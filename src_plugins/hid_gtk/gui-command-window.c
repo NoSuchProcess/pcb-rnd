@@ -438,8 +438,3 @@ void ghid_handle_user_command(pcb_bool raise)
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
 }
-
-int ghid_command_entry_is_active(void)
-{
-	return ghidgui->command_entry_status_line_active;
-}

@@ -387,6 +387,7 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 
 static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer data)
 {
+	pcb_gtk_common_t *com = data;
 /*	gboolean active =*/ gtk_toggle_button_get_active(button);
 	static gboolean holdoff;
 
@@ -396,14 +397,14 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 	/* Can't toggle into command window mode if the status line command
 	   |  entry is active.
 	 */
-	if (ghid_command_entry_is_active()) {
+	if (com->command_entry_is_active()) {
 		holdoff = TRUE;
 		gtk_toggle_button_set_active(button, FALSE);
 		holdoff = FALSE;
 		return;
 	}
 	conf_set(CFR_DESIGN, "plugins/hid_gtk/use_command_window", -1, "1", POL_OVERWRITE);
-	ghid_command_use_command_window_sync();
+	com->command_use_command_window_sync();
 }
 
 static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpointer data)
@@ -493,7 +494,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 
 	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
 															TRUE, FALSE, FALSE, 2,
-															config_command_window_toggle_cb, NULL, _("Use separate window for command entry"));
+															config_command_window_toggle_cb, com, _("Use separate window for command entry"));
 
 	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
 															TRUE, FALSE, FALSE, 2,

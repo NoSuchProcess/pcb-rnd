@@ -903,6 +903,10 @@ void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 	pcb_gtk_logv(gtkhid_active, level, fmt, args);
 }
 
+int ghid_command_entry_is_active(void)
+{
+	return ghidgui->command_entry_status_line_active;
+}
 
 pcb_uninit_t hid_hid_gtk_init()
 {
@@ -963,6 +967,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.map_color_string = ghid_map_color_string;
 	ghidgui->common.set_special_colors = ghid_set_special_colors;
 	ghidgui->common.layer_buttons_color_update = ghid_layer_buttons_color_update;
+	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
+	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;
