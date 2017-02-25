@@ -1153,9 +1153,9 @@ int gtkhid_active = 0;
 void gtkhid_begin(void)
 {
 	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-		PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
-		PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
-		gtkhid_active = 1;
+	PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+	gtkhid_active = 1;
 }
 
 void gtkhid_end(void)
