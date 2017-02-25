@@ -962,11 +962,16 @@ static void command_use_command_window_sync(pcb_gtk_command_t *ctx)
 	}
 }
 
-
 void ghid_command_use_command_window_sync(void)
 {
 	command_use_command_window_sync(&ghidgui->cmd);
 }
+
+static void LayersChanged_cb(void)
+{
+	ghid_LayersChanged(0, 0, 0);
+}
+
 
 pcb_uninit_t hid_hid_gtk_init()
 {
@@ -1027,6 +1032,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.map_color_string = ghid_map_color_string;
 	ghidgui->common.set_special_colors = ghid_set_special_colors;
 	ghidgui->common.layer_buttons_color_update = ghid_layer_buttons_color_update;
+	ghidgui->common.LayersChanged = LayersChanged_cb;
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
 

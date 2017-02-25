@@ -43,6 +43,8 @@ typedef struct pcb_gtk_common_s {
 	void (*port_ranges_scale)(void);
 	void (*pack_mode_buttons)(void);
 
+	void (*LayersChanged)(void);
+
 	/* only for config: */
 	const gchar *(*get_color_name)(GdkColor * color);
 	void (*map_color_string)(const char *color_string, GdkColor * color);
