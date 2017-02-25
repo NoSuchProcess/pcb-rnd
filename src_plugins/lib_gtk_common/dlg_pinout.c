@@ -66,7 +66,7 @@ void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_element_t *element)
 	gtk_container_add(GTK_CONTAINER(top_window), vbox);
 
 
-	preview = pcb_gtk_preview_pinout_new(com->gport, com->init_drawing_widget, com->preview_expose, element);
+	preview = pcb_gtk_preview_pinout_new(com, com->init_drawing_widget, com->preview_expose, element);
 
 	gtk_box_pack_start(GTK_BOX(vbox), preview, TRUE, TRUE, 0);
 

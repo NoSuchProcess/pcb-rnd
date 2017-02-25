@@ -13,6 +13,7 @@ typedef struct pcb_gtk_common_s {
 	GtkWidget *top_window;
 
 	GdkPixmap *(*render_pixmap)(int cx, int cy, double zoom, int width, int height, int depth);
+	gboolean (*preview_draw)(GtkWidget *widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
 	gboolean (*preview_expose)(GtkWidget *widget, GdkEventExpose *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);

@@ -37,6 +37,7 @@
 #include "hid.h"
 #include "layer.h"
 #include "ui_zoompan.h"
+#include "glue.h"
 
 #define GHID_TYPE_PINOUT_PREVIEW           (pcb_gtk_preview_get_type())
 #define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_t))
@@ -92,6 +93,8 @@ struct pcb_gtk_preview_s {
 	pcb_coord_t grabx, graby;
 
 	pcb_element_t element;
+
+	pcb_gtk_common_t *com;
 };
 
 /** Retrieves \ref pcb_gtk_preview_t 's GType identifier.
@@ -110,18 +113,15 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *he
     \param  expose            Drawing event call-back function ?
     \param  element           ?
 \todo rename to pcb_gtk_preview_new */
-GtkWidget *pcb_gtk_preview_pinout_new(void *gport,
+GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t *com,
 																			pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_element_t * element);
 
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget,
     using \p layer... for What ?
  */
-GtkWidget *pcb_gtk_preview_layer_new(void *gport,
+GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com,
 																		 pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
-
-/* Temporary glue: */
-gboolean ghid_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx);
 
 #endif /* PCB_GTK_WT_REVIEW_H */

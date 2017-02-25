@@ -571,7 +571,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
-		ghid_config_window_show(gport);
+		ghid_config_window_show(&ghidgui->common);
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
 		ghid_drc_window_show(&ghidgui->common, raise);
@@ -956,7 +956,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.lead_user_to_location = ghid_lead_user_to_location;
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
-
+	ghidgui->common.preview_draw = ghid_preview_draw;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;

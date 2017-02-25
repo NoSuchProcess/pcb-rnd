@@ -124,6 +124,7 @@ enum {
 	PROP_EXPOSE = 4,
 	PROP_KIND = 5,
 	PROP_LAYER = 6,
+	PROP_COM = 7,
 };
 
 static GObjectClass *ghid_pinout_preview_parent_class = NULL;
@@ -183,6 +184,9 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 		break;
 	case PROP_GPORT:
 		pinout->gport = (void *) g_value_get_pointer(value);
+		break;
+	case PROP_COM:
+		pinout->com = (void *) g_value_get_pointer(value);
 		break;
 	case PROP_INIT_WIDGET:
 		pinout->init_drawing_widget = (void *) g_value_get_pointer(value);
@@ -270,6 +274,7 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 																	g_param_spec_pointer("element-data", "", "", G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_GPORT, g_param_spec_pointer("gport", "", "", G_PARAM_WRITABLE));
+	g_object_class_install_property(gobject_class, PROP_COM, g_param_spec_pointer("com", "", "", G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_INIT_WIDGET,
 																	g_param_spec_pointer("init-widget", "", "", G_PARAM_WRITABLE));
@@ -422,7 +427,7 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 /*		pcb_printf("mo %mm %mm\n", cx, cy); */
 		preview->mouse_cb(w, PCB_HID_MOUSE_MOTION, cx, cy);
 		if (preview->overlay_draw_cb != NULL)
-			ghid_preview_draw(w, preview->overlay_draw_cb, &preview->expose_data);
+			preview->com->preview_draw(w, preview->overlay_draw_cb, &preview->expose_data);
 	}
 	return FALSE;
 }
@@ -465,14 +470,15 @@ GType pcb_gtk_preview_get_type()
 	return ghid_pinout_preview_type;
 }
 
-GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_element_t * element)
 {
 	pcb_gtk_preview_t *pinout_preview;
 
 	pinout_preview = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
 																											"element-data", element,
-																											"gport", gport,
+																											"gport", com->gport,
+																											"com", com,
 																											"init-widget", init_widget,
 																											"expose", expose, "kind", PCB_GTK_PREVIEW_PINOUT, NULL);
 
@@ -481,14 +487,15 @@ GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t
 	return GTK_WIDGET(pinout_preview);
 }
 
-GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
 {
 	pcb_gtk_preview_t *prv;
 
 	prv = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
 																					 "layer", layer,
-																					 "gport", gport,
+																					 "gport", com->gport,
+																					 "com", com,
 																					 "init-widget", init_widget,
 																					 "expose", expose,
 																					 "kind", PCB_GTK_PREVIEW_LAYER, "width-request", 50, "height-request", 50, NULL);
