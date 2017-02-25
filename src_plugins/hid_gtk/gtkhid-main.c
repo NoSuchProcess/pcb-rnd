@@ -278,7 +278,7 @@ char *ghid_prompt_for(const char *msg, const char *default_string)
 
 void ghid_show_item(void *item)
 {
-	ghid_pinout_window_show(&ghid_port, (pcb_element_t *) item);
+	ghid_pinout_window_show(&ghidgui->common, (pcb_element_t *)item);
 }
 
 void ghid_beep()
