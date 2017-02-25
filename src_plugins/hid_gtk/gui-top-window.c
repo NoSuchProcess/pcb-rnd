@@ -117,24 +117,6 @@ GHidPort ghid_port, *gport;
 
 pcb_hid_cfg_t *ghid_cfg = NULL;
 
-/*! \brief callback for ghid_main_menu_update_toggle_state () */
-void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)
-{
-	if (tflag != NULL) {
-		int v = pcb_hid_get_flag(tflag);
-		if (v < 0) {
-			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), 0);
-			gtk_action_set_sensitive(act, 0);
-		}
-		else
-			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), ! !v);
-	}
-	if (aflag != NULL) {
-		int v = pcb_hid_get_flag(aflag);
-		gtk_action_set_sensitive(act, ! !v);
-	}
-}
-
 /*! \brief sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags()
 {

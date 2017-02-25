@@ -15,6 +15,8 @@
 #include "misc_util.h"
 #include "error.h"
 #include "conf.h"
+#include "hid_flags.h"
+
 #include "bu_menu.h"
 #include "wt_layer_selector.h"
 #include "wt_route_style.h"
@@ -511,4 +513,22 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 	}
 #endif
 	return 0;
+}
+
+/*! \brief callback for ghid_main_menu_update_toggle_state () */
+void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)
+{
+	if (tflag != NULL) {
+		int v = pcb_hid_get_flag(tflag);
+		if (v < 0) {
+			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), 0);
+			gtk_action_set_sensitive(act, 0);
+		}
+		else
+			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), ! !v);
+	}
+	if (aflag != NULL) {
+		int v = pcb_hid_get_flag(aflag);
+		gtk_action_set_sensitive(act, ! !v);
+	}
 }

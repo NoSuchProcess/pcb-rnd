@@ -2078,7 +2078,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
+ hid_flags.h ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h attrib.h ../src_plugins/lib_gtk_common/glue.h hid.h \
