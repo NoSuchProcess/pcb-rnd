@@ -72,7 +72,7 @@
 
 /* Ugly hack: save a copy of gport on window construct in case we need to
    reconstruct */
-static void *priv_copy_gport;
+static pcb_gtk_common_t *priv_copy_com;
 
 extern int pcb_act_MoveLayer(int argc, char **argv, int x, int y);
 conf_hid_gtk_t conf_hid_gtk;
@@ -323,7 +323,7 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 		page = gtk_notebook_get_current_page(config_notebook);
 
 		ghid_config_window_close();
-		ghid_config_window_show(priv_copy_gport);
+		ghid_config_window_show(priv_copy_com->gport);
 
 		/* restore expansions and notebook states */
 		for (; first != NULL; first = next) {
@@ -479,7 +479,7 @@ void config_general_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_general_tab_create(GtkWidget * tab_vbox, void *gport)
+static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *vbox, *content_vbox;
 
@@ -583,7 +583,7 @@ void config_sizes_save(GtkButton * widget, save_ctx_t * ctx)
 }
 
 
-static void config_sizes_tab_create(GtkWidget * tab_vbox, void *gport)
+static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *table, *vbox, *hbox, *content_vbox;
 
@@ -734,7 +734,7 @@ static void config_window_row(GtkWidget * parent, const char *desc, int load, co
 	}
 }
 
-static void config_window_tab_create(GtkWidget * tab_vbox, void *gport)
+static void config_window_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *lab;
 
@@ -963,7 +963,7 @@ void config_increments_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_increments_tab_create(GtkWidget * tab_vbox, void *gport)
+static void config_increments_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *vbox, *catvbox, *content_vbox;
 
@@ -1170,7 +1170,7 @@ void config_library_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_library_tab_create(GtkWidget * tab_vbox, void *gport)
+static void config_library_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *vbox, *label, *entry, *content_vbox, *paths_box;
 	const char *cnames[] = { "configured path", "actual path on the filesystem", "config source" };
@@ -1366,7 +1366,7 @@ void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_layers_tab_create(GtkWidget * tab_vbox, void *gport)
+static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *content_vbox, *prv;
 	GtkWidget *hbox, *arrow;
@@ -1384,7 +1384,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, void *gport)
 	vbox = ghid_notebook_page(tabs, _("Physical layer stack"), 0, 6);
 	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
 		pcb_gtk_preview_t *p;
-		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
+		prv = pcb_gtk_preview_layer_new(com, ghid_init_drawing_widget, ghid_preview_expose, lid);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
@@ -1454,7 +1454,7 @@ void ghid_config_layer_name_update(gchar * name, gint layer)
 	 */
 static GtkWidget *config_colors_vbox, *config_colors_tab_vbox;
 
-static void config_colors_tab_create(GtkWidget * tab_vbox, void *gport);
+static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com);
 
 typedef struct {
 	conf_native_t *cfg;
@@ -1574,7 +1574,7 @@ void config_colors_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_colors_tab_create(GtkWidget * tab_vbox, void *gport)
+static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *scrolled_vbox, *vbox, *expander;
 
@@ -1720,7 +1720,7 @@ static void config_tree_sect(GtkTreeStore * model, GtkTreeIter * parent, GtkTree
 
 /* Create a leaf node with a custom tab */
 static GtkWidget *config_tree_leaf_(GtkTreeStore * model, GtkTreeIter * parent, const char *name,
-																		void (*tab_create) (GtkWidget * tab_vbox, void *gport), GtkTreeIter * iter, void *gport)
+																		void (*tab_create) (GtkWidget * tab_vbox, pcb_gtk_common_t *com), GtkTreeIter * iter, pcb_gtk_common_t *com)
 {
 	GtkWidget *vbox = NULL;
 
@@ -1728,16 +1728,16 @@ static GtkWidget *config_tree_leaf_(GtkTreeStore * model, GtkTreeIter * parent, 
 	gtk_tree_store_set(model, iter, CONFIG_NAME_COLUMN, name, -1);
 	if (tab_create != NULL) {
 		vbox = config_page_create(model, iter, config_notebook);
-		tab_create(vbox, gport);
+		tab_create(vbox, com);
 	}
 	return vbox;
 }
 
 static GtkWidget *config_tree_leaf(GtkTreeStore * model, GtkTreeIter * parent, const char *name,
-																	 void (*tab_create) (GtkWidget * tab_vbox, void *gport), void *gport)
+																	 void (*tab_create) (GtkWidget * tab_vbox, pcb_gtk_common_t *com), pcb_gtk_common_t *com)
 {
 	GtkTreeIter iter;
-	return config_tree_leaf_(model, parent, name, tab_create, &iter, gport);
+	return config_tree_leaf_(model, parent, name, tab_create, &iter, com);
 }
 
 /***** auto *****/
@@ -2602,7 +2602,7 @@ static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, vo
 	free(sorted);
 }
 
-void ghid_config_window_show(void *gport)
+void ghid_config_window_show(pcb_gtk_common_t *com)
 {
 	GtkWidget *widget, *main_vbox, *config_hbox, *hbox;
 	GtkWidget *scrolled;
@@ -2619,7 +2619,7 @@ void ghid_config_window_show(void *gport)
 		return;
 	}
 
-	priv_copy_gport = gport;
+	priv_copy_com = com;
 
 	config_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(G_OBJECT(config_window), "delete_event", G_CALLBACK(config_destroy_cb), NULL);
@@ -2654,15 +2654,15 @@ void ghid_config_window_show(void *gport)
 									 _
 									 ("\n<b>Config PoV</b>\nAccess all configuration fields presented in\na tree that matches the configuration\nfile (lht) structure."));
 
-	config_tree_leaf(model, &user_pov, _("General"), config_general_tab_create, gport);
-	config_tree_leaf(model, &user_pov, _("Window"), config_window_tab_create, gport);
-	config_tree_leaf(model, &user_pov, _("Sizes"), config_sizes_tab_create, gport);
-	config_tree_leaf(model, &user_pov, _("Increments"), config_increments_tab_create, gport);
-	config_tree_leaf(model, &user_pov, _("Library"), config_library_tab_create, gport);
-	config_tree_leaf(model, &user_pov, _("Layers"), config_layers_tab_create, gport);
-	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create, gport);
+	config_tree_leaf(model, &user_pov, _("General"), config_general_tab_create, com);
+	config_tree_leaf(model, &user_pov, _("Window"), config_window_tab_create, com);
+	config_tree_leaf(model, &user_pov, _("Sizes"), config_sizes_tab_create, com);
+	config_tree_leaf(model, &user_pov, _("Increments"), config_increments_tab_create, com);
+	config_tree_leaf(model, &user_pov, _("Library"), config_library_tab_create, com);
+	config_tree_leaf(model, &user_pov, _("Layers"), config_layers_tab_create, com);
+	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create, com);
 
-	config_tree_auto(model, &config_pov, gport);
+	config_tree_auto(model, &config_pov, com->gport);
 
 	/* Create the tree view */
 	gui_config_treeview = treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));
