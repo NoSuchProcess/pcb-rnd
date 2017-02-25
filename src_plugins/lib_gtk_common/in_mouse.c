@@ -367,7 +367,6 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 
-	extern GdkModifierType ghid_glob_mask;
 	ghid_glob_mask = state;
 
 	gdk_window_get_pointer(gtk_widget_get_window(drawing_area), NULL, NULL, &mask);

@@ -121,4 +121,7 @@ GtkWidget *pcb_gtk_preview_layer_new(void *gport,
 																		 pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
 
+/* Temporary glue: */
+gboolean ghid_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx);
+
 #endif /* PCB_GTK_WT_REVIEW_H */

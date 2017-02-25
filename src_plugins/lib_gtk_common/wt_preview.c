@@ -403,9 +403,6 @@ static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gp
 	return FALSE;
 }
 
-#warning TODO: this should go in the renderer (e.g. gdk) API .h
-gboolean ghid_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx);
-
 static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer data)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;

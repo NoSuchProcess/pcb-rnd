@@ -92,7 +92,6 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 
 		view->com->note_event_location(NULL);
 
-		extern GdkModifierType ghid_glob_mask;
 		ghid_glob_mask = state;
 
 		if (state & GDK_MOD1_MASK)    mods |= PCB_M_Alt;

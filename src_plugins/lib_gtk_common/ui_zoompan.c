@@ -36,11 +36,6 @@
 #include "layer_vis.h"
 #include "bu_status_line.h"
 
-/* defined by the hid (gtk version or render specific): */
-void ghid_pan_common(void);
-void ghid_port_ranges_scale(void);
-void ghid_invalidate_all();
-
 double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 {
 	double min_zoom, max_zoom, max_zoom_w, max_zoom_h, out_zoom;
