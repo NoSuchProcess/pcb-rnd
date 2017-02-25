@@ -56,7 +56,7 @@
 #include "config.h"
 #include <ctype.h>
 #include <assert.h>
-#include "wt_library.h"
+#include "dlg_library.h"
 #include "conf_core.h"
 
 #include "buffer.h"

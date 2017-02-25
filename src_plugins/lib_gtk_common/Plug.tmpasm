@@ -23,6 +23,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_file_chooser.o
   $(PLUGDIR)/lib_gtk_common/dlg_fontsel.o
   $(PLUGDIR)/lib_gtk_common/dlg_input.o
+  $(PLUGDIR)/lib_gtk_common/dlg_library.o
   $(PLUGDIR)/lib_gtk_common/dlg_log.o
   $(PLUGDIR)/lib_gtk_common/dlg_message.o
   $(PLUGDIR)/lib_gtk_common/dlg_netlist.o
@@ -45,7 +46,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
   $(PLUGDIR)/lib_gtk_common/wt_layer_selector.o
   $(PLUGDIR)/lib_gtk_common/wt_layer_selector_cr.o
-  $(PLUGDIR)/lib_gtk_common/wt_library.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
   $(PLUGDIR)/lib_gtk_common/wt_route_style.o
 @]
