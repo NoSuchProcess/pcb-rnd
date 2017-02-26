@@ -414,6 +414,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 #warning TODO: refresh the display with empty - also for the above returns!
 			return;
 		}
+		gtk_entry_set_text(library_window->entry_filter, name);
 	}
 	library_window_preview_refresh(library_window, name, entry);
 	free(name);
