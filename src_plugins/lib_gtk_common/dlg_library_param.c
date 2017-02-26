@@ -162,6 +162,75 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 	return sres.array;
 }
 
+static int param_split(char *buf, char *argv[], int amax)
+{
+	int n;
+	char *next, *bump;
+
+	for(n=0; ;n++) {
+		if (n >= amax)
+			return n+1;
+
+		/* ltrim */
+		while(isspace(*buf)) buf++;
+		argv[n] = buf;
+
+		/* find next param */
+		bump = buf;
+		next = strchr(buf, ',');
+		if (next == NULL)
+			return n+1;
+		buf = next+1;
+
+		/* rtrim */
+		*next = '\0';
+		next--;
+		while((next >= bump) && (isspace(*next))) {
+			*next = '\0';
+			next++;
+		}
+	}
+	return -1;
+}
+
+
+static void load_params(char *user_params, char *help_params, pcb_hid_attribute_t *attrs, int numattr)
+{
+	char *parain;
+	char *parahlp;
+	int argc_in, argc_help, posi, n;
+	char *end, *argv_in[MAX_PARAMS], *argv_help[MAX_PARAMS];
+
+	if (user_params == NULL)
+		user_params = "";
+	if (help_params == NULL)
+		help_params = "";
+
+
+	parain = pcb_strdup(user_params);
+	parahlp = pcb_strdup(help_params);
+
+	/* truncate trailing ")" */
+	if (*parain != '\0') {
+		end = parain + strlen(parain) - 1;
+		if (*end == ')')
+			*end = '\0';
+	}
+
+	argc_in = param_split(parain, argv_in, MAX_PARAMS);
+	argc_help = param_split(parahlp, argv_help, MAX_PARAMS);
+
+	/* iterate and assign default values and mark them changed to get them back */
+	for(posi = n = 0; n < argc_in; n++) {
+		printf("in='%s'\n", argv_in[n]);
+	}
+
+	/* clean up */
+	free(parain);
+	free(parahlp);
+}
+
+
 char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt)
 {
 	FILE *f;
@@ -231,6 +300,12 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 		}
 	}
 	pclose(f);
+
+	if (filter_txt != NULL) {
+		char *prm = strchr(filter_txt, '(');
+		if (prm != NULL)
+			load_params(prm+1, params, attrs, numattr);
+	}
 
 	ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr);
 
