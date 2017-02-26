@@ -106,6 +106,16 @@ static void free_attr(pcb_hid_attribute_t *a)
 	}
 }
 
+static pcb_hid_attribute_t *find_attr(pcb_hid_attribute_t *attrs, int numattr, const char *name)
+{
+	int n;
+	for(n = 0; n < numattr; n++)
+		if (strcmp(attrs[n].name, name) == 0)
+			return &attrs[n];
+	return NULL;
+}
+
+
 static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res, int numattr)
 {
 	int n, pushed = 0;
@@ -162,6 +172,38 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 	return sres.array;
 }
 
+static void set_attr(pcb_hid_attribute_t *a, char *val)
+{
+	const char **s;
+	char *desc;
+	int vlen, len, n;
+
+	switch(a->type) {
+		case HID_Enum:
+			vlen = strlen(val);
+			for(n = 0, s = a->enumerations; *s != NULL; s++,n++) {
+				desc = strstr(*s, " (");
+				if (desc != NULL)
+					len = desc - *s;
+				else
+					len = strlen(*s);
+				if ((len == vlen) && (strncmp(*s, val, len) == 0)) {
+					a->default_val.int_value = n;
+					break;
+				}
+			}
+			break;
+		case HID_String:
+			free((char *)a->default_val.str_value);
+			a->default_val.str_value = pcb_strdup(val);
+			break;
+		case HID_Coord:
+			a->default_val.coord_value = pcb_get_value(val, NULL, NULL, NULL);
+			break;
+		default:;
+	}
+}
+
 static int param_split(char *buf, char *argv[], int amax)
 {
 	int n;
@@ -187,7 +229,7 @@ static int param_split(char *buf, char *argv[], int amax)
 		next--;
 		while((next >= bump) && (isspace(*next))) {
 			*next = '\0';
-			next++;
+			next--;
 		}
 	}
 	return -1;
@@ -222,7 +264,42 @@ static void load_params(char *user_params, char *help_params, pcb_hid_attribute_
 
 	/* iterate and assign default values and mark them changed to get them back */
 	for(posi = n = 0; n < argc_in; n++) {
-		printf("in='%s'\n", argv_in[n]);
+		char *key, *val, *sep;
+		pcb_hid_attribute_t *a;
+
+		sep = strchr(argv_in[n], '=');
+		if (sep != NULL) {
+			key = argv_in[n];
+			*sep = '\0';
+			val = sep+1;
+
+			/* rtrim key */
+			sep--;
+			while((sep >= key) && (isspace(*sep))) {
+				*sep = '\0';
+				sep--;
+			}
+
+			/* ltrim val */
+			while(isspace(*val)) val++;
+		}
+		else {
+			if (posi >= argc_help) {
+				pcb_message(PCB_MSG_ERROR, "More positional parameters than expected - ignoring %s", argv_in[n]);
+				continue;
+			}
+			key = argv_help[posi];
+			val = argv_in[n];
+			posi++;
+		}
+
+		a = find_attr(attrs, numattr, key);
+		if (a == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Unknown parameter %s - ignoring value %s", key, val);
+			continue;
+		}
+		set_attr(a, val);
+		a->changed = 1; /* make sure the value is kept on the outpute */
 	}
 
 	/* clean up */
