@@ -370,4 +370,4 @@ put /local/dep/SRCS /local/pcb/SRCS
 
 gsub /local/pcb/DEPSRCS {.o } {.c }
 append /local/dep/SRCS /local/pcb/DEPSRCS
-include {../scconfig/Makefile.dep.inc}
+include {../scconfig/template/cdep.tmpasm}
