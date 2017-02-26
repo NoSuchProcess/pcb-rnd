@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#@@example connector(2, 3, silkmark=external)
+#@@example connector(2, 3, silkmark=external, spacing=100)
 
 #@@purpose Generate pin-array connectors (e.g. headers).
 
