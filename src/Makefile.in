@@ -328,7 +328,7 @@ util_deps: $(OBJS) $(OBJS_UTIL)
 FORCE:
 
 
-DISTCLEANFILES = core_lists.h buildin.c compat_inc.h conf_core_fields.h conf_internal.c generated_lists.h @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c compat_inc.h conf_core_fields.h conf_internal.c generated_lists.h @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(OBJS) $(OBJS_C99) $(CLEANFILES)
