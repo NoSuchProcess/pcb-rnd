@@ -106,6 +106,36 @@ static void free_attr(pcb_hid_attribute_t *a)
 	}
 }
 
+static char *gen_cmd(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res, int numattr)
+{
+	int n;
+
+	for(n = 0; n < numattr; n++) {
+		char *desc, buff[128];
+		const char *val;
+		switch(attrs[n].type) {
+			case HID_Enum:
+				val = attrs[n].enumerations[res[n].int_value];
+				if (val != NULL) {
+					desc = strstr((char *)val, " (");
+					if (desc != NULL)
+						*desc = '\0';
+				}
+				break;
+			case HID_String:
+				val = res[n].str_value;
+				break;
+			case HID_Coord:
+				val = buff;
+				pcb_snprintf(buff, sizeof(buff), "%$$mh", res[n].coord_value);
+				break;
+			default:;
+		}
+		printf("RES: %s=%s\n", attrs[n].name, val);
+	}
+
+}
+
 char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry)
 {
 	FILE *f;
@@ -178,6 +208,8 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	}
 
 	ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr);
+
+	gen_cmd(attrs, res, numattr);
 
 	for(n = 0; n < numattr; n++)
 		free_attr(&attrs[n]);
