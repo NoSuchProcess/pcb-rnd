@@ -128,6 +128,9 @@ function element_pin(x, y,  number, flags,   ringdia, clearance, mask, drill, na
 			flags = ""
 	}
 
+	if (flags == "none")
+		flags = ""
+
 	print "	Pin[" coord_x(x), coord_y(y),
 		int(either(ringdia, DEFAULT["pin_ringdia"])), int(either(clearance, DEFAULT["pin_clearance"])), int(either(mask, DEFAULT["pin_mask"])),
 		int(either(drill, DEFAULT["pin_drill"])), q name q, q number q, q flags q "]"
