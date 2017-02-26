@@ -23,11 +23,30 @@
 /* GUI for parametric footprints parameter exploration */
 
 #include "config.h"
+
+#define _BSD_SOURCE
+#include <stdio.h>
+
 #include "dlg_library_param.h"
 
 char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry)
 {
+	FILE *f;
+	char *cmd, line[1024];
+
 	printf("Not yet\n");
+
+	cmd = pcb_strdup_printf("%s --help", entry->data.fp.loc_info);
+	f = popen(cmd, "r");
+	free(cmd);
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not execute parametric footprint %s\n", entry->data.fp.loc_info);
+		return NULL;
+	}
+	while(fgets(line, sizeof(line), f) > 0) {
+		printf("line=%s\n", line);
+	}
+	pclose(f);
 	return NULL;
 }
 

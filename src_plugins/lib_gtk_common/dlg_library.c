@@ -408,8 +408,13 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	if (entry == NULL)
 		return;
 
-	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC))
+	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC)) {
 		name = pcb_gtk_library_param_ui(library_window, entry);
+		if (name == NULL) {
+#warning TODO: refresh the display with empty - also for the above returns!
+			return;
+		}
+	}
 	library_window_preview_refresh(library_window, name, entry);
 	free(name);
 }
