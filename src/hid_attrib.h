@@ -15,7 +15,8 @@ struct pcb_hid_attr_val_s {
 	pcb_coord_t coord_value;
 };
 
-enum pcb_hids_t { HID_Label, HID_Integer, HID_Real, HID_String,
+enum pcb_hids_t {
+	HID_Label, HID_Integer, HID_Real, HID_String,
 	HID_Boolean, HID_Enum, HID_Mixed, HID_Path,
 	HID_Unit, HID_Coord
 };
