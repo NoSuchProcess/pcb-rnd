@@ -23,6 +23,7 @@ sortuniq /local/dep/SRCS_SORTED /local/dep/SRCS
 foreach /local/c in /local/dep/SRCS_SORTED
 	put /local/o /local/c
 	sub {/local/o} {.c$} {.o}
+	sub {/local/c} {.o$} {.c}
 	switch /local/c
 		case {/src_plugins/} end
 		case {$(PLUGDIR)}
