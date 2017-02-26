@@ -73,6 +73,7 @@
 #include "win_place.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "dlg_library_param.h"
 
 /** \todo Open an empty file. Launch the Netlist window ... then : \n <tt>
 (pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_widget_show_all: assertion 'GTK_IS_WIDGET (widget)' failed \n
@@ -396,6 +397,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	pcb_gtk_library_t *library_window = (pcb_gtk_library_t *) user_data;
+	char *name = NULL;
 	pcb_fplibrary_t *entry = NULL;
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -406,7 +408,10 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	if (entry == NULL)
 		return;
 
-	library_window_preview_refresh(library_window, NULL, entry);
+	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC))
+		name = pcb_gtk_library_param_ui(library_window, entry);
+	library_window_preview_refresh(library_window, name, entry);
+	free(name);
 }
 
 /** Requests re-evaluation of the filter.
