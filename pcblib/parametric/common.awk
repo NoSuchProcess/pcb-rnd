@@ -527,3 +527,40 @@ function dimension(x1, y1, x2, y2, dist, name,    value,    vx,vy)
 {
 	print "#dimension", coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), dist, name, value
 }
+
+function help_extract(SEEN, fn, dirn,     WANT,tmp)
+{
+	if (fn in SEEN)
+		return
+	SEEN[fn]++
+	print "#@@info-gen-extract " fn
+	close(fn)
+	while((getline line < fn) > 0) {
+		if (line ~ "^#@@include") {
+			sub("^#@@include[ \t]*", "", line)
+			tmp = dirn "/" line
+			WANT[tmp]++
+		}
+		else if (line ~ "^#@@")
+			print line
+	}
+	close(fn)
+	for(tmp in WANT)
+		help_extract(SEEN, tmp, dirn)
+}
+
+function help_print(   SEEN, dirn)
+{
+	print "#@@info-generator pcblib common.awk"
+	dirn = genfull
+	sub("/[^/]*$", "", dirn)
+	help_extract(SEEN, genfull, dirn)
+}
+
+function help_auto()
+{
+	if (args ~ "^--help") {
+		help_print()
+		exit(0)
+	}
+}
