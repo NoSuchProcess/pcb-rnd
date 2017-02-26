@@ -177,7 +177,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))	/* warn if update_on is not explicitly empty */
 					pcb_message(PCB_MSG_WARNING,
-											"Checkbox menu item not %s updated on any conf change - try to use the update_on field\n", checked);
+											"Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
 			}
 		}
 		else if (label && strcmp(label, "false") == 0) {
