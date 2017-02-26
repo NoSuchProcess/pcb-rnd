@@ -52,7 +52,7 @@ struct pcb_gtk_library_s {
 	GtkWidget *preview_text;
 	GtkEntry *entry_filter;
 	GtkButton *button_clear;
-	guint filter_timeout;
+	guint filter_timeout, param_timer;
 
 	void *gport;
 };

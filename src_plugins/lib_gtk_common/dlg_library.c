@@ -75,6 +75,10 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "dlg_library_param.h"
 
+/** how often should the parametric footprint redrawn while the parameters are
+    changing - in milisec */
+#define PARAM_REFRESH_RATE_MS 100
+
 /** \todo Open an empty file. Launch the Netlist window ... then : \n <tt>
 (pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_widget_show_all: assertion 'GTK_IS_WIDGET (widget)' failed \n
 (pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_tree_view_set_model: assertion 'GTK_IS_TREE_VIEW (tree_view)' failed \n
@@ -381,12 +385,29 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 	gtk_label_set_text(GTK_LABEL(library_window->preview_text), g_string_free(pt, FALSE));
 }
 
-void lib_param_chg(pcb_gtk_library_param_cb_ctx_t *ctx)
+/** Update the preview and filter text from the parametric attribute dialog */
+static gboolean lib_param_chg_delayed(pcb_gtk_library_param_cb_ctx_t *ctx)
 {
 	char *cmd = pcb_gtk_library_param_snapshot(ctx);
+
 	gtk_entry_set_text(ctx->library_window->entry_filter, cmd);
 	library_window_preview_refresh(ctx->library_window, cmd, ctx->entry);
 	free(cmd);
+	ctx->library_window->param_timer = 0;
+	return FALSE; /* Turns timer off */
+}
+
+static void lib_param_del_timer(pcb_gtk_library_t *library_window)
+{
+	if (library_window->param_timer != 0)
+		g_source_remove(library_window->param_timer);
+	library_window->param_timer = 0;
+}
+
+static void lib_param_chg(pcb_gtk_library_param_cb_ctx_t *ctx)
+{
+	if (ctx->library_window->param_timer == 0)
+		ctx->library_window->param_timer = g_timeout_add(PARAM_REFRESH_RATE_MS, (GSourceFunc)lib_param_chg_delayed, ctx);
 }
 
 /** Handles changes in the treeview selection.
@@ -408,6 +429,8 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	char *name = NULL;
 	pcb_fplibrary_t *entry = NULL;
 
+	lib_param_del_timer(library_window);
+
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return;
 
@@ -419,6 +442,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC)) {
 		const char *in_para = gtk_entry_get_text(library_window->entry_filter);
 		name = pcb_gtk_library_param_ui(library_window, entry, in_para, lib_param_chg);
+		lib_param_del_timer(library_window);
 		if (name == NULL) {
 #warning TODO: refresh the display with empty - also for the above returns!
 			return;
@@ -720,6 +744,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	/* chain up to constructor of parent class */
 	object = G_OBJECT_CLASS(library_window_parent_class)->constructor(type, n_construct_properties, construct_params);
 	library_window = GHID_LIBRARY_WINDOW(object);
+	library_window->param_timer = 0;
 
 	/* dialog initialization */
 	g_object_set(object,
@@ -808,6 +833,8 @@ static void library_window_finalize(GObject * object)
 		g_source_remove(library_window->filter_timeout);
 		library_window->filter_timeout = 0;
 	}
+
+	lib_param_del_timer(library_window);
 
 	G_OBJECT_CLASS(library_window_parent_class)->finalize(object);
 }
