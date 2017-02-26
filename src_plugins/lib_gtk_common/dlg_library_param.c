@@ -198,7 +198,7 @@ static void set_attr(pcb_hid_attribute_t *a, char *val)
 			a->default_val.str_value = pcb_strdup(val);
 			break;
 		case HID_Coord:
-			a->default_val.coord_value = pcb_get_value(val, NULL, NULL, NULL);
+			a->default_val.coord_value = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
 			break;
 		default:;
 	}
