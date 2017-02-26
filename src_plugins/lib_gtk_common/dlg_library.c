@@ -409,7 +409,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 		return;
 
 	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC)) {
-		name = pcb_gtk_library_param_ui(library_window, entry);
+		name = pcb_gtk_library_param_ui(library_window, entry, gtk_entry_get_text(library_window->entry_filter));
 		if (name == NULL) {
 #warning TODO: refresh the display with empty - also for the above returns!
 			return;

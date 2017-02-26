@@ -145,6 +145,9 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 			default:;
 		}
 
+		if (val == NULL)
+			continue;
+
 		if (pushed)
 			gds_append_str(&sres, ", ");
 		pcb_append_printf(&sres, "%s=%s", attrs[n].name, val);
@@ -155,7 +158,7 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 	return sres.array;
 }
 
-char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry)
+char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt)
 {
 	FILE *f;
 	char *sres, *cmd, line[1024];
