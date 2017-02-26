@@ -330,8 +330,8 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	char *sres, *cmd, line[1024];
 	pcb_hid_attribute_t *curr, attrs[MAX_PARAMS];
 	pcb_hid_attr_val_t res[MAX_PARAMS];
-	int n, numattr = 0;
-	char *params = NULL, *descr = NULL;
+	int n, numattr = 0, dirty = 0;
+	char *params = NULL, *descr = NULL, *example = NULL;
 	pcb_gtk_library_param_cb_ctx_t ctx;
 
 	ctx.library_window = library_window;
@@ -379,6 +379,9 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 		else if (strcmp(cmd, "params") == 0) {
 			params = pcb_strdup(arg);
 		}
+		else if (strcmp(cmd, "example") == 0) {
+			example = pcb_strdup(arg);
+		}
 		else if (strncmp(cmd, "param:", 6) == 0) {
 			colsplit();
 			curr = append(col);
@@ -406,8 +409,23 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	}
 	pclose(f);
 
+	if (filter_txt == NULL) {
+		filter_txt = example;
+		dirty = 1;
+	}
+
 	if (filter_txt != NULL) {
 		char *prm = strchr(filter_txt, '(');
+
+		/* if filter text doesn't have parameters, try the example */
+		if ((prm == NULL) || (prm[1] == ')')) {
+			if (example != NULL) {
+				filter_txt = example;
+				prm = strchr(filter_txt, '(');
+				dirty = 1;
+			}
+		}
+
 		if (prm != NULL)
 			load_params(prm+1, params, attrs, numattr);
 	}
@@ -415,6 +433,9 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	/* make a snapshot to res so that callback gen_cmd() works from live data */
 	for(n = 0; n < numattr; n++)
 		res[n] = attrs[n].default_val;
+
+	if (dirty) /* had to replace the filter text, make it effective */
+		attr_change_cb(&attrs[0]);
 
 	ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr);
 
@@ -425,6 +446,7 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 		free_attr(&attrs[n]);
 	free(descr);
 	free(params);
+	free(example);
 
 	return sres;
 }
