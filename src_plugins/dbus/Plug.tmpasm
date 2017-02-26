@@ -2,7 +2,15 @@ put /local/pcb/mod {dbus}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/dbus/dbus.o $(PLUGDIR)/dbus/dbus-pcbmain.o @]
 
 switch /local/pcb/dbus/controls
-	case {disable} end;
+	case {disable}
+		# create the introspect header even if disabled so make dep works
+		put /local/tmp { $(PLUGDIR)/dbus/dbus-introspect.tmp }
+		append /local/pcb/RULES [@
+$(PLUGDIR)/dbus/dbus-introspect.h: $(PLUGDIR)/dbus/dbus.xml
+	echo '/* AUTOMATICALLY GENERATED FROM dbus.xml DO NOT EDIT */' > $(PLUGDIR)/dbus/dbus-introspect.h
+@]
+		append /local/pcb/all   [@ $(PLUGDIR)/dbus/dbus-introspect.h @]
+	end;
 	default
 		put /local/pcb/mod/CFLAGS   /target/libs/sul/dbus/cflags
 		put /local/pcb/mod/LDFLAGS  /target/libs/sul/dbus/ldflags
@@ -18,10 +26,11 @@ $(PLUGDIR)/dbus/dbus-introspect.h: $(PLUGDIR)/dbus/dbus.xml
 	mv @/local/tmp@ $(PLUGDIR)/dbus/dbus-introspect.h
 @]
 
-	put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/dbus/dbus-introspect.h }
 
 	end
 end
+
+put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/dbus/dbus-introspect.h }
 
 switch /local/pcb/dbus/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
