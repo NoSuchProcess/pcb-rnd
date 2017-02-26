@@ -51,7 +51,8 @@ struct pcb_gtk_library_s {
 	GtkWidget *preview;
 	GtkWidget *preview_text;
 	GtkEntry *entry_filter;
-	GtkButton *button_clear;
+	GtkButton *button_clear, *button_edit;
+	GtkTreeSelection *selection;
 	guint filter_timeout, param_timer;
 
 	void *gport;

@@ -453,6 +453,13 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	free(name);
 }
 
+static void library_window_callback_edit_button_clicked(GtkButton *button, void *library_window)
+{
+	pcb_gtk_library_t *lw = library_window;
+	library_window_callback_tree_selection_changed(lw->selection, lw);
+}
+
+
 /** Requests re-evaluation of the filter.
 
     This is the timeout function for the filtering of footprint
@@ -606,7 +613,6 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 {
 	GtkWidget *libtreeview, *vbox, *scrolled_win, *label, *hbox, *entry, *button;
 	GtkTreeModel *child_model, *model;
-	GtkTreeSelection *selection;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 
@@ -639,9 +645,9 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	g_signal_connect(libtreeview, "key-press-event", G_CALLBACK(tree_row_key_pressed), NULL);
 
 	/* connect callback to selection */
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(libtreeview));
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
-	g_signal_connect(selection, "changed", G_CALLBACK(library_window_callback_tree_selection_changed), library_window);
+	library_window->selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(libtreeview));
+	gtk_tree_selection_set_mode(library_window->selection, GTK_SELECTION_SINGLE);
+	g_signal_connect(library_window->selection, "changed", G_CALLBACK(library_window_callback_tree_selection_changed), library_window);
 
 	/* insert a column to treeview for library/symbol name */
 	renderer = GTK_CELL_RENDERER(g_object_new(GTK_TYPE_CELL_RENDERER_TEXT,
@@ -693,19 +699,32 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	/* and init the event source for footprint filter */
 	library_window->filter_timeout = 0;
 
-	/* create the erase button for filter entry */
+	/* EDIT */
+	button = GTK_WIDGET(g_object_new(GTK_TYPE_BUTTON,
+																	 /* GtkWidget */
+																	 "sensitive", TRUE,
+																	 /* GtkButton */
+																	 "relief", GTK_RELIEF_NONE, NULL));
+	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_SMALL_TOOLBAR));
+	g_signal_connect(button, "clicked", G_CALLBACK(library_window_callback_edit_button_clicked), library_window);
+	/* add the clear button to the filter area */
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	/* set clear button of library_window */
+	library_window->button_edit = GTK_BUTTON(button);
+
+	/* CLEAR */
 	button = GTK_WIDGET(g_object_new(GTK_TYPE_BUTTON,
 																	 /* GtkWidget */
 																	 "sensitive", FALSE,
 																	 /* GtkButton */
 																	 "relief", GTK_RELIEF_NONE, NULL));
-
 	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_SMALL_TOOLBAR));
 	g_signal_connect(button, "clicked", G_CALLBACK(library_window_callback_filter_button_clicked), library_window);
 	/* add the clear button to the filter area */
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	/* set clear button of library_window */
 	library_window->button_clear = GTK_BUTTON(button);
+
 
 #if 0
 	/* create the refresh button */
