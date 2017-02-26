@@ -28,6 +28,7 @@ function automap(algo, pivot, revx, revy   ,xx,yy)
 }
 
 BEGIN {
+	help_auto()
 	set_arg(P, "?spacing", "0.5mm")
 	set_arg(P, "?balldia", "0.35mm")
 	set_arg(P, "?silkmark", "arc")

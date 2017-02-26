@@ -16,6 +16,7 @@ function wave(type, repeat,    step,x,y)
 }
 
 BEGIN {
+	help_auto()
 	set_arg(P, "?type", "block")
 	proc_args(P, "spacing,type,pol,dia", "spacing")
 

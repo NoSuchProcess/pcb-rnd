@@ -6,7 +6,7 @@ function parri(A     ,s,i)
 }
 
 BEGIN {
-
+	help_auto()
 	PT["50"] = "26mil"
 	set_arg(P, "?pitch", "50")
 

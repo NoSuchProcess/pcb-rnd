@@ -6,7 +6,7 @@ function parri(A     ,s,i)
 }
 
 BEGIN {
-
+	help_auto()
 	PT["0.65"] = "0.35mm"
 	PT["0.5"] = "0.3mm"
 	PT["0.4"] = "0.2mm"

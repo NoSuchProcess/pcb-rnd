@@ -1,4 +1,5 @@
 BEGIN {
+	help_auto()
 	set_arg(P, "?spacing", 300)
 
 	proc_args(P, "n,spacing", "n")

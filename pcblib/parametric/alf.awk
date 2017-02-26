@@ -1,5 +1,5 @@
 BEGIN {
-	
+	help_auto()
 	set_arg(P, "?aspect", 6)
 	set_arg(P, "?type", "normal")
 

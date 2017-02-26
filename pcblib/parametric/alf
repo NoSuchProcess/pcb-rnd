@@ -33,5 +33,5 @@
 
 #@@include common.awk
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/alf.awk -v "args=$*" -v gen=`basename $0`
+awk -f `dirname $0`/common.awk -f `dirname $0`/alf.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
 

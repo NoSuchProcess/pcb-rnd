@@ -1,4 +1,5 @@
 BEGIN {
+	help_auto()
 	set_arg(P, "?row_spacing", 250)
 	set_arg(P, "?pad_spacing", 50)
 	set_arg(P, "?ext_bloat", 10)

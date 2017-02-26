@@ -15,7 +15,7 @@ function pol_sign(   ox,oy)
 }
 
 BEGIN {
-	
+	help_auto()
 	set_arg(P, "?pol", "sign")
 	proc_args(P, "spacing,pol,dia", "spacing")
 

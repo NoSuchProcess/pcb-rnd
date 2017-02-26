@@ -1,4 +1,5 @@
 BEGIN {
+	help_auto()
 	set_arg(P, "?spacing", 100)
 	set_arg(P, "?silkmark", "square")
 	set_arg(P, "?sequence", "normal")

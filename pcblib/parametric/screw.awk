@@ -49,6 +49,7 @@ function round_up(num, to)
 }
 
 BEGIN {
+	help_auto()
 	set_arg(P, "?shape", "circle")
 	proc_args(P, "hole,head,shape,ring", "hole")
 

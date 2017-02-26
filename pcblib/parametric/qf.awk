@@ -99,8 +99,8 @@ function pinnum(num)
 }
 
 BEGIN {
+	help_auto()
 	qf_globals()
-
 
 	element_begin("", "U1", 2*nx + 2*ny   ,0,0, -width/2 - mm(1), -height/2 - mm(2))
 
