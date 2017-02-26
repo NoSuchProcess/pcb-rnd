@@ -307,28 +307,21 @@ static void load_params(char *user_params, char *help_params, pcb_hid_attribute_
 	free(parahlp);
 }
 
-typedef struct {
-	pcb_gtk_library_t *win;
-	pcb_fplibrary_t *entry;
-	pcb_gtk_library_param_cb_t cb;
-	pcb_hid_attribute_t *attrs;
-	pcb_hid_attr_val_t *res;
-	int *numattr;
-} cb_ctx_t;
-
 void attr_change_cb(pcb_hid_attribute_t *attr)
 {
 	int idx;
-	cb_ctx_t *ctx = attr->user_data;
-	char *cmd;
+	pcb_gtk_library_param_cb_ctx_t *ctx = attr->user_data;
 
 	/* copy the relevant value to res[] so that gen_cmd sees it */
 	idx = attr - ctx->attrs;
 	ctx->res[idx] = attr->default_val;
 
-	cmd = gen_cmd(ctx->entry->name, ctx->attrs, ctx->res, *ctx->numattr);
+	ctx->cb(ctx);
+}
 
-	ctx->cb(ctx->win, ctx->entry, cmd);
+char *pcb_gtk_library_param_snapshot(pcb_gtk_library_param_cb_ctx_t *ctx)
+{
+	return gen_cmd(ctx->entry->name, ctx->attrs, ctx->res, *ctx->numattr);
 }
 
 char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt, pcb_gtk_library_param_cb_t cb)
@@ -339,9 +332,9 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	pcb_hid_attr_val_t res[MAX_PARAMS];
 	int n, numattr = 0;
 	char *params = NULL, *descr = NULL;
-	cb_ctx_t ctx;
+	pcb_gtk_library_param_cb_ctx_t ctx;
 
-	ctx.win = library_window;
+	ctx.library_window = library_window;
 	ctx.entry = entry;
 	ctx.cb = cb;
 	ctx.attrs = attrs;

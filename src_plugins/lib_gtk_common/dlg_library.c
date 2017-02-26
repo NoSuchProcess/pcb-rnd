@@ -381,10 +381,12 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 	gtk_label_set_text(GTK_LABEL(library_window->preview_text), g_string_free(pt, FALSE));
 }
 
-void lib_param_chg(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt)
+void lib_param_chg(pcb_gtk_library_param_cb_ctx_t *ctx)
 {
-	gtk_entry_set_text(library_window->entry_filter, filter_txt);
-	library_window_preview_refresh(library_window, filter_txt, entry);
+	char *cmd = pcb_gtk_library_param_snapshot(ctx);
+	gtk_entry_set_text(ctx->library_window->entry_filter, cmd);
+	library_window_preview_refresh(ctx->library_window, cmd, ctx->entry);
+	free(cmd);
 }
 
 /** Handles changes in the treeview selection.
