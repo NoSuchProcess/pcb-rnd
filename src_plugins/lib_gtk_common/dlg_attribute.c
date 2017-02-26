@@ -43,60 +43,45 @@
 GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gint header_pad, gint box_pad,
 															gboolean pack_start, gboolean bottom_pad);
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value, gfloat low, gfloat high, gfloat step0,
-											gfloat step1, gint digits, gint width, void (*cb_func) (GtkSpinButton *, gpointer), gpointer data,
+											gfloat step1, gint digits, gint width, void (*cb_func) (GtkSpinButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
 											gboolean right_align, const gchar * string);
 void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button, gboolean active, gboolean pack_start, gboolean expand,
-																 gboolean fill, gint pad, void (*cb_func) (GtkToggleButton *, gpointer), gpointer data,
+																 gboolean fill, gint pad, void (*cb_func) (GtkToggleButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
 																 const gchar * string);
 
 
 
-static void set_flag_cb(GtkToggleButton * button, void *flag)
+static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 {
-	*(gboolean *) flag = gtk_toggle_button_get_active(button);
+	dst->default_val.int_value = gtk_toggle_button_get_active(button);
 }
 
-
-static void intspinner_changed_cb(GtkSpinButton * spin_button, gpointer data)
+static void intspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
-	int *ival = (int *) data;
-
-	*ival = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *) spin_button));
+	dst->default_val.int_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
 }
 
-static void coordentry_changed_cb(GtkEntry * entry, pcb_coord_t * res)
+static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	const gchar *s = gtk_entry_get_text(entry);
-	*res = pcb_get_value(s, NULL, NULL, NULL);
+	dst->default_val.coord_value = pcb_get_value(s, NULL, NULL, NULL);
 }
 
-static void dblspinner_changed_cb(GtkSpinButton * spin_button, gpointer data)
+static void dblspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
-	double *dval = (double *) data;
-
-	*dval = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *) spin_button));
+	dst->default_val.real_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
 }
 
-
-static void entry_changed_cb(GtkEntry * entry, char **str)
+static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
-	const gchar *s;
-
-	s = gtk_entry_get_text(entry);
-
-	if (*str)
-		free(*str);
-	*str = pcb_strdup(s);
+	free((char *)dst->default_val.str_value);
+	dst->default_val.str_value = pcb_strdup(gtk_entry_get_text(entry));
 }
 
-static void enum_changed_cb(GtkWidget * combo_box, int *val)
+static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 {
-	gint active;
-
-	active = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
-	*val = active;
+	dst->default_val.int_value = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
 }
-
 
 int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,
 													const char *title, const char *descr)
@@ -152,7 +137,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			 */
 			ghid_spin_button(hbox, &widget, attrs[j].default_val.int_value,
 											 attrs[j].min_val, attrs[j].max_val, 1.0, 1.0, 0, 0,
-											 intspinner_changed_cb, &(attrs[j].default_val.int_value), FALSE, NULL);
+											 intspinner_changed_cb, &(attrs[j]), FALSE, NULL);
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 
 			widget = gtk_label_new(attrs[j].name);
@@ -169,7 +154,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			if (attrs[j].default_val.str_value != NULL)
 				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
 			gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
-			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(attrs[j].default_val.coord_value));
+			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(attrs[j]));
 
 			widget = gtk_label_new(attrs[j].name);
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
@@ -186,7 +171,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			 */
 			ghid_spin_button(hbox, &widget, attrs[j].default_val.real_value,
 											 attrs[j].min_val, attrs[j].max_val, 0.01, 0.01, 3,
-											 0, dblspinner_changed_cb, &(attrs[j].default_val.real_value), FALSE, NULL);
+											 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
 
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 
@@ -203,7 +188,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			if (attrs[j].default_val.str_value != NULL)
 				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
 			gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
-			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j].default_val.str_value));
+			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
 
 			widget = gtk_label_new(attrs[j].name);
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
@@ -213,7 +198,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			/* put this in a check button */
 			ghid_check_button_connected(vbox, &widget,
 																	attrs[j].default_val.int_value,
-																	TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j].default_val.int_value), attrs[j].name);
+																	TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), attrs[j].name);
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 			break;
 
@@ -225,7 +210,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			combo = gtk_combo_box_new_text();
 			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
 			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
-			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j].default_val.int_value));
+			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
 
 
 			/*
@@ -253,7 +238,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			 */
 			ghid_spin_button(hbox, &widget, attrs[j].default_val.real_value,
 											 attrs[j].min_val, attrs[j].max_val, 0.01, 0.01, 3,
-											 0, dblspinner_changed_cb, &(attrs[j].default_val.real_value), FALSE, NULL);
+											 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 
 			goto do_enum;
@@ -264,7 +249,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			entry = gtk_entry_new();
 			gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
 			gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
-			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j].default_val.str_value));
+			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
 
 			gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
 			break;
@@ -279,7 +264,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			combo = gtk_combo_box_new_text();
 			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
 			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
-			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j].default_val.int_value));
+			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
 
 			/*
 			 * Iterate through each value and add them to the
