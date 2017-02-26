@@ -167,8 +167,6 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	int n, numattr = 0;
 	char *params = NULL, *descr = NULL;
 
-	printf("Not yet\n");
-
 	cmd = pcb_strdup_printf("%s --help", entry->data.fp.loc_info);
 	f = popen(cmd, "r");
 	free(cmd);
