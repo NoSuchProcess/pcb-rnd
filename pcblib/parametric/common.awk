@@ -559,7 +559,7 @@ function help_print(   SEEN, dirn)
 
 function help_auto()
 {
-	if (args ~ "^--help") {
+	if ((args ~ "^--help") || (args ~ ",[ \t]*--help")) {
 		help_print()
 		exit(0)
 	}
