@@ -106,9 +106,22 @@ static void free_attr(pcb_hid_attribute_t *a)
 	}
 }
 
-static char *gen_cmd(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res, int numattr)
+static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res, int numattr)
 {
-	int n;
+	int n, pushed = 0;
+	gds_t sres;
+	char *tmp;
+
+	memset(&sres, 0, sizeof(sres));
+
+	gds_append_str(&sres, fpname);
+
+	/* cut original name at "(" */
+	tmp = strchr(sres.array, '(');
+	if (tmp != NULL)
+		gds_truncate(&sres, tmp - sres.array);
+
+	gds_append_str(&sres, "(");
 
 	for(n = 0; n < numattr; n++) {
 		char *desc, buff[128];
@@ -131,15 +144,21 @@ static char *gen_cmd(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res, int nu
 				break;
 			default:;
 		}
-		printf("RES: %s=%s\n", attrs[n].name, val);
+
+		if (pushed)
+			gds_append_str(&sres, ", ");
+		pcb_append_printf(&sres, "%s=%s", attrs[n].name, val);
+		pushed++;
 	}
 
+	gds_append_str(&sres, ")");
+	return sres.array;
 }
 
 char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry)
 {
 	FILE *f;
-	char *cmd, line[1024];
+	char *sres, *cmd, line[1024];
 	pcb_hid_attribute_t *curr, attrs[MAX_PARAMS];
 	pcb_hid_attr_val_t res[MAX_PARAMS];
 	int n, numattr = 0;
@@ -206,17 +225,18 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 			append_enum(curr, evl);
 		}
 	}
+	pclose(f);
 
 	ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr);
 
-	gen_cmd(attrs, res, numattr);
+	sres = gen_cmd(entry->name, attrs, res, numattr);
 
+	/* clean up */
 	for(n = 0; n < numattr; n++)
 		free_attr(&attrs[n]);
-
 	free(descr);
 	free(params);
-	pclose(f);
-	return NULL;
+
+	return sres;
 }
 
