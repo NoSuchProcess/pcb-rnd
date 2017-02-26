@@ -2,6 +2,9 @@
 # Arguments:
 #  /local/dep/CFLAGS   CFLAGS used for compiling
 #  /local/dep/SRCS     list of c soures
+#  /local/pcb/DEPDEPS  targets make dep should generate first
+
+sortuniq /local/pcb/DEPDEPS_SORTED /local/pcb/DEPDEPS
 
 print [@
 
@@ -10,7 +13,9 @@ FORCE:
 
 include Makefile.dep
 
-dep: FORCE
+DEPDEPS=@/local/pcb/DEPDEPS_SORTED@
+
+dep: FORCE $(DEPDEPS)
 	echo "### Generated file, do not edit, run make dep ###" > Makefile.dep
 	echo "" >> Makefile.dep
 @]
