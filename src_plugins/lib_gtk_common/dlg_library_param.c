@@ -126,6 +126,10 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 	for(n = 0; n < numattr; n++) {
 		char *desc, buff[128];
 		const char *val;
+
+		if (!attrs[n].changed)
+			continue;
+
 		switch(attrs[n].type) {
 			case HID_Enum:
 				val = attrs[n].enumerations[res[n].int_value];
