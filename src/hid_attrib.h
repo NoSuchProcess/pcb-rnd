@@ -37,7 +37,11 @@ struct pcb_hid_attribute_s {
 	   "char *" so the value should be initialized to zero, and may be
 	   set to non-zero (not always one).  */
 	void *value;
-	int changed; /* may not be available in all HIDs; supported by hid_gtk */
+
+	/* Advanced API: may not be available in all HIDs; supported by hid_gtk */
+	int changed; /* 0 for initial values, 1 on user change */
+	void (*change_cb)(pcb_hid_attribute_t *attr); /* called upon value change by the user */
+	void *user_data; /* ignored; the caller is free to use it */
 };
 
 extern void pcb_hid_register_attributes(pcb_hid_attribute_t *, int, const char *cookie, int copy);
