@@ -307,8 +307,31 @@ static void load_params(char *user_params, char *help_params, pcb_hid_attribute_
 	free(parahlp);
 }
 
+typedef struct {
+	pcb_gtk_library_t *win;
+	pcb_fplibrary_t *entry;
+	pcb_gtk_library_param_cb_t cb;
+	pcb_hid_attribute_t *attrs;
+	pcb_hid_attr_val_t *res;
+	int *numattr;
+} cb_ctx_t;
 
-char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt)
+void attr_change_cb(pcb_hid_attribute_t *attr)
+{
+	int idx;
+	cb_ctx_t *ctx = attr->user_data;
+	char *cmd;
+
+	/* copy the relevant value to res[] so that gen_cmd sees it */
+	idx = attr - ctx->attrs;
+	ctx->res[idx] = attr->default_val;
+
+	cmd = gen_cmd(ctx->entry->name, ctx->attrs, ctx->res, *ctx->numattr);
+
+	ctx->cb(ctx->win, ctx->entry, cmd);
+}
+
+char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt, pcb_gtk_library_param_cb_t cb)
 {
 	FILE *f;
 	char *sres, *cmd, line[1024];
@@ -316,6 +339,14 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	pcb_hid_attr_val_t res[MAX_PARAMS];
 	int n, numattr = 0;
 	char *params = NULL, *descr = NULL;
+	cb_ctx_t ctx;
+
+	ctx.win = library_window;
+	ctx.entry = entry;
+	ctx.cb = cb;
+	ctx.attrs = attrs;
+	ctx.res = res;
+	ctx.numattr = &numattr;
 
 	cmd = pcb_strdup_printf("%s --help", entry->data.fp.loc_info);
 	f = popen(cmd, "r");
@@ -359,6 +390,10 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 			colsplit();
 			curr = append(col);
 			curr->help_text = pcb_strdup(arg);
+			if (cb != NULL) {
+				curr->user_data = &ctx;
+				curr->change_cb = attr_change_cb;
+			}
 		}
 		else if (strncmp(cmd, "dim:", 4) == 0) {
 			curr->type = HID_Coord;
@@ -383,6 +418,10 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 		if (prm != NULL)
 			load_params(prm+1, params, attrs, numattr);
 	}
+
+	/* make a snapshot to res so that callback gen_cmd() works from live data */
+	for(n = 0; n < numattr; n++)
+		res[n] = attrs[n].default_val;
 
 	ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr);
 

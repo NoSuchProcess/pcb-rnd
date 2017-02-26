@@ -381,6 +381,12 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 	gtk_label_set_text(GTK_LABEL(library_window->preview_text), g_string_free(pt, FALSE));
 }
 
+void lib_param_chg(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt)
+{
+	gtk_entry_set_text(library_window->entry_filter, filter_txt);
+	library_window_preview_refresh(library_window, filter_txt, entry);
+}
+
 /** Handles changes in the treeview selection.
 
     This is the callback function that is called every time the user
@@ -409,7 +415,8 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 		return;
 
 	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC)) {
-		name = pcb_gtk_library_param_ui(library_window, entry, gtk_entry_get_text(library_window->entry_filter));
+		const char *in_para = gtk_entry_get_text(library_window->entry_filter);
+		name = pcb_gtk_library_param_ui(library_window, entry, in_para, lib_param_chg);
 		if (name == NULL) {
 #warning TODO: refresh the display with empty - also for the above returns!
 			return;
