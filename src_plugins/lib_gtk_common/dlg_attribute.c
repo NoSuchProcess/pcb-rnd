@@ -54,33 +54,39 @@ void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button, gboolean 
 static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 {
 	dst->default_val.int_value = gtk_toggle_button_get_active(button);
+	dst->changed = 1;
 }
 
 static void intspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
 	dst->default_val.int_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
+	dst->changed = 1;
 }
 
 static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	const gchar *s = gtk_entry_get_text(entry);
 	dst->default_val.coord_value = pcb_get_value(s, NULL, NULL, NULL);
+	dst->changed = 1;
 }
 
 static void dblspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
 	dst->default_val.real_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
+	dst->changed = 1;
 }
 
 static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	free((char *)dst->default_val.str_value);
 	dst->default_val.str_value = pcb_strdup(gtk_entry_get_text(entry));
+	dst->changed = 1;
 }
 
 static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 {
 	dst->default_val.int_value = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
+	dst->changed = 1;
 }
 
 int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,

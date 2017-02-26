@@ -37,6 +37,7 @@ struct pcb_hid_attribute_s {
 	   "char *" so the value should be initialized to zero, and may be
 	   set to non-zero (not always one).  */
 	void *value;
+	int changed;
 };
 
 extern void pcb_hid_register_attributes(pcb_hid_attribute_t *, int, const char *cookie, int copy);
