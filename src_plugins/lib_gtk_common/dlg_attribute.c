@@ -216,7 +216,6 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			combo = gtk_combo_box_new_text();
 			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
 			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
-			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
 
 
 			/*
@@ -231,6 +230,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
 			widget = gtk_label_new(attrs[j].name);
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
 			break;
 
 		case HID_Mixed:
