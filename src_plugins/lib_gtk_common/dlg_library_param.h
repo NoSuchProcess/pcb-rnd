@@ -14,6 +14,7 @@ struct pcb_gtk_library_param_cb_ctx_s {
 	pcb_hid_attribute_t *attrs;
 	pcb_hid_attr_val_t *res;
 	int *numattr;
+	int first_optional;
 };
 
 /** Parse the "--help" of a parametric footprint, offer GUI to change parameters.

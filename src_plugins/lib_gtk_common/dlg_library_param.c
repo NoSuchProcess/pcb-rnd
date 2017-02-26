@@ -116,7 +116,7 @@ static pcb_hid_attribute_t *find_attr(pcb_hid_attribute_t *attrs, int numattr, c
 }
 
 
-static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res, int numattr)
+static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res, int numattr, int first_optional)
 {
 	int n, pushed = 0;
 	gds_t sres;
@@ -164,7 +164,11 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 
 		if (pushed)
 			gds_append_str(&sres, ", ");
-		pcb_append_printf(&sres, "%s=%s", attrs[n].name, val);
+
+		if ((n == pushed) && (n < first_optional))
+			gds_append_str(&sres, val); /* positional */
+		else
+			pcb_append_printf(&sres, "%s=%s", attrs[n].name, val);
 		pushed++;
 	}
 
@@ -321,7 +325,7 @@ void attr_change_cb(pcb_hid_attribute_t *attr)
 
 char *pcb_gtk_library_param_snapshot(pcb_gtk_library_param_cb_ctx_t *ctx)
 {
-	return gen_cmd(ctx->entry->name, ctx->attrs, ctx->res, *ctx->numattr);
+	return gen_cmd(ctx->entry->name, ctx->attrs, ctx->res, *ctx->numattr, ctx->first_optional);
 }
 
 char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_t *entry, const char *filter_txt, pcb_gtk_library_param_cb_t cb)
@@ -340,6 +344,7 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	ctx.attrs = attrs;
 	ctx.res = res;
 	ctx.numattr = &numattr;
+	ctx.first_optional = -1;
 
 	cmd = pcb_strdup_printf("%s --help", entry->data.fp.loc_info);
 	f = popen(cmd, "r");
@@ -381,6 +386,10 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 		}
 		else if (strcmp(cmd, "example") == 0) {
 			example = pcb_strdup(arg);
+		}
+		else if (strncmp(cmd, "optional:", 9) == 0) {
+			if (ctx.first_optional < 0)
+				ctx.first_optional = numattr-1;
 		}
 		else if (strncmp(cmd, "param:", 6) == 0) {
 			colsplit();
@@ -439,7 +448,7 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 
 	ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr);
 
-	sres = gen_cmd(entry->name, attrs, res, numattr);
+	sres = gen_cmd(entry->name, attrs, res, numattr, ctx.first_optional);
 
 	/* clean up */
 	for(n = 0; n < numattr; n++)
