@@ -24,16 +24,18 @@ switch /local/pcb/hid_lesstif/controls
 			@?/target/libs/gui/xinerama/ldflags@
 			@?/target/libs/gui/xrender/ldflags@
 		@]
+		end
+end
 
-		put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_lesstif/menu_lht.c }
-		append /local/pcb/RULES [@
+# always generate the menu lht rule so make dep can be run
+put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_lesstif/menu_lht.c }
+append /local/pcb/DEPDEPS { $(PLUGDIR)/hid_lesstif/menu_lht.c }
+append /local/pcb/RULES [@
 ### lesstif menu embed
 $(PLUGDIR)/hid_lesstif/menu_lht.c: pcb-menu-lesstif.lht
 	$(CQUOTE) -n lesstif_menu_default <pcb-menu-lesstif.lht >$(PLUGDIR)/hid_lesstif/menu_lht.c
 @]
 
-		end
-end
 
 switch /local/pcb/hid_lesstif/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
