@@ -85,6 +85,7 @@ plugin_def("hid_batch",       "batch process (no-gui HID)",sbuildin, 1)
 plugin_def("hid_gtk",         "the GTK gui",               sbuildin, 1)
 plugin_def("hid_lesstif",     "the lesstif gui",           sbuildin, 1)
 plugin_def("hid_remote",      "remote HID server",         sdisable, 1)
+plugin_def("hid_srv_ws",      "websocket server HID",      sdisable, 1)
 
 plugin_dep("export_lpr", "export_ps")
 plugin_dep("export_xy", "export_bom")
@@ -96,6 +97,8 @@ plugin_dep("hid_gtk", "draw_csect")
 plugin_dep("hid_lesstif", "draw_csect")
 plugin_dep("hid_gtk", "draw_fontsel")
 plugin_dep("hid_lesstif", "draw_fontsel")
+plugin_dep("hid_srv_ws", "hid_remote")
+
 
 /* for the uniq name lib: */
 plugin_dep("io_kicad_legacy", "io_kicad")

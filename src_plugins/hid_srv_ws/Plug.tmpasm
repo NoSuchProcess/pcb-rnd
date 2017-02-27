@@ -1,0 +1,10 @@
+put /local/pcb/mod {hid_srv_ws}
+append /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/hid_srv_ws/server.o
+@]
+
+switch /local/pcb/hid_srv_ws/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
