@@ -213,6 +213,13 @@ static void InitPaths(char *argv0)
  * main program
  */
 
+static const char *hid_name = NULL;
+void pcb_set_hid_name(const char *new_hid_name)
+{
+	hid_name = new_hid_name;
+}
+
+
 #include "dolists.h"
 
 static char **hid_argv_orig;
@@ -265,6 +272,7 @@ const char *pcb_action_args[] = {
 	NULL, NULL, NULL /* terminator */
 };
 
+
 int main(int argc, char *argv[])
 {
 	enum {
@@ -274,7 +282,7 @@ int main(int argc, char *argv[])
 		DO_GUI
 	} do_what = DO_SOMETHING;
 	int n, hid_argc = 0;
-	char *cmd, *arg, *hid_name = NULL, **hid_argv;
+	char *cmd, *arg, **hid_argv;
 	const char **cs;
 	const char *main_action = NULL;
 	char *command_line_pcb = NULL;
