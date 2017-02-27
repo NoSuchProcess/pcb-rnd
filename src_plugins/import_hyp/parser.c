@@ -871,6 +871,77 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 	return new_arc;
 }
 
+/*
+ * Draw an arc from (x1, y1) to (x2, y2) with center (xc, yc) and radius r using a polygonal approximation.
+ * Arc may be clockwise or counterclockwise. Note pcb-rnd y-axis points downward.
+ */
+
+void hyp_arc2poly(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xc, pcb_coord_t yc,
+									pcb_coord_t r, pcb_bool_t clockwise)
+{
+	pcb_coord_t arc_precision = PCB_MM_TO_COORD(0.254);	/* mm */
+	int min_circle_segments = 8;	/* 8 seems minimal, 16 seems more than sufficient. */
+	int segments;
+	int poly_points = 0;
+	int i;
+
+	double alpha = atan2(y1 - yc, x1 - xc);
+	double beta = atan2(y2 - yc, x2 - xc);
+
+	if (clockwise) {
+		/* draw arc clockwise from (x1,y1) to (x2,y2) */
+		if (beta < alpha)
+			beta = beta + 2 * M_PI;
+	}
+	else {
+		/* draw arc counterclockwise from (x1,y1) to (x2,y2) */
+		if (alpha < beta)
+			alpha = alpha + 2 * M_PI;
+		/* draw a circle if starting and end points are the same */
+		if ((x1 == x2) && (y1 == y2))
+			beta = alpha + 2 * M_PI;
+	}
+
+	/* Calculate number of segments needed for a full circle. */
+	segments = min_circle_segments;
+	if (arc_precision > 0) {
+		/* Increase number of segments until difference between circular arc and polygonal approximation is less than max_arc_error */
+		double arc_error;
+		do {
+			arc_error = r * (1 - cos(M_PI / segments));
+			if (arc_error > arc_precision)
+				segments += 4;
+		}
+		while (arc_error > arc_precision);
+	}
+	else if (arc_precision < 0)
+		pcb_printf("error: negative arc precision\n");
+
+	/* A full circle is drawn using 'segments' segments; a 90 degree arc using segments/4. */
+	poly_points = pcb_round(segments * abs(beta - alpha) / (2 * M_PI));
+
+	/* Sanity checks */
+	if (poly_points < 1)
+		poly_points = 1;
+
+	/* first point */
+	pcb_poly_point_new(current_polygon, x1, y1);
+
+	/* intermediate points */
+	for (i = 1; i < poly_points; i++) {
+		double angle = alpha + (beta - alpha) * i / poly_points;
+		pcb_coord_t x = xc + r * cos(angle);
+		pcb_coord_t y = yc + r * sin(angle);
+		pcb_poly_point_new(current_polygon, x, y);
+	}
+
+	/* last point */
+	pcb_poly_point_new(current_polygon, x2, y2);
+
+	return;
+}
+
+
 /* exec_* routines are called by parser to interpret hyperlynx file */
 
 /*
@@ -2091,7 +2162,8 @@ pcb_bool exec_curve(parse_param * h)
 	case HYP_POLYGON_HOLE:
 		if (current_polygon != NULL) {
 			/* polygon contains line segments, not arc segments. convert arc segment to line segments. */
-			pcb_poly_point_new(current_polygon, x2coord(h->x2), y2coord(h->y2));	/* 2do XXX */
+			hyp_arc2poly(x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc), y2coord(h->yc),
+									 xy2coord(h->r), pcb_false);
 		}
 		break;
 	case HYP_POLYLINE:
