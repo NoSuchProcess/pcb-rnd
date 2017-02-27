@@ -208,4 +208,47 @@ for a in range (0, 8, 2):
 print "  }"
 print "}"
 
+x0 = 9.5
+y0 = 5.0
+r = 0.5
+
+print "{NET=curvetst"
+print "  {POLYGON L=component W=0.05 ID=2 X=%f Y=%f" % (x0+r, y0)
+print "     (CURVE X1=%f Y1=%f X2=%f Y2=%f XC=%f YC=%f R=%f )" % (x0+r, y0, x0+r, y0, x0, y0, r)
+print "  }"
+print "  {POLYVOID ID=2 X=%f Y=%f" % (x0-r/2, y0)
+print "     (CURVE X1=%f Y1=%f X2=%f Y2=%f XC=%f YC=%f R=%f )" % (x0-r/2, y0, x0+r/2, y0, x0, y0, r/2)
+print "     (LINE X=%f Y=%f)" % (x0-r/2, y0)
+print "  }"
+print "}"
+
+x0 = 9.0
+y0 = 6.0
+w = 0.5
+
+print "{NET=linetst"
+print "  {POLYGON L=component W=0.05 ID=3 X=%f Y=%f" % (x0, y0)
+print "     (LINE X=%f Y=%f)" % (x0+2*w, y0)
+print "     (LINE X=%f Y=%f)" % (x0+2*w, y0+w)
+print "     (LINE X=%f Y=%f)" % (x0+w, y0+w)
+print "     (LINE X=%f Y=%f)" % (x0+w, y0+2*w)
+print "     (LINE X=%f Y=%f)" % (x0, y0+2*w)
+print "     (LINE X=%f Y=%f)" % (x0, y0)
+print "  }"
+
+x0 = 9.125
+y0 = 6.125
+w = 0.25
+
+print "  {POLYVOID ID=3 X=%f Y=%f" % (x0, y0)
+print "     (LINE X=%f Y=%f)" % (x0+2*w, y0)
+print "     (LINE X=%f Y=%f)" % (x0+2*w, y0+w)
+print "     (LINE X=%f Y=%f)" % (x0+w, y0+w)
+print "     (LINE X=%f Y=%f)" % (x0+w, y0+2*w)
+print "     (LINE X=%f Y=%f)" % (x0, y0+2*w)
+print "     (LINE X=%f Y=%f)" % (x0, y0)
+print "  }"
+
+print "}"
+
 print "{END}"

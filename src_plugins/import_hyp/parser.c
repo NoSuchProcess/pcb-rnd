@@ -1964,14 +1964,19 @@ pcb_bool exec_polyvoid_begin(parse_param * h)
 	current_polygon = NULL;
 	for (i = polygon_head; i != NULL; i = i->next)
 		if (h->id == i->hyp_poly_id) {
-			if (i->is_polygon)
+			if (i->is_polygon) {
 				current_polygon = i->polygon;
+				break;
+			}
 			else
 				pcb_printf("polyvoid: polyvoid hole in polyline not implemented.\n");
 		}
 
-	if (i == NULL)
+	if (i == NULL) {
+		poly_state = HYP_POLYIDLE;
 		pcb_printf("polyvoid: polygon id %i not found\n", h->id);
+		return 0;
+	}
 
 	if (current_polygon != NULL) {
 		/* create hole in polygon */
@@ -1983,7 +1988,7 @@ pcb_bool exec_polyvoid_begin(parse_param * h)
 	/* bookkeeping */
 	if ((poly_state != HYP_POLYIDLE) && hyp_debug)
 		pcb_printf("polyvoid: unexpected polyvoid. continuing.\n");
-	if (i->is_polygon)
+	if ((i != NULL) && (i->is_polygon))
 		poly_state = HYP_POLYGON_HOLE;
 	else
 		poly_state = HYP_POLYLINE_HOLE;
