@@ -28,7 +28,7 @@ switch /local/pcb/hid_lesstif/controls
 end
 
 # always generate the menu lht rule so make dep can be run
-put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_lesstif/menu_lht.c }
+append /local/pcb/CLEANFILES { $(PLUGDIR)/hid_lesstif/menu_lht.c }
 append /local/pcb/DEPDEPS { $(PLUGDIR)/hid_lesstif/menu_lht.c }
 append /local/pcb/RULES [@
 ### lesstif menu embed
