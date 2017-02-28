@@ -1,3 +1,6 @@
+#ifndef PCB_GTK_BU_CURSOR_POS_H
+#define PCB_GTK_BU_CURSOR_POS_H
+
 #include <gtk/gtk.h>
 
 typedef struct pcb_gtk_cursor_pos_s {
@@ -12,3 +15,5 @@ void make_cursor_position_labels(GtkWidget *hbox, pcb_gtk_cursor_pos_t *cps);
 
 /* update the content of the cursor pos labels */
 void ghid_set_cursor_position_labels(pcb_gtk_cursor_pos_t *cps, int compact_vertical);
+
+#endif
