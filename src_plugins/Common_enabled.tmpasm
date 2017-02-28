@@ -58,28 +58,13 @@ switch /local/pcb/mod/LEX
 	end
 end
 
-switch /local/pcb/mod/CONF
-	case {^$} end
-	default
-		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
-		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
-		append /local/pcb/CLEANFILES /local/pcb/mod/CONFOUT
-		append /local/pcb/DEPDEPS /local/pcb/mod/CONFOUT
-		append /local/pcb/RULES [@
-# conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
-@/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
-	AWK=@/host/fstools/awk@ ../scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
-@]
-		end
-end
+include  /local/pcb/tmpasm/plugin_conf
+include  /local/pcb/tmpasm/plugin_sphash
 
 append /local/pcb/CLEANFILES ?/local/pcb/mod/CLEANFILES
 
-include  /local/pcb/tmpasm/plugin_sphash
-
 put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/OBJS_C99 {}
-put /local/pcb/mod/CONF {}
 put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
 put /local/pcb/mod/YACC {}

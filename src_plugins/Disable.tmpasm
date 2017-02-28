@@ -8,21 +8,7 @@ append /local/pcb/DEPSRCS            ?/local/pcb/mod/OBJS
 append /local/pcb/DEPSRCS            ?/local/pcb/mod/OBJS_C99
 
 
-# Make sure we can generate a dummy conf fields for disabled modules
-# Requred for make dep
-switch /local/pcb/mod/CONF
-	case {^$} end
-	default
-		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
-		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
-		append /local/pcb/RULES [@
-@/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
-	AWK=@/host/fstools/awk@ ../scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
-@]
-		append /local/pcb/DEPDEPS            ?/local/pcb/mod/CONFOUT
-	end
-end
-
+include  /local/pcb/tmpasm/plugin_conf
 include  /local/pcb/tmpasm/plugin_sphash
 
 put /local/pcb/mod/OBJS {}

@@ -1,0 +1,18 @@
+# explicit conf_fields.h generation rules
+
+switch /local/pcb/mod/CONF
+	case {^$} end
+	default
+		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
+		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
+		append /local/pcb/CLEANFILES /local/pcb/mod/CONFOUT
+		append /local/pcb/DEPDEPS /local/pcb/mod/CONFOUT
+		append /local/pcb/RULES [@
+# conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
+@/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
+	AWK=@/host/fstools/awk@ ../scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
+@]
+		end
+end
+
+put /local/pcb/mod/CONF {}
