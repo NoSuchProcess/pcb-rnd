@@ -31,4 +31,7 @@ extern pcb_hid_cfg_keys_t ghid_keymap;
 
 extern GdkModifierType pcb_gtk_glob_mask;
 
+unsigned short int ghid_translate_key(const char *desc, int len);
+int ghid_key_name(unsigned short int key_char, char *out, int out_len);
+
 #endif

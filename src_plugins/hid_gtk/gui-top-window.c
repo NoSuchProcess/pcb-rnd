@@ -833,31 +833,6 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	ghidgui->creating = TRUE;
 }
 
-static unsigned short int ghid_translate_key(const char *desc, int len)
-{
-	guint key;
-
-	if (pcb_strcasecmp(desc, "enter") == 0)
-		desc = "Return";
-
-	key = gdk_keyval_from_name(desc);
-	if (key > 0xffff) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid/exotic key sym: '%s'\n", desc);
-		return 0;
-	}
-	return key;
-}
-
-int ghid_key_name(unsigned short int key_char, char *out, int out_len)
-{
-	char *name = gdk_keyval_name(key_char);
-	if (name == NULL)
-		return -1;
-	strncpy(out, name, out_len);
-	out[out_len - 1] = '\0';
-	return 0;
-}
-
 void ghid_do_export(pcb_hid_attr_val_t * options)
 {
 	gtkhid_begin();
