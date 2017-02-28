@@ -661,7 +661,7 @@ void ghid_create_pcb_widgets(void)
 	ghid_install_accel_groups(GTK_WINDOW(port->top_window), ghidgui);
 	ghid_update_toggle_flags();
 
-	pcb_gtk_icons_init(port->top_window);
+	pcb_gtk_icons_init(gtk_widget_get_window(port->top_window));
 	pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	ghid_mode_buttons_update();
 }
