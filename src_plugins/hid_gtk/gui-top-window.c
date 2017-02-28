@@ -176,67 +176,9 @@ static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 	ghid_set_status_line_label();
 }
 
-
-#warning TODO: move to common
-static pcb_bool check_externally_modified(void)
-{
-	GFile *file;
-	GFileInfo *info;
-	GTimeVal timeval;
-
-	/* Treat zero time as a flag to indicate we've not got an mtime yet */
-	if (PCB->Filename == NULL || (ghidgui->our_mtime.tv_sec == 0 && ghidgui->our_mtime.tv_usec == 0))
-		return pcb_false;
-
-	file = g_file_new_for_path(PCB->Filename);
-	info = g_file_query_info(file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	g_object_unref(file);
-
-	if (info == NULL || !g_file_info_has_attribute(info, G_FILE_ATTRIBUTE_TIME_MODIFIED))
-		return pcb_false;
-
-	g_file_info_get_modification_time(info, &timeval);	/*&ghidgui->last_seen_mtime); */
-	g_object_unref(info);
-
-	/* Ignore when the file on disk is the same age as when we last looked */
-	if (timeval.tv_sec == ghidgui->last_seen_mtime.tv_sec && timeval.tv_usec == ghidgui->last_seen_mtime.tv_usec)
-		return pcb_false;
-
-	ghidgui->last_seen_mtime = timeval;
-
-	return (ghidgui->last_seen_mtime.tv_sec > ghidgui->our_mtime.tv_sec) ||
-		(ghidgui->last_seen_mtime.tv_sec == ghidgui->our_mtime.tv_sec &&
-		 ghidgui->last_seen_mtime.tv_usec > ghidgui->our_mtime.tv_usec);
-}
-
-static void update_board_mtime_from_disk(void)
-{
-	GFile *file;
-	GFileInfo *info;
-
-	ghidgui->our_mtime.tv_sec = 0;
-	ghidgui->our_mtime.tv_usec = 0;
-	ghidgui->last_seen_mtime = ghidgui->our_mtime;
-
-	if (PCB->Filename == NULL)
-		return;
-
-	file = g_file_new_for_path(PCB->Filename);
-	info = g_file_query_info(file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	g_object_unref(file);
-
-	if (info == NULL || !g_file_info_has_attribute(info, G_FILE_ATTRIBUTE_TIME_MODIFIED))
-		return;
-
-	g_file_info_get_modification_time(info, &ghidgui->our_mtime);
-	g_object_unref(info);
-
-	ghidgui->last_seen_mtime = ghidgui->our_mtime;
-}
-
 static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, GHidPort * port)
 {
-	if (check_externally_modified())
+	if (check_externally_modified(&ghidgui->ext_chg))
 		pcb_gtk_info_bar_file_extmod_prompt(&ghidgui->ibar, ghidgui->vbox_middle);
 
 	return FALSE;
@@ -269,7 +211,7 @@ void ghid_sync_with_new_layout(void)
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
 	pcb_gtk_close_info_bar(&ghidgui->ibar);
-	update_board_mtime_from_disk();
+	update_board_mtime_from_disk(&ghidgui->ext_chg);
 }
 
 void ghid_notify_save_pcb(const char *filename, pcb_bool done)
@@ -280,13 +222,13 @@ void ghid_notify_save_pcb(const char *filename, pcb_bool done)
 		return;
 
 	if (done)
-		update_board_mtime_from_disk();
+		update_board_mtime_from_disk(&ghidgui->ext_chg);
 }
 
 void ghid_notify_filename_changed(void)
 {
 	/* Pick up the mtime of the new PCB file */
-	update_board_mtime_from_disk();
+	update_board_mtime_from_disk(&ghidgui->ext_chg);
 	ghid_window_set_name_label(PCB->Name);
 }
 

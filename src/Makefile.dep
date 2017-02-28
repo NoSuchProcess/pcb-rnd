@@ -901,7 +901,8 @@
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_info_bar.h board.h const.h library.h \
+ ../src_plugins/lib_gtk_common/bu_info_bar.h \
+ ../src_plugins/lib_gtk_common/util_ext_chg.h board.h const.h library.h \
  rats_patch.h board.h event.h compat_misc.h conf_core.h \
  ../src_plugins/lib_gtk_common/colors.h
 ../src_plugins/hid_gtk/gtkhid-gdk.o: ../src_plugins/hid_gtk/gtkhid-gdk.c \
@@ -937,7 +938,8 @@
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_info_bar.h board.h const.h library.h \
+ ../src_plugins/lib_gtk_common/bu_info_bar.h \
+ ../src_plugins/lib_gtk_common/util_ext_chg.h board.h const.h library.h \
  rats_patch.h board.h event.h compat_misc.h hid_draw_helpers.h \
  hid_attrib.h hid_helper.h hid_color.h \
  ../src_plugins/lib_gtk_common/colors.h \
@@ -976,7 +978,8 @@
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_info_bar.h board.h const.h library.h \
+ ../src_plugins/lib_gtk_common/bu_info_bar.h \
+ ../src_plugins/lib_gtk_common/util_ext_chg.h board.h const.h library.h \
  rats_patch.h board.h event.h compat_misc.h hid_nogui.h \
  hid_draw_helpers.h pcb-printf.h plugins.h hid_attrib.h hid_init.h \
  hid_flags.h hid_actions.h plug_footprint.h vtlibrary.h plug_io.h \
@@ -1042,10 +1045,10 @@
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h conf_hid.h ../src_plugins/lib_gtk_common/bu_info_bar.h \
- board.h const.h library.h rats_patch.h board.h event.h compat_misc.h \
- action_helper.h crosshair.h vtonpoint.h hid.h draw.h error.h layer.h \
- find.h search.h rats.h netlist.h route_style.h rats.h \
- ../src_plugins/hid_gtk/gtkhid-main.h \
+ ../src_plugins/lib_gtk_common/util_ext_chg.h board.h const.h library.h \
+ rats_patch.h board.h event.h compat_misc.h action_helper.h crosshair.h \
+ vtonpoint.h hid.h draw.h error.h layer.h find.h search.h rats.h \
+ netlist.h route_style.h rats.h ../src_plugins/hid_gtk/gtkhid-main.h \
  ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h \
@@ -1082,7 +1085,8 @@
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_info_bar.h board.h const.h library.h \
+ ../src_plugins/lib_gtk_common/bu_info_bar.h \
+ ../src_plugins/lib_gtk_common/util_ext_chg.h board.h const.h library.h \
  rats_patch.h board.h event.h compat_misc.h conf_core.h data.h \
  crosshair.h vtonpoint.h hid.h buffer.h hid_cfg_action.h action_helper.h \
  buffer.h change.h copy.h crosshair.h draw.h error.h plug_io.h find.h \
@@ -2664,6 +2668,23 @@
  move.h misc_util.h ht_element.h ../src_3rd/liblihata/genht/ht.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_rat_list.h \
  obj_rat.h layer_grp.h
+../src_plugins/lib_gtk_common/util_ext_chg.o: \
+ ../src_plugins/lib_gtk_common/util_ext_chg.c ../config.h \
+ ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h board.h const.h \
+ macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ obj_all_list.h obj_arc_list.h obj_common.h \
+ ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
+ obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
+ ../src_3rd/liblihata/genht/htip.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h box.h math_helper.h move.h \
+ misc_util.h ht_element.h ../src_3rd/liblihata/genht/ht.h obj_poly_list.h \
+ obj_poly.h polyarea.h obj_text_list.h obj_rat_list.h obj_rat.h \
+ layer_grp.h library.h rats_patch.h board.h
 ../src_plugins/lib_gtk_common/util_str.o: \
  ../src_plugins/lib_gtk_common/util_str.c ../config.h \
  ../src_plugins/lib_gtk_common/util_str.h

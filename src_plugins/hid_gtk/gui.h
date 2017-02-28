@@ -38,6 +38,7 @@
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/bu_info_bar.h"
+#include "../src_plugins/lib_gtk_common/util_ext_chg.h"
 
 #include "board.h"
 #include "event.h"
@@ -50,6 +51,7 @@ typedef struct {
 	pcb_gtk_menu_ctx_t menu;
 	pcb_gtk_command_t cmd;
 	pcb_gtk_info_bar_t ibar;
+	pcb_gtk_ext_chg_t ext_chg;
 
 	GtkWidget *status_line_label, *status_line_hbox;
 
@@ -59,9 +61,6 @@ typedef struct {
 	GtkWidget *mode_toolbar;
 	GtkWidget *mode_toolbar_vbox;
 	GtkWidget *vbox_middle;
-
-	GTimeVal our_mtime;
-	GTimeVal last_seen_mtime;
 
 	GtkWidget *h_range, *v_range;
 	GtkObject *h_adjustment, *v_adjustment;
