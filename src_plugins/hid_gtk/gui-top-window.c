@@ -102,6 +102,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
+#include "../src_plugins/lib_gtk_common/util_listener.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
@@ -683,66 +684,6 @@ void ghid_create_pcb_widgets(void)
 	ghid_mode_buttons_update();
 }
 
-static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gpointer data)
-{
-	GIOStatus status;
-	gchar *str;
-	gsize len;
-	gsize term;
-	GError *err = NULL;
-
-
-	if (condition & G_IO_HUP) {
-		pcb_gui->log("Read end of pipe died!\n");
-		return FALSE;
-	}
-
-	if (condition == G_IO_IN) {
-		status = g_io_channel_read_line(source, &str, &len, &term, &err);
-		switch (status) {
-		case G_IO_STATUS_NORMAL:
-			pcb_hid_parse_actions(str);
-			g_free(str);
-			break;
-
-		case G_IO_STATUS_ERROR:
-			pcb_gui->log("ERROR status from g_io_channel_read_line\n");
-			return FALSE;
-			break;
-
-		case G_IO_STATUS_EOF:
-			pcb_gui->log("Input pipe returned EOF.  The --listen option is \n" "probably not running anymore in this session.\n");
-			return FALSE;
-			break;
-
-		case G_IO_STATUS_AGAIN:
-			pcb_gui->log("AGAIN status from g_io_channel_read_line\n");
-			return FALSE;
-			break;
-
-		default:
-			fprintf(stderr, "ERROR:  unhandled case in ghid_listener_cb\n");
-			return FALSE;
-			break;
-		}
-
-	}
-	else
-		fprintf(stderr, "Unknown condition in ghid_listener_cb\n");
-
-	return TRUE;
-}
-
-static void ghid_create_listener(void)
-{
-	GIOChannel *channel;
-	int fd = fileno(stdin);
-
-	channel = g_io_channel_unix_new(fd);
-	g_io_add_watch(channel, G_IO_IN, ghid_listener_cb, NULL);
-}
-
-
 /* ------------------------------------------------------------ */
 int ghid_usage(const char *topic)
 {
@@ -853,7 +794,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 		(GHID_MAIN_MENU(ghidgui->menu.menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
-		ghid_create_listener();
+		pcb_gtk_create_listener();
 
 	ghid_notify_gui_is_up();
 
