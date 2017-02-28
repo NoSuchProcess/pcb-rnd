@@ -148,9 +148,9 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 	mb->com = com;
 	mb->mode_toolbar = gtk_toolbar_new();
 
-	mb->mode_frame = gtk_frame_new(NULL);
+	mb->mode_buttons_frame = gtk_frame_new(NULL);
 	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(mb->mode_frame), vbox);
+	gtk_container_add(GTK_CONTAINER(mb->mode_buttons_frame), vbox);
 
 	for (i = 0; i < n_mode_buttons; ++i) {
 		MB = &mode_buttons[i];

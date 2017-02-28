@@ -9,7 +9,6 @@ typedef struct {
 	GtkWidget *mode_buttons_frame;
 	GtkWidget *mode_toolbar;
 	GtkWidget *mode_toolbar_vbox;
-	GtkWidget *mode_frame;
 
 	pcb_gtk_common_t *com;
 } pcb_gtk_mode_btn_t;
