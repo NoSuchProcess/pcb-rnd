@@ -41,6 +41,7 @@
 
 #include "in_keyboard.h"
 #include "bu_status_line.h"
+#include "bu_icons.h"
 
 pcb_hid_cfg_mouse_t ghid_mouse;
 int ghid_wheel_zoom = 0;
@@ -52,7 +53,6 @@ pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
 }
 
 static GdkCursorType old_cursor;
-GdkPixmap *XC_clock_source, *XC_clock_mask, *XC_hand_source, *XC_hand_mask, *XC_lock_source, *XC_lock_mask;
 
 #define CUSTOM_CURSOR_CLOCKWISE		(GDK_LAST_CURSOR + 10)
 #define CUSTOM_CURSOR_DRAG			  (GDK_LAST_CURSOR + 11)

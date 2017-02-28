@@ -83,7 +83,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "event.h"
 #include "free_atexit.h"
 #include "paths.h"
-#include "gui-icons-misc.data"
 #include "hid_attrib.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
@@ -98,6 +97,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
+#include "../src_plugins/lib_gtk_common/bu_icons.h"
 #include "../src_plugins/lib_gtk_common/bu_info_bar.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
@@ -646,24 +646,6 @@ void ghid_interface_set_sensitive(gboolean sensitive)
 	gtk_widget_set_sensitive(ghidgui->menu_hbox, sensitive);
 }
 
-
-/* ----------------------------------------------------------------------
- * initializes icon pixmap and also cursor bit maps
- */
-static void ghid_init_icons(GHidPort * port)
-{
-	GdkWindow *window = gtk_widget_get_window(gport->top_window);
-
-	XC_clock_source = gdk_bitmap_create_from_data(window, (char *) rotateIcon_bits, rotateIcon_width, rotateIcon_height);
-	XC_clock_mask = gdk_bitmap_create_from_data(window, (char *) rotateMask_bits, rotateMask_width, rotateMask_height);
-
-	XC_hand_source = gdk_bitmap_create_from_data(window, (char *) handIcon_bits, handIcon_width, handIcon_height);
-	XC_hand_mask = gdk_bitmap_create_from_data(window, (char *) handMask_bits, handMask_width, handMask_height);
-
-	XC_lock_source = gdk_bitmap_create_from_data(window, (char *) lockIcon_bits, lockIcon_width, lockIcon_height);
-	XC_lock_mask = gdk_bitmap_create_from_data(window, (char *) lockMask_bits, lockMask_width, lockMask_height);
-}
-
 void ghid_create_pcb_widgets(void)
 {
 	GHidPort *port = &ghid_port;
@@ -679,7 +661,7 @@ void ghid_create_pcb_widgets(void)
 	ghid_install_accel_groups(GTK_WINDOW(port->top_window), ghidgui);
 	ghid_update_toggle_flags();
 
-	ghid_init_icons(port);
+	pcb_gtk_icons_init(port->top_window);
 	pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	ghid_mode_buttons_update();
 }
@@ -699,7 +681,6 @@ int ghid_usage(const char *topic)
 void ghid_parse_arguments(int *argc, char ***argv)
 {
 	GtkWidget *window;
-	GdkPixbuf *icon;
 
 	ghid_config_init();
 
@@ -760,9 +741,6 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	textdomain(PACKAGE);
 	bind_textdomain_codeset(PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
-
-	icon = gdk_pixbuf_new_from_xpm_data((const gchar **) icon_bits);
-	gtk_window_set_default_icon(icon);
 
 	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
