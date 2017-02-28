@@ -36,7 +36,7 @@
 
 #include "const.h"
 #include "board.h"
-/*#include "action_helper.h"*/
+#include "action_helper.h"
 #include "crosshair.h"
 
 #include "in_keyboard.h"
