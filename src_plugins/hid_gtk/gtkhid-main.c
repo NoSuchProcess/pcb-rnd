@@ -253,8 +253,7 @@ void ghid_create_menu(const char *menu_path, const char *action, const char *mne
 	pcb_gtk_menu_create_menu(&ghidgui->menu, menu_path, action, mnemonic, accel, tip, cookie);
 }
 
-static int ghid_propedit_start(void *pe, int num_props,
-															 const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
+static int ghid_propedit_start(void *pe, int num_props, const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
 	ghidgui->propedit_widget = pcb_gtk_dlg_propedit_create(&ghidgui->propedit_dlg, &ghidgui->common);
 	ghidgui->propedit_dlg.propedit_query = query;
@@ -269,8 +268,7 @@ static void ghid_propedit_end(void *pe)
 	gtk_widget_destroy(ghidgui->propedit_widget);
 }
 
-static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min,
-																	 const char *max, const char *avg)
+static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg)
 {
 	pcb_gtk_dlg_propedit_prop_add(&ghidgui->propedit_dlg, propname, most_common, min, max, avg);
 }
@@ -292,8 +290,8 @@ static int ghid_drc_window_throw_dialog_glue()
 }
 
 pcb_hid_drc_gui_t ghid_drc_gui = {
-	1,														/* log_drc_overview */
-	0,														/* log_drc_details */
+	1,  /* log_drc_overview */
+	0,  /* log_drc_details */
 	ghid_drc_window_reset_message,
 	ghid_drc_window_append_violation_glue,
 	ghid_drc_window_throw_dialog_glue,
