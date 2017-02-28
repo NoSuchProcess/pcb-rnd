@@ -1293,6 +1293,8 @@
  ../src_3rd/genvector/gds_char.h plugins.h compat_misc.h event.h \
  ../src_plugins/hid_remote/proto.h hid_draw_helpers.h hid_nogui.h \
  hid_actions.h hid_init.h dolists.h
+../src_plugins/hid_srv_ws/server.o: ../src_plugins/hid_srv_ws/server.c \
+ ../config.h plugins.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
