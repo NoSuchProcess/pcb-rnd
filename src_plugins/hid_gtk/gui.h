@@ -37,6 +37,7 @@
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
+#include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
 #include "../src_plugins/lib_gtk_common/bu_info_bar.h"
 #include "../src_plugins/lib_gtk_common/util_ext_chg.h"
 
@@ -52,14 +53,13 @@ typedef struct {
 	pcb_gtk_command_t cmd;
 	pcb_gtk_info_bar_t ibar;
 	pcb_gtk_ext_chg_t ext_chg;
+	pcb_gtk_mode_btn_t mode_btn;
 
 	GtkWidget *status_line_label, *status_line_hbox;
 
-	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox, *mode_buttons_frame;
+	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox;
 	GtkWidget *left_toolbar;
 	GtkWidget *layer_selector, *route_style_selector;
-	GtkWidget *mode_toolbar;
-	GtkWidget *mode_toolbar_vbox;
 	GtkWidget *vbox_middle;
 
 	GtkWidget *h_range, *v_range;
@@ -72,8 +72,6 @@ typedef struct {
 	gboolean adjustment_changed_holdoff, in_popup;
 
 	gboolean small_label_markup, creating;
-
-	gint settings_mode;
 
 	pcb_gtk_dlg_propedit_t propedit_dlg;
 	GtkWidget *propedit_widget;
@@ -135,11 +133,9 @@ void ghid_wgeo_save(int save_to_file, int skip_user);
 void ghid_conf_save_pre_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
 void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
 
-void ghid_mode_buttons_update(void);
-void ghid_pack_mode_buttons(void);
-
 void ghid_status_line_set_text(const gchar *text);
 void ghid_set_status_line_label(void);
+void ghid_pack_mode_buttons(void);
 
 /* gui-output-events.c function prototypes. */
 extern pcb_hid_cfg_t *ghid_cfg;

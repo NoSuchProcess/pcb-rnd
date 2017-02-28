@@ -972,6 +972,10 @@ static void LayersChanged_cb(void)
 	ghid_LayersChanged(0, 0, 0);
 }
 
+void ghid_pack_mode_buttons(void)
+{
+	pcb_gtk_pack_mode_buttons(&ghidgui->mode_btn);
+}
 
 pcb_uninit_t hid_hid_gtk_init()
 {
