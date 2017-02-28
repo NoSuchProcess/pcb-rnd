@@ -86,7 +86,7 @@ $(HASHOBJ) $(QPARSE) $(LHTOBJ) \
 
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
-include {../scconfig/Makefile.comp.inc}
+include {../scconfig/template/compile.tmpasm}
 
 print [@
 

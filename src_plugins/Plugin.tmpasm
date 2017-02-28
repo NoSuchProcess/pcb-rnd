@@ -15,7 +15,7 @@ uniq /local/pcb/mod/LIBS
 put /local/comp/OBJS ?/local/pcb/mod/OBJS
 put /local/comp/OBJS_C99 ?/local/pcb/mod/OBJS_C99
 put /local/comp/CFLAGS /local/pcb/mod/CFLAGS
-include {../scconfig/Makefile.comp_var.inc}
+include {../scconfig/template/comp_var.tmpasm}
 
 append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
 
