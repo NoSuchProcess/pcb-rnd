@@ -67,32 +67,14 @@ void ghid_port_ranges_changed(void)
  */
 void ghid_port_ranges_scale(void)
 {
-	GtkAdjustment *adj;
-	gdouble page_size;
-
 	/* Update the scrollbars with PCB units.  So Scale the current
 	   |  drawing area size in pixels to PCB units and that will be
 	   |  the page size for the Gtk adjustment.
 	 */
 	pcb_gtk_zoom_post(&gport->view);
 
-	adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range));
-	page_size = MIN(gport->view.width, PCB->MaxWidth);
-	gtk_adjustment_configure(adj, gtk_adjustment_get_value(adj),	/* value          */
-													 -gport->view.width,	/* lower          */
-													 PCB->MaxWidth + page_size,	/* upper          */
-													 page_size / 100.0,	/* step_increment */
-													 page_size / 10.0,	/* page_increment */
-													 page_size);	/* page_size      */
-
-	adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->v_range));
-	page_size = MIN(gport->view.height, PCB->MaxHeight);
-	gtk_adjustment_configure(adj, gtk_adjustment_get_value(adj),	/* value          */
-													 -gport->view.height,	/* lower          */
-													 PCB->MaxHeight + page_size,	/* upper          */
-													 page_size / 100.0,	/* step_increment */
-													 page_size / 10.0,	/* page_increment */
-													 page_size);	/* page_size      */
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range)), gport->view.width, PCB->MaxWidth);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(ghidgui->v_range)), gport->view.height, PCB->MaxHeight);
 }
 
 void ghid_note_event_location(GdkEventButton * ev)
