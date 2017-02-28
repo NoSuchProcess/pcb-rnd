@@ -37,6 +37,7 @@
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
+#include "../src_plugins/lib_gtk_common/bu_info_bar.h"
 
 #include "board.h"
 #include "event.h"
@@ -48,6 +49,7 @@ typedef struct {
 	pcb_gtk_cursor_pos_t cps;
 	pcb_gtk_menu_ctx_t menu;
 	pcb_gtk_command_t cmd;
+	pcb_gtk_info_bar_t ibar;
 
 	GtkWidget *status_line_label, *status_line_hbox;
 
@@ -58,7 +60,6 @@ typedef struct {
 	GtkWidget *mode_toolbar_vbox;
 	GtkWidget *vbox_middle;
 
-	GtkWidget *info_bar;
 	GTimeVal our_mtime;
 	GTimeVal last_seen_mtime;
 

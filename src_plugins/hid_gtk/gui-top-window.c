@@ -99,6 +99,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
+#include "../src_plugins/lib_gtk_common/bu_info_bar.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
@@ -148,73 +149,35 @@ static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 	return FALSE;
 }
 
-static void info_bar_response_cb(GtkInfoBar * info_bar, gint response_id, GhidGui * _gui)
-{
-	gtk_widget_destroy(_gui->info_bar);
-	_gui->info_bar = NULL;
+/*! \brief Menu action callback function
+ *  \par Function Description
+ *  This is the main menu callback function.  The callback receives
+ *  the original lihata action node pointer HID actions to be
+ *  executed.
+ *
+ *  \param [in]   The action that was activated
+ *  \param [in]   The related menu lht action node
+ */
 
-	if (response_id == GTK_RESPONSE_ACCEPT)
-		pcb_revert_pcb();
+static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
+{
+	if (action == NULL || node == NULL)
+		return;
+
+	pcb_hid_cfg_action(node);
+
+	/* Sync gui widgets with pcb state */
+	ghid_mode_buttons_update();
+
+	/* Sync gui status display with pcb state */
+	pcb_adjust_attached_objects();
+	ghid_invalidate_all();
+	ghid_window_set_name_label(PCB->Name);
+	ghid_set_status_line_label();
 }
 
-static void close_file_modified_externally_prompt(void)
-{
-	if (ghidgui->info_bar != NULL)
-		gtk_widget_destroy(ghidgui->info_bar);
-	ghidgui->info_bar = NULL;
-}
 
-static void show_file_modified_externally_prompt(void)
-{
-	GtkWidget *button;
-	GtkWidget *button_image;
-	GtkWidget *icon;
-	GtkWidget *label;
-	GtkWidget *content_area;
-	char *file_path_utf8;
-	const char *secondary_text;
-	char *markup;
-
-	close_file_modified_externally_prompt();
-
-	ghidgui->info_bar = gtk_info_bar_new();
-
-	button = gtk_info_bar_add_button(GTK_INFO_BAR(ghidgui->info_bar), _("Reload"), GTK_RESPONSE_ACCEPT);
-	button_image = gtk_image_new_from_stock(GTK_STOCK_REFRESH, GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_image(GTK_BUTTON(button), button_image);
-
-	gtk_info_bar_add_button(GTK_INFO_BAR(ghidgui->info_bar), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	gtk_info_bar_set_message_type(GTK_INFO_BAR(ghidgui->info_bar), GTK_MESSAGE_WARNING);
-	gtk_box_pack_start(GTK_BOX(ghidgui->vbox_middle), ghidgui->info_bar, FALSE, FALSE, 0);
-	gtk_box_reorder_child(GTK_BOX(ghidgui->vbox_middle), ghidgui->info_bar, 0);
-
-
-	g_signal_connect(ghidgui->info_bar, "response", G_CALLBACK(info_bar_response_cb), ghidgui);
-
-	file_path_utf8 = g_filename_to_utf8(PCB->Filename, -1, NULL, NULL, NULL);
-
-	secondary_text = PCB->Changed ? "Do you want to drop your changes and reload the file?" : "Do you want to reload the file?";
-
-	markup = g_markup_printf_escaped(_("<b>The file %s has changed on disk</b>\n\n%s"), file_path_utf8, secondary_text);
-	g_free(file_path_utf8);
-
-	content_area = gtk_info_bar_get_content_area(GTK_INFO_BAR(ghidgui->info_bar));
-
-	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_DIALOG);
-	gtk_box_pack_start(GTK_BOX(content_area), icon, FALSE, FALSE, 0);
-
-	label = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(content_area), label, TRUE, TRUE, 6);
-
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label), markup);
-	g_free(markup);
-
-	gtk_misc_set_alignment(GTK_MISC(label), 0., 0.5);
-
-	gtk_widget_show_all(ghidgui->info_bar);
-}
-
+#warning TODO: move to common
 static pcb_bool check_externally_modified(void)
 {
 	GFile *file;
@@ -246,41 +209,6 @@ static pcb_bool check_externally_modified(void)
 		 ghidgui->last_seen_mtime.tv_usec > ghidgui->our_mtime.tv_usec);
 }
 
-static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, GHidPort * port)
-{
-	if (check_externally_modified())
-		show_file_modified_externally_prompt();
-
-	return FALSE;
-}
-
-/*! \brief Menu action callback function
- *  \par Function Description
- *  This is the main menu callback function.  The callback receives
- *  the original lihata action node pointer HID actions to be
- *  executed.
- *
- *  \param [in]   The action that was activated
- *  \param [in]   The related menu lht action node
- */
-
-static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
-{
-	if (action == NULL || node == NULL)
-		return;
-
-	pcb_hid_cfg_action(node);
-
-	/* Sync gui widgets with pcb state */
-	ghid_mode_buttons_update();
-
-	/* Sync gui status display with pcb state */
-	pcb_adjust_attached_objects();
-	ghid_invalidate_all();
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
-}
-
 static void update_board_mtime_from_disk(void)
 {
 	GFile *file;
@@ -305,6 +233,15 @@ static void update_board_mtime_from_disk(void)
 
 	ghidgui->last_seen_mtime = ghidgui->our_mtime;
 }
+
+static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, GHidPort * port)
+{
+	if (check_externally_modified())
+		pcb_gtk_info_bar_file_extmod_prompt(&ghidgui->ibar, ghidgui->vbox_middle);
+
+	return FALSE;
+}
+
 
 void ghid_handle_units_changed(void)
 {
@@ -331,7 +268,7 @@ void ghid_sync_with_new_layout(void)
 
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
-	close_file_modified_externally_prompt();
+	pcb_gtk_close_info_bar(&ghidgui->ibar);
 	update_board_mtime_from_disk();
 }
 
