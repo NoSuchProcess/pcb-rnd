@@ -39,6 +39,7 @@
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+#include "../src_plugins/lib_gtk_common/ui_crosshair.h"
 #include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
 #include "../src_plugins/lib_gtk_common/util_watch.h"
@@ -176,72 +177,13 @@ int ghid_mod1_is_pressed()
 
 void ghid_set_crosshair(int x, int y, int action)
 {
-	GdkDisplay *display;
-	GdkScreen *screen;
 	int offset_x, offset_y;
-	int widget_x, widget_y;
-	int pointer_x, pointer_y;
-	pcb_coord_t pcb_x, pcb_y;
 
 	ghid_draw_grid_local(x, y);
-
-	if (gport->view.crosshair_x != x || gport->view.crosshair_y != y) {
-		ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
-		gport->view.crosshair_x = x;
-		gport->view.crosshair_y = y;
-
-		/* FIXME - does this trigger the idle_proc stuff?  It is in the
-		 * lesstif HID.  Maybe something is needed here?
-		 *
-		 * need_idle_proc ();
-		 */
-	}
-
-	if (action != HID_SC_PAN_VIEWPORT && action != HID_SC_WARP_POINTER)
-		return;
-
-	/* Find out where the drawing area is on the screen. gdk_display_get_pointer
-	 * and gdk_display_warp_pointer work relative to the whole display, whilst
-	 * our coordinates are relative to the drawing area origin.
-	 */
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
-	display = gdk_display_get_default();
-
-	switch (action) {
-	case HID_SC_PAN_VIEWPORT:
-		/* Pan the board in the viewport so that the crosshair (who's location
-		 * relative on the board was set above) lands where the pointer is.
-		 * We pass the request to pan a particular point on the board to a
-		 * given widget coordinate of the viewport into the rendering code
-		 */
-
-		/* Find out where the pointer is relative to the display */
-		gdk_display_get_pointer(display, NULL, &pointer_x, &pointer_y, NULL);
-
-		widget_x = pointer_x - offset_x;
-		widget_y = pointer_y - offset_y;
-
-		pcb_gtk_coords_event2pcb(&gport->view, widget_x, widget_y, &pcb_x, &pcb_y);
-		pcb_gtk_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
-
-		/* Just in case we couldn't pan the board the whole way,
-		 * we warp the pointer to where the crosshair DID land.
-		 */
-		/* Fall through */
-
-	case HID_SC_WARP_POINTER:
-		screen = gdk_display_get_default_screen(display);
-
-		pcb_gtk_coords_pcb2event(&gport->view, x, y, &widget_x, &widget_y);
-
-		pointer_x = offset_x + widget_x;
-		pointer_y = offset_y + widget_y;
-
-		gdk_display_warp_pointer(display, screen, pointer_x, pointer_y);
-
-		break;
-	}
+	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->cps, &gport->view);
 }
+
 
 int ghid_confirm_dialog(const char *msg, ...)
 {
