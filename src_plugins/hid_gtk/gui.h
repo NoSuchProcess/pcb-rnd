@@ -51,10 +51,6 @@ typedef struct GhidGui_s{
 
 	GdkPixbuf *bg_pixbuf; /* -> renderer */
 
-	gboolean adjustment_changed_holdoff, in_popup; /* -> topwin */
-
-	gboolean small_label_markup, creating; /* -> topwin */
-
 	pcb_gtk_dlg_propedit_t propedit_dlg;
 	GtkWidget *propedit_widget;
 } GhidGui;

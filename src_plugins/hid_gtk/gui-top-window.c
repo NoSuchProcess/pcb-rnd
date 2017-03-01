@@ -105,20 +105,20 @@ void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw)
 	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
 }
 
-static void h_adjustment_changed_cb(GtkAdjustment * adj, GhidGui * g)
+static void h_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 {
-	if (g->adjustment_changed_holdoff)
+	if (tw->adjustment_changed_holdoff)
 		return;
 
-	ghid_port_ranges_changed(&g->topwin);
+	ghid_port_ranges_changed(tw);
 }
 
-static void v_adjustment_changed_cb(GtkAdjustment * adj, GhidGui * g)
+static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 {
-	if (g->adjustment_changed_holdoff)
+	if (tw->adjustment_changed_holdoff)
 		return;
 
-	ghid_port_ranges_changed(&g->topwin);
+	ghid_port_ranges_changed(tw);
 }
 
 	/* Save size of top window changes so PCB can restart at its size at exit.
@@ -487,7 +487,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 
 
 
-	g_signal_connect(G_OBJECT(tw->v_adjustment), "value_changed", G_CALLBACK(v_adjustment_changed_cb), ghidgui);
+	g_signal_connect(G_OBJECT(tw->v_adjustment), "value_changed", G_CALLBACK(v_adjustment_changed_cb), tw);
 
 	tw->h_adjustment = gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0);
 
@@ -500,7 +500,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox_scroll, FALSE, FALSE, 0);
 
 
-	g_signal_connect(G_OBJECT(tw->h_adjustment), "value_changed", G_CALLBACK(h_adjustment_changed_cb), ghidgui);
+	g_signal_connect(G_OBJECT(tw->h_adjustment), "value_changed", G_CALLBACK(h_adjustment_changed_cb), tw);
 
 	/* -- The bottom status line label */
 	tw->status_line_hbox = gtk_hbox_new(FALSE, 0);
@@ -540,7 +540,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	g_signal_connect(G_OBJECT(window), "delete_event", G_CALLBACK(delete_chart_cb), port);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(destroy_chart_cb), port);
 
-	ghidgui->creating = FALSE;
+	ghidgui->topwin.creating = FALSE;
 
 	gtk_widget_show_all(gport->top_window);
 	ghid_pack_mode_buttons();
@@ -704,7 +704,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	wplc_place(WPLC_TOP, window);
 
 	gtk_widget_show_all(gport->top_window);
-	ghidgui->creating = TRUE;
+	ghidgui->topwin.creating = TRUE;
 }
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)

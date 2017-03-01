@@ -208,7 +208,7 @@ gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPo
 		 */
 		gtk_widget_grab_focus(out->drawing_area);
 	}
-	ghidgui->in_popup = FALSE;
+	ghidgui->topwin.in_popup = FALSE;
 
 	/* Following expression is true if a you open a menu from the menu bar,
 	 * move the mouse to the viewport and click on it. This closes the menu

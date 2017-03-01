@@ -115,10 +115,10 @@ static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 
 void ghid_pan_common(void)
 {
-	ghidgui->adjustment_changed_holdoff = TRUE;
+	ghidgui->topwin.adjustment_changed_holdoff = TRUE;
 	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), gport->view.x0);
 	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), gport->view.y0);
-	ghidgui->adjustment_changed_holdoff = FALSE;
+	ghidgui->topwin.adjustment_changed_holdoff = FALSE;
 
 	ghid_port_ranges_changed(&ghidgui->topwin);
 }
@@ -653,7 +653,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 1;
 	}
 	else {
-		ghidgui->in_popup = TRUE;
+		ghidgui->topwin.in_popup = TRUE;
 		gtk_widget_grab_focus(ghid_port.drawing_area);
 		gtk_menu_popup(menu, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
 	}
