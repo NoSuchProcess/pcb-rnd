@@ -210,9 +210,8 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 	gchar *str;
 	gchar *filename;
 
-	/* FIXME -- should this happen?  It does... */
 	/* This happens if we're calling an exporter from the command line */
-	if (ghidgui == NULL)
+	if (!tw->active)
 		return;
 
 #warning TODO: use some gds here to speed things up
@@ -540,13 +539,12 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	g_signal_connect(G_OBJECT(window), "delete_event", G_CALLBACK(delete_chart_cb), port);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(destroy_chart_cb), port);
 
-	tw->creating = FALSE;
-
 	gtk_widget_show_all(gport->top_window);
 	ghid_pack_mode_buttons();
 	gdk_window_set_back_pixmap(gtk_widget_get_window(gport->drawing_area), NULL, FALSE);
 
 	ghid_fullscreen_apply(tw);
+	tw->active = 1;
 }
 
 
@@ -704,7 +702,6 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	wplc_place(WPLC_TOP, window);
 
 	gtk_widget_show_all(gport->top_window);
-	ghidgui->topwin.creating = TRUE;
 }
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
@@ -731,7 +728,7 @@ static gboolean get_layer_visible_cb(int id)
 
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->topwin.menu.menu_bar || PCB == NULL)
+	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL)
 		return;
 
 	ghid_layer_buttons_update(&ghidgui->topwin);

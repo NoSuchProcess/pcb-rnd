@@ -35,7 +35,8 @@ typedef struct {
 	/* own internal states */
 	gchar *name_label_string;
 	gboolean adjustment_changed_holdoff, in_popup;
-	gboolean small_label_markup, creating;
+	gboolean small_label_markup;
+	int active; /* 0 before init finishes */
 } pcb_gtk_topwin_t;
 
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw);

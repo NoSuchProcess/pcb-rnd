@@ -1064,7 +1064,7 @@ static void show_crosshair(gboolean paint_new_location)
 	static GdkGC *xor_gc;
 	static GdkColor cross_color;
 
-	if (gport->view.crosshair_x < 0 || ghidgui->topwin.creating || !gport->view.has_entered)
+	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
 		return;
 
 	if (!xor_gc) {
