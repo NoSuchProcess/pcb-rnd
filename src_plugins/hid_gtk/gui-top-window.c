@@ -22,20 +22,6 @@
 
 /* #define DEBUG_MENUS */
 
-#ifdef DAN_FIXME
-TODO:
-
--what about stuff like this:
-
-	/* Set to ! because pcb_act_Display toggles it */
-conf_core.editor.draw_grid = !gtk_toggle_action_get_active(action);
-pcb_hid_actionl("Display", "Grid", "", NULL);
-ghid_set_status_line_label();
-
-
-I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
-	via size.NOte the status line label does not get updated properly until a zoom in / out.
-#endif
 /* This file was originally written by Bill Wilson for the PCB Gtk
  * port.  It was later heavily modified by Dan McMahill to provide
  * user customized menus.
