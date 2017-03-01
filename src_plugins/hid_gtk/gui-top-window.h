@@ -38,11 +38,15 @@ void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
 void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw);
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
+void ghid_layer_buttons_update(pcb_gtk_topwin_t *tw);
 
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done);
 void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
+void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name);
+void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw);
+
 
 #endif
 
