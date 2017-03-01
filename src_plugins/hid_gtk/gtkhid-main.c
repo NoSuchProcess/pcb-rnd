@@ -958,7 +958,7 @@ static void LayersChanged_cb(void)
 
 void ghid_pack_mode_buttons(void)
 {
-	pcb_gtk_pack_mode_buttons(&ghidgui->mode_btn);
+	pcb_gtk_pack_mode_buttons(&ghidgui->topwin.mode_btn);
 }
 
 static void ghid_notify_save_pcb(const char *filename, pcb_bool done)

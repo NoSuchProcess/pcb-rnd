@@ -8,6 +8,8 @@
 #include "../src_plugins/lib_gtk_common/util_ext_chg.h"
 #include "../src_plugins/lib_gtk_common/bu_info_bar.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
+#include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
+#include "hid_cfg.h"
 
 typedef struct {
 	/* util/builder states */
@@ -15,6 +17,7 @@ typedef struct {
 	pcb_gtk_info_bar_t ibar;
 	pcb_gtk_menu_ctx_t menu;
 	pcb_hid_cfg_t *ghid_cfg;
+	pcb_gtk_mode_btn_t mode_btn;
 
 	/* own widgets */
 	GtkWidget *status_line_label, *status_line_hbox;

@@ -43,6 +43,7 @@
 #include "search.h"
 #include "rats.h"
 #include "gtkhid-main.h"
+#include "gui-top-window.h"
 
 #include "../src_plugins/lib_gtk_common/bu_dwg_tooltip.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
@@ -105,10 +106,10 @@ gboolean ghid_idle_cb(gpointer data)
 	if (conf_core.editor.mode == PCB_MODE_NO)
 		pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	ghid_mode_cursor(&gport->mouse, conf_core.editor.mode);
-	if (ghidgui->mode_btn.settings_mode != conf_core.editor.mode) {
+	if (ghidgui->topwin.mode_btn.settings_mode != conf_core.editor.mode) {
 		ghid_mode_buttons_update();
 	}
-	ghidgui->mode_btn.settings_mode = conf_core.editor.mode;
+	ghidgui->topwin.mode_btn.settings_mode = conf_core.editor.mode;
 	return FALSE;
 }
 

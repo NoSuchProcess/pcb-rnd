@@ -293,7 +293,7 @@ static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle ** menu_bar_style, 
 
 	/* Build a tool item to extract the theme's styling for a toolbar button with text */
 	tool_item = gtk_tool_item_new();
-	gtk_toolbar_insert(GTK_TOOLBAR(ghidgui->mode_btn.mode_toolbar), tool_item, 0);
+	gtk_toolbar_insert(GTK_TOOLBAR(tw->mode_btn.mode_toolbar), tool_item, 0);
 	tool_button = gtk_button_new();
 	gtk_container_add(GTK_CONTAINER(tool_item), tool_button);
 	tool_button_label = gtk_label_new("");
@@ -412,8 +412,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	tw->menu.menu_bar = ghid_load_menus(&tw->menu, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
-	pcb_gtk_make_mode_buttons_and_toolbar(&ghidgui->common, &ghidgui->mode_btn);
-	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), ghidgui->mode_btn.mode_toolbar_vbox, FALSE, FALSE, 0);
+	pcb_gtk_make_mode_buttons_and_toolbar(&ghidgui->common, &tw->mode_btn);
+	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->mode_btn.mode_toolbar_vbox, FALSE, FALSE, 0);
 
 	tw->position_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
@@ -436,10 +436,10 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	vbox = ghid_scrolled_vbox(tw->left_toolbar, &scrolled, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), tw->layer_selector, FALSE, FALSE, 0);
 
-	/* ghidgui->mode_btn.mode_buttons_frame was created above in the call to
+	/* tw->mode_btn.mode_buttons_frame was created above in the call to
 	 * make_mode_buttons_and_toolbar (...);
 	 */
-	gtk_box_pack_start(GTK_BOX(tw->left_toolbar), ghidgui->mode_btn.mode_buttons_frame, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tw->left_toolbar), tw->mode_btn.mode_buttons_frame, FALSE, FALSE, 0);
 
 	frame = gtk_frame_new(NULL);
 	gtk_box_pack_end(GTK_BOX(tw->left_toolbar), frame, FALSE, FALSE, 0);
