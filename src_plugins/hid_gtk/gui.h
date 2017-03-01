@@ -256,6 +256,4 @@ void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
 
 GMainLoop *ghid_entry_loop;
 
-void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
-
 #endif /* PCB_HID_GTK_GHID_GUI_H */

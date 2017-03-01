@@ -92,6 +92,7 @@
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
 
 #warning TODO: remove these:
 #include "gui.h"
@@ -639,31 +640,6 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 		gtk_widget_show(tw->top_hbox);
 		gtk_widget_show(tw->status_line_hbox);
 	}
-}
-
-/*! \brief callback for */
-static gboolean get_layer_visible_cb(int id)
-{
-	int visible;
-	layer_process(NULL, NULL, &visible, id);
-	return visible;
-}
-
-void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL)
-		return;
-
-	ghid_layer_buttons_update(&ghidgui->topwin);
-	pcb_gtk_layer_selector_show_layers(GHID_LAYER_SELECTOR(ghidgui->topwin.layer_selector), get_layer_visible_cb);
-
-	/* FIXME - if a layer is moved it should retain its color.  But layers
-	   |  currently can't do that because color info is not saved in the
-	   |  pcb file.  So this makes a moved layer change its color to reflect
-	   |  the way it will be when the pcb is reloaded.
-	 */
-	pcb_colors_from_settings(PCB);
-	return;
 }
 
 int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
