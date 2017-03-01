@@ -1017,6 +1017,14 @@ static void ghid_route_styles_edited_cb()
 	pcb_gtk_tw_route_styles_edited_cb(&ghidgui->topwin);
 }
 
+static int ghid_usage(const char *topic)
+{
+	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
+	conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
+	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
+	return 0;
+}
+
 
 static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 {

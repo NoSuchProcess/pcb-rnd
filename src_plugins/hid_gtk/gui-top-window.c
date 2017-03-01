@@ -619,15 +619,6 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 	ghid_mode_buttons_update();
 }
 
-/* ------------------------------------------------------------ */
-int ghid_usage(const char *topic)
-{
-	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
-	conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
-	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
-	return 0;
-}
-
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 {
 	if (conf_core.editor.fullscreen) {

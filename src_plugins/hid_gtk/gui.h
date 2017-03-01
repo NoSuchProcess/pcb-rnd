@@ -243,7 +243,6 @@ static inline pcb_coord_t Pz(int z)
 extern const char *ghid_cookie;
 extern const char *ghid_menu_cookie;
 
-int ghid_usage(const char *topic);
 void hid_gtk_wgeo_update(void);
 
 void ghid_confchg_line_refraction(conf_native_t *cfg);
