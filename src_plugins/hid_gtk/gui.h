@@ -86,13 +86,6 @@ typedef struct {
 
 extern GHidPort ghid_port, *gport;
 
-typedef enum {
-	NO_BUTTON_PRESSED,
-	BUTTON1_PRESSED,
-	BUTTON2_PRESSED,
-	BUTTON3_PRESSED
-} ButtonState;
-
 /* Function prototypes
 */
 void ghid_parse_arguments(gint * argc, gchar *** argv);
