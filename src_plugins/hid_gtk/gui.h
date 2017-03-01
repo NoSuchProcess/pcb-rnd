@@ -30,7 +30,6 @@
 #include <gtk/gtk.h>
 
 /* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
-#include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 #include "../src_plugins/lib_gtk_common/dlg_command.h"
@@ -46,7 +45,6 @@ typedef struct GhidGui_s{
 
 	pcb_gtk_topwin_t topwin;
 	pcb_gtk_common_t common;
-	pcb_gtk_cursor_pos_t cps;
 	pcb_gtk_command_t cmd;
 
 	GdkPixbuf *bg_pixbuf; /* -> renderer */

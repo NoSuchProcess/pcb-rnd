@@ -9,6 +9,7 @@
 #include "../src_plugins/lib_gtk_common/bu_info_bar.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
+#include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
 #include "hid_cfg.h"
 
 typedef struct {
@@ -18,6 +19,7 @@ typedef struct {
 	pcb_gtk_menu_ctx_t menu;
 	pcb_hid_cfg_t *ghid_cfg;
 	pcb_gtk_mode_btn_t mode_btn;
+	pcb_gtk_cursor_pos_t cps;
 
 	/* own widgets */
 	GtkWidget *status_line_label, *status_line_hbox;
@@ -43,6 +45,7 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw);
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
 void ghid_layer_buttons_update(pcb_gtk_topwin_t *tw);
+void ghid_handle_units_changed(pcb_gtk_topwin_t *tw);
 
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done);

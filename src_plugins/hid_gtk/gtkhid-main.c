@@ -220,7 +220,7 @@ void ghid_set_crosshair(int x, int y, int action)
 
 	ghid_draw_grid_local(x, y);
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
-	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->cps, &gport->view);
+	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->topwin.cps, &gport->view);
 }
 
 
@@ -593,9 +593,6 @@ Sets the display units to millimeters.
 
 %end-doc */
 
-#warning TODO: move this to a header
-extern void ghid_handle_units_changed(void);
-
 static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const pcb_unit_t *new_unit;
@@ -608,7 +605,7 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
 	}
 
-	ghid_handle_units_changed();
+	ghid_handle_units_changed(&ghidgui->topwin);
 
 	ghid_set_status_line_label();
 

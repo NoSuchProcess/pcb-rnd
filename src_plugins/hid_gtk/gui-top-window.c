@@ -139,12 +139,12 @@ static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, pcb_gt
 }
 
 
-void ghid_handle_units_changed(void)
+void ghid_handle_units_changed(pcb_gtk_topwin_t *tw)
 {
 	char *text = pcb_strdup_printf("<b>%s</b>",
 																 conf_core.editor.grid_unit->in_suffix);
-	ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
-	gtk_label_set_markup(GTK_LABEL(ghidgui->cps.grid_units_label), text);
+	ghid_set_cursor_position_labels(&tw->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+	gtk_label_set_markup(GTK_LABEL(tw->cps.grid_units_label), text);
 	free(text);
 	ghid_config_handle_units_changed(gport);
 }
@@ -160,7 +160,7 @@ void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 		pcb_gtk_route_style_select_style(GHID_ROUTE_STYLE(tw->route_style_selector), &PCB->RouteStyle.array[0]);
 	}
 
-	ghid_handle_units_changed();
+	ghid_handle_units_changed(tw);
 
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
@@ -330,20 +330,20 @@ static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
 	 * need to grab the GtkStyle associated with an actual menu item to
 	 * get a text color to render with.
 	 */
-	gtk_widget_set_style(ghidgui->cps.cursor_position_relative_label, menu_bar_style);
-	gtk_widget_set_style(ghidgui->cps.cursor_position_absolute_label, menu_bar_style);
+	gtk_widget_set_style(tw->cps.cursor_position_relative_label, menu_bar_style);
+	gtk_widget_set_style(tw->cps.cursor_position_absolute_label, menu_bar_style);
 
 	/* Style the units button as if it were a toolbar button - hopefully
 	 * this isn't too ugly sitting on a background themed as a menu bar.
 	 * It is unlikely any theme defines colours for a GtkButton sitting on
 	 * a menu bar.
 	 */
-	rel_pos_frame = gtk_widget_get_parent(ghidgui->cps.cursor_position_relative_label);
-	abs_pos_frame = gtk_widget_get_parent(ghidgui->cps.cursor_position_absolute_label);
+	rel_pos_frame = gtk_widget_get_parent(tw->cps.cursor_position_relative_label);
+	abs_pos_frame = gtk_widget_get_parent(tw->cps.cursor_position_absolute_label);
 	gtk_widget_set_style(rel_pos_frame, menu_bar_style);
 	gtk_widget_set_style(abs_pos_frame, menu_bar_style);
-	gtk_widget_set_style(ghidgui->cps.grid_units_button, tool_button_style);
-	gtk_widget_set_style(ghidgui->cps.grid_units_label, tool_button_label_style);
+	gtk_widget_set_style(tw->cps.grid_units_button, tool_button_style);
+	gtk_widget_set_style(tw->cps.grid_units_label, tool_button_label_style);
 }
 
 /* Attempt to produce a conststent style for our extra menu-bar items by
@@ -418,7 +418,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	tw->position_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
 
-	make_cursor_position_labels(tw->position_hbox, &ghidgui->cps);
+	make_cursor_position_labels(tw->position_hbox, &tw->cps);
 
 	hbox_middle = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_middle, TRUE, TRUE, 0);

@@ -97,7 +97,7 @@ void ghid_note_event_location(GdkEventButton * ev)
 	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
 
 	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
-	ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 }
 
 #warning TODO: move this to common
