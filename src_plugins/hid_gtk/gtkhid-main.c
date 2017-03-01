@@ -43,6 +43,7 @@
 #include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
 #include "../src_plugins/lib_gtk_common/util_watch.h"
+#include "../src_plugins/lib_gtk_common/util_listener.h"
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_command.h"
