@@ -321,7 +321,7 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 		page = gtk_notebook_get_current_page(config_notebook);
 
 		ghid_config_window_close();
-		ghid_config_window_show(priv_copy_com->gport);
+		ghid_config_window_show(priv_copy_com);
 
 		/* restore expansions and notebook states */
 		for (; first != NULL; first = next) {
@@ -2606,7 +2606,7 @@ static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, pc
 		*basename = '\0';
 		basename++;
 		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
-		config_tree_leaf_(model, parent, basename, NULL, &iter, com->gport);
+		config_tree_leaf_(model, parent, basename, NULL, &iter, com);
 		gtk_tree_store_set(model, &iter, CONFIG_PAGE_COLUMN, auto_page, CONFIG_PAGE_UPDATE_CB, config_page_update_auto,
 											 CONFIG_PAGE_DATA, e->value, -1);
 	}
