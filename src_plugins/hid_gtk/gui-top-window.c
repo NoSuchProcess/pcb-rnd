@@ -100,14 +100,14 @@ GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;
 
 
-static GtkWidget *ghid_load_menus(void);
+static GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu);
 
 pcb_hid_cfg_t *ghid_cfg = NULL;
 
 /*! \brief sync the menu checkboxes with actual pcb state */
-void ghid_update_toggle_flags()
+void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw)
 {
-	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(ghidgui->menu.menu_bar), menu_toggle_update_cb);
+	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
 }
 
 static void h_adjustment_changed_cb(GtkAdjustment * adj, GhidGui * g)
@@ -219,19 +219,19 @@ void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
 }
 
 /*! \brief Install menu bar and accelerator groups */
-void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui)
+void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
-	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu.menu_bar)));
-	gtk_window_add_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->topwin.layer_selector)));
-	gtk_window_add_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->topwin.route_style_selector)));
+	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
+	gtk_window_add_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(tw->layer_selector)));
+	gtk_window_add_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(tw->route_style_selector)));
 }
 
 /*! \brief Remove menu bar and accelerator groups */
-void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui)
+void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
-	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu.menu_bar)));
-	gtk_window_remove_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->topwin.layer_selector)));
-	gtk_window_remove_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->topwin.route_style_selector)));
+	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
+	gtk_window_remove_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(tw->layer_selector)));
+	gtk_window_remove_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(tw->route_style_selector)));
 }
 
 /* Refreshes the window title bar and sets the PCB name to the
@@ -282,13 +282,13 @@ void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw)
 
 void ghid_layer_buttons_update(pcb_gtk_topwin_t *tw)
 {
-	pcb_gtk_layer_buttons_update(tw->layer_selector, GHID_MAIN_MENU(ghidgui->menu.menu_bar));
+	pcb_gtk_layer_buttons_update(tw->layer_selector, GHID_MAIN_MENU(tw->menu.menu_bar));
 }
 
 /*! \brief Called when user clicks OK on route style dialog */
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
 {
-	ghid_main_menu_install_route_style_selector(GHID_MAIN_MENU(ghidgui->menu.menu_bar), GHID_ROUTE_STYLE(tw->route_style_selector));
+	ghid_main_menu_install_route_style_selector(GHID_MAIN_MENU(tw->menu.menu_bar), GHID_ROUTE_STYLE(tw->route_style_selector));
 }
 
 
@@ -317,7 +317,7 @@ static void destroy_chart_cb(GtkWidget * widget, GHidPort * port)
 	gtk_main_quit();
 }
 
-static void get_widget_styles(GtkStyle ** menu_bar_style, GtkStyle ** tool_button_style, GtkStyle ** tool_button_label_style)
+static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle ** menu_bar_style, GtkStyle ** tool_button_style, GtkStyle ** tool_button_label_style)
 {
 	GtkWidget *tool_button;
 	GtkWidget *tool_button_label;
@@ -332,8 +332,8 @@ static void get_widget_styles(GtkStyle ** menu_bar_style, GtkStyle ** tool_butto
 	gtk_container_add(GTK_CONTAINER(tool_button), tool_button_label);
 
 	/* Grab the various styles we need */
-	gtk_widget_ensure_style(ghidgui->menu.menu_bar);
-	*menu_bar_style = gtk_widget_get_style(ghidgui->menu.menu_bar);
+	gtk_widget_ensure_style(tw->menu.menu_bar);
+	*menu_bar_style = gtk_widget_get_style(tw->menu.menu_bar);
 
 	gtk_widget_ensure_style(tool_button);
 	*tool_button_style = gtk_widget_get_style(tool_button);
@@ -352,7 +352,7 @@ static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
 	GtkStyle *tool_button_style;
 	GtkStyle *tool_button_label_style;
 
-	get_widget_styles(&menu_bar_style, &tool_button_style, &tool_button_label_style);
+	get_widget_styles(tw, &menu_bar_style, &tool_button_style, &tool_button_label_style);
 
 	/* Style the top bar background as if it were all a menu bar */
 	gtk_widget_set_style(tw->top_bar_background, menu_bar_style);
@@ -441,8 +441,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	g_signal_connect(G_OBJECT(tw->layer_selector), "select_layer", G_CALLBACK(layer_selector_select_callback), &ghidgui->common);
 	g_signal_connect(G_OBJECT(tw->layer_selector), "toggle_layer", G_CALLBACK(layer_selector_toggle_callback), &ghidgui->common);
 	/* Build main menu */
-	ghidgui->menu.menu_bar = ghid_load_menus();
-	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), ghidgui->menu.menu_bar, FALSE, FALSE, 0);
+	tw->menu.menu_bar = ghid_load_menus(&tw->menu);
+	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
 	pcb_gtk_make_mode_buttons_and_toolbar(&ghidgui->common, &ghidgui->mode_btn);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), ghidgui->mode_btn.mode_toolbar_vbox, FALSE, FALSE, 0);
@@ -645,8 +645,8 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 		g_error_free(err);
 	}
 	ghid_build_pcb_top_window(tw, in_top_window);
-	ghid_install_accel_groups(GTK_WINDOW(port->top_window), ghidgui);
-	ghid_update_toggle_flags();
+	ghid_install_accel_groups(GTK_WINDOW(port->top_window), tw);
+	ghid_update_toggle_flags(tw);
 
 	pcb_gtk_icons_init(gtk_widget_get_window(port->top_window));
 	pcb_crosshair_set_mode(PCB_MODE_ARROW);
@@ -763,7 +763,7 @@ static gboolean get_layer_visible_cb(int id)
 
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->menu.menu_bar || PCB == NULL)
+	if (!ghidgui || !ghidgui->topwin.menu.menu_bar || PCB == NULL)
 		return;
 
 	ghid_layer_buttons_update(&ghidgui->topwin);
@@ -798,8 +798,8 @@ pcb_hid_action_t gtk_topwindow_action_list[] = {
 
 PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 
-#warning TODO: move this to common, get &ghidgui->menu as arg
-static GtkWidget *ghid_load_menus(void)
+#warning TODO: move this to common
+static GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
@@ -814,7 +814,7 @@ static GtkWidget *ghid_load_menus(void)
 	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/main_menu");
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
-		ghid_main_menu_add_node(&ghidgui->menu, GHID_MAIN_MENU(menu_bar), mr);
+		ghid_main_menu_add_node(menu, GHID_MAIN_MENU(menu_bar), mr);
 	}
 
 	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/popups");
@@ -822,7 +822,7 @@ static GtkWidget *ghid_load_menus(void)
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
 			for (n = mr->data.list.first; n != NULL; n = n->next)
-				ghid_main_menu_add_popup_node(&ghidgui->menu, GHID_MAIN_MENU(menu_bar), n);
+				ghid_main_menu_add_popup_node(menu, GHID_MAIN_MENU(menu_bar), n);
 		}
 		else
 			pcb_hid_cfg_error(mr, "/popups should be a list");

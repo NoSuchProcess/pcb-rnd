@@ -7,14 +7,13 @@
 
 #include "../src_plugins/lib_gtk_common/util_ext_chg.h"
 #include "../src_plugins/lib_gtk_common/bu_info_bar.h"
-
-/* TODO: remove this */
-typedef struct GhidGui_s GhidGui;
+#include "../src_plugins/lib_gtk_common/bu_menu.h"
 
 typedef struct {
 	/* util/builder states */
 	pcb_gtk_ext_chg_t ext_chg;
 	pcb_gtk_info_bar_t ibar;
+	pcb_gtk_menu_ctx_t menu;
 
 	/* own widgets */
 	GtkWidget *status_line_label, *status_line_hbox;
@@ -32,9 +31,9 @@ typedef struct {
 
 } pcb_gtk_topwin_t;
 
-void ghid_update_toggle_flags(void);
-void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui);
-void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
+void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw);
+void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
+void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw);
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);

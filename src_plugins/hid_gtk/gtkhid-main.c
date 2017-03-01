@@ -87,7 +87,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 	 */
 	ghid_layer_buttons_update(&ghidgui->topwin);
 	ghid_main_menu_install_route_style_selector
-		(GHID_MAIN_MENU(ghidgui->menu.menu_bar), GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
+		(GHID_MAIN_MENU(ghidgui->topwin.menu.menu_bar), GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
 
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		pcb_gtk_create_listener();
@@ -289,7 +289,7 @@ static int ghid_remove_menu(const char *menu_path)
 
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	pcb_gtk_menu_create_menu(&ghidgui->menu, menu_path, action, mnemonic, accel, tip, cookie);
+	pcb_gtk_menu_create_menu(&ghidgui->topwin.menu, menu_path, action, mnemonic, accel, tip, cookie);
 }
 
 static int ghid_propedit_start(void *pe, int num_props, const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
@@ -910,13 +910,13 @@ static void command_post_entry(void)
 {
 	ghid_interface_input_signals_connect();
 	ghid_interface_set_sensitive(TRUE);
-	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), ghidgui);
+	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
 	gtk_widget_grab_focus(gport->drawing_area);
 }
 
 static void command_pre_entry(void)
 {
-	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), ghidgui);
+	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
 	ghid_interface_input_signals_disconnect();
 	ghid_interface_set_sensitive(FALSE);
 }
@@ -1142,8 +1142,8 @@ pcb_uninit_t hid_hid_gtk_init()
 /*	ghid_hid.propedit_add_value = ghid_propedit_add_value;*/
 
 	pcb_gtk_conf_init();
-	ghidgui->menu.ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
-	ghidgui->menu.confchg_checkbox = ghid_confchg_checkbox;
+	ghidgui->topwin.menu.ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
+	ghidgui->topwin.menu.confchg_checkbox = ghid_confchg_checkbox;
 	ghid_conf_regs();
 
 	ghid_hid.create_menu = ghid_create_menu;

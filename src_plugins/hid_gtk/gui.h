@@ -36,7 +36,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_command.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
-#include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
 #include "gui-top-window.h"
 
@@ -49,7 +48,6 @@ typedef struct GhidGui_s{
 	pcb_gtk_topwin_t topwin;
 	pcb_gtk_common_t common;
 	pcb_gtk_cursor_pos_t cps;
-	pcb_gtk_menu_ctx_t menu; /* -> topwin */
 	pcb_gtk_command_t cmd;
 	pcb_gtk_mode_btn_t mode_btn; /* -> topwin */
 
