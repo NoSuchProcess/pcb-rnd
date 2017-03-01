@@ -72,6 +72,9 @@
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
 
+#warning TODO: make this a separate object
+#include "actions.c"
+
 void ghid_do_export(pcb_hid_attr_val_t * options)
 {
 	gtkhid_begin();
@@ -1292,12 +1295,13 @@ pcb_uninit_t hid_hid_gtk_init()
 	return hid_hid_gtk_uninit;
 }
 
+#warning TODO: remove this
 int gtkhid_active = 0;
+
 
 void gtkhid_begin(void)
 {
 	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-	PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
 	gtkhid_active = 1;
 }
