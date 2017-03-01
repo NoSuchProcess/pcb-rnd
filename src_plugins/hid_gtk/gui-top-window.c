@@ -540,7 +540,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	g_signal_connect(G_OBJECT(window), "delete_event", G_CALLBACK(delete_chart_cb), port);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(destroy_chart_cb), port);
 
-	ghidgui->topwin.creating = FALSE;
+	tw->creating = FALSE;
 
 	gtk_widget_show_all(gport->top_window);
 	ghid_pack_mode_buttons();
