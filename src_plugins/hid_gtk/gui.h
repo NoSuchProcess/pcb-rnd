@@ -45,8 +45,6 @@
 
 typedef struct GhidGui_s{
 	GtkActionGroup *main_actions;
-	GtkActionGroup *change_selected_actions; /* -> del */
-	GtkActionGroup *displayed_name_actions; /* -> del */
 
 	pcb_gtk_topwin_t topwin;
 	pcb_gtk_common_t common;
