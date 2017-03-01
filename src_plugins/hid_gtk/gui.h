@@ -40,7 +40,7 @@
 #include "board.h"
 #include "event.h"
 
-typedef struct GhidGui_s{
+typedef struct GhidGui_s {
 	GtkActionGroup *main_actions;
 
 	pcb_gtk_topwin_t topwin;
@@ -55,8 +55,7 @@ typedef struct GhidGui_s{
 
 extern GhidGui _ghidgui, *ghidgui;
 
-	/* The output viewport
-	 */
+/* The output viewport */
 typedef struct {
 	GtkWidget *top_window,				/* toplevel widget              */
 	 *drawing_area;								/* and its drawing area */
@@ -76,8 +75,7 @@ typedef struct {
 
 extern GHidPort ghid_port, *gport;
 
-/* Function prototypes
-*/
+/* Function prototypes */
 void ghid_parse_arguments(gint * argc, gchar *** argv);
 void ghid_do_export(pcb_hid_attr_val_t * options);
 void ghid_do_exit(pcb_hid_t *hid);
