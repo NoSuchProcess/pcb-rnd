@@ -218,6 +218,9 @@ void ghid_set_crosshair(int x, int y, int action)
 {
 	int offset_x, offset_y;
 
+	if (gport->drawing_area == NULL)
+		return;
+
 	ghid_draw_grid_local(x, y);
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->topwin.cps, &gport->view);
