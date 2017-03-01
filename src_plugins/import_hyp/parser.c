@@ -1861,6 +1861,7 @@ pcb_bool exec_polygon_begin(parse_param * h)
 {
 	pcb_layer_t *current_layer;
 	hyp_polygon_t *new_poly;
+	pcb_flag_t flags;
 
 	if (hyp_debug) {
 		pcb_printf("polygon begin:");
@@ -1900,9 +1901,23 @@ pcb_bool exec_polygon_begin(parse_param * h)
 		return pcb_true;
 	}
 
+	/* handle different polygon types: plane, pour, and copper *//* XXX fixme */
+	flags = pcb_no_flags();
+	switch (h->polygon_type) {
+	case POLYGON_TYPE_PLANE:
+		flags = pcb_flag_add(flags, PCB_FLAG_CLEARPOLY);
+		break;
+	case POLYGON_TYPE_POUR:
+		break;
+	case POLYGON_TYPE_COPPER:
+		break;
+	default:
+		break;
+	}
+
 	/* create empty pcb polygon */
 	current_layer = hyp_get_layer(h);
-	current_polygon = pcb_poly_new(current_layer, pcb_flag_make(PCB_FLAG_CLEARPOLY));
+	current_polygon = pcb_poly_new(current_layer, flags);
 
 	/* add first vertex */
 	if (current_polygon != NULL)
