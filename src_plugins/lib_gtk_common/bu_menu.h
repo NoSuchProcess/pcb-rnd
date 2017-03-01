@@ -1,6 +1,8 @@
 #ifndef GHID_MAIN_MENU_H__
 #define GHID_MAIN_MENU_H__
 
+#include <gtk/gtk.h>
+
 #include "wt_layer_selector.h"
 #include "wt_route_style.h"
 
@@ -39,5 +41,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t *nd);
 int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item);
 
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag);
+
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hid_cfg_t **cfg_out);
 
 #endif

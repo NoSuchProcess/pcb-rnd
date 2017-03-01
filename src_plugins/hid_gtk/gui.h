@@ -112,7 +112,6 @@ void ghid_set_status_line_label(void);
 void ghid_pack_mode_buttons(void);
 
 /* gui-output-events.c function prototypes. */
-extern pcb_hid_cfg_t *ghid_cfg;
 gboolean ghid_idle_cb(gpointer data);
 void ghid_port_ranges_changed(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);

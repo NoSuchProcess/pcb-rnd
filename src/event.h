@@ -51,6 +51,8 @@ typedef enum {
 	PCB_EVENT_RUBBER_LOOKUP_LINES,    /* rubber band: attach rubber banded line objects to crosshair */
 	PCB_EVENT_RUBBER_LOOKUP_RATS,     /* rubber band: attach rubber banded rat lines objects to crosshair */
 
+	PCB_EVENT_GUI_SYNC,               /* sync GUI state (e.g. after a menu clicked) */
+
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 

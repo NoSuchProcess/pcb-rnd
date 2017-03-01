@@ -99,11 +99,6 @@
 GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;
 
-
-static GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu);
-
-pcb_hid_cfg_t *ghid_cfg = NULL;
-
 /*! \brief sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw)
 {
@@ -133,33 +128,6 @@ static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 	wplc_config_event(widget, &hid_gtk_wgeo.top_x, &hid_gtk_wgeo.top_y, &hid_gtk_wgeo.top_width, &hid_gtk_wgeo.top_height);
 
 	return FALSE;
-}
-
-/*! \brief Menu action callback function
- *  \par Function Description
- *  This is the main menu callback function.  The callback receives
- *  the original lihata action node pointer HID actions to be
- *  executed.
- *
- *  \param [in]   The action that was activated
- *  \param [in]   The related menu lht action node
- */
-
-static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
-{
-	if (action == NULL || node == NULL)
-		return;
-
-	pcb_hid_cfg_action(node);
-
-	/* Sync gui widgets with pcb state */
-	ghid_mode_buttons_update();
-
-	/* Sync gui status display with pcb state */
-	pcb_adjust_attached_objects();
-	ghid_invalidate_all();
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
 }
 
 static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, pcb_gtk_topwin_t *tw)
@@ -441,7 +409,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	g_signal_connect(G_OBJECT(tw->layer_selector), "select_layer", G_CALLBACK(layer_selector_select_callback), &ghidgui->common);
 	g_signal_connect(G_OBJECT(tw->layer_selector), "toggle_layer", G_CALLBACK(layer_selector_toggle_callback), &ghidgui->common);
 	/* Build main menu */
-	tw->menu.menu_bar = ghid_load_menus(&tw->menu);
+	tw->menu.menu_bar = ghid_load_menus(&tw->menu, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
 	pcb_gtk_make_mode_buttons_and_toolbar(&ghidgui->common, &ghidgui->mode_btn);
@@ -797,43 +765,6 @@ pcb_hid_action_t gtk_topwindow_action_list[] = {
 };
 
 PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
-
-#warning TODO: move this to common
-static GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu)
-{
-	const lht_node_t *mr;
-	GtkWidget *menu_bar = NULL;
-	extern const char *hid_gtk_menu_default;
-
-	ghid_cfg = pcb_hid_cfg_load("gtk", 0, hid_gtk_menu_default);
-	if (ghid_cfg == NULL) {
-		pcb_message(PCB_MSG_ERROR, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
-		abort();
-	}
-
-	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/main_menu");
-	if (mr != NULL) {
-		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
-		ghid_main_menu_add_node(menu, GHID_MAIN_MENU(menu_bar), mr);
-	}
-
-	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/popups");
-	if (mr != NULL) {
-		if (mr->type == LHT_LIST) {
-			lht_node_t *n;
-			for (n = mr->data.list.first; n != NULL; n = n->next)
-				ghid_main_menu_add_popup_node(menu, GHID_MAIN_MENU(menu_bar), n);
-		}
-		else
-			pcb_hid_cfg_error(mr, "/popups should be a list");
-	}
-
-	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/mouse");
-	if (hid_cfg_mouse_init(ghid_cfg, &ghid_mouse) != 0)
-		pcb_message(PCB_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
-
-	return menu_bar;
-}
 
 /* ------------------------------------------------------------ */
 

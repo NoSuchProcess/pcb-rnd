@@ -14,6 +14,7 @@ typedef struct {
 	pcb_gtk_ext_chg_t ext_chg;
 	pcb_gtk_info_bar_t ibar;
 	pcb_gtk_menu_ctx_t menu;
+	pcb_hid_cfg_t *ghid_cfg;
 
 	/* own widgets */
 	GtkWidget *status_line_label, *status_line_hbox;

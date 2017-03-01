@@ -279,12 +279,12 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 /* Create a new menu by path */
 static void pcb_gtk_menu_create_menu(pcb_gtk_menu_ctx_t *ctx, const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	pcb_hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, ctx);
+	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, ctx);
 }
 
 static int ghid_remove_menu(const char *menu_path)
 {
-	return pcb_hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
+	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
 }
 
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
@@ -643,7 +643,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (strlen(argv[0]) < sizeof(name) - 32) {
 		lht_node_t *menu_node;
 		sprintf(name, "/popups/%s", argv[0]);
-		menu_node = pcb_hid_cfg_get_menu(ghid_cfg, name);
+		menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
 		if (menu_node != NULL)
 			menu = menu_node->user_data;
 	}
@@ -991,6 +991,17 @@ static void ghid_route_styles_edited_cb()
 	pcb_gtk_tw_route_styles_edited_cb(&ghidgui->topwin);
 }
 
+static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	/* Sync gui widgets with pcb state */
+	ghid_mode_buttons_update();
+
+	/* Sync gui status display with pcb state */
+	pcb_adjust_attached_objects();
+	ghid_invalidate_all();
+	ghid_window_set_name_label(PCB->Name);
+	ghid_set_status_line_label();
+}
 
 
 pcb_uninit_t hid_hid_gtk_init()
@@ -1164,6 +1175,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, RouteStylesChanged, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, ghid_Busy, NULL, ghid_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_SYNC, ghid_gui_sync, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }

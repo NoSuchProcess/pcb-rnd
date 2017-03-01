@@ -11,11 +11,15 @@
 #include <gtk/gtk.h>
 #include <liblihata/tree.h>
 
+#include "board.h"
 #include "pcb-printf.h"
 #include "misc_util.h"
 #include "error.h"
 #include "conf.h"
 #include "hid_flags.h"
+#include "hid_cfg.h"
+#include "hid_cfg_action.h"
+#include "event.h"
 
 #include "bu_menu.h"
 #include "wt_layer_selector.h"
@@ -531,4 +535,61 @@ void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag
 		int v = pcb_hid_get_flag(aflag);
 		gtk_action_set_sensitive(act, ! !v);
 	}
+}
+
+/*! \brief Menu action callback function
+ *  \par Function Description
+ *  This is the main menu callback function.  The callback receives
+ *  the original lihata action node pointer HID actions to be
+ *  executed.
+ *
+ *  \param [in]   The action that was activated
+ *  \param [in]   The related menu lht action node
+ */
+
+static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
+{
+	if (action == NULL || node == NULL)
+		return;
+
+	pcb_hid_cfg_action(node);
+
+	pcb_event(PCB_EVENT_GUI_SYNC, NULL);
+}
+
+
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hid_cfg_t **cfg_out)
+{
+	const lht_node_t *mr;
+	GtkWidget *menu_bar = NULL;
+	extern const char *hid_gtk_menu_default;
+
+	*cfg_out = pcb_hid_cfg_load("gtk", 0, hid_gtk_menu_default);
+	if (*cfg_out == NULL) {
+		pcb_message(PCB_MSG_ERROR, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
+		abort();
+	}
+
+	mr = pcb_hid_cfg_get_menu(*cfg_out, "/main_menu");
+	if (mr != NULL) {
+		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
+		ghid_main_menu_add_node(menu, GHID_MAIN_MENU(menu_bar), mr);
+	}
+
+	mr = pcb_hid_cfg_get_menu(*cfg_out, "/popups");
+	if (mr != NULL) {
+		if (mr->type == LHT_LIST) {
+			lht_node_t *n;
+			for (n = mr->data.list.first; n != NULL; n = n->next)
+				ghid_main_menu_add_popup_node(menu, GHID_MAIN_MENU(menu_bar), n);
+		}
+		else
+			pcb_hid_cfg_error(mr, "/popups should be a list");
+	}
+
+	mr = pcb_hid_cfg_get_menu(*cfg_out, "/mouse");
+	if (hid_cfg_mouse_init(*cfg_out, &ghid_mouse) != 0)
+		pcb_message(PCB_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
+
+	return menu_bar;
 }
