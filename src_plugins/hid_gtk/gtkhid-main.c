@@ -66,6 +66,7 @@
 #include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
 
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
@@ -1001,6 +1002,83 @@ static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 	ghid_invalidate_all();
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
+}
+
+	/* Create top level window for routines that will need top_window
+	   |  before ghid_create_pcb_widgets() is called.
+	 */
+void ghid_parse_arguments(int *argc, char ***argv)
+{
+	GtkWidget *window;
+
+	ghid_config_init();
+
+	/* on windows we need to figure out the installation directory */
+#ifdef WIN32
+	char *tmps;
+	char *libdir;
+	tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
+#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE  G_DIR_SEPARATOR_S "pcblib"
+	libdir = (char *) malloc(strlen(tmps) + strlen(REST_OF_PATH) + 1);
+	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
+	free(tmps);
+
+#undef REST_OF_PATH
+
+#endif
+
+#if defined (DEBUG)
+	{
+		int i;
+		for (i = 0; i < *argc; i++)
+			printf("ghid_parse_arguments():  *argv[%d] = \"%s\"\n", i, (*argv)[i]);
+	}
+#endif
+
+	/* Threads aren't used in PCB, but this call would go here.
+	 */
+	/* g_thread_init (NULL); */
+
+#if defined (ENABLE_NLS)
+	/* Do our own setlocale() stufff since we want to override LC_NUMERIC
+	 */
+	gtk_set_locale();
+	setlocale(LC_NUMERIC, "C");		/* use decimal point instead of comma */
+#endif
+
+	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
+
+	/*
+	 * Prevent gtk_init() and gtk_init_check() from automatically
+	 * calling setlocale (LC_ALL, "") which would undo LC_NUMERIC if ENABLE_NLS
+	 * We also don't want locale set if no ENABLE_NLS to keep "C" LC_NUMERIC.
+	 */
+	gtk_disable_setlocale();
+	gtk_init(argc, argv);
+
+
+	gport = &ghid_port;
+	gport->view.coord_per_px = 300.0;
+	pcb_pixel_slop = 300;
+
+	ghid_init_renderer(argc, argv, gport);
+
+#ifdef ENABLE_NLS
+#ifdef LOCALEDIR
+	bindtextdomain(PACKAGE, LOCALEDIR);
+#endif
+	textdomain(PACKAGE);
+	bind_textdomain_codeset(PACKAGE, "UTF-8");
+#endif /* ENABLE_NLS */
+
+	ghidgui->topwin.com = &ghidgui->common;
+	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
+	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
+
+	wplc_place(WPLC_TOP, window);
+
+	gtk_widget_show_all(gport->top_window);
 }
 
 

@@ -10,10 +10,12 @@
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
+#include "../src_plugins/lib_gtk_common/glue.h"
 #include "hid_cfg.h"
 
 typedef struct {
 	/* util/builder states */
+	pcb_gtk_common_t *com;
 	pcb_gtk_ext_chg_t ext_chg;
 	pcb_gtk_info_bar_t ibar;
 	pcb_gtk_menu_ctx_t menu;

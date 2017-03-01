@@ -90,7 +90,6 @@
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
-#include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
@@ -405,13 +404,13 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	tw->layer_selector = pcb_gtk_layer_selector_new();
 	make_layer_buttons(tw->layer_selector);
 	make_virtual_layer_buttons(tw->layer_selector);
-	g_signal_connect(G_OBJECT(tw->layer_selector), "select_layer", G_CALLBACK(layer_selector_select_callback), &ghidgui->common);
-	g_signal_connect(G_OBJECT(tw->layer_selector), "toggle_layer", G_CALLBACK(layer_selector_toggle_callback), &ghidgui->common);
+	g_signal_connect(G_OBJECT(tw->layer_selector), "select_layer", G_CALLBACK(layer_selector_select_callback), tw->com);
+	g_signal_connect(G_OBJECT(tw->layer_selector), "toggle_layer", G_CALLBACK(layer_selector_toggle_callback), tw->com);
 	/* Build main menu */
 	tw->menu.menu_bar = ghid_load_menus(&tw->menu, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
-	pcb_gtk_make_mode_buttons_and_toolbar(&ghidgui->common, &tw->mode_btn);
+	pcb_gtk_make_mode_buttons_and_toolbar(tw->com, &tw->mode_btn);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->mode_btn.mode_toolbar_vbox, FALSE, FALSE, 0);
 
 	tw->position_hbox = gtk_hbox_new(FALSE, 0);
@@ -446,7 +445,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
-	tw->route_style_selector = pcb_gtk_route_style_new(&ghidgui->common);
+	tw->route_style_selector = pcb_gtk_route_style_new(tw->com);
 	make_route_style_buttons(GHID_ROUTE_STYLE(tw->route_style_selector));
 	gtk_box_pack_start(GTK_BOX(hbox), tw->route_style_selector, FALSE, FALSE, 0);
 
@@ -626,82 +625,6 @@ int ghid_usage(const char *topic)
 	conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
 	return 0;
-}
-
-	/* Create top level window for routines that will need top_window
-	   |  before ghid_create_pcb_widgets() is called.
-	 */
-void ghid_parse_arguments(int *argc, char ***argv)
-{
-	GtkWidget *window;
-
-	ghid_config_init();
-
-	/* on windows we need to figure out the installation directory */
-#ifdef WIN32
-	char *tmps;
-	char *libdir;
-	tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
-#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE  G_DIR_SEPARATOR_S "pcblib"
-	libdir = (char *) malloc(strlen(tmps) + strlen(REST_OF_PATH) + 1);
-	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
-	free(tmps);
-
-#undef REST_OF_PATH
-
-#endif
-
-#if defined (DEBUG)
-	{
-		int i;
-		for (i = 0; i < *argc; i++)
-			printf("ghid_parse_arguments():  *argv[%d] = \"%s\"\n", i, (*argv)[i]);
-	}
-#endif
-
-	/* Threads aren't used in PCB, but this call would go here.
-	 */
-	/* g_thread_init (NULL); */
-
-#if defined (ENABLE_NLS)
-	/* Do our own setlocale() stufff since we want to override LC_NUMERIC
-	 */
-	gtk_set_locale();
-	setlocale(LC_NUMERIC, "C");		/* use decimal point instead of comma */
-#endif
-
-	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
-
-	/*
-	 * Prevent gtk_init() and gtk_init_check() from automatically
-	 * calling setlocale (LC_ALL, "") which would undo LC_NUMERIC if ENABLE_NLS
-	 * We also don't want locale set if no ENABLE_NLS to keep "C" LC_NUMERIC.
-	 */
-	gtk_disable_setlocale();
-	gtk_init(argc, argv);
-
-
-	gport = &ghid_port;
-	gport->view.coord_per_px = 300.0;
-	pcb_pixel_slop = 300;
-
-	ghid_init_renderer(argc, argv, gport);
-
-#ifdef ENABLE_NLS
-#ifdef LOCALEDIR
-	bindtextdomain(PACKAGE, LOCALEDIR);
-#endif
-	textdomain(PACKAGE);
-	bind_textdomain_codeset(PACKAGE, "UTF-8");
-#endif /* ENABLE_NLS */
-
-	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-
-	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
-
-	wplc_place(WPLC_TOP, window);
-
-	gtk_widget_show_all(gport->top_window);
 }
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
