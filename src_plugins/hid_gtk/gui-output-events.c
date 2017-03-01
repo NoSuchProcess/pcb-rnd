@@ -50,12 +50,16 @@
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-void ghid_port_ranges_changed(void)
+#warning TODO: remove
+#include "gui.h"
+
+
+void ghid_port_ranges_changed(pcb_gtk_topwin_t *tw)
 {
 	GtkAdjustment *h_adj, *v_adj;
 
-	h_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range));
-	v_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->v_range));
+	h_adj = gtk_range_get_adjustment(GTK_RANGE(tw->h_range));
+	v_adj = gtk_range_get_adjustment(GTK_RANGE(tw->v_range));
 	gport->view.x0 = gtk_adjustment_get_value(h_adj);
 	gport->view.y0 = gtk_adjustment_get_value(v_adj);
 
@@ -65,7 +69,7 @@ void ghid_port_ranges_changed(void)
 /* Do scrollbar scaling based on current port drawing area size and
    |  overall PCB board size.
  */
-void ghid_port_ranges_scale(void)
+void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
 {
 	/* Update the scrollbars with PCB units.  So Scale the current
 	   |  drawing area size in pixels to PCB units and that will be
@@ -73,8 +77,8 @@ void ghid_port_ranges_scale(void)
 	 */
 	pcb_gtk_zoom_post(&gport->view);
 
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range)), gport->view.width, PCB->MaxWidth);
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(ghidgui->v_range)), gport->view.height, PCB->MaxHeight);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, PCB->MaxWidth);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
 }
 
 void ghid_note_event_location(GdkEventButton * ev)
@@ -153,7 +157,7 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 		ghid_drawing_area_configure_hook(out);
 	}
 
-	ghid_port_ranges_scale();
+	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
 	ghid_invalidate_all();
 	return 0;
 }
@@ -265,7 +269,7 @@ void ghid_confchg_flip(conf_native_t *cfg)
 void ghid_confchg_fullscreen(conf_native_t *cfg)
 {
 	if (gtkhid_active)
-		ghid_fullscreen_apply();
+		ghid_fullscreen_apply(&ghidgui->topwin);
 }
 
 

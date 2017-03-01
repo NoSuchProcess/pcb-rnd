@@ -61,12 +61,50 @@
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
+#include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
+
+void ghid_do_export(pcb_hid_attr_val_t * options)
+{
+	gtkhid_begin();
+
+	pcb_hid_cfg_keys_init(&ghid_keymap);
+	ghid_keymap.translate_key = ghid_translate_key;
+	ghid_keymap.key_name = ghid_key_name;
+	ghid_keymap.auto_chr = 1;
+	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
+
+	ghid_create_pcb_widgets(&ghidgui->topwin, gport->top_window);
+
+	/* These are needed to make sure the @layerpick and @layerview menus
+	 * are properly initialized and synchronized with the current PCB.
+	 */
+	ghid_layer_buttons_update(&ghidgui->topwin);
+	ghid_main_menu_install_route_style_selector
+		(GHID_MAIN_MENU(ghidgui->menu.menu_bar), GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
+
+	if (conf_hid_gtk.plugins.hid_gtk.listen)
+		pcb_gtk_create_listener();
+
+	ghid_notify_gui_is_up();
+
+	pcb_event(PCB_EVENT_GUI_INIT, NULL);
+
+	gtk_main();
+	pcb_hid_cfg_keys_uninit(&ghid_keymap);
+	gtkhid_end();
+}
+
+void ghid_do_exit(pcb_hid_t * hid)
+{
+	gtk_main_quit();
+}
+
 
 static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 {
@@ -77,11 +115,11 @@ static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 void ghid_pan_common(void)
 {
 	ghidgui->adjustment_changed_holdoff = TRUE;
-	gtk_range_set_value(GTK_RANGE(ghidgui->h_range), gport->view.x0);
-	gtk_range_set_value(GTK_RANGE(ghidgui->v_range), gport->view.y0);
+	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), gport->view.x0);
+	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), gport->view.y0);
 	ghidgui->adjustment_changed_holdoff = FALSE;
 
-	ghid_port_ranges_changed();
+	ghid_port_ranges_changed(&ghidgui->topwin);
 }
 
 void ghid_port_button_press_main(void)
@@ -355,11 +393,11 @@ static void PointCursor(pcb_bool grabbed)
 
 static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->route_style_selector)
+	if (!ghidgui || !ghidgui->topwin.route_style_selector)
 		return;
 
 	pcb_gtk_route_style_sync
-		(GHID_ROUTE_STYLE(ghidgui->route_style_selector),
+		(GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector),
 		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness,
 		 conf_core.design.clearance);
 
@@ -379,15 +417,15 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	if (!gport->pixmap)
 		return;
 
-	if (ghidgui->route_style_selector) {
-		pcb_gtk_route_style_empty(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
-		make_route_style_buttons(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
+	if (ghidgui->topwin.route_style_selector) {
+		pcb_gtk_route_style_empty(GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
+		make_route_style_buttons(GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
 	}
 	RouteStylesChanged(0, 0, NULL);
 
-	ghid_port_ranges_scale();
+	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
 	pcb_gtk_zoom_view_fit(&gport->view);
-	ghid_sync_with_new_layout();
+	ghid_sync_with_new_layout(&ghidgui->topwin);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -710,13 +748,13 @@ int act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 void ghid_status_line_set_text(const gchar *text)
 {
 	if (!ghidgui->cmd.command_entry_status_line_active)
-		ghid_status_line_set_text_(ghidgui->status_line_label, text);
+		ghid_status_line_set_text_(ghidgui->topwin.status_line_label, text);
 }
 
 void ghid_set_status_line_label(void)
 {
 	if (!ghidgui->cmd.command_entry_status_line_active) \
-		ghid_set_status_line_label_(ghidgui->status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
+		ghid_set_status_line_label_(ghidgui->topwin.status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
 }
 
 void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
@@ -859,7 +897,12 @@ int ghid_command_entry_is_active(void)
 
 static void command_pack_in_status_line(void)
 {
-	gtk_box_pack_start(GTK_BOX(ghidgui->status_line_hbox), ghidgui->cmd.command_combo_box, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(ghidgui->topwin.status_line_hbox), ghidgui->cmd.command_combo_box, FALSE, FALSE, 0);
+}
+
+static void ghid_interface_set_sensitive(gboolean sensitive)
+{
+	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
 }
 
 static void command_post_entry(void)
@@ -890,7 +933,7 @@ static void command_use_command_window_sync(pcb_gtk_command_t *ctx)
 		return;
 
 	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
-		gtk_container_remove(GTK_CONTAINER(ghidgui->status_line_hbox), ctx->command_combo_box);
+		gtk_container_remove(GTK_CONTAINER(ghidgui->topwin.status_line_hbox), ctx->command_combo_box);
 	else {
 		/* Destroy the window (if it's up) which floats the command_combo_box
 		   |  so we can pack it back into the status line hbox.  If the window
@@ -916,6 +959,38 @@ void ghid_pack_mode_buttons(void)
 {
 	pcb_gtk_pack_mode_buttons(&ghidgui->mode_btn);
 }
+
+static void ghid_notify_save_pcb(const char *filename, pcb_bool done)
+{
+	pcb_gtk_tw_notify_save_pcb(&ghidgui->topwin, filename, done);
+}
+
+static void ghid_notify_filename_changed()
+{
+	pcb_gtk_tw_notify_filename_changed(&ghidgui->topwin);
+}
+
+static void ghid_port_ranges_scale(void)
+{
+	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
+}
+
+void ghid_window_set_name_label(gchar *name)
+{
+	pcb_gtk_tw_window_set_name_label(&ghidgui->topwin, name);
+}
+
+static void ghid_layer_buttons_color_update(void)
+{
+	pcb_gtk_tw_layer_buttons_color_update(&ghidgui->topwin);
+}
+
+static void ghid_route_styles_edited_cb()
+{
+	pcb_gtk_tw_route_styles_edited_cb(&ghidgui->topwin);
+}
+
+
 
 pcb_uninit_t hid_hid_gtk_init()
 {

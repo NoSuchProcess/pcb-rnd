@@ -1,8 +1,48 @@
+#ifndef PCB_GTK_TOPWIN_H
+#define PCB_GTK_TOPWIN_H
+
+/* OPTIONAL top window implementation */
+
 #include <gtk/gtk.h>
-#include "gui.h"
+
+#include "../src_plugins/lib_gtk_common/util_ext_chg.h"
+#include "../src_plugins/lib_gtk_common/bu_info_bar.h"
+
+/* TODO: remove this */
+typedef struct GhidGui_s GhidGui;
+
+typedef struct {
+	/* util/builder states */
+	pcb_gtk_ext_chg_t ext_chg;
+	pcb_gtk_info_bar_t ibar;
+
+	/* own widgets */
+	GtkWidget *status_line_label, *status_line_hbox;
+
+	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox;
+	GtkWidget *left_toolbar;
+	GtkWidget *layer_selector, *route_style_selector;
+	GtkWidget *vbox_middle;
+
+	GtkWidget *h_range, *v_range;
+	GtkObject *h_adjustment, *v_adjustment;
+
+	/* own internal states */
+	gchar *name_label_string;
+
+} pcb_gtk_topwin_t;
 
 void ghid_update_toggle_flags(void);
-void ghid_notify_save_pcb(const char *file, pcb_bool done);
-void ghid_notify_filename_changed(void);
 void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui);
 void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
+void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);
+void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw);
+void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
+
+void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw);
+void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done);
+void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);
+void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
+
+#endif
+

@@ -38,40 +38,28 @@
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
-#include "../src_plugins/lib_gtk_common/bu_info_bar.h"
-#include "../src_plugins/lib_gtk_common/util_ext_chg.h"
+#include "gui-top-window.h"
 
 #include "board.h"
 #include "event.h"
 
-typedef struct {
-	GtkActionGroup *main_actions, *change_selected_actions, *displayed_name_actions;
+typedef struct GhidGui_s{
+	GtkActionGroup *main_actions;
+	GtkActionGroup *change_selected_actions; /* -> del */
+	GtkActionGroup *displayed_name_actions; /* -> del */
 
+	pcb_gtk_topwin_t topwin;
 	pcb_gtk_common_t common;
 	pcb_gtk_cursor_pos_t cps;
-	pcb_gtk_menu_ctx_t menu;
+	pcb_gtk_menu_ctx_t menu; /* -> topwin */
 	pcb_gtk_command_t cmd;
-	pcb_gtk_info_bar_t ibar;
-	pcb_gtk_ext_chg_t ext_chg;
-	pcb_gtk_mode_btn_t mode_btn;
+	pcb_gtk_mode_btn_t mode_btn; /* -> topwin */
 
-	GtkWidget *status_line_label, *status_line_hbox;
+	GdkPixbuf *bg_pixbuf; /* -> renderer */
 
-	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox;
-	GtkWidget *left_toolbar;
-	GtkWidget *layer_selector, *route_style_selector;
-	GtkWidget *vbox_middle;
+	gboolean adjustment_changed_holdoff, in_popup; /* -> topwin */
 
-	GtkWidget *h_range, *v_range;
-	GtkObject *h_adjustment, *v_adjustment;
-
-	GdkPixbuf *bg_pixbuf;
-
-	gchar *name_label_string;
-
-	gboolean adjustment_changed_holdoff, in_popup;
-
-	gboolean small_label_markup, creating;
+	gboolean small_label_markup, creating; /* -> topwin */
 
 	pcb_gtk_dlg_propedit_t propedit_dlg;
 	GtkWidget *propedit_widget;
@@ -113,14 +101,11 @@ void ghid_parse_arguments(gint * argc, gchar *** argv);
 void ghid_do_export(pcb_hid_attr_val_t * options);
 void ghid_do_exit(pcb_hid_t *hid);
 
-void ghid_create_pcb_widgets(void);
 void ghid_window_set_name_label(gchar * name);
-void ghid_interface_set_sensitive(gboolean sensitive);
 void ghid_interface_input_signals_connect(void);
 void ghid_interface_input_signals_disconnect(void);
 
 void ghid_pcb_saved_toggle_states_set(void);
-void ghid_sync_with_new_layout(void);
 
 void ghid_change_selected_update_menu_actions(void);
 
@@ -140,11 +125,9 @@ void ghid_pack_mode_buttons(void);
 /* gui-output-events.c function prototypes. */
 extern pcb_hid_cfg_t *ghid_cfg;
 gboolean ghid_idle_cb(gpointer data);
-void ghid_route_styles_edited_cb(void);
-void ghid_port_ranges_changed(void);
-void ghid_port_ranges_scale(void);
+void ghid_port_ranges_changed(pcb_gtk_topwin_t *tw);
+void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
 void ghid_note_event_location(GdkEventButton *ev);
-void ghid_layer_buttons_color_update(void);
 
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 
@@ -292,8 +275,6 @@ void ghid_confchg_checkbox(conf_native_t *cfg);
 void ghid_confchg_flip(conf_native_t *cfg);
 
 void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
-
-void ghid_fullscreen_apply(void);
 
 GMainLoop *ghid_entry_loop;
 
