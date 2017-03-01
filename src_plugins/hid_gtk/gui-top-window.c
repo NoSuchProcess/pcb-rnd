@@ -20,8 +20,6 @@
  *
  */
 
-/* #define DEBUG_MENUS */
-
 /* This file was originally written by Bill Wilson for the PCB Gtk
  * port.  It was later heavily modified by Dan McMahill to provide
  * user customized menus.
@@ -862,10 +860,6 @@ static GtkWidget *ghid_load_menus(void)
 		else
 			pcb_hid_cfg_error(mr, "/popups should be a list");
 	}
-
-#ifdef DEBUG_MENUS
-	puts("Finished loading menus.");
-#endif
 
 	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/mouse");
 	if (hid_cfg_mouse_init(ghid_cfg, &ghid_mouse) != 0)
