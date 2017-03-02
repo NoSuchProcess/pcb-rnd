@@ -536,43 +536,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->active = 1;
 }
 
-
-	/* Connect and disconnect just the signals a g_main_loop() will need.
-	   |  Cursor and motion events still need to be handled by the top level
-	   |  loop, so don't connect/reconnect these.
-	   |  A g_main_loop will be running when PCB wants the user to select a
-	   |  location or if command entry is needed in the status line hbox.
-	   |  During these times normal button/key presses are intercepted, either
-	   |  by new signal handlers or the command_combo_box entry.
-	 */
-static gulong button_press_handler, button_release_handler, key_press_handler, key_release_handler;
-
-void ghid_interface_input_signals_connect(void)
-{
-	button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
-	button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
-	key_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
-	key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), NULL);
-}
-
-void ghid_interface_input_signals_disconnect(void)
-{
-	if (button_press_handler)
-		g_signal_handler_disconnect(gport->drawing_area, button_press_handler);
-
-	if (button_release_handler)
-		g_signal_handler_disconnect(gport->drawing_area, button_release_handler);
-
-	if (key_press_handler)
-		g_signal_handler_disconnect(gport->drawing_area, key_press_handler);
-
-	if (key_release_handler)
-		g_signal_handler_disconnect(gport->drawing_area, key_release_handler);
-
-	button_press_handler = button_release_handler = 0;
-	key_press_handler = key_release_handler = 0;
-}
-
 	/* We'll set the interface insensitive when a g_main_loop is running so the
 	   |  Gtk menus and buttons don't respond and interfere with the special entry
 	   |  the user needs to be doing.

@@ -79,8 +79,6 @@ void ghid_do_export(pcb_hid_attr_val_t * options);
 void ghid_do_exit(pcb_hid_t *hid);
 
 void ghid_window_set_name_label(gchar * name);
-void ghid_interface_input_signals_connect(void);
-void ghid_interface_input_signals_disconnect(void);
 
 void ghid_pcb_saved_toggle_states_set(void);
 
