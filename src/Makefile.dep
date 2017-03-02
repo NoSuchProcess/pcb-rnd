@@ -993,6 +993,7 @@
  ../src_plugins/hid_gtk/gtkhid-main.h ../src_plugins/hid_gtk/render.h \
  ../src_plugins/lib_gtk_common/act_fileio.h \
  ../src_plugins/lib_gtk_common/act_print.h \
+ ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h \
  ../src_plugins/lib_gtk_common/bu_layer_selector.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
@@ -1063,7 +1064,6 @@
  vtonpoint.h hid.h draw.h error.h layer.h find.h search.h rats.h \
  netlist.h library.h route_style.h rats.h \
  ../src_plugins/hid_gtk/gtkhid-main.h \
- ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h \

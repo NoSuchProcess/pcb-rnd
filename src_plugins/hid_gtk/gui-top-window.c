@@ -472,14 +472,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw->com->gport);
 	g_signal_connect(tw->com->top_window, "enter-notify-event", G_CALLBACK(top_window_enter_cb), tw);
 
-	/* Mouse and key events will need to be intercepted when PCB needs a
-	   |  location from the user.
-	 */
-	g_signal_connect(G_OBJECT(tw->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), tw->com->gport);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), tw->com->gport);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), tw->com->gport);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), tw->com->gport);
-
 	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), tw->com->gport);
 	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), tw);
 

@@ -69,8 +69,6 @@ void ghid_note_event_location(GdkEventButton *ev);
 
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw);
 
-gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out);
-gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out);
 gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, void * out);
 
 #endif

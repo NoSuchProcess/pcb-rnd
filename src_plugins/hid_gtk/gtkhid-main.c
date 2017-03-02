@@ -36,6 +36,7 @@
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/act_print.h"
+#include "../src_plugins/lib_gtk_common/bu_dwg_tooltip.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/bu_menu.h"
@@ -171,6 +172,89 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	return 0;
 }
 
+gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
+{
+	GHidPort *out = out_;
+
+	/* printf("enter: mode: %d detail: %d\n", ev->mode, ev->detail); */
+
+	/* See comment in ghid_port_window_leave_cb() */
+
+	if (ev->mode != GDK_CROSSING_NORMAL && ev->detail != GDK_NOTIFY_NONLINEAR) {
+		return FALSE;
+	}
+
+	if (!ghidgui->topwin.cmd.command_entry_status_line_active) {
+		out->view.has_entered = TRUE;
+		/* Make sure drawing area has keyboard focus when we are in it.
+		 */
+		gtk_widget_grab_focus(out->drawing_area);
+	}
+	ghidgui->topwin.in_popup = FALSE;
+
+	/* Following expression is true if a you open a menu from the menu bar,
+	 * move the mouse to the viewport and click on it. This closes the menu
+	 * and moves the pointer to the viewport without the pointer going over
+	 * the edge of the viewport */
+	if (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR) {
+		ghid_screen_update();
+	}
+	return FALSE;
+}
+
+gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
+{
+	GHidPort *out = out_;
+
+	/* printf("leave mode: %d detail: %d\n", ev->mode, ev->detail); */
+
+	/* Window leave events can also be triggered because of focus grabs. Some
+	 * X applications occasionally grab the focus and so trigger this function.
+	 * At least GNOME's window manager is known to do this on every mouse click.
+	 *
+	 * See http://bugzilla.gnome.org/show_bug.cgi?id=102209
+	 */
+
+	if (ev->mode != GDK_CROSSING_NORMAL) {
+		return FALSE;
+	}
+
+	out->view.has_entered = FALSE;
+
+	ghid_screen_update();
+
+	return FALSE;
+}
+
+static gboolean check_object_tooltips(GHidPort *out)
+{
+	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
+}
+
+gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, void * out_)
+{
+	GHidPort *out = out_;
+	gdouble dx, dy;
+	static gint x_prev = -1, y_prev = -1;
+
+	gdk_event_request_motions(ev);
+
+	if (out->view.panning) {
+		dx = gport->view.coord_per_px * (x_prev - ev->x);
+		dy = gport->view.coord_per_px * (y_prev - ev->y);
+		if (x_prev > 0)
+			pcb_gtk_pan_view_rel(&gport->view, dx, dy);
+		x_prev = ev->x;
+		y_prev = ev->y;
+		return FALSE;
+	}
+	x_prev = y_prev = -1;
+	ghid_note_event_location((GdkEventButton *) ev);
+
+	pcb_gtk_dwg_tooltip_queue(out->drawing_area, (GSourceFunc)check_object_tooltips, out);
+
+	return FALSE;
+}
 
 
 void ghid_do_export(pcb_hid_attr_val_t * options)
@@ -190,8 +274,14 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 	gport->mouse.top_window = ghidgui->common.top_window;
 
 #warning TODO: move this to render init
+	/* Mouse and key events will need to be intercepted when PCB needs a
+	   |  location from the user.
+	 */
+	g_signal_connect(G_OBJECT(gport->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gport);
+	g_signal_connect(G_OBJECT(gport->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), gport);
 	g_signal_connect(G_OBJECT(gport->drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gport);
-
+	g_signal_connect(G_OBJECT(gport->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gport);
+	g_signal_connect(G_OBJECT(gport->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), gport);
 
 	ghid_interface_input_signals_connect();
 
