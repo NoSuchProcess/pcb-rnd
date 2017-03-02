@@ -43,6 +43,7 @@
 #include "crosshair.h"
 #include "pcb-printf.h"
 #include "hid_actions.h"
+#include "action_helper.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
 
@@ -110,6 +111,32 @@ void ghid_handle_units_changed(pcb_gtk_topwin_t *tw)
 	gtk_label_set_markup(GTK_LABEL(tw->cps.grid_units_label), text);
 	free(text);
 	ghid_config_handle_units_changed(tw->com);
+}
+
+gboolean ghid_idle_cb(void *topwin)
+{
+	pcb_gtk_topwin_t *tw = topwin;
+	if (conf_core.editor.mode == PCB_MODE_NO)
+		pcb_crosshair_set_mode(PCB_MODE_ARROW);
+	tw->com->mode_cursor_main(conf_core.editor.mode);
+	if (tw->mode_btn.settings_mode != conf_core.editor.mode) {
+		ghid_mode_buttons_update();
+	}
+	tw->mode_btn.settings_mode = conf_core.editor.mode;
+	return FALSE;
+}
+
+gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw)
+{
+	gint ksym = kev->keyval;
+
+	if (ghid_is_modifier_key_sym(ksym))
+		ghid_note_event_location(NULL);
+
+	pcb_adjust_attached_objects();
+	tw->com->invalidate_all();
+	g_idle_add(ghid_idle_cb, tw);
+	return FALSE;
 }
 
 

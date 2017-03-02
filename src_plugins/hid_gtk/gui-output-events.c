@@ -81,32 +81,6 @@ void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
 	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
 }
 
-gboolean ghid_idle_cb(void *topwin)
-{
-	pcb_gtk_topwin_t *tw = topwin;
-	if (conf_core.editor.mode == PCB_MODE_NO)
-		pcb_crosshair_set_mode(PCB_MODE_ARROW);
-	tw->com->mode_cursor_main(conf_core.editor.mode);
-	if (tw->mode_btn.settings_mode != conf_core.editor.mode) {
-		ghid_mode_buttons_update();
-	}
-	tw->mode_btn.settings_mode = conf_core.editor.mode;
-	return FALSE;
-}
-
-gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw)
-{
-	gint ksym = kev->keyval;
-
-	if (ghid_is_modifier_key_sym(ksym))
-		ghid_note_event_location(NULL);
-
-	pcb_adjust_attached_objects();
-	ghid_invalidate_all();
-	g_idle_add(ghid_idle_cb, tw);
-	return FALSE;
-}
-
 void ghid_confchg_line_refraction(conf_native_t *cfg)
 {
 	/* test if PCB struct doesn't exist at startup */
