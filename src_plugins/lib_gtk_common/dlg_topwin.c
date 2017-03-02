@@ -131,7 +131,7 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, p
 	gint ksym = kev->keyval;
 
 	if (ghid_is_modifier_key_sym(ksym))
-		ghid_note_event_location(NULL);
+		tw->com->note_event_location(NULL);
 
 	pcb_adjust_attached_objects();
 	tw->com->invalidate_all();
