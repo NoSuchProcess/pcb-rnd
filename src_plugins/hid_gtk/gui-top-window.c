@@ -455,13 +455,10 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	/* -- The PCB layout output drawing area */
 
-	gport->drawing_area = gtk_drawing_area_new();
-	ghid_init_drawing_widget(gport->drawing_area, gport);
+	tw->drawing_area = gtk_drawing_area_new();
+	ghid_init_drawing_widget(tw->drawing_area, gport);
 
-	gport->mouse.drawing_area = gport->drawing_area;
-	gport->mouse.top_window = tw->com->top_window;
-
-	gtk_widget_add_events(gport->drawing_area, GDK_EXPOSURE_MASK
+	gtk_widget_add_events(tw->drawing_area, GDK_EXPOSURE_MASK
 												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
 												| GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK
 												| GDK_KEY_RELEASE_MASK | GDK_KEY_PRESS_MASK
@@ -472,9 +469,9 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	 * enter and button press callbacks grab focus to be sure we have it
 	 * when in the drawing_area.
 	 */
-	gtk_widget_set_can_focus(gport->drawing_area, TRUE);
+	gtk_widget_set_can_focus(tw->drawing_area, TRUE);
 
-	gtk_box_pack_start(GTK_BOX(hbox), gport->drawing_area, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), tw->drawing_area, TRUE, TRUE, 0);
 
 	tw->v_adjustment = gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0);
 	tw->v_range = gtk_vscrollbar_new(GTK_ADJUSTMENT(tw->v_adjustment));
@@ -512,33 +509,28 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	   |  the user does a command entry.
 	 */
 
-	g_signal_connect(G_OBJECT(gport->drawing_area), "realize", G_CALLBACK(ghid_port_drawing_realize_cb), port);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "expose_event", G_CALLBACK(ghid_drawing_area_expose_cb), port);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(ghid_port_drawing_realize_cb), port);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "expose_event", G_CALLBACK(ghid_drawing_area_expose_cb), port);
 	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), port);
 	g_signal_connect(tw->com->top_window, "enter-notify-event", G_CALLBACK(top_window_enter_cb), tw);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "configure_event",
+	g_signal_connect(G_OBJECT(tw->drawing_area), "configure_event",
 									 G_CALLBACK(ghid_port_drawing_area_configure_event_cb), port);
 
 
 	/* Mouse and key events will need to be intercepted when PCB needs a
 	   |  location from the user.
 	 */
-
-	ghid_interface_input_signals_connect();
-
-	g_signal_connect(G_OBJECT(gport->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), port);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), port);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), port);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), port);
-
-
+	g_signal_connect(G_OBJECT(tw->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), port);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), port);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), port);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), port);
 
 	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), port);
 	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), port);
 
 	gtk_widget_show_all(tw->com->top_window);
 	ghid_pack_mode_buttons();
-	gdk_window_set_back_pixmap(gtk_widget_get_window(gport->drawing_area), NULL, FALSE);
+	gdk_window_set_back_pixmap(gtk_widget_get_window(tw->drawing_area), NULL, FALSE);
 
 	ghid_fullscreen_apply(tw);
 	tw->active = 1;

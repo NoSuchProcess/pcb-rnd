@@ -87,6 +87,12 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 
 	ghid_create_pcb_widgets(&ghidgui->topwin, gport->top_window);
 
+	gport->mouse.drawing_area = ghidgui->topwin.drawing_area;
+	gport->drawing_area = ghidgui->topwin.drawing_area;
+	gport->mouse.top_window = ghidgui->common.top_window;
+
+	ghid_interface_input_signals_connect();
+
 	/* These are needed to make sure the @layerpick and @layerview menus
 	 * are properly initialized and synchronized with the current PCB.
 	 */
