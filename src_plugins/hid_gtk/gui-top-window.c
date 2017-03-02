@@ -551,12 +551,8 @@ void ghid_interface_input_signals_connect(void)
 {
 	button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
 	button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
-
-	key_press_handler =
-		g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
-
-	key_release_handler =
-		g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), NULL);
+	key_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
+	key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), NULL);
 }
 
 void ghid_interface_input_signals_disconnect(void)
@@ -575,7 +571,6 @@ void ghid_interface_input_signals_disconnect(void)
 
 	button_press_handler = button_release_handler = 0;
 	key_press_handler = key_release_handler = 0;
-
 }
 
 	/* We'll set the interface insensitive when a g_main_loop is running so the
