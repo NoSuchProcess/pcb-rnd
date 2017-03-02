@@ -244,6 +244,11 @@ void command_window_close_cb(pcb_gtk_command_t *ctx)
 	command_window = NULL;
 }
 
+void command_window_close_cb_(GtkWidget *btn, pcb_gtk_command_t *ctx)
+{
+	command_window_close_cb(ctx);
+}
+
 static void command_destroy_cb(GtkWidget * widget, gpointer data)
 {
 	command_window = NULL;
@@ -297,7 +302,7 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(command_window_close_cb), ctx);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(command_window_close_cb_), ctx);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	gtk_widget_show_all(command_window);
