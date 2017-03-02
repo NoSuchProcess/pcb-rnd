@@ -1650,12 +1650,12 @@ static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, Gt
 	return vbox;
 }
 
-void ghid_config_handle_units_changed(void *gport)
+void ghid_config_handle_units_changed(pcb_gtk_common_t *com)
 {
 	if (config_sizes_vbox) {
 		gtk_widget_destroy(config_sizes_vbox);
 		config_sizes_vbox = NULL;
-		config_sizes_tab_create(config_sizes_tab_vbox, gport);
+		config_sizes_tab_create(config_sizes_tab_vbox, com);
 	}
 }
 

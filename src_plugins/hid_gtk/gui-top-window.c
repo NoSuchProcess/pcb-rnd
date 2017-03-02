@@ -146,7 +146,7 @@ void ghid_handle_units_changed(pcb_gtk_topwin_t *tw)
 	ghid_set_cursor_position_labels(&tw->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 	gtk_label_set_markup(GTK_LABEL(tw->cps.grid_units_label), text);
 	free(text);
-	ghid_config_handle_units_changed(gport);
+	ghid_config_handle_units_changed(tw->com);
 }
 
 

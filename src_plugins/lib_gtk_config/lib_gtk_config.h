@@ -10,6 +10,6 @@ void pcb_gtk_conf_init(void);
 
 void ghid_config_window_show(pcb_gtk_common_t *com);
 
-void ghid_config_handle_units_changed(void *gport);
+void ghid_config_handle_units_changed(pcb_gtk_common_t *com);
 
 void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int idx);
