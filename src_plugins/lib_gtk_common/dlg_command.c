@@ -244,7 +244,7 @@ void command_window_close_cb(pcb_gtk_command_t *ctx)
 	command_window = NULL;
 }
 
-void command_window_close_cb_(GtkWidget *btn, pcb_gtk_command_t *ctx)
+static void command_window_close_cb_(GtkWidget *btn, pcb_gtk_command_t *ctx)
 {
 	command_window_close_cb(ctx);
 }
