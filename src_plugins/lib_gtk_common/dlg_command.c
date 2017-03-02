@@ -249,9 +249,9 @@ void command_window_close_cb_(GtkWidget *btn, pcb_gtk_command_t *ctx)
 	command_window_close_cb(ctx);
 }
 
-static void command_destroy_cb(GtkWidget * widget, gpointer data)
+static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
 {
-	command_window = NULL;
+	command_window_close_cb(ctx);
 }
 
 	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
@@ -268,7 +268,7 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 		return;
 	}
 	command_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	g_signal_connect(G_OBJECT(command_window), "destroy", G_CALLBACK(command_destroy_cb), NULL);
+	g_signal_connect(G_OBJECT(command_window), "destroy", G_CALLBACK(command_destroy_cb), ctx);
 	gtk_window_set_title(GTK_WINDOW(command_window), _("pcb-rnd Command Entry"));
 	gtk_window_set_wmclass(GTK_WINDOW(command_window), "PCB_Command", "PCB");
 	gtk_window_set_resizable(GTK_WINDOW(command_window), FALSE);
