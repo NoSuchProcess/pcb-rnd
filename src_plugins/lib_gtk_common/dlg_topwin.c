@@ -36,7 +36,7 @@
 */
 #define _POSIX_SOURCE
 #include "config.h"
-#include "gui-top-window.h"
+#include "dlg_topwin.h"
 #include "conf_core.h"
 
 #include "board.h"
@@ -47,22 +47,22 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 
-#include "../src_plugins/lib_gtk_common/bu_box.h"
-#include "../src_plugins/lib_gtk_common/bu_status_line.h"
-#include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
-#include "../src_plugins/lib_gtk_common/bu_menu.h"
-#include "../src_plugins/lib_gtk_common/bu_icons.h"
-#include "../src_plugins/lib_gtk_common/bu_info_bar.h"
-#include "../src_plugins/lib_gtk_common/dlg_route_style.h"
-#include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
-#include "../src_plugins/lib_gtk_common/util_str.h"
-#include "../src_plugins/lib_gtk_common/util_listener.h"
-#include "../src_plugins/lib_gtk_common/in_mouse.h"
-#include "../src_plugins/lib_gtk_common/in_keyboard.h"
-#include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
+#include "bu_box.h"
+#include "bu_status_line.h"
+#include "bu_layer_selector.h"
+#include "bu_menu.h"
+#include "bu_icons.h"
+#include "bu_info_bar.h"
+#include "dlg_route_style.h"
+#include "dlg_fontsel.h"
+#include "util_str.h"
+#include "util_listener.h"
+#include "in_mouse.h"
+#include "in_keyboard.h"
+#include "wt_layer_selector.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
-#include "../src_plugins/lib_gtk_common/win_place.h"
+#include "win_place.h"
 
 /*! \brief sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw)

@@ -5,14 +5,15 @@
 
 #include <gtk/gtk.h>
 
-#include "../src_plugins/lib_gtk_common/util_ext_chg.h"
-#include "../src_plugins/lib_gtk_common/bu_info_bar.h"
-#include "../src_plugins/lib_gtk_common/bu_menu.h"
-#include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
-#include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
-#include "../src_plugins/lib_gtk_common/glue.h"
-#include "../src_plugins/lib_gtk_common/dlg_command.h"
 #include "hid_cfg.h"
+
+#include "util_ext_chg.h"
+#include "bu_info_bar.h"
+#include "bu_menu.h"
+#include "bu_mode_btn.h"
+#include "bu_cursor_pos.h"
+#include "glue.h"
+#include "dlg_command.h"
 
 typedef struct {
 	/* util/builder states */

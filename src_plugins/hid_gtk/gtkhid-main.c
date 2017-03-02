@@ -30,7 +30,6 @@
 #include "layer_vis.h"
 
 #include "gtkhid-main.h"
-#include "gui-top-window.h"
 #include "render.h"
 #include "glue_conf.h"
 
@@ -63,6 +62,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
 #include "../src_plugins/lib_gtk_common/dlg_pinout.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
+#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"

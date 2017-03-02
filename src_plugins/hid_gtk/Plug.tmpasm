@@ -3,7 +3,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/colors.o
 	$(PLUGDIR)/hid_gtk/gtkhid-main.o
 	$(PLUGDIR)/hid_gtk/glue_conf.o
-	$(PLUGDIR)/hid_gtk/gui-top-window.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
 @]
 

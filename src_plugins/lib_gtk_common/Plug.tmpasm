@@ -41,6 +41,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_report.o
   $(PLUGDIR)/lib_gtk_common/dlg_route_style.o
   $(PLUGDIR)/lib_gtk_common/dlg_search.o
+  $(PLUGDIR)/lib_gtk_common/dlg_topwin.o
   $(PLUGDIR)/lib_gtk_common/in_keyboard.o
   $(PLUGDIR)/lib_gtk_common/in_mouse.o
   $(PLUGDIR)/lib_gtk_common/menu_lht.o
