@@ -226,7 +226,7 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 		filename = g_strdup(PCB->Filename);
 
 	str = g_strdup_printf("%s%s (%s) - pcb-rnd", PCB->Changed ? "*" : "", tw->name_label_string, filename);
-	gtk_window_set_title(GTK_WINDOW(gport->top_window), str);
+	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), str);
 	g_free(str);
 	g_free(filename);
 }
@@ -370,19 +370,16 @@ static void fullscreen_cb(GtkButton * btn, void *data)
  * Create the top_window contents.  The config settings should be loaded
  * before this is called.
  */
-static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
+static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 {
-	GtkWidget *window;
 	GtkWidget *vbox_main, *hbox_middle, *hbox;
 	GtkWidget *vbox, *frame, *hbox_scroll, *fullscreen_btn;
 	GtkWidget *label;
 	GHidPort *port = &ghid_port;
 	GtkWidget *scrolled;
 
-	window = in_top_window;
-
 	vbox_main = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(window), vbox_main);
+	gtk_container_add(GTK_CONTAINER(tw->com->top_window), vbox_main);
 
 	/* -- Top control bar */
 	tw->top_bar_background = gtk_event_box_new();
@@ -462,7 +459,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 	ghid_init_drawing_widget(gport->drawing_area, gport);
 
 	gport->mouse.drawing_area = gport->drawing_area;
-	gport->mouse.top_window = gport->top_window;
+	gport->mouse.top_window = tw->com->top_window;
 
 	gtk_widget_add_events(gport->drawing_area, GDK_EXPOSURE_MASK
 												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
@@ -517,8 +514,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 
 	g_signal_connect(G_OBJECT(gport->drawing_area), "realize", G_CALLBACK(ghid_port_drawing_realize_cb), port);
 	g_signal_connect(G_OBJECT(gport->drawing_area), "expose_event", G_CALLBACK(ghid_drawing_area_expose_cb), port);
-	g_signal_connect(G_OBJECT(gport->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), port);
-	g_signal_connect(gport->top_window, "enter-notify-event", G_CALLBACK(top_window_enter_cb), tw);
+	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), port);
+	g_signal_connect(tw->com->top_window, "enter-notify-event", G_CALLBACK(top_window_enter_cb), tw);
 	g_signal_connect(G_OBJECT(gport->drawing_area), "configure_event",
 									 G_CALLBACK(ghid_port_drawing_area_configure_event_cb), port);
 
@@ -536,10 +533,10 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw, GtkWidget *in_top_wi
 
 
 
-	g_signal_connect(G_OBJECT(window), "delete_event", G_CALLBACK(delete_chart_cb), port);
-	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(destroy_chart_cb), port);
+	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), port);
+	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), port);
 
-	gtk_widget_show_all(gport->top_window);
+	gtk_widget_show_all(tw->com->top_window);
 	ghid_pack_mode_buttons();
 	gdk_window_set_back_pixmap(gtk_widget_get_window(gport->drawing_area), NULL, FALSE);
 
@@ -605,11 +602,11 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 
 	tw->com->load_bg_image();
 
-	ghid_build_pcb_top_window(tw, in_top_window);
-	ghid_install_accel_groups(GTK_WINDOW(port->top_window), tw);
+	ghid_build_pcb_top_window(tw);
+	ghid_install_accel_groups(GTK_WINDOW(tw->com->top_window), tw);
 	ghid_update_toggle_flags(tw);
 
-	pcb_gtk_icons_init(gtk_widget_get_window(port->top_window));
+	pcb_gtk_icons_init(gtk_widget_get_window(tw->com->top_window));
 	pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	ghid_mode_buttons_update();
 }
