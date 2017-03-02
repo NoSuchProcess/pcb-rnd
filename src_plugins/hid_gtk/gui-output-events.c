@@ -28,30 +28,8 @@
 
 #include "config.h"
 #include "conf_core.h"
-
-#include "hid_cfg.h"
-#include "gui-top-window.h"
-
-#include <gdk/gdkkeysyms.h>
-
-#include "action_helper.h"
-#include "crosshair.h"
-#include "draw.h"
-#include "error.h"
-#include "layer.h"
-#include "find.h"
-#include "search.h"
-#include "rats.h"
-#include "gtkhid-main.h"
-#include "gui-top-window.h"
-
-#include "../src_plugins/lib_gtk_common/bu_status_line.h"
-#include "../src_plugins/lib_gtk_common/in_mouse.h"
-#include "../src_plugins/lib_gtk_common/in_keyboard.h"
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
-
-#warning TODO: remove
 #include "gui.h"
+#include "gtkhid-main.h"
 
 void ghid_confchg_line_refraction(conf_native_t *cfg)
 {
