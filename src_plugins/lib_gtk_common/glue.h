@@ -21,12 +21,14 @@ typedef struct pcb_gtk_common_s {
 
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
 	gboolean (*preview_expose)(GtkWidget *widget, GdkEventExpose *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+	void (*load_bg_image)(void);
 
 	/* main window */
 	void (*window_set_name_label)(gchar *name);
 	void (*set_status_line_label)(void);
 	void (*status_line_set_text)(const gchar *text);
 
+	/* UI */
 	void (*note_event_location)(GdkEventButton *ev);
 	gboolean (*idle_cb)(gpointer data);
 	int (*shift_is_pressed)();
@@ -36,10 +38,9 @@ typedef struct pcb_gtk_common_s {
 	void (*port_button_press_main)(void);
 	void (*port_button_release_main)(void);
 
-	void (*route_styles_edited_cb)(void);
 
+	/* screen */
 	void (*mode_cursor_main)(int mode);
-
 	void (*invalidate_all)();
 	void (*cancel_lead_user)(void);
 	void (*lead_user_to_location)(pcb_coord_t x, pcb_coord_t y);
@@ -47,9 +48,10 @@ typedef struct pcb_gtk_common_s {
 	void (*port_ranges_scale)(void);
 	void (*pack_mode_buttons)(void);
 
+	/* execute events */
 	void (*LayersChanged)(void);
+	void (*route_styles_edited_cb)(void);
 
-	void (*load_bg_image)(void);
 	void (*main_destroy)(void *gport);
 
 	/* only for config: */
