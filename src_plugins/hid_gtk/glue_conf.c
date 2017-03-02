@@ -26,6 +26,8 @@
  */
 
 #include "config.h"
+#include "glue_conf.h"
+#include "conf.h"
 #include "conf_core.h"
 #include "gui.h"
 #include "gtkhid-main.h"

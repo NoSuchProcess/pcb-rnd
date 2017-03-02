@@ -32,6 +32,7 @@
 #include "gtkhid-main.h"
 #include "gui-top-window.h"
 #include "render.h"
+#include "glue_conf.h"
 
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
