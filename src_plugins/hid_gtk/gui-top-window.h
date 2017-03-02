@@ -61,5 +61,19 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name);
 void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw);
 
 
+/* output events */
+void ghid_port_ranges_changed(pcb_gtk_topwin_t *tw);
+gboolean ghid_idle_cb(gpointer data);
+void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
+void ghid_note_event_location(GdkEventButton *ev);
+
+gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
+
+gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out);
+gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out);
+gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, void * out);
+
+gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out);
+
 #endif
 

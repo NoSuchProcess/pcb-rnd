@@ -126,7 +126,7 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
 	return FALSE;
 }
 
-gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * out)
+gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
 {
 	static gboolean first_time_done;
 
@@ -168,8 +168,9 @@ static gboolean check_object_tooltips(GHidPort *out)
 	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
-gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPort * out)
+gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, void * out_)
 {
+	GHidPort *out = out_;
 	gdouble dx, dy;
 	static gint x_prev = -1, y_prev = -1;
 
@@ -192,8 +193,10 @@ gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPor
 	return FALSE;
 }
 
-gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPort * out)
+gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
 {
+	GHidPort *out = out_;
+
 	/* printf("enter: mode: %d detail: %d\n", ev->mode, ev->detail); */
 
 	/* See comment in ghid_port_window_leave_cb() */
@@ -220,8 +223,10 @@ gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPo
 	return FALSE;
 }
 
-gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPort * out)
+gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
 {
+	GHidPort *out = out_;
+
 	/* printf("leave mode: %d detail: %d\n", ev->mode, ev->detail); */
 
 	/* Window leave events can also be triggered because of focus grabs. Some

@@ -13,12 +13,16 @@ typedef struct pcb_gtk_common_s {
 	void *gport;      /* Opaque pointer back to the HID's interna struct - used when common calls a HID function */
 	GtkWidget *top_window;
 
+	/* rendering */
 	GdkPixmap *(*render_pixmap)(int cx, int cy, double zoom, int width, int height, int depth);
 	gboolean (*preview_draw)(GtkWidget *widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+	void (*drawing_realize)(GtkWidget *w, void *gport);
+	gboolean (*drawing_area_expose)(GtkWidget *w, GdkEventExpose *ev, void *gport);
 
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
 	gboolean (*preview_expose)(GtkWidget *widget, GdkEventExpose *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 
+	/* main window */
 	void (*window_set_name_label)(gchar *name);
 	void (*set_status_line_label)(void);
 	void (*status_line_set_text)(const gchar *text);
@@ -46,6 +50,7 @@ typedef struct pcb_gtk_common_s {
 	void (*LayersChanged)(void);
 
 	void (*load_bg_image)(void);
+	void (*main_destroy)(void *gport);
 
 	/* only for config: */
 	const gchar *(*get_color_name)(GdkColor * color);

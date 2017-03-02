@@ -97,22 +97,6 @@ void ghid_status_line_set_text(const gchar *text);
 void ghid_set_status_line_label(void);
 void ghid_pack_mode_buttons(void);
 
-/* gui-output-events.c function prototypes. */
-gboolean ghid_idle_cb(gpointer data);
-void ghid_port_ranges_changed(pcb_gtk_topwin_t *tw);
-void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
-void ghid_note_event_location(GdkEventButton *ev);
-
-gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
-
-
-gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPort * out);
-gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPort * out);
-gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPort * out);
-
-
-gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * out);
-
 /* ***  */
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
 
@@ -150,8 +134,6 @@ void ghid_shutdown_renderer(GHidPort *);
 void ghid_init_drawing_widget(GtkWidget * widget, void *gport);
 void ghid_drawing_area_configure_hook(GHidPort * port);
 void ghid_screen_update(void);
-gboolean ghid_drawing_area_expose_cb(GtkWidget *, GdkEventExpose *, GHidPort *);
-void ghid_port_drawing_realize_cb(GtkWidget *, gpointer);
 gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);
 pcb_hid_t *ghid_request_debug_draw(void);
@@ -249,6 +231,8 @@ void ghid_confchg_flip(conf_native_t *cfg);
 
 void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
 
-GMainLoop *ghid_entry_loop;
+/* render */
+gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GHidPort * port);
+
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */

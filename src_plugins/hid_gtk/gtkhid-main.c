@@ -199,6 +199,24 @@ void ghid_mode_cursor_main(int mode)
 	ghid_mode_cursor(&gport->mouse, mode);
 }
 
+GMainLoop *ghid_entry_loop;
+
+static void ghid_main_destroy(void *port)
+{
+	ghid_shutdown_renderer(port);
+	gtk_main_quit();
+}
+
+static void drawing_realize_cb(GtkWidget *w, void *gport)
+{
+	ghid_port_drawing_realize_cb(w, gport);
+}
+
+static gboolean drawing_area_expose_cb(GtkWidget *w, GdkEventExpose *ev, void *gport)
+{
+	return ghid_drawing_area_expose_cb(w, ev, gport);
+}
+
 
 /* ------------------------------------------------------------ */
 
@@ -1213,6 +1231,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.gport = &ghid_port;
 	ghidgui->common.render_pixmap = ghid_render_pixmap;
 	ghidgui->common.init_drawing_widget = ghid_init_drawing_widget;
+	ghidgui->common.drawing_realize = drawing_realize_cb;
+	ghidgui->common.drawing_area_expose = drawing_area_expose_cb;
 	ghidgui->common.preview_expose = ghid_preview_expose;
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
 	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
@@ -1242,6 +1262,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
+	ghidgui->common.main_destroy = ghid_main_destroy;
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
 	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;

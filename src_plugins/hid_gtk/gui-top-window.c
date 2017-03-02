@@ -39,7 +39,6 @@
 #include "gui-top-window.h"
 #include "conf_core.h"
 
-#include "gui.h"
 #include "board.h"
 #include "data.h"
 #include "hid.h"
@@ -94,7 +93,7 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 
 	/* Save size of top window changes so PCB can restart at its size at exit.
 	 */
-static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * port)
+static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void *gport)
 {
 	wplc_config_event(widget, &hid_gtk_wgeo.top_x, &hid_gtk_wgeo.top_y, &hid_gtk_wgeo.top_width, &hid_gtk_wgeo.top_height);
 
@@ -132,8 +131,8 @@ void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 
 	ghid_handle_units_changed(tw);
 
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
+	tw->com->window_set_name_label(PCB->Name);
+	tw->com->set_status_line_label();
 	pcb_gtk_close_info_bar(&tw->ibar);
 	update_board_mtime_from_disk(&tw->ext_chg);
 }
@@ -153,7 +152,7 @@ void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
 {
 	/* Pick up the mtime of the new PCB file */
 	update_board_mtime_from_disk(&tw->ext_chg);
-	ghid_window_set_name_label(PCB->Name);
+	tw->com->window_set_name_label(PCB->Name);
 }
 
 /*! \brief Install menu bar and accelerator groups */
@@ -234,11 +233,8 @@ void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
  * Top window
  * ---------------------------------------------------------------
  */
-static gint delete_chart_cb(GtkWidget * widget, GdkEvent * event, GHidPort * port)
+static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
 {
-	if (ghid_entry_loop != NULL)
-		g_main_loop_quit(ghid_entry_loop);
-
 	pcb_hid_action("Quit");
 
 	/*
@@ -248,10 +244,9 @@ static gint delete_chart_cb(GtkWidget * widget, GdkEvent * event, GHidPort * por
 	return TRUE;
 }
 
-static void destroy_chart_cb(GtkWidget * widget, GHidPort * port)
+static void destroy_chart_cb(GtkWidget * widget, pcb_gtk_topwin_t *tw)
 {
-	ghid_shutdown_renderer(port);
-	gtk_main_quit();
+	tw->com->main_destroy(tw->com->gport);
 }
 
 static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle ** menu_bar_style, GtkStyle ** tool_button_style, GtkStyle ** tool_button_label_style)
@@ -345,7 +340,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	GtkWidget *vbox_main, *hbox_middle, *hbox;
 	GtkWidget *vbox, *frame, *hbox_scroll, *fullscreen_btn;
 	GtkWidget *label;
-	GHidPort *port = &ghid_port;
 	GtkWidget *scrolled;
 
 	vbox_main = gtk_vbox_new(FALSE, 0);
@@ -426,7 +420,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	/* -- The PCB layout output drawing area */
 
 	tw->drawing_area = gtk_drawing_area_new();
-	ghid_init_drawing_widget(tw->drawing_area, tw->com->gport);
+	tw->com->init_drawing_widget(tw->drawing_area, tw->com->gport);
 
 	gtk_widget_add_events(tw->drawing_area, GDK_EXPOSURE_MASK
 												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
@@ -479,27 +473,27 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	   |  the user does a command entry.
 	 */
 
-	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(ghid_port_drawing_realize_cb), port);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "expose_event", G_CALLBACK(ghid_drawing_area_expose_cb), port);
-	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), port);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(tw->com->drawing_realize), tw->com->gport);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "expose_event", G_CALLBACK(tw->com->drawing_area_expose), tw->com->gport);
+	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw->com->gport);
 	g_signal_connect(tw->com->top_window, "enter-notify-event", G_CALLBACK(top_window_enter_cb), tw);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "configure_event",
-									 G_CALLBACK(ghid_port_drawing_area_configure_event_cb), port);
+									 G_CALLBACK(ghid_port_drawing_area_configure_event_cb), tw->com->gport);
 
 
 	/* Mouse and key events will need to be intercepted when PCB needs a
 	   |  location from the user.
 	 */
-	g_signal_connect(G_OBJECT(tw->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), port);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), port);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), port);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), port);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), tw->com->gport);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), tw->com->gport);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), tw->com->gport);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), tw->com->gport);
 
-	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), port);
-	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), port);
+	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), tw->com->gport);
+	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), tw);
 
 	gtk_widget_show_all(tw->com->top_window);
-	ghid_pack_mode_buttons();
+	tw->com->pack_mode_buttons();
 	gdk_window_set_back_pixmap(gtk_widget_get_window(tw->drawing_area), NULL, FALSE);
 
 	ghid_fullscreen_apply(tw);
@@ -518,8 +512,6 @@ void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive
 
 void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 {
-	GHidPort *port = &ghid_port;
-
 	tw->com->load_bg_image();
 
 	ghid_build_pcb_top_window(tw);
