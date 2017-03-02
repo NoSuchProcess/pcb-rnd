@@ -45,6 +45,8 @@ typedef struct pcb_gtk_common_s {
 
 	void (*LayersChanged)(void);
 
+	void (*load_bg_image)(void);
+
 	/* only for config: */
 	const gchar *(*get_color_name)(GdkColor * color);
 	void (*map_color_string)(const char *color_string, GdkColor * color);

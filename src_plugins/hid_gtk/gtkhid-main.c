@@ -1020,6 +1020,19 @@ static void ghid_route_styles_edited_cb()
 	pcb_gtk_tw_route_styles_edited_cb(&ghidgui->topwin);
 }
 
+static void ghid_load_bg_image(void)
+{
+	GError *err = NULL;
+
+	if (conf_hid_gtk.plugins.hid_gtk.bg_image)
+		ghidgui->bg_pixbuf = gdk_pixbuf_new_from_file(conf_hid_gtk.plugins.hid_gtk.bg_image, &err);
+
+	if (err) {
+		g_error("%s", err->message);
+		g_error_free(err);
+	}
+}
+
 static int ghid_usage(const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
@@ -1181,6 +1194,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.LayersChanged = LayersChanged_cb;
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
+	ghidgui->common.load_bg_image = ghid_load_bg_image;
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
 	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;

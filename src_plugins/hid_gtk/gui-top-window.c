@@ -602,14 +602,9 @@ void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive
 void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 {
 	GHidPort *port = &ghid_port;
-	GError *err = NULL;
 
-	if (conf_hid_gtk.plugins.hid_gtk.bg_image)
-		ghidgui->bg_pixbuf = gdk_pixbuf_new_from_file(conf_hid_gtk.plugins.hid_gtk.bg_image, &err);
-	if (err) {
-		g_error("%s", err->message);
-		g_error_free(err);
-	}
+	tw->com->load_bg_image();
+
 	ghid_build_pcb_top_window(tw, in_top_window);
 	ghid_install_accel_groups(GTK_WINDOW(port->top_window), tw);
 	ghid_update_toggle_flags(tw);
