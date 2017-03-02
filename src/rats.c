@@ -68,7 +68,7 @@ static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
  * some local identifiers
  */
 static pcb_bool badnet = pcb_false;
-static pcb_layergrp_id_t Sgrp, Cgrp;	/* layer group holding solder/component side */
+static pcb_layergrp_id_t Sgrp = -1, Cgrp = -1; /* layer group holding solder/component side */
 
 /* ---------------------------------------------------------------------------
  * parse a connection description from a string
@@ -830,6 +830,10 @@ pcb_rat_t *pcb_rat_add_net(void)
 		pcb_message(PCB_MSG_ERROR, _("You must name the starting element first\n"));
 		return (NULL);
 	}
+
+	Sgrp = Cgrp = -1;
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
 
 	/* will work for pins to since the FLAG is common */
 	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);
