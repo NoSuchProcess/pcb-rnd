@@ -1202,7 +1202,6 @@ static pcb_r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 	pcb_layergrp_id_t i_layergrp = pcb_layer_get_group(i->layer);
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
-printf("(%ld %ld) == %ld\n", rat->group1, rat->group2, i_layergrp);
 		if (rat->group1 == i_layergrp &&
 				((rat->Point1.X == i->pad.Point1.X && rat->Point1.Y == i->pad.Point1.Y) ||
 				 (rat->Point1.X == i->pad.Point2.X && rat->Point1.Y == i->pad.Point2.Y) ||

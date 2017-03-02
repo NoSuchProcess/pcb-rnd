@@ -68,7 +68,7 @@ static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
  * some local identifiers
  */
 static pcb_bool badnet = pcb_false;
-static pcb_layergrp_id_t SLayer, CLayer;	/* layer group holding solder/component side */
+static pcb_layergrp_id_t Sgrp, Cgrp;	/* layer group holding solder/component side */
 
 /* ---------------------------------------------------------------------------
  * parse a connection description from a string
@@ -117,7 +117,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
 			conn->type = PCB_TYPE_PAD;
 			conn->ptr1 = element;
 			conn->ptr2 = pad;
-			conn->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
+			conn->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? Sgrp : Cgrp;
 
 			if (PCB_FLAG_TEST(PCB_FLAG_EDGE2, pad)) {
 				conn->X = pad->Point2.X;
@@ -136,7 +136,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
 			conn->type = PCB_TYPE_PIN;
 			conn->ptr1 = element;
 			conn->ptr2 = pin;
-			conn->group = SLayer;			/* any layer will do */
+			conn->group = Sgrp;			/* any layer will do */
 			conn->X = pin->X;
 			conn->Y = pin->Y;
 			return pcb_true;
@@ -195,9 +195,9 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	badnet = pcb_false;
 
 	/* find layer groups of the component side and solder side */
-	SLayer = CLayer = -1;
-	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &SLayer, 1);
-	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, &CLayer, 1);
+	Sgrp = Cgrp = -1;
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
 
 	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
@@ -467,7 +467,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->type = PCB_TYPE_VIA;
 				conn->ptr1 = via;
 				conn->ptr2 = via;
-				conn->group = SLayer;
+				conn->group = Sgrp;
 			}
 		}
 		PCB_END_LOOP;
@@ -832,7 +832,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 	}
 
 	/* will work for pins to since the FLAG is common */
-	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? SLayer : CLayer);
+	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);
 	strcpy(name1, pcb_connection_name(found, ptr1, ptr2));
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 5);
@@ -844,7 +844,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 		pcb_message(PCB_MSG_ERROR, _("You must name the ending element first\n"));
 		return (NULL);
 	}
-	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? SLayer : CLayer);
+	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);
 	name2 = pcb_connection_name(found, ptr1, ptr2);
 
 	menu = pcb_netnode_to_netname(name1);
