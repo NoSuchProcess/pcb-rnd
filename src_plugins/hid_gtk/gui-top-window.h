@@ -62,7 +62,6 @@ void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw);
 
 
 /* output events */
-void ghid_port_ranges_changed(pcb_gtk_topwin_t *tw);
 gboolean ghid_idle_cb(void *topwin);
 void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
 void ghid_note_event_location(GdkEventButton *ev);

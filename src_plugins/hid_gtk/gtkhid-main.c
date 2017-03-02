@@ -309,11 +309,22 @@ void ghid_do_exit(pcb_hid_t * hid)
 	gtk_main_quit();
 }
 
-
 static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 {
 	*width = gport->view.width;
 	*height = gport->view.height;
+}
+
+static void ghid_port_ranges_changed(void)
+{
+	GtkAdjustment *h_adj, *v_adj;
+
+	h_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.h_range));
+	v_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.v_range));
+	gport->view.x0 = gtk_adjustment_get_value(h_adj);
+	gport->view.y0 = gtk_adjustment_get_value(v_adj);
+
+	ghid_invalidate_all();
 }
 
 void ghid_pan_common(void)
@@ -323,7 +334,7 @@ void ghid_pan_common(void)
 	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), gport->view.y0);
 	ghidgui->topwin.adjustment_changed_holdoff = FALSE;
 
-	ghid_port_ranges_changed(&ghidgui->topwin);
+	ghid_port_ranges_changed();
 }
 
 void ghid_port_button_press_main(void)
@@ -1412,6 +1423,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
 	ghidgui->common.main_destroy = ghid_main_destroy;
+	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
 	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;

@@ -54,18 +54,6 @@
 #include "gui.h"
 
 
-void ghid_port_ranges_changed(pcb_gtk_topwin_t *tw)
-{
-	GtkAdjustment *h_adj, *v_adj;
-
-	h_adj = gtk_range_get_adjustment(GTK_RANGE(tw->h_range));
-	v_adj = gtk_range_get_adjustment(GTK_RANGE(tw->v_range));
-	gport->view.x0 = gtk_adjustment_get_value(h_adj);
-	gport->view.y0 = gtk_adjustment_get_value(v_adj);
-
-	ghid_invalidate_all();
-}
-
 /* Do scrollbar scaling based on current port drawing area size and
    |  overall PCB board size.
  */
