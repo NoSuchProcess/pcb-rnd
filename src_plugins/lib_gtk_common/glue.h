@@ -36,7 +36,7 @@ typedef struct pcb_gtk_common_s {
 	void (*interface_set_sensitive)(gboolean sensitive);
 	void (*port_button_press_main)(void);
 	void (*port_button_release_main)(void);
-
+	void (*port_ranges_changed)(void);
 
 	/* screen */
 	void (*mode_cursor_main)(int mode);

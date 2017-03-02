@@ -134,6 +134,21 @@ void ghid_note_event_location(GdkEventButton *ev)
 	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 }
 
+/* Do scrollbar scaling based on current port drawing area size and
+   |  overall PCB board size.
+ */
+static void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
+{
+	/* Update the scrollbars with PCB units.  So Scale the current
+	   |  drawing area size in pixels to PCB units and that will be
+	   |  the page size for the Gtk adjustment.
+	 */
+	pcb_gtk_zoom_post(&gport->view);
+
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, PCB->MaxWidth);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
+}
+
 #warning TODO: move most of this to render
 gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
 {

@@ -63,7 +63,6 @@ void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw);
 
 /* output events */
 gboolean ghid_idle_cb(void *topwin);
-void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
 void ghid_note_event_location(GdkEventButton *ev);
 
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw);
