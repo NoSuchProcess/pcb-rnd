@@ -32,7 +32,6 @@
 /* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
-#include "../src_plugins/lib_gtk_common/dlg_command.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "gui-top-window.h"
@@ -45,7 +44,6 @@ typedef struct GhidGui_s {
 
 	pcb_gtk_topwin_t topwin;
 	pcb_gtk_common_t common;
-	pcb_gtk_command_t cmd;
 
 	GdkPixbuf *bg_pixbuf; /* -> renderer */
 

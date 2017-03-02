@@ -11,6 +11,7 @@
 #include "../src_plugins/lib_gtk_common/bu_mode_btn.h"
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
+#include "../src_plugins/lib_gtk_common/dlg_command.h"
 #include "hid_cfg.h"
 
 typedef struct {
@@ -22,6 +23,7 @@ typedef struct {
 	pcb_hid_cfg_t *ghid_cfg;
 	pcb_gtk_mode_btn_t mode_btn;
 	pcb_gtk_cursor_pos_t cps;
+	pcb_gtk_command_t cmd;
 
 	/* own widgets */
 	GtkWidget *status_line_label, *status_line_hbox;

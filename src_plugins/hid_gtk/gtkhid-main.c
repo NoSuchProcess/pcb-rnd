@@ -449,7 +449,7 @@ static int LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ghid_handle_user_command(&ghidgui->cmd, TRUE);
+	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 	return 0;
 }
 
@@ -753,13 +753,13 @@ int act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 void ghid_status_line_set_text(const gchar *text)
 {
-	if (!ghidgui->cmd.command_entry_status_line_active)
+	if (!ghidgui->topwin.cmd.command_entry_status_line_active)
 		ghid_status_line_set_text_(ghidgui->topwin.status_line_label, text);
 }
 
 void ghid_set_status_line_label(void)
 {
-	if (!ghidgui->cmd.command_entry_status_line_active) \
+	if (!ghidgui->topwin.cmd.command_entry_status_line_active) \
 		ghid_set_status_line_label_(ghidgui->topwin.status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
 }
 
@@ -898,12 +898,12 @@ void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 
 int ghid_command_entry_is_active(void)
 {
-	return ghidgui->cmd.command_entry_status_line_active;
+	return ghidgui->topwin.cmd.command_entry_status_line_active;
 }
 
 static void command_pack_in_status_line(void)
 {
-	gtk_box_pack_start(GTK_BOX(ghidgui->topwin.status_line_hbox), ghidgui->cmd.command_combo_box, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(ghidgui->topwin.status_line_hbox), ghidgui->topwin.cmd.command_combo_box, FALSE, FALSE, 0);
 }
 
 static void ghid_interface_set_sensitive(gboolean sensitive)
@@ -953,7 +953,7 @@ static void command_use_command_window_sync(pcb_gtk_command_t *ctx)
 
 void ghid_command_use_command_window_sync(void)
 {
-	command_use_command_window_sync(&ghidgui->cmd);
+	command_use_command_window_sync(&ghidgui->topwin.cmd);
 }
 
 static gboolean get_layer_visible_cb(int id)
@@ -1182,11 +1182,10 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
 
-	ghidgui->cmd.com = &ghidgui->common;
-	ghidgui->cmd.pack_in_status_line = command_pack_in_status_line;
-	ghidgui->cmd.post_entry = command_post_entry;
-	ghidgui->cmd.pre_entry = command_pre_entry;
-
+	ghidgui->topwin.cmd.com = &ghidgui->common;
+	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;
+	ghidgui->topwin.cmd.post_entry = command_post_entry;
+	ghidgui->topwin.cmd.pre_entry = command_pre_entry;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;
