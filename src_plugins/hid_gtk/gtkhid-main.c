@@ -115,6 +115,23 @@ static void ghid_interface_input_signals_disconnect(void)
 	key_press_handler = key_release_handler = 0;
 }
 
+void ghid_note_event_location(GdkEventButton *ev)
+{
+	gint event_x, event_y;
+
+	if (!ev) {
+		gdk_window_get_pointer(gtk_widget_get_window(ghid_port.drawing_area), &event_x, &event_y, NULL);
+	}
+	else {
+		event_x = ev->x;
+		event_y = ev->y;
+	}
+
+	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
+
+	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
+	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+}
 
 void ghid_do_export(pcb_hid_attr_val_t * options)
 {

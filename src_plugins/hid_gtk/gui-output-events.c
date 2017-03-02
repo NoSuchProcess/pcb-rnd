@@ -82,25 +82,6 @@ void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
 	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
 }
 
-void ghid_note_event_location(GdkEventButton * ev)
-{
-	gint event_x, event_y;
-
-	if (!ev) {
-		gdk_window_get_pointer(gtk_widget_get_window(ghid_port.drawing_area), &event_x, &event_y, NULL);
-	}
-	else {
-		event_x = ev->x;
-		event_y = ev->y;
-	}
-
-	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
-
-	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
-	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
-}
-
-#warning TODO: move this to common
 gboolean ghid_idle_cb(gpointer data)
 {
 	if (conf_core.editor.mode == PCB_MODE_NO)

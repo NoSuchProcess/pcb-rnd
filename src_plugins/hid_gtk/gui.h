@@ -233,6 +233,6 @@ void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
 
 /* render */
 gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GHidPort * port);
-
+void ghid_port_drawing_realize_cb(GtkWidget * widget, gpointer data);
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */
