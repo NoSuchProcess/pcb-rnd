@@ -94,7 +94,7 @@ static void ghid_interface_input_signals_connect(void)
 	button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
 	button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
 	key_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
-	key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), NULL);
+	key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
 }
 
 static void ghid_interface_input_signals_disconnect(void)
@@ -198,7 +198,7 @@ void ghid_port_button_press_main(void)
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
 	if (!gport->view.panning)
-		g_idle_add(ghid_idle_cb, NULL);
+		g_idle_add(ghid_idle_cb, &ghidgui->topwin);
 }
 
 void ghid_port_button_release_main(void)
@@ -208,7 +208,7 @@ void ghid_port_button_release_main(void)
 
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
-	g_idle_add(ghid_idle_cb, NULL);
+	g_idle_add(ghid_idle_cb, &ghidgui->topwin);
 }
 
 void ghid_mode_cursor_main(int mode)
@@ -1254,7 +1254,6 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
 	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
 	ghidgui->common.note_event_location = ghid_note_event_location;
-	ghidgui->common.idle_cb = ghid_idle_cb;
 	ghidgui->common.shift_is_pressed = ghid_shift_is_pressed;
 	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;
 	ghidgui->common.interface_input_signals_connect = ghid_interface_input_signals_connect;

@@ -82,19 +82,20 @@ void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
 	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
 }
 
-gboolean ghid_idle_cb(gpointer data)
+gboolean ghid_idle_cb(void *topwin)
 {
+	pcb_gtk_topwin_t *tw = topwin;
 	if (conf_core.editor.mode == PCB_MODE_NO)
 		pcb_crosshair_set_mode(PCB_MODE_ARROW);
-	ghid_mode_cursor(&gport->mouse, conf_core.editor.mode);
-	if (ghidgui->topwin.mode_btn.settings_mode != conf_core.editor.mode) {
+	tw->com->mode_cursor_main(conf_core.editor.mode);
+	if (tw->mode_btn.settings_mode != conf_core.editor.mode) {
 		ghid_mode_buttons_update();
 	}
-	ghidgui->topwin.mode_btn.settings_mode = conf_core.editor.mode;
+	tw->mode_btn.settings_mode = conf_core.editor.mode;
 	return FALSE;
 }
 
-gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data)
+gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw)
 {
 	gint ksym = kev->keyval;
 
@@ -103,7 +104,7 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
 
 	pcb_adjust_attached_objects();
 	ghid_invalidate_all();
-	g_idle_add(ghid_idle_cb, NULL);
+	g_idle_add(ghid_idle_cb, tw);
 	return FALSE;
 }
 

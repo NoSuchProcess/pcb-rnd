@@ -30,7 +30,6 @@ typedef struct pcb_gtk_common_s {
 
 	/* UI */
 	void (*note_event_location)(GdkEventButton *ev);
-	gboolean (*idle_cb)(gpointer data);
 	int (*shift_is_pressed)();
 	void (*interface_input_signals_disconnect)(void);
 	void (*interface_input_signals_connect)(void);
