@@ -108,43 +108,6 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, p
 	return FALSE;
 }
 
-gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
-{
-	static gboolean first_time_done;
-
-	gport->view.canvas_width = ev->width;
-	gport->view.canvas_height = ev->height;
-
-	if (gport->pixmap)
-		gdk_pixmap_unref(gport->pixmap);
-
-	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(widget), gport->view.canvas_width, gport->view.canvas_height, -1);
-	gport->drawable = gport->pixmap;
-
-	if (!first_time_done) {
-		gport->colormap = gtk_widget_get_colormap(gport->top_window);
-		if (gdk_color_parse(conf_core.appearance.color.background, &gport->bg_color))
-			gdk_color_alloc(gport->colormap, &gport->bg_color);
-		else
-			gdk_color_white(gport->colormap, &gport->bg_color);
-
-		if (gdk_color_parse(conf_core.appearance.color.off_limit, &gport->offlimits_color))
-			gdk_color_alloc(gport->colormap, &gport->offlimits_color);
-		else
-			gdk_color_white(gport->colormap, &gport->offlimits_color);
-		first_time_done = TRUE;
-		ghid_drawing_area_configure_hook(out);
-		pcb_board_changed(0);
-	}
-	else {
-		ghid_drawing_area_configure_hook(out);
-	}
-
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-	ghid_invalidate_all();
-	return 0;
-}
-
 static gboolean check_object_tooltips(GHidPort *out)
 {
 	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);

@@ -133,6 +133,46 @@ void ghid_note_event_location(GdkEventButton *ev)
 	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 }
 
+#warning TODO: move most of this to render
+gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
+{
+	static gboolean first_time_done;
+
+	gport->view.canvas_width = ev->width;
+	gport->view.canvas_height = ev->height;
+
+	if (gport->pixmap)
+		gdk_pixmap_unref(gport->pixmap);
+
+	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(widget), gport->view.canvas_width, gport->view.canvas_height, -1);
+	gport->drawable = gport->pixmap;
+
+	if (!first_time_done) {
+		gport->colormap = gtk_widget_get_colormap(gport->top_window);
+		if (gdk_color_parse(conf_core.appearance.color.background, &gport->bg_color))
+			gdk_color_alloc(gport->colormap, &gport->bg_color);
+		else
+			gdk_color_white(gport->colormap, &gport->bg_color);
+
+		if (gdk_color_parse(conf_core.appearance.color.off_limit, &gport->offlimits_color))
+			gdk_color_alloc(gport->colormap, &gport->offlimits_color);
+		else
+			gdk_color_white(gport->colormap, &gport->offlimits_color);
+		first_time_done = TRUE;
+		ghid_drawing_area_configure_hook(out);
+		pcb_board_changed(0);
+	}
+	else {
+		ghid_drawing_area_configure_hook(out);
+	}
+
+	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
+	ghid_invalidate_all();
+	return 0;
+}
+
+
+
 void ghid_do_export(pcb_hid_attr_val_t * options)
 {
 	gtkhid_begin();
@@ -148,6 +188,10 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 	gport->mouse.drawing_area = ghidgui->topwin.drawing_area;
 	gport->drawing_area = ghidgui->topwin.drawing_area;
 	gport->mouse.top_window = ghidgui->common.top_window;
+
+#warning TODO: move this to render init
+	g_signal_connect(G_OBJECT(gport->drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gport);
+
 
 	ghid_interface_input_signals_connect();
 
@@ -233,7 +277,6 @@ static gboolean drawing_area_expose_cb(GtkWidget *w, GdkEventExpose *ev, void *g
 {
 	return ghid_drawing_area_expose_cb(w, ev, gport);
 }
-
 
 /* ------------------------------------------------------------ */
 

@@ -73,7 +73,5 @@ gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void *
 gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out);
 gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, void * out);
 
-gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out);
-
 #endif
 
