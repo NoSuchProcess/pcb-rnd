@@ -617,7 +617,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 }
 
 struct lo_info {
-	pcb_cardinal_t layer;
+	pcb_layer_id_t layer;
 	pcb_line_t line;
 	pcb_pad_t pad;
 	pcb_arc_t arc;
@@ -1199,9 +1199,11 @@ static pcb_r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
+	pcb_layergrp_id_t i_layergrp = pcb_layer_get_group(i->layer);
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
-		if (rat->group1 == i->layer &&
+printf("(%ld %ld) == %ld\n", rat->group1, rat->group2, i_layergrp);
+		if (rat->group1 == i_layergrp &&
 				((rat->Point1.X == i->pad.Point1.X && rat->Point1.Y == i->pad.Point1.Y) ||
 				 (rat->Point1.X == i->pad.Point2.X && rat->Point1.Y == i->pad.Point2.Y) ||
 				 (rat->Point1.X == (i->pad.Point1.X + i->pad.Point2.X) / 2 &&
@@ -1209,7 +1211,7 @@ static pcb_r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 			if (ADD_RAT_TO_LIST(rat, PCB_TYPE_PAD, &i->pad, PCB_FCT_RAT))
 				longjmp(i->env, 1);
 		}
-		else if (rat->group2 == i->layer &&
+		else if (rat->group2 == i_layergrp &&
 						 ((rat->Point2.X == i->pad.Point1.X && rat->Point2.Y == i->pad.Point1.Y) ||
 							(rat->Point2.X == i->pad.Point2.X && rat->Point2.Y == i->pad.Point2.Y) ||
 							(rat->Point2.X == (i->pad.Point1.X + i->pad.Point2.X) / 2 &&
