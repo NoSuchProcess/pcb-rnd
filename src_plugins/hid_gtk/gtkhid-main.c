@@ -72,6 +72,9 @@
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
 
+GhidGui _ghidgui, *ghidgui = &_ghidgui;
+GHidPort ghid_port, *gport;
+
 #warning TODO: make this a separate object
 #include "actions.c"
 

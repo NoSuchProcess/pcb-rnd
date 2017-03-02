@@ -94,11 +94,6 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 
-#warning TODO: remove these:
-#include "gui.h"
-GhidGui _ghidgui, *ghidgui = &_ghidgui;
-GHidPort ghid_port, *gport;
-
 /*! \brief sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw)
 {
@@ -455,7 +450,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	/* -- The PCB layout output drawing area */
 
 	tw->drawing_area = gtk_drawing_area_new();
-	ghid_init_drawing_widget(tw->drawing_area, gport);
+	ghid_init_drawing_widget(tw->drawing_area, tw->com->gport);
 
 	gtk_widget_add_events(tw->drawing_area, GDK_EXPOSURE_MASK
 												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
