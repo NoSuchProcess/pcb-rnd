@@ -591,9 +591,13 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *table, *vbox, *hbox, *content_vbox;
 
-	content_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
+	if (config_sizes_tab_vbox == NULL) {
+		content_vbox = gtk_vbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
+	}
+	else
+		content_vbox = config_sizes_tab_vbox;
 
 	/* Need a vbox we can destroy if user changes grid units.
 	 */
@@ -1656,6 +1660,7 @@ void ghid_config_handle_units_changed(pcb_gtk_common_t *com)
 		gtk_widget_destroy(config_sizes_vbox);
 		config_sizes_vbox = NULL;
 		config_sizes_tab_create(config_sizes_tab_vbox, com);
+		gtk_widget_show(config_sizes_tab_vbox);
 	}
 }
 
