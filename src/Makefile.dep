@@ -1160,12 +1160,15 @@
  ../src_plugins/lib_gtk_common/dlg_report.h \
  ../src_plugins/lib_gtk_common/dlg_progress.h \
  ../src_plugins/lib_gtk_common/dlg_attribute.h \
+ ../src_plugins/lib_gtk_common/dlg_drc.h \
  ../src_plugins/lib_gtk_common/util_listener.h \
  ../src_plugins/lib_gtk_common/util_timer.h \
  ../src_plugins/lib_gtk_common/util_watch.h \
  ../src_plugins/lib_gtk_common/util_block_hook.h \
  ../src_plugins/lib_gtk_common/win_place.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf.h
+../src_plugins/hid_gtk/glue_win32.o: ../src_plugins/hid_gtk/glue_win32.c \
+ ../src_plugins/hid_gtk/glue_win32.h
 ../src_plugins/hid_gtk/gtkhid-gdk.o: ../src_plugins/hid_gtk/gtkhid-gdk.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -1243,12 +1246,12 @@
  ../src_plugins/lib_gtk_common/glue.h board.h const.h library.h \
  rats_patch.h board.h event.h compat_misc.h conf_core.h pcb-printf.h \
  plugins.h hid_init.h hid.h ../src_plugins/hid_gtk/gtkhid-main.h \
- ../src_plugins/lib_gtk_common/dlg_drc.h \
  ../src_plugins/lib_gtk_config/lib_gtk_config.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf.h \
  ../src_plugins/hid_gtk/glue_common.h ../src_plugins/hid_gtk/glue_hid.h \
  ../src_plugins/hid_gtk/glue_conf.h ../src_plugins/hid_gtk/glue_event.h \
- ../src_plugins/hid_gtk/common.h ../src_plugins/hid_gtk/render.h \
+ ../src_plugins/hid_gtk/glue_win32.h ../src_plugins/hid_gtk/common.h \
+ ../src_plugins/hid_gtk/render.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h
 ../src_plugins/hid_lesstif/dialogs.o: \
  ../src_plugins/hid_lesstif/dialogs.c \

@@ -6,6 +6,7 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/glue_conf.o
 	$(PLUGDIR)/hid_gtk/glue_hid.o
 	$(PLUGDIR)/hid_gtk/glue_event.o
+	$(PLUGDIR)/hid_gtk/glue_win32.o
 	$(PLUGDIR)/hid_gtk/common.o
 	$(PLUGDIR)/hid_gtk/actions.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o

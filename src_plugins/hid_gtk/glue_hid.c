@@ -21,6 +21,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
 #include "../src_plugins/lib_gtk_common/dlg_progress.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
+#include "../src_plugins/lib_gtk_common/dlg_drc.h"
 #include "../src_plugins/lib_gtk_common/util_listener.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
 #include "../src_plugins/lib_gtk_common/util_watch.h"
@@ -477,6 +478,24 @@ static int ghid_usage(const char *topic)
 	return 0;
 }
 
+static void ghid_drc_window_append_violation_glue(pcb_drc_violation_t *violation)
+{
+	ghid_drc_window_append_violation(&ghidgui->common, violation);
+}
+
+static int ghid_drc_window_throw_dialog_glue()
+{
+	return ghid_drc_window_throw_dialog(&ghidgui->common);
+}
+
+pcb_hid_drc_gui_t ghid_drc_gui = {
+	1,  /* log_drc_overview */
+	0,  /* log_drc_details */
+	ghid_drc_window_reset_message,
+	ghid_drc_window_append_violation_glue,
+	ghid_drc_window_throw_dialog_glue,
+};
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -550,6 +569,8 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->propedit_add_stat = ghid_propedit_add_stat;
 /*	dst->propedit_add_prop = ghid_propedit_add_prop;*/
 /*	dst->propedit_add_value = ghid_propedit_add_value;*/
+
+	dst->drc_gui = &ghid_drc_gui;
 
 	dst->create_menu = ghid_create_menu;
 	dst->remove_menu = ghid_remove_menu;
