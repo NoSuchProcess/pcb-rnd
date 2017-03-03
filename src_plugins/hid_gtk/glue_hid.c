@@ -29,19 +29,16 @@
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-#warning TODO: remove this
-int gtkhid_active = 0;
-
 void gtkhid_begin(void)
 {
 	ghid_action_reg();
-	gtkhid_active = 1;
+	ghidgui->hid_active = 1;
 }
 
 void gtkhid_end(void)
 {
 	ghid_action_unreg();
-	gtkhid_active = 0;
+	ghidgui->hid_active = 0;
 }
 
 
@@ -340,13 +337,13 @@ static void ghid_log(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	pcb_gtk_logv(gtkhid_active, PCB_MSG_INFO, fmt, ap);
+	pcb_gtk_logv(ghidgui->hid_active, PCB_MSG_INFO, fmt, ap);
 	va_end(ap);
 }
 
 static void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 {
-	pcb_gtk_logv(gtkhid_active, level, fmt, args);
+	pcb_gtk_logv(ghidgui->hid_active, level, fmt, args);
 }
 
 static int ghid_confirm_dialog(const char *msg, ...)

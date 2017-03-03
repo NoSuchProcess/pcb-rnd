@@ -61,14 +61,14 @@ void ghid_confchg_flip(conf_native_t *cfg)
 
 void ghid_confchg_fullscreen(conf_native_t *cfg)
 {
-	if (gtkhid_active)
+	if (ghidgui->hid_active)
 		ghid_fullscreen_apply(&ghidgui->topwin);
 }
 
 
 void ghid_confchg_checkbox(conf_native_t *cfg)
 {
-	if (gtkhid_active)
+	if (ghidgui->hid_active)
 		ghid_update_toggle_flags(&ghidgui->topwin);
 }
 

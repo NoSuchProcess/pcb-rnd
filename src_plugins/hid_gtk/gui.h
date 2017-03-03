@@ -50,6 +50,8 @@ typedef struct GhidGui_s {
 
 	pcb_gtk_dlg_propedit_t propedit_dlg;
 	GtkWidget *propedit_widget;
+
+	int hid_active; /* 1 if the currently running hid (pcb_gui) is us */
 } GhidGui;
 
 extern GhidGui _ghidgui, *ghidgui;

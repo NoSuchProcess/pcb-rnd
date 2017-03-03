@@ -24,7 +24,7 @@ static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 
 static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if ((!ghidgui) || (!gtkhid_active))
+	if ((!ghidgui) || (!ghidgui->hid_active))
 		return;
 
 	if (PCB != NULL)
@@ -47,7 +47,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!gtkhid_active)
+	if (!ghidgui->hid_active)
 		return;
 
 	pcb_gtk_netlist_changed(&ghidgui->common, user_data, argc, argv);
