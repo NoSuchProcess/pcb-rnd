@@ -5,6 +5,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_netlist.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
 static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {

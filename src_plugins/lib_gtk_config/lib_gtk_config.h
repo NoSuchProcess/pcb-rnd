@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include "hid.h"
+#include "event.h"
 #include "conf_hid.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
 
@@ -13,3 +14,10 @@ void ghid_config_window_show(pcb_gtk_common_t *com);
 void ghid_config_handle_units_changed(pcb_gtk_common_t *com);
 
 void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int idx);
+
+void ghid_wgeo_save(int save_to_file, int skip_user);
+void ghid_conf_save_pre_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
+void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
+
+void ghid_config_init(void);
+

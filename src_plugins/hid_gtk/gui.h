@@ -20,8 +20,6 @@
  *
  */
 
-/* FIXME - rename this file to ghid.h */
-
 #ifndef PCB_HID_GTK_GHID_H
 #define PCB_HID_GTK_GHID_H
 
@@ -79,20 +77,6 @@ typedef struct {
 } GHidPort;
 
 extern GHidPort ghid_port, *gport;
-
-/* Function prototypes */
-void ghid_pcb_saved_toggle_states_set(void);
-
-void ghid_change_selected_update_menu_actions(void);
-
-void ghid_config_start_backup_timer(void);
-void ghid_config_text_scale_update(void);
-void ghid_config_layer_name_update(gchar * name, gint layer);
-
-void ghid_config_init(void);
-void ghid_wgeo_save(int save_to_file, int skip_user);
-void ghid_conf_save_pre_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
-void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
 
 /* ***  */
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
@@ -220,6 +204,5 @@ extern const char *ghid_menu_cookie;
 void hid_gtk_wgeo_update(void);
 
 void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
-
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */
