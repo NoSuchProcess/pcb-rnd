@@ -36,15 +36,16 @@
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
 
-
 #include "board.h"
 #include "event.h"
+#include "conf_hid.h"
 
 typedef struct GhidGui_s {
 	GtkActionGroup *main_actions;
 
 	pcb_gtk_topwin_t topwin;
 	pcb_gtk_common_t common;
+	conf_hid_id_t conf_id;
 
 	GdkPixbuf *bg_pixbuf; /* -> renderer */
 
