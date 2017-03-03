@@ -3,8 +3,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 
 /*** code used by multiple different glue layers */
-void ghid_notify_gui_is_up(void);
-
 void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
 void ghid_note_event_location(GdkEventButton *ev);
 

@@ -202,13 +202,15 @@ static void ghid_do_export(pcb_hid_attr_val_t * options)
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		pcb_gtk_create_listener();
 
-	ghid_notify_gui_is_up();
+	ghidgui->gui_is_up = 1;
 
 	pcb_event(PCB_EVENT_GUI_INIT, NULL);
 
 	gtk_main();
 	pcb_hid_cfg_keys_uninit(&ghid_keymap);
 	gtkhid_end();
+
+	ghidgui->gui_is_up = 0;
 }
 
 static void ghid_do_exit(pcb_hid_t * hid)

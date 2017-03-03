@@ -10,14 +10,6 @@
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-#warning TODO: remove these
-static int ghid_gui_is_up = 0;
-void ghid_notify_gui_is_up(void)
-{
-	ghid_gui_is_up = 1;
-}
-
-
 /* Do scrollbar scaling based on current port drawing area size and
    |  overall PCB board size.
  */
@@ -90,7 +82,7 @@ int ghid_shift_is_pressed()
 	GdkModifierType mask;
 	GHidPort *out = &ghid_port;
 
-	if (!ghid_gui_is_up)
+	if (!ghidgui->gui_is_up)
 		return 0;
 
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
@@ -108,7 +100,7 @@ int ghid_control_is_pressed()
 	GdkModifierType mask;
 	GHidPort *out = &ghid_port;
 
-	if (!ghid_gui_is_up)
+	if (!ghidgui->gui_is_up)
 		return 0;
 
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
@@ -126,7 +118,7 @@ int ghid_mod1_is_pressed()
 	GdkModifierType mask;
 	GHidPort *out = &ghid_port;
 
-	if (!ghid_gui_is_up)
+	if (!ghidgui->gui_is_up)
 		return 0;
 
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
