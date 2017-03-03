@@ -9,6 +9,7 @@
 	- gtk preferences window: csesct doens't grow as much as it should, vertically
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
+	- start new layout, cancel -> crash
 
 - plugin breakage:
 	- lib_gtk_* back references
