@@ -52,6 +52,8 @@ typedef struct GhidGui_s {
 	GtkWidget *propedit_widget;
 
 	int hid_active; /* 1 if the currently running hid (pcb_gui) is us */
+
+	gulong button_press_handler, button_release_handler, key_press_handler, key_release_handler;
 } GhidGui;
 
 extern GhidGui _ghidgui, *ghidgui;

@@ -59,33 +59,30 @@ void ghid_note_event_location(GdkEventButton *ev)
 	   |  During these times normal button/key presses are intercepted, either
 	   |  by new signal handlers or the command_combo_box entry.
 	 */
-#warning TODO: move these into the struct
-static gulong button_press_handler, button_release_handler, key_press_handler, key_release_handler;
-
 void ghid_interface_input_signals_connect(void)
 {
-	button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
-	button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
-	key_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
-	key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
+	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
+	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
+	ghidgui->key_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
+	ghidgui->key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
 }
 
 void ghid_interface_input_signals_disconnect(void)
 {
-	if (button_press_handler)
-		g_signal_handler_disconnect(gport->drawing_area, button_press_handler);
+	if (ghidgui->button_press_handler)
+		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_press_handler);
 
-	if (button_release_handler)
-		g_signal_handler_disconnect(gport->drawing_area, button_release_handler);
+	if (ghidgui->button_release_handler)
+		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_release_handler);
 
-	if (key_press_handler)
-		g_signal_handler_disconnect(gport->drawing_area, key_press_handler);
+	if (ghidgui->key_press_handler)
+		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_press_handler);
 
-	if (key_release_handler)
-		g_signal_handler_disconnect(gport->drawing_area, key_release_handler);
+	if (ghidgui->key_release_handler)
+		g_signal_handler_disconnect(gport->drawing_area, ghidgui->key_release_handler);
 
-	button_press_handler = button_release_handler = 0;
-	key_press_handler = key_release_handler = 0;
+	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
+	ghidgui->key_press_handler = ghidgui->key_release_handler = 0;
 }
 
 int ghid_shift_is_pressed()
