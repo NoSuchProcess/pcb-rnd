@@ -1,14 +1,13 @@
 #include "config.h"
 #include "glue_hid.h"
 
-#include "hid_init.h"
-
 #include "gui.h"
 #include "actions.h"
 #include "glue_hid.h"
 #include "render.h"
 #include "common.h"
 #include "hid_nogui.h"
+#include "hid_attrib.h"
 #include "hid_draw_helpers.h"
 
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
@@ -16,6 +15,7 @@
 #include "../src_plugins/lib_gtk_common/ui_crosshair.h"
 #include "../src_plugins/lib_gtk_common/dlg_confirm.h"
 #include "../src_plugins/lib_gtk_common/dlg_input.h"
+#include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
 #include "../src_plugins/lib_gtk_common/dlg_pinout.h"
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
@@ -28,24 +28,18 @@
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-
-#warning TODO: make this a separate object
-#include "actions.c"
-
 #warning TODO: remove this
 int gtkhid_active = 0;
 
 void gtkhid_begin(void)
 {
-	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+	ghid_action_reg();
 	gtkhid_active = 1;
 }
 
 void gtkhid_end(void)
 {
-	pcb_hid_remove_actions_by_cookie(ghid_cookie);
-	pcb_hid_remove_attributes_by_cookie(ghid_cookie);
+	ghid_action_unreg();
 	gtkhid_active = 0;
 }
 

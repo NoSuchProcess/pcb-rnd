@@ -22,12 +22,15 @@
 
 #include "config.h"
 
+#include "gui.h"
+
 #include "board.h"
 #include "data.h"
 #include "search.h"
 #include "change.h"
 #include "action_helper.h"
 #include "hid_attrib.h"
+#include "hid_actions.h"
 #include "hid.h"
 #include "compat_nls.h"
 
@@ -547,3 +550,15 @@ pcb_hid_action_t ghid_main_action_list[] = {
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 #include "dolists.h"
+
+void ghid_action_reg(void)
+{
+	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+}
+
+void ghid_action_unreg(void)
+{
+	pcb_hid_remove_actions_by_cookie(ghid_cookie);
+	pcb_hid_remove_attributes_by_cookie(ghid_cookie);
+}
