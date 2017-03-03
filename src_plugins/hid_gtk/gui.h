@@ -75,10 +75,6 @@ typedef struct {
 extern GHidPort ghid_port, *gport;
 
 /* Function prototypes */
-void ghid_parse_arguments(gint * argc, gchar *** argv);
-void ghid_do_export(pcb_hid_attr_val_t * options);
-void ghid_do_exit(pcb_hid_t *hid);
-
 void ghid_pcb_saved_toggle_states_set(void);
 
 void ghid_change_selected_update_menu_actions(void);
@@ -106,7 +102,6 @@ pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * name, gboolean);
 void ghid_netlist_highlight_node(const gchar * name);
 
 /* gtkhid-gdk.c AND gtkhid-gl.c */
-int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 pcb_hid_gc_t ghid_make_gc(void);
 void ghid_destroy_gc(pcb_hid_gc_t);
 void ghid_use_mask(int use_it);

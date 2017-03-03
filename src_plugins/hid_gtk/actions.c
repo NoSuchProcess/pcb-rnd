@@ -22,11 +22,29 @@
 
 #include "config.h"
 
+#include "board.h"
+#include "data.h"
 #include "search.h"
 #include "change.h"
+#include "action_helper.h"
+#include "hid_attrib.h"
+#include "hid.h"
+#include "compat_nls.h"
 
+#include "../src_plugins/lib_gtk_common/act_print.h"
+#include "../src_plugins/lib_gtk_common/act_fileio.h"
+#include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
+#include "../src_plugins/lib_gtk_common/dlg_export.h"
+#include "../src_plugins/lib_gtk_common/dlg_library.h"
+#include "../src_plugins/lib_gtk_common/dlg_log.h"
+#include "../src_plugins/lib_gtk_common/dlg_about.h"
+#include "../src_plugins/lib_gtk_common/dlg_drc.h"
+#include "../src_plugins/lib_gtk_common/dlg_netlist.h"
+#include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
+#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
+
 #include "actions.h"
 
 
@@ -356,11 +374,6 @@ static int SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 /* ------------------------------------------------------------ */
-static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	ghid_watch_cursor(&gport->mouse);
-}
-
 static int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_zoom(&gport->view, argc, argv, x, y);
