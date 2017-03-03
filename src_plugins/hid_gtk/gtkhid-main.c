@@ -1,6 +1,9 @@
 #include "config.h"
 #include "conf_core.h"
 
+#include "glue_common.h"
+#include "common.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -79,76 +82,6 @@ GHidPort ghid_port, *gport;
 
 #warning TODO: make this a separate object
 #include "actions.c"
-
-	/* Connect and disconnect just the signals a g_main_loop() will need.
-	   |  Cursor and motion events still need to be handled by the top level
-	   |  loop, so don't connect/reconnect these.
-	   |  A g_main_loop will be running when PCB wants the user to select a
-	   |  location or if command entry is needed in the status line hbox.
-	   |  During these times normal button/key presses are intercepted, either
-	   |  by new signal handlers or the command_combo_box entry.
-	 */
-#warning TODO: move these into the struct
-static gulong button_press_handler, button_release_handler, key_press_handler, key_release_handler;
-
-static void ghid_interface_input_signals_connect(void)
-{
-	button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
-	button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
-	key_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
-	key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
-}
-
-static void ghid_interface_input_signals_disconnect(void)
-{
-	if (button_press_handler)
-		g_signal_handler_disconnect(gport->drawing_area, button_press_handler);
-
-	if (button_release_handler)
-		g_signal_handler_disconnect(gport->drawing_area, button_release_handler);
-
-	if (key_press_handler)
-		g_signal_handler_disconnect(gport->drawing_area, key_press_handler);
-
-	if (key_release_handler)
-		g_signal_handler_disconnect(gport->drawing_area, key_release_handler);
-
-	button_press_handler = button_release_handler = 0;
-	key_press_handler = key_release_handler = 0;
-}
-
-void ghid_note_event_location(GdkEventButton *ev)
-{
-	gint event_x, event_y;
-
-	if (!ev) {
-		gdk_window_get_pointer(gtk_widget_get_window(ghid_port.drawing_area), &event_x, &event_y, NULL);
-	}
-	else {
-		event_x = ev->x;
-		event_y = ev->y;
-	}
-
-	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
-
-	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
-	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
-}
-
-/* Do scrollbar scaling based on current port drawing area size and
-   |  overall PCB board size.
- */
-static void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
-{
-	/* Update the scrollbars with PCB units.  So Scale the current
-	   |  drawing area size in pixels to PCB units and that will be
-	   |  the page size for the Gtk adjustment.
-	 */
-	pcb_gtk_zoom_post(&gport->view);
-
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, PCB->MaxWidth);
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
-}
 
 #warning TODO: move most of this to render
 gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
@@ -331,134 +264,11 @@ static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 	*height = gport->view.height;
 }
 
-static void ghid_port_ranges_changed(void)
-{
-	GtkAdjustment *h_adj, *v_adj;
-
-	h_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.h_range));
-	v_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.v_range));
-	gport->view.x0 = gtk_adjustment_get_value(h_adj);
-	gport->view.y0 = gtk_adjustment_get_value(v_adj);
-
-	ghid_invalidate_all();
-}
-
-void ghid_pan_common(void)
-{
-	ghidgui->topwin.adjustment_changed_holdoff = TRUE;
-	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), gport->view.x0);
-	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), gport->view.y0);
-	ghidgui->topwin.adjustment_changed_holdoff = FALSE;
-
-	ghid_port_ranges_changed();
-}
-
-void ghid_port_button_press_main(void)
-{
-	ghid_invalidate_all();
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
-	if (!gport->view.panning)
-		g_idle_add(ghid_idle_cb, &ghidgui->topwin);
-}
-
-void ghid_port_button_release_main(void)
-{
-	pcb_adjust_attached_objects();
-	ghid_invalidate_all();
-
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
-	g_idle_add(ghid_idle_cb, &ghidgui->topwin);
-}
-
-void ghid_mode_cursor_main(int mode)
-{
-	ghid_mode_cursor(&gport->mouse, mode);
-}
-
-GMainLoop *ghid_entry_loop;
-
-static void ghid_main_destroy(void *port)
-{
-	ghid_shutdown_renderer(port);
-	gtk_main_quit();
-}
-
-static void drawing_realize_cb(GtkWidget *w, void *gport)
-{
-	ghid_port_drawing_realize_cb(w, gport);
-}
-
-static gboolean drawing_area_expose_cb(GtkWidget *w, GdkEventExpose *ev, void *gport)
-{
-	return ghid_drawing_area_expose_cb(w, ev, gport);
-}
-
 /* ------------------------------------------------------------ */
 
 void ghid_calibrate(double xval, double yval)
 {
 	printf(_("ghid_calibrate() -- not implemented\n"));
-}
-
-static int ghid_gui_is_up = 0;
-
-void ghid_notify_gui_is_up(void)
-{
-	ghid_gui_is_up = 1;
-}
-
-int ghid_shift_is_pressed()
-{
-	GdkModifierType mask;
-	GHidPort *out = &ghid_port;
-
-	if (!ghid_gui_is_up)
-		return 0;
-
-	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-
-#ifdef PCB_WORKAROUND_GTK_SHIFT
-	/* On some systems the above query fails and we need to return the last known state instead */
-	return pcb_gtk_glob_mask & GDK_SHIFT_MASK;
-#else
-	return (mask & GDK_SHIFT_MASK) ? TRUE : FALSE;
-#endif
-}
-
-int ghid_control_is_pressed()
-{
-	GdkModifierType mask;
-	GHidPort *out = &ghid_port;
-
-	if (!ghid_gui_is_up)
-		return 0;
-
-	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-
-#ifdef PCB_WORKAROUND_GTK_CTRL
-	/* On some systems the above query fails and we need to return the last known state instead */
-	return pcb_gtk_glob_mask & GDK_CONTROL_MASK;
-#else
-	return (mask & GDK_CONTROL_MASK) ? TRUE : FALSE;
-#endif
-}
-
-int ghid_mod1_is_pressed()
-{
-	GdkModifierType mask;
-	GHidPort *out = &ghid_port;
-
-	if (!ghid_gui_is_up)
-		return 0;
-
-	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-#ifdef __APPLE__
-	return (mask & (1 << 13)) ? TRUE : FALSE;	/* The option key is not MOD1, although it should be... */
-#else
-	return (mask & GDK_MOD1_MASK) ? TRUE : FALSE;
-#endif
 }
 
 void ghid_set_crosshair(int x, int y, int action)
@@ -663,7 +473,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 
 	if (PCB != NULL)
-		ghid_window_set_name_label(PCB->Name);
+		ghidgui->common.window_set_name_label(PCB->Name);
 
 	if (!gport->pixmap)
 		return;
@@ -857,7 +667,7 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	ghid_handle_units_changed(&ghidgui->topwin);
 
-	ghid_set_status_line_label();
+	ghidgui->common.set_status_line_label();
 
 	/* FIXME ?
 	 * lesstif_sizes_reset ();
@@ -993,18 +803,6 @@ int act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return pcb_gtk_act_importgui(ghid_port.top_window, argc, argv, x, y);
 }
 
-void ghid_status_line_set_text(const gchar *text)
-{
-	if (!ghidgui->topwin.cmd.command_entry_status_line_active)
-		ghid_status_line_set_text_(ghidgui->topwin.status_line_label, text);
-}
-
-void ghid_set_status_line_label(void)
-{
-	if (!ghidgui->topwin.cmd.command_entry_status_line_active) \
-		ghid_set_status_line_label_(ghidgui->topwin.status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
-}
-
 void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
 {
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
@@ -1138,100 +936,6 @@ void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 	pcb_gtk_logv(gtkhid_active, level, fmt, args);
 }
 
-int ghid_command_entry_is_active(void)
-{
-	return ghidgui->topwin.cmd.command_entry_status_line_active;
-}
-
-static void command_pack_in_status_line(void)
-{
-	gtk_box_pack_start(GTK_BOX(ghidgui->topwin.status_line_hbox), ghidgui->topwin.cmd.command_combo_box, FALSE, FALSE, 0);
-}
-
-static void ghid_interface_set_sensitive(gboolean sensitive)
-{
-	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
-}
-
-static void command_post_entry(void)
-{
-	ghid_interface_input_signals_connect();
-	ghid_interface_set_sensitive(TRUE);
-	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
-	gtk_widget_grab_focus(gport->drawing_area);
-}
-
-static void command_pre_entry(void)
-{
-	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
-	ghid_interface_input_signals_disconnect();
-	ghid_interface_set_sensitive(FALSE);
-}
-
-	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window toggles, the config code calls
-	   |  this to ensure the command_combo_box is set up for living in the
-	   |  right place.
-	 */
-static void command_use_command_window_sync(pcb_gtk_command_t *ctx)
-{
-	/* The combo box will be NULL and not living anywhere until the
-	   |  first command entry.
-	 */
-	if (!ctx->command_combo_box)
-		return;
-
-	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
-		gtk_container_remove(GTK_CONTAINER(ghidgui->topwin.status_line_hbox), ctx->command_combo_box);
-	else {
-		/* Destroy the window (if it's up) which floats the command_combo_box
-		   |  so we can pack it back into the status line hbox.  If the window
-		   |  wasn't up, the command_combo_box was already floating.
-		 */
-		command_window_close_cb(ctx);
-		gtk_widget_hide(ctx->command_combo_box);
-		command_pack_in_status_line();
-	}
-}
-
-void ghid_command_use_command_window_sync(void)
-{
-	command_use_command_window_sync(&ghidgui->topwin.cmd);
-}
-
-static gboolean get_layer_visible_cb(int id)
-{
-	int visible;
-	layer_process(NULL, NULL, &visible, id);
-	return visible;
-}
-
-static void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL)
-		return;
-
-	ghid_layer_buttons_update(&ghidgui->topwin);
-	pcb_gtk_layer_selector_show_layers(GHID_LAYER_SELECTOR(ghidgui->topwin.layer_selector), get_layer_visible_cb);
-
-	/* FIXME - if a layer is moved it should retain its color.  But layers
-	   |  currently can't do that because color info is not saved in the
-	   |  pcb file.  So this makes a moved layer change its color to reflect
-	   |  the way it will be when the pcb is reloaded.
-	 */
-	pcb_colors_from_settings(PCB);
-	return;
-}
-
-static void LayersChanged_cb(void)
-{
-	ghid_LayersChanged(0, 0, 0);
-}
-
-void ghid_pack_mode_buttons(void)
-{
-	pcb_gtk_pack_mode_buttons(&ghidgui->topwin.mode_btn);
-}
-
 static void ghid_notify_save_pcb(const char *filename, pcb_bool done)
 {
 	pcb_gtk_tw_notify_save_pcb(&ghidgui->topwin, filename, done);
@@ -1240,39 +944,6 @@ static void ghid_notify_save_pcb(const char *filename, pcb_bool done)
 static void ghid_notify_filename_changed()
 {
 	pcb_gtk_tw_notify_filename_changed(&ghidgui->topwin);
-}
-
-static void ghid_port_ranges_scale(void)
-{
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-}
-
-void ghid_window_set_name_label(gchar *name)
-{
-	pcb_gtk_tw_window_set_name_label(&ghidgui->topwin, name);
-}
-
-static void ghid_layer_buttons_color_update(void)
-{
-	pcb_gtk_tw_layer_buttons_color_update(&ghidgui->topwin);
-}
-
-static void ghid_route_styles_edited_cb()
-{
-	pcb_gtk_tw_route_styles_edited_cb(&ghidgui->topwin);
-}
-
-static void ghid_load_bg_image(void)
-{
-	GError *err = NULL;
-
-	if (conf_hid_gtk.plugins.hid_gtk.bg_image)
-		ghidgui->bg_pixbuf = gdk_pixbuf_new_from_file(conf_hid_gtk.plugins.hid_gtk.bg_image, &err);
-
-	if (err) {
-		g_error("%s", err->message);
-		g_error_free(err);
-	}
 }
 
 static int ghid_usage(const char *topic)
@@ -1292,8 +963,8 @@ static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 	/* Sync gui status display with pcb state */
 	pcb_adjust_attached_objects();
 	ghid_invalidate_all();
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
+	ghidgui->common.window_set_name_label(PCB->Name);
+	ghidgui->common.set_status_line_label();
 }
 
 	/* Create top level window for routines that will need top_window
@@ -1404,51 +1075,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	printf("\"Share\" installation path is \"%s\"\n", "share_dir_todo12");
 #endif
 
-	/* Set up the glue struct to lib_gtk_common */
-	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.render_pixmap = ghid_render_pixmap;
-	ghidgui->common.init_drawing_widget = ghid_init_drawing_widget;
-	ghidgui->common.drawing_realize = drawing_realize_cb;
-	ghidgui->common.drawing_area_expose = drawing_area_expose_cb;
-	ghidgui->common.preview_expose = ghid_preview_expose;
-	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
-	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
-	ghidgui->common.note_event_location = ghid_note_event_location;
-	ghidgui->common.shift_is_pressed = ghid_shift_is_pressed;
-	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;
-	ghidgui->common.interface_input_signals_connect = ghid_interface_input_signals_connect;
-	ghidgui->common.interface_set_sensitive = ghid_interface_set_sensitive;
-	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
-	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
-	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
-	ghidgui->common.route_styles_edited_cb = ghid_route_styles_edited_cb;
-	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
-	ghidgui->common.invalidate_all = ghid_invalidate_all;
-	ghidgui->common.cancel_lead_user = ghid_cancel_lead_user;
-	ghidgui->common.lead_user_to_location = ghid_lead_user_to_location;
-	ghidgui->common.pan_common = ghid_pan_common;
-	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
-	ghidgui->common.preview_draw = ghid_preview_draw;
-	ghidgui->common.pack_mode_buttons = ghid_pack_mode_buttons;
-	ghidgui->common.get_color_name = ghid_get_color_name;
-	ghidgui->common.map_color_string = ghid_map_color_string;
-	ghidgui->common.set_special_colors = ghid_set_special_colors;
-	ghidgui->common.layer_buttons_color_update = ghid_layer_buttons_color_update;
-	ghidgui->common.LayersChanged = LayersChanged_cb;
-	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
-	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
-	ghidgui->common.load_bg_image = ghid_load_bg_image;
-	ghidgui->common.main_destroy = ghid_main_destroy;
-	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
-
-	ghidgui->topwin.cmd.com = &ghidgui->common;
-	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;
-	ghidgui->topwin.cmd.post_entry = command_post_entry;
-	ghidgui->topwin.cmd.pre_entry = command_pre_entry;
-
-	ghid_port.view.com = &ghidgui->common;
-	ghid_port.mouse.com = &ghidgui->common;
-
+	ghid_glue_common_init();
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 

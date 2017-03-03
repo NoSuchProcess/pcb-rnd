@@ -35,25 +35,25 @@
 void ghid_confchg_line_refraction(conf_native_t *cfg)
 {
 	/* test if PCB struct doesn't exist at startup */
-	if (!PCB)
+	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
 		return;
-	ghid_set_status_line_label();
+	ghidgui->common.set_status_line_label();
 }
 
 void ghid_confchg_all_direction_lines(conf_native_t *cfg)
 {
 	/* test if PCB struct doesn't exist at startup */
-	if (!PCB)
+	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
 		return;
-	ghid_set_status_line_label();
+	ghidgui->common.set_status_line_label();
 }
 
 void ghid_confchg_flip(conf_native_t *cfg)
 {
 	/* test if PCB struct doesn't exist at startup */
-	if (!PCB)
+	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
 		return;
-	ghid_set_status_line_label();
+	ghidgui->common.set_status_line_label();
 }
 
 void ghid_confchg_fullscreen(conf_native_t *cfg)

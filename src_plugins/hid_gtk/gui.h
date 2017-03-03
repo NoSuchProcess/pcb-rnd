@@ -79,8 +79,6 @@ void ghid_parse_arguments(gint * argc, gchar *** argv);
 void ghid_do_export(pcb_hid_attr_val_t * options);
 void ghid_do_exit(pcb_hid_t *hid);
 
-void ghid_window_set_name_label(gchar * name);
-
 void ghid_pcb_saved_toggle_states_set(void);
 
 void ghid_change_selected_update_menu_actions(void);
@@ -93,10 +91,6 @@ void ghid_config_init(void);
 void ghid_wgeo_save(int save_to_file, int skip_user);
 void ghid_conf_save_pre_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
 void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
-
-void ghid_status_line_set_text(const gchar *text);
-void ghid_set_status_line_label(void);
-void ghid_pack_mode_buttons(void);
 
 /* ***  */
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
@@ -226,8 +220,5 @@ void hid_gtk_wgeo_update(void);
 
 void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
 
-/* render */
-gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GHidPort * port);
-void ghid_port_drawing_realize_cb(GtkWidget * widget, gpointer data);
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */

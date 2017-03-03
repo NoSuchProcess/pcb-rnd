@@ -1,0 +1,165 @@
+#include "config.h"
+
+#include "action_helper.h"
+
+#include "gui.h"
+#include "common.h"
+
+#include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
+#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
+#include "../src_plugins/lib_gtk_common/in_keyboard.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+
+#warning TODO: remove these
+static int ghid_gui_is_up = 0;
+void ghid_notify_gui_is_up(void)
+{
+	ghid_gui_is_up = 1;
+}
+
+
+/* Do scrollbar scaling based on current port drawing area size and
+   |  overall PCB board size.
+ */
+void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
+{
+	/* Update the scrollbars with PCB units.  So Scale the current
+	   |  drawing area size in pixels to PCB units and that will be
+	   |  the page size for the Gtk adjustment.
+	 */
+	pcb_gtk_zoom_post(&gport->view);
+
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, PCB->MaxWidth);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
+}
+
+void ghid_note_event_location(GdkEventButton *ev)
+{
+	gint event_x, event_y;
+
+	if (!ev) {
+		gdk_window_get_pointer(gtk_widget_get_window(ghid_port.drawing_area), &event_x, &event_y, NULL);
+	}
+	else {
+		event_x = ev->x;
+		event_y = ev->y;
+	}
+
+	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
+
+	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
+	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+}
+
+	/* Connect and disconnect just the signals a g_main_loop() will need.
+	   |  Cursor and motion events still need to be handled by the top level
+	   |  loop, so don't connect/reconnect these.
+	   |  A g_main_loop will be running when PCB wants the user to select a
+	   |  location or if command entry is needed in the status line hbox.
+	   |  During these times normal button/key presses are intercepted, either
+	   |  by new signal handlers or the command_combo_box entry.
+	 */
+#warning TODO: move these into the struct
+static gulong button_press_handler, button_release_handler, key_press_handler, key_release_handler;
+
+void ghid_interface_input_signals_connect(void)
+{
+	button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
+	button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
+	key_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
+	key_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
+}
+
+void ghid_interface_input_signals_disconnect(void)
+{
+	if (button_press_handler)
+		g_signal_handler_disconnect(gport->drawing_area, button_press_handler);
+
+	if (button_release_handler)
+		g_signal_handler_disconnect(gport->drawing_area, button_release_handler);
+
+	if (key_press_handler)
+		g_signal_handler_disconnect(gport->drawing_area, key_press_handler);
+
+	if (key_release_handler)
+		g_signal_handler_disconnect(gport->drawing_area, key_release_handler);
+
+	button_press_handler = button_release_handler = 0;
+	key_press_handler = key_release_handler = 0;
+}
+
+int ghid_shift_is_pressed()
+{
+	GdkModifierType mask;
+	GHidPort *out = &ghid_port;
+
+	if (!ghid_gui_is_up)
+		return 0;
+
+	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+
+#ifdef PCB_WORKAROUND_GTK_SHIFT
+	/* On some systems the above query fails and we need to return the last known state instead */
+	return pcb_gtk_glob_mask & GDK_SHIFT_MASK;
+#else
+	return (mask & GDK_SHIFT_MASK) ? TRUE : FALSE;
+#endif
+}
+
+int ghid_control_is_pressed()
+{
+	GdkModifierType mask;
+	GHidPort *out = &ghid_port;
+
+	if (!ghid_gui_is_up)
+		return 0;
+
+	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+
+#ifdef PCB_WORKAROUND_GTK_CTRL
+	/* On some systems the above query fails and we need to return the last known state instead */
+	return pcb_gtk_glob_mask & GDK_CONTROL_MASK;
+#else
+	return (mask & GDK_CONTROL_MASK) ? TRUE : FALSE;
+#endif
+}
+
+int ghid_mod1_is_pressed()
+{
+	GdkModifierType mask;
+	GHidPort *out = &ghid_port;
+
+	if (!ghid_gui_is_up)
+		return 0;
+
+	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+#ifdef __APPLE__
+	return (mask & (1 << 13)) ? TRUE : FALSE;	/* The option key is not MOD1, although it should be... */
+#else
+	return (mask & GDK_MOD1_MASK) ? TRUE : FALSE;
+#endif
+}
+
+static gboolean get_layer_visible_cb(int id)
+{
+	int visible;
+	layer_process(NULL, NULL, &visible, id);
+	return visible;
+}
+
+void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL)
+		return;
+
+	ghid_layer_buttons_update(&ghidgui->topwin);
+	pcb_gtk_layer_selector_show_layers(GHID_LAYER_SELECTOR(ghidgui->topwin.layer_selector), get_layer_visible_cb);
+
+	/* FIXME - if a layer is moved it should retain its color.  But layers
+	   |  currently can't do that because color info is not saved in the
+	   |  pcb file.  So this makes a moved layer change its color to reflect
+	   |  the way it will be when the pcb is reloaded.
+	 */
+	pcb_colors_from_settings(PCB);
+	return;
+}

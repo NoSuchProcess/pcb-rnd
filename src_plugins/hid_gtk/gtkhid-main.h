@@ -3,7 +3,6 @@
 
 #include "conf_hid.h"
 
-void ghid_notify_gui_is_up(void);
 extern int gtkhid_active;
 
 void gtkhid_begin(void);
