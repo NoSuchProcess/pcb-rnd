@@ -451,12 +451,6 @@ static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx
 }
 
 /* Create a new menu by path */
-#warning TODO: mege this into the caller
-static void pcb_gtk_menu_create_menu(pcb_gtk_menu_ctx_t *ctx, const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
-{
-	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, ctx);
-}
-
 static int ghid_remove_menu(const char *menu_path)
 {
 	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
@@ -464,7 +458,7 @@ static int ghid_remove_menu(const char *menu_path)
 
 static void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	pcb_gtk_menu_create_menu(&ghidgui->topwin.menu, menu_path, action, mnemonic, accel, tip, cookie);
+	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, &ghidgui->topwin.menu);
 }
 
 static int ghid_usage(const char *topic)
