@@ -30,7 +30,6 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "gui.h"
-#include "gtkhid-main.h"
 
 #warning TODO: move to state struct
 static conf_hid_id_t ghid_conf_id;

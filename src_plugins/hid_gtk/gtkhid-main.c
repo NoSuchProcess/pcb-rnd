@@ -10,8 +10,6 @@
 #include "hid_init.h"
 #include "conf_core.h"
 
-#include "gtkhid-main.h"
-
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"

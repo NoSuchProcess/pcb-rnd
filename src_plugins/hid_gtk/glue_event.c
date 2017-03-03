@@ -6,9 +6,6 @@
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-#warning TODO: remove
-#include "gtkhid-main.h"
-
 static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!ghidgui || !ghidgui->topwin.route_style_selector)
