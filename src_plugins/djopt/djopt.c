@@ -2246,6 +2246,9 @@ static void pinsnap()
 	int close = 0;
 	corner_s *c2;
 
+	memset(best_c, 0, sizeof(best_c));
+	memset(best_dist, 0, sizeof(best_dist));
+
 	/* Look for pins that have no connections.  See if there's a corner
 	   close by that should be connected to it.  This usually happens
 	   when the MUCS router needs to route to an off-grid pin.  */
