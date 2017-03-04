@@ -242,6 +242,8 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					return -1;
 				}
+			} else if (n->str != NULL && strcmp("hide", n->str) == 0) {
+				pcb_printf("\tignoring gr_text \"hide\" flag\n"); 
 			} else if (n->str != NULL && strcmp("effects", n->str) == 0) {
 				for(m = n->children; m != NULL; m = m->next) {
 					printf("\tstepping through text effects definitions\n"); 
@@ -720,6 +722,26 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 					} else {
 						return -1;
 					}
+			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
+					SEEN_NO_DUP(tally, 4);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("\tvia tstamp: '%s'\n", (n->children->str));
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("drill", n->str) == 0) {
+					SEEN_NO_DUP(tally, 5);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("\tvia drill: '%s'\n", (n->children->str));
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Drill = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown via argument %s:", n->str);
@@ -1151,6 +1173,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				moduleValue = text;
 				foundRefdes = 0;
 				printf("\tmoduleValue now: '%s'\n", moduleValue);
+			} else if (strcmp("hide", textLabel) == 0) {
+				pcb_printf("\tignoring fp_text \"hide\" flag\n");
 			} else {
 				foundRefdes = 0;
 			}
@@ -1229,7 +1253,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 			} else if (l->str != NULL && strcmp("hide", l->str) == 0) {
-					pcb_printf("\ttext hidden flag \"hide\" found and ignored.\n");
+				pcb_printf("\tfp_text hidden flag \"hide\" found and ignored.\n");
+			} else if (l->str != NULL && strcmp("justify", l->str) == 0) {/*this may be unnecessary here*/
+				pcb_printf("\tfp_text justify flag found and ignored.\n");
 			} else if (l->str != NULL && strcmp("effects", l->str) == 0) {
 				SEEN_NO_DUP(featureTally, 5);
 				for(m = l->children; m != NULL; m = m->next) {
