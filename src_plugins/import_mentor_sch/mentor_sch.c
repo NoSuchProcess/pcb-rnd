@@ -40,6 +40,8 @@
 #include "plugins.h"
 #include "hid.h"
 
+#include "netlist_helper.h"
+
 static const char *mentor_sch_cookie = "mentor_sch importer";
 
 /* Return the nth child's string of the subtree called subtree_name under node */
@@ -57,28 +59,38 @@ static const char *get_by_name(gsxl_node_t *node, const char *subtree_name, int 
 	return NULL;
 }
 
-static int parse_netlist_instance(gsxl_node_t *inst)
+static int parse_netlist_instance(nethlp_ctx_t *nhctx, gsxl_node_t *inst)
 {
 	gsxl_node_t *n;
 	const char *refdes = NULL;
+	nethlp_elem_ctx_t ectx;
 
-	printf("inst %s\n", inst->children->str);
+/*	printf("inst %s\n", inst->children->str); */
+
+	nethlp_elem_new(nhctx, &ectx, inst->children->str);
 
 	for(n = inst->children; n != NULL; n = n->next) {
 		if (strcmp(n->str, "designator") == 0) {
 			refdes = n->children->str;
-			printf(" refdes=%s\n", refdes);
+/*			printf(" refdes=%s\n", refdes); */
+			nethlp_elem_refdes(&ectx, refdes);
 		}
 		else if (strcmp(n->str, "property") == 0) {
 			const char *key, *val;
 			key = get_by_name(n, "rename", 1);
 			val = get_by_name(n, "string", 0);
-			printf(" property '%s'='%s'\n", key, val);
+/*			printf(" property '%s'='%s'\n", key, val); */
+			if ((key != NULL) && (val != NULL))
+				nethlp_elem_attr(&ectx, key, val);
 		}
 	}
+
+	nethlp_elem_done(&ectx);
+/*	pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);*/
+	return 0;
 }
 
-static int parse_netlist_net(gsxl_node_t *net)
+static int parse_netlist_net(nethlp_ctx_t *nhctx, gsxl_node_t *net)
 {
 	gsxl_node_t *n, *p;
 	const char *netname = get_by_name(net, "rename", 1);
@@ -97,25 +109,31 @@ static int parse_netlist_net(gsxl_node_t *net)
 			}
 		}
 	}
-
+	return 0;
 }
 
 
 static int parse_netlist_view(gsxl_node_t *view)
 {
 	gsxl_node_t *contents, *n;
+	nethlp_ctx_t nhctx;
 	int res = 0;
+	
+	nethlp_new(&nhctx);
+
 	for(contents = view->children; contents != NULL; contents = contents->next) {
 		if (strcmp(contents->str, "contents") == 0) {
 			printf("--- view\n");
 			for(n = contents->children; n != NULL; n = n->next) {
 				if (strcmp(n->str, "instance") == 0)
-					res |= parse_netlist_instance(n);
+					res |= parse_netlist_instance(&nhctx, n);
 				if (strcmp(n->str, "net") == 0)
-					res |= parse_netlist_net(n);
+					res |= parse_netlist_net(&nhctx, n);
 			}
 		}
 	}
+
+	nethlp_destroy(&nhctx);
 	return res;
 }
 
