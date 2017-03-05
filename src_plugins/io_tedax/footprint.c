@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  tedax IO plugin - plugin coordination
+ *  tedax IO plugin - footprint import/export
  *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -24,35 +24,13 @@
 
 #include "config.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "netlist.h"
 #include "footprint.h"
 
-#include "plugins.h"
-#include "hid.h"
-#include "hid_actions.h"
+#include "unit.h"
 
-
-static const char *tedax_cookie = "tEDAx IO";
-
-pcb_hid_action_t tedax_action_list[] = {
-	{"LoadTedaxFrom", 0, pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
-	{"SaveTedax", 0, pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
-};
-
-PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
-
-static void hid_tedax_uninit()
+const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
+const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file";
+int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_remove_actions_by_cookie(tedax_cookie);
-}
 
-#include "dolists.h"
-pcb_uninit_t hid_io_tedax_init()
-{
-	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
-	return hid_tedax_uninit;
 }

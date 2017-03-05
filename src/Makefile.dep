@@ -2074,10 +2074,13 @@
  polygon.h rtree.h remove.h rtree.h flag_str.h obj_pinvia_therm.h \
  rats_patch.h route_style.h compat_misc.h obj_all.h \
  ../src_plugins/io_pcb/parse_y.h
+../src_plugins/io_tedax/footprint.o: ../src_plugins/io_tedax/footprint.c \
+ ../config.h ../src_plugins/io_tedax/footprint.h unit.h
 ../src_plugins/io_tedax/io_tedax.o: ../src_plugins/io_tedax/io_tedax.c \
- ../config.h ../src_plugins/io_tedax/netlist.h unit.h plugins.h hid.h \
- error.h drc.h unit.h global_typedefs.h pcb_bool.h attrib.h layer.h \
- globalconst.h obj_all_list.h obj_arc_list.h obj_common.h \
+ ../config.h ../src_plugins/io_tedax/netlist.h unit.h \
+ ../src_plugins/io_tedax/footprint.h plugins.h hid.h error.h drc.h unit.h \
+ global_typedefs.h pcb_bool.h attrib.h layer.h globalconst.h \
+ obj_all_list.h obj_arc_list.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
