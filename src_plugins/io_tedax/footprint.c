@@ -36,7 +36,7 @@
 #include "obj_elem.h"
 #include "obj_pad.h"
 
-static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad)
+static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
 	double l, vx, vy, nx, ny, width, x1, y1, x2, y2, dx, dy;
 
@@ -59,16 +59,31 @@ static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad)
 	nx = -vy;
 	ny = vx;
 
-	pcb_fprintf(f, " %.9mm %.9mm",   (pcb_coord_t)(x1 - vx * width + nx * width), (pcb_coord_t)(y1 - vy * width + ny * width));
-	pcb_fprintf(f, " %.9mm %.9mm",   (pcb_coord_t)(x1 - vx * width - nx * width), (pcb_coord_t)(y1 - vy * width - ny * width));
-	pcb_fprintf(f, " %.9mm %.9mm",   (pcb_coord_t)(x2 + vx * width + nx * width), (pcb_coord_t)(y2 + vy * width + ny * width));
-	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x2 + vx * width - nx * width), (pcb_coord_t)(y2 + vy * width - ny * width));
+	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x1 - vx * width + nx * width) - cx, (pcb_coord_t)(y1 - vy * width + ny * width) - cy);
+	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x1 - vx * width - nx * width) - cx, (pcb_coord_t)(y1 - vy * width - ny * width) - cy);
+	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x2 + vx * width + nx * width) - cx, (pcb_coord_t)(y2 + vy * width + ny * width) - cy);
+	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x2 + vx * width - nx * width) - cx, (pcb_coord_t)(y2 + vy * width - ny * width) - cy);
 }
 
+#define elem_layer(elem, obj) \
+	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (elem)) == PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (obj))) ? "primary" : "secondary")
+
+#define safe_term_num(out, obj, buff) \
+do { \
+	out = obj->Number; \
+	if ((out == NULL) || (*out == '\0')) { \
+		sprintf(buff, "%p", (void *)obj); \
+		out = buff; \
+		if (out[1] == 'x') \
+			out+=2; \
+	} \
+} while(0)
 
 static int fp_save(pcb_data_t *data, const char *fn)
 {
 	FILE *f;
+	char buff[64];
+
 	f = fopen(fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open %s for writing\n", fn);
@@ -81,23 +96,28 @@ static int fp_save(pcb_data_t *data, const char *fn)
 		fprintf(f, "\nbegin footprint v1 %s\n", element->Name->TextString);
 		PCB_PAD_LOOP(element)
 		{
-			char *lloc, *pnum = pad->Number, buff[64];
-			lloc="??";
-			if ((pnum == NULL) || (*pnum == '\0')) {
-				sprintf(buff, "%p", (void *)pad);
-				pnum = buff;
-				if (pnum[1] == 'x')
-					pnum+=2;
-			}
+			char *lloc, *pnum;
+			lloc = elem_layer(element, pad);
+			safe_term_num(pnum, pad, buff);
 			fprintf(f, "	term %s %s signal %s\n", pnum, pnum, pad->Name);
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) { /* sqaure cap pad -> poly */
 				fprintf(f, "	polygon %s copper %s 4", lloc, pnum);
-				print_sqpad_coords(f, pad);
+				print_sqpad_coords(f, pad,  element->MarkX, element->MarkY);
 				pcb_fprintf(f, " %mm\n", pad->Clearance);
 			}
 			else { /* round cap pad -> line */
-				pcb_fprintf(f, "	line %s copper %s %mm %mm %mm %mm %mm %mm\n", lloc, pnum, pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance);
+				pcb_fprintf(f, "	line %s copper %s %mm %mm %mm %mm %mm %mm\n", lloc, pnum, pad->Point1.X - element->MarkX, pad->Point1.Y - element->MarkY, pad->Point2.X - element->MarkX, pad->Point2.Y - element->MarkY, pad->Thickness, pad->Clearance);
 			}
+		}
+		PCB_END_LOOP;
+
+		PCB_PIN_LOOP(element)
+		{
+			char *pnum;
+			safe_term_num(pnum, pin, buff);
+			fprintf(f, "	term %s %s signal %s\n", pnum, pnum, pin->Name);
+			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->Thickness/2, pin->Clearance);
+			pcb_fprintf(f, "	hole %s %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole/2);
 		}
 		PCB_END_LOOP;
 		fprintf(f, "end footprint\n");
