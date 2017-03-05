@@ -37,6 +37,8 @@
 #include "pcb-printf.h"
 #include "compat_misc.h"
 #include "obj_elem.h"
+#include "obj_line.h"
+#include "obj_arc.h"
 #include "obj_pad.h"
 #include "obj_pinvia.h"
 
@@ -137,6 +139,25 @@ static int fp_save(pcb_data_t *data, const char *fn)
 			pcb_fprintf(f, "	hole %s %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole/2);
 		}
 		PCB_END_LOOP;
+
+		PCB_ELEMENT_PCB_LINE_LOOP(element)
+		{
+			char *lloc= elem_layer(element, line);
+			pcb_fprintf(f, "	line %s silk - %mm %mm %mm %mm %mm %mm\n", lloc,
+				line->Point1.X - element->MarkX, line->Point1.Y - element->MarkY, line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, line->Thickness, line->Clearance);
+		}
+		PCB_END_LOOP;
+
+		PCB_ELEMENT_ARC_LOOP(element)
+		{
+			char *lloc= elem_layer(element, arc);
+			pcb_fprintf(f, "	arc %s silk - %mm %mm %mm %f %f %mm %mm\n", lloc,
+				arc->X - element->MarkX, arc->Y - element->MarkY, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
+				arc->Thickness, arc->Clearance);
+		}
+		PCB_END_LOOP;
+
+
 		fprintf(f, "end footprint\n");
 	}
 	PCB_END_LOOP;
