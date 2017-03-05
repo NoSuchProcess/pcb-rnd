@@ -357,7 +357,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
-	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
+	Clearance = Thickness = 1; /* start with sane default of one nanometre */
 
 	printf("gr_line parsing about to commence:\n");
 
@@ -417,7 +417,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tgr_line layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer < 0) {
-							pcb_printf("\tNon silk gr_line ignored\n");
+							pcb_printf("\tNon silk gr_line layer %d ignored\n", PCBLayer);
 							return 0;
 							/* return -1; */
 						}
@@ -461,7 +461,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-        required = BV(0) | BV(1) | BV(2) | BV(3);
+        required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
         if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew gr_line on layer created\n");
