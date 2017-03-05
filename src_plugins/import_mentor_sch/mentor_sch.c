@@ -128,10 +128,22 @@ static int parse_netlist_view(gsxl_node_t *view)
 {
 	gsxl_node_t *contents, *n;
 	nethlp_ctx_t nhctx;
-	int res = 0;
-	
+	int idx, res = 0, cnt = 0;
+	conf_listitem_t *item;
+	const char *item_str;
+
 	nethlp_new(&nhctx);
-	nethlp_load_part_map(&nhctx, "mentor_parts.map");
+
+	conf_loop_list_str(&conf_mentor.plugins.import_mentor_sch.map_search_paths, item, item_str, idx) {
+		char *p; 
+		pcb_path_resolve(item_str, &p, 0);
+		if (p != NULL) {
+			cnt += nethlp_load_part_map(&nhctx, p);
+			free(p);
+		}
+	}
+	if (cnt == 0)
+		pcb_message(PCB_MSG_WARNING, "Couldn't find any part map rules - check your map_search_paths and rule files\n");
 
 	for(contents = view->children; contents != NULL; contents = contents->next) {
 		if (strcmp(contents->str, "contents") == 0) {
