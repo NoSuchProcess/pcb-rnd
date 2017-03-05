@@ -154,6 +154,9 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 		return -1;
 	}
 
+	pcb_hid_actionl("Netlist", "Freeze", NULL);
+	pcb_hid_actionl("Netlist", "Clear", NULL);
+
 	for(library = dom->root->children; library != NULL; library = library->next) {
 		if (strcmp(library->str, "library") == 0) {
 			if (strcmp(library->children->str, "hierarchical") == 0) {
@@ -171,6 +174,9 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 			}
 		}
 	}
+
+	pcb_hid_actionl("Netlist", "Sort", NULL);
+	pcb_hid_actionl("Netlist", "Thaw", NULL);
 
 /*	for(n = library->children; n != NULL; n = n->next) {
 		printf("n=%s\n", n->str);

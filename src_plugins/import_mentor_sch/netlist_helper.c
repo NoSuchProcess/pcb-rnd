@@ -30,6 +30,9 @@
 
 #include "netlist_helper.h"
 #include "compat_misc.h"
+#include "pcb-printf.h"
+#include "error.h"
+#include "hid_actions.h"
 
 
 nethlp_ctx_t *nethlp_new(nethlp_ctx_t *prealloc)
@@ -115,9 +118,12 @@ nethlp_net_ctx_t *nethlp_net_new(nethlp_ctx_t *nhctx, nethlp_net_ctx_t *prealloc
 void nethlp_net_add_term(nethlp_net_ctx_t *nctx, const char *part, const char *pin)
 {
 	char *refdes = htsp_get(&nctx->nhctx->id2refdes, part);
-	if (refdes == NULL)
-		refdes = "n/a";
-	printf("net: %s %s (%s) %s\n", nctx->netname, refdes, part, pin);
+	char term[256];
+	if (refdes == NULL) {
+		pcb_message(PCB_MSG_ERROR, "nethelper: can't resolve refdes of part %s\n", part);
+	}
+	pcb_snprintf(term, sizeof(term), "%s:%s", refdes, pin);
+	pcb_hid_actionl("Netlist", "Add",  nctx->netname, term, NULL);
 }
 
 void nethlp_net_destroy(nethlp_net_ctx_t *nctx)
