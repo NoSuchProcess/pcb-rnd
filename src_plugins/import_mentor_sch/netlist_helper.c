@@ -73,7 +73,16 @@ void nethlp_destroy(nethlp_ctx_t *nhctx)
 		free(nhctx);
 }
 
-#define ltrim(s) while(isspace(*s)) s++;
+#define ltrim(str) while(isspace(*str)) str++;
+#define rtrim(str) \
+do { \
+	char *__s__; \
+	for(__s__ = str + strlen(str) - 1; __s__ >= str; __s__--) { \
+		if ((*__s__ != '\r') && (*__s__ != '\n')) \
+			break; \
+		*__s__ = '\0'; \
+	} \
+} while(0)
 
 static int part_map_split(char *s, char *argv[], int maxargs)
 {
@@ -83,6 +92,7 @@ static int part_map_split(char *s, char *argv[], int maxargs)
 	ltrim(s);
 	if ((*s == '#') || (*s == '\0'))
 		return 0;
+	rtrim(s);
 
 	for(argc = n = 0; n < maxargs; n++) {
 		argv[argc] = s;
