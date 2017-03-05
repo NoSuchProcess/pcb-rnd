@@ -127,6 +127,7 @@ static int parse_netlist_view(gsxl_node_t *view)
 	int res = 0;
 	
 	nethlp_new(&nhctx);
+	nethlp_load_part_map(&nhctx, "mentor_parts.map");
 
 	for(contents = view->children; contents != NULL; contents = contents->next) {
 		if (strcmp(contents->str, "contents") == 0) {

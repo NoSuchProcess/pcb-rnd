@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <genht/hash.h>
 
 #include "netlist_helper.h"
@@ -43,6 +44,8 @@ nethlp_ctx_t *nethlp_new(nethlp_ctx_t *prealloc)
 	}
 	else
 		prealloc->alloced = 0;
+
+	prealloc->part_rules = NULL;
 	htsp_init(&prealloc->id2refdes, strhash, strkeyeq);
 	return prealloc;
 }
@@ -50,6 +53,17 @@ nethlp_ctx_t *nethlp_new(nethlp_ctx_t *prealloc)
 void nethlp_destroy(nethlp_ctx_t *nhctx)
 {
 	htsp_entry_t *e;
+	nethlp_rule_t *r, *next;
+
+	for(r = nhctx->part_rules; r != NULL; r = next) {
+		next = r->next;
+		re_se_free(r->key);
+		re_se_free(r->val);
+		free(r->new_key);
+		free(r->new_val);
+		free(r);
+	}
+
 	for (e = htsp_first(&nhctx->id2refdes); e; e = htsp_next(&nhctx->id2refdes, e)) {
 		free(e->key);
 		free(e->value);
@@ -57,6 +71,99 @@ void nethlp_destroy(nethlp_ctx_t *nhctx)
 	htsp_uninit(&nhctx->id2refdes);
 	if (nhctx->alloced)
 		free(nhctx);
+}
+
+#define ltrim(s) while(isspace(*s)) s++;
+
+static int part_map_split(char *s, char *argv[], int maxargs)
+{
+	int argc;
+	int n;
+
+	ltrim(s);
+	if ((*s == '#') || (*s == '\0'))
+		return 0;
+
+	for(argc = n = 0; n < maxargs; n++) {
+		argv[argc] = s;
+		if (s != NULL) {
+			argc++;
+			s = strchr(s, '|');
+			if (s != NULL) {
+				*s = '\0';
+				s++;
+			}
+		}
+	}
+	return argc;
+}
+
+static int part_map_parse(nethlp_ctx_t *nhctx, int argc, char *argv[], const char *fn, int lineno)
+{
+	char *end;
+	nethlp_rule_t *r;
+	re_se_t *kr, *vr;
+	int prio;
+
+	if (argc != 5) {
+		pcb_message(PCB_MSG_ERROR, "Loading part map: wrong number of fields %d in %s:%d - expected 5 - ignoring this rule\n", argc, fn, lineno);
+		return -1;
+	}
+	if (*argv[0] != '*') {
+		prio = strtol(argv[0], &end, 10);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "Loading part map: invaid priority '%s' in %s:%d - ignoring this rule\n", argv[0], fn, lineno);
+			return -1;
+		}
+	}
+	else
+		prio = nethlp_prio_always;
+	kr = re_se_comp(argv[1]);
+	if (kr == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Loading part map: can't compile attribute name regex in %s:%d - ignoring this rule\n", fn, lineno);
+		return -1;
+	}
+	vr = re_se_comp(argv[2]);
+	if (vr == NULL) {
+		re_se_free(kr);
+		pcb_message(PCB_MSG_ERROR, "Loading part map: can't compile attribute value regex in %s:%d - ignoring this rule\n", fn, lineno);
+		return -1;
+	}
+
+	r = malloc(sizeof(nethlp_rule_t));
+	r->prio = prio;
+	r->key = kr;
+	r->val = vr;
+	r->new_key = pcb_strdup(argv[3]);
+	r->new_val = pcb_strdup(argv[4]);
+	r->next = nhctx->part_rules;
+	nhctx->part_rules = r;
+
+	return 0;
+}
+
+int nethlp_load_part_map(nethlp_ctx_t *nhctx, const char *fn)
+{
+	FILE *f;
+	int cnt, argc, lineno;
+	char line[1024], *argv[8];
+
+	f = fopen(fn, "r");
+	if (f == NULL)
+		return -1;
+
+	lineno = 0;
+	while(fgets(line, sizeof(line), f) != NULL) {
+		lineno++;
+		argc = part_map_split(line, argv, 6);
+		if ((argc > 0) && (part_map_parse(nhctx, argc, argv, fn, lineno) == 0)) {
+/*			printf("MAP %d '%s' '%s' '%s' '%s' '%s'\n", argc, argv[0], argv[1], argv[2], argv[3], argv[4]);*/
+			cnt++;
+		}
+	}
+
+	fclose(f);
+	return cnt;
 }
 
 
