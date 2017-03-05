@@ -106,6 +106,8 @@ static int parse_netlist_net(nethlp_ctx_t *nhctx, gsxl_node_t *net)
 					pin = p->children->str;
 					part = get_by_name(p, "instanceRef", 0);
 					if ((part != NULL) && (pin != NULL)) {
+						if (*pin == '&')
+							pin++;
 						nethlp_net_add_term(&nctx, part, pin);
 					}
 				}
