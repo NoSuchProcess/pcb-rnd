@@ -11,3 +11,9 @@
 
 # plain headers
 100|Part Name|Dummy_HDR \([0-9]+\)x\([0-9]+\) P:\([0-9.]+mm\)|footprint|connector(\1, \2, \3)
+
+# last hope...
+10|Part Name|_0402$|footprint|0402
+10|Part Name|_0603$|footprint|0603
+10|Part Name|_1206$|footprint|1206
+10|Part Name|_1210$|footprint|1210
