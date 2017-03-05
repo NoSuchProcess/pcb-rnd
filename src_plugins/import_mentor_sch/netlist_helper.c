@@ -191,12 +191,44 @@ void nethlp_elem_attr(nethlp_elem_ctx_t *ectx, const char *key, const char *val)
 	htsp_set(&ectx->attr, pcb_strdup(key), pcb_strdup(val));
 }
 
+static void elem_map_apply(nethlp_elem_ctx_t *ectx, nethlp_rule_t *r)
+{
+	char *dst;
+	int len;
+	len = re_se_backref(r->val, &dst, r->new_val);
+	printf("Map add: '%s' -> '%s'\n", r->new_key, dst);
+}
+
 void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 {
 	htsp_entry_t *e;
 
+	/* apply part map */
+	for (e = htsp_first(&ectx->attr); e; e = htsp_next(&ectx->attr, e)) {
+		nethlp_rule_t *r, *best_rule = NULL;
+		int best_prio = 0;
+
+		for(r = ectx->nhctx->part_rules; r != NULL; r = r->next) {
+			if (r->prio == nethlp_prio_always) {
+				if (re_se_exec(r->key, e->key) && re_se_exec(r->val, e->value)) {
+					/* always apply - backref is already set up for val */
+					elem_map_apply(ectx, r);
+				}
+			}
+			else if ((r->prio >= best_prio) && re_se_exec(r->key, e->key) && re_se_exec(r->val, e->value)) {
+				best_prio = r->prio;
+				best_rule = r;
+			}
+		}
+		if (best_rule != NULL) {
+			re_se_exec(best_rule->val, e->value); /* acquire the back refs again */
+			elem_map_apply(ectx, best_rule);
+		}
+	}
+
 	printf("Elem '%s' -> '%s'\n", ectx->id, (char *)htsp_get(&ectx->nhctx->id2refdes, ectx->id));
 
+	/* free */
 	for (e = htsp_first(&ectx->attr); e; e = htsp_next(&ectx->attr, e)) {
 		free(e->key);
 		free(e->value);

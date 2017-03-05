@@ -10,4 +10,4 @@
 #    5: add attribute value: use value for the new attribute; built with back references to part attribute regex
 
 # plain headers
-10|Part Name|Dummy_HDR ([0-9]+)x([0-9]+) P:([0-9.]+mm)|footprint|connector(\1, \2, \3)
+100|Part Name|Dummy_HDR \([0-9]+\)x\([0-9]+\) P:\([0-9.]+mm\)|footprint|connector(\1, \2, \3)
