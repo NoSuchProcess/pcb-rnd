@@ -114,7 +114,10 @@ nethlp_net_ctx_t *nethlp_net_new(nethlp_ctx_t *nhctx, nethlp_net_ctx_t *prealloc
 
 void nethlp_net_add_term(nethlp_net_ctx_t *nctx, const char *part, const char *pin)
 {
-
+	char *refdes = htsp_get(&nctx->nhctx->id2refdes, part);
+	if (refdes == NULL)
+		refdes = "n/a";
+	printf("net: %s %s (%s) %s\n", nctx->netname, refdes, part, pin);
 }
 
 void nethlp_net_destroy(nethlp_net_ctx_t *nctx)
