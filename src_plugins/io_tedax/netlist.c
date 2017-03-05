@@ -1,32 +1,4 @@
-/*
- *                            COPYRIGHT
- *
- *  pcb-rnd, interactive printed circuit board design
- *
- *  tedax import plugin
- *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- */
-
 #include "config.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <genht/htsp.h>
 #include <genht/hash.h>
@@ -39,79 +11,8 @@
 
 #include "action_helper.h"
 #include "hid_actions.h"
-#include "plugins.h"
-#include "hid.h"
 
-
-static const char *tedax_cookie = "tedax importer";
-
-/* remove leading whitespace */
-#define ltrim(s) while(isspace(*s)) s++
-
-/* remove trailing newline;; trailing backslash is an error */
-#define rtrim(s) \
-	do { \
-		char *end; \
-		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
-			*end = '\0'; \
-		if (*end == '\\') \
-			return -1; \
-	} while(0)
-
-static int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int argv_size)
-{
-	int argc;
-
-	for(;;) {
-		char *s, *o;
-
-		if (fgets(buff, buff_size, f) == NULL)
-			return -1;
-
-		s = buff;
-		if (*s == '#') /* comment */
-			continue;
-		ltrim(s);
-		rtrim(s);
-		if (*s == '\0') /* empty line */
-			continue;
-
-		/* argv split */
-		for(argc = 0, o = argv[0] = s; *s != '\0';) {
-			if (*s == '\\') {
-				s++;
-				switch(*s) {
-					case 'r': *o = '\r'; break;
-					case 'n': *o = '\n'; break;
-					case 't': *o = '\t'; break;
-					default: *o = *s;
-				}
-				o++;
-				s++;
-				continue;
-			}
-			if ((argc+1 < argv_size) && ((*s == ' ') || (*s == '\t'))) {
-				*s = '\0';
-				s++;
-				o++;
-				while((*s == ' ') || (*s == '\t'))
-					s++;
-				argc++;
-				argv[argc] = o;
-			}
-			else {
-				*o = *s;
-				s++;
-				o++;
-			}
-		}
-		return argc+1; /* valid line, split up */
-	}
-
-	return -1; /* can't get here */
-}
-
-#define null_empty(s) ((s) == NULL ? "" : (s))
+#include "parse.h"
 
 typedef struct {
 	char *value;
@@ -224,8 +125,8 @@ static int tedax_load_net(const char *fname_net)
 	return ret;
 }
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(filename)";
-static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified tedax netlist file.";
+const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(filename)";
+const char pcb_acth_LoadtedaxFrom[] = "Loads the specified tedax netlist file.";
 int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
@@ -246,22 +147,4 @@ int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	}
 
 	return tedax_load_net(fname);
-}
-
-pcb_hid_action_t tedax_action_list[] = {
-	{"LoadTedaxFrom", 0, pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom}
-};
-
-PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
-
-static void hid_tedax_uninit()
-{
-	pcb_hid_remove_actions_by_cookie(tedax_cookie);
-}
-
-#include "dolists.h"
-pcb_uninit_t hid_io_tedax_init()
-{
-	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
-	return hid_tedax_uninit;
 }
