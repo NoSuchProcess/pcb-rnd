@@ -466,8 +466,10 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 		pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew gr_line on layer created\n");
 		return 0;
+	} else {
+		pcb_printf("\tignoring malformed gr_line definition \n");
+		return 0;
 	}
-	return -1;
 }
 
 /* kicad_pcb/gr_arc     can also parse gr_cicle*/
@@ -1050,6 +1052,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
+	int moduleLayer = 0; /* used in case empty module element layer defs found */
 	int kicadLayer = 15; /* default = top side */
 	int moduleOnTop = 1;
 	int padLayerDefCount = 0;
@@ -1087,6 +1090,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tlayer: '%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
+					moduleLayer = PCBLayer;
 					if (PCBLayer < 0) {
 						return -1;
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
@@ -1677,11 +1681,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						SEEN_NO_DUP(featureTally, 7);
 						PCBLayer = kicad_get_layeridx(st, l->children->str);
 						if (PCBLayer < 0) {
-							pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, line ignored.\n");
+							pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, using module layer.\n");
+							PCBLayer = moduleLayer;
 							return 0;
 						}
 					} else {
-						return -1;
+						pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_line element\n");
+						PCBLayer = moduleLayer; /* default to module layer */
+						/* return -1; */
 					}
 			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 8);
@@ -1824,10 +1831,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						SEEN_NO_DUP(featureTally, 7);
 						PCBLayer = kicad_get_layeridx(st, l->children->str);
 						if (PCBLayer < 0) {
-							return -1;
+							pcb_message(PCB_MSG_ERROR, "\tinvalid gr_arc layer def, using module default layer.\n");
+							PCBLayer = moduleLayer; /* revert to default */
+							return 0;
+							/* return -1; */
 						}
 					} else {
-						return -1;
+						PCBLayer = moduleLayer;
+						pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_arc element.\n");
+						/*return -1;*/
 					}
 			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 8);
