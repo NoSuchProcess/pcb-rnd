@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <genht/hash.h>
 
 #include "netlist_helper.h"
@@ -84,7 +85,7 @@ void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 {
 	htsp_entry_t *e;
 
-	printf("Elem '%s' -> '%s'\n", ectx->id, htsp_get(&ectx->nhctx->id2refdes, ectx->id));
+	printf("Elem '%s' -> '%s'\n", ectx->id, (char *)htsp_get(&ectx->nhctx->id2refdes, ectx->id));
 
 	for (e = htsp_first(&ectx->attr); e; e = htsp_next(&ectx->attr, e)) {
 		free(e->key);
@@ -96,4 +97,30 @@ void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 		free(ectx);
 }
 
+
+nethlp_net_ctx_t *nethlp_net_new(nethlp_ctx_t *nhctx, nethlp_net_ctx_t *prealloc, const char *netname)
+{
+	if (prealloc == NULL) {
+		prealloc = malloc(sizeof(nethlp_net_ctx_t));
+		prealloc->alloced = 1;
+	}
+	else
+		prealloc->alloced = 0;
+	prealloc->nhctx = nhctx;
+
+	prealloc->netname = pcb_strdup(netname);
+	return prealloc;
+}
+
+void nethlp_net_add_term(nethlp_net_ctx_t *nctx, const char *part, const char *pin)
+{
+
+}
+
+void nethlp_net_destroy(nethlp_net_ctx_t *nctx)
+{
+	free(nctx->netname);
+	if (nctx->alloced)
+		free(nctx);
+}
 

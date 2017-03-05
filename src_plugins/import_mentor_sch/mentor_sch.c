@@ -94,8 +94,10 @@ static int parse_netlist_net(nethlp_ctx_t *nhctx, gsxl_node_t *net)
 {
 	gsxl_node_t *n, *p;
 	const char *netname = get_by_name(net, "rename", 1);
+	nethlp_net_ctx_t nctx;
 
-	printf("net %s\n", netname);
+	nethlp_net_new(nhctx, &nctx, netname);
+
 	for(n = net->children; n != NULL; n = n->next) {
 		if (strcmp(n->str, "joined") == 0) {
 			for(p = n->children; p != NULL; p = p->next) {
@@ -103,12 +105,15 @@ static int parse_netlist_net(nethlp_ctx_t *nhctx, gsxl_node_t *net)
 					const char *part, *pin;
 					pin = p->children->str;
 					part = get_by_name(p, "instanceRef", 0);
-					if ((part != NULL) && (pin != NULL))
-						printf(" %s %s\n", part, pin);
+					if ((part != NULL) && (pin != NULL)) {
+						nethlp_net_add_term(&nctx, part, pin);
+					}
 				}
 			}
 		}
 	}
+	
+	nethlp_net_destroy(&nctx);
 	return 0;
 }
 
