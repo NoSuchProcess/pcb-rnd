@@ -196,12 +196,14 @@ static void elem_map_apply(nethlp_elem_ctx_t *ectx, nethlp_rule_t *r)
 	char *dst;
 	int len;
 	len = re_se_backref(r->val, &dst, r->new_val);
-	printf("Map add: '%s' -> '%s'\n", r->new_key, dst);
+/*	printf("Map add: '%s' -> '%s'\n", r->new_key, dst);*/
+	htsp_set(&ectx->attr, pcb_strdup(r->new_key), pcb_strdup(dst));
 }
 
 void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 {
 	htsp_entry_t *e;
+	char *refdes, *footprint, *value;
 
 	/* apply part map */
 	for (e = htsp_first(&ectx->attr); e; e = htsp_next(&ectx->attr, e)) {
@@ -226,7 +228,19 @@ void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 		}
 	}
 
-	printf("Elem '%s' -> '%s'\n", ectx->id, (char *)htsp_get(&ectx->nhctx->id2refdes, ectx->id));
+	/* look up hardwired attributes */
+	footprint = htsp_get(&ectx->attr, "pcb-rnd-footprint");
+	if (footprint == NULL)
+		footprint = htsp_get(&ectx->attr, "footprint");
+
+	value = htsp_get(&ectx->attr, "pcb-rnd-value");
+	if (value == NULL)
+		value = htsp_get(&ectx->attr, "value");
+
+	refdes = htsp_get(&ectx->nhctx->id2refdes, ectx->id);
+
+	/* create elemet */
+	printf("Elem '%s' -> %s:%s:%s\n", ectx->id, refdes, footprint, value);
 
 	/* free */
 	for (e = htsp_first(&ectx->attr); e; e = htsp_next(&ectx->attr, e)) {
