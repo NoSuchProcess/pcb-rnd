@@ -25,6 +25,8 @@
 #include "config.h"
 #include <stdio.h>
 #include <math.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 
 #include "footprint.h"
 
@@ -33,8 +35,10 @@
 #include "data.h"
 #include "board.h"
 #include "pcb-printf.h"
+#include "compat_misc.h"
 #include "obj_elem.h"
 #include "obj_pad.h"
+#include "obj_pinvia.h"
 
 static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
@@ -79,16 +83,29 @@ do { \
 	} \
 } while(0)
 
+#define print_term(num, obj) \
+do { \
+	if (htsp_get(&terms, pnum) == NULL) { \
+		htsp_set(&terms, pcb_strdup(pnum), obj); \
+		fprintf(f, "	term %s %s signal %s\n", pnum, pnum, obj->Name); \
+	} \
+} while(0)
+
 static int fp_save(pcb_data_t *data, const char *fn)
 {
 	FILE *f;
 	char buff[64];
+	htsp_t terms;
+	htsp_entry_t *e;
 
 	f = fopen(fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open %s for writing\n", fn);
 		return -1;
 	}
+
+	htsp_init(&terms, strhash, strkeyeq);
+
 	fprintf(f, "tedax v1\n");
 
 	PCB_ELEMENT_LOOP(data)
@@ -99,7 +116,7 @@ static int fp_save(pcb_data_t *data, const char *fn)
 			char *lloc, *pnum;
 			lloc = elem_layer(element, pad);
 			safe_term_num(pnum, pad, buff);
-			fprintf(f, "	term %s %s signal %s\n", pnum, pnum, pad->Name);
+			print_term(pnum, pad);
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) { /* sqaure cap pad -> poly */
 				fprintf(f, "	polygon %s copper %s 4", lloc, pnum);
 				print_sqpad_coords(f, pad,  element->MarkX, element->MarkY);
@@ -115,7 +132,7 @@ static int fp_save(pcb_data_t *data, const char *fn)
 		{
 			char *pnum;
 			safe_term_num(pnum, pin, buff);
-			fprintf(f, "	term %s %s signal %s\n", pnum, pnum, pin->Name);
+			print_term(pnum, pin);
 			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->Thickness/2, pin->Clearance);
 			pcb_fprintf(f, "	hole %s %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole/2);
 		}
@@ -123,6 +140,10 @@ static int fp_save(pcb_data_t *data, const char *fn)
 		fprintf(f, "end footprint\n");
 	}
 	PCB_END_LOOP;
+
+	for (e = htsp_first(&terms); e; e = htsp_next(&terms, e))
+		free(e->key);
+	htsp_uninit(&terms);
 
 	fclose(f);
 
