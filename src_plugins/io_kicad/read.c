@@ -985,6 +985,10 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 			res |= kicad_reg_layer(st, "F.SilkS", PCB_LYT_SILK | PCB_LYT_TOP);
 			res |= kicad_reg_layer(st, "B.SilkS", PCB_LYT_SILK | PCB_LYT_BOTTOM);
 
+			/* for modules */
+			res |= kicad_reg_layer(st, "Top", PCB_LYT_COPPER | PCB_LYT_TOP);
+			res |= kicad_reg_layer(st, "Bottom", PCB_LYT_COPPER | PCB_LYT_BOTTOM);
+
 			/*
 			We don't have custom mask layers yet
 			res |= kicad_reg_layer(st, "F.Mask",  PCB_LYT_MASK | PCB_LYT_TOP);
