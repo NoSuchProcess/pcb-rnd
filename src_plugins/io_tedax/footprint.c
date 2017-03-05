@@ -157,13 +157,16 @@ static int fp_save(pcb_data_t *data, const char *fn)
 		}
 		PCB_END_LOOP;
 
-
 		fprintf(f, "end footprint\n");
+
+		for (e = htsp_first(&terms); e; e = htsp_next(&terms, e)) {
+			free(e->key);
+			htsp_delentry(&terms, e);
+		}
+
 	}
 	PCB_END_LOOP;
 
-	for (e = htsp_first(&terms); e; e = htsp_next(&terms, e))
-		free(e->key);
 	htsp_uninit(&terms);
 
 	fclose(f);
