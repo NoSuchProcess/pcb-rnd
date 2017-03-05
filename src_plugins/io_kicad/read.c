@@ -451,7 +451,8 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 					} else {
 						return -1;
 					}
-			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) { /* unlikely to be used or seen */
+			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
+				pcb_printf("\tgr_line tstamp: '%s'\n", (n->children->str));
 				/* ignore */
 			} else {
 				if (n->str != NULL) {
@@ -607,6 +608,9 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 					} else {
 						return -1;
 					}
+			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
+				pcb_printf("\tgr_arc tstamp: '%s'\n", (n->children->str));
+				/* ignore */
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown gr_arc argument %s:", n->str);
