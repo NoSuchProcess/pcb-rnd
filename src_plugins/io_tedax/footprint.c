@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include <stdio.h>
+#include <math.h>
 
 #include "footprint.h"
 
@@ -31,7 +32,39 @@
 #include "error.h"
 #include "data.h"
 #include "board.h"
+#include "pcb-printf.h"
 #include "obj_elem.h"
+#include "obj_pad.h"
+
+static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad)
+{
+	double l, vx, vy, nx, ny, width, x1, y1, x2, y2, dx, dy;
+
+	x1 = Pad->Point1.X;
+	y1 = Pad->Point1.Y;
+	x2 = Pad->Point2.X;
+	y2 = Pad->Point2.Y;
+
+	width = (double)((Pad->Thickness + 1) / 2);
+	dx = x2-x1;
+	dy = y2-y1;
+
+	if ((dx == 0) && (dy == 0))
+		dx = 1;
+
+	l = sqrt((double)dx*(double)dx + (double)dy*(double)dy);
+
+	vx = dx / l;
+	vy = dy / l;
+	nx = -vy;
+	ny = vx;
+
+	pcb_fprintf(f, " %.9mm %.9mm",   (pcb_coord_t)(x1 - vx * width + nx * width), (pcb_coord_t)(y1 - vy * width + ny * width));
+	pcb_fprintf(f, " %.9mm %.9mm",   (pcb_coord_t)(x1 - vx * width - nx * width), (pcb_coord_t)(y1 - vy * width - ny * width));
+	pcb_fprintf(f, " %.9mm %.9mm",   (pcb_coord_t)(x2 + vx * width + nx * width), (pcb_coord_t)(y2 + vy * width + ny * width));
+	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x2 + vx * width - nx * width), (pcb_coord_t)(y2 + vy * width - ny * width));
+}
+
 
 static int fp_save(pcb_data_t *data, const char *fn)
 {
@@ -45,7 +78,7 @@ static int fp_save(pcb_data_t *data, const char *fn)
 
 	PCB_ELEMENT_LOOP(data)
 	{
-		fprintf(f, "begin footprint v1 %s\n", element->Name->TextString);
+		fprintf(f, "\nbegin footprint v1 %s\n", element->Name->TextString);
 		PCB_PAD_LOOP(element)
 		{
 			char *lloc, *pnum = pad->Number, buff[64];
@@ -56,12 +89,18 @@ static int fp_save(pcb_data_t *data, const char *fn)
 				if (pnum[1] == 'x')
 					pnum+=2;
 			}
-			fprintf(f, "term %s %s signal %s\n", pnum, pnum, pad->Name);
-			fprintf(f, "polygon %s copper %s ---\n", lloc, pnum);
+			fprintf(f, "	term %s %s signal %s\n", pnum, pnum, pad->Name);
+			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) { /* sqaure cap pad -> poly */
+				fprintf(f, "	polygon %s copper %s 4", lloc, pnum);
+				print_sqpad_coords(f, pad);
+				pcb_fprintf(f, " %mm\n", pad->Clearance);
+			}
+			else { /* round cap pad -> line */
+				pcb_fprintf(f, "	line %s copper %s %mm %mm %mm %mm %mm %mm\n", lloc, pnum, pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance);
+			}
 		}
 		PCB_END_LOOP;
 		fprintf(f, "end footprint\n");
-		break;
 	}
 	PCB_END_LOOP;
 
