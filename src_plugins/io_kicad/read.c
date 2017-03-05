@@ -44,6 +44,7 @@
 #include "move.h"
 #include "macro.h"
 #include "obj_all.h"
+#include "rotate.h"
 
 typedef struct {
 	pcb_board_t *PCB;
@@ -1070,6 +1071,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int foundRefdes = 0;
 	int refdesScaling  = 100;
 	int moduleEmpty = 1;
+	int moduleRotation = 0; /* here's hoping it's an integer */
+	unsigned int padRotation = 0; /* for rotating pads */
 	unsigned long tally = 0, featureTally, required;
 	pcb_coord_t moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
 	pcb_angle_t startAngle = 0.0;
@@ -1154,6 +1157,18 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 				} else {
 					return -1;
+				}
+				if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
+					pcb_printf("\tmodule rotation: '%s'\n", (n->children->next->next->str));
+					val = strtod(n->children->next->next->str, &end);
+					if (*end != 0) {
+						pcb_printf("\tmodule (at) \"rotation\" value error\n");
+						return -1;
+					} else {
+						moduleRotation = (int)val;
+					}
+				} else {
+					pcb_printf("\tno module (at) \"rotation\" value found'\n");
 				}
 			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
 				pcb_printf("module 3D model found and ignored\n");
@@ -1419,6 +1434,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
 				featureTally = 0;
 				padLayerDefCount = 0;
+				padRotation = 0;
 				if (n->children != 0 && n->children->str != NULL) {
 					printf("pad name found: %s\n", n->children->str);
 					pinName = n->children->str;
@@ -1477,6 +1493,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								}
 							} else {
 								return -1;
+							}
+							if (m->children->next->next != NULL && m->children->next->next->str != NULL) {
+								pcb_printf("\tpad rotation:\t'%s'\n", (m->children->next->next->str));
+								val = strtod(m->children->next->next->str, &end);
+								if (*end != 0) {
+									pcb_printf("Odd pad rotation def ignored.");
+								} else {
+									padRotation = (int) val;
+								}
 							}
 						} else {
 							return -1;
@@ -1612,6 +1637,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 						}
 						moduleEmpty = 0;
+						if (padRotation != 0) {
+							padRotation = padRotation/90;/*ignore rotation != n*90*/
+							PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
+							PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
+							pcb_printf("\t Pad rotation %d applied\n", padRotation);
+						}
 						pcb_element_pad_new(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
 								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
 					} else {
@@ -1939,7 +1970,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
 			}
 			pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
-			return 0; 
+			pcb_printf("I should apply module rotation of %d here.", moduleRotation);
+			return 0;
 		} else {
 			return -1;
 		}
