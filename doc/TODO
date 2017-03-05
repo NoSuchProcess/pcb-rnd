@@ -63,6 +63,7 @@ CLEANUP #5
 	- move the logical layer preferences menu tab items in this context menu too (e.g. move up/down, rename, delete, insert)
 - layer group rewrite:
 	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
+	- make the color config dynamic too; invent color for new layers
 - BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc and it will calculate a self-intersecting clearance [report:Evan]
 - draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numebring, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
