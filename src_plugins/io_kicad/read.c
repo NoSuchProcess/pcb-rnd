@@ -1071,7 +1071,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int foundRefdes = 0;
 	int refdesScaling  = 100;
 	int moduleEmpty = 1;
-	int moduleRotation = 0; /* here's hoping it's an integer */
+	unsigned int moduleRotation = 0; /* for rotating modules */
 	unsigned int padRotation = 0; /* for rotating pads */
 	unsigned long tally = 0, featureTally, required;
 	pcb_coord_t moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
@@ -1969,8 +1969,18 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
 				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
 			}
-			pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
-			pcb_printf("I should apply module rotation of %d here.", moduleRotation);
+                        pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
+			if (moduleRotation != 0) {
+				pcb_printf("Applying module rotation of %d here.", moduleRotation);
+				moduleRotation = moduleRotation/90;/* ignore rotation != n*90 for now*/
+				pcb_element_rotate90(PCB->Data, newModule, moduleX, moduleY, moduleRotation);
+				/* can test for rotation != n*90 degrees if necessary, and call
+				 * void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element,
+				 *		pcb_coord_t X, pcb_coord_t Y, double 
+				 *		cosa, double sina, pcb_angle_t angle);
+				 */
+			}
+			/*pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));*/
 			return 0;
 		} else {
 			return -1;
