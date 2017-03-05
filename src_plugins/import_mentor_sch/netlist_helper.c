@@ -232,10 +232,14 @@ void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 	footprint = htsp_get(&ectx->attr, "pcb-rnd-footprint");
 	if (footprint == NULL)
 		footprint = htsp_get(&ectx->attr, "footprint");
+	if (footprint == NULL)
+		footprint = htsp_get(&ectx->attr, "Footprint");
 
 	value = htsp_get(&ectx->attr, "pcb-rnd-value");
 	if (value == NULL)
 		value = htsp_get(&ectx->attr, "value");
+	if (value == NULL)
+		value = htsp_get(&ectx->attr, "Value");
 
 	refdes = htsp_get(&ectx->nhctx->id2refdes, ectx->id);
 
