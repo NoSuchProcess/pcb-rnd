@@ -89,7 +89,7 @@ do { \
 do { \
 	if (htsp_get(&terms, pnum) == NULL) { \
 		htsp_set(&terms, pcb_strdup(pnum), obj); \
-		fprintf(f, "	term %s %s signal %s\n", pnum, pnum, obj->Name); \
+		fprintf(f, "	term %s %s - %s\n", pnum, pnum, obj->Name); \
 	} \
 } while(0)
 
