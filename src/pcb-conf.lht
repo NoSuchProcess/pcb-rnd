@@ -226,6 +226,12 @@ li:pcb-rnd-conf-v1 {
 				gnetlist_program = gnetlist
 				make_program = make
 			}
+			ha:import_mentor_sch {
+				li:map_search_paths = {
+					{./mentor_parts.map}
+					{$(rc.path.share)/mentor_parts.map}
+				}
+			}
 			ha:hid_gtk {
 				compact_horizontal = 1
 				compact_vertical = 1

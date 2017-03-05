@@ -39,8 +39,12 @@
 #include "hid_actions.h"
 #include "plugins.h"
 #include "hid.h"
+#include "mentor_sch_conf.h"
 
 #include "netlist_helper.h"
+
+conf_mentor_sch_t conf_mentor;
+
 
 static const char *mentor_sch_cookie = "mentor_sch importer";
 
@@ -266,11 +270,17 @@ PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
 static void hid_mentor_sch_uninit()
 {
 	pcb_hid_remove_actions_by_cookie(mentor_sch_cookie);
+	conf_unreg_fields("plugins/import_mentor_sch/");
 }
 
 #include "dolists.h"
 pcb_uninit_t hid_import_mentor_sch_init()
 {
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_mentor, field,isarray,type_name,cpath,cname,desc,flags);
+#include "mentor_sch_conf_fields.h"
+
 	PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
 	return hid_mentor_sch_uninit;
 }

@@ -1618,7 +1618,35 @@
  vtonpoint.h hid.h error.h drc.h buffer.h error.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h compat_misc.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
- action_helper.h hid_actions.h plugins.h hid.h dolists.h
+ action_helper.h hid_actions.h plugins.h hid.h \
+ ../src_plugins/import_mentor_sch/mentor_sch_conf.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h conf.h ../src_plugins/import_mentor_sch/netlist_helper.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genregex/regex_se.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
+ ../src_plugins/import_mentor_sch/mentor_sch_conf_fields.h
+../src_plugins/import_mentor_sch/netlist_helper.o: \
+ ../src_plugins/import_mentor_sch/netlist_helper.c ../config.h \
+ ../src_3rd/liblihata/genht/hash.h \
+ ../src_plugins/import_mentor_sch/netlist_helper.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genregex/regex_se.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
+ compat_misc.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h unit.h error.h hid_actions.h \
+ hid.h error.h drc.h global_typedefs.h pcb_bool.h attrib.h layer.h \
+ globalconst.h obj_all_list.h obj_arc_list.h obj_common.h \
+ ../src_3rd/genlist/gendlist.h flag.h obj_arc.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_elem_list.h obj_elem.h \
+ obj_line_list.h obj_line.h obj_pad_list.h obj_pad.h obj_pinvia_list.h \
+ obj_pinvia.h obj_text.h font.h ../src_3rd/liblihata/genht/htip.h box.h \
+ math_helper.h macro.h move.h misc_util.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h
 ../src_plugins/import_mucs/mucs.o: ../src_plugins/import_mucs/mucs.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
