@@ -260,7 +260,7 @@ static void hid_tedax_uninit()
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_import_tedax_init()
+pcb_uninit_t hid_io_tedax_init()
 {
 	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
 	return hid_tedax_uninit;

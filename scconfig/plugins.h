@@ -53,7 +53,6 @@ plugin_def("import_ltspice",  "import ltspice .net+.asc",  sbuildin, 1)
 plugin_def("import_tinycad",  "import tinycad .net",       sbuildin, 1)
 plugin_def("import_mentor_sch","import mentor graphics sch",sdisable, 0)
 
-plugin_def("import_tedax",    "import tEDAx netlist",      sbuildin, 1)
 
 plugin_header("\nExport plugins:\n")
 plugin_def("export_gcode",    "gcode pcb_exporter",            sbuildin, 1)
@@ -79,6 +78,8 @@ plugin_def("io_lihata",       "lihata board format",       sbuildin, 1)
 plugin_def("io_pcb",          "the original pcb format",   sbuildin, 1)
 plugin_def("io_kicad_legacy", "Kicad's legacy format",     sbuildin, 1)
 plugin_def("io_kicad",        "Kicad's s-expr format",     sbuildin, 1)
+plugin_def("io_tedax",        "tEDAx (Trivial EDA eXchange)", sbuildin, 1)
+
 
 plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",       "batch process (no-gui HID)",sbuildin, 1)

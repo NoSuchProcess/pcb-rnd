@@ -1,7 +1,7 @@
-put /local/pcb/mod {import_tedax}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_tedax/tedax.o @]
+put /local/pcb/mod {io_tedax}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_tedax/tedax.o @]
 
-switch /local/pcb/import_tedax/controls
+switch /local/pcb/io_tedax/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

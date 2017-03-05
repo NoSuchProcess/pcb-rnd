@@ -1717,25 +1717,6 @@
  hid_actions.h ../src_plugins/import_sch/import_sch_conf.h conf.h \
  misc_util.h compat_nls.h compat_misc.h obj_rat.h dolists.h \
  ../src_plugins/import_sch/import_sch_conf_fields.h
-../src_plugins/import_tedax/tedax.o: ../src_plugins/import_tedax/tedax.c \
- ../config.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/hash.h board.h const.h macro.h \
- global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
- obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genlist/gendlist.h \
- flag.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
- obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
- ../src_3rd/liblihata/genht/htip.h box.h math_helper.h move.h misc_util.h \
- ht_element.h ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h \
- polyarea.h obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h \
- library.h rats_patch.h board.h data.h crosshair.h vtonpoint.h hid.h \
- error.h drc.h buffer.h error.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h compat_misc.h action_helper.h \
- hid_actions.h plugins.h hid.h dolists.h
 ../src_plugins/import_tinycad/tinycad.o: \
  ../src_plugins/import_tinycad/tinycad.c ../config.h \
  ../src_3rd/qparse/qparse.h board.h const.h macro.h global_typedefs.h \
@@ -2093,6 +2074,25 @@
  polygon.h rtree.h remove.h rtree.h flag_str.h obj_pinvia_therm.h \
  rats_patch.h route_style.h compat_misc.h obj_all.h \
  ../src_plugins/io_pcb/parse_y.h
+../src_plugins/io_tedax/tedax.o: ../src_plugins/io_tedax/tedax.c \
+ ../config.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h board.h const.h macro.h \
+ global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genlist/gendlist.h \
+ flag.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
+ ../src_3rd/liblihata/genht/htip.h box.h math_helper.h move.h misc_util.h \
+ ht_element.h ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h \
+ polyarea.h obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h \
+ library.h rats_patch.h board.h data.h crosshair.h vtonpoint.h hid.h \
+ error.h drc.h buffer.h error.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h compat_misc.h action_helper.h \
+ hid_actions.h plugins.h hid.h dolists.h
 ../src_plugins/jostle/jostle.o: ../src_plugins/jostle/jostle.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
