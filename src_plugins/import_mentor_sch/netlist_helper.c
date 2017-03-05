@@ -238,23 +238,25 @@ void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 		}
 	}
 
-	/* look up hardwired attributes */
-	footprint = htsp_get(&ectx->attr, "pcb-rnd-footprint");
-	if (footprint == NULL)
-		footprint = htsp_get(&ectx->attr, "footprint");
-	if (footprint == NULL)
-		footprint = htsp_get(&ectx->attr, "Footprint");
-
-	value = htsp_get(&ectx->attr, "pcb-rnd-value");
-	if (value == NULL)
-		value = htsp_get(&ectx->attr, "value");
-	if (value == NULL)
-		value = htsp_get(&ectx->attr, "Value");
-
 	refdes = htsp_get(&ectx->nhctx->id2refdes, ectx->id);
+	if (refdes != NULL) {
+		/* look up hardwired attributes */
+		footprint = htsp_get(&ectx->attr, "pcb-rnd-footprint");
+		if (footprint == NULL) footprint = htsp_get(&ectx->attr, "footprint");
+		if (footprint == NULL) footprint = htsp_get(&ectx->attr, "Footprint");
+		if (footprint == NULL) footprint = "";
 
-	/* create elemet */
-	printf("Elem '%s' -> %s:%s:%s\n", ectx->id, refdes, footprint, value);
+		value = htsp_get(&ectx->attr, "pcb-rnd-value");
+		if (value == NULL) value = htsp_get(&ectx->attr, "value");
+		if (value == NULL) value = htsp_get(&ectx->attr, "Value");
+		if (value == NULL) value = "";
+
+		/* create elemet */
+		pcb_hid_actionl("ElementList", "Need", refdes, footprint, value, NULL);
+		printf("Elem '%s' -> %s:%s:%s\n", ectx->id, refdes, footprint, value);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "Ignoring part %s: no refdes\n", ectx->id);
 
 	/* free */
 	for (e = htsp_first(&ectx->attr); e; e = htsp_next(&ectx->attr, e)) {
