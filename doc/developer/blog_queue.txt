@@ -1,0 +1,10 @@
+- eagle->kicad->pcb-rnd layout conversion pathway summary
+- QR code creation dialogue howto
+- mentor netlist import howto
+
+less urgent/pre-planned/TO-DO
+- Klingon font announcement
+- CJK glyph insertion dialogue
+- FidoCadJ font creation plugin
+- unicode bdf bitmap dot matrix glyph insertion
+- bitmap -> silkscreen insertion dialogue
