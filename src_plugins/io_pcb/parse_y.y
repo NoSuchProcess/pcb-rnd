@@ -210,6 +210,7 @@ parsepcb
 			        pcb_message(PCB_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
 			        YYABORT;
 			     }
+			     pcb_message(PCB_MSG_ERROR, "missing layer-group string: invalid input file, had to improvise, the layer stack is most probably broken\n");
 			  }
 			  else if (pcb_layer_parse_group_string(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN, old_fmt))
 			    {
