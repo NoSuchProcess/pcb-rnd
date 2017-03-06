@@ -669,6 +669,19 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 	return pcb->Data->LayerN++;
 }
 
+pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
+{
+	pcb_layer_id_t lid;
+	for(lid = 0; lid < PCB_MAX_LAYER; lid++) {
+		if (pcb->Data->Layer[lid].grp == 0) {
+			free(pcb->Data->Layer[lid].Name);
+			pcb->Data->Layer[lid].Name = pcb_strdup(name);
+			return lid;
+		}
+	}
+	return -1;
+}
+
 #warning TODO: make pcb_layer_add_in_group_ accept pcb* and use that instead
 static int add_in_group(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
 {
@@ -715,6 +728,24 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 			return -1;
 		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
+
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
+	if (pcb->LayerGroups.grp[gid].len < 1) {
+		lid = new_ly_old(pcb, "top_copper");
+		if (lid < 0)
+			return -1;
+		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+	}
+
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+	if (pcb->LayerGroups.grp[gid].len < 1) {
+		lid = new_ly_old(pcb, "bottom_copper");
+		if (lid < 0)
+			return -1;
+		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+	}
+
+	pcb_hid_action("dumplayers");
 
 	return 0;
 }
