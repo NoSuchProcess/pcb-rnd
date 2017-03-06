@@ -669,6 +669,19 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 	return pcb->Data->LayerN++;
 }
 
+#warning TODO: make pcb_layer_add_in_group_ accept pcb* and use that instead
+static int add_in_group(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
+{
+	if ((layer_id < 0) || (layer_id >= pcb_max_layer))
+		return -1;
+
+	grp->lid[grp->len] = layer_id;
+	grp->len++;
+	pcb->Data->Layer[layer_id].grp = group_id;
+
+	return 0;
+}
+
 int pcb_layer_improvise(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
@@ -682,7 +695,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 				pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
 			else
 				pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
-			pcb_layer_add_in_group_(&pcb->LayerGroups.grp[gid], gid, lid);
+			add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 			silk = lid;
 		}
 	}
@@ -692,7 +705,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		lid = new_ly_end(pcb, "silk");
 		if (lid < 0)
 			return -1;
-		pcb_layer_add_in_group_(&pcb->LayerGroups.grp[gid], gid, lid);
+		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
 	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
@@ -700,7 +713,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		lid = new_ly_end(pcb, "silk");
 		if (lid < 0)
 			return -1;
-		pcb_layer_add_in_group_(&pcb->LayerGroups.grp[gid], gid, lid);
+		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
 	return 0;
