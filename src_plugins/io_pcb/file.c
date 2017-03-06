@@ -663,10 +663,13 @@ int io_pcb_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *File
 
 pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 {
+	pcb_layer_id_t lid;
 	if (pcb->Data->LayerN >= PCB_MAX_LAYER)
 		return -1;
-	pcb->Data->Layer[pcb->Data->LayerN].Name = pcb_strdup(name);
-	return pcb->Data->LayerN++;
+	lid = pcb->Data->LayerN;
+	pcb->Data->Layer[lid].Name = pcb_strdup(name);
+	pcb->Data->LayerN++;
+	return lid;
 }
 
 pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
@@ -712,6 +715,10 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 			silk = lid;
 		}
 		else {
+			if (*pcb->Data->Layer[lid].Name == '\0') {
+				free(pcb->Data->Layer[lid].Name);
+				pcb->Data->Layer[lid].Name = pcb_strdup("anonymous");
+			}
 			if (lid == 0)
 				pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
 			else
