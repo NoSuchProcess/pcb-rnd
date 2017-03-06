@@ -67,6 +67,9 @@ int io_pcb_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *File
 /* This is the version needed by the file we're saving.  */
 int PCBFileVersionNeeded(void);
 
+/* Improvise layers and groups for a partial input file that lacks layer groups (and maybe even some layers) */
+int pcb_layer_improvise(pcb_board_t *pcb);
+
 /* This is the version we support.  */
 #define PCB_FILE_VERSION 20110603
 

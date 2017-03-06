@@ -205,7 +205,13 @@ parsepcb
 			  if ((yy_settings_dest != CFR_invalid) && (layer_group_string != NULL))
 					conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, POL_OVERWRITE);
 			  pcb_board_new_postproc(yyPCB, 0);
-			  if (pcb_layer_parse_group_string(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN, old_fmt))
+			  if (layer_group_string == NULL) {
+			     if (pcb_layer_improvise(yyPCB) != 0) {
+			        pcb_message(PCB_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
+			        YYABORT;
+			     }
+			  }
+			  else if (pcb_layer_parse_group_string(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN, old_fmt))
 			    {
 			      pcb_message(PCB_MSG_ERROR, "illegal layer-group string\n");
 			      YYABORT;

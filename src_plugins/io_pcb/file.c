@@ -53,6 +53,7 @@
 #include "remove.h"
 #include "flag_str.h"
 #include "compat_fs.h"
+#include "compat_misc.h"
 #include "paths.h"
 #include "rats_patch.h"
 #include "hid_actions.h"
@@ -656,5 +657,51 @@ int io_pcb_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *File
 
 	/* hit eof before finding anything familiar or too many bad lines: the file
 	is surely not a .pcb */
+	return 0;
+}
+
+
+pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
+{
+	if (pcb->Data->LayerN >= PCB_MAX_LAYER)
+		return -1;
+	pcb->Data->Layer[pcb->Data->LayerN].Name = pcb_strdup(name);
+	return pcb->Data->LayerN++;
+}
+
+int pcb_layer_improvise(pcb_board_t *pcb)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layer_id_t lid, silk = -1;
+
+	pcb_layer_group_setup_default(&pcb->LayerGroups);
+
+	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+		if (strcmp(pcb->Data->Layer[lid].Name, "silk") == 0) {
+			if (silk < 0)
+				pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
+			else
+				pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
+			pcb_layer_add_in_group_(&pcb->LayerGroups.grp[gid], gid, lid);
+			silk = lid;
+		}
+	}
+
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
+	if (pcb->LayerGroups.grp[gid].len < 1) {
+		lid = new_ly_end(pcb, "silk");
+		if (lid < 0)
+			return -1;
+		pcb_layer_add_in_group_(&pcb->LayerGroups.grp[gid], gid, lid);
+	}
+
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
+	if (pcb->LayerGroups.grp[gid].len < 1) {
+		lid = new_ly_end(pcb, "silk");
+		if (lid < 0)
+			return -1;
+		pcb_layer_add_in_group_(&pcb->LayerGroups.grp[gid], gid, lid);
+	}
+
 	return 0;
 }
