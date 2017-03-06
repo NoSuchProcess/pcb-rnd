@@ -8,3 +8,4 @@ less urgent/pre-planned/TO-DO
 - FidoCadJ font creation plugin
 - unicode bdf bitmap dot matrix glyph insertion
 - bitmap -> silkscreen insertion dialogue
+- pcb-rnd -> MUCS export module based on existing C++ helper app
