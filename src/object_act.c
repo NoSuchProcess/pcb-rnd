@@ -1077,6 +1077,13 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else
 		new_index = atoi(argv[1]);
 
+	if (new_index < 0) {
+		if (pcb_layer_flags(old_index) & PCB_LYT_SILK) {
+			pcb_message(PCB_MSG_ERROR, "Can not remove silk layers\n");
+			return 1;
+		}
+	}
+
 	if (pcb_layer_move(old_index, new_index))
 		return 1;
 
