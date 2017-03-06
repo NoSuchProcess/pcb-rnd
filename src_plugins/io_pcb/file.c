@@ -711,6 +711,10 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 			add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 			silk = lid;
 		}
+		else {
+			pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+			add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		}
 	}
 
 	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
