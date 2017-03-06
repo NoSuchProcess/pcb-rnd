@@ -10,3 +10,5 @@ less urgent/pre-planned/TO-DO
 - bitmap -> silkscreen insertion dialogue
 - pcb-rnd -> MUCS export module based on existing C++ helper app
 - metafont glyph -> stroked font converter
+- 2D bar code dialogue
+
