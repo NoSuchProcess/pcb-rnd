@@ -1447,7 +1447,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 
 /* -- common */
 	vbox = gtk_vbox_new(TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, FALSE, TRUE, 0);
 	config_user_role_section(com, tab_vbox, config_layers_save);
 }
 
