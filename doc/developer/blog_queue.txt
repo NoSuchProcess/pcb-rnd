@@ -1,6 +1,6 @@
 - eagle->kicad->pcb-rnd layout conversion pathway summary
-- QR code creation dialogue howto
-- mentor netlist import howto
+- QR code and bar code creation dialogue howto: qr() (needs qrencode(1)) and code128()
+- mentor netlist import howto - contributor wishes to remain anonymous
 
 less urgent/pre-planned/TO-DO
 - Klingon font announcement
@@ -10,5 +10,5 @@ less urgent/pre-planned/TO-DO
 - bitmap -> silkscreen insertion dialogue
 - pcb-rnd -> MUCS export module based on existing C++ helper app
 - metafont glyph -> stroked font converter
-- 2D bar code dialogue
+
 
