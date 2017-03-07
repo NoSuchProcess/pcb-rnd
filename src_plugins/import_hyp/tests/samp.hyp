@@ -48,7 +48,7 @@
   (MDEF, 0, 0.5, 0.5, 0)
 }
 {PADSTACK=0802pad,
-  (MDEF, 1, 0.2, 0.12, 0)
+  (component, 1, 0.2, 0.12, 0)
 }
 {NET=segtst
   (SEG X1=6.500000 Y1=3.000000 X2=6.625000 Y2=3.000000 W=0.008333 L=component)
