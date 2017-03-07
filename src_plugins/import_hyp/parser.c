@@ -1027,7 +1027,7 @@ pcb_bool exec_units(parse_param * h)
 
 pcb_bool exec_plane_sep(parse_param * h)
 {
-	board_clearance = xy2coord(h->plane_separation);
+	board_clearance = xy2coord(h->default_plane_separation);
 
 	if (hyp_debug)
 		pcb_printf("plane_sep: default_plane_separation = %ml\n", board_clearance);
