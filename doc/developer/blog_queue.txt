@@ -1,6 +1,6 @@
 - eagle->kicad->pcb-rnd layout conversion pathway summary
 - QR code and bar code creation dialogue howto: qr() (needs qrencode(1)) and code128()
-- mentor netlist import howto - contributor wishes to remain anonymous
+- mentor netlist import howto - contributor wishes to remain anonymous; see work/alien_formats/mentor/blog for the material; please svn remove that dir after use
 
 less urgent/pre-planned/TO-DO
 - Klingon font announcement
