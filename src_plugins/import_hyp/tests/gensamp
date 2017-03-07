@@ -55,7 +55,7 @@ print "  (PERIMETER_SEGMENT X1=5.0 Y1=8.0 X2=5.5 Y2=8.5)"
 
 print "}"
 
-print "{PLANE_SEP=0.254}"
+print "{PLANE_SEP=0.05}"
 
 print "{STACKUP"
 print "  (SIGNAL T=0.000700 L=component)"
@@ -81,6 +81,9 @@ print "  (MDEF, 2, 0.5, 0.5, 0)"
 print "}"
 print "{PADSTACK=nodrill,"
 print "  (MDEF, 0, 0.5, 0.5, 0)"
+print "}"
+print "{PADSTACK=0802pad,"
+print "  (MDEF, 1, 0.2, 0.12, 0)"
 print "}"
 
 #
@@ -253,50 +256,49 @@ print "}"
 
 x0 = 11.5
 y0 = 5.0
-w = 3.0
-h = 1.0
-s = 1.5
+w = 1.0
+h = 0.5
+s = 1.0
 
 def mkpolygon (typ, id, x0, y0, w, h):
-  print "{NET=%s_tst" % (typ.lower())
   print "  {POLYGON L=component T=%s W=0.1 ID=%i X=%f Y=%f" % (typ, id, x0, y0)
   print "     (LINE X=%f Y=%f)" % (x0+w, y0)
   print "     (LINE X=%f Y=%f)" % (x0+w, y0+h)
   print "     (LINE X=%f Y=%f)" % (x0, y0+h)
   print "     (LINE X=%f Y=%f)" % (x0, y0)
   print "  }"
-  print "  (VIA X=%f Y=%f P=squarepad)" % (x0+w/2.0, y0+h/2.0)
-  print "}"
   return
+
+
+x1 = 11.0
+x2 = x0 + w / 4.0
+print "{NET=poly_clearance_tst PS=0.05"
+print "  (VIA X=%f Y=%f P=0802pad)" % (x2, y0+h/2.0)
+print "  (VIA X=%f Y=%f P=0802pad)" % (x2, y0+h/2.0+s)
+print "  (VIA X=%f Y=%f P=0802pad)" % (x2, y0+h/2.0+2*s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0, x2, y0+h/2.0)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+s, x2, y0+h/2.0+s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+2*s, x2, y0+h/2.0+2*s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0, x1, y0+h/2.0+s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+s, x1, y0+h/2.0+2*s)
 
 mkpolygon("POUR", 4, x0, y0, w, h)
 mkpolygon("COPPER", 5, x0, y0 + s, w, h)
 mkpolygon("PLANE", 6, x0, y0 + 2 * s, w, h)
 
-x1 = 11.0
-x2 = x0 + w / 4.0
-print "{NET=poly_clearance_tst"
-print "  (VIA X=%f Y=%f P=roundpad)" % (x2, y0+h/2.0)
-print "  (VIA X=%f Y=%f P=roundpad)" % (x2, y0+h/2.0+s)
-print "  (VIA X=%f Y=%f P=roundpad)" % (x2, y0+h/2.0+2*s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0, x2, y0+h/2.0)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0+s, x2, y0+h/2.0+s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0+2*s, x2, y0+h/2.0+2*s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0, x1, y0+h/2.0+s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0+s, x1, y0+h/2.0+2*s)
 print "}"
 
-x1 = 15.0
+x1 = 13.0
 x2 = x0 + w * 3.0 / 4.0
-print "{NET=poly_clearance_tst2 PS=0.1"
-print "  (VIA X=%f Y=%f P=squarepad)" % (x2, y0+h/2.0)
-print "  (VIA X=%f Y=%f P=squarepad)" % (x2, y0+h/2.0+s)
-print "  (VIA X=%f Y=%f P=squarepad)" % (x2, y0+h/2.0+2*s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0, x2, y0+h/2.0)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0+s, x2, y0+h/2.0+s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0+2*s, x2, y0+h/2.0+2*s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0, x1, y0+h/2.0+s)
-print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.1 L=component)" % (x1, y0+h/2.0+s, x1, y0+h/2.0+2*s)
+print "{NET=poly_clearance_tst2 PS=0.05"
+print "  (VIA X=%f Y=%f P=0802pad)" % (x2, y0+h/2.0)
+print "  (VIA X=%f Y=%f P=0802pad)" % (x2, y0+h/2.0+s)
+print "  (VIA X=%f Y=%f P=0802pad)" % (x2, y0+h/2.0+2*s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0, x2, y0+h/2.0)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+s, x2, y0+h/2.0+s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+2*s, x2, y0+h/2.0+2*s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0, x1, y0+h/2.0+s)
+print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+s, x1, y0+h/2.0+2*s)
 print "}"
 
 print "{END}"
