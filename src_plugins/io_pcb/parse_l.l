@@ -58,6 +58,7 @@
 #include "plug_footprint.h"
 #include "attribs.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "compat_cc.h"
 #include "obj_common.h"
 #include "paths.h"
@@ -377,9 +378,9 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yy_settings_dest = settings_dest;
 	if (settings_dest != CFR_invalid)
 		conf_reset(settings_dest, Filename);
-	setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
+	pcb_setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
 	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename);
-	setlocale(LC_ALL, "");
+	pcb_setlocale(LC_ALL, "");
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
 		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(PCB_ENABLEPCB_FLAG_MINCUT, yy_pcb_flags), POL_OVERWRITE);

@@ -37,6 +37,11 @@
 #	else
 #		define N_(S) (S)
 #	endif
+#	ifdef LOCALEDIR
+#		define pcb_setlocale setlocale
+#	else
+#		define pcb_setlocale(a, b)
+#	endif
 #else
 #	define _(S) (S)
 #	define N_(S) (S)
@@ -45,6 +50,7 @@
 #	define dgettext(D, S) (S)
 #	define dcgettext(D, S, T) (S)
 #	define bindtextdomain(D, Dir) (D)
+#	define pcb_setlocale(a, b)
 #endif /* ENABLE_NLS */
 
 #endif

@@ -258,7 +258,7 @@ static void ghid_parse_arguments(int *argc, char ***argv)
 	/* Do our own setlocale() stufff since we want to override LC_NUMERIC
 	 */
 	gtk_set_locale();
-	setlocale(LC_NUMERIC, "C");		/* use decimal point instead of comma */
+	pcb_setlocale(LC_NUMERIC, "C");		/* use decimal point instead of comma */
 #endif
 
 	conf_parse_arguments("plugins/hid_gtk/", argc, argv);

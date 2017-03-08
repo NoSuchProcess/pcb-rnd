@@ -485,9 +485,9 @@ static int ZoomAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	if (*vp == '+' || *vp == '-' || *vp == '=')
 		vp++;
-	setlocale(LC_ALL, "C");
+	pcb_setlocale(LC_ALL, "C");
 	v = strtod(vp, NULL);
-	setlocale(LC_ALL, "");
+	pcb_setlocale(LC_ALL, "");
 	if (v <= 0)
 		return 1;
 	switch (argv[0][0]) {

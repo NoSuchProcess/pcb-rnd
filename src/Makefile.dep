@@ -1783,7 +1783,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h error.h data.h crosshair.h \
  vtonpoint.h hid.h error.h drc.h buffer.h ../src_plugins/io_kicad/read.h \
  layer.h const.h netlist.h route_style.h polygon.h rtree.h misc_util.h \
- conf_core.h move.h macro.h obj_all.h
+ conf_core.h move.h macro.h obj_all.h rotate.h
 ../src_plugins/io_kicad/read_net.o: ../src_plugins/io_kicad/read_net.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
@@ -2002,7 +2002,7 @@
  vtroutestyle.h library.h rats_patch.h board.h plug_io.h hid.h layer.h \
  move.h ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h \
  rtree.h rats.h netlist.h route_style.h remove.h flag_str.h compat_fs.h \
- paths.h rats_patch.h hid_actions.h hid_flags.h \
+ compat_misc.h paths.h rats_patch.h hid_actions.h hid_flags.h \
  ../src_plugins/io_pcb/attribs.h route_style.h obj_poly.h
 ../src_plugins/io_pcb/io_pcb.o: ../src_plugins/io_pcb/io_pcb.c \
  ../config.h plugins.h ../src_plugins/io_pcb/parse_common.h plug_io.h \
@@ -2047,8 +2047,8 @@
  ../src_plugins/io_pcb/file.h board.h const.h vtroutestyle.h library.h \
  rats_patch.h board.h plug_io.h ../src_plugins/io_pcb/parse_common.h \
  ../src_plugins/io_pcb/parse_y.h plug_footprint.h vtlibrary.h \
- ../src_plugins/io_pcb/attribs.h compat_misc.h compat_cc.h obj_common.h \
- paths.h
+ ../src_plugins/io_pcb/attribs.h compat_misc.h compat_nls.h compat_cc.h \
+ obj_common.h paths.h
 ../src_plugins/io_pcb/parse_y.o: ../src_plugins/io_pcb/parse_y.c \
  ../config.h flag.h globalconst.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -2075,7 +2075,24 @@
  rats_patch.h route_style.h compat_misc.h obj_all.h \
  ../src_plugins/io_pcb/parse_y.h
 ../src_plugins/io_tedax/footprint.o: ../src_plugins/io_tedax/footprint.c \
- ../config.h ../src_plugins/io_tedax/footprint.h unit.h
+ ../config.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h ../src_plugins/io_tedax/footprint.h \
+ unit.h error.h data.h globalconst.h global_typedefs.h pcb_bool.h unit.h \
+ layer.h attrib.h obj_all_list.h obj_arc_list.h obj_common.h \
+ ../src_3rd/genlist/gendlist.h flag.h obj_arc.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_elem_list.h obj_elem.h \
+ obj_line_list.h obj_line.h obj_pad_list.h obj_pad.h obj_pinvia_list.h \
+ obj_pinvia.h obj_text.h font.h ../src_3rd/liblihata/genht/htip.h box.h \
+ math_helper.h macro.h move.h misc_util.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h crosshair.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h layer_grp.h \
+ buffer.h board.h const.h vtroutestyle.h library.h rats_patch.h board.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h compat_misc.h obj_elem.h \
+ obj_line.h obj_arc.h obj_pad.h obj_pinvia.h
 ../src_plugins/io_tedax/io_tedax.o: ../src_plugins/io_tedax/io_tedax.c \
  ../config.h ../src_plugins/io_tedax/netlist.h unit.h \
  ../src_plugins/io_tedax/footprint.h plugins.h hid.h error.h drc.h unit.h \
@@ -5069,7 +5086,7 @@ paths.o: paths.c ../config.h paths.h ../src_3rd/genvector/gds_char.h \
  globalconst.h
 pcb-printf.o: pcb-printf.c ../config.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h unit.h
+ ../src_3rd/genvector/genvector_undef.h unit.h compat_nls.h
 plug_footprint.o: plug_footprint.c ../config.h plug_footprint.h \
  vtlibrary.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h plugins.h \

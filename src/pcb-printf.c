@@ -37,6 +37,7 @@
 #include <math.h>
 #include "config.h"
 #include "pcb-printf.h"
+#include "compat_nls.h"
 
 const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] =
 {
@@ -94,14 +95,13 @@ static inline void make_printf_spec(char *printf_spec_new, const char *printf_sp
 		sprintf(printf_spec_new, ", %s.%df", printf_spec, precision);
 }
 
-
 /* sprintf a value */
 #define sprintf_lc_safe(is_file_mode, out, fmt, val) \
 do { \
 	if (is_file_mode) { \
-		setlocale(LC_ALL, "C"); \
+		pcb_setlocale(LC_ALL, "C"); \
 		sprintf(out, fmt, val); \
-		setlocale(LC_ALL, ""); \
+		pcb_setlocale(LC_ALL, ""); \
 	} \
 	else \
 		sprintf(out, fmt, val); \

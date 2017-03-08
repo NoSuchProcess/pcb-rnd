@@ -288,6 +288,15 @@ int main(int argc, char *argv[])
 	char *command_line_pcb = NULL;
 	vtptr_t plugin_cli_conf;
 
+#ifdef LOCALEDIR
+	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+	textdomain(GETTEXT_PACKAGE);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	setlocale(LC_ALL, "");
+#else
+	setlocale(LC_ALL, "C");
+#endif
+
 	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
 	/* init application:
 	 * - make program name available for error handlers
@@ -379,12 +388,6 @@ int main(int argc, char *argv[])
 
 	pcb_fp_init();
 
-#ifdef LOCALEDIR
-	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-	textdomain(GETTEXT_PACKAGE);
-	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-	setlocale(LC_ALL, "");
-#endif
 
 	srand(time(NULL));						/* Set seed for rand() */
 
