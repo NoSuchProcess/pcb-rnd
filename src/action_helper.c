@@ -803,13 +803,14 @@ void pcb_notify_mode(void)
 				/* place a via if vias are visible, the layer is
 				   in a new group since the last line and there
 				   isn't a pin already here */
-				if (PCB->ViaOn && pcb_layer_get_group_(CURRENT) !=
-						pcb_layer_get_group_(lastLayer) &&
-						pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+				if (PCB->ViaOn 
+						&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(lastLayer) 
+						&& (pcb_layer_flags(pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER)
+						&& (pcb_layer_flags(pcb_layer_id(PCB->Data, lastLayer)) & PCB_LYT_COPPER)
+						&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
 																	 pcb_crosshair.AttachedLine.Point1.X,
 																	 pcb_crosshair.AttachedLine.Point1.Y,
-																	 conf_core.design.via_thickness / 2) ==
-						PCB_TYPE_NONE
+																	 conf_core.design.via_thickness / 2) == PCB_TYPE_NONE
 						&& (via =
 								pcb_via_new(PCB->Data,
 														 pcb_crosshair.AttachedLine.Point1.X,
