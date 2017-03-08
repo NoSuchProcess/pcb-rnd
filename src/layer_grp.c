@@ -327,7 +327,7 @@ int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_laye
 		if (l != NULL) {
 			if (del_layers) {
 				pcb_layer_move(stk->grp[gid].lid[n], -1);
-				n = 0; /* restart counting because the layer remove code may have changed the order */
+				n = -1; /* restart counting because the layer remove code may have changed the order */
 			}
 			else {
 				/* detach only */
