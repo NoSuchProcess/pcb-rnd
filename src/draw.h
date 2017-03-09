@@ -94,5 +94,11 @@ void pcb_erase_obj(int, void *, void *);
 #define PCB_DRAW_BBOX(obj)
 #endif
 
+/* Some low level draw callback depend on this in their void *cl */
+struct pcb_draw_info_s {
+	const pcb_box_t *drawn_area;
+	pcb_layer_t *layer;
+};
+
 
 #endif

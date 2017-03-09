@@ -473,7 +473,7 @@ static void DrawRats(const pcb_box_t * drawn_area)
 
 void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 {
-	struct pcb_draw_poly_info_s info;
+	struct pcb_draw_info_s info;
 	pcb_box_t scr2;
 	pcb_layer_id_t lid;
 	unsigned int lflg = 0;

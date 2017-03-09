@@ -28,10 +28,6 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-struct pcb_draw_poly_info_s {
-	const pcb_box_t *drawn_area;
-	pcb_layer_t *layer;
-};
 pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl);
 #endif
 
