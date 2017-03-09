@@ -5,7 +5,6 @@
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
 		- probably IDs are messed too: copy and paste new arc loaded that way a few times and it will disappear after other edits (silk)
 	- make ; make clean -> error messages for removing non-existing files [report: Dima]
-	+ layer group edition bug (csect): delete a group with more than 1 layer and the 2nd? layer is not removed (stays on the layer selector side bar) [report: Evan]
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
 	- start new layout, cancel -> crash
