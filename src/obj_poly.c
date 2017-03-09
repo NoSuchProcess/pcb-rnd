@@ -709,7 +709,7 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 /*** draw ***/
 pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 {
-	struct pcb_draw_info_s *i = cl;
+	pcb_draw_info_t *i = cl;
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	static const char *color;
 	char buf[sizeof("#XXXXXX")];
