@@ -505,7 +505,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->do_exit = ghid_do_exit;
 	dst->parse_arguments = ghid_parse_arguments;
 	dst->invalidate_lr = ghid_invalidate_lr;
-	dst->invalidate_all = ghid_invalidate_all;
+	dst->invalidate_all = ghid_gdk_invalidate_all;
 	dst->notify_crosshair_change = ghid_notify_crosshair_change;
 	dst->notify_mark_change = ghid_notify_mark_change;
 	dst->set_layer_group = ghid_set_layer_group;

@@ -106,14 +106,14 @@ void ghid_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord
 void ghid_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 void ghid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 void ghid_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
-void ghid_invalidate_all();
+void ghid_gdk_invalidate_all();
 void ghid_notify_crosshair_change(pcb_bool changes_complete);
 void ghid_notify_mark_change(pcb_bool changes_complete);
-void ghid_init_renderer(int *, char ***, GHidPort *);
-void ghid_shutdown_renderer(GHidPort *);
+void ghid_gdk_init_renderer(int *, char ***, void *);
+void ghid_gdk_shutdown_renderer(GHidPort *);
 void ghid_init_drawing_widget(GtkWidget * widget, void *gport);
-void ghid_drawing_area_configure_hook(GHidPort * port);
-void ghid_screen_update(void);
+void ghid_gdk_drawing_area_configure_hook(GHidPort * port);
+void ghid_gdk_screen_update(void);
 gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);
 pcb_hid_t *ghid_request_debug_draw(void);
@@ -121,6 +121,14 @@ void ghid_flush_debug_draw(void);
 void ghid_finish_debug_draw(void);
 
 void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y);
+
+extern pcb_hid_t ghid_hid;
+
+static inline void ghid_invalidate_all(void) { ghid_hid.invalidate_all(); }
+static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
+static inline void ghid_shutdown_renderer(void *port) { ghidgui->common.shutdown_renderer(port); }
+static inline void ghid_drawing_area_configure_hook(void *out) { ghidgui->common.drawing_area_configure_hook(out); }
+static inline void ghid_init_renderer(int *argc, char ***argv, void *port) { ghidgui->common.init_renderer(argc, argv, port); }
 
 /* Coordinate conversions */
 #include "compat_misc.h"
@@ -203,6 +211,8 @@ extern const char *ghid_menu_cookie;
 
 void hid_gtk_wgeo_update(void);
 
-void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
+void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
+
+static inline void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy) { ghidgui->common.draw_grid_local(cx, cy); }
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */

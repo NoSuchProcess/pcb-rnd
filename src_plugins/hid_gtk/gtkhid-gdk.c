@@ -261,7 +261,7 @@ static void ghid_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
 static int grid_local_have_old = 0, grid_local_old_r = 0;
 static pcb_coord_t grid_local_old_x, grid_local_old_y;
 
-void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
+void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 {
 	if (grid_local_have_old) {
 		ghid_draw_grid_local_(grid_local_old_x, grid_local_old_y, grid_local_old_r);
@@ -885,7 +885,7 @@ void ghid_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pc
 }
 
 
-void ghid_invalidate_all()
+void ghid_gdk_invalidate_all()
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(NULL);
@@ -1093,13 +1093,14 @@ static void show_crosshair(gboolean paint_new_location)
 		x_prev = y_prev = -1;
 }
 
-void ghid_init_renderer(int *argc, char ***argv, GHidPort * port)
+void ghid_gdk_init_renderer(int *argc, char ***argv, void *vport)
 {
+	GHidPort * port = vport;
 	/* Init any GC's required */
 	port->render_priv = g_new0(render_priv, 1);
 }
 
-void ghid_shutdown_renderer(GHidPort * port)
+void ghid_gdk_shutdown_renderer(GHidPort * port)
 {
 	ghid_cancel_lead_user();
 	g_free(port->render_priv);
@@ -1110,7 +1111,7 @@ void ghid_init_drawing_widget(GtkWidget * widget, void * port)
 {
 }
 
-void ghid_drawing_area_configure_hook(GHidPort * port)
+void ghid_gdk_drawing_area_configure_hook(GHidPort * port)
 {
 	static int done_once = 0;
 	render_priv *priv = port->render_priv;
@@ -1132,7 +1133,7 @@ void ghid_drawing_area_configure_hook(GHidPort * port)
 	}
 }
 
-void ghid_screen_update(void)
+void ghid_gdk_screen_update(void)
 {
 	render_priv *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);

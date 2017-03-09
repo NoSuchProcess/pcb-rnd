@@ -210,7 +210,7 @@ void ghid_glue_common_init(void)
 	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
 	ghidgui->common.route_styles_edited_cb = ghid_route_styles_edited_cb;
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
-	ghidgui->common.invalidate_all = ghid_invalidate_all;
+	ghidgui->common.invalidate_all = ghid_gdk_invalidate_all;
 	ghidgui->common.cancel_lead_user = ghid_cancel_lead_user;
 	ghidgui->common.lead_user_to_location = ghid_lead_user_to_location;
 	ghidgui->common.pan_common = ghid_pan_common;
@@ -227,6 +227,12 @@ void ghid_glue_common_init(void)
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
 	ghidgui->common.main_destroy = ghid_main_destroy;
 	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
+
+	ghidgui->common.init_renderer = ghid_gdk_init_renderer;
+	ghidgui->common.screen_update = ghid_gdk_screen_update;
+	ghidgui->common.draw_grid_local = ghid_gdk_draw_grid_local;
+	ghidgui->common.drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
+	ghidgui->common.shutdown_renderer = ghid_gdk_shutdown_renderer;
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
 	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;
