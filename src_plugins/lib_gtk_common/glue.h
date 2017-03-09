@@ -18,10 +18,13 @@ typedef struct pcb_gtk_common_s {
 	gboolean (*preview_draw)(GtkWidget *widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 	void (*drawing_realize)(GtkWidget *w, void *gport);
 	gboolean (*drawing_area_expose)(GtkWidget *w, GdkEventExpose *ev, void *gport);
+	void (*drawing_area_configure_hook)(void *);
 
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
 	gboolean (*preview_expose)(GtkWidget *widget, GdkEventExpose *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 	void (*load_bg_image)(void);
+	void (*init_renderer)(int *argc, char ***argv, void *port);
+	void (*draw_grid_local)(pcb_coord_t cx, pcb_coord_t cy);
 
 	/* main window */
 	void (*window_set_name_label)(gchar *name);
@@ -46,6 +49,8 @@ typedef struct pcb_gtk_common_s {
 	void (*pan_common)(void);
 	void (*port_ranges_scale)(void);
 	void (*pack_mode_buttons)(void);
+	void (*screen_update)(void);
+	void (*shutdown_renderer)(void *port);
 
 	/* execute events */
 	void (*LayersChanged)(void);
