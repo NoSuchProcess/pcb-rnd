@@ -504,24 +504,24 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->do_export = ghid_do_export;
 	dst->do_exit = ghid_do_exit;
 	dst->parse_arguments = ghid_parse_arguments;
-	dst->invalidate_lr = ghid_invalidate_lr;
+	dst->invalidate_lr = ghid_gdk_invalidate_lr;
 	dst->invalidate_all = ghid_gdk_invalidate_all;
-	dst->notify_crosshair_change = ghid_notify_crosshair_change;
-	dst->notify_mark_change = ghid_notify_mark_change;
-	dst->set_layer_group = ghid_set_layer_group;
-	dst->make_gc = ghid_make_gc;
-	dst->destroy_gc = ghid_destroy_gc;
-	dst->use_mask = ghid_use_mask;
-	dst->set_color = ghid_set_color;
-	dst->set_line_cap = ghid_set_line_cap;
-	dst->set_line_width = ghid_set_line_width;
-	dst->set_draw_xor = ghid_set_draw_xor;
-	dst->draw_line = ghid_draw_line;
-	dst->draw_arc = ghid_draw_arc;
-	dst->draw_rect = ghid_draw_rect;
-	dst->fill_circle = ghid_fill_circle;
-	dst->fill_polygon = ghid_fill_polygon;
-	dst->fill_rect = ghid_fill_rect;
+	dst->notify_crosshair_change = ghid_gdk_notify_crosshair_change;
+	dst->notify_mark_change = ghid_gdk_notify_mark_change;
+	dst->set_layer_group = ghid_gdk_set_layer_group;
+	dst->make_gc = ghid_gdk_make_gc;
+	dst->destroy_gc = ghid_gdk_destroy_gc;
+	dst->use_mask = ghid_gdk_use_mask;
+	dst->set_color = ghid_gdk_set_color;
+	dst->set_line_cap = ghid_gdk_set_line_cap;
+	dst->set_line_width = ghid_gdk_set_line_width;
+	dst->set_draw_xor = ghid_gdk_set_draw_xor;
+	dst->draw_line = ghid_gdk_draw_line;
+	dst->draw_arc = ghid_gdk_draw_arc;
+	dst->draw_rect = ghid_gdk_draw_rect;
+	dst->fill_circle = ghid_gdk_fill_circle;
+	dst->fill_polygon = ghid_gdk_fill_polygon;
+	dst->fill_rect = ghid_gdk_fill_rect;
 
 	dst->calibrate = ghid_calibrate;
 	dst->shift_is_pressed = ghid_shift_is_pressed;
@@ -551,9 +551,9 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->edit_attributes = ghid_attributes;
 	dst->point_cursor = PointCursor;
 
-	dst->request_debug_draw = ghid_request_debug_draw;
-	dst->flush_debug_draw = ghid_flush_debug_draw;
-	dst->finish_debug_draw = ghid_finish_debug_draw;
+	dst->request_debug_draw = ghid_gdk_request_debug_draw;
+	dst->flush_debug_draw = ghid_gdk_flush_debug_draw;
+	dst->finish_debug_draw = ghid_gdk_finish_debug_draw;
 
 	dst->notify_save_pcb = ghid_notify_save_pcb;
 	dst->notify_filename_changed = ghid_notify_filename_changed;

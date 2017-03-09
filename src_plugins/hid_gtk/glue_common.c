@@ -193,11 +193,11 @@ void ghid_glue_common_init(void)
 {
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.render_pixmap = ghid_render_pixmap;
-	ghidgui->common.init_drawing_widget = ghid_init_drawing_widget;
-	ghidgui->common.drawing_realize = ghid_port_drawing_realize_cb;
-	ghidgui->common.drawing_area_expose = ghid_drawing_area_expose_cb;
-	ghidgui->common.preview_expose = ghid_preview_expose;
+	ghidgui->common.render_pixmap = ghid_gdk_render_pixmap;
+	ghidgui->common.init_drawing_widget = ghid_gdk_init_drawing_widget;
+	ghidgui->common.drawing_realize = ghid_gdk_port_drawing_realize_cb;
+	ghidgui->common.drawing_area_expose = ghid_gdk_drawing_area_expose_cb;
+	ghidgui->common.preview_expose = ghid_gdk_preview_expose;
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
 	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
 	ghidgui->common.note_event_location = ghid_note_event_location;
@@ -215,11 +215,12 @@ void ghid_glue_common_init(void)
 	ghidgui->common.lead_user_to_location = ghid_lead_user_to_location;
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
-	ghidgui->common.preview_draw = ghid_preview_draw;
+	ghidgui->common.preview_draw = ghid_gdk_preview_draw;
 	ghidgui->common.pack_mode_buttons = ghid_pack_mode_buttons;
 	ghidgui->common.get_color_name = ghid_get_color_name;
 	ghidgui->common.map_color_string = ghid_map_color_string;
-	ghidgui->common.set_special_colors = ghid_set_special_colors;
+	ghidgui->common.set_special_colors = ghid_gdk_set_special_colors;
+
 	ghidgui->common.layer_buttons_color_update = ghid_layer_buttons_color_update;
 	ghidgui->common.LayersChanged = LayersChanged_cb;
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
