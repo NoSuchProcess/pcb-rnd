@@ -21,12 +21,27 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+
+#include "crosshair.h"
+#include "clip.h"
+#include "data.h"
+#include "layer.h"
+#include "board.h"
+#include "hid_draw_helpers.h"
+#include "hid_attrib.h"
+#include "hid_helper.h"
+#include "hid_color.h"
+
+#include "../src_plugins/lib_gtk_common/colors.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
 /* The Linux OpenGL ABI 1.0 spec requires that we define
  * GL_GLEXT_PROTOTYPES before including gl.h or glx.h for extensions
@@ -104,7 +119,7 @@ void hidgl_draw_grid(pcb_box_t * drawn_area)
 	pcb_coord_t x1, y1, x2, y2, n, i;
 	double x, y;
 
-	if (!Settings.DrawGrid)
+	if (!conf_core.editor.draw_grid)
 		return;
 
 	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), PCB->Grid, PCB->GridOffsetX);
