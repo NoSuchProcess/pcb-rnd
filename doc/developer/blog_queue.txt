@@ -4,6 +4,7 @@
 
 less urgent/pre-planned/TO-DO
 - Klingon font announcement
+- braille font (maybe together with the Klingon?)
 - CJK glyph insertion dialogue
 - FidoCadJ font creation plugin
 - unicode bdf bitmap dot matrix glyph insertion
