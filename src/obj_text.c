@@ -41,6 +41,7 @@
 #include "obj_text.h"
 #include "obj_text_op.h"
 #include "obj_text_list.h"
+#include "obj_poly_draw.h"
 
 /* TODO: remove this if draw.c is moved here: */
 #include "draw.h"
@@ -516,6 +517,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 		if (*string <= PCB_MAX_FONTPOSITION && font->Symbol[*string].Valid) {
 			pcb_line_t *line = font->Symbol[*string].Line;
 			pcb_line_t newline;
+			pcb_polygon_t *p;
 
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */
@@ -546,6 +548,10 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 				newline.Point2.Y += Text->Y;
 				_draw_line(&newline);
 			}
+
+			/* draw the polygons */
+			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
+				_draw_simple_poly(p);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);

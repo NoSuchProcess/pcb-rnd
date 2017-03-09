@@ -30,6 +30,8 @@
 
 #include <genht/htip.h>
 #include "global_typedefs.h"
+#include "obj_poly.h"
+#include "obj_poly_list.h"
 #include "box.h"
 
 /* ---------------------------------------------------------------------------
@@ -41,6 +43,7 @@ typedef struct symbol_s {     /* a single symbol */
 	pcb_cardinal_t LineN;       /* number of lines */
 	pcb_cardinal_t LineMax;     /* lines allocated */
 	pcb_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
+	polylist_t polys;           /* simple (non-clipped) polygons */
 } pcb_symbol_t;
 
 typedef long int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
