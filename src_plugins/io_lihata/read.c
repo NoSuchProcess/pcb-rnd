@@ -796,7 +796,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 
 static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 {
-	lht_node_t *grp, *obj;
+	lht_node_t *grp, *obj, *n;
 	lht_dom_iterator_t it;
 
 	parse_coord(&sym->Width, lht_dom_hash_get(nd, "width"));
@@ -806,12 +806,35 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 	grp = lht_dom_hash_get(nd, "objects");
 	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {
 		pcb_coord_t x1, y1, x2, y2, th;
-		parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
-		parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
-		parse_coord(&x2, lht_dom_hash_get(obj, "x2"));
-		parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
-		parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
-		pcb_font_new_line_in_sym(sym, x1, y1, x2, y2, th);
+		if (strncmp(obj->name, "line.", 5) == 0) {
+			parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
+			parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
+			parse_coord(&x2, lht_dom_hash_get(obj, "x2"));
+			parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
+			parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
+			pcb_font_new_line_in_sym(sym, x1, y1, x2, y2, th);
+		}
+		else if (strncmp(obj->name, "simplepoly.", 11) == 0) {
+			int len;
+			pcb_polygon_t *sp;
+			if (obj->type != LHT_LIST) {
+				pcb_message(PCB_MSG_ERROR, "Symbol error: simplepoly is not a list!\n");
+				continue;
+			}
+			for(len = 0, n = obj->data.list.first; n != NULL; len++, n = n->next) ;
+			if ((len % 2 != 0) || (len < 6)) {
+				pcb_message(PCB_MSG_ERROR, "Symbol error: sumplepoly has wrong number of points (%d, expected an even integer >= 6)!\n", len);
+				continue;
+			}
+			sp = pcb_font_new_poly_in_sym(sym, len/2);
+			for(len = 0, n = obj->data.list.first; n != NULL; len++, n = n->next) {
+				parse_coord(&x1, n);
+				n = n->next;
+				parse_coord(&y1, n);
+				sp->Points[len].X = x1;
+				sp->Points[len].Y = y1;
+			}
+		}
 	}
 
 	sym->Valid = 1;
