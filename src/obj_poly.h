@@ -43,7 +43,7 @@ struct pcb_polygon_s  {           /* holds information about a polygon */
 	pcb_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
 	pcb_cardinal_t HoleIndexN;   /* number of holes in polygon */
 	pcb_cardinal_t HoleIndexMax; /* max number from malloc() */
-	gdl_elem_t link;             /* a text is in a list of a layer */
+	gdl_elem_t link;             /* a poly is in a list of a layer */
 };
 
 
