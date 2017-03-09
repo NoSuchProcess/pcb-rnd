@@ -17,16 +17,6 @@ static void ghid_interface_set_sensitive(gboolean sensitive);
 
 /*** drawing widget - output ***/
 
-static void drawing_realize_cb(GtkWidget *w, void *gport)
-{
-	ghid_port_drawing_realize_cb(w, gport);
-}
-
-static gboolean drawing_area_expose_cb(GtkWidget *w, GdkEventExpose *ev, void *gport)
-{
-	return ghid_drawing_area_expose_cb(w, ev, gport);
-}
-
 static void ghid_window_set_name_label(gchar *name)
 {
 	pcb_gtk_tw_window_set_name_label(&ghidgui->topwin, name);
@@ -205,8 +195,8 @@ void ghid_glue_common_init(void)
 	ghidgui->common.gport = &ghid_port;
 	ghidgui->common.render_pixmap = ghid_render_pixmap;
 	ghidgui->common.init_drawing_widget = ghid_init_drawing_widget;
-	ghidgui->common.drawing_realize = drawing_realize_cb;
-	ghidgui->common.drawing_area_expose = drawing_area_expose_cb;
+	ghidgui->common.drawing_realize = ghid_port_drawing_realize_cb;
+	ghidgui->common.drawing_area_expose = ghid_drawing_area_expose_cb;
 	ghidgui->common.preview_expose = ghid_preview_expose;
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
 	ghidgui->common.set_status_line_label = ghid_set_status_line_label;

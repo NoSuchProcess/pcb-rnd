@@ -1144,8 +1144,9 @@ void ghid_screen_update(void)
 	show_crosshair(TRUE);
 }
 
-gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GHidPort * port)
+gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
 {
+	GHidPort *port = vport;
 	render_priv *priv = port->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
