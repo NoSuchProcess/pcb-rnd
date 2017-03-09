@@ -748,6 +748,29 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+#define MAX_SIMPLE_POLY_POINTS 128
+void _draw_simple_poly(pcb_polygon_t *poly)
+{
+	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
+	int max, n;
+	pcb_point_t *p;
+
+
+	max = poly->PointN;
+	if (max > MAX_SIMPLE_POLY_POINTS) {
+		max = MAX_SIMPLE_POLY_POINTS;
+	}
+
+	PCB_DRAW_BBOX(poly);
+	for(n = 0, p = poly->Points; n < max; n++,p++) {
+		x[n] = p->X;
+		y[n] = p->Y;
+	}
+
+	pcb_gui->fill_polygon(Output.fgGC, poly->PointN, x, y);
+}
+
+
 /* erases a polygon on a layer */
 void ErasePolygon(pcb_polygon_t *Polygon)
 {

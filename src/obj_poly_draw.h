@@ -33,3 +33,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl);
 
 void ErasePolygon(pcb_polygon_t *Polygon);
 void DrawPolygon(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+
+/* Draw a simple polygon: no clipping, no hole, just PointN and Points, with
+   a limited amount of max points */
+void _draw_simple_poly(pcb_polygon_t *poly);
