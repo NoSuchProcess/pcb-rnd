@@ -1155,3 +1155,24 @@ int io_lihata_test_parse_pcb(pcb_plug_io_t *plug_ctx, pcb_board_t *Ptr, const ch
 	lht_parser_uninit(&ctx);
 	return (state == TPS_GOOD);
 }
+
+int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
+{
+	int res;
+	char *errmsg;
+	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
+
+	if (doc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
+		return -1;
+	}
+
+	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-font-v1"))) {
+		pcb_message(PCB_MSG_ERROR, "Not a font lihata.\n");
+		return -1;
+	}
+
+	res = parse_font(Ptr, doc->root->data.list.first);
+	lht_dom_uninit(doc);
+	return res;
+}

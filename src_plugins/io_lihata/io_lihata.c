@@ -56,7 +56,7 @@ pcb_uninit_t hid_io_lihata_init(void)
 	io_lihata.test_parse_pcb = io_lihata_test_parse_pcb;
 	io_lihata.parse_pcb = io_lihata_parse_pcb;
 	io_lihata.parse_element = NULL;
-	io_lihata.parse_font = NULL;
+	io_lihata.parse_font = io_lihata_parse_font;
 	io_lihata.write_buffer = NULL;
 	io_lihata.write_element = NULL;
 	io_lihata.write_pcb = io_lihata_write_pcb;
