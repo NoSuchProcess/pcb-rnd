@@ -71,6 +71,7 @@ void pcb_font_create_default(pcb_board_t *pcb);
 void pcb_font_set_info(pcb_font_t *Ptr);
 
 pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
+pcb_polygon_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points);
 
 
 /*** font kit handling ***/

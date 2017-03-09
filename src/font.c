@@ -189,6 +189,18 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 	return (line);
 }
 
+pcb_polygon_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points)
+{
+	pcb_polygon_t *p = calloc(sizeof(pcb_polygon_t), 1);
+	if (num_points > 0) {
+		p->PointN = p->PointMax = num_points;
+		p->Points = malloc(sizeof(pcb_point_t) * num_points);
+	}
+	polylist_insert(&Symbol->polys, p);
+	return p;
+}
+
+
 pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 {
 	if (id <= 0)
