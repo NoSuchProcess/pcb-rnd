@@ -48,10 +48,18 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_win32_init();
 
 	ghid_glue_hid_init(&ghid_hid);
-	ghid_glue_common_init(&ghid_hid);
+	ghid_glue_common_init();
 
 	ghid_hid.name = "gtk";
 	ghid_hid.description = "Gtk - The Gimp Toolkit, with GDK software pixmap rendering";
+
+	if (conf_core.editor.gl) {
+#if 0
+		ghid_gl_install(&ghidgui->common, &ghid_hid);
+#endif
+	} else
+		ghid_gdk_install(&ghidgui->common, &ghid_hid);
+
 
 	pcb_gtk_conf_init();
 	ghidgui->topwin.menu.ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
