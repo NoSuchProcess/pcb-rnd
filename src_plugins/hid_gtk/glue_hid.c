@@ -276,7 +276,7 @@ static void ghid_parse_arguments(int *argc, char ***argv)
 	gport->view.coord_per_px = 300.0;
 	pcb_pixel_slop = 300;
 
-	ghid_init_renderer(argc, argv, gport);
+	ghidgui->common.init_renderer(argc, argv, gport);
 
 #ifdef ENABLE_NLS
 #ifdef LOCALEDIR
