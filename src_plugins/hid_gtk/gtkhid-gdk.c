@@ -1211,52 +1211,6 @@ gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hi
 	return FALSE;
 }
 
-gboolean ghid_gdk_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
-{
-	GdkWindow *window = gtk_widget_get_window(widget);
-	GdkDrawable *save_drawable;
-	GtkAllocation allocation;
-	pcb_gtk_view_t save_view;
-	int save_width, save_height;
-	double xz, yz, vw, vh;
-
-	vw = ctx->view.X2 - ctx->view.X1;
-	vh = ctx->view.Y2 - ctx->view.Y1;
-
-	/* Setup drawable and zoom factor for drawing routines
-	 */
-	save_drawable = gport->drawable;
-	save_view = gport->view;
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
-
-	gtk_widget_get_allocation(widget, &allocation);
-	xz = vw / (double)allocation.width;
-	yz = vh / (double)allocation.height;
-	if (xz > yz)
-		gport->view.coord_per_px = xz;
-	else
-		gport->view.coord_per_px = yz;
-
-	gport->drawable = window;
-	gport->view.canvas_width = allocation.width;
-	gport->view.canvas_height = allocation.height;
-	gport->view.width = allocation.width * gport->view.coord_per_px;
-	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
-	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
-
-	/* call the drawing routine */
-	expcall(&ghid_hid, ctx);
-
-	gport->drawable = save_drawable;
-	gport->view = save_view;
-	gport->view.canvas_width = save_width;
-	gport->view.canvas_height = save_height;
-
-	return FALSE;
-}
-
 GdkPixmap *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
 {
 	GdkPixmap *pixmap;

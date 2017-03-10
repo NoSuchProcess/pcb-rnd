@@ -1401,7 +1401,6 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
-		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;
 	}
 
 /* -- Logical layers tab */

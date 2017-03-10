@@ -50,10 +50,6 @@ static pcb_bool dummy_mouse(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 	return 0;
 }
 
-static void dummy_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
-{
-}
-
 
 /****** fab ******/
 
@@ -82,7 +78,6 @@ static void dummy_draw_csect(pcb_hid_gc_t gc)
 
 void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc) = dummy_draw_csect;
 pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
-void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx) = dummy_overlay;
 
 
 /****** font selector GUI ******/

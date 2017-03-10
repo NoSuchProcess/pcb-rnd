@@ -924,8 +924,10 @@ void ghid_gl_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 
 gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
 {
+	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
+	GdkDrawable *save_drawable;
 	GtkAllocation allocation;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
@@ -934,6 +936,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
 
+	save_drawable = gport->drawable;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
@@ -941,14 +944,15 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	/* Setup zoom factor for drawing routines */
 
 	gtk_widget_get_allocation(widget, &allocation);
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
+	xz = vw / (double) allocation.width;
+	yz = vh / (double) allocation.height;
 
 	if (xz > yz)
 		gport->view.coord_per_px = xz;
 	else
 		gport->view.coord_per_px = yz;
 
+	gport->drawable = window;
 	gport->view.canvas_width = allocation.width;
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
@@ -968,7 +972,10 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	glViewport(0, 0, allocation.width, allocation.height);
 
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height);
+	if (ev)
+		glScissor(ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height);
+	else
+		glScissor(0, 0, allocation.width, allocation.height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -977,12 +984,16 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
+	glEnable(GL_STENCIL_TEST);
 	glClearColor(gport->bg_color.red / 65535., gport->bg_color.green / 65535., gport->bg_color.blue / 65535., 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	hidgl_reset_stencil_usage();
+	glDisable(GL_STENCIL_TEST);
+	glStencilMask(0);
+	glStencilFunc(GL_ALWAYS, 0, 0);
 
 	/* call the drawing routine */
 	hidgl_init_triangle_array(&buffer);
@@ -1007,106 +1018,13 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	gport->render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
+	gport->drawable = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
 
 	return FALSE;
 }
-
-gboolean ghid_gl_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
-{
-	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
-	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
-	GtkAllocation allocation;
-	pcb_gtk_view_t save_view;
-	int save_width, save_height;
-	double xz, yz, vw, vh;
-
-	vw = ctx->view.X2 - ctx->view.X1;
-	vh = ctx->view.Y2 - ctx->view.Y1;
-
-	save_view = gport->view;
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
-
-	/* Setup zoom factor for drawing routines */
-
-	gtk_widget_get_allocation(widget, &allocation);
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
-
-	if (xz > yz)
-		gport->view.coord_per_px = xz;
-	else
-		gport->view.coord_per_px = yz;
-
-	gport->view.canvas_width = allocation.width;
-	gport->view.canvas_height = allocation.height;
-	gport->view.width = allocation.width * gport->view.coord_per_px;
-	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
-	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
-
-	/* make GL-context "current" */
-	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
-		return FALSE;
-	}
-	gport->render_priv->in_context = pcb_true;
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport(0, 0, allocation.width, allocation.height);
-
-	glEnable(GL_SCISSOR_TEST);
-#warning TODO scissor
-//	glScissor(ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, allocation.width, allocation.height, 0, 0, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -Z_NEAR);
-
-	glClearColor(gport->bg_color.red / 65535., gport->bg_color.green / 65535., gport->bg_color.blue / 65535., 1.);
-	glStencilMask(~0);
-	glClearStencil(0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-	hidgl_reset_stencil_usage();
-#warning TODO: remove clearing
-	/* call the drawing routine */
-	hidgl_init_triangle_array(&buffer);
-	ghid_gl_invalidate_current_gc();
-	glPushMatrix();
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
-					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
-							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
-
-	expcall(&ghid_hid, ctx);
-
-	hidgl_flush_triangles(&buffer);
-	glPopMatrix();
-
-	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
-		gdk_gl_drawable_swap_buffers(pGlDrawable);
-	else
-		glFlush();
-
-	/* end drawing to current GL-context */
-	gport->render_priv->in_context = pcb_false;
-	gdk_gl_drawable_gl_end(pGlDrawable);
-
-	gport->view = save_view;
-	gport->view.canvas_width = save_width;
-	gport->view.canvas_height = save_height;
-
-	return FALSE;
-}
-
 
 GdkPixmap *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
 {

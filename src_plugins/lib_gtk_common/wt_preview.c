@@ -340,7 +340,7 @@ static gboolean button_press(GtkWidget * w, pcb_hid_cfg_mod_t btn)
 		if (preview->mouse_cb != NULL) {
 /*				pcb_printf("bp %mm %mm\n", cx, cy); */
 			if (preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy))
-				ghid_preview_expose(w, NULL);
+				gtk_widget_queue_draw(w);
 		}
 		break;
 	case PCB_MB_RIGHT:
@@ -363,7 +363,7 @@ do_zoom:;
 	preview->view.x0 = cx - (preview->view.canvas_width / 2) * preview->view.coord_per_px;
 	preview->view.y0 = cy - (preview->view.canvas_height / 2) * preview->view.coord_per_px;
 	update_expose_data(preview);
-	ghid_preview_expose(w, NULL);
+	gtk_widget_queue_draw(w);
 
 	return FALSE;
 }
@@ -400,7 +400,7 @@ static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gp
 			get_ptr(preview, &cx, &cy, &wx, &wy);
 /*				pcb_printf("br %mm %mm\n", cx, cy); */
 			if (preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy))
-				ghid_preview_expose(w, NULL);
+				gtk_widget_queue_draw(w);
 		}
 		break;
 	default:;
@@ -419,15 +419,13 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 		preview->view.x0 = preview->grabx - wx * preview->view.coord_per_px;
 		preview->view.y0 = preview->graby - wy * preview->view.coord_per_px;
 		update_expose_data(preview);
-		ghid_preview_expose(w, NULL);
+		gtk_widget_queue_draw(w);
 		return FALSE;
 	}
 
 	if (preview->mouse_cb != NULL) {
-/*		pcb_printf("mo %mm %mm\n", cx, cy); */
 		preview->mouse_cb(w, PCB_HID_MOUSE_MOTION, cx, cy);
-		if (preview->overlay_draw_cb != NULL)
-			preview->com->preview_draw(w, preview->overlay_draw_cb, &preview->expose_data);
+		gtk_widget_queue_draw(w);
 	}
 	return FALSE;
 }

@@ -292,6 +292,48 @@ static int is_button(int x, int y, const pcb_box_t *box)
 
 static pcb_hid_gc_t csect_gc;
 
+static pcb_coord_t ox, oy, cx, cy;
+static int drag_addgrp, drag_delgrp;
+static pcb_layergrp_id_t gactive = -1;
+
+typedef enum {
+	MARK_GRP_FRAME,
+	MARK_GRP_MIDDLE,
+	MARK_GRP_TOP
+} mark_grp_loc_t;
+
+static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
+{
+	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
+	pcb_layergrp_id_t g;
+
+	g = get_group_coords(y, &y1, &y2);
+
+	if ((g >= 0) && ((pcb_layergrp_flags(g) & accept_mask) == accept_mask)) {
+		gactive = g;
+		switch(loc) {
+			case MARK_GRP_FRAME:
+				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
+				dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
+				break;
+			case MARK_GRP_MIDDLE:
+				dline_(x0, (y1+y2)/2, PCB_MM_TO_COORD(200), (y1+y2)/2, 0.1);
+				break;
+			case MARK_GRP_TOP:
+				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
+				break;
+		}
+	}
+	else
+		gactive = -1;
+}
+
+static void draw_hover_label(const char *str)
+{
+	int x0 = PCB_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
+	dtext_(cx+x0, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
+}
+
 /* Draw the cross-section layer */
 static void draw_csect(pcb_hid_gc_t gc)
 {
@@ -392,114 +434,34 @@ static void draw_csect(pcb_hid_gc_t gc)
 	x=20;
 	x = 2 + create_button(gc, x, y, "Add copper group", &btn_addgrp);
 	x = 2 + create_button(gc, x, y, "Del copper group", &btn_delgrp);
-}
 
-static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
-static int lvalid, gvalid, dgvalid, drag_addgrp, drag_delgrp;
-static pcb_layergrp_id_t gactive = -1;
-
-typedef enum {
-	MARK_GRP_FRAME,
-	MARK_GRP_MIDDLE,
-	MARK_GRP_TOP
-} mark_grp_loc_t;
-
-static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
-{
-	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
-	pcb_layergrp_id_t g;
-
-	g = get_group_coords(y, &y1, &y2);
-
-	if ((y1 == gy1) && (y2 == gy2) && gvalid)
-		return;
-	if (gvalid) {
-		switch(loc) {
-			case MARK_GRP_FRAME:
-				dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
-				dline_(x0, gy2, PCB_MM_TO_COORD(200), gy2, 0.1);
-				break;
-			case MARK_GRP_MIDDLE:
-				dline_(x0, (gy1+gy2)/2, PCB_MM_TO_COORD(200), (gy1+gy2)/2, 0.1);
-				break;
-			case MARK_GRP_TOP:
-				dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
-		}
-		gvalid = 0;
-	}
-
-	if ((g >= 0) && ((pcb_layergrp_flags(g) & accept_mask) == accept_mask)) {
-		gy1 = y1;
-		gy2 = y2;
-		gactive = g;
-		gvalid = 1;
-		switch(loc) {
-			case MARK_GRP_FRAME:
-				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
-				dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
-				break;
-			case MARK_GRP_MIDDLE:
-				dline_(x0, (y1+y2)/2, PCB_MM_TO_COORD(200), (y1+y2)/2, 0.1);
-				break;
-			case MARK_GRP_TOP:
-				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
-				break;
-		}
-	}
-	else
-		gactive = -1;
-}
-
-static void draw_hover_label(int *valid, const char *str)
-{
-	int x0 = PCB_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
-	if ((lx != cx) || (ly != cy)) {
-		if (*valid)
-			dtext_(lx+x0, ly, 250, 0, str, PCB_MM_TO_COORD(0.01));
-		dtext_(cx+x0, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
-		lx = cx;
-		ly = cy;
-		*valid = 1;
-	}
-}
-
-static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
-{
 	if ((drag_lid >= 0) || (drag_addgrp) || (drag_delgrp) || (drag_gid >= 0)) {
-		pcb_hid_t *old_gui = pcb_gui;
-		pcb_gui = hid;
-		Output.fgGC = pcb_gui->make_gc();
-
-		pcb_gui->set_color(Output.fgGC, "#000000");
-		pcb_gui->set_draw_xor(Output.fgGC, 1);
+		pcb_gui->set_color(gc, "#000000");
 
 		/* draw the actual operation */
 		if (drag_addgrp) {
 			mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_MIDDLE);
-			draw_hover_label(&lvalid, "INSERT");
+			draw_hover_label("INSERT");
 		}
 		if (drag_delgrp) {
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_FRAME);
-			draw_hover_label(&lvalid, "DEL");
+			draw_hover_label("DEL");
 		}
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
-			draw_hover_label(&lvalid, l->Name);
+			draw_hover_label(l->Name);
 			mark_grp(cy, PCB_LYT_COPPER, MARK_GRP_FRAME);
 		}
 		else if (drag_gid >= 0) {
 			pcb_layer_group_t *g = &PCB->LayerGroups.grp[drag_gid];
 			const char *name = g->name == NULL ? "<unnamed group>" : g->name;
-			draw_hover_label(&dgvalid, name);
+			draw_hover_label(name);
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_TOP);
 			if (gactive < 0)
 				mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_BOTTOM, MARK_GRP_TOP);
 			if (gactive < 0)
 				mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_TOP);
 		}
-
-		pcb_gui->destroy_gc(Output.fgGC);
-		pcb_gui = old_gui;
 	}
 }
 
@@ -558,7 +520,6 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			if (drag_lid >= 0) {
 				ox = x;
 				oy = y;
-				lvalid = 0;
 				res = 1;
 				break;
 			}
@@ -568,7 +529,6 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				pcb_layergrp_id_t gid;
 				gid = get_group_coords(y, &tmp, &tmp);
 				if ((gid >= 0) && (pcb_layergrp_flags(gid) & PCB_LYT_COPPER) && (pcb_layergrp_flags(gid) & PCB_LYT_INTERN)) {
-					gvalid = 0;
 					drag_gid = gid;
 					/* temporary workaround for the restricted setup */
 					if (pcb_layergrp_flags(gid - 1) & PCB_LYT_SUBSTRATE)
@@ -595,7 +555,6 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				drag_addgrp = 0;
 				gactive = -1;
 				res = 1;
-				lvalid = gvalid = 0;
 			}
 			else if (drag_delgrp) {
 				if (gactive >= 0) {
@@ -608,7 +567,6 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				drag_delgrp = 0;
 				gactive = -1;
 				res = 1;
-				lvalid = gvalid = 0;
 			}
 			else if (drag_lid >= 0) {
 				if (gactive >= 0) {
@@ -622,7 +580,6 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					pcb_message(PCB_MSG_ERROR, "Can not move copper layer onto non-copper layer group\n");
 				res = 1;
 				drag_lid = -1;
-				lvalid = gvalid = 0;
 				gactive = -1;
 			}
 			else if (drag_gid > 0) {
@@ -630,7 +587,6 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				res = 1;
 				drag_gid = -1;
 				drag_gid_subst = -1;
-				lvalid = gvalid = 0;
 			}
 			break;
 		case PCB_HID_MOUSE_MOTION:
@@ -706,7 +662,6 @@ pcb_uninit_t hid_draw_csect_init(void)
 
 	pcb_stub_draw_csect = draw_csect;
 	pcb_stub_draw_csect_mouse_ev = mouse_csect;
-	pcb_stub_draw_csect_overlay = draw_csect_overlay;
 
 	return hid_draw_csect_uninit;
 }

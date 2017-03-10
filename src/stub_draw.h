@@ -40,7 +40,6 @@ extern void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc);
 /* csect */
 extern void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc);
 extern pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
-extern void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
 
 /* fontsel */
 extern void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc);
