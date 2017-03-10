@@ -2649,16 +2649,16 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 	gtk_window_set_wmclass(GTK_WINDOW(config_window), "Pcb_Conf", "PCB");
 	gtk_container_set_border_width(GTK_CONTAINER(config_window), 2);
 
-	config_hbox = gtk_hbox_new(FALSE, 4);
+	config_hbox = gtk_hpaned_new();
 	gtk_container_add(GTK_CONTAINER(config_window), config_hbox);
 
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-	gtk_widget_set_size_request(scrolled, 150, 0);
-	gtk_box_pack_start(GTK_BOX(config_hbox), scrolled, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(scrolled, 200, 0);
+	gtk_paned_pack1(GTK_PANED(config_hbox), scrolled, TRUE, FALSE);
 
 	main_vbox = gtk_vbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(config_hbox), main_vbox, TRUE, TRUE, 0);
+	gtk_paned_pack2(GTK_PANED(config_hbox), main_vbox, TRUE, FALSE);
 
 	widget = gtk_notebook_new();
 	gtk_box_pack_start(GTK_BOX(main_vbox), widget, TRUE, TRUE, 0);
