@@ -412,7 +412,7 @@ int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
 
 	assert(node);
 	/** assert that starting_region is well formed */
-	assert(query->X1 < query->X2 && query->Y1 < query->Y2);
+	assert(query->X1 <= query->X2 && query->Y1 <= query->Y2);
 	assert(node->box.X1 < query->X2 && node->box.X2 > query->X1 && node->box.Y1 < query->Y2 && node->box.Y2 > query->Y1);
 #ifdef SLOW_ASSERTS
 	/** assert that node is well formed */
