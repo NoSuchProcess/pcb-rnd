@@ -138,6 +138,11 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return conf_core.editor.show_mask;
 			return 0;
+		case PCB_LYT_SILK:
+			priv->trans_lines = pcb_true;
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
+				return PCB->ElementOn;
+			return 0;
 		case PCB_LYT_PASTE:
 			priv->trans_lines = pcb_true;
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
@@ -156,11 +161,6 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 		switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_INVIS:
 			return PCB->InvisibleObjectsOn;
-		case PCB_LYT_SILK:
-			priv->trans_lines = pcb_true;
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-				return PCB->ElementOn;
-			return 0;
 		case PCB_LYT_ASSY:
 			return 0;
 		case PCB_LYT_PDRILL:
