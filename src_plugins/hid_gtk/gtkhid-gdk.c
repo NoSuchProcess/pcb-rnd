@@ -19,6 +19,7 @@
 
 extern pcb_hid_t ghid_hid;
 void ghid_cancel_lead_user(void);
+void ghid_gdk_screen_update(void);
 
 /* Sets priv->u_gc to the "right" GC to use (wrt mask or window)
 */
@@ -1100,8 +1101,9 @@ void ghid_gdk_init_renderer(int *argc, char ***argv, void *vport)
 	port->render_priv = g_new0(render_priv, 1);
 }
 
-void ghid_gdk_shutdown_renderer(GHidPort * port)
+void ghid_gdk_shutdown_renderer(void *port_)
 {
+	GHidPort *port = port_;
 	ghid_cancel_lead_user();
 	g_free(port->render_priv);
 	port->render_priv = NULL;
@@ -1111,8 +1113,9 @@ void ghid_gdk_init_drawing_widget(GtkWidget * widget, void * port)
 {
 }
 
-void ghid_gdk_drawing_area_configure_hook(GHidPort * port)
+void ghid_gdk_drawing_area_configure_hook(void *port_)
 {
+	GHidPort *port = port_;
 	static int done_once = 0;
 	render_priv *priv = port->render_priv;
 
