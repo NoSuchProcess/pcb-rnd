@@ -533,28 +533,53 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->edit_attributes = ghid_attributes;
 	dst->point_cursor = PointCursor;
 
-	dst->invalidate_lr = ghid_gdk_invalidate_lr;
-	dst->invalidate_all = ghid_gdk_invalidate_all;
-	dst->notify_crosshair_change = ghid_gdk_notify_crosshair_change;
-	dst->notify_mark_change = ghid_gdk_notify_mark_change;
-	dst->set_layer_group = ghid_gdk_set_layer_group;
-	dst->make_gc = ghid_gdk_make_gc;
-	dst->destroy_gc = ghid_gdk_destroy_gc;
-	dst->use_mask = ghid_gdk_use_mask;
-	dst->set_color = ghid_gdk_set_color;
-	dst->set_line_cap = ghid_gdk_set_line_cap;
-	dst->set_line_width = ghid_gdk_set_line_width;
-	dst->set_draw_xor = ghid_gdk_set_draw_xor;
-	dst->draw_line = ghid_gdk_draw_line;
-	dst->draw_arc = ghid_gdk_draw_arc;
-	dst->draw_rect = ghid_gdk_draw_rect;
-	dst->fill_circle = ghid_gdk_fill_circle;
-	dst->fill_polygon = ghid_gdk_fill_polygon;
-	dst->fill_rect = ghid_gdk_fill_rect;
+	if (conf_core.editor.gl) {
+		dst->invalidate_lr = ghid_gl_invalidate_lr;
+		dst->invalidate_all = ghid_gl_invalidate_all;
+		dst->notify_crosshair_change = ghid_gl_notify_crosshair_change;
+		dst->notify_mark_change = ghid_gl_notify_mark_change;
+		dst->set_layer_group = ghid_gl_set_layer_group;
+		dst->make_gc = ghid_gl_make_gc;
+		dst->destroy_gc = ghid_gl_destroy_gc;
+		dst->use_mask = ghid_gl_use_mask;
+		dst->set_color = ghid_gl_set_color;
+		dst->set_line_cap = ghid_gl_set_line_cap;
+		dst->set_line_width = ghid_gl_set_line_width;
+		dst->set_draw_xor = ghid_gl_set_draw_xor;
+		dst->draw_line = ghid_gl_draw_line;
+		dst->draw_arc = ghid_gl_draw_arc;
+		dst->draw_rect = ghid_gl_draw_rect;
+		dst->fill_circle = ghid_gl_fill_circle;
+		dst->fill_polygon = ghid_gl_fill_polygon;
+		dst->fill_rect = ghid_gl_fill_rect;
 
-	dst->request_debug_draw = ghid_gdk_request_debug_draw;
-	dst->flush_debug_draw = ghid_gdk_flush_debug_draw;
-	dst->finish_debug_draw = ghid_gdk_finish_debug_draw;
+		dst->request_debug_draw = ghid_gl_request_debug_draw;
+		dst->flush_debug_draw = ghid_gl_flush_debug_draw;
+		dst->finish_debug_draw = ghid_gl_finish_debug_draw;
+	} else {
+		dst->invalidate_lr = ghid_gdk_invalidate_lr;
+		dst->invalidate_all = ghid_gdk_invalidate_all;
+		dst->notify_crosshair_change = ghid_gdk_notify_crosshair_change;
+		dst->notify_mark_change = ghid_gdk_notify_mark_change;
+		dst->set_layer_group = ghid_gdk_set_layer_group;
+		dst->make_gc = ghid_gdk_make_gc;
+		dst->destroy_gc = ghid_gdk_destroy_gc;
+		dst->use_mask = ghid_gdk_use_mask;
+		dst->set_color = ghid_gdk_set_color;
+		dst->set_line_cap = ghid_gdk_set_line_cap;
+		dst->set_line_width = ghid_gdk_set_line_width;
+		dst->set_draw_xor = ghid_gdk_set_draw_xor;
+		dst->draw_line = ghid_gdk_draw_line;
+		dst->draw_arc = ghid_gdk_draw_arc;
+		dst->draw_rect = ghid_gdk_draw_rect;
+		dst->fill_circle = ghid_gdk_fill_circle;
+		dst->fill_polygon = ghid_gdk_fill_polygon;
+		dst->fill_rect = ghid_gdk_fill_rect;
+
+		dst->request_debug_draw = ghid_gdk_request_debug_draw;
+		dst->flush_debug_draw = ghid_gdk_flush_debug_draw;
+		dst->finish_debug_draw = ghid_gdk_finish_debug_draw;
+	}
 
 	dst->notify_save_pcb = ghid_notify_save_pcb;
 	dst->notify_filename_changed = ghid_notify_filename_changed;
