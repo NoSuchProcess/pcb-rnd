@@ -914,27 +914,27 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 		pcb_line_t *rub2 = rbnd->Rubberband[1].Line;
 
 		/* Create float point-vector representations of the lines */
-		fline fmain, frub1, frub2;
-		fmain = fline_create_from_points (&line->Point1, &line->Point2);
+		pcb_fline_t fmain, frub1, frub2;
+		fmain = pcb_fline_create_from_points(&line->Point1, &line->Point2);
 		if (rbnd->Rubberband[0].MovedPoint == &rub1->Point1)
-			frub1 = fline_create_from_points (&rub1->Point1, &rub1->Point2);
+			frub1 = pcb_fline_create_from_points(&rub1->Point1, &rub1->Point2);
 		else
-			frub1 = fline_create_from_points (&rub1->Point2, &rub1->Point1);
+			frub1 = pcb_fline_create_from_points(&rub1->Point2, &rub1->Point1);
 
 		if (rbnd->Rubberband[1].MovedPoint == &rub2->Point1)
-			frub2 = fline_create_from_points (&rub2->Point1, &rub2->Point2);
+			frub2 = pcb_fline_create_from_points(&rub2->Point1, &rub2->Point2);
 		else
-			frub2 = fline_create_from_points (&rub2->Point2, &rub2->Point1);
+			frub2 = pcb_fline_create_from_points(&rub2->Point2, &rub2->Point1);
 
 		/* If they are valid (non-null directions) we carry on */
-		if (fline_is_valid(fmain) && fline_is_valid(frub1) && fline_is_valid(frub2)) {
-			fvector fmove;
+		if (pcb_fline_is_valid(fmain) && pcb_fline_is_valid(frub1) && pcb_fline_is_valid(frub2)) {
+			pcb_fvector_t fmove;
 
-			fvector fintersection = fline_intersection(frub1, frub2);
+			pcb_fvector_t fintersection = pcb_fline_intersection(frub1, frub2);
 
-			if (!fvector_is_null(fintersection)) {
+			if (!pcb_fvector_is_null(fintersection)) {
 				/* Movement direction defined as from mid line to intersection point */
-				fvector fmid;
+				pcb_fvector_t fmid;
 				fmid.x = ((double)line->Point2.X + line->Point1.X) / 2.0;
 				fmid.y = ((double)line->Point2.Y + line->Point1.Y) / 2.0;
 				fmove.x = fintersection.x - fmid.x;
@@ -946,19 +946,19 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 				fmove.y = frub1.direction.y;
 			}
 
-			if (!fvector_is_null(fmove)) {
-				fvector_normalize(&fmove);
+			if (!pcb_fvector_is_null(fmove)) {
+				pcb_fvector_normalize(&fmove);
 
 				/* Cursor delta vector */
-				fvector fcursor_delta;
+				pcb_fvector_t fcursor_delta;
 				fcursor_delta.x = pcb_crosshair->X - pcb_marked->X;
 				fcursor_delta.y = pcb_crosshair->Y - pcb_marked->Y;
 
 				/* Cursor delta projection on movement direction */
-				double amount_moved = fvector_dot(fmove, fcursor_delta);
+				double amount_moved = pcb_fvector_dot(fmove, fcursor_delta);
 
 				/* Scale fmove by calculated amount */
-				fvector fmove_total;
+				pcb_fvector_t fmove_total;
 				fmove_total.x = fmove.x * amount_moved;
 				fmove_total.y = fmove.y * amount_moved;
 
@@ -969,19 +969,19 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 				/* Move rubberband: fmove_total·normal = fmove_rubberband·normal
 				 * where normal is the moving line normal
 				 */
-				fvector fnormal;
+				pcb_fvector_t fnormal;
 				fnormal.x = fmain.direction.y;
 				fnormal.y = -fmain.direction.x;
-				if (fvector_dot(fnormal, fmove) < 0) {
+				if (pcb_fvector_dot(fnormal, fmove) < 0) {
 					fnormal.x = -fnormal.x;
 					fnormal.y = -fnormal.y;
 				}
-				double rub1_move = amount_moved * fvector_dot(fmove, fnormal) / fvector_dot(frub1.direction, fnormal);
+				double rub1_move = amount_moved * pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub1.direction, fnormal);
 				rbnd->Rubberband[0].DX = rub1_move*frub1.direction.x;
 				rbnd->Rubberband[0].DY = rub1_move*frub1.direction.y;
 				rbnd->Rubberband[0].delta_is_valid = 1;
 
-				double rub2_move = amount_moved * fvector_dot(fmove, fnormal) / fvector_dot(frub2.direction, fnormal);
+				double rub2_move = amount_moved * pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub2.direction, fnormal);
 				rbnd->Rubberband[1].DX = rub2_move*frub2.direction.x;
 				rbnd->Rubberband[1].DY = rub2_move*frub2.direction.y;
 				rbnd->Rubberband[1].delta_is_valid = 1;

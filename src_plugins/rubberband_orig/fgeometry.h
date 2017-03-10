@@ -4,38 +4,38 @@
 
 #include "obj_common.h"
 
-typedef struct
+typedef struct pcb_fvector_s
 {
 	double x;
 	double y;
-} fvector;
+} pcb_fvector_t;
 
 
 /* flines should be created through fline_create* functions.
  * Alternatively, they can be created manually as long as
  * direction is normalized
  */
-typedef struct
+typedef struct pcb_fline_s
 {
-	fvector point;
-	fvector direction;
-} fline;
+	pcb_fvector_t point;
+	pcb_fvector_t direction;
+} pcb_fline_t;
 
-int fvector_is_null(fvector v);
+int pcb_fvector_is_null(pcb_fvector_t v);
 
 
 /* Any vector given to the following functions has to be non-null */   
-double fvector_dot (fvector v1, fvector v2);
-void fvector_normalize (fvector *v);
+double pcb_fvector_dot(pcb_fvector_t v1, pcb_fvector_t v2);
+void pcb_fvector_normalize(pcb_fvector_t *v);
 
 
-fline fline_create(pcb_any_line_t *line);
-fline fline_create_from_points(struct pcb_point_s *base_point, struct pcb_point_s *other_point);
+pcb_fline_t pcb_fline_create(pcb_any_line_t *line);
+pcb_fline_t pcb_fline_create_from_points(struct pcb_point_s *base_point, struct pcb_point_s *other_point);
 
-int fline_is_valid(fline l);
+int pcb_fline_is_valid(pcb_fline_t l);
 
 /* l1.direction and l2.direction are expected to be normalized */
-fvector fline_intersection(fline l1, fline l2);
+pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2);
 
 #endif
 

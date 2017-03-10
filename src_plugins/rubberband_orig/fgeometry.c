@@ -5,18 +5,18 @@
 
 #define MIN_COMPONENT	0.000001
 
-int fvector_is_null (fvector v)
+int pcb_fvector_is_null (pcb_fvector_t v)
 {
 	return fabs(v.x) < MIN_COMPONENT && fabs(v.y) < MIN_COMPONENT;
 }
 
-double fvector_dot (fvector v1, fvector v2)
+double pcb_fvector_dot (pcb_fvector_t v1, pcb_fvector_t v2)
 {
 	return v1.x * v2.x + v1.y * v2.y;
 }
 
 
-void fvector_normalize (fvector *v)
+void pcb_fvector_normalize (pcb_fvector_t *v)
 {
 	double module = sqrt(v->x * v->x + v->y * v->y);
 	
@@ -24,50 +24,50 @@ void fvector_normalize (fvector *v)
 	v->y /= module;
 }
 
-int fline_is_valid(fline l)
+int pcb_fline_is_valid(pcb_fline_t l)
 {
-	return !fvector_is_null(l.direction);
+	return !pcb_fvector_is_null(l.direction);
 }
 
-fline fline_create(pcb_any_line_t *line)
+pcb_fline_t pcb_fline_create(pcb_any_line_t *line)
 {
-	fline ret;
+	pcb_fline_t ret;
 	
 	ret.point.x = line->Point1.X;
 	ret.point.y = line->Point1.Y;
 	ret.direction.x = line->Point2.X - line->Point1.X;
 	ret.direction.y = line->Point2.Y - line->Point1.Y;
 	
-	if (!fvector_is_null (ret.direction))
-		fvector_normalize( &ret.direction );
+	if (!pcb_fvector_is_null (ret.direction))
+		pcb_fvector_normalize( &ret.direction );
 	
 	return ret;
 }
 
 
-fline fline_create_from_points(struct pcb_point_s *base_point, struct pcb_point_s *other_point)
+pcb_fline_t pcb_fline_create_from_points(struct pcb_point_s *base_point, struct pcb_point_s *other_point)
 {
-	fline ret;
+	pcb_fline_t ret;
 	
 	ret.point.x = base_point->X;
 	ret.point.y = base_point->Y;
 	ret.direction.x = other_point->X - base_point->X;
 	ret.direction.y = other_point->Y - base_point->Y;
 	
-	if (!fvector_is_null (ret.direction))
-		fvector_normalize( &ret.direction );
+	if (!pcb_fvector_is_null (ret.direction))
+		pcb_fvector_normalize( &ret.direction );
 	
 	return ret;
 }
 
 
-fvector fline_intersection(fline l1, fline l2)
+pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 {
-	fvector ret;
+	pcb_fvector_t ret;
 	ret.x = 0;
 	ret.y = 0;
 
-	double lines_dot = fvector_dot (l1.direction, l2.direction);
+	double lines_dot = pcb_fvector_dot (l1.direction, l2.direction);
 	if (fabs(lines_dot) > 0.990 )
 	{
 		/* Consider them parallel. Return null point (vector) */
