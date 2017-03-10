@@ -69,6 +69,7 @@ void hyp_set_origin();					/* set origin so all coordinates are positive */
 void hyp_perimeter();						/* add board outline to pcb */
 void hyp_create_polygons();			/* add all created polygons to pcb */
 void hyp_create_silkscreen();		/* add silkscreen outlines to all devices on board */
+void hyp_resize_board();				/* resize board to fit outline */
 unsigned int hyp_layer_flag(char *);	/* set "solder side" flag if on bottom layer */
 
 int hyp_debug;									/* logging on/off switch */
@@ -502,6 +503,57 @@ void hyp_set_origin()
 }
 
 /* 
+ * resize board to fit pcb outline.
+ */
+
+void hyp_resize_board()
+{
+	pcb_coord_t x_max, x_min, y_max, y_min;
+	pcb_coord_t width, height;
+	pcb_coord_t slack = PCB_MM_TO_COORD(1);
+	outline_t *i;
+
+	if (PCB == NULL)
+		return;
+	if (outline_head == NULL)
+		return;
+
+	x_min = x_max = outline_head->x1;
+	y_min = y_max = outline_head->y1;
+
+	for (i = outline_head; i != NULL; i = i->next) {
+
+		x_max = max(x_max, i->x1);
+		x_max = max(x_max, i->x2);
+		y_max = max(y_max, i->y1);
+		y_max = max(y_max, i->y2);
+
+		x_min = min(x_min, i->x1);
+		x_min = min(x_min, i->x2);
+		y_min = min(y_min, i->y1);
+		y_min = min(y_min, i->y2);
+
+		if (i->is_arc) {
+			x_max = max(x_max, i->xc + i->r);
+			y_max = max(y_max, i->yc + i->r);
+
+			x_min = min(x_min, i->xc - i->r);
+			y_min = min(y_min, i->yc - i->r);
+		}
+	}
+
+	width = max(PCB->MaxWidth, x_max - x_min + slack);
+	height = max(PCB->MaxHeight, y_max - y_min + slack);
+
+	/* resize if board too small */
+	if ((width > PCB->MaxWidth) || (height > PCB->MaxHeight))
+		pcb_board_resize(width, height);
+
+	return;
+
+}
+
+/* 
  * Draw board perimeter.
  * The first segment is part of the first polygon.
  * The first polygon of the board perimeter is positive, the rest are holes.
@@ -648,14 +700,16 @@ void hyp_element_silkscreen_new(pcb_data_t * Data, pcb_element_t * Element, pcb_
 	pcb_element_line_new(Element, x2, y2, x2, y1, 1);
 	pcb_element_line_new(Element, x2, y1, x1, y1, 1);
 
-	/* put text bottom left */
+	/* put part no. bottom left */
 	PCB_ELEM_TEXT_REFDES(Element).X = x1;
 	PCB_ELEM_TEXT_REFDES(Element).Y = y2;
 
+	/* put description top left */
 	PCB_ELEM_TEXT_DESCRIPTION(Element).X = x1;
-	PCB_ELEM_TEXT_DESCRIPTION(Element).Y = y2;
+	PCB_ELEM_TEXT_DESCRIPTION(Element).Y = y1;
 
-	PCB_ELEM_TEXT_VALUE(Element).X = x1;
+	/* put value bottom right */
+	PCB_ELEM_TEXT_VALUE(Element).X = x2;
 	PCB_ELEM_TEXT_VALUE(Element).Y = y2;
 
 	/* update */
@@ -1074,6 +1128,9 @@ pcb_bool exec_perimeter_segment(parse_param * h)
 
 	/* set origin so all coordinates are positive */
 	hyp_set_origin();
+
+	/* resize board if too small to draw outline */
+	hyp_resize_board();
 
 	return 0;
 }
