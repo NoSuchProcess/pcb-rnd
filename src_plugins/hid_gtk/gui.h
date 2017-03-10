@@ -156,7 +156,12 @@ static inline void ghid_invalidate_all(void) { ghid_hid.invalidate_all(); }
 static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
 static inline void ghid_shutdown_renderer(void *port) { ghidgui->common.shutdown_renderer(port); }
 static inline void ghid_drawing_area_configure_hook(void *out) { ghidgui->common.drawing_area_configure_hook(out); }
-static inline void ghid_init_renderer(int *argc, char ***argv, void *port) { ghidgui->common.init_renderer(argc, argv, port); }
+
+static inline void ghid_init_renderer(int *argc, char ***argv, void *port)
+{
+	if (ghidgui->common.init_renderer != NULL)
+		ghidgui->common.init_renderer(argc, argv, port);
+}
 
 /* Coordinate conversions */
 #include "compat_misc.h"
