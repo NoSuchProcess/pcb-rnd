@@ -24,7 +24,7 @@ typedef struct pcb_fline_s
 int pcb_fvector_is_null(pcb_fvector_t v);
 
 
-/* Any vector given to the following functions has to be non-null */   
+/* Any vector given to the following functions has to be non-null */
 double pcb_fvector_dot(pcb_fvector_t v1, pcb_fvector_t v2);
 void pcb_fvector_normalize(pcb_fvector_t *v);
 
