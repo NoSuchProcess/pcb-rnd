@@ -775,7 +775,7 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 					pcb_coord_t a = 0; /*-25945061;*/
 					x1 = ptr->Line->Point2.X;
 					y1 = ptr->Line->Point2.Y;
-/*					printf ("%d\n", dy);*/
+/*					pcb_trace("%d\n", dy);*/
 					x2 = ptr->Line->Point1.X + dx;
 					y2 = ptr->Line->Point1.Y + dy + a;
 				}
