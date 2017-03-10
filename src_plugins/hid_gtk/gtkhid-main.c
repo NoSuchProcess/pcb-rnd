@@ -28,12 +28,6 @@ const char *ghid_menu_cookie = "gtk hid menu";
 GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;
 
-#warning TODO: move to render common
-void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
-{
-	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
-}
-
 void hid_hid_gtk_uninit()
 {
 	pcb_event_unbind_allcookie(ghid_cookie);

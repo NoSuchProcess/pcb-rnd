@@ -23,6 +23,8 @@
 #ifndef PCB_HID_GTK_GHID_H
 #define PCB_HID_GTK_GHID_H
 
+typedef struct GHidPort_s  GHidPort;
+
 #include "hid.h"
 
 #include <gtk/gtk.h>
@@ -59,8 +61,9 @@ typedef struct GhidGui_s {
 
 extern GhidGui _ghidgui, *ghidgui;
 
+
 /* The output viewport */
-typedef struct {
+struct GHidPort_s {
 	GtkWidget *top_window,				/* toplevel widget              */
 	 *drawing_area;								/* and its drawing area */
 	GdkPixmap *pixmap, *mask;
@@ -77,14 +80,11 @@ typedef struct {
 	pcb_gtk_view_t view;
 
 	pcb_lead_user_t lead_user;
-
-} GHidPort;
+};
 
 extern GHidPort ghid_port, *gport;
 
 /* ***  */
-void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
-
 void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean horizontal, GtkPositionType pos,
 												gboolean set_draw_value, gint digits,

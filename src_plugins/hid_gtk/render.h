@@ -3,6 +3,7 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
+#include "gui.h"
 #include "conf.h"
 #include "pcb_bool.h"
 
@@ -25,8 +26,11 @@ typedef struct pcb_lead_user_s {
 	pcb_coord_t y;
 } pcb_lead_user_t;
 
-/* the only entry points we should see */
+/* the only entry points we should see from the actual renderers */
 void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid);
 void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid);
+
+/*** Utility functions for renderers to call ***/
+void ghid_draw_area_update(GHidPort *out, GdkRectangle *rect);
 
 #endif
