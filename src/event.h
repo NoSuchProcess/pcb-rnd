@@ -50,6 +50,7 @@ typedef enum {
 	PCB_EVENT_RUBBER_RENAME,          /* rubber band: element pin/pad got renamed */
 	PCB_EVENT_RUBBER_LOOKUP_LINES,    /* rubber band: attach rubber banded line objects to crosshair */
 	PCB_EVENT_RUBBER_LOOKUP_RATS,     /* rubber band: attach rubber banded rat lines objects to crosshair */
+	PCB_EVENT_RUBBER_FIT_CROSSHAIR,   /* rubber band: fit crosshair and modify lines to keep orientation */
 
 	PCB_EVENT_GUI_SYNC,               /* sync GUI state (e.g. after a menu clicked) */
 

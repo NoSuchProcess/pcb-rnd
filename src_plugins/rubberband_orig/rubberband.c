@@ -42,12 +42,14 @@
 #include "operation.h"
 #include "rotate.h"
 #include "draw.h"
+#include "crosshair.h"
 #include "obj_rat_draw.h"
 #include "obj_line_op.h"
 #include "obj_line_draw.h"
 #include "plugins.h"
 #include "conf_core.h"
 #include "layer_grp.h"
+#include "fgeometry.h"
 
 #include "polygon.h"
 
@@ -55,6 +57,9 @@ typedef struct {								/* rubberband lines for element moves */
 	pcb_layer_t *Layer;						/* layer that holds the line */
 	pcb_line_t *Line;							/* the line itself */
 	pcb_point_t *MovedPoint;			/* and finally the point */
+	pcb_coord_t DX;
+	pcb_coord_t DY;
+	int delta_is_valid;
 } pcb_rubberband_t;
 
 typedef struct {
@@ -674,6 +679,9 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 	ptr->Layer = Layer;
 	ptr->Line = Line;
 	ptr->MovedPoint = MovedPoint;
+	ptr->DX = -1;
+	ptr->DY = -1;
+	ptr->delta_is_valid = 0;
 	return (ptr);
 }
 
@@ -739,8 +747,8 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rubberband_t *ptr;
 	pcb_cardinal_t i;
-	pcb_coord_t dx = argv[1].d.c, dy = argv[2].d.c;
-
+	pcb_coord_t group_dx = argv[1].d.c, group_dy = argv[2].d.c;
+	pcb_coord_t dx = group_dx, dy = group_dy;
 
 	/* draw the attached rubberband lines too */
 	i = rbnd->RubberbandN;
@@ -754,12 +762,22 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 			pcb_coord_t x1=0,y1=0,x2=0,y2=0;
 
 			if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line)) {
-				/* 'point1' is always the fix-point */
+				if (ptr->delta_is_valid) {
+					dx = ptr->DX;
+					dy = ptr->DY;
+				}
+				else {
+					dx = group_dx;
+					dy = group_dy;
+				}
+				/* 'point1' is always the fix-point */	
 				if (ptr->MovedPoint == &ptr->Line->Point1) {
 					x1 = ptr->Line->Point2.X;
 					y1 = ptr->Line->Point2.Y;
+					pcb_coord_t a = 0; /*-25945061;*/
+/*					printf ("%d\n", dy);*/
 					x2 = ptr->Line->Point1.X + dx;
-					y2 = ptr->Line->Point1.Y + dy;
+					y2 = ptr->Line->Point1.Y + dy + a;
 				}
 				else {
 					x1 = ptr->Line->Point1.X;
@@ -768,23 +786,22 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 					y2 = ptr->Line->Point2.Y + dy;
 				}
 			}
-			else if (ptr->MovedPoint == &ptr->Line->Point1)	{
-					x1 = ptr->Line->Point1.X + dx;
-					y1 = ptr->Line->Point1.Y + dy;
-					x2 = ptr->Line->Point2.X + dx;
-					y2 = ptr->Line->Point2.Y + dy;
+			else if (ptr->MovedPoint == &ptr->Line->Point1) {
+					x1 = ptr->Line->Point1.X + group_dx;
+					y1 = ptr->Line->Point1.Y + group_dy;
+					x2 = ptr->Line->Point2.X + group_dx;
+					y2 = ptr->Line->Point2.Y + group_dy;
 			}
 
 			if ((x1 != x2) || (y1 != y2)) {
 				XORDrawAttachedLine(x1,y1,x2,y2, ptr->Line->Thickness);
-
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
 					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
- 					XORDrawAttachedLine(x1,y1,x2,y2,ptr->Line->Thickness + 2 * (PCB->Bloat + 1) );
-        	pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+					XORDrawAttachedLine(x1,y1,x2,y2,ptr->Line->Thickness + 2 * (PCB->Bloat + 1) );
+					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 				}
-      }
+			}
 		}
 
 		ptr++;
@@ -876,6 +893,103 @@ static void rbe_lookup_rats(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
 }
 
+static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int i;
+	rubber_ctx_t *rbnd = user_data;
+	pcb_crosshair_t *pcb_crosshair = argv[1].d.p;
+	pcb_mark_t *pcb_marked = argv[2].d.p;
+	pcb_coord_t *x = argv[3].d.p; /* Return argument */
+	pcb_coord_t *y = argv[4].d.p; /* Return argument */
+
+	for (i=0; i<rbnd->RubberbandN; i++) {
+		rbnd->Rubberband[i].delta_is_valid = 0;
+	}
+
+	/* Move keeping rubberband lines direction */
+	if ((pcb_crosshair->AttachedObject.Type == PCB_TYPE_LINE) && (rbnd->RubberbandN == 2))
+	{
+		pcb_line_t *line = (pcb_line_t*) pcb_crosshair->AttachedObject.Ptr2;
+		pcb_line_t *rub1 = rbnd->Rubberband[0].Line;
+		pcb_line_t *rub2 = rbnd->Rubberband[1].Line;
+
+		/* Create float point-vector representations of the lines */
+		fline fmain, frub1, frub2;
+		fmain = fline_create_from_points (&line->Point1, &line->Point2);
+		if (rbnd->Rubberband[0].MovedPoint == &rub1->Point1)
+			frub1 = fline_create_from_points (&rub1->Point1, &rub1->Point2);
+		else
+			frub1 = fline_create_from_points (&rub1->Point2, &rub1->Point1);
+
+		if (rbnd->Rubberband[1].MovedPoint == &rub2->Point1)
+			frub2 = fline_create_from_points (&rub2->Point1, &rub2->Point2);
+		else
+			frub2 = fline_create_from_points (&rub2->Point2, &rub2->Point1);
+
+		/* If they are valid (non-null directions) we carry on */
+		if (fline_is_valid(fmain) && fline_is_valid(frub1) && fline_is_valid(frub2)) {
+			fvector fmove;
+
+			fvector fintersection = fline_intersection(frub1, frub2);
+
+			if (!fvector_is_null(fintersection)) {
+				/* Movement direction defined as from mid line to intersection point */
+				fvector fmid;
+				fmid.x = ((double)line->Point2.X + line->Point1.X) / 2.0;
+				fmid.y = ((double)line->Point2.Y + line->Point1.Y) / 2.0;
+				fmove.x = fintersection.x - fmid.x;
+				fmove.y = fintersection.y - fmid.y;
+			}
+			else {
+				/* No intersection. Rubberband lines are parallel */
+				fmove.x = frub1.direction.x;
+				fmove.y = frub1.direction.y;
+			}
+
+			if (!fvector_is_null(fmove)) {
+				fvector_normalize(&fmove);
+
+				/* Cursor delta vector */
+				fvector fcursor_delta;
+				fcursor_delta.x = pcb_crosshair->X - pcb_marked->X;
+				fcursor_delta.y = pcb_crosshair->Y - pcb_marked->Y;
+
+				/* Cursor delta projection on movement direction */
+				double amount_moved = fvector_dot(fmove, fcursor_delta);
+
+				/* Scale fmove by calculated amount */
+				fvector fmove_total;
+				fmove_total.x = fmove.x * amount_moved;
+				fmove_total.y = fmove.y * amount_moved;
+
+				/* Update values for nearest_grid and Rubberband lines */
+				*x = pcb_marked->X + fmove_total.x;
+				*y = pcb_marked->Y + fmove_total.y;
+
+				/* Move rubberband: fmove_total·normal = fmove_rubberband·normal
+				 * where normal is the moving line normal
+				 */
+				fvector fnormal;
+				fnormal.x = fmain.direction.y;
+				fnormal.y = -fmain.direction.x;
+				if (fvector_dot(fnormal, fmove) < 0) {
+					fnormal.x = -fnormal.x;
+					fnormal.y = -fnormal.y;
+				}
+				double rub1_move = amount_moved * fvector_dot(fmove, fnormal) / fvector_dot(frub1.direction, fnormal);
+				rbnd->Rubberband[0].DX = rub1_move*frub1.direction.x;
+				rbnd->Rubberband[0].DY = rub1_move*frub1.direction.y;
+				rbnd->Rubberband[0].delta_is_valid = 1;
+
+				double rub2_move = amount_moved * fvector_dot(fmove, fnormal) / fvector_dot(frub2.direction, fnormal);
+				rbnd->Rubberband[1].DX = rub2_move*frub2.direction.x;
+				rbnd->Rubberband[1].DY = rub2_move*frub2.direction.y;
+				rbnd->Rubberband[1].delta_is_valid = 1;
+			}
+		}
+	}
+}
+
 
 static const char *rubber_cookie = "old rubberband";
 
@@ -895,6 +1009,7 @@ pcb_uninit_t hid_rubberband_orig_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_RENAME, rbe_rename, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_LINES, rbe_lookup_lines, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_FIT_CROSSHAIR, rbe_fit_crosshair, ctx, rubber_cookie);
 
 	return rb_uninit;
 }

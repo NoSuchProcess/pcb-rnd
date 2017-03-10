@@ -1244,6 +1244,9 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	}
 
+	pcb_event(PCB_EVENT_RUBBER_FIT_CROSSHAIR, "pppp", &pcb_crosshair, &pcb_marked,
+											&nearest_grid_x, &nearest_grid_y);
+
 	snap_data.crosshair = &pcb_crosshair;
 	snap_data.nearest_sq_dist = crosshair_sq_dist(&pcb_crosshair, nearest_grid_x, nearest_grid_y);
 	snap_data.nearest_is_grid = pcb_true;

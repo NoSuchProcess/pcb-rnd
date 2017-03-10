@@ -1,5 +1,8 @@
 put /local/pcb/mod {rubberband_orig}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/rubberband_orig/rubberband.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/rubberband_orig/rubberband.o
+	$(PLUGDIR)/rubberband_orig/fgeometry.o
+@]
 
 switch /local/pcb/rubberband_orig/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
