@@ -181,8 +181,64 @@ static void ghid_load_bg_image(void)
 	}
 }
 
+static gboolean lead_user_cb(gpointer data)
+{
+	pcb_lead_user_t *lead_user = data;
+	pcb_coord_t step;
+	double elapsed_time;
+
+	/* Queue a redraw */
+	ghid_invalidate_all();
+
+	/* Update radius */
+	elapsed_time = g_timer_elapsed(lead_user->timer, NULL);
+	g_timer_start(lead_user->timer);
+
+	step = PCB_MM_TO_COORD(LEAD_USER_VELOCITY * elapsed_time);
+	if (lead_user->radius > step)
+		lead_user->radius -= step;
+	else
+		lead_user->radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
+
+	return TRUE;
+}
+
+
+void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_lead_user_t *lead_user = &gport->lead_user;
+
+	ghid_cancel_lead_user();
+
+	lead_user->lead_user = pcb_true;
+	lead_user->x = x;
+	lead_user->y = y;
+	lead_user->radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
+	lead_user->timeout = g_timeout_add(LEAD_USER_PERIOD, lead_user_cb, lead_user);
+	lead_user->timer = g_timer_new();
+}
+
+void ghid_cancel_lead_user(void)
+{
+	pcb_lead_user_t *lead_user = &gport->lead_user;
+
+	if (lead_user->timeout)
+		g_source_remove(lead_user->timeout);
+
+	if (lead_user->timer)
+		g_timer_destroy(lead_user->timer);
+
+	if (lead_user->lead_user)
+		ghid_invalidate_all();
+
+	lead_user->timeout = 0;
+	lead_user->timer = NULL;
+	lead_user->lead_user = pcb_false;
+}
+
 static void ghid_main_destroy(void *port)
 {
+	ghid_cancel_lead_user();
 	ghid_shutdown_renderer(port);
 	gtk_main_quit();
 }

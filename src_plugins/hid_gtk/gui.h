@@ -37,6 +37,7 @@
 #include "board.h"
 #include "event.h"
 #include "conf_hid.h"
+#include "render.h"
 
 typedef struct GhidGui_s {
 	GtkActionGroup *main_actions;
@@ -74,6 +75,9 @@ typedef struct {
 	pcb_gtk_mouse_t mouse;
 
 	pcb_gtk_view_t view;
+
+	pcb_lead_user_t lead_user;
+
 } GHidPort;
 
 extern GHidPort ghid_port, *gport;
@@ -90,8 +94,6 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 
 pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * name, gboolean);
 void ghid_netlist_highlight_node(const gchar * name);
-
-void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y);
 
 extern pcb_hid_t ghid_hid;
 

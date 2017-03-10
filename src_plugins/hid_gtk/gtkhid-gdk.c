@@ -18,7 +18,6 @@
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
 extern pcb_hid_t ghid_hid;
-void ghid_cancel_lead_user(void);
 static void ghid_gdk_screen_update(void);
 
 /* Sets priv->u_gc to the "right" GC to use (wrt mask or window)
@@ -38,15 +37,6 @@ typedef struct render_priv {
 	GdkRectangle clip_rect;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
-
-	/* Feature for leading the user to a particular location */
-	guint lead_user_timeout;
-	GTimer *lead_user_timer;
-	pcb_bool lead_user;
-	pcb_coord_t lead_user_radius;
-	pcb_coord_t lead_user_x;
-	pcb_coord_t lead_user_y;
-
 } render_priv;
 
 
@@ -61,9 +51,7 @@ typedef struct hid_gc_s {
 	gint mask_seq;
 } hid_gc_s;
 
-
-static void draw_lead_user(render_priv * priv);
-
+static void draw_lead_user(render_priv *priv_);
 
 static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
@@ -1104,7 +1092,6 @@ static void ghid_gdk_init_renderer(int *argc, char ***argv, void *vport)
 static void ghid_gdk_shutdown_renderer(void *port_)
 {
 	GHidPort *port = port_;
-	ghid_cancel_lead_user();
 	g_free(port->render_priv);
 	port->render_priv = NULL;
 }
@@ -1291,28 +1278,19 @@ static void ghid_gdk_finish_debug_draw(void)
 	 */
 }
 
-#define LEAD_USER_WIDTH           0.2	/* millimeters */
-#define LEAD_USER_PERIOD          (1000 / 5)	/* 5fps (in ms) */
-#define LEAD_USER_VELOCITY        3.	/* millimeters per second */
-#define LEAD_USER_ARC_COUNT       3
-#define LEAD_USER_ARC_SEPARATION  3.	/* millimeters */
-#define LEAD_USER_INITIAL_RADIUS  10.	/* millimetres */
-#define LEAD_USER_COLOR_R         1.
-#define LEAD_USER_COLOR_G         1.
-#define LEAD_USER_COLOR_B         0.
-
-static void draw_lead_user(render_priv * priv)
+static void draw_lead_user(render_priv *priv)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	int i;
-	pcb_coord_t radius = priv->lead_user_radius;
+	pcb_lead_user_t *lead_user = &gport->lead_user;
+	pcb_coord_t radius = lead_user->radius;
 	pcb_coord_t width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
 	pcb_coord_t separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
 	static GdkGC *lead_gc = NULL;
 	GdkColor lead_color;
 
-	if (!priv->lead_user)
+	if (!lead_user->lead_user)
 		return;
 
 	if (lead_gc == NULL) {
@@ -1339,64 +1317,8 @@ static void draw_lead_user(render_priv * priv)
 
 		/* Draw an arc at radius */
 		gdk_draw_arc(gport->drawable, lead_gc, FALSE,
-								 Vx(priv->lead_user_x - radius), Vy(priv->lead_user_y - radius), Vz(2. * radius), Vz(2. * radius), 0, 360 * 64);
+								 Vx(lead_user->x - radius), Vy(lead_user->y - radius), Vz(2. * radius), Vz(2. * radius), 0, 360 * 64);
 	}
-}
-
-static gboolean lead_user_cb(gpointer data)
-{
-	render_priv *priv = data;
-	pcb_coord_t step;
-	double elapsed_time;
-
-	/* Queue a redraw */
-	ghid_invalidate_all();
-
-	/* Update radius */
-	elapsed_time = g_timer_elapsed(priv->lead_user_timer, NULL);
-	g_timer_start(priv->lead_user_timer);
-
-	step = PCB_MM_TO_COORD(LEAD_USER_VELOCITY * elapsed_time);
-	if (priv->lead_user_radius > step)
-		priv->lead_user_radius -= step;
-	else
-		priv->lead_user_radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
-
-	return TRUE;
-}
-
-#warning move this out to common
-void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y)
-{
-	render_priv *priv = gport->render_priv;
-
-	ghid_cancel_lead_user();
-
-	priv->lead_user = pcb_true;
-	priv->lead_user_x = x;
-	priv->lead_user_y = y;
-	priv->lead_user_radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
-	priv->lead_user_timeout = g_timeout_add(LEAD_USER_PERIOD, lead_user_cb, priv);
-	priv->lead_user_timer = g_timer_new();
-}
-
-#warning move this out to common
-void ghid_cancel_lead_user(void)
-{
-	render_priv *priv = gport->render_priv;
-
-	if (priv->lead_user_timeout)
-		g_source_remove(priv->lead_user_timeout);
-
-	if (priv->lead_user_timer)
-		g_timer_destroy(priv->lead_user_timer);
-
-	if (priv->lead_user)
-		ghid_invalidate_all();
-
-	priv->lead_user_timeout = 0;
-	priv->lead_user_timer = NULL;
-	priv->lead_user = pcb_false;
 }
 
 void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)

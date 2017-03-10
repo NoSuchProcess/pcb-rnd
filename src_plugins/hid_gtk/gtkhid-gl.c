@@ -54,15 +54,6 @@ typedef struct render_priv {
 	int subcomposite_stencil_bit;
 	char *current_colorname;
 	double current_alpha_mult;
-
-	/* Feature for leading the user to a particular location */
-	guint lead_user_timeout;
-	GTimer *lead_user_timer;
-	pcb_bool lead_user;
-	pcb_coord_t lead_user_radius;
-	pcb_coord_t lead_user_x;
-	pcb_coord_t lead_user_y;
-
 } render_priv;
 
 
@@ -76,9 +67,7 @@ typedef struct hid_gc_s {
 	gchar xor;
 } hid_gc_s;
 
-
 static void draw_lead_user(render_priv * priv);
-
 
 static void start_subcomposite(void)
 {
@@ -760,7 +749,6 @@ void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 
 void ghid_gl_shutdown_renderer(GHidPort * port)
 {
-	ghid_cancel_lead_user();
 	g_free(port->render_priv);
 	port->render_priv = NULL;
 }
@@ -1193,20 +1181,11 @@ void ghid_gl_finish_debug_draw(void)
 	ghid_gl_end_drawing(gport);
 }
 
-#define LEAD_USER_WIDTH           0.2	/* millimeters */
-#define LEAD_USER_PERIOD          (1000 / 20)	/* 20fps (in ms) */
-#define LEAD_USER_VELOCITY        3.	/* millimeters per second */
-#define LEAD_USER_ARC_COUNT       3
-#define LEAD_USER_ARC_SEPARATION  3.	/* millimeters */
-#define LEAD_USER_INITIAL_RADIUS  10.	/* millimetres */
-#define LEAD_USER_COLOR_R         1.
-#define LEAD_USER_COLOR_G         1.
-#define LEAD_USER_COLOR_B         0.
-
 static void draw_lead_user(render_priv * priv)
 {
 	int i;
-	double radius = priv->lead_user_radius;
+	pcb_lead_user_t *lead_user = &gport->lead_user;
+	double radius = lead_user->radius;
 	double width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
 	double separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
 
@@ -1226,7 +1205,7 @@ static void draw_lead_user(render_priv * priv)
 			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 
 		/* Draw an arc at radius */
-		hidgl_draw_arc(width, priv->lead_user_x, priv->lead_user_y, radius, radius, 0, 360, gport->view.coord_per_px);
+		hidgl_draw_arc(width, lead_user->x, lead_user->y, radius, radius, 0, 360, gport->view.coord_per_px);
 	}
 
 	hidgl_flush_triangles(&buffer);
