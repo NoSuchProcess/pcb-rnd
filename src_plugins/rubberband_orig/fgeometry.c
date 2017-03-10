@@ -99,7 +99,7 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 	 * s = (d2y * ( p2x - p1x ) + d2x * ( p1y - p2y )) / ( d2y * d1x - d2x * d1y)
 	 */
 	
-	double t,s;
+	double t;
 	double p1x, p1y, d1x, d1y;
 	double p2x, p2y, d2x, d2y;
 	
