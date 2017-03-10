@@ -1655,6 +1655,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	XtSetValues(appwidget, stdarg_args, stdarg_n);
 
 	stdarg(XmNspacing, 0);
+	XtRealizeWidget(appwidget);
 	mainwind = XmCreateMainWindow(appwidget, XmStrCast("mainWind"), stdarg_args, stdarg_n);
 	XtManageChild(mainwind);
 

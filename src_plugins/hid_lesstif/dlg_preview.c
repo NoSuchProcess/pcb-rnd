@@ -1,5 +1,14 @@
 /* Directly included by main.c for now */
 
+static int widget_depth(Widget w) {
+	Arg args[1];
+	int depth;
+
+	XtSetArg(args[0], XtNdepth, &depth);
+	XtGetValues(w, args, 1);
+	return depth;
+}
+
 #define SHOW_SAVES \
 	int save_vx, save_vy, save_vw, save_vh; \
 	int save_fx, save_fy; \
@@ -17,9 +26,9 @@ do { \
 	save_fx = conf_core.editor.view.flip_x; \
 	save_fy = conf_core.editor.view.flip_y; \
 	save_px = pixmap; \
-	pixmap = pd->window; \
-	view_left_x = pd->x; \
-	view_top_y = pd->y; \
+	pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da)); \
+	view_left_x = pd->y; \
+	view_top_y = pd->x; \
 	view_zoom = pd->zoom; \
 	view_width = pd->v_width; \
 	view_height = pd->v_height; \
@@ -30,11 +39,16 @@ do { \
 
 #define SHOW_LEAVE \
 do { \
+	XGCValues gcv = { .graphics_exposures = 0 };	\
+	GC gc = XtGetGC(da, GCGraphicsExposures, &gcv); \
 	view_left_x = save_vx; \
 	view_top_y = save_vy; \
 	view_zoom = save_vz; \
 	view_width = save_vw; \
 	view_height = save_vh; \
+	XCopyArea(lesstif_display, pixmap, XtWindow(da), gc, 0, 0, pd->v_width, pd->v_height, 0, 0); \
+	XtReleaseGC(da, gc); \
+	XFreePixmap(lesstif_display, pixmap); \
 	pixmap = save_px; \
 	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx); \
 	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy); \
@@ -136,6 +150,7 @@ static void show_layer_inp_callback(Widget da, PreviewData * pd, XmDrawingAreaCa
 
 static void show_layer_mot_callback(Widget w, XtPointer pd_, XEvent * e, Boolean * ctd)
 {
+	Widget da = w;
 	PreviewData *pd = pd_;
 	SHOW_SAVES;
 	Window root, child;
@@ -162,8 +177,7 @@ static void show_layer_mot_callback(Widget w, XtPointer pd_, XEvent * e, Boolean
 	}
 	else if (pd->mouse_ev != NULL) {
 		pd->mouse_ev(w, PCB_HID_MOUSE_MOTION, cx, cy);
-		if (pd->overlay_draw != NULL)
-			pd->overlay_draw(pcb_gui, &pd->ctx);
+		SHOW_DRAW;
 	}
 
 	SHOW_LEAVE;
