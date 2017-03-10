@@ -23,9 +23,12 @@
 #ifndef PCB_HID_GTK_GHID_H
 #define PCB_HID_GTK_GHID_H
 
-typedef struct GHidPort_s  GHidPort;
-
 #include "hid.h"
+
+typedef struct GHidPort_s  GHidPort;
+typedef struct GhidGui_s GhidGui;
+extern pcb_hid_t ghid_hid;
+extern GhidGui _ghidgui, *ghidgui;
 
 #include <gtk/gtk.h>
 
@@ -41,7 +44,7 @@ typedef struct GHidPort_s  GHidPort;
 #include "conf_hid.h"
 #include "render.h"
 
-typedef struct GhidGui_s {
+struct GhidGui_s {
 	GtkActionGroup *main_actions;
 
 	pcb_gtk_topwin_t topwin;
@@ -57,10 +60,7 @@ typedef struct GhidGui_s {
 	int gui_is_up; /*1 if all parts of the gui is up and running */
 
 	gulong button_press_handler, button_release_handler, key_press_handler, key_release_handler;
-} GhidGui;
-
-extern GhidGui _ghidgui, *ghidgui;
-
+};
 
 /* The output viewport */
 struct GHidPort_s {
@@ -85,22 +85,6 @@ struct GHidPort_s {
 extern GHidPort ghid_port, *gport;
 
 /* ***  */
-void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
-												gboolean horizontal, GtkPositionType pos,
-												gboolean set_draw_value, gint digits,
-												gboolean pack_start, gboolean expand, gboolean fill,
-												guint pad, gfloat value, gfloat low, gfloat high,
-												gfloat step0, gfloat step1, void (*cb_func) (), gpointer data);
-
-pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * name, gboolean);
-void ghid_netlist_highlight_node(const gchar * name);
-
-extern pcb_hid_t ghid_hid;
-
-static inline void ghid_invalidate_all(void) { ghid_hid.invalidate_all(); }
-static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
-static inline void ghid_shutdown_renderer(void *port) { ghidgui->common.shutdown_renderer(port); }
-static inline void ghid_drawing_area_configure_hook(void *out) { ghidgui->common.drawing_area_configure_hook(out); }
 
 /* Coordinate conversions */
 #include "compat_misc.h"

@@ -239,7 +239,7 @@ void ghid_cancel_lead_user(void)
 static void ghid_main_destroy(void *port)
 {
 	ghid_cancel_lead_user();
-	ghid_shutdown_renderer(port);
+	ghidgui->common.shutdown_renderer(port);
 	gtk_main_quit();
 }
 

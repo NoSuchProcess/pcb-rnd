@@ -42,6 +42,7 @@ void gtkhid_end(void)
 	ghidgui->hid_active = 0;
 }
 
+static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
 
 static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
 {
