@@ -58,7 +58,7 @@ static const char pcb_acts_Display[] =
 	"Display(Grid|Redraw)\n"
 	"Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)\n"
 	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
-	"Display(ToggleMask|ToggleName|ToggleClearLine|ToggleFullPoly)\n"
+	"Display(ToggleMask|TogglePaste|ToggleName|ToggleClearLine|ToggleFullPoly)\n"
 	"Display(ToggleSnapPin|ToggleSnapOffGridLine|ToggleHighlightOnPoint)\n"
 	"Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)\n"
 	"Display(ToggleCheckPlanes|ToggleShowDRC|ToggleAutoDRC)\n"
@@ -163,6 +163,9 @@ with a lasso (left mouse drag) and perform actions on the selection.
 
 @item ToggleMask
 Turns the solder mask on or off.
+
+@item TogglePaste
+Turns the solder paste on or off.
 
 @item ToggleClearLine
 When set, the clear-line flag causes new lines and arcs to have their
@@ -407,6 +410,11 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 
 		case F_ToggleMask:
 			conf_toggle_editor(show_mask);
+			pcb_redraw();
+			break;
+
+		case F_TogglePaste:
+			conf_toggle_editor(show_paste);
 			pcb_redraw();
 			break;
 

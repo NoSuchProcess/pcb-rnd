@@ -52,8 +52,9 @@ static pcb_bool ignore_layer_update;
 #define LAYER_BUTTON_VIAS			(PCB_MAX_LAYER + 3)
 #define LAYER_BUTTON_FARSIDE		(PCB_MAX_LAYER + 4)
 #define LAYER_BUTTON_MASK			(PCB_MAX_LAYER + 5)
-#define LAYER_BUTTON_UI			(PCB_MAX_LAYER + 6)
-#define N_LAYER_BUTTONS				(PCB_MAX_LAYER + 7)
+#define LAYER_BUTTON_PASTE			(PCB_MAX_LAYER + 6)
+#define LAYER_BUTTON_UI			(PCB_MAX_LAYER + 7)
+#define N_LAYER_BUTTONS				(PCB_MAX_LAYER + 8)
 
 
 /* ---------------------------------------------------------------------------
@@ -115,6 +116,11 @@ void layer_process(const gchar **color_string, const char **text, int *set, int 
 		*color_string = conf_core.appearance.color.mask;
 		*text = _("solder mask");
 		*set = conf_core.editor.show_mask;
+		break;
+	case LAYER_BUTTON_PASTE:
+		*color_string = conf_core.appearance.color.paste;
+		*text = _("solder paste");
+		*set = conf_core.editor.show_paste;
 		break;
 	case LAYER_BUTTON_UI:
 	default:											/* layers */
@@ -201,6 +207,13 @@ void layer_selector_toggle_callback(pcb_gtk_layer_selector_t * ls, int layer, gp
 			conf_set_editor(show_mask, 0);
 		redraw = TRUE;
 		break;
+	case LAYER_BUTTON_PASTE:
+		if (active)
+			conf_set_editor(show_paste, 1);
+		else
+			conf_set_editor(show_paste, 0);
+		redraw = TRUE;
+		break;
 	default:
 		/* Flip the visibility */
 		if (layer >= LAYER_BUTTON_UI) {
@@ -249,6 +262,8 @@ void make_virtual_layer_buttons(GtkWidget *layer_selector)
 	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_FARSIDE, text, color_string, active, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_MASK);
 	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_MASK, text, color_string, active, FALSE);
+	layer_process(&color_string, &text, &active, LAYER_BUTTON_PASTE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_PASTE, text, color_string, active, FALSE);
 
 	numui = pcb_layer_list(PCB_LYT_UI, ui, sizeof(ui) / sizeof(ui[0]));
 	for (n = 0; n < numui; n++) {
@@ -350,6 +365,8 @@ int pcb_gtk_ToggleView(GtkWidget *layer_selector, int argc, const char **argv, p
 		l = LAYER_BUTTON_VIAS;
 	else if (strcmp(argv[0], "Mask") == 0)
 		l = LAYER_BUTTON_MASK;
+	else if (strcmp(argv[0], "Paste") == 0)
+		l = LAYER_BUTTON_PASTE;
 	else if (strcmp(argv[0], "BackSide") == 0)
 		l = LAYER_BUTTON_FARSIDE;
 	else {

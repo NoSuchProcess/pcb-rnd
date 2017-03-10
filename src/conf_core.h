@@ -51,6 +51,7 @@ typedef struct {
 		CFT_BOOLEAN local_ref;             /* use local reference for moves, by setting the mark at the beginning of each move. */
 		CFT_BOOLEAN check_planes;          /* when set, only polygons and their clearances are drawn, to see if polygons have isolated regions. */
 		CFT_BOOLEAN show_mask;             /* show the solder mask layer */
+		CFT_BOOLEAN show_paste;            /* show the solder paste layer */
 		CFT_BOOLEAN hide_names;            /* when set, element names are not drawn. */
 		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
@@ -187,6 +188,7 @@ typedef struct {
 			CFT_COLOR layer_selected[PCB_MAX_LAYER];
 			CFT_COLOR warn;
 			CFT_COLOR mask;
+			CFT_COLOR paste;
 		} color;
 		struct pinout {
 			CFT_INTEGER name_length;

@@ -81,7 +81,7 @@ struct pcb_board_s {
 		*ElementColor_nonetlist,
 		*RatColor,
 		*InvisibleObjectsColor,
-		*InvisibleMarkColor, *ElementSelectedColor, *RatSelectedColor, *ConnectedColor, *WarnColor, *MaskColor;
+		*InvisibleMarkColor, *ElementSelectedColor, *RatSelectedColor, *ConnectedColor, *WarnColor, *MaskColor, *PasteColor;
 	pcb_coord_t CursorX,									/* cursor position as saved with layout */
 	  CursorY;
 	pcb_coord_t Bloat,									/* drc sizes saved with layout */

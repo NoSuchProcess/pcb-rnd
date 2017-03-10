@@ -62,6 +62,7 @@ li:pcb-rnd-conf-v1 {
 			local_ref = 0
 			check_planes = 0
 			show_mask = 0
+			show_paste = 0
 			hide_names = 0
 			description = 0
 			name_on_pcb = 0
@@ -206,6 +207,7 @@ li:pcb-rnd-conf-v1 {
 				}
 				warn = {#ff8000}
 				mask = {#ff0000}
+				paste = {#cd00cd}
 			}
 			ha:pinout {
 #				name_length = 0

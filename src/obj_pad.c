@@ -441,7 +441,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 /* draws solder paste layer for a given side of the board - only pads get paste */
 void DrawPaste(int side, const pcb_box_t * drawn_area)
 {
-	pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
+	pcb_gui->set_color(Output.fgGC, PCB->PasteColor);
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {

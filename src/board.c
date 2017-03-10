@@ -186,6 +186,7 @@ void pcb_colors_from_settings(pcb_board_t *ptr)
 	ptr->ViaSelectedColor = conf_core.appearance.color.via_selected;
 	ptr->WarnColor = conf_core.appearance.color.warn;
 	ptr->MaskColor = conf_core.appearance.color.mask;
+	ptr->PasteColor = conf_core.appearance.color.paste;
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
 		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];

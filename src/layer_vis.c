@@ -97,6 +97,7 @@ void pcb_layervis_parse_string(const char *layer_string)
 	PCB->RatOn = pcb_false;
 
 	conf_set_editor(show_mask, 0);
+	conf_set_editor(show_paste, 0);
 	conf_set_editor(show_solder_side, 0);
 
 	for (i = argn - 1; i >= 0; i--) {
@@ -112,6 +113,8 @@ void pcb_layervis_parse_string(const char *layer_string)
 			PCB->ElementOn = pcb_true;
 		else if (pcb_strcasecmp(args[i], "mask") == 0)
 			conf_set_editor(show_mask, 1);
+		else if (pcb_strcasecmp(args[i], "paste") == 0)
+			conf_set_editor(show_paste, 1);
 		else if (pcb_strcasecmp(args[i], "solderside") == 0)
 			conf_set_editor(show_solder_side, 1);
 		else if (isdigit((int) args[i][0])) {
