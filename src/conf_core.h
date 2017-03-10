@@ -36,6 +36,7 @@ typedef struct {
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
 		CFT_BOOLEAN all_direction_lines;   /* enable lines to all directions */
 		CFT_BOOLEAN rubber_band_mode;      /* move, rotate use rubberband connections */
+		CFT_BOOLEAN rubber_band_keep_midlinedir; /* keep line direction when a middle line is moved */
 		CFT_BOOLEAN swap_start_direction;  /* change starting direction after each click */
 		CFT_BOOLEAN show_drc;              /* show drc region on crosshair */
 		CFT_BOOLEAN auto_drc;              /* when set, PCB doesn't let you place copper that violates DRC. */

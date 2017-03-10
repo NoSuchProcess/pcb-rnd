@@ -902,6 +902,9 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_coord_t *x = argv[3].d.p; /* Return argument */
 	pcb_coord_t *y = argv[4].d.p; /* Return argument */
 
+	if (!conf_core.editor.rubber_band_keep_midlinedir)
+		return;
+
 	for (i=0; i<rbnd->RubberbandN; i++) {
 		rbnd->Rubberband[i].delta_is_valid = 0;
 	}

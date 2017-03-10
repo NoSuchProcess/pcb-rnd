@@ -263,6 +263,7 @@ ha:{
 				ha:Libstroke gestures on middle button = { checked=editor/enable_stroke; action=conf(toggle, editor/enable_stroke, design) }
 				-
 				ha:Rubber band mode                 = { checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
+				ha:Rubber band keeps middle line dir= { checked=editor/rubber_band_keep_midlinedir; action=conf(toggle, editor/rubber_band_keep_midlinedir, design) }
 				ha:Require unique element names     = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
 				ha:Auto-zero delta measurements     = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
 				ha:New lines, arcs clear polygons   = { checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
