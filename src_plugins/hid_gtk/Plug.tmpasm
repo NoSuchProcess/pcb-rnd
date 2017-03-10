@@ -11,7 +11,7 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/actions.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gl.o
-	$(PLUGDIR)/hid_gtk/hidgl.o
+	$(PLUGDIR)/gl/hidgl.o
 @]
 
 switch /local/pcb/hid_gtk/controls
