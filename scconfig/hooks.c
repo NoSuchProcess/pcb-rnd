@@ -371,6 +371,9 @@ int hook_detect_target()
 			hook_custom_arg("Disable-lib_gtk_common", NULL);
 			hook_custom_arg("Disable-lib_gtk_config", NULL);
 		}
+		else {
+			require("libs/gui/gtk2gl/presents", 0, 0);
+		}
 	}
 
 	if (want_cairo) {
