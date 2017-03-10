@@ -2338,7 +2338,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 		new_val = buff;
 		break;
 	case CFN_REAL:
-		sprintf(buff, "%.16f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj)));
+		sprintf(buff, "%.16f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj)));
 		new_val = buff;
 		break;
 	case CFN_BOOLEAN:
