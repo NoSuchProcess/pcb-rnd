@@ -33,6 +33,7 @@
 #include "hid_actions.h"
 #include "hid.h"
 #include "compat_nls.h"
+#include "compat_misc.h"
 
 #include "../src_plugins/lib_gtk_common/act_print.h"
 #include "../src_plugins/lib_gtk_common/act_fileio.h"

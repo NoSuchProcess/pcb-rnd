@@ -9,6 +9,7 @@
 #include "hid_nogui.h"
 #include "hid_attrib.h"
 #include "hid_draw_helpers.h"
+#include "coord_conv.h"
 
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/bu_dwg_tooltip.h"
