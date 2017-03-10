@@ -502,6 +502,32 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 
 /*** draw ***/
 
+#define MAX_SIMPLE_POLY_POINTS 256
+static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0)
+{
+	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
+	int max, n;
+	pcb_point_t *p;
+
+
+	max = poly->PointN;
+	if (max > MAX_SIMPLE_POLY_POINTS) {
+		max = MAX_SIMPLE_POLY_POINTS;
+	}
+
+	/* transform each coordinate */
+	for(n = 0, p = poly->Points; n < max; n++,p++) {
+		x[n] = PCB_SCALE_TEXT(p->X + x0, Text->Scale);
+		y[n] = PCB_SCALE_TEXT(p->Y, Text->Scale);
+		PCB_COORD_ROTATE90(x[n], y[n], 0, 0, Text->Direction);
+		x[n] += Text->X;
+		y[n] += Text->Y;
+	}
+
+	pcb_gui->fill_polygon(Output.fgGC, poly->PointN, x, y);
+}
+
+
 /* ---------------------------------------------------------------------------
  * lowlevel drawing routine for text objects
  */
@@ -551,7 +577,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 
 			/* draw the polygons */
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
-				_draw_simple_poly(p);
+				draw_text_poly(Text, p, x);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
