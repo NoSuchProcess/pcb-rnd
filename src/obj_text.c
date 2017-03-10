@@ -118,6 +118,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_coord_t min_final_radius;
 	pcb_coord_t min_unscaled_radius;
 	pcb_bool first_time = pcb_true;
+	pcb_polygon_t *poly;
 
 	if (FontPtr == NULL)
 		FontPtr = pcb_font(PCB, Text->fid, 1);
@@ -165,6 +166,16 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 				maxx = MAX(maxx, line->Point2.X + unscaled_radius + tx);
 				maxy = MAX(maxy, line->Point2.Y + unscaled_radius);
 			}
+
+			for(poly = polylist_first(&symbol[*s].polys); poly != NULL; poly = polylist_next(poly)) {
+				int n;
+				pcb_point_t *pnt;
+				for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
+					maxx = MAX(maxx, pnt->X + tx);
+					maxy = MAX(maxy, pnt->Y);
+				}
+			}
+
 			space = symbol[*s].Delta;
 		}
 		else {
