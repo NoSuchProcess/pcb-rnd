@@ -2687,6 +2687,7 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 
 	/* Create the tree view */
 	gui_config_treeview = treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));
+	gtk_tree_view_set_headers_visible(treeview, FALSE);
 	g_object_unref(G_OBJECT(model));	/* Don't need the model anymore */
 
 	renderer = gtk_cell_renderer_text_new();
