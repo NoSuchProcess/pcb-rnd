@@ -894,7 +894,7 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 		aptr = findAperture(curr_aptr_list, linewidth, shape);
 		if (aptr == NULL)
 			pcb_fprintf(stderr, "error: aperture for width %$mS type %s is null\n", linewidth, shape == ROUND ? "ROUND" : "SQUARE");
-		if (f)
+		if (f && aptr)
 			fprintf(f, "G54D%d*", aptr->dCode);
 	}
 #if 0

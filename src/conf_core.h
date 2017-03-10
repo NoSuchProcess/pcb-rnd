@@ -119,6 +119,7 @@ typedef struct {
 			
 			CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
 		} path;
+		CFT_COORD paste_adjust;		   /* Adjust paste thickness */
 	} rc;
 
 	const struct design { /* defaults of a new layout */
