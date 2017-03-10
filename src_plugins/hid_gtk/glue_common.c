@@ -189,7 +189,7 @@ static void ghid_main_destroy(void *port)
 
 /*** init ***/
 
-void ghid_glue_common_init(void)
+void ghid_glue_common_init(pcb_hid_t *hid)
 {
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
@@ -223,10 +223,10 @@ void ghid_glue_common_init(void)
 
 	if (conf_core.editor.gl) {
 #if 0
-		ghid_gl_install(&ghidgui->common);
+		ghid_gl_install(&ghidgui->common, hid);
 #endif
 	} else
-		ghid_gdk_install(&ghidgui->common);
+		ghid_gdk_install(&ghidgui->common, hid);
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
 	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;

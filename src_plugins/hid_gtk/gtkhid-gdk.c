@@ -1394,7 +1394,7 @@ void ghid_cancel_lead_user(void)
 	priv->lead_user = pcb_false;
 }
 
-void ghid_gdk_install(pcb_gtk_common_t *common)
+void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
 	common->render_pixmap = ghid_gdk_render_pixmap;
 	common->init_drawing_widget = ghid_gdk_init_drawing_widget;
@@ -1408,5 +1408,28 @@ void ghid_gdk_install(pcb_gtk_common_t *common)
 	common->draw_grid_local = ghid_gdk_draw_grid_local;
 	common->drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
 	common->shutdown_renderer = ghid_gdk_shutdown_renderer;
+
+	hid->invalidate_lr = ghid_gdk_invalidate_lr;
+	hid->invalidate_all = ghid_gdk_invalidate_all;
+	hid->notify_crosshair_change = ghid_gdk_notify_crosshair_change;
+	hid->notify_mark_change = ghid_gdk_notify_mark_change;
+	hid->set_layer_group = ghid_gdk_set_layer_group;
+	hid->make_gc = ghid_gdk_make_gc;
+	hid->destroy_gc = ghid_gdk_destroy_gc;
+	hid->use_mask = ghid_gdk_use_mask;
+	hid->set_color = ghid_gdk_set_color;
+	hid->set_line_cap = ghid_gdk_set_line_cap;
+	hid->set_line_width = ghid_gdk_set_line_width;
+	hid->set_draw_xor = ghid_gdk_set_draw_xor;
+	hid->draw_line = ghid_gdk_draw_line;
+	hid->draw_arc = ghid_gdk_draw_arc;
+	hid->draw_rect = ghid_gdk_draw_rect;
+	hid->fill_circle = ghid_gdk_fill_circle;
+	hid->fill_polygon = ghid_gdk_fill_polygon;
+	hid->fill_rect = ghid_gdk_fill_rect;
+
+	hid->request_debug_draw = ghid_gdk_request_debug_draw;
+	hid->flush_debug_draw = ghid_gdk_flush_debug_draw;
+	hid->finish_debug_draw = ghid_gdk_finish_debug_draw;
 }
 

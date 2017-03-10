@@ -47,8 +47,8 @@ pcb_uninit_t hid_hid_gtk_init()
 {
 	ghid_win32_init();
 
-	ghid_glue_common_init();
 	ghid_glue_hid_init(&ghid_hid);
+	ghid_glue_common_init(&ghid_hid);
 
 	ghid_hid.name = "gtk";
 	ghid_hid.description = "Gtk - The Gimp Toolkit, with GDK software pixmap rendering";
