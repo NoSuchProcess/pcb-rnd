@@ -222,6 +222,7 @@ void ghid_glue_common_init(void)
 	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
 
 	if (conf_core.editor.gl) {
+#if 0
 		ghidgui->common.render_pixmap = ghid_gl_render_pixmap;
 		ghidgui->common.init_drawing_widget = ghid_gl_init_drawing_widget;
 		ghidgui->common.drawing_realize = ghid_gl_port_drawing_realize_cb;
@@ -234,6 +235,7 @@ void ghid_glue_common_init(void)
 		ghidgui->common.draw_grid_local = ghid_gl_draw_grid_local;
 		ghidgui->common.drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
 		ghidgui->common.shutdown_renderer = ghid_gl_shutdown_renderer;
+#endif
 	} else {
 		ghidgui->common.render_pixmap = ghid_gdk_render_pixmap;
 		ghidgui->common.init_drawing_widget = ghid_gdk_init_drawing_widget;

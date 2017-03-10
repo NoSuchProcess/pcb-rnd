@@ -254,7 +254,6 @@ void lesstif_show_layergrp_edit(void)
 	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
 		layergrp_edit = lesstif_show_layer(lid, "Layer groups", 0);
 		layergrp_edit->mouse_ev = pcb_stub_draw_csect_mouse_ev;
-		layergrp_edit->overlay_draw = pcb_stub_draw_csect_overlay;
 		layergrp_edit->pre_close = layergrp_pre_close;
 	}
 }

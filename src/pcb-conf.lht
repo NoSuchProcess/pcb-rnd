@@ -80,7 +80,7 @@ li:pcb-rnd-conf-v1 {
 			}
 			undo_warning_size = 1024
 			fullscreen = 0
-			gl = 1
+			gl = 0
 			layer_alpha = 0.7
 			drill_alpha = 0.85
 		} # editor

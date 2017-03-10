@@ -10,9 +10,10 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/common.o
 	$(PLUGDIR)/hid_gtk/actions.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
-	$(PLUGDIR)/hid_gtk/gtkhid-gl.o
-	$(PLUGDIR)/gl/hidgl.o
 @]
+
+#	$(PLUGDIR)/hid_gtk/gtkhid-gl.o
+#	$(PLUGDIR)/gl/hidgl.o
 
 switch /local/pcb/hid_gtk/controls
 	case {disable} end;

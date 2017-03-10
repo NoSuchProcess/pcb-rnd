@@ -534,6 +534,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->point_cursor = PointCursor;
 
 	if (conf_core.editor.gl) {
+#if 0
 		dst->invalidate_lr = ghid_gl_invalidate_lr;
 		dst->invalidate_all = ghid_gl_invalidate_all;
 		dst->notify_crosshair_change = ghid_gl_notify_crosshair_change;
@@ -556,6 +557,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 		dst->request_debug_draw = ghid_gl_request_debug_draw;
 		dst->flush_debug_draw = ghid_gl_flush_debug_draw;
 		dst->finish_debug_draw = ghid_gl_finish_debug_draw;
+#endif
 	} else {
 		dst->invalidate_lr = ghid_gdk_invalidate_lr;
 		dst->invalidate_all = ghid_gdk_invalidate_all;
