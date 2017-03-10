@@ -391,7 +391,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		r = gport->offlimits_color.red / 65535.;
 		g = gport->offlimits_color.green / 65535.;
 		b = gport->offlimits_color.blue / 65535.;
-		a = 0.85;
+		a = conf_core.editor.drill_alpha;
 	}
 	else {
 		if (pcb_hid_cache_color(0, gc->colorname, &cval, &cache))
@@ -428,7 +428,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		r = cc->red;
 		g = cc->green;
 		b = cc->blue;
-		a = 0.7;
+		a = conf_core.editor.layer_alpha;
 	}
 	if (1) {
 		double maxi, mult;

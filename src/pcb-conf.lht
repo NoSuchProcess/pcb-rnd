@@ -81,6 +81,8 @@ li:pcb-rnd-conf-v1 {
 			undo_warning_size = 1024
 			fullscreen = 0
 			gl = 1
+			layer_alpha = 0.7
+			drill_alpha = 0.85
 		} # editor
 
 		ha:rc {
