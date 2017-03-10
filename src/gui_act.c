@@ -1350,6 +1350,7 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	};
 	int pan_warp = HID_SC_DO_NOTHING;
 	double dx, dy;
+	pcb_coord_t view_width, view_height;
 
 	extra_units_x[0].scale = PCB->Grid;
 	extra_units_x[2].scale = PCB->MaxWidth;
@@ -1357,7 +1358,10 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	extra_units_y[0].scale = PCB->Grid;
 	extra_units_y[2].scale = PCB->MaxHeight;
 
-	pcb_gui->get_view_size(&extra_units_x[1].scale, &extra_units_y[1].scale);
+	pcb_gui->get_view_size(&view_width, &view_height);
+
+	extra_units_x[1].scale = view_width;
+	extra_units_y[1].scale = view_height;
 
 	if (argc != 4)
 		PCB_ACT_FAIL(cursor);
