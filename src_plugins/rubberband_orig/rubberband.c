@@ -772,9 +772,9 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 				}
 				/* 'point1' is always the fix-point */	
 				if (ptr->MovedPoint == &ptr->Line->Point1) {
+					pcb_coord_t a = 0; /*-25945061;*/
 					x1 = ptr->Line->Point2.X;
 					y1 = ptr->Line->Point2.Y;
-					pcb_coord_t a = 0; /*-25945061;*/
 /*					printf ("%d\n", dy);*/
 					x2 = ptr->Line->Point1.X + dx;
 					y2 = ptr->Line->Point1.Y + dy + a;
@@ -947,18 +947,19 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 
 			if (!pcb_fvector_is_null(fmove)) {
+				pcb_fvector_t fcursor_delta, fmove_total, fnormal;
+				double amount_moved, rub1_move, rub2_move;
+
 				pcb_fvector_normalize(&fmove);
 
 				/* Cursor delta vector */
-				pcb_fvector_t fcursor_delta;
 				fcursor_delta.x = pcb_crosshair->X - pcb_marked->X;
 				fcursor_delta.y = pcb_crosshair->Y - pcb_marked->Y;
 
 				/* Cursor delta projection on movement direction */
-				double amount_moved = pcb_fvector_dot(fmove, fcursor_delta);
+				amount_moved = pcb_fvector_dot(fmove, fcursor_delta);
 
 				/* Scale fmove by calculated amount */
-				pcb_fvector_t fmove_total;
 				fmove_total.x = fmove.x * amount_moved;
 				fmove_total.y = fmove.y * amount_moved;
 
@@ -969,19 +970,18 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 				/* Move rubberband: fmove_total·normal = fmove_rubberband·normal
 				 * where normal is the moving line normal
 				 */
-				pcb_fvector_t fnormal;
 				fnormal.x = fmain.direction.y;
 				fnormal.y = -fmain.direction.x;
 				if (pcb_fvector_dot(fnormal, fmove) < 0) {
 					fnormal.x = -fnormal.x;
 					fnormal.y = -fnormal.y;
 				}
-				double rub1_move = amount_moved * pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub1.direction, fnormal);
+				rub1_move = amount_moved * pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub1.direction, fnormal);
 				rbnd->Rubberband[0].DX = rub1_move*frub1.direction.x;
 				rbnd->Rubberband[0].DY = rub1_move*frub1.direction.y;
 				rbnd->Rubberband[0].delta_is_valid = 1;
 
-				double rub2_move = amount_moved * pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub2.direction, fnormal);
+				rub2_move = amount_moved * pcb_fvector_dot(fmove, fnormal) / pcb_fvector_dot(frub2.direction, fnormal);
 				rbnd->Rubberband[1].DX = rub2_move*frub2.direction.x;
 				rbnd->Rubberband[1].DY = rub2_move*frub2.direction.y;
 				rbnd->Rubberband[1].delta_is_valid = 1;

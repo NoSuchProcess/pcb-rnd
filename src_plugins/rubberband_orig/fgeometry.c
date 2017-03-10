@@ -64,16 +64,19 @@ pcb_fline_t pcb_fline_create_from_points(struct pcb_point_s *base_point, struct 
 pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 {
 	pcb_fvector_t ret;
+	double lines_dot;
+
 	ret.x = 0;
 	ret.y = 0;
 
-	double lines_dot = pcb_fvector_dot (l1.direction, l2.direction);
+	lines_dot = pcb_fvector_dot (l1.direction, l2.direction);
 	if (fabs(lines_dot) > 0.990 )
 	{
 		/* Consider them parallel. Return null point (vector) */
 		return ret;
 	}
-	
+
+	{
 	/*
 	 * *** From polygon1.c ***
 	 * We have the lines:
@@ -123,7 +126,7 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 	
 	
 	/*printf("Intersection x=%f, y=%f\n", ret.x, ret.y);*/
-	
+	}
 	return ret;
 }
 
