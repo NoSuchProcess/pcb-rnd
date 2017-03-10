@@ -132,6 +132,8 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 	end_subcomposite();
 	start_subcomposite();
 
+	priv->trans_lines = pcb_true;
+
 	/* non-virtual layers with special visibility */
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
@@ -139,12 +141,10 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 				return conf_core.editor.show_mask;
 			return 0;
 		case PCB_LYT_SILK:
-			priv->trans_lines = pcb_true;
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return PCB->ElementOn;
 			return 0;
 		case PCB_LYT_PASTE:
-			priv->trans_lines = pcb_true;
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return conf_core.editor.show_paste;
 			return 0;
@@ -167,9 +167,15 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 		case PCB_LYT_UDRILL:
 			return 1;
 		case PCB_LYT_RAT:
-			if (PCB->RatOn)
-				priv->trans_lines = pcb_true;
 			return PCB->RatOn;
+		case PCB_LYT_CSECT:
+			/* Opaque draw */
+			priv->trans_lines = pcb_false;
+			/* Disable stencil for cross-section drawing; that code
+			 * relies on overdraw doing the right thing and doesn't
+			 * use layers */
+			glDisable(GL_STENCIL_TEST);
+			return 0;
 		}
 	}
 	return 0;
