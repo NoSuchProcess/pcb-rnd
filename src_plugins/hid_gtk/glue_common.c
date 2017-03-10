@@ -223,33 +223,10 @@ void ghid_glue_common_init(void)
 
 	if (conf_core.editor.gl) {
 #if 0
-		ghidgui->common.render_pixmap = ghid_gl_render_pixmap;
-		ghidgui->common.init_drawing_widget = ghid_gl_init_drawing_widget;
-		ghidgui->common.drawing_realize = ghid_gl_port_drawing_realize_cb;
-		ghidgui->common.drawing_area_expose = ghid_gl_drawing_area_expose_cb;
-		ghidgui->common.preview_expose = ghid_gl_preview_expose;
-		ghidgui->common.invalidate_all = ghid_gl_invalidate_all;
-		ghidgui->common.set_special_colors = ghid_gl_set_special_colors;
-		ghidgui->common.init_renderer = ghid_gl_init_renderer;
-		ghidgui->common.screen_update = ghid_gl_screen_update;
-		ghidgui->common.draw_grid_local = ghid_gl_draw_grid_local;
-		ghidgui->common.drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
-		ghidgui->common.shutdown_renderer = ghid_gl_shutdown_renderer;
+		ghid_gl_install(&ghidgui->common);
 #endif
-	} else {
-		ghidgui->common.render_pixmap = ghid_gdk_render_pixmap;
-		ghidgui->common.init_drawing_widget = ghid_gdk_init_drawing_widget;
-		ghidgui->common.drawing_realize = ghid_gdk_port_drawing_realize_cb;
-		ghidgui->common.drawing_area_expose = ghid_gdk_drawing_area_expose_cb;
-		ghidgui->common.preview_expose = ghid_gdk_preview_expose;
-		ghidgui->common.invalidate_all = ghid_gdk_invalidate_all;
-		ghidgui->common.set_special_colors = ghid_gdk_set_special_colors;
-		ghidgui->common.init_renderer = ghid_gdk_init_renderer;
-		ghidgui->common.screen_update = ghid_gdk_screen_update;
-		ghidgui->common.draw_grid_local = ghid_gdk_draw_grid_local;
-		ghidgui->common.drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
-		ghidgui->common.shutdown_renderer = ghid_gdk_shutdown_renderer;
-	}
+	} else
+		ghid_gdk_install(&ghidgui->common);
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
 	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;

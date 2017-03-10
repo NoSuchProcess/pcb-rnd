@@ -1393,3 +1393,20 @@ void ghid_cancel_lead_user(void)
 	priv->lead_user_timer = NULL;
 	priv->lead_user = pcb_false;
 }
+
+void ghid_gdk_install(pcb_gtk_common_t *common)
+{
+	common->render_pixmap = ghid_gdk_render_pixmap;
+	common->init_drawing_widget = ghid_gdk_init_drawing_widget;
+	common->drawing_realize = ghid_gdk_port_drawing_realize_cb;
+	common->drawing_area_expose = ghid_gdk_drawing_area_expose_cb;
+	common->preview_expose = ghid_gdk_preview_expose;
+	common->invalidate_all = ghid_gdk_invalidate_all;
+	common->set_special_colors = ghid_gdk_set_special_colors;
+	common->init_renderer = ghid_gdk_init_renderer;
+	common->screen_update = ghid_gdk_screen_update;
+	common->draw_grid_local = ghid_gdk_draw_grid_local;
+	common->drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
+	common->shutdown_renderer = ghid_gdk_shutdown_renderer;
+}
+
