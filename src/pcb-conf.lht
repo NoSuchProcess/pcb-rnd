@@ -80,6 +80,7 @@ li:pcb-rnd-conf-v1 {
 			}
 			undo_warning_size = 1024
 			fullscreen = 0
+			gl = 1
 		} # editor
 
 		ha:rc {

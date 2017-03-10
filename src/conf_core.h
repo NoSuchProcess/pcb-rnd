@@ -56,6 +56,7 @@ typedef struct {
 		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
+		CFT_BOOLEAN gl;                    /* use GL for drawing where available */
 
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
 

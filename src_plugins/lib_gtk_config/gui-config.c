@@ -511,6 +511,11 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 															config_auto_place_toggle_cb, NULL,
 															_("Restore window geometry (when saved geometry is available)"));
 
+	ghid_check_button_connected(vbox, NULL, conf_core.editor.gl,
+															TRUE, FALSE, FALSE, 2,
+															config_general_toggle_cb, (void *) &conf_core.editor.gl,
+															_("Use GL for drawing (requires restart to take effect)"));
+
 	vbox = ghid_category_vbox(content_vbox, _("Backups"), 4, 2, TRUE, TRUE);
 	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
 															TRUE, FALSE, FALSE, 2,
