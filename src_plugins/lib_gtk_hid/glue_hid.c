@@ -34,15 +34,11 @@
 void gtkhid_begin(void)
 {
 	ghid_action_reg();
-	if (ghidgui->begin != NULL)
-		ghidgui->begin();
 	ghidgui->hid_active = 1;
 }
 
 void gtkhid_end(void)
 {
-	if (ghidgui->end != NULL)
-		ghidgui->end();
 	ghid_action_unreg();
 	ghidgui->hid_active = 0;
 }
