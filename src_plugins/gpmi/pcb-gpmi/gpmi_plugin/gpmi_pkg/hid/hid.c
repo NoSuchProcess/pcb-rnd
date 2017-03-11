@@ -269,7 +269,6 @@ int hid_add_attribute(gpmi_hid_t *hid, char *attr_name, char *help, hid_attr_typ
 		hid->attr[current].default_val  = hid_string2val(type, default_val);
 		hid->attr[current].enumerations = NULL;
 	}
-	hid->attr[current].hash         = 0;
 
 	hid->type[current] = type;
 
