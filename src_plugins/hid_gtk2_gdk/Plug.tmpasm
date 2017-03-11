@@ -4,9 +4,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk2_gdk/gtkhid-gdk.o
 @]
 
-#	$(PLUGDIR)/hid_gtk2_gl/gtkhid-gl.o
-#	$(PLUGDIR)/hid_gtk2_gl/hidgl.o
-
 switch /local/pcb/hid_gtk2_gdk/controls
 	case {disable} end;
 	default
