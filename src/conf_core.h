@@ -56,8 +56,8 @@ typedef struct {
 		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
-		CFT_REAL layer_alpha;			   /* alpha value for layer drawing */
-		CFT_REAL drill_alpha;			   /* alpha value for drill drawing */
+		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
+		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
 
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
 
