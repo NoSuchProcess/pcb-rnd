@@ -35,7 +35,7 @@
 #endif
 
 #include <gtk/gtkgl.h>
-#include "../gl/hidgl.h"
+#include "hidgl.h"
 #include "hid_draw_helpers.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
