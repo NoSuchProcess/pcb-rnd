@@ -1192,7 +1192,7 @@ static void draw_lead_user(render_priv * priv)
 	double width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
 	double separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
 
-	if (!priv->lead_user)
+	if (!lead_user->lead_user)
 		return;
 
 	glPushAttrib(GL_CURRENT_BIT | GL_COLOR_BUFFER_BIT);
