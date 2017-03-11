@@ -302,7 +302,7 @@ int hook_detect_target()
 {
 	int want_glib = 0, want_gtk, want_gd, want_stroke, need_inl = 0, want_cairo;
 
-	want_gtk    = plug_is_enabled("hid_gtk2_gdk");
+	want_gtk    = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
 	want_cairo  = plug_is_enabled("export_bboard");
@@ -365,15 +365,19 @@ int hook_detect_target()
 
 	if (want_gtk) {
 		require("libs/gui/gtk2/presents", 0, 0);
-		if (!istrue(get("libs/gui/gtk2/presents"))) {
+		if (istrue(get("libs/gui/gtk2/presents"))) {
+			require("libs/gui/gtk2gl/presents", 0, 0);
+			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
+				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
+				hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+			}
+		}
+		else {
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid and lib_gtk_*...\n");
 			hook_custom_arg("Disable-hid_gtk2_gdk", NULL);
 			hook_custom_arg("Disable-lib_gtk_common", NULL);
 			hook_custom_arg("Disable-lib_gtk_config", NULL);
 			hook_custom_arg("Disable-lib_gtk_hid", NULL);
-		}
-		else {
-			require("libs/gui/gtk2gl/presents", 0, 0);
 		}
 	}
 
