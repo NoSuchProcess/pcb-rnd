@@ -118,7 +118,7 @@ li:pcb-rnd-conf-v1 {
 #			action_string = {}
 #			rat_path = {}
 #			rat_command = {}
-			li:preferred_gui = { gtk2_gdk; lesstif }
+			li:preferred_gui = { gtk2_gl; gtk2_gdk; lesstif }
 			save_final_fallback_fmt = lihata
 			paste_adjust = 0
 		} # rc
