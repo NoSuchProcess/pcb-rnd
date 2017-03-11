@@ -22,8 +22,8 @@
 #include "../src_plugins/lib_gtk_hid/common.h"
 #include "../src_plugins/lib_gtk_hid/render.h"
 
-const char *ghid_cookie = "gtk2 hid, gdk";
-const char *ghid_menu_cookie = "gtk2 hid menu, gdk";
+const char *ghid_cairo_cookie = "gtk2 hid, gdk";
+const char *ghid_cairo_menu_cookie = "gtk2 hid menu, gdk";
 
 pcb_hid_t gtk3_cairo_hid;
 
@@ -35,9 +35,9 @@ void gtk3_cairo_parse_arguments(int *argc, char ***argv)
 
 static void hid_hid_gtk3_cairo_uninit()
 {
-	pcb_event_unbind_allcookie(ghid_cookie);
-	conf_hid_unreg(ghid_cookie);
-	conf_hid_unreg(ghid_menu_cookie);
+	pcb_event_unbind_allcookie(ghid_cairo_cookie);
+	conf_hid_unreg(ghid_cairo_cookie);
+	conf_hid_unreg(ghid_cairo_menu_cookie);
 }
 
 pcb_uninit_t hid_hid_gtk3_cairo_init()
@@ -53,13 +53,13 @@ pcb_uninit_t hid_hid_gtk3_cairo_init()
 	gtk3_cairo_hid.name = "gtk3_cairo";
 	gtk3_cairo_hid.description = "Gtk3 - The Gimp Toolkit, with cairo rendering";
 
-	ghidgui->topwin.menu.ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
+	ghidgui->topwin.menu.ghid_menuconf_id = conf_hid_reg(ghid_cairo_menu_cookie, NULL);
 	ghidgui->topwin.menu.confchg_checkbox = ghid_confchg_checkbox;
-	ghid_conf_regs(ghid_cookie);
+	ghid_conf_regs(ghid_cairo_cookie);
 
 	pcb_hid_register_hid(&gtk3_cairo_hid);
 
-	glue_event_init(ghid_cookie);
+	glue_event_init(ghid_cairo_cookie);
 
 	return hid_hid_gtk3_cairo_uninit;
 }
