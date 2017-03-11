@@ -22,8 +22,8 @@
 #include "../src_plugins/lib_gtk_hid/common.h"
 #include "../src_plugins/lib_gtk_hid/render.h"
 
-const char *ghid_cairo_cookie = "gtk2 hid, gdk";
-const char *ghid_cairo_menu_cookie = "gtk2 hid menu, gdk";
+const char *ghid_cairo_cookie = "gtk3 hid, cairo";
+const char *ghid_cairo_menu_cookie = "gtk3 hid menu, cairo";
 
 pcb_hid_t gtk3_cairo_hid;
 
