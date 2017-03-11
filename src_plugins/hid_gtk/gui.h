@@ -90,8 +90,6 @@ extern GHidPort ghid_port, *gport;
 extern const char *ghid_cookie;
 extern const char *ghid_menu_cookie;
 
-void hid_gtk_wgeo_update(void);
-
 static inline void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy) { ghidgui->common.draw_grid_local(cx, cy); }
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */
