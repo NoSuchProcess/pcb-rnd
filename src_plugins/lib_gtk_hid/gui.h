@@ -47,6 +47,9 @@ extern GhidGui _ghidgui, *ghidgui;
 struct GhidGui_s {
 	GtkActionGroup *main_actions;
 
+	void (*begin)();
+	void (*end)();
+
 	pcb_gtk_topwin_t topwin;
 	pcb_gtk_common_t common;
 	conf_hid_id_t conf_id;
