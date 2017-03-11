@@ -40,7 +40,7 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-extern pcb_hid_t ghid_hid;
+extern pcb_hid_t gtk2_gl_hid;
 
 static pcb_hid_gc_t current_gc = NULL;
 
@@ -188,7 +188,7 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 	pcb_hid_gc_t rv;
 
 	rv = g_new0(hid_gc_s, 1);
-	rv->me_pointer = &ghid_hid;
+	rv->me_pointer = &gtk2_gl_hid;
 	rv->colorname = conf_core.appearance.color.background;
 	rv->alpha_mult = 1.0;
 	return rv;
@@ -495,7 +495,7 @@ static void ghid_gl_invalidate_current_gc(void)
 
 static int use_gc(pcb_hid_gc_t gc)
 {
-	if (gc->me_pointer != &ghid_hid) {
+	if (gc->me_pointer != &gtk2_gl_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
 		abort();
 	}
@@ -745,9 +745,9 @@ void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 	}
 
 	/* Setup HID function pointers specific to the GL renderer */
-	ghid_hid.end_layer = ghid_gl_end_layer;
-	ghid_hid.fill_pcb_polygon = ghid_gl_fill_pcb_polygon;
-	ghid_hid.thindraw_pcb_polygon = ghid_gl_thindraw_pcb_polygon;
+	gtk2_gl_hid.end_layer = ghid_gl_end_layer;
+	gtk2_gl_hid.fill_pcb_polygon = ghid_gl_fill_pcb_polygon;
+	gtk2_gl_hid.thindraw_pcb_polygon = ghid_gl_thindraw_pcb_polygon;
 }
 
 void ghid_gl_shutdown_renderer(GHidPort * port)
@@ -821,7 +821,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev,
 	   we can't use the hidgl polygon drawing routine */
 	/* TODO: We could use the GLU tessellator though */
 	if (hidgl_stencil_bits() == 0)
-		ghid_hid.fill_pcb_polygon = pcb_dhlp_fill_pcb_polygon;
+		gtk2_gl_hid.fill_pcb_polygon = pcb_dhlp_fill_pcb_polygon;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -880,7 +880,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev,
 
 	hidgl_init_triangle_array(&buffer);
 	ghid_gl_invalidate_current_gc();
-	pcb_hid_expose_all(&ghid_hid, &ctx);
+	pcb_hid_expose_all(&gtk2_gl_hid, &ctx);
 	hidgl_flush_triangles(&buffer);
 
 	ghid_gl_draw_grid(&ctx.view);
@@ -1001,7 +1001,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
 							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
-	expcall(&ghid_hid, ctx);
+	expcall(&gtk2_gl_hid, ctx);
 
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
@@ -1107,7 +1107,7 @@ GdkPixmap *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int hei
 	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
-	pcb_hid_expose_all(&ghid_hid, &ctx);
+	pcb_hid_expose_all(&gtk2_gl_hid, &ctx);
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
 
@@ -1160,7 +1160,7 @@ pcb_hid_t *ghid_gl_request_debug_draw(void)
 	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
 							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
-	return &ghid_hid;
+	return &gtk2_gl_hid;
 }
 
 void ghid_gl_flush_debug_draw(void)
@@ -1217,6 +1217,7 @@ static void draw_lead_user(render_priv * priv)
 
 void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
+	if (common != NULL) {
 	common->render_pixmap = ghid_gl_render_pixmap;
 	common->init_drawing_widget = ghid_gl_init_drawing_widget;
 	common->drawing_realize = ghid_gl_port_drawing_realize_cb;
@@ -1229,7 +1230,9 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	common->draw_grid_local = ghid_gl_draw_grid_local;
 	common->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
 	common->shutdown_renderer = ghid_gl_shutdown_renderer;
+	}
 
+	if (hid != NULL) {
 	hid->invalidate_lr = ghid_gl_invalidate_lr;
 	hid->invalidate_all = ghid_gl_invalidate_all;
 	hid->notify_crosshair_change = ghid_gl_notify_crosshair_change;
@@ -1252,5 +1255,6 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->request_debug_draw = ghid_gl_request_debug_draw;
 	hid->flush_debug_draw = ghid_gl_flush_debug_draw;
 	hid->finish_debug_draw = ghid_gl_finish_debug_draw;
+	}
 }
 

@@ -19,7 +19,7 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
-extern pcb_hid_t ghid_hid;
+extern pcb_hid_t gtk2_gdk_hid;
 static void ghid_gdk_screen_update(void);
 
 /* Sets priv->u_gc to the "right" GC to use (wrt mask or window)
@@ -118,7 +118,7 @@ static pcb_hid_gc_t ghid_gdk_make_gc(void)
 	pcb_hid_gc_t rv;
 
 	rv = g_new0(hid_gc_s, 1);
-	rv->me_pointer = &ghid_hid;
+	rv->me_pointer = &gtk2_gdk_hid;
 	rv->colorname = g_strdup(conf_core.appearance.color.background);
 	return rv;
 }
@@ -566,7 +566,7 @@ static int use_gc(pcb_hid_gc_t gc)
 	render_priv *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
 
-	if (gc->me_pointer != &ghid_hid) {
+	if (gc->me_pointer != &gtk2_gdk_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
 		abort();
 	}
@@ -831,7 +831,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	ghid_gdk_draw_bg_image();
 
-	pcb_hid_expose_all(&ghid_hid, &ctx);
+	pcb_hid_expose_all(&gtk2_gdk_hid, &ctx);
 	ghid_gdk_draw_grid();
 
 	/* In some cases we are called with the crosshair still off */
@@ -1193,7 +1193,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
 	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
 	/* call the drawing routine */
-	expcall(&ghid_hid, ctx);
+	expcall(&gtk2_gdk_hid, ctx);
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;
@@ -1250,7 +1250,7 @@ static GdkPixmap *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width,
 	ectx.force = 0;
 	ectx.content.elem = NULL;
 
-	pcb_hid_expose_all(&ghid_hid, &ectx);
+	pcb_hid_expose_all(&gtk2_gdk_hid, &ectx);
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;
@@ -1264,7 +1264,7 @@ static pcb_hid_t *ghid_gdk_request_debug_draw(void)
 {
 	/* No special setup requirements, drawing goes into
 	 * the backing pixmap. */
-	return &ghid_hid;
+	return &gtk2_gdk_hid;
 }
 
 static void ghid_gdk_flush_debug_draw(void)
@@ -1325,6 +1325,7 @@ static void draw_lead_user(render_priv *priv)
 
 void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
+	if (common != NULL) {
 	common->render_pixmap = ghid_gdk_render_pixmap;
 	common->init_drawing_widget = ghid_gdk_init_drawing_widget;
 	common->drawing_realize = ghid_gdk_port_drawing_realize_cb;
@@ -1337,7 +1338,9 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	common->draw_grid_local = ghid_gdk_draw_grid_local;
 	common->drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
 	common->shutdown_renderer = ghid_gdk_shutdown_renderer;
+	}
 
+	if (hid != NULL) {
 	hid->invalidate_lr = ghid_gdk_invalidate_lr;
 	hid->invalidate_all = ghid_gdk_invalidate_all;
 	hid->notify_crosshair_change = ghid_gdk_notify_crosshair_change;
@@ -1360,4 +1363,5 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->request_debug_draw = ghid_gdk_request_debug_draw;
 	hid->flush_debug_draw = ghid_gdk_flush_debug_draw;
 	hid->finish_debug_draw = ghid_gdk_finish_debug_draw;
+	}
 }

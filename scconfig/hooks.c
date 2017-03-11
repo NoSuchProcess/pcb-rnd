@@ -371,8 +371,6 @@ int hook_detect_target()
 				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
 				hook_custom_arg("Disable-hid_gtk2_gl", NULL);
 			}
-			else
-				hook_custom_arg("Disable-hid_gtk2_gdk", NULL); /* temp */
 		}
 		else {
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid and lib_gtk_*...\n");
@@ -380,8 +378,6 @@ int hook_detect_target()
 			hook_custom_arg("Disable-lib_gtk_common", NULL);
 			hook_custom_arg("Disable-lib_gtk_config", NULL);
 			hook_custom_arg("Disable-lib_gtk_hid", NULL);
-
-			hook_custom_arg("Disable-hid_gtk2_gl", NULL); /* temp */
 		}
 	}
 

@@ -27,7 +27,6 @@
 
 typedef struct GHidPort_s  GHidPort;
 typedef struct GhidGui_s GhidGui;
-extern pcb_hid_t ghid_hid;
 extern GhidGui _ghidgui, *ghidgui;
 
 #include <gtk/gtk.h>

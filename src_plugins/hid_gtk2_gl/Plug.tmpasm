@@ -3,8 +3,10 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk2_gl/gtkhid-main.o
 	$(PLUGDIR)/hid_gtk2_gl/gtkhid-gl.o
 	$(PLUGDIR)/hid_gtk2_gl/hidgl.o
-	$(PLUGDIR)/hid_gtk2_gl/colors.o
 @]
+
+# depend on gdk's until a proper API is added for this
+#	$(PLUGDIR)/hid_gtk2_gl/colors.o
 
 switch /local/pcb/hid_gtk2_gl/controls
 	case {disable} end;
