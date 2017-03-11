@@ -1215,7 +1215,7 @@ static void draw_lead_user(render_priv * priv)
 	glPopAttrib();
 }
 
-void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
+void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
 	common->render_pixmap = ghid_gl_render_pixmap;
 	common->init_drawing_widget = ghid_gl_init_drawing_widget;
