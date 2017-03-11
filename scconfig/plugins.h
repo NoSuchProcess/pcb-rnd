@@ -86,6 +86,7 @@ plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",       "batch process (no-gui HID)",sbuildin, 1)
 plugin_def("hid_gtk2_gdk",    "GTK2 GUI, software render", sbuildin, 1)
 plugin_def("hid_gtk2_gl",     "GTK2 GUI, opengl render",   sbuildin, 1)
+plugin_def("hid_gtk3_cairo",  "GTK3 GUI, cairo render",    sdisable, 0)
 plugin_def("hid_lesstif",     "the lesstif gui",           sbuildin, 1)
 plugin_def("hid_remote",      "remote HID server",         sdisable, 0)
 plugin_def("hid_srv_ws",      "websocket server HID",      sdisable, 0)
@@ -109,6 +110,12 @@ plugin_dep("hid_gtk2_gl", "lib_gtk_config")
 plugin_dep("hid_gtk2_gl", "lib_gtk_hid")
 plugin_dep("hid_gtk2_gl", "draw_csect")
 plugin_dep("hid_gtk2_gl", "draw_fontsel")
+
+plugin_dep("hid_gtk3_cairo", "lib_gtk_common")
+plugin_dep("hid_gtk3_cairo", "lib_gtk_config")
+plugin_dep("hid_gtk3_cairo", "lib_gtk_hid")
+plugin_dep("hid_gtk3_cairo", "draw_csect")
+plugin_dep("hid_gtk3_cairo", "draw_fontsel")
 
 
 /* for the uniq name lib: */

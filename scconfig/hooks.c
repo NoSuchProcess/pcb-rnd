@@ -300,12 +300,14 @@ int safe_atoi(const char *s)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int want_glib = 0, want_gtk, want_gd, want_stroke, need_inl = 0, want_cairo;
+	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo;
 
-	want_gtk    = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
+	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
+	want_gtk3   = plug_is_enabled("hid_gtk3_cairo");
+	want_gtk    = want_gtk2 | want_gtk3;
 	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
-	want_cairo  = plug_is_enabled("export_bboard");
+	want_cairo  = plug_is_enabled("export_bboard") | want_gtk3;
 
 	require("cc/fpic",  0, 1);
 	require("signal/names/*",  0, 0);
@@ -363,24 +365,6 @@ int hook_detect_target()
 		}
 	}
 
-	if (want_gtk) {
-		require("libs/gui/gtk2/presents", 0, 0);
-		if (istrue(get("libs/gui/gtk2/presents"))) {
-			require("libs/gui/gtk2gl/presents", 0, 0);
-			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
-				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
-				hook_custom_arg("Disable-hid_gtk2_gl", NULL);
-			}
-		}
-		else {
-			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid and lib_gtk_*...\n");
-			hook_custom_arg("Disable-hid_gtk2_gdk", NULL);
-			hook_custom_arg("Disable-lib_gtk_common", NULL);
-			hook_custom_arg("Disable-lib_gtk_config", NULL);
-			hook_custom_arg("Disable-lib_gtk_hid", NULL);
-		}
-	}
-
 	if (want_cairo) {
 		require("libs/gui/cairo/presents", 0, 0);
 		if (!istrue(get("libs/gui/cairo/presents"))) {
@@ -388,6 +372,47 @@ int hook_detect_target()
 			hook_custom_arg("Disable-export_bboard", NULL);
 		}
 	}
+
+	if (want_gtk2) {
+		require("libs/gui/gtk2/presents", 0, 0);
+		if (istrue(get("libs/gui/gtk2/presents"))) {
+			require("libs/gui/gtk2gl/presents", 0, 0);
+			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
+				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
+				hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+			}
+			need_gtklibs = 1;
+		}
+		else {
+			report_repeat("WARNING: Since there's no libgtk2 found, disabling hid_gtk2*...\n");
+			hook_custom_arg("Disable-hid_gtk2_gdk", NULL);
+			hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+		}
+	}
+
+	if (want_gtk3) {
+		if (istrue(get("libs/gui/cairo/presents"))) {
+			require("libs/gui/gtk3/presents", 0, 0);
+			if (!istrue(get("libs/gui/gtk3/presents"))) {
+				report_repeat("WARNING: Since there's no libgtk3 found, disabling hid_gtk3*...\n");
+				hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
+			}
+		}
+		else {
+			report_repeat("WARNING: not going to try gtk3 because cairo is not found\n");
+			hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
+		}
+	}
+
+	if (!need_gtklibs) {
+		report("No gtk support available, disabling lib_gtk_*...\n");
+		hook_custom_arg("Disable-lib_gtk_common", NULL);
+		hook_custom_arg("Disable-lib_gtk_config", NULL);
+		hook_custom_arg("Disable-lib_gtk_hid", NULL);
+	}
+
+
+
 
 	if (plug_is_enabled("hid_lesstif")) {
 		require("libs/gui/lesstif2/presents", 0, 0);
