@@ -7,8 +7,8 @@ put /local/pcb/mod/OBJS_C99 [@
 switch /local/pcb/hid_gtk3_cairo/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
-		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
+		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk3/cflags
+		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk3/ldflags
 		append /local/pcb/CFLAGS { -DPCB_GTK3=1 }
 	end
 end
