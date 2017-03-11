@@ -1,6 +1,0 @@
-#LIBGTK_GL_SRCS= \
-#	hid/gtk/gtkhid-gl.c
-
-#GL_SRCS= \
-#	hid/common/hidgl.c \
-#	hid/common/hidgl.h
