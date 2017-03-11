@@ -10,6 +10,9 @@
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
+GhidGui _ghidgui, *ghidgui = &_ghidgui;
+GHidPort ghid_port, *gport;
+
 /* Do scrollbar scaling based on current port drawing area size and
    |  overall PCB board size.
  */

@@ -25,9 +25,6 @@
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
 
-GhidGui _ghidgui, *ghidgui = &_ghidgui;
-GHidPort ghid_port, *gport;
-
 static void hid_hid_gtk2_gdk_uninit()
 {
 	pcb_event_unbind_allcookie(ghid_cookie);
