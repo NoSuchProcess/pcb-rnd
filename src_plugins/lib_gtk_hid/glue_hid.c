@@ -224,7 +224,7 @@ static void ghid_do_exit(pcb_hid_t * hid)
 	/* Create top level window for routines that will need top_window
 	   |  before ghid_create_pcb_widgets() is called.
 	 */
-static void ghid_parse_arguments(int *argc, char ***argv)
+void gtkhid_parse_arguments(int *argc, char ***argv)
 {
 	GtkWidget *window;
 
@@ -505,7 +505,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 
 	dst->do_export = gtkhid_do_export;
 	dst->do_exit = ghid_do_exit;
-	dst->parse_arguments = ghid_parse_arguments;
+	dst->parse_arguments = gtkhid_parse_arguments;
 
 	dst->calibrate = ghid_calibrate;
 	dst->shift_is_pressed = ghid_shift_is_pressed;
