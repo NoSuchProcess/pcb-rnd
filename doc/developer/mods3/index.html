@@ -118,7 +118,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Remote control PCB using DBUS. 
-<tr><th align=left>diag<td>167
+<tr><th align=left>diag<td>210
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disabled
 <td> (feature)
@@ -133,22 +133,27 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Same as distalign, operates on text objects. 
-<tr><th align=left>djopt<td>2331
+<tr><th align=left>djopt<td>2333
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Various board optimization algorithms. 
-<tr><th align=left>draw_csect<td>575
+<tr><th align=left>draw_csect<td>536
 <td  > WIP
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Draw cross section and layer map. 
-<tr><th align=left>draw_fab<td>255
+<tr><th align=left>draw_fab<td>256
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Draw the fab layer (for various exporters). 
-<tr><th align=left>export_bboard<td>417
+<tr><th align=left>draw_fontsel<td>187
+<td  > WIP
+<td bgcolor="red"> disable
+<td> (feature)
+<td> Draw the font selector GUI 
+<tr><th align=left>export_bboard<td>421
 <td  > WIP
 <td bgcolor="red"> disabled
 <td> export
@@ -158,27 +163,32 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export bom (Bill of Materials) 
-<tr><th align=left>export_dsn<td>453
+<tr><th align=left>export_dsn<td>454
 <td bgcolor="lightgreen" > works
 <td > enabled
 <td> export
 <td> Export specctra .dsn files 
-<tr><th align=left>export_dxf<td>3980
+<tr><th align=left>export_dxf<td>3984
 <td  > WIP
 <td bgcolor="red"> disabled
 <td> export
 <td> Export dxf 
+<tr><th align=left>export_fidocadj<td>253
+<td  > WIP
+<td bgcolor="red"> disable
+<td> export
+<td> Export to FidoCadJ format (.fcd) 
 <tr><th align=left>export_gcode<td>2472
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gcode 
-<tr><th align=left>export_gerber<td>989
+<tr><th align=left>export_gerber<td>996
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gerber 
-<tr><th align=left>export_ipcd356<td>467
+<tr><th align=left>export_ipcd356<td>471
 <td  > Work-in-progress
 <td bgcolor="red"> disable
 <td> export
@@ -193,17 +203,17 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to nelma (Numerical capacitance calculator) 
-<tr><th align=left>export_openscad<td>1380
+<tr><th align=left>export_openscad<td>1384
 <td  > WIP
 <td bgcolor="red"> disabled
 <td> export
 <td> Export openscad 
-<tr><th align=left>export_png<td>1112
+<tr><th align=left>export_png<td>1114
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to png, gif and jpeg 
-<tr><th align=left>export_ps<td>1634
+<tr><th align=left>export_ps<td>1640
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
@@ -213,7 +223,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export various board statistics in lihata format 
-<tr><th align=left>export_svg<td>565
+<tr><th align=left>export_svg<td>567
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
@@ -229,7 +239,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export XY centroid element data for pick & place. 
-<tr><th align=left>fontmode<td>168
+<tr><th align=left>fontmode<td>174
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -244,13 +254,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> fp
 <td> Footprint: get static (file) footprints from the web, e.g. from http://gedasymbols.org 
-<tr><th align=left>gl<td>588
-<td bgcolor="red" > disabled
-<br> (pcb-rnd has no support for opengl.)
-<td bgcolor="red"> disabled
-<td> (feature)
-<td> Common gl functions for hids. 
-<tr><th align=left>gpmi<td>3215
+<tr><th align=left>gpmi<td>3218
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <br> (if gpmi is installed)
@@ -261,26 +265,36 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> HID without GUI; read actions from stdin. 
-<tr><th align=left>hid_gtk<td>9755
+<tr><th align=left>hid_gtk2_gdk<td>1177
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
-<td> GUI: the GTK HID. 
-<tr><th align=left>hid_gtk3<td>25
+<td> GUI: GTK2 HID with GDK software rendering. 
+<tr><th align=left>hid_gtk2_gl<td>1624
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> hid
+<td> GUI: GTK2 with opengl rendering 
+<tr><th align=left>hid_gtk3_cairo<td>22
 <td  > WIP
 <td bgcolor="red"> disable
 <td> hid
 <td> GUI: the GTK3 HID, using cairo for rendering 
-<tr><th align=left>hid_lesstif<td>6875
+<tr><th align=left>hid_lesstif<td>6982
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: the lesstif HID. 
-<tr><th align=left>hid_remote<td>1171
+<tr><th align=left>hid_remote<td>1173
 <td  > WIP
 <td bgcolor="red"> disable
 <td> hid
 <td> Remote access HID: implement a protocol and use it to relay between a core and a remote HID implementation. 
+<tr><th align=left>hid_srv_ws<td>11
+<td  > WIP
+<td bgcolor="red"> disable
+<td> hid
+<td> HID server: websockets using hid_remote. 
 <tr><th align=left>import_dsn<td>233
 <td bgcolor="lightgreen" > works
 <td > enabled
@@ -291,7 +305,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import plugin for netlists in the EDIF format. 
-<tr><th align=left>import_hyp<td>2400
+<tr><th align=left>import_hyp<td>2919
 <td  > WIP
 <td bgcolor="red"> disable
 <td> import
@@ -301,7 +315,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import the netlist and footprints from an ltspice .asc and .net pair of files 
-<tr><th align=left>import_mucs<td>108
+<tr><th align=left>import_mentor_sch<td>492
+<td  > WIP
+<td bgcolor="red"> disable
+<td> import
+<td> Import mentor graphics schematics from .edf netlist, using a parts conversion table. 
+<tr><th align=left>import_mucs<td>113
 <td bgcolor="lightgreen" > works
 <td > builtin
 <td> import
@@ -321,7 +340,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import the netlist and footprints from a tinycad netlist. 
-<tr><th align=left>io_kicad<td>3060
+<tr><th align=left>io_kicad<td>3313
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
@@ -331,16 +350,21 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Export the design and elements in Kicad's legacy format. 
-<tr><th align=left>io_lihata<td>2097
+<tr><th align=left>io_lihata<td>2187
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Load and save the design and elements in the lihata board format. 
-<tr><th align=left>io_pcb<td>2207
+<tr><th align=left>io_pcb<td>2339
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Load and save the design and elements in the original pcb text format. 
+<tr><th align=left>io_tedax<td>343
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> import
+<td> Import and export tEDAx netlists and footprints. 
 <tr><th align=left>jostle<td>445
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -351,11 +375,21 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (lib)
 <td> S-expression parser lib 
-<tr><th align=left>lib_gtk_common<td>6915
+<tr><th align=left>lib_gtk_common<td>11467
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disabled
 <td> (lib)
 <td> hid_gtk* common code (regardless of gtk version or drawing mechanism: for  both gtk2 and gtk3 and for both sw rendering and gl) 
+<tr><th align=left>lib_gtk_config<td>2583
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disabled
+<td> (lib)
+<td> hid_gtk* preferences dialog common code (regardless of gtk version) 
+<tr><th align=left>lib_gtk_hid<td>1395
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disabled
+<td> (lib)
+<td> Generic gtk HID implementation, independent of GTK version (2 vs. 3) and rendering engine. Mostly a dispatcher that fills in all the glue to connect the parts. An actual gtk HID implementation may use this lib or replace parts of it or the whole with local implementation. 
 <tr><th align=left>lib_legacy_func<td>87
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -411,7 +445,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Report() and ReportObject() actions - print a report about design objects. 
-<tr><th align=left>rubberband_orig<td>668
+<tr><th align=left>rubberband_orig<td>853
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
