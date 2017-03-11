@@ -397,6 +397,8 @@ int hook_detect_target()
 				report_repeat("WARNING: Since there's no libgtk3 found, disabling hid_gtk3*...\n");
 				hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
 			}
+			else
+				need_gtklibs = 1;
 		}
 		else {
 			report_repeat("WARNING: not going to try gtk3 because cairo is not found\n");
