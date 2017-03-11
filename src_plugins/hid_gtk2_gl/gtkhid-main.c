@@ -22,8 +22,8 @@
 #include "../src_plugins/lib_gtk_hid/common.h"
 #include "../src_plugins/lib_gtk_hid/render.h"
 
-const char *ghid_gl_cookie = "gtk hid, gl";
-const char *ghid_gl_menu_cookie = "gtk hid menu, gl";
+const char *ghid_gl_cookie = "gtk2 hid, gl";
+const char *ghid_gl_menu_cookie = "gtk2 hid menu, gl";
 
 static void hid_hid_gtk2_gl_uninit()
 {
@@ -42,7 +42,7 @@ pcb_uninit_t hid_hid_gtk2_gl_init()
 	ghid_glue_common_init();
 
 	ghid_hid.name = "gtk2_gl";
-	ghid_hid.description = "Gtk - The Gimp Toolkit, with opengl rendering";
+	ghid_hid.description = "Gtk2 - The Gimp Toolkit, with opengl rendering";
 
 	ghid_gl_install(&ghidgui->common, &ghid_hid);
 
