@@ -1,14 +1,14 @@
-put /local/pcb/mod {hid_gtk}
+put /local/pcb/mod {hid_gtk2_gdk}
 put /local/pcb/mod/OBJS_C99 [@
-	$(PLUGDIR)/hid_gtk/colors.o
-	$(PLUGDIR)/hid_gtk/gtkhid-main.o
-	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
+	$(PLUGDIR)/hid_gtk2_gdk/colors.o
+	$(PLUGDIR)/hid_gtk2_gdk/gtkhid-main.o
+	$(PLUGDIR)/hid_gtk2_gdk/gtkhid-gdk.o
 @]
 
-#	$(PLUGDIR)/hid_gtk/gtkhid-gl.o
-#	$(PLUGDIR)/gl/hidgl.o
+#	$(PLUGDIR)/hid_gtk2_gl/gtkhid-gl.o
+#	$(PLUGDIR)/hid_gtk2_gl/hidgl.o
 
-switch /local/pcb/hid_gtk/controls
+switch /local/pcb/hid_gtk2_gdk/controls
 	case {disable} end;
 	default
 		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
@@ -16,7 +16,7 @@ switch /local/pcb/hid_gtk/controls
 	end
 end
 
-switch /local/pcb/hid_gtk/controls
+switch /local/pcb/hid_gtk2_gdk/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

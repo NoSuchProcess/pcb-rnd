@@ -28,7 +28,7 @@ const char *ghid_menu_cookie = "gtk hid menu";
 GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;
 
-void hid_hid_gtk_uninit()
+static void hid_hid_gtk2_gdk_uninit()
 {
 	pcb_event_unbind_allcookie(ghid_cookie);
 	conf_hid_unreg(ghid_cookie);
@@ -37,14 +37,14 @@ void hid_hid_gtk_uninit()
 
 pcb_hid_t ghid_hid;
 
-pcb_uninit_t hid_hid_gtk_init()
+pcb_uninit_t hid_hid_gtk2_gdk_init()
 {
 	ghid_win32_init();
 
 	ghid_glue_hid_init(&ghid_hid);
 	ghid_glue_common_init();
 
-	ghid_hid.name = "gtk";
+	ghid_hid.name = "gtk2_gdk";
 	ghid_hid.description = "Gtk - The Gimp Toolkit, with GDK software pixmap rendering";
 
 	if (conf_core.editor.gl) {
@@ -68,5 +68,5 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	glue_event_init(ghid_cookie);
 
-	return hid_hid_gtk_uninit;
+	return hid_hid_gtk2_gdk_uninit;
 }
