@@ -84,10 +84,4 @@ struct GHidPort_s {
 
 extern GHidPort ghid_port, *gport;
 
-/* ***  */
-
-
-extern const char *ghid_cookie;
-extern const char *ghid_menu_cookie;
-
 #endif /* PCB_HID_GTK_GHID_GUI_H */

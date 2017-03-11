@@ -58,7 +58,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	pcb_gtk_conf_init();
 	ghidgui->topwin.menu.ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
 	ghidgui->topwin.menu.confchg_checkbox = ghid_confchg_checkbox;
-	ghid_conf_regs();
+	ghid_conf_regs(ghid_cookie);
 
 	pcb_hid_register_hid(&ghid_hid);
 
@@ -66,7 +66,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h"
 
-	glue_event_init();
+	glue_event_init(ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }
