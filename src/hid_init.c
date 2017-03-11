@@ -223,7 +223,7 @@ pcb_hid_t *pcb_hid_find_gui(const char *preference)
 	int i;
 
 	/* ugly hack for historical reasons: some old configs and veteran users are used to the --gui gtk option */
-	if (strcmp(preference, "gtk") == 0) {
+	if ((preference != NULL) && (strcmp(preference, "gtk") == 0)) {
 		pcb_hid_t *g;
 
 		g = pcb_hid_find_gui("gtk2_gl");
