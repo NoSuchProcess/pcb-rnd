@@ -1001,9 +1001,8 @@
  ../src_plugins/lib_gtk_hid/glue_win32.h \
  ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/hid_gtk2_gl/gtkhid-gl.o: \
- ../src_plugins/hid_gtk2_gl/gtkhid-gl.c ../config.h \
- ../src_plugins/hid_gtk2_gl/gtkhid-gl-config.h crosshair.h vtonpoint.h \
- global_typedefs.h pcb_bool.h unit.h \
+ ../src_plugins/hid_gtk2_gl/gtkhid-gl.c ../config.h crosshair.h \
+ vtonpoint.h global_typedefs.h pcb_bool.h unit.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h attrib.h \
  layer.h globalconst.h obj_all_list.h obj_arc_list.h obj_common.h \
