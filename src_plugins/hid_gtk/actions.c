@@ -51,7 +51,7 @@
 
 #include "actions.h"
 
-
+static const char *ghid_act_cookie = "gtk HID actions";
 
 int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -499,7 +499,7 @@ pcb_hid_action_t ghid_menu_action_list[] = {
 	{"fontsel", 0, pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
 
-PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 
 pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}
@@ -549,17 +549,17 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"Zoom", N_("Click on zoom focus"), Zoom, pcb_acth_zoom, pcb_acts_zoom}
 };
 
-PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
+PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
 #include "dolists.h"
 
 void ghid_action_reg(void)
 {
-	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
+	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 }
 
 void ghid_action_unreg(void)
 {
-	pcb_hid_remove_actions_by_cookie(ghid_cookie);
-	pcb_hid_remove_attributes_by_cookie(ghid_cookie);
+	pcb_hid_remove_actions_by_cookie(ghid_act_cookie);
+	pcb_hid_remove_attributes_by_cookie(ghid_act_cookie);
 }
