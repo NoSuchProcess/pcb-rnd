@@ -36,6 +36,8 @@
  */
 /*#include "colors.h"*/
 
+TODO: these should be static and filled in in the common struct in the _install() call
+
 const gchar *ghid_get_color_name(GdkRGBA * color)
 {
 	static char tmp[16];

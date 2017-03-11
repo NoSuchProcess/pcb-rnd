@@ -1,6 +1,5 @@
 put /local/pcb/mod {hid_gtk2_gdk}
 put /local/pcb/mod/OBJS_C99 [@
-	$(PLUGDIR)/hid_gtk2_gdk/colors.o
 	$(PLUGDIR)/hid_gtk2_gdk/gtkhid-main.o
 	$(PLUGDIR)/hid_gtk2_gdk/gtkhid-gdk.o
 @]

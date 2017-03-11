@@ -39,7 +39,6 @@
 #include "hid_helper.h"
 #include "hid_color.h"
 
-#include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 

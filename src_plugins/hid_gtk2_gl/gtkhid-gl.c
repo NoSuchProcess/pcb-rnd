@@ -11,7 +11,6 @@
 #include "hid_helper.h"
 #include "hid_color.h"
 
-#include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
@@ -70,6 +69,35 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static void draw_lead_user(render_priv * priv);
+
+static const gchar *get_color_name(GdkColor * color)
+{
+	static char tmp[16];
+
+	if (!color)
+		return "#000000";
+
+	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
+	return tmp;
+}
+
+static void map_color_string(const char *color_string, GdkColor * color)
+{
+	static GdkColormap *colormap = NULL;
+	GHidPort *out = &ghid_port;
+
+	if (!color || !out->top_window)
+		return;
+	if (colormap == NULL)
+		colormap = gtk_widget_get_colormap(out->top_window);
+	if (color->red || color->green || color->blue)
+		gdk_colormap_free_colors(colormap, color, 1);
+	gdk_color_parse(color_string, color);
+	gdk_color_alloc(colormap, color);
+}
+
+
+
 
 static void start_subcomposite(void)
 {
@@ -332,14 +360,14 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
 	render_priv *priv = gport->render_priv;
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
-		ghid_map_color_string(cfg->val.color[0], &gport->bg_color);
+		map_color_string(cfg->val.color[0], &gport->bg_color);
 		set_special_grid_color();
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit)) {
-		ghid_map_color_string(cfg->val.color[0], &gport->offlimits_color);
+		map_color_string(cfg->val.color[0], &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
-		ghid_map_color_string(cfg->val.color[0], &gport->grid_color);
+		map_color_string(cfg->val.color[0], &gport->grid_color);
 		set_special_grid_color();
 	}
 }
@@ -707,7 +735,7 @@ void ghid_gl_show_crosshair(gboolean paint_new_location)
 	if (!done_once) {
 		done_once = 1;
 		/* FIXME: when CrossColor changed from config */
-		ghid_map_color_string(conf_core.appearance.color.cross, &cross_color);
+		map_color_string(conf_core.appearance.color.cross, &cross_color);
 	}
 	x = gport->view.crosshair_x;
 	y = gport->view.crosshair_y;
@@ -1229,6 +1257,8 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	common->draw_grid_local = ghid_gl_draw_grid_local;
 	common->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
 	common->shutdown_renderer = ghid_gl_shutdown_renderer;
+	common->get_color_name = get_color_name;
+	common->map_color_string = map_color_string;
 	}
 
 	if (hid != NULL) {

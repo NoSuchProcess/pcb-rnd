@@ -9,7 +9,6 @@
 #include "common.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
-#include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 static void ghid_interface_set_sensitive(gboolean sensitive);
@@ -266,8 +265,6 @@ void ghid_glue_common_init(void)
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 	ghidgui->common.pack_mode_buttons = ghid_pack_mode_buttons;
-	ghidgui->common.get_color_name = ghid_get_color_name;
-	ghidgui->common.map_color_string = ghid_map_color_string;
 
 	ghidgui->common.layer_buttons_color_update = ghid_layer_buttons_color_update;
 	ghidgui->common.LayersChanged = LayersChanged_cb;

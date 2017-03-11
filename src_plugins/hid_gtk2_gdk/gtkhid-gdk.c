@@ -15,7 +15,6 @@
 #include "../src_plugins/lib_gtk_hid/gui.h"
 #include "../src_plugins/lib_gtk_hid/coord_conv.h"
 
-#include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
@@ -54,6 +53,33 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static void draw_lead_user(render_priv *priv_);
+
+static const gchar *get_color_name(GdkColor * color)
+{
+	static char tmp[16];
+
+	if (!color)
+		return "#000000";
+
+	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
+	return tmp;
+}
+
+static void map_color_string(const char *color_string, GdkColor * color)
+{
+	static GdkColormap *colormap = NULL;
+	GHidPort *out = &ghid_port;
+
+	if (!color || !out->top_window)
+		return;
+	if (colormap == NULL)
+		colormap = gtk_widget_get_colormap(out->top_window);
+	if (color->red || color->green || color->blue)
+		gdk_colormap_free_colors(colormap, color, 1);
+	gdk_color_parse(color_string, color);
+	gdk_color_alloc(colormap, color);
+}
+
 
 static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
@@ -436,7 +462,7 @@ static void set_special_grid_color(void)
 	green = (gport->grid_color.green ^ gport->bg_color.green) & 0xFF;
 	blue = (gport->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
 	conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
-	ghid_map_color_string(conf_core.appearance.color.grid, &gport->grid_color);
+	map_color_string(conf_core.appearance.color.grid, &gport->grid_color);
 
 	config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 
@@ -448,16 +474,16 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 {
 	render_priv *priv = gport->render_priv;
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
-		ghid_map_color_string(cfg->val.color[0], &gport->bg_color);
+		map_color_string(cfg->val.color[0], &gport->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
 		set_special_grid_color();
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
-		ghid_map_color_string(cfg->val.color[0], &gport->offlimits_color);
+		map_color_string(cfg->val.color[0], &gport->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
-		ghid_map_color_string(cfg->val.color[0], &gport->grid_color);
+		map_color_string(cfg->val.color[0], &gport->grid_color);
 		set_special_grid_color();
 	}
 }
@@ -1065,7 +1091,7 @@ static void show_crosshair(gboolean paint_new_location)
 		gdk_gc_set_clip_origin(xor_gc, 0, 0);
 		set_clip(priv, xor_gc);
 		/* FIXME: when CrossColor changed from config */
-		ghid_map_color_string(conf_core.appearance.color.cross, &cross_color);
+		map_color_string(conf_core.appearance.color.cross, &cross_color);
 	}
 	x = DRAW_X(&gport->view, gport->view.crosshair_x);
 	y = DRAW_Y(&gport->view, gport->view.crosshair_y);
@@ -1338,6 +1364,8 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	common->draw_grid_local = ghid_gdk_draw_grid_local;
 	common->drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
 	common->shutdown_renderer = ghid_gdk_shutdown_renderer;
+	common->get_color_name = get_color_name;
+	common->map_color_string = map_color_string;
 	}
 
 	if (hid != NULL) {
