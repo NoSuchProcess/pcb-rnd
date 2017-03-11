@@ -53,6 +53,73 @@ for d in $dirs
 do
 	cat `find $d -name '*.blm'` 
 done| awk -v import=$import '
+		BEGIN {
+			GTK[6735]++
+			GTK[6720]++
+			GTK[6719]++
+			GTK[6718]++
+			GTK[6713]++
+			GTK[6710]++
+			GTK[6709]++
+			GTK[6707]++
+			GTK[6705]++
+			GTK[6703]++
+			GTK[6701]++
+			GTK[6700]++
+			GTK[6699]++
+			GTK[6690]++
+			GTK[6689]++
+			GTK[6686]++
+			GTK[6683]++
+			GTK[6681]++
+			GTK[6679]++
+			GTK[6668]++
+			GTK[6667]++
+			GTK[6657]++
+			GTK[6610]++
+			GTK[6581]++
+			GTK[6570]++
+			GTK[6963]++
+###
+			GTK[7353]++
+			GTK[7344]++
+			GTK[7333]++
+			GTK[7312]++
+			GTK[7300]++
+			GTK[7297]++
+			GTK[7295]++
+			GTK[7293]++
+			GTK[7292]++
+			GTK[7291]++
+			GTK[7289]++
+			GTK[7288]++
+			GTK[7287]++
+			GTK[7217]++
+			GTK[7213]++
+			GTK[7212]++
+			GTK[7211]++
+			GTK[7185]++
+			GTK[7117]++
+			GTK[7086]++
+			GTK[7056]++
+			GTK[7044]++
+			GTK[7042]++
+			GTK[6975]++
+			GTK[6966]++
+			GTK[7357]++
+##
+			GTK[7371]++
+			GTK[7370]++
+			GTK[7369]++
+			GTK[7367]++
+			GTK[7365]++
+			GTK[7372]++
+##
+			GTK[7560]++
+			GTK[7564]++
+			GTK[7595]++
+		}
+
 		{
 			rev=int($1)
 			if (((rev >= 3871) && (rev <= 3914)) || ((rev >= 4065) && (rev <= 4068)) || (rev == 4023) || (rev == 4033) || (rev == 4095) || (rev == 4096) || (rev == 4122)) {
@@ -63,15 +130,16 @@ done| awk -v import=$import '
 # unravel
 				old++
 			}
-			else if ((rev == 6046) || (rev == 6063) || (rev == 6066) || (rev == 6072) || (rev == 6077) || (rev == 6079) || (rev == 6083) || (rev == 6084)) {
+			else if ((rev in GTK) || (rev == 6046) || (rev == 6063) || (rev == 6066) || (rev == 6072) || (rev == 6077) || (rev == 6079) || (rev == 6083) || (rev == 6084) || (rev == 6365) || (rev == 6447) || (rev == 6449) || (rev == 6487) || (rev == 6491) || ((rev >= 6507) && (rev <= 6511))  || (rev == 6548)) {
 # gtk splitup
 				old++
 			}
-			else if ((rev <= import) || (rev == 1022) || (rev == 3539) || (rev == 4187))
+			else if ((rev <= import) || (rev == 1022) || (rev == 3539) || (rev == 4187) || (rev == 6230) || (rev == 6292) || (rev == 6293) || (rev == 6297) || (rev == 6298) || (rev == 6299))
 				old++
 			else
 				new++
 		}
+
 		END {
 			print "old: " old
 			print "new: " new
