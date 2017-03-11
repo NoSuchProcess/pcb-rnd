@@ -167,7 +167,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 }
 
 
-static void ghid_do_export(pcb_hid_attr_val_t * options)
+void gtkhid_do_export(pcb_hid_attr_val_t *options)
 {
 	gtkhid_begin();
 
@@ -503,7 +503,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->gui = 1;
 	dst->poly_after = 1;
 
-	dst->do_export = ghid_do_export;
+	dst->do_export = gtkhid_do_export;
 	dst->do_exit = ghid_do_exit;
 	dst->parse_arguments = ghid_parse_arguments;
 
