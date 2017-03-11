@@ -999,8 +999,7 @@
  ../src_plugins/lib_gtk_hid/glue_conf.h \
  ../src_plugins/lib_gtk_hid/glue_event.h \
  ../src_plugins/lib_gtk_hid/glue_win32.h \
- ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h \
- ../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h
+ ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/hid_gtk2_gl/gtkhid-gl.o: \
  ../src_plugins/hid_gtk2_gl/gtkhid-gl.c ../config.h \
  ../src_plugins/hid_gtk2_gl/gtkhid-gl-config.h crosshair.h vtonpoint.h \
@@ -1089,8 +1088,7 @@
  ../src_plugins/lib_gtk_hid/glue_conf.h \
  ../src_plugins/lib_gtk_hid/glue_event.h \
  ../src_plugins/lib_gtk_hid/glue_win32.h \
- ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h \
- ../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h
+ ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/hid_gtk2_gl/hidgl.o: ../src_plugins/hid_gtk2_gl/hidgl.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -3078,7 +3076,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_plugins/lib_gtk_common/glue.h conf.h plugins.h
+ ../src_plugins/lib_gtk_common/glue.h conf.h \
+ ../src_plugins/lib_gtk_config/hid_gtk_conf.h plugins.h \
+ ../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h
 ../src_plugins/lib_gtk_hid/actions.o: \
  ../src_plugins/lib_gtk_hid/actions.c ../config.h \
  ../src_plugins/lib_gtk_hid/gui.h hid.h error.h drc.h unit.h \
