@@ -4,7 +4,6 @@
 
 #include "action_helper.h"
 #include "error.h"
-#include "gui.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_init.h"
@@ -14,13 +13,14 @@
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-#include "glue_common.h"
-#include "glue_hid.h"
-#include "glue_conf.h"
-#include "glue_event.h"
-#include "glue_win32.h"
-#include "common.h"
-#include "render.h"
+#include "../src_plugins/lib_gtk_hid/gui.h"
+#include "../src_plugins/lib_gtk_hid/glue_common.h"
+#include "../src_plugins/lib_gtk_hid/glue_hid.h"
+#include "../src_plugins/lib_gtk_hid/glue_conf.h"
+#include "../src_plugins/lib_gtk_hid/glue_event.h"
+#include "../src_plugins/lib_gtk_hid/glue_win32.h"
+#include "../src_plugins/lib_gtk_hid/common.h"
+#include "../src_plugins/lib_gtk_hid/render.h"
 
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";

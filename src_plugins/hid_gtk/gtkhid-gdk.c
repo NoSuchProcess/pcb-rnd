@@ -7,12 +7,13 @@
 #include "clip.h"
 #include "data.h"
 #include "layer.h"
-#include "gui.h"
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_helper.h"
 #include "hid_color.h"
-#include "coord_conv.h"
+
+#include "../src_plugins/lib_gtk_hid/gui.h"
+#include "../src_plugins/lib_gtk_hid/coord_conv.h"
 
 #include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"

@@ -32,7 +32,7 @@
 
 
 /* FIXME: Find a way to get rid of GHidPort *out and gui.h */
-#include "gui.h"
+#include "../src_plugins/lib_gtk_hid/gui.h"
 
 /* FIXME: could be more generic with a pcb_color_s structure depending on Toolkit :
  * GdkColor for GTK2
