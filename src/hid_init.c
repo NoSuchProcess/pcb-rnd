@@ -222,6 +222,22 @@ pcb_hid_t *pcb_hid_find_gui(const char *preference)
 {
 	int i;
 
+	/* ugly hack for historical reasons: some old configs and veteran users are used to the --gui gtk option */
+	if (strcmp(preference, "gtk") == 0) {
+		pcb_hid_t *g;
+
+		g = pcb_hid_find_gui("gtk2_gl");
+		if (g != NULL)
+			return g;
+
+		g = pcb_hid_find_gui("gtk2_gdk");
+		if (g != NULL)
+			return g;
+
+		return NULL;
+	}
+
+	/* normal search */
 	if (preference != NULL) {
 		for (i = 0; i < pcb_hid_num_hids; i++)
 			if (!pcb_hid_list[i]->printer && !pcb_hid_list[i]->exporter && !strcmp(pcb_hid_list[i]->name, preference))
