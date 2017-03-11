@@ -9,6 +9,7 @@ switch /local/pcb/hid_gtk3_cairo/controls
 	default
 		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
 		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
+		append /local/pcb/CFLAGS { -DPCB_GTK3=1 }
 	end
 end
 
