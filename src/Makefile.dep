@@ -3259,6 +3259,8 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/lib_gtk_common/glue.h conf.h plugins.h
+../src_plugins/lib_gtk_hid/lib_gtk_hid.o: \
+ ../src_plugins/lib_gtk_hid/lib_gtk_hid.c ../config.h plugins.h
 ../src_plugins/lib_legacy_func/lib_legacy_func.o: \
  ../src_plugins/lib_legacy_func/lib_legacy_func.c \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
