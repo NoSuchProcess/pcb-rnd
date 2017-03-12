@@ -199,25 +199,49 @@ static void term_destroy(term_t *t)
 	free(t);
 }
 
+#define load_int(dst, src, msg) \
+do { \
+	char *end; \
+	dst = strtol(src, &end, 10); \
+	if (*end != '\0') { \
+		pcb_message(PCB_MSG_ERROR, msg, src); \
+		return -1; \
+	} \
+} while(0)
+
+#define load_val(dst, src, msg) \
+do { \
+	pcb_bool succ; \
+	dst = pcb_get_value_ex(src, NULL, NULL, NULL, "mm", &succ); \
+	if (!succ) { \
+		pcb_message(PCB_MSG_ERROR, msg, src); \
+		return -1; \
+	} \
+} while(0)
+
 static int load_poly(pcb_coord_t *px, pcb_coord_t *py, int maxpt, int argc, char *argv[])
 {
 	int max, n;
-	char *end;
-	max = strtol(argv[0], &end, 10);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "invalid number of points '%s' in poly, skipping footprint\n", argv[0]);
-		return -1;
-	}
+	load_int(max, argv[0], "invalid number of points '%s' in poly, skipping footprint\n");
 	argc--;
 	argv++;
 	if (max*2 != argc) {
 		pcb_message(PCB_MSG_ERROR, "invalid number of polygon points: expected %d coords got %d skipping footprint\n", max*2, argc);
 		return -1;
 	}
-	for(n = 0; n < argc; n++) {
-		px[n] = 0;
-		py[n] = 0;
+	for(n = 0; n < argc; n+=2) {
+		load_val(px[n], argv[n+0], "invalid X '%s' in poly, skipping footprint\n");
+		load_val(py[n], argv[n+1], "invalid X '%s' in poly, skipping footprint\n");
 	}
+	return max;
+}
+
+int is_poly_square(int numpt, pcb_coord_t *px, pcb_coord_t *py)
+{
+	if (numpt != 4)
+		return 0;
+
+	return 0;
 }
 
 /* Parse one footprint block */
@@ -227,18 +251,13 @@ static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], in
 	htip_entry_t *ei;
 	htip_t terms;
 	term_t *term;
-	char *end;
 	pcb_coord_t px[256], py[256];
 
 	pcb_trace("FP start\n");
 	htip_init(&terms, longhash, longkeyeq);
 	while((argc = tedax_getline(fn, buff, buff_size, argv, argv_size)) >= 0) {
 		if ((argc == 5) && (strcmp(argv[0], "term") == 0)) {
-			termid = strtol(argv[1], &end, 10);
-			if (*end != '\0') {
-				pcb_message(PCB_MSG_ERROR, "invalid term ID '%s', skipping footprint\n", termid);
-				return -1;
-			}
+			load_int(termid, argv[1], "invalid term ID '%s', skipping footprint\n");
 			term = term_new(argv[2], argv[4]);
 			htip_set(&terms, termid, term);
 			pcb_trace(" Term!\n");
@@ -247,8 +266,9 @@ static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], in
 			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
 			if (numpt < 0)
 				return -1;
-/*			if (is_poly_square(numpt, px, py)) {
-			}*/
+			if (is_poly_square(numpt, px, py)) {
+				printf("  sq!\n");
+			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
 			pcb_trace(" done.\n");
@@ -281,7 +301,7 @@ static int tedax_parse_fp(FILE *fn, int multi)
 			return -1;
 		found++;
 	} while(multi);
-
+	return 0;
 }
 
 int tedax_fp_load(pcb_data_t *data, const char *fn, int multi)
