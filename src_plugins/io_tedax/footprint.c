@@ -199,14 +199,29 @@ static void term_destroy(term_t *t)
 	free(t);
 }
 
+static int load_poly(pcb_coord_t *px, pcb_coord_t *py, int maxpt, int argc, char *argv[])
+{
+	int max;
+	char *end;
+	max = strtol(argv[0], &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "invalid number of points '%s' in poly, skipping footprint\n", argv[0]);
+		return -1;
+	}
+	argc--;
+	argv++;
+	printf("poly: %d %d\n", max, argc);
+}
+
 /* Parse one footprint block */
 static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
-	int argc, termid;
+	int argc, termid, numpt;
 	htip_entry_t *ei;
 	htip_t terms;
 	term_t *term;
 	char *end;
+	pcb_coord_t px[256], py[256];
 
 	pcb_trace("FP start\n");
 	htip_init(&terms, longhash, longkeyeq);
@@ -220,6 +235,13 @@ static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], in
 			term = term_new(argv[2], argv[4]);
 			htip_set(&terms, termid, term);
 			pcb_trace(" Term!\n");
+		}
+		if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
+			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
+			if (numpt < 0)
+				return -1;
+/*			if (is_poly_square(numpt, px, py)) {
+			}*/
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
 			pcb_trace(" done.\n");
