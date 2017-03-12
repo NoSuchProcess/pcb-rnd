@@ -613,7 +613,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 	vbox = ghid_category_vbox(config_sizes_vbox, _("Board Size"), 4, 2, TRUE, TRUE);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_table_new(4, 1, FALSE);
 	gtk_box_pack_start(GTK_BOX(hbox), table, FALSE, FALSE, 0);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 6);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
@@ -624,7 +624,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 												 PCB->MaxWidth, PCB_MIN_SIZE, PCB_MAX_COORD, CE_LARGE, 0, coord_entry_cb, &new_board_width, FALSE,
 												 _("Width"));
 
-	ghid_table_coord_entry(table, 1, 0, NULL,
+	ghid_table_coord_entry(table, 0, 2, NULL,
 												 PCB->MaxHeight, PCB_MIN_SIZE, PCB_MAX_COORD,
 												 CE_LARGE, 0, coord_entry_cb, &new_board_height, FALSE, _("Height"));
 
@@ -2708,6 +2708,8 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 	gtk_widget_grab_default(button);
 
 	gtk_widget_show_all(config_window);
+	config_auto_src_hide();
+	gtk_window_resize(GTK_WINDOW(config_window), 800, 600);
 }
 
 static void ghid_config_window_close(void)
