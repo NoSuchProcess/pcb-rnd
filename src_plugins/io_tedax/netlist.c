@@ -59,26 +59,8 @@ static int tedax_parse_net(FILE *fn)
 	htsp_t fps;
 	htsp_entry_t *e;
 
-	/* look for the header */
-	if (tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 2) {
-		pcb_message(PCB_MSG_ERROR, "Can't find tEDAx header (no line)\n");
+	if (tedax_seek_block(fn, "netlist", "v1") != 0)
 		return -1;
-	}
-	if ((argv[1] == NULL) || (pcb_strcasecmp(argv[0], "tEDAx") != 0) || (pcb_strcasecmp(argv[1], "v1") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "Can't find tEDAx header (wrong line)\n");
-		return -1;
-	}
-
-	/* seek netlist begin */
-	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0)
-		if ((argc > 2) && (strcmp(argv[0], "begin") == 0) && (strcmp(argv[1], "netlist") == 0) && (strcmp(argv[2], "v1") == 0))
-			break;
-
-	if (argc < 2) {
-		pcb_message(PCB_MSG_ERROR, "Can't find v1 netlist block in tEDAx\n");
-		return -1;
-	}
-
 
 	htsp_init(&fps, strhash, strkeyeq);
 

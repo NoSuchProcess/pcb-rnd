@@ -19,3 +19,4 @@
 
 int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int argv_size);
 
+int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver);
