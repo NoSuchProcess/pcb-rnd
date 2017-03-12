@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <genht/htsp.h>
+#include <genht/htip.h>
 #include <genht/hash.h>
 
 #include "footprint.h"
@@ -177,14 +178,47 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 /*******************************/
 
+typedef struct {
+	char *pinid;
+	/* type can be ignored in pcb-rnd */
+	char *name;
+} term_t;
+
+static term_t *term_new(const char *pinid, const char *name)
+{
+	term_t *t = malloc(sizeof(term_t));
+	t->pinid = pcb_strdup(pinid);
+	t->name = pcb_strdup(name);
+	return t;
+}
+
+static void term_destroy(term_t *t)
+{
+	free(t->pinid);
+	free(t->name);
+	free(t);
+}
+
 /* Parse one footprint block */
 static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
-	int argc;
+	int argc, termid;
+	htip_entry_t *ei;
+	htip_t terms;
+	term_t *term;
+	char *end;
 
 	pcb_trace("FP start\n");
+	htip_init(&terms, longhash, longkeyeq);
 	while((argc = tedax_getline(fn, buff, buff_size, argv, argv_size)) >= 0) {
 		if ((argc == 5) && (strcmp(argv[0], "term") == 0)) {
+			termid = strtol(argv[1], &end, 10);
+			if (*end != '\0') {
+				pcb_message(PCB_MSG_ERROR, "invalid term ID '%s', skipping footprint\n", termid);
+				return -1;
+			}
+			term = term_new(argv[2], argv[4]);
+			htip_set(&terms, termid, term);
 			pcb_trace(" Term!\n");
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
@@ -192,6 +226,10 @@ static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], in
 			return 0;
 		}
 	}
+
+	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei))
+		term_destroy(ei->value);
+	htip_uninit(&terms);
 
 	return -1;
 }
