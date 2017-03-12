@@ -42,7 +42,7 @@
 static const char *tedax_cookie = "tEDAx IO";
 
 static const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
-static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: footprint";
+static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: board-footprints";
 static int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname, *type = argv[0];
@@ -51,7 +51,7 @@ static int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	fname = (argc > 1) ? argv[1] : NULL;
 
-	if (pcb_strcasecmp(type, "footprint") == 0)
+	if (pcb_strcasecmp(type, "board-footprints") == 0)
 		return tedax_fp_save(PCB->Data, argv[1]);
 
 	PCB_ACT_FAIL(Savetedax);
