@@ -183,7 +183,10 @@ static int tedax_parse_fp(FILE *fn)
 	char *argv[16];
 	int argc;
 
-	if (tedax_seek_block(fn, "footprint", "v1") != 0)
+	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	if (tedax_seek_block(fn, "footprint", "v1", line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
 	pcb_trace("FP start\n");
