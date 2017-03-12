@@ -970,7 +970,7 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 				*x = pcb_marked->X + fmove_total.x;
 				*y = pcb_marked->Y + fmove_total.y;
 
-				/* Move rubberband: fmove_total·normal = fmove_rubberband·normal
+				/* Move rubberband: fmove_total*normal = fmove_rubberband*normal
 				 * where normal is the moving line normal
 				 */
 				fnormal.x = fmain.direction.y;
