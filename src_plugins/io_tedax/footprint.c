@@ -177,20 +177,13 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 /*******************************/
 
-static int tedax_parse_fp(FILE *fn)
+/* Parse one footprint block */
+static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
-	char line[520];
-	char *argv[16];
 	int argc;
 
-	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
-		return -1;
-
-	if (tedax_seek_block(fn, "footprint", "v1", line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
-		return -1;
-
 	pcb_trace("FP start\n");
-	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+	while((argc = tedax_getline(fn, buff, buff_size, argv, argv_size)) >= 0) {
 		if ((argc == 5) && (strcmp(argv[0], "term") == 0)) {
 			pcb_trace(" Term!\n");
 		}
@@ -199,10 +192,32 @@ static int tedax_parse_fp(FILE *fn)
 			return 0;
 		}
 	}
+
 	return -1;
 }
 
-int tedax_fp_load(pcb_data_t *data, const char *fn)
+/* parse one or more footprint blocks */
+static int tedax_parse_fp(FILE *fn, int multi)
+{
+	char line[520];
+	char *argv[16];
+	int found = 0;
+
+	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	do {
+		if (tedax_seek_block(fn, "footprint", "v1", (found > 0), line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+			break;
+
+		if (tedax_parse_1fp(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+			return -1;
+		found++;
+	} while(multi);
+
+}
+
+int tedax_fp_load(pcb_data_t *data, const char *fn, int multi)
 {
 	FILE *f;
 	int ret = 0;
@@ -213,7 +228,7 @@ int tedax_fp_load(pcb_data_t *data, const char *fn)
 		return -1;
 	}
 
-	ret = tedax_parse_fp(f);
+	ret = tedax_parse_fp(f, multi);
 
 	fclose(f);
 	return ret;

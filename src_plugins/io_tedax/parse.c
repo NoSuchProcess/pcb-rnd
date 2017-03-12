@@ -99,7 +99,7 @@ int tedax_seek_hdr(FILE *f, char *buff, int buff_size, char *argv[], int argv_si
 }
 
 
-int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, char *buff, int buff_size, char *argv[], int argv_size)
+int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, int silent, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	int argc;
 
@@ -109,7 +109,8 @@ int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, char *b
 			break;
 
 	if (argc < 2) {
-		pcb_message(PCB_MSG_ERROR, "Can't find %s %s block in tEDAx\n", blk_ver, blk_name);
+		if (!silent)
+			pcb_message(PCB_MSG_ERROR, "Can't find %s %s block in tEDAx\n", blk_ver, blk_name);
 		return -1;
 	}
 
