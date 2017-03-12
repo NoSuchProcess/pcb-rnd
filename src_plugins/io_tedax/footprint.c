@@ -108,7 +108,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 	htsp_init(&terms, strhash, strkeyeq);
 
-	fprintf(f, "tedax v1\n");
+	fprintf(f, "tEDAx v1\n");
 
 	PCB_ELEMENT_LOOP(data)
 	{

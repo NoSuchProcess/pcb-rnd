@@ -64,7 +64,7 @@ static int tedax_parse_net(FILE *fn)
 		pcb_message(PCB_MSG_ERROR, "Can't find tEDAx header (no line)\n");
 		return -1;
 	}
-	if ((argv[1] == NULL) || (strcmp(argv[0], "tEDAx") != 0) || (strcmp(argv[1], "v1") != 0)) {
+	if ((argv[1] == NULL) || (pcb_strcasecmp(argv[0], "tEDAx") != 0) || (pcb_strcasecmp(argv[1], "v1") != 0)) {
 		pcb_message(PCB_MSG_ERROR, "Can't find tEDAx header (wrong line)\n");
 		return -1;
 	}

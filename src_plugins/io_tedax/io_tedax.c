@@ -36,39 +36,60 @@
 #include "hid.h"
 #include "hid_actions.h"
 #include "action_helper.h"
+#include "compat_misc.h"
 
 
 static const char *tedax_cookie = "tEDAx IO";
 
 static const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
-static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file";
+static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: footprint";
 static int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	return tedax_fp_save(PCB->Data, argv[1]);
+	const char *fname, *type = argv[0];
+
+	if (argc < 1)
+		PCB_ACT_FAIL(Savetedax);
+
+	fname = (argc > 1) ? argv[1] : NULL;
+
+	if (pcb_strcasecmp(type, "footprint") == 0)
+		return tedax_fp_save(PCB->Data, argv[1]);
+
+	PCB_ACT_FAIL(Savetedax);
 }
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(filename)";
-static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified tedax netlist file.";
+#define gen_load(type, fname) \
+do { \
+	static char *default_file = NULL; \
+	if (!fname || !*fname) { \
+		fname = pcb_gui->fileselect("Load tedax " #type " file...", \
+																"Picks a tedax " #type " file to load.\n", \
+																default_file, ".tdx", "tedax-" #type, HID_FILESELECT_READ); \
+		if (fname == NULL) \
+			PCB_ACT_FAIL(LoadtedaxFrom); \
+		if (default_file != NULL) { \
+			free(default_file); \
+			default_file = NULL; \
+		} \
+	} \
+} while(0)
+
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(type, filename)";
+static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file. Type can be: netlist.";
 static int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *fname = NULL;
-	static char *default_file = NULL;
+	const char *fname, *type = argv[0];
 
-	fname = argc ? argv[0] : 0;
+	if (argc < 1)
+		PCB_ACT_FAIL(Savetedax);
 
-	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect("Load tedax netlist file...",
-																"Picks a tedax netlist file to load.\n",
-																default_file, ".net", "tedax", HID_FILESELECT_READ);
-		if (fname == NULL)
-			PCB_ACT_FAIL(LoadtedaxFrom);
-		if (default_file != NULL) {
-			free(default_file);
-			default_file = NULL;
-		}
+	fname = (argc > 1) ? argv[1] : NULL;
+
+	if (pcb_strcasecmp(type, "netlist") == 0) {
+		gen_load(netlist, fname);
+		return tedax_net_load(fname);
 	}
-
-	return tedax_net_load(fname);
+	PCB_ACT_FAIL(Savetedax);
 }
 
 

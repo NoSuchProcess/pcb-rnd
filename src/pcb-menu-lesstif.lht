@@ -40,7 +40,7 @@ ha:{
 				ha:Import = {
 					li:submenu {
 						ha:Import gschem schematics          = { action=Import() }
-						ha:Import tEDAx schematics           = { action=LoadTedaxFrom() }
+						ha:Import tEDAx schematics           = { action=LoadTedaxFrom(netlist) }
 						ha:Import KiCad/eeschema schematics  = { action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = { action=LoadMentorFrom() }
 						ha:Load element data to paste-buffer = { li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
