@@ -32,8 +32,6 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
-
-#include "action_helper.h"
 #include "hid_actions.h"
 
 #include "parse.h"
@@ -132,7 +130,7 @@ static int tedax_parse_net(FILE *fn)
 }
 
 
-static int tedax_load_net(const char *fname_net)
+int tedax_net_load(const char *fname_net)
 {
 	FILE *fn;
 	int ret = 0;
@@ -149,26 +147,3 @@ static int tedax_load_net(const char *fname_net)
 	return ret;
 }
 
-const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(filename)";
-const char pcb_acth_LoadtedaxFrom[] = "Loads the specified tedax netlist file.";
-int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	const char *fname = NULL;
-	static char *default_file = NULL;
-
-	fname = argc ? argv[0] : 0;
-
-	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect("Load tedax netlist file...",
-																"Picks a tedax netlist file to load.\n",
-																default_file, ".net", "tedax", HID_FILESELECT_READ);
-		if (fname == NULL)
-			PCB_ACT_FAIL(LoadtedaxFrom);
-		if (default_file != NULL) {
-			free(default_file);
-			default_file = NULL;
-		}
-	}
-
-	return tedax_load_net(fname);
-}

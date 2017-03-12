@@ -93,7 +93,7 @@ do { \
 	} \
 } while(0)
 
-static int fp_save(pcb_data_t *data, const char *fn)
+int tedax_fp_save(pcb_data_t *data, const char *fn)
 {
 	FILE *f;
 	char buff[64];
@@ -172,11 +172,4 @@ static int fp_save(pcb_data_t *data, const char *fn)
 	fclose(f);
 
 	return 0;
-}
-
-const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
-const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file";
-int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	return fp_save(PCB->Data, argv[1]);
 }

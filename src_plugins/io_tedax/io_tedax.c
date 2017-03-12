@@ -28,15 +28,49 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "board.h"
 #include "netlist.h"
 #include "footprint.h"
 
 #include "plugins.h"
 #include "hid.h"
 #include "hid_actions.h"
+#include "action_helper.h"
 
 
 static const char *tedax_cookie = "tEDAx IO";
+
+static const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
+static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file";
+static int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return tedax_fp_save(PCB->Data, argv[1]);
+}
+
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(filename)";
+static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified tedax netlist file.";
+static int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const char *fname = NULL;
+	static char *default_file = NULL;
+
+	fname = argc ? argv[0] : 0;
+
+	if (!fname || !*fname) {
+		fname = pcb_gui->fileselect("Load tedax netlist file...",
+																"Picks a tedax netlist file to load.\n",
+																default_file, ".net", "tedax", HID_FILESELECT_READ);
+		if (fname == NULL)
+			PCB_ACT_FAIL(LoadtedaxFrom);
+		if (default_file != NULL) {
+			free(default_file);
+			default_file = NULL;
+		}
+	}
+
+	return tedax_net_load(fname);
+}
+
 
 pcb_hid_action_t tedax_action_list[] = {
 	{"LoadTedaxFrom", 0, pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
