@@ -201,7 +201,7 @@ static void term_destroy(term_t *t)
 
 static int load_poly(pcb_coord_t *px, pcb_coord_t *py, int maxpt, int argc, char *argv[])
 {
-	int max;
+	int max, n;
 	char *end;
 	max = strtol(argv[0], &end, 10);
 	if (*end != '\0') {
@@ -210,7 +210,14 @@ static int load_poly(pcb_coord_t *px, pcb_coord_t *py, int maxpt, int argc, char
 	}
 	argc--;
 	argv++;
-	printf("poly: %d %d\n", max, argc);
+	if (max*2 != argc) {
+		pcb_message(PCB_MSG_ERROR, "invalid number of polygon points: expected %d coords got %d skipping footprint\n", max*2, argc);
+		return -1;
+	}
+	for(n = 0; n < argc; n++) {
+		px[n] = 0;
+		py[n] = 0;
+	}
 }
 
 /* Parse one footprint block */
