@@ -122,9 +122,9 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			safe_term_num(pnum, pad, buff);
 			print_term(pnum, pad);
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) { /* sqaure cap pad -> poly */
-				fprintf(f, "	polygon %s copper %s 4", lloc, pnum);
+				pcb_fprintf(f, "	polygon %s copper %s %mm 4", lloc, pnum, pad->Clearance);
 				print_sqpad_coords(f, pad,  element->MarkX, element->MarkY);
-				pcb_fprintf(f, " %mm\n", pad->Clearance);
+				pcb_fprintf(f, "\n");
 			}
 			else { /* round cap pad -> line */
 				pcb_fprintf(f, "	line %s copper %s %mm %mm %mm %mm %mm %mm\n", lloc, pnum, pad->Point1.X - element->MarkX, pad->Point1.Y - element->MarkY, pad->Point2.X - element->MarkX, pad->Point2.Y - element->MarkY, pad->Thickness, pad->Clearance);
