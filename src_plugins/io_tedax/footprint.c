@@ -29,6 +29,7 @@
 #include <genht/hash.h>
 
 #include "footprint.h"
+#include "parse.h"
 
 #include "unit.h"
 #include "error.h"
@@ -172,4 +173,45 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 	fclose(f);
 
 	return 0;
+}
+
+/*******************************/
+
+static int tedax_parse_fp(FILE *fn)
+{
+	char line[520];
+	char *argv[16];
+	int argc;
+
+	if (tedax_seek_block(fn, "footprint", "v1") != 0)
+		return -1;
+
+	pcb_trace("FP start\n");
+	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+		if ((argc == 5) && (strcmp(argv[0], "term") == 0)) {
+			pcb_trace(" Term!\n");
+		}
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
+			pcb_trace(" done.\n");
+			return 0;
+		}
+	}
+	return -1;
+}
+
+int tedax_fp_load(pcb_data_t *data, const char *fn)
+{
+	FILE *f;
+	int ret = 0;
+
+	f = fopen(fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fn);
+		return -1;
+	}
+
+	ret = tedax_parse_fp(f);
+
+	fclose(f);
+	return ret;
 }

@@ -46,7 +46,6 @@ static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a t
 static int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname, *type = argv[0];
-
 	if (argc < 1)
 		PCB_ACT_FAIL(Savetedax);
 
@@ -61,7 +60,7 @@ static int pcb_act_Savetedax(int argc, const char **argv, pcb_coord_t x, pcb_coo
 #define gen_load(type, fname) \
 do { \
 	static char *default_file = NULL; \
-	if (!fname || !*fname) { \
+	if ((fname == NULL) || (*fname == '\0')) { \
 		fname = pcb_gui->fileselect("Load tedax " #type " file...", \
 																"Picks a tedax " #type " file to load.\n", \
 																default_file, ".tdx", "tedax-" #type, HID_FILESELECT_READ); \
@@ -75,7 +74,7 @@ do { \
 } while(0)
 
 static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(type, filename)";
-static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file. Type can be: netlist.";
+static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file. Type can be: netlist or footprint.";
 static int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname, *type = argv[0];
@@ -88,6 +87,10 @@ static int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb
 	if (pcb_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
 		return tedax_net_load(fname);
+	}
+	if (pcb_strcasecmp(type, "footprint") == 0) {
+		gen_load(netlist, fname);
+		return tedax_fp_load(PCB->Data, fname);
 	}
 	PCB_ACT_FAIL(Savetedax);
 }
