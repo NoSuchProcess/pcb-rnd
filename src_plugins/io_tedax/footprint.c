@@ -250,6 +250,25 @@ int is_poly_square(int numpt, pcb_coord_t *px, pcb_coord_t *py)
 	return fabs(l1-l2) < PCB_MM_TO_COORD(0.02);
 }
 
+static int add_pad_sq_poly(pcb_element_t *elem, pcb_coord_t *px, pcb_coord_t *py, const char *clear, const char *num, int backside)
+{
+	pcb_coord_t w, h, t, x1, y1, x2, y2, clr;
+	w = px[2] - px[0];
+	h = py[1] - py[0];
+	t = (w < h) ? w : h;
+	x1 = px[0] + t / 2;
+	y1 = py[0] + t / 2;
+	x2 = x1 + (w - t);
+	y2 = y1 + (h - t);
+
+	load_val(clr, clear, "invalid clearance '%s' in poly, skipping footprint\n");
+
+	pcb_element_pad_new(elem, x1, y1, x2, y2, t, 2 * clr, t + clr, NULL,
+		num, pcb_flag_make(PCB_FLAG_SQUARE | (backside ? PCB_FLAG_ONSOLDER : 0)));
+
+	return 0;
+}
+
 /* Parse one footprint block */
 static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
@@ -269,11 +288,33 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			pcb_trace(" Term!\n");
 		}
 		if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
+			const char *lloc = argv[1], *ltype = argv[2];
+			int backside;
 			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
 			if (numpt < 0)
 				return -1;
+			load_int(termid, argv[3], "invalid term ID for polygon: '%s', skipping footprint\n");
+			term = htip_get(&terms, termid);
+			if (term == NULL) {
+				pcb_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", argv[3]);
+				return -1;
+			}
+			if (strcmp(ltype, "copper") != 0) {
+				pcb_message(PCB_MSG_ERROR, "polygon on non-copper is not supported - skipping footprint\n");
+				return -1;
+			}
+
+			if (strcmp(lloc, "secondary") != 0)
+				backside = 1;
+			else if (strcmp(lloc, "primary") == 0)
+				backside = 0;
+			else {
+				pcb_message(PCB_MSG_ERROR, "polygon on layer %s, which is not an outer layer - skipping footprint\n", lloc);
+				return -1;
+			}
+
 			if (is_poly_square(numpt, px, py)) {
-/*				pcb_element_pad_new(elem, X1, Y1, X2, Y2, Thickness, Clearance, Mask, char *Name, char *Number, pcb_flag_t Flags);*/
+				add_pad_sq_poly(elem, px, py, argv[4], term->name, backside);
 			}
 			else {
 				pcb_message(PCB_MSG_ERROR, "non-square pads are not yet supported - skipping footprint\n");
