@@ -229,23 +229,29 @@ static int load_poly(pcb_coord_t *px, pcb_coord_t *py, int maxpt, int argc, char
 		pcb_message(PCB_MSG_ERROR, "invalid number of polygon points: expected %d coords got %d skipping footprint\n", max*2, argc);
 		return -1;
 	}
-	for(n = 0; n < argc; n+=2) {
-		load_val(px[n], argv[n+0], "invalid X '%s' in poly, skipping footprint\n");
-		load_val(py[n], argv[n+1], "invalid X '%s' in poly, skipping footprint\n");
+	for(n = 0; n < max; n++) {
+		load_val(px[n], argv[n*2+0], "invalid X '%s' in poly, skipping footprint\n");
+		load_val(py[n], argv[n*2+1], "invalid Y '%s' in poly, skipping footprint\n");
 	}
 	return max;
 }
 
+#define sqr(o) ((o)*(o))
+
 int is_poly_square(int numpt, pcb_coord_t *px, pcb_coord_t *py)
 {
+	double l1, l2;
 	if (numpt != 4)
 		return 0;
 
-	return 0;
+	l1 = sqrt(sqr((double)px[0] - (double)px[2]) + sqr((double)py[0] - (double)py[2]));
+	l2 = sqrt(sqr((double)px[1] - (double)px[3]) + sqr((double)py[1] - (double)py[3]));
+
+	return fabs(l1-l2) < PCB_MM_TO_COORD(0.02);
 }
 
 /* Parse one footprint block */
-static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
+static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	int argc, termid, numpt;
 	htip_entry_t *ei;
@@ -267,7 +273,11 @@ static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], in
 			if (numpt < 0)
 				return -1;
 			if (is_poly_square(numpt, px, py)) {
-				printf("  sq!\n");
+/*				pcb_element_pad_new(elem, X1, Y1, X2, Y2, Thickness, Clearance, Mask, char *Name, char *Number, pcb_flag_t Flags);*/
+			}
+			else {
+				pcb_message(PCB_MSG_ERROR, "non-square pads are not yet supported - skipping footprint\n");
+				return -1;
 			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
@@ -283,8 +293,21 @@ static int tedax_parse_1fp(FILE *fn, char *buff, int buff_size, char *argv[], in
 	return -1;
 }
 
+static int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
+{
+	pcb_element_t *elem;
+
+	elem = pcb_element_new(data, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), "", "", "", 0, 0, 0, 100, pcb_no_flags(), 0);
+	if (tedax_parse_1fp_(elem, fn, buff, buff_size, argv, argv_size) != 0) {
+		pcb_element_free(elem);
+		return -1;
+	}
+	return 0;
+}
+
+
 /* parse one or more footprint blocks */
-static int tedax_parse_fp(FILE *fn, int multi)
+static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi)
 {
 	char line[520];
 	char *argv[16];
@@ -297,7 +320,7 @@ static int tedax_parse_fp(FILE *fn, int multi)
 		if (tedax_seek_block(fn, "footprint", "v1", (found > 0), line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 			break;
 
-		if (tedax_parse_1fp(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		if (tedax_parse_1fp(data, fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 			return -1;
 		found++;
 	} while(multi);
@@ -315,7 +338,7 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi)
 		return -1;
 	}
 
-	ret = tedax_parse_fp(f, multi);
+	ret = tedax_parse_fp(data, f, multi);
 
 	fclose(f);
 	return ret;
