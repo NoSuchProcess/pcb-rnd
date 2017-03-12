@@ -66,7 +66,7 @@ void pcb_pad_free(pcb_pad_t * data)
 
 /*** utility ***/
 /* creates a new pad in an element */
-pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags)
+pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
 {
 	pcb_pad_t *pad = pcb_pad_alloc(Element);
 
