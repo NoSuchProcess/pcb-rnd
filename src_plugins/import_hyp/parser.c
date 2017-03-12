@@ -1738,9 +1738,10 @@ pcb_bool exec_pin(parse_param * h)
 	if (dot != NULL) {
 		*dot = '\0';
 		pin_name = pcb_strdup(dot + 1);
-		if (hyp_debug)
-			pcb_printf("pin: device_name = \"%s\" pin_name = \"%s\"\n", device_name, pin_name);
 	}
+
+	if (hyp_debug)
+		pcb_printf("pin: device_name = \"%s\" pin_name = \"%s\"\n", device_name, pin_name);
 
 	/* find device by name */
 	device = hyp_create_element_by_name(device_name, x2coord(h->x), y2coord(h->y));
