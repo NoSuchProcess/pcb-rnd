@@ -298,8 +298,8 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		symbol->Delta = x1 - symbol->Width;
 	}
 
-
 	pcb_font_set_info(font);
+	pcb_hid_actionl("SaveFontTo", NULL);
 
 	return 0;
 }
