@@ -182,11 +182,15 @@ typedef struct {
 	char *pinid;
 	/* type can be ignored in pcb-rnd */
 	char *name;
+
+	pcb_pin_t *pin;
+	pcb_coord_t pin_ring_cx, pin_ring_cy, pin_ring_d, pin_ring_clr;
+	int pin_ring_valid;
 } term_t;
 
 static term_t *term_new(const char *pinid, const char *name)
 {
-	term_t *t = malloc(sizeof(term_t));
+	term_t *t = calloc(sizeof(term_t), 1);
 	t->pinid = pcb_strdup(pinid);
 	t->name = pcb_strdup(name);
 	return t;
@@ -319,7 +323,7 @@ static int add_pad_sq_poly(pcb_element_t *elem, pcb_coord_t *px, pcb_coord_t *py
 /* Parse one footprint block */
 static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
-	int argc, termid, numpt;
+	int argc, termid, numpt, res = -1;
 	htip_entry_t *ei;
 	htip_t terms;
 	term_t *term;
@@ -332,7 +336,6 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			load_int(termid, argv[1], "invalid term ID '%s', skipping footprint\n");
 			term = term_new(argv[2], argv[4]);
 			htip_set(&terms, termid, term);
-			pcb_trace(" Term!\n");
 		}
 		else if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
 			const char *lloc = argv[1], *ltype = argv[2];
@@ -410,24 +413,72 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 		else if ((argc == 5) && (strcmp(argv[0], "hole") == 0)) {
 			pcb_coord_t cx, cy, d;
 
-			load_term(term, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
+			if (term->pin != NULL) {
+				pcb_message(PCB_MSG_ERROR, "hole: only one pin per terminal is supported - skipping footprint\n");
+				return -1;
+			}
 
+			load_term(term, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
 			load_val(cx, argv[2], "ivalid arc cx");
 			load_val(cy, argv[3], "ivalid arc cy");
 			load_val(d, argv[4], "ivalid arc radius");
-			pcb_element_pin_new(elem, cx, cy, 0, 0, 0, d, term->name, argv[1], pcb_no_flags());
+			term->pin = pcb_element_pin_new(elem, cx, cy, 0, 0, 0, d, term->name, argv[1], pcb_no_flags());
+		}
+		else if ((argc == 8) && (strcmp(argv[0], "fillcircle") == 0)) {
+			const char *lloc = argv[1], *ltype = argv[2];
+			pcb_coord_t cx, cy, d, clr;
+
+			load_val(cx, argv[4], "ivalid fillcircle cx");
+			load_val(cy, argv[5], "ivalid fillcircle cy");
+			load_val(d, argv[6], "ivalid fillcircle radius");
+			load_val(clr, argv[7], "ivalid fillcircle clearance");
+
+			if (strcmp(ltype, "copper") == 0) {
+				if (strcmp(lloc, "all") == 0) {
+					if (term->pin_ring_valid) {
+						pcb_message(PCB_MSG_ERROR, "fillcircle: only one pin per terminal is supported - skipping footprint\n");
+						return -1;
+					}
+					term->pin_ring_cx = cx;
+					term->pin_ring_cy = cy;
+					term->pin_ring_d = d;
+					term->pin_ring_clr = clr;
+					term->pin_ring_valid = 1;
+				}
+				else {
+					int backside;
+					load_term(term, argv[3], "invalid term ID for copper fillcircle: '%s', skipping footprint\n");
+					load_lloc(backside, lloc, "terminal fillcircle on layer %s, which is not an outer layer - skipping footprint\n");
+					pcb_element_pad_new(elem, cx, cy, cx, cy, d/2, 2 * clr, d/2 + clr, NULL,
+						term->name, pcb_flag_make(backside ? PCB_FLAG_ONSOLDER : 0));
+				}
+			}
+			else if (strcmp(ltype, "silk") == 0) {
+				if (strcmp(lloc, "primary") != 0) {
+					pcb_message(PCB_MSG_ERROR, "silk fillcircle on secondary layer is not supported by pcb-rnd - skipping footprint\n");
+					return -1;
+				}
+				pcb_element_line_new(elem, cx, cy, cx, cy, d/2);
+			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
-			pcb_trace(" done.\n");
-			return 0;
+			res = 0;
+			break;
 		}
 	}
 
-	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei))
-		term_destroy(ei->value);
+	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei)) {
+		term = ei->value;
+		if ((term->pin != NULL) && (term->pin_ring_valid)) {
+			/* combine the ring with the pin */
+			term->pin->Thickness = term->pin_ring_d + term->pin->DrillingHole;
+			term->pin->Clearance = term->pin_ring_clr;
+		}
+		term_destroy(term);
+	}
 	htip_uninit(&terms);
 
-	return -1;
+	return res;
 }
 
 static int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
