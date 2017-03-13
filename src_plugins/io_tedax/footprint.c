@@ -308,9 +308,9 @@ static int add_pad_sq_poly(pcb_element_t *elem, pcb_coord_t *px, pcb_coord_t *py
 		h = -h;
 	t = (w < h) ? w : h;
 	x1 = px[0] + t / 2;
-	y1 = py[0] + t / 2;
+	y1 = py[0] - t / 2;
 	x2 = x1 + (w - t);
-	y2 = y1 + (h - t);
+	y2 = y1 - (h - t);
 
 	load_val(clr, clear, "invalid clearance '%s' in poly, skipping footprint\n");
 
