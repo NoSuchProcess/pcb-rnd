@@ -484,7 +484,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->status_line_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), tw->status_line_hbox, FALSE, FALSE, 0);
 
-	label = pcb_gtk_build_status_line_label();
+	label = pcb_gtk_status_line_label_new();
 
 	tw->status_line_label = label;
 	gtk_box_pack_start(GTK_BOX(tw->status_line_hbox), label, FALSE, FALSE, 0);

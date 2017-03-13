@@ -28,7 +28,7 @@
 #include "compat_nls.h"
 #include "board.h"
 
-GtkWidget *pcb_gtk_build_status_line_label(void)
+GtkWidget *pcb_gtk_status_line_label_new(void)
 {
 	GtkWidget *label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
