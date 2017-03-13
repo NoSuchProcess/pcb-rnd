@@ -42,7 +42,7 @@ void pcb_gtk_status_line_set_text(GtkWidget *status_line_label, const gchar * te
 		gtk_label_set_markup(GTK_LABEL(status_line_label), text ? text : "");
 }
 
-void ghid_set_status_line_label_(GtkWidget *status_line_label, int compat_horiz)
+void pcb_gtk_status_line_update(GtkWidget *status_line_label, int compat_horiz)
 {
 	const gchar *flag = conf_core.editor.all_direction_lines
 		? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));

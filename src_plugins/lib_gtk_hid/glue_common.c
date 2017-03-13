@@ -23,8 +23,8 @@ static void ghid_window_set_name_label(gchar *name)
 
 static void ghid_set_status_line_label(void)
 {
-	if (!ghidgui->topwin.cmd.command_entry_status_line_active) \
-		ghid_set_status_line_label_(ghidgui->topwin.status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
+	if (!ghidgui->topwin.cmd.command_entry_status_line_active)
+		pcb_gtk_status_line_update(ghidgui->topwin.status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal);
 }
 
 void ghid_status_line_set_text(const gchar *text)
