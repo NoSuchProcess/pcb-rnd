@@ -14,7 +14,7 @@ typedef struct pcb_gtk_common_s {
 	GtkWidget *top_window;
 
 	/* rendering */
-	GdkPixmap *(*render_pixmap)(int cx, int cy, double zoom, int width, int height, int depth);
+	void *(*render_pixmap)(int cx, int cy, double zoom, int width, int height, int depth);
 	void (*drawing_realize)(GtkWidget *w, void *gport);
 	gboolean (*drawing_area_expose)(GtkWidget *w, GdkEventExpose *ev, void *gport);
 	void (*drawing_area_configure_hook)(void *);
