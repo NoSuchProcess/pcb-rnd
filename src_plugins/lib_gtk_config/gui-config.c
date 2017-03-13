@@ -1809,7 +1809,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 	GtkWidget *scrolled;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
-	vbox = ghid_category_vbox(tab_vbox, "Configuration node", 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(tab_vbox, "Configuration node", 4, 2, TRUE, FALSE);
 
 	/* header */
 	auto_tab_widgets.name = gtk_label_new("setting name");
@@ -2660,7 +2660,7 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-	gtk_widget_set_size_request(scrolled, 170, 0);
+	gtk_widget_set_size_request(scrolled, 100, 0);
 	gtk_paned_pack1(GTK_PANED(config_hbox), scrolled, TRUE, FALSE);
 
 	main_vbox = gtk_vbox_new(FALSE, 4);
@@ -2720,7 +2720,7 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 
 	gtk_widget_show_all(config_window);
 	config_auto_src_hide();
-	gtk_window_resize(GTK_WINDOW(config_window), 800, 600);
+	gtk_window_resize(GTK_WINDOW(config_window), 780, 550);
 }
 
 static void ghid_config_window_close(void)
