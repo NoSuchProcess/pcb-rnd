@@ -48,6 +48,8 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "event.h"
+#include "polygon.h"
+#include "obj_poly_draw.h"
 
 /* FIXME - we currently hardcode the grid and PCB size.  What we
    should do in the future is scan the font for its extents, and size
