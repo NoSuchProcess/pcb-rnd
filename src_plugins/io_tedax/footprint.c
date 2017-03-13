@@ -300,7 +300,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			htip_set(&terms, termid, term);
 			pcb_trace(" Term!\n");
 		}
-		if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
+		else if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
 			const char *lloc = argv[1], *ltype = argv[2];
 			int backside;
 			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
@@ -331,6 +331,26 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			}
 			else {
 				pcb_message(PCB_MSG_ERROR, "non-square pads are not yet supported - skipping footprint\n");
+				return -1;
+			}
+		}
+		else if ((argc == 10) && (strcmp(argv[0], "line") == 0)) {
+			const char *lloc = argv[1], *ltype = argv[2];
+			pcb_coord_t x1, y1, x2, y2, w;
+			if (strcmp(ltype, "silk") == 0) {
+				if (strcmp(lloc, "primary") != 0) {
+					pcb_message(PCB_MSG_ERROR, "silk lines on secondary layer is not supported by pcb-rnd - skipping footprint\n");
+					return -1;
+				}
+				load_val(x1, argv[4], "ivalid line x1");
+				load_val(y1, argv[5], "ivalid line y1");
+				load_val(x2, argv[6], "ivalid line x2");
+				load_val(y2, argv[7], "ivalid line y2");
+				load_val(w, argv[8], "ivalid line width");
+				pcb_element_line_new(elem, x1, y1, x2, y2, w);
+			}
+			else if (strcmp(ltype, "copper") == 0) {
+				pcb_message(PCB_MSG_ERROR, "line pads are not yet supported - skipping footprint\n");
 				return -1;
 			}
 		}
