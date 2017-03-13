@@ -201,15 +201,18 @@ pcb_polygon_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points)
 }
 
 
-pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
+static pcb_font_t *pcb_font_(pcb_board_t *pcb, pcb_font_id_t id, int fallback, int unlink)
 {
 	if (id <= 0)
 		return &pcb->fontkit.dflt;
 
 	if (pcb->fontkit.hash_inited) {
 		pcb_font_t *f = htip_get(&pcb->fontkit.fonts, id);
-		if (f != NULL)
+		if (f != NULL) {
+			if (unlink)
+				htip_popentry(&pcb->fontkit.fonts, id);
 			return f;
+		}
 	}
 
 	if (fallback)
@@ -217,6 +220,17 @@ pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 
 	return NULL;
 }
+
+pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
+{
+	return pcb_font_(pcb, id, fallback, 0);
+}
+
+pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, pcb_font_id_t id)
+{
+	return pcb_font_(pcb, id, 0, 1);
+}
+
 
 static void hash_setup(pcb_fontkit_t *fk)
 {
