@@ -317,7 +317,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 				return -1;
 			}
 
-			if (strcmp(lloc, "secondary") != 0)
+			if (strcmp(lloc, "secondary") == 0)
 				backside = 1;
 			else if (strcmp(lloc, "primary") == 0)
 				backside = 0;
