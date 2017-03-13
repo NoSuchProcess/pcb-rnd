@@ -36,7 +36,7 @@ GtkWidget *pcb_gtk_status_line_label_new(void)
 	return label;
 }
 
-void ghid_status_line_set_text_(GtkWidget *status_line_label, const gchar * text)
+void pcb_gtk_status_line_set_text(GtkWidget *status_line_label, const gchar * text)
 {
 	if (status_line_label != NULL)
 		gtk_label_set_markup(GTK_LABEL(status_line_label), text ? text : "");
@@ -63,7 +63,7 @@ void ghid_set_status_line_label_(GtkWidget *status_line_label, int compat_horiz)
 																 conf_core.design.clearance,
 																 conf_core.design.text_scale, conf_core.editor.buffer_number + 1);
 
-	ghid_status_line_set_text_(status_line_label, text);
+	pcb_gtk_status_line_set_text(status_line_label, text);
 	free(text);
 }
 

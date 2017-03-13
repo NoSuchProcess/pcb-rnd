@@ -30,7 +30,7 @@ static void ghid_set_status_line_label(void)
 void ghid_status_line_set_text(const gchar *text)
 {
 	if (!ghidgui->topwin.cmd.command_entry_status_line_active)
-		ghid_status_line_set_text_(ghidgui->topwin.status_line_label, text);
+		pcb_gtk_status_line_set_text(ghidgui->topwin.status_line_label, text);
 }
 
 static void ghid_port_ranges_scale(void)
