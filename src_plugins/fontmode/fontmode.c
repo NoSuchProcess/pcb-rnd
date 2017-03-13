@@ -221,6 +221,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_symbol_t *symbol;
 	int i;
 	pcb_line_t *l;
+	pcb_polygon_t *p, *np;
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 
@@ -234,6 +235,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		font->Symbol[i].Width = 0;
 	}
 
+	/* pack lines */
 	linelist_foreach(&lfont->Line, &it, l) {
 		int x1 = l->Point1.X;
 		int y1 = l->Point1.Y;
@@ -260,6 +262,28 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		pcb_font_new_line_in_sym(symbol, x1, y1, x2, y2, l->Thickness);
 	}
 
+	/* pack polygons */
+	polylist_foreach(&lfont->Polygon, &it, p) {
+		pcb_coord_t x1 = p->Points[0].X;
+		pcb_coord_t y1 = p->Points[0].Y;
+		pcb_coord_t s, ox, oy;
+		int n;
+
+		s = XYtoSym(x1, y1);
+		ox = (s % 16 + 1) * CELL_SIZE;
+		oy = (s / 16 + 1) * CELL_SIZE;
+		symbol = &font->Symbol[s];
+
+		np = pcb_font_new_poly_in_sym(symbol, p->PointN);
+
+		for(n = 0; n < p->PointN; n++) {
+			np->Points[n].X = p->Points[n].X - ox;
+			np->Points[n].Y = p->Points[n].Y - oy;
+		}
+	}
+
+
+	/* recalc delta */
 	linelist_foreach(&lwidth->Line, &it, l) {
 		pcb_coord_t x1 = l->Point1.X;
 		pcb_coord_t y1 = l->Point1.Y;
@@ -273,6 +297,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 		symbol->Delta = x1 - symbol->Width;
 	}
+
 
 	pcb_font_set_info(font);
 
