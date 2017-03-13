@@ -138,7 +138,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			safe_term_num(pnum, pin, buff);
 			print_term(pnum, pin);
 			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->Thickness/2, pin->Clearance);
-			pcb_fprintf(f, "	hole %s %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole/2);
+			pcb_fprintf(f, "	hole %s %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole);
 		}
 		PCB_END_LOOP;
 
@@ -225,6 +225,17 @@ do { \
 	dst = pcb_get_value_ex(src, NULL, NULL, NULL, "mm", &succ); \
 	if (!succ) { \
 		pcb_message(PCB_MSG_ERROR, msg, src); \
+		return -1; \
+	} \
+} while(0)
+
+#define load_term(dst, src, msg) \
+do { \
+	int termid; \
+	load_int(termid, src, msg); \
+	dst = htip_get(&terms, termid); \
+	if (dst == NULL) { \
+		pcb_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", src); \
 		return -1; \
 	} \
 } while(0)
@@ -329,12 +340,9 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
 			if (numpt < 0)
 				return -1;
-			load_int(termid, argv[3], "invalid term ID for polygon: '%s', skipping footprint\n");
-			term = htip_get(&terms, termid);
-			if (term == NULL) {
-				pcb_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", argv[3]);
-				return -1;
-			}
+
+			load_term(term, argv[3], "invalid term ID for polygon: '%s', skipping footprint\n");
+
 			if (strcmp(ltype, "copper") != 0) {
 				pcb_message(PCB_MSG_ERROR, "polygon on non-copper is not supported - skipping footprint\n");
 				return -1;
@@ -369,12 +377,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 				pcb_element_line_new(elem, x1, y1, x2, y2, w);
 			}
 			else if (strcmp(ltype, "copper") == 0) {
-				load_int(termid, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
-				term = htip_get(&terms, termid);
-				if (term == NULL) {
-					pcb_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", argv[3]);
-					return -1;
-				}
+				load_term(term, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
 				load_lloc(backside, lloc, "terminal line on layer %s, which is not an outer layer - skipping footprint\n");
 
 				pcb_element_pad_new(elem, x1, y1, x2, y2, w, 2 * clr, w + clr, NULL,
@@ -403,6 +406,16 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			load_val(w, argv[9], "ivalid arc width");
 
 			pcb_element_arc_new(elem, cx, cy, r, r, sa, da, w);
+		}
+		else if ((argc == 5) && (strcmp(argv[0], "hole") == 0)) {
+			pcb_coord_t cx, cy, d;
+
+			load_term(term, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
+
+			load_val(cx, argv[2], "ivalid arc cx");
+			load_val(cy, argv[3], "ivalid arc cy");
+			load_val(d, argv[4], "ivalid arc radius");
+			pcb_element_pin_new(elem, cx, cy, 0, 0, 0, d, term->name, argv[1], pcb_no_flags());
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
 			pcb_trace(" done.\n");
