@@ -90,6 +90,9 @@ struct pcb_plug_io_s {
 	   Return 0 on success. */
 	int (*write_pcb)(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
 
+	/* Attempt to write the font to file. Return 0 on success. */
+	int (*write_font)(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename);
+
 	const char *default_fmt;
 	const char *description;
 	const char *default_extension; /* used to generate save-as filename */
@@ -107,6 +110,7 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *name);
 int pcb_parse_font(pcb_font_t *Ptr, char *Filename);
 int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
 int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
+int pcb_write_font(pcb_font_t *Ptr, char *Filename, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *pcb_check_and_open_file(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);

@@ -316,6 +316,26 @@ int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt)
 	return res;
 }
 
+int pcb_write_font(pcb_font_t *Ptr, char *Filename, const char *fmt)
+{
+	int res, newfmt = 0;
+	pcb_plug_io_t *p = find_writer(PCB_IOT_FONT, fmt);
+
+	if (p != NULL) {
+		res = p->write_font(p, Ptr, Filename);
+		newfmt = 1;
+	}
+	else
+		res = -1;
+
+/*	if ((res == 0) && (newfmt))
+		PCB->Data->loader = p;*/
+
+	plug_io_err(res, "write font", NULL);
+	return res;
+}
+
+
 static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt, pcb_bool emergency)
 {
 	int res, newfmt = 0;
