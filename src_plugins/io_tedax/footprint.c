@@ -253,8 +253,21 @@ int is_poly_square(int numpt, pcb_coord_t *px, pcb_coord_t *py)
 static int add_pad_sq_poly(pcb_element_t *elem, pcb_coord_t *px, pcb_coord_t *py, const char *clear, const char *num, int backside)
 {
 	pcb_coord_t w, h, t, x1, y1, x2, y2, clr;
-	w = px[2] - px[0];
-	h = py[1] - py[0];
+
+	if (px[2] != px[0])
+		w = px[2] - px[0];
+	else
+		w = px[1] - px[0];
+
+	if (py[1] != py[0])
+		h = py[1] - py[0];
+	else
+		h = py[2] - py[0];
+
+	if (w < 0)
+		w = -w;
+	if (h < 0)
+		h = -h;
 	t = (w < h) ? w : h;
 	x1 = px[0] + t / 2;
 	y1 = py[0] + t / 2;
