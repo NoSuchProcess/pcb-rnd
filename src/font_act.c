@@ -110,8 +110,8 @@ int pcb_act_save_font_to(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			pcb_message(PCB_MSG_ERROR, "SaveFontTo(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font(PCB, fid, 0) != NULL) {
-			pcb_message(PCB_MSG_ERROR, "SaveFontTo(): font ID %d is already taken\n", fid);
+		if (pcb_font(PCB, fid, 0) == NULL) {
+			pcb_message(PCB_MSG_ERROR, "SaveFontTo(): can not fetch font ID %d\n", fid);
 			return 1;
 		}
 	}
