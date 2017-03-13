@@ -538,7 +538,11 @@ static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0
 		x[n] = PCB_SCALE_TEXT(p->X + x0, Text->Scale);
 		y[n] = PCB_SCALE_TEXT(p->Y, Text->Scale);
 		PCB_COORD_ROTATE90(x[n], y[n], 0, 0, Text->Direction);
-#warning TODO: backside transformation!
+
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
+			x[n] = PCB_SWAP_SIGN_X(x[n]);
+			y[n] = PCB_SWAP_SIGN_Y(y[n]);
+		}
 
 		x[n] += Text->X;
 		y[n] += Text->Y;
