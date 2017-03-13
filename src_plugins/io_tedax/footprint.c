@@ -314,7 +314,7 @@ static int add_pad_sq_poly(pcb_element_t *elem, pcb_coord_t *px, pcb_coord_t *py
 
 	load_val(clr, clear, "invalid clearance '%s' in poly, skipping footprint\n");
 
-	pcb_element_pad_new(elem, x1, y1, x2, y2, t, 2 * clr, t + clr, NULL,
+	pcb_element_pad_new(elem, x1, y1, x2, y2, t, clr, t + clr, NULL,
 		num, pcb_flag_make(PCB_FLAG_SQUARE | (backside ? PCB_FLAG_ONSOLDER : 0)));
 
 	return 0;
@@ -383,7 +383,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 				load_term(term, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
 				load_lloc(backside, lloc, "terminal line on layer %s, which is not an outer layer - skipping footprint\n");
 
-				pcb_element_pad_new(elem, x1, y1, x2, y2, w, 2 * clr, w + clr, NULL,
+				pcb_element_pad_new(elem, x1, y1, x2, y2, w, clr, w + clr, NULL,
 					term->name, pcb_flag_make(backside ? PCB_FLAG_ONSOLDER : 0));
 			}
 		}
