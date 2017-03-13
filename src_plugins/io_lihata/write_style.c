@@ -361,6 +361,7 @@ static lhtpers_rule_t r_netlists[] = {
 
 
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
+static const char *pat_spoly[]= {"li:simplepoly.*", "*", NULL};
 static const char *pat_rat[]  = {"ha:rat.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
 static const char *pat_via[]  = {"ha:via.*", "*", NULL};
@@ -392,6 +393,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_symbol,  &style_structi,  r_symbol},
 
 	{pat_line,    &style_structi,  r_line},
+	{pat_spoly,   &style_structi,  NULL},
 	{pat_rat,     &style_structi,  r_rat},
 	{pat_arc,     &style_structi,  r_arc},
 	{pat_via,     &style_structi,  r_pinvia},

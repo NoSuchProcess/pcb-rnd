@@ -232,6 +232,24 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pc
 	return obj;
 }
 
+static lht_node_t *build_simplepoly(pcb_polygon_t *poly, int local_id)
+{
+	char buff[128];
+	lht_node_t *obj;
+	pcb_point_t *pnt;
+	int n;
+
+	sprintf(buff, "simplepoly.%ld", (local_id >= 0 ? local_id : poly->ID));
+	obj = lht_dom_node_alloc(LHT_LIST, buff);
+
+	for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
+		lht_dom_list_append(obj, build_textf(NULL, CFMT, pnt->X));
+		lht_dom_list_append(obj, build_textf(NULL, CFMT, pnt->Y));
+	}
+	return obj;
+}
+
+
 static lht_node_t *build_rat(pcb_rat_t *rat)
 {
 	char buff[128];
@@ -553,6 +571,7 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 {
 	lht_node_t *lst, *ndt;
 	pcb_line_t *li;
+	pcb_polygon_t *poly;
 	int n;
 
 	ndt = lht_dom_node_alloc(LHT_HASH, name);
@@ -565,6 +584,8 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 	for(n = 0, li = sym->Line; n < sym->LineN; n++, li++)
 		lht_dom_list_append(lst, build_line(li, n, 0, 0));
 
+	for(n = 1, poly = polylist_first(&sym->polys); poly != NULL; poly = polylist_next(poly), n++)
+		lht_dom_list_append(lst, build_simplepoly(poly, n));
 
 	return ndt;
 }
