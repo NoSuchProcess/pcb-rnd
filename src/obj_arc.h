@@ -37,7 +37,7 @@ struct pcb_arc_s {       /* holds information about arcs */
 	pcb_coord_t Width, Height,					/* length of axis */
 	  X, Y;												/* center coordinates */
 	pcb_angle_t StartAngle, Delta;			/* the two limiting angles in degrees */
-	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element */
+	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element or in a font */
 };
 
 /*** Memory ***/

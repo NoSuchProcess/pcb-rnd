@@ -200,6 +200,19 @@ pcb_polygon_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points)
 	return p;
 }
 
+pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_angle_t start, pcb_angle_t delta, pcb_coord_t thickness)
+{
+	pcb_arc_t *a = calloc(sizeof(pcb_arc_t), 1);
+	a->X = cx;
+	a->Y = cy;
+	a->Height = a->Width = r;
+	a->StartAngle = start;
+	a->Delta = delta;
+	a->Thickness = thickness;
+	arclist_insert(&Symbol->arcs, a);
+	return a;
+}
+
 
 static pcb_font_t *pcb_font_(pcb_board_t *pcb, pcb_font_id_t id, int fallback, int unlink)
 {

@@ -142,6 +142,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	for (; s && *s; s++) {
 		if (*s <= PCB_MAX_FONTPOSITION && symbol[*s].Valid) {
 			pcb_line_t *line = symbol[*s].Line;
+			pcb_arc_t *arc;
 			for (i = 0; i < symbol[*s].LineN; line++, i++) {
 				/* Clamp the width of text lines at the minimum thickness.
 				 * NB: Divide 4 in thickness calculation is comprised of a factor
@@ -165,6 +166,12 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 				maxy = MAX(maxy, line->Point1.Y + unscaled_radius);
 				maxx = MAX(maxx, line->Point2.X + unscaled_radius + tx);
 				maxy = MAX(maxy, line->Point2.Y + unscaled_radius);
+			}
+
+			for(arc = arclist_first(&symbol[*s].arcs); arc != NULL; arc = arclist_next(arc)) {
+				pcb_arc_bbox(arc);
+				maxx = MAX(maxx, arc->BoundingBox.X2);
+				maxy = MAX(maxy, arc->BoundingBox.X2);
 			}
 
 			for(poly = polylist_first(&symbol[*s].polys); poly != NULL; poly = polylist_next(poly)) {
@@ -531,6 +538,8 @@ static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0
 		x[n] = PCB_SCALE_TEXT(p->X + x0, Text->Scale);
 		y[n] = PCB_SCALE_TEXT(p->Y, Text->Scale);
 		PCB_COORD_ROTATE90(x[n], y[n], 0, 0, Text->Direction);
+#warning TODO: backside transformation!
+
 		x[n] += Text->X;
 		y[n] += Text->Y;
 	}
@@ -555,6 +564,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 			pcb_line_t *line = font->Symbol[*string].Line;
 			pcb_line_t newline;
 			pcb_polygon_t *p;
+			pcb_arc_t *a, newarc;
 
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */
@@ -584,6 +594,27 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 				newline.Point2.X += Text->X;
 				newline.Point2.Y += Text->Y;
 				_draw_line(&newline);
+			}
+
+			/* draw the arcs */
+			for(a = arclist_first(&font->Symbol[*string].arcs); a != NULL; a = arclist_next(a)) {
+				newarc = *a;
+
+				newarc.X = PCB_SCALE_TEXT(newarc.X + x, Text->Scale);
+				newarc.Y = PCB_SCALE_TEXT(newarc.Y, Text->Scale);
+				if (newarc.Thickness < min_line_width)
+					newarc.Thickness = min_line_width;
+				pcb_arc_rotate90(&newarc, 0, 0, Text->Direction);
+
+				if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
+					newarc.X = PCB_SWAP_SIGN_X(newarc.X);
+					newarc.Y = PCB_SWAP_SIGN_Y(newarc.Y);
+					newarc.StartAngle = PCB_SWAP_ANGLE(newarc.StartAngle);
+					newarc.Delta = PCB_SWAP_DELTA(newarc.Delta);
+				}
+				newarc.X += Text->X;
+				newarc.Y += Text->Y;
+				_draw_arc(&newarc);
 			}
 
 			/* draw the polygons */

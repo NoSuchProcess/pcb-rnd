@@ -32,6 +32,8 @@
 #include "global_typedefs.h"
 #include "obj_poly.h"
 #include "obj_poly_list.h"
+#include "obj_arc.h"
+#include "obj_arc_list.h"
 #include "box.h"
 
 /* ---------------------------------------------------------------------------
@@ -44,6 +46,7 @@ typedef struct symbol_s {     /* a single symbol */
 	pcb_cardinal_t LineMax;     /* lines allocated */
 	pcb_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
 	polylist_t polys;           /* simple (non-clipped) polygons */
+	arclist_t arcs;
 } pcb_symbol_t;
 
 typedef long int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
@@ -71,6 +74,7 @@ void pcb_font_create_default(pcb_board_t *pcb);
 void pcb_font_set_info(pcb_font_t *Ptr);
 
 pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
+pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_angle_t start, pcb_angle_t delta, pcb_coord_t thickness);
 pcb_polygon_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points);
 
 
