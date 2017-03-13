@@ -85,7 +85,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_layergrp_id_t grp[4];
 	int s, l;
 
-	font = pcb_font(PCB, conf_core.design.text_font_id, 0);
+	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
 	if (font == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
 		return 1;
