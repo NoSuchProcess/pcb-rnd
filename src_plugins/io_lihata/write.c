@@ -139,7 +139,6 @@ static lht_node_t *build_attributes(pcb_attribute_list_t *lst)
 
 	if ((lst->Number == 0) && (!io_lihata_full_tree))
 		return dummy_node("attributes");
-
 	ln = lht_dom_node_alloc(LHT_HASH, "attributes");
 
 	for (n = 0; n < lst->Number; n++)
@@ -936,5 +935,32 @@ int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename,
 	}
 
 	lht_dom_uninit(brd);
+	return res;
+}
+
+int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename)
+{
+	FILE *f;
+	int res;
+	lht_doc_t *doc;
+
+
+	f = fopen(Filename, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
+		return -1;
+	}
+
+	/* create the doc */
+	io_lihata_full_tree = 1;
+	doc = lht_dom_init();
+	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-font-v1");
+	lht_dom_list_append(doc->root, build_font(font));
+
+	res = lht_dom_export(doc->root, f, "");
+
+	fclose(f);
+	lht_dom_uninit(doc);
+	io_lihata_full_tree = 0;
 	return res;
 }

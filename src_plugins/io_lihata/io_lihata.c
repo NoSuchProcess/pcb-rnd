@@ -36,7 +36,7 @@ int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fm
 		return 200;
 
 	if ((strcmp(fmt, "lihata") != 0) ||
-		((typ & (~(/*PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER |*/ PCB_IOT_PCB))) != 0))
+		((typ & (~(/*PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER |*/ PCB_IOT_PCB | PCB_IOT_FONT))) != 0))
 		return 0;
 	if (wr)
 		return 100;
@@ -57,6 +57,7 @@ pcb_uninit_t hid_io_lihata_init(void)
 	io_lihata.parse_pcb = io_lihata_parse_pcb;
 	io_lihata.parse_element = NULL;
 	io_lihata.parse_font = io_lihata_parse_font;
+	io_lihata.write_font = io_lihata_write_font;
 	io_lihata.write_buffer = NULL;
 	io_lihata.write_element = NULL;
 	io_lihata.write_pcb = io_lihata_write_pcb;
