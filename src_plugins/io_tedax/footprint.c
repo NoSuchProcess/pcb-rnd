@@ -209,6 +209,16 @@ do { \
 	} \
 } while(0)
 
+#define load_dbl(dst, src, msg) \
+do { \
+	char *end; \
+	dst = strtod(src, &end); \
+	if (*end != '\0') { \
+		pcb_message(PCB_MSG_ERROR, msg, src); \
+		return -1; \
+	} \
+} while(0)
+
 #define load_val(dst, src, msg) \
 do { \
 	pcb_bool succ; \
@@ -370,6 +380,29 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 				pcb_element_pad_new(elem, x1, y1, x2, y2, w, 2 * clr, w + clr, NULL,
 					term->name, pcb_flag_make(backside ? PCB_FLAG_ONSOLDER : 0));
 			}
+		}
+		else if ((argc == 11) && (strcmp(argv[0], "arc") == 0)) {
+			const char *lloc = argv[1], *ltype = argv[2];
+			pcb_coord_t cx, cy, r, w;
+			double sa, da;
+
+			if (strcmp(ltype, "silk") != 0) {
+				pcb_message(PCB_MSG_ERROR, "arc is supported only on silk - skipping footprint\n", argv[3]);
+				return -1;
+			}
+			if (strcmp(lloc, "primary") != 0) {
+				pcb_message(PCB_MSG_ERROR, "silk arcs on secondary layer is not supported by pcb-rnd - skipping footprint\n");
+				return -1;
+			}
+
+			load_val(cx, argv[4], "ivalid arc cx");
+			load_val(cy, argv[5], "ivalid arc cy");
+			load_val(r, argv[6], "ivalid arc radius");
+			load_dbl(sa, argv[7], "ivalid arc start angle");
+			load_dbl(da, argv[8], "ivalid arc delta angle");
+			load_val(w, argv[9], "ivalid arc width");
+
+			pcb_element_arc_new(elem, cx, cy, r, r, sa, da, w);
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
 			pcb_trace(" done.\n");
