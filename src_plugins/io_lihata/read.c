@@ -805,7 +805,9 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "objects");
 	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {
-		pcb_coord_t x1, y1, x2, y2, th;
+		pcb_coord_t x1, y1, x2, y2, th, r;
+		double sa, da;
+
 		if (strncmp(obj->name, "line.", 5) == 0) {
 			parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
 			parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
@@ -813,6 +815,15 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 			parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
 			parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
 			pcb_font_new_line_in_sym(sym, x1, y1, x2, y2, th);
+		}
+		else if (strncmp(obj->name, "simplearc.", 10) == 0) {
+			parse_coord(&x1, lht_dom_hash_get(obj, "x"));
+			parse_coord(&y1, lht_dom_hash_get(obj, "y"));
+			parse_coord(&r, lht_dom_hash_get(obj, "r"));
+			parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
+			parse_double(&sa, lht_dom_hash_get(obj, "astart"));
+			parse_double(&da, lht_dom_hash_get(obj, "adelta"));
+			pcb_font_new_arc_in_sym(sym, x1, y1, r, sa, da, th);
 		}
 		else if (strncmp(obj->name, "simplepoly.", 11) == 0) {
 			int len;
