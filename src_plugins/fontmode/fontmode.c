@@ -108,6 +108,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
 	pcb_layergrp_id_t grp[4];
 	pcb_polygon_t *poly;
+	pcb_arc_t *arc, *newarc;
 	int s, l;
 
 	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
@@ -181,6 +182,12 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 				maxx = symbol->Line[l].Point2.X;
 		}
 
+
+		for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc)) {
+			newarc = pcb_arc_new(lfont, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
+			newarc = pcb_arc_new(lorig, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
+		}
+
 		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly)) {
 			int n;
 			pcb_point_t *pnt;
@@ -225,6 +232,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_symbol_t *symbol;
 	int i;
 	pcb_line_t *l;
+	pcb_arc_t *a;
 	pcb_polygon_t *p, *np;
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
@@ -266,6 +274,27 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		pcb_font_new_line_in_sym(symbol, x1, y1, x2, y2, l->Thickness);
 	}
 
+	/* pack arcs */
+	arclist_foreach(&lfont->Arc, &it, a) {
+		int cx = a->X;
+		int cy = a->Y;
+		int ox, oy, s;
+
+		s = XYtoSym(cx, cy);
+		ox = (s % 16 + 1) * CELL_SIZE;
+		oy = (s / 16 + 1) * CELL_SIZE;
+		symbol = &font->Symbol[s];
+
+		cx -= ox;
+		cy -= oy;
+
+		if (symbol->Width < cx)
+			symbol->Width = cx;
+		symbol->Valid = 1;
+
+		pcb_font_new_arc_in_sym(symbol, cx, cy, a->Width, a->StartAngle, a->Delta, a->Thickness);
+	}
+
 	/* pack polygons */
 	polylist_foreach(&lfont->Polygon, &it, p) {
 		pcb_coord_t x1 = p->Points[0].X;
@@ -285,7 +314,6 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 			np->Points[n].Y = p->Points[n].Y - oy;
 		}
 	}
-
 
 	/* recalc delta */
 	linelist_foreach(&lwidth->Line, &it, l) {
