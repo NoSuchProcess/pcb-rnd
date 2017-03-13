@@ -77,12 +77,35 @@ static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 	return &PCB->Data->Layer[lid];
 }
 
+static void add_poly(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t ox, pcb_coord_t oy)
+{
+	int n;
+	pcb_point_t *pnt;
+	pcb_polygon_t *np;
+	
+	/* alloc */
+	np = pcb_poly_new(layer, pcb_no_flags());
+	pcb_poly_copy(np, poly);
+
+	/* transform */
+	for(n = 0, pnt = np->Points; n < np->PointN; n++,pnt++) {
+		pnt->X += ox;
+		pnt->Y += oy;
+	}
+
+	/* add */
+	pcb_add_polygon_on_layer(layer, np);
+	pcb_poly_init_clip(PCB->Data, layer, np);
+	DrawPolygon(layer, np);
+}
+
 static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
 	pcb_layergrp_id_t grp[4];
+	pcb_polygon_t *poly;
 	int s, l;
 
 	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
@@ -153,6 +176,22 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 			if (maxx < symbol->Line[l].Point2.X)
 				maxx = symbol->Line[l].Point2.X;
 		}
+
+		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly)) {
+			int n;
+			pcb_point_t *pnt;
+
+			add_poly(lfont, poly, ox, oy);
+			add_poly(lorig, poly, ox, oy);
+
+			for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
+				if (maxx < pnt->X)
+					maxx = pnt->X;
+				if (maxy < pnt->Y)
+					maxy = pnt->Y;
+			}
+		}
+
 		w = maxx + symbol->Delta + ox;
 		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
