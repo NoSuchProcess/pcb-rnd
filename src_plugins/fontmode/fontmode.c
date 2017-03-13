@@ -85,6 +85,12 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_layergrp_id_t grp[4];
 	int s, l;
 
+	font = pcb_font(PCB, conf_core.design.text_font_id, 0);
+	if (font == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
+		return 1;
+	}
+
 	if (pcb_hid_actionl("New", "Font", 0))
 		return 1;
 
@@ -94,7 +100,6 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	conf_set_design("design/shrink", "%s", "1"); PCB->Shrink = 1;
 	conf_set_design("design/min_wid", "%s", "1"); PCB->minWid = 1;
 	conf_set_design("design/min_slk", "%s", "1"); PCB->minSlk = 1;
-
 
 	PCB->MaxWidth = CELL_SIZE * 18;
 	PCB->MaxHeight = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
@@ -123,8 +128,6 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_event(PCB_EVENT_BOARD_CHANGED, NULL);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 
-
-	font = pcb_font(PCB, 0, 1);
 	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
 		pcb_coord_t ox = (s % 16 + 1) * CELL_SIZE;
 		pcb_coord_t oy = (s / 16 + 1) * CELL_SIZE;
