@@ -607,7 +607,8 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 
 				newarc.X = PCB_SCALE_TEXT(newarc.X + x, Text->Scale);
 				newarc.Y = PCB_SCALE_TEXT(newarc.Y, Text->Scale);
-				newarc.Height = newarc.Width  =PCB_SCALE_TEXT(newarc.Height, Text->Scale);
+				newarc.Height = newarc.Width = PCB_SCALE_TEXT(newarc.Height, Text->Scale);
+				newarc.Thickness = PCB_SCALE_TEXT(newarc.Thickness, Text->Scale / 2);
 				if (newarc.Thickness < min_line_width)
 					newarc.Thickness = min_line_width;
 				pcb_arc_rotate90(&newarc, 0, 0, Text->Direction);
