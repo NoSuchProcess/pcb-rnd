@@ -393,16 +393,32 @@ static void XORDrawMoveOrCopy(void)
 
 	case PCB_TYPE_LINE:
 		{
-			pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
+			/* We move a local copy of the line -the real line hasn't moved, 
+			 * only the preview.
+			 */			
+			int moved = 0;
+			pcb_line_t line;
+			memcpy(&line, (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
 
-			XORDrawAttachedLine(line->Point1.X + dx, line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
+			pcb_event(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pp", &line, &moved);
+			
+			if (!moved)
+			{
+				line.Point1.X += dx;
+				line.Point1.Y += dy;
+				line.Point2.X += dx;
+				line.Point2.Y += dy;
+			}
+
+			XORDrawAttachedLine(line.Point1.X, line.Point1.Y,
+								line.Point2.X, line.Point2.Y, line.Thickness);
 			
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawAttachedLine(line->Point1.X + dx, line->Point1.Y + dy,
-					line->Point2.X + dx, line->Point2.Y + dy, 
-					line->Thickness + 2 * (PCB->Bloat + 1) );
+				XORDrawAttachedLine(line.Point1.X, line.Point1.Y,
+									line.Point2.X, line.Point2.Y,
+									line.Thickness + 2 * (PCB->Bloat + 1) );
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;

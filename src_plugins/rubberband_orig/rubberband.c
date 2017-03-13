@@ -991,6 +991,28 @@ static void rbe_fit_crosshair(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	rubber_ctx_t *rbnd = user_data;
+	pcb_line_t *main_line = argv[1].d.p;
+	int *moved = argv[2].d.p;
+	
+	*moved = 0;
+	
+	if (rbnd->RubberbandN != 2)
+		return;
+		
+	if (rbnd->Rubberband[0].delta_is_valid)	{
+		main_line->Point1.X += rbnd->Rubberband[0].DX;
+		main_line->Point1.Y += rbnd->Rubberband[0].DY;
+		*moved = 1;
+	}
+	if (rbnd->Rubberband[1].delta_is_valid)	{
+		main_line->Point2.X += rbnd->Rubberband[1].DX;
+		main_line->Point2.Y += rbnd->Rubberband[1].DY;
+		*moved = 1;
+	}	
+}
 
 static const char *rubber_cookie = "old rubberband";
 
@@ -1011,6 +1033,7 @@ pcb_uninit_t hid_rubberband_orig_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_LINES, rbe_lookup_lines, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_FIT_CROSSHAIR, rbe_fit_crosshair, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, rbe_constrain_main_line, ctx, rubber_cookie);
 
 	return rb_uninit;
 }
