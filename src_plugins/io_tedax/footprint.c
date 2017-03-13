@@ -144,7 +144,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 		PCB_ELEMENT_PCB_LINE_LOOP(element)
 		{
-			char *lloc= elem_layer(element, line);
+			char *lloc = /*elem_layer(element, line)*/ "primary";
 			pcb_fprintf(f, "	line %s silk - %mm %mm %mm %mm %mm %mm\n", lloc,
 				line->Point1.X - element->MarkX, line->Point1.Y - element->MarkY, line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, line->Thickness, line->Clearance);
 		}
@@ -152,7 +152,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 		PCB_ELEMENT_ARC_LOOP(element)
 		{
-			char *lloc= elem_layer(element, arc);
+			char *lloc = /*elem_layer(element, arc)*/ "primary";
 			pcb_fprintf(f, "	arc %s silk - %mm %mm %mm %f %f %mm %mm\n", lloc,
 				arc->X - element->MarkX, arc->Y - element->MarkY, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
 				arc->Thickness, arc->Clearance);
