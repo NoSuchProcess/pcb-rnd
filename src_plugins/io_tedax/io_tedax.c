@@ -28,10 +28,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "board.h"
-#include "netlist.h"
 #include "footprint.h"
 
+#include "board.h"
+#include "netlist.h"
+#include "conf_core.h"
+#include "buffer.h"
 #include "plugins.h"
 #include "hid.h"
 #include "hid_actions.h"
@@ -90,7 +92,7 @@ static int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb
 	}
 	if (pcb_strcasecmp(type, "footprint") == 0) {
 		gen_load(netlist, fname);
-		return tedax_fp_load(PCB->Data, fname, 0);
+		return tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0);
 	}
 	PCB_ACT_FAIL(Savetedax);
 }
