@@ -125,6 +125,8 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	conf_set_design("design/shrink", "%s", "1"); PCB->Shrink = 1;
 	conf_set_design("design/min_wid", "%s", "1"); PCB->minWid = 1;
 	conf_set_design("design/min_slk", "%s", "1"); PCB->minSlk = 1;
+	conf_set_design("design/text_font_id", "%s", "0");
+
 
 	PCB->MaxWidth = CELL_SIZE * 18;
 	PCB->MaxHeight = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
