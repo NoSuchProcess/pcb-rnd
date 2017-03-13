@@ -1,6 +1,8 @@
+Ready to blog:
 - QR code and bar code creation dialogue howto: qr() (needs qrencode(1)) and code128() + edakrill
 - mentor netlist import howto - contributor wishes to remain anonymous; see work/alien_formats/mentor/blog for the material; please svn remove that dir after use
 - bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
+- fonteditor (can edit custom font (currently selected on a board), can save font to file)
 
 less urgent/pre-planned/TO-DO
 - Klingon font announcement
