@@ -219,6 +219,19 @@ do { \
 	} \
 } while(0)
 
+#define load_lloc(dst, src, msg) \
+do { \
+	if (strcmp(src, "secondary") == 0) \
+		dst = 1; \
+	else if (strcmp(src, "primary") == 0) \
+		dst = 0; \
+	else { \
+		pcb_message(PCB_MSG_ERROR, msg, lloc); \
+		return -1; \
+	} \
+} while(0)
+
+
 static int load_poly(pcb_coord_t *px, pcb_coord_t *py, int maxpt, int argc, char *argv[])
 {
 	int max, n;
@@ -317,15 +330,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 				return -1;
 			}
 
-			if (strcmp(lloc, "secondary") == 0)
-				backside = 1;
-			else if (strcmp(lloc, "primary") == 0)
-				backside = 0;
-			else {
-				pcb_message(PCB_MSG_ERROR, "polygon on layer %s, which is not an outer layer - skipping footprint\n", lloc);
-				return -1;
-			}
-
+			load_lloc(backside, lloc, "polygon on layer %s, which is not an outer layer - skipping footprint\n");
 			if (is_poly_square(numpt, px, py)) {
 				add_pad_sq_poly(elem, px, py, argv[4], term->name, backside);
 			}
@@ -336,22 +341,34 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 		}
 		else if ((argc == 10) && (strcmp(argv[0], "line") == 0)) {
 			const char *lloc = argv[1], *ltype = argv[2];
-			pcb_coord_t x1, y1, x2, y2, w;
+			pcb_coord_t x1, y1, x2, y2, w, clr;
+			int backside;
+
+			load_val(x1, argv[4], "ivalid line x1");
+			load_val(y1, argv[5], "ivalid line y1");
+			load_val(x2, argv[6], "ivalid line x2");
+			load_val(y2, argv[7], "ivalid line y2");
+			load_val(w, argv[8], "ivalid line width");
+			load_val(clr, argv[9], "ivalid line clearance");
+
 			if (strcmp(ltype, "silk") == 0) {
 				if (strcmp(lloc, "primary") != 0) {
 					pcb_message(PCB_MSG_ERROR, "silk lines on secondary layer is not supported by pcb-rnd - skipping footprint\n");
 					return -1;
 				}
-				load_val(x1, argv[4], "ivalid line x1");
-				load_val(y1, argv[5], "ivalid line y1");
-				load_val(x2, argv[6], "ivalid line x2");
-				load_val(y2, argv[7], "ivalid line y2");
-				load_val(w, argv[8], "ivalid line width");
 				pcb_element_line_new(elem, x1, y1, x2, y2, w);
 			}
 			else if (strcmp(ltype, "copper") == 0) {
-				pcb_message(PCB_MSG_ERROR, "line pads are not yet supported - skipping footprint\n");
-				return -1;
+				load_int(termid, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
+				term = htip_get(&terms, termid);
+				if (term == NULL) {
+					pcb_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", argv[3]);
+					return -1;
+				}
+				load_lloc(backside, lloc, "terminal line on layer %s, which is not an outer layer - skipping footprint\n");
+
+				pcb_element_pad_new(elem, x1, y1, x2, y2, w, 2 * clr, w + clr, NULL,
+					term->name, pcb_flag_make(backside ? PCB_FLAG_ONSOLDER : 0));
 			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
