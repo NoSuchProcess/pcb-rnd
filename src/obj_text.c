@@ -42,6 +42,7 @@
 #include "obj_text_op.h"
 #include "obj_text_list.h"
 #include "obj_poly_draw.h"
+#include "obj_arc_draw.h"
 
 /* TODO: remove this if draw.c is moved here: */
 #include "draw.h"
