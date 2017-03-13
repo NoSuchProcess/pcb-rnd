@@ -1806,6 +1806,7 @@ static void config_page_update_auto(void *data);
 static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, const char *basename)
 {
 	GtkWidget *vbox, *src, *src_left, *src_right, *w;
+	GtkWidget *scrolled;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
 	vbox = ghid_category_vbox(tab_vbox, "Configuration node", 4, 2, TRUE, TRUE);
@@ -1822,9 +1823,13 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 
 	/* upper hbox */
-	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, TRUE, 4);
+	scrolled = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled, FALSE, FALSE, 4);
+
 	src = gtk_hbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), src);
 
 	src_left = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(src), src_left, FALSE, FALSE, 4);
@@ -1953,12 +1958,10 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 
 	/* lower hbox for displaying the rendered value */
-	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
-	src = gtk_hbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), gtk_hseparator_new(), FALSE, TRUE, 4);
 
 	w = gtk_label_new("Resulting native configuration value, after merging all sources above:");
-	gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), w, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(w), 0., 0.);
 
 	{
@@ -1966,15 +1969,22 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 		static GType ty[] = { G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING };
 		const char **s;
 		int n, num_cols = sizeof(col_names) / sizeof(col_names[0]);
+
+		scrolled = gtk_scrolled_window_new(NULL, NULL);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 		auto_tab_widgets.res_t = gtk_tree_view_new();
+		gtk_container_add(GTK_CONTAINER(scrolled), auto_tab_widgets.res_t);
 		auto_tab_widgets.res_l = gtk_list_store_newv(num_cols, ty);
+
 		for (n = 0, s = col_names; n < num_cols; n++, s++) {
 			GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.res_t), -1, *s, renderer, "text", n, NULL);
+			g_object_set(renderer, "wrap-width", 300, NULL);
 		}
 		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.res_t), GTK_TREE_MODEL(auto_tab_widgets.res_l));
-		gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.res_t, FALSE, FALSE, 4);
+		gtk_box_pack_start(GTK_BOX(tab_vbox), scrolled, TRUE, TRUE, 4);
 	}
+	gtk_widget_set_size_request(tab_vbox, -1, 100);
 }
 
 /* hide all source edit widgets */
@@ -2650,7 +2660,7 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-	gtk_widget_set_size_request(scrolled, 200, 0);
+	gtk_widget_set_size_request(scrolled, 170, 0);
 	gtk_paned_pack1(GTK_PANED(config_hbox), scrolled, TRUE, FALSE);
 
 	main_vbox = gtk_vbox_new(FALSE, 4);
