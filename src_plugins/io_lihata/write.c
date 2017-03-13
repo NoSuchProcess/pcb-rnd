@@ -211,7 +211,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 	return hsh;
 }
 
-static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pcb_coord_t dy)
+static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pcb_coord_t dy, int simple)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -219,10 +219,13 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pc
 	sprintf(buff, "line.%ld", (local_id >= 0 ? local_id : line->ID));
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
-	lht_dom_hash_put(obj, build_attributes(&line->Attributes));
-	lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_TYPE_LINE));
+	if (!simple) {
+		lht_dom_hash_put(obj, build_attributes(&line->Attributes));
+		lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_TYPE_LINE));
+		lht_dom_hash_put(obj, build_textf("clearance", CFMT, line->Clearance));
+	}
+
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, line->Thickness));
-	lht_dom_hash_put(obj, build_textf("clearance", CFMT, line->Clearance));
 	lht_dom_hash_put(obj, build_textf("x1", CFMT, line->Point1.X+dx));
 	lht_dom_hash_put(obj, build_textf("y1", CFMT, line->Point1.Y+dy));
 	lht_dom_hash_put(obj, build_textf("x2", CFMT, line->Point2.X+dx));
@@ -439,7 +442,7 @@ static lht_node_t *build_element(pcb_element_t *elem)
 
 
 	for(li = linelist_first(&elem->Line); li != NULL; li = linelist_next(li))
-		lht_dom_list_append(lst, build_line(li, -1, -elem->MarkX, -elem->MarkY));
+		lht_dom_list_append(lst, build_line(li, -1, -elem->MarkX, -elem->MarkY, 0));
 
 	for(ar = arclist_first(&elem->Arc); ar != NULL; ar = arclist_next(ar))
 		lht_dom_list_append(lst, build_arc(ar, -elem->MarkX, -elem->MarkY));
@@ -474,7 +477,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int la
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li)) {
-		lht_dom_list_append(grp, build_line(li, -1, 0, 0));
+		lht_dom_list_append(grp, build_line(li, -1, 0, 0, 0));
 		added++;
 	}
 
@@ -600,7 +603,7 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 	lst = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(ndt, lst);
 	for(n = 0, li = sym->Line; n < sym->LineN; n++, li++)
-		lht_dom_list_append(lst, build_line(li, n, 0, 0));
+		lht_dom_list_append(lst, build_line(li, n, 0, 0, 1));
 
 	for(arc = arclist_first(&sym->arcs); arc != NULL; arc = arclist_next(arc), n++)
 		lht_dom_list_append(lst, build_simplearc(arc, n));
