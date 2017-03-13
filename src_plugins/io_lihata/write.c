@@ -231,6 +231,24 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pc
 	return obj;
 }
 
+static lht_node_t *build_simplearc(pcb_arc_t *arc, int local_id)
+{
+	char buff[128];
+	lht_node_t *obj;
+
+	sprintf(buff, "simplearc.%ld", (local_id >= 0 ? local_id : arc->ID));
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+	lht_dom_hash_put(obj, build_textf("x", CFMT, arc->X));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, arc->Y));
+	lht_dom_hash_put(obj, build_textf("r", CFMT, arc->Height));
+	lht_dom_hash_put(obj, build_textf("astart", "%f", arc->StartAngle));
+	lht_dom_hash_put(obj, build_textf("adelta", "%f", arc->Delta));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, arc->Thickness));
+
+	return obj;
+}
+
+
 static lht_node_t *build_simplepoly(pcb_polygon_t *poly, int local_id)
 {
 	char buff[128];
@@ -571,6 +589,7 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 	lht_node_t *lst, *ndt;
 	pcb_line_t *li;
 	pcb_polygon_t *poly;
+	pcb_arc_t *arc;
 	int n;
 
 	ndt = lht_dom_node_alloc(LHT_HASH, name);
@@ -583,7 +602,10 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 	for(n = 0, li = sym->Line; n < sym->LineN; n++, li++)
 		lht_dom_list_append(lst, build_line(li, n, 0, 0));
 
-	for(n = 1, poly = polylist_first(&sym->polys); poly != NULL; poly = polylist_next(poly), n++)
+	for(arc = arclist_first(&sym->arcs); arc != NULL; arc = arclist_next(arc), n++)
+		lht_dom_list_append(lst, build_simplearc(arc, n));
+
+	for(poly = polylist_first(&sym->polys); poly != NULL; poly = polylist_next(poly), n++)
 		lht_dom_list_append(lst, build_simplepoly(poly, n));
 
 	return ndt;
