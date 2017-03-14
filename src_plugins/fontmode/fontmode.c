@@ -184,8 +184,12 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 
 		for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc)) {
-			newarc = pcb_arc_new(lfont, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
+			pcb_arc_new(lfont, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
 			newarc = pcb_arc_new(lorig, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
+			if (maxx < newarc->BoundingBox.X2)
+				maxx = newarc->BoundingBox.X2;
+			if (maxy < newarc->BoundingBox.Y2)
+				maxy = newarc->BoundingBox.Y2;
 		}
 
 		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly)) {
