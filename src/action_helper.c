@@ -394,7 +394,6 @@ void pcb_release_mode(void)
 		pcb_notify_mode();
 		pcb_buffer_clear(PCB_PASTEBUFFER);
 		pcb_buffer_set_number(Note.Buffer);
-		pcb_undo_inc_serial();
 		Note.Moving = pcb_false;
 		Note.Hit = 0;
 	}
@@ -467,10 +466,7 @@ void pcb_adjust_attached_objects(void)
 		break;
 		/* line creation mode */
 	case PCB_MODE_LINE:
-		if (PCB->RatDraw || conf_core.editor.line_refraction == 0)
-			pcb_line_adjust_attached();
-		else
-			pcb_line_adjust_attached_2lines(conf_core.editor.line_refraction - 1);
+		pcb_line_adjust_attached();
 		break;
 		/* point insertion mode */
 	case PCB_MODE_INSERT_POINT:
@@ -732,7 +728,6 @@ void pcb_notify_mode(void)
 		pcb_notify_line();
 		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)
 			break;
-
 		/* Remove anchor if clicking on start point;
 		 * this means we can't paint 0 length lines
 		 * which could be used for square SMD pads.
@@ -756,6 +751,57 @@ void pcb_notify_mode(void)
 				pcb_draw();
 			}
 			break;
+		}
+		else if(pcb_crosshair.Route.size > 0)
+		{
+			pcb_pin_t *via = NULL;
+
+			/* place a via if vias are visible, the layer is
+				 in a new group since the last line and there
+				 isn't a pin already here */
+			if (PCB->ViaOn 
+					&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(lastLayer)
+					&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+																				pcb_crosshair.AttachedLine.Point1.X,
+																				pcb_crosshair.AttachedLine.Point1.Y,
+																				conf_core.design.via_thickness / 2) ==
+																					PCB_TYPE_NONE
+					&& (pcb_layer_flags(pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER)
+					&& (pcb_layer_flags(pcb_layer_id(PCB->Data, lastLayer)) & PCB_LYT_COPPER)
+					&& (via =	pcb_via_new(PCB->Data,
+																pcb_crosshair.AttachedLine.Point1.X,
+																pcb_crosshair.AttachedLine.Point1.Y,
+																conf_core.design.via_thickness,
+																2 * conf_core.design.clearance, 0, 
+																conf_core.design.via_drilling_hole, NULL, 
+																pcb_no_flags())) != NULL) {
+						pcb_obj_add_attribs(via, PCB->pen_attr);
+						pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
+			}
+
+			/* Add the route to the design */
+			pcb_route_apply(&pcb_crosshair.Route);
+
+			/* move to new start point */
+			pcb_crosshair.AttachedLine.Point1.X = Note.X;
+			pcb_crosshair.AttachedLine.Point1.Y = Note.Y;
+			pcb_crosshair.AttachedLine.Point2.X = Note.X;
+			pcb_crosshair.AttachedLine.Point2.Y = Note.Y;
+
+			if (conf_core.editor.swap_start_direction) 
+				conf_setf(CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
+
+			if (conf_core.editor.orthogonal_moves) {
+				/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
+				pcb_marked.X = Note.X;
+				pcb_marked.Y = Note.Y;
+			}
+
+			if(via)
+				DrawVia(via);
+
+			pcb_draw();
+			lastLayer = CURRENT;
 		}
 		else
 			/* create line if both ends are determined && length != 0 */

@@ -821,29 +821,21 @@ void pcb_draw_attached(void)
 		break;
 
 	case PCB_MODE_LINE:
-		/* draw only if starting point exists and the line has length */
-		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) {
-			XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point1.X,
-													pcb_crosshair.AttachedLine.Point1.Y,
-													pcb_crosshair.AttachedLine.Point2.X,
-													pcb_crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
-			/* draw two lines ? */
-			if (conf_core.editor.line_refraction)
-				XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point2.X,
-														pcb_crosshair.AttachedLine.Point2.Y,
-														pcb_crosshair.X, pcb_crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
-			if (conf_core.editor.show_drc) {
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+		if(PCB->RatDraw)
+		{
+			/* draw only if starting point exists and the line has length */
+			if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) 
 				XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point1.X,
 														pcb_crosshair.AttachedLine.Point1.Y,
 														pcb_crosshair.AttachedLine.Point2.X,
-														pcb_crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
-				if (conf_core.editor.line_refraction)
-					XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point2.X,
-															pcb_crosshair.AttachedLine.Point2.Y,
-															pcb_crosshair.X, pcb_crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
-			}
+														pcb_crosshair.AttachedLine.Point2.Y, 10 );
+		}
+		else if(pcb_crosshair.Route.size > 0)
+		{	
+			pcb_route_draw(&pcb_crosshair.Route,pcb_crosshair.GC);
+			if(conf_core.editor.show_drc)
+				pcb_route_draw_drc(&pcb_crosshair.Route,pcb_crosshair.GC);
+			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 		}
 		break;
 
@@ -1498,6 +1490,10 @@ void pcb_crosshair_init(void)
 
 	/* clear the mark */
 	pcb_marked.status = pcb_false;
+
+	/* Initialise Line Route */
+	pcb_route_init(&pcb_crosshair.Route);
+
 }
 
 /* ---------------------------------------------------------------------------
@@ -1506,6 +1502,7 @@ void pcb_crosshair_init(void)
 void pcb_crosshair_uninit(void)
 {
 	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
+	pcb_route_destroy(&pcb_crosshair.Route);
 	pcb_gui->destroy_gc(pcb_crosshair.GC);
 }
 
@@ -1560,6 +1557,7 @@ void pcb_crosshair_set_mode(int Mode)
 	recursing = pcb_true;
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_added_lines = 0;
+	pcb_route_reset(&pcb_crosshair.Route);
 	pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedPolygon.PointN = 0;

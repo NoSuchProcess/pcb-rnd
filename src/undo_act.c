@@ -146,6 +146,7 @@ int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				if (conf_core.editor.auto_drc)
 					pcb_undo(pcb_true);						/* undo the connection find */
 				pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+				pcb_route_reset(&pcb_crosshair.Route);
 				pcb_crosshair_set_local_ref(0, 0, pcb_false);
 				pcb_notify_crosshair_change(pcb_true);
 				return 0;

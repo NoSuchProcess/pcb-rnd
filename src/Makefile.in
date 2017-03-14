@@ -122,6 +122,7 @@ put /local/pcb/OBJS [@
 	remove.o
 	remove_act.o
 	rotate.o
+	route.o
 	route_style.o
 	rtree.o
 	search.o

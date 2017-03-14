@@ -34,6 +34,7 @@
 #include "hid.h"
 #include "obj_line.h"
 #include "obj_poly.h"
+#include "route.h"
 
 typedef struct {								/* currently marked block */
 	pcb_point_t Point1,							/* start- and end-position */
@@ -76,7 +77,8 @@ typedef struct {								/* holds cursor information */
 	pcb_attached_box_t AttachedBox;
 	pcb_polygon_t AttachedPolygon;
 	pcb_attached_object_t AttachedObject;	/* data of attached objects */
-	enum pcb_crosshair_shape_e shape;		/* shape of crosshair */
+	pcb_route_t Route;										/* Calculated line route in LINE or MOVE(LINE) mode */ 
+	enum pcb_crosshair_shape_e shape;			/* shape of crosshair */
 	vtop_t onpoint_objs;
 	vtop_t old_onpoint_objs;
 

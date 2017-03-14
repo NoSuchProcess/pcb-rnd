@@ -49,6 +49,7 @@ void pcb_line_adjust_attached(void)
 	/* I need at least one point */
 	if (line->State == PCB_CH_STATE_FIRST)
 		return;
+
 	/* don't draw outline when ctrl key is pressed */
 	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_gui->control_is_pressed()) {
 		line->draw = pcb_false;
@@ -56,13 +57,19 @@ void pcb_line_adjust_attached(void)
 	}
 	else
 		line->draw = pcb_true;
-	/* no 45 degree lines required */
-	if (PCB->RatDraw || conf_core.editor.all_direction_lines) {
-		line->Point2.X = pcb_crosshair.X;
-		line->Point2.Y = pcb_crosshair.Y;
-		return;
-	}
-	pcb_line_45(line);
+
+	line->Point2.X = pcb_crosshair.X;
+	line->Point2.Y = pcb_crosshair.Y;
+
+	pcb_route_calculate(&pcb_crosshair.Route,
+											&line->Point1,
+											&line->Point2,
+											pcb_layer_id(PCB->Data, CURRENT),
+											conf_core.design.line_thickness,
+											conf_core.design.clearance,
+											pcb_gui->shift_is_pressed(),
+											pcb_gui->control_is_pressed() );
+
 }
 
 /* ---------------------------------------------------------------------------
