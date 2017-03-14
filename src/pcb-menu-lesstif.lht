@@ -313,6 +313,9 @@ ha:{
 				ha:Pins -10 mil = { action=ChangeDrillSize(SelectedPins,-10,mil) }
 				ha:Pins +10 mil = { action=ChangeDrillSize(SelectedPins,+10,mil) }
 				-
+				ha:Route radius +0.5 = { a=Alt<Key>c; action=conf(delta, editor/route_radius, +0.5, design); }
+				ha:Route radius -0.5 = { a=Alt Shift<Key>c; action=conf(delta, editor/route_radius, -0.5, design); }
+				-
 				ha:Change square-flag of selected objects = { foreground=grey50; sensitive=false }
 				ha:Elements = { action=ChangeSquare(SelectedElements) }
 				ha:Pins = { action=ChangeSquare(SelectedPins) }
