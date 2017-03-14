@@ -1102,6 +1102,58 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
+static pcb_layer_t *pick_layer(const char *user_text)
+{
+	char *end;
+	pcb_layer_id_t id;
+	if (*user_text == '#') {
+		id = strtol(user_text+1, &end, 10);
+		if (*end == '\0')
+			return pcb_get_layer(id);
+	}
+	return NULL;
+}
+
+static const char pcb_acts_CreateText[] = "CreateText(layer, fontID, X, Y, direction, scale, text)\n";
+static const char pcb_acth_CreateText[] = "Create a new text object";
+static int pcb_act_CreateText(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_layer_t *ly;
+	int fid = 0, dir = 0, scale = 0;
+	pcb_bool succ;
+
+	if (argc != 7)
+		PCB_ACT_FAIL(CreateText);
+
+	ly = pick_layer(argv[0]);
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Unknown layer %s", argv[0]);
+		return 1;
+	}
+
+	fid = atoi(argv[1]);
+	x = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mm", &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "Invalid X coord %s", argv[2]);
+		return 1;
+	}
+	y = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mm", &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "Invalid Y coord %s", argv[3]);
+		return 1;
+	}
+	dir = atoi(argv[4]);
+	scale = atoi(argv[5]);
+	if (scale < 1) {
+		pcb_message(PCB_MSG_ERROR, "Invalid scale coord %s", argv[5]);
+		return 1;
+	}
+
+	pcb_text_new(ly, pcb_font(PCB, fid, 1), x, y, dir, scale, (char *)argv[6], pcb_no_flags());
+
+	return 0;
+}
+
 
 pcb_hid_action_t object_action_list[] = {
 	{"Attributes", 0, pcb_act_Attributes,
@@ -1139,6 +1191,9 @@ pcb_hid_action_t object_action_list[] = {
 	,
 	{"MoveLayer", 0, pcb_act_MoveLayer,
 	 movelayer_help, movelayer_syntax}
+	,
+	{"CreateText", 0, pcb_act_CreateText,
+	 pcb_acth_CreateText, pcb_acts_CreateText}
 };
 
 PCB_REGISTER_ACTIONS(object_action_list, NULL)
