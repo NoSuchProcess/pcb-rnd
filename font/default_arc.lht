@@ -7,1656 +7,1656 @@ li:pcb-rnd-font-v1 {
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:&5c {
     width = 0.762001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 30.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
     }
-    height = 1.143001mm
+    height = 1.246633mm
    }
    ha:b {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.3 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.6 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.7 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:c {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.3 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:d {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.3 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.6 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.7 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:e {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.2 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.3 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.4 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.5 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.6 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
      ha:line.7 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:f {
     width = 0.381001mm
     delta = 10.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.2 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 15.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.3 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:g {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.3 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.5 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.6 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.7 {
-      y2 = 65.0mil
+      y2 = 1.754632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 60.0mil
+      y1 = 1.627632mm
      }
      ha:line.8 {
-      y2 = 65.0mil
+      y2 = 1.754632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 65.0mil
+      y1 = 1.754632mm
      }
      ha:line.9 {
-      y2 = 60.0mil
+      y2 = 1.627632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 65.0mil
+      y1 = 1.754632mm
      }
      ha:line.10 {
-      y2 = 60.0mil
+      y2 = 1.627632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.651001mm
+    height = 1.754633mm
    }
    ha:h {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:i {
     width = 0.001um
     delta = 10.0mil
     li:objects {
      ha:line.0 {
-      y2 = 21.0mil
+      y2 = 0.637032mm
       thickness = 10.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:j {
     width = 0.127001mm
     delta = 10.0mil
     li:objects {
      ha:line.0 {
-      y2 = 21.0mil
+      y2 = 0.637032mm
       thickness = 10.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 60.0mil
+      y2 = 1.627632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 60.0mil
+      y2 = 1.627632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 65.0mil
+      y1 = 1.754632mm
      }
     }
-    height = 1.651001mm
+    height = 1.754633mm
    }
    ha:k {
     width = 0.381001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 15.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:l {
     width = 0.127001mm
     delta = 10.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:m {
     width = 0.889001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.6 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 30.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.7 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 30.0mil
       x2 = 35.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.8 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 35.0mil
       x2 = 35.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.9 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:n {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:o {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.6 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.7 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:p {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 65.0mil
+      y2 = 1.754632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.3 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.4 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.5 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 25.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.6 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.7 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.8 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
     }
-    height = 1.651001mm
+    height = 1.754633mm
    }
    ha:q {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 65.0mil
+      y2 = 1.754632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.6 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.7 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.651001mm
+    height = 1.754633mm
    }
    ha:r {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:s {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.1 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.2 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
      ha:line.3 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
      ha:line.4 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.6 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.7 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.8 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:t {
     width = 0.254001mm
     delta = 10.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.2 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:u {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.3 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:v {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 10.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:w {
     width = 0.762001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.3 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.5 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.6 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.7 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 30.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.8 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 30.0mil
       x2 = 30.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:x {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:y {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.2 {
-      y2 = 60.0mil
+      y2 = 1.627632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 60.0mil
+      y2 = 1.627632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 65.0mil
+      y1 = 1.754632mm
      }
      ha:line.4 {
-      y2 = 65.0mil
+      y2 = 1.754632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 65.0mil
+      y1 = 1.754632mm
      }
      ha:line.5 {
-      y2 = 65.0mil
+      y2 = 1.754632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 60.0mil
+      y1 = 1.627632mm
      }
      ha:line.6 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.7 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.651001mm
+    height = 1.754633mm
    }
    ha:z {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:~ {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.4 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 0.889001mm
+    height = 0.992633mm
    }
    ha:&7b {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.1 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.2 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:&7d {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
      ha:line.3 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.5 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:| {
     width = 0.001um
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:&23 {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
      ha:line.2 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 15.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.3 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
     }
-    height = 1.016001mm
+    height = 1.119633mm
    }
    ha:&26 {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.1 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.2 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.3 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 15.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.5 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.6 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
      ha:line.7 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.8 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 15.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.9 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 15.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.10 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:! {
     width = 0.001um
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.1 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:" {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 0.508001mm
+    height = 0.611633mm
    }
    ha:$ {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.1 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.2 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.3 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.4 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
      ha:line.5 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.6 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.7 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.8 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.9 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.10 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
      ha:line.11 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:% {
     width = 1.274066mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 5.08mil
       x2 = 1.145032mm
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:simplearc.1 {
       thickness = 8.0mil
       adelta = -352.874984
       astart = 0.000000
       x = 0.967232mm
-      y = 43.0mil
+      y = 1.195832mm
       r = 8.0mil
      }
      ha:simplearc.2 {
@@ -1664,211 +1664,227 @@ li:pcb-rnd-font-v1 {
       adelta = -352.874984
       astart = 0.000000
       x = 12.08mil
-      y = 17.0mil
+      y = 0.535432mm
+      r = 8.0mil
+     }
+     ha:simplearc.3 {
+      thickness = 8.0mil
+      adelta = -352.874984
+      astart = 0.000000
+      x = 0.967232mm
+      y = 1.299464mm
+      r = 8.0mil
+     }
+     ha:simplearc.4 {
+      thickness = 8.0mil
+      adelta = -352.874984
+      astart = 0.000000
+      x = 12.08mil
+      y = 25.16mil
       r = 8.0mil
      }
     }
-    height = 1.399034mm
+    height = 1.606298mm
    }
    ha:' {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
     }
-    height = 0.508001mm
+    height = 0.611633mm
    }
    ha:( {
     width = 0.127001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.2 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:) {
     width = 0.127001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.2 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:* {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
     }
-    height = 1.016001mm
+    height = 1.119633mm
    }
    ha:+ {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
     }
-    height = 1.016001mm
+    height = 1.119633mm
    }
    ha:, {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 60.0mil
+      y1 = 1.627632mm
      }
     }
-    height = 1.524001mm
+    height = 1.627633mm
    }
    ha:- {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 0.762001mm
+    height = 0.865633mm
    }
    ha:. {
     width = 0.127001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:0 {
     width = 0.715266mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 4.08mil
       x2 = 4.08mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 0.611632mm
       x2 = 0.611632mm
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.2 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 4.08mil
       x2 = 0.611632mm
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
      ha:simplearc.3 {
       thickness = 8.0mil
       adelta = -180.000000
       astart = 180.000000
       x = 14.08mil
-      y = 40.0mil
+      y = 1.119632mm
       r = 10.0mil
      }
      ha:simplearc.4 {
@@ -1876,86 +1892,86 @@ li:pcb-rnd-font-v1 {
       adelta = -180.000000
       astart = 0.000000
       x = 14.08mil
-      y = 20.0mil
+      y = 0.611632mm
       r = 10.0mil
      }
     }
-    height = 1.373634mm
+    height = 1.477266mm
    }
    ha:1 {
     width = 0.381001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 8.0mil
-      y1 = 18.0mil
+      y1 = 0.560832mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 8.0mil
       x2 = 8.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:2 {
     width = 0.816866mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 0.703128mm
+      y2 = 0.80676mm
       thickness = 8.0mil
       x1 = 3.08mil
       x2 = 0.642585mm
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 3.08mil
       x2 = 0.713232mm
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:simplearc.2 {
       thickness = 8.0mil
       adelta = -219.805571
       astart = 0.000000
       x = 0.408432mm
-      y = 20.0mil
+      y = 0.611632mm
       r = 12.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:3 {
     width = 29.3403937mil
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 28.0mil
+      y2 = 0.814832mm
       thickness = 8.0mil
       x1 = 0.316997mm
       x2 = 0.46736mm
-      y1 = 28.0mil
+      y1 = 0.814832mm
      }
      ha:simplearc.1 {
       thickness = 8.0mil
       adelta = 220.815084
       astart = 26.565051
       x = 14.08mil
-      y = 0.97282mm
+      y = 42.38mil
       r = 0.28398mm
      }
      ha:simplearc.2 {
@@ -1963,86 +1979,86 @@ li:pcb-rnd-font-v1 {
       adelta = -217.677691
       astart = 336.732295
       x = 13.48mil
-      y = 19.3mil
+      y = 0.593852mm
       r = 10.0mil
      }
     }
-    height = 53.5603937mil
+    height = 1.464066mm
    }
    ha:4 {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.1 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:5 {
     width = 0.762551mm
-    delta = 12.0mil
+    delta = 0.508626mm
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 4.1353937mil
       x2 = 0.613039mm
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 4.1353937mil
       x2 = 4.1353937mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:simplearc.2 {
       thickness = 8.0mil
       adelta = -261.027373
       astart = 315.000000
       x = 0.333639mm
-      y = 38.0mil
+      y = 1.068832mm
       r = 0.325278mm
      }
     }
-    height = 1.394112mm
+    height = 1.497744mm
    }
    ha:6 {
     width = 0.725326mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 0.10414mm
       x2 = 0.10414mm
-      y1 = 39.0mil
+      y1 = 1.094232mm
      }
      ha:simplearc.1 {
       thickness = 8.0mil
       adelta = 153.997867
       astart = 206.565051
       x = 0.362662mm
-      y = 20.0mil
+      y = 0.611632mm
       r = 0.25903mm
      }
      ha:simplearc.2 {
@@ -2050,32 +2066,32 @@ li:pcb-rnd-font-v1 {
       adelta = 359.510304
       astart = 99.462322
       x = 0.362662mm
-      y = 39.0mil
+      y = 1.094232mm
       r = 0.25903mm
      }
     }
-    height = 1.353264mm
+    height = 1.456896mm
    }
    ha:7 {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:8 {
     width = 10.0mil
@@ -2086,7 +2102,7 @@ li:pcb-rnd-font-v1 {
       adelta = 359.510304
       astart = 99.462322
       x = 10.0mil
-      y = 20.0mil
+      y = 0.611632mm
       r = 0.25903mm
      }
      ha:simplearc.1 {
@@ -2094,7 +2110,7 @@ li:pcb-rnd-font-v1 {
       adelta = 359.510304
       astart = 99.462322
       x = 10.0mil
-      y = 40.0mil
+      y = 1.119632mm
       r = 0.25903mm
      }
     }
@@ -2105,18 +2121,18 @@ li:pcb-rnd-font-v1 {
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 39.0mil
+      y2 = 1.094232mm
       thickness = 8.0mil
       x1 = 24.5mil
       x2 = 24.5mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:simplearc.1 {
       thickness = 8.0mil
       adelta = 153.434949
       astart = 26.565051
       x = 0.362662mm
-      y = 39.0mil
+      y = 1.094232mm
       r = 0.25903mm
      }
      ha:simplearc.2 {
@@ -2124,78 +2140,78 @@ li:pcb-rnd-font-v1 {
       adelta = 359.510304
       astart = 279.462322
       x = 0.362662mm
-      y = 20.0mil
+      y = 0.611632mm
       r = 0.25903mm
      }
     }
-    height = 1.353264mm
+    height = 1.456896mm
    }
    ha:< {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 20.0mil
+      y2 = 0.611632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.016001mm
+    height = 1.119633mm
    }
    ha:> {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 40.0mil
+      y1 = 1.119632mm
      }
     }
-    height = 1.016001mm
+    height = 1.119633mm
    }
    ha:? {
     width = 0.664986mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 0.32543mm
-      x2 = 0.32543mm
-      y1 = 48.0mil
-     }
-     ha:line.1 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.40163mm
       x2 = 0.47783mm
-      y1 = 28.0mil
+      y1 = 0.814832mm
+     }
+     ha:line.1 {
+      y2 = 1.373632mm
+      thickness = 8.0mil
+      x1 = 0.32543mm
+      x2 = 0.32543mm
+      y1 = 1.322832mm
      }
      ha:simplearc.2 {
       thickness = 8.0mil
       adelta = 45.928843
       astart = 319.781750
       x = 0.586492mm
-      y = 35.0mil
+      y = 0.992632mm
       r = 0.25903mm
      }
      ha:simplearc.3 {
@@ -2203,785 +2219,622 @@ li:pcb-rnd-font-v1 {
       adelta = 226.858335
       astart = 138.852258
       x = 0.332492mm
-      y = 18.0mil
+      y = 0.560832mm
       r = 0.22886mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:@ {
-    width = 1.270001mm
+    width = 1.477266mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 40.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 0.0
-      y1 = 10.0mil
+      x1 = 0.992632mm
+      x2 = 0.992632mm
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 10.0mil
-      y1 = 40.0mil
+      x1 = 1.119631mm
+      x2 = 1.310047mm
+      y1 = 0.992632mm
      }
-     ha:line.2 {
-      y2 = 50.0mil
+     ha:simplearc.2 {
       thickness = 8.0mil
-      x1 = 10.0mil
-      x2 = 40.0mil
-      y1 = 50.0mil
+      adelta = 90.000000
+      astart = 0.000000
+      x = 1.119632mm
+      y = 0.865632mm
+      r = 5.0mil
      }
-     ha:line.3 {
-      y2 = 10.0mil
+     ha:simplearc.3 {
       thickness = 8.0mil
-      x1 = 50.0mil
-      x2 = 50.0mil
-      y1 = 35.0mil
+      adelta = -306.869898
+      astart = 153.434949
+      x = 0.738632mm
+      y = 0.738632mm
+      r = 10.0mil
      }
-     ha:line.4 {
-      y2 = 0.0
+     ha:simplearc.4 {
       thickness = 8.0mil
-      x1 = 50.0mil
-      x2 = 40.0mil
-      y1 = 10.0mil
-     }
-     ha:line.5 {
-      y2 = 0.0
-      thickness = 8.0mil
-      x1 = 40.0mil
-      x2 = 10.0mil
-      y1 = 0.0
-     }
-     ha:line.6 {
-      y2 = 10.0mil
-      thickness = 8.0mil
-      x1 = 10.0mil
-      x2 = 0.0
-      y1 = 0.0
-     }
-     ha:line.7 {
-      y2 = 30.0mil
-      thickness = 8.0mil
-      x1 = 15.0mil
-      x2 = 15.0mil
-      y1 = 20.0mil
-     }
-     ha:line.8 {
-      y2 = 35.0mil
-      thickness = 8.0mil
-      x1 = 15.0mil
-      x2 = 20.0mil
-      y1 = 30.0mil
-     }
-     ha:line.9 {
-      y2 = 35.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 30.0mil
-      y1 = 35.0mil
-     }
-     ha:line.10 {
-      y2 = 30.0mil
-      thickness = 8.0mil
-      x1 = 30.0mil
-      x2 = 35.0mil
-      y1 = 35.0mil
-     }
-     ha:line.11 {
-      y2 = 35.0mil
-      thickness = 8.0mil
-      x1 = 35.0mil
-      x2 = 40.0mil
-      y1 = 30.0mil
-     }
-     ha:line.12 {
-      y2 = 15.0mil
-      thickness = 8.0mil
-      x1 = 35.0mil
-      x2 = 35.0mil
-      y1 = 30.0mil
-     }
-     ha:line.13 {
-      y2 = 15.0mil
-      thickness = 8.0mil
-      x1 = 35.0mil
-      x2 = 30.0mil
-      y1 = 20.0mil
-     }
-     ha:line.14 {
-      y2 = 15.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 30.0mil
-      y1 = 15.0mil
-     }
-     ha:line.15 {
-      y2 = 20.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 15.0mil
-      y1 = 15.0mil
-     }
-     ha:line.16 {
-      y2 = 35.0mil
-      thickness = 8.0mil
-      x1 = 40.0mil
-      x2 = 50.0mil
-      y1 = 35.0mil
+      adelta = -313.602819
+      astart = 111.801409
+      x = 0.738632mm
+      y = 0.738632mm
+      r = 25.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.477266mm
    }
    ha:A {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 10.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 7.0mil
-      y1 = 20.0mil
-     }
-     ha:line.2 {
-      y2 = 10.0mil
-      thickness = 8.0mil
-      x1 = 7.0mil
-      x2 = 18.0mil
-      y1 = 10.0mil
-     }
-     ha:line.3 {
-      y2 = 20.0mil
-      thickness = 8.0mil
-      x1 = 18.0mil
-      x2 = 25.0mil
-      y1 = 10.0mil
-     }
-     ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 25.0mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
-     ha:line.5 {
-      y2 = 30.0mil
+     ha:line.2 {
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
+     }
+     ha:line.3 {
+      y2 = 14.08mil
+      thickness = 8.0mil
+      x1 = 7.0mil
+      x2 = 18.0mil
+      y1 = 14.08mil
+     }
+     ha:line.4 {
+      y2 = 0.611632mm
+      thickness = 8.0mil
+      x1 = 18.0mil
+      x2 = 25.0mil
+      y1 = 14.08mil
+     }
+     ha:line.5 {
+      y2 = 14.08mil
+      thickness = 8.0mil
+      x1 = 0.0
+      x2 = 7.0mil
+      y1 = 0.611632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:B {
-    width = 0.635001mm
+    width = 0.865633mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 20.0mil
-      y1 = 50.0mil
-     }
-     ha:line.1 {
-      y2 = 45.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 50.0mil
-     }
-     ha:line.2 {
-      y2 = 45.0mil
-      thickness = 8.0mil
-      x1 = 25.0mil
-      x2 = 25.0mil
-      y1 = 33.0mil
-     }
-     ha:line.3 {
-      y2 = 33.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 28.0mil
-     }
-     ha:line.4 {
-      y2 = 28.0mil
-      thickness = 8.0mil
-      x1 = 5.0mil
-      x2 = 20.0mil
-      y1 = 28.0mil
-     }
-     ha:line.5 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
-     ha:line.6 {
-      y2 = 10.0mil
+     ha:line.1 {
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
-     ha:line.7 {
-      y2 = 15.0mil
+     ha:line.2 {
+      y2 = 1.373632mm
       thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 10.0mil
+      x1 = 0.482598mm
+      x2 = 0.0
+      y1 = 1.373632mm
      }
-     ha:line.8 {
-      y2 = 23.0mil
+     ha:line.3 {
+      y2 = 0.814832mm
       thickness = 8.0mil
-      x1 = 25.0mil
-      x2 = 25.0mil
-      y1 = 15.0mil
+      x1 = 0.482599mm
+      x2 = 5.0mil
+      y1 = 0.814832mm
      }
-     ha:line.9 {
-      y2 = 23.0mil
+     ha:simplearc.4 {
       thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 28.0mil
+      adelta = 180.000000
+      astart = 90.000000
+      x = 0.482599mm
+      y = 1.094232mm
+      r = 11.0mil
+     }
+     ha:simplearc.5 {
+      thickness = 8.0mil
+      adelta = 180.000000
+      astart = 90.000000
+      x = 20.0mil
+      y = 0.586232mm
+      r = 9.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.477266mm
    }
    ha:C {
-    width = 0.508001mm
-    delta = 12.0mil
+    width = 0.611633mm
+    delta = 1.6164761in
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
-      x1 = 7.0mil
-      x2 = 20.0mil
-      y1 = 50.0mil
+      x1 = 0.484632mm
+      x2 = 0.611632mm
+      y1 = 1.373632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 7.0mil
-      y1 = 43.0mil
+      x1 = 0.484632mm
+      x2 = 0.611632mm
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 43.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 0.0
-      y1 = 17.0mil
+      x1 = 4.08mil
+      x2 = 4.08mil
+      y1 = 0.738632mm
      }
-     ha:line.3 {
-      y2 = 10.0mil
+     ha:simplearc.3 {
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 7.0mil
-      y1 = 17.0mil
+      adelta = 90.000000
+      astart = -90.000000
+      x = 0.484632mm
+      y = 0.738632mm
+      r = 15.0mil
      }
-     ha:line.4 {
-      y2 = 10.0mil
+     ha:simplearc.4 {
       thickness = 8.0mil
-      x1 = 7.0mil
-      x2 = 20.0mil
-      y1 = 10.0mil
+      adelta = -90.000000
+      astart = 90.000000
+      x = 0.484632mm
+      y = 0.992632mm
+      r = 15.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.477266mm
    }
    ha:D {
-    width = 0.635001mm
+    width = 0.738634mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 17.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
-      x1 = 18.0mil
-      x2 = 25.0mil
-      y1 = 10.0mil
+      x1 = 0.0
+      x2 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 43.0mil
+      y2 = 1.373632mm
+      thickness = 8.0mil
+      x1 = 0.0
+      x2 = 10.0mil
+      y1 = 1.373632mm
+     }
+     ha:line.3 {
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 25.0mil
-      y1 = 17.0mil
+      y1 = 0.738632mm
      }
-     ha:line.3 {
-      y2 = 43.0mil
+     ha:simplearc.4 {
       thickness = 8.0mil
-      x1 = 18.0mil
-      x2 = 25.0mil
-      y1 = 50.0mil
+      adelta = 90.000000
+      astart = 90.000000
+      x = 10.0mil
+      y = 0.992632mm
+      r = 15.0mil
      }
-     ha:line.4 {
-      y2 = 50.0mil
+     ha:simplearc.5 {
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 18.0mil
-      y1 = 50.0mil
-     }
-     ha:line.5 {
-      y2 = 10.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 18.0mil
-      y1 = 10.0mil
+      adelta = -90.000000
+      astart = 270.000000
+      x = 10.0mil
+      y = 0.738632mm
+      r = 15.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.477266mm
    }
    ha:E {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 28.0mil
+      y2 = 0.814832mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 15.0mil
-      y1 = 28.0mil
+      y1 = 0.814832mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.3 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:F {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 28.0mil
+      y2 = 0.814832mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 15.0mil
-      y1 = 28.0mil
+      y1 = 0.814832mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:G {
-    width = 0.635001mm
+    width = 0.816866mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 15.0mil
+      y2 = 1.043432mm
       thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 10.0mil
+      x1 = 4.08mil
+      x2 = 4.08mil
+      y1 = 0.637032mm
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 0.881916mm
       thickness = 8.0mil
-      x1 = 5.0mil
-      x2 = 20.0mil
-      y1 = 10.0mil
+      x1 = 0.648647mm
+      x2 = 0.399316mm
+      y1 = 0.881916mm
      }
-     ha:line.2 {
-      y2 = 10.0mil
+     ha:simplearc.2 {
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 5.0mil
-      y1 = 15.0mil
+      adelta = -149.237280
+      astart = 0.000000
+      x = 16.0mil
+      y = 0.637032mm
+      r = 0.302768mm
      }
-     ha:line.3 {
-      y2 = 45.0mil
+     ha:simplearc.3 {
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 0.0
-      y1 = 15.0mil
-     }
-     ha:line.4 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 5.0mil
-      y1 = 45.0mil
-     }
-     ha:line.5 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 5.0mil
-      x2 = 20.0mil
-      y1 = 50.0mil
-     }
-     ha:line.6 {
-      y2 = 45.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 50.0mil
-     }
-     ha:line.7 {
-      y2 = 45.0mil
-      thickness = 8.0mil
-      x1 = 25.0mil
-      x2 = 25.0mil
-      y1 = 35.0mil
-     }
-     ha:line.8 {
-      y2 = 35.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 30.0mil
-     }
-     ha:line.9 {
-      y2 = 30.0mil
-      thickness = 8.0mil
-      x1 = 10.0mil
-      x2 = 20.0mil
-      y1 = 30.0mil
+      adelta = -218.123169
+      astart = 218.123169
+      x = 16.16mil
+      y = 1.068832mm
+      r = 0.302768mm
      }
     }
-    height = 1.270001mm
+    height = 1.475234mm
    }
    ha:H {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 25.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:I {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:J {
-    width = 0.381001mm
+    width = 0.613666mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
-      x1 = 7.0mil
-      x2 = 15.0mil
-      y1 = 10.0mil
+      x1 = 12.08mil
+      x2 = 0.510032mm
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 45.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
-      x1 = 15.0mil
-      x2 = 15.0mil
-      y1 = 10.0mil
+      x1 = 0.510032mm
+      x2 = 0.510032mm
+      y1 = 14.08mil
      }
-     ha:line.2 {
-      y2 = 45.0mil
+     ha:simplearc.2 {
       thickness = 8.0mil
-      x1 = 10.0mil
-      x2 = 15.0mil
-      y1 = 50.0mil
-     }
-     ha:line.3 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 5.0mil
-      x2 = 10.0mil
-      y1 = 50.0mil
-     }
-     ha:line.4 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 5.0mil
-      y1 = 45.0mil
-     }
-     ha:line.5 {
-      y2 = 40.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 0.0
-      y1 = 45.0mil
+      adelta = -180.000000
+      astart = 180.000000
+      x = 12.08mil
+      y = 1.170432mm
+      r = 8.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.477266mm
    }
    ha:K {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:L {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:M {
     width = 0.762001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 15.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 30.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.3 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 30.0mil
       x2 = 30.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:&2f {
     width = 0.762001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 30.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
     }
-    height = 1.143001mm
+    height = 1.246633mm
    }
    ha:&3a {
     width = 0.127001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
      ha:line.1 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 0.889001mm
+    height = 0.992633mm
    }
    ha:&3b {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:&3d {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
      ha:line.1 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
     }
-    height = 0.889001mm
+    height = 0.992633mm
    }
    ha:O {
     width = 0.715266mm
-    delta = 0.302768mm
+    delta = 0.510033mm
     li:objects {
      ha:line.0 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 4.08mil
       x2 = 4.08mil
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 40.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
       x1 = 0.611632mm
       x2 = 0.611632mm
-      y1 = 20.0mil
+      y1 = 0.611632mm
      }
      ha:simplearc.2 {
       thickness = 8.0mil
       adelta = -180.000000
       astart = 180.000000
       x = 14.08mil
-      y = 40.0mil
+      y = 1.119632mm
       r = 10.0mil
      }
      ha:simplearc.3 {
@@ -2989,644 +2842,592 @@ li:pcb-rnd-font-v1 {
       adelta = -180.000000
       astart = 0.000000
       x = 14.08mil
-      y = 20.0mil
+      y = 0.611632mm
       r = 10.0mil
      }
     }
-    height = 1.373634mm
+    height = 1.477266mm
    }
    ha:P {
-    width = 0.635001mm
+    width = 0.738634mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
-      x2 = 20.0mil
-      y1 = 10.0mil
+      x2 = 15.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 15.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 10.0mil
-     }
-     ha:line.3 {
-      y2 = 25.0mil
-      thickness = 8.0mil
-      x1 = 25.0mil
-      x2 = 25.0mil
-      y1 = 15.0mil
-     }
-     ha:line.4 {
-      y2 = 25.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 30.0mil
-     }
-     ha:line.5 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
-      x2 = 20.0mil
-      y1 = 30.0mil
+      x2 = 15.0mil
+      y1 = 0.865632mm
+     }
+     ha:simplearc.3 {
+      thickness = 8.0mil
+      adelta = -180.000000
+      astart = -90.000000
+      x = 15.0mil
+      y = 0.611632mm
+      r = 10.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:N {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 25.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:R {
-    width = 0.635001mm
+    width = 0.738634mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
-      x2 = 20.0mil
-      y1 = 10.0mil
+      x2 = 15.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 15.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 10.0mil
-     }
-     ha:line.2 {
-      y2 = 25.0mil
-      thickness = 8.0mil
-      x1 = 25.0mil
-      x2 = 25.0mil
-      y1 = 15.0mil
-     }
-     ha:line.3 {
-      y2 = 25.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 25.0mil
-      y1 = 30.0mil
-     }
-     ha:line.4 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
-      x2 = 20.0mil
-      y1 = 30.0mil
+      x2 = 13.0mil
+      y1 = 0.865632mm
      }
-     ha:line.5 {
-      y2 = 50.0mil
+     ha:line.2 {
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
-     ha:line.6 {
-      y2 = 50.0mil
+     ha:line.3 {
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 13.0mil
       x2 = 25.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
+     }
+     ha:simplearc.4 {
+      thickness = 8.0mil
+      adelta = -180.000000
+      astart = -90.000000
+      x = 15.0mil
+      y = 0.611632mm
+      r = 10.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:S {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.3 {
-      y2 = 25.0mil
+      y2 = 0.738632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.4 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 25.0mil
+      y1 = 0.738632mm
      }
      ha:line.5 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.6 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.7 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 25.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.8 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.9 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.10 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:Q {
-    width = 0.508001mm
-    delta = 12.0mil
+    width = 0.715266mm
+    delta = 0.357633mm
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.119632mm
       thickness = 8.0mil
-      x1 = 0.0
-      x2 = 0.0
-      y1 = 15.0mil
+      x1 = 4.08mil
+      x2 = 4.08mil
+      y1 = 0.611632mm
      }
      ha:line.1 {
-      y2 = 10.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 5.0mil
-      y1 = 15.0mil
-     }
-     ha:line.2 {
-      y2 = 10.0mil
-      thickness = 8.0mil
-      x1 = 5.0mil
-      x2 = 15.0mil
-      y1 = 10.0mil
-     }
-     ha:line.3 {
-      y2 = 15.0mil
+      y2 = 54.0mil
       thickness = 8.0mil
       x1 = 15.0mil
-      x2 = 20.0mil
-      y1 = 10.0mil
-     }
-     ha:line.4 {
-      y2 = 40.0mil
-      thickness = 8.0mil
-      x1 = 20.0mil
-      x2 = 20.0mil
-      y1 = 15.0mil
-     }
-     ha:line.5 {
-      y2 = 40.0mil
-      thickness = 8.0mil
-      x1 = 10.0mil
-      x2 = 20.0mil
-      y1 = 50.0mil
-     }
-     ha:line.6 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 5.0mil
-      x2 = 10.0mil
-      y1 = 50.0mil
-     }
-     ha:line.7 {
-      y2 = 50.0mil
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 5.0mil
+      x2 = 27.0mil
       y1 = 45.0mil
      }
-     ha:line.8 {
-      y2 = 50.0mil
+     ha:line.2 {
+      y2 = 1.119632mm
       thickness = 8.0mil
-      x1 = 10.0mil
-      x2 = 20.0mil
-      y1 = 35.0mil
+      x1 = 0.611632mm
+      x2 = 0.611632mm
+      y1 = 0.611632mm
+     }
+     ha:simplearc.3 {
+      thickness = 8.0mil
+      adelta = -180.000000
+      astart = 180.000000
+      x = 14.08mil
+      y = 1.119632mm
+      r = 10.0mil
+     }
+     ha:simplearc.4 {
+      thickness = 8.0mil
+      adelta = -180.000000
+      astart = 0.000000
+      x = 14.08mil
+      y = 0.611632mm
+      r = 10.0mil
      }
     }
-    height = 1.270001mm
+    height = 1.477266mm
    }
    ha:U {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.3 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.4 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:V {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:T {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:X {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:Y {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:W {
     width = 0.762001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.3 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 25.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.4 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 25.0mil
       x2 = 30.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.5 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 30.0mil
       x2 = 30.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:[ {
     width = 0.127001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:^ {
     width = 0.254001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 15.0mil
+      y1 = 0.484632mm
      }
      ha:line.1 {
-      y2 = 15.0mil
+      y2 = 0.484632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 10.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
     }
-    height = 0.381001mm
+    height = 0.484633mm
    }
    ha:Z {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 10.0mil
+      y1 = 14.08mil
      }
      ha:line.1 {
-      y2 = 10.0mil
+      y2 = 14.08mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.2 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 25.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:a {
     width = 0.635001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 35.0mil
+      y2 = 0.992632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.1 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.2 {
-      y2 = 30.0mil
+      y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.3 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 35.0mil
+      y1 = 0.992632mm
      }
      ha:line.4 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.5 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 20.0mil
-      y1 = 30.0mil
+      y1 = 0.865632mm
      }
      ha:line.6 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 20.0mil
       x2 = 25.0mil
-      y1 = 45.0mil
+      y1 = 1.246632mm
      }
      ha:line.7 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 5.0mil
       x2 = 15.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
      ha:line.8 {
-      y2 = 45.0mil
+      y2 = 1.246632mm
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
    ha:_ {
     width = 0.508001mm
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 50.0mil
+      y2 = 1.373632mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 20.0mil
-      y1 = 50.0mil
+      y1 = 1.373632mm
      }
     }
-    height = 1.270001mm
+    height = 1.373633mm
    }
   }
-  cell_width = 1.274066mm
-  cell_height = 1.651001mm
+  cell_width = 1.477266mm
+  cell_height = 1.754633mm
  }
 }
