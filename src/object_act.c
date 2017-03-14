@@ -1149,7 +1149,7 @@ static int pcb_act_CreateText(int argc, const char **argv, pcb_coord_t x, pcb_co
 		return 1;
 	}
 
-	pcb_text_new(ly, pcb_font(PCB, fid, 1), x, y, dir, scale, (char *)argv[6], pcb_no_flags());
+	pcb_text_new(ly, pcb_font(PCB, fid, 1), x, y, dir, scale, argv[6], pcb_no_flags());
 
 	return 0;
 }

@@ -71,7 +71,7 @@ void pcb_text_free(pcb_text_t * data)
 /*** utility ***/
 
 /* creates a new text on a layer */
-pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, const char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 
