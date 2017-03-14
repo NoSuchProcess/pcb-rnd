@@ -783,18 +783,18 @@ void pcb_notify_mode(void)
 			pcb_route_apply(&pcb_crosshair.Route);
 
 			/* move to new start point */
-			pcb_crosshair.AttachedLine.Point1.X = Note.X;
-			pcb_crosshair.AttachedLine.Point1.Y = Note.Y;
-			pcb_crosshair.AttachedLine.Point2.X = Note.X;
-			pcb_crosshair.AttachedLine.Point2.Y = Note.Y;
+			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.Route.end_point.X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.Route.end_point.Y;
+			pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.Route.end_point.X;
+			pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Route.end_point.Y;
 
 			if (conf_core.editor.swap_start_direction) 
 				conf_setf(CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
 
 			if (conf_core.editor.orthogonal_moves) {
 				/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
-				pcb_marked.X = Note.X;
-				pcb_marked.Y = Note.Y;
+				pcb_marked.X = pcb_crosshair.Route.end_point.X;
+				pcb_marked.Y = pcb_crosshair.Route.end_point.Y;
 			}
 
 			if(via)
