@@ -110,6 +110,8 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	pcb_cardinal_t i, j;
 	pcb_symbol_t *symbol;
 	pcb_line_t *line;
+	pcb_arc_t *arc;
+	pcb_polygon_t *poly;
 	pcb_coord_t totalminy = PCB_MAX_COORD;
 
 	/* calculate cell with and height (is at least PCB_DEFAULT_CELLSIZE)
@@ -138,9 +140,32 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 			maxy = MAX(maxy, line->Point2.Y);
 		}
 
+		for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc)) {
+			pcb_arc_bbox(arc);
+			minx = MIN(minx, arc->BoundingBox.X1);
+			miny = MIN(miny, arc->BoundingBox.Y1);
+			maxx = MAX(maxx, arc->BoundingBox.X2);
+			maxy = MAX(maxy, arc->BoundingBox.Y2);
+		}
+
+		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly)) {
+			pcb_poly_bbox(poly);
+			minx = MIN(minx, poly->BoundingBox.X1);
+			miny = MIN(miny, poly->BoundingBox.Y1);
+			maxx = MAX(maxx, poly->BoundingBox.X2);
+			maxy = MAX(maxy, poly->BoundingBox.Y2);
+		}
+
+
 		/* move symbol to left edge */
 		for (line = symbol->Line, j = symbol->LineN; j; j--, line++)
 			pcb_line_move(line, -minx, 0);
+
+		for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc))
+			pcb_arc_move(arc, -minx, 0);
+
+		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly))
+			pcb_poly_move(poly, -minx, 0);
 
 		/* set symbol bounding box with a minimum cell size of (1,1) */
 		symbol->Width = maxx - minx + 1;
@@ -153,12 +178,19 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	}
 
 	/* move coordinate system to the upper edge (lowest y on screen) */
-	for (i = 0, symbol = Ptr->Symbol; i <= PCB_MAX_FONTPOSITION; i++, symbol++)
+	for (i = 0, symbol = Ptr->Symbol; i <= PCB_MAX_FONTPOSITION; i++, symbol++) {
 		if (symbol->Valid) {
 			symbol->Height -= totalminy;
 			for (line = symbol->Line, j = symbol->LineN; j; j--, line++)
 				pcb_line_move(line, 0, -totalminy);
+
+			for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc))
+				pcb_arc_move(arc, 0, -totalminy);
+
+			for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly))
+				pcb_poly_move(poly, 0, -totalminy);
 		}
+	}
 
 	/* setup the box for the default symbol */
 	Ptr->DefaultSymbol.X1 = Ptr->DefaultSymbol.Y1 = 0;
