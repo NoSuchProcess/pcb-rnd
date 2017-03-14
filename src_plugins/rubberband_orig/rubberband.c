@@ -770,7 +770,7 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 					dx = group_dx;
 					dy = group_dy;
 				}
-				/* 'point1' is always the fix-point */	
+				/* 'point1' is always the fix-point */
 				if (ptr->MovedPoint == &ptr->Line->Point1) {
 					x1 = ptr->Line->Point2.X;
 					y1 = ptr->Line->Point2.Y;
@@ -1002,16 +1002,16 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	if (rbnd->RubberbandN != 2)
 		return;
 		
-	if (rbnd->Rubberband[0].delta_is_valid)	{
+	if (rbnd->Rubberband[0].delta_is_valid) {
 		main_line->Point1.X += rbnd->Rubberband[0].DX;
 		main_line->Point1.Y += rbnd->Rubberband[0].DY;
 		*moved = 1;
 	}
-	if (rbnd->Rubberband[1].delta_is_valid)	{
+	if (rbnd->Rubberband[1].delta_is_valid) {
 		main_line->Point2.X += rbnd->Rubberband[1].DX;
 		main_line->Point2.Y += rbnd->Rubberband[1].DY;
 		*moved = 1;
-	}	
+	}
 }
 
 static const char *rubber_cookie = "old rubberband";
