@@ -1824,18 +1824,18 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 
 	/* upper hbox */
-	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, TRUE, 4);
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled, FALSE, FALSE, 4);
 
 	src = gtk_hbox_new(FALSE, 4);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), src);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled), GTK_SHADOW_OUT);
 
 	src_left = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(src), src_left, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(src), src_left, TRUE, TRUE, 4);
 	src_right = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(src), src_right, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(src), src_right, TRUE, TRUE, 4);
 
 	/* upper-left: sources */
 	{
