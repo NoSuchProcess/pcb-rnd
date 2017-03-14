@@ -31,7 +31,8 @@
 #include "hid.h"
 
 static const char pcb_acts_Conf[] =
-	"conf(set, path, value, [role], [policy]) - change a config setting\n"
+	"conf(set, path, value, [role], [policy]) - change a config setting to an absolute value\n"
+	"conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)\n"
 	"conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config\n"
 	"conf(reset, role) - reset the in-memory lihata of a role\n"
 	"conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)\n"
@@ -53,7 +54,7 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
 
-	if (PCB_NSTRCMP(cmd, "set") == 0) {
+	if ((PCB_NSTRCMP(cmd, "set") == 0) || (PCB_NSTRCMP(cmd, "delta") == 0)) {
 		const char *path, *val;
 		conf_policy_t pol = POL_OVERWRITE;
 		conf_role_t role = CFR_invalid;
@@ -80,6 +81,18 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		path = argv[1];
 		val = argv[2];
 
+		if (cmd[0] == 'd') {
+			conf_native_t *n = conf_get_field(argv[1]);
+			switch(n->type) {
+				case CFN_REAL:
+				case CFN_COORD:
+				case CFN_INTEGER:
+				default:
+					pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': not a numeric item\n", argv[1]);
+					return 1;
+			}
+		}
+
 		if (role == CFR_invalid) {
 			conf_native_t *n = conf_get_field(argv[1]);
 			if (n == NULL) {
@@ -90,6 +103,7 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		}
 		else
 			res = conf_set(role, path, -1, val, pol);
+
 		if (res != 0) {
 			pcb_message(PCB_MSG_ERROR, "conf(set) failed.\n");
 			return 1;
