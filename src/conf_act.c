@@ -56,6 +56,7 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if ((PCB_NSTRCMP(cmd, "set") == 0) || (PCB_NSTRCMP(cmd, "delta") == 0)) {
 		const char *path, *val;
+		char valbuff[128];
 		conf_policy_t pol = POL_OVERWRITE;
 		conf_role_t role = CFR_invalid;
 		int res;
@@ -82,9 +83,27 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		val = argv[2];
 
 		if (cmd[0] == 'd') {
+			double d;
+			char *end;
 			conf_native_t *n = conf_get_field(argv[1]);
+
+			if (n == 0) {
+				pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': no such path\n", argv[1]);
+				return 1;
+			}
+
 			switch(n->type) {
 				case CFN_REAL:
+					d = strtod(val, &end);
+					if (*end != '\0') {
+						bad_conv:;
+						pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': invalid delta value\n", argv[1]);
+						return 1;
+					}
+					d += *n->val.real;
+					sprintf(valbuff, "%f", d);
+					val = valbuff;
+					break;
 				case CFN_COORD:
 				case CFN_INTEGER:
 				default:
