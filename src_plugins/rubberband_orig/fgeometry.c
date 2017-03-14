@@ -1,3 +1,40 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design - 2d geometry helpers
+ *  Copyright (C) 2017 Luis de Arquer <ldearquer@gmail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+
+   some parts based on src/polygon1.c
+   based on:
+       poly_Boolean: a polygon clip library
+       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
+       (also the authors of the paper describing the actual algorithm)
+       leonov@propro.iis.nsk.su
+
+   in turn based on:
+       nclip: a polygon clip library
+       Copyright (C) 1993  Klamer Schutte
+
+      polygon1.c
+      (C) 1997 Alexey Nikitin, Michael Leonov
+      (C) 1993 Klamer Schutte
+*/
+
 
 #include "fgeometry.h"
 #include <math.h>
