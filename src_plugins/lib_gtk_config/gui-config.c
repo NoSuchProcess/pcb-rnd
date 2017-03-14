@@ -492,30 +492,30 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 
 	vbox = ghid_category_vbox(content_vbox, _("Enables"), 4, 2, TRUE, TRUE);
 
-	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
-															TRUE, FALSE, FALSE, 2,
-															config_command_window_toggle_cb, com, _("Use separate window for command entry"));
+	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
+																 TRUE, FALSE, FALSE, 2,
+																 config_command_window_toggle_cb, com, _("Use separate window for command entry"));
 
-	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
-															TRUE, FALSE, FALSE, 2,
-															config_compact_horizontal_toggle_cb, com,
-															_("Alternate window layout to allow smaller horizontal size"));
+	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
+																 TRUE, FALSE, FALSE, 2,
+																 config_compact_horizontal_toggle_cb, com,
+																 _("Alternate window layout to allow smaller horizontal size"));
 
-	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_vertical,
-															TRUE, FALSE, FALSE, 2,
-															config_compact_vertical_toggle_cb, com,
-															_("Alternate window layout to allow smaller vertical size"));
+	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_vertical,
+																 TRUE, FALSE, FALSE, 2,
+																 config_compact_vertical_toggle_cb, com,
+																 _("Alternate window layout to allow smaller vertical size"));
 
-	ghid_check_button_connected(vbox, NULL, conf_core.editor.auto_place,
-															TRUE, FALSE, FALSE, 2,
-															config_auto_place_toggle_cb, NULL,
-															_("Restore window geometry (when saved geometry is available)"));
+	pcb_gtk_check_button_connected(vbox, NULL, conf_core.editor.auto_place,
+																 TRUE, FALSE, FALSE, 2,
+																 config_auto_place_toggle_cb, NULL,
+																 _("Restore window geometry (when saved geometry is available)"));
 
 	vbox = ghid_category_vbox(content_vbox, _("Backups"), 4, 2, TRUE, TRUE);
-	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
-															TRUE, FALSE, FALSE, 2,
-															config_general_toggle_cb, (void *) &conf_core.editor.save_in_tmp,
-															_("If layout is modified at exit, save into PCB.%i.save"));
+	pcb_gtk_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
+																 TRUE, FALSE, FALSE, 2,
+																 config_general_toggle_cb, (void *) &conf_core.editor.save_in_tmp,
+																 _("If layout is modified at exit, save into PCB.%i.save"));
 	ghid_spin_button(vbox, NULL, conf_core.rc.backup_interval, 0.0, 60 * 60, 60.0,
 									 600.0, 0, 0, config_backup_spin_button_cb, NULL, FALSE,
 									 _("Seconds between auto backups\n" "(set to zero to disable auto backups)"));
@@ -734,9 +734,10 @@ static void config_window_row(GtkWidget * parent, const char *desc, int load, co
 	}
 	else {
 		GtkWidget *btn;
-		ghid_check_button_connected(hbox, &btn, chk,
-																TRUE, FALSE, FALSE, 2,
-																config_window_toggle_cb, (void *) wgeo_save_str, _("every time pcb-rnd exits"));
+		pcb_gtk_check_button_connected(hbox, &btn, chk,
+																	 TRUE, FALSE, FALSE, 2,
+																	 config_window_toggle_cb, (void *) wgeo_save_str, 
+																	 _("every time pcb-rnd exits"));
 		if (wgeo_save_str == NULL)
 			gtk_widget_set_sensitive(btn, FALSE);
 	}
@@ -1903,7 +1904,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 	auto_tab_widgets.edit_real = gtk_spin_button_new(auto_tab_widgets.edit_real_adj, 1, 4);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_real, FALSE, FALSE, 4);
 
-	ghid_check_button_connected(src_right, &auto_tab_widgets.edit_boolean, 0, TRUE, FALSE, FALSE, 2, NULL, NULL, NULL);
+	pcb_gtk_check_button_connected(src_right, &auto_tab_widgets.edit_boolean, 0, TRUE, FALSE, FALSE, 2, NULL, NULL, NULL);
 
 	auto_tab_widgets.edit_color = gtk_color_button_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_color, FALSE, FALSE, 4);

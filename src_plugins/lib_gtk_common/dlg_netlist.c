@@ -728,8 +728,8 @@ static void ghid_netlist_window_create(pcb_gtk_common_t *com)
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(netlist_rip_up_cb), GINT_TO_POINTER(0));
 
-	ghid_check_button_connected(vbox, &disable_all_button, FALSE, TRUE, FALSE,
-															FALSE, 0, netlist_disable_all_cb, NULL, _("Disable all nets for adding rats"));
+	pcb_gtk_check_button_connected(vbox, &disable_all_button, FALSE, TRUE, FALSE,
+																 FALSE, 0, netlist_disable_all_cb, NULL, _("Disable all nets for adding rats"));
 
 	sep = gtk_hseparator_new();
 	gtk_box_pack_start(GTK_BOX(vbox), sep, FALSE, FALSE, 3);

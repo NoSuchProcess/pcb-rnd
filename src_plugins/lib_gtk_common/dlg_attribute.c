@@ -45,9 +45,11 @@ GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gi
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value, gfloat low, gfloat high, gfloat step0,
 											gfloat step1, gint digits, gint width, void (*cb_func) (GtkSpinButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
 											gboolean right_align, const gchar * string);
-void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button, gboolean active, gboolean pack_start, gboolean expand,
-																 gboolean fill, gint pad, void (*cb_func) (GtkToggleButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
-																 const gchar * string);
+void pcb_gtk_check_button_connected(GtkWidget * box, GtkWidget ** button, gboolean active,
+																		gboolean pack_start, gboolean expand,
+																		gboolean fill, gint pad,
+																		void (*cb_func) (GtkToggleButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
+																		const gchar * string);
 
 
 #define change_cb(dst) do { if (dst->change_cb != NULL) dst->change_cb(dst); } while(0)
@@ -209,9 +211,9 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 		case HID_Boolean:
 			/* put this in a check button */
-			ghid_check_button_connected(vbox, &widget,
-																	attrs[j].default_val.int_value,
-																	TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), attrs[j].name);
+			pcb_gtk_check_button_connected(vbox, &widget,
+                                     attrs[j].default_val.int_value,
+                                     TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), attrs[j].name);
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 			break;
 
