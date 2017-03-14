@@ -316,7 +316,7 @@ pcb_route_calculate(pcb_route_t * 	p_route,
 
 
 	/* Set radius to 0 for standard 45/90 operation */
-	const pcb_coord_t radius = thickness * 4.0;
+	const pcb_coord_t radius = thickness * conf_core.editor.route_radius;
 
 	/* If the line can be drawn directly to the target then add a single line segment. */
 	if(PCB->RatDraw || conf_core.editor.all_direction_lines) {
