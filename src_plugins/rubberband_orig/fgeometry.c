@@ -136,7 +136,7 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 		 * s = (d2y * ( p2x - p1x ) + d2x * ( p1y - p2y )) / ( d2y * d1x - d2x * d1y)
 		 */
 		
-		double t, s;
+		double t;
 		double p1x, p1y, d1x, d1y;
 		double p2x, p2y, d2x, d2y;
 
@@ -151,12 +151,17 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 		d2y = l2.direction.y;
 
 		t = (d1y * ( p1x - p2x ) + d1x * ( - p1y + p2y )) / ( d1y * d2x - d1x * d2y );
-		s = (d2y * ( p2x - p1x ) + d2x * ( p1y - p2y )) / ( d2y * d1x - d2x * d1y );
 
-		/*pcb_trace("Intersection t=%f, s=%f\n", t, s); */
+#if 0
+/* Can we remove this? */
+		{
+			double s = (d2y * ( p2x - p1x ) + d2x * ( p1y - p2y )) / ( d2y * d1x - d2x * d1y );
+			pcb_trace("Intersection t=%f, s=%f\n", t, s);
 
-/*	ret.x = p1x + s * d1x;
-		ret.y = p1y + s * d1y;*/
+			ret.x = p1x + s * d1x;
+			ret.y = p1y + s * d1y;
+		}
+#endif
 
 		ret.x = p2x + t * d2x;
 		ret.y = p2y + t * d2y;
