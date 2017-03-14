@@ -105,7 +105,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
-	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
+	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
 	pcb_layergrp_id_t grp[4];
 	pcb_polygon_t *poly;
 	pcb_arc_t *arc, *newarc;
@@ -148,7 +148,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 	assert(pcb_layer_group_list(PCB_LYT_SILK, grp, 2) == 2);
 	make_layer(grp[0], "Silk");
-	make_layer(grp[1], "Silk");
+	lsilk = make_layer(grp[1], "Silk");
 
 	pcb_layergrp_inhibit_dec();
 
@@ -157,6 +157,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
+		char txt[32];
 		pcb_coord_t ox = (s % 16 + 1) * CELL_SIZE;
 		pcb_coord_t oy = (s / 16 + 1) * CELL_SIZE;
 		pcb_coord_t w, miny, maxy, maxx = 0;
@@ -165,6 +166,13 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 		miny = PCB_MIL_TO_COORD(5);
 		maxy = font->MaxHeight;
+
+		if ((s > 32) && (s < 127)) {
+			sprintf(txt, "%c", s);
+			pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, txt, pcb_no_flags());
+		}
+		sprintf(txt, "%d", s);
+		pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, txt, pcb_no_flags());
 
 		for (l = 0; l < symbol->LineN; l++) {
 			pcb_line_new_merge(lfont,
