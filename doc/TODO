@@ -11,6 +11,7 @@
 	- fontsel: shouldn't consider board swap; reproduce: tab in main window, hover mouse in open fontsel window -> disappear!
 	- undo bug: copy an arc, paste, undo  [report: Erich]
 	- lihata save: text with \ in it (broken quoting)
+	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
 
 - plugin breakage:
 	- don't force builtin for dependant libs
