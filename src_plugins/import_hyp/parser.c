@@ -1946,7 +1946,7 @@ pcb_bool exec_pad(parse_param * h)
 		}
 		else if (h->via_pad_sx > h->via_pad_sy) {
 			thickness = xy2coord(h->via_pad_sy);
-			x2 = x2coord(h->y) + xy2coord(h->via_pad_sx) - xy2coord(h->via_pad_sy);
+			x2 = x2coord(h->x) + xy2coord(h->via_pad_sx) - xy2coord(h->via_pad_sy);
 			y2 = y2coord(h->y);
 		}
 		else {
