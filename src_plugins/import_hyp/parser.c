@@ -46,7 +46,7 @@
 pcb_data_t *hyp_dest;
 
 /*
- * board outline is doubly linked list of arcs and line segments.
+ * board outline is a linked list of arcs and line segments.
  */
 
 typedef struct outline_s {
@@ -859,8 +859,6 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 		break;
 
 	default:
-		if (hyp_debug)
-			pcb_printf("create layer \"%s\"\n", lname);
 
 		/* create new bottom layer */
 		pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
