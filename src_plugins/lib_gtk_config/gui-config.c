@@ -610,7 +610,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 	}
 
 	/* ---- Board Size ---- */
-	vbox = ghid_category_vbox(config_sizes_vbox, _("Board Size"), 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(config_sizes_vbox, _("Board Size"), 4, 2, TRUE, FALSE);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	table = gtk_table_new(4, 1, FALSE);
@@ -629,7 +629,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 												 CE_LARGE, 0, coord_entry_cb, &new_board_height, FALSE, _("Height"));
 
 	/* ---- Text Scale ---- */
-	vbox = ghid_category_vbox(config_sizes_vbox, _("Text Scale"), 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(config_sizes_vbox, _("Text Scale"), 4, 2, TRUE, FALSE);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	table = gtk_table_new(4, 2, FALSE);
@@ -642,7 +642,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 
 
 	/* ---- DRC Sizes ---- */
-	vbox = ghid_category_vbox(config_sizes_vbox, _("Design Rule Checking"), 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(config_sizes_vbox, _("Design Rule Checking"), 4, 2, TRUE, FALSE);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	table = gtk_table_new(4, 2, FALSE);
