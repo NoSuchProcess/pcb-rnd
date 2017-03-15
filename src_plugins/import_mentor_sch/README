@@ -1,6 +1,6 @@
-Import mentor graphics schematics from .edf netlist, using a parts
+Import Mentor Graphics Design Capture from flattened .edf netlist, using a parts
 conversion table.
 
-#state: WIP
-#default: disable
+#state: works
+#default: builtin
 #implements: import
