@@ -780,11 +780,13 @@ void hyp_reset_layers()
 	if (id < 0)
 		pcb_printf("failed to create bottom silk\n");
 
+	top_layer_id = -1;
 	if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
 		top_layer_id = pcb_layer_create(gid, NULL);
 	if (top_layer_id < 0)
 		pcb_printf("failed to create top copper\n");
 
+	bottom_layer_id = -1;
 	if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
 		bottom_layer_id = pcb_layer_create(gid, NULL);
 	if (bottom_layer_id < 0)
@@ -796,7 +798,7 @@ void hyp_reset_layers()
 	if (grp != NULL) {
 		id = pcb_layer_create(grp - PCB->LayerGroups.grp, "outline");
 		pcb_layergrp_fix_turn_to_outline(grp);
-		if (id <0)
+		if (id < 0)
 			pcb_printf("failed to create outline\n");
 	}
 
