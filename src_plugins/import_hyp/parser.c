@@ -72,6 +72,12 @@ void hyp_create_silkscreen();		/* add silkscreen outlines to all devices on boar
 void hyp_resize_board();				/* resize board to fit outline */
 unsigned int hyp_layer_flag(char *);	/* set "solder side" flag if on bottom layer */
 
+/* layer creation */
+int layer_count;
+pcb_layer_id_t top_layer_id, bottom_layer_id;
+void hyp_reset_layers();				/* reset layer stack to minimun */
+pcb_layer_id_t hyp_create_layer(char *lname);	/* create new copper layer at bottom of stack */
+
 int hyp_debug;									/* logging on/off switch */
 
 /* Physical constants */
@@ -241,6 +247,9 @@ void hyp_init(void)
 		layer_is_plane[n] = pcb_false;	/* signal layer */
 		layer_clearance[n] = -1;		/* no separation between fill copper and signals on layer */
 	}
+	layer_count = 0;
+	top_layer_id = -1;
+	bottom_layer_id = -1;
 
 	/* clear padstack */
 	padstack_head = NULL;
@@ -280,12 +289,14 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 {
 	int retval;
 
-	hyp_init();
-
 	/* set debug levels */
 	hyyset_debug(debug > 2);			/* switch flex logging on */
 	hyydebug = (debug > 1);				/* switch bison logging on */
 	hyp_debug = (debug > 0);			/* switch hyperlynx logging on */
+
+	hyp_init();
+
+	hyp_reset_layers();
 
 	/* set shared board */
 	hyp_dest = dest;
@@ -395,12 +406,13 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 
 	/* get outline layer */
 	outline_id = pcb_layer_by_name("outline");
-	if (outline_id < 0)
-		outline_id = pcb_layer_create(-1, "outline");
+	if (outline_id < 0) {
+		pcb_printf("no outline layer.\n");
+		return;
+	}
 	outline_layer = pcb_get_layer(outline_id);
-
 	if (outline_layer == NULL) {
-		pcb_printf("create outline layer failed.\n");
+		pcb_printf("get outline layer failed.\n");
 		return;
 	}
 
@@ -737,6 +749,58 @@ void hyp_create_silkscreen()
 	return;
 }
 
+/* 
+ * reset pcb layer stack 
+ */
+
+void hyp_reset_layers()
+{
+
+	pcb_layer_id_t id = -1;
+	pcb_layergrp_id_t gid = -1;
+	pcb_layer_group_t *grp = NULL;
+
+	pcb_layergrp_inhibit_inc();
+
+	pcb_layers_reset();
+
+	pcb_layer_group_setup_default(&PCB->LayerGroups);
+
+	/* set up dual layer board: top and bottom copper and silk */
+
+	id = -1;
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1) == 1)
+		id = pcb_layer_create(gid, pcb_strdup("top silk"));
+	if (id < 0)
+		pcb_printf("failed to create top silk\n");
+
+	id = -1;
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_BOTTOM, &gid, 1) == 1)
+		id = pcb_layer_create(gid, pcb_strdup("bottom silk"));
+	if (id < 0)
+		pcb_printf("failed to create bottom silk\n");
+
+	if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
+		top_layer_id = pcb_layer_create(gid, NULL);
+	if (top_layer_id < 0)
+		pcb_printf("failed to create top copper\n");
+
+	if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
+		bottom_layer_id = pcb_layer_create(gid, NULL);
+	if (bottom_layer_id < 0)
+		pcb_printf("failed to create bottom copper\n");
+
+	/* create outline layer */
+
+	grp = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
+	id = pcb_layer_create(grp - PCB->LayerGroups.grp, "outline");
+	pcb_layergrp_fix_turn_to_outline(grp);
+
+	pcb_layergrp_inhibit_dec();
+
+	return;
+}
+
 /*
  * Returns the pcb_layer_id of layer "lname". 
  * If layer lname does not exist, a new copper layer with name "lname" is created.
@@ -746,6 +810,8 @@ void hyp_create_silkscreen()
 pcb_layer_id_t hyp_create_layer(char *lname)
 {
 	pcb_layer_id_t layer_id;
+	pcb_layergrp_id_t gid;
+	pcb_layer_group_t *grp;
 	char new_layer_name[PCB_MAX_LAYER];
 	int n;
 
@@ -754,38 +820,63 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 		/* we have a layer name. check whether layer already exists */
 		layer_id = pcb_layer_by_name(lname);
 		if (layer_id >= 0)
-			return layer_id;					/* found */
-		/* create new layer */
-		if (hyp_debug)
-			pcb_printf("create layer \"%s\"\n", lname);
-		layer_id = pcb_layer_create(-1, pcb_strdup(lname));
+			return layer_id;					/* found. return existing layer. */
 	}
 	else {
 		/* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
 		for (n = 1; n < PCB_MAX_LAYER; n++) {
 			pcb_sprintf(new_layer_name, "%i", n);
 			if (pcb_layer_by_name(new_layer_name) < 0) {
-				/* create new layer */
-				if (hyp_debug)
-					pcb_printf("create auto layer \"%s\"\n", new_layer_name);
-				layer_id = pcb_layer_create(-1, pcb_strdup(new_layer_name));
+				lname = new_layer_name;
 				break;
 			}
 		}
-	}
-	/* check if layer valid */
-	if (layer_id < 0) {
-		/* layer creation failed. return the first copper layer you can find. */
-		if (hyp_debug)
-			pcb_printf("running out of layers\n");
-		if (pcb_layer_list(PCB_LYT_COPPER, &layer_id, 1) <= 0) {
-			if (hyp_debug)
-				pcb_printf("fatal: no copper layers.\n");
-			layer_id = 0;
-		}
+		if (lname == NULL)
+			return bottom_layer_id;		/* no unused layer name available */
 	}
 
-	return layer_id;
+	/* new layer */
+
+	layer_count++;
+	switch (layer_count) {
+	case 1:
+		/* rename top copper and return */
+		pcb_layer_rename(top_layer_id, lname);
+		return top_layer_id;
+		break;
+
+	case 2:
+		/* rename bottom copper and return */
+		pcb_layer_rename(bottom_layer_id, lname);
+		return bottom_layer_id;
+		break;
+
+	default:
+		if (hyp_debug)
+			pcb_printf("create layer \"%s\"\n", lname);
+
+		/* create new bottom layer */
+		pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
+		layer_id = pcb_layer_create(gid, lname);
+
+		/* check if new bottom layer valid */
+		if (layer_id < 0) {
+			/* layer creation failed. return old bottom layer. */
+			if (hyp_debug)
+				pcb_printf("running out of layers\n");
+			return bottom_layer_id;
+		}
+
+		/* move old bottom layer to internal */
+		grp = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
+		pcb_layer_move_to_group(bottom_layer_id, grp - PCB->LayerGroups.grp);
+
+		/* created layer becomes new bottom layer */
+		bottom_layer_id = layer_id;
+		return bottom_layer_id;
+	}
+
+	return bottom_layer_id;
 }
 
 /*

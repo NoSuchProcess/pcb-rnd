@@ -37,6 +37,7 @@
 #include "hid_attrib.h"
 #include "hid_helper.h"
 #include "plugins.h"
+#include "event.h"
 
 #warning TODO: rename config.h VERSION to PCB_VERSION
 #undef VERSION
@@ -55,6 +56,7 @@ int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	const char *fname = NULL;
 	int debug = 0;
 	int i = 0;
+	pcb_bool_t retval;
 
 	fname = argc ? argv[0] : 0;
 
@@ -68,11 +70,11 @@ int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 
 	/* 
-   * debug level.
-   * one "debug" argument: hyperlynx logging.
-   * two "debug" arguments: hyperlynx and bison logging.
-   * three "debug" arguments: hyperlynx, bison and flex logging.
-   */
+	 * debug level.
+	 * one "debug" argument: hyperlynx logging.
+	 * two "debug" arguments: hyperlynx and bison logging.
+	 * three "debug" arguments: hyperlynx, bison and flex logging.
+	 */
 
 	for (i = 0; i < argc; i++)
 		debug += (strcmp(argv[i], "debug") == 0);
@@ -80,7 +82,13 @@ int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (debug > 0)
 		pcb_message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
 
-	if (hyp_parse(PCB->Data, fname, debug))
+	retval = hyp_parse(PCB->Data, fname, debug);
+
+	/* notify GUI */
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(PCB_EVENT_BOARD_CHANGED, NULL);
+
+	if (retval)
 		PCB_AFAIL(load_hyp);
 
 	return 0;
@@ -92,7 +100,7 @@ pcb_hid_action_t hyp_action_list[] = {
 
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 
-static void hid_import_hyp_uninit()
+		 static void hid_import_hyp_uninit()
 {
 	pcb_hid_remove_actions_by_cookie(hyp_cookie);
 }
@@ -102,7 +110,7 @@ pcb_uninit_t hid_import_hyp_init()
 {
 #warning TODO: rather register an importer than an action
 	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
-	return hid_import_hyp_uninit;
+		return hid_import_hyp_uninit;
 }
 
 /* not truncated */
