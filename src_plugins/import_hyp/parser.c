@@ -793,8 +793,12 @@ void hyp_reset_layers()
 	/* create outline layer */
 
 	grp = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
-	id = pcb_layer_create(grp - PCB->LayerGroups.grp, "outline");
-	pcb_layergrp_fix_turn_to_outline(grp);
+	if (grp != NULL) {
+		id = pcb_layer_create(grp - PCB->LayerGroups.grp, "outline");
+		pcb_layergrp_fix_turn_to_outline(grp);
+		if (id <0)
+			pcb_printf("failed to create outline\n");
+	}
 
 	pcb_layergrp_inhibit_dec();
 
