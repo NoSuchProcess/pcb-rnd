@@ -100,7 +100,7 @@ int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layer_stack_t *stack, pcb_layer
 
 
 /* Insert a new layer group in the layer stack after the specified group */
-pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layergrp_id_t where);
+pcb_layer_group_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t where);
 
 
 /* Enable/disable inhibition of layer changed events during layer group updates */

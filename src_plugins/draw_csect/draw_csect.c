@@ -543,11 +543,11 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			if (drag_addgrp) {
 				if (gactive >= 0) {
 					pcb_layer_group_t *g;
-					g = pcb_layergrp_insert_after(&PCB->LayerGroups, gactive);
+					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = NULL;
 					g->type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 					g->valid = 1;
-					g = pcb_layergrp_insert_after(&PCB->LayerGroups, gactive);
+					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = pcb_strdup("Intern");
 					g->type = PCB_LYT_INTERN | PCB_LYT_COPPER;
 					g->valid = 1;

@@ -223,14 +223,15 @@ pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, p
 	return NULL;
 }
 
-pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layergrp_id_t where)
+pcb_layer_group_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t where)
 {
+	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	int n;
 	if ((where <= 0) || (where >= stack->len))
 		return NULL;
 
 	for(n = stack->len-1; n > where; n--)
-		pcb_layergrp_move_onto(PCB, stack, n+1, n);
+		pcb_layergrp_move_onto(pcb, stack, n+1, n);
 
 	stack->len++;
 	NOTIFY();
