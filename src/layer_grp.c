@@ -311,7 +311,7 @@ static void move_grps(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_
 		for(n = 0; n < stk->grp[g].len; n++) {
 			pcb_layer_id_t lid =stk->grp[g].lid[n];
 			if ((lid >= 0) && (lid < pcb_max_layer)) {
-				pcb_layer_t *l = &pcb->Data->Layer[n];
+				pcb_layer_t *l = &pcb->Data->Layer[lid];
 				if (l->grp > 0)
 					l->grp += delta;
 			}
