@@ -194,7 +194,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *l = LAYER_ON_STACK(i);
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
-		unsigned int gflg = pcb_layergrp_flags(group);
+		unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
 		if (gflg & PCB_LYT_SILK) /* do not draw silk here, it'll be drawn separately */
 			continue;
@@ -261,7 +261,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	slk_len = pcb_layer_group_list(PCB_LYT_SILK, slk, sizeof(slk) / sizeof(slk[0]));
 	for(i = 0; i < slk_len; i++) {
 		if (pcb_layer_gui_set_glayer(slk[i], 0)) {
-			unsigned int loc = pcb_layergrp_flags(slk[i]);
+			unsigned int loc = pcb_layergrp_flags(PCB, slk[i]);
 			DrawSilk(loc & PCB_LYT_ANYWHERE, drawn_area);
 			pcb_gui->end_layer();
 		}
@@ -341,7 +341,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 static void DrawPPV(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 {
 	int side;
-	unsigned int gflg = pcb_layergrp_flags(group);
+	unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
 	if (PCB->PinOn || !pcb_gui->gui) {
 		/* draw element pins */
@@ -532,7 +532,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 	pcb_layer_t *Layer;
 	pcb_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
 	pcb_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
-	unsigned int gflg = pcb_layergrp_flags(group);
+	unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
 	if (gflg & PCB_LYT_OUTLINE)
 		rv = 0;

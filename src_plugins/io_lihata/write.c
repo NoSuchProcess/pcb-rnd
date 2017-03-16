@@ -520,7 +520,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 		/* produce an old layer group assignment from top to bottom */
 		gm = 0;
 		for(n = 0; n < pcb_max_group; n++) {
-			unsigned int gflg = pcb_layergrp_flags(n);
+			unsigned int gflg = pcb_layergrp_flags(PCB, n);
 			if (gflg & PCB_LYT_COPPER) {
 				if (gflg & PCB_LYT_TOP)
 					gtop = gm;

@@ -71,7 +71,7 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t lgrp);
 int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty);
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
-unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group_idx);
+unsigned int pcb_layergrp_flags(pcb_board_t *pcb, pcb_layergrp_id_t group_idx);
 const char *pcb_layergrp_name(pcb_layergrp_id_t gid);
 
 /* Same as pcb_layer_list but lists layer groups. A group is matching

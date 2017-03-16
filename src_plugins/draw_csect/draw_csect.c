@@ -309,7 +309,7 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 
 	g = get_group_coords(y, &y1, &y2);
 
-	if ((g >= 0) && ((pcb_layergrp_flags(g) & accept_mask) == accept_mask)) {
+	if ((g >= 0) && ((pcb_layergrp_flags(PCB, g) & accept_mask) == accept_mask)) {
 		gactive = g;
 		switch(loc) {
 			case MARK_GRP_FRAME:
@@ -472,7 +472,7 @@ static void do_move_grp()
 	if ((gactive < 0) || (gactive == drag_gid+1))
 		return;
 
-	tflg = pcb_layergrp_flags(gactive);
+	tflg = pcb_layergrp_flags(PCB, gactive);
 
 	pcb_layergrp_move(&PCB->LayerGroups, drag_gid, gactive);
 
@@ -528,12 +528,12 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				pcb_coord_t tmp;
 				pcb_layergrp_id_t gid;
 				gid = get_group_coords(y, &tmp, &tmp);
-				if ((gid >= 0) && (pcb_layergrp_flags(gid) & PCB_LYT_COPPER) && (pcb_layergrp_flags(gid) & PCB_LYT_INTERN)) {
+				if ((gid >= 0) && (pcb_layergrp_flags(PCB, gid) & PCB_LYT_COPPER) && (pcb_layergrp_flags(PCB, gid) & PCB_LYT_INTERN)) {
 					drag_gid = gid;
 					/* temporary workaround for the restricted setup */
-					if (pcb_layergrp_flags(gid - 1) & PCB_LYT_SUBSTRATE)
+					if (pcb_layergrp_flags(PCB, gid - 1) & PCB_LYT_SUBSTRATE)
 						drag_gid_subst = gid - 1;
-					else if ((pcb_layergrp_flags(gid - 1) & PCB_LYT_OUTLINE) && (pcb_layergrp_flags(gid - 2) & PCB_LYT_SUBSTRATE))
+					else if ((pcb_layergrp_flags(PCB, gid - 1) & PCB_LYT_OUTLINE) && (pcb_layergrp_flags(PCB, gid - 2) & PCB_LYT_SUBSTRATE))
 						drag_gid_subst = gid - 2;
 					res = 1;
 				}
@@ -559,9 +559,9 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			else if (drag_delgrp) {
 				if (gactive >= 0) {
 					pcb_layergrp_del(PCB, gactive, 1);
-					if (pcb_layergrp_flags(gactive) & PCB_LYT_SUBSTRATE)
+					if (pcb_layergrp_flags(PCB, gactive) & PCB_LYT_SUBSTRATE)
 						pcb_layergrp_del(PCB, gactive, 1);
-					else if (pcb_layergrp_flags(gactive-1) & PCB_LYT_SUBSTRATE)
+					else if (pcb_layergrp_flags(PCB, gactive-1) & PCB_LYT_SUBSTRATE)
 						pcb_layergrp_del(PCB, gactive-1, 1);
 				}
 				drag_delgrp = 0;

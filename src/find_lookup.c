@@ -519,7 +519,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 
 			/* try all new pads */
 			/* handle the special pad layers */
-			flg = pcb_layergrp_flags(group);
+			flg = pcb_layergrp_flags(PCB, group);
 			if ((flg & PCB_LYT_BOTTOM) && (flg & PCB_LYT_COPPER))    layer = PCB_SOLDER_SIDE;
 			else if ((flg & PCB_LYT_TOP) && (flg & PCB_LYT_COPPER))  layer = PCB_COMPONENT_SIDE;
 			else continue; /* skip pads for this group */
@@ -926,7 +926,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 	}
 
 	/* handle the special pad layers */
-	flg = pcb_layergrp_flags(LayerGroup);
+	flg = pcb_layergrp_flags(PCB, LayerGroup);
 	if ((flg & PCB_LYT_BOTTOM) && (flg & PCB_LYT_COPPER))    info.layer = PCB_SOLDER_SIDE;
 	else if ((flg & PCB_LYT_TOP) && (flg & PCB_LYT_COPPER))  info.layer = PCB_COMPONENT_SIDE;
 	else return pcb_false;
@@ -1049,7 +1049,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 	}
 
 	/* handle the special pad layers */
-	flg = pcb_layergrp_flags(LayerGroup);
+	flg = pcb_layergrp_flags(PCB, LayerGroup);
 	if ((flg & PCB_LYT_BOTTOM) && (flg & PCB_LYT_COPPER))    info.layer = PCB_SOLDER_SIDE;
 	else if ((flg & PCB_LYT_TOP) && (flg & PCB_LYT_COPPER))  info.layer = PCB_COMPONENT_SIDE;
 	else return pcb_false;
@@ -1143,7 +1143,7 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 	}
 
 	/* handle the special pad layers */
-	flg = pcb_layergrp_flags(LayerGroup);
+	flg = pcb_layergrp_flags(PCB, LayerGroup);
 	if ((flg & PCB_LYT_BOTTOM) && (flg & PCB_LYT_COPPER))    info.layer = PCB_SOLDER_SIDE;
 	else if ((flg & PCB_LYT_TOP) && (flg & PCB_LYT_COPPER))  info.layer = PCB_COMPONENT_SIDE;
 	else return pcb_false;
@@ -1323,7 +1323,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 	}
 
 	/* handle the special pad layers */
-	flg = pcb_layergrp_flags(LayerGroup);
+	flg = pcb_layergrp_flags(PCB, LayerGroup);
 	if ((flg & PCB_LYT_BOTTOM) && (flg & PCB_LYT_COPPER))    info.layer = PCB_SOLDER_SIDE;
 	else if ((flg & PCB_LYT_TOP) && (flg & PCB_LYT_COPPER))  info.layer = PCB_COMPONENT_SIDE;
 	else return retv;
@@ -1444,7 +1444,7 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 	}
 
 	/* handle the special pad layers */
-	flg = pcb_layergrp_flags(LayerGroup);
+	flg = pcb_layergrp_flags(PCB, LayerGroup);
 	if ((flg & PCB_LYT_BOTTOM) && (flg & PCB_LYT_COPPER))    info.layer = PCB_SOLDER_SIDE;
 	else if ((flg & PCB_LYT_TOP) && (flg & PCB_LYT_COPPER))  info.layer = PCB_COMPONENT_SIDE;
 	else return pcb_false;

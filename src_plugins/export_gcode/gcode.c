@@ -405,13 +405,13 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++) {
 		if (gcode_export_group[i]) {
 			char tmp_ln[PCB_PATH_MAX];
-			const char *name = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
+			const char *name = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB_FNS_fixed);
 			gcode_cur_group = i;
 
 			/* magic */
 			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.grp[i].lid[0] : i;
 			printf("idx=%d %s\n", idx, name);
-			is_solder = (pcb_layergrp_flags(pcb_layer_get_group(PCB, idx)) & PCB_LYT_BOTTOM) ? 1 : 0;
+			is_solder = (pcb_layergrp_flags(PCB, pcb_layer_get_group(PCB, idx)) & PCB_LYT_BOTTOM) ? 1 : 0;
 			save_drill = is_solder;		/* save drills for one layer only */
 			gcode_start_png(gcode_basename, name);
 			pcb_hid_save_and_show_layer_ons(save_ons);

@@ -390,8 +390,8 @@ static pcb_layergrp_id_t group_for_layer(int l)
 	return pcb_max_group + 3 + l;
 }
 
-static int is_solder(pcb_layergrp_id_t grp)     { return pcb_layergrp_flags(grp) & PCB_LYT_BOTTOM; }
-static int is_component(pcb_layergrp_id_t grp)  { return pcb_layergrp_flags(grp) & PCB_LYT_TOP; }
+static int is_solder(pcb_layergrp_id_t grp)     { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_BOTTOM; }
+static int is_component(pcb_layergrp_id_t grp)  { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_TOP; }
 
 static int layer_sort(const void *va, const void *vb)
 {

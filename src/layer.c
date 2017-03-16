@@ -179,7 +179,7 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 		return 0;
 
 	l = &PCB->Data->Layer[layer_idx];
-	return pcb_layergrp_flags(l->grp);
+	return pcb_layergrp_flags(PCB, l->grp);
 }
 
 #define APPEND(n) \

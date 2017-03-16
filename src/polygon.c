@@ -1030,7 +1030,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 		return 0;
 
 	group = pcb_layer_get_group_(Layer);
-	gflg = pcb_layergrp_flags(group);
+	gflg = pcb_layergrp_flags(PCB, group);
 	info.solder = (gflg & PCB_LYT_BOTTOM);
 	info.data = Data;
 	info.other = here;

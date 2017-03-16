@@ -257,7 +257,7 @@ static void nelma_write_space(FILE * out)
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 		if (nelma_export_group[i]) {
 			char tmp_ln[PCB_PATH_MAX];
-			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB_FNS_fixed);
 
 			if (z != 10) {
 				fprintf(out, ",\n");
@@ -320,7 +320,7 @@ static void nelma_write_nets(FILE * out)
 			for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 				if (nelma_export_group[i]) {
 					char tmp_ln[PCB_PATH_MAX];
-					const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
+					const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB_FNS_fixed);
 
 					if (m != 0 || i != 0)
 						fprintf(out, ",\n");
@@ -386,7 +386,7 @@ static void nelma_write_layers(FILE * out)
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 		if (nelma_export_group[i]) {
 			char tmp_ln[PCB_PATH_MAX];
-			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB_FNS_fixed);
 
 			if (z != 10) {
 				sprintf(buf, "substrate-%d", z);
@@ -417,7 +417,7 @@ static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 		if (nelma_export_group[i]) {
 			char tmp_ln[PCB_PATH_MAX];
-			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB_FNS_fixed);
 
 			fprintf(out, "object %s-%s {\n", pin->ListEntry, ext);
 			fprintf(out, "\tposition = { 0, 0 }\n");
@@ -611,7 +611,7 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++) {
 		if (nelma_export_group[i]) {
 			char tmp_ln[PCB_PATH_MAX];
-			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB_FNS_fixed);
 
 			nelma_cur_group = i;
 

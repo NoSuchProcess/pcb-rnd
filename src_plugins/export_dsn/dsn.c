@@ -170,7 +170,7 @@ static void print_structure(FILE * fp)
 
 	for (group = 0; group < pcb_max_group; group++) {
 		pcb_layer_t *first_layer;
-		unsigned int gflg = pcb_layergrp_flags(group);
+		unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
 		if (gflg & PCB_LYT_SILK)
 			continue;

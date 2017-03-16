@@ -84,7 +84,7 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		pcb_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
-		unsigned int gflg = pcb_layergrp_flags(lg);
+		unsigned int gflg = pcb_layergrp_flags(PCB, lg);
 		for (j = 0; j < PCB_MAX_LAYER; j++)
 			putchar(j == lg ? '#' : '-');
 		printf(" %c %s\n", (gflg & PCB_LYT_TOP) ? 'c' : (gflg & PCB_LYT_BOTTOM) ? 's' : '-', PCB->Data->Layer[i].Name);

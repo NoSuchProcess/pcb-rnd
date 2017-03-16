@@ -672,7 +672,7 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 		pcb_gui->set_color(Output.fgGC, layer->Color);
 
 	if (layer->grp >= 0)
-		flg = pcb_layergrp_flags(layer->grp);
+		flg = pcb_layergrp_flags(PCB, layer->grp);
 
 	if (flg & PCB_LYT_SILK)
 		min_silk_line = PCB->minSlk;

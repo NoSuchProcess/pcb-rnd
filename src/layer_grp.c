@@ -113,13 +113,13 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, 
 	return gid;
 }
 
-unsigned int pcb_layergrp_flags(pcb_layergrp_id_t gid)
+unsigned int pcb_layergrp_flags(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 {
 
-	if ((gid < 0) || (gid >= PCB->LayerGroups.len))
+	if ((gid < 0) || (gid >= pcb->LayerGroups.len))
 		return 0;
 
-	return PCB->LayerGroups.grp[gid].type;
+	return pcb->LayerGroups.grp[gid].type;
 }
 
 const char *pcb_layergrp_name(pcb_layergrp_id_t gid)
@@ -484,7 +484,7 @@ int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(grp, PCB->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(grp), is_empty);
+		return pcb_gui->set_layer_group(grp, PCB->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(PCB, grp), is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
@@ -506,7 +506,7 @@ int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_
 {
 	int group, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		if ((pcb_layergrp_flags(group) & mask) == mask)
+		if ((pcb_layergrp_flags(PCB, group) & mask) == mask)
 				APPEND(group);
 	}
 	return used;
@@ -516,7 +516,7 @@ int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int 
 {
 	int group, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		if ((pcb_layergrp_flags(group) & mask))
+		if ((pcb_layergrp_flags(PCB, group) & mask))
 				APPEND(group);
 	}
 	return used;

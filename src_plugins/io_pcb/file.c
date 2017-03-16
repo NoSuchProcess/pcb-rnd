@@ -156,7 +156,7 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 #warning layer TODO: revise this loop to save only what the original code saved
 	for (group = 0; group < pcb_max_group; group++)
 		if (PCB->LayerGroups.grp[group].len) {
-			unsigned int gflg = pcb_layergrp_flags(group);
+			unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
 			if (gflg & PCB_LYT_SILK) /* silk is hacked in asusming there's a top and bottom copper */
 				continue;
