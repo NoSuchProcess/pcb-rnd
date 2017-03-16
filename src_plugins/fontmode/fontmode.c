@@ -137,8 +137,8 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_layergrp_inhibit_inc();
 	pcb_layers_reset();
 	pcb_layer_group_setup_default(&PCB->LayerGroups);
-	pcb_get_grp_new_intern(PCB, &PCB->LayerGroups, 1);
-	pcb_get_grp_new_intern(PCB, &PCB->LayerGroups, 2);
+	pcb_get_grp_new_intern(PCB, 1);
+	pcb_get_grp_new_intern(PCB, 2);
 
 	assert(pcb_layergrp_list(PCB, PCB_LYT_COPPER, grp, 4) == 4);
 	lfont  = make_layer(grp[0], "Font");

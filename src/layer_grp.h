@@ -132,8 +132,8 @@ void pcb_layer_group_to_old(pcb_board_t *pcb);
 /* for parsing old files with old layer descriptions, with no layer groups */
 void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
 pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, pcb_layer_stack_t *stack, int intern_id);
-pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb, pcb_layer_stack_t *stack);
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id);
+pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb);
 
 /* ugly hack: remove the extra substrate we added after the outline layer */
 void pcb_layergrp_fix_old_outline(pcb_board_t *pcb);

@@ -795,7 +795,7 @@ void hyp_reset_layers()
 	/* create outline layer */
 
 	id = -1;
-	grp = pcb_get_grp_new_intern(PCB, &PCB->LayerGroups, -1);
+	grp = pcb_get_grp_new_intern(PCB, -1);
 	if (grp != NULL) {
 		id = pcb_layer_create(grp - PCB->LayerGroups.grp, "outline");
 		pcb_layergrp_fix_turn_to_outline(grp);
@@ -873,7 +873,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 		}
 
 		/* move old bottom layer to internal */
-		grp = pcb_get_grp_new_intern(PCB, &PCB->LayerGroups, -1);
+		grp = pcb_get_grp_new_intern(PCB, -1);
 		pcb_layer_move_to_group(PCB, bottom_layer_id, grp - PCB->LayerGroups.grp);
 
 		/* created layer becomes new bottom layer */

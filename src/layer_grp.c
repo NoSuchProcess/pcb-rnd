@@ -239,8 +239,9 @@ pcb_layer_group_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t
 	return stack->grp+where+1;
 }
 
-static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, pcb_layer_stack_t *stack, int omit_substrate)
+static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substrate)
 {
+	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	int bl, n;
 
 	if (stack->len+2 >= PCB_MAX_LAYERGRP)
@@ -270,8 +271,9 @@ static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, pcb_layer_st
 	return NULL;
 }
 
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, pcb_layer_stack_t *stack, int intern_id)
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id)
 {
+	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	pcb_layer_group_t *g;
 
 	if (intern_id > 0) { /* look for existing intern layer first */
@@ -282,18 +284,18 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, pcb_layer_stack_t *s
 	}
 
 	inhibit_notify++;
-	g = pcb_get_grp_new_intern_(pcb, stack, 0);
+	g = pcb_get_grp_new_intern_(pcb, 0);
 	inhibit_notify--;
 	g->intern_id = intern_id;
 	NOTIFY();
 	return g;
 }
 
-pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb, pcb_layer_stack_t *stack)
+pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb)
 {
 	pcb_layer_group_t *g;
 	inhibit_notify++;
-	g = pcb_get_grp_new_intern_(pcb, stack, 1);
+	g = pcb_get_grp_new_intern_(pcb, 1);
 	inhibit_notify--;
 	NOTIFY();
 	return g;
@@ -433,7 +435,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 					goto error;
 				/* finalize group */
 				if (loc & PCB_LYT_INTERN)
-					g = pcb_get_grp_new_intern(pcb, LayerGroup, -1);
+					g = pcb_get_grp_new_intern(pcb, -1);
 				else
 					g = pcb_get_grp(LayerGroup, loc, PCB_LYT_COPPER);
 
