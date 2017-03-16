@@ -84,7 +84,7 @@ pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id);
 
 /* Put a layer in a group (the layer should not be in any other group);
    returns 0 on success */
-int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
+int pcb_layer_add_in_group(pcb_board_t *pcb, pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
 int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id);
 
 /* Remove a layer group; if del_layers is zero, layers are kept but detached

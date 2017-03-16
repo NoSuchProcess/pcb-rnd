@@ -108,7 +108,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, 
 {
 	if (pcb_layergrp_del_layer(pcb, -1, lid) != 0)
 		return -1;
-	pcb_layer_add_in_group(lid, gid);
+	pcb_layer_add_in_group(pcb, lid, gid);
 	NOTIFY();
 	return gid;
 }
@@ -541,12 +541,12 @@ int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layerg
 	return 0;
 }
 
-int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
+int pcb_layer_add_in_group(pcb_board_t *pcb, pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
 {
-	if ((group_id < 0) || (group_id >= PCB->LayerGroups.len))
+	if ((group_id < 0) || (group_id >= pcb->LayerGroups.len))
 		return -1;
 
-	return pcb_layer_add_in_group_(PCB, &PCB->LayerGroups.grp[group_id], group_id, layer_id);
+	return pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[group_id], group_id, layer_id);
 }
 
 #define NEWG(g, flags, gname) \
