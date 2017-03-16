@@ -170,7 +170,7 @@ int pcb_layergrp_free(pcb_layer_stack_t *stack, pcb_layergrp_id_t id)
 	return -1;
 }
 
-int pcb_layergrp_move_onto(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
+int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
 {
 	pcb_layer_group_t *d, *s;
 	int n;
@@ -185,7 +185,7 @@ int pcb_layergrp_move_onto(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_
 
 	/* update layer's group refs to the new grp */
 	for(n = 0; n < d->len; n++) {
-		pcb_layer_t *layer = PCB->Data->Layer + d->lid[n];
+		pcb_layer_t *layer = pcb->Data->Layer + d->lid[n];
 		layer->grp = dst;
 	}
 
@@ -229,14 +229,14 @@ pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layer
 		return NULL;
 
 	for(n = stack->len-1; n > where; n--)
-		pcb_layergrp_move_onto(stack, n+1, n);
+		pcb_layergrp_move_onto(PCB, stack, n+1, n);
 
 	stack->len++;
 	NOTIFY();
 	return stack->grp+where+1;
 }
 
-static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_layer_stack_t *stack, int omit_substrate)
+static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, pcb_layer_stack_t *stack, int omit_substrate)
 {
 	int bl, n;
 
@@ -249,7 +249,7 @@ static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_layer_stack_t *stack, int 
 
 			/* insert a new internal layer: move existing layers to make room */
 			for(n = stack->len-1; n >= bl; n--)
-				pcb_layergrp_move_onto(stack, n+2, n);
+				pcb_layergrp_move_onto(pcb, stack, n+2, n);
 
 			stack->len += 2;
 
@@ -267,7 +267,7 @@ static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_layer_stack_t *stack, int 
 	return NULL;
 }
 
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_id)
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, pcb_layer_stack_t *stack, int intern_id)
 {
 	pcb_layer_group_t *g;
 
@@ -279,18 +279,18 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_i
 	}
 
 	inhibit_notify++;
-	g = pcb_get_grp_new_intern_(stack, 0);
+	g = pcb_get_grp_new_intern_(pcb, stack, 0);
 	inhibit_notify--;
 	g->intern_id = intern_id;
 	NOTIFY();
 	return g;
 }
 
-pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
+pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb, pcb_layer_stack_t *stack)
 {
 	pcb_layer_group_t *g;
 	inhibit_notify++;
-	g = pcb_get_grp_new_intern_(stack, 1);
+	g = pcb_get_grp_new_intern_(pcb, stack, 1);
 	inhibit_notify--;
 	NOTIFY();
 	return g;
@@ -399,8 +399,8 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layer_group_t *g)
 }
 
 
-#define LAYER_IS_OUTLINE(idx) ((PCB->Data->Layer[idx].Name != NULL) && ((strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0)))
-int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
+#define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].Name != NULL) && ((strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0)))
+int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
 {
 	const char *s, *start;
 	pcb_layer_id_t lids[PCB_MAX_LAYER];
@@ -427,7 +427,7 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 					goto error;
 				/* finalize group */
 				if (loc & PCB_LYT_INTERN)
-					g = pcb_get_grp_new_intern(LayerGroup, -1);
+					g = pcb_get_grp_new_intern(pcb, LayerGroup, -1);
 				else
 					g = pcb_get_grp(LayerGroup, loc, PCB_LYT_COPPER);
 
@@ -440,7 +440,7 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 						else
 							pcb_message(PCB_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
 					}
-					pcb_layer_add_in_group_(g, g - LayerGroup->grp, lids[n]);
+					pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, lids[n]);
 				}
 
 				lids_len = 0;
@@ -458,10 +458,10 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 
 	/* set the two silks */
 	g = pcb_get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
-	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-2);
+	pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, LayerN-2);
 
 	g = pcb_get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
-	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-1);
+	pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, LayerN-1);
 
 	inhibit_notify--;
 	return 0;
@@ -525,14 +525,14 @@ pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id)
 	return PCB->Data->Layer[layer_id].grp;
 }
 
-int pcb_layer_add_in_group_(pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
+int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
 {
 	if ((layer_id < 0) || (layer_id >= pcb_max_layer))
 		return -1;
 
 	grp->lid[grp->len] = layer_id;
 	grp->len++;
-	PCB->Data->Layer[layer_id].grp = group_id;
+	pcb->Data->Layer[layer_id].grp = group_id;
 
 	return 0;
 }
@@ -542,7 +542,7 @@ int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
 	if ((group_id < 0) || (group_id >= PCB->LayerGroups.len))
 		return -1;
 
-	return pcb_layer_add_in_group_(&PCB->LayerGroups.grp[group_id], group_id, layer_id);
+	return pcb_layer_add_in_group_(PCB, &PCB->LayerGroups.grp[group_id], group_id, layer_id);
 }
 
 #define NEWG(g, flags, gname) \

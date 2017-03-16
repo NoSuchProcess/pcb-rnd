@@ -611,7 +611,7 @@ void PostLoadElementPCB()
 		return;
 
 	pcb_board_new_postproc(yyPCB, 0);
-	pcb_layer_parse_group_string("1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN, 0);
+	pcb_layer_parse_group_string(yyPCB, "1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN, 0);
 	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
 	PCB = yyPCB;
 	pcb_element_move(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
@@ -685,19 +685,6 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 	return -1;
 }
 
-#warning TODO: make pcb_layer_add_in_group_ accept pcb* and use that instead
-static int add_in_group(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
-{
-	if ((layer_id < 0) || (layer_id >= pcb_max_layer))
-		return -1;
-
-	grp->lid[grp->len] = layer_id;
-	grp->len++;
-	pcb->Data->Layer[layer_id].grp = group_id;
-
-	return 0;
-}
-
 int pcb_layer_improvise(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
@@ -711,7 +698,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 				pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
 			else
 				pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
-			add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 			silk = lid;
 		}
 		else {
@@ -723,7 +710,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 				pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
 			else
 				pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
-			add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 		}
 	}
 
@@ -732,7 +719,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		lid = new_ly_end(pcb, "silk");
 		if (lid < 0)
 			return -1;
-		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
 	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
@@ -740,7 +727,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		lid = new_ly_end(pcb, "silk");
 		if (lid < 0)
 			return -1;
-		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
 	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
@@ -748,7 +735,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		lid = new_ly_old(pcb, "top_copper");
 		if (lid < 0)
 			return -1;
-		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
 	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
@@ -756,7 +743,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		lid = new_ly_old(pcb, "bottom_copper");
 		if (lid < 0)
 			return -1;
-		add_in_group(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
 	pcb_hid_action("dumplayers");

@@ -749,9 +749,9 @@ static void layer_fixup(pcb_board_t *pcb)
 		else if (grp == top_silk)
 			g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
 		else
-			g = pcb_get_grp_new_intern(&pcb->LayerGroups, grp);
+			g = pcb_get_grp_new_intern(pcb, &pcb->LayerGroups, grp);
 /*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
-		pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, n);
+		pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, n);
 		if (strcmp(l->Name, "outline") == 0)
 			pcb_layergrp_fix_turn_to_outline(g);
 	}
@@ -760,9 +760,9 @@ static void layer_fixup(pcb_board_t *pcb)
 
 	/* link in the 2 hardwired silks */
 	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
-	pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-2);
+	pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-2);
 	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
-	pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-1);
+	pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-1);
 	pcb_layergrp_inhibit_dec();
 }
 

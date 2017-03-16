@@ -85,7 +85,7 @@ pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id);
 /* Put a layer in a group (the layer should not be in any other group);
    returns 0 on success */
 int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
-int pcb_layer_add_in_group_(pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id);
+int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id);
 
 /* Remove a layer group; if del_layers is zero, layers are kept but detached
    (.grp = -1), else layers are deleted too */
@@ -96,7 +96,7 @@ int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t gfrom, pcb_layer
 
 /** Move src onto dst, not shifting the stack, free()'ing and overwriting dst,
     leaving a gap (0'd slot) at src */
-int pcb_layergrp_move_onto(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src);
+int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src);
 
 
 /* Insert a new layer group in the layer stack after the specified group */
@@ -114,7 +114,7 @@ void pcb_layergrp_inhibit_dec(void);
 
    OBSOLETE, do not use in new code: only the conf system and io_pcb
    may need this. */
-int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt);
+int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt);
 
 #define PCB_COPPER_GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
@@ -135,8 +135,8 @@ void pcb_layer_group_to_old(pcb_board_t *pcb);
 /* for parsing old files with old layer descriptions, with no layer groups */
 void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
 pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_id);
-pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack);
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, pcb_layer_stack_t *stack, int intern_id);
+pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb, pcb_layer_stack_t *stack);
 
 /* ugly hack: remove the extra substrate we added after the outline layer */
 void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup);
