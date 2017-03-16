@@ -896,13 +896,13 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	switch(lnum) {
 		case 0:
 /*pcb_hid_actionl("dumpcsect", NULL);*/
-			pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
+			pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
 			id = pcb_layer_create(gid, lname);
 /*printf("------------------------------\n");
 pcb_hid_actionl("dumpcsect", NULL);*/
 			break;
 		case 15:
-			pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
+			pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
 			id = pcb_layer_create(gid, lname);
 			break;
 		default:
@@ -953,7 +953,7 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 	pcb_layer_id_t id;
 	if (pcb_layer_list(mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
-		pcb_layer_group_list(PCB, mask, &gid, 1);
+		pcb_layergrp_list(PCB, mask, &gid, 1);
 		id = pcb_layer_create(gid, kicad_name);
 	}
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);

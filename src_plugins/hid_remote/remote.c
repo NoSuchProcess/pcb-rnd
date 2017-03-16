@@ -66,7 +66,7 @@ static void remote_send_all_layers()
 	pcb_layergrp_id_t garr[128];
 	int n, used;
 
-	used = pcb_layer_group_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, garr, sizeof(garr)/sizeof(garr[0]));
+	used = pcb_layergrp_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, garr, sizeof(garr)/sizeof(garr[0]));
 	for(n = 0; n < used; n++) {
 		pcb_layergrp_id_t gid = garr[n];
 		pcb_remote_new_layer_group(pcb_layergrp_name(PCB, gid), gid, pcb_layergrp_flags(PCB, gid));

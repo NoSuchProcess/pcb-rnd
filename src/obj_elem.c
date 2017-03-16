@@ -206,8 +206,8 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	PCB_END_LOOP;
 
 	gbottom = gtop = -1;
-	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gbottom, 1);
-	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER,    &gtop, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gbottom, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER,    &gtop, 1);
 
 	group = (PCB_SWAP_IDENT ? gbottom : gtop);
 	clayer = &Buffer->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
@@ -268,8 +268,8 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	pcb_bool warned = pcb_false;
 
 	gbottom = gtop = -1;
-	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gbottom, 1);
-	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER,    &gtop, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gbottom, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER,    &gtop, 1);
 
 	if (Buffer->Data->pcb == 0)
 		Buffer->Data->pcb = PCB;

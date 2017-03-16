@@ -247,7 +247,7 @@ static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	info.line = NULL;
 	info.rbnd = rbnd;
 	flg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-	if (pcb_layer_group_list(PCB, flg | PCB_LYT_COPPER, &group, 1) < 1)
+	if (pcb_layergrp_list(PCB, flg | PCB_LYT_COPPER, &group, 1) < 1)
 		return;
 
 	/* check all visible layers in the same group */
@@ -321,7 +321,7 @@ static void CheckPadForRat(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	pcb_layergrp_id_t group;
 
 	flg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-	if (pcb_layer_group_list(PCB, flg | PCB_LYT_COPPER, &group, 1) < 1)
+	if (pcb_layergrp_list(PCB, flg | PCB_LYT_COPPER, &group, 1) < 1)
 		return;
 
 	info.group = group;

@@ -499,10 +499,10 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	memset(group_data, 0, sizeof(group_data));
 
-	if (pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gbottom, 1) > 0)
+	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gbottom, 1) > 0)
 		group_data[gbottom].solder = 1;
 
-	if (pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gtop, 1) > 0)
+	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gtop, 1) > 0)
 		group_data[gtop].component = 1;
 
 	for (i = 0; i < pcb_max_layer; i++) {

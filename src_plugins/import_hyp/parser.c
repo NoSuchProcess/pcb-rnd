@@ -769,25 +769,25 @@ void hyp_reset_layers()
 	/* set up dual layer board: top and bottom copper and silk */
 
 	id = -1;
-	if (pcb_layer_group_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1) == 1)
+	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1) == 1)
 		id = pcb_layer_create(gid, pcb_strdup("top silk"));
 	if (id < 0)
 		pcb_printf("failed to create top silk\n");
 
 	id = -1;
-	if (pcb_layer_group_list(PCB, PCB_LYT_SILK | PCB_LYT_BOTTOM, &gid, 1) == 1)
+	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_BOTTOM, &gid, 1) == 1)
 		id = pcb_layer_create(gid, pcb_strdup("bottom silk"));
 	if (id < 0)
 		pcb_printf("failed to create bottom silk\n");
 
 	top_layer_id = -1;
-	if (pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
+	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
 		top_layer_id = pcb_layer_create(gid, NULL);
 	if (top_layer_id < 0)
 		pcb_printf("failed to create top copper\n");
 
 	bottom_layer_id = -1;
-	if (pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
+	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
 		bottom_layer_id = pcb_layer_create(gid, NULL);
 	if (bottom_layer_id < 0)
 		pcb_printf("failed to create bottom copper\n");
@@ -861,7 +861,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	default:
 
 		/* create new bottom layer */
-		pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
+		pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
 		layer_id = pcb_layer_create(gid, lname);
 
 		/* check if new bottom layer valid */

@@ -168,7 +168,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	}
 
 	/* query by groups (physical layers): any copper in group */
-	used = pcb_layer_group_list(PCB, PCB_LYT_COPPER, garr, sizeof(garr)/sizeof(garr[0]));
+	used = pcb_layergrp_list(PCB, PCB_LYT_COPPER, garr, sizeof(garr)/sizeof(garr[0]));
 	printf("All %d groups containing copper layers are:\n", used);
 	for(g = 0; g < used; g++) {
 		pcb_layergrp_id_t group_id = garr[g];

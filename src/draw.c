@@ -143,7 +143,7 @@ static void PrintAssembly(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
 	pcb_layergrp_id_t side_group;
 
-	if (pcb_layer_group_list(PCB, PCB_LYT_COPPER | lyt_side, &side_group, 1) != 1)
+	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | lyt_side, &side_group, 1) != 1)
 		return;
 
 	pcb_draw_doing_assy = pcb_true;
@@ -206,8 +206,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	solder = component = -1;
-	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder, 1);
-	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &component, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &component, 1);
 
 	/*
 	 * first draw all 'invisible' stuff
@@ -258,7 +258,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	/* Draw silks */
-	slk_len = pcb_layer_group_list(PCB, PCB_LYT_SILK, slk, sizeof(slk) / sizeof(slk[0]));
+	slk_len = pcb_layergrp_list(PCB, PCB_LYT_SILK, slk, sizeof(slk) / sizeof(slk[0]));
 	for(i = 0; i < slk_len; i++) {
 		if (pcb_layer_gui_set_glayer(slk[i], 0)) {
 			unsigned int loc = pcb_layergrp_flags(PCB, slk[i]);

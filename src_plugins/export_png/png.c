@@ -466,8 +466,8 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 			int i, n = 0;
 			pcb_layergrp_id_t solder_layer = -1, comp_layer = -1;
 	
-			pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_layer, 1);
-			pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_layer, 1);
+			pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_layer, 1);
+			pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_layer, 1);
 			assert(solder_layer >= 0);
 			assert(comp_layer >= 0);
 

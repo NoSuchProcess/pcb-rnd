@@ -613,8 +613,8 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		/* insert the new layer into the top copper group (or if that fails, in
 		   any copper group) */
 		gid = -1;
-		if (pcb_layer_group_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) < 1)
-			pcb_layer_group_list(PCB, PCB_LYT_COPPER, &gid, 1);
+		if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) < 1)
+			pcb_layergrp_list(PCB, PCB_LYT_COPPER, &gid, 1);
 		lp->grp = gid;
 
 		for (l = 0; l < pcb_max_layer; l++)

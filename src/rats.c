@@ -196,8 +196,8 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 
 	/* find layer groups of the component side and solder side */
 	Sgrp = Cgrp = -1;
-	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
-	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
 
 	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
@@ -832,8 +832,8 @@ pcb_rat_t *pcb_rat_add_net(void)
 	}
 
 	Sgrp = Cgrp = -1;
-	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
-	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
 
 	/* will work for pins to since the FLAG is common */
 	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);

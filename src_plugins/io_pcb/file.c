@@ -695,9 +695,9 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 		if (strcmp(pcb->Data->Layer[lid].Name, "silk") == 0) {
 			if (silk < 0)
-				pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
+				pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
 			else
-				pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
+				pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
 			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 			silk = lid;
 		}
@@ -707,14 +707,14 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 				pcb->Data->Layer[lid].Name = pcb_strdup("anonymous");
 			}
 			if (lid == 0)
-				pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
+				pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
 			else
-				pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+				pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
 			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 		}
 	}
 
-	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
 		lid = new_ly_end(pcb, "silk");
 		if (lid < 0)
@@ -722,7 +722,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
 		lid = new_ly_end(pcb, "silk");
 		if (lid < 0)
@@ -730,7 +730,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
 		lid = new_ly_old(pcb, "top_copper");
 		if (lid < 0)
@@ -738,7 +738,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
 		lid = new_ly_old(pcb, "bottom_copper");
 		if (lid < 0)
