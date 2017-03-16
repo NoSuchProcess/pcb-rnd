@@ -352,8 +352,9 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 	return 0;
 }
 
-int pcb_layergrp_move(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layergrp_id_t to_before)
+int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t from, pcb_layergrp_id_t to_before)
 {
+	pcb_layer_stack_t *stk = &pcb->LayerGroups;
 	pcb_layer_group_t tmp;
 	int n;
 
