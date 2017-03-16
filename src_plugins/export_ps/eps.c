@@ -367,7 +367,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_CSECT) || (flags & PCB_LYT_INVIS))
 		return 0;
 
-	if ((group >= 0) && pcb_is_layergrp_empty(PCB, group) && (flags & PCB_LYT_OUTLINE))
+	if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && (flags & PCB_LYT_OUTLINE))
 		return 0;
 
 	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));

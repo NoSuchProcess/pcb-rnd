@@ -131,7 +131,7 @@ const char *pcb_layergrp_name(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 	return pcb->LayerGroups.grp[gid].name;
 }
 
-pcb_bool pcb_is_layergrp_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
+pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 {
 	int i;
 	pcb_layer_group_t *g = &pcb->LayerGroups.grp[num];

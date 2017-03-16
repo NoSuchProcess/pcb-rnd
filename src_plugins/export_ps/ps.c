@@ -776,7 +776,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 	if (is_empty)
 		return 0;
 
-	if ((group >= 0) && pcb_is_layergrp_empty(PCB, group))
+	if ((group >= 0) && pcb_layergrp_is_empty(PCB, group))
 		return 0;
 
 	if (flags & PCB_LYT_INVIS)
