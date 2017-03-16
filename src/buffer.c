@@ -46,6 +46,7 @@
 #include "compat_nls.h"
 #include "obj_all_op.h"
 #include "layer_grp.h"
+#include "event.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -215,12 +216,14 @@ pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, cons
 		Buffer->Y = newPCB->CursorY;
 		pcb_board_remove(newPCB);
 		Buffer->Data->pcb = PCB;
+		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 		return (pcb_true);
 	}
 
 	/* release unused memory */
 	pcb_board_remove(newPCB);
 	Buffer->Data->pcb = PCB;
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 	return (pcb_false);
 }
 
