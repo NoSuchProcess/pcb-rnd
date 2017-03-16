@@ -145,8 +145,8 @@ static void UpdateXY(pcb_netlist_t *Nets)
 	pcb_cardinal_t i, j;
 	/* find layer groups of the component side and solder side */
 
-	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
-	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
+	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
+	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
 
 	/* update all nets */
 	for (i = 0; i < Nets->NetN; i++) {

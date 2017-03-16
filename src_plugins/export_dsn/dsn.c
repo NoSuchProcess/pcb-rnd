@@ -151,8 +151,8 @@ static void print_structure(FILE * fp)
 	pcb_layergrp_id_t group, top_group, bot_group;
 	pcb_layer_id_t top_layer, bot_layer;
 
-	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &top_group, 1);
-	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &bot_group, 1);
+	pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &top_group, 1);
+	pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &bot_group, 1);
 
 	top_layer = PCB->LayerGroups.grp[top_group].lid[0];
 	bot_layer = PCB->LayerGroups.grp[bot_group].lid[0];

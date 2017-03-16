@@ -875,9 +875,9 @@ static routedata_t *CreateRouteData()
 	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->ViaOn;
 
 	back = front = -1;
-	if (pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &back, 1) <= 0)
+	if (pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &back, 1) <= 0)
 		return NULL;
-	if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &front, 1) <= 0)
+	if (pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &front, 1) <= 0)
 		return NULL;
 
 	/* determine preferred routing direction on each group */

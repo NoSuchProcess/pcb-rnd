@@ -140,13 +140,13 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_get_grp_new_intern(PCB, &PCB->LayerGroups, 1);
 	pcb_get_grp_new_intern(PCB, &PCB->LayerGroups, 2);
 
-	assert(pcb_layer_group_list(PCB_LYT_COPPER, grp, 4) == 4);
+	assert(pcb_layer_group_list(PCB, PCB_LYT_COPPER, grp, 4) == 4);
 	lfont  = make_layer(grp[0], "Font");
 	lorig  = make_layer(grp[1], "OrigFont");
 	lwidth = make_layer(grp[2], "Width");
 	lgrid  = make_layer(grp[3], "Grid");
 
-	assert(pcb_layer_group_list(PCB_LYT_SILK, grp, 2) == 2);
+	assert(pcb_layer_group_list(PCB, PCB_LYT_SILK, grp, 2) == 2);
 	make_layer(grp[0], "Silk");
 	lsilk = make_layer(grp[1], "Silk");
 

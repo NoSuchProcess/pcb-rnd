@@ -585,10 +585,10 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int solder_layer;
 	int comp_showing = 0, solder_showing = 0;
 
-	if (pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
+	if (pcb_layer_group_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
 		solder_showing = group_showing(solder_group, &solder_layer);
 
-	if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
+	if (pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
 		comp_showing = group_showing(comp_group, &comp_layer);
 
 	if (argc > 0) {

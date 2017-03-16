@@ -227,7 +227,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	   layer to get the pins.  */
 	if (fast_erase == 0) {
 		pcb_layergrp_id_t comp_copp;
-		if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &comp_copp, 1) > 0) {
+		if (pcb_layer_group_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_copp, 1) > 0) {
 			print_group[pcb_layer_get_group(PCB, comp_copp)] = 1;
 			fast_erase = 1;
 		}

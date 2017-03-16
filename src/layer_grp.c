@@ -502,21 +502,21 @@ int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
 			used++; \
 	} while(0)
 
-int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
+int pcb_layer_group_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		if ((pcb_layergrp_flags(PCB, group) & mask) == mask)
+		if ((pcb_layergrp_flags(pcb, group) & mask) == mask)
 				APPEND(group);
 	}
 	return used;
 }
 
-int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
+int pcb_layer_group_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		if ((pcb_layergrp_flags(PCB, group) & mask))
+		if ((pcb_layergrp_flags(pcb, group) & mask))
 				APPEND(group);
 	}
 	return used;
