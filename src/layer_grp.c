@@ -162,7 +162,7 @@ int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id)
 		if (g->name != NULL)
 			free(g->name);
 		for(n = 0; n < g->len; n++) {
-			pcb_layer_t *layer = PCB->Data->Layer + g->lid[n];
+			pcb_layer_t *layer = pcb->Data->Layer + g->lid[n];
 			layer->grp = -1;
 		}
 		memset(g, 0, sizeof(pcb_layer_group_t));
