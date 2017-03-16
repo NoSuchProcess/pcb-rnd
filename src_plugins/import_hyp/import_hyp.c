@@ -82,6 +82,8 @@ int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (debug > 0)
 		pcb_message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
 
+	pcb_event(PCB_EVENT_BUSY, NULL);
+
 	retval = hyp_parse(PCB->Data, fname, debug);
 
 	/* notify GUI */
