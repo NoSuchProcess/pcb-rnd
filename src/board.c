@@ -83,7 +83,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->Grid = conf_core.editor.grid;
 	save = PCB;
 	PCB = ptr;
-	pcb_layer_parse_group_string(ptr, conf_core.design.groups, &ptr->LayerGroups, PCB_MAX_LAYER, 0);
+	pcb_layer_parse_group_string(ptr, conf_core.design.groups, PCB_MAX_LAYER, 0);
 	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	PCB = save;
 

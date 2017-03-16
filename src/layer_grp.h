@@ -111,7 +111,7 @@ void pcb_layergrp_inhibit_dec(void);
 
    OBSOLETE, do not use in new code: only the conf system and io_pcb
    may need this. */
-int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt);
+int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, int oldfmt);
 
 #define PCB_COPPER_GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
