@@ -558,11 +558,11 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			}
 			else if (drag_delgrp) {
 				if (gactive >= 0) {
-					pcb_layergrp_del(&PCB->LayerGroups, gactive, 1);
+					pcb_layergrp_del(PCB, gactive, 1);
 					if (pcb_layergrp_flags(gactive) & PCB_LYT_SUBSTRATE)
-						pcb_layergrp_del(&PCB->LayerGroups, gactive, 1);
+						pcb_layergrp_del(PCB, gactive, 1);
 					else if (pcb_layergrp_flags(gactive-1) & PCB_LYT_SUBSTRATE)
-						pcb_layergrp_del(&PCB->LayerGroups, gactive-1, 1);
+						pcb_layergrp_del(PCB, gactive-1, 1);
 				}
 				drag_delgrp = 0;
 				gactive = -1;

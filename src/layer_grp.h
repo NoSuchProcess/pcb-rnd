@@ -89,7 +89,7 @@ int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layerg
 
 /* Remove a layer group; if del_layers is zero, layers are kept but detached
    (.grp = -1), else layers are deleted too */
-int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_layers);
+int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers);
 
 /** Move gfrom to to_before and shift the stack as necessary. Return -1 on range error */
 int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t gfrom, pcb_layergrp_id_t to_before);
@@ -139,7 +139,7 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, pcb_layer_stack_t *s
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb, pcb_layer_stack_t *stack);
 
 /* ugly hack: remove the extra substrate we added after the outline layer */
-void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup);
+void pcb_layergrp_fix_old_outline(pcb_board_t *pcb);
 
 /* ugly hack: turn an old intern layer group into an outline group after realizing it is really an outline (reading the old layers) */
 void pcb_layergrp_fix_turn_to_outline(pcb_layer_group_t *g);

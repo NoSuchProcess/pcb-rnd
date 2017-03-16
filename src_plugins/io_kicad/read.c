@@ -977,6 +977,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	int i;
 	unsigned int res;
 
+#warning TODO: don't use PCB, use st->PCB
 
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
 			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
@@ -1026,7 +1027,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 				}
 			}
 
-			pcb_layergrp_fix_old_outline(&PCB->LayerGroups);
+			pcb_layergrp_fix_old_outline(PCB);
 
 			pcb_layergrp_inhibit_dec();
 			return 0;

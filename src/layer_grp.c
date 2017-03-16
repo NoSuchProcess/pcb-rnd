@@ -153,8 +153,9 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
-int pcb_layergrp_free(pcb_layer_stack_t *stack, pcb_layergrp_id_t id)
+int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id)
 {
+	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	if ((id >= 0) && (id < stack->len)) {
 		int n;
 		pcb_layer_group_t *g = stack->grp + id;
@@ -177,7 +178,7 @@ int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layer_stack_t *stack, pcb_layer
 
 	if ((src < 0) || (src >= stack->len))
 		return -1;
-	if ((dst < stack->len) && (pcb_layergrp_free(stack, dst) != 0))
+	if ((dst < stack->len) && (pcb_layergrp_free(pcb, dst) != 0))
 		return -1;
 	d = stack->grp + dst;
 	s = stack->grp + src;
@@ -315,9 +316,10 @@ static void move_grps(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layerg
 		memmove(&stk->grp[from + delta], &stk->grp[from], sizeof(pcb_layer_group_t) * remaining);
 }
 
-int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_layers)
+int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 {
 	int n;
+	pcb_layer_stack_t *stk = &pcb->LayerGroups;
 
 	if ((gid < 0) || (gid >= stk->len))
 		return -1;
@@ -336,7 +338,7 @@ int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_laye
 		}
 	}
 
-	pcb_layergrp_free(stk, gid);
+	pcb_layergrp_free(pcb, gid);
 	move_grps(stk, gid+1, stk->len-1, -1);
 	stk->len--;
 	NOTIFY();
@@ -381,12 +383,13 @@ int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layerg
 
 
 	/* ugly hack: remove the extra substrate we added after the outline layer */
-void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup)
+void pcb_layergrp_fix_old_outline(pcb_board_t *pcb)
 {
+	pcb_layer_stack_t *LayerGroup = &pcb->LayerGroups;
 	pcb_layer_group_t *g = pcb_get_grp(LayerGroup, PCB_LYT_ANYWHERE, PCB_LYT_OUTLINE);
 	if ((g != NULL) && (g[1].type & PCB_LYT_SUBSTRATE)) {
 		pcb_layergrp_id_t gid = g - LayerGroup->grp + 1;
-		pcb_layergrp_del(LayerGroup, gid, 0);
+		pcb_layergrp_del(pcb, gid, 0);
 	}
 }
 
@@ -454,7 +457,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, pcb_laye
 			break;
 	}
 
-	pcb_layergrp_fix_old_outline(LayerGroup);
+	pcb_layergrp_fix_old_outline(pcb);
 
 	/* set the two silks */
 	g = pcb_get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
