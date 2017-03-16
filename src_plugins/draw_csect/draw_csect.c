@@ -572,7 +572,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				if (gactive >= 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 					if (l->grp != gactive) {
-						pcb_layer_move_to_group(drag_lid, gactive);
+						pcb_layer_move_to_group(PCB, drag_lid, gactive);
 						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->Name, gactive);
 					}
 				}

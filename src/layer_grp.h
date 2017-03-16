@@ -62,7 +62,7 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 
 /* Returns group actually moved to (i.e. either group or previous) */
-pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_t group);
+pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t layer, pcb_layergrp_id_t group);
 
 /* Returns pcb_true if all layers in a group are empty */
 pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t lgrp);

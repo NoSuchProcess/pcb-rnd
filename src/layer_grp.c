@@ -67,7 +67,7 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t lid)
 	return pcb_layer_get_group_(&PCB->Data->Layer[lid]);
 }
 
-int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
+int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id_t lid)
 {
 	int n;
 	pcb_layer_group_t *grp;
@@ -76,13 +76,13 @@ int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
 	if ((lid < 0) || (lid >= pcb_max_layer))
 		return -1;
 
-	layer = PCB->Data->Layer + lid;
+	layer = pcb->Data->Layer + lid;
 	if (gid < 0)
 		gid = layer->grp;
-	if (gid >= PCB->LayerGroups.len)
+	if (gid >= pcb->LayerGroups.len)
 		return -1;
 
-	grp = &PCB->LayerGroups.grp[gid];
+	grp = &pcb->LayerGroups.grp[gid];
 
 	if (layer->grp != gid)
 		return -1;
@@ -104,9 +104,9 @@ int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
 	return -1;
 }
 
-pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t lid, pcb_layergrp_id_t gid)
+pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, pcb_layergrp_id_t gid)
 {
-	if (pcb_layergrp_del_layer(-1, lid) != 0)
+	if (pcb_layergrp_del_layer(pcb, -1, lid) != 0)
 		return -1;
 	pcb_layer_add_in_group(lid, gid);
 	NOTIFY();

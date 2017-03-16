@@ -874,7 +874,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 
 		/* move old bottom layer to internal */
 		grp = pcb_get_grp_new_intern(PCB, &PCB->LayerGroups, -1);
-		pcb_layer_move_to_group(bottom_layer_id, grp - PCB->LayerGroups.grp);
+		pcb_layer_move_to_group(PCB, bottom_layer_id, grp - PCB->LayerGroups.grp);
 
 		/* created layer becomes new bottom layer */
 		bottom_layer_id = layer_id;
