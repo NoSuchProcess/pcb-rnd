@@ -93,7 +93,7 @@ int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t gfrom, pcb_layer
 
 /** Move src onto dst, not shifting the stack, free()'ing and overwriting dst,
     leaving a gap (0'd slot) at src */
-int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src);
+int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layergrp_id_t dst, pcb_layergrp_id_t src);
 
 
 /* Insert a new layer group in the layer stack after the specified group */

@@ -171,8 +171,9 @@ int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id)
 	return -1;
 }
 
-int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
+int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
 {
+	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	pcb_layer_group_t *d, *s;
 	int n;
 
@@ -231,7 +232,7 @@ pcb_layer_group_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t
 		return NULL;
 
 	for(n = stack->len-1; n > where; n--)
-		pcb_layergrp_move_onto(pcb, stack, n+1, n);
+		pcb_layergrp_move_onto(pcb, n+1, n);
 
 	stack->len++;
 	NOTIFY();
@@ -251,7 +252,7 @@ static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, pcb_layer_st
 
 			/* insert a new internal layer: move existing layers to make room */
 			for(n = stack->len-1; n >= bl; n--)
-				pcb_layergrp_move_onto(pcb, stack, n+2, n);
+				pcb_layergrp_move_onto(pcb, n+2, n);
 
 			stack->len += 2;
 
