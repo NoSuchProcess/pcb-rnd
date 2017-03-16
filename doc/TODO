@@ -1,9 +1,6 @@
 - BUGS
 	+ rats not disappearing after routing [report: erich/cm13g09]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
-	- load data from layout to paste buffer:
-		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
-		- probably IDs are messed too: copy and paste new arc loaded that way a few times and it will disappear after other edits (silk)
 	- make ; make clean -> error messages for removing non-existing files [report: Dima]
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
