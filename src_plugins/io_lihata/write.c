@@ -542,7 +542,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 	}
 
 	for(n = 0; n < pcb_max_layer; n++) {
-		int gid = pcb_layer_lookup_group(n);
+		int gid = pcb_layer_get_group(PCB, n);
 		if (v1_layers) {
 			if (gid >= 0) {
 				if (gid < sizeof(grp) / sizeof(grp[0]))

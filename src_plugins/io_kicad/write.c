@@ -293,12 +293,12 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 
 	/* we now proceed to write the internal copper text to the kicad file, layer by layer */
 	if (innerCount != 0) {
-		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
+		currentGroup = pcb_layer_get_group(PCB, innerLayers[0]);
 	}
 	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper text, group by group */
 		{
-			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
-				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
+			if (currentGroup != pcb_layer_get_group(PCB, innerLayers[i])) {
+				currentGroup = pcb_layer_get_group(PCB, innerLayers[i]);
 				currentKicadLayer++;
 				if (currentKicadLayer > 14) {
 					currentKicadLayer = 14; /* kicad 16 layers in total, 0...15 */
@@ -345,12 +345,12 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 
 	/* we now proceed to write the internal copper tracks to the kicad file, layer by layer */
 	if (innerCount != 0) {
-		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
+		currentGroup = pcb_layer_get_group(PCB, innerLayers[0]);
 	}
 	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper tracks, group by group */
 		{
-			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
-				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
+			if (currentGroup != pcb_layer_get_group(PCB, innerLayers[i])) {
+				currentGroup = pcb_layer_get_group(PCB, innerLayers[i]);
 				currentKicadLayer++;
 				if (currentKicadLayer > 14) {
 					currentKicadLayer = 14; /* kicad 16 layers in total, 0...15 */
@@ -430,12 +430,12 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 
 	/* we now proceed to write the internal copper polygons to the kicad file, layer by layer */
 	if (innerCount != 0) {
-		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
+		currentGroup = pcb_layer_get_group(PCB, innerLayers[0]);
 	}
 	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper polygons, group by group */
 		{
-			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
-				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
+			if (currentGroup != pcb_layer_get_group(PCB, innerLayers[i])) {
+				currentGroup = pcb_layer_get_group(PCB, innerLayers[i]);
 				currentKicadLayer++;
 				if (currentKicadLayer > 14) {
 					currentKicadLayer = 14; /* kicad 16 layers in total, 0...15 */

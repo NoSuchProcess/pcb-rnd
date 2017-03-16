@@ -713,7 +713,7 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 	if (pcb_gui->set_layer_group != NULL) {
 		pcb_layergrp_id_t grp;
 		pcb_layer_id_t lid = v->new_id;
-		grp = pcb_layer_lookup_group(lid);
+		grp = pcb_layer_get_group(PCB, lid);
 		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
 	}
 

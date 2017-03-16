@@ -79,9 +79,6 @@ const char *pcb_layergrp_name(pcb_layergrp_id_t gid);
 int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
 int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
 
-/* Looks up which group a layer is in. Returns group ID. */
-pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id);
-
 /* Put a layer in a group (the layer should not be in any other group);
    returns 0 on success */
 int pcb_layer_add_in_group(pcb_board_t *pcb, pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);

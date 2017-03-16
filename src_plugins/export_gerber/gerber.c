@@ -436,7 +436,7 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 		suff = "oln";
 	else {
 		static char buf[20];
-		pcb_layergrp_id_t group = pcb_layer_lookup_group(lid);
+		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, lid);
 		sprintf(buf, "ly%ld", group);
 		suff = buf;
 	}
@@ -481,7 +481,7 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 		suff = "gm1";
 	else {
 		static char buf[20];
-		pcb_layergrp_id_t group = pcb_layer_lookup_group(lid);
+		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, lid);
 		sprintf(buf, "g%ld", group);
 		suff = buf;
 	}
