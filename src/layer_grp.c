@@ -303,15 +303,18 @@ pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb)
 
 /* Move an inclusive block of groups [from..to] by delta on the stack, assuming
    target is already cleared and the new hole will be cleared by the caller */
-static void move_grps(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layergrp_id_t to, int delta)
+static void move_grps(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layergrp_id_t to, int delta)
 {
 	int g, remaining, n;
 
 	for(g = from; g <= to; g++) {
 		for(n = 0; n < stk->grp[g].len; n++) {
-			pcb_layer_t *l = pcb_get_layer(stk->grp[g].lid[n]);
-			if ((l != NULL) && (l->grp > 0))
-				l->grp += delta;
+			pcb_layer_id_t lid =stk->grp[g].lid[n];
+			if ((lid >= 0) && (lid < pcb_max_layer)) {
+				pcb_layer_t *l = &pcb->Data->Layer[n];
+				if (l->grp > 0)
+					l->grp += delta;
+			}
 		}
 	}
 
@@ -343,7 +346,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 	}
 
 	pcb_layergrp_free(pcb, gid);
-	move_grps(stk, gid+1, stk->len-1, -1);
+	move_grps(pcb, stk, gid+1, stk->len-1, -1);
 	stk->len--;
 	NOTIFY();
 	return 0;
@@ -366,11 +369,11 @@ int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layerg
 	memcpy(&tmp, &stk->grp[from], sizeof(pcb_layer_group_t));
 	memset(&stk->grp[from], 0, sizeof(pcb_layer_group_t));
 	if (to_before < from + 1) {
-		move_grps(stk, to_before, from-1, +1);
+		move_grps(PCB, stk, to_before, from-1, +1);
 		memcpy(&stk->grp[to_before], &tmp, sizeof(pcb_layer_group_t));
 	}
 	else {
-		move_grps(stk, from+1, to_before-1, -1);
+		move_grps(PCB, stk, from+1, to_before-1, -1);
 		memcpy(&stk->grp[to_before-1], &tmp, sizeof(pcb_layer_group_t));
 	}
 
