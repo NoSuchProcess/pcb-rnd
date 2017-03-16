@@ -549,7 +549,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 			continue;
 		layer = PCB->Data->Layer + i;
 		if (!pcb_layer_is_empty_(layer))
-			group_data[pcb_layer_get_group(i)].draw = 1;
+			group_data[pcb_layer_get_group(PCB, i)].draw = 1;
 	}
 
 	inner_layers = 0;

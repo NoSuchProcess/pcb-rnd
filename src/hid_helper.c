@@ -56,7 +56,7 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 	}
 
 	
-	group = pcb_layer_get_group(lid);
+	group = pcb_layer_get_group(PCB, lid);
 	nlayers = PCB->LayerGroups.grp[group].len;
 	single_name = pcb_layer_name(lid);
 

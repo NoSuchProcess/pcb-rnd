@@ -58,7 +58,7 @@ struct pcb_layer_stack_s {
 };
 
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
-pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
+pcb_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 
 /* Returns group actually moved to (i.e. either group or previous) */

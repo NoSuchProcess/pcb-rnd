@@ -78,7 +78,7 @@ static void remote_send_all_layers()
 	for(n = 0; n < used; n++) {
 		const char *name;
 		pcb_layer_id_t layer_id = arr[n];
-		pcb_layergrp_id_t gid = pcb_layer_get_group(layer_id);
+		pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, layer_id);
 		name = pcb_layer_name(layer_id);
 		if ((gid < 0) && (name != NULL)) {
 			pcb_remote_new_layer_group(name, layer_id, pcb_layer_flags(layer_id));
@@ -89,7 +89,7 @@ static void remote_send_all_layers()
 
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t lid = arr[n];
-		pcb_layergrp_id_t gid = pcb_layer_get_group(lid);
+		pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, lid);
 		if (gid >= 0)
 			pcb_remote_new_layer(pcb_layer_name(lid), lid, gid);
 	}

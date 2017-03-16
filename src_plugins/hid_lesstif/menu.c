@@ -254,7 +254,7 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	show_one_layer_button(layer, set);
 	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(layer) & PCB_LYT_SILK))) {
 		int i;
-		pcb_layergrp_id_t group = pcb_layer_get_group(layer);
+		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, layer);
 		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
 			l = PCB->LayerGroups.grp[group].lid[i];
 			if (l != layer && (!(pcb_layer_flags(l) & PCB_LYT_SILK))) {

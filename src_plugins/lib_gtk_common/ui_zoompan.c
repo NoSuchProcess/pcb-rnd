@@ -351,7 +351,7 @@ side'' of the board.
 
 int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_layergrp_id_t active_group = pcb_layer_get_group(pcb_layer_stack[0]);
+	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	pcb_bool comp_on = pcb_false, solder_on = pcb_false;
 

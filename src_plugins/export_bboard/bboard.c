@@ -508,7 +508,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 	for (i = 0; i < pcb_max_layer; i++) {
 		layer = PCB->Data->Layer + i;
 		if (linelist_length(&layer->Line) > 0)
-			group_data[pcb_layer_get_group(i)].draw = 1;
+			group_data[pcb_layer_get_group(PCB, i)].draw = 1;
 	}
 
 	bboard_init_board_cairo(PCB->MaxWidth, PCB->MaxHeight, bboard_bgcolor, options[HA_antialias].int_value);
@@ -532,7 +532,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 		unsigned int flg = pcb_layer_flags(i);
 		if (flg & PCB_LYT_SILK)
 			continue;
-		if (bboard_validate_layer(flg, pcb_layer_get_group(i), options[HA_skipsolder].int_value)) {
+		if (bboard_validate_layer(flg, pcb_layer_get_group(PCB, i), options[HA_skipsolder].int_value)) {
 			bboard_get_layer_color(&(PCB->Data->Layer[i]), &clr_r, &clr_g, &clr_b);
 			bboard_set_color_cairo(clr_r, clr_g, clr_b);
 			PCB_LINE_LOOP(&(PCB->Data->Layer[i]));

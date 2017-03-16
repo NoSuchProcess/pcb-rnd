@@ -1512,7 +1512,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			PCB_END_LOOP;
 		}
 		else {
-			PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
+			PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(PCB, pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
 			{
 				info.layer = layer;
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
@@ -1530,7 +1530,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		/* non-copper (e.g. silk, outline) doesn't plow */
 		if (!(pcb_layer_flags(pcb_layer_id(Data, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER)))
 			return 0;
-		PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
+		PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(PCB, pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
 		{
 			info.layer = layer;
 			pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);

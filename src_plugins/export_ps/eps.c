@@ -148,7 +148,7 @@ PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 static pcb_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_layer && l >= 0)
-		return pcb_layer_get_group(l);
+		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
 	return pcb_max_group + 3 + l;
 }
@@ -212,7 +212,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 			continue;
 		if (layer->On)
 			if (!PCB_LAYER_IS_EMPTY(layer))
-				print_group[pcb_layer_get_group(i)] = 1;
+				print_group[pcb_layer_get_group(PCB, i)] = 1;
 	}
 
 	/* Now, if only one layer has real stuff on it, we can use the fast
@@ -228,7 +228,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	if (fast_erase == 0) {
 		pcb_layergrp_id_t comp_copp;
 		if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &comp_copp, 1) > 0) {
-			print_group[pcb_layer_get_group(comp_copp)] = 1;
+			print_group[pcb_layer_get_group(PCB, comp_copp)] = 1;
 			fast_erase = 1;
 		}
 	}
@@ -241,7 +241,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	for (i = 0; i < pcb_max_layer; i++) {
 		if (pcb_layer_flags(i) & PCB_LYT_SILK)
 			continue;
-		if (print_group[pcb_layer_get_group(i)])
+		if (print_group[pcb_layer_get_group(PCB, i)])
 			print_layer[i] = 1;
 	}
 

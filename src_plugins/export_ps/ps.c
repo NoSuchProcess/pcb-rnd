@@ -429,7 +429,7 @@ static pcb_hid_attribute_t *ps_get_export_options(int *n)
 static pcb_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_layer && l >= 0)
-		return pcb_layer_get_group(l);
+		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
 	return pcb_max_group + 3 + l;
 }

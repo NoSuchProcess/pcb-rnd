@@ -537,8 +537,8 @@ static void move_all_thermals(int old_index, int new_index)
 
 static int is_last_top_copper_layer(int layer)
 {
-	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb_max_group + PCB_COMPONENT_SIDE);
-	pcb_layergrp_id_t lgroup = pcb_layer_get_group(layer);
+	pcb_layergrp_id_t cgroup = pcb_layer_get_group(PCB, pcb_max_group + PCB_COMPONENT_SIDE);
+	pcb_layergrp_id_t lgroup = pcb_layer_get_group(PCB, layer);
 	if (cgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
 		return 1;
 	return 0;
@@ -546,8 +546,8 @@ static int is_last_top_copper_layer(int layer)
 
 static int is_last_bottom_copper_layer(int layer)
 {
-	int sgroup = pcb_layer_get_group(pcb_max_group + PCB_SOLDER_SIDE);
-	int lgroup = pcb_layer_get_group(layer);
+	int sgroup = pcb_layer_get_group(PCB, pcb_max_group + PCB_SOLDER_SIDE);
+	int lgroup = pcb_layer_get_group(PCB, layer);
 	if (sgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
 		return 1;
 	return 0;

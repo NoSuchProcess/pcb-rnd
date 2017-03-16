@@ -499,7 +499,7 @@ void nelma_choose_groups()
 			/* layer isn't empty */
 			if ((flags & PCB_LYT_COPPER) || (flags & PCB_LYT_OUTLINE)) {
 				/* layer is a copper layer */
-				m = pcb_layer_get_group(n);
+				m = pcb_layer_get_group(PCB, n);
 
 				/* the export layer */
 				nelma_export_group[m] = 1;

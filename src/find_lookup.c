@@ -1199,7 +1199,7 @@ static pcb_r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
-	pcb_layergrp_id_t i_layergrp = pcb_layer_get_group(i->layer);
+	pcb_layergrp_id_t i_layergrp = pcb_layer_get_group(PCB, i->layer);
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
 		if (rat->group1 == i_layergrp &&

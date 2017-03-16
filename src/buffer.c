@@ -487,8 +487,8 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 	Buffer->Data->Layer[CLayer] = swap;
 
 	/* swap layer groups when balanced */
-	sgroup = pcb_layer_get_group(SLayer);
-	cgroup = pcb_layer_get_group(CLayer);
+	sgroup = pcb_layer_get_group(PCB, SLayer);
+	cgroup = pcb_layer_get_group(PCB, CLayer);
 #warning layer TODO: revise this code for the generic physical layer support; move this code to layer*.c
 	if (PCB->LayerGroups.grp[cgroup].len == PCB->LayerGroups.grp[sgroup].len) {
 		for (j = k = 0; j < PCB->LayerGroups.grp[sgroup].len; j++) {

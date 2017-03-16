@@ -191,7 +191,7 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
 		printf("pcb_layervis_change_group_vis(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
 
 	/* decrement 'i' to keep stack in order of layergroup */
-	if ((group = pcb_layer_get_group(Layer)) >= 0) {
+	if ((group = pcb_layer_get_group(PCB, Layer)) >= 0) {
 		for (i = PCB->LayerGroups.grp[group].len; i;) {
 			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[--i];
 

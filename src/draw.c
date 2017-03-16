@@ -193,7 +193,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *l = LAYER_ON_STACK(i);
-		pcb_layergrp_id_t group = pcb_layer_get_group(pcb_layer_stack[i]);
+		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		unsigned int gflg = pcb_layergrp_flags(group);
 
 		if (gflg & PCB_LYT_SILK) /* do not draw silk here, it'll be drawn separately */

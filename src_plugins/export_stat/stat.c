@@ -174,7 +174,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		int empty = pcb_layer_is_empty_(l);
 		unsigned int lflg = pcb_layer_flags(lid);
 
-		lgid = pcb_layer_get_group(lid);
+		lgid = pcb_layer_get_group(PCB, lid);
 		lgs = lgss + lgid;
 
 		fprintf(f, "		ha:layer_%d {\n", lid);

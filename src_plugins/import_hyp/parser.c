@@ -1989,8 +1989,8 @@ pcb_bool exec_useg(parse_param * h)
 
 	/* XXX fixme. I want to put an unrouted segment between two layers, not two layer groups. */
 	/* lookup layer group begin and end layer are on */
-	layer1_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer1_name));
-	layer2_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer2_name));
+	layer1_grp_id = pcb_layer_get_group(PCB, hyp_create_layer(h->layer1_name));
+	layer2_grp_id = pcb_layer_get_group(PCB, hyp_create_layer(h->layer2_name));
 
 	if ((layer1_grp_id == -1) || (layer2_grp_id == -1)) {
 		if (hyp_debug)

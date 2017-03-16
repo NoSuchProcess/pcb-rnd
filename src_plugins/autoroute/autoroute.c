@@ -729,7 +729,7 @@ static routebox_t *AddIrregularObstacle(vtptr_t layergroupboxes[],
 static routebox_t *AddPolygon(vtptr_t layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, pcb_route_style_t * style)
 {
 	int is_not_rectangle = 1;
-	pcb_layergrp_id_t layergroup = pcb_layer_get_group(layer);
+	pcb_layergrp_id_t layergroup = pcb_layer_get_group(PCB, layer);
 	routebox_t *rb;
 	assert(0 <= layergroup && layergroup < pcb_max_group);
 	rb = AddIrregularObstacle(layergroupboxes,
@@ -1077,7 +1077,7 @@ static routedata_t *CreateRouteData()
 		if (!(pcb_layer_flags(i) & PCB_LYT_COPPER))
 			continue;
 
-		layergroup = pcb_layer_get_group(i);
+		layergroup = pcb_layer_get_group(PCB, i);
 
 		/* add all (non-rat) lines */
 		PCB_LINE_LOOP(LAYER_PTR(i));

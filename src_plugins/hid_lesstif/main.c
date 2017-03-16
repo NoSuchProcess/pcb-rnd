@@ -580,7 +580,7 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
-	pcb_layergrp_id_t active_group = pcb_layer_get_group(pcb_layer_stack[0]);
+	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	int comp_layer;
 	int solder_layer;
 	int comp_showing = 0, solder_showing = 0;
@@ -2743,7 +2743,7 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		idx = PCB->LayerGroups.grp[group].lid[idx];
 #if 0
 		if (idx == pcb_layer_stack[0]
-				|| pcb_layer_get_group(idx) == pcb_layer_get_group(pcb_layer_stack[0]))
+				|| pcb_layer_get_group(PCB, idx) == pcb_layer_get_group(PCB, pcb_layer_stack[0]))
 			autofade = 0;
 		else
 			autofade = 1;
