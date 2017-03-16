@@ -122,13 +122,13 @@ unsigned int pcb_layergrp_flags(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 	return pcb->LayerGroups.grp[gid].type;
 }
 
-const char *pcb_layergrp_name(pcb_layergrp_id_t gid)
+const char *pcb_layergrp_name(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 {
 
-	if ((gid < 0) || (gid >= PCB->LayerGroups.len))
+	if ((gid < 0) || (gid >= pcb->LayerGroups.len))
 		return 0;
 
-	return PCB->LayerGroups.grp[gid].name;
+	return pcb->LayerGroups.grp[gid].name;
 }
 
 pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
