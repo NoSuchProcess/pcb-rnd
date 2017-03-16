@@ -474,7 +474,7 @@ static void do_move_grp()
 
 	tflg = pcb_layergrp_flags(PCB, gactive);
 
-	pcb_layergrp_move(&PCB->LayerGroups, drag_gid, gactive);
+	pcb_layergrp_move(PCB, &PCB->LayerGroups, drag_gid, gactive);
 
 	if (drag_gid_subst >= 0) {
 		if ((drag_gid < drag_gid_subst) && (gactive > drag_gid))
@@ -485,15 +485,15 @@ static void do_move_grp()
 
 		if (tflg & PCB_LYT_COPPER) {
 			if (tflg & PCB_LYT_BOTTOM)
-				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive);
+				pcb_layergrp_move(PCB, &PCB->LayerGroups, drag_gid_subst, gactive);
 			else
-				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive+1);
+				pcb_layergrp_move(PCB, &PCB->LayerGroups, drag_gid_subst, gactive+1);
 		}
 		else if (tflg & PCB_LYT_SUBSTRATE) {
 			if (gactive < drag_gid)
-				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive);
+				pcb_layergrp_move(PCB, &PCB->LayerGroups, drag_gid_subst, gactive);
 			else
-				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive-1);
+				pcb_layergrp_move(PCB, &PCB->LayerGroups, drag_gid_subst, gactive-1);
 		}
 	}
 }

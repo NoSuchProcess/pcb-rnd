@@ -352,7 +352,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 	return 0;
 }
 
-int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layergrp_id_t to_before)
+int pcb_layergrp_move(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layergrp_id_t to_before)
 {
 	pcb_layer_group_t tmp;
 	int n;
@@ -369,17 +369,19 @@ int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layerg
 	memcpy(&tmp, &stk->grp[from], sizeof(pcb_layer_group_t));
 	memset(&stk->grp[from], 0, sizeof(pcb_layer_group_t));
 	if (to_before < from + 1) {
-		move_grps(PCB, stk, to_before, from-1, +1);
+		move_grps(pcb, stk, to_before, from-1, +1);
 		memcpy(&stk->grp[to_before], &tmp, sizeof(pcb_layer_group_t));
 	}
 	else {
-		move_grps(PCB, stk, from+1, to_before-1, -1);
+		move_grps(pcb, stk, from+1, to_before-1, -1);
 		memcpy(&stk->grp[to_before-1], &tmp, sizeof(pcb_layer_group_t));
 	}
 
 	/* fix up the group id for the layers of the group moved */
 	for(n = 0; n < stk->grp[to_before].len; n++) {
-		pcb_layer_t *l = pcb_get_layer(stk->grp[to_before].lid[n]);
+#warning TODO: use pcb_get_layer when it becomes pcb-safe
+/*		pcb_layer_t *l = pcb_get_layer(stk->grp[to_before].lid[n]);*/
+		pcb_layer_t *l = &pcb->Data->Layer[stk->grp[to_before].lid[n]];
 		if ((l != NULL) && (l->grp > 0))
 			l->grp = to_before;
 	}
