@@ -476,13 +476,13 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 			if (comp_layer < solder_layer)
 				for (i = comp_layer; i <= solder_layer; i++) {
 					photo_groups[n++] = i;
-					if (i != comp_layer && i != solder_layer && !pcb_is_layergrp_empty(i))
+					if (i != comp_layer && i != solder_layer && !pcb_is_layergrp_empty(PCB, i))
 						photo_has_inners = 1;
 				}
 			else
 				for (i = comp_layer; i >= solder_layer; i--) {
 					photo_groups[n++] = i;
-					if (i != comp_layer && i != solder_layer && !pcb_is_layergrp_empty(i))
+					if (i != comp_layer && i != solder_layer && !pcb_is_layergrp_empty(PCB, i))
 						photo_has_inners = 1;
 				}
 			if (!photo_has_inners) {

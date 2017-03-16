@@ -4407,7 +4407,7 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 		/* do nothing here to export all layers */
 	}
 	else {
-		if (pcb_is_layergrp_empty(group)) {
+		if (pcb_is_layergrp_empty(PCB, group)) {
 			/* do not export empty layers */
 			if (dxf_verbose) {
 				fprintf(stderr, "DXF: Warning, Layer %ld contains no exportable items and is not set.\n", group);
