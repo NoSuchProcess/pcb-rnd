@@ -138,7 +138,8 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			safe_term_num(pnum, pin, buff);
 			print_term(pnum, pin);
 			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->Thickness/2, pin->Clearance);
-			pcb_fprintf(f, "	hole %s %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole);
+#warning TODO:  last dash should be unplated for mounting holes
+			pcb_fprintf(f, "	hole %s %mm %mm %mm -\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole);
 		}
 		PCB_END_LOOP;
 
@@ -410,7 +411,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 
 			pcb_element_arc_new(elem, cx, cy, r, r, sa, da, w);
 		}
-		else if ((argc == 5) && (strcmp(argv[0], "hole") == 0)) {
+		else if ((argc == 6) && (strcmp(argv[0], "hole") == 0)) {
 			pcb_coord_t cx, cy, d;
 
 			if (term->pin != NULL) {
@@ -422,6 +423,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			load_val(cx, argv[2], "ivalid arc cx");
 			load_val(cy, argv[3], "ivalid arc cy");
 			load_val(d, argv[4], "ivalid arc radius");
+#warning TODO: argv[5] is hints: plated vs. unplated
 			term->pin = pcb_element_pin_new(elem, cx, cy, 0, 0, 0, d, term->name, argv[1], pcb_no_flags());
 		}
 		else if ((argc == 8) && (strcmp(argv[0], "fillcircle") == 0)) {
