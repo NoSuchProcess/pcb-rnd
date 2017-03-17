@@ -142,7 +142,7 @@ hyp_section
   | netclass 
   | end 
   | key 
-  | '{' error '}' ;
+  | error '}' ;
 
   /* board_file */
 
@@ -537,6 +537,7 @@ pin_function
   : H_F '=' H_SIM_OUT  { h.pin_function = PIN_SIM_OUT; h.pin_function_set = pcb_true; }
   | H_F '=' H_SIM_IN   { h.pin_function = PIN_SIM_IN; h.pin_function_set = pcb_true; }
   | H_F '=' H_SIM_BOTH { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = pcb_true; }
+  | H_F '=' H_STRING { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = pcb_true; hyyerror("warning: SIM_BOTH assumed"); }
   ;
 
 pad /* deprecated hyperlynx v1.x only */
