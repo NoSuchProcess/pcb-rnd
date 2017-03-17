@@ -193,13 +193,13 @@ board_param_list
 board_param_list_item
   : '(' board_param ')'
   | '(' board_param { hyyerror("warning: missing ')'"); }
+  | error ')' ;
   ;
 
 board_param
   : perimeter_segment
   | perimeter_arc
-  | board_attribute 
-  | error ;
+  | board_attribute ;
 
 perimeter_segment
   : H_PERIMETER_SEGMENT coord_line { if (exec_perimeter_segment(&h)) YYERROR; } ;
