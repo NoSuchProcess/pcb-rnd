@@ -561,6 +561,32 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 	return 0;
 }
 
+static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
+{
+	pcb_line_t *li;
+	pcb_text_t *te;
+	pcb_polygon_t *po;
+	pcb_arc_t *ar;
+
+	memcpy(dst, src, sizeof(pcb_layer_t));
+
+	/* reparent all the lists: each list item has a ->parent pointer that needs to point to the new place */
+	for(li = linelist_first(&dst->Line); li != NULL; li = linelist_next(li))
+		li->link.parent = &dst->Line.lst;
+	for(te = textlist_first(&dst->Text); te != NULL; te = textlist_next(te))
+		te->link.parent = &dst->Text.lst;
+	for(po = polylist_first(&dst->Polygon); po != NULL; po = polylist_next(po))
+		po->link.parent = &dst->Polygon.lst;
+	for(ar = arclist_first(&dst->Arc); ar != NULL; ar = arclist_next(ar))
+		ar->link.parent = &dst->Arc.lst;
+}
+
+static void layer_clear(pcb_layer_t *dst)
+{
+	memset(dst, 0, sizeof(pcb_layer_t));
+	dst->grp = -1;
+}
+
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
 	pcb_layer_id_t l;
@@ -601,9 +627,12 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		}
 		/* Create a new layer at new_index. */
 		lp = &PCB->Data->Layer[new_index];
+#warning TODO: use layer_move()
 		memmove(&PCB->Data->Layer[new_index + 1],
 						&PCB->Data->Layer[new_index], (pcb_max_layer - new_index) * sizeof(pcb_layer_t));
 		pcb_max_layer++;
+
+#warning TODO: make a static layer_new()
 		memset(lp, 0, sizeof(pcb_layer_t));
 		lp->On = 1;
 		lp->Name = pcb_strdup("New Layer");
@@ -623,10 +652,12 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		pcb_layer_stack[pcb_max_layer - 1] = new_index;
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
-#warning layer TODO remove objects, free fields
-		memmove(&PCB->Data->Layer[old_index],
-						&PCB->Data->Layer[old_index + 1], (pcb_max_layer - old_index - 1) * sizeof(pcb_layer_t));
-		memset(&PCB->Data->Layer[pcb_max_layer + 1], 0, sizeof(pcb_layer_t));
+#warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
+		for(l = old_index; l < pcb_max_layer-1; l++) {
+			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
+			layer_clear(&PCB->Data->Layer[l+1]);
+		}
+
 		for (l = 0; l < pcb_max_layer; l++)
 			if (pcb_layer_stack[l] == old_index)
 				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb_max_layer - l - 1) * sizeof(pcb_layer_stack[0]));
@@ -637,11 +668,16 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	}
 	else {
 		/* Move an existing layer */
+#warning TODO: use layer_move()
 		memcpy(&saved_layer, &PCB->Data->Layer[old_index], sizeof(pcb_layer_t));
+
+#warning TODO: use layer_move()
 		if (old_index < new_index)
 			memmove(&PCB->Data->Layer[old_index], &PCB->Data->Layer[old_index + 1], (new_index - old_index) * sizeof(pcb_layer_t));
 		else
 			memmove(&PCB->Data->Layer[new_index + 1], &PCB->Data->Layer[new_index], (old_index - new_index) * sizeof(pcb_layer_t));
+
+#warning TODO: use layer_move()
 		memcpy(&PCB->Data->Layer[new_index], &saved_layer, sizeof(pcb_layer_t));
 	}
 
