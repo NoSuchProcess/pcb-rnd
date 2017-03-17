@@ -57,8 +57,6 @@ typedef struct {
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
 		CFT_REAL route_radius;             /* temporary: route draw helper's arc radius at corners (factor of the trace thickness) */
-		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
-		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
 
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
 
@@ -156,6 +154,8 @@ typedef struct {
 	const struct appearance {
 		CFT_COORD rat_thickness;
 		CFT_COORD mark_size;               /* relative marker size */
+		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
+		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
 		struct loglevels {
 			CFT_STRING   debug_tag;          /* log style tag of debug messages */
 			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
