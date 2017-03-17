@@ -121,7 +121,6 @@ typedef struct {
 			
 			CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
 		} path;
-		CFT_COORD paste_adjust;		   /* Adjust paste thickness */
 	} rc;
 
 	const struct design { /* defaults of a new layout */
@@ -148,6 +147,8 @@ typedef struct {
 
 		CFT_STRING groups;                 /* string with layergroups */
 		CFT_STRING routes;                 /* string with route styles */
+
+		CFT_COORD paste_adjust;            /* Adjust paste thickness */
 	} design;
 
 /* @path appearance/color */

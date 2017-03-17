@@ -446,8 +446,8 @@ void DrawPaste(int side, const pcb_box_t * drawn_area)
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			pcb_coord_t save_thickness = pad->Thickness;
-			if (conf_core.rc.paste_adjust)
-				pad->Thickness = max(0, pad->Thickness + conf_core.rc.paste_adjust);
+			if (conf_core.design.paste_adjust)
+				pad->Thickness = max(0, pad->Thickness + conf_core.design.paste_adjust);
 			if (pad->Mask < pad->Thickness)
 				_draw_pad(Output.fgGC, pad, pcb_true, pcb_true);
 			else
