@@ -362,6 +362,9 @@ int pcb_act_FreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	else
 		angle_s = argv[0];
 
+	if (angle_s == NULL)
+		return 0;
+
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_buffer_free_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
 	pcb_notify_crosshair_change(pcb_true);
