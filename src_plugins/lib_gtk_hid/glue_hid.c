@@ -143,8 +143,16 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	gport->drawable = gport->pixmap;
 
 	if (!first_time_done) {
-		ghidgui->common.map_color_string(conf_core.appearance.color.background, &gport->bg_color);
-		ghidgui->common.map_color_string(conf_core.appearance.color.off_limit, &gport->offlimits_color);
+		gport->colormap = gtk_widget_get_colormap(gport->top_window);
+		if (gdk_color_parse(conf_core.appearance.color.background, &gport->bg_color))
+			gdk_color_alloc(gport->colormap, &gport->bg_color);
+		else
+			gdk_color_white(gport->colormap, &gport->bg_color);
+
+		if (gdk_color_parse(conf_core.appearance.color.off_limit, &gport->offlimits_color))
+			gdk_color_alloc(gport->colormap, &gport->offlimits_color);
+		else
+			gdk_color_white(gport->colormap, &gport->offlimits_color);
 		first_time_done = TRUE;
 		ghid_drawing_area_configure_hook(out);
 		pcb_board_changed(0);

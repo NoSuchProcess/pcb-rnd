@@ -53,7 +53,6 @@ typedef struct render_priv {
 	pcb_bool trans_lines;
 	pcb_bool in_context;
 	int subcomposite_stencil_bit;
-	GdkColormap *colormap;
 	char *current_colorname;
 	double current_alpha_mult;
 } render_priv;
@@ -102,7 +101,7 @@ static void map_color_string(const char *color_string, GdkColor * color)
 
 static void start_subcomposite(void)
 {
-	render_priv *priv = gport->priv;
+	render_priv *priv = gport->render_priv;
 	int stencil_bit;
 
 	/* Flush out any existing geoemtry to be rendered */
@@ -120,7 +119,7 @@ static void start_subcomposite(void)
 
 static void end_subcomposite(void)
 {
-	render_priv *priv = gport->priv;
+	render_priv *priv = gport->render_priv;
 
 	/* Flush out any existing geoemtry to be rendered */
 	hidgl_flush_triangles(&buffer);
@@ -137,7 +136,7 @@ static void end_subcomposite(void)
 
 int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	render_priv *priv = gport->priv;
+	render_priv *priv = gport->render_priv;
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group) {
 		int n = PCB->LayerGroups.grp[group].len;
@@ -350,7 +349,7 @@ void ghid_gl_use_mask(int use_it)
 	 */
 static void set_special_grid_color(void)
 {
-	if (!gport->priv->colormap)
+	if (!gport->colormap)
 		return;
 	gport->grid_color.red ^= gport->bg_color.red;
 	gport->grid_color.green ^= gport->bg_color.green;
@@ -359,7 +358,7 @@ static void set_special_grid_color(void)
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
-	render_priv *priv = gport->priv;
+	render_priv *priv = gport->render_priv;
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
 		map_color_string(cfg->val.color[0], &gport->bg_color);
 		set_special_grid_color();
@@ -385,7 +384,7 @@ typedef struct {
 
 static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 {
-	render_priv *priv = gport->priv;
+	render_priv *priv = gport->render_priv;
 	static void *cache = NULL;
 	pcb_hidval_t cval;
 	ColorCache *cc;
@@ -399,8 +398,8 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	priv->current_colorname = pcb_strdup(gc->colorname);
 	priv->current_alpha_mult = gc->alpha_mult;
 
-	if (gport->priv->colormap == NULL)
-		gport->priv->colormap = gtk_widget_get_colormap(gport->top_window);
+	if (gport->colormap == NULL)
+		gport->colormap = gtk_widget_get_colormap(gport->top_window);
 	if (strcmp(gc->colorname, "erase") == 0) {
 		r = gport->bg_color.red / 65535.;
 		g = gport->bg_color.green / 65535.;
@@ -425,9 +424,9 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 		if (!cc->color_set) {
 			if (gdk_color_parse(gc->colorname, &cc->color))
-				gdk_color_alloc(gport->priv->colormap, &cc->color);
+				gdk_color_alloc(gport->colormap, &cc->color);
 			else
-				gdk_color_white(gport->priv->colormap, &cc->color);
+				gdk_color_white(gport->colormap, &cc->color);
 			cc->red = cc->color.red / 65535.;
 			cc->green = cc->color.green / 65535.;
 			cc->blue = cc->color.blue / 65535.;
@@ -438,7 +437,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 				cc->xor_color.red = cc->color.red ^ gport->bg_color.red;
 				cc->xor_color.green = cc->color.green ^ gport->bg_color.green;
 				cc->xor_color.blue = cc->color.blue ^ gport->bg_color.blue;
-				gdk_color_alloc(gport->priv->colormap, &cc->xor_color);
+				gdk_color_alloc(gport->colormap, &cc->xor_color);
 				cc->red = cc->color.red / 65535.;
 				cc->green = cc->color.green / 65535.;
 				cc->blue = cc->color.blue / 65535.;
@@ -761,7 +760,7 @@ void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 	GHidPort * port = vport;
 	render_priv *priv;
 
-	port->priv = priv = g_new0(render_priv, 1);
+	port->render_priv = priv = g_new0(render_priv, 1);
 
 	gtk_gl_init(argc, argv);
 
@@ -780,14 +779,14 @@ void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 
 void ghid_gl_shutdown_renderer(GHidPort * port)
 {
-	g_free(port->priv);
-	port->priv = NULL;
+	g_free(port->render_priv);
+	port->render_priv = NULL;
 }
 
 void ghid_gl_init_drawing_widget(GtkWidget * widget, void * port_)
 {
 	GHidPort *port = port_;
-	render_priv *priv = port->priv;
+	render_priv *priv = port->render_priv;
 
 	gtk_widget_set_gl_capability(widget, priv->glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
 }
@@ -806,7 +805,7 @@ gboolean ghid_gl_start_drawing(GHidPort * port)
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext))
 		return FALSE;
 
-	port->priv->in_context = pcb_true;
+	port->render_priv->in_context = pcb_true;
 
 	return TRUE;
 }
@@ -821,7 +820,7 @@ void ghid_gl_end_drawing(GHidPort * port)
 	else
 		glFlush();
 
-	port->priv->in_context = pcb_false;
+	port->render_priv->in_context = pcb_false;
 
 	/* end drawing to current GL-context */
 	gdk_gl_drawable_gl_end(pGlDrawable);
@@ -835,7 +834,7 @@ void ghid_gl_screen_update(void)
 gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
 {
 	GHidPort * port = vport;
-	render_priv *priv = port->priv;
+	render_priv *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
 
@@ -989,7 +988,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
 		return FALSE;
 	}
-	gport->priv->in_context = pcb_true;
+	gport->render_priv->in_context = pcb_true;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1040,7 +1039,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 		glFlush();
 
 	/* end drawing to current GL-context */
-	gport->priv->in_context = pcb_false;
+	gport->render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	gport->drawable = save_drawable;
@@ -1092,7 +1091,7 @@ GdkPixmap *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int hei
 	if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext)) {
 		return NULL;
 	}
-	gport->priv->in_context = pcb_true;
+	gport->render_priv->in_context = pcb_true;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1142,7 +1141,7 @@ GdkPixmap *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int hei
 	glFlush();
 
 	/* end drawing to current GL-context */
-	gport->priv->in_context = pcb_false;
+	gport->render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(gldrawable);
 
 	gdk_pixmap_unset_gl_capability(pixmap);
