@@ -625,11 +625,10 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 			pcb_message(PCB_MSG_ERROR, "No room for new layers\n");
 			return 1;
 		}
-		/* Create a new layer at new_index. */
+		/* Create a new layer at new_index - by shifting right all layers above it. */
 		lp = &PCB->Data->Layer[new_index];
-#warning TODO: use layer_move()
-		memmove(&PCB->Data->Layer[new_index + 1],
-						&PCB->Data->Layer[new_index], (pcb_max_layer - new_index) * sizeof(pcb_layer_t));
+		for(l = pcb_max_layer; l > new_index; l--)
+			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l-1]);
 		pcb_max_layer++;
 
 #warning TODO: make a static layer_new()
