@@ -68,7 +68,7 @@ struct GHidPort_s {
 	GdkPixmap *pixmap, *mask;
 	GdkDrawable *drawable;				/* Current drawable for drawing routines */
 
-	struct render_priv *render_priv;
+	struct render_priv_s *render_priv;
 
 	GdkColor bg_color, offlimits_color, grid_color;
 

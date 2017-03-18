@@ -28,7 +28,7 @@ static void ghid_gdk_screen_update(void);
 static int cur_mask = -1;
 static int mask_seq = 0;
 
-typedef struct render_priv {
+typedef struct render_priv_s {
 	GdkGC *bg_gc;
 	GdkGC *offlimits_gc;
 	GdkGC *mask_gc;
@@ -38,7 +38,7 @@ typedef struct render_priv {
 	GdkRectangle clip_rect;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
-} render_priv;
+} render_priv_t;
 
 
 typedef struct hid_gc_s {
@@ -52,7 +52,7 @@ typedef struct hid_gc_s {
 	gint mask_seq;
 } hid_gc_s;
 
-static void draw_lead_user(render_priv *priv_);
+static void draw_lead_user(render_priv_t *priv_);
 
 static const gchar *get_color_name(GdkColor * color)
 {
@@ -154,7 +154,7 @@ static pcb_hid_gc_t ghid_gdk_make_gc(void)
 	return rv;
 }
 
-static void set_clip(render_priv * priv, GdkGC * gc)
+static void set_clip(render_priv_t * priv, GdkGC * gc)
 {
 	if (gc == NULL)
 		return;
@@ -167,7 +167,7 @@ static void set_clip(render_priv * priv, GdkGC * gc)
 
 static inline void ghid_gdk_draw_grid_global(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	pcb_coord_t x, y, x1, y1, x2, y2, grd;
 	int n, i;
 	static GdkPoint *points = NULL;
@@ -227,7 +227,7 @@ static inline void ghid_gdk_draw_grid_global(void)
 
 static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
 	static int apoints = 0, npoints = 0, old_radius = 0;
@@ -310,7 +310,7 @@ static void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 static void ghid_gdk_draw_grid(void)
 {
 	static GdkColormap *colormap = NULL;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	grid_local_have_old = 0;
 
@@ -349,7 +349,7 @@ static void ghid_gdk_draw_bg_image(void)
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
 	static gint w_scaled, h_scaled;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	if (!ghidgui->bg_pixbuf)
 		return;
@@ -401,7 +401,7 @@ static void ghid_gdk_use_mask(int use_it)
 {
 	static int mask_seq_id = 0;
 	GdkColor color;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	if (!gport->pixmap)
 		return;
@@ -461,7 +461,7 @@ typedef struct {
 	 */
 static void set_special_grid_color(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	int red, green, blue;
 
 	red = (gport->grid_color.red ^ gport->bg_color.red) & 0xFF;
@@ -478,7 +478,7 @@ static void set_special_grid_color(void)
 
 static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
 		if (map_color_string(cfg->val.color[0], &gport->bg_color)) {
 			gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
@@ -559,7 +559,7 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 
 static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	switch (style) {
 	case Trace_Cap:
@@ -579,7 +579,7 @@ static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 static void ghid_gdk_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	gc->width = width;
 	if (gc->gc)
@@ -597,7 +597,7 @@ static void ghid_gdk_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 
 static int use_gc(pcb_hid_gc_t gc)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
 
 	if (gc->me_pointer != &gtk2_gdk_hid) {
@@ -629,7 +629,7 @@ static int use_gc(pcb_hid_gc_t gc)
 static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	dx1 = Vx((double) x1);
 	dy1 = Vy((double) y1);
@@ -647,7 +647,7 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 {
 	gint vrx2, vry2;
 	double w, h, radius;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -688,7 +688,7 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -724,7 +724,7 @@ static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	gint w, h, vr;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -743,7 +743,7 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	USE_GC(gc);
 
 	if (npoints < n_coords) {
@@ -760,7 +760,7 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw, xx, yy;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -794,7 +794,7 @@ static void redraw_region(GdkRectangle * rect)
 {
 	int eleft, eright, etop, ebottom;
 	pcb_hid_expose_ctx_t ctx;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	if (!gport->pixmap)
 		return;
@@ -920,7 +920,7 @@ static void ghid_gdk_invalidate_all()
 
 static void ghid_gdk_notify_crosshair_change(pcb_bool changes_complete)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -954,7 +954,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_bool changes_complete)
 
 static void ghid_gdk_notify_mark_change(pcb_bool changes_complete)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -1081,7 +1081,7 @@ static void draw_crosshair(GdkGC * xor_gc, gint x, gint y)
 
 static void show_crosshair(gboolean paint_new_location)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	gint x, y;
@@ -1122,7 +1122,7 @@ static void ghid_gdk_init_renderer(int *argc, char ***argv, void *vport)
 {
 	GHidPort * port = vport;
 	/* Init any GC's required */
-	port->render_priv = g_new0(render_priv, 1);
+	port->render_priv = g_new0(render_priv_t, 1);
 }
 
 static void ghid_gdk_shutdown_renderer(void *port_)
@@ -1140,7 +1140,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 {
 	GHidPort *port = port_;
 	static int done_once = 0;
-	render_priv *priv = port->render_priv;
+	render_priv_t *priv = port->render_priv;
 
 	if (!done_once) {
 		priv->bg_gc = gdk_gc_new(port->drawable);
@@ -1161,7 +1161,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 
 static void ghid_gdk_screen_update(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	if (gport->pixmap == NULL)
@@ -1174,7 +1174,7 @@ static void ghid_gdk_screen_update(void)
 static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
 {
 	GHidPort *port = vport;
-	render_priv *priv = port->render_priv;
+	render_priv_t *priv = port->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
@@ -1195,7 +1195,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1244,7 +1244,7 @@ static GdkPixmap *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width,
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	pcb_hid_expose_ctx_t ectx;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	save_drawable = gport->drawable;
 	save_view = gport->view;
@@ -1314,7 +1314,7 @@ static void ghid_gdk_finish_debug_draw(void)
 	 */
 }
 
-static void draw_lead_user(render_priv *priv)
+static void draw_lead_user(render_priv_t *priv)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);

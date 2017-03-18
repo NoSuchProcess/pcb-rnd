@@ -28,7 +28,7 @@ static void ghid_cairo_screen_update(void);
 static int cur_mask = -1;
 static int mask_seq = 0;
 
-typedef struct render_priv {
+typedef struct render_priv_s {
 	GdkGC *bg_gc;
 	GdkGC *offlimits_gc;
 	GdkGC *mask_gc;
@@ -38,7 +38,7 @@ typedef struct render_priv {
 	GdkRectangle clip_rect;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
-} render_priv;
+} render_priv_t;
 
 
 typedef struct hid_gc_s {

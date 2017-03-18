@@ -48,14 +48,14 @@ static pcb_hid_gc_t current_gc = NULL;
 
 static int cur_mask = -1;
 
-typedef struct render_priv {
+typedef struct render_priv_s {
 	GdkGLConfig *glconfig;
 	pcb_bool trans_lines;
 	pcb_bool in_context;
 	int subcomposite_stencil_bit;
 	char *current_colorname;
 	double current_alpha_mult;
-} render_priv;
+} render_priv_t;
 
 
 typedef struct hid_gc_s {
@@ -68,7 +68,7 @@ typedef struct hid_gc_s {
 	gchar xor;
 } hid_gc_s;
 
-static void draw_lead_user(render_priv * priv);
+static void draw_lead_user(render_priv_t * priv);
 
 static const gchar *get_color_name(GdkColor * color)
 {
@@ -104,7 +104,7 @@ static pcb_bool map_color_string(const char *color_string, GdkColor * color)
 
 static void start_subcomposite(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	int stencil_bit;
 
 	/* Flush out any existing geoemtry to be rendered */
@@ -122,7 +122,7 @@ static void start_subcomposite(void)
 
 static void end_subcomposite(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	/* Flush out any existing geoemtry to be rendered */
 	hidgl_flush_triangles(&buffer);
@@ -139,7 +139,7 @@ static void end_subcomposite(void)
 
 int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group(PCB)) {
 		int n = PCB->LayerGroups.grp[group].len;
@@ -359,7 +359,7 @@ static void set_special_grid_color(void)
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
 		if (map_color_string(cfg->val.color[0], &gport->bg_color))
 			set_special_grid_color();
@@ -385,7 +385,7 @@ typedef struct {
 
 static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	static void *cache = NULL;
 	static GdkColormap *colormap = NULL;
 	pcb_hidval_t cval;
@@ -760,9 +760,9 @@ void ghid_gl_show_crosshair(gboolean paint_new_location)
 void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 {
 	GHidPort * port = vport;
-	render_priv *priv;
+	render_priv_t *priv;
 
-	port->render_priv = priv = g_new0(render_priv, 1);
+	port->render_priv = priv = g_new0(render_priv_t, 1);
 
 	gtk_gl_init(argc, argv);
 
@@ -788,7 +788,7 @@ void ghid_gl_shutdown_renderer(GHidPort * port)
 void ghid_gl_init_drawing_widget(GtkWidget * widget, void * port_)
 {
 	GHidPort *port = port_;
-	render_priv *priv = port->render_priv;
+	render_priv_t *priv = port->render_priv;
 
 	gtk_widget_set_gl_capability(widget, priv->glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
 }
@@ -836,7 +836,7 @@ void ghid_gl_screen_update(void)
 gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
 {
 	GHidPort * port = vport;
-	render_priv *priv = port->render_priv;
+	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
 
@@ -1213,7 +1213,7 @@ void ghid_gl_finish_debug_draw(void)
 	ghid_gl_end_drawing(gport);
 }
 
-static void draw_lead_user(render_priv * priv)
+static void draw_lead_user(render_priv_t * priv)
 {
 	int i;
 	pcb_lead_user_t *lead_user = &gport->lead_user;
