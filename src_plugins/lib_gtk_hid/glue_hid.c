@@ -371,6 +371,9 @@ static char *ghid_prompt_for(const char *msg, const char *default_string)
 
 	grv = pcb_gtk_dlg_input(msg, default_string, GTK_WINDOW(ghid_port.top_window));
 
+	if (grv == NULL)
+		return NULL;
+
 	/* can't assume the caller will do g_free() on it */
 	rv = pcb_strdup(grv);
 	g_free(grv);
