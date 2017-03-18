@@ -668,17 +668,18 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	}
 	else {
 		/* Move an existing layer */
-#warning TODO: use layer_move()
-		memcpy(&saved_layer, &PCB->Data->Layer[old_index], sizeof(pcb_layer_t));
+		layer_move(&saved_layer, &PCB->Data->Layer[old_index]);
 
-#warning TODO: use layer_move()
-		if (old_index < new_index)
-			memmove(&PCB->Data->Layer[old_index], &PCB->Data->Layer[old_index + 1], (new_index - old_index) * sizeof(pcb_layer_t));
-		else
-			memmove(&PCB->Data->Layer[new_index + 1], &PCB->Data->Layer[new_index], (old_index - new_index) * sizeof(pcb_layer_t));
+		if (old_index < new_index) {
+			for(l = old_index; l < new_index; l++)
+				layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
+		}
+		else {
+			for(l = old_index; l > new_index; l--)
+				layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l-1]);
+		}
 
-#warning TODO: use layer_move()
-		memcpy(&PCB->Data->Layer[new_index], &saved_layer, sizeof(pcb_layer_t));
+		layer_move(&PCB->Data->Layer[new_index], &saved_layer);
 	}
 
 	move_all_thermals(old_index, new_index);
