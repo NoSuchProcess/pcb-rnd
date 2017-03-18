@@ -387,7 +387,7 @@ static pcb_layergrp_id_t group_for_layer(int l)
 	if (l < pcb_max_layer && l >= 0)
 		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
-	return pcb_max_group + 3 + l;
+	return pcb_max_group(PCB) + 3 + l;
 }
 
 static int is_solder(pcb_layergrp_id_t grp)     { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_BOTTOM; }

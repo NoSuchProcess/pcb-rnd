@@ -553,7 +553,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	inner_layers = 0;
-	for (i = 0; i < pcb_max_group; i++) {
+	for (i = 0; i < pcb_max_group(PCB); i++) {
 		if (group_data[i].draw && !(group_data[i].component || group_data[i].solder)) {
 			inner_layers++;
 		}
@@ -561,7 +561,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 
 	layer_spacing = BOARD_THICKNESS / ((float) inner_layers + 1);
 	layer_offset = BOARD_THICKNESS / 2. - layer_spacing;
-	for (i = 0; i < pcb_max_group; i++) {
+	for (i = 0; i < pcb_max_group(PCB); i++) {
 		if (group_data[i].component) {
 			group_data[i].z_offset = (BOARD_THICKNESS / 2.) + (OUTER_COPPER_THICKNESS / 2.);
 		}
@@ -637,7 +637,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	if (opt_exp_copper) {
-		for (i = 0; i < pcb_max_group; i++) {
+		for (i = 0; i < pcb_max_group(PCB); i++) {
 			if (group_data[i].exp) {
 /*        printf("%d\n",i); */
 
@@ -769,7 +769,7 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 	if (!layer_ok)
 		return 0;
 
-	if (group >= 0 && group < pcb_max_group) {
+	if (group >= 0 && group < pcb_max_group(PCB)) {
 		if (flags & PCB_LYT_SILK) {
 			if (!opt_exp_silk)
 				return 0;

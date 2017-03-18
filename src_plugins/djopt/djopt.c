@@ -2478,7 +2478,7 @@ static void grok_layer_groups()
 		layer_type[i] = 0;
 		layer_groupings[i] = 0;
 	}
-	for (i = 0; i < pcb_max_group; i++) {
+	for (i = 0; i < pcb_max_group(PCB); i++) {
 		f = 0;
 		for (j = 0; j < l->grp[i].len; j++) {
 			unsigned int lflg = pcb_layer_flags(l->grp[i].lid[j]);

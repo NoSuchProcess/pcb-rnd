@@ -168,7 +168,7 @@ static void print_structure(FILE * fp)
 						 "Router will consider an inner layer to be the \"top\" layer.\n");
 	}
 
-	for (group = 0; group < pcb_max_group; group++) {
+	for (group = 0; group < pcb_max_group(PCB); group++) {
 		pcb_layer_t *first_layer;
 		unsigned int gflg = pcb_layergrp_flags(PCB, group);
 

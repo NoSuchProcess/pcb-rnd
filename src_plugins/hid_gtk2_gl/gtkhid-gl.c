@@ -136,7 +136,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 {
 	render_priv *priv = gport->render_priv;
 	int idx = group;
-	if (idx >= 0 && idx < pcb_max_group) {
+	if (idx >= 0 && idx < pcb_max_group(PCB)) {
 		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.grp[group].lid[idx];

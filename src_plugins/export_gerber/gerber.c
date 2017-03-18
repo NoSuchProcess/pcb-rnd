@@ -370,7 +370,7 @@ static pcb_layergrp_id_t group_for_layer(int l)
 	if (l < pcb_max_layer && l >= 0)
 		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
-	return pcb_max_group + 3 + l;
+	return pcb_max_group(PCB) + 3 + l;
 }
 
 static int layer_sort(const void *va, const void *vb)
@@ -643,7 +643,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	if ((flags & PCB_LYT_CSECT) && (!want_cross_sect))
 		return 0;
 
-	if ((group >= 0) && (group < pcb_max_group)) {
+	if ((group >= 0) && (group < pcb_max_group(PCB))) {
 		group_name = PCB->LayerGroups.grp[group].name;
 		if (group_name == NULL)
 			group_name = "<unknown>";

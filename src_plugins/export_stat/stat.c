@@ -240,7 +240,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 	phg = 0;
 	fprintf(f, "	li:physical_layers {\n");
-	for(lgid = 0; lgid < pcb_max_group; lgid++) {
+	for(lgid = 0; lgid < pcb_max_group(PCB); lgid++) {
 		if (group_not_empty[lgid]) {
 			phg++;
 			fprintf(f, "		ha:layergroup_%ld {\n", lgid);

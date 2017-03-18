@@ -2733,7 +2733,7 @@ static void lesstif_notify_mark_change(pcb_bool changes_complete)
 static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int idx = group;
-	if (idx >= 0 && idx < pcb_max_group) {
+	if (idx >= 0 && idx < pcb_max_group(PCB)) {
 		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.grp[group].lid[idx];

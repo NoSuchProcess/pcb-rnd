@@ -154,7 +154,7 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 	char sep = 0;
 	int group, entry;
 #warning layer TODO: revise this loop to save only what the original code saved
-	for (group = 0; group < pcb_max_group; group++)
+	for (group = 0; group < pcb_max_group(PCB); group++)
 		if (PCB->LayerGroups.grp[group].len) {
 			unsigned int gflg = pcb_layergrp_flags(PCB, group);
 

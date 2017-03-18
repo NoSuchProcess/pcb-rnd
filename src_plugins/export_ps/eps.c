@@ -150,7 +150,7 @@ static pcb_layergrp_id_t group_for_layer(int l)
 	if (l < pcb_max_layer && l >= 0)
 		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
-	return pcb_max_group + 3 + l;
+	return pcb_max_group(PCB) + 3 + l;
 }
 
 static int is_solder(pcb_layergrp_id_t grp)     { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_BOTTOM; }
@@ -219,7 +219,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	   erase logic.  Otherwise, we have to use the expensive multi-mask
 	   erase.  */
 	fast_erase = 0;
-	for (i = 0; i < pcb_max_group; i++)
+	for (i = 0; i < pcb_max_group(PCB); i++)
 		if (print_group[i])
 			fast_erase++;
 

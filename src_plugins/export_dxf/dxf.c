@@ -745,7 +745,7 @@ static pcb_layergrp_id_t dxf_group_for_layer(int l) {
 		return pcb_layer_get_group(PCB, l);
 	}
 	/* else something unique */
-	return pcb_max_group + 3 + l;
+	return pcb_max_group(PCB) + 3 + l;
 }
 
 /*!

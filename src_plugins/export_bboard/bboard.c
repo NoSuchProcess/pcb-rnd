@@ -182,7 +182,7 @@ static int bboard_validate_layer(unsigned long flags, int group, int skipsolder)
 	if (group_data[group].solder && skipsolder)
 		return 0;
 
-	if (group >= 0 && group < pcb_max_group) {
+	if (group >= 0 && group < pcb_max_group(PCB)) {
 		if (!group_data[group].draw)
 			return 0;
 		group_data[group].exp = 1;

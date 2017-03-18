@@ -1291,7 +1291,7 @@ static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 
 	string = g_string_new("");
 
-	for (group = 0; group < pcb_max_group; group++) {
+	for (group = 0; group < pcb_max_group(PCB); group++) {
 		if (lg->grp[group].len == 0)
 			continue;
 		for (entry = 0; entry < lg->grp[group].len; entry++) {
@@ -1306,7 +1306,7 @@ static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 			if (entry != lg->grp[group].len - 1)
 				string = g_string_append(string, ",");
 		}
-		if (group != pcb_max_group - 1)
+		if (group != pcb_max_group(PCB) - 1)
 			string = g_string_append(string, ":");
 	}
 	return g_string_free(string, FALSE);	/* Don't free string->str */

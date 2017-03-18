@@ -52,10 +52,12 @@ struct pcb_data_s {
 	ratlist_t Rat;
 };
 
+#define pcb_max_group(pcb) ((pcb)->LayerGroups.len)
 
-/* DO NOT USE these two macros, they are not PCB-safe */
+/* DO NOT USE this macro, it is not PCB-safe */
 #define pcb_max_layer (PCB->Data->LayerN)
-#define pcb_max_group (PCB->LayerGroups.len)
+
+
 
 extern pcb_buffer_t pcb_buffers[PCB_MAX_BUFFER];
 extern int pcb_added_lines;

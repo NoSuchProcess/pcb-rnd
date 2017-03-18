@@ -348,7 +348,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 
 	/* draw physical layers */
 	y = ystart;
-	for(gid = 0; gid < pcb_max_group; gid++) {
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		int i, stepf = 0, stepb = 0, th;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
 		const char *color = "#ff0000";
@@ -607,7 +607,7 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 {
 	pcb_layergrp_id_t gid;
 
-	for(gid = 0; gid < pcb_max_group; gid++) {
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		int i;
 		const char *type_gfx;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
