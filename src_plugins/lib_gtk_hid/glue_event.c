@@ -66,7 +66,8 @@ static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	ghid_watch_cursor(&gport->mouse);
+	if (gport != NULL)
+		ghid_watch_cursor(&gport->mouse);
 }
 
 void glue_event_init(const char *cookie)
