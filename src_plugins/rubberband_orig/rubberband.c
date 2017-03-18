@@ -717,28 +717,54 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rubberband_t *ptr;
-	pcb_coord_t DX = argv[1].d.c, DY = argv[2].d.c;
-	pcb_opctx_t *ctx = argv[3].d.p;
+	int i;	
+	int type = argv[1].d.i;
+	pcb_opctx_t *ctx[2];
+	pcb_coord_t DX, DY;
 
+	/* Initially, both contexts are expected to be equal. */
+	ctx[0] = argv[2].d.p;
+	ctx[1] = argv[3].d.p;
+
+	DX = ctx[0]->move.dx;
+	DY = ctx[0]->move.dy;
+
+	/* move all the lines... and reset the counter */
 	if (DX == 0 && DY == 0) {
 		int n;
 
 		/* first clear any marks that we made in the line flags */
+		/* Note: why bother? We are deleting the rubberbands anyway... */
 		for(n = 0, ptr = rbnd->Rubberband; n < rbnd->RubberbandN; n++, ptr++)
 			PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
 
+		rbnd->RubberbandN = 0;
 		return;
 	}
 
-	/* move all the lines... and reset the counter */
 	ptr = rbnd->Rubberband;
-	while (rbnd->RubberbandN) {
-		/* first clear any marks that we made in the line flags */
-		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-		pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
-		MoveLinePoint(ctx, ptr->Layer, ptr->Line, ptr->MovedPoint);
-		rbnd->RubberbandN--;
-		ptr++;
+
+	/* Modify movement coordinates to keep rubberband direction if required */
+	if (type == PCB_TYPE_LINE && rbnd->RubberbandN == 2 && ptr->delta_is_valid)	{
+		for (i=0; i<2; i++) {
+			ctx[i]->move.dx = ptr[i].DX;
+			ctx[i]->move.dy = ptr[i].DY;
+			pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr[i].Layer,
+						 ptr[i].Line, ptr[i].MovedPoint,
+						 ptr[i].DX, ptr[i].DY);
+			MoveLinePoint(ctx[i], ptr[i].Layer, ptr[i].Line, ptr[i].MovedPoint);
+		}
+		rbnd->RubberbandN = 0;
+	}
+	else {
+		while (rbnd->RubberbandN) {
+			/* first clear any marks that we made in the line flags */
+			PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
+			pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
+			MoveLinePoint(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
+			rbnd->RubberbandN--;
+			ptr++;
+		}
 	}
 }
 

@@ -103,14 +103,15 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
  */
 void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
-	pcb_opctx_t ctx;
+	pcb_opctx_t ctx1;
+	pcb_opctx_t ctx2;
 	void *ptr2;
 
-	ctx.move.pcb = PCB;
-	ctx.move.dx = DX;
-	ctx.move.dy = DY;
+	ctx1.move.pcb = ctx2.move.pcb = PCB;
+	ctx1.move.dx = ctx2.move.dx = DX;
+	ctx1.move.dy = ctx2.move.dy = DY;
 
-	pcb_event(PCB_EVENT_RUBBER_MOVE, "ccp", DX, DY, &ctx);
+	pcb_event(PCB_EVENT_RUBBER_MOVE, "ipp", Type, &ctx1, &ctx2);
 
 	if (DX == 0 && DY == 0)
 		return NULL;
@@ -120,14 +121,38 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	if (Type == PCB_TYPE_ARC_POINT) {
 		/* moving the endpoint of an arc is not really a move, but a change of arc properties */
 		if (pcb_crosshair.AttachedObject.radius == 0)
-			pcb_arc_set_angles((pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2, pcb_crosshair.AttachedObject.start_angle, pcb_crosshair.AttachedObject.delta_angle);
+			pcb_arc_set_angles((pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2,
+					   pcb_crosshair.AttachedObject.start_angle,
+					   pcb_crosshair.AttachedObject.delta_angle);
 		else
-			pcb_arc_set_radii((pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2, pcb_crosshair.AttachedObject.radius, pcb_crosshair.AttachedObject.radius);
+			pcb_arc_set_radii((pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2,
+					  pcb_crosshair.AttachedObject.radius,
+					  pcb_crosshair.AttachedObject.radius);
 		pcb_crosshair.AttachedObject.radius = 0;
 	}
 	else {
-		pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
-		ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+		/* If rubberband has adapted movement, move accordingly */
+		if (Type == PCB_TYPE_LINE &&
+		    (ctx1.move.dx != ctx2.move.dx || ctx1.move.dy != ctx2.move.dy)) {
+		    	pcb_line_t *line = (pcb_line_t*) Ptr2;
+
+		    	/* Move point1 form line */
+			pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT,
+						 Ptr1, line, &line->Point1,
+						 ctx1.move.dx, ctx1.move.dy);
+			MoveLinePoint(&ctx1, Ptr1, line, &line->Point1);
+
+			/* Move point2 form line */
+			pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT,
+						 Ptr1, line, &line->Point2,
+						 ctx2.move.dx, ctx2.move.dy);
+			ptr2 = MoveLinePoint(&ctx2, Ptr1, line, &line->Point2);
+		}
+		/* Otherwise make a normal move */
+		else {
+			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
+			ptr2 = pcb_object_operation(&MoveFunctions, &ctx1, Type, Ptr1, Ptr2, Ptr3);
+		}
 	}
 	pcb_undo_inc_serial();
 
