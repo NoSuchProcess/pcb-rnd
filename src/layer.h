@@ -37,7 +37,7 @@ typedef enum {
 	PCB_LYT_TOP      = 0x00000001, /* layer is on the top side of the board */
 	PCB_LYT_BOTTOM   = 0x00000002, /* layer is on the bottom side of the board */
 	PCB_LYT_INTERN   = 0x00000004, /* layer is internal */
-	PCB_LYT_LOGICAL  = 0x00000008, /* not in the layer stackup (typically aux drawing layer ) */
+	PCB_LYT_LOGICAL  = 0x00000008, /* does not depend on the layer stackup (typically aux drawing layer) */
 	PCB_LYT_ANYWHERE = 0x000000FF, /* MASK: layer is anywhere on the stack */
 
 	/* What the layer consists of */

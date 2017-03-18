@@ -681,6 +681,14 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_hid_t *old_gui = expose_begin(hid);
 	unsigned long lflg = pcb_layer_flags(e->content.layer_id);
+	int fx, fy;
+
+	if (lflg & PCB_LYT_LOGICAL) {
+		fx = conf_core.editor.view.flip_x;
+		fy = conf_core.editor.view.flip_y;
+		conf_force_set_bool(conf_core.editor.view.flip_x, 0);
+		conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+	}
 
 	if (lflg & PCB_LYT_CSECT) {
 		if ((pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) || (e->force)) {
@@ -700,6 +708,11 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 		pcb_message(PCB_MSG_ERROR, "Internal error: don't know how to draw layer %ld for preview; please report this bug.\n", e->content.layer_id);
 
 	expose_end(old_gui);
+
+	if (lflg & PCB_LYT_LOGICAL) {
+		conf_force_set_bool(conf_core.editor.view.flip_x, fx);
+		conf_force_set_bool(conf_core.editor.view.flip_y, fy);
+	}
 }
 
 
