@@ -194,10 +194,12 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc)) {
 			pcb_arc_new(lfont, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
 			newarc = pcb_arc_new(lorig, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
-			if (maxx < newarc->BoundingBox.X2 - ox)
-				maxx = newarc->BoundingBox.X2 - ox;
-			if (maxy < newarc->BoundingBox.Y2 - oy)
-				maxy = newarc->BoundingBox.Y2 - oy;
+			if (newarc != NULL) {
+				if (maxx < newarc->BoundingBox.X2 - ox)
+					maxx = newarc->BoundingBox.X2 - ox;
+				if (maxy < newarc->BoundingBox.Y2 - oy)
+					maxy = newarc->BoundingBox.Y2 - oy;
+			}
 		}
 
 		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly)) {
@@ -299,6 +301,9 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 		cx -= ox;
 		cy -= oy;
+
+		if (symbol->Width < a->BoundingBox.X2 - ox)
+			symbol->Width = a->BoundingBox.X2 - ox;
 
 		if (symbol->Width < cx)
 			symbol->Width = cx;
