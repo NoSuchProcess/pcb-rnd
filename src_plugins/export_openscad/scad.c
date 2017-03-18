@@ -548,7 +548,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 		if (pcb_layer_flags(i) & PCB_LYT_SILK)
 			continue;
 		layer = PCB->Data->Layer + i;
-		if (!pcb_layer_is_empty_(layer))
+		if (!pcb_layer_is_empty_(PCB, layer))
 			group_data[pcb_layer_get_group(PCB, i)].draw = 1;
 	}
 
