@@ -4,7 +4,6 @@
 	- make ; make clean -> error messages for removing non-existing files [report: Dima]
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
-	- start new layout, cancel -> crash
 	- fontsel: shouldn't consider board swap; reproduce: tab in main window, hover mouse in open fontsel window -> disappear!
 	- undo bug: copy an arc, paste, undo  [report: Erich]
 	- lihata save: text with \ in it (broken quoting)
