@@ -72,7 +72,6 @@ struct GHidPort_s {
 
 	GdkColor bg_color, offlimits_color, grid_color;
 
-	GdkColormap *colormap;
 
 	pcb_gtk_mouse_t mouse;
 

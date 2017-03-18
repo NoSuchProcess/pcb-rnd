@@ -143,7 +143,6 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	gport->drawable = gport->pixmap;
 
 	if (!first_time_done) {
-		gport->colormap = gtk_widget_get_colormap(gport->top_window);
 		if (!ghidgui->common.map_color_string(conf_core.appearance.color.background, &gport->bg_color))
 			ghidgui->common.map_color_string("white", &gport->bg_color);
 		if (!ghidgui->common.map_color_string(conf_core.appearance.color.off_limit, &gport->offlimits_color))
