@@ -495,7 +495,7 @@ void nelma_choose_groups()
 			continue;
 		layer = &PCB->Data->Layer[n];
 
-		if (!PCB_LAYER_IS_EMPTY(layer)) {
+		if (!pcb_layer_is_empty_(PCB, layer)) {
 			/* layer isn't empty */
 			if ((flags & PCB_LYT_COPPER) || (flags & PCB_LYT_OUTLINE)) {
 				/* layer is a copper layer */

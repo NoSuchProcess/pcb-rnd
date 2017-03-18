@@ -211,7 +211,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		if (pcb_layer_flags(i) & PCB_LYT_SILK)
 			continue;
 		if (layer->On)
-			if (!PCB_LAYER_IS_EMPTY(layer))
+			if (!pcb_layer_is_empty_(PCB, layer))
 				print_group[pcb_layer_get_group(PCB, i)] = 1;
 	}
 

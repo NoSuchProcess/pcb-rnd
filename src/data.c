@@ -261,7 +261,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
 	for (i = 0; i < pcb_max_layer; i++)
-		hasNoObjects = hasNoObjects && PCB_LAYER_IS_EMPTY(&(Data->Layer[i]));
+		hasNoObjects = hasNoObjects && pcb_layer_is_empty_(PCB, &(Data->Layer[i]));
 	return (hasNoObjects);
 }
 
