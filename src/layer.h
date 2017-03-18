@@ -155,9 +155,9 @@ pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
 const char *pcb_layer_name(pcb_layer_id_t id);
 
 /* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
-pcb_bool pcb_layer_is_empty_(pcb_layer_t *ly);
-pcb_bool pcb_layer_is_empty(pcb_layer_id_t ly);
-#define PCB_LAYER_IS_EMPTY(layer) pcb_layer_is_empty_((layer))
+pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *ly);
+pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t ly);
+#define PCB_LAYER_IS_EMPTY(layer) pcb_layer_is_empty_(PCB, (layer))
 
 
 /* call the gui to set a virtual layer or the UI layer group */

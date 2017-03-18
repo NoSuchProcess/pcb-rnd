@@ -514,7 +514,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	   We should check for pcb_gui->gui here, but it's kinda cool seeing the
 	   auto-outline magically disappear when you first add something to
 	   the outline layer.  */
-	if ((lflg & PCB_LYT_OUTLINE) && pcb_layer_is_empty_(Layer)) {
+	if ((lflg & PCB_LYT_OUTLINE) && pcb_layer_is_empty_(PCB, Layer)) {
 		pcb_gui->set_color(Output.fgGC, Layer->Color);
 		pcb_gui->set_line_width(Output.fgGC, PCB->minWid);
 		pcb_gui->draw_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);

@@ -94,10 +94,10 @@ do { \
 	} \
 } while(0)
 
-pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
+pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	unsigned int flags;
-	pcb_layer_id_t lid = pcb_layer_id(PCB->Data, layer);
+	pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
 
 	if (lid < 0)
 		return 1;
@@ -105,7 +105,7 @@ pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
 	flags = pcb_layer_flags(lid);
 
 	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_TOP)) { /* if our layer is the top copper layer and we have an element pad on it, it's non-empty */
-		PCB_PAD_ALL_LOOP(PCB->Data);
+		PCB_PAD_ALL_LOOP(pcb->Data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
 				return 0;
@@ -115,7 +115,7 @@ pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
 
 
 	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_BOTTOM)) { /* if our layer is the bottom copper layer and we have an element pad on it, it's non-empty */
-		PCB_PAD_ALL_LOOP(PCB->Data);
+		PCB_PAD_ALL_LOOP(pcb->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
 				return 0;
@@ -133,10 +133,10 @@ pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
 		(textlist_length(&layer->Text) == 0);
 }
 
-pcb_bool pcb_layer_is_empty(pcb_layer_id_t num)
+pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
 {
 	if ((num >= 0) && (num < pcb_max_layer))
-		return pcb_layer_is_empty_(PCB->Data->Layer + num);
+		return pcb_layer_is_empty_(pcb, pcb->Data->Layer + num);
 	return pcb_false;
 }
 

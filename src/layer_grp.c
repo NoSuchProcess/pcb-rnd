@@ -148,7 +148,7 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	}
 
 	for (i = 0; i < g->len; i++)
-		if (!pcb_layer_is_empty(g->lid[i]))
+		if (!pcb_layer_is_empty(pcb, g->lid[i]))
 			return pcb_false;
 	return pcb_true;
 }
