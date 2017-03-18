@@ -398,7 +398,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		pcb_message(PCB_MSG_ERROR, _("You can't mirror a buffer that has elements!\n"));
 		return;
 	}
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < Buffer->Data->LayerN; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
 			pcb_message(PCB_MSG_ERROR, _("You can't mirror a buffer that has text!\n"));
@@ -586,7 +586,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	ctx.copy.DeltaY = Y - PCB_PASTEBUFFER->Y;
 
 	/* paste all layers */
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < PCB_PASTEBUFFER->Data->LayerN; i++) {
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {
