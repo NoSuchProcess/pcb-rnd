@@ -1954,12 +1954,10 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 
 	/* lower hbox for displaying the rendered value */
-	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
-	src = gtk_hbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(vbox), src, TRUE, TRUE, 4);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
 
 	w = gtk_label_new("Resulting native configuration value, after merging all sources above:");
-	gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), w, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(w), 0., 0.);
 
 	{
@@ -1980,11 +1978,10 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 		scrolled = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 4);
+		gtk_box_pack_start(GTK_BOX(tab_vbox), scrolled, TRUE, TRUE, 4);
 		gtk_container_add(GTK_CONTAINER(scrolled), GTK_WIDGET(auto_tab_widgets.res_t));
-		//gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.res_t, TRUE, TRUE, 4);
 	}
-	gtk_widget_set_size_request(tab_vbox, -1, 100);
+	gtk_widget_set_size_request(tab_vbox, -1, -1); /* Recompute the window size */
 }
 
 /* hide all source edit widgets */
