@@ -587,6 +587,16 @@ static void layer_clear(pcb_layer_t *dst)
 	dst->grp = -1;
 }
 
+static void layer_init(pcb_layer_t *lp, int idx)
+{
+	memset(lp, 0, sizeof(pcb_layer_t));
+	lp->grp = -1;
+	lp->On = 1;
+	lp->Name = pcb_strdup("New Layer");
+	lp->Color = conf_core.appearance.color.layer[idx];
+	lp->SelectedColor = conf_core.appearance.color.layer_selected[idx];
+}
+
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
 	pcb_layer_id_t l;
@@ -631,12 +641,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l-1]);
 		pcb_max_layer++;
 
-#warning TODO: make a static layer_new()
-		memset(lp, 0, sizeof(pcb_layer_t));
-		lp->On = 1;
-		lp->Name = pcb_strdup("New Layer");
-		lp->Color = conf_core.appearance.color.layer[new_index];
-		lp->SelectedColor = conf_core.appearance.color.layer_selected[new_index];
+		layer_init(lp, new_index);
 
 		/* insert the new layer into the top copper group (or if that fails, in
 		   any copper group) */
