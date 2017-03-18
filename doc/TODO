@@ -1,6 +1,5 @@
 - BUGS
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
-	- make ; make clean -> error messages for removing non-existing files [report: Dima]
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
