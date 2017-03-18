@@ -597,6 +597,24 @@ static void layer_init(pcb_layer_t *lp, int idx)
 	lp->SelectedColor = conf_core.appearance.color.layer_selected[idx];
 }
 
+static layer_sync_groups(pcb_board_t *pcb)
+{
+	pcb_layergrp_id_t g;
+	pcb_layer_id_t l;
+
+	for (g = 0; g < pcb_max_group; g++)
+		pcb->LayerGroups.grp[g].len = 0;
+
+	for (l = 0; l < pcb_max_layer; l++) {
+		int i;
+		g = pcb->Data->Layer[l].grp;
+		if (g >= 0) {
+			i = pcb->LayerGroups.grp[g].len++;
+			pcb->LayerGroups.grp[g].lid[i] = l;
+		}
+	}
+}
+
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
 	pcb_layer_id_t l;
@@ -688,17 +706,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 
 	move_all_thermals(old_index, new_index);
 
-	for (g = 0; g < pcb_max_group; g++)
-		PCB->LayerGroups.grp[g].len = 0;
-
-	for (l = 0; l < pcb_max_layer; l++) {
-		int i;
-		g = PCB->Data->Layer[l].grp;
-		if (g >= 0) {
-			i = PCB->LayerGroups.grp[g].len++;
-			PCB->LayerGroups.grp[g].lid[i] = l;
-		}
-	}
+	layer_sync_groups(PCB);
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
