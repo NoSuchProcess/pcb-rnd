@@ -395,13 +395,18 @@ void pcb_uninit_buffers(void)
 
 void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 {
-	int i;
+	int i, num_layers;
 
 	if (elementlist_length(&Buffer->Data->Element)) {
 		pcb_message(PCB_MSG_ERROR, _("You can't mirror a buffer that has elements!\n"));
 		return;
 	}
-	for (i = 0; i < Buffer->Data->LayerN; i++) {
+
+	num_layers = PCB_PASTEBUFFER->Data->LayerN;
+	if (num_layers == 0) /* some buffers don't have layers, just simple objects */
+		num_layers = PCB->Data->LayerN;
+
+	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
 			pcb_message(PCB_MSG_ERROR, _("You can't mirror a buffer that has text!\n"));
@@ -578,6 +583,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	pcb_cardinal_t i;
 	pcb_bool changed = pcb_false;
 	pcb_opctx_t ctx;
+	int num_layers;
 
 #ifdef DEBUG
 	printf("Entering CopyPastebufferToLayout.....\n");
@@ -589,7 +595,10 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	ctx.copy.DeltaY = Y - PCB_PASTEBUFFER->Y;
 
 	/* paste all layers */
-	for (i = 0; i < PCB_PASTEBUFFER->Data->LayerN; i++) {
+	num_layers = PCB_PASTEBUFFER->Data->LayerN;
+	if (num_layers == 0) /* some buffers don't have layers, just simple objects */
+		num_layers = PCB->Data->LayerN;
+	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {
