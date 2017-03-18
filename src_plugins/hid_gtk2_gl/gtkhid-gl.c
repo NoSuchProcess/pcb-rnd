@@ -81,20 +81,25 @@ static const gchar *get_color_name(GdkColor * color)
 	return tmp;
 }
 
-static void map_color_string(const char *color_string, GdkColor * color)
+/** Returns TRUE only if \p color_string has been allocated to \p color. */
+static pcb_bool map_color_string(const char *color_string, GdkColor * color)
 {
+	static GdkColormap *colormap = NULL;
+	GHidPort *out = &ghid_port;
+	pcb_bool parsed;
 
-	if (!color || !gport->top_window)
-		return;
-	if (gport->colormap == NULL)
-		gport->colormap = gtk_widget_get_colormap(gport->top_window);
+	if (!color || !out->top_window)
+		return FALSE;
+	if (colormap == NULL)
+		colormap = gtk_widget_get_colormap(out->top_window);
 	if (color->red || color->green || color->blue)
-		gdk_colormap_free_colors(gport->colormap, color, 1);
-	gdk_color_parse(color_string, color);
-	gdk_color_alloc(gport->colormap, color);
+		gdk_colormap_free_colors(colormap, color, 1);
+	parsed = gdk_color_parse(color_string, color);
+	if (parsed)
+		gdk_color_alloc(colormap, color);
+
+	return parsed;
 }
-
-
 
 
 static void start_subcomposite(void)
@@ -347,8 +352,6 @@ void ghid_gl_use_mask(int use_it)
 	 */
 static void set_special_grid_color(void)
 {
-	if (!gport->colormap)
-		return;
 	gport->grid_color.red ^= gport->bg_color.red;
 	gport->grid_color.green ^= gport->bg_color.green;
 	gport->grid_color.blue ^= gport->bg_color.blue;
@@ -358,15 +361,15 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
 	render_priv *priv = gport->render_priv;
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
-		map_color_string(cfg->val.color[0], &gport->bg_color);
-		set_special_grid_color();
+		if (map_color_string(cfg->val.color[0], &gport->bg_color))
+			set_special_grid_color();
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit)) {
 		map_color_string(cfg->val.color[0], &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
-		map_color_string(cfg->val.color[0], &gport->grid_color);
-		set_special_grid_color();
+		if (map_color_string(cfg->val.color[0], &gport->grid_color))
+			set_special_grid_color();
 	}
 }
 
@@ -384,6 +387,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 {
 	render_priv *priv = gport->render_priv;
 	static void *cache = NULL;
+	static GdkColormap *colormap = NULL;
 	pcb_hidval_t cval;
 	ColorCache *cc;
 	double r, g, b, a;
@@ -396,8 +400,8 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	priv->current_colorname = pcb_strdup(gc->colorname);
 	priv->current_alpha_mult = gc->alpha_mult;
 
-	if (gport->colormap == NULL)
-		gport->colormap = gtk_widget_get_colormap(gport->top_window);
+	if (colormap == NULL)
+		colormap = gtk_widget_get_colormap(gport->top_window);
 	if (strcmp(gc->colorname, "erase") == 0) {
 		r = gport->bg_color.red / 65535.;
 		g = gport->bg_color.green / 65535.;
@@ -422,9 +426,9 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 		if (!cc->color_set) {
 			if (gdk_color_parse(gc->colorname, &cc->color))
-				gdk_color_alloc(gport->colormap, &cc->color);
+				gdk_color_alloc(colormap, &cc->color);
 			else
-				gdk_color_white(gport->colormap, &cc->color);
+				gdk_color_white(colormap, &cc->color);
 			cc->red = cc->color.red / 65535.;
 			cc->green = cc->color.green / 65535.;
 			cc->blue = cc->color.blue / 65535.;
@@ -435,7 +439,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 				cc->xor_color.red = cc->color.red ^ gport->bg_color.red;
 				cc->xor_color.green = cc->color.green ^ gport->bg_color.green;
 				cc->xor_color.blue = cc->color.blue ^ gport->bg_color.blue;
-				gdk_color_alloc(gport->colormap, &cc->xor_color);
+				gdk_color_alloc(colormap, &cc->xor_color);
 				cc->red = cc->color.red / 65535.;
 				cc->green = cc->color.green / 65535.;
 				cc->blue = cc->color.blue / 65535.;
