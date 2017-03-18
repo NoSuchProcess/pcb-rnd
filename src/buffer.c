@@ -602,25 +602,28 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {
-			changed = changed || (!pcb_layer_is_empty_(PCB, sourcelayer));
 			PCB_LINE_LOOP(sourcelayer);
 			{
-				CopyLine(&ctx, destlayer, line);
+				if (CopyLine(&ctx, destlayer, line))
+					changed = 1;
 			}
 			PCB_END_LOOP;
 			PCB_ARC_LOOP(sourcelayer);
 			{
-				CopyArc(&ctx, destlayer, arc);
+				if (CopyArc(&ctx, destlayer, arc))
+					changed = 1;
 			}
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(sourcelayer);
 			{
-				CopyText(&ctx, destlayer, text);
+				if (CopyText(&ctx, destlayer, text))
+					changed = 1;
 			}
 			PCB_END_LOOP;
 			PCB_POLY_LOOP(sourcelayer);
 			{
-				CopyPolygon(&ctx, destlayer, polygon);
+				if (CopyPolygon(&ctx, destlayer, polygon))
+					changed = 1;
 			}
 			PCB_END_LOOP;
 		}
