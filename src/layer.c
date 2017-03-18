@@ -135,7 +135,7 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 
 pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
 {
-	if ((num >= 0) && (num < pcb_max_layer))
+	if ((num >= 0) && (num < pcb->Data->LayerN))
 		return pcb_layer_is_empty_(pcb, pcb->Data->Layer + num);
 	return pcb_false;
 }
@@ -175,7 +175,7 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
 
-	if ((layer_idx < 0) || (layer_idx >= pcb_max_layer))
+	if ((layer_idx < 0) || (layer_idx >= PCB->Data->LayerN))
 		return 0;
 
 	l = &PCB->Data->Layer[layer_idx];
@@ -253,7 +253,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 pcb_layer_id_t pcb_layer_by_name(const char *name)
 {
 	int n;
-	for (n = 0; n < pcb_max_layer; n++)
+	for (n = 0; n < PCB->Data->LayerN; n++)
 		if (strcmp(PCB->Data->Layer[n].Name, name) == 0)
 			return n;
 	return -1;
@@ -440,7 +440,7 @@ static void layer_sync_groups(pcb_board_t *pcb)
 	for (g = 0; g < pcb_max_group; g++)
 		pcb->LayerGroups.grp[g].len = 0;
 
-	for (l = 0; l < pcb_max_layer; l++) {
+	for (l = 0; l < pcb->Data->LayerN; l++) {
 		int i;
 		g = pcb->Data->Layer[l].grp;
 		if (g >= 0) {
@@ -456,13 +456,13 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_layer_t saved_layer;
 
 	/* sanity checks */
-	if (old_index < -1 || old_index >= pcb_max_layer) {
-		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb_max_layer - 1);
+	if (old_index < -1 || old_index >= PCB->Data->LayerN) {
+		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, PCB->Data->LayerN - 1);
 		return 1;
 	}
 
-	if (new_index < -1 || new_index > pcb_max_layer || new_index >= PCB_MAX_LAYER) {
-		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb_max_layer);
+	if (new_index < -1 || new_index > PCB->Data->LayerN || new_index >= PCB_MAX_LAYER) {
+		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, PCB->Data->LayerN);
 		return 1;
 	}
 
@@ -485,15 +485,15 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	if (old_index == -1) { /* insert new layer */
 		pcb_layergrp_id_t gid;
 		pcb_layer_t *lp;
-		if (pcb_max_layer == PCB_MAX_LAYER) {
+		if (PCB->Data->LayerN == PCB_MAX_LAYER) {
 			pcb_message(PCB_MSG_ERROR, "No room for new layers\n");
 			return 1;
 		}
 		/* Create a new layer at new_index - by shifting right all layers above it. */
 		lp = &PCB->Data->Layer[new_index];
-		for(l = pcb_max_layer; l > new_index; l--)
+		for(l = PCB->Data->LayerN; l > new_index; l--)
 			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l-1]);
-		pcb_max_layer++;
+		PCB->Data->LayerN++;
 
 		layer_init(lp, new_index);
 
@@ -504,23 +504,23 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 			pcb_layergrp_list(PCB, PCB_LYT_COPPER, &gid, 1);
 		lp->grp = gid;
 
-		for (l = 0; l < pcb_max_layer; l++)
+		for (l = 0; l < PCB->Data->LayerN; l++)
 			if (pcb_layer_stack[l] >= new_index)
 				pcb_layer_stack[l]++;
-		pcb_layer_stack[pcb_max_layer - 1] = new_index;
+		pcb_layer_stack[PCB->Data->LayerN - 1] = new_index;
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
 #warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
-		for(l = old_index; l < pcb_max_layer-1; l++) {
+		for(l = old_index; l < PCB->Data->LayerN-1; l++) {
 			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
 			layer_clear(&PCB->Data->Layer[l+1]);
 		}
 
-		for (l = 0; l < pcb_max_layer; l++)
+		for (l = 0; l < PCB->Data->LayerN; l++)
 			if (pcb_layer_stack[l] == old_index)
-				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb_max_layer - l - 1) * sizeof(pcb_layer_stack[0]));
+				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (PCB->Data->LayerN - l - 1) * sizeof(pcb_layer_stack[0]));
 		pcb_max_layer--;
-		for (l = 0; l < pcb_max_layer; l++)
+		for (l = 0; l < PCB->Data->LayerN; l++)
 			if (pcb_layer_stack[l] > old_index)
 				pcb_layer_stack[l]--;
 	}
@@ -553,7 +553,7 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 {
 	if (id < 0)
 		return NULL;
-	if (id < pcb_max_layer)
+	if (id < PCB->Data->LayerN)
 		return PCB->Data->Layer[id].Name;
 	if ((id >= PCB_LAYER_VIRT_MIN) && (id <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[id-PCB_LAYER_VIRT_MIN].name;
@@ -562,7 +562,7 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 
 pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 {
-	if ((id >= 0) && (id < pcb_max_layer))
+	if ((id >= 0) && (id < PCB->Data->LayerN))
 		return &PCB->Data->Layer[id];
 	if (id & PCB_LYT_UI) {
 		id &= ~(PCB_LYT_VIRTUAL | PCB_LYT_UI);
@@ -623,7 +623,7 @@ static pcb_layer_id_t pcb_layer_get_cached(pcb_layer_id_t *cache, unsigned int l
 {
 	pcb_layer_group_t *g;
 
-	if (*cache < pcb_max_layer) { /* check if the cache is still pointing to the right layer */
+	if (*cache < PCB->Data->LayerN) { /* check if the cache is still pointing to the right layer */
 		pcb_layergrp_id_t gid = PCB->Data->Layer[*cache].grp;
 		if ((gid >= 0) && (gid < PCB->LayerGroups.len)) {
 			g = &(PCB->LayerGroups.grp[gid]);

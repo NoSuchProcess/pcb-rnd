@@ -61,7 +61,7 @@ pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 
 pcb_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, pcb_layer_id_t lid)
 {
-	if ((lid < 0) || (lid >= pcb_max_layer))
+	if ((lid < 0) || (lid >= pcb->Data->LayerN))
 		return -1;
 
 	return pcb_layer_get_group_(&pcb->Data->Layer[lid]);
@@ -73,7 +73,7 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 	pcb_layer_group_t *grp;
 	pcb_layer_t *layer;
 
-	if ((lid < 0) || (lid >= pcb_max_layer))
+	if ((lid < 0) || (lid >= pcb->Data->LayerN))
 		return -1;
 
 	layer = pcb->Data->Layer + lid;
@@ -310,7 +310,7 @@ static void move_grps(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_
 	for(g = from; g <= to; g++) {
 		for(n = 0; n < stk->grp[g].len; n++) {
 			pcb_layer_id_t lid =stk->grp[g].lid[n];
-			if ((lid >= 0) && (lid < pcb_max_layer)) {
+			if ((lid >= 0) && (lid < pcb->Data->LayerN)) {
 				pcb_layer_t *l = &pcb->Data->Layer[lid];
 				if (l->grp > 0)
 					l->grp += delta;
@@ -534,7 +534,7 @@ int pcb_layer_group_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layerg
 
 int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
 {
-	if ((layer_id < 0) || (layer_id >= pcb_max_layer))
+	if ((layer_id < 0) || (layer_id >= pcb->Data->LayerN))
 		return -1;
 
 	grp->lid[grp->len] = layer_id;
