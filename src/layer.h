@@ -193,18 +193,6 @@ void pcb_layers_reset();
 /* Create a new layer and put it in an existing group (if grp is not -1). */
 pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname);
 
-/* If reuse_layer is false, create a new layer of the given type; if
-   reuse_group is true, try to put the new layer on an existing group.
-   If reuse_layer is 1, first try to return an already exiting layer that
-   matches type and create a new one if that fails.
-   Upon creating a new layer, name it according to lname if it is not NULL
-   Returns a layer index (or -1 on error)
-   Do not create: mask, silk, paste; they are special layers.
-
-   OLD API: tries to handle groups together with layers - DO NOT USE
-   */
-pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname);
-
 /* Rename an existing layer by idx */
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname);
 
