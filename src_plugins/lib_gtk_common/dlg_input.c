@@ -72,7 +72,7 @@ gchar *pcb_gtk_dlg_input(const char *prompt, const char *initial, GtkWindow * pa
 
 	response = gtk_dialog_run(GTK_DIALOG(dialog));
 	if (response != GTK_RESPONSE_OK)
-		string = g_strdup(initial ? initial : "");
+		string = NULL;
 	else
 		string = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 
