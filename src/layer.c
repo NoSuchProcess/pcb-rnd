@@ -86,9 +86,9 @@ static const char *pcb_layer_type_class_names[] = {
 #define PCB_LAYER_VIRT_MIN (PCB_LYT_VIRTUAL + PCB_VLY_first + 1)
 #define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + PCB_VLY_end)
 
-#define layer_if_too_many(fail_cmd) \
+#define layer_if_too_many(pcb, fail_cmd) \
 do { \
-	if (PCB->Data->LayerN >= PCB_MAX_LAYER) { \
+	if (pcb->Data->LayerN >= PCB_MAX_LAYER) { \
 		pcb_message(PCB_MSG_ERROR, "Too many layers - can't have more than %d\n", PCB_MAX_LAYER); \
 		fail_cmd; \
 	} \
@@ -438,7 +438,7 @@ pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer,
 			return -2;
 	}
 
-	layer_if_too_many(return -1);
+	layer_if_too_many(PCB, return -1);
 
 	id = PCB->Data->LayerN++;
 
@@ -459,7 +459,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 {
 	pcb_layer_id_t id;
 
-	layer_if_too_many(return -1);
+	layer_if_too_many(PCB, return -1);
 
 	id = PCB->Data->LayerN++;
 
