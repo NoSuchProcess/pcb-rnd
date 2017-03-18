@@ -44,6 +44,9 @@ OBJS = conftest.o help.o
 
 all: conftest
 
+ROOT=../..
+include $(ROOT)/Makefile.conf
+
 conftest: $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS) $(LDLIBS) -o conftest
 
@@ -58,4 +61,4 @@ test:
 	cd tests && $(MAKE) all
 
 clean:
-	-rm conftest tests/*.out $(OBJS)
+	-$(SCCBOX) rm -f conftest tests/*.out $(OBJS)

@@ -9,6 +9,9 @@ LIBPCB_BASE= $(SRC)/unit.o $(SRC)/compat_misc.o
 
 all: tester_spd prcli
 
+ROOT=../..
+include $(ROOT)/Makefile.conf
+
 test: tester.diff
 	@echo "pcb-printf:          *** QC PASS ***"
 	@rm tester.stdout ; true
@@ -43,5 +46,5 @@ $(SRC)/pcb-printf_spd.o: $(SRC)/pcb-printf.c $(SRC)/pcb-printf.h
 	$(CC) -c $(CFLAGS_OP) -DSPEED $(CFLAGS) -o $@ $(SRC)/pcb-printf.c
 
 clean:
-	-rm tester tester.o prcli prcli.o tester_spd tester_spd.o $(SRC)/pcb-printf_spd.o  2>/dev/null
+	-$(SCCBOX) rm -f tester tester.o prcli prcli.o tester_spd tester_spd.o $(SRC)/pcb-printf_spd.o
 

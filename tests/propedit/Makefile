@@ -17,6 +17,9 @@ OBJS = tester.o $(PED)/props.o
 
 all: tester
 
+ROOT=../..
+include $(ROOT)/Makefile.conf
+
 test: tester.diff
 	@echo "propedit:            *** QC PASS ***"
 	@rm tester.out
@@ -35,4 +38,4 @@ tester.out: tester
 	./tester > tester.out
 
 clean:
-	-rm tester.out tester $(OBJS)
+	-$(SCCBOX) rm -f tester.out tester $(OBJS)

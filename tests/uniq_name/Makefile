@@ -9,6 +9,9 @@ LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(SRC)/compat_misc.o
 
 all: tester
 
+ROOT=../..
+include $(ROOT)/Makefile.conf
+
 test: tester.diff
 	@echo "uniq_name:           *** QC PASS ***"
 	@rm tester.out
@@ -27,4 +30,4 @@ tester.out: tester
 	./tester > tester.out
 
 clean:
-	-rm tester.out tester tester.o
+	-$(SCCBOX) rm -f tester.out tester tester.o

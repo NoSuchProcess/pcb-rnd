@@ -6,6 +6,9 @@ GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 
 all: tester
 
+ROOT=../..
+include $(ROOT)/Makefile.conf
+
 test: tester.diff
 	@echo "strflags:            *** QC PASS ***"
 	@rm tester.stdout
@@ -23,5 +26,5 @@ tester.diff: tester.stdout
 	diff -u tester.ref tester.stdout
 
 clean:
-	rm tester tester.o 2>/dev/null ; true
+	-$(SCCBOX) rm -f tester tester.o
 

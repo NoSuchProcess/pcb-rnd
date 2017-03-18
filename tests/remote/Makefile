@@ -4,6 +4,9 @@ CFLAGS = -Wall -g -I$(REM) -I$(ROOT)/src -I$(ROOT)
 
 all: test_parse
 
+ROOT=../..
+include $(ROOT)/Makefile.conf
+
 test_parse: test_parse.o
 	$(CC) $(LDFLAGS) -o test_parse test_parse.o  $(LDLIBS)
 
@@ -13,4 +16,4 @@ test:
 	@./test_all.sh
 
 clean:
-	-rm test_parse test_parse.o
+	-$(SCCBOX) rm -f test_parse test_parse.o
