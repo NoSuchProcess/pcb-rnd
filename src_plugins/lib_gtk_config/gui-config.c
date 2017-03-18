@@ -1966,6 +1966,8 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 		static const char *col_names[] = { "index", "role & prio", "value" };
 		static GType ty[] = { G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING };
 		const char **s;
+		GtkWidget *scrolled;
+
 		int n, num_cols = sizeof(col_names) / sizeof(col_names[0]);
 		auto_tab_widgets.res_t = gtk_tree_view_new();
 		auto_tab_widgets.res_l = gtk_list_store_newv(num_cols, ty);
@@ -1975,7 +1977,12 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.res_t), -1, *s, renderer, "text", n, NULL);
 		}
 		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.res_t), GTK_TREE_MODEL(auto_tab_widgets.res_l));
-		gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.res_t, TRUE, TRUE, 4);
+
+		scrolled = gtk_scrolled_window_new(NULL, NULL);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 4);
+		gtk_container_add(GTK_CONTAINER(scrolled), GTK_WIDGET(auto_tab_widgets.res_t));
+		//gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.res_t, TRUE, TRUE, 4);
 	}
 	gtk_widget_set_size_request(tab_vbox, -1, 100);
 }
