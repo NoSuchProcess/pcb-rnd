@@ -309,18 +309,22 @@ static void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 
 static void ghid_gdk_draw_grid(void)
 {
+	static GdkColormap *colormap = NULL;
 	render_priv *priv = gport->render_priv;
 
 	grid_local_have_old = 0;
 
 	if (!conf_core.editor.draw_grid)
 		return;
+	if (colormap == NULL)
+		colormap = gtk_widget_get_colormap(gport->top_window);
+
 	if (!priv->grid_gc) {
 		if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
 			gport->grid_color.red ^= gport->bg_color.red;
 			gport->grid_color.green ^= gport->bg_color.green;
 			gport->grid_color.blue ^= gport->bg_color.blue;
-			gdk_color_alloc(gport->colormap, &gport->grid_color);
+			gdk_color_alloc(colormap, &gport->grid_color);
 		}
 		priv->grid_gc = gdk_gc_new(gport->drawable);
 		gdk_gc_set_function(priv->grid_gc, GDK_XOR);
@@ -460,9 +464,6 @@ static void set_special_grid_color(void)
 	render_priv *priv = gport->render_priv;
 	int red, green, blue;
 
-	if (!gport->colormap)
-		return;
-
 	red = (gport->grid_color.red ^ gport->bg_color.red) & 0xFF;
 	green = (gport->grid_color.green ^ gport->bg_color.green) & 0xFF;
 	blue = (gport->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
@@ -496,6 +497,7 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	static void *cache = 0;
+	static GdkColormap *colormap = NULL;
 	pcb_hidval_t cval;
 
 	if (name == NULL) {
@@ -511,8 +513,8 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 
 	if (!gc->gc)
 		return;
-	if (gport->colormap == 0)
-		gport->colormap = gtk_widget_get_colormap(gport->top_window);
+	if (colormap == NULL)
+		colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (strcmp(name, "erase") == 0) {
 		gdk_gc_set_foreground(gc->gc, &gport->bg_color);
@@ -533,9 +535,9 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 
 		if (!cc->color_set) {
 			if (gdk_color_parse(name, &cc->color))
-				gdk_color_alloc(gport->colormap, &cc->color);
+				gdk_color_alloc(colormap, &cc->color);
 			else
-				gdk_color_white(gport->colormap, &cc->color);
+				gdk_color_white(colormap, &cc->color);
 			cc->color_set = 1;
 		}
 		if (gc->xor_mask) {
@@ -543,7 +545,7 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 				cc->xor_color.red = cc->color.red ^ gport->bg_color.red;
 				cc->xor_color.green = cc->color.green ^ gport->bg_color.green;
 				cc->xor_color.blue = cc->color.blue ^ gport->bg_color.blue;
-				gdk_color_alloc(gport->colormap, &cc->xor_color);
+				gdk_color_alloc(colormap, &cc->xor_color);
 				cc->xor_set = 1;
 			}
 			gdk_gc_set_foreground(gc->gc, &cc->xor_color);
@@ -1321,10 +1323,14 @@ static void draw_lead_user(render_priv *priv)
 	pcb_coord_t width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
 	pcb_coord_t separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
 	static GdkGC *lead_gc = NULL;
+	static GdkColormap *colormap = NULL;
 	GdkColor lead_color;
 
 	if (!lead_user->lead_user)
 		return;
+
+	if (colormap == NULL)
+		colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (lead_gc == NULL) {
 		lead_gc = gdk_gc_new(window);
@@ -1335,7 +1341,7 @@ static void draw_lead_user(render_priv *priv)
 		lead_color.red = (int) (65535. * LEAD_USER_COLOR_R);
 		lead_color.green = (int) (65535. * LEAD_USER_COLOR_G);
 		lead_color.blue = (int) (65535. * LEAD_USER_COLOR_B);
-		gdk_color_alloc(gport->colormap, &lead_color);
+		gdk_color_alloc(colormap, &lead_color);
 		gdk_gc_set_foreground(lead_gc, &lead_color);
 	}
 
