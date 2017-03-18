@@ -23,4 +23,6 @@ include::adoc_common_attributes.adoc[]
 
 * `\#include` directives <<includes_directives.adoc#, policy>>.
 
+* ./configure --debug, then: valgrind --track-origins=yes -v ./pcb-rnd 2>Valg.log
+
 * Policy about copyrights ?

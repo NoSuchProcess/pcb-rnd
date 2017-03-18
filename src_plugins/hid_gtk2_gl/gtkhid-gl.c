@@ -83,17 +83,15 @@ static const gchar *get_color_name(GdkColor * color)
 
 static void map_color_string(const char *color_string, GdkColor * color)
 {
-	static GdkColormap *colormap = NULL;
-	GHidPort *out = &ghid_port;
 
-	if (!color || !out->top_window)
+	if (!color || !gport->top_window)
 		return;
-	if (colormap == NULL)
-		colormap = gtk_widget_get_colormap(out->top_window);
+	if (gport->colormap == NULL)
+		gport->colormap = gtk_widget_get_colormap(gport->top_window);
 	if (color->red || color->green || color->blue)
-		gdk_colormap_free_colors(colormap, color, 1);
+		gdk_colormap_free_colors(gport->colormap, color, 1);
 	gdk_color_parse(color_string, color);
-	gdk_color_alloc(colormap, color);
+	gdk_color_alloc(gport->colormap, color);
 }
 
 

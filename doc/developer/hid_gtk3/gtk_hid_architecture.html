@@ -33,7 +33,7 @@
 <ul class="sectlevel2">
 <li><a href="#_roadmap_short_term">Roadmap (short term)</a></li>
 <li><a href="#_names_proposal">Names proposal</a></li>
-<li><a href="#__code_glue_h_code"><code>glue.h</code></a></li>
+<li><a href="#_situation_code_svn_r7460_code">Situation <code>svn r7460</code></a></li>
 </ul>
 </li>
 <li><a href="#_road_blocks_ahead">Road blocks ahead</a></li>
@@ -60,7 +60,7 @@ This structure is general enough. Nothing too entangled to GTK2 nor GTK3 there.<
 <p>Q: How GTK HID is initialized ?</p>
 </div>
 <div class="paragraph">
-<p>A?: <code>hid_hid_gtk_init ()</code> in <code>&lt;hid_gtk/gtkhid-main.c&gt;</code></p>
+<p>A: <code>hid_hid_gtk_init ()</code> in <code>&lt;hid_gtk/gtkhid-main.c&gt;</code></p>
 </div>
 <div class="paragraph">
 <p>The GUI seems to start building from <code>ghid_do_export ()</code></p>
@@ -150,9 +150,9 @@ GHidPort ghid_port, *gport;</code></pre>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">GTK3 compatible</th>
-<th class="tableblock halign-left valign-top">GTK3 replacement</th>
-<th class="tableblock halign-left valign-top">GTK2 compatible ?</th>
+<th class="tableblock halign-left valign-top">GTK+3 compatible</th>
+<th class="tableblock halign-left valign-top">GTK+3 replacement</th>
+<th class="tableblock halign-left valign-top">GTK+2 compatible ?</th>
 </tr>
 </thead>
 <tbody>
@@ -213,9 +213,9 @@ GHidPort ghid_port, *gport;</code></pre>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">GTK3 compatible</th>
-<th class="tableblock halign-left valign-top">GTK3 replacement</th>
-<th class="tableblock halign-left valign-top">GTK2 compatible ?</th>
+<th class="tableblock halign-left valign-top">GTK+3 compatible</th>
+<th class="tableblock halign-left valign-top">GTK+3 replacement</th>
+<th class="tableblock halign-left valign-top">GTK+2 compatible ?</th>
 </tr>
 </thead>
 <tbody>
@@ -230,15 +230,15 @@ GHidPort ghid_port, *gport;</code></pre>
 <div class="paragraph">
 <p>Indirectly, a <code>GdkGC</code> needs a <code>GdkDrawable</code> which is also deprecated in GTK3.
 A good replacement is a <code>GdkWindow</code>. Unfortunately <code>pcb-rnd</code> is making more use
-of deprecated <code>GdkPixmap</code> objects.</p>
+of deprecated <code>GdkPixmap</code> objects than <code>GdkWindow</code>.</p>
 </div>
 <div class="paragraph">
-<p><code>gdk_draw_line</code> has been deprecated since version 2.22. Use <code>cairo_line_to</code>
- and <code>cairo_stroke</code> instead. <code>gdk_gc_new</code> has been deprecated since version 2.22.
+<p><code>gdk_draw_line</code> has been deprecated since GTK+ 2.22. Use <code>cairo_line_to</code>
+ and <code>cairo_stroke</code> instead. <code>gdk_gc_new</code> has been deprecated since GTK+ 2.22.
  Use Cairo for rendering.</p>
 </div>
 <div class="paragraph">
-<p>Cairo needs also a context</p>
+<p>Cairo API needs a context:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -257,13 +257,10 @@ cairo_create (cairo_surface_t *target);</code></pre>
 drawing operation or as source when drawing onto another surface.</p>
 </div>
 <div class="paragraph">
-<p>Problem with <code>GdkPixmap</code>. Use now <code>GdkWindow</code> !</p>
-</div>
-<div class="paragraph">
 <p>GDK does not wrap the cairo API, instead it allows to create cairo contexts
 which can be used to draw on <code>GdkWindow</code>. Additional functions allow use
-GdkRectangles with cairo and to use GdkColors, GdkRGBAs, GdkPixbufs
-and GdkWindows as sources for drawing operations.</p>
+<code>GdkRectangles</code> with cairo and to use <code>GdkColors</code>, <code>GdkRGBAs</code>, <code>GdkPixbufs</code>
+and <code>GdkWindows</code> as sources for drawing operations.</p>
 </div>
 </div>
 <div class="sect2">
@@ -419,12 +416,176 @@ in <code>hid_gtk3</code> for those high level structures.</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="__code_glue_h_code"><code>glue.h</code></h3>
+<h3 id="_situation_code_svn_r7460_code">Situation <code>svn r7460</code></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">├── hid_gtk
+│   ├── actions.c
+│   ├── colors.c
+│   ├── common.c
+│   ├── glue_common.c
+│   ├── glue_conf.c
+│   ├── glue_event.c
+│   ├── glue_hid.c
+│   ├── glue_win32.c
+│   ├── gtkhid-gdk.c
+│   ├── gtkhid-gl.c
+│   └── gtkhid-main.c
+├── hid_gtk3
+│   └── colors.c
+├── lib_gtk_common
+│   ├── act_fileio.c
+│   ├── act_print.c
+│   ├── bu_*.c
+│   ├── dlg_*.c
+│   ├── dlg_topwin.c
+│   ├── in_keyboard.c
+│   ├── in_mouse.c
+│   ├── lib_gtk_common.c
+│   ├── ui_crosshair.c
+│   ├── ui_zoompan.c
+│   ├── util_block_hook.c
+│   ├── util_ext_chg.c
+│   ├── util_listener.c
+│   ├── util_str.c
+│   ├── util_timer.c
+│   ├── util_watch.c
+│   ├── win_place.c
+│   └── wt_*.c
+├── lib_gtk_config
+│   ├── gtk_conf_list.c
+│   ├── gui-config.c
+│   └── lib_gtk_config.c</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">bu_*</div>
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">box
+check_button
+cursor_pos
+dwg_tooltip
+entry
+icons
+info_bar
+layer_selector
+menu
+mode_btn
+notebook
+spin_button
+status_line
+text_view</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">dlg_*</div>
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">about
+attribute
+command
+confirm
+drc
+drc_cr
+export
+file_chooser
+fontsel
+input
+library
+library_param
+log
+message
+netlist
+pinout
+print
+progress
+propedit
+report
+route_style
+search</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">wt_*</div>
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">accel_label.c
+coord_entry.c
+layer_selector.c
+layer_selector_cr.c
+preview.c
+route_style.c</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gui_creation_timeline">GUI creation Timeline</h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">function</th>
+<th class="tableblock halign-left valign-top">dir.</th>
+<th class="tableblock halign-left valign-top">file</th>
+<th class="tableblock halign-left valign-top">structure / data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hid_hid_gtk_init</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gtkhid-main.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GhidGui _ghidgui, *ghidgui = &amp;_ghidgui;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_glue_common_init</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">glue_common.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GHidPort ghid_port, *gport;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_glue_hid_init</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">glue_hid.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_hid_t ghid_hid;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">glue_event_init</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">glue_event.c</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_do_export</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">glue_hid.c</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_hid_cfg_keys_init</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">src/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hid_cfg_input.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_hid_cfg_keys_t ghid_keymap;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_create_pcb_widgets</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lib_gtk_common</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dlg_topwin.c</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="__code_glue_h_code"><code>glue.h</code></h4>
 <div class="paragraph">
 <p>FIXME: draw relationships between "top level" structures, and common, config</p>
 </div>
 <div class="paragraph">
 <p>Detail common GTK2/GTK3 features ; distinguish between low level GTK2/3 ones.</p>
+</div>
 </div>
 </div>
 </div>
@@ -438,14 +599,14 @@ in <code>hid_gtk3</code> for those high level structures.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Menus</p>
+<p>Menus         : Split Application menus and <em>per topic</em> contextual menus.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Actions</p>
+<p>Actions      : use <code>GAction</code> if needed</p>
 </li>
 <li>
-<p>Short cut, multi-key shortcuts</p>
+<p>Short cut, multi-key shortcuts   :</p>
 </li>
 </ul>
 </div>
@@ -460,7 +621,7 @@ in <code>hid_gtk3</code> for those high level structures.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-25 08:36:07 CET
+Last updated 2017-03-08 11:38:35 CET
 </div>
 </div>
 </body>

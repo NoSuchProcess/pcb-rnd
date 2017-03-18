@@ -14,7 +14,7 @@ pcb_hid_t pcb_gui = pcb_hid_find_gui ()
 
 Q: How GTK HID is initialized ?
 
-A?: `hid_hid_gtk_init ()` in `<hid_gtk/gtkhid-main.c>`
+A: `hid_hid_gtk_init ()` in `<hid_gtk/gtkhid-main.c>`
 
 The GUI seems to start building from `ghid_do_export ()`
 
@@ -44,12 +44,12 @@ GTK3 compatibility within these 2 structures:
 .`GHidPort` structure study (portion)
 [options="header"]
 |===
-|  Type         | GTK3 compatible | GTK3 replacement | GTK2 compatible ?
-| GtkWidget     | {yes}           |                  |
-| GdkPixmap     | {no}            | GdkPixbuf        | could be
-| GdkDrawable   | {no}            | Cairo surface    | {no} (not desired)
-| GdkColor      | {no}            | GdkRGBA          | {no}^1^
-| GdkColormap   | {no}            | GdkVisual        | {no}^1^
+|  Type         | GTK+3 compatible  | GTK+3 replacement   | GTK+2 compatible ?
+| GtkWidget     | {yes}             |                     |
+| GdkPixmap     | {no}              | GdkPixbuf           | could be
+| GdkDrawable   | {no}              | Cairo surface       | {no} (not desired)
+| GdkColor      | {no}              | GdkRGBA             | {no}^1^
+| GdkColormap   | {no}              | GdkVisual           | {no}^1^
 |===
 ^1^ An abstracted structure will be put in place (almost completed)
 
@@ -62,19 +62,19 @@ GTK3 compatibility within these 2 structures:
 .`hid_gc_s` structure study (portion)
 [options="header"]
 |===
-|  Type         | GTK3 compatible | GTK3 replacement | GTK2 compatible ?
-| GdkGC         | {no}            | Cairo context    | could be (not desired)
+|  Type         | GTK+3 compatible  | GTK+3 replacement | GTK+2 compatible ?
+| GdkGC         | {no}              | Cairo context     | could be (not desired)
 |===
 
 Indirectly, a `GdkGC` needs a `GdkDrawable` which is also deprecated in GTK3.
 A good replacement is a `GdkWindow`. Unfortunately {prg} is making more use
-of deprecated `GdkPixmap` objects.
+of deprecated `GdkPixmap` objects than `GdkWindow`.
 
-`gdk_draw_line` has been deprecated since version 2.22. Use `cairo_line_to`
- and `cairo_stroke` instead. `gdk_gc_new` has been deprecated since version 2.22.
+`gdk_draw_line` has been deprecated since GTK+ 2.22. Use `cairo_line_to`
+ and `cairo_stroke` instead. `gdk_gc_new` has been deprecated since GTK+ 2.22.
  Use Cairo for rendering.
 
-Cairo needs also a context
+Cairo API needs a context:
 ```c
 cairo_line_to (cairo_t *cr,
                double x,
@@ -87,12 +87,10 @@ and then pops-up the *Cairo Surface* !
 A `cairo_surface_t` represents an image, either as the destination of a
 drawing operation or as source when drawing onto another surface.
 
-Problem with `GdkPixmap`. Use now `GdkWindow` !
-
 GDK does not wrap the cairo API, instead it allows to create cairo contexts
 which can be used to draw on `GdkWindow`. Additional functions allow use
-GdkRectangles with cairo and to use GdkColors, GdkRGBAs, GdkPixbufs
-and GdkWindows as sources for drawing operations.
+`GdkRectangles` with cairo and to use `GdkColors`, `GdkRGBAs`, `GdkPixbufs`
+and `GdkWindows` as sources for drawing operations.
 
 === GDK3
 === Cairo Interaction
@@ -170,7 +168,116 @@ marks in the manual, there's absolutely no issue with a _gtk2+pixmap_.
 | extern GHidPort ghid_port, *gport;  | pcb_gtk_viewport_t _pcb_gtk_viewport *pcb_gtk_viewport
 |===
 
-=== `glue.h`
+=== Situation `svn r7460`
+
+```sh
+├── hid_gtk
+│   ├── actions.c
+│   ├── colors.c
+│   ├── common.c
+│   ├── glue_common.c
+│   ├── glue_conf.c
+│   ├── glue_event.c
+│   ├── glue_hid.c
+│   ├── glue_win32.c
+│   ├── gtkhid-gdk.c
+│   ├── gtkhid-gl.c
+│   └── gtkhid-main.c
+├── hid_gtk3
+│   └── colors.c
+├── lib_gtk_common
+│   ├── act_fileio.c
+│   ├── act_print.c
+│   ├── bu_*.c
+│   ├── dlg_*.c
+│   ├── dlg_topwin.c
+│   ├── in_keyboard.c
+│   ├── in_mouse.c
+│   ├── lib_gtk_common.c
+│   ├── ui_crosshair.c
+│   ├── ui_zoompan.c
+│   ├── util_block_hook.c
+│   ├── util_ext_chg.c
+│   ├── util_listener.c
+│   ├── util_str.c
+│   ├── util_timer.c
+│   ├── util_watch.c
+│   ├── win_place.c
+│   └── wt_*.c
+├── lib_gtk_config
+│   ├── gtk_conf_list.c
+│   ├── gui-config.c
+│   └── lib_gtk_config.c
+```
+
+.bu_*
+```sh
+box
+check_button
+cursor_pos
+dwg_tooltip
+entry
+icons
+info_bar
+layer_selector
+menu
+mode_btn
+notebook
+spin_button
+status_line
+text_view
+```
+
+.dlg_*
+```sh
+about
+attribute
+command
+confirm
+drc
+drc_cr
+export
+file_chooser
+fontsel
+input
+library
+library_param
+log
+message
+netlist
+pinout
+print
+progress
+propedit
+report
+route_style
+search
+```
+
+.wt_*
+```sh
+accel_label.c
+coord_entry.c
+layer_selector.c
+layer_selector_cr.c
+preview.c
+route_style.c
+```
+
+==== GUI creation Timeline
+[options="header"]
+|===
+| function                | dir.            | file            | structure / data
+| hid_hid_gtk_init        | hid_gtk         | gtkhid-main.c   | GhidGui _ghidgui, *ghidgui = &_ghidgui;
+| ghid_glue_common_init   | hid_gtk         | glue_common.c   | GHidPort ghid_port, *gport;
+| ghid_glue_hid_init      | hid_gtk         | glue_hid.c      | pcb_hid_t ghid_hid;
+| glue_event_init         | hid_gtk         | glue_event.c    |
+| ghid_do_export          | hid_gtk         | glue_hid.c      | 
+| pcb_hid_cfg_keys_init   | src/            | hid_cfg_input.c | pcb_hid_cfg_keys_t ghid_keymap;
+| ghid_create_pcb_widgets | lib_gtk_common  | dlg_topwin.c    | 
+|===
+
+==== `glue.h`
 FIXME: draw relationships between "top level" structures, and common, config
 
 Detail common GTK2/GTK3 features ; distinguish between low level GTK2/3 ones.
@@ -179,9 +286,9 @@ Detail common GTK2/GTK3 features ; distinguish between low level GTK2/3 ones.
 
 Thinking about:
 
-* Menus
-** Actions
-** Short cut, multi-key shortcuts
+* Menus         : Split Application menus and _per topic_ contextual menus.
+** Actions      : use `GAction` if needed
+** Short cut, multi-key shortcuts   : 
 
 Suggests more use of GIO : https://developer.gnome.org/gio/stable/ch01.html
 
