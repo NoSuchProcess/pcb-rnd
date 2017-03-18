@@ -315,6 +315,7 @@ pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer,
 			case PCB_LYT_FONTSEL:
 			case PCB_LYT_SUBSTRATE:
 			case PCB_LYT_MISC:
+			case PCB_LYT_NOEXPORT:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
@@ -393,6 +394,7 @@ pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer,
 			case PCB_LYT_FONTSEL:
 			case PCB_LYT_SUBSTRATE:
 			case PCB_LYT_MISC:
+			case PCB_LYT_NOEXPORT:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
@@ -602,7 +604,7 @@ static void layer_init(pcb_layer_t *lp, int idx)
 
 /* Recalculate the group->layer cross-links using the layer->group links
    (useful when layer positions change but groups don't) */
-static layer_sync_groups(pcb_board_t *pcb)
+static void layer_sync_groups(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t g;
 	pcb_layer_id_t l;
@@ -623,7 +625,6 @@ static layer_sync_groups(pcb_board_t *pcb)
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
 	pcb_layer_id_t l;
-	pcb_layergrp_id_t g;
 	pcb_layer_t saved_layer;
 
 	/* sanity checks */
