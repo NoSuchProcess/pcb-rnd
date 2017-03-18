@@ -70,7 +70,6 @@ CLEANUP #5
 - unravel the undo code
 	- grid size change should be undoable? [report:Evan]
 	- maybe other conf settings too?
-- src/check_icon.data - is it used?
 - search for move.dst_layer - don't compare pointer to -1!
 - rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
@@ -102,7 +101,6 @@ CLEANUP #5
 	- gpmi:
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
-- check whether local copy of gts is needed, bisect when toporouter broke 
 - check gpmi when pcb-rnd is fully linstalled - broken symlinks?
 - multi-key: display state on the gui
 - TODO#3: works only on US keyboard
