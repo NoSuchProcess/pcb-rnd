@@ -286,7 +286,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 		length = coord_abs(dy);
 	}
 	group = pcb_layer_get_group(PCB, INDEXOFCURRENT);
-	comp = pcb_max_group + 10;				/* this out-of-range group might save a call */
+	comp = PCB->LayerGroups.len + 10;				/* this out-of-range group might save a call */
 	if (pcb_layergrp_flags(PCB, group) & PCB_LYT_BOTTOM)
 		info.solder = pcb_true;
 	else {
@@ -441,7 +441,7 @@ static void drc_line(pcb_point_t *end)
 
 	/* prepare for the intersection search */
 	group = pcb_layer_get_group(PCB, INDEXOFCURRENT);
-	comp = pcb_max_group + 10;  /* this out-of-range group might save a call */
+	comp = PCB->LayerGroups.len + 10;  /* this out-of-range group might save a call */
 	if (pcb_layergrp_flags(PCB, group) & PCB_LYT_BOTTOM)
 		info.solder = pcb_true;
 	else {

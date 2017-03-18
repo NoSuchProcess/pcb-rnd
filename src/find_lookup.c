@@ -489,7 +489,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 			}
 		}
 		/* loop over all layergroups */
-		for (group = 0; group < pcb_max_group; group++) {
+		for (group = 0; group < PCB->LayerGroups.len; group++) {
 			pcb_cardinal_t entry;
 
 			for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {

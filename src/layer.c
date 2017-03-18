@@ -376,7 +376,7 @@ static int is_last_top_copper_layer(int layer)
 
 static int is_last_bottom_copper_layer(int layer)
 {
-	int sgroup = pcb_layer_get_group(PCB, pcb_max_group + PCB_SOLDER_SIDE);
+	int sgroup = pcb_layer_get_group(PCB, PCB->LayerGroups.len + PCB_SOLDER_SIDE);
 	int lgroup = pcb_layer_get_group(PCB, layer);
 	if (sgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
 		return 1;
@@ -437,7 +437,7 @@ static void layer_sync_groups(pcb_board_t *pcb)
 	pcb_layergrp_id_t g;
 	pcb_layer_id_t l;
 
-	for (g = 0; g < pcb_max_group; g++)
+	for (g = 0; g < pcb->LayerGroups.len; g++)
 		pcb->LayerGroups.grp[g].len = 0;
 
 	for (l = 0; l < pcb->Data->LayerN; l++) {

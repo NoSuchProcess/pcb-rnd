@@ -198,7 +198,7 @@ void pcb_data_free(pcb_data_t * data)
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
-	for (layer = data->Layer, i = 0; i < pcb_max_layer; layer++, i++) {
+	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++) {
 		pcb_attribute_free(&layer->Attributes);
 		PCB_TEXT_LOOP(layer);
 		{
@@ -260,7 +260,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
-	for (i = 0; i < pcb_max_layer; i++)
+	for (i = 0; i < Data->LayerN; i++)
 		hasNoObjects = hasNoObjects && pcb_layer_is_empty_(PCB, &(Data->Layer[i]));
 	return (hasNoObjects);
 }
