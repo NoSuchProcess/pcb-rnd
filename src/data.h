@@ -53,6 +53,7 @@ struct pcb_data_s {
 };
 
 
+/* DO NOT USE these two macros, they are not PCB-safe */
 #define pcb_max_layer (PCB->Data->LayerN)
 #define pcb_max_group (PCB->LayerGroups.len)
 
