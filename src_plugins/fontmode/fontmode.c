@@ -302,6 +302,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		cx -= ox;
 		cy -= oy;
 
+		pcb_arc_bbox(a);
 		if (symbol->Width < a->BoundingBox.X2 - ox)
 			symbol->Width = a->BoundingBox.X2 - ox;
 
