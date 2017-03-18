@@ -379,7 +379,7 @@ struct hid_s {
 
 	/* Prompts the user to enter a string, returns the string.  If
 	   default_string isn't NULL, the form is pre-filled with this
-	   value.  "msg" is like "Enter value:".  */
+	   value.  "msg" is like "Enter value:".  Returns NULL on cancel. */
 	char *(*prompt_for) (const char *msg_, const char *default_string_);
 
 	/* Prompts the user for a filename or directory name.  For GUI
