@@ -324,6 +324,8 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		for(n = 0; n < p->PointN; n++) {
 			np->Points[n].X = p->Points[n].X - ox;
 			np->Points[n].Y = p->Points[n].Y - oy;
+			if (symbol->Width < np->Points[n].X)
+				symbol->Width = np->Points[n].X;
 		}
 	}
 
