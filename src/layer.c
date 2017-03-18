@@ -561,6 +561,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 	return 0;
 }
 
+/* Safe move of a layer within a layer array, updaging all fields (list->parents) */
 static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	pcb_line_t *li;
@@ -581,12 +582,14 @@ static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 		ar->link.parent = &dst->Arc.lst;
 }
 
+/* empty and detach a layer - must be initialized or another layer moved over it later */
 static void layer_clear(pcb_layer_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_layer_t));
 	dst->grp = -1;
 }
 
+/* Initialize a new layer with safe initial values */
 static void layer_init(pcb_layer_t *lp, int idx)
 {
 	memset(lp, 0, sizeof(pcb_layer_t));
@@ -597,6 +600,8 @@ static void layer_init(pcb_layer_t *lp, int idx)
 	lp->SelectedColor = conf_core.appearance.color.layer_selected[idx];
 }
 
+/* Recalculate the group->layer cross-links using the layer->group links
+   (useful when layer positions change but groups don't) */
 static layer_sync_groups(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t g;
@@ -621,15 +626,17 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_layergrp_id_t g;
 	pcb_layer_t saved_layer;
 
-
+	/* sanity checks */
 	if (old_index < -1 || old_index >= pcb_max_layer) {
 		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb_max_layer - 1);
 		return 1;
 	}
+
 	if (new_index < -1 || new_index > pcb_max_layer || new_index >= PCB_MAX_LAYER) {
 		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb_max_layer);
 		return 1;
 	}
+
 	if (old_index == new_index)
 		return 0;
 
