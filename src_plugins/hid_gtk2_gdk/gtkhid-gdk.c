@@ -65,19 +65,24 @@ static const gchar *get_color_name(GdkColor * color)
 	return tmp;
 }
 
-static void map_color_string(const char *color_string, GdkColor * color)
+/** Returns TRUE only if \p color_string has been allocated to \p color. */
+static pcb_bool map_color_string(const char *color_string, GdkColor * color)
 {
 	static GdkColormap *colormap = NULL;
 	GHidPort *out = &ghid_port;
+	pcb_bool parsed;
 
 	if (!color || !out->top_window)
-		return;
+		return FALSE;
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(out->top_window);
 	if (color->red || color->green || color->blue)
 		gdk_colormap_free_colors(colormap, color, 1);
-	gdk_color_parse(color_string, color);
-	gdk_color_alloc(colormap, color);
+	parsed = gdk_color_parse(color_string, color);
+	if (parsed)
+		gdk_color_alloc(colormap, color);
+
+	return parsed;
 }
 
 
@@ -174,7 +179,7 @@ static inline void ghid_gdk_draw_grid_global(void)
 	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->Grid, PCB->GridOffsetY);
 
 	grd = PCB->Grid;
-	
+
 	if (Vz(grd) < conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px) {
 		if (!conf_hid_gtk.plugins.hid_gtk.global_grid.sparse)
 			return;
@@ -817,7 +822,7 @@ static void redraw_region(GdkRectangle * rect)
 	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
 	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
-	
+
 	ctx.force = 0;
 	ctx.content.elem = NULL;
 
