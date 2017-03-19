@@ -231,19 +231,21 @@ void ghid_gl_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 
 static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 {
+	static GdkColor grid_color;
+
 	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 
-	if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
-		gport->grid_color.red ^= gport->bg_color.red;
-		gport->grid_color.green ^= gport->bg_color.green;
-		gport->grid_color.blue ^= gport->bg_color.blue;
+	if (gdk_color_parse(conf_core.appearance.color.grid, &grid_color)) {
+		grid_color.red ^= gport->bg_color.red;
+		grid_color.green ^= gport->bg_color.green;
+		grid_color.blue ^= gport->bg_color.blue;
 	}
 
 	glEnable(GL_COLOR_LOGIC_OP);
 	glLogicOp(GL_XOR);
 
-	glColor3f(gport->grid_color.red / 65535., gport->grid_color.green / 65535., gport->grid_color.blue / 65535.);
+	glColor3f(grid_color.red / 65535., grid_color.green / 65535., grid_color.blue / 65535.);
 
 #warning this does not draw the local grid and ignores other new grid options
 	hidgl_draw_grid(drawn_area);
