@@ -47,6 +47,7 @@ static pcb_hid_gc_t current_gc = NULL;
 #define USE_GC(gc) if (!use_gc(gc)) return
 
 static int cur_mask = -1;
+static GdkColor grid_color;
 
 typedef struct render_priv_s {
 	GdkGLConfig *glconfig;
@@ -231,8 +232,6 @@ void ghid_gl_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 
 static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 {
-	static GdkColor grid_color;
-
 	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 
@@ -354,9 +353,9 @@ void ghid_gl_use_mask(int use_it)
 	 */
 static void set_special_grid_color(void)
 {
-	gport->grid_color.red ^= gport->bg_color.red;
-	gport->grid_color.green ^= gport->bg_color.green;
-	gport->grid_color.blue ^= gport->bg_color.blue;
+	grid_color.red ^= gport->bg_color.red;
+	grid_color.green ^= gport->bg_color.green;
+	grid_color.blue ^= gport->bg_color.blue;
 }
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
@@ -370,7 +369,7 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 		map_color_string(cfg->val.color[0], &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
-		if (map_color_string(cfg->val.color[0], &gport->grid_color))
+		if (map_color_string(cfg->val.color[0], &grid_color))
 			set_special_grid_color();
 	}
 }
