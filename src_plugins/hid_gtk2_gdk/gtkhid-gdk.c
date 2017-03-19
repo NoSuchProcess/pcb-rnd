@@ -310,6 +310,7 @@ static void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 static void ghid_gdk_draw_grid(void)
 {
 	static GdkColormap *colormap = NULL;
+	static GdkColor grid_color;
 	render_priv_t *priv = gport->render_priv;
 
 	grid_local_have_old = 0;
@@ -320,15 +321,15 @@ static void ghid_gdk_draw_grid(void)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (!priv->grid_gc) {
-		if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
-			gport->grid_color.red ^= gport->bg_color.red;
-			gport->grid_color.green ^= gport->bg_color.green;
-			gport->grid_color.blue ^= gport->bg_color.blue;
-			gdk_color_alloc(colormap, &gport->grid_color);
+		if (gdk_color_parse(conf_core.appearance.color.grid, &grid_color)) {
+			grid_color.red ^= gport->bg_color.red;
+			grid_color.green ^= gport->bg_color.green;
+			grid_color.blue ^= gport->bg_color.blue;
+			gdk_color_alloc(colormap, &grid_color);
 		}
 		priv->grid_gc = gdk_gc_new(gport->drawable);
 		gdk_gc_set_function(priv->grid_gc, GDK_XOR);
-		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
+		gdk_gc_set_foreground(priv->grid_gc, &grid_color);
 		gdk_gc_set_clip_origin(priv->grid_gc, 0, 0);
 		set_clip(priv, priv->grid_gc);
 	}
@@ -337,7 +338,6 @@ static void ghid_gdk_draw_grid(void)
 		ghid_gdk_draw_grid_local(grid_local_old_x, grid_local_old_y);
 		return;
 	}
-
 
 	ghid_gdk_draw_grid_global();
 }
