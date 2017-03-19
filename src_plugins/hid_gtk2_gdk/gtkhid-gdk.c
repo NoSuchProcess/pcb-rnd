@@ -459,30 +459,32 @@ typedef struct {
 	/* Config helper functions for when the user changes color preferences.
 	   |  set_special colors used in the gtkhid.
 	 */
-static void set_special_grid_color(void)
+static void set_special_grid_color(GdkColor *grid_color)
 {
 	render_priv_t *priv = gport->render_priv;
 	int red, green, blue;
 
-	red = (gport->grid_color.red ^ gport->bg_color.red) & 0xFF;
-	green = (gport->grid_color.green ^ gport->bg_color.green) & 0xFF;
-	blue = (gport->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
+	red = (grid_color->red ^ gport->bg_color.red) & 0xFF;
+	green = (grid_color->green ^ gport->bg_color.green) & 0xFF;
+	blue = (grid_color->blue ^ gport->bg_color.blue) & 0xFF;
 	conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
-	map_color_string(conf_core.appearance.color.grid, &gport->grid_color);
+	map_color_string(conf_core.appearance.color.grid, grid_color);
 
 	config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 
 	if (priv->grid_gc)
-		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
+		gdk_gc_set_foreground(priv->grid_gc, grid_color);
 }
 
 static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
+	static GdkColor grid_color;
+
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
 		if (map_color_string(cfg->val.color[0], &gport->bg_color)) {
 			gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
-			set_special_grid_color();
+			set_special_grid_color(&grid_color);
 		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
@@ -490,8 +492,8 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 			gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
-		if (map_color_string(cfg->val.color[0], &gport->grid_color))
-			set_special_grid_color();
+		if (map_color_string(cfg->val.color[0], &grid_color))
+			set_special_grid_color(&grid_color);
 	}
 }
 
