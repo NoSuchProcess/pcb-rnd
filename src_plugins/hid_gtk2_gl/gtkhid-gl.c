@@ -47,10 +47,10 @@ static pcb_hid_gc_t current_gc = NULL;
 #define USE_GC(gc) if (!use_gc(gc)) return
 
 static int cur_mask = -1;
-static GdkColor grid_color;
 
 typedef struct render_priv_s {
 	GdkGLConfig *glconfig;
+	GdkColor grid_color;
 	pcb_bool trans_lines;
 	pcb_bool in_context;
 	int subcomposite_stencil_bit;
@@ -232,19 +232,21 @@ void ghid_gl_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 
 static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 {
+	render_priv_t *priv = gport->render_priv;
+
 	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 
-	if (gdk_color_parse(conf_core.appearance.color.grid, &grid_color)) {
-		grid_color.red ^= gport->bg_color.red;
-		grid_color.green ^= gport->bg_color.green;
-		grid_color.blue ^= gport->bg_color.blue;
+	if (gdk_color_parse(conf_core.appearance.color.grid, &priv->grid_color)) {
+		priv->grid_color.red ^= gport->bg_color.red;
+		priv->grid_color.green ^= gport->bg_color.green;
+		priv->grid_color.blue ^= gport->bg_color.blue;
 	}
 
 	glEnable(GL_COLOR_LOGIC_OP);
 	glLogicOp(GL_XOR);
 
-	glColor3f(grid_color.red / 65535., grid_color.green / 65535., grid_color.blue / 65535.);
+	glColor3f(priv->grid_color.red / 65535., priv->grid_color.green / 65535., priv->grid_color.blue / 65535.);
 
 #warning this does not draw the local grid and ignores other new grid options
 	hidgl_draw_grid(drawn_area);
@@ -353,14 +355,17 @@ void ghid_gl_use_mask(int use_it)
 	 */
 static void set_special_grid_color(void)
 {
-	grid_color.red ^= gport->bg_color.red;
-	grid_color.green ^= gport->bg_color.green;
-	grid_color.blue ^= gport->bg_color.blue;
+	render_priv_t *priv = gport->render_priv;
+
+	priv->grid_color.red ^= gport->bg_color.red;
+	priv->grid_color.green ^= gport->bg_color.green;
+	priv->grid_color.blue ^= gport->bg_color.blue;
 }
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
+
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
 		if (map_color_string(cfg->val.color[0], &gport->bg_color))
 			set_special_grid_color();
@@ -369,7 +374,7 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 		map_color_string(cfg->val.color[0], &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
-		if (map_color_string(cfg->val.color[0], &grid_color))
+		if (map_color_string(cfg->val.color[0], &priv->grid_color))
 			set_special_grid_color();
 	}
 }
