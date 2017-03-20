@@ -7,7 +7,7 @@ LDLIBS = -lm
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 LIBPCB_BASE= $(SRC)/unit.o $(SRC)/compat_misc.o
 
-all: tester_spd prcli
+all: tester tester_spd prcli
 
 ROOT=../..
 include $(ROOT)/Makefile.conf
