@@ -67,13 +67,14 @@ static int min_sig_figs(double d)
 }
 
 /* Truncate trailing 0's from str */
-static void do_trunc0(char *str)
+static int do_trunc0(char *str)
 {
 	char *end = str + strlen(str) - 1;
 	while((end > str) && (*end == '0') && (end[-1] != '.')) {
 		*end = '\0';
 		end--;
 	}
+	return end-str+1;
 }
 
 
@@ -398,7 +399,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 	gds_t spec;
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0;
-	char *free_fmt = NULL;
+	char *dot, *free_fmt = NULL;
 	enum pcb_allow_e mask = PCB_UNIT_ALLOW_ALL;
 
 	gds_init(&spec);
@@ -550,7 +551,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				++fmt;
 				if (*fmt == '*')
 					ext_unit = va_arg(args, const char *);
-				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A')
+				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f')
 					value[0] = va_arg(args, pcb_coord_t);
 				count = 1;
 				switch (*fmt) {
@@ -628,6 +629,14 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					/* if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
 					tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, pcb_angle_t))); /* kicad legacy needs decidegrees */
+					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+					break;
+				case 'f':
+					gds_append_len(&spec, "f", 1);
+					tmplen = sprintf(tmp, spec.array, va_arg(args, double));
+					dot = strchr(spec.array, '.');
+					if ((dot != NULL) && (dot[1] == '0'))
+						tmplen = do_trunc0(tmp);
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case '+':

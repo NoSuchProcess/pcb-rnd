@@ -57,6 +57,7 @@
  *   %mr    output a measure in a unit readable by parse_l.l
  *          (outputs in centimil without units - compatibility with mainline)
  *   %ma    output an angle in degrees (expects degrees)
+ *   %mf    output an a double (same as %f, expect it understands the .0n modifier)
  *
  * These accept the usual printf modifiers for %f, as well as
  *     $    output a unit suffix after the measure (with space between measure and unit)
