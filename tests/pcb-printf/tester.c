@@ -54,6 +54,10 @@ int main()
 			PCB_PRINTF("m+=%m+%mS m\n", PCB_UNIT_ALLOW_M, c[n]);
 			PCB_PRINTF("m+=%m+%mS mm or m\n", PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_M, c[n]);
 		}
+#ifndef SPEED
+			printf("---------------\n");
+#endif
+		PCB_PRINTF("mf=%.08mf\n", (double)1.2345);
 	}
 
 #ifdef SPEED
