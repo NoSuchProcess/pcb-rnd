@@ -62,6 +62,11 @@
 #@@thumbsize:automap2 3
 #@@thumbnum:automap2 1
 
+#@@param:alphabet the alphabet automap may use for rows; use A..Z if unspecified, else use the letters in this alphabet (in order). List letters without separator, e.g. ABCDEF
+#@@preview_args:automap2 3,3,automap=alnum,alphabet=QDT
+#@@thumbsize:automap2 3
+#@@thumbnum:automap2 1
+
 
 #@@include common.awk
 

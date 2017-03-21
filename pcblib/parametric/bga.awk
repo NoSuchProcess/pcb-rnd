@@ -1,8 +1,8 @@
 function pinalpha(p,    s)
 {
-	if (p >= 26)
-		s = pinalpha(int(p/26)-1)
-	return s sprintf("%c", 65 + (p % 26))
+	if (p >= alphabet_len)
+		s = pinalpha(int(p/alphabet_len)-1)
+	return s sprintf("%s", substr(alphabet, (p % alphabet_len)+1, 1))
 }
 
 function automap(algo, pivot, revx, revy   ,xx,yy)
@@ -33,7 +33,7 @@ BEGIN {
 	set_arg(P, "?balldia", "0.35mm")
 	set_arg(P, "?silkmark", "arc")
 
-	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2", "")
+	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2,alphabet", "")
 
 	step = parse_dim(P["spacing"])
 
@@ -41,6 +41,11 @@ BEGIN {
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
+
+	alphabet = P["alphabet"]
+	if (alphabet == "")
+		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	alphabet_len = length(alphabet)
 
 	if (P["map"] != "") {
 		v = split(P["map"], A, ":")
