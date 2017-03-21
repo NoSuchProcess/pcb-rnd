@@ -445,7 +445,7 @@ pcb_route_apply(const pcb_route_t * p_route)
 																					p_obj->start_angle,
 																					p_obj->delta_angle,
 																					p_route->thickness,
-																					p_route->clearance,
+																					2 * p_route->clearance,
 																					pcb_flag_make(PCB_FLAG_CLEARLINE) );
 					if(arc)	{
 						pcb_added_lines++;
