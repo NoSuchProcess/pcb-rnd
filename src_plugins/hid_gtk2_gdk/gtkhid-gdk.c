@@ -462,13 +462,12 @@ typedef struct {
 static void set_special_grid_color(void)
 {
 	render_priv_t *priv = gport->render_priv;
-	int red, green, blue;
 
-	red = (priv->grid_color.red ^ gport->bg_color.red) & 0xFF;
-	green = (priv->grid_color.green ^ gport->bg_color.green) & 0xFF;
-	blue = (priv->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
-	conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
+          /* The color grid is combined with background color */
 	map_color_string(conf_core.appearance.color.grid, &priv->grid_color);
+	priv->grid_color.red = (priv->grid_color.red ^ gport->bg_color.red) & 0xFF;
+	priv->grid_color.green = (priv->grid_color.green ^ gport->bg_color.green) & 0xFF;
+	priv->grid_color.blue = (priv->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
 
 	config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 
@@ -491,8 +490,10 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 			gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
-		if (map_color_string(cfg->val.color[0], &priv->grid_color))
+		if (map_color_string(cfg->val.color[0], &priv->grid_color)) {
+			conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "%s", get_color_name(&priv->grid_color));
 			set_special_grid_color();
+		}
 	}
 }
 
