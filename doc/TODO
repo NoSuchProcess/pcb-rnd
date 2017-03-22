@@ -3,7 +3,8 @@
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
-	- undo bug: empty board, draw line, select line, drag&drop move selected line, undo -> undo bug
+	- undo bug: empty board, draw line, select line, drag&drop move selected line, undo -> undo bug [report: Evan]
+	- undo bug: draw rectangle; undo; draw a rectangle or line -> undo bug [report: miloh]
 
 - plugin breakage:
 	- don't force builtin for dependant libs
