@@ -827,6 +827,11 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
  */
 int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
+	if (elementlist_length(&Data->Element) > 1) {
+		pcb_message(PCB_MSG_ERROR, "Can't save multiple modules (footprints) in a single s-experssion mod file\n");
+		return -1;
+	}
+
 	return write_kicad_layout_elements(FP, PCB, Data, 0, 0, 0);
 }
 
