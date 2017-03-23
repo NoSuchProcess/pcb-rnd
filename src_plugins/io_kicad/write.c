@@ -890,7 +890,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		}
 
 		fprintf(FP, "%*s", indentation, "");
-		fprintf(FP,  "(module %s (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n",
+		fprintf(FP,  "(module \"%s\" (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n",
 								currentElementName, kicad_sexpr_layer_to_text(copperLayer));
 		fprintf(FP, "%*s", indentation + 2, "");
 		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos); 
