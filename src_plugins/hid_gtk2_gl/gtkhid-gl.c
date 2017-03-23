@@ -374,8 +374,10 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 		map_color_string(cfg->val.color[0], &gport->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
-		if (map_color_string(cfg->val.color[0], &priv->grid_color))
+		if (map_color_string(cfg->val.color[0], &priv->grid_color)) {
+			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 			set_special_grid_color();
+		}
 	}
 }
 
