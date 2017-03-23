@@ -82,14 +82,14 @@ void pcb_text_uninit(void);
 #define	PCB_TEXT_ALL_LOOP(top) do {                        \
 	pcb_cardinal_t l;                                   \
 	pcb_layer_t *layer = (top)->Layer;                  \
-	for (l = 0; l < (top)->LayerN; l++, layer++) \
+	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++) \
 	{                                                   \
 		PCB_TEXT_LOOP(layer)
 
 #define PCB_TEXT_VISIBLE_LOOP(board) do {                       \
 	pcb_cardinal_t l;                                        \
 	pcb_layer_t *layer = (board)->Data->Layer;               \
-	for (l = 0; l < (board)->Data->LayerN; l++, layer++)      \
+	for (l = 0; l < ((board)->Data->LayerN > 0 ? (board)->Data->LayerN : PCB->Data->LayerN); l++, layer++)      \
 	{                                                        \
 		PCB_TEXT_LOOP(layer);                                      \
 		if (pcb_text_is_visible((board), layer, text))
