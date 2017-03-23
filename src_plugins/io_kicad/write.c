@@ -45,8 +45,6 @@
  * and layer "21" SilkScreen Front
  */
 
-/* generates a line by line listing of the elements being saved */
-static int io_kicad_write_element_index(FILE * FP, pcb_data_t *Data);
 
 /* generates text for the kicad layer provided  */
 static char * kicad_sexpr_layer_to_text(int layer);
@@ -57,23 +55,8 @@ static int write_kicad_layout_via_drill_size(FILE * FP, pcb_cardinal_t indentati
 /* writes the buffer to file */
 int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
-	/*fputs("io_kicad_legacy_write_buffer()", FP); */
-
-	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n",FP);
-	fputs("Units mm\n",FP);
-	fputs("$INDEX\n",FP);
-	io_kicad_write_element_index(FP, buff->Data);
-	fputs("$EndINDEX\n",FP);
-
-	/* WriteViaData(FP, buff->Data); */
-
-	pcb_write_element_data(FP, buff->Data, "kicadl");
-
-	/*
-		for (i = 0; i < pcb_max_layer; i++)
-		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
-	*/
-	return (0);
+	pcb_message(PCB_MSG_ERROR, "can't save buffer in s-expr yet, please use kicad legacy for this\n");
+	return -1;
 }
 
 /* ---------------------------------------------------------------------------
@@ -483,41 +466,6 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 		free(outlineLayers);
 	}
         return (0);
-}
-
-/* ---------------------------------------------------------------------------
- * writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX
- */
-static int io_kicad_write_element_index(FILE * FP, pcb_data_t *Data)
-{
-	gdl_iterator_t eit;
-	pcb_element_t *element;
-	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
-
-	elementlist_dedup_initializer(ededup);
-
-	/* Now initialize the group with defaults */
-	unm_init(&group1);
-
-	elementlist_foreach(&Data->Element, &eit, element) {
-		elementlist_dedup_skip(ededup, element);
-		/* skip duplicate elements */
-		/* only non empty elements */
-
-		if (!linelist_length(&element->Line)
-				&& !pinlist_length(&element->Pin)
-				&& !arclist_length(&element->Arc)
-				&& !padlist_length(&element->Pad))
-			continue;
-
-		fprintf(FP, "%s\n", unm_name(&group1, element->Name[0].TextString, element));
-
-	}
-	/* Release unique name utility memory */
-	unm_uninit(&group1);
-	/* free the state used for deduplication */
-	elementlist_dedup_free(ededup);
-	return 0;
 }
 
 
