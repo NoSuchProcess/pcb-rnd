@@ -70,9 +70,6 @@ struct GHidPort_s {
 
 	struct render_priv_s *render_priv;
 
-	GdkColor bg_color, offlimits_color, grid_color;
-
-
 	pcb_gtk_mouse_t mouse;
 
 	pcb_gtk_view_t view;

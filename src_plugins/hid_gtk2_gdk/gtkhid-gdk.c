@@ -1159,7 +1159,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 
 		priv->offlimits_gc = gdk_gc_new(port->drawable);
 		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
-			map_color_string("white", &gport->offlimits_color);
+			map_color_string("white", &priv->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 		done_once = 1;
