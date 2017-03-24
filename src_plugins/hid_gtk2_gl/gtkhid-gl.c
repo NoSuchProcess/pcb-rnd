@@ -599,15 +599,15 @@ void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 	hidgl_fill_rect(x1, y1, x2, y2);
 }
 
-void ghid_gl_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
-{
-	ghid_gl_invalidate_all();
-}
-
 void ghid_gl_invalidate_all()
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar)
 		ghid_draw_area_update(gport, NULL);
+}
+
+void ghid_gl_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+{
+	ghid_gl_invalidate_all();
 }
 
 void ghid_gl_notify_crosshair_change(pcb_bool changes_complete)
