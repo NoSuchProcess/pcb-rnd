@@ -182,14 +182,16 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int i = 0;
 	time_t start, end;
 	GdkDisplay *display;
+	GdkWindow *window;
 
-	display = gdk_drawable_get_display(gport->drawable);
+	window = gtk_widget_get_window(gport->drawing_area);
+	display = gtk_widget_get_display(gport->drawing_area);
 
 	gdk_display_sync(display);
 	time(&start);
 	do {
 		ghid_invalidate_all();
-		gdk_window_process_updates(gtk_widget_get_window(gport->drawing_area), FALSE);
+		gdk_window_process_updates(window, FALSE);
 		time(&end);
 		i++;
 	}
