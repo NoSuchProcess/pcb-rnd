@@ -143,8 +143,6 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	gport->drawable = gport->pixmap;
 
 	if (!first_time_done) {
-		if (!ghidgui->common.map_color_string(conf_core.appearance.color.off_limit, &gport->offlimits_color))
-			ghidgui->common.map_color_string("white", &gport->offlimits_color);
 		first_time_done = TRUE;
 		ghid_drawing_area_configure_hook(out);
 		pcb_board_changed(0);

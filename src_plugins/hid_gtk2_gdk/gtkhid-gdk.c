@@ -32,6 +32,7 @@ typedef struct render_priv_s {
 	GdkGC *bg_gc;
 	GdkColor bg_color;
 	GdkGC *offlimits_gc;
+	GdkColor offlimits_color;
 	GdkGC *mask_gc;
 	GdkGC *u_gc;
 	GdkGC *grid_gc;
@@ -488,9 +489,9 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
-		if (map_color_string(cfg->val.color[0], &gport->offlimits_color)) {
+		if (map_color_string(cfg->val.color[0], &priv->offlimits_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
-			gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
+			gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
@@ -528,7 +529,7 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 		gdk_gc_set_foreground(gc->gc, &priv->bg_color);
 	}
 	else if (strcmp(name, "drill") == 0) {
-		gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);
+		gdk_gc_set_foreground(gc->gc, &priv->offlimits_color);
 	}
 	else {
 		ColorCache *cc;
@@ -1157,7 +1158,9 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
 
 		priv->offlimits_gc = gdk_gc_new(port->drawable);
-		gdk_gc_set_foreground(priv->offlimits_gc, &port->offlimits_color);
+		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
+			map_color_string("white", &gport->offlimits_color);
+		gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 		done_once = 1;
 	}
