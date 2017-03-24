@@ -50,7 +50,7 @@ static int cur_mask = -1;
 
 typedef struct render_priv_s {
 	GdkGLConfig *glconfig;
-	GdkColor grid_color;
+	GdkColor bg_color, offlimits_color, grid_color;
 	pcb_bool trans_lines;
 	pcb_bool in_context;
 	int subcomposite_stencil_bit;
@@ -238,9 +238,9 @@ static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 		return;
 
 	if (gdk_color_parse(conf_core.appearance.color.grid, &priv->grid_color)) {
-		priv->grid_color.red ^= gport->bg_color.red;
-		priv->grid_color.green ^= gport->bg_color.green;
-		priv->grid_color.blue ^= gport->bg_color.blue;
+		priv->grid_color.red ^= priv->bg_color.red;
+		priv->grid_color.green ^= priv->bg_color.green;
+		priv->grid_color.blue ^= priv->bg_color.blue;
 	}
 
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -357,9 +357,9 @@ static void set_special_grid_color(void)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	priv->grid_color.red ^= gport->bg_color.red;
-	priv->grid_color.green ^= gport->bg_color.green;
-	priv->grid_color.blue ^= gport->bg_color.blue;
+	priv->grid_color.red ^= priv->bg_color.red;
+	priv->grid_color.green ^= priv->bg_color.green;
+	priv->grid_color.blue ^= priv->bg_color.blue;
 }
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
@@ -367,11 +367,11 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 	render_priv_t *priv = gport->render_priv;
 
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
-		if (map_color_string(cfg->val.color[0], &gport->bg_color))
+		if (map_color_string(cfg->val.color[0], &priv->bg_color))
 			set_special_grid_color();
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit)) {
-		map_color_string(cfg->val.color[0], &gport->offlimits_color);
+		map_color_string(cfg->val.color[0], &priv->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
 		if (map_color_string(cfg->val.color[0], &priv->grid_color)) {
@@ -411,15 +411,15 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 	if (strcmp(gc->colorname, "erase") == 0) {
-		r = gport->bg_color.red / 65535.;
-		g = gport->bg_color.green / 65535.;
-		b = gport->bg_color.blue / 65535.;
+		r = priv->bg_color.red / 65535.;
+		g = priv->bg_color.green / 65535.;
+		b = priv->bg_color.blue / 65535.;
 		a = 1.0;
 	}
 	else if (strcmp(gc->colorname, "drill") == 0) {
-		r = gport->offlimits_color.red / 65535.;
-		g = gport->offlimits_color.green / 65535.;
-		b = gport->offlimits_color.blue / 65535.;
+		r = priv->offlimits_color.red / 65535.;
+		g = priv->offlimits_color.green / 65535.;
+		b = priv->offlimits_color.blue / 65535.;
 		a = conf_core.appearance.drill_alpha;
 	}
 	else {
@@ -444,9 +444,9 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		}
 		if (gc->xor) {
 			if (!cc->xor_set) {
-				cc->xor_color.red = cc->color.red ^ gport->bg_color.red;
-				cc->xor_color.green = cc->color.green ^ gport->bg_color.green;
-				cc->xor_color.blue = cc->color.blue ^ gport->bg_color.blue;
+				cc->xor_color.red = cc->color.red ^ priv->bg_color.red;
+				cc->xor_color.green = cc->color.green ^ priv->bg_color.green;
+				cc->xor_color.blue = cc->color.blue ^ priv->bg_color.blue;
 				gdk_color_alloc(colormap, &cc->xor_color);
 				cc->red = cc->color.red / 65535.;
 				cc->green = cc->color.green / 65535.;
@@ -803,6 +803,13 @@ void ghid_gl_init_drawing_widget(GtkWidget * widget, void * port_)
 
 void ghid_gl_drawing_area_configure_hook(GHidPort * port)
 {
+	render_priv_t *priv = port->render_priv;
+
+	if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
+		map_color_string("white", &priv->bg_color);
+
+	if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
+		map_color_string("white", &priv->offlimits_color);
 }
 
 gboolean ghid_gl_start_drawing(GHidPort * port)
@@ -882,8 +889,8 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev,
 							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
 	glEnable(GL_STENCIL_TEST);
-	glClearColor(port->offlimits_color.red / 65535.,
-							 port->offlimits_color.green / 65535., port->offlimits_color.blue / 65535., 1.);
+	glClearColor(priv->offlimits_color.red / 65535.,
+							 priv->offlimits_color.green / 65535., priv->offlimits_color.blue / 65535., 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -904,7 +911,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev,
 	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
-	glColor3f(port->bg_color.red / 65535., port->bg_color.green / 65535., port->bg_color.blue / 65535.);
+	glColor3f(priv->bg_color.red / 65535., priv->bg_color.green / 65535., priv->bg_color.blue / 65535.);
 
 	glBegin(GL_QUADS);
 	glVertex3i(0, 0, 0);
@@ -963,6 +970,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GdkDrawable *save_drawable;
 	GtkAllocation allocation;
+	render_priv_t *priv = gport->render_priv;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
@@ -1019,7 +1027,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
 	glEnable(GL_STENCIL_TEST);
-	glClearColor(gport->bg_color.red / 65535., gport->bg_color.green / 65535., gport->bg_color.blue / 65535., 1.);
+	glClearColor(priv->bg_color.red / 65535., priv->bg_color.green / 65535., priv->bg_color.blue / 65535., 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -1067,6 +1075,7 @@ GdkPixmap *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int hei
 	GdkGLPixmap *glpixmap;
 	GdkGLContext *glcontext;
 	GdkGLDrawable *gldrawable;
+	render_priv_t *priv = gport->render_priv;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	pcb_hid_expose_ctx_t ctx;
@@ -1118,7 +1127,7 @@ GdkPixmap *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int hei
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
-	glClearColor(gport->bg_color.red / 65535., gport->bg_color.green / 65535., gport->bg_color.blue / 65535., 1.);
+	glClearColor(priv->bg_color.red / 65535., priv->bg_color.green / 65535., priv->bg_color.blue / 65535., 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
