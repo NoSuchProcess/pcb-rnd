@@ -781,8 +781,10 @@ void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 	gtk2_gl_hid.thindraw_pcb_polygon = ghid_gl_thindraw_pcb_polygon;
 }
 
-void ghid_gl_shutdown_renderer(GHidPort * port)
+void ghid_gl_shutdown_renderer(void * p)
 {
+	GHidPort *port = p;
+
 	g_free(port->render_priv);
 	port->render_priv = NULL;
 }
@@ -795,10 +797,11 @@ void ghid_gl_init_drawing_widget(GtkWidget * widget, void * port_)
 	gtk_widget_set_gl_capability(widget, priv->glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
 }
 
-void ghid_gl_drawing_area_configure_hook(GHidPort * port)
+void ghid_gl_drawing_area_configure_hook(void * port)
 {
 	static int done_once = 0;
-	render_priv_t *priv = port->render_priv;
+	GHidPort *p = port;
+	render_priv_t *priv = p->render_priv;
 
 	if (!done_once) {
 		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
@@ -1071,7 +1074,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	return FALSE;
 }
 
-GdkPixmap *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
+/*GdkPixmap*/void *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
 {
 	GdkGLConfig *glconfig;
 	GdkPixmap *pixmap;
