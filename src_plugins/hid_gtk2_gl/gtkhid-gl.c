@@ -237,12 +237,6 @@ static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 
-	if (gdk_color_parse(conf_core.appearance.color.grid, &priv->grid_color)) {
-		priv->grid_color.red ^= priv->bg_color.red;
-		priv->grid_color.green ^= priv->bg_color.green;
-		priv->grid_color.blue ^= priv->bg_color.blue;
-	}
-
 	glEnable(GL_COLOR_LOGIC_OP);
 	glLogicOp(GL_XOR);
 
@@ -803,13 +797,22 @@ void ghid_gl_init_drawing_widget(GtkWidget * widget, void * port_)
 
 void ghid_gl_drawing_area_configure_hook(GHidPort * port)
 {
+	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
 
-	if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
-		map_color_string("white", &priv->bg_color);
+	if (!done_once) {
+		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
+			map_color_string("white", &priv->bg_color);
 
-	if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
-		map_color_string("white", &priv->offlimits_color);
+		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
+			map_color_string("white", &priv->offlimits_color);
+
+		if (!map_color_string(conf_core.appearance.color.grid, &priv->grid_color))
+			map_color_string("blue", &priv->grid_color);
+		set_special_grid_color();
+
+		done_once = 1;
+	}
 }
 
 gboolean ghid_gl_start_drawing(GHidPort * port)
