@@ -30,6 +30,7 @@ static int mask_seq = 0;
 
 typedef struct render_priv_s {
 	GdkGC *bg_gc;
+	GdkColor bg_color;
 	GdkGC *offlimits_gc;
 	GdkGC *mask_gc;
 	GdkGC *u_gc;
@@ -322,9 +323,9 @@ static void ghid_gdk_draw_grid(void)
 
 	if (!priv->grid_gc) {
 		if (gdk_color_parse(conf_core.appearance.color.grid, &priv->grid_color)) {
-			priv->grid_color.red ^= gport->bg_color.red;
-			priv->grid_color.green ^= gport->bg_color.green;
-			priv->grid_color.blue ^= gport->bg_color.blue;
+			priv->grid_color.red ^= priv->bg_color.red;
+			priv->grid_color.green ^= priv->bg_color.green;
+			priv->grid_color.blue ^= priv->bg_color.blue;
 			gdk_color_alloc(colormap, &priv->grid_color);
 		}
 		priv->grid_gc = gdk_gc_new(gport->drawable);
@@ -465,9 +466,9 @@ static void set_special_grid_color(void)
 
           /* The color grid is combined with background color */
 	map_color_string(conf_core.appearance.color.grid, &priv->grid_color);
-	priv->grid_color.red = (priv->grid_color.red ^ gport->bg_color.red) & 0xFF;
-	priv->grid_color.green = (priv->grid_color.green ^ gport->bg_color.green) & 0xFF;
-	priv->grid_color.blue = (priv->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
+	priv->grid_color.red = (priv->grid_color.red ^ priv->bg_color.red) & 0xFF;
+	priv->grid_color.green = (priv->grid_color.green ^ priv->bg_color.green) & 0xFF;
+	priv->grid_color.blue = (priv->grid_color.blue ^ priv->bg_color.blue) & 0xFF;
 
 	config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 
@@ -480,9 +481,9 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 	render_priv_t *priv = gport->render_priv;
 
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
-		if (map_color_string(cfg->val.color[0], &gport->bg_color)) {
+		if (map_color_string(cfg->val.color[0], &priv->bg_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/background"), -1);
-			gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
+			gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			set_special_grid_color();
 		}
 	}
@@ -504,6 +505,7 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	static void *cache = 0;
 	static GdkColormap *colormap = NULL;
+	render_priv_t *priv = gport->render_priv;
 	pcb_hidval_t cval;
 
 	if (name == NULL) {
@@ -523,7 +525,7 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (strcmp(name, "erase") == 0) {
-		gdk_gc_set_foreground(gc->gc, &gport->bg_color);
+		gdk_gc_set_foreground(gc->gc, &priv->bg_color);
 	}
 	else if (strcmp(name, "drill") == 0) {
 		gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);
@@ -548,9 +550,9 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 		}
 		if (gc->xor_mask) {
 			if (!cc->xor_set) {
-				cc->xor_color.red = cc->color.red ^ gport->bg_color.red;
-				cc->xor_color.green = cc->color.green ^ gport->bg_color.green;
-				cc->xor_color.blue = cc->color.blue ^ gport->bg_color.blue;
+				cc->xor_color.red = cc->color.red ^ priv->bg_color.red;
+				cc->xor_color.green = cc->color.green ^ priv->bg_color.green;
+				cc->xor_color.blue = cc->color.blue ^ priv->bg_color.blue;
 				gdk_color_alloc(colormap, &cc->xor_color);
 				cc->xor_set = 1;
 			}
@@ -1149,7 +1151,9 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 
 	if (!done_once) {
 		priv->bg_gc = gdk_gc_new(port->drawable);
-		gdk_gc_set_foreground(priv->bg_gc, &port->bg_color);
+		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
+			map_color_string("white", &priv->bg_color);
+		gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
 
 		priv->offlimits_gc = gdk_gc_new(port->drawable);
