@@ -481,13 +481,16 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
 		if (map_color_string(cfg->val.color[0], &gport->bg_color)) {
+			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/background"), -1);
 			gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
 			set_special_grid_color();
 		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
-		if (map_color_string(cfg->val.color[0], &gport->offlimits_color))
+		if (map_color_string(cfg->val.color[0], &gport->offlimits_color)) {
+			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
 			gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
+		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
 		if (map_color_string(cfg->val.color[0], &priv->grid_color)) {
