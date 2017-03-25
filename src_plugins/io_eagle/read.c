@@ -217,15 +217,68 @@ static int eagle_read_drawing(read_state_t *st, xmlNode *subtree)
 	return eagle_foreach_dispatch(st, subtree->children, disp);
 }
 
+static int eagle_read_ver(xmlChar *ver)
+{
+	int v1, v2, v3;
+	char *end;
+
+	if (ver == NULL) {
+		pcb_message(PCB_MSG_ERROR, "no version attribute in <eagle>\n");
+		return -1;
+	}
+
+	v1 = strtol((char *)ver, &end, 10);
+	if (*end != '.') {
+		pcb_message(PCB_MSG_ERROR, "malformed version string [1] in <eagle>\n");
+		return -1;
+	}
+	v2 = strtol((char *)end+1, &end, 10);
+	if (*end != '.') {
+		pcb_message(PCB_MSG_ERROR, "malformed version string [2] in <eagle>\n");
+		return -1;
+	}
+	v3 = strtol((char *)end+1, &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "malformed version string [3] in <eagle>\n");
+		return -1;
+	}
+
+	/* version check */
+	if (v1 < 6) {
+		pcb_message(PCB_MSG_ERROR, "file version too old\n");
+		return -1;
+	}
+	if (v1 > 7) {
+		pcb_message(PCB_MSG_ERROR, "file version too new\n");
+		return -1;
+	}
+	pcb_message(PCB_MSG_DEBUG, "Loading eagle board version %d.%d.%d\n", v1, v2, v3);
+	return 0;
+}
+
+static void st_init(read_state_t *st)
+{
+	htip_init(&st->layers, longhash, longkeyeq);
+	pcb_layer_group_setup_default(&st->pcb->LayerGroups);
+}
+
+static void st_uninit(read_state_t *st)
+{
+	htip_entry_t *e;
+
+	pcb_layergrp_fix_old_outline(st->pcb);
+
+	for (e = htip_first(&st->layers); e; e = htip_next(&st->layers, e))
+		free(e->value);
+	htip_uninit(&st->layers);
+}
+
 int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	xmlDoc *doc;
 	xmlNode *root;
-	xmlChar *ver;
-	char *end;
-	int v1, v2, v3, res;
+	int res;
 	read_state_t st;
-	htip_entry_t *e;
 
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"drawing",        eagle_read_drawing},
@@ -246,57 +299,22 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 		goto err;
 	}
 
-	ver = xmlGetProp(root, (xmlChar *)"version");
-	if (ver == NULL) {
-		pcb_message(PCB_MSG_ERROR, "no version attribute in <eagle>\n");
+	if (eagle_read_ver(xmlGetProp(root, (xmlChar *)"version")) < 0)
 		goto err;
-	}
-
-	v1 = strtol((char *)ver, &end, 10);
-	if (*end != '.') {
-		pcb_message(PCB_MSG_ERROR, "malformed version string [1] in <eagle>\n");
-		goto err;
-	}
-	v2 = strtol((char *)end+1, &end, 10);
-	if (*end != '.') {
-		pcb_message(PCB_MSG_ERROR, "malformed version string [2] in <eagle>\n");
-		goto err;
-	}
-	v3 = strtol((char *)end+1, &end, 10);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "malformed version string [3] in <eagle>\n");
-		goto err;
-	}
-
-	/* version check */
-	if (v1 < 6) {
-		pcb_message(PCB_MSG_ERROR, "file version too old\n");
-		goto err;
-	}
-	if (v1 > 7) {
-		pcb_message(PCB_MSG_ERROR, "file version too new\n");
-		goto err;
-	}
-	pcb_message(PCB_MSG_DEBUG, "Loading eagle board version %d.%d.%d\n", v1, v2, v3);
 
 	st.doc = doc;
 	st.root = root;
 	st.pcb = pcb;
 
-	htip_init(&st.layers, longhash, longkeyeq);
-	pcb_layer_group_setup_default(&pcb->LayerGroups);
-
+	st_init(&st);
 	res = eagle_foreach_dispatch(&st, root->children, disp);
-
-	for (e = htip_first(&st.layers); e; e = htip_next(&st.layers, e))
-		free(e->value);
-	htip_uninit(&st.layers);
-	pcb_layergrp_fix_old_outline(pcb);
+	st_uninit(&st);
 
 	pcb_trace("Houston, the Eagle has landed. %d\n", res);
 
 	xmlFreeDoc(doc);
 	return 0;
+
 err:;
 	xmlFreeDoc(doc);
 	return -1;
