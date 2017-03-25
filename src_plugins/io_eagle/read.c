@@ -282,7 +282,6 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	st.pcb = pcb;
 
 	htip_init(&st.layers, longhash, longkeyeq);
-	pcb_layers_reset();
 	pcb_layer_group_setup_default(&pcb->LayerGroups);
 
 	res = eagle_foreach_dispatch(&st, root->children, disp);
