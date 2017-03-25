@@ -95,6 +95,25 @@ pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord
 	return (pad);
 }
 
+pcb_pad_t *pcb_element_pad_new_rect(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
+{
+	pcb_coord_t x1, y1, x2, y2, w, h, t;
+	pcb_pad_t *pad;
+
+	w = X1 - X2;
+	h = Y1 - Y2;
+	t = (w < h) ? w : h;
+	x1 = X2 + t / 2;
+	y1 = Y2 + t / 2;
+	x2 = x1 + (w - t);
+	y2 = y1 + (h - t);
+
+	pad = pcb_element_pad_new(Element, x1, y1, x2, y2, t, 2 * Clearance, t + Mask, Name, Number, Flags);
+	PCB_FLAG_SET(PCB_FLAG_SQUARE, pad);
+	return pad;
+}
+
+
 /* sets the bounding box of a pad */
 void pcb_pad_bbox(pcb_pad_t *Pad)
 {

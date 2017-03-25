@@ -339,25 +339,19 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 			PCB_END_LOOP;
 			PCB_POLY_LOOP(layer);
 			{
-				pcb_coord_t x1, y1, x2, y2, w, h, t;
-
 				if (!polygon_is_rectangle(polygon)) {
 					crooked = pcb_true;
 					continue;
 				}
 
-				w = polygon->Points[2].X - polygon->Points[0].X;
-				h = polygon->Points[1].Y - polygon->Points[0].Y;
-				t = (w < h) ? w : h;
-				x1 = polygon->Points[0].X + t / 2;
-				y1 = polygon->Points[0].Y + t / 2;
-				x2 = x1 + (w - t);
-				y2 = y1 + (h - t);
-
 				sprintf(num, "%d", pin_n++);
-				pcb_element_pad_new(Element,
-										 x1, y1, x2, y2, t,
-										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, pcb_flag_make(PCB_FLAG_SQUARE | onsolderflag));
+
+				pcb_element_pad_new_rect(Element,
+					polygon->Points[2].X, polygon->Points[1].Y,
+					polygon->Points[0].X, polygon->Points[0].Y,
+					conf_core.design.clearance, conf_core.design.clearance,
+					NULL, num, pcb_flag_make(PCB_FLAG_SQUARE | onsolderflag));
+
 				MAYBE_WARN();
 				hasParts = pcb_true;
 			}

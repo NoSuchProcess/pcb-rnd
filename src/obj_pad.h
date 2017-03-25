@@ -45,6 +45,8 @@ pcb_pad_t *pcb_pad_alloc(pcb_element_t * element);
 void pcb_pad_free(pcb_pad_t * data);
 
 pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags);
+pcb_pad_t *pcb_element_pad_new_rect(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags);
+
 void pcb_pad_bbox(pcb_pad_t *Pad);
 
 pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
