@@ -4,6 +4,7 @@
 	- cross section on export should draw with double font, but should print file names
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
 	- undo bug: empty board, draw line, select line, drag&drop move selected line, undo -> undo bug [report: Evan]
+	- grid.lht: edit one poly by moving a conrer, undo, get another poly's corner ruined - lht poly creation bug?
 
 - plugin breakage:
 	- don't force builtin for dependant libs
