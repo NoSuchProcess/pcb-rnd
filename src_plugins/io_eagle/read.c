@@ -260,10 +260,10 @@ static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int ty
 
 	switch(loc) {
 		case IN_ELEM:
-			if ((ln != 121) && (ln != 122)) /* consider silk lines only */
+			if ((ln != 121) && (ln != 122) && (ln != 51) && (ln != 52)) /* consider silk lines only */
 				return 0;
 			lin = pcb_element_line_alloc((pcb_element_t *)obj);
-			if (ln == 122)
+			if ((ln == 122) || (ln == 52))
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
 			break;
 		case ON_BOARD:
@@ -382,10 +382,52 @@ static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int
 				pcb_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
 				continue;
 			}
-			eagle_foreach_dispatch(st, n->children, disp, name, ON_BOARD);
+			eagle_foreach_dispatch(st, n->children, disp, (char *)name, ON_BOARD);
 		}
 	}
 	return 0;
+}
+
+static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	xmlNode *n;
+
+	for(n = subtree->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"element") == 0) {
+			pcb_coord_t x, y;
+			const char *name = eagle_get_attrs(n, "name", NULL);
+			const char *lib = eagle_get_attrs(n, "library", NULL);
+			const char *pkg = eagle_get_attrs(n, "package", NULL);
+			pcb_element_t *elem, *new_elem;
+			if (name == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring element with no name\n");
+				continue;
+			}
+			if ((lib == NULL) || (pkg == NULL)) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring element with incomplete library reference\n");
+				continue;
+			}
+
+			elem = eagle_libelem_get(st, lib, pkg);
+			if (elem == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Library element not found: %s/%s\n", lib, pkg);
+				continue;
+			}
+			if (pcb_element_is_empty(elem)) {
+				pcb_message(PCB_MSG_WARNING, "Not placing empty element: %s/%s\n", lib, pkg);
+				continue;
+			}
+
+			x = eagle_get_attrc(n, "x", -1);
+			y = eagle_get_attrc(n, "y", -1);
+
+
+			new_elem = pcb_element_alloc(st->pcb->Data);
+			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
+
+			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, elem);
+		}
+	}
 }
 
 static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int type)
@@ -398,7 +440,7 @@ static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int t
 		{"classes",     eagle_read_nop},
 		{"designrules", eagle_read_nop},
 		{"autorouter",  eagle_read_nop},
-		{"elements",    eagle_read_nop},
+		{"elements",    eagle_read_elements},
 		{"signals",     eagle_read_signals},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
