@@ -1964,7 +1964,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 		static const char *col_names[] = { "index", "role & prio", "value" };
 		static GType ty[] = { G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING };
 		const char **s;
-		GtkWidget *scrolled, *vb1, *vb2;
+		GtkWidget *scrolled, *viewport, *vb1, *vb2;
 
 		int n, num_cols = sizeof(col_names) / sizeof(col_names[0]);
 		auto_tab_widgets.res_t = gtk_tree_view_new();
@@ -1983,8 +1983,9 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 		scrolled = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled), GTK_SHADOW_NONE);
 		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), vb1);
+		viewport = gtk_bin_get_child(GTK_BIN(scrolled));
+		gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 		gtk_box_pack_start(GTK_BOX(tab_vbox), scrolled, TRUE, TRUE, 4);
 	}
 	gtk_widget_set_size_request(tab_vbox, -1, -1); /* Recompute the window size */
