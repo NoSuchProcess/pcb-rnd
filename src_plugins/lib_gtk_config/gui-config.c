@@ -58,6 +58,7 @@
 #include "gtk_conf_list.h"
 #include "hid_gtk_conf.h"
 
+#include "../src_plugins/lib_gtk_common/compat.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
@@ -1801,6 +1802,31 @@ static void config_auto_remove_cb(GtkButton * btn, void *data);
 static void config_auto_create_cb(GtkButton * btn, void *data);
 static void config_page_update_auto(void *data);
 
+/** Wraps the \p child in a "packed" scrolled window. */
+static GtkWidget *bu_scrolled_window_packed(GtkWidget * child, GtkOrientation orientation)
+{
+	GtkWidget *scrolled, *viewport, *b1, *b2;
+
+	if (orientation == GTK_ORIENTATION_VERTICAL) {
+		b1 = gtkc_vbox_new(FALSE, 0);
+		b2 = gtkc_vbox_new(FALSE, 0);
+	}
+	else {
+		b1 = gtkc_hbox_new(FALSE, 0);
+		b2 = gtkc_hbox_new(FALSE, 0);
+	}
+	gtk_box_pack_start(GTK_BOX(b1), child, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(b1), b2, TRUE, TRUE, 0);
+
+	scrolled = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), b1);
+	viewport = gtk_bin_get_child(GTK_BIN(scrolled));
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
+
+	return scrolled;
+}
+
 /* Evaluates to 1 if the user canedit the config for this role */
 #define EDITABLE_ROLE(role) ((role == CFR_USER)  || (role == CFR_DESIGN) || (role == CFR_CLI) || ((role == CFR_PROJECT) && (PCB != NULL) && (PCB->Filename != NULL)))
 
@@ -1964,7 +1990,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 		static const char *col_names[] = { "index", "role & prio", "value" };
 		static GType ty[] = { G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING };
 		const char **s;
-		GtkWidget *scrolled, *viewport, *vb1, *vb2;
+		GtkWidget *scrolled;
 
 		int n, num_cols = sizeof(col_names) / sizeof(col_names[0]);
 		auto_tab_widgets.res_t = gtk_tree_view_new();
@@ -1975,17 +2001,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.res_t), -1, *s, renderer, "text", n, NULL);
 		}
 		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.res_t), GTK_TREE_MODEL(auto_tab_widgets.res_l));
-
-		vb1 = gtk_vbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(vb1), auto_tab_widgets.res_t, FALSE, FALSE, 0);
-		vb2 = gtk_vbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(vb1), vb2, TRUE, TRUE, 0);
-
-		scrolled = gtk_scrolled_window_new(NULL, NULL);
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), vb1);
-		viewport = gtk_bin_get_child(GTK_BIN(scrolled));
-		gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
+		scrolled = bu_scrolled_window_packed(auto_tab_widgets.res_t, GTK_ORIENTATION_VERTICAL);
 		gtk_box_pack_start(GTK_BOX(tab_vbox), scrolled, TRUE, TRUE, 4);
 	}
 	gtk_widget_set_size_request(tab_vbox, -1, -1); /* Recompute the window size */
