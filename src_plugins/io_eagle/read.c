@@ -446,6 +446,8 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			const char *lib = eagle_get_attrs(n, "library", NULL);
 			const char *pkg = eagle_get_attrs(n, "package", NULL);
 			pcb_element_t *elem, *new_elem;
+			const char *rot;
+
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring element with no name\n");
 				continue;
@@ -467,10 +469,23 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 
 			x = eagle_get_attrc(n, "x", -1);
 			y = eagle_get_attrc(n, "y", -1);
-
+			rot = eagle_get_attrs(n, "rot", NULL);
 
 			new_elem = pcb_element_alloc(st->pcb->Data);
 			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
+
+			if ((rot != NULL) && (rot[0] == 'R')) {
+				int deg = atoi(rot+1);
+				printf("rot? %s %d\n", rot, deg);
+				switch(deg) {
+					case 0: break;
+					case 90: pcb_element_rotate90(st->pcb->Data, new_elem, x, y, 3); break;
+					case 180: pcb_element_rotate90(st->pcb->Data, new_elem, x, y, 2); break;
+					case 270: pcb_element_rotate90(st->pcb->Data, new_elem, x, y, 1); break;
+					default:
+						pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation: %s/%s\n", lib, pkg);
+				}
+			}
 
 			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, elem);
 		}
