@@ -243,6 +243,13 @@ static pcb_element_t *eagle_libelem_get(read_state_t *st, const char *lib, const
 	return htsp_get(&l->elems, elem);
 }
 
+static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
+{
+	if (x > st->pcb->MaxWidth)
+		st->pcb->MaxWidth = x;
+	if (y > st->pcb->MaxHeight)
+		st->pcb->MaxHeight = y;
+}
 
 static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
@@ -274,6 +281,15 @@ static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	lin->Point2.X = eagle_get_attrc(subtree, "x2", -1);
 	lin->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
 	lin->Thickness = eagle_get_attrc(subtree, "width", -1);
+
+	switch(loc) {
+		case IN_ELEM: break;
+		case ON_BOARD:
+			size_bump(st, lin->Point1.X, lin->Point1.Y);
+			size_bump(st, lin->Point2.X, lin->Point2.Y);
+			break;
+	}
+
 	return 0;
 }
 
