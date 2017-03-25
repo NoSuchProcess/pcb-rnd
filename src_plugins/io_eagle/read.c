@@ -225,8 +225,19 @@ static pcb_element_t *eagle_libelem_get(read_state_t *st, const char *lib, const
 
 static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
 {
+	static const dispatch_t disp[] = { /* possible children of <board> */
+		{"description", eagle_read_nop},
+		{"wire",        eagle_read_nop},
+		{"circle",      eagle_read_nop},
+		{"smd",         eagle_read_nop},
+		{"pad",         eagle_read_nop},
+		{"text",        eagle_read_nop},
+		{"rectangle",   eagle_read_nop},
+		{"@text",       eagle_read_nop},
+		{NULL, NULL}
+	};
 	printf("   read pkg: TODO\n");
-	return 0;
+	return eagle_foreach_dispatch(st, subtree->children, disp);
 }
 
 static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree)
@@ -252,7 +263,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree)
 static int eagle_read_libs(read_state_t *st, xmlNode *subtree)
 {
 	xmlNode *n;
-	static const dispatch_t disp[] = { /* possible children of <board> */
+	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"description", eagle_read_nop},
 		{"packages",    eagle_read_lib_pkgs},
 		{"@text",       eagle_read_nop},
