@@ -188,7 +188,6 @@ static int eagle_read_drawing(read_state_t *st, xmlNode *subtree)
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
-printf("DRAW %s\n", subtree->name);
 	return eagle_foreach_dispatch(st, subtree->children, disp);
 }
 
