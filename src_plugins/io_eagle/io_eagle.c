@@ -57,7 +57,7 @@ pcb_uninit_t hid_io_eagle_init(void)
 
 	/* register the IO hook */
 	io_eagle.plugin_data = NULL;
-/*	io_eagle.fmt_support_prio = io_eagle_fmt;*/
+	io_eagle.fmt_support_prio = io_eagle_fmt;
 	io_eagle.test_parse_pcb = io_eagle_test_parse_pcb;
 	io_eagle.parse_pcb = io_eagle_read_pcb;
 /*	io_eagle.parse_element = NULL;

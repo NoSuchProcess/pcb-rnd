@@ -26,9 +26,14 @@
  */
 
 #include "config.h"
+
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+
 #include "board.h"
 #include "read.h"
 #include "conf.h"
+#include "error.h"
 
 int io_eagle_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
 {
@@ -50,6 +55,59 @@ int io_eagle_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Fi
 
 int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
+	xmlDoc *doc;
+	xmlNode *root;
+	xmlChar *ver;
+	char *end;
+	int v1, v2, v3;
+
+	doc = xmlReadFile(Filename, NULL, 0);
+	if (doc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "xml parsing error\n");
+		return -1;
+	}
+
+	root = xmlDocGetRootElement(doc);
+	if (xmlStrcmp(root->name, (xmlChar *)"eagle") != 0) {
+		pcb_message(PCB_MSG_ERROR, "xml error: root is not <eagle>\n");
+		goto err;
+	}
+	ver = xmlGetProp(root, (xmlChar *)"version");
+	v1 = strtol((char *)ver, &end, 10);
+	if (*end != '.') {
+		pcb_message(PCB_MSG_ERROR, "malformed version string [1] in <eagle>\n");
+		goto err;
+	}
+	v2 = strtol((char *)end+1, &end, 10);
+	if (*end != '.') {
+		pcb_message(PCB_MSG_ERROR, "malformed version string [2] in <eagle>\n");
+		goto err;
+	}
+	v3 = strtol((char *)end+1, &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "malformed version string [3] in <eagle>\n");
+		goto err;
+	}
+
+	/* version check */
+	if (v1 < 6) {
+		pcb_message(PCB_MSG_ERROR, "file version too old\n");
+		goto err;
+	}
+	if (v1 > 7) {
+		pcb_message(PCB_MSG_ERROR, "file version too new\n");
+		goto err;
+	}
+	pcb_message(PCB_MSG_DEBUG, "Loading eagle board version %d.%d.%d\n", v1, v2, v3);
+
+
+	pcb_trace("Houston, the Eagle has landed.\n");
+	goto err; /* until we really parse */
+
+	xmlFreeDoc(doc);
+	return 0;
+err:;
+	xmlFreeDoc(doc);
 	return -1;
 }
 
