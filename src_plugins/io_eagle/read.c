@@ -395,10 +395,13 @@ static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	y = eagle_get_attrc(subtree, "y", 0);
 	drill = eagle_get_attrc(subtree, "drill", 0);
 	dia = eagle_get_attrc(subtree, "diameter", 0);
-	shape = eagle_get_attrc(subtree, "shape", 0);
+	shape = eagle_get_attrs(subtree, "shape", 0);
 
 	pin = pcb_element_pin_new((pcb_element_t *)obj, x, y, dia,
 		conf_core.design.clearance, 0, drill, name, name, pcb_no_flags());
+
+	if ((shape != NULL) && (strcmp(shape, "octagon") == 0))
+		PCB_FLAG_SET(PCB_FLAG_OCTAGON, pin);
 
 	size_bump(st, x + dia, y + dia);
 
