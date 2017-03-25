@@ -59,6 +59,11 @@ typedef struct {
 	pcb_layer_id_t ly;
 } eagle_layer_t;
 
+typedef struct {
+	const char *desc;
+	htsp_t elements; /* -> pcb_elemement_t */
+} eagle_library_t;
+
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
 static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *disp_table)
@@ -204,13 +209,43 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 	return htip_get(&st->layers, id);
 }
 
+static int eagle_read_libs(read_state_t *st, xmlNode *subtree)
+{
+	xmlNode *n;
+
+	for(n = subtree->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"library") == 0) {
+			printf("Lib!\n");
+		}
+	}
+}
+
+static int eagle_read_board(read_state_t *st, xmlNode *subtree)
+{
+	static const dispatch_t disp[] = { /* possible children of <board> */
+		{"plain",       eagle_read_nop},
+		{"libraries",   eagle_read_libs},
+		{"attributes",  eagle_read_nop},
+		{"variantdefs", eagle_read_nop},
+		{"classes",     eagle_read_nop},
+		{"designrules", eagle_read_nop},
+		{"autorouter",  eagle_read_nop},
+		{"elements",    eagle_read_nop},
+		{"signals",     eagle_read_nop},
+		{"@text",       eagle_read_nop},
+		{NULL, NULL}
+	};
+	return eagle_foreach_dispatch(st, subtree->children, disp);
+}
+
+
 static int eagle_read_drawing(read_state_t *st, xmlNode *subtree)
 {
 	static const dispatch_t disp[] = { /* possible children of <drawing> */
 		{"settings",  eagle_read_nop},
 		{"grid",      eagle_read_nop},
 		{"layers",    eagle_read_layers},
-		{"board",     eagle_read_nop},
+		{"board",     eagle_read_board},
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
