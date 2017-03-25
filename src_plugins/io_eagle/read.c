@@ -264,10 +264,10 @@ static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int ty
 
 	switch(loc) {
 		case IN_ELEM:
-			if ((ln != 121) && (ln != 122) && (ln != 51) && (ln != 52)) /* consider silk lines only */
+			if ((ln != 121) && (ln != 122) && (ln != 21) && (ln != 22)) /* consider silk lines only */
 				return 0;
 			lin = pcb_element_line_alloc((pcb_element_t *)obj);
-			if ((ln == 122) || (ln == 52))
+			if ((ln == 122) || (ln == 22))
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
 			break;
 		case ON_BOARD:
