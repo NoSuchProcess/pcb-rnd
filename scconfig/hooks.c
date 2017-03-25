@@ -300,7 +300,7 @@ int safe_atoi(const char *s)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo;
+	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk3   = plug_is_enabled("hid_gtk3_cairo");
@@ -308,6 +308,7 @@ int hook_detect_target()
 	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
 	want_cairo  = plug_is_enabled("export_bboard") | want_gtk3;
+	want_xml2   = plug_is_enabled("io_eagle");
 
 	require("cc/fpic",  0, 1);
 	require("signal/names/*",  0, 0);
@@ -413,7 +414,16 @@ int hook_detect_target()
 		hook_custom_arg("Disable-lib_gtk_hid", NULL);
 	}
 
-
+	if (want_xml2) {
+		require("libs/sul/libxml2/presents", 0, 0);
+		if (!istrue(get("libs/sul/libxml2/presents"))) {
+			report("libxml2 is not available, disabling io_eagle...\n");
+			hook_custom_arg("Disable-io_eagle", NULL);
+		}
+		put("/local/pcb/want_libxml2", strue);
+	}
+	else
+		put("/local/pcb/want_libxml2", strue);
 
 
 	if (plug_is_enabled("hid_lesstif")) {
