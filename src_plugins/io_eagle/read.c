@@ -159,7 +159,6 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
 			int id;
 			unsigned long typ;
-			pcb_layer_id_t lid;
 			pcb_layergrp_id_t gid;
 			pcb_layer_group_t *grp;
 
@@ -179,16 +178,22 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
 				case 16: typ = PCB_LYT_COPPER | PCB_LYT_BOTTOM; break;
 				case 121: typ = PCB_LYT_SILK | PCB_LYT_TOP; break;
 				case 122: typ = PCB_LYT_SILK | PCB_LYT_BOTTOM; break;
+				case 199:
+					grp = pcb_get_grp_new_intern(st->pcb, -1);
+					ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
+					pcb_layergrp_fix_turn_to_outline(grp);
+					break;
+
 				default:
 					if ((id > 1) && (id < 16)) {
 						/* new internal layer */
 						grp = pcb_get_grp_new_intern(st->pcb, -1);
-						lid = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
+						ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
 					}
 			}
 			if (typ != 0) {
 				if (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0) {
-					lid = pcb_layer_create(gid, ly->name);
+					ly->ly = pcb_layer_create(gid, ly->name);
 /*					pcb_layer_add_in_group(st->pcb, lid, gid);*/
 				}
 			}
@@ -289,6 +294,7 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	for (e = htip_first(&st.layers); e; e = htip_next(&st.layers, e))
 		free(e->value);
 	htip_uninit(&st.layers);
+	pcb_layergrp_fix_old_outline(pcb);
 
 	pcb_trace("Houston, the Eagle has landed. %d\n", res);
 
