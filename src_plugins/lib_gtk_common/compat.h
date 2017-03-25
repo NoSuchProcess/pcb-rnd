@@ -31,7 +31,7 @@ static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 
 static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 {
-	GtkBox *box = gtk_box_new(TK_ORIENTATION_VERTICAL, spacing);
+	GtkBox *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, spacing);
 	gtk_box_set_homogenous(box, homogenous);
 	return GTK_WIDGET(box);
 }
