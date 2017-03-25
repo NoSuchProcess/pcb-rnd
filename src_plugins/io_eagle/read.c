@@ -382,7 +382,7 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	return 0;
 }
 
-static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj, int type, int hole)
 {
 	pcb_coord_t x, y, drill, dia;
 	pcb_pin_t *pin;
@@ -396,10 +396,11 @@ static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	drill = eagle_get_attrc(subtree, "drill", 0);
 	dia = eagle_get_attrc(subtree, "diameter", 0);
 	shape = eagle_get_attrs(subtree, "shape", 0);
-
 	pin = pcb_element_pin_new((pcb_element_t *)obj, x, y, dia,
 		conf_core.design.clearance, 0, drill, name, name, pcb_no_flags());
-
+	if (hole) {
+		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pin);
+	}
 	if ((shape != NULL) && (strcmp(shape, "octagon") == 0))
 		PCB_FLAG_SET(PCB_FLAG_OCTAGON, pin);
 
@@ -408,6 +409,17 @@ static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	return 0;
 }
 
+static int eagle_read_hole(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	return eagle_read_pad_or_hole(st, subtree, obj, type, 1);
+}
+
+static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	return eagle_read_pad_or_hole(st, subtree, obj, type, 0);
+}
+
+
 /****************** composite objects ******************/
 
 static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
@@ -415,7 +427,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 	static const dispatch_t disp[] = { /* possible children of <board> */
 		{"description", eagle_read_nop},
 		{"wire",        eagle_read_wire},
-		{"hole",        eagle_read_nop},
+		{"hole",        eagle_read_hole},
 		{"circle",      eagle_read_circle},
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
