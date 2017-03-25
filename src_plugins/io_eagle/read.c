@@ -158,6 +158,10 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
 		if (xmlStrcmp(n->name, (xmlChar *)"layer") == 0) {
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
 			int id;
+			unsigned long typ;
+			pcb_layer_id_t lid;
+			pcb_layergrp_id_t gid;
+			pcb_layer_group_t *grp;
 
 			ly->name    = eagle_get_attrs(n, "name", NULL);
 			ly->color   = eagle_get_attrl(n, "color", -1);
@@ -168,12 +172,32 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
 			id = eagle_get_attrl(n, "number", -1);
 			if (id >= 0)
 				htip_set(&st->layers, id, ly);
+
+			typ = 0;
+			switch(id) {
+				case 1: typ = PCB_LYT_COPPER | PCB_LYT_TOP; break;
+				case 16: typ = PCB_LYT_COPPER | PCB_LYT_BOTTOM; break;
+				case 121: typ = PCB_LYT_SILK | PCB_LYT_TOP; break;
+				case 122: typ = PCB_LYT_SILK | PCB_LYT_BOTTOM; break;
+				default:
+					if ((id > 1) && (id < 16)) {
+						/* new internal layer */
+						grp = pcb_get_grp_new_intern(st->pcb, -1);
+						lid = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
+					}
+			}
+			if (typ != 0) {
+				if (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0) {
+					lid = pcb_layer_create(gid, ly->name);
+/*					pcb_layer_add_in_group(st->pcb, lid, gid);*/
+				}
+			}
 		}
 	}
 	return 0;
 }
 
-static eagle_layer_t *lyeagle_layer_get(read_state_t *st, int id)
+static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 {
 	return htip_get(&st->layers, id);
 }
@@ -258,6 +282,8 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	st.pcb = pcb;
 
 	htip_init(&st.layers, longhash, longkeyeq);
+	pcb_layers_reset();
+	pcb_layer_group_setup_default(&pcb->LayerGroups);
 
 	res = eagle_foreach_dispatch(&st, root->children, disp);
 
@@ -266,7 +292,6 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	htip_uninit(&st.layers);
 
 	pcb_trace("Houston, the Eagle has landed. %d\n", res);
-	goto err; /* until we really parse */
 
 	xmlFreeDoc(doc);
 	return 0;
