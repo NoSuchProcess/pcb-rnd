@@ -339,6 +339,27 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	return 0;
 }
 
+static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	pcb_coord_t x, y, drill, dia;
+	pcb_pin_t *pin;
+	const char *name, *shape;
+
+	assert(type == IN_ELEM);
+
+	name = eagle_get_attrs(subtree, "name", NULL);
+	x = eagle_get_attrc(subtree, "x", 0);
+	y = eagle_get_attrc(subtree, "y", 0);
+	drill = eagle_get_attrc(subtree, "drill", 0);
+	dia = eagle_get_attrc(subtree, "diameter", 0);
+	shape = eagle_get_attrc(subtree, "shape", 0);
+
+	pin = pcb_element_pin_new((pcb_element_t *)obj, x, y, dia,
+		conf_core.design.clearance, 0, drill, name, name, pcb_no_flags());
+
+	return 0;
+}
+
 /****************** composite objects ******************/
 
 static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
@@ -349,7 +370,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{"hole",        eagle_read_nop},
 		{"circle",      eagle_read_nop},
 		{"smd",         eagle_read_smd},
-		{"pad",         eagle_read_nop},
+		{"pad",         eagle_read_pad},
 		{"text",        eagle_read_nop},
 		{"rectangle",   eagle_read_nop},
 		{"@text",       eagle_read_nop},
