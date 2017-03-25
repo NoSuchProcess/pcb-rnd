@@ -255,6 +255,49 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 
 /****************** drawing primitives ******************/
 
+static int eagle_read_circle(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	eagle_loc_t loc = type;
+	pcb_arc_t *circ;
+	long ln = eagle_get_attrl(subtree, "layer", -1);
+	eagle_layer_t *ly;
+
+	switch(loc) {
+		case IN_ELEM:
+			if ((ln != 121) && (ln != 122) && (ln != 51) && (ln != 52)) /* consider silk circles only */
+				return 0;
+			circ = pcb_element_arc_alloc((pcb_element_t *)obj);
+			if ((ln == 122) || (ln == 52))
+				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, circ);
+			break;
+		case ON_BOARD:
+			ly = eagle_layer_get(st, ln);
+			if (ly->ly < 0) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring circle on layer %s\n", ly->name);
+				return 0;
+			}
+			circ = pcb_arc_alloc(pcb_get_layer(ly->ly));
+			break;
+	}
+	circ->X = eagle_get_attrc(subtree, "x", -1);
+	circ->Y = eagle_get_attrc(subtree, "y", -1);
+	circ->Width = eagle_get_attrc(subtree, "radius", -1);
+	circ->Height = circ->Width; /* no ellipse support */
+	circ->StartAngle = 0;
+	circ->Delta = 360;
+	circ->Thickness = eagle_get_attrc(subtree, "width", -1);
+
+	switch(loc) {
+		case IN_ELEM: break;
+		case ON_BOARD:
+			size_bump(st, circ->X + circ->Width + circ->Thickness, circ->Y + circ->Width + circ->Thickness);
+			pcb_add_arc_on_layer(pcb_get_layer(ly->ly), circ);
+			break;
+	}
+
+	return 0;
+}
+
 static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
@@ -368,7 +411,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{"description", eagle_read_nop},
 		{"wire",        eagle_read_wire},
 		{"hole",        eagle_read_nop},
-		{"circle",      eagle_read_nop},
+		{"circle",      eagle_read_circle},
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
 		{"text",        eagle_read_nop},
