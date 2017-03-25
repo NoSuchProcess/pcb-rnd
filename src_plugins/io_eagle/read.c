@@ -298,10 +298,10 @@ static int eagle_read_circle(read_state_t *st, xmlNode *subtree, void *obj, int 
 	return 0;
 }
 
-static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_rect(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
-	pcb_line_t *lin;
+	pcb_line_t *lin1, *lin2, *lin3, *lin4;
 	long ln = eagle_get_attrl(subtree, "layer", -1);
 	eagle_layer_t *ly;
 
@@ -309,37 +309,121 @@ static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int ty
 		case IN_ELEM:
 			if ((ln != 121) && (ln != 122) && (ln != 21) && (ln != 22)) /* consider silk lines only */
 				return 0;
-			lin = pcb_element_line_alloc((pcb_element_t *)obj);
+			lin1 = pcb_element_line_alloc((pcb_element_t *)obj);
+			lin2 = pcb_element_line_alloc((pcb_element_t *)obj);
+			lin3 = pcb_element_line_alloc((pcb_element_t *)obj);
+			lin4 = pcb_element_line_alloc((pcb_element_t *)obj);
 			if ((ln == 122) || (ln == 22))
-				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
+				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin1);
+				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin2);
+				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin3);
+				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin4);
 			break;
 		case ON_BOARD:
 			ly = eagle_layer_get(st, ln);
 			if (ly->ly < 0) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
+				pcb_message(PCB_MSG_WARNING, "Ignoring rectangle on layer %s\n", ly->name);
 				return 0;
 			}
-			lin = pcb_line_alloc(pcb_get_layer(ly->ly));
+			lin1 = pcb_line_alloc(pcb_get_layer(ly->ly));
+			lin2 = pcb_line_alloc(pcb_get_layer(ly->ly));
+			lin3 = pcb_line_alloc(pcb_get_layer(ly->ly));
+			lin4 = pcb_line_alloc(pcb_get_layer(ly->ly));
 			break;
 	}
 
-	lin->Point1.X = eagle_get_attrc(subtree, "x1", -1);
-	lin->Point1.Y = eagle_get_attrc(subtree, "y1", -1);
-	lin->Point2.X = eagle_get_attrc(subtree, "x2", -1);
-	lin->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
-	lin->Thickness = eagle_get_attrc(subtree, "width", -1);
+	lin1->Point1.X = eagle_get_attrc(subtree, "x1", -1);
+	lin1->Point1.Y = eagle_get_attrc(subtree, "y1", -1);
+	lin1->Point2.X = eagle_get_attrc(subtree, "x2", -1);
+	lin1->Point2.Y = lin1->Point1.Y;
+
+	lin2->Point1.X = lin1->Point2.X;
+	lin2->Point1.Y = lin1->Point2.Y;
+	lin2->Point2.X = lin1->Point2.X;
+	lin2->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
+
+	lin3->Point1.X = lin2->Point2.X;
+	lin3->Point1.Y = lin2->Point2.Y;
+	lin3->Point2.X = lin1->Point1.X;
+	lin3->Point2.Y = lin2->Point2.Y;
+
+	lin4->Point1.X = lin3->Point2.X;
+	lin4->Point1.Y = lin3->Point2.Y;
+	lin4->Point2.X = lin1->Point1.X;
+	lin4->Point2.Y = lin1->Point1.Y;
+
+#warning hard coded rectangle line thicknesses need to be changed to design rules value
+ 
+	lin1->Thickness = PCB_MIL_TO_COORD(10);
+	lin2->Thickness = lin1->Thickness;
+	lin3->Thickness = lin1->Thickness;
+	lin4->Thickness = lin1->Thickness;
 
 	switch(loc) {
-		case IN_ELEM: break;
+		case IN_ELEM:
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin1);
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin2);
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin3);
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin4);
+
+			break;
+
 		case ON_BOARD:
-			size_bump(st, lin->Point1.X + lin->Thickness, lin->Point1.Y + lin->Thickness);
-			size_bump(st, lin->Point2.X + lin->Thickness, lin->Point2.Y + lin->Thickness);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin);
+			size_bump(st, lin1->Point1.X + lin1->Thickness, lin1->Point1.Y + lin1->Thickness);
+			size_bump(st, lin3->Point1.X + lin3->Thickness, lin3->Point1.Y + lin3->Thickness);
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin1);
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin2);
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin3);
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin4);
+
 			break;
 	}
 
 	return 0;
 }
+
+static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+        eagle_loc_t loc = type;
+        pcb_line_t *lin;
+        long ln = eagle_get_attrl(subtree, "layer", -1);
+        eagle_layer_t *ly;
+
+        switch(loc) {
+                case IN_ELEM:
+                        if ((ln != 121) && (ln != 122) && (ln != 21) && (ln != 22)) /* consider silk lines only */
+                                return 0;
+                        lin = pcb_element_line_alloc((pcb_element_t *)obj);
+                        if ((ln == 122) || (ln == 22))
+                                PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
+                        break;
+                case ON_BOARD:
+                        ly = eagle_layer_get(st, ln);
+                        if (ly->ly < 0) {
+                                pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
+                                return 0;
+                        }
+                        lin = pcb_line_alloc(pcb_get_layer(ly->ly));
+	}
+
+        lin->Point1.X = eagle_get_attrc(subtree, "x1", -1);
+        lin->Point1.Y = eagle_get_attrc(subtree, "y1", -1);
+        lin->Point2.X = eagle_get_attrc(subtree, "x2", -1);
+        lin->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
+        lin->Thickness = eagle_get_attrc(subtree, "width", -1);
+
+        switch(loc) {
+                case IN_ELEM: break;
+                case ON_BOARD:
+                        size_bump(st, lin->Point1.X + lin->Thickness, lin->Point1.Y + lin->Thickness);
+                        size_bump(st, lin->Point2.X + lin->Thickness, lin->Point2.Y + lin->Thickness);
+                        pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin);
+                        break;
+        }
+
+        return 0;
+}
+
 
 static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
@@ -437,7 +521,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
 		{"text",        eagle_read_nop},
-		{"rectangle",   eagle_read_nop},
+		{"rectangle",   eagle_read_rect},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
