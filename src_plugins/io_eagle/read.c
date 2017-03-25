@@ -27,6 +27,7 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
@@ -46,6 +47,16 @@ typedef struct {
 	int (*parser)(read_state_t *st, xmlNode *subtree);
 } dispatch_t;
 
+typedef struct {
+	const char *name;
+	int color;
+	int fill;
+	int visible;
+	int active;
+
+	pcb_layer_id_t ly;
+} eagle_layer_t;
+
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
 static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *disp_table)
@@ -58,13 +69,13 @@ static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *
 		return -1;
 
 	if (subtree->type == XML_TEXT_NODE)
-		name = "@text";
+		name = (const xmlChar *)"@text";
 	else
 		name = subtree->name;
 
 	for(d = disp_table; d->node_name != NULL; d++)
 		if (xmlStrcmp((xmlChar *)d->node_name, name) == 0)
-			return d->parser(st, subtree->children);
+			return d->parser(st, subtree);
 
 	pcb_message(PCB_MSG_ERROR, "eagle: unknown node: '%s'\n", name);
 	/* node name not found in the dispatcher table */
@@ -111,17 +122,68 @@ int io_eagle_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Fi
 	return 0;
 }
 
+/* Return a node attribute value converted to long, or return invalid_val
+   for synatx error or if the attribute doesn't exist */
+static long eagle_get_attrl(xmlNode *nd, const char *name, long invalid_val)
+{
+	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	char *end;
+	long res;
+
+	if (p == NULL)
+		return invalid_val;
+	res = strtol((char *)p, &end, 10);
+	if (*end != '\0')
+		return invalid_val;
+	return res;
+}
+
+/* Return a node attribute value converted to char *, or return invalid_val
+   if the attribute doesn't exist */
+static const char *eagle_get_attrs(xmlNode *nd, const char *name, const char *invalid_val)
+{
+	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	if (p == NULL)
+		return invalid_val;
+	return (const char *)p;
+}
+
+static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
+{
+	xmlNode *n;
+
+	printf("subtree=%s\n", subtree->name);
+	for(n = subtree->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"layer") == 0) {
+			eagle_layer_t *ly= calloc(sizeof(eagle_layer_t), 1);
+			int id;
+
+			ly->name    = eagle_get_attrs(n, "name", NULL);
+			ly->color   = eagle_get_attrl(n, "color", -1);
+			ly->fill    = eagle_get_attrl(n, "fill", -1);
+			ly->visible = eagle_get_attrl(n, "visible", -1);
+			ly->active  = eagle_get_attrl(n, "active", -1);
+			ly->ly      = -1;
+			id = eagle_get_attrl(n, "number", -1);
+			if (id >= 0) {
+				printf("layer %d %s\n", id, ly->name);
+			}
+		}
+	}
+	return 0;
+}
 
 static int eagle_read_drawing(read_state_t *st, xmlNode *subtree)
 {
 	static const dispatch_t disp[] = { /* possible children of <drawing> */
 		{"settings",  eagle_read_nop},
 		{"grid",      eagle_read_nop},
-		{"layers",    eagle_read_nop},
+		{"layers",    eagle_read_layers},
 		{"board",     eagle_read_nop},
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
+printf("DRAW %s\n", subtree->name);
 	return eagle_foreach_dispatch(st, subtree->children, disp);
 }
 
@@ -151,7 +213,13 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 		pcb_message(PCB_MSG_ERROR, "xml error: root is not <eagle>\n");
 		goto err;
 	}
+
 	ver = xmlGetProp(root, (xmlChar *)"version");
+	if (ver == NULL) {
+		pcb_message(PCB_MSG_ERROR, "no version attribute in <eagle>\n");
+		goto err;
+	}
+
 	v1 = strtol((char *)ver, &end, 10);
 	if (*end != '.') {
 		pcb_message(PCB_MSG_ERROR, "malformed version string [1] in <eagle>\n");
