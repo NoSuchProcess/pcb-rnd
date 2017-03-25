@@ -255,6 +255,50 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 
 /****************** drawing primitives ******************/
 
+
+static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	eagle_loc_t loc = type;
+	pcb_text_t *text;
+	long ln = eagle_get_attrl(subtree, "layer", -1);
+	eagle_layer_t *ly;
+	pcb_coord_t X, Y, height;
+	char *rot, *text_val;
+	unsigned int text_direction = 0;
+
+	X = eagle_get_attrc(subtree, "x", -1);
+	Y = eagle_get_attrc(subtree, "y", -1);
+	height = PCB_MM_TO_COORD(eagle_get_attrc(subtree, "size", -1));
+	rot = eagle_get_attrs(subtree, "rot", NULL);
+	if (rot == NULL) {
+		rot = "R0";
+	}
+        if (rot[0] == 'R') {
+		int deg = atoi(rot+1);
+		printf("text rot: %s\n", rot);
+		if (deg < 45 || deg >= 315) {
+			text_direction = 0;
+		} else if (deg < 135 && deg >= 45) {
+			text_direction = 1;
+		} else if (deg < 225 && deg >= 135) {
+			text_direction = 2;
+		} else {
+			text_direction = 3;
+		}
+	}
+	
+	if (subtree->children == NULL) {
+		/* text_val = ........ */
+		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field on layer %s\n", ly->name);
+		return 0;
+	}
+
+	pcb_printf("\ttext found on Eagle layout at with rot: %s\n", rot);
+
+	return 0;
+}
+
+
 static int eagle_read_circle(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
