@@ -28,12 +28,14 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <assert.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
 #include "board.h"
 #include "read.h"
 #include "conf.h"
+#include "conf_core.h"
 #include "error.h"
 
 typedef struct eagle_layer_s {
@@ -251,6 +253,8 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 		st->pcb->MaxHeight = y;
 }
 
+/****************** drawing primitives ******************/
+
 static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
@@ -294,6 +298,49 @@ static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	return 0;
 }
 
+static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	pcb_coord_t x, y, dx, dy;
+	pcb_pad_t *pad;
+	long ln = eagle_get_attrl(subtree, "layer", -1);
+	const char *name;
+
+	assert(type == IN_ELEM);
+
+	name = eagle_get_attrs(subtree, "name", NULL);
+	x = eagle_get_attrc(subtree, "x", 0);
+	y = eagle_get_attrc(subtree, "y", 0);
+	dx = eagle_get_attrc(subtree, "dx", 0);
+	dy = eagle_get_attrc(subtree, "dy", 0);
+
+	if (dx < 0) {
+		x -= dx;
+		dx = -dx;
+	}
+
+	if (dy < 0) {
+		y -= dy;
+		dy = -dy;
+	}
+
+	x -= dx/2;
+	y -= dy/2;
+
+	pcb_printf("%mm %mm -> %mm %mm\n", x, y, dx, dy);
+
+	pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+		x+dx, y+dy, x, y,
+		conf_core.design.clearance, conf_core.design.clearance,
+		name, name, pcb_flag_make(0));
+
+	if (ln == 16)
+		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pad);
+
+	return 0;
+}
+
+/****************** composite objects ******************/
+
 static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
@@ -301,7 +348,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{"wire",        eagle_read_wire},
 		{"hole",        eagle_read_nop},
 		{"circle",      eagle_read_nop},
-		{"smd",         eagle_read_nop},
+		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_nop},
 		{"text",        eagle_read_nop},
 		{"rectangle",   eagle_read_nop},
