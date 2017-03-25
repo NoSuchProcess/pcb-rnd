@@ -289,8 +289,8 @@ static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	switch(loc) {
 		case IN_ELEM: break;
 		case ON_BOARD:
-			size_bump(st, lin->Point1.X, lin->Point1.Y);
-			size_bump(st, lin->Point2.X, lin->Point2.Y);
+			size_bump(st, lin->Point1.X + lin->Thickness, lin->Point1.Y + lin->Thickness);
+			size_bump(st, lin->Point2.X + lin->Thickness, lin->Point2.Y + lin->Thickness);
 			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin);
 			break;
 	}
