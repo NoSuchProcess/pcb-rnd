@@ -339,7 +339,8 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 */
 static GtkWidget *config_window;
 
-static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, void (*save_cb) (GtkButton * widget, save_ctx_t * sctx))
+static void config_user_role_section(pcb_gtk_common_t * com, GtkWidget * vbox,
+																		 void (*save_cb) (GtkButton * widget, save_ctx_t * sctx))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox, *vbox2;
 	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_binary, NULL };
@@ -482,7 +483,7 @@ void config_general_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
+static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com)
 {
 	GtkWidget *vbox, *content_vbox;
 
@@ -587,7 +588,7 @@ void config_sizes_save(GtkButton * widget, save_ctx_t * ctx)
 }
 
 
-static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
+static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com)
 {
 	GtkWidget *table, *vbox, *hbox, *content_vbox;
 
@@ -736,14 +737,13 @@ static void config_window_row(GtkWidget * parent, const char *desc, int load, co
 		GtkWidget *btn;
 		pcb_gtk_check_button_connected(hbox, &btn, chk,
 																	 TRUE, FALSE, FALSE, 2,
-																	 config_window_toggle_cb, (void *) wgeo_save_str, 
-																	 _("every time pcb-rnd exits"));
+																	 config_window_toggle_cb, (void *) wgeo_save_str, _("every time pcb-rnd exits"));
 		if (wgeo_save_str == NULL)
 			gtk_widget_set_sensitive(btn, FALSE);
 	}
 }
 
-static void config_window_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
+static void config_window_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com)
 {
 	GtkWidget *lab;
 
@@ -972,7 +972,7 @@ void config_increments_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_increments_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
+static void config_increments_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com)
 {
 	GtkWidget *vbox, *catvbox, *content_vbox;
 
@@ -1179,7 +1179,7 @@ void config_library_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_library_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
+static void config_library_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com)
 {
 	GtkWidget *vbox, *label, *entry, *content_vbox, *paths_box;
 	const char *cnames[] = { "configured path", "actual path on the filesystem", "config source" };
@@ -1375,7 +1375,7 @@ void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
+static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com)
 {
 	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *content_vbox, *prv;
 	GtkWidget *hbox, *arrow;
@@ -1462,7 +1462,7 @@ void ghid_config_layer_name_update(gchar * name, gint layer)
 	 */
 static GtkWidget *config_colors_vbox, *config_colors_tab_vbox;
 
-static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com);
+static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com);
 
 typedef struct {
 	conf_native_t *cfg;
@@ -1489,8 +1489,8 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 			int n;
 			conf_native_t *nat = conf_get_field(ci->cfg->hash_path);
 			if (nat != NULL)
-				for(n = 0; (n < PCB_MAX_LAYER) && (n < nat->array_size); n++)
-					conf_set(CFR_DESIGN, ci->cfg->hash_path, n,  nat->val.color[n], POL_OVERWRITE);
+				for (n = 0; (n < PCB_MAX_LAYER) && (n < nat->array_size); n++)
+					conf_set(CFR_DESIGN, ci->cfg->hash_path, n, nat->val.color[n], POL_OVERWRITE);
 		}
 	}
 
@@ -1501,7 +1501,7 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 	}
 }
 
-static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, conf_native_t *cfg, int idx)
+static void config_color_button_create(pcb_gtk_common_t * com, GtkWidget * box, conf_native_t * cfg, int idx)
 {
 	GtkWidget *hbox, *label;
 	gchar *title;
@@ -1534,7 +1534,7 @@ static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, co
 	g_signal_connect(G_OBJECT(ci->button), "color-set", G_CALLBACK(config_color_set_cb), ci);
 }
 
-void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int idx)
+void config_color_button_update(pcb_gtk_common_t * com, conf_native_t * cfg, int idx)
 {
 	if (idx < 0) {
 		for (idx = 0; idx < cfg->array_size; idx++)
@@ -1548,7 +1548,7 @@ void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int i
 	}
 }
 
-void config_colors_tab_create_scalar(pcb_gtk_common_t *com, GtkWidget *parent_vbox, const char *path_prefix, int selected)
+void config_colors_tab_create_scalar(pcb_gtk_common_t * com, GtkWidget * parent_vbox, const char *path_prefix, int selected)
 {
 	htsp_entry_t *e;
 	int pl = strlen(path_prefix);
@@ -1563,7 +1563,7 @@ void config_colors_tab_create_scalar(pcb_gtk_common_t *com, GtkWidget *parent_vb
 	}
 }
 
-void config_colors_tab_create_array(pcb_gtk_common_t *com, GtkWidget * parent_vbox, const char *path)
+void config_colors_tab_create_array(pcb_gtk_common_t * com, GtkWidget * parent_vbox, const char *path)
 {
 	conf_native_t *cfg = conf_get_field(path);
 	int n;
@@ -1584,7 +1584,7 @@ void config_colors_save(GtkButton * widget, save_ctx_t * ctx)
 	config_any_replace(ctx, paths);
 }
 
-static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
+static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t * com)
 {
 	GtkWidget *scrolled_vbox, *vbox, *expander;
 
@@ -1654,7 +1654,7 @@ static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, Gt
 	return vbox;
 }
 
-void ghid_config_handle_units_changed(pcb_gtk_common_t *com)
+void ghid_config_handle_units_changed(pcb_gtk_common_t * com)
 {
 	if (config_sizes_vbox) {
 		gtk_widget_destroy(config_sizes_vbox);
@@ -1732,7 +1732,8 @@ static void config_tree_sect(GtkTreeStore * model, GtkTreeIter * parent, GtkTree
 
 /* Create a leaf node with a custom tab */
 static GtkWidget *config_tree_leaf_(GtkTreeStore * model, GtkTreeIter * parent, const char *name,
-																		void (*tab_create) (GtkWidget * tab_vbox, pcb_gtk_common_t *com), GtkTreeIter * iter, pcb_gtk_common_t *com)
+																		void (*tab_create) (GtkWidget * tab_vbox, pcb_gtk_common_t * com), GtkTreeIter * iter,
+																		pcb_gtk_common_t * com)
 {
 	GtkWidget *vbox = NULL;
 
@@ -1746,7 +1747,7 @@ static GtkWidget *config_tree_leaf_(GtkTreeStore * model, GtkTreeIter * parent, 
 }
 
 static GtkWidget *config_tree_leaf(GtkTreeStore * model, GtkTreeIter * parent, const char *name,
-																	 void (*tab_create) (GtkWidget * tab_vbox, pcb_gtk_common_t *com), pcb_gtk_common_t *com)
+																	 void (*tab_create) (GtkWidget * tab_vbox, pcb_gtk_common_t * com), pcb_gtk_common_t * com)
 {
 	GtkTreeIter iter;
 	return config_tree_leaf_(model, parent, name, tab_create, &iter, com);
@@ -1804,7 +1805,7 @@ static void config_page_update_auto(void *data);
 /* Evaluates to 1 if the user canedit the config for this role */
 #define EDITABLE_ROLE(role) ((role == CFR_USER)  || (role == CFR_DESIGN) || (role == CFR_CLI) || ((role == CFR_PROJECT) && (PCB != NULL) && (PCB->Filename != NULL)))
 
-static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, const char *basename)
+static void config_auto_tab_create(pcb_gtk_common_t * com, GtkWidget * tab_vbox, const char *basename)
 {
 	GtkWidget *vbox, *src, *src_left, *src_right, *w;
 
@@ -1884,7 +1885,8 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 	auto_tab_widgets.edit_string = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_string, FALSE, FALSE, 4);
 
-	auto_tab_widgets.edit_coord = pcb_gtk_coord_entry_new(PCB_MM_TO_COORD(-1000), PCB_MM_TO_COORD(1000), 0, conf_core.editor.grid_unit, CE_TINY);
+	auto_tab_widgets.edit_coord =
+		pcb_gtk_coord_entry_new(PCB_MM_TO_COORD(-1000), PCB_MM_TO_COORD(1000), 0, conf_core.editor.grid_unit, CE_TINY);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_coord, FALSE, FALSE, 4);
 
 	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
@@ -1988,7 +1990,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 		gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 		gtk_box_pack_start(GTK_BOX(tab_vbox), scrolled, TRUE, TRUE, 4);
 	}
-	gtk_widget_set_size_request(tab_vbox, -1, -1); /* Recompute the window size */
+	gtk_widget_set_size_request(tab_vbox, -1, -1);	/* Recompute the window size */
 }
 
 /* hide all source edit widgets */
@@ -2025,7 +2027,7 @@ static lht_node_t *config_auto_get_nth(const lht_node_t * list, int idx)
 }
 
 /* set up all source edit widgets for a lihata source node */
-static void config_auto_src_show(pcb_gtk_common_t *com, lht_node_t *nd)
+static void config_auto_src_show(pcb_gtk_common_t * com, lht_node_t * nd)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	char *tmp;
@@ -2273,7 +2275,7 @@ static void config_auto_idx_changed_cb(GtkTreeView * tree, void *data)
 	}
 }
 
-static void config_auto_idx_deladd_cb(pcb_gtk_common_t *com, int del)
+static void config_auto_idx_deladd_cb(pcb_gtk_common_t * com, int del)
 {
 	int role = config_auto_get_edited_role();
 	if (role != CFR_invalid) {
@@ -2580,7 +2582,7 @@ static int config_tree_auto_cmp(const void *v1, const void *v2)
 
 
 /* Automatically create a subtree using the central config field hash */
-static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, pcb_gtk_common_t *com)
+static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, pcb_gtk_common_t * com)
 {
 	htsp_t *dirs;
 	htsp_entry_t *e;
@@ -2634,7 +2636,7 @@ static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, pc
 	free(sorted);
 }
 
-void ghid_config_window_show(pcb_gtk_common_t *com)
+void ghid_config_window_show(pcb_gtk_common_t * com)
 {
 	GtkWidget *widget, *main_vbox, *config_hbox, *hbox;
 	GtkWidget *scrolled;
