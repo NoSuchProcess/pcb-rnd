@@ -40,6 +40,8 @@ typedef struct read_state_s {
 	xmlDoc *doc;
 	xmlNode *root;
 	pcb_board_t *pcb;
+
+	htip_t layers;
 } read_state_t;
 
 typedef struct {
@@ -152,10 +154,9 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
 {
 	xmlNode *n;
 
-	printf("subtree=%s\n", subtree->name);
 	for(n = subtree->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"layer") == 0) {
-			eagle_layer_t *ly= calloc(sizeof(eagle_layer_t), 1);
+			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
 			int id;
 
 			ly->name    = eagle_get_attrs(n, "name", NULL);
@@ -165,12 +166,16 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
 			ly->active  = eagle_get_attrl(n, "active", -1);
 			ly->ly      = -1;
 			id = eagle_get_attrl(n, "number", -1);
-			if (id >= 0) {
-				printf("layer %d %s\n", id, ly->name);
-			}
+			if (id >= 0)
+				htip_set(&st->layers, id, ly);
 		}
 	}
 	return 0;
+}
+
+static eagle_layer_t *lyeagle_layer_get(read_state_t *st, int id)
+{
+	return htip_get(&st->layers, id);
 }
 
 static int eagle_read_drawing(read_state_t *st, xmlNode *subtree)
@@ -195,6 +200,8 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	char *end;
 	int v1, v2, v3, res;
 	read_state_t st;
+	htip_entry_t *e;
+
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"drawing",        eagle_read_drawing},
 		{"compatibility",  eagle_read_nop},
@@ -251,7 +258,13 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	st.root = root;
 	st.pcb = pcb;
 
+	htip_init(&st.layers, longhash, longkeyeq);
+
 	res = eagle_foreach_dispatch(&st, root->children, disp);
+
+	for (e = htip_first(&st.layers); e; e = htip_next(&st.layers, e))
+		free(e->value);
+	htip_uninit(&st.layers);
 
 	pcb_trace("Houston, the Eagle has landed. %d\n", res);
 	goto err; /* until we really parse */
