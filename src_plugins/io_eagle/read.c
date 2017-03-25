@@ -66,6 +66,10 @@ typedef struct {
 	int (*parser)(read_state_t *st, xmlNode *subtree, void *obj, int type);
 } dispatch_t;
 
+typedef enum {
+	IN_ELEM = 1,
+	ON_BOARD
+} eagle_loc_t;
 
 
 /* Search the dispatcher table for subtree->str, execute the parser on match
@@ -159,6 +163,23 @@ static const char *eagle_get_attrs(xmlNode *nd, const char *name, const char *in
 	return (const char *)p;
 }
 
+/* Return a node attribute value converted to coord, or return invalid_val
+   if the attribute doesn't exist */
+static pcb_coord_t eagle_get_attrc(xmlNode *nd, const char *name, pcb_coord_t invalid_val)
+{
+	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	pcb_coord_t c;
+	pcb_bool succ;
+
+	if (p == NULL)
+		return invalid_val;
+
+	c = pcb_get_value((char *)p, NULL, NULL, &succ);
+	if (!succ)
+		return invalid_val;
+	return c;
+}
+
 static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	xmlNode *n;
@@ -222,11 +243,45 @@ static pcb_element_t *eagle_libelem_get(read_state_t *st, const char *lib, const
 	return htsp_get(&l->elems, elem);
 }
 
+
+static int eagle_read_wire(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	eagle_loc_t loc = type;
+	pcb_line_t *lin;
+	long ln = eagle_get_attrl(subtree, "layer", -1);
+	eagle_layer_t *ly;
+
+	switch(loc) {
+		case IN_ELEM:
+			if ((ln != 121) && (ln != 122)) /* consider silk lines only */
+				return 0;
+			lin = pcb_element_line_alloc((pcb_element_t *)obj);
+			if (ln == 122)
+				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
+			break;
+		case ON_BOARD:
+			ly = eagle_layer_get(st, ln);
+			if (ly->ly < 0) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
+				return 0;
+			}
+			lin = pcb_line_alloc(pcb_get_layer(ly->ly));
+			break;
+	}
+
+	lin->Point1.X = eagle_get_attrc(subtree, "x1", -1);
+	lin->Point1.Y = eagle_get_attrc(subtree, "y1", -1);
+	lin->Point2.X = eagle_get_attrc(subtree, "x2", -1);
+	lin->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
+	lin->Thickness = eagle_get_attrc(subtree, "width", -1);
+	return 0;
+}
+
 static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
 		{"description", eagle_read_nop},
-		{"wire",        eagle_read_nop},
+		{"wire",        eagle_read_wire},
 		{"circle",      eagle_read_nop},
 		{"smd",         eagle_read_nop},
 		{"pad",         eagle_read_nop},
@@ -236,7 +291,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{NULL, NULL}
 	};
 	printf("   read pkg: TODO\n");
-	return eagle_foreach_dispatch(st, subtree->children, disp, NULL, 0);
+	return eagle_foreach_dispatch(st, subtree->children, disp, elem, IN_ELEM);
 }
 
 static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree, void *obj, int type)
