@@ -174,7 +174,7 @@ static pcb_coord_t eagle_get_attrc(xmlNode *nd, const char *name, pcb_coord_t in
 	if (p == NULL)
 		return invalid_val;
 
-	c = pcb_get_value((char *)p, NULL, NULL, &succ);
+	c = pcb_get_value((char *)p, "mm", NULL, &succ);
 	if (!succ)
 		return invalid_val;
 	return c;
@@ -282,6 +282,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 	static const dispatch_t disp[] = { /* possible children of <board> */
 		{"description", eagle_read_nop},
 		{"wire",        eagle_read_wire},
+		{"hole",        eagle_read_nop},
 		{"circle",      eagle_read_nop},
 		{"smd",         eagle_read_nop},
 		{"pad",         eagle_read_nop},
@@ -344,6 +345,32 @@ static int eagle_read_libs(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	return 0;
 }
 
+static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	xmlNode *n;
+	static const dispatch_t disp[] = { /* possible children of <library> */
+		{"contactref",  eagle_read_nop},
+		{"wire",        eagle_read_wire},
+		{"polygon",     eagle_read_nop},
+		{"via",         eagle_read_nop},
+		{"@text",       eagle_read_nop},
+		{NULL, NULL}
+	};
+
+	for(n = subtree->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"signal") == 0) {
+			const char *name = eagle_get_attrs(n, "name", NULL);
+			eagle_library_t *lib;
+			if (name == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
+				continue;
+			}
+			eagle_foreach_dispatch(st, n->children, disp, name, ON_BOARD);
+		}
+	}
+	return 0;
+}
+
 static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
@@ -355,7 +382,7 @@ static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int t
 		{"designrules", eagle_read_nop},
 		{"autorouter",  eagle_read_nop},
 		{"elements",    eagle_read_nop},
-		{"signals",     eagle_read_nop},
+		{"signals",     eagle_read_signals},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
