@@ -1851,7 +1851,9 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 	/* upper hbox */
 	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
 	src = gtk_hbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
+	w = bu_scrolled_window_packed(src, GTK_ORIENTATION_HORIZONTAL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(w), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+	gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
 
 	src_left = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(src), src_left, FALSE, FALSE, 4);
