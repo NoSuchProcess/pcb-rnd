@@ -36,20 +36,7 @@
 #include "conf.h"
 #include "error.h"
 
-typedef struct read_state_s {
-	xmlDoc *doc;
-	xmlNode *root;
-	pcb_board_t *pcb;
-
-	htip_t layers;
-} read_state_t;
-
-typedef struct {
-	const char *node_name;
-	int (*parser)(read_state_t *st, xmlNode *subtree);
-} dispatch_t;
-
-typedef struct {
+typedef struct eagle_layer_s {
 	const char *name;
 	int color;
 	int fill;
@@ -59,10 +46,28 @@ typedef struct {
 	pcb_layer_id_t ly;
 } eagle_layer_t;
 
-typedef struct {
+typedef struct eagle_library_s {
 	const char *desc;
-	htsp_t elements; /* -> pcb_elemement_t */
+	htsp_t elems; /* -> pcb_elemement_t */
 } eagle_library_t;
+
+
+typedef struct read_state_s {
+	xmlDoc *doc;
+	xmlNode *root;
+	pcb_board_t *pcb;
+
+	htip_t layers;
+	htsp_t libs;
+	eagle_library_t *curr_lib;
+} read_state_t;
+
+typedef struct {
+	const char *node_name;
+	int (*parser)(read_state_t *st, xmlNode *subtree);
+} dispatch_t;
+
+
 
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
@@ -209,15 +214,66 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 	return htip_get(&st->layers, id);
 }
 
+static pcb_element_t *eagle_libelem_get(read_state_t *st, const char *lib, const char *elem)
+{
+	eagle_library_t *l;
+	l = htsp_get(&st->libs, lib);
+	if (l == NULL)
+		return NULL;
+	return htsp_get(&l->elems, elem);
+}
+
+static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
+{
+	printf("   read pkg: TODO\n");
+	return 0;
+}
+
+static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree)
+{
+	xmlNode *n;
+	for(n = subtree->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"package") == 0) {
+			const char *name = eagle_get_attrs(n, "name", NULL);
+			pcb_element_t *elem;
+			if (name == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring package with no name\n");
+				continue;
+			}
+			printf(" pkg %s\n", name);
+			elem = calloc(sizeof(pcb_element_t), 1);
+			eagle_read_pkg(st, n, elem);
+			htsp_set(&st->curr_lib->elems, (char *)name, elem);
+		}
+	}
+	return 0;
+}
+
 static int eagle_read_libs(read_state_t *st, xmlNode *subtree)
 {
 	xmlNode *n;
+	static const dispatch_t disp[] = { /* possible children of <board> */
+		{"description", eagle_read_nop},
+		{"packages",    eagle_read_lib_pkgs},
+		{"@text",       eagle_read_nop},
+		{NULL, NULL}
+	};
 
 	for(n = subtree->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"library") == 0) {
-			printf("Lib!\n");
+			const char *name = eagle_get_attrs(n, "name", NULL);
+			if (name == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring library with no name\n");
+				continue;
+			}
+			st->curr_lib = calloc(sizeof(eagle_library_t), 1);
+			printf("Name: %s\n", name);
+			htsp_init(&st->curr_lib->elems, strhash, strkeyeq);
+			eagle_foreach_dispatch(st, n->children, disp);
+			htsp_set(&st->libs, (char *)name, st->curr_lib);
 		}
 	}
+	return 0;
 }
 
 static int eagle_read_board(read_state_t *st, xmlNode *subtree)
@@ -294,18 +350,31 @@ static int eagle_read_ver(xmlChar *ver)
 static void st_init(read_state_t *st)
 {
 	htip_init(&st->layers, longhash, longkeyeq);
+	htsp_init(&st->libs, strhash, strkeyeq);
 	pcb_layer_group_setup_default(&st->pcb->LayerGroups);
 }
 
 static void st_uninit(read_state_t *st)
 {
-	htip_entry_t *e;
+	htip_entry_t *ei;
+	htsp_entry_t *es;
 
 	pcb_layergrp_fix_old_outline(st->pcb);
 
-	for (e = htip_first(&st->layers); e; e = htip_next(&st->layers, e))
-		free(e->value);
+	for (ei = htip_first(&st->layers); ei; ei = htip_next(&st->layers, ei))
+		free(ei->value);
 	htip_uninit(&st->layers);
+
+	for (es = htsp_first(&st->libs); es; es = htsp_next(&st->libs, es)) {
+		htsp_entry_t *e;
+		eagle_library_t *l = es->value;
+		for (e = htsp_first(&l->elems); e; e = htsp_next(&l->elems, e))
+			free(e->value);
+		htsp_uninit(&l->elems);
+		free(l);
+	}
+	htsp_uninit(&st->libs);
+
 }
 
 int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
