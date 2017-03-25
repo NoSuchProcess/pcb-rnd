@@ -59,19 +59,18 @@ typedef struct read_state_s {
 
 	htip_t layers;
 	htsp_t libs;
-	eagle_library_t *curr_lib;
 } read_state_t;
 
 typedef struct {
 	const char *node_name;
-	int (*parser)(read_state_t *st, xmlNode *subtree);
+	int (*parser)(read_state_t *st, xmlNode *subtree, void *obj, int type);
 } dispatch_t;
 
 
 
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
-static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *disp_table)
+static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *disp_table, void *obj, int type)
 {
 	const dispatch_t *d;
 	const xmlChar *name;
@@ -87,7 +86,7 @@ static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *
 
 	for(d = disp_table; d->node_name != NULL; d++)
 		if (xmlStrcmp((xmlChar *)d->node_name, name) == 0)
-			return d->parser(st, subtree);
+			return d->parser(st, subtree, obj, type);
 
 	pcb_message(PCB_MSG_ERROR, "eagle: unknown node: '%s'\n", name);
 	/* node name not found in the dispatcher table */
@@ -97,19 +96,19 @@ static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *
 /* Take each children of tree and execute them using eagle_dispatch
    Useful for procssing nodes that may host various subtrees of different
    nodes ina  flexible way. Return non-zero if any subtree processor failed. */
-static int eagle_foreach_dispatch(read_state_t *st, xmlNode *tree, const dispatch_t *disp_table)
+static int eagle_foreach_dispatch(read_state_t *st, xmlNode *tree, const dispatch_t *disp_table, void *obj, int type)
 {
 	xmlNode *n;
 
 	for(n = tree; n != NULL; n = n->next)
-		if (eagle_dispatch(st, n, disp_table) != 0)
+		if (eagle_dispatch(st, n, disp_table, obj, type) != 0)
 			return -1;
 
 	return 0; /* success */
 }
 
 /* No-op: ignore the subtree */
-static int eagle_read_nop(read_state_t *st, xmlNode *subtree)
+static int eagle_read_nop(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	return 0;
 }
@@ -160,7 +159,7 @@ static const char *eagle_get_attrs(xmlNode *nd, const char *name, const char *in
 	return (const char *)p;
 }
 
-static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
+static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	xmlNode *n;
 
@@ -237,12 +236,14 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{NULL, NULL}
 	};
 	printf("   read pkg: TODO\n");
-	return eagle_foreach_dispatch(st, subtree->children, disp);
+	return eagle_foreach_dispatch(st, subtree->children, disp, NULL, 0);
 }
 
-static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree)
+static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	xmlNode *n;
+	eagle_library_t *lib = obj;
+
 	for(n = subtree->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"package") == 0) {
 			const char *name = eagle_get_attrs(n, "name", NULL);
@@ -254,13 +255,13 @@ static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree)
 			printf(" pkg %s\n", name);
 			elem = calloc(sizeof(pcb_element_t), 1);
 			eagle_read_pkg(st, n, elem);
-			htsp_set(&st->curr_lib->elems, (char *)name, elem);
+			htsp_set(&lib->elems, (char *)name, elem);
 		}
 	}
 	return 0;
 }
 
-static int eagle_read_libs(read_state_t *st, xmlNode *subtree)
+static int eagle_read_libs(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	xmlNode *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
@@ -273,21 +274,22 @@ static int eagle_read_libs(read_state_t *st, xmlNode *subtree)
 	for(n = subtree->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"library") == 0) {
 			const char *name = eagle_get_attrs(n, "name", NULL);
+			eagle_library_t *lib;
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring library with no name\n");
 				continue;
 			}
-			st->curr_lib = calloc(sizeof(eagle_library_t), 1);
+			lib = calloc(sizeof(eagle_library_t), 1);
 			printf("Name: %s\n", name);
-			htsp_init(&st->curr_lib->elems, strhash, strkeyeq);
-			eagle_foreach_dispatch(st, n->children, disp);
-			htsp_set(&st->libs, (char *)name, st->curr_lib);
+			htsp_init(&lib->elems, strhash, strkeyeq);
+			eagle_foreach_dispatch(st, n->children, disp, lib, 0);
+			htsp_set(&st->libs, (char *)name, lib);
 		}
 	}
 	return 0;
 }
 
-static int eagle_read_board(read_state_t *st, xmlNode *subtree)
+static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
 		{"plain",       eagle_read_nop},
@@ -302,11 +304,11 @@ static int eagle_read_board(read_state_t *st, xmlNode *subtree)
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
-	return eagle_foreach_dispatch(st, subtree->children, disp);
+	return eagle_foreach_dispatch(st, subtree->children, disp, NULL, 0);
 }
 
 
-static int eagle_read_drawing(read_state_t *st, xmlNode *subtree)
+static int eagle_read_drawing(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	static const dispatch_t disp[] = { /* possible children of <drawing> */
 		{"settings",  eagle_read_nop},
@@ -316,7 +318,7 @@ static int eagle_read_drawing(read_state_t *st, xmlNode *subtree)
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
-	return eagle_foreach_dispatch(st, subtree->children, disp);
+	return eagle_foreach_dispatch(st, subtree->children, disp, NULL, 0);
 }
 
 static int eagle_read_ver(xmlChar *ver)
@@ -422,7 +424,7 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	st.pcb = pcb;
 
 	st_init(&st);
-	res = eagle_foreach_dispatch(&st, root->children, disp);
+	res = eagle_foreach_dispatch(&st, root->children, disp, NULL, 0);
 	st_uninit(&st);
 
 	pcb_trace("Houston, the Eagle has landed. %d\n", res);
