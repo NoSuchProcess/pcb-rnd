@@ -191,12 +191,9 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree)
 						ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
 					}
 			}
-			if (typ != 0) {
-				if (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0) {
+			if (typ != 0)
+				if (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0)
 					ly->ly = pcb_layer_create(gid, ly->name);
-/*					pcb_layer_add_in_group(st->pcb, lid, gid);*/
-				}
-			}
 		}
 	}
 	return 0;
