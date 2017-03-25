@@ -430,7 +430,7 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	pcb_coord_t x, y, dx, dy;
 	pcb_pad_t *pad;
 	long ln = eagle_get_attrl(subtree, "layer", -1);
-	const char *name;
+	const char *name, *rot;
 
 	assert(type == IN_ELEM);
 
@@ -439,6 +439,8 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	y = eagle_get_attrc(subtree, "y", 0);
 	dx = eagle_get_attrc(subtree, "dx", 0);
 	dy = eagle_get_attrc(subtree, "dy", 0);
+
+	rot = eagle_get_attrs(subtree, "rot", NULL);
 
 	if (dx < 0) {
 		x -= dx;
@@ -450,15 +452,52 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 		dy = -dy;
 	}
 
-	x -= dx/2;
-	y -= dy/2;
+	if (rot == NULL) {
+		rot = "R0";
+	}
+
+	if ((rot != NULL) && (rot[0] == 'R')) { 
+		int deg = atoi(rot+1);
+		printf("smd pad rot? %s %d\n", rot, deg);
+		switch(deg) {
+			case 0:
+				x -= dx/2;
+				y -= dy/2;
+				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+					x+dx, y+dy, x, y,
+					conf_core.design.clearance, conf_core.design.clearance,
+					name, name, pcb_flag_make(0));
+				break;
+			case 180:
+				x -= dx/2;
+				y -= dy/2;
+        		        pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+                		        x+dx, y+dy, x, y,
+                		        conf_core.design.clearance, conf_core.design.clearance,
+                		        name, name, pcb_flag_make(0));
+				break;
+			case 90:
+				y -= dx/2;
+				x -= dy/2;
+				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+					x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
+					conf_core.design.clearance, conf_core.design.clearance,
+					name, name, pcb_flag_make(0));
+				break;
+			case 270:
+				y -= dx/2;
+				x -= dy/2;
+				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+					x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
+					conf_core.design.clearance, conf_core.design.clearance,
+					name, name, pcb_flag_make(0));
+				break;
+			default:
+				pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation of smd pad: %s\n", rot);
+		}
+	}
 
 	pcb_printf("%mm %mm -> %mm %mm\n", x, y, dx, dy);
-
-	pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-		x+dx, y+dy, x, y,
-		conf_core.design.clearance, conf_core.design.clearance,
-		name, name, pcb_flag_make(0));
 
 	if (ln == 16)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pad);
