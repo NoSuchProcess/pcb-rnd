@@ -5,6 +5,8 @@
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
 	- undo bug: empty board, draw line, select line, drag&drop move selected line, undo -> undo bug [report: Evan]
 	- grid.lht: edit one poly by moving a conrer, undo, get another poly's corner ruined - lht poly creation bug?
+	- when saving in old pcb format, rename outline layer to outline even if it had a different name
+	- when saving in old pcb format, rename silk layers to silk even if they had a different name
 
 - plugin breakage:
 	- don't force builtin for dependant libs
