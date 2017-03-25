@@ -554,6 +554,8 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 					default:
 						pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation: %s/%s\n", lib, pkg);
 				}
+				pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
+				size_bump(st, new_elem->BoundingBox.X2, new_elem->BoundingBox.Y2);
 			}
 
 			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, elem);
