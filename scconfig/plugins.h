@@ -79,6 +79,7 @@ plugin_def("io_lihata",       "lihata board format",       sbuildin, 1)
 plugin_def("io_pcb",          "the original pcb format",   sbuildin, 1)
 plugin_def("io_kicad_legacy", "Kicad's legacy format",     sbuildin, 1)
 plugin_def("io_kicad",        "Kicad's s-expr format",     sbuildin, 1)
+plugin_def("io_eagle",        "Eagle's xml format",        sdisable, 0)
 plugin_def("io_tedax",        "tEDAx (Trivial EDA eXchange)", sbuildin, 1)
 
 
