@@ -1,4 +1,4 @@
-all: tester
+all:
 	cd ../../src && $(MAKE) mod_fp_wget
 
 CFLAGS = -Wall -g -I../../src -I../.. -I../../src_3rd -I../../src_3rd/liblihata
