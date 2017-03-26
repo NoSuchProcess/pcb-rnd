@@ -305,20 +305,20 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 
 static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
-	eagle_loc_t loc = type;
-	pcb_text_t *text;
+/*	eagle_loc_t loc = type; */
+/*	pcb_text_t *text; */
 	long ln = eagle_get_attrl(subtree, "layer", -1);
-	eagle_layer_t *ly;
+/*	eagle_layer_t *ly; */
 	pcb_coord_t X, Y, height;
 	const char *rot, *text_val;
 	unsigned int text_direction = 0;
 
 	if (subtree->children == NULL) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field on layer %s\n", ly->name);
+		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;
 	}
 	if (subtree->children->type != XML_TEXT_NODE) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring text field on layer %s (invalid child node)\n", ly->name);
+		pcb_message(PCB_MSG_WARNING, "Ignoring text field (invalid child node)\n");
 		return 0;
 	}
 
