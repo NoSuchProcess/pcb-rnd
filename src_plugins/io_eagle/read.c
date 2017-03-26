@@ -64,6 +64,7 @@ typedef struct read_state_s {
 
 	/* design rules */
 	pcb_coord_t md_wire_wire; /* minimal distance between wire and wire (clearance) */
+	pcb_coord_t ms_width; /* minimal trace width */
 	double rv_pad_top, rv_pad_inner, rv_pad_bottom; /* pad size-to-drill ration on different layers */
 } read_state_t;
 
@@ -631,7 +632,12 @@ static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj,
 	drill = eagle_get_attrc(subtree, "drill", 0);
 	dia = eagle_get_attrc(subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
 	shape = eagle_get_attrs(subtree, "shape", 0);
-	pcb_printf("dia=%mm drill=%mm\n", dia, drill);
+
+
+	if ((dia - drill) / 2.0 < st->ms_width)
+		dia = drill + 2*st->ms_width;
+
+/*	pcb_printf("dia=%mm drill=%mm\n", dia, drill);*/
 
 	switch((eagle_loc_t)type) {
 		case IN_ELEM:
@@ -872,6 +878,7 @@ static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
 			continue;
 		name = eagle_get_attrs(n, "name", NULL);
 		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(n, "value", 0);
+		else if (strcmp(name, "msWidth") == 0) st->ms_width = eagle_get_attrcu(n, "value", 0);
 		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrd(n, "value", 0);
 		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrd(n, "value", 0);
 		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(n, "value", 0);
