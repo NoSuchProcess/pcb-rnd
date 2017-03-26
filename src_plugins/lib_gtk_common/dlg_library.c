@@ -247,7 +247,7 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 							next++;
 					}
 					need = pcb_fp_tag(tag, 0);
-					fprintf(stderr, "TAG: '%s' %p\n", tag, (void *) need);
+/*					pcb_trace("TAG: '%s' %p\n", tag, (void *) need);*/
 					if (need == NULL) {
 						ret = FALSE;
 						break;
