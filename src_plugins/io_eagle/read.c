@@ -32,6 +32,8 @@
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
+#include "../src_plugins/boardflip/boardflip.h"
+
 #include "board.h"
 #include "read.h"
 #include "conf.h"
@@ -996,6 +998,8 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
 	res = eagle_foreach_dispatch(&st, root->children, disp, NULL, 0);
+	if (res == 0)
+		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
 
 	st_uninit(&st);

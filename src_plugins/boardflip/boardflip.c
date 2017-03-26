@@ -39,6 +39,7 @@
 #include "obj_all.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
+#include "boardflip.h"
 
 
 /* Things that need to be flipped:
