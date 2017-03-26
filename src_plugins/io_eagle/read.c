@@ -78,6 +78,33 @@ typedef enum {
 } eagle_loc_t;
 
 
+/* Xml path walk that's much simpler than xpath; the ... is a NULL
+   terminated list of node names */
+static xmlNode *eagle_xml_path(xmlNode *subtree, ...)
+{
+	xmlNode *nd = subtree;
+	const char *target;
+	va_list ap;
+
+	va_start(ap, subtree);
+
+	/* get next path element */
+	while((target = va_arg(ap, const char *)) != NULL) {
+		/* look for target on this level */
+		for(nd = nd->children;;nd = nd->next) {
+			if (nd == NULL) {/* target not found on this level */
+				va_end(ap);
+				return NULL;
+			}
+			if (xmlStrcmp(nd->name, (const xmlChar *)target) == 0) /* found, skip to next level */
+				break;
+		}
+	}
+
+	va_end(ap);
+	return nd;
+}
+
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
 static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *disp_table, void *obj, int type)
@@ -813,6 +840,7 @@ static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
 		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrcu(n, "value", NULL);
 		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrcu(n, "value", NULL);
 	}
+	return 0;
 }
 
 static int eagle_read_ver(xmlChar *ver)
@@ -887,7 +915,7 @@ static void st_uninit(read_state_t *st)
 int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	xmlDoc *doc;
-	xmlNode *root;
+	xmlNode *root, *dr;
 	int res;
 	read_state_t st;
 
@@ -918,7 +946,15 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	st.pcb = pcb;
 
 	st_init(&st);
+
+	dr = eagle_xml_path(root, "drawing", "board", "designrules", NULL);
+	if (dr != NULL)
+		eagle_read_design_rules(&st, dr);
+	else
+		pcb_message(PCB_MSG_WARNING, "can't find design rules\n");
+
 	res = eagle_foreach_dispatch(&st, root->children, disp, NULL, 0);
+
 	st_uninit(&st);
 
 	pcb_trace("Houston, the Eagle has landed. %d\n", res);
