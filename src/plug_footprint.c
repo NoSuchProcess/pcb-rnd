@@ -184,6 +184,7 @@ pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int
 		l->name = pcb_strdup(name);
 	l->parent = parent;
 	l->type = LIB_DIR;
+	l->data.dir.backend = NULL;
 	vtlib_init(&l->data.dir.children);
 	return l;
 }
@@ -399,8 +400,25 @@ int pcb_fp_read_lib_all(void)
 
 int pcb_fp_rehash(pcb_fplibrary_t *l)
 {
+	pcb_plug_fp_t *be;
+	char *path;
+	int res;
+
 	if (l == NULL) {
 		pcb_fp_free_children(&pcb_library);
 		return pcb_fp_read_lib_all();
 	}
+	if (l->type != PCB_FP_DIR)
+		return -1;
+
+	be = l->data.dir.backend;
+	if ((be == NULL) || (be->load_dir == NULL))
+		return -1;
+
+	path = pcb_strdup(l->name);
+	pcb_fp_rmdir(l);
+	res = be->load_dir(be, path, 1);
+	pcb_fp_sort_children(&pcb_library);
+	free(path);
+	return res;
 }

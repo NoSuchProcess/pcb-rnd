@@ -31,7 +31,33 @@ static const char pcb_acts_fp_rehash[] = "fp_rehash()" ;
 static const char pcb_acth_fp_rehash[] = "Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.";
 static int pcb_act_fp_rehash(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_fp_rehash(NULL);
+	pcb_fplibrary_t *l;
+
+	if (argc == 0) {
+		pcb_fp_rehash(NULL);
+		return 0;
+	}
+
+	l = pcb_fp_lib_search(&pcb_library, argv[0]);
+	if (l == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't find library path %s\n", argv[0]);
+		return 1;
+	}
+
+	if (l->type != PCB_FP_DIR) {
+		pcb_message(PCB_MSG_ERROR, "Library path %s is not a directory\n", argv[0]);
+		return 1;
+	}
+
+	if (l->data.dir.backend == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Library path %s is not a top level directory of a fp_ plugin\n", argv[0]);
+		return 1;
+	}
+
+	if (pcb_fp_rehash(l) != 0) {
+		pcb_message(PCB_MSG_ERROR, "Failed to rehash %s\n", argv[0]);
+		return 1;
+	}
 	return 0;
 }
 

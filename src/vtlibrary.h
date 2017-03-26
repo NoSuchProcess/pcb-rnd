@@ -61,6 +61,7 @@ struct pcb_fplibrary_s {
 	union {
 		struct { /* type == LIB_DIR */
 			vtlib_t children;
+			void *backend; /* pcb_plug_fp_t* */
 		} dir;
 		struct { /* type == LIB_FOOTPRINT */
 			char *loc_info;

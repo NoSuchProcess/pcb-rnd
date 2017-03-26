@@ -78,6 +78,7 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	gds_t vpath;
 	int vpath_base_len;
 	fp_get_mode wmode = FP_WGET_OFFLINE;
+	pcb_fplibrary_t *l;
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
@@ -115,12 +116,16 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	gds_init(&vpath);
 	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);
+
+	l = pcb_fp_mkdir_p(vpath.array);
+	l->data.dir.backend = ctx;
+
 	gds_append(&vpath, '/');
 	vpath_base_len = vpath.used;
 
+
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *fn;
-		pcb_fplibrary_t *l;
 
 		if (*line == '#')
 			continue;
