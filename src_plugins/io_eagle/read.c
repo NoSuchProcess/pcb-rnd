@@ -64,7 +64,7 @@ typedef struct read_state_s {
 
 	/* design rules */
 	pcb_coord_t md_wire_wire; /* minimal distance between wire and wire (clearance) */
-	pcb_coord_t rv_pad_top, rv_pad_inner, rv_pad_bottom; /* pad size-to-drill ration on different layers */
+	double rv_pad_top, rv_pad_inner, rv_pad_bottom; /* pad size-to-drill ration on different layers */
 } read_state_t;
 
 typedef struct {
@@ -181,6 +181,22 @@ static long eagle_get_attrl(xmlNode *nd, const char *name, long invalid_val)
 	if (p == NULL)
 		return invalid_val;
 	res = strtol((char *)p, &end, 10);
+	if (*end != '\0')
+		return invalid_val;
+	return res;
+}
+
+/* Return a node attribute value converted to double, or return invalid_val
+   for synatx error or if the attribute doesn't exist */
+static double eagle_get_attrd(xmlNode *nd, const char *name, double invalid_val)
+{
+	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	char *end;
+	double res;
+
+	if (p == NULL)
+		return invalid_val;
+	res = strtod((char *)p, &end);
 	if (*end != '\0')
 		return invalid_val;
 	return res;
@@ -615,8 +631,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj,
 	x = eagle_get_attrc(subtree, "x", 0);
 	y = eagle_get_attrc(subtree, "y", 0);
 	drill = eagle_get_attrc(subtree, "drill", 0);
-#warning TODO: default should be: drill * (1.0+rvPadTop*2)
-	dia = eagle_get_attrc(subtree, "diameter", PCB_MIL_TO_COORD(25)+drill);
+	dia = eagle_get_attrc(subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
 	shape = eagle_get_attrs(subtree, "shape", 0);
 	pcb_printf("dia=%mm drill=%mm\n", dia, drill);
 
@@ -843,10 +858,12 @@ static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
 			continue;
 		name = eagle_get_attrs(n, "name", NULL);
 		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(n, "value", 0);
-		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrcu(n, "value", 0);
-		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrcu(n, "value", 0);
-		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrcu(n, "value", 0);
+		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrd(n, "value", 0);
+		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrd(n, "value", 0);
+		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(n, "value", 0);
 	}
+	if ((st->rv_pad_top != st->rv_pad_inner) || (st->rv_pad_top != st->rv_pad_inner))
+		pcb_message(PCB_MSG_WARNING, "top/inner/bottom default pad sizes differ - using top size only\n");
 	return 0;
 }
 
