@@ -61,6 +61,10 @@ typedef struct read_state_s {
 
 	htip_t layers;
 	htsp_t libs;
+
+	/* design rules */
+	pcb_coord_t md_wire_wire; /* minimal distance between wire and wire (clearance) */
+	pcb_coord_t rv_pad_top, rv_pad_inner, rv_pad_bottom; /* pad size-to-drill ration on different layers */
 } read_state_t;
 
 typedef struct {
@@ -177,6 +181,22 @@ static pcb_coord_t eagle_get_attrc(xmlNode *nd, const char *name, pcb_coord_t in
 		return invalid_val;
 
 	c = pcb_get_value((char *)p, "mm", NULL, &succ);
+	if (!succ)
+		return invalid_val;
+	return c;
+}
+
+/* same as eagle_get_attrc() but assume the input has units */
+static pcb_coord_t eagle_get_attrcu(xmlNode *nd, const char *name, pcb_coord_t invalid_val)
+{
+	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	pcb_coord_t c;
+	pcb_bool succ;
+
+	if (p == NULL)
+		return invalid_val;
+
+	c = pcb_get_value((char *)p, NULL, NULL, &succ);
 	if (!succ)
 		return invalid_val;
 	return c;
@@ -777,6 +797,22 @@ static int eagle_read_drawing(read_state_t *st, xmlNode *subtree, void *obj, int
 		{NULL, NULL}
 	};
 	return eagle_foreach_dispatch(st, subtree->children, disp, NULL, 0);
+}
+
+static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
+{
+	xmlNode *n;
+	const char *name;
+
+	for(n = subtree->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"param") != 0)
+			continue;
+		name = eagle_get_attrs(n, "name", NULL);
+		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(n, "value", NULL);
+		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrcu(n, "value", NULL);
+		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrcu(n, "value", NULL);
+		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrcu(n, "value", NULL);
+	}
 }
 
 static int eagle_read_ver(xmlChar *ver)
