@@ -1802,6 +1802,12 @@ static void config_auto_remove_cb(GtkButton * btn, void *data);
 static void config_auto_create_cb(GtkButton * btn, void *data);
 static void config_page_update_auto(void *data);
 
+/** Let the widget resize itself. */
+static void widget_set_size_automatic_cb(GtkWidget *w, void *data)
+{
+	gtk_widget_set_size_request(w, -1, -1);
+}
+
 /** Wraps the \p child in a "packed" scrolled window. */
 static GtkWidget *bu_scrolled_window_packed(GtkWidget * child, GtkOrientation orientation)
 {
@@ -1824,6 +1830,7 @@ static GtkWidget *bu_scrolled_window_packed(GtkWidget * child, GtkOrientation or
 	viewport = gtk_bin_get_child(GTK_BIN(scrolled));
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 	gtk_widget_set_size_request(viewport, 100, 200);
+	g_signal_connect(G_OBJECT(viewport), "realize", G_CALLBACK(widget_set_size_automatic_cb), NULL);
 
 	return scrolled;
 }
