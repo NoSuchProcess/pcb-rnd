@@ -6,5 +6,3 @@ void fp_gedasymbols_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fct
 void fp_gedasymbols_init(void);
 void fp_gedasymbols_uninit(void);
 
-extern conf_fp_wget_t conf_fp_wget;
-

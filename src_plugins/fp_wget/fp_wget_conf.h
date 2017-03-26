@@ -11,4 +11,6 @@ typedef struct {
 	} plugins;
 } conf_fp_wget_t;
 
+extern conf_fp_wget_t conf_fp_wget;
+
 #endif
