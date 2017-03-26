@@ -269,7 +269,7 @@ li:pcb-rnd-conf-v1 {
 			}
 			ha:fp_wget {
 				auto_update_gedasymbols = 0
-				auto_update_edakrill = 1
+				auto_update_edakrill = 0
 			}
 		} # plugins
 
