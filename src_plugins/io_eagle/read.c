@@ -476,11 +476,6 @@ static int eagle_read_rect(read_state_t *st, xmlNode *subtree, void *obj, int ty
 
 	switch(loc) {
 		case IN_ELEM:
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin1);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin2);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin3);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin4);
-
 			break;
 
 		case ON_BOARD:
