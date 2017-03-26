@@ -6,22 +6,22 @@
 #include <genht/hash.h>
 #include "config.h"
 #include "wget_common.h"
-#include "gedasymbols.h"
+#include "edakrill.h"
 #include "plugins.h"
 #include "plug_footprint.h"
 #include "compat_misc.h"
 
-#define REQUIRE_PATH_PREFIX "wget@gedasymbols"
+#define REQUIRE_PATH_PREFIX "wget@edakrill"
 
-#define CGI_URL "http://www.gedasymbols.org/scripts/global_list.cgi"
-#define FP_URL "http://www.gedasymbols.org/"
-#define FP_DL "?dl"
-static const char *url_idx_md5 = CGI_URL "?md5";
-static const char *url_idx_list = CGI_URL;
+#define ROOT_URL "http://www.repo.hu/projects/edakrill/"
+#define FP_URL ROOT_URL "user/"
+
+static const char *url_idx_md5 = ROOT_URL "tags.idx.md5";
+static const char *url_idx_list = ROOT_URL "tags.idx";
 static const char *gedasym_cache = "fp_wget_cache";
-static const char *last_sum_fn = "fp_wget_cache/gedasymbols.last";
+static const char *last_sum_fn = "fp_wget_cache/edakrill.last";
 
-int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
+int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 {
 	FILE *f;
 	int fctx;
@@ -43,7 +43,7 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (l != NULL)
 		l->data.dir.backend = ctx;
 
-	if (force || (conf_fp_wget.plugins.fp_wget.auto_update_gedasymbols))
+	if (force || (conf_fp_wget.plugins.fp_wget.auto_update_edakrill))
 		wmode &= ~FP_WGET_OFFLINE;
 
 	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, wmode) != 0) {
@@ -122,7 +122,7 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 #define FIELD_WGET_CTX 0
 
-FILE *fp_gedasymbols_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
+FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	gds_t s;
 	FILE *f;
@@ -138,7 +138,6 @@ FILE *fp_gedasymbols_fopen(pcb_plug_fp_t *ctx, const char *path, const char *nam
 	gds_init(&s);
 	gds_append_str(&s, FP_URL);
 	gds_append_str(&s, name);
-	gds_append_str(&s, FP_DL);
 
 	fp_wget_open(s.array, gedasym_cache, &f, &(fctx->field[FIELD_WGET_CTX].i), FP_WGET_UPDATE);
 
@@ -146,25 +145,25 @@ FILE *fp_gedasymbols_fopen(pcb_plug_fp_t *ctx, const char *path, const char *nam
 	return f;
 }
 
-void fp_gedasymbols_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
+void fp_edakrill_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	fp_wget_close(&f, &(fctx->field[FIELD_WGET_CTX].i));
 }
 
 
-static pcb_plug_fp_t fp_gedasymbols;
+static pcb_plug_fp_t fp_edakrill;
 
-void fp_gedasymbols_uninit(void)
+void fp_edakrill_uninit(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_gedasymbols);
+	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_edakrill);
 }
 
-void fp_gedasymbols_init(void)
+void fp_edakrill_init(void)
 {
-	fp_gedasymbols.plugin_data = NULL;
-	fp_gedasymbols.load_dir = fp_gedasymbols_load_dir;
-	fp_gedasymbols.fopen = fp_gedasymbols_fopen;
-	fp_gedasymbols.fclose = fp_gedasymbols_fclose;
+	fp_edakrill.plugin_data = NULL;
+	fp_edakrill.load_dir = fp_edakrill_load_dir;
+	fp_edakrill.fopen = fp_edakrill_fopen;
+	fp_edakrill.fclose = fp_edakrill_fclose;
 
-	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_gedasymbols);
+	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_edakrill);
 }

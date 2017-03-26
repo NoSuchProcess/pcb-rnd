@@ -106,3 +106,51 @@ int fp_wget_close(FILE **f, int *fctx)
 
 	return -1;
 }
+
+
+char *load_md5_sum(FILE *f)
+{
+	char *s, sum[64];
+
+	if (f == NULL)
+		return NULL;
+
+	*sum = '\0';
+	fgets(sum, sizeof(sum), f);
+	sum[sizeof(sum)-1] = '\0';
+
+	for(s = sum;; s++) {
+		if ((*s == '\0') || (isspace(*s))) {
+			if ((s - sum) == 32) {
+				*s = '\0';
+				return pcb_strdup(sum);
+			}
+			else
+				return NULL;
+		}
+		if (isdigit(*s))
+			continue;
+		if ((*s >= 'a') && (*s <= 'f'))
+			continue;
+		if ((*s >= 'A') && (*s <= 'F'))
+			continue;
+		return NULL;
+	}
+}
+
+int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
+{
+	int changed = 0;
+
+	if ((md5_last == NULL) || (strcmp(md5_last, md5_new) != 0)) {
+		FILE *f;
+		f = fopen(last_fn, "w");
+		fputs(md5_new, f);
+		fclose(f);
+		changed = 1;
+	}
+	if (md5_last != NULL)
+		free(md5_last);
+	free(md5_new);
+	return changed;
+}

@@ -1,5 +1,6 @@
 #include "config.h"
 #include "gedasymbols.h"
+#include "edakrill.h"
 #include "plugins.h"
 #include "fp_wget_conf.h"
 
@@ -17,5 +18,6 @@ pcb_uninit_t hid_fp_wget_init(void)
 #include "fp_wget_conf_fields.h"
 
 	fp_gedasymbols_init();
+	fp_edakrill_init();
 	return hid_fp_wget_uninit;
 }

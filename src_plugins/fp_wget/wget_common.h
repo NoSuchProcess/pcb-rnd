@@ -7,3 +7,6 @@ typedef enum {
 
 int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode);
 int fp_wget_close(FILE **f, int *fctx);
+
+char *load_md5_sum(FILE *f);
+int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new);
