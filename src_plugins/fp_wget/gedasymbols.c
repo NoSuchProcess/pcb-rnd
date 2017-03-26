@@ -77,11 +77,15 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path)
 	fp_get_mode mode;
 	gds_t vpath;
 	int vpath_base_len;
+	fp_get_mode wmode = FP_WGET_OFFLINE;
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
 
-	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, 0) != 0)
+	if (conf_fp_wget.plugins.fp_wget.auto_update_gedasymbols)
+		wmode &= ~FP_WGET_OFFLINE;
+
+	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, wmode) != 0)
 		return -1;
 	md5_new = load_md5_sum(f);
 	fp_wget_close(&f, &fctx);
