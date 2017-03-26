@@ -26,10 +26,41 @@ struct {
 	char *fname;
 	int fp;
 	long date;
+	void **tags;
+	int tags_used, tags_alloced;
 } krill;
+
+static void tag_add_(const char *kv)
+{
+	if (krill.tags_used >= krill.tags_alloced) {
+		krill.tags_alloced += 16;
+		krill.tags = realloc(krill.tags, sizeof(void *) * krill.tags_alloced);
+	}
+	krill.tags[krill.tags_used] = kv == NULL ? NULL : pcb_fp_tag(kv, 1);
+	krill.tags_used++;
+}
+
+static void tag_add(const char *key, const char *val)
+{
+	char *next, *tmp;
+	for(; val != NULL; val = next) {
+		next = strchr(val, ',');
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+		}
+		while(*val == ' ') val++;
+		if (val == '\0')
+			break;
+		tmp = pcb_strdup_printf("%s:%s", key, val);
+		tag_add_(tmp);
+		free(tmp);
+	}
+}
 
 static void krill_flush(pcb_plug_fp_t *ctx, gds_t *vpath, int base_len)
 {
+	int n;
 	if ((krill.fp) && (krill.fname != NULL)) {
 		char *end, *fn;
 		pcb_fplibrary_t *l;
@@ -48,16 +79,27 @@ static void krill_flush(pcb_plug_fp_t *ctx, gds_t *vpath, int base_len)
 
 		/* add to the database */
 		l = pcb_fp_mkdir_p(vpath->array);
-		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, NULL);
+		if (krill.tags != NULL)
+			tag_add_(NULL);
+		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, krill.tags);
 		fn[-1] = '/';
 		l->data.fp.loc_info = pcb_strdup(vpath->array);
+		
+		krill.tags = NULL;
+		krill.tags_used = 0;
 	}
+
+	krill.tags_used = 0;
+
 	free(krill.name);
 	free(krill.fname);
+	free(krill.tags);
 	krill.name = NULL;
 	krill.fname = NULL;
 	krill.fp = 0;
 	krill.date = 0;
+	krill.tags = NULL;
+	krill.tags_alloced = 0;
 }
 
 int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
@@ -134,6 +176,17 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		if (strncmp(line, "t type=", 7) == 0) {
 			if (strcmp(line+7, "footprint") == 0)
 				krill.fp = 1;
+		}
+		if (*line == 't') {
+			char *val, *key = line+2;
+			val = strchr(key, '=');
+			if (val != NULL) {
+				*val = '\0';
+				val++;
+				if ((strcmp(key, "auto/file") != 0) && (strcmp(key, "type") != 0)) {
+					tag_add(key, val);
+				}
+			}
 		}
 		if (*line == 'm') {
 			end = strstr(line, ".cnv.fp ");
