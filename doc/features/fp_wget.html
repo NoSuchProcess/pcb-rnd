@@ -32,7 +32,9 @@ The [fp_wget] plugin is an implementation that:
 </ul>
 <p>
 This is all transparent, the user experience is that the remote library is
-like a read-only local library reachable from the library window. 
+like a read-only local library reachable from the library window. Since
+version 1.2.2, automatic index update is controlled by a configuration setting
+and a selective, per website mecahnism for manual triggered update.
 <p>
 A web site used as a library should be able to:
 <ul>
@@ -43,6 +45,9 @@ A web site used as a library should be able to:
 The plugin uses external program <i>wget</i> to communicate on the web.
 
 
+<h3> How to configure for eakrill </h3>
+Add wget@edakrill in the library search path (e.g. in preferences as library-newlib).
+
 <h3> How to configure for gedasymbols.org </h3>
 Add wget@gedasymbols in the library search path (e.g. in preferences as library-newlib).
 
@@ -50,8 +55,7 @@ Add wget@gedasymbols in the library search path (e.g. in preferences as library-
 Not affected.
 
 <h2> plans </h2>
-Better feedback on progress, explicit user requested refresh, refresh in
-the background.
+Better feedback on progress, refresh in the background.
 
 </body>
 </html>
