@@ -2568,6 +2568,7 @@ static void config_page_update_auto(void *data)
 	gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
 	gtk_widget_hide(auto_tab_widgets.btn_create);
 	config_auto_res_show();
+	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(auto_tab_widgets.src_t));
 	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(auto_tab_widgets.res_t));
 }
 
