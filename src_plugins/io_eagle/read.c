@@ -625,8 +625,6 @@ static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj,
 	pcb_pin_t *pin;
 	const char *name, *shape;
 
-	assert(type == IN_ELEM);
-
 	name = eagle_get_attrs(subtree, "name", NULL);
 	x = eagle_get_attrc(subtree, "x", 0);
 	y = eagle_get_attrc(subtree, "y", 0);
@@ -635,8 +633,16 @@ static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj,
 	shape = eagle_get_attrs(subtree, "shape", 0);
 	pcb_printf("dia=%mm drill=%mm\n", dia, drill);
 
-	pin = pcb_element_pin_new((pcb_element_t *)obj, x, y, dia,
-		conf_core.design.clearance, 0, drill, name, name, pcb_no_flags());
+	switch((eagle_loc_t)type) {
+		case IN_ELEM:
+			pin = pcb_element_pin_new((pcb_element_t *)obj, x, y, dia,
+				conf_core.design.clearance, 0, drill, name, name, pcb_no_flags());
+			break;
+		case ON_BOARD:
+			pin = pcb_via_new(st->pcb->Data, x, y, dia,
+				conf_core.design.clearance, 0, drill, name, pcb_no_flags());
+			break;
+	}
 
 	if (hole)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pin);
@@ -661,6 +667,11 @@ static int eagle_read_hole(read_state_t *st, xmlNode *subtree, void *obj, int ty
 static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	return eagle_read_pad_or_hole(st, subtree, obj, type, 0);
+}
+
+static int eagle_read_via(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	return eagle_read_pad_or_hole(st, subtree, obj, ON_BOARD, 0);
 }
 
 
@@ -741,7 +752,7 @@ static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int
 		{"contactref",  eagle_read_nop},
 		{"wire",        eagle_read_wire},
 		{"polygon",     eagle_read_nop},
-		{"via",         eagle_read_nop},
+		{"via",         eagle_read_via},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
