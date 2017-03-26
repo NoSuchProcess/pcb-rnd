@@ -584,7 +584,6 @@ static GtkTreeModel *create_lib_tree_model(pcb_gtk_library_t * library_window)
 	return create_lib_tree_model_recurse(tree, library_window, &pcb_library, NULL);
 }
 
-#if 0
 /* \brief On-demand refresh of the footprint library.
  * \par Function Description
  * Requests a rescan of the footprint library in order to pick up any
@@ -594,9 +593,34 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 {
 	pcb_gtk_library_t *library_window = GHID_LIBRARY_WINDOW(user_data);
 	GtkTreeModel *model;
+	pcb_fplibrary_t *entry = NULL;
+	GtkTreeIter iter;
 
-	/* Rescan the libraries for symbols */
-	/*  TODO: How do we do this in PCB?  */
+	lib_param_del_timer(library_window);
+
+	if (gtk_tree_selection_get_selected(library_window->selection, &model, &iter)) {
+		gtk_tree_model_get(model, &iter, MENU_ENTRY_COLUMN, &entry, -1);
+
+		if (entry == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Invalid selection\n");
+			return;
+		}
+
+		if ((int)entry->type != PCB_FP_DIR) {
+			pcb_message(PCB_MSG_ERROR, "Library path is not a directory\n");
+			return;
+		}
+
+		if (entry->data.dir.backend == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Library path is not a top level directory of a fp_ plugin\n");
+			return;
+		}
+	}
+
+	if (pcb_fp_rehash(entry) != 0) {
+		pcb_message(PCB_MSG_ERROR, "Failed to rehash library\n");
+		return;
+	}
 
 	/* Refresh the "Library" view */
 	model = (GtkTreeModel *)
@@ -606,7 +630,6 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 
 	gtk_tree_view_set_model(library_window->libtreeview, model);
 }
-#endif
 
 /** Creates the treeview for the "Library" view */
 static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
@@ -726,7 +749,6 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	library_window->button_clear = GTK_BUTTON(button);
 
 
-#if 0
 	/* create the refresh button */
 	button = GTK_WIDGET(g_object_new(GTK_TYPE_BUTTON,
 																	 /* GtkWidget */
@@ -737,7 +759,6 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	/* add the refresh button to the filter area */
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(button, "clicked", G_CALLBACK(library_window_callback_refresh_library), library_window);
-#endif
 
 	/* add the filter area to the vertical box */
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
