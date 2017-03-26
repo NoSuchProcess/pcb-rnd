@@ -267,6 +267,9 @@ li:pcb-rnd-conf-v1 {
 			ha:report {
 				columns = 8
 			}
+			ha:fp_wget {
+				auto_update_gedasymbols = 0
+			}
 		} # plugins
 
 		ha:utils {
