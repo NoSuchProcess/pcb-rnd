@@ -956,7 +956,7 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 {
 	xmlDoc *doc;
 	xmlNode *root, *dr;
-	int res;
+	int res, old_leni;
 	read_state_t st;
 
 	static const dispatch_t disp[] = { /* possible children of root */
@@ -993,7 +993,10 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 	else
 		pcb_message(PCB_MSG_WARNING, "can't find design rules\n");
 
+	old_leni = pcb_create_being_lenient;
+	pcb_create_being_lenient = 1;
 	res = eagle_foreach_dispatch(&st, root->children, disp, NULL, 0);
+	pcb_create_being_lenient = old_leni;
 
 	st_uninit(&st);
 
