@@ -98,7 +98,6 @@ CLEANUP #5
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - next_gui: keep them open, hide
 - look for #warnings
-- fix librarychanged: disable update of gedasymbols on-start, make it an explicit refresh button
 - libstroke: zoom
 - cleanup/rewrite resources:
 	- load/swap menus (TODO#1)
