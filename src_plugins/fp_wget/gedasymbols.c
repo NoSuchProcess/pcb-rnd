@@ -83,16 +83,27 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
 
+	gds_init(&vpath);
+	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);
+
+	l = pcb_fp_mkdir_p(vpath.array);
+	if (l != NULL)
+		l->data.dir.backend = ctx;
+
 	if (force || (conf_fp_wget.plugins.fp_wget.auto_update_gedasymbols))
 		wmode &= ~FP_WGET_OFFLINE;
 
-	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, wmode) != 0)
-		return -1;
+	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, wmode) != 0) {
+		if (wmode & FP_WGET_OFFLINE) /* accept that we don't have the index in offline mode */
+			goto quit;
+		goto err;
+	}
+
 	md5_new = load_md5_sum(f);
 	fp_wget_close(&f, &fctx);
 
 	if (md5_new == NULL)
-		return -1;
+		goto err;
 
 	f = fopen(last_sum_fn, "r");
 	md5_last = load_md5_sum(f);
@@ -111,18 +122,11 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (fp_wget_open(url_idx_list, gedasym_cache, &f, &fctx, mode) != 0) {
 		printf("failed to download the new list\n");
 		remove(last_sum_fn); /* make sure it is downloaded next time */
-		return -1;
+		goto err;
 	}
-
-	gds_init(&vpath);
-	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);
-
-	l = pcb_fp_mkdir_p(vpath.array);
-	l->data.dir.backend = ctx;
 
 	gds_append(&vpath, '/');
 	vpath_base_len = vpath.used;
-
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *fn;
@@ -153,7 +157,14 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	fp_wget_close(&f, &fctx);
 
 	printf("update!\n");
+
+	quit:;
+	gds_uninit(&vpath);
 	return 0;
+
+	err:;
+	gds_uninit(&vpath);
+	return -1;
 }
 
 #define FIELD_WGET_CTX 0
