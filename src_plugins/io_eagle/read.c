@@ -313,6 +313,17 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	const char *rot, *text_val;
 	unsigned int text_direction = 0;
 
+	if (subtree->children == NULL) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field on layer %s\n", ly->name);
+		return 0;
+	}
+	if (subtree->children->type != XML_TEXT_NODE) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring text field on layer %s (invalid child node)\n", ly->name);
+		return 0;
+	}
+
+#warning TODO: need to convert
+	text_val = (const char *)xmlNodeGetContent(subtree->children);
 	X = eagle_get_attrc(subtree, "x", -1);
 	Y = eagle_get_attrc(subtree, "y", -1);
 	height = PCB_MM_TO_COORD(eagle_get_attrc(subtree, "size", -1));
@@ -335,13 +346,8 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 		}
 	}
 	
-	if (subtree->children == NULL) {
-		/* text_val = ........ */
-		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field on layer %s\n", ly->name);
-		return 0;
-	}
 
-	pcb_printf("\ttext found on Eagle layout at with rot: %s\n", rot);
+	pcb_printf("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, height, text_val, ln, text_direction);
 
 	return 0;
 }
