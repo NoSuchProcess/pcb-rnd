@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "../src/error.h"
+#include "../src/event.h"
 #include "../src/plugins.h"
 #include "gsch2pcb_rnd_conf.h"
 
@@ -69,3 +70,9 @@ pcb_plugin_info_t *pcb_plugin_register(const char *name, const char *path, void 
 		printf("Plugin loaded: %s (%s)\n", name, path);
 	return &pif;
 }
+
+void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
+{
+
+}
+
