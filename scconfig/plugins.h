@@ -118,9 +118,10 @@ plugin_dep("hid_gtk3_cairo", "lib_gtk_hid")
 plugin_dep("hid_gtk3_cairo", "draw_csect")
 plugin_dep("hid_gtk3_cairo", "draw_fontsel")
 
-
 /* for the uniq name lib: */
 plugin_dep("io_kicad_legacy", "io_kicad")
 
 /* for drill.[ch] */
 plugin_dep("draw_fab", "report")
+
+plugin_dep("io_eagle", "boardflip")
