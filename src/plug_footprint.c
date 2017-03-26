@@ -397,8 +397,10 @@ int pcb_fp_read_lib_all(void)
 	return (1);
 }
 
-int pcb_fp_rehash(void)
+int pcb_fp_rehash(pcb_fplibrary_t *l)
 {
-	pcb_fp_free_children(&pcb_library);
-	return pcb_fp_read_lib_all();
+	if (l == NULL) {
+		pcb_fp_free_children(&pcb_library);
+		return pcb_fp_read_lib_all();
+	}
 }

@@ -1037,7 +1037,7 @@ static gtk_conf_list_t library_cl;
 
 static void config_library_apply(void)
 {
-	pcb_fp_rehash();
+	pcb_fp_rehash(NULL);
 }
 
 static char *get_misc_col_data(int row, int col, lht_node_t * nd)
