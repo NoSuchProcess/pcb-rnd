@@ -841,10 +841,10 @@ static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
 		if (xmlStrcmp(n->name, (xmlChar *)"param") != 0)
 			continue;
 		name = eagle_get_attrs(n, "name", NULL);
-		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(n, "value", NULL);
-		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrcu(n, "value", NULL);
-		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrcu(n, "value", NULL);
-		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrcu(n, "value", NULL);
+		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(n, "value", 0);
+		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrcu(n, "value", 0);
+		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrcu(n, "value", 0);
+		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrcu(n, "value", 0);
 	}
 	return 0;
 }
