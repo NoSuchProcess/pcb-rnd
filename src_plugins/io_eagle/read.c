@@ -731,7 +731,6 @@ static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int
 	for(n = subtree->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"signal") == 0) {
 			const char *name = eagle_get_attrs(n, "name", NULL);
-			eagle_library_t *lib;
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
 				continue;
