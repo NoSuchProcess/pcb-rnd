@@ -68,7 +68,7 @@ static int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 	return changed;
 }
 
-int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path)
+int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 {
 	FILE *f;
 	int fctx;
@@ -82,7 +82,7 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path)
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
 
-	if (conf_fp_wget.plugins.fp_wget.auto_update_gedasymbols)
+	if (force || (conf_fp_wget.plugins.fp_wget.auto_update_gedasymbols))
 		wmode &= ~FP_WGET_OFFLINE;
 
 	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, wmode) != 0)

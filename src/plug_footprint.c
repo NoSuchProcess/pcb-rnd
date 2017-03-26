@@ -352,7 +352,7 @@ static int fp_read_lib_all_(const char *searchpath)
 
 		/* Next read in any footprints in the top level dir */
 		res = -1;
-		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, load_dir, res, >= 0, (self, toppath));
+		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, load_dir, res, >= 0, (self, toppath, 0));
 		if (res >= 0)
 			n_footprints += res;
 		else

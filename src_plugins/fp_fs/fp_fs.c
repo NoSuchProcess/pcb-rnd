@@ -258,7 +258,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 }
 
 
-static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path)
+static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 {
 	return fp_fs_load_dir_(&pcb_library, ".", path, 1);
 }

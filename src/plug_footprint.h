@@ -42,8 +42,9 @@ struct pcb_plug_fp_s {
 	void *plugin_data;
 
 	/* returns the number of footprints loaded into the library or -1 on
-	   error; next in chain is run only on error. */
-	int (*load_dir)(pcb_plug_fp_t *ctx, const char *path);
+	   error; next in chain is run only on error. If force is 1, force doing the
+	   expensive part of the load (e.g. wget) */
+	int (*load_dir)(pcb_plug_fp_t *ctx, const char *path, int force);
 
 /* Open a footprint for reading; if the footprint is parametric, it's run
    prefixed with libshell (or executed directly, if libshell is NULL).
