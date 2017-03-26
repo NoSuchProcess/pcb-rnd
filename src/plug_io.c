@@ -347,9 +347,15 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 	}
 
 	if (p != NULL) {
-		pcb_event(PCB_EVENT_SAVE_PRE, "s", fmt);
-		res = p->write_pcb(p, f, old_filename, new_filename, emergency);
-		pcb_event(PCB_EVENT_SAVE_POST, "si", fmt, res);
+		if (p->write_pcb != NULL) {
+			pcb_event(PCB_EVENT_SAVE_PRE, "s", fmt);
+			res = p->write_pcb(p, f, old_filename, new_filename, emergency);
+			pcb_event(PCB_EVENT_SAVE_POST, "si", fmt, res);
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Can't write PCB: internal error: io plugin %s doesn't implement write_pcb()\n", p->description);
+			res = -1;
+		}
 	}
 
 	if ((res == 0) && (newfmt))
