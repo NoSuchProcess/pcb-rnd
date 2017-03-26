@@ -320,7 +320,8 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	if (rot == NULL) {
 		rot = "R0";
 	}
-        if (rot[0] == 'R') {
+
+	if (rot[0] == 'R') {
 		int deg = atoi(rot+1);
 		printf("text rot: %s\n", rot);
 		if (deg < 45 || deg >= 315) {
