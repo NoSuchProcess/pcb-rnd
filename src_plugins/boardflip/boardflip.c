@@ -8,7 +8,7 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
- * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016; generalized in 2017.
  *
  * Original source was: http://www.delorie.com/pcb/boardflip.c
  *
@@ -59,8 +59,28 @@
 
 #define XFLIP(v) (v) = ((flip_x ? -(v) : (v)) + xo)
 #define YFLIP(v) (v) = ((flip_y ? -(v) : (v)) + yo)
-#define AFLIP(a) (a) = -(a)
+#define AFLIP(a) (a) = aflip((a), flip_x, flip_y)
+#define NEG(a) (a) = -(a)
 #define ONLY1 ((flip_x || flip_y) && !(flip_x && flip_y))
+
+static double aflip(double a, pcb_bool flip_x, pcb_bool flip_y)
+{
+	if (flip_x) {
+		while(a > 360.0) a -= 360.0;
+		while(a < 0.0) a += 360.0;
+
+		if ((0.0 <= a) && (a <= 90.0)) a = (90.0 - a) + 90.0;
+		else if ((0 < 90.0) && (a <= 180.0)) a = 90.0 - (a - 90.0);
+		else if ((0 < 180.0) && (a <= 270.0)) a = 270.0 + (270.0 - a);
+		else if ((0 < 270.0) && (a <= 360.0)) a = 270.0 - (a - 270.0);
+
+		while(a > 360.0) a -= 360.0;
+		while(a < 0.0) a += 360.0;
+	}
+	if (flip_y)
+		a = -a;
+	return a;
+}
 
 void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord_t xo, pcb_coord_t yo, pcb_bool elem_swap_sides)
 {
@@ -109,10 +129,9 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		{
 			XFLIP(arc->X);
 			YFLIP(arc->Y);
-			if (ONLY1) {
-				AFLIP(arc->StartAngle);
-				AFLIP(arc->Delta);
-			}
+			AFLIP(arc->StartAngle);
+			if (ONLY1)
+				NEG(arc->Delta);
 		}
 		PCB_END_LOOP;
 	}
@@ -149,10 +168,9 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		{
 			XFLIP(arc->X);
 			YFLIP(arc->Y);
-			if (ONLY1) {
-				AFLIP(arc->StartAngle);
-				AFLIP(arc->Delta);
-			}
+			AFLIP(arc->StartAngle);
+			if (ONLY1)
+				NEG(arc->Delta);
 		}
 		PCB_END_LOOP;
 		PCB_PIN_LOOP(element);
