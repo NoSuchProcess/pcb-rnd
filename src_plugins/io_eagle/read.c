@@ -637,9 +637,10 @@ static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj,
 
 	pin = pcb_element_pin_new((pcb_element_t *)obj, x, y, dia,
 		conf_core.design.clearance, 0, drill, name, name, pcb_no_flags());
-	if (hole) {
+
+	if (hole)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pin);
-	}
+
 	if ((shape != NULL) && (strcmp(shape, "octagon") == 0))
 		PCB_FLAG_SET(PCB_FLAG_OCTAGON, pin);
 	else if ((shape != NULL) && (strcmp(shape, "square") == 0))
