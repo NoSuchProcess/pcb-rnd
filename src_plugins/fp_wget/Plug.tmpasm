@@ -1,5 +1,9 @@
 put /local/pcb/mod {fp_wget}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/fp_wget/fp_wget.o $(PLUGDIR)/fp_wget/wget_common.o $(PLUGDIR)/fp_wget/gedasymbols.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/fp_wget/fp_wget.o
+	$(PLUGDIR)/fp_wget/wget_common.o
+	$(PLUGDIR)/fp_wget/gedasymbols.o
+@]
 put /local/pcb/mod/CONF {$(PLUGDIR)/fp_wget/fp_wget_conf.h}
 
 switch /local/pcb/fp_wget/controls
