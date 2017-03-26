@@ -795,7 +795,7 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 				size_bump(st, new_elem->BoundingBox.X2, new_elem->BoundingBox.Y2);
 			}
 
-			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, elem);
+			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, (void *)elem);
 		}
 	}
 	return 0;
