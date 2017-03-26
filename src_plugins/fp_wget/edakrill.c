@@ -21,6 +21,45 @@ static const char *url_idx_list = ROOT_URL "tags.idx";
 static const char *gedasym_cache = "fp_wget_cache";
 static const char *last_sum_fn = "fp_wget_cache/edakrill.last";
 
+struct {
+	char *name;
+	char *fname;
+	int fp;
+	long date;
+} krill;
+
+static void krill_flush(pcb_plug_fp_t *ctx, gds_t *vpath, int base_len)
+{
+	if ((krill.fp) && (krill.fname != NULL)) {
+		char *end, *fn;
+		pcb_fplibrary_t *l;
+
+/*		printf("Krill %s: %s [%ld]\n", krill.name, krill.fname, krill.date);*/
+
+		/* split path and fn; path stays in vpath.array, fn is a ptr to the file name */
+		gds_truncate(vpath, base_len);
+		gds_append_str(vpath, krill.fname);
+		end = vpath->array + vpath->used - 1;
+		while((end > vpath->array) && (*end != '/')) { end--; vpath->used--; }
+		*end = '\0';
+		vpath->used--;
+		end++;
+		fn = end;
+
+		/* add to the database */
+		l = pcb_fp_mkdir_p(vpath->array);
+		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, NULL);
+		fn[-1] = '/';
+		l->data.fp.loc_info = pcb_strdup(vpath->array);
+	}
+	free(krill.name);
+	free(krill.fname);
+	krill.name = NULL;
+	krill.fname = NULL;
+	krill.fp = 0;
+	krill.date = 0;
+}
+
 int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 {
 	FILE *f;
@@ -83,30 +122,32 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *fn;
-
-		if (*line == '#')
+		if ((*line == '#') || (line[1] != ' '))
 			continue;
-		end = strchr(line, '|');
-		if (end == NULL)
-			continue;
-		*end = '\0';
 
-		/* split path and fn; path stays in vpath.array, fn is a ptr to the file name */
-		gds_truncate(&vpath, vpath_base_len);
-		gds_append_str(&vpath, line);
-		end = vpath.array + vpath.used - 1;
-		while((end > vpath.array) && (*end != '/')) { end--; vpath.used--; }
+		end = line + strlen(line) - 1;
 		*end = '\0';
-		vpath.used--;
-		end++;
-		fn = end;
+		if (*line == 'f') {
+			krill_flush(ctx, &vpath, vpath_base_len);
+			krill.name = pcb_strdup(line+2);
+		}
+		if (strncmp(line, "t type=", 7) == 0) {
+			if (strcmp(line+7, "footprint") == 0)
+				krill.fp = 1;
+		}
+		if (*line == 'm') {
+			end = strstr(line, ".cnv.fp ");
+			if (end != NULL) {
+				end += 7;
+				*end = '\0';
+				end++;
+				krill.fname = pcb_strdup(line+2);
+				krill.date = strtol(end, NULL, 10);
+			}
+		}
 
-		/* add to the database */
-		l = pcb_fp_mkdir_p(vpath.array);
-		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, NULL);
-		fn[-1] = '/';
-		l->data.fp.loc_info = pcb_strdup(vpath.array);
 	}
+	krill_flush(ctx, &vpath, vpath_base_len);
 	fp_wget_close(&f, &fctx);
 
 	printf("update!\n");
