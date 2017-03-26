@@ -515,10 +515,10 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 			case 180:
 				x -= dx/2;
 				y -= dy/2;
-        		        pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-                		        x+dx, y+dy, x, y,
-                		        conf_core.design.clearance, conf_core.design.clearance,
-                		        name, name, pcb_flag_make(0));
+				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+					x+dx, y+dy, x, y,
+					conf_core.design.clearance, conf_core.design.clearance,
+					name, name, pcb_flag_make(0));
 				break;
 			case 90:
 				y -= dx/2;
