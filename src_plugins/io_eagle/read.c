@@ -310,7 +310,7 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	long ln = eagle_get_attrl(subtree, "layer", -1);
 	eagle_layer_t *ly;
 	pcb_coord_t X, Y, height;
-	char *rot, *text_val;
+	const char *rot, *text_val;
 	unsigned int text_direction = 0;
 
 	X = eagle_get_attrc(subtree, "x", -1);
