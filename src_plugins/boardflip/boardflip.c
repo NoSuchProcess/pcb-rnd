@@ -56,10 +56,10 @@
   rats
 */
 
-#define XFLIP(v)  v = ((flip_x ? -(v) : (v)) + xo)
-#define YFLIP(v)  v = ((flip_y ? -(v) : (v)) + yo)
-#define AFLIP(a) (a) = - (a)
-#define ONLY1 ((flip_x || flip_y) && (!flip_x && !flip_y))
+#define XFLIP(v) (v) = ((flip_x ? -(v) : (v)) + xo)
+#define YFLIP(v) (v) = ((flip_y ? -(v) : (v)) + yo)
+#define AFLIP(a) (a) = -(a)
+#define ONLY1 ((flip_x || flip_y) && !(flip_x && flip_y))
 
 void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord_t xo, pcb_coord_t yo, pcb_bool elem_swap_sides)
 {
