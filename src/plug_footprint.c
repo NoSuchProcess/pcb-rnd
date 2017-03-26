@@ -422,8 +422,9 @@ int pcb_fp_rehash(pcb_fplibrary_t *l)
 	pcb_fp_sort_children(&pcb_library);
 	free(path);
 
-	if (res >= 0)
+	if (res >= 0) {
 		pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
-
-	return res;
+		return 0;
+	}
+	return -1;
 }
