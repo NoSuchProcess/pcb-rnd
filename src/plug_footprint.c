@@ -34,6 +34,7 @@
 #include "conf_core.h"
 #include "error.h"
 #include "compat_misc.h"
+#include "event.h"
 
 pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
 pcb_fplibrary_t pcb_library;
@@ -420,5 +421,9 @@ int pcb_fp_rehash(pcb_fplibrary_t *l)
 	res = be->load_dir(be, path, 1);
 	pcb_fp_sort_children(&pcb_library);
 	free(path);
+
+	if (res >= 0)
+		pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
+
 	return res;
 }
