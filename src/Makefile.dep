@@ -3164,6 +3164,7 @@
  fptr_cast.h ../src_3rd/liblihata/tree.h \
  ../src_plugins/lib_gtk_config/gtk_conf_list.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf.h \
+ ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/util_str.h \
  ../src_plugins/lib_gtk_common/wt_preview.h obj_elem.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
