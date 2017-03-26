@@ -798,6 +798,7 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, elem);
 		}
 	}
+	return 0;
 }
 
 static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int type)
