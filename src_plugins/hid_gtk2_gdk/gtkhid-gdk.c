@@ -74,13 +74,12 @@ static const gchar *get_color_name(GdkColor * color)
 static pcb_bool map_color_string(const char *color_string, GdkColor * color)
 {
 	static GdkColormap *colormap = NULL;
-	GHidPort *out = &ghid_port;
 	pcb_bool parsed;
 
-	if (!color || !out->top_window)
+	if (!color || !gport->top_window)
 		return FALSE;
 	if (colormap == NULL)
-		colormap = gtk_widget_get_colormap(out->top_window);
+		colormap = gtk_widget_get_colormap(gport->top_window);
 	if (color->red || color->green || color->blue)
 		gdk_colormap_free_colors(colormap, color, 1);
 	parsed = gdk_color_parse(color_string, color);
@@ -1130,14 +1129,14 @@ static void show_crosshair(gboolean paint_new_location)
 
 static void ghid_gdk_init_renderer(int *argc, char ***argv, void *vport)
 {
-	GHidPort * port = vport;
+	GHidPort *port = vport;
 	/* Init any GC's required */
 	port->render_priv = g_new0(render_priv_t, 1);
 }
 
-static void ghid_gdk_shutdown_renderer(void *port_)
+static void ghid_gdk_shutdown_renderer(void *vport)
 {
-	GHidPort *port = port_;
+	GHidPort *port = vport;
 	g_free(port->render_priv);
 	port->render_priv = NULL;
 }
@@ -1146,9 +1145,9 @@ static void ghid_gdk_init_drawing_widget(GtkWidget * widget, void * port)
 {
 }
 
-static void ghid_gdk_drawing_area_configure_hook(void *port_)
+static void ghid_gdk_drawing_area_configure_hook(void *vport)
 {
-	GHidPort *port = port_;
+	GHidPort *port = vport;
 	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
 
