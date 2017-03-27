@@ -36,6 +36,7 @@
 #include "polygon.h"
 
 #include "action_helper.h"
+#include "hid_actions.h"
 #include "hid.h"
 #include "plugins.h"
 

@@ -1416,7 +1416,7 @@
  ../src_3rd/liblihata/genht/ht.h obj_text_list.h obj_rat_list.h obj_rat.h \
  layer_grp.h library.h rats_patch.h board.h data.h crosshair.h \
  vtonpoint.h hid.h error.h drc.h route.h buffer.h polygon.h rtree.h \
- action_helper.h hid.h plugins.h dolists.h
+ action_helper.h hid_actions.h hid.h plugins.h dolists.h
 ../src_plugins/import_edif/edif.o: ../src_plugins/import_edif/edif.c \
  math_helper.h board.h ../config.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
