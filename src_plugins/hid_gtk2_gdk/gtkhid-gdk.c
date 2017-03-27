@@ -1165,7 +1165,9 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 		done_once = 1;
 	}
-  priv->drawable = gport->drawable;
+	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
+																 gport->view.canvas_width, gport->view.canvas_height, -1);
+	priv->drawable = gport->pixmap;
 
 	if (port->mask) {
 		gdk_pixmap_unref(port->mask);
