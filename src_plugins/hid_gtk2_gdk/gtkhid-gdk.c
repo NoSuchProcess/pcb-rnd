@@ -1151,23 +1151,24 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
 
+	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
+																 gport->view.canvas_width, gport->view.canvas_height, -1);
+	priv->drawable = gport->pixmap;
+
 	if (!done_once) {
-		priv->bg_gc = gdk_gc_new(port->drawable);
+		priv->bg_gc = gdk_gc_new(priv->drawable);
 		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
 
-		priv->offlimits_gc = gdk_gc_new(port->drawable);
+		priv->offlimits_gc = gdk_gc_new(priv->drawable);
 		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 		done_once = 1;
 	}
-	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
-																 gport->view.canvas_width, gport->view.canvas_height, -1);
-	priv->drawable = gport->pixmap;
 
 	if (port->mask) {
 		gdk_pixmap_unref(port->mask);
@@ -1218,7 +1219,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
 
 	/* Setup drawable and zoom factor for drawing routines
 	 */
-	save_drawable = gport->drawable;
+	save_drawable = priv->drawable;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
@@ -1231,7 +1232,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
 	else
 		gport->view.coord_per_px = yz;
 
-	gport->drawable = window;
+	priv->drawable = window;
 	gport->view.canvas_width = allocation.width;
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
@@ -1245,7 +1246,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
 	/* call the drawing routine */
 	expcall(&gtk2_gdk_hid, ctx);
 
-	gport->drawable = save_drawable;
+	priv->drawable = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
@@ -1262,7 +1263,7 @@ static GdkPixmap *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width,
 	pcb_hid_expose_ctx_t ectx;
 	render_priv_t *priv = gport->render_priv;
 
-	save_drawable = gport->drawable;
+	save_drawable = priv->drawable;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
@@ -1272,7 +1273,7 @@ static GdkPixmap *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width,
 	/* Setup drawable and zoom factor for drawing routines
 	 */
 
-	gport->drawable = pixmap;
+	priv->drawable = pixmap;
 	gport->view.coord_per_px = zoom;
 	gport->view.canvas_width = width;
 	gport->view.canvas_height = height;
@@ -1302,7 +1303,7 @@ static GdkPixmap *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width,
 
 	pcb_hid_expose_all(&gtk2_gdk_hid, &ectx);
 
-	gport->drawable = save_drawable;
+	priv->drawable = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
@@ -1372,7 +1373,7 @@ static void draw_lead_user(render_priv_t *priv)
 			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 
 		/* Draw an arc at radius */
-		gdk_draw_arc(gport->drawable, lead_gc, FALSE,
+		gdk_draw_arc(gport->render_priv->drawable, lead_gc, FALSE,
 								 Vx(lead_user->x - radius), Vy(lead_user->y - radius), Vz(2. * radius), Vz(2. * radius), 0, 360 * 64);
 	}
 }
