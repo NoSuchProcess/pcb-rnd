@@ -44,7 +44,7 @@ static int pcb_act_fp_rehash(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		return 1;
 	}
 
-	if (l->type != PCB_FP_DIR) {
+	if (l->type != LIB_DIR) {
 		pcb_message(PCB_MSG_ERROR, "Library path %s is not a directory\n", argv[0]);
 		return 1;
 	}
