@@ -38,6 +38,7 @@
 #include "hid_helper.h"
 #include "plugins.h"
 #include "event.h"
+#include "plug_io.h"
 
 #warning TODO: rename config.h VERSION to PCB_VERSION
 #undef VERSION
@@ -46,6 +47,23 @@
 #include "board.h"
 
 static const char *hyp_cookie = "hyp importer";
+
+
+static pcb_plug_io_t io_hyp;
+
+int io_hyp_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
+{
+	if (strcmp(ctx->description, fmt) == 0)
+		return 200;
+
+	if ((strcmp(fmt, "hyp") != 0) ||
+		((typ & (~(PCB_IOT_PCB))) != 0))
+		return 0;
+
+	return 70;
+}
+
+
 
 static const char load_hyp_syntax[] = "LoadhypFrom(filename[, \"debug\"]...)";
 
@@ -102,7 +120,31 @@ pcb_hid_action_t hyp_action_list[] = {
 
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 
-		 static void hid_io_hyp_uninit()
+/* cheap, partial read of the file to determine if it is worth running the real parser */
+int io_hyp_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+{
+	char line[1024];
+	int found = 0, lineno = 0;
+
+	/* look for {VERSION and {BOARD in the first 32 lines, not assuming indentation */
+	while(fgets(line, sizeof(line), f) != NULL) {
+		if ((found == 0) && (strstr(line, "{VERSION=")))
+			found = 1;
+		if ((found == 1) && (strstr(line, "{BOARD")))
+			return 1;
+		lineno++;
+		if (lineno > 32)
+			break;
+	}
+	return 0;
+}
+
+int io_hyp_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
+{
+	return hyp_parse(pcb->Data, Filename, 0);
+}
+
+static void hid_io_hyp_uninit()
 {
 	pcb_hid_remove_actions_by_cookie(hyp_cookie);
 }
@@ -110,7 +152,27 @@ PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 #include "dolists.h"
 pcb_uninit_t hid_io_hyp_init()
 {
-#warning TODO: rather register an importer than an action
+	/* register the IO hook */
+	io_hyp.plugin_data = NULL;
+	io_hyp.fmt_support_prio = io_hyp_fmt;
+	io_hyp.test_parse_pcb = io_hyp_test_parse_pcb;
+	io_hyp.parse_pcb = io_hyp_read_pcb;
+/*	io_hyp.parse_element = NULL;
+	io_hyp.parse_font = NULL;
+	io_hyp.write_buffer = io_hyp_write_buffer;
+	io_hyp.write_element = io_hyp_write_element;
+	io_hyp.write_pcb = io_hyp_write_pcb;*/
+	io_hyp.default_fmt = "hyp";
+	io_hyp.description = "hyperlinks";
+	io_hyp.save_preference_prio = 30;
+	io_hyp.default_extension = ".hyp";
+#warning TODO: look these up
+	io_hyp.fp_extension = ".hyp_mod";
+	io_hyp.mime_type = "application/x-hyp-pcb";
+
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
+
+
 	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 		return hid_io_hyp_uninit;
 }
