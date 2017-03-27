@@ -88,7 +88,7 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 			return;
 		(*nlines)++;
 		if (pn > 0) {
-			pcb_line_t *line = pcb_line_new_merge(layer, lx, PCB->MaxHeight - ly,
+			/*pcb_line_t *line = */pcb_line_new_merge(layer, lx, PCB->MaxHeight - ly,
 				x, PCB->MaxHeight - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
 /*				pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, line);*/
 /*				pcb_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
