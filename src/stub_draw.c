@@ -37,7 +37,7 @@ void dummy_draw_text(pcb_hid_gc_t gc, const char *str)
 
 	t.X = 0;
 	t.Y = 0;
-	t.TextString = str;
+	t.TextString = (char *)str;
 	t.Direction = 0;
 	t.fid = 0; /* use the default font */
 	t.Scale = 150;
