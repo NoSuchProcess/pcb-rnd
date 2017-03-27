@@ -142,13 +142,10 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(widget), gport->view.canvas_width, gport->view.canvas_height, -1);
 	gport->drawable = gport->pixmap;
 
+  ghid_drawing_area_configure_hook(out);
 	if (!first_time_done) {
 		first_time_done = TRUE;
-		ghid_drawing_area_configure_hook(out);
 		pcb_board_changed(0);
-	}
-	else {
-		ghid_drawing_area_configure_hook(out);
 	}
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
