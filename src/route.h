@@ -89,7 +89,7 @@ void	pcb_route_direct( pcb_route_t *   p_route,
 												pcb_coord_t     thickness,
 												pcb_coord_t     clearance );
 
-void	pcb_route_apply(const pcb_route_t * p_route);
+int	pcb_route_apply(const pcb_route_t * p_route);
 
 void	pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC );
 void	pcb_route_draw_drc( pcb_route_t * p_route,pcb_hid_gc_t GC );

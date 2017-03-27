@@ -404,7 +404,7 @@ pcb_route_calculate(pcb_route_t * 	p_route,
 	}
 }
 
-void
+int
 pcb_route_apply(const pcb_route_t * p_route)
 {
 
@@ -465,7 +465,7 @@ pcb_route_apply(const pcb_route_t * p_route)
 				break;
 		}
 	}
-	
+	return applied;
 }
 
 /*=============================================================================
