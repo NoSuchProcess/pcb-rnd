@@ -5,8 +5,10 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "config.h"
 #include "wget_common.h"
+#include "compat_misc.h"
 
 enum {
 	FCTX_INVALID = 0,

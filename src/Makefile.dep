@@ -896,7 +896,7 @@
  ../src_3rd/genlist/gendlist.h plugins.h compat_misc.h
 ../src_plugins/fp_wget/wget_common.o: \
  ../src_plugins/fp_wget/wget_common.c ../config.h \
- ../src_plugins/fp_wget/wget_common.h
+ ../src_plugins/fp_wget/wget_common.h compat_misc.h
 ../src_plugins/hid_batch/batch.o: ../src_plugins/hid_batch/batch.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
