@@ -513,17 +513,17 @@ pcb_route_draw_arc(	pcb_hid_gc_t	GC,
 					pcb_coord_t		radius,
 					pcb_coord_t		thickness )
 {
-	double wid = thickness / 2;
+	double x1, y1, x2, y2, wid = thickness / 2;
 
 	if(delta < 0) {
 		start_angle += delta;
 		delta = -delta;
 	}
 
-	double x1 = x - (cos(PCB_M180 * start_angle) * radius);
-	double y1 = y + (sin(PCB_M180 * start_angle) * radius);
-	double x2 = x - (cos(PCB_M180 * (start_angle+delta)) * radius);
-	double y2 = y + (sin(PCB_M180 * (start_angle+delta)) * radius);
+	x1 = x - (cos(PCB_M180 * start_angle) * radius);
+	y1 = y + (sin(PCB_M180 * start_angle) * radius);
+	x2 = x - (cos(PCB_M180 * (start_angle+delta)) * radius);
+	y2 = y + (sin(PCB_M180 * (start_angle+delta)) * radius);
 
 	pcb_gui->draw_arc(GC, x, y, radius + wid, radius + wid, start_angle, delta);
 	if (wid > pcb_pixel_slop) {
@@ -570,10 +570,10 @@ void
 pcb_route_draw_drc( pcb_route_t * p_route,pcb_hid_gc_t GC )
 {
 	pcb_coord_t thickness = p_route->thickness + 2 * p_route->clearance;
+	int i;
 
 	pcb_gui->set_color(GC,conf_core.appearance.color.cross);
 
-	int i=0;
 	for(i=0;i<p_route->size;++i) {
 		const pcb_route_object_t * p_obj = &p_route->objects[i];
 
