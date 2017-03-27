@@ -32,6 +32,9 @@
 #include "find.h"
 #include "rtree.h"
 #include "route.h"
+#include "undo.h"
+#include "obj_line_draw.h"
+#include "obj_arc_draw.h"
 
 void
 pcb_route_init(pcb_route_t * p_route)
