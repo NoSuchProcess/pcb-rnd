@@ -1,0 +1,18 @@
+put /local/pcb/mod {io_hyp}
+
+append /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/io_hyp/io_hyp.o
+	$(PLUGDIR)/io_hyp/hyp_l.o
+	$(PLUGDIR)/io_hyp/hyp_y.o
+	$(PLUGDIR)/io_hyp/parser.o
+@]
+
+put /local/pcb/mod/YACC {$(PLUGDIR)/io_hyp/hyp_y}
+put /local/pcb/mod/LEX  {$(PLUGDIR)/io_hyp/hyp_l}
+
+
+switch /local/pcb/io_hyp/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

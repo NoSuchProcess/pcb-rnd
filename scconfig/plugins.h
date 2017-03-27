@@ -48,7 +48,7 @@ plugin_def("import_sch",      "import sch",                sbuildin, 1)
 plugin_def("import_edif",     "import edif",               sbuildin, 1)
 plugin_def("import_netlist",  "import netlist",            sbuildin, 1)
 plugin_def("import_dsn",      "specctra .dsn importer",    sbuildin, 1)
-plugin_def("import_hyp",      "hyperlynx .hyp importer",   sdisable, 0)
+
 plugin_def("import_mucs",     "import mucs routing",       sbuildin, 1)
 plugin_def("import_ltspice",  "import ltspice .net+.asc",  sbuildin, 1)
 plugin_def("import_tinycad",  "import tinycad .net",       sbuildin, 1)
@@ -80,6 +80,7 @@ plugin_def("io_pcb",          "the original pcb format",   sbuildin, 1)
 plugin_def("io_kicad_legacy", "Kicad's legacy format",     sbuildin, 1)
 plugin_def("io_kicad",        "Kicad's s-expr format",     sbuildin, 1)
 plugin_def("io_eagle",        "Eagle's xml format",        sdisable, 0)
+plugin_def("io_hyp",          "hyperlynx .hyp loader",     sdisable, 0)
 plugin_def("io_tedax",        "tEDAx (Trivial EDA eXchange)", sbuildin, 1)
 
 

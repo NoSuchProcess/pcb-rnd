@@ -4,7 +4,6 @@ include {../src_plugins/import_edif/Plug.tmpasm}
 include {../src_plugins/import_netlist/Plug.tmpasm}
 include {../src_plugins/import_sch/Plug.tmpasm}
 include {../src_plugins/import_dsn/Plug.tmpasm}
-include {../src_plugins/import_hyp/Plug.tmpasm}
 include {../src_plugins/import_mucs/Plug.tmpasm}
 include {../src_plugins/import_ltspice/Plug.tmpasm}
 include {../src_plugins/import_tinycad/Plug.tmpasm}
@@ -41,4 +40,5 @@ include {../src_plugins/io_pcb/Plug.tmpasm}
 include {../src_plugins/io_kicad_legacy/Plug.tmpasm}
 include {../src_plugins/io_kicad/Plug.tmpasm}
 include {../src_plugins/io_eagle/Plug.tmpasm}
+include {../src_plugins/io_hyp/Plug.tmpasm}
 include {../src_plugins/io_tedax/Plug.tmpasm}
