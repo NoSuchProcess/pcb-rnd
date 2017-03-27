@@ -36,7 +36,7 @@ static void tag_add_(const char *kv)
 		krill.tags_alloced += 16;
 		krill.tags = realloc(krill.tags, sizeof(void *) * krill.tags_alloced);
 	}
-	krill.tags[krill.tags_used] = kv == NULL ? NULL : pcb_fp_tag(kv, 1);
+	krill.tags[krill.tags_used] = (void *)(kv == NULL ? NULL : pcb_fp_tag(kv, 1));
 	krill.tags_used++;
 }
 
