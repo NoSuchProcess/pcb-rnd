@@ -237,7 +237,6 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 		pcb_r_insert_entry(data->rat_tree, (pcb_box_t *)line, 0);
 	}
 	PCB_END_LOOP;
-	return 0;
 }
 
 static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
