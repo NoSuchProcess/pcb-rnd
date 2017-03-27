@@ -806,8 +806,6 @@ void ghid_gl_drawing_area_configure_hook(void * port)
 	GHidPort *p = port;
 	render_priv_t *priv = p->render_priv;
 
-	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
-																 gport->view.canvas_width, gport->view.canvas_height, -1);
 	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {

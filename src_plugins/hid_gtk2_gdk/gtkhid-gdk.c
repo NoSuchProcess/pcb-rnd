@@ -1151,6 +1151,9 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
 
+	if (gport->pixmap)
+		gdk_pixmap_unref(gport->pixmap);
+
 	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
 																 gport->view.canvas_width, gport->view.canvas_height, -1);
 	priv->drawable = gport->pixmap;
