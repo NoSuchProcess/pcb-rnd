@@ -167,7 +167,6 @@ static void XORDrawArc(pcb_arc_t * arc)
 static void XORDrawAttachedArc(pcb_coord_t thick)
 {
 	pcb_arc_t arc;
-	pcb_box_t bx;
 	pcb_coord_t wx, wy;
 	pcb_angle_t sa, dir;
 
