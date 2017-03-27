@@ -409,7 +409,7 @@ int pcb_fp_rehash(pcb_fplibrary_t *l)
 		pcb_fp_free_children(&pcb_library);
 		return pcb_fp_read_lib_all();
 	}
-	if (l->type != PCB_FP_DIR)
+	if (l->type != LIB_DIR)
 		return -1;
 
 	be = l->data.dir.backend;

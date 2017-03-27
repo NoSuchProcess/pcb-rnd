@@ -606,7 +606,7 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 			return;
 		}
 
-		if ((int)entry->type != PCB_FP_DIR) {
+		if (entry->type != LIB_DIR) {
 			pcb_message(PCB_MSG_ERROR, "Library path is not a directory\n");
 			return;
 		}

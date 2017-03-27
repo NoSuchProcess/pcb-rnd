@@ -265,7 +265,7 @@ printf("LOAD: '%s'\n", path);
 	res = fp_fs_load_dir_(&pcb_library, ".", path, 1);
 	if (res >= 0) {
 		pcb_fplibrary_t *l = pcb_fp_lib_search(&pcb_library, path);
-		if ((l != NULL) && (l->type == PCB_FP_DIR))
+		if ((l != NULL) && (l->type == LIB_DIR))
 			l->data.dir.backend = ctx;
 	}
 	return res;
