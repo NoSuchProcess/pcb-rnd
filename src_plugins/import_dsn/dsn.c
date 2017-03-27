@@ -128,6 +128,7 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	const char *sy = c->next->str;
 	pcb_bool succ;
 	pcb_coord_t x, y, dia, drill;
+	long l1, l2;
 	const char *unit = (type == TYPE_PCB) ? "mm" : "nm";
 
 	if (strncmp(name, "via_", 4) != 0) {
@@ -136,10 +137,13 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	}
 
 	name += 4;
-	if (sscanf(name, "%ld_%ld", &dia, &drill) != 2) {
+	if (sscanf(name, "%ld_%ld", &l1, &l2) != 2) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (diameters): %s\n", name);
 		return;
 	}
+
+	dia = l1;
+	drill = l2;
 
 	x = pcb_get_value(sx, unit, NULL, &succ);
 	if (!succ) {
