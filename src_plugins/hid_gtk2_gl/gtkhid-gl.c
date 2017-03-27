@@ -806,6 +806,9 @@ void ghid_gl_drawing_area_configure_hook(void * port)
 	GHidPort *p = port;
 	render_priv_t *priv = p->render_priv;
 
+	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
+																 gport->view.canvas_width, gport->view.canvas_height, -1);
+
 	if (!done_once) {
 		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);

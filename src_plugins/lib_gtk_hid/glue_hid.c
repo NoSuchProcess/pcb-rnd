@@ -139,9 +139,6 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	if (gport->pixmap)
 		gdk_pixmap_unref(gport->pixmap);
 
-	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(widget), gport->view.canvas_width, gport->view.canvas_height, -1);
-	gport->drawable = gport->pixmap;
-
   ghid_drawing_area_configure_hook(out);
 	if (!first_time_done) {
 		first_time_done = TRUE;
