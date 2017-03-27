@@ -977,7 +977,6 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
-	GdkDrawable *save_drawable;
 	GtkAllocation allocation;
 	render_priv_t *priv = gport->render_priv;
 	pcb_gtk_view_t save_view;
@@ -987,7 +986,6 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
 
-	save_drawable = gport->drawable;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
@@ -1003,7 +1001,6 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	else
 		gport->view.coord_per_px = yz;
 
-	gport->drawable = window;
 	gport->view.canvas_width = allocation.width;
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
@@ -1069,7 +1066,6 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid
 	gport->render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
-	gport->drawable = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
