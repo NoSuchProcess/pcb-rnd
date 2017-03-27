@@ -9,8 +9,8 @@ void ghid_win32_init(void)
 	char *loader_cache;
 	FILE *loader_file;
 
-	tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
-#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE
+	tmps = g_win32_get_package_installation_directory(PCB_PACKAGE "-" PCB_VERSION, NULL);
+#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PCB_PACKAGE
 #define REST_OF_CACHE G_DIR_SEPARATOR_S "loaders.cache"
 	share_dir = (char *) malloc(strlen(tmps) + strlen(REST_OF_PATH) + 1);
 	sprintf(share_dir, "%s%s", tmps, REST_OF_PATH);

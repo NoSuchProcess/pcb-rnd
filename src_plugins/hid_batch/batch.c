@@ -117,7 +117,7 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 		interactive = 0;
 
 	if (interactive) {
-		printf("Entering %s version %s batch mode.\n", PACKAGE, VERSION);
+		printf("Entering %s version %s batch mode.\n", PCB_PACKAGE, PCB_VERSION);
 		printf("See http://repo.hu/projects/pcb-rnd for project information\n");
 	}
 

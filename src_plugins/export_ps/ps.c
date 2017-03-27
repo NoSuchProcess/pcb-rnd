@@ -472,7 +472,7 @@ void ps_start_file(FILE * f)
 	 * %%Creator DCS indicates the document creator, usually the name of
 	 * the document composition software.
 	 */
-	fprintf(f, "%%%%Creator: PCB release: pcb-rnd " VERSION "\n");
+	fprintf(f, "%%%%Creator: PCB release: pcb-rnd " PCB_VERSION "\n");
 
 	/*
 	 * %%Version DCS comment can be used to note the version and
@@ -492,7 +492,7 @@ void ps_start_file(FILE * f)
 	 * There is currently no code in PCB to manage this revision number.
 	 *
 	 */
-	fprintf(f, "%%%%Version: (PCB pcb-rnd " VERSION ") 0.0 0\n");
+	fprintf(f, "%%%%Version: (PCB pcb-rnd " PCB_VERSION ") 0.0 0\n");
 
 
 	/*

@@ -84,7 +84,7 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 #define HA_built 4
 
 	{"first_ver", "the version of pcb-rnd you first used on this board",
-	 HID_String, 0, 0, {0, VERSION, 0}, 0, 0},
+	 HID_String, 0, 0, {0, PCB_VERSION, 0}, 0, 0},
 #define HA_first_ver 5
 
 	{"license", "license of the design",
@@ -161,9 +161,9 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "		lht_built=%s\n", (stat_values[HA_lht_built].int_value ? "yes" : "no"));
 	fprintf(f, "		orig_rnd=%s\n", (stat_values[HA_orig].int_value ? "yes" : "no"));
 	fprintf(f, "		first_ver=%s\n", stat_values[HA_first_ver].str_value);
-	fprintf(f, "		curr_ver=%s\n", VERSION);
-#ifdef REVISION
-	fprintf(f, "		curr_rev=%s\n", REVISION);
+	fprintf(f, "		curr_ver=%s\n", PCB_VERSION);
+#ifdef PCB_REVISION
+	fprintf(f, "		curr_rev=%s\n", PCB_REVISION);
 #endif
 
 	fprintf(f, "	}\n");

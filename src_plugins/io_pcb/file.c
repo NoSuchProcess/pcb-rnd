@@ -207,7 +207,7 @@ static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char
 static void WritePCBInfoHeader(FILE * FP)
 {
 	/* write some useful comments */
-	fprintf(FP, "# release: pcb-rnd " VERSION "\n");
+	fprintf(FP, "# release: pcb-rnd " PCB_VERSION "\n");
 
 	/* avoid writing things like user name or date, as these cause merge
 	 * conflicts in collaborative environments using version control systems

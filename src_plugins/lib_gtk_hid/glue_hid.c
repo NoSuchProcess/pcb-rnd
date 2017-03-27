@@ -224,8 +224,8 @@ void gtkhid_parse_arguments(int *argc, char ***argv)
 #ifdef WIN32
 	char *tmps;
 	char *libdir;
-	tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
-#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE  G_DIR_SEPARATOR_S "pcblib"
+	tmps = g_win32_get_package_installation_directory(PCB_PACKAGE "-" PCB_VERSION, NULL);
+#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PCB_PACKAGE  G_DIR_SEPARATOR_S "pcblib"
 	libdir = (char *) malloc(strlen(tmps) + strlen(REST_OF_PATH) + 1);
 	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
 	free(tmps);
@@ -272,10 +272,10 @@ void gtkhid_parse_arguments(int *argc, char ***argv)
 
 #ifdef ENABLE_NLS
 #ifdef LOCALEDIR
-	bindtextdomain(PACKAGE, LOCALEDIR);
+	bindtextdomain(PCB_PACKAGE, LOCALEDIR);
 #endif
-	textdomain(PACKAGE);
-	bind_textdomain_codeset(PACKAGE, "UTF-8");
+	textdomain(PCB_PACKAGE);
+	bind_textdomain_codeset(PCB_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
 	ghidgui->topwin.com = &ghidgui->common;

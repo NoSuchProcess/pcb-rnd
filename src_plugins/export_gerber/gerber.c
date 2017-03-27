@@ -735,7 +735,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		}
 		/* Print a cute file header at the beginning of each file. */
 		fprintf(f, "G04 Title: %s, %s *\r\n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(group_name));
-		fprintf(f, "G04 Creator: pcb-rnd " VERSION " *\r\n");
+		fprintf(f, "G04 Creator: pcb-rnd " PCB_VERSION " *\r\n");
 		fprintf(f, "G04 CreationDate: %s *\r\n", utcTime);
 
 		/* ID the user. */

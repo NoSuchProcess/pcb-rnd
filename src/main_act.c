@@ -177,7 +177,7 @@ static const char pcb_acth_PrintVersion[] = "Print version.";
 
 int pcb_act_PrintVersion(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	printf("PCB version %s\n", VERSION);
+	printf("PCB version %s\n", PCB_VERSION);
 	return 0;
 }
 
@@ -195,7 +195,7 @@ int pcb_act_PrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n");
 	printf("                COPYRIGHT for %s (pcb-rnd) version %s:\n"
 				 "    pcb-rnd, a fork of PCB with random improvements\n"
-				 "    Copyright (C) 2013, 2014, 2015, 2016, 2017 Tibor 'Igor2' Palinkas\n\n", Progname, VERSION);
+				 "    Copyright (C) 2013, 2014, 2015, 2016, 2017 Tibor 'Igor2' Palinkas\n\n", Progname, PCB_VERSION);
 	printf("    This program is free software; you can redistribute it and/or modify\n"
 				 "    it under the terms of the GNU General Public License as published by\n"
 				 "    the Free Software Foundation; either version 2 of the License, or\n"

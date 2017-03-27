@@ -60,7 +60,7 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	};
 
 	gtk_about_dialog_set_program_name(about, "pcb-rnd");
-	gtk_about_dialog_set_version(about, VERSION);
+	gtk_about_dialog_set_version(about, PCB_VERSION);
 	gtk_about_dialog_set_authors(about, authors);
 
 	gtk_about_dialog_set_copyright(about, pcb_get_info_copyright());
