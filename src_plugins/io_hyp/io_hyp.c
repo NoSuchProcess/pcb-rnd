@@ -39,10 +39,6 @@
 #include "plugins.h"
 #include "event.h"
 #include "plug_io.h"
-
-#warning TODO: rename config.h VERSION to PCB_VERSION
-#undef VERSION
-
 #include "parser.h"
 #include "board.h"
 
