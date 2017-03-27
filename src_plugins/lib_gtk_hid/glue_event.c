@@ -29,7 +29,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	if (PCB != NULL)
 		ghidgui->common.window_set_name_label(PCB->Name);
 
-	if (!gport->pixmap)
+	if (!gport->drawing_allowed)
 		return;
 
 	if (ghidgui->topwin.route_style_selector) {

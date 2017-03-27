@@ -808,6 +808,7 @@ void ghid_gl_drawing_area_configure_hook(void * port)
 
 	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
 																 gport->view.canvas_width, gport->view.canvas_height, -1);
+	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {
 		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))

@@ -1154,6 +1154,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *port_)
 	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
 																 gport->view.canvas_width, gport->view.canvas_height, -1);
 	priv->drawable = gport->pixmap;
+	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {
 		priv->bg_gc = gdk_gc_new(priv->drawable);
