@@ -60,7 +60,6 @@ static void tag_add(const char *key, const char *val)
 
 static void krill_flush(pcb_plug_fp_t *ctx, gds_t *vpath, int base_len)
 {
-	int n;
 	if ((krill.fp) && (krill.fname != NULL)) {
 		char *end, *fn;
 		pcb_fplibrary_t *l;
@@ -163,7 +162,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	vpath_base_len = vpath.used;
 
 	while(fgets(line, sizeof(line), f) != NULL) {
-		char *end, *fn;
+		char *end;
 		if ((*line == '#') || (line[1] != ' '))
 			continue;
 
