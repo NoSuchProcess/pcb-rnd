@@ -66,7 +66,6 @@ struct GHidPort_s {
 	GtkWidget *top_window,				/* toplevel widget              */
 	 *drawing_area;								/* and its drawing area */
 	GdkPixmap *pixmap, *mask;
-	GdkDrawable *drawable;				/* Current drawable for drawing routines */
 
 	struct render_priv_s *render_priv;
 
