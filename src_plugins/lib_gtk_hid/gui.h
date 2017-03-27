@@ -66,7 +66,7 @@ struct GhidGui_s {
 struct GHidPort_s {
 	GtkWidget *top_window,				/* toplevel widget              */
 	 *drawing_area;								/* and its drawing area */
-	GdkPixmap *pixmap, *mask;
+
 	pcb_bool drawing_allowed;     /**< Track if a drawing area is available for rendering. */
 
 	struct render_priv_s *render_priv;
