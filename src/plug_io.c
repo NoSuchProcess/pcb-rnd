@@ -151,10 +151,10 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 			if ((available[n].plug->test_parse_pcb == NULL) || (available[n].plug->test_parse_pcb(available[n].plug, Ptr, Filename, ft))) {
 				accepts[n] = 1;
 				accept_total++;
-				rewind(ft);
 			}
 			else
 				accepts[n] = 0;
+			rewind(ft);
 		}
 	}
 	fclose(ft);
