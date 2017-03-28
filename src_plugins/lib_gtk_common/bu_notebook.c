@@ -31,12 +31,14 @@
 #include "bu_notebook.h"
 #include "bu_box.h"
 
+#include "compat.h"
+
 GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint border)
 {
 	GtkWidget *label;
 	GtkWidget *vbox;
 
-	vbox = gtk_vbox_new(FALSE, pad);
+	vbox = gtkc_vbox_new(FALSE, pad);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), border);
 
 	label = gtk_label_new(name);
