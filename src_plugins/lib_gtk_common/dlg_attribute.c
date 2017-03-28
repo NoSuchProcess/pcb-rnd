@@ -38,6 +38,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
+#include "compat.h"
 #include "wt_coord_entry.h"
 
 GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gint header_pad, gint box_pad,
@@ -118,7 +119,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
-	main_vbox = gtk_vbox_new(FALSE, 6);
+	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
 	gtk_container_add(GTK_CONTAINER(content_area), main_vbox);
 
@@ -142,7 +143,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 
 		case HID_Integer:
-			hbox = gtk_hbox_new(FALSE, 4);
+			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 			/*
@@ -160,7 +161,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 
 		case HID_Coord:
-			hbox = gtk_hbox_new(FALSE, 4);
+			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 			entry = pcb_gtk_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
@@ -176,7 +177,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 
 		case HID_Real:
-			hbox = gtk_hbox_new(FALSE, 4);
+			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 			/*
@@ -195,7 +196,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 
 		case HID_String:
-			hbox = gtk_hbox_new(FALSE, 4);
+			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 			entry = gtk_entry_new();
@@ -218,7 +219,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 
 		case HID_Enum:
-			hbox = gtk_hbox_new(FALSE, 4);
+			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 		do_enum:
@@ -243,7 +244,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 
 		case HID_Mixed:
-			hbox = gtk_hbox_new(FALSE, 4);
+			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 			/*
@@ -273,7 +274,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			unit_list = get_unit_list();
 			n = pcb_get_n_units();
 
-			hbox = gtk_hbox_new(FALSE, 4);
+			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 			combo = gtk_combo_box_new_text();
