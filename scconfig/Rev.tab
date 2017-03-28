@@ -1,3 +1,4 @@
+7998	configure	gtk GTK3 box compatibility
 7968	configure	clean up global namespace: rename VERSION, PACKAGE and REVISION
 7967	configure	rename import_hyp to io_hyp
 7954	configure	fp_wget configuration, edakrill integration
