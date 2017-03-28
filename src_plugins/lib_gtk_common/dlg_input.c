@@ -30,6 +30,7 @@
 #include "config.h"
 
 #include "dlg_input.h"
+#include "compat.h"
 
 /** ghid_dialog_input:
  *  Display a new GtkDialog to let user enter some data.
@@ -51,7 +52,7 @@ gchar *pcb_gtk_dlg_input(const char *prompt, const char *initial, GtkWindow * pa
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 	/* Change to gtkc_vbox_new here */
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtkc_vbox_new(FALSE, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
 	label = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
