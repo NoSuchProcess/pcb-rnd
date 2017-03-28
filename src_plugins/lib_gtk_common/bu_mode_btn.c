@@ -34,6 +34,7 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
+#include "compat.h"
 
 typedef struct {
 	GtkWidget *button;
@@ -149,7 +150,7 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 	mb->mode_toolbar = gtk_toolbar_new();
 
 	mb->mode_buttons_frame = gtk_frame_new(NULL);
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(mb->mode_buttons_frame), vbox);
 
 	for (i = 0; i < n_mode_buttons; ++i) {
@@ -171,7 +172,7 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 		if ((n_mb < 1) || (n_mb > 10))
 			n_mb = 3;
 		if ((i % n_mb) == 0) {
-			hbox = gtk_hbox_new(FALSE, 0);
+			hbox = gtkc_hbox_new(FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 		}
 		gtk_box_pack_start(GTK_BOX(hbox), MB->button, FALSE, FALSE, 0);
@@ -201,7 +202,7 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 		MB->toolbar_button_cb_id = g_signal_connect(MB->toolbar_button, "toggled", G_CALLBACK(mode_toolbar_button_toggled_cb), MB);
 	}
 
-	mb->mode_toolbar_vbox = gtk_vbox_new(FALSE, 0);
+	mb->mode_toolbar_vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mb->mode_toolbar_vbox), mb->mode_toolbar, FALSE, FALSE, 0);
 
 	/* Pack an empty, wide hbox right below the toolbar and make it as wide
@@ -209,8 +210,8 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 	   disappear if the container hbox is not wide enough. Without this hack
 	   the width would be determined by the menu bar, and that could be short
 	   if the user changes the menu layout. */
-	pad_hbox = gtk_hbox_new(FALSE, 0);
-	pad_vbox = gtk_hbox_new(FALSE, 0);
+	pad_hbox = gtkc_hbox_new(FALSE, 0);
+	pad_vbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(pad_hbox), pad_vbox, FALSE, FALSE, tb_width * 3 / 4);
 	gtk_box_pack_start(GTK_BOX(mb->mode_toolbar_vbox), pad_hbox, FALSE, FALSE, 0);
 }
