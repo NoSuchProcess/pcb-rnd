@@ -33,6 +33,7 @@
 #include "config.h"
 
 #include "bu_spin_button.h"
+#include "compat.h"
 
 void
 ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value,
@@ -45,7 +46,7 @@ ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value,
 	GtkAdjustment *adj;
 
 	if (string && box) {
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtkc_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 2);
 		box = hbox;
 	}
