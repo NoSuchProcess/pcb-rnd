@@ -40,6 +40,8 @@
 #include "wt_preview.h"
 #include "win_place.h"
 
+#include "compat.h"
+
 static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 {
 	gtk_widget_destroy(top_window);
@@ -62,7 +64,7 @@ void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_element_t *element)
 	gtk_window_set_wmclass(GTK_WINDOW(top_window), "PCB_Pinout", "PCB");
 	gtk_container_set_border_width(GTK_CONTAINER(top_window), 4);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(top_window), vbox);
 
 
