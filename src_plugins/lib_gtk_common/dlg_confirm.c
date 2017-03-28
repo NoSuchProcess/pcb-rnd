@@ -27,6 +27,8 @@
 #include "board.h"
 #include "hid_actions.h"
 
+#include "compat.h"
+
 #include "dlg_message.h"
 
 int pcb_gtk_dlg_confirm_open(GtkWidget *top_window, const char *msg, va_list ap)
