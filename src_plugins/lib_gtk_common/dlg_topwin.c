@@ -47,6 +47,7 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 
+#include "compat.h"
 #include "bu_box.h"
 #include "bu_status_line.h"
 #include "bu_layer_selector.h"
@@ -363,24 +364,24 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	GtkWidget *label;
 	GtkWidget *scrolled;
 
-	vbox_main = gtk_vbox_new(FALSE, 0);
+	vbox_main = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(tw->com->top_window), vbox_main);
 
 	/* -- Top control bar */
 	tw->top_bar_background = gtk_event_box_new();
 	gtk_box_pack_start(GTK_BOX(vbox_main), tw->top_bar_background, FALSE, FALSE, 0);
 
-	tw->top_hbox = gtk_hbox_new(FALSE, 0);
+	tw->top_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(tw->top_bar_background), tw->top_hbox);
 
 	/*
 	 * menu_hbox will be made insensitive when the gui needs
 	 * a modal button GetLocation button press.
 	 */
-	tw->menu_hbox = gtk_hbox_new(FALSE, 0);
+	tw->menu_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->top_hbox), tw->menu_hbox, FALSE, FALSE, 0);
 
-	tw->menubar_toolbar_vbox = gtk_vbox_new(FALSE, 0);
+	tw->menubar_toolbar_vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->menu_hbox), tw->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
 	/* Build layer menus */
@@ -396,12 +397,12 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	pcb_gtk_make_mode_buttons_and_toolbar(tw->com, &tw->mode_btn);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->mode_btn.mode_toolbar_vbox, FALSE, FALSE, 0);
 
-	tw->position_hbox = gtk_hbox_new(FALSE, 0);
+	tw->position_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
 
 	make_cursor_position_labels(tw->position_hbox, &tw->cps);
 
-	hbox_middle = gtk_hbox_new(FALSE, 0);
+	hbox_middle = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_middle, TRUE, TRUE, 0);
 
 	fix_topbar_theming(tw); /* Must be called after toolbar is created */
@@ -411,7 +412,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	 * This box will be made insensitive when the gui needs
 	 * a modal button GetLocation button press.
 	 */
-	tw->left_toolbar = gtk_vbox_new(FALSE, 0);
+	tw->left_toolbar = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->left_toolbar, FALSE, FALSE, 0);
 
 	vbox = ghid_scrolled_vbox(tw->left_toolbar, &scrolled, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -424,18 +425,18 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	frame = gtk_frame_new(NULL);
 	gtk_box_pack_end(GTK_BOX(tw->left_toolbar), frame, FALSE, FALSE, 0);
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
 	tw->route_style_selector = pcb_gtk_route_style_new(tw->com);
 	make_route_style_buttons(GHID_ROUTE_STYLE(tw->route_style_selector));
 	gtk_box_pack_start(GTK_BOX(hbox), tw->route_style_selector, FALSE, FALSE, 0);
 
-	tw->vbox_middle = gtk_vbox_new(FALSE, 0);
+	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->vbox_middle, TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
 
 	/* -- The PCB layout output drawing area */
@@ -469,7 +470,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	tw->h_adjustment = gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0);
 
-	hbox_scroll = gtk_hbox_new(FALSE, 0);
+	hbox_scroll = gtkc_hbox_new(FALSE, 0);
 	tw->h_range = gtk_hscrollbar_new(GTK_ADJUSTMENT(tw->h_adjustment));
 	fullscreen_btn = gtk_button_new_with_label("FS");
 	g_signal_connect(GTK_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL);
@@ -481,7 +482,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->h_adjustment), "value_changed", G_CALLBACK(h_adjustment_changed_cb), tw);
 
 	/* -- The bottom status line label */
-	tw->status_line_hbox = gtk_hbox_new(FALSE, 0);
+	tw->status_line_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), tw->status_line_hbox, FALSE, FALSE, 0);
 
 	label = pcb_gtk_status_line_label_new();
