@@ -36,7 +36,7 @@ typedef struct {
 	GtkWidget *vbox_middle;
 
 	GtkWidget *h_range, *v_range;
-	GtkObject *h_adjustment, *v_adjustment;
+	GObject *h_adjustment, *v_adjustment;
 
 	/* own internal states */
 	gchar *name_label_string;

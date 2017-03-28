@@ -459,7 +459,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	gtk_box_pack_start(GTK_BOX(hbox), tw->drawing_area, TRUE, TRUE, 0);
 
-	tw->v_adjustment = gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0);
+	tw->v_adjustment = G_OBJECT(gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0));
 	tw->v_range = gtk_vscrollbar_new(GTK_ADJUSTMENT(tw->v_adjustment));
 
 	gtk_box_pack_start(GTK_BOX(hbox), tw->v_range, FALSE, FALSE, 0);
@@ -468,7 +468,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	g_signal_connect(G_OBJECT(tw->v_adjustment), "value_changed", G_CALLBACK(v_adjustment_changed_cb), tw);
 
-	tw->h_adjustment = gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0);
+	tw->h_adjustment = G_OBJECT(gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0));
 
 	hbox_scroll = gtkc_hbox_new(FALSE, 0);
 	tw->h_range = gtk_hscrollbar_new(GTK_ADJUSTMENT(tw->h_adjustment));
