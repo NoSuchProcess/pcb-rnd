@@ -59,6 +59,8 @@
 #include "bu_box.h"
 #include "bu_check_button.h"
 
+#include "compat.h"
+
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 /** \file   dlg_netlist.c
@@ -649,10 +651,10 @@ static void ghid_netlist_window_create(pcb_gtk_common_t *com)
 
 	gtk_container_set_border_width(GTK_CONTAINER(netlist_window), 2);
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtkc_vbox_new(FALSE, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_container_add(GTK_CONTAINER(netlist_window), vbox);
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtkc_hbox_new(FALSE, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 4);
 
 
@@ -703,13 +705,13 @@ static void ghid_netlist_window_create(pcb_gtk_common_t *com)
 																			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC, node_selection_changed_cb, com);
 	node_selection = selection;
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Operations on selected 'Net Name':"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
 
 	button = gtk_button_new_with_label(_("Select"));
