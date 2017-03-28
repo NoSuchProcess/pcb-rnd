@@ -41,6 +41,8 @@
 #include "wt_coord_entry.h"
 #include "bu_box.h"
 
+#include "compat.h"
+
 typedef struct expr1_s expr1_t;
 
 struct expr1_s {
@@ -96,7 +98,7 @@ static void build_expr1(expr1_t * e, GtkWidget * parent_box)
 	gtk_widget_set_tooltip_text(e->content, "Edit search expression");
 	g_signal_connect(e->content, "clicked", G_CALLBACK(edit_expr_cb), e);
 
-	e->remove = gtk_vbox_new(FALSE, 0);
+	e->remove = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(parent_box), e->remove, FALSE, FALSE, 0);
 
 	e->remove_button = gtk_button_new_with_label("");
@@ -134,7 +136,7 @@ static expr1_t *append_row(GtkWidget *top_window)
 		gtk_box_pack_start(GTK_BOX(sdlg.wizard_vbox), e->and, FALSE, FALSE, 0);
 	}
 
-	e->hbox = gtk_hbox_new(FALSE, 0);
+	e->hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(sdlg.wizard_vbox), e->hbox, FALSE, FALSE, 0);
 
 	e->remove_row = gtk_button_new_with_label("");
@@ -150,7 +152,7 @@ static expr1_t *append_row(GtkWidget *top_window)
 	e->sig_append_col = g_signal_connect(e->append_col, "clicked", G_CALLBACK(new_col_cb), e);
 	gtk_widget_set_tooltip_text(e->append_col, "Append an expression to this row with OR");
 
-	e->spc = gtk_vbox_new(FALSE, 10);
+	e->spc = gtkc_vbox_new(FALSE, 10);
 	gtk_box_pack_start(GTK_BOX(e->hbox), e->spc, FALSE, FALSE, 10);
 
 	build_expr1(e, e->hbox);
@@ -695,11 +697,11 @@ static void expr_wizard_dialog(GtkWidget *top_window, expr1_t * e)
 																			 GTK_DIALOG_MODAL,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtkc_hbox_new(FALSE, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 
 	/* left */
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtkc_vbox_new(FALSE, 4);
 	expr_wizard_dlg.tr_left = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), -1, "variable", renderer, "text", 0,
@@ -715,7 +717,7 @@ static void expr_wizard_dialog(GtkWidget *top_window, expr1_t * e)
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);
 
 	/* operator */
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtkc_vbox_new(FALSE, 4);
 
 	expr_wizard_dlg.tr_op = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
@@ -726,7 +728,7 @@ static void expr_wizard_dialog(GtkWidget *top_window, expr1_t * e)
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 4);
 
 	/* right */
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtkc_vbox_new(FALSE, 4);
 
 	expr_wizard_dlg.tr_right = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
@@ -819,7 +821,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(sdlg.window));
 
-	vbox_win = gtk_vbox_new(FALSE, 4);
+	vbox_win = gtkc_vbox_new(FALSE, 4);
 	gtk_container_add(GTK_CONTAINER(content_area), vbox_win);
 
 	lab = gtk_label_new("Query expression:");
@@ -831,7 +833,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.expr, FALSE, FALSE, 0);
 
 	{
-		GtkWidget *hbox = gtk_hbox_new(FALSE, 4);
+		GtkWidget *hbox = gtkc_hbox_new(FALSE, 4);
 
 		sdlg.action = gtk_combo_box_new_text();
 		gtk_widget_set_tooltip_text(sdlg.action, "Do this with any object matching the query expression");
@@ -853,7 +855,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 /* */
 	vbox = ghid_framed_vbox(vbox_win, "wizard", 1, TRUE, 4, 10);
 
-	sdlg.wizard_vbox = gtk_vbox_new(FALSE, 6);
+	sdlg.wizard_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_vbox, TRUE, TRUE, 4);
 
 	sdlg.new_row = gtk_button_new_with_label("Add new row");
