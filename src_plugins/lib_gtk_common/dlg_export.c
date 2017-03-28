@@ -38,6 +38,7 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "compat.h"
 
 static GtkWidget *export_dialog = NULL;
 static GtkWidget *export_top_win = NULL;
@@ -68,7 +69,7 @@ void ghid_dialog_export(GtkWidget *top_window)
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(export_dialog));
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
