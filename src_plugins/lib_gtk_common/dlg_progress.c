@@ -26,6 +26,7 @@
 
 #include "pcb_bool.h"
 #include "compat_nls.h"
+#include "compat.h"
 
 struct progress_dialog {
 	GtkWidget *dialog;
@@ -92,7 +93,7 @@ static struct progress_dialog *make_progress_dialog(GtkWidget *top_window)
 	pd->progress = gtk_progress_bar_new();
 	gtk_widget_set_size_request(pd->progress, -1, 26);
 
-	vbox = gtk_vbox_new(pcb_false, 0);
+	vbox = gtkc_vbox_new(pcb_false, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), pd->message, pcb_true, pcb_true, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), pd->progress, pcb_false, pcb_true, 8);
 
