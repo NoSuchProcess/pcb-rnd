@@ -5,6 +5,8 @@
 #include "gtk_conf_list.h"
 #include "compat_misc.h"
 
+#include "../lib_gtk_common/compat.h"
+
 static void fill_misc_cols(gtk_conf_list_t *cl, int row_idx, GtkTreeIter *iter, lht_node_t *nd)
 {
 	int col;
@@ -265,7 +267,7 @@ GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)
 
 	cl->editing = 0;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
 	cl->t = gtk_tree_view_new();
 
 	/* create the list model */
@@ -301,7 +303,7 @@ GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)
 
 	gtk_tree_view_set_model(GTK_TREE_VIEW(cl->t), GTK_TREE_MODEL(cl->l));
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtkc_hbox_new(FALSE, 0);
 	bins = gtk_button_new_with_label("insert new");
 	bdel = gtk_button_new_with_label("remove");
 
