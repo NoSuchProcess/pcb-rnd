@@ -47,6 +47,7 @@
 #include "obj_poly_draw.h"
 #include "layer_vis.h"
 
+#include "compat.h"
 #include "util_str.h"
 #include "win_place.h"
 
@@ -734,7 +735,7 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	gtk_window_set_wmclass(GTK_WINDOW(drc_window), "PCB_DRC", "PCB");
 	gtk_window_set_default_size(GTK_WINDOW(drc_window), hid_gtk_wgeo.drc_width, hid_gtk_wgeo.drc_height);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(drc_window), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_box_set_spacing(GTK_BOX(vbox), 6);
