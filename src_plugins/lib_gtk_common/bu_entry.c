@@ -31,6 +31,8 @@
 #include "bu_entry.h"
 #include "conf_core.h"
 
+#include "compat.h"
+
 void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
 											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size,
 											const pcb_unit_t * u, gint width,
@@ -44,7 +46,7 @@ void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t val
 		u = conf_core.editor.grid_unit;
 
 	if ((string_pre || string_post) && box) {
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtkc_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 2);
 		box = hbox;
 	}
