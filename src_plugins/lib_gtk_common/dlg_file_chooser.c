@@ -34,6 +34,7 @@
 #include "compat_misc.h"
 
 #include "dlg_file_chooser.h"
+#include "compat.h"
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename.*/
@@ -232,9 +233,9 @@ gchar *ghid_dialog_file_select_save(GtkWidget *top_window, const gchar *title, g
 	/* Create and add the file format widget */
 	if (format != NULL) {
 		const char **s;
-		fmt = gtk_hbox_new(FALSE, 0);
+		fmt = gtkc_hbox_new(FALSE, 0);
 
-		tmp = gtk_vbox_new(FALSE, 0);
+		tmp = gtkc_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(fmt), tmp, TRUE, TRUE, 0);
 
 		tmp = gtk_label_new("File format: ");
