@@ -1,3 +1,29 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Alain Vigne
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Contact addresses for paper mail and Email:
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
+ *
+ */
+
 #include "config.h"
 #include "conf_core.h"
 
@@ -29,21 +55,30 @@ static int cur_mask = -1;
 static int mask_seq = 0;
 
 typedef struct render_priv_s {
-	GdkGC *bg_gc;
-	GdkGC *offlimits_gc;
-	GdkGC *mask_gc;
-	GdkGC *u_gc;
-	GdkGC *grid_gc;
+	GdkRGBA bg_color;											/**< cached back-ground color           */
+	GdkRGBA offlimits_color;							/**< cached external board color        */
+	GdkRGBA grid_color;										/**< cached grid color                  */
+
+	cairo_surface_t *cr_surf_window;			/**< The surface drawing in gport->drawing_area     */
+	cairo_t *cr;													/**< cairo context connected to \p cr_surf_window   */
+
+	//GdkPixmap *pixmap, *mask;
+
+	//GdkGC *bg_gc;
+	//GdkGC *offlimits_gc;
+	//GdkGC *mask_gc;
+	//GdkGC *u_gc;
+	//GdkGC *grid_gc;
 	pcb_bool clip;
 	GdkRectangle clip_rect;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
 } render_priv_t;
 
-
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
-	GdkGC *gc;
+	//cairo_t *cr;                  /**< cairo context */
+	//cairo_surface_t *surface;     /**< a surface */
 
 	gchar *colorname;
 	pcb_coord_t width;
@@ -52,41 +87,44 @@ typedef struct hid_gc_s {
 	gint mask_seq;
 } hid_gc_s;
 
-static void draw_lead_user(render_priv *priv_);
+static void draw_lead_user(render_priv_t * priv_);
 
-
-/* FIXME: could be more generic with a pcb_color_s structure depending on Toolkit :
- * GdkColor for GTK2
- * GdkRGBA  for GTK3
- */
-
-static const gchar *get_color_name(GdkColor * color)
+static const gchar *get_color_name(GdkRGBA * color)
 {
 	static char tmp[16];
 
 	if (!color)
 		return "#000000";
 
-	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
+	sprintf(tmp, "#%2.2x%2.2x%2.2x",
+					(int) (color->red * 255) & 0xff, (int) (color->green * 255) & 0xff, (int) (color->blue * 255) & 0xff);
 	return tmp;
 }
 
-static void map_color_string(const char *color_string, GdkColor * color)
+/** Returns TRUE if \p color_string has been successfully parsed to \p color. */
+static pcb_bool map_color_string(const char *color_string, GdkRGBA * color)
 {
-	static GdkColormap *colormap = NULL;
-	GHidPort *out = &ghid_port;
+	pcb_bool parsed;
 
-	if (!color || !out->top_window)
-		return;
-	if (colormap == NULL)
-		colormap = gtk_widget_get_colormap(out->top_window);
-	if (color->red || color->green || color->blue)
-		gdk_colormap_free_colors(colormap, color, 1);
-	gdk_color_parse(color_string, color);
-	gdk_color_alloc(colormap, color);
+	if (!color)
+		return FALSE;
+
+	parsed = gdk_rgba_parse(color, color_string);
+
+	return parsed;
 }
 
+static void cr_draw_line(cairo_t * cr, int fill, double x1, int y1, int x2, int y2)
+{
+	cairo_move_to(cr, x1, y1);
+	cairo_line_to(cr, x2, y2);
+	if (fill)
+		cairo_stroke(cr);
+	else
+		cairo_fill(cr);
+}
 
+/** TODO: Does this function have some specifics in cairo ?  or is it general ? */
 static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int idx = group;
@@ -102,12 +140,12 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 
 	/* non-virtual layers with special visibility */
 	switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_MASK:
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*&& !pinout */ )
-				return conf_core.editor.show_mask;
-			return 0;
-		case PCB_LYT_PASTE: /* Never draw the paste layer */
-			return 0;
+	case PCB_LYT_MASK:
+		if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*&& !pinout */ )
+			return conf_core.editor.show_mask;
+		return 0;
+	case PCB_LYT_PASTE:					/* Never draw the paste layer */
+		return 0;
 	}
 
 	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
@@ -138,8 +176,8 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 
 static void ghid_cairo_destroy_gc(pcb_hid_gc_t gc)
 {
-	if (gc->gc)
-		g_object_unref(gc->gc);
+	//if (gc->cr)
+	//  //g_object_unref(gc->gc);
 	if (gc->colorname != NULL)
 		g_free(gc->colorname);
 	g_free(gc);
@@ -155,20 +193,25 @@ static pcb_hid_gc_t ghid_cairo_make_gc(void)
 	return rv;
 }
 
-static void set_clip(render_priv * priv, GdkGC * gc)
+static void set_clip(render_priv_t * priv, cairo_t * cr)
 {
-	if (gc == NULL)
+	if (cr == NULL)
 		return;
 
-	if (priv->clip)
-		gdk_gc_set_clip_rectangle(gc, &priv->clip_rect);
-	else
-		gdk_gc_set_clip_mask(gc, NULL);
+	if (priv->clip) {
+		gdk_cairo_rectangle(cr, &priv->clip_rect);
+		cairo_clip(cr);
+	}
+	else {
+		/*FIXME: do nothing if no clipping ? */
+		//cairo_mask(cr, NULL);
+		//gdk_gc_set_clip_mask(gc, NULL);
+	}
 }
 
 static inline void ghid_cairo_draw_grid_global(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	pcb_coord_t x, y, x1, y1, x2, y2, grd;
 	int n, i;
 	static GdkPoint *points = NULL;
@@ -176,11 +219,11 @@ static inline void ghid_cairo_draw_grid_global(void)
 
 	x1 = pcb_grid_fit(MAX(0, SIDE_X(gport->view.x0)), PCB->Grid, PCB->GridOffsetX);
 	y1 = pcb_grid_fit(MAX(0, SIDE_Y(gport->view.y0)), PCB->Grid, PCB->GridOffsetY);
-	x2 = pcb_grid_fit(MIN(PCB->MaxWidth,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->Grid, PCB->GridOffsetX);
+	x2 = pcb_grid_fit(MIN(PCB->MaxWidth, SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->Grid, PCB->GridOffsetX);
 	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->Grid, PCB->GridOffsetY);
 
 	grd = PCB->Grid;
-	
+
 	if (Vz(grd) < conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px) {
 		if (!conf_hid_gtk.plugins.hid_gtk.global_grid.sparse)
 			return;
@@ -222,13 +265,26 @@ static inline void ghid_cairo_draw_grid_global(void)
 	for (y = y1; y <= y2; y += grd) {
 		for (i = 0; i < n; i++)
 			points[i].y = Vy(y);
-		gdk_draw_points(gport->drawable, priv->grid_gc, points, n);
+
+		/*FIXME: problem: draw n points ... Efficiency ? */
+		//gdk_draw_points(gport->drawable, priv->grid_gc, points, n);
+//    cairo_move_to (cr, x, y);
+//    cairo_line_to (cr, x, y);
+//    /* repeat for each point */
+//
+//    cairo_stroke (cr);
+//
+//  Within the implementation (and test suite) we call these "degenerate"
+//  paths and we explicitly support drawing round caps for such degenerate
+//  paths. So this should work perfectly for the case of
+//  CAIRO_LINE_CAP_ROUND and you'll get the diameter controlled by
+//  cairo_set_line_width just like you want.
 	}
 }
 
 static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
 	static int apoints = 0, npoints = 0, old_radius = 0;
@@ -242,7 +298,7 @@ static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radi
 	if (n > apoints) {
 		apoints = n;
 		points_base = (GdkPoint *) realloc(points_base, apoints * sizeof(GdkPoint));
-		points_abs  = (GdkPoint *) realloc(points_abs,  apoints * sizeof(GdkPoint));
+		points_abs = (GdkPoint *) realloc(points_abs, apoints * sizeof(GdkPoint));
 	}
 
 	if (radius != old_radius) {
@@ -255,16 +311,16 @@ static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radi
 		recalc = 1;
 	}
 
-	/* reclaculate the 'filled circle' mask (base relative coords) if grid or radius changed */
+	/* recaculate the 'filled circle' mask (base relative coords) if grid or radius changed */
 	if (recalc) {
 
 		npoints = 0;
-		for(y = -radius; y <= radius; y++) {
-			int y2 = y*y;
-			for(x = -radius; x <= radius; x++) {
-				if (x*x + y2 < r2) {
-					points_base[npoints].x = x*PCB->Grid;
-					points_base[npoints].y = y*PCB->Grid;
+		for (y = -radius; y <= radius; y++) {
+			int y2 = y * y;
+			for (x = -radius; x <= radius; x++) {
+				if (x * x + y2 < r2) {
+					points_base[npoints].x = x * PCB->Grid;
+					points_base[npoints].y = y * PCB->Grid;
 					npoints++;
 				}
 			}
@@ -272,14 +328,13 @@ static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radi
 	}
 
 	/* calculate absolute positions */
-	for(n = 0; n < npoints; n++) {
+	for (n = 0; n < npoints; n++) {
 		points_abs[n].x = Vx(points_base[n].x + cx);
 		points_abs[n].y = Vy(points_base[n].y + cy);
 	}
 
-	gdk_draw_points(gport->drawable, priv->grid_gc, points_abs, npoints);
+	//gdk_draw_points(gport->drawable, priv->grid_gc, points_abs, npoints);
 }
-
 
 static int grid_local_have_old = 0, grid_local_old_r = 0;
 static pcb_coord_t grid_local_old_x, grid_local_old_y;
@@ -310,31 +365,30 @@ static void ghid_cairo_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 
 static void ghid_cairo_draw_grid(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	grid_local_have_old = 0;
 
 	if (!conf_core.editor.draw_grid)
 		return;
-	if (!priv->grid_gc) {
-		if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
-			gport->grid_color.red ^= gport->bg_color.red;
-			gport->grid_color.green ^= gport->bg_color.green;
-			gport->grid_color.blue ^= gport->bg_color.blue;
-			gdk_color_alloc(gport->colormap, &gport->grid_color);
-		}
-		priv->grid_gc = gdk_gc_new(gport->drawable);
-		gdk_gc_set_function(priv->grid_gc, GDK_XOR);
-		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
-		gdk_gc_set_clip_origin(priv->grid_gc, 0, 0);
-		set_clip(priv, priv->grid_gc);
-	}
+	//if (!priv->grid_gc) {
+	//  if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
+	//    gport->grid_color.red ^= gport->bg_color.red;
+	//    gport->grid_color.green ^= gport->bg_color.green;
+	//    gport->grid_color.blue ^= gport->bg_color.blue;
+	//    gdk_color_alloc(gport->colormap, &gport->grid_color);
+	//  }
+	//  priv->grid_gc = gdk_gc_new(gport->drawable);
+	//  gdk_gc_set_function(priv->grid_gc, GDK_XOR);
+	//  gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
+	//  gdk_gc_set_clip_origin(priv->grid_gc, 0, 0);
+	//  set_clip(priv, priv->grid_gc);
+	//}
 
 	if (conf_hid_gtk.plugins.hid_gtk.local_grid.enable) {
 		ghid_cairo_draw_grid_local(grid_local_old_x, grid_local_old_y);
 		return;
 	}
-
 
 	ghid_cairo_draw_grid_global();
 }
@@ -346,7 +400,7 @@ static void ghid_cairo_draw_bg_image(void)
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
 	static gint w_scaled, h_scaled;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	if (!ghidgui->bg_pixbuf)
 		return;
@@ -388,8 +442,8 @@ static void ghid_cairo_draw_bg_image(void)
 		h_scaled = h;
 	}
 
-	if (pixbuf)
-		gdk_pixbuf_render_to_drawable(pixbuf, gport->drawable, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+	if (pixbuf);									//gdk_pixbuf_render_to_drawable(pixbuf, gport->drawable, priv->bg_gc,
+	//                              src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
 #define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
@@ -398,15 +452,13 @@ static void ghid_cairo_use_mask(int use_it)
 {
 	static int mask_seq_id = 0;
 	GdkColor color;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
-	if (!gport->pixmap)
-		return;
 	if (use_it == cur_mask)
 		return;
 	switch (use_it) {
 	case HID_MASK_OFF:
-		gport->drawable = gport->pixmap;
+		//gport->drawable = gport->pixmap;
 		mask_seq = 0;
 		break;
 
@@ -415,20 +467,20 @@ static void ghid_cairo_use_mask(int use_it)
 		g_return_if_reached();
 
 	case HID_MASK_CLEAR:
-		if (!gport->mask)
-			gport->mask = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
-		gport->drawable = gport->mask;
+		//if (!gport->mask)
+		//  gport->mask = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
+		//gport->drawable = gport->mask;
 		mask_seq = 0;
-		if (!priv->mask_gc) {
-			priv->mask_gc = gdk_gc_new(gport->drawable);
-			gdk_gc_set_clip_origin(priv->mask_gc, 0, 0);
-			set_clip(priv, priv->mask_gc);
-		}
+		//if (!priv->mask_gc) {
+		//  priv->mask_gc = gdk_gc_new(gport->drawable);
+		//  gdk_gc_set_clip_origin(priv->mask_gc, 0, 0);
+		//  set_clip(priv, priv->mask_gc);
+		//}
 		color.pixel = 1;
-		gdk_gc_set_foreground(priv->mask_gc, &color);
-		gdk_draw_rectangle(gport->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+		//gdk_gc_set_foreground(priv->mask_gc, &color);
+		//gdk_draw_rectangle(gport->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 		color.pixel = 0;
-		gdk_gc_set_foreground(priv->mask_gc, &color);
+		//gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
 
 	case HID_MASK_AFTER:
@@ -437,7 +489,7 @@ static void ghid_cairo_use_mask(int use_it)
 			mask_seq_id = 1;
 		mask_seq = mask_seq_id;
 
-		gport->drawable = gport->pixmap;
+		//gport->drawable = gport->pixmap;
 		break;
 
 	}
@@ -453,44 +505,51 @@ typedef struct {
 } ColorCache;
 
 
-	/* Config helper functions for when the user changes color preferences.
-	   |  set_special colors used in the gtkhid.
-	 */
-static void set_special_grid_color(void)
+/*  Config helper functions for when the user changes color preferences.
+    set_special colors used in the gtkhid.
+ */
+//static void set_special_grid_color(void)
+//{
+//  render_priv_t *priv = gport->render_priv;
+//  int red, green, blue;
+//
+//  //if (!gport->colormap)
+//  //  return;
+//
+//  red = priv->grid_color.red;
+//  green = priv->grid_color.green;
+//  blue = priv->grid_color.blue;
+//  conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
+//  map_color_string(conf_core.appearance.color.grid, &priv->grid_color);
+//
+//  config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
+//
+//  //if (priv->grid_gc)
+//  //  gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
+//}
+
+static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 {
-	render_priv *priv = gport->render_priv;
-	int red, green, blue;
+	render_priv_t *priv = gport->render_priv;
 
-	if (!gport->colormap)
-		return;
-
-	red = (gport->grid_color.red ^ gport->bg_color.red) & 0xFF;
-	green = (gport->grid_color.green ^ gport->bg_color.green) & 0xFF;
-	blue = (gport->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
-	conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
-	map_color_string(conf_core.appearance.color.grid, &gport->grid_color);
-
-	config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
-
-	if (priv->grid_gc)
-		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
-}
-
-static void ghid_cairo_set_special_colors(conf_native_t *cfg)
-{
-	render_priv *priv = gport->render_priv;
-	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
-		map_color_string(cfg->val.color[0], &gport->bg_color);
-		gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
-		set_special_grid_color();
+	if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.background) /*&& priv->bg_gc */ ) {
+		if (map_color_string(cfg->val.color[0], &priv->bg_color)) {
+			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/background"), -1);
+			//gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
+			//set_special_grid_color();
+		}
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
-		map_color_string(cfg->val.color[0], &gport->offlimits_color);
-		gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
+	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.off_limit) /*&& priv->offlimits_gc */ ) {
+		if (map_color_string(cfg->val.color[0], &priv->offlimits_color)) {
+			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
+			//gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
+		}
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
-		map_color_string(cfg->val.color[0], &gport->grid_color);
-		set_special_grid_color();
+	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.grid) /*&& priv->grid_gc */ ) {
+		if (map_color_string(cfg->val.color[0], &priv->grid_color)) {
+			conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "%s", get_color_name(&priv->grid_color));
+			//set_special_grid_color();
+		}
 	}
 }
 
@@ -510,16 +569,16 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->colorname = g_strdup(name);
 	}
 
-	if (!gc->gc)
-		return;
-	if (gport->colormap == 0)
-		gport->colormap = gtk_widget_get_colormap(gport->top_window);
+	//if (!gc->gc)
+	//  return;
+	//if (gport->colormap == 0)
+	//  gport->colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (strcmp(name, "erase") == 0) {
-		gdk_gc_set_foreground(gc->gc, &gport->bg_color);
+		;														//gdk_gc_set_foreground(gc->gc, &gport->bg_color);
 	}
 	else if (strcmp(name, "drill") == 0) {
-		gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);
+		;														//gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);
 	}
 	else {
 		ColorCache *cc;
@@ -533,69 +592,67 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 		}
 
 		if (!cc->color_set) {
-			if (gdk_color_parse(name, &cc->color))
-				gdk_color_alloc(gport->colormap, &cc->color);
-			else
-				gdk_color_white(gport->colormap, &cc->color);
+			if (gdk_color_parse(name, &cc->color));	//gdk_color_alloc(gport->colormap, &cc->color);
+			else;											//gdk_color_white(gport->colormap, &cc->color);
 			cc->color_set = 1;
 		}
-		if (gc->xor_mask) {
-			if (!cc->xor_set) {
-				cc->xor_color.red = cc->color.red ^ gport->bg_color.red;
-				cc->xor_color.green = cc->color.green ^ gport->bg_color.green;
-				cc->xor_color.blue = cc->color.blue ^ gport->bg_color.blue;
-				gdk_color_alloc(gport->colormap, &cc->xor_color);
-				cc->xor_set = 1;
-			}
-			gdk_gc_set_foreground(gc->gc, &cc->xor_color);
-		}
-		else {
-			gdk_gc_set_foreground(gc->gc, &cc->color);
-		}
+		//if (gc->xor_mask) {
+		//  if (!cc->xor_set) {
+		//    cc->xor_color.red = cc->color.red ^ gport->bg_color.red;
+		//    cc->xor_color.green = cc->color.green ^ gport->bg_color.green;
+		//    cc->xor_color.blue = cc->color.blue ^ gport->bg_color.blue;
+		//    gdk_color_alloc(gport->colormap, &cc->xor_color);
+		//    cc->xor_set = 1;
+		//  }
+		//  gdk_gc_set_foreground(gc->gc, &cc->xor_color);
+		//}
+		//else {
+		//  gdk_gc_set_foreground(gc->gc, &cc->color);
+		//}
 	}
 }
 
 static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	switch (style) {
 	case Trace_Cap:
 	case Round_Cap:
-		gc->cap = GDK_CAP_ROUND;
-		gc->join = GDK_JOIN_ROUND;
+		//gc->cap = GDK_CAP_ROUND;
+		//gc->join = GDK_JOIN_ROUND;
 		break;
 	case Square_Cap:
 	case Beveled_Cap:
-		gc->cap = GDK_CAP_PROJECTING;
-		gc->join = GDK_JOIN_MITER;
+		//gc->cap = GDK_CAP_PROJECTING;
+		//gc->join = GDK_JOIN_MITER;
 		break;
 	}
-	if (gc->gc)
-		gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+	//if (gc->gc)
+	//  gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
 static void ghid_cairo_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
-	gc->width = width;
-	if (gc->gc)
-		gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+	//gc->width = width;
+	//if (gc->gc)
+	//  gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
 static void ghid_cairo_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 {
-	gc->xor_mask = xor_mask;
-	if (!gc->gc)
-		return;
-	gdk_gc_set_function(gc->gc, xor_mask ? GDK_XOR : GDK_COPY);
-	ghid_cairo_set_color(gc, gc->colorname);
+	//gc->xor_mask = xor_mask;
+	//if (!gc->gc)
+	//  return;
+	//gdk_gc_set_function(gc->gc, xor_mask ? GDK_XOR : GDK_COPY);
+	//ghid_cairo_set_color(gc, gc->colorname);
 }
 
 static int use_gc(pcb_hid_gc_t gc)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
 
 	if (gc->me_pointer != &gtk3_cairo_hid) {
@@ -603,49 +660,52 @@ static int use_gc(pcb_hid_gc_t gc)
 		abort();
 	}
 
-	if (!gport->pixmap)
-		return 0;
-	if (!gc->gc) {
-		gc->gc = gdk_gc_new(window);
-		ghid_cairo_set_color(gc, gc->colorname);
-		ghid_cairo_set_line_width(gc, gc->width);
-		ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
-		ghid_cairo_set_draw_xor(gc, gc->xor_mask);
-		gdk_gc_set_clip_origin(gc->gc, 0, 0);
-	}
-	if (gc->mask_seq != mask_seq) {
-		if (mask_seq)
-			gdk_gc_set_clip_mask(gc->gc, gport->mask);
-		else
-			set_clip(priv, gc->gc);
-		gc->mask_seq = mask_seq;
-	}
-	priv->u_gc = WHICH_GC(gc);
+	//if (!gport->pixmap)
+	//  return 0;
+	//if (!gc->gc) {
+	//  gc->gc = gdk_gc_new(window);
+	//  ghid_cairo_set_color(gc, gc->colorname);
+	//  ghid_cairo_set_line_width(gc, gc->width);
+	//  ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
+	//  ghid_cairo_set_draw_xor(gc, gc->xor_mask);
+	//  gdk_gc_set_clip_origin(gc->gc, 0, 0);
+	//}
+	//if (gc->mask_seq != mask_seq) {
+	//  if (mask_seq)
+	//    gdk_gc_set_clip_mask(gc->gc, gport->mask);
+	//  else
+	//    set_clip(priv, gc->gc);
+	//  gc->mask_seq = mask_seq;
+	//}
+	//priv->u_gc = WHICH_GC(gc);
 	return 1;
 }
 
 static void ghid_cairo_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	dx1 = Vx((double) x1);
 	dy1 = Vy((double) y1);
 	dx2 = Vx((double) x2);
 	dy2 = Vy((double) y2);
 
-	if (!pcb_line_clip(0, 0, gport->view.canvas_width, gport->view.canvas_height, &dx1, &dy1, &dx2, &dy2, gc->width / gport->view.coord_per_px))
+	if (!pcb_line_clip
+			(0, 0, gport->view.canvas_width, gport->view.canvas_height, &dx1, &dy1, &dx2, &dy2, gc->width / gport->view.coord_per_px))
 		return;
 
 	USE_GC(gc);
-	gdk_draw_line(gport->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
+	cr_draw_line(priv->cr, FALSE, dx1, dy1, dx2, dy2);
+	//gdk_draw_line(gport->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
 }
 
-static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
+																pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	gint vrx2, vry2;
 	double w, h, radius;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -656,8 +716,8 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 		return;
 
 	USE_GC(gc);
-	vrx2 = Vz(xradius*2.0);
-	vry2 = Vz(yradius*2.0);
+	vrx2 = Vz(xradius * 2.0);
+	vry2 = Vz(yradius * 2.0);
 
 	if ((delta_angle > 360.0) || (delta_angle < -360.0)) {
 		start_angle = 0;
@@ -677,16 +737,15 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	if (start_angle >= 180)
 		start_angle -= 360;
 
-	gdk_draw_arc(gport->drawable, priv->u_gc, 0,
-							 pcb_round(Vxd(cx) - Vzd(xradius) + 0.5), pcb_round(Vyd(cy) - Vzd(yradius) + 0.5),
-							 pcb_round(vrx2), pcb_round(vry2),
-							 (start_angle + 180) * 64, delta_angle * 64);
+	//gdk_draw_arc(gport->drawable, priv->u_gc, 0,
+	//             pcb_round(Vxd(cx) - Vzd(xradius) + 0.5), pcb_round(Vyd(cy) - Vzd(yradius) + 0.5),
+	//             pcb_round(vrx2), pcb_round(vry2), (start_angle + 180) * 64, delta_angle * 64);
 }
 
 static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -715,14 +774,15 @@ static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 	}
 
 	USE_GC(gc);
-	gdk_draw_rectangle(gport->drawable, priv->u_gc, FALSE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+	cairo_rectangle(priv->cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+	cairo_stroke(priv->cr);
+	//gdk_draw_rectangle(gport->drawable, priv->u_gc, FALSE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
-
 
 static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	gint w, h, vr;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -733,7 +793,7 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 
 	USE_GC(gc);
 	vr = Vz(radius);
-	gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
+	//gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
 static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
@@ -741,7 +801,7 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	USE_GC(gc);
 
 	if (npoints < n_coords) {
@@ -752,13 +812,14 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 		points[i].x = Vx(x[i]);
 		points[i].y = Vy(y[i]);
 	}
-	gdk_draw_polygon(gport->drawable, priv->u_gc, 1, points, n_coords);
+	//gdk_draw_polygon(gport->drawable, priv->u_gc, 1, points, n_coords);
 }
 
+/** TODO: Refactor with ghid_cairo_draw_rect() ? common part, fill as an extra parameter ? */
 static void ghid_cairo_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw, xx, yy;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -785,17 +846,19 @@ static void ghid_cairo_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 		y2 = yy;
 	}
 	USE_GC(gc);
-	gdk_draw_rectangle(gport->drawable, priv->u_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+	cairo_rectangle(priv->cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+	cairo_fill(priv->cr);
+	//gdk_draw_rectangle(gport->drawable, priv->u_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 static void redraw_region(GdkRectangle * rect)
 {
 	int eleft, eright, etop, ebottom;
 	pcb_hid_expose_ctx_t ctx;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
-	if (!gport->pixmap)
-		return;
+	//if (!gport->pixmap)
+	//  return;
 
 	if (rect != NULL) {
 		priv->clip_rect = *rect;
@@ -809,10 +872,10 @@ static void redraw_region(GdkRectangle * rect)
 		priv->clip = pcb_false;
 	}
 
-	set_clip(priv, priv->bg_gc);
-	set_clip(priv, priv->offlimits_gc);
-	set_clip(priv, priv->mask_gc);
-	set_clip(priv, priv->grid_gc);
+	//set_clip(priv, priv->bg_gc);
+	//set_clip(priv, priv->offlimits_gc);
+	//set_clip(priv, priv->mask_gc);
+	//set_clip(priv, priv->grid_gc);
 
 	ctx.view.X1 = MIN(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
 	ctx.view.Y1 = MIN(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
@@ -823,7 +886,7 @@ static void redraw_region(GdkRectangle * rect)
 	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
 	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
-	
+
 	ctx.force = 0;
 	ctx.content.elem = NULL;
 
@@ -842,24 +905,22 @@ static void redraw_region(GdkRectangle * rect)
 		ebottom = tmp;
 	}
 
-	if (eleft > 0)
-		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, 0, 0, eleft, gport->view.canvas_height);
+	if (eleft > 0);								//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, 0, 0, eleft, gport->view.canvas_height);
 	else
 		eleft = 0;
-	if (eright < gport->view.canvas_width)
-		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eright, 0, gport->view.canvas_width - eright, gport->view.canvas_height);
+	if (eright < gport->view.canvas_width);	//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eright, 0, gport->view.canvas_width - eright,
+	//                   gport->view.canvas_height);
 	else
 		eright = gport->view.canvas_width;
-	if (etop > 0)
-		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, 0, eright - eleft + 1, etop);
+	if (etop > 0);								//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, 0, eright - eleft + 1, etop);
 	else
 		etop = 0;
-	if (ebottom < gport->view.canvas_height)
-		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, ebottom, eright - eleft + 1, gport->view.canvas_height - ebottom);
+	if (ebottom < gport->view.canvas_height);	//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, ebottom, eright - eleft + 1,
+	//                   gport->view.canvas_height - ebottom);
 	else
 		ebottom = gport->view.canvas_height;
 
-	gdk_draw_rectangle(gport->drawable, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
+	//gdk_draw_rectangle(gport->drawable, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
 
 	ghid_cairo_draw_bg_image();
 
@@ -879,7 +940,7 @@ static void redraw_region(GdkRectangle * rect)
 	priv->clip = pcb_false;
 
 	/* Rest the clip for bg_gc, as it is used outside this function */
-	gdk_gc_set_clip_mask(priv->bg_gc, NULL);
+	//gdk_gc_set_clip_mask(priv->bg_gc, NULL);
 }
 
 static void ghid_cairo_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
@@ -907,7 +968,6 @@ static void ghid_cairo_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_co
 	ghid_cairo_screen_update();
 }
 
-
 static void ghid_cairo_invalidate_all()
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
@@ -918,7 +978,7 @@ static void ghid_cairo_invalidate_all()
 
 static void ghid_cairo_notify_crosshair_change(pcb_bool changes_complete)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -930,9 +990,9 @@ static void ghid_cairo_notify_crosshair_change(pcb_bool changes_complete)
 	if (priv->attached_invalidate_depth < 0) {
 		priv->attached_invalidate_depth = 0;
 		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
-		 * is not expected to occur, but we will try to handle it gracefully.
-		 * As we know the crosshair will have been shown already, we must
-		 * repaint the entire view to be sure not to leave an artaefact.
+		   is not expected to occur, but we will try to handle it gracefully.
+		   As we know the crosshair will have been shown already, we must
+		   repaint the entire view to be sure not to leave an artefact.
 		 */
 		ghid_cairo_invalidate_all();
 		return;
@@ -952,7 +1012,7 @@ static void ghid_cairo_notify_crosshair_change(pcb_bool changes_complete)
 
 static void ghid_cairo_notify_mark_change(pcb_bool changes_complete)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -964,9 +1024,9 @@ static void ghid_cairo_notify_mark_change(pcb_bool changes_complete)
 	if (priv->mark_invalidate_depth < 0) {
 		priv->mark_invalidate_depth = 0;
 		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
-		 * is not expected to occur, but we will try to handle it gracefully.
-		 * As we know the mark will have been shown already, we must
-		 * repaint the entire view to be sure not to leave an artaefact.
+		   is not expected to occur, but we will try to handle it gracefully.
+		   As we know the mark will have been shown already, we must
+		   repaint the entire view to be sure not to leave an artefact.
 		 */
 		ghid_cairo_invalidate_all();
 		return;
@@ -984,15 +1044,17 @@ static void ghid_cairo_notify_mark_change(pcb_bool changes_complete)
 	}
 }
 
-static void draw_right_cross(GdkGC * xor_gc, gint x, gint y)
+static void draw_right_cross(cairo_t * xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
-	gdk_draw_line(window, xor_gc, x, 0, x, gport->view.canvas_height);
-	gdk_draw_line(window, xor_gc, 0, y, gport->view.canvas_width, y);
+	cr_draw_line(gport->render_priv->cr, FALSE, x, 0, x, gport->view.canvas_height);
+	cr_draw_line(gport->render_priv->cr, FALSE, 0, y, gport->view.canvas_width, y);
+	//gdk_draw_line(window, xor_gc, x, 0, x, gport->view.canvas_height);
+	//gdk_draw_line(window, xor_gc, 0, y, gport->view.canvas_width, y);
 }
 
-static void draw_slanted_cross(GdkGC * xor_gc, gint x, gint y)
+static void draw_slanted_cross(cairo_t * xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	gint x0, y0, x1, y1;
@@ -1005,7 +1067,8 @@ static void draw_slanted_cross(GdkGC * xor_gc, gint x, gint y)
 	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - x;
 	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
+	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
 	x0 = x - (gport->view.canvas_height - y);
 	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
@@ -1015,10 +1078,11 @@ static void draw_slanted_cross(GdkGC * xor_gc, gint x, gint y)
 	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - (gport->view.canvas_width - x);
 	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
+	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 }
 
-static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
+static void draw_dozen_cross(cairo_t * xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	gint x0, y0, x1, y1;
@@ -1032,7 +1096,8 @@ static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
 	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - x * tan60;
 	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
+	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
 	x0 = x + (gport->view.canvas_height - y) * tan60;
 	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
@@ -1042,7 +1107,8 @@ static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
 	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - x / tan60;
 	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
+	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
 	x0 = x - (gport->view.canvas_height - y) / tan60;
 	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
@@ -1052,7 +1118,8 @@ static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
 	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - (gport->view.canvas_width - x) * tan60;
 	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
+	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
 	x0 = x - (gport->view.canvas_height - y) * tan60;
 	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
@@ -1062,10 +1129,11 @@ static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
 	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - (gport->view.canvas_width - x) / tan60;
 	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
+	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 }
 
-static void draw_crosshair(GdkGC * xor_gc, gint x, gint y)
+static void draw_crosshair(cairo_t * xor_gc, gint x, gint y)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
@@ -1079,30 +1147,30 @@ static void draw_crosshair(GdkGC * xor_gc, gint x, gint y)
 
 static void show_crosshair(gboolean paint_new_location)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	gint x, y;
 	static gint x_prev = -1, y_prev = -1;
-	static GdkGC *xor_gc;
+	static cairo_t *xor_gc;
 	static GdkColor cross_color;
 
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
 		return;
 
-	if (!xor_gc) {
-		xor_gc = gdk_gc_new(window);
-		gdk_gc_copy(xor_gc, style->white_gc);
-		gdk_gc_set_function(xor_gc, GDK_XOR);
-		gdk_gc_set_clip_origin(xor_gc, 0, 0);
-		set_clip(priv, xor_gc);
-		/* FIXME: when CrossColor changed from config */
-		map_color_string(conf_core.appearance.color.cross, &cross_color);
-	}
+	//if (!xor_gc) {
+	//  xor_gc = gdk_gc_new(window);
+	//  gdk_gc_copy(xor_gc, style->white_gc);
+	//  gdk_gc_set_function(xor_gc, GDK_XOR);
+	//  gdk_gc_set_clip_origin(xor_gc, 0, 0);
+	//  set_clip(priv, xor_gc);
+	//  /* FIXME: when CrossColor changed from config */
+	//  map_color_string(conf_core.appearance.color.cross, &cross_color);
+	//}
 	x = DRAW_X(&gport->view, gport->view.crosshair_x);
 	y = DRAW_Y(&gport->view, gport->view.crosshair_y);
 
-	gdk_gc_set_foreground(xor_gc, &cross_color);
+	//gdk_gc_set_foreground(xor_gc, &cross_color);
 
 	if (x_prev >= 0 && !paint_new_location)
 		draw_crosshair(xor_gc, x_prev, y_prev);
@@ -1118,65 +1186,90 @@ static void show_crosshair(gboolean paint_new_location)
 
 static void ghid_cairo_init_renderer(int *argc, char ***argv, void *vport)
 {
-	GHidPort * port = vport;
+	GHidPort *port = vport;
 	/* Init any GC's required */
-	port->render_priv = g_new0(render_priv, 1);
+	port->render_priv = g_new0(render_priv_t, 1);
 }
 
-static void ghid_cairo_shutdown_renderer(void *port_)
+static void ghid_cairo_shutdown_renderer(void *vport)
 {
-	GHidPort *port = port_;
+	GHidPort *port = vport;
+	render_priv_t *priv = port->render_priv;
+
+	cairo_destroy(priv->cr);
+	cairo_surface_destroy(priv->cr_surf_window);
+
 	g_free(port->render_priv);
 	port->render_priv = NULL;
 }
 
-static void ghid_cairo_init_drawing_widget(GtkWidget * widget, void * port)
+static void ghid_cairo_init_drawing_widget(GtkWidget * widget, void *vport)
 {
+	GHidPort *port = vport;
+	render_priv_t *priv = port->render_priv;
+
+	priv->cr_surf_window = gdk_window_create_similar_surface(gport->drawing_area,
+																													 CAIRO_CONTENT_COLOR_ALPHA,
+																													 gport->view.canvas_width, gport->view.canvas_height);
+	priv->cr = cairo_create(priv->cr_surf_window);
 }
 
-static void ghid_cairo_drawing_area_configure_hook(void *port_)
+static void ghid_cairo_drawing_area_configure_hook(void *vport)
 {
-	GHidPort *port = port_;
+	GHidPort *port = vport;
 	static int done_once = 0;
-	render_priv *priv = port->render_priv;
+	render_priv_t *priv = port->render_priv;
+
+	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {
-		priv->bg_gc = gdk_gc_new(port->drawable);
-		gdk_gc_set_foreground(priv->bg_gc, &port->bg_color);
-		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
+		//priv->bg_gc = gdk_gc_new(port->drawable);
+		//gdk_gc_set_foreground(priv->bg_gc, &port->bg_color);
+		//gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
+		//
+		//priv->offlimits_gc = gdk_gc_new(port->drawable);
+		//gdk_gc_set_foreground(priv->offlimits_gc, &port->offlimits_color);
+		//gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 
-		priv->offlimits_gc = gdk_gc_new(port->drawable);
-		gdk_gc_set_foreground(priv->offlimits_gc, &port->offlimits_color);
-		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
+		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
+			map_color_string("white", &priv->bg_color);
+
+		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
+			map_color_string("white", &priv->offlimits_color);
+
+		if (!map_color_string(conf_core.appearance.color.grid, &priv->grid_color))
+			map_color_string("blue", &priv->grid_color);
+		//set_special_grid_color();
+
 		done_once = 1;
 	}
 
-	if (port->mask) {
-		gdk_pixmap_unref(port->mask);
-		port->mask = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
-	}
+	//if (port->mask) {
+	//  gdk_pixmap_unref(port->mask);
+	//  port->mask = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
+	//}
 }
 
 static void ghid_cairo_screen_update(void)
 {
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
-	if (gport->pixmap == NULL)
-		return;
+	//if (gport->pixmap == NULL)
+	//  return;
 
-	gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+	//gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 	show_crosshair(TRUE);
 }
 
 static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
 {
 	GHidPort *port = vport;
-	render_priv *priv = port->render_priv;
+	render_priv_t *priv = port->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
-	gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
-										ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
+	//gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
+	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 	show_crosshair(TRUE);
 	return FALSE;
 }
@@ -1185,35 +1278,36 @@ static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data
 {
 }
 
-static gboolean ghid_cairo_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
+static gboolean ghid_cairo_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
+																					pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx)
 {
 	GdkWindow *window = gtk_widget_get_window(widget);
-	GdkDrawable *save_drawable;
-	GtkAllocation allocation;
+	//GdkDrawable *save_drawable;
+	GtkAllocation allocation;			/* Assuming widget is a drawing widget, get the Rectangle allowed for drawing. */
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
-	render_priv *priv = gport->render_priv;
+	render_priv_t *priv = gport->render_priv;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
 
 	/* Setup drawable and zoom factor for drawing routines
 	 */
-	save_drawable = gport->drawable;
+	//save_drawable = gport->drawable;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
 
 	gtk_widget_get_allocation(widget, &allocation);
-	xz = vw / (double)allocation.width;
-	yz = vh / (double)allocation.height;
+	xz = vw / (double) allocation.width;
+	yz = vh / (double) allocation.height;
 	if (xz > yz)
 		gport->view.coord_per_px = xz;
 	else
 		gport->view.coord_per_px = yz;
 
-	gport->drawable = window;
+	//gport->drawable = window;
 	gport->view.canvas_width = allocation.width;
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
@@ -1222,12 +1316,14 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, GdkEventExpose * e
 	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
 	/* clear background */
-	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
+	//cairo_rectangle();
+	//cairo_fill();
+	//gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
 	/* call the drawing routine */
 	expcall(&gtk3_cairo_hid, ctx);
 
-	gport->drawable = save_drawable;
+	//gport->drawable = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
@@ -1235,67 +1331,67 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, GdkEventExpose * e
 	return FALSE;
 }
 
-static GdkPixmap *ghid_cairo_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
+static void *ghid_cairo_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
 {
-	GdkPixmap *pixmap;
-	GdkDrawable *save_drawable;
-	pcb_gtk_view_t save_view;
-	int save_width, save_height;
-	pcb_hid_expose_ctx_t ectx;
-	render_priv *priv = gport->render_priv;
+	GdkPixbuf *pixbuf;
+	//GdkDrawable *save_drawable;
+	//pcb_gtk_view_t save_view;
+	//int save_width, save_height;
+	//pcb_hid_expose_ctx_t ectx;
+	//render_priv *priv = gport->render_priv;
+	//
+	//save_drawable = gport->drawable;
+	//save_view = gport->view;
+	//save_width = gport->view.canvas_width;
+	//save_height = gport->view.canvas_height;
+	//
+	//pixmap = gdk_pixmap_new(NULL, width, height, depth);
+	//
+	///* Setup drawable and zoom factor for drawing routines
+	// */
+	//
+	//gport->drawable = pixmap;
+	//gport->view.coord_per_px = zoom;
+	//gport->view.canvas_width = width;
+	//gport->view.canvas_height = height;
+	//gport->view.width = width * gport->view.coord_per_px;
+	//gport->view.height = height * gport->view.coord_per_px;
+	//gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
+	//gport->view.x0 -= gport->view.height / 2;
+	//gport->view.y0 = conf_core.editor.view.flip_y ? PCB->MaxHeight - cy : cy;
+	//gport->view.y0 -= gport->view.width / 2;
+	//
+	///* clear background */
+	//gdk_draw_rectangle(pixmap, priv->bg_gc, TRUE, 0, 0, width, height);
+	//
+	///* call the drawing routine */
+	//ectx.view.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
+	//ectx.view.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
+	//ectx.view.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
+	//ectx.view.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
+	//
+	//ectx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X1));
+	//ectx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X2));
+	//ectx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y1));
+	//ectx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y2));
+	//
+	//ectx.force = 0;
+	//ectx.content.elem = NULL;
+	//
+	//pcb_hid_expose_all(&gtk3_cairo_hid, &ectx);
+	//
+	//gport->drawable = save_drawable;
+	//gport->view = save_view;
+	//gport->view.canvas_width = save_width;
+	//gport->view.canvas_height = save_height;
 
-	save_drawable = gport->drawable;
-	save_view = gport->view;
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
-
-	pixmap = gdk_pixmap_new(NULL, width, height, depth);
-
-	/* Setup drawable and zoom factor for drawing routines
-	 */
-
-	gport->drawable = pixmap;
-	gport->view.coord_per_px = zoom;
-	gport->view.canvas_width = width;
-	gport->view.canvas_height = height;
-	gport->view.width = width * gport->view.coord_per_px;
-	gport->view.height = height * gport->view.coord_per_px;
-	gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
-	gport->view.x0 -= gport->view.height / 2;
-	gport->view.y0 = conf_core.editor.view.flip_y ? PCB->MaxHeight - cy : cy;
-	gport->view.y0 -= gport->view.width / 2;
-
-	/* clear background */
-	gdk_draw_rectangle(pixmap, priv->bg_gc, TRUE, 0, 0, width, height);
-
-	/* call the drawing routine */
-	ectx.view.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
-	ectx.view.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
-	ectx.view.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
-	ectx.view.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
-
-	ectx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X1));
-	ectx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X2));
-	ectx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y1));
-	ectx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y2));
-
-	ectx.force = 0;
-	ectx.content.elem = NULL;
-
-	pcb_hid_expose_all(&gtk3_cairo_hid, &ectx);
-
-	gport->drawable = save_drawable;
-	gport->view = save_view;
-	gport->view.canvas_width = save_width;
-	gport->view.canvas_height = save_height;
-
-	return pixmap;
+	return pixbuf;
 }
 
 static pcb_hid_t *ghid_cairo_request_debug_draw(void)
 {
 	/* No special setup requirements, drawing goes into
-	 * the backing pixmap. */
+	 * the backing pixmap in GTK2. */
 	return &gtk3_cairo_hid;
 }
 
@@ -1312,7 +1408,7 @@ static void ghid_cairo_finish_debug_draw(void)
 	 */
 }
 
-static void draw_lead_user(render_priv *priv)
+static void draw_lead_user(render_priv_t * priv)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
@@ -1321,41 +1417,41 @@ static void draw_lead_user(render_priv *priv)
 	pcb_coord_t radius = lead_user->radius;
 	pcb_coord_t width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
 	pcb_coord_t separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
-	static GdkGC *lead_gc = NULL;
-	GdkColor lead_color;
+	//static GdkGC *lead_gc = NULL;
+	//GdkColor lead_color;
 
 	if (!lead_user->lead_user)
 		return;
 
-	if (lead_gc == NULL) {
-		lead_gc = gdk_gc_new(window);
-		gdk_gc_copy(lead_gc, style->white_gc);
-		gdk_gc_set_function(lead_gc, GDK_XOR);
-		gdk_gc_set_clip_origin(lead_gc, 0, 0);
-		lead_color.pixel = 0;
-		lead_color.red = (int) (65535. * LEAD_USER_COLOR_R);
-		lead_color.green = (int) (65535. * LEAD_USER_COLOR_G);
-		lead_color.blue = (int) (65535. * LEAD_USER_COLOR_B);
-		gdk_color_alloc(gport->colormap, &lead_color);
-		gdk_gc_set_foreground(lead_gc, &lead_color);
-	}
+	//if (lead_gc == NULL) {
+	//  lead_gc = gdk_gc_new(window);
+	//  gdk_gc_copy(lead_gc, style->white_gc);
+	//  gdk_gc_set_function(lead_gc, GDK_XOR);
+	//  gdk_gc_set_clip_origin(lead_gc, 0, 0);
+	//  lead_color.pixel = 0;
+	//  lead_color.red = (int) (65535. * LEAD_USER_COLOR_R);
+	//  lead_color.green = (int) (65535. * LEAD_USER_COLOR_G);
+	//  lead_color.blue = (int) (65535. * LEAD_USER_COLOR_B);
+	//  gdk_color_alloc(gport->colormap, &lead_color);
+	//  gdk_gc_set_foreground(lead_gc, &lead_color);
+	//}
 
-	set_clip(priv, lead_gc);
-	gdk_gc_set_line_attributes(lead_gc, Vz(width), GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_MITER);
+	//set_clip(priv, lead_gc);
+	//gdk_gc_set_line_attributes(lead_gc, Vz(width), GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_MITER);
 
-	/* arcs at the approrpriate radii */
+	/* arcs at the appropriate radii */
 
 	for (i = 0; i < LEAD_USER_ARC_COUNT; i++, radius -= separation) {
 		if (radius < width)
 			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 
 		/* Draw an arc at radius */
-		gdk_draw_arc(gport->drawable, lead_gc, FALSE,
-								 Vx(lead_user->x - radius), Vy(lead_user->y - radius), Vz(2. * radius), Vz(2. * radius), 0, 360 * 64);
+		//gdk_draw_arc(gport->drawable, lead_gc, FALSE,
+		//             Vx(lead_user->x - radius), Vy(lead_user->y - radius), Vz(2. * radius), Vz(2. * radius), 0, 360 * 64);
 	}
 }
 
-void ghid_cairo_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
+void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 {
 	if (common != NULL) {
 		common->render_pixmap = ghid_cairo_render_pixmap;
