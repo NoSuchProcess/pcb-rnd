@@ -1,0 +1,1329 @@
+# copyright - 1996-2004 - Daniel Steven Smith
+# Postcardware
+# Daniel Steven Smith
+#12 Overlook Drive
+# Leominster, MA
+# 01453-5142
+# USA
+#
+li:pcb-rnd-font-v1 {
+ ha:geda_pcb {
+  id = 0
+  ha:symbols {
+   ha:D {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.2 {
+       48.81mil; 85.0mil
+       43.87mil; 87.53mil
+       40.42mil; 69.67mil
+       40.42mil; 28.53mil
+       39.08mil; 22.48mil
+       8.27mil; 22.48mil
+       25.48mil; 46.89mil
+       39.08mil; 22.48mil
+       40.42mil; 28.53mil
+       28.54mil; 51.15mil
+       40.42mil; 69.67mil
+       43.87mil; 87.53mil
+       8.43mil; 77.12mil
+       21.35mil; 54.86mil
+       8.43mil; 36.6mil
+       8.43mil; 77.12mil
+       43.87mil; 87.53mil
+       3.48mil; 87.53mil
+       0.0mil; 81.45mil
+       0.0mil; 20.88mil
+       4.82mil; 18.48mil
+       45.2mil; 18.48mil
+       48.81mil; 24.63mil
+       24.15mil; 58.73mil
+       9.47mil; 83.53mil
+       40.13mil; 83.53mil
+       24.15mil; 58.73mil
+       48.81mil; 24.63mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:E {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       28.51mil; 64.46mil
+       26.52mil; 62.34mil
+       40.52mil; 47.28mil
+       22.52mil; 26.87mil
+       7.97mil; 41.68mil
+       26.52mil; 62.34mil
+       28.51mil; 64.46mil
+       42.37mil; 79.92mil
+       45.43mil; 77.12mil
+       47.84mil; 79.79mil
+       40.13mil; 87.53mil
+       23.59mil; 69.67mil
+       7.32mil; 87.53mil
+       1.2mil; 80.6mil
+       8.26mil; 74.32mil
+       12.11mil; 78.32mil
+       21.58mil; 67.81mil
+       0.0mil; 44.87mil
+       25.45mil; 18.35mil
+       48.1mil; 43.14mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:F {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       46.31mil; 25.8mil
+       12.14mil; 59.81mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.74mil; 81.45mil
+       3.74mil; 28.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.14mil; 24.69mil
+       12.14mil; 36.86mil
+       21.54mil; 27.0mil
+       19.07mil; 22.87mil
+       27.6mil; 18.48mil
+       31.34mil; 24.63mil
+       28.61mil; 25.93mil
+       12.14mil; 43.27mil
+       12.14mil; 53.13mil
+       38.66mil; 26.42mil
+       36.51mil; 22.87mil
+       45.07mil; 18.48mil
+       48.78mil; 24.63mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:I {
+    width=37mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       0.68mil; 59.12mil
+       13.41mil; 52.81mil
+       0.0mil; 46.53mil
+       7.75mil; 42.69mil
+       14.25mil; 45.68mil
+       14.25mil; 28.82mil
+       10.67mil; 22.8mil
+       18.94mil; 18.54mil
+       22.65mil; 24.69mil
+       22.65mil; 46.33mil
+       32.32mil; 41.48mil
+       36.81mil; 43.53mil
+       23.72mil; 49.95mil
+       37.07mil; 56.06mil
+       29.19mil; 60.13mil
+       22.65mil; 57.14mil
+       22.65mil; 77.12mil
+       26.39mil; 83.27mil
+       17.87mil; 87.47mil
+       14.25mil; 81.45mil
+       14.25mil; 56.32mil
+       5.14mil; 60.88mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:J {
+    width=40mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       20.41mil; 56.55mil
+       15.26mil; 62.15mil
+       0.0mil; 45.81mil
+       22.26mil; 23.62mil
+       26.13mil; 27.2mil
+       9.02mil; 44.61mil
+     }
+     li:simplepoly.1 {
+       19.53mil; 43.92mil
+       25.06mil; 38.46mil
+       40.55mil; 55.41mil
+       18.55mil; 78.81mil
+       14.81mil; 74.68mil
+       31.15mil; 56.75mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:K {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       12.27mil; 52.06mil
+       25.32mil; 38.88mil
+       45.85mil; 67.68mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+       41.72mil; 87.27mil
+       38.24mil; 81.55mil
+       37.98mil; 81.55mil
+       37.98mil; 70.87mil
+       22.52mil; 47.67mil
+       12.14mil; 57.79mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.58mil; 81.55mil
+       3.71mil; 81.45mil
+       3.71mil; 28.82mil
+       3.58mil; 28.89mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.27mil; 24.63mil
+       12.14mil; 24.69mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:N {
+    width=47mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.1 {
+       27.79mil; 35.14mil
+       47.19mil; 51.41mil
+       29.0mil; 67.58mil
+       25.94mil; 64.88mil
+       36.81mil; 54.86mil
+       21.28mil; 41.13mil
+       10.41mil; 51.15mil
+       25.94mil; 64.88mil
+       29.0mil; 67.58mil
+       41.72mil; 78.88mil
+       44.26mil; 76.6mil
+       47.06mil; 79.79mil
+       39.35mil; 87.53mil
+       22.45mil; 73.41mil
+       6.54mil; 87.53mil
+       0.42mil; 80.6mil
+       7.48mil; 74.32mil
+       11.33mil; 78.32mil
+       19.4mil; 70.87mil
+       0.0mil; 54.6mil
+       18.19mil; 38.39mil
+       5.47mil; 27.13mil
+       2.93mil; 29.41mil
+       0.13mil; 26.22mil
+       7.88mil; 18.48mil
+       24.73mil; 32.6mil
+       40.68mil; 18.48mil
+       46.8mil; 25.41mil
+       39.74mil; 31.69mil
+       35.86mil; 27.69mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:O {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       43.58mil; 20.62mil
+       49.34mil; 26.94mil
+       41.66mil; 32.86mil
+       38.73mil; 29.61mil
+       25.32mil; 40.35mil
+       12.14mil; 30.74mil
+       12.14mil; 43.66mil
+       26.07mil; 53.46mil
+       27.34mil; 52.48mil
+       32.93mil; 57.07mil
+       25.25mil; 63.0mil
+       12.14mil; 53.2mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.32mil; 87.47mil
+       3.74mil; 81.45mil
+       3.74mil; 28.73mil
+       0.0mil; 22.87mil
+       8.66mil; 18.67mil
+       28.48mil; 32.6mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:P {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.15 {
+       12.14mil; 24.69mil
+       12.14mil; 43.4mil
+       14.22mil; 43.31mil
+       16.04mil; 43.21mil
+       17.61mil; 43.11mil
+       18.87mil; 43.05mil
+       19.88mil; 42.95mil
+       20.63mil; 42.88mil
+       22.16mil; 42.72mil
+       23.66mil; 42.49mil
+       25.09mil; 42.23mil
+       26.42mil; 41.94mil
+       27.69mil; 41.58mil
+       28.93mil; 41.16mil
+       31.73mil; 39.86mil
+       34.07mil; 38.1mil
+       35.93mil; 35.89mil
+       37.33mil; 33.25mil
+       38.21mil; 30.13mil
+       38.66mil; 26.42mil
+       36.51mil; 22.87mil
+       45.07mil; 18.48mil
+       48.78mil; 24.63mil
+       46.31mil; 25.8mil
+       45.82mil; 30.71mil
+       44.84mil; 34.94mil
+       43.35mil; 38.52mil
+       41.36mil; 41.45mil
+       38.86mil; 43.73mil
+       35.73mil; 45.39mil
+       34.24mil; 45.91mil
+       32.61mil; 46.33mil
+       30.75mil; 46.72mil
+       28.77mil; 47.05mil
+       26.59mil; 47.31mil
+       24.15mil; 47.5mil
+       23.63mil; 47.54mil
+       22.52mil; 47.6mil
+       20.83mil; 47.67mil
+       18.55mil; 47.73mil
+       15.69mil; 47.83mil
+       12.14mil; 47.93mil
+       12.14mil; 54.47mil
+       16.17mil; 54.37mil
+       17.7mil; 54.37mil
+       19.04mil; 54.34mil
+       20.14mil; 54.31mil
+       21.02mil; 54.31mil
+       21.67mil; 54.31mil
+       22.13mil; 54.27mil
+       24.47mil; 54.34mil
+       26.65mil; 54.44mil
+       28.64mil; 54.6mil
+       30.4mil; 54.83mil
+       31.99mil; 55.15mil
+       33.45mil; 55.51mil
+       35.24mil; 56.23mil
+       36.9mil; 57.07mil
+       38.43mil; 58.11mil
+       39.77mil; 59.35mil
+       40.97mil; 60.78mil
+       42.08mil; 62.41mil
+       42.96mil; 64.2mil
+       43.71mil; 66.25mil
+       44.32mil; 68.56mil
+       44.84mil; 71.13mil
+       45.2mil; 73.93mil
+       45.46mil; 77.12mil
+       49.17mil; 83.27mil
+       40.65mil; 87.47mil
+       37.07mil; 81.45mil
+       38.14mil; 80.47mil
+       37.95mil; 76.37mil
+       37.42mil; 72.73mil
+       36.55mil; 69.57mil
+       35.31mil; 66.87mil
+       33.75mil; 64.62mil
+       31.76mil; 62.8mil
+       29.97mil; 61.76mil
+       27.86mil; 60.91mil
+       25.45mil; 60.23mil
+       22.68mil; 59.77mil
+       19.62mil; 59.48mil
+       16.14mil; 59.35mil
+       15.46mil; 59.38mil
+       14.81mil; 59.38mil
+       14.16mil; 59.38mil
+       13.47mil; 59.38mil
+       12.82mil; 59.42mil
+       12.14mil; 59.42mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.74mil; 81.45mil
+       3.74mil; 28.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:S {
+    width=55mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.1 {
+       8.4mil; 18.48mil
+       29.74mil; 31.01mil
+       48.52mil; 18.48mil
+       52.0mil; 24.69mil
+       52.0mil; 77.12mil
+       55.71mil; 83.27mil
+       47.12mil; 87.66mil
+       43.61mil; 75.0mil
+       43.61mil; 28.6mil
+       27.34mil; 39.01mil
+       12.01mil; 30.22mil
+       12.01mil; 77.12mil
+       12.79mil; 78.06mil
+       29.19mil; 66.05mil
+       43.61mil; 75.0mil
+       47.12mil; 87.66mil
+       26.65mil; 74.74mil
+       7.75mil; 87.6mil
+       3.61mil; 81.45mil
+       3.61mil; 28.82mil
+       0.0mil; 22.8mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:T {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.1 {
+       48.78mil; 50.34mil
+       36.38mil; 52.26mil
+       12.14mil; 41.0mil
+       12.14mil; 64.46mil
+       36.38mil; 52.26mil
+       48.78mil; 50.34mil
+       12.14mil; 68.53mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.61mil; 81.55mil
+       3.74mil; 81.45mil
+       3.74mil; 28.82mil
+       3.61mil; 28.89mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.27mil; 24.63mil
+       12.14mil; 24.69mil
+       12.14mil; 33.61mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:U {
+    width=45mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.20 {
+       37.2mil; 87.53mil
+       33.75mil; 81.45mil
+       33.71mil; 81.15mil
+       33.71mil; 80.5mil
+       33.71mil; 79.53mil
+       33.68mil; 78.19mil
+       33.65mil; 76.53mil
+       33.62mil; 74.42mil
+       33.45mil; 64.33mil
+       33.39mil; 61.47mil
+       33.26mil; 58.7mil
+       33.13mil; 56.06mil
+       32.93mil; 53.53mil
+       32.67mil; 51.12mil
+       32.41mil; 48.74mil
+       31.92mil; 46.11mil
+       31.27mil; 43.7mil
+       30.39mil; 41.52mil
+       29.35mil; 39.63mil
+       28.12mil; 37.97mil
+       26.65mil; 36.54mil
+       24.63mil; 35.2mil
+       22.23mil; 34.1mil
+       19.43mil; 33.22mil
+       16.21mil; 32.57mil
+       12.59mil; 32.14mil
+       8.43mil; 31.95mil
+       8.43mil; 77.12mil
+       12.14mil; 83.27mil
+       3.61mil; 87.47mil
+       0.0mil; 81.45mil
+       0.0mil; 20.88mil
+       4.82mil; 18.48mil
+       8.56mil; 24.63mil
+       12.27mil; 25.08mil
+       15.49mil; 25.51mil
+       18.19mil; 25.9mil
+       20.44mil; 26.25mil
+       22.16mil; 26.55mil
+       23.43mil; 26.84mil
+       25.97mil; 27.69mil
+       28.31mil; 28.73mil
+       30.43mil; 29.96mil
+       32.31mil; 31.4mil
+       33.97mil; 33.06mil
+       35.5mil; 34.94mil
+       36.38mil; 36.37mil
+       37.16mil; 37.97mil
+       37.91mil; 39.69mil
+       38.6mil; 41.58mil
+       39.18mil; 43.66mil
+       39.73mil; 45.94mil
+       40.03mil; 47.63mil
+       40.29mil; 49.52mil
+       40.52mil; 51.57mil
+       40.71mil; 53.79mil
+       40.84mil; 56.19mil
+       40.94mil; 58.86mil
+       40.94mil; 60.33mil
+       40.97mil; 61.82mil
+       41.0mil; 63.39mil
+       41.0mil; 65.05mil
+       41.0mil; 66.74mil
+       41.04mil; 68.56mil
+       41.07mil; 77.54mil
+       43.35mil; 76.08mil
+       45.85mil; 83.27mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:V {
+    width=45mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.21 {
+       37.2mil; 87.53mil
+       33.75mil; 81.45mil
+       33.71mil; 81.15mil
+       33.71mil; 80.5mil
+       33.71mil; 79.53mil
+       33.68mil; 78.19mil
+       33.65mil; 76.53mil
+       33.62mil; 74.42mil
+       33.45mil; 64.33mil
+       33.39mil; 61.47mil
+       33.26mil; 58.7mil
+       33.13mil; 56.06mil
+       32.93mil; 53.53mil
+       32.67mil; 51.12mil
+       32.41mil; 48.74mil
+       31.92mil; 46.11mil
+       31.27mil; 43.7mil
+       30.39mil; 41.52mil
+       29.35mil; 39.63mil
+       28.12mil; 37.97mil
+       26.65mil; 36.54mil
+       24.63mil; 35.2mil
+       22.23mil; 34.1mil
+       19.43mil; 33.22mil
+       16.21mil; 32.57mil
+       12.59mil; 32.14mil
+       8.43mil; 31.95mil
+       8.43mil; 77.12mil
+       12.14mil; 83.27mil
+       3.61mil; 87.47mil
+       0.0mil; 81.45mil
+       0.0mil; 20.88mil
+       4.82mil; 18.48mil
+       8.56mil; 24.63mil
+       12.27mil; 25.08mil
+       15.49mil; 25.51mil
+       18.19mil; 25.9mil
+       20.44mil; 26.25mil
+       22.16mil; 26.55mil
+       23.43mil; 26.84mil
+       25.97mil; 27.69mil
+       28.31mil; 28.73mil
+       30.43mil; 29.96mil
+       32.31mil; 31.4mil
+       33.97mil; 33.06mil
+       35.5mil; 34.94mil
+       36.38mil; 36.37mil
+       37.16mil; 37.97mil
+       37.91mil; 39.69mil
+       38.6mil; 41.58mil
+       39.18mil; 43.66mil
+       39.73mil; 45.94mil
+       40.03mil; 47.63mil
+       40.29mil; 49.52mil
+       40.52mil; 51.57mil
+       40.71mil; 53.79mil
+       40.84mil; 56.19mil
+       40.94mil; 58.86mil
+       40.94mil; 60.33mil
+       40.97mil; 61.82mil
+       41.0mil; 63.39mil
+       41.0mil; 65.05mil
+       41.0mil; 66.74mil
+       41.04mil; 68.56mil
+       41.07mil; 77.54mil
+       43.35mil; 76.08mil
+       45.85mil; 83.27mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:Y {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       28.93mil; 54.79mil
+       28.93mil; 77.25mil
+       32.64mil; 83.4mil
+       24.37mil; 87.53mil
+       20.92mil; 81.45mil
+       20.92mil; 50.79mil
+     }
+     li:simplepoly.1 {
+       37.46mil; 46.07mil
+       12.14mil; 33.8mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.71mil; 81.45mil
+       3.71mil; 28.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.2mil; 24.69mil
+       45.85mil; 42.07mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+       40.91mil; 87.53mil
+       37.46mil; 81.45mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:a {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       8.53mil; 18.48mil
+       43.74mil; 35.01mil
+       46.24mil; 33.67mil
+       48.39mil; 36.99mil
+       40.26mil; 41.0mil
+       12.14mil; 27.69mil
+       12.14mil; 44.35mil
+       42.34mil; 58.73mil
+       45.07mil; 57.27mil
+       47.06mil; 60.59mil
+       39.05mil; 64.59mil
+       12.14mil; 51.74mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.74mil; 81.94mil
+       3.74mil; 28.82mil
+       0.0mil; 22.87mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:b {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.2 {
+       8.66mil; 18.67mil
+       48.78mil; 36.99mil
+       36.94mil; 68.53mil
+       12.14mil; 57.07mil
+       12.14mil; 77.12mil
+       13.93mil; 80.05mil
+       36.94mil; 68.53mil
+       48.78mil; 36.99mil
+       18.0mil; 52.26mil
+       13.73mil; 50.34mil
+       36.38mil; 38.95mil
+       12.14mil; 27.69mil
+       12.14mil; 49.62mil
+       13.73mil; 50.34mil
+       18.0mil; 52.26mil
+       49.34mil; 66.61mil
+       7.19mil; 87.53mil
+       3.61mil; 81.55mil
+       3.61mil; 28.89mil
+       0.0mil; 22.87mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:c {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       12.14mil; 24.69mil
+       12.14mil; 44.8mil
+       42.18mil; 79.07mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+       40.91mil; 87.66mil
+       12.14mil; 54.47mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.32mil; 87.47mil
+       3.71mil; 81.45mil
+       3.71mil; 28.82mil
+       0.0mil; 22.87mil
+       8.4mil; 18.54mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:d {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.2 {
+       48.81mil; 85.0mil
+       43.87mil; 87.53mil
+       22.94mil; 58.41mil
+       20.01mil; 53.82mil
+       8.43mil; 36.86mil
+       8.43mil; 70.06mil
+       20.01mil; 53.82mil
+       22.94mil; 58.41mil
+       2.8mil; 86.46mil
+       0.0mil; 81.45mil
+       0.0mil; 20.88mil
+       4.82mil; 18.48mil
+       25.55mil; 47.28mil
+       28.41mil; 51.41mil
+       40.42mil; 67.94mil
+       40.42mil; 34.81mil
+       28.41mil; 51.41mil
+       25.55mil; 47.28mil
+       45.72mil; 19.42mil
+       48.81mil; 24.63mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:e {
+    width=56mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       27.99mil; 55.12mil
+       12.01mil; 36.08mil
+       12.01mil; 77.12mil
+       15.72mil; 83.27mil
+       7.19mil; 87.47mil
+       3.58mil; 81.45mil
+       3.58mil; 28.82mil
+       0.0mil; 22.8mil
+       8.4mil; 18.54mil
+       12.14mil; 24.69mil
+       30.26mil; 43.79mil
+       43.31mil; 28.01mil
+       40.26mil; 22.87mil
+       48.65mil; 18.54mil
+       52.39mil; 24.69mil
+       52.39mil; 77.12mil
+       56.1mil; 83.27mil
+       47.58mil; 87.47mil
+       44.0mil; 81.45mil
+       44.0mil; 35.33mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:f {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       12.14mil; 24.69mil
+       12.14mil; 44.22mil
+       13.86mil; 43.44mil
+       15.43mil; 42.4mil
+       16.86mil; 41.16mil
+       18.09mil; 39.69mil
+       19.17mil; 38.03mil
+       20.11mil; 36.05mil
+       20.53mil; 34.81mil
+       20.89mil; 33.48mil
+       21.15mil; 32.05mil
+       21.38mil; 30.48mil
+       21.48mil; 28.82mil
+       21.54mil; 27.0mil
+       19.07mil; 22.87mil
+       27.6mil; 18.48mil
+       31.34mil; 24.63mil
+       28.61mil; 25.93mil
+       28.35mil; 28.5mil
+       27.89mil; 30.91mil
+       27.24mil; 33.22mil
+       26.36mil; 35.37mil
+       25.29mil; 37.38mil
+       23.95mil; 39.3mil
+       22.45mil; 41.06mil
+       20.76mil; 42.59mil
+       18.91mil; 43.99mil
+       16.86mil; 45.23mil
+       14.61mil; 46.27mil
+       12.14mil; 47.15mil
+       12.14mil; 56.94mil
+       15.65mil; 56.06mil
+       19.0mil; 54.79mil
+       22.19mil; 53.13mil
+       25.19mil; 51.05mil
+       28.02mil; 48.61mil
+       30.75mil; 45.65mil
+       33.03mil; 42.66mil
+       34.95mil; 39.6mil
+       36.45mil; 36.44mil
+       37.59mil; 33.22mil
+       38.3mil; 29.93mil
+       38.66mil; 26.42mil
+       36.51mil; 22.87mil
+       45.07mil; 18.48mil
+       48.78mil; 24.63mil
+       46.31mil; 25.8mil
+       45.63mil; 31.2mil
+       44.36mil; 36.15mil
+       42.44mil; 40.7mil
+       39.87mil; 44.84mil
+       36.71mil; 48.55mil
+       32.77mil; 51.96mil
+       29.35mil; 54.31mil
+       25.94mil; 56.26mil
+       22.52mil; 57.76mil
+       19.1mil; 58.86mil
+       15.65mil; 59.55mil
+       12.14mil; 59.81mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.74mil; 81.45mil
+       3.74mil; 28.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:g {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       49.17mil; 24.76mil
+       28.31mil; 51.74mil
+       49.56mil; 83.27mil
+       40.91mil; 87.53mil
+       37.33mil; 81.55mil
+       38.73mil; 80.8mil
+       23.4mil; 58.15mil
+       8.66mil; 77.18mil
+       12.4mil; 83.27mil
+       3.71mil; 87.53mil
+       0.0mil; 81.55mil
+       20.86mil; 54.4mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.27mil; 24.63mil
+       10.45mil; 25.47mil
+       25.77mil; 47.99mil
+       40.58mil; 28.73mil
+       37.03mil; 22.87mil
+       45.59mil; 18.48mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:h {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.1 {
+       12.01mil; 24.69mil
+       12.01mil; 31.95mil
+       37.33mil; 45.06mil
+       37.33mil; 28.82mil
+       33.71mil; 22.8mil
+       41.98mil; 18.54mil
+       45.72mil; 24.69mil
+       45.72mil; 77.12mil
+       49.43mil; 83.27mil
+       40.91mil; 87.47mil
+       37.33mil; 81.45mil
+       37.33mil; 69.47mil
+       37.33mil; 53.46mil
+       12.01mil; 41.13mil
+       12.01mil; 47.93mil
+       37.33mil; 61.08mil
+       37.33mil; 53.46mil
+       37.33mil; 69.47mil
+       12.01mil; 57.14mil
+       12.01mil; 77.12mil
+       15.72mil; 83.27mil
+       7.19mil; 87.47mil
+       3.58mil; 81.45mil
+       3.58mil; 28.82mil
+       0.0mil; 22.8mil
+       8.27mil; 18.54mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:i {
+    width=15mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       12.0mil; 24.69mil
+       12.0mil; 77.12mil
+       15.75mil; 83.27mil
+       7.22mil; 87.47mil
+       3.61mil; 81.45mil
+       3.61mil; 28.82mil
+       0.0mil; 22.8mil
+       8.26mil; 18.54mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:j {
+    width=15mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       12.0mil; 24.69mil
+       12.0mil; 77.12mil
+       15.75mil; 83.27mil
+       7.22mil; 87.47mil
+       3.61mil; 81.45mil
+       3.61mil; 28.82mil
+       0.0mil; 22.8mil
+       8.26mil; 18.54mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:k {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       45.85mil; 52.06mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+       41.72mil; 87.27mil
+       38.24mil; 81.55mil
+       37.98mil; 81.55mil
+       37.98mil; 54.99mil
+       12.27mil; 46.33mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.58mil; 81.55mil
+       3.71mil; 81.45mil
+       3.71mil; 28.82mil
+       3.58mil; 28.89mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.27mil; 24.63mil
+       12.14mil; 24.69mil
+       12.14mil; 40.28mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:l {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       3.74mil; 81.55mil
+       3.74mil; 28.82mil
+       0.0mil; 22.87mil
+       8.66mil; 18.67mil
+       44.84mil; 34.88mil
+       47.32mil; 33.54mil
+       49.34mil; 36.6mil
+       41.2mil; 40.74mil
+       12.14mil; 27.62mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:m {
+    width=56mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.2 {
+       12.01mil; 64.0mil
+       12.01mil; 77.12mil
+       15.72mil; 83.27mil
+       7.19mil; 87.47mil
+       3.58mil; 81.45mil
+       3.58mil; 28.82mil
+       0.0mil; 22.8mil
+       8.33mil; 18.54mil
+       12.07mil; 24.69mil
+       28.38mil; 39.01mil
+       32.93mil; 43.01mil
+       44.0mil; 51.93mil
+       44.0mil; 32.86mil
+       32.93mil; 43.01mil
+       28.38mil; 39.01mil
+       42.79mil; 26.87mil
+       40.26mil; 22.87mil
+       48.65mil; 18.74mil
+       52.39mil; 24.63mil
+       52.39mil; 77.12mil
+       56.1mil; 83.27mil
+       47.58mil; 87.47mil
+       44.0mil; 81.45mil
+       44.0mil; 63.81mil
+       26.78mil; 49.82mil
+       22.78mil; 45.55mil
+       12.01mil; 36.34mil
+       12.01mil; 55.22mil
+       22.78mil; 45.55mil
+       26.78mil; 49.82mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:n {
+    width=37mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       14.25mil; 53.0mil
+       0.0mil; 46.53mil
+       7.75mil; 42.69mil
+       14.25mil; 45.68mil
+       14.25mil; 28.82mil
+       10.67mil; 22.8mil
+       18.94mil; 18.54mil
+       22.65mil; 24.69mil
+       22.65mil; 49.13mil
+       37.07mil; 56.06mil
+       29.19mil; 60.13mil
+       22.65mil; 57.14mil
+       22.65mil; 77.12mil
+       26.39mil; 83.27mil
+       17.87mil; 87.47mil
+       14.25mil; 81.45mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:o {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       43.58mil; 20.62mil
+       49.34mil; 26.94mil
+       41.66mil; 32.86mil
+       38.73mil; 29.61mil
+       25.32mil; 40.35mil
+       12.14mil; 30.74mil
+       12.14mil; 43.66mil
+       28.41mil; 55.12mil
+       43.58mil; 43.14mil
+       49.34mil; 49.46mil
+       41.66mil; 55.41mil
+       38.73mil; 52.13mil
+       25.32mil; 62.87mil
+       12.14mil; 53.2mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.32mil; 87.47mil
+       3.74mil; 81.45mil
+       3.74mil; 28.82mil
+       0.0mil; 22.87mil
+       8.66mil; 18.67mil
+       28.48mil; 32.6mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:p {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       8.4mil; 18.48mil
+       28.35mil; 32.6mil
+       43.45mil; 20.62mil
+       49.21mil; 26.94mil
+       41.53mil; 32.86mil
+       38.6mil; 29.61mil
+       25.19mil; 40.35mil
+       12.01mil; 30.74mil
+       12.01mil; 77.12mil
+       12.85mil; 78.39mil
+       28.67mil; 65.79mil
+       44.19mil; 77.25mil
+       45.72mil; 75.52mil
+       49.34mil; 78.45mil
+       43.12mil; 85.39mil
+       26.07mil; 73.6mil
+       7.75mil; 87.6mil
+       3.61mil; 81.45mil
+       3.61mil; 28.82mil
+       0.0mil; 22.8mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:q {
+    width=57mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       51.45mil; 19.29mil
+       57.18mil; 26.22mil
+       53.05mil; 32.73mil
+       49.66mil; 28.89mil
+       39.44mil; 45.13mil
+       31.86mil; 35.14mil
+       31.86mil; 77.12mil
+       35.6mil; 83.27mil
+       27.08mil; 87.47mil
+       23.46mil; 81.45mil
+       23.46mil; 31.33mil
+       14.25mil; 44.61mil
+       4.46mil; 27.13mil
+       2.41mil; 30.22mil
+       0.0mil; 27.13mil
+       6.67mil; 17.69mil
+       16.47mil; 34.55mil
+       28.41mil; 17.96mil
+       41.26mil; 35.59mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:r {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.1 {
+       40.91mil; 87.66mil
+       12.14mil; 61.47mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.58mil; 81.55mil
+       3.58mil; 28.89mil
+       0.0mil; 22.87mil
+       8.66mil; 18.67mil
+       49.3mil; 39.79mil
+       15.39mil; 53.59mil
+       12.14mil; 50.73mil
+       36.12mil; 41.06mil
+       12.14mil; 28.73mil
+       12.14mil; 50.73mil
+       15.39mil; 53.59mil
+       43.12mil; 78.52mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:s {
+    width=47mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       3.58mil; 72.6mil
+       3.58mil; 28.82mil
+       0.0mil; 22.8mil
+       8.27mil; 18.54mil
+       12.01mil; 24.69mil
+       12.01mil; 60.33mil
+       44.13mil; 31.4mil
+       44.06mil; 77.12mil
+       47.77mil; 83.27mil
+       39.25mil; 87.47mil
+       35.67mil; 81.45mil
+       35.67mil; 43.99mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:t {
+    width=50mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       29.19mil; 77.12mil
+       32.9mil; 83.27mil
+       24.37mil; 87.47mil
+       20.79mil; 81.45mil
+       20.37mil; 28.08mil
+       3.45mil; 41.0mil
+       0.0mil; 37.29mil
+       7.45mil; 31.95mil
+       7.97mil; 32.47mil
+       25.58mil; 18.48mil
+       46.57mil; 33.87mil
+       47.58mil; 33.02mil
+       50.38mil; 35.53mil
+       43.83mil; 41.55mil
+       29.19mil; 30.81mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:u {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       37.46mil; 46.2mil
+       12.14mil; 33.87mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.32mil; 87.47mil
+       3.71mil; 81.45mil
+       3.71mil; 28.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.27mil; 24.63mil
+       45.85mil; 42.07mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+       41.04mil; 87.47mil
+       37.46mil; 81.45mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:v {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       37.46mil; 46.2mil
+       12.14mil; 33.87mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.32mil; 87.47mil
+       3.71mil; 81.45mil
+       3.71mil; 28.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.27mil; 24.63mil
+       45.85mil; 42.07mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+       41.04mil; 87.47mil
+       37.46mil; 81.45mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:w {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.1 {
+       3.74mil; 81.45mil
+       3.74mil; 28.82mil
+       0.0mil; 22.87mil
+       8.66mil; 18.67mil
+       48.78mil; 36.99mil
+       36.38mil; 38.95mil
+       12.14mil; 27.69mil
+       12.14mil; 51.15mil
+       36.38mil; 38.95mil
+       48.78mil; 36.99mil
+       12.14mil; 55.22mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:x {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       28.93mil; 50.92mil
+       28.93mil; 77.12mil
+       32.64mil; 83.27mil
+       23.98mil; 87.53mil
+       20.53mil; 81.81mil
+       20.53mil; 53.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.27mil; 24.63mil
+       10.45mil; 25.47mil
+       20.53mil; 40.21mil
+       20.53mil; 28.82mil
+       16.79mil; 22.87mil
+       25.32mil; 18.48mil
+       28.93mil; 24.69mil
+       28.93mil; 43.92mil
+       40.58mil; 28.73mil
+       37.03mil; 22.87mil
+       45.59mil; 18.48mil
+       49.17mil; 24.76mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:y {
+    width=49mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.1 {
+       28.93mil; 77.25mil
+       32.64mil; 83.4mil
+       24.37mil; 87.53mil
+       20.92mil; 81.45mil
+       20.92mil; 55.8mil
+       12.14mil; 51.54mil
+       12.14mil; 77.12mil
+       15.85mil; 83.27mil
+       7.19mil; 87.53mil
+       3.71mil; 81.45mil
+       3.71mil; 28.82mil
+       0.0mil; 22.87mil
+       8.53mil; 18.48mil
+       12.2mil; 24.69mil
+       45.85mil; 42.07mil
+       45.85mil; 77.12mil
+       49.56mil; 83.27mil
+       40.91mil; 87.53mil
+       37.46mil; 81.45mil
+       37.46mil; 46.07mil
+       12.14mil; 33.8mil
+       12.14mil; 42.33mil
+       37.46mil; 55.48mil
+       37.46mil; 46.07mil
+       37.46mil; 81.45mil
+       37.46mil; 63.87mil
+       28.93mil; 59.81mil
+     }
+    }
+    height = 63.33mil
+   }
+   ha:z {
+    width=48mil; delta=12.0mil;
+    li:objects {
+     li:simplepoly.0 {
+       19.75mil; 81.45mil
+       19.75mil; 62.67mil
+       9.41mil; 78.58mil
+       12.27mil; 83.27mil
+       3.61mil; 87.53mil
+       0.0mil; 81.55mil
+       5.27mil; 78.81mil
+       19.75mil; 56.0mil
+       19.75mil; 29.02mil
+       16.01mil; 22.87mil
+       24.54mil; 18.48mil
+       28.15mil; 24.69mil
+       28.15mil; 50.4mil
+       43.48mil; 77.93mil
+       45.07mil; 77.12mil
+       48.78mil; 83.27mil
+       40.13mil; 87.53mil
+       36.55mil; 81.55mil
+       36.87mil; 81.32mil
+       28.15mil; 64.88mil
+       28.15mil; 77.12mil
+       31.86mil; 83.27mil
+       23.33mil; 87.47mil
+     }
+    }
+    height = 63.33mil
+   }
+
+  }
+  cell_width = 2.87641mm
+  cell_height = 1.879602mm
+ }
+}
