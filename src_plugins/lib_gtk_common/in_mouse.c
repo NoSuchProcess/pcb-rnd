@@ -65,8 +65,6 @@ static GdkCursorType old_cursor;
 static GdkCursorType gport_set_cursor(pcb_gtk_mouse_t *ctx, GdkCursorType shape)
 {
 	GdkWindow *window;
-	GdkColor fg = { 0, 65535, 65535, 65535 };	/* white */
-	GdkColor bg = { 0, 0, 0, 0 };	/* black */
 	GdkCursorType old_shape = ctx->X_cursor_shape;
 
 	if (ctx->drawing_area == NULL)
@@ -84,11 +82,11 @@ static GdkCursorType gport_set_cursor(pcb_gtk_mouse_t *ctx, GdkCursorType shape)
 	ctx->X_cursor_shape = shape;
 	if (shape > GDK_LAST_CURSOR) {
 		if (shape == CUSTOM_CURSOR_CLOCKWISE)
-			ctx->X_cursor = gdk_cursor_new_from_pixmap(XC_clock_source, XC_clock_mask, &fg, &bg, ICON_X_HOT, ICON_Y_HOT);
+			ctx->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->drawing_area), XC_clock_source, ICON_X_HOT, ICON_Y_HOT);
 		else if (shape == CUSTOM_CURSOR_DRAG)
-			ctx->X_cursor = gdk_cursor_new_from_pixmap(XC_hand_source, XC_hand_mask, &fg, &bg, ICON_X_HOT, ICON_Y_HOT);
+			ctx->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->drawing_area), XC_hand_source, ICON_X_HOT, ICON_Y_HOT);
 		else if (shape == CUSTOM_CURSOR_LOCK)
-			ctx->X_cursor = gdk_cursor_new_from_pixmap(XC_lock_source, XC_lock_mask, &fg, &bg, ICON_X_HOT, ICON_Y_HOT);
+			ctx->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->drawing_area), XC_lock_source, ICON_X_HOT, ICON_Y_HOT);
 	}
 	else
 		ctx->X_cursor = gdk_cursor_new(shape);
