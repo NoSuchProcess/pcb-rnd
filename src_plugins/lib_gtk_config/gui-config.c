@@ -1840,7 +1840,7 @@ static GtkWidget *bu_scrolled_window_packed(GtkWidget * child, GtkOrientation or
 
 static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, const char *basename)
 {
-	GtkWidget *vbox, *src, *src_left, *src_right, *w;
+	GtkWidget *vbox, *src, *src_right, *w;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
 	vbox = ghid_category_vbox(tab_vbox, "Configuration node", 4, 2, TRUE, FALSE);
@@ -1859,14 +1859,8 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 	/* upper hbox */
 	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
 	src = gtkc_hbox_new(FALSE, 4);
-	w = bu_scrolled_window_packed(src, GTK_ORIENTATION_HORIZONTAL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(w), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-	gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
 
-	src_left = gtkc_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(src), src_left, FALSE, FALSE, 4);
-	src_right = gtkc_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(src), src_right, FALSE, FALSE, 4);
 
 	/* upper-left: sources */
 	{
@@ -1881,9 +1875,14 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.src_t), -1, *s, renderer, "text", n, NULL);
 		}
 		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.src_t), GTK_TREE_MODEL(auto_tab_widgets.src_l));
-		gtk_box_pack_start(GTK_BOX(src_left), auto_tab_widgets.src_t, FALSE, FALSE, 4);
 		g_signal_connect(G_OBJECT(auto_tab_widgets.src_t), "cursor-changed", G_CALLBACK(config_auto_src_changed_cb), com);
 	}
+	w = bu_scrolled_window_packed(auto_tab_widgets.src_t, GTK_ORIENTATION_HORIZONTAL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(w), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+	gtk_box_pack_start(GTK_BOX(src), w, TRUE, TRUE, 4);
+
+	src_right = gtkc_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(src), src_right, FALSE, FALSE, 4);
 
 
 	/* upper-right: edit data */
