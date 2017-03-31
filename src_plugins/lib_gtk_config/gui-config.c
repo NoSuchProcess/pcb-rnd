@@ -2692,7 +2692,7 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-	gtk_widget_set_size_request(scrolled, 100, 0);
+	gtk_widget_set_size_request(scrolled, 150, 0);
 	gtk_paned_pack1(GTK_PANED(config_hbox), scrolled, TRUE, FALSE);
 
 	main_vbox = gtkc_vbox_new(FALSE, 4);
