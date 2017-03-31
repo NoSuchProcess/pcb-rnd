@@ -140,7 +140,7 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 	GtkWidget *vbox, *hbox = NULL;
 	GtkWidget *pad_hbox, *pad_vbox;
 	GtkWidget *image;
-	GtkRequisition *requisition = NULL;
+	GtkRequisition requisition;
 	GdkPixbuf *pixbuf;
 	GSList *group = NULL;
 	GSList *toolbar_group = NULL;
@@ -192,8 +192,8 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 		image = gtk_image_new_from_pixbuf(pixbuf);
 		gtk_container_add(GTK_CONTAINER(MB->toolbar_button), image);
 		g_object_unref(pixbuf);
-		gtk_widget_get_requisition(image, requisition);
-		tb_width += requisition->width;
+		gtk_widget_get_requisition(image, &requisition);
+		tb_width += requisition.width;
 
 		if (strcmp(MB->name, "select") == 0) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(MB->button), TRUE);
