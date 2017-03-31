@@ -315,7 +315,7 @@ static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointe
 {
 	gint ksym = kev->keyval;
 
-	if (ksym != GDK_Escape)
+	if (ksym != GDK_KEY_Escape)
 		return FALSE;
 
 	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
