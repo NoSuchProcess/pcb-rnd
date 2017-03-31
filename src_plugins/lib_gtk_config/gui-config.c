@@ -1890,6 +1890,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 	auto_tab_widgets.src = gtk_label_new("source");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.src, FALSE, FALSE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(auto_tab_widgets.src), TRUE);
 
 	{															/* array index bar */
 		auto_tab_widgets.edit_idx_box = gtkc_hbox_new(FALSE, 4);
