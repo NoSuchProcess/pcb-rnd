@@ -42,7 +42,7 @@ static void display_options_dialog(GtkWidget * button, gpointer data)
 
 void pcb_gtk_dlg_about(GtkWidget * top_window)
 {
-	GtkWidget *button;
+	GtkWidget *button, *action_area;
 	GtkWidget *w = gtk_about_dialog_new();
 	GtkAboutDialog *about = GTK_ABOUT_DIALOG(w);
 
@@ -50,8 +50,9 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	button = gtk_button_new_from_stock(_("_Options"));
 	/*gtk_widget_set_can_default(button, TRUE);*/
 	gtk_widget_show(button);
-	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(about)->action_area), button, FALSE, TRUE, 0);
-	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX(GTK_DIALOG(about)->action_area), button, TRUE);
+	action_area = gtk_dialog_get_action_area(GTK_DIALOG(about));
+	gtk_box_pack_end(GTK_BOX(action_area), button, FALSE, TRUE, 0);
+	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX(action_area), button, TRUE);
 	g_signal_connect(button, "clicked", G_CALLBACK(display_options_dialog), about);
 
 	/* We don't want to maintain a list of authors... So, this is the minimum info */
