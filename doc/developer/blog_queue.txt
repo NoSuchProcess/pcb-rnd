@@ -5,7 +5,6 @@ Ready to blog:
 - arc-in-font + the new alternative default font with arcs: font/default_arc.lht
 
 less urgent/pre-planned/TO-DO
-- Klingon font announcement
 - braille font (maybe together with the Klingon?)
 - CJK glyph insertion dialogue
 - FidoCadJ font creation plugin
