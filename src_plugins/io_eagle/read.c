@@ -814,7 +814,11 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			const char *name = eagle_get_attrs(n, "name", NULL);
 			const char *lib = eagle_get_attrs(n, "library", NULL);
 			const char *pkg = eagle_get_attrs(n, "package", NULL);
+			const char *val = eagle_get_attrs(n, "value", NULL);
 			pcb_element_t *elem, *new_elem;
+			pcb_coord_t TextX = 0, TextY = 0;
+			int Direction = 0, TextScale = 100;
+			pcb_flag_t TextFlags = pcb_no_flags();
 			const char *rot;
 
 			if (name == NULL) {
@@ -842,6 +846,25 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 
 			new_elem = pcb_element_alloc(st->pcb->Data);
 			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
+
+
+			PCB_ELEMENT_PCB_TEXT_LOOP(new_elem);
+			{
+				if (st->pcb->Data && st->pcb->Data->name_tree[n])
+					pcb_r_delete_entry(st->pcb->Data->name_tree[n], (pcb_box_t *) text);
+			}
+			PCB_END_LOOP;
+
+#warning TODO: use pcb_elem_new() instead of this?
+#warning TODO: load child node attribs to figure rotation and coords
+
+			pcb_element_text_set(&PCB_ELEM_TEXT_DESCRIPTION(new_elem), pcb_font(st->pcb, 0, 1), TextX, TextY, Direction, pkg, TextScale, TextFlags);
+			pcb_element_text_set(&PCB_ELEM_TEXT_REFDES(new_elem), pcb_font(st->pcb, 0, 1), TextX, TextY, Direction, name, TextScale, TextFlags);
+			pcb_element_text_set(&PCB_ELEM_TEXT_VALUE(new_elem), pcb_font(st->pcb, 0, 1), TextX, TextY, Direction, val, TextScale, TextFlags);
+			PCB_ELEM_TEXT_DESCRIPTION(new_elem).Element = new_elem;
+			PCB_ELEM_TEXT_REFDES(new_elem).Element = new_elem;
+			PCB_ELEM_TEXT_VALUE(new_elem).Element = new_elem;
+
 
 			if ((rot != NULL) && (rot[0] == 'R')) {
 				int deg = atoi(rot+1);
