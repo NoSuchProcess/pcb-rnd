@@ -39,6 +39,7 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "error.h"
+#include "hid_actions.h"
 
 typedef struct eagle_layer_s {
 	const char *name;
@@ -748,17 +749,43 @@ static int eagle_read_libs(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	return 0;
 }
 
+static int eagle_read_contactref(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	const char *elem, *pad, *net;
+	char conn[256];
+
+	elem = eagle_get_attrs(subtree, "element", NULL);
+	pad = eagle_get_attrs(subtree, "pad", NULL);
+
+
+	if ((elem == NULL) || (pad == NULL)) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring contactref: missing element or pad\n");
+		return 0;
+	}
+
+	net = eagle_get_attrs(subtree->parent, "name", NULL);
+
+	pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
+
+	pcb_hid_actionl("Netlist", "Add",  net, conn, NULL);
+	return 0;
+}
+
+
 static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	xmlNode *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
-		{"contactref",  eagle_read_nop},
+		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
 		{"polygon",     eagle_read_nop},
 		{"via",         eagle_read_via},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
+
+	pcb_hid_actionl("Netlist", "Freeze", NULL);
+	pcb_hid_actionl("Netlist", "Clear", NULL);
 
 	for(n = subtree->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"signal") == 0) {
@@ -770,6 +797,10 @@ static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int
 			eagle_foreach_dispatch(st, n->children, disp, (char *)name, ON_BOARD);
 		}
 	}
+
+	pcb_hid_actionl("Netlist", "Sort", NULL);
+	pcb_hid_actionl("Netlist", "Thaw", NULL);
+
 	return 0;
 }
 
