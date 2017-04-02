@@ -100,7 +100,7 @@ pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 
 void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
-	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags);
+	unsigned Direction, const char *TextString, int Scale, pcb_flag_t Flags);
 
 
 /* Change the specified text on an element, either on the board (give

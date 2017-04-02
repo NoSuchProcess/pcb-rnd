@@ -675,7 +675,7 @@ pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coo
 /* creates a new textobject as part of an element
    copies the values to the appropriate text object */
 void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
-	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags)
+	unsigned Direction, const char *TextString, int Scale, pcb_flag_t Flags)
 {
 	free(Text->TextString);
 	Text->TextString = (TextString && *TextString) ? pcb_strdup(TextString) : NULL;
