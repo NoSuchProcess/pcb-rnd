@@ -223,7 +223,6 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 			pcb_poly_clear_from_poly(data, PCB_TYPE_PAD, element, pad);
 		}
 		PCB_END_LOOP;
-		pcb_element_bbox(data, element, pcb_font(PCB, 0, 1));
 		pcb_r_insert_entry(data->element_tree, (pcb_box_t *)element, 0);
 	}
 	PCB_END_LOOP;
