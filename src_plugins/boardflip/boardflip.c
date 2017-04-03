@@ -167,7 +167,6 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(data);
 	{
-		pcb_r_delete_entry(data->element_tree, (pcb_box_t *)element);
 		XFLIP(element->MarkX);
 		YFLIP(element->MarkY);
 		if ((elem_swap_sides) && (ONLY1))
@@ -205,6 +204,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 			pcb_poly_restore_to_poly(data, PCB_TYPE_PIN, element, pin);
 			XFLIP(pin->X);
 			YFLIP(pin->Y);
+			pcb_pin_bbox(pin);
 			pcb_r_insert_entry(data->pin_tree, (pcb_box_t *)pin, 0);
 			pcb_poly_clear_from_poly(data, PCB_TYPE_PIN, element, pin);
 		}
@@ -219,11 +219,12 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 			YFLIP(pad->Point2.Y);
 			if ((elem_swap_sides) && (ONLY1))
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
+			pcb_pad_bbox(pad);
 			pcb_r_insert_entry(data->pad_tree, (pcb_box_t *)pad, 0);
 			pcb_poly_clear_from_poly(data, PCB_TYPE_PAD, element, pad);
 		}
 		PCB_END_LOOP;
-		pcb_r_insert_entry(data->element_tree, (pcb_box_t *)element, 0);
+		pcb_element_bbox(data, element, pcb_font(PCB, 0, 1)); /* also does the rtree administration */
 	}
 	PCB_END_LOOP;
 	PCB_RAT_LOOP(data);
