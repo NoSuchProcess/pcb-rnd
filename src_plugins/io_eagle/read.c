@@ -853,7 +853,8 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 
 			new_elem = pcb_element_alloc(st->pcb->Data);
 			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
-
+			new_elem->Flags = pcb_no_flags();
+			new_elem->ID = pcb_create_ID_get();
 
 			PCB_ELEMENT_PCB_TEXT_LOOP(new_elem);
 			{
