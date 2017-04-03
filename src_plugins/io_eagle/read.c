@@ -717,6 +717,11 @@ static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree, void *obj, in
 			printf(" pkg %s\n", name);
 			elem = calloc(sizeof(pcb_element_t), 1);
 			eagle_read_pkg(st, n, elem);
+			if (pcb_element_is_empty(elem)) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring empty package %s\n", name);
+				free(elem);
+				continue;
+			}
 			htsp_set(&lib->elems, (char *)name, elem);
 		}
 	}
