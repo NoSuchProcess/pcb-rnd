@@ -622,6 +622,7 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 
 static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj, int type, int hole)
 {
+	eagle_loc_t loc = type;
 	pcb_coord_t x, y, drill, dia;
 	pcb_pin_t *pin;
 	const char *name, *shape;
@@ -660,7 +661,12 @@ static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj,
 	else
 		PCB_FLAG_SET(PCB_FLAG_VIA, pin);
 
-	size_bump(st, x + dia, y + dia);
+	switch(loc) {
+		case IN_ELEM: break;
+		case ON_BOARD:
+			size_bump(st, x + dia, y + dia);
+			break;
+	}
 
 	return 0;
 }
