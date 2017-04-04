@@ -1,8 +1,8 @@
 Ready to blog:
 - QR code and bar code creation dialogue howto: qr() (needs qrencode(1)) and code128() + edakrill
-- bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
-- fonteditor (can edit custom font (currently selected on a board), can save font to file)
 - arc-in-font + the new alternative default font with arcs: font/default_arc.lht
+- fonteditor (can edit custom font (currently selected on a board), can save font to file)
+- bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
 
 less urgent/pre-planned/TO-DO
 - braille font (maybe together with the Klingon?)
