@@ -331,6 +331,7 @@ static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		case F_Object:
 			if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				element = (pcb_element_t *) ptrtmp;
+				pcb_undo_save_serial();
 				pcb_element_change_side(element, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 				pcb_undo_inc_serial();
 				pcb_draw();
@@ -338,7 +339,10 @@ static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			break;
 		case F_Selected:
 		case F_SelectedElements:
+			pcb_undo_save_serial();
 			pcb_selected_element_change_side();
+			pcb_undo_inc_serial();
+			pcb_draw();
 			break;
 		default:
 			err = 1;

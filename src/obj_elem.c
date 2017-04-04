@@ -475,10 +475,6 @@ pcb_bool pcb_selected_element_change_side(void)
 		}
 	}
 	PCB_END_LOOP;
-	if (change) {
-		pcb_draw();
-		pcb_undo_inc_serial();
-	}
 	return (change);
 }
 
