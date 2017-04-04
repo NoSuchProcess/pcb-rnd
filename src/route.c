@@ -131,21 +131,23 @@ pcb_route_add_arc( pcb_route_t * p_route,pcb_point_t * center,pcb_angle_t start_
 
 
 void
-pcb_route_direct( pcb_route_t * 	p_route, 
+pcb_route_direct( pcb_board_t *   PCB,
+									pcb_route_t * 	route, 
 									pcb_point_t * 	point1, 
 									pcb_point_t *		point2, 
 									pcb_layer_id_t 	layer,
 									pcb_coord_t     thickness,
 									pcb_coord_t     clearance	)
 {
-	pcb_route_reset(p_route);
-	p_route->start_point	= *point1;
-	p_route->end_point 		= *point2;
-	p_route->start_layer	= layer;
-	p_route->end_layer		= layer;
-	p_route->thickness		= thickness;
-	p_route->clearance		= clearance;
-	pcb_route_add_line(p_route,point1,point2,layer);
+	pcb_route_reset(route);
+	route->start_point	= *point1;
+	route->end_point 		= *point2;
+	route->start_layer	= layer;
+	route->end_layer		= layer;
+	route->thickness		= thickness;
+	route->clearance		= clearance;
+	route->PCB					= PCB;
+	pcb_route_add_line(route,point1,point2,layer);
 }
 
 /*-----------------------------------------------------------
@@ -304,7 +306,8 @@ pcb_route_calculate_45(pcb_point_t * start_point, pcb_point_t * target_point)
 
 /* TODO: Pass in other required information such as object flags */
 void
-pcb_route_calculate(pcb_route_t * 	p_route,
+pcb_route_calculate(pcb_board_t *   PCB,
+										pcb_route_t * 	route,
 										pcb_point_t * 	point1, 
 										pcb_point_t * 	point2,
 										pcb_layer_id_t  layer_id, 
@@ -323,17 +326,18 @@ pcb_route_calculate(pcb_route_t * 	p_route,
 
 	/* If the line can be drawn directly to the target then add a single line segment. */
 	if(PCB->RatDraw || conf_core.editor.all_direction_lines) {
-		pcb_route_direct(p_route,point1,point2,layer_id,thickness,clearance);
+		pcb_route_direct(PCB,route,point1,point2,layer_id,thickness,clearance);
 		return;
 	}
 
 	/* Restart the route */
-	pcb_route_reset(p_route);
-	p_route->start_point 	= *point1;
-	p_route->thickness 		= thickness;
-	p_route->clearance		= clearance;
-	p_route->start_layer	= layer_id;
-	p_route->end_layer		= layer_id;
+	pcb_route_reset(route);
+	route->start_point 	= *point1;
+	route->thickness 		= thickness;
+	route->clearance		= clearance;
+	route->start_layer	= layer_id;
+	route->end_layer		= layer_id;
+	route->PCB					= PCB;
 
 	/* If Refraction is 0 then add a single line segment that is horizontal, vertical or 45 degrees. 
 	* This line segment might not end under the crosshair.
@@ -341,8 +345,8 @@ pcb_route_calculate(pcb_route_t * 	p_route,
 	if(conf_core.editor.line_refraction == 0)	{
 		pcb_point_t target = *point2;
 		pcb_route_calculate_45(point1,&target);
-		pcb_route_add_line(p_route,point1,&target,layer_id);
-		p_route->end_point = target;
+		pcb_route_add_line(route,point1,&target,layer_id);
+		route->end_point = target;
 	}
 	else {
 		/* Refraction is non-zero so add multiple lines (horizontal, vertical and/or 45 degrees). */
@@ -386,20 +390,20 @@ pcb_route_calculate(pcb_route_t * 	p_route,
 			pcb_route_calculate_corner_arc(point1,&target,point2,radius,&arc,&target1,&target2);
 
 			if((point1->X != target1.X) || (point1->Y != target1.Y))
-				pcb_route_add_line(p_route,point1,&target1,layer_id);
+				pcb_route_add_line(route,point1,&target1,layer_id);
 			
 			if((target1.X != target2.X) || (target1.Y != target2.Y))
-				pcb_route_add_arc(p_route,&arc.point1,arc.start_angle,arc.delta_angle,arc.radius,layer_id);
+				pcb_route_add_arc(route,&arc.point1,arc.start_angle,arc.delta_angle,arc.radius,layer_id);
 
 			if((point2->X != target2.X) || (point2->Y != target2.Y))
-				pcb_route_add_line(p_route,&target2,point2,layer_id);
+				pcb_route_add_line(route,&target2,point2,layer_id);
 
-			p_route->end_point = *point2;
+			route->end_point = *point2;
 		}
 		else {
-			pcb_route_add_line(p_route,point1,&target,layer_id);
-			pcb_route_add_line(p_route,&target,point2,layer_id);
-			p_route->end_point = *point2;
+			pcb_route_add_line(route,point1,&target,layer_id);
+			pcb_route_add_line(route,&target,point2,layer_id);
+			route->end_point = *point2;
 		}
 	}
 }
@@ -569,7 +573,7 @@ pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC )
 void
 pcb_route_draw_drc( pcb_route_t * p_route,pcb_hid_gc_t GC )
 {
-	pcb_coord_t thickness = p_route->thickness + 2 * p_route->clearance;
+	pcb_coord_t thickness = p_route->thickness + 2 * p_route->PCB->Bloat;
 	int i;
 
 	pcb_gui->set_color(GC,conf_core.appearance.color.cross);

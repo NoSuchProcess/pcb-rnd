@@ -49,6 +49,7 @@ typedef struct {
 	pcb_coord_t						clearance;
 	pcb_layer_id_t				start_layer;	/* The ID of the layer that the route started on */
 	pcb_layer_id_t				end_layer;		/* The ID of the layer that the route ended on, usually the same as the start for simple routes*/
+	pcb_board_t *   			PCB;
   int										size;					/* The number of active objects in the array */
   int										capacity;			/* The size of the object array */
   pcb_route_object_t *	objects;			/* Pointer to the object array data */
@@ -74,7 +75,8 @@ void	pcb_route_add_arc( 	pcb_route_t * 	p_route,
 													pcb_coord_t 		radius,
 													pcb_layer_id_t	layer );
 
-void	pcb_route_calculate( 	pcb_route_t * 	p_route, 
+void	pcb_route_calculate( 	pcb_board_t *		PCB,
+														pcb_route_t * 	route, 
 														pcb_point_t * 	point1, 
 														pcb_point_t * 	point2,
 														pcb_layer_id_t	layer_id,
@@ -82,7 +84,8 @@ void	pcb_route_calculate( 	pcb_route_t * 	p_route,
 														pcb_coord_t			clearance,
 														int 						mod1,
 														int 						mod2 );
-void	pcb_route_direct( pcb_route_t *   p_route,
+void	pcb_route_direct( pcb_board_t *   PCB,
+												pcb_route_t *   p_route,
 												pcb_point_t *   point1,
 												pcb_point_t *   point2,
 												pcb_layer_id_t  layer,

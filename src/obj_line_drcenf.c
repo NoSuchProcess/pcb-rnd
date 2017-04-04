@@ -61,7 +61,8 @@ void pcb_line_adjust_attached(void)
 	line->Point2.X = pcb_crosshair.X;
 	line->Point2.Y = pcb_crosshair.Y;
 
-	pcb_route_calculate(&pcb_crosshair.Route,
+	pcb_route_calculate(PCB,
+											&pcb_crosshair.Route,
 											&line->Point1,
 											&line->Point2,
 											pcb_layer_id(PCB->Data, CURRENT),
