@@ -1381,7 +1381,12 @@ element_hi_format
 			}
 		  relementdefs ')'
 			{
-				pcb_element_bbox(yyData, yyElement, yyFont);
+				if (pcb_element_is_empty(yyElement)) {
+					pcb_element_free(yyElement);
+					yyElement = NULL;
+				}
+				else
+					pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 		;
 
