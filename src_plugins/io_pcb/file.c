@@ -482,6 +482,26 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 /* ---------------------------------------------------------------------------
  * writes layer data
  */
+static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
+{
+	unsigned long lflg = pcb_layer_flags(pcb_layer_id(PCB->Data, layer));
+	/* The old PCB format encodes some properties in layer names - have to
+	   alter the real layer name before save to get the same effect */
+	if (lflg & PCB_LYT_OUTLINE) {
+		if (pcb_strcasecmp(name, "outline") == 0)
+			return name;
+		return "Outline";
+	}
+	if (lflg & PCB_LYT_SILK) {
+		if (pcb_strcasecmp(name, "silk") == 0)
+			return name;
+		return "silk";
+	}
+
+	/* plain layer */
+	return name;
+}
+
 static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
@@ -493,7 +513,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->Name && *layer->Name)) {
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
+		pcb_print_quoted_string(FP, layer_name_hack(layer, PCB_EMPTY(layer->Name)));
 		fputs(")\n(\n", FP);
 		WriteAttributeList(FP, &layer->Attributes, "\t");
 
