@@ -110,7 +110,7 @@ static void InitPaths(char *argv0)
 	size_t l;
 	int haspath;
 	char *t1, *t2;
-	int found_bindir = 0;
+	int found_bindir = 0, se = 0;
 	char *exec_prefix = NULL;
 	char *bindir = NULL;
 
@@ -207,16 +207,18 @@ static void InitPaths(char *argv0)
 	conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
-	pcb_setenv("PCB_RND_VERSION",     PCB_VERSION,           1);
-	pcb_setenv("PCB_RND_REVISION",    PCB_REVISION,          1);
-	pcb_setenv("PCB_RND_PCBLIB",      PCBSHAREDIR "/pcblib", 1);
-	pcb_setenv("PCB_RND_SHARE",       PCBSHAREDIR,           1);
-	pcb_setenv("PCB_RND_LIB",         PCBLIBDIR,             1);
-	pcb_setenv("PCB_RND_EXEC_PREFIX", exec_prefix,           1);
+	se |= pcb_setenv("PCB_RND_VERSION",     PCB_VERSION,           1);
+	se |= pcb_setenv("PCB_RND_REVISION",    PCB_REVISION,          1);
+	se |= pcb_setenv("PCB_RND_PCBLIB",      PCBSHAREDIR "/pcblib", 1);
+	se |= pcb_setenv("PCB_RND_SHARE",       PCBSHAREDIR,           1);
+	se |= pcb_setenv("PCB_RND_LIB",         PCBLIBDIR,             1);
+	se |= pcb_setenv("PCB_RND_EXEC_PREFIX", exec_prefix,           1);
+
+	if (se != 0)
+		fprintf(stderr, "WARNING: setenv() failed - external commands such as parametric footprints may not have a proper environment\n");
 
 	free(exec_prefix);
 	free(bindir);
-
 }
 
 /* ----------------------------------------------------------------------
