@@ -343,6 +343,7 @@ static GtkWidget *config_window;
 static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, void (*save_cb) (GtkButton * widget, save_ctx_t * sctx))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox, *vbox2;
+	const char *tooltip_text;
 	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_binary, NULL };
 	static save_ctx_t ctx_all2user = { CFR_USER, CFR_binary, NULL };
 	static save_ctx_t ctx_all2file = { CFR_file, CFR_binary, NULL };
@@ -364,6 +365,8 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 	gtk_box_pack_start(GTK_BOX(hbox), vbox2, FALSE, FALSE, 0);
 
 	button = gtk_button_new_with_label("Save in project config");
+	conf_get_project_conf_name(NULL, (PCB == NULL ? NULL : PCB->Filename), &tooltip_text);
+	gtk_widget_set_tooltip_text(GTK_WIDGET(button), tooltip_text);
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
 
