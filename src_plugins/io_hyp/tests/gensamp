@@ -269,6 +269,14 @@ def mkpolygon (typ, id, x0, y0, w, h):
   print "  }"
   return
 
+def mkpolyvoid (id, x0, y0, w, h):
+  print "  {POLYVOID ID=%i X=%f Y=%f" % (id, x0, y0)
+  print "     (LINE X=%f Y=%f)" % (x0+w, y0)
+  print "     (LINE X=%f Y=%f)" % (x0+w, y0+h)
+  print "     (LINE X=%f Y=%f)" % (x0, y0+h)
+  print "     (LINE X=%f Y=%f)" % (x0, y0)
+  print "  }"
+  return
 
 x1 = 11.0
 x2 = x0 + w / 4.0
@@ -299,6 +307,20 @@ print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+s, x2
 print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+2*s, x2, y0+h/2.0+2*s)
 print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0, x1, y0+h/2.0+s)
 print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+s, x1, y0+h/2.0+2*s)
+print "}"
+
+# test nesting of polygons
+
+x0 = 14.0
+y0 = 5.0
+s = 0.25
+print "{NET=nesting_poly_1 PS=0.05"
+mkpolygon("POUR", 7, x0, y0, 8*s, 8*s)
+mkpolyvoid(7, x0+1*s, y0+1*s, 6*s, 6*s)
+print "}"
+print "{NET=nesting_poly_2 PS=0.05"
+mkpolygon("POUR", 8, x0+2*s, y0+2*s, 4*s, 4*s)
+mkpolyvoid(8, x0+3*s, y0+3*s, 2*s, 2*s)
 print "}"
 
 print "{END}"
