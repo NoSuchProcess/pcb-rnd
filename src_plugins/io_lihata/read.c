@@ -478,6 +478,7 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 			for(r = 0; r < cnt->data.table.rows; r++) {
 				parse_coord(&poly->Points[n].X, cnt->data.table.r[r][0]);
 				parse_coord(&poly->Points[n].Y, cnt->data.table.r[r][1]);
+				post_id_req(&poly->Points[n]);
 				n++;
 			}
 		}
