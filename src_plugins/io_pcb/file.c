@@ -166,8 +166,6 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 			sep = 1;
 			for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
 				pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
-				unsigned int lflg = pcb_layer_flags(layer);
-
 
 				sprintf(cp, "%ld", layer + 1);
 				while (*++cp);
