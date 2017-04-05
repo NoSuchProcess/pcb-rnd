@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -162,3 +164,17 @@ int pcb_strncasecmp(const char *s1, const char *s2, size_t n)
 	}
 	return tolower(*s1) - tolower(*s2);
 }
+
+#ifdef PCB_HAVE_SETENV
+	extern int setenv();
+#endif
+
+int pcb_setenv(const char *name, const char *val, int overwrite)
+{
+#ifdef PCB_HAVE_SETENV
+	return setenv(name, val, overwrite);
+#else
+	return -1;
+#endif
+}
+

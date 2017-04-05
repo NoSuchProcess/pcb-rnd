@@ -312,6 +312,7 @@ int hook_detect_target()
 
 	require("cc/fpic",  0, 1);
 	require("signal/names/*",  0, 0);
+	require("libs/env/setenv/*",  0, 0);
 	require("libs/fs/mkdtemp/*",  0, 0);
 	require("libs/fs/realpath/*",  0, 0);
 	require("libs/fs/readdir/*",  0, 1);

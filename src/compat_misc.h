@@ -43,4 +43,6 @@ double pcb_round(double x);
 int pcb_strcasecmp(const char *s1, const char *s2);
 int pcb_strncasecmp(const char *s1, const char *s2, size_t n);
 
+int pcb_setenv(const char *name, const char *val, int overwrite);
+
 #endif /* PCB_COMPAT_MISC_H */
