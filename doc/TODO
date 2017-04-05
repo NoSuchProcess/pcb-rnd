@@ -3,6 +3,7 @@
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
+	- gtk: menu: veiw/more zoom*/flip up -> infinite loop of flip/redraw [report: miloh]
 
 - plugin breakage:
 	- don't force builtin for dependant libs
