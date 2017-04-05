@@ -377,7 +377,7 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 	vbox2 = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox2, FALSE, FALSE, 0);
 
-	button = gtk_button_new_with_label("Save to file");
+	button = gtk_button_new_with_label("Save to file...");
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2file);
 
