@@ -399,7 +399,16 @@ int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	return pcb_gtk_swap_sides(&gport->view, argc, argv, x, y);
+	int res, oa;
+
+	/* ugly workaround: turn off gui refreshes until the swap finishes to avoid triggering more events that may lead to infinite loop */
+	oa = ghidgui->hid_active;
+	ghidgui->hid_active = 0;
+
+	res = pcb_gtk_swap_sides(&gport->view, argc, argv, x, y);
+
+	ghidgui->hid_active = oa;
+	return res;
 }
 
 static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
