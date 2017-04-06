@@ -432,9 +432,42 @@ function parse_dim(h)
 {
 	if (h == "")
 		return ""
-	if (h ~ "mm") {
+	if (h ~ "mm$") {
 		sub("mm", "", h)
 		return mm(h)
+	}
+	if (h ~ "um$") {
+		sub("um", "", h)
+		return mm(h)/1000
+	}
+	if (h ~ "nm$") {
+		sub("nm", "", h)
+		return mm(h)/1000000
+	}
+	if (h ~ "cm$") {
+		sub("cm", "", h)
+		return mm(h)*10
+	}
+	if (h ~ "m$") {
+		sub("m", "", h)
+		return mm(h)*1000
+	}
+	if (h ~ "km$") {
+		sub("km", "", h)
+		return mm(h)*1000000
+	}
+
+	if (h ~ "in$") {
+		sub("in", "", h)
+		return mil(h)*100
+	}
+	if (h ~ "dmil$") {
+		sub("dmil", "", h)
+		return mil(h)*10
+	}
+	if (h ~ "cmil$") {
+		sub("cmil", "", h)
+		return mil(h)*100
 	}
 	return mil(h)
 }
