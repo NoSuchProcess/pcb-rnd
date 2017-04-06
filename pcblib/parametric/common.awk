@@ -459,7 +459,7 @@ function parse_dim(h)
 
 	if (h ~ "in$") {
 		sub("in", "", h)
-		return mil(h)*100
+		return mil(h)*1000
 	}
 	if (h ~ "dmil$") {
 		sub("dmil", "", h)
