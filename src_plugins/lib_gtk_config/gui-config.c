@@ -371,6 +371,8 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
 
 	button = gtk_button_new_with_label("Save in user config");
+	tooltip_text = conf_get_user_conf_name();
+	gtk_widget_set_tooltip_text(GTK_WIDGET(button), tooltip_text);
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2user);
 

@@ -310,6 +310,11 @@ static int conf_parse_increments(pcb_increments_t *inc, lht_node_t *node)
 	return 0;
 }
 
+const char *conf_get_user_conf_name()
+{
+	return conf_user_fn;
+}
+
 const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
 {
 	static char res[PCB_PATH_MAX];
