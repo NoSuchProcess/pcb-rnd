@@ -315,16 +315,16 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 
 	if (need_update) {						/* need to reopen the preferences dialog to show the new settings */
 		tvmap_t *first = NULL, *next;
-		int page;
+		GtkTreePath *current_path;
 
-		/* save expansions and notebook states */
+		/* save expansions and cursor selection */
 		gtk_tree_view_map_expanded_rows(gui_config_treeview, tvmap, &first);
-		page = gtk_notebook_get_current_page(config_notebook);
+		gtk_tree_view_get_cursor(gui_config_treeview, &current_path, NULL);
 
 		ghid_config_window_close();
 		ghid_config_window_show(priv_copy_com);
 
-		/* restore expansions and notebook states */
+		/* restore expansions and cursor position. That will trigger correct notebook display */
 		for (; first != NULL; first = next) {
 /*			printf("exp2 %s\n", gtk_tree_path_to_string(first->path));*/
 			next = first->next;
@@ -332,7 +332,8 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 			gtk_tree_path_free(first->path);
 			free(first);
 		}
-		gtk_notebook_set_current_page(config_notebook, page);
+		gtk_tree_view_set_cursor(gui_config_treeview, current_path, NULL, FALSE);
+		gtk_tree_path_free(current_path);
 	}
 }
 
