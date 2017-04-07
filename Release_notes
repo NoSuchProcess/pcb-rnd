@@ -1,29 +1,24 @@
-pcb-rnd 1.2.1
+pcb-rnd 1.2.2
 ~~~~~~~~~~~~~~
 
-With a new peak in number of developers and contributors, version 1.2.1
-introduces a large amount of bug fixes, cleanups and new features that
-can be sorted in the following main groups.
+We had multiple focuses in the past 2 months for producing pcb-rnd 1.2.2,
+an important feature-rich release:
 
-1. Layer model rewrite; pcb-rnd now has a clear separation of physical
-layer and logical layer concepts. There's new, board cross-section GUI
-to visualize and manipulate the layer stack.
+1. Going on with the major cleanup/split in the gtk HID allows pcb-rnd to
+have multiple GTK based HIDs.
 
-2. The hid_gtk refactoring; big, monolithic code blocks are split up in
-smaller, more independent, lib-like modules and are moved to a lib plugin.
-This paves the road for a modular setup to support multiple graphic
-renderings and maybe even different gtk versions.
+2. One of the new GTK based HID has opengl rendering (reusing the old code).
 
-3. Automated testing and validation: a new infrastructure for automated
-testing of exporters is added. The reference PNG files are manually validated
-against the input PCB geometry - by now, we know exactly how much error
-the PNG rendering has.
+3. Font upgrade: support for multiple fonts on the same board, font
+selectable per text object; arc in font; polygon in font.
 
-4. UI fixes: better rubber band, xor-outline-while-moving and DRC outline
-visualization support.
+4. More user friendly font editor: can load and save fonts directly from/to
+files on the disk; can edit any of the currently loaded fonts; can edit
+arcs and polygons.
 
-5. Introducing the "EDA ecosystem" idea: real working import/export bridges
-or flows to fidocadj, freerouting.net, ltspice, mucs and TinyCAD. Major
-improvements in the KiCad file format compatibility.
+5. Rubber band and signal routing UI improvements.
 
-6. The toporouter got removed in favor of the new routers for now.
+6. Support for EDAkrill in the library window.
+
+7. More io_ support: tEDAx footprints and netlists, import netlist from
+mentor graphics schematics.
