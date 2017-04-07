@@ -260,8 +260,8 @@ w = 1.0
 h = 0.5
 s = 1.0
 
-def mkpolygon (typ, id, x0, y0, w, h):
-  print "  {POLYGON L=component T=%s W=0.1 ID=%i X=%f Y=%f" % (typ, id, x0, y0)
+def mkpolygon (typ, linewdth, id, x0, y0, w, h):
+  print "  {POLYGON L=component T=%s W=%f ID=%i X=%f Y=%f" % (typ, linewdth, id, x0, y0)
   print "     (LINE X=%f Y=%f)" % (x0+w, y0)
   print "     (LINE X=%f Y=%f)" % (x0+w, y0+h)
   print "     (LINE X=%f Y=%f)" % (x0, y0+h)
@@ -290,9 +290,9 @@ print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+2*s, 
 print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0, x1, y0+h/2.0+s)
 print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=0.04 L=component)" % (x1, y0+h/2.0+s, x1, y0+h/2.0+2*s)
 
-mkpolygon("POUR", 4, x0, y0, w, h)
-mkpolygon("COPPER", 5, x0, y0 + s, w, h)
-mkpolygon("PLANE", 6, x0, y0 + 2 * s, w, h)
+mkpolygon("POUR", 0.1, 4, x0, y0, w, h)
+mkpolygon("COPPER", 0.1, 5, x0, y0 + s, w, h)
+mkpolygon("PLANE", 0.1, 6, x0, y0 + 2 * s, w, h)
 
 print "}"
 
@@ -314,12 +314,12 @@ print "}"
 x0 = 14.0
 y0 = 5.0
 s = 0.25
-print "{NET=nesting_poly_1 PS=0.05"
-mkpolygon("POUR", 7, x0, y0, 8*s, 8*s)
+print "{NET=nesting_poly_1 PS=0"
+mkpolygon("POUR", 0, 7, x0, y0, 8*s, 8*s)
 mkpolyvoid(7, x0+1*s, y0+1*s, 6*s, 6*s)
 print "}"
-print "{NET=nesting_poly_2 PS=0.05"
-mkpolygon("POUR", 8, x0+2*s, y0+2*s, 4*s, 4*s)
+print "{NET=nesting_poly_2 PS=0"
+mkpolygon("POUR", 0, 8, x0+2*s, y0+2*s, 4*s, 4*s)
 mkpolyvoid(8, x0+3*s, y0+3*s, 2*s, 2*s)
 print "}"
 

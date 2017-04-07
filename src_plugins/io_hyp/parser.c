@@ -70,7 +70,7 @@ void hyp_perimeter();						/* add board outline to pcb */
 void hyp_create_polygons();			/* add all created polygons to pcb */
 void hyp_create_silkscreen();		/* add silkscreen outlines to all devices on board */
 void hyp_resize_board();				/* resize board to fit outline */
-unsigned int hyp_layer_flag(char *);	/* set "solder side" flag if on bottom layer */
+pcb_bool_t hyp_is_bottom_layer(char *);	/* true if bottom layer */
 
 /* layer creation */
 int layer_count;
@@ -120,13 +120,25 @@ device_t *device_head;
 
 /* padstack */
 
+typedef struct padstack_element_s {
+	char *layer_name;
+	int pad_shape;
+	pcb_coord_t pad_sx;
+	pcb_coord_t pad_sy;
+	double pad_angle;
+	pcb_coord_t thermal_clear_sx;
+	pcb_coord_t thermal_clear_sy;
+	double thermal_clear_angle;
+	pad_type_enum pad_type;
+	struct padstack_element_s *next;
+} padstack_element_t;
+
+padstack_element_t *current_padstack_element;
+
 typedef struct padstack_s {
 	char *name;
-	pcb_coord_t thickness;
-	pcb_coord_t clearance;
-	pcb_coord_t mask;
-	pcb_coord_t drill_hole;
-	pcb_flag_t flags;							/* round, rectangular or octagon */
+	pcb_coord_t drill_size;
+	struct padstack_element_s *padstack;
 	struct padstack_s *next;
 } padstack_t;
 
@@ -254,6 +266,7 @@ void hyp_init(void)
 	/* clear padstack */
 	padstack_head = NULL;
 	current_padstack = NULL;
+	current_padstack_element = NULL;
 
 	/* clear devices */
 	device_head = NULL;
@@ -375,7 +388,8 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 		device_t *dev = hyp_device_by_name(element_name);
 		if (dev != NULL) {
 			/* device on component or solder side? */
-			flags = pcb_flag_add(flags, hyp_layer_flag(dev->layer_name));
+			if (hyp_is_bottom_layer(dev->layer_name))
+				flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
 			/* create */
 			if (hyp_debug)
 				pcb_printf("creating device \"%s\".\n", dev->ref);
@@ -900,18 +914,6 @@ pcb_layer_t *hyp_get_layer(parse_param * h)
 pcb_bool_t hyp_is_bottom_layer(char *layer_name)
 {
 	return ((layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(layer_name)) & PCB_LYT_BOTTOM));
-}
-
-/*
- * return PCB_FLAG_ONSOLDER if layer_name is name of bottom layer
- */
-
-unsigned int hyp_layer_flag(char *layer_name)
-{
-	if ((layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(layer_name)) & PCB_LYT_BOTTOM))
-		return PCB_FLAG_ONSOLDER;
-	else
-		return PCB_FLAG_NO;
 }
 
 /*
@@ -1507,8 +1509,6 @@ pcb_bool exec_padstack_element(parse_param * h)
 				pcb_printf(" oblong");
 			else
 				pcb_printf(" ?");
-			pcb_printf(" pad_sx = %ml", xy2coord(h->pad_sx));
-			pcb_printf(" pad_sy = %ml", xy2coord(h->pad_sy));
 			pcb_printf(" thermal_clear_sx = %ml", xy2coord(h->thermal_clear_sx));
 			pcb_printf(" thermal_clear_sy = %ml", xy2coord(h->thermal_clear_sy));
 			pcb_printf(" thermal_clear_angle = %f", h->thermal_clear_angle);
@@ -1532,37 +1532,39 @@ pcb_bool exec_padstack_element(parse_param * h)
 		pcb_printf("\n");
 	}
 
-
-	/* XXX fixme. This reduces the padstack to a pcb_via_new call; a very basic approximation of what a padstack is. */
-
 	if (h->padstack_name_set) {
+		/* add new padstack */
 		current_padstack = malloc(sizeof(padstack_t));
 		if (current_padstack == NULL)
-			return 1;
+			return 1;									/*malloc failed */
 		current_padstack->name = pcb_strdup(h->padstack_name);
-
-		if (h->pad_sx < h->pad_sy)
-			current_padstack->thickness = xy2coord(h->pad_sx);
-		else
-			current_padstack->thickness = xy2coord(h->pad_sy);
-
-		current_padstack->clearance = 0;
-		current_padstack->mask = current_padstack->thickness;
-		current_padstack->drill_hole = xy2coord(h->drill_size);
-		if (h->pad_shape == 1)
-			current_padstack->flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
-		else if (h->pad_shape == 2)
-			current_padstack->flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
-		else
-			current_padstack->flags = pcb_no_flags();	/* round */
+		current_padstack->drill_size = xy2coord(h->drill_size);
+		current_padstack_element = malloc(sizeof(padstack_element_t));
+		current_padstack->padstack = current_padstack_element;
+	}
+	else {
+		/* add new padstack element */
+		current_padstack_element->next = malloc(sizeof(padstack_element_t));
+		current_padstack_element = current_padstack_element->next;
+		if (current_padstack_element == NULL)
+			return 1;									/*malloc failed */
 	}
 
-	if ((current_padstack != NULL) && h->pad_type_set & (h->pad_type == PAD_TYPE_THERMAL_RELIEF)) {
-		current_padstack->clearance =
-			(xy2coord(h->thermal_clear_sx) + xy2coord(h->thermal_clear_sy)) * 0.5 - current_padstack->thickness;
-		if (current_padstack->clearance < 0)
-			current_padstack->clearance = 0;
-	}
+	/* fill in values */
+
+	current_padstack_element->layer_name = pcb_strdup(h->layer_name);
+	current_padstack_element->pad_shape = h->pad_shape;
+	current_padstack_element->pad_sx = xy2coord(h->pad_sx);
+	current_padstack_element->pad_sy = xy2coord(h->pad_sy);
+	current_padstack_element->pad_angle = h->pad_angle;
+	current_padstack_element->thermal_clear_sx = xy2coord(h->thermal_clear_sx);
+	current_padstack_element->thermal_clear_sy = xy2coord(h->thermal_clear_sy);
+	current_padstack_element->thermal_clear_angle = h->thermal_clear_angle;
+	if (h->pad_type_set)
+		current_padstack_element->pad_type = h->pad_type;
+	else
+		current_padstack_element->pad_type = PAD_TYPE_METAL;
+	current_padstack_element->next = NULL;
 
 	return 0;
 }
@@ -1580,8 +1582,205 @@ pcb_bool exec_padstack_end(parse_param * h)
 		current_padstack = NULL;
 	}
 
+	current_padstack_element = NULL;
+
 	return 0;
 }
+
+/*
+ * draw padstack. Used when drawing vias, pins and pads.
+ * ref is an optional string which gives pin reference as device.pin, eg. U1.VCC
+ */
+
+void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
+{
+
+/* 
+ * We try to map a hyperlynx padstack to its closest pcb-rnd primitive.
+ * Choose between pcb_via_new(), pcb_element_pin_new(), pcb_element_pad_new() to draw a padstack.
+ * if there is a drill hole but no pin reference, it's a via. Use pcb_via_new().
+ * if there is a drill hole and a pin reference, it's a pin. Use pcb_element_pin_new().
+ * if there is no drill hole, it's a pad. Use pcb_element_pad_new().
+ */
+
+	pcb_element_t *element = NULL;
+	pcb_coord_t x1 = 0;
+	pcb_coord_t y1 = 0;
+	pcb_coord_t x2 = 0;
+	pcb_coord_t y2 = 0;
+	pcb_coord_t thickness = 0;
+	pcb_coord_t clearance = 0;
+	pcb_coord_t mask = 0;
+	pcb_coord_t drillinghole = 0;
+	char *name = NULL;
+	char *number = NULL;
+	pcb_flag_t flags;
+
+	char *device_name = NULL;
+	char *pin_name = NULL;
+	char *layer_name = NULL;
+	padstack_element_t *i;
+
+	if (padstk == NULL) {
+		if (hyp_debug)
+			pcb_printf("draw padstack: padstack not found.\n");
+		return;
+	}
+
+	/* drill size */
+	drillinghole = padstk->drill_size;
+
+	/* pad size and shape */
+	thickness = 0;
+	clearance = 0;
+	mask = 0;
+	flags = pcb_no_flags();
+
+	/* loop over padstack, and choose one entry. this is suboptimal. XXX fixme */
+	for (i = padstk->padstack; i != NULL; i = i->next) {
+		if ((i->layer_name != NULL) && strcmp(i->layer_name, "ADEF") == 0)
+			continue;									/* skip antipads */
+		if (i->pad_type != PAD_TYPE_METAL)
+			continue;									/* skip antipads and thermal relief */
+		thickness = min(i->pad_sx, i->pad_sy);
+		if (i->pad_shape == 1)
+			flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
+		else if (i->pad_shape == 2)
+			flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
+		else
+			flags = pcb_no_flags();		/* round */
+		/* MDEF is a dummy layer name used to signal the default for metal layers */
+		if ((i->layer_name != NULL) && strcmp(i->layer_name, "MDEF") == 0)
+			break;
+	}
+
+	mask = thickness;
+
+	if ((drillinghole > 0) && (ref == NULL)) {
+		pcb_via_new(hyp_dest, x, y, thickness, clearance, mask, drillinghole, name, flags);
+		return;
+	}
+
+	/* device and pin name, if any */
+	device_name = NULL;
+	pin_name = NULL;
+	if (ref != NULL) {
+		char *dot;
+		/* reference has format 'device_name.pin_name' */
+		device_name = pcb_strdup(ref);
+		dot = strrchr(device_name, '.');
+		if (dot != NULL) {
+			*dot = '\0';
+			pin_name = pcb_strdup(dot + 1);
+		}
+
+		if (hyp_debug)
+			pcb_printf("draw padstack: device_name = \"%s\" pin_name = \"%s\"\n", device_name, pin_name);
+
+		/* find device by name */
+		element = hyp_create_element_by_name(device_name, x, y);
+	}
+
+	/* name */
+	name = pin_name;
+
+	if ((drillinghole > 0) && (element != NULL)) {
+		/* create */
+		pcb_element_pin_new(element, x, y, thickness, clearance, mask, drillinghole, name, number, flags);
+		/* update bounding box */
+		pcb_element_bbox(hyp_dest, element, pcb_font(PCB, 0, 1));
+		return;
+	}
+
+	/* we're now pretty sure it's not a pin or via but a pad. */
+
+	/* layer */
+	layer_name = NULL;
+	x1 = 0;
+	y1 = 0;
+	x2 = 0;
+	y2 = 0;
+
+	/* loop over padstack, find suitable layer, and set pad arguments. */
+	for (i = padstk->padstack; i != NULL; i = i->next) {
+		if (i->layer_name == NULL)
+			continue;
+		if (strcmp(i->layer_name, "ADEF") == 0)
+			continue;									/* skip dummy layer 'ADEF' */
+		if (i->pad_type != PAD_TYPE_METAL)
+			continue;									/* skip antipads and thermal relief */
+
+		x1 = x;
+		y1 = y;
+		x2 = x1;
+		y2 = y1;
+		thickness = 0;
+
+		if (i->pad_sy > i->pad_sx) {
+			thickness = i->pad_sx;
+			x2 = x;
+			y2 = y + i->pad_sy - i->pad_sx;
+		}
+		else if (i->pad_sx > i->pad_sy) {
+			thickness = i->pad_sy;
+			x2 = x + i->pad_sx - i->pad_sy;
+			y2 = y;
+		}
+		else {
+			thickness = i->pad_sx;
+			x2 = x;
+			y2 = y;
+		}
+
+		mask = thickness;
+
+		/* XXX ought to rotate pad along h->via_pad_angle, if h->via_pad_angle_set */
+
+		layer_name = pcb_strdup(i->layer_name);
+		if (i->pad_shape == 1)
+			flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
+		else if (i->pad_shape == 2)
+			flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
+		else
+			flags = pcb_no_flags();		/* round */
+	}
+
+	/* set pad "on solder side" flag if needed */
+	if (hyp_is_bottom_layer(layer_name))
+		flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
+
+	/* create dummy element on top or bottom layer for pads without pin reference */
+	if (element == NULL) {
+		if ((layer_name != NULL) && hyp_is_bottom_layer(layer_name)) {
+			if (solder_side_pads == NULL)
+				solder_side_pads =
+					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_flag_make(PCB_FLAG_ONSOLDER), NULL, NULL, NULL, 0, 0, 0, 500,
+													pcb_flag_make(PCB_FLAG_ONSOLDER), pcb_false);
+			element = solder_side_pads;
+		}
+		else {
+			if (component_side_pads == NULL)
+				component_side_pads =
+					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), NULL, NULL, NULL, 0, 0, 0, 500, pcb_no_flags(),
+													pcb_false);
+			element = component_side_pads;
+		}
+	}
+
+	if (element != NULL) {
+		/* create */
+		pcb_element_pad_new(element, x1, y1, x2, y2, thickness, clearance, mask, name, number, flags);
+		/* update bounding box */
+		pcb_element_bbox(hyp_dest, element, pcb_font(PCB, 0, 1));
+		return;
+	}
+
+	if (hyp_debug)
+		pcb_printf("draw padstack: skipped.\n");
+
+	return;
+}
+
 
 /*
  * NET record.
@@ -1670,6 +1869,24 @@ pcb_bool exec_arc(parse_param * h)
 	return 0;
 }
 
+/* 
+ * Convert string-type pad shapes to numeric ones.
+ */
+
+int str2pad_shape(char *pad_shape)
+{
+	if (pad_shape == NULL)
+		return 0;
+	else if (strcmp(pad_shape, "OVAL") == 0)
+		return 0;
+	else if (strcmp(pad_shape, "RECT") == 0)
+		return 1;
+	else if (strcmp(pad_shape, "OBLONG") == 0)
+		return 2;
+	else
+		return 0;
+}
+
 /*
  * VIA subrecord of NET record. 
  * Draws via using padstack definition.
@@ -1677,8 +1894,6 @@ pcb_bool exec_arc(parse_param * h)
 
 pcb_bool exec_via(parse_param * h)
 {
-	padstack_t *padstack;
-
 	/* detect old-style v1.0 via */
 	if (!h->padstack_name_set)
 		return exec_via_v1(h);
@@ -1690,33 +1905,27 @@ pcb_bool exec_via(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	padstack = hyp_padstack_by_name(h->padstack_name);
-	if (padstack == NULL) {
-		pcb_printf("via: padstack \"%s\" not found. skipping.\n", h->padstack_name);
+	if (!h->padstack_name_set) {
+		if (hyp_debug)
+			pcb_printf("pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
 		return 0;
 	}
 
-	/* XXX buried and blind vias not implemented yet */
-
-	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
-							padstack->drill_hole, NULL, padstack->flags);
+	hyp_draw_padstack(hyp_padstack_by_name(h->padstack_name), x2coord(h->x), y2coord(h->y), NULL);
 
 	return 0;
 }
 
 /*
  * VIA subrecord of NET record. 
- * Draws deprecated v1.x via. Does not use padstack.
+ * Draws deprecated v1.x via.
  */
 
 pcb_bool exec_via_v1(parse_param * h)
 {
-	pcb_coord_t thickness;
-	pcb_coord_t clearance;
-	pcb_coord_t mask;
-	pcb_coord_t drill_hole = 0;
-	char *shape = NULL;
-	pcb_flag_t flags;
+	padstack_t *padstk;
+	padstack_element_t *pad1;
+	padstack_element_t *pad2;
 
 	if (hyp_debug) {
 		pcb_printf("old_via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
@@ -1747,47 +1956,61 @@ pcb_bool exec_via_v1(parse_param * h)
 		if (h->via_pad2_sx_set)
 			pcb_printf(" via_pad2_sx = \"%ml\"", xy2coord(h->via_pad2_sx));
 		if (h->via_pad2_sy_set)
-			pcb_printf(" via_pad1_sy = \"%ml\"", xy2coord(h->via_pad2_sy));
+			pcb_printf(" via_pad2_sy = \"%ml\"", xy2coord(h->via_pad2_sy));
 		if (h->via_pad2_angle_set)
 			pcb_printf(" via_pad2_angle = \"%f\"", h->via_pad2_angle);
 		pcb_printf("\n");
 	}
 
-	if (h->via_pad_sx_set && h->via_pad_sy_set)
-		mask = thickness = (xy2coord(h->via_pad_sx) + xy2coord(h->via_pad_sy)) * 0.5;
-	else if (h->via_pad1_sx_set && h->via_pad1_sy_set)
-		mask = thickness = (xy2coord(h->via_pad1_sx) + xy2coord(h->via_pad1_sy)) * 0.5;
-	else if (h->via_pad2_sx_set && h->via_pad2_sy_set)
-		mask = thickness = (xy2coord(h->via_pad2_sx) + xy2coord(h->via_pad2_sy)) * 0.5;
+	/* create padstack for this via */
+	padstk = malloc(sizeof(padstack_t));
+	if (padstk == NULL)
+		return 1;
+	pad1 = malloc(sizeof(padstack_element_t));
+	if (pad1 == NULL)
+		return 1;
+	pad2 = malloc(sizeof(padstack_element_t));
+	if (pad2 == NULL)
+		return 1;
+
+	padstk->name = "*** VIA ***";
+	padstk->drill_size = xy2coord(h->drill_size);
+	padstk->padstack = pad1;
+	padstk->next = NULL;
+
+	pad1->layer_name = h->layer1_name;
+	pad1->pad_shape = str2pad_shape(h->via_pad1_shape);
+	pad1->pad_sx = xy2coord(h->via_pad1_sx);
+	pad1->pad_sy = xy2coord(h->via_pad1_sy);
+	pad1->pad_angle = h->via_pad1_angle;
+	pad1->thermal_clear_sx = 0;
+	pad1->thermal_clear_sy = 0;
+	pad1->thermal_clear_angle = 0.0;
+	pad1->pad_type = PAD_TYPE_METAL;
+
+	if (h->layer2_name_set && h->via_pad2_sx_set && h->via_pad2_sy_set) {
+		pad1->next = pad2;
+		pad2->layer_name = h->layer2_name;
+		pad2->pad_shape = str2pad_shape(h->via_pad2_shape);
+		pad2->pad_sx = xy2coord(h->via_pad2_sx);
+		pad2->pad_sy = xy2coord(h->via_pad2_sy);
+		pad2->pad_angle = h->via_pad2_angle;
+		pad2->thermal_clear_sx = 0;
+		pad2->thermal_clear_sy = 0;
+		pad2->thermal_clear_angle = 0.0;
+		pad2->pad_type = PAD_TYPE_METAL;
+		pad2->next = NULL;
+	}
 	else
-		mask = thickness = 0;
+		pad1->next = NULL;
 
-	clearance = 2 * hyp_clearance(h);
+	/* draw padstack */
+	hyp_draw_padstack(padstk, x2coord(h->x), y2coord(h->y), NULL);
 
-	if (h->drill_size_set)
-		drill_hole = xy2coord(h->drill_size);
-	else
-		drill_hole = 0;
-
-	if (h->via_pad_shape_set)
-		shape = h->via_pad_shape;
-	else if (h->via_pad1_shape_set)
-		shape = h->via_pad1_shape;
-	else if (h->via_pad2_shape_set)
-		shape = h->via_pad2_shape;
-	else
-		shape = NULL;
-
-	if ((shape != NULL) && (strcmp(shape, "RECT") == 0))
-		flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
-	else if ((shape != NULL) && (strcmp(shape, "OBLONG") == 0))
-		flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
-	else
-		flags = pcb_no_flags();			/* round */
-
-	/* XXX buried and blind vias not implemented yet */
-
-	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, drill_hole, NULL, flags);
+	/* free padstack for this via */
+	free(pad2);
+	free(pad1);
+	free(padstk);
 
 	return 0;
 }
@@ -1799,13 +2022,6 @@ pcb_bool exec_via_v1(parse_param * h)
 
 pcb_bool exec_pin(parse_param * h)
 {
-	pcb_element_t *device;
-	padstack_t *padstack;
-	char *device_name = NULL;
-	char *pin_name = NULL;
-	char *dot = NULL;
-	char *pin_net_name = NULL;
-
 	if (hyp_debug) {
 		pcb_printf("pin: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		pcb_printf(" pin_reference = \"%s\"", h->pin_reference);
@@ -1822,46 +2038,7 @@ pcb_bool exec_pin(parse_param * h)
 		return 0;
 	}
 
-	if (net_name != NULL)
-		pin_net_name = pcb_strdup(net_name);
-	else
-		pin_net_name = pcb_strdup("?");
-
-	/* h->pin_reference has format 'device_name.pin_name' */
-	device_name = pcb_strdup(h->pin_reference);
-	pin_name = pcb_strdup("?");
-	dot = strrchr(device_name, '.');
-	if (dot != NULL) {
-		*dot = '\0';
-		pin_name = pcb_strdup(dot + 1);
-	}
-
-	if (hyp_debug)
-		pcb_printf("pin: device_name = \"%s\" pin_name = \"%s\"\n", device_name, pin_name);
-
-	/* find device by name */
-	device = hyp_create_element_by_name(device_name, x2coord(h->x), y2coord(h->y));
-
-	if (device == NULL) {
-		pcb_printf("pin: device \"%s\" not found. skipping pin \"%s\"\n", device_name, h->pin_reference);
-		return 0;
-	}
-
-	/* find padstack */
-	padstack = hyp_padstack_by_name(h->padstack_name);
-	if (padstack == NULL) {
-		pcb_printf("pin: padstack \"%s\" not found. skipping pin \"%s\"\n", h->padstack_name, h->pin_reference);
-		return 0;
-	}
-
-	/* what if padstack = single layer & no drill ?  SMD XXX */
-
-	/* add new pin */
-	pcb_element_pin_new(device, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
-											padstack->drill_hole, pin_net_name, pin_name, padstack->flags);
-
-	/* update */
-	pcb_element_bbox(hyp_dest, device, pcb_font(PCB, 0, 1));
+	hyp_draw_padstack(hyp_padstack_by_name(h->padstack_name), x2coord(h->x), y2coord(h->y), h->pin_reference);
 
 	return 0;
 }
@@ -1873,12 +2050,8 @@ pcb_bool exec_pin(parse_param * h)
 
 pcb_bool exec_pad(parse_param * h)
 {
-	pcb_coord_t x1, y1, x2, y2;
-	pcb_coord_t thickness;
-	pcb_coord_t clearance;
-	pcb_coord_t mask;
-	pcb_element_t *device;
-	pcb_flag_t flags;
+	padstack_t *padstk;
+	padstack_element_t *pad;
 
 	if (hyp_debug) {
 		pcb_printf("pad: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
@@ -1895,73 +2068,42 @@ pcb_bool exec_pad(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	/* if necessary, create an element to connect the pad to */
-	if (h->layer_name_set && hyp_is_bottom_layer(h->layer_name)) {
-		solder_side_pads =
-			pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_flag_make(PCB_FLAG_ONSOLDER), NULL, NULL, NULL, 0, 0, 0, 500,
-											pcb_flag_make(PCB_FLAG_ONSOLDER), pcb_false);
-		device = solder_side_pads;
-	}
-	else {
-		component_side_pads =
-			pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), NULL, NULL, NULL, 0, 0, 0, 500, pcb_no_flags(),
-											pcb_false);
-		device = component_side_pads;
-	}
-
-	if (device == NULL) {
-		pcb_printf("pad: can't create device. skipping pad.\n");
+	if (!h->layer_name_set) {
+		if (hyp_debug)
+			pcb_printf("pad: layer name not set. skipping pad\n.");
 		return 0;
 	}
 
-	/* pad shape */
-	flags = pcb_no_flags();				/* round */
+	/* create padstack for this pad */
+	padstk = malloc(sizeof(padstack_t));
+	if (padstk == NULL)
+		return 1;
+	pad = malloc(sizeof(padstack_element_t));
+	if (pad == NULL)
+		return 1;
 
-	if (h->via_pad_shape_set && (h->via_pad_shape != NULL) && (strcmp(h->via_pad_shape, "RECT") == 0))
-		flags = pcb_flag_add(flags, PCB_FLAG_SQUARE);
+	padstk->name = "*** PAD ***";
+	padstk->drill_size = 0.0;
+	padstk->padstack = pad;
+	padstk->next = NULL;
 
-	if (h->layer_name_set)
-		flags = pcb_flag_add(flags, hyp_layer_flag(h->layer_name));
+	pad->layer_name = h->layer_name;
+	pad->pad_shape = str2pad_shape(h->via_pad_shape);
+	pad->pad_sx = xy2coord(h->via_pad_sx);
+	pad->pad_sy = xy2coord(h->via_pad_sy);
+	pad->pad_angle = h->via_pad_angle;
+	pad->thermal_clear_sx = 0;
+	pad->thermal_clear_sy = 0;
+	pad->thermal_clear_angle = 0;
+	pad->pad_type = PAD_TYPE_METAL;
+	pad->next = NULL;
 
-	if (h->via_pad_sx_set && h->via_pad_sy_set)
-		mask = thickness = (xy2coord(h->via_pad_sx) + xy2coord(h->via_pad_sy)) * 0.5;
+	/* draw padstack */
+	hyp_draw_padstack(padstk, x2coord(h->x), y2coord(h->y), NULL);
 
-	clearance = 2 * hyp_clearance(h);	/* XXX hyp_layer_clearance */
-
-	/* create */
-	x1 = x2coord(h->x);
-	y1 = y2coord(h->y);
-
-	x2 = x1;
-	y2 = y1;
-	thickness = 0;
-
-	if (h->via_pad_sx_set && h->via_pad_sy_set) {
-		if (h->via_pad_sy > h->via_pad_sx) {
-			thickness = xy2coord(h->via_pad_sx);
-			x2 = x2coord(h->x);
-			y2 = y2coord(h->y) + xy2coord(h->via_pad_sy) - xy2coord(h->via_pad_sx);
-		}
-		else if (h->via_pad_sx > h->via_pad_sy) {
-			thickness = xy2coord(h->via_pad_sy);
-			x2 = x2coord(h->x) + xy2coord(h->via_pad_sx) - xy2coord(h->via_pad_sy);
-			y2 = y2coord(h->y);
-		}
-		else {
-			thickness = xy2coord(h->via_pad_sx);
-			x2 = x2coord(h->x);
-			y2 = y2coord(h->y);
-		}
-	}
-
-	/* XXX ought to rotate pad along h->via_pad_angle, if h->via_pad_angle_set */
-
-	mask = thickness;
-
-	pcb_element_pad_new(device, x1, y1, x2, y2, thickness, clearance, mask, net_name, NULL, flags);
-
-	/* update */
-	pcb_element_bbox(hyp_dest, device, pcb_font(PCB, 0, 1));
+	/* free padstack for this pad */
+	free(pad);
+	free(padstk);
 
 	return 0;
 }
