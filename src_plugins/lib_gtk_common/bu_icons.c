@@ -90,7 +90,7 @@ static GdkPixbuf *pcb_gtk_cursor_from_xbm_data(unsigned char *data, unsigned cha
 	return dest;
 }
 
-void pcb_gtk_icons_init(GdkWindow * top_window)
+void pcb_gtk_icons_init(GtkWindow * top_window)
 {
 	GdkPixbuf *icon;
 
@@ -99,6 +99,7 @@ void pcb_gtk_icons_init(GdkWindow * top_window)
 
 	icon = gdk_pixbuf_new_from_xpm_data((const gchar **) icon_bits);
 	gtk_window_set_default_icon(icon);
+	gtk_window_set_icon(top_window, icon);
 
 	XC_clock_source = pcb_gtk_cursor_from_xbm_data(rotateIcon_bits, rotateMask_bits, rotateIcon_width, rotateIcon_height);
 

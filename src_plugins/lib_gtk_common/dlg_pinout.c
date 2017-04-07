@@ -61,7 +61,7 @@ void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_element_t *element)
 	top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(top_window), title);
 	g_free(title);
-	gtk_window_set_wmclass(GTK_WINDOW(top_window), "PCB_Pinout", "PCB");
+	gtk_window_set_role(GTK_WINDOW(top_window), "PCB_Pinout");
 	gtk_container_set_border_width(GTK_CONTAINER(top_window), 4);
 
 	vbox = gtkc_vbox_new(FALSE, 0);

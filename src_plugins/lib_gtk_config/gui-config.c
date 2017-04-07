@@ -2689,7 +2689,7 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 	g_signal_connect(G_OBJECT(config_window), "delete_event", G_CALLBACK(config_destroy_cb), NULL);
 
 	gtk_window_set_title(GTK_WINDOW(config_window), _("pcb-rnd Preferences"));
-	gtk_window_set_wmclass(GTK_WINDOW(config_window), "Pcb_Conf", "PCB");
+	gtk_window_set_role(GTK_WINDOW(config_window), "Pcb_Conf");
 	gtk_container_set_border_width(GTK_CONTAINER(config_window), 2);
 
 	config_hbox = gtk_hpaned_new();

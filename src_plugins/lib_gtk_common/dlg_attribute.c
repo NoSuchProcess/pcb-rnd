@@ -115,7 +115,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 																			 (GtkDialogFlags) (GTK_DIALOG_MODAL
 																												 | GTK_DIALOG_DESTROY_WITH_PARENT),
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_NONE, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
-	gtk_window_set_wmclass(GTK_WINDOW(dialog), "PCB_attribute_editor", "PCB");
+	gtk_window_set_role(GTK_WINDOW(dialog), "PCB_attribute_editor");
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 

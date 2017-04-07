@@ -732,7 +732,7 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	g_signal_connect(G_OBJECT(drc_window), "destroy", G_CALLBACK(drc_destroy_cb), NULL);
 	g_signal_connect(G_OBJECT(drc_window), "configure_event", G_CALLBACK(drc_window_configure_event_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(drc_window), _("pcb-rnd DRC"));
-	gtk_window_set_wmclass(GTK_WINDOW(drc_window), "PCB_DRC", "PCB");
+	gtk_window_set_role(GTK_WINDOW(drc_window), "PCB_DRC");
 	gtk_window_set_default_size(GTK_WINDOW(drc_window), hid_gtk_wgeo.drc_width, hid_gtk_wgeo.drc_height);
 
 	vbox = gtkc_vbox_new(FALSE, 0);

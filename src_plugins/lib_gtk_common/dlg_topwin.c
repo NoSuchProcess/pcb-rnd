@@ -529,7 +529,7 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 	ghid_install_accel_groups(GTK_WINDOW(tw->com->top_window), tw);
 	ghid_update_toggle_flags(tw);
 
-	pcb_gtk_icons_init(gtk_widget_get_window(tw->com->top_window));
+	pcb_gtk_icons_init(GTK_WINDOW(tw->com->top_window));
 	pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	ghid_mode_buttons_update();
 }

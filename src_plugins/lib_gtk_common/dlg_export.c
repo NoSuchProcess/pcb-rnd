@@ -65,7 +65,7 @@ void ghid_dialog_export(GtkWidget *top_window)
 																																|
 																																GTK_DIALOG_DESTROY_WITH_PARENT),
 																							GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
-	gtk_window_set_wmclass(GTK_WINDOW(export_dialog), "PCB_Export", "PCB");
+	gtk_window_set_role(GTK_WINDOW(export_dialog), "PCB_Export");
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(export_dialog));
 
