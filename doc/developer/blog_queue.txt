@@ -1,14 +1,15 @@
 Ready to blog:
-- QR code and bar code creation dialogue howto: qr() (needs qrencode(1)) and code128() + edakrill
 - arc-in-font + the new alternative default font with arcs: font/default_arc.lht
 - fonteditor (can edit custom font (currently selected on a board), can save font to file)
 - bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
 
-less urgent/pre-planned/TO-DO
-- braille font (maybe together with the Klingon?)
+less urgent, almost finished:
+- braille font
+- unicode bdf bitmap dot matrix glyph insertion
+
+pre-planned/TO-DO:
 - CJK glyph insertion dialogue
 - FidoCadJ font creation plugin
-- unicode bdf bitmap dot matrix glyph insertion
 - pcb-rnd -> MUCS export module based on existing C++ helper app
 - metafont glyph -> stroked font converter
 
