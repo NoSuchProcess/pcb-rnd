@@ -37,6 +37,7 @@
 #include "layer.h"
 #include "data.h"
 #include "search.h"
+#include "rotate.h"
 #include "compat_misc.h"
 
 /*
@@ -1636,12 +1637,48 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	mask = 0;
 	flags = pcb_no_flags();
 
-	/* loop over padstack, and choose one entry. this is suboptimal. XXX fixme */
+	/* loop over padstack, and choose one entry to implement via. this is suboptimal. XXX fixme 
+   * order chosen:
+   * - top layer
+   * - bottom layer
+   * - default "MDEF" layer
+   * - any metal layer 
+   */
+
+  /* search for top layer */
 	for (i = padstk->padstack; i != NULL; i = i->next) {
-		if ((i->layer_name != NULL) && strcmp(i->layer_name, "ADEF") == 0)
-			continue;									/* skip antipads */
-		if (i->pad_type != PAD_TYPE_METAL)
-			continue;									/* skip antipads and thermal relief */
+		if (i->layer_name == NULL)
+			continue;
+		if ((strcmp(i->layer_name, pcb_layer_name(top_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
+			break;
+	}
+  /* if top layer not found, search for bottom layer */
+	if (i == NULL)
+		for (i = padstk->padstack; i != NULL; i = i->next) {
+			if (i->layer_name == NULL)
+				continue;
+			if ((strcmp(i->layer_name, pcb_layer_name(bottom_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
+				break;
+		}
+  /* if bottom layer not found, search for default MDEF layer */
+	if (i == NULL)
+		for (i = padstk->padstack; i != NULL; i = i->next) {
+			if (i->layer_name == NULL)
+				continue;
+			if ((strcmp(i->layer_name, "MDEF") == 0) && (i->pad_type != PAD_TYPE_METAL))
+				break;
+		}
+  /* if default MDEF layer not found, search for any metal layer */
+	if (i == NULL)
+		for (i = padstk->padstack; i != NULL; i = i->next) {
+			if (i->layer_name == NULL)
+				continue;
+			if (i->pad_type == PAD_TYPE_METAL)
+				break;
+		}
+
+	if (i != NULL) {
+    /* layer found */
 		thickness = min(i->pad_sx, i->pad_sy);
 		if (i->pad_shape == 1)
 			flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
@@ -1649,9 +1686,6 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 			flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
 		else
 			flags = pcb_no_flags();		/* round */
-		/* MDEF is a dummy layer name used to signal the default for metal layers */
-		if ((i->layer_name != NULL) && strcmp(i->layer_name, "MDEF") == 0)
-			break;
 	}
 
 	mask = thickness;
@@ -1717,13 +1751,17 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		thickness = 0;
 
 		if (i->pad_sy > i->pad_sx) {
+			pcb_coord_t deltay = (i->pad_sy - i->pad_sx) / 2;
 			thickness = i->pad_sx;
 			x2 = x;
-			y2 = y + i->pad_sy - i->pad_sx;
+			y1 = y - deltay;
+			y2 = y + deltay;
 		}
 		else if (i->pad_sx > i->pad_sy) {
+			pcb_coord_t deltax = (i->pad_sx - i->pad_sy) / 2;
 			thickness = i->pad_sy;
-			x2 = x + i->pad_sx - i->pad_sy;
+			x1 = x - deltax;
+			x2 = x + deltax;
 			y2 = y;
 		}
 		else {
@@ -1734,7 +1772,12 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 
 		mask = thickness;
 
-		/* XXX ought to rotate pad along h->via_pad_angle, if h->via_pad_angle_set */
+		/* rotation */
+		if (i->pad_angle != 0.0) {
+			double angle = i->pad_angle * M_PI / 180.0;
+			pcb_rotate(&x1, &y1, x, y, cos(angle), sin(angle));
+			pcb_rotate(&x2, &y2, x, y, cos(angle), sin(angle));
+		}
 
 		layer_name = pcb_strdup(i->layer_name);
 		if (i->pad_shape == 1)
