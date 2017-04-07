@@ -2764,6 +2764,7 @@ static void ghid_config_window_close(void)
 {
 	gtk_widget_destroy(config_window);
 
+	config_sizes_tab_vbox = NULL;
 	config_sizes_vbox = NULL;
 	config_increments_vbox = NULL;
 	config_groups_vbox = config_groups_table = NULL;
