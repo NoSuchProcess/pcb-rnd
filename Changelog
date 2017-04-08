@@ -1,3 +1,102 @@
+pcb-rnd 1.2.2 (up to r8077)
+~~~~~~~~~~~~~~~~~~~~~
+	[font]
+		-Add: multiple fonts: introduce the font kit concept; allow font objects to have a font id
+		-Add: io_lihata support for multiple fonts
+		-Add: io_lihata support for polygon and arc in font
+		-Add: font selector GUI
+		-Add: edit the current font, not font0, and throw an error if the current font is not accessible for some reason
+		-Add: alerntive default font with arcs, Herhey font
+
+	[export]
+		-Fix: ps: don't export zero-radius arc, it would end up writing "inf" after /0 (thanks for John for the bugreport and test file)
+		-Fix: svg: don't export 0-radius arc
+		-Fix: fidocadj: Fine tuned fidocadj text export angle, dimensions, placement
+		-Add: gerber: exporting the cross section layer is optional
+
+	[footprints]
+		-Add: fp_wget: offline mdoe: wget the index only if enabled; GUI for manual uodate
+		-Add: fp_wget: support for edakrill
+		-Add: API CHANGE: the fp rehash function takes an optional pointer to the subtree to rehash; when NULL, rehash everything (as it did previously)
+		-Change: don't merge all local file system trees into fs, keep them separate for less confusion
+
+	[layer]
+		-Fix: look up component and solder groups before placing a new rat on the GUI so the groups are placed right
+		-Fix: move action doesn't let the user remove silk layers
+		-Fix: removing a layer group removes all layers, including the second
+		-Fix: obsolete direct PCB ref
+		-Fix: when (re)moving layers, reparent the lists after memmove() to avoid broken parent pointers
+		-Fix: buffer operations (mirror and paste): use the buffer's layer list only if it has one - when copying a simple object within the board, there won't be, use the boards' then
+		-Clenaup: remove redundant pcb_layer_lookup_group() - use pcb_layer_get_group() instead
+		-Del: old API, already unused: pcb_layer_create_old()
+		-Del: macro PCB_LAYER_IS_EMPTY() to get the API simpler - just use the direct call, this also exposes the use of PCB in some calls
+		-Del: macro pcb_max_group() -> not PCB-safe
+
+	[core]
+		-Fix: netlist add action shouldn't segfault on empty/NULL netname or pin name
+		-Fix: convert buffer to element: buggy layer group handling (made solder-side objects disappear; thanks to Evan for reporting this)
+		-Fix: move-selected undo bug: undo serial has to be increased after the paste
+		-Fix: Don't add a via when switching to/from a non-copper layer during line creation
+		-Fix: don't mess up the undo serial when moving an element to the other side from menu (reported by James)
+		-Change: increase the layer limit to 38 for new io_ plugins
+		-Change: move rectangle pad creation to a central function - more and more code depends on it
+		-Add: export version, revision and main paths so that child processes (e.g. parametric footprints) have a chance to identify the installation
+
+	[io]
+		-Fix: io_lihata: assing unique ID to each polygon point loaded - fixes poly point move undo bug
+		-Fix: io_kicad: parser now copes with absent gr_line thickness definitions
+		-Fix: io_kicad: save fp in s-expression format
+		-Fix: io_kicad: quote module name, as it may contain ()
+		-Fix: io_pcb: do not load empty footprint into the buffer, it'd assert later (fixes: parametric footprint with broken params was leading to an assert in the preview)
+		-Fix: io_pcb: force-rename outline and silk layers because the loader will detect them by name
+		-Add: io_kicad: eeschema import
+		-Add: io_kicad: recognize layers Top and Bottom
+		-Add: io_pcb: improvise a minimal usable layer group setup if there's no layer group string on the input (thanks to oskay for reporting this)
+		-Add: tEDAx: netlist import
+		-Add: tEDAx: footprint export
+		-Add: tEDAx: footprint import
+		-Add: mentor: plugin for importing edf netlist from Mentor Graphics Design Capture
+
+	[rubberband & route]
+		-Add: keep line direction of middle line segments (2 lines connected) in rubber band mode (patch by Luis de Arquer)
+		-Add: Rubberband keep direction: Line being moved is constrained to keep direction on preview
+		-Add: optional curved corners; alt+c and alt+shift+c in menu files to change route arc radius
+
+	[gtk]
+		-Fix: external command window segfault when reopen after a WM close
+		-Fix: preferences dialog: proper refresh of widgets when changing the unit in top window while the sizes tab is open
+		-Fix: fit in 800x600
+		-Fix: cancel means NO when prompted for creating a new layout (updated ghid_prompt_for() for r7792)
+		-Fix: don't change the mouse cursor in busy mode if the hid is not initialized (led to crash)
+		-Add: gl support
+		-Add: optional gtk shift workaround for some broken mac+gtk stack
+		-Add: detect if the user clicked on a parametric footprint and present a dialog box with its parameters
+		-Add: gtk's attribute dialog can notify the caller about changes using an optional callback function
+		-Add: global or selective refresh of libraries using the refresh button
+
+	[lesstif]
+		- double buffer preview
+
+	[scconfig]
+		-Fix: make clean removes sccbox.o
+		-Fix: generate all files so that make dep works right even with disabled plugins
+		-Cleanup: move out 60 kilobytes of optional junk from Makefile to Makefile.gendep: we may depend on make -f and variable passing if we already depend on gcc for make dep
+		-Cleanup: move compile templates to scconfig/template
+		-Cleanup: rename globals VERSION, REVISION and PACKAGE to have a PCB_ prefix to avoid name collisions
+
+	[pcblib]
+		-Add: auto generated --help for all parametrics
+
+	[djopt]
+		-Fix: uninitialized local vars (reported by miloh)
+
+	[boardflip]
+		-Change: rewrite the board flip plugin to be generic (flipping around X and/or Y, applying offsets)
+
+	[pcblib]
+		-Fix: unit conversion supports all suffixes the core supports
+
+
 pcb-rnd 1.2.1 (r6916)
 ~~~~~~~~~~~~~~~~~~~~~
 	[layer]

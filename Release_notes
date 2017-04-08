@@ -21,4 +21,8 @@ arcs and polygons.
 6. Support for EDAkrill in the library window.
 
 7. More io_ support: tEDAx footprints and netlists, import netlist from
-mentor graphics schematics.
+mentor graphics schematics, import KiCad's eeschema netlist.
+
+8. gtk dialog box for editing parameters of parametric fooprints
+
+9. Generic cleanup: start removing global PCB, making the layer code reentrant
