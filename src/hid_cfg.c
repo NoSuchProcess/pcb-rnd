@@ -281,7 +281,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedd
 
 	if (!exact_fn) {
 		/* try different paths to find the menu file inventing its exact name */
-		static const char *hid_cfg_paths_in[] = { "./", PCBSHAREDIR "/", NULL };
+		static const char *hid_cfg_paths_in[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 		char **paths = NULL, **p;
 		int fn_len = strlen(fn);
 
