@@ -42,14 +42,14 @@ After RELEASE 1.2.2:
 		- remove -m pcb
 
 CLEANUP #5
-- extend teh DRC window to be a generic location list
+- extend the DRC window to be a generic location list
 	- buttons to select one or all items or all items including locked
 	- multiple DRC windows
 	- io infra for save incompatibility note with DRC list
 	- import sch shouldn't select elements to be removed but put them on a drc list
 - hid_gtk? bug: moving with cursor keys snapping to a via - can't leave with cursor keys!
 - io_pcb: new, optional "layer tag" field in mainline's file format
-- insonsistencies in UI/terminology:
+- inconsistencies in UI/terminology:
 	- allow clearance to be set to 0 in the route style [report: miloh]
 	- similar thing on hole size [report: miloh]
 	- report dialog should use the same terminology as route style dialog [report: miloh]
