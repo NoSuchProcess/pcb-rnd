@@ -3,6 +3,7 @@
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
+	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
 
 - plugin breakage:
 	- don't force builtin for dependant libs
