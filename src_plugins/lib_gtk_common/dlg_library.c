@@ -824,15 +824,8 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																			"top-padding", 5,
 																			"bottom-padding", 5, "xscale", 1.0, "yscale", 1.0, "xalign", 0.5, "yalign", 0.5, NULL));
 
-#warning gl TODO: this wont work with gl: use pcb_gtk_preview_pinout_new() instead and set *-request separately, because _new() has side effects
-	preview = (GtkWidget *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
-																			 /* GhidPinoutPreview */
-																			 "element-data", NULL,
-																			 "gport", lwcom->gport,
-																			 "init-widget", lwcom->init_drawing_widget,
-																			 "expose", lwcom->preview_expose, "kind", PCB_GTK_PREVIEW_PINOUT,
-																			 /* GtkWidget */
-																			 "width-request", 150, "height-request", 150, NULL);
+	preview = pcb_gtk_preview_pinout_new(lwcom, lwcom->init_drawing_widget, lwcom->preview_expose, NULL);
+	gtk_widget_set_size_request(preview, 150, 150);
 
 	preview_text = gtk_label_new("");
 
