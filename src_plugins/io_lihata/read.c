@@ -200,17 +200,26 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
    Return 0 on success */
 static int parse_bool(pcb_bool *res, lht_node_t *nd)
 {
+	char val[8], *end;
+
 	if (nd == NULL)
 		return -1;
 
-	if ((strcmp(nd->data.text.value, "1") == 0) || (pcb_strcasecmp(nd->data.text.value, "on") == 0) ||
-	    (pcb_strcasecmp(nd->data.text.value, "true") == 0) || (pcb_strcasecmp(nd->data.text.value, "yes") == 0)) {
+	strncpy(val, nd->data.text.value, sizeof(val)-1);
+	val[sizeof(val)-1] = '\0';
+	end = strpbrk(val, " \t\r\n");
+	if (end != NULL)
+		*end = '\0';
+
+
+	if ((strcmp(val, "1") == 0) || (pcb_strcasecmp(val, "on") == 0) ||
+	    (pcb_strcasecmp(val, "true") == 0) || (pcb_strcasecmp(val, "yes") == 0)) {
 		*res = 1;
 		return 0;
 	}
 
-	if ((strcmp(nd->data.text.value, "0") == 0) || (pcb_strcasecmp(nd->data.text.value, "off") == 0) ||
-	    (pcb_strcasecmp(nd->data.text.value, "false") == 0) || (pcb_strcasecmp(nd->data.text.value, "no") == 0)) {
+	if ((strcmp(val, "0") == 0) || (pcb_strcasecmp(val, "off") == 0) ||
+	    (pcb_strcasecmp(val, "false") == 0) || (pcb_strcasecmp(val, "no") == 0)) {
 		*res = 0;
 		return 0;
 	}
