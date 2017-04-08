@@ -234,6 +234,8 @@ FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, 
 
 	fp_wget_open(s.array, gedasym_cache, &f, &(fctx->field[FIELD_WGET_CTX].i), FP_WGET_UPDATE);
 
+	fctx->backend = ctx;
+
 	gds_uninit(&s);
 	return f;
 }
