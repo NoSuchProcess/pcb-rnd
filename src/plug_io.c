@@ -316,7 +316,7 @@ int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt)
 	return res;
 }
 
-int pcb_write_font(pcb_font_t *Ptr, char *Filename, const char *fmt)
+int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
 {
 	int res, newfmt = 0;
 	pcb_plug_io_t *p = find_writer(PCB_IOT_FONT, fmt);

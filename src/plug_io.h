@@ -110,7 +110,7 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *name);
 int pcb_parse_font(pcb_font_t *Ptr, const char *Filename);
 int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
 int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
-int pcb_write_font(pcb_font_t *Ptr, char *Filename, const char *fmt);
+int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *pcb_check_and_open_file(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
