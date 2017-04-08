@@ -96,7 +96,6 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				case CFN_REAL:
 					d = strtod(val, &end);
 					if (*end != '\0') {
-						bad_conv:;
 						pcb_message(PCB_MSG_ERROR, "Can't delta-set '%s': invalid delta value\n", argv[1]);
 						return 1;
 					}
