@@ -160,7 +160,16 @@ char *pcb_get_info_compile_options(void)
 		first_time = 0;
 		gds_init(&info);
 
-		gds_append_str(&info, "----- Compile Time Options -----\n");
+		gds_append_str(&info, "----- Run Time Options -----\n");
+		gds_append_str(&info, "GUI: ");
+		if (pcb_gui != NULL) {
+			gds_append_str(&info, pcb_gui->name);
+			gds_append_str(&info, "\n");
+		}
+		else
+			gds_append_str(&info, "none\n");
+
+		gds_append_str(&info, "\n----- Compile Time Options -----\n");
 		hids = pcb_hid_enumerate();
 		gds_append_str(&info, "GUI:\n");
 		for (i = 0; hids[i]; i++) {
