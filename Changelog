@@ -43,7 +43,7 @@ pcb-rnd 1.2.2 (up to r8077)
 		-Add: export version, revision and main paths so that child processes (e.g. parametric footprints) have a chance to identify the installation
 
 	[io]
-		-Fix: io_lihata: assigning unique ID to each polygon point loaded - fixes poly point move undo bug
+		-Fix: io_lihata: assign unique ID to each polygon point loaded - fixes poly point move undo bug
 		-Fix: io_kicad: parser now copes with absent gr_line thickness definitions
 		-Fix: io_kicad: save fp in s-expression format
 		-Fix: io_kicad: quote module name, as it may contain ()
