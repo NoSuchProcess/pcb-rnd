@@ -1,9 +1,10 @@
-- BUGS
+- BUGS for after the next release:
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
 	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
+	- library window: allow long tags and long location text to split
 
 - plugin breakage:
 	- don't force builtin for dependant libs
