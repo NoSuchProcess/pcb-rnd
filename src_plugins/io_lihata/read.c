@@ -1207,12 +1207,14 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
 
 	if (doc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
+		if (!pcb_io_err_inhibit)
+			pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
 		return -1;
 	}
 
 	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-font-v1"))) {
-		pcb_message(PCB_MSG_ERROR, "Not a font lihata.\n");
+		if (!pcb_io_err_inhibit)
+			pcb_message(PCB_MSG_ERROR, "Not a font lihata.\n");
 		return -1;
 	}
 
