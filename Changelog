@@ -6,16 +6,16 @@ pcb-rnd 1.2.2 (up to r8077)
 		-Add: io_lihata support for polygon and arc in font
 		-Add: font selector GUI
 		-Add: edit the current font, not font0, and throw an error if the current font is not accessible for some reason
-		-Add: alerntive default font with arcs, Herhey font
+		-Add: alternative default font with arcs, Herhey font
 
 	[export]
-		-Fix: ps: don't export zero-radius arc, it would end up writing "inf" after /0 (thanks for John for the bugreport and test file)
+		-Fix: ps: don't export zero-radius arc, it would end up writing "inf" after /0 (thanks to John for the bugreport and test file)
 		-Fix: svg: don't export 0-radius arc
 		-Fix: fidocadj: Fine tuned fidocadj text export angle, dimensions, placement
 		-Add: gerber: exporting the cross section layer is optional
 
 	[footprints]
-		-Add: fp_wget: offline mdoe: wget the index only if enabled; GUI for manual uodate
+		-Add: fp_wget: offline mode: wget the index only if enabled; GUI for manual update
 		-Add: fp_wget: support for edakrill
 		-Add: API CHANGE: the fp rehash function takes an optional pointer to the subtree to rehash; when NULL, rehash everything (as it did previously)
 		-Change: don't merge all local file system trees into fs, keep them separate for less confusion
@@ -27,7 +27,7 @@ pcb-rnd 1.2.2 (up to r8077)
 		-Fix: obsolete direct PCB ref
 		-Fix: when (re)moving layers, reparent the lists after memmove() to avoid broken parent pointers
 		-Fix: buffer operations (mirror and paste): use the buffer's layer list only if it has one - when copying a simple object within the board, there won't be, use the boards' then
-		-Clenaup: remove redundant pcb_layer_lookup_group() - use pcb_layer_get_group() instead
+		-Cleanup: remove redundant pcb_layer_lookup_group() - use pcb_layer_get_group() instead
 		-Del: old API, already unused: pcb_layer_create_old()
 		-Del: macro PCB_LAYER_IS_EMPTY() to get the API simpler - just use the direct call, this also exposes the use of PCB in some calls
 		-Del: macro pcb_max_group() -> not PCB-safe
@@ -43,7 +43,7 @@ pcb-rnd 1.2.2 (up to r8077)
 		-Add: export version, revision and main paths so that child processes (e.g. parametric footprints) have a chance to identify the installation
 
 	[io]
-		-Fix: io_lihata: assing unique ID to each polygon point loaded - fixes poly point move undo bug
+		-Fix: io_lihata: assigning unique ID to each polygon point loaded - fixes poly point move undo bug
 		-Fix: io_kicad: parser now copes with absent gr_line thickness definitions
 		-Fix: io_kicad: save fp in s-expression format
 		-Fix: io_kicad: quote module name, as it may contain ()
