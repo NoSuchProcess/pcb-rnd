@@ -196,7 +196,7 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *name)
 	return res;
 }
 
-int pcb_parse_font(pcb_font_t *Ptr, char *Filename)
+int pcb_parse_font(pcb_font_t *Ptr, const char *Filename)
 {
 	int res = -1;
 	PCB_HOOK_CALL(pcb_plug_io_t, pcb_plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
