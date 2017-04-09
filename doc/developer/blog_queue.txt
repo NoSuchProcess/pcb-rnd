@@ -1,6 +1,4 @@
 Ready to blog:
-- arc-in-font + the new alternative default font with arcs: font/default_arc.lht
-- fonteditor (can edit custom font (currently selected on a board), can save font to file)
 - bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
 
 less urgent, almost finished:
