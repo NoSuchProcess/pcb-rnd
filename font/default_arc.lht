@@ -361,7 +361,7 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:m {
-    width = 2.35mm
+    width = 1.35mm
     delta = -283.463um
     li:objects {
      ha:line.0 {
