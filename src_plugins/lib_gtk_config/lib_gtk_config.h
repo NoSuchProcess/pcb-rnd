@@ -9,7 +9,7 @@ extern conf_hid_id_t ghid_conf_id;
 /* called before the first conf access, from hid_gtk* */
 void pcb_gtk_conf_init(void);
 
-void ghid_config_window_show(pcb_gtk_common_t *com, gboolean raise);
+void pcb_gtk_config_window_show(pcb_gtk_common_t *com, gboolean raise);
 
 void ghid_config_handle_units_changed(pcb_gtk_common_t *com);
 
