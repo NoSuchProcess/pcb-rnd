@@ -205,7 +205,8 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* ------------------------------------------------------------ */
 
 static const char dowindows_syntax[] =
-	"DoWindows(1|2|3|4|5|6|7,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
+	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
+	"DoWindows(Layout|Library|Log|Netlist|Preferences|DRC|Search [,false])";
 
 static const char dowindows_help[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
 
@@ -274,7 +275,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
 		ghid_drc_window_show(&ghidgui->common, raise);
 	}
-	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "search") == 0) {
+	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "Search") == 0) {
 		ghid_search_window_show(gport->top_window, raise);
 	}
 	else {
