@@ -464,7 +464,7 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:o {
-    width = 0.251968mm
+    width = 0.618839mm
     delta = 0.614943mm
     li:objects {
      ha:simplearc.0 {
@@ -848,7 +848,7 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:~ {
-    width = 18.92mil
+    width = 0.753702mm
     delta = 0.459232mm
     li:objects {
      ha:simplearc.0 {
@@ -1451,7 +1451,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:2 {
     width = 0.816866mm
-    delta = 40.231569mm
+    delta = 12.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.80676mm
@@ -1617,7 +1617,7 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:8 {
-    width = 10.0mil
+    width = 0.616663mm
     delta = 12.0mil
     li:objects {
      ha:simplearc.0 {
@@ -1895,7 +1895,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:C {
     width = 0.611633mm
-    delta = 1.6164761in
+    delta = 12.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
