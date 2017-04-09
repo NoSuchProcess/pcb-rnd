@@ -53,12 +53,12 @@
 
 static const char *ghid_act_cookie = "gtk HID actions";
 
-int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_SelectLayer(ghidgui->topwin.layer_selector, argc, argv, x, y);
 }
 
-int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_ToggleView(ghidgui->topwin.layer_selector, argc, argv, x, y);
 }
@@ -270,7 +270,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
-		ghid_config_window_show(&ghidgui->common, raise);
+		pcb_gtk_config_window_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
 		ghid_drc_window_show(&ghidgui->common, raise);
@@ -386,7 +386,7 @@ static int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return pcb_gtk_zoom(&gport->view, argc, argv, x, y);
 }
 
-int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int offset_x, offset_y, pointer_x, pointer_y;
 	GdkDisplay *display = gdk_display_get_default();
@@ -564,13 +564,13 @@ pcb_hid_action_t ghid_main_action_list[] = {
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
 #include "dolists.h"
 
-void ghid_action_reg(void)
+void pcb_gtk_action_reg(void)
 {
 	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
 	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 }
 
-void ghid_action_unreg(void)
+void pcb_gtk_action_unreg(void)
 {
 	pcb_hid_remove_actions_by_cookie(ghid_act_cookie);
 	pcb_hid_remove_attributes_by_cookie(ghid_act_cookie);
