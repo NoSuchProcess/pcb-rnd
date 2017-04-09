@@ -322,7 +322,7 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 		gtk_tree_view_get_cursor(gui_config_treeview, &current_path, NULL);
 
 		ghid_config_window_close();
-		ghid_config_window_show(priv_copy_com);
+		ghid_config_window_show(priv_copy_com, TRUE);
 
 		/* restore expansions and cursor position. That will trigger correct notebook display */
 		for (; first != NULL; first = next) {
@@ -2667,7 +2667,7 @@ static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, pc
 	free(sorted);
 }
 
-void ghid_config_window_show(pcb_gtk_common_t *com)
+void ghid_config_window_show(pcb_gtk_common_t *com, gboolean raise)
 {
 	GtkWidget *widget, *main_vbox, *config_hbox, *hbox;
 	GtkWidget *scrolled;
@@ -2680,7 +2680,9 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 	GtkTreeSelection *select;
 
 	if (config_window) {
-		gtk_window_present(GTK_WINDOW(config_window));
+		if (raise) {
+			gtk_window_present(GTK_WINDOW(config_window));
+		}
 		return;
 	}
 
@@ -2759,6 +2761,9 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 	gtk_widget_show_all(config_window);
 	config_auto_src_hide();
 	gtk_window_resize(GTK_WINDOW(config_window), 780, 550);
+
+	if (!raise)
+		gtk_widget_hide(config_window);
 }
 
 static void ghid_config_window_close(void)
