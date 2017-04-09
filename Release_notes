@@ -7,16 +7,17 @@ an important feature-rich release:
 1. Going on with the major cleanup/split in the gtk HID allows pcb-rnd to
 have multiple GTK based HIDs.
 
-2. One of the new GTK based HID has opengl rendering (reusing the old code).
+2. One of the new GTK based HID has opengl rendering (reusing the old code;
+thanks to Keith).
 
 3. Font upgrade: support for multiple fonts on the same board, font
-selectable per text object; arc in font; polygon in font.
+selectable per text object; arc in font; polygon in font (thanks to Erich).
 
 4. More user friendly font editor: can load and save fonts directly from/to
 files on the disk; can edit any of the currently loaded fonts; can edit
 arcs and polygons.
 
-5. Rubber band and signal routing UI improvements.
+5. Rubber band and signal routing UI improvements (thanks to Ade and Luis).
 
 6. Support for EDAkrill in the library window.
 
