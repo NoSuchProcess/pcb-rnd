@@ -125,8 +125,8 @@ int pcb_act_save_font_to(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	}
 
 	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect("Load PCB font file...",
-																"Picks a PCB font file to load.\n",
+		fname = pcb_gui->fileselect("Save PCB font file...",
+																"Picks a PCB font file to save.\n",
 																default_file, ".font", "pcbfont", HID_FILESELECT_MAY_NOT_EXIST);
 		if (fname == NULL)
 			PCB_ACT_FAIL(save_font_to);
