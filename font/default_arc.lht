@@ -4,7 +4,7 @@ li:pcb-rnd-font-v1 {
   ha:symbols {
    ha:] {
     width = 0.127001mm
-    delta = 12.0mil
+    delta = 14.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -32,7 +32,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:&5c {
     width = 0.762001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.246632mm
@@ -46,7 +46,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:b {
     width = 0.713756mm
-    delta = 12.0mil
+    delta = 4.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -68,7 +68,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:c {
     width = 0.611633mm
-    delta = 0.406923mm
+    delta = 0.203723mm
     li:objects {
      ha:line.0 {
       y2 = 0.865632mm
@@ -97,7 +97,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:d {
     width = 0.713756mm
-    delta = 12.0mil
+    delta = 4.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -119,7 +119,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:e {
     width = 0.715266mm
-    delta = 0.406923mm
+    delta = 0.152923mm
     li:objects {
      ha:line.0 {
       y2 = 1.119632mm
@@ -148,7 +148,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:f {
     width = 0.484634mm
-    delta = 10.0mil
+    delta = 4.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -177,7 +177,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:g {
     width = 0.713756mm
-    delta = 0.255279mm
+    delta = 0.128279mm
     li:objects {
      ha:line.0 {
       y2 = 1.754632mm
@@ -220,7 +220,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:h {
     width = 0.703348mm
-    delta = 12.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -277,7 +277,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:j {
     width = 0.252632mm
-    delta = 10.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.637032mm
@@ -313,7 +313,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:k {
     width = 0.381001mm
-    delta = 12.0mil
+    delta = 10.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -361,8 +361,8 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:m {
-    width = 1.35mm
-    delta = -283.463um
+    width = 1.12574mm
+    delta = 0.148337mm
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -406,7 +406,7 @@ li:pcb-rnd-font-v1 {
       astart = 0.000000
       x = 32.32mil
       y = 0.992632mm
-      r = 7.9203937mil
+      r = 0.201178mm
      }
      ha:simplearc.6 {
       thickness = 8.0mil
@@ -414,14 +414,14 @@ li:pcb-rnd-font-v1 {
       astart = 0.000000
       x = 16.32mil
       y = 0.992632mm
-      r = 7.9203937mil
+      r = 0.201178mm
      }
     }
     height = 1.373633mm
    }
    ha:n {
     width = 0.71934mm
-    delta = 12.0mil
+    delta = 5.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -458,29 +458,29 @@ li:pcb-rnd-font-v1 {
       astart = 0.000000
       x = 16.32mil
       y = 0.992632mm
-      r = 7.9203937mil
+      r = 0.201178mm
      }
     }
     height = 1.373633mm
    }
    ha:o {
-    width = 0.618839mm
-    delta = 0.614943mm
+    width = 0.720439mm
+    delta = 0.132343mm
     li:objects {
      ha:simplearc.0 {
       thickness = 8.0mil
       adelta = -360.000000
       astart = 20.000000
-      x = 0.251968mm
+      x = 13.92mil
       y = 44.0mil
       r = 0.263238mm
      }
     }
-    height = 1.270001mm
+    height = 1.269747mm
    }
    ha:p {
     width = 0.735847mm
-    delta = 12.0mil
+    delta = 7.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.754632mm
@@ -500,7 +500,7 @@ li:pcb-rnd-font-v1 {
       thickness = 8.0mil
       adelta = -360.000000
       astart = 20.000000
-      x = 0.378968mm
+      x = 14.92mil
       y = 44.0mil
       r = 0.253245mm
      }
@@ -509,14 +509,14 @@ li:pcb-rnd-font-v1 {
    }
    ha:q {
     width = 0.713756mm
-    delta = 0.427737mm
+    delta = 0.173737mm
     li:objects {
      ha:line.0 {
       y2 = 1.754632mm
       thickness = 8.0mil
-      x1 = 0.612909mm
+      x1 = 24.0mil
       x2 = 0.612909mm
-      y1 = 0.992632mm
+      y1 = 34.0mil
      }
      ha:simplearc.1 {
       thickness = 8.0mil
@@ -531,7 +531,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:r {
     width = 0.534157mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -560,7 +560,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:s {
     width = 0.842266mm
-    delta = 17.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.119632mm
@@ -648,13 +648,13 @@ li:pcb-rnd-font-v1 {
    }
    ha:u {
     width = 0.711202mm
-    delta = 0.231388mm
+    delta = 0.180588mm
     li:objects {
      ha:line.0 {
       y2 = 45.0mil
       thickness = 8.0mil
-      x1 = 0.099568mm
-      x2 = 0.099568mm
+      x1 = 3.92mil
+      x2 = 3.92mil
       y1 = 0.865632mm
      }
      ha:line.1 {
@@ -670,14 +670,14 @@ li:pcb-rnd-font-v1 {
       astart = 0.000000
       x = 14.0mil
       y = 45.0mil
-      r = 0.251968mm
+      r = 9.92mil
      }
     }
     height = 1.498602mm
    }
    ha:v {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -698,7 +698,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:w {
     width = 1.02639mm
-    delta = 16.0mil
+    delta = 7.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.170432mm
@@ -756,7 +756,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:x {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -777,13 +777,13 @@ li:pcb-rnd-font-v1 {
    }
    ha:y {
     width = 0.711202mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 45.0mil
       thickness = 8.0mil
-      x1 = 0.099568mm
-      x2 = 0.099568mm
+      x1 = 3.92mil
+      x2 = 3.92mil
       y1 = 0.865632mm
      }
      ha:line.1 {
@@ -799,7 +799,7 @@ li:pcb-rnd-font-v1 {
       astart = 23.774865
       x = 14.0mil
       y = 60.0mil
-      r = 0.251968mm
+      r = 9.92mil
      }
      ha:simplearc.3 {
       thickness = 8.0mil
@@ -807,14 +807,14 @@ li:pcb-rnd-font-v1 {
       astart = 0.000000
       x = 14.0mil
       y = 45.0mil
-      r = 0.251968mm
+      r = 9.92mil
      }
     }
     height = 1.879602mm
    }
    ha:z {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.865632mm
@@ -841,14 +841,14 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:~ {
-    width = 0.753702mm
-    delta = 0.459232mm
+    width = 0.829902mm
+    delta = 8.08mil
     li:objects {
      ha:simplearc.0 {
       thickness = 8.0mil
       adelta = -152.513380
       astart = 0.000000
-      x = 7.08mil
+      x = 10.08mil
       y = 0.992632mm
       r = 0.169501mm
      }
@@ -856,16 +856,16 @@ li:pcb-rnd-font-v1 {
       thickness = 8.0mil
       adelta = -152.513380
       astart = 180.000000
-      x = 18.92mil
+      x = 21.92mil
       y = 32.92mil
       r = 0.169501mm
      }
     }
-    height = 0.889001mm
+    height = 0.925323mm
    }
    ha:&7b {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 14.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -914,7 +914,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:&7d {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.484632mm
@@ -963,7 +963,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:| {
     width = 0.001um
-    delta = 12.0mil
+    delta = 15.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -1011,22 +1011,22 @@ li:pcb-rnd-font-v1 {
     height = 1.119633mm
    }
    ha:&26 {
-    width = 30.1353937mil
-    delta = 12.0mil
+    width = 0.765439mm
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
       thickness = 8.0mil
-      x1 = 0.130438mm
+      x1 = 8.0mil
       x2 = 0.765438mm
-      y1 = 0.738632mm
+      y1 = 32.0mil
      }
      ha:line.1 {
-      y2 = 0.560832mm
+      y2 = 28.0mil
       thickness = 8.0mil
-      x1 = 0.130438mm
-      x2 = 0.134492mm
-      y1 = 0.738632mm
+      x1 = 8.0mil
+      x2 = 6.0mil
+      y1 = 32.0mil
      }
      ha:line.2 {
       y2 = 0.703086mm
@@ -1042,7 +1042,14 @@ li:pcb-rnd-font-v1 {
       x2 = 0.689238mm
       y1 = 1.276688mm
      }
-     ha:simplearc.4 {
+     ha:line.4 {
+      y2 = 28.0mil
+      thickness = 8.0mil
+      x1 = 0.134492mm
+      x2 = 6.0mil
+      y1 = 0.560832mm
+     }
+     ha:simplearc.5 {
       thickness = 8.0mil
       adelta = -185.000000
       astart = 144.000000
@@ -1050,20 +1057,20 @@ li:pcb-rnd-font-v1 {
       y = 45.0mil
       r = 0.230006mm
      }
-     ha:simplearc.5 {
+     ha:simplearc.6 {
       thickness = 8.0mil
       adelta = -225.000000
       astart = 0.000000
       x = 0.33567mm
       y = 0.560832mm
-      r = 7.9203937mil
+      r = 0.201178mm
      }
     }
     height = 1.47664mm
    }
    ha:! {
     width = 0.001um
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -1084,7 +1091,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:" {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.611632mm
@@ -1104,8 +1111,8 @@ li:pcb-rnd-font-v1 {
     height = 0.611633mm
    }
    ha:$ {
-    width = 28.96933071mil
-    delta = 12.0mil
+    width = 0.735821mm
+    delta = 8.0mil
     li:objects {
      ha:line.0 {
       y2 = 65.0mil
@@ -1142,7 +1149,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:% {
     width = 1.274066mm
-    delta = 12.0mil
+    delta = 7.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -1172,7 +1179,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:' {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -1185,8 +1192,8 @@ li:pcb-rnd-font-v1 {
     height = 0.611633mm
    }
    ha:( {
-    width = 2.87641mm
-    delta = 12.0mil
+    width = 0.299452mm
+    delta = 0.068708mm
     li:objects {
      ha:line.0 {
       y2 = 46.0mil
@@ -1200,7 +1207,7 @@ li:pcb-rnd-font-v1 {
       thickness = 8.0mil
       x1 = 0.194119mm
       x2 = 8.0mil
-      y1 = 53.8319685mil
+      y1 = 1.367332mm
      }
      ha:line.2 {
       y2 = 14.0mil
@@ -1211,29 +1218,13 @@ li:pcb-rnd-font-v1 {
      }
      ha:simplearc.3 {
       thickness = 8.0mil
-      adelta = -50.000000
-      astart = 230.000000
-      x = 2.516632mm
-      y = 22.0mil
-      r = 0.255072mm
-     }
-     ha:simplearc.4 {
-      thickness = 8.0mil
-      adelta = 50.000000
-      astart = 130.000000
-      x = 2.517704mm
-      y = 1.172464mm
-      r = 0.255072mm
-     }
-     ha:simplearc.5 {
-      thickness = 8.0mil
       adelta = 50.000000
       astart = -50.000000
       x = 0.359776mm
       y = 22.0mil
       r = 0.255072mm
      }
-     ha:simplearc.6 {
+     ha:simplearc.4 {
       thickness = 8.0mil
       adelta = -50.000000
       astart = 50.000000
@@ -1245,36 +1236,52 @@ li:pcb-rnd-font-v1 {
     height = 1.471494mm
    }
    ha:) {
-    width = 0.105777mm
-    delta = 0.934844mm
+    width = 0.299453mm
+    delta = 0.123115mm
     li:objects {
      ha:line.0 {
-      y2 = 1.172463mm
+      y2 = 46.0mil
       thickness = 8.0mil
-      x1 = 0.104704mm
-      x2 = 0.105776mm
+      x1 = 0.194747mm
+      x2 = 0.194747mm
       y1 = 22.0mil
      }
      ha:line.1 {
-      y2 = 14.0mil
-      thickness = 8.0mil
-      x1 = 0.014216mm
-      x2 = 0.0
-      y1 = 0.363931mm
-     }
-     ha:line.2 {
       y2 = 54.0mil
       thickness = 8.0mil
-      x1 = 0.015288mm
-      x2 = 0.0
-      y1 = 53.8319685mil
+      x1 = 0.105332mm
+      x2 = 0.096251mm
+      y1 = 1.367332mm
+     }
+     ha:line.2 {
+      y2 = 14.0mil
+      thickness = 8.0mil
+      x1 = 0.10426mm
+      x2 = 0.096251mm
+      y1 = 0.363931mm
+     }
+     ha:simplearc.3 {
+      thickness = 8.0mil
+      adelta = -50.000000
+      astart = 230.000000
+      x = -60.325um
+      y = 22.0mil
+      r = 0.255072mm
+     }
+     ha:simplearc.4 {
+      thickness = 8.0mil
+      adelta = 50.000000
+      astart = 130.000000
+      x = -59.253um
+      y = 1.172464mm
+      r = 0.255072mm
      }
     }
-    height = 1.371601mm
+    height = 1.471494mm
    }
    ha:* {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 10.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.119632mm
@@ -1330,7 +1337,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:, {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -1344,7 +1351,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:- {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 14.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.865632mm
@@ -1361,18 +1368,18 @@ li:pcb-rnd-font-v1 {
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 1.373632mm
+      y2 = 54.0mil
       thickness = 8.0mil
       x1 = 0.0
       x2 = 5.0mil
-      y1 = 1.373632mm
+      y1 = 54.0mil
      }
     }
-    height = 1.373633mm
+    height = 1.371601mm
    }
    ha:0 {
     width = 0.715266mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.119632mm
@@ -1416,7 +1423,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:1 {
     width = 0.381001mm
-    delta = 12.0mil
+    delta = 9.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -1444,7 +1451,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:2 {
     width = 0.816866mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.80676mm
@@ -1473,7 +1480,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:3 {
     width = 0.744275mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.814832mm
@@ -1503,7 +1510,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:4 {
     width = 0.635001mm
-    delta = 12.0mil
+    delta = 9.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -1531,20 +1538,20 @@ li:pcb-rnd-font-v1 {
    }
    ha:5 {
     width = 0.762551mm
-    delta = 12.0mil
+    delta = 5.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
       thickness = 8.0mil
-      x1 = 4.1353937mil
+      x1 = 0.105039mm
       x2 = 0.613039mm
       y1 = 14.08mil
      }
      ha:line.1 {
       y2 = 0.865632mm
       thickness = 8.0mil
-      x1 = 4.1353937mil
-      x2 = 4.1353937mil
+      x1 = 0.105039mm
+      x2 = 0.105039mm
       y1 = 14.08mil
      }
      ha:simplearc.2 {
@@ -1560,7 +1567,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:6 {
     width = 0.725326mm
-    delta = 12.0mil
+    delta = 4.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.611632mm
@@ -1590,7 +1597,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:7 {
     width = 0.635001mm
-    delta = 12.0mil
+    delta = 10.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -1610,14 +1617,14 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:8 {
-    width = 0.616663mm
-    delta = 12.0mil
+    width = 0.718263mm
+    delta = 6.0mil
     li:objects {
      ha:simplearc.0 {
       thickness = 8.0mil
       adelta = 360.000000
       astart = 99.000000
-      x = 10.0mil
+      x = 14.0mil
       y = 0.611632mm
       r = 0.25903mm
      }
@@ -1625,7 +1632,7 @@ li:pcb-rnd-font-v1 {
       thickness = 8.0mil
       adelta = 360.000000
       astart = 99.000000
-      x = 10.0mil
+      x = 14.0mil
       y = 1.119632mm
       r = 0.25903mm
      }
@@ -1634,7 +1641,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:9 {
     width = 0.725326mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.094232mm
@@ -1664,7 +1671,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:< {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.611632mm
@@ -1688,25 +1695,25 @@ li:pcb-rnd-font-v1 {
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 0.865632mm
+      y2 = 0.840232mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 0.611632mm
+      y1 = 0.586232mm
      }
      ha:line.1 {
-      y2 = 0.865632mm
+      y2 = 0.840232mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 10.0mil
-      y1 = 1.119632mm
+      y1 = 1.094232mm
      }
     }
-    height = 1.119633mm
+    height = 1.094233mm
    }
    ha:? {
     width = 0.664986mm
-    delta = 12.0mil
+    delta = 5.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.711422mm
@@ -1743,7 +1750,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:@ {
     width = 1.477266mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.484632mm
@@ -1788,7 +1795,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:A {
     width = 0.635001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -1837,7 +1844,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:B {
     width = 0.865633mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -1888,7 +1895,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:C {
     width = 0.611633mm
-    delta = 12.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -1932,7 +1939,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:D {
     width = 0.738634mm
-    delta = 12.0mil
+    delta = 9.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -1983,7 +1990,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:E {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.814832mm
@@ -2018,7 +2025,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:F {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 8.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -2046,7 +2053,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:G {
     width = 0.816866mm
-    delta = 12.0mil
+    delta = 8.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.043432mm
@@ -2068,7 +2075,7 @@ li:pcb-rnd-font-v1 {
       astart = 0.000000
       x = 16.0mil
       y = 0.637032mm
-      r = 0.302768mm
+      r = 11.92mil
      }
      ha:simplearc.3 {
       thickness = 8.0mil
@@ -2076,7 +2083,7 @@ li:pcb-rnd-font-v1 {
       astart = 218.000000
       x = 16.16mil
       y = 1.068832mm
-      r = 0.302768mm
+      r = 11.92mil
      }
     }
     height = 1.475234mm
@@ -2111,7 +2118,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:I {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 9.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -2139,7 +2146,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:J {
     width = 0.613666mm
-    delta = 12.0mil
+    delta = 9.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -2168,7 +2175,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:K {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 11.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -2220,39 +2227,39 @@ li:pcb-rnd-font-v1 {
     delta = 12.0mil
     li:objects {
      ha:line.0 {
-      y2 = 1.373632mm
+      y2 = 1.399032mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 0.0
-      y1 = 14.08mil
+      y1 = 15.08mil
      }
      ha:line.1 {
-      y2 = 0.865632mm
+      y2 = 0.891032mm
       thickness = 8.0mil
       x1 = 0.0
       x2 = 15.0mil
-      y1 = 14.08mil
+      y1 = 15.08mil
      }
      ha:line.2 {
-      y2 = 14.08mil
+      y2 = 15.08mil
       thickness = 8.0mil
       x1 = 15.0mil
       x2 = 30.0mil
-      y1 = 0.865632mm
+      y1 = 0.891032mm
      }
      ha:line.3 {
-      y2 = 1.373632mm
+      y2 = 1.399032mm
       thickness = 8.0mil
       x1 = 30.0mil
       x2 = 30.0mil
-      y1 = 14.08mil
+      y1 = 15.08mil
      }
     }
-    height = 1.373633mm
+    height = 1.399033mm
    }
    ha:&2f {
     width = 0.762001mm
-    delta = 12.0mil
+    delta = 15.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.484632mm
@@ -2266,7 +2273,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:&3a {
     width = 0.127001mm
-    delta = 12.0mil
+    delta = 14.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.738632mm
@@ -2287,21 +2294,21 @@ li:pcb-rnd-font-v1 {
    }
    ha:&3b {
     width = 0.254001mm
-    delta = 12.0mil
+    delta = 14.0mil
     li:objects {
      ha:line.0 {
-      y2 = 1.119632mm
-      thickness = 8.0mil
-      x1 = 0.0
-      x2 = 10.0mil
-      y1 = 1.373632mm
-     }
-     ha:line.1 {
       y2 = 0.865632mm
       thickness = 8.0mil
       x1 = 10.0mil
       x2 = 10.0mil
       y1 = 0.738632mm
+     }
+     ha:line.1 {
+      y2 = 1.119632mm
+      thickness = 8.0mil
+      x1 = 0.0
+      x2 = 10.0mil
+      y1 = 1.373632mm
      }
     }
     height = 1.373633mm
@@ -2329,7 +2336,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:O {
     width = 0.715266mm
-    delta = 0.510033mm
+    delta = 0.230633mm
     li:objects {
      ha:line.0 {
       y2 = 1.119632mm
@@ -2366,7 +2373,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:P {
     width = 0.738634mm
-    delta = 12.0mil
+    delta = 6.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -2402,7 +2409,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:N {
     width = 0.635001mm
-    delta = 12.0mil
+    delta = 10.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -2430,7 +2437,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:R {
     width = 0.738634mm
-    delta = 12.0mil
+    delta = 5.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -2472,8 +2479,8 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
    ha:S {
-    width = 28.96933071mil
-    delta = 0.636527mm
+    width = 0.735821mm
+    delta = 0.204727mm
     li:objects {
      ha:line.0 {
       y2 = 0.851061mm
@@ -2503,7 +2510,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:Q {
     width = 0.715266mm
-    delta = 0.357633mm
+    delta = 0.230633mm
     li:objects {
      ha:line.0 {
       y2 = 1.119632mm
@@ -2547,7 +2554,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:U {
     width = 0.715266mm
-    delta = 0.431293mm
+    delta = 0.228093mm
     li:objects {
      ha:line.0 {
       y2 = 44.0mil
@@ -2576,7 +2583,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:V {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.373632mm
@@ -2597,7 +2604,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:T {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 9.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -2618,7 +2625,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:X {
     width = 0.635001mm
-    delta = 12.0mil
+    delta = 14.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -2639,7 +2646,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:Y {
     width = 0.508001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.865632mm
@@ -2667,7 +2674,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:W {
     width = 0.762001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 0.865632mm
@@ -2765,7 +2772,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:Z {
     width = 0.635001mm
-    delta = 12.0mil
+    delta = 13.0mil
     li:objects {
      ha:line.0 {
       y2 = 14.08mil
@@ -2793,7 +2800,7 @@ li:pcb-rnd-font-v1 {
    }
    ha:a {
     width = 0.73991mm
-    delta = 12.0mil
+    delta = 8.0mil
     li:objects {
      ha:line.0 {
       y2 = 1.246632mm
@@ -2835,7 +2842,7 @@ li:pcb-rnd-font-v1 {
     height = 1.373633mm
    }
   }
-  cell_width = 2.87641mm
+  cell_width = 1.477266mm
   cell_height = 1.879602mm
  }
 }
