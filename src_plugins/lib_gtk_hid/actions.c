@@ -100,13 +100,14 @@ lht compatibility with the lesstif HID.
 
 static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	char *s;
 
 	if (argc != 0)
 		PCB_AFAIL(editlayergroups);
 
-#warning TODO: extend the DoWindows action so it opens the right preferences tab
-
-	pcb_hid_actionl("DoWindows", "Preferences", NULL);
+	s = pcb_concat(_("User PoV"), "/", _("Layers"), NULL);
+	pcb_hid_actionl("DoWindows", "Preferences", "1", s, NULL);
+	free(s);
 
 	return 0;
 }
@@ -271,6 +272,10 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
 		pcb_gtk_config_window_show(&ghidgui->common, raise);
+		/* The 3rd argument will be the path (as a text string, not numbers) to select, once dialog is opened */
+		if (argc >= 3) {
+			pcb_gtk_config_set_cursor(argv[2]);
+		}
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
 		ghid_drc_window_show(&ghidgui->common, raise);

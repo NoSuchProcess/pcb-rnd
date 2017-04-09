@@ -2778,3 +2778,49 @@ static void ghid_config_window_close(void)
 	config_window = NULL;
 	gui_config_treeview = NULL;
 }
+
+void pcb_gtk_config_set_cursor(const char *string_path)
+{
+	gchar **split;
+	gchar *p;
+	int i = 0;
+	gboolean found;
+	GtkTreeModel *model;
+	GtkTreeIter parent, *iter;
+	GtkTreePath *tree_path = NULL;
+
+	model = gtk_tree_view_get_model(gui_config_treeview);
+	gtk_tree_model_get_iter_first(model, &parent);
+
+	/* Split the path, then search for matched column name    */
+	split = g_strsplit(string_path, "/", 0);
+	while (split[i] != NULL) {
+		found = FALSE;
+		iter = gtk_tree_iter_copy(&parent);
+		do {												/* Explore hierarchy        */
+			gtk_tree_model_get(model, iter, CONFIG_NAME_COLUMN, &p, -1);
+			found = (pcb_strcasecmp(split[i], p) == 0) ? TRUE : FALSE;
+			if (found) {
+				if (tree_path != NULL)
+					gtk_tree_path_free(tree_path);
+				/* If node has children, go down. Otherwise, keep memory of this node */
+				tree_path = gtk_tree_model_get_path(model, iter);
+				if (gtk_tree_model_iter_children(model, iter, &parent)) {
+					gtk_tree_path_free(tree_path);
+					tree_path = gtk_tree_model_get_path(model, iter);
+					gtk_tree_model_get_iter(model, &parent, tree_path);
+				}
+			}
+		} while (!found && gtk_tree_model_iter_next(model, iter));
+		gtk_tree_iter_free(iter);
+		i++;
+	}
+	g_strfreev(split);
+
+	/* Expand and select the path */
+	if (tree_path != NULL) {
+		gtk_tree_view_expand_to_path(gui_config_treeview, tree_path);
+		gtk_tree_view_set_cursor(gui_config_treeview, tree_path, NULL, FALSE);
+		gtk_tree_path_free(tree_path);
+	}
+}
