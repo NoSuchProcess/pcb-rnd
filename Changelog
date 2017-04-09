@@ -1,4 +1,4 @@
-pcb-rnd 1.2.2 (up to r8077)
+pcb-rnd 1.2.2 (up to r8101)
 ~~~~~~~~~~~~~~~~~~~~~
 	[font]
 		-Add: multiple fonts: introduce the font kit concept; allow font objects to have a font id
@@ -49,6 +49,8 @@ pcb-rnd 1.2.2 (up to r8077)
 		-Fix: io_kicad: quote module name, as it may contain ()
 		-Fix: io_pcb: do not load empty footprint into the buffer, it'd assert later (fixes: parametric footprint with broken params was leading to an assert in the preview)
 		-Fix: io_pcb: force-rename outline and silk layers because the loader will detect them by name
+		-Fix: io_lihata: accept trailing whitespace in boolean values
+		-Fix: io_lihata: don't complain about fonts under io_err_inhibit
 		-Add: io_kicad: eeschema import
 		-Add: io_kicad: recognize layers Top and Bottom
 		-Add: io_pcb: improvise a minimal usable layer group setup if there's no layer group string on the input (thanks to oskay for reporting this)
@@ -56,6 +58,7 @@ pcb-rnd 1.2.2 (up to r8077)
 		-Add: tEDAx: footprint export
 		-Add: tEDAx: footprint import
 		-Add: mentor: plugin for importing edf netlist from Mentor Graphics Design Capture
+
 
 	[rubberband & route]
 		-Add: keep line direction of middle line segments (2 lines connected) in rubber band mode (patch by Luis de Arquer)
@@ -68,6 +71,8 @@ pcb-rnd 1.2.2 (up to r8077)
 		-Fix: fit in 800x600
 		-Fix: cancel means NO when prompted for creating a new layout (updated ghid_prompt_for() for r7792)
 		-Fix: don't change the mouse cursor in busy mode if the hid is not initialized (led to crash)
+		-Fix: Display the proper pcb-rnd icon for top level windows.
+		-Fix: preferences window: preserve correct tree view selection after Save.
 		-Add: gl support
 		-Add: optional gtk shift workaround for some broken mac+gtk stack
 		-Add: detect if the user clicked on a parametric footprint and present a dialog box with its parameters
