@@ -2784,43 +2784,52 @@ void pcb_gtk_config_set_cursor(const char *string_path)
 	gchar **split;
 	gchar *p;
 	int i = 0;
-	gboolean found;
+	gboolean found, valid = TRUE;
 	GtkTreeModel *model;
-	GtkTreeIter parent, *iter;
+	GtkTreeIter parent, *iter = NULL;
 	GtkTreePath *tree_path = NULL;
 
 	model = gtk_tree_view_get_model(gui_config_treeview);
 	gtk_tree_model_get_iter_first(model, &parent);
+	iter = gtk_tree_iter_copy(&parent);   /* Allocates a new structure  */
 
 	/* Split the path, then search for matched column name    */
 	split = g_strsplit(string_path, "/", 0);
-	while (split[i] != NULL) {
+	while (valid && split[i] != NULL) {
 		found = FALSE;
-		iter = gtk_tree_iter_copy(&parent);
-		do {												/* Explore hierarchy        */
+		/* iter browses the `parent` 's children, except for root level, where it browses siblings */
+		if (i > 0)
+			valid = gtk_tree_model_iter_children(model, iter, &parent);
+
+		while (valid && !found && iter != NULL) {	/* Explore all siblings */
 			gtk_tree_model_get(model, iter, CONFIG_NAME_COLUMN, &p, -1);
 			found = (pcb_strcasecmp(split[i], p) == 0) ? TRUE : FALSE;
+
 			if (found) {
+				/* Update the parent and path to newly found item   */
 				if (tree_path != NULL)
 					gtk_tree_path_free(tree_path);
-				/* If node has children, go down. Otherwise, keep memory of this node */
 				tree_path = gtk_tree_model_get_path(model, iter);
-				if ((split[i+1] != NULL) && (gtk_tree_model_iter_children(model, iter, &parent))) {
-					gtk_tree_path_free(tree_path);
-					tree_path = gtk_tree_model_get_path(model, iter);
-					gtk_tree_model_get_iter(model, &parent, tree_path);
-				}
+				gtk_tree_model_get_iter(model, &parent, tree_path);
 			}
-		} while (!found && gtk_tree_model_iter_next(model, iter));
-		gtk_tree_iter_free(iter);
+			else
+				valid = gtk_tree_model_iter_next(model, iter);
+		}
 		i++;
 	}
+
+	/* Free the iterator structure and char array : */
+	if (iter != NULL)
+		gtk_tree_iter_free(iter);
 	g_strfreev(split);
 
-	/* Expand and select the path */
-	if (tree_path != NULL) {
+	if (valid) {
 		gtk_tree_view_expand_to_path(gui_config_treeview, tree_path);
 		gtk_tree_view_set_cursor(gui_config_treeview, tree_path, NULL, FALSE);
-		gtk_tree_path_free(tree_path);
 	}
+	else
+		pcb_message(PCB_MSG_ERROR, "Error: %s  not found\n", string_path);
+
+	if (tree_path != NULL)
+		gtk_tree_path_free(tree_path);
 }
