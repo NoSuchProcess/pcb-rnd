@@ -393,7 +393,7 @@ void pcb_uninit_buffers(pcb_board_t *pcb)
 }
 
 
-void pcb_buffer_mirror(pcb_buffer_t *Buffer)
+void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	int i, num_layers;
 
@@ -404,7 +404,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 
 	num_layers = PCB_PASTEBUFFER->Data->LayerN;
 	if (num_layers == 0) /* some buffers don't have layers, just simple objects */
-		num_layers = PCB->Data->LayerN;
+		num_layers = pcb->Data->LayerN;
 
 	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
@@ -774,7 +774,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 			/* Mirror buffer */
 		case F_Mirror:
-			pcb_buffer_mirror(PCB_PASTEBUFFER);
+			pcb_buffer_mirror(PCB, PCB_PASTEBUFFER);
 			break;
 
 		case F_Rotate:
