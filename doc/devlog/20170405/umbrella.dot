@@ -25,7 +25,7 @@ digraph g {
 	genxproj -> cschem [dir=both weight=50]
 	cschem -> tedax [dir=both weigth=100]
 
-	cschem -> edakrill [dir=both]
+	cschem -> edakrill [dir=both constraint=false]
 
 	edakrill -> tedax [dir=both weight=50]
 
