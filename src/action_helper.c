@@ -301,8 +301,8 @@ static void click_timer_cb(pcb_hidval_t hv)
 		if (Note.Moving && !pcb_gui->shift_is_pressed()) {
 			Note.Buffer = conf_core.editor.buffer_number;
 			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
-			pcb_buffer_clear(PCB_PASTEBUFFER);
-			pcb_buffer_add_selected(PCB_PASTEBUFFER, Note.X, Note.Y, pcb_true);
+			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, Note.X, Note.Y, pcb_true);
 			pcb_undo_save_serial();
 			pcb_remove_selected();
 			pcb_crosshair_save_mode();
@@ -392,7 +392,7 @@ void pcb_release_mode(void)
 	else if (Note.Moving) {
 		pcb_undo_restore_serial();
 		pcb_notify_mode();
-		pcb_buffer_clear(PCB_PASTEBUFFER);
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		pcb_buffer_set_number(Note.Buffer);
 		Note.Moving = pcb_false;
 		Note.Hit = 0;

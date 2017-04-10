@@ -100,7 +100,7 @@ int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 /* ---------------------------------------------------------------------------
  * clears the contents of the paste buffer
  */
-void pcb_buffer_clear(pcb_buffer_t *Buffer)
+void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	if (Buffer && Buffer->Data) {
 		pcb_data_free(Buffer->Data);
@@ -112,11 +112,11 @@ void pcb_buffer_clear(pcb_buffer_t *Buffer)
  * copies all selected and visible objects to the paste buffer
  * returns true if any objects have been removed
  */
-void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
+void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
 {
 	pcb_opctx_t ctx;
 
-	ctx.buffer.pcb = PCB;
+	ctx.buffer.pcb = pcb;
 
 	/* switch crosshair off because adding objects to the pastebuffer
 	 * may change the 'valid' area for the cursor
@@ -127,9 +127,9 @@ void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y,
 		ctx.buffer.extraflg =  0;
 
 	pcb_notify_crosshair_change(pcb_false);
-	ctx.buffer.src = PCB->Data;
+	ctx.buffer.src = pcb->Data;
 	ctx.buffer.dst = Buffer->Data;
-	pcb_selected_operation(PCB, &AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
+	pcb_selected_operation(pcb, &AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
 	if (X || Y) {
@@ -201,28 +201,28 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
  * parse the file with enabled 'PCB mode' (see parser)
  * if successful, update some other stuff
  */
-pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
+pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
 	pcb_board_t *newPCB = pcb_board_new(1);
 
 	/* new data isn't added to the undo list */
 	if (!pcb_parse_pcb(newPCB, Filename, fmt, CFR_invalid, 0)) {
 		/* clear data area and replace pointer */
-		pcb_buffer_clear(Buffer);
+		pcb_buffer_clear(pcb, Buffer);
 		free(Buffer->Data);
 		Buffer->Data = newPCB->Data;
 		newPCB->Data = NULL;
 		Buffer->X = newPCB->CursorX;
 		Buffer->Y = newPCB->CursorY;
 		pcb_board_remove(newPCB);
-		Buffer->Data->pcb = PCB;
+		Buffer->Data->pcb = pcb;
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 		return (pcb_true);
 	}
 
 	/* release unused memory */
 	pcb_board_remove(newPCB);
-	Buffer->Data->pcb = PCB;
+	Buffer->Data->pcb = pcb;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 	return (pcb_false);
 }
@@ -387,7 +387,7 @@ void pcb_uninit_buffers(void)
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++) {
-		pcb_buffer_clear(pcb_buffers+i);
+		pcb_buffer_clear(PCB, pcb_buffers+i);
 		free(pcb_buffers[i].Data);
 	}
 }
@@ -754,12 +754,12 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 		switch (pcb_funchash_get(function, NULL)) {
 			/* clear contents of paste buffer */
 		case F_Clear:
-			pcb_buffer_clear(PCB_PASTEBUFFER);
+			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 			break;
 
 			/* copies objects to paste buffer */
 		case F_AddSelected:
-			pcb_buffer_add_selected(PCB_PASTEBUFFER, 0, 0, pcb_false);
+			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
 			break;
 
 			/* converts buffer contents into an element */

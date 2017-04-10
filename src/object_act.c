@@ -798,7 +798,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				if (pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
 					Note.Buffer = conf_core.editor.buffer_number;
 					pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
-					pcb_buffer_clear(PCB_PASTEBUFFER);
+					pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 					pcb_copy_obj_to_buffer(PCB_PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					pcb_element_smash_buffer(PCB_PASTEBUFFER);
 					PCB_PASTEBUFFER->X = 0;

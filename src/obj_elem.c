@@ -126,7 +126,7 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 {
 	pcb_element_t *element;
 
-	pcb_buffer_clear(Buffer);
+	pcb_buffer_clear(PCB, Buffer);
 	if (!pcb_parse_element(Buffer->Data, Name)) {
 		if (conf_core.editor.show_solder_side)
 			pcb_buffer_flip_side(Buffer);
@@ -144,7 +144,7 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 	}
 
 	/* release memory which might have been acquired */
-	pcb_buffer_clear(Buffer);
+	pcb_buffer_clear(PCB, Buffer);
 	return (pcb_false);
 }
 
@@ -179,7 +179,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	 */
 	element = elementlist_first(&Buffer->Data->Element);
 	elementlist_remove(element);
-	pcb_buffer_clear(Buffer);
+	pcb_buffer_clear(PCB, Buffer);
 	PCB_ELEMENT_PCB_LINE_LOOP(element);
 	{
 		pcb_line_new(&Buffer->Data->SILKLAYER,
@@ -387,7 +387,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	if (PCB_SWAP_IDENT)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, Element);
 	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
-	pcb_buffer_clear(Buffer);
+	pcb_buffer_clear(PCB, Buffer);
 	pcb_move_obj_to_buffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	pcb_set_buffer_bbox(Buffer);
 	return (pcb_true);

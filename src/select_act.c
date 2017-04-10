@@ -220,11 +220,11 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				pcb_coord_t x, y;
 				Note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
-				pcb_buffer_clear(PCB_PASTEBUFFER);
+				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 				pcb_gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
 				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
-				pcb_buffer_add_selected(PCB_PASTEBUFFER, x, y, pcb_true);
+				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true);
 				pcb_undo_save_serial();
 				pcb_remove_selected();
 				pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
