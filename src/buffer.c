@@ -104,7 +104,7 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	if (Buffer && Buffer->Data) {
 		pcb_data_free(Buffer->Data);
-		Buffer->Data->pcb = PCB;
+		Buffer->Data->pcb = pcb;
 	}
 }
 
@@ -329,11 +329,11 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 /* ---------------------------------------------------------------------------
  * creates a new paste buffer
  */
-pcb_data_t *pcb_buffer_new(void)
+pcb_data_t *pcb_buffer_new(pcb_board_t *pcb)
 {
 	pcb_data_t *data;
 	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
-	data->pcb = (pcb_board_t *) PCB;
+	data->pcb = (pcb_board_t *)pcb;
 	return data;
 }
 
@@ -374,20 +374,20 @@ int pcb_act_FreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 /* ---------------------------------------------------------------------------
  * initializes the buffers by allocating memory
  */
-void pcb_init_buffers(void)
+void pcb_init_buffers(pcb_board_t *pcb)
 {
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++)
-		pcb_buffers[i].Data = pcb_buffer_new();
+		pcb_buffers[i].Data = pcb_buffer_new(pcb);
 }
 
-void pcb_uninit_buffers(void)
+void pcb_uninit_buffers(pcb_board_t *pcb)
 {
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++) {
-		pcb_buffer_clear(PCB, pcb_buffers+i);
+		pcb_buffer_clear(pcb, pcb_buffers+i);
 		free(pcb_buffers[i].Data);
 	}
 }

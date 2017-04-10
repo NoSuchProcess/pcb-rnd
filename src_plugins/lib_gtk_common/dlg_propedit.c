@@ -321,7 +321,7 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 */
 
 	memset(&preview_pcb, 0, sizeof(preview_pcb));
-	preview_pcb.Data = pcb_buffer_new();
+	preview_pcb.Data = pcb_buffer_new(&preview_pcb);
 	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(2000);
 	pcb_colors_from_settings(&preview_pcb);
 	pcb_font_create_default(&preview_pcb);

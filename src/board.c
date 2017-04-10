@@ -69,8 +69,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 
 	/* allocate memory, switch all layers on and copy resources */
 	ptr = calloc(1, sizeof(pcb_board_t));
-	ptr->Data = pcb_buffer_new();
-	ptr->Data->pcb = ptr;
+	ptr->Data = pcb_buffer_new(ptr);
 
 	ptr->ThermStyle = 4;
 	ptr->IsleArea = 2.e8;

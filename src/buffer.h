@@ -53,8 +53,8 @@ void pcb_buffer_rotate(pcb_buffer_t *, pcb_uint8_t);
 void pcb_buffer_select_paste(int);
 void pcb_buffers_flip_side(void);
 void pcb_buffer_mirror(pcb_buffer_t *);
-void pcb_init_buffers(void);
-void pcb_uninit_buffers(void);
+void pcb_init_buffers(pcb_board_t *pcb);
+void pcb_uninit_buffers(pcb_board_t *pcb);
 void *pcb_move_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
 void *pcb_copy_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
 
@@ -66,7 +66,7 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y);
 
 
-pcb_data_t *pcb_buffer_new(void);
+pcb_data_t *pcb_buffer_new(pcb_board_t *pcb);
 
 /* sets currently active buffer */
 void pcb_buffer_set_number(int Number);
