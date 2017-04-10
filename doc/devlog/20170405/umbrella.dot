@@ -26,6 +26,7 @@ digraph g {
 	cschem -> tedax [dir=both weigth=10]
 
 	edakrill -> tedax [dir=both]
+	edakrill -> cschem [dir=both]
 
 
 	pcbrnd -> kicad [dir=both]
