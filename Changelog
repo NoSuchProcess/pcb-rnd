@@ -1,4 +1,4 @@
-pcb-rnd 1.2.2 (up to r8101)
+pcb-rnd 1.2.2 (r8120)
 ~~~~~~~~~~~~~~~~~~~~~
 	[font]
 		-Add: multiple fonts: introduce the font kit concept; allow font objects to have a font id
