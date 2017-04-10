@@ -109,13 +109,13 @@ GType pcb_gtk_preview_get_type(void);
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height);
 
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget.
-    \param  init_widget       ?
-    \param  expose            Drawing event call-back function ?
-    \param  element           ?
-\todo rename to pcb_gtk_preview_new */
-GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t *com,
-																			pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_element_t * element);
+    \param  init_widget       virtual function called at initialization
+    \param  expose            drawing event call-back function
+    \param  element           widget associated data
+ */
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com,
+															 pcb_gtk_init_drawing_widget_t init_widget,
+															 pcb_gtk_preview_expose_t expose, pcb_element_t * element);
 
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget,
     using \p layer... for What ?
