@@ -18,15 +18,16 @@ digraph g {
 	}
 
 
-	pcbrnd -> edakrill [dir=both weigth=10]
-	pcbrnd -> cschem [dir=both weigth=10]
-	pcbrnd -> tedax [dir=both weigth=10]
-	genxproj -> pcbrnd [dir=both]
-	genxproj -> cschem [dir=both]
-	cschem -> tedax [dir=both weigth=10]
+	pcbrnd -> edakrill [dir=both weigth=100]
+	pcbrnd -> cschem [dir=both weigth=100]
+	pcbrnd -> tedax [dir=both weigth=100]
+	genxproj -> pcbrnd [dir=both weight=50]
+	genxproj -> cschem [dir=both weight=50]
+	cschem -> tedax [dir=both weigth=100]
 
-	edakrill -> tedax [dir=both]
-	edakrill -> cschem [dir=both]
+	cschem -> edakrill [dir=both]
+
+	edakrill -> tedax [dir=both weight=50]
 
 
 	pcbrnd -> kicad [dir=both]
