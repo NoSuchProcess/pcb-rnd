@@ -40,9 +40,10 @@ do { \
 #define SHOW_LEAVE \
 do { \
 	XGCValues gcv; \
+	GC gc; \
 	memset(&gcv, 0, sizeof(gcv)); \
 	gcv.graphics_exposures = 0; \
-	GC gc = XtGetGC(da, GCGraphicsExposures, &gcv); \
+	gc = XtGetGC(da, GCGraphicsExposures, &gcv); \
 	view_left_x = save_vx; \
 	view_top_y = save_vy; \
 	view_zoom = save_vz; \
