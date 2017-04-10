@@ -330,7 +330,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			box.X2 = Note.X - PCB_SLOP * pcb_pixel_slop;
 			box.Y1 = Note.Y + PCB_SLOP * pcb_pixel_slop;
 			box.Y2 = Note.Y - PCB_SLOP * pcb_pixel_slop;
-			pcb_crosshair.drags = pcb_list_block(&box, &pcb_crosshair.drags_len);
+			pcb_crosshair.drags = pcb_list_block(PCB, &box, &pcb_crosshair.drags_len);
 			pcb_crosshair.drags_current = 0;
 			AttachForCopy(Note.X, Note.Y);
 		}
@@ -345,7 +345,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			box.X2 = PCB_MAX_COORD;
 			box.Y2 = PCB_MAX_COORD;
 			/* unselect first if shift key not down */
-			if (!pcb_gui->shift_is_pressed() && pcb_select_block(&box, pcb_false))
+			if (!pcb_gui->shift_is_pressed() && pcb_select_block(PCB, &box, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			pcb_notify_block();
 			pcb_crosshair.AttachedBox.Point1.X = Note.X;
@@ -371,7 +371,7 @@ void pcb_release_mode(void)
 		pcb_undo_save_serial();
 		/* unselect first if shift key not down */
 		if (!pcb_gui->shift_is_pressed()) {
-			if (pcb_select_block(&box, pcb_false))
+			if (pcb_select_block(PCB, &box, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			if (Note.Moving) {
 				Note.Moving = 0;
@@ -382,7 +382,7 @@ void pcb_release_mode(void)
 		/* Restore the SN so that if we select something the deselect/select combo
 		   gets the same SN. */
 		pcb_undo_restore_serial();
-		if (pcb_select_object())
+		if (pcb_select_object(PCB))
 			pcb_board_set_changed_flag(pcb_true);
 		else
 			pcb_undo_inc_serial(); /* We didn't select anything new, so, the deselection should get its  own SN. */
@@ -408,7 +408,7 @@ void pcb_release_mode(void)
 		box.Y2 = pcb_crosshair.AttachedBox.Point2.Y;
 
 		pcb_undo_restore_serial();
-		if (pcb_select_block(&box, pcb_true))
+		if (pcb_select_block(PCB, &box, pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 		else if (pcb_bumped)
 			pcb_undo_inc_serial();

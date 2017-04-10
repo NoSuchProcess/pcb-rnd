@@ -129,7 +129,7 @@ void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y,
 	pcb_notify_crosshair_change(pcb_false);
 	ctx.buffer.src = PCB->Data;
 	ctx.buffer.dst = Buffer->Data;
-	pcb_selected_operation(&AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
+	pcb_selected_operation(PCB, &AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
 	if (X || Y) {

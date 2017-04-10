@@ -380,7 +380,7 @@ pcb_bool pcb_chg_selected_thermals(int types, int therm_style)
 	ctx.chgtherm.pcb = PCB;
 	ctx.chgtherm.style = therm_style;
 
-	change = pcb_selected_operation(&ChangeThermalFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeThermalFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -402,7 +402,7 @@ pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt
 	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
 	ctx.chgsize.delta = Difference;
 
-	change = pcb_selected_operation(&ChangeSizeFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -425,9 +425,9 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
 	ctx.chgsize.delta = Difference;
 
 	if (conf_core.editor.show_mask)
-		change = pcb_selected_operation(&ChangeMaskSizeFunctions, &ctx, pcb_false, types);
+		change = pcb_selected_operation(PCB, &ChangeMaskSizeFunctions, &ctx, pcb_false, types);
 	else
-		change = pcb_selected_operation(&ChangeClearSizeFunctions, &ctx, pcb_false, types);
+		change = pcb_selected_operation(PCB, &ChangeClearSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -449,7 +449,7 @@ pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool f
 	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
 	ctx.chgsize.delta = Difference;
 
-	change = pcb_selected_operation(&Change2ndSizeFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &Change2ndSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -468,7 +468,7 @@ pcb_bool pcb_chg_selected_join(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ChangeJoinFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -487,7 +487,7 @@ pcb_bool pcb_set_selected_join(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&SetJoinFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &SetJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -506,7 +506,7 @@ pcb_bool pcb_clr_selected_join(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ClrJoinFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ClrJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -525,7 +525,7 @@ pcb_bool pcb_chg_selected_nonetlist(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ChangeNonetlistFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -545,7 +545,7 @@ pcb_bool SetSelectedNonetlist(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&SetNonetlistFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &SetNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -564,7 +564,7 @@ pcb_bool ClrSelectedNonetlist(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ClrNonetlistFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ClrNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -584,7 +584,7 @@ pcb_bool pcb_chg_selected_square(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ChangeSquareFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -606,7 +606,7 @@ pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference,
 	ctx.chgangle.absolute = (fixIt) ? Difference : 0;
 	ctx.chgangle.delta = Difference;
 
-	change = pcb_selected_operation(&ChangeAngleFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeAngleFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -628,7 +628,7 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
 	ctx.chgsize.delta = Difference;
 
-	change = pcb_selected_operation(&ChangeRadiusFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeRadiusFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -648,7 +648,7 @@ pcb_bool pcb_set_selected_square(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&SetSquareFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &SetSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -667,7 +667,7 @@ pcb_bool pcb_clr_selected_square(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ClrSquareFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ClrSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -686,7 +686,7 @@ pcb_bool pcb_chg_selected_octagon(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ChangeOctagonFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ChangeOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -705,7 +705,7 @@ pcb_bool pcb_set_selected_octagon(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&SetOctagonFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &SetOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -724,7 +724,7 @@ pcb_bool pcb_clr_selected_octagon(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(&ClrOctagonFunctions, &ctx, pcb_false, types);
+	change = pcb_selected_operation(PCB, &ClrOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();

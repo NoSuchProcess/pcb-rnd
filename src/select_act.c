@@ -158,7 +158,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				pcb_search_method_t method = PCB_SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
-					if (pcb_select_object_by_name(type, pattern, pcb_true, method))
+					if (pcb_select_object_by_name(PCB, type, pattern, pcb_true, method))
 						pcb_board_set_changed_flag(pcb_true);
 					if (PCB_ACTION_ARG(1) == NULL)
 						free((char*)pattern);
@@ -169,7 +169,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			/* select a single object */
 		case F_ToggleObject:
 		case F_Object:
-			if (pcb_select_object())
+			if (pcb_select_object(PCB))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 
@@ -184,7 +184,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(&box, pcb_true)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
@@ -201,14 +201,14 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.Y1 = -PCB_MAX_COORD;
 				box.X2 = PCB_MAX_COORD;
 				box.Y2 = PCB_MAX_COORD;
-				if (pcb_select_block(&box, pcb_true))
+				if (pcb_select_block(PCB, &box, pcb_true))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
 
 			/* all found connections */
 		case F_Connection:
-			if (pcb_select_connection(pcb_true)) {
+			if (pcb_select_connection(PCB, pcb_true)) {
 				pcb_draw();
 				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
@@ -317,7 +317,7 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				pcb_search_method_t method = PCB_SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
-					if (pcb_select_object_by_name(type, pattern, pcb_false, method))
+					if (pcb_select_object_by_name(PCB, type, pattern, pcb_false, method))
 						pcb_board_set_changed_flag(pcb_true);
 					if (PCB_ACTION_ARG(1) == NULL)
 						free((char*)pattern);
@@ -336,7 +336,7 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(&box, pcb_false)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
@@ -353,14 +353,14 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				box.Y1 = -PCB_MAX_COORD;
 				box.X2 = PCB_MAX_COORD;
 				box.Y2 = PCB_MAX_COORD;
-				if (pcb_select_block(&box, pcb_false))
+				if (pcb_select_block(PCB, &box, pcb_false))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
 
 			/* all found connections */
 		case F_Connection:
-			if (pcb_select_connection(pcb_false)) {
+			if (pcb_select_connection(PCB, pcb_false)) {
 				pcb_draw();
 				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
