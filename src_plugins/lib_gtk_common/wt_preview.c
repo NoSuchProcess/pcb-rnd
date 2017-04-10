@@ -150,7 +150,7 @@ static void ghid_pinout_preview_constructed(GObject * object)
  */
 static void ghid_pinout_preview_finalize(GObject * object)
 {
-	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(object);
+	pcb_gtk_preview_t *pinout = PCB_GTK_PREVIEW(object);
 
 	/* Passing NULL for element data will free the old memory */
 	pinout_set_data(pinout, NULL);
@@ -171,7 +171,7 @@ static void ghid_pinout_preview_finalize(GObject * object)
  */
 static void ghid_pinout_preview_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
 {
-	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(object);
+	pcb_gtk_preview_t *pinout = PCB_GTK_PREVIEW(object);
 	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(pinout));
 
 	switch (property_id) {
@@ -229,7 +229,7 @@ static void ghid_pinout_preview_get_property(GObject * object, guint property_id
 /** Converter: set up a pinout expose and use the generic preview expose call */
 static gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 {
-	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(widget);
+	pcb_gtk_preview_t *pinout = PCB_GTK_PREVIEW(widget);
 
 	switch (pinout->kind) {
 	case PCB_GTK_PREVIEW_PINOUT:
@@ -473,7 +473,7 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widge
 {
 	pcb_gtk_preview_t *preview;
 
-	preview = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
+	preview = (pcb_gtk_preview_t *) g_object_new(PCB_GTK_TYPE_PREVIEW,
 																							 "element-data", element,
 																							 "gport", com->gport,
 																							 "com", com,
@@ -490,7 +490,7 @@ GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing
 {
 	pcb_gtk_preview_t *prv;
 
-	prv = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
+	prv = (pcb_gtk_preview_t *) g_object_new(PCB_GTK_TYPE_PREVIEW,
 																					 "layer", layer,
 																					 "gport", com->gport,
 																					 "com", com,

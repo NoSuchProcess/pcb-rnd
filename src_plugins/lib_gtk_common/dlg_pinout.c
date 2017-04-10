@@ -72,7 +72,7 @@ void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_element_t *element)
 
 	gtk_box_pack_start(GTK_BOX(vbox), preview, TRUE, TRUE, 0);
 
-	pcb_gtk_preview_get_natsize(GHID_PINOUT_PREVIEW(preview), &width, &height);
+	pcb_gtk_preview_get_natsize(PCB_GTK_PREVIEW(preview), &width, &height);
 
 	gtk_window_set_default_size(GTK_WINDOW(top_window), width + 50, height + 50);
 

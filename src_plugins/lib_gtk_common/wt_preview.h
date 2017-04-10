@@ -39,11 +39,11 @@
 #include "ui_zoompan.h"
 #include "glue.h"
 
-#define GHID_TYPE_PINOUT_PREVIEW           (pcb_gtk_preview_get_type())
-#define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_t))
-#define GHID_PINOUT_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_class_t))
-#define GHID_IS_PINOUT_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_TYPE_PINOUT_PREVIEW))
-#define GHID_PINOUT_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_class_t))
+#define PCB_GTK_TYPE_PREVIEW           (pcb_gtk_preview_get_type())
+#define PCB_GTK_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_t))
+#define PCB_GTK_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
+#define PCB_GTK_IS_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PCB_GTK_TYPE_PREVIEW))
+#define PCB_GTK_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
 
 /** The _preview_ widget Class. */
 typedef struct pcb_gtk_preview_class_s pcb_gtk_preview_class_t;
