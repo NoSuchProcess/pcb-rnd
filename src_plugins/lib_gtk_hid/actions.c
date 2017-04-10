@@ -86,31 +86,6 @@ static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 /* ------------------------------------------------------------ */
 
-static const char editlayergroups_syntax[] = "EditLayerGroups()\n";
-
-static const char editlayergroups_help[] = "Open the preferences window which allows editing of the layer groups.";
-
-/* %start-doc actions EditLayerGroups
-
-Opens the preferences window which is where the layer groups
-are edited.  This action is primarily provides to provide menu
-lht compatibility with the lesstif HID.
-
-%end-doc */
-
-static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-
-	if (argc != 0)
-		PCB_AFAIL(editlayergroups);
-
-#warning TODO: get rid of _() here and in the tree creation too; then delete this action and use a DoWindows() call directly from the menu files
-	pcb_hid_actionl("DoWindows", "Preferences", "1", "User PoV/Layers", NULL);
-
-	return 0;
-}
-
-
 static const char pcb_acts_fontsel[] = "FontSel()\n";
 static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
 static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -508,8 +483,6 @@ pcb_hid_action_t ghid_menu_action_list[] = {
 	 toggleview_help, toggleview_syntax}
 	,
 	{"AdjustStyle", 0, AdjustStyle, adjuststyle_help, adjuststyle_syntax}
-	,
-	{"EditLayerGroups", 0, EditLayerGroups, editlayergroups_help, editlayergroups_syntax}
 	,
 	{"fontsel", 0, pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
