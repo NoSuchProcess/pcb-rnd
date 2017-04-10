@@ -28,9 +28,9 @@ digraph g {
 	edakrill -> tedax [dir=both]
 
 
-	pcbrnd -> kciad [dir=both]
-	genxproj -> kciad [dir=both]
-	edakrill -> kciad [dir=both]
+	pcbrnd -> kicad [dir=both]
+	genxproj -> kicad [dir=both]
+	edakrill -> kicad [dir=both]
 
 	pcbrnd -> gschem [dir=both]
 	genxproj -> gschem [dir=both]

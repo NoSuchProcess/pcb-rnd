@@ -55,13 +55,13 @@
 <polygon fill="black" stroke="black" points="309.956,-233.887 307.278,-244.137 315.764,-237.794 309.956,-233.887"/>
 <polygon fill="black" stroke="black" points="343.091,-197.18 345.77,-186.929 337.283,-193.272 343.091,-197.18"/>
 </g>
-<!-- kciad -->
-<g id="node19" class="node"><title>kciad</title>
+<!-- kicad -->
+<g id="node19" class="node"><title>kicad</title>
 <ellipse fill="none" stroke="black" cx="36" cy="-34" rx="36.1339" ry="18"/>
-<text text-anchor="middle" x="36" y="-29.9" font-family="Times Roman,serif" font-size="14.00">kciad</text>
+<text text-anchor="middle" x="36" y="-29.9" font-family="Times Roman,serif" font-size="14.00">kicad</text>
 </g>
-<!-- pcbrnd&#45;&gt;kciad -->
-<g id="edge18" class="edge"><title>pcbrnd&#45;&gt;kciad</title>
+<!-- pcbrnd&#45;&gt;kicad -->
+<g id="edge18" class="edge"><title>pcbrnd&#45;&gt;kicad</title>
 <path fill="none" stroke="black" d="M187.266,-283.809C141.045,-267.815 86.0135,-240.545 55,-196 27.2596,-156.156 28.1535,-97.0214 31.7702,-62.3045"/>
 <polygon fill="black" stroke="black" points="186.39,-287.206 196.984,-287.053 188.607,-280.566 186.39,-287.206"/>
 <polygon fill="black" stroke="black" points="35.2967,-62.2908 33.0073,-51.9462 28.3461,-61.4606 35.2967,-62.2908"/>
@@ -105,8 +105,8 @@
 <polygon fill="black" stroke="black" points="246.5,-78 250,-88 253.5,-78 246.5,-78"/>
 <polygon fill="black" stroke="black" points="253.5,-62.3207 250,-52.3207 246.5,-62.3208 253.5,-62.3207"/>
 </g>
-<!-- edakrill&#45;&gt;kciad -->
-<g id="edge22" class="edge"><title>edakrill&#45;&gt;kciad</title>
+<!-- edakrill&#45;&gt;kicad -->
+<g id="edge22" class="edge"><title>edakrill&#45;&gt;kicad</title>
 <path fill="none" stroke="black" d="M204.713,-96.7046C200.573,-93.5461 196.311,-90.5926 192,-88 156.652,-66.7406 111.742,-52.3175 79.1946,-43.7634"/>
 <polygon fill="black" stroke="black" points="202.524,-99.4354 212.505,-102.99 206.919,-93.9872 202.524,-99.4354"/>
 <polygon fill="black" stroke="black" points="79.6437,-40.2662 69.0893,-41.1911 77.9169,-47.0499 79.6437,-40.2662"/>
@@ -146,8 +146,8 @@
 <polygon fill="black" stroke="black" points="372.5,-413.685 376,-423.685 379.5,-413.685 372.5,-413.685"/>
 <polygon fill="black" stroke="black" points="379.5,-206.266 376,-196.266 372.5,-206.266 379.5,-206.266"/>
 </g>
-<!-- genxproj&#45;&gt;kciad -->
-<g id="edge20" class="edge"><title>genxproj&#45;&gt;kciad</title>
+<!-- genxproj&#45;&gt;kicad -->
+<g id="edge20" class="edge"><title>genxproj&#45;&gt;kicad</title>
 <path fill="none" stroke="black" d="M346.968,-419.572C338.344,-413.778 328.622,-408.042 319,-404 263.309,-380.602 238.246,-406.32 186,-376 93.4231,-322.276 64.0387,-296.049 26,-196 9.10238,-151.556 18.8249,-95.3189 27.4164,-62.1443"/>
 <polygon fill="black" stroke="black" points="344.983,-422.454 355.182,-425.324 348.998,-416.721 344.983,-422.454"/>
 <polygon fill="black" stroke="black" points="30.8664,-62.7971 30.131,-52.2279 24.1148,-60.9489 30.8664,-62.7971"/>
