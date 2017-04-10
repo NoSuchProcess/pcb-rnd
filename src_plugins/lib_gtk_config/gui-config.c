@@ -2805,7 +2805,7 @@ void pcb_gtk_config_set_cursor(const char *string_path)
 					gtk_tree_path_free(tree_path);
 				/* If node has children, go down. Otherwise, keep memory of this node */
 				tree_path = gtk_tree_model_get_path(model, iter);
-				if (gtk_tree_model_iter_children(model, iter, &parent)) {
+				if ((split[i+1] != NULL) && (gtk_tree_model_iter_children(model, iter, &parent))) {
 					gtk_tree_path_free(tree_path);
 					tree_path = gtk_tree_model_get_path(model, iter);
 					gtk_tree_model_get_iter(model, &parent, tree_path);
