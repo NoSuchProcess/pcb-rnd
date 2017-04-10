@@ -100,15 +100,12 @@ lht compatibility with the lesstif HID.
 
 static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	char *s;
 
 	if (argc != 0)
 		PCB_AFAIL(editlayergroups);
 
 #warning TODO: get rid of _() here and in the tree creation too; then delete this action and use a DoWindows() call directly from the menu files
-	s = pcb_concat(_("User PoV"), "/", _("Layers"), NULL);
-	pcb_hid_actionl("DoWindows", "Preferences", "1", s, NULL);
-	free(s);
+	pcb_hid_actionl("DoWindows", "Preferences", "1", "User PoV/Layers", NULL);
 
 	return 0;
 }

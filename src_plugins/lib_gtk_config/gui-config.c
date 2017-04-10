@@ -2714,20 +2714,20 @@ void pcb_gtk_config_window_show(pcb_gtk_common_t *com, gboolean raise)
 	/* build the tree */
 	model = gtk_tree_store_new(N_CONFIG_COLUMNS, G_TYPE_STRING, G_TYPE_INT, G_TYPE_POINTER, G_TYPE_POINTER);
 
-	config_tree_sect(model, NULL, &user_pov, _("User PoV"),
+	config_tree_sect(model, NULL, &user_pov, "User PoV",
 									 _
 									 ("\n<b>User PoV</b>\nA subset of configuration settings regrouped,\npresented in the User's Point of View."));
-	config_tree_sect(model, NULL, &config_pov, _("Config PoV"),
+	config_tree_sect(model, NULL, &config_pov, "Config PoV",
 									 _
 									 ("\n<b>Config PoV</b>\nAccess all configuration fields presented in\na tree that matches the configuration\nfile (lht) structure."));
 
-	config_tree_leaf(model, &user_pov, _("General"), config_general_tab_create, com);
-	config_tree_leaf(model, &user_pov, _("Window"), config_window_tab_create, com);
-	config_tree_leaf(model, &user_pov, _("Sizes"), config_sizes_tab_create, com);
-	config_tree_leaf(model, &user_pov, _("Increments"), config_increments_tab_create, com);
-	config_tree_leaf(model, &user_pov, _("Library"), config_library_tab_create, com);
-	config_tree_leaf(model, &user_pov, _("Layers"), config_layers_tab_create, com);
-	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create, com);
+	config_tree_leaf(model, &user_pov, "General", config_general_tab_create, com);
+	config_tree_leaf(model, &user_pov, "Window", config_window_tab_create, com);
+	config_tree_leaf(model, &user_pov, "Sizes", config_sizes_tab_create, com);
+	config_tree_leaf(model, &user_pov, "Increments", config_increments_tab_create, com);
+	config_tree_leaf(model, &user_pov, "Library", config_library_tab_create, com);
+	config_tree_leaf(model, &user_pov, "Layers", config_layers_tab_create, com);
+	config_tree_leaf(model, &user_pov, "Colors", config_colors_tab_create, com);
 
 	config_tree_auto(model, &config_pov, com);
 
