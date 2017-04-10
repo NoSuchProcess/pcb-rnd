@@ -68,7 +68,7 @@ outline_t *outline_tail;
 
 void hyp_set_origin();					/* set origin so all coordinates are positive */
 void hyp_perimeter();						/* add board outline to pcb */
-void hyp_create_polygons();			/* add all created polygons to pcb */
+void hyp_draw_polygons();				/* add all hyperlynx polygons to pcb */
 void hyp_create_silkscreen();		/* add silkscreen outlines to all devices on board */
 void hyp_resize_board();				/* resize board to fit outline */
 pcb_bool_t hyp_is_bottom_layer(char *);	/* true if bottom layer */
@@ -152,38 +152,43 @@ pcb_element_t *solder_side_pads;
 
 	/* polygons */
 
+/* 
+ * a hyperlynx polygon is a sequence of line and arc segments.
+ *
+ * if is_arc is false, draw a line to (x1, y1).
+ * if is_arc is true, draw an arc from (x1, y1) to (x2, y2) with center (xc, yc).
+ *
+ * is_first marks the first vertex of a contour. 
+ * The first contour is the outer edge of the polygon; the following contours are holes.
+ */
+
+typedef struct hyp_vertex_s {
+	pcb_coord_t x1;
+	pcb_coord_t y1;
+	pcb_coord_t x2;
+	pcb_coord_t y2;
+	pcb_coord_t xc;
+	pcb_coord_t yc;
+	pcb_coord_t r;
+	pcb_bool_t is_first;					/* true if first vertex of contour */
+	pcb_bool_t is_arc;						/* true if arc */
+	struct hyp_vertex_s *next;
+} hyp_vertex_t;
+
 	/* linked list to store correspondence between hyperlynx polygon id's and pcb polygons. */
 typedef struct hyp_polygon_s {
 	int hyp_poly_id;							/* hyperlynx polygon/polyline id */
-	pcb_polygon_t *polygon;
-	pcb_layer_t *layer;
-	pcb_bool_t is_polygon;				/* whether polygon or polyline */
+	polygon_type_enum hyp_poly_type;	/* pour, copper, ... */
+	pcb_bool_t is_polygon;				/* true if polygon, false if polyline */
+	char *layer_name;							/* layer of polygon */
+	pcb_coord_t line_width;				/* line width of edge */
+	pcb_coord_t clearance;				/* clearance with other copper */
+	hyp_vertex_t *vertex;					/* polygon contours as linked list of vertices */
 	struct hyp_polygon_s *next;
 } hyp_polygon_t;
 
-hyp_polygon_t *polygon_head = NULL;
-
-/* keep track of current polygon */
-
-pcb_polygon_t *current_polygon = NULL;
-
-/* current polyline layer, position, width and clearance */
-pcb_layer_t *current_polyline_layer = NULL;
-pcb_coord_t current_polyline_xpos = 0;
-pcb_coord_t current_polyline_ypos = 0;
-pcb_coord_t current_polyline_width = 0;
-pcb_coord_t current_polyline_clearance = 0;
-
-/* State machine for polygon parsing:
- * HYP_POLYIDLE idle
- * HYP_POLYGON parsing a polygon
- * HYP_POLYLINE parsing a polyline (sequence of lines and arcs)
- * HYP_POLYGON_HOLE parsing a hole in a polygon
- * HYP_POLYLINE_HOLE parsing a hole in a polyline
- */
-
-enum poly_state_e { HYP_POLYIDLE, HYP_POLYGON, HYP_POLYLINE, HYP_POLYGON_HOLE, HYP_POLYLINE_HOLE };
-enum poly_state_e poly_state = HYP_POLYIDLE;
+hyp_polygon_t *polygon_head = NULL;	/* linked list of all polygons */
+hyp_vertex_t *current_vertex = NULL; /* keeps track where to add next polygon segment when parsing polygons */
 
 /* origin. Chosen so all coordinates are positive. */
 pcb_coord_t origin_x;
@@ -278,15 +283,7 @@ void hyp_init(void)
 
 	/* clear polygon data */
 	polygon_head = NULL;
-	current_polygon = NULL;
-	poly_state = HYP_POLYIDLE;
-
-	/* clear polyline data */
-	current_polyline_layer = NULL;
-	current_polyline_xpos = 0;
-	current_polyline_ypos = 0;
-	current_polyline_width = 0;
-	current_polyline_clearance = 0;
+	current_vertex = NULL;
 
 	/* set origin */
 	origin_x = 0;
@@ -322,8 +319,8 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	retval = hyyparse();
 	fclose(hyyin);
 
-	/* finish setting up polygons */
-	hyp_create_polygons();
+	/* set up polygons */
+	hyp_draw_polygons();
 
 	/* create device outlines */
 	hyp_create_silkscreen();
@@ -918,57 +915,6 @@ pcb_bool_t hyp_is_bottom_layer(char *layer_name)
 }
 
 /*
- * create all polygons 
- */
-
-void hyp_create_polygons()
-{
-	hyp_polygon_t *i;
-
-	/* loop over all created polygons and close them */
-	for (i = polygon_head; i != NULL; i = i->next)
-		if ((i->is_polygon) && (i->polygon != NULL) && (i->layer != NULL)) {
-			pcb_add_polygon_on_layer(i->layer, i->polygon);
-			pcb_poly_init_clip(hyp_dest, i->layer, i->polygon);
-		}
-	return;
-}
-
-/*
- * calculate hyperlynx-style clearance
- * 
- * use plane_separation of, in order:
- * - this copper
- * - the net this copper belongs to
- * - the layer this copper is on
- * - the board
- * if neither copper, net, layer nor board have plane_separation set, do not set clearance.
- */
-
-pcb_coord_t hyp_clearance(parse_param * h)
-{
-	pcb_coord_t clearance;
-	pcb_layer_id_t layr_id;
-
-	if (h->layer_name_set)
-		layr_id = hyp_create_layer(h->layer_name);
-	clearance = -1;
-
-	if (h->plane_separation_set)
-		clearance = xy2coord(h->plane_separation);
-	else if (net_clearance >= 0)
-		clearance = net_clearance;
-	else if (h->layer_name_set && (layer_clearance[layr_id] >= 0))
-		clearance = layer_clearance[layr_id];
-	else if (board_clearance >= 0)
-		clearance = board_clearance;
-	else
-		clearance = 0;
-
-	return clearance;
-}
-
-/*
  * Draw arc from (x1, y1) to (x2, y2) with center (xc, yc) and radius r. 
  * Direction of arc is clockwise or counter-clockwise, depending upon value of pcb_bool_t Clockwise.
  */
@@ -1003,23 +949,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 
 	delta = end_angle - start_angle;
 
-#undef XXX
-#ifdef XXX
-	if (hyp_debug)
-		pcb_printf("hyp_arc: start_angle: %f end_angle: %f delta: %f\n", start_angle, end_angle, delta);
-#endif
-
 	new_arc = pcb_arc_new(Layer, XC, YC, Width, Height, start_angle, delta, Thickness, Clearance, Flags);
-
-#ifdef XXX
-	/* XXX remove debugging code */
-	if (hyp_debug) {
-		pcb_coord_t x1, y1, x2, y2;
-		pcb_arc_get_end(new_arc, 1, &x1, &y1);
-		pcb_arc_get_end(new_arc, 0, &x2, &y2);
-		pcb_printf("hyp_arc: start_point: (%ml, %ml) end_point: (%ml, %ml)\n", x1, y1, x2, y2);
-	}
-#endif
 
 	return new_arc;
 }
@@ -1028,18 +958,21 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
  * Draw an arc from (x1, y1) to (x2, y2) with center (xc, yc) and radius r using a polygonal approximation.
  * Arc may be clockwise or counterclockwise. Note pcb-rnd y-axis points downward.
  */
-
-void hyp_arc2poly(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xc, pcb_coord_t yc,
-									pcb_coord_t r, pcb_bool_t clockwise)
+void hyp_arc2contour(pcb_pline_t * contour, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t xc,
+										 pcb_coord_t yc, pcb_coord_t r, pcb_bool_t clockwise)
 {
 	pcb_coord_t arc_precision = PCB_MM_TO_COORD(0.254);	/* mm */
 	int min_circle_segments = 8;	/* 8 seems minimal, 16 seems more than sufficient. */
 	int segments;
 	int poly_points = 0;
 	int i;
+	pcb_vector_t v;
 
 	double alpha = atan2(y1 - yc, x1 - xc);
 	double beta = atan2(y2 - yc, x2 - xc);
+
+	if (contour == NULL)
+		return;
 
 	if (clockwise) {
 		/* draw arc clockwise from (x1,y1) to (x2,y2) */
@@ -1077,23 +1010,228 @@ void hyp_arc2poly(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2
 	if (poly_points < 1)
 		poly_points = 1;
 
-	/* first point */
-	pcb_poly_point_new(current_polygon, x1, y1);
+	/* add first point to contour */
+	v[0] = x1;
+	v[1] = y1;
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 
 	/* intermediate points */
 	for (i = 1; i < poly_points; i++) {
 		double angle = alpha + (beta - alpha) * i / poly_points;
-		pcb_coord_t x = xc + r * cos(angle);
-		pcb_coord_t y = yc + r * sin(angle);
-		pcb_poly_point_new(current_polygon, x, y);
+		v[0] = xc + r * cos(angle);
+		v[1] = yc + r * sin(angle);
+		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	}
 
 	/* last point */
-	pcb_poly_point_new(current_polygon, x2, y2);
+	v[0] = x2;
+	v[1] = y2;
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 
 	return;
 }
 
+/*
+ * dump polygon structure for debugging.
+ */
+void hyp_dump_polygons()
+{
+	hyp_polygon_t *i;
+	hyp_vertex_t *v;
+
+	/* loop over all created polygons and draw them */
+	for (i = polygon_head; i != NULL; i = i->next) {
+		pcb_printf("%s id=%i.\n", (i->is_polygon ? "polygon" : "polyline"), i->hyp_poly_id);
+		for (v = i->vertex; v != NULL; v = v->next) {
+			if (v->is_first)
+				pcb_printf("  contour\n");
+			if (v->is_arc)
+				pcb_printf("    arc  x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", v->x1, v->y1, v->x2, v->y2,
+									 v->xc, v->yc, v->r);
+			else
+				pcb_printf("    line x1 = %ml y1 = %ml\n", v->x1, v->y1);
+		}
+	}
+}
+
+/* 
+ * draw a single polyline 
+ */
+
+void hyp_draw_polyline(hyp_polygon_t * polyline)
+{
+	pcb_layer_t *layer;
+	pcb_coord_t xpos;
+	pcb_coord_t ypos;
+	hyp_vertex_t *vrtx;
+
+	if ((polyline == NULL) || (polyline->vertex == NULL))
+		return;
+
+	layer = pcb_get_layer(hyp_create_layer(polyline->layer_name));
+
+	xpos = polyline->vertex->x1;
+	ypos = polyline->vertex->y1;
+
+	for (vrtx = polyline->vertex->next; vrtx != NULL; vrtx = vrtx->next) {
+		if (vrtx->is_first)
+			break;										/* polyvoids in polyline not implemented */
+		if (!vrtx->is_arc) {
+			/* draw line */
+			pcb_line_new(layer, xpos, ypos, vrtx->x1, vrtx->y1, polyline->line_width, polyline->clearance, pcb_no_flags());
+			/* move on */
+			xpos = vrtx->x1;
+			ypos = vrtx->y1;
+		}
+		else {
+			/* draw clockwise arc from (x1, y2) to (x2, y2) */
+			hyp_arc_new(layer, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, vrtx->r, pcb_false,
+									polyline->line_width, polyline->clearance, pcb_no_flags());
+			/* move on */
+			if ((xpos == vrtx->x1) && (ypos == vrtx->y1)) {
+				xpos = vrtx->x2;
+				ypos = vrtx->y2;
+			}
+			else if ((xpos == vrtx->x2) && (ypos == vrtx->y2)) {
+				xpos = vrtx->x1;
+				ypos = vrtx->y1;
+			}
+		}
+	}
+	return;
+}
+
+/* 
+ * draw a single polygon 
+ */
+
+void hyp_draw_polygon(hyp_polygon_t * polygon)
+{
+	pcb_layer_t *layer;
+	pcb_bool_t outer_contour;
+	hyp_vertex_t *vrtx;
+
+	pcb_polyarea_t *polyarea = NULL;
+	pcb_pline_t *contour = NULL;
+
+	polyarea = pcb_polyarea_create();
+	if (polyarea == NULL)
+		return;
+
+	if ((polygon == NULL) || (polygon->vertex == NULL))
+		return;
+
+	layer = pcb_get_layer(hyp_create_layer(polygon->layer_name));
+
+	outer_contour = pcb_true;
+
+	for (vrtx = polygon->vertex; vrtx != NULL; vrtx = vrtx->next) {
+		pcb_vector_t v;
+		v[0] = vrtx->x1;
+		v[1] = vrtx->y1;
+		if ((vrtx->is_first) || (vrtx->next == NULL)) {
+			if (contour != NULL) {
+				/* add contour to polyarea */
+				pcb_poly_contour_pre(contour, pcb_false);
+
+				/* check contour valid */
+				if (pcb_polyarea_contour_check(contour)) {
+					if (hyp_debug)
+						pcb_printf("draw polygon: bad contour. skipping.\n");
+					return;
+				}
+
+				/* set orientation for outer contour, negative for holes */
+				if (contour->Flags.orient != (outer_contour ? PCB_PLF_DIR : PCB_PLF_INV))
+					pcb_poly_contour_inv(contour);
+
+				/* add contour to polyarea */
+				pcb_polyarea_contour_include(polyarea, contour);
+
+				/* first contour is outer contour, remainder are holes */
+				outer_contour = pcb_false;
+			}
+			/* create new contour */
+			contour = pcb_poly_contour_new(v);
+			if (contour == NULL)
+				return;
+		}
+		else {
+			if (!vrtx->is_arc)
+				/* line. add vertex to contour */
+				pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+			else
+				/* arc. pcb polyarea contains line segments, not arc segments. convert arc segment to line segments. */
+				hyp_arc2contour(contour, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, pcb_false);
+		}
+	}
+
+	/* add polyarea to pcb */
+	if (pcb_poly_valid(polyarea))
+		pcb_poly_to_polygons_on_layer(hyp_dest, layer, polyarea, pcb_no_flags());
+	else if (hyp_debug)
+		pcb_printf("draw polygon: self-intersecting polygon id=%i dropped.\n", polygon->hyp_poly_id);
+
+	return;
+}
+
+/*
+ * create all polygons 
+ */
+
+void hyp_draw_polygons()
+{
+	hyp_polygon_t *i;
+
+#ifdef XXX
+	hyp_dump_polygons();					/* more debugging */
+#endif
+
+	/* loop over all created polygons and draw them */
+	for (i = polygon_head; i != NULL; i = i->next) {
+		if (hyp_debug)
+			pcb_printf("draw polygons: drawing poly id=%i.\n", i->hyp_poly_id);
+		if (i->is_polygon)
+			hyp_draw_polygon(i);
+		else
+			hyp_draw_polyline(i);
+	}
+	return;
+}
+
+/*
+ * calculate hyperlynx-style clearance
+ * 
+ * use plane_separation of, in order:
+ * - this copper
+ * - the net this copper belongs to
+ * - the layer this copper is on
+ * - the board
+ * if neither copper, net, layer nor board have plane_separation set, do not set clearance.
+ */
+
+pcb_coord_t hyp_clearance(parse_param * h)
+{
+	pcb_coord_t clearance;
+	pcb_layer_id_t layr_id;
+
+	if (h->layer_name_set)
+		layr_id = hyp_create_layer(h->layer_name);
+	clearance = -1;
+
+	if (h->plane_separation_set)
+		clearance = xy2coord(h->plane_separation);
+	else if (net_clearance >= 0)
+		clearance = net_clearance;
+	else if (h->layer_name_set && (layer_clearance[layr_id] >= 0))
+		clearance = layer_clearance[layr_id];
+	else if (board_clearance >= 0)
+		clearance = board_clearance;
+	else
+		clearance = 0;
+
+	return clearance;
+}
 
 /* exec_* routines are called by parser to interpret hyperlynx file */
 
@@ -1638,21 +1776,21 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	flags = pcb_no_flags();
 
 	/* loop over padstack, and choose one entry to implement via. this is suboptimal. XXX fixme 
-   * order chosen:
-   * - top layer
-   * - bottom layer
-   * - default "MDEF" layer
-   * - any metal layer 
-   */
+	 * order chosen:
+	 * - top layer
+	 * - bottom layer
+	 * - default "MDEF" layer
+	 * - any metal layer 
+	 */
 
-  /* search for top layer */
+	/* search for top layer */
 	for (i = padstk->padstack; i != NULL; i = i->next) {
 		if (i->layer_name == NULL)
 			continue;
 		if ((strcmp(i->layer_name, pcb_layer_name(top_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
 			break;
 	}
-  /* if top layer not found, search for bottom layer */
+	/* if top layer not found, search for bottom layer */
 	if (i == NULL)
 		for (i = padstk->padstack; i != NULL; i = i->next) {
 			if (i->layer_name == NULL)
@@ -1660,7 +1798,7 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 			if ((strcmp(i->layer_name, pcb_layer_name(bottom_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
 				break;
 		}
-  /* if bottom layer not found, search for default MDEF layer */
+	/* if bottom layer not found, search for default MDEF layer */
 	if (i == NULL)
 		for (i = padstk->padstack; i != NULL; i = i->next) {
 			if (i->layer_name == NULL)
@@ -1668,7 +1806,7 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 			if ((strcmp(i->layer_name, "MDEF") == 0) && (i->pad_type != PAD_TYPE_METAL))
 				break;
 		}
-  /* if default MDEF layer not found, search for any metal layer */
+	/* if default MDEF layer not found, search for any metal layer */
 	if (i == NULL)
 		for (i = padstk->padstack; i != NULL; i = i->next) {
 			if (i->layer_name == NULL)
@@ -1678,7 +1816,7 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		}
 
 	if (i != NULL) {
-    /* layer found */
+		/* layer found */
 		thickness = min(i->pad_sx, i->pad_sy);
 		if (i->pad_shape == 1)
 			flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
@@ -2194,13 +2332,11 @@ pcb_bool exec_useg(parse_param * h)
  * draws copper polygon.
  */
 
-/* XXX still need to implement different types (POUR, COPPER, PLANE) */
-
 pcb_bool exec_polygon_begin(parse_param * h)
 {
-	pcb_layer_t *current_layer;
 	hyp_polygon_t *new_poly;
-	pcb_flag_t flags;
+	hyp_vertex_t *new_vertex;
+	hyp_polygon_t *i;
 
 	if (hyp_debug) {
 		pcb_printf("polygon begin:");
@@ -2227,7 +2363,7 @@ pcb_bool exec_polygon_begin(parse_param * h)
 		}
 		if (h->id_set)
 			pcb_printf(" id = %i", h->id);
-		pcb_printf(" x = %ml y = %ml\n", xy2coord(h->x), xy2coord(h->y));
+		pcb_printf(" x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 	}
 
 	if (!h->layer_name_set) {
@@ -2240,41 +2376,44 @@ pcb_bool exec_polygon_begin(parse_param * h)
 		return pcb_true;
 	}
 
-	/* handle different polygon types: plane, pour, and copper *//* XXX fixme */
-	flags = pcb_no_flags();
-	switch (h->polygon_type) {
-	case POLYGON_TYPE_PLANE:
-		flags = pcb_flag_add(flags, PCB_FLAG_CLEARPOLY);
-		break;
-	case POLYGON_TYPE_POUR:
-		break;
-	case POLYGON_TYPE_COPPER:
-		break;
-	default:
-		break;
-	}
+	/* make sure layer exists */
+	hyp_create_layer(h->layer_name);
 
-	/* create empty pcb polygon */
-	current_layer = hyp_get_layer(h);
-	current_polygon = pcb_poly_new(current_layer, flags);
+	/* check for other polygons with this id */
+	for (i = polygon_head; i != NULL; i = i->next)
+		if (h->id == i->hyp_poly_id) {
+			pcb_printf("warning: duplicate polygon id %i.\n", h->id);
+			break;
+		}
 
-	/* add first vertex */
-	if (current_polygon != NULL)
-		pcb_poly_point_new(current_polygon, x2coord(h->x), y2coord(h->y));
+	/* create first vertex */
+	new_vertex = malloc(sizeof(hyp_vertex_t));
+	new_vertex->x1 = x2coord(h->x);
+	new_vertex->y1 = y2coord(h->y);
+	new_vertex->x2 = 0;
+	new_vertex->y2 = 0;
+	new_vertex->xc = 0;
+	new_vertex->yc = 0;
+	new_vertex->r = 0;
+	new_vertex->is_arc = pcb_false;
+	new_vertex->is_first = pcb_true;
+	new_vertex->next = NULL;
 
-	/* bookkeeping */
-	if ((poly_state != HYP_POLYIDLE) && hyp_debug)
-		pcb_printf("polygon: unexpected polygon. continuing.\n");
-	poly_state = HYP_POLYGON;
-
+	/* create new polygon */
 	new_poly = malloc(sizeof(hyp_polygon_t));
 	new_poly->hyp_poly_id = h->id;	/* hyperlynx polygon/polyline id */
-	new_poly->polygon = current_polygon;
-	new_poly->layer = current_layer;
+	new_poly->hyp_poly_type = h->polygon_type;
 	new_poly->is_polygon = pcb_true;
+	new_poly->layer_name = h->layer_name;
+	new_poly->line_width = xy2coord(h->width);
+	new_poly->clearance = hyp_clearance(h);
+	new_poly->vertex = new_vertex;
 
 	new_poly->next = polygon_head;
 	polygon_head = new_poly;
+
+	/* bookkeeping */
+	current_vertex = new_vertex;
 
 	return 0;
 }
@@ -2285,10 +2424,9 @@ pcb_bool exec_polygon_end(parse_param * h)
 		pcb_printf("polygon end:\n");
 
 	/* bookkeeping */
-	if ((poly_state != HYP_POLYGON) && hyp_debug)
+	if ((current_vertex == NULL) && hyp_debug)
 		pcb_printf("polygon: unexpected polygon end. continuing.\n");
-	poly_state = HYP_POLYIDLE;
-	current_polygon = NULL;
+	current_vertex = NULL;
 
 	return 0;
 }
@@ -2301,6 +2439,7 @@ pcb_bool exec_polygon_end(parse_param * h)
 pcb_bool exec_polyvoid_begin(parse_param * h)
 {
 	hyp_polygon_t *i;
+	hyp_vertex_t *new_vertex;
 
 	if (hyp_debug) {
 		pcb_printf("polyvoid begin:");
@@ -2315,37 +2454,41 @@ pcb_bool exec_polyvoid_begin(parse_param * h)
 	}
 
 	/* look up polygon with this id */
-	current_polygon = NULL;
 	for (i = polygon_head; i != NULL; i = i->next)
-		if (h->id == i->hyp_poly_id) {
-			if (i->is_polygon) {
-				current_polygon = i->polygon;
-				break;
-			}
-			else
-				pcb_printf("polyvoid: polyvoid hole in polyline not implemented.\n");
-		}
+		if (h->id == i->hyp_poly_id)
+			break;
 
 	if (i == NULL) {
-		poly_state = HYP_POLYIDLE;
+		current_vertex = NULL;
 		pcb_printf("polyvoid: polygon id %i not found\n", h->id);
 		return 0;
 	}
 
-	if (current_polygon != NULL) {
-		/* create hole in polygon */
-		pcb_poly_hole_new(current_polygon);
-		/* add first vertex of hole */
-		pcb_poly_point_new(current_polygon, x2coord(h->x), y2coord(h->y));
-	}
+	/* find last vertex of polygon */
+	for (current_vertex = i->vertex; current_vertex != NULL; current_vertex = current_vertex->next)
+		if (current_vertex->next == NULL)
+			break;
+
+	assert(current_vertex != NULL);	/* at least one vertex in polygon */
+
+	/* add new vertex at end of list of vertices */
+	new_vertex = malloc(sizeof(hyp_vertex_t));
+	new_vertex->x1 = x2coord(h->x);
+	new_vertex->y1 = y2coord(h->y);
+	new_vertex->x2 = 0;
+	new_vertex->y2 = 0;
+	new_vertex->xc = 0;
+	new_vertex->yc = 0;
+	new_vertex->r = 0;
+	new_vertex->is_arc = pcb_false;
+	new_vertex->is_first = pcb_true;
+	new_vertex->next = NULL;
 
 	/* bookkeeping */
-	if ((poly_state != HYP_POLYIDLE) && hyp_debug)
-		pcb_printf("polyvoid: unexpected polyvoid. continuing.\n");
-	if ((i != NULL) && (i->is_polygon))
-		poly_state = HYP_POLYGON_HOLE;
-	else
-		poly_state = HYP_POLYLINE_HOLE;
+	if (current_vertex != NULL) {
+		current_vertex->next = new_vertex;
+		current_vertex = new_vertex;
+	}
 
 	return 0;
 }
@@ -2356,9 +2499,9 @@ pcb_bool exec_polyvoid_end(parse_param * h)
 		pcb_printf("polyvoid end:\n");
 
 	/* bookkeeping */
-	if ((poly_state != HYP_POLYGON_HOLE) && (poly_state != HYP_POLYLINE_HOLE) && hyp_debug)
+	if ((current_vertex == NULL) && hyp_debug)
 		pcb_printf("polyvoid: unexpected polyvoid end. continuing.\n");
-	poly_state = HYP_POLYIDLE;
+	current_vertex = NULL;
 
 	return 0;
 }
@@ -2370,6 +2513,8 @@ pcb_bool exec_polyvoid_end(parse_param * h)
 pcb_bool exec_polyline_begin(parse_param * h)
 {
 	hyp_polygon_t *new_poly;
+	hyp_vertex_t *new_vertex;
+	hyp_polygon_t *i;
 
 	if (hyp_debug) {
 		pcb_printf("polyline begin:");
@@ -2414,28 +2559,44 @@ pcb_bool exec_polyline_begin(parse_param * h)
 		return pcb_true;
 	}
 
-	/* create polyline */
-	current_polygon = NULL;
-	current_polyline_layer = hyp_get_layer(h);
-	current_polyline_width = xy2coord(h->width);
-	current_polyline_clearance = hyp_clearance(h);
-	current_polyline_xpos = x2coord(h->x);
-	current_polyline_ypos = y2coord(h->y);
+	/* make sure layer exists */
+	hyp_create_layer(h->layer_name);
 
-	/* bookkeeping */
-	if ((poly_state != HYP_POLYIDLE) && hyp_debug)
-		pcb_printf("polyline: unexpected polyline. continuing.\n");
-	poly_state = HYP_POLYLINE;
+	/* check for other polygons with this id */
+	for (i = polygon_head; i != NULL; i = i->next)
+		if (h->id == i->hyp_poly_id) {
+			pcb_printf("warning: duplicate polygon id %i.\n", h->id);
+			break;
+		}
 
-	/* we need to store the id of the polyline, in case a matching polyvoid occurs. */
+	/* create first vertex */
+	new_vertex = malloc(sizeof(hyp_vertex_t));
+	new_vertex->x1 = x2coord(h->x);
+	new_vertex->y1 = y2coord(h->y);
+	new_vertex->x2 = 0;
+	new_vertex->y2 = 0;
+	new_vertex->xc = 0;
+	new_vertex->yc = 0;
+	new_vertex->r = 0;
+	new_vertex->is_arc = pcb_false;
+	new_vertex->is_first = pcb_true;
+	new_vertex->next = NULL;
+
+	/* create new polyline */
 	new_poly = malloc(sizeof(hyp_polygon_t));
 	new_poly->hyp_poly_id = h->id;	/* hyperlynx polygon/polyline id */
-	new_poly->polygon = NULL;
-	new_poly->layer = current_polyline_layer;
+	new_poly->hyp_poly_type = h->polygon_type;
 	new_poly->is_polygon = pcb_false;
+	new_poly->layer_name = h->layer_name;
+	new_poly->line_width = xy2coord(h->width);
+	new_poly->clearance = hyp_clearance(h);
+	new_poly->vertex = new_vertex;
 
 	new_poly->next = polygon_head;
 	polygon_head = new_poly;
+
+	/* bookkeeping */
+	current_vertex = new_vertex;
 
 	return 0;
 }
@@ -2446,16 +2607,9 @@ pcb_bool exec_polyline_end(parse_param * h)
 		pcb_printf("polyline end:\n");
 
 	/* bookkeeping */
-	if ((poly_state != HYP_POLYLINE) && hyp_debug)
+	if ((current_vertex == NULL) && hyp_debug)
 		pcb_printf("polyline: unexpected polyline end. continuing.\n");
-
-	poly_state = HYP_POLYIDLE;
-	current_polygon = NULL;
-	current_polyline_layer = NULL;
-	current_polyline_width = 0;
-	current_polyline_clearance = 0;
-	current_polyline_xpos = 0;
-	current_polyline_ypos = 0;
+	current_vertex = NULL;
 
 	return 0;
 }
@@ -2466,37 +2620,32 @@ pcb_bool exec_polyline_end(parse_param * h)
 
 pcb_bool exec_line(parse_param * h)
 {
+	hyp_vertex_t *new_vertex;
+
 	if (hyp_debug)
 		pcb_printf("line: x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 
-	switch (poly_state) {
-	case HYP_POLYIDLE:
-		if (hyp_debug)
-			pcb_printf("line: unexpected. continuing.\n");
-		break;
-	case HYP_POLYGON:
-	case HYP_POLYGON_HOLE:
-		/* add new vertex to polygon */
-		if (current_polygon != NULL)
-			pcb_poly_point_new(current_polygon, x2coord(h->x), y2coord(h->y));
-		break;
-	case HYP_POLYLINE:
-		/* add new point to polyline */
-		if (current_polyline_layer != NULL) {
-			pcb_line_new(current_polyline_layer, current_polyline_xpos, current_polyline_ypos, x2coord(h->x), y2coord(h->y),
-									 current_polyline_width, current_polyline_clearance, pcb_no_flags());
-			/* move on */
-			current_polyline_xpos = x2coord(h->x);
-			current_polyline_ypos = y2coord(h->y);
-		}
-		break;
-	case HYP_POLYLINE_HOLE:
-		/* hole in polyline not implemented */
-		break;
-	default:
-		if (hyp_debug)
-			pcb_printf("line: error\n");
+	if (current_vertex == NULL) {
+		pcb_printf("line: skipping.");
+		return 0;
 	}
+
+	/* add new vertex at end of list of vertices */
+	new_vertex = malloc(sizeof(hyp_vertex_t));
+	new_vertex->x1 = x2coord(h->x);
+	new_vertex->y1 = y2coord(h->y);
+	new_vertex->x2 = 0;
+	new_vertex->y2 = 0;
+	new_vertex->xc = 0;
+	new_vertex->yc = 0;
+	new_vertex->r = 0;
+	new_vertex->is_arc = pcb_false;
+	new_vertex->is_first = pcb_false;
+	new_vertex->next = NULL;
+
+	/* bookkeeping */
+	current_vertex->next = new_vertex;
+	current_vertex = new_vertex;
 
 	return 0;
 }
@@ -2508,48 +2657,33 @@ pcb_bool exec_line(parse_param * h)
 
 pcb_bool exec_curve(parse_param * h)
 {
+	hyp_vertex_t *new_vertex;
+
 	if (hyp_debug)
 		pcb_printf("curve: x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", x2coord(h->x1), y2coord(h->y1),
 							 x2coord(h->x2), y2coord(h->y2), x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
 
-	switch (poly_state) {
-	case HYP_POLYIDLE:
-		if (hyp_debug)
-			pcb_printf("curve: unexpected. continuing.\n");
-		break;
-	case HYP_POLYGON:
-	case HYP_POLYGON_HOLE:
-		if (current_polygon != NULL) {
-			/* polygon contains line segments, not arc segments. convert arc segment to line segments. */
-			hyp_arc2poly(x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc), y2coord(h->yc),
-									 xy2coord(h->r), pcb_false);
-		}
-		break;
-	case HYP_POLYLINE:
-		if (current_polyline_layer != NULL) {
-			/* clockwise arc from (x1, y2) to (x2, y2) */
-			hyp_arc_new(current_polyline_layer, x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc),
-									y2coord(h->yc), xy2coord(h->r), xy2coord(h->r), pcb_false, current_polyline_width,
-									current_polyline_clearance, pcb_no_flags());
-
-			/* move on */
-			if ((current_polyline_xpos == x2coord(h->x1)) && (current_polyline_ypos == y2coord(h->y1))) {
-				current_polyline_xpos = x2coord(h->x2);
-				current_polyline_ypos = y2coord(h->y2);
-			}
-			else if ((current_polyline_xpos == x2coord(h->x2)) && (current_polyline_ypos == y2coord(h->y2))) {
-				current_polyline_xpos = x2coord(h->x1);
-				current_polyline_ypos = y2coord(h->y1);
-			}
-		}
-		break;
-	case HYP_POLYLINE_HOLE:
-		/* not implemented */
-		break;
-	default:
-		if (hyp_debug)
-			pcb_printf("curve: error\n");
+	if (current_vertex == NULL) {
+		pcb_printf("curve: skipping.");
+		return 0;
 	}
+
+	/* add new vertex at end of list of vertices */
+	new_vertex = malloc(sizeof(hyp_vertex_t));
+	new_vertex->x1 = x2coord(h->x1);
+	new_vertex->y1 = y2coord(h->y1);
+	new_vertex->x2 = x2coord(h->x2);
+	new_vertex->y2 = y2coord(h->y2);
+	new_vertex->xc = x2coord(h->xc);
+	new_vertex->yc = y2coord(h->yc);
+	new_vertex->r = xy2coord(h->r);
+	new_vertex->is_arc = pcb_true;
+	new_vertex->is_first = pcb_false;
+	new_vertex->next = NULL;
+
+	/* bookkeeping */
+	current_vertex->next = new_vertex;
+	current_vertex = new_vertex;
 
 	return 0;
 }
