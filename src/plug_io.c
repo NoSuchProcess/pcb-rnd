@@ -634,10 +634,10 @@ int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 	int result;
 
 	if (PCB_SWAP_IDENT)
-		pcb_buffers_flip_side();
+		pcb_buffers_flip_side(PCB);
 	result = pcb_write_pipe(Filename, pcb_false, fmt);
 	if (PCB_SWAP_IDENT)
-		pcb_buffers_flip_side();
+		pcb_buffers_flip_side(PCB);
 	return (result);
 }
 

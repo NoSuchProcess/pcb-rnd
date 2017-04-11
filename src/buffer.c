@@ -537,12 +537,12 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	pcb_set_buffer_bbox(Buffer);
 }
 
-void pcb_buffers_flip_side(void)
+void pcb_buffers_flip_side(pcb_board_t *pcb)
 {
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++)
-		pcb_buffer_flip_side(PCB, &pcb_buffers[i]);
+		pcb_buffer_flip_side(pcb, &pcb_buffers[i]);
 	pcb_crosshair_range_to_buffer();
 }
 

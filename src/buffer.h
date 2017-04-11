@@ -51,7 +51,7 @@ void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *, pcb_coord_t, pcb_
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
 void pcb_buffer_rotate(pcb_buffer_t *, pcb_uint8_t);
 void pcb_buffer_select_paste(int);
-void pcb_buffers_flip_side(void);
+void pcb_buffers_flip_side(pcb_board_t *pcb);
 void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *);
 void pcb_init_buffers(pcb_board_t *pcb);
 void pcb_uninit_buffers(pcb_board_t *pcb);
