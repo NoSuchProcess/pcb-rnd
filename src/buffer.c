@@ -578,7 +578,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
  * pastes the contents of the buffer to the layout. Only visible objects
  * are handled by the routine.
  */
-pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
+pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_cardinal_t i;
 	pcb_bool changed = pcb_false;
@@ -590,14 +590,14 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 #endif
 
 	/* set movement vector */
-	ctx.copy.pcb = PCB;
+	ctx.copy.pcb = pcb;
 	ctx.copy.DeltaX = X - PCB_PASTEBUFFER->X;
 	ctx.copy.DeltaY = Y - PCB_PASTEBUFFER->Y;
 
 	/* paste all layers */
 	num_layers = PCB_PASTEBUFFER->Data->LayerN;
 	if (num_layers == 0) /* some buffers don't have layers, just simple objects */
-		num_layers = PCB->Data->LayerN;
+		num_layers = pcb->Data->LayerN;
 	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
@@ -630,13 +630,13 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	}
 
 	/* paste elements */
-	if (PCB->PinOn && PCB->ElementOn) {
+	if (pcb->PinOn && pcb->ElementOn) {
 		PCB_ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
 		{
 #ifdef DEBUG
 			printf("In CopyPastebufferToLayout, pasting element %s\n", element->Name[1].TextString);
 #endif
-			if (PCB_FRONT(element) || PCB->InvisibleObjectsOn) {
+			if (PCB_FRONT(element) || pcb->InvisibleObjectsOn) {
 				CopyElement(&ctx, element);
 				changed = pcb_true;
 			}
@@ -645,7 +645,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	}
 
 	/* finally the vias */
-	if (PCB->ViaOn) {
+	if (pcb->ViaOn) {
 		changed |= (pinlist_length(&(PCB_PASTEBUFFER->Data->Via)) != 0);
 		PCB_VIA_LOOP(PCB_PASTEBUFFER->Data);
 		{
@@ -737,7 +737,6 @@ Selects the given buffer to be the current paste buffer.
 @end table
 
 %end-doc */
-
 static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = argc ? argv[0] : "";
@@ -848,7 +847,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 				oldx = x;
 				oldy = y;
-				if (pcb_buffer_copy_to_layout(x, y))
+				if (pcb_buffer_copy_to_layout(PCB, x, y))
 					pcb_board_set_changed_flag(pcb_true);
 			}
 			break;

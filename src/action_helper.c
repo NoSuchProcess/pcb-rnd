@@ -1113,7 +1113,7 @@ void pcb_notify_mode(void)
 					}
 				}
 			}
-			if (pcb_buffer_copy_to_layout(Note.X, Note.Y))
+			if (pcb_buffer_copy_to_layout(PCB, Note.X, Note.Y))
 				pcb_board_set_changed_flag(pcb_true);
 			if (e) {
 				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,

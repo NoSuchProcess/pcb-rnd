@@ -431,7 +431,7 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, 
 			a[2] = element->Name[2].TextString;
 			a[3] = NULL;
 			pcb_act_LoadFootprint(3, a, element->MarkX, element->MarkY);
-			pcb_buffer_copy_to_layout(element->MarkX, element->MarkY);
+			pcb_buffer_copy_to_layout(PCB, element->MarkX, element->MarkY);
 			pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
 			pcb_element_remove(element);
 		}

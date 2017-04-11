@@ -229,7 +229,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				pcb_remove_selected();
 				pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
-				pcb_buffer_copy_to_layout(x, y);
+				pcb_buffer_copy_to_layout(PCB, x, y);
 				pcb_buffer_set_number(Note.Buffer);
 			}
 			break;

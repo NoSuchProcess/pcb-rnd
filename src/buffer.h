@@ -63,7 +63,7 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 /* pastes the contents of the buffer to the layout. Only visible objects
    are handled by the routine. */
-pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y);
+pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y);
 
 
 pcb_data_t *pcb_buffer_new(pcb_board_t *pcb);
