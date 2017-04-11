@@ -388,7 +388,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, Element);
 	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 	pcb_buffer_clear(PCB, Buffer);
-	pcb_move_obj_to_buffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
+	pcb_move_obj_to_buffer(PCB, Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	pcb_set_buffer_bbox(Buffer);
 	return (pcb_true);
 }

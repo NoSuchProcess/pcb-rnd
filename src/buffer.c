@@ -550,12 +550,12 @@ void pcb_buffers_flip_side(pcb_board_t *pcb)
  * moves the passed object to the passed buffer and removes it
  * from its original place
  */
-void *pcb_move_obj_to_buffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
 	/* setup local identifiers used by move operations */
-	ctx.buffer.pcb = PCB;
+	ctx.buffer.pcb = pcb;
 	ctx.buffer.dst = Destination;
 	ctx.buffer.src = Src;
 	return (pcb_object_operation(&MoveBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
@@ -564,11 +564,11 @@ void *pcb_move_obj_to_buffer(pcb_data_t *Destination, pcb_data_t *Src, int Type,
 /* ----------------------------------------------------------------------
  * Adds the passed object to the passed buffer
  */
-void *pcb_copy_obj_to_buffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
-	ctx.buffer.pcb = PCB;
+	ctx.buffer.pcb = pcb;
 	ctx.buffer.dst = Destination;
 	ctx.buffer.src = Src;
 	return (pcb_object_operation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));

@@ -55,8 +55,8 @@ void pcb_buffers_flip_side(pcb_board_t *pcb);
 void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *);
 void pcb_init_buffers(pcb_board_t *pcb);
 void pcb_uninit_buffers(pcb_board_t *pcb);
-void *pcb_move_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
-void *pcb_copy_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
+void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
+void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
 
 /* This action is called from ActionElementAddIf() */
 int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
