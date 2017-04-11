@@ -129,7 +129,7 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 	pcb_buffer_clear(PCB, Buffer);
 	if (!pcb_parse_element(Buffer->Data, Name)) {
 		if (conf_core.editor.show_solder_side)
-			pcb_buffer_flip_side(Buffer);
+			pcb_buffer_flip_side(PCB, Buffer);
 		pcb_set_buffer_bbox(Buffer);
 		if (elementlist_length(&Buffer->Data->Element)) {
 			element = elementlist_first(&Buffer->Data->Element);

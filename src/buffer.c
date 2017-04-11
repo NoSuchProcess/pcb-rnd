@@ -443,7 +443,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 /* ---------------------------------------------------------------------------
  * flip components/tracks from one side to the other
  */
-void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
+void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	int j, k;
 	pcb_layer_id_t SLayer = -1, CLayer = -1;
@@ -495,14 +495,14 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 	Buffer->Data->Layer[CLayer] = swap;
 
 	/* swap layer groups when balanced */
-	sgroup = pcb_layer_get_group(PCB, SLayer);
-	cgroup = pcb_layer_get_group(PCB, CLayer);
+	sgroup = pcb_layer_get_group(pcb, SLayer);
+	cgroup = pcb_layer_get_group(pcb, CLayer);
 #warning layer TODO: revise this code for the generic physical layer support; move this code to layer*.c
-	if (PCB->LayerGroups.grp[cgroup].len == PCB->LayerGroups.grp[sgroup].len) {
-		for (j = k = 0; j < PCB->LayerGroups.grp[sgroup].len; j++) {
+	if (pcb->LayerGroups.grp[cgroup].len == pcb->LayerGroups.grp[sgroup].len) {
+		for (j = k = 0; j < pcb->LayerGroups.grp[sgroup].len; j++) {
 			int t1, t2;
-			pcb_layer_id_t cnumber = PCB->LayerGroups.grp[cgroup].lid[k];
-			pcb_layer_id_t snumber = PCB->LayerGroups.grp[sgroup].lid[j];
+			pcb_layer_id_t cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
+			pcb_layer_id_t snumber = pcb->LayerGroups.grp[sgroup].lid[j];
 
 			if ((pcb_layer_flags(snumber)) & PCB_LYT_SILK)
 				continue;
@@ -510,7 +510,7 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 
 			while ((pcb_layer_flags(cnumber)) & PCB_LYT_SILK) {
 				k++;
-				cnumber = PCB->LayerGroups.grp[cgroup].lid[k];
+				cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
 			}
 			Buffer->Data->Layer[snumber] = Buffer->Data->Layer[cnumber];
 			Buffer->Data->Layer[cnumber] = swap;
@@ -542,7 +542,7 @@ void pcb_buffers_flip_side(void)
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++)
-		pcb_buffer_flip_side(&pcb_buffers[i]);
+		pcb_buffer_flip_side(PCB, &pcb_buffers[i]);
 	pcb_crosshair_range_to_buffer();
 }
 

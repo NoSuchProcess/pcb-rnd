@@ -41,7 +41,7 @@ struct pcb_buffer_s {								/* information about the paste buffer */
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void pcb_buffer_flip_side(pcb_buffer_t *Buffer);
+void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer);
 
 /* returns 0 on success */
 int pcb_set_buffer_bbox(pcb_buffer_t *);
