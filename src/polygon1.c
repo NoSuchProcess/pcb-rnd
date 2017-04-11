@@ -2926,6 +2926,46 @@ void pcb_polyarea_bbox(pcb_polyarea_t * p, pcb_box_t * b)
 	}
 }
 
+#ifndef NDEBUG
+static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl)
+{
+	pcb_vnode_t *v, *n;
+	pcb_coord_t minx = COORD_MAX, miny = COORD_MAX, maxx = -COORD_MAX, maxy = -COORD_MAX;
+
+#define update_minmax(min, max, val) \
+	if (val < min) min = val; \
+	if (val > max) max = val;
+
+	if (c->Flags.orient == PCB_PLF_INV)
+		DEBUGP("failed orient\n");
+	if (pcb_polyarea_contour_check(c))
+		DEBUGP("failed self-intersection\n");
+
+
+	pcb_fprintf(stderr, "!!!animator start\n");
+	v = pl;
+	do {
+		n = v->next;
+		update_minmax(minx, maxx, v->point[0]);
+		update_minmax(miny, maxy, v->point[1]);
+		update_minmax(minx, maxx, n->point[0]);
+		update_minmax(miny, maxy, n->point[1]);
+	}
+	while ((v = v->next) != pl);
+	pcb_fprintf(stderr, "viewport %mm %mm - %mm %mm\n", minx, miny, maxx, maxy);
+	pcb_fprintf(stderr, "frame\n");
+	v = pl;
+	do {
+		n = v->next;
+		pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
+	}
+	while ((v = v->next) != pl);
+	pcb_fprintf(stderr, "flush\n");
+	pcb_fprintf(stderr, "!!!animator end\n");
+#undef update_minmax
+}
+#endif
+
 
 pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 {
@@ -2936,38 +2976,16 @@ pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 
 	if (p->contours->Flags.orient == PCB_PLF_INV || pcb_polyarea_contour_check(p->contours)) {
 #ifndef NDEBUG
-		pcb_vnode_t *v, *n;
 		DEBUGP("Invalid Outer pcb_pline_t\n");
-		if (p->contours->Flags.orient == PCB_PLF_INV)
-			DEBUGP("failed orient\n");
-		if (pcb_polyarea_contour_check(p->contours))
-			DEBUGP("failed self-intersection\n");
-		v = &p->contours->head;
-		do {
-			n = v->next;
-			pcb_fprintf(stderr, "Line [%#mS %#mS %#mS %#mS 100 100 \"\"]\n", v->point[0], v->point[1], n->point[0], n->point[1]);
-		}
-		while ((v = v->next) != &p->contours->head);
+		pcb_poly_valid_report(p->contours, &p->contours->head);
 #endif
 		return pcb_false;
 	}
 	for (c = p->contours->next; c != NULL; c = c->next) {
 		if (c->Flags.orient == PCB_PLF_DIR || pcb_polyarea_contour_check(c) || !pcb_poly_contour_in_contour(p->contours, c)) {
 #ifndef NDEBUG
-			pcb_vnode_t *v, *n;
 			DEBUGP("Invalid Inner pcb_pline_t orient = %d\n", c->Flags.orient);
-			if (c->Flags.orient == PCB_PLF_DIR)
-				DEBUGP("failed orient\n");
-			if (pcb_polyarea_contour_check(c))
-				DEBUGP("failed self-intersection\n");
-			if (!pcb_poly_contour_in_contour(p->contours, c))
-				DEBUGP("failed containment\n");
-			v = &c->head;
-			do {
-				n = v->next;
-				pcb_fprintf(stderr, "Line [%#mS %#mS %#mS %#mS 100 100 \"\"]\n", v->point[0], v->point[1], n->point[0], n->point[1]);
-			}
-			while ((v = v->next) != &c->head);
+			pcb_poly_valid_report(c, &c->head);
 #endif
 			return pcb_false;
 		}
