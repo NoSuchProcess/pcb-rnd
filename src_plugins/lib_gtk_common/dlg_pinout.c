@@ -74,7 +74,7 @@ void ghid_pinout_window_show(pcb_gtk_common_t *com, pcb_element_t *element)
 
 	pcb_gtk_preview_get_natsize(PCB_GTK_PREVIEW(preview), &width, &height);
 
-	gtk_window_set_default_size(GTK_WINDOW(top_window), width + 50, height + 50);
+	gtk_widget_set_size_request(top_window, width, height);
 
 	hbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
