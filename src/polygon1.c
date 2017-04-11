@@ -106,7 +106,8 @@ int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_
 #undef DEBUG_GATHER
 #undef DEBUG_ANGLE
 #undef DEBUG
-#ifdef DEBUG
+
+#ifndef NDEBUG
 #include <stdarg.h>
 static void DEBUGP(const char *fmt, ...)
 {
