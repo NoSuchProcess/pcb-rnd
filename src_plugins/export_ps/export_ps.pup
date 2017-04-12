@@ -1,0 +1,4 @@
+#longdesc: Export postscript or embedded postscript.
+#state: works
+#default: buildin
+#implements: export

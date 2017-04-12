@@ -1,0 +1,4 @@
+#longdesc: Same as distalign, operates on text objects.
+#state: works
+#default: buildin
+#implements: (feature)

@@ -1,0 +1,4 @@
+#longdesc: Import specctra .dsn files
+#state: works
+#default: enabled
+#implements: import

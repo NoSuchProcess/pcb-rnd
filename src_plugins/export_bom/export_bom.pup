@@ -1,0 +1,4 @@
+#longdesc: Export bom (Bill of Materials)
+#state: works
+#default: buildin
+#implements: export

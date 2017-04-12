@@ -1,0 +1,4 @@
+#longdesc: Import plugin for hyperlynx geometry.
+#state: WIP
+#default: disable
+#implements: import

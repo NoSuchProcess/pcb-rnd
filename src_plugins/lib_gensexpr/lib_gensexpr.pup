@@ -1,0 +1,4 @@
+#longdesc: S-expression parser lib
+#state: works
+#default: disabled
+#implements: (lib)
