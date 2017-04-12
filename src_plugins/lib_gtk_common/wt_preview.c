@@ -492,7 +492,7 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawi
 	pcb_gtk_preview_t *preview;
 
 	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose);
-	g_object_set(G_OBJECT(preview), "element-data", element, "kind", PCB_GTK_PREVIEW_PINOUT, NULL);
+	g_object_set(G_OBJECT(preview), "element-data", element, NULL);
 
 	return GTK_WIDGET(preview);
 }
@@ -503,7 +503,7 @@ GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com, pcb_gtk_init_drawin
 	pcb_gtk_preview_t *prv;
 
 	prv = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose);
-	g_object_set(G_OBJECT(prv), "layer", layer, "kind", PCB_GTK_PREVIEW_LAYER, "width-request", 50, "height-request", 50, NULL);
+	g_object_set(G_OBJECT(prv), "layer", layer, "width-request", 50, "height-request", 50, NULL);
 
 #warning TODO: maybe expose these through the object API so the caller can set it up?
 	memset(&prv->view, 0, sizeof(prv->view));
