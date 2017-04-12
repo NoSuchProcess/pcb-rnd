@@ -2066,7 +2066,7 @@ static void config_auto_src_show(pcb_gtk_common_t *com, lht_node_t *nd)
 
 	if (nd != NULL) {
 		tmp = pcb_strdup_printf("%s:%d.%d", nd->file_name, nd->line, nd->col);
-		gtk_label_set(GTK_LABEL(auto_tab_widgets.src), tmp);
+		gtk_label_set_text(GTK_LABEL(auto_tab_widgets.src), tmp);
 		free(tmp);
 		gtk_widget_show(auto_tab_widgets.src);
 	}
@@ -2506,7 +2506,7 @@ static void config_page_update_auto(void *data)
 	lht_node_t *nd;
 
 	/* set name */
-	gtk_label_set(GTK_LABEL(auto_tab_widgets.name), nat->hash_path);
+	gtk_label_set_text(GTK_LABEL(auto_tab_widgets.name), nat->hash_path);
 
 	auto_tab_widgets.nat = data;
 
@@ -2522,7 +2522,7 @@ static void config_page_update_auto(void *data)
 			l = 0;
 	}
 	*so = '\0';
-	gtk_label_set(GTK_LABEL(auto_tab_widgets.desc), tmp);
+	gtk_label_set_text(GTK_LABEL(auto_tab_widgets.desc), tmp);
 	free(tmp);
 
 	config_auto_src_hide();
