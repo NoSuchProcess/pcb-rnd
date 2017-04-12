@@ -53,7 +53,7 @@
 /** Just define a sensible scale, lets say (for example), 100 pixel per 150 mil */
 #define SENSIBLE_VIEW_SCALE  (100. / PCB_MIL_TO_COORD (150.))
 
-static void pinout_set_view(pcb_gtk_preview_t * preview)
+static void preview_set_view(pcb_gtk_preview_t * preview)
 {
 	float scale = SENSIBLE_VIEW_SCALE;
 	pcb_element_t *elem = &preview->element;
@@ -66,7 +66,7 @@ static void pinout_set_view(pcb_gtk_preview_t * preview)
 	preview->h_pixels = scale * (elem->BoundingBox.Y2 - elem->BoundingBox.Y1);
 }
 
-static void pinout_set_data(pcb_gtk_preview_t * preview, pcb_element_t * element)
+static void preview_set_data(pcb_gtk_preview_t * preview, pcb_element_t * element)
 {
 	if (element == NULL) {
 		pcb_element_destroy(&preview->element);
@@ -98,7 +98,7 @@ static void pinout_set_data(pcb_gtk_preview_t * preview, pcb_element_t * element
 									 conf_core.appearance.pinout.offset_x - preview->element.BoundingBox.X1,
 									 conf_core.appearance.pinout.offset_y - preview->element.BoundingBox.Y1);
 
-	pinout_set_view(preview);
+	preview_set_view(preview);
 
 	PCB_ELEMENT_PCB_LINE_LOOP(&preview->element);
 	{
@@ -128,19 +128,19 @@ enum {
 	PROP_COM = 7,
 };
 
-static GObjectClass *ghid_pinout_preview_parent_class = NULL;
+static GObjectClass *ghid_preview_parent_class = NULL;
 
 /** GObject constructed
     Initialises the preview object once it is constructed.
     Chains up in case the parent class wants to do anything too.
 
-    \param object   The pinout preview object
+    \param object   The preview object
  */
-static void ghid_pinout_preview_constructed(GObject * object)
+static void ghid_preview_constructed(GObject * object)
 {
 	/* chain up to the parent class */
-	if (G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->constructed != NULL)
-		G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->constructed(object);
+	if (G_OBJECT_CLASS(ghid_preview_parent_class)->constructed != NULL)
+		G_OBJECT_CLASS(ghid_preview_parent_class)->constructed(object);
 }
 
 /** GObject finalise handler
@@ -149,14 +149,14 @@ static void ghid_pinout_preview_constructed(GObject * object)
 
     \param widget   The GObject being finalized.
  */
-static void ghid_pinout_preview_finalize(GObject * object)
+static void ghid_preview_finalize(GObject * object)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
 
 	/* Passing NULL for element data will free the old memory */
-	pinout_set_data(preview, NULL);
+	preview_set_data(preview, NULL);
 
-	G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->finalize(object);
+	G_OBJECT_CLASS(ghid_preview_parent_class)->finalize(object);
 }
 
 /** GObject property setter function
@@ -170,7 +170,7 @@ static void ghid_pinout_preview_finalize(GObject * object)
     \param value         The GValue the property is being set from
     \param pspec         A GParamSpec describing the property being set
  */
-static void ghid_pinout_preview_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
+static void ghid_preview_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
 	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(preview));
@@ -178,7 +178,7 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 	switch (property_id) {
 	case PROP_ELEMENT_DATA:
 		preview->kind = PCB_GTK_PREVIEW_PINOUT;
-		pinout_set_data(preview, (pcb_element_t *) g_value_get_pointer(value));
+		preview_set_data(preview, (pcb_element_t *) g_value_get_pointer(value));
 		preview->expose_data.content.elem = &preview->element;
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
@@ -219,7 +219,7 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
     \param [out] value        The GValue in which to return the value of the property
     \param       pspec        A GParamSpec describing the property being got
  */
-static void ghid_pinout_preview_get_property(GObject * object, guint property_id, GValue * value, GParamSpec * pspec)
+static void ghid_preview_get_property(GObject * object, guint property_id, GValue * value, GParamSpec * pspec)
 {
 	switch (property_id) {
 	default:
@@ -257,19 +257,19 @@ static gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 
     \param klass    The pcb_gtk_preview_class_t we are initialising
  */
-static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
+static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *gtk_widget_class = GTK_WIDGET_CLASS(klass);
 
-	gobject_class->finalize = ghid_pinout_preview_finalize;
-	gobject_class->set_property = ghid_pinout_preview_set_property;
-	gobject_class->get_property = ghid_pinout_preview_get_property;
-	gobject_class->constructed = ghid_pinout_preview_constructed;
+	gobject_class->finalize = ghid_preview_finalize;
+	gobject_class->set_property = ghid_preview_set_property;
+	gobject_class->get_property = ghid_preview_get_property;
+	gobject_class->constructed = ghid_preview_constructed;
 
 	gtk_widget_class->expose_event = ghid_preview_expose;
 
-	ghid_pinout_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
+	ghid_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 
 	g_object_class_install_property(gobject_class, PROP_ELEMENT_DATA,
 																	g_param_spec_pointer("element-data", "", "", G_PARAM_WRITABLE));
@@ -447,14 +447,14 @@ static gboolean preview_key_release_cb(GtkWidget *preview, GdkEventKey * kev, gp
 
 GType pcb_gtk_preview_get_type()
 {
-	static GType ghid_pinout_preview_type = 0;
+	static GType ghid_preview_type = 0;
 
-	if (!ghid_pinout_preview_type) {
-		static const GTypeInfo ghid_pinout_preview_info = {
+	if (!ghid_preview_type) {
+		static const GTypeInfo ghid_preview_info = {
 			sizeof(pcb_gtk_preview_class_t),
 			NULL,											/* base_init */
 			NULL,											/* base_finalize */
-			(GClassInitFunc) ghid_pinout_preview_class_init,
+			(GClassInitFunc) ghid_preview_class_init,
 			NULL,											/* class_finalize */
 			NULL,											/* class_data */
 			sizeof(pcb_gtk_preview_t),
@@ -462,11 +462,11 @@ GType pcb_gtk_preview_get_type()
 			NULL,											/* instance_init */
 		};
 
-		ghid_pinout_preview_type =
-			g_type_register_static(GTK_TYPE_DRAWING_AREA, "pcb_gtk_preview_t", &ghid_pinout_preview_info, (GTypeFlags) 0);
+		ghid_preview_type =
+			g_type_register_static(GTK_TYPE_DRAWING_AREA, "pcb_gtk_preview_t", &ghid_preview_info, (GTypeFlags) 0);
 	}
 
-	return ghid_pinout_preview_type;
+	return ghid_preview_type;
 }
 
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
