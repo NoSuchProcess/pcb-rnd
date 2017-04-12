@@ -98,7 +98,7 @@ void pcb_gtk_dlg_fontsel(pcb_gtk_common_t *com, pcb_layer_t *txtly, pcb_text_t *
 
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
-	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(fontsel_close_cb), ctx);
+	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(fontsel_close_cb), ctx);
 	gtk_window_set_role(GTK_WINDOW(w), "PCB_Dialog");
 
 	content_area = gtk_dialog_get_content_area(dialog);

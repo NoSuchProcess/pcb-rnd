@@ -59,7 +59,7 @@ void pcb_gtk_dlg_report(GtkWidget * top_window, const gchar * title, const gchar
 
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
-	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), GTK_OBJECT(dialog));
+	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), G_OBJECT(dialog));
 	gtk_window_set_role(GTK_WINDOW(w), "PCB_Dialog");
 
 	content_area = gtk_dialog_get_content_area(dialog);

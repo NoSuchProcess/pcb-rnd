@@ -473,7 +473,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	hbox_scroll = gtkc_hbox_new(FALSE, 0);
 	tw->h_range = gtk_hscrollbar_new(GTK_ADJUSTMENT(tw->h_adjustment));
 	fullscreen_btn = gtk_button_new_with_label("FS");
-	g_signal_connect(GTK_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL);
+	g_signal_connect(G_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), tw->h_range, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), fullscreen_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox_scroll, FALSE, FALSE, 0);
