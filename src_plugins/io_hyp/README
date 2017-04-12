@@ -1,5 +1,5 @@
-Import plugin for hyperlynx geometry.
+Import plugin for hyperlynx geometry (no polygons yet).
 
-#state: WIP
-#default: disable
+#state: works
+#default: buildin
 #implements: import

@@ -1,3 +1,4 @@
+8153	configure	enable io_hyp by default
 8054	configure	setenv() detection for parametric footprint env
 7998	configure	gtk GTK3 box compatibility
 7968	configure	clean up global namespace: rename VERSION, PACKAGE and REVISION
