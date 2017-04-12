@@ -369,24 +369,24 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 	conf_get_project_conf_name(NULL, (PCB == NULL ? NULL : PCB->Filename), &tooltip_text);
 	gtk_widget_set_tooltip_text(GTK_WIDGET(button), tooltip_text);
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
 
 	button = gtk_button_new_with_label("Save in user config");
 	tooltip_text = conf_get_user_conf_name();
 	gtk_widget_set_tooltip_text(GTK_WIDGET(button), tooltip_text);
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2user);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2user);
 
 	vbox2 = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox2, FALSE, FALSE, 0);
 
 	button = gtk_button_new_with_label("Save to file...");
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2file);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2file);
 
 	button = gtk_button_new_with_label("Restore factory defaults");
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_int2design);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_int2design);
 }
 
 	/* -------------- The General config page ----------------
@@ -733,7 +733,7 @@ static void config_window_row(GtkWidget * parent, const char *desc, int load, co
 
 	button = gtk_button_new_with_label(_("now"));
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(wgeo_save_direct), (void *) wgeo_save_str);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(wgeo_save_direct), (void *) wgeo_save_str);
 
 	if (load) {
 		button = gtk_button_new_with_label(_("Load from file"));
@@ -1914,11 +1914,11 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 		w = gtk_button_new_with_label("Append item");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_create_cb), com);
+		g_signal_connect(G_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_create_cb), com);
 
 		w = gtk_button_new_with_label("Remove item");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_remove_cb), com);
+		g_signal_connect(G_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_remove_cb), com);
 
 	}
 
@@ -1973,15 +1973,15 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 		auto_tab_widgets.btn_apply = w = gtk_button_new_with_label("Apply");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_apply_cb), com);
+		g_signal_connect(G_OBJECT(w), "clicked", G_CALLBACK(config_auto_apply_cb), com);
 
 		auto_tab_widgets.btn_reset = w = gtk_button_new_with_label("Reset");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_reset_cb), com);
+		g_signal_connect(G_OBJECT(w), "clicked", G_CALLBACK(config_auto_reset_cb), com);
 
 		auto_tab_widgets.btn_remove = w = gtk_button_new_with_label("Remove");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_remove_cb), NULL);
+		g_signal_connect(G_OBJECT(w), "clicked", G_CALLBACK(config_auto_remove_cb), NULL);
 
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.finalize, FALSE, FALSE, 0);
 	}
@@ -1992,7 +1992,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 	auto_tab_widgets.btn_create = w = gtk_button_new_with_label("Create item in selected source");
 	gtk_box_pack_start(GTK_BOX(src_right), w, FALSE, FALSE, 0);
-	g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_create_cb), NULL);
+	g_signal_connect(G_OBJECT(w), "clicked", G_CALLBACK(config_auto_create_cb), NULL);
 
 
 	/* lower hbox for displaying the rendered value */
