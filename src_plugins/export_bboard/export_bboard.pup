@@ -1,4 +1,4 @@
 #longdesc: Export breadboard
 #state: WIP
-#default: disabled
+default disable
 #implements: export

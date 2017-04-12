@@ -1,4 +1,4 @@
 #longdesc: Scalable Vector Graphics (SVG) exporter
 #state: works
-#default: buildin
+default buildin
 #implements: export

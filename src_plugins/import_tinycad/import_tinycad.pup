@@ -1,4 +1,4 @@
 #longdesc: Import the netlist and footprints from a tinycad netlist.
 #state: works
-#default: buildin
+default buildin
 #implements: import

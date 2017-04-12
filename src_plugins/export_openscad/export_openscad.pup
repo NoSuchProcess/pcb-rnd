@@ -1,4 +1,4 @@
 #longdesc: Export openscad
 #state: WIP
-#default: disabled
+default disable
 #implements: export

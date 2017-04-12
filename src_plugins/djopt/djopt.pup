@@ -1,4 +1,4 @@
 #longdesc: Various board optimization algorithms.
 #state: works
-#default: buildin
+default buildin
 #implements: (feature)

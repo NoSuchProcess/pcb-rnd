@@ -1,4 +1,4 @@
 #longdesc: Export to FidoCadJ format (.fcd)
 #state: WIP
-#default: disable
+default disable
 #implements: export

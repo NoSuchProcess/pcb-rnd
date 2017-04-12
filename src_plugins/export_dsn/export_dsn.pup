@@ -1,4 +1,4 @@
 #longdesc: Export specctra .dsn files
 #state: works
-#default: enabled
+default buildin
 #implements: export

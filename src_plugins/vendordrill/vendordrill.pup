@@ -1,4 +1,4 @@
 #longdesc: Vendor drill mapping.
 #state: works
-#default: buildin
+default buildin
 #implements: (feature)

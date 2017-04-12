@@ -1,4 +1,4 @@
 #longdesc: Report() and ReportObject() actions - print a report about design objects.
 #state: works
-#default: buildin
+default buildin
 #implements: (feature)

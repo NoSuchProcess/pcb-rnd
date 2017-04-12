@@ -1,4 +1,4 @@
 #longdesc: Draw teardrops on pins.
 #state: works
-#default: buildin
+default buildin
 #implements: (feature)

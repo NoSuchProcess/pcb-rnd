@@ -1,4 +1,4 @@
 #longdesc: Export various board statistics in lihata format
 #state: works
-#default: buildin
+default buildin
 #implements: export

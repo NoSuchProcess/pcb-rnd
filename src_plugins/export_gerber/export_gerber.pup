@@ -1,4 +1,4 @@
 #longdesc: Export to gerber
 #state: works
-#default: buildin
+default buildin
 #implements: export

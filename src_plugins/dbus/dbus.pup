@@ -1,5 +1,5 @@
 #longdesc: Remote control PCB using DBUS.
 #state: WIP
 #lstate: needs to install the xml?
-#default: disabled
+default disable
 #implements: (feature)

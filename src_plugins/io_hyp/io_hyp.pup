@@ -1,4 +1,4 @@
 #longdesc: Import plugin for hyperlynx geometry (no polygons yet).
 #state: works
-#default: buildin
+default buildin
 #implements: import

@@ -1,4 +1,4 @@
 #longdesc: The selected polygons are combined together according to the ordering of their points.
 #state: works
-#default: buildin
+default buildin
 #implements: (feature)
