@@ -4,6 +4,7 @@
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +28,7 @@
 
 /* This file copied and modified by Peter Clifton, starting from
  * gui-pinout-window.c, written by Bill Wilson for the PCB Gtk port
- * then got a major refactoring by Tibor 'Igor2' Palinkas in pcb-rnd
+ * then got a major refactoring by Tibor 'Igor2' Palinkas and Alain in pcb-rnd
  */
 
 #include "config.h"
