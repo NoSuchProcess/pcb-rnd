@@ -241,7 +241,7 @@ gchar *ghid_dialog_file_select_save(GtkWidget *top_window, const gchar *title, g
 		tmp = gtk_label_new("File format: ");
 		gtk_box_pack_start(GTK_BOX(fmt), tmp, FALSE, FALSE, 0);
 
-		fmt_combo = gtk_combo_box_new_text();
+		fmt_combo = gtkc_combo_box_text_new();
 		gtk_box_pack_start(GTK_BOX(fmt), fmt_combo, FALSE, FALSE, 0);
 
 		for (s = formats; *s != NULL; s++)

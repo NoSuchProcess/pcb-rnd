@@ -223,7 +223,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 		do_enum:
-			combo = gtk_combo_box_new_text();
+			combo = gtkc_combo_box_text_new();
 			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
 			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
 
@@ -277,7 +277,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-			combo = gtk_combo_box_new_text();
+			combo = gtkc_combo_box_text_new();
 			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
 			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
 			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));

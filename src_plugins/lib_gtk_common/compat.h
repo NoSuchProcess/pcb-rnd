@@ -36,6 +36,11 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 	return GTK_WIDGET(box);
 }
 
+static inline GtkWidget *gtkc_combo_box_text_new(void)
+{
+	return gtk_combo_box_text_new();
+}
+
 #else
 /* gtk2 */
 
@@ -47,6 +52,11 @@ static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 {
 	return gtk_vbox_new(homogenous, spacing);
+}
+
+static inline GtkWidget *gtkc_combo_box_text_new(void)
+{
+	return gtk_combo_box_new_text();
 }
 
 #endif
