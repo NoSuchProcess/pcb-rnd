@@ -106,7 +106,7 @@ struct pcb_gtk_preview_s {
 GType pcb_gtk_preview_get_type(void);
 
 /** Queries the natural size of a preview widget */
-void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height);
+void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *height);
 
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget.
     \param  init_widget       virtual function called at initialization
