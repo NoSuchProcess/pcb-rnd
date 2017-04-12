@@ -84,7 +84,7 @@ menucfg: $(OBJS) $(MENULIB_OBJS) src/default/main_lib.o src/default/main_custom_
 menucfg.o: menucfg.c
 	$(CC) -c $(CFLAGS) -o menucfg.o menucfg.c
 
-hooks.o: plugin_3state.h plugins.h Rev.h
+hooks.o: plugin_3state.h plugins.h Rev.h ../src_3rd/puplug/scconfig_hooks.h
 
 src/util/arg_auto_set.o: src/util/arg_auto_set.c src/util/arg_auto_set.h
 	$(CC) -c $(CFLAGS) -o src/util/arg_auto_set.o src/util/arg_auto_set.c

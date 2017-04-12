@@ -14,6 +14,8 @@
 
 #include "plugin_3state.h"
 
+#include "../src_3rd/puplug/scconfig_hooks.h"
+
 int want_intl = 0, want_coord_bits;
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
@@ -90,6 +92,7 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "debug") == 0) {
 		put("/local/pcb/debug", strue);
+		pup_set_debug(strue);
 		return 1;
 	}
 	if (strcmp(key, "symbols") == 0) {
@@ -212,6 +215,8 @@ int hook_postinit()
 	db_mkdir("/local");
 	db_mkdir("/local/pcb");
 
+	pup_hook_postinit();
+
 	/* DEFAULTS */
 	put("/local/prefix", "/usr/local");
 
@@ -272,6 +277,8 @@ int hook_postarg()
 /* Runs when things should be detected for the host system */
 int hook_detect_host()
 {
+	pup_hook_detect_host();
+
 	require("fstools/ar",  0, 1);
 	require("fstools/mkdir", 0, 1);
 	require("fstools/rm",  0, 1);
@@ -309,6 +316,8 @@ int hook_detect_target()
 	want_stroke = plug_is_enabled("stroke");
 	want_cairo  = plug_is_enabled("export_bboard") | want_gtk3;
 	want_xml2   = plug_is_enabled("io_eagle");
+
+	pup_hook_detect_target();
 
 	require("cc/fpic",  0, 1);
 	require("signal/names/*",  0, 0);
@@ -742,7 +751,9 @@ int hook_generate()
 {
 	char *rev = "non-svn", *tmp;
 	int generr = 0;
-	int res = 0;
+	int res;
+
+	res = pup_hook_generate("../src_3rd/puplug");
 
 	tmp = svn_info(0, "../src", "Revision:");
 	if (tmp != NULL) {
