@@ -1,4 +1,5 @@
 - BUGS for after the next release:
+	- using the q key to make a pin square works, drop down menus to do the same are broken [report: EvanFoss]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- gtk preferences window: can't size down to x600 [report: miloh]
 	- cross section on export should draw with double font, but should print file names
