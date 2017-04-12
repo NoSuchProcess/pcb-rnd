@@ -323,7 +323,7 @@ static gboolean tree_row_key_pressed(GtkTreeView * tree_view, GdkEventKey * even
 
 	/* Handle both lower- and uppercase `c' */
 	if (((event->state & default_mod_mask) != GDK_CONTROL_MASK)
-			|| ((event->keyval != GDK_c) && (event->keyval != GDK_C)))
+			|| ((event->keyval != GDK_KEY_c) && (event->keyval != GDK_KEY_C)))
 		return FALSE;
 
 	selection = gtk_tree_view_get_selection(tree_view);
