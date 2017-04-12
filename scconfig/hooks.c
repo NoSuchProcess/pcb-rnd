@@ -751,9 +751,7 @@ int hook_generate()
 {
 	char *rev = "non-svn", *tmp;
 	int generr = 0;
-	int res;
-
-	res = pup_hook_generate("../src_3rd/puplug");
+	int res = 0;
 
 	tmp = svn_info(0, "../src", "Revision:");
 	if (tmp != NULL) {
@@ -779,6 +777,9 @@ int hook_generate()
 
 	if (plug_is_enabled("gpmi"))
 		gpmi_config();
+
+	generr |= pup_hook_generate("../src_3rd/puplug");
+
 
 	if (!generr) {
 	printf("\n\n");
