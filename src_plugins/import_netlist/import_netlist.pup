@@ -1,4 +1,4 @@
 #longdesc: Import plugin for netlists in the classic pcb netlist format.
 #state: works
 default buildin
-#implements: import
+class import

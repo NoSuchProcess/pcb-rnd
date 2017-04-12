@@ -1,4 +1,4 @@
 #longdesc: Draw the font selector GUI
 #state: WIP
 default disable
-#implements: (feature)
+class feature

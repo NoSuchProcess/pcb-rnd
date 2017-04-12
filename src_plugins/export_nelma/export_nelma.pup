@@ -1,4 +1,4 @@
 #longdesc: Export to nelma (Numerical capacitance calculator)
 #state: works
 default buildin
-#implements: export
+class export

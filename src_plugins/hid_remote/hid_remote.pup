@@ -1,4 +1,4 @@
 #longdesc: Remote access HID: implement a protocol and use it to relay between a core and a remote HID implementation.
 #state: WIP
 default disable
-#implements: hid
+class hid

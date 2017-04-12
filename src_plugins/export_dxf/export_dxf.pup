@@ -1,4 +1,4 @@
 #longdesc: Export dxf
 #state: WIP
 default disable
-#implements: export
+class export

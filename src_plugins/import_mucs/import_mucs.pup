@@ -1,4 +1,4 @@
 #longdesc: Import lines and vias from MUCS unixplot .pl files
 #state: works
 default buildin
-#implements: import
+class import

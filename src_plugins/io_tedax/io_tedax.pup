@@ -1,4 +1,4 @@
 #longdesc: Import and export tEDAx netlists and footprints.
 #state: works
 default buildin
-#implements: import
+class import

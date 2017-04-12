@@ -1,4 +1,4 @@
 #longdesc: Import Mentor Graphics Design Capture from flattened .edf netlist, using a parts conversion table.
 #state: works
 default buildin
-#implements: import
+class import

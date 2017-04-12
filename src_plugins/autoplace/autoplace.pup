@@ -1,4 +1,4 @@
 #longdesc: Automatically place elements.
 #state: works
 default buildin
-#implements: (feature)
+class feature

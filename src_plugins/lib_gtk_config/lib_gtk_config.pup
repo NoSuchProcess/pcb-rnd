@@ -1,4 +1,4 @@
 #longdesc: hid_gtk* preferences dialog common code (regardless of gtk version)
 #state: works
 default disable
-#implements: (lib)
+class lib

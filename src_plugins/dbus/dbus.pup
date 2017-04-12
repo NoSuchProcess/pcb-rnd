@@ -2,4 +2,4 @@
 #state: WIP
 #lstate: needs to install the xml?
 default disable
-#implements: (feature)
+class feature
