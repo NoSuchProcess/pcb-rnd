@@ -20,8 +20,8 @@
  *
  */
 
-/* hbox/vbox creation, similar to gtk2's */
 #ifdef PCB_GTK3
+/** hbox/vbox creation, similar to gtk2's */
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 {
 	GtkBox *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, spacing);
@@ -36,13 +36,15 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 	return GTK_WIDGET(box);
 }
 
+/* combo box text API, GTK3, GTK2.24 compatible. */
+
 static inline GtkWidget *gtkc_combo_box_text_new(void)
 {
 	return gtk_combo_box_text_new();
 }
 
 #else
-/* gtk2 */
+/* GTK2 */
 
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 {
@@ -53,6 +55,8 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 {
 	return gtk_vbox_new(homogenous, spacing);
 }
+
+/* combo box text API, GTK2.4 compatible, GTK3 incompatible. */
 
 static inline GtkWidget *gtkc_combo_box_text_new(void)
 {
