@@ -469,24 +469,35 @@ GType pcb_gtk_preview_get_type()
 	return ghid_preview_type;
 }
 
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
-															 pcb_gtk_preview_expose_t expose, pcb_element_t * element)
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+															 pcb_gtk_preview_expose_t expose)
 {
 	pcb_gtk_preview_t *preview;
 
 	preview = (pcb_gtk_preview_t *) g_object_new(PCB_GTK_TYPE_PREVIEW,
-																							 "element-data", element,
-																							 "gport", com->gport,
 																							 "com", com,
+																							 "gport", com->gport,
 																							 "init-widget", init_widget,
-																							 "expose", expose, "kind", PCB_GTK_PREVIEW_PINOUT, NULL);
+																							 "kind", PCB_GTK_PREVIEW_PINOUT,	/* May change in the future */
+																							 "expose", expose, NULL);
 
 	preview->init_drawing_widget(GTK_WIDGET(preview), preview->gport);
 
 	return GTK_WIDGET(preview);
 }
 
-GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+																			pcb_gtk_preview_expose_t expose, pcb_element_t * element)
+{
+	pcb_gtk_preview_t *preview;
+
+	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose);
+	g_object_set(G_OBJECT(preview), "element-data", element, "kind", PCB_GTK_PREVIEW_PINOUT, NULL);
+
+	return GTK_WIDGET(preview);
+}
+
+GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
 {
 	pcb_gtk_preview_t *prv;
