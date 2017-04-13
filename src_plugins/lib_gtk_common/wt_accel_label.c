@@ -55,6 +55,7 @@ Modifications:
 #include "config.h"
 #include "wt_accel_label.h"
 #include "compat_nls.h"
+#include "compat.h"
 
 #define P_(x) (x)
 
@@ -309,7 +310,7 @@ static void gschem_accel_label_class_init(GschemAccelLabelClass * class)
 	gobject_class->get_property = gschem_accel_label_get_property;
 
 	widget_class->size_request = gschem_accel_label_size_request;
-	widget_class->expose_event = gschem_accel_label_expose_event;
+	PCB_GTK_EXPOSE_EVENT(widget_class, gschem_accel_label_expose_event);
 
 	g_object_class_install_property(gobject_class,
 																	PROP_ACCEL_CLOSURE,

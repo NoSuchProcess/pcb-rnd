@@ -43,6 +43,8 @@ static inline GtkWidget *gtkc_combo_box_text_new(void)
 	return gtk_combo_box_text_new();
 }
 
+#define PCB_GTK_EXPOSE_EVENT(x,y) (x->draw = y)
+
 #else
 /* GTK2 */
 
@@ -62,6 +64,8 @@ static inline GtkWidget *gtkc_combo_box_text_new(void)
 {
 	return gtk_combo_box_new_text();
 }
+
+#define PCB_GTK_EXPOSE_EVENT(x,y) (x->expose_event = y)
 
 #endif
 
