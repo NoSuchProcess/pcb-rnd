@@ -68,6 +68,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "bu_box.h"
+#include "compat.h"
 #include "wt_preview.h"
 #include "win_place.h"
 

@@ -35,6 +35,7 @@
 #include "conf_core.h"
 
 #include "in_mouse.h"
+#include "compat.h"
 #include "wt_preview.h"
 
 #include "copy.h"

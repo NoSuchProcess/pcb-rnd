@@ -19,6 +19,8 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+#ifndef PCB_GTK_COMPAT_H
+#define PCB_GTK_COMPAT_H
 
 #ifdef PCB_GTK3
 /** hbox/vbox creation, similar to gtk2's */
@@ -71,3 +73,4 @@ static inline GtkWidget *gtkc_combo_box_text_new(void)
 
 #endif
 
+#endif  /* PCB_GTK_COMPAT_H */

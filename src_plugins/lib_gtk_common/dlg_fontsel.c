@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include "dlg_fontsel.h"
+#include "compat.h"
 #include "bu_box.h"
 #include "layer.h"
 #include "wt_preview.h"
