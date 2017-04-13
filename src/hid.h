@@ -554,7 +554,7 @@ struct hid_s {
    Do *not* assume that the hid that is passed is the GUI hid.  This
    callback is also used for printing and exporting. */
 
-typedef struct pcb_hid_expose_layer_s {
+typedef struct pcb_hid_expose_ctx_s {
 	pcb_box_t view;
 	unsigned force:1; /* draw even if layer set fails */
 	union {
