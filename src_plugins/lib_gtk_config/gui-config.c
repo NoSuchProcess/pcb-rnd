@@ -58,7 +58,6 @@
 #include "gtk_conf_list.h"
 #include "hid_gtk_conf.h"
 
-#include "../src_plugins/lib_gtk_common/compat.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
