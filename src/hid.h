@@ -48,7 +48,7 @@ and may be changed by the HID in response to new information.
 
 /* Like end cap styles.  The cap *always* extends beyond the
    coordinates given, by half the width of the line.  Beveled ends can
-   used to make octagonal pads by giving the same x,y coordinate
+   be used to make octagonal pads by giving the same x,y coordinate
    twice.  */
 typedef enum {
 	Trace_Cap,									/* This means we're drawing a trace, which has round caps.  */
@@ -102,7 +102,7 @@ extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char 
 #define PCB_REGISTER_ACTIONS(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
 { pcb_hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
-/* Note that PCB expects the gui to provide the following actions:
+/* Note that PCB expects the GUI to provide the following actions:
 
    LibraryChanged()
  */
@@ -172,7 +172,7 @@ struct hid_s {
 	   polygons will be drawn twice.  */
 	unsigned poly_after:1;
 
-	/* If set, draw holes after copper, silk and mask, to make sure it
+	/* If set, draws holes after copper, silk and mask, to make sure it
 	   punches through everything. */
 	unsigned holes_after:1;
 
@@ -184,13 +184,13 @@ struct hid_s {
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
-	   used to interpret command line options.  If n_ret is non-NULL,
+	   used to interpret command line options.  If n_ret_ is non-NULL,
 	   the number of attributes is stored there.  */
 	pcb_hid_attribute_t *(*get_export_options) (int *n_ret_);
 
-	/* Export (or print) the current PCB.  The options given represent
+	/* Exports (or print) the current PCB.  The options given represent
 	   the choices made from the options returned from
-	   get_export_options.  Call with options == NULL to start the
+	   get_export_options.  Call with options_ == NULL to start the
 	   primary GUI (create a main window, print, export, etc)  */
 	void (*do_export) (pcb_hid_attr_val_t * options_);
 
@@ -200,7 +200,7 @@ struct hid_s {
 	/* uninit a GUI hid */
 	void (*do_exit) (pcb_hid_t *hid);
 
-	/* Parse the command line.  Call this early for whatever HID will be
+	/* Parses the command line.  Call this early for whatever HID will be
 	   the primary HID, as it will set all the registered attributes.
 	   The HID should remove all arguments, leaving any possible file
 	   names behind.  */
@@ -223,7 +223,7 @@ struct hid_s {
 	   zero it may be non-empty. */
 	int (*set_layer_group)(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 
-	/* Tell the GUI the layer last selected has been finished with */
+	/* Tell the GUI the layer last selected has been finished with. */
 	void (*end_layer) (void);
 
 	/* Drawing Functions.  Coordinates and distances are ALWAYS in PCB's
@@ -244,7 +244,7 @@ struct hid_s {
 	   you use the "erase" color when use_mask is disabled, it simply
 	   draws in the background color.  */
 	void (*use_mask) (int use_it_);
-	/* Flush the buffer and return to non-mask operation.  */
+	/* Flushes the buffer and return to non-mask operation.  */
 #define HID_MASK_OFF 0
 	/* Polygons being drawn before clears.  */
 #define HID_MASK_BEFORE 1
@@ -253,7 +253,7 @@ struct hid_s {
 	/* Polygons being drawn after clears.  */
 #define HID_MASK_AFTER 3
 
-	/* Set a color.  Names can be like "red" or "#rrggbb" or special
+	/* Sets a color.  Names can be like "red" or "#rrggbb" or special
 	   names like "erase".  *Always* use the "erase" color for removing
 	   ink (like polygon reliefs or thermals), as you cannot rely on
 	   knowing the background color or special needs of the HID.  Always
@@ -262,7 +262,7 @@ struct hid_s {
 	   enough to call for each item drawn. */
 	void (*set_color) (pcb_hid_gc_t gc_, const char *name_);
 
-	/* Set the line style.  While calling this is cheap, calling it with
+	/* Sets the line style.  While calling this is cheap, calling it with
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
 	void (*set_line_cap) (pcb_hid_gc_t gc_, pcb_cap_style_t style_);
@@ -289,12 +289,12 @@ struct hid_s {
 	void (*fill_rect) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
 
 
-	/* This is for the printer.  If you call this for the GUI, xval and
-	   yval are ignored, and a dialog pops up to lead you through the
-	   calibration procedure.  For the printer, if xval and yval are
+	/* This is for the printer.  If you call this for the GUI, xval_ and
+	   yval_ are ignored, and a dialog pops up to lead you through the
+	   calibration procedure.  For the printer, if xval_ and yval_ are
 	   zero, a calibration page is printed with instructions for
-	   calibrating your printer.  After calibrating, nonzero xval and
-	   yval are passed according to the instructions.  Metric is nonzero
+	   calibrating your printer.  After calibrating, nonzero xval_ and
+	   yval_ are passed according to the instructions.  Metric is nonzero
 	   if the user prefers metric units, else inches are used. */
 	void (*calibrate) (double xval_, double yval_);
 
@@ -319,7 +319,7 @@ struct hid_s {
 	   hiding, showing, redrawing, etc.  The core just tells it what
 	   coordinates it's actually using.  Note that this routine may
 	   need to know what "pcb units" are so it can display them in mm
-	   or mils accordingly.  If cursor_action is set, the cursor or
+	   or mils accordingly.  If cursor_action_ is set, the cursor or
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
 	void (*set_crosshair) (int x_, int y_, int cursor_action_);
@@ -329,16 +329,16 @@ struct hid_s {
 
 	/* Causes func to be called at some point in the future.  Timers are
 	   only good for *one* call; if you want it to repeat, add another
-	   timer during the callback for the first.  user_data can be
+	   timer during the callback for the first.  user_data_ can be
 	   anything, it's just passed to func.  Times are not guaranteed to
 	   be accurate.  */
 	  pcb_hidval_t(*add_timer) (void (*func) (pcb_hidval_t user_data_), unsigned long milliseconds_, pcb_hidval_t user_data_);
 	/* Use this to stop a timer that hasn't triggered yet.  */
 	void (*stop_timer) (pcb_hidval_t timer_);
 
-	/* Causes func to be called when some condition occurs on the file
+	/* Causes func_ to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
-	   hangup, and errors. user_data can be anything, it's just passed
+	   hangup, and errors. user_data_ can be anything, it's just passed
 	   to func. */
 	  pcb_hidval_t(*watch_file) (int fd_, unsigned int condition_,
 												 void (*func_) (pcb_hidval_t watch_, int fd_, unsigned int condition_, pcb_hidval_t user_data_),
@@ -346,19 +346,19 @@ struct hid_s {
 	/* Use this to stop a file watch. */
 	void (*unwatch_file) (pcb_hidval_t watch_);
 
-	/* Causes func to be called in the mainloop prior to blocking */
+	/* Causes func_ to be called in the mainloop prior to blocking */
 	  pcb_hidval_t(*add_block_hook) (void (*func_) (pcb_hidval_t data_), pcb_hidval_t data_);
 	/* Use this to stop a mainloop block hook. */
 	void (*stop_block_hook) (pcb_hidval_t block_hook_);
 
 	/* Various dialogs */
 
-	/* Log a message to the log window.  */
+	/* Logs a message to the log window.  */
 	void (*log) (const char *fmt_, ...);
 	void (*logv) (enum pcb_message_level, const char *fmt_, va_list args_);
 
 	/* A generic yes/no dialog.  Returns zero if the cancel button is
-	   pressed, one for the ok button.  If you specify alternate labels
+	   pressed, one for the OK button.  If you specify alternate labels
 	   for ..., they are used instead of the default OK/Cancel ones, and
 	   the return value is the index of the label chosen.  You MUST pass
 	   NULL as the last parameter to this.  */
@@ -389,7 +389,7 @@ struct hid_s {
 
 	/* The function calling hid->fileselect will deal with the case
 	   where the selected file already exists.  If not given, then the
-	   gui will prompt with an "overwrite?" prompt.  Only used when
+	   GUI will prompt with an "overwrite?" prompt.  Only used when
 	   writing.
 	 */
 #define HID_FILESELECT_MAY_NOT_EXIST 0x02
@@ -400,30 +400,30 @@ struct hid_s {
 	 */
 #define HID_FILESELECT_IS_TEMPLATE 0x04
 
-	/* title may be used as a dialog box title.  Ignored if NULL.
+	/* title_ may be used as a dialog box title.  Ignored if NULL.
 	 *
-	 * descr is a longer help string.  Ignored if NULL.
+	 * descr_ is a longer help string.  Ignored if NULL.
 	 *
-	 * default_file is the default file name.  Ignored if NULL.
+	 * default_file_ is the default file name.  Ignored if NULL.
 	 *
-	 * default_ext is the default file extension, like ".pdf".
+	 * default_ext_ is the default file extension, like ".pdf".
 	 * Ignored if NULL.
 	 *
-	 * history_tag may be used by the GUI to keep track of file
+	 * history_tag_ may be used by the GUI to keep track of file
 	 * history.  Examples would be "board", "vendor", "renumber",
 	 * etc.  If NULL, no specific history is kept.
 	 *
-	 * flags are the bitwise or of the HID_FILESELECT defines above
+	 * flags_ are the bitwise OR of the HID_FILESELECT defines above
 	 */
 
 	char *(*fileselect) (const char *title_, const char *descr_,
 											 const char *default_file_, const char *default_ext_, const char *history_tag_, int flags_);
 
-	/* A generic dialog to ask for a set of attributes.  If n_attrs is
-	   zero, attrs(.name) must be NULL terminated.  Returns non-zero if
+	/* A generic dialog to ask for a set of attributes.  If n_attrs_ is
+	   zero, attrs_(.name) must be NULL terminated.  Returns non-zero if
 	   an error occurred (usually, this means the user cancelled the
-	   dialog or something). title is the title of the dialog box
-	   descr (if not NULL) can be a longer description of what the
+	   dialog or something). title_ is the title of the dialog box
+	   descr_ (if not NULL) can be a longer description of what the
 	   attributes are used for.  The HID may choose to ignore it or it
 	   may use it for a tooltip or text in a dialog box, or a help
 	   string.
@@ -432,7 +432,7 @@ struct hid_s {
 													 int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_);
 
 	/* This causes a second window to display, which only shows the
-	   selected item. The expose callback is called twice; once to size
+	   selected item_. The expose callback is called twice; once to size
 	   the extents of the item, and once to draw it.  To pass magic
 	   values, pass the address of a variable created for this
 	   purpose.  */
@@ -492,7 +492,7 @@ struct hid_s {
 	/* Notification to the GUI that the PCB file has been renamed. */
 	void (*notify_filename_changed) (void);
 
-	/* Create a new menu and/or submenus
+	/* Creates a new menu and/or submenus
 	 * menu_path is a / separated path to the new menu (parents are silently created).
 	 * The last non-NULL item is the new menu item.
 	 * action, mnemonic, accel and tip affect the new menu item.
@@ -502,7 +502,7 @@ struct hid_s {
 	 */
 	void (*create_menu) (const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 
-	/* Remove a menu recursively */
+	/* Removes a menu recursively */
 	int (*remove_menu) (const char *menu_path);
 
 	/* Optional: print usage string (if accepts command line arguments)
@@ -524,23 +524,23 @@ struct hid_s {
 	int (*propedit_start)(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx));
 
 	/* Optional: end a propedit session: all data has been sent, no more; this call
-	   should present and run the user dialog and should return only when the
+	   should present and run the user dialog and should return, only when the
 	   propedit section can be closed. */
 	void (*propedit_end)(void *pe);
 
-	/* Optional: register a new property
+	/* Optional: registers a new property
 	   Returns a prop context passed with each value
 	*/
 	void *(*propedit_add_prop)(void *pe, const char *propname, int is_mutable, int num_vals);
 
-	/* Optional: register a new value for a property */
+	/* Optional: registers a new value for a property */
 	void (*propedit_add_value)(void *pe, const char *propname, void *propctx, const char *value, int repeat_cnt);
 
-	/* Optional: register statistical info for a property */
+	/* Optional: registers statistical info for a property */
 	void (*propedit_add_stat)(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg);
 };
 
-/* On of these functions (in the common code) will be called whenever the GUI
+/* One of these functions (in the common code) will be called whenever the GUI
    needs to redraw the screen, print the board, or export a layer.
 
    Each time func is called, it should do the following:
@@ -568,23 +568,23 @@ typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx
 /* Normal expose: draw all layers with all flags (no .content is used) */
 void pcb_hid_expose_all(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region);
 
-/* Pinout preview expose: draw an element; content.elem is used */
+/* Pinout preview expose: draws an element; content.elem is used */
 void pcb_hid_expose_pinout(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *element);
 
 
-/* Layer preview expose: draw a single layer; content.layer_id is used */
+/* Layer preview expose: draws a single layer; content.layer_id is used */
 void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ly);
 
 
-/* This is initially set to a "no-gui" gui, and later reset by
+/* This is initially set to a "no-gui" GUI, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. */
 extern pcb_hid_t *pcb_gui;
 
-/* When not NULL, auto-start the next gui after the current one quits */
+/* When not NULL, auto-start the next GUI after the current one quits */
 extern pcb_hid_t *pcb_next_gui;
 
 /* This is either NULL or points to the current HID that is being called to
-   do the exporting. The gui HIDs set and unset this var.*/
+   do the exporting. The GUI HIDs set and unset this var.*/
 extern pcb_hid_t *pcb_exporter;
 
 /* This is either NULL or points to the current pcb_hid_action_t that is being
@@ -596,7 +596,7 @@ extern const pcb_hid_action_t *pcb_current_action;
    smaller than a screen pixel.  */
 extern int pcb_pixel_slop;
 
-/* Init and uninit the whole action framework */
+/* Inits and uninits the whole action framework */
 void pcb_hid_actions_init(void);
 void pcb_hid_actions_uninit(void);
 
