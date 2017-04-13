@@ -35,7 +35,6 @@
 #include "conf_core.h"
 
 #include "in_mouse.h"
-#include "compat.h"
 #include "wt_preview.h"
 
 #include "copy.h"
@@ -229,7 +228,7 @@ static void ghid_preview_get_property(GObject * object, guint property_id, GValu
 }
 
 /** Converter: set up a pinout expose and use the generic preview expose call */
-static gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
+static gboolean ghid_preview_expose(GtkWidget * widget, PCB_GTK_EXPOSE_STRUCT * ev)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(widget);
 

@@ -40,8 +40,6 @@
 #include "wt_preview.h"
 #include "win_place.h"
 
-#include "compat.h"
-
 static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 {
 	gtk_widget_destroy(top_window);

@@ -39,6 +39,7 @@
 #include "layer.h"
 #include "ui_zoompan.h"
 #include "glue.h"
+#include "compat.h"
 
 #define PCB_GTK_TYPE_PREVIEW           (pcb_gtk_preview_get_type())
 #define PCB_GTK_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_t))
@@ -60,7 +61,7 @@ struct pcb_gtk_preview_class_s {
 /** \todo understand where is this initialized ? */
 typedef void (*pcb_gtk_init_drawing_widget_t) (GtkWidget * widget, void *port);
 /** Expose event, set as a property. */
-typedef gboolean(*pcb_gtk_preview_expose_t) (GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall,
+typedef gboolean(*pcb_gtk_preview_expose_t) (GtkWidget * widget, PCB_GTK_EXPOSE_STRUCT * ev, pcb_hid_expose_t expcall,
 																						 const pcb_hid_expose_ctx_t * ctx);
 /** \todo How this is initialized ? Where is it going ? */
 typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t) (void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
