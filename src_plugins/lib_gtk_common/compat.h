@@ -3,6 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2017 Tibor Palinkas
+ *  Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
