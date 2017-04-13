@@ -1178,7 +1178,7 @@ static pcb_r_dir_t find_inside(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
+void pcb_poly_insert_holes(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 {
 	pcb_polyarea_t *curc;
 	pcb_pline_t *curh, *container;
@@ -1313,7 +1313,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 	}
 	pcb_r_destroy_tree(&tree);
 	free(all_pa_info);
-}																/* InsertHoles */
+}																/* pcb_poly_insert_holes */
 
 
 /****************************************************************/
@@ -2125,7 +2125,7 @@ int pcb_polyarea_boolean_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_poly
 			pcb_poly_contour_del(&p);
 		}
 
-		InsertHoles(&e, *res, &holes);
+		pcb_poly_insert_holes(&e, *res, &holes);
 	}
 	/* delete holes if any left */
 	while ((p = holes) != NULL) {
@@ -2186,7 +2186,7 @@ int pcb_polyarea_and_subtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb
 		M_pcb_polyarea_t_label(b, a, pcb_false);
 
 		M_pcb_polyarea_t_Collect(&e, a, aandb, &holes, PCB_PBO_ISECT, pcb_false);
-		InsertHoles(&e, *aandb, &holes);
+		pcb_poly_insert_holes(&e, *aandb, &holes);
 		assert(pcb_poly_valid(*aandb));
 		/* delete holes if any left */
 		while ((p = holes) != NULL) {
@@ -2197,7 +2197,7 @@ int pcb_polyarea_and_subtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb
 		clear_marks(a);
 		clear_marks(b);
 		M_pcb_polyarea_t_Collect(&e, a, aminusb, &holes, PCB_PBO_SUB, pcb_false);
-		InsertHoles(&e, *aminusb, &holes);
+		pcb_poly_insert_holes(&e, *aminusb, &holes);
 		pcb_polyarea_free(&a);
 		pcb_polyarea_free(&b);
 		assert(pcb_poly_valid(*aminusb));
