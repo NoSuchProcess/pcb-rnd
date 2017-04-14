@@ -159,9 +159,17 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 	st_deps_on = get(buff);
 
 	if (require) {
-		if ((strcmp(st_plugin, sbuildin) == 0) || (strcmp(st_plugin, splugin) == 0)) {
+		if ((strcmp(st_plugin, sbuildin) == 0)) {
 			if (strcmp(st_deps_on, sbuildin) != 0) {
-				sprintf(buff, "WARNING: disabling %s because the %s is not enabled as a buildin...\n", plugin, deps_on);
+				sprintf(buff, "WARNING: disabling (ex-buildin) %s because the %s is not enabled as a buildin...\n", plugin, deps_on);
+				report_repeat(buff);
+				sprintf(buff, "Disable-%s", plugin);
+				hook_custom_arg(buff, NULL);
+			}
+		}
+		else if ((strcmp(st_plugin, splugin) == 0)) {
+			if ((strcmp(st_deps_on, sbuildin) != 0) && (strcmp(st_deps_on, splugin) != 0)) {
+				sprintf(buff, "WARNING: disabling (ex-plugin) %s because the %s is not enabled as a buildin or plugin...\n", plugin, deps_on);
 				report_repeat(buff);
 				sprintf(buff, "Disable-%s", plugin);
 				hook_custom_arg(buff, NULL);
