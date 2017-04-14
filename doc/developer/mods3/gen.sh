@@ -50,14 +50,14 @@ do
 		bn=`basename $n`
 		code_size=`sloc $n`
 		total=$(($total + $code_size))
-		class=`sed '
-		/^#implements:/ {
-			s/#implements: *//
+		class=`cat $n/*.pup | sed '
+		/^$class/ {
+			s/$class *//
 			s/[()]//g
 			p
 		}
 		{ d }
-		' < $n/README`
+		' `
 		echo "$class" >> classes
 
 		echo "$code_size" >> $class.lines
@@ -68,16 +68,21 @@ do
 #		esac
 
 		echo "<tr><th align=left>$bn<td>$code_size"
-		awk '
-			/^#/ {
+		cat $n/*.pup | awk '
+			/^[$]/ {
 				key=$1
-				sub("#", "", key)
-				sub("[:=]", "", key)
+				sub("[$]", "", key)
 				$1=""
 				DB[key]=$0
 				next
 			}
-			{ desc = desc " " $0 }
+
+			/^[A-Za-z]/ {
+				key=$1
+				$1=""
+				DB[key]=$0
+				next
+			}
 
 			function strip(s) {
 				sub("^[ \t]*", "", s)
@@ -121,10 +126,10 @@ do
 				print "<td " clr ">" dfl
 				if (DB["ldefault"] != "")
 					print "<br> (" strip(DB["ldefault"]) ")"
-				print "<td>" DB["implements"]
-				print "<td>" desc
+				print "<td>" DB["class"]
+				print "<td>" DB["long"]
 			}
-		' < $n/README
+		'
 	fi
 done
 cat post.html
