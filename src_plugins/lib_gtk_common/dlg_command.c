@@ -161,7 +161,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 			history_list = g_list_remove(history_list, s);
 			history_list = g_list_prepend(history_list, s);
 			gtk_combo_box_remove_text(GTK_COMBO_BOX(ctx->command_combo_box), i);
-			gtk_combo_box_prepend_text(GTK_COMBO_BOX(ctx->command_combo_box), s);
+			gtkc_combo_box_text_prepend_text(ctx->command_combo_box, s);
 			return;
 		}
 	}
@@ -170,7 +170,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 	 */
 	s = g_strdup(cmd);
 	history_list = g_list_prepend(history_list, s);
-	gtk_combo_box_prepend_text(GTK_COMBO_BOX(ctx->command_combo_box), s);
+	gtkc_combo_box_text_prepend_text(ctx->command_combo_box, s);
 
 	/* And keep the lists trimmed!
 	 */
