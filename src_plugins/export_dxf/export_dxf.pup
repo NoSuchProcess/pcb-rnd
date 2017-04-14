@@ -1,4 +1,5 @@
+$class export
+$short DXF pcb_exporter
 $long Export dxf
 $state WIP
 default disable
-$class export

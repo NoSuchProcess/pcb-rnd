@@ -1,4 +1,5 @@
+$class import
+$short import edif
 $long Import plugin for netlists in the EDIF format.
 $state works
 default buildin
-$class import

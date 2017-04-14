@@ -1,4 +1,5 @@
+$class export
+$short nelma pcb_exporter
 $long Export to nelma (Numerical capacitance calculator)
 $state works
 default buildin
-$class export

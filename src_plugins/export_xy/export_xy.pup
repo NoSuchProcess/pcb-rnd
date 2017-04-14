@@ -1,4 +1,5 @@
+$class export
+$short xy (centroid) pcb_exporter
 $long Export XY centroid element data for pick & place.
 $state works
 default buildin
-$class export

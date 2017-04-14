@@ -1,4 +1,5 @@
+$class lib
+$short hid_gtk preferences dialog
 $long hid_gtk* preferences dialog common code (regardless of gtk version)
 $state works
 default disable
-$class lib

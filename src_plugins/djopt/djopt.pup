@@ -1,4 +1,5 @@
+$class feature
+$short djopt board optimization
 $long Various board optimization algorithms.
 $state works
 default buildin
-$class feature

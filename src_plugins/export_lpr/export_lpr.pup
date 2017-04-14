@@ -1,4 +1,5 @@
+$class export
+$short lpr pcb_exporter (printer)
 $long Export to lpr (using export_ps to generate postscript)
 $state works
 default buildin
-$class export

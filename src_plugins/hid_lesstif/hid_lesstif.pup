@@ -1,4 +1,5 @@
+$class hid
+$short the lesstif gui
 $long GUI: the lesstif HID.
 $state works
 default buildin
-$class hid

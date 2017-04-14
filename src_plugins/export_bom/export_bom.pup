@@ -1,4 +1,5 @@
+$class export
+$short bom pcb_exporter
 $long Export bom (Bill of Materials)
 $state works
 default buildin
-$class export

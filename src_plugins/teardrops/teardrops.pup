@@ -1,4 +1,5 @@
+$class feature
+$short draw teardrops on pins
 $long Draw teardrops on pins.
 $state works
 default buildin
-$class feature

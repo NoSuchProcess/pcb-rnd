@@ -1,4 +1,5 @@
+$class import
+$short import mucs routing
 $long Import lines and vias from MUCS unixplot .pl files
 $state works
 default buildin
-$class import

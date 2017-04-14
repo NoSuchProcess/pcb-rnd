@@ -1,4 +1,5 @@
+$class hid
+$short GTK2 GUI, opengl render
 $long GUI: GTK2 with opengl rendering
 $state works
 default buildin
-$class hid

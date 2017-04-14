@@ -1,4 +1,5 @@
+$class hid
+$short GTK2 GUI, software render
 $long GUI: GTK2 HID with GDK software rendering.
 $state works
 default buildin
-$class hid

@@ -1,4 +1,5 @@
+$class export
+$short FidoCadJ .fcd pcb_exporter
 $long Export to FidoCadJ format (.fcd)
 $state WIP
 default disable
-$class export

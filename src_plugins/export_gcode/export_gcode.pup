@@ -1,4 +1,5 @@
+$class export
+$short gcode pcb_exporter
 $long Export to gcode
 $state works
 default buildin
-$class export

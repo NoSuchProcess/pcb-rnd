@@ -1,5 +1,5 @@
+$class feature
 $short distribute and align text
 $long Same as distalign, operates on text objects.
 $state works
 default buildin
-$class feature

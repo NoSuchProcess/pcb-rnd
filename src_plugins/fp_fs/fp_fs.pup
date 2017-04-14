@@ -1,4 +1,5 @@
+$class fp
+$short filesystem footprints
 $long Footprint: file system based implementation. Used to be called Newlib: load footprints from directories. Run external processes for the parametric footprints.
 $state works
 default buildin
-$class fp

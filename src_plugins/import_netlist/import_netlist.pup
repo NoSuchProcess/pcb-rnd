@@ -1,4 +1,5 @@
+$class import
+$short import netlist
 $long Import plugin for netlists in the classic pcb netlist format.
 $state works
 default buildin
-$class import

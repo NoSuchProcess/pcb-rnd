@@ -1,4 +1,5 @@
+$class io
+$short the original pcb format
 $long Load and save the design and elements in the original pcb text format.
 $state works
 default buildin
-$class io

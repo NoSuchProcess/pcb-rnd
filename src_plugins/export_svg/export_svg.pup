@@ -1,4 +1,5 @@
+$class export
+$short SVG pcb_exporter
 $long Scalable Vector Graphics (SVG) exporter
 $state works
 default buildin
-$class export

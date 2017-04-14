@@ -1,4 +1,5 @@
+$class io
+$short lihata board format
 $long Load and save the design and elements in the lihata board format.
 $state works
 default buildin
-$class io

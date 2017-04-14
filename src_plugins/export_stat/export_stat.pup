@@ -1,4 +1,5 @@
+$class export
+$short export board statistics
 $long Export various board statistics in lihata format
 $state works
 default buildin
-$class export

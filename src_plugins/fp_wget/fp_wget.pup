@@ -1,4 +1,5 @@
+$class fp
+$short web footprints
 $long Footprint: get static (file) footprints from the web, e.g. from http://gedasymbols.org
 $state works
 default buildin
-$class fp

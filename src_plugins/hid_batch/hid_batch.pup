@@ -1,4 +1,5 @@
+$class hid
+$short batch process (no-gui HID)
 $long HID without GUI; read actions from stdin.
 $state works
 default buildin
-$class hid
