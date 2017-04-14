@@ -296,6 +296,9 @@ static void prop_preview_init(void)
 {
 	pcb_polygon_t *v;
 	pcb_layer_id_t n;
+	pcb_board_t *old_pcb;
+	old_pcb = PCB;
+	PCB = &preview_pcb;
 
 	memset(&preview_pcb, 0, sizeof(preview_pcb));
 	preview_pcb.Data = pcb_buffer_new(&preview_pcb);
@@ -308,10 +311,16 @@ static void prop_preview_init(void)
 		preview_pcb.Data->Layer[n].On = 1;
 		preview_pcb.Data->Layer[n].Color = pcb_strdup(PCB->Data->Layer[n].Color);
 		preview_pcb.Data->Layer[n].Name = pcb_strdup("preview dummy");
+		
 	}
 
 	memcpy(&preview_pcb.LayerGroups, &PCB->LayerGroups, sizeof(PCB->LayerGroups));
-	preview_pcb.Data->LayerN = pcb_max_layer;
+	preview_pcb.Data->LayerN = 1;
+	preview_pcb.Data->Layer[0].grp = 0;
+	preview_pcb.LayerGroups.grp[0].type = PCB_LYT_COPPER | PCB_LYT_TOP;
+	preview_pcb.LayerGroups.grp[0].lid[0] = 0;
+	preview_pcb.LayerGroups.grp[0].len = 1;
+	preview_pcb.LayerGroups.len = 1;
 	preview_pcb.Data->pcb = &preview_pcb;
 
 #warning TODO: preview_pcb is never freed
@@ -333,11 +342,12 @@ static void prop_preview_init(void)
 	pcb_text_new(preview_pcb.Data->Layer + 0, pcb_font(PCB, 0, 1),
 							 PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
 
-	v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer,
+	v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer + 0,
 																									 PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
 																									 PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
 																									 pcb_flag_make(PCB_FLAG_CLEARPOLY));
-	pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer, v);
+	pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer + 0, v);
+	PCB = old_pcb;
 
 #if 0
 	zoom1 = 1;
@@ -373,10 +383,9 @@ static void prop_preview_init(void)
 static void prop_preview_draw(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_board_t *old_pcb;
-	printf("prop prev expose\n");
 	old_pcb = PCB;
 	PCB = &preview_pcb;
-
+	pcb_draw_layer(&(PCB->Data->Layer[0]), &e->view);
 	PCB = old_pcb;
 }
 
@@ -502,6 +511,10 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 	prv = pcb_gtk_preview_dialog_new(com, com->init_drawing_widget, com->preview_expose, prop_preview_draw);
 
 	p = (pcb_gtk_preview_t *) prv;
+	p->expose_data.view.X1 = 0;
+	p->expose_data.view.Y1 = 0;
+	p->expose_data.view.X2 = PCB_MIL_TO_COORD(1500);
+	p->expose_data.view.Y2 = PCB_MIL_TO_COORD(1500);
 /*	p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;*/
 	gtk_widget_set_size_request(prv, 200, 200);
 
