@@ -20,7 +20,8 @@ include {../scconfig/template/comp_var.tmpasm}
 append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
 
 append /local/pcb/rules/install_ [@
-	$(SCCBOX) $(HOW) "$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so" "$(LIBDIR)/plugins/@/local/pcb/mod@.so"@]
+	$(SCCBOX) $(HOW) "$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so" "$(LIBDIR)/plugins/@/local/pcb/mod@.so"
+	$(SCCBOX) $(HOW) "$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.pup" "$(LIBDIR)/plugins/@/local/pcb/mod@.pup"@]
 
 append /local/pcb/CLEANFILES [@ $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@  @/local/pcb/mod/OBJS_C99@ @]
 
@@ -36,6 +37,7 @@ mod_@/local/pcb/mod@: $(PLUGIDIR)/@/local/pcb/mod@.so
 $(PLUGIDIR)/@/local/pcb/mod@.so: $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so
 	$(MKDIR) $(PLUGIDIR)
 	$(CP) $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so
+	$(CP) $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.pup $(PLUGIDIR)/@/local/pcb/mod@.pup
 
 # module .c -> .o rules
 @/local/comp/output@
