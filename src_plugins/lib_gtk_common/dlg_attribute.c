@@ -234,7 +234,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			 */
 			i = 0;
 			while (attrs[j].enumerations[i]) {
-				gtk_combo_box_append_text(GTK_COMBO_BOX(combo), attrs[j].enumerations[i]);
+				gtkc_combo_box_text_append_text(combo, attrs[j].enumerations[i]);
 				i++;
 			}
 			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
@@ -287,7 +287,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			 * combo box
 			 */
 			for (i = 0; i < n; ++i)
-				gtk_combo_box_append_text(GTK_COMBO_BOX(combo), unit_list[i].in_suffix);
+				gtkc_combo_box_text_append_text(combo, unit_list[i].in_suffix);
 			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
 			widget = gtk_label_new(attrs[j].name);
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);

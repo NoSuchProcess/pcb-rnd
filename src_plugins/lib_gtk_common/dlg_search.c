@@ -838,7 +838,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 		sdlg.action = gtkc_combo_box_text_new();
 		gtk_widget_set_tooltip_text(sdlg.action, "Do this with any object matching the query expression");
 		for (s = actions; *s != NULL; s++)
-			gtk_combo_box_append_text(GTK_COMBO_BOX(sdlg.action), *s);
+			gtkc_combo_box_text_append_text(sdlg.action, *s);
 		gtk_box_pack_start(GTK_BOX(hbox), sdlg.action, FALSE, FALSE, 0);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(sdlg.action), 0);
 

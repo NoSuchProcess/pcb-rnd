@@ -245,7 +245,7 @@ gchar *ghid_dialog_file_select_save(GtkWidget *top_window, const gchar *title, g
 		gtk_box_pack_start(GTK_BOX(fmt), fmt_combo, FALSE, FALSE, 0);
 
 		for (s = formats; *s != NULL; s++)
-			gtk_combo_box_append_text(GTK_COMBO_BOX(fmt_combo), *s);
+			gtkc_combo_box_text_append_text(fmt_combo, *s);
 
 		gtk_combo_box_set_active(GTK_COMBO_BOX(fmt_combo), *format);
 		g_signal_connect(G_OBJECT(fmt_combo), "changed", G_CALLBACK(fmt_changed_cb), &ctx);

@@ -1947,8 +1947,8 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_color, FALSE, FALSE, 4);
 
 	auto_tab_widgets.edit_unit = gtkc_combo_box_text_new();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), "mm");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), "mil");
+	gtkc_combo_box_text_append_text(auto_tab_widgets.edit_unit, "mm");
+	gtkc_combo_box_text_append_text(auto_tab_widgets.edit_unit, "mil");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_unit, FALSE, FALSE, 4);
 
 	{															/* list */

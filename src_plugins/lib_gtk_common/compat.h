@@ -46,6 +46,11 @@ static inline GtkWidget *gtkc_combo_box_text_new(void)
 	return gtk_combo_box_text_new();
 }
 
+static inline void gtkc_combo_box_text_append_text(GtkWidget *combo, const gchar *text)
+{
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), text);
+}
+
 #define PCB_GTK_EXPOSE_EVENT(x) (x->draw)
 #define PCB_GTK_EXPOSE_STRUCT cairo_t
 
@@ -67,6 +72,11 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 static inline GtkWidget *gtkc_combo_box_text_new(void)
 {
 	return gtk_combo_box_new_text();
+}
+
+static inline void gtkc_combo_box_text_append_text(GtkWidget *combo, const gchar *text)
+{
+	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), text);
 }
 
 #define PCB_GTK_EXPOSE_EVENT(x) (x->expose_event)
