@@ -3,3 +3,4 @@ $short import mentor graphics sch
 $long Import Mentor Graphics Design Capture from flattened .edf netlist, using a parts conversion table.
 $state works
 default buildin
+dep lib_gensexpr
