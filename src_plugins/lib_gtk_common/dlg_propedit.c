@@ -327,17 +327,17 @@ static void prop_preview_init(void)
 
 	pcb_via_new(preview_pcb.Data,
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
+							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(40), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
 
 	pcb_line_new(preview_pcb.Data->Layer + 0,
 							 PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 							 PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
-							 PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
+							 PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(40), pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	pcb_arc_new(preview_pcb.Data->Layer + 0,
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 							PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
-							0.0, 90.0, PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
+							0.0, 90.0, PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(40), pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	pcb_text_new(preview_pcb.Data->Layer + 0, pcb_font(PCB, 0, 1),
 							 PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
