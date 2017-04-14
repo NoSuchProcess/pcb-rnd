@@ -1,5 +1,0 @@
-Export specctra .dsn files
-
-#state: works
-#default: enabled
-#implements: export

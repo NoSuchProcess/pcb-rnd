@@ -1,5 +1,0 @@
-Import the netlist and footprints from a tinycad netlist.
-
-#state: works
-#default: buildin
-#implements: import

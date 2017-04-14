@@ -1,5 +1,0 @@
-GUI: GTK2 HID with GDK software rendering.
-
-#state: works
-#default: buildin
-#implements: hid

@@ -1,6 +1,0 @@
-All objects on the board are up-down flipped.
-
-#state: WIP
-#lstate: doesn't update rtrees
-#default: disabled
-#implements: (feature)

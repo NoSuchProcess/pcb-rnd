@@ -1,5 +1,0 @@
-HID server: websockets using hid_remote.
-
-#state: WIP
-#default: disable
-#implements: hid

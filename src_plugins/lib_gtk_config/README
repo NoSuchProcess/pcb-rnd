@@ -1,5 +1,0 @@
-hid_gtk* preferences dialog common code (regardless of gtk version)
-
-#state: works
-#default: disabled
-#implements: (lib)
