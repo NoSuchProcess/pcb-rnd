@@ -1,4 +1,4 @@
-#longdesc: GUI: GTK2 HID with GDK software rendering.
-#state: works
+$long GUI: GTK2 HID with GDK software rendering.
+$state works
 default buildin
 class hid

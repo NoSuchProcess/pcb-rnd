@@ -1,5 +1,5 @@
-#longdesc: A thin layer of code to dump exporter calls for testing the HID exporter API.
-#state: disabled
+$long A thin layer of code to dump exporter calls for testing the HID exporter API.
+$state disabled
 #lstate: work in progress
 default buildin
 class export

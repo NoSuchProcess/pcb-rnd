@@ -1,4 +1,5 @@
-#longdesc: Same as distalign, operates on text objects.
-#state: works
+$short distribute and align text
+$long Same as distalign, operates on text objects.
+$state works
 default buildin
 class feature

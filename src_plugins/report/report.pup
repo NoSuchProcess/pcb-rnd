@@ -1,4 +1,4 @@
-#longdesc: Report() and ReportObject() actions - print a report about design objects.
-#state: works
+$long Report() and ReportObject() actions - print a report about design objects.
+$state works
 default buildin
 class feature

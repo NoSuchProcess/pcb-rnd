@@ -1,5 +1,6 @@
-#longdesc: All objects on the board are up-down flipped.
-#state: WIP
-#lstate: doesn't update rtrees
+$short flip board objects
+$long All objects on the board are up-down flipped.
+$state WIP
+$lstate doesn't update rtrees
 default disable
 class feature

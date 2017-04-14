@@ -1,4 +1,4 @@
-#longdesc: Import specctra .dsn files
-#state: works
+$long Import specctra .dsn files
+$state works
 default buildin
 class import

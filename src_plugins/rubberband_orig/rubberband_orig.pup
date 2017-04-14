@@ -1,4 +1,4 @@
-#longdesc: The original rubberband code.
-#state: works
+$long The original rubberband code.
+$state works
 default buildin
 class feature

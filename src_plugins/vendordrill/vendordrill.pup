@@ -1,4 +1,4 @@
-#longdesc: Vendor drill mapping.
-#state: works
+$long Vendor drill mapping.
+$state works
 default buildin
 class feature

@@ -1,4 +1,4 @@
-#longdesc: Export to gcode
-#state: works
+$long Export to gcode
+$state works
 default buildin
 class export

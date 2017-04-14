@@ -1,4 +1,4 @@
-#longdesc: Export specctra .dsn files
-#state: works
+$long Export specctra .dsn files
+$state works
 default buildin
 class export

@@ -1,4 +1,4 @@
-#longdesc: Load the design from eagle's xml format.
-#state: WIP
+$long Load the design from eagle's xml format.
+$state WIP
 default disable
 class io

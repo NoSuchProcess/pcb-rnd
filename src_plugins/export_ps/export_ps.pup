@@ -1,4 +1,4 @@
-#longdesc: Export postscript or embedded postscript.
-#state: works
+$long Export postscript or embedded postscript.
+$state works
 default buildin
 class export

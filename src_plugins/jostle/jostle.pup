@@ -1,4 +1,4 @@
-#longdesc: Pushes lines out of the way.
-#state: works
+$long Pushes lines out of the way.
+$state works
 default buildin
 class feature

@@ -1,4 +1,4 @@
-#longdesc: GUI: the lesstif HID.
-#state: works
+$long GUI: the lesstif HID.
+$state works
 default buildin
 class hid

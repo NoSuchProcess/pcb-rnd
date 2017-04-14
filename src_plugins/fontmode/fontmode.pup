@@ -1,4 +1,4 @@
-#longdesc: Font editing actions.
-#state: works
+$long Font editing actions.
+$state works
 default buildin
 class feature

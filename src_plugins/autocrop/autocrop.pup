@@ -1,4 +1,5 @@
-#longdesc: Reduce the board dimensions to just enclose the elements.
-#state: works
+$short crop board to fit objects
+$long Reduce the board dimensions to just enclose the elements.
+$state works
 default buildin
 class feature

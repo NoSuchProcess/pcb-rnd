@@ -1,4 +1,4 @@
-#longdesc: IPC-D-356 Netlist export.
-#state: Work-in-progress
+$long IPC-D-356 Netlist export.
+$state Work-in-progress
 default disable
 class export

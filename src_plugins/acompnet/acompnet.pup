@@ -1,4 +1,5 @@
-#longdesc: Auto-complete the current network. A very limited autorouter/assistant.
-#state: WIP
+$short net auto-completion
+$long Auto-complete the current network. A very limited autorouter/assistant.
+$state WIP
 default disable
 class feature

@@ -1,4 +1,4 @@
-#longdesc: Export openscad
-#state: WIP
+$long Export openscad
+$state WIP
 default disable
 class export
