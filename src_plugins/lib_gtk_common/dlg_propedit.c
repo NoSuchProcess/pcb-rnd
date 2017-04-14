@@ -370,7 +370,7 @@ static void prop_preview_init(void)
 */
 }
 
-static void prop_preview_draw(pcb_hid_gc_t gc)
+static void prop_preview_draw(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_board_t *old_pcb;
 	printf("prop prev expose\n");

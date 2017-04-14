@@ -698,7 +698,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	}
 	else if (lflg & PCB_LYT_DIALOG) {
 		if ((pcb_layer_gui_set_vlayer(PCB_VLY_DIALOG, 0)) || (e->force)) {
-			e->dialog_draw(Output.fgGC);
+			e->dialog_draw(Output.fgGC, e);
 			pcb_gui->end_layer();
 		}
 	}
