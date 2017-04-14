@@ -1,6 +1,5 @@
 # footprint plugins
-# This has to be separate from any other class because gsch2pcb depends on it
-# while it doesn't want to link the rest.
+# List of plugins gsch2pcb needs. Temporary until -m pcb is removed.
 
 include {../src_plugins/fp_fs/Plug.tmpasm}
 include {../src_plugins/fp_wget/Plug.tmpasm}
