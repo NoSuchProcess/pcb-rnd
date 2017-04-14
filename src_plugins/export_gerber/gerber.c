@@ -67,9 +67,9 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 #define gerberXOffset(pcb, x) ((pcb_coord_t) (x))
 #define gerberYOffset(pcb, y) ((pcb_coord_t) (-(y)))
 
-/* These are for drills (printed as mils but are really 1/10th mil) */
-#define gerberDrX(pcb, x) ((pcb_coord_t) (x) * 10)
-#define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)) * 10)
+/* Note: these are for drills (printed as mils but are really 1/10th mil) so print them with %mk  */
+#define gerberDrX(pcb, x) ((pcb_coord_t) (x))
+#define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
 
 /*----------------------------------------------------------------------------*/
 /* Private data structures                                                    */
@@ -664,7 +664,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 				Aperture *ap = findAperture(curr_aptr_list, pending_drills[i].diam, ROUND);
 				fprintf(f, "T%02d\r\n", ap->dCode);
 			}
-			pcb_fprintf(f, "X%06.0mlY%06.0ml\r\n", gerberDrX(PCB, pending_drills[i].x), gerberDrY(PCB, pending_drills[i].y));
+			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pending_drills[i].x), gerberDrY(PCB, pending_drills[i].y));
 		}
 		free(pending_drills);
 		n_pending_drills = max_pending_drills = 0;
