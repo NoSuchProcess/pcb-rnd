@@ -1,4 +1,4 @@
 $long HID without GUI; read actions from stdin.
 $state works
 default buildin
-class hid
+$class hid

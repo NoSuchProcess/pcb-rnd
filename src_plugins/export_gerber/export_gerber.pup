@@ -1,4 +1,4 @@
 $long Export to gerber
 $state works
 default buildin
-class export
+$class export

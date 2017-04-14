@@ -1,4 +1,4 @@
 $long Export to FidoCadJ format (.fcd)
 $state WIP
 default disable
-class export
+$class export

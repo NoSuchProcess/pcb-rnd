@@ -1,4 +1,4 @@
 $long Import the netlist and footprints from an ltspice .asc and .net pair of files
 $state works
 default buildin
-class import
+$class import

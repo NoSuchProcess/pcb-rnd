@@ -1,4 +1,4 @@
 $long Export XY centroid element data for pick & place.
 $state works
 default buildin
-class export
+$class export

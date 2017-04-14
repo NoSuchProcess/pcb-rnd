@@ -1,4 +1,4 @@
 $long Scalable Vector Graphics (SVG) exporter
 $state works
 default buildin
-class export
+$class export

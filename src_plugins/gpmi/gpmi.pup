@@ -2,4 +2,4 @@ $long Scriptable plugin system with about 10 scripting languages supported and d
 $state works
 default buildin
 #ldefault: if gpmi is installed
-class feature
+$class feature

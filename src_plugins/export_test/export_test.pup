@@ -2,4 +2,4 @@ $long A thin layer of code to dump exporter calls for testing the HID exporter A
 $state disabled
 #lstate: work in progress
 default buildin
-class export
+$class export

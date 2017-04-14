@@ -1,4 +1,4 @@
 $long Export specctra .dsn files
 $state works
 default buildin
-class export
+$class export

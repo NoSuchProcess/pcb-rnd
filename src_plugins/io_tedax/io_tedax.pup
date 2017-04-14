@@ -1,4 +1,4 @@
 $long Import and export tEDAx netlists and footprints.
 $state works
 default buildin
-class import
+$class import

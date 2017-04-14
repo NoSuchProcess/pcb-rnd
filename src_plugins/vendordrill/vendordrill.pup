@@ -1,4 +1,4 @@
 $long Vendor drill mapping.
 $state works
 default buildin
-class feature
+$class feature

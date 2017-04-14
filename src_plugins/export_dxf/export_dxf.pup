@@ -1,4 +1,4 @@
 $long Export dxf
 $state WIP
 default disable
-class export
+$class export

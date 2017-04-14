@@ -1,4 +1,4 @@
 $long The selected polygons are combined together according to the ordering of their points.
 $state works
 default buildin
-class feature
+$class feature

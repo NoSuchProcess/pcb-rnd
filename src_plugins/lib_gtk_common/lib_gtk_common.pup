@@ -3,4 +3,4 @@ both gtk2 and gtk3 and for both sw rendering and gl)
 
 $state works
 default disable
-class lib
+$class lib

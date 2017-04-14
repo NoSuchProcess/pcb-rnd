@@ -1,4 +1,4 @@
 $long Draw the font selector GUI
 $state WIP
 default disable
-class feature
+$class feature

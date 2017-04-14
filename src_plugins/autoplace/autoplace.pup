@@ -2,4 +2,4 @@ $short auto place components
 $long Automatically place elements.
 $state works
 default buildin
-class feature
+$class feature

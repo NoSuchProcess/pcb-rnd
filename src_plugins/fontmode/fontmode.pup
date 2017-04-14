@@ -1,4 +1,4 @@
 $long Font editing actions.
 $state works
 default buildin
-class feature
+$class feature

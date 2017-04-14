@@ -1,4 +1,4 @@
 $long Pull traces to minimize their length.
 $state works
 default buildin
-class feature
+$class feature

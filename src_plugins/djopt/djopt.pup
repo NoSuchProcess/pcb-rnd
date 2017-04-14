@@ -1,4 +1,4 @@
 $long Various board optimization algorithms.
 $state works
 default buildin
-class feature
+$class feature

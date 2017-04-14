@@ -1,4 +1,4 @@
 $long S-expression parser lib
 $state works
 default disable
-class lib
+$class lib

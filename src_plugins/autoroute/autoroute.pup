@@ -2,4 +2,4 @@ $short the original autorouter
 $long Automatically route selected or all rats. This is the original autorouter.
 $state works
 default buildin
-class feature
+$class feature
