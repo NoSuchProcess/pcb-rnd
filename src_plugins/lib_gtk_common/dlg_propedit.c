@@ -349,19 +349,6 @@ static void prop_preview_init(void)
 	pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer + 0, v);
 	PCB = old_pcb;
 
-#if 0
-	zoom1 = 1;
-	cx = PCB_MIL_TO_COORD(1000 + 300 / 2 * zoom1);
-	cy = PCB_MIL_TO_COORD(1000 + 400 / 2 * zoom1);
-	fx = conf_core.editor.view.flip_x;
-	fy = conf_core.editor.view.flip_y;
-	conf_set(CFR_DESIGN, "editor/view/flip_x", -1, "0", POL_OVERWRITE);
-	conf_set(CFR_DESIGN, "editor/view/flip_y", -1, "0", POL_OVERWRITE);
-	pm = dlg->com->render_pixmap(cx, cy, 40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(dlg->com->top_window->window)));
-	conf_setf(CFR_DESIGN, "editor/view/flip_x", -1, "%d", fx, POL_OVERWRITE);
-	conf_setf(CFR_DESIGN, "editor/view/flip_y", -1, "%d", fy, POL_OVERWRITE);
-#endif
-
 /*
 	{
 		GdkGC *gc = gdk_gc_new(GDK_DRAWABLE(gport->top_window->window));
