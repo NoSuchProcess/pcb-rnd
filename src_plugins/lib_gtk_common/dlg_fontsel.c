@@ -106,9 +106,10 @@ void pcb_gtk_dlg_fontsel(pcb_gtk_common_t *com, pcb_layer_t *txtly, pcb_text_t *
 	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(content_area), vbox, TRUE, TRUE, 0);
 
-	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) > 0) {
+	/* create the preview render */
+	{
 		pcb_gtk_preview_t *p;
-		prv = pcb_gtk_preview_layer_new(com, com->init_drawing_widget, com->preview_expose, lid);
+		prv = pcb_gtk_preview_dialog_new(com, com->init_drawing_widget, com->preview_expose, pcb_stub_draw_fontsel);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;

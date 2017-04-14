@@ -44,7 +44,7 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{"plated-drill",   PCB_LYT_VIRTUAL + 6, PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
 	{"unplated-drill", PCB_LYT_VIRTUAL + 7, PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
 	{"csect",          PCB_LYT_VIRTUAL + 8, PCB_LYT_VIRTUAL | PCB_LYT_CSECT | PCB_LYT_LOGICAL },
-	{"fontsel",        PCB_LYT_VIRTUAL + 9, PCB_LYT_VIRTUAL | PCB_LYT_FONTSEL | PCB_LYT_LOGICAL | PCB_LYT_NOEXPORT },
+	{"dialog",         PCB_LYT_VIRTUAL + 9, PCB_LYT_VIRTUAL | PCB_LYT_DIALOG | PCB_LYT_LOGICAL | PCB_LYT_NOEXPORT },
 	{ NULL, 0 },
 };
 

@@ -56,7 +56,7 @@ typedef enum {
 	PCB_LYT_CSECT    = 0x00100000, /* (virtual) cross-section drawing (displaying layer groups) */
 	PCB_LYT_SUBSTRATE= 0x00200000, /* substrate / insulator */
 	PCB_LYT_MISC     = 0x00400000, /* misc physical layers (e.g. adhesive) */
-	PCB_LYT_FONTSEL  = 0x00800000, /* (virtual) font selector */
+	PCB_LYT_DIALOG   = 0x00800000, /* (virtual) dialog box drawings (e.g. font selector) - not to be interpreted in the board space */
 	PCB_LYT_ANYTHING = 0x00FFFF00, /* MASK: layers consist anything */
 
 	/* misc properties */
@@ -75,7 +75,7 @@ typedef enum {
 	PCB_VLY_PLATED_DRILL,
 	PCB_VLY_UNPLATED_DRILL,
 	PCB_VLY_CSECT,
-	PCB_VLY_FONTSEL,
+	PCB_VLY_DIALOG,
 
 	/* for determining the range, do not use */
 	PCB_VLY_end,

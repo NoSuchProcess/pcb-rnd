@@ -127,6 +127,7 @@ enum {
 	PROP_KIND = 5,
 	PROP_LAYER = 6,
 	PROP_COM = 7,
+	PROP_DIALOG_DRAW = 8  /* for PCB_LYT_DIALOG */
 };
 
 static GObjectClass *ghid_preview_parent_class = NULL;
@@ -205,6 +206,10 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
+	case PROP_DIALOG_DRAW:
+		preview->expose_data.dialog_draw = (void *) g_value_get_pointer(value);
+		break;
+
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
 	}
@@ -288,6 +293,8 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_LAYER,
 																	g_param_spec_long("layer", "", "", -(1UL << 31), (1UL << 31) - 1, -1, G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_DIALOG_DRAW, g_param_spec_pointer("dialog_draw", "", "", G_PARAM_WRITABLE));
 }
 
 static void update_expose_data(pcb_gtk_preview_t * prv)
@@ -471,7 +478,7 @@ GType pcb_gtk_preview_get_type()
 }
 
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-															 pcb_gtk_preview_expose_t expose)
+															 pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw)
 {
 	pcb_gtk_preview_t *preview;
 
@@ -480,7 +487,9 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widg
 																							 "gport", com->gport,
 																							 "init-widget", init_widget,
 																							 "kind", PCB_GTK_PREVIEW_PINOUT,	/* May change in the future */
-																							 "expose", expose, NULL);
+																							 "expose", expose,
+																							 "dialog_draw", dialog_draw,
+																							 NULL);
 
 	preview->init_drawing_widget(GTK_WIDGET(preview), preview->gport);
 
@@ -492,18 +501,18 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawi
 {
 	pcb_gtk_preview_t *preview;
 
-	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose);
+	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, NULL);
 	g_object_set(G_OBJECT(preview), "element-data", element, NULL);
 
 	return GTK_WIDGET(preview);
 }
 
-GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
+static GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer, hid_dialog_draw_t dialog_draw)
 {
 	pcb_gtk_preview_t *prv;
 
-	prv = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose);
+	prv = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, dialog_draw);
 	g_object_set(G_OBJECT(prv), "layer", layer, "width-request", 50, "height-request", 50, NULL);
 
 #warning TODO: maybe expose these through the object API so the caller can set it up?
@@ -536,6 +545,20 @@ GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com, pcb_gtk_init_drawin
 */
 
 	return GTK_WIDGET(prv);
+}
+
+GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
+{
+	return pcb_gtk_preview_generic_new(com, init_widget, expose, layer, NULL);
+}
+
+GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw)
+{
+	pcb_layer_id_t lid;
+	if (pcb_layer_list(PCB_LYT_DIALOG, &lid, 1) > 0)
+		return pcb_gtk_preview_generic_new(com, init_widget, expose, lid, dialog_draw);
+	else
+		return NULL;
 }
 
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *height)

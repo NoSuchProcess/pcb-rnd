@@ -115,7 +115,7 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *h
     \param  expose            drawing event call-back function
  */
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com,
-															 pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose);
+															 pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw);
 
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget for pinout.
     \param  init_widget       virtual function called at initialization
@@ -132,5 +132,7 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com,
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com,
 																		 pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
+
+GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw);
 
 #endif /* PCB_GTK_WT_REVIEW_H */
