@@ -7,6 +7,9 @@
 	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
 	- library window: allow long tags and long location text to split
 	- gtk: Alain: pcb_gtk_config_set_cursor() doesn't work for Config PoV
+	- command dialog:
+		- closing it with ESC key seems to fire the last action. Expected is, doing nothing
+		- when you press the up arrow it doesn't bring back the last command but the first you ever typed
 
 - plugin breakage:
 	- don't force builtin for dependant libs
