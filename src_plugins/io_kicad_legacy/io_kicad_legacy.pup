@@ -3,3 +3,4 @@ $short Kicad's legacy format
 $long Export the design and elements in Kicad's legacy format.
 $state works
 default buildin
+dep io_kicad

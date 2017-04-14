@@ -2,4 +2,4 @@ $class export
 $short breadboard pcb_exporter
 $long Export breadboard
 $state WIP
-default disable
+default disable-all

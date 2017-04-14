@@ -3,3 +3,5 @@ $short the lesstif gui
 $long GUI: the lesstif HID.
 $state works
 default buildin
+dep draw_csect
+dep draw_fontsel

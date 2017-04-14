@@ -3,3 +3,8 @@ $short GTK2 GUI, opengl render
 $long GUI: GTK2 with opengl rendering
 $state works
 default buildin
+dep lib_gtk_common
+dep lib_gtk_config
+dep lib_gtk_hid
+dep draw_csect
+dep draw_fontsel

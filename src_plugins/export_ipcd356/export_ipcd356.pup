@@ -2,4 +2,4 @@ $class export
 $short IPC-D-356 Netlist pcb_exporter
 $long IPC-D-356 Netlist export.
 $state Work-in-progress
-default disable
+default disable-all

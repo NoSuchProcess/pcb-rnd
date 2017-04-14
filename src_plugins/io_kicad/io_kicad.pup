@@ -3,3 +3,6 @@ $short Kicad's s-expr format
 $long Load and save the design and elements in Kicad's s-expression format - this is the new, currently preferred format in Kicad.
 $state works
 default buildin
+
+# for the uniq name lib:
+dep lib_gensexpr

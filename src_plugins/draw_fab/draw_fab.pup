@@ -3,3 +3,6 @@ $short fab layer in some exports
 $long Draw the fab layer (for various exporters).
 $state works
 default buildin
+
+# for drill.[ch]
+dep report

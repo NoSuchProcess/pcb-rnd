@@ -2,4 +2,4 @@ $class lib
 $short #s-expression library
 $long S-expression parser lib
 $state works
-default disable
+default disable-all

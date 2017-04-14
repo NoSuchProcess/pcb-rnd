@@ -2,4 +2,4 @@ $class export
 $short openscad pcb_exporter
 $long Export openscad
 $state WIP
-default disable
+default disable-all
