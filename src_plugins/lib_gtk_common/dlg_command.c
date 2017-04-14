@@ -224,7 +224,7 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	 */
 static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 {
-	ctx->command_combo_box = gtk_combo_box_entry_new_text();
+	ctx->command_combo_box = gtkc_combo_box_new_with_entry();
 	ctx->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ctx->command_combo_box)));
 
 	gtk_entry_set_width_chars(ctx->command_entry, 40);
