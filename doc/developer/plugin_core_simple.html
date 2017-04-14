@@ -8,15 +8,29 @@
 <ul>
 	<li> 1. make up a name for the plugin. There are a few <a href="plugin_naming.html"> conventions. </a> This document will refer to the name as <i>plg</i>, always replace it with your chosen name.
 	<li> 2. cd src_plugins; svn mkdir <i>plg</i>
-	<li> 3. copy Makefile, Plug.tmpasm and README from another, small plugin, for example from the <i>report</i> plugin (the next points will assume you picked this plugin as the source of the copy)
+	<li> 3. copy Makefile, Plug.tmpasm and .pup from another, small plugin, for example from the <i>report</i> plugin (the next points will assume you picked this plugin as the source of the copy)
 	<li> 4. edit Makefile: replace <b>report</b> to <i>plg</i>
-	<li> 5. edit README; there should be short summary about the purpose of the plugin then "#key: value" pairs for statistics:
+	<li> 5. edit <i>plg</i>.pup; there should be short summary about the purpose of the plugin then "#key: value" pairs for statistics:
 		<ul>
-			<li> <i>#state:</i> either <b>works</b> or <b>disabled</b>
-			<li> <i>#lstate:</i> if state is disabled, add a new line <b>#lstate:</b> with a few words on why the plugin is disabled
-			<li> <i>#default:</i> <b>disabled</b> or <b>builtin</b> or <b>plugin</b> (this field might be removed later because of redundancy)
-			<li> <i>#implements:</i> the same as the plugin name prefix (see <a href="plugin_naming.html"> conventions. </a>) or <b>(feature)</b> for feature plugins; it's redundant but is kept for supporting external plugins
+			<li> <i>$class</i> the same as the plugin name prefix (see <a href="plugin_naming.html"> conventions. </a>) or <b>(feature)</b> for feature plugins; it's redundant but is kept for supporting external plugins
+			<li> <i>$short</i> short description - should be less than 32 characters; this shows up in the configure summary
+			<li> <i>$long</i> long description - used for documantation; no length limitation, but must be a single line
+			<li> <i>$state</i> either <b>works</b> or <b>disabled</b>
+			<li> <i>$lstate</i> [optional] a chance to explain why the value of default is what it is; e.g. why a plugin is disabled
+			<li> <i>default</i> <b>disable-all</b> or <b>disable</b> or <b>buildin</b> or <b>plugin</b>
+			<li> <i>dep</i> [optional] a single plugin name on which <i>plg</i> depends; multiple dep lines can be added
+			<li> <i>conflict</i> [optional] a single plugin name on which <i>plg</i> conflicts with; multiple dep lines can be added
 		</ul>
+		Values of default:
+		<ul>
+		<ul>
+			<li> buildin - unless the user requests otherwise, your plugin is linked into the executable
+			<li> plugin - unless the user requests otherwise, your plugin is dynamically linked; not recommended: the policy is to let users explicitly request dynamic linking
+			<li> disable - unless the user requests otherwise, your plugin is not compiled (recommended until the plugin gets some user testing)
+			<li> disable-all - the plugin stays disabled even with ./configure --all=* and the only way to enable it is to excplicitly name it
+		</ul>
+		IMPORTANT: all fields are single-line, do not use semicolon (';') in any of the fields.
+	</ul>
 	<li> 6. edit Plug.tmpasm:
 		<pre>
 put /local/pcb/mod {<i>plg</i>}
@@ -35,22 +49,12 @@ put /local/pcb/mod/LEX  [@ $(PLUGDIR)/<i>plg</i>/barl @]
 			<li> Leave the switch part on the bottom intact.
 		</ul>
 	<li> 7. create your C sources and headers in src_plugins/<i>plg</i>/
-	<li> 8. edit scconfig/plugins.h: copy an existing line and edit it:
-<pre>
-plugin_def("<i>plg</i>",       "<i>short description</i>",       <i>default</i>)
-</pre>
-	Default is one of:
-	<ul>
-		<li> sbuildin - unless the user requests otherwise, your plugin is linked into the executable
-		<li> sdisable - unless the user requests otherwise, your plugin is not compiled (recommended until the plugin gets some user testing)
-		<li> splugin - unless the user requests otherwise, your plugin is dynamically linked; not recommended: the policy is to let users explicitly request dynamic linking
-	</ul>
 	The order of entries in the file is the same as the order in the summary table
 	at the end of ./configure; insert your plugin in the right group!
-	<li> 9. run "make map_plugins" in src/ to get your new plugin on the plugin list
-	<li> 10. run ./configure --buildin-<i>plg</i>
-	<li> 11. run make to see if it compiles and test
-	<li> (12. while developing, you can run make from src_plugins/<i>plg</i> - if
+	<li> 8. run "make map_plugins" in src/ to get your new plugin on the plugin list
+	<li> 9. run ./configure --buildin-<i>plg</i>
+	<li> 10. run make to see if it compiles and test
+	<li> (11. while developing, you can run make from src_plugins/<i>plg</i> - if
 	your plugin is a builtin, it will recompile pcb-rnd. For some of us it's convenient
 	to run make in the same directory where all the source files are.)
 </ul>
