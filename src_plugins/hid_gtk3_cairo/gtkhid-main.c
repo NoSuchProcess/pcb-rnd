@@ -29,7 +29,7 @@ pcb_hid_t gtk3_cairo_hid;
 
 void gtk3_cairo_parse_arguments(int *argc, char ***argv)
 {
-	ghid_gdk_install(&ghidgui->common, NULL);
+	ghid_cairo_install(&ghidgui->common, NULL);
 	gtkhid_parse_arguments(argc, argv);
 }
 
@@ -48,7 +48,7 @@ pcb_uninit_t hid_hid_gtk3_cairo_init()
 	ghid_glue_common_init();
 
 	gtk3_cairo_hid.parse_arguments = gtk3_cairo_parse_arguments;
-	ghid_gdk_install(NULL, &gtk3_cairo_hid);
+	ghid_cairo_install(NULL, &gtk3_cairo_hid);
 
 	gtk3_cairo_hid.name = "gtk3_cairo";
 	gtk3_cairo_hid.description = "Gtk3 - The Gimp Toolkit, with cairo rendering";
