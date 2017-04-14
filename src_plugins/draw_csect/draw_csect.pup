@@ -2,4 +2,4 @@ $class feature
 $short draw cross-section (layers)
 $long Draw cross section and layer map.
 $state WIP
-default buildin
+default disable
