@@ -160,7 +160,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 		if (!strcmp(cmd, s)) {
 			history_list = g_list_remove(history_list, s);
 			history_list = g_list_prepend(history_list, s);
-			gtk_combo_box_remove_text(GTK_COMBO_BOX(ctx->command_combo_box), i);
+			gtkc_combo_box_text_remove(ctx->command_combo_box, i);
 			gtkc_combo_box_text_prepend_text(ctx->command_combo_box, s);
 			return;
 		}
@@ -177,7 +177,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 	if (g_list_length(history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
 		s = (gchar *) g_list_nth_data(history_list, conf_hid_gtk.plugins.hid_gtk.history_size);
 		history_list = g_list_remove(history_list, s);
-		gtk_combo_box_remove_text(GTK_COMBO_BOX(ctx->command_combo_box), conf_hid_gtk.plugins.hid_gtk.history_size);
+		gtkc_combo_box_text_remove(ctx->command_combo_box, conf_hid_gtk.plugins.hid_gtk.history_size);
 		g_free(s);
 	}
 }
