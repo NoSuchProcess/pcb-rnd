@@ -1,4 +1,5 @@
 all: FORCE
+	cd src_3rd/puplug/util && $(MAKE)
 	cd src && $(MAKE)
 	cd util && $(MAKE)
 	cd pcblib && $(MAKE)
@@ -14,6 +15,7 @@ clean: FORCE
 #	cd doc && $(MAKE) clean
 	cd tests && $(MAKE) clean
 	cd src_3rd/sphash && $(MAKE) clean
+	cd src_3rd/puplug/util && $(MAKE) clean
 
 distclean: FORCE
 	$(MAKE) clean ; true
