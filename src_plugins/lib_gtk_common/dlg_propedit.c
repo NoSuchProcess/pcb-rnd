@@ -292,25 +292,10 @@ static void do_apply_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 
 static pcb_board_t preview_pcb;
 
-static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
+static void prop_preview_init(void)
 {
-	GtkWidget *area = gtk_drawing_area_new();
-	pcb_board_t *old_pcb;
-	int n, zoom1, fx, fy;
-	pcb_coord_t cx, cy;
-
-/*
-	void *v;
-	v = pcb_poly_new_from_rectangle(PCB->Data->Layer+1,
-		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
-		PCB_MIL_TO_COORD(1500), PCB_MIL_TO_COORD(1500),
-		pcb_flag_make(PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY));
-	printf("poly2=%p -----------\n", (void *)v);
-	DrawPolygon(PCB->Data->Layer+1, v);
-	pcb_draw();
-	gtk_drawing_area_size(GTK_DRAWING_AREA(area), 300, 400);
-	return;
-*/
+	pcb_polygon_t *v;
+	pcb_layer_id_t n;
 
 	memset(&preview_pcb, 0, sizeof(preview_pcb));
 	preview_pcb.Data = pcb_buffer_new(&preview_pcb);
@@ -348,16 +333,11 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 	pcb_text_new(preview_pcb.Data->Layer + 0, pcb_font(PCB, 0, 1),
 							 PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
 
-	{
-		pcb_polygon_t *v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer,
+	v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer,
 																									 PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
 																									 PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
 																									 pcb_flag_make(PCB_FLAG_CLEARPOLY));
-		pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer, v);
-	}
-
-	old_pcb = PCB;
-	PCB = &preview_pcb;
+	pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer, v);
 
 #if 0
 	zoom1 = 1;
@@ -388,15 +368,16 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 		gdk_draw_line(pm, gc, x-1, y-1, -1, -1);
 	}
 */
-
-	PCB = old_pcb;
-
-	return area;
 }
 
 static void prop_preview_draw(pcb_hid_gc_t gc)
 {
+	pcb_board_t *old_pcb;
 	printf("prop prev expose\n");
+	old_pcb = PCB;
+	PCB = &preview_pcb;
+
+	PCB = old_pcb;
 }
 
 
@@ -517,6 +498,7 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 
 /***** RIGHT *****/
 /* preview */
+	prop_preview_init();
 	prv = pcb_gtk_preview_dialog_new(com, com->init_drawing_widget, com->preview_expose, prop_preview_draw);
 
 	p = (pcb_gtk_preview_t *) prv;
