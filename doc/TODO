@@ -51,14 +51,14 @@ CLEANUP #5
 	- multiple DRC windows
 	- io infra for save incompatibility note with DRC list
 	- import sch shouldn't select elements to be removed but put them on a drc list
-	- display number of items
-	- export to file
+	- display number of items at top of drc window
+	- export to file 
 - hid_gtk? bug: moving with cursor keys snapping to a via - can't leave with cursor keys!
 - io_pcb: new, optional "layer tag" field in mainline's file format
 - inconsistencies in UI/terminology:
 	- allow clearance to be set to 0 in the route style [report: miloh]
 	- similar thing on hole size [report: miloh]
-	- report dialog should use the same terminology as route style dialog [report: miloh]
+	- report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
 - GTK layers [report: Ade]:
 	- add a left-click context menu for the layer selector widget
 	- move the layer+selected color change from the preferecnes menu there (but this should probably live in gui-config.h)
