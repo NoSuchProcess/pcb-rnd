@@ -784,7 +784,7 @@ static void dialog_cb(GtkDialog * dlg, gint response_id, gpointer * data)
 	switch (response_id) {
 	case GTK_RESPONSE_APPLY:
 		script = gtk_entry_get_text(GTK_ENTRY(sdlg.expr));
-		act = gtk_combo_box_get_active_text(GTK_COMBO_BOX(sdlg.action));
+		act = gtkc_combo_box_text_get_active_text(sdlg.action);
 		pcb_hid_actionl("query", act, script, NULL);
 		break;
 	case GTK_RESPONSE_CLOSE:

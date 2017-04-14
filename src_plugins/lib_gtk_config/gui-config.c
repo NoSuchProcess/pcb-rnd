@@ -2399,7 +2399,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 		break;
 	case CFN_UNIT:
 		{
-			char *s = gtk_combo_box_get_active_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit));
+			char *s = gtkc_combo_box_text_get_active_text(auto_tab_widgets.edit_unit);
 			strcpy(buff, s);
 			new_val = buff;
 			g_free(s);
