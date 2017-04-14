@@ -74,7 +74,6 @@ pcb_bool pcb_draw_doing_assy = pcb_false;
  * some local prototypes
  */
 static void DrawEverything(const pcb_box_t *);
-static void DrawPPV(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
 static void DrawLayerGroup(int, const pcb_box_t *);
 static void DrawMask(int side, const pcb_box_t *);
 static void DrawRats(const pcb_box_t *);
@@ -240,7 +239,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	/* Draw pins, pads, vias below silk */
 	if (pcb_gui->gui)
-		DrawPPV(PCB_SWAP_IDENT ? solder : component, drawn_area);
+		pcb_draw_ppv(PCB_SWAP_IDENT ? solder : component, drawn_area);
 	else if (!pcb_gui->holes_after)
 		DrawEverything_holes(drawn_area);
 
@@ -338,7 +337,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
  * Draws pins pads and vias - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
  */
-static void DrawPPV(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
+void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 {
 	int side;
 	unsigned int gflg = pcb_layergrp_flags(PCB, group);
@@ -547,7 +546,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 		rv = 1;
 
 	if (rv && !pcb_gui->gui)
-		DrawPPV(group, drawn_area);
+		pcb_draw_ppv(group, drawn_area);
 }
 
 void pcb_erase_obj(int type, void *lptr, void *ptr)

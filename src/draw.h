@@ -81,6 +81,7 @@ void pcb_redraw(void);
 void pcb_draw_obj(int, void *, void *);
 void pcb_draw_layer(pcb_layer_t *, const pcb_box_t *);
 void pcb_erase_obj(int, void *, void *);
+void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
 
 /*#define PCB_BBOX_DEBUG*/
 
