@@ -193,7 +193,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 		}
 		else {
 			/* NORMAL ITEM */
-			GtkWidget *item = gtk_menu_item_new_gschem(menu_label, accel);
+			GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel);
 			accel = NULL;
 			gtk_menu_shell_append(shell, item);
 			sub_res->user_data = handle_alloc(item, item);
