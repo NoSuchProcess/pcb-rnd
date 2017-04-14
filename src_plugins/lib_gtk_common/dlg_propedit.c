@@ -302,7 +302,7 @@ static void prop_preview_init(void)
 
 	memset(&preview_pcb, 0, sizeof(preview_pcb));
 	preview_pcb.Data = pcb_buffer_new(&preview_pcb);
-	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(2000);
+	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(1000);
 	pcb_colors_from_settings(&preview_pcb);
 	pcb_font_create_default(&preview_pcb);
 	preview_pcb.ViaOn = 1;
@@ -511,10 +511,11 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 	prv = pcb_gtk_preview_dialog_new(com, com->init_drawing_widget, com->preview_expose, prop_preview_draw);
 
 	p = (pcb_gtk_preview_t *) prv;
-	p->expose_data.view.X1 = 0;
-	p->expose_data.view.Y1 = 0;
-	p->expose_data.view.X2 = PCB_MIL_TO_COORD(1500);
-	p->expose_data.view.Y2 = PCB_MIL_TO_COORD(1500);
+	p->view.x0 = PCB_MIL_TO_COORD(800);
+	p->view.y0 = PCB_MIL_TO_COORD(800);
+	p->view.coord_per_px = PCB_MIL_TO_COORD(2.5);
+	pcb_gtk_zoom_post(&p->view);
+
 /*	p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;*/
 	gtk_widget_set_size_request(prv, 200, 200);
 
