@@ -40,6 +40,7 @@
 #include "buffer.h"
 
 #include "bu_box.h"
+#include "wt_preview.h"
 #include "compat.h"
 
 static char *str_sub(const char *val, char sepi, char sepo)
@@ -289,15 +290,6 @@ static void do_apply_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 	g_free(prop);
 }
 
-/* FIXME: GTK3 incompatible */
-static GdkPixmap *pm;
-static gboolean preview_expose_event(GtkWidget * w, GdkEventExpose * event)
-{
-	gdk_draw_drawable(w->window, w->style->fg_gc[gtk_widget_get_state(w)],
-										pm, event->area.x, event->area.y, event->area.x, event->area.y, event->area.width, event->area.height);
-	return FALSE;
-}
-
 static pcb_board_t preview_pcb;
 
 static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
@@ -367,6 +359,7 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 	old_pcb = PCB;
 	PCB = &preview_pcb;
 
+#if 0
 	zoom1 = 1;
 	cx = PCB_MIL_TO_COORD(1000 + 300 / 2 * zoom1);
 	cy = PCB_MIL_TO_COORD(1000 + 400 / 2 * zoom1);
@@ -377,6 +370,7 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 	pm = dlg->com->render_pixmap(cx, cy, 40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(dlg->com->top_window->window)));
 	conf_setf(CFR_DESIGN, "editor/view/flip_x", -1, "%d", fx, POL_OVERWRITE);
 	conf_setf(CFR_DESIGN, "editor/view/flip_y", -1, "%d", fy, POL_OVERWRITE);
+#endif
 
 /*
 	{
@@ -397,9 +391,14 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 
 	PCB = old_pcb;
 
-	g_signal_connect(G_OBJECT(area), "expose-event", G_CALLBACK(preview_expose_event), pm);
 	return area;
 }
+
+static void prop_preview_draw(pcb_hid_gc_t gc)
+{
+	printf("prop prev expose\n");
+}
+
 
 /*static void sort_by_name(GtkTreeModel *liststore)
 {
@@ -452,9 +451,11 @@ static void make_sortable(GtkTreeModel * liststore)
 GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_common_t *com)
 {
 	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label;
-	GtkWidget *hbx, *dummy, *box_val_edit, *preview;
+	GtkWidget *hbx, *dummy, *box_val_edit, *prv;
 	GtkCellRenderer *renderer;
 	GtkWidget *content_area;
+	pcb_gtk_preview_t *p;
+
 
 	dlg->last_add_iter_valid = 0;
 	dlg->com = com;
@@ -516,8 +517,13 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 
 /***** RIGHT *****/
 /* preview */
-	preview = preview_init(dlg);
-	gtk_box_pack_start(GTK_BOX(vbox_edit), preview, TRUE, TRUE, 4);
+	prv = pcb_gtk_preview_dialog_new(com, com->init_drawing_widget, com->preview_expose, prop_preview_draw);
+
+	p = (pcb_gtk_preview_t *) prv;
+/*	p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;*/
+	gtk_widget_set_size_request(prv, 200, 200);
+
+	gtk_box_pack_start(GTK_BOX(vbox_edit), prv, TRUE, TRUE, 4);
 
 	label = gtk_label_new("Change property of all objects");
 	gtk_box_pack_start(GTK_BOX(vbox_edit), label, FALSE, TRUE, 4);
