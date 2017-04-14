@@ -169,8 +169,12 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 		}
 	}
 	else {
-		if ((strcmp(st_plugin, sbuildin) == 0) || (strcmp(st_plugin, splugin) == 0))
+		if (strcmp(st_plugin, sbuildin) == 0)
 			put(buff, sbuildin);
+		else if (strcmp(st_plugin, splugin) == 0) {
+			if ((st_deps_on == NULL) || (strcmp(st_deps_on, "disable") == 0))
+				put(buff, splugin);
+		}
 	}
 }
 
