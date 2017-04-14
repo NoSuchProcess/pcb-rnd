@@ -227,8 +227,8 @@ static gboolean gschem_accel_label_expose_event(GtkWidget * widget, GdkEventExpo
 				pango_layout_set_width(label_layout, pango_layout_get_width(label_layout)
 															 - ac_width * PANGO_SCALE);
 
-			if (GTK_WIDGET_CLASS(gschem_accel_label_parent_class)->expose_event)
-				GTK_WIDGET_CLASS(gschem_accel_label_parent_class)->expose_event(widget, event);
+			if (PCB_GTK_EXPOSE_EVENT(GTK_WIDGET_CLASS(gschem_accel_label_parent_class)))
+				PCB_GTK_EXPOSE_EVENT(GTK_WIDGET_CLASS(gschem_accel_label_parent_class))(widget, event);
 			if (direction == GTK_TEXT_DIR_RTL)
 				widget->allocation.x -= ac_width;
 			widget->allocation.width += ac_width;
@@ -254,8 +254,8 @@ static gboolean gschem_accel_label_expose_event(GtkWidget * widget, GdkEventExpo
 			g_object_unref(accel_layout);
 		}
 		else {
-			if (GTK_WIDGET_CLASS(gschem_accel_label_parent_class)->expose_event)
-				GTK_WIDGET_CLASS(gschem_accel_label_parent_class)->expose_event(widget, event);
+			if (PCB_GTK_EXPOSE_EVENT(GTK_WIDGET_CLASS(gschem_accel_label_parent_class)))
+				PCB_GTK_EXPOSE_EVENT(GTK_WIDGET_CLASS(gschem_accel_label_parent_class))(widget, event);
 		}
 	}
 
@@ -310,7 +310,7 @@ static void gschem_accel_label_class_init(GschemAccelLabelClass * class)
 	gobject_class->get_property = gschem_accel_label_get_property;
 
 	widget_class->size_request = gschem_accel_label_size_request;
-	PCB_GTK_EXPOSE_EVENT(widget_class, gschem_accel_label_expose_event);
+	PCB_GTK_EXPOSE_EVENT(widget_class) = gschem_accel_label_expose_event;
 
 	g_object_class_install_property(gobject_class,
 																	PROP_ACCEL_CLOSURE,

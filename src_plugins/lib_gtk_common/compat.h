@@ -46,7 +46,7 @@ static inline GtkWidget *gtkc_combo_box_text_new(void)
 	return gtk_combo_box_text_new();
 }
 
-#define PCB_GTK_EXPOSE_EVENT(x,y) (x->draw = y)
+#define PCB_GTK_EXPOSE_EVENT(x) (x->draw)
 #define PCB_GTK_EXPOSE_STRUCT cairo_t
 
 #else
@@ -69,7 +69,7 @@ static inline GtkWidget *gtkc_combo_box_text_new(void)
 	return gtk_combo_box_new_text();
 }
 
-#define PCB_GTK_EXPOSE_EVENT(x,y) (x->expose_event = y)
+#define PCB_GTK_EXPOSE_EVENT(x) (x->expose_event)
 #define PCB_GTK_EXPOSE_STRUCT GdkEventExpose
 
 #endif
