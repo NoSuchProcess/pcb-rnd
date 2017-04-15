@@ -65,6 +65,8 @@ void pcb_hid_uninit(void)
 	}
 	free(pcb_hid_list);
 
+	pup_uninit(&pcb_pup);
+
 	pcb_hid_actions_uninit();
 	pcb_hid_attributes_uninit();
 

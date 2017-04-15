@@ -251,7 +251,6 @@ void pcb_main_uninit(void)
 	free(PCB);
 	PCB = NULL;
 
-#warning puplug TODO: call here: pcb_plugins_uninit();
 	pcb_hid_uninit();
 	pcb_text_uninit();
 	pcb_events_uninit();
