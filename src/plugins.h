@@ -26,33 +26,10 @@
 #ifndef PCB_RND_PLUGINS_H
 #define PCB_RND_PLUGINS_H
 
-typedef struct pcb_plugin_info_s pcb_plugin_info_t;
+#include <puplug/puplug.h>
+#include <puplug/error.h>
 
-typedef void (*pcb_uninit_t)(void);
-
-struct pcb_plugin_info_s {
-	char *name;
-	char *path;
-	void *handle;
-	int dynamic_loaded;
-	unsigned int hash;
-	pcb_uninit_t uninit;
-	pcb_plugin_info_t *next;
-};
-
-extern pcb_plugin_info_t *plugins;
-
-/* Init the plugin system */
-void pcb_plugins_init(void);
-
-/* Uninit each plugin then uninit the plugin system */
-void pcb_plugins_uninit(void);
-
-/* Register a new plugin (or buildin) */
-pcb_plugin_info_t *pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic, pcb_uninit_t uninit);
-
-/* Find a plugin by name */
-pcb_plugin_info_t *plugin_find(const char *name);
+extern pup_context_t pcb_pup;
 
 /* Hook based plugin generics; plugins that implement a common API should use
    HOOK_REGISTER with an api struct. The core should run the plugins using

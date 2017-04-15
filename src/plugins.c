@@ -33,53 +33,7 @@
 #include "compat_misc.h"
 #include "hid.h"
 
-pcb_plugin_info_t *plugins = NULL;
-
-pcb_plugin_info_t *plugin_find(const char *name)
-{
-	pcb_plugin_info_t *i;
-	for(i = plugins; i != NULL; i = i->next)
-		if (strcmp(i->name, name) == 0)
-			return i;
-	return NULL;
-}
-
-pcb_plugin_info_t *pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
-{
-	pcb_plugin_info_t *i = malloc(sizeof(pcb_plugin_info_t));
-
-	i->name = pcb_strdup(name);
-	i->path = pcb_strdup(path);
-	i->handle = handle;
-	i->dynamic_loaded = dynamic_loaded;
-	i->uninit = uninit;
-	i->hash = 0;
-
-	i->next = plugins;
-	plugins = i;
-	return i;
-}
-
-void pcb_plugins_init(void)
-{
-}
-
-
-void pcb_plugins_uninit(void)
-{
-	pcb_plugin_info_t *i, *next;
-	for(i = plugins; i != NULL; i = next) {
-		next = i->next;
-		free(i->name);
-		free(i->path);
-		if (i->uninit != NULL)
-			i->uninit();
-		free(i);
-	}
-	plugins = NULL;
-}
-
-
+pup_context_t pcb_pup;
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
@@ -88,6 +42,8 @@ static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 
 static int pcb_act_ManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+#warning puplug TODO: rewrite for puplug
+#if 0
 	pcb_plugin_info_t *i;
 	int nump = 0, numb = 0;
 	gds_t str;
@@ -131,6 +87,7 @@ static int pcb_act_ManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb
 	gds_append_str(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
 	pcb_gui->report_dialog("Manage plugins", str.array);
 	gds_uninit(&str);
+#endif
 	return 0;
 }
 

@@ -168,6 +168,11 @@ put /local/pcb/OBJS [@
 	../src_3rd/qparse/qparse.o
 @]
 
+put /local/pcb/LIBS [@
+	../src_3rd/puplug/libpuplug.a
+@]
+
+
 # We do not compile these in the executable but we need rules for these for utils
 put /local/pcb/OBJS_UTIL [@
 	../src_3rd/genvector/vts0.o
@@ -268,6 +273,7 @@ CC=@cc/cc@
 CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
+PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
 
 all:
 	$(MAKE) revcheck
@@ -286,6 +292,13 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS)
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
 	$(CC) -o pcb-rnd$(EXE) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
+
+buildin.c: $(PLUGDIR)/.builtin.pups
+	cd $(PLUGDIR) && $(PUPLUG) buildin.c "-" < $(PLUGDIR)/.builtin.pups > $(ROOT)/src/buildin.c
+
+buildin.h: $(PLUGDIR)/.builtin.pups
+	$(PUPLUG) buildin.h > buildin.h
+
 @]
 
 print [@

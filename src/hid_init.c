@@ -55,79 +55,6 @@ static unsigned int plugin_hash(const char *fn)
 	return h;
 }
 
-/* dirname must be strdup()'d on the caller's side! */
-static int hid_load_dir(char *dirname)
-{
-	DIR *dir;
-	struct dirent *de;
-	int count = 0;
-
-	dir = opendir(dirname);
-	if (!dir) {
-		hid_append_dir(dirname, 0);
-		return 0;
-	}
-	while ((de = readdir(dir)) != NULL) {
-		unsigned int phash;
-		void *sym;
-		pcb_uninit_t (*symv) ();
-		pcb_uninit_t uninit;
-		void *so;
-		char *basename, *path, *symname;
-		struct stat st;
-
-		basename = pcb_strdup(de->d_name);
-		if (strlen(basename) > 3 && pcb_strcasecmp(basename + strlen(basename) - 3, ".so") == 0)
-			basename[strlen(basename) - 3] = 0;
-		else if (strlen(basename) > 4 && pcb_strcasecmp(basename + strlen(basename) - 4, ".dll") == 0)
-			basename[strlen(basename) - 4] = 0;
-		path = pcb_concat(dirname, PCB_DIR_SEPARATOR_S, de->d_name, NULL);
-
-		if (stat(path, &st) == 0 && (
-/* mingw and win32 do not support S_IXGRP or S_IXOTH */
-#if defined(S_IXGRP)
-																	(st.st_mode & S_IXGRP) ||
-#endif
-#if defined(S_IXOTH)
-																	(st.st_mode & S_IXOTH) ||
-#endif
-																	(st.st_mode & S_IXUSR))
-				&& S_ISREG(st.st_mode)) {
-			if ((so = dlopen(path, RTLD_NOW | RTLD_GLOBAL)) == NULL) {
-				fprintf(stderr, "dl_error: %s\n", dlerror());
-			}
-			else {
-				pcb_plugin_info_t *inf = plugin_find(basename);
-				phash = plugin_hash(path);
-				if (inf == NULL) {
-					symname = pcb_concat("hid_", basename, "_init", NULL);
-					if ((sym = dlsym(so, symname)) != NULL) {
-						symv = (pcb_uninit_t (*)())pcb_cast_d2f(sym);
-						uninit = symv();
-					}
-					else if ((sym = dlsym(so, "pcb_plugin_init")) != NULL) {
-						symv = (pcb_uninit_t (*)()) pcb_cast_d2f(sym);
-						uninit = symv();
-					}
-					else
-						uninit = NULL;
-					inf = pcb_plugin_register(basename, path, so, 1, uninit);
-					inf->hash = phash;
-					count++;
-					free(symname);
-				}
-				else if (phash != inf->hash) /* warn only if this is not the very same file in yet-another-copy */
-					pcb_message(PCB_MSG_ERROR, "Can't load %s because it'd provide plugin %s that is already loaded from %s\n", path, basename, (*inf->path == '<' ? "<buildin>" : inf->path));
-			}
-		}
-		free(basename);
-		free(path);
-	}
-	closedir(dir);
-	hid_append_dir(dirname, count);
-	return count;
-}
-
 void pcb_hid_init()
 {
 	int found;
@@ -136,6 +63,8 @@ void pcb_hid_init()
 	/* Setup a "nogui" default HID */
 	pcb_gui = pcb_hid_nogui_get_hid();
 
+#warning puplug TODO: rewrite this
+#if 0
 #warning TODO: make this configurable
 	found = hid_load_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
@@ -153,6 +82,7 @@ void pcb_hid_init()
 	}
 	hid_load_dir(pcb_concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
 	hid_load_dir(pcb_concat("plugins", NULL));
+#endif
 }
 
 void pcb_hid_uninit(void)

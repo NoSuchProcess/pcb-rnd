@@ -247,11 +247,14 @@ static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
 
 static const char pcb_acth_DumpPlugins[] = "Print plugins loaded.";
 
+#warning puplug TODO: rewrite this and move
 int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+#if 0
 	pcb_plugin_info_t *i;
 	for(i = plugins; i != NULL; i = i->next)
 		printf("%s\t%s\n", i->name, i->path);
+#endif
 	return 0;
 }
 
@@ -259,12 +262,14 @@ int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
 
 static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories and the number of plugins loaded from each.";
-
+#warning puplug TODO: rewrite this and move
 int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+#if 0
 	const pcb_plugin_dir_t *d;
 	for(d = pcb_plugin_dir_first; d != NULL; d = d->next)
 		printf("%s\t%d\n", d->path, d->num_plugins);
+#endif
 	return 0;
 }
 

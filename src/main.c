@@ -251,7 +251,7 @@ void pcb_main_uninit(void)
 	free(PCB);
 	PCB = NULL;
 
-	pcb_plugins_uninit();
+#warning puplug TODO: call here: pcb_plugins_uninit();
 	pcb_hid_uninit();
 	pcb_text_uninit();
 	pcb_events_uninit();
@@ -425,9 +425,14 @@ int main(int argc, char *argv[])
 	pcb_events_init();
 	pcb_text_init();
 
-	pcb_buildin_init();
+	pup_init(&pcb_pup);
+	pcb_pup.error_stack_enable = 1;
+	pup_buildin_load(&pcb_pup, pup_buildins);
+	pup_autoload_dir(&pcb_pup, NULL, NULL);
+
 	pcb_hid_init();
-	pcb_plugins_init();
+
+#warning puplug TODO: call here: pcb_plugins_init();
 
 	{ /* Now that plugins are already initialized, apply plugin config items */
 		int n;
