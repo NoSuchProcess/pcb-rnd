@@ -55,28 +55,26 @@ static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 
 static int pcb_act_ManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-#warning puplug TODO: rewrite for puplug
-#if 0
-	pcb_plugin_info_t *i;
+	pup_plugin_t *p;
 	int nump = 0, numb = 0;
 	gds_t str;
 
 	gds_init(&str);
 
-	for (i = plugins; i != NULL; i = i->next)
-		if (i->dynamic_loaded)
-			nump++;
-		else
+	for (p = pcb_pup.plugins; p != NULL; p = p->next)
+		if (p->flags & PUP_FLG_STATIC)
 			numb++;
+		else
+			nump++;
 
 	gds_append_str(&str, "Plugins loaded:\n");
 	if (nump > 0) {
-		for (i = plugins; i != NULL; i = i->next) {
-			if (i->dynamic_loaded) {
+		for (p = pcb_pup.plugins; p != NULL; p = p->next) {
+			if (!(p->flags & PUP_FLG_STATIC)) {
 				gds_append(&str, ' ');
-				gds_append_str(&str, i->name);
+				gds_append_str(&str, p->name);
 				gds_append(&str, ' ');
-				gds_append_str(&str, i->path);
+				gds_append_str(&str, p->path);
 				gds_append(&str, '\n');
 			}
 		}
@@ -86,10 +84,10 @@ static int pcb_act_ManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb
 
 	gds_append_str(&str, "\n\nBuildins:\n");
 	if (numb > 0) {
-		for (i = plugins; i != NULL; i = i->next) {
-			if (!i->dynamic_loaded) {
+		for (p = pcb_pup.plugins; p != NULL; p = p->next) {
+			if (p->flags & PUP_FLG_STATIC) {
 				gds_append(&str, ' ');
-				gds_append_str(&str, i->name);
+				gds_append_str(&str, p->name);
 				gds_append(&str, '\n');
 			}
 		}
@@ -100,7 +98,6 @@ static int pcb_act_ManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb
 	gds_append_str(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
 	pcb_gui->report_dialog("Manage plugins", str.array);
 	gds_uninit(&str);
-#endif
 	return 0;
 }
 
