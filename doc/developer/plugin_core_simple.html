@@ -20,6 +20,7 @@
 			<li> <i>default</i> <b>disable-all</b> or <b>disable</b> or <b>buildin</b> or <b>plugin</b>
 			<li> <i>dep</i> [optional] a single plugin name on which <i>plg</i> depends; multiple dep lines can be added
 			<li> <i>conflict</i> [optional] a single plugin name on which <i>plg</i> conflicts with; multiple dep lines can be added
+			<li> <i>autoload</i> [optional] when 1, the plugin is automatically loaded and initialized (when not disabled); do not set this on libs and other code that are accessible only as a dependency of other plugins; set this 1 on HID, io, import, export, feature plugins
 		</ul>
 		Values of default:
 		<ul>
