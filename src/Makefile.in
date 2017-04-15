@@ -167,10 +167,11 @@ put /local/pcb/OBJS [@
 	../src_3rd/qparse/qparse.o
 @]
 
-put /local/pcb/LIBS [@
+put /local/pcb/LIBS_3RD [@
 	../src_3rd/puplug/libpuplug.a
 @]
 
+put /local/pcb/LIBS /local/pcb/LIBS_3RD
 
 # We do not compile these in the executable but we need rules for these for utils
 put /local/pcb/OBJS_UTIL [@
@@ -229,6 +230,7 @@ uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
+uniq /local/pcb/LIBS_3RD
 uniq /local/pcb/ACTION_REG_SRC
 uniq /local/pcb/EXEDEPS
 uniq /local/pcb/CLEANFILES
@@ -265,6 +267,7 @@ CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
 C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS=@/local/pcb/LIBS@ -lm @?/target/libs/ldl@
+LIBS_3RD=@/local/pcb/LIBS_3RD@
 EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
@@ -285,7 +288,7 @@ revcheck:
 
 all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
-pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS)
+pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LDFLAGS) $(LIBS)
 
 
