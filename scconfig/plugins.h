@@ -98,6 +98,7 @@ plugin_def("hid_srv_ws",       "websocket server HID",            sdisable, 0)
 
 
 plugin_dep("draw_fab", "report")
+plugin_dep("import_mentor_sch", "lib_gensexpr")
 plugin_dep("export_lpr", "export_ps")
 plugin_dep("hid_gtk2_gl", "lib_gtk_common")
 plugin_dep("hid_gtk2_gl", "lib_gtk_config")
