@@ -438,8 +438,6 @@ int main(int argc, char *argv[])
 
 	pcb_hid_init();
 
-#warning puplug TODO: call here: pcb_plugins_init();
-
 	{ /* Now that plugins are already initialized, apply plugin config items */
 		int n;
 		for(n = 0; n < vtptr_len(&plugin_cli_conf); n++) {
