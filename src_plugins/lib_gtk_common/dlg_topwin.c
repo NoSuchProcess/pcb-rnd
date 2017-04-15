@@ -505,7 +505,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	gtk_widget_show_all(tw->com->top_window);
 	tw->com->pack_mode_buttons();
-	gdk_window_set_back_pixmap(gtk_widget_get_window(tw->drawing_area), NULL, FALSE);
 
 	ghid_fullscreen_apply(tw);
 	tw->active = 1;
