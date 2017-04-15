@@ -33,7 +33,7 @@ void gtk2_gl_parse_arguments(int *argc, char ***argv)
 	gtkhid_parse_arguments(argc, argv);
 }
 
-int pplg_check_ver_gtk2_gl(int ver_needed) { return 0; }
+int pplg_check_ver_hid_gtk2_gl(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_gtk2_gl(void)
 {
