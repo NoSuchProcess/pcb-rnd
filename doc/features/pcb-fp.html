@@ -29,7 +29,7 @@ Pcb-fp is an effort to clean up the footprint situation:
 	<li> parametric footprints: replace m4 with a generic, language-independent footprint generator framework
 	<ul>
 		<li> implement libpcb_fp, which centralizes searching and loading footprints
-		<li> fork gsch2pcb to gsch2pcb-rnd that uses libpcb_fp (and does not have any m4 references hardwired)
+		<li> fork gsch2pcb to gsch2pcb-rnd that does not have any m4 references hardwired
 		<li> fork gnet_gsch2pcb.scm (the gnetlist backend) to remove m4 heuristics
 	</ul>
 </ul>

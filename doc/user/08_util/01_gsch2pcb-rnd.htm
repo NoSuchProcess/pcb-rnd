@@ -28,14 +28,6 @@ one of these by name, using the -m command line argument (e.g.
 		<td> method name
 		<td> description
 	<tr>
-		<td> pcb
-		<td> The classic approach: load the existing extract elements from
-		     the .sch file, load the .pcb file, compare element lists, load
-		     footprint libraries and create .new.pcb and .net and .cmd and let
-		     the user handle the rest. Does <b>not</b> work with anything else
-		     than the .pcb format. This method is <b>deprecated</b> and is
-		     provided only for compatibility with some old workflows.
-	<tr>
 		<td> import
 		<td> Runs the same gnetlist backend as the import_sch plugin. A single
 		     action command file generated with .cmd suffix. When executed
@@ -49,6 +41,10 @@ one of these by name, using the -m command line argument (e.g.
 		     separate .net netlist file that can be imported the same way as the
 		     .net of the pcb method. Pro: the user can update elements-only or
 		     nets-only. Con: requires two user actions to get a full impoty.
+	<tr>
+		<td> <strike>pcb</strike>
+		<td> The classic approach that tried to edit the .pcb file.
+		     <b>No longer supported</b>.
 </table>
 </body>
 </html>
