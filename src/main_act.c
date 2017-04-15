@@ -245,16 +245,26 @@ int pcb_act_PrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 /* --------------------------------------------------------------------------- */
 static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
 
-static const char pcb_acth_DumpPlugins[] = "Print plugins loaded.";
+static const char pcb_acth_DumpPlugins[] = "Print plugins loaded in a format digestable by scripts.";
 
-#warning puplug TODO: rewrite this and move
 int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-#if 0
-	pcb_plugin_info_t *i;
-	for(i = plugins; i != NULL; i = i->next)
-		printf("%s\t%s\n", i->name, i->path);
-#endif
+	pup_plugin_t *p;
+	const pup_buildin_t **bu;
+	int n;
+
+	printf("#state\tname\tbuildin\tautoload\trefco\tloaded_from\n");
+
+	for(p = pcb_pup.plugins; p != NULL; p = p->next)
+		printf("loaded\t%s\t%d\t%d\t%d\t%s\n",
+			p->name,
+			!!(p->flags & PUP_FLG_STATIC), !!(p->flags & PUP_FLG_AUTOLOAD), p->references,
+			(p->path == NULL ? "<builtin>" : p->path));
+
+	for(n = 0, bu = pcb_pup.bu; n < pcb_pup.bu_used; n++, bu++)
+		if (pup_lookup(&pcb_pup, (*bu)->name) == NULL)
+			printf("unloaded buildin\t%s\t1\t0\t0\t<builtin>\n", (*bu)->name);
+
 	return 0;
 }
 
@@ -262,15 +272,15 @@ int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
 
 static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories and the number of plugins loaded from each.";
-#warning puplug TODO: rewrite this and move
+
 int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 #if 0
 	const pcb_plugin_dir_t *d;
 	for(d = pcb_plugin_dir_first; d != NULL; d = d->next)
 		printf("%s\t%d\n", d->path, d->num_plugins);
-#endif
 	return 0;
+#endif
 }
 
 
