@@ -7,6 +7,8 @@
 
 append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pcb/mod@_init();@] {\n}
 
+append /local/pcb/buildin_pups [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
+
 append /local/pcb/buildin_init_code    [@
 	uninit_func = hid_@/local/pcb/mod@_init();
 	pcb_plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0, uninit_func);
