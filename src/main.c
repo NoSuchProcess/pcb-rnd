@@ -436,6 +436,11 @@ int main(int argc, char *argv[])
 	pup_err_stack_process_str(&pcb_pup, print_pup_err);
 
 	pcb_hid_init();
+	for(cs = pcb_pup_paths; *cs != NULL; cs++) {
+		pcb_message(PCB_MSG_DEBUG, "Loading plugins from '%s'\n", *cs);
+		pup_autoload_dir(&pcb_pup, *cs, pcb_pup_paths);
+	}
+	pup_err_stack_process_str(&pcb_pup, print_pup_err);
 
 	{ /* Now that plugins are already initialized, apply plugin config items */
 		int n;
