@@ -364,7 +364,13 @@ static void xy_parse_arguments(int *argc, char ***argv)
 
 pcb_hid_t xy_hid;
 
-pcb_uninit_t hid_export_xy_init()
+int pplg_check_ver_export_xy(int ver_needed) { return 0; }
+
+void pplg_uninit_export_xy(void)
+{
+}
+
+int pplg_init_export_xy(void)
 {
 	memset(&xy_hid, 0, sizeof(pcb_hid_t));
 
@@ -382,5 +388,5 @@ pcb_uninit_t hid_export_xy_init()
 	xy_hid.usage = xy_usage;
 
 	pcb_hid_register_hid(&xy_hid);
-	return NULL;
+	return 0;
 }

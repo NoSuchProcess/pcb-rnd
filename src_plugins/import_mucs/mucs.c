@@ -147,14 +147,16 @@ pcb_hid_action_t mucs_action_list[] = {
 
 PCB_REGISTER_ACTIONS(mucs_action_list, mucs_cookie)
 
-static void hid_mucs_uninit()
+int pplg_check_ver_import_mucs(int ver_needed) { return 0; }
+
+void pplg_uninit_import_mucs(void)
 {
 	pcb_hid_remove_actions_by_cookie(mucs_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_import_mucs_init()
+int pplg_init_import_mucs(void)
 {
 	PCB_REGISTER_ACTIONS(mucs_action_list, mucs_cookie)
-		return hid_mucs_uninit;
+	return 0;
 }

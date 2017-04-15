@@ -247,14 +247,16 @@ static const char *diag_cookie = "diag plugin";
 
 PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 
-static void hid_diag_uninit(void)
+int pplg_check_ver_diag(int ver_needed) { return 0; }
+
+void pplg_uninit_diag(void)
 {
 	pcb_hid_remove_actions_by_cookie(diag_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_diag_init(void)
+int pplg_init_diag(void)
 {
 	PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
-	return hid_diag_uninit;
+	return 0;
 }

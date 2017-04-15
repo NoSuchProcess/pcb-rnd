@@ -310,14 +310,16 @@ pcb_hid_action_t ltspice_action_list[] = {
 
 PCB_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
 
-static void hid_ltspice_uninit()
+int pplg_check_ver_import_ltspice(int ver_needed) { return 0; }
+
+void pplg_uninit_import_ltspice(void)
 {
 	pcb_hid_remove_actions_by_cookie(ltspice_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_import_ltspice_init()
+int pplg_init_import_ltspice(void)
 {
 	PCB_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
-		return hid_ltspice_uninit;
+	return 0;
 }

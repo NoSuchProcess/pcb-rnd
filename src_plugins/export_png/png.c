@@ -1486,7 +1486,13 @@ static int png_usage(const char *topic)
 
 #include "dolists.h"
 
-pcb_uninit_t hid_export_png_init()
+int pplg_check_ver_export_png(int ver_needed) { return 0; }
+
+void pplg_uninit_export_png(void)
+{
+}
+
+int pplg_init_export_png(void)
 {
 	memset(&png_hid, 0, sizeof(pcb_hid_t));
 
@@ -1525,5 +1531,5 @@ pcb_uninit_t hid_export_png_init()
 	pcb_hid_register_hid(&png_hid);
 
 #endif
-	return NULL;
+	return 0;
 }

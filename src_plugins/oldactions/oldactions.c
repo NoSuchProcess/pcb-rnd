@@ -306,14 +306,16 @@ static const char *oldactions_cookie = "oldactions plugin";
 
 PCB_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 
-static void hid_oldactions_uninit(void)
+int pplg_check_ver_oldactions(int ver_needed) { return 0; }
+
+void pplg_uninit_oldactions(void)
 {
 	pcb_hid_remove_actions_by_cookie(oldactions_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_oldactions_init(void)
+int pplg_init_oldactions(void)
 {
 	PCB_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
-	return hid_oldactions_uninit;
+	return 0;
 }

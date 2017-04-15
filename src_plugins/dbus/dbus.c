@@ -373,7 +373,9 @@ static void dbus_gui_init(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_dbus_setup();
 }
 
-static void hid_dbus_uninit(void)
+int pplg_check_ver_dbus(int ver_needed) { return 0; }
+
+void pplg_uninit_dbus(void)
 {
 	pcb_dbus_finish();
 	pcb_event_unbind_allcookie(dbus_cookie);
@@ -381,9 +383,9 @@ static void hid_dbus_uninit(void)
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_dbus_init(void)
+int pplg_init_dbus(void)
 {
 /*	PCB_REGISTER_ACTIONS(debug_action_list, dbus_cookie)*/
 	pcb_event_bind(PCB_EVENT_GUI_INIT, dbus_gui_init, NULL, dbus_cookie);
-	return hid_dbus_uninit;
+	return 0;
 }

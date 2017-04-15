@@ -298,16 +298,18 @@ pcb_hid_action_t dsn_action_list[] = {
 
 PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
 
-static void hid_dsn_uninit()
+int pplg_check_ver_import_dsn(int ver_needed) { return 0; }
+
+void pplg_uninit_import_dsn(void)
 {
 	pcb_hid_remove_actions_by_cookie(dsn_cookie);
 
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_import_dsn_init()
+int pplg_init_import_dsn(void)
 {
 	PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
-	return hid_dsn_uninit;
+	return 0;
 }
 

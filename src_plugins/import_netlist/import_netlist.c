@@ -173,11 +173,13 @@ static int netlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	return ReadNetlist(fn);
 }
 
-static void hid_import_netlist_uninit(void)
+int pplg_check_ver_import_netlist(int ver_needed) { return 0; }
+
+void pplg_uninit_import_netlist(void)
 {
 }
 
-pcb_uninit_t hid_import_netlist_init(void)
+int pplg_init_import_netlist(void)
 {
 
 	/* register the IO hook */
@@ -188,6 +190,6 @@ pcb_uninit_t hid_import_netlist_init(void)
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
 
-	return hid_import_netlist_uninit;
+	return 0;
 }
 

@@ -403,13 +403,15 @@ static void remote_propedit_add_stat(void *pe, const char *propname, void *propc
 #include "dolists.h"
 
 
-static void hid_hid_remote_uninit()
+int pplg_check_ver_remote(int ver_needed) { return 0; }
+
+void pplg_uninit_hid_remote(void)
 {
 	pcb_hid_remove_actions_by_cookie(remote_cookie);
 	pcb_event_unbind_allcookie(remote_cookie);
 }
 
-pcb_uninit_t hid_hid_remote_init()
+int pplg_init_hid_remote(void)
 {
 	memset(&remote_hid, 0, sizeof(pcb_hid_t));
 
@@ -469,5 +471,5 @@ pcb_uninit_t hid_hid_remote_init()
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, remote_cookie);
 
-	return hid_hid_remote_uninit;
+	return 0;
 }

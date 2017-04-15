@@ -2696,19 +2696,21 @@ pcb_hid_action_t djopt_action_list[] = {
 
 PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 
-static void hid_djopt_uninit(void)
+int pplg_check_ver_djopt(int ver_needed) { return 0; }
+
+void pplg_uninit_djopt(void)
 {
 	pcb_hid_remove_actions_by_cookie(djopt_cookie);
 	conf_unreg_fields("plugins/djopt/");
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_djopt_init(void)
+int pplg_init_djopt(void)
 {
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc,flags);
 #include "djopt_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
-	return hid_djopt_uninit;
+	return 0;
 }

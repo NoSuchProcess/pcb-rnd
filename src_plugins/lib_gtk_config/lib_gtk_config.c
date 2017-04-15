@@ -40,7 +40,13 @@ void pcb_gtk_conf_init(void)
 	ghid_conf_id = conf_hid_reg(lib_gtk_config_cookie, NULL);
 }
 
-pcb_uninit_t hid_lib_gtk_config_init(void)
+int pplg_check_ver_lib_gtk_config(int ver_needed) { return 0; }
+
+void pplg_uninit_lib_gtk_config(void)
+{
+}
+
+int pplg_init_lib_gtk_config(void)
 {
 	pcb_gtk_conf_init();
 
@@ -48,6 +54,6 @@ pcb_uninit_t hid_lib_gtk_config_init(void)
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h"
 
-	return NULL;
+	return 0;
 }
 

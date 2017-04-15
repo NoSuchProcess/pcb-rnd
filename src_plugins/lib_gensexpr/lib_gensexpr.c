@@ -1,7 +1,13 @@
 #include <stdlib.h>
 #include "plugins.h"
 
-pcb_uninit_t hid_lib_gensexpr_init(void)
+int pplg_check_ver_lib_gensexpr(int ver_needed) { return 0; }
+
+void pplg_uninit_lib_gensexpr(void)
 {
-	return NULL;
+}
+
+int pplg_init_lib_gensexpr(void)
+{
+	return 0;
 }

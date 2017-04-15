@@ -303,7 +303,13 @@ static void bom_parse_arguments(int *argc, char ***argv)
 
 pcb_hid_t bom_hid;
 
-pcb_uninit_t hid_export_bom_init()
+int pplg_check_ver_export_bom(int ver_needed) { return 0; }
+
+void pplg_uninit_export_bom(void)
+{
+}
+
+int pplg_init_export_bom(void)
 {
 	memset(&bom_hid, 0, sizeof(pcb_hid_t));
 
@@ -321,5 +327,5 @@ pcb_uninit_t hid_export_bom_init()
 	bom_hid.usage = bom_usage;
 
 	pcb_hid_register_hid(&bom_hid);
-	return NULL;
+	return 0;
 }

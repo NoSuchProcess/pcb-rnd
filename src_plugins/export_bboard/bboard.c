@@ -573,13 +573,15 @@ static void bboard_set_crosshair(int x, int y, int action)
 
 static pcb_hid_t bboard_hid;
 
-void hid_export_bboard_uninit()
+int pplg_check_ver_export_bboard(int ver_needed) { return 0; }
+
+void pplg_uninit_export_bboard(void)
 {
 	pcb_hid_remove_attributes_by_cookie(bboard_cookie);
 }
 
 
-pcb_uninit_t hid_export_bboard_init()
+int pplg_init_export_bboard(void)
 {
 	memset(&bboard_hid, 0, sizeof(bboard_hid));
 
@@ -598,6 +600,6 @@ pcb_uninit_t hid_export_bboard_init()
 	pcb_hid_register_hid(&bboard_hid);
 
 	pcb_hid_register_attributes(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]), bboard_cookie, 0);
-	return hid_export_bboard_uninit;
+	return 0;
 }
 

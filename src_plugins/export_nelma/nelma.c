@@ -963,7 +963,13 @@ static int nelma_usage(const char *topic)
 
 #include "dolists.h"
 
-pcb_uninit_t hid_export_nelma_init()
+int pplg_check_ver_export_nelma(int ver_needed) { return 0; }
+
+int pplg_uninit_export_nelma(void)
+{
+}
+
+int pplg_init_export_nelma(void)
 {
 	memset(&nelma_hid, 0, sizeof(pcb_hid_t));
 
@@ -1000,5 +1006,5 @@ pcb_uninit_t hid_export_nelma_init()
 	nelma_hid.usage = nelma_usage;
 
 	pcb_hid_register_hid(&nelma_hid);
-	return NULL;
+	return 0;
 }

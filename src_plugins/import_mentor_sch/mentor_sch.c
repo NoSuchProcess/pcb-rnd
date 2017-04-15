@@ -279,14 +279,16 @@ pcb_hid_action_t mentor_sch_action_list[] = {
 
 PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
 
-static void hid_mentor_sch_uninit()
+int pplg_check_ver_import_mentor_sch(int ver_needed) { return 0; }
+
+void pplg_uninit_import_mentor_sch(void)
 {
 	pcb_hid_remove_actions_by_cookie(mentor_sch_cookie);
 	conf_unreg_fields("plugins/import_mentor_sch/");
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_import_mentor_sch_init()
+int pplg_init_import_mentor_sch(void)
 {
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
@@ -294,5 +296,5 @@ pcb_uninit_t hid_import_mentor_sch_init()
 #include "mentor_sch_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
-	return hid_mentor_sch_uninit;
+	return 0;
 }

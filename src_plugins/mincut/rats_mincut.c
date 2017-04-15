@@ -396,18 +396,20 @@ void rat_proc_shorts(void)
 	shorts = NULL;
 }
 
-void hid_mincut_uninit(void)
+int pplg_check_ver_mincut(int ver_needed) { return 0; }
+
+void pplg_uninit_mincut(void)
 {
 	conf_unreg_fields("plugins/mincut/");
 }
 
 #include "stub_mincut.h"
-pcb_uninit_t hid_mincut_init(void)
+int pplg_init_mincut(void)
 {
 	pcb_stub_rat_found_short = rat_found_short;
 	pcb_stub_rat_proc_shorts = rat_proc_shorts;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc,flags);
 #include "rats_mincut_conf_fields.h"
-	return hid_mincut_uninit;
+	return 0;
 }

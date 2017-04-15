@@ -879,7 +879,13 @@ static int gcode_usage(const char *topic)
 
 pcb_hid_t gcode_hid;
 
-pcb_uninit_t hid_export_gcode_init()
+int pplg_check_ver_export_gcode(int ver_needed) { return 0; }
+
+void pplg_uninit_export_gcode(void)
+{
+}
+
+int pplg_init_export_gcode(void)
 {
 	memset(&gcode_hid, 0, sizeof(pcb_hid_t));
 
@@ -917,5 +923,5 @@ pcb_uninit_t hid_export_gcode_init()
 
 	pcb_hid_register_hid(&gcode_hid);
 
-	return NULL;
+	return 0;
 }

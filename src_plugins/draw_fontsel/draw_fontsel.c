@@ -233,11 +233,13 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 	return 0;
 }
 
-static void hid_draw_fontsel_uninit(void)
+int pplg_check_ver_draw_fontsel(int ver_needed) { return 0; }
+
+void pplg_uninit_draw_fontsel(void)
 {
 }
 
-pcb_uninit_t hid_draw_fontsel_init(void)
+int pplg_init_draw_fontsel(void)
 {
 	pcb_stub_draw_fontsel = pcb_draw_fontsel;
 	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
@@ -245,5 +247,5 @@ pcb_uninit_t hid_draw_fontsel_init(void)
 	pcb_stub_draw_fontsel_layer_obj = &fontsel_layer;
 	pcb_stub_draw_fontsel_text_type = &fontsel_txt_type;
 
-	return hid_draw_fontsel_uninit;
+	return 0;
 }

@@ -603,12 +603,14 @@ static void IPCD356_parse_arguments(int *argc, char ***argv)
 
 pcb_hid_t IPCD356_hid;
 
-void hid_export_ipcd356_uninit()
+int pplg_check_ver_export_ipcd356(int ver_needed) { return 0; }
+
+void pplg_uninit_export_ipcd356(void)
 {
 	pcb_hid_remove_attributes_by_cookie(ipcd356_cookie);
 }
 
-pcb_uninit_t *hid_export_ipcd356_init()
+int pplg_init_export_ipcd356(void)
 {
 	memset(&IPCD356_hid, 0, sizeof(pcb_hid_t));
 
@@ -626,5 +628,5 @@ pcb_uninit_t *hid_export_ipcd356_init()
 	pcb_hid_register_hid(&IPCD356_hid);
 
 	pcb_hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]), ipcd356_cookie, 0);
-	return hid_export_ipcd356_uninit;
+	return 0;
 }

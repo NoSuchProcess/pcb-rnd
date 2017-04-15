@@ -1207,7 +1207,13 @@ static void gerber_set_crosshair(int x, int y, int action)
 {
 }
 
-pcb_uninit_t hid_export_gerber_init()
+int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
+
+void pplg_uninit_export_gerber(void)
+{
+}
+
+int pplg_init_export_gerber(void)
 {
 	memset(&gerber_hid, 0, sizeof(gerber_hid));
 
@@ -1241,5 +1247,5 @@ pcb_uninit_t hid_export_gerber_init()
 	gerber_hid.usage = gerber_usage;
 
 	pcb_hid_register_hid(&gerber_hid);
-	return NULL;
+	return 0;
 }

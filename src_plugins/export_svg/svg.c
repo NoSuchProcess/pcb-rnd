@@ -701,7 +701,13 @@ static int svg_usage(const char *topic)
 
 #include "dolists.h"
 
-pcb_uninit_t hid_export_svg_init()
+int pplg_check_ver_export_svg(int ver_needed) { return 0; }
+
+void pplg_uninit_export_svg(void)
+{
+}
+
+int pplg_init_export_svg(void)
 {
 	memset(&svg_hid, 0, sizeof(pcb_hid_t));
 
@@ -739,5 +745,5 @@ pcb_uninit_t hid_export_svg_init()
 
 	pcb_hid_register_hid(&svg_hid);
 
-	return NULL;
+	return 0;
 }

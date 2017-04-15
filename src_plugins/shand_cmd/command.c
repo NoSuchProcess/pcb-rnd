@@ -400,14 +400,16 @@ static const char *shand_cmd_cookie = "shand_cmd plugin";
 
 PCB_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
 
-static void hid_shand_cmd_uninit(void)
+int pplg_check_ver_shand_cmd(int ver_needed) { return 0; }
+
+void pplg_uninit_shand_cmd(void)
 {
 	pcb_hid_remove_actions_by_cookie(shand_cmd_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_shand_cmd_init(void)
+int pplg_init_shand_cmd(void)
 {
 	PCB_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
-	return hid_shand_cmd_uninit;
+	return 0;
 }

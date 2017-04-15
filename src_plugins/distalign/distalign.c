@@ -627,16 +627,18 @@ static char *distalign_cookie = "distalign plugin";
 
 PCB_REGISTER_ACTIONS(distalign_action_list, distalign_cookie)
 
-static void hid_distalign_uninit(void)
+int pplg_check_ver_distalign(int ver_needed) { return 0; }
+
+void pplg_uninit_distalign(void)
 {
 	pcb_hid_remove_actions_by_cookie(distalign_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_distalign_init()
+int pplg_init_distalign(void)
 {
 	PCB_REGISTER_ACTIONS(distalign_action_list, distalign_cookie);
-	return hid_distalign_uninit;
+	return 0;
 }
 
 

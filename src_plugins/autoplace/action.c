@@ -64,14 +64,16 @@ pcb_hid_action_t autoplace_action_list[] = {
 
 PCB_REGISTER_ACTIONS(autoplace_action_list, autoplace_cookie)
 
-static void hid_autoplace_uninit(void)
+int pplg_check_ver_autoplace(int ver_needed) { return 0; }
+
+void pplg_uninit_autoplace(void)
 {
 	pcb_hid_remove_actions_by_cookie(autoplace_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_autoplace_init(void)
+int pplg_init_autoplace(void)
 {
 	PCB_REGISTER_ACTIONS(autoplace_action_list, autoplace_cookie)
-	return hid_autoplace_uninit;
+	return 0;
 }

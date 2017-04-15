@@ -248,14 +248,16 @@ char *polystitch_cookie = "polystitch plugin";
 
 PCB_REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie)
 
-static void hid_polystitch_uninit(void)
+int pplg_check_ver_polystitch(int ver_needed) { return 0; }
+
+void pplg_uninit_polystitch(void)
 {
 	pcb_hid_remove_actions_by_cookie(polystitch_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_polystitch_init()
+int pplg_init_polystitch(void)
 {
 	PCB_REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie);
-	return hid_polystitch_uninit;
+	return 0;
 }

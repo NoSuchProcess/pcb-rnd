@@ -1047,7 +1047,13 @@ void rb_uninit(void)
 	pcb_event_unbind_allcookie(rubber_cookie);
 }
 
-pcb_uninit_t hid_rubberband_orig_init(void)
+int pplg_check_ver_rubberband_orig(int ver_needed) { return 0; }
+
+void pplg_uninit_rubberband_orig(void)
+{
+}
+
+int pplg_init_rubberband_orig(void)
 {
 	void *ctx = &rubber_band_state;
 	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
@@ -1061,6 +1067,5 @@ pcb_uninit_t hid_rubberband_orig_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_FIT_CROSSHAIR, rbe_fit_crosshair, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, rbe_constrain_main_line, ctx, rubber_cookie);
 
-	return rb_uninit;
+	return 0;
 }
-

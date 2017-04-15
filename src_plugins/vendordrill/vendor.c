@@ -679,7 +679,9 @@ static void vendor_free_all(void)
 	cached_drill = -1;
 }
 
-static void hid_vendordrill_uninit(void)
+int pplg_check_ver_vendordrill(int ver_needed) { return 0; }
+
+void pplg_uninit_vendordrill(void)
 {
 	pcb_hid_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
@@ -687,7 +689,7 @@ static void hid_vendordrill_uninit(void)
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_vendordrill_init(void)
+int pplg_init_vendordrill(void)
 {
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
@@ -697,5 +699,5 @@ pcb_uninit_t hid_vendordrill_init(void)
 	pcb_stub_vendor_is_element_mappable = vendorIsElementMappable;
 
 	PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
-	return hid_vendordrill_uninit;
+	return 0;
 }

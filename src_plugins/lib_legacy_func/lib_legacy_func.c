@@ -132,8 +132,14 @@ void pcb_crosshair_restore(void)
 }
 
 
-pcb_uninit_t hid_lib_legacy_func_init(void)
+int pplg_check_ver_lib_legacy_func(int ver_needed) { return 0; }
+
+void pplg_uninit_lib_legacy_func(void)
 {
-	return NULL;
+}
+
+int pplg_init_lib_legacy_func(void)
+{
+	return 0;
 }
 

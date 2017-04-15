@@ -40,7 +40,7 @@ static pcb_hid_attribute_t *batch_get_export_options(int *n_ret)
 
 static char *prompt = NULL;
 
-static void hid_batch_uninit(void)
+static void uninit_batch(void)
 {
 	pcb_hid_remove_actions_by_cookie(batch_cookie);
 	pcb_event_unbind_allcookie(batch_cookie);
@@ -128,7 +128,7 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 			fflush(stdout);
 		}
 		if (fgets(line, sizeof(line) - 1, stdin) == NULL) {
-			hid_batch_uninit();
+			uninit_batch();
 			return;
 		}
 		pcb_hid_parse_command(line);
@@ -320,8 +320,13 @@ static void batch_propedit_add_stat(void *pe, const char *propname, void *propct
 
 static pcb_hid_t batch_hid;
 
+int pplg_check_ver_hid_batch(int ver_needed) { return 0; }
 
-pcb_uninit_t hid_hid_batch_init()
+void pplg_uninit_hid_batch(void)
+{
+}
+
+int pplg_init_hid_batch(void)
 {
 	memset(&batch_hid, 0, sizeof(pcb_hid_t));
 
@@ -378,7 +383,7 @@ pcb_uninit_t hid_hid_batch_init()
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
 
 	pcb_hid_register_hid(&batch_hid);
-	return hid_batch_uninit;
+	return 0;
 }
 
 static void batch_begin(void)

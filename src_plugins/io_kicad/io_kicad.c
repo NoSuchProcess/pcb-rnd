@@ -52,7 +52,9 @@ pcb_hid_action_t eeschema_action_list[] = {
 PCB_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie)
 
 
-static void hid_io_kicad_uninit(void)
+int pplg_check_ver_io_kicad(int ver_needed) { return 0; }
+
+void pplg_uninit_io_kicad(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
 	pcb_hid_remove_actions_by_cookie(kicad_cookie);
@@ -60,7 +62,7 @@ static void hid_io_kicad_uninit(void)
 
 #include "dolists.h"
 
-pcb_uninit_t hid_io_kicad_init(void)
+int pplg_init_io_kicad(void)
 {
 
 	/* register the IO hook */
@@ -87,6 +89,6 @@ pcb_uninit_t hid_io_kicad_init(void)
 
 	/* TODO: Alloc plugin-globals here. */
 
-	return hid_io_kicad_uninit;
+	return 0;
 }
 

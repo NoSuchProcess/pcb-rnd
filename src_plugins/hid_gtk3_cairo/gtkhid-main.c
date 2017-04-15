@@ -33,14 +33,16 @@ void gtk3_cairo_parse_arguments(int *argc, char ***argv)
 	gtkhid_parse_arguments(argc, argv);
 }
 
-static void hid_hid_gtk3_cairo_uninit()
+int pplg_check_ver_gtk3_cairo(int ver_needed) { return 0; }
+
+void pplg_uninit_hid_gtk3_cairo(void)
 {
 	pcb_event_unbind_allcookie(ghid_cairo_cookie);
 	conf_hid_unreg(ghid_cairo_cookie);
 	conf_hid_unreg(ghid_cairo_menu_cookie);
 }
 
-pcb_uninit_t hid_hid_gtk3_cairo_init()
+int pplg_init_hid_gtk3_cairo(void)
 {
 	ghid_win32_init();
 
@@ -61,5 +63,5 @@ pcb_uninit_t hid_hid_gtk3_cairo_init()
 
 	glue_event_init(ghid_cairo_cookie);
 
-	return hid_hid_gtk3_cairo_uninit;
+	return 0;
 }

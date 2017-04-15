@@ -1127,12 +1127,14 @@ static const char *openscad_cookie = "openscad exporter";
 
 static pcb_hid_t scad_hid;
 
-void hid_export_openscad_uninit()
+int pplg_check_ver_export_openscad(int ver_needed) { return 0; }
+
+void pplg_uninit_export_openscad(void)
 {
 	pcb_hid_remove_attributes_by_cookie(openscad_cookie);
 }
 
-pcb_uninit_t hid_export_openscad_init()
+int pplg_init_export_openscad(void)
 {
 	memset(&scad_hid, 0, sizeof(scad_hid));
 
@@ -1169,5 +1171,5 @@ pcb_uninit_t hid_export_openscad_init()
 	pcb_hid_register_hid(&scad_hid);
 
 	pcb_hid_register_attributes(scad_options, sizeof(scad_options) / sizeof(scad_options[0]), openscad_cookie, 0);
-	return hid_export_openscad_uninit;
+	return 0;
 }

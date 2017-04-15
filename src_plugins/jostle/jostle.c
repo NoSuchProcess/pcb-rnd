@@ -549,14 +549,16 @@ char *jostle_cookie = "jostle plugin";
 
 PCB_REGISTER_ACTIONS(jostle_action_list, jostle_cookie)
 
-static void hid_jostle_uninit(void)
+int pplg_check_ver_jostle(int ver_needed) { return 0; }
+
+void pplg_uninit_jostle(void)
 {
 	pcb_hid_remove_actions_by_cookie(jostle_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_jostle_init()
+int pplg_init_jostle(void)
 {
 	PCB_REGISTER_ACTIONS(jostle_action_list, jostle_cookie);
-	return hid_jostle_uninit;
+	return 0;
 }

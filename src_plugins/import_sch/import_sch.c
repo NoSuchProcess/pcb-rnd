@@ -456,14 +456,16 @@ pcb_hid_action_t import_sch_action_list[] = {
 
 PCB_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 
-static void hid_import_sch_uninit(void)
+int pplg_check_ver_import_sch(int ver_needed) { return 0; }
+
+void pplg_uninit_import_sch(void)
 {
 	pcb_hid_remove_actions_by_cookie(import_sch_cookie);
 	conf_unreg_fields("plugins/import_sch/");
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_import_sch_init(void)
+int pplg_init_import_sch(void)
 {
 	char *tmp;
 
@@ -481,5 +483,5 @@ pcb_uninit_t hid_import_sch_init(void)
 	if (tmp != NULL)
 		conf_set(CFR_ENV, "plugins/import_sch/gnetlist_program", -1, tmp, POL_OVERWRITE);
 
-	return hid_import_sch_uninit;
+	return 0;
 }

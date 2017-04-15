@@ -102,17 +102,19 @@ static const char *acompnet_cookie = "acompnet plugin";
 
 PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
 
-static void hid_acompnet_uninit(void)
+int pplg_check_ver_acompnet(int ver_needed) { return 0; }
+
+void pplg_uninit_acompnet(void)
 {
 	pcb_hid_remove_actions_by_cookie(acompnet_cookie);
 	pcb_uilayer_free_all_cookie(acompnet_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_acompnet_init(void)
+int pplg_init_acompnet(void)
 {
 	PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
 	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", "#c09920");
 
-	return hid_acompnet_uninit;
+	return 0;
 }

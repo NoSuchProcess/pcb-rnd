@@ -278,16 +278,18 @@ void query_action_reg(const char *cookie);
 
 static const char *query_cookie = "query plugin";
 
-static void hid_query_uninit(void)
+int pplg_check_ver_query(int ver_needed) { return 0; }
+
+void pplg_uninit_query(void)
 {
 	pcb_hid_remove_actions_by_cookie(query_cookie);
 }
 
 void pcb_qry_basic_fnc_init(void);
 
-pcb_uninit_t hid_query_init(void)
+int pplg_init_query(void)
 {
 	pcb_qry_basic_fnc_init();
 	query_action_reg(query_cookie);
-	return hid_query_uninit;
+	return 0;
 }

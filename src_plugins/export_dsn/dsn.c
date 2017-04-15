@@ -577,13 +577,15 @@ static void dsn_parse_arguments(int *argc, char ***argv)
 	pcb_hid_parse_command_line(argc, argv);
 }
 
-static void hid_dsn_uninit()
+int pplg_check_ver_export_dsn(int ver_needed) { return 0; }
+
+void pplg_uninit_export_dsn(void)
 {
 	pcb_hid_remove_attributes_by_cookie(dsn_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_export_dsn_init()
+int pplg_init_export_dsn(void)
 {
 	memset(&dsn_hid, 0, sizeof(pcb_hid_t));
 	pcb_hid_nogui_init(&dsn_hid);
@@ -598,6 +600,6 @@ pcb_uninit_t hid_export_dsn_init()
 	pcb_hid_register_hid(&dsn_hid);
 
 	pcb_hid_register_attributes(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
-	return hid_dsn_uninit;
+	return 0;
 }
 

@@ -105,14 +105,16 @@ pcb_hid_action_t tedax_action_list[] = {
 
 PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
 
-static void hid_tedax_uninit()
+int pplg_check_ver_io_tedax(int ver_needed) { return 0; }
+
+void pplg_uninit_io_tedax(void)
 {
 	pcb_hid_remove_actions_by_cookie(tedax_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_io_tedax_init()
+int pplg_init_io_tedax(void)
 {
 	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
-	return hid_tedax_uninit;
+	return 0;
 }

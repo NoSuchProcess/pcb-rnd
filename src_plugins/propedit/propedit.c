@@ -81,14 +81,16 @@ pcb_hid_action_t propedit_action_list[] = {
 
 PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 
-static void hid_propedit_uninit(void)
+int pplg_check_ver_propedit(int ver_needed) { return 0; }
+
+void pplg_uninit_propedit(void)
 {
 	pcb_hid_remove_actions_by_cookie(propedit_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_propedit_init(void)
+int pplg_init_propedit(void)
 {
 	PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
-	return hid_propedit_uninit;
+	return 0;
 }

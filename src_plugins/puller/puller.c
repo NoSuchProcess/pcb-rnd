@@ -2392,14 +2392,16 @@ static const char *puller_cookie = "puller plugin";
 
 PCB_REGISTER_ACTIONS(puller_action_list, puller_cookie)
 
-static void hid_puller_uninit(void)
+int pplg_check_ver_puller(int ver_needed) { return 0; }
+
+void pplg_uninit_puller(void)
 {
 	pcb_hid_remove_actions_by_cookie(puller_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_puller_init(void)
+int pplg_init_puller(void)
 {
 	PCB_REGISTER_ACTIONS(puller_action_list, puller_cookie)
-	return hid_puller_uninit;
+	return 0;
 }

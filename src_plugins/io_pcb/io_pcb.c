@@ -43,7 +43,9 @@ int io_pcb_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 }
 
 extern void pcb_lex_destroy(void);
-static void hid_io_pcb_uninit(void)
+int pplg_check_ver_io_pcb(int ver_needed) { return 0; }
+
+void pplg_uninit_io_pcb(void)
 {
 	int n;
 	pcb_lex_destroy();
@@ -52,7 +54,7 @@ static void hid_io_pcb_uninit(void)
 		PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[n]));
 }
 
-pcb_uninit_t hid_io_pcb_init(void)
+int pplg_init_io_pcb(void)
 {
 
 	memset(&io_pcb, 0, sizeof(io_pcb));
@@ -104,5 +106,5 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[2].mime_type = "application/x-pcb-layout";
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[2]));
 
-	return hid_io_pcb_uninit;
+	return 0;
 }

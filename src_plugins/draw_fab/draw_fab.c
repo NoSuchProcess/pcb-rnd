@@ -295,11 +295,13 @@ static void DrawFab(pcb_hid_gc_t gc)
 	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", PCB_UNKNOWN(PCB->Name));
 }
 
-static void hid_draw_fab_uninit(void)
+int pplg_check_ver_draw_fab(int ver_needed) { return 0; }
+
+void pplg_uninit_draw_fab(void)
 {
 }
 
-pcb_uninit_t hid_draw_fab_init(void)
+int pplg_init_draw_fab(void)
 {
 	pcb_stub_draw_fab = DrawFab;
 	pcb_stub_draw_fab_overhang = DrawFab_overhang;
@@ -309,5 +311,5 @@ pcb_uninit_t hid_draw_fab_init(void)
 #include "draw_fab_conf_fields.h"
 
 
-	return hid_draw_fab_uninit;
+	return 0;
 }

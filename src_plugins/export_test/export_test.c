@@ -330,7 +330,13 @@ static void export_test_parse_arguments(int *argc, char ***argv)
 
 pcb_hid_t export_test_hid;
 
-pcb_uninit_t hid_export_test_init()
+int pplg_check_ver_export_test(int ver_needed) { return 0; }
+
+void pplg_uninit_export_test(void)
+{
+}
+
+int pplg_init_export_test(void)
 {
 	memset(&export_test_hid, 0, sizeof(pcb_hid_t));
 
@@ -348,5 +354,5 @@ pcb_uninit_t hid_export_test_init()
 	export_test_hid.usage = export_test_usage;
 
 	pcb_hid_register_hid(&export_test_hid);
-	return NULL;
+	return 0;
 }

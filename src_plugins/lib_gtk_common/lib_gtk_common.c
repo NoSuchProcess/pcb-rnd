@@ -27,8 +27,14 @@
 #include <stdlib.h>
 #include "plugins.h"
 
-pcb_uninit_t hid_lib_gtk_common_init(void)
+int pplg_check_ver_lib_gtk_common(int ver_needed) { return 0; }
+
+void pplg_uninit_lib_gtk_common(void)
 {
-	return NULL;
+}
+
+int pplg_init_lib_gtk_common(void)
+{
+	return 0;
 }
 

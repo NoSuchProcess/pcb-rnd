@@ -43,11 +43,13 @@ int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fm
 	return 100;
 }
 
-static void hid_io_lihata_uninit(void)
+int pplg_check_ver_io_lihata(int ver_needed) { return 0; }
+
+void pplg_uninit_io_lihata(void)
 {
 }
 
-pcb_uninit_t hid_io_lihata_init(void)
+int pplg_init_io_lihata(void)
 {
 
 	/* register the IO hook */
@@ -75,6 +77,6 @@ pcb_uninit_t hid_io_lihata_init(void)
 	conf_reg_field(conf_io_lihata, field,isarray,type_name,cpath,cname,desc,flags);
 #include "lht_conf_fields.h"
 
-	return hid_io_lihata_uninit;
+	return 0;
 }
 

@@ -3708,12 +3708,14 @@ static int lesstif_usage(const char *topic)
 
 void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 
-static void hid_lesstif_uninit(void)
+int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
+
+void pplg_uninit_hid_lesstif(void)
 {
 	pcb_event_unbind_allcookie(lesstif_cookie);
 }
 
-pcb_uninit_t hid_hid_lesstif_init()
+int pplg_init_hid_lesstif(void)
 {
 	memset(&lesstif_hid, 0, sizeof(pcb_hid_t));
 
@@ -3795,7 +3797,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 
 	pcb_hid_register_hid(&lesstif_hid);
 
-	return hid_lesstif_uninit;
+	return 0;
 }
 
 

@@ -43,12 +43,14 @@ int io_kicad_legacy_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const ch
 	return 0; /* no read support yet */
 }
 
-static void hid_io_kicad_legacy_uninit(void)
+int pplg_check_ver_io_kicad_legacy(int ver_needed) { return 0; }
+
+void pplg_uninit_io_kicad_legacy(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
 }
 
-pcb_uninit_t hid_io_kicad_legacy_init(void)
+int pplg_init_io_kicad_legacy(void)
 {
 
 	/* register the IO hook */
@@ -72,6 +74,6 @@ pcb_uninit_t hid_io_kicad_legacy_init(void)
 
 	/* TODO: Alloc plugin-globals here. */
 
-	return hid_io_kicad_legacy_uninit;
+	return 0;
 }
 

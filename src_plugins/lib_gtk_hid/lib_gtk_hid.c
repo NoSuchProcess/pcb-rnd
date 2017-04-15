@@ -32,8 +32,14 @@
 
 static const char *lib_gtk_hid_cookie = "lib_gtk_hid";
 
-pcb_uninit_t hid_lib_gtk_hid_init(void)
+int pplg_check_ver_lib_gtk_hid(int ver_needed) { return 0; }
+
+void pplg_uninit_lib_gtk_hid(void)
 {
-	return NULL;
+}
+
+int pplg_init_lib_gtk_hid(void)
+{
+	return 0;
 }
 

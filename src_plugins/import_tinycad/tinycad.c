@@ -194,14 +194,16 @@ pcb_hid_action_t tinycad_action_list[] = {
 
 PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
 
-static void hid_tinycad_uninit()
+int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
+
+void pplg_uninit_import_tinycad(void)
 {
 	pcb_hid_remove_actions_by_cookie(tinycad_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_import_tinycad_init()
+int pplg_init_import_tinycad(void)
 {
 	PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
-	return hid_tinycad_uninit;
+	return 0;
 }

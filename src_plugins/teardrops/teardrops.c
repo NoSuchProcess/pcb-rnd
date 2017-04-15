@@ -322,14 +322,16 @@ char *teardrops_cookie = "teardrops plugin";
 
 PCB_REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie)
 
-static void hid_teardrops_uninit(void)
+int pplg_check_ver_teardrops(int ver_needed) { return 0; }
+
+void pplg_uninit_teardrops(void)
 {
 	pcb_hid_remove_actions_by_cookie(teardrops_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_teardrops_init()
+int pplg_init_teardrops(void)
 {
 	PCB_REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie);
-	return hid_teardrops_uninit;
+	return 0;
 }

@@ -28,13 +28,20 @@
 
 #include "plugins.h"
 
-extern pcb_uninit_t hid_hid_remote_init();
+int pplg_check_ver_hid_srv_ws(int ver_needed) { return 0; }
+
+extern int pplg_init_hid_remote(void);
 extern void pcb_set_hid_name(const char *new_hid_name);
 
-pcb_uninit_t hid_hid_srv_ws_init()
+
+void pplg_init_hid_srv_ws(void)
+{
+}
+
+int pplg_init_hid_srv_ws(void)
 {
 	printf("WS: waiting for connections\n");
 	pcb_set_hid_name("remote");
 
-	return hid_hid_remote_init();
+	return 0;
 }

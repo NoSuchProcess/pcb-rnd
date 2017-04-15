@@ -327,7 +327,13 @@ static int stat_usage(const char *topic)
 
 #include "dolists.h"
 
-pcb_uninit_t hid_export_stat_init()
+int pplg_check_ver_export_stat(int ver_needed) { return 0; }
+
+void pplg_uninit_export_stat(void)
+{
+}
+
+int pplg_init_export_stat(void)
 {
 	memset(&stat_hid, 0, sizeof(pcb_hid_t));
 
@@ -347,5 +353,5 @@ pcb_uninit_t hid_export_stat_init()
 
 	pcb_hid_register_hid(&stat_hid);
 
-	return NULL;
+	return 0;
 }

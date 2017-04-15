@@ -904,17 +904,19 @@ static const char *report_cookie = "report plugin";
 
 PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
 
-static void hid_report_uninit(void)
+int pplg_check_ver_report(int ver_needed) { return 0; }
+
+void pplg_uninit_report(void)
 {
 	pcb_hid_remove_actions_by_cookie(report_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_report_init(void)
+int pplg_init_report(void)
 {
 	PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_report, field,isarray,type_name,cpath,cname,desc,flags);
 #include "report_conf_fields.h"
-	return hid_report_uninit;
+	return 0;
 }

@@ -100,14 +100,16 @@ static pcb_hid_attribute_t *loghid_get_export_options(int *n)
 
 #include "dolists.h"
 
-static void hid_loghid_uninit(void)
+int pplg_check_ver_loghid(int ver_needed) { return 0; }
+
+void pplg_uninit_loghid(void)
 {
 }
 
 static pcb_hid_t loghid_gui;
 static pcb_hid_t loghid_exp;
 
-pcb_uninit_t hid_loghid_init(void)
+int pplg_init_loghid(void)
 {
 	memset(&loghid_gui, 0, sizeof(pcb_hid_t));
 	memset(&loghid_exp, 0, sizeof(pcb_hid_t));
@@ -134,5 +136,5 @@ pcb_uninit_t hid_loghid_init(void)
 
 	pcb_hid_register_hid(&loghid_exp);
 
-	return hid_loghid_uninit;
+	return 0;
 }

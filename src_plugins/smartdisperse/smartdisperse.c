@@ -270,14 +270,16 @@ char *smartdisperse_cookie = "smartdisperse plugin";
 
 PCB_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie)
 
-static void hid_smartdisperse_uninit(void)
+int pplg_check_ver_smartdisperse(int ver_needed) { return 0; }
+
+void pplg_uninit_smartdisperse(void)
 {
 	pcb_hid_remove_actions_by_cookie(smartdisperse_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_smartdisperse_init()
+int pplg_init_smartdisperse(void)
 {
 	PCB_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie);
-	return hid_smartdisperse_uninit;
+	return 0;
 }

@@ -156,12 +156,18 @@ static void real_stroke_start(void)
 	StrokeBox.Y1 = pcb_crosshair.Y;
 }
 
-pcb_uninit_t hid_stroke_init(void)
+int pplg_check_ver_stroke(int ver_needed) { return 0; }
+
+int pplg_uninit_stroke(void)
+{
+}
+
+int pplg_init_stroke(void)
 {
 	stroke_init();
 
 	pcb_stub_stroke_record = real_stroke_record;
 	pcb_stub_stroke_start = real_stroke_start;
 	pcb_stub_stroke_finish = real_stroke_finish;
-	return NULL;
+	return 0;
 }

@@ -233,14 +233,16 @@ char *autocrop_cookie = "autocrop plugin";
 
 PCB_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie)
 
-static void hid_autocrop_uninit(void)
+int pplg_check_ver_autocrop(int ver_needed) { return 0; }
+
+void pplg_uninit_autocrop(void)
 {
 	pcb_hid_remove_actions_by_cookie(autocrop_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_autocrop_init()
+int pplg_init_autocrop(void)
 {
 	PCB_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie);
-	return hid_autocrop_uninit;
+	return 0;
 }

@@ -1609,7 +1609,13 @@ static void plugin_ps_uninit(void)
 }
 
 
-pcb_uninit_t hid_export_ps_init()
+int pplg_check_ver_export_ps(int ver_needed) { return 0; }
+
+void pplg_uninit_export_ps(void)
+{
+}
+
+int pplg_init_export_ps(void)
 {
 	memset(&ps_hid, 0, sizeof(pcb_hid_t));
 
@@ -1628,5 +1634,5 @@ pcb_uninit_t hid_export_ps_init()
 	pcb_hid_register_hid(&ps_hid);
 
 	hid_eps_init();
-	return plugin_ps_uninit;
+	return 0;
 }

@@ -649,19 +649,21 @@ pcb_hid_action_t draw_csect_action_list[] = {
 
 PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
 
-static void hid_draw_csect_uninit(void)
+int pplg_check_ver_draw_csect(int ver_needed) { return 0; }
+
+void pplg_uninit_draw_csect(void)
 {
 	pcb_hid_remove_actions_by_cookie(draw_csect_cookie);
 }
 
 #include "dolists.h"
 
-pcb_uninit_t hid_draw_csect_init(void)
+int pplg_init_draw_csect(void)
 {
 	PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
 
 	pcb_stub_draw_csect = draw_csect;
 	pcb_stub_draw_csect_mouse_ev = mouse_csect;
 
-	return hid_draw_csect_uninit;
+	return 0;
 }

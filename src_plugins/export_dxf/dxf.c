@@ -5909,7 +5909,9 @@ static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message)
 
 const char *dxf_cookie = "dxf exporter";
 
-void hid_export_dxf_uninit()
+int pplg_check_ver_export_dxf(int ver_needed) { return 0; }
+
+void pplg_uninit_export_dxf(void)
 {
 	pcb_hid_remove_attributes_by_cookie(dxf_cookie);
 }
@@ -5920,7 +5922,7 @@ void hid_export_dxf_uninit()
  * Initialise and register the DXF HID.
  * No other HID calls are valid until this is called.
  */
-pcb_uninit_t hid_export_dxf_init()
+int pplg_init_export_dxf(void)
 {
 	memset(&dxf_hid, 0, sizeof(pcb_hid_t));
 
@@ -5960,7 +5962,7 @@ pcb_uninit_t hid_export_dxf_init()
 
 	pcb_hid_register_attributes(dxf_options, sizeof(dxf_options) / sizeof(dxf_options[0]), dxf_cookie, 0);
 
-	return hid_export_dxf_uninit;
+	return 0;
 }
 
 

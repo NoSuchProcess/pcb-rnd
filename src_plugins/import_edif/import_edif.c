@@ -73,11 +73,13 @@ static int edif_import(pcb_plug_import_t *ctx, unsigned int aspects, const char 
 	return ret;
 }
 
-static void hid_import_edif_uninit(void)
+int pplg_check_ver_import_edif(int ver_needed) { return 0; }
+
+void pplg_uninit_import_edif(void)
 {
 }
 
-pcb_uninit_t hid_import_edif_init(void)
+int pplg_init_import_edif(void)
 {
 
 	/* register the IO hook */
@@ -88,6 +90,6 @@ pcb_uninit_t hid_import_edif_init(void)
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
 
-	return hid_import_edif_uninit;
+	return 0;
 }
 

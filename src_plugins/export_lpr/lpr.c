@@ -123,7 +123,13 @@ static void plugin_lpr_uninit(void)
 	pcb_hid_remove_actions_by_cookie(lpr_cookie);
 }
 
-pcb_uninit_t hid_export_lpr_init()
+int pplg_check_ver_export_lpr(int ver_needed) { return 0; }
+
+void pplg_uninit_export_lpr(void)
+{
+}
+
+int pplg_init_export_lpr(void)
 {
 	memset(&lpr_hid, 0, sizeof(pcb_hid_t));
 
@@ -145,5 +151,5 @@ pcb_uninit_t hid_export_lpr_init()
 
 	pcb_hid_register_hid(&lpr_hid);
 
-	return plugin_lpr_uninit;
+	return 0;
 }

@@ -367,7 +367,9 @@ pcb_hid_action_t renumber_action_list[] = {
 		NULL, NULL}
 };
 
-static void hid_renumber_uninit(void)
+int pplg_check_ver_renumber(int ver_needed) { return 0; }
+
+void pplg_uninit_renumber(void)
 {
 	pcb_hid_remove_actions_by_cookie(renumber_cookie);
 }
@@ -375,8 +377,8 @@ static void hid_renumber_uninit(void)
 PCB_REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
 
 #include "dolists.h"
-pcb_uninit_t hid_renumber_init(void)
+int pplg_init_renumber(void)
 {
 	PCB_REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
-	return hid_renumber_uninit;
+	return 0;
 }

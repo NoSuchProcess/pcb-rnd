@@ -140,13 +140,15 @@ int io_hyp_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, 
 	return hyp_parse(pcb->Data, Filename, 0);
 }
 
-static void hid_io_hyp_uninit()
+int pplg_check_ver_io_hyp(int ver_needed) { return 0; }
+
+void pplg_uninit_io_hyp(void)
 {
 	pcb_hid_remove_actions_by_cookie(hyp_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_io_hyp_init()
+int pplg_init_io_hyp(void)
 {
 	/* register the IO hook */
 	io_hyp.plugin_data = NULL;
@@ -170,7 +172,7 @@ pcb_uninit_t hid_io_hyp_init()
 
 
 	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
-		return hid_io_hyp_uninit;
+	return 0;
 }
 
 /* not truncated */
