@@ -34,6 +34,19 @@
 #include "hid.h"
 
 pup_context_t pcb_pup;
+char **pcb_pup_paths = NULL;
+static int paths_used = 0, paths_alloced = 0;
+
+void pcb_plugin_add_dir(const char *dir)
+{
+	if (paths_used+1 >= paths_alloced) {
+		paths_alloced += 16;
+		pcb_pup_paths = realloc(pcb_pup_paths, sizeof(char *) * paths_alloced);
+	}
+	pcb_pup_paths[paths_used] = pcb_strdup(dir);
+	paths_used++;
+	pcb_pup_paths[paths_used] = NULL;
+}
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";

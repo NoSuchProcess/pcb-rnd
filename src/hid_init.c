@@ -33,26 +33,23 @@ void pcb_hid_init()
 	/* Setup a "nogui" default HID */
 	pcb_gui = pcb_hid_nogui_get_hid();
 
-#warning puplug TODO: rewrite this
-#if 0
 #warning TODO: make this configurable
-	found = hid_load_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
+	pcb_plugin_add_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-	found += hid_load_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
+	pcb_plugin_add_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", NULL));
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-	hid_load_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-	hid_load_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", NULL));
+	pcb_plugin_add_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+	pcb_plugin_add_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", NULL));
 
 	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
 	if (conf_core.rc.path.home != NULL) {
-		hid_load_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-		hid_load_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL));
+		pcb_plugin_add_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+		pcb_plugin_add_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL));
 	}
-	hid_load_dir(pcb_concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-	hid_load_dir(pcb_concat("plugins", NULL));
-#endif
+	pcb_plugin_add_dir(pcb_concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+	pcb_plugin_add_dir(pcb_concat("plugins", NULL));
 }
 
 void pcb_hid_uninit(void)
