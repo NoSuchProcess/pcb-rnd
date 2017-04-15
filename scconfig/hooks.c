@@ -778,9 +778,6 @@ int hook_generate()
 
 	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
-	/* Has to be after pcb/Makefile so that all the modules are loaded. */
-	printf("Generating pcb/buildin  (%d)\n", generr |= tmpasm("../src", "buildin.c.in", "buildin.c"));
-
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
 
 	printf("Generating config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
