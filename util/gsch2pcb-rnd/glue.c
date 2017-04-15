@@ -63,14 +63,6 @@ void pcb_trace(const char *Format, ...)
 const char *pcb_board_get_filename(void) { return NULL; }
 const char *pcb_board_get_name(void) { return NULL; }
 
-pcb_plugin_info_t *pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
-{
-	static pcb_plugin_info_t pif;
-	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
-		printf("Plugin loaded: %s (%s)\n", name, path);
-	return &pif;
-}
-
 void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
 {
 

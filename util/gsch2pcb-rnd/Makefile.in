@@ -57,7 +57,6 @@ OBJS = \
  netlister.o \
  run.o \
  glue.o \
- method_pcb.o \
  method_import.o
 
 all:
@@ -115,19 +114,7 @@ clean:
 	$(SCCBOX) rm -f -q gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
 
 distclean: clean
-	$(SCCBOX) rm -f -q fp_init.c fp_init.h
 
 include $(ROOT)/Makefile.conf
 
 @]
-
-redir {gsch2pcb-rnd/fp_init.c}
-print [@
-@?/local/pcb/buildin_init_code@
-@]
-
-redir {gsch2pcb-rnd/fp_init.h}
-print [@
-@/local/pcb/buildin_init_extern@
-@]
-

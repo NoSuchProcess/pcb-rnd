@@ -47,7 +47,6 @@
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
-#include "method_pcb.h"
 #include "method_import.h"
 
 static const char *want_method_default = "import";
@@ -371,8 +370,6 @@ void require_gnetlist_backend(const char *dir, const char *backend)
 }
 
 
-#include "fp_init.h"
-
 const char *local_project_pcb_name = NULL;
 
 /************************ main ***********************/
@@ -380,7 +377,6 @@ int main(int argc, char ** argv)
 {
 	const char *want_method;
 
-	method_pcb_register();
 	method_import_register();
 
 	conf_init();
@@ -399,11 +395,6 @@ int main(int argc, char ** argv)
 
 	conf_load_all(NULL, NULL);
 	conf_update(NULL);
-
-	{
-		pcb_uninit_t uninit_func;
-#		include "fp_init.c"
-	}
 
 	load_extra_project_files();
 	conf_update(NULL); /* because of CLI changes */
