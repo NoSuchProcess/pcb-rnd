@@ -292,10 +292,10 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS)
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
 	$(CC) -o pcb-rnd$(EXE) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
 
-buildin.c: $(PLUGDIR)/.builtin.pups
+buildin.c: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 	cd $(PLUGDIR) && $(PUPLUG) buildin.c "-" < $(PLUGDIR)/.builtin.pups > $(ROOT)/src/buildin.c
 
-buildin.h: $(PLUGDIR)/.builtin.pups
+buildin.h: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 	$(PUPLUG) buildin.h > buildin.h
 
 @]
