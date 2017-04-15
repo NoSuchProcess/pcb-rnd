@@ -284,6 +284,11 @@ const char *pcb_action_args[] = {
 	NULL, NULL, NULL /* terminator */
 };
 
+void print_pup_err(pup_err_stack_t *entry, char *string)
+{
+	pcb_message(PCB_MSG_ERROR, "puplug: %s\n", string);
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -429,6 +434,7 @@ int main(int argc, char *argv[])
 	pcb_pup.error_stack_enable = 1;
 	pup_buildin_load(&pcb_pup, pup_buildins);
 	pup_autoload_dir(&pcb_pup, NULL, NULL);
+	pup_err_stack_process_str(&pcb_pup, print_pup_err);
 
 	pcb_hid_init();
 
