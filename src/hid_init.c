@@ -6,8 +6,6 @@
 /* for dlopen() and friends; will also solve all system-dependent includes
    and provides a dl-compat layer on windows. Also solves the opendir related
    includes. */
-#include "compat_dl.h"
-
 #include "plugins.h"
 #include "hid_attrib.h"
 #include "hid_init.h"

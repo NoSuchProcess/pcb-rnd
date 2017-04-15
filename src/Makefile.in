@@ -36,7 +36,6 @@ put /local/pcb/OBJS [@
 	conf_hid.o
 	conf_internal.o
 	clip.o
-	compat_dl.o
 	compat_fs.o
 	compat_lrealpath.o
 	compat_misc.o
