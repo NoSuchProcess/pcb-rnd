@@ -1051,6 +1051,7 @@ int pplg_check_ver_rubberband_orig(int ver_needed) { return 0; }
 
 void pplg_uninit_rubberband_orig(void)
 {
+	pcb_event_unbind_allcookie(rubber_cookie);
 }
 
 int pplg_init_rubberband_orig(void)
