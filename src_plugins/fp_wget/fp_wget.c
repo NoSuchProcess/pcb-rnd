@@ -11,6 +11,8 @@ int pplg_check_ver_fp_wget(int ver_needed) { return 0; }
 void pplg_uninit_fp_wget(void)
 {
 	fp_gedasymbols_uninit();
+	fp_edakrill_uninit();
+	conf_unreg_fields("plugins/fp_wget/");
 }
 
 int pplg_init_fp_wget(void)

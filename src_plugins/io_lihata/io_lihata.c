@@ -47,6 +47,7 @@ int pplg_check_ver_io_lihata(int ver_needed) { return 0; }
 
 void pplg_uninit_io_lihata(void)
 {
+	conf_unreg_fields("plugins/io_lihata/");
 }
 
 int pplg_init_io_lihata(void)

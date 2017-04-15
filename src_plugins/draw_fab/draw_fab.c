@@ -299,6 +299,7 @@ int pplg_check_ver_draw_fab(int ver_needed) { return 0; }
 
 void pplg_uninit_draw_fab(void)
 {
+	conf_unreg_fields("plugins/draw_fab/");
 }
 
 int pplg_init_draw_fab(void)
