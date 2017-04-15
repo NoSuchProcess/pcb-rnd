@@ -39,6 +39,10 @@ gen_pie "core" $code_size "#00ff88" >> after.pie
 #gen_pie "3rd" $code_size >> after.pie
 
 echo "" > classes
+echo '
+digraph plugin_deps {
+overlap=scale
+'> deps.dot
 
 (
 cat pre.html
@@ -68,13 +72,22 @@ do
 #		esac
 
 		echo "<tr><th align=left>$bn<td>$code_size"
-		cat $n/*.pup | awk '
+		cat $n/*.pup | awk -v "plugin=$n" '
+		 BEGIN {
+				q = "\""
+				dep="/dev/fd/3"
+				sub(".*/", "", plugin)
+		 }
 			/^[$]/ {
 				key=$1
 				sub("[$]", "", key)
 				$1=""
 				DB[key]=$0
 				next
+			}
+
+			/^dep/ {
+				print q plugin q "->" q $2 q >> dep
 			}
 
 			/^[A-Za-z]/ {
@@ -118,7 +131,7 @@ do
 					clr = "bgcolor=\"lightgreen\""
 				else if (dfl ~ "plugin")
 					clr = "bgcolor=\"yellow\""
-				else if ((dfl ~ "fail") || (dfl ~ "disable"))
+				else if ((dfl ~ "disable-all") || (dfl ~ "disable"))
 					clr = "bgcolor=\"red\""
 				else
 					clr=""
@@ -128,13 +141,31 @@ do
 					print "<br> (" strip(DB["ldefault"]) ")"
 				print "<td>" DB["class"]
 				print "<td>" DB["long"]
+				if (int(DB["autoload"]))
+					print q "user" q "->" q plugin q " [color=\"#a0a0a0\"]" >> dep
+
+				class = DB["class"]
+				if (class ~ "io")
+					clr = "fillcolor=\"#ffa0a0\""
+				else if (class ~ "import")
+					clr = "fillcolor=\"#a0ffff\""
+				else if (class ~ "export")
+					clr = "fillcolor=\"#a0ffff\""
+				else if (class ~ "lib")
+					clr = "fillcolor=\"#a0a0a0\""
+				else if (class ~ "hid")
+					clr = "fillcolor=\"#a0a0ff\""
+				print q plugin q " [style=filled " clr "]" >> dep
 			}
 		'
 	fi
 done
 cat post.html
 gen_pie "plugins" "$total" "#0088ff" >> after.pie
-) > index.html
+) > index.html 3>>deps.dot
+echo "}" >>deps.dot
+
+twopi -Tsvg deps.dot > deps.svg
 
 for n in *.lines
 do
