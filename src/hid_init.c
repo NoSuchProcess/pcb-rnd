@@ -13,7 +13,6 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_inc.h"
-#include "fptr_cast.h"
 
 pcb_hid_t **pcb_hid_list = 0;
 int pcb_hid_num_hids = 0;
@@ -25,33 +24,6 @@ pcb_hid_t *pcb_exporter = NULL;
 int pcb_pixel_slop = 1;
 
 pcb_plugin_dir_t *pcb_plugin_dir_first = NULL, *pcb_plugin_dir_last = NULL;
-
-void hid_append_dir(char *dirname, int count)
-{
-	pcb_plugin_dir_t *pd;
-	pd = malloc(sizeof(pcb_plugin_dir_t));
-	pd->path = dirname;
-	pd->num_plugins = count;
-	pd->next = NULL;
-	if (pcb_plugin_dir_first == NULL)
-		pcb_plugin_dir_first = pd;
-	if (pcb_plugin_dir_last != NULL)
-		pcb_plugin_dir_last->next = pd;
-	pcb_plugin_dir_last = pd;
-}
-
-static unsigned int plugin_hash(const char *fn)
-{
-	unsigned int h = 0;
-	FILE *f = fopen(fn, "r");
-	if (f != NULL) {
-		char buff[256];
-		int len = fread(buff, 1, sizeof(buff), f);
-		h ^= jenhash(buff, len);
-		fclose(f);
-	}
-	return h;
-}
 
 void pcb_hid_init()
 {
