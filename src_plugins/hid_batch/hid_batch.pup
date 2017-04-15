@@ -3,3 +3,4 @@ $short batch process (no-gui HID)
 $long HID without GUI: read actions from stdin.
 $state works
 default buildin
+autoload 1

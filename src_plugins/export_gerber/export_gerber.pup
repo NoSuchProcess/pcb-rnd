@@ -3,3 +3,4 @@ $short gerber pcb_exporter
 $long Export to gerber
 $state works
 default buildin
+autoload 1

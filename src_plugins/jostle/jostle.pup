@@ -3,3 +3,4 @@ $short push lines out of the way
 $long Pushes lines out of the way.
 $state works
 default buildin
+autoload 1

@@ -3,3 +3,4 @@ $short object property editor
 $long List and edit properties of a group of objects.
 $state works
 default buildin
+autoload 1

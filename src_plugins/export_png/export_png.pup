@@ -3,3 +3,4 @@ $short png/gif/jpg pcb_exporter
 $long Export to png, gif and jpeg
 $state works
 default buildin
+autoload 1

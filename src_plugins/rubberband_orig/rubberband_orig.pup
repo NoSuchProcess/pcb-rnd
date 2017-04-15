@@ -3,3 +3,4 @@ $short the original rubberband
 $long The original rubberband code.
 $state works
 default buildin
+autoload 1

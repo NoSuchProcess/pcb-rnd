@@ -3,3 +3,4 @@ $short command shorthands
 $long vi-like command shorthands (1..3 character long commands)
 $state works
 default buildin
+autoload 1

@@ -3,3 +3,4 @@ $short puller
 $long Pull traces to minimize their length.
 $state works
 default buildin
+autoload 1

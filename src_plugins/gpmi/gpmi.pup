@@ -4,3 +4,4 @@ $long Scriptable plugin system with about 10 scripting languages supported and d
 $state works
 $ldefault: if gpmi is installed
 default buildin
+autoload 1

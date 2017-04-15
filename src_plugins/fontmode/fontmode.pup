@@ -3,3 +3,4 @@ $short font editor
 $long Font editing actions.
 $state works
 default buildin
+autoload 1

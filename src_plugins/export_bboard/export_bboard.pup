@@ -3,3 +3,4 @@ $short breadboard pcb_exporter
 $long Export breadboard
 $state WIP
 default disable-all
+autoload 1

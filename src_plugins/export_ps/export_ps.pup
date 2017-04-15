@@ -3,3 +3,4 @@ $short postscript pcb_exporter
 $long Export postscript or embedded postscript.
 $state works
 default buildin
+autoload 1

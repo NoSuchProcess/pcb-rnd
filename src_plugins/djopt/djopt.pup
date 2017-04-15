@@ -3,3 +3,4 @@ $short djopt board optimization
 $long Various board optimization algorithms.
 $state works
 default buildin
+autoload 1

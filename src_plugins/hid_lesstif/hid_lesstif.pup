@@ -5,3 +5,4 @@ $state works
 default buildin
 dep draw_csect
 dep draw_fontsel
+autoload 1

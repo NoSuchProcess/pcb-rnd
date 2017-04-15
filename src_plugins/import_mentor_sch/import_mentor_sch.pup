@@ -4,3 +4,4 @@ $long Import Mentor Graphics Design Capture from flattened .edf netlist, using a
 $state works
 default buildin
 dep lib_gensexpr
+autoload 1

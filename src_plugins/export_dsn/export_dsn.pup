@@ -3,3 +3,4 @@ $short specctra .dsn pcb_exporter
 $long Export specctra .dsn files
 $state works
 default buildin
+autoload 1

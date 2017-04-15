@@ -3,3 +3,4 @@ $short specctra .dsn importer
 $long Import specctra .dsn files
 $state works
 default buildin
+autoload 1

@@ -3,3 +3,4 @@ $short openscad pcb_exporter
 $long Export openscad
 $state WIP
 default disable-all
+autoload 1

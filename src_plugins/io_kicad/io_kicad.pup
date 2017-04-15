@@ -6,3 +6,5 @@ default buildin
 
 # for the uniq name lib:
 dep lib_gensexpr
+
+autoload 1

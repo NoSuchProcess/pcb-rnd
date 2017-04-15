@@ -3,3 +3,4 @@ $short DXF pcb_exporter
 $long Export dxf
 $state WIP
 default disable-all
+autoload 1

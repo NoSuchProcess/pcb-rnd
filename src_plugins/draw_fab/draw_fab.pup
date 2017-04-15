@@ -6,3 +6,4 @@ default buildin
 
 # for drill.[ch]
 dep report
+autoload 1

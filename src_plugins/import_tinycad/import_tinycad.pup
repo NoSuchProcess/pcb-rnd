@@ -3,3 +3,4 @@ $short import tinycad .net
 $long Import the netlist and footprints from a tinycad netlist.
 $state works
 default buildin
+autoload 1

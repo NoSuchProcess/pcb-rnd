@@ -3,3 +3,4 @@ $short flip board objects
 $long All objects on the board are up-down flipped.
 $lstate doesn't update rtrees
 default buildin
+autoload 1

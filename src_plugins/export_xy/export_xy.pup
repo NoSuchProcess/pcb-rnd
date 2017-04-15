@@ -4,3 +4,4 @@ $long Export XY centroid element data for pick & place.
 $state works
 default buildin
 dep export_bom
+autoload 1

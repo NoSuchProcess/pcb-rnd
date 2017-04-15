@@ -3,3 +3,4 @@ $short crop board to fit objects
 $long Reduce the board dimensions to just enclose the elements.
 $state works
 default buildin
+autoload 1

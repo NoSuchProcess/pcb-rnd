@@ -3,3 +3,4 @@ $short draw teardrops on pins
 $long Draw teardrops on pins.
 $state works
 default buildin
+autoload 1

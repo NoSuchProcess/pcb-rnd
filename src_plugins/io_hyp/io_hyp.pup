@@ -3,3 +3,4 @@ $short hyperlynx .hyp loader
 $long Import plugin for hyperlynx geometry (no polygons yet).
 $state works
 default buildin
+autoload 1

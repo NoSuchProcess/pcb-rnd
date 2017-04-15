@@ -3,3 +3,4 @@ $short vendor drill mapping
 $long Vendor drill mapping.
 $state works
 default buildin
+autoload 1
