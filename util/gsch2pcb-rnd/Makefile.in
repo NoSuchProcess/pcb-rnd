@@ -41,8 +41,6 @@ put /local/pcb/CFLAGS {}
 put /local/pcb/buildin_init_code {}
 put /local/pcb/buildin_init_extern {}
 
-include {../src_plugins/plugins_fp.tmpasm}
-
 uniq /local/pcb/OBJS
 
 print [@
