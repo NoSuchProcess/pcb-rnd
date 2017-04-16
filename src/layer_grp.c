@@ -294,8 +294,10 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id)
 	inhibit_notify++;
 	g = pcb_get_grp_new_intern_(pcb, 0);
 	inhibit_notify--;
-	g->intern_id = intern_id;
-	NOTIFY();
+	if (g != NULL) {
+		g->intern_id = intern_id;
+		NOTIFY();
+	}
 	return g;
 }
 
