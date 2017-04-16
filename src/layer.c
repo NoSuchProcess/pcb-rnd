@@ -283,6 +283,13 @@ void pcb_layers_reset()
 	PCB->Data->LayerN = 0;
 }
 
+/* empty and detach a layer - must be initialized or another layer moved over it later */
+static void layer_clear(pcb_layer_t *dst)
+{
+	memset(dst, 0, sizeof(pcb_layer_t));
+	dst->grp = -1;
+}
+
 pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 {
 	pcb_layer_id_t id;
@@ -294,8 +301,10 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 	if (lname != NULL) {
 		if (PCB->Data->Layer[id].Name != NULL)
 			free((char *)PCB->Data->Layer[id].Name);
-		PCB->Data->Layer[id].Name = pcb_strdup(lname);
 	}
+
+	layer_clear(&PCB->Data->Layer[id]);
+	PCB->Data->Layer[id].Name = pcb_strdup(lname);
 
 	/* add layer to group */
 	if (grp >= 0) {
@@ -410,13 +419,6 @@ static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 		po->link.parent = &dst->Polygon.lst;
 	for(ar = arclist_first(&dst->Arc); ar != NULL; ar = arclist_next(ar))
 		ar->link.parent = &dst->Arc.lst;
-}
-
-/* empty and detach a layer - must be initialized or another layer moved over it later */
-static void layer_clear(pcb_layer_t *dst)
-{
-	memset(dst, 0, sizeof(pcb_layer_t));
-	dst->grp = -1;
 }
 
 /* Initialize a new layer with safe initial values */
