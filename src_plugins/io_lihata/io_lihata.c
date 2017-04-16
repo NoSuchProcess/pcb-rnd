@@ -39,7 +39,7 @@ int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fm
 		((typ & (~(/*PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER |*/ PCB_IOT_PCB | PCB_IOT_FONT))) != 0))
 		return 0;
 	if (wr)
-		return 100;
+		return ctx->save_preference_prio;
 	return 100;
 }
 
@@ -83,7 +83,7 @@ int pplg_init_io_lihata(void)
 	io_lihata1.write_buffer = NULL;
 	io_lihata1.write_element = NULL;
 	io_lihata1.write_pcb = io_lihata_write_pcb_v1;
-	io_lihata1.default_fmt = "lihata-v1";
+	io_lihata1.default_fmt = "lihata";
 	io_lihata1.description = "lihata board v1";
 	io_lihata1.save_preference_prio = 99;
 	io_lihata1.default_extension = ".lht";

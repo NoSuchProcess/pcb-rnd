@@ -458,6 +458,15 @@ static lht_node_t *build_element(pcb_element_t *elem)
 }
 
 
+static lht_node_t *build_layer_stack(pcb_board_t *pcb)
+{
+	lht_node_t *lstk;
+	lstk = lht_dom_node_alloc(LHT_HASH, "layer_stack");
+
+
+	return lstk;
+}
+
 static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int layer_group)
 {
 	lht_node_t *obj, *grp;
@@ -855,6 +864,8 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	sprintf(vers, "pcb-rnd-board-v%d", wrver);
 	brd->root = lht_dom_node_alloc(LHT_HASH, vers);
 	lht_dom_hash_put(brd->root, build_board_meta(pcb));
+	if (wrver >= 2)
+		lht_dom_hash_put(brd->root, build_layer_stack(pcb));
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
@@ -908,10 +919,11 @@ static void clean_invalid(lht_node_t *node)
 static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency, int ver)
 {
 	int res;
-	lht_doc_t *brd = build_board(PCB);
+	lht_doc_t *brd;
 	const char *fnpat = conf_io_lihata.plugins.io_lihata.aux_pcb_pattern;
 
 	wrver = ver;
+	brd = build_board(PCB);
 
 	if ((fnpat != NULL) && (*fnpat != '\0')) {
 		char *orig_fn;
