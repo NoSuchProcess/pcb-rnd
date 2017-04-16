@@ -481,10 +481,15 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 					mask_start_sub(thin, &state, screen);
 				adding = want_add;
 			}
-			if (l->comb & PCB_LYC_AUTO)
-				pcb_draw_mask_auto(side, screen);
-			else
+			if (!(l->comb & PCB_LYC_AUTO)) {
+				const char *old_color = l->Color;
+				if (!thin)
+					l->Color = PCB->MaskColor;
 				pcb_draw_layer(l, screen);
+				l->Color = old_color;
+			}
+			else
+				pcb_draw_mask_auto(side, screen);
 		}
 		if (!adding)
 			mask_start_add(thin, screen);
