@@ -214,6 +214,7 @@ static int pcb_act_DumpFonts(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 	else
 		printf(" <no extra font loaded>\n");
+	return 0;
 }
 
 #ifndef NDEBUG
@@ -223,6 +224,7 @@ static int pcb_act_DumpUndo(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	printf("Undo:\n");
 	undo_dump();
+	return 0;
 }
 #endif
 
