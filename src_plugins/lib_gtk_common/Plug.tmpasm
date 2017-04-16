@@ -62,13 +62,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/wt_route_style.o
 @]
 
-
-switch /local/pcb/lib_gtk_common/controls
-	case {buildin}   include /local/pcb/tmpasm/buildin; end;
-	case {plugin}    include /local/pcb/tmpasm/plugin; end;
-	case {disable}   include /local/pcb/tmpasm/disable; end;
-end
-
 switch /local/pcb/lib_gtk_common/controls
 	case {disable} end;
 	default
@@ -77,6 +70,11 @@ switch /local/pcb/lib_gtk_common/controls
 	end
 end
 
+switch /local/pcb/lib_gtk_common/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
 
 # always generate the menu lht rule so make dep can be run
 append /local/pcb/CLEANFILES { $(PLUGDIR)/lib_gtk_common/menu_lht.c }
