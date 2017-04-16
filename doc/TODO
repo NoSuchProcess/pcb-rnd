@@ -10,6 +10,8 @@
 	- command dialog:
 		- closing it with ESC key seems to fire the last action. Expected is, doing nothing
 		- when you press the up arrow it doesn't bring back the last command but the first you ever typed
+	- plugins:
+		- turn gpmi into a conventional plugin
 
 - plugin breakage:
 	- don't force builtin for dependant libs
@@ -74,7 +76,6 @@ CLEANUP #5
 	- grid size change should be undoable? [report:Evan]
 	- maybe other conf settings too?
 - search for move.dst_layer - don't compare pointer to -1!
-- rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
