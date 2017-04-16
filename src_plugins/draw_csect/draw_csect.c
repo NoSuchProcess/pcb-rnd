@@ -465,6 +465,28 @@ static void draw_csect(pcb_hid_gc_t gc)
 	}
 }
 
+/* Returns 0 if gactive can be removed from its current group */
+static int check_layer_del(pcb_layer_id_t lid)
+{
+	pcb_layer_group_t *grp;
+	unsigned int tflg;
+
+	tflg = pcb_layer_flags(lid);
+	grp = pcb_get_layergrp(PCB, pcb_layer_get_group(PCB, lid));
+
+	if (grp == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Invalid source group.\n");
+		return -1;
+	}
+
+	if ((tflg & PCB_LYT_SILK) && (grp->len == 1)) {
+		pcb_message(PCB_MSG_ERROR, "Can not remove the last layer of this group because this group must have at least one layer.\n");
+		return -1;
+	}
+
+	return 0;
+}
+
 static void do_move_grp()
 {
 	unsigned int tflg;
@@ -571,7 +593,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			else if (drag_lid >= 0) {
 				if (gactive >= 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
-					if (l->grp != gactive) {
+					if ((l->grp != gactive) && (check_layer_del(drag_lid) == 0)) {
 						pcb_layer_move_to_group(PCB, drag_lid, gactive);
 						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->Name, gactive);
 					}
