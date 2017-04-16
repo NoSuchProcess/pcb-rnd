@@ -418,19 +418,23 @@ static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
  */
 static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
 {
-	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
+	pcb_r_search(PCB->Data->pin_tree, screen, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->via_tree, screen, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
+}
 
+static void mask_start_sub(int thin, const pcb_box_t *screen)
+{
 	if (thin)
 		pcb_gui->set_color(Output.pmGC, PCB->MaskColor);
 	else {
 		DrawMaskBoardArea(HID_MASK_BEFORE, screen);
 		pcb_gui->use_mask(HID_MASK_CLEAR);
 	}
+}
 
-	pcb_r_search(PCB->Data->pin_tree, screen, NULL, clear_pin_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->via_tree, screen, NULL, clear_pin_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
-
+static void mask_start_add(int thin, const pcb_box_t *screen)
+{
 	if (thin)
 		pcb_gui->set_color(Output.pmGC, "erase");
 	else {
@@ -441,7 +445,11 @@ static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
 
 static void pcb_draw_mask(int side, const pcb_box_t * screen)
 {
+	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
+
+	mask_start_sub(thin, screen);
 	pcb_draw_mask_auto(side, screen);
+	mask_start_add(thin, screen);
 }
 
 static void DrawRats(const pcb_box_t * drawn_area)
