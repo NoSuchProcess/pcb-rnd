@@ -82,6 +82,12 @@ typedef enum {
 	PCB_VLY_first = PCB_VLY_INVISIBLE
 } pcb_virtual_layer_t;
 
+typedef enum { /* bitfield */
+	PCB_LYC_SUB = 1,        /* bit 0 is 0 for add or 1 for sub */
+	PCB_LYC_AUTO = 2        /* bit 1 is 0 for manual drawn layer or 1 for auto-generated (from pins, pads, elements) */
+} pcb_layer_combining_t;
+
+
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "attrib.h"
@@ -100,6 +106,8 @@ struct pcb_layer_s {              /* holds information about one layer */
 	pcb_attribute_list_t Attributes;
 	int no_drc;                    /* whether to ignore the layer when checking the design rules */
 	pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
+
+	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
 
 	const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
 };
