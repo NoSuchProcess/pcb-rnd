@@ -226,6 +226,14 @@ static int pcb_act_DumpUndo(int argc, const char **argv, pcb_coord_t x, pcb_coor
 }
 #endif
 
+static const char d1_syntax[] = "d1()\n";
+static const char d1_help[] = "debug action for development";
+static int pcb_act_d1(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	printf("D1!\n");
+	return 0;
+}
+
 
 pcb_hid_action_t diag_action_list[] = {
 	{"dumpconf", 0, pcb_act_DumpConf,
@@ -239,7 +247,9 @@ pcb_hid_action_t diag_action_list[] = {
 	 dump_undo_help, dump_undo_syntax},
 #endif
 	{"EvalConf", 0, pcb_act_EvalConf,
-	 eval_conf_help, eval_conf_syntax}
+	 eval_conf_help, eval_conf_syntax},
+	{"d1", 0, pcb_act_d1,
+	 d1_help, d1_syntax}
 
 };
 
