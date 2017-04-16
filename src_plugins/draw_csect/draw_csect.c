@@ -189,7 +189,8 @@ enum {
 	OMIT_TOP = 1,
 	OMIT_BOTTOM = 2,
 	OMIT_LEFT = 4,
-	OMIT_RIGHT = 8
+	OMIT_RIGHT = 8,
+	OMIT_ALL = 1|2|4|8
 };
 
 /* draw a hatched rectangle; to turn off hatching in a directon set the
@@ -409,13 +410,27 @@ static void draw_csect(pcb_hid_gc_t gc)
 				pcb_text_t *t;
 				pcb_layer_id_t lid = g->lid[i];
 				pcb_layer_t *l = &PCB->Data->Layer[lid];
+				int redraw_text = 0;
+
 				if (lid == drag_lid)
 					continue;
 				t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
 				pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-				x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
-				dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
+				if (l->comb & PCB_LYC_SUB) {
+					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1.2, 0, 0, 0, OMIT_NONE);
+					redraw_text = 1;
+				}
+
+				if (redraw_text)
+					t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
+				else
+					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
+
+				if (l->comb & PCB_LYC_AUTO)
+					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.0, 0, 3, 0, OMIT_ALL);
+
 				reg_layer_coords(lid, t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));
+				x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
 			}
 		}
 
