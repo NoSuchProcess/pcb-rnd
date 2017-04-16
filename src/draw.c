@@ -379,12 +379,8 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 static void pcb_draw_silk_auto(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
 	pcb_layer_id_t lid;
-	int side = lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
+	int side = (lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE);
 
-	if (pcb_layer_list(PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
-		return;
-
-	pcb_draw_layer(LAYER_PTR(lid), drawn_area);
 	/* draw package */
 	pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -392,6 +388,13 @@ static void pcb_draw_silk_auto(unsigned int lyt_side, const pcb_box_t * drawn_ar
 
 static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
+	pcb_layer_id_t lid;
+
+	if (pcb_layer_list(PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
+		return;
+
+	pcb_draw_layer(LAYER_PTR(lid), drawn_area);
+
 	pcb_draw_silk_auto(lyt_side, drawn_area);
 }
 
