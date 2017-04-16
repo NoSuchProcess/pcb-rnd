@@ -47,6 +47,7 @@
 
 #warning TODO: put these in a gloal load-context-struct
 vtptr_t post_ids, post_thermal;
+static int rdver;
 
 /* Collect objects that has unknown ID on a list. Once all objects with
    known-IDs are allocated, the unknonw-ID objects are allocated a fresh
@@ -1080,8 +1081,13 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
 
-	if ((nd->type != LHT_HASH) || (strcmp(nd->name, "pcb-rnd-board-v1"))) {
+	if ((nd->type != LHT_HASH) || (strncmp(nd->name, "pcb-rnd-board-v", 15) != 0)) {
 		pcb_message(PCB_MSG_ERROR, "Not a board lihata.\n");
+		return -1;
+	}
+	rdver = atoi(nd->name+15);
+	if ((rdver < 1) || (rdver > 2)) {
+		pcb_message(PCB_MSG_ERROR, "Lihata board version %d not supported; must be 1 or 2.\n", rdver);
 		return -1;
 	}
 
