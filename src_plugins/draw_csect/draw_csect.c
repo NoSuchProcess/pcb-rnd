@@ -403,7 +403,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 
 
 		/* draw layer names */
-		if (g->type & PCB_LYT_COPPER) {
+		{
 			x = GROUP_WIDTH_MM + 3;
 			for(i = 0; i < g->len; i++) {
 				pcb_text_t *t;
