@@ -1282,6 +1282,12 @@ static const gchar *layer_info_text[] = {
 		 "on the Logical layers tab. The new logical layer is inserted\n"
 		 "before the active layer (display order) and into the first (top)\n"
 		 "copper group in the physical stack.\n"
+	"\n"),
+	N_("<h>Layer button styles\n"),
+	N_("A normal, user editable layer has a thin frame and no fill.\n"
+		 "When the button is drawn with \\\\\\ fill, the layer is not user\n"
+		 "editable but automatically generated. When the frame is thick,\n"
+		 "the layer is subtracted, not added during the render.\n"
 	"\n")
 };
 
