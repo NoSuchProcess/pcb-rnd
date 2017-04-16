@@ -200,7 +200,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
-		if (gflg & PCB_LYT_SILK) /* do not draw silk here, it'll be drawn separately */
+		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE)) /* do not draw silk, mask and paste here, they'll be drawn separately */
 			continue;
 
 		if (l->On && !do_group[group]) {
