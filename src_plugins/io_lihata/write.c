@@ -457,17 +457,39 @@ static lht_node_t *build_element(pcb_element_t *elem)
 	return obj;
 }
 
+static void build_layer_stack_flag(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name)
+{
+	lht_node_t *dst = ctx;
+	lht_dom_hash_put(dst, build_text(name, "1"));
+}
 
 static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 {
-	lht_node_t *lstk;
-	lstk = lht_dom_node_alloc(LHT_HASH, "layer_stack");
+	lht_node_t *lstk, *grps, *grp, *layers, *flags;
+	int n, i;
 
+	lstk = lht_dom_node_alloc(LHT_HASH, "layer_stack");
+	lht_dom_hash_put(lstk, grps = lht_dom_node_alloc(LHT_LIST, "groups"));
+
+	for(n = 0; n < pcb->LayerGroups.len; n++) {
+		pcb_layer_group_t *g = &pcb->LayerGroups.grp[n];
+		char tmp[32];
+		sprintf(tmp, "%d", n);
+		lht_dom_list_append(grps, grp = lht_dom_node_alloc(LHT_HASH, tmp));
+
+		lht_dom_hash_put(grp, build_text("name", g->name));
+		lht_dom_hash_put(grp, layers = lht_dom_node_alloc(LHT_LIST, "layers"));
+		for(i = 0; i < g->len; i++)
+			lht_dom_list_append(layers, build_textf("", "%ld", g->lid[i]));
+
+		lht_dom_hash_put(grp, flags = lht_dom_node_alloc(LHT_HASH, "type"));
+		pcb_layer_type_map(g->type, flags, build_layer_stack_flag);
+	}
 
 	return lstk;
 }
 
-static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int layer_group)
+static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int layer_group, pcb_layer_id_t lid)
 {
 	lht_node_t *obj, *grp;
 	pcb_line_t *li;
@@ -483,6 +505,8 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int la
 	lht_dom_hash_put(obj, build_attributes(&layer->Attributes));
 	sprintf(tmp, "%d", layer_group);
 	lht_dom_hash_put(obj, build_text("group", tmp));
+	if (wrver >= 2)
+		lht_dom_hash_put(obj, build_textf("lid", "%ld", lid));
 
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
 
@@ -561,7 +585,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 					gid = -1;
 			}
 		}
-		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid));
+		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
 	}
 
 	return layers;
