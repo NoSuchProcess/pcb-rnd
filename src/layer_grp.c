@@ -59,6 +59,14 @@ pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 	return Layer->grp;
 }
 
+pcb_layer_group_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid)
+{
+	if ((gid < 0) || (gid >= pcb->LayerGroups.len))
+		return NULL;
+	return pcb->LayerGroups.grp + gid;
+}
+
+
 pcb_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, pcb_layer_id_t lid)
 {
 	if ((lid < 0) || (lid >= pcb->Data->LayerN))

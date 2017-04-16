@@ -57,6 +57,9 @@ struct pcb_layer_stack_s {
 	pcb_layer_group_t grp[PCB_MAX_LAYERGRP];
 };
 
+/* Return the layer group for an id, or NULL on error (range check) */
+pcb_layer_group_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
+
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
 pcb_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
