@@ -75,9 +75,9 @@ pcb_bool pcb_draw_doing_assy = pcb_false;
  */
 static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *);
-static void DrawMask(int side, const pcb_box_t *);
+static void pcb_draw_mask(int side, const pcb_box_t *);
 static void DrawRats(const pcb_box_t *);
-static void DrawSilk(unsigned int lyt_side, const pcb_box_t *);
+static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t *);
 
 #warning TODO: this should be cached
 void pcb_lighten_color(const char *orig, char buf[8], double factor)
@@ -151,7 +151,7 @@ static void PrintAssembly(unsigned int lyt_side, const pcb_box_t * drawn_area)
 	pcb_gui->set_draw_faded(Output.fgGC, 0);
 
 	/* draw package */
-	DrawSilk(lyt_side, drawn_area);
+	pcb_draw_silk(lyt_side, drawn_area);
 	pcb_draw_doing_assy = pcb_false;
 }
 
@@ -169,6 +169,11 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
 		DrawHoles(pcb_false, pcb_true, drawn_area);
 		pcb_gui->end_layer();
 	}
+}
+
+void pcb_draw_paste(int side, const pcb_box_t * drawn_area)
+{
+	pcb_draw_paste_auto(side, drawn_area);
 }
 
 /* ---------------------------------------------------------------------------
@@ -246,13 +251,13 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	/* Draw the solder mask if turned on */
 	gid = pcb_layergrp_get_top_mask();
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, 0))) {
-		DrawMask(PCB_COMPONENT_SIDE, drawn_area);
+		pcb_draw_mask(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	gid = pcb_layergrp_get_bottom_mask();
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, 0))) {
-		DrawMask(PCB_SOLDER_SIDE, drawn_area);
+		pcb_draw_mask(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
@@ -261,7 +266,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	for(i = 0; i < slk_len; i++) {
 		if (pcb_layer_gui_set_glayer(slk[i], 0)) {
 			unsigned int loc = pcb_layergrp_flags(PCB, slk[i]);
-			DrawSilk(loc & PCB_LYT_ANYWHERE, drawn_area);
+			pcb_draw_silk(loc & PCB_LYT_ANYWHERE, drawn_area);
 			pcb_gui->end_layer();
 		}
 	}
@@ -283,14 +288,14 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	paste_empty = pcb_layer_is_paste_empty(PCB_COMPONENT_SIDE);
 	gid = pcb_layergrp_get_top_paste();
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, paste_empty))) {
-		DrawPaste(PCB_COMPONENT_SIDE, drawn_area);
+		pcb_draw_paste(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	paste_empty = pcb_layer_is_paste_empty(PCB_SOLDER_SIDE);
 	gid = pcb_layergrp_get_bottom_paste();
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, paste_empty))) {
-		DrawPaste(PCB_SOLDER_SIDE, drawn_area);
+		pcb_draw_paste(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
@@ -371,7 +376,7 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
  * Draws silk layer.
  */
 
-static void DrawSilk(unsigned int lyt_side, const pcb_box_t * drawn_area)
+static void pcb_draw_silk_auto(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
 #if 0
 	/* This code is used when you want to mask silk to avoid exposed
@@ -415,6 +420,11 @@ static void DrawSilk(unsigned int lyt_side, const pcb_box_t * drawn_area)
 #endif
 }
 
+static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t * drawn_area)
+{
+	pcb_draw_silk_auto(lyt_side, drawn_area);
+}
+
 
 static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
 {
@@ -433,7 +443,7 @@ static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
 /* ---------------------------------------------------------------------------
  * draws solder mask layer - this will cover nearly everything
  */
-static void DrawMask(int side, const pcb_box_t * screen)
+static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
 {
 	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 
@@ -454,6 +464,11 @@ static void DrawMask(int side, const pcb_box_t * screen)
 		DrawMaskBoardArea(HID_MASK_AFTER, screen);
 		pcb_gui->use_mask(HID_MASK_OFF);
 	}
+}
+
+static void pcb_draw_mask(int side, const pcb_box_t * screen)
+{
+	pcb_draw_mask_auto(side, screen);
 }
 
 static void DrawRats(const pcb_box_t * drawn_area)

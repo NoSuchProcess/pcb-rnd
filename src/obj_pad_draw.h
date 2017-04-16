@@ -34,7 +34,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl);
 #endif
 
 void draw_pad(pcb_pad_t * pad);
-void DrawPaste(int side, const pcb_box_t * drawn_area);
+void pcb_draw_paste_auto(int side, const pcb_box_t * drawn_area);
 void ErasePad(pcb_pad_t *Pad);
 void ErasePadName(pcb_pad_t *Pad);
 void DrawPad(pcb_pad_t *Pad);
