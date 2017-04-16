@@ -762,9 +762,13 @@ static void layer_fixup(pcb_board_t *pcb)
 		else
 			g = pcb_get_grp_new_intern(pcb, grp);
 /*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
-		pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, n);
-		if (strcmp(l->Name, "outline") == 0)
-			pcb_layergrp_fix_turn_to_outline(g);
+		if (g != NULL) {
+			pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, n);
+			if (strcmp(l->Name, "outline") == 0)
+				pcb_layergrp_fix_turn_to_outline(g);
+		}
+		else
+			pcb_message(PCB_MSG_ERROR, "failed to create layer %s\n", l->Name);
 	}
 
 	pcb_layergrp_fix_old_outline(pcb);
