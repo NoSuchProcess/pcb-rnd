@@ -43,11 +43,6 @@
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 
-After RELEASE 1.2.2:
-	- gsch2pcb-rnd migration
-		- remove old project file support
-		- remove -m pcb
-
 CLEANUP #5
 - extend the DRC window to be a generic location list
 	- buttons to select one or all items or all items including locked
