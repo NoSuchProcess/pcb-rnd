@@ -218,6 +218,7 @@ static int pcb_act_DumpFonts(int argc, const char **argv, pcb_coord_t x, pcb_coo
 }
 
 #ifndef NDEBUG
+extern void undo_dump(void);
 static const char dump_undo_syntax[] = "dumpfonts()\n";
 static const char dump_undo_help[] = "Print info about fonts";
 static int pcb_act_DumpUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)

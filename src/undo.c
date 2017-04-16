@@ -1653,7 +1653,7 @@ static const char *undo_type2str(int type)
 	return buff;
 }
 
-void undo_dump()
+void undo_dump(void)
 {
 	size_t n;
 	int last_serial = -2;
