@@ -147,11 +147,6 @@ static void register_actions()
 	pcb_hid_register_action(&act, gpmi_cookie, 0);
 }
 
-#ifndef PLUGIN_INIT_NAME
-#define PLUGIN_INIT_NAME pcb_plugin_init
-#endif
-
-pcb_uninit_t PLUGIN_INIT_NAME ();
 static gpmi_package *pkg_scripts = NULL;
 
 static void load_base_and_cfg(void)
@@ -228,7 +223,12 @@ static void load_base_and_cfg(void)
 	free(hdirh);
 }
 
-static void plugin_gpmi_uninit(void)
+int pplg_check_ver_gpmi(int ver_needed)
+{
+	return 0;
+}
+
+void pplg_uninit_gpmi(void)
 {
 	pcb_event_unbind_allcookie(gpmi_cookie);
 	pcb_hid_remove_actions_by_cookie(gpmi_cookie);
@@ -237,15 +237,15 @@ static void plugin_gpmi_uninit(void)
 	gpmi_uninit();
 }
 
-pcb_uninit_t hid_gpmi_init(void)
+int pplg_init_gpmi(void)
 {
 	gpmi_init();
 	load_base_and_cfg();
-	return plugin_gpmi_uninit;
+	return 0;
 }
 
 /* Workaround: can't call it gpmi.so so basename is gpmi_plugin thus init name must be that too for the loader */
-pcb_uninit_t hid_gpmi_plugin_init(void)
+int pplg_init_gpmi_plugin(void)
 {
-	return hid_gpmi_init();
+	return pplg_init_gpmi();
 }
