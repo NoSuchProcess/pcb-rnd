@@ -48,6 +48,7 @@
 /*#define CFMT "%$$mn"*/
 
 static int io_lihata_full_tree = 0;
+static int wrver;
 
 /* An invalid node will kill any existing node on an overwrite-save-merge */
 static lht_node_t *dummy_node(const char *name)
@@ -848,9 +849,11 @@ static lht_node_t *build_conf()
 
 static lht_doc_t *build_board(pcb_board_t *pcb)
 {
+	char vers[32];
 	lht_doc_t *brd = lht_dom_init();
 
-	brd->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-board-v1");
+	sprintf(vers, "pcb-rnd-board-v%d", wrver);
+	brd->root = lht_dom_node_alloc(LHT_HASH, vers);
 	lht_dom_hash_put(brd->root, build_board_meta(pcb));
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
@@ -902,11 +905,13 @@ static void clean_invalid(lht_node_t *node)
 	}
 }
 
-int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency, int ver)
 {
 	int res;
 	lht_doc_t *brd = build_board(PCB);
 	const char *fnpat = conf_io_lihata.plugins.io_lihata.aux_pcb_pattern;
+
+	wrver = ver;
 
 	if ((fnpat != NULL) && (*fnpat != '\0')) {
 		char *orig_fn;
@@ -961,6 +966,16 @@ int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename,
 
 	lht_dom_uninit(brd);
 	return res;
+}
+
+int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+{
+	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 1);
+}
+
+int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+{
+	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 2);
 }
 
 int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename)

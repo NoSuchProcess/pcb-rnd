@@ -20,6 +20,7 @@
  *
  */
 
-int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP);
+int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE * FP);
+int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE * FP);
 int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename);
 
