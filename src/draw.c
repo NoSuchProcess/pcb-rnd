@@ -378,46 +378,16 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 static void pcb_draw_silk_auto(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
-#if 0
-	/* This code is used when you want to mask silk to avoid exposed
-	   pins and pads.  We decided it was a bad idea to do this
-	   unconditionally, but the code remains.  */
-#endif
+	pcb_layer_id_t lid;
+	int side = lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
 
-#if 0
-	if (pcb_gui->poly_before) {
-		pcb_gui->use_mask(HID_MASK_BEFORE);
-#endif
-		pcb_layer_id_t lid;
-		int side = lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
+	if (pcb_layer_list(PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
+		return;
 
-		if (pcb_layer_list(PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
-			return;
-
-		pcb_draw_layer(LAYER_PTR(lid), drawn_area);
-		/* draw package */
-		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-		pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
-
-#if 0
-	}
-
-	pcb_gui->use_mask(HID_MASK_CLEAR);
-	pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, clear_pad_callback, &side, NULL);
-
-	if (pcb_gui->poly_after) {
-		pcb_layer_id_t lsilk;
-		pcb_gui->use_mask(HID_MASK_AFTER);
-		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lsilk, 1) > 0)
-			pcb_draw_layer(LAYER_PTR(lsilk), drawn_area);
-		/* draw package */
-		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-		pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
-	}
-	pcb_gui->use_mask(HID_MASK_OFF);
-#endif
+	pcb_draw_layer(LAYER_PTR(lid), drawn_area);
+	/* draw package */
+	pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
+	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 }
 
 static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t * drawn_area)
