@@ -781,7 +781,7 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layergrp_inhibit_dec();
 }
 
-static pcb_data_t *parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
+static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *grps, *grp, *name, *type, *flg, *layers, *lyr;
 	lht_dom_iterator_t it, itt;
@@ -855,6 +855,7 @@ static pcb_data_t *parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			}
 		}
 	}
+	return 0;
 }
 
 static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
@@ -1188,7 +1189,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 	if (rdver >= 2) {
 		sub = lht_dom_hash_get(nd, "layer_stack");
-		if ((sub != NULL) && ((parse_layer_stack(pcb, sub)) == NULL))
+		if ((sub != NULL) && ((parse_layer_stack(pcb, sub)) != 0))
 			return -1;
 	}
 
