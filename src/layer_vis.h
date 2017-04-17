@@ -45,4 +45,10 @@ void pcb_layervis_save_stack(void);
 /* restores the layerstack setting */
 void pcb_layervis_restore_stack(void);
 
+/* Init config watches to keep layers in sync */
+void layer_vis_init(void);
+
+/* Sync layer visibility flags to config nodes */
+void layer_vis_sync(void);
+
 #endif

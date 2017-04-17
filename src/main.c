@@ -325,6 +325,7 @@ int main(int argc, char *argv[])
 	conf_init();
 	conf_core_init();
 	conf_core_postproc(); /* to get all the paths initialized */
+	layer_vis_init();
 
 	vtptr_init(&plugin_cli_conf);
 

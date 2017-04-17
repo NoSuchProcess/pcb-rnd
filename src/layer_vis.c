@@ -36,6 +36,7 @@
 #include "layer_vis.h"
 #include "event.h"
 #include "compat_misc.h"
+#include "conf_hid.h"
 
 /*
  * Used by pcb_layervis_save_stack() and
@@ -77,6 +78,7 @@ static void PushOnTopOfLayerStack(int NewTop)
  */
 int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 {
+	unsigned long flg;
 	pcb_layergrp_id_t group;
 	int i, changed = 1;		/* at least the current layer changes */
 
@@ -95,6 +97,13 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
 
 	if (conf_core.rc.verbose)
 		printf("pcb_layervis_change_group_vis(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
+
+	/* special case: some layer groups are controlled by a config setting */
+	flg = pcb_layer_flags(Layer);
+	if (flg & PCB_LYT_MASK)
+		conf_set_editor(show_mask, On);
+	if (flg & PCB_LYT_PASTE)
+		conf_set_editor(show_paste, On);
 
 	/* decrement 'i' to keep stack in order of layergroup */
 	if ((group = pcb_layer_get_group(PCB, Layer)) >= 0) {
@@ -207,4 +216,59 @@ void pcb_layervis_restore_stack(void)
 	PCB->RatOn = SavedStack.RatOn;
 
 	SavedStack.cnt--;
+}
+
+static conf_hid_id_t layer_vis_conf_id;
+
+void layer_vis_chg_mask(conf_native_t *cfg)
+{
+	pcb_layer_id_t n;
+	int chg = 0;
+	static int in = 0; /* don't run when called from the PCB_EVENT_LAYERS_CHANGED triggered from this function */
+
+	if ((PCB == NULL) || (in))
+		return;
+
+	in = 1;
+	for(n = 0; n < pcb_max_layer; n++) {
+		if (pcb_layer_flags(n) & PCB_LYT_MASK) {
+			if (PCB->Data->Layer[n].On != *cfg->val.boolean) {
+				chg = 1;
+				PCB->Data->Layer[n].On = *cfg->val.boolean;
+			}
+		}
+	}
+	if (chg)
+		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	in = 0;
+}
+
+void layer_vis_sync(void)
+{
+	conf_native_t *n_mask = conf_get_field("editor/show_mask");
+	layer_vis_chg_mask(n_mask);
+}
+
+static void layer_vis_sync_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	layer_vis_sync();
+}
+
+static const char *layer_vis_cookie = "core_layer_vis";
+
+void layer_vis_init(void)
+{
+	conf_native_t *n_mask = conf_get_field("editor/show_mask");
+	static conf_hid_callbacks_t cbs_mask;
+
+	layer_vis_conf_id = conf_hid_reg(layer_vis_cookie, NULL);
+
+	if (n_mask != NULL) {
+		memset(&cbs_mask, 0, sizeof(conf_hid_callbacks_t));
+		cbs_mask.val_change_post = layer_vis_chg_mask;
+		conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
+	}
+
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
+	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
 }
