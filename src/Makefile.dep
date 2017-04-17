@@ -2088,7 +2088,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  flag_str.h compat_misc.h macro.h error.h misc_util.h layer.h vtptr.h \
  ../src_plugins/io_lihata/common.h polygon.h rtree.h conf_core.h \
- obj_all.h
+ obj_all.h ../src_plugins/io_lihata/io_lihata.h conf.h \
+ ../src_plugins/io_lihata/lht_conf.h
 ../src_plugins/io_lihata/write.o: ../src_plugins/io_lihata/write.c \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -5112,8 +5113,7 @@ hid_init.o: hid_init.c ../config.h hid.h error.h drc.h unit.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h compat_inc.h \
- fptr_cast.h
+ ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h compat_inc.h
 hid_nogui.o: hid_nogui.c ../config.h hid.h error.h drc.h unit.h \
  global_typedefs.h pcb_bool.h attrib.h layer.h globalconst.h \
  obj_all_list.h obj_arc_list.h obj_common.h \
@@ -5241,7 +5241,7 @@ layer_vis.o: layer_vis.c ../config.h board.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h layer_ui.h layer_vis.h event.h \
- compat_misc.h
+ compat_misc.h conf_hid.h
 library.o: library.c ../config.h library.h global_typedefs.h pcb_bool.h \
  unit.h macro.h compat_misc.h
 list_conf.o: list_conf.c conf.h ../config.h global_typedefs.h pcb_bool.h \
