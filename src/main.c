@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 		DO_GUI
 	} do_what = DO_SOMETHING;
 	int n, hid_argc = 0;
-	char *cmd, *arg, **hid_argv;
+	char *cmd, *arg, **hid_argv, **sp;
 	const char **cs;
 	const char *main_action = NULL;
 	char *command_line_pcb = NULL;
@@ -439,9 +439,9 @@ int main(int argc, char *argv[])
 	}
 
 	pcb_hid_init();
-	for(cs = pcb_pup_paths; *cs != NULL; cs++) {
-		pcb_message(PCB_MSG_DEBUG, "Loading plugins from '%s'\n", *cs);
-		pup_autoload_dir(&pcb_pup, *cs, pcb_pup_paths);
+	for(sp = pcb_pup_paths; *sp != NULL; sp++) {
+		pcb_message(PCB_MSG_DEBUG, "Loading plugins from '%s'\n", *sp);
+		pup_autoload_dir(&pcb_pup, *sp, (const char **)pcb_pup_paths);
 	}
 	if (pcb_pup.err_stack != NULL) {
 		pcb_message(PCB_MSG_ERROR, "Some of the dynamic linked plugins could not be loaded:\n");
