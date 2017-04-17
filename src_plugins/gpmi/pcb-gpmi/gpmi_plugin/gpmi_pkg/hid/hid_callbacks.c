@@ -10,10 +10,6 @@
 #include "src/hid_flags.h"
 #include "src/hid_init.h"
 
-
-/* TODO */
-#define PCB_MAX_LAYER 16
-
 pcb_hid_attribute_t *gpmi_hid_get_export_options(int *num)
 {
 	gpmi_hid_t *h;
@@ -66,7 +62,7 @@ void gpmi_hid_do_export(pcb_hid_attr_val_t * options)
 	ctx.view.X2 = PCB->MaxWidth;
 	ctx.view.Y2 = PCB->MaxHeight;
 
-	pcb_hid_expose_all(h->hid, &ctx.view);
+	pcb_hid_expose_all(h->hid, &ctx);
 	pcb_hid_restore_layer_ons(save_ons);
 	gpmi_event(h->module, HIDE_do_export_finish, h);
 	h->result = NULL;
