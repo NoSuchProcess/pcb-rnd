@@ -20,6 +20,10 @@
  *
  */
 
+/* Include these before TDL_DONT_UNDEF to avoid TDL redefs */
+#include "obj_poly_list.h"
+#include "obj_arc_list.h"
+
 #define TDL_DONT_UNDEF
 #include "obj_text_list.h"
 #include <genlist/gentdlist_impl.c>
