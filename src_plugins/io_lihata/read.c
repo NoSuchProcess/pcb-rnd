@@ -781,11 +781,86 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layergrp_inhibit_dec();
 }
 
+static pcb_data_t *parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
+{
+	lht_node_t *grps, *grp, *name, *type, *flg, *layers, *lyr;
+	lht_dom_iterator_t it, itt;
+	long int n;
+
+	for(n = 0; n < PCB_MAX_LAYERGRP; n++)
+		pcb_layergrp_free(pcb, n);
+	pcb->LayerGroups.len = 0;
+
+	grps = lht_dom_hash_get(nd, "groups");
+	for(grp = lht_dom_first(&it, grps); grp != NULL; grp = lht_dom_next(&it)) {
+		pcb_layergrp_id_t gid;
+		pcb_layer_group_t *g;
+		char *end;
+		gid = strtol(grp->name, &end, 10);
+		if ((*end != '\0') || (gid < 0)) {
+			pcb_message(PCB_MSG_ERROR, "Invalid group id in layer stack: '%s' (not an int or negative; ignoring the group)\n", grp->name);
+			continue;
+		}
+		if (gid >= PCB_MAX_LAYERGRP) {
+			pcb_message(PCB_MSG_ERROR, "Invalid group id in layer stack: '%s' (too many layers; ignoring the group)\n", grp->name);
+			continue;
+		}
+
+		pcb_layergrp_free(pcb, n); /* just in case of double initialization of the same layer id */
+
+		g = &pcb->LayerGroups.grp[gid];
+		if (pcb->LayerGroups.len <= gid)
+			pcb->LayerGroups.len = gid+1;
+
+		/* set name */
+		name = lht_dom_hash_get(grp, "name");
+		if (name == NULL) {
+			g->name = malloc(32);
+			sprintf(g->name, "grp_%ld", gid);
+		}
+		else
+			g->name = pcb_strdup(name->name);
+
+		/* set type flags */
+		type = lht_dom_hash_get(grp, "type");
+		if (type != NULL) {
+			for(flg = lht_dom_first(&itt, type); flg != NULL; flg = lht_dom_next(&itt)) {
+				pcb_layer_type_t val = pcb_layer_type_str2bit(flg->name);
+				if (val == 0)
+					pcb_message(PCB_MSG_ERROR, "Invalid type name: '%s' in group '%s' (ignoring the type flag)\n", flg->name, g->name);
+				g->type |= val;
+			}
+		}
+
+		/* load layers */
+		layers = lht_dom_hash_get(grp, "layers");
+		if (layers != NULL) {
+			for(lyr = lht_dom_first(&itt, layers); lyr != NULL; lyr = lht_dom_next(&itt)) {
+				pcb_layer_id_t lid;
+				if (lyr->type != LHT_TEXT) {
+					pcb_message(PCB_MSG_ERROR, "Invalid layer node type in group '%s' (ignoring the layer)\n", g->name);
+					continue;
+				}
+				lid = strtol(lyr->data.text.value, &end, 10);
+				if ((*end != '\0') || (lid < 0)) {
+					pcb_message(PCB_MSG_ERROR, "Invalid layer id '%s' in group '%s' (not an int or negative; ignoring the layer)\n", lyr->data.text.value, g->name);
+					continue;
+				}
+				if (g->len >= PCB_MAX_LAYER) {
+					pcb_message(PCB_MSG_ERROR, "Too many layers  in group '%s' (ignoring the layer)\n", g->name);
+					continue;
+				}
+				g->lid[g->len] = lid;
+				g->len++;
+			}
+		}
+	}
+}
+
 static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 {
 	pcb_data_t *dt;
 	lht_node_t *grp;
-	int need_layer_fixup = 1;
 
 	if (nd->type != LHT_HASH)
 		return NULL;
@@ -798,8 +873,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 	if ((grp != NULL) && (grp->type == LHT_LIST))
 		parse_data_layers(pcb, dt, grp);
 
-#warning layer TODO: read layer groups - if present, set need_layer_fixup to 0
-	if (need_layer_fixup)
+	if (rdver == 1)
 		layer_fixup(pcb);
 
 	grp = lht_dom_hash_get(nd, "objects");
@@ -1111,6 +1185,12 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	if ((sub != NULL) && (parse_fontkit(&PCB->fontkit, sub) != 0))
 		return -1;
 	PCB->fontkit.valid = 1;
+
+	if (rdver >= 2) {
+		sub = lht_dom_hash_get(nd, "layer_stack");
+		if ((sub != NULL) && ((parse_layer_stack(pcb, sub)) == NULL))
+			return -1;
+	}
 
 	sub = lht_dom_hash_get(nd, "data");
 	if ((sub != NULL) && ((parse_data(pcb, sub)) == NULL))
