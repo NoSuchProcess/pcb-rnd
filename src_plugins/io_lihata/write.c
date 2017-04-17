@@ -540,16 +540,14 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 
 static lht_node_t *build_data_layers(pcb_data_t *data)
 {
-	int n;
+	long int n;
 	lht_node_t *layers;
 	pcb_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
 	pcb_layer_group_t *g;
-	int v1_layers = 1;
 
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 
-	if (v1_layers) {
-		/* produce an old layer group assignment from top to bottom */
+	{ /* produce an old layer group assignment from top to bottom (needed for v1, good for other versions too */
 		gm = 0;
 		for(n = 0; n < pcb_max_group(PCB); n++) {
 			unsigned int gflg = pcb_layergrp_flags(PCB, n);
@@ -574,8 +572,8 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 	}
 
 	for(n = 0; n < pcb_max_layer; n++) {
-		int gid = pcb_layer_get_group(PCB, n);
-		if (v1_layers) {
+		pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
+		if (wrver == 1) {
 			if (gid >= 0) {
 				if (gid < sizeof(grp) / sizeof(grp[0]))
 					gid = grp[gid];
