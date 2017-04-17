@@ -378,7 +378,6 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 static void pcb_draw_silk_auto(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
-	pcb_layer_id_t lid;
 	int side = (lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE);
 
 	/* draw package */
