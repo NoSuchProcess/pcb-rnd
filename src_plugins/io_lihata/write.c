@@ -489,22 +489,20 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 	return lstk;
 }
 
-static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int layer_group, pcb_layer_id_t lid)
+static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_layergrp_id_t layer_group, pcb_layer_id_t lid)
 {
 	lht_node_t *obj, *grp;
 	pcb_line_t *li;
 	pcb_arc_t *ar;
 	pcb_polygon_t *po;
 	pcb_text_t *tx;
-	char tmp[16];
 	int added = 0;
 
 	obj = lht_dom_node_alloc(LHT_HASH, layer->Name);
 
 	lht_dom_hash_put(obj, build_text("visible", layer->On ? "1" : "0"));
 	lht_dom_hash_put(obj, build_attributes(&layer->Attributes));
-	sprintf(tmp, "%d", layer_group);
-	lht_dom_hash_put(obj, build_text("group", tmp));
+	lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
 	if (wrver >= 2)
 		lht_dom_hash_put(obj, build_textf("lid", "%ld", lid));
 
