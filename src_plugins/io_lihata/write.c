@@ -489,9 +489,15 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 	return lstk;
 }
 
+static void build_data_layer_comb(void *ctx, pcb_layer_combining_t bit, const char *name)
+{
+	lht_node_t *comb = ctx;
+	lht_dom_hash_put(comb, build_text(name, "1"));
+}
+
 static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_layergrp_id_t layer_group, pcb_layer_id_t lid)
 {
-	lht_node_t *obj, *grp;
+	lht_node_t *obj, *grp, *comb;
 	pcb_line_t *li;
 	pcb_arc_t *ar;
 	pcb_polygon_t *po;
@@ -503,8 +509,11 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 	lht_dom_hash_put(obj, build_text("visible", layer->On ? "1" : "0"));
 	lht_dom_hash_put(obj, build_attributes(&layer->Attributes));
 	lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
-	if (wrver >= 2)
+	if (wrver >= 2) {
 		lht_dom_hash_put(obj, build_textf("lid", "%ld", lid));
+		lht_dom_hash_put(obj, comb = lht_dom_node_alloc(LHT_HASH, "combining"));
+		pcb_layer_comb_map(layer->comb, comb, build_data_layer_comb);
+	}
 
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
 
