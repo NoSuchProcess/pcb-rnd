@@ -1349,8 +1349,7 @@ static void rename_layer_button_cb(GtkWidget * widget, gchar * data)
 		return;
 	if (strcmp(name, CURRENT->Name) == 0)
 		return;
-	free(CURRENT->Name);
-	CURRENT->Name = name;
+	pcb_layer_rename(pcb_layer_id(PCB->Data, CURRENT), name);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
