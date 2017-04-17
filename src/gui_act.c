@@ -54,15 +54,13 @@
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
 static const char pcb_acts_Display[] =
-	"Display(NameOnPCB|Description|Value)\n"
-	"Display(Grid|Redraw)\n"
+	"Display(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName)\n"
 	"Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)\n"
-	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
-	"Display(ToggleMask|TogglePaste|ToggleName|ToggleClearLine|ToggleFullPoly)\n"
-	"Display(ToggleSnapPin|ToggleSnapOffGridLine|ToggleHighlightOnPoint)\n"
+	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames|ToggleMask)\n"
+	"Display(TogglePaste|ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)\n"
+	"Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)\n"
 	"Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)\n"
-	"Display(ToggleCheckPlanes|ToggleShowDRC|ToggleAutoDRC)\n"
-	"Display(ToggleLiveRoute|LockNames|OnlyNames)\n" "Display(Pinout|PinOrPadName)";
+	"Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)";
 
 static const char pcb_acth_Display[] = "Several display-related actions.";
 
