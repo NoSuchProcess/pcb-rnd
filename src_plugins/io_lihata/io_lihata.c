@@ -85,7 +85,7 @@ int pplg_init_io_lihata(void)
 	io_lihata1.write_pcb = io_lihata_write_pcb_v1;
 	io_lihata1.default_fmt = "lihata";
 	io_lihata1.description = "lihata board v1";
-	io_lihata1.save_preference_prio = 99;
+	io_lihata1.save_preference_prio = 199;
 	io_lihata1.default_extension = ".lht";
 	io_lihata1.fp_extension = ".lht";
 	io_lihata1.mime_type = "application/x-pcbrnd-board";
