@@ -483,10 +483,15 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 			}
 			if (!(l->comb & PCB_LYC_AUTO)) {
 				const char *old_color = l->Color;
+				pcb_hid_gc_t *old_fg = Output.fgGC;
+				Output.fgGC = Output.pmGC;
 				if (!thin)
 					l->Color = PCB->MaskColor;
+				if (!want_add)
+					l->Color = "erase";
 				pcb_draw_layer(l, screen);
 				l->Color = old_color;
+				Output.fgGC = old_fg;
 			}
 			else
 				pcb_draw_mask_auto(side, screen);
