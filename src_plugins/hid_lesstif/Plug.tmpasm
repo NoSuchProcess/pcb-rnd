@@ -32,7 +32,7 @@ append /local/pcb/CLEANFILES { $(PLUGDIR)/hid_lesstif/menu_lht.c }
 append /local/pcb/DEPDEPS { $(PLUGDIR)/hid_lesstif/menu_lht.c }
 append /local/pcb/RULES [@
 ### lesstif menu embed
-$(PLUGDIR)/hid_lesstif/menu_lht.c: pcb-menu-lesstif.lht
+$(PLUGDIR)/hid_lesstif/menu_lht.c: pcb-menu-lesstif.lht $(CQUOTE)
 	$(CQUOTE) -n lesstif_menu_default <pcb-menu-lesstif.lht >$(PLUGDIR)/hid_lesstif/menu_lht.c
 @]
 

@@ -331,7 +331,7 @@ generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 conf_core_fields.h: conf_core.h
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree < conf_core.h > conf_core_fields.h
 
-conf_internal.c: pcb-conf.lht
+conf_internal.c: pcb-conf.lht $(CQUOTE)
 	$(CQUOTE) -n conf_internal < pcb-conf.lht > conf_internal.c
 
 defpcb_internal.c: default.pcb

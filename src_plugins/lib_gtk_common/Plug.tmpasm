@@ -81,6 +81,6 @@ append /local/pcb/CLEANFILES { $(PLUGDIR)/lib_gtk_common/menu_lht.c }
 append /local/pcb/DEPDEPS { $(PLUGDIR)/lib_gtk_common/menu_lht.c }
 append /local/pcb/RULES [@
 ### gtk menu embed
-$(PLUGDIR)/lib_gtk_common/menu_lht.c: pcb-menu-gtk.lht
+$(PLUGDIR)/lib_gtk_common/menu_lht.c: pcb-menu-gtk.lht $(CQUOTE)
 	$(CQUOTE) -n hid_gtk_menu_default <pcb-menu-gtk.lht >$(PLUGDIR)/lib_gtk_common/menu_lht.c
 @]
