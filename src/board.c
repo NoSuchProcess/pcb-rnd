@@ -167,22 +167,11 @@ int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 void pcb_colors_from_settings(pcb_board_t *ptr)
 {
 	int i;
-	pcb_layer_id_t SLayer = -1, CLayer = -1;
 
 	/* copy default settings */
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
 		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];
-	}
-
-	if (pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, &CLayer, 1) > 0) {
-		ptr->Data->Layer[CLayer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.invisible_objects : conf_core.appearance.color.element;
-		ptr->Data->Layer[CLayer].SelectedColor = conf_core.appearance.color.element_selected;
-	}
-
-	if (pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &SLayer, 1) > 0) {
-		ptr->Data->Layer[SLayer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.element : conf_core.appearance.color.invisible_objects;
-		ptr->Data->Layer[SLayer].SelectedColor = conf_core.appearance.color.element_selected;
 	}
 }
 
