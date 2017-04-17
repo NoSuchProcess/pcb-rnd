@@ -170,22 +170,6 @@ void pcb_colors_from_settings(pcb_board_t *ptr)
 	pcb_layer_id_t SLayer = -1, CLayer = -1;
 
 	/* copy default settings */
-	ptr->ConnectedColor = conf_core.appearance.color.connected;
-	ptr->ElementColor = conf_core.appearance.color.element;
-	ptr->ElementColor_nonetlist = conf_core.appearance.color.element_nonetlist;
-	ptr->RatColor = conf_core.appearance.color.rat;
-	ptr->InvisibleObjectsColor = conf_core.appearance.color.invisible_objects;
-	ptr->InvisibleMarkColor = conf_core.appearance.color.invisible_mark;
-	ptr->ElementSelectedColor = conf_core.appearance.color.element_selected;
-	ptr->RatSelectedColor = conf_core.appearance.color.rat_selected;
-	ptr->PinColor = conf_core.appearance.color.pin;
-	ptr->PinSelectedColor = conf_core.appearance.color.pin_selected;
-	ptr->PinNameColor = conf_core.appearance.color.pin_name;
-	ptr->ViaColor = conf_core.appearance.color.via;
-	ptr->ViaSelectedColor = conf_core.appearance.color.via_selected;
-	ptr->WarnColor = conf_core.appearance.color.warn;
-	ptr->MaskColor = conf_core.appearance.color.mask;
-	ptr->PasteColor = conf_core.appearance.color.paste;
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
 		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];

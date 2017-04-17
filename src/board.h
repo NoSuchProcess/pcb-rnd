@@ -72,16 +72,6 @@ struct pcb_board_s {
 	  ViaOn,											/* visibility flags */
 	  ElementOn, RatOn, InvisibleObjectsOn, PinOn, SilkActive,	/* active layer is actually silk */
 	  RatDraw;										/* we're drawing rats */
-	char *ViaColor,								/* some colors */
-	 *ViaSelectedColor,
-		*PinColor,
-		*PinSelectedColor,
-		*PinNameColor,
-		*ElementColor,
-		*ElementColor_nonetlist,
-		*RatColor,
-		*InvisibleObjectsColor,
-		*InvisibleMarkColor, *ElementSelectedColor, *RatSelectedColor, *ConnectedColor, *WarnColor, *MaskColor, *PasteColor;
 	pcb_coord_t CursorX,									/* cursor position as saved with layout */
 	  CursorY;
 	pcb_coord_t Bloat,									/* drc sizes saved with layout */

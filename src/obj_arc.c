@@ -700,12 +700,12 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 	char buf[sizeof("#XXXXXX")];
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
-		color = PCB->WarnColor;
+		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc))
 			color = layer->SelectedColor;
 		else
-			color = PCB->ConnectedColor;
+			color = conf_core.appearance.color.connected;
 	}
 	else
 		color = layer->Color;

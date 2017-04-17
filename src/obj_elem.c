@@ -1804,18 +1804,18 @@ void draw_element_name(pcb_element_t * element)
 	if ((conf_core.editor.hide_names && pcb_gui->gui) || PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
 		return;
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element)))
-		pcb_gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element_selected);
 	else if (PCB_FRONT(element)) {
 #warning TODO: why do we test for Names flag here instead of elements flag?
 		if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, element))
-			pcb_gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
+			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element_nonetlist);
 		else
-			pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
+			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
 	}
 	else
-		pcb_gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.invisible_objects);
 
 	DrawTextLowLevel(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk);
 
@@ -1855,13 +1855,13 @@ void draw_element_package(pcb_element_t * element)
 {
 	/* set color and draw lines, arcs, text and pins */
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
-		pcb_gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element_selected);
 	else if (PCB_FRONT(element))
-		pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
 	else
-		pcb_gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.invisible_objects);
 
 	/* draw lines, arcs, text and pins */
 	PCB_ELEMENT_PCB_LINE_LOOP(element);
@@ -1912,7 +1912,7 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 		mark_size = MIN(mark_size, pad0->Thickness / 2);
 	}
 
-	pcb_gui->set_color(Output.fgGC, invisible ? PCB->InvisibleMarkColor : PCB->ElementColor);
+	pcb_gui->set_color(Output.fgGC, invisible ? conf_core.appearance.color.invisible_mark : conf_core.appearance.color.element);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 	pcb_gui->set_line_width(Output.fgGC, 0);
 	pcb_gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y - mark_size);

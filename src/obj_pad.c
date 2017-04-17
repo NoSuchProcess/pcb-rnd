@@ -377,7 +377,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 		box.Y1 += conf_core.appearance.pinout.text_offset_y;
 	}
 
-	pcb_gui->set_color(Output.fgGC, PCB->PinNameColor);
+	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
 
 	text.Flags = pcb_no_flags();
 	/* Set font height to approx 90% of pin thickness */
@@ -409,19 +409,19 @@ void draw_pad(pcb_pad_t * pad)
 	char buf[sizeof("#XXXXXX")];
 
 	if (pcb_draw_doing_pinout)
-		pcb_gui->set_color(Output.fgGC, PCB->PinColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin);
 	else if (PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad))
-			color = PCB->WarnColor;
+			color = conf_core.appearance.color.warn;
 		else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad))
-			color = PCB->PinSelectedColor;
+			color = conf_core.appearance.color.pin_selected;
 		else
-			color = PCB->ConnectedColor;
+			color = conf_core.appearance.color.connected;
 	}
 	else if (PCB_FRONT(pad))
-		color = PCB->PinColor;
+		color = conf_core.appearance.color.pin;
 	else
-		color = PCB->InvisibleObjectsColor;
+		color = conf_core.appearance.color.invisible_objects;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, pad)) {
 		assert(color != NULL);
@@ -460,7 +460,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 /* draws solder paste layer for a given side of the board - only pads get paste */
 void pcb_draw_paste_auto(int side, const pcb_box_t * drawn_area)
 {
-	pcb_gui->set_color(Output.fgGC, PCB->PasteColor);
+	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.paste);
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {

@@ -103,7 +103,7 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 				y[i++] = v->point[1];
 			}
 			if (1) {
-				pcb_gui->set_color(ddgc, color ? color : PCB->ConnectedColor);
+				pcb_gui->set_color(ddgc, color ? color : conf_core.appearance.color.connected);
 				pcb_gui->set_line_width(ddgc, 1);
 				for (i = 0; i < n - 1; i++) {
 					pcb_gui->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);

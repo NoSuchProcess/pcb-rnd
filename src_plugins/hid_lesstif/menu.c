@@ -92,12 +92,12 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		pcb_data_t *d = PCB->Data;
 		for (i = 0; i < PCB_MAX_LAYER; i++)
 			fg_colors[i] = lesstif_parse_color(d->Layer[i].Color);
-		fg_colors[LB_SILK] = lesstif_parse_color(PCB->ElementColor);
-		fg_colors[LB_RATS] = lesstif_parse_color(PCB->RatColor);
-		fg_colors[LB_PINS] = lesstif_parse_color(PCB->PinColor);
-		fg_colors[LB_VIAS] = lesstif_parse_color(PCB->ViaColor);
-		fg_colors[LB_BACK] = lesstif_parse_color(PCB->InvisibleObjectsColor);
-		fg_colors[LB_MASK] = lesstif_parse_color(PCB->MaskColor);
+		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
+		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
+		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
+		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
+		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
+		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
 		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 	else {

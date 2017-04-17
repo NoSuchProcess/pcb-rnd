@@ -38,6 +38,7 @@
 #include "plugins.h"
 #include "stub_draw.h"
 #include "draw_fab_conf.h"
+#include "conf_core.h"
 
 #include "obj_text_draw.h"
 
@@ -199,7 +200,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 			plated_sym = --ds;
 		if (drill->UnplatedCount)
 			unplated_sym = --ds;
-		pcb_gui->set_color(gc, PCB->PinColor);
+		pcb_gui->set_color(gc, conf_core.appearance.color.pin);
 		for (i = 0; i < drill->PinN; i++)
 			drill_sym(gc, PCB_FLAG_TEST(PCB_FLAG_HOLE, drill->Pin[i]) ? unplated_sym : plated_sym, drill->Pin[i]->X, drill->Pin[i]->Y);
 		if (plated_sym != -1) {
@@ -215,7 +216,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 			text_at(gc, PCB_MIL_TO_COORD(1400), yoff, PCB_MIL_TO_COORD(2), "NO");
 			text_at(gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
-		pcb_gui->set_color(gc, PCB->ElementColor);
+		pcb_gui->set_color(gc, conf_core.appearance.color.element);
 		text_at(gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize) + 0.0004);
 		if (plated_sym != -1 && unplated_sym != -1)
 			text_at(gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize) + 0.0004);
@@ -224,7 +225,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 		total_drills += drill->ViaCount;
 	}
 
-	pcb_gui->set_color(gc, PCB->ElementColor);
+	pcb_gui->set_color(gc, conf_core.appearance.color.element);
 	text_at(gc, 0, yoff, PCB_MIL_TO_COORD(9), "Symbol");
 	text_at(gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");
 	text_at(gc, PCB_MIL_TO_COORD(950), yoff, PCB_MIL_TO_COORD(9), "Count");

@@ -806,11 +806,11 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 	if (Type == PCB_TYPE_VIA) {
 		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, Pin))
-				color = PCB->WarnColor;
+				color = conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, Pin))
-				color = PCB->ViaSelectedColor;
+				color = conf_core.appearance.color.via_selected;
 			else
-				color = PCB->ConnectedColor;
+				color = conf_core.appearance.color.connected;
 
 			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
@@ -819,16 +819,16 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 			}
 		}
 		else
-			color = PCB->ViaColor;
+			color = conf_core.appearance.color.via;
 	}
 	else {
 		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, Pin))
-				color = PCB->WarnColor;
+				color = conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, Pin))
-				color = PCB->PinSelectedColor;
+				color = conf_core.appearance.color.pin_selected;
 			else
-				color = PCB->ConnectedColor;
+				color = conf_core.appearance.color.connected;
 
 			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
@@ -837,7 +837,7 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 			}
 		}
 		else
-			color = PCB->PinColor;
+			color = conf_core.appearance.color.pin;
 	}
 
 	pcb_gui->set_color(Output.fgGC, color);
@@ -879,7 +879,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 		box.Y1 = pv->Y - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
 	}
 
-	pcb_gui->set_color(Output.fgGC, PCB->PinNameColor);
+	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
 
 	text.Flags = pcb_no_flags();
 	/* Set font height to approx 56% of pin thickness */
@@ -964,9 +964,9 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pv))
-			color = PCB->WarnColor;
+			color = conf_core.appearance.color.warn;
 		else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pv))
-			color = PCB->ViaSelectedColor;
+			color = conf_core.appearance.color.via_selected;
 		else
 			color = conf_core.appearance.color.black;
 

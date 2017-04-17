@@ -718,11 +718,11 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
-		color = PCB->WarnColor;
+		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 		color = i->layer->SelectedColor;
 	else if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
-		color = PCB->ConnectedColor;
+		color = conf_core.appearance.color.connected;
 	else if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, polygon)) {
 		assert(color != NULL);
 		pcb_lighten_color(color, buf, 1.75);

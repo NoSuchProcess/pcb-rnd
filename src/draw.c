@@ -191,8 +191,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	pcb_bool paste_empty;
 
-	PCB->Data->SILKLAYER.Color = PCB->ElementColor;
-	PCB->Data->BACKSILKLAYER.Color = PCB->InvisibleObjectsColor;
+	PCB->Data->SILKLAYER.Color = conf_core.appearance.color.element;
+	PCB->Data->BACKSILKLAYER.Color = conf_core.appearance.color.invisible_objects;
 
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
@@ -405,7 +405,7 @@ static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
 		return;
 
 	pcb_gui->use_mask(mask_type);
-	pcb_gui->set_color(Output.fgGC, PCB->MaskColor);
+	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.mask);
 	if (drawn_area == NULL)
 		pcb_gui->fill_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	else
@@ -425,7 +425,7 @@ static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
 static void mask_start_sub(int thin, int *state, const pcb_box_t *screen)
 {
 	if (thin)
-		pcb_gui->set_color(Output.pmGC, PCB->MaskColor);
+		pcb_gui->set_color(Output.pmGC, conf_core.appearance.color.mask);
 	else {
 		if (*state == 0)
 			DrawMaskBoardArea(HID_MASK_BEFORE, screen);
@@ -485,7 +485,7 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 				pcb_hid_gc_t old_fg = Output.fgGC;
 				Output.fgGC = Output.pmGC;
 				if (!thin)
-					l->Color = PCB->MaskColor;
+					l->Color = conf_core.appearance.color.mask;
 				if (!want_add)
 					l->Color = "erase";
 				pcb_draw_layer(l, screen);

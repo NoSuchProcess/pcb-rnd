@@ -226,12 +226,12 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, rat))
-			pcb_gui->set_color(Output.fgGC, PCB->RatSelectedColor);
+			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.rat_selected);
 		else
-			pcb_gui->set_color(Output.fgGC, PCB->ConnectedColor);
+			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.connected);
 	}
 	else
-		pcb_gui->set_color(Output.fgGC, PCB->RatColor);
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.rat);
 
 	if (conf_core.appearance.rat_thickness < 20)
 		rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;

@@ -812,12 +812,12 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 	char buf[sizeof("#XXXXXX")];
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, line))
-		color = PCB->WarnColor;
+		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 			color = layer->SelectedColor;
 		else
-			color = PCB->ConnectedColor;
+			color = conf_core.appearance.color.connected;
 	}
 	else
 		color = layer->Color;
