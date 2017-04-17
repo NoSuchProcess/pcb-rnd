@@ -814,12 +814,12 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 
 		/* set name */
 		name = lht_dom_hash_get(grp, "name");
-		if (name == NULL) {
+		if ((name == NULL) || (name->type != LHT_TEXT) || (name->data.text.value == NULL)) {
 			g->name = malloc(32);
 			sprintf(g->name, "grp_%ld", gid);
 		}
 		else
-			g->name = pcb_strdup(name->name);
+			g->name = pcb_strdup(name->data.text.value);
 
 		/* set type flags */
 		type = lht_dom_hash_get(grp, "type");
