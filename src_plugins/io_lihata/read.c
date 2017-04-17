@@ -811,6 +811,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		g = &pcb->LayerGroups.grp[gid];
 		if (pcb->LayerGroups.len <= gid)
 			pcb->LayerGroups.len = gid+1;
+		g->valid = 1;
 
 		/* set name */
 		name = lht_dom_hash_get(grp, "name");
