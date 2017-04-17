@@ -83,6 +83,13 @@ static const char *pcb_layer_type_class_names[] = {
 	"INVALID", "location", "purpose", "property"
 };
 
+static const pcb_layer_type_name_t pcb_layer_comb_names[] = {
+	{ PCB_LYC_SUB,  0, "sub"},
+	{ PCB_LYC_AUTO, 0, "auto"},
+	{ 0, 0, NULL }
+};
+
+
 #define PCB_LAYER_VIRT_MIN (PCB_LYT_VIRTUAL + PCB_VLY_first + 1)
 #define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + PCB_VLY_end)
 
@@ -587,10 +594,33 @@ int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, p
 	return found;
 }
 
+int pcb_layer_comb_map(pcb_layer_combining_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_combining_t bit, const char *name))
+{
+	const pcb_layer_type_name_t *n;
+	int found = 0;
+	for(n = pcb_layer_comb_names; n->name != NULL; n++) {
+		if (type & n->type) {
+			cb(ctx, n->type, n->name);
+			found++;
+		}
+	}
+	return found;
+}
+
+
 pcb_layer_type_t pcb_layer_type_str2bit(const char *name)
 {
 	const pcb_layer_type_name_t *n;
 	for(n = pcb_layer_type_names; n->name != NULL; n++)
+		if (strcmp(n->name, name) == 0)
+			return n->type;
+	return 0;
+}
+
+pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name)
+{
+	const pcb_layer_type_name_t *n;
+	for(n = pcb_layer_comb_names; n->name != NULL; n++)
 		if (strcmp(n->name, name) == 0)
 			return n->type;
 	return 0;

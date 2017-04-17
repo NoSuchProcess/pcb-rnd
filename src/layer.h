@@ -177,9 +177,11 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
 /* map bits of a layer type (call cb for each bit set); return number of bits
    found. */
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name));
+int pcb_layer_comb_map(pcb_layer_combining_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_combining_t bit, const char *name));
 
 /* return 0 or the flag value correspoding to name (linear search) */
 pcb_layer_type_t pcb_layer_type_str2bit(const char *name);
+pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name);
 
 /* List layer IDs that matches mask - write the first res_len items in res,
    if res is not NULL. Returns:
