@@ -326,7 +326,7 @@ typedef struct edge_struct {
 		unsigned is_via:1;
 		/* record "conflict level" of via candidates, in case we need to split
 		 * them later. */
-		conflict_t via_conflict_level:2;
+		unsigned via_conflict_level:2; /* conflict_t */
 		/* when "routing with conflicts", sometimes edge is interior. */
 		unsigned is_interior:1;
 		/* this is a fake edge used to defer searching for via spaces */
