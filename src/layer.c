@@ -587,6 +587,16 @@ int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, p
 	return found;
 }
 
+pcb_layer_type_t pcb_layer_type_str2bit(const char *name)
+{
+	const pcb_layer_type_name_t *n;
+	for(n = pcb_layer_type_names; n->name != NULL; n++)
+		if (strcmp(n->name, name) == 0)
+			return n->type;
+	return 0;
+}
+
+
 int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 {
 	pcb_virt_layer_t *v = &pcb_virt_layers[vid];

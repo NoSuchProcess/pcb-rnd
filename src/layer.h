@@ -178,6 +178,9 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
    found. */
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name));
 
+/* return 0 or the flag value correspoding to name (linear search) */
+pcb_layer_type_t pcb_layer_type_str2bit(const char *name);
+
 /* List layer IDs that matches mask - write the first res_len items in res,
    if res is not NULL. Returns:
     - the total number of layers matching the query, if res is NULL
