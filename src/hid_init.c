@@ -27,7 +27,6 @@ pcb_plugin_dir_t *pcb_plugin_dir_first = NULL, *pcb_plugin_dir_last = NULL;
 
 void pcb_hid_init()
 {
-	int found;
 	pcb_hid_actions_init();
 
 	/* Setup a "nogui" default HID */
