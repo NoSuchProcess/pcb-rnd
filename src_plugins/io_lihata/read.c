@@ -44,6 +44,7 @@
 #include "polygon.h"
 #include "conf_core.h"
 #include "obj_all.h"
+#include "io_lihata.h"
 
 #warning TODO: put these in a gloal load-context-struct
 vtptr_t post_ids, post_thermal;
@@ -1177,16 +1178,22 @@ static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
+	pcb_plug_io_t *loader;
 
 	if ((nd->type != LHT_HASH) || (strncmp(nd->name, "pcb-rnd-board-v", 15) != 0)) {
 		pcb_message(PCB_MSG_ERROR, "Not a board lihata.\n");
 		return -1;
 	}
 	rdver = atoi(nd->name+15);
-	if ((rdver < 1) || (rdver > 2)) {
-		pcb_message(PCB_MSG_ERROR, "Lihata board version %d not supported; must be 1 or 2.\n", rdver);
-		return -1;
+	switch(rdver) {
+		case 1: loader = &plug_io_lihata_v1; break;
+		case 2: loader = &plug_io_lihata_v2; break;
+		default:
+			pcb_message(PCB_MSG_ERROR, "Lihata board version %d not supported; must be 1 or 2.\n", rdver);
+			return -1;
 	}
+
+
 
 	vtptr_init(&post_ids);
 	vtptr_init(&post_thermal);
@@ -1239,6 +1246,8 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	if (sub != NULL)
 		parse_conf(pcb, sub);
 
+
+	pcb->Data->loader = loader; /* set this manually so the version is remembered */
 	return 0;
 }
 
