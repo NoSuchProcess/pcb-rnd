@@ -170,7 +170,8 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 			continue;
 		res = available[n].plug->parse_pcb(available[n].plug, Ptr, Filename, load_settings);
 		if (res == 0) {
-			Ptr->Data->loader = available[n].plug;
+			if (Ptr->Data->loader == NULL) /* if the loader didn't set this (to some more fine grained, e.g. depending on file format version) */
+				Ptr->Data->loader = available[n].plug;
 			break;
 		}
 	}
