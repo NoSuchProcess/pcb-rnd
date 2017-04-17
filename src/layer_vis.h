@@ -32,10 +32,6 @@
 
 #include "layer.h"
 
-/* Given a string description of a layer visibility stack, adjust the layer
-   visibility to correspond */
-void pcb_layervis_parse_string(const char *layer_string);
-
 /* changes the visibility of all layers in a group; returns the number of
    changed layers */
 int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOrder);

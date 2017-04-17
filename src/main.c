@@ -539,9 +539,8 @@ int main(int argc, char *argv[])
 			PCB->Filename = pcb_strdup(command_line_pcb);
 	}
 
-	if (conf_core.design.initial_layer_stack && conf_core.design.initial_layer_stack[0]) {
-		pcb_layervis_parse_string(conf_core.design.initial_layer_stack);
-	}
+	if (conf_core.design.initial_layer_stack && conf_core.design.initial_layer_stack[0])
+		pcb_message(PCB_MSG_ERROR, "Config setting desgin/initial_layer_stack is set but is deprecated and ignored. Please edit your config files to remove it.\n");
 
 	/* read the library file and display it if it's not empty
 	 */

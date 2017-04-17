@@ -143,7 +143,7 @@ typedef struct {
 		CFT_REAL poly_isle_area;  /* polygon min area */
 		CFT_STRING default_layer_name[PCB_MAX_LAYER];
 		CFT_STRING fab_author;                  /* Full name of author for FAB drawings */
-		CFT_STRING initial_layer_stack;         /* If set, the initial layer stack is set to this */
+		CFT_STRING initial_layer_stack;         /* deprecated. */
 
 		CFT_STRING groups;                 /* string with layergroups */
 		CFT_STRING routes;                 /* string with route styles */

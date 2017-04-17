@@ -140,7 +140,6 @@ li:pcb-rnd-conf-v1 {
 #			li:default_layer_name = {layername1; layername2}
 #			background_image = {}
 #			fab_author = {}
-#			initial_layer_stack = {}
 			groups = {}
 			routes = {}
 			paste_adjust = 0
