@@ -17,12 +17,8 @@ end
 
 append /local/pcb/RULES [@
 # DBUS xml embedded
-$(PLUGDIR)/dbus/dbus-introspect.h: $(PLUGDIR)/dbus/dbus.xml
-	echo '/* AUTOMATICALLY GENERATED FROM dbus.xml DO NOT EDIT */' > @/local/tmp@
-	echo "static char *pcb_dbus_introspect_xml ="  > @/local/tmp@
-	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/"/' < $(PLUGDIR)/dbus/dbus.xml >> @/local/tmp@
-	echo ";" >> @/local/tmp@
-	mv @/local/tmp@ $(PLUGDIR)/dbus/dbus-introspect.h
+$(PLUGDIR)/dbus/dbus-introspect.h: $(PLUGDIR)/dbus/dbus.xml $(CQUOTE)
+	$(CQUOTE) -n pcb_dbus_introspect_xml < $(PLUGDIR)/dbus/dbus.xml > $(PLUGDIR)/dbus/dbus-introspect.h
 @]
 
 put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/dbus/dbus-introspect.h }
