@@ -158,13 +158,12 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 {
 	/* copy default settings */
-	pcb_colors_from_settings(pcb);
+	pcb_layer_colors_from_conf(pcb);
 
 	return 0;
 }
 
-#warning TODO: indeed, remove this and all the board *color fields
-void pcb_colors_from_settings(pcb_board_t *ptr)
+void pcb_layer_colors_from_conf(pcb_board_t *ptr)
 {
 	int i;
 

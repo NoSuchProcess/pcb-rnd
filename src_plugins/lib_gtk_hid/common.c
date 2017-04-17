@@ -152,6 +152,6 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	   |  pcb file.  So this makes a moved layer change its color to reflect
 	   |  the way it will be when the pcb is reloaded.
 	 */
-	pcb_colors_from_settings(PCB);
+	pcb_layer_colors_from_conf(PCB);
 	return;
 }

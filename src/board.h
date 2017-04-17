@@ -119,7 +119,7 @@ int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults);
 
 /* Perhaps PCB should internally just use the Settings colors?  For now,
  * use this to set PCB colors so the config can reassign PCB colors. */
-void pcb_colors_from_settings(pcb_board_t *);
+void pcb_layer_colors_from_conf(pcb_board_t *);
 
 /* counts the number of plated and unplated holes in the design within
    a given area of the board. To count for the whole board, pass NULL

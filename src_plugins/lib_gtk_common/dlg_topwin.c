@@ -235,7 +235,7 @@ const gchar *get_layer_color(gint layer)
 void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw)
 {
 	pcb_gtk_layer_selector_update_colors(GHID_LAYER_SELECTOR(tw->layer_selector), get_layer_color);
-	pcb_colors_from_settings(PCB);
+	pcb_layer_colors_from_conf(PCB);
 }
 
 void ghid_layer_buttons_update(pcb_gtk_topwin_t *tw)
