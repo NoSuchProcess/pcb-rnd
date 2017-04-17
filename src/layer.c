@@ -158,10 +158,11 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 	return -1;
 }
 
-pcb_bool pcb_layer_is_paste_empty(pcb_side_t side)
+#warning layer TODO: with editables this is not enough, check user layers too
+pcb_bool pcb_layer_is_paste_empty(pcb_board_t *pcb, pcb_side_t side)
 {
 	pcb_bool paste_empty = pcb_true;
-	PCB_PAD_ALL_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(pcb->Data);
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			paste_empty = pcb_false;

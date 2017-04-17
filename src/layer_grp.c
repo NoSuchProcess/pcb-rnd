@@ -150,9 +150,9 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 
 	if (g->type & PCB_LYT_PASTE) {
 		if (g->type & PCB_LYT_TOP)
-			return pcb_layer_is_paste_empty(PCB_COMPONENT_SIDE);
+			return pcb_layer_is_paste_empty(pcb, PCB_COMPONENT_SIDE);
 		if (g->type & PCB_LYT_BOTTOM)
-			return pcb_layer_is_paste_empty(PCB_SOLDER_SIDE);
+			return pcb_layer_is_paste_empty(pcb, PCB_SOLDER_SIDE);
 	}
 
 	for (i = 0; i < g->len; i++)
