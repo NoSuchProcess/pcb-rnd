@@ -298,7 +298,7 @@ do { \
 	/* check layers */
 	LAYER_LOOP(pcb->Data, pcb_max_layer);
 	{
-		unsigned int lflg = pcb_layer_flags(n);
+		unsigned int lflg = pcb_layer_flags(pcb, n);
 
 		if ((lflg & PCB_LYT_SILK) && (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))) {
 			if (!(pcb->ElementOn || !Flag))

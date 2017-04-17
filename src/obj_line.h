@@ -108,7 +108,7 @@ void pcb_line_enforce_drc(void);
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (!(pcb_layer_flags(l) & PCB_LYT_COPPER)) continue; \
+		if (!(pcb_layer_flags(PCB, l) & PCB_LYT_COPPER)) continue; \
 		PCB_LINE_LOOP(layer)
 
 #define PCB_LINE_SILK_LOOP(top) do	{		\
@@ -116,7 +116,7 @@ void pcb_line_enforce_drc(void);
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (!(pcb_layer_flags(l) & PCB_LYT_SILK)) continue; \
+		if (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK)) continue; \
 		PCB_LINE_LOOP(layer)
 
 #define PCB_LINE_VISIBLE_LOOP(top) do	{		\

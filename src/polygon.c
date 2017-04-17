@@ -1021,7 +1021,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	pcb_layergrp_id_t group;
 	unsigned int gflg;
 
-	if (!(pcb_layer_flags(pcb_layer_id(Data, Layer)) & PCB_LYT_COPPER)) {
+	if (!(pcb_layer_flags(PCB, pcb_layer_id(Data, Layer)) & PCB_LYT_COPPER)) {
 		polygon->NoHolesValid = 0;
 		return 0;
 	}
@@ -1503,7 +1503,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (type == PCB_TYPE_PIN || ptr1 == ptr2 || ptr1 == NULL) {
 			LAYER_LOOP(Data, pcb_max_layer);
 			{
-				if (!(pcb_layer_flags(pcb_layer_id(Data, layer)) & PCB_LYT_COPPER))
+				if (!(pcb_layer_flags(PCB, pcb_layer_id(Data, layer)) & PCB_LYT_COPPER))
 					continue;
 				info.layer = layer;
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
@@ -1528,7 +1528,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
 		/* non-copper (e.g. silk, outline) doesn't plow */
-		if (!(pcb_layer_flags(pcb_layer_id(Data, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER)))
+		if (!(pcb_layer_flags(PCB, pcb_layer_id(Data, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER)))
 			return 0;
 		PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(PCB, pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
 		{

@@ -105,7 +105,7 @@ extern int *pcb_arc_start_ptr, *pcb_arc_end_ptr;
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l =0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)		\
 	{ \
-		if (!(pcb_layer_flags(l) & PCB_LYT_COPPER)) continue; \
+		if (!(pcb_layer_flags(PCB, l) & PCB_LYT_COPPER)) continue; \
 		PCB_ARC_LOOP(layer)
 
 #define PCB_ARC_SILK_LOOP(top) do	{		\
@@ -113,7 +113,7 @@ extern int *pcb_arc_start_ptr, *pcb_arc_end_ptr;
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (!(pcb_layer_flags(l) & PCB_LYT_SILK)) continue; \
+		if (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK)) continue; \
 		PCB_ARC_LOOP(layer)
 
 #define PCB_ARC_VISIBLE_LOOP(top) do	{		\

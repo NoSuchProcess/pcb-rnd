@@ -529,7 +529,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	/* draw all wires from all valid layers */
 	for (i = pcb_max_layer; i >= 0; i--) {
-		unsigned int flg = pcb_layer_flags(i);
+		unsigned int flg = pcb_layer_flags(PCB, i);
 		if (flg & PCB_LYT_SILK)
 			continue;
 		if (bboard_validate_layer(flg, pcb_layer_get_group(PCB, i), options[HA_skipsolder].int_value)) {

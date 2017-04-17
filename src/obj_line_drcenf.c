@@ -489,7 +489,7 @@ void pcb_line_enforce_drc(void)
 	if (pcb_gui->mod1_is_pressed() || pcb_gui->control_is_pressed() || PCB->RatDraw)
 		return;
 
-	if (!(pcb_layer_flags(layer_idx) & PCB_LYT_COPPER))
+	if (!(pcb_layer_flags(PCB, layer_idx) & PCB_LYT_COPPER))
 		return;
 
 	rs.X = r45.X = pcb_crosshair.X;

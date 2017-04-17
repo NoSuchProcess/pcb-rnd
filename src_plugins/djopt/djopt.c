@@ -469,7 +469,7 @@ static void new_line(corner_s * s, corner_s * e, int layer, pcb_line_t * example
 {
 	line_s *ls;
 
-	if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+	if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 		dj_abort("layer %d\n", layer);
 
 	if (example == NULL)
@@ -1738,7 +1738,7 @@ static int vianudge()
 			directions[c->lines[i]->layer] |= o;
 		}
 		for (o = 0, i = 0; i < pcb_max_layer; i++) {
-			if (!(pcb_layer_flags(i) & PCB_LYT_COPPER))
+			if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
 				continue;
 			if (counts[i] == 1) {
 				o = directions[i];
@@ -1758,7 +1758,7 @@ static int vianudge()
 			continue;
 		}
 		for (i = 0; i < pcb_max_layer; i++) {
-			if (!(pcb_layer_flags(i) & PCB_LYT_COPPER))
+			if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
 				continue;
 			if (counts[i] && directions[i] != o && directions[i] != oboth)
 				goto vianudge_continue;
@@ -2297,7 +2297,7 @@ static void pinsnap()
 
 			dprintf("%s x %#mS-%#mS y %#mS-%#mS\n", corner_name(c), left, right, bottom, top);
 			for (l = 0; l <= pcb_max_layer; l++) {
-				if (!(pcb_layer_flags(l) & PCB_LYT_COPPER))
+				if (!(pcb_layer_flags(PCB, l) & PCB_LYT_COPPER))
 					continue;
 				best_dist[l] = close * 2;
 				best_c[l] = 0;
@@ -2481,7 +2481,7 @@ static void grok_layer_groups()
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		f = 0;
 		for (j = 0; j < l->grp[i].len; j++) {
-			unsigned int lflg = pcb_layer_flags(l->grp[i].lid[j]);
+			unsigned int lflg = pcb_layer_flags(PCB, l->grp[i].lid[j]);
 			if (lflg & PCB_LYT_BOTTOM)
 				f |= LT_SOLDER;
 			if (lflg & PCB_LYT_TOP)
@@ -2619,7 +2619,7 @@ static int pcb_act_DJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	for (layn = 0; layn < pcb_max_layer; layn++) {
 		pcb_layer_t *layer = LAYER_PTR(layn);
 
-		if (!(pcb_layer_flags(layn) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, layn) & PCB_LYT_COPPER))
 			continue;
 
 		PCB_LINE_LOOP(layer);

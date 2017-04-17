@@ -1092,7 +1092,7 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 	}
 
 	for (i = -1; i < pcb_max_layer + 1; i++) {
-		if (pcb_layer_flags(i) & PCB_LYT_SILK) /* special order: silks are i=-1 and i=max+1, if we meet them elsewhere, skip */
+		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK) /* special order: silks are i=-1 and i=max+1, if we meet them elsewhere, skip */
 			continue;
 		if (i < 0)
 			SearchLayer = &PCB->Data->SILKLAYER;

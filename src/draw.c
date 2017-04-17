@@ -553,7 +553,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 	lid = pcb_layer_id(PCB->Data, Layer);
 	if (lid >= 0)
-		lflg = pcb_layer_flags(lid);
+		lflg = pcb_layer_flags(PCB, lid);
 
 	/* The implicit outline rectangle (or automatic outline rectanlge).
 	   We should check for pcb_gui->gui here, but it's kinda cool seeing the
@@ -725,7 +725,7 @@ void pcb_hid_expose_pinout(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_hid_t *old_gui = expose_begin(hid);
-	unsigned long lflg = pcb_layer_flags(e->content.layer_id);
+	unsigned long lflg = pcb_layer_flags(PCB, e->content.layer_id);
 	int fx, fy;
 
 	if (lflg & PCB_LYT_LOGICAL) {

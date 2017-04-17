@@ -258,7 +258,7 @@ void gcode_choose_groups()
 	memset(gcode_export_group, 0, sizeof(gcode_export_group));
 
 	for (n = 0; n < pcb_max_layer; n++) {
-		unsigned int flags = pcb_layer_flags(n);
+		unsigned int flags = pcb_layer_flags(PCB, n);
 		if (flags & PCB_LYT_SILK)
 			continue;
 		layer = &PCB->Data->Layer[n];

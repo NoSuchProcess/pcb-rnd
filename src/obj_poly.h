@@ -98,7 +98,7 @@ double pcb_poly_area(const pcb_polygon_t *poly);
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (!(pcb_layer_flags(l) & PCB_LYT_COPPER)) continue; \
+		if (!(pcb_layer_flags(PCB, l) & PCB_LYT_COPPER)) continue; \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_SILK_LOOP(top) do	{		\
@@ -106,7 +106,7 @@ double pcb_poly_area(const pcb_polygon_t *poly);
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (!(pcb_layer_flags(l) & PCB_LYT_SILK)) continue; \
+		if (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK)) continue; \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_VISIBLE_LOOP(top) do	{	\

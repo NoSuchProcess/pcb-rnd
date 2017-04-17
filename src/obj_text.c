@@ -388,7 +388,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 	textlist_remove(text);
 	textlist_append(&Destination->Text, text);
 
-	if (pcb_layer_flags(pcb_layer_id(PCB->Data, Destination)) & PCB_LYT_BOTTOM)
+	if (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, Destination)) & PCB_LYT_BOTTOM)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, text); /* get the text mirrored on display */
 	else
 		PCB_FLAG_CLEAR(PCB_FLAG_ONSOLDER, text);

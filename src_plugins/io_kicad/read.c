@@ -237,7 +237,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer < 0) {
 						return -1;
-					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+					} else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 					}
 				} else {
@@ -1105,7 +1105,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					moduleLayer = PCBLayer;
 					if (PCBLayer < 0) {
 						return -1;
-					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+					} else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 							TextFlags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 							moduleOnTop = 0;
@@ -1274,7 +1274,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\ttext layer not defined for module text, default being used.\n");
 						Flags = pcb_flag_make(0);
 						/*return -1;*/
-					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+					} else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 					}
 				} else {
@@ -1527,7 +1527,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 										}
 									} else if (PCBLayer < -1) {
 										printf("\tUnimplemented layer definition: %s\n", l->str);
-									} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+									} else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
 										kicadLayer = 0;
 										padLayerDefCount++;
 									} else if (padLayerDefCount) {

@@ -486,7 +486,7 @@ static int check_layer_del(pcb_layer_id_t lid)
 	pcb_layer_group_t *grp;
 	unsigned int tflg;
 
-	tflg = pcb_layer_flags(lid);
+	tflg = pcb_layer_flags(PCB, lid);
 	grp = pcb_get_layergrp(PCB, pcb_layer_get_group(PCB, lid));
 
 	if (grp == NULL) {

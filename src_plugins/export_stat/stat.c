@@ -172,7 +172,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	for(lid = 0; lid < pcb_max_layer; lid++) {
 		pcb_layer_t *l = PCB->Data->Layer+lid;
 		int empty = pcb_layer_is_empty_(PCB, l);
-		unsigned int lflg = pcb_layer_flags(lid);
+		unsigned int lflg = pcb_layer_flags(PCB, lid);
 
 		lgid = pcb_layer_get_group(PCB, lid);
 		lgs = lgss + lgid;

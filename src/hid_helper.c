@@ -42,7 +42,7 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 	const char *single_name, *res = NULL;
 
 	if (flags == 0)
-		flags = pcb_layer_flags(lid);
+		flags = pcb_layer_flags(PCB, lid);
 
 	if (flags & PCB_LYT_OUTLINE) {
 		strcpy(dest, "outline");

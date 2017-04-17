@@ -169,7 +169,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 			XtSetValues(lb->w[i], stdarg_args, stdarg_n);
 
-			if ((i >= pcb_max_layer && i < PCB_MAX_LAYER) || (pcb_layer_flags(i) & PCB_LYT_SILK))
+			if ((i >= pcb_max_layer && i < PCB_MAX_LAYER) || (pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 				XtUnmanageChild(lb->w[i]);
 			else
 				XtManageChild(lb->w[i]);
@@ -252,12 +252,12 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	}
 
 	show_one_layer_button(layer, set);
-	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(layer) & PCB_LYT_SILK))) {
+	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(PCB, layer) & PCB_LYT_SILK))) {
 		int i;
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, layer);
 		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
 			l = PCB->LayerGroups.grp[group].lid[i];
-			if (l != layer && (!(pcb_layer_flags(l) & PCB_LYT_SILK))) {
+			if (l != layer && (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK))) {
 				show_one_layer_button(l, set);
 				PCB->Data->Layer[l].On = set;
 			}
@@ -272,7 +272,7 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	const char *name;
 	PCB->RatDraw = (layer == LB_RATS);
 	PCB->SilkActive = (layer == LB_SILK);
-	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(layer) & PCB_LYT_SILK)))
+	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(PCB, layer) & PCB_LYT_SILK)))
 		pcb_layervis_change_group_vis(layer, 1, 1);
 	for (l = 0; l < num_layer_buttons; l++) {
 		LayerButtons *lb = layer_button_list + l;

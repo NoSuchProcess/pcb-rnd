@@ -172,7 +172,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty);
 
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
-unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
+unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx);
 
 /* map bits of a layer type (call cb for each bit set); return number of bits
    found. */

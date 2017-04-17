@@ -1309,9 +1309,9 @@ static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 			continue;
 		for (entry = 0; entry < lg->grp[group].len; entry++) {
 			layer = lg->grp[group].lid[entry];
-			if ((pcb_layer_flags(layer) & PCB_LYT_TOP) && (pcb_layer_flags(layer) & PCB_LYT_COPPER))
+			if ((pcb_layer_flags(PCB, layer) & PCB_LYT_TOP) && (pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 				string = g_string_append(string, "c");
-			else if ((pcb_layer_flags(layer) & PCB_LYT_BOTTOM) && (pcb_layer_flags(layer) & PCB_LYT_COPPER))
+			else if ((pcb_layer_flags(PCB, layer) & PCB_LYT_BOTTOM) && (pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 				string = g_string_append(string, "s");
 			else
 				g_string_append_printf(string, "%ld", layer + 1);

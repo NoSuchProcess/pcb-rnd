@@ -766,8 +766,8 @@ void pcb_notify_mode(void)
 																				pcb_crosshair.AttachedLine.Point1.Y,
 																				conf_core.design.via_thickness / 2) ==
 																					PCB_TYPE_NONE
-					&& (pcb_layer_flags(pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER)
-					&& (pcb_layer_flags(pcb_layer_id(PCB->Data, lastLayer)) & PCB_LYT_COPPER)
+					&& (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER)
+					&& (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, lastLayer)) & PCB_LYT_COPPER)
 					&& (via =	pcb_via_new(PCB->Data,
 																pcb_crosshair.AttachedLine.Point1.X,
 																pcb_crosshair.AttachedLine.Point1.Y,
@@ -823,7 +823,7 @@ void pcb_notify_mode(void)
 			}
 
 			if (conf_core.editor.auto_drc
-					&& (pcb_layer_flags(pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER))
+					&& (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER))
 				maybe_found_flag = PCB_FLAG_FOUND;
 			else
 				maybe_found_flag = 0;
@@ -851,8 +851,8 @@ void pcb_notify_mode(void)
 				   isn't a pin already here */
 				if (PCB->ViaOn 
 						&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(lastLayer) 
-						&& (pcb_layer_flags(pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER)
-						&& (pcb_layer_flags(pcb_layer_id(PCB->Data, lastLayer)) & PCB_LYT_COPPER)
+						&& (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER)
+						&& (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, lastLayer)) & PCB_LYT_COPPER)
 						&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
 																	 pcb_crosshair.AttachedLine.Point1.X,
 																	 pcb_crosshair.AttachedLine.Point1.Y,
@@ -949,7 +949,7 @@ void pcb_notify_mode(void)
 					pcb_text_t *text;
 					int flag = PCB_FLAG_CLEARLINE;
 
-					if (pcb_layer_flags(INDEXOFCURRENT) & PCB_LYT_BOTTOM)
+					if (pcb_layer_flags(PCB, INDEXOFCURRENT) & PCB_LYT_BOTTOM)
 						flag |= PCB_FLAG_ONSOLDER;
 					if ((text = pcb_text_new(CURRENT, pcb_font(PCB, conf_core.design.text_font_id, 1), Note.X,
 																		Note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {

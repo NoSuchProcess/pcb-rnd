@@ -123,7 +123,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, in
 		pcb_layer_t *layer;		\
 		pcb_layer_id_t number; 		\
 		number = ((pcb_board_t *)(data->pcb))->LayerGroups.grp[(group)].lid[entry]; \
-		if (!(pcb_layer_flags(number) & PCB_LYT_COPPER)) \
+		if (!(pcb_layer_flags(PCB, number) & PCB_LYT_COPPER)) \
 		  continue;			\
 		layer = &data->Layer[number];
 

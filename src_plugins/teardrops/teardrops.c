@@ -216,7 +216,7 @@ static void check_pin(pcb_pin_t * _pin)
 
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
-		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 			continue;
 		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
@@ -240,7 +240,7 @@ static void check_via(pcb_pin_t * _pin)
 
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
-		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 			continue;
 		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
@@ -278,7 +278,7 @@ static void check_pad(pcb_pad_t * _pad)
 
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
-		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 			continue;
 		pcb_r_search(l->line_tree, &(pad->BoundingBox), NULL, check_line_callback, l, NULL);
 	}

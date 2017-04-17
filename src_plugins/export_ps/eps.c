@@ -208,7 +208,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	/* Figure out which layers actually have stuff on them.  */
 	for (i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
-		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK)
 			continue;
 		if (layer->On)
 			if (!pcb_layer_is_empty_(PCB, layer))
@@ -239,7 +239,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	/* Now, for each group we're printing, mark its layers for
 	   printing.  */
 	for (i = 0; i < pcb_max_layer; i++) {
-		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK)
 			continue;
 		if (print_group[pcb_layer_get_group(PCB, i)])
 			print_layer[i] = 1;

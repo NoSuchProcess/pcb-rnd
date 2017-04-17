@@ -245,7 +245,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 	yoff = -TEXT_LINE;
 	for (found = 0, i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *l = LAYER_PTR(i);
-		if ((pcb_layer_flags(i) & PCB_LYT_OUTLINE) && (linelist_length(&l->Line) || arclist_length(&l->Arc))) {
+		if ((pcb_layer_flags(PCB, i) & PCB_LYT_OUTLINE) && (linelist_length(&l->Line) || arclist_length(&l->Arc))) {
 			found = 1;
 			break;
 		}

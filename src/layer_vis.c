@@ -99,7 +99,7 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
 		printf("pcb_layervis_change_group_vis(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
 
 	/* special case: some layer groups are controlled by a config setting */
-	flg = pcb_layer_flags(Layer);
+	flg = pcb_layer_flags(PCB, Layer);
 	if (flg & PCB_LYT_MASK)
 		conf_set_editor(show_mask, On);
 	if (flg & PCB_LYT_PASTE)
@@ -143,7 +143,7 @@ void pcb_layervis_reset_stack(void)
 
 	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
 	for (i = 0; i < pcb_max_layer; i++) {
-		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
+		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = i;
 		PCB->Data->Layer[i].On = pcb_true;
 	}
@@ -177,7 +177,7 @@ void pcb_layervis_save_stack(void)
 	}
 
 	for (i = 0; i < pcb_max_layer; i++) {
-		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
+		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			SavedStack.pcb_layer_stack[i] = pcb_layer_stack[i];
 		SavedStack.LayerOn[i] = PCB->Data->Layer[i].On;
 	}
@@ -205,7 +205,7 @@ void pcb_layervis_restore_stack(void)
 	}
 
 	for (i = 0; i < pcb_max_layer; i++) {
-		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
+		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = SavedStack.pcb_layer_stack[i];
 		PCB->Data->Layer[i].On = SavedStack.LayerOn[i];
 	}
@@ -231,7 +231,7 @@ void layer_vis_chg_mask(conf_native_t *cfg)
 
 	in = 1;
 	for(n = 0; n < pcb_max_layer; n++) {
-		if (pcb_layer_flags(n) & PCB_LYT_MASK) {
+		if (pcb_layer_flags(PCB, n) & PCB_LYT_MASK) {
 			if (PCB->Data->Layer[n].On != *cfg->val.boolean) {
 				chg = 1;
 				PCB->Data->Layer[n].On = *cfg->val.boolean;

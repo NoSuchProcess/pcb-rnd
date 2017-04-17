@@ -911,7 +911,7 @@ pcb_layer_t *hyp_get_layer(parse_param * h)
 
 pcb_bool_t hyp_is_bottom_layer(char *layer_name)
 {
-	return ((layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(layer_name)) & PCB_LYT_BOTTOM));
+	return ((layer_name != NULL) && (pcb_layer_flags(PCB, pcb_layer_by_name(layer_name)) & PCB_LYT_BOTTOM));
 }
 
 /*

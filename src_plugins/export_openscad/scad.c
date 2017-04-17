@@ -545,7 +545,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 		group_data[gtop].component = 1;
 
 	for (i = 0; i < pcb_max_layer; i++) {
-		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK)
 			continue;
 		layer = PCB->Data->Layer + i;
 		if (!pcb_layer_is_empty_(PCB, layer))

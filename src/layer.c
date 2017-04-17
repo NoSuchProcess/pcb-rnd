@@ -109,7 +109,7 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 	if (lid < 0)
 		return 1;
 
-	flags = pcb_layer_flags(lid);
+	flags = pcb_layer_flags(pcb, lid);
 
 	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_TOP)) { /* if our layer is the top copper layer and we have an element pad on it, it's non-empty */
 		PCB_PAD_ALL_LOOP(pcb->Data);
@@ -173,7 +173,7 @@ pcb_bool pcb_layer_is_paste_empty(pcb_board_t *pcb, pcb_side_t side)
 	return paste_empty;
 }
 
-unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
+unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx)
 {
 	pcb_layer_t *l;
 
@@ -183,11 +183,11 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
 
-	if ((layer_idx < 0) || (layer_idx >= PCB->Data->LayerN))
+	if ((layer_idx < 0) || (layer_idx >= pcb->Data->LayerN))
 		return 0;
 
-	l = &PCB->Data->Layer[layer_idx];
-	return pcb_layergrp_flags(PCB, l->grp);
+	l = &pcb->Data->Layer[layer_idx];
+	return pcb_layergrp_flags(pcb, l->grp);
 }
 
 #define APPEND(n) \
@@ -228,7 +228,7 @@ int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 			APPEND_VIRT(v);
 
 	for (n = 0; n < PCB_MAX_LAYER; n++)
-		if ((pcb_layer_flags(n) & mask) == mask)
+		if ((pcb_layer_flags(PCB, n) & mask) == mask)
 			APPEND(n);
 
 	if (mask == PCB_LYT_UI)
@@ -248,7 +248,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 			APPEND_VIRT(v);
 
 	for (n = 0; n < PCB_MAX_LAYER; n++)
-		if ((pcb_layer_flags(n) & mask))
+		if ((pcb_layer_flags(PCB, n) & mask))
 			APPEND(n);
 
 	if (mask & PCB_LYT_UI)

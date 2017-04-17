@@ -241,8 +241,8 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	switch(fh1) {
 		case query_fields_name:     PCB_QRY_RET_STR(res, l->Name);
 		case query_fields_visible:  PCB_QRY_RET_INT(res, l->On);
-		case query_fields_position: PCB_QRY_RET_INT(res, pcb_layer_flags(pcb_layer_id(PCB->Data, l)) & PCB_LYT_ANYWHERE);
-		case query_fields_type:     PCB_QRY_RET_INT(res, pcb_layer_flags(pcb_layer_id(PCB->Data, l)) & PCB_LYT_ANYTHING);
+		case query_fields_position: PCB_QRY_RET_INT(res, pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, l)) & PCB_LYT_ANYWHERE);
+		case query_fields_type:     PCB_QRY_RET_INT(res, pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, l)) & PCB_LYT_ANYTHING);
 		default:;
 	}
 

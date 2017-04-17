@@ -73,7 +73,7 @@ static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
 		/* TODO: check group flags against mask here for more efficiency */
 		lid = g->lid[it->lidx];
 		it->lidx++;
-		hit = pcb_layer_flags(lid) & it->mask;
+		hit = pcb_layer_flags(PCB, lid) & it->mask;
 		if (it->exact) {
 			if (hit == it->mask)
 				return lid;

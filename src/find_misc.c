@@ -230,7 +230,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 			pcb_layer_id_t laynum = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
 
 			/* don't mess with non-conducting objects! */
-			if (!(pcb_layer_flags(laynum) & PCB_LYT_COPPER) || ((pcb_layer_t *) ptr1)->no_drc)
+			if (!(pcb_layer_flags(PCB, laynum) & PCB_LYT_COPPER) || ((pcb_layer_t *) ptr1)->no_drc)
 				return;
 		}
 	}

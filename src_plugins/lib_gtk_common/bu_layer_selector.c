@@ -281,7 +281,7 @@ void make_layer_buttons(GtkWidget * layersel)
 	gboolean active = TRUE;
 
 	for (i = 0; i < pcb_max_layer; ++i) {
-		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK)
 			continue;									/* silks have a special, common button */
 		layer_process(&color_string, &text, &active, i);
 		pcb_gtk_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE);
@@ -392,7 +392,7 @@ int pcb_gtk_ToggleView(GtkWidget *layer_selector, int argc, const char **argv, p
 /*! \brief callback for pcb_gtk_layer_selector_delete_layers */
 gboolean get_layer_delete(gint layer)
 {
-	if (pcb_layer_flags(layer) & PCB_LYT_SILK)
+	if (pcb_layer_flags(PCB, layer) & PCB_LYT_SILK)
 		return 1;
 	return layer >= pcb_max_layer;
 }

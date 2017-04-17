@@ -250,7 +250,7 @@ void pcb_layout_lookup_init(void)
 	for(i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *layer = LAYER_PTR(i);
 
-		if (pcb_layer_flags(i) & PCB_LYT_COPPER) {
+		if (pcb_layer_flags(PCB, i) & PCB_LYT_COPPER) {
 
 		if (linelist_length(&layer->Line)) {
 			LineList[i].Size = linelist_length(&layer->Line);
@@ -413,7 +413,7 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 
 		/* now all lines, arcs and polygons of the several layers */
 		for(layer = 0; layer < pcb_max_layer; layer++) {
-			if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+			if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 				continue;
 			if (LAYER_PTR(layer)->no_drc)
 				continue;
@@ -731,7 +731,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 
 	/* loop over all layers */
 	for(layer = 0; layer < pcb_max_layer; layer++) {
-		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 			continue;
 		if (LAYER_PTR(layer)->no_drc)
 			continue;

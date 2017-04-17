@@ -862,7 +862,7 @@ static routedata_t *CreateRouteData()
 		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
 			pcb_layer_id_t lid = PCB->LayerGroups.grp[group].lid[i];
 			/* layer must be 1) copper and 2) on */
-			if ((pcb_layer_flags(lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].On) {
+			if ((pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].On) {
 				routing_layers++;
 				is_layer_group_active[group] = pcb_true;
 				break;
@@ -1074,7 +1074,7 @@ static routedata_t *CreateRouteData()
 	for (i = 0; i < pcb_max_layer; i++) {
 		pcb_layergrp_id_t layergroup;
 
-		if (!(pcb_layer_flags(i) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
 			continue;
 
 		layergroup = pcb_layer_get_group(PCB, i);
