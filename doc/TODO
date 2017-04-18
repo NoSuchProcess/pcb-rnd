@@ -12,6 +12,7 @@
 		- when you press the up arrow it doesn't bring back the last command but the first you ever typed
 	- plugins:
 		- turn gpmi into a conventional plugin
+	- png export: rotated sqaure pad bug, see RTT/padrot.pcb [report: Larry]
 
 - plugin breakage:
 	- don't force builtin for dependant libs
