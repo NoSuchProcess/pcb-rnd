@@ -116,6 +116,9 @@ static pcb_bool map_color_string(const char *color_string, GdkRGBA * color)
 
 static void cr_draw_line(cairo_t * cr, int fill, double x1, int y1, int x2, int y2)
 {
+	if (cr == NULL)
+		return;
+
 	cairo_move_to(cr, x1, y1);
 	cairo_line_to(cr, x2, y2);
 	if (fill)
@@ -616,6 +619,9 @@ static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	render_priv_t *priv = gport->render_priv;
 
+	if (priv->cr == NULL)
+		return;
+
 	switch (style) {
 	case Trace_Cap:
 	case Round_Cap:
@@ -635,6 +641,9 @@ static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 static void ghid_cairo_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	render_priv_t *priv = gport->render_priv;
+
+	if (priv->cr == NULL)
+		return;
 
 	//gc->width = width;
 	//if (gc->gc)
@@ -747,6 +756,9 @@ static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 	gint w, h, lw;
 	render_priv_t *priv = gport->render_priv;
 
+	if (priv->cr == NULL)
+		return;
+
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -784,6 +796,9 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 	gint w, h, vr;
 	render_priv_t *priv = gport->render_priv;
 
+	if (priv->cr == NULL)
+		return;
+
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
 	if (SIDE_X(cx) < gport->view.x0 - radius
@@ -802,6 +817,10 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 	static int npoints = 0;
 	int i;
 	render_priv_t *priv = gport->render_priv;
+
+	if (priv->cr == NULL)
+		return;
+
 	USE_GC(gc);
 
 	if (npoints < n_coords) {
@@ -820,6 +839,9 @@ static void ghid_cairo_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 {
 	gint w, h, lw, xx, yy;
 	render_priv_t *priv = gport->render_priv;
+
+	if (priv->cr == NULL)
+		return;
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -1189,6 +1211,7 @@ static void ghid_cairo_init_renderer(int *argc, char ***argv, void *vport)
 	GHidPort *port = vport;
 	/* Init any GC's required */
 	port->render_priv = g_new0(render_priv_t, 1);
+	port->render_priv->cr = NULL;
 }
 
 static void ghid_cairo_shutdown_renderer(void *vport)
@@ -1197,6 +1220,7 @@ static void ghid_cairo_shutdown_renderer(void *vport)
 	render_priv_t *priv = port->render_priv;
 
 	cairo_destroy(priv->cr);
+	priv->cr = NULL;
 	cairo_surface_destroy(priv->cr_surf_window);
 
 	g_free(port->render_priv);
