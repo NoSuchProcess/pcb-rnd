@@ -439,7 +439,7 @@ static void mask_start_add(int thin, const pcb_box_t *screen)
 	if (thin)
 		pcb_gui->set_color(Output.pmGC, "erase");
 	else
-		pcb_gui->use_mask(HID_MASK_OFF);
+		pcb_gui->use_mask(HID_MASK_AFTER);
 }
 
 static void mask_finish(int thin, const pcb_box_t *screen)
