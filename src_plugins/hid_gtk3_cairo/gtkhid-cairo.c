@@ -1205,13 +1205,6 @@ static void ghid_cairo_shutdown_renderer(void *vport)
 
 static void ghid_cairo_init_drawing_widget(GtkWidget * widget, void *vport)
 {
-	GHidPort *port = vport;
-	render_priv_t *priv = port->render_priv;
-
-	priv->cr_surf_window = gdk_window_create_similar_surface(gport->drawing_area,
-																													 CAIRO_CONTENT_COLOR_ALPHA,
-																													 gport->view.canvas_width, gport->view.canvas_height);
-	priv->cr = cairo_create(priv->cr_surf_window);
 }
 
 static void ghid_cairo_drawing_area_configure_hook(void *vport)
@@ -1276,6 +1269,13 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, GdkEventEx
 
 static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 {
+	GHidPort *port = data;
+	render_priv_t *priv = port->render_priv;
+
+	priv->cr_surf_window = gdk_window_create_similar_surface(gtk_widget_get_window(gport->drawing_area),
+																													 CAIRO_CONTENT_COLOR_ALPHA,
+																													 gport->view.canvas_width, gport->view.canvas_height);
+	priv->cr = cairo_create(priv->cr_surf_window);
 }
 
 static gboolean ghid_cairo_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
