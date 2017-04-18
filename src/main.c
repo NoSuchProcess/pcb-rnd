@@ -253,6 +253,7 @@ void pcb_main_uninit(void)
 
 	pcb_hid_uninit();
 	pcb_text_uninit();
+	layer_vis_uninit();
 	pcb_events_uninit();
 
 	pcb_strflg_uninit_buf();

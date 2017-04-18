@@ -272,3 +272,8 @@ void layer_vis_init(void)
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
 }
+
+void layer_vis_uninit(void)
+{
+	pcb_event_unbind_allcookie(layer_vis_cookie);
+}
