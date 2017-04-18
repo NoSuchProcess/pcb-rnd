@@ -23,7 +23,7 @@ BEGIN {
 	HDR["feature"] = "Feature plugins"
 	HDR["fp"] = "Footprint backends"
 	HDR["import"] = "Import plugins"
-	HDR["export"] = "Import plugins"
+	HDR["export"] = "Export plugins"
 	HDR["io"] = "IO plugins (file formats)"
 	HDR["hid"] = "HID plugins"
 	print "/******************************************************************************"

@@ -1,5 +1,5 @@
 $class export
-$short gerber pcb_exporter
+$short Gerber pcb_exporter
 $long Export to gerber
 $state works
 default buildin
