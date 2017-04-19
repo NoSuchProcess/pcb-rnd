@@ -12,10 +12,10 @@
 		- when you press the up arrow it doesn't bring back the last command but the first you ever typed
 	- plugins:
 		- turn gpmi into a conventional plugin
-	- png export: rotated sqaure pad bug, see RTT/padrot.pcb [report: Larry]
+	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 
 - plugin breakage:
-	- don't force builtin for dependant libs
+	- don't force builtin for dependent libs
 
 - fontsel:
 	- replace font in slot (even in default)
@@ -51,7 +51,7 @@ CLEANUP #5
 	- buttons to select one or all items or all items including locked
 	- multiple DRC windows
 	- io infra for save incompatibility note with DRC list
-	- import sch shouldn't select elements to be removed but put them on a drc list
+	- import sch. shouldn't select elements to be removed but put them on a drc list
 	- display number of items at top of drc window
 	- export to file 
 - hid_gtk? bug: moving with cursor keys snapping to a via - can't leave with cursor keys!
@@ -62,13 +62,13 @@ CLEANUP #5
 	- report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
 - GTK layers [report: Ade]:
 	- add a left-click context menu for the layer selector widget
-	- move the layer+selected color change from the preferecnes menu there (but this should probably live in gui-config.h)
+	- move the layer+selected color change from the preferences menu there (but this should probably live in gui-config.h)
 	- move the logical layer preferences menu tab items in this context menu too (e.g. move up/down, rename, delete, insert)
 - layer group rewrite:
 	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 	- make the color config dynamic too; invent color for new layers
 - BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc and it will calculate a self-intersecting clearance [report:Evan]
-- draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numebring, and the copper needs to go under the silk so the number ends up there too [report:Evan]
+- draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numbering, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
