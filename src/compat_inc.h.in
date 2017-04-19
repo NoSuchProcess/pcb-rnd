@@ -1,5 +1,6 @@
 put /local/pcb/compat_inc [@
 
+@?/host/libs/fs/realpath/includes@
 @?libs/ldl/includes@
 @?libs/LoadLibrary/includes@
 @?libs/fs/getcwd/includes@
