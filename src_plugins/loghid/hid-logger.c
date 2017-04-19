@@ -66,7 +66,7 @@ static void log_destroy_gc(pcb_hid_gc_t gc) {
 	delegatee_->destroy_gc(gc);
 }
 
-static void log_use_mask(int use_it) {
+static void log_use_mask(pcb_mask_op_t use_it) {
 	pcb_fprintf(out_, "use_mask(%x)\n", use_it);
 	delegatee_->use_mask(use_it);
 }

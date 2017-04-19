@@ -979,7 +979,7 @@ static void ps_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void ps_use_mask(int use_it)
+static void ps_use_mask(pcb_mask_op_t use_it)
 {
 	/* does nothing */
 }

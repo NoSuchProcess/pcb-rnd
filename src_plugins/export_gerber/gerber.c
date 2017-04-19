@@ -43,7 +43,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options);
 static void gerber_parse_arguments(int *argc, char ***argv);
 static pcb_hid_gc_t gerber_make_gc(void);
 static void gerber_destroy_gc(pcb_hid_gc_t gc);
-static void gerber_use_mask(int use_it);
+static void gerber_use_mask(pcb_mask_op_t use_it);
 static void gerber_set_color(pcb_hid_gc_t gc, const char *name);
 static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 static void gerber_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
@@ -822,7 +822,7 @@ static void gerber_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void gerber_use_mask(int use_it)
+static void gerber_use_mask(pcb_mask_op_t use_it)
 {
 	current_mask = use_it;
 }

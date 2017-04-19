@@ -293,7 +293,7 @@ static pcb_coord_t opt_minimal_drill;
 static int opt_board_cut;
 
 static int lastseq = 0;
-static int current_mask;
+static pcb_mask_op_t current_mask;
 
 static float scaled_layer_thickness;
 
@@ -846,7 +846,7 @@ static void scad_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void scad_use_mask(int use_it)
+static void scad_use_mask(pcb_mask_op_t use_it)
 {
 	current_mask = use_it;
 }

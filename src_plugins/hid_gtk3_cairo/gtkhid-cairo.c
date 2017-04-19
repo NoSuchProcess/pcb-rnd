@@ -451,7 +451,7 @@ static void ghid_cairo_draw_bg_image(void)
 
 #define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
 
-static void ghid_cairo_use_mask(int use_it)
+static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 {
 	static int mask_seq_id = 0;
 	GdkColor color;

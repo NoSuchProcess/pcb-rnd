@@ -19,4 +19,4 @@ void gpmi_hid_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_b
 void gpmi_hid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 void gpmi_hid_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t *pad, pcb_bool drawHole, pcb_bool mask);
 void gpmi_hid_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask);
-void gpmi_hid_use_mask(int use_it);
+void gpmi_hid_use_mask(pcb_mask_op_t use_it);

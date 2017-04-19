@@ -127,6 +127,14 @@ typedef struct {
 	int (*throw_drc_dialog) (void);
 } pcb_hid_drc_gui_t;
 
+typedef enum pcb_mask_op_s {
+	HID_MASK_OFF,    /* Flushes the buffer and return to non-mask operation.  */
+	HID_MASK_BEFORE, /* Polygons being drawn before clears.  */
+	HID_MASK_CLEAR,  /* Clearances being drawn.  */
+	HID_MASK_SET,    /* Positive draw.  */
+	HID_MASK_AFTER   /* Polygons being drawn after clears.  */
+} pcb_mask_op_t;
+
 typedef struct hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
@@ -243,17 +251,7 @@ struct hid_s {
 	   call use_mask(HID_MASK_OFF) to flush the buffer to the HID.  If
 	   you use the "erase" color when use_mask is disabled, it simply
 	   draws in the background color.  */
-	void (*use_mask) (int use_it_);
-	/* Flushes the buffer and return to non-mask operation.  */
-#define HID_MASK_OFF 0
-	/* Polygons being drawn before clears.  */
-#define HID_MASK_BEFORE 1
-	/* Clearances being drawn.  */
-#define HID_MASK_CLEAR 2
-	/* Polygons being drawn after clears.  */
-#define HID_MASK_AFTER 3
-	/* Positive draw.  */
-#define HID_MASK_SET 5
+	void (*use_mask) (pcb_mask_op_t use_it_);
 
 	/* Sets a color.  Names can be like "red" or "#rrggbb" or special
 	   names like "erase".  *Always* use the "erase" color for removing

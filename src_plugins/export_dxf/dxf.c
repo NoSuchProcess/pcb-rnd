@@ -265,7 +265,7 @@ static void dxf_set_line_width(pcb_hid_gc_t gc, int width);
 static void dxf_show_item(void *item);
 static StringList *dxf_string_insert(char *str, StringList * list);
 static void dxf_use_gc(pcb_hid_gc_t gc, int radius);
-static void dxf_use_mask(int use_it);
+static void dxf_use_mask(pcb_mask_op_t use_it);
 static void dxf_write_block(FILE * fp, int id_code, char *xref_name,
 														char *block_name, char *linetype, char *layer, double x0,
 														double y0, double z0, double thickness, int color, int paperspace, int block_type);
@@ -4622,7 +4622,7 @@ static void dxf_destroy_gc(pcb_hid_gc_t gc)
  *   <li> <c>HID_MASK_AFTER == 3 </c> Polygons being drawn after clears.
  * </ul>
  */
-static void dxf_use_mask(int use_it) {
+static void dxf_use_mask(pcb_mask_op_t use_it) {
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_use_mask () function.\n", __FILE__, __LINE__);
 #endif

@@ -233,7 +233,7 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 
 PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
-static void lesstif_use_mask(int use_it);
+static void lesstif_use_mask(pcb_mask_op_t use_it);
 static void zoom_max();
 static void zoom_to(double factor, int x, int y);
 static void zoom_by(double factor, int x, int y);
@@ -2806,7 +2806,7 @@ static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void lesstif_use_mask(int use_it)
+static void lesstif_use_mask(pcb_mask_op_t use_it)
 {
 	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && !use_xrender)
 		use_it = 0;

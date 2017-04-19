@@ -302,7 +302,7 @@ static void ghid_gl_draw_bg_image(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void ghid_gl_use_mask(int use_it)
+void ghid_gl_use_mask(pcb_mask_op_t use_it)
 {
 	static int stencil_bit = 0;
 

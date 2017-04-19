@@ -405,7 +405,7 @@ static void svg_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void svg_use_mask(int use_it)
+static void svg_use_mask(pcb_mask_op_t use_it)
 {
 	if (use_it == HID_MASK_CLEAR) {
 		return;

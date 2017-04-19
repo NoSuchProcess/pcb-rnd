@@ -158,7 +158,7 @@ void gpmi_hid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coo
 	gpmi_event(h->module, HIDE_fill_rect, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_use_mask(int use_it)
+void gpmi_hid_use_mask(pcb_mask_op_t use_it)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(pcb_exporter);
 	gpmi_event(h->module, HIDE_use_mask, h, use_it);
