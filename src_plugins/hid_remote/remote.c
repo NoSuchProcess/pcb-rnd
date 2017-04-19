@@ -200,7 +200,7 @@ static void remote_destroy_gc(pcb_hid_gc_t gc)
 		proto_send_del_gc(idx);
 }
 
-static const char *mask_names[] = { "off", "before", "clear", "after" };
+static const char *mask_names[] = { "off", "before", "clear", "set", "after" };
 static void remote_use_mask(pcb_mask_op_t mask)
 {
 	if ((mask >= 0) && (mask < sizeof(mask_names) / sizeof(mask_names[0])))
