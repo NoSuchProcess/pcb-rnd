@@ -301,6 +301,9 @@ buildin.c: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 buildin.h: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 	$(PUPLUG) buildin.h > buildin.h
 
+$(PUPLUG):
+	cd ../src_3rd/puplug && make
+
 @]
 
 print [@
