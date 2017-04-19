@@ -1,23 +1,31 @@
 :author: Alain
 include::adoc_common_attributes.adoc[]
 
-= GTK2 / GTK3 GUI related topics
+= GTK{2 | 3 | 4} GUI related topics
 
-* My understanding/roadmap for <<gtk_hid_architecture.adoc#, GTK HID architecture>>.
-
-//* Multi-key keyboard shortcuts
-
-* Menus, Actions
-
-//* `cairo` back-end versus GDK
+* My understanding/roadmap for <<gtk_hid_architecture.adoc#, GTKx HID architecture>>.
+** GTK3 using `cairo` back-end versus GDK
 //** Prefer `GdkPixbuf`  to `GdkPixmap` or `GdkBitmap`
 //** Get rid of `gdk_drawable...` ; use cairo surfaces
 
-* Custom widgets
-** <<route_style.adoc#, Route styles>> dialog + widget. Concepts
-** Layer selection
+* Menus, Actions :
+  The configurable menus system needs to be kept.
 
-* GTK3 new design ?
+//* Multi-key keyboard shortcuts
+
+== Custom widgets
+* <<layer_selection.adoc#, Layer selection>> concepts
+
+* <<route_style.adoc#, Route styles>> dialog + widget. Concepts
+
+* Preview widget
+
+== Dialogs
+* <<gtk_preferences_dialog.adoc#, Preferences Dialog>>
+
+* <<gtk_drc_dialog.adoc#, DRC Dialog>> or windows ... Future work.
+
+== GTK4 new design ?
 
 == Developer tips
 

@@ -1,0 +1,65 @@
+:author: Alain
+include::adoc_common_attributes.adoc[]
+
+= GTK "Preferences Dialog"
+
+== Requirements
+* The window should fit 800x600 screen configurations.
+* The preferences should be consistent troughout the dialog, honored and refreshed.
+* All preferences types should be "bug free" !
+
+== Current implementation
+=== Size
+Size requested: 780x550. Realized so far : 780x591
+
+There is a "dynamic area" in `Config PoV` where all the widgets needed to edit
+different data types are created, but then, only displayed
+
+GTK realizes all those widgets, which is taking a lot of Y space, while
+during real user interaction, only a few widgets are displayed, minimising the
+required Y space... I tried to connect a `realize` signal to recalculate
+the widget size, but does not seem to work :(
+
+=== Jump on `Save`
+In `User PoV`, when clicking on `Save in config` ?? (else too ?) there is an ugly workaround:
+
+The whole preferences dialog was designed to be built up once, with all
+values copied from core to GTK then copied back from GTK to core on dialog close.
+This means if any value is updated on the fly, it's not trivial to make sure the
+gtk mirror is updated.
+
+As a workaround, we just force it in a state that the tabs need to be re-created.
+
+This is not nice, but the real fix would be very expensive. The config system
+is strong on this, it supports calling back functions on config value changes,
+so it would be easy to get the conf system to notify the gtk code when the
+change happens. But on the GTK side we don't have any infra or code for this.
+And a partial solution wouldn't help - if we wanted to do this, we'd need to
+do this for all values, including the tricky ones (prio lists even in the config pov section).
+Would take weeks or even months to get it right. Not sure it is worth the effort.
+
+So, on save, the dialog is destroyed and recreated, jumping at the same tab in
+the tree view. This has some bugs. FIXME them !
+
+On the other hand, there could be yet another workaround on this: we could
+remember what tree node was open when we triggered this, and then after the
+rebuild, we could just open that again. Go Alain !
+
+=== Problems with some types
+* increments
+* layers
+* groups
+
+=== Code explanation
+
+//image::gtk_preferences_dialog.svg[]
+
+
+`static GtkWidget *config_window;`
+
+is the total dialog window.
+
+
+
+
+== TODO

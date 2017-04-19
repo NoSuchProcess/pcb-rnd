@@ -51,7 +51,7 @@ GTK3 compatibility within these 2 structures:
 | GdkColor      | {no}              | GdkRGBA             | {no}^1^
 | GdkColormap   | {no}              | GdkVisual           | {no}^1^
 |===
-^1^ An abstracted structure will be put in place (almost completed)
+^1^ An abstracted structure was envisioned, but abandoned due to scarce use of color objects.
 
 
 == Drawing primitives using GDKx
@@ -265,16 +265,16 @@ route_style.c
 ```
 
 ==== GUI creation Timeline
-[options="header"]
+[options="header",cols="4*m"]
 |===
-| function                | dir.            | file            | structure / data
-| hid_hid_gtk_init        | hid_gtk         | gtkhid-main.c   | GhidGui _ghidgui, *ghidgui = &_ghidgui;
-| ghid_glue_common_init   | hid_gtk         | glue_common.c   | GHidPort ghid_port, *gport;
-| ghid_glue_hid_init      | hid_gtk         | glue_hid.c      | pcb_hid_t ghid_hid;
-| glue_event_init         | hid_gtk         | glue_event.c    |
-| ghid_do_export          | hid_gtk         | glue_hid.c      | 
+| function                | directory       | file            | structure / data
+| hid_hid_gtk_init        | hid_gtk/        | gtkhid-main.c   | GhidGui _ghidgui, *ghidgui = &_ghidgui;
+| ghid_glue_common_init   | hid_gtk/        | glue_common.c   | GHidPort ghid_port, *gport;
+| ghid_glue_hid_init      | hid_gtk/        | glue_hid.c      | pcb_hid_t ghid_hid;
+| glue_event_init         | hid_gtk/        | glue_event.c    |
+| ghid_do_export          | hid_gtk/        | glue_hid.c      | 
 | pcb_hid_cfg_keys_init   | src/            | hid_cfg_input.c | pcb_hid_cfg_keys_t ghid_keymap;
-| ghid_create_pcb_widgets | lib_gtk_common  | dlg_topwin.c    | 
+| ghid_create_pcb_widgets | lib_gtk_common/ | dlg_topwin.c    | 
 |===
 
 ==== `glue.h`

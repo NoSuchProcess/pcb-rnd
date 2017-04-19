@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.5">
+<meta name="author" content="Alain">
+<title>GTK "Preferences Dialog"</title>
+<link rel="stylesheet" href="./default.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>GTK "Preferences Dialog"</h1>
+<div class="details">
+<span id="author" class="author">Alain</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_requirements">Requirements</a></li>
+<li><a href="#_current_implementation">Current implementation</a>
+<ul class="sectlevel2">
+<li><a href="#_size">Size</a></li>
+<li><a href="#_jump_on_code_save_code">Jump on <code>Save</code></a></li>
+<li><a href="#_problems_with_some_types">Problems with some types</a></li>
+<li><a href="#_code_explanation">Code explanation</a></li>
+</ul>
+</li>
+<li><a href="#_todo">TODO</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_requirements">Requirements</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>The window should fit 800x600 screen configurations.</p>
+</li>
+<li>
+<p>The preferences should be consistent troughout the dialog, honored and refreshed.</p>
+</li>
+<li>
+<p>All preferences types should be "bug free" !</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_current_implementation">Current implementation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_size">Size</h3>
+<div class="paragraph">
+<p>Size requested: 780x550. Realized so far : 780x591</p>
+</div>
+<div class="paragraph">
+<p>There is a "dynamic area" in <code>Config PoV</code> where all the widgets needed to edit
+different data types are created, but then, only displayed</p>
+</div>
+<div class="paragraph">
+<p>GTK realizes all those widgets, which is taking a lot of Y space, while
+during real user interaction, only a few widgets are displayed, minimising the
+required Y space&#8230;&#8203; I tried to connect a <code>realize</code> signal to recalculate
+the widget size, but does not seem to work :(</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_jump_on_code_save_code">Jump on <code>Save</code></h3>
+<div class="paragraph">
+<p>In <code>User PoV</code>, when clicking on <code>Save in config</code> ?? (else too ?) there is an ugly workaround:</p>
+</div>
+<div class="paragraph">
+<p>The whole preferences dialog was designed to be built up once, with all
+values copied from core to GTK then copied back from GTK to core on dialog close.
+This means if any value is updated on the fly, it&#8217;s not trivial to make sure the
+gtk mirror is updated.</p>
+</div>
+<div class="paragraph">
+<p>As a workaround, we just force it in a state that the tabs need to be re-created.</p>
+</div>
+<div class="paragraph">
+<p>This is not nice, but the real fix would be very expensive. The config system
+is strong on this, it supports calling back functions on config value changes,
+so it would be easy to get the conf system to notify the gtk code when the
+change happens. But on the GTK side we don&#8217;t have any infra or code for this.
+And a partial solution wouldn&#8217;t help - if we wanted to do this, we&#8217;d need to
+do this for all values, including the tricky ones (prio lists even in the config pov section).
+Would take weeks or even months to get it right. Not sure it is worth the effort.</p>
+</div>
+<div class="paragraph">
+<p>So, on save, the dialog is destroyed and recreated, jumping at the same tab in
+the tree view. This has some bugs. FIXME them !</p>
+</div>
+<div class="paragraph">
+<p>On the other hand, there could be yet another workaround on this: we could
+remember what tree node was open when we triggered this, and then after the
+rebuild, we could just open that again. Go Alain !</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_problems_with_some_types">Problems with some types</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>increments</p>
+</li>
+<li>
+<p>layers</p>
+</li>
+<li>
+<p>groups</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code_explanation">Code explanation</h3>
+<div class="paragraph">
+<p><code>static GtkWidget *config_window;</code></p>
+</div>
+<div class="paragraph">
+<p>is the total dialog window.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_todo">TODO</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-04-19 09:02:53 CEST
+</div>
+</div>
+</body>
+</html>

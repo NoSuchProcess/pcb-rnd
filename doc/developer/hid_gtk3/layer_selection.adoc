@@ -1,0 +1,19 @@
+:author: Alain
+include::adoc_common_attributes.adoc[]
+
+= Layer selection GUI
+
+:experimental:
+:numbered:
+== Introduction
+
+=== What is the Layer Selection widget
+Up to {prg} v1.2.2, the Layer Selection widget resides on the left side,
+underneath the menus, and presents a list of named layers. On the left
+of a layer name, there is a colored rectangle :
+
+* fully filled if the layer is visible
+* half filled if the layer is not shown.
+
+
+== Evolution

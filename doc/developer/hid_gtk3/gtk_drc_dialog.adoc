@@ -1,0 +1,5 @@
+:author: Alain
+include::adoc_common_attributes.adoc[]
+
+= DRC results GUI
+

@@ -189,7 +189,7 @@ GHidPort ghid_port, *gport;</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p><sup>1</sup> An abstracted structure will be put in place (almost completed)</p>
+<p><sup>1</sup> An abstracted structure was envisioned, but abandoned due to scarce use of color objects.</p>
 </div>
 </div>
 </div>
@@ -527,52 +527,52 @@ route_style.c</code></pre>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">function</th>
-<th class="tableblock halign-left valign-top">dir.</th>
+<th class="tableblock halign-left valign-top">directory</th>
 <th class="tableblock halign-left valign-top">file</th>
 <th class="tableblock halign-left valign-top">structure / data</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">hid_hid_gtk_init</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">gtkhid-main.c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GhidGui _ghidgui, *ghidgui = &amp;_ghidgui;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_hid_gtk_init</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_gtk/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gtkhid-main.c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GhidGui _ghidgui, *ghidgui = &amp;_ghidgui;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_glue_common_init</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">glue_common.c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GHidPort ghid_port, *gport;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ghid_glue_common_init</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_gtk/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>glue_common.c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GHidPort ghid_port, *gport;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_glue_hid_init</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">glue_hid.c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_hid_t ghid_hid;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ghid_glue_hid_init</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_gtk/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>glue_hid.c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pcb_hid_t ghid_hid;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">glue_event_init</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">glue_event.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>glue_event_init</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_gtk/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>glue_event.c</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_do_export</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">hid_gtk</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">glue_hid.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ghid_do_export</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_gtk/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>glue_hid.c</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_hid_cfg_keys_init</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">src/</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">hid_cfg_input.c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_hid_cfg_keys_t ghid_keymap;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pcb_hid_cfg_keys_init</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>src/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hid_cfg_input.c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pcb_hid_cfg_keys_t ghid_keymap;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ghid_create_pcb_widgets</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lib_gtk_common</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">dlg_topwin.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ghid_create_pcb_widgets</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lib_gtk_common/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dlg_topwin.c</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -621,7 +621,7 @@ route_style.c</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-08 11:38:35 CET
+Last updated 2017-04-05 13:45:49 CEST
 </div>
 </div>
 </body>
