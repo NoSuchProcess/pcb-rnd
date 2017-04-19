@@ -425,6 +425,8 @@ static void eps_use_mask(pcb_mask_op_t use_it)
 		}
 		break;
 	case HID_MASK_AFTER:
+	case HID_MASK_BEFORE:
+	case HID_MASK_SET:
 		break;
 	case HID_MASK_OFF:
 		if (mask_pending) {
