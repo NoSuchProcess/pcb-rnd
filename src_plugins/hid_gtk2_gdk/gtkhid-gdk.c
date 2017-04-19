@@ -398,7 +398,19 @@ static void ghid_gdk_draw_bg_image(void)
 		gdk_pixbuf_render_to_drawable(pixbuf, priv->drawable, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
-#define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
+#define WHICH_GC(gc) (((cur_mask == HID_MASK_CLEAR) || (cur_mask == HID_MASK_SET)) ? priv->mask_gc : (gc)->gc)
+
+static void ghid_mask_setup(render_priv_t *priv)
+{
+	if (!priv->mask)
+		priv->mask = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
+	priv->drawable = priv->mask;
+	if (!priv->mask_gc) {
+		priv->mask_gc = gdk_gc_new(priv->drawable);
+		gdk_gc_set_clip_origin(priv->mask_gc, 0, 0);
+		set_clip(priv, priv->mask_gc);
+	}
+}
 
 static void ghid_gdk_use_mask(pcb_mask_op_t use_it)
 {
@@ -421,15 +433,8 @@ static void ghid_gdk_use_mask(pcb_mask_op_t use_it)
 		g_return_if_reached();
 
 	case HID_MASK_CLEAR:
-		if (!priv->mask)
-			priv->mask = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
-		priv->drawable = priv->mask;
+		ghid_mask_setup(priv);
 		mask_seq = 0;
-		if (!priv->mask_gc) {
-			priv->mask_gc = gdk_gc_new(priv->drawable);
-			gdk_gc_set_clip_origin(priv->mask_gc, 0, 0);
-			set_clip(priv, priv->mask_gc);
-		}
 		color.pixel = 1;
 		gdk_gc_set_foreground(priv->mask_gc, &color);
 		gdk_draw_rectangle(priv->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
@@ -438,6 +443,12 @@ static void ghid_gdk_use_mask(pcb_mask_op_t use_it)
 		break;
 
 	case HID_MASK_SET:
+		ghid_mask_setup(priv);
+		mask_seq = 0;
+		color.pixel = 1;
+		gdk_gc_set_foreground(priv->mask_gc, &color);
+		break;
+
 	case HID_MASK_AFTER:
 		mask_seq_id++;
 		if (!mask_seq_id)
