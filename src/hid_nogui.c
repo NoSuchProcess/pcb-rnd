@@ -65,7 +65,7 @@ static void nogui_destroy_gc(pcb_hid_gc_t gc)
 {
 }
 
-static void nogui_use_mask(int use_it)
+static void nogui_use_mask(pcb_mask_op_t use_it)
 {
 	CRASH("use_mask");
 }
