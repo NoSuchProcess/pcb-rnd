@@ -101,5 +101,5 @@ clean:
 	-rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure revtest revtest.o cquote core src/util/sccbox.o
 
 distclean:
-	-rm ../config.h ../Makefile.conf ../src/Makefile ../util/gsch2pcb-rnd/Makefile config.cache config.log Rev.stamp sccbox
+	-rm ../config.h ../Makefile.conf ../src/Makefile ../util/gsch2pcb-rnd/Makefile config.cache config.log Rev.stamp sccbox ../src_3rd/puplug/Makefile ../src_3rd/puplug/config.h
 	-$(MAKE) clean
