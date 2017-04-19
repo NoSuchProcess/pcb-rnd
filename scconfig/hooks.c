@@ -320,6 +320,7 @@ int safe_atoi(const char *s)
 int hook_detect_target()
 {
 	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2;
+	const char *host_ansi, *host_ped, *target_ansi, *target_ped;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk3   = plug_is_enabled("hid_gtk3_cairo");
@@ -329,9 +330,34 @@ int hook_detect_target()
 	want_cairo  = plug_is_enabled("export_bboard") | want_gtk3;
 	want_xml2   = plug_is_enabled("io_eagle");
 
+	require("cc/fpic",  0, 1);
+	host_ansi = get("/host/cc/argstd/ansi");
+	host_ped = get("/host/cc/argstd/pedantic");
+	target_ansi = get("/target/cc/argstd/ansi");
+	target_ped = get("/target/cc/argstd/pedantic");
+
+	{ /* need to set debug flags here to make sure libs are detected with the modified cflags; -ansi matters in what #defines we need for some #includes */
+		const char *tmp, *fpic, *debug;
+		fpic = get("/target/cc/fpic");
+		if (fpic == NULL) fpic = "";
+		debug = get("/arg/debug");
+		if (debug == NULL) debug = "";
+		tmp = str_concat(" ", fpic, debug, NULL);
+		put("/local/global_cflags", tmp);
+
+		/* for --debug mode, use -ansi -pedantic for all detection */
+		put("/local/cc_flags_save", get("/target/cc/cflags"));
+		if (istrue(get("/local/pcb/debug"))) {
+			append("/target/cc/cflags", " ");
+			append("/target/cc/cflags", target_ansi);
+			append("/target/cc/cflags", " ");
+			append("/target/cc/cflags", target_ped);
+			printf("DEBUG='%s'\n", get("/target/cc/cflags"));
+		}
+	}
+
 	pup_hook_detect_target();
 
-	require("cc/fpic",  0, 1);
 	require("signal/names/*",  0, 0);
 	require("libs/env/setenv/*",  0, 0);
 	require("libs/fs/mkdtemp/*",  0, 0);
@@ -576,17 +602,6 @@ int hook_detect_target()
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
 
-	{
-		const char *tmp, *fpic, *debug;
-		fpic = get("/target/cc/fpic");
-		if (fpic == NULL) fpic = "";
-		debug = get("/arg/debug");
-		if (debug == NULL) debug = "";
-		tmp = str_concat(" ", fpic, debug, NULL);
-		put("/local/global_cflags", tmp);
-	}
-
-
 	/* plugin dependencies */
 	if (plug_is_enabled("dbus")) {
 		require("libs/sul/dbus/presents", 0, 0);
@@ -652,17 +667,15 @@ int hook_detect_target()
 	/* set cflags for C89 */
 	put("/local/pcb/c89flags", "");
 	if (istrue(get("/local/pcb/debug"))) {
-		const char *ansi = get("/host/cc/argstd/ansi");
-		const char *ped = get("/host/cc/argstd/pedantic");
 
-		if ((ansi != NULL) && (*ansi != '\0')) {
+		if ((target_ansi != NULL) && (*target_ansi != '\0')) {
 			append("/local/pcb/c89flags", " ");
-			append("/local/pcb/c89flags", ansi);
+			append("/local/pcb/c89flags", target_ansi);
 			need_inl = 1;
 		}
-		if ((ped != NULL) && (*ped != '\0')) {
+		if ((target_ped != NULL) && (*target_ped != '\0')) {
 			append("/local/pcb/c89flags", " ");
-			append("/local/pcb/c89flags", ped);
+			append("/local/pcb/c89flags", target_ped);
 			need_inl = 1;
 		}
 	}
@@ -675,6 +688,9 @@ int hook_detect_target()
 		append("/local/pcb/c89flags", " ");
 		append("/local/pcb/c89flags", "-Dinline= ");
 	}
+
+	/* restore the original CFLAGS, without the effects of --debug, so Makefiles can decide when to use what cflag (c99 needs different ones) */
+	put("/target/cc/cflags", get("/local/cc_flags_save"));
 
 	return 0;
 }
