@@ -15,7 +15,7 @@ clean: FORCE
 #	cd doc && $(MAKE) clean
 	cd tests && $(MAKE) clean
 	cd src_3rd/sphash && $(MAKE) clean
-	cd src_3rd/puplug/util && $(MAKE) clean
+	cd src_3rd/puplug && $(MAKE) clean
 
 distclean: FORCE
 	$(MAKE) clean ; true
