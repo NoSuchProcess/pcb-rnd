@@ -437,6 +437,7 @@ static void ghid_gdk_use_mask(int use_it)
 		gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
 
+	case HID_MASK_SET:
 	case HID_MASK_AFTER:
 		mask_seq_id++;
 		if (!mask_seq_id)

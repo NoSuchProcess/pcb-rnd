@@ -327,6 +327,15 @@ void ghid_gl_use_mask(int use_it)
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value (with 1) */
 		break;
 
+	case HID_MASK_SET:
+		/* Write '1' to the stencil buffer where the solder-mask should not be drawn. */
+		glColorMask(0, 0, 0, 0);		/* Disable writting in color buffer */
+		glEnable(GL_STENCIL_TEST);	/* Enable Stencil test */
+		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, write stencil_bit */
+		glStencilMask(stencil_bit);	/* Only write to our subcompositing stencil bitplane */
+		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);	/* Stencil pass => replace stencil value (with 1) */
+		break;
+
 	case HID_MASK_AFTER:
 		/* Drawing operations as masked to areas where the stencil buffer is '0' */
 		glColorMask(1, 1, 1, 1);		/* Enable drawing of r, g, b & a */

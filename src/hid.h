@@ -252,6 +252,8 @@ struct hid_s {
 #define HID_MASK_CLEAR 2
 	/* Polygons being drawn after clears.  */
 #define HID_MASK_AFTER 3
+	/* Positive draw.  */
+#define HID_MASK_SET 5
 
 	/* Sets a color.  Names can be like "red" or "#rrggbb" or special
 	   names like "erase".  *Always* use the "erase" color for removing
