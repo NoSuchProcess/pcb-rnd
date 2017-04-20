@@ -422,16 +422,12 @@ static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
 	pcb_r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
 }
 
-static void mask_start_sub(int thin, int *state, const pcb_box_t *screen)
+static void mask_start_sub(int thin, const pcb_box_t *screen)
 {
 	if (thin)
 		pcb_gui->set_color(Output.pmGC, conf_core.appearance.color.mask);
-	else {
-		if (*state == 0)
-			DrawMaskBoardArea(HID_MASK_BEFORE, screen);
+	else
 		pcb_gui->use_mask(HID_MASK_CLEAR);
-	}
-	*state = 1;
 }
 
 static void mask_start_add(int thin, const pcb_box_t *screen)
@@ -451,9 +447,24 @@ static void mask_finish(int thin, const pcb_box_t *screen)
 	}
 }
 
+static void mask_init(int thin, const pcb_box_t *screen, int negative)
+{
+	pcb_gui->use_mask(HID_MASK_INIT);
+
+	if ((!thin) && (negative)) {
+		/* old way of drawing the big poly for the negative */
+		DrawMaskBoardArea(HID_MASK_BEFORE, screen);
+
+		if (!pcb_gui->poly_before) {
+			/* new way */
+			pcb_gui->use_mask(HID_MASK_SET);
+			DrawMaskBoardArea(HID_MASK_SET, screen);
+		}
+	}
+}
+
 static void pcb_draw_mask(int side, const pcb_box_t * screen)
 {
-	int state = 0;
 	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
 	pcb_layergrp_id_t gid = -1;
@@ -463,24 +474,29 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 	grp = pcb_get_layergrp(PCB, gid);
 
 	if ((grp == NULL) || (grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-sub */
-		mask_start_sub(thin, &state, screen);
+		mask_init(thin, screen, 1);
+		mask_start_sub(thin, screen);
 		pcb_draw_mask_auto(side, screen);
 		mask_start_add(thin, screen);
 	}
 	else { /* generic multi-layer rendering */
 		int n, adding = 1;
+		pcb_layer_t *l = pcb_get_layer(grp->lid[0]);
+		mask_init(thin, screen, (l->comb & PCB_LYC_SUB));
+
 		for(n = 0; n < grp->len; n++) {
 			int want_add;
-			pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
+			l = pcb_get_layer(grp->lid[n]);
 
 			want_add = !(l->comb & PCB_LYC_SUB);
 			if (want_add != adding) {
 				if (want_add)
 					mask_start_add(thin, screen);
 				else
-					mask_start_sub(thin, &state, screen);
+					mask_start_sub(thin, screen);
 				adding = want_add;
 			}
+
 			if (!(l->comb & PCB_LYC_AUTO)) {
 				const char *old_color = l->Color;
 				pcb_hid_gc_t old_fg = Output.fgGC;

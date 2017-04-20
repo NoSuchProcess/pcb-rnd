@@ -129,9 +129,13 @@ typedef struct {
 
 typedef enum pcb_mask_op_s {
 	HID_MASK_OFF,    /* Flushes the buffer and return to non-mask operation.  */
+
 	HID_MASK_BEFORE, /* Polygons being drawn before clears.  */
-	HID_MASK_CLEAR,  /* Clearances being drawn.  */
-	HID_MASK_SET,    /* Positive draw.  */
+
+	HID_MASK_INIT,   /* Initialize a new rendering layer for compositing layers  */
+	HID_MASK_CLEAR,  /* negative-draw on the rendering layer  */
+	HID_MASK_SET,    /* positive-draw on the rendering layer */
+
 	HID_MASK_AFTER   /* Polygons being drawn after clears.  */
 } pcb_mask_op_t;
 
