@@ -317,11 +317,14 @@ void ghid_gl_use_mask(pcb_mask_op_t use_it)
 		/* The HID asks not to receive this mask type, so warn if we get it */
 		g_return_if_reached();
 
-	case HID_MASK_CLEAR:
-		/* Write '1' to the stencil buffer where the solder-mask should not be drawn. */
+	case HID_MASK_INIT:
 		glColorMask(0, 0, 0, 0);		/* Disable writting in color buffer */
 		glEnable(GL_STENCIL_TEST);	/* Enable Stencil test */
 		stencil_bit = hidgl_assign_clear_stencil_bit();	/* Get a new (clean) bitplane to stencil with */
+		break;
+
+	case HID_MASK_CLEAR:
+		/* Write '1' to the stencil buffer where the solder-mask should not be drawn. */
 		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, write stencil_bit */
 		glStencilMask(stencil_bit);	/* Only write to our subcompositing stencil bitplane */
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value (with 1) */
@@ -329,8 +332,6 @@ void ghid_gl_use_mask(pcb_mask_op_t use_it)
 
 	case HID_MASK_SET:
 		/* Write '1' to the stencil buffer where the solder-mask should not be drawn. */
-		glColorMask(0, 0, 0, 0);		/* Disable writting in color buffer */
-		glEnable(GL_STENCIL_TEST);	/* Enable Stencil test */
 		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, write stencil_bit */
 		glStencilMask(stencil_bit);	/* Only write to our subcompositing stencil bitplane */
 		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);	/* Stencil pass => replace stencil value (with 1) */
