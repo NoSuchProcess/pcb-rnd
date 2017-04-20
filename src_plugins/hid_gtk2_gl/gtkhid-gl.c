@@ -324,14 +324,14 @@ void ghid_gl_use_mask(pcb_mask_op_t use_it)
 		break;
 
 	case HID_MASK_CLEAR:
-		/* Write '1' to the stencil buffer where the solder-mask should not be drawn. */
+		/* Write '0' to the stencil buffer where the solder-mask should not be drawn ("transparent", "cutout"). */
 		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, write stencil_bit */
 		glStencilMask(stencil_bit);	/* Only write to our subcompositing stencil bitplane */
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value (with 1) */
 		break;
 
 	case HID_MASK_SET:
-		/* Write '1' to the stencil buffer where the solder-mask should not be drawn. */
+		/* Write '1' to the stencil buffer where the solder-mask should be drawn ("red", "solid"). */
 		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, write stencil_bit */
 		glStencilMask(stencil_bit);	/* Only write to our subcompositing stencil bitplane */
 		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);	/* Stencil pass => replace stencil value (with 1) */
