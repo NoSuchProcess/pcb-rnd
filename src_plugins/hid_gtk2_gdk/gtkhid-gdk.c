@@ -432,19 +432,22 @@ static void ghid_gdk_use_mask(pcb_mask_op_t use_it)
 		/* The HID asks not to receive this mask type, so warn if we get it */
 		g_return_if_reached();
 
-	case HID_MASK_CLEAR:
+	case HID_MASK_INIT:
 		ghid_mask_setup(priv);
 		mask_seq = 0;
-		color.pixel = 1;
+
+		/* clear the mask */
+		color.pixel = 0;
 		gdk_gc_set_foreground(priv->mask_gc, &color);
 		gdk_draw_rectangle(priv->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+		break;
+
+	case HID_MASK_CLEAR:
 		color.pixel = 0;
 		gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
 
 	case HID_MASK_SET:
-		ghid_mask_setup(priv);
-		mask_seq = 0;
 		color.pixel = 1;
 		gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
