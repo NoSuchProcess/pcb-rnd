@@ -782,25 +782,25 @@ void hyp_reset_layers()
 
 	id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1) == 1)
-		id = pcb_layer_create(gid, pcb_strdup("top silk"));
+		id = pcb_layer_create(gid, "top silk");
 	if (id < 0)
 		pcb_printf("failed to create top silk\n");
 
 	id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_BOTTOM, &gid, 1) == 1)
-		id = pcb_layer_create(gid, pcb_strdup("bottom silk"));
+		id = pcb_layer_create(gid, "bottom silk");
 	if (id < 0)
 		pcb_printf("failed to create bottom silk\n");
 
 	top_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
-		top_layer_id = pcb_layer_create(gid, NULL);
+		top_layer_id = pcb_layer_create(gid, "");
 	if (top_layer_id < 0)
 		pcb_printf("failed to create top copper\n");
 
 	bottom_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
-		bottom_layer_id = pcb_layer_create(gid, NULL);
+		bottom_layer_id = pcb_layer_create(gid, "");
 	if (bottom_layer_id < 0)
 		pcb_printf("failed to create bottom copper\n");
 
