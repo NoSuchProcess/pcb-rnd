@@ -480,7 +480,7 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 		mask_start_add(thin, screen);
 	}
 	else { /* generic multi-layer rendering */
-		int n, adding = 1;
+		int n, adding = -1;
 		pcb_layer_t *l = pcb_get_layer(grp->lid[0]);
 		mask_init(thin, screen, (l->comb & PCB_LYC_SUB));
 
