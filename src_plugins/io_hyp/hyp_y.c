@@ -270,7 +270,7 @@ void hyyprint(FILE *, int, HYYSTYPE);
 void new_record();
 
 /* struct to pass to calling class */
-struct parse_param_s h;
+parse_param h;
 
 
 #line 277 "hyp_y.c" /* yacc.c:358  */
