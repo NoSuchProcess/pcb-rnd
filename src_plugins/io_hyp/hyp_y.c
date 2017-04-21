@@ -267,10 +267,10 @@ void hyyprint(FILE *, int, HYYSTYPE);
 #define HYYPRINT(file, type, value) hyyprint (file, type, value)
 
 /* clear parse_param struct at beginning of new record */
-void new_record();
+static void new_record();
 
 /* struct to pass to calling class */
-parse_param h;
+static parse_param h;
 
 
 #line 277 "hyp_y.c" /* yacc.c:358  */
@@ -3058,7 +3058,7 @@ void hyyprint(FILE *file, int type, YYSTYPE value)
  * reset parse_param struct at beginning of record
  */
 
-void new_record()
+static void new_record()
 {
   h.vers = 0;
   h.detailed = pcb_false;
