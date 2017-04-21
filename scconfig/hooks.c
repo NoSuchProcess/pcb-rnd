@@ -330,7 +330,7 @@ int hook_detect_target()
 	want_cairo  = plug_is_enabled("export_bboard") | want_gtk3;
 	want_xml2   = plug_is_enabled("io_eagle");
 
-	require("cc/fpic",  0, 1);
+	require("cc/fpic",  0, 0);
 	host_ansi = get("/host/cc/argstd/ansi");
 	host_ped = get("/host/cc/argstd/pedantic");
 	target_ansi = get("/target/cc/argstd/ansi");
