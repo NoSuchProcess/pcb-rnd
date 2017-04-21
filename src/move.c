@@ -149,6 +149,9 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			ptr2 = MoveLinePoint(&ctx2, Ptr1, line, &line->Point2);
 		}
 		/* Otherwise make a normal move */
+		else if(Type == PCB_TYPE_LINE_POINT) {
+			ptr2 = MoveLinePointWithRoute(&ctx1, Ptr1, Ptr2, Ptr3);
+		}
 		else {
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 			ptr2 = pcb_object_operation(&MoveFunctions, &ctx1, Type, Ptr1, Ptr2, Ptr3);

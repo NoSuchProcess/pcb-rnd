@@ -90,7 +90,6 @@ void pcb_line_enforce_drc(void);
 		pcb_line_bbox(__l__); \
 	} while(0)
 
-
 #define PCB_LINE_LOOP(layer) do {                                       \
   pcb_line_t *line;                                                   \
   gdl_iterator_t __it__;                                            \

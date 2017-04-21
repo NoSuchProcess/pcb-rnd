@@ -45,6 +45,10 @@ static double drc_lines(pcb_point_t *end, pcb_bool way);
 void pcb_line_adjust_attached(void)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
+	int flags = conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0;
+
+	if (conf_core.editor.auto_drc && (pcb_layer_flags(PCB,pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER))
+		flags |= PCB_FLAG_FOUND;
 
 	/* I need at least one point */
 	if (line->State == PCB_CH_STATE_FIRST)
@@ -67,7 +71,8 @@ void pcb_line_adjust_attached(void)
 											&line->Point2,
 											pcb_layer_id(PCB->Data, CURRENT),
 											conf_core.design.line_thickness,
-											conf_core.design.clearance,
+											conf_core.design.clearance * 2,
+											pcb_flag_make(flags),
 											pcb_gui->shift_is_pressed(),
 											pcb_gui->control_is_pressed() );
 

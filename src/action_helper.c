@@ -801,6 +801,7 @@ void pcb_notify_mode(void)
 				DrawVia(via);
 
 			pcb_draw();
+			pcb_undo_inc_serial();
 			lastLayer = CURRENT;
 		}
 		else

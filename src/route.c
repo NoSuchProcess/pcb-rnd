@@ -35,6 +35,9 @@
 #include "undo.h"
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
+#include "obj_line.h"
+#include "obj_line_op.h"
+
 
 void
 pcb_route_init(pcb_route_t * p_route)
@@ -137,7 +140,8 @@ pcb_route_direct( pcb_board_t *   PCB,
 									pcb_point_t *		point2, 
 									pcb_layer_id_t 	layer,
 									pcb_coord_t     thickness,
-									pcb_coord_t     clearance	)
+									pcb_coord_t     clearance,
+									pcb_flag_t			flags )
 {
 	pcb_route_reset(route);
 	route->start_point	= *point1;
@@ -147,6 +151,7 @@ pcb_route_direct( pcb_board_t *   PCB,
 	route->thickness		= thickness;
 	route->clearance		= clearance;
 	route->PCB					= PCB;
+	route->flags				= flags;
 	pcb_route_add_line(route,point1,point2,layer);
 }
 
@@ -312,7 +317,8 @@ pcb_route_calculate(pcb_board_t *   PCB,
 										pcb_point_t * 	point2,
 										pcb_layer_id_t  layer_id, 
 										pcb_coord_t 		thickness, 
-										pcb_coord_t 		clearance, 
+										pcb_coord_t 		clearance,
+										pcb_flag_t			flags, 
 										int 						mod1, 
 										int 						mod2 )
 {
@@ -326,7 +332,7 @@ pcb_route_calculate(pcb_board_t *   PCB,
 
 	/* If the line can be drawn directly to the target then add a single line segment. */
 	if(PCB->RatDraw || conf_core.editor.all_direction_lines) {
-		pcb_route_direct(PCB,route,point1,point2,layer_id,thickness,clearance);
+		pcb_route_direct(PCB,route,point1,point2,layer_id,thickness,clearance,flags);
 		return;
 	}
 
@@ -338,6 +344,7 @@ pcb_route_calculate(pcb_board_t *   PCB,
 	route->start_layer	= layer_id;
 	route->end_layer		= layer_id;
 	route->PCB					= PCB;
+	route->flags				= flags;
 
 	/* If Refraction is 0 then add a single line segment that is horizontal, vertical or 45 degrees. 
 	* This line segment might not end under the crosshair.
@@ -401,8 +408,10 @@ pcb_route_calculate(pcb_board_t *   PCB,
 			route->end_point = *point2;
 		}
 		else {
-			pcb_route_add_line(route,point1,&target,layer_id);
-			pcb_route_add_line(route,&target,point2,layer_id);
+			if((point1->X != target.X) || (point1->Y != target.Y))
+				pcb_route_add_line(route,point1,&target,layer_id);
+			if((point2->X != target.X) || (point2->Y != target.Y))
+				pcb_route_add_line(route,&target,point2,layer_id);
 			route->end_point = *point2;
 		}
 	}
@@ -411,9 +420,16 @@ pcb_route_calculate(pcb_board_t *   PCB,
 int
 pcb_route_apply(const pcb_route_t * p_route)
 {
+	return pcb_route_apply_to_line(p_route,NULL,NULL);
+}
+
+int
+pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_layer,pcb_line_t * apply_to_line)
+{
 
 	int i;
 	int applied = 0;
+	char * number = (apply_to_line ? apply_to_line->Number : NULL);
 
 	for( i=0;i<p_route->size;i++)	{
 		pcb_route_object_t const * p_obj = &p_route->objects[i];
@@ -422,21 +438,64 @@ pcb_route_apply(const pcb_route_t * p_route)
 		switch(p_obj->type)
 		{
 			case PCB_TYPE_LINE :
-				{
+				/* 	If the route is being applied to an existing line then the existing
+						line will be used as the first line in the route. This maintains the
+						ID of the line and line points. This is especially useful if the 
+						route contains a single line.
+				*/
+				if(apply_to_line)	{
+					/* Move the existing line points to the position of the route line. */
+					if((p_obj->point1.X != apply_to_line->Point1.X) || (p_obj->point1.Y != apply_to_line->Point1.Y))
+						pcb_undo_add_obj_to_move(	PCB_TYPE_LINE_POINT, 
+																			apply_to_line_layer, 
+																			apply_to_line, 
+																			&apply_to_line->Point1, 
+																			p_obj->point1.X - apply_to_line->Point1.X, 
+																			p_obj->point1.Y - apply_to_line->Point1.Y );
+
+					if((p_obj->point2.X != apply_to_line->Point2.X) || (p_obj->point2.Y != apply_to_line->Point2.Y))
+						pcb_undo_add_obj_to_move(	PCB_TYPE_LINE_POINT, 
+																			apply_to_line_layer, 
+																			apply_to_line, 
+																			&apply_to_line->Point2, 
+																			p_obj->point2.X - apply_to_line->Point2.X, 
+																			p_obj->point2.Y - apply_to_line->Point2.Y );
+						
+					/* Move the existing line point/s */
+					EraseLine(apply_to_line);
+					pcb_r_delete_entry(apply_to_line_layer->line_tree, (pcb_box_t *) apply_to_line);
+					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, apply_to_line_layer, apply_to_line);
+					apply_to_line->Point1.X = p_obj->point1.X;
+					apply_to_line->Point1.Y = p_obj->point1.Y;
+					apply_to_line->Point2.X = p_obj->point2.X;
+					apply_to_line->Point2.Y = p_obj->point2.Y;
+					pcb_line_bbox(apply_to_line);
+					pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) apply_to_line, 0);
+					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, apply_to_line);
+					DrawLine(layer, apply_to_line);
+					apply_to_line_layer = layer;
+
+					/* The existing line has been used so forget about it. */
+					apply_to_line = NULL;
+					applied = 1;
+				}
+				else {
+					/* Create a new line */
 					pcb_line_t * line = pcb_line_new_merge(	layer,
 																									p_obj->point1.X,
 																									p_obj->point1.Y,
 																									p_obj->point2.X,
 																									p_obj->point2.Y,
 																									p_route->thickness,
-																									2 * p_route->clearance,
-																									pcb_flag_make(PCB_FLAG_CLEARLINE) );
+																									p_route->clearance,
+																									p_route->flags );
 					if(line) {
+						if(number)
+							line->Number = pcb_strdup(number);
 						pcb_added_lines++;
 						pcb_obj_add_attribs(line, PCB->pen_attr);
-						pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, line, line);
 						DrawLine(layer, line);
-						pcb_undo_inc_serial();
+						pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, line, line);
 						applied = 1;
 					}
 				}
@@ -444,6 +503,7 @@ pcb_route_apply(const pcb_route_t * p_route)
 	
 			case PCB_TYPE_ARC :
 				{
+					/* Create a new arc */
 					pcb_arc_t * arc =	pcb_arc_new( 	layer,
 																					p_obj->point1.X,
 																					p_obj->point1.Y,
@@ -452,13 +512,12 @@ pcb_route_apply(const pcb_route_t * p_route)
 																					p_obj->start_angle,
 																					p_obj->delta_angle,
 																					p_route->thickness,
-																					2 * p_route->clearance,
-																					pcb_flag_make(PCB_FLAG_CLEARLINE) );
+																					p_route->clearance,
+																					p_route->flags );
 					if(arc)	{
 						pcb_added_lines++;
             pcb_obj_add_attribs(arc, PCB->pen_attr);
             pcb_undo_add_obj_to_create(PCB_TYPE_ARC, layer, arc, arc);
-            pcb_undo_inc_serial();
             DrawArc(layer, arc);
             applied = 1;
 					}
@@ -469,6 +528,12 @@ pcb_route_apply(const pcb_route_t * p_route)
 				break;
 		}
 	}
+
+	/* If the existing apply-to-line wasn't updated then it should be deleted */
+	/* (This can happen if the route does not contain any lines.)             */
+	if(apply_to_line != NULL)
+		pcb_line_destroy(apply_to_line_layer,apply_to_line);
+
 	return applied;
 }
 

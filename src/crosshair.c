@@ -456,19 +456,42 @@ static void XORDrawMoveOrCopy(void)
 	case PCB_TYPE_LINE_POINT:
 		{
 			pcb_line_t *line;
-			pcb_point_t *point1,*point2;
+			pcb_point_t *point,*point1,point2;
 
 			line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
-			point1 = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
-			point2 = (point1 == &line->Point1 ? &line->Point2 : &line->Point1);
-				
-			XORDrawAttachedLine(point1->X + dx, point1->Y + dy, point2->X, point2->Y, line->Thickness);
+			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
+			point1 = (point == &line->Point1 ? &line->Point2 : &line->Point1);
+			point2 = *point;
+			point2.X += dx;
+			point2.Y += dy;				
 
-			/* Draw the DRC outline if it is enabled */
-			if (conf_core.editor.show_drc) {
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawAttachedLine(point1->X + dx, point1->Y + dy, point2->X, point2->Y,line->Thickness + 2 * (PCB->Bloat + 1) );
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+			if(conf_core.editor.move_linepoint_uses_route == 0) {/* config setting for selecting new 45/90 method */ 
+				XORDrawAttachedLine(point1->X, point1->Y, point2.X, point2.Y, line->Thickness);
+
+				/* Draw the DRC outline if it is enabled */
+				if (conf_core.editor.show_drc) {
+					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+					XORDrawAttachedLine(point1->X, point1->Y, point2.X, point2.Y,line->Thickness + 2 * (PCB->Bloat + 1) );
+					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+				}
+			}
+			else {
+				pcb_route_t	route;
+				pcb_route_init(&route);
+				pcb_route_calculate(	PCB,
+															&route,
+															point1,
+															&point2,
+															pcb_layer_id(PCB->Data,(pcb_layer_t *)pcb_crosshair.AttachedObject.Ptr1),
+															line->Thickness,
+															line->Clearance,
+															line->Flags,
+															pcb_gui->shift_is_pressed(),
+															pcb_gui->control_is_pressed() );
+				pcb_route_draw(&route,pcb_crosshair.GC);
+				if (conf_core.editor.show_drc) 
+					pcb_route_draw_drc(&route,pcb_crosshair.GC);
+				pcb_route_destroy(&route);		
 			}
 
 			break;
