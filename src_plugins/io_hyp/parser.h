@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef PCB_IO_HYP_PARSER_H
+#define PCB_IO_HYP_PARSER_H
 
 #include <stdio.h>
 #include "pcb_bool.h"
