@@ -421,7 +421,7 @@ static void svg_use_mask(pcb_mask_op_t use_it)
 			pcb_append_printf(&snormal, "<!-- MASK: off -->\n");
 			pcb_append_printf(&snormal, "</mask>\n");
 			pcb_append_printf(&snormal, "</defs>\n");
-			pcb_append_printf(&snormal, "<use xlink:href=\"#initfill\" fill=\"#FF0000\" mask=\"url(#Mask)\"/>\n");
+			pcb_append_printf(&snormal, "<use xlink:href=\"#initfill\" fill=\"%s\" mask=\"url(#Mask)\"/>\n", mask_color);
 			break;
 	}
 }
