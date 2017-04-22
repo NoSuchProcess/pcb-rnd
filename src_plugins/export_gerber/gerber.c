@@ -85,6 +85,8 @@ static int copy_outline_mode;
 static int name_style;
 static int want_cross_sect;
 static pcb_layer_t *outline_layer;
+static int mask_issued;
+static int gerber_debug;
 
 enum ApertureShape {
 	ROUND,												/* Shaped like a circle */
@@ -822,9 +824,14 @@ static void gerber_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
+
 static void gerber_use_mask(pcb_mask_op_t use_it)
 {
 	current_mask = use_it;
+	if ((f != NULL) && (gerber_debug))
+		fprintf(f, "G04 hid debug mask: %d*\r\n", use_it);
+	if ((use_it == HID_MASK_OFF) || (use_it == HID_MASK_INIT))
+		mask_issued = -1;
 }
 
 static void gerber_set_color(pcb_hid_gc_t gc, const char *name)
@@ -863,6 +870,17 @@ static void gerber_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void use_gc(pcb_hid_gc_t gc, int radius)
 {
+	if ((f != NULL) && (current_mask != mask_issued)) {
+		if (current_mask == HID_MASK_SET) {
+			fprintf(f, "%%LPD*%%\r\n");
+			mask_issued = current_mask;
+		}
+		else if (current_mask == HID_MASK_CLEAR) {
+			fprintf(f, "%%LPC*%%\r\n");
+			mask_issued = current_mask;
+		}
+	}
+
 	if (radius) {
 		radius *= 2;
 		if (radius != linewidth || lastcap != Round_Cap) {
@@ -897,6 +915,8 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 		if (f && aptr)
 			fprintf(f, "G54D%d*", aptr->dCode);
 	}
+
+
 #if 0
 	if (lastcolor != gc->color) {
 		c = gc->color;
@@ -1224,6 +1244,8 @@ int pplg_init_export_gerber(void)
 	gerber_hid.name = "gerber";
 	gerber_hid.description = "RS-274X (Gerber) export";
 	gerber_hid.exporter = 1;
+
+	gerber_hid.mask_invert = 1;
 
 	gerber_hid.get_export_options = gerber_get_export_options;
 	gerber_hid.do_export = gerber_do_export;
