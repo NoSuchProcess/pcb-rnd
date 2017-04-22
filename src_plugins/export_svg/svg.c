@@ -111,7 +111,7 @@ struct {
 	/* MASK */   { "#00ff00", "#00ff00", "#00ff00", PCB_MM_TO_COORD(0) },
 	/* SILK */   { "#ffffff", "#eeeeee", "#aaaaaa", PCB_MM_TO_COORD(0) },
 	/* COPPER */ { "#bbbbbb", "#707090", "#555555", PCB_MM_TO_COORD(0.05) },
-	/* INNER */  { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0.05) }
+	/* INNER */  { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0) }
 };
 
 pcb_hid_attribute_t svg_attribute_list[] = {
