@@ -184,6 +184,12 @@ struct hid_s {
 	   polygons will be drawn twice.  */
 	unsigned poly_after:1;
 
+	/* If set, draw the mask layer inverted. Normally the mask is a filled
+	   rectangle over the board with cutouts at pins/pads. The HIDs
+	   use render in normal mode, gerber renders in inverse mode. */
+	unsigned mask_invert:1;
+
+
 	/* If set, draws holes after copper, silk and mask, to make sure it
 	   punches through everything. */
 	unsigned holes_after:1;
