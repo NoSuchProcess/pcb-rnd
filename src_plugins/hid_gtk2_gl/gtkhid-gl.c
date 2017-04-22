@@ -62,7 +62,7 @@ typedef struct render_priv_s {
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 
-	const char *colorname;
+	gchar *colorname;
 	double alpha_mult;
 	pcb_coord_t width;
 	gint cap, join;
@@ -493,7 +493,17 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 void ghid_gl_set_color(pcb_hid_gc_t gc, const char *name)
 {
-	gc->colorname = name;
+	if (name == NULL) {
+		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
+		name = "magenta";
+	}
+
+	if (name != gc->colorname) {
+		if (gc->colorname != NULL)
+			g_free(gc->colorname);
+		gc->colorname = g_strdup(name);
+	}
+
 	set_gl_color_for_gc(gc);
 }
 
