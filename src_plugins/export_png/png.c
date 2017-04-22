@@ -1073,37 +1073,52 @@ static void png_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
+static mask_op = 0;
 static void png_use_mask(pcb_mask_op_t use_it)
 {
 	if (photo_mode)
 		return;
 
-	if (use_it == HID_MASK_CLEAR) {
-		return;
-	}
-	if (use_it) {
-		if (mask_im == NULL) {
-			mask_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
-			if (!mask_im) {
-				pcb_message(PCB_MSG_ERROR, "png_use_mask():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
-				return;
+	switch(use_it) {
+		case HID_MASK_OFF:
+			mask_op = 0;
+			break;
+
+		case HID_MASK_BEFORE:
+			break;
+
+		case HID_MASK_INIT:
+			if (mask_im == NULL) {
+				mask_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+				if (!mask_im) {
+					pcb_message(PCB_MSG_ERROR, "png_use_mask():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					return;
+				}
+				gdImagePaletteCopy(mask_im, im);
 			}
-			gdImagePaletteCopy(mask_im, im);
+			im = mask_im;
+			gdImageFilledRectangle(mask_im, 0, 0, gdImageSX(mask_im), gdImageSY(mask_im), white->c);
+			break;
+
+		case HID_MASK_AFTER:
+		{
+			int x, y, c;
+			im = master_im;
+			for (x = 0; x < gdImageSX(im); x++) {
+				for (y = 0; y < gdImageSY(im); y++) {
+					c = gdImageGetPixel(mask_im, x, y);
+					if (c)
+						gdImageSetPixel(im, x, y, c);
+				}
+			}
 		}
-		im = mask_im;
-		gdImageFilledRectangle(mask_im, 0, 0, gdImageSX(mask_im), gdImageSY(mask_im), white->c);
-	}
-	else {
-		int x, y, c;
 
-		im = master_im;
-
-		for (x = 0; x < gdImageSX(im); x++)
-			for (y = 0; y < gdImageSY(im); y++) {
-				c = gdImageGetPixel(mask_im, x, y);
-				if (c)
-					gdImageSetPixel(im, x, y, c);
-			}
+		case HID_MASK_CLEAR:
+			mask_op = HID_MASK_CLEAR;
+			break;
+		case HID_MASK_SET:
+			mask_op = HID_MASK_SET;
+			break;
 	}
 }
 
@@ -1168,6 +1183,7 @@ static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 static void use_gc(pcb_hid_gc_t gc)
 {
 	int need_brush = 0;
+	color_struct *clr;
 
 	if (gc->me_pointer != &png_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to png HID\n");
@@ -1183,6 +1199,10 @@ static void use_gc(pcb_hid_gc_t gc)
 		linewidth = gc->width;
 		need_brush = 1;
 	}
+
+	clr = gc->color;
+	if (mask_op == HID_MASK_CLEAR)
+		clr = white;
 
 	need_brush |= (gc->color->r != last_color_r) || (gc->color->g != last_color_g) || (gc->color->b != last_color_b) || (gc->cap != last_cap);
 
