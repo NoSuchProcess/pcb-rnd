@@ -990,10 +990,10 @@ static void ps_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	if (global.mask_mode == HID_MASK_CLEAR) {
 		gc->r = gc->g = gc->b = 255;
-		gc->erase = 1;
+		gc->erase = 0;
 	}
 	else if (global.mask_mode == HID_MASK_SET) {
-		gc->r = gc->g = gc->b = 0;
+		gc->r = gc->g = gc->b = 255;
 		gc->erase = 1;
 	}
 	else if (strcmp(name, "erase") == 0 || strcmp(name, "drill") == 0) {
@@ -1638,7 +1638,7 @@ int pplg_init_export_ps(void)
 	ps_hid.name = "ps";
 	ps_hid.description = "Postscript export";
 	ps_hid.exporter = 1;
-	ps_hid.poly_before = 1;
+	ps_hid.mask_invert = 1;
 
 	ps_hid.usage = ps_usage;
 
