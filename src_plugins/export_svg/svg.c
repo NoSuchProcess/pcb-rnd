@@ -375,7 +375,7 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (photo_mode) {
 		if (is_our_silk)
 			photo_color = PHOTO_SILK;
-		if (is_our_mask)
+		else if (is_our_mask)
 			photo_color = PHOTO_MASK;
 		else if (group >= 0) {
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
