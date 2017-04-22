@@ -413,6 +413,8 @@ static struct {
 	pcb_bool is_paste;
 
 	double polygrid;
+
+	pcb_mask_op_t mask_mode;
 } global;
 
 static pcb_hid_attribute_t *ps_get_export_options(int *n)
@@ -981,12 +983,20 @@ static void ps_destroy_gc(pcb_hid_gc_t gc)
 
 static void ps_use_mask(pcb_mask_op_t use_it)
 {
-	/* does nothing */
+	global.mask_mode = use_it;
 }
 
 static void ps_set_color(pcb_hid_gc_t gc, const char *name)
 {
-	if (strcmp(name, "erase") == 0 || strcmp(name, "drill") == 0) {
+	if (global.mask_mode == HID_MASK_CLEAR) {
+		gc->r = gc->g = gc->b = 255;
+		gc->erase = 1;
+	}
+	else if (global.mask_mode == HID_MASK_SET) {
+		gc->r = gc->g = gc->b = 0;
+		gc->erase = 1;
+	}
+	else if (strcmp(name, "erase") == 0 || strcmp(name, "drill") == 0) {
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 1;
 	}
