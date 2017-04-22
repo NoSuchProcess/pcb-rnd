@@ -86,6 +86,7 @@ static const char *CAPS(pcb_cap_style_t cap)
 static FILE *f = NULL;
 static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
+static pcb_mask_op_t mask_mode;
 
 gds_t sbright, sdark, snormal;
 
@@ -305,7 +306,7 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	y2 = PCB->MaxHeight;
 	x2 += PCB_MM_TO_COORD(5);
 	y2 += PCB_MM_TO_COORD(5);
-	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
+	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
@@ -407,12 +408,24 @@ static void svg_destroy_gc(pcb_hid_gc_t gc)
 
 static void svg_use_mask(pcb_mask_op_t use_it)
 {
-	if (use_it == HID_MASK_CLEAR) {
-		return;
-	}
-	if (use_it) {
+	mask_mode = use_it;
+	switch(mask_mode) {
+		case HID_MASK_INIT:
+			pcb_append_printf(&snormal, "<!-- MASK: init -->\n");
+			pcb_append_printf(&snormal, "<defs>\n");
+			pcb_append_printf(&snormal, "<rect id=\"initfill\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\"/>\n", PCB->MaxWidth, PCB->MaxHeight);
+			pcb_append_printf(&snormal, "<mask id=\"Mask\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", PCB->MaxWidth, PCB->MaxHeight);
+			break;
+
+		case HID_MASK_OFF:
+			pcb_append_printf(&snormal, "<!-- MASK: off -->\n");
+			pcb_append_printf(&snormal, "</mask>\n");
+			pcb_append_printf(&snormal, "</defs>\n");
+			pcb_append_printf(&snormal, "<use xlink:href=\"#initfill\" fill=\"#FF0000\" mask=\"url(#Mask)\"/>\n");
+			break;
 	}
 }
+
 
 static void svg_set_color(pcb_hid_gc_t gc, const char *name)
 {
