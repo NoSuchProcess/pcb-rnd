@@ -92,6 +92,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 				}
 				break;
 			default:
+				pcb_message(PCB_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
 				abort();
 			}
 		}
