@@ -44,6 +44,7 @@
 #include "compat_misc.h"
 #include "event.h"
 #include "layer_vis.h"
+#include "attrib.h"
 
 #include "obj_elem_draw.h"
 #include "obj_pinvia_draw.h"
@@ -1393,6 +1394,79 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 }
 
 
+#define istrue(s) ((*(s) == '1') || (*(s) == 'y') || (*(s) == 'Y') || (*(s) == 't') || (*(s) == 'T'))
+
+static const char pcb_acts_EditLayer[] = "Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]\nEditlayer([@layer], attrib, key=value)";
+static const char pcb_acth_EditLayer[] = "Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without argument sor if only a layer name is specified, interactive runs editing.";
+static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int ret = 0, n, interactive = 1, explicit = 0;
+	pcb_layer_t *ly = CURRENT;
+
+	for(n = 0; n < argc; n++) {
+		if (!explicit && (*argv[n] == '@')) {
+			pcb_layer_id_t lid = pcb_layer_by_name(argv[n]+1);
+			if (lid < 0) {
+				pcb_message(PCB_MSG_ERROR, "Can't find layer named %s\n", argv[n]+1);
+				return 1;
+			}
+			ly = pcb_get_layer(lid);
+			explicit = 1;
+		}
+		else if (strncmp(argv[n], "name=", 5) == 0) {
+			interactive = 0;
+			ret |= pcb_layer_rename_(ly, pcb_strdup(argv[n]+5));
+		}
+		else if (strncmp(argv[n], "auto=", 5) == 0) {
+			interactive = 0;
+			if (istrue(argv[n]+5))
+				ly->comb |= PCB_LYC_AUTO;
+			else
+				ly->comb &= ~PCB_LYC_AUTO;
+		}
+		else if (strncmp(argv[n], "sub=", 4) == 0) {
+			interactive = 0;
+			if (istrue(argv[n]+4))
+				ly->comb |= PCB_LYC_SUB;
+			else
+				ly->comb &= ~PCB_LYC_SUB;
+		}
+		else if (strncmp(argv[n], "attrib", 6) == 0) {
+			char *key, *val;
+			interactive = 0;
+			n++;
+			if (n >= argc) {
+				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", argv[n]+1);
+				return 1;
+			}
+			key = pcb_strdup(argv[n]);
+			val = strchr(key, '=');
+			if (val != NULL) {
+				*val = '\0';
+				val++;
+				if (val == '\0')
+					val = NULL;
+			}
+			if (val == NULL)
+				ret |= pcb_attribute_remove(&ly->Attributes, key);
+			else
+				ret |= pcb_attribute_put(&ly->Attributes, key, val, 1);
+			free(key);
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Invalid EditLayer() command: %s\n", argv[n]);
+			PCB_ACT_FAIL(EditLayer);
+		}
+	}
+
+	if (interactive) {
+		printf("interactive...\n");
+	}
+
+	return ret;
+}
+
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
 	 pcb_acth_Display, pcb_acts_Display}
@@ -1443,6 +1517,9 @@ pcb_hid_action_t gui_action_list[] = {
 	 pcb_acth_LibraryChanged, pcb_acts_LibraryChanged}
 	,
 	{"Cursor", 0, pcb_act_Cursor, pcb_acth_cursor, pcb_acts_cursor}
+	,
+	{"EditLayer", 0, pcb_act_EditLayer,
+	 pcb_acth_EditLayer, pcb_acts_EditLayer}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
