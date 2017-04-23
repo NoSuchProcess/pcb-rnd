@@ -8,6 +8,7 @@ case {disable}
 	end
 default
 
+
 append /local/pcb/RULES [@
 ### gpmi_plugin
 clean_gpmi: FORCE
@@ -45,6 +46,7 @@ end
 
 switch /local/pcb/gpmi/controls
 	case {buildin}
+		append /local/pcb/buildin_pups [@gpmi=gpmi/gpmi.pup@] {\n}
 		append /local/pcb/RULES [@
 
 mod_pcb_gpmi: all
