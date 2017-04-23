@@ -43,6 +43,17 @@ static menu_handle_t *handle_alloc(GtkWidget * widget, GtkWidget * destroy)
 	return m;
 }
 
+GtkWidget *pcb_gtk_menu_widget(lht_node_t *node)
+{
+	menu_handle_t *m;
+
+	if (node == NULL) return NULL;
+	if (node->user_data == NULL) return NULL;
+
+	m = node->user_data;
+	return m->widget;
+}
+
 struct _GHidMainMenu {
 	GtkMenuBar parent;
 
@@ -493,6 +504,8 @@ int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int 
 	int is_popup = (strncmp(path, "/popups", 7) == 0);
 	menu_handle_t *ph = parent->user_data;
 	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
+
+printf("MENU: '%s' %d\n", path, is_popup);;
 
 	ghid_main_menu_real_add_node(ctx, GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), menu_item);
 

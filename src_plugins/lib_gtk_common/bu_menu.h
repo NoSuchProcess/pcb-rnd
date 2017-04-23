@@ -44,4 +44,6 @@ void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag
 
 GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hid_cfg_t **cfg_out);
 
+GtkWidget *pcb_gtk_menu_widget(lht_node_t *node);
+
 #endif
