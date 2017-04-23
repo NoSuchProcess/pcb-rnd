@@ -297,6 +297,7 @@ static pcb_hid_gc_t csect_gc;
 static pcb_coord_t ox, oy, cx, cy;
 static int drag_addgrp, drag_delgrp, drag_addlayer, drag_dellayer;
 static pcb_layergrp_id_t gactive = -1;
+static pcb_layer_id_t lactive = -1;
 
 typedef enum {
 	MARK_GRP_FRAME,
@@ -329,6 +330,19 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 	else
 		gactive = -1;
 }
+
+static void mark_layer(pcb_coord_t x, pcb_coord_t y)
+{
+	lactive = get_layer_coords(x, y);
+	if (lactive >= 0) {
+		dhrect(
+			PCB_COORD_TO_MM(layer_crd[lactive].X1)-1, PCB_COORD_TO_MM(layer_crd[lactive].Y1)-1,
+			PCB_COORD_TO_MM(layer_crd[lactive].X2)+1, PCB_COORD_TO_MM(layer_crd[lactive].Y2)+1,
+			0.1, 0.1, 3, 3, 0
+		);
+	}
+}
+
 
 static void draw_hover_label(const char *str)
 {
@@ -473,7 +487,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 			draw_hover_label("ADD LAYER");
 		}
 		if (drag_dellayer) {
-			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK, MARK_GRP_FRAME);
+			mark_layer(cx, cy);
 			draw_hover_label("DEL LAYER");
 		}
 		else if (drag_lid >= 0) {
@@ -641,7 +655,13 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				res = 1;
 			}
 			else if (drag_dellayer) {
+				if (lactive >= 0) {
+					char tmp[32];
+					sprintf(tmp, "%d", lactive);
+					pcb_hid_actionl("MoveLayer", tmp, "-1", NULL);
+				}
 				drag_dellayer = 0;
+				lactive = -1;
 				res = 1;
 			}
 			else if (drag_lid >= 0) {
