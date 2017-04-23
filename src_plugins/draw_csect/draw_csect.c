@@ -668,7 +668,10 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 		for(i = 0; i < g->len; i++) {
 			pcb_layer_id_t lid = g->lid[i];
 			pcb_layer_t *l = &PCB->Data->Layer[lid];
-			printf("      [%ld] %s\n", lid, l->Name);
+			printf("      [%ld] %s comb=", lid, l->Name);
+			if (l->comb & PCB_LYC_SUB) printf(" sub");
+			if (l->comb & PCB_LYC_AUTO) printf(" auto");
+			printf("\n");
 			if (l->grp != gid)
 				printf("         *** broken layer-to-group cross reference: %ld\n", l->grp);
 		}
