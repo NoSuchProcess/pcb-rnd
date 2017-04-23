@@ -1478,6 +1478,9 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		if (ar == 0) {
 			if (strcmp(ly->Name, attr[0].default_val.str_value) != 0)
 				ret |= pcb_layer_rename_(ly, pcb_strdup(argv[n]+5));
+			ly->comb = 0;
+			if (attr[1].default_val.int_value) ly->comb |= PCB_LYC_SUB;
+			if (attr[2].default_val.int_value) ly->comb |= PCB_LYC_AUTO;
 		}
 
 		ret |= ar;
