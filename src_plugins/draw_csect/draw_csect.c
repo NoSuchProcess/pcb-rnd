@@ -368,6 +368,7 @@ static void mark_layer_order(pcb_coord_t x)
 	}
 	dline_(tx, ty1-PCB_MM_TO_COORD(1.5), tx-PCB_MM_TO_COORD(0.75), ty2+PCB_MM_TO_COORD(1.5), 0.1);
 	dline_(tx, ty1-PCB_MM_TO_COORD(1.5), tx+PCB_MM_TO_COORD(0.75), ty2+PCB_MM_TO_COORD(1.5), 0.1);
+	lactive_idx++;
 }
 
 static void draw_hover_label(const char *str)
@@ -695,8 +696,14 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				if (gactive >= 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 					if ((l->grp != gactive) && (check_layer_del(drag_lid) == 0)) {
+						pcb_layer_group_t *g = &PCB->LayerGroups.grp[gactive];
 						pcb_layer_move_to_group(PCB, drag_lid, gactive);
 						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->Name, gactive);
+						if (lactive_idx != g->len-1) {
+							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(pcb_layer_id_t));
+							g->lid[lactive_idx] = drag_lid;
+							pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+						}
 					}
 				}
 				else
