@@ -196,10 +196,13 @@ static gboolean button_press_cb(pcb_gtk_layer_selector_t * ls, GdkEventButton * 
 	/* Ignore the synthetic presses caused by double and tripple clicks, and
 	 * also ignore all but left-clicks
 	 */
-	if (event->type != GDK_BUTTON_PRESS || event->button != 1)
+	if (event->type != GDK_BUTTON_PRESS)
 		return TRUE;
 
-	if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(ls), event->x, event->y, &path, &column, NULL, NULL)) {
+	if (event->button == 3)
+		return pcb_hid_actionl("Popup", "layer", NULL);
+
+	if ((event->button == 1) == (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(ls), event->x, event->y, &path, &column, NULL, NULL))) {
 		GtkTreeIter iter;
 		gboolean activatable, separator;
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(ls->list_store), &iter, path);
@@ -210,8 +213,11 @@ static gboolean button_press_cb(pcb_gtk_layer_selector_t * ls, GdkEventButton * 
 			toggle_visibility(ls, &iter, TRUE);
 			return TRUE;
 		}
+		return FALSE;
 	}
-	return FALSE;
+
+	/* unhandled button */
+	return TRUE;
 }
 
 /*! \brief Callback for layer selection change: sync menu, emit signal */
