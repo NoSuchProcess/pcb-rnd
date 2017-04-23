@@ -1243,46 +1243,39 @@ static const gchar *layer_info_text[] = {
 		 "are drawn. Physical layer groups are listed on the left - group names\n"
 		 "are printed in the cross-section. Logical layers are listed on the right.\n"),
 	"\n",
-	N_("<h>Moving layers between groups\n(physical layer stack tab)\n"),
+	N_("<h>Moving layers between groups\n"),
 	N_("Drag and drop a framed layer name. Potential target group is marked with\n"
 		 "horizontal line framing. Currently only copper groups can host layers.\n"),
 	"\n",
-	N_("<h>Moving layer groups\n(physical layer stack tab)\n"),
+	N_("<h>Moving layer groups\n"),
 	N_("Drag & drop the group by its name. Currently only copper groups can be moved.\n"
 	"\n"),
 	"\n",
-	N_("<h>Creating a new group\n(physical layer stack tab)\n"),
+	N_("<h>Creating a new group\n"),
 	N_("Drag the 'Add copper group' button and drop it in the layer stack.\n"
 	"\n"),
 	"\n",
-	N_("<h>Removing a group\n(physical layer stack tab)\n"),
+	N_("<h>Removing a group\n"),
 	N_("Drag the 'Del copper group' button and drop it on the group to be removed.\n"
 		 "Layers in that group are removed too.\n"
 	"\n"),
 	"\n",
-	N_("<h>Changing the display order of logical layers\n(Logical layers tab)\n"),
+	N_("<h>Changing the display order of logical layers\n"),
 	N_("Select the layer in the main window, press the up/down arrow buttons\n"
 		 "on the Logical layers tab. The display order of layers does not affect\n"
 		 "the physical location of the layer, that is determined by the grouping.\n"
 	"\n"),
 	"\n",
-	N_("<h>Remove a logical layer\n(Logical layers tab)\n"),
-	N_("Select the layer in the main window, press the Delete button\n"
-		 "on the Logical layers tab. The currently selected layer is removed, among\n"
-		 "with all objects hosted by that layer.\n"
+	N_("<h>Remove a logical layer\n"),
+	N_("Drag the \"Del logical layer\" button over a logical layer button.\n"),
+	"\n",
+	N_("<h>Change the name of a logical layer\n"),
+	N_("TODO\n"
 	"\n"),
 	"\n",
-	N_("<h>Change the name of a logical layer\n(Logical layers tab)\n"),
-	N_("Select the layer in the main window, press the Edit button\n"
-		 "on the Logical layers tab.\n"
-	"\n"),
+	N_("<h>Create a new logical layer\n"),
+	N_("Drag the \"Add logical layer\" button over layer group.\n"),
 	"\n",
-	N_("<h>Create a new logical layer\n(Logical layers tab)\n"),
-	N_("Select a layer in the main window, press the New button\n"
-		 "on the Logical layers tab. The new logical layer is inserted\n"
-		 "before the active layer (display order) and into the first (top)\n"
-		 "copper group in the physical stack.\n"
-	"\n"),
 	N_("<h>Layer button styles\n"),
 	N_("A normal, user editable layer has a thin frame and no fill.\n"
 		 "When the button is drawn with \\\\\\ fill, the layer is not user\n"
