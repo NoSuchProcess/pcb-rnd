@@ -31,6 +31,7 @@
 #include "stub_draw.h"
 #include "compat_misc.h"
 #include "hid_actions.h"
+#include "event.h"
 
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
@@ -631,7 +632,12 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				res = 1;
 			}
 			else if (drag_addlayer) {
+				if (gactive >= 0) {
+					pcb_layer_create(gactive, "New Layer");
+					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+				}
 				drag_addlayer = 0;
+				gactive = -1;
 				res = 1;
 			}
 			else if (drag_dellayer) {
