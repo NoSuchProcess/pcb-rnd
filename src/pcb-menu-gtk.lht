@@ -577,6 +577,7 @@ ha:{
 	} # main menu
 
 	li:popups {
+
 		ha:popup1 {
 			li:submenu {
 				ha:Operations on selections {
@@ -624,5 +625,17 @@ ha:{
 				}
 			}
 		} # popup1
+
+		ha:layer {
+			li:submenu {
+				ha:Properties...                    = { action=EditLayer() }
+				ha:Grouping...                      = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
+				-
+				ha:Remove                           = {}
+				ha:Insert new, before this layer    = {}
+				ha:Insert new, after this layer     = {}
+			}
+		} # layer
+
 	} # popups
 } # root
