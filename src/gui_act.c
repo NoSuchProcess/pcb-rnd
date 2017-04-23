@@ -45,6 +45,7 @@
 #include "event.h"
 #include "layer_vis.h"
 #include "attrib.h"
+#include "hid_attrib.h"
 
 #include "obj_elem_draw.h"
 #include "obj_pinvia_draw.h"
@@ -1460,9 +1461,29 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 
 	if (interactive) {
-		printf("interactive...\n");
+		int ar;
+		pcb_hid_attr_val_t rv[16];
+		pcb_hid_attribute_t attr[] = {
+			{"name", "logical layer name",      HID_String, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+			{"sub", "drawn using subtraction",  HID_Boolean, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+			{"auto", "auto-generated layer",    HID_Boolean, 0, 0, {0}, NULL, NULL, 0, NULL, NULL}
+		};
+
+		attr[0].default_val.str_value = ly->Name;
+		attr[1].default_val.int_value = ly->comb & PCB_LYC_SUB;
+		attr[2].default_val.int_value = ly->comb & PCB_LYC_AUTO;
+
+		ar = pcb_gui->attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "edit layer properies", "Edit the properties of a logical layer");
+
+		if (ar == 0) {
+			if (strcmp(ly->Name, attr[0].default_val.str_value) != 0)
+				ret |= pcb_layer_rename_(ly, pcb_strdup(argv[n]+5));
+		}
+
+		ret |= ar;
 	}
 
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return ret;
 }
 
