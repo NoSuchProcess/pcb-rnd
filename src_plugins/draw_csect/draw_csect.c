@@ -493,7 +493,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 			draw_hover_label(l->Name);
-			mark_grp(cy, PCB_LYT_COPPER, MARK_GRP_FRAME);
+			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK, MARK_GRP_FRAME);
 		}
 		else if (drag_gid >= 0) {
 			pcb_layer_group_t *g = &PCB->LayerGroups.grp[drag_gid];
@@ -673,7 +673,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					}
 				}
 				else
-					pcb_message(PCB_MSG_ERROR, "Can not move copper layer onto non-copper layer group\n");
+					pcb_message(PCB_MSG_ERROR, "Can not move layer into that layer group\n");
 				res = 1;
 				drag_lid = -1;
 				gactive = -1;
