@@ -331,7 +331,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		sprintf(name, "/popups/%s", argv[0]);
 		menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, name);
 		if (menu_node != NULL)
-			menu = menu_node->user_data;
+			menu = pcb_gtk_menu_widget(menu_node);
 	}
 
 	if (!GTK_IS_MENU(menu)) {
