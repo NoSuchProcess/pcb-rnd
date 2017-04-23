@@ -213,7 +213,7 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 		hatch_box(x1, y1, x2, y2, thick_hatch, -step_back);
 }
 
-static pcb_box_t btn_addgrp, btn_delgrp;
+static pcb_box_t btn_addgrp, btn_delgrp, btn_addlayer, btn_dellayer;
 static pcb_box_t layer_crd[PCB_MAX_LAYER];
 static pcb_box_t group_crd[PCB_MAX_LAYERGRP];
 static char layer_valid[PCB_MAX_LAYER];
@@ -294,7 +294,7 @@ static int is_button(int x, int y, const pcb_box_t *box)
 static pcb_hid_gc_t csect_gc;
 
 static pcb_coord_t ox, oy, cx, cy;
-static int drag_addgrp, drag_delgrp;
+static int drag_addgrp, drag_delgrp, drag_addlayer, drag_dellayer;
 static pcb_layergrp_id_t gactive = -1;
 
 typedef enum {
@@ -310,7 +310,7 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 
 	g = get_group_coords(y, &y1, &y2);
 
-	if ((g >= 0) && ((pcb_layergrp_flags(PCB, g) & accept_mask) == accept_mask)) {
+	if ((g >= 0) && ((pcb_layergrp_flags(PCB, g) & accept_mask) & accept_mask)) {
 		gactive = g;
 		switch(loc) {
 			case MARK_GRP_FRAME:
@@ -450,17 +450,30 @@ static void draw_csect(pcb_hid_gc_t gc)
 	x = 2 + create_button(gc, x, y, "Add copper group", &btn_addgrp);
 	x = 2 + create_button(gc, x, y, "Del copper group", &btn_delgrp);
 
-	if ((drag_lid >= 0) || (drag_addgrp) || (drag_delgrp) || (drag_gid >= 0)) {
+	x += 2;
+	x = 2 + create_button(gc, x, y, "Add logical layer", &btn_addlayer);
+	x = 2 + create_button(gc, x, y, "Del logical layer", &btn_dellayer);
+
+
+	if ((drag_lid >= 0) || (drag_addgrp | drag_delgrp | drag_addlayer | drag_dellayer) || (drag_gid >= 0)) {
 		pcb_gui->set_color(gc, "#000000");
 
 		/* draw the actual operation */
 		if (drag_addgrp) {
 			mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_MIDDLE);
-			draw_hover_label("INSERT");
+			draw_hover_label("INSERT GRP");
 		}
 		if (drag_delgrp) {
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_FRAME);
-			draw_hover_label("DEL");
+			draw_hover_label("DEL GROUP");
+		}
+		if (drag_addlayer) {
+			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK, MARK_GRP_FRAME);
+			draw_hover_label("ADD LAYER");
+		}
+		if (drag_dellayer) {
+			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK, MARK_GRP_FRAME);
+			draw_hover_label("DEL LAYER");
 		}
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
@@ -553,6 +566,18 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				break;
 			}
 
+			if (is_button(x, y, &btn_addlayer)) {
+				drag_addlayer = 1;
+				res = 1;
+				break;
+			}
+
+			if (is_button(x, y, &btn_dellayer)) {
+				drag_dellayer = 1;
+				res = 1;
+				break;
+			}
+
 			drag_lid = get_layer_coords(x, y);
 			if (drag_lid >= 0) {
 				ox = x;
@@ -603,6 +628,14 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				}
 				drag_delgrp = 0;
 				gactive = -1;
+				res = 1;
+			}
+			else if (drag_addlayer) {
+				drag_addlayer = 0;
+				res = 1;
+			}
+			else if (drag_dellayer) {
+				drag_dellayer = 0;
 				res = 1;
 			}
 			else if (drag_lid >= 0) {
