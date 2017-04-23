@@ -1330,29 +1330,6 @@ static void config_layers_apply(void)
 	/* Nothing to do, changes got carried out right away */
 }
 
-static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
-{
-	gchar **argv;
-
-	if (PCB->RatDraw || PCB->SilkActive)
-		return;
-
-	argv = g_strsplit(data, ",", -1);
-	pcb_act_MoveLayer(2, argv, 0, 0);
-	g_strfreev(argv);
-}
-
-static void rename_layer_button_cb(GtkWidget * widget, gchar * data)
-{
-	char *name = pcb_gui->prompt_for("Enter the name of the layer:", CURRENT->Name);
-	if (name == NULL)
-		return;
-	if (strcmp(name, CURRENT->Name) == 0)
-		return;
-	pcb_layer_rename(pcb_layer_id(PCB->Data, CURRENT), name);
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
-}
-
 void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	gchar *s;
@@ -1389,8 +1366,7 @@ void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 
 static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
-	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *content_vbox, *prv;
-	GtkWidget *hbox, *arrow;
+	GtkWidget *tabs, *vbox, *text, *content_vbox, *prv;
 	pcb_layer_id_t lid;
 	gint i;
 
@@ -1410,45 +1386,6 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
 	}
-
-/* -- Logical layers tab */
-	vbox = ghid_notebook_page(tabs, _("Logical layers"), 0, 6);
-	vbox1 = ghid_category_vbox(vbox, _("Operations on currently selected layer:"), 4, 2, TRUE, TRUE);
-
-	button = gtk_button_new();
-	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_ETCHED_IN);
-	gtk_container_add(GTK_CONTAINER(button), arrow);
-	g_signal_connect(G_OBJECT(button), (gchar *) "clicked", G_CALLBACK(edit_layer_button_cb), (gchar *) "c,up");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-
-	button = gtk_button_new();
-	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_ETCHED_IN);
-	gtk_container_add(GTK_CONTAINER(button), arrow);
-	g_signal_connect(G_OBJECT(button), (gchar *) "clicked", G_CALLBACK(edit_layer_button_cb), (gchar *) "c,down");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-
-	button = gtk_button_new_from_stock(GTK_STOCK_DELETE);
-	g_signal_connect(G_OBJECT(button), (gchar *) "clicked", G_CALLBACK(edit_layer_button_cb), (gchar *) "c,-1");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-
-	button = gtk_button_new_from_stock(GTK_STOCK_EDIT);
-	g_signal_connect(G_OBJECT(button), (gchar *) "clicked", G_CALLBACK(rename_layer_button_cb), NULL);
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-
-	vbox1 = ghid_category_vbox(vbox, _("Add new layer above currently selected layer:"), 4, 2, TRUE, TRUE);
-	button = gtk_button_new_from_stock(GTK_STOCK_ADD);
-	g_signal_connect(G_OBJECT(button), (gchar *) "clicked", G_CALLBACK(edit_layer_button_cb), (gchar *) "-1,c");
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
 /* -- Info tab */
 	vbox = ghid_notebook_page(tabs, _("Info"), 0, 6);
