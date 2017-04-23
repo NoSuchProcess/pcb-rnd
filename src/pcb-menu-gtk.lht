@@ -631,9 +631,9 @@ ha:{
 				ha:Properties...                    = { action=EditLayer() }
 				ha:Grouping...                      = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
-				ha:Remove                           = {}
-				ha:Insert new, before this layer    = {}
-				ha:Insert new, after this layer     = {}
+				ha:Remove                           = { action=MoveLayer(c, -1) }
+				ha:Insert new, before this layer    = { action=MoveLayer(-1, c) }
+				ha:Insert new, after this layer     = { action={ MoveLayer(-1, c); MoveLayer(c, down) } }
 			}
 		} # layer
 
