@@ -318,6 +318,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 	if (grp >= 0) {
 		PCB->LayerGroups.grp[grp].lid[PCB->LayerGroups.grp[grp].len] = id;
 		PCB->LayerGroups.grp[grp].len++;
+		PCB->Data->Layer[id].On = PCB->Data->Layer[PCB->LayerGroups.grp[grp].lid[0]].On;
 	}
 	PCB->Data->Layer[id].grp = grp;
 
