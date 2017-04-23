@@ -355,21 +355,19 @@ static void mark_layer_order(pcb_coord_t x)
 
 	g = &PCB->LayerGroups.grp[gactive];
 
-	tx = layer_crd[g->lid[0]].X1;
+	tx = layer_crd[g->lid[0]].X1 - PCB_MM_TO_COORD(1.5);
 	ty1 = layer_crd[g->lid[0]].Y1;
 	ty2 = layer_crd[g->lid[0]].Y2;
 
 	for(lactive_idx = g->len-1; lactive_idx >= 0; lactive_idx--) {
 		pcb_layer_id_t lid = g->lid[lactive_idx];
-/*		pcb_printf("chk: %mm %mm\n", layer_crd[lid].X1, layer_crd[lid].X2);*/
 		if (x > (layer_crd[lid].X1 + layer_crd[lid].X2)/2) {
-			tx = layer_crd[lactive_idx].X2;
-/*			pcb_printf(" hit1 %mm\n", tx);*/
+			tx = layer_crd[lid].X2;
 			break;
 		}
 	}
-/*	pcb_printf("  hit2 %mm\n", tx);*/
-	dline_(tx, ty1-PCB_MM_TO_COORD(1), tx, ty2+PCB_MM_TO_COORD(1), 0.25);
+	dline_(tx, ty1-PCB_MM_TO_COORD(1.5), tx-PCB_MM_TO_COORD(0.75), ty2+PCB_MM_TO_COORD(1.5), 0.1);
+	dline_(tx, ty1-PCB_MM_TO_COORD(1.5), tx+PCB_MM_TO_COORD(0.75), ty2+PCB_MM_TO_COORD(1.5), 0.1);
 }
 
 static void draw_hover_label(const char *str)
