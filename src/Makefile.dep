@@ -351,8 +351,8 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/genvector/vtp0.h list_conf.h conf.h obj_text_draw.h \
- ../src_plugins/draw_fab/draw_fab_conf_fields.h
+ ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h \
+ obj_text_draw.h ../src_plugins/draw_fab/draw_fab_conf_fields.h
 ../src_plugins/draw_fontsel/draw_fontsel.o: \
  ../src_plugins/draw_fontsel/draw_fontsel.c ../config.h board.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -4636,8 +4636,8 @@ compat_fs.o: compat_fs.c ../config.h compat_inc.h compat_fs.h \
  compat_misc.h compat_nls.h globalconst.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h error.h
-compat_lrealpath.o: compat_lrealpath.c ../config.h compat_lrealpath.h \
- compat_misc.h
+compat_lrealpath.o: compat_lrealpath.c compat_inc.h ../config.h \
+ compat_lrealpath.h compat_misc.h
 compat_misc.o: compat_misc.c ../config.h compat_misc.h compat_inc.h
 conf.o: conf.c ../src_3rd/liblihata/genht/hash.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
@@ -4939,7 +4939,8 @@ gui_act.o: gui_act.c ../config.h board.h const.h macro.h \
  buffer.h action_helper.h undo.h funchash_core.h funchash.h \
  funchash_core_list.h draw.h search.h rats.h netlist.h route_style.h \
  find.h stub_stroke.h hid_actions.h hid_init.h compat_nls.h compat_misc.h \
- event.h layer_vis.h obj_elem_draw.h obj_pinvia_draw.h obj_pad_draw.h
+ event.h layer_vis.h hid_attrib.h obj_elem_draw.h obj_pinvia_draw.h \
+ obj_pad_draw.h
 heap.o: heap.c ../config.h heap.h
 hid_actions.o: hid_actions.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -5666,15 +5667,15 @@ obj_text.o: obj_text.c ../config.h rotate.h global_typedefs.h pcb_bool.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
  list_conf.h
-obj_text_list.o: obj_text_list.c obj_text_list.h obj_text.h obj_common.h \
+obj_text_list.o: obj_text_list.c obj_poly_list.h obj_poly.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  globalconst.h ../config.h attrib.h global_typedefs.h pcb_bool.h unit.h \
- font.h ../src_3rd/liblihata/genht/htip.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h obj_poly.h polyarea.h \
- obj_poly_list.h ../src_3rd/genlist/gentdlist_impl.h \
+ polyarea.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_arc.h obj_arc_list.h box.h math_helper.h macro.h move.h misc_util.h \
- ../src_3rd/genlist/gentdlist_impl.c
+ obj_arc_list.h obj_arc.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/liblihata/genht/htip.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h box.h math_helper.h macro.h \
+ move.h misc_util.h ../src_3rd/genlist/gentdlist_impl.c
 object_act.o: object_act.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
