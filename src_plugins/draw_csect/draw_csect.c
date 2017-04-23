@@ -695,15 +695,35 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			else if (drag_lid >= 0) {
 				if (gactive >= 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
-					if ((l->grp != gactive) && (check_layer_del(drag_lid) == 0)) {
-						pcb_layer_group_t *g = &PCB->LayerGroups.grp[gactive];
+					pcb_layer_group_t *g;
+					if (l->grp == gactive) { /* move within the group */
+						int d, s, at;
+						g = &PCB->LayerGroups.grp[gactive];
+
+						/* move drag_lid to the end of the list within the group */
+						for(s = d = 0; s < g->len; s++) {
+							if (g->lid[s] != drag_lid) {
+								g->lid[d] = g->lid[s];
+								d++;
+							}
+							else
+								at = s;
+						}
+						g->lid[g->len-1] = drag_lid;
+						if (lactive_idx >= at) /* because lactive_idx was calculated with this layer in the middle */
+							lactive_idx--;
+						goto move_layer_to_its_place;
+					}
+					else if (check_layer_del(drag_lid) == 0) {
+						g = &PCB->LayerGroups.grp[gactive];
 						pcb_layer_move_to_group(PCB, drag_lid, gactive);
 						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->Name, gactive);
-						if (lactive_idx != g->len-1) {
+						move_layer_to_its_place:;
+						if (lactive_idx < g->len-1) {
 							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(pcb_layer_id_t));
 							g->lid[lactive_idx] = drag_lid;
-							pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 						}
+						pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 					}
 				}
 				else
