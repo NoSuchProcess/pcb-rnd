@@ -397,77 +397,43 @@ static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t * drawn_area)
 	pcb_draw_silk_auto(lyt_side, drawn_area);
 }
 
+#include "draw_composite.c"
+
 /* ---------------------------------------------------------------------------
  * draws solder mask layer - this will cover nearly everything
  */
-static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
+static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 {
-	pcb_r_search(PCB->Data->pin_tree, screen, NULL, clear_pin_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->via_tree, screen, NULL, clear_pin_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
+	pcb_r_search(PCB->Data->pin_tree, ctx->screen, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->via_tree, ctx->screen, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->pad_tree, ctx->screen, NULL, clear_pad_callback, side, NULL);
 }
-
-#include "draw_composite.c"
 
 static void pcb_draw_mask(int side, const pcb_box_t * screen)
 {
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
 	pcb_layergrp_id_t gid = -1;
-	pcb_layer_group_t *grp;
 	comp_ctx_t cctx;
+
+	pcb_layergrp_list(PCB, PCB_LYT_MASK | side_lyt, &gid, 1);
 
 	cctx.pcb = PCB;
 	cctx.screen = screen;
+	cctx.grp = pcb_get_layergrp(PCB, gid);
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 	cctx.invert = pcb_gui->mask_invert;
 	cctx.poly_before = pcb_gui->poly_before;
 	cctx.poly_after = pcb_gui->poly_after;
 
-	pcb_layergrp_list(PCB, PCB_LYT_MASK | side_lyt, &gid, 1);
-	grp = pcb_get_layergrp(PCB, gid);
 
-	if ((grp == NULL) || (grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-sub */
+	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-sub */
 		comp_init(&cctx, 1);
 		comp_start_sub(&cctx);
-		pcb_draw_mask_auto(side, screen);
+		pcb_draw_mask_auto(&cctx, &side);
 		comp_start_add(&cctx);
 	}
-	else { /* generic multi-layer rendering */
-		int n, adding = -1;
-		pcb_layer_t *l = pcb_get_layer(grp->lid[0]);
-		comp_init(&cctx, (l->comb & PCB_LYC_SUB));
-
-		for(n = 0; n < grp->len; n++) {
-			int want_add;
-			l = pcb_get_layer(grp->lid[n]);
-
-			want_add = !(l->comb & PCB_LYC_SUB);
-			if (want_add != adding) {
-				if (want_add)
-					comp_start_add(&cctx);
-				else
-					comp_start_sub(&cctx);
-				adding = want_add;
-			}
-
-			if (!(l->comb & PCB_LYC_AUTO)) {
-				const char *old_color = l->Color;
-				pcb_hid_gc_t old_fg = Output.fgGC;
-				Output.fgGC = Output.pmGC;
-				if (!cctx.thin)
-					l->Color = conf_core.appearance.color.mask;
-				if (!want_add)
-					l->Color = "erase";
-				pcb_draw_layer(l, screen);
-				l->Color = old_color;
-				Output.fgGC = old_fg;
-			}
-			else
-				pcb_draw_mask_auto(cctx.thin, screen);
-		}
-		if (!adding)
-			comp_start_add(&cctx);
-	}
+	else
+		comp_draw_layer(&cctx, pcb_draw_mask_auto, &side);
 	comp_finish(&cctx);
 }
 

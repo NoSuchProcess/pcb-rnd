@@ -30,6 +30,8 @@
 typedef struct comp_ctx_s {
 	pcb_board_t *pcb;
 	const pcb_box_t *screen;
+	pcb_layer_group_t *grp;
+
 	unsigned thin:1;
 	unsigned invert:1;
 	unsigned poly_before:1;
@@ -108,4 +110,42 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 			comp_fill_board(ctx, HID_MASK_SET);
 		}
 	}
+}
+
+static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
+{ /* generic multi-layer rendering */
+	int n, adding = -1;
+	pcb_layer_t *l = pcb_get_layer(ctx->grp->lid[0]);
+	comp_init(ctx, (l->comb & PCB_LYC_SUB));
+
+	for(n = 0; n < ctx->grp->len; n++) {
+		int want_add;
+		l = pcb_get_layer(ctx->grp->lid[n]);
+
+		want_add = !(l->comb & PCB_LYC_SUB);
+		if (want_add != adding) {
+			if (want_add)
+				comp_start_add(ctx);
+			else
+				comp_start_sub(ctx);
+			adding = want_add;
+		}
+
+		if (!(l->comb & PCB_LYC_AUTO)) {
+			const char *old_color = l->Color;
+			pcb_hid_gc_t old_fg = Output.fgGC;
+			Output.fgGC = Output.pmGC;
+			if (!ctx->thin)
+				l->Color = conf_core.appearance.color.mask;
+			if (!want_add)
+				l->Color = "erase";
+			pcb_draw_layer(l, ctx->screen);
+			l->Color = old_color;
+			Output.fgGC = old_fg;
+		}
+		else
+			draw_auto(ctx, auto_data);
+	}
+	if (!adding)
+		comp_start_add(ctx);
 }
