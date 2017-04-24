@@ -320,7 +320,7 @@ in the popups subtree in the menu lht file.
 %end-doc */
 static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	GtkMenu *menu = NULL;
+	GtkWidget *menu = NULL;
 	char name[256];
 
 	if (argc != 1 && argc != 2)
@@ -341,7 +341,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else {
 		ghidgui->topwin.in_popup = TRUE;
 		gtk_widget_grab_focus(ghid_port.drawing_area);
-		gtk_menu_popup(menu, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
+		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
 	}
 	return 0;
 }
