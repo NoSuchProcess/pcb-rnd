@@ -110,7 +110,8 @@ static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 				return conf_core.editor.show_mask;
 			return 0;
 		case PCB_LYT_PASTE: /* Never draw the paste layer */
-			return 0;
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
+				return conf_core.editor.show_paste;
 	}
 
 	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
