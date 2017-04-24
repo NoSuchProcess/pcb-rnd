@@ -66,7 +66,8 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 #define LB_VIAS	(PCB_MAX_LAYER+3)
 #define LB_BACK	(PCB_MAX_LAYER+4)
 #define LB_MASK	(PCB_MAX_LAYER+5)
-#define LB_NUM  (PCB_MAX_LAYER+6)
+#define LB_PASTE	(PCB_MAX_LAYER+6)
+#define LB_NUM  (PCB_MAX_LAYER+7)
 
 typedef struct {
 	Widget w[LB_NUM];
@@ -98,6 +99,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
 		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
 		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
+		fg_colors[LB_PASTE] = lesstif_parse_color(conf_core.appearance.color.paste);
 		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 	else {
@@ -109,6 +111,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
 		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
 		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
+		fg_colors[LB_PASTE] = lesstif_parse_color(conf_core.appearance.color.paste);
 		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 
@@ -140,6 +143,9 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 				break;
 			case LB_MASK:
 				set = conf_core.editor.show_mask;
+				break;
+			case LB_PASTE:
+				set = conf_core.editor.show_paste;
 				break;
 			default:									/* layers */
 				set = PCB->Data->Layer[i].On;
@@ -245,6 +251,10 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	case LB_MASK:
 		conf_toggle_editor(show_mask);
 		set = conf_core.editor.show_mask;
+		break;
+	case LB_PASTE:
+		conf_toggle_editor(show_paste);
+		set = conf_core.editor.show_paste;
 		break;
 	default:											/* layers */
 		set = PCB->Data->Layer[layer].On = !PCB->Data->Layer[layer].On;
@@ -364,6 +374,8 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		layer_button_callback(0, LB_VIAS, 0);
 	else if (strcmp(argv[0], "Mask") == 0)
 		layer_button_callback(0, LB_MASK, 0);
+	else if (strcmp(argv[0], "Paste") == 0)
+		layer_button_callback(0, LB_PASTE, 0);
 	else if (strcmp(argv[0], "BackSide") == 0)
 		layer_button_callback(0, LB_BACK, 0);
 	else {
@@ -417,6 +429,9 @@ static void insert_layerview_buttons(Widget menu)
 		case LB_MASK:
 			name = "Solder Mask";
 			break;
+		case LB_PASTE:
+			name = "Paste";
+			break;
 		}
 		stdarg_n = 0;
 		btn = XmCreateToggleButton(menu, XmStrCast(name), stdarg_args, stdarg_n);
@@ -426,6 +441,8 @@ static void insert_layerview_buttons(Widget menu)
 
 		if (i == LB_MASK)
 			note_widget_flag(btn, XmNset, "editor/show_mask");
+		else if (i == LB_PASTE)
+			note_widget_flag(btn, XmNset, "editor/show_paste");
 	}
 	lb->is_pick = 0;
 	LesstifLayersChanged(0, 0, 0);
