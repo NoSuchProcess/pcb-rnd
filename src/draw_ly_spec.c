@@ -30,9 +30,34 @@
 
 /******** paste ********/
 
+static void pcb_draw_paste_auto_(comp_ctx_t *ctx, void *side)
+{
+	pcb_draw_paste_auto(*(int *)side, ctx->screen);
+}
+
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 {
-	pcb_draw_paste_auto(side, drawn_area);
+	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
+	pcb_layergrp_id_t gid = -1;
+	comp_ctx_t cctx;
+
+	pcb_layergrp_list(PCB, PCB_LYT_PASTE | side_lyt, &gid, 1);
+
+	cctx.pcb = PCB;
+	cctx.screen = drawn_area;
+	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
+	cctx.invert = 0;
+	cctx.poly_before = pcb_gui->poly_before;
+	cctx.poly_after = pcb_gui->poly_after;
+
+
+	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) /* fallback: no layers -> original code: draw a single auto-add */
+		pcb_draw_paste_auto(side, drawn_area);
+	else {
+		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
+		comp_finish(&cctx);
+	}
 }
 
 /******** mask ********/
