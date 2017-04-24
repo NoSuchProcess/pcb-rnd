@@ -28,7 +28,7 @@
    using positive and negative draw operations. Included from draw.c. */
 
 
-static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
+static void comp_fill_board(int mask_type, const pcb_box_t * drawn_area)
 {
 	/* Skip the mask drawing if the GUI doesn't want this type */
 	if ((mask_type == HID_MASK_BEFORE && !pcb_gui->poly_before) || (mask_type == HID_MASK_AFTER && !pcb_gui->poly_after))
@@ -78,7 +78,7 @@ static void comp_finish(int thin, const pcb_box_t *screen)
 {
 	if (!thin) {
 		pcb_gui->use_mask(HID_MASK_AFTER);
-		DrawMaskBoardArea(HID_MASK_AFTER, screen);
+		comp_fill_board(HID_MASK_AFTER, screen);
 		pcb_gui->use_mask(HID_MASK_OFF);
 	}
 }
@@ -92,12 +92,12 @@ static void comp_init(int thin, const pcb_box_t *screen, int negative)
 
 	if ((!thin) && (negative)) {
 		/* old way of drawing the big poly for the negative */
-		DrawMaskBoardArea(HID_MASK_BEFORE, screen);
+		comp_fill_board(HID_MASK_BEFORE, screen);
 
 		if (!pcb_gui->poly_before) {
 			/* new way */
 			pcb_gui->use_mask(HID_MASK_SET);
-			DrawMaskBoardArea(HID_MASK_SET, screen);
+			comp_fill_board(HID_MASK_SET, screen);
 		}
 	}
 }
