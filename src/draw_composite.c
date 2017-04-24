@@ -27,77 +27,85 @@
 /* Local functions to draw a layer group as a composite of logical layers
    using positive and negative draw operations. Included from draw.c. */
 
+typedef struct comp_ctx_s {
+	pcb_board_t *pcb;
+	const pcb_box_t *screen;
+	unsigned thin:1;
+	unsigned invert:1;
+	unsigned poly_before:1;
+	unsigned poly_after:1;
+} comp_ctx_t;
 
-static void comp_fill_board(int mask_type, const pcb_box_t * drawn_area)
+static void comp_fill_board(comp_ctx_t *ctx, int mask_type)
 {
 	/* Skip the mask drawing if the GUI doesn't want this type */
-	if ((mask_type == HID_MASK_BEFORE && !pcb_gui->poly_before) || (mask_type == HID_MASK_AFTER && !pcb_gui->poly_after))
+	if ((mask_type == HID_MASK_BEFORE && !ctx->poly_before) || (mask_type == HID_MASK_AFTER && !ctx->poly_after))
 		return;
 
 	pcb_gui->use_mask(mask_type);
 	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.mask);
-	if (drawn_area == NULL)
-		pcb_gui->fill_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	if (ctx->screen == NULL)
+		pcb_gui->fill_rect(Output.fgGC, 0, 0, ctx->pcb->MaxWidth, ctx->pcb->MaxHeight);
 	else
-		pcb_gui->fill_rect(Output.fgGC, drawn_area->X1, drawn_area->Y1, drawn_area->X2, drawn_area->Y2);
+		pcb_gui->fill_rect(Output.fgGC, ctx->screen->X1, ctx->screen->Y1, ctx->screen->X2, ctx->screen->Y2);
 }
 
-static void comp_start_sub_(int thin, const pcb_box_t *screen)
+static void comp_start_sub_(comp_ctx_t *ctx)
 {
-	if (thin)
+	if (ctx->thin)
 		pcb_gui->set_color(Output.pmGC, conf_core.appearance.color.mask);
 	else
 		pcb_gui->use_mask(HID_MASK_CLEAR);
 }
 
-static void comp_start_add_(int thin, const pcb_box_t *screen)
+static void comp_start_add_(comp_ctx_t *ctx)
 {
-	if (thin)
+	if (ctx->thin)
 		pcb_gui->set_color(Output.pmGC, "erase");
 	else
 		pcb_gui->use_mask(HID_MASK_SET);
 }
 
-static void comp_start_sub(int thin, const pcb_box_t *screen)
+static void comp_start_sub(comp_ctx_t *ctx)
 {
-	if (pcb_gui->mask_invert)
-		comp_start_add_(thin, screen);
+	if (ctx->invert)
+		comp_start_add_(ctx);
 	else
-		comp_start_sub_(thin, screen);
+		comp_start_sub_(ctx);
 }
 
-static void comp_start_add(int thin, const pcb_box_t *screen)
+static void comp_start_add(comp_ctx_t *ctx)
 {
-	if (pcb_gui->mask_invert)
-		comp_start_sub_(thin, screen);
+	if (ctx->invert)
+		comp_start_sub_(ctx);
 	else
-		comp_start_add_(thin, screen);
+		comp_start_add_(ctx);
 }
 
-static void comp_finish(int thin, const pcb_box_t *screen)
+static void comp_finish(comp_ctx_t *ctx)
 {
-	if (!thin) {
+	if (!ctx->thin) {
 		pcb_gui->use_mask(HID_MASK_AFTER);
-		comp_fill_board(HID_MASK_AFTER, screen);
+		comp_fill_board(ctx, HID_MASK_AFTER);
 		pcb_gui->use_mask(HID_MASK_OFF);
 	}
 }
 
-static void comp_init(int thin, const pcb_box_t *screen, int negative)
+static void comp_init(comp_ctx_t *ctx, int negative)
 {
 	pcb_gui->use_mask(HID_MASK_INIT);
 
-	if (pcb_gui->mask_invert)
+	if (ctx->invert)
 		negative = !negative;
 
-	if ((!thin) && (negative)) {
+	if ((!ctx->thin) && (negative)) {
 		/* old way of drawing the big poly for the negative */
-		comp_fill_board(HID_MASK_BEFORE, screen);
+		comp_fill_board(ctx, HID_MASK_BEFORE);
 
 		if (!pcb_gui->poly_before) {
 			/* new way */
 			pcb_gui->use_mask(HID_MASK_SET);
-			comp_fill_board(HID_MASK_SET, screen);
+			comp_fill_board(ctx, HID_MASK_SET);
 		}
 	}
 }

@@ -411,24 +411,31 @@ static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
 
 static void pcb_draw_mask(int side, const pcb_box_t * screen)
 {
-	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
 	pcb_layergrp_id_t gid = -1;
 	pcb_layer_group_t *grp;
-	
+	comp_ctx_t cctx;
+
+	cctx.pcb = PCB;
+	cctx.screen = screen;
+	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
+	cctx.invert = pcb_gui->mask_invert;
+	cctx.poly_before = pcb_gui->poly_before;
+	cctx.poly_after = pcb_gui->poly_after;
+
 	pcb_layergrp_list(PCB, PCB_LYT_MASK | side_lyt, &gid, 1);
 	grp = pcb_get_layergrp(PCB, gid);
 
 	if ((grp == NULL) || (grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-sub */
-		comp_init(thin, screen, 1);
-		comp_start_sub(thin, screen);
+		comp_init(&cctx, 1);
+		comp_start_sub(&cctx);
 		pcb_draw_mask_auto(side, screen);
-		comp_start_add(thin, screen);
+		comp_start_add(&cctx);
 	}
 	else { /* generic multi-layer rendering */
 		int n, adding = -1;
 		pcb_layer_t *l = pcb_get_layer(grp->lid[0]);
-		comp_init(thin, screen, (l->comb & PCB_LYC_SUB));
+		comp_init(&cctx, (l->comb & PCB_LYC_SUB));
 
 		for(n = 0; n < grp->len; n++) {
 			int want_add;
@@ -437,9 +444,9 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 			want_add = !(l->comb & PCB_LYC_SUB);
 			if (want_add != adding) {
 				if (want_add)
-					comp_start_add(thin, screen);
+					comp_start_add(&cctx);
 				else
-					comp_start_sub(thin, screen);
+					comp_start_sub(&cctx);
 				adding = want_add;
 			}
 
@@ -447,7 +454,7 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 				const char *old_color = l->Color;
 				pcb_hid_gc_t old_fg = Output.fgGC;
 				Output.fgGC = Output.pmGC;
-				if (!thin)
+				if (!cctx.thin)
 					l->Color = conf_core.appearance.color.mask;
 				if (!want_add)
 					l->Color = "erase";
@@ -456,12 +463,12 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 				Output.fgGC = old_fg;
 			}
 			else
-				pcb_draw_mask_auto(side, screen);
+				pcb_draw_mask_auto(cctx.thin, screen);
 		}
 		if (!adding)
-			comp_start_add(thin, screen);
+			comp_start_add(&cctx);
 	}
-	comp_finish(thin, screen);
+	comp_finish(&cctx);
 }
 
 static void DrawRats(const pcb_box_t * drawn_area)
