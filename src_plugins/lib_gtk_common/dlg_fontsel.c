@@ -62,7 +62,6 @@ void pcb_gtk_dlg_fontsel(pcb_gtk_common_t *com, pcb_layer_t *txtly, pcb_text_t *
 	GtkDialog *dialog;
 	GtkWidget *content_area, *prv;
 	GtkWidget *vbox;
-	pcb_layer_id_t lid;
 	pcb_gtk_dlg_fontsel_t *ctx;
 
 	if (txt == NULL) {
