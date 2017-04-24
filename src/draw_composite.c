@@ -27,6 +27,21 @@
 /* Local functions to draw a layer group as a composite of logical layers
    using positive and negative draw operations. Included from draw.c. */
 
+
+static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
+{
+	/* Skip the mask drawing if the GUI doesn't want this type */
+	if ((mask_type == HID_MASK_BEFORE && !pcb_gui->poly_before) || (mask_type == HID_MASK_AFTER && !pcb_gui->poly_after))
+		return;
+
+	pcb_gui->use_mask(mask_type);
+	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.mask);
+	if (drawn_area == NULL)
+		pcb_gui->fill_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	else
+		pcb_gui->fill_rect(Output.fgGC, drawn_area->X1, drawn_area->Y1, drawn_area->X2, drawn_area->Y2);
+}
+
 static void comp_start_sub_(int thin, const pcb_box_t *screen)
 {
 	if (thin)
