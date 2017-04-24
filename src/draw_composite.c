@@ -31,6 +31,7 @@ typedef struct comp_ctx_s {
 	pcb_board_t *pcb;
 	const pcb_box_t *screen;
 	pcb_layer_group_t *grp;
+	const char *color;
 
 	unsigned thin:1;
 	unsigned invert:1;
@@ -45,7 +46,7 @@ static void comp_fill_board(comp_ctx_t *ctx, int mask_type)
 		return;
 
 	pcb_gui->use_mask(mask_type);
-	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.mask);
+	pcb_gui->set_color(Output.fgGC, ctx->color);
 	if (ctx->screen == NULL)
 		pcb_gui->fill_rect(Output.fgGC, 0, 0, ctx->pcb->MaxWidth, ctx->pcb->MaxHeight);
 	else
@@ -55,7 +56,7 @@ static void comp_fill_board(comp_ctx_t *ctx, int mask_type)
 static void comp_start_sub_(comp_ctx_t *ctx)
 {
 	if (ctx->thin)
-		pcb_gui->set_color(Output.pmGC, conf_core.appearance.color.mask);
+		pcb_gui->set_color(Output.pmGC, ctx->color);
 	else
 		pcb_gui->use_mask(HID_MASK_CLEAR);
 }
@@ -139,7 +140,7 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 			pcb_hid_gc_t old_fg = Output.fgGC;
 			Output.fgGC = Output.pmGC;
 			if (!ctx->thin)
-				l->Color = conf_core.appearance.color.mask;
+				l->Color = ctx->color;
 			if (!want_add)
 				l->Color = "erase";
 			pcb_draw_layer(l, ctx->screen);

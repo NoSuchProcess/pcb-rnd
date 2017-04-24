@@ -46,6 +46,7 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;
 	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.color = conf_core.appearance.color.paste;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 	cctx.invert = 0;
 	cctx.poly_before = pcb_gui->poly_before;
@@ -79,6 +80,7 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 	cctx.pcb = PCB;
 	cctx.screen = screen;
 	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.color = conf_core.appearance.color.mask;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 	cctx.invert = pcb_gui->mask_invert;
 	cctx.poly_before = pcb_gui->poly_before;
