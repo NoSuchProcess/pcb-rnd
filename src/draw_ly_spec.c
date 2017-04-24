@@ -97,7 +97,7 @@ static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t *drawn_area)
 
 /******** misc ********/
 
-static void DrawRats(const pcb_box_t * drawn_area)
+static void pcb_draw_rats(const pcb_box_t *drawn_area)
 {
 	/*
 	 * lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
@@ -111,7 +111,7 @@ static void DrawRats(const pcb_box_t * drawn_area)
 		pcb_gui->use_mask(HID_MASK_OFF);
 }
 
-static void PrintAssembly(unsigned int lyt_side, const pcb_box_t * drawn_area)
+static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area)
 {
 	pcb_layergrp_id_t side_group;
 

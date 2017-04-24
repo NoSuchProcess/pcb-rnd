@@ -80,8 +80,8 @@ static void DrawLayerGroup(int, const pcb_box_t *);
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area);
 static void pcb_draw_mask(int side, const pcb_box_t *screen);
 static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t *drawn_area);
-static void DrawRats(const pcb_box_t *);
-static void PrintAssembly(unsigned int lyt_side, const pcb_box_t * drawn_area);
+static void pcb_draw_rats(const pcb_box_t *);
+static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area);
 
 
 
@@ -261,7 +261,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
 		/* Draw rat lines on top */
 		if (pcb_layer_gui_set_vlayer(PCB_VLY_RATS, 0)) {
-			DrawRats(drawn_area);
+			pcb_draw_rats(drawn_area);
 			pcb_gui->end_layer();
 		}
 	}
@@ -281,12 +281,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_TOP_ASSY, 0)) {
-		PrintAssembly(PCB_LYT_TOP, drawn_area);
+		pcb_draw_assembly(PCB_LYT_TOP, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_BOTTOM_ASSY, 0)) {
-		PrintAssembly(PCB_LYT_BOTTOM, drawn_area);
+		pcb_draw_assembly(PCB_LYT_BOTTOM, drawn_area);
 		pcb_gui->end_layer();
 	}
 
