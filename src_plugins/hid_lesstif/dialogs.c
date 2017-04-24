@@ -668,43 +668,43 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 		stdarg(XmNalignment, XmALIGNMENT_END);
 
 		switch (attrs[i].type) {
-		case HID_Label:
+		case PCB_HATT_LABEL:
 			stdarg(XmNlabelString, empty);
 			wl[i] = XmCreateLabel(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
-		case HID_Boolean:
+		case PCB_HATT_BOOL:
 			stdarg(XmNlabelString, empty);
 			stdarg(XmNset, results[i].int_value);
 			wl[i] = XmCreateToggleButton(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
-		case HID_String:
+		case PCB_HATT_STRING:
 			stdarg(XmNcolumns, 40);
 			stdarg(XmNresizeWidth, True);
 			stdarg(XmNvalue, results[i].str_value);
 			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
-		case HID_Integer:
+		case PCB_HATT_INTEGER:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
 			sprintf(buf, "%d", results[i].int_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
-		case HID_Coord:
+		case PCB_HATT_COORD:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
 			pcb_snprintf(buf, sizeof(buf), "%$mS", results[i].coord_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
-		case HID_Real:
+		case PCB_HATT_REAL:
 			stdarg(XmNcolumns, 16);
 			stdarg(XmNresizeWidth, True);
 			pcb_snprintf(buf, sizeof(buf), "%g", results[i].real_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
-		case HID_Enum:
+		case PCB_HATT_ENUM:
 			{
 				static XmString empty = 0;
 				Widget submenu, default_button = 0;
@@ -757,25 +757,25 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 			continue;
 
 		switch (attrs[i].type) {
-		case HID_Boolean:
+		case PCB_HATT_BOOL:
 			results[i].int_value = XmToggleButtonGetState(wl[i]);
 			break;
-		case HID_String:
+		case PCB_HATT_STRING:
 			results[i].str_value = XmTextGetString(wl[i]);
 			break;
-		case HID_Integer:
+		case PCB_HATT_INTEGER:
 			cp = XmTextGetString(wl[i]);
 			sscanf(cp, "%d", &results[i].int_value);
 			break;
-		case HID_Coord:
+		case PCB_HATT_COORD:
 			cp = XmTextGetString(wl[i]);
 			results[i].coord_value = pcb_get_value(cp, NULL, NULL, NULL);
 			break;
-		case HID_Real:
+		case PCB_HATT_REAL:
 			cp = XmTextGetString(wl[i]);
 			sscanf(cp, "%lg", &results[i].real_value);
 			break;
-		case HID_Enum:
+		case PCB_HATT_ENUM:
 			{
 				const char **uptr;
 				Widget btn;
@@ -922,11 +922,11 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 static pcb_hid_attribute_t printer_calibrate_attrs[] = {
 	{"Enter Values here:", "",
-	 HID_Label, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
 	{"x-calibration", "X scale for calibrating your printer",
-	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0},
+	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
 	{"y-calibration", "Y scale for calibrating your printer",
-	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0}
+	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
 };
 
 static pcb_hid_attr_val_t printer_calibrate_values[3];

@@ -18,7 +18,7 @@ do { \
 	memset((attr), 0, sizeof(pcb_hid_attribute_t)); \
 	(attr)->name         = name_; \
 	(attr)->help_text    = help_; \
-	(attr)->type         = HID_Label; \
+	(attr)->type         = PCB_HATT_LABEL; \
 } while(0)
 
 #define attr_make_label_str(attr, name1, name2, help_) \
@@ -34,7 +34,7 @@ do { \
 	memset((attr), 0, sizeof(pcb_hid_attribute_t)); \
 	(attr)->name         = name_; \
 	(attr)->help_text    = help_; \
-	(attr)->type         = HID_Enum; \
+	(attr)->type         = PCB_HATT_ENUM; \
 	(attr)->enumerations = enum_vals; \
 	(attr)->default_val.int_value = default_item; \
 } while(0)

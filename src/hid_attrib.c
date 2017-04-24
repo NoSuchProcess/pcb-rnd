@@ -56,36 +56,36 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 		for (i = 0; i < ha->n; i++) {
 			pcb_hid_attribute_t *a = ha->attributes + i;
 			switch (a->type) {
-			case HID_Label:
+			case PCB_HATT_LABEL:
 				break;
-			case HID_Integer:
+			case PCB_HATT_INTEGER:
 				if (a->value)
 					*(int *) a->value = a->default_val.int_value;
 				break;
-			case HID_Coord:
+			case PCB_HATT_COORD:
 				if (a->value)
 					*(pcb_coord_t *) a->value = a->default_val.coord_value;
 				break;
-			case HID_Boolean:
+			case PCB_HATT_BOOL:
 				if (a->value)
 					*(char *) a->value = a->default_val.int_value;
 				break;
-			case HID_Real:
+			case PCB_HATT_REAL:
 				if (a->value)
 					*(double *) a->value = a->default_val.real_value;
 				break;
-			case HID_String:
+			case PCB_HATT_STRING:
 				if (a->value)
 					*(const char **) a->value = a->default_val.str_value;
 				break;
-			case HID_Enum:
+			case PCB_HATT_ENUM:
 				if (a->value)
 					*(int *) a->value = a->default_val.int_value;
 				break;
-			case HID_Mixed:
+			case PCB_HATT_MIXED:
 				if (a->value) {
 					*(pcb_hid_attr_val_t *) a->value = a->default_val;
-			case HID_Unit:
+			case PCB_HATT_UNIT:
 					if (a->value)
 						*(int *) a->value = a->default_val.int_value;
 					break;
@@ -111,9 +111,9 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 					char *ep;
 					const pcb_unit_t *unit;
 					switch (ha->attributes[i].type) {
-					case HID_Label:
+					case PCB_HATT_LABEL:
 						break;
-					case HID_Integer:
+					case PCB_HATT_INTEGER:
 						if (a->value)
 							*(int *) a->value = strtol((*argv)[1], 0, 0);
 						else
@@ -121,7 +121,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 						(*argc)--;
 						(*argv)++;
 						break;
-					case HID_Coord:
+					case PCB_HATT_COORD:
 						if (a->value)
 							*(pcb_coord_t *) a->value = pcb_get_value((*argv)[1], NULL, NULL, NULL);
 						else
@@ -129,7 +129,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 						(*argc)--;
 						(*argv)++;
 						break;
-					case HID_Real:
+					case PCB_HATT_REAL:
 						if (a->value)
 							*(double *) a->value = strtod((*argv)[1], 0);
 						else
@@ -137,7 +137,7 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 						(*argc)--;
 						(*argv)++;
 						break;
-					case HID_String:
+					case PCB_HATT_STRING:
 						if (a->value)
 							*(char **) a->value = (*argv)[1];
 						else
@@ -145,16 +145,16 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 						(*argc)--;
 						(*argv)++;
 						break;
-					case HID_Boolean:
+					case PCB_HATT_BOOL:
 						if (a->value)
 							*(char *) a->value = bool_val;
 						else
 							a->default_val.int_value = bool_val;
 						break;
-					case HID_Mixed:
+					case PCB_HATT_MIXED:
 						a->default_val.real_value = strtod((*argv)[1], &ep);
 						goto do_enum;
-					case HID_Enum:
+					case PCB_HATT_ENUM:
 						ep = (*argv)[1];
 					do_enum:
 						ok = 0;
@@ -172,13 +172,13 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 						(*argc)--;
 						(*argv)++;
 						break;
-					case HID_Path:
+					case PCB_HATT_PATH:
 						abort();
 						a->default_val.str_value = (*argv)[1];
 						(*argc)--;
 						(*argv)++;
 						break;
-					case HID_Unit:
+					case PCB_HATT_UNIT:
 						unit = get_unit_struct((*argv)[1]);
 						if (unit == NULL) {
 							fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);

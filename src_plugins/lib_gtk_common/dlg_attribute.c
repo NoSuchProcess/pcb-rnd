@@ -136,13 +136,13 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 		if (attrs[j].help_text == ATTR_UNDOCUMENTED)
 			continue;
 		switch (attrs[j].type) {
-		case HID_Label:
+		case PCB_HATT_LABEL:
 			widget = gtk_label_new(attrs[j].name);
 			gtk_box_pack_start(GTK_BOX(vbox), widget, FALSE, FALSE, 0);
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 			break;
 
-		case HID_Integer:
+		case PCB_HATT_INTEGER:
 			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -160,7 +160,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			break;
 
-		case HID_Coord:
+		case PCB_HATT_COORD:
 			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -176,7 +176,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			break;
 
-		case HID_Real:
+		case PCB_HATT_REAL:
 			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -195,7 +195,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			break;
 
-		case HID_String:
+		case PCB_HATT_STRING:
 			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -210,7 +210,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			break;
 
-		case HID_Boolean:
+		case PCB_HATT_BOOL:
 			/* put this in a check button */
 			pcb_gtk_check_button_connected(vbox, &widget,
                                      attrs[j].default_val.int_value,
@@ -218,7 +218,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 			break;
 
-		case HID_Enum:
+		case PCB_HATT_ENUM:
 			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -243,7 +243,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
 			break;
 
-		case HID_Mixed:
+		case PCB_HATT_MIXED:
 			hbox = gtkc_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -260,7 +260,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			goto do_enum;
 			break;
 
-		case HID_Path:
+		case PCB_HATT_PATH:
 			vbox1 = ghid_category_vbox(vbox, attrs[j].name, 4, 2, TRUE, TRUE);
 			entry = gtk_entry_new();
 			gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
@@ -270,7 +270,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
 			break;
 
-		case HID_Unit:
+		case PCB_HATT_UNIT:
 			unit_list = get_unit_list();
 			n = pcb_get_n_units();
 

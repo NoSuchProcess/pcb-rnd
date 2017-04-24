@@ -102,7 +102,7 @@ Name of breadboard image output file.
 %end-doc
 */
 	{
-	 "bbfile", "Braedboard file name", HID_String, 0, 0,
+	 "bbfile", "Braedboard file name", PCB_HATT_STRING, 0, 0,
 	 {
 		0, 0, 0}, 0, 0},
 /*
@@ -114,7 +114,7 @@ Background color. It can be HTML color code (RRGGBB); if left empty or set to 't
 %end-doc
 */
 	{
-	 "bgcolor", "Background color (rrggbb)", HID_String, 0, 0,
+	 "bgcolor", "Background color (rrggbb)", PCB_HATT_STRING, 0, 0,
 	 {
 		0, 0, 0}, 0, 0},
 /*
@@ -126,7 +126,7 @@ The solder layer will be ommited (if set to true) from output.
 %end-doc
 */
 	{
-	 "skipsolder", "Ignore solder layer", HID_Boolean, 0, 0,
+	 "skipsolder", "Ignore solder layer", PCB_HATT_BOOL, 0, 0,
 	 {
 		1, 0, 0}, 0, 0},
 /*
@@ -138,7 +138,7 @@ Connections are antialiased. Antialiasing applies only to wires, models are not 
 %end-doc
 */
 	{
-	 "antialias", "Antialiasing", HID_Boolean, 0, 0,
+	 "antialias", "Antialiasing", PCB_HATT_BOOL, 0, 0,
 	 {
 		1, 0, 0}, 0, 0},
 };

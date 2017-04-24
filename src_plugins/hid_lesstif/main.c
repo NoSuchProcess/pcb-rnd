@@ -189,7 +189,7 @@ static void ShowCrosshair(pcb_bool show)
 
 		 pcb_hid_attribute_t lesstif_attribute_list[] = {
 			 {"install", "Install private colormap",
-				HID_Boolean, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
+				PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
 #define HA_colormap 0
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -200,7 +200,7 @@ Listen for actions on stdin.
 %end-doc
 */
 			 {"listen", "Listen on standard input for actions",
-				HID_Boolean, 0, 0, {0, 0, 0}, 0, &stdin_listen},
+				PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &stdin_listen},
 #define HA_listen 1
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -213,7 +213,7 @@ automatically scaled to fit the canvas.
 %end-doc
 */
 			 {"bg-image", "Background Image",
-				HID_String, 0, 0, {0, 0, 0}, 0, &background_image_file},
+				PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, &background_image_file},
 #define HA_bg_image 2
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -226,7 +226,7 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 #warning TODO#1: this should be generic and not depend on the HID
 /*
 			 {"pcb-menu", "Location of pcb-menu.res file",
-				HID_String, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
+				PCB_HATT_STRING, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
 #define HA_pcbmenu 3
 */
 		 };
@@ -1872,12 +1872,12 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 		for (i = 0; i < ha->n; i++) {
 			pcb_hid_attribute_t *a = ha->attributes + i;
 			switch (a->type) {
-			case HID_Integer:
-			case HID_Coord:
-			case HID_Real:
-			case HID_String:
-			case HID_Path:
-			case HID_Boolean:
+			case PCB_HATT_INTEGER:
+			case PCB_HATT_COORD:
+			case PCB_HATT_REAL:
+			case PCB_HATT_STRING:
+			case PCB_HATT_PATH:
+			case PCB_HATT_BOOL:
 				acount++;
 				rcount++;
 				break;
@@ -1930,16 +1930,16 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 			o->specifier = tmpres;
 
 			switch (a->type) {
-			case HID_Integer:
-			case HID_Coord:
-			case HID_Real:
-			case HID_String:
-			case HID_Path:
+			case PCB_HATT_INTEGER:
+			case PCB_HATT_COORD:
+			case PCB_HATT_REAL:
+			case PCB_HATT_STRING:
+			case PCB_HATT_PATH:
 				o->argKind = XrmoptionSepArg;
 				o->value = NULL;
 				acount++;
 				break;
-			case HID_Boolean:
+			case PCB_HATT_BOOL:
 				o->argKind = XrmoptionNoArg;
 				o->value = XmStrCast("True");
 				acount++;
@@ -1953,36 +1953,36 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 			r->resource_offset = sizeof(val_union) * rcount;
 
 			switch (a->type) {
-			case HID_Integer:
+			case PCB_HATT_INTEGER:
 				r->resource_type = XtRInt;
 				r->default_type = XtRInt;
 				r->resource_size = sizeof(int);
 				r->default_addr = &(a->default_val.int_value);
 				rcount++;
 				break;
-			case HID_Coord:
+			case PCB_HATT_COORD:
 				r->resource_type = XmStrCast(XtRPCBCoord);
 				r->default_type = XmStrCast(XtRPCBCoord);
 				r->resource_size = sizeof(pcb_coord_t);
 				r->default_addr = &(a->default_val.coord_value);
 				rcount++;
 				break;
-			case HID_Real:
+			case PCB_HATT_REAL:
 				r->resource_type = XmStrCast(XtRDouble);
 				r->default_type = XmStrCast(XtRDouble);
 				r->resource_size = sizeof(double);
 				r->default_addr = &(a->default_val.real_value);
 				rcount++;
 				break;
-			case HID_String:
-			case HID_Path:
+			case PCB_HATT_STRING:
+			case PCB_HATT_PATH:
 				r->resource_type = XtRString;
 				r->default_type = XtRString;
 				r->resource_size = sizeof(char *);
 				r->default_addr = (char *) a->default_val.str_value;
 				rcount++;
 				break;
-			case HID_Boolean:
+			case PCB_HATT_BOOL:
 				r->resource_type = XtRBoolean;
 				r->default_type = XtRInt;
 				r->resource_size = sizeof(int);
@@ -2035,36 +2035,36 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 			pcb_hid_attribute_t *a = ha->attributes + i;
 			val_union *v = new_values + rcount;
 			switch (a->type) {
-			case HID_Integer:
+			case PCB_HATT_INTEGER:
 				if (a->value)
 					*(int *) a->value = v->i;
 				else
 					a->default_val.int_value = v->i;
 				rcount++;
 				break;
-			case HID_Coord:
+			case PCB_HATT_COORD:
 				if (a->value)
 					*(pcb_coord_t *) a->value = v->c;
 				else
 					a->default_val.coord_value = v->c;
 				rcount++;
 				break;
-			case HID_Boolean:
+			case PCB_HATT_BOOL:
 				if (a->value)
 					*(char *) a->value = v->i;
 				else
 					a->default_val.int_value = v->i;
 				rcount++;
 				break;
-			case HID_Real:
+			case PCB_HATT_REAL:
 				if (a->value)
 					*(double *) a->value = v->f;
 				else
 					a->default_val.real_value = v->f;
 				rcount++;
 				break;
-			case HID_String:
-			case HID_Path:
+			case PCB_HATT_STRING:
+			case PCB_HATT_PATH:
 				if (a->value)
 					*(char **) a->value = v->s;
 				else

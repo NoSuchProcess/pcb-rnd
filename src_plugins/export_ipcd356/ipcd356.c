@@ -69,7 +69,7 @@ Name of the IPC-D-356 Netlist output file.
 	{
 	 "netlistfile",
 	 "Name of the IPC-D-356 Netlist output file",
-	 HID_String,
+	 PCB_HATT_STRING,
 	 0, 0, {0, 0, 0}, 0, 0},
 #define HA_IPCD356_filename 0
 };

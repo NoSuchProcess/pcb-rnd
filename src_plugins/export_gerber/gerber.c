@@ -317,7 +317,7 @@ Gerber output file prefix. Can include a path.
 %end-doc
 */
 	{"gerberfile", "Gerber output file base",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_gerberfile 0
 
 /* %start-doc options "90 Gerber Export"
@@ -328,7 +328,7 @@ Output contains all layers, even empty ones.
 %end-doc
 */
 	{"all-layers", "Output all layers, even empty ones",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_all_layers 1
 
 /* %start-doc options "90 Gerber Export"
@@ -339,16 +339,16 @@ Print file names and aperture counts on stdout.
 %end-doc
 */
 	{"verbose", "Print file names and aperture counts on stdout",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_verbose 2
 	{"copy-outline", "Copy outline onto other layers",
-	 HID_Enum, 0, 0, {0, 0, 0}, copy_outline_names, 0},
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names, 0},
 #define HA_copy_outline 3
 	{"name-style", "Naming style for individual gerber files",
-	 HID_Enum, 0, 0, {0, 0, 0}, name_style_names, 0},
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, name_style_names, 0},
 #define HA_name_style 4
 	{"cross-sect", "Export the cross section layer",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cross_sect 5
 };
 

@@ -5,8 +5,8 @@
 
 /* Used for HID attributes (exporting and printing, mostly).
    HA_boolean uses int_value, HA_enum sets int_value to the index and
-   str_value to the enumeration string.  HID_Label just shows the
-   default str_value.  HID_Mixed is a real_value followed by an enum,
+   str_value to the enumeration string.  PCB_HATT_LABEL just shows the
+   default str_value.  PCB_HATT_MIXED is a real_value followed by an enum,
    like 0.5in or 100mm. */
 struct pcb_hid_attr_val_s {
 	int int_value;
@@ -16,9 +16,9 @@ struct pcb_hid_attr_val_s {
 };
 
 typedef enum pcb_hids_e {
-	HID_Label, HID_Integer, HID_Real, HID_String,
-	HID_Boolean, HID_Enum, HID_Mixed, HID_Path,
-	HID_Unit, HID_Coord
+	PCB_HATT_LABEL, PCB_HATT_INTEGER, PCB_HATT_REAL, PCB_HATT_STRING,
+	PCB_HATT_BOOL, PCB_HATT_ENUM, PCB_HATT_MIXED, PCB_HATT_PATH,
+	PCB_HATT_UNIT, PCB_HATT_COORD
 } pcb_hids_t;
 
 struct pcb_hid_attribute_s {
@@ -32,8 +32,8 @@ struct pcb_hid_attribute_s {
 	const char **enumerations;
 	/* If set, this is used for global attributes (i.e. those set
 	   statically with REGISTER_ATTRIBUTES below) instead of changing
-	   the default_val.  Note that a HID_Mixed attribute must specify a
-	   pointer to pcb_hid_attr_val_t here, and HID_Boolean assumes this is
+	   the default_val.  Note that a PCB_HATT_MIXED attribute must specify a
+	   pointer to pcb_hid_attr_val_t here, and PCB_HATT_BOOL assumes this is
 	   "char *" so the value should be initialized to zero, and may be
 	   set to non-zero (not always one).  */
 	void *value;

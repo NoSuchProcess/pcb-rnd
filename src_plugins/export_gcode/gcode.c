@@ -145,31 +145,31 @@ static const char *units[] = {
 pcb_hid_attribute_t gcode_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 	{"basename", "File name prefix",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_basename 0
 
 	{"dpi", "Resolution of intermediate image (pixels/inch)",
-	 HID_Integer, 0, 2000, {600, 0, 0}, 0, 0},
+	 PCB_HATT_INTEGER, 0, 2000, {600, 0, 0}, 0, 0},
 #define HA_dpi 1
 
 	{"mill-depth", "Milling depth",
-	 HID_Real, -1000, 1000, {0, 0, -0.05}, 0, 0},
+	 PCB_HATT_REAL, -1000, 1000, {0, 0, -0.05}, 0, 0},
 #define HA_cutdepth 2
 
 	{"safe-Z", "Safe Z for traverse move",
-	 HID_Real, -1000, 10000, {0, 0, 2}, 0, 0},
+	 PCB_HATT_REAL, -1000, 10000, {0, 0, 2}, 0, 0},
 #define HA_safeZ 3
 
 	{"tool-radius", "Milling tool radius compensation",
-	 HID_Real, 0, 10000, {0, 0, 0.1}, 0, 0},
+	 PCB_HATT_REAL, 0, 10000, {0, 0, 0.1}, 0, 0},
 #define HA_toolradius 4
 
 	{"drill-depth", "Drilling depth",
-	 HID_Real, -10000, 10000, {0, 0, -2}, 0, 0},
+	 PCB_HATT_REAL, -10000, 10000, {0, 0, -2}, 0, 0},
 #define HA_drilldepth 5
 
 	{"measurement-unit", "Measurement unit",
-	 HID_Unit, 0, 0, {-1, 0, 0}, units, 0},
+	 PCB_HATT_UNIT, 0, 0, {-1, 0, 0}, units, 0},
 #define HA_unit 6
 
 };

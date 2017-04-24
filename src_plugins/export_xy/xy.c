@@ -37,7 +37,7 @@ Name of the XY output file.
 %end-doc
 */
 	{"xyfile", "Name of the XY output file",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xyfile 0
 
 /* %start-doc options "8 BOM Creation"
@@ -48,10 +48,10 @@ Unit of XY dimensions. Defaults to mil.
 %end-doc
 */
 	{"xy-unit", "XY units",
-	 HID_Unit, 0, 0, {-1, 0, 0}, NULL, 0},
+	 PCB_HATT_UNIT, 0, 0, {-1, 0, 0}, NULL, 0},
 #define HA_unit 1
 	{"xy-in-mm", ATTR_UNDOCUMENTED,
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xymm 2
 };
 

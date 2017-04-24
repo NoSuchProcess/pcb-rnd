@@ -160,7 +160,7 @@ File name prefix.
 %end-doc
 */
 	{"basename", "File name prefix",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_basename 0
 
 /* %start-doc options "nelma Options"
@@ -171,7 +171,7 @@ Horizontal scale factor (grid points/inch).
 %end-doc
 */
 	{"dpi", "Horizontal scale factor (grid points/inch)",
-	 HID_Integer, 0, 1000, {100, 0, 0}, 0, 0},
+	 PCB_HATT_INTEGER, 0, 1000, {100, 0, 0}, 0, 0},
 #define HA_dpi 1
 
 /* %start-doc options "nelma Options"
@@ -182,7 +182,7 @@ Copper layer height (um).
 %end-doc
 */
 	{"copper-height", "Copper layer height (um)",
-	 HID_Integer, 0, 200, {100, 0, 0}, 0, 0},
+	 PCB_HATT_INTEGER, 0, 200, {100, 0, 0}, 0, 0},
 #define HA_copperh 2
 
 /* %start-doc options "nelma Options"
@@ -193,7 +193,7 @@ Substrate layer height (um).
 %end-doc
 */
 	{"substrate-height", "Substrate layer height (um)",
-	 HID_Integer, 0, 10000, {2000, 0, 0}, 0, 0},
+	 PCB_HATT_INTEGER, 0, 10000, {2000, 0, 0}, 0, 0},
 #define HA_substrateh 3
 
 /* %start-doc options "nelma Options"
@@ -204,7 +204,7 @@ Substrate relative epsilon.
 %end-doc
 */
 	{"substrate-epsilon", "Substrate relative epsilon",
-	 HID_Real, 0, 100, {0, 0, 4.0}, 0, 0},
+	 PCB_HATT_REAL, 0, 100, {0, 0, 4.0}, 0, 0},
 #define HA_substratee 4
 };
 

@@ -39,7 +39,7 @@ static const char *loghid_cookie = "loghid plugin";
 
 pcb_hid_attribute_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0}
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_target_hid 0
 };
 #define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])

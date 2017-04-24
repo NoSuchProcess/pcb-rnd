@@ -32,7 +32,7 @@ Name of the BOM output file.
 %end-doc
 */
 	{"bomfile", "Name of the BOM output file",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_bomfile 0
 /* %start-doc options "8 BOM Creation"
 @ftable @code

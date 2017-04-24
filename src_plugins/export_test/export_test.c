@@ -31,7 +31,7 @@ Name of the export_test output file. Use stdout if not specified.
 %end-doc
 */
 	{"export_testfile", "Name of the export_test output file",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_testfile 0
 };
 

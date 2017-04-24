@@ -144,7 +144,7 @@ Name of the OpenSCAD model file.
 %end-doc
 */
 	{
-	 "scad_file", "SCAD file name", HID_String, 0, 0,
+	 "scad_file", "SCAD file name", PCB_HATT_STRING, 0, 0,
 	 {
 		0, 0, 0, 0}, 0, 0},
 /*
@@ -158,7 +158,7 @@ How the board outline is created. @samp{None} - no board outline (inner layers c
 */
 	{
 	 "board_outline", "Board outline",
-	 HID_Enum,
+	 PCB_HATT_ENUM,
 	 0, 0,
 	 {
 		2, 0, 0, 0}, board_outlines, 0},
@@ -172,7 +172,7 @@ Populates board with components.  Values: @samp{None}, @samp{Boxes}, @samp{Simpl
 */
 	{
 	 "components", "Export components",
-	 HID_Enum,
+	 PCB_HATT_ENUM,
 	 0, 0,
 	 {
 		3, 0, 0, 0}, export_modes, 0},
@@ -185,7 +185,7 @@ Exports copper tracks, pads, pins and vias. Default: @samp{false}.
 %end-doc
 */
 	{
-	 "copper", "Export tracks and copper planes", HID_Boolean, 0, 0,
+	 "copper", "Export tracks and copper planes", PCB_HATT_BOOL, 0, 0,
 	 {
 		0, 0, 0, 0}, 0, 0},
 /*
@@ -197,7 +197,7 @@ Exports silk screen layers. Default: @samp{false}.
 %end-doc
 */
 	{
-	 "silk_layers", "Export silk layers", HID_Boolean, 0, 0,
+	 "silk_layers", "Export silk layers", PCB_HATT_BOOL, 0, 0,
 	 {
 		0, 0, 0, 0}, 0, 0},
 /*
@@ -209,7 +209,7 @@ Exports inner layers (normally invisible, hidden inside board). Default: @samp{f
 %end-doc
 */
 	{
-	 "innner_layers", "Export inner layers", HID_Boolean, 0, 0,
+	 "innner_layers", "Export inner layers", PCB_HATT_BOOL, 0, 0,
 	 {
 		0, 0, 0, 0}, 0, 0},
 /*
@@ -221,7 +221,7 @@ Type of solder mask. Available options: @samp{None}, @samp{Green}, @samp{Red} an
 %end-doc
 */
 	{
-	 "solder_mask", "Solder mask color", HID_Enum, 0, 0,
+	 "solder_mask", "Solder mask color", PCB_HATT_ENUM, 0, 0,
 	 {
 		0, 0, 0, 0}, mask_colors, 0},
 	{
@@ -234,13 +234,13 @@ Type of copper finish. Values: @samp{Copper}, @samp{Gold} and @samp{HAL}. Defaul
 %end-doc
 */
 	 "copper_finish", "Surface finish of copper",
-	 HID_Enum,
+	 PCB_HATT_ENUM,
 	 0, 0,
 	 {
 		0, 0, 0, 0}, copper_colors, 0},
 
 	{
-	 " ", " ", HID_Label, 0, 0,
+	 " ", " ", PCB_HATT_LABEL, 0, 0,
 	 {
 		0, 0, 0, 0}, 0, 0},
 /*
@@ -252,7 +252,7 @@ Minimal drill to be exported. Default: @samp{1mm}.
 %end-doc
 */
 	{
-	 "min_drill", "Minimal drill to export", HID_Coord, PCB_MM_TO_COORD(0),
+	 "min_drill", "Minimal drill to export", PCB_HATT_COORD, PCB_MM_TO_COORD(0),
 	 PCB_MM_TO_COORD(10),
 	 {
 		0, 0, 0, PCB_MM_TO_COORD(1)}, 0, 0},
@@ -266,7 +266,7 @@ Type of board cut. Values: @samp{All}, @samp{Top}, @samp{Top only}, @samp{Bottom
 */
 	{
 	 "board_cut", "Section of board to be exported (3D print support)",
-	 HID_Enum,
+	 PCB_HATT_ENUM,
 	 0, 0,
 	 {
 		0, 0, 0, 0}, board_cuts, 0},

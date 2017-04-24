@@ -55,12 +55,12 @@ static char *gui_get_pat(pcb_search_method_t * method)
 
 	attrs[0].name = "Pattern";
 	attrs[0].help_text = "Name/refdes pattern";
-	attrs[0].type = HID_String;
+	attrs[0].type = PCB_HATT_STRING;
 	attrs[0].default_val.str_value = results[0].str_value;
 
 	attrs[1].name = "Method";
 	attrs[1].help_text = "method of search: either regular expression or a list of full names separated by |";
-	attrs[1].type = HID_Enum;
+	attrs[1].type = PCB_HATT_ENUM;
 	attrs[1].enumerations = methods;
 	attrs[1].default_val.int_value = results[1].int_value;
 

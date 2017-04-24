@@ -66,11 +66,11 @@ int pcb_gtk_act_print(GtkWidget *top_window, int argc, const char **argv, pcb_co
 
 static pcb_hid_attribute_t printer_calibrate_attrs[] = {
 	{N_("Enter Values here:"), "",
-	 HID_Label, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
 	{N_("x-calibration"), N_("X scale for calibrating your printer"),
-	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0},
+	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
 	{N_("y-calibration"), N_("Y scale for calibrating your printer"),
-	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0}
+	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
 };
 
 static pcb_hid_attr_val_t printer_calibrate_values[3];

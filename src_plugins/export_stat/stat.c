@@ -63,32 +63,32 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_statfile 0
 
 	{"board_id", "Short name of the board so it can be identified for updates",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_board_id 1
 
 	{"orig", "This design started its life in pcb-rnd",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_orig 2
 
 	{"lht_built", "This design was already in lihata when real boards got built",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_lht_built 3
 
 
 	{"built", "how many actual/physical boards got built",
-	 HID_Integer, 0, 1000000, {0, 0, 0}, 0, 0},
+	 PCB_HATT_INTEGER, 0, 1000000, {0, 0, 0}, 0, 0},
 #define HA_built 4
 
 	{"first_ver", "the version of pcb-rnd you first used on this board",
-	 HID_String, 0, 0, {0, PCB_VERSION, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, PCB_VERSION, 0}, 0, 0},
 #define HA_first_ver 5
 
 	{"license", "license of the design",
-	 HID_String, 0, 0, {0, "proprietary/private", 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, "proprietary/private", 0}, 0, 0},
 #define HA_license 6
 
 };

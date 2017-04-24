@@ -1464,9 +1464,9 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		int ar;
 		pcb_hid_attr_val_t rv[16];
 		pcb_hid_attribute_t attr[] = {
-			{"name", "logical layer name",          HID_String, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-			{"sub: drawn using subtraction", NULL,  HID_Boolean, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-			{"auto: auto-generated layer", NULL,    HID_Boolean, 0, 0, {0}, NULL, NULL, 0, NULL, NULL}
+			{"name", "logical layer name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+			{"sub: drawn using subtraction", NULL,  PCB_HATT_BOOL, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+			{"auto: auto-generated layer", NULL,    PCB_HATT_BOOL, 0, 0, {0}, NULL, NULL, 0, NULL, NULL}
 		};
 
 		attr[0].default_val.str_value = ly->Name;

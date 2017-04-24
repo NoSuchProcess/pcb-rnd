@@ -629,7 +629,7 @@ DXF output file prefix. Can include a path.
 %end-doc
 */
 	{"dxffile", "DXF layer filename base",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dxffile 0
 
 /*
@@ -641,7 +641,7 @@ Export DXF files in mm. Default is mil
 %end-doc
 */
 	{"metric", "export DXF files in mm",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_metric 1
 
 /*
@@ -653,7 +653,7 @@ Export entities in color BYBLOCK. Default is BYLAYER.
 %end-doc
 */
 	{"layer-color-BYBLOCK", "export entities in color BYBLOCK",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_color_byblock 2
 
 /*
@@ -665,7 +665,7 @@ Export a DXF file with XREFS. Default is no XREFS.
 %end-doc
 */
 	{"xrefs", "export a DXF file with xrefs",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xrefs 3
 
 /*
@@ -677,7 +677,7 @@ DXF Xrefs filename. Can include a path.
 %end-doc
 */
 	{"xreffile", "DXF Xrefs filename",
-	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xreffile 4
 
 /*
@@ -689,7 +689,7 @@ Verbose output to stderr (comments).
 %end-doc
 */
 	{"be verbose", "verbose output to stderr (comments)",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_verbose 5
 
 /*
@@ -701,7 +701,7 @@ Export all layers.
 %end-doc
 */
 	{"export all layers", "export all layers",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_all_layers 6
 };
 
@@ -712,8 +712,8 @@ Export all layers.
  *
  * HA_boolean uses int_value, HA_enum sets int_value to the index and
  * str_value to the enumeration string.\n
- * HID_Label just shows the default str_value.\n
- * HID_Mixed is a real_value followed by an enum, like 0.5in or 100mm.
+ * PCB_HATT_LABEL just shows the default str_value.\n
+ * PCB_HATT_MIXED is a real_value followed by an enum, like 0.5in or 100mm.
  */
 static pcb_hid_attr_val_t dxf_values[NUM_OPTIONS];
 

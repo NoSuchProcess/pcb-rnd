@@ -49,7 +49,7 @@ static pcb_hid_attribute_t *attr_append(const char *name, pcb_hid_attribute_t *a
 	a = &attrs[*numattr];
 	memset(a, 0, sizeof(pcb_hid_attribute_t));
 	a->name = name;
-	a->type = HID_String;
+	a->type = PCB_HATT_STRING;
 
 	(*numattr)++;
 	return a;
@@ -141,7 +141,7 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 			continue;
 
 		switch(attrs[n].type) {
-			case HID_Enum:
+			case PCB_HATT_ENUM:
 				val = attrs[n].enumerations[res[n].int_value];
 				if (val != NULL) {
 					desc = strstr((char *)val, " (");
@@ -149,10 +149,10 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 						*desc = '\0';
 				}
 				break;
-			case HID_String:
+			case PCB_HATT_STRING:
 				val = res[n].str_value;
 				break;
-			case HID_Coord:
+			case PCB_HATT_COORD:
 				val = buff;
 				pcb_snprintf(buff, sizeof(buff), "%$$mh", res[n].coord_value);
 				break;
@@ -183,7 +183,7 @@ static void set_attr(pcb_hid_attribute_t *a, char *val)
 	int vlen, len, n;
 
 	switch(a->type) {
-		case HID_Enum:
+		case PCB_HATT_ENUM:
 			vlen = strlen(val);
 			for(n = 0, s = a->enumerations; *s != NULL; s++,n++) {
 				desc = strstr(*s, " (");
@@ -197,11 +197,11 @@ static void set_attr(pcb_hid_attribute_t *a, char *val)
 				}
 			}
 			break;
-		case HID_String:
+		case PCB_HATT_STRING:
 			free((char *)a->default_val.str_value);
 			a->default_val.str_value = pcb_strdup(val);
 			break;
-		case HID_Coord:
+		case PCB_HATT_COORD:
 			a->default_val.coord_value = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
 			break;
 		default:;
@@ -401,13 +401,13 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 			}
 		}
 		else if (strncmp(cmd, "dim:", 4) == 0) {
-			curr->type = HID_Coord;
+			curr->type = PCB_HATT_COORD;
 			curr->min_val = 0;
 			curr->max_val = PCB_MM_TO_COORD(512);
 		}
 		else if (strncmp(cmd, "enum:", 5) == 0) {
 			char *evl;
-			curr->type = HID_Enum;
+			curr->type = PCB_HATT_ENUM;
 			colsplit(); colsplit();
 			if (arg != NULL)
 				evl = pcb_strdup_printf("%s (%s)", col, arg);
