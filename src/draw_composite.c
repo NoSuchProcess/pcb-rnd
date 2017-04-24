@@ -27,7 +27,7 @@
 /* Local functions to draw a layer group as a composite of logical layers
    using positive and negative draw operations. Included from draw.c. */
 
-static void mask_start_sub_(int thin, const pcb_box_t *screen)
+static void comp_start_sub_(int thin, const pcb_box_t *screen)
 {
 	if (thin)
 		pcb_gui->set_color(Output.pmGC, conf_core.appearance.color.mask);
@@ -35,7 +35,7 @@ static void mask_start_sub_(int thin, const pcb_box_t *screen)
 		pcb_gui->use_mask(HID_MASK_CLEAR);
 }
 
-static void mask_start_add_(int thin, const pcb_box_t *screen)
+static void comp_start_add_(int thin, const pcb_box_t *screen)
 {
 	if (thin)
 		pcb_gui->set_color(Output.pmGC, "erase");
@@ -43,23 +43,23 @@ static void mask_start_add_(int thin, const pcb_box_t *screen)
 		pcb_gui->use_mask(HID_MASK_SET);
 }
 
-static void mask_start_sub(int thin, const pcb_box_t *screen)
+static void comp_start_sub(int thin, const pcb_box_t *screen)
 {
 	if (pcb_gui->mask_invert)
-		mask_start_add_(thin, screen);
+		comp_start_add_(thin, screen);
 	else
-		mask_start_sub_(thin, screen);
+		comp_start_sub_(thin, screen);
 }
 
-static void mask_start_add(int thin, const pcb_box_t *screen)
+static void comp_start_add(int thin, const pcb_box_t *screen)
 {
 	if (pcb_gui->mask_invert)
-		mask_start_sub_(thin, screen);
+		comp_start_sub_(thin, screen);
 	else
-		mask_start_add_(thin, screen);
+		comp_start_add_(thin, screen);
 }
 
-static void mask_finish(int thin, const pcb_box_t *screen)
+static void comp_finish(int thin, const pcb_box_t *screen)
 {
 	if (!thin) {
 		pcb_gui->use_mask(HID_MASK_AFTER);
@@ -68,7 +68,7 @@ static void mask_finish(int thin, const pcb_box_t *screen)
 	}
 }
 
-static void mask_init(int thin, const pcb_box_t *screen, int negative)
+static void comp_init(int thin, const pcb_box_t *screen, int negative)
 {
 	pcb_gui->use_mask(HID_MASK_INIT);
 

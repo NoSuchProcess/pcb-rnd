@@ -435,15 +435,15 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 	grp = pcb_get_layergrp(PCB, gid);
 
 	if ((grp == NULL) || (grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-sub */
-		mask_init(thin, screen, 1);
-		mask_start_sub(thin, screen);
+		comp_init(thin, screen, 1);
+		comp_start_sub(thin, screen);
 		pcb_draw_mask_auto(side, screen);
-		mask_start_add(thin, screen);
+		comp_start_add(thin, screen);
 	}
 	else { /* generic multi-layer rendering */
 		int n, adding = -1;
 		pcb_layer_t *l = pcb_get_layer(grp->lid[0]);
-		mask_init(thin, screen, (l->comb & PCB_LYC_SUB));
+		comp_init(thin, screen, (l->comb & PCB_LYC_SUB));
 
 		for(n = 0; n < grp->len; n++) {
 			int want_add;
@@ -452,9 +452,9 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 			want_add = !(l->comb & PCB_LYC_SUB);
 			if (want_add != adding) {
 				if (want_add)
-					mask_start_add(thin, screen);
+					comp_start_add(thin, screen);
 				else
-					mask_start_sub(thin, screen);
+					comp_start_sub(thin, screen);
 				adding = want_add;
 			}
 
@@ -474,9 +474,9 @@ static void pcb_draw_mask(int side, const pcb_box_t * screen)
 				pcb_draw_mask_auto(side, screen);
 		}
 		if (!adding)
-			mask_start_add(thin, screen);
+			comp_start_add(thin, screen);
 	}
-	mask_finish(thin, screen);
+	comp_finish(thin, screen);
 }
 
 static void DrawRats(const pcb_box_t * drawn_area)
