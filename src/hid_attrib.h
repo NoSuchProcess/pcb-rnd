@@ -15,18 +15,18 @@ struct pcb_hid_attr_val_s {
 	pcb_coord_t coord_value;
 };
 
-enum pcb_hids_t {
+typedef enum pcb_hids_e {
 	HID_Label, HID_Integer, HID_Real, HID_String,
 	HID_Boolean, HID_Enum, HID_Mixed, HID_Path,
 	HID_Unit, HID_Coord
-};
+} pcb_hids_t;
 
 struct pcb_hid_attribute_s {
 	const char *name;
 	/* If the help_text is this, usage() won't show this option */
 #define ATTR_UNDOCUMENTED ((char *)(1))
 	const char *help_text;
-	enum pcb_hids_t type;
+	pcb_hids_t type;
 	int min_val, max_val;				/* for integer and real */
 	pcb_hid_attr_val_t default_val;		/* Also actual value for global attributes.  */
 	const char **enumerations;
