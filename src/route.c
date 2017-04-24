@@ -25,11 +25,14 @@
  *
  */
 #include "config.h"
+
+#include "compat_misc.h"
 #include "conf_core.h"
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
 #include "find.h"
+#include "polygon.h"
 #include "rtree.h"
 #include "route.h"
 #include "undo.h"
