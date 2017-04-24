@@ -422,65 +422,7 @@ static void pcb_draw_mask_auto(int side, const pcb_box_t * screen)
 	pcb_r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
 }
 
-static void mask_start_sub_(int thin, const pcb_box_t *screen)
-{
-	if (thin)
-		pcb_gui->set_color(Output.pmGC, conf_core.appearance.color.mask);
-	else
-		pcb_gui->use_mask(HID_MASK_CLEAR);
-}
-
-static void mask_start_add_(int thin, const pcb_box_t *screen)
-{
-	if (thin)
-		pcb_gui->set_color(Output.pmGC, "erase");
-	else
-		pcb_gui->use_mask(HID_MASK_SET);
-}
-
-static void mask_start_sub(int thin, const pcb_box_t *screen)
-{
-	if (pcb_gui->mask_invert)
-		mask_start_add_(thin, screen);
-	else
-		mask_start_sub_(thin, screen);
-}
-
-static void mask_start_add(int thin, const pcb_box_t *screen)
-{
-	if (pcb_gui->mask_invert)
-		mask_start_sub_(thin, screen);
-	else
-		mask_start_add_(thin, screen);
-}
-
-static void mask_finish(int thin, const pcb_box_t *screen)
-{
-	if (!thin) {
-		pcb_gui->use_mask(HID_MASK_AFTER);
-		DrawMaskBoardArea(HID_MASK_AFTER, screen);
-		pcb_gui->use_mask(HID_MASK_OFF);
-	}
-}
-
-static void mask_init(int thin, const pcb_box_t *screen, int negative)
-{
-	pcb_gui->use_mask(HID_MASK_INIT);
-
-	if (pcb_gui->mask_invert)
-		negative = !negative;
-
-	if ((!thin) && (negative)) {
-		/* old way of drawing the big poly for the negative */
-		DrawMaskBoardArea(HID_MASK_BEFORE, screen);
-
-		if (!pcb_gui->poly_before) {
-			/* new way */
-			pcb_gui->use_mask(HID_MASK_SET);
-			DrawMaskBoardArea(HID_MASK_SET, screen);
-		}
-	}
-}
+#include "draw_composite.c"
 
 static void pcb_draw_mask(int side, const pcb_box_t * screen)
 {
