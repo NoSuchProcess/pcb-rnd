@@ -51,25 +51,33 @@ directly. A layer is always part of a <i>layer group</i>.
 <p>
 One or more explicit layers form a <i>layer group</i>. All pcb-rnd layers
 of a layer group will end up on the same physical layer. The visibility of
-layers in a layer group are toggled together. The main use of layer groups
-is to exploit that layers have different drawing color on screen: there
-can be a signal and a gnd layers with different color in the same layer group,
-on the same physical layer.
+layers in a layer group are toggled together. Having more than one layer
+in a group may be useful to:
+<ul>
+	<li> exploit that layers have different drawing color on screen: e.g. there
+	     can be a signal and a gnd layers with different color in the same
+	     layer group, on the same physical layer.
+	<li> on composite-groups (mask, paste, [TODO]), layers are combined using
+	     their properties: some layers may draw, others may clear; some layers
+	     may contain auto-generated objects. The order of layers does matter
+	     in draw-clear combinations.
+<ul>
 <p>
 Since <i>layer groups</i> donate the physical layers, a board stack-up
 is built of layer groups. Substrates are layer groups without drawable
-layers in them.
+layers in them. The mask, paste, silk layer groups behave the same and
+can host zero or more logical layers.
 <p>
-Layer group types are:
+Each laeyr group has a type. Types are:
 <ul>
 	<li> copper for signal layers
 	<li> silk for silkscreen layers
 	<li> outline for the contour of the board and slots and cutouts
-	<li> (mask for solder masks - this is a virtual layer)
-	<li> (paste for solder paste - this is a virtual layer)
+	<li> mask for solder masks
+	<li> paste for solder paste
 </ul>
 <p>
-Layer group locations are:
+Each layer group has a location. Locations are:
 <ul>
 	<li> top (used to be the "component side" in the age of thru-hole components)
 	<li> bottom (used to be the "solder side" in the age of thru-hole components)
@@ -77,17 +85,17 @@ Layer group locations are:
 	<li> global (affects all physical layers, thus has no specific location)
 </ul>
 <p>
-Not all combination of type and location are supported, for an outline layer
-is always global. The table below lists whether a combination is supported
-or not.
+Not all combination of type and location are supported: e.g. for an outline
+layer group the location is always global. The table below lists whether a
+combination is supported or not.
 <p>
 <table border=1>
-	<tr><th> &nbsp; <th> top <th> bottom <th> intern <th> global
-	<tr><th> copper <td> yes <td> yes    <td> yes    <td> no
-	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no
-	<tr><th> outline<td> no  <td> no     <td> no     <td> yes
-	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no
-	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no
+	<tr><th> &nbsp; <th> top <th> bottom <th> intern <th> global <th> composite
+	<tr><th> copper <td> yes <td> yes    <td> yes    <td> no     <td> no
+	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no     <td> TODO
+	<tr><th> outline<td> no  <td> no     <td> no     <td> yes    <td> no
+	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no     <td> yes
+	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no     <td> yes
 </table>
 
 <h3> 2.4. Basic drawing objects </h3>
