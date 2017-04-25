@@ -510,7 +510,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 			draw_hover_label("DEL GROUP");
 		}
 		if (drag_addlayer) {
-			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE, MARK_GRP_FRAME);
+			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK, MARK_GRP_FRAME);
 			draw_hover_label("ADD LAYER");
 		}
 		if (drag_dellayer) {
@@ -520,7 +520,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 			draw_hover_label(l->Name);
-			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE, MARK_GRP_FRAME);
+			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK, MARK_GRP_FRAME);
 			mark_layer_order(cx);
 		}
 		else if (drag_gid >= 0) {
