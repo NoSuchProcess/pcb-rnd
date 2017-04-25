@@ -35,14 +35,15 @@ enum {
 };
 
 struct _GHidCellRendererVisibility {
-	GtkCellRenderer parent;
+	GtkCellRendererPixbufClass parent;
 
 	gboolean active, group;
 	gchar *color;
+	GdkPixbuf *pixbuf;
 };
 
 struct _GHidCellRendererVisibilityClass {
-	GtkCellRendererClass parent_class;
+	GtkCellRendererPixbufClass parent_class;
 
 	void (*toggled) (GHidCellRendererVisibility * cell, const gchar * path);
 };
@@ -204,6 +205,8 @@ ghid_cell_renderer_visibility_set_property(GObject * object, guint param_id, con
 static void ghid_cell_renderer_visibility_init(GHidCellRendererVisibility * ls)
 {
 	g_object_set(ls, "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE, NULL);
+	ls->pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, VISIBILITY_TOGGLE_SIZE + 2, VISIBILITY_TOGGLE_SIZE + 2);
+	gdk_pixbuf_fill(ls->pixbuf, 0x0000ffff);
 }
 
 static void ghid_cell_renderer_visibility_class_init(GHidCellRendererVisibilityClass * klass)
@@ -264,7 +267,7 @@ GType ghid_cell_renderer_visibility_get_type(void)
 			(GInstanceInitFunc) ghid_cell_renderer_visibility_init,
 		};
 
-		ls_type = g_type_register_static(GTK_TYPE_CELL_RENDERER, "GHidCellRendererVisibility", &ls_info, 0);
+		ls_type = g_type_register_static(GTK_TYPE_CELL_RENDERER_PIXBUF, "GHidCellRendererVisibility", &ls_info, 0);
 	}
 
 	return ls_type;
