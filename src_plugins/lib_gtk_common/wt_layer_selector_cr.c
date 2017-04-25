@@ -19,6 +19,8 @@
 
 #include "util_str.h"
 
+/* how much non-group layers should be indented to the right, in pixel */
+#define IND_SIZE 10
 
 enum {
 	TOGGLED,
@@ -60,7 +62,7 @@ ghid_cell_renderer_visibility_get_size(GtkCellRenderer * cell,
 	gtk_cell_renderer_get_padding(cell, &xpad, &ypad);
 	gtk_cell_renderer_get_alignment(cell, &xalign, &yalign);
 
-	w = VISIBILITY_TOGGLE_SIZE + 2 * (xpad + style->xthickness);
+	w = VISIBILITY_TOGGLE_SIZE + 2 * (xpad + style->xthickness + IND_SIZE);
 	h = VISIBILITY_TOGGLE_SIZE + 2 * (ypad + style->ythickness);
 
 	if (width)
@@ -96,6 +98,9 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 	ghid_cell_renderer_visibility_get_size(cell, widget, cell_area,
 																				 &toggle_rect.x, &toggle_rect.y, &toggle_rect.width, &toggle_rect.height);
 	gtk_cell_renderer_get_padding(cell, &xpad, &ypad);
+
+	if (!pcb_cell->group)
+		xpad += IND_SIZE;
 
 	toggle_rect.x += cell_area->x + xpad;
 	toggle_rect.y += cell_area->y + ypad;
