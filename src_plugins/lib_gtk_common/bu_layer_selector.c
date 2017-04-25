@@ -275,7 +275,7 @@ void make_virtual_layer_buttons(GtkWidget *layer_selector)
 /*! \brief Populate a layer selector with all layers Gtk is aware of */
 void make_layer_buttons(GtkWidget * layersel)
 {
-	gint i;
+	pcb_layer_id_t i;
 	const gchar *text;
 	const gchar *color_string;
 	gboolean active = TRUE;
