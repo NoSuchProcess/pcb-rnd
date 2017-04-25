@@ -12,6 +12,7 @@
 	- plugins:
 		- turn gpmi into a conventional plugin
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
+	- r8406 breaks the gtk cursor somehow: hovering above line endpoints stop showing the endpoint shape correctly [report: miloh]
 	- layer rewrite:
 		- lesstif: layer selector should show all layers, probably in the order of the stackup
 		- gtk: "can't remove silk layer" when logical silk is being removed with right-click in layer selector [report: miloh]
