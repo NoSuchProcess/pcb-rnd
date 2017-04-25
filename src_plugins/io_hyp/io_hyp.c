@@ -137,7 +137,9 @@ int io_hyp_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *File
 
 int io_hyp_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
-	return hyp_parse(pcb->Data, Filename, 0);
+	int res = hyp_parse(pcb->Data, Filename, 0);
+	pcb_layer_auto_fixup(pcb);
+	return res;
 }
 
 int pplg_check_ver_io_hyp(int ver_needed) { return 0; }
