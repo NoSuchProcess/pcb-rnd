@@ -1,7 +1,6 @@
 - BUGS for after the next release:
 	- using the q key to make a pin square works, drop down menus to do the same are broken [report: EvanFoss]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
-	- gtk preferences window: can't size down to x600 [report: miloh -- checked in r8204 and working]
 	- cross section on export should draw with double font, but should print file names
 	- after the next release: when DRC sizes are saved in used conf, they are overriden from the default.pcb [report: Alain]
 	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
