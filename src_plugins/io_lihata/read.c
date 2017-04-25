@@ -791,11 +791,15 @@ static void layer_fixup(pcb_board_t *pcb)
 
 	pcb_layergrp_fix_old_outline(pcb);
 
-	/* link in the 2 hardwired silks */
+	/* link in the 2 hardwired silks and mark them auto */
 	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-2);
+	pcb->Data->Layer[pcb->Data->LayerN-2].comb |= PCB_LYC_AUTO;
+	
 	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-1);
+	pcb->Data->Layer[pcb->Data->LayerN-1].comb |= PCB_LYC_AUTO;
+
 	pcb_layergrp_inhibit_dec();
 }
 
