@@ -281,8 +281,8 @@ void make_layer_buttons(GtkWidget * layersel)
 	gboolean active = TRUE;
 
 	for (i = 0; i < pcb_max_layer; ++i) {
-		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK)
-			continue;									/* silks have a special, common button */
+		if ((pcb_layer_flags(PCB, i) & PCB_LYT_SILK) && !pcb_draw_layer_is_comp(i))
+			continue; /* silks have a special, common button - if it's not a composite layer group, skip showing each layer for now */
 		layer_process(&color_string, &text, &active, i);
 		pcb_gtk_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE);
 	}
