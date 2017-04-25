@@ -19,9 +19,6 @@
 		- layer and group edit dialog accessible from right-click & csect
 		- gerber warning on composite silk
 
-- plugin breakage:
-	- don't force builtin for dependent libs
-
 - fontsel:
 	- replace font in slot (even in default)
 	- ttf import?
