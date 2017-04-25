@@ -2244,6 +2244,8 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	/* clean up */
 	gsxl_uninit(&st.dom);
 
+	pcb_layer_auto_fixup(Ptr);
+
 #warning TODO: free the layer hash
 
 	return readres;
