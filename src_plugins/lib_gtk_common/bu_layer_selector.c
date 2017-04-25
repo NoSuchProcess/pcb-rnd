@@ -250,8 +250,10 @@ void make_virtual_layer_buttons(GtkWidget *layer_selector)
 	gboolean active;
 	pcb_layer_id_t ui[16], numui, n;
 
-	layer_process(&color_string, &text, &active, LAYER_BUTTON_SILK);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, text, color_string, active, TRUE, FALSE);
+pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, "GROUP", color_string, active, TRUE, TRUE);
+
+/*	layer_process(&color_string, &text, &active, LAYER_BUTTON_SILK);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, text, color_string, active, TRUE, FALSE);*/
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_RATS);
 	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_RATS, text, color_string, active, TRUE, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_PINS);
