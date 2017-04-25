@@ -107,6 +107,10 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 	toggle_rect.width -= xpad * 2;
 	toggle_rect.height -= ypad * 2;
 
+	if (pcb_cell->group)
+		toggle_rect.width -= IND_SIZE*2;
+
+
 	if (toggle_rect.width <= 0 || toggle_rect.height <= 0)
 		return;
 
