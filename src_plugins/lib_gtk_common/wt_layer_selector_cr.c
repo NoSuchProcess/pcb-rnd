@@ -291,6 +291,7 @@ static void ghid_cell_renderer_visibility_init(GHidCellRendererVisibility * ls)
 	gdk_pixbuf_fill(ls->pixbuf, 0x0000ffff);
 	ls->surface = pcb_gtk_surface_init_for_pixbuf(ls->pixbuf);
 	g_object_set(ls, "pixbuf", ls->pixbuf, NULL);
+	g_object_set(ls, "follow-state", TRUE, NULL);
 }
 
 static void ghid_cell_renderer_visibility_class_init(GHidCellRendererVisibilityClass * klass)
