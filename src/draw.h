@@ -101,5 +101,7 @@ typedef struct pcb_draw_info_s {
 	pcb_layer_t *layer;
 } pcb_draw_info_t;
 
+/* Returns whether lay_id is part of a group that is composed of multiple layers */
+int pcb_draw_layer_is_comp(pcb_layer_id_t lay_id);
 
 #endif

@@ -151,3 +151,10 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 	if (!adding)
 		comp_start_add(ctx);
 }
+
+int pcb_draw_layer_is_comp(pcb_layer_id_t id)
+{
+	pcb_layer_group_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].grp);
+	if (g == NULL) return 0;
+	return (g->len > 1);
+}
