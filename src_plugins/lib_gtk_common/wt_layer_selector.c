@@ -37,6 +37,7 @@
 #include "wt_layer_selector.h"
 
 #include "pcb-printf.h"
+#include "hid_actions.h"
 
 #include "wt_layer_selector_cr.h"
 
