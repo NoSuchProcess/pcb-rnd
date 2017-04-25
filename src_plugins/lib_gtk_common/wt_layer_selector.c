@@ -366,7 +366,9 @@ GtkWidget *pcb_gtk_layer_selector_new(void)
 	GtkCellRenderer *renderer2 = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *opacity_col = gtk_tree_view_column_new_with_attributes("", renderer1,
 																																						"active", VISIBLE_COL,
-																																						"color", COLOR_COL, NULL);
+																																						"color", COLOR_COL,
+																																						"group", GROUP_COL,
+																																						NULL);
 	GtkTreeViewColumn *name_col = gtk_tree_view_column_new_with_attributes("", renderer2,
 																																				 "text", TEXT_COL,
 																																				 "font", FONT_COL,
