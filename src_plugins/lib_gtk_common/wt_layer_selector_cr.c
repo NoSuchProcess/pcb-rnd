@@ -84,6 +84,77 @@ ghid_cell_renderer_visibility_get_size(GtkCellRenderer * cell,
 	}
 }
 
+static void convert_alpha(guchar * dest_data, int dest_stride,
+													guchar * src_data, int src_stride, int src_x, int src_y, int width, int height)
+{
+	int x, y;
+
+	src_data += src_stride * src_y + src_x * 4;
+
+	for (y = 0; y < height; y++) {
+		guint32 *src = (guint32 *) src_data;
+
+		for (x = 0; x < width; x++) {
+			guint alpha = src[x] >> 24;
+
+			if (alpha == 0) {
+				dest_data[x * 4 + 0] = 0;
+				dest_data[x * 4 + 1] = 0;
+				dest_data[x * 4 + 2] = 0;
+			}
+			else {
+				dest_data[x * 4 + 0] = (((src[x] & 0xff0000) >> 16) * 255 + alpha / 2) / alpha;
+				dest_data[x * 4 + 1] = (((src[x] & 0x00ff00) >> 8) * 255 + alpha / 2) / alpha;
+				dest_data[x * 4 + 2] = (((src[x] & 0x0000ff) >> 0) * 255 + alpha / 2) / alpha;
+			}
+			dest_data[x * 4 + 3] = alpha;
+		}
+
+		src_data += src_stride;
+		dest_data += dest_stride;
+	}
+}
+
+static void convert_no_alpha(guchar * dest_data, int dest_stride,
+														 guchar * src_data, int src_stride, int src_x, int src_y, int width, int height)
+{
+	int x, y;
+
+	src_data += src_stride * src_y + src_x * 4;
+
+	for (y = 0; y < height; y++) {
+		guint32 *src = (guint32 *) src_data;
+
+		for (x = 0; x < width; x++) {
+			dest_data[x * 3 + 0] = src[x] >> 16;
+			dest_data[x * 3 + 1] = src[x] >> 8;
+			dest_data[x * 3 + 2] = src[x];
+		}
+
+		src_data += src_stride;
+		dest_data += dest_stride;
+	}
+}
+
+/** Updates the content of \p surface into \p pixbuf */
+void pcb_gtk_surface_draw_to_pixbuf(cairo_surface_t * surface, GdkPixbuf * pixbuf)
+{
+	gint width = gdk_pixbuf_get_width(pixbuf);
+	gint height = gdk_pixbuf_get_height(pixbuf);
+
+	cairo_surface_flush(surface);
+	if (cairo_surface_status(surface))
+		return;
+
+	/* Performs the conversion */
+	if (gdk_pixbuf_get_has_alpha(pixbuf))
+		convert_alpha(gdk_pixbuf_get_pixels(pixbuf), gdk_pixbuf_get_rowstride(pixbuf),
+									cairo_image_surface_get_data(surface), cairo_image_surface_get_stride(surface), 0, 0, width, height);
+	else
+		convert_no_alpha(gdk_pixbuf_get_pixels(pixbuf), gdk_pixbuf_get_rowstride(pixbuf),
+										 cairo_image_surface_get_data(surface), cairo_image_surface_get_stride(surface), 0, 0, width, height);
+}
+
 /*! \brief Actually renders the swatch */
 static void
 ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
