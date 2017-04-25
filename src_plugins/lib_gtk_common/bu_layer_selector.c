@@ -251,24 +251,24 @@ void make_virtual_layer_buttons(GtkWidget *layer_selector)
 	pcb_layer_id_t ui[16], numui, n;
 
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_SILK);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, text, color_string, active, TRUE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, text, color_string, active, TRUE, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_RATS);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_RATS, text, color_string, active, TRUE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_RATS, text, color_string, active, TRUE, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_PINS);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_PINS, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_PINS, text, color_string, active, FALSE, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_VIAS);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_VIAS, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_VIAS, text, color_string, active, FALSE, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_FARSIDE);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_FARSIDE, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_FARSIDE, text, color_string, active, FALSE, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_MASK);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_MASK, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_MASK, text, color_string, active, FALSE, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_PASTE);
-	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_PASTE, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_PASTE, text, color_string, active, FALSE, FALSE);
 
 	numui = pcb_layer_list(PCB_LYT_UI, ui, sizeof(ui) / sizeof(ui[0]));
 	for (n = 0; n < numui; n++) {
 		pcb_layer_t *l = pcb_get_layer(ui[n]);
-		pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_UI, l->Name, l->Color, 1, FALSE);
+		pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_UI, l->Name, l->Color, 1, FALSE, FALSE);
 	}
 }
 
@@ -284,7 +284,7 @@ void make_layer_buttons(GtkWidget * layersel)
 		if ((pcb_layer_flags(PCB, i) & PCB_LYT_SILK) && !pcb_draw_layer_is_comp(i))
 			continue; /* silks have a special, common button - if it's not a composite layer group, skip showing each layer for now */
 		layer_process(&color_string, &text, &active, i);
-		pcb_gtk_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE);
+		pcb_gtk_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE, FALSE);
 	}
 }
 

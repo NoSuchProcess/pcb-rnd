@@ -32,10 +32,11 @@ GtkWidget *pcb_gtk_layer_selector_new(void);
     \param [in] color_string  The color of the layer on selector
     \param [in] visibile      Whether the layer is visible
     \param [in] activatable   Whether the layer appears in menus and can be selected
+    \param [in] is_grp        Whether the entry is a layer group
  */
 void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 																			gint user_id,
-																			const gchar * name, const gchar * color_string, gboolean visible, gboolean activatable);
+																			const gchar * name, const gchar * color_string, gboolean visible, gboolean activatable, gboolean is_grp);
 
 /** Installs the "Current Layer" menu items for a layer selector
     \par Function Description

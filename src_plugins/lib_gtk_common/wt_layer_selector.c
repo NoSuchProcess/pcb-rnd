@@ -66,6 +66,7 @@ enum {
 	FONT_COL,
 	ACTIVATABLE_COL,
 	SEPARATOR_COL,
+	GROUP_COL,
 	N_COLS
 };
 
@@ -170,6 +171,14 @@ static gboolean tree_view_separator_func(GtkTreeModel * model, GtkTreeIter * ite
 	return ret_val;
 }
 
+/*! \brief Decides if a GtkListStore entry is a group */
+static gboolean tree_view_group_func(GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
+{
+	gboolean ret_val;
+	gtk_tree_model_get(model, iter, GROUP_COL, &ret_val, -1);
+	return ret_val;
+}
+
 /*! \brief Decides if a GtkListStore entry may be selected */
 static gboolean tree_selection_func(GtkTreeSelection * selection,
 																		GtkTreeModel * model, GtkTreePath * path, gboolean selected, gpointer data)
@@ -205,9 +214,9 @@ static gboolean button_press_cb(pcb_gtk_layer_selector_t * ls, GdkEventButton * 
 
 	if ((event->button == 1) == (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(ls), event->x, event->y, &path, &column, NULL, NULL))) {
 		GtkTreeIter iter;
-		gboolean activatable, separator;
+		gboolean activatable, separator, group;
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(ls->list_store), &iter, path);
-		gtk_tree_model_get(GTK_TREE_MODEL(ls->list_store), &iter, ACTIVATABLE_COL, &activatable, SEPARATOR_COL, &separator, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(ls->list_store), &iter, ACTIVATABLE_COL, &activatable, SEPARATOR_COL, &separator, GROUP_COL, &group, -1);
 		/* Toggle visibility for non-activatable layers no matter
 		 *  where you click. */
 		if (!separator && (column == ls->visibility_column || !activatable)) {
@@ -368,7 +377,7 @@ GtkWidget *pcb_gtk_layer_selector_new(void)
 	/* action index, active, color, text, font, is_separator */
 	ls->list_store = gtk_list_store_new(N_COLS, G_TYPE_POINTER, G_TYPE_INT,
 																			G_TYPE_BOOLEAN, G_TYPE_STRING,
-																			G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
+																			G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 	gtk_tree_view_insert_column(GTK_TREE_VIEW(ls), opacity_col, -1);
 	gtk_tree_view_insert_column(GTK_TREE_VIEW(ls), name_col, -1);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(ls), GTK_TREE_MODEL(ls->list_store));
@@ -398,7 +407,7 @@ GtkWidget *pcb_gtk_layer_selector_new(void)
 
 void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 																			gint user_id,
-																			const gchar * name, const gchar * color_string, gboolean visible, gboolean activatable)
+																			const gchar * name, const gchar * color_string, gboolean visible, gboolean activatable, gboolean is_group)
 {
 	struct _layer *new_layer = NULL;
 	gchar *pname, *vname;
@@ -444,6 +453,7 @@ void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 											 FONT_COL, activatable ? NULL : "Italic",
 											 ACTIVATABLE_COL, activatable,
 											 SEPARATOR_COL, FALSE,
+											 GROUP_COL, is_group,
 											 -1);
 	}
 	else {
@@ -460,6 +470,7 @@ void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 											 TEXT_COL, name,
 											 FONT_COL, activatable ? NULL : "Italic",
 											 ACTIVATABLE_COL, activatable,
+											 GROUP_COL, is_group,
 											 -1);
 	}
 
@@ -705,12 +716,12 @@ void pcb_gtk_layer_selector_show_layers(pcb_gtk_layer_selector_t * ls, gboolean(
 	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(ls->list_store), &iter);
 	do {
 		struct _layer *ldata;
-		gboolean sep;
+		gboolean sep, is_grp;
 		gint user_id;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(ls->list_store),
-											 &iter, USER_ID_COL, &user_id, STRUCT_COL, &ldata, SEPARATOR_COL, &sep, -1);
-		if (!sep)
+											 &iter, USER_ID_COL, &user_id, STRUCT_COL, &ldata, SEPARATOR_COL, &sep, GROUP_COL, &is_grp, -1);
+		if ((!sep) && (!is_grp))
 			set_visibility(ls, &iter, ldata, callback(user_id));
 	}
 	while (gtk_tree_model_iter_next(GTK_TREE_MODEL(ls->list_store), &iter));
