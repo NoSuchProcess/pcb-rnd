@@ -441,7 +441,10 @@ void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 											 VISIBLE_COL, visible,
 											 COLOR_COL, color_string,
 											 TEXT_COL, name,
-											 FONT_COL, activatable ? NULL : "Italic", ACTIVATABLE_COL, activatable, SEPARATOR_COL, FALSE, -1);
+											 FONT_COL, activatable ? NULL : "Italic",
+											 ACTIVATABLE_COL, activatable,
+											 SEPARATOR_COL, FALSE,
+											 -1);
 	}
 	else {
 		/* If the row exists, we clear out its ldata to create
@@ -454,7 +457,10 @@ void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 											 STRUCT_COL, new_layer,
 											 VISIBLE_COL, visible,
 											 COLOR_COL, color_string,
-											 TEXT_COL, name, FONT_COL, activatable ? NULL : "Italic", ACTIVATABLE_COL, activatable, -1);
+											 TEXT_COL, name,
+											 FONT_COL, activatable ? NULL : "Italic",
+											 ACTIVATABLE_COL, activatable,
+											 -1);
 	}
 
 	/* -- Setup new actions -- */
