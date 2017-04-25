@@ -40,6 +40,7 @@ struct _GHidCellRendererVisibility {
 	gboolean active, group;
 	gchar *color;
 	GdkPixbuf *pixbuf;
+	cairo_surface_t *surface;
 };
 
 struct _GHidCellRendererVisibilityClass {
@@ -151,6 +152,42 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 	}
 }
 
+/** Creates an image surface of same size than \p pixbuf. This surface can be used
+    to draw with cairo and then, transfer surface pixels to pixbuf pixels.
+
+    Returns a pointer to the newly created surface. The caller owns the surface and
+      should call cairo_surface_destroy() when done with it.
+
+      This function always returns a valid pointer, but it will return a pointer
+      to a "nil" surface in the case of an error. See \ref cairo_image_surface_create_for_data ()
+ **/
+cairo_surface_t *pcb_gtk_surface_init_for_pixbuf(GdkPixbuf * pixbuf)
+{
+	gint width = gdk_pixbuf_get_width(pixbuf);
+	gint height = gdk_pixbuf_get_height(pixbuf);
+	int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
+
+	int cairo_stride;
+	guchar *cairo_pixels;
+	cairo_format_t format;
+	cairo_surface_t *surface;
+
+	if (n_channels == 3)
+		format = CAIRO_FORMAT_RGB24;
+	else
+		format = CAIRO_FORMAT_ARGB32;
+
+	cairo_stride = cairo_format_stride_for_width(format, width);
+	cairo_pixels = g_malloc_n(height, cairo_stride);
+	surface = cairo_image_surface_create_for_data((unsigned char *) cairo_pixels, format, width, height, cairo_stride);
+
+	if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
+		g_free(cairo_pixels);
+		printf("Surface creation problem in pcb_gtk_surface_init_for_pixbuf() !\n");
+	}
+	return surface;
+}
+
 /*! \brief Toggless the swatch */
 static gint
 ghid_cell_renderer_visibility_activate(GtkCellRenderer * cell,
@@ -207,6 +244,7 @@ static void ghid_cell_renderer_visibility_init(GHidCellRendererVisibility * ls)
 	g_object_set(ls, "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE, NULL);
 	ls->pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, VISIBILITY_TOGGLE_SIZE + 2, VISIBILITY_TOGGLE_SIZE + 2);
 	gdk_pixbuf_fill(ls->pixbuf, 0x0000ffff);
+	ls->surface = pcb_gtk_surface_init_for_pixbuf(ls->pixbuf);
 }
 
 static void ghid_cell_renderer_visibility_class_init(GHidCellRendererVisibilityClass * klass)
