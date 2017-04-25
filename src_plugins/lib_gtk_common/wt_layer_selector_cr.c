@@ -14,6 +14,7 @@
 
 #include "config.h"
 #include "compat_nls.h"
+#include "error.h"
 
 #include "wt_layer_selector_cr.h"
 
@@ -182,7 +183,7 @@ cairo_surface_t *pcb_gtk_surface_init_for_pixbuf(GdkPixbuf * pixbuf)
 
 	if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
 		g_free(cairo_pixels);
-		printf("Surface creation problem in pcb_gtk_surface_init_for_pixbuf() !\n");
+		pcb_message(PCB_MSG_ERROR, "Surface creation problem in pcb_gtk_surface_init_for_pixbuf() !\n");
 	}
 	return surface;
 }
