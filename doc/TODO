@@ -13,7 +13,9 @@
 		- turn gpmi into a conventional plugin
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	- layer rewrite:
+		- lesstif: layer selector should show all layers, probably in the order of the stackup
 		- gtk: "can't remove silk layer" when logical silk is being removed with right-click in layer selector [report: miloh]
+		- check why thin draw crashes
 		- layer group property edit dialog
 		- right click in preview & csect
 		- layer and group edit dialog accessible from right-click & csect
