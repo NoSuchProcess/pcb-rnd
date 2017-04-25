@@ -223,6 +223,46 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 	}
 }
 
+/* Actually renders the swatch */
+static void pcb_gtk_layer_visibility_render_pixbuf(GHidCellRendererVisibility * ls)
+{
+	cairo_t *cr;
+	GdkColor color;
+	GdkRectangle toggle_rect;
+
+	cr = cairo_create(ls->surface);
+
+	toggle_rect.x = 0;
+	toggle_rect.y = 0;
+	toggle_rect.width = gdk_pixbuf_get_width(ls->pixbuf);
+	toggle_rect.height = gdk_pixbuf_get_height(ls->pixbuf);
+
+	cairo_set_line_width(cr, 1);
+
+	cairo_rectangle(cr, toggle_rect.x + 0.5, toggle_rect.y + 0.5, toggle_rect.width - 1, toggle_rect.height - 1);
+	cairo_set_source_rgb(cr, 1, 1, 1);
+	cairo_fill_preserve(cr);
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_stroke(cr);
+
+	if (ls->color != NULL) {
+		/* FIXME: better use pango_color_parse: not deprecated over GTKx */
+		gdk_color_parse(ls->color, &color);
+		gdk_cairo_set_source_color(cr, &color);
+		if (ls->active)
+			cairo_rectangle(cr, toggle_rect.x + 0.5, toggle_rect.y + 0.5, toggle_rect.width - 1, toggle_rect.height - 1);
+		else {
+			cairo_move_to(cr, toggle_rect.x + 1, toggle_rect.y + 1);
+			cairo_rel_line_to(cr, toggle_rect.width / 2, 0);
+			cairo_rel_line_to(cr, -toggle_rect.width / 2, toggle_rect.width / 2);
+			cairo_close_path(cr);
+		}
+	}
+	cairo_fill(cr);
+	pcb_gtk_surface_draw_to_pixbuf(ls->surface, ls->pixbuf);
+	cairo_destroy(cr);
+}
+
 /** Creates an image surface of same size than pixbuf. This surface can be used
     to draw with cairo and then, transfer surface pixels to pixbuf pixels.
 
