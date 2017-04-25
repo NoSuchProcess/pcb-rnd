@@ -18,6 +18,10 @@
 		- right click in preview & csect
 		- layer and group edit dialog accessible from right-click & csect
 		- gerber warning on composite silk
+		- lihata v2:
+			- indent styling for layer stack
+			- review, make it default
+			- document versions and differences
 
 - fontsel:
 	- replace font in slot (even in default)
