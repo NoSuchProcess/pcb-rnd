@@ -136,7 +136,7 @@ static void convert_no_alpha(guchar * dest_data, int dest_stride,
 	}
 }
 
-/** Updates the content of \p surface into \p pixbuf */
+/** Updates the content of surface into pixbuf */
 void pcb_gtk_surface_draw_to_pixbuf(cairo_surface_t * surface, GdkPixbuf * pixbuf)
 {
 	gint width = gdk_pixbuf_get_width(pixbuf);
