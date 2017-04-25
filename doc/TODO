@@ -13,6 +13,7 @@
 		- turn gpmi into a conventional plugin
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	- layer rewrite:
+		- gtk: "can't remove silk layer" when logical silk is being removed with right-click in layer selector [report: miloh]
 		- layer group property edit dialog
 		- right click in preview & csect
 		- layer and group edit dialog accessible from right-click & csect
