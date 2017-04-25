@@ -156,5 +156,12 @@ int pcb_draw_layer_is_comp(pcb_layer_id_t id)
 {
 	pcb_layer_group_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].grp);
 	if (g == NULL) return 0;
-	return (g->len > 1);
+
+	/* silk has special rules because the original format/model had 1 (auto+)
+	   silk layer in the layer group */
+	if (g->type & PCB_LYT_SILK)
+		return ((g->len != 1) ||
+			((PCB->Data->Layer[id].comb & (PCB_LYC_AUTO | PCB_LYC_SUB)) != PCB_LYC_AUTO));
+
+	return (g->len > 0);
 }
