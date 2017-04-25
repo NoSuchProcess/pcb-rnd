@@ -56,6 +56,7 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) /* fallback: no layers -> original code: draw a single auto-add */
 		pcb_draw_paste_auto(side, drawn_area);
 	else {
+		comp_init(&cctx, 0);
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
 		comp_finish(&cctx);
 	}
@@ -100,25 +101,44 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 
 /******** silk ********/
 
-static void pcb_draw_silk_auto(unsigned int lyt_side, const pcb_box_t * drawn_area)
+static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 {
-	int side = (lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE);
+	int side = (*(unsigned long *)lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE);
 
 	/* draw package */
-	pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+	pcb_r_search(PCB->Data->element_tree, ctx->screen, NULL, draw_element_callback, &side, NULL);
+	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], ctx->screen, NULL, draw_element_name_callback, &side, NULL);
 }
 
-static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t *drawn_area)
+static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 {
 	pcb_layer_id_t lid;
+	pcb_layergrp_id_t gid = -1;
+	comp_ctx_t cctx;
 
 	if (pcb_layer_list(PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
 		return;
 
-	pcb_draw_layer(LAYER_PTR(lid), drawn_area);
+	pcb_layergrp_list(PCB, PCB_LYT_SILK | lyt_side, &gid, 1);
 
-	pcb_draw_silk_auto(lyt_side, drawn_area);
+	cctx.pcb = PCB;
+	cctx.screen = drawn_area;
+	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.color = /*PCB->Data->Layer[lid].Color*/ conf_core.appearance.color.element;
+	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
+	cctx.invert = 0;
+	cctx.poly_before = pcb_gui->poly_before;
+	cctx.poly_after = pcb_gui->poly_after;
+
+	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw auto+manual */
+		pcb_draw_layer(LAYER_PTR(lid), cctx.screen);
+		pcb_draw_silk_auto(&cctx, &lyt_side);
+	}
+	else {
+		comp_init(&cctx, 0);
+		comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
+		comp_finish(&cctx);
+	}
 }
 
 

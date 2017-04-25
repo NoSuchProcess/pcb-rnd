@@ -79,7 +79,7 @@ static void DrawLayerGroup(int, const pcb_box_t *);
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area);
 static void pcb_draw_mask(int side, const pcb_box_t *screen);
-static void pcb_draw_silk(unsigned int lyt_side, const pcb_box_t *drawn_area);
+static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area);
 static void pcb_draw_rats(const pcb_box_t *);
 static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area);
 
