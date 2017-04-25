@@ -112,7 +112,6 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 	if (pcb_cell->group)
 		toggle_rect.width -= IND_SIZE*2;
 
-
 	if (toggle_rect.width <= 0 || toggle_rect.height <= 0)
 		return;
 
@@ -152,14 +151,14 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 	}
 }
 
-/** Creates an image surface of same size than \p pixbuf. This surface can be used
+/** Creates an image surface of same size than pixbuf. This surface can be used
     to draw with cairo and then, transfer surface pixels to pixbuf pixels.
 
     Returns a pointer to the newly created surface. The caller owns the surface and
       should call cairo_surface_destroy() when done with it.
 
       This function always returns a valid pointer, but it will return a pointer
-      to a "nil" surface in the case of an error. See \ref cairo_image_surface_create_for_data ()
+      to a "nil" surface in the case of an error. See cairo_image_surface_create_for_data ()
  **/
 cairo_surface_t *pcb_gtk_surface_init_for_pixbuf(GdkPixbuf * pixbuf)
 {
