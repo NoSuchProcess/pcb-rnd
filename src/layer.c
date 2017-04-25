@@ -628,6 +628,15 @@ pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name)
 	return 0;
 }
 
+void pcb_layer_auto_fixup(pcb_board_t *pcb)
+{
+	pcb_layer_id_t n;
+
+	/* old silk layers are always auto */
+	for(n = 0; n < pcb_max_layer; n++)
+		if (pcb_layer_flags(PCB, n) & PCB_LYT_SILK)
+			pcb->Data->Layer[n].comb |= PCB_LYC_AUTO;
+}
 
 int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 {
