@@ -436,6 +436,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 			}
 		}
 	}
+	pcb_layer_auto_fixup(PCB);
 	return retval;
 }
 
