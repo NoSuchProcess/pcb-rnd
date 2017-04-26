@@ -171,14 +171,6 @@ static gboolean tree_view_separator_func(GtkTreeModel * model, GtkTreeIter * ite
 	return ret_val;
 }
 
-/*! \brief Decides if a GtkListStore entry is a group */
-static gboolean tree_view_group_func(GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
-{
-	gboolean ret_val;
-	gtk_tree_model_get(model, iter, GROUP_COL, &ret_val, -1);
-	return ret_val;
-}
-
 /*! \brief Decides if a GtkListStore entry may be selected */
 static gboolean tree_selection_func(GtkTreeSelection * selection,
 																		GtkTreeModel * model, GtkTreePath * path, gboolean selected, gpointer data)
