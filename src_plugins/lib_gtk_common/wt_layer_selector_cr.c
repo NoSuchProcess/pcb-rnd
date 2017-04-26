@@ -32,13 +32,14 @@ static guint toggle_cell_signals[LAST_SIGNAL] = { 0 };
 enum {
 	PROP_ACTIVE = 1,
 	PROP_GROUP,
+	PROP_HIDE,
 	PROP_COLOR
 };
 
 struct _GHidCellRendererVisibility {
 	GtkCellRendererPixbufClass parent;
 
-	gboolean active, group;
+	gboolean active, group, hide;
 	gchar *color;
 	GdkPixbuf *pixbuf;
 	cairo_surface_t *surface;
@@ -169,6 +170,10 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 	gint xpad, ypad;
 
 	pcb_cell = GHID_CELL_RENDERER_VISIBILITY(cell);
+
+	if (pcb_cell->hide)
+		return;
+
 	ghid_cell_renderer_visibility_get_size(cell, widget, cell_area,
 																				 &toggle_rect.x, &toggle_rect.y, &toggle_rect.width, &toggle_rect.height);
 	gtk_cell_renderer_get_padding(cell, &xpad, &ypad);
@@ -339,6 +344,9 @@ static void ghid_cell_renderer_visibility_get_property(GObject * object, guint p
 	case PROP_GROUP:
 		g_value_set_boolean(value, pcb_cell->group);
 		break;
+	case PROP_HIDE:
+		g_value_set_boolean(value, pcb_cell->hide);
+		break;
 	case PROP_COLOR:
 		g_value_set_string(value, pcb_cell->color);
 		break;
@@ -356,6 +364,9 @@ ghid_cell_renderer_visibility_set_property(GObject * object, guint param_id, con
 		break;
 	case PROP_GROUP:
 		pcb_cell->group = g_value_get_boolean(value);
+		break;
+	case PROP_HIDE:
+		pcb_cell->hide = g_value_get_boolean(value);
 		break;
 	case PROP_COLOR:
 		g_free(pcb_cell->color);
@@ -397,6 +408,10 @@ static void ghid_cell_renderer_visibility_class_init(GHidCellRendererVisibilityC
 																	g_param_spec_boolean("group",
 																											 _("Group"),
 																											 _("Whether item controls a group"), FALSE, G_PARAM_READWRITE));
+	g_object_class_install_property(object_class, PROP_HIDE,
+																	g_param_spec_boolean("hide",
+																											 _("Hide"),
+																											 _("Whether the visibility box is hidden"), FALSE, G_PARAM_READWRITE));
 	g_object_class_install_property(object_class, PROP_COLOR,
 																	g_param_spec_string("color", _("Layer color"), _("Layer color"), FALSE, G_PARAM_READWRITE));
 
