@@ -758,9 +758,25 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 	else {
 		while (rbnd->RubberbandN) {
-			/* first clear any marks that we made in the line flags */
-			PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-			MoveLinePointWithRoute(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
+
+			/* If PCB_FLAG_RUBBEREND is set then only one end of the line is moving. */
+			if(PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line))
+			{
+				/* first clear any marks that we made in the line flags */
+				PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
+				MoveLinePointWithRoute(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
+			}
+			else
+			{
+				/* Both ends of the line are being moved together but only one
+				 * LinePoint is being moved at this time so the LinePoint is
+				 * being moved directly without the route calculator. */
+
+				/* TODO: Move the entire line using the route calculator when 
+				 * advanced features such as push-n-shove are implemented. */
+				MoveLinePoint(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
+			}
+
 			rbnd->RubberbandN--;
 			ptr++;
 		}
