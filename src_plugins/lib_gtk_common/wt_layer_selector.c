@@ -67,7 +67,6 @@ enum {
 	ACTIVATABLE_COL,
 	SEPARATOR_COL,
 	GROUP_COL,
-	HIDE_COL,
 	N_COLS
 };
 
@@ -361,7 +360,6 @@ GtkWidget *pcb_gtk_layer_selector_new(void)
 																																						"active", VISIBLE_COL,
 																																						"color", COLOR_COL,
 																																						"group", GROUP_COL,
-																																						"hide", HIDE_COL,
 																																						NULL);
 	GtkTreeViewColumn *name_col = gtk_tree_view_column_new_with_attributes("", renderer2,
 																																				 "text", TEXT_COL,
@@ -373,7 +371,7 @@ GtkWidget *pcb_gtk_layer_selector_new(void)
 	/* action index, active, color, text, font, is_separator */
 	ls->list_store = gtk_list_store_new(N_COLS, G_TYPE_POINTER, G_TYPE_INT,
 																			G_TYPE_BOOLEAN, G_TYPE_STRING,
-																			G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
+																			G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 	gtk_tree_view_insert_column(GTK_TREE_VIEW(ls), opacity_col, -1);
 	gtk_tree_view_insert_column(GTK_TREE_VIEW(ls), name_col, -1);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(ls), GTK_TREE_MODEL(ls->list_store));
@@ -450,7 +448,6 @@ void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 											 ACTIVATABLE_COL, activatable,
 											 SEPARATOR_COL, FALSE,
 											 GROUP_COL, is_group,
-											 HIDE_COL, 0,
 											 -1);
 	}
 	else {
@@ -468,7 +465,6 @@ void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
 											 FONT_COL, activatable ? NULL : "Italic",
 											 ACTIVATABLE_COL, activatable,
 											 GROUP_COL, is_group,
-											 HIDE_COL, 0,
 											 -1);
 	}
 
