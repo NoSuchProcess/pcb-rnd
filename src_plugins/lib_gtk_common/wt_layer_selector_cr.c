@@ -202,6 +202,22 @@ ghid_cell_renderer_visibility_render(GtkCellRenderer * cell,
 		cairo_set_source_rgb(cr, 0, 0, 0);
 		cairo_stroke(cr);
 
+		if (pcb_cell->group) {
+#if 0
+			/* if closed */
+			cairo_move_to(cr, toggle_rect.x + toggle_rect.width + 2, toggle_rect.y+5);
+			cairo_line_to(cr, toggle_rect.x + toggle_rect.width + 12, toggle_rect.y+5);
+			cairo_line_to(cr, toggle_rect.x + toggle_rect.width + 7, toggle_rect.y+7+5);
+			cairo_line_to(cr, toggle_rect.x + toggle_rect.width + 2, toggle_rect.y+5);
+#endif
+			/* if open */
+			cairo_move_to(cr, toggle_rect.x + toggle_rect.width + 2, toggle_rect.y+7+5);
+			cairo_line_to(cr, toggle_rect.x + toggle_rect.width + 12, toggle_rect.y+7+5);
+			cairo_line_to(cr, toggle_rect.x + toggle_rect.width + 7, toggle_rect.y+5);
+			cairo_line_to(cr, toggle_rect.x + toggle_rect.width + 2, toggle_rect.y+7+5);
+			cairo_stroke(cr);
+		}
+
 		gdk_color_parse(pcb_cell->color, &color);
 		if (flags & GTK_CELL_RENDERER_PRELIT) {
 			color.red = (4 * color.red + 65535) / 5;
