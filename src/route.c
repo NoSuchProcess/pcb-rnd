@@ -334,7 +334,7 @@ pcb_route_calculate(pcb_board_t *   PCB,
 	const pcb_coord_t radius = thickness * conf_core.editor.route_radius;
 
 	/* If the line can be drawn directly to the target then add a single line segment. */
-	if(PCB->RatDraw || conf_core.editor.all_direction_lines) {
+	if(conf_core.editor.all_direction_lines) {
 		pcb_route_direct(PCB,route,point1,point2,layer_id,thickness,clearance,flags);
 		return;
 	}
