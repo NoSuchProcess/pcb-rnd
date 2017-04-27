@@ -122,15 +122,6 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 #define PCB_GTK_EXPOSE_EVENT(x) (x->expose_event)
 #define PCB_GTK_EXPOSE_STRUCT GdkEventExpose
 
-static inline void pcb_gtk_set_bg_color(GtkWidget *widget, unsigned int r, unsigned int g, unsigned int b)
-{
-	GdkColor color;
-	color.red = r;
-	color.green = g;
-	color.blue = b;
-	gtk_widget_modify_bg(widget, GTK_STATE_NORMAL, &color);
-}
-
 #endif
 
 /*** common for now ***/
