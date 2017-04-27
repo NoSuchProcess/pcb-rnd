@@ -122,6 +122,19 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 #define PCB_GTK_EXPOSE_EVENT(x) (x->expose_event)
 #define PCB_GTK_EXPOSE_STRUCT GdkEventExpose
 
+/* gtk deprecated gtk_widget_hide_all() for some reason; this naive
+   implementation seems to work. */
+static inline void pcb_gtk_widget_hide_all(GtkWidget *widget)
+{
+	if(GTK_IS_CONTAINER(widget)) {
+		GList *children = gtk_container_get_children(GTK_CONTAINER(widget));
+		while ((children = g_list_next(children)) != NULL)
+			pcb_gtk_widget_hide_all(GTK_WIDGET(children->data));
+	}
+	gtk_widget_hide(widget);
+}
+
+
 #endif
 
 #endif  /* PCB_GTK_COMPAT_H */
