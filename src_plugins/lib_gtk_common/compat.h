@@ -122,6 +122,16 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 #define PCB_GTK_EXPOSE_EVENT(x) (x->expose_event)
 #define PCB_GTK_EXPOSE_STRUCT GdkEventExpose
 
+static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
+{
+	GtkStateType st = gtk_widget_get_state(widget);
+	/* race condition... */
+	if (set)
+		gtk_widget_set_state(widget, st | GTK_STATE_SELECTED);
+	else
+		gtk_widget_set_state(widget, st & (~GTK_STATE_SELECTED));
+}
+
 #endif
 
 /*** common for now ***/
