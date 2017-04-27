@@ -131,6 +131,9 @@ static inline void pcb_gtk_set_bg_color(GtkWidget *widget, unsigned int r, unsig
 	gtk_widget_modify_bg(widget, GTK_STATE_NORMAL, &color);
 }
 
+#endif
+
+/*** common for now ***/
 
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
    implementation seems to work. */
@@ -144,7 +147,5 @@ static inline void pcb_gtk_widget_hide_all(GtkWidget *widget)
 	gtk_widget_hide(widget);
 }
 
-
-#endif
 
 #endif  /* PCB_GTK_COMPAT_H */
