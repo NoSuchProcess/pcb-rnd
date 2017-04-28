@@ -231,8 +231,6 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 	gtk_container_add(GTK_CONTAINER(event_box), w);
 	g_signal_connect(event_box, "button-press-event", G_CALLBACK(cb), cb_data);
 
-	gtkc_widget_selectable(event_box, "layersel");
-
 	return event_box;
 }
 
@@ -265,6 +263,7 @@ static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, cons
 	/* selectable layer name*/
 	ly_name_bx = gtkc_hbox_new(0, 0);
 	lsl->name_box = wrap_bind_click(ly_name_bx, G_CALLBACK(layer_select_press_cb), lsl);
+	gtkc_widget_selectable(lsl->name_box, "layersel");
 	lab = gtk_label_new(name);
 	gtk_box_pack_start(GTK_BOX(ly_name_bx), lab, TRUE, TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(lsl->box), lsl->name_box, TRUE, TRUE, 10);
