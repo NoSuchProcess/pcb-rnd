@@ -74,6 +74,18 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 #define PCB_GTK_EXPOSE_EVENT(x) (x->draw)
 #define PCB_GTK_EXPOSE_STRUCT cairo_t
 
+static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
+{
+	GtkStyleContext *sc = gtk_widget_get_style_context(widget);
+	GtkStateFlags sf = gtk_widget_get_state_flags(widget);
+
+	if (set)
+		gtk_style_context_set_state(sc, sf | GTK_STATE_FLAG_SELECTED);
+	else
+		gtk_style_context_set_state(sc, sf & (~GTK_STATE_FLAG_NORMAL));
+  gtk_widget_queue_draw(widget);
+}
+
 #else
 /* GTK2 */
 
