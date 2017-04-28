@@ -231,22 +231,7 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 	gtk_container_add(GTK_CONTAINER(event_box), w);
 	g_signal_connect(event_box, "button-press-event", G_CALLBACK(cb), cb_data);
 
-#ifdef PCB_GTK3
-	{
-		GtkStyleContext *context;
-		GtkCssProvider *provider;
-
-		context = gtk_widget_get_style_context(event_box);      /* Will modify only this widget */
-		provider = gtk_css_provider_new();
-		gtk_css_provider_load_from_data(GTK_CSS_PROVIDER(provider),
-																		"*.layersel:selected {\n"
-																		"   background-color: @theme_selected_bg_color;\n"
-																		"   color: @theme_selected_fg_color;\n" "}\n", -1, NULL);
-		gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-		gtk_style_context_add_class(context, "layersel");
-		g_object_unref(provider);   /* Frees the structure */
-	}
-#endif
+	gtkc_widget_selectable(event_box, "layersel");
 
 	return event_box;
 }

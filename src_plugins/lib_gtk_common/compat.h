@@ -86,6 +86,24 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
   gtk_widget_queue_draw(widget);
 }
 
+/* Make a widget selectable (via recoloring) */
+#define gtkc_widget_selectable(widget, name_space) \
+	do { \
+		GtkStyleContext *context; \
+		GtkCssProvider *provider; \
+\
+		context = gtk_widget_get_style_context(widget); \
+		provider = gtk_css_provider_new(); \
+		gtk_css_provider_load_from_data(GTK_CSS_PROVIDER(provider), \
+																		"*." name_space ":selected {\n" \
+																		"   background-color: @theme_selected_bg_color;\n" \
+																		"   color: @theme_selected_fg_color;\n" "}\n", -1, NULL); \
+		gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION); \
+		gtk_style_context_add_class(context, name_space); \
+		g_object_unref(provider); \
+	} while(0)
+
+
 #else
 /* GTK2 */
 
@@ -143,6 +161,8 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 	else
 		gtk_widget_set_state(widget, st & (~GTK_STATE_SELECTED));
 }
+
+#define gtkc_widget_selectable(widget, name_space)
 
 #endif
 
