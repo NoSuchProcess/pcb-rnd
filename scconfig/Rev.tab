@@ -1,3 +1,4 @@
+8560	configure	gtk: new layer selector
 8331	configure	cquote generates C98-safe long strings
 8275	configure	puplug
 8153	configure	enable io_hyp by default
