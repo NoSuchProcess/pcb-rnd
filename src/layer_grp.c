@@ -654,7 +654,7 @@ pcb_layergrp_id_t pcb_layergrp_get_top_silk()
 int pcb_silk_on(pcb_board_t *pcb)
 {
 	static pcb_layer_id_t ts = -1, bs = -1;
-	pcb_layergrp_get_cached(pcb, &ts, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	pcb_layergrp_get_cached(pcb, &ts, PCB_LYT_TOP, PCB_LYT_SILK);
 	if ((ts >= 0) && (pcb->LayerGroups.grp[ts].vis))
 		return 1;
 	pcb_layergrp_get_cached(pcb, &bs, PCB_LYT_BOTTOM, PCB_LYT_SILK);
