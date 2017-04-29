@@ -37,7 +37,6 @@
 #include "compat.h"
 
 #warning TEMPORARY HACKs:
-#define pcb_hid_actionl(a, b, c) printf("action: " a b "\n")
 static pcb_gtk_ls_lyr_t *current = NULL;
 
 /*** Layer visibility widget rendering ***/
@@ -177,12 +176,12 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 	pcb_gtk_ls_lyr_t *lsl = user_data;
 	switch(event->button.button) {
 		case 1:
+		case 3:
 			if ((lsl->ev_toggle_vis == NULL) || (lsl->ev_toggle_vis(lsl) == 0))
 				lsl->on = !lsl->on;
 			layer_vis_sync(lsl);
-			break;
-		case 3:
-			pcb_hid_actionl("Popup", "layer", NULL);
+			if (event->button.button == 3)
+				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
 	}
 	return TRUE;
@@ -193,7 +192,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpoint
 	pcb_gtk_ls_lyr_t *lsl = user_data, *old_curr;
 	switch(event->button.button) {
 		case 1:
-			printf("layer select!\n");
+		case 3:
 			if ((lsl->ev_selected == NULL) || (lsl->ev_selected(lsl) == 0)) {
 				old_curr = current;
 				current = lsl;
@@ -201,9 +200,8 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpoint
 					layer_vis_sync(old_curr);
 				layer_vis_sync(lsl);
 			}
-			break;
-		case 3:
-			pcb_hid_actionl("Popup", "layer", NULL);
+			if (event->button.button == 3)
+				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
 	}
 	return TRUE;
