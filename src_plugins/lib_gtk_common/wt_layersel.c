@@ -63,10 +63,8 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb)
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
 	gint width, height, max_height;
-	guchar *pixels;
-	guint r, g, b;
-	guint w;
-	guchar *p;
+	guchar *pixels, *p;
+	guint w, r, g, b;
 
 	pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 16, 16);
 	width = gdk_pixbuf_get_width(pixbuf);	/* 16 here, obviously */
