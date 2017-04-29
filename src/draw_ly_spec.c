@@ -120,6 +120,8 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 		return;
 
 	pcb_layergrp_list(PCB, PCB_LYT_SILK | lyt_side, &gid, 1);
+	if (!PCB->LayerGroups.grp[gid].vis)
+		return;
 
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;

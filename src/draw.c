@@ -199,13 +199,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	 */
 	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB_VLY_INVISIBLE, 0)) {
 		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
-		if (pcb_silk_on(PCB)) {
-			pcb_layer_id_t lsilk;
-			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-			pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
-			if (pcb_layer_list(PCB_LYT_INVISIBLE_SIDE() | PCB_LYT_SILK, &lsilk, 1) > 0)
-				pcb_draw_layer(&(PCB->Data->Layer[lsilk]), drawn_area);
-		}
+		pcb_draw_silk(PCB_LYT_INVISIBLE_SIDE(), drawn_area);
 		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		pcb_gui->end_layer();
 	}
