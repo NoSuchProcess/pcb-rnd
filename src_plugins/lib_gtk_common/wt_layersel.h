@@ -12,11 +12,13 @@ typedef struct pcb_gtk_ls_lyr_s pcb_gtk_ls_lyr_t;
 struct pcb_gtk_ls_lyr_s {
 	GtkWidget *box, *vis_on, *vis_off, *name_box;
 
-	int (*ev_toggle_vis)(pcb_gtk_ls_lyr_t *lsl); /* called first in click handler, if returns non-zero, normal visibility update is supressed */
+	int (*ev_vis)(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on); /* called first in click handler with toggle=1, if returns non-zero, normal visibility update is supressed; also called from layer draw, with toggle=0 */
 	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl);   /* called first in click handler, if returns non-zero, layer can not be selected */
 
 	pcb_layer_id_t lid;
 	char * const*force_color;
+
+	int virt_data;
 
 	/* for callbacks */
 	pcb_gtk_ls_grp_t *lsg;  /* points to parent */

@@ -101,17 +101,25 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb)
 
 static void layersel_lyr_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 {
-	pcb_layer_t *l = pcb_get_layer(lsl->lid);
-	if (l != NULL) {
-		if (l->On) {
-			gtk_widget_show(lsl->vis_on);
-			gtk_widget_hide(lsl->vis_off);
-		}
-		else {
-			gtk_widget_show(lsl->vis_off);
-			gtk_widget_hide(lsl->vis_on);
-		}
+	int is_on = 0;
+
+	if (lsl->ev_vis == NULL) {
+		pcb_layer_t *l = pcb_get_layer(lsl->lid);
+		if (l != NULL)
+			is_on = l->On;
 	}
+	else
+		lsl->ev_vis(lsl, 0, &is_on);
+
+	if (is_on) {
+		gtk_widget_show(lsl->vis_on);
+		gtk_widget_hide(lsl->vis_off);
+	}
+	else {
+		gtk_widget_show(lsl->vis_off);
+		gtk_widget_hide(lsl->vis_on);
+	}
+
 	if ((lsl->lid != -1) && (lsl->lid == pcb_layer_id(PCB->Data, LAYER_ON_STACK(0))))
 		pcb_gtk_set_selected(lsl->name_box, 1);
 	else
@@ -152,6 +160,16 @@ static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 
 /*** Event handling ***/
 
+/* Toggle a virtual layer: flip the bool */
+static int vis_virt(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
+{
+	pcb_bool *b = (pcb_bool *)((char *)PCB + lsl->virt_data);
+	if (toggle)
+		*b = !*b;
+	*is_on = *b;
+	return 0;
+}
+
 static int ev_lyr_no_select(pcb_gtk_ls_lyr_t *lsl)
 {
 	return 1; /* layer can not be selected ever */
@@ -175,19 +193,31 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 {
 	pcb_gtk_ls_lyr_t *lsl = user_data;
 	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
+	int n, is_on, normal = 1;
 
 	switch(event->button.button) {
 		case 1:
 		case 3:
-			if ((lsl->ev_toggle_vis == NULL) || (lsl->ev_toggle_vis(lsl) == 0)) {
-				pcb_layer_t *l = pcb_get_layer(lsl->lid);
-				if (l != NULL) {
-					int n, want_on = !l->On;
-					pcb_layervis_change_group_vis(lsl->lid, want_on, 0);
-					for(n = 0; n < lsl->lsg->grp->len; n++)
-						layersel_lyr_vis_sync(&lsl->lsg->layer[n]);
+			if (lsl->ev_vis != NULL) {
+				if (lsl->ev_vis(lsl, 1, &is_on) == 0) {
+					normal = 0;
+					layersel_lyr_vis_sync(lsl);
 				}
 			}
+			else {
+				pcb_layer_t *l = pcb_get_layer(lsl->lid);
+				if (l != NULL)
+					is_on = !l->On;
+				else
+					normal = 0;
+			}
+
+			if (normal) {
+				pcb_layervis_change_group_vis(lsl->lid, is_on, 0);
+				for(n = 0; n < lsl->lsg->grp->len; n++)
+					layersel_lyr_vis_sync(&lsl->lsg->layer[n]);
+			}
+
 			ls->com->invalidate_all();
 			if (event->button.button == 3)
 				pcb_hid_actionl("Popup", "layer", NULL);
@@ -419,16 +449,16 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 typedef struct {
 	const char *name;
 	char * const*force_color;
-	int (*ev_toggle_vis)(pcb_gtk_ls_lyr_t *lsl);
+	int (*ev_vis)(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on);
 	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl);
+	int virt_data;
 } virt_layers_t;
 
 static const virt_layers_t virts[] = {
-	{ "Pins/Pads",  &conf_core.appearance.color.pin,               NULL, ev_lyr_no_select },
-	{ "Vias",       &conf_core.appearance.color.via,               NULL, ev_lyr_no_select },
-	{ "Far side",   &conf_core.appearance.color.invisible_objects, NULL, ev_lyr_no_select },
-	{ "Rats",       &conf_core.appearance.color.rat,               NULL, ev_lyr_no_select },
-	{ "All-silk",   &conf_core.appearance.color.element,           NULL, ev_lyr_no_select }
+	{ "Pins/Pads",  &conf_core.appearance.color.pin,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->PinOn) - (char *)PCB},
+	{ "Vias",       &conf_core.appearance.color.via,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->ViaOn) - (char *)PCB },
+	{ "Far side",   &conf_core.appearance.color.invisible_objects, vis_virt, ev_lyr_no_select,  ((char *)&PCB->InvisibleObjectsOn) - (char *)PCB },
+	{ "Rats",       &conf_core.appearance.color.rat,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->RatOn) - (char *)PCB },
 };
 
 static void layersel_populate(pcb_gtk_layersel_t *ls)
@@ -455,8 +485,9 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 		for(n = 0; n < ls->grp_virt.len; n++) {
 			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], virts[n].name, -1, virts[n].force_color), FALSE, FALSE, 1);
-			lsg->layer[n].ev_selected   = virts[n].ev_selected;
-			lsg->layer[n].ev_toggle_vis = virts[n].ev_toggle_vis;
+			lsg->layer[n].ev_selected = virts[n].ev_selected;
+			lsg->layer[n].ev_vis = virts[n].ev_vis;
+			lsg->layer[n].virt_data = virts[n].virt_data;
 			lsg->layer[n].lid = ls->grp_virt.lid[n] = -1;
 		}
 
