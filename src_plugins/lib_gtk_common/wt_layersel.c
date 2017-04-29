@@ -195,9 +195,8 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 	return TRUE;
 }
 
-static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_lyr_t *lsl)
 {
-	pcb_gtk_ls_lyr_t *lsl = user_data;
 	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
 	int n, is_on, normal = 1;
 
@@ -234,9 +233,8 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 	return TRUE;
 }
 
-static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_lyr_t *lsl)
 {
-	pcb_gtk_ls_lyr_t *lsl = user_data;
 	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
 	pcb_layer_id_t old_curr;
 
