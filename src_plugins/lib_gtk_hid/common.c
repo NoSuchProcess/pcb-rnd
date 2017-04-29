@@ -5,6 +5,7 @@
 #include "gui.h"
 #include "common.h"
 
+#include "../src_plugins/lib_gtk_common/wt_layersel.h"
 #include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
@@ -144,8 +145,12 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL)
 		return;
 
+#ifdef NEWLS
+
+#else
 	ghid_layer_buttons_update(&ghidgui->topwin);
 	pcb_gtk_layer_selector_show_layers(GHID_LAYER_SELECTOR(ghidgui->topwin.layer_selector), get_layer_visible_cb);
+#endif
 
 	/* FIXME - if a layer is moved it should retain its color.  But layers
 	   |  currently can't do that because color info is not saved in the

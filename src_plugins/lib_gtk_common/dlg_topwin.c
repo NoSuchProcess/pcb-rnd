@@ -61,6 +61,7 @@
 #include "in_mouse.h"
 #include "in_keyboard.h"
 #include "wt_layer_selector.h"
+#include "wt_layersel.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "win_place.h"
@@ -227,20 +228,32 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 const gchar *get_layer_color(gint layer)
 {
 	const gchar *rv;
+#ifdef NEWLS
+	printf("layer TODO: get_layer_color()\n");
+#else
 	layer_process(&rv, NULL, NULL, layer);
+#endif
 	return rv;
 }
 
 /*! \brief Update a layer selector's color scheme */
 void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw)
 {
+#ifdef NEWLS
+	printf("layer TODO: get_layer_color()\n");
+#else
 	pcb_gtk_layer_selector_update_colors(GHID_LAYER_SELECTOR(tw->layer_selector), get_layer_color);
 	pcb_layer_colors_from_conf(PCB);
+#endif
 }
 
 void ghid_layer_buttons_update(pcb_gtk_topwin_t *tw)
 {
+#ifdef NEWLS
+	printf("layer TODO: get_layer_color()\n");
+#else
 	pcb_gtk_layer_buttons_update(tw->layer_selector, GHID_MAIN_MENU(tw->menu.menu_bar));
+#endif
 }
 
 /*! \brief Called when user clicks OK on route style dialog */
@@ -385,11 +398,16 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->menu_hbox), tw->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
 	/* Build layer menus */
+#ifdef NEWLS
+	tw->layer_selector = pcb_gtk_layersel_build(&tw->layersel);
+#else
 	tw->layer_selector = pcb_gtk_layer_selector_new();
 	make_layer_buttons(tw->layer_selector);
 	make_virtual_layer_buttons(tw->layer_selector);
 	g_signal_connect(G_OBJECT(tw->layer_selector), "select_layer", G_CALLBACK(layer_selector_select_callback), tw->com);
 	g_signal_connect(G_OBJECT(tw->layer_selector), "toggle_layer", G_CALLBACK(layer_selector_toggle_callback), tw->com);
+#endif
+
 	/* Build main menu */
 	tw->menu.menu_bar = ghid_load_menus(&tw->menu, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
@@ -415,8 +433,12 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->left_toolbar = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->left_toolbar, FALSE, FALSE, 0);
 
+#ifdef NEWLS
+	gtk_box_pack_start(GTK_BOX(tw->left_toolbar), tw->layer_selector, TRUE, TRUE, 0);
+#else
 	vbox = ghid_scrolled_vbox(tw->left_toolbar, &scrolled, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), tw->layer_selector, FALSE, FALSE, 0);
+#endif
 
 	/* tw->mode_btn.mode_buttons_frame was created above in the call to
 	 * make_mode_buttons_and_toolbar (...);
