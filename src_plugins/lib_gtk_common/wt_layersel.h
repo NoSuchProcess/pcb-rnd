@@ -29,10 +29,6 @@ struct pcb_gtk_ls_grp_s {
 
 	/* for callbacks */
 	pcb_gtk_layersel_t *ls;  /* points to parent */
-
-	/* TODO: temporary hack: will come from the core */
-	unsigned on:1;    /* central visibility (toggles all layers) */
-	unsigned open:1;  /* whether group is expanded, layers are visible */
 };
 
 

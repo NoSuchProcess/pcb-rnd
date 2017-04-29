@@ -45,6 +45,7 @@ struct pcb_layer_group_s {
 
 	unsigned valid:1;                      /* 1 if it's a new-style, valid layer group; 0 after loading old files with no layer stackup info */
 	unsigned vis:1;                        /* 1 if layer group is visible on the GUI */
+	unsigned open:1;                       /* 1 if the group is open (expanded) on the GUI */
 
 	/* internal: temporary states */
 	int intern_id;                         /* for the old layer import mechanism */

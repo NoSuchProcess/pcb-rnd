@@ -120,7 +120,7 @@ static void layer_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 
 static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 {
-	if (lsg->open) {
+	if (lsg->grp->open) {
 		int n;
 		pcb_gtk_widget_hide_all(lsg->grp_closed);
 		gtk_widget_set_no_show_all(lsg->grp_open, 0);
@@ -137,7 +137,7 @@ static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 
 		/* a closed group has visibility boxes displayed, pick one to show */
 		if (lsg->vis_on != NULL) {
-			if (lsg->on) {
+			if (lsg->grp->vis) {
 				gtk_widget_show(lsg->vis_on);
 				gtk_widget_hide(lsg->vis_off);
 			}
@@ -161,7 +161,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 {
 	switch(event->button.button) {
 		case 1:
-			lsg->on = !lsg->on;
+			lsg->grp->vis = !lsg->grp->vis;
 			group_vis_sync(lsg);
 			break;
 		case 3:
@@ -212,7 +212,7 @@ static gboolean group_any_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 {
 	switch(event->button.button) {
 		case 1:
-			lsg->open = openval;
+			lsg->grp->open = openval;
 			group_vis_sync(lsg);
 			break;
 		case 3:
@@ -405,6 +405,7 @@ GtkWidget *pcb_gtk_layersel_build(pcb_gtk_layersel_t *ls)
 	GtkWidget *scrolled;
 
 	ls->grp_box = gtkc_vbox_new(FALSE, 0);
+	ls->grp_virt.open = 1;
 	layersel_populate(ls);
 
 	/* get the whole box vertically scrolled, if needed */
