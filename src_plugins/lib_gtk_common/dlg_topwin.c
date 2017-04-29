@@ -219,16 +219,6 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 	g_free(filename);
 }
 
-
-/*! \brief callback for pcb_gtk_layer_selector_update_colors */
-const gchar *get_layer_color(gint layer)
-{
-	const gchar *rv;
-#warning layersel TODO
-rv=NULL;
-	return rv;
-}
-
 /*! \brief Update a layer selector's color scheme */
 void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw)
 {
