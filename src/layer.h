@@ -137,12 +137,8 @@ pcb_layer_id_t pcb_layer_get_top_silk();
 
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
-#define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \
-				(conf_core.editor.show_solder_side ? pcb_layer_get_bottom_silk() : pcb_layer_get_top_silk())] \
-				: LAYER_ON_STACK(0))
-#define	INDEXOFCURRENT		(PCB->SilkActive ? \
-				(conf_core.editor.show_solder_side ? pcb_layer_get_bottom_silk() : pcb_layer_get_top_silk()) \
-				: pcb_layer_stack[0])
+#define	CURRENT	(LAYER_ON_STACK(0))
+#define	INDEXOFCURRENT	(pcb_layer_stack[0])
 #define SILKLAYER		Layer[ \
 				(conf_core.editor.show_solder_side ? pcb_layer_get_bottom_silk() : pcb_layer_get_top_silk())]
 #define BACKSILKLAYER		Layer[ \

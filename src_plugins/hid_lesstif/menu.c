@@ -117,8 +117,6 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	if (PCB->RatDraw)
 		current_layer = LB_RATS;
-	else if (PCB->SilkActive)
-		current_layer = LB_SILK;
 	else
 		current_layer = pcb_layer_stack[0];
 
@@ -281,7 +279,6 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	int l, i;
 	const char *name;
 	PCB->RatDraw = (layer == LB_RATS);
-	PCB->SilkActive = (layer == LB_SILK);
 	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(PCB, layer) & PCB_LYT_SILK)))
 		pcb_layervis_change_group_vis(layer, 1, 1);
 	for (l = 0; l < num_layer_buttons; l++) {

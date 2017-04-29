@@ -70,7 +70,7 @@ struct pcb_board_s {
 	  ThermStyle;									/* type of thermal to place with thermal tool */
 	pcb_bool Changed,									/* layout has been changed */
 	  ViaOn,											/* visibility flags */
-	  RatOn, InvisibleObjectsOn, PinOn, SilkActive,	/* active layer is actually silk */
+	  RatOn, InvisibleObjectsOn, PinOn,	/* active layer is actually silk */
 	  RatDraw;										/* we're drawing rats */
 	pcb_coord_t CursorX,									/* cursor position as saved with layout */
 	  CursorY;

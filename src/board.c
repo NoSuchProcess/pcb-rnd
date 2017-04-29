@@ -73,7 +73,6 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 
 	ptr->ThermStyle = 4;
 	ptr->IsleArea = 2.e8;
-	ptr->SilkActive = pcb_false;
 	ptr->RatDraw = pcb_false;
 
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
