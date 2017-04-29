@@ -173,10 +173,17 @@ static int ev_lyr_no_select(pcb_gtk_ls_lyr_t *lsl)
 
 static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_grp_t *lsg)
 {
+	pcb_gtk_layersel_t *ls = lsg->ls;
+	int n;
+
 	switch(event->button.button) {
 		case 1:
 			lsg->grp->vis = !lsg->grp->vis;
+			pcb_layervis_change_group_vis(lsg->layer[0].lid, lsg->grp->vis, 0);
+			for(n = 0; n < lsg->grp->len; n++)
+				layersel_lyr_vis_sync(&lsg->layer[n]);
 			group_vis_sync(lsg);
+			ls->com->invalidate_all();
 			break;
 		case 3:
 			pcb_hid_actionl("Popup", "group", NULL);
