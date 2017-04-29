@@ -34,6 +34,7 @@ struct pcb_gtk_ls_grp_s {
 
 
 struct pcb_gtk_layersel_s {
+	GtkWidget *grp_box;
 	pcb_gtk_ls_grp_t grp[4];
 };
 
