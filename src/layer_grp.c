@@ -637,3 +637,15 @@ pcb_layergrp_id_t pcb_layergrp_get_top_paste()
 	static pcb_layer_id_t cache = -1;
 	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_PASTE);
 }
+
+pcb_layergrp_id_t pcb_layergrp_get_bottom_silk()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+}
+
+pcb_layergrp_id_t pcb_layergrp_get_top_silk()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_SILK);
+}

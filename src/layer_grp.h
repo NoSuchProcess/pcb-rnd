@@ -152,5 +152,7 @@ pcb_layergrp_id_t pcb_layergrp_get_bottom_mask();
 pcb_layergrp_id_t pcb_layergrp_get_top_mask();
 pcb_layergrp_id_t pcb_layergrp_get_bottom_paste();
 pcb_layergrp_id_t pcb_layergrp_get_top_paste();
+pcb_layergrp_id_t pcb_layergrp_get_bottom_silk();
+pcb_layergrp_id_t pcb_layergrp_get_top_silk();
 
 #endif
