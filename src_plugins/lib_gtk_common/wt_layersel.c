@@ -381,7 +381,7 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 	int n;
 	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1, grp);
 
-	lsg->layer = malloc(sizeof(pcb_gtk_ls_lyr_t) * grp->len);
+	lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), grp->len);
 
 	/* install layers */
 	for(n = 0; n < grp->len; n++) {
@@ -416,7 +416,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 	{ /* build hardwired virtual layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
-		lsg->layer = malloc(sizeof(pcb_gtk_ls_lyr_t) * 5);
+		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), 5);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0, &ls->grp_virt), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads", -1, &conf_core.appearance.color.pin), FALSE, FALSE, 1);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[1], "Vias", -1, &conf_core.appearance.color.via), FALSE, FALSE, 1);
