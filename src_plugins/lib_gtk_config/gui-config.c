@@ -341,7 +341,7 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 */
 static GtkWidget *config_window;
 
-static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, void (*save_cb) (GtkButton * widget, save_ctx_t * sctx))
+static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, void (*save_cb) (GtkButton * widget, save_ctx_t * sctx), int disable_factory)
 {
 	GtkWidget *config_color_warn_label, *button, *hbox, *vbox2;
 	const char *tooltip_text;
@@ -384,9 +384,11 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2file);
 
-	button = gtk_button_new_with_label("Restore factory defaults");
-	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_int2design);
+	if (!disable_factory) {
+		button = gtk_button_new_with_label("Restore factory defaults");
+		gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
+		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_int2design);
+	}
 }
 
 	/* -------------- The General config page ----------------
@@ -535,7 +537,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 
 	vbox = gtkc_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(com, tab_vbox, config_general_save);
+	config_user_role_section(com, tab_vbox, config_general_save, 0);
 }
 
 	/* -------------- The Sizes config page ----------------
@@ -683,7 +685,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 
 	vbox = gtkc_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(com, tab_vbox, config_sizes_save);
+	config_user_role_section(com, tab_vbox, config_sizes_save, 0);
 
 	gtk_widget_show_all(config_sizes_vbox);
 }
@@ -1034,7 +1036,7 @@ static void config_increments_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t 
 
 	vbox = gtkc_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(com, tab_vbox, config_increments_save);
+	config_user_role_section(com, tab_vbox, config_increments_save, 0);
 }
 
 	/* -------------- The Library config page ----------------
@@ -1223,7 +1225,7 @@ static void config_library_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 	entry = gtk_conf_list_widget(&library_cl);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 4);
 
-	config_user_role_section(com, tab_vbox, config_library_save);
+	config_user_role_section(com, tab_vbox, config_library_save, 0);
 }
 
 
@@ -1390,7 +1392,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 /* -- common */
 	vbox = gtkc_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, FALSE, TRUE, 0);
-	config_user_role_section(com, tab_vbox, config_layers_save);
+	config_user_role_section(com, tab_vbox, config_layers_save, 1);
 }
 
 void ghid_config_layer_name_update(gchar * name, gint layer)
@@ -1567,7 +1569,7 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	config_colors_tab_create_scalar(com, vbox, "appearance/color", 1);
 
 	config_colors_tab_create_array(com, vbox, "appearance/color/layer_selected");
-	config_user_role_section(com, config_colors_vbox, config_colors_save);
+	config_user_role_section(com, config_colors_vbox, config_colors_save, 0);
 
 	gtk_widget_show_all(config_colors_vbox);
 }
