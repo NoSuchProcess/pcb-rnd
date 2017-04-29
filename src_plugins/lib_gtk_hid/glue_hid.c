@@ -179,7 +179,7 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 	/* These are needed to make sure the @layerpick and @layerview menus
 	 * are properly initialized and synchronized with the current PCB.
 	 */
-	ghid_layer_buttons_update(&ghidgui->topwin);
+	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->topwin.menu.menu_bar), GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
 

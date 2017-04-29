@@ -225,7 +225,7 @@ void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw)
 #warning layersel TODO
 }
 
-void ghid_layer_buttons_update(pcb_gtk_topwin_t *tw)
+void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
 {
 #warning layersel TODO
 }
