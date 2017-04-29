@@ -39,13 +39,9 @@
 #include "compat.h"
 
 /*** Layer visibility widget rendering ***/
+
 #define set_pixel(dst, r, g, b, a) \
-do { \
-	p[0] = r; \
-	p[1] = g; \
-	p[2] = b; \
-	p[3] = a; \
-} while(0)
+	do { p[0] = r; p[1] = g; p[2] = b; p[3] = a; } while(0)
 
 static guint hex2bin_(char c)
 {
