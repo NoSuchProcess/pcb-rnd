@@ -255,6 +255,7 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 			}
 		}
 	}
+	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 }
 
 static const char *layer_vis_cookie = "core_layer_vis";
