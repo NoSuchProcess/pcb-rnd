@@ -410,7 +410,7 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
 	gtk_misc_set_alignment(GTK_MISC(vlabel), 0, 1);
 	gtk_widget_set_size_request(vlabel, 32, 1);
 
-	/* install group name - vertical (for when the group is closed) */
+	/* install group name - horizontal (for when the group is closed) */
 	if (has_group_vis) {
 		GtkWidget *vis;
 		vis = wrap_bind_click(build_visbox(grp_color(grp), &lsg->vis_on, &lsg->vis_off), G_CALLBACK(group_vis_press_cb), lsg);
