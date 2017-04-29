@@ -403,7 +403,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	/* Build layer menus */
 #ifdef NEWLS
-	tw->layer_selector = pcb_gtk_layersel_build(&tw->layersel);
+	tw->layer_selector = pcb_gtk_layersel_build(tw->com, &tw->layersel);
 #else
 	tw->layer_selector = pcb_gtk_layer_selector_new();
 	make_layer_buttons(tw->layer_selector);

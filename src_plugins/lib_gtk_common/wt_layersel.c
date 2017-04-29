@@ -176,6 +176,8 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	pcb_gtk_ls_lyr_t *lsl = user_data;
+	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
+
 	switch(event->button.button) {
 		case 1:
 		case 3:
@@ -188,6 +190,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 						layersel_lyr_vis_sync(&lsl->lsg->layer[n]);
 				}
 			}
+			ls->com->invalidate_all();
 			if (event->button.button == 3)
 				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
@@ -214,6 +217,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpoint
 							for(li = 0; li < ls->grp[gi].grp->len; li++)
 								if (ls->grp[gi].layer[li].lid == old_curr)
 									layersel_lyr_vis_sync(&ls->grp[gi].layer[li]);
+					ls->com->invalidate_all();
 				}
 				layersel_lyr_vis_sync(lsl);
 			}
@@ -452,12 +456,13 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 	gtk_box_pack_start(GTK_BOX(ls->grp_box), spring, TRUE, TRUE, 0);
 }
 
-GtkWidget *pcb_gtk_layersel_build(pcb_gtk_layersel_t *ls)
+GtkWidget *pcb_gtk_layersel_build(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls)
 {
 	GtkWidget *scrolled;
 
 	ls->grp_box = gtkc_vbox_new(FALSE, 0);
 	ls->grp_virt.open = 1;
+	ls->com = com;
 	layersel_populate(ls);
 
 	/* get the whole box vertically scrolled, if needed */
