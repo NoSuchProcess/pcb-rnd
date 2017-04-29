@@ -23,7 +23,15 @@
  *
  */
 
+#include "config.h"
+
 #include <gtk/gtk.h>
+
+#include "layer.h"
+#include "layer_grp.h"
+#include "board.h"
+#include "data.h"
+
 #include "wt_layersel.h"
 #include "compat.h"
 
@@ -333,10 +341,10 @@ static void build_group_finish(pcb_gtk_ls_grp_t *lsg)
 }
 
 /* Create a group that has a real layer group in core, add all layers */
-static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, const char *gname)
+static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, pcb_layer_group_t *grp)
 {
 	int n;
-	GtkWidget *wg = build_group_start(ls, lsg, gname, 1);
+	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1);
 
 	/* install layers */
 	for(n = 0; n < 4; n++) {
@@ -354,18 +362,23 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 
 
 /*** Layer selector widget building function ***/
-static layersel_populate(pcb_gtk_layersel_t *ls)
+static void layersel_populate(pcb_gtk_layersel_t *ls)
 {
 	GtkWidget *spring;
+	pcb_layergrp_id_t gid;
 
-	gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[0], "group0"), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[1], "group1"), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[2], "group2longnamed"), FALSE, FALSE, 0);
+	printf("%d %d\n", pcb_max_group(PCB), PCB_MAX_LAYERGRP);
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+		if (g->type & PCB_LYT_SUBSTRATE)
+			continue;
+		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[gid], g), FALSE, FALSE, 0);
+	}
 
 	gtk_box_pack_start(GTK_BOX(ls->grp_box), gtk_hseparator_new(), FALSE, FALSE, 0);
 
 	{ /* build hardwired virtual layers */
-		pcb_gtk_ls_grp_t *lsg = &ls->grp[3];
+		pcb_gtk_ls_grp_t *lsg = &ls->grp_virt;
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads"), FALSE, FALSE, 1);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[1], "Vias"), FALSE, FALSE, 1);
