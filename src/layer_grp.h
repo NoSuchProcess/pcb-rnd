@@ -155,4 +155,7 @@ pcb_layergrp_id_t pcb_layergrp_get_top_paste();
 pcb_layergrp_id_t pcb_layergrp_get_bottom_silk();
 pcb_layergrp_id_t pcb_layergrp_get_top_silk();
 
+/* return whether any silk layer group is visible */
+int pcb_silk_on(void);
+
 #endif
