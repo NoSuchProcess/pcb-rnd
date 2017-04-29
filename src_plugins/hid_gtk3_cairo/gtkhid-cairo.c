@@ -161,7 +161,7 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 			return /* pinout ? 0 : */ PCB->InvisibleObjectsOn;
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*|| pinout */ )
-				return PCB->ElementOn;
+				return pcb_silk_on(PCB);
 			return 0;
 		case PCB_LYT_ASSY:
 			return 0;

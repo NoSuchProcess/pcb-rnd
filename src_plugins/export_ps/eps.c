@@ -386,7 +386,7 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 
 	if (as_shown) {
 		if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-			return PCB->ElementOn;
+			return pcb_silk_on(PCB);
 		else
 			return 0;
 	}

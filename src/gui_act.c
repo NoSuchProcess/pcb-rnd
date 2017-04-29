@@ -942,7 +942,7 @@ appear on the silk layer when you print the layout.
 static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
-	if (function && PCB->ElementOn) {
+	if (function && pcb_silk_on(PCB)) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{

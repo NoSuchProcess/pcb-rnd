@@ -127,7 +127,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		for (i = 0; i < (lb->is_pick ? LB_NUMPICK : LB_NUM); i++) {
 			switch (i) {
 			case LB_SILK:
-				set = PCB->ElementOn;
+				set = pcb_silk_on(PCB);
 				break;
 			case LB_RATS:
 				set = PCB->RatOn;
@@ -232,7 +232,7 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	int l, set;
 	switch (layer) {
 	case LB_SILK:
-		set = PCB->ElementOn = !PCB->ElementOn;
+		set = !pcb_silk_on(PCB);
 		PCB->Data->SILKLAYER.On = set;
 		PCB->Data->BACKSILKLAYER.On = set;
 		break;

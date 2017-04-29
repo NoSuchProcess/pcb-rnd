@@ -199,7 +199,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	 */
 	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB_VLY_INVISIBLE, 0)) {
 		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
-		if (PCB->ElementOn) {
+		if (pcb_silk_on(PCB)) {
 			pcb_layer_id_t lsilk;
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 			pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -494,7 +494,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 			DrawPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT:
-		if (PCB->ElementOn && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
+		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
 			DrawElement((pcb_element_t *) ptr2);
 		break;
 	case PCB_TYPE_RATLINE:
@@ -510,7 +510,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 			DrawPad((pcb_pad_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT_NAME:
-		if (PCB->ElementOn && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
+		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
 			DrawElementName((pcb_element_t *) ptr1);
 		break;
 	}

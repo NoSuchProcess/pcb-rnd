@@ -515,7 +515,7 @@ SearchElementNameByLocation(int locked, pcb_element_t ** Element, pcb_text_t ** 
 	struct ans_info info;
 
 	/* package layer have to be switched on */
-	if (PCB->ElementOn) {
+	if (pcb_silk_on(PCB)) {
 		info.ptr1 = (void **) Element;
 		info.ptr2 = (void **) Text;
 		info.ptr3 = (void **) Dummy;
@@ -560,7 +560,7 @@ SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** D
 	struct ans_info info;
 
 	/* Both package layers have to be switched on */
-	if (PCB->ElementOn && PCB->PinOn) {
+	if (pcb_silk_on(PCB) && PCB->PinOn) {
 		info.ptr1 = (void **) Element;
 		info.ptr2 = (void **) Dummy1;
 		info.ptr3 = (void **) Dummy2;

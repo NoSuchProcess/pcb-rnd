@@ -630,7 +630,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	}
 
 	/* paste elements */
-	if (pcb->PinOn && pcb->ElementOn) {
+	if (pcb->PinOn && pcb_silk_on(pcb)) {
 		PCB_ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
 		{
 #ifdef DEBUG

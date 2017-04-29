@@ -467,7 +467,7 @@ pcb_bool pcb_selected_element_change_side(void)
 {
 	pcb_bool change = pcb_false;
 
-	if (PCB->PinOn && PCB->ElementOn)
+	if (PCB->PinOn && pcb_silk_on(PCB))
 		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
@@ -1453,7 +1453,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
-	if (PCB->ElementOn)
+	if (pcb_silk_on(PCB))
 		EraseElement(Element);
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
@@ -1475,7 +1475,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 	}
 	PCB_END_LOOP;
-	if (PCB->ElementOn) {
+	if (pcb_silk_on(PCB)) {
 		DrawElement(Element);
 	}
 	if (changed)
@@ -1655,7 +1655,7 @@ void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 	/* this call clears the polygons */
 	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);
-	if (PCB->ElementOn && (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
+	if (pcb_silk_on(PCB) && (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
 		DrawElementName(element);
 		DrawElementPackage(element);
 	}
@@ -1671,7 +1671,7 @@ void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* moves all names of an element to a new position */
 void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	if (PCB->ElementOn && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
+	if (pcb_silk_on(PCB) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElementName(Element);
 		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 		{
@@ -1704,7 +1704,7 @@ void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool didDraw = pcb_false;
 
-	if (PCB->ElementOn && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
+	if (pcb_silk_on(PCB) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElement(Element);
 		pcb_element_move(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
 		DrawElementName(Element);
@@ -1761,7 +1761,7 @@ void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	/* erase from screen */
-	if ((PCB->ElementOn || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
+	if ((pcb_silk_on(PCB) || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElement(Element);
 		if (!ctx->remove.bulk)
 			pcb_draw();

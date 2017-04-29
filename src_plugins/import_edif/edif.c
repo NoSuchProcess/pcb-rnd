@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.4"
+#define YYBISON_VERSION "3.0.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -600,7 +600,7 @@ extern int edifdebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
+typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
 #line 201 "edif.y" /* yacc.c:355  */
@@ -611,8 +611,6 @@ union YYSTYPE
 
 #line 613 "edif.c" /* yacc.c:355  */
 };
-
-typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -626,7 +624,7 @@ int edifparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 630 "edif.c" /* yacc.c:358  */
+#line 628 "edif.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -3374,535 +3372,535 @@ yyreduce:
         case 2:
 #line 513 "edif.y" /* yacc.c:1646  */
     { PopC(); }
-#line 3378 "edif.c" /* yacc.c:1646  */
+#line 3376 "edif.c" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 528 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3384 "edif.c" /* yacc.c:1646  */
+#line 3382 "edif.c" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 531 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3390 "edif.c" /* yacc.c:1646  */
+#line 3388 "edif.c" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 535 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3396 "edif.c" /* yacc.c:1646  */
+#line 3394 "edif.c" /* yacc.c:1646  */
     break;
 
   case 25:
 #line 559 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3402 "edif.c" /* yacc.c:1646  */
+#line 3400 "edif.c" /* yacc.c:1646  */
     break;
 
   case 34:
 #line 576 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[-3].ps)); free((yyvsp[-2].s)); }
-#line 3408 "edif.c" /* yacc.c:1646  */
+#line 3406 "edif.c" /* yacc.c:1646  */
     break;
 
   case 36:
 #line 580 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3414 "edif.c" /* yacc.c:1646  */
+#line 3412 "edif.c" /* yacc.c:1646  */
     break;
 
   case 47:
 #line 605 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3420 "edif.c" /* yacc.c:1646  */
+#line 3418 "edif.c" /* yacc.c:1646  */
     break;
 
   case 69:
 #line 653 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3426 "edif.c" /* yacc.c:1646  */
+#line 3424 "edif.c" /* yacc.c:1646  */
     break;
 
   case 70:
 #line 656 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3432 "edif.c" /* yacc.c:1646  */
+#line 3430 "edif.c" /* yacc.c:1646  */
     break;
 
   case 80:
 #line 674 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3438 "edif.c" /* yacc.c:1646  */
+#line 3436 "edif.c" /* yacc.c:1646  */
     break;
 
   case 84:
 #line 684 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3444 "edif.c" /* yacc.c:1646  */
+#line 3442 "edif.c" /* yacc.c:1646  */
     break;
 
   case 91:
 #line 699 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3450 "edif.c" /* yacc.c:1646  */
+#line 3448 "edif.c" /* yacc.c:1646  */
     break;
 
   case 102:
 #line 722 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3456 "edif.c" /* yacc.c:1646  */
+#line 3454 "edif.c" /* yacc.c:1646  */
     break;
 
   case 140:
 #line 782 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3462 "edif.c" /* yacc.c:1646  */
+#line 3460 "edif.c" /* yacc.c:1646  */
     break;
 
   case 147:
 #line 797 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3468 "edif.c" /* yacc.c:1646  */
+#line 3466 "edif.c" /* yacc.c:1646  */
     break;
 
   case 150:
 #line 804 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3474 "edif.c" /* yacc.c:1646  */
+#line 3472 "edif.c" /* yacc.c:1646  */
     break;
 
   case 182:
 #line 874 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3480 "edif.c" /* yacc.c:1646  */
+#line 3478 "edif.c" /* yacc.c:1646  */
     break;
 
   case 184:
 #line 878 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3486 "edif.c" /* yacc.c:1646  */
+#line 3484 "edif.c" /* yacc.c:1646  */
     break;
 
   case 240:
 #line 982 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3492 "edif.c" /* yacc.c:1646  */
+#line 3490 "edif.c" /* yacc.c:1646  */
     break;
 
   case 247:
 #line 995 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3498 "edif.c" /* yacc.c:1646  */
+#line 3496 "edif.c" /* yacc.c:1646  */
     break;
 
   case 278:
 #line 1042 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3504 "edif.c" /* yacc.c:1646  */
+#line 3502 "edif.c" /* yacc.c:1646  */
     break;
 
   case 279:
 #line 1045 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3510 "edif.c" /* yacc.c:1646  */
+#line 3508 "edif.c" /* yacc.c:1646  */
     break;
 
   case 333:
 #line 1131 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3516 "edif.c" /* yacc.c:1646  */
+#line 3514 "edif.c" /* yacc.c:1646  */
     break;
 
   case 336:
 #line 1138 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3522 "edif.c" /* yacc.c:1646  */
+#line 3520 "edif.c" /* yacc.c:1646  */
     break;
 
   case 337:
 #line 1141 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3528 "edif.c" /* yacc.c:1646  */
+#line 3526 "edif.c" /* yacc.c:1646  */
     break;
 
   case 344:
 #line 1154 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3534 "edif.c" /* yacc.c:1646  */
+#line 3532 "edif.c" /* yacc.c:1646  */
     break;
 
   case 346:
 #line 1158 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3540 "edif.c" /* yacc.c:1646  */
+#line 3538 "edif.c" /* yacc.c:1646  */
     break;
 
   case 347:
 #line 1159 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3546 "edif.c" /* yacc.c:1646  */
+#line 3544 "edif.c" /* yacc.c:1646  */
     break;
 
   case 348:
 #line 1160 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3552 "edif.c" /* yacc.c:1646  */
+#line 3550 "edif.c" /* yacc.c:1646  */
     break;
 
   case 369:
 #line 1201 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[-2].s); }
-#line 3558 "edif.c" /* yacc.c:1646  */
+#line 3556 "edif.c" /* yacc.c:1646  */
     break;
 
   case 371:
 #line 1205 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3564 "edif.c" /* yacc.c:1646  */
+#line 3562 "edif.c" /* yacc.c:1646  */
     break;
 
   case 374:
 #line 1212 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3570 "edif.c" /* yacc.c:1646  */
+#line 3568 "edif.c" /* yacc.c:1646  */
     break;
 
   case 381:
 #line 1223 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3576 "edif.c" /* yacc.c:1646  */
+#line 3574 "edif.c" /* yacc.c:1646  */
     break;
 
   case 384:
 #line 1230 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3582 "edif.c" /* yacc.c:1646  */
+#line 3580 "edif.c" /* yacc.c:1646  */
     break;
 
   case 388:
 #line 1236 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3588 "edif.c" /* yacc.c:1646  */
+#line 3586 "edif.c" /* yacc.c:1646  */
     break;
 
   case 390:
 #line 1240 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3594 "edif.c" /* yacc.c:1646  */
+#line 3592 "edif.c" /* yacc.c:1646  */
     break;
 
   case 393:
 #line 1247 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3600 "edif.c" /* yacc.c:1646  */
+#line 3598 "edif.c" /* yacc.c:1646  */
     break;
 
   case 397:
 #line 1255 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3606 "edif.c" /* yacc.c:1646  */
+#line 3604 "edif.c" /* yacc.c:1646  */
     break;
 
   case 408:
 #line 1270 "edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3612 "edif.c" /* yacc.c:1646  */
+#line 3610 "edif.c" /* yacc.c:1646  */
     break;
 
   case 437:
 #line 1320 "edif.y" /* yacc.c:1646  */
     { (yyval.pl) = new_pair_list((yyvsp[-1].ps)); }
-#line 3618 "edif.c" /* yacc.c:1646  */
+#line 3616 "edif.c" /* yacc.c:1646  */
     break;
 
   case 438:
 #line 1323 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3624 "edif.c" /* yacc.c:1646  */
+#line 3622 "edif.c" /* yacc.c:1646  */
     break;
 
   case 439:
 #line 1324 "edif.y" /* yacc.c:1646  */
     { (yyvsp[0].ps)->next = (yyvsp[-1].ps); (yyval.ps) = (yyvsp[0].ps); }
-#line 3630 "edif.c" /* yacc.c:1646  */
+#line 3628 "edif.c" /* yacc.c:1646  */
     break;
 
   case 455:
 #line 1350 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3636 "edif.c" /* yacc.c:1646  */
+#line 3634 "edif.c" /* yacc.c:1646  */
     break;
 
   case 459:
 #line 1360 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3642 "edif.c" /* yacc.c:1646  */
+#line 3640 "edif.c" /* yacc.c:1646  */
     break;
 
   case 460:
 #line 1363 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3648 "edif.c" /* yacc.c:1646  */
+#line 3646 "edif.c" /* yacc.c:1646  */
     break;
 
   case 462:
 #line 1369 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3654 "edif.c" /* yacc.c:1646  */
+#line 3652 "edif.c" /* yacc.c:1646  */
     break;
 
   case 463:
 #line 1372 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3660 "edif.c" /* yacc.c:1646  */
+#line 3658 "edif.c" /* yacc.c:1646  */
     break;
 
   case 483:
 #line 1414 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3666 "edif.c" /* yacc.c:1646  */
+#line 3664 "edif.c" /* yacc.c:1646  */
     break;
 
   case 484:
 #line 1417 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3672 "edif.c" /* yacc.c:1646  */
+#line 3670 "edif.c" /* yacc.c:1646  */
     break;
 
   case 492:
 #line 1431 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3678 "edif.c" /* yacc.c:1646  */
+#line 3676 "edif.c" /* yacc.c:1646  */
     break;
 
   case 506:
 #line 1459 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3684 "edif.c" /* yacc.c:1646  */
+#line 3682 "edif.c" /* yacc.c:1646  */
     break;
 
   case 507:
 #line 1462 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3690 "edif.c" /* yacc.c:1646  */
+#line 3688 "edif.c" /* yacc.c:1646  */
     break;
 
   case 514:
 #line 1477 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3696 "edif.c" /* yacc.c:1646  */
+#line 3694 "edif.c" /* yacc.c:1646  */
     break;
 
   case 549:
 #line 1532 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3702 "edif.c" /* yacc.c:1646  */
+#line 3700 "edif.c" /* yacc.c:1646  */
     break;
 
   case 555:
 #line 1544 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3708 "edif.c" /* yacc.c:1646  */
+#line 3706 "edif.c" /* yacc.c:1646  */
     break;
 
   case 560:
 #line 1553 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3714 "edif.c" /* yacc.c:1646  */
+#line 3712 "edif.c" /* yacc.c:1646  */
     break;
 
   case 561:
 #line 1556 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3720 "edif.c" /* yacc.c:1646  */
+#line 3718 "edif.c" /* yacc.c:1646  */
     break;
 
   case 562:
 #line 1557 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3726 "edif.c" /* yacc.c:1646  */
+#line 3724 "edif.c" /* yacc.c:1646  */
     break;
 
   case 582:
 #line 1599 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3732 "edif.c" /* yacc.c:1646  */
+#line 3730 "edif.c" /* yacc.c:1646  */
     break;
 
   case 585:
 #line 1602 "edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3738 "edif.c" /* yacc.c:1646  */
+#line 3736 "edif.c" /* yacc.c:1646  */
     break;
 
   case 586:
 #line 1605 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[-1].s); }
-#line 3744 "edif.c" /* yacc.c:1646  */
+#line 3742 "edif.c" /* yacc.c:1646  */
     break;
 
   case 587:
 #line 1608 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3750 "edif.c" /* yacc.c:1646  */
+#line 3748 "edif.c" /* yacc.c:1646  */
     break;
 
   case 589:
 #line 1612 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3756 "edif.c" /* yacc.c:1646  */
+#line 3754 "edif.c" /* yacc.c:1646  */
     break;
 
   case 590:
 #line 1613 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3762 "edif.c" /* yacc.c:1646  */
+#line 3760 "edif.c" /* yacc.c:1646  */
     break;
 
   case 591:
 #line 1614 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3768 "edif.c" /* yacc.c:1646  */
+#line 3766 "edif.c" /* yacc.c:1646  */
     break;
 
   case 592:
 #line 1617 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3774 "edif.c" /* yacc.c:1646  */
+#line 3772 "edif.c" /* yacc.c:1646  */
     break;
 
   case 593:
 #line 1618 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3780 "edif.c" /* yacc.c:1646  */
+#line 3778 "edif.c" /* yacc.c:1646  */
     break;
 
   case 594:
 #line 1621 "edif.y" /* yacc.c:1646  */
     { define_pcb_net((yyvsp[-2].ps), (yyvsp[-1].pl)); }
-#line 3786 "edif.c" /* yacc.c:1646  */
+#line 3784 "edif.c" /* yacc.c:1646  */
     break;
 
   case 595:
 #line 1624 "edif.y" /* yacc.c:1646  */
     { (yyval.pl)=(yyvsp[0].pl); }
-#line 3792 "edif.c" /* yacc.c:1646  */
+#line 3790 "edif.c" /* yacc.c:1646  */
     break;
 
   case 611:
 #line 1646 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[-2].ps)); }
-#line 3798 "edif.c" /* yacc.c:1646  */
+#line 3796 "edif.c" /* yacc.c:1646  */
     break;
 
   case 632:
 #line 1683 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3804 "edif.c" /* yacc.c:1646  */
+#line 3802 "edif.c" /* yacc.c:1646  */
     break;
 
   case 633:
 #line 1684 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3810 "edif.c" /* yacc.c:1646  */
+#line 3808 "edif.c" /* yacc.c:1646  */
     break;
 
   case 634:
 #line 1688 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3816 "edif.c" /* yacc.c:1646  */
+#line 3814 "edif.c" /* yacc.c:1646  */
     break;
 
   case 639:
 #line 1697 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3822 "edif.c" /* yacc.c:1646  */
+#line 3820 "edif.c" /* yacc.c:1646  */
     break;
 
   case 644:
 #line 1708 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3828 "edif.c" /* yacc.c:1646  */
+#line 3826 "edif.c" /* yacc.c:1646  */
     break;
 
   case 698:
 #line 1810 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); }
-#line 3834 "edif.c" /* yacc.c:1646  */
+#line 3832 "edif.c" /* yacc.c:1646  */
     break;
 
   case 701:
 #line 1817 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3840 "edif.c" /* yacc.c:1646  */
+#line 3838 "edif.c" /* yacc.c:1646  */
     break;
 
   case 727:
 #line 1869 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3846 "edif.c" /* yacc.c:1646  */
+#line 3844 "edif.c" /* yacc.c:1646  */
     break;
 
   case 730:
 #line 1876 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3852 "edif.c" /* yacc.c:1646  */
+#line 3850 "edif.c" /* yacc.c:1646  */
     break;
 
   case 747:
 #line 1911 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3858 "edif.c" /* yacc.c:1646  */
+#line 3856 "edif.c" /* yacc.c:1646  */
     break;
 
   case 766:
 #line 1942 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3864 "edif.c" /* yacc.c:1646  */
+#line 3862 "edif.c" /* yacc.c:1646  */
     break;
 
   case 789:
 #line 1977 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3870 "edif.c" /* yacc.c:1646  */
+#line 3868 "edif.c" /* yacc.c:1646  */
     break;
 
   case 791:
 #line 1983 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3876 "edif.c" /* yacc.c:1646  */
+#line 3874 "edif.c" /* yacc.c:1646  */
     break;
 
   case 803:
 #line 1999 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3882 "edif.c" /* yacc.c:1646  */
+#line 3880 "edif.c" /* yacc.c:1646  */
     break;
 
   case 818:
 #line 2018 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3888 "edif.c" /* yacc.c:1646  */
+#line 3886 "edif.c" /* yacc.c:1646  */
     break;
 
   case 823:
 #line 2029 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3894 "edif.c" /* yacc.c:1646  */
+#line 3892 "edif.c" /* yacc.c:1646  */
     break;
 
   case 827:
 #line 2035 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3900 "edif.c" /* yacc.c:1646  */
+#line 3898 "edif.c" /* yacc.c:1646  */
     break;
 
   case 829:
 #line 2039 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3906 "edif.c" /* yacc.c:1646  */
+#line 3904 "edif.c" /* yacc.c:1646  */
     break;
 
   case 831:
@@ -3919,251 +3917,251 @@ yyreduce:
 	(yyval.ps) = new_str_pair(NULL,(yyvsp[-2].s));
     }
 }
-#line 3923 "edif.c" /* yacc.c:1646  */
+#line 3921 "edif.c" /* yacc.c:1646  */
     break;
 
   case 832:
 #line 2058 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3929 "edif.c" /* yacc.c:1646  */
+#line 3927 "edif.c" /* yacc.c:1646  */
     break;
 
   case 833:
 #line 2059 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3935 "edif.c" /* yacc.c:1646  */
+#line 3933 "edif.c" /* yacc.c:1646  */
     break;
 
   case 834:
 #line 2060 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3941 "edif.c" /* yacc.c:1646  */
+#line 3939 "edif.c" /* yacc.c:1646  */
     break;
 
   case 835:
 #line 2061 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3947 "edif.c" /* yacc.c:1646  */
+#line 3945 "edif.c" /* yacc.c:1646  */
     break;
 
   case 848:
 #line 2088 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3953 "edif.c" /* yacc.c:1646  */
+#line 3951 "edif.c" /* yacc.c:1646  */
     break;
 
   case 849:
 #line 2091 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3959 "edif.c" /* yacc.c:1646  */
+#line 3957 "edif.c" /* yacc.c:1646  */
     break;
 
   case 881:
 #line 2144 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[-2].s),(yyvsp[-1].s)); }
-#line 3965 "edif.c" /* yacc.c:1646  */
+#line 3963 "edif.c" /* yacc.c:1646  */
     break;
 
   case 882:
 #line 2147 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3971 "edif.c" /* yacc.c:1646  */
+#line 3969 "edif.c" /* yacc.c:1646  */
     break;
 
   case 883:
 #line 2148 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3977 "edif.c" /* yacc.c:1646  */
+#line 3975 "edif.c" /* yacc.c:1646  */
     break;
 
   case 884:
 #line 2151 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3983 "edif.c" /* yacc.c:1646  */
+#line 3981 "edif.c" /* yacc.c:1646  */
     break;
 
   case 885:
 #line 2152 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=NULL; }
-#line 3989 "edif.c" /* yacc.c:1646  */
+#line 3987 "edif.c" /* yacc.c:1646  */
     break;
 
   case 889:
 #line 2162 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3995 "edif.c" /* yacc.c:1646  */
+#line 3993 "edif.c" /* yacc.c:1646  */
     break;
 
   case 891:
 #line 2168 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4001 "edif.c" /* yacc.c:1646  */
+#line 3999 "edif.c" /* yacc.c:1646  */
     break;
 
   case 892:
 #line 2169 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4007 "edif.c" /* yacc.c:1646  */
+#line 4005 "edif.c" /* yacc.c:1646  */
     break;
 
   case 893:
 #line 2172 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4013 "edif.c" /* yacc.c:1646  */
+#line 4011 "edif.c" /* yacc.c:1646  */
     break;
 
   case 894:
 #line 2175 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4019 "edif.c" /* yacc.c:1646  */
+#line 4017 "edif.c" /* yacc.c:1646  */
     break;
 
   case 896:
 #line 2181 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4025 "edif.c" /* yacc.c:1646  */
+#line 4023 "edif.c" /* yacc.c:1646  */
     break;
 
   case 898:
 #line 2183 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4031 "edif.c" /* yacc.c:1646  */
+#line 4029 "edif.c" /* yacc.c:1646  */
     break;
 
   case 903:
 #line 2194 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4037 "edif.c" /* yacc.c:1646  */
+#line 4035 "edif.c" /* yacc.c:1646  */
     break;
 
   case 935:
 #line 2258 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4043 "edif.c" /* yacc.c:1646  */
+#line 4041 "edif.c" /* yacc.c:1646  */
     break;
 
   case 943:
 #line 2274 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4049 "edif.c" /* yacc.c:1646  */
+#line 4047 "edif.c" /* yacc.c:1646  */
     break;
 
   case 946:
 #line 2279 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4055 "edif.c" /* yacc.c:1646  */
+#line 4053 "edif.c" /* yacc.c:1646  */
     break;
 
   case 973:
 #line 2324 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4061 "edif.c" /* yacc.c:1646  */
+#line 4059 "edif.c" /* yacc.c:1646  */
     break;
 
   case 987:
 #line 2346 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 4067 "edif.c" /* yacc.c:1646  */
+#line 4065 "edif.c" /* yacc.c:1646  */
     break;
 
   case 994:
 #line 2362 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-6].s)); free((yyvsp[-5].s)); free((yyvsp[-4].s)); free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4073 "edif.c" /* yacc.c:1646  */
+#line 4071 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1054:
 #line 2469 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4079 "edif.c" /* yacc.c:1646  */
+#line 4077 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1055:
 #line 2470 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4085 "edif.c" /* yacc.c:1646  */
+#line 4083 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1056:
 #line 2471 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4091 "edif.c" /* yacc.c:1646  */
+#line 4089 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1057:
 #line 2472 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4097 "edif.c" /* yacc.c:1646  */
+#line 4095 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1059:
 #line 2476 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4103 "edif.c" /* yacc.c:1646  */
+#line 4101 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1061:
 #line 2480 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4109 "edif.c" /* yacc.c:1646  */
+#line 4107 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1063:
 #line 2484 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 4115 "edif.c" /* yacc.c:1646  */
+#line 4113 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1085:
 #line 2520 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4121 "edif.c" /* yacc.c:1646  */
+#line 4119 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1086:
 #line 2523 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4127 "edif.c" /* yacc.c:1646  */
+#line 4125 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1107:
 #line 2564 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4133 "edif.c" /* yacc.c:1646  */
+#line 4131 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1109:
 #line 2566 "edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 4139 "edif.c" /* yacc.c:1646  */
+#line 4137 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1126:
 #line 2593 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4145 "edif.c" /* yacc.c:1646  */
+#line 4143 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1127:
 #line 2596 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4151 "edif.c" /* yacc.c:1646  */
+#line 4149 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1128:
 #line 2599 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4157 "edif.c" /* yacc.c:1646  */
+#line 4155 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1129:
 #line 2602 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4163 "edif.c" /* yacc.c:1646  */
+#line 4161 "edif.c" /* yacc.c:1646  */
     break;
 
 
-#line 4167 "edif.c" /* yacc.c:1646  */
+#line 4165 "edif.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

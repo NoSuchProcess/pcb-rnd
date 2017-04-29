@@ -78,8 +78,8 @@ void pcb_select_element(pcb_board_t *pcb, pcb_element_t *element, pcb_change_fla
 	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, element);
 
 	if (redraw) {
-		if (pcb->ElementOn && ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn))
-			if (pcb->ElementOn) {
+		if (pcb_silk_on(pcb) && ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn))
+			if (pcb_silk_on(pcb)) {
 				DrawElementName(element);
 				DrawElementPackage(element);
 			}
@@ -301,7 +301,7 @@ do { \
 		unsigned int lflg = pcb_layer_flags(pcb, n);
 
 		if ((lflg & PCB_LYT_SILK) && (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))) {
-			if (!(pcb->ElementOn || !Flag))
+			if (!(pcb_silk_on(pcb) || !Flag))
 				continue;
 		}
 		else if ((lflg & PCB_LYT_SILK) && !(PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))) {
@@ -365,7 +365,7 @@ do { \
 	{
 		{
 			pcb_bool gotElement = pcb_false;
-			if ((pcb->ElementOn || !Flag)
+			if ((pcb_silk_on(pcb) || !Flag)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 					&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn)) {
 				if (PCB_BOX_NEAR_BOX(&PCB_ELEM_TEXT_VISIBLE(PCB, element).BoundingBox, Box)
@@ -377,7 +377,7 @@ do { \
 						append(PCB_TYPE_ELEMENT_NAME, element, text);
 					}
 					PCB_END_LOOP;
-					if (pcb->ElementOn)
+					if (pcb_silk_on(pcb))
 						DrawElementName(element);
 				}
 				if ((pcb->PinOn || !Flag) && PCB_ELEMENT_NEAR_BOX(element, Box))
@@ -628,7 +628,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 	PCB_ENDALL_LOOP;
 
 	/* elements silkscreen */
-	if (type & PCB_TYPE_ELEMENT && pcb->ElementOn && F->Element)
+	if (type & PCB_TYPE_ELEMENT && pcb_silk_on(pcb) && F->Element)
 		PCB_ELEMENT_LOOP(pcb->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
@@ -641,7 +641,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		}
 	}
 	PCB_END_LOOP;
-	if (type & PCB_TYPE_ELEMENT_NAME && pcb->ElementOn && F->ElementName)
+	if (type & PCB_TYPE_ELEMENT_NAME && pcb_silk_on(pcb) && F->ElementName)
 		PCB_ELEMENT_LOOP(pcb->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element))) {
@@ -778,7 +778,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 	}
 	PCB_ENDALL_LOOP;
 
-	if (pcb->PinOn && pcb->ElementOn) {
+	if (pcb->PinOn && pcb_silk_on(pcb)) {
 		PCB_PIN_ALL_LOOP(pcb->Data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
@@ -907,7 +907,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 	}
 	PCB_ENDALL_LOOP;
 
-	if (pcb->ElementOn && (Type & PCB_TYPE_ELEMENT))
+	if (pcb_silk_on(pcb) && (Type & PCB_TYPE_ELEMENT))
 		PCB_ELEMENT_LOOP(pcb->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)

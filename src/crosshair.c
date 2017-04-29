@@ -344,7 +344,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 		}
 
 	/* draw elements if visible */
-	if (PCB->PinOn && PCB->ElementOn) {
+	if (PCB->PinOn && pcb_silk_on(PCB)) {
 		PCB_ELEMENT_LOOP(Buffer->Data);
 		{
 			if (PCB_FRONT(element) || PCB->InvisibleObjectsOn)

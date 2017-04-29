@@ -148,7 +148,6 @@ void pcb_layervis_reset_stack(void)
 			pcb_layer_stack[i] = i;
 		PCB->Data->Layer[i].On = pcb_true;
 	}
-	PCB->ElementOn = pcb_true;
 	PCB->InvisibleObjectsOn = pcb_true;
 	PCB->PinOn = pcb_true;
 	PCB->ViaOn = pcb_true;
@@ -182,7 +181,7 @@ void pcb_layervis_save_stack(void)
 			SavedStack.pcb_layer_stack[i] = pcb_layer_stack[i];
 		SavedStack.LayerOn[i] = PCB->Data->Layer[i].On;
 	}
-	SavedStack.ElementOn = PCB->ElementOn;
+	SavedStack.ElementOn = pcb_silk_on(PCB);
 	SavedStack.InvisibleObjectsOn = PCB->InvisibleObjectsOn;
 	SavedStack.PinOn = PCB->PinOn;
 	SavedStack.ViaOn = PCB->ViaOn;
@@ -210,7 +209,6 @@ void pcb_layervis_restore_stack(void)
 			pcb_layer_stack[i] = SavedStack.pcb_layer_stack[i];
 		PCB->Data->Layer[i].On = SavedStack.LayerOn[i];
 	}
-	PCB->ElementOn = SavedStack.ElementOn;
 	PCB->InvisibleObjectsOn = SavedStack.InvisibleObjectsOn;
 	PCB->PinOn = SavedStack.PinOn;
 	PCB->ViaOn = SavedStack.ViaOn;

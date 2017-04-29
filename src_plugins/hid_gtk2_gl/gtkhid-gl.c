@@ -165,7 +165,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 			return 0;
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-				return PCB->ElementOn;
+				return pcb_silk_on(PCB);
 			return 0;
 		case PCB_LYT_PASTE:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
