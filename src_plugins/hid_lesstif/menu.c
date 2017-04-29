@@ -309,88 +309,6 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	lesstif_invalidate_all();
 }
 
-static const char selectlayer_syntax[] = "SelectLayer(1..MAXLAYER|Silk|Rats)";
-
-static const char selectlayer_help[] = "Select which layer is the current layer.";
-
-/* %start-doc actions SelectLayer
-
-The specified layer becomes the currently active layer.  It is made
-visible if it is not already visible
-
-%end-doc */
-
-static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	int newl;
-	if (argc == 0)
-		return 1;
-	if (pcb_strcasecmp(argv[0], "silk") == 0)
-		newl = LB_SILK;
-	else if (pcb_strcasecmp(argv[0], "rats") == 0)
-		newl = LB_RATS;
-	else
-		newl = atoi(argv[0]) - 1;
-	layerpick_button_callback(0, newl, 0);
-	return 0;
-}
-
-static const char toggleview_syntax[] =
-	"ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)";
-
-static const char toggleview_help[] = "Toggle the visibility of the specified layer or layer group.";
-
-/* %start-doc actions ToggleView
-
-If you pass an integer, that layer is specified by index (the first
-layer is @code{1}, etc).  If you pass a layer name, that layer is
-specified by name.  When a layer is specified, the visibility of the
-layer group containing that layer is toggled.
-
-If you pass a special layer name, the visibility of those components
-(silk, rats, etc) is toggled.  Note that if you have a layer named
-the same as a special layer, the layer is chosen over the special layer.
-
-%end-doc */
-
-static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	int i, l;
-
-	if (argc == 0)
-		return 1;
-	if (isdigit((int) argv[0][0])) {
-		l = atoi(argv[0]) - 1;
-		layer_button_callback(0, l, 0);
-	}
-	else if (strcmp(argv[0], "Silk") == 0)
-		layer_button_callback(0, LB_SILK, 0);
-	else if (strcmp(argv[0], "Rats") == 0)
-		layer_button_callback(0, LB_RATS, 0);
-	else if (strcmp(argv[0], "Pins") == 0)
-		layer_button_callback(0, LB_PINS, 0);
-	else if (strcmp(argv[0], "Vias") == 0)
-		layer_button_callback(0, LB_VIAS, 0);
-	else if (strcmp(argv[0], "Mask") == 0)
-		layer_button_callback(0, LB_MASK, 0);
-	else if (strcmp(argv[0], "Paste") == 0)
-		layer_button_callback(0, LB_PASTE, 0);
-	else if (strcmp(argv[0], "BackSide") == 0)
-		layer_button_callback(0, LB_BACK, 0);
-	else {
-		l = -1;
-		for (i = 0; i < pcb_max_layer; i++)
-			if (strcmp(argv[0], PCB->Data->Layer[i].Name) == 0) {
-				l = i;
-				break;
-			}
-		if (l == -1)
-			return 1;
-		layer_button_callback(0, l, 0);
-	}
-	return 0;
-}
-
 static void insert_layerview_buttons(Widget menu)
 {
 	int i, s;
@@ -544,10 +462,6 @@ void lesstif_update_widget_flags()
 pcb_hid_action_t lesstif_menu_action_list[] = {
 	{"GetXY", "", GetXY,
 	 getxy_help, getxy_syntax},
-	{"ToggleView", 0, ToggleView,
-	 toggleview_help, toggleview_syntax},
-	{"SelectLayer", 0, SelectLayer,
-	 selectlayer_help, selectlayer_syntax}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)

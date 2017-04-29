@@ -1474,6 +1474,59 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	return ret;
 }
 
+const char pcb_acts_selectlayer[] = "SelectLayer(1..MAXLAYER|Silk|Rats)";
+const char pcb_acth_selectlayer[] = "Select which layer is the current layer.";
+
+/* %start-doc actions SelectLayer
+
+The specified layer becomes the currently active layer.  It is made
+visible if it is not already visible
+
+%end-doc */
+
+static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+#warning layersel TODO
+
+	return 0;
+}
+
+
+const char pcb_acts_toggleview[] = "ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)";
+const char pcb_acth_toggleview[] = "Toggle the visibility of the specified layer or layer group.";
+
+/* %start-doc actions ToggleView
+
+If you pass an integer, that layer is specified by index (the first
+layer is @code{1}, etc).  If you pass a layer name, that layer is
+specified by name.  When a layer is specified, the visibility of the
+layer group containing that layer is toggled.
+
+If you pass a special layer name, the visibility of those components
+(silk, rats, etc) is toggled.  Note that if you have a layer named
+the same as a special layer, the layer is chosen over the special layer.
+
+%end-doc */
+
+static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	if (pcb_strcasecmp(argv[0], "silk") == 0) {
+#warning layersel TODO
+	}
+	else if (pcb_strcasecmp(argv[0], "rats") == 0) {
+		PCB->RatOn = !PCB->RatOn;
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	}
+	else {
+		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
+	}
+
+	return 1;
+}
+
+
+
 
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
@@ -1509,8 +1562,14 @@ pcb_hid_action_t gui_action_list[] = {
 	{"RemoveMenu", 0, pcb_act_RemoveMenu,
 	 pcb_acth_RemoveMenu, pcb_acts_RemoveMenu}
 	,
+	{"SelectLayer", 0, pcb_act_SelectLayer,
+	 pcb_acth_selectlayer, pcb_acts_selectlayer}
+	,
 	{"SwitchHID", 0, pcb_act_SwitchHID,
 	 pcb_acth_SwitchHID, pcb_acts_SwitchHID}
+	,
+	{"ToggleView", 0, pcb_act_ToggleView,
+	 pcb_acth_toggleview, pcb_acts_toggleview}
 	,
 	{"PCBChanged", 0, pcb_act_PCBChanged,
 	 pcb_acth_PCBChanged, pcb_acts_PCBChanged}
