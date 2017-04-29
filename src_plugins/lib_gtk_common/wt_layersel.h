@@ -17,8 +17,6 @@ struct pcb_gtk_ls_lyr_s {
 	pcb_layer_id_t lid;
 	char * const*force_color;
 
-	unsigned on:1; /* TODO: temporary hack: should be extracted from the layer struct */
-
 	/* for callbacks */
 	pcb_gtk_ls_grp_t *lsg;  /* points to parent */
 };

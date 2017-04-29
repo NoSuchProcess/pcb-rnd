@@ -33,6 +33,7 @@
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
+#include "hid_actions.h"
 
 #include "wt_layersel.h"
 #include "compat.h"
@@ -102,13 +103,16 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb)
 
 static void layersel_lyr_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 {
-	if (lsl->on) {
-		gtk_widget_show(lsl->vis_on);
-		gtk_widget_hide(lsl->vis_off);
-	}
-	else {
-		gtk_widget_show(lsl->vis_off);
-		gtk_widget_hide(lsl->vis_on);
+	pcb_layer_t *l = pcb_get_layer(lsl->lid);
+	if (l != NULL) {
+		if (l->On) {
+			gtk_widget_show(lsl->vis_on);
+			gtk_widget_hide(lsl->vis_off);
+		}
+		else {
+			gtk_widget_show(lsl->vis_off);
+			gtk_widget_hide(lsl->vis_on);
+		}
 	}
 	if (lsl->lid == pcb_layer_id(PCB->Data, LAYER_ON_STACK(0)))
 		pcb_gtk_set_selected(lsl->name_box, 1);
@@ -175,9 +179,15 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 	switch(event->button.button) {
 		case 1:
 		case 3:
-			if ((lsl->ev_toggle_vis == NULL) || (lsl->ev_toggle_vis(lsl) == 0))
-			lsl->on = !lsl->on;
-			layersel_lyr_vis_sync(lsl);
+			if ((lsl->ev_toggle_vis == NULL) || (lsl->ev_toggle_vis(lsl) == 0)) {
+				pcb_layer_t *l = pcb_get_layer(lsl->lid);
+				if (l != NULL) {
+					int n, want_on = !l->On;
+					pcb_layervis_change_group_vis(lsl->lid, want_on, 0);
+					for(n = 0; n < lsl->lsg->grp->len; n++)
+						layersel_lyr_vis_sync(&lsl->lsg->layer[n]);
+				}
+			}
 			if (event->button.button == 3)
 				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
