@@ -29,15 +29,13 @@
 
 #include "layer.h"
 #include "layer_grp.h"
+#include "layer_vis.h"
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
 
 #include "wt_layersel.h"
 #include "compat.h"
-
-#warning TEMPORARY HACKs:
-static pcb_gtk_ls_lyr_t *current = NULL;
 
 /*** Layer visibility widget rendering ***/
 #define set_pixel(dst, r, g, b, a) \
@@ -102,7 +100,7 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb)
 
 /*** Sync: make the GUI look like internal states ***/
 
-static void layer_vis_sync(pcb_gtk_ls_lyr_t *lsl)
+static void layersel_lyr_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 {
 	if (lsl->on) {
 		gtk_widget_show(lsl->vis_on);
@@ -112,7 +110,7 @@ static void layer_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 		gtk_widget_show(lsl->vis_off);
 		gtk_widget_hide(lsl->vis_on);
 	}
-	if (lsl == current)
+	if (lsl->lid == pcb_layer_id(PCB->Data, LAYER_ON_STACK(0)))
 		pcb_gtk_set_selected(lsl->name_box, 1);
 	else
 		pcb_gtk_set_selected(lsl->name_box, 0);
@@ -127,7 +125,7 @@ static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 		gtk_widget_show_all(lsg->grp_open);
 		gtk_widget_set_no_show_all(lsg->grp_open, 1);
 		for(n = 0; n < lsg->grp->len; n++)
-			layer_vis_sync(&lsg->layer[n]);
+			layersel_lyr_vis_sync(&lsg->layer[n]);
 	}
 	else {
 		gtk_widget_set_no_show_all(lsg->grp_closed, 0);
@@ -178,8 +176,8 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 		case 1:
 		case 3:
 			if ((lsl->ev_toggle_vis == NULL) || (lsl->ev_toggle_vis(lsl) == 0))
-				lsl->on = !lsl->on;
-			layer_vis_sync(lsl);
+			lsl->on = !lsl->on;
+			layersel_lyr_vis_sync(lsl);
 			if (event->button.button == 3)
 				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
@@ -189,16 +187,25 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 
 static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-	pcb_gtk_ls_lyr_t *lsl = user_data, *old_curr;
+	pcb_gtk_ls_lyr_t *lsl = user_data;
+	pcb_layer_id_t old_curr;
 	switch(event->button.button) {
 		case 1:
 		case 3:
 			if ((lsl->ev_selected == NULL) || (lsl->ev_selected(lsl) == 0)) {
-				old_curr = current;
-				current = lsl;
-				if (old_curr != NULL)
-					layer_vis_sync(old_curr);
-				layer_vis_sync(lsl);
+				old_curr = pcb_layer_id(PCB->Data, LAYER_ON_STACK(0));
+				pcb_layervis_change_group_vis(lsl->lid, 1, 1);
+				if (old_curr >= 0) { /* need to find old layer by lid */
+					int gi, li;
+					pcb_gtk_layersel_t *ls = lsl->lsg->ls;
+
+					for(gi = 0; gi < pcb_max_group(PCB); gi++)
+						if (ls->grp[gi].grp != NULL)
+							for(li = 0; li < ls->grp[gi].grp->len; li++)
+								if (ls->grp[gi].layer[li].lid == old_curr)
+									layersel_lyr_vis_sync(&ls->grp[gi].layer[li]);
+				}
+				layersel_lyr_vis_sync(lsl);
 			}
 			if (event->button.button == 3)
 				pcb_hid_actionl("Popup", "layer", NULL);
@@ -309,7 +316,7 @@ static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, cons
 	gtk_box_pack_start(GTK_BOX(lsl->box), lsl->name_box, TRUE, TRUE, 10);
 	gtk_misc_set_alignment(GTK_MISC(lab), 0, 0.5);
 
-	layer_vis_sync(lsl);
+	layersel_lyr_vis_sync(lsl);
 
 	return lsl->box;
 }
