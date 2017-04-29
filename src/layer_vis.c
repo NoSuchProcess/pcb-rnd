@@ -118,7 +118,7 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, pcb_bool On, pcb_bool Ch
 
 	done:;
 	/* update control panel and exit */
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return (changed);
 }
 
@@ -226,7 +226,7 @@ void layer_vis_chg_mask(conf_native_t *cfg)
 		}
 	}
 	if (chg)
-		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	in = 0;
 }
 

@@ -3793,6 +3793,7 @@ int pplg_init_hid_lesstif(void)
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, LesstifRouteStylesChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, LesstifLayersChanged, NULL, lesstif_cookie);
+	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, LesstifLayersChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
 

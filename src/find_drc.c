@@ -335,7 +335,7 @@ int pcb_drc_all(void)
 	drcerr_count = 0;
 	pcb_layervis_save_stack();
 	pcb_layervis_reset_stack();
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	pcb_conn_lookup_init();
 
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
@@ -690,7 +690,7 @@ int pcb_drc_all(void)
 
 
 	pcb_layervis_restore_stack();
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
 
 	if (nopastecnt > 0) {
