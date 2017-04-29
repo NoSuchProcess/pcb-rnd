@@ -142,10 +142,10 @@ visible=0;
 
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL)
+	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL || ghidgui->topwin.layersel.running)
 		return;
 
-#warning layersel TODO
+	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
 
 	/* FIXME - if a layer is moved it should retain its color.  But layers
 	   |  currently can't do that because color info is not saved in the

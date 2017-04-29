@@ -176,6 +176,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 	pcb_gtk_layersel_t *ls = lsg->ls;
 	int n;
 
+	ls->running = 1;
 	switch(event->button.button) {
 		case 1:
 			lsg->grp->vis = !lsg->grp->vis;
@@ -190,6 +191,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			pcb_hid_actionl("Popup", "group", NULL);
 			break;
 	}
+	ls->running = 0;
 	return TRUE;
 }
 
@@ -199,6 +201,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
 	int n, is_on, normal = 1;
 
+	ls->running = 1;
 	switch(event->button.button) {
 		case 1:
 		case 3:
@@ -227,13 +230,17 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, gpointer 
 				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
 	}
+	ls->running = 0;
 	return TRUE;
 }
 
 static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	pcb_gtk_ls_lyr_t *lsl = user_data;
+	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
 	pcb_layer_id_t old_curr;
+
+	ls->running = 1;
 	switch(event->button.button) {
 		case 1:
 		case 3:
@@ -242,7 +249,6 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpoint
 				pcb_layervis_change_group_vis(lsl->lid, 1, 1);
 				if (old_curr >= 0) { /* need to find old layer by lid */
 					int gi, li;
-					pcb_gtk_layersel_t *ls = lsl->lsg->ls;
 
 					for(gi = 0; gi < pcb_max_group(PCB); gi++)
 						if (ls->grp[gi].grp != NULL)
@@ -257,6 +263,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, gpoint
 				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
 	}
+	ls->running = 0;
 	return TRUE;
 }
 
