@@ -62,6 +62,16 @@ extern const char *conf_internal;
 
 /*static lht_doc_t *conf_plugin;*/
 
+static int conf_ignore_old_paths(const char *path)
+{
+	static const char *ignores[] = { "editor/show_mask", "editor/show_paste", NULL };
+	const char **i;
+	for(i = ignores; *i != NULL; i++)
+		if (strcmp(path, *i) == 0)
+			return 1;
+	return 0;
+}
+
 static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
 {
 	if (cwd == NULL)
@@ -593,7 +603,7 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 	switch(n->type) {
 		case LHT_TEXT:
 			if (target == NULL) {
-				if ((strncmp(path, "plugins/", 8) != 0) && (strncmp(path, "utils/", 6) != 0))/* it is normal to have configuration for plugins and utils not loaded - ignore these */
+				if ((strncmp(path, "plugins/", 8) != 0) && (strncmp(path, "utils/", 6) != 0) && !conf_ignore_old_paths(path)) /* it is normal to have configuration for plugins and utils not loaded - ignore these */
 					pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
 				break;
 			}
