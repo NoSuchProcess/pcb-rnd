@@ -31,6 +31,7 @@
 #include "layer_grp.h"
 #include "board.h"
 #include "data.h"
+#include "conf_core.h"
 
 #include "wt_layersel.h"
 #include "compat.h"
@@ -247,6 +248,29 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 
 /*** Row builder ***/
 
+#define hardwired_colors(typ) \
+do { \
+	unsigned long __typ__ = (typ); \
+	if (__typ__ & PCB_LYT_SILK)   return conf_core.appearance.color.element; \
+	if (__typ__ & PCB_LYT_MASK)   return conf_core.appearance.color.mask; \
+	if (__typ__ & PCB_LYT_PASTE)  return conf_core.appearance.color.paste; \
+} while (0)
+
+static const char *lyr_color(pcb_layer_id_t lid)
+{
+	if (lid < 0) return "#aaaa00";
+	hardwired_colors(pcb_layer_flags(PCB, lid));
+	return conf_core.appearance.color.layer[lid];
+}
+
+static const char *grp_color(pcb_layer_group_t *g)
+{
+	hardwired_colors(g->type);
+	/* normal mechanism: first layer's color or yellow */
+	if (g->len == 0) return "#ffff00";
+	return lyr_color(g->lid[0]);
+}
+
 /* Create a hbox with on/off visibility boxes packed in, pointers returned in *on, *off */
 static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **off)
 {
@@ -259,15 +283,22 @@ static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **of
 }
 
 /* Create a hbox of a layer within an expanded group */
-static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, const char *name)
+static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, const char *name, pcb_layer_id_t lid, char * const *force_color)
 {
 	GtkWidget *vis_box, *vis_ebox, *ly_name_bx, *lab;
+	const char *color;
 
 	lsl->lsg = lsg;
+	lsl->force_color = force_color;
 	lsl->box = gtkc_hbox_new(0, 0);
 
+	if (force_color == NULL)
+		color = lyr_color(lid);
+	else
+		color = *force_color;
+
 	/* sensitive layer visibility widgets */
-	vis_box = build_visbox("#ff0000", &lsl->vis_on, &lsl->vis_off);
+	vis_box = build_visbox(color, &lsl->vis_on, &lsl->vis_off);
 	vis_ebox = wrap_bind_click(vis_box, G_CALLBACK(layer_vis_press_cb), lsl);
 	gtk_box_pack_start(GTK_BOX(lsl->box), vis_ebox, FALSE, FALSE, 0);
 
@@ -286,7 +317,7 @@ static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, cons
 }
 
 /* Creating a group enrty (both open and closed state); after layers are added, finish() needs to be called */
-static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, const char *gname, int has_group_vis)
+static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, const char *gname, int has_group_vis, pcb_layer_group_t *grp)
 {
 	GtkWidget *gn_vert, *vlabel, *opn, *cld;
 
@@ -303,6 +334,7 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
   +--------------------------+
 */
 	lsg->ls = ls;
+	lsg->grp = grp;
 	lsg->grp_row = gtkc_vbox_new(0, 0);
 	lsg->grp_closed = gtkc_hbox_new(0, 0);
 	lsg->grp_open = gtkc_hbox_new(0, 0);
@@ -325,7 +357,7 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
 	/* install group name - vertical (for when the group is closed) */
 	if (has_group_vis) {
 		GtkWidget *vis;
-		vis = wrap_bind_click(build_visbox("#ff0000", &lsg->vis_on, &lsg->vis_off), G_CALLBACK(group_vis_press_cb), lsg);
+		vis = wrap_bind_click(build_visbox(grp_color(grp), &lsg->vis_on, &lsg->vis_off), G_CALLBACK(group_vis_press_cb), lsg);
 		gtk_box_pack_start(GTK_BOX(lsg->grp_closed), vis, FALSE, FALSE, 0);
 	}
 	cld = wrap_bind_click(gtk_label_new(gname), G_CALLBACK(group_open_press_cb), lsg);
@@ -347,16 +379,15 @@ static void build_group_finish(pcb_gtk_ls_grp_t *lsg)
 static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, pcb_layer_group_t *grp)
 {
 	int n;
-	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1);
+	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1, grp);
 
-	lsg->grp = grp;
-	lsg->layer = malloc(sizeof(pcb_gtk_ls_grp_t) * grp->len);
+	lsg->layer = malloc(sizeof(pcb_gtk_ls_lyr_t) * grp->len);
 
 	/* install layers */
 	for(n = 0; n < grp->len; n++) {
 		pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
 		if (l != NULL) {
-			GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->Name);
+			GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->Name, grp->lid[n], NULL);
 			gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
 			lsg->layer[n].lid = grp->lid[n];
 		}
@@ -385,18 +416,19 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 	{ /* build hardwired virtual layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
-		lsg->grp = &ls->grp_virt;
-		lsg->layer = malloc(sizeof(pcb_gtk_ls_grp_t) * 4);
-		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0), FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads"), FALSE, FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[1], "Vias"), FALSE, FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[2], "Far side"), FALSE, FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[3], "All-silk"), FALSE, FALSE, 1);
+		lsg->layer = malloc(sizeof(pcb_gtk_ls_lyr_t) * 5);
+		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0, &ls->grp_virt), FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads", -1, &conf_core.appearance.color.pin), FALSE, FALSE, 1);
+		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[1], "Vias", -1, &conf_core.appearance.color.via), FALSE, FALSE, 1);
+		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[2], "Far side", -1, &conf_core.appearance.color.invisible_objects), FALSE, FALSE, 1);
+		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[3], "Rats", -1, &conf_core.appearance.color.rat), FALSE, FALSE, 1);
+		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[4], "All-silk", -1, &conf_core.appearance.color.element), FALSE, FALSE, 1);
 
 		lsg->layer[0].ev_selected = ev_lyr_no_select;
 		lsg->layer[1].ev_selected = ev_lyr_no_select;
 		lsg->layer[2].ev_selected = ev_lyr_no_select;
 		lsg->layer[3].ev_selected = ev_lyr_no_select;
+		lsg->layer[4].ev_selected = ev_lyr_no_select;
 
 		build_group_finish(lsg);
 	}

@@ -15,6 +15,7 @@ struct pcb_gtk_ls_lyr_s {
 	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl);   /* called first in click handler, if returns non-zero, layer can not be selected */
 
 	pcb_layer_id_t lid;
+	char * const*force_color;
 
 	unsigned on:1; /* TODO: temporary hack: should be extracted from the layer struct */
 
