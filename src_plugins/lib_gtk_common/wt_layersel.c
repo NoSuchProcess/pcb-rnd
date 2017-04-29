@@ -114,7 +114,7 @@ static void layersel_lyr_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 			gtk_widget_hide(lsl->vis_on);
 		}
 	}
-	if (lsl->lid == pcb_layer_id(PCB->Data, LAYER_ON_STACK(0)))
+	if ((lsl->lid != -1) && (lsl->lid == pcb_layer_id(PCB->Data, LAYER_ON_STACK(0))))
 		pcb_gtk_set_selected(lsl->name_box, 1);
 	else
 		pcb_gtk_set_selected(lsl->name_box, 0);
@@ -446,8 +446,10 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[3], "Rats", -1, &conf_core.appearance.color.rat), FALSE, FALSE, 1);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[4], "All-silk", -1, &conf_core.appearance.color.element), FALSE, FALSE, 1);
 
-		for(n = 0; n < ls->grp_virt.len; n++)
+		for(n = 0; n < ls->grp_virt.len; n++) {
 			lsg->layer[n].ev_selected = ev_lyr_no_select;
+			lsg->layer[n].lid = ls->grp_virt.lid[n] = -1;
+		}
 
 		build_group_finish(lsg);
 	}
