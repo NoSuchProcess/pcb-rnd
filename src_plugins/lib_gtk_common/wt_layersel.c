@@ -416,6 +416,8 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 	{ /* build hardwired virtual layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
+		int n;
+
 		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), 5);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0, &ls->grp_virt), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads", -1, &conf_core.appearance.color.pin), FALSE, FALSE, 1);
@@ -424,11 +426,8 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[3], "Rats", -1, &conf_core.appearance.color.rat), FALSE, FALSE, 1);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[4], "All-silk", -1, &conf_core.appearance.color.element), FALSE, FALSE, 1);
 
-		lsg->layer[0].ev_selected = ev_lyr_no_select;
-		lsg->layer[1].ev_selected = ev_lyr_no_select;
-		lsg->layer[2].ev_selected = ev_lyr_no_select;
-		lsg->layer[3].ev_selected = ev_lyr_no_select;
-		lsg->layer[4].ev_selected = ev_lyr_no_select;
+		for(n = 0; n < 5; n++)
+			lsg->layer[n].ev_selected = ev_lyr_no_select;
 
 		build_group_finish(lsg);
 	}
