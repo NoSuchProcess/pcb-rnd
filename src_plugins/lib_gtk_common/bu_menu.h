@@ -3,7 +3,6 @@
 
 #include <gtk/gtk.h>
 
-#include "wt_layer_selector.h"
 #include "wt_route_style.h"
 
 #include "conf.h"
@@ -34,7 +33,7 @@ void ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 
 void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base);
 
-void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, pcb_gtk_layer_selector_t * ls);
+void ghid_main_menu_install_layer_selector(GHidMainMenu * mm);
 void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_route_style_t * rss);
 
 int ghid_remove_menu_widget(void *ctx, lht_node_t *nd);

@@ -22,7 +22,6 @@
 #include "event.h"
 
 #include "bu_menu.h"
-#include "wt_layer_selector.h"
 #include "wt_route_style.h"
 #include "in_keyboard.h"
 #include "wt_accel_label.h"
@@ -427,7 +426,7 @@ ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 }
 
 /*! \brief Installs or updates layer selector items */
-void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, pcb_gtk_layer_selector_t * ls)
+void ghid_main_menu_install_layer_selector(GHidMainMenu * mm)
 {
 	GList *children, *iter;
 
@@ -441,7 +440,8 @@ void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, pcb_gtk_layer_sele
 		g_list_free(children);
 
 		/* Install new ones */
-		mm->n_layer_views = pcb_gtk_layer_selector_install_view_items(ls, mm->layer_view_shell, mm->layer_view_pos);
+#warning layersel TODO
+		mm->n_layer_views = /*pcb_gtk_layer_selector_install_view_items(ls, mm->layer_view_shell, mm->layer_view_pos)*/ NULL;
 	}
 
 	/* @layerpick */
@@ -454,7 +454,8 @@ void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, pcb_gtk_layer_sele
 		g_list_free(children);
 
 		/* Install new ones */
-		mm->n_layer_picks = pcb_gtk_layer_selector_install_pick_items(ls, mm->layer_pick_shell, mm->layer_pick_pos);
+#warning layersel TODO
+		mm->n_layer_picks = /*pcb_gtk_layer_selector_install_pick_items(ls, mm->layer_pick_shell, mm->layer_pick_pos);*/ NULL;
 	}
 }
 

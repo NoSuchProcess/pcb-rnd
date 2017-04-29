@@ -38,7 +38,6 @@
 #include "../src_plugins/lib_gtk_common/act_print.h"
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/wt_layersel.h"
-#include "../src_plugins/lib_gtk_common/bu_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
@@ -56,12 +55,14 @@ static const char *ghid_act_cookie = "gtk HID actions";
 
 static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	return pcb_gtk_SelectLayer(ghidgui->topwin.layer_selector, argc, argv, x, y);
+#warning layersel TODO
+/*	return pcb_gtk_SelectLayer(ghidgui->topwin.layer_selector, argc, argv, x, y);*/
 }
 
 static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	return pcb_gtk_ToggleView(ghidgui->topwin.layer_selector, argc, argv, x, y);
+#warning layersel TODO
+/*	return pcb_gtk_ToggleView(ghidgui->topwin.layer_selector, argc, argv, x, y); */
 }
 
 /* ------------------------------------------------------------ */
@@ -477,12 +478,15 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t ghid_menu_action_list[] = {
+#warning layersel TODO
+/*
 	{"SelectLayer", 0, SelectLayer,
 	 selectlayer_help, selectlayer_syntax}
 	,
 	{"ToggleView", 0, ToggleView,
 	 toggleview_help, toggleview_syntax}
 	,
+*/
 	{"AdjustStyle", 0, AdjustStyle, adjuststyle_help, adjuststyle_syntax}
 	,
 	{"fontsel", 0, pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}

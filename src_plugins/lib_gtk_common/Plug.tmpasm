@@ -13,7 +13,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/bu_entry.o
   $(PLUGDIR)/lib_gtk_common/bu_info_bar.o
   $(PLUGDIR)/lib_gtk_common/bu_icons.o
-  $(PLUGDIR)/lib_gtk_common/bu_layer_selector.o
   $(PLUGDIR)/lib_gtk_common/bu_menu.o
   $(PLUGDIR)/lib_gtk_common/bu_mode_btn.o
   $(PLUGDIR)/lib_gtk_common/bu_notebook.o
@@ -56,8 +55,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/win_place.o
   $(PLUGDIR)/lib_gtk_common/wt_accel_label.o
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
-  $(PLUGDIR)/lib_gtk_common/wt_layer_selector.o
-  $(PLUGDIR)/lib_gtk_common/wt_layer_selector_cr.o
   $(PLUGDIR)/lib_gtk_common/wt_layersel.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
   $(PLUGDIR)/lib_gtk_common/wt_route_style.o
