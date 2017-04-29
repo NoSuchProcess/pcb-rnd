@@ -100,8 +100,6 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, pcb_bool On, pcb_bool Ch
 
 	/* special case: some layer groups are controlled by a config setting */
 	flg = pcb_layer_flags(PCB, Layer);
-	if (flg & PCB_LYT_MASK)
-		conf_set_editor(show_mask, On);
 	if (flg & PCB_LYT_PASTE)
 		conf_set_editor(show_paste, On);
 
@@ -242,15 +240,8 @@ void layer_vis_chg_mask(conf_native_t *cfg)
 	in = 0;
 }
 
-void layer_vis_sync(void)
-{
-	conf_native_t *n_mask = conf_get_field("editor/show_mask");
-	layer_vis_chg_mask(n_mask);
-}
-
 static void layer_vis_sync_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	layer_vis_sync();
 }
 
 static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -291,9 +282,7 @@ void layer_vis_init(void)
 		conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
 	}
 
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
-	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
 }
 
 void layer_vis_uninit(void)

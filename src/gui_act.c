@@ -408,11 +408,6 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 			pcb_redraw();
 			break;
 
-		case F_ToggleMask:
-			conf_toggle_editor(show_mask);
-			pcb_redraw();
-			break;
-
 		case F_TogglePaste:
 			conf_toggle_editor(show_paste);
 			pcb_redraw();

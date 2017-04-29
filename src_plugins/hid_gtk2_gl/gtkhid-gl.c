@@ -161,7 +161,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-				return conf_core.editor.show_mask;
+				return pcb_mask_on(PCB);
 			return 0;
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))

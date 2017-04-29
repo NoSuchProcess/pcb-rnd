@@ -458,7 +458,6 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
-		conf_force_set_bool(conf_core.editor.show_mask, 0);
 
 		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 
@@ -471,7 +470,6 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 			assert(solder_layer >= 0);
 			assert(comp_layer >= 0);
 
-			conf_force_set_bool(conf_core.editor.show_mask, 1);
 			photo_has_inners = 0;
 			if (comp_layer < solder_layer)
 				for (i = comp_layer; i <= solder_layer; i++) {
@@ -1041,7 +1039,7 @@ static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 		}
 
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_MASK)
-			return conf_core.editor.show_mask && PCB_LAYERFLG_ON_VISIBLE_SIDE(flags);
+			return PCB_LAYERFLG_ON_VISIBLE_SIDE(flags);
 	}
 	else {
 		if (is_mask)

@@ -2758,7 +2758,7 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && !pinout)
-				return conf_core.editor.show_mask;
+				return pcb_mask_on(PCB);
 			return 0;
 		case PCB_LYT_PASTE:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && !pinout)

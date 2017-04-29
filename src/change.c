@@ -424,7 +424,7 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
 	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
 	ctx.chgsize.delta = Difference;
 
-	if (conf_core.editor.show_mask)
+	if (pcb_mask_on(PCB))
 		change = pcb_selected_operation(PCB, &ChangeMaskSizeFunctions, &ctx, pcb_false, types);
 	else
 		change = pcb_selected_operation(PCB, &ChangeClearSizeFunctions, &ctx, pcb_false, types);
@@ -879,7 +879,7 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
 	ctx.chgsize.delta = Difference;
 
-	if (conf_core.editor.show_mask)
+	if (pcb_mask_on(PCB))
 		change = (pcb_object_operation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	else
 		change = (pcb_object_operation(&ChangeClearSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);

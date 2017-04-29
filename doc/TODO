@@ -16,6 +16,9 @@
 	- layer rewrite:
 		- gtk layersel bugs:
 			- double click should be ignored and handled as two single clicks [reprot: miloh]
+			- png export: check mask/paste drawing, make new options? mask on in photo more?
+			- svg export: check mask/paste drawing, make new options? mask on in photo more?
+
 		- lesstif: layer selector should show all layers, probably in the order of the stackup
 		- gtk: "can't remove silk layer" when logical silk is being removed with right-click in layer selector [report: miloh]
 		- check why thin draw crashes

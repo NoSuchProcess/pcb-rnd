@@ -275,7 +275,6 @@ static void WritePCBDataHeader(FILE * FP)
 	conf_update_pcb_flag(&pcb_flags, "editor/check_planes",PCB_CHECKPLANESFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/description", PCB_DESCRIPTIONFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/name_on_pcb", PCB_NAMEONPCBFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/show_mask", PCB_SHOWMASKFLAG);
 
 	fprintf(FP, "\n# To read pcb files, the pcb version (or the git source date) must be >= the file version\n");
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());

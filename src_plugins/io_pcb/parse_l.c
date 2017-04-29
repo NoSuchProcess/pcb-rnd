@@ -2546,7 +2546,6 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 		CONF_SET(settings_dest, "editor/check_planes", -1, CONF_BOOL_FLAG(PCB_CHECKPLANESFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/description", -1, CONF_BOOL_FLAG(PCB_DESCRIPTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/name_on_pcb", -1, CONF_BOOL_FLAG(PCB_NAMEONPCBFLAG, yy_pcb_flags), POL_OVERWRITE);
-		CONF_SET(settings_dest, "editor/show_mask", -1, CONF_BOOL_FLAG(PCB_SHOWMASKFLAG, yy_pcb_flags), POL_OVERWRITE);
 
 		/* don't save this because it is saved manually as PCB::grid::unit */
 		CONF_NO_ATTRIB("editor/grid_unit");

@@ -650,7 +650,7 @@ pcb_layergrp_id_t pcb_layergrp_get_top_silk()
 	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
 }
 
-/* Note: this function is in this file mainly to access the static inlines */
+/* Note: these function is in this file mainly to access the static inlines */
 int pcb_silk_on(pcb_board_t *pcb)
 {
 	static pcb_layer_id_t ts = -1, bs = -1;
@@ -659,6 +659,18 @@ int pcb_silk_on(pcb_board_t *pcb)
 		return 1;
 	pcb_layergrp_get_cached(pcb, &bs, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 	if ((bs >= 0) && (pcb->LayerGroups.grp[bs].vis))
+		return 1;
+	return 0;
+}
+
+int pcb_mask_on(pcb_board_t *pcb)
+{
+	static pcb_layer_id_t tm = -1, bm = -1;
+	pcb_layergrp_get_cached(pcb, &tm, PCB_LYT_TOP, PCB_LYT_MASK);
+	if ((tm >= 0) && (pcb->LayerGroups.grp[tm].vis))
+		return 1;
+	pcb_layergrp_get_cached(pcb, &bm, PCB_LYT_BOTTOM, PCB_LYT_MASK);
+	if ((bm >= 0) && (pcb->LayerGroups.grp[bm].vis))
 		return 1;
 	return 0;
 }

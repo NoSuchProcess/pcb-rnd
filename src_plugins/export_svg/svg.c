@@ -211,11 +211,9 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
-		conf_force_set_bool(conf_core.editor.show_mask, 0);
 
 		if (options[HA_photo_mode].int_value) {
 			photo_mode = 1;
-			conf_force_set_bool(conf_core.editor.show_mask, 1);
 		}
 		else
 			photo_mode = 0;

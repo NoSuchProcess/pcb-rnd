@@ -140,7 +140,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 				set = PCB->InvisibleObjectsOn;
 				break;
 			case LB_MASK:
-				set = conf_core.editor.show_mask;
+				set = pcb_mask_on(PCB);
 				break;
 			case LB_PASTE:
 				set = conf_core.editor.show_paste;
@@ -247,8 +247,9 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 		set = PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
 		break;
 	case LB_MASK:
-		conf_toggle_editor(show_mask);
-		set = conf_core.editor.show_mask;
+#warning layersel TODO
+/*		conf_toggle_editor(show_mask);*/
+		set = pcb_mask_on(PCB);
 		break;
 	case LB_PASTE:
 		conf_toggle_editor(show_paste);
@@ -436,8 +437,10 @@ static void insert_layerview_buttons(Widget menu)
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) layer_button_callback, (XtPointer) (size_t) i);
 		lb->w[i] = btn;
 
-		if (i == LB_MASK)
-			note_widget_flag(btn, XmNset, "editor/show_mask");
+		if (i == LB_MASK) {
+#warning layersel TODO
+/*			note_widget_flag(btn, XmNset, "editor/show_mask");*/
+		}
 		else if (i == LB_PASTE)
 			note_widget_flag(btn, XmNset, "editor/show_paste");
 	}
