@@ -61,8 +61,6 @@ li:pcb-rnd-conf-v1 {
 			thin_draw_poly = 0
 			local_ref = 0
 			check_planes = 0
-			show_mask = 0
-			show_paste = 0
 			hide_names = 0
 			description = 0
 			name_on_pcb = 0
