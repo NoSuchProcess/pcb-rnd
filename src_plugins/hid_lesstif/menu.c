@@ -143,7 +143,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 				set = pcb_mask_on(PCB);
 				break;
 			case LB_PASTE:
-				set = conf_core.editor.show_paste;
+				set = pcb_paste_on(PCB);
 				break;
 			default:									/* layers */
 				set = PCB->Data->Layer[i].On;
@@ -252,8 +252,9 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 		set = pcb_mask_on(PCB);
 		break;
 	case LB_PASTE:
-		conf_toggle_editor(show_paste);
-		set = conf_core.editor.show_paste;
+#warning layersel TODO
+/*		conf_toggle_editor(show_paste);*/
+		set = pcb_paste_on(PCB);
 		break;
 	default:											/* layers */
 		set = PCB->Data->Layer[layer].On = !PCB->Data->Layer[layer].On;
@@ -441,8 +442,10 @@ static void insert_layerview_buttons(Widget menu)
 #warning layersel TODO
 /*			note_widget_flag(btn, XmNset, "editor/show_mask");*/
 		}
-		else if (i == LB_PASTE)
-			note_widget_flag(btn, XmNset, "editor/show_paste");
+		else if (i == LB_PASTE) {
+#warning layersel TODO
+/*			note_widget_flag(btn, XmNset, "editor/show_paste");*/
+		}
 	}
 	lb->is_pick = 0;
 	LesstifLayersChanged(0, 0, 0);

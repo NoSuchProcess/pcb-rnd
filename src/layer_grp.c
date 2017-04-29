@@ -675,3 +675,16 @@ int pcb_mask_on(pcb_board_t *pcb)
 	return 0;
 }
 
+
+int pcb_paste_on(pcb_board_t *pcb)
+{
+	static pcb_layer_id_t tp = -1, bp = -1;
+	pcb_layergrp_get_cached(pcb, &tp, PCB_LYT_TOP, PCB_LYT_PASTE);
+	if ((tp >= 0) && (pcb->LayerGroups.grp[tp].vis))
+		return 1;
+	pcb_layergrp_get_cached(pcb, &bp, PCB_LYT_BOTTOM, PCB_LYT_PASTE);
+	if ((bp >= 0) && (pcb->LayerGroups.grp[bp].vis))
+		return 1;
+	return 0;
+}
+

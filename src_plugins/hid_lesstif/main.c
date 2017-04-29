@@ -2762,7 +2762,7 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 			return 0;
 		case PCB_LYT_PASTE:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && !pinout)
-				return conf_core.editor.show_paste;
+				return pcb_paste_on(PCB);
 	}
 
 	/* normal layers */

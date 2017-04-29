@@ -78,7 +78,6 @@ static void PushOnTopOfLayerStack(int NewTop)
  */
 int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 {
-	unsigned long flg;
 	pcb_layergrp_id_t group;
 	int i, changed = 1;		/* at least the current layer changes */
 
@@ -91,17 +90,8 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, pcb_bool On, pcb_bool Ch
 		goto done;
 	}
 
-	/* Warning: these special case values must agree with what gui-top-window.c
-	   |  thinks the are.
-	 */
-
 	if (conf_core.rc.verbose)
 		printf("pcb_layervis_change_group_vis(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
-
-	/* special case: some layer groups are controlled by a config setting */
-	flg = pcb_layer_flags(PCB, Layer);
-	if (flg & PCB_LYT_PASTE)
-		conf_set_editor(show_paste, On);
 
 	/* decrement 'i' to keep stack in order of layergroup */
 	if ((group = pcb_layer_get_group(PCB, Layer)) >= 0) {

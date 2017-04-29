@@ -58,8 +58,8 @@
 static const char pcb_acts_Display[] =
 	"Display(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName)\n"
 	"Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)\n"
-	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames|ToggleMask)\n"
-	"Display(TogglePaste|ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)\n"
+	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
+	"Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)\n"
 	"Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)\n"
 	"Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)\n"
 	"Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)";
@@ -160,12 +160,6 @@ mouse drag) and perform actions on the selection.
 If set, only text will be sensitive for mouse clicks and actions that
 work on objects under the mouse. You can still select other objects
 with a lasso (left mouse drag) and perform actions on the selection.
-
-@item ToggleMask
-Turns the solder mask on or off.
-
-@item TogglePaste
-Turns the solder paste on or off.
 
 @item ToggleClearLine
 When set, the clear-line flag causes new lines and arcs to have their
@@ -405,11 +399,6 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 
 		case F_ToggleName:
 			conf_toggle_editor(show_number);
-			pcb_redraw();
-			break;
-
-		case F_TogglePaste:
-			conf_toggle_editor(show_paste);
 			pcb_redraw();
 			break;
 
