@@ -417,8 +417,22 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 	return wg;
 }
 
-
 /*** Layer selector widget building function ***/
+typedef struct {
+	const char *name;
+	char * const*force_color;
+	int (*ev_toggle_vis)(pcb_gtk_ls_lyr_t *lsl);
+	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl);
+} virt_layers_t;
+
+static const virt_layers_t virts[] = {
+	{ "Pins/Pads",  &conf_core.appearance.color.pin,               NULL, ev_lyr_no_select },
+	{ "Vias",       &conf_core.appearance.color.via,               NULL, ev_lyr_no_select },
+	{ "Far side",   &conf_core.appearance.color.invisible_objects, NULL, ev_lyr_no_select },
+	{ "Rats",       &conf_core.appearance.color.rat,               NULL, ev_lyr_no_select },
+	{ "All-silk",   &conf_core.appearance.color.element,           NULL, ev_lyr_no_select }
+};
+
 static void layersel_populate(pcb_gtk_layersel_t *ls)
 {
 	GtkWidget *spring;
@@ -437,17 +451,14 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
 		int n;
 
-		ls->grp_virt.len = 5;
+		ls->grp_virt.len = sizeof(virts) / sizeof(virts[0]);
 		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), ls->grp_virt.len);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0, &ls->grp_virt), FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads", -1, &conf_core.appearance.color.pin), FALSE, FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[1], "Vias", -1, &conf_core.appearance.color.via), FALSE, FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[2], "Far side", -1, &conf_core.appearance.color.invisible_objects), FALSE, FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[3], "Rats", -1, &conf_core.appearance.color.rat), FALSE, FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[4], "All-silk", -1, &conf_core.appearance.color.element), FALSE, FALSE, 1);
 
 		for(n = 0; n < ls->grp_virt.len; n++) {
-			lsg->layer[n].ev_selected = ev_lyr_no_select;
+			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], virts[n].name, -1, virts[n].force_color), FALSE, FALSE, 1);
+			lsg->layer[n].ev_selected   = virts[n].ev_selected;
+			lsg->layer[n].ev_toggle_vis = virts[n].ev_toggle_vis;
 			lsg->layer[n].lid = ls->grp_virt.lid[n] = -1;
 		}
 
