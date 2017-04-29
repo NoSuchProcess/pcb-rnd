@@ -2,6 +2,7 @@
 #define PCB_GTK_LAYERSEL_H
 
 #include <gtk/gtk.h>
+#include "layer_grp.h"
 
 typedef struct pcb_gtk_layersel_s pcb_gtk_layersel_t;
 typedef struct pcb_gtk_ls_grp_s pcb_gtk_ls_grp_t;
@@ -22,6 +23,8 @@ struct pcb_gtk_ls_lyr_s {
 struct pcb_gtk_ls_grp_s {
 	GtkWidget *grp_row, *grp_closed, *grp_open, *layers, *vis_on, *vis_off;
 
+	pcb_layer_group_t *grp;
+
 	pcb_gtk_ls_lyr_t layer[4];
 
 	/* for callbacks */
@@ -36,7 +39,8 @@ struct pcb_gtk_ls_grp_s {
 struct pcb_gtk_layersel_s {
 	GtkWidget *grp_box;
 	pcb_gtk_ls_grp_t grp[PCB_MAX_LAYERGRP];
-	pcb_gtk_ls_grp_t grp_virt;
+	pcb_gtk_ls_grp_t lsg_virt;
+	pcb_layer_group_t grp_virt;
 };
 
 GtkWidget *pcb_gtk_layersel_build(pcb_gtk_layersel_t *ls);

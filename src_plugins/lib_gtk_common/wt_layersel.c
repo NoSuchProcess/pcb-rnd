@@ -346,6 +346,8 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 	int n;
 	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1);
 
+	lsg->grp = grp;
+
 	/* install layers */
 	for(n = 0; n < 4; n++) {
 		char tmp[32];
@@ -378,7 +380,8 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 	gtk_box_pack_start(GTK_BOX(ls->grp_box), gtk_hseparator_new(), FALSE, FALSE, 0);
 
 	{ /* build hardwired virtual layers */
-		pcb_gtk_ls_grp_t *lsg = &ls->grp_virt;
+		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
+		lsg->grp = &ls->grp_virt;
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads"), FALSE, FALSE, 1);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[1], "Vias"), FALSE, FALSE, 1);
