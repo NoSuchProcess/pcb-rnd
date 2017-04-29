@@ -344,13 +344,14 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 		}
 
 	/* draw elements if visible */
-	if (PCB->PinOn && PCB->ElementOn)
+	if (PCB->PinOn && PCB->ElementOn) {
 		PCB_ELEMENT_LOOP(Buffer->Data);
-	{
-		if (PCB_FRONT(element) || PCB->InvisibleObjectsOn)
-			XORDrawElement(element, x, y);
+		{
+			if (PCB_FRONT(element) || PCB->InvisibleObjectsOn)
+				XORDrawElement(element, x, y);
+		}
+		PCB_END_LOOP;
 	}
-	PCB_END_LOOP;
 
 	/* and the vias */
 	if (PCB->ViaOn)
