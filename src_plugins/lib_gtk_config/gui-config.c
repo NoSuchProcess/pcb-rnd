@@ -1438,7 +1438,7 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 
 	if (conf_set(CFR_DESIGN, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE) == 0) {
 		ci->com->set_special_colors(ci->cfg);
-		ci->com->layer_buttons_color_update();
+		ci->com->layer_buttons_update();
 		ci->com->invalidate_all();
 	}
 }
@@ -2372,7 +2372,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 	if (update_clr) {
 #warning TODO: conf hooks should solve these
 		com->set_special_colors(nat);
-		com->layer_buttons_color_update();
+		com->layer_buttons_update();
 		com->invalidate_all();
 	}
 }

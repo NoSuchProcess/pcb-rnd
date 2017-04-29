@@ -219,12 +219,6 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 	g_free(filename);
 }
 
-/*! \brief Update a layer selector's color scheme */
-void pcb_gtk_tw_layer_buttons_color_update(pcb_gtk_topwin_t *tw)
-{
-#warning layersel TODO
-}
-
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
 {
 #warning layersel TODO

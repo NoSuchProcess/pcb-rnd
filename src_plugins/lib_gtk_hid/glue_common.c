@@ -38,9 +38,9 @@ static void ghid_port_ranges_scale(void)
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
 }
 
-static void ghid_layer_buttons_color_update(void)
+static void ghid_layer_buttons_update(void)
 {
-	pcb_gtk_tw_layer_buttons_color_update(&ghidgui->topwin);
+	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
 }
 
 static void ghid_route_styles_edited_cb()
@@ -266,7 +266,7 @@ void ghid_glue_common_init(void)
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 	ghidgui->common.pack_mode_buttons = ghid_pack_mode_buttons;
 
-	ghidgui->common.layer_buttons_color_update = ghid_layer_buttons_color_update;
+	ghidgui->common.layer_buttons_update = ghid_layer_buttons_update;
 	ghidgui->common.LayersChanged = LayersChanged_cb;
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
