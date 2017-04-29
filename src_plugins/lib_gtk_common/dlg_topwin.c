@@ -182,7 +182,9 @@ void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
+#ifndef NEWLS
 	gtk_window_add_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(tw->layer_selector)));
+#endif
 	gtk_window_add_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(tw->route_style_selector)));
 }
 
@@ -190,7 +192,9 @@ void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
+#ifndef NEWLS
 	gtk_window_remove_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(tw->layer_selector)));
+#endif
 	gtk_window_remove_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(tw->route_style_selector)));
 }
 
