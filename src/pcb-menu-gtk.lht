@@ -629,7 +629,7 @@ ha:{
 		ha:layer {
 			li:submenu {
 				ha:Properties...                    = { action=EditLayer() }
-				ha:Grouping...                      = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
+				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Move up                          = { action=MoveLayer(c, up) }
 				ha:Move down                        = { action=MoveLayer(c, down) }
