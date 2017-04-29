@@ -14,6 +14,8 @@ struct pcb_gtk_ls_lyr_s {
 	int (*ev_toggle_vis)(pcb_gtk_ls_lyr_t *lsl); /* called first in click handler, if returns non-zero, normal visibility update is supressed */
 	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl);   /* called first in click handler, if returns non-zero, layer can not be selected */
 
+	pcb_layer_id_t lid;
+
 	unsigned on:1; /* TODO: temporary hack: should be extracted from the layer struct */
 
 	/* for callbacks */
@@ -24,8 +26,7 @@ struct pcb_gtk_ls_grp_s {
 	GtkWidget *grp_row, *grp_closed, *grp_open, *layers, *vis_on, *vis_off;
 
 	pcb_layer_group_t *grp;
-
-	pcb_gtk_ls_lyr_t layer[4];
+	pcb_gtk_ls_lyr_t *layer;
 
 	/* for callbacks */
 	pcb_gtk_layersel_t *ls;  /* points to parent */

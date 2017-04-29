@@ -126,7 +126,7 @@ static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 		gtk_widget_set_no_show_all(lsg->grp_open, 0);
 		gtk_widget_show_all(lsg->grp_open);
 		gtk_widget_set_no_show_all(lsg->grp_open, 1);
-		for(n = 0; n < 4; n++)
+		for(n = 0; n < lsg->grp->len; n++)
 			layer_vis_sync(&lsg->layer[n]);
 	}
 	else {
@@ -212,7 +212,10 @@ static gboolean group_any_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 {
 	switch(event->button.button) {
 		case 1:
-			lsg->grp->open = openval;
+			if (lsg->grp->len != 0) /* don't let empty group open, that'd make the open group row unusable */
+				lsg->grp->open = openval;
+			else
+				lsg->grp->open = 0;
 			group_vis_sync(lsg);
 			break;
 		case 3:
@@ -347,14 +350,16 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1);
 
 	lsg->grp = grp;
+	lsg->layer = malloc(sizeof(pcb_gtk_ls_grp_t) * grp->len);
 
 	/* install layers */
-	for(n = 0; n < 4; n++) {
-		char tmp[32];
-		GtkWidget *ly;
-		sprintf(tmp, "layer %d", n);
-		ly = build_layer(lsg, &lsg->layer[n], tmp);
-		gtk_box_pack_start(GTK_BOX(lsg->layers), ly, TRUE, TRUE, 1);
+	for(n = 0; n < grp->len; n++) {
+		pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
+		if (l != NULL) {
+			GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->Name);
+			gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
+			lsg->layer[n].lid = grp->lid[n];
+		}
 	}
 
 	build_group_finish(lsg);
@@ -382,6 +387,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 	{ /* build hardwired virtual layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
 		lsg->grp = &ls->grp_virt;
+		lsg->layer = malloc(sizeof(pcb_gtk_ls_grp_t) * 4);
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[0], "Pins/Pads"), FALSE, FALSE, 1);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[1], "Vias"), FALSE, FALSE, 1);
