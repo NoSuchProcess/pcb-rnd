@@ -76,7 +76,7 @@ static void PushOnTopOfLayerStack(int NewTop)
  * changes the visibility of all layers in a group
  * returns the number of changed layers
  */
-int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
+int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 {
 	unsigned long flg;
 	pcb_layergrp_id_t group;
