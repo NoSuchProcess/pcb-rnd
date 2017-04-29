@@ -255,6 +255,29 @@ static void layer_vis_sync_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 	layer_vis_sync();
 }
 
+static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_layergrp_id_t gid;
+	int n;
+
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+
+		/* ugly heuristics for default open the most common groups */
+		g->open = !!(g->type & (PCB_LYT_SILK | PCB_LYT_COPPER | PCB_LYT_OUTLINE));
+		
+		/* the group is visible exactly if if any layer is visible */
+		g->vis = 0;
+		for(n = 0; n < g->len; n++) {
+			pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+			if ((l != NULL) && (l->On)) {
+				g->vis = 1;
+				break;
+			}
+		}
+	}
+}
+
 static const char *layer_vis_cookie = "core_layer_vis";
 
 void layer_vis_init(void)
@@ -271,6 +294,7 @@ void layer_vis_init(void)
 	}
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, layer_vis_sync_ev, NULL, layer_vis_cookie);
 }
 
