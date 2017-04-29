@@ -374,7 +374,6 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 	GtkWidget *spring;
 	pcb_layergrp_id_t gid;
 
-	printf("%d %d\n", pcb_max_group(PCB), PCB_MAX_LAYERGRP);
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
 		if (g->type & PCB_LYT_SUBSTRATE)
