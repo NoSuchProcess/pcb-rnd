@@ -37,12 +37,13 @@ struct pcb_gtk_ls_grp_s {
 
 struct pcb_gtk_layersel_s {
 	pcb_gtk_common_t *com;
-	GtkWidget *grp_box;
+	GtkWidget *grp_box, *grp_box_outer;
 	pcb_gtk_ls_grp_t grp[PCB_MAX_LAYERGRP];
 	pcb_gtk_ls_grp_t lsg_virt;
 	pcb_layer_group_t grp_virt;
 };
 
 GtkWidget *pcb_gtk_layersel_build(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls);
+void pcb_gtk_layersel_update(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls);
 
 #endif

@@ -221,7 +221,7 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
 {
-#warning layersel TODO
+	pcb_gtk_layersel_update(tw->com, &tw->layersel);
 }
 
 /*! \brief Called when user clicks OK on route style dialog */

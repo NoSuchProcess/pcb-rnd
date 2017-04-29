@@ -506,15 +506,43 @@ GtkWidget *pcb_gtk_layersel_build(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls)
 {
 	GtkWidget *scrolled;
 
-	ls->grp_box = gtkc_vbox_new(FALSE, 0);
+	ls->grp_box_outer = gtkc_vbox_new(FALSE, 0);
 	ls->grp_virt.open = 1;
 	ls->com = com;
+
+	ls->grp_box = gtkc_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(ls->grp_box_outer), ls->grp_box, FALSE, FALSE, 0);
 	layersel_populate(ls);
 
 	/* get the whole box vertically scrolled, if needed */
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), ls->grp_box);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), ls->grp_box_outer);
 
 	return scrolled;
 }
+
+static void layersel_destroy(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls)
+{
+	pcb_layergrp_id_t gid;
+
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+		free(ls->grp[gid].layer);
+		ls->grp[gid].layer = NULL;
+	}
+
+	free(ls->lsg_virt.layer);
+	ls->lsg_virt.layer = NULL;
+
+	gtk_widget_destroy(ls->grp_box);
+	ls->grp_box = gtkc_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(ls->grp_box_outer), ls->grp_box, FALSE, FALSE, 0);
+}
+
+void pcb_gtk_layersel_update(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls)
+{
+	layersel_destroy(com, ls);
+	layersel_populate(ls);
+	gtk_widget_show_all(ls->grp_box);
+}
+
