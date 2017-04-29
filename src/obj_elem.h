@@ -111,6 +111,10 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 void pcb_element_text_set_font(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which, pcb_font_id_t fid);
 void pcb_element_text_update(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which);
 
+/* returns whether the silk group of the element's is visible */
+#define pcb_element_silk_vis(elem) \
+	(PCB->LayerGroups.grp[((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (elem))) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk())].vis)
+
 
 
 /* ---------------------------------------------------------------------------

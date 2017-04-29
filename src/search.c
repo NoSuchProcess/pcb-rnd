@@ -537,7 +537,7 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, element))
 		return PCB_R_DIR_NOT_FOUND;
 
-	if ((PCB_FRONT(element) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &element->VBox)) {
+	if ((PCB_FRONT(element) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &element->VBox) && pcb_element_silk_vis(element)) {
 		/* use the element with the smallest bounding box */
 		newarea = (element->VBox.X2 - element->VBox.X1) * (double) (element->VBox.Y2 - element->VBox.Y1);
 		if (newarea < i->area) {
