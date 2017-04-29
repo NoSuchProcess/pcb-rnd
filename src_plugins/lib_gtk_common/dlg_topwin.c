@@ -224,6 +224,11 @@ void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
 	pcb_gtk_layersel_update(tw->com, &tw->layersel);
 }
 
+void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw)
+{
+	pcb_gtk_layersel_vis_update(&tw->layersel);
+}
+
 /*! \brief Called when user clicks OK on route style dialog */
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
 {

@@ -14,4 +14,5 @@ int ghid_control_is_pressed();
 int ghid_mod1_is_pressed();
 
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
+void ghid_LayervisChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
 

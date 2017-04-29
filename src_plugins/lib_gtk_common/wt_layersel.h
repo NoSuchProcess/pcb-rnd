@@ -46,5 +46,6 @@ struct pcb_gtk_layersel_s {
 
 GtkWidget *pcb_gtk_layersel_build(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls);
 void pcb_gtk_layersel_update(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls);
+void pcb_gtk_layersel_vis_update(pcb_gtk_layersel_t *ls);
 
 #endif

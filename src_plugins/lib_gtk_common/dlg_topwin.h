@@ -54,6 +54,7 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw);
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw);
+void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw);
 void ghid_handle_units_changed(pcb_gtk_topwin_t *tw);
 
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw);

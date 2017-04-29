@@ -78,7 +78,7 @@ void glue_event_init(const char *cookie)
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, GhidNetlistChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, RouteStylesChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, cookie);
-	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, ghid_LayersChanged, NULL, cookie);
+	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, ghid_LayervisChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, ghid_Busy, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_GUI_SYNC, ghid_gui_sync, NULL, cookie);
 }

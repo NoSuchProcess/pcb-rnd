@@ -155,3 +155,12 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_layer_colors_from_conf(PCB);
 	return;
 }
+
+void ghid_LayervisChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL || ghidgui->topwin.layersel.running)
+		return;
+
+	pcb_gtk_tw_layer_vis_update(&ghidgui->topwin);
+	return;
+}
