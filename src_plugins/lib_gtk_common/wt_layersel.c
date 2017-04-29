@@ -179,7 +179,8 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 	switch(event->button.button) {
 		case 1:
 			lsg->grp->vis = !lsg->grp->vis;
-			pcb_layervis_change_group_vis(lsg->layer[0].lid, lsg->grp->vis, 0);
+			if (lsg->grp->len > 0)
+				pcb_layervis_change_group_vis(lsg->layer[0].lid, lsg->grp->vis, 0);
 			for(n = 0; n < lsg->grp->len; n++)
 				layersel_lyr_vis_sync(&lsg->layer[n]);
 			group_vis_sync(lsg);
