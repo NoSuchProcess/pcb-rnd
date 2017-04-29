@@ -594,71 +594,71 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
 }
 
-static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
+static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
 	pcb_layer_group_t *g;
 
 	/* check if the last known value is still accurate */
-	if ((*cache >= 0) && (*cache < PCB->LayerGroups.len)) {
-		g = &(PCB->LayerGroups.grp[*cache]);
+	if ((*cache >= 0) && (*cache < pcb->LayerGroups.len)) {
+		g = &(pcb->LayerGroups.grp[*cache]);
 		if ((g->type & loc) && (g->type & typ))
 			return *cache;
 	}
 
 	/* nope: need to resolve it again */
-	g = pcb_get_grp(&PCB->LayerGroups, loc, typ);
+	g = pcb_get_grp(&pcb->LayerGroups, loc, typ);
 	if (g == NULL)
 		*cache = -1;
 	else
-		*cache = (g - PCB->LayerGroups.grp);
+		*cache = (g - pcb->LayerGroups.grp);
 	return *cache;
 }
 
 pcb_layergrp_id_t pcb_layergrp_get_bottom_mask()
 {
 	static pcb_layer_id_t cache = -1;
-	return pcb_layergrp_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_MASK);
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_BOTTOM, PCB_LYT_MASK);
 }
 
 pcb_layergrp_id_t pcb_layergrp_get_top_mask()
 {
 	static pcb_layer_id_t cache = -1;
-	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_MASK);
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_MASK);
 }
 
 pcb_layergrp_id_t pcb_layergrp_get_bottom_paste()
 {
 	static pcb_layer_id_t cache = -1;
-	return pcb_layergrp_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_PASTE);
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_BOTTOM, PCB_LYT_PASTE);
 }
 
 pcb_layergrp_id_t pcb_layergrp_get_top_paste()
 {
 	static pcb_layer_id_t cache = -1;
-	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_PASTE);
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_PASTE);
 }
 
 pcb_layergrp_id_t pcb_layergrp_get_bottom_silk()
 {
 	static pcb_layer_id_t cache = -1;
-	return pcb_layergrp_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 }
 
 pcb_layergrp_id_t pcb_layergrp_get_top_silk()
 {
 	static pcb_layer_id_t cache = -1;
-	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_SILK);
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
 }
 
 /* Note: this function is in this file mainly to access the static inlines */
-int pcb_silk_on(void)
+int pcb_silk_on(pcb_board_t *pcb)
 {
 	static pcb_layer_id_t ts = -1, bs = -1;
-	pcb_layergrp_get_cached(&ts, PCB_LYT_BOTTOM, PCB_LYT_SILK);
-	if ((ts >= 0) && (PCB->LayerGroups.grp[ts].vis))
+	pcb_layergrp_get_cached(pcb, &ts, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	if ((ts >= 0) && (pcb->LayerGroups.grp[ts].vis))
 		return 1;
-	pcb_layergrp_get_cached(&bs, PCB_LYT_BOTTOM, PCB_LYT_SILK);
-	if ((bs >= 0) && (PCB->LayerGroups.grp[bs].vis))
+	pcb_layergrp_get_cached(pcb, &bs, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	if ((bs >= 0) && (pcb->LayerGroups.grp[bs].vis))
 		return 1;
 	return 0;
 }
