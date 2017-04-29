@@ -556,6 +556,7 @@ void pcb_gtk_layersel_vis_update(pcb_gtk_layersel_t *ls)
 	pcb_layergrp_id_t gid;
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++)
-		group_vis_sync(&ls->grp[gid]);
+		if (ls->grp[gid].grp != NULL)
+			group_vis_sync(&ls->grp[gid]);
 }
 
