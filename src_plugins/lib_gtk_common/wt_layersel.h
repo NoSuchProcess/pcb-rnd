@@ -13,7 +13,7 @@ struct pcb_gtk_ls_lyr_s {
 	GtkWidget *box, *vis_on, *vis_off, *name_box;
 
 	int (*ev_vis)(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on); /* called first in click handler with toggle=1, if returns non-zero, normal visibility update is supressed; also called from layer draw, with toggle=0 */
-	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl);   /* called first in click handler, if returns non-zero, layer can not be selected */
+	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl, int do_select);     /* called first in click handler with do_select=1, if returns -1, layer can not be selected; when called with do_select=0, return current selection */
 
 	pcb_layer_id_t lid;
 	char * const*force_color;
@@ -42,6 +42,7 @@ struct pcb_gtk_layersel_s {
 	pcb_gtk_ls_grp_t lsg_virt;
 	pcb_layer_group_t grp_virt;
 	unsigned running:1;
+	unsigned no_copper_sel:1;
 };
 
 GtkWidget *pcb_gtk_layersel_build(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls);

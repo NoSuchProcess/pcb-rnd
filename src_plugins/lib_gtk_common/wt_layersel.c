@@ -116,7 +116,9 @@ static void layersel_lyr_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 		gtk_widget_hide(lsl->vis_on);
 	}
 
-	if ((lsl->lid != -1) && (lsl->lid == pcb_layer_id(PCB->Data, LAYER_ON_STACK(0))))
+	if ((lsl->lid < 0) ?
+		((lsl->ev_selected != NULL) && (lsl->ev_selected(lsl, 0) == 1)) :
+		((!lsl->lsg->ls->no_copper_sel) && (lsl->lid == pcb_layer_id(PCB->Data, LAYER_ON_STACK(0)))))
 		pcb_gtk_set_selected(lsl->name_box, 1);
 	else
 		pcb_gtk_set_selected(lsl->name_box, 0);
@@ -166,15 +168,16 @@ static int vis_virt(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 	return 0;
 }
 
-static int ev_lyr_no_select(pcb_gtk_ls_lyr_t *lsl)
+static int ev_lyr_no_select(pcb_gtk_ls_lyr_t *lsl, int do_select)
 {
-	return 1; /* layer can not be selected ever */
+	return -1; /* layer can not be selected ever */
 }
 
-static int ev_lyr_select_rat(pcb_gtk_ls_lyr_t *lsl)
+static int ev_lyr_select_rat(pcb_gtk_ls_lyr_t *lsl, int do_select)
 {
-	PCB->RatDraw = 1;
-	return 0;
+	if (do_select)
+		lsl->lsg->ls->no_copper_sel = PCB->RatOn = PCB->RatDraw = 1;
+	return PCB->RatDraw;
 }
 
 static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_grp_t *lsg)
@@ -247,9 +250,9 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gt
 	ls->running = 1;
 	switch(event->button.button) {
 		case 1:
-			PCB->RatDraw = 0;
+			ls->no_copper_sel = PCB->RatDraw = 0;
 		case 3:
-			if ((lsl->ev_selected == NULL) || (lsl->ev_selected(lsl) == 0)) {
+			if ((lsl->ev_selected == NULL) || (lsl->ev_selected(lsl, 1) >= 0)) {
 				old_curr = pcb_layer_id(PCB->Data, LAYER_ON_STACK(0));
 				pcb_layervis_change_group_vis(lsl->lid, 1, 1);
 				if (old_curr >= 0) { /* need to find old layer by lid */
@@ -466,7 +469,7 @@ typedef struct {
 	const char *name;
 	char * const*force_color;
 	int (*ev_vis)(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on);
-	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl);
+	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl, int do_select);
 	int virt_data;
 } virt_layers_t;
 
