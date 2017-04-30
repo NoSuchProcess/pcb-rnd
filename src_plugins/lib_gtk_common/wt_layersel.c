@@ -34,6 +34,7 @@
 #include "data.h"
 #include "conf_core.h"
 #include "hid_actions.h"
+#include "math_helper.h"
 
 #include "wt_layersel.h"
 #include "compat.h"
@@ -134,7 +135,7 @@ static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 		gtk_widget_set_no_show_all(lsg->grp_open, 0);
 		gtk_widget_show_all(lsg->grp_open);
 		gtk_widget_set_no_show_all(lsg->grp_open, 1);
-		for(n = 0; n < lsg->grp->len; n++)
+		for(n = 0; n < MAX(lsg->grp->len, 1); n++)
 			layersel_lyr_vis_sync(&lsg->layer[n]);
 	}
 	else {
@@ -167,6 +168,16 @@ static int vis_virt(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 	if (toggle)
 		*b = !*b;
 	*is_on = *b;
+	return 0;
+}
+
+/* Toggle a implicit layer: toggle the parent group's */
+static int vis_impl(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
+{
+	pcb_bool *b = lsl->lsg->grp->vis;
+	if (toggle)
+		lsl->lsg->grp->vis = !lsl->lsg->grp->vis;
+	*is_on = lsl->lsg->grp->vis;
 	return 0;
 }
 
@@ -272,10 +283,7 @@ static gboolean group_any_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 {
 	switch(event->button.button) {
 		case 1:
-			if (lsg->grp->len != 0) /* don't let empty group open, that'd make the open group row unusable */
-				lsg->grp->open = openval;
-			else
-				lsg->grp->open = 0;
+			lsg->grp->open = openval;
 			group_vis_sync(lsg);
 			break;
 		case 3:
@@ -441,15 +449,27 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 	int n;
 	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1, grp);
 
-	lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), grp->len);
+	lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), (grp->len == 0 ? 1 : grp->len));
 
 	/* install layers */
-	for(n = 0; n < grp->len; n++) {
-		pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
-		if (l != NULL) {
-			GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->Name, grp->lid[n], NULL);
-			gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
-			lsg->layer[n].lid = grp->lid[n];
+	if (grp->len == 0) {
+		const char *clr = grp_color(grp);
+		char *name = pcb_strdup_printf("<%s>", lsg->grp->name);
+		GtkWidget *wl = build_layer(lsg, &lsg->layer[0], name, -1, &clr);
+		gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
+		lsg->layer[0].lid = -1;
+		lsg->layer[0].ev_selected = ev_lyr_no_select;
+		lsg->layer[0].ev_vis = vis_impl;
+		free(name);
+	}
+	else {
+		for(n = 0; n < grp->len; n++) {
+			pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
+			if (l != NULL) {
+				GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->Name, grp->lid[n], NULL);
+				gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
+				lsg->layer[n].lid = grp->lid[n];
+			}
 		}
 	}
 
