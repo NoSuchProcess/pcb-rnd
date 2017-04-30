@@ -421,6 +421,7 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
 	gtk_box_pack_start(GTK_BOX(gn_vert), vlabel, TRUE, TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(vlabel), 0, 1);
 	gtk_widget_set_size_request(vlabel, 32, 1);
+	gtk_widget_set_tooltip_text(gn_vert, gname);
 
 	/* install group name - horizontal (for when the group is closed) */
 	if (has_group_vis) {
