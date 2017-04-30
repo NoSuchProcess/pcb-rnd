@@ -54,6 +54,13 @@ void pcb_layergrp_inhibit_dec(void)
 	inhibit_notify--;
 }
 
+pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layer_group_t *grp)
+{
+	if ((grp >= &pcb->LayerGroups.grp[0]) && (grp < &pcb->LayerGroups.grp[pcb->LayerGroups.len]))
+		return grp - &pcb->LayerGroups.grp[0];
+	return -1;
+}
+
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
 	return Layer->grp;

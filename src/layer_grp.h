@@ -61,6 +61,10 @@ struct pcb_layer_stack_s {
 /* Return the layer group for an id, or NULL on error (range check) */
 pcb_layer_group_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 
+/* Return the gid if grp is in the stackup of pcb (else return -1) */
+pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layer_group_t *grp);
+
+
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
 pcb_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
