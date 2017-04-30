@@ -1512,16 +1512,33 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 {
 	pcb_layer_id_t lid;
 	if (pcb_strcasecmp(argv[0], "silk") == 0) {
-		if (pcb_list_layers(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
-			pcb_layervis_change_group_vis(atoi(lid, 1, 0);
+		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
+			pcb_layervis_change_group_vis(lid, -1, 0);
+		else
+			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
 	else if (pcb_strcasecmp(argv[0], "rats") == 0) {
 		PCB->RatOn = !PCB->RatOn;
 		pcb_gui->invalidate_all();
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
+	else if (pcb_strcasecmp(argv[0], "vias") == 0) {
+		PCB->ViaOn = !PCB->ViaOn;
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	}
+	else if ((pcb_strcasecmp(argv[0], "pins") == 0) || (pcb_strcasecmp(argv[0], "pads") == 0)) {
+		PCB->PinOn = !PCB->PinOn;
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	}
+	else if (pcb_strcasecmp(argv[0], "BackSide") == 0) {
+		PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	}
 	else {
-		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 0);
+		pcb_layervis_change_group_vis(atoi(argv[0])-1, -1, 0);
 	}
 
 	return 1;
