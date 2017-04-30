@@ -594,6 +594,24 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
 }
 
+
+
+int pcb_layergrp_rename_(pcb_layer_group_t *grp, char *name)
+{
+	free(grp->name);
+	grp->name = name;
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	return 0;
+}
+
+int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *name)
+{
+	pcb_layer_group_t *grp = pcb_get_layergrp(pcb, gid);
+	if (grp == NULL) return -1;
+	return pcb_layergrp_rename_(grp, pcb_strdup(name));
+}
+
+
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
 	pcb_layer_group_t *g;

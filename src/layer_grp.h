@@ -108,6 +108,13 @@ pcb_layer_group_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t
 void pcb_layergrp_inhibit_inc(void);
 void pcb_layergrp_inhibit_dec(void);
 
+/* Rename an existing layer by idx */
+int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname);
+
+/* changes the name of a layer; memory has to be already allocated */
+int pcb_layergrp_rename_(pcb_layer_group_t *grp, char *name);
+
+
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of
    comma separated layer numbers (1,2,b:4,6,8,t); oldfmt is 0 or 1
