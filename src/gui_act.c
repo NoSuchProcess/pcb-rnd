@@ -1486,7 +1486,20 @@ visible if it is not already visible
 
 static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	pcb_layer_id_t lid;
+
+	if (pcb_strcasecmp(argv[0], "silk") == 0) {
+		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
+			pcb_layervis_change_group_vis(lid, 1, 1);
+		else
+			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
+	}
+	else if (pcb_strcasecmp(argv[0], "rats") == 0) {
 #warning layersel TODO
+	}
+	else {
+		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
+	}
 
 	return 0;
 }
