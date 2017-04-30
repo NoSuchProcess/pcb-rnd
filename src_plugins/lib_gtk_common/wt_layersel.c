@@ -555,6 +555,8 @@ void pcb_gtk_layersel_vis_update(pcb_gtk_layersel_t *ls)
 {
 	pcb_layergrp_id_t gid;
 
+	ls->no_copper_sel = PCB->RatDraw; /* someone may have turned RatDraw on - turn off selecting copper */
+
 	for(gid = 0; gid < pcb_max_group(PCB); gid++)
 		if (ls->grp[gid].grp != NULL)
 			group_vis_sync(&ls->grp[gid]);
