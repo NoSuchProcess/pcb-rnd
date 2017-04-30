@@ -245,7 +245,7 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
 
 		/* ugly heuristics for default open the most common groups */
-		g->open = !!(g->type & (PCB_LYT_SILK | PCB_LYT_COPPER | PCB_LYT_OUTLINE));
+		g->open = 1; /*!!(g->type & (PCB_LYT_SILK | PCB_LYT_COPPER | PCB_LYT_OUTLINE));*/
 		
 		/* the group is visible exactly if if any layer is visible */
 		g->vis = 0;
