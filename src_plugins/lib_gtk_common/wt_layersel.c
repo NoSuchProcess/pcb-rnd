@@ -565,7 +565,6 @@ static void layersel_destroy(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls)
 
 	memset(&ls->grp, 0, sizeof(ls->grp));
 	memset(&ls->lsg_virt, 0, sizeof(ls->lsg_virt));
-	memset(&ls->grp_virt, 0, sizeof(ls->grp_virt));
 
 	gtk_widget_destroy(ls->grp_box);
 	ls->grp_box = gtkc_vbox_new(FALSE, 0);
