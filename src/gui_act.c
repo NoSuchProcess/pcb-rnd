@@ -1489,15 +1489,18 @@ static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_c
 	pcb_layer_id_t lid;
 
 	if (pcb_strcasecmp(argv[0], "silk") == 0) {
+		PCB->RatDraw = 0;
 		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
 			pcb_layervis_change_group_vis(lid, 1, 1);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
 	else if (pcb_strcasecmp(argv[0], "rats") == 0) {
-#warning layersel TODO
+		PCB->RatOn = PCB->RatDraw = 1;
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else {
+		PCB->RatDraw = 0;
 		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
 	}
 
