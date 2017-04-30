@@ -413,6 +413,7 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
 	lsg->layers = gtkc_vbox_new(0, 0);
 	opn = wrap_bind_click(gn_vert, G_CALLBACK(group_close_press_cb), lsg);
 	gtk_box_pack_start(GTK_BOX(lsg->grp_open), opn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(lsg->grp_open), gtk_vseparator_new(), FALSE, FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(lsg->grp_open), lsg->layers, TRUE, TRUE, 0);
 
 	/* install group name - vertical (for when the group is open) */
@@ -420,8 +421,9 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
 	gtk_label_set_angle(GTK_LABEL(vlabel), 90);
 	gtk_box_pack_start(GTK_BOX(gn_vert), vlabel, TRUE, TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(vlabel), 0, 1);
-	gtk_widget_set_size_request(vlabel, 32, 1);
+	gtk_widget_set_size_request(vlabel, 16, 1);
 	gtk_widget_set_tooltip_text(gn_vert, gname);
+
 
 	/* install group name - horizontal (for when the group is closed) */
 	if (has_group_vis) {
