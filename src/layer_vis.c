@@ -257,7 +257,7 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 			}
 		}
 	}
-	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
 static const char *layer_vis_cookie = "core_layer_vis";
