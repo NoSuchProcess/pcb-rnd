@@ -34,6 +34,9 @@ char *pcb_strdup(const char *s); /* from #include "compat_misc.h" */
 /* copy a string between quotes */
 char *strunquote(const char *);
 
+/* print error message */
+void hyyerror(const char *);
+
 /* remember hyperlynx file section we're in */
 int section = -1;
 
@@ -113,10 +116,25 @@ FLOAT_YOCTO         {SIMPLE_FLOAT}{WS}*"y"{FLOAT_SUFFIX}
   */
 
  /* an unquoted string */
-STRING              [^ \t\v\f\r\n\{\}\(\)=\"]+
+ /* a sequence of characters, excluding whitespace and reserved characters.
+  * also allow strings such as "(Net0)" .
+  */
+STRING              [^ \t\v\f\r\n\{\}\(\)=\"]+|"("[[:alnum:]]+")"
 
  /* a string enclosed in double quotes " */
 QUOTED_STRING       \"([^\"\n]|\"\")*\"
+
+/* an unquoted string with spaces */
+CHARS_AND_SPACES       [^\t\v\f\r\n\{\}\(\)=\"\,]+
+
+/* all variables used in assignments */
+VARIABLE            ("A"|"A1"|"A2"|"BR"|"C"|"C\?"|"CO\?"|"D"|"ER"|"F"|"ID"|"L"|"L1"|"L2"|"LPS"|"LT"|"M"|"N"|"NAME"|"P"|"PKG"|"PR\?"|"PS"|"R"|"REF"|"S"|"SX"|"SY"|"S1"|"S1X"|"S1Y"|"S2"|"S2X"|"S2Y"|"T"|"TC"|"USE_DIE_FOR_METAL"|"V"|"V\?"|"VAL"|"W"|"X"|"X1"|"X2"|"XC"|"Y"|"Y1"|"Y2"|"YC"|"Z"|"ZL"|"ZLEN"|"ZW")
+
+/* an unquoted string with spaces is terminated by the next assignment or the end of line */
+STRING_W_SPACES     {CHARS_AND_SPACES}(" "{VARIABLE}"=")?
+
+/* an empty string is terminated by the next assignment, a ')' or a '}' */
+EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
 
 %%
 
@@ -301,9 +319,30 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                      * NAME= L1=somelayer
                      * NAME= )
                      * NAME= }
+                     * and we accept the following constructs as representing "a string with spaces"
+                     * NAME=a string with spaces L1=somelayer
                      */
 <STATE_STRING>{
-([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return H_STRING; } /* emit empty string and reprocess */
+
+{EMPTY_STRING}      { yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return H_STRING; } /* emit empty string and reprocess */
+
+{STRING_W_SPACES}   {
+                      char *s = pcb_strdup(hyytext);
+
+                      BEGIN INITIAL; 
+
+                      /* strip final ' VAR=' */
+                      if ((strlen(s) != 0) && (s[strlen(s)-1] == '=')) {
+                        char* space = strrchr(s, ' ');
+                        if (space != NULL) *space = '\0';
+                        yyless(strlen(s));
+                        if (strchr(s, ' ') != NULL) hyyerror("warning: unquoted string with space");
+                        }
+
+                      hyylval.strval = s;
+
+                      return H_STRING;
+                    }
 }
 
 <*>{

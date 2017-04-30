@@ -397,7 +397,8 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 		}
 		else {
 			/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
-			pcb_printf("device \"%s\" not specified in DEVICE record. continuing.\n", element_name);
+			if (hyp_debug)
+			  pcb_printf("device \"%s\" not specified in DEVICE record. continuing.\n", element_name);
 			elem =
 				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), flags, element_name, element_name, NULL, x, y,
 												text_direction, text_scale, flags, pcb_false);

@@ -624,7 +624,7 @@ lines_and_curves
 line_or_curve
   : line
   | curve
-  | ')' { hyyerror("warning: skipping unexpected ')'"); }
+  | ')' { hyyerror("warning: unexpected ')'"); }
   | '(' error ')'
   ;
 
