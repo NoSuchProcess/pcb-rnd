@@ -1510,8 +1510,10 @@ the same as a special layer, the layer is chosen over the special layer.
 
 static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	pcb_layer_id_t lid;
 	if (pcb_strcasecmp(argv[0], "silk") == 0) {
-#warning layersel TODO
+		if (pcb_list_layers(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
+			pcb_layervis_change_group_vis(atoi(lid, 1, 0);
 	}
 	else if (pcb_strcasecmp(argv[0], "rats") == 0) {
 		PCB->RatOn = !PCB->RatOn;
@@ -1519,7 +1521,7 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else {
-		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 1);
+		pcb_layervis_change_group_vis(atoi(argv[0])-1, 1, 0);
 	}
 
 	return 1;
