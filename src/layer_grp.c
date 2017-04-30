@@ -615,7 +615,7 @@ pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name)
 {
 	pcb_layergrp_id_t n;
 	for (n = 0; n < pcb->LayerGroups.len; n++)
-		if (strcmp(PCB->LayerGroups.grp[n].name, name) == 0)
+		if ((PCB->LayerGroups.grp[n].name != NULL) && (strcmp(PCB->LayerGroups.grp[n].name, name) == 0))
 			return n;
 	return -1;
 }
