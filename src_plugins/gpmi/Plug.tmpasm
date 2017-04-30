@@ -53,9 +53,11 @@ mod_pcb_gpmi: all
 
 @]
 
-		append /local/pcb/LIBS        {$(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a}
+		put /local/pcb/tmp {$(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a}
+		append /local/pcb/tmp /local/pcb/LDFLAGS
+		put /local/pcb/LDFLAGS /local/pcb/tmp
 		append /local/pcb/EXEDEPS     {$(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a}
-		append /local/pcb/LDFLAGS      /target/libs/script/gpmi/ldflags
+		append /local/pcb/LIBS      /target/libs/script/gpmi/ldflags
 
 		append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_gpmi_init();@] {\n}
 
