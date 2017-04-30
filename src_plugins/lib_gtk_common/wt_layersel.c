@@ -248,7 +248,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			}
 
 			ls->com->invalidate_all();
-			if (event->button.button == 3)
+			if ((event->button.button == 3) && (lsl->lid >= 0))
 				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
 	}
@@ -271,7 +271,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gt
 				ls->com->invalidate_all();
 				pcb_gtk_layersel_vis_update(ls); /* need to do a full redraw because of side effects of special layer selections (e.g. Rats') */
 			}
-			if (event->button.button == 3)
+			if ((event->button.button == 3) && (lsl->lid >= 0))
 				pcb_hid_actionl("Popup", "layer", NULL);
 			break;
 	}
