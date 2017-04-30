@@ -43,6 +43,8 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "event.h"
+#include "layer.h"
+#include "layer_grp.h"
 #include "layer_vis.h"
 #include "attrib.h"
 #include "hid_attrib.h"
@@ -1474,6 +1476,89 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	return ret;
 }
 
+
+static const char pcb_acts_EditGroup[] = "Editgroup([@group], [name=text|type=+bit|type=-bit])]\nEditlayer([@layer], attrib, key=value)";
+static const char pcb_acth_EditGroup[] = "Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.";
+static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int ret = 0, n, interactive = 1, explicit = 0;
+	pcb_layer_group_t *g = NULL;
+
+	if (CURRENT != NULL)
+		g = pcb_get_layergrp(PCB, CURRENT->grp);
+
+	for(n = 0; n < argc; n++) {
+		if (!explicit && (*argv[n] == '@')) {
+			pcb_layergrp_id_t gid = pcb_layergrp_by_name(PCB, argv[n]+1);
+			if (gid < 0) {
+				pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", argv[n]+1);
+				return 1;
+			}
+			g = pcb_get_layergrp(PCB, gid);
+			explicit = 1;
+		}
+		else if (strncmp(argv[n], "name=", 5) == 0) {
+			interactive = 0;
+			ret |= pcb_layergrp_rename_(g, pcb_strdup(argv[n]+5));
+		}
+		else if (strncmp(argv[n], "type=", 5) == 0) {
+			interactive = 0;
+#warning layer TODO
+		}
+#if 0
+		else if (strncmp(argv[n], "attrib", 6) == 0) {
+			char *key, *val;
+			interactive = 0;
+			n++;
+			if (n >= argc) {
+				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", argv[n]+1);
+				return 1;
+			}
+			key = pcb_strdup(argv[n]);
+			val = strchr(key, '=');
+			if (val != NULL) {
+				*val = '\0';
+				val++;
+				if (val == '\0')
+					val = NULL;
+			}
+			if (val == NULL)
+				ret |= pcb_attribute_remove(&g->Attributes, key);
+			else
+				ret |= pcb_attribute_put(&g->Attributes, key, val, 1);
+			free(key);
+		}
+#endif
+		else {
+			pcb_message(PCB_MSG_ERROR, "Invalid EditGroup() command: %s\n", argv[n]);
+			PCB_ACT_FAIL(EditLayer);
+		}
+	}
+
+	if (interactive) {
+		int ar;
+		pcb_hid_attr_val_t rv[16];
+		pcb_hid_attribute_t attr[] = {
+			{"name", "logical layer name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
+		};
+
+		attr[0].default_val.str_value = g->name;
+
+		ar = pcb_gui->attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "edit layer properies", "Edit the properties of a logical layer");
+
+		if (ar == 0) {
+			if (strcmp(g->name, attr[0].default_val.str_value) != 0)
+				ret |= pcb_layergrp_rename_(g, pcb_strdup(argv[n]+5));
+		}
+
+		ret |= ar;
+	}
+
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	return ret;
+}
+
+
 const char pcb_acts_selectlayer[] = "SelectLayer(1..MAXLAYER|Silk|Rats)";
 const char pcb_acth_selectlayer[] = "Select which layer is the current layer.";
 
@@ -1622,6 +1707,9 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"EditLayer", 0, pcb_act_EditLayer,
 	 pcb_acth_EditLayer, pcb_acts_EditLayer}
+	,
+	{"EditGroup", 0, pcb_act_EditGroup,
+	 pcb_acth_EditGroup, pcb_acts_EditGroup}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

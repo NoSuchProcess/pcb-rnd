@@ -260,7 +260,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 
 pcb_layer_id_t pcb_layer_by_name(const char *name)
 {
-	int n;
+	pcb_layer_id_t n;
 	for (n = 0; n < PCB->Data->LayerN; n++)
 		if (strcmp(PCB->Data->Layer[n].Name, name) == 0)
 			return n;
@@ -269,7 +269,7 @@ pcb_layer_id_t pcb_layer_by_name(const char *name)
 
 void pcb_layers_reset()
 {
-	int n;
+	pcb_layer_id_t n;
 
 	/* reset everything to empty, even if that's invalid (no top/bottom copper)
 	   for the rest of the code: the (embedded) default design will overwrite this. */
