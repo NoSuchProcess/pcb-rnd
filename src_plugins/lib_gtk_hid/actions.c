@@ -466,7 +466,6 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t ghid_menu_action_list[] = {
-#warning layersel TODO
 	{"AdjustStyle", 0, AdjustStyle, adjuststyle_help, adjuststyle_syntax}
 	,
 	{"fontsel", 0, pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
