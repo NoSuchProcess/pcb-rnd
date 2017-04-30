@@ -230,6 +230,7 @@ uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
+uniq /local/pcb/LIBS_PRE
 uniq /local/pcb/LIBS_3RD
 uniq /local/pcb/ACTION_REG_SRC
 uniq /local/pcb/EXEDEPS
@@ -266,6 +267,7 @@ SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
 C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
+LIBS_PRE=@/local/pcb/LIBS_PRE@
 LIBS=@/local/pcb/LIBS@ -lm @?/target/libs/ldl@
 LIBS_3RD=@/local/pcb/LIBS_3RD@
 EXEDEPS=@/local/pcb/EXEDEPS@
@@ -289,7 +291,7 @@ revcheck:
 all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
-	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LDFLAGS) $(LIBS)
+	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c

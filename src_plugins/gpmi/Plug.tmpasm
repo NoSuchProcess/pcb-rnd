@@ -53,9 +53,7 @@ mod_pcb_gpmi: all
 
 @]
 
-		put /local/pcb/tmp {$(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a}
-		append /local/pcb/tmp /local/pcb/LDFLAGS
-		put /local/pcb/LDFLAGS /local/pcb/tmp
+		append /local/pcb/LIBS_PRE    {$(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a}
 		append /local/pcb/EXEDEPS     {$(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a}
 		append /local/pcb/LIBS      /target/libs/script/gpmi/ldflags
 
