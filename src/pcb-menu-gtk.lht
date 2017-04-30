@@ -642,7 +642,7 @@ ha:{
 
 		ha:group {
 			li:submenu {
-				ha:Group properties...              = { action=EditGroup() }
+				ha:Group properties...              = { action=EditGroup(@) }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 			}
 		} # group
