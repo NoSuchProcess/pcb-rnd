@@ -334,7 +334,9 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
                       /* strip final ' VAR=' */
                       if ((strlen(s) != 0) && (s[strlen(s)-1] == '=')) {
                         char* space = strrchr(s, ' ');
-                        if (space != NULL) *space = '\0';
+                        /* strip trailing spaces */
+                        if (space != NULL)
+                          while ((space >= s) && (*space == ' ')) *space-- = '\0';
                         yyless(strlen(s));
                         if (strchr(s, ' ') != NULL) hyyerror("warning: unquoted string contains space");
                         }

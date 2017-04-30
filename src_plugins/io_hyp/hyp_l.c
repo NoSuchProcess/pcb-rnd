@@ -1973,8 +1973,8 @@ static yyconst flex_int16_t yy_rule_linenum[138] =
 
       271,  272,  273,  274,  275,  279,  280,  285,  288,  289,
       290,  291,  292,  293,  294,  295,  296,  297,  298,  299,
-      300,  301,  302,  303,  307,  312,  327,  329,  350,  352,
-      354,  357,  359,  361,  364,  381,  386
+      300,  301,  302,  303,  307,  312,  327,  329,  352,  354,
+      356,  359,  361,  363,  366,  383,  388
     } ;
 
 static yy_state_type *yy_state_buf=0, *yy_state_ptr=0;
@@ -3314,7 +3314,9 @@ YY_RULE_SETUP
                       /* strip final ' VAR=' */
                       if ((strlen(s) != 0) && (s[strlen(s)-1] == '=')) {
                         char* space = strrchr(s, ' ');
-                        if (space != NULL) *space = '\0';
+                        /* strip trailing spaces */
+                        if (space != NULL)
+                          while ((space >= s) && (*space == ' ')) *space-- = '\0';
                         yyless(strlen(s));
                         if (strchr(s, ' ') != NULL) hyyerror("warning: unquoted string contains space");
                         }
@@ -3328,39 +3330,39 @@ YY_RULE_SETUP
 
 case 129:
 YY_RULE_SETUP
-#line 350 "hyp_l.l"
+#line 352 "hyp_l.l"
 {return '{';}
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 352 "hyp_l.l"
+#line 354 "hyp_l.l"
 {BEGIN STATE_COMMENT_EOL; return '}';}
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 354 "hyp_l.l"
+#line 356 "hyp_l.l"
 {if (section == H_PADSTACK) BEGIN STATE_STRING; return '(';}
 	YY_BREAK
 /* allow for comment after the closing bracket ) */
 case 132:
 YY_RULE_SETUP
-#line 357 "hyp_l.l"
+#line 359 "hyp_l.l"
 {BEGIN STATE_COMMENT_EOL; return ')';}
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 359 "hyp_l.l"
+#line 361 "hyp_l.l"
 {return ',';}
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 361 "hyp_l.l"
+#line 363 "hyp_l.l"
 {if ((section == H_VERSION) || (section == H_PLANE_SEP)) BEGIN STATE_FLOAT; return '=';}
 	YY_BREAK
 /* string */
 case 135:
 YY_RULE_SETUP
-#line 364 "hyp_l.l"
+#line 366 "hyp_l.l"
 { 
                         /*
                          * Commas are not allowed in strings in the padstack section
@@ -3380,7 +3382,7 @@ YY_RULE_SETUP
 /* string in double quotes */
 case 136:
 YY_RULE_SETUP
-#line 381 "hyp_l.l"
+#line 383 "hyp_l.l"
 {BEGIN INITIAL; hyylval.strval = strunquote(hyytext); return H_STRING;}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
@@ -3389,22 +3391,22 @@ case YY_STATE_EOF(STATE_POSINT):
 case YY_STATE_EOF(STATE_FLOAT):
 case YY_STATE_EOF(STATE_COMMENT):
 case YY_STATE_EOF(STATE_COMMENT_EOL):
-#line 383 "hyp_l.l"
+#line 385 "hyp_l.l"
 {yyterminate();}
 	YY_BREAK
 /* have bison catch all unrecognized characters with parse errors */
 case 137:
 YY_RULE_SETUP
-#line 386 "hyp_l.l"
+#line 388 "hyp_l.l"
 {return hyytext[0];}
 	YY_BREAK
 
 case 138:
 YY_RULE_SETUP
-#line 390 "hyp_l.l"
+#line 392 "hyp_l.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 3408 "hyp_l.c"
+#line 3410 "hyp_l.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -4514,7 +4516,7 @@ void hyyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 389 "hyp_l.l"
+#line 391 "hyp_l.l"
 
 
 
