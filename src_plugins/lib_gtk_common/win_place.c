@@ -40,6 +40,7 @@ static GtkWidget *wplc_windows[WPLC_max];
 
 /* true if the given configuration item has exactly one integer value */
 #define HAVE(native) ((native != NULL) && ((native)->used == 1) && ((native)->type == CFN_INTEGER))
+#define HAVE_NZ(native) ((HAVE(native)) && ((native)->val.integer[0] != 0))
 
 void wplc_place(wplc_win_t id, GtkWidget *new_win)
 {
@@ -81,7 +82,7 @@ void wplc_place(wplc_win_t id, GtkWidget *new_win)
 	else {
 		win = wplc_windows[id];
 		if (win != NULL) {
-			if (HAVE(nw) && HAVE(nh))
+			if (HAVE_NZ(nw) && HAVE_NZ(nh))
 				gtk_window_resize(GTK_WINDOW(win), nw->val.integer[0], nh->val.integer[0]);
 			if (HAVE(nx) && HAVE(ny))
 				gtk_window_move(GTK_WINDOW(win), nx->val.integer[0], ny->val.integer[0]);
