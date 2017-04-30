@@ -132,14 +132,6 @@ int ghid_mod1_is_pressed()
 #endif
 }
 
-static gboolean get_layer_visible_cb(int id)
-{
-	int visible;
-#warning layersel TODO
-visible=0;
-	return visible;
-}
-
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL || ghidgui->topwin.layersel.running)
