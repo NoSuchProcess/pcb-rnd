@@ -236,10 +236,6 @@ void layer_vis_chg_mask(conf_native_t *cfg)
 	in = 0;
 }
 
-static void layer_vis_sync_ev(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-}
-
 static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_layergrp_id_t gid;
