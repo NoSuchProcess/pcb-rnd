@@ -253,19 +253,9 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gt
 			ls->no_copper_sel = PCB->RatDraw = 0;
 		case 3:
 			if ((lsl->ev_selected == NULL) || (lsl->ev_selected(lsl, 1) >= 0)) {
-				old_curr = pcb_layer_id(PCB->Data, LAYER_ON_STACK(0));
 				pcb_layervis_change_group_vis(lsl->lid, 1, 1);
-				if (old_curr >= 0) { /* need to find old layer by lid */
-					int gi, li;
-
-					for(gi = 0; gi < pcb_max_group(PCB); gi++)
-						if (ls->grp[gi].grp != NULL)
-							for(li = 0; li < ls->grp[gi].grp->len; li++)
-								if (ls->grp[gi].layer[li].lid == old_curr)
-									layersel_lyr_vis_sync(&ls->grp[gi].layer[li]);
-					ls->com->invalidate_all();
-				}
-				layersel_lyr_vis_sync(lsl);
+				ls->com->invalidate_all();
+				pcb_gtk_layersel_vis_update(ls); /* need to do a full redraw because of side effects of special layer selections (e.g. Rats') */
 			}
 			if (event->button.button == 3)
 				pcb_hid_actionl("Popup", "layer", NULL);
