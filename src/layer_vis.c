@@ -97,7 +97,7 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeS
 		On = !PCB->Data->Layer[Layer].On;
 
 	if (conf_core.rc.verbose)
-		printf("pcb_layervis_change_group_vis(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
+		printf("pcb_layervis_change_group_vis(Layer=%ld, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
 
 	/* decrement 'i' to keep stack in order of layergroup */
 	if ((group = pcb_layer_get_group(PCB, Layer)) >= 0) {
