@@ -1476,7 +1476,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	return ret;
 }
 
-
+pcb_layergrp_id_t pcb_actd_EditGroup_gid = -1;
 static const char pcb_acts_EditGroup[] = "Editgroup([@group], [name=text|type=+bit|type=-bit])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditGroup[] = "Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.";
 static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -1489,7 +1489,11 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	for(n = 0; n < argc; n++) {
 		if (!explicit && (*argv[n] == '@')) {
-			pcb_layergrp_id_t gid = pcb_layergrp_by_name(PCB, argv[n]+1);
+			pcb_layergrp_id_t gid;
+			if (argv[n][1] == '\0')
+				gid = pcb_actd_EditGroup_gid;
+			else
+				gid = pcb_layergrp_by_name(PCB, argv[n]+1);
 			if (gid < 0) {
 				pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", argv[n]+1);
 				return 1;
