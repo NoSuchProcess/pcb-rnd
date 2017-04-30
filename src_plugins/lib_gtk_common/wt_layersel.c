@@ -38,6 +38,8 @@
 #include "wt_layersel.h"
 #include "compat.h"
 
+extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+
 /*** Layer visibility widget rendering ***/
 
 #define set_pixel(dst, r, g, b, a) \
@@ -197,6 +199,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			ls->com->invalidate_all();
 			break;
 		case 3:
+			pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
 			pcb_hid_actionl("Popup", "group", NULL);
 			break;
 	}
@@ -276,6 +279,7 @@ static gboolean group_any_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			group_vis_sync(lsg);
 			break;
 		case 3:
+			pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
 			pcb_hid_actionl("Popup", "group", NULL);
 			break;
 	}
