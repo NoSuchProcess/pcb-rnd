@@ -1259,7 +1259,7 @@ pcb_bool exec_version(parse_param * h)
 		pcb_printf("version: vers = %f\n", h->vers);
 
 	if (h->vers < 1.0)
-		pcb_message(PCB_MSG_DEBUG, "warning: version 1.x deprecated\n");
+		pcb_message(PCB_MSG_DEBUG, "info: version 1.x deprecated\n");
 
 	return 0;
 }
@@ -2383,7 +2383,7 @@ pcb_bool exec_polygon_begin(parse_param * h)
 	/* check for other polygons with this id */
 	for (i = polygon_head; i != NULL; i = i->next)
 		if (h->id == i->hyp_poly_id) {
-			pcb_printf("warning: duplicate polygon id %i.\n", h->id);
+			pcb_printf("info: duplicate polygon id %i.\n", h->id);
 			break;
 		}
 
@@ -2566,7 +2566,7 @@ pcb_bool exec_polyline_begin(parse_param * h)
 	/* check for other polygons with this id */
 	for (i = polygon_head; i != NULL; i = i->next)
 		if (h->id == i->hyp_poly_id) {
-			pcb_printf("warning: duplicate polygon id %i.\n", h->id);
+			pcb_printf("info: duplicate polygon id %i.\n", h->id);
 			break;
 		}
 

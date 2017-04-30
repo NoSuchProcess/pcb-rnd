@@ -3316,7 +3316,7 @@ YY_RULE_SETUP
                         char* space = strrchr(s, ' ');
                         if (space != NULL) *space = '\0';
                         yyless(strlen(s));
-                        if (strchr(s, ' ') != NULL) hyyerror("warning: unquoted string with space");
+                        if (strchr(s, ' ') != NULL) hyyerror("warning: unquoted string contains space");
                         }
 
                       hyylval.strval = s;
