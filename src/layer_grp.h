@@ -114,6 +114,9 @@ int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lna
 /* changes the name of a layer; memory has to be already allocated */
 int pcb_layergrp_rename_(pcb_layer_group_t *grp, char *name);
 
+/* Slow linear search for a layer group by name */
+pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);
+
 
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of

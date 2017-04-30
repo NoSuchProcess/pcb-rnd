@@ -611,6 +611,15 @@ int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *nam
 	return pcb_layergrp_rename_(grp, pcb_strdup(name));
 }
 
+pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name)
+{
+	pcb_layergrp_id_t n;
+	for (n = 0; n < pcb->LayerGroups.len; n++)
+		if (strcmp(PCB->LayerGroups.grp[n].name, name) == 0)
+			return n;
+	return -1;
+}
+
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
