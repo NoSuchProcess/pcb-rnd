@@ -76,12 +76,15 @@ static void PushOnTopOfLayerStack(int NewTop)
  * changes the visibility of all layers in a group
  * returns the number of changed layers
  */
-int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, pcb_bool On, pcb_bool ChangeStackOrder)
+int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder)
 {
 	pcb_layergrp_id_t group;
 	int i, changed = 1;		/* at least the current layer changes */
 
+
 	if (Layer & PCB_LYT_UI) {
+		if (On < 0)
+			On = !pcb_uilayer.array[Layer].On;
 		Layer &= ~(PCB_LYT_UI | PCB_LYT_VIRTUAL);
 		if (Layer >= vtlayer_len(&pcb_uilayer))
 			return 0;
@@ -89,6 +92,9 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, pcb_bool On, pcb_bool Ch
 		changed = 1;
 		goto done;
 	}
+
+	if (On < 0)
+		On = !PCB->Data->Layer[Layer].On;
 
 	if (conf_core.rc.verbose)
 		printf("pcb_layervis_change_group_vis(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
