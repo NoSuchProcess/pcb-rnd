@@ -171,6 +171,12 @@ static int ev_lyr_no_select(pcb_gtk_ls_lyr_t *lsl)
 	return 1; /* layer can not be selected ever */
 }
 
+static int ev_lyr_select_rat(pcb_gtk_ls_lyr_t *lsl)
+{
+	PCB->RatDraw = 1;
+	return 0;
+}
+
 static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_grp_t *lsg)
 {
 	pcb_gtk_layersel_t *ls = lsg->ls;
@@ -241,6 +247,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gt
 	ls->running = 1;
 	switch(event->button.button) {
 		case 1:
+			PCB->RatDraw = 0;
 		case 3:
 			if ((lsl->ev_selected == NULL) || (lsl->ev_selected(lsl) == 0)) {
 				old_curr = pcb_layer_id(PCB->Data, LAYER_ON_STACK(0));
@@ -467,7 +474,7 @@ static const virt_layers_t virts[] = {
 	{ "Pins/Pads",  &conf_core.appearance.color.pin,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->PinOn) - (char *)PCB},
 	{ "Vias",       &conf_core.appearance.color.via,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->ViaOn) - (char *)PCB },
 	{ "Far side",   &conf_core.appearance.color.invisible_objects, vis_virt, ev_lyr_no_select,  ((char *)&PCB->InvisibleObjectsOn) - (char *)PCB },
-	{ "Rats",       &conf_core.appearance.color.rat,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->RatOn) - (char *)PCB },
+	{ "Rats",       &conf_core.appearance.color.rat,               vis_virt, ev_lyr_select_rat, ((char *)&PCB->RatOn) - (char *)PCB },
 };
 
 static void layersel_populate(pcb_gtk_layersel_t *ls)
