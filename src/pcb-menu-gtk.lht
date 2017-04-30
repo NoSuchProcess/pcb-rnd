@@ -628,7 +628,7 @@ ha:{
 
 		ha:layer {
 			li:submenu {
-				ha:Properties...                    = { action=EditLayer() }
+				ha:Layer properties...              = { action=EditLayer() }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
 				-
 				ha:Move up                          = { action=MoveLayer(c, up) }
@@ -639,6 +639,13 @@ ha:{
 				ha:Insert new, after this layer     = { action={ MoveLayer(-1, c); MoveLayer(c, down) } }
 			}
 		} # layer
+
+		ha:group {
+			li:submenu {
+				ha:Group properties...              = { action=EditGroup() }
+				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
+			}
+		} # group
 
 	} # popups
 } # root
