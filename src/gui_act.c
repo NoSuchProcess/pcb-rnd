@@ -1506,8 +1506,21 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			ret |= pcb_layergrp_rename_(g, pcb_strdup(argv[n]+5));
 		}
 		else if (strncmp(argv[n], "type=", 5) == 0) {
+			const char *sbit = argv[n]+5;
+			pcb_layer_type_t bit = pcb_layer_type_str2bit(sbit+1);
+			if (bit == 0) {
+				if (strcmp(sbit+1, "anything") == 0) bit = PCB_LYT_ANYTHING;
+				else if (strcmp(sbit+1, "anywhere") == 0) bit = PCB_LYT_ANYWHERE;
+			}
+			if (bit == 0) {
+				pcb_message(PCB_MSG_ERROR, "Unknown type bit %s\n", sbit+1);
+				return 1;
+			}
+			switch(*sbit) {
+				case '+': g->type |= bit; break;
+				case '-': g->type &= ~bit; break;
+			}
 			interactive = 0;
-#warning layer TODO
 		}
 #if 0
 		else if (strncmp(argv[n], "attrib", 6) == 0) {
