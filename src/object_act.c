@@ -1038,6 +1038,12 @@ Moves the layer up.
 @item down
 Moves the layer down.
 
+@item step+
+Moves the layer towards the end of its group's list.
+
+@item step-
+Moves the layer towards the beginning of its group's list.
+
 @item c
 Creates a new layer.
 
@@ -1078,6 +1084,21 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			return 1;
 		new_top = new_index;
 	}
+	else if (strncmp(argv[1], "step", 4) == 0) {
+		pcb_layer_t *l = CURRENT;
+		pcb_layer_group_t *g = pcb_get_layergrp(PCB, l->grp);
+		if (g == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Invalid layer group\n");
+			return 1;
+		}
+		switch(argv[1][4]) {
+			case '+': return pcb_layergrp_step_layer(g, pcb_layer_id(PCB->Data, l), +1); break;
+			case '-': return pcb_layergrp_step_layer(g, pcb_layer_id(PCB->Data, l), -1); break;
+		}
+		pcb_message(PCB_MSG_ERROR, "Invalid step direction\n");
+		return 1;
+	}
+
 	else
 		new_index = atoi(argv[1]);
 

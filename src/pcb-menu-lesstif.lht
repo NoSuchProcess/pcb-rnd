@@ -159,8 +159,8 @@ ha:{
 						-
 						ha:Delete current layer = { action=MoveLayer(c,-1) }
 						ha:Add new layer = { action=MoveLayer(-1,c) }
-						ha:Move current layer up = { action=MoveLayer(c,up) }
-						ha:Move current layer down = { action=MoveLayer(c,down) }
+						ha:Move current layer up = { action=MoveLayer(c,step-) }
+						ha:Move current layer down = { action=MoveLayer(c,step+) }
 					}
 				}
 			}
