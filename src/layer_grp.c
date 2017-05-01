@@ -369,6 +369,7 @@ int pcb_layergrp_step_layer(pcb_layer_group_t *grp, pcb_layer_id_t lid, int delt
 	tmp = grp->lid[idx];
 	grp->lid[idx] =grp->lid[idx2];
 	grp->lid[idx2] = tmp;
+	NOTIFY();
 	return 0;
 }
 
