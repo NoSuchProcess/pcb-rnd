@@ -564,8 +564,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "UI", 0, &ls->grp_ui), FALSE, FALSE, 0);
 
 		for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
-			gtk_box_pack_start(GTK_BOX(lsg->layers),
-				build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].Name, -1, NULL), FALSE, FALSE, 1);
+			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].Name, -1, &pcb_uilayer.array[n].Color), FALSE, FALSE, 1);
 			lsg->layer[n].ev_selected = ev_lyr_no_select;
 			lsg->layer[n].ev_vis = vis_ui;
 			lsg->layer[n].virt_data = n;
