@@ -554,7 +554,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		build_group_finish(lsg);
 	}
 
-	{ /* UI layers */
+	if (vtlayer_len(&pcb_uilayer) > 0) { /* UI layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_ui;
 
 		ls->grp_ui.len = vtlayer_len(&pcb_uilayer);
