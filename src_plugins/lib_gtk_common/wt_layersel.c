@@ -584,6 +584,7 @@ GtkWidget *pcb_gtk_layersel_build(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls)
 
 	ls->grp_box_outer = gtkc_vbox_new(FALSE, 0);
 	ls->grp_virt.open = 1;
+	ls->grp_ui.open = 1;
 	ls->com = com;
 
 	ls->grp_box = gtkc_vbox_new(FALSE, 0);
