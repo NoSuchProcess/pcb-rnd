@@ -124,6 +124,11 @@ static void show_layer_inp_callback(Widget da, PreviewData * pd, XmDrawingAreaCa
 				if (pd->mouse_ev(da, kind, cx, cy))
 					SHOW_DRAW;
 			break;
+		case PCB_MB_RIGHT:
+			if (pd->mouse_ev != NULL)
+				if (pd->mouse_ev(da, PCB_HID_MOUSE_POPUP, cx, cy))
+					SHOW_DRAW;
+			break;
 		case PCB_MB_MIDDLE:
 			if (kind == PCB_HID_MOUSE_PRESS) {
 				pd->pan = 1;

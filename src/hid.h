@@ -14,7 +14,8 @@
 typedef enum {
 	PCB_HID_MOUSE_PRESS,
 	PCB_HID_MOUSE_RELEASE,
-	PCB_HID_MOUSE_MOTION
+	PCB_HID_MOUSE_MOTION,
+	PCB_HID_MOUSE_POPUP  /* "right click", open context-specific popup */
 } pcb_hid_mouse_ev_t;
 
 
