@@ -39,8 +39,8 @@ struct pcb_gtk_layersel_s {
 	pcb_gtk_common_t *com;
 	GtkWidget *grp_box, *grp_box_outer;
 	pcb_gtk_ls_grp_t grp[PCB_MAX_LAYERGRP];
-	pcb_gtk_ls_grp_t lsg_virt;
-	pcb_layer_group_t grp_virt;
+	pcb_gtk_ls_grp_t lsg_virt, lsg_ui;
+	pcb_layer_group_t grp_virt, grp_ui;
 	unsigned running:1;
 	unsigned no_copper_sel:1;
 };

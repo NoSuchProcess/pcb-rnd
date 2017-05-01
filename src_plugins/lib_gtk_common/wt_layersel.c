@@ -29,6 +29,7 @@
 
 #include "layer.h"
 #include "layer_grp.h"
+#include "layer_ui.h"
 #include "layer_vis.h"
 #include "board.h"
 #include "data.h"
@@ -168,6 +169,15 @@ static int vis_virt(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 	if (toggle)
 		*b = !*b;
 	*is_on = *b;
+	return 0;
+}
+
+static int vis_ui(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
+{
+	pcb_layer_t *l = &pcb_uilayer.array[lsl->virt_data];
+	if (toggle)
+		l->On = !l->On;
+	*is_on = l->On;
 	return 0;
 }
 
@@ -517,6 +527,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 {
 	GtkWidget *spring;
 	pcb_layergrp_id_t gid;
+		int n;
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
@@ -529,7 +540,6 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 	{ /* build hardwired virtual layers */
 		pcb_gtk_ls_grp_t *lsg = &ls->lsg_virt;
-		int n;
 
 		ls->grp_virt.len = sizeof(virts) / sizeof(virts[0]);
 		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), ls->grp_virt.len);
@@ -545,6 +555,25 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 
 		build_group_finish(lsg);
 	}
+
+	{ /* UI layers */
+		pcb_gtk_ls_grp_t *lsg = &ls->lsg_ui;
+
+		ls->grp_ui.len = vtlayer_len(&pcb_uilayer);
+		lsg->layer = calloc(sizeof(pcb_gtk_ls_lyr_t), ls->grp_ui.len);
+		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "UI", 0, &ls->grp_ui), FALSE, FALSE, 0);
+
+		for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
+			gtk_box_pack_start(GTK_BOX(lsg->layers),
+				build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].Name, -1, NULL), FALSE, FALSE, 1);
+			lsg->layer[n].ev_selected = ev_lyr_no_select;
+			lsg->layer[n].ev_vis = vis_ui;
+			lsg->layer[n].virt_data = n;
+			lsg->layer[n].lid = -1;
+		}
+		build_group_finish(lsg);
+	}
+
 
 	spring = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(ls->grp_box), spring, TRUE, TRUE, 0);
