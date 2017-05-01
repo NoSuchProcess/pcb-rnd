@@ -516,6 +516,10 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		return 0; /* avoid group sync */
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
+		pcb_layergrp_id_t gid;
+		pcb_layer_group_t *g;
+		int grp_idx;
+
 #warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
 		for(l = old_index; l < PCB->Data->LayerN-1; l++) {
 			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
@@ -529,6 +533,23 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		for (l = 0; l < PCB->Data->LayerN; l++)
 			if (pcb_layer_stack[l] > old_index)
 				pcb_layer_stack[l]--;
+
+		/* remove the current lid from its group */
+		g = pcb_get_layergrp(PCB, PCB->Data->Layer[old_index].grp);
+		grp_idx = pcb_layergrp_index_in_grp(g, old_index);
+		memmove(g->lid+grp_idx, g->lid+grp_idx+1, (g->len - grp_idx - 1) * sizeof(pcb_layer_id_t));
+		g->len--;
+
+		/* update lids in all groups (shifting down idx) */
+		for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+			int n;
+			g = &PCB->LayerGroups.grp[gid];
+			for(n = 0; n < g->len; n++)
+				if (g->lid[n] > old_index)
+					g->lid[n]--;
+		}
+		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+		return 0;
 	}
 	else {
 		/* Move an existing layer */
@@ -544,11 +565,11 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		}
 
 		layer_move(&PCB->Data->Layer[new_index], &saved_layer);
+
+		layer_sync_groups(PCB);
 	}
 
 	move_all_thermals(old_index, new_index);
-
-	layer_sync_groups(PCB);
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
