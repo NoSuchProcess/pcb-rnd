@@ -21,7 +21,7 @@
 			- consider to provide a config setting for makging open-group-name horizontal [report: istankovic]
 			- @layer* menu: centralize the code
 		- lesstif: layer selector should show all layers, probably in the order of the stackup
-		- gtk: "can't remove silk layer" when logical silk is being removed with right-click in layer selector [report: miloh]
+		+ gtk: "can't remove silk layer" when logical silk is being removed with right-click in layer selector [report: miloh]
 		- check why thin draw crashes
 		- gerber warning on composite silk
 		- lihata v2:
