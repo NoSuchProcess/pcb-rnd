@@ -989,6 +989,10 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		events.output_rules = io_lihata_out_rules;
 
 		res = lhtpers_fsave_as(&events, brd, inf, FP, old_filename, &errmsg);
+		if (res == LHTPERS_ERR_ROOT_MISMATCH) {
+			/* different lht file; the user requested the save, including overwrite, so do that */
+			res = lhtpers_fsave_as(&events, brd, NULL, FP, old_filename, &errmsg);
+		}
 		if (res != 0) {
 			FILE *fe;
 			char *fe_name = pcb_concat(old_filename, ".mem.lht", NULL);
