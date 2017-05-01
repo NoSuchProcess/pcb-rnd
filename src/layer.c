@@ -457,9 +457,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		return 1;
 	}
 
-	if (old_index == new_index)
-		return 0;
-
 	if (new_index == -1 && is_last_top_copper_layer(old_index)) {
 		pcb_gui->confirm_dialog("You can't delete the last top-side layer\n", "Ok", NULL);
 		return 1;
@@ -481,13 +478,27 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 
 		lp = &PCB->Data->Layer[new_lid];
 		layer_init(lp, new_lid);
-		lp->grp = PCB->Data->Layer[new_index].grp;
+		if (new_in_grp >= 0)
+			lp->grp = new_in_grp;
+		else
+			lp->grp = PCB->Data->Layer[new_index].grp;
+
 		g = pcb_get_layergrp(PCB, lp->grp);
-		grp_idx = pcb_layergrp_index_in_grp(g, new_index);
+
+		if (new_in_grp >= 0) {
+			if (new_index == 0)
+				grp_idx = 0;
+			else
+				grp_idx = g->len;
+		}
+		else
+			grp_idx = pcb_layergrp_index_in_grp(g, new_index);
 
 		/* shift group members up and insert the new group */
-		fprintf(stderr, "move: len=%d new_index=%d %d\n", g->len, grp_idx, (g->len - grp_idx));
-		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(pcb_layer_id_t));
+		if ((g->len > grp_idx) && (grp_idx >= 0))
+			memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(pcb_layer_id_t));
+		if (grp_idx < 0)
+			grp_idx = 0;
 		g->lid[grp_idx] = new_lid;
 		g->len++;
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);

@@ -644,6 +644,9 @@ ha:{
 			li:submenu {
 				ha:Group properties...              = { action=EditGroup(@) }
 				ha:Grouping... (layer preferences)  = { action=DoWindows(Preferences, 1, "User PoV/Layers") }
+				-
+				ha:Insert new layer                 = { action={ MoveLayer(-1, gi); EditLayer() } }
+				ha:Append new layer                 = { action={ MoveLayer(-1, ga); EditLayer() } }
 			}
 		} # group
 
