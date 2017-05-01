@@ -3275,7 +3275,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/genvector/vtp0.h list_conf.h hid_actions.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h hid_actions.h math_helper.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h \
  ../src_plugins/lib_gtk_common/glue.h hid.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h
@@ -5178,7 +5178,7 @@ layer.o: layer.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h undo.h event.h \
- layer_ui.h
+ layer_ui.h layer_vis.h
 layer_grp.o: layer_grp.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \

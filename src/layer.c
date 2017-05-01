@@ -34,6 +34,7 @@
 #include "undo.h"
 #include "event.h"
 #include "layer_ui.h"
+#include "layer_vis.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1, PCB_LYT_VIRTUAL | PCB_LYT_INVIS },
