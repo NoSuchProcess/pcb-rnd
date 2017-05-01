@@ -256,6 +256,26 @@ static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
 	command_window_close_cb(ctx);
 }
 
+static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointer data)
+{
+	gint ksym = kev->keyval;
+
+	if (ksym != GDK_KEY_Escape)
+		return FALSE;
+
+	if (command_window) {
+		gtk_widget_destroy(command_window);
+		return TRUE;
+	}
+
+	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
+		g_main_loop_quit(ghid_entry_loop);
+	command_entered = NULL;				/* We are aborting */
+
+	return TRUE;
+}
+
+
 	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
 	   |  ActionCommand() to show the command window.
 	 */
@@ -279,8 +299,11 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_container_add(GTK_CONTAINER(command_window), vbox);
 
-	if (!ctx->command_combo_box)
+	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
+		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), NULL);
+	}
+
 
 	gtk_box_pack_start(GTK_BOX(vbox), ctx->command_combo_box, FALSE, FALSE, 0);
 	combo_vbox = vbox;
@@ -310,20 +333,6 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 	gtk_widget_show_all(command_window);
 }
 
-
-static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointer data)
-{
-	gint ksym = kev->keyval;
-
-	if (ksym != GDK_KEY_Escape)
-		return FALSE;
-
-	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
-		g_main_loop_quit(ghid_entry_loop);
-	command_entered = NULL;				/* We are aborting */
-
-	return TRUE;
-}
 
 
 	/* This is the command entry function called from ActionCommand() when
