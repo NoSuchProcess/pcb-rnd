@@ -442,7 +442,7 @@ static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx)
 	lp->SelectedColor = conf_core.appearance.color.layer_selected[idx];
 }
 
-int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
+int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
 {
 	pcb_layer_id_t l;
 

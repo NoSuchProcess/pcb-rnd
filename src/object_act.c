@@ -1109,7 +1109,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 
-	if (pcb_layer_move(old_index, new_index))
+	if (pcb_layer_move(old_index, new_index, -1))
 		return 1;
 
 	return 0;
