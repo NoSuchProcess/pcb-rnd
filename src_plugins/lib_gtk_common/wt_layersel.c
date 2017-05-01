@@ -184,7 +184,6 @@ static int vis_ui(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 /* Toggle a implicit layer: toggle the parent group's */
 static int vis_impl(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 {
-	pcb_bool *b = lsl->lsg->grp->vis;
 	if (toggle)
 		lsl->lsg->grp->vis = !lsl->lsg->grp->vis;
 	*is_on = lsl->lsg->grp->vis;
@@ -284,7 +283,6 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_lyr_t *lsl)
 {
 	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
-	pcb_layer_id_t old_curr;
 
 	ls->running = 1;
 	switch(event->button.button) {
