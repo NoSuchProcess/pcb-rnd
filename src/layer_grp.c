@@ -340,6 +340,15 @@ static void move_grps(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_
 		memmove(&stk->grp[from + delta], &stk->grp[from], sizeof(pcb_layer_group_t) * remaining);
 }
 
+int pcb_layergrp_index_in_grp(pcb_layer_group_t *grp, pcb_layer_id_t lid)
+{
+	int idx;
+	for(idx = 0; idx < grp->len; idx++)
+		if (grp->lid[idx] == lid)
+			return idx;
+	return -1;
+}
+
 int pcb_layergrp_step_layer(pcb_layer_group_t *grp, pcb_layer_id_t lid, int delta)
 {
 	int idx, idx2;

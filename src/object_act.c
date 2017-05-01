@@ -1112,18 +1112,6 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (pcb_layer_move(old_index, new_index))
 		return 1;
 
-	if (new_index == -1) {
-		new_top = old_index;
-		if (new_top >= pcb_max_layer)
-			new_top--;
-		new_index = new_top;
-	}
-	if (old_index == -1)
-		new_top = new_index;
-
-	if (new_top != -1)
-		pcb_layervis_change_group_vis(new_index, 1, 1);
-
 	return 0;
 }
 

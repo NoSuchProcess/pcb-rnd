@@ -493,32 +493,27 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_undo_add_layer_move(old_index, new_index);
 	pcb_undo_inc_serial();
 
-	if (old_index == -1) { /* insert new layer */
-		pcb_layergrp_id_t gid;
+	if (old_index == -1) { /* append new layer at the end of the logical layer list, put it in the current group */
+		pcb_layer_group_t *g;
 		pcb_layer_t *lp;
-		if (PCB->Data->LayerN == PCB_MAX_LAYER) {
-			pcb_message(PCB_MSG_ERROR, "No room for new layers\n");
-			return 1;
-		}
-		/* Create a new layer at new_index - by shifting right all layers above it. */
-		lp = &PCB->Data->Layer[new_index];
-		for(l = PCB->Data->LayerN; l > new_index; l--)
-			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l-1]);
-		PCB->Data->LayerN++;
+		pcb_layer_id_t new_lid = PCB->Data->LayerN++;
+		int grp_idx;
 
+		lp = &PCB->Data->Layer[new_lid];
 		layer_init(lp, new_index);
+		lp->grp = PCB->Data->Layer[new_index].grp;
+		g = pcb_get_layergrp(PCB, lp->grp);
+		grp_idx = pcb_layergrp_index_in_grp(g, new_index);
 
-		/* insert the new layer into the top copper group (or if that fails, in
-		   any copper group) */
-		gid = -1;
-		if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) < 1)
-			pcb_layergrp_list(PCB, PCB_LYT_COPPER, &gid, 1);
-		lp->grp = gid;
-
-		for (l = 0; l < PCB->Data->LayerN; l++)
-			if (pcb_layer_stack[l] >= new_index)
-				pcb_layer_stack[l]++;
-		pcb_layer_stack[PCB->Data->LayerN - 1] = new_index;
+		/* shift group members up and insert the new group */
+		fprintf(stderr, "move: len=%d new_index=%d %d\n", g->len, grp_idx, (g->len - grp_idx));
+		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(pcb_layer_id_t));
+		g->lid[grp_idx] = new_lid;
+		g->len++;
+		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+		pcb_layervis_change_group_vis(new_lid, 1, 1);
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		return 0; /* avoid group sync */
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
 #warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);

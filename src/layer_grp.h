@@ -112,6 +112,10 @@ pcb_layer_group_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t
    the end of the list) or -1 on error */
 int pcb_layergrp_step_layer(pcb_layer_group_t *grp, pcb_layer_id_t lid, int delta);
 
+/* Return the array index of lid within the grp's lid list or -1 if not on the list */
+int pcb_layergrp_index_in_grp(pcb_layer_group_t *grp, pcb_layer_id_t lid);
+
+
 /* Enable/disable inhibition of layer changed events during layer group updates */
 void pcb_layergrp_inhibit_inc(void);
 void pcb_layergrp_inhibit_dec(void);
