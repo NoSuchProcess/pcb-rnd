@@ -356,6 +356,8 @@ static gboolean button_press(GtkWidget * w, pcb_hid_cfg_mod_t btn)
 		preview->view.panning = 1;
 		preview->grabx = cx;
 		preview->graby = cy;
+		preview->grabt = time(NULL);
+		preview->grabmot = 0;
 		break;
 	case PCB_MB_SCROLL_UP:
 		pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 0.8);
@@ -397,16 +399,20 @@ static gboolean preview_scroll_cb(GtkWidget * w, GdkEventScroll * ev, gpointer d
 static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gpointer data)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
+	gint wx, wy;
+	pcb_coord_t cx, cy;
+
+	get_ptr(preview, &cx, &cy, &wx, &wy);
 
 	switch (ghid_mouse_button(ev->button)) {
 	case PCB_MB_RIGHT:
 		preview->view.panning = 0;
+		if (((time(NULL) - preview->grabt) < 2) && (preview->grabmot < 4)) {
+			pcb_trace("popup %d!\n", (time(NULL) - preview->grabt), preview->grabmot);
+		}
 		break;
 	case PCB_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
-			pcb_coord_t cx, cy;
-			gint wx, wy;
-			get_ptr(preview, &cx, &cy, &wx, &wy);
 /*				pcb_printf("br %mm %mm\n", cx, cy); */
 			if (preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy))
 				gtk_widget_queue_draw(w);
@@ -425,6 +431,7 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
 	if (preview->view.panning) {
+		preview->grabmot++;
 		preview->view.x0 = preview->grabx - wx * preview->view.coord_per_px;
 		preview->view.y0 = preview->graby - wy * preview->view.coord_per_px;
 		update_expose_data(preview);

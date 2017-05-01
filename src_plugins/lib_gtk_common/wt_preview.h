@@ -93,6 +93,8 @@ struct pcb_gtk_preview_s {
 	pcb_gtk_preview_mouse_ev_t mouse_cb;
 	pcb_hid_expose_t overlay_draw_cb;
 	pcb_coord_t grabx, graby;
+	time_t grabt;
+	long grabmot;
 
 	pcb_element_t element;
 
