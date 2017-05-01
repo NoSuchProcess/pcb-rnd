@@ -416,11 +416,6 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 			pcb_hid_parse_command(command);
 			g_free(command);
 		}
-		else if (previous) {
-			command = g_strdup(previous);
-			pcb_hid_parse_command(command);
-			g_free(command);
-		}
 	}
 	ctx->com->window_set_name_label(PCB->Name);
 	ctx->com->set_status_line_label();
