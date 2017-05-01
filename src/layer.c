@@ -445,7 +445,6 @@ static void layer_init(pcb_layer_t *lp, int idx)
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
 	pcb_layer_id_t l;
-	pcb_layer_t saved_layer;
 
 	/* sanity checks */
 	if (old_index < -1 || old_index >= PCB->Data->LayerN) {
