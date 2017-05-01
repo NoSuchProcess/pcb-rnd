@@ -441,26 +441,6 @@ static void layer_init(pcb_layer_t *lp, int idx)
 	lp->SelectedColor = conf_core.appearance.color.layer_selected[idx];
 }
 
-/* Recalculate the group->layer cross-links using the layer->group links
-   (useful when layer positions change but groups don't) */
-static void layer_sync_groups(pcb_board_t *pcb)
-{
-	pcb_layergrp_id_t g;
-	pcb_layer_id_t l;
-
-	for (g = 0; g < pcb->LayerGroups.len; g++)
-		pcb->LayerGroups.grp[g].len = 0;
-
-	for (l = 0; l < pcb->Data->LayerN; l++) {
-		int i;
-		g = pcb->Data->Layer[l].grp;
-		if (g >= 0) {
-			i = pcb->LayerGroups.grp[g].len++;
-			pcb->LayerGroups.grp[g].lid[i] = l;
-		}
-	}
-}
-
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
 	pcb_layer_id_t l;
@@ -513,7 +493,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		pcb_layervis_change_group_vis(new_lid, 1, 1);
 		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
-		return 0; /* avoid group sync */
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
 		pcb_layergrp_id_t gid;
@@ -549,30 +528,16 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 					g->lid[n]--;
 		}
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
-		return 0;
 	}
 	else {
-		/* Move an existing layer */
-		layer_move(&saved_layer, &PCB->Data->Layer[old_index]);
-
-		if (old_index < new_index) {
-			for(l = old_index; l < new_index; l++)
-				layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
-		}
-		else {
-			for(l = old_index; l > new_index; l--)
-				layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l-1]);
-		}
-
-		layer_move(&PCB->Data->Layer[new_index], &saved_layer);
-
-		layer_sync_groups(PCB);
+		pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
+		/* Removed r8686:
+		   The new layer design presents the layers by groups to preserve physical
+		   order. In this system the index of the logical layer on the logical
+		   layer list is insignificant, thus we shouldn't try to change it. */
 	}
 
 	move_all_thermals(old_index, new_index);
-
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
-	pcb_gui->invalidate_all();
 	return 0;
 }
 
