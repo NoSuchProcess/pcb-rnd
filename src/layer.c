@@ -432,7 +432,7 @@ static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 }
 
 /* Initialize a new layer with safe initial values */
-static void layer_init(pcb_layer_t *lp, int idx)
+static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx)
 {
 	memset(lp, 0, sizeof(pcb_layer_t));
 	lp->grp = -1;
@@ -480,7 +480,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		int grp_idx;
 
 		lp = &PCB->Data->Layer[new_lid];
-		layer_init(lp, new_index);
+		layer_init(lp, new_lid);
 		lp->grp = PCB->Data->Layer[new_index].grp;
 		g = pcb_get_layergrp(PCB, lp->grp);
 		grp_idx = pcb_layergrp_index_in_grp(g, new_index);
