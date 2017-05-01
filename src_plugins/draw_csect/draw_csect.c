@@ -36,6 +36,8 @@
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
 
+extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+
 static const char *COLOR_ANNOT = "#000000";
 static const char *COLOR_BG = "#f0f0f0";
 
@@ -595,6 +597,8 @@ static void do_move_grp()
 static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_bool res = 0;
+	pcb_layer_id_t lid;
+
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
 			if (is_button(x, y, &btn_addgrp)) {
@@ -743,6 +747,20 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			cx = x;
 			cy = y;
 			break;
+		case PCB_HID_MOUSE_POPUP:
+			lid = get_layer_coords(x, y);
+			if (lid >= 0) {
+				pcb_layervis_change_group_vis(lid, 1, 1);
+				pcb_hid_actionl("Popup", "layer", NULL);
+			}
+			else if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
+				pcb_coord_t tmp;
+				pcb_actd_EditGroup_gid = get_group_coords(y, &tmp, &tmp);
+				if (pcb_actd_EditGroup_gid >= 0)
+					pcb_hid_actionl("Popup", "group", NULL);
+			}
+			break;
+
 	}
 	return res;
 }
