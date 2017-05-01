@@ -989,8 +989,9 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		events.output_rules = io_lihata_out_rules;
 
 		res = lhtpers_fsave_as(&events, brd, inf, FP, old_filename, &errmsg);
-		if (res == LHTPERS_ERR_ROOT_MISMATCH) {
-			/* different lht file; the user requested the save, including overwrite, so do that */
+		if ((res == LHTPERS_ERR_ROOT_MISMATCH) || (res == LHTPERS_ERR_ROOT_MISSING)) {
+			/* target is a different lht file or not even an lht file; the user requested the save, including overwrite, so do that */
+			rewind(FP);
 			res = lhtpers_fsave_as(&events, brd, NULL, FP, old_filename, &errmsg);
 		}
 		if (res != 0) {
