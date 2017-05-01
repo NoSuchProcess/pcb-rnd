@@ -74,7 +74,6 @@
    reconstruct */
 static pcb_gtk_common_t *priv_copy_com;
 
-extern int pcb_act_MoveLayer(int argc, char **argv, int x, int y);
 conf_hid_gtk_t conf_hid_gtk;
 window_geometry_t hid_gtk_wgeo, hid_gtk_wgeo_old;
 
