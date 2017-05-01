@@ -210,20 +210,22 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			ls->com->invalidate_all();
 			break;
 		case 3:
-			pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
-			pcb_hid_actionl("Popup", "group", NULL);
+			if (lsg->grp != &lsg->ls->grp_virt) {
+				pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
+				pcb_hid_actionl("Popup", "group", NULL);
+			}
 			break;
 	}
 	ls->running = 0;
 	return TRUE;
 }
 
-static void layer_popup(int button, pcb_layer_id_t lid, pcb_layer_group_t *g)
+static void layer_popup(pcb_gtk_layersel_t *ls, int button, pcb_layer_id_t lid, pcb_layer_group_t *g)
 {
 	if (button != 3)
 		return;
 	if (lid < 0) {
-		if (g != NULL) {
+		if ((g != NULL) && (g != &ls->grp_virt)) {
 			pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, g);
 			pcb_hid_actionl("Popup", "group", NULL);
 		}
@@ -262,7 +264,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			}
 
 			ls->com->invalidate_all();
-			layer_popup(event->button.button, lsl->lid, lsl->lsg->grp);
+			layer_popup(ls, event->button.button, lsl->lid, lsl->lsg->grp);
 			break;
 	}
 	ls->running = 0;
@@ -284,7 +286,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gt
 				ls->com->invalidate_all();
 				pcb_gtk_layersel_vis_update(ls); /* need to do a full redraw because of side effects of special layer selections (e.g. Rats') */
 			}
-			layer_popup(event->button.button, lsl->lid, lsl->lsg->grp);
+			layer_popup(ls, event->button.button, lsl->lid, lsl->lsg->grp);
 			break;
 	}
 	ls->running = 0;
@@ -299,8 +301,10 @@ static gboolean group_any_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			group_vis_sync(lsg);
 			break;
 		case 3:
-			pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
-			pcb_hid_actionl("Popup", "group", NULL);
+			if (lsg->grp != &lsg->ls->grp_virt) {
+				pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, lsg->grp);
+				pcb_hid_actionl("Popup", "group", NULL);
+			}
 			break;
 	}
 	return TRUE;
