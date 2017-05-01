@@ -16,7 +16,7 @@ struct pcb_gtk_ls_lyr_s {
 	int (*ev_selected)(pcb_gtk_ls_lyr_t *lsl, int do_select);     /* called first in click handler with do_select=1, if returns -1, layer can not be selected; when called with do_select=0, return current selection */
 
 	pcb_layer_id_t lid;
-	char * const*force_color;
+	const char * const*force_color;
 
 	int virt_data;
 

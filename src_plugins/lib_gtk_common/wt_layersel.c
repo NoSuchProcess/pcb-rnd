@@ -355,7 +355,7 @@ static const char *lyr_color(pcb_layer_id_t lid)
 	return conf_core.appearance.color.layer[lid];
 }
 
-static const char *grp_color(pcb_layer_group_t *g)
+static const char * const grp_color(pcb_layer_group_t *g)
 {
 	hardwired_colors(g->type);
 	/* normal mechanism: first layer's color or yellow */
@@ -375,7 +375,7 @@ static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **of
 }
 
 /* Create a hbox of a layer within an expanded group */
-static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, const char *name, pcb_layer_id_t lid, char * const *force_color)
+static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, const char *name, pcb_layer_id_t lid, const char * const *force_color)
 {
 	GtkWidget *vis_box, *vis_ebox, *ly_name_bx, *lab;
 	const char *color;
@@ -480,7 +480,7 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 
 	/* install layers */
 	if (grp->len == 0) {
-		const char *clr = grp_color(grp);
+		const char * const clr = grp_color(grp);
 		char *name = pcb_strdup_printf("<%s>", lsg->grp->name);
 		GtkWidget *wl = build_layer(lsg, &lsg->layer[0], name, -1, &clr);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
@@ -544,7 +544,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "Virtual", 0, &ls->grp_virt), FALSE, FALSE, 0);
 
 		for(n = 0; n < ls->grp_virt.len; n++) {
-			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], virts[n].name, -1, virts[n].force_color), FALSE, FALSE, 1);
+			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], virts[n].name, -1, (const char *const *)virts[n].force_color), FALSE, FALSE, 1);
 			lsg->layer[n].ev_selected = virts[n].ev_selected;
 			lsg->layer[n].ev_vis = virts[n].ev_vis;
 			lsg->layer[n].virt_data = virts[n].virt_data;
