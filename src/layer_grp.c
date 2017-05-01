@@ -340,6 +340,38 @@ static void move_grps(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_
 		memmove(&stk->grp[from + delta], &stk->grp[from], sizeof(pcb_layer_group_t) * remaining);
 }
 
+int pcb_layergrp_step_layer(pcb_layer_group_t *grp, pcb_layer_id_t lid, int delta)
+{
+	int idx, idx2;
+	pcb_layer_id_t tmp;
+
+	for(idx = 0; idx < grp->len; idx++) {
+		if (grp->lid[idx] == lid) {
+			if (delta > 0) {
+				if (idx == grp->len - 1) /* already the last */
+					return 0;
+				idx2 = idx+1;
+				goto swap;
+			}
+			else if (delta < 0) {
+				if (idx == 0) /* already the last */
+					return 0;
+				idx2 = idx-1;
+				goto swap;
+			}
+			else
+				return -1;
+		}
+	}
+	return -1;
+
+	swap:;
+	tmp = grp->lid[idx];
+	grp->lid[idx] =grp->lid[idx2];
+	grp->lid[idx2] = tmp;
+	return 0;
+}
+
 int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 {
 	int n;
