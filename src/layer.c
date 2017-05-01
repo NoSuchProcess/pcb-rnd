@@ -432,14 +432,22 @@ static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 }
 
 /* Initialize a new layer with safe initial values */
-static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx)
+static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gid)
 {
 	memset(lp, 0, sizeof(pcb_layer_t));
-	lp->grp = -1;
+	lp->grp = gid;
 	lp->On = 1;
 	lp->Name = pcb_strdup("New Layer");
 	lp->Color = conf_core.appearance.color.layer[idx];
 	lp->SelectedColor = conf_core.appearance.color.layer_selected[idx];
+	if ((gid >= 0) && (PCB->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
+		switch((PCB->LayerGroups.grp[gid].type) & PCB_LYT_ANYTHING) {
+			case PCB_LYT_MASK:  lp->comb = PCB_LYC_AUTO | PCB_LYC_SUB; break;
+			case PCB_LYT_SILK:  lp->comb = PCB_LYC_AUTO;
+			case PCB_LYT_PASTE: lp->comb = PCB_LYC_AUTO;
+			default: break;
+		}
+	}
 }
 
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
@@ -477,11 +485,10 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		int grp_idx;
 
 		lp = &PCB->Data->Layer[new_lid];
-		layer_init(lp, new_lid);
 		if (new_in_grp >= 0)
-			lp->grp = new_in_grp;
+			layer_init(lp, new_lid, new_in_grp);
 		else
-			lp->grp = PCB->Data->Layer[new_index].grp;
+			layer_init(lp, new_lid, PCB->Data->Layer[new_index].grp);
 
 		g = pcb_get_layergrp(PCB, lp->grp);
 
