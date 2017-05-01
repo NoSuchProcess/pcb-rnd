@@ -132,7 +132,8 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	cctx.poly_before = pcb_gui->poly_before;
 	cctx.poly_after = pcb_gui->poly_after;
 
-	if ((cctx.grp == NULL) || (cctx.grp->len <= 1) || ((PCB->Data->Layer[lid].comb & (PCB_LYC_AUTO | PCB_LYC_SUB)) == PCB_LYC_AUTO)) { /* fallback: no layers -> original code: draw auto+manual */
+	if ((cctx.grp == NULL) || (cctx.grp->len < 2) ||   /* fallback: no layers -> original code: draw auto+manual */
+			(((cctx.grp->len == 1)) && ((PCB->Data->Layer[lid].comb & (PCB_LYC_AUTO | PCB_LYC_SUB)) == PCB_LYC_AUTO))) {    /* fallback: one positive auto layer -> original code: draw auto+manual */
 		pcb_draw_layer(LAYER_PTR(lid), cctx.screen);
 		pcb_draw_silk_auto(&cctx, &lyt_side);
 	}
