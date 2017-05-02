@@ -100,5 +100,3 @@ test_flag "editor/local_ref" "true" "localref"
 test_flag "editor/check_planes" "true" "checkplanes"
 test_flag "editor/description" "true" "description"
 test_flag "editor/name_on_pcb" "true" "nameonpcb"
-test_flag "editor/show_mask" "true" "showmask"
-
