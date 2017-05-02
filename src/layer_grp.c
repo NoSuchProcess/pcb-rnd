@@ -643,6 +643,15 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
 }
 
+void pcb_layer_group_setup_silks(pcb_layer_stack_t *newg)
+{
+#warning layer TODO: this still depends on PCB in pcb_layer_create
+	pcb_layergrp_id_t gid;
+	for(gid = 0; gid < newg->len; gid++)
+		if ((newg->grp[gid].type & PCB_LYT_SILK) && (newg->grp[gid].len == 0))
+			pcb_layer_create(gid, "silk");
+}
+
 
 
 int pcb_layergrp_rename_(pcb_layer_group_t *grp, char *name)

@@ -150,13 +150,9 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, in
 		  continue;			\
 		layer = &data->Layer[number];
 
-/* transitional code: old loaders load the old layer stack, convert to the new
-   (and back before save) */
-void pcb_layer_group_from_old(pcb_board_t *pcb);
-void pcb_layer_group_to_old(pcb_board_t *pcb);
-
 /* for parsing old files with old layer descriptions, with no layer groups */
-void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
+void pcb_layer_group_setup_default(pcb_layer_stack_t *newg); /* default layer groups, no layers */
+void pcb_layer_group_setup_silks(pcb_layer_stack_t *newg); /* make sure we have two silk layers, add them if needed */
 pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
 pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id);
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb);
