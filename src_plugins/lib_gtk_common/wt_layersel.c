@@ -248,6 +248,9 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
 	int n, is_on, normal = 1;
 
+	if (event->type != GDK_BUTTON_PRESS) /* ignore excess events on double or triple buttons */
+		return;
+
 	ls->running = 1;
 	switch(event->button.button) {
 		case 1:
