@@ -14,6 +14,7 @@
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	- r8406 breaks the gtk cursor somehow: hovering above line endpoints stop showing the endpoint shape correctly [report: miloh]
 	- layer rewrite:
+		- open a footprint file -> layer names/stack is strange [report: Evan]
 		- gtk layersel bugs:
 			- double click should be ignored and handled as two single clicks [reprot: miloh]
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
