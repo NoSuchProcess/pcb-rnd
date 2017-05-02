@@ -628,9 +628,10 @@ void PostLoadElementPCB()
 		return;
 
 	pcb_board_new_postproc(yyPCB, 0);
-	pcb_layer_parse_group_string(yyPCB, "1,c:2,s", yyData->LayerN, 0);
-	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
+	pcb_layer_group_setup_default(&yyPCB->LayerGroups);
 	PCB = yyPCB;
+	pcb_layer_group_setup_silks(&yyPCB->LayerGroups);
+	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
 	pcb_element_move(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
 	PCB = pcb_save;
 	yyPCB->MaxWidth = e->BoundingBox.X2;
