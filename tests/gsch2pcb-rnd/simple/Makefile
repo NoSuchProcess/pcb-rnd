@@ -4,6 +4,9 @@ all:
 include ../Makefile.common
 
 test: FORCE
-	@rm main.pcb main.pcb.new main.cmd main.net main.out 2>/dev/null; true
-	@$(GSCH2PCB) -m pcb $(CONF) main.sch > main.out
-	@$(DIFF) main.pcb.ref main.pcb
+	@make clean
+	@$(GSCH2PCB) -m import $(CONF) main.sch > main.log
+	@$(DIFF) main.cmd.ref main.cmd
+
+clean:
+	@rm main.pcb main.cmd main.log 2>/dev/null; true
