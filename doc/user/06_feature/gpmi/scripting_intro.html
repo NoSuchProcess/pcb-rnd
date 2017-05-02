@@ -7,7 +7,7 @@
 <body>
 <H1> Scripting intro </H1>
 This document is an introduction to GPMI for pcb-rnd users. It focuses on
-scripting pcb-rnd and doesn't discusses GPMI deeper than the minimum necessary.
+scripting pcb-rnd and doesn't discuss GPMI deeper than the minimum necessary.
 GPMI is more generic than shown here.
 <p>
 The scope of the document is to describe the relations between pcb-rnd, 
@@ -39,7 +39,7 @@ and registered as an exporter on paper, but it doesn't really create a
 new export facility, just sits there, interacting with pcb-rnd (creating
 menus, actions, etc). Most script plugins do this.
 <p>
-When pcb-rnd executable is compiled, the core, the default GUI and exporter HIDs
+When the pcb-rnd executable is compiled, the core, the default GUI and exporter HIDs
 and buildins are compiled into the executable. Later on 
 <p>
 The <i>GPMI hid</i> is an <i>optional plugin</i> that, by compile-time choice
@@ -131,7 +131,7 @@ Step 1. The green arrows represent this path: the script executes PkgLoad()
 which in turns loads other package(s) into the GPMI hid.
 <p>
 Packages are loaded only once and are globally accessible for multiple modules.
-<td><img src="gpmi_flow_load.png" alt="[same diagram as before, with pacakge load flow highlighted]"></table>
+<td><img src="gpmi_flow_load.png" alt="[same diagram as before, with package load flow highlighted]"></table>
 
 <H3> 2.3. Binding events, registering actions, creating menus </H3>
 <table border=0 width="100%"><tr><td valign=top>
