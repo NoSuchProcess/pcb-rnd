@@ -35,7 +35,7 @@
 #	if defined(gettext_noop)
 #		define N_(S) gettext_noop(S)
 #	else
-#		define N_(S) (S)
+#		define N_(S) S
 #	endif
 #	ifdef LOCALEDIR
 #		define pcb_setlocale setlocale
@@ -43,8 +43,8 @@
 #		define pcb_setlocale(a, b)
 #	endif
 #else
-#	define _(S) (S)
-#	define N_(S) (S)
+#	define _(S) S
+#	define N_(S) S
 #	define textdomain(S) (S)
 #	define gettext(S) (S)
 #	define dgettext(D, S) (S)
