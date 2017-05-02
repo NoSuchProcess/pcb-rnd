@@ -16,7 +16,6 @@
 	- layer rewrite:
 		- open a footprint file -> layer names/stack is strange [report: Evan]
 		- gtk layersel bugs:
-			- double click should be ignored and handled as two single clicks [reprot: miloh]
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
 			- svg export: check mask/paste drawing, make new options? mask on in photo more?
 			- consider to provide a config setting for makging open-group-name horizontal [report: istankovic]
