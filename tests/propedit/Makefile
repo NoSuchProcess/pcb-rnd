@@ -9,6 +9,7 @@ LIB_OBJS = \
  $(LHT)/genht/htsp.o \
  $(LHT)/genht/hash.o \
  $(SRC)/compat_misc.o \
+ $(SRC)/misc_util.o \
  $(SRC)/pcb-printf.o \
  $(SRC)/unit.o \
  $(ROOT)/src_3rd/genvector/gds_char.o
