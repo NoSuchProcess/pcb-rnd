@@ -90,8 +90,8 @@ static void comp_finish(comp_ctx_t *ctx)
 	if (!ctx->thin) {
 		pcb_gui->use_mask(HID_MASK_AFTER);
 		comp_fill_board(ctx, HID_MASK_AFTER);
-		pcb_gui->use_mask(HID_MASK_OFF);
 	}
+	pcb_gui->use_mask(HID_MASK_OFF);
 }
 
 static void comp_init(comp_ctx_t *ctx, int negative)
@@ -111,6 +111,9 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 			comp_fill_board(ctx, HID_MASK_SET);
 		}
 	}
+	
+	if (ctx->thin)
+		pcb_gui->use_mask(HID_MASK_SET);
 }
 
 static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
