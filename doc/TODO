@@ -14,13 +14,14 @@
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	- r8406 breaks the gtk cursor somehow: hovering above line endpoints stop showing the endpoint shape correctly [report: miloh]
 	- layer rewrite:
+		- collapse/expand all in the group popup menu [report: Alain]
 		- gtk layersel bugs:
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
 			- svg export: check mask/paste drawing, make new options? mask on in photo more?
 			- consider to provide a config setting for makging open-group-name horizontal [report: istankovic]
 			- @layer* menu: centralize the code
 		- lesstif: layer selector should show all layers, probably in the order of the stackup
-		- check why thin draw crashes
+		- check why opengl rendering of composite silk is inverse
 		- gerber warning on composite silk
 		- lihata v2:
 			- indent styling for layer stack
