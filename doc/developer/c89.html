@@ -2,11 +2,9 @@
 <body>
 <h1> pcb-rnd - C89 </h1>
 
-The code is written in C, namely C89 for most parts with a few exceptions
-written in C99. It's not yet decided whether the code will be C89 or C99
-long term. If it'll be C89, the C99 parts will be rewritten. If it'll be
-C99, new code can use C99 features freely. Until the decision, keep
-new code C89. Especially watch out for these:
+Most of the code base is written in C89, with a few exceptions
+written in C99 (gtk, because it's not C89-compatible). When adding
+new code, keep it C89. Especially watch out for these:
 <ul>
 	<li> comment: always use /* */, never //
 	<li> don't mix variable declaration with code - open a new {} block, which will also scope your new variables, or better yet, split up the function into smaller, static functions, the compiler will inline them anyway

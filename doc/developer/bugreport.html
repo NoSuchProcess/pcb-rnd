@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd - reporting bugs </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+<!--AUTO head begin-->
+	<link rel="icon" href="resources/logo16.png">
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor="#eeeeee" width="100%">
+<tr>
+<th align=center bgcolor="#ccc0cc"> <a href="index.html"> Main </a>
+<th align=center bgcolor="#ccc0cc"> <a href="news.html"> News </a>
+<th align=center bgcolor="#ccc0cc"> <a href="doc.html"> Doc </a>
+<th align=center bgcolor="#ccc0cc"> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor="#ccc0cc"> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a> & <a href="http://www.repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=timeline"> timeline </a>
+<td align=right width="60%"> <font size="+2"><i>pcb-rnd</i></font> <img src="resources/logo32.png" alt="[pcb-rnd logo]">
+</table>
+<!--AUTO navbar end-->
+
+<H1> pcb-rnd - license </H1>
+Pcb-rnd, like any other biggish piece of software, is not a free of bugs.
+When you find a bug, please report it and we will try to fix it as soon as
+possible.For reporting bugs you can use any medium you can reach us on:
+mostly IRC and email, whichever is easier for you.
+<p>
+Using the below table you can <b>optionally</b> increase the efficiency of your
+bugreport by sending enough data in the initial report that we won't need
+to ask for clarification.
+
+<table border=1 cellspacing=0>
+<tr><th>what went wrong <th> optional extra info to help debugging
+
+<tr><td>
+	0. For any report, please include
+<td>
+	what version of pcb-rnd are you using: release tarball version
+	number or the output of "svn info" in trunk/.
+
+<tr><td>
+	1. Configuration problems:
+	<ul>
+		<li> ./configure failed
+		<li> ./configure didn't find a optional package XY
+		<li> ./configure didn't do what I wanted it to do
+	<ul>
+<td>
+	include your scconfig/config.log
+
+<tr><td>
+	2. Build problems:
+	make fails
+<td>
+	<ul>
+		<li> include your scconfig/config.log
+		<li> run <tt>make clean; make >make.log 2>&amp;1</tt> ; send the resulting make.log
+	</ul>
+
+<tr><td>
+	3. Installation problems:
+	make install fails
+<td>
+	<ul>
+		<li> include your scconfig/config.log
+		<li> run <tt>make install >makei.log 2>&amp;1</tt> ; send the resulting makei.log
+		<li> if the error is not an obvious failure of an operation with a clear error
+		     message, please explain, in details, what you expected to happen
+		     (what files should have copied/linked where) and what happened instead.
+	</ul>
+
+<tr><td>
+	4. pcb-rnd doesn't find a file
+<td>
+	Please make sure you have installed pcb-rnd before running it, or if
+	you are running it from source, make sure to cd to trunk/src and
+	running it as ./pcb-rnd. Only these two ways are supported. If it still
+	fails running by one of those two, please jump to point 5.
+
+<tr><td>
+	5. pcb-rnd run time error, non-gui-related
+<td>
+	<ul>
+		<li> run pcb-rnd from the command line; append <tt> >run.log 2>&amp;1 </tt> to the command line, reproduce the error and include run.log
+		<li> if the error is not an obvious failure of an operation with a clear error
+		     message, please explain, in details, what you expected to happen
+		     and what happened instead.
+	</ul>
+
+<tr><td>
+	6. pcb-rnd run time error, gui-related
+<td>
+	<ul>
+		<li> if you are using the gtk-gl hid, please also try the gdk hid with
+		     the command line argument <tt> --gui gtk2_gdk </tt>. Please include
+		     a sentence about whether the bug affects both HIDs or is gl-only.
+		<li> even for the most obvious-looking problem, please explain, in
+		     details, what you expected to happen and what happened instead.
+	</ul>
+
+<tr><td>
+	7. pcb-rnd crashes (segfault, assertion, abortion)
+<td>
+	<ul>
+	<li> Re-run ./configure with <tt>--debug</tt> and recompile (and reinstall).
+	<li> Run pcb-rnd from gdb:
+	<li> <ul>
+			<li> if you are running the installed version: <tt> gdb pcb-rnd </tt>
+			<li> if you are running from source: <tt> cd trunk/src; gdb ./pcb-rnd </tt>
+		</ul>
+	<li> Type this in the gdb prompt: <tt>run</tt> (optionally append a space
+	and the command line arguments you would have used for starting pcb-rnd)
+	<li> reproduce the problem
+	<li> type <tt>bt</tt>, copy&paste the result and include it in the bugreport
+	<li> if the problem is reproducible, please include a description how to
+	trigger it, preferrably on an empty board on a fresh start, alternatively
+	with an example file included
+
+<tr><td>
+	8. pcb-rnd can't load my file
+<td>
+	Please include the file in your bugreport
+
+<tr><td>
+	9. pcb-rnd loads my file but it doesn't look good
+<td>
+	Please include the file in your bugreport; please include a screenshot
+	of the file (even open in another software) to demonstrate how it
+	should look and a screenshot how it looked in pcb-rnd; please mark
+	the difference visually.
+</table>
+
+</body>
+</html>
