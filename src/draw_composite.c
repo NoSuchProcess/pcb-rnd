@@ -126,7 +126,7 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 		int want_add;
 		l = pcb_get_layer(ctx->grp->lid[n]);
 
-		want_add = !(l->comb & PCB_LYC_SUB);
+		want_add = ctx->thin || !(l->comb & PCB_LYC_SUB);
 		if (want_add != adding) {
 			if (want_add)
 				comp_start_add(ctx);
