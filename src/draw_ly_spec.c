@@ -56,7 +56,6 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) /* fallback: no layers -> original code: draw a single auto-add */
 		pcb_draw_paste_auto(side, drawn_area);
 	else {
-		comp_init(&cctx, 0);
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
 		comp_finish(&cctx);
 	}
@@ -138,7 +137,6 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 		pcb_draw_silk_auto(&cctx, &lyt_side);
 	}
 	else {
-		comp_init(&cctx, 0);
 		comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
 		comp_finish(&cctx);
 	}
