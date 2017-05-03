@@ -71,6 +71,9 @@ static void comp_start_add_(comp_ctx_t *ctx)
 
 static void comp_start_sub(comp_ctx_t *ctx)
 {
+	if (ctx->thin)
+		return;
+
 	if (ctx->invert)
 		comp_start_add_(ctx);
 	else
@@ -79,6 +82,9 @@ static void comp_start_sub(comp_ctx_t *ctx)
 
 static void comp_start_add(comp_ctx_t *ctx)
 {
+	if (ctx->thin)
+		return;
+
 	if (ctx->invert)
 		comp_start_sub_(ctx);
 	else
@@ -87,15 +93,19 @@ static void comp_start_add(comp_ctx_t *ctx)
 
 static void comp_finish(comp_ctx_t *ctx)
 {
-	if (!ctx->thin) {
-		pcb_gui->use_mask(HID_MASK_AFTER);
-		comp_fill_board(ctx, HID_MASK_AFTER);
-	}
+	if (ctx->thin)
+		return;
+
+	pcb_gui->use_mask(HID_MASK_AFTER);
+	comp_fill_board(ctx, HID_MASK_AFTER);
 	pcb_gui->use_mask(HID_MASK_OFF);
 }
 
 static void comp_init(comp_ctx_t *ctx, int negative)
 {
+	if (ctx->thin)
+		return;
+
 	pcb_gui->use_mask(HID_MASK_INIT);
 
 	if (ctx->invert)
@@ -111,9 +121,6 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 			comp_fill_board(ctx, HID_MASK_SET);
 		}
 	}
-	
-	if (ctx->thin)
-		pcb_gui->use_mask(HID_MASK_SET);
 }
 
 static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
@@ -142,8 +149,7 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 			const char *old_color = l->Color;
 			pcb_hid_gc_t old_fg = Output.fgGC;
 			Output.fgGC = Output.pmGC;
-			if (!ctx->thin)
-				l->Color = ctx->color;
+			l->Color = ctx->color;
 			if (!want_add)
 				l->Color = "erase";
 			pcb_draw_layer(l, ctx->screen);
