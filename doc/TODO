@@ -73,9 +73,7 @@ CLEANUP #5
 	- similar thing on hole size [report: miloh]
 	- report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
 - GTK layers [report: Ade]:
-	- add a left-click context menu for the layer selector widget
-	- move the layer+selected color change from the preferences menu there (but this should probably live in gui-config.h)
-	- move the logical layer preferences menu tab items in this context menu too (e.g. move up/down, rename, delete, insert)
+	- move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h)
 - layer group rewrite:
 	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 	- make the color config dynamic too; invent color for new layers
