@@ -518,10 +518,10 @@ typedef struct {
 } virt_layers_t;
 
 static const virt_layers_t virts[] = {
-	{ "Pins/Pads",  &conf_core.appearance.color.pin,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->PinOn) - (char *)PCB},
-	{ "Vias",       &conf_core.appearance.color.via,               vis_virt, ev_lyr_no_select,  ((char *)&PCB->ViaOn) - (char *)PCB },
-	{ "Far side",   &conf_core.appearance.color.invisible_objects, vis_virt, ev_lyr_no_select,  ((char *)&PCB->InvisibleObjectsOn) - (char *)PCB },
-	{ "Rats",       &conf_core.appearance.color.rat,               vis_virt, ev_lyr_select_rat, ((char *)&PCB->RatOn) - (char *)PCB },
+	{ "Pins/Pads",  &conf_core.appearance.color.pin,               vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, PinOn) },
+	{ "Vias",       &conf_core.appearance.color.via,               vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, ViaOn) },
+	{ "Far side",   &conf_core.appearance.color.invisible_objects, vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, InvisibleObjectsOn) },
+	{ "Rats",       &conf_core.appearance.color.rat,               vis_virt, ev_lyr_select_rat, offsetof(pcb_board_t, RatOn) },
 };
 
 static void layersel_populate(pcb_gtk_layersel_t *ls)
