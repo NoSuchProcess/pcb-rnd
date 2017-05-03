@@ -270,7 +270,7 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
 "Y2"/{LHS}          {return H_Y2;}
 "YC"/{LHS}          {return H_YC;}
 "Z"/{LHS}           {return H_Z;}
-"ZL"/{LHS}          {return H_ZL;}
+"ZL"/{LHS}          {BEGIN STATE_STRING; return H_ZL;}
 "ZLEN"/{LHS}        {return H_ZLEN;}
 "ZW"/{LHS}          {return H_ZW;}
  

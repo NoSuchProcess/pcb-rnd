@@ -3155,7 +3155,7 @@ case 103:
 YY_DO_BEFORE_ACTION; /* set up hyytext again */
 YY_RULE_SETUP
 #line 273 "hyp_l.l"
-{return H_ZL;}
+{BEGIN STATE_STRING; return H_ZL;}
 	YY_BREAK
 case 104:
 *yy_cp = (yy_hold_char); /* undo effects of setting up hyytext */
