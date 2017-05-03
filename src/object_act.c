@@ -587,7 +587,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_board_set_changed_flag(pcb_true);
 	}
 
-	else if (e && strcmp(PCB_ELEM_NAME_DESCRIPTION(e), footprint) != 0) {
+	else if (e && PCB_ELEM_NAME_DESCRIPTION(e) && strcmp(PCB_ELEM_NAME_DESCRIPTION(e), footprint) != 0) {
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
