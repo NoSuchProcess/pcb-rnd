@@ -62,7 +62,7 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb)
 {
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
-	gint width, height, max_height;
+	gint width, height, max_height, brd;
 	guchar *pixels, *p;
 	guint w, r, g, b;
 
@@ -76,11 +76,13 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb)
 	g = hex2bin(rgb+3);
 	b = hex2bin(rgb+5);
 
+	brd = 1;
+
 	while (height--) {
 		w = width;
 		p = pixels;
 		while (w--) {
-			if ((height == 0) || (height == max_height-1) || (w == 0) || (w == width-1))
+			if ((height < brd) || (height >= max_height-brd) || (w < brd) || (w >= width-brd))
 				set_pixel(p, 0, 0, 0, 0xff); /* frame */
 			else if ((width-w+5 < height) || (filled))
 				set_pixel(p, r, g, b, 0xff); /* layer color fill (full or up-left triangle) */
