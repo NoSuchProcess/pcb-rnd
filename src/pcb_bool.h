@@ -52,4 +52,6 @@ do { \
 	} \
 } while(0)
 
+pcb_bool_op_t pcb_str2boolop(const char *s);
+
 #endif
