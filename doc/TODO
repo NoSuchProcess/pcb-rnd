@@ -20,7 +20,6 @@
 			- consider to provide a config setting for makging open-group-name horizontal [report: istankovic]
 			- @layer* menu: centralize the code
 		- lesstif: layer selector should show all layers, probably in the order of the stackup
-		- check why opengl rendering of composite silk is inverse
 		- gerber warning on composite silk
 		- lihata v2:
 			- indent styling for layer stack
