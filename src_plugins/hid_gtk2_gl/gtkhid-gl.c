@@ -331,7 +331,7 @@ void ghid_gl_use_mask(pcb_mask_op_t use_it)
 	case HID_MASK_AFTER:
 		/* Drawing operations as masked to areas where the stencil buffer is '0' */
 		glColorMask(1, 1, 1, 1);		/* Enable drawing of r, g, b & a */
-		glStencilFunc(GL_NOTEQUAL, 1, stencil_bit);	/* Draw only where our bit of the stencil buffer is clear */
+		glStencilFunc(GL_NOTEQUAL, 0, stencil_bit);	/* Draw only where our bit of the stencil buffer is clear */
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	/* Stencil buffer read only */
 		break;
 
