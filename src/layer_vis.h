@@ -52,4 +52,7 @@ void layer_vis_uninit(void);
 /* Sync layer visibility flags to config nodes */
 void layer_vis_sync(void);
 
+/* Open/close, on/off all layers and groups; does NOT generate an event */
+void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_t vis);
+
 #endif

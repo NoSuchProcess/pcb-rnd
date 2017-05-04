@@ -236,29 +236,44 @@ void layer_vis_chg_mask(conf_native_t *cfg)
 	in = 0;
 }
 
-static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_t vis)
 {
 	pcb_layergrp_id_t gid;
 	int n;
 
-	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
-		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
+		pcb_layer_group_t *g = &pcb->LayerGroups.grp[gid];
 
-		/* ugly heuristics for default open the most common groups */
-		g->open = 1; /*!!(g->type & (PCB_LYT_SILK | PCB_LYT_COPPER | PCB_LYT_OUTLINE));*/
-		
-		/* the group is visible exactly if if any layer is visible */
-		g->vis = 0;
-		for(n = 0; n < g->len; n++) {
-			pcb_layer_t *l = pcb_get_layer(g->lid[n]);
-			if ((l != NULL) && (l->On)) {
-				g->vis = 1;
-				break;
+		pcb_bool_op(g->open, open);
+
+		if (vis == PCB_BOOL_PRESERVE) {
+			/* the group is visible exactly if if any layer is visible */
+			g->vis = 0;
+			for(n = 0; n < g->len; n++) {
+				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+				if ((l != NULL) && (l->On)) {
+					g->vis = 1;
+					break;
+				}
+			}
+		}
+		else {
+			pcb_bool_op(g->vis, vis);
+			for(n = 0; n < g->len; n++) {
+				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+				pcb_bool_op(l->On, vis);
 			}
 		}
 	}
+	/* do NOT generate an event: some callers want to handle that */
+}
+
+static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_layer_vis_change_all(PCB, PCB_BOOL_SET, PCB_BOOL_PRESERVE);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
+
 
 static const char *layer_vis_cookie = "core_layer_vis";
 
