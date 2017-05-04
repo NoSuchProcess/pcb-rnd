@@ -2,8 +2,8 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- * 
+ *  Copyright (C) 2016, 2017 Tibor 'Igor2' Palinkas
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -35,7 +35,8 @@ typedef enum pcb_bool_op_e {
 	PCB_BOOL_CLEAR = 0,
 	PCB_BOOL_SET = 1,
 	PCB_BOOL_TOGGLE = -1,
-	PCB_BOOL_PRESERVE = -2
+	PCB_BOOL_PRESERVE = -2,
+	PCB_BOOL_INVALID = -8
 } pcb_bool_op_t;
 
 /* changes the value of pcb_bool dst as requested by pcb_bool_op_t op
@@ -46,6 +47,7 @@ do { \
 		case PCB_BOOL_CLEAR:   (dst) = 0; break; \
 		case PCB_BOOL_SET:     (dst) = 1; break; \
 		case PCB_BOOL_TOGGLE:  (dst) = !(dst); break; \
+		case PCB_BOOL_INVALID: \
 		case PCB_BOOL_PRESERVE: break; \
 	} \
 } while(0)
