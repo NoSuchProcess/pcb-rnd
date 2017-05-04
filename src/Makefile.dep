@@ -5700,6 +5700,7 @@ paths.o: paths.c ../config.h paths.h ../src_3rd/genvector/gds_char.h \
 pcb-printf.o: pcb-printf.c ../config.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h unit.h compat_nls.h
+pcb_bool.o: pcb_bool.c ../config.h pcb_bool.h compat_misc.h
 plug_footprint.o: plug_footprint.c ../config.h plug_footprint.h \
  vtlibrary.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h plugins.h \
