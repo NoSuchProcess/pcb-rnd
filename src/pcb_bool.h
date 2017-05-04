@@ -28,4 +28,26 @@ typedef enum pcb_bool_e {
 	pcb_false = 0,
 	pcb_true = 1
 } pcb_bool_t;
+
+
+	/* for arguments optionally changing the value of a bool */
+typedef enum pcb_bool_op_e {
+	PCB_BOOL_CLEAR = 0,
+	PCB_BOOL_SET = 1,
+	PCB_BOOL_TOGGLE = -1,
+	PCB_BOOL_PRESERVE = -2
+} pcb_bool_op_t;
+
+/* changes the value of pcb_bool dst as requested by pcb_bool_op_t op
+   WARNING: evaluates dst multiple times */
+#define pcb_bool_op(dst, op) \
+do { \
+	switch(op) { \
+		case PCB_BOOL_CLEAR:   (dst) = 0; break; \
+		case PCB_BOOL_SET:     (dst) = 1; break; \
+		case PCB_BOOL_TOGGLE:  (dst) = !(dst); break; \
+		case PCB_BOOL_PRESERVE: break; \
+	} \
+} while(0)
+
 #endif
