@@ -142,9 +142,6 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 			adding = want_add;
 		}
 
-		if (l->comb & PCB_LYC_AUTO)
-			draw_auto(ctx, auto_data);
-
 		{
 			const char *old_color = l->Color;
 			pcb_hid_gc_t old_fg = Output.fgGC;
@@ -152,6 +149,8 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 			l->Color = ctx->color;
 			if (!want_add)
 				l->Color = "erase";
+			if (l->comb & PCB_LYC_AUTO)
+				draw_auto(ctx, auto_data);
 			pcb_draw_layer(l, ctx->screen);
 			l->Color = old_color;
 			Output.fgGC = old_fg;
