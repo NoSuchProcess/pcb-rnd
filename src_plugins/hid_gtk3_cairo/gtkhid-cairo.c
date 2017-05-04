@@ -80,7 +80,7 @@ typedef struct hid_gc_s {
 	//cairo_t *cr;                  /**< cairo context */
 	//cairo_surface_t *surface;     /**< a surface */
 
-	gchar *colorname;
+	const char *colorname;
 	pcb_coord_t width;
 	gint cap, join;
 	gchar xor_mask;
@@ -178,8 +178,8 @@ static void ghid_cairo_destroy_gc(pcb_hid_gc_t gc)
 {
 	//if (gc->cr)
 	//  //g_object_unref(gc->gc);
-	if (gc->colorname != NULL)
-		g_free(gc->colorname);
+	//if (gc->colorname != NULL)
+	//	g_free(gc->colorname);
 	g_free(gc);
 }
 
@@ -189,7 +189,7 @@ static pcb_hid_gc_t ghid_cairo_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk3_cairo_hid;
-	rv->colorname = g_strdup(conf_core.appearance.color.background);
+	rv->colorname = conf_core.appearance.color.background;
 	return rv;
 }
 
@@ -563,11 +563,12 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 		name = "magenta";
 	}
 
-	if (name != gc->colorname) {
-		if (gc->colorname != NULL)
-			g_free(gc->colorname);
-		gc->colorname = g_strdup(name);
-	}
+	//if (name != gc->colorname) {
+	//	if (gc->colorname != NULL)
+	//		g_free(gc->colorname);
+	//	gc->colorname = g_strdup(name);
+	//}
+	gc->colorname = name;
 
 	//if (!gc->gc)
 	//  return;
