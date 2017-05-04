@@ -1610,7 +1610,7 @@ static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_c
 }
 
 
-const char pcb_acts_toggleview[] = "ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)";
+const char pcb_acts_toggleview[] = "ToggleView(1..MAXLAYER)\n" "ToggleView(layername)\n" "ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)\n" "ToggleView(All, Open|Vis, Set|Clear|Toggle)";
 const char pcb_acth_toggleview[] = "Toggle the visibility of the specified layer or layer group.";
 
 /* %start-doc actions ToggleView
@@ -1629,7 +1629,25 @@ the same as a special layer, the layer is chosen over the special layer.
 static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_layer_id_t lid;
-	if (pcb_strcasecmp(argv[0], "silk") == 0) {
+	if (pcb_strcasecmp(argv[0], "all") == 0) {
+		pcb_bool_op_t open = PCB_BOOL_PRESERVE, vis = PCB_BOOL_PRESERVE, user = PCB_BOOL_PRESERVE;
+		if (argc < 3)
+			PCB_ACT_FAIL(toggleview);
+		user = pcb_str2boolop(argv[2]);
+		if (user == PCB_BOOL_INVALID)
+			PCB_ACT_FAIL(toggleview);
+		if (pcb_strcasecmp(argv[1], "open") == 0)
+			open = user;
+		else if (pcb_strcasecmp(argv[1], "vis") == 0)
+			vis = user;
+		else
+			PCB_ACT_FAIL(toggleview);
+		pcb_layer_vis_change_all(PCB, open, vis);
+		pcb_gui->invalidate_all();
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		return 0;
+	}
+	else if (pcb_strcasecmp(argv[0], "silk") == 0) {
 		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
 			pcb_layervis_change_group_vis(lid, -1, 0);
 		else
