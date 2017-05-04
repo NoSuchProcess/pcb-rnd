@@ -58,11 +58,11 @@ static guint hex2bin_(char c)
 #define hex2bin(str) ((hex2bin_((str)[0])) << 4 | hex2bin_((str)[1]))
 
 /* draw a visibility box: filled or partially filled with layer color */
-static GtkWidget *layer_vis_box(int filled, const char *rgb)
+static GtkWidget *layer_vis_box(int filled, const char *rgb, int brd)
 {
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
-	gint width, height, max_height, brd;
+	gint width, height, max_height;
 	guchar *pixels, *p;
 	guint w, r, g, b;
 
@@ -75,8 +75,6 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb)
 	r = hex2bin(rgb+1);
 	g = hex2bin(rgb+3);
 	b = hex2bin(rgb+5);
-
-	brd = 1;
 
 	while (height--) {
 		w = width;
@@ -369,12 +367,12 @@ static const char * const grp_color(pcb_layer_group_t *g)
 }
 
 /* Create a hbox with on/off visibility boxes packed in, pointers returned in *on, *off */
-static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **off)
+static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **off, int brd)
 {
 	GtkWidget *vis_box = gtkc_hbox_new(0, 0);
-	*on = layer_vis_box(1, color);
+	*on = layer_vis_box(1, color, brd);
 	gtk_box_pack_start(GTK_BOX(vis_box), *on, FALSE, FALSE, 0);
-	*off = layer_vis_box(0, color);
+	*off = layer_vis_box(0, color, brd);
 	gtk_box_pack_start(GTK_BOX(vis_box), *off, FALSE, FALSE, 0);
 	return vis_box;
 }
@@ -383,6 +381,7 @@ static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **of
 static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, const char *name, pcb_layer_id_t lid, const char * const *force_color)
 {
 	GtkWidget *vis_box, *vis_ebox, *ly_name_bx, *lab;
+	pcb_layer_t *ly;
 	const char *color;
 
 	lsl->lsg = lsg;
@@ -394,8 +393,10 @@ static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, cons
 	else
 		color = *force_color;
 
+	ly = pcb_get_layer(lid);
+
 	/* sensitive layer visibility widgets */
-	vis_box = build_visbox(color, &lsl->vis_on, &lsl->vis_off);
+	vis_box = build_visbox(color, &lsl->vis_on, &lsl->vis_off, (((ly != NULL) && (ly->comb & PCB_LYC_SUB)) ? 2 : 1));
 	vis_ebox = wrap_bind_click(vis_box, G_CALLBACK(layer_vis_press_cb), lsl);
 	gtk_box_pack_start(GTK_BOX(lsl->box), vis_ebox, FALSE, FALSE, 0);
 
@@ -457,7 +458,7 @@ static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *ls
 	/* install group name - horizontal (for when the group is closed) */
 	if (has_group_vis) {
 		GtkWidget *vis;
-		vis = wrap_bind_click(build_visbox(grp_color(grp), &lsg->vis_on, &lsg->vis_off), G_CALLBACK(group_vis_press_cb), lsg);
+		vis = wrap_bind_click(build_visbox(grp_color(grp), &lsg->vis_on, &lsg->vis_off, 1), G_CALLBACK(group_vis_press_cb), lsg);
 		gtk_box_pack_start(GTK_BOX(lsg->grp_closed), vis, FALSE, FALSE, 0);
 	}
 	cld = wrap_bind_click(gtk_label_new(gname), G_CALLBACK(group_open_press_cb), lsg);
