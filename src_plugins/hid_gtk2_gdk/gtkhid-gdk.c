@@ -1270,7 +1270,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
 	return FALSE;
 }
 
-static /*GdkPixmap*/ void *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
+static void *ghid_gdk_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
 {
 	GdkPixmap *pixmap;
 	GdkDrawable *save_drawable;
