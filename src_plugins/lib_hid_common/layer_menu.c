@@ -20,5 +20,46 @@
  *
  */
 
-/* TODO */
-static int placeholder;
+#include "config.h"
+
+#include "board.h"
+#include "data.h"
+#include "hid.h"
+#include "layer.h"
+#include "layer_grp.h"
+#include "pcb-printf.h"
+
+void pcb_layer_menu_create(const char *path_prefix, const char *cookie)
+{
+	char path[1024], *bn;
+	int plen = strlen(path_prefix), len_avail = sizeof(path) - plen;
+	pcb_layergrp_id_t gid;
+
+
+	memcpy(path, path_prefix, plen);
+	bn = path + plen;
+	if ((plen == 0) || (bn[-1] != '/')) {
+		*bn = '/';
+		bn++;
+		len_avail--;
+	}
+
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+		int n;
+
+		if (g->type & PCB_LYT_SUBSTRATE)
+			continue;
+
+		pcb_snprintf(bn, len_avail, "[%s]", g->name);
+		pcb_gui->create_menu(path, "TODO: action", "", "accel", "Layer group", cookie);
+
+		for(n = 0; n < g->len; n++) {
+			pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+
+			pcb_snprintf(bn, len_avail, "  %s", l->Name);
+			pcb_gui->create_menu(path, "TODO: action", "", "accel", "Layer", cookie);
+		}
+	}
+}
+
