@@ -59,6 +59,8 @@
 
 CLEANUP #5
 - HID: option for using a fixed backround color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
+- biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
+	Within that revamp we can also unify how output files are accessed/checked.
 - extend the DRC window to be a generic location list
 	- buttons to select one or all items or all items including locked
 	- multiple DRC windows
