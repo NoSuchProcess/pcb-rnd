@@ -5,4 +5,5 @@ $state works
 default buildin
 dep draw_csect
 dep draw_fontsel
+dep lib_hid_common
 autoload 1

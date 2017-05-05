@@ -1,0 +1,5 @@
+$class lib
+$short all-hid common code
+$long hid_* common helper functions
+$state works
+default disable-all

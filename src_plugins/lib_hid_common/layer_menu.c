@@ -1,0 +1,2 @@
+/* TODO */
+static int placeholder;
