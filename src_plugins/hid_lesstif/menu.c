@@ -808,7 +808,6 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 #endif
 		act = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
 		if (checked) {
-			md = calloc(sizeof(menu_data_t), 1);
 			if (strchr(checked, '='))
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
 			else
@@ -822,7 +821,6 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 			md->btn = XmCreateLabel(menu, XmStrCast("menulabel"), stdarg_args, stdarg_n);
 		}
 		else {
-			md = calloc(sizeof(menu_data_t), 1);
 			md->btn = XmCreatePushButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 			XtAddCallback(md->btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
