@@ -1285,15 +1285,25 @@ static void ghid_cairo_screen_update(void)
 	show_crosshair(TRUE);
 }
 
-static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
+/* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
+static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEventExpose*/void * p, void *vport)
 {
 	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
+	cairo_t *cr = p;
+	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	//gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
 	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
+
+	//cairo_set_source_surface(cr, priv->cr_surf_window, 0, 0);
+	//cairo_paint(cr);
+	gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
+	cairo_rectangle(cr, 1,1, 200, 150);
+	cairo_fill(cr);
+
 	show_crosshair(TRUE);
+
 	return FALSE;
 }
 
