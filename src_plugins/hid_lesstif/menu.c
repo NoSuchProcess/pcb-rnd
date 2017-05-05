@@ -39,7 +39,7 @@ pcb_hid_cfg_t *lesstif_cfg;
 static Colormap cmap;
 
 static void note_accelerator(const lht_node_t *node);
-static void note_widget_flag(Widget w, char *type, const char *name);
+static int note_widget_flag(Widget w, char *type, const char *name);
 
 static const char getxy_syntax[] = "GetXY()";
 
@@ -425,7 +425,7 @@ static Widgetpcb_flag_t *wflags = 0;
 static int n_wflags = 0;
 static int max_wflags = 0;
 
-static void note_widget_flag(Widget w, char *type, const char *name)
+static int note_widget_flag(Widget w, char *type, const char *name)
 {
 	if (n_wflags >= max_wflags) {
 		max_wflags += 20;
@@ -435,15 +435,27 @@ static void note_widget_flag(Widget w, char *type, const char *name)
 	wflags[n_wflags].flagname = name;
 	wflags[n_wflags].oldval = -1;
 	wflags[n_wflags].xres = type;
-	n_wflags++;
+	return n_wflags++;
+}
+
+static int del_widget_flag(int idx)
+{
+	wflags[idx].w = NULL;
+	wflags[idx].flagname = NULL;
+	wflags[idx].xres = NULL;
 }
 
 void lesstif_update_widget_flags()
 {
 	int i;
 	for (i = 0; i < n_wflags; i++) {
-		int v = pcb_hid_get_flag(wflags[i].flagname);
+		int v;
 		Arg args[2];
+
+		if (wflags[i].w == NULL)
+			continue;
+
+		v = pcb_hid_get_flag(wflags[i].flagname);
 		if (v < 0) {
 			XtSetArg(args[0], wflags[i].xres, 0);
 			XtSetArg(args[1], XtNsensitive, 0);
@@ -669,9 +681,17 @@ int lesstif_key_event(XKeyEvent * e)
 static void add_node_to_menu(Widget menu, lht_node_t *node, XtCallbackProc callback, int level);
 
 typedef struct {
-	Widget sub; /* the open menu pane that hosts all the submenus */
-	Widget btn; /* the button in the menu line */
+	Widget sub;     /* the open menu pane that hosts all the submenus */
+	Widget btn;     /* the button in the menu line */
+	int wflag_idx;  /* index in the wflags[] array */
 } menu_data_t;
+
+menu_data_t *menu_data_alloc(void)
+{
+	menu_data_t *md = calloc(sizeof(menu_data_t), 1);
+	md->wflag_idx = -1;
+	return md;
+}
 
 static int del_menu(void *ctx, lht_node_t *node)
 {
@@ -679,6 +699,9 @@ static int del_menu(void *ctx, lht_node_t *node)
 
 	if (md == NULL)
 		return 0;
+
+	if (md->wflag_idx >= 0)
+		del_widget_flag(md->wflag_idx);
 
 	if (md->sub != NULL) {
 		XtUnmanageChild(md->sub);
@@ -696,8 +719,8 @@ static int del_menu(void *ctx, lht_node_t *node)
 
 static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
-	menu_data_t *md;
-	md = calloc(sizeof(menu_data_t), 1);
+	menu_data_t *md = menu_data_alloc();
+
 	stdarg_n = 0;
 	stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
 	md->sub = XmCreatePulldownMenu(menu, node->name, stdarg_args, stdarg_n);
@@ -761,7 +784,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	v = node->name;
 	stdarg(XmNlabelString, XmStringCreatePCB(pcb_strdup(v)));
 
-	md = calloc(sizeof(menu_data_t), 1);
+	md = menu_data_alloc();
 	if (pcb_hid_cfg_has_submenus(node)) {
 		int nn = stdarg_n;
 		lht_node_t *i;
@@ -827,7 +850,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 
 		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
 		if (v != NULL)
-			note_widget_flag(md->btn, XmNset, v);
+			md->wflag_idx = note_widget_flag(md->btn, XmNset, v);
 
 		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_ACTIVE);
 		if (v != NULL)
