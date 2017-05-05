@@ -877,8 +877,8 @@ static void redraw_region(GdkRectangle * rect)
 	pcb_hid_expose_ctx_t ctx;
 	render_priv_t *priv = gport->render_priv;
 
-	//if (!gport->pixmap)
-	//  return;
+	if (priv->cr == NULL)
+	  return;
 
 	if (rect != NULL) {
 		priv->clip_rect = *rect;
@@ -925,21 +925,29 @@ static void redraw_region(GdkRectangle * rect)
 		ebottom = tmp;
 	}
 
-	if (eleft > 0);								//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, 0, 0, eleft, gport->view.canvas_height);
+  gdk_cairo_set_source_rgba(priv->cr, &priv->offlimits_color);
+	if (eleft > 0) {
+		cairo_rectangle(priv->cr, 0.0, 0.0, eleft, gport->view.canvas_height);
+	}
 	else
 		eleft = 0;
-	if (eright < gport->view.canvas_width);	//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eright, 0, gport->view.canvas_width - eright,
-	//                   gport->view.canvas_height);
+	if (eright < gport->view.canvas_width) {
+		cairo_rectangle(priv->cr, eright, 0.0, gport->view.canvas_width - eright, gport->view.canvas_height);
+	}
 	else
 		eright = gport->view.canvas_width;
-	if (etop > 0);								//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, 0, eright - eleft + 1, etop);
+	if (etop > 0) {
+		cairo_rectangle(priv->cr, eleft, 0.0, eright - eleft + 1, etop);
+	}
 	else
 		etop = 0;
-	if (ebottom < gport->view.canvas_height);	//gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, ebottom, eright - eleft + 1,
-	//                   gport->view.canvas_height - ebottom);
+	if (ebottom < gport->view.canvas_height) {
+		cairo_rectangle(priv->cr, eleft, ebottom, eright - eleft + 1, gport->view.canvas_height - ebottom);
+	}
 	else
 		ebottom = gport->view.canvas_height;
 
+	cairo_fill(priv->cr);
 	//gdk_draw_rectangle(gport->drawable, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
 
 	ghid_cairo_draw_bg_image();
