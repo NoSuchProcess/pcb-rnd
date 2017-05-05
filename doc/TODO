@@ -24,6 +24,9 @@
 			- indent styling for layer stack
 			- review, make it default
 			- document versions and differences
+	- Export Layout -> stat dialog: [report: Alain]
+		- the meta-data (built=0, ...) are not affected by dialog user inputs.
+		- there is no confirmation an existing file will be overwritten
 
 - fontsel:
 	- replace font in slot (even in default)
