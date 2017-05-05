@@ -427,15 +427,26 @@ static int max_wflags = 0;
 
 static int note_widget_flag(Widget w, char *type, const char *name)
 {
+	int idx;
+
+	/* look for a free slot to reuse */
+	for(idx = 0; idx < n_wflags; idx++)
+		if (wflags[idx].w == NULL)
+			goto add;
+
+	/* no free slot, alloc a new one */
 	if (n_wflags >= max_wflags) {
 		max_wflags += 20;
 		wflags = (Widgetpcb_flag_t *) realloc(wflags, max_wflags * sizeof(Widgetpcb_flag_t));
 	}
-	wflags[n_wflags].w = w;
-	wflags[n_wflags].flagname = name;
-	wflags[n_wflags].oldval = -1;
-	wflags[n_wflags].xres = type;
-	return n_wflags++;
+	idx = n_wflags++;
+
+	add:;
+	wflags[idx].w = w;
+	wflags[idx].flagname = name;
+	wflags[idx].oldval = -1;
+	wflags[idx].xres = type;
+	return idx;
 }
 
 static int del_widget_flag(int idx)
