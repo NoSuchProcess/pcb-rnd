@@ -673,6 +673,27 @@ typedef struct {
 	Widget btn; /* the button in the menu line */
 } menu_data_t;
 
+static int del_menu(void *ctx, lht_node_t *node)
+{
+	menu_data_t *md = node->user_data;
+
+	if (md == NULL)
+		return 0;
+
+	if (md->sub != NULL) {
+		XtUnmanageChild(md->sub);
+		XtDestroyWidget(md->sub);
+	}
+	if (md->btn != NULL) {
+		XtUnmanageChild(md->btn);
+		XtDestroyWidget(md->btn);
+	}
+	free(md);
+
+	node->user_data = NULL;
+	return 0;
+}
+
 static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
 	menu_data_t *md;
@@ -907,6 +928,10 @@ void lesstif_create_menu(const char *menu_path, const char *action, const char *
 	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, action, mnemonic, accel, tip, cookie, lesstif_create_menu_widget, NULL);
 }
 
+void lesstif_remove_menu(const char *menu_path)
+{
+	pcb_hid_cfg_remove_menu(lesstif_cfg, menu_path, del_menu, NULL);
+}
 
 void lesstif_uninit_menu(void)
 {
