@@ -668,33 +668,39 @@ int lesstif_key_event(XKeyEvent * e)
 
 static void add_node_to_menu(Widget menu, lht_node_t *node, XtCallbackProc callback, int level);
 
+typedef struct {
+	Widget sub; /* the open menu pane that hosts all the submenus */
+	Widget btn; /* the button in the menu line */
+} menu_data_t;
+
 static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
-	Widget sub, btn = NULL;
+	menu_data_t *md;
+	md = calloc(sizeof(menu_data_t), 1);
 	stdarg_n = 0;
 	stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-	sub = XmCreatePulldownMenu(menu, node->name, stdarg_args, stdarg_n);
-	XtSetValues(sub, stdarg_args, stdarg_n);
+	md->sub = XmCreatePulldownMenu(menu, node->name, stdarg_args, stdarg_n);
+	XtSetValues(md->sub, stdarg_args, stdarg_n);
 	stdarg_n = 0;
-	stdarg(XmNsubMenuId, sub);
-	btn = XmCreateCascadeButton(menu, node->name, stdarg_args, stdarg_n);
-	XtManageChild(btn);
+	stdarg(XmNsubMenuId, md->sub);
+	md->btn = XmCreateCascadeButton(menu, node->name, stdarg_args, stdarg_n);
+	XtManageChild(md->btn);
 
-	node->user_data = sub;
+	node->user_data = md;
 
 	if (pcb_hid_cfg_has_submenus(node)) {
 		lht_node_t *i;
 		i = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, NULL);
 		for(i = i->data.list.first; i != NULL; i = i->next)
-			add_node_to_menu(sub, i, callback, 1);
+			add_node_to_menu(md->sub, i, callback, 1);
 	}
 }
 
 static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc callback, int level)
 {
 	const char *v;
-	Widget sub, btn = NULL;
 	lht_node_t *act, *kacc;
+	menu_data_t *md;
 
 	stdarg_n = 0;
 	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FOREGROUND);
@@ -734,6 +740,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	v = node->name;
 	stdarg(XmNlabelString, XmStringCreatePCB(pcb_strdup(v)));
 
+	md = calloc(sizeof(menu_data_t), 1);
 	if (pcb_hid_cfg_has_submenus(node)) {
 		int nn = stdarg_n;
 		lht_node_t *i;
@@ -741,16 +748,16 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		lht_node_t *submenu_node = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, &field_name);
 
 		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-		sub = XmCreatePulldownMenu(menu, pcb_strdup(v), stdarg_args + nn, stdarg_n - nn);
-		node->user_data = sub;
+		md->sub = XmCreatePulldownMenu(menu, pcb_strdup(v), stdarg_args + nn, stdarg_n - nn);
+		node->user_data = md;
 		stdarg_n = nn;
-		stdarg(XmNsubMenuId, sub);
-		btn = XmCreateCascadeButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
-		XtManageChild(btn);
+		stdarg(XmNsubMenuId, md->sub);
+		md->btn = XmCreateCascadeButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
+		XtManageChild(md->btn);
 
 		/* assume submenu is a list, pcb_hid_cfg_has_submenus() already checked that */
 		for(i = submenu_node->data.list.first; i != NULL; i = i->next)
-			add_node_to_menu(sub, i, callback, level+1);
+			add_node_to_menu(md->sub, i, callback, level+1);
 	}
 	else {
 		/* doesn't have submenu */
@@ -780,32 +787,35 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 #endif
 		act = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
 		if (checked) {
+			md = calloc(sizeof(menu_data_t), 1);
 			if (strchr(checked, '='))
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
 			else
 				stdarg(XmNindicatorType, XmN_OF_MANY);
-			btn = XmCreateToggleButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
+			md->btn = XmCreateToggleButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 			if (act != NULL)
-				XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) act);
+				XtAddCallback(md->btn, XmNvalueChangedCallback, callback, (XtPointer) act);
 		}
 		else if (label && strcmp(label, "false") == 0) {
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-			btn = XmCreateLabel(menu, XmStrCast("menulabel"), stdarg_args, stdarg_n);
+			md->btn = XmCreateLabel(menu, XmStrCast("menulabel"), stdarg_args, stdarg_n);
 		}
 		else {
-			btn = XmCreatePushButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
-			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) act);
+			md = calloc(sizeof(menu_data_t), 1);
+			md->btn = XmCreatePushButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
+			XtAddCallback(md->btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
 
 		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
 		if (v != NULL)
-			note_widget_flag(btn, XmNset, v);
+			note_widget_flag(md->btn, XmNset, v);
 
 		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_ACTIVE);
 		if (v != NULL)
-			note_widget_flag(btn, XmNsensitive, v);
+			note_widget_flag(md->btn, XmNsensitive, v);
 
-		XtManageChild(btn);
+		XtManageChild(md->btn);
+		node->user_data = md;
 	}
 }
 
@@ -881,7 +891,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 
 static int lesstif_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
 {
-	Widget w = (is_main) ? lesstif_menubar : parent->user_data;
+	Widget w = (is_main) ? lesstif_menubar : ((menu_data_t *)parent->user_data)->sub;
 
 	if (strncmp(path, "/popups", 7) == 0)
 		return -1; /* there's no popup support in lesstif */
