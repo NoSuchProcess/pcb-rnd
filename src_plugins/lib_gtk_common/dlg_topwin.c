@@ -348,7 +348,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	GtkWidget *vbox_main, *hbox_middle, *hbox;
 	GtkWidget *vbox, *frame, *hbox_scroll, *fullscreen_btn;
 	GtkWidget *label;
-	GtkWidget *scrolled;
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(tw->com->top_window), vbox_main);
