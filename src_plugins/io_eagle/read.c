@@ -787,13 +787,44 @@ static int eagle_read_contactref(read_state_t *st, xmlNode *subtree, void *obj, 
 }
 
 
+static int eagle_read_poly(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	eagle_layer_t *ly;
+	long ln = eagle_get_attrl(subtree, "layer", -1);
+	pcb_polygon_t *poly;
+	xmlNode *n;
+
+	ly = eagle_layer_get(st, ln);
+	if (ly->ly < 0) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring polygon on layer %s\n", ly->name);
+		return 0;
+	}
+
+	poly = pcb_poly_new(&st->pcb->Data->Layer[ly->ly], pcb_flag_make(PCB_FLAG_CLEARPOLY));
+
+	for(n = subtree->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"vertex") == 0) {
+			pcb_coord_t x, y;
+			x = eagle_get_attrc(n, "x", 0);
+			y = eagle_get_attrc(n, "y", 0);
+			pcb_poly_point_new(poly, x, y);
+		}
+	}
+
+	pcb_add_polygon_on_layer(&st->pcb->Data->Layer[ly->ly], poly);
+	pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[ly->ly], poly);
+
+	return 0;
+}
+
+
 static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	xmlNode *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
-		{"polygon",     eagle_read_nop},
+		{"polygon",     eagle_read_poly},
 		{"via",         eagle_read_via},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
