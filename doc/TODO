@@ -46,6 +46,7 @@
 		- regex and string cmp match speed vs. select by name
 
 AFTER THE NEXT RELEASE:
+- fp_board: extend the API so that the element can be presented without saving to a file
 - layer rewrite: central menu buttons
 	- lesstif needs to remember the widgets via lb->w in menu.c
 	- rewrite the central code for callbacks?
