@@ -176,7 +176,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 			pcb_r_delete_entry(data->name_tree[n], (pcb_box_t *)text);
 			XFLIP(text->X);
 			YFLIP(text->Y);
-			if (ONLY1)
+			if (elem_swap_sides)
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 			pcb_r_insert_entry(data->name_tree[n], (pcb_box_t *)text, 0);
 		}
