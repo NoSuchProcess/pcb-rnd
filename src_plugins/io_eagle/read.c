@@ -737,9 +737,9 @@ static int eagle_read_pkg_txt(read_state_t *st, xmlNode *subtree, void *obj, int
 	if ((n == NULL) || (n->content == NULL))
 		return 0;
 
-	if (strcmp(n->content, ">NAME") == 0)
+	if (xmlStrcmp(n->content, (const xmlChar *)">NAME") == 0)
 		t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
-	else if (strcmp(n->content, ">VALUE") == 0)
+	else if (xmlStrcmp(n->content, (const xmlChar *)">VALUE") == 0)
 		t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
 	else
 		return 0;
