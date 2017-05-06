@@ -907,7 +907,8 @@ static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *e
 	pcb_coord_t size = PCB_MM_TO_COORD(2);
 
 	for(nd = nd->children; nd != NULL; nd = nd->next) {
-		if (xmlStrcmp(nd->name, (xmlChar *)"attribute") == 0) {
+		const char *this_attr = eagle_get_attrs(nd, "name", "");
+		if ((xmlStrcmp(nd->name, (xmlChar *)"attribute") == 0) && (strcmp(attname, this_attr) == 0)) {
 			direction = eagle_rot2steps(eagle_get_attrs(nd, "rot", NULL));
 			if (direction < 0)
 				direction = 0;
