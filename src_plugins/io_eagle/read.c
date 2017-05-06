@@ -878,6 +878,28 @@ static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int
 	return 0;
 }
 
+/* Convert eagle Rxxx string to pcb-rnd 90-deg rotation steps */
+static int eagle_rot2steps(const char *rot)
+{
+	int deg;
+	char *end;
+
+	if ((rot == NULL) || (rot[0] != 'R'))
+		return -1;
+
+	deg = strtol(rot+1, &end, 10);
+	if (*end != '\0')
+		return -1;
+
+	switch(deg) {
+		case 0: return 0;
+		case 90: return 3;
+		case 180: return 2;
+		case 270: return 1;
+	}
+	return -1;
+}
+
 static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *elem, pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
 {
 	int Direction = 0, TextScale = 100;
@@ -911,6 +933,7 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			const char *val = eagle_get_attrs(n, "value", NULL);
 			pcb_element_t *elem, *new_elem;
 			const char *rot;
+			int steps;
 
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring element with no name\n");
@@ -953,17 +976,12 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_VALUE(new_elem), x, y, "VALUE", val);
 
 
-			if ((rot != NULL) && (rot[0] == 'R')) {
-				int deg = atoi(rot+1);
-				printf("rot? %s %d\n", rot, deg);
-				switch(deg) {
-					case 0: break;
-					case 90: pcb_element_rotate90(st->pcb->Data, new_elem, x, y, 3); break;
-					case 180: pcb_element_rotate90(st->pcb->Data, new_elem, x, y, 2); break;
-					case 270: pcb_element_rotate90(st->pcb->Data, new_elem, x, y, 1); break;
-					default:
-						pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation: %s/%s\n", lib, pkg);
-				}
+			if (rot != NULL) {
+				steps = eagle_rot2steps(rot);
+				if (steps > 0)
+					pcb_element_rotate90(st->pcb->Data, new_elem, x, y, steps);
+				else
+					pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation '%s': %s/%s\n", rot, lib, pkg);
 			}
 
 			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
