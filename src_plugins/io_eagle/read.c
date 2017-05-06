@@ -41,6 +41,9 @@
 #include "error.h"
 #include "hid_actions.h"
 
+/* coordinates that corresponds to pcb-rnd 100% text size in height */
+#define EAGLE_TEXT_SIZE_100 PCB_MM_TO_COORD(2)
+
 typedef struct eagle_layer_s {
 	const char *name;
 	int color;
@@ -719,6 +722,36 @@ static int eagle_read_via(read_state_t *st, xmlNode *subtree, void *obj, int typ
 
 /****************** composite objects ******************/
 
+/* Save the relative coords and size of the each relevant text fields */
+static int eagle_read_pkg_txt(read_state_t *st, xmlNode *subtree, void *obj, int type)
+{
+	pcb_element_t *elem = obj;
+	pcb_coord_t size;
+	xmlNode *n;
+	pcb_text_t *t;
+
+	for(n = subtree->children; n != NULL; n = n->next)
+		if (n->type == XML_TEXT_NODE)
+			break;
+
+	if ((n == NULL) || (n->content == NULL))
+		return 0;
+
+	if (strcmp(n->content, ">NAME") == 0)
+		t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
+	else if (strcmp(n->content, ">VALUE") == 0)
+		t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
+	else
+		return 0;
+
+	size = eagle_get_attrc(subtree, "size", EAGLE_TEXT_SIZE_100);
+	t->X = eagle_get_attrc(subtree, "x", 0);
+	t->Y = eagle_get_attrc(subtree, "y", 0);
+	t->Scale = (int)(((double)EAGLE_TEXT_SIZE_100 / (double)size) * 100.0);
+
+	return 0;
+}
+
 static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
@@ -728,12 +761,12 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{"circle",      eagle_read_circle},
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
-		{"text",        eagle_read_nop},
+		{"text",        eagle_read_pkg_txt},
 		{"rectangle",   eagle_read_rect},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
-	printf("   read pkg: TODO\n");
+
 	return eagle_foreach_dispatch(st, subtree->children, disp, elem, IN_ELEM);
 }
 
@@ -904,7 +937,7 @@ static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *e
 {
 	int direction = 0, TextScale = 100;
 	pcb_flag_t TextFlags = pcb_no_flags();
-	pcb_coord_t size = PCB_MM_TO_COORD(2);
+	pcb_coord_t size = EAGLE_TEXT_SIZE_100;
 
 	for(nd = nd->children; nd != NULL; nd = nd->next) {
 		const char *this_attr = eagle_get_attrs(nd, "name", "");
