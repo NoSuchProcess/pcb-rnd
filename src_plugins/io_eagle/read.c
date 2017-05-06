@@ -902,13 +902,15 @@ static int eagle_rot2steps(const char *rot)
 
 static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *elem, pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
 {
-	int Direction = 0, TextScale = 100;
+	int direction = 0, TextScale = 100;
 	pcb_flag_t TextFlags = pcb_no_flags();
 	pcb_coord_t size = PCB_MM_TO_COORD(2);
 
 	for(nd = nd->children; nd != NULL; nd = nd->next) {
 		if (xmlStrcmp(nd->name, (xmlChar *)"attribute") == 0) {
-			const char *rot = eagle_get_attrs(nd, "rot", NULL);
+			direction = eagle_rot2steps(eagle_get_attrs(nd, "rot", NULL));
+			if (direction < 0)
+				direction = 0;
 			size = eagle_get_attrc(nd, "size", size);
 			x = eagle_get_attrc(nd, "x", x);
 			y = eagle_get_attrc(nd, "y", y);
@@ -916,7 +918,7 @@ static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *e
 		}
 	}
 
-	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, Direction, str, TextScale, TextFlags);
+	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
 	text->Element = elem;
 }
 
