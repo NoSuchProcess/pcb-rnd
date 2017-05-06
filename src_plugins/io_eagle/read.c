@@ -933,11 +933,14 @@ static int eagle_rot2steps(const char *rot)
 	return -1;
 }
 
-static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *elem, pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
+static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *elem, pcb_text_t *text, pcb_text_t *def_text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
 {
-	int direction = 0, TextScale = 100;
+	int direction = 0, TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);
 	pcb_flag_t TextFlags = pcb_no_flags();
-	pcb_coord_t size = EAGLE_TEXT_SIZE_100;
+	pcb_coord_t size;
+
+	x += def_text->X;
+	y += def_text->Y + EAGLE_TEXT_SIZE_100;
 
 	for(nd = nd->children; nd != NULL; nd = nd->next) {
 		const char *this_attr = eagle_get_attrs(nd, "name", "");
@@ -945,12 +948,15 @@ static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *e
 			direction = eagle_rot2steps(eagle_get_attrs(nd, "rot", NULL));
 			if (direction < 0)
 				direction = 0;
-			size = eagle_get_attrc(nd, "size", size);
+			size = eagle_get_attrc(nd, "size", -1);
 			x = eagle_get_attrc(nd, "x", x);
 			y = eagle_get_attrc(nd, "y", y);
 			break;
 		}
 	}
+
+	if (size >= 0)
+		TextScale = (int)(((double)EAGLE_TEXT_SIZE_100 / (double)size) * 100.0);
 
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
 	text->Element = elem;
@@ -1007,10 +1013,9 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			}
 			PCB_END_LOOP;
 
-			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_DESCRIPTION(new_elem), x, y, "PROD_ID", pkg);
-			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_REFDES(new_elem), x, y, "NAME", name);
-			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_VALUE(new_elem), x, y, "VALUE", val);
-
+			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_DESCRIPTION(new_elem), &PCB_ELEM_TEXT_DESCRIPTION(elem), x, y, "PROD_ID", pkg);
+			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_REFDES(new_elem), &PCB_ELEM_TEXT_REFDES(elem), x, y, "NAME", name);
+			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_VALUE(new_elem), &PCB_ELEM_TEXT_VALUE(elem), x, y, "VALUE", val);
 
 			if (rot != NULL) {
 				steps = eagle_rot2steps(rot);
