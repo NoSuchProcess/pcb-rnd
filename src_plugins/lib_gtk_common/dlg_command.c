@@ -349,6 +349,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	 */
 	if (!ctx->command_combo_box) {
 		command_combo_box_entry_create(ctx);
+		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), NULL);
 		ctx->pack_in_status_line();
 	}
 
