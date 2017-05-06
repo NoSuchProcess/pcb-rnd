@@ -977,7 +977,7 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			const char *val = eagle_get_attrs(n, "value", NULL);
 			pcb_element_t *elem, *new_elem;
 			const char *rot;
-			int steps;
+			int steps, back = 0;
 
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring element with no name\n");
@@ -1001,6 +1001,10 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			x = eagle_get_attrc(n, "x", -1);
 			y = eagle_get_attrc(n, "y", -1);
 			rot = eagle_get_attrs(n, "rot", NULL);
+			if ((rot != NULL) && (*rot == 'M')) {
+				rot++;
+				back = 1;
+			}
 
 #warning TODO: use pcb_elem_new() instead of this?
 			new_elem = pcb_element_alloc(st->pcb->Data);
@@ -1029,6 +1033,9 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 
 			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
 			size_bump(st, new_elem->BoundingBox.X2, new_elem->BoundingBox.Y2);
+
+			if (back)
+				pcb_element_change_side(new_elem, 2 * y - st->pcb->MaxHeight);
 
 			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, (void *)elem);
 		}
