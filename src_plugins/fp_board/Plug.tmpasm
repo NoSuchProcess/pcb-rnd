@@ -1,0 +1,8 @@
+put /local/pcb/mod {fp_board}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/fp_board/fp_board.o @]
+
+switch /local/pcb/fp_board/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

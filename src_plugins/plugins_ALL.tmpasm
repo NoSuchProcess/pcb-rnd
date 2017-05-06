@@ -30,6 +30,7 @@ include {../src_plugins/export_svg/Plug.tmpasm}
 include {../src_plugins/export_test/Plug.tmpasm}
 include {../src_plugins/export_xy/Plug.tmpasm}
 include {../src_plugins/fontmode/Plug.tmpasm}
+include {../src_plugins/fp_board/Plug.tmpasm}
 include {../src_plugins/fp_fs/Plug.tmpasm}
 include {../src_plugins/fp_wget/Plug.tmpasm}
 include {../src_plugins/gpmi/Plug.tmpasm}

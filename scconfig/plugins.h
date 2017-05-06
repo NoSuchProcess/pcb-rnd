@@ -47,6 +47,7 @@ plugin_def("teardrops",        "draw teardrops on pins",          sbuildin, 1)
 plugin_def("vendordrill",      "vendor drill mapping",            sbuildin, 1)
 
 plugin_header("\nFootprint backends:\n")
+plugin_def("fp_board",         "footprint library from boards",   sdisable, 1)
 plugin_def("fp_fs",            "filesystem footprints",           sbuildin, 1)
 plugin_def("fp_wget",          "web footprints",                  sbuildin, 1)
 
