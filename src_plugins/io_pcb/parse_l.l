@@ -324,6 +324,10 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	int ret;
 	pcb_fp_fopen_ctx_t st;
 
+	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
+
+	/* set up the yy globals only after the pcb_fp_fopen() because it can
+	   also call Parse */
 	yy_parse_tags = 0;
 	yy_settings_dest = CFR_invalid;
 	yyPCB = NULL;
@@ -332,7 +336,6 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yyFontkitValid = NULL;
 	yyElement = NULL;
 
-	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
 
 	if (f == NULL)
 		return -1;
