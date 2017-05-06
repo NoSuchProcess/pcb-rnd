@@ -20,7 +20,7 @@ extern int ghid_wheel_zoom;
 pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button);
 
 void ghid_hand_cursor(pcb_gtk_mouse_t *ctx);
-void ghid_point_cursor(pcb_gtk_mouse_t *ctx);
+void ghid_point_cursor(pcb_gtk_mouse_t *ctx, pcb_bool grabbed);
 /** Changes the cursor appearance to signifies a wait state */
 void ghid_watch_cursor(pcb_gtk_mouse_t *ctx);
 /** Changes the cursor appearance according to @mode */

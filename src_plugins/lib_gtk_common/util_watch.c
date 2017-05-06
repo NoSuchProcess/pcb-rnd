@@ -55,7 +55,7 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 	x.ptr = (void *) watch;
 	watch->func(x, watch->fd, pcb_condition, watch->user_data);
 
-	watch->com->mode_cursor_main(conf_core.editor.mode);
+	watch->com->mode_cursor_main(-1);
 
 	return TRUE;									/* Leave watch on */
 }

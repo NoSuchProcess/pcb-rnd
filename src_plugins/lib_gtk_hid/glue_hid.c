@@ -403,10 +403,7 @@ static void PointCursor(pcb_bool grabbed)
 	if (!ghidgui)
 		return;
 
-	if (grabbed > 0)
-		ghid_point_cursor(&gport->mouse);
-	else
-		ghid_mode_cursor(&gport->mouse, conf_core.editor.mode);
+	ghid_point_cursor(&gport->mouse, grabbed);
 }
 
 static void ghid_notify_save_pcb(const char *filename, pcb_bool done)

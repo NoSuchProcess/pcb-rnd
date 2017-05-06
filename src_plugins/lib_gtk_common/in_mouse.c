@@ -38,6 +38,7 @@
 #include "board.h"
 #include "action_helper.h"
 #include "crosshair.h"
+#include "conf_core.h"
 
 #include "in_keyboard.h"
 #include "bu_status_line.h"
@@ -52,7 +53,7 @@ pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
 	return (PCB_MB_LEFT << (ev_button - 1));
 }
 
-static GdkCursorType old_cursor;
+static GdkCursorType old_cursor, cursor_override;
 
 #define CUSTOM_CURSOR_CLOCKWISE		(GDK_LAST_CURSOR + 10)
 #define CUSTOM_CURSOR_DRAG			  (GDK_LAST_CURSOR + 11)
@@ -97,14 +98,22 @@ static GdkCursorType gport_set_cursor(pcb_gtk_mouse_t *ctx, GdkCursorType shape)
 	return old_shape;
 }
 
-void ghid_point_cursor(pcb_gtk_mouse_t *ctx)
+void ghid_point_cursor(pcb_gtk_mouse_t *ctx, pcb_bool grabbed)
 {
-	old_cursor = gport_set_cursor(ctx, GDK_DRAPED_BOX);
+	if (grabbed) {
+		old_cursor = gport_set_cursor(ctx, GDK_DRAPED_BOX);
+		cursor_override = GDK_DRAPED_BOX;
+	}
+	else {
+		cursor_override = 0;
+		ghid_mode_cursor(ctx, -1);
+	}
 }
 
 void ghid_hand_cursor(pcb_gtk_mouse_t *ctx)
 {
 	old_cursor = gport_set_cursor(ctx, GDK_HAND2);
+	cursor_override = GDK_HAND2;
 }
 
 void ghid_watch_cursor(pcb_gtk_mouse_t *ctx)
@@ -118,6 +127,14 @@ void ghid_watch_cursor(pcb_gtk_mouse_t *ctx)
 
 void ghid_mode_cursor(pcb_gtk_mouse_t *ctx, int mode)
 {
+	if (cursor_override != 0) {
+		gport_set_cursor(ctx, cursor_override);
+		return;
+	}
+
+	if (mode < 0) /* automatic */
+		mode = conf_core.editor.mode;
+
 	switch (mode) {
 	case PCB_MODE_NO:
 		gport_set_cursor(ctx, (GdkCursorType) CUSTOM_CURSOR_DRAG);
@@ -199,6 +216,7 @@ void ghid_corner_cursor(pcb_gtk_mouse_t *ctx)
 
 void ghid_restore_cursor(pcb_gtk_mouse_t *ctx)
 {
+	cursor_override = 0;
 	gport_set_cursor(ctx, old_cursor);
 }
 

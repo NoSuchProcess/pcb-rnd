@@ -158,6 +158,8 @@ static void ghid_port_button_release_main(void)
 
 static void ghid_mode_cursor_main(int mode)
 {
+	if (mode >= 0)
+		ghid_point_cursor(&gport->mouse, 0); /* undo any override (e.g. left over from arrow cursor poitning to the end of a line) first */
 	ghid_mode_cursor(&gport->mouse, mode);
 }
 

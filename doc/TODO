@@ -12,7 +12,6 @@
 	- plugins:
 		- turn gpmi into a conventional plugin
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
-	- r8406 breaks the gtk cursor somehow: hovering above line endpoints stop showing the endpoint shape correctly [report: miloh]
 	- layer rewrite:
 		- gtk layersel bugs:
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
