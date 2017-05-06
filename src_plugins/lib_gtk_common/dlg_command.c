@@ -177,7 +177,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 	if (g_list_length(history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
 		s = (gchar *) g_list_nth_data(history_list, 0);
 		history_list = g_list_remove(history_list, s);
-		gtkc_combo_box_text_remove(ctx->command_combo_box, conf_hid_gtk.plugins.hid_gtk.history_size);
+		gtkc_combo_box_text_remove(ctx->command_combo_box, 0);
 		g_free(s);
 	}
 }
