@@ -2,7 +2,6 @@
 	- using the q key to make a pin square works, drop down menus to do the same are broken [report: EvanFoss]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- cross section on export should draw with double font, but should print file names
-	- after the next release: when DRC sizes are saved in user conf, they are overriden from the default.pcb [report: Alain]
 	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
 	- library window: allow long tags and long location text to split
 	- command dialog:
@@ -55,6 +54,8 @@ For after 1.2.3
 	- rewrite the central code for callbacks?
 
 CLEANUP #5
+- BUG: when DRC sizes are saved in user conf, they are overriden from the default.pcb [report: Alain]
+	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - HID: option for using a fixed backround color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
 	- unify how output files are accessed/checked: confirmation on overwrite
