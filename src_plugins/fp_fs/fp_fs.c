@@ -261,7 +261,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 {
 	int res;
-printf("LOAD: '%s'\n", path);
+
 	res = fp_fs_load_dir_(&pcb_library, ".", path, 1);
 	if (res >= 0) {
 		pcb_fplibrary_t *l = pcb_fp_lib_search(&pcb_library, path);
