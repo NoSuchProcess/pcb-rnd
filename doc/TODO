@@ -8,8 +8,6 @@
 	- command dialog:
 		- closing it with ESC key seems to fire the last action. Expected is, doing nothing
 		- when you press the up arrow it doesn't bring back the last command but the first you ever typed
-	- plugins:
-		- turn gpmi into a conventional plugin
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	+ stat export: save user-input metadata properly [report: Alain]
 	- layer rewrite:
