@@ -159,9 +159,9 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 		s = (gchar *) list->data;
 		if (!strcmp(cmd, s)) {
 			history_list = g_list_remove(history_list, s);
-			history_list = g_list_prepend(history_list, s);
+			history_list = g_list_append(history_list, s);
 			gtkc_combo_box_text_remove(ctx->command_combo_box, i);
-			gtkc_combo_box_text_prepend_text(ctx->command_combo_box, s);
+			gtkc_combo_box_text_append_text(ctx->command_combo_box, s);
 			return;
 		}
 	}
@@ -169,13 +169,13 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 	/* Not a duplicate, so put first in history list and combo box text list.
 	 */
 	s = g_strdup(cmd);
-	history_list = g_list_prepend(history_list, s);
-	gtkc_combo_box_text_prepend_text(ctx->command_combo_box, s);
+	history_list = g_list_append(history_list, s);
+	gtkc_combo_box_text_append_text(ctx->command_combo_box, s);
 
 	/* And keep the lists trimmed!
 	 */
 	if (g_list_length(history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
-		s = (gchar *) g_list_nth_data(history_list, conf_hid_gtk.plugins.hid_gtk.history_size);
+		s = (gchar *) g_list_nth_data(history_list, 0);
 		history_list = g_list_remove(history_list, s);
 		gtkc_combo_box_text_remove(ctx->command_combo_box, conf_hid_gtk.plugins.hid_gtk.history_size);
 		g_free(s);
