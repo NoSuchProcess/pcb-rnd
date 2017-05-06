@@ -256,7 +256,7 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int 
 	for(n = subtree->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"layer") == 0) {
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
-			int id;
+			int id, reuse = 0;
 			unsigned long typ;
 			pcb_layergrp_id_t gid;
 			pcb_layer_group_t *grp;
@@ -275,8 +275,20 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int 
 			switch(id) {
 				case 1: typ = PCB_LYT_COPPER | PCB_LYT_TOP; break;
 				case 16: typ = PCB_LYT_COPPER | PCB_LYT_BOTTOM; break;
-				case 121: typ = PCB_LYT_SILK | PCB_LYT_TOP; break;
-				case 122: typ = PCB_LYT_SILK | PCB_LYT_BOTTOM; break;
+				case 121:
+				case 25: /* names */
+				case 27: /* values */
+				case 39: /* keepout */
+					reuse = 1;
+					typ = PCB_LYT_SILK | PCB_LYT_TOP;
+					break;
+				case 122:
+				case 26: /* names */
+				case 28: /* values */
+				case 40: /* keepout */
+					reuse = 1;
+					typ = PCB_LYT_SILK | PCB_LYT_BOTTOM;
+					break;
 				case 199:
 					grp = pcb_get_grp_new_intern(st->pcb, -1);
 					ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
@@ -290,9 +302,12 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int 
 						ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
 					}
 			}
-			if (typ != 0)
-				if (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0)
+			if (typ != 0) {
+				if (reuse)
+					pcb_layer_list(typ, &ly->ly, 1);
+				if ((ly->ly < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
 					ly->ly = pcb_layer_create(gid, ly->name);
+			}
 		}
 	}
 	pcb_layer_group_setup_silks(&st->pcb->LayerGroups);
@@ -427,23 +442,27 @@ static int eagle_read_rect(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	pcb_line_t *lin1, *lin2, *lin3, *lin4;
 	long ln = eagle_get_attrl(subtree, "layer", -1);
 	eagle_layer_t *ly;
+	unsigned long int flags;
 
+	ly = eagle_layer_get(st, ln);
 	switch(loc) {
 		case IN_ELEM:
-			if ((ln != 121) && (ln != 122) && (ln != 21) && (ln != 22)) /* consider silk lines only */
+			if (ly->ly < 0)
+				return 0;
+			flags = pcb_layer_flags(st->pcb, ly->ly);
+			if (!(flags & PCB_LYT_SILK)) /* consider silk lines only */
 				return 0;
 			lin1 = pcb_element_line_alloc((pcb_element_t *)obj);
 			lin2 = pcb_element_line_alloc((pcb_element_t *)obj);
 			lin3 = pcb_element_line_alloc((pcb_element_t *)obj);
 			lin4 = pcb_element_line_alloc((pcb_element_t *)obj);
-			if ((ln == 122) || (ln == 22))
+			if (flags & PCB_LYT_BOTTOM)
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin1);
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin2);
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin3);
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin4);
 			break;
 		case ON_BOARD:
-			ly = eagle_layer_get(st, ln);
 			if (ly->ly < 0) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring rectangle on layer %s\n", ly->name);
 				return 0;
@@ -506,17 +525,22 @@ static int eagle_read_wire(read_state_t * st, xmlNode * subtree, void *obj, int 
 	pcb_line_t *lin;
 	long ln = eagle_get_attrl(subtree, "layer", -1);
 	eagle_layer_t *ly;
+	unsigned long flags;
+
+	ly = eagle_layer_get(st, ln);
 
 	switch (loc) {
 	case IN_ELEM:
-		if ((ln != 121) && (ln != 122) && (ln != 21) && (ln != 22)) /* consider silk lines only */
+		if (ly->ly < 0)
+			return 0;
+		flags = pcb_layer_flags(st->pcb, ly->ly);
+		if (!(flags & PCB_LYT_SILK)) /* consider silk lines only */
 			return 0;
 		lin = pcb_element_line_alloc((pcb_element_t *) obj);
-		if ((ln == 122) || (ln == 22))
+		if (flags & PCB_LYT_BOTTOM)
 			PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
 		break;
 	case ON_BOARD:
-		ly = eagle_layer_get(st, ln);
 		if (ly->ly < 0) {
 			pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
 			return 0;
