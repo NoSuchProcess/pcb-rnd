@@ -5,7 +5,6 @@
 	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
 	- library window: allow long tags and long location text to split
 	- command dialog:
-		- closing it with ESC key seems to fire the last action. Expected is, doing nothing
 		- when you press the up arrow it doesn't bring back the last command but the first you ever typed
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	+ stat export: save user-input metadata properly [report: Alain]
