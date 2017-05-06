@@ -406,6 +406,7 @@ static int eagle_read_circle(read_state_t *st, xmlNode *subtree, void *obj, int 
 	circ->StartAngle = 0;
 	circ->Delta = 360;
 	circ->Thickness = eagle_get_attrc(subtree, "width", -1);
+	circ->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
 	switch(loc) {
 		case IN_ELEM: break;
@@ -526,7 +527,7 @@ static int eagle_read_wire(read_state_t * st, xmlNode * subtree, void *obj, int 
 	lin->Point2.X = eagle_get_attrc(subtree, "x2", -1);
 	lin->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
 	lin->Thickness = eagle_get_attrc(subtree, "width", -1);
-	lin->Flags = pcb_no_flags();
+	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 	lin->ID = pcb_create_ID_get();
 
 	switch (loc) {
