@@ -1312,7 +1312,7 @@ static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data
 	GHidPort *port = data;
 	render_priv_t *priv = port->render_priv;
 
-	priv->cr_surf_window = gdk_window_create_similar_surface(gtk_widget_get_window(gport->drawing_area),
+	priv->cr_surf_window = gdk_window_create_similar_surface(gtk_widget_get_window(widget),
 																													 CAIRO_CONTENT_COLOR_ALPHA,
 																													 gport->view.canvas_width, gport->view.canvas_height);
 	priv->cr = cairo_create(priv->cr_surf_window);
