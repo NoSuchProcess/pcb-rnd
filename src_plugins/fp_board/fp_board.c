@@ -9,8 +9,11 @@
 #include "error.h"
 #include "obj_elem.h"
 #include "obj_elem_list.h"
+#include "obj_elem_op.h"
 #include "compat_misc.h"
 #include "pcb-printf.h"
+#include "operation.h"
+#include "plug_io.h"
 
 #define REQUIRE_PATH_PREFIX "board@"
 
@@ -19,28 +22,30 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	const char *fpath;
 	pcb_fplibrary_t *l;
 	pcb_buffer_t buff;
-	elementlist_dedup_initializer(dedup);
 	unsigned long int id;
+	elementlist_dedup_initializer(dedup);
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
 
 	fpath = path + strlen(REQUIRE_PATH_PREFIX);
 
+	/* load file */
 	memset(&buff, 0, sizeof(buff));
 	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != pcb_true) {
 		pcb_message(PCB_MSG_ERROR, "Warning: failed to load %s\n", fpath);
 		return -1;
 	}
 
+	/* make sure lib dir is ready */
 	l = pcb_fp_lib_search(&pcb_library, path);
 	if (l == NULL)
 		l = pcb_fp_mkdir_len(&pcb_library, path, -1);
 
+	/* add unique elements */
 	id = 0;
 	PCB_ELEMENT_LOOP(buff.Data) {
 		const char *ename;
-		char *name;
 		pcb_fplibrary_t *e;
 
 		id++;
@@ -57,6 +62,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	elementlist_dedup_free(dedup);
 
+	/* clean up buffer */
 	pcb_buffer_clear(PCB, &buff);
 	free(buff.Data);
 
@@ -65,27 +71,79 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
-	char *fpath, *id;
+	char *fpath, *ids, *end;
+	unsigned long int id, req_id;
+	pcb_buffer_t buff;
+	FILE *f = NULL;
+	pcb_opctx_t op;
+	char *tmp_name = ".board.fp";
 
 	if (strncmp(name, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return NULL;
 
+	/* split file name and ID */
 	fpath = pcb_strdup(name + strlen(REQUIRE_PATH_PREFIX));
-	id = strchr(fpath, '@');
-	if (id == NULL) {
+	ids = strchr(fpath, '@');
+	if (ids == NULL)
+		goto err;
+
+	*ids = '\0';
+	ids++;
+
+	req_id = strtoul(ids, &end, 10);
+	if (*end != '\0')
+		goto err;
+
+	/* load file */
+	memset(&buff, 0, sizeof(buff));
+	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != pcb_true) {
+		pcb_message(PCB_MSG_ERROR, "Warning: failed to load %s\n", fpath);
+		goto err;
+	}
+
+	/* find the reuqested footprint in the file */
+	id = 0;
+	PCB_ELEMENT_LOOP(buff.Data) {
+		id++;
+		if (id == req_id) {
+/*			if (strcmp(element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString, l->name)) */
+			pcb_buffer_t buff2;
+
+			/* This is not pretty: we are saving the element to a file so we can return a FILE *.
+			   Later on we should just return the footprint. */
+			memset(&op, 0, sizeof(op));
+			op.buffer.dst = calloc(sizeof(pcb_data_t), 1);
+			AddElementToBuffer(&op, element);
+
+			f = fopen(tmp_name, "w");
+			memset(&buff2, 0, sizeof(buff2));
+			buff2.Data = op.buffer.dst;
+			pcb_write_buffer(f, &buff2, NULL);
+			fclose(f);
+
+			pcb_data_free(op.buffer.dst);
+			free(op.buffer.dst);
+
+			f = fopen(tmp_name, "r");
+			break;
+		}
+	} PCB_END_LOOP;
+
+	/* clean up buffer */
+
+	pcb_buffer_clear(PCB, &buff);
+	free(buff.Data);
+	return f;
+
+err:;
 		free(fpath);
 		return NULL;
-	}
-	*id = '\0';
-	id++;
-	printf("woops: '%s'@'%s'\n", fpath, id);
-
-
-	return NULL;
 }
 
 static void fp_board_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
+	fclose(f);
+#warning TODO: remove file
 }
 
 
