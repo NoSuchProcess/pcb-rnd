@@ -18,8 +18,6 @@
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
 			- svg export: check mask/paste drawing, make new options? mask on in photo more?
 			- consider to provide a config setting for makging open-group-name horizontal [report: istankovic]
-			- @layer* menu: centralize the code
-		- lesstif: layer selector should show all layers, probably in the order of the stackup
 		- lihata v2:
 			- indent styling for layer stack
 			- review, make it default
@@ -56,6 +54,11 @@
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
 		- regex and string cmp match speed vs. select by name
+
+For after 1.2.3
+- layer rewrite: central menu buttons
+	- lesstif needs to remember the widgets via lb->w in menu.c
+	- rewrite the central code for callbacks?
 
 CLEANUP #5
 - HID: option for using a fixed backround color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
