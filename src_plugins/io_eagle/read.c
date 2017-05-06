@@ -878,6 +878,15 @@ static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int
 	return 0;
 }
 
+static void eagle_read_elem_text(read_state_t *st, pcb_element_t *elem, pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
+{
+	int Direction = 0, TextScale = 100;
+			pcb_flag_t TextFlags = pcb_no_flags();
+
+	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, Direction, str, TextScale, TextFlags);
+	text->Element = elem;
+}
+
 static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
 	xmlNode *n;
@@ -890,9 +899,6 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			const char *pkg = eagle_get_attrs(n, "package", NULL);
 			const char *val = eagle_get_attrs(n, "value", NULL);
 			pcb_element_t *elem, *new_elem;
-			pcb_coord_t TextX = 0, TextY = 0;
-			int Direction = 0, TextScale = 100;
-			pcb_flag_t TextFlags = pcb_no_flags();
 			const char *rot;
 
 			if (name == NULL) {
@@ -918,6 +924,7 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			y = eagle_get_attrc(n, "y", -1);
 			rot = eagle_get_attrs(n, "rot", NULL);
 
+#warning TODO: use pcb_elem_new() instead of this?
 			new_elem = pcb_element_alloc(st->pcb->Data);
 			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
 			new_elem->Flags = pcb_no_flags();
@@ -930,15 +937,9 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 			}
 			PCB_END_LOOP;
 
-#warning TODO: use pcb_elem_new() instead of this?
-#warning TODO: load child node attribs to figure rotation and coords
-
-			pcb_element_text_set(&PCB_ELEM_TEXT_DESCRIPTION(new_elem), pcb_font(st->pcb, 0, 1), TextX, TextY, Direction, pkg, TextScale, TextFlags);
-			pcb_element_text_set(&PCB_ELEM_TEXT_REFDES(new_elem), pcb_font(st->pcb, 0, 1), TextX, TextY, Direction, name, TextScale, TextFlags);
-			pcb_element_text_set(&PCB_ELEM_TEXT_VALUE(new_elem), pcb_font(st->pcb, 0, 1), TextX, TextY, Direction, val, TextScale, TextFlags);
-			PCB_ELEM_TEXT_DESCRIPTION(new_elem).Element = new_elem;
-			PCB_ELEM_TEXT_REFDES(new_elem).Element = new_elem;
-			PCB_ELEM_TEXT_VALUE(new_elem).Element = new_elem;
+			eagle_read_elem_text(st, new_elem, &PCB_ELEM_TEXT_DESCRIPTION(new_elem), x, y, "PROD_ID", pkg);
+			eagle_read_elem_text(st, new_elem, &PCB_ELEM_TEXT_REFDES(new_elem), x, y, "NAME", name);
+			eagle_read_elem_text(st, new_elem, &PCB_ELEM_TEXT_VALUE(new_elem), x, y, "VALUE", val);
 
 
 			if ((rot != NULL) && (rot[0] == 'R')) {
