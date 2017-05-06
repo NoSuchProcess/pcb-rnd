@@ -1,5 +1,5 @@
 - BUGS for the next release:
-	- using the q key to make a pin square works, drop down menus to do the same are broken [report: EvanFoss]
+	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- cross section on export should draw with double font, but should print file names
 	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
