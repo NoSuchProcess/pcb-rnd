@@ -295,6 +295,7 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int 
 					ly->ly = pcb_layer_create(gid, ly->name);
 		}
 	}
+	pcb_layer_group_setup_silks(&st->pcb->LayerGroups);
 	pcb_layer_auto_fixup(st->pcb);
 	return 0;
 }
