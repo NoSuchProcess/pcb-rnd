@@ -11,6 +11,7 @@
 	- plugins:
 		- turn gpmi into a conventional plugin
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
+	+ stat export: save user-input metadata properly [report: Alain]
 	- layer rewrite:
 		- gtk layersel bugs:
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
@@ -20,9 +21,6 @@
 			- indent styling for layer stack
 			- review, make it default
 			- document versions and differences
-	- Export Layout -> stat dialog: [report: Alain]
-		- the meta-data (built=0, ...) are not affected by dialog user inputs.
-		- there is no confirmation an existing file will be overwritten
 
 - fontsel:
 	- replace font in slot (even in default)
@@ -61,7 +59,7 @@ For after 1.2.3
 CLEANUP #5
 - HID: option for using a fixed backround color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
-	Within that revamp we can also unify how output files are accessed/checked.
+	- unify how output files are accessed/checked: confirmation on overwrite
 - extend the DRC window to be a generic location list
 	- buttons to select one or all items or all items including locked
 	- multiple DRC windows
