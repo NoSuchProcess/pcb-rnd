@@ -12,3 +12,6 @@ char *pcb_tempfile_name_new(const char *name);
  * (this fact is a little confusing)
  */
 int pcb_tempfile_unlink(char *name);
+
+/* Return non-zero if path is a directory */
+int pcb_is_dir(const char *path);
