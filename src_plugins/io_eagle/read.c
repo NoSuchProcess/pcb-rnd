@@ -39,6 +39,8 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "error.h"
+#include "polygon.h"
+#include "rtree.h"
 #include "hid_actions.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
