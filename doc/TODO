@@ -48,12 +48,10 @@
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 
-For after 1.2.3
+AFTER THE NEXT RELEASE:
 - layer rewrite: central menu buttons
 	- lesstif needs to remember the widgets via lb->w in menu.c
 	- rewrite the central code for callbacks?
-
-CLEANUP #5
 - BUG: when DRC sizes are saved in user conf, they are overriden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - HID: option for using a fixed backround color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
@@ -124,7 +122,7 @@ CLEANUP #5
 	  draw a line on a layer and a poly on another and change whether they are in
 	  the same layer group
 
-CLEANUP #6:
+LATER RELEASES:
 - silent failure on parser error in io_pcb: e.g. missing or non-integer fields of Via[] [report: Erich]
 - core lib splitup:
 	- gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
