@@ -62,6 +62,7 @@ typedef struct render_priv_s {
 
 	cairo_surface_t *cr_surf_window;			/**< The surface drawing in gport->drawing_area     */
 	cairo_t *cr;													/**< cairo context connected to \p cr_surf_window   */
+	cairo_t *cr_drawing_area;							/**< cairo context connected to gport->drawing_area */
 
 	//GdkPixmap *pixmap, *mask;
 
@@ -1182,14 +1183,16 @@ static void show_crosshair(gboolean paint_new_location)
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	gint x, y;
 	static gint x_prev = -1, y_prev = -1;
-	static cairo_t *xor_gc;
+	//static cairo_t *xor_gc;
 	static GdkColor cross_color;
+	cairo_t *cr;
 
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
 		return;
 
 	/* FIXME: when CrossColor changed from config */
 	map_color_string(conf_core.appearance.color.cross, &priv->crosshair_color);
+	cr = priv->cr_drawing_area;
 
 	//if (!xor_gc) {
 	//  xor_gc = gdk_gc_new(window);
@@ -1206,10 +1209,10 @@ static void show_crosshair(gboolean paint_new_location)
 	//gdk_gc_set_foreground(xor_gc, &cross_color);
 
 	if (x_prev >= 0 && !paint_new_location)
-		draw_crosshair(xor_gc, x_prev, y_prev);
+		draw_crosshair(cr, x_prev, y_prev);
 
 	if (x >= 0 && paint_new_location) {
-		draw_crosshair(xor_gc, x, y);
+		draw_crosshair(cr, x, y);
 		x_prev = x;
 		y_prev = y;
 	}
@@ -1303,6 +1306,7 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEvent
 
 	//cairo_set_source_surface(cr, priv->cr_surf_window, 0, 0);
 	//cairo_paint(cr);
+	priv->cr_drawing_area = cr;
 	gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
 	cairo_rectangle(cr, 1,1, 200, 150);
 	cairo_fill(cr);
