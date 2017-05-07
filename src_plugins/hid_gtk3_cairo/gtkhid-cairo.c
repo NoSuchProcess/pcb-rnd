@@ -114,7 +114,7 @@ static pcb_bool map_color_string(const char *color_string, GdkRGBA * color)
 	return parsed;
 }
 
-static void cr_draw_line(cairo_t * cr, int fill, double x1, int y1, int x2, int y2)
+static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2, double y2)
 {
 	if (cr == NULL)
 		return;
@@ -122,9 +122,10 @@ static void cr_draw_line(cairo_t * cr, int fill, double x1, int y1, int x2, int 
 	cairo_move_to(cr, x1, y1);
 	cairo_line_to(cr, x2, y2);
 	if (fill)
-		cairo_stroke(cr);
-	else
+		/*FIXME: What means "fill a line" ? cairo_fill is not appropriate if path is only a line. */
 		cairo_fill(cr);
+	else
+		cairo_stroke(cr);
 }
 
 /** TODO: Does this function have some specifics in cairo ?  or is it general ? */
