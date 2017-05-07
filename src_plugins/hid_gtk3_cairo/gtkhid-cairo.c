@@ -1179,12 +1179,12 @@ static void draw_crosshair(cairo_t * xor_gc, gint x, gint y)
 static void show_crosshair(gboolean paint_new_location)
 {
 	render_priv_t *priv = gport->render_priv;
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
-	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
+	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
+	//GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	gint x, y;
 	static gint x_prev = -1, y_prev = -1;
-	//static cairo_t *xor_gc;
-	//static GdkColor cross_color;
+	static cairo_t *xor_gc;
+	static GdkColor cross_color;
 	cairo_t *cr;
 
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
@@ -1309,9 +1309,6 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEvent
 	cairo_set_source_surface(cr, priv->cr_surf_window, 0, 0);
 	cairo_paint(cr);
 	priv->cr_drawing_area = cr;
-	//gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
-	//cairo_rectangle(cr, 1,1, 200, 150);
-	//cairo_fill(cr);
 
 	show_crosshair(TRUE);
 
