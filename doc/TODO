@@ -10,7 +10,7 @@
 		- gtk layersel bugs:
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
 			- svg export: check mask/paste drawing, make new options? mask on in photo more?
-			- consider to provide a config setting for makging open-group-name horizontal [report: istankovic]
+			- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 		- lihata v2:
 			- indent styling for layer stack
 			- review, make it default
@@ -50,9 +50,9 @@ AFTER THE NEXT RELEASE:
 - layer rewrite: central menu buttons
 	- lesstif needs to remember the widgets via lb->w in menu.c
 	- rewrite the central code for callbacks?
-- BUG: when DRC sizes are saved in user conf, they are overriden from the default.pcb [report: Alain]
+- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
-- HID: option for using a fixed backround color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
+- HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
 	- unify how output files are accessed/checked: confirmation on overwrite
 - extend the DRC window to be a generic location list
@@ -171,7 +171,7 @@ FEATURES
 
 Low prio:
 - bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
-- bug: redrawbug1: grap c1, the diagonal trace gets dran over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
+- bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
 - bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 - GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - insert drag&drop strangeness (mainline too):
@@ -206,11 +206,11 @@ Low prio:
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead
 - arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
-	-> AttachForCopy() calls SetCrosshairRange() that then sets corsshair max* which
+	-> AttachForCopy() calls SetCrosshairRange() that then sets crosshair max* which
 	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
 - while drawing a line, the temporary outline should reflect the layer color
 - push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - examine current handling of long options [miloh]
-- --dump-actions shows gpmi paths ( is this related? it looks unexpected to me) 
-- unify gui invocation options: why do pcb --help gtk & pcb --help lesstif show differerent input methods [report:miloh] 
+- --dump-actions shows gpmi paths ( is this related? it looks unexpected to me)
+- unify gui invocation options: why do pcb --help gtk & pcb --help lesstif show different input methods [report:miloh]
