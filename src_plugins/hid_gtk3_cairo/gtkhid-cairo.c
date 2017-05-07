@@ -58,6 +58,7 @@ typedef struct render_priv_s {
 	GdkRGBA bg_color;											/**< cached back-ground color           */
 	GdkRGBA offlimits_color;							/**< cached external board color        */
 	GdkRGBA grid_color;										/**< cached grid color                  */
+	GdkRGBA crosshair_color;							/**< cached crosshair color             */
 
 	cairo_surface_t *cr_surf_window;			/**< The surface drawing in gport->drawing_area     */
 	cairo_t *cr;													/**< cairo context connected to \p cr_surf_window   */
@@ -1186,6 +1187,9 @@ static void show_crosshair(gboolean paint_new_location)
 
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
 		return;
+
+	/* FIXME: when CrossColor changed from config */
+	map_color_string(conf_core.appearance.color.cross, &priv->crosshair_color);
 
 	//if (!xor_gc) {
 	//  xor_gc = gdk_gc_new(window);
