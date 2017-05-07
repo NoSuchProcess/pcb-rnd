@@ -46,6 +46,10 @@
 		- regex and string cmp match speed vs. select by name
 
 AFTER THE NEXT RELEASE:
+- cleanup: revise strftime() calls, especially in exporters:
+	- make a config.h format string, don't depend on %c
+	- make the format more ISO-like
+	- make sure to use this in all the exported comments but don't break file formats
 - fp_board: extend the API so that the element can be presented without saving to a file
 - layer rewrite: central menu buttons
 	- lesstif needs to remember the widgets via lb->w in menu.c
