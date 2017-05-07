@@ -52,6 +52,8 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		elementlist_dedup_skip(dedup, element);
 
 		ename = element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString;
+		if (ename == NULL)
+			ename = "anonymous";
 		e = pcb_fp_append_entry(l, ename, PCB_FP_FILE, NULL);
 
 		/* remember location by ID - because of the dedup search by name is unsafe */
