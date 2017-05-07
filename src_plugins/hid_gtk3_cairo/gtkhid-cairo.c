@@ -1075,12 +1075,12 @@ static void ghid_cairo_notify_mark_change(pcb_bool changes_complete)
 	}
 }
 
-static void draw_right_cross(cairo_t * xor_gc, gint x, gint y)
+static void draw_right_cross(cairo_t * cr, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
-	cr_draw_line(gport->render_priv->cr, FALSE, x, 0, x, gport->view.canvas_height);
-	cr_draw_line(gport->render_priv->cr, FALSE, 0, y, gport->view.canvas_width, y);
+	cr_draw_line(cr, FALSE, x, 0, x, gport->view.canvas_height);
+	cr_draw_line(cr, FALSE, 0, y, gport->view.canvas_width, y);
 	//gdk_draw_line(window, xor_gc, x, 0, x, gport->view.canvas_height);
 	//gdk_draw_line(window, xor_gc, 0, y, gport->view.canvas_width, y);
 }
@@ -1184,7 +1184,7 @@ static void show_crosshair(gboolean paint_new_location)
 	gint x, y;
 	static gint x_prev = -1, y_prev = -1;
 	//static cairo_t *xor_gc;
-	static GdkColor cross_color;
+	//static GdkColor cross_color;
 	cairo_t *cr;
 
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
@@ -1193,6 +1193,8 @@ static void show_crosshair(gboolean paint_new_location)
 	/* FIXME: when CrossColor changed from config */
 	map_color_string(conf_core.appearance.color.cross, &priv->crosshair_color);
 	cr = priv->cr_drawing_area;
+	gdk_cairo_set_source_rgba(cr, &priv->crosshair_color);
+	cairo_set_line_width(cr, 1.0);
 
 	//if (!xor_gc) {
 	//  xor_gc = gdk_gc_new(window);
@@ -1304,12 +1306,12 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEvent
 	//gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
 	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 
-	//cairo_set_source_surface(cr, priv->cr_surf_window, 0, 0);
-	//cairo_paint(cr);
+	cairo_set_source_surface(cr, priv->cr_surf_window, 0, 0);
+	cairo_paint(cr);
 	priv->cr_drawing_area = cr;
-	gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
-	cairo_rectangle(cr, 1,1, 200, 150);
-	cairo_fill(cr);
+	//gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
+	//cairo_rectangle(cr, 1,1, 200, 150);
+	//cairo_fill(cr);
 
 	show_crosshair(TRUE);
 
