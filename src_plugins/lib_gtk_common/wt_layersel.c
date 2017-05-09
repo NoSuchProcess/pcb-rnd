@@ -357,7 +357,7 @@ static const char *lyr_color(pcb_layer_id_t lid)
 {
 	if (lid < 0) return "#aaaa00";
 	hardwired_colors(pcb_layer_flags(PCB, lid));
-	return conf_core.appearance.color.layer[lid];
+	return conf_core.appearance.color.layer[lid] == NULL ? "#aaaa00" : conf_core.appearance.color.layer[lid];
 }
 
 static const char * const grp_color(pcb_layer_group_t *g)
