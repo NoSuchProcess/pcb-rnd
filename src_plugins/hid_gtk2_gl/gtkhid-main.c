@@ -33,6 +33,30 @@ void gtk2_gl_parse_arguments(int *argc, char ***argv)
 	gtkhid_parse_arguments(argc, argv);
 }
 
+#include "layer.h"
+#include "event.h"
+#include "error.h"
+#include "data.h"
+static void warn_composite(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int lid;
+	for(lid = 0; lid < pcb_max_layer; lid++) {
+		if (pcb_layer_flags(PCB, lid) & (PCB_LYT_MASK | PCB_LYT_PASTE))
+			goto warn;
+		if (PCB->Data->Layer[lid].comb & PCB_LYC_SUB)
+			goto warn;
+	}
+	return;
+
+	warn:;
+	pcb_message(PCB_MSG_ERROR,
+	"\n"
+	"! Compositing layers (editing mask or paste) is NOT SUPPORTED by\n"
+	"! the opengl renderer at the moment. The rendering on screen will\n"
+	"! be broken. Please save, exit and run pcb-rnd with --gui gtk2_gdk\n"
+	"\n");
+}
+
 int pplg_check_ver_hid_gtk2_gl(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_gtk2_gl(void)
@@ -62,6 +86,8 @@ int pplg_init_hid_gtk2_gl(void)
 	pcb_hid_register_hid(&gtk2_gl_hid);
 
 	glue_event_init(ghid_gl_cookie);
+
+	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, warn_composite, NULL, ghid_gl_cookie);
 
 	return 0;
 }
