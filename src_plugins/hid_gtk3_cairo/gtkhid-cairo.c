@@ -60,8 +60,7 @@ typedef struct render_priv_s {
 	GdkRGBA grid_color;										/**< cached grid color                  */
 	GdkRGBA crosshair_color;							/**< cached crosshair color             */
 
-	cairo_surface_t *cr_surf_window;			/**< The surface drawing in gport->drawing_area     */
-	cairo_t *cr;													/**< cairo context connected to \p cr_surf_window   */
+	cairo_t *cr;													/**< cairo context for off-line painting            */
 	cairo_t *cr_drawing_area;							/**< cairo context connected to gport->drawing_area */
 
 	//GdkPixmap *pixmap, *mask;
@@ -1237,7 +1236,6 @@ static void ghid_cairo_shutdown_renderer(void *vport)
 
 	cairo_destroy(priv->cr);
 	priv->cr = NULL;
-	cairo_surface_destroy(priv->cr_surf_window);
 
 	g_free(port->render_priv);
 	port->render_priv = NULL;
@@ -1305,9 +1303,12 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEvent
 
 	//gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
 	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
-
-	cairo_set_source_surface(cr, priv->cr_surf_window, 0, 0);
+	cairo_save(cr);
+	cairo_set_source_surface(cr, cairo_get_target(priv->cr), 0, 0);
+	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint(cr);
+	cairo_restore(cr);
+
 	priv->cr_drawing_area = cr;
 
 	show_crosshair(TRUE);
@@ -1319,11 +1320,15 @@ static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data
 {
 	GHidPort *port = data;
 	render_priv_t *priv = port->render_priv;
+  cairo_surface_t *surf;
 
-	priv->cr_surf_window = gdk_window_create_similar_surface(gtk_widget_get_window(widget),
-																													 CAIRO_CONTENT_COLOR_ALPHA,
-																													 gport->view.canvas_width, gport->view.canvas_height);
-	priv->cr = cairo_create(priv->cr_surf_window);
+	surf = gdk_window_create_similar_surface(gtk_widget_get_window(widget),
+																					 CAIRO_CONTENT_COLOR_ALPHA,
+																					 gport->view.canvas_width, gport->view.canvas_height);
+	//surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+	//																	gport->view.canvas_width, gport->view.canvas_height);
+	priv->cr = cairo_create(surf);
+	cairo_surface_destroy(surf);
 }
 
 static gboolean ghid_cairo_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
