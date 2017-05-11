@@ -84,11 +84,11 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 #define HA_built 4
 
 	{"first_ver", "the version of pcb-rnd you first used on this board",
-	 PCB_HATT_STRING, 0, 0, {0, PCB_VERSION, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, NULL, 0}, 0, 0},
 #define HA_first_ver 5
 
 	{"license", "license of the design",
-	 PCB_HATT_STRING, 0, 0, {0, "proprietary/private", 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, NULL, 0}, 0, 0},
 #define HA_license 6
 
 };
@@ -350,6 +350,9 @@ int pplg_init_export_stat(void)
 	stat_hid.parse_arguments = stat_parse_arguments;
 
 	stat_hid.usage = stat_usage;
+
+	stat_attribute_list[HA_first_ver].default_val.str_value = pcb_strdup(PCB_VERSION);
+	stat_attribute_list[HA_license].default_val.str_value = pcb_strdup("proprietary/private");
 
 	pcb_hid_register_hid(&stat_hid);
 
