@@ -502,9 +502,9 @@ static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 
 typedef struct {
 	int color_set;
-	GdkColor color;
+	GdkRGBA color;
 	int xor_set;
-	GdkColor xor_color;
+	GdkRGBA xor_color;
 } ColorCache;
 
 
@@ -603,8 +603,11 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 		}
 
 		if (!cc->color_set) {
-			if (gdk_color_parse(name, &cc->color));	//gdk_color_alloc(gport->colormap, &cc->color);
-			else;											//gdk_color_white(gport->colormap, &cc->color);
+			if (! gdk_rgba_parse(&cc->color, name))
+				gdk_rgba_parse(&cc->color, "white");
+				//gdk_color_white(gport->colormap, &cc->color);
+			//else
+				//gdk_color_alloc(gport->colormap, &cc->color);
 			cc->color_set = 1;
 		}
 		//if (gc->xor_mask) {
@@ -620,6 +623,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 		//else {
 		//  gdk_gc_set_foreground(gc->gc, &cc->color);
 		//}
+		gdk_cairo_set_source_rgba(cr, &cc->color);
 	}
 }
 
