@@ -814,31 +814,25 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 
 static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
-	static GdkPoint *points = 0;
-	static int npoints = 0;
 	int i;
 	render_priv_t *priv = gport->render_priv;
 	cairo_t *cr = priv->cr;
+	int _x, _y;
 
 	if (priv->cr == NULL)
 		return;
 
 	USE_GC(gc);
 
-	if (npoints < n_coords) {
-		npoints = n_coords + 1;
-		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
-	}
 	for (i = 0; i < n_coords; i++) {
-		points[i].x = Vx(x[i]);
-		points[i].y = Vy(y[i]);
+		_x = Vx(x[i]);
+		_y = Vy(y[i]);
 		if (i == 0)
-			cairo_move_to(cr, points[i].x, points[i].y);
+			cairo_move_to(cr, _x, _y);
 		else
-			cairo_line_to(cr, points[i].x, points[i].y);
+			cairo_line_to(cr, _x, _y);
 	}
 	cairo_fill(cr);
-	//gdk_draw_polygon(gport->drawable, priv->u_gc, 1, points, n_coords);
 }
 
 /** TODO: Refactor with ghid_cairo_draw_rect() ? common part, fill as an extra parameter ? */
