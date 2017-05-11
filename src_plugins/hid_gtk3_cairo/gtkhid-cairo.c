@@ -818,6 +818,7 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 	static int npoints = 0;
 	int i;
 	render_priv_t *priv = gport->render_priv;
+	cairo_t *cr = priv->cr;
 
 	if (priv->cr == NULL)
 		return;
@@ -831,7 +832,12 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 	for (i = 0; i < n_coords; i++) {
 		points[i].x = Vx(x[i]);
 		points[i].y = Vy(y[i]);
+		if (i == 0)
+			cairo_move_to(cr, points[i].x, points[i].y);
+		else
+			cairo_line_to(cr, points[i].x, points[i].y);
 	}
+	cairo_fill(cr);
 	//gdk_draw_polygon(gport->drawable, priv->u_gc, 1, points, n_coords);
 }
 
