@@ -939,7 +939,11 @@ static void redraw_region(GdkRectangle * rect)
 		ebottom = tmp;
 	}
 
-  gdk_cairo_set_source_rgba(priv->cr, &priv->offlimits_color);
+	gdk_cairo_set_source_rgba(priv->cr, &priv->bg_color);
+	cairo_rectangle(priv->cr, 0.0, 0.0, gport->view.canvas_width, gport->view.canvas_height);
+	cairo_fill(priv->cr);
+
+	gdk_cairo_set_source_rgba(priv->cr, &priv->offlimits_color);
 	if (eleft > 0) {
 		cairo_rectangle(priv->cr, 0.0, 0.0, eleft, gport->view.canvas_height);
 	}
