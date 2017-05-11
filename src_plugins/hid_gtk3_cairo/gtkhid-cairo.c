@@ -1307,18 +1307,6 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 	//}
 }
 
-static void ghid_cairo_screen_update(void)
-{
-	render_priv_t *priv = gport->render_priv;
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
-
-	//if (gport->pixmap == NULL)
-	//  return;
-
-	//gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
-	show_crosshair(TRUE);
-}
-
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
 static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEventExpose*/void * p, void *vport)
 {
@@ -1340,6 +1328,19 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEvent
 	show_crosshair(TRUE);
 
 	return FALSE;
+}
+
+static void ghid_cairo_screen_update(void)
+{
+	render_priv_t *priv = gport->render_priv;
+	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
+
+	if (priv->cr == NULL)
+	  return;
+
+	//gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+	//show_crosshair(TRUE);
+  ghid_cairo_drawing_area_expose_cb(gport->drawing_area, priv->cr, gport);
 }
 
 static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
