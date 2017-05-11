@@ -515,7 +515,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 	else if (new_index == -1) { /* Delete the layer at old_index */
 		pcb_layergrp_id_t gid;
 		pcb_layer_group_t *g;
-		int grp_idx;
+		int grp_idx, remaining;
 
 #warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
 		for(l = old_index; l < PCB->Data->LayerN-1; l++) {
@@ -534,7 +534,14 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		/* remove the current lid from its group */
 		g = pcb_get_layergrp(PCB, PCB->Data->Layer[old_index].grp);
 		grp_idx = pcb_layergrp_index_in_grp(g, old_index);
-		memmove(g->lid+grp_idx, g->lid+grp_idx+1, (g->len - grp_idx - 1) * sizeof(pcb_layer_id_t));
+		if (grp_idx < 0) {
+			pcb_message(PCB_MSG_ERROR, "Internal error; layer not in group\n");
+			return -1;
+		}
+
+		remaining = (g->len - grp_idx - 1);
+		if (remaining > 0)
+			memmove(g->lid+grp_idx, g->lid+grp_idx+1, remaining * sizeof(pcb_layer_id_t));
 		g->len--;
 
 		/* update lids in all groups (shifting down idx) */
