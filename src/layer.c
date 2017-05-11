@@ -518,18 +518,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		int grp_idx, remaining;
 
 #warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
-		for(l = old_index; l < PCB->Data->LayerN-1; l++) {
-			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
-			layer_clear(&PCB->Data->Layer[l+1]);
-		}
-
-		for (l = 0; l < PCB->Data->LayerN; l++)
-			if (pcb_layer_stack[l] == old_index)
-				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (PCB->Data->LayerN - l - 1) * sizeof(pcb_layer_stack[0]));
-		pcb_max_layer--;
-		for (l = 0; l < PCB->Data->LayerN; l++)
-			if (pcb_layer_stack[l] > old_index)
-				pcb_layer_stack[l]--;
 
 		/* remove the current lid from its group */
 		g = pcb_get_layergrp(PCB, PCB->Data->Layer[old_index].grp);
@@ -552,6 +540,23 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 				if (g->lid[n] > old_index)
 					g->lid[n]--;
 		}
+
+		/* update visibility */
+		for(l = old_index; l < PCB->Data->LayerN-1; l++) {
+			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
+			layer_clear(&PCB->Data->Layer[l+1]);
+		}
+
+		for (l = 0; l < PCB->Data->LayerN; l++)
+			if (pcb_layer_stack[l] == old_index)
+				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (PCB->Data->LayerN - l - 1) * sizeof(pcb_layer_stack[0]));
+
+		/* remove layer from the logical layer array */
+		pcb_max_layer--;
+		for (l = 0; l < PCB->Data->LayerN; l++)
+			if (pcb_layer_stack[l] > old_index)
+				pcb_layer_stack[l]--;
+
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	}
 	else {
