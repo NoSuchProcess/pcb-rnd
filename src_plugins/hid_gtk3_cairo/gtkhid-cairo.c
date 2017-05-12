@@ -763,7 +763,8 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	//             pcb_round(vrx2), pcb_round(vry2), (start_angle + 180) * 64, delta_angle * 64);
 }
 
-static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+/** Draws a rectangle */
+static void cr_draw_rect(pcb_hid_gc_t gc, int fill, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw;
 	render_priv_t *priv = gport->render_priv;
@@ -799,8 +800,22 @@ static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 
 	USE_GC(gc);
 	cairo_rectangle(priv->cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-	cairo_stroke(priv->cr);
 	//gdk_draw_rectangle(gport->drawable, priv->u_gc, FALSE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+
+	if (fill)
+		cairo_fill(priv->cr);
+	else
+		cairo_stroke(priv->cr);
+}
+
+static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	cr_draw_rect(gc, FALSE, x1, y1,x2, y2);
+}
+
+static void ghid_cairo_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	cr_draw_rect(gc, TRUE, x1, y1,x2, y2);
 }
 
 static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
@@ -844,45 +859,6 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 			cairo_line_to(cr, _x, _y);
 	}
 	cairo_fill(cr);
-}
-
-/** TODO: Refactor with ghid_cairo_draw_rect() ? common part, fill as an extra parameter ? */
-static void ghid_cairo_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-	gint w, h, lw, xx, yy;
-	render_priv_t *priv = gport->render_priv;
-
-	if (priv->cr == NULL)
-		return;
-
-	lw = gc->width;
-	w = gport->view.canvas_width * gport->view.coord_per_px;
-	h = gport->view.canvas_height * gport->view.coord_per_px;
-
-	if ((SIDE_X(x1) < gport->view.x0 - lw && SIDE_X(x2) < gport->view.x0 - lw)
-			|| (SIDE_X(x1) > gport->view.x0 + w + lw && SIDE_X(x2) > gport->view.x0 + w + lw)
-			|| (SIDE_Y(y1) < gport->view.y0 - lw && SIDE_Y(y2) < gport->view.y0 - lw)
-			|| (SIDE_Y(y1) > gport->view.y0 + h + lw && SIDE_Y(y2) > gport->view.y0 + h + lw))
-		return;
-
-	x1 = Vx(x1);
-	y1 = Vy(y1);
-	x2 = Vx(x2);
-	y2 = Vy(y2);
-	if (x2 < x1) {
-		xx = x1;
-		x1 = x2;
-		x2 = xx;
-	}
-	if (y2 < y1) {
-		yy = y1;
-		y1 = y2;
-		y2 = yy;
-	}
-	USE_GC(gc);
-	cairo_rectangle(priv->cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-	cairo_fill(priv->cr);
-	//gdk_draw_rectangle(gport->drawable, priv->u_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 static void redraw_region(GdkRectangle * rect)
