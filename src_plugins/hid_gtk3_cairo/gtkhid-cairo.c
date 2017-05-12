@@ -1336,7 +1336,7 @@ static void ghid_cairo_screen_update(void)
 
 	//gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 	//show_crosshair(TRUE);
-  ghid_cairo_drawing_area_expose_cb(gport->drawing_area, priv->cr, gport);
+	gtk_widget_queue_draw(gport->drawing_area);
 }
 
 static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
