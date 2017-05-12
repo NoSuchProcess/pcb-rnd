@@ -264,7 +264,7 @@ static inline void ghid_cairo_draw_grid_global(void)
 		points[n].x = Vx(x);
 		n++;
 	}
-	if (n == 0)
+	if (n == 0 || n > 222)
 		return;
 	for (y = y1; y <= y2; y += grd) {
 		for (i = 0; i < n; i++) {
