@@ -674,7 +674,8 @@ static void ghid_cairo_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 	if (priv->cr == NULL)
 		return;
 
-	//gc->width = width;
+	gc->width = width;
+	cairo_set_line_width(priv->cr, Vz(gc->width));
 	//if (gc->gc)
 	//  gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
@@ -691,6 +692,7 @@ static void ghid_cairo_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 static int use_gc(pcb_hid_gc_t gc)
 {
 	render_priv_t *priv = gport->render_priv;
+	cairo_t *cr = priv->cr;
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
 
 	if (gc->me_pointer != &gtk3_cairo_hid) {
@@ -698,8 +700,13 @@ static int use_gc(pcb_hid_gc_t gc)
 		abort();
 	}
 
-	//if (!gport->pixmap)
-	//  return 0;
+	if (cr == NULL)
+		return 0;
+
+	ghid_cairo_set_color(gc, gc->colorname);
+	ghid_cairo_set_line_width(gc, gc->width);
+	ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
+
 	//if (!gc->gc) {
 	//  gc->gc = gdk_gc_new(window);
 	//  ghid_cairo_set_color(gc, gc->colorname);
