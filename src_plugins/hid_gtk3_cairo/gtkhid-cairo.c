@@ -865,6 +865,8 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 
 	USE_GC(gc);
 	vr = Vz(radius);
+	cairo_arc(priv->cr, Vx(cx), Vy(cy), vr, 0.0, 2 * M_PI);
+	cairo_fill(priv->cr);
 	//gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
