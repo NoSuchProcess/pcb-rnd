@@ -369,6 +369,10 @@ static void ghid_cairo_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 static void ghid_cairo_draw_grid(void)
 {
 	render_priv_t *priv = gport->render_priv;
+	cairo_t *cr = priv->cr;
+
+	if (cr == NULL)
+		return;
 
 	grid_local_have_old = 0;
 
@@ -388,12 +392,20 @@ static void ghid_cairo_draw_grid(void)
 	//  set_clip(priv, priv->grid_gc);
 	//}
 
+	cairo_save(cr);
+	/*FIXME: deal with gc */
+	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
+	cairo_set_line_width(cr, 1.0);
+	gdk_cairo_set_source_rgba(cr, &priv->grid_color);
+
 	if (conf_hid_gtk.plugins.hid_gtk.local_grid.enable) {
 		ghid_cairo_draw_grid_local(grid_local_old_x, grid_local_old_y);
+		cairo_restore(cr);
 		return;
 	}
 
 	ghid_cairo_draw_grid_global();
+  cairo_restore(cr);
 }
 
 /* ------------------------------------------------------------ */
