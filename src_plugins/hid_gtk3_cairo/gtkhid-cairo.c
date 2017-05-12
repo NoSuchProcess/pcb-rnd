@@ -980,6 +980,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	/* Rest the clip for bg_gc, as it is used outside this function */
 	//gdk_gc_set_clip_mask(priv->bg_gc, NULL);
+	ghid_cairo_screen_update();
 }
 
 static void ghid_cairo_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
@@ -1004,14 +1005,12 @@ static void ghid_cairo_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_co
 	rect.height = maxy - miny;
 
 	redraw_region(&rect);
-	ghid_cairo_screen_update();
 }
 
 static void ghid_cairo_invalidate_all()
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(NULL);
-		ghid_cairo_screen_update();
 	}
 }
 
