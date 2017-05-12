@@ -215,6 +215,7 @@ static void set_clip(render_priv_t * priv, cairo_t * cr)
 static inline void ghid_cairo_draw_grid_global(void)
 {
 	render_priv_t *priv = gport->render_priv;
+	cairo_t *cr = priv->cr;
 	pcb_coord_t x, y, x1, y1, x2, y2, grd;
 	int n, i;
 	static GdkPoint *points = NULL;
@@ -266,11 +267,14 @@ static inline void ghid_cairo_draw_grid_global(void)
 	if (n == 0)
 		return;
 	for (y = y1; y <= y2; y += grd) {
-		for (i = 0; i < n; i++)
+		for (i = 0; i < n; i++) {
 			points[i].y = Vy(y);
-
+			cairo_move_to(cr, points[i].x, points[i].y);
+			cairo_line_to(cr, points[i].x, points[i].y);
+		}
 		/*FIXME: problem: draw n points ... Efficiency ? */
 		//gdk_draw_points(gport->drawable, priv->grid_gc, points, n);
+
 //    cairo_move_to (cr, x, y);
 //    cairo_line_to (cr, x, y);
 //    /* repeat for each point */
@@ -283,6 +287,7 @@ static inline void ghid_cairo_draw_grid_global(void)
 //  CAIRO_LINE_CAP_ROUND and you'll get the diameter controlled by
 //  cairo_set_line_width just like you want.
 	}
+	cairo_stroke(cr);
 }
 
 static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
