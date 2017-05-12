@@ -84,7 +84,8 @@ typedef struct hid_gc_s {
 
 	const char *colorname;
 	pcb_coord_t width;
-	gint cap, join;
+	cairo_line_cap_t cap;
+	cairo_line_join_t join;
 	gchar xor_mask;
 	gint mask_seq;
 } hid_gc_s;
@@ -654,15 +655,17 @@ static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	switch (style) {
 	case Trace_Cap:
 	case Round_Cap:
-		//gc->cap = GDK_CAP_ROUND;
-		//gc->join = GDK_JOIN_ROUND;
+		gc->cap = CAIRO_LINE_CAP_ROUND;
+		gc->join = CAIRO_LINE_JOIN_ROUND;
 		break;
 	case Square_Cap:
 	case Beveled_Cap:
-		//gc->cap = GDK_CAP_PROJECTING;
-		//gc->join = GDK_JOIN_MITER;
+		gc->cap = CAIRO_LINE_CAP_SQUARE;
+		gc->join = CAIRO_LINE_JOIN_MITER;
 		break;
 	}
+	cairo_set_line_cap(priv->cr, gc->cap);
+	cairo_set_line_join(priv->cr, gc->join);
 	//if (gc->gc)
 	//  gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
