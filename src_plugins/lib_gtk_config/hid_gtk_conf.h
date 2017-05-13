@@ -21,8 +21,8 @@ typedef struct {
 			} local_grid;
 
 			const struct global_grid {
-				CFT_INTEGER min_dist_px;                  /* never try to draw a grid so dense that the disatance between grid points is smaller than this */
-				CFT_BOOLEAN sparse;                       /* enable drawing sparse grid: when zoomed out byeond min_dist_px draw every 2nd, 4th, 8th, etc. grid point; if disabled the grid is turned off when it'd get too dense */
+				CFT_INTEGER min_dist_px;                  /* never try to draw a grid so dense that the distance between grid points is smaller than this */
+				CFT_BOOLEAN sparse;                       /* enable drawing sparse grid: when zoomed out beyond min_dist_px draw every 2nd, 4th, 8th, etc. grid point; if disabled the grid is turned off when it'd get too dense */
 			} global_grid;
 
 			const struct auto_save_window_geometry {
