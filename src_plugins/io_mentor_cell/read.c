@@ -92,6 +92,7 @@ static void parse_padstack(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, 
 	pcb_flag_t flags = pcb_no_flags();
 	pcb_coord_t thickness, hole, ms, cl;
 	char *curr, *next;
+	int sqpad_pending = 0;
 
 	thickness = 0;
 	hole = 0;
@@ -113,15 +114,37 @@ static void parse_padstack(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, 
 				ltrim(curr);
 				flags = pcb_flag_add(flags, PCB_FLAG_SQUARE);
 				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+				sqpad_pending = 1;
 			}
-			if (strncmp(curr, "Oblong", 6) == 0) {
-				pcb_message(PCB_MSG_ERROR, "Ignoring oblong pin - not yet supported\n");
-				return;
+			if (strncmp(curr, "Rectangle", 9) == 0) {
+				char *hs;
+				pcb_coord_t w, h;
+				curr += 9;
+				ltrim(curr);
+				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+				hs = strchr(curr, 'x');
+				if (hs == NULL) {
+					pcb_message(PCB_MSG_ERROR, "Broken Rectangle pad: no 'x' in size\n");
+					return;
+				}
+				*hs = '\0';
+				hs++;
+				w = pcb_get_value(curr, ctx->unit, NULL, NULL);
+				h = pcb_get_value(hs, ctx->unit, NULL, NULL);
+				pcb_element_pad_new_rect(elem, px+w/2, py+h/2, px-w/2, py-h/2, cl, ms, name, name, flags);
 			}
 			else if (strncmp(curr, "Round", 5) == 0) {
 				curr += 5;
 				ltrim(curr);
 				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+			}
+			else if (strncmp(curr, "Oblong", 6) == 0) {
+				pcb_message(PCB_MSG_ERROR, "Ignoring oblong pin - not yet supported\n");
+				return;
+			}
+			else {
+				pcb_message(PCB_MSG_ERROR, "Ignoring unknown pad shape: %s\n", curr);
+				return;
 			}
 		}
 		else if (strncmp(curr, "Hole Rnd", 8) == 0) {
@@ -131,9 +154,12 @@ static void parse_padstack(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, 
 		}
 	}
 
-	if (hole > 0)
+	if (hole > 0) {
 		pcb_element_pin_new(elem, px, py, thickness, cl, ms, hole, name, name, flags);
-	else
+		sqpad_pending = 0;
+	}
+
+	if (sqpad_pending)
 		pcb_element_pad_new_rect(elem, px, py, px+thickness, py+thickness, cl, ms, name, name, flags);
 
 }
