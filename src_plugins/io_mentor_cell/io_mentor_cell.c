@@ -26,9 +26,7 @@
 #include "config.h"
 #include "plugins.h"
 #include "plug_io.h"
-#include "write.h"
 #include "read.h"
-#include "read_net.h"
 
 static pcb_plug_io_t io_mentor_cell;
 static const char *mentor_cell_cookie = "mentor_cell plugin";

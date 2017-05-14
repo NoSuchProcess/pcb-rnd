@@ -23,12 +23,21 @@
  *
  */
 
+#include "config.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "board.h"
+#include "conf_core.h"
+#include "plug_io.h"
+
 typedef struct {
 	FILE *f;
-	pcb_board_t *pcb
+	pcb_board_t *pcb;
 } hkp_ctx_t;
 
-int io_mentor_cell_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
+int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
 {
 	hkp_ctx_t ctx;
 
