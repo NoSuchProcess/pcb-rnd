@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <qparse/qparse.h>
+#include <genvector/gds_char.h>
 
 #include "board.h"
 #include "conf_core.h"
@@ -47,7 +48,7 @@ struct node_s {
 typedef struct {
 	pcb_board_t *pcb;
 	char *unit;
-	node_t *root;
+	node_t *root, *curr;
 } hkp_ctx_t;
 
 /*** High level parser ***/
@@ -207,6 +208,31 @@ static void destroy(node_t *nd)
 	free(nd);
 }
 
+/* Split up a virtual line and save it in the tree */
+void save_vline(hkp_ctx_t *ctx, char *vline, int level)
+{
+	node_t *nd;
+
+	nd = calloc(sizeof(node_t), 1);
+	nd->argc = qparse(vline, &nd->argv);
+	nd->level = level;
+
+	if (level == ctx->curr->level) { /* sibling */
+		sibling:;
+		nd->parent = ctx->curr->parent;
+		ctx->curr->next = nd;
+		nd->parent->last_child = nd;
+	}
+	else if (level == ctx->curr->level+1) { /* first child */
+		ctx->curr->first_child = ctx->curr->last_child = nd;
+		nd->parent = ctx->curr;
+	}
+	else if (level < ctx->curr->level) { /* step back to a previous level */
+		while(level < ctx->curr->level) ctx->curr = ctx->curr->parent;
+		goto sibling;
+	}
+	ctx->curr = nd;
+}
 
 int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
 {
@@ -214,8 +240,10 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	char *s, **argv;
 	int argc, res = -1;
 	FILE *f;
+	gds_t vline;
 	char line[1024];
-	node_t *curr = NULL, *nd, *last;
+	int level;
+
 
 	f = fopen(fn, "r");
 	if (f == NULL)
@@ -223,35 +251,33 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	ctx.pcb = pcb;
 	ctx.unit = "mm";
-	curr = ctx.root = calloc(sizeof(node_t), 1);
+	ctx.curr = ctx.root = calloc(sizeof(node_t), 1);
+	gds_init(&vline);
 
+	/* read physical lines, build virtual lines and save them in the tree*/
 	while(fgets(line, sizeof(line), f) != NULL) {
-		int level = 0;
 		s = line;
 		while(isspace(*s)) s++;
-		while(*s == '.') { s++; level++; };
-		if (level == 0)
-			continue;
-		nd = calloc(sizeof(node_t), 1);
-		nd->argc = qparse(s, &nd->argv);
-		nd->level = level;
 
-		if (level == curr->level) { /* sibling */
-			sibling:;
-			nd->parent = curr->parent;
-			curr->next = nd;
-			nd->parent->last_child = nd;
+		/* first char is '.' means it's a new virtual line */
+		if (*s == '.') {
+			if (gds_len(&vline) > 0) {
+				save_vline(&ctx, vline.array, level);
+				gds_truncate(&vline, 0);
+			}
+			level = 0;
+			while(*s == '.') { s++; level++; };
 		}
-		else if (level == curr->level+1) { /* first child */
-			curr->first_child = curr->last_child = nd;
-			nd->parent = curr;
-		}
-		else if (level < curr->level) { /* step back to a previous level */
-			while(level < curr->level) curr = curr->parent;
-			goto sibling;
-		}
-		curr = nd;
+
+		if (gds_len(&vline) > 0)
+			gds_append(&vline, ' ');
+		gds_append_str(&vline, s);
 	}
+
+	/* the last virtual line before eof */
+	if (gds_len(&vline) > 0)
+		save_vline(&ctx, vline.array, level);
+	gds_uninit(&vline);
 
 	/* we are loading the cells into a board, make a default layer stack for that */
 	pcb_layergrp_inhibit_inc();
@@ -261,6 +287,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	pcb_layer_auto_fixup(pcb);
 	pcb_layergrp_inhibit_dec();
 
+	/* parse the root */
 	res = parse_root(&ctx);
 
 	err:;
