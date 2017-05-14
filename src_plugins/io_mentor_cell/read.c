@@ -35,6 +35,8 @@
 #include "plug_io.h"
 #include "error.h"
 
+#define ltrim(s) while(isspace(*s)) (s)++
+
 typedef struct node_s node_t;
 
 struct node_s {
@@ -85,11 +87,61 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	return !(suc1 && suc2);
 }
 
+static void parse_padstack(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
+{
+	pcb_flag_t flags = pcb_no_flags();
+	pcb_coord_t thickness, hole, ms, cl;
+	char *curr, *next;
+
+	thickness = 0;
+	hole = 0;
+	cl = PCB_MM_TO_COORD(1);
+	ms = 0;
+
+	for(curr = ps; curr != NULL; curr = next) {
+		next = strchr(curr, ',');
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+		}
+		ltrim(curr);
+		if (strncmp(curr, "Pad", 3) == 0) {
+			curr += 4;
+			ltrim(curr);
+			if (strncmp(curr, "Square", 6) == 0) {
+				curr += 6;
+				ltrim(curr);
+				flags = pcb_flag_add(flags, PCB_FLAG_SQUARE);
+				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+			}
+			if (strncmp(curr, "Oblong", 6) == 0) {
+				pcb_message(PCB_MSG_ERROR, "Ignoring oblong pin - not yet supported\n");
+				return;
+			}
+			else if (strncmp(curr, "Round", 5) == 0) {
+				curr += 5;
+				ltrim(curr);
+				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+			}
+		}
+		else if (strncmp(curr, "Hole Rnd", 8) == 0) {
+			curr += 8;
+			ltrim(curr);
+			hole = pcb_get_value(curr, ctx->unit, NULL, NULL);
+		}
+	}
+
+	if (hole > 0)
+		pcb_element_pin_new(elem, px, py, thickness, cl, ms, hole, name, name, flags);
+	else
+		pcb_element_pad_new_rect(elem, px, py, px+thickness, py+thickness, cl, ms, name, name, flags);
+
+}
+
 static void parse_pin(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
 {
 	node_t *tmp;
-	pcb_coord_t px, py, th, cl, ms, hl;
-	pcb_flag_t flags = pcb_no_flags();
+	pcb_coord_t px, py, ms, cl;
 
 	tmp = find_nth(nd->first_child, "XY", 0);
 	if (tmp == NULL) {
@@ -97,10 +149,10 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
 		return;
 	}
 	parse_xy(ctx, tmp->argv[1], &px, &py);
-	th = PCB_MM_TO_COORD(2);
-	hl = PCB_MM_TO_COORD(1);
-	cl = ms = 0;
-	pcb_element_pin_new(elem, px, py, th, cl, ms, hl, nd->argv[1], nd->argv[1], flags);
+
+	tmp = find_nth(nd->first_child, "PADSTACK", 0);
+	if (tmp != NULL)
+		parse_padstack(ctx, elem, tmp->argv[1], px, py, nd->argv[1]);
 }
 
 static void parse_silk(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
