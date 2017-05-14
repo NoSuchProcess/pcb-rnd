@@ -54,6 +54,7 @@ include {../src_plugins/io_hyp/Plug.tmpasm}
 include {../src_plugins/io_kicad/Plug.tmpasm}
 include {../src_plugins/io_kicad_legacy/Plug.tmpasm}
 include {../src_plugins/io_lihata/Plug.tmpasm}
+include {../src_plugins/io_mentor_cell/Plug.tmpasm}
 include {../src_plugins/io_pcb/Plug.tmpasm}
 include {../src_plugins/io_tedax/Plug.tmpasm}
 include {../src_plugins/jostle/Plug.tmpasm}

@@ -1,0 +1,7 @@
+$class io
+$short Mentor Graphics cell footprints
+$long Load Mentor Graphics cell footprint library and make footprints available (e.g. for fp_board)
+$state works
+default disable
+
+autoload 1
