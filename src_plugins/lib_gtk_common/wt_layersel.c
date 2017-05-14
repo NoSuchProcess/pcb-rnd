@@ -307,8 +307,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			if (normal) {
 				pcb_layervis_change_group_vis(lsl->lid, is_on, 1);
 				ensure_visible_current(ls);
-				for(n = 0; n < lsl->lsg->grp->len; n++)
-					layersel_lyr_vis_sync(&lsl->lsg->layer[n]);
+				pcb_gtk_layersel_vis_update(ls); /* rather do a full redraw because the selection may have changed */
 			}
 
 			ls->com->invalidate_all();
