@@ -566,11 +566,49 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	conf_update(NULL); /* restore forced sets */
 }
 
+static void clip(color_struct * dest, color_struct * source)
+{
+#define CLIP(var) \
+  dest->var = source->var;	\
+  if (dest->var > 255) dest->var = 255;	\
+  if (dest->var < 0)   dest->var = 0;
+
+	CLIP(r);
+	CLIP(g);
+	CLIP(b);
+#undef CLIP
+}
+
 static void blend(color_struct * dest, float a_amount, color_struct * a, color_struct * b)
 {
 	dest->r = a->r * a_amount + b->r * (1 - a_amount);
 	dest->g = a->g * a_amount + b->g * (1 - a_amount);
 	dest->b = a->b * a_amount + b->b * (1 - a_amount);
+}
+
+static void multiply(color_struct * dest, color_struct * a, color_struct * b)
+{
+	dest->r = (a->r * b->r) / 255;
+	dest->g = (a->g * b->g) / 255;
+	dest->b = (a->b * b->b) / 255;
+}
+
+static void add(color_struct * dest, double a_amount, const color_struct * a, double b_amount, const color_struct * b)
+{
+	dest->r = a->r * a_amount + b->r * b_amount;
+	dest->g = a->g * a_amount + b->g * b_amount;
+	dest->b = a->b * a_amount + b->b * b_amount;
+
+	clip(dest, dest);
+}
+
+static void subtract(color_struct * dest, double a_amount, const color_struct * a, double b_amount, const color_struct * b)
+{
+	dest->r = a->r * a_amount - b->r * b_amount;
+	dest->g = a->g * a_amount - b->g * b_amount;
+	dest->b = a->b * a_amount - b->b * b_amount;
+
+	clip(dest, dest);
 }
 
 static void rgb(color_struct * dest, int r, int g, int b)
