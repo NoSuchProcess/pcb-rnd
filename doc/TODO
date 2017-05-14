@@ -5,7 +5,7 @@
 	- pcb_fp_sort_children() got disabled somehow - enable sorting footprints again [report: agaran]
 	- library window: allow long tags and long location text to split
 	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
-	- layer selector bug: if currently selected layer gets invisible, select another [report: miloh]
+	+ layer selector bug: if currently selected layer gets invisible, select another [report: miloh]
 	+ stat export: save user-input metadata properly [report: Alain]
 	- layer rewrite:
 		- gtk layersel bugs:
