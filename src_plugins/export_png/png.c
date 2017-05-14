@@ -399,7 +399,7 @@ In photo-realistic mode, export the solder mask as this colour. Parameter
 */
 	{"photo-mask-colour", "Colour for the exported colour mask",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, mask_colour_names, 0},
-#define HA_photo_mask_colour 15
+#define HA_photo_mask_colour 14
 
 /* %start-doc options "93 PNG Options"
 @ftable @code
@@ -413,7 +413,7 @@ of plating. Parameter @code{<colour>} can be @samp{tinned}, @samp{gold},
 */
 	{"photo-plating", "Type of plating applied to exposed copper in photo-mode",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, plating_type_names, 0},
-#define HA_photo_plating 16
+#define HA_photo_plating 15
 
 /* %start-doc options "93 PNG Options"
 @ftable @code
@@ -426,7 +426,7 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 */
 	{"photo-silk-colour", "Colour for the exported colour silk",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, silk_colour_names, 0},
-#define HA_photo_silk_colour 17
+#define HA_photo_silk_colour 16
 
 	{"ben-mode", ATTR_UNDOCUMENTED,
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
