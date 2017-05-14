@@ -884,6 +884,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		for (x = 0; x < gdImageSX(im); x++) {
 			for (y = 0; y < gdImageSY(im); y++) {
 				color_struct p, cop;
+				color_struct mask_colour;
 				int cc, mask, silk;
 				int transparent;
 
@@ -948,8 +949,9 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 				}
 				else if (mask) {
 					p = cop;
-					p.r /= 2;
-					p.b /= 2;
+					mask_colour = mask_colours[options[HA_photo_mask_colour].int_value];
+					multiply(&p, &p, &mask_colour);
+					add(&p, 1, &p, 0.2, &mask_colour);
 					if (mask == TOP_SHADOW)
 						blend(&p, 0.7, &p, &white);
 					if (mask == BOTTOM_SHADOW)
