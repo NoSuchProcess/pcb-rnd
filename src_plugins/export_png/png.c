@@ -224,6 +224,9 @@ static const color_struct silk_colours[] = {
 	{0xB9B90AFF, 185, 185, 10, 255}
 };
 
+static const color_struct silk_top_shadow = {0x151515FF, 21, 21, 21, 255};
+static const color_struct silk_bottom_shadow = {0x0E0E0EFF, 14, 14, 14, 255};
+
 pcb_hid_attribute_t png_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
@@ -939,7 +942,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		for (x = 0; x < gdImageSX(im); x++) {
 			for (y = 0; y < gdImageSY(im); y++) {
 				color_struct p, cop;
-				color_struct mask_colour;
+				color_struct mask_colour, silk_colour;
 				int cc, mask, silk;
 				int transparent;
 
@@ -1028,12 +1031,13 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 					transparent = 1;
 				}
 				else if (silk) {
+					silk_colour = silk_colours[options[HA_photo_silk_colour].int_value];
+					blend(&p, 1.0, &silk_colour, &silk_colour);
+
 					if (silk == TOP_SHADOW)
-						rgb(&p, 255, 255, 255);
+						add(&p, 1.0, &p, 1.0, &silk_top_shadow);
 					else if (silk == BOTTOM_SHADOW)
-						rgb(&p, 192, 192, 192);
-					else
-						rgb(&p, 224, 224, 224);
+						subtract(&p, 1.0, &p, 1.0, &silk_bottom_shadow);
 				}
 				else if (mask) {
 					p = cop;
