@@ -214,7 +214,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 		case 1:
 			lsg->grp->vis = !lsg->grp->vis;
 			if (lsg->grp->len > 0)
-				pcb_layervis_change_group_vis(lsg->layer[0].lid, lsg->grp->vis, 0);
+				pcb_layervis_change_group_vis(lsg->layer[0].lid, lsg->grp->vis, 1);
 			for(n = 0; n < lsg->grp->len; n++)
 				layersel_lyr_vis_sync(&lsg->layer[n]);
 			group_vis_sync(lsg);
@@ -272,7 +272,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			}
 
 			if (normal) {
-				pcb_layervis_change_group_vis(lsl->lid, is_on, 0);
+				pcb_layervis_change_group_vis(lsl->lid, is_on, 1);
 				for(n = 0; n < lsl->lsg->grp->len; n++)
 					layersel_lyr_vis_sync(&lsl->lsg->layer[n]);
 			}
