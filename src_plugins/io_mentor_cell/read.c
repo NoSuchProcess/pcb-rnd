@@ -72,12 +72,8 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	char *sy, *end;
 	pcb_bool suc1, suc2;
 
-	if (*s == '(') s++;
 	sy = strchr(s, ',');
 	if (sy == NULL)
-		return -1;
-	end = strchr(sy+1, ')');
-	if (end == NULL)
 		return -1;
 
 	*sy = '\0';
@@ -98,14 +94,14 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 	pcb_element_t *elem;
 	pcb_flag_t flags = pcb_no_flags();
 	char *desc = "", *refdes = "", *value = "";
-	node_t *n, *tt, *attr, *tmp;
+	node_t *n, *tt, *attr, *tmp, *pp;
 	pcb_coord_t tx = 0, ty = 0, px, py, th, cl, ms, hl;
 	int dir = 0;
 
 	/* extract global */
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "DESCRIPTION") == 0) desc = n->argv[1];
-		if (strcmp(n->argv[0], "TEXT") == 0) {
+		else if (strcmp(n->argv[0], "TEXT") == 0) {
 			tt = find_nth(n, "TEXT_TYPE", 0);
 			if ((tt != NULL) && (strcmp(tt->argv[2], "REF_DES") == 0)) {
 				attr = find_nth(tt, "DISPLAY_ATTR", 0);
@@ -121,7 +117,7 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb->Data, 0, 1),
 		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);
 
-	/* extract pins */
+	/* extract pins and silk lines */
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PIN") == 0) {
 			tmp = find_nth(n->first_child, "XY", 0);
@@ -135,9 +131,34 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 			cl = ms = 0;
 			pcb_element_pin_new(elem, px, py, th, cl, ms, hl, n->argv[1], n->argv[1], flags);
 		}
+		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
+			tmp = find_nth(n->first_child, "SIDE", 0);
+			if (tmp != NULL) {
+				if (strcmp(tmp->argv[1], "MNT_SIDE") != 0) {
+					pcb_message(PCB_MSG_ERROR, "Ignoring element silk line not on mount-side\n");
+					continue;
+				}
+			}
+			pp = find_nth(n->first_child, "POLYLINE_PATH", 0);
+			if (pp != NULL) {
+				pcb_coord_t px, py, x, y;
+				int n;
+				th = PCB_MM_TO_COORD(0.5);
+				tmp = find_nth(pp->first_child, "WIDTH", 0);
+				if (tmp != NULL)
+					pcb_get_value(tmp->argv[1], ctx->unit, NULL, NULL);
+				tmp = find_nth(pp->first_child, "XY", 0);
+				parse_xy(ctx, tmp->argv[1], &px, &py);
+				for(n = 2; n < tmp->argc; n++) {
+					parse_xy(ctx, tmp->argv[n], &x, &y);
+					pcb_element_line_new(elem, px, py, x, y, th);
+					px = x;
+					py = y;
+				}
+			}
+		}
 	}
 
-printf("elem=%p\n", elem);
 #if 0
 	/* extract tags */
 	for(n = nd->first_child; n != NULL; n = n->next) {
