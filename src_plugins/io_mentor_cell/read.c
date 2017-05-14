@@ -69,7 +69,7 @@ static node_t *find_nth(node_t *nd, char *name, int idx)
 /* split s and parse  it into (x,y) - modifies s */
 static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 {
-	char *sy, *end;
+	char *sy;
 	pcb_bool suc1, suc2;
 
 	sy = strchr(s, ',');
@@ -85,6 +85,54 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	return !(suc1 && suc2);
 }
 
+static void parse_pin(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
+{
+	node_t *tmp;
+	pcb_coord_t px, py, th, cl, ms, hl;
+	pcb_flag_t flags = pcb_no_flags();
+
+	tmp = find_nth(nd->first_child, "XY", 0);
+	if (tmp == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Ignoring pin with no coords\n");
+		return;
+	}
+	parse_xy(ctx, tmp->argv[1], &px, &py);
+	th = PCB_MM_TO_COORD(2);
+	hl = PCB_MM_TO_COORD(1);
+	cl = ms = 0;
+	pcb_element_pin_new(elem, px, py, th, cl, ms, hl, nd->argv[1], nd->argv[1], flags);
+}
+
+static void parse_silk(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
+{
+	node_t *tmp, *pp;
+
+	tmp = find_nth(nd->first_child, "SIDE", 0);
+	if (tmp != NULL) {
+		if (strcmp(tmp->argv[1], "MNT_SIDE") != 0) {
+			pcb_message(PCB_MSG_ERROR, "Ignoring element silk line not on mount-side\n");
+			return;
+		}
+	}
+	pp = find_nth(nd->first_child, "POLYLINE_PATH", 0);
+	if (pp != NULL) {
+		pcb_coord_t th, px, py, x, y;
+		int n;
+		th = PCB_MM_TO_COORD(0.5);
+		tmp = find_nth(pp->first_child, "WIDTH", 0);
+		if (tmp != NULL)
+			pcb_get_value(tmp->argv[1], ctx->unit, NULL, NULL);
+		tmp = find_nth(pp->first_child, "XY", 0);
+		parse_xy(ctx, tmp->argv[1], &px, &py);
+		for(n = 2; n < tmp->argc; n++) {
+			parse_xy(ctx, tmp->argv[n], &x, &y);
+			pcb_element_line_new(elem, px, py, x, y, th);
+			px = x;
+			py = y;
+		}
+	}
+}
+
 static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 {
 #if 0
@@ -94,8 +142,8 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 	pcb_element_t *elem;
 	pcb_flag_t flags = pcb_no_flags();
 	char *desc = "", *refdes = "", *value = "";
-	node_t *n, *tt, *attr, *tmp, *pp;
-	pcb_coord_t tx = 0, ty = 0, px, py, th, cl, ms, hl;
+	node_t *n, *tt, *attr, *tmp;
+	pcb_coord_t tx = 0, ty = 0;
 	int dir = 0;
 
 	/* extract global */
@@ -119,44 +167,10 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 
 	/* extract pins and silk lines */
 	for(n = nd->first_child; n != NULL; n = n->next) {
-		if (strcmp(n->argv[0], "PIN") == 0) {
-			tmp = find_nth(n->first_child, "XY", 0);
-			if (tmp == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Ignoring pin with no coords\n");
-				continue;
-			}
-			parse_xy(ctx, tmp->argv[1], &px, &py);
-			th = PCB_MM_TO_COORD(2);
-			hl = PCB_MM_TO_COORD(1);
-			cl = ms = 0;
-			pcb_element_pin_new(elem, px, py, th, cl, ms, hl, n->argv[1], n->argv[1], flags);
-		}
-		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
-			tmp = find_nth(n->first_child, "SIDE", 0);
-			if (tmp != NULL) {
-				if (strcmp(tmp->argv[1], "MNT_SIDE") != 0) {
-					pcb_message(PCB_MSG_ERROR, "Ignoring element silk line not on mount-side\n");
-					continue;
-				}
-			}
-			pp = find_nth(n->first_child, "POLYLINE_PATH", 0);
-			if (pp != NULL) {
-				pcb_coord_t px, py, x, y;
-				int n;
-				th = PCB_MM_TO_COORD(0.5);
-				tmp = find_nth(pp->first_child, "WIDTH", 0);
-				if (tmp != NULL)
-					pcb_get_value(tmp->argv[1], ctx->unit, NULL, NULL);
-				tmp = find_nth(pp->first_child, "XY", 0);
-				parse_xy(ctx, tmp->argv[1], &px, &py);
-				for(n = 2; n < tmp->argc; n++) {
-					parse_xy(ctx, tmp->argv[n], &x, &y);
-					pcb_element_line_new(elem, px, py, x, y, th);
-					px = x;
-					py = y;
-				}
-			}
-		}
+		if (strcmp(n->argv[0], "PIN") == 0)
+			parse_pin(ctx, elem, n);
+		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0)
+			parse_silk(ctx, elem, n);
 	}
 
 #if 0
