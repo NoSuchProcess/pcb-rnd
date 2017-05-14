@@ -50,6 +50,132 @@ typedef struct {
 	node_t *root;
 } hkp_ctx_t;
 
+/*** High level parser ***/
+
+/* Return the idxth sibling with matching name */
+static node_t *find_nth(node_t *nd, char *name, int idx)
+{
+	for(; nd != NULL; nd = nd->next) {
+		if (strcmp(nd->argv[0], name) == 0) {
+			if (idx == 0)
+				return nd;
+			idx--;
+		}
+	}
+	return NULL;
+}
+
+/* split s and parse  it into (x,y) - modifies s */
+static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
+{
+	char *sy, *end;
+	pcb_bool suc1, suc2;
+
+	if (*s == '(') s++;
+	sy = strchr(s, ',');
+	if (sy == NULL)
+		return -1;
+	end = strchr(sy+1, ')');
+	if (end == NULL)
+		return -1;
+
+	*sy = '\0';
+	sy++;
+
+	*x = pcb_get_value(s, ctx->unit, NULL, &suc1);
+	*y = pcb_get_value(sy, ctx->unit, NULL, &suc2);
+
+	return !(suc1 && suc2);
+}
+
+static void parse_package(hkp_ctx_t *ctx, node_t *nd)
+{
+#if 0
+	static const char *tagnames[] = { "PACKAGE_GROUP", "MOUNT_TYPE", "NUMBER_LAYERS", "TIMESTAMP", NULL };
+	const char **t;
+#endif
+	pcb_element_t *elem;
+	pcb_flag_t flags = pcb_no_flags();
+	char *desc = "", *refdes = "", *value = "";
+	node_t *n, *tt, *attr, *tmp;
+	pcb_coord_t tx = 0, ty = 0, px, py, th, cl, ms, hl;
+	int dir = 0;
+
+	/* extract global */
+	for(n = nd->first_child; n != NULL; n = n->next) {
+		if (strcmp(n->argv[0], "DESCRIPTION") == 0) desc = n->argv[1];
+		if (strcmp(n->argv[0], "TEXT") == 0) {
+			tt = find_nth(n, "TEXT_TYPE", 0);
+			if ((tt != NULL) && (strcmp(tt->argv[2], "REF_DES") == 0)) {
+				attr = find_nth(tt, "DISPLAY_ATTR", 0);
+				if (attr != NULL) {
+					tmp = find_nth(attr, "XY", 0);
+					if (tmp != NULL)
+						parse_xy(ctx, tmp->argv[1], &tx, &ty);
+				}
+			}
+		}
+	}
+
+	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb->Data, 0, 1),
+		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);
+
+	/* extract pins */
+	for(n = nd->first_child; n != NULL; n = n->next) {
+		if (strcmp(n->argv[0], "PIN") == 0) {
+			tmp = find_nth(n->first_child, "XY", 0);
+			if (tmp == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Ignoring pin with no coords\n");
+				continue;
+			}
+			parse_xy(ctx, tmp->argv[1], &px, &py);
+			th = PCB_MM_TO_COORD(2);
+			hl = PCB_MM_TO_COORD(1);
+			cl = ms = 0;
+			pcb_element_pin_new(elem, px, py, th, cl, ms, hl, n->argv[1], n->argv[1], flags);
+		}
+	}
+
+printf("elem=%p\n", elem);
+#if 0
+	/* extract tags */
+	for(n = nd->first_child; n != NULL; n = n->next) {
+		for(t = tagnames; *t != NULL; t++) {
+			if (strcmp(n->argv[0], *t) == 0) {
+/*				printf("TAG %s=%s\n", *t, n->argv[1]); */
+			}
+		}
+	}
+#endif
+}
+
+static int parse_root(hkp_ctx_t *ctx)
+{
+	node_t *n;
+
+	/* extract globals */
+	for(n = ctx->root->first_child; n != NULL; n = n->next) {
+		if (strcmp(n->argv[0], "UNITS") == 0) {
+			if (strcmp(n->argv[1], "MIL") == 0) ctx->unit = "mil";
+			else if (strcmp(n->argv[1], "MM") == 0) ctx->unit = "mm";
+			else {
+				pcb_message(PCB_MSG_ERROR, "Unkown unit '%s'\n", n->argv[1]);
+				return -1;
+			}
+		}
+	}
+
+	/* build packages */
+	for(n = ctx->root->first_child; n != NULL; n = n->next)
+		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
+			parse_package(ctx, n);
+
+	return 0;
+}
+
+
+/*** Low level parser ***/
+
 static void dump(node_t *nd)
 {
 	int n;
@@ -86,7 +212,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 {
 	hkp_ctx_t ctx;
 	char *s, **argv;
-	int argc;
+	int argc, res = -1;
 	FILE *f;
 	char line[1024];
 	node_t *curr = NULL, *nd, *last;
@@ -127,12 +253,21 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 		curr = nd;
 	}
 
+	/* we are loading the cells into a board, make a default layer stack for that */
+	pcb_layergrp_inhibit_inc();
+	pcb_layers_reset();
+	pcb_layer_group_setup_default(&pcb->LayerGroups);
+	pcb_layer_group_setup_silks(&pcb->LayerGroups);
+	pcb_layer_auto_fixup(pcb);
+	pcb_layergrp_inhibit_dec();
+
+	res = parse_root(&ctx);
 
 	err:;
 	dump(ctx.root);
 	destroy(ctx.root);
 	fclose(f);
-	return -1;
+	return res;
 }
 
 int io_mentor_cell_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
