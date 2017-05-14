@@ -237,12 +237,26 @@ pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path)
 	return parent;
 }
 
+static int fp_sort_cb(const void *a, const void *b)
+{
+	const pcb_fplibrary_t *fa = a, *fb = b;
+	int res = strcmp(fa->name, fb->name);
+	return res == 0 ? 1 : res;
+}
+
 void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 {
-/*	int i;
-	qsort(lib->Menu, lib->MenuN, sizeof(lib->Menu[0]), netlist_sort);
-	for (i = 0; i < lib->MenuN; i++)
-		qsort(lib->Menu[i].Entry, lib->Menu[i].EntryN, sizeof(lib->Menu[i].Entry[0]), netnode_sort);*/
+	vtlib_t *v;
+	int n;
+
+	if (parent->type != LIB_DIR)
+		return;
+
+	v = &parent->data.dir.children;
+	qsort(v->array, vtlib_len(v), sizeof(pcb_fplibrary_t), fp_sort_cb);
+
+	for (n = 0; n < vtlib_len(v); n++)
+		pcb_fp_sort_children(&v->array[n]);
 }
 
 void fp_free_entry(pcb_fplibrary_t *l)
