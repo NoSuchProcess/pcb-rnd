@@ -166,6 +166,36 @@ static const char *filetypes[] = {
 	NULL
 };
 
+static const char *mask_colour_names[] = {
+	"green",
+	"red",
+	"blue",
+	"purple",
+	"black",
+	"white",
+	NULL
+};
+
+/*  These values were arrived at through trial and error.
+    One potential improvement (especially for white) is
+    to use separate color_structs for the multiplication
+    and addition parts of the mask math.
+ */
+static const color_struct mask_colours[] = {
+#define MASK_COLOUR_GREEN 0
+	{0x3CA03CFF, 60, 160, 60, 255},
+#define MASK_COLOUR_RED 1
+	{0x8C1919FF, 140, 25, 25, 255},
+#define MASK_COLOUR_BLUE 2
+	{0x3232A0FF, 50, 50, 160, 255},
+#define MASK_COLOUR_PURPLE 3
+	{0x3C1446FF, 60, 20, 70, 255},
+#define MASK_COLOUR_BLACK 4
+	{0x141414FF, 20, 20, 20, 255},
+#define MASK_COLOUR_WHITE 5
+	{0xA7E6A2FF, 167, 230, 162, 255}	/* <-- needs improvement over FR4 */
+};
+
 pcb_hid_attribute_t png_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
@@ -326,6 +356,19 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
 	{"photo-flip-y", "Show reverse side of the board, up-down flip",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_flip_y 13
+
+/* %start-doc options "93 PNG Options"
+@ftable @code
+@cindex photo-mask-colour
+@item --photo-mask-colour <colour>
+In photo-realistic mode, export the solder mask as this colour. Parameter
+@code{<colour>} can be @samp{green}, @samp{red}, @samp{blue}, or @samp{purple}.
+@end ftable
+%end-doc
+*/
+	{"photo-mask-colour", "Colour for the exported colour mask",
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, mask_colour_names, 0},
+#define HA_photo_mask_colour 15
 
 	{"ben-mode", ATTR_UNDOCUMENTED,
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
