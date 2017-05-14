@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "qparse.h"
 
 typedef enum qp_state_e {
@@ -108,6 +109,8 @@ int qparse2(const char *input, char **argv_ret[], flags_t flg)
 					case '\t':
 					case '\n':
 					case '\r':
+						if (flg & QPARSE_MULTISEP)
+							while(isspace(s[1])) s++;
 						qnext();
 						break;
 					default:
