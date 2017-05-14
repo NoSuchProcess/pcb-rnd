@@ -1360,7 +1360,7 @@ static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 		int fg = gdImageColorResolve(im, gc->color->r, gc->color->g,
 																 gc->color->b), w = gc->width, dx = x2 - x1, dy = y2 - y1, dwx, dwy;
 		gdPoint p[4];
-		double l = sqrt(dx * dx + dy * dy) * 2;
+		double l = sqrt((double)dx * (double)dx + (double)dy * (double)dy) * 2.0;
 
 		w += 2 * bloat;
 		dwx = -w / l * dy;
