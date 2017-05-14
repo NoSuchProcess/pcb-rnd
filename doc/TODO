@@ -3,7 +3,7 @@
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- cross section on export should draw with double font, but should print file names
 	- library window: allow long tags and long location text to split
-	- png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
+	+ png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	+ layer selector bug: if currently selected layer gets invisible, select another [report: miloh]
 	+ stat export: save user-input metadata properly [report: Alain]
 	- layer rewrite:
