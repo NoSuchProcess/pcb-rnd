@@ -650,7 +650,6 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																 "homogeneous", FALSE, "spacing", 5, NULL));
 
 	child_model = create_lib_tree_model(library_window);
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(child_model), MENU_NAME_COLUMN, GTK_SORT_ASCENDING);
 	model = (GtkTreeModel *) g_object_new(GTK_TYPE_TREE_MODEL_FILTER, "child-model", child_model, "virtual-root", NULL, NULL);
 
 	scrolled_win = GTK_WIDGET(g_object_new(GTK_TYPE_SCROLLED_WINDOW,
