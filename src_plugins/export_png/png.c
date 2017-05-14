@@ -1246,7 +1246,7 @@ static void png_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static mask_op = 0;
+static int mask_op = 0;
 static void png_use_mask(pcb_mask_op_t use_it)
 {
 	if (photo_mode)
