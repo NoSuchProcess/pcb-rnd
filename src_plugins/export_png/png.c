@@ -940,13 +940,46 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 					if (mask)
 						rgb(&cop, 220, 145, 230);
 					else {
-						rgb(&cop, 140, 150, 160);
 
-						r = (pcb_rand() % 5 - 2) * 2;
-						cop.r += r;
-						cop.g += r;
-						cop.b += r;
+						if (options[HA_photo_plating].int_value == PLATING_GOLD) {
+							/* ENIG */
+							rgb(&cop, 185, 146, 52);
 
+							/* increase top shadow to increase shininess */
+							if (cc == TOP_SHADOW)
+								blend(&cop, 0.7, &cop, &white);
+						}
+						else if (options[HA_photo_plating].int_value == PLATING_TIN) {
+							/* tinned */
+							rgb(&cop, 140, 150, 160);
+
+							/* add some variation to make it look more matte */
+							r = (rand() % 5 - 2) * 2;
+							cop.r += r;
+							cop.g += r;
+							cop.b += r;
+						}
+						else if (options[HA_photo_plating].int_value == PLATING_SILVER) {
+							/* silver */
+							rgb(&cop, 192, 192, 185);
+
+							/* increase top shadow to increase shininess */
+							if (cc == TOP_SHADOW)
+								blend(&cop, 0.7, &cop, &white);
+						}
+						else if (options[HA_photo_plating].int_value == PLATING_COPPER) {
+							/* copper */
+							rgb(&cop, 184, 115, 51);
+
+							/* increase top shadow to increase shininess */
+							if (cc == TOP_SHADOW)
+								blend(&cop, 0.7, &cop, &white);
+						}
+						/*FIXME: old code...can be removed after validation.   rgb(&cop, 140, 150, 160);
+						   r = (pcb_rand() % 5 - 2) * 2;
+						   cop.r += r;
+						   cop.g += r;
+						   cop.b += r; */
 					}
 
 					if (cc == TOP_SHADOW) {
