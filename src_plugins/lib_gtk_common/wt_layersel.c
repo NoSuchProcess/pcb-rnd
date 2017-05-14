@@ -161,6 +161,38 @@ static void group_vis_sync(pcb_gtk_ls_grp_t *lsg)
 	}
 }
 
+/* Select the first visible layer (physically) below the one turned off or
+   reenable the original if all are off; this how we ensure the CURRENT layer
+   is visible and avoid drawing on inivisible layers */
+static void ensure_visible_current(pcb_gtk_layersel_t *ls)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layer_t *l;
+
+	if (CURRENT->On)
+		return;
+
+	/* look for the next one to enable, group-vise */
+	for(gid = CURRENT->grp + 1; gid != CURRENT->grp; gid++) {
+		pcb_layer_group_t *g;
+		if (gid >= pcb_max_group(PCB))
+			gid = 0;
+		g = &PCB->LayerGroups.grp[gid];
+		if (g->len < 1)
+			continue;
+		l = PCB->Data->Layer + g->lid[0];
+		if (l->On)
+			goto change_selection;
+	}
+
+	/* fallback: all off; turn the current one back on */
+	l = CURRENT;
+
+	change_selection:;
+		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, l), 1, 1);
+		ls->com->invalidate_all();
+		pcb_gtk_layersel_vis_update(ls);
+}
 
 /*** Event handling ***/
 
@@ -215,6 +247,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			lsg->grp->vis = !lsg->grp->vis;
 			if (lsg->grp->len > 0)
 				pcb_layervis_change_group_vis(lsg->layer[0].lid, lsg->grp->vis, 1);
+			ensure_visible_current(ls);
 			for(n = 0; n < lsg->grp->len; n++)
 				layersel_lyr_vis_sync(&lsg->layer[n]);
 			group_vis_sync(lsg);
@@ -273,6 +306,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 
 			if (normal) {
 				pcb_layervis_change_group_vis(lsl->lid, is_on, 1);
+				ensure_visible_current(ls);
 				for(n = 0; n < lsl->lsg->grp->len; n++)
 					layersel_lyr_vis_sync(&lsl->lsg->layer[n]);
 			}
