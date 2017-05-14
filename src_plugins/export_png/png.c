@@ -208,6 +208,22 @@ static const char *plating_type_names[] = {
 	NULL
 };
 
+static const char *silk_colour_names[] = {
+	"white",
+	"black",
+	"yellow",
+	NULL
+};
+
+static const color_struct silk_colours[] = {
+#define SILK_COLOUR_WHITE 0
+	{0xE0E0E0FF, 224, 224, 224, 255},
+#define SILK_COLOUR_BLACK 1
+	{0x0E0E0EFF, 14, 14, 14, 255},
+#define SILK_COLOUR_YELLOW 2
+	{0xB9B90AFF, 185, 185, 10, 255}
+};
+
 pcb_hid_attribute_t png_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
@@ -395,6 +411,19 @@ of plating. Parameter @code{<colour>} can be @samp{tinned}, @samp{gold},
 	{"photo-plating", "Type of plating applied to exposed copper in photo-mode",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, plating_type_names, 0},
 #define HA_photo_plating 16
+
+/* %start-doc options "93 PNG Options"
+@ftable @code
+@cindex photo-silk-colour
+@item --photo-silk-colour
+In photo-realistic mode, export the silk screen as this colour. Parameter
+@code{<colour>} can be @samp{white}, @samp{black}, or @samp{yellow}.
+@end ftable
+%end-doc
+*/
+	{"photo-silk-colour", "Colour for the exported colour mask",
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, silk_colour_names, 0},
+#define HA_photo_silk_colour 17
 
 	{"ben-mode", ATTR_UNDOCUMENTED,
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
