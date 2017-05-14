@@ -214,7 +214,7 @@ void save_vline(hkp_ctx_t *ctx, char *vline, int level)
 	node_t *nd;
 
 	nd = calloc(sizeof(node_t), 1);
-	nd->argc = qparse(vline, &nd->argv);
+	nd->argc = qparse2(vline, &nd->argv, QPARSE_DOUBLE_QUOTE | QPARSE_MULTISEP);
 	nd->level = level;
 
 	if (level == ctx->curr->level) { /* sibling */
