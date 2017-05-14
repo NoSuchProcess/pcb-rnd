@@ -25,7 +25,8 @@
 typedef enum qp_state_e {
 	qp_normal,
 	qp_dquote,
-	qp_squote
+	qp_squote,
+	qp_paren
 } qp_state_t;
 
 #define qpush(chr) \
@@ -105,6 +106,12 @@ int qparse2(const char *input, char **argv_ret[], flags_t flg)
 						else
 							qpush(*s);
 						break;
+					case '(':
+						if (flg & QPARSE_PAREN)
+							state = qp_paren;
+						else
+							qpush(*s);
+						break;
 					case ' ':
 					case '\t':
 					case '\n':
@@ -147,6 +154,21 @@ int qparse2(const char *input, char **argv_ret[], flags_t flg)
 						qpush(*s);
 				}
 				/* End of qp_dquote */
+				break;
+
+			case qp_paren:
+				switch (*s) {
+					case '\\':
+						s++;
+						qbackslash(*s);
+						break;
+					case ')':
+						state = qp_normal;
+						break;
+					default:
+						qpush(*s);
+				}
+				/* End of qp_paren */
 				break;
 		}
 	}
