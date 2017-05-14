@@ -214,7 +214,7 @@ void save_vline(hkp_ctx_t *ctx, char *vline, int level)
 	node_t *nd;
 
 	nd = calloc(sizeof(node_t), 1);
-	nd->argc = qparse2(vline, &nd->argv, QPARSE_DOUBLE_QUOTE | QPARSE_MULTISEP);
+	nd->argc = qparse2(vline, &nd->argv, QPARSE_DOUBLE_QUOTE | QPARSE_PAREN | QPARSE_MULTISEP);
 	nd->level = level;
 
 	if (level == ctx->curr->level) { /* sibling */
@@ -232,6 +232,13 @@ void save_vline(hkp_ctx_t *ctx, char *vline, int level)
 		goto sibling;
 	}
 	ctx->curr = nd;
+}
+
+static void rtrim(gds_t *s)
+{
+	int n;
+	for(n = gds_len(s)-1; (n >= 0) && isspace(s->array[n]); n--)
+		s->array[n] = '\0';
 }
 
 int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
@@ -262,6 +269,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 		/* first char is '.' means it's a new virtual line */
 		if (*s == '.') {
 			if (gds_len(&vline) > 0) {
+				rtrim(&vline);
 				save_vline(&ctx, vline.array, level);
 				gds_truncate(&vline, 0);
 			}
@@ -275,8 +283,10 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	}
 
 	/* the last virtual line before eof */
-	if (gds_len(&vline) > 0)
+	if (gds_len(&vline) > 0) {
+		rtrim(&vline);
 		save_vline(&ctx, vline.array, level);
+	}
 	gds_uninit(&vline);
 
 	/* we are loading the cells into a board, make a default layer stack for that */
