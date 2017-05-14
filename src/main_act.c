@@ -80,8 +80,8 @@ static int help0(void)
 	int i;
 
 	u("pcb-rnd Printed Circuit Board editing program, http://repo.hu/projects/pcb-rnd");
-	u("For more information, please read the topic help pages:", Progname);
-	u("  %s --help topic");
+	u("For more information, please read the topic help pages:");
+	u("  %s --help topic", Progname);
 	u("Topics are:");
 	u("  invocation           how to run pcb-rnd");
 	u("  main                 main/misc flags (affecting none or all plugins)");
