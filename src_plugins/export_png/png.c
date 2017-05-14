@@ -424,7 +424,7 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 @end ftable
 %end-doc
 */
-	{"photo-silk-colour", "Colour for the exported colour mask",
+	{"photo-silk-colour", "Colour for the exported colour silk",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, silk_colour_names, 0},
 #define HA_photo_silk_colour 17
 
