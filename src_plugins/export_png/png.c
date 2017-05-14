@@ -196,6 +196,18 @@ static const color_struct mask_colours[] = {
 	{0xA7E6A2FF, 167, 230, 162, 255}	/* <-- needs improvement over FR4 */
 };
 
+static const char *plating_type_names[] = {
+#define PLATING_TIN 0
+	"tinned",
+#define PLATING_GOLD 1
+	"gold",
+#define PLATING_SILVER 2
+	"silver",
+#define PLATING_COPPER 3
+	"copper",
+	NULL
+};
+
 pcb_hid_attribute_t png_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
@@ -369,6 +381,20 @@ In photo-realistic mode, export the solder mask as this colour. Parameter
 	{"photo-mask-colour", "Colour for the exported colour mask",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, mask_colour_names, 0},
 #define HA_photo_mask_colour 15
+
+/* %start-doc options "93 PNG Options"
+@ftable @code
+@cindex photo-plating
+@item --photo-plating
+In photo-realistic mode, export the exposed copper as though it has this type
+of plating. Parameter @code{<colour>} can be @samp{tinned}, @samp{gold},
+@samp{silver}, or @samp{copper}.
+@end ftable
+%end-doc
+*/
+	{"photo-plating", "Type of plating applied to exposed copper in photo-mode",
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, plating_type_names, 0},
+#define HA_photo_plating 16
 
 	{"ben-mode", ATTR_UNDOCUMENTED,
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
