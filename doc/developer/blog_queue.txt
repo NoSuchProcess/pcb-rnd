@@ -1,4 +1,5 @@
 Ready to blog:
+- fp_board
 - bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
 
 less urgent, almost finished:
