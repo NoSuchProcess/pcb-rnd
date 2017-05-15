@@ -1,3 +1,4 @@
+8912	configure	fp_board enabled by default; new plugin for mentor cell footprints
 8817	configure	fp_board: new plugin
 8774	configure	layer: all-hid common library plugin for the layer menus
 8748	configure	core: new pcb_bool source file

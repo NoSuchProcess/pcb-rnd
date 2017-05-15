@@ -2,5 +2,5 @@ $class fp
 $short footprint library from boards
 $long Footprint: load a board and expose all the unique elements on that board as a footprint library
 $state WIP
-default disable
+default buildin
 autoload 1
