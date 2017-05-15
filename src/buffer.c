@@ -222,7 +222,8 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 
 	/* release unused memory */
 	pcb_board_remove(newPCB);
-	Buffer->Data->pcb = pcb;
+	if (Buffer->Data != NULL)
+		Buffer->Data->pcb = pcb;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 	return (pcb_false);
 }
