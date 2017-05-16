@@ -38,6 +38,7 @@
 #include "data.h"
 #include "conf_core.h"
 #include "buffer.h"
+#include "draw.h"
 
 #include "bu_box.h"
 #include "wt_preview.h"

@@ -29,6 +29,7 @@
 #include "write.h"
 #include "read.h"
 #include "read_net.h"
+#include "hid_actions.h"
 
 static pcb_plug_io_t io_kicad;
 static const char *kicad_cookie = "kicad plugin";

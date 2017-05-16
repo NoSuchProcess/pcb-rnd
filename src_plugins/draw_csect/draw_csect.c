@@ -32,6 +32,7 @@
 #include "compat_misc.h"
 #include "hid_actions.h"
 #include "event.h"
+#include "layer_vis.h"
 
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
