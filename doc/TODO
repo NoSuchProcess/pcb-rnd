@@ -3,7 +3,6 @@
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- cross section on export should draw with double font, but should print file names
 	- library window: allow long tags and long location text to split
-	+ png export: rotated square pad bug, see RTT/padrot.pcb [report: Larry]
 	- layer rewrite:
 		- gtk layersel bugs:
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
