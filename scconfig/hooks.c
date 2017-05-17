@@ -789,6 +789,7 @@ int hook_generate()
 	logprintf(0, "scconfig generate version info: version='%s' rev='%s'\n", version, rev);
 	put("/local/revision", rev);
 	put("/local/version",  version);
+	put("/local/pup/sccbox", "../../scconfig/sccbox");
 
 	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
