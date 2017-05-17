@@ -40,6 +40,10 @@ void gtk2_gl_parse_arguments(int *argc, char ***argv)
 static void warn_composite(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int lid;
+
+	if (pcb_gui != &gtk2_gl_hid)
+		return;
+
 	for(lid = 0; lid < pcb_max_layer; lid++) {
 		if (pcb_layer_flags(PCB, lid) & (PCB_LYT_MASK | PCB_LYT_PASTE))
 			goto warn;
