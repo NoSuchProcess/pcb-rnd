@@ -1403,6 +1403,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		else if (strncmp(argv[n], "name=", 5) == 0) {
 			interactive = 0;
 			ret |= pcb_layer_rename_(ly, pcb_strdup(argv[n]+5));
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(argv[n], "auto=", 5) == 0) {
 			interactive = 0;
@@ -1410,6 +1411,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				ly->comb |= PCB_LYC_AUTO;
 			else
 				ly->comb &= ~PCB_LYC_AUTO;
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(argv[n], "sub=", 4) == 0) {
 			interactive = 0;
@@ -1417,6 +1419,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				ly->comb |= PCB_LYC_SUB;
 			else
 				ly->comb &= ~PCB_LYC_SUB;
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(argv[n], "attrib", 6) == 0) {
 			char *key, *val;
@@ -1439,6 +1442,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			else
 				ret |= pcb_attribute_put(&ly->Attributes, key, val, 1);
 			free(key);
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid EditLayer() command: %s\n", argv[n]);
@@ -1462,11 +1466,17 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		ar = pcb_gui->attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "edit layer properies", "Edit the properties of a logical layer");
 
 		if (ar == 0) {
-			if (strcmp(ly->Name, attr[0].default_val.str_value) != 0)
+			pcb_layer_combining_t comb = 0;
+			if (strcmp(ly->Name, attr[0].default_val.str_value) != 0) {
 				ret |= pcb_layer_rename_(ly, pcb_strdup(argv[n]+5));
-			ly->comb = 0;
-			if (attr[1].default_val.int_value) ly->comb |= PCB_LYC_SUB;
-			if (attr[2].default_val.int_value) ly->comb |= PCB_LYC_AUTO;
+				pcb_board_set_changed_flag(pcb_true);
+			}
+			if (attr[1].default_val.int_value) comb |= PCB_LYC_SUB;
+			if (attr[2].default_val.int_value) comb |= PCB_LYC_AUTO;
+			if (ly->comb != comb) {
+				ly->comb = comb;
+				pcb_board_set_changed_flag(pcb_true);
+			}
 		}
 
 		ret |= ar;
