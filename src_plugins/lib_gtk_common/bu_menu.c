@@ -119,21 +119,8 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 	/* Resolve menu name */
 	tmp_val = sub_res->name;
 
-	/* Hack '_' in based on mnemonic value */
-	if ((!mnemonic) || (is_main))
-		menu_label = g_strdup(tmp_val);
-	else {
-		char *post_ = strchr(tmp_val, mnemonic);
-		if (post_ == NULL)
-			menu_label = g_strdup(tmp_val);
-		else {
-			GString *tmp = g_string_new("");
-			g_string_append_len(tmp, tmp_val, post_ - tmp_val);
-			g_string_append_c(tmp, '_');
-			g_string_append(tmp, post_);
-			menu_label = g_string_free(tmp, FALSE);
-		}
-	}
+
+	menu_label = g_strdup(tmp_val);
 
 	if (pcb_hid_cfg_has_submenus(sub_res)) {
 		/* SUBMENU */
