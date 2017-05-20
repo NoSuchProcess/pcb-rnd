@@ -559,6 +559,13 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	}
 }
 
+static void WriteLayers(FILE *FP, pcb_data_t *data)
+{
+	int i;
+	for (i = 0; i < pcb_max_layer; i++)
+		WriteLayerData(FP, i, &(data->Layer[i]));
+}
+
 /* ---------------------------------------------------------------------------
  * writes the buffer to file
  */
@@ -569,8 +576,7 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WriteViaData(FP, buff->Data);
 	io_pcb_WriteElementData(ctx, FP, buff->Data);
-	for (i = 0; i < pcb_max_layer; i++)
-		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
+	WriteLayers(FP, buff->Data);
 	return (0);
 }
 
@@ -591,6 +597,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WriteViaData(FP, PCB->Data);
 	io_pcb_WriteElementData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
+	WriteLayers(FP, PCB->Data);
 	for (i = 0; i < pcb_max_layer; i++)
 		WriteLayerData(FP, i, &(PCB->Data->Layer[i]));
 	WritePCBNetlistData(FP);
