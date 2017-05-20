@@ -1,8 +1,6 @@
 - BUGS for the next release:
-	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
-	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- cross section on export should draw with double font, but should print file names
-	- library window: allow long tags and long location text to split
+	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
 	- layer rewrite:
 		- gtk layersel bugs:
 			- png export: check mask/paste drawing, make new options? mask on in photo more?
@@ -13,9 +11,6 @@
 			- review, make it default
 			- document versions and differences
 
-- fontsel:
-	- replace font in slot (even in default)
-	- ttf import?
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -43,6 +38,13 @@
 		- regex and string cmp match speed vs. select by name
 
 AFTER THE NEXT RELEASE:
+- BUGS:
+	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
+	- library window: allow long tags and long location text to split
+- fontsel:
+	- replace font in slot (even in default)
+	- ttf import?
+
 - cleanup: revise strftime() calls, especially in exporters:
 	- make a config.h format string, don't depend on %c
 	- make the format more ISO-like
