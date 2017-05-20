@@ -559,6 +559,23 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	}
 }
 
+static void LayersFixup(void)
+{
+	pcb_layer_id_t bs, ts;
+
+	/* the PCB format requires 2 silk layers to be the last; swap layers to make that so */
+	bs = pcb_layer_get_bottom_silk();
+	ts = pcb_layer_get_top_silk();
+	if (bs != pcb_max_layer - 2)
+		pcb_layer_swap(bs, pcb_max_layer - 2);
+
+	bs = pcb_layer_get_bottom_silk();
+	ts = pcb_layer_get_top_silk();
+
+	if (ts != pcb_max_layer - 1)
+		pcb_layer_swap(ts, pcb_max_layer - 1);
+}
+
 static void WriteLayers(FILE *FP, pcb_data_t *data)
 {
 	int i;
@@ -572,6 +589,8 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
 	pcb_cardinal_t i;
+
+	LayersFixup();
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WriteViaData(FP, buff->Data);
@@ -588,6 +607,8 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	pcb_cardinal_t i;
 
 	pcb_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description, 1);
+
+	LayersFixup();
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WritePCBInfoHeader(FP);
