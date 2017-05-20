@@ -1515,6 +1515,7 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		else if (strncmp(argv[n], "name=", 5) == 0) {
 			interactive = 0;
 			ret |= pcb_layergrp_rename_(g, pcb_strdup(argv[n]+5));
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(argv[n], "type=", 5) == 0) {
 			const char *sbit = argv[n]+5;
@@ -1532,6 +1533,7 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				case '-': g->type &= ~bit; break;
 			}
 			interactive = 0;
+			pcb_board_set_changed_flag(pcb_true);
 		}
 #if 0
 		else if (strncmp(argv[n], "attrib", 6) == 0) {
@@ -1578,6 +1580,7 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (strcmp(g->name, attr[0].default_val.str_value) != 0) {
 				ret |= pcb_layergrp_rename_(g, (char *)attr[0].default_val.str_value);
 				attr[0].default_val.str_value = NULL;
+				pcb_board_set_changed_flag(pcb_true);
 			}
 		}
 
