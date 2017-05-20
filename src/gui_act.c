@@ -1459,7 +1459,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			{"auto: auto-generated layer", NULL,    PCB_HATT_BOOL, 0, 0, {0}, NULL, NULL, 0, NULL, NULL}
 		};
 
-		attr[0].default_val.str_value = ly->Name;
+		attr[0].default_val.str_value = pcb_strdup(ly->Name);
 		attr[1].default_val.int_value = ly->comb & PCB_LYC_SUB;
 		attr[2].default_val.int_value = ly->comb & PCB_LYC_AUTO;
 
@@ -1468,7 +1468,8 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		if (ar == 0) {
 			pcb_layer_combining_t comb = 0;
 			if (strcmp(ly->Name, attr[0].default_val.str_value) != 0) {
-				ret |= pcb_layer_rename_(ly, pcb_strdup(argv[n]+5));
+				ret |= pcb_layer_rename_(ly, (char *)attr[0].default_val.str_value);
+				attr[0].default_val.str_value = NULL;
 				pcb_board_set_changed_flag(pcb_true);
 			}
 			if (attr[1].default_val.int_value) comb |= PCB_LYC_SUB;
@@ -1478,7 +1479,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_board_set_changed_flag(pcb_true);
 			}
 		}
-
+		free((char *)attr[0].default_val.str_value);
 		ret |= ar;
 	}
 
@@ -1569,14 +1570,18 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			{"name", "logical layer name",          PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
 		};
 
-		attr[0].default_val.str_value = g->name;
+		attr[0].default_val.str_value = pcb_strdup(g->name);
 
 		ar = pcb_gui->attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "edit layer properies", "Edit the properties of a logical layer");
 
 		if (ar == 0) {
-			if (strcmp(g->name, attr[0].default_val.str_value) != 0)
-				ret |= pcb_layergrp_rename_(g, pcb_strdup(argv[n]+5));
+			if (strcmp(g->name, attr[0].default_val.str_value) != 0) {
+				ret |= pcb_layergrp_rename_(g, (char *)attr[0].default_val.str_value);
+				attr[0].default_val.str_value = NULL;
+			}
 		}
+
+		free((char *)attr[0].default_val.str_value);
 
 		ret |= ar;
 	}
