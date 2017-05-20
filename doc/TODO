@@ -35,6 +35,7 @@ AFTER THE NEXT RELEASE:
 - BUGS:
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- library window: allow long tags and long location text to split
+	- undo on new layer from right-click menu in gtk layerselk doesn't work
 - gtk layersel feature requests:
 	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - cleanup: remove mnemonic from the menu system
