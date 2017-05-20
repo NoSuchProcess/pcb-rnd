@@ -529,6 +529,7 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 		lsg->layer[0].ev_selected = ev_lyr_no_select;
 		lsg->layer[0].ev_vis = vis_impl;
 		free(name);
+		gtk_widget_set_tooltip_text(wl, "This is an empty layer group with a\nvirtual auto layer implied.\nTo start editing, create a real layer\nin it using the right click menu.");
 	}
 	else {
 		for(n = 0; n < grp->len; n++) {
