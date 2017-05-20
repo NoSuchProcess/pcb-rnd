@@ -336,40 +336,6 @@ int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 
 #undef APPEND
 
-/* ---------------------------------------------------------------------------
- * move layer
- * moves the selected layers to a new index in the layer list.
- */
-
-static void move_one_thermal(int old_index, int new_index, pcb_pin_t * pin)
-{
-	int t1 = 0, i;
-	int oi = old_index, ni = new_index;
-
-	if (old_index != -1)
-		t1 = PCB_FLAG_THERM_GET(old_index, pin);
-
-	if (oi == -1)
-		oi = PCB_MAX_LAYER - 1;					/* inserting a layer */
-	if (ni == -1)
-		ni = PCB_MAX_LAYER - 1;					/* deleting a layer */
-
-	if (oi < ni) {
-		for (i = oi; i < ni; i++)
-			PCB_FLAG_THERM_ASSIGN(i, PCB_FLAG_THERM_GET(i + 1, pin), pin);
-	}
-	else {
-		for (i = oi; i > ni; i--)
-			PCB_FLAG_THERM_ASSIGN(i, PCB_FLAG_THERM_GET(i - 1, pin), pin);
-	}
-
-	if (new_index != -1)
-		PCB_FLAG_THERM_ASSIGN(new_index, t1, pin);
-	else
-		PCB_FLAG_THERM_ASSIGN(ni, 0, pin);
-}
-
-
 static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
 {
 	int was_on_l1 = !!PCB_FLAG_THERM_GET(lid1, pin);
@@ -379,20 +345,6 @@ static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
 	PCB_FLAG_THERM_ASSIGN(lid1, was_on_l2, pin);
 }
 
-static void move_all_thermals(int old_index, int new_index)
-{
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		move_one_thermal(old_index, new_index, via);
-	}
-	PCB_END_LOOP;
-
-	PCB_PIN_ALL_LOOP(PCB->Data);
-	{
-		move_one_thermal(old_index, new_index, pin);
-	}
-	PCB_ENDALL_LOOP;
-}
 
 static int is_last_top_copper_layer(int layer)
 {
@@ -577,7 +529,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		   layer list is insignificant, thus we shouldn't try to change it. */
 	}
 
-	move_all_thermals(old_index, new_index);
 	return 0;
 }
 
