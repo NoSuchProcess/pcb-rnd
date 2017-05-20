@@ -547,6 +547,19 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 	return obj;
 }
 
+#define LAYER_GID_FIX_V1() \
+	do { \
+		if (wrver == 1) { \
+			if (gid >= 0) { \
+				if (gid < sizeof(grp) / sizeof(grp[0])) \
+					gid = grp[gid]; \
+				else \
+					gid = -1; \
+			} \
+		} \
+	} while(0)
+
+
 static lht_node_t *build_data_layers(pcb_data_t *data)
 {
 	long int n;
@@ -580,17 +593,29 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 		grp[g - PCB->LayerGroups.grp] = gtop;
 	}
 
-	for(n = 0; n < pcb_max_layer; n++) {
-		pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
-		if (wrver == 1) {
-			if (gid >= 0) {
-				if (gid < sizeof(grp) / sizeof(grp[0]))
-					gid = grp[gid];
-				else
-					gid = -1;
+	if (wrver == 1) {
+		/* v1 needs to have silk at the end of the list */
+		for(n = 0; n < pcb_max_layer; n++) {
+			if ((pcb_layer_flags(PCB, n) & PCB_LYT_SILK) == 0) {
+				pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
+				LAYER_GID_FIX_V1();
+				lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
 			}
 		}
-		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
+		for(n = 0; n < pcb_max_layer; n++) {
+			if (pcb_layer_flags(PCB, n) & PCB_LYT_SILK) {
+				pcb_layer_id_t gid = pcb_layer_get_group(PCB, n);
+				LAYER_GID_FIX_V1();
+				lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
+			}
+		}
+	}
+	else {
+		/* keep the original order from v2, to minimize diffs */
+		for(n = 0; n < pcb_max_layer; n++) {
+			pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
+			lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
+		}
 	}
 
 	return layers;
