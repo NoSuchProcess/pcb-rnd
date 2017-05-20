@@ -40,10 +40,12 @@ AFTER THE NEXT RELEASE:
 - BUGS:
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- library window: allow long tags and long location text to split
+- cleanup: remove mnemonic from the menu system
+	- check the central code and struct fields
+	- remove "m=" fields from the menu lihata files
 - fontsel:
 	- replace font in slot (even in default)
 	- ttf import?
-
 - cleanup: revise strftime() calls, especially in exporters:
 	- make a config.h format string, don't depend on %c
 	- make the format more ISO-like
