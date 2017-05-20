@@ -338,9 +338,10 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_INVIS)
 		return 0;
 
-	/* don't draw the mask if we are not in the photo mode */
-	if (!photo_mode && (flags & PCB_LYT_MASK))
-		return 0;
+	if (flags & PCB_LYT_MASK) {
+		if ((!photo_mode) && (!PCB->LayerGroups.grp[group].vis))
+			return 0; /* not in photo mode or not visible */
+	}
 
 	switch(flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK: is_our_mask = PCB_LAYERFLG_ON_VISIBLE_SIDE(flags); break;
