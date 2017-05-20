@@ -100,8 +100,10 @@ static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, c
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
 
-	pcb_gui->set_color(gc, bgcolor);
-	DrawTextLowLevel(&t, 1000000);
+	if (pcb_gui->gui) { /* it is unreadable on black&white and on most exporters */
+		pcb_gui->set_color(gc, bgcolor);
+		DrawTextLowLevel(&t, 1000000);
+	}
 
 	pcb_gui->set_color(gc, fgcolor);
 	DrawTextLowLevel(&t, 0);

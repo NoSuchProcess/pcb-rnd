@@ -1,5 +1,4 @@
 - BUGS for the next release:
-	- cross section on export should draw with double font, but should print file names
 	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
 	- layer rewrite:
 		- gtk layersel bugs:
