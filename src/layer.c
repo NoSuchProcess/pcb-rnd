@@ -369,6 +369,16 @@ static void move_one_thermal(int old_index, int new_index, pcb_pin_t * pin)
 		PCB_FLAG_THERM_ASSIGN(ni, 0, pin);
 }
 
+
+static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
+{
+	int was_on_l1 = !!PCB_FLAG_THERM_GET(lid1, pin);
+	int was_on_l2 = !!PCB_FLAG_THERM_GET(lid2, pin);
+
+	PCB_FLAG_THERM_ASSIGN(lid2, was_on_l1, pin);
+	PCB_FLAG_THERM_ASSIGN(lid1, was_on_l2, pin);
+}
+
 static void move_all_thermals(int old_index, int new_index)
 {
 	PCB_VIA_LOOP(PCB->Data);
@@ -570,6 +580,51 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 	move_all_thermals(old_index, new_index);
 	return 0;
 }
+
+int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2)
+{
+	pcb_layer_t l1tmp, l2tmp;
+	pcb_layergrp_id_t gid;
+
+	if (lid1 == lid2)
+		return 0;
+
+	printf("SWAP: %d %d\n", lid1, lid2);
+
+	layer_move(&l1tmp, &PCB->Data->Layer[lid1]);
+	layer_move(&l2tmp, &PCB->Data->Layer[lid2]);
+
+	layer_move(&PCB->Data->Layer[lid1], &l2tmp);
+	layer_move(&PCB->Data->Layer[lid2], &l1tmp);
+
+	PCB_VIA_LOOP(PCB->Data);
+	{
+		swap_one_thermal(lid1, lid2, via);
+	}
+	PCB_END_LOOP;
+
+	PCB_PIN_ALL_LOOP(PCB->Data);
+	{
+		swap_one_thermal(lid1, lid2, pin);
+	}
+	PCB_ENDALL_LOOP;
+
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+		int n;
+
+		for(n = 0; n < g->len; n++) {
+			if (g->lid[n] == lid1)
+				g->lid[n] = lid2;
+			else if (g->lid[n] == lid2)
+				g->lid[n] = lid1;
+		}
+	}
+
+	return 0;
+}
+
+
 
 const char *pcb_layer_name(pcb_layer_id_t id)
 {
