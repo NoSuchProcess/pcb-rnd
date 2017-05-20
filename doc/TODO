@@ -1,15 +1,10 @@
 - BUGS for the next release:
 	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
 	- layer rewrite:
-		- gtk layersel bugs:
-			- png export: check mask/paste drawing, make new options? mask on in photo more?
-			- svg export: check mask/paste drawing, make new options? mask on in photo more?
-			- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 		- lihata v2:
 			- indent styling for layer stack
 			- review, make it default
 			- document versions and differences
-
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -40,6 +35,8 @@ AFTER THE NEXT RELEASE:
 - BUGS:
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- library window: allow long tags and long location text to split
+- gtk layersel feature requests:
+	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - cleanup: remove mnemonic from the menu system
 	- check the central code and struct fields
 	- remove "m=" fields from the menu lihata files
