@@ -598,8 +598,6 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	io_pcb_WriteElementData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
 	WriteLayers(FP, PCB->Data);
-	for (i = 0; i < pcb_max_layer; i++)
-		WriteLayerData(FP, i, &(PCB->Data->Layer[i]));
 	WritePCBNetlistData(FP);
 	WritePCBNetlistPatchData(FP);
 
