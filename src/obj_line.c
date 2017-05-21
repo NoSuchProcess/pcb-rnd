@@ -481,6 +481,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	if((conf_core.editor.move_linepoint_uses_route == 0) || !Layer)	{
+		pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, Layer, Line, Point, ctx->move.dx, ctx->move.dy);
 		return MoveLinePoint(ctx,Layer,Line,Point);
 	}
 	else {
