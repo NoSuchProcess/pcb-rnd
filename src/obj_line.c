@@ -475,14 +475,12 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 	}
 }
 
-
-
 /* moves one end of a line */
 void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
-	if((conf_core.editor.move_linepoint_uses_route == 0) || !Layer)	{
+	if ((conf_core.editor.move_linepoint_uses_route == 0) || !Layer) {
 		pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, Layer, Line, Point, ctx->move.dx, ctx->move.dy);
-		return MoveLinePoint(ctx,Layer,Line,Point);
+		return MoveLinePoint(ctx, Layer, Line, Point);
 	}
 	else {
 		/* Move with Route Code */
@@ -493,7 +491,7 @@ void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_coord_t clearance = Line->Clearance;
 		pcb_flag_t flags = Line->Flags;
 
-		point2.X += ctx->move.dx;	
+		point2.X += ctx->move.dx;
 		point2.Y += ctx->move.dy;
 	
 		if((point1.X != point2.X) || (point1.Y != point2.Y)) {
@@ -510,7 +508,7 @@ void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 													pcb_gui->shift_is_pressed(),
 													pcb_gui->control_is_pressed() );
 			pcb_route_apply_to_line(&route,Layer,Line);
-			pcb_route_destroy(&route);	
+			pcb_route_destroy(&route);
 		}
 
 		pcb_draw();
