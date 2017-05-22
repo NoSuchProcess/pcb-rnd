@@ -134,6 +134,15 @@ static lht_perstyle_t style_structsp = {
 	/* name_braced */ 0
 };
 
+static lht_perstyle_t style_structnp = {
+	/* buff */        {PB_BEGINSP, PB_SPACE, PB_LBRACENL, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
+	/* has_eq */      0,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
 static lht_perstyle_t style_nlstruct = {
 	/* buff */        {PB_BEGINNL, PB_SPACE, PB_LBRACENL, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
 	/* has_eq */      0,
@@ -375,6 +384,7 @@ static const char *pat_ls_type2[] = {"ha:type", "ha:*", "li:groups", "ha:layer_s
 static const char *pat_ls_lyr1[] = {"te:*", "li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
 static const char *pat_ls_lyr2[] = {"li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
 static const char *pat_ls_name[] = {"te:name", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_grps[] = {"li:groups", "ha:layer_stack", "*", NULL};
 
 static lhtpers_rule_t r_layergrp[] = {
 	{pat_ls_name,  NULL, NULL},
@@ -433,7 +443,9 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_objects, &style_nlstruct, NULL},
 	{pat_flag,    &style_newline,  NULL},
 
-	{pat_layergrp, &style_struct,   r_layergrp},
+	{pat_layergrp,&style_structnp, r_layergrp},
+	{pat_ls_grps, &style_structnp, NULL},
+
 
 	{pat_cell,    &style_inline,   NULL},
 	{pat_thermt,  &style_inline,   NULL},
