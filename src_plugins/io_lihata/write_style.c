@@ -125,6 +125,15 @@ static lht_perstyle_t style_structs = {
 	/* name_braced */ 0
 };
 
+static lht_perstyle_t style_structsp = {
+	/* buff */        {PB_BEGINSP, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
+	/* has_eq */      0,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
 static lht_perstyle_t style_nlstruct = {
 	/* buff */        {PB_BEGINNL, PB_SPACE, PB_LBRACENL, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
 	/* has_eq */      0,
@@ -384,6 +393,10 @@ static const char *pat_del_add[] = {"ha:*", "li:netlist_patch", "*", NULL};
 static const char *pat_netinfo[] = {"li:net_info", "li:netlist_patch", "*", NULL};
 static const char *pat_tconn[] = {"te:*", "li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
 static const char *pat_lconn[] = {"li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
+static const char *pat_ls_type1[] = {"te:*", "ha:type", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_type2[] = {"ha:type", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_lyr1[] = {"te:*", "li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_lyr2[] = {"li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
 static const char *pat_root[] = {"^", NULL};
 
 static lhtpers_rule_t r_istructs[] = {
@@ -416,6 +429,12 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_nettxt,  &style_inline,   NULL},
 	{pat_tconn,   &style_inline,   NULL},
 	{pat_lconn,   &style_struct_thermal, NULL},
+
+	{pat_ls_type1, &style_inline,   NULL},
+	{pat_ls_type2, &style_structsp, NULL},
+	{pat_ls_lyr1,  &style_inline,   NULL},
+	{pat_ls_lyr2,  &style_structsp, NULL},
+
 	{NULL, NULL, NULL}
 };
 
