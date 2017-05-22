@@ -317,9 +317,13 @@ static lhtpers_rule_t r_element[] = {
 
 static const char *pat_visible[] = {"te:visible", "*", NULL};
 static const char *pat_group[]   = {"te:group", "*", NULL};
+static const char *pat_lid[]     = {"te:lid", "*", NULL};
+static const char *pat_combin[]  = {"ha:combining", "*", NULL};
 static lhtpers_rule_t r_layer[] = {
-	{pat_visible,          &style_newline, NULL},
+	{pat_lid,              &style_newline, NULL},
 	{pat_group,            &style_newline, NULL},
+	{pat_combin,           &style_structs, NULL},
+	{pat_visible,          &style_newline, NULL},
 	{pat_attributes,       &style_nlstruct, NULL},
 	{pat_objects,          &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
@@ -419,6 +423,7 @@ static const char *pat_netinfo[] = {"li:net_info", "li:netlist_patch", "*", NULL
 static const char *pat_tconn[] = {"te:*", "li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
 static const char *pat_lconn[] = {"li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
 static const char *pat_layergrp[] = {"ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_combs[]  = {"te:*", "ha:combining", "*", NULL};
 static const char *pat_root[] = {"^", NULL};
 
 static lhtpers_rule_t r_istructs[] = {
@@ -458,6 +463,7 @@ static lhtpers_rule_t r_istructs[] = {
 
 	{pat_ls_type1, &style_inline,   NULL},
 	{pat_ls_lyr1,  &style_inline,   NULL},
+	{pat_combs,    &style_inline,   NULL},
 
 	{NULL, NULL, NULL}
 };
