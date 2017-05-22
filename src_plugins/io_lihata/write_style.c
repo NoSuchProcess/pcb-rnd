@@ -369,6 +369,21 @@ static lhtpers_rule_t r_netlists[] = {
 };
 
 
+
+static const char *pat_ls_type1[] = {"te:*", "ha:type", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_type2[] = {"ha:type", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_lyr1[] = {"te:*", "li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_lyr2[] = {"li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_ls_name[] = {"te:name", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+
+static lhtpers_rule_t r_layergrp[] = {
+	{pat_ls_name,  NULL, NULL},
+	{pat_ls_type2, &style_structsp, NULL},
+	{pat_ls_lyr2,  &style_structsp, NULL},
+	{NULL, NULL, NULL}
+};
+
+
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_spoly[]= {"li:simplepoly.*", "*", NULL};
 static const char *pat_rat[]  = {"ha:rat.*", "*", NULL};
@@ -393,10 +408,7 @@ static const char *pat_del_add[] = {"ha:*", "li:netlist_patch", "*", NULL};
 static const char *pat_netinfo[] = {"li:net_info", "li:netlist_patch", "*", NULL};
 static const char *pat_tconn[] = {"te:*", "li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
 static const char *pat_lconn[] = {"li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
-static const char *pat_ls_type1[] = {"te:*", "ha:type", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
-static const char *pat_ls_type2[] = {"ha:type", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
-static const char *pat_ls_lyr1[] = {"te:*", "li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
-static const char *pat_ls_lyr2[] = {"li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_layergrp[] = {"ha:*", "li:groups", "ha:layer_stack", "*", NULL};
 static const char *pat_root[] = {"^", NULL};
 
 static lhtpers_rule_t r_istructs[] = {
@@ -421,6 +433,8 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_objects, &style_nlstruct, NULL},
 	{pat_flag,    &style_newline,  NULL},
 
+	{pat_layergrp, &style_struct,   r_layergrp},
+
 	{pat_cell,    &style_inline,   NULL},
 	{pat_thermt,  &style_inline,   NULL},
 	{pat_del_add, &style_struct_thermal, NULL},
@@ -431,9 +445,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_lconn,   &style_struct_thermal, NULL},
 
 	{pat_ls_type1, &style_inline,   NULL},
-	{pat_ls_type2, &style_structsp, NULL},
 	{pat_ls_lyr1,  &style_inline,   NULL},
-	{pat_ls_lyr2,  &style_structsp, NULL},
 
 	{NULL, NULL, NULL}
 };
