@@ -1,10 +1,5 @@
 - BUGS for the next release:
 	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
-	- layer rewrite:
-		- lihata v2:
-			- indent styling for layer stack
-			- review, make it default
-			- document versions and differences
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
