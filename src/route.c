@@ -349,10 +349,18 @@ pcb_route_calculate(pcb_board_t *   PCB,
 	route->PCB					= PCB;
 	route->flags				= flags;
 
+	/* If the start point is the same as the end point then add a single 0-length line. 
+	 * If a 0-length line is not added then some operations such as moving a line point
+	 * could cause the line to disappear.
+	 */
+	if((point1->X == point2->X) && (point1->Y == point2->Y)) {
+		route->end_point = *point2;
+		pcb_route_add_line(route,point1,point2,layer_id);
+	}
 	/* If Refraction is 0 then add a single line segment that is horizontal, vertical or 45 degrees. 
 	* This line segment might not end under the crosshair.
 	*/
-	if(conf_core.editor.line_refraction == 0)	{
+	else if(conf_core.editor.line_refraction == 0)	{
 		pcb_point_t target = *point2;
 		pcb_route_calculate_45(point1,&target);
 		pcb_route_add_line(route,point1,&target,layer_id);

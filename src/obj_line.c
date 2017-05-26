@@ -487,29 +487,24 @@ void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_route_t route;
 		pcb_point_t point1 = (&Line->Point1 == Point ? Line->Point2 : Line->Point1);
 		pcb_point_t point2 = *Point;
-		pcb_coord_t thickness = Line->Thickness;
-		pcb_coord_t clearance = Line->Clearance;
-		pcb_flag_t flags = Line->Flags;
 
 		point2.X += ctx->move.dx;
 		point2.Y += ctx->move.dy;
 	
-		if((point1.X != point2.X) || (point1.Y != point2.Y)) {
-			/* Calculate the new line route and add apply it */
-			pcb_route_init(&route);
-			pcb_route_calculate(PCB,
-													&route,
-													&point1,
-													&point2,
-													pcb_layer_id(PCB->Data,Layer),
-													thickness,
-													clearance,
-													flags,
-													pcb_gui->shift_is_pressed(),
-													pcb_gui->control_is_pressed() );
-			pcb_route_apply_to_line(&route,Layer,Line);
-			pcb_route_destroy(&route);
-		}
+		/* Calculate the new line route and add apply it */
+		pcb_route_init(&route);
+		pcb_route_calculate(PCB,
+												&route,
+												&point1,
+												&point2,
+												pcb_layer_id(PCB->Data,Layer),
+												Line->Thickness,
+												Line->Clearance,
+												Line->Flags,
+												pcb_gui->shift_is_pressed(),
+												pcb_gui->control_is_pressed() );
+		pcb_route_apply_to_line(&route,Layer,Line);
+		pcb_route_destroy(&route);
 
 		pcb_draw();
 	}
