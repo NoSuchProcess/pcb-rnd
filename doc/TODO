@@ -1,5 +1,4 @@
-- BUGS for the next release:
-	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
+
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -31,6 +30,8 @@ AFTER THE NEXT RELEASE:
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- library window: allow long tags and long location text to split
 	- undo on new layer from right-click menu in gtk layerselk doesn't work
+	- using the q key to make a pin square works, from menu (info/key bindings): undo error [report: EvanFoss]
+	- replace default font with OSI lht font, load a file with embedded default font -> get both fonts in the same slot [report: miloh]
 - gtk layersel feature requests:
 	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - cleanup: remove mnemonic from the menu system
