@@ -441,7 +441,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 	pcb_undo_inc_serial();
 
 	if (old_index == -1) { /* append new layer at the end of the logical layer list, put it in the current group */
-		pcb_layer_group_t *g;
+		pcb_layergrp_t *g;
 		pcb_layer_t *lp;
 		pcb_layer_id_t new_lid = PCB->Data->LayerN++;
 		int grp_idx;
@@ -476,7 +476,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
 		pcb_layergrp_id_t gid;
-		pcb_layer_group_t *g;
+		pcb_layergrp_t *g;
 		int grp_idx, remaining;
 
 #warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
@@ -561,7 +561,7 @@ int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2)
 	PCB_ENDALL_LOOP;
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
-		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		int n;
 
 		for(n = 0; n < g->len; n++) {
@@ -691,7 +691,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 
 static pcb_layer_id_t pcb_layer_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
-	pcb_layer_group_t *g;
+	pcb_layergrp_t *g;
 
 	if (*cache < PCB->Data->LayerN) { /* check if the cache is still pointing to the right layer */
 		pcb_layergrp_id_t gid = PCB->Data->Layer[*cache].grp;

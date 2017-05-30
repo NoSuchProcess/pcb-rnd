@@ -1493,7 +1493,7 @@ static const char pcb_acth_EditGroup[] = "Change a property or attribute of a la
 static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int ret = 0, n, interactive = 1, explicit = 0;
-	pcb_layer_group_t *g = NULL;
+	pcb_layergrp_t *g = NULL;
 
 	if (CURRENT != NULL)
 		g = pcb_get_layergrp(PCB, CURRENT->grp);

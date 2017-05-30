@@ -30,7 +30,7 @@
 typedef struct comp_ctx_s {
 	pcb_board_t *pcb;
 	const pcb_box_t *screen;
-	pcb_layer_group_t *grp;
+	pcb_layergrp_t *grp;
 	const char *color;
 
 	unsigned thin:1;
@@ -162,7 +162,7 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 
 int pcb_draw_layer_is_comp(pcb_layer_id_t id)
 {
-	pcb_layer_group_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].grp);
+	pcb_layergrp_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].grp);
 	if (g == NULL) return 0;
 
 	/* silk has special rules because the original format/model had 1 (auto+)

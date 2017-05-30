@@ -27,7 +27,7 @@ struct pcb_gtk_ls_lyr_s {
 struct pcb_gtk_ls_grp_s {
 	GtkWidget *grp_row, *grp_closed, *grp_open, *layers, *vis_on, *vis_off;
 
-	pcb_layer_group_t *grp;
+	pcb_layergrp_t *grp;
 	pcb_gtk_ls_lyr_t *layer;
 
 	/* for callbacks */
@@ -40,7 +40,7 @@ struct pcb_gtk_layersel_s {
 	GtkWidget *grp_box, *grp_box_outer;
 	pcb_gtk_ls_grp_t grp[PCB_MAX_LAYERGRP];
 	pcb_gtk_ls_grp_t lsg_virt, lsg_ui;
-	pcb_layer_group_t grp_virt, grp_ui;
+	pcb_layergrp_t grp_virt, grp_ui;
 	unsigned running:1;
 	unsigned no_copper_sel:1;
 };

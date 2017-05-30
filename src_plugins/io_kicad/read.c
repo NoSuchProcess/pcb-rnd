@@ -908,13 +908,13 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {
 				/* Edge must be the outline */
-				pcb_layer_group_t *g = pcb_get_grp_new_intern(PCB, -1);
+				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 				pcb_layergrp_fix_turn_to_outline(g);
 				id = pcb_layer_create(g - PCB->LayerGroups.grp, lname);
 			}
 			else if ((strcmp(ltype, "signal") == 0) || (strcmp(ltype, "power") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
 				/* Create a new inner layer for signals and for emulating misc layers */
-				pcb_layer_group_t *g = pcb_get_grp_new_intern(PCB, -1);
+				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 				id = pcb_layer_create(g - PCB->LayerGroups.grp, lname);
 			}
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {

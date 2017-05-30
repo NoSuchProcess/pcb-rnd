@@ -1093,7 +1093,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	else if (strncmp(argv[1], "step", 4) == 0) {
 		pcb_layer_t *l = CURRENT;
-		pcb_layer_group_t *g = pcb_get_layergrp(PCB, l->grp);
+		pcb_layergrp_t *g = pcb_get_layergrp(PCB, l->grp);
 		if (g == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Invalid layer group\n");
 			return 1;
@@ -1112,7 +1112,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (new_index < 0) {
 		if (pcb_layer_flags(PCB, old_index) & PCB_LYT_SILK) {
 			pcb_layer_t *l = pcb_get_layer(old_index);
-			pcb_layer_group_t *g = pcb_get_layergrp(PCB, l->grp);
+			pcb_layergrp_t *g = pcb_get_layergrp(PCB, l->grp);
 			if (g->len == 1) {
 				pcb_message(PCB_MSG_ERROR, "Removing this layer would result in an empty top or bottom silk group, which is not possible at the moment.\n");
 				return 1;

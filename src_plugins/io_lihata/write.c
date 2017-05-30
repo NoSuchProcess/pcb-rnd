@@ -472,7 +472,7 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 	lht_dom_hash_put(lstk, grps = lht_dom_node_alloc(LHT_LIST, "groups"));
 
 	for(n = 0; n < pcb->LayerGroups.len; n++) {
-		pcb_layer_group_t *g = &pcb->LayerGroups.grp[n];
+		pcb_layergrp_t *g = &pcb->LayerGroups.grp[n];
 		char tmp[32];
 		sprintf(tmp, "%d", n);
 		lht_dom_list_append(grps, grp = lht_dom_node_alloc(LHT_HASH, tmp));
@@ -565,7 +565,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 	long int n;
 	lht_node_t *layers;
 	pcb_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
-	pcb_layer_group_t *g;
+	pcb_layergrp_t *g;
 
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 

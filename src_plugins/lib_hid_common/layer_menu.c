@@ -45,7 +45,7 @@ void pcb_layer_menu_create(const char *path_prefix, const char *cookie)
 	}
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
-		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		int n;
 
 		if (g->type & PCB_LYT_SUBSTRATE)

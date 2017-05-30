@@ -174,7 +174,7 @@ static void ensure_visible_current(pcb_gtk_layersel_t *ls)
 
 	/* look for the next one to enable, group-vise */
 	for(gid = CURRENT->grp + 1; gid != CURRENT->grp; gid++) {
-		pcb_layer_group_t *g;
+		pcb_layergrp_t *g;
 		if (gid >= pcb_max_group(PCB))
 			gid = 0;
 		g = &PCB->LayerGroups.grp[gid];
@@ -264,7 +264,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 	return TRUE;
 }
 
-static void layer_popup(pcb_gtk_layersel_t *ls, int button, pcb_layer_id_t lid, pcb_layer_group_t *g)
+static void layer_popup(pcb_gtk_layersel_t *ls, int button, pcb_layer_id_t lid, pcb_layergrp_t *g)
 {
 	if (button != 3)
 		return;
@@ -393,7 +393,7 @@ static const char *lyr_color(pcb_layer_id_t lid)
 	return conf_core.appearance.color.layer[lid] == NULL ? "#aaaa00" : conf_core.appearance.color.layer[lid];
 }
 
-static const char * const grp_color(pcb_layer_group_t *g)
+static const char * const grp_color(pcb_layergrp_t *g)
 {
 	hardwired_colors(g->type);
 	/* normal mechanism: first layer's color or yellow */
@@ -450,7 +450,7 @@ static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, cons
 }
 
 /* Creating a group enrty (both open and closed state); after layers are added, finish() needs to be called */
-static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, const char *gname, int has_group_vis, pcb_layer_group_t *grp)
+static GtkWidget *build_group_start(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, const char *gname, int has_group_vis, pcb_layergrp_t *grp)
 {
 	GtkWidget *gn_vert, *vlabel, *opn, *cld;
 
@@ -512,7 +512,7 @@ static void build_group_finish(pcb_gtk_ls_grp_t *lsg)
 }
 
 /* Create a group that has a real layer group in core, add all layers */
-static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, pcb_layer_group_t *grp)
+static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg, pcb_layergrp_t *grp)
 {
 	int n;
 	GtkWidget *wg = build_group_start(ls, lsg, grp->name, 1, grp);
@@ -570,7 +570,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 	int n;
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
-		pcb_layer_group_t *g = &PCB->LayerGroups.grp[gid];
+		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		if (g->type & PCB_LYT_SUBSTRATE)
 			continue;
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_real(ls, &ls->grp[gid], g), FALSE, FALSE, 0);

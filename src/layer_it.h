@@ -60,7 +60,7 @@ static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
 		return -1;
 	}
 	else for(;;) {
-		pcb_layer_group_t *g = &(it->stack->grp[it->gid]);
+		pcb_layergrp_t *g = &(it->stack->grp[it->gid]);
 		pcb_layer_id_t lid;
 		unsigned int hit;
 		if (it->lidx >= g->len) { /* layer list over in this group */

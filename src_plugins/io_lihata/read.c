@@ -753,7 +753,7 @@ static void layer_fixup(pcb_board_t *pcb)
 {
 	int n;
 	pcb_layergrp_id_t top_silk, bottom_silk;
-	pcb_layer_group_t *g;
+	pcb_layergrp_t *g;
 
 	pcb_layergrp_inhibit_inc();
 
@@ -816,7 +816,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	grps = lht_dom_hash_get(nd, "groups");
 	for(grp = lht_dom_first(&it, grps); grp != NULL; grp = lht_dom_next(&it)) {
 		pcb_layergrp_id_t gid;
-		pcb_layer_group_t *g;
+		pcb_layergrp_t *g;
 		char *end;
 		gid = strtol(grp->name, &end, 10);
 		if ((*end != '\0') || (gid < 0)) {

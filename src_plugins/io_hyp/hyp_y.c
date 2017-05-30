@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.4"
+#define YYBISON_VERSION "3.0.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -227,7 +227,7 @@ extern int hyydebug;
 
 /* Value type.  */
 #if ! defined HYYSTYPE && ! defined HYYSTYPE_IS_DECLARED
-
+typedef union HYYSTYPE HYYSTYPE;
 union HYYSTYPE
 {
 #line 30 "hyp_y.y" /* yacc.c:355  */
@@ -239,8 +239,6 @@ union HYYSTYPE
 
 #line 241 "hyp_y.c" /* yacc.c:355  */
 };
-
-typedef union HYYSTYPE HYYSTYPE;
 # define HYYSTYPE_IS_TRIVIAL 1
 # define HYYSTYPE_IS_DECLARED 1
 #endif
@@ -273,7 +271,7 @@ static void new_record();
 static parse_param h;
 
 
-#line 277 "hyp_y.c" /* yacc.c:358  */
+#line 275 "hyp_y.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -1868,947 +1866,947 @@ yyreduce:
         case 19:
 #line 150 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_board_file(&h)) YYERROR; }
-#line 1872 "hyp_y.c" /* yacc.c:1646  */
+#line 1870 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 21:
 #line 155 "hyp_y.y" /* yacc.c:1646  */
     { h.vers = yylval.floatval; }
-#line 1878 "hyp_y.c" /* yacc.c:1646  */
+#line 1876 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 22:
 #line 155 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_version(&h)) YYERROR; }
-#line 1884 "hyp_y.c" /* yacc.c:1646  */
+#line 1882 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 23:
 #line 160 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_data_mode(&h)) YYERROR; }
-#line 1890 "hyp_y.c" /* yacc.c:1646  */
+#line 1888 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 24:
 #line 163 "hyp_y.y" /* yacc.c:1646  */
     { h.detailed = pcb_false; }
-#line 1896 "hyp_y.c" /* yacc.c:1646  */
+#line 1894 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 25:
 #line 164 "hyp_y.y" /* yacc.c:1646  */
     { h.detailed = pcb_true; }
-#line 1902 "hyp_y.c" /* yacc.c:1646  */
+#line 1900 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 26:
 #line 169 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_units(&h)) YYERROR; }
-#line 1908 "hyp_y.c" /* yacc.c:1646  */
+#line 1906 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 27:
 #line 172 "hyp_y.y" /* yacc.c:1646  */
     { h.unit_system_english = pcb_true; }
-#line 1914 "hyp_y.c" /* yacc.c:1646  */
+#line 1912 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 28:
 #line 173 "hyp_y.y" /* yacc.c:1646  */
     { h.unit_system_english = pcb_false; }
-#line 1920 "hyp_y.c" /* yacc.c:1646  */
+#line 1918 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 29:
 #line 176 "hyp_y.y" /* yacc.c:1646  */
     { h.metal_thickness_weight = pcb_true; }
-#line 1926 "hyp_y.c" /* yacc.c:1646  */
+#line 1924 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 30:
 #line 177 "hyp_y.y" /* yacc.c:1646  */
     { h.metal_thickness_weight = pcb_false; }
-#line 1932 "hyp_y.c" /* yacc.c:1646  */
+#line 1930 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 31:
 #line 181 "hyp_y.y" /* yacc.c:1646  */
     { h.default_plane_separation = yylval.floatval; }
-#line 1938 "hyp_y.c" /* yacc.c:1646  */
+#line 1936 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 32:
 #line 181 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_plane_sep(&h)) YYERROR; }
-#line 1944 "hyp_y.c" /* yacc.c:1646  */
+#line 1942 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 38:
 #line 195 "hyp_y.y" /* yacc.c:1646  */
     { hyyerror("warning: missing ')'"); }
-#line 1950 "hyp_y.c" /* yacc.c:1646  */
+#line 1948 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 43:
 #line 205 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_perimeter_segment(&h)) YYERROR; }
-#line 1956 "hyp_y.c" /* yacc.c:1646  */
+#line 1954 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 44:
 #line 208 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_perimeter_arc(&h)) YYERROR; }
-#line 1962 "hyp_y.c" /* yacc.c:1646  */
+#line 1960 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 45:
 #line 211 "hyp_y.y" /* yacc.c:1646  */
     { h.name = yylval.strval; }
-#line 1968 "hyp_y.c" /* yacc.c:1646  */
+#line 1966 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 46:
 #line 211 "hyp_y.y" /* yacc.c:1646  */
     { h.value = yylval.strval; }
-#line 1974 "hyp_y.c" /* yacc.c:1646  */
+#line 1972 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 47:
 #line 211 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_board_attribute(&h)) YYERROR; }
-#line 1980 "hyp_y.c" /* yacc.c:1646  */
+#line 1978 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 56:
 #line 230 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_options(&h)) YYERROR; }
-#line 1986 "hyp_y.c" /* yacc.c:1646  */
+#line 1984 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 57:
 #line 233 "hyp_y.y" /* yacc.c:1646  */
     { h.use_die_for_metal = yylval.boolval; }
-#line 1992 "hyp_y.c" /* yacc.c:1646  */
+#line 1990 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 60:
 #line 238 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 1998 "hyp_y.c" /* yacc.c:1646  */
+#line 1996 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 61:
 #line 238 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_signal(&h)) YYERROR; }
-#line 2004 "hyp_y.c" /* yacc.c:1646  */
+#line 2002 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 66:
 #line 247 "hyp_y.y" /* yacc.c:1646  */
     { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = pcb_true; }
-#line 2010 "hyp_y.c" /* yacc.c:1646  */
+#line 2008 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 74:
 #line 257 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2016 "hyp_y.c" /* yacc.c:1646  */
+#line 2014 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 75:
 #line 257 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_dielectric(&h)) YYERROR; }
-#line 2022 "hyp_y.c" /* yacc.c:1646  */
+#line 2020 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 79:
 #line 265 "hyp_y.y" /* yacc.c:1646  */
     { h.epsilon_r = yylval.floatval; h.epsilon_r_set = pcb_true; }
-#line 2028 "hyp_y.c" /* yacc.c:1646  */
+#line 2026 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 86:
 #line 275 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2034 "hyp_y.c" /* yacc.c:1646  */
+#line 2032 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 87:
 #line 275 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_plane(&h)) YYERROR; }
-#line 2040 "hyp_y.c" /* yacc.c:1646  */
+#line 2038 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 91:
 #line 283 "hyp_y.y" /* yacc.c:1646  */
     { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = pcb_true; }
-#line 2046 "hyp_y.c" /* yacc.c:1646  */
+#line 2044 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 99:
 #line 293 "hyp_y.y" /* yacc.c:1646  */
     { h.thickness = yylval.floatval; h.thickness_set = pcb_true; }
-#line 2052 "hyp_y.c" /* yacc.c:1646  */
+#line 2050 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 100:
 #line 296 "hyp_y.y" /* yacc.c:1646  */
     { h.plating_thickness = yylval.floatval; h.plating_thickness_set = pcb_true; }
-#line 2058 "hyp_y.c" /* yacc.c:1646  */
+#line 2056 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 101:
 #line 299 "hyp_y.y" /* yacc.c:1646  */
     { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = pcb_true; }
-#line 2064 "hyp_y.c" /* yacc.c:1646  */
+#line 2062 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 102:
 #line 302 "hyp_y.y" /* yacc.c:1646  */
     { h.temperature_coefficient = yylval.floatval; h.temperature_coefficient_set = pcb_true; }
-#line 2070 "hyp_y.c" /* yacc.c:1646  */
+#line 2068 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 103:
 #line 305 "hyp_y.y" /* yacc.c:1646  */
     { h.epsilon_r = yylval.floatval; h.epsilon_r_set = pcb_true; }
-#line 2076 "hyp_y.c" /* yacc.c:1646  */
+#line 2074 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 104:
 #line 308 "hyp_y.y" /* yacc.c:1646  */
     { h.loss_tangent = yylval.floatval; h.loss_tangent_set = pcb_true; }
-#line 2082 "hyp_y.c" /* yacc.c:1646  */
+#line 2080 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 105:
 #line 311 "hyp_y.y" /* yacc.c:1646  */
     { h.layer_name = yylval.strval; h.layer_name_set = pcb_true; }
-#line 2088 "hyp_y.c" /* yacc.c:1646  */
+#line 2086 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 106:
 #line 314 "hyp_y.y" /* yacc.c:1646  */
     { h.material_name = yylval.strval; h.material_name_set = pcb_true; }
-#line 2094 "hyp_y.c" /* yacc.c:1646  */
+#line 2092 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 107:
 #line 317 "hyp_y.y" /* yacc.c:1646  */
     { h.plane_separation = yylval.floatval; h.plane_separation_set = pcb_true; }
-#line 2100 "hyp_y.c" /* yacc.c:1646  */
+#line 2098 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 108:
 #line 320 "hyp_y.y" /* yacc.c:1646  */
     { h.conformal = yylval.boolval; h.conformal_set = pcb_true; }
-#line 2106 "hyp_y.c" /* yacc.c:1646  */
+#line 2104 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 109:
 #line 323 "hyp_y.y" /* yacc.c:1646  */
     { h.prepreg = yylval.boolval; h.prepreg_set = pcb_true; }
-#line 2112 "hyp_y.c" /* yacc.c:1646  */
+#line 2110 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 114:
 #line 336 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2118 "hyp_y.c" /* yacc.c:1646  */
+#line 2116 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 115:
 #line 336 "hyp_y.y" /* yacc.c:1646  */
     { h.device_type = yylval.strval; }
-#line 2124 "hyp_y.c" /* yacc.c:1646  */
+#line 2122 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 116:
 #line 336 "hyp_y.y" /* yacc.c:1646  */
     { h.ref = yylval.strval; }
-#line 2130 "hyp_y.c" /* yacc.c:1646  */
+#line 2128 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 117:
 #line 336 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_devices(&h)) YYERROR; }
-#line 2136 "hyp_y.c" /* yacc.c:1646  */
+#line 2134 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 125:
 #line 355 "hyp_y.y" /* yacc.c:1646  */
     { h.name = yylval.strval; h.name_set = pcb_true; }
-#line 2142 "hyp_y.c" /* yacc.c:1646  */
+#line 2140 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 128:
 #line 363 "hyp_y.y" /* yacc.c:1646  */
     { h.value_float = yylval.floatval; h.value_float_set = pcb_true; }
-#line 2148 "hyp_y.c" /* yacc.c:1646  */
+#line 2146 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 129:
 #line 366 "hyp_y.y" /* yacc.c:1646  */
     { h.value_string = yylval.strval; h.value_string_set = pcb_true; }
-#line 2154 "hyp_y.c" /* yacc.c:1646  */
+#line 2152 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 130:
 #line 369 "hyp_y.y" /* yacc.c:1646  */
     { h.package = yylval.strval; h.package_set = pcb_true; }
-#line 2160 "hyp_y.c" /* yacc.c:1646  */
+#line 2158 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 134:
 #line 381 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_supplies(&h)) YYERROR; }
-#line 2166 "hyp_y.c" /* yacc.c:1646  */
+#line 2164 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 136:
 #line 385 "hyp_y.y" /* yacc.c:1646  */
     { h.voltage_specified = yylval.boolval; }
-#line 2172 "hyp_y.c" /* yacc.c:1646  */
+#line 2170 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 137:
 #line 388 "hyp_y.y" /* yacc.c:1646  */
     { h.conversion = yylval.boolval; }
-#line 2178 "hyp_y.c" /* yacc.c:1646  */
+#line 2176 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 138:
 #line 393 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2184 "hyp_y.c" /* yacc.c:1646  */
+#line 2182 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 139:
 #line 393 "hyp_y.y" /* yacc.c:1646  */
     { h.padstack_name = yylval.strval; h.padstack_name_set = pcb_true; }
-#line 2190 "hyp_y.c" /* yacc.c:1646  */
+#line 2188 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 140:
 #line 393 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_padstack_end(&h)) YYERROR; }
-#line 2196 "hyp_y.c" /* yacc.c:1646  */
+#line 2194 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 141:
 #line 396 "hyp_y.y" /* yacc.c:1646  */
     { h.drill_size = yylval.floatval; h.drill_size_set = pcb_true; }
-#line 2202 "hyp_y.c" /* yacc.c:1646  */
+#line 2200 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 147:
 #line 405 "hyp_y.y" /* yacc.c:1646  */
     { h.layer_name = yylval.strval; h.layer_name_set = pcb_true; }
-#line 2208 "hyp_y.c" /* yacc.c:1646  */
+#line 2206 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 148:
 #line 405 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_padstack_element(&h)) YYERROR; new_record(); }
-#line 2214 "hyp_y.c" /* yacc.c:1646  */
+#line 2212 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 150:
 #line 409 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_shape = yylval.floatval; }
-#line 2220 "hyp_y.c" /* yacc.c:1646  */
+#line 2218 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 152:
 #line 410 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_shape = -1; }
-#line 2226 "hyp_y.c" /* yacc.c:1646  */
+#line 2224 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 153:
 #line 414 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_sx = yylval.floatval; }
-#line 2232 "hyp_y.c" /* yacc.c:1646  */
+#line 2230 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 154:
 #line 414 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_sy = yylval.floatval; }
-#line 2238 "hyp_y.c" /* yacc.c:1646  */
+#line 2236 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 155:
 #line 414 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_angle = yylval.floatval; }
-#line 2244 "hyp_y.c" /* yacc.c:1646  */
+#line 2242 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 157:
 #line 418 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_type = PAD_TYPE_METAL; h.pad_type_set = pcb_true; }
-#line 2250 "hyp_y.c" /* yacc.c:1646  */
+#line 2248 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 158:
 #line 419 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_type = PAD_TYPE_ANTIPAD; h.pad_type_set = pcb_true; }
-#line 2256 "hyp_y.c" /* yacc.c:1646  */
+#line 2254 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 159:
 #line 420 "hyp_y.y" /* yacc.c:1646  */
     { h.thermal_clear_shape = yylval.floatval; }
-#line 2262 "hyp_y.c" /* yacc.c:1646  */
+#line 2260 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 160:
 #line 421 "hyp_y.y" /* yacc.c:1646  */
     { h.thermal_clear_sx = yylval.floatval; }
-#line 2268 "hyp_y.c" /* yacc.c:1646  */
+#line 2266 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 161:
 #line 422 "hyp_y.y" /* yacc.c:1646  */
     { h.thermal_clear_sy = yylval.floatval; }
-#line 2274 "hyp_y.c" /* yacc.c:1646  */
+#line 2272 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 162:
 #line 423 "hyp_y.y" /* yacc.c:1646  */
     { h.thermal_clear_angle = yylval.floatval; }
-#line 2280 "hyp_y.c" /* yacc.c:1646  */
+#line 2278 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 163:
 #line 424 "hyp_y.y" /* yacc.c:1646  */
     { h.pad_type = PAD_TYPE_THERMAL_RELIEF; h.pad_type_set = pcb_true; }
-#line 2286 "hyp_y.c" /* yacc.c:1646  */
+#line 2284 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 164:
 #line 430 "hyp_y.y" /* yacc.c:1646  */
     { h.net_name = yylval.strval; if (exec_net(&h)) YYERROR; }
-#line 2292 "hyp_y.c" /* yacc.c:1646  */
+#line 2290 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 166:
 #line 433 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_net_plane_separation(&h)) YYERROR; }
-#line 2298 "hyp_y.c" /* yacc.c:1646  */
+#line 2296 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 170:
 #line 438 "hyp_y.y" /* yacc.c:1646  */
     { hyyerror("warning: empty net"); }
-#line 2304 "hyp_y.c" /* yacc.c:1646  */
+#line 2302 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 186:
 #line 461 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2310 "hyp_y.c" /* yacc.c:1646  */
+#line 2308 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 187:
 #line 461 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_seg(&h)) YYERROR; }
-#line 2316 "hyp_y.c" /* yacc.c:1646  */
+#line 2314 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 188:
 #line 464 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2322 "hyp_y.c" /* yacc.c:1646  */
+#line 2320 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 189:
 #line 464 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_arc(&h)) YYERROR; }
-#line 2328 "hyp_y.c" /* yacc.c:1646  */
+#line 2326 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 194:
 #line 477 "hyp_y.y" /* yacc.c:1646  */
     { h.width = yylval.floatval; h.width_set = pcb_true; }
-#line 2334 "hyp_y.c" /* yacc.c:1646  */
+#line 2332 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 195:
 #line 480 "hyp_y.y" /* yacc.c:1646  */
     { h.left_plane_separation = yylval.floatval; h.left_plane_separation_set = pcb_true; }
-#line 2340 "hyp_y.c" /* yacc.c:1646  */
+#line 2338 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 196:
 #line 483 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2346 "hyp_y.c" /* yacc.c:1646  */
+#line 2344 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 197:
 #line 483 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_via(&h)) YYERROR; }
-#line 2352 "hyp_y.c" /* yacc.c:1646  */
+#line 2350 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 201:
 #line 494 "hyp_y.y" /* yacc.c:1646  */
     { h.drill_size = yylval.floatval; h.drill_size_set = pcb_true; }
-#line 2358 "hyp_y.c" /* yacc.c:1646  */
+#line 2356 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 204:
 #line 497 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = pcb_true; }
-#line 2364 "hyp_y.c" /* yacc.c:1646  */
+#line 2362 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 205:
 #line 498 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = pcb_true; }
-#line 2370 "hyp_y.c" /* yacc.c:1646  */
+#line 2368 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 206:
 #line 499 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = pcb_true; }
-#line 2376 "hyp_y.c" /* yacc.c:1646  */
+#line 2374 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 207:
 #line 500 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = pcb_true; }
-#line 2382 "hyp_y.c" /* yacc.c:1646  */
+#line 2380 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 208:
 #line 501 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad1_shape = yylval.strval; h.via_pad1_shape_set = pcb_true; }
-#line 2388 "hyp_y.c" /* yacc.c:1646  */
+#line 2386 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 209:
 #line 502 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad1_sx = yylval.floatval; h.via_pad1_sx_set = pcb_true; }
-#line 2394 "hyp_y.c" /* yacc.c:1646  */
+#line 2392 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 210:
 #line 503 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad1_sy = yylval.floatval; h.via_pad1_sy_set = pcb_true; }
-#line 2400 "hyp_y.c" /* yacc.c:1646  */
+#line 2398 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 211:
 #line 504 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad1_angle = yylval.floatval; h.via_pad1_angle_set = pcb_true; }
-#line 2406 "hyp_y.c" /* yacc.c:1646  */
+#line 2404 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 212:
 #line 505 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad2_shape = yylval.strval; h.via_pad2_shape_set = pcb_true; }
-#line 2412 "hyp_y.c" /* yacc.c:1646  */
+#line 2410 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 213:
 #line 506 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad2_sx = yylval.floatval; h.via_pad2_sx_set = pcb_true; }
-#line 2418 "hyp_y.c" /* yacc.c:1646  */
+#line 2416 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 214:
 #line 507 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad2_sy = yylval.floatval; h.via_pad2_sy_set = pcb_true; }
-#line 2424 "hyp_y.c" /* yacc.c:1646  */
+#line 2422 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 215:
 #line 508 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad2_angle  = yylval.floatval; h.via_pad2_angle_set = pcb_true; }
-#line 2430 "hyp_y.c" /* yacc.c:1646  */
+#line 2428 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 216:
 #line 512 "hyp_y.y" /* yacc.c:1646  */
     { h.padstack_name = yylval.strval; h.padstack_name_set = pcb_true; }
-#line 2436 "hyp_y.c" /* yacc.c:1646  */
+#line 2434 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 217:
 #line 515 "hyp_y.y" /* yacc.c:1646  */
     { h.layer1_name = yylval.strval; h.layer1_name_set = pcb_true; }
-#line 2442 "hyp_y.c" /* yacc.c:1646  */
+#line 2440 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 218:
 #line 518 "hyp_y.y" /* yacc.c:1646  */
     { h.layer2_name = yylval.strval; h.layer2_name_set = pcb_true; }
-#line 2448 "hyp_y.c" /* yacc.c:1646  */
+#line 2446 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 219:
 #line 521 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2454 "hyp_y.c" /* yacc.c:1646  */
+#line 2452 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 220:
 #line 521 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_pin(&h)) YYERROR; }
-#line 2460 "hyp_y.c" /* yacc.c:1646  */
+#line 2458 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 225:
 #line 534 "hyp_y.y" /* yacc.c:1646  */
     { h.pin_reference = yylval.strval; h.pin_reference_set = pcb_true; }
-#line 2466 "hyp_y.c" /* yacc.c:1646  */
+#line 2464 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 226:
 #line 537 "hyp_y.y" /* yacc.c:1646  */
     { h.pin_function = PIN_SIM_OUT; h.pin_function_set = pcb_true; }
-#line 2472 "hyp_y.c" /* yacc.c:1646  */
+#line 2470 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 227:
 #line 538 "hyp_y.y" /* yacc.c:1646  */
     { h.pin_function = PIN_SIM_IN; h.pin_function_set = pcb_true; }
-#line 2478 "hyp_y.c" /* yacc.c:1646  */
+#line 2476 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 228:
 #line 539 "hyp_y.y" /* yacc.c:1646  */
     { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = pcb_true; }
-#line 2484 "hyp_y.c" /* yacc.c:1646  */
+#line 2482 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 229:
 #line 540 "hyp_y.y" /* yacc.c:1646  */
     { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = pcb_true; hyyerror("warning: SIM_BOTH assumed"); }
-#line 2490 "hyp_y.c" /* yacc.c:1646  */
+#line 2488 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 230:
 #line 544 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2496 "hyp_y.c" /* yacc.c:1646  */
+#line 2494 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 231:
 #line 544 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_pad(&h)) YYERROR; }
-#line 2502 "hyp_y.c" /* yacc.c:1646  */
+#line 2500 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 235:
 #line 553 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = pcb_true; }
-#line 2508 "hyp_y.c" /* yacc.c:1646  */
+#line 2506 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 236:
 #line 554 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = pcb_true; }
-#line 2514 "hyp_y.c" /* yacc.c:1646  */
+#line 2512 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 237:
 #line 555 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = pcb_true; }
-#line 2520 "hyp_y.c" /* yacc.c:1646  */
+#line 2518 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 238:
 #line 556 "hyp_y.y" /* yacc.c:1646  */
     { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = pcb_true; }
-#line 2526 "hyp_y.c" /* yacc.c:1646  */
+#line 2524 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 239:
 #line 560 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2532 "hyp_y.c" /* yacc.c:1646  */
+#line 2530 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 240:
 #line 560 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_useg(&h)) YYERROR; }
-#line 2538 "hyp_y.c" /* yacc.c:1646  */
+#line 2536 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 243:
 #line 568 "hyp_y.y" /* yacc.c:1646  */
     { h.zlayer_name = yylval.strval; h.zlayer_name_set = pcb_true; }
-#line 2544 "hyp_y.c" /* yacc.c:1646  */
+#line 2542 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 244:
 #line 569 "hyp_y.y" /* yacc.c:1646  */
     { h.width = yylval.floatval; }
-#line 2550 "hyp_y.c" /* yacc.c:1646  */
+#line 2548 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 245:
 #line 570 "hyp_y.y" /* yacc.c:1646  */
     { h.length = yylval.floatval; }
-#line 2556 "hyp_y.c" /* yacc.c:1646  */
+#line 2554 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 247:
 #line 575 "hyp_y.y" /* yacc.c:1646  */
     { h.impedance = yylval.floatval; h.impedance_set = pcb_true; }
-#line 2562 "hyp_y.c" /* yacc.c:1646  */
+#line 2560 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 248:
 #line 576 "hyp_y.y" /* yacc.c:1646  */
     { h.delay = yylval.floatval; }
-#line 2568 "hyp_y.c" /* yacc.c:1646  */
+#line 2566 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 250:
 #line 580 "hyp_y.y" /* yacc.c:1646  */
     { h.resistance = yylval.floatval; h.resistance_set = pcb_true;}
-#line 2574 "hyp_y.c" /* yacc.c:1646  */
+#line 2572 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 253:
 #line 586 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2580 "hyp_y.c" /* yacc.c:1646  */
+#line 2578 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 254:
 #line 586 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_polygon_begin(&h)) YYERROR; }
-#line 2586 "hyp_y.c" /* yacc.c:1646  */
+#line 2584 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 255:
 #line 587 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_polygon_end(&h)) YYERROR; }
-#line 2592 "hyp_y.c" /* yacc.c:1646  */
+#line 2590 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 262:
 #line 602 "hyp_y.y" /* yacc.c:1646  */
     { h.id = yylval.intval; h.id_set = pcb_true; }
-#line 2598 "hyp_y.c" /* yacc.c:1646  */
+#line 2596 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 263:
 #line 606 "hyp_y.y" /* yacc.c:1646  */
     { h.polygon_type = POLYGON_TYPE_POUR; h.polygon_type_set = pcb_true; }
-#line 2604 "hyp_y.c" /* yacc.c:1646  */
+#line 2602 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 264:
 #line 607 "hyp_y.y" /* yacc.c:1646  */
     { h.polygon_type = POLYGON_TYPE_PLANE; h.polygon_type_set = pcb_true; }
-#line 2610 "hyp_y.c" /* yacc.c:1646  */
+#line 2608 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 265:
 #line 608 "hyp_y.y" /* yacc.c:1646  */
     { h.polygon_type = POLYGON_TYPE_COPPER; h.polygon_type_set = pcb_true; }
-#line 2616 "hyp_y.c" /* yacc.c:1646  */
+#line 2614 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 266:
 #line 612 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2622 "hyp_y.c" /* yacc.c:1646  */
+#line 2620 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 267:
 #line 612 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_polyvoid_begin(&h)) YYERROR; }
-#line 2628 "hyp_y.c" /* yacc.c:1646  */
+#line 2626 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 268:
 #line 613 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_polyvoid_end(&h)) YYERROR; }
-#line 2634 "hyp_y.c" /* yacc.c:1646  */
+#line 2632 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 269:
 #line 616 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2640 "hyp_y.c" /* yacc.c:1646  */
+#line 2638 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 270:
 #line 616 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_polyline_begin(&h)) YYERROR; }
-#line 2646 "hyp_y.c" /* yacc.c:1646  */
+#line 2644 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 271:
 #line 617 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_polyline_end(&h)) YYERROR; }
-#line 2652 "hyp_y.c" /* yacc.c:1646  */
+#line 2650 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 276:
 #line 627 "hyp_y.y" /* yacc.c:1646  */
     { hyyerror("warning: unexpected ')'"); }
-#line 2658 "hyp_y.c" /* yacc.c:1646  */
+#line 2656 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 278:
 #line 632 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2664 "hyp_y.c" /* yacc.c:1646  */
+#line 2662 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 279:
 #line 632 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_line(&h)) YYERROR; }
-#line 2670 "hyp_y.c" /* yacc.c:1646  */
+#line 2668 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 280:
 #line 635 "hyp_y.y" /* yacc.c:1646  */
     { new_record(); }
-#line 2676 "hyp_y.c" /* yacc.c:1646  */
+#line 2674 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 281:
 #line 635 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_curve(&h)) YYERROR; }
-#line 2682 "hyp_y.c" /* yacc.c:1646  */
+#line 2680 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 282:
 #line 638 "hyp_y.y" /* yacc.c:1646  */
     { h.name = yylval.strval; }
-#line 2688 "hyp_y.c" /* yacc.c:1646  */
+#line 2686 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 283:
 #line 638 "hyp_y.y" /* yacc.c:1646  */
     { h.value = yylval.strval; }
-#line 2694 "hyp_y.c" /* yacc.c:1646  */
+#line 2692 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 284:
 #line 638 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_net_attribute(&h)) YYERROR; }
-#line 2700 "hyp_y.c" /* yacc.c:1646  */
+#line 2698 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 285:
 #line 643 "hyp_y.y" /* yacc.c:1646  */
     { h.net_class_name = yylval.strval; if (exec_net_class(&h)) YYERROR; }
-#line 2706 "hyp_y.c" /* yacc.c:1646  */
+#line 2704 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 294:
 #line 662 "hyp_y.y" /* yacc.c:1646  */
     { h.net_name = yylval.strval; }
-#line 2712 "hyp_y.c" /* yacc.c:1646  */
+#line 2710 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 295:
 #line 662 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_net_class_element(&h)) YYERROR; }
-#line 2718 "hyp_y.c" /* yacc.c:1646  */
+#line 2716 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 296:
 #line 665 "hyp_y.y" /* yacc.c:1646  */
     { h.name = yylval.strval; }
-#line 2724 "hyp_y.c" /* yacc.c:1646  */
+#line 2722 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 297:
 #line 665 "hyp_y.y" /* yacc.c:1646  */
     { h.value = yylval.strval; }
-#line 2730 "hyp_y.c" /* yacc.c:1646  */
+#line 2728 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 298:
 #line 665 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_net_class_attribute(&h)) YYERROR; }
-#line 2736 "hyp_y.c" /* yacc.c:1646  */
+#line 2734 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 299:
 #line 670 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_end(&h)) YYERROR; }
-#line 2742 "hyp_y.c" /* yacc.c:1646  */
+#line 2740 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 300:
 #line 675 "hyp_y.y" /* yacc.c:1646  */
     { h.key = yylval.strval; }
-#line 2748 "hyp_y.c" /* yacc.c:1646  */
+#line 2746 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 301:
 #line 675 "hyp_y.y" /* yacc.c:1646  */
     { if (exec_key(&h)) YYERROR; }
-#line 2754 "hyp_y.c" /* yacc.c:1646  */
+#line 2752 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 302:
 #line 680 "hyp_y.y" /* yacc.c:1646  */
     { h.x = yylval.floatval; }
-#line 2760 "hyp_y.c" /* yacc.c:1646  */
+#line 2758 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 303:
 #line 680 "hyp_y.y" /* yacc.c:1646  */
     { h.y = yylval.floatval; }
-#line 2766 "hyp_y.c" /* yacc.c:1646  */
+#line 2764 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 304:
 #line 683 "hyp_y.y" /* yacc.c:1646  */
     { h.x1 = yylval.floatval; }
-#line 2772 "hyp_y.c" /* yacc.c:1646  */
+#line 2770 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 305:
 #line 683 "hyp_y.y" /* yacc.c:1646  */
     { h.y1 = yylval.floatval; }
-#line 2778 "hyp_y.c" /* yacc.c:1646  */
+#line 2776 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 306:
 #line 686 "hyp_y.y" /* yacc.c:1646  */
     { h.x2 = yylval.floatval; }
-#line 2784 "hyp_y.c" /* yacc.c:1646  */
+#line 2782 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 307:
 #line 686 "hyp_y.y" /* yacc.c:1646  */
     { h.y2 = yylval.floatval; }
-#line 2790 "hyp_y.c" /* yacc.c:1646  */
+#line 2788 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 309:
 #line 692 "hyp_y.y" /* yacc.c:1646  */
     { h.xc = yylval.floatval; }
-#line 2796 "hyp_y.c" /* yacc.c:1646  */
+#line 2794 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 310:
 #line 692 "hyp_y.y" /* yacc.c:1646  */
     { h.yc = yylval.floatval; }
-#line 2802 "hyp_y.c" /* yacc.c:1646  */
+#line 2800 "hyp_y.c" /* yacc.c:1646  */
     break;
 
   case 311:
 #line 692 "hyp_y.y" /* yacc.c:1646  */
     { h.r = yylval.floatval; }
-#line 2808 "hyp_y.c" /* yacc.c:1646  */
+#line 2806 "hyp_y.c" /* yacc.c:1646  */
     break;
 
 
-#line 2812 "hyp_y.c" /* yacc.c:1646  */
+#line 2810 "hyp_y.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

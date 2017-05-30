@@ -351,7 +351,7 @@ static void mark_layer(pcb_coord_t x, pcb_coord_t y)
 
 static void mark_layer_order(pcb_coord_t x)
 {
-	pcb_layer_group_t *g;
+	pcb_layergrp_t *g;
 	pcb_coord_t tx, ty1, ty2;
 	lactive_idx = -1;
 
@@ -398,7 +398,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 	y = ystart;
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		int i, stepf = 0, stepb = 0, th;
-		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
+		pcb_layergrp_t *g = PCB->LayerGroups.grp + gid;
 		const char *color = "#ff0000";
 
 		if ((!g->valid) || (gid == drag_gid)  || (gid == drag_gid_subst))
@@ -529,7 +529,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 			mark_layer_order(cx);
 		}
 		else if (drag_gid >= 0) {
-			pcb_layer_group_t *g = &PCB->LayerGroups.grp[drag_gid];
+			pcb_layergrp_t *g = &PCB->LayerGroups.grp[drag_gid];
 			const char *name = g->name == NULL ? "<unnamed group>" : g->name;
 			draw_hover_label(name);
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_TOP);
@@ -544,7 +544,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 /* Returns 0 if gactive can be removed from its current group */
 static int check_layer_del(pcb_layer_id_t lid)
 {
-	pcb_layer_group_t *grp;
+	pcb_layergrp_t *grp;
 	unsigned int tflg;
 
 	tflg = pcb_layer_flags(PCB, lid);
@@ -654,7 +654,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 		case PCB_HID_MOUSE_RELEASE:
 			if (drag_addgrp) {
 				if (gactive >= 0) {
-					pcb_layer_group_t *g;
+					pcb_layergrp_t *g;
 					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = NULL;
 					g->type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
@@ -702,7 +702,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			else if (drag_lid >= 0) {
 				if (gactive >= 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
-					pcb_layer_group_t *g;
+					pcb_layergrp_t *g;
 					if (l->grp == gactive) { /* move within the group */
 						int d, s, at;
 						g = &PCB->LayerGroups.grp[gactive];
@@ -781,7 +781,7 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		int i;
 		const char *type_gfx;
-		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
+		pcb_layergrp_t *g = PCB->LayerGroups.grp + gid;
 
 		if (!g->valid) {
 			if (g->len <= 0)

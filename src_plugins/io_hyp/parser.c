@@ -771,7 +771,7 @@ void hyp_reset_layers()
 
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
-	pcb_layer_group_t *grp = NULL;
+	pcb_layergrp_t *grp = NULL;
 
 	pcb_layergrp_inhibit_inc();
 
@@ -831,7 +831,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 {
 	pcb_layer_id_t layer_id;
 	pcb_layergrp_id_t gid;
-	pcb_layer_group_t *grp;
+	pcb_layergrp_t *grp;
 	char new_layer_name[PCB_MAX_LAYER];
 	int n;
 

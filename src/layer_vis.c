@@ -242,7 +242,7 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 	int n;
 
 	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
-		pcb_layer_group_t *g = &pcb->LayerGroups.grp[gid];
+		pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
 
 		pcb_bool_op(g->open, open);
 

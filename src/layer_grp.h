@@ -28,7 +28,7 @@
 #ifndef PCB_LAYER_GRP_H
 #define PCB_LAYER_GRP_H
 
-typedef struct pcb_layergrp_s pcb_layer_group_t;
+typedef struct pcb_layergrp_s pcb_layergrp_t;
 
 #include "layer.h"
 
@@ -55,14 +55,14 @@ struct pcb_layergrp_s {
 /* layer stack: an ordered list of layer groups (physical layers). */
 struct pcb_layer_stack_s {
 	pcb_cardinal_t len;
-	pcb_layer_group_t grp[PCB_MAX_LAYERGRP];
+	pcb_layergrp_t grp[PCB_MAX_LAYERGRP];
 };
 
 /* Return the layer group for an id, or NULL on error (range check) */
-pcb_layer_group_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
+pcb_layergrp_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 
 /* Return the gid if grp is in the stackup of pcb (else return -1) */
-pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layer_group_t *grp);
+pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layergrp_t *grp);
 
 
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
@@ -90,7 +90,7 @@ int pcb_layergrp_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_
 /* Put a layer in a group (the layer should not be in any other group);
    returns 0 on success */
 int pcb_layer_add_in_group(pcb_board_t *pcb, pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
-int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id);
+int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id);
 
 /* Remove a layer group; if del_layers is zero, layers are kept but detached
    (.grp = -1), else layers are deleted too */
@@ -105,15 +105,15 @@ int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layergrp_id_t dst, pcb_layergrp
 
 
 /* Insert a new layer group in the layer stack after the specified group */
-pcb_layer_group_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t where);
+pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t where);
 
 /* Move lid 1 step towards the front (delta=-1) or end (delta=+1) of the
    layer list of the group. Return 0 on success (even when already reached
    the end of the list) or -1 on error */
-int pcb_layergrp_step_layer(pcb_layer_group_t *grp, pcb_layer_id_t lid, int delta);
+int pcb_layergrp_step_layer(pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta);
 
 /* Return the array index of lid within the grp's lid list or -1 if not on the list */
-int pcb_layergrp_index_in_grp(pcb_layer_group_t *grp, pcb_layer_id_t lid);
+int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, pcb_layer_id_t lid);
 
 
 /* Enable/disable inhibition of layer changed events during layer group updates */
@@ -124,7 +124,7 @@ void pcb_layergrp_inhibit_dec(void);
 int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname);
 
 /* changes the name of a layer; memory has to be already allocated */
-int pcb_layergrp_rename_(pcb_layer_group_t *grp, char *name);
+int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name);
 
 /* Slow linear search for a layer group by name */
 pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);
@@ -153,15 +153,15 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, in
 /* for parsing old files with old layer descriptions, with no layer groups */
 void pcb_layer_group_setup_default(pcb_layer_stack_t *newg); /* default layer groups, no layers */
 void pcb_layer_group_setup_silks(pcb_layer_stack_t *newg); /* make sure we have two silk layers, add them if needed */
-pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id);
-pcb_layer_group_t *pcb_get_grp_new_misc(pcb_board_t *pcb);
+pcb_layergrp_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
+pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id);
+pcb_layergrp_t *pcb_get_grp_new_misc(pcb_board_t *pcb);
 
 /* ugly hack: remove the extra substrate we added after the outline layer */
 void pcb_layergrp_fix_old_outline(pcb_board_t *pcb);
 
 /* ugly hack: turn an old intern layer group into an outline group after realizing it is really an outline (reading the old layers) */
-void pcb_layergrp_fix_turn_to_outline(pcb_layer_group_t *g);
+void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g);
 
 
 

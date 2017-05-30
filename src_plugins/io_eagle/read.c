@@ -264,7 +264,7 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int 
 			int id, reuse = 0;
 			unsigned long typ;
 			pcb_layergrp_id_t gid;
-			pcb_layer_group_t *grp;
+			pcb_layergrp_t *grp;
 
 			ly->name    = eagle_get_attrs(n, "name", NULL);
 			ly->color   = eagle_get_attrl(n, "color", -1);
