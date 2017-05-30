@@ -852,6 +852,7 @@ static int eagle_read_contactref(read_state_t *st, xmlNode *subtree, void *obj, 
 
 static int eagle_read_poly(read_state_t *st, xmlNode *subtree, void *obj, int type)
 {
+	eagle_loc_t loc = type;
 	eagle_layer_t *ly;
 	long ln = eagle_get_attrl(subtree, "layer", -1);
 	pcb_polygon_t *poly;
@@ -871,6 +872,13 @@ static int eagle_read_poly(read_state_t *st, xmlNode *subtree, void *obj, int ty
 			x = eagle_get_attrc(n, "x", 0);
 			y = eagle_get_attrc(n, "y", 0);
 			pcb_poly_point_new(poly, x, y);
+			switch (loc) {
+				case IN_ELEM:
+				break;
+			case ON_BOARD:
+                        	size_bump(st, x, y);
+				break;
+			}
 		}
 	}
 
@@ -1051,6 +1059,7 @@ static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int t
 		{"attributes",  eagle_read_nop},
 		{"variantdefs", eagle_read_nop},
 		{"classes",     eagle_read_nop},
+		{"description", eagle_read_nop},
 		{"designrules", eagle_read_nop},
 		{"autorouter",  eagle_read_nop},
 		{"elements",    eagle_read_elements},
@@ -1221,6 +1230,7 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 
 err:;
 	xmlFreeDoc(doc);
+	pcb_trace("Eagle XML parsing error. Bailing out now. %d\n", res);
 	return -1;
 }
 
