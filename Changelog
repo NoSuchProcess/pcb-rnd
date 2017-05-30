@@ -1,3 +1,185 @@
+pcb-rnd 1.2.3 (r8962)
+~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-Cleanup: start remove hardwired global var PCB, make the API take the board pointer as an argument
+		-Del: board color cache - use the conf
+		-Del: no need to set silk layer colors to special, draw.c will handle that
+		-Fix: human readable error message before abort() on unknown hid attrib type on cli-to-attrib conversion
+		-Fix: select element only if its silk layer is visible
+		-Del: show_paste is not a config setting anymore - normal layer group visibility should apply
+		-Fix: ElementList() shouldn't crash on empty footprint description (reported by Evan)
+		-Fix: don't segfault whenloading the buffer fails (e.g. source is non-existing file name)
+
+	[layer]
+		-Add: compositing layer draw for mask, paste and silk; positive vs. negative, auto vs. manual flags per layer
+		-Cleanup: have a generic, draw-callback based PCB_LYT_DIALOG instead of a layer dedicated for fontsel; this makes it easier to introduce new dialog box layers/previews without having to register new layers
+		-Fix: uninit in layer_vis to remove events registered earlier
+		-Change: new interpretation of the mask draw API in the HID API: it's the generic composite layer draw API
+		-Add: EditLayer() and EditGroup actions for changing layer/group name and properites (+ dialog box)
+		-Add: function to clean up old imports: mark all silk layers auto; used in io_pcb, io_kicad*, io_eagle, io_hyp
+		-Cleanup: get rid of PCB->ElementOn in favor of a layer group based query
+		-Del: remove old config items show_mask and show_paste, use the normal layer visibility mechanism should handle that
+		-Split: split off LAYERVIS_CHANGED from the LAYERS_CHANGED event to provide a cheaper mechanism for the more common case
+		-Add: SelectLayer(): central action
+		-Add: low level group rename functions
+		-Add: low level function to find a group by name
+		-Add: low level group pointer -> ID converter function
+		-Add: low level function to step a layer within a group +1 or -1 slot; insertion of new layers is interpreted in group context,not in logical layer context
+		-Del: old layer move code: logical layer index is insignificant as layers are presented by group orders,no need to move layers on that list
+		-Add: helper function for creating the mandantory silk layers
+		-Add: ToggleView() can expand/collapse and vis/unvis all layers and groups
+		-Add: hid_common function for building a layer menu, at least adding groups and layers
+		-Fix: mark pcb changed when group properties are changed in EditGroup()
+		-Fix: cross section draws "text-with-background" only on the GUI - most exporters won't be able to display this correctly, making the text unreadable
+
+	[layersel]
+		-Add: new layer selector in the top window; show layers per groups; collapse/expand groups
+		-Add: right-click layer popup (also selects the pointed layer)
+		-Add: layer property inidications similar to cross section view's: hatch for auto, thick border for negative
+
+	[csect]
+		-Add: properly indicate where the layer would be inserted within the group
+		-Add: add/del/reorder logical layers within a layer group
+		-Add: allow logical layers to be in the paste layer
+		-Fix: allow all layers to show up on the csect drawing, not only copper layers
+		-Add: open popup menu for groups and layers on right click
+		-Add: draw_csect doesn't allow removing the last layer from a silk
+
+	[eagle]
+		-Fix: make sure both silk layers are set up even if the input file didn't specify them
+		-Add: load and build polygons
+		-Fix: make new lines and arcs clear by default
+		-Add: use md_wire_wire for clearance values on lines and arcs
+		-Fix: put multiple unsupported layers on silk
+		-Add: proper element text placement and rotation
+
+	[scconfig]
+		-Fix: cquote generates C89-safe long strings using arrays - removes a lot of string-too-long warnings
+		-Fix: use -ansi -pedantic for detections in --debug mode, so the same flags are used for detecting libs and compilation; this should fix the realpath bug reported by Ade
+		-Fix: make sure realpath() gets its _DEFAULT_SOURCE when needed
+		-Fix: -fPIC is optional: many C compilers don't support it
+
+	[boardflip]
+		-Fix: don't mirror element text unless had to move to the other side
+
+	[export]
+		-Fix: ps: proper plugin uninit
+		-Fix: stat: don't use read-only string in default attribute val - the gtk gui tends to free() it
+		-Fix: stat: user-input save metadata properly
+		-Fix: stat: use 4-digit year in date, to avoid confusion
+		-Fix: stat: wrong date format, should be iso (reported by Larry)
+
+	[fp_board]
+		-Add: load board as a footprint library
+
+	[fp_fs]
+		-Fix: always return error on fp mapping if topdir is not a directory - this how we give other fp_ implementations a chance to map those
+
+	[gerber]
+		-Fix: board larger than 214.7mm had a coord overflow in drill files with 32 bit coords (reported by Evan)
+
+	[gtk]
+		-Fix: pinout window size is 0 after opening
+		-Change: propedit preview should use the preview infra instead of pixmap for forward portability
+		-Change: menu: use hbox instead of the accel label hack copied from gschem
+		-Fix: popup menu didn't work since r4248: action didn't consider the extra layer of (private) menu handle
+		-Add: left-click on the layer selector widget pops up the layer popup
+		-Fix: gdk should allow drawing the paste layer
+		-Add: local widget_hide_all() implementation to work around gtk's wise decision to kill off everything that's simple
+		-Fix: don't offer restoring factory default for layers, it's hard to tell what exactly we should do
+		-Add: wt_preview can distinguish right click from pan
+		-Add: esc in command window dialog closes the dialog
+		-Fix: apply Chalres' patch about double command execution on esc
+		-Fix: point-cursor-disappears-if-gpmi-enabled bug; move point_cursor logics from glue to in_mouse, make a permanent override and an explicit "set cursor to mode default" (mode set to -1) that also respects the override
+		-Fix: command entry history upside-down + when number of commands is over the maximum in the history, properly delete the oldest, not the latest
+		-Del: underscore menu mnemonics: no support for that hotkey mechanism in our menus anymore
+		-Add: GL: annoying, bold warning about opengl not supporting composite layers
+
+	[lesstif]
+		-Fix: non-c89 initialization
+		-Add: be able to show the paste layer
+		-Add: remember both submenu widget and menu button in the lihata node's user_data when creating menus (so that it'll be possible to remove menus later)
+		-Add: implement the remove menu HID call
+		-Fix: remove flags[] entry when a checkbox menu is removed
+		-Add: reuse empty wflags[] slots
+
+	[io]
+		-Fix: let io_ set Data->loader on pcb load; this gives the plugin a chance to make a decision depending on file content
+
+	[io_hyp]
+		-Change: enable the plugin by default
+
+	[io_lihata]
+		-Add: v2 writer makes a layer stack subtree; prefer v2 saver if version is unspecified
+		-Fix: in-place upgrade from lihata board v1 to v2 (bypass the root mismatch error)
+		-Fix: non-lht-board file overwrite: missing or mismatching root error means we need to do a fresh save, not merging but overwriting everything
+		-Fix: when saving v1, make sure the 2 silk layers are at the end of the layer list - old code and the old format requires that
+
+	[io_pcb]
+		-Fix: when loading a footprint file, properly set up the mostly empty layer stack
+		-Workaround: the total lack of reentrancy... assume fp fopen() may call Parse so initialize globals only after that call
+		-Fix: swap layers so that silks are always at the end (required by old code and the format)
+
+	[plugin]
+		-Change: use puplug instead of the plugin system mostly inherited from mainline
+		-Change: switch over from manual plugin listing to semi-automated when generating the tmpasm
+		-Add: runtime plugin dependency handling: when a module is selected to be a plugin, its dependencies should be at least plugin (but don't need to be builtin)
+
+	[png]
+		-Update: new mask draw API; properly draw both positive and negative combinations
+		-Fix: export non-axis-aligned square pads properly (numeric conversion bug turned those into random sized rectangles)
+		-Add: photo-mask-colour options similar to mainline's.
+		-Fix: draw mask layer in 'as shown' only if it's visible
+
+	[polygon]
+		-Fix: enable DEBUGP() in --debug so we get more detailed error messages
+		-Fix: print animator script with proper coords on stderr instead of old pcb format lines when polygon asserts
+
+	[ps]
+		-Add: remember last set mask mode
+		-Update: new layer mask API
+
+	[route]
+		-Add: Allow line-points to be moved using the route code which implements 45/90 mode. Disabled by default with config setting move_linepoint_uses_route
+		-Fix: The 45/90 route rules were disabled if the rat layer was selected but editing other layers.
+		-Fix: original line end point move should manage undo in the new code when route is turned off (bisecting credits: miloh & evan)
+		-Fix: When moving a line-point would result in a 0 length line, the move operation was not applied.
+
+	[rubberband]
+		-Fix: Draw rat lines directly when rubberbanding to avoid 45/90 rules.
+		-Fix: Rubberband with 45/90 route code failed if both ends of the line moved.
+		-Fix: plugin uninit should remove events registered on init
+
+	[svg]
+		-Add: preparing for the new mask API: <defs> and <mask> sections for the mask
+		-Update: new mask layer API: mask set/clear overrides color
+		-Fix: use the "configured" mask color instead of hardwired red
+		-Fix: missing else made the silk use copper color
+		-Tune: "inner" layer shadow has no "3d" depth
+		-Fix: mask rendering logics: always visible in photo mode, group visibility controls it in normal mode
+
+	[util]
+		-Del: gsch2pcb-rnd: method_pcb - please use method_import instead
+
+	[tests]
+		-Update: simple gsch2pcb-rnd test: switch from -m pcb to -m import
+		-Update: pcbflags: there's no more showmask config setting
+		-Fix: missing distance calculation function - link misc_util.o in propedit test
+
+	[doc]
+		-Update: core plugin howto for r8214
+		-Fix: refine the 3-state wording in src_plugin's README
+		-Update: mods3; work from pup files, ignore the READMEs
+		-Update: plugin creation tutorial for the new plugin system
+		-Add: explain autoload in the plugin doc
+		-Add: mods3: generate plugin dep graph
+		-Fix: html validation, typos (by Larry)
+		-Update: model doc for layer compositing
+		-Add: missing rosetta Makefile
+		-Add: missing explanation for gpmi rosetta 90_clock
+		-Add: bugreporting howto
+		-Add: io_lihata: lihata board version history
+
 pcb-rnd 1.2.2 (r8120)
 ~~~~~~~~~~~~~~~~~~~~~
 	[font]
