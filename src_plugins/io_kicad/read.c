@@ -104,7 +104,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree->str != NULL) {
 		int ver = atoi(subtree->str);
 		printf("kicad version: '%s' == %d\n", subtree->str, ver);
-		if (ver == 3 || ver == 4) /* accept version 3 */
+		if (ver == 3 || ver == 4 || 20170123) /* accept version 3 */
 			return 0;
 	}
 	return -1;
@@ -2186,6 +2186,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"net",        kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class",  kicad_parse_nop},
 		{"module",     kicad_parse_module},  /* for footprints */
+		{"dimension",  kicad_parse_nop},  /* for dimensioning features */
 		{"gr_line",     kicad_parse_gr_line},
 		{"gr_arc",     kicad_parse_gr_arc},
 		{"gr_circle",     kicad_parse_gr_arc},
