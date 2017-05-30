@@ -28,7 +28,7 @@
 #ifndef PCB_LAYER_GRP_H
 #define PCB_LAYER_GRP_H
 
-typedef struct pcb_layer_group_s pcb_layer_group_t;
+typedef struct pcb_layergrp_s pcb_layer_group_t;
 
 #include "layer.h"
 
@@ -37,7 +37,7 @@ typedef struct pcb_layer_group_s pcb_layer_group_t;
  * on/off together.
  */
 
-struct pcb_layer_group_s {
+struct pcb_layergrp_s {
 	pcb_cardinal_t len;                    /* number of layer IDs in use */
 	pcb_layer_id_t lid[PCB_MAX_LAYER];     /* lid=layer ID */
 	char *name;                            /* name of the physical layer (independent of the name of the layer groups) */
