@@ -1,6 +1,7 @@
 Ready to blog:
 - fp_board
 - bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
+- Ade's route stuff, current state, with video
 
 less urgent, almost finished:
 - braille font
