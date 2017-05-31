@@ -860,10 +860,11 @@ void ghid_gl_screen_update(void)
 }
 
 #define Z_NEAR 3.0
-gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
+gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, /*GdkEventExpose*/void * p, void *vport)
 {
 	GHidPort * port = vport;
 	render_priv_t *priv = port->render_priv;
+	GdkEventExpose *ev = p;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
 

@@ -1204,10 +1204,11 @@ static void ghid_gdk_screen_update(void)
 	show_crosshair(TRUE);
 }
 
-static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, void *vport)
+static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget * widget, /*GdkEventExpose*/void * p, void *vport)
 {
 	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;
+	GdkEventExpose *ev = p;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	gdk_draw_drawable(window, priv->bg_gc, priv->pixmap,
