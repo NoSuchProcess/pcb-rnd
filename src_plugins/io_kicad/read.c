@@ -59,6 +59,29 @@ typedef struct {
 	int (*parser)(read_state_t *st, gsxl_node_t *subtree);
 } dispatch_t;
 
+static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
+{
+	gds_t str;
+	va_list ap;
+
+
+	gds_init(&str);
+#warning TODO: include location info here:
+	pcb_append_printf(&str, "io_kicad parse error: ");
+
+	va_start(ap, fmt);
+	pcb_append_vprintf(&str, fmt, ap);
+	va_end(ap);
+	
+	gds_append(&str, '\n');
+
+#warning TODO: do not printf here:
+	pcb_message(PCB_MSG_ERROR, "%s", str.array);
+
+	gds_uninit(&str);
+	return -1;
+}
+
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
 static int kicad_dispatch(read_state_t *st, gsxl_node_t *subtree, const dispatch_t *disp_table)
@@ -67,15 +90,14 @@ static int kicad_dispatch(read_state_t *st, gsxl_node_t *subtree, const dispatch
 
 	/* do not tolerate empty/NIL node */
 	if (subtree->str == NULL)
-		return -1;
+		return kicad_error(subtree, "unexpected empty/NIL subtree");
 
 	for(d = disp_table; d->node_name != NULL; d++)
 		if (strcmp(d->node_name, subtree->str) == 0)
 			return d->parser(st, subtree->children);
 
-	printf("Unknown node: '%s'\n", subtree->str);
 	/* node name not found in the dispatcher table */
-	return -1;
+	return kicad_error(subtree, "Unknown node: '%s'", subtree->str);
 }
 
 /* Take each children of tree and execute them using kicad_dispatch
