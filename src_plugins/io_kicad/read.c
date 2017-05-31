@@ -126,7 +126,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree->str != NULL) {
 		int ver = atoi(subtree->str);
 		printf("kicad version: '%s' == %d\n", subtree->str, ver);
-		if (ver == 3 || ver == 4 || ver == 20170123) /* accept version 3 */
+		if (ver == 3 || ver == 4 || ver == 20170123)
 			return 0;
 	}
 	return -1;
