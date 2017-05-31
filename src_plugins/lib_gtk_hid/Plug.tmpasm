@@ -15,14 +15,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/lib_gtk_hid/render.o
 @]
 
-switch /local/pcb/lib_gtk_common/controls
-	case {disable} end;
-	default
-		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtkx/cflags
-		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtkx/ldflags
-	end
-end
-
 switch /local/pcb/lib_gtk_hid/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
