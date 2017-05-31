@@ -466,6 +466,16 @@ int hook_detect_target()
 		has_gtk2 = 0;
 	}
 
+	/* libs/gui/gtkx is the version-independent set of flags in the XOR model */
+	if (has_gtk3) {
+		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk3/cflags"));
+		put("/target/libs/gui/gtkx/ldflags", get("/target/libs/gui/gtk3/ldflags"));
+	}
+	if (has_gtk2) {
+		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk2/cflags"));
+		put("/target/libs/gui/gtkx/ldflags", get("/target/libs/gui/gtk2/ldflags"));
+	}
+
 	if (!need_gtklibs) {
 		report("No gtk support available, disabling lib_gtk_*...\n");
 		hook_custom_arg("Disable-lib_gtk_common", NULL);
