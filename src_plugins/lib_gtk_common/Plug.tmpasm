@@ -63,8 +63,8 @@ put /local/pcb/mod/OBJS_C99 [@
 switch /local/pcb/lib_gtk_common/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
-		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
+		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtkx/cflags
+		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtkx/ldflags
 	end
 end
 
