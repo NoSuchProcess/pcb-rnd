@@ -319,7 +319,7 @@ int safe_atoi(const char *s)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2;
+	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
@@ -431,6 +431,7 @@ int hook_detect_target()
 				hook_custom_arg("Disable-hid_gtk2_gl", NULL);
 			}
 			need_gtklibs = 1;
+			has_gtk2 = 1;
 		}
 		else {
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling hid_gtk2*...\n");
@@ -446,13 +447,23 @@ int hook_detect_target()
 				report_repeat("WARNING: Since there's no libgtk3 found, disabling hid_gtk3*...\n");
 				hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
 			}
-			else
+			else {
 				need_gtklibs = 1;
+				has_gtk3 = 1;
+			}
 		}
 		else {
 			report_repeat("WARNING: not going to try gtk3 because cairo is not found\n");
 			hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
 		}
+	}
+
+	/* gtk2 vs. gtk3 xor logic */
+	if (has_gtk2 && has_gtk3) {
+		report_repeat("Selected both gtk2 and gtk3 HIDs; gtk2 and gtk3 are incompatible, disabling gtk2 in favor of gtk3.\n");
+		hook_custom_arg("Disable-hid_gtk2_gdk", NULL);
+		hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+		has_gtk2 = 0;
 	}
 
 	if (!need_gtklibs) {
