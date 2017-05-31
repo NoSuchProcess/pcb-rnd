@@ -309,13 +309,13 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 							}
 							/* ignore right or left justification for now */
 						} else {
-							return -1;
+							return kicad_error(subtree, "unexpected empty/NULL gr_text justify node");
 						}
 					} else {
 						if (m->str != NULL) {
 							printf("Unknown effects argument %s:", m->str);
 						}
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL gr_text effects node");
 					}
 				}
 			} 				
@@ -365,7 +365,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 		pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, text, Flags);
 		return 0; /* create new font */
 	}
-	return -1;
+	return kicad_error(subtree, "failed to create gr_text element");
 }
 
 /* kicad_pcb/gr_line */
@@ -704,7 +704,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 							X = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL via X node");
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("\tvia at y: '%s'\n", (n->children->next->str));
@@ -715,7 +715,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 							Y = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL via Y node");
 					}
 			} else if (n->str != NULL && strcmp("size", n->str) == 0) {
 					SEEN_NO_DUP(tally, 1);
@@ -728,7 +728,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 							Thickness = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL via size node");
 					}
 			} else if (n->str != NULL && strcmp("layers", n->str) == 0) {
 					SEEN_NO_DUP(tally, 2);
@@ -741,7 +741,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
  *							}   via layers not currently used in PCB
  */   
 						} else {
-							return -1;
+							return kicad_error(subtree, "unexpected empty/NULL via layer node");
 						}
 					}
 			} else if (n->str != NULL && strcmp("net", n->str) == 0) {
@@ -749,14 +749,14 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("\tvia segment net: '%s'\n", (n->children->str));
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL via net node");
 					}
 			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 					SEEN_NO_DUP(tally, 4);
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("\tvia tstamp: '%s'\n", (n->children->str));
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL via tstamp node");
 					}
 			} else if (n->str != NULL && strcmp("drill", n->str) == 0) {
 					SEEN_NO_DUP(tally, 5);
@@ -769,13 +769,13 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 							Drill = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL via drill node");
 					}
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown via argument %s:", n->str);
 				}
-				return -1;
+				return kicad_error(subtree, "unexpected empty/NULL via argument node");
 			}
 		}
 	}
@@ -816,7 +816,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 							X1 = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment X1 node");
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("\tsegment start at y: '%s'\n", (n->children->next->str));
@@ -827,7 +827,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 							Y1 = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment Y1 node");
 					}
 			} else if (n->str != NULL && strcmp("end", n->str) == 0) {
 					SEEN_NO_DUP(tally, 1);
@@ -840,7 +840,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 							X2 = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment X2 node");
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("\tsegment end at y: '%s'\n", (n->children->next->str));
@@ -851,7 +851,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 							Y2 = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment Y2 node");
 					}
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 					SEEN_NO_DUP(tally, 2);
@@ -862,7 +862,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 							return kicad_error(subtree, "error parsing segment layer");
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment layer node");
 					}
 			} else if (n->str != NULL && strcmp("width", n->str) == 0) {
 					SEEN_NO_DUP(tally, 3);
@@ -875,7 +875,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 							Thickness = PCB_MM_TO_COORD(val);
 						}
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment width node");
 					}
 			} else if (n->str != NULL && strcmp("net", n->str) == 0) {
 					SEEN_NO_DUP(tally, 4);
@@ -883,7 +883,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tsegment net: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 11);
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment net node");
 					}
 			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) { /* not likely to be used */
 					SEEN_NO_DUP(tally, 5);
@@ -891,13 +891,13 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tsegment timestamp: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 13);
 					} else {
-						return -1;
+						return kicad_error(subtree, "unexpected empty/NULL segment tstamp node");
 					}
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown segment argument %s:", n->str);
 				}
-				return -1;
+				return kicad_error(subtree, "unexpected empty/NULL segment argument node");
 			}
 		}
 	}
@@ -907,7 +907,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 		pcb_printf("\tnew segment on layer created\n");
 		return 0;
 	}
-	return -1;
+	return kicad_error(subtree, "failed to create segment on layout");
 }
 
 /* Parse a layer definition and do all the administration needed for the layer */
@@ -946,7 +946,7 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 				if (strcmp(lname+2, "Adhes") == 0) return 0; /* pcb-rnd has no adhesive support */
 				if (strcmp(lname+2, "Paste") == 0) return 0; /* pcb-rnd has no custom paste support */
 				if (strcmp(lname+2, "Mask") == 0)  return 0; /* pcb-rnd has no custom mask support */
-				return -1; /* unknown F. or B. layer -> error */
+				return kicad_error(subtree, "unknown F. or B. layer error"); /* unknown F. or B. layer -> error */
 #endif
 				goto hack1;
 			}
