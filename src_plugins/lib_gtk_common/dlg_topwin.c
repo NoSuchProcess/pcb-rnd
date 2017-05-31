@@ -430,6 +430,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
 												| GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK
 												| GDK_KEY_RELEASE_MASK | GDK_KEY_PRESS_MASK
+												| GDK_SCROLL_MASK
 												| GDK_FOCUS_CHANGE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
 
 	/*
