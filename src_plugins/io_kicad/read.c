@@ -177,6 +177,7 @@ static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 			} else { /* default to A0 */
 				st->PCB->MaxWidth = PCB_MM_TO_COORD(1189.0);
 				st->PCB->MaxHeight = PCB_MM_TO_COORD(841.0);
+				pcb_message(PCB_MSG_ERROR, "\tUnable to determine layout size. Defaulting to A0 layout size.\n");
 			}
 			return 0;
 	}
