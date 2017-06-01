@@ -100,6 +100,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 	polylist_t Polygon;
 	arclist_t Arc;
 	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
+	pcb_rtree_t *subc_tree;        /* TODO: decide whether this lists subcircuits or parts of subcircuits */
 	pcb_bool On;                   /* visible flag */
 	const char *Color;             /* color */
 	const char *SelectedColor;

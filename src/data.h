@@ -29,6 +29,7 @@
 #ifndef	PCB_DATA_H
 #define	PCB_DATA_H
 
+#include <genht/htsp.h>
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "layer.h"
@@ -43,6 +44,7 @@ struct pcb_data_s {
 	int LayerN;                        /* number of layers in this board */
 	pinlist_t Via;
 	elementlist_t Element;
+	htsp_t subc;                       /* refdes -> pcb_subc_t* */
 /**/
 	pcb_rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
