@@ -269,6 +269,9 @@ void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 		lay->text_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(lay->text_tree, (pcb_box_t *) text, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_TEXT, lay, text);
+
+	PCB_SET_PARENT(text, layer, lay);
+
 	return (text);
 }
 
@@ -403,6 +406,8 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 	pcb_r_insert_entry(Destination->text_tree, (pcb_box_t *) text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Destination, text);
 
+	PCB_SET_PARENT(text, layer, Destination);
+
 	return text;
 }
 
@@ -448,6 +453,7 @@ void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_TEXT, Layer, Text, Text);
+	PCB_CLEAR_PARENT(Text);
 	return NULL;
 }
 
