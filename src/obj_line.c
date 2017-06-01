@@ -310,7 +310,7 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 	pcb_r_insert_entry(lay->line_tree, (pcb_box_t *) line, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_LINE, lay, line);
 
-	PCB_SET_PARENT(line, data, ctx->buffer.dst);
+	PCB_SET_PARENT(line, layer, lay);
 
 	return (line);
 }
