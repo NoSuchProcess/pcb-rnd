@@ -130,6 +130,7 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	pcb_box_t		BoundingBox;	\
 	long int	ID;		\
 	pcb_flag_t	Flags; \
+	pcb_objtype_t type; \
 	pcb_parenttype_t parent_type; \
 	pcb_parent_t parent; \
 	pcb_attribute_list_t Attributes
