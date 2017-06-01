@@ -147,6 +147,9 @@ void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 	if (!ctx->buffer.dst->rat_tree)
 		ctx->buffer.dst->rat_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(ctx->buffer.dst->rat_tree, (pcb_box_t *) rat, 0);
+
+	PCB_SET_PARENT(rat, data, ctx->buffer.dst);
+
 	return rat;
 }
 
