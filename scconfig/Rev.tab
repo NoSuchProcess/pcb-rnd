@@ -1,3 +1,4 @@
+8990	configure	new source files for subcircuits
 8920	configure	build changes in puplug
 8912	configure	fp_board enabled by default; new plugin for mentor cell footprints
 8817	configure	fp_board: new plugin

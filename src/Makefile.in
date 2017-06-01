@@ -69,6 +69,7 @@ put /local/pcb/OBJS [@
 	hid_init.o
 	hid_nogui.o
 	ht_element.o
+	ht_subc.o
 	insert.o
 	intersect.o
 	layer.o
@@ -103,6 +104,8 @@ put /local/pcb/OBJS [@
 	obj_poly_list.o
 	obj_rat.o
 	obj_rat_list.o
+	obj_subc.o
+	obj_subc_list.o
 	obj_text.o
 	obj_text_list.o
 	paths.o
