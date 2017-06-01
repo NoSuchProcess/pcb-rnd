@@ -800,6 +800,7 @@ void *RemoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_VIA, Via, Via, Via);
+	PCB_CLEAR_PARENT(Via);
 	return NULL;
 }
 

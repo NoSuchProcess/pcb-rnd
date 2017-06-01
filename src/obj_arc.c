@@ -583,6 +583,7 @@ void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_ARC, Layer, Arc, Arc);
+	PCB_CLEAR_PARENT(Arc);
 	return NULL;
 }
 

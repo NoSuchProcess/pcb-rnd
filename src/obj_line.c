@@ -682,6 +682,7 @@ void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_LINE, Layer, Line, Line);
+	PCB_CLEAR_PARENT(Line);
 	return NULL;
 }
 

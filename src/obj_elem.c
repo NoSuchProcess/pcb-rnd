@@ -1777,6 +1777,7 @@ void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, Element, Element, Element);
+	PCB_CLEAR_PARENT(Element);
 	return NULL;
 }
 
