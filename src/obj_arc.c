@@ -54,8 +54,7 @@ pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 
 	new_obj = calloc(sizeof(pcb_arc_t), 1);
 	new_obj->type = PCB_OBJ_ARC;
-	new_obj->parent_type = PCB_PARENT_LAYER;
-	new_obj->parent.layer = layer;
+	PCB_SET_PARENT(new_obj, layer, layer);
 	arclist_append(&layer->Arc, new_obj);
 
 	return new_obj;
@@ -66,8 +65,7 @@ pcb_arc_t *pcb_element_arc_alloc(pcb_element_t *Element)
 	pcb_arc_t *arc = calloc(sizeof(pcb_arc_t), 1);
 
 	arc->type = PCB_OBJ_ARC;
-	arc->parent_type = PCB_PARENT_ELEMENT;
-	arc->parent.element = Element;
+	PCB_SET_PARENT(arc, element, Element);
 
 	arclist_append(&Element->Arc, arc);
 	return arc;
@@ -232,8 +230,7 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 		Layer->arc_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	Arc->type = PCB_OBJ_ARC;
-	Arc->parent_type = PCB_PARENT_LAYER;
-	Arc->parent.layer = Layer;
+	PCB_SET_PARENT(Arc, layer, Layer);
 }
 
 
@@ -317,9 +314,7 @@ void *MoveArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
 	pcb_r_insert_entry(lay->arc_tree, (pcb_box_t *) arc, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_ARC, lay, arc);
 
-	arc->type = PCB_OBJ_ARC;
-	arc->parent_type = PCB_PARENT_LAYER;
-	arc->parent.layer = lay;
+	PCB_SET_PARENT(arc, layer, lay);
 
 	return (arc);
 }
@@ -534,9 +529,7 @@ void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_arc_t *
 		Destination->arc_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Destination->arc_tree, (pcb_box_t *) arc, 0);
 
-	arc->type = PCB_OBJ_ARC;
-	arc->parent_type = PCB_PARENT_LAYER;
-	arc->parent.layer = Destination;
+	PCB_SET_PARENT(arc, layer, Destination);
 
 	return arc;
 }
@@ -574,10 +567,7 @@ void *DestroyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 
-	Arc->type = PCB_OBJ_ARC;
-	Arc->parent_type = PCB_PARENT_INVALID;
-	Arc->parent.any = NULL;
-
+	PCB_CLEAR_PARENT(Arc);
 	pcb_arc_free(Arc);
 
 	return NULL;

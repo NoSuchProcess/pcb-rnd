@@ -82,6 +82,22 @@ union pcb_parent_s {
 	pcb_element_t  *element;
 };
 
+#define PCB_PARENT_TYPENAME_layer    PCB_PARENT_LAYER
+#define PCB_PARENT_TYPENAME_data     PCB_PARENT_DATA
+#define PCB_PARENT_TYPENAME_element  PCB_PARENT_ELEMENT
+
+#define PCB_SET_PARENT(obj, ptype, parent_ptr) \
+	do { \
+		obj->parent_type = PCB_PARENT_TYPENAME_ ## ptype; \
+		obj->parent.ptype = parent_ptr; \
+	} while(0)
+
+#define PCB_CLEAR_PARENT(obj) \
+	do { \
+		obj->parent_type = PCB_PARENT_INVALID; \
+		obj->parent.any = NULL; \
+	} while(0)
+
 
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */

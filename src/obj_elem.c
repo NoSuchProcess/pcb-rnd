@@ -65,8 +65,7 @@ pcb_element_t *pcb_element_alloc(pcb_data_t * data)
 
 	new_obj = calloc(sizeof(pcb_element_t), 1);
 	new_obj->type = PCB_OBJ_ELEMENT;
-	new_obj->parent_type = PCB_PARENT_DATA;
-	new_obj->parent.data = data;
+	PCB_SET_PARENT(new_obj, data, data);
 
 	elementlist_append(&data->Element, new_obj);
 
@@ -117,8 +116,7 @@ pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element)
 	pcb_line_t *line = calloc(sizeof(pcb_line_t), 1);
 
 	line->type = PCB_OBJ_ELINE;
-	line->parent_type = PCB_PARENT_ELEMENT;
-	line->parent.element = Element;
+	PCB_SET_PARENT(line, element, Element);
 
 	linelist_append(&Element->Line, line);
 
