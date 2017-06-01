@@ -52,6 +52,10 @@ pcb_pad_t *pcb_pad_alloc(pcb_element_t * element)
 	pcb_pad_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_pad_t), 1);
+	new_obj->type = PCB_OBJ_PAD;
+	new_obj->parent_type = PCB_PARENT_ELEMENT;
+	new_obj->parent.element = element;
+
 	padlist_append(&element->Pad, new_obj);
 
 	return new_obj;

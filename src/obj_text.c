@@ -57,6 +57,10 @@ pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)
 	pcb_text_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_text_t), 1);
+	new_obj->type = PCB_OBJ_TEXT;
+	new_obj->parent_type = PCB_PARENT_LAYER;
+	new_obj->parent.layer = layer;
+
 	textlist_append(&layer->Text, new_obj);
 
 	return new_obj;

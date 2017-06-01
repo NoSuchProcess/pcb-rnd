@@ -57,6 +57,10 @@ pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)
 	pcb_line_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_line_t), 1);
+	new_obj->type = PCB_OBJ_LINE;
+	new_obj->parent_type = PCB_PARENT_LAYER;
+	new_obj->parent.layer = layer;
+
 	linelist_append(&layer->Line, new_obj);
 
 	return new_obj;

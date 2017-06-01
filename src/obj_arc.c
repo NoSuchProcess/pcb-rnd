@@ -53,6 +53,9 @@ pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 	pcb_arc_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_arc_t), 1);
+	new_obj->type = PCB_OBJ_ARC;
+	new_obj->parent_type = PCB_PARENT_LAYER;
+	new_obj->parent.layer = layer;
 	arclist_append(&layer->Arc, new_obj);
 
 	return new_obj;
@@ -61,6 +64,10 @@ pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 pcb_arc_t *pcb_element_arc_alloc(pcb_element_t *Element)
 {
 	pcb_arc_t *arc = calloc(sizeof(pcb_arc_t), 1);
+
+	arc->type = PCB_OBJ_ARC;
+	arc->parent_type = PCB_PARENT_ELEMENT;
+	arc->parent.element = Element;
 
 	arclist_append(&Element->Arc, arc);
 	return arc;

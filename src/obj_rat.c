@@ -56,6 +56,10 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 	pcb_rat_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_rat_t), 1);
+	new_obj->type = PCB_OBJ_RAT;
+	new_obj->parent_type = PCB_PARENT_DATA;
+	new_obj->parent.data = data;
+
 	ratlist_append(&data->Rat, new_obj);
 
 	return new_obj;

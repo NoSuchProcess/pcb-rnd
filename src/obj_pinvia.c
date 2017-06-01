@@ -53,6 +53,10 @@ pcb_pin_t *pcb_via_alloc(pcb_data_t * data)
 	pcb_pin_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_pin_t), 1);
+	new_obj->type = PCB_OBJ_VIA;
+	new_obj->parent_type = PCB_PARENT_DATA;
+	new_obj->parent.data = data;
+
 	pinlist_append(&data->Via, new_obj);
 
 	return new_obj;
@@ -70,6 +74,10 @@ pcb_pin_t *pcb_pin_alloc(pcb_element_t * element)
 	pcb_pin_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_pin_t), 1);
+	new_obj->type = PCB_OBJ_PIN;
+	new_obj->parent_type = PCB_PARENT_ELEMENT;
+	new_obj->parent.element = element;
+
 	pinlist_append(&element->Pin, new_obj);
 
 	return new_obj;
