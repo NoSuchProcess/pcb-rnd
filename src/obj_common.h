@@ -34,6 +34,55 @@
 #include "attrib.h"
 #include "global_typedefs.h"
 
+/* Can be used as a bitfield */
+typedef enum pcb_objtype_e {
+	PCB_OBJ_VOID      = 0x000000,
+
+	PCB_OBJ_POINT     = 0x000001,
+	PCB_OBJ_LINE      = 0x000002,
+	PCB_OBJ_TEXT      = 0x000004,
+	PCB_OBJ_POLYGON   = 0x000008,
+	PCB_OBJ_ARC       = 0x000010,
+	PCB_OBJ_RAT       = 0x000020,
+	PCB_OBJ_PAD       = 0x000040,
+	PCB_OBJ_PIN       = 0x000080,
+	PCB_OBJ_VIA       = 0x000100,
+	PCB_OBJ_ELEMENT   = 0x000200,
+
+	/* more abstract objects */
+	PCB_OBJ_NET       = 0x100001,
+	PCB_OBJ_LAYER     = 0x100002,
+
+	/* temporary, for backward compatibility */
+	PCB_OBJ_ELINE     = 0x200001,
+	PCB_OBJ_EARC      = 0x200002,
+	PCB_OBJ_ETEXT     = 0x200004,
+
+	/* combinations, groups, masks */
+	PCB_OBJ_CLASS_MASK= 0xF00000,
+	PCB_OBJ_CLASS_OBJ = 0x000000, /* anything with common object fields (pcb_any_obj_t) */
+	PCB_OBJ_ANY       = 0xFFFFFF
+} pcb_objtype_t;
+
+/* which elem of the parent union is active */
+typedef enum pcb_parenttype_e {
+	PCB_PARENT_INVALID = 0,  /* invalid or unknown */
+	PCB_PARENT_LAYER,        /* object is on a layer */
+	PCB_PARENT_ELEMENT,      /* object is part of an element */
+	PCB_PARENT_DATA          /* global objects like via */
+} pcb_parenttype_t;
+
+/* class is e.g. PCB_OBJ_CLASS_OBJ */
+#define PCB_OBJ_IS_CLASS(type, class)  (((type) & PCB_OBJ_CLASS_MASK) == (class))
+
+union pcb_parent_s {
+	void         *any;
+	pcb_layer_t    *layer;
+	pcb_data_t     *data;
+	pcb_element_t  *element;
+};
+
+
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
 	pcb_coord_t X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
@@ -81,6 +130,8 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	pcb_box_t		BoundingBox;	\
 	long int	ID;		\
 	pcb_flag_t	Flags; \
+	pcb_parenttype_t parent_type; \
+	pcb_parent_t parent; \
 	pcb_attribute_list_t Attributes
 
 	/*  struct pcb_lib_entry_t *net */
