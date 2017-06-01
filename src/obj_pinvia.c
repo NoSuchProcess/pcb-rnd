@@ -208,6 +208,7 @@ void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
 	if (!Data->via_tree)
 		Data->via_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
+	PCB_SET_PARENT(Via, data, Data);
 }
 
 /* sets the bounding box of a pin or via */
@@ -301,6 +302,7 @@ void *MoveViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 		ctx->buffer.dst->via_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *) via, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_VIA, via, via);
+	PCB_SET_PARENT(via, data, ctx->buffer.dst);
 	return via;
 }
 
