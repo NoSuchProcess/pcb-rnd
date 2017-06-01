@@ -309,6 +309,9 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 		lay->line_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(lay->line_tree, (pcb_box_t *) line, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_LINE, lay, line);
+
+	PCB_SET_PARENT(line, data, ctx->buffer.dst);
+
 	return (line);
 }
 
@@ -525,6 +528,9 @@ void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_line_t
 	if (!Destination->line_tree)
 		Destination->line_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Destination->line_tree, (pcb_box_t *) line, 0);
+
+	PCB_SET_PARENT(line, layer, Destination);
+
 	return line;
 }
 
