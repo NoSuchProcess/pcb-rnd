@@ -210,6 +210,7 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
+	PCB_SET_PARENT(polygon, layer, Layer);
 }
 
 /* creates a new polygon on a layer */
@@ -339,6 +340,9 @@ void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t *
 	if (!lay->polygon_tree)
 		lay->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(lay->polygon_tree, (pcb_box_t *) polygon, 0);
+
+	PCB_SET_PARENT(polygon, layer, lay);
+
 	return (polygon);
 }
 
@@ -473,6 +477,8 @@ void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_pol
 	if (!Destination->polygon_tree)
 		Destination->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon, 0);
+
+	PCB_SET_PARENT(polygon, layer, Destination);
 
 	return polygon;
 }
