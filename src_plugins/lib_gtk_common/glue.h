@@ -5,6 +5,8 @@
 #include "hid.h"
 #include "conf.h"
 
+#include "compat.h"
+
 /** The HID using pcb_gtk_common needs to fill in this struct and pass it
     on to most of the calls. This is the only legal way pcb_gtk_common can
     back reference to the HID. This lets multiple HIDs use gtk_common code
@@ -16,7 +18,7 @@ typedef struct pcb_gtk_common_s {
 	/* rendering */
 	void *(*render_pixmap)(int cx, int cy, double zoom, int width, int height, int depth);
 	void (*drawing_realize)(GtkWidget *w, void *gport);
-	gboolean (*drawing_area_expose)(GtkWidget *w, /*GdkEventExpose*/void *p, void *gport);
+	gboolean (*drawing_area_expose)(GtkWidget *w, pcb_gtk_expose_t *p, void *gport);
 	void (*drawing_area_configure_hook)(void *);
 
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);

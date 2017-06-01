@@ -1319,7 +1319,7 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 }
 
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
-static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, /*GdkEventExpose*/void * p, void *vport)
+static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t * p, void *vport)
 {
 	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;

@@ -72,7 +72,7 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 }
 
 #define PCB_GTK_EXPOSE_EVENT(x) (x->draw)
-#define PCB_GTK_EXPOSE_STRUCT cairo_t
+typedef struct cairo_t pcb_gtk_expose_t;
 #define PCB_GTK_DRAW_SIGNAL_NAME "draw"
 
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
@@ -151,7 +151,7 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 }
 
 #define PCB_GTK_EXPOSE_EVENT(x) (x->expose_event)
-#define PCB_GTK_EXPOSE_STRUCT GdkEventExpose
+typedef struct GdkEventExpose pcb_gtk_expose_t;
 #define PCB_GTK_DRAW_SIGNAL_NAME "expose_event"
 
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)

@@ -1204,7 +1204,7 @@ static void ghid_gdk_screen_update(void)
 	show_crosshair(TRUE);
 }
 
-static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget * widget, /*GdkEventExpose*/void * p, void *vport)
+static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t * p, void *vport)
 {
 	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;
