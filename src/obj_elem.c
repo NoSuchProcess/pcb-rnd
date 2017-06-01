@@ -1102,6 +1102,7 @@ void *pcb_element_remove(pcb_element_t *Element)
 	ctx.remove.pcb = PCB;
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
+	PCB_CLEAR_PARENT(Element);
 
 	return RemoveElement_op(&ctx, Element);
 }
@@ -1323,6 +1324,8 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 		pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PAD, element, pad);
 	}
 	PCB_END_LOOP;
+
+	PCB_SET_PARENT(element, data, ctx->buffer.dst);
 
 	return element;
 }
