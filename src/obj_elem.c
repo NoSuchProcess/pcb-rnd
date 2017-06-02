@@ -278,9 +278,6 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gbottom, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER,    &gtop, 1);
 
-	if (Buffer->Data->pcb == 0)
-		Buffer->Data->pcb = PCB;
-
 	Element = pcb_element_new(PCB->Data, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(),
 														 NULL, NULL, NULL, PCB_PASTEBUFFER->X,
 														 PCB_PASTEBUFFER->Y, 0, 100, pcb_flag_make(PCB_SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
