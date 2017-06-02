@@ -49,12 +49,30 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 
 	for(n = 0; n < pcb_max_layer; n++) {
-
+		pcb_line_t *lin;
+		pcb_text_t *txt;
+		pcb_arc_t *arc;
+		pcb_polygon_t *poly;
+	
 		/* check layers */
 		if (data->Layer[n].parent != data)
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].Name, data->Layer[n].parent, data);
 		if (name_chk && ((data->Layer[n].Name == NULL) || (*data->Layer[n].Name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
+
+		/* check layer objects */
+		for(lin = linelist_first(&data->Layer[n].Line); lin != NULL; lin = linelist_next(lin))
+			check_parent("line", lin, PCB_PARENT_LAYER, &data->Layer[n]);
+
+		for(txt = textlist_first(&data->Layer[n].Text); txt != NULL; txt = textlist_next(txt))
+			check_parent("text", txt, PCB_PARENT_LAYER, &data->Layer[n]);
+
+		for(poly = polylist_first(&data->Layer[n].Polygon); poly != NULL; poly = polylist_next(poly))
+			check_parent("polygon", poly, PCB_PARENT_LAYER, &data->Layer[n]);
+
+		for(arc = arclist_first(&data->Layer[n].Arc); arc != NULL; arc = arclist_next(arc))
+			check_parent("arc", arc, PCB_PARENT_LAYER, &data->Layer[n]);
+
 	}
 
 	/* check global objects */
