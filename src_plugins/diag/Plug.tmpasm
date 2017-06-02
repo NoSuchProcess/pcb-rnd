@@ -1,5 +1,9 @@
 put /local/pcb/mod {diag}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/diag/diag.o $(PLUGDIR)/diag/diag_conf.o @]
+put /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/diag/diag.o
+ $(PLUGDIR)/diag/diag_conf.o
+ $(PLUGDIR)/diag/integrity.o
+@]
 
 switch /local/pcb/diag/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

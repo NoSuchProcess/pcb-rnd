@@ -33,6 +33,7 @@
 #include "plugins.h"
 #include "conf.h"
 #include "error.h"
+#include "integrity.h"
 
 static const char dump_conf_syntax[] =
 	"dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout\n"
@@ -229,6 +230,15 @@ static int pcb_act_DumpUndo(int argc, const char **argv, pcb_coord_t x, pcb_coor
 }
 #endif
 
+static const char integrity_syntax[] = "integrity()\n";
+static const char integrity_help[] = "perform integrirty check on the current board and generate errors if needed";
+static int pcb_act_integrity(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_check_integrity(PCB);
+	return 0;
+}
+
+
 static const char d1_syntax[] = "d1()\n";
 static const char d1_help[] = "debug action for development";
 static int pcb_act_d1(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -252,7 +262,9 @@ pcb_hid_action_t diag_action_list[] = {
 	{"EvalConf", 0, pcb_act_EvalConf,
 	 eval_conf_help, eval_conf_syntax},
 	{"d1", 0, pcb_act_d1,
-	 d1_help, d1_syntax}
+	 d1_help, d1_syntax},
+	{"integrity", 0, pcb_act_integrity,
+	 integrity_help, integrity_syntax}
 
 };
 
