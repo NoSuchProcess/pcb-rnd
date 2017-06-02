@@ -111,6 +111,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
 
 	const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
+	pcb_data_t *parent;
 };
 
 

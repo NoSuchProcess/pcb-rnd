@@ -555,6 +555,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 		dt->LayerN = layer_id+1;
 
 	ly->Name = pcb_strdup(grp->name);
+	ly->parent = dt;
 
 	parse_bool(&ly->On, lht_dom_hash_get(grp, "visible"));
 	if (pcb != NULL) {
@@ -889,8 +890,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 	if (nd->type != LHT_HASH)
 		return NULL;
 
-	dt = calloc(sizeof(pcb_data_t), 1);
-	dt->pcb = pcb;
+	dt = pcb_buffer_new(pcb);
 	pcb->Data = dt;
 
 	grp = lht_dom_hash_get(nd, "layers");

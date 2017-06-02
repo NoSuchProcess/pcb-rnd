@@ -216,6 +216,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		Buffer->Y = newPCB->CursorY;
 		pcb_board_remove(newPCB);
 		Buffer->Data->pcb = pcb;
+		pcb_data_set_layer_parents(Buffer->Data);
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 		return (pcb_true);
 	}
@@ -335,6 +336,7 @@ pcb_data_t *pcb_buffer_new(pcb_board_t *pcb)
 	pcb_data_t *data;
 	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
 	data->pcb = (pcb_board_t *)pcb;
+	pcb_data_set_layer_parents(data);
 	return data;
 }
 

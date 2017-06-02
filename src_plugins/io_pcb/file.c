@@ -712,6 +712,7 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 		return -1;
 	lid = pcb->Data->LayerN;
 	pcb->Data->Layer[lid].Name = pcb_strdup(name);
+	pcb->Data->Layer[lid].parent = pcb->Data;
 	pcb->Data->LayerN++;
 	return lid;
 }

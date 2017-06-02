@@ -887,6 +887,7 @@ layer
 					YYABORT;
 				}
 				Layer = &yyData->Layer[$3-1];
+				Layer->parent = yyData;
 
 					/* memory for name is already allocated */
 				if (Layer->Name != NULL)

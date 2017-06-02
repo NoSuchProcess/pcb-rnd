@@ -323,6 +323,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 	}
 	PCB->Data->Layer[id].grp = grp;
 
+	PCB->Data->Layer[id].parent = PCB->Data;
 	return id;
 }
 
@@ -394,7 +395,7 @@ static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 }
 
 /* Initialize a new layer with safe initial values */
-static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gid)
+static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gid, pcb_data_t *parent)
 {
 	memset(lp, 0, sizeof(pcb_layer_t));
 	lp->grp = gid;
@@ -410,6 +411,7 @@ static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gi
 			default: break;
 		}
 	}
+	lp->parent = parent;
 }
 
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
@@ -448,9 +450,9 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 
 		lp = &PCB->Data->Layer[new_lid];
 		if (new_in_grp >= 0)
-			layer_init(lp, new_lid, new_in_grp);
+			layer_init(lp, new_lid, new_in_grp, PCB->Data);
 		else
-			layer_init(lp, new_lid, PCB->Data->Layer[new_index].grp);
+			layer_init(lp, new_lid, PCB->Data->Layer[new_index].grp, PCB->Data);
 
 		g = pcb_get_layergrp(PCB, lp->grp);
 

@@ -2473,6 +2473,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yy_settings_dest = CFR_invalid;
 	yyPCB = NULL;
 	yyData = Ptr;
+	pcb_data_set_layer_parents(Ptr);
 	yyFont = pcb_font(PCB, 0, 1);
 	yyFontkitValid = NULL;
 	yyElement = NULL;

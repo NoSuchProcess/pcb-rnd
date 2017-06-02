@@ -336,3 +336,9 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
 	return (pcb_data_is_empty(Data) ? NULL : out);
 }
 
+void pcb_data_set_layer_parents(pcb_data_t *data)
+{
+	pcb_layer_id_t n;
+	for(n = 0; n < PCB_MAX_LAYER; n++)
+		data->Layer[n].parent = data;
+}

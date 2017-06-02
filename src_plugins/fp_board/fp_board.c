@@ -116,6 +116,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 			   Later on we should just return the footprint. */
 			memset(&op, 0, sizeof(op));
 			op.buffer.dst = calloc(sizeof(pcb_data_t), 1);
+			pcb_data_set_layer_parents(op.buffer.dst);
 			AddElementToBuffer(&op, element);
 
 			f = fopen(tmp_name, "w");
