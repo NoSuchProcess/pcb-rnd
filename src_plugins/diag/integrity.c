@@ -28,6 +28,14 @@
 
 #define CHK "Broken integrity: "
 
+#define check_parent(name, obj, pt, prnt) \
+	do { \
+		if (obj->parent_type != pt) \
+			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type proken (%d != %d)\n", whose, obj->ID, obj->parent_type, pt); \
+		else if (obj->parent.any != prnt) \
+			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type proken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
+	} while(0)
+
 /* Check layers and objects: walk the tree top->down and check ->parent
    references from any node */
 static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk)
@@ -41,10 +49,22 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 
 	for(n = 0; n < pcb_max_layer; n++) {
+		pcb_pin_t *via;
+		pcb_element_t *elem;
+
+		/* check layers */
 		if (data->Layer[n].parent != data)
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].Name, data->Layer[n].parent, data);
 		if (name_chk && ((data->Layer[n].Name == NULL) || (*data->Layer[n].Name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
+
+		/* check global objects */
+		for(via = pinlist_first(&data->Via); via != NULL; via = pinlist_next(via))
+			check_parent("via", via, PCB_PARENT_DATA, data);
+
+		for(elem = elementlist_first(&data->Element); elem != NULL; elem = elementlist_next(elem))
+			check_parent("element", elem, PCB_PARENT_DATA, data);
+
 	}
 }
 
