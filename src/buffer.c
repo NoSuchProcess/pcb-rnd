@@ -378,7 +378,7 @@ void pcb_init_buffers(pcb_board_t *pcb)
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++)
-		pcb_buffers[i].Data = pcb_buffer_new(pcb);
+		pcb_buffers[i].Data = pcb_buffer_new(NULL);
 }
 
 void pcb_uninit_buffers(pcb_board_t *pcb)
