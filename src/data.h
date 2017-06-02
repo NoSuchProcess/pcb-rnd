@@ -112,6 +112,7 @@ void pcb_loop_all(void *ctx,
 	pcb_via_cb_t vcb
 );
 
+pcb_data_t *pcb_data_new(pcb_board_t *parent);
 void pcb_data_free(pcb_data_t *);
 pcb_bool pcb_data_is_empty(pcb_data_t *);
 

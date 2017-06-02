@@ -342,3 +342,12 @@ void pcb_data_set_layer_parents(pcb_data_t *data)
 	for(n = 0; n < PCB_MAX_LAYER; n++)
 		data->Layer[n].parent = data;
 }
+
+pcb_data_t *pcb_data_new(pcb_board_t *parent)
+{
+	pcb_data_t *data;
+	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
+	data->pcb = (pcb_board_t *)parent;
+	pcb_data_set_layer_parents(data);
+	return data;
+}

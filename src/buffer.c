@@ -333,11 +333,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
  */
 pcb_data_t *pcb_buffer_new(pcb_board_t *pcb)
 {
-	pcb_data_t *data;
-	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
-	data->pcb = (pcb_board_t *)pcb;
-	pcb_data_set_layer_parents(data);
-	return data;
+	return pcb_data_new(pcb);
 }
 
 
