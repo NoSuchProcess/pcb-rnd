@@ -2010,18 +2010,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			/* update the newly created module's refdes field, if available */
 			if (moduleDefined && moduleRefdes) {
 				printf("have Refdes for module/element %s, updating new module\n", moduleRefdes);
-				textLabel = newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
+				free(newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
 				newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString = pcb_strdup(moduleRefdes);
-				/*free(textLabel);  The intention here is to avoid a memory leak */
-				/*pcb_element_text_change(st->PCB, st->PCB->Data, newModule, PCB_ELEMNAME_IDX_REFDES, pcb_strdup(moduleRefdes));*/
 			}
 			/* update the newly created module's value field, if available */
 			if (moduleDefined && moduleValue) {
 				printf("have Value for module/element %s, updating new module\n", moduleValue);
-				textLabel = newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
+				free(newModule->Name[PCB_ELEMNAME_IDX_VALUE].TextString);
 				newModule->Name[PCB_ELEMNAME_IDX_VALUE].TextString = pcb_strdup(moduleValue);
-				/*free(textLabel);  The intention here is to avoid a memory leak */
-				/*pcb_element_text_change(st->PCB, st->PCB->Data, newModule, PCB_ELEMNAME_IDX_VALUE, pcb_strdup(moduleValue)); */
 			}
 			return 0;
 		} else {
