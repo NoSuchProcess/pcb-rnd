@@ -347,7 +347,15 @@ pcb_data_t *pcb_data_new(pcb_board_t *parent)
 {
 	pcb_data_t *data;
 	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
-	data->pcb = (pcb_board_t *)parent;
+	if (parent != NULL)
+		PCB_SET_PARENT(data, board, parent);
 	pcb_data_set_layer_parents(data);
 	return data;
+}
+
+pcb_board_t *pcb_data_get_top(pcb_data_t *data)
+{
+	if (data->parent_type == PCB_PARENT_BOARD)
+		return data->parent.board;
+	return NULL;
 }

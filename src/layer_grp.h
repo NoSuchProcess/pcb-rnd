@@ -141,11 +141,12 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, in
 
 #define PCB_COPPER_GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
-        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.grp[(group)].len; entry++) \
+	pcb_board_t *cgl__pcb = pcb_data_get_top(data); \
+        for (entry = 0; entry < ((pcb_board_t *)(cgl__pcb))->LayerGroups.grp[(group)].len; entry++) \
         { \
 		pcb_layer_t *layer;		\
 		pcb_layer_id_t number; 		\
-		number = ((pcb_board_t *)(data->pcb))->LayerGroups.grp[(group)].lid[entry]; \
+		number = ((pcb_board_t *)(cgl__pcb))->LayerGroups.grp[(group)].lid[entry]; \
 		if (!(pcb_layer_flags(PCB, number) & PCB_LYT_COPPER)) \
 		  continue;			\
 		layer = &data->Layer[number];

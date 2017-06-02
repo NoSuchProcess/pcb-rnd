@@ -54,7 +54,6 @@ struct pcb_data_s {
 	ratlist_t Rat;
 
 /**/
-	pcb_board_t *pcb; /* points to the top level board, across parents - used only for settings */
 	pcb_parenttype_t parent_type;
 	pcb_parent_t parent;
 };
@@ -127,5 +126,10 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data);
 
 /* Make sure all layers of data has their .parent field pointing to the data */
 void pcb_data_set_layer_parents(pcb_data_t *data);
+
+/* Returns the top level pcb related to a data, or NULL if the data is floating
+   (e.g. is a global buffer) */
+pcb_board_t *pcb_data_get_top(pcb_data_t *data);
+
 
 #endif

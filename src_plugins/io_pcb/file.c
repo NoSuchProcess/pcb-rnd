@@ -641,7 +641,7 @@ void PreLoadElementPCB()
 
 	yyFont = &yyPCB->fontkit.dflt;
 	yyData = yyPCB->Data;
-	yyData->pcb = yyPCB;
+	PCB_SET_PARENT(yyData, board, yyPCB);
 	yyData->LayerN = 0;
 }
 

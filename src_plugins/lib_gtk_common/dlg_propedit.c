@@ -322,8 +322,8 @@ static void prop_preview_init(void)
 	preview_pcb.LayerGroups.grp[0].lid[0] = 0;
 	preview_pcb.LayerGroups.grp[0].len = 1;
 	preview_pcb.LayerGroups.len = 1;
-	preview_pcb.Data->pcb = &preview_pcb;
-	preview_pcb.Data->Layer[0].parent = &preview_pcb.Data;
+	PCB_SET_PARENT(preview_pcb.Data, board, &preview_pcb);
+	preview_pcb.Data->Layer[0].parent = preview_pcb.Data;
 
 #warning TODO: preview_pcb is never freed
 

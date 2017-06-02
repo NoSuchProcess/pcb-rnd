@@ -1804,7 +1804,7 @@ yyreduce:
 				yyFont = &yyPCB->fontkit.dflt;
 				yyFontkitValid = &yyPCB->fontkit.valid;
 				yyData = yyPCB->Data;
-				yyData->pcb = yyPCB;
+				PCB_SET_PARENT(yyData, board, yyPCB);
 				yyData->LayerN = 0;
 				yyPCB->NetlistPatches = yyPCB->NetlistPatchLast = NULL;
 				layer_group_string = NULL;

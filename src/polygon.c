@@ -807,7 +807,7 @@ static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_pol
 	if (pin->Clearance == 0)
 		return 0;
 	i = pcb_layer_id(d, l);
-	np = pin_clearance_poly(i, d->pcb, pin);
+	np = pin_clearance_poly(i, pcb_data_get_top(d), pin);
 
 	if (PCB_FLAG_THERM_TEST(i, pin)) {
 		if (!np)
@@ -910,7 +910,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	i = pcb_layer_id(info->data, info->layer);
 	if (PCB_FLAG_THERM_TEST(i, pin)) {
-		np = ThermPoly((pcb_board_t *) (info->data->pcb), pin, i);
+		np = ThermPoly(pcb_data_get_top(info->data), pin, i);
 		if (!np)
 			return PCB_R_DIR_FOUND_CONTINUE;
 	}
