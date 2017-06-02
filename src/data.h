@@ -49,10 +49,14 @@ struct pcb_data_s {
 /**/
 	pcb_rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
-	pcb_board_t *pcb;
 	pcb_layer_t Layer[PCB_MAX_LAYER]; /* layer TODO: make this dynamic */
 	pcb_plug_io_t *loader;
 	ratlist_t Rat;
+
+/**/
+	pcb_board_t *pcb; /* points to the top level board, across parents - used only for settings */
+	pcb_parenttype_t parent_type;
+	pcb_parent_t parent;
 };
 
 #define pcb_max_group(pcb) ((pcb)->LayerGroups.len)
