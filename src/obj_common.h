@@ -33,6 +33,7 @@
 #include "flag.h"
 #include "attrib.h"
 #include "global_typedefs.h"
+#include "data_parent.h"
 
 /* Can be used as a bitfield */
 typedef enum pcb_objtype_e {
@@ -63,41 +64,6 @@ typedef enum pcb_objtype_e {
 	PCB_OBJ_CLASS_OBJ = 0x000000, /* anything with common object fields (pcb_any_obj_t) */
 	PCB_OBJ_ANY       = 0xFFFFFF
 } pcb_objtype_t;
-
-/* which elem of the parent union is active */
-typedef enum pcb_parenttype_e {
-	PCB_PARENT_INVALID = 0,  /* invalid or unknown */
-	PCB_PARENT_LAYER,        /* object is on a layer */
-	PCB_PARENT_ELEMENT,      /* object is part of an element */
-	PCB_PARENT_DATA          /* global objects like via */
-} pcb_parenttype_t;
-
-/* class is e.g. PCB_OBJ_CLASS_OBJ */
-#define PCB_OBJ_IS_CLASS(type, class)  (((type) & PCB_OBJ_CLASS_MASK) == (class))
-
-union pcb_parent_s {
-	void         *any;
-	pcb_layer_t    *layer;
-	pcb_data_t     *data;
-	pcb_element_t  *element;
-};
-
-#define PCB_PARENT_TYPENAME_layer    PCB_PARENT_LAYER
-#define PCB_PARENT_TYPENAME_data     PCB_PARENT_DATA
-#define PCB_PARENT_TYPENAME_element  PCB_PARENT_ELEMENT
-
-#define PCB_SET_PARENT(obj, ptype, parent_ptr) \
-	do { \
-		obj->parent_type = PCB_PARENT_TYPENAME_ ## ptype; \
-		obj->parent.ptype = parent_ptr; \
-	} while(0)
-
-#define PCB_CLEAR_PARENT(obj) \
-	do { \
-		obj->parent_type = PCB_PARENT_INVALID; \
-		obj->parent.any = NULL; \
-	} while(0)
-
 
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */

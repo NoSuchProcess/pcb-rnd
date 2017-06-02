@@ -35,6 +35,7 @@
 #include "layer.h"
 #include "crosshair.h"
 #include "buffer.h"
+#include "data_parent.h"
 
 #include "obj_all_list.h"
 
