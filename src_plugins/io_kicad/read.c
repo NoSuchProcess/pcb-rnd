@@ -1093,11 +1093,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int square = 0;
 	int throughHole = 0;
 	int foundRefdes = 0;
+	int foundValue = 0;
 	int refdesScaling  = 100;
 	int moduleEmpty = 1;
 	unsigned int moduleRotation = 0; /* for rotating modules */
 	unsigned int padRotation = 0; /* for rotating pads */
-	unsigned long tally = 0, featureTally, required;
+	unsigned long tally = 0, featureTally = 0, required;
 	pcb_coord_t moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t endAngle = 0.0;
@@ -1113,11 +1114,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
-	moduleName = moduleRefdes = moduleValue = NULL;
+	moduleName = NULL;
+	moduleRefdes = "";
+	moduleValue = "";
 
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);
 		moduleName = subtree->str;
+
 		SEEN_NO_DUP(tally, 0);
 		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
@@ -1194,6 +1198,19 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					pcb_printf("\tno module (at) \"rotation\" value found'\n");
 				}
+			/* if we have been provided with a Module Name and location, create a new Element with default "" and "" for refdes and value fields */
+				if (moduleName != NULL && moduleDefined == 0) {
+					moduleDefined = 1; /* but might be empty, wait and see */
+					printf("Have new module name and location, defining module/element %s\n", moduleName);
+						newModule = pcb_element_new(st->PCB->Data, NULL,
+										 pcb_font(st->PCB, 0, 1), Flags,
+										 moduleName, moduleRefdes, moduleValue,
+										 moduleX, moduleY, direction,
+										 refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
+					pcb_move_obj(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()],  &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()], X, Y);
+					moduleRefdes = NULL;
+					moduleValue = NULL;
+				}
 			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
 				pcb_printf("module 3D model found and ignored\n");
 			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
@@ -1202,13 +1219,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 /* ********************************************************** */
 
-
 	if (n->children != NULL && n->children->str != NULL) {
 		textLabel = n->children->str;
 		printf("fp_text element being parsed for %s - label: '%s'\n", moduleName, textLabel);
 		if (n->children->next != NULL && n->children->next->str != NULL) {
 			text = n->children->next->str;
-			foundRefdes = 0;
 			if (strcmp("reference", textLabel) == 0) {
 				SEEN_NO_DUP(tally, 7);
 				printf("\tfp_text reference found: '%s'\n", textLabel);
@@ -1222,13 +1237,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 8);
 				printf("\tfp_text value found: '%s'\n", textLabel);
 				moduleValue = text;
-				foundRefdes = 0;
+				foundValue = 1;
 				printf("\tmoduleValue now: '%s'\n", moduleValue);
 			} else if (strcmp("hide", textLabel) == 0) {
 				pcb_printf("\tignoring fp_text \"hide\" flag\n");
-			} else {
-				foundRefdes = 0;
-			}
+			} 
 		} else {
 			text = textLabel; /* just a single string, no reference or value */ 
 		}
@@ -1324,7 +1337,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 										scaling = (int) (100*val/1.27); /* standard glyph width ~= 1.27mm */
 										if (foundRefdes) {
 											refdesScaling = scaling;
-											foundRefdes = 0;
+											/*foundRefdes = 0;*/
 										}
 									}
 								} else {
@@ -1410,16 +1423,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
-		if (moduleValue != NULL && moduleRefdes != NULL && moduleName != NULL && moduleDefined == 0) {
-			moduleDefined = 1; /* but might be empty, wait and see */
-			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
-			newModule = pcb_element_new(st->PCB->Data, NULL,
-								 pcb_font(st->PCB, 0, 1), Flags,
-								 moduleName, moduleRefdes, moduleValue,
-								 moduleX, moduleY, direction,
-								 refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
-			pcb_move_obj(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()],  &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()], X, Y);
-		}
+		/* if we  update X, Y for text fields (refdes, value), we would do it here */
 	}
 
 
@@ -1895,13 +1899,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						if (PCBLayer < 0) {
 							pcb_message(PCB_MSG_ERROR, "\tinvalid gr_arc layer def, using module default layer.\n");
 							PCBLayer = moduleLayer; /* revert to default */
-							return 0;
-							/* return -1; */
 						}
 					} else {
 						PCBLayer = moduleLayer;
 						pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_arc element.\n");
-						/*return -1;*/
 					}
 			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 8);
@@ -1986,8 +1987,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} 
 		}
 
+
 		if (newModule != NULL) {
-			if (moduleEmpty) {
+			if (moduleEmpty) { /* should try and use module empty function here */
 				Thickness = PCB_MM_TO_COORD(0.200);
 				pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
 				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
@@ -2004,6 +2006,23 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				 */
 			}
 			/*pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));*/
+
+			/* update the newly created module's refdes field, if available */
+			if (moduleDefined && moduleRefdes) {
+				printf("have Refdes for module/element %s, updating new module\n", moduleRefdes);
+				textLabel = newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
+				newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString = pcb_strdup(moduleRefdes);
+				/*free(textLabel);  The intention here is to avoid a memory leak */
+				/*pcb_element_text_change(st->PCB, st->PCB->Data, newModule, PCB_ELEMNAME_IDX_REFDES, pcb_strdup(moduleRefdes));*/
+			}
+			/* update the newly created module's value field, if available */
+			if (moduleDefined && moduleValue) {
+				printf("have Value for module/element %s, updating new module\n", moduleValue);
+				textLabel = newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
+				newModule->Name[PCB_ELEMNAME_IDX_VALUE].TextString = pcb_strdup(moduleValue);
+				/*free(textLabel);  The intention here is to avoid a memory leak */
+				/*pcb_element_text_change(st->PCB, st->PCB->Data, newModule, PCB_ELEMNAME_IDX_VALUE, pcb_strdup(moduleValue)); */
+			}
 			return 0;
 		} else {
 			return kicad_error(subtree, "unable to create incomplete module.");
