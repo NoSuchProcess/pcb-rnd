@@ -71,8 +71,15 @@ static trnode_t *eagle_xml_children(trparse_t *pst, trnode_t *node)
 	return (trnode_t *)nd->children;
 }
 
+static trnode_t *eagle_xml_next(trparse_t *pst, trnode_t *node)
+{
+	xmlNode *nd = (xmlNode *)node;
+	return (trnode_t *)nd->next;
+}
+
 trparse_calls_t trparse_xml_calls = {
 	eagle_xml_load,
 	eagle_xml_unload,
-	eagle_xml_children
+	eagle_xml_children,
+	eagle_xml_next
 };

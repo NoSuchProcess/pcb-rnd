@@ -49,6 +49,9 @@
 #define EAGLE_TEXT_SIZE_100 PCB_MM_TO_COORD(2)
 
 #define CHILDREN(node) st->parser.calls->children(&st->parser, node)
+#define NEXT(node)     st->parser.calls->next(&st->parser, node)
+
+#define IS_TEXT(node)  (((xmlNode *)node)->type == XML_TEXT_NODE)
 
 typedef struct eagle_layer_s {
 	const char *name;
@@ -92,7 +95,7 @@ typedef enum {
 
 /* Xml path walk that's much simpler than xpath; the ... is a NULL
    terminated list of node names */
-static xmlNode *eagle_xml_path(xmlNode *subtree, ...)
+static xmlNode *eagle_xml_path(read_state_t *st, xmlNode *subtree, ...)
 {
 	xmlNode *nd = subtree;
 	const char *target;
@@ -103,7 +106,7 @@ static xmlNode *eagle_xml_path(xmlNode *subtree, ...)
 	/* get next path element */
 	while((target = va_arg(ap, const char *)) != NULL) {
 		/* look for target on this level */
-		for(nd = nd->children;;nd = nd->next) {
+		for(nd = CHILDREN(nd);;nd = NEXT(nd)) {
 			if (nd == NULL) {/* target not found on this level */
 				va_end(ap);
 				return NULL;
@@ -261,7 +264,7 @@ static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int 
 {
 	xmlNode *n;
 
-	for(n = subtree->children; n != NULL; n = n->next) {
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (xmlStrcmp(n->name, (xmlChar *)"layer") == 0) {
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
 			int id, reuse = 0;
@@ -358,17 +361,17 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	const char *rot, *text_val;
 	unsigned int text_direction = 0;
 
-	if (subtree->children == NULL) {
+	if (CHILDREN(subtree) == NULL) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;
 	}
-	if (subtree->children->type != XML_TEXT_NODE) {
+	if (!IS_TEXT(CHILDREN(subtree->children))) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring text field (invalid child node)\n");
 		return 0;
 	}
 
 #warning TODO: need to convert
-	text_val = (const char *)xmlNodeGetContent(subtree->children);
+	text_val = (const char *)xmlNodeGetContent(CHILDREN(subtree));
 	X = eagle_get_attrc(subtree, "x", -1);
 	Y = eagle_get_attrc(subtree, "y", -1);
 	height = PCB_MM_TO_COORD(eagle_get_attrc(subtree, "size", -1));
@@ -735,8 +738,8 @@ static int eagle_read_pkg_txt(read_state_t *st, xmlNode *subtree, void *obj, int
 	xmlNode *n;
 	pcb_text_t *t;
 
-	for(n = subtree->children; n != NULL; n = n->next)
-		if (n->type == XML_TEXT_NODE)
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n))
+		if (IS_TEXT(n))
 			break;
 
 	if ((n == NULL) || (n->content == NULL))
@@ -772,7 +775,7 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 		{NULL, NULL}
 	};
 
-	return eagle_foreach_dispatch(st, subtree->children, disp, elem, IN_ELEM);
+	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, elem, IN_ELEM);
 }
 
 static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree, void *obj, int type)
@@ -780,7 +783,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree, void *obj, in
 	xmlNode *n;
 	eagle_library_t *lib = obj;
 
-	for(n = subtree->children; n != NULL; n = n->next) {
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (xmlStrcmp(n->name, (xmlChar *)"package") == 0) {
 			const char *name = eagle_get_attrs(n, "name", NULL);
 			pcb_element_t *elem;
@@ -812,7 +815,7 @@ static int eagle_read_libs(read_state_t *st, xmlNode *subtree, void *obj, int ty
 		{NULL, NULL}
 	};
 
-	for(n = subtree->children; n != NULL; n = n->next) {
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (xmlStrcmp(n->name, (xmlChar *)"library") == 0) {
 			const char *name = eagle_get_attrs(n, "name", NULL);
 			eagle_library_t *lib;
@@ -823,7 +826,7 @@ static int eagle_read_libs(read_state_t *st, xmlNode *subtree, void *obj, int ty
 			lib = calloc(sizeof(eagle_library_t), 1);
 			printf("Name: %s\n", name);
 			htsp_init(&lib->elems, strhash, strkeyeq);
-			eagle_foreach_dispatch(st, n->children, disp, lib, 0);
+			eagle_foreach_dispatch(st, CHILDREN(n), disp, lib, 0);
 			htsp_set(&st->libs, (char *)name, lib);
 		}
 	}
@@ -869,7 +872,7 @@ static int eagle_read_poly(read_state_t *st, xmlNode *subtree, void *obj, int ty
 
 	poly = pcb_poly_new(&st->pcb->Data->Layer[ly->ly], pcb_flag_make(PCB_FLAG_CLEARPOLY));
 
-	for(n = subtree->children; n != NULL; n = n->next) {
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (xmlStrcmp(n->name, (xmlChar *)"vertex") == 0) {
 			pcb_coord_t x, y;
 			x = eagle_get_attrc(n, "x", 0);
@@ -907,14 +910,14 @@ static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int
 	pcb_hid_actionl("Netlist", "Freeze", NULL);
 	pcb_hid_actionl("Netlist", "Clear", NULL);
 
-	for(n = subtree->children; n != NULL; n = n->next) {
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (xmlStrcmp(n->name, (xmlChar *)"signal") == 0) {
 			const char *name = eagle_get_attrs(n, "name", NULL);
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
 				continue;
 			}
-			eagle_foreach_dispatch(st, n->children, disp, (char *)name, ON_BOARD);
+			eagle_foreach_dispatch(st, CHILDREN(n), disp, (char *)name, ON_BOARD);
 		}
 	}
 
@@ -955,7 +958,7 @@ static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *e
 	x += def_text->X;
 	y += def_text->Y + EAGLE_TEXT_SIZE_100;
 
-	for(nd = nd->children; nd != NULL; nd = nd->next) {
+	for(nd = CHILDREN(nd); nd != NULL; nd = NEXT(nd)) {
 		const char *this_attr = eagle_get_attrs(nd, "name", "");
 		if ((xmlStrcmp(nd->name, (xmlChar *)"attribute") == 0) && (strcmp(attname, this_attr) == 0)) {
 			direction = eagle_rot2steps(eagle_get_attrs(nd, "rot", NULL));
@@ -979,7 +982,7 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 {
 	xmlNode *n;
 
-	for(n = subtree->children; n != NULL; n = n->next) {
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (xmlStrcmp(n->name, (xmlChar *)"element") == 0) {
 			pcb_coord_t x, y;
 			const char *name = eagle_get_attrs(n, "name", NULL);
@@ -1070,7 +1073,7 @@ static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int t
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
-	return eagle_foreach_dispatch(st, subtree->children, disp, NULL, 0);
+	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, 0);
 }
 
 
@@ -1084,7 +1087,7 @@ static int eagle_read_drawing(read_state_t *st, xmlNode *subtree, void *obj, int
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
-	return eagle_foreach_dispatch(st, subtree->children, disp, NULL, 0);
+	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, 0);
 }
 
 static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
@@ -1092,7 +1095,7 @@ static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
 	xmlNode *n;
 	const char *name;
 
-	for(n = subtree->children; n != NULL; n = n->next) {
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (xmlStrcmp(n->name, (xmlChar *)"param") != 0)
 			continue;
 		name = eagle_get_attrs(n, "name", NULL);
@@ -1201,7 +1204,7 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 
 	st_init(&st);
 
-	dr = eagle_xml_path(st.parser.root, "drawing", "board", "designrules", NULL);
+	dr = eagle_xml_path(&st, st.parser.root, "drawing", "board", "designrules", NULL);
 	if (dr != NULL)
 		eagle_read_design_rules(&st, dr);
 	else
@@ -1222,7 +1225,7 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 
 err:;
 	st_uninit(&st);
-	pcb_trace("Eagle XML parsing error. Bailing out now. %d\n", res);
+	pcb_trace("Eagle XML parsing error. Bailing out now.\n");
 	return -1;
 }
 
