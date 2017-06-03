@@ -98,13 +98,18 @@ int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 }
 
 /* ---------------------------------------------------------------------------
- * clears the contents of the paste buffer
+ * clears the contents of the paste buffer (preserves parent)
  */
 void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	if (Buffer && Buffer->Data) {
+		void *old_parent = Buffer->Data->parent.any;
+		pcb_parenttype_t old_pt = Buffer->Data->parent_type;
+
 		pcb_data_free(Buffer->Data);
-		PCB_SET_PARENT(Buffer->Data, board, pcb);
+
+		Buffer->Data->parent.any = old_parent;
+		Buffer->Data->parent_type = old_pt;
 	}
 }
 
