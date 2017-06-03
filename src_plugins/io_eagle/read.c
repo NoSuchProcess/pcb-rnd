@@ -365,7 +365,7 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;
 	}
-	if (!IS_TEXT(CHILDREN(subtree->children))) {
+	if (!IS_TEXT(CHILDREN(subtree))) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring text field (invalid child node)\n");
 		return 0;
 	}
