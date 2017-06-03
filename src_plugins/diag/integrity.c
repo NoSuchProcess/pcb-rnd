@@ -36,6 +36,41 @@
 			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type proken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
 	} while(0)
 
+#define check_field_eq(name, obj, st1, st2, fld, fmt) \
+	do { \
+		if ((st1)->fld != (st2)->fld) \
+			pcb_message(PCB_MSG_ERROR, CHK "%s " name " field ." #fld " value mismatch (" fmt " != " fmt ")\n", whose, obj->ID, (st1)->fld, (st2)->fld); \
+	} while(0)
+
+
+static void chk_element(const char *whose, pcb_element_t *elem)
+{
+	int n;
+	pcb_pin_t *pin;
+	pcb_pad_t *pad;
+	pcb_line_t *lin;
+	pcb_arc_t *arc;
+
+	for(pin = pinlist_first(&elem->Pin); pin != NULL; pin = pinlist_next(pin))
+		check_parent("pin", pin, PCB_PARENT_ELEMENT, elem);
+
+	for(pad = padlist_first(&elem->Pad); pad != NULL; pad = padlist_next(pad))
+		check_parent("pad", pad, PCB_PARENT_ELEMENT, elem);
+
+	for(lin = linelist_first(&elem->Line); lin != NULL; lin = linelist_next(lin))
+		check_parent("line", lin, PCB_PARENT_ELEMENT, elem);
+
+	for(arc = arclist_first(&elem->Arc); arc != NULL; arc = arclist_next(arc))
+		check_parent("arc", arc, PCB_PARENT_ELEMENT, elem);
+
+	for(n = 1; n < PCB_MAX_ELEMENTNAMES; n++) {
+		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], X, "%mm");
+		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], Y, "%mm");
+		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], Direction, "%d");
+		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], fid, "%d");
+	}
+}
+
 /* Check layers and objects: walk the tree top->down and check ->parent
    references from any node */
 static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk)
@@ -83,8 +118,10 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		for(via = pinlist_first(&data->Via); via != NULL; via = pinlist_next(via))
 			check_parent("via", via, PCB_PARENT_DATA, data);
 
-		for(elem = elementlist_first(&data->Element); elem != NULL; elem = elementlist_next(elem))
+		for(elem = elementlist_first(&data->Element); elem != NULL; elem = elementlist_next(elem)) {
 			check_parent("element", elem, PCB_PARENT_DATA, data);
+			chk_element(whose, elem);
+		}
 	}
 }
 
