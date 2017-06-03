@@ -51,7 +51,7 @@
 #define CHILDREN(node) st->parser.calls->children(&st->parser, node)
 #define NEXT(node)     st->parser.calls->next(&st->parser, node)
 
-#define IS_TEXT(node)  (((xmlNode *)node)->type == XML_TEXT_NODE)
+#define IS_TEXT(node)  st->parser.calls->is_text(&st->parser, node)
 
 typedef struct eagle_layer_s {
 	const char *name;

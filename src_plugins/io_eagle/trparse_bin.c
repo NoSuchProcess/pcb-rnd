@@ -60,9 +60,16 @@ static trnode_t *eagle_bin_next(trparse_t *pst, trnode_t *node)
 	return NULL;
 }
 
+static int eagle_bin_is_text(trparse_t *pst, trnode_t *node)
+{
+	return 0;
+}
+
+
 trparse_calls_t trparse_bin_calls = {
 	eagle_bin_load,
 	eagle_bin_unload,
 	eagle_bin_children,
-	eagle_bin_next
+	eagle_bin_next,
+	eagle_bin_is_text
 };

@@ -7,8 +7,11 @@ typedef struct trparse_s trparse_t;
 typedef struct trparse_calls_s {
 	int (*load)(trparse_t *pst, const char *fn);
 	int (*unload)(trparse_t *pst);
+
 	trnode_t *(*children)(trparse_t *pst, trnode_t *node);
 	trnode_t *(*next)(trparse_t *pst, trnode_t *node);
+
+	int (*is_text)(trparse_t *pst, trnode_t *node);
 } trparse_calls_t;
 
 
