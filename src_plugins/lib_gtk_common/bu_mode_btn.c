@@ -168,6 +168,7 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 		MB->toolbar_button = gtk_radio_button_new(toolbar_group);
 		toolbar_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(MB->toolbar_button));
 		gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(MB->toolbar_button), FALSE);
+		gtk_widget_set_tooltip_text(MB->toolbar_button, MB->tooltip);
 
 		/* Pack mode-frame button into the frame */
 		n_mb = conf_hid_gtk.plugins.hid_gtk.n_mode_button_columns;
