@@ -35,6 +35,8 @@
 #include "error.h"
 #include "integrity.h"
 
+conf_diag_t conf_diag;
+
 static const char dump_conf_syntax[] =
 	"dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout\n"
 	"dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree\n"
@@ -277,11 +279,16 @@ int pplg_check_ver_diag(int ver_needed) { return 0; }
 void pplg_uninit_diag(void)
 {
 	pcb_hid_remove_actions_by_cookie(diag_cookie);
+	conf_unreg_fields("plugins/diag/");
 }
 
 #include "dolists.h"
 int pplg_init_diag(void)
 {
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
+#include "diag_conf_fields.h"
+
 	PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 	return 0;
 }

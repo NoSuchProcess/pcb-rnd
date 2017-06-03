@@ -216,16 +216,17 @@
  ../src_3rd/liblihata/genht/ht.h obj_text_list.h obj_rat_list.h obj_rat.h \
  layer_grp.h library.h rats_patch.h board.h data.h \
  ../src_3rd/liblihata/genht/htsp.h crosshair.h vtonpoint.h hid.h error.h \
- drc.h route.h buffer.h layer.h ../src_plugins/diag/diag_conf.h \
- action_helper.h hid_actions.h plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h conf.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/genvector/vtp0.h list_conf.h conf.h error.h \
- ../src_plugins/diag/integrity.h dolists.h
+ drc.h route.h buffer.h layer.h ../src_plugins/diag/diag_conf.h conf.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h conf.h action_helper.h hid_actions.h plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h \
+ ../src_plugins/diag/integrity.h dolists.h \
+ ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
  ../config.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -1887,7 +1888,14 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h error.h \
- polygon.h rtree.h rtree.h hid_actions.h
+ polygon.h rtree.h rtree.h hid_actions.h \
+ ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h
+../src_plugins/io_eagle/trparse_bin.o: \
+ ../src_plugins/io_eagle/trparse_bin.c ../config.h error.h \
+ ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_bin.h
+../src_plugins/io_eagle/trparse_xml.o: \
+ ../src_plugins/io_eagle/trparse_xml.c ../config.h error.h \
+ ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h
 ../src_plugins/io_hyp/hyp_l.o: ../src_plugins/io_hyp/hyp_l.c \
  ../src_plugins/io_hyp/hyp_y.h ../src_plugins/io_hyp/parser.h pcb_bool.h \
  board.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \

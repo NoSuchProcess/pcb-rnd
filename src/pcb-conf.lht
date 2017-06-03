@@ -238,6 +238,9 @@ li:pcb-rnd-conf-v1 {
 			ha:vendor {
 				enable = 0
 			}
+			ha:diag {
+				auto_integrity = 0
+			}
 			ha:import_sch {
 				gnetlist_program = gnetlist
 				make_program = make
