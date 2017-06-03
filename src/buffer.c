@@ -110,6 +110,7 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 
 		Buffer->Data->parent.any = old_parent;
 		Buffer->Data->parent_type = old_pt;
+		pcb_data_set_layer_parents(Buffer->Data);
 	}
 }
 
