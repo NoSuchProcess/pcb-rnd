@@ -224,7 +224,7 @@
  list_conf.h conf.h action_helper.h hid_actions.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h event.h \
  ../src_plugins/diag/integrity.h dolists.h \
  ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
@@ -5200,7 +5200,7 @@ hid_cfg_input.o: hid_cfg_input.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../config.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h hid_cfg_action.h error.h \
- compat_misc.h
+ compat_misc.h event.h unit.h
 hid_color.o: hid_color.c ../config.h hid_color.h hid.h error.h drc.h \
  unit.h global_typedefs.h pcb_bool.h attrib.h layer.h globalconst.h \
  obj_all_list.h obj_arc_list.h obj_common.h \

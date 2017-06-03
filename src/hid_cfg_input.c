@@ -34,6 +34,7 @@
 #include "hid_cfg_action.h"
 #include "error.h"
 #include "compat_misc.h"
+#include "event.h"
 
 /* split value into a list of '-' separated words; examine each word
    and set the bitmask of modifiers */
@@ -162,6 +163,7 @@ static lht_node_t *find_best_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_
 void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask)
 {
 	pcb_hid_cfg_action(find_best_action(mouse, button_and_mask));
+	pcb_event(PCB_EVENT_USER_INPUT_POST, NULL);
 }
 
 
@@ -451,8 +453,12 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
 
 int pcb_hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len)
 {
+	int res;
+
 	if (seq_len < 1)
 		return -1;
 
-	return pcb_hid_cfg_action(seq[seq_len-1]->action_node);
+	res = pcb_hid_cfg_action(seq[seq_len-1]->action_node);
+	pcb_event(PCB_EVENT_USER_INPUT_POST, NULL);
+	return res;
 }

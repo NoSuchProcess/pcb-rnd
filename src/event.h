@@ -55,6 +55,7 @@ typedef enum {
 	PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, /* rubber band: adapt main line to keep rubberband lines direction */
 
 	PCB_EVENT_GUI_SYNC,               /* sync GUI state (e.g. after a menu clicked) */
+	PCB_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
 
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
