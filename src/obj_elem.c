@@ -218,7 +218,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 
 	group = (PCB_SWAP_IDENT ? gbottom : gtop);
 	clayer = &Buffer->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
-	group = (PCB_SWAP_IDENT ? gbottom : gtop);
+	group = (PCB_SWAP_IDENT ? gtop : gbottom);
 	slayer = &Buffer->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
 	PCB_PAD_LOOP(element);
 	{
