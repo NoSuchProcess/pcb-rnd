@@ -152,7 +152,7 @@ static int eagle_foreach_dispatch(read_state_t *st, xmlNode *tree, const dispatc
 {
 	xmlNode *n;
 
-	for(n = tree; n != NULL; n = n->next)
+	for(n = tree; n != NULL; n = NEXT(n))
 		if (eagle_dispatch(st, n, disp_table, obj, type) != 0)
 			return -1;
 
