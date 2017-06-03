@@ -44,25 +44,26 @@ typedef struct {
 	const gchar *name;
 	gint mode;
 	const gchar **xpm;
+	const char *tooltip;
 	pcb_gtk_mode_btn_t *mbb;
 } ModeButton;
 
 
 static ModeButton mode_buttons[] = {
-	{NULL, NULL, 0, 0, "via", PCB_MODE_VIA, via},
-	{NULL, NULL, 0, 0, "line", PCB_MODE_LINE, line},
-	{NULL, NULL, 0, 0, "arc", PCB_MODE_ARC, arc},
-	{NULL, NULL, 0, 0, "text", PCB_MODE_TEXT, text},
-	{NULL, NULL, 0, 0, "rectangle", PCB_MODE_RECTANGLE, rect},
-	{NULL, NULL, 0, 0, "polygon", PCB_MODE_POLYGON, poly},
-	{NULL, NULL, 0, 0, "polygonhole", PCB_MODE_POLYGON_HOLE, polyhole},
-	{NULL, NULL, 0, 0, "buffer", PCB_MODE_PASTE_BUFFER, buf},
-	{NULL, NULL, 0, 0, "remove", PCB_MODE_REMOVE, del},
-	{NULL, NULL, 0, 0, "rotate", PCB_MODE_ROTATE, rot},
-	{NULL, NULL, 0, 0, "insertPoint", PCB_MODE_INSERT_POINT, ins},
-	{NULL, NULL, 0, 0, "thermal", PCB_MODE_THERMAL, thrm},
-	{NULL, NULL, 0, 0, "select", PCB_MODE_ARROW, sel},
-	{NULL, NULL, 0, 0, "lock", PCB_MODE_LOCK, lock}
+	{NULL, NULL, 0, 0, "via", PCB_MODE_VIA, via, "place a via on the board"},
+	{NULL, NULL, 0, 0, "line", PCB_MODE_LINE, line, "draw a line segment (trace) on the board"},
+	{NULL, NULL, 0, 0, "arc", PCB_MODE_ARC, arc, "draw an arc segment (trace) on the board"},
+	{NULL, NULL, 0, 0, "text", PCB_MODE_TEXT, text, "draw text on the board"},
+	{NULL, NULL, 0, 0, "rectangle", PCB_MODE_RECTANGLE, rect, "draw a rectangular polygon on the board"},
+	{NULL, NULL, 0, 0, "polygon", PCB_MODE_POLYGON, poly, "draw a polygon on the board"},
+	{NULL, NULL, 0, 0, "polygonhole", PCB_MODE_POLYGON_HOLE, polyhole, "cut out a hole from existing polygons on the board"},
+	{NULL, NULL, 0, 0, "buffer", PCB_MODE_PASTE_BUFFER, buf, "paste the current buffer on the board"},
+	{NULL, NULL, 0, 0, "remove", PCB_MODE_REMOVE, del, "remove an object from the board"},
+	{NULL, NULL, 0, 0, "rotate", PCB_MODE_ROTATE, rot, "rotate an object on the board"},
+	{NULL, NULL, 0, 0, "insertPoint", PCB_MODE_INSERT_POINT, ins, "insert a point in a trace or polygon contour"},
+	{NULL, NULL, 0, 0, "thermal", PCB_MODE_THERMAL, thrm, "change thermal connectivity of a pin or via"},
+	{NULL, NULL, 0, 0, "select", PCB_MODE_ARROW, sel, "switch to select mode"},
+	{NULL, NULL, 0, 0, "lock", PCB_MODE_LOCK, lock, "lock or unlock objects on the board"}
 };
 
 static gint n_mode_buttons = G_N_ELEMENTS(mode_buttons);
