@@ -2,6 +2,8 @@ put /local/pcb/mod {io_eagle}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/io_eagle/io_eagle.o
  $(PLUGDIR)/io_eagle/read.o
+ $(PLUGDIR)/io_eagle/trparse_xml.o
+ $(PLUGDIR)/io_eagle/trparse_bin.o
 @]
 
 switch /local/pcb/io_eagle/controls

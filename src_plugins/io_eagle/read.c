@@ -42,9 +42,13 @@
 #include "polygon.h"
 #include "rtree.h"
 #include "hid_actions.h"
+#include "trparse.h"
+#include "trparse_xml.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
 #define EAGLE_TEXT_SIZE_100 PCB_MM_TO_COORD(2)
+
+#define CHILDREN(node) st->parser.calls->children(&st->parser, node)
 
 typedef struct eagle_layer_s {
 	const char *name;
@@ -63,8 +67,7 @@ typedef struct eagle_library_s {
 
 
 typedef struct read_state_s {
-	xmlDoc *doc;
-	xmlNode *root;
+	trparse_t parser;
 	pcb_board_t *pcb;
 
 	htip_t layers;
@@ -1170,13 +1173,12 @@ static void st_uninit(read_state_t *st)
 		free(l);
 	}
 	htsp_uninit(&st->libs);
-
+	st->parser.calls->unload(&st->parser);
 }
 
 int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
-	xmlDoc *doc;
-	xmlNode *root, *dr;
+	xmlNode *dr;
 	int res, old_leni;
 	read_state_t st;
 
@@ -1187,28 +1189,19 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 		{NULL, NULL}
 	};
 
-	doc = xmlReadFile(Filename, NULL, 0);
-	if (doc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "xml parsing error\n");
+	st.parser.calls = &trparse_xml_calls;
+
+	if (st.parser.calls->load(&st.parser, Filename) != 0)
 		return -1;
-	}
 
-	root = xmlDocGetRootElement(doc);
-	if (xmlStrcmp(root->name, (xmlChar *)"eagle") != 0) {
-		pcb_message(PCB_MSG_ERROR, "xml error: root is not <eagle>\n");
-		goto err;
-	}
-
-	if (eagle_read_ver(xmlGetProp(root, (xmlChar *)"version")) < 0)
+	if (eagle_read_ver(xmlGetProp(st.parser.root, (xmlChar *)"version")) < 0)
 		goto err;
 
-	st.doc = doc;
-	st.root = root;
 	st.pcb = pcb;
 
 	st_init(&st);
 
-	dr = eagle_xml_path(root, "drawing", "board", "designrules", NULL);
+	dr = eagle_xml_path(st.parser.root, "drawing", "board", "designrules", NULL);
 	if (dr != NULL)
 		eagle_read_design_rules(&st, dr);
 	else
@@ -1216,7 +1209,7 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
-	res = eagle_foreach_dispatch(&st, root->children, disp, NULL, 0);
+	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
 	if (res == 0)
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
@@ -1225,11 +1218,10 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 
 	pcb_trace("Houston, the Eagle has landed. %d\n", res);
 
-	xmlFreeDoc(doc);
 	return 0;
 
 err:;
-	xmlFreeDoc(doc);
+	st_uninit(&st);
 	pcb_trace("Eagle XML parsing error. Bailing out now. %d\n", res);
 	return -1;
 }
