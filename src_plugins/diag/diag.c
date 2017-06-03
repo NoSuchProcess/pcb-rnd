@@ -33,6 +33,7 @@
 #include "plugins.h"
 #include "conf.h"
 #include "error.h"
+#include "event.h"
 #include "integrity.h"
 
 conf_diag_t conf_diag;
@@ -240,6 +241,18 @@ static int pcb_act_integrity(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	return 0;
 }
 
+static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+
+	if (conf_diag.plugins.diag.auto_integrity) {
+		static int cnt = 0;
+		if ((cnt++ % 100) == 0) {
+			pcb_trace("Number of integrity checks so far: %d\n", cnt);
+		}
+		pcb_check_integrity(PCB);
+	}
+}
+
 
 static const char d1_syntax[] = "d1()\n";
 static const char d1_help[] = "debug action for development";
@@ -280,6 +293,7 @@ void pplg_uninit_diag(void)
 {
 	pcb_hid_remove_actions_by_cookie(diag_cookie);
 	conf_unreg_fields("plugins/diag/");
+	pcb_event_unbind_allcookie(diag_cookie);
 }
 
 #include "dolists.h"
@@ -289,6 +303,7 @@ int pplg_init_diag(void)
 	conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
 #include "diag_conf_fields.h"
 
+	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, ev_ui_post, NULL, diag_cookie);
 	PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 	return 0;
 }
