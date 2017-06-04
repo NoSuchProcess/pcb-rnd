@@ -26,11 +26,26 @@
 #include "config.h"
 
 #include "buffer.h"
+#include "data.h"
 #include "error.h"
 #include "obj_subc.h"
 
+pcb_subc_t *pcb_subc_alloc(void)
+{
+	pcb_subc_t *sc;
+	sc = calloc(sizeof(pcb_subc_t), 1);
+	sc->data = pcb_data_new(NULL);
+	PCB_SET_PARENT(sc->data, subc, sc);
+	return sc;
+}
+
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
+	pcb_subc_t *sc;
+
+	sc = pcb_subc_alloc();
+	PCB_SET_PARENT(sc->data, data, buffer->Data);
+
 
 	pcb_message(PCB_MSG_ERROR, "pcb_subc_convert_from_buffer(): not yet implemented\n");
 	return -1;
