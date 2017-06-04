@@ -121,7 +121,7 @@ extern int *pcb_arc_start_ptr, *pcb_arc_end_ptr;
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (layer->On)				\
+		if (layer->meta.real.vis) \
 			PCB_ARC_LOOP(layer)
 
 #endif

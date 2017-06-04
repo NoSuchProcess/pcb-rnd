@@ -1438,9 +1438,9 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 					val = NULL;
 			}
 			if (val == NULL)
-				ret |= pcb_attribute_remove(&ly->Attributes, key);
+				ret |= pcb_attribute_remove(&ly->meta.real.Attributes, key);
 			else
-				ret |= pcb_attribute_put(&ly->Attributes, key, val, 1);
+				ret |= pcb_attribute_put(&ly->meta.real.Attributes, key, val, 1);
 			free(key);
 			pcb_board_set_changed_flag(pcb_true);
 		}
@@ -1459,7 +1459,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			{"auto: auto-generated layer", NULL,    PCB_HATT_BOOL, 0, 0, {0}, NULL, NULL, 0, NULL, NULL}
 		};
 
-		attr[0].default_val.str_value = pcb_strdup(ly->Name);
+		attr[0].default_val.str_value = pcb_strdup(ly->meta.real.name);
 		attr[1].default_val.int_value = ly->comb & PCB_LYC_SUB;
 		attr[2].default_val.int_value = ly->comb & PCB_LYC_AUTO;
 
@@ -1467,7 +1467,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		if (ar == 0) {
 			pcb_layer_combining_t comb = 0;
-			if (strcmp(ly->Name, attr[0].default_val.str_value) != 0) {
+			if (strcmp(ly->meta.real.name, attr[0].default_val.str_value) != 0) {
 				ret |= pcb_layer_rename_(ly, (char *)attr[0].default_val.str_value);
 				attr[0].default_val.str_value = NULL;
 				pcb_board_set_changed_flag(pcb_true);

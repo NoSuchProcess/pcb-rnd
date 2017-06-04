@@ -160,7 +160,7 @@ static void print_structure(FILE * fp)
 
 	g_list_free(layerlist);				/* might be around from the last export */
 
-	if (PCB->Data->Layer[top_layer].On) {
+	if (PCB->Data->Layer[top_layer].meta.real.vis) {
 		layerlist = g_list_append(layerlist, &PCB->Data->Layer[top_layer]);
 	}
 	else {
@@ -182,32 +182,32 @@ static void print_structure(FILE * fp)
 			continue;
 
 		first_layer = &PCB->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
-		if (!first_layer->On)
+		if (!first_layer->meta.real.vis)
 			continue;
 
 		layerlist = g_list_append(layerlist, first_layer);
 
 		if (group < top_group) {
 			pcb_message(PCB_MSG_WARNING, "WARNING! DSN export moved layer group with the \"%s\" layer "
-							 "after the top layer group.  DSN files must have the top " "layer first.\n", first_layer->Name);
+							 "after the top layer group.  DSN files must have the top " "layer first.\n", first_layer->meta.real.name);
 		}
 
 		if (group > bot_group) {
 			pcb_message(PCB_MSG_WARNING, "WARNING! DSN export moved layer group with the \"%s\" layer "
-							 "before the bottom layer group.  DSN files must have the " "bottom layer last.\n", first_layer->Name);
+							 "before the bottom layer group.  DSN files must have the " "bottom layer last.\n", first_layer->meta.real.name);
 		}
 
 		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 		{
 			if (entry > 0) {
 				pcb_message(PCB_MSG_WARNING, "WARNING! DSN export squashed layer \"%s\" into layer "
-								 "\"%s\", DSN files do not have layer groups.", layer->Name, first_layer->Name);
+								 "\"%s\", DSN files do not have layer groups.", layer->meta.real.name, first_layer->meta.real.name);
 			}
 		}
 		PCB_END_LOOP;
 	}
 
-	if (PCB->Data->Layer[bot_layer].On) {
+	if (PCB->Data->Layer[bot_layer].meta.real.vis) {
 		layerlist = g_list_append(layerlist, &PCB->Data->Layer[bot_layer]);
 	}
 	else {
@@ -229,12 +229,12 @@ static void print_structure(FILE * fp)
 		for (int ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
 			char *nname;
 			nname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
-			if (!strcmp(layer->Name, nname)) {
+			if (!strcmp(layer->meta.real.name, nname)) {
 				g_free(layeropts);
-				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", layer->Name);
+				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", layer->meta.real.name);
 			}
 		}
-		fprintf(fp, "    (layer \"%s\"\n", layer->Name);
+		fprintf(fp, "    (layer \"%s\"\n", layer->meta.real.name);
 		fprintf(fp, "      %s\n", layeropts);
 		fprintf(fp, "    )\n");
 		g_free(layeropts);
@@ -316,7 +316,7 @@ static void print_library(FILE * fp)
 			if (!pin->Number) { /* if pin is null just make it a keepout */
 				for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
 					pcb_layer_t *lay = iter->data;
-					pcb_fprintf(fp, "      (keepout \"\" (circle \"%s\" %.6mm %.6mm %.6mm))\n", lay->Name, pinthickness, lx, ly);
+					pcb_fprintf(fp, "      (keepout \"\" (circle \"%s\" %.6mm %.6mm %.6mm))\n", lay->meta.real.name, pinthickness, lx, ly);
 				}
 			}
 			else {
@@ -357,7 +357,7 @@ static void print_library(FILE * fp)
 				pcb_layer_t *lay;
 				lay = g_list_nth_data(layerlist, partside);
 				pcb_fprintf(fp, "      (keepout \"\" (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
-										lay->Name, lx - xlen / 2, ly - ylen / 2, lx + xlen / 2, ly + ylen / 2);
+										lay->meta.real.name, lx - xlen / 2, ly - ylen / 2, lx + xlen / 2, ly + ylen / 2);
 			}
 			else {
 				pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, pad->Number, lx, ly);
@@ -399,7 +399,7 @@ static void print_library(FILE * fp)
 			dim2 = dim2l;
 			pcb_fprintf(fp,
 									"      (shape (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
-									((pcb_layer_t *) (g_list_first(layerlist)->data))->Name, dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
+									((pcb_layer_t *) (g_list_first(layerlist)->data))->meta.real.name, dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
 		}
 		else if (sscanf(padstack, "Th_square_%ld", &dim1l) == 1) {
 			dim1 = dim1l;
@@ -476,7 +476,7 @@ static void print_wires(FILE * fp)
 		{
 			pcb_fprintf(fp,
 									"        (wire (path %s %.6mm %.6mm %.6mm %.6mm %.6mm)\n",
-									lay->Name, line->Thickness, line->Point1.X,
+									lay->meta.real.name, line->Thickness, line->Point1.X,
 									(PCB->MaxHeight - line->Point1.Y), line->Point2.X, (PCB->MaxHeight - line->Point2.Y));
 			fprintf(fp, "            (type protect))\n");
 		}

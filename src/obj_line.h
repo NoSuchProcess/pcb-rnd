@@ -123,7 +123,7 @@ void pcb_line_enforce_drc(void);
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (layer->On)				\
+		if (layer->meta.real.vis) \
 			PCB_LINE_LOOP(layer)
 
 #endif

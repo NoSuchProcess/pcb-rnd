@@ -232,15 +232,15 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->meta.real.Attributes, s2));
 	}
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
 	switch(fh1) {
-		case query_fields_name:     PCB_QRY_RET_STR(res, l->Name);
-		case query_fields_visible:  PCB_QRY_RET_INT(res, l->On);
+		case query_fields_name:     PCB_QRY_RET_STR(res, l->meta.real.name);
+		case query_fields_visible:  PCB_QRY_RET_INT(res, l->meta.real.vis);
 		case query_fields_position: PCB_QRY_RET_INT(res, pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, l)) & PCB_LYT_ANYWHERE);
 		case query_fields_type:     PCB_QRY_RET_INT(res, pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, l)) & PCB_LYT_ANYTHING);
 		default:;

@@ -677,7 +677,7 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 	case PCB_TYPE_POLYGON:						/* restore the removed point */
 		{
 			/* recover the point */
-			if (andDraw && layer->On)
+			if (andDraw && layer->meta.real.vis)
 				ErasePolygon(polygon);
 			pcb_insert_point_in_object(PCB_TYPE_POLYGON, layer, polygon,
 														&Entry->Data.RemovedPoint.Index,
@@ -685,7 +685,7 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 														Entry->Data.RemovedPoint.Y, pcb_true, Entry->Data.RemovedPoint.last_in_contour);
 
 			polygon->Points[Entry->Data.RemovedPoint.Index].ID = Entry->Data.RemovedPoint.ID;
-			if (andDraw && layer->On)
+			if (andDraw && layer->meta.real.vis)
 				DrawPolygon(layer, polygon);
 			Entry->Type = PCB_UNDO_INSERT_POINT;
 			Entry->ID = Entry->Data.RemovedPoint.ID;
@@ -718,7 +718,7 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 	switch (type) {
 	case PCB_TYPE_POLYGON_POINT:			/* removes an inserted polygon point */
 		{
-			if (andDraw && layer->On)
+			if (andDraw && layer->meta.real.vis)
 				ErasePolygon(polygon);
 
 			/* Check whether this point was at the end of its contour.
@@ -741,7 +741,7 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 			Entry->Type = PCB_UNDO_REMOVE_POINT;
 			Entry->Data.RemovedPoint.Index = point_idx;
 			pcb_destroy_object(PCB->Data, PCB_TYPE_POLYGON_POINT, layer, polygon, pnt);
-			if (andDraw && layer->On)
+			if (andDraw && layer->meta.real.vis)
 				DrawPolygon(layer, polygon);
 			return (pcb_true);
 		}

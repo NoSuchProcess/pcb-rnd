@@ -309,7 +309,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 
 	/* draw all visible layers */
 	for (i = 0; i < pcb_max_layer; i++)
-		if (PCB->Data->Layer[i].On) {
+		if (PCB->Data->Layer[i].meta.real.vis) {
 			pcb_layer_t *layer = &Buffer->Data->Layer[i];
 
 			PCB_LINE_LOOP(layer);
@@ -1088,7 +1088,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 	for (i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *layer = &PCB->Data->Layer[i];
 		/* Only find points of arcs and lines on currently visible layers. */
-		if (!layer->On)
+		if (!layer->meta.real.vis)
 			continue;
 		pcb_r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info, NULL);
 		pcb_r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info, NULL);

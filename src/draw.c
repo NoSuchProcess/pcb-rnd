@@ -172,8 +172,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	pcb_bool paste_empty;
 
-	PCB->Data->SILKLAYER.Color = conf_core.appearance.color.element;
-	PCB->Data->BACKSILKLAYER.Color = conf_core.appearance.color.invisible_objects;
+	PCB->Data->SILKLAYER.meta.real.color = conf_core.appearance.color.element;
+	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
 
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
@@ -184,7 +184,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE)) /* do not draw silk, mask and paste here, they'll be drawn separately */
 			continue;
 
-		if (l->On && !do_group[group]) {
+		if (l->meta.real.vis && !do_group[group]) {
 			do_group[group] = 1;
 			drawn_groups[ngroups++] = group;
 		}
@@ -297,7 +297,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	/* find the first ui layer in use */
 	first = NULL;
 	for(i = 0; i < vtlayer_len(&pcb_uilayer); i++) {
-		if (pcb_uilayer.array[i].cookie != NULL) {
+		if (pcb_uilayer.array[i].meta.real.cookie != NULL) {
 			first = pcb_uilayer.array+i;
 			break;
 		}
@@ -306,7 +306,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	/* if there's any UI layer, try to draw them */
 	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0)) {
 		for(i = 0; i < vtlayer_len(&pcb_uilayer); i++)
-			if ((pcb_uilayer.array[i].cookie != NULL) && (pcb_uilayer.array[i].On))
+			if ((pcb_uilayer.array[i].meta.real.cookie != NULL) && (pcb_uilayer.array[i].meta.real.vis))
 				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
 		pcb_gui->end_layer();
 	}
@@ -394,7 +394,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	   auto-outline magically disappear when you first add something to
 	   the outline layer.  */
 	if ((lflg & PCB_LYT_OUTLINE) && pcb_layer_is_empty_(PCB, Layer)) {
-		pcb_gui->set_color(Output.fgGC, Layer->Color);
+		pcb_gui->set_color(Output.fgGC, Layer->meta.real.color);
 		pcb_gui->set_line_width(Output.fgGC, PCB->minWid);
 		pcb_gui->draw_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
@@ -419,7 +419,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 	for (i = n_entries - 1; i >= 0; i--) {
 		layernum = layers[i];
 		Layer = PCB->Data->Layer + layernum;
-		if (!(gflg & PCB_LYT_SILK) && Layer->On)
+		if (!(gflg & PCB_LYT_SILK) && Layer->meta.real.vis)
 			pcb_draw_layer(Layer, drawn_area);
 	}
 	if (n_entries > 1)
@@ -472,19 +472,19 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 			DrawVia((pcb_pin_t *) ptr2);
 		break;
 	case PCB_TYPE_LINE:
-		if (((pcb_layer_t *) ptr1)->On)
+		if (((pcb_layer_t *) ptr1)->meta.real.vis)
 			DrawLine((pcb_layer_t *) ptr1, (pcb_line_t *) ptr2);
 		break;
 	case PCB_TYPE_ARC:
-		if (((pcb_layer_t *) ptr1)->On)
+		if (((pcb_layer_t *) ptr1)->meta.real.vis)
 			DrawArc((pcb_layer_t *) ptr1, (pcb_arc_t *) ptr2);
 		break;
 	case PCB_TYPE_TEXT:
-		if (((pcb_layer_t *) ptr1)->On)
+		if (((pcb_layer_t *) ptr1)->meta.real.vis)
 			DrawText((pcb_layer_t *) ptr1, (pcb_text_t *) ptr2);
 		break;
 	case PCB_TYPE_POLYGON:
-		if (((pcb_layer_t *) ptr1)->On)
+		if (((pcb_layer_t *) ptr1)->meta.real.vis)
 			DrawPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT:

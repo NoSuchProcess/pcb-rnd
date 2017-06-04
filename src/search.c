@@ -1104,7 +1104,7 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 			if (!PCB->InvisibleObjectsOn)
 				continue;
 		}
-		if (SearchLayer->On) {
+		if (SearchLayer->meta.real.vis) {
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_POLYGON_POINT &&
 					SearchPointByLocation(locked, (pcb_layer_t **) Result1, (pcb_polygon_t **) Result2, (pcb_point_t **) Result3))

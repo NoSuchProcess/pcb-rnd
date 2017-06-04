@@ -94,24 +94,38 @@ typedef enum { /* bitfield */
 #include "obj_all_list.h"
 
 struct pcb_layer_s {              /* holds information about one layer */
-	const char *Name;               /* layer name */
 	linelist_t Line;
 	textlist_t Text;
 	polylist_t Polygon;
 	arclist_t Arc;
-	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
-	pcb_rtree_t *subc_tree;        /* TODO: decide whether this lists subcircuits or parts of subcircuits */
-	pcb_bool On;                   /* visible flag */
-	const char *Color;             /* color */
-	const char *SelectedColor;
-	pcb_attribute_list_t Attributes;
-	int no_drc;                    /* whether to ignore the layer when checking the design rules */
-	pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
+	pcb_data_t *parent;
 
+	pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
 	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
 
-	const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
-	pcb_data_t *parent;
+	/* for bound layers these point to the board layer's*/
+	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
+	pcb_rtree_t *subc_tree;        /* TODO: decide whether this lists subcircuits or parts of subcircuits */
+
+	union {
+		struct { /* A real board layer */
+			const char *name;              /* layer name */
+			pcb_bool vis;                  /* visible flag */
+			const char *color;             /* color */
+			const char *selected_color;
+			pcb_attribute_list_t Attributes;
+			int no_drc;                    /* whether to ignore the layer when checking the design rules */
+			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
+		} real;
+		struct { /* A subcircuit layer binding; list data are local but everything else is coming from board layers */
+			pcb_layer_t *real; /* NULL if unbound */
+			
+			/* matching rules */
+			pcb_layer_type_t type;
+			pcb_layer_combining_t comb;
+			int stack_offs;                /* offset in the stack for PCB_LYT_INNER: positive is counted from primary side, negative from the opposite side */
+		} bound;
+	} meta;
 };
 
 

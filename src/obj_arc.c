@@ -503,7 +503,7 @@ void *MoveArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		EraseArc(Arc);
 		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
 		DrawArc(Layer, Arc);
@@ -544,7 +544,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
-	if (ctx->move.dst_layer == Layer && Layer->On) {
+	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis) {
 		DrawArc(Layer, Arc);
 		pcb_draw();
 	}
@@ -552,11 +552,11 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 		return (Arc);
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_ARC, Layer, Arc, Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-	if (Layer->On)
+	if (Layer->meta.real.vis)
 		EraseArc(Arc);
 	newone = (pcb_arc_t *) MoveArcToLayerLowLevel(ctx, Layer, Arc, ctx->move.dst_layer);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, ctx->move.dst_layer, Arc);
-	if (ctx->move.dst_layer->On)
+	if (ctx->move.dst_layer->meta.real.vis)
 		DrawArc(ctx->move.dst_layer, newone);
 	pcb_draw();
 	return (newone);
@@ -577,7 +577,7 @@ void *DestroyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	/* erase from screen */
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		EraseArc(Arc);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -718,12 +718,12 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc))
-			color = layer->SelectedColor;
+			color = layer->meta.real.selected_color;
 		else
 			color = conf_core.appearance.color.connected;
 	}
 	else
-		color = layer->Color;
+		color = layer->meta.real.color;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, arc)) {
 		assert(color != NULL);

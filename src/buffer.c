@@ -606,7 +606,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
-		if (destlayer->On) {
+		if (destlayer->meta.real.vis) {
 			PCB_LINE_LOOP(sourcelayer);
 			{
 				if (CopyLine(&ctx, destlayer, line))

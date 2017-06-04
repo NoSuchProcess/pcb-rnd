@@ -890,9 +890,9 @@ layer
 				Layer->parent = yyData;
 
 					/* memory for name is already allocated */
-				if (Layer->Name != NULL)
-					free((char*)Layer->Name);
-				Layer->Name = $4;   /* shouldn't this be strdup()'ed ? */
+				if (Layer->meta.real.name != NULL)
+					free((char*)Layer->meta.real.name);
+				Layer->meta.real.name = $4;   /* shouldn't this be strdup()'ed ? */
 				LayerFlag[$3-1] = pcb_true;
 				if (yyData->LayerN < $3)
 				  yyData->LayerN = $3;
@@ -928,7 +928,7 @@ layerdefinition
 		| text_hi_format
 		| text_newformat
 		| text_oldformat
-		| { attr_list = & Layer->Attributes; } attribute
+		| { attr_list = & Layer->meta.real.Attributes; } attribute
 		| polygon_format
 
 /* %start-doc pcbfile Line

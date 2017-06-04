@@ -626,7 +626,7 @@ pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC )
 
 		pcb_layer_t * layer = pcb_get_layer(p_obj->layer);
 		if(layer)
-			pcb_gui->set_color(GC,layer->Color);
+			pcb_gui->set_color(GC,layer->meta.real.color);
 
 		switch(p_obj->type) {
 			case PCB_TYPE_LINE :	

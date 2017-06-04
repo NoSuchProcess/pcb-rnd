@@ -862,7 +862,7 @@ static routedata_t *CreateRouteData()
 		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
 			pcb_layer_id_t lid = PCB->LayerGroups.grp[group].lid[i];
 			/* layer must be 1) copper and 2) on */
-			if ((pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].On) {
+			if ((pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].meta.real.vis) {
 				routing_layers++;
 				is_layer_group_active[group] = pcb_true;
 				break;
@@ -4460,10 +4460,10 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				assert(is_layer_group_active[p->group]);
 				for (i = 0, layer = NULL; i < PCB->LayerGroups.grp[p->group].len; i++) {
 					layer = LAYER_PTR(PCB->LayerGroups.grp[p->group].lid[i]);
-					if (layer->On)
+					if (layer->meta.real.vis)
 						break;
 				}
-				assert(layer && layer->On);	/*at least one layer must be on in this group! */
+				assert(layer && layer->meta.real.vis);	/*at least one layer must be on in this group! */
 				assert(p->type != EXPANSION_AREA);
 				if (p->type == LINE) {
 					pcb_coord_t halfwidth = HALF_THICK(p->style->Thick);

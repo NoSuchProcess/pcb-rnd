@@ -72,7 +72,7 @@ void pcb_text_uninit(void);
 	} while(0)
 
 /* Determines if text is actually visible */
-#define pcb_text_is_visible(b, l, t)      ((l)->On)
+#define pcb_text_is_visible(b, l, t)      ((l)->meta.real.vis)
 
 #define PCB_TEXT_LOOP(layer) do {                                       \
   pcb_text_t *text;                                                   \

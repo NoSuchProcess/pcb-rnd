@@ -50,7 +50,7 @@ static void reassign_no_drc_flags(void)
 #warning layer TODO: decide whether it is from attribute or not
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = LAYER_PTR(layer);
-		l->no_drc = pcb_attrib_get(l, "PCB::skip-drc") != NULL;
+		l->meta.real.no_drc = pcb_attribute_get(&l->meta.real.Attributes, "PCB::skip-drc") != NULL;
 	}
 }
 
@@ -90,7 +90,7 @@ static void DrawNewConnections(void)
 	for (i = pcb_max_layer; i != -1; i--) {
 		pcb_cardinal_t layer = pcb_layer_stack[i];
 
-		if (PCB->Data->Layer[layer].On) {
+		if (PCB->Data->Layer[layer].meta.real.vis) {
 			/* draw all new lines */
 			position = LineList[layer].DrawLocation;
 			for (; position < LineList[layer].Number; position++)
@@ -230,7 +230,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 			pcb_layer_id_t laynum = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
 
 			/* don't mess with non-conducting objects! */
-			if (!(pcb_layer_flags(PCB, laynum) & PCB_LYT_COPPER) || ((pcb_layer_t *) ptr1)->no_drc)
+			if (!(pcb_layer_flags(PCB, laynum) & PCB_LYT_COPPER) || ((pcb_layer_t *) ptr1)->meta.real.no_drc)
 				return;
 		}
 	}

@@ -84,17 +84,17 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeS
 
 	if (Layer & PCB_LYT_UI) {
 		if (On < 0)
-			On = !pcb_uilayer.array[Layer].On;
+			On = !pcb_uilayer.array[Layer].meta.real.vis;
 		Layer &= ~(PCB_LYT_UI | PCB_LYT_VIRTUAL);
 		if (Layer >= vtlayer_len(&pcb_uilayer))
 			return 0;
-		pcb_uilayer.array[Layer].On = On;
+		pcb_uilayer.array[Layer].meta.real.vis = On;
 		changed = 1;
 		goto done;
 	}
 
 	if (On < 0)
-		On = !PCB->Data->Layer[Layer].On;
+		On = !PCB->Data->Layer[Layer].meta.real.vis;
 
 	if (conf_core.rc.verbose)
 		printf("pcb_layervis_change_group_vis(Layer=%ld, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
@@ -106,7 +106,7 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeS
 
 			/* don't count the passed member of the group */
 			if (layer != Layer && layer < pcb_max_layer) {
-				PCB->Data->Layer[layer].On = On;
+				PCB->Data->Layer[layer].meta.real.vis = On;
 
 				/* push layer on top of stack if switched on */
 				if (On && ChangeStackOrder)
@@ -118,7 +118,7 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeS
 	}
 
 	/* change at least the passed layer */
-	PCB->Data->Layer[Layer].On = On;
+	PCB->Data->Layer[Layer].meta.real.vis = On;
 	if (On && ChangeStackOrder)
 		PushOnTopOfLayerStack(Layer);
 
@@ -140,7 +140,7 @@ void pcb_layervis_reset_stack(void)
 	for (i = 0; i < pcb_max_layer; i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = i;
-		PCB->Data->Layer[i].On = pcb_true;
+		PCB->Data->Layer[i].meta.real.vis = pcb_true;
 	}
 	PCB->InvisibleObjectsOn = pcb_true;
 	PCB->PinOn = pcb_true;
@@ -173,7 +173,7 @@ void pcb_layervis_save_stack(void)
 	for (i = 0; i < pcb_max_layer; i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			SavedStack.pcb_layer_stack[i] = pcb_layer_stack[i];
-		SavedStack.LayerOn[i] = PCB->Data->Layer[i].On;
+		SavedStack.LayerOn[i] = PCB->Data->Layer[i].meta.real.vis;
 	}
 	SavedStack.ElementOn = pcb_silk_on(PCB);
 	SavedStack.InvisibleObjectsOn = PCB->InvisibleObjectsOn;
@@ -201,7 +201,7 @@ void pcb_layervis_restore_stack(void)
 	for (i = 0; i < pcb_max_layer; i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = SavedStack.pcb_layer_stack[i];
-		PCB->Data->Layer[i].On = SavedStack.LayerOn[i];
+		PCB->Data->Layer[i].meta.real.vis = SavedStack.LayerOn[i];
 	}
 	PCB->InvisibleObjectsOn = SavedStack.InvisibleObjectsOn;
 	PCB->PinOn = SavedStack.PinOn;
@@ -225,9 +225,9 @@ void layer_vis_chg_mask(conf_native_t *cfg)
 	in = 1;
 	for(n = 0; n < pcb_max_layer; n++) {
 		if (pcb_layer_flags(PCB, n) & PCB_LYT_MASK) {
-			if (PCB->Data->Layer[n].On != *cfg->val.boolean) {
+			if (PCB->Data->Layer[n].meta.real.vis != *cfg->val.boolean) {
 				chg = 1;
-				PCB->Data->Layer[n].On = *cfg->val.boolean;
+				PCB->Data->Layer[n].meta.real.vis = *cfg->val.boolean;
 			}
 		}
 	}
@@ -251,7 +251,7 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 			g->vis = 0;
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
-				if ((l != NULL) && (l->On)) {
+				if ((l != NULL) && (l->meta.real.vis)) {
 					g->vis = 1;
 					break;
 				}
@@ -261,7 +261,7 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 			pcb_bool_op(g->vis, vis);
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
-				pcb_bool_op(l->On, vis);
+				pcb_bool_op(l->meta.real.vis, vis);
 			}
 		}
 	}

@@ -372,7 +372,7 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		EraseText(Layer, Text);
 		pcb_text_move(Text, ctx->move.dx, ctx->move.dy);
 		DrawText(Layer, Text);
@@ -420,12 +420,12 @@ void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 	}
 	if (ctx->move.dst_layer != layer) {
 		pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_TEXT, layer, text, text);
-		if (layer->On)
+		if (layer->meta.real.vis)
 			EraseText(layer, text);
 		text = MoveTextToLayerLowLevel(ctx, layer, text, ctx->move.dst_layer);
-		if (ctx->move.dst_layer->On)
+		if (ctx->move.dst_layer->meta.real.vis)
 			DrawText(ctx->move.dst_layer, text);
-		if (layer->On || ctx->move.dst_layer->On)
+		if (layer->meta.real.vis || ctx->move.dst_layer->meta.real.vis)
 			pcb_draw();
 	}
 	return text;
@@ -446,7 +446,7 @@ void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	/* erase from screen */
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		EraseText(Layer, Text);
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
 		if (!ctx->remove.bulk)
@@ -676,9 +676,9 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 	unsigned int flg = 0;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
-		pcb_gui->set_color(Output.fgGC, layer->SelectedColor);
+		pcb_gui->set_color(Output.fgGC, layer->meta.real.selected_color);
 	else
-		pcb_gui->set_color(Output.fgGC, layer->Color);
+		pcb_gui->set_color(Output.fgGC, layer->meta.real.color);
 
 	if (layer->grp >= 0)
 		flg = pcb_layergrp_flags(PCB, layer->grp);

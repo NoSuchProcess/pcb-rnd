@@ -471,7 +471,7 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 }
 
 
-#define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].Name != NULL) && ((strcmp(pcb->Data->Layer[idx].Name, "route") == 0 || strcmp(pcb->Data->Layer[(idx)].Name, "outline") == 0)))
+#define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].meta.real.name != NULL) && ((strcmp(pcb->Data->Layer[idx].meta.real.name, "route") == 0 || strcmp(pcb->Data->Layer[(idx)].meta.real.name, "outline") == 0)))
 int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int LayerN, int oldfmt)
 {
 	const char *s, *start;

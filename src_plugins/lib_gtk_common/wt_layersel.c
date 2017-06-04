@@ -108,7 +108,7 @@ static void layersel_lyr_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 	if (lsl->ev_vis == NULL) {
 		pcb_layer_t *l = pcb_get_layer(lsl->lid);
 		if (l != NULL)
-			is_on = l->On;
+			is_on = l->meta.real.vis;
 	}
 	else
 		lsl->ev_vis(lsl, 0, &is_on);
@@ -169,7 +169,7 @@ static void ensure_visible_current(pcb_gtk_layersel_t *ls)
 	pcb_layergrp_id_t gid;
 	pcb_layer_t *l;
 
-	if (CURRENT->On)
+	if (CURRENT->meta.real.vis)
 		return;
 
 	/* look for the next one to enable, group-vise */
@@ -181,7 +181,7 @@ static void ensure_visible_current(pcb_gtk_layersel_t *ls)
 		if (g->len < 1)
 			continue;
 		l = PCB->Data->Layer + g->lid[0];
-		if (l->On)
+		if (l->meta.real.vis)
 			goto change_selection;
 	}
 
@@ -210,8 +210,8 @@ static int vis_ui(pcb_gtk_ls_lyr_t *lsl, int toggle, int *is_on)
 {
 	pcb_layer_t *l = &pcb_uilayer.array[lsl->virt_data];
 	if (toggle)
-		l->On = !l->On;
-	*is_on = l->On;
+		l->meta.real.vis = !l->meta.real.vis;
+	*is_on = l->meta.real.vis;
 	return 0;
 }
 
@@ -299,7 +299,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			else {
 				pcb_layer_t *l = pcb_get_layer(lsl->lid);
 				if (l != NULL)
-					is_on = !l->On;
+					is_on = !l->meta.real.vis;
 				else
 					normal = 0;
 			}
@@ -535,7 +535,7 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 		for(n = 0; n < grp->len; n++) {
 			pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
 			if (l != NULL) {
-				GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->Name, grp->lid[n], NULL);
+				GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->meta.real.name, grp->lid[n], NULL);
 				gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
 				lsg->layer[n].lid = grp->lid[n];
 			}
@@ -604,7 +604,7 @@ static void layersel_populate(pcb_gtk_layersel_t *ls)
 		gtk_box_pack_start(GTK_BOX(ls->grp_box), build_group_start(ls, lsg, "UI", 0, &ls->grp_ui), FALSE, FALSE, 0);
 
 		for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
-			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].Name, -1, &pcb_uilayer.array[n].Color), FALSE, FALSE, 1);
+			gtk_box_pack_start(GTK_BOX(lsg->layers), build_layer(lsg, &lsg->layer[n], pcb_uilayer.array[n].meta.real.name, -1, &pcb_uilayer.array[n].meta.real.color), FALSE, FALSE, 1);
 			lsg->layer[n].ev_selected = ev_lyr_no_select;
 			lsg->layer[n].ev_vis = vis_ui;
 			lsg->layer[n].virt_data = n;

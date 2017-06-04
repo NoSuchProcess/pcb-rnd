@@ -568,7 +568,7 @@ static int group_showing(int g, int *c)
 		l = PCB->LayerGroups.grp[g].lid[i];
 		if (l >= 0 && l < pcb_max_layer && (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK))) {
 			*c = l;
-			if (PCB->Data->Layer[l].On)
+			if (PCB->Data->Layer[l].meta.real.vis)
 				return 1;
 		}
 	}
@@ -2737,7 +2737,7 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.grp[group].lid[idx];
-			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].On)
+			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].meta.real.vis)
 				break;
 		}
 		idx = PCB->LayerGroups.grp[group].lid[idx];
@@ -2767,7 +2767,7 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 
 	/* normal layers */
 	if (flags & PCB_LYT_COPPER)
-		return pinout ? 1 : PCB->Data->Layer[idx].On;
+		return pinout ? 1 : PCB->Data->Layer[idx].meta.real.vis;
 
 	/* virtual layers */
 	{

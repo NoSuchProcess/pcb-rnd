@@ -554,15 +554,15 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	if (layer_id >= dt->LayerN)
 		dt->LayerN = layer_id+1;
 
-	ly->Name = pcb_strdup(grp->name);
+	ly->meta.real.name = pcb_strdup(grp->name);
 	ly->parent = dt;
 
-	parse_bool(&ly->On, lht_dom_hash_get(grp, "visible"));
+	parse_bool(&ly->meta.real.vis, lht_dom_hash_get(grp, "visible"));
 	if (pcb != NULL) {
 		int grp_id;
 		parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
 		dt->Layer[layer_id].grp = grp_id;
-/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->Name, grp_id);*/
+/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->meta.real.name, grp_id);*/
 	}
 
 	ncmb = lht_dom_hash_get(grp, "combining");
@@ -771,7 +771,7 @@ static void layer_fixup(pcb_board_t *pcb)
 	for(n = 0; n < pcb->Data->LayerN - 2; n++) {
 		pcb_layer_t *l = &pcb->Data->Layer[n];
 		pcb_layergrp_id_t grp = l->grp;
-		/*pcb_trace("********* l=%d %s g=%ld (top=%ld bottom=%ld)\n", n, l->Name, grp, top_silk, bottom_silk);*/
+		/*pcb_trace("********* l=%d %s g=%ld (top=%ld bottom=%ld)\n", n, l->meta.real.name, grp, top_silk, bottom_silk);*/
 		l->grp = -1;
 
 		if (grp == bottom_silk)
@@ -783,11 +783,11 @@ static void layer_fixup(pcb_board_t *pcb)
 /*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
 		if (g != NULL) {
 			pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, n);
-			if (strcmp(l->Name, "outline") == 0)
+			if (strcmp(l->meta.real.name, "outline") == 0)
 				pcb_layergrp_fix_turn_to_outline(g);
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, "failed to create layer %s\n", l->Name);
+			pcb_message(PCB_MSG_ERROR, "failed to create layer %s\n", l->meta.real.name);
 	}
 
 	pcb_layergrp_fix_old_outline(pcb);

@@ -176,7 +176,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 			int t = PCB_FLAG_THERM_GET(layer, &fh);
 			if (t != 0) {
 				const char *name;
-				txt = lht_dom_node_alloc(LHT_TEXT, PCB->Data->Layer[layer].Name);
+				txt = lht_dom_node_alloc(LHT_TEXT, PCB->Data->Layer[layer].meta.real.name);
 				name = io_lihata_thermal_style(t);
 				if (name != NULL)
 					txt->data.text.value = pcb_strdup(name);
@@ -504,10 +504,10 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 	pcb_text_t *tx;
 	int added = 0;
 
-	obj = lht_dom_node_alloc(LHT_HASH, layer->Name);
+	obj = lht_dom_node_alloc(LHT_HASH, layer->meta.real.name);
 
-	lht_dom_hash_put(obj, build_text("visible", layer->On ? "1" : "0"));
-	lht_dom_hash_put(obj, build_attributes(&layer->Attributes));
+	lht_dom_hash_put(obj, build_text("visible", layer->meta.real.vis ? "1" : "0"));
+	lht_dom_hash_put(obj, build_attributes(&layer->meta.real.Attributes));
 	lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
 	if (wrver >= 2) {
 		lht_dom_hash_put(obj, build_textf("lid", "%ld", lid));

@@ -356,10 +356,10 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	pcb_bool comp_on = pcb_false, solder_on = pcb_false;
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
-		solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->On;
+		solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
-		comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->On;
+		comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->meta.real.vis;
 
 	pcb_draw_inhibit_inc();
 	if (argc > 0) {

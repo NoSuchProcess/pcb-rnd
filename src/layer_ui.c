@@ -43,18 +43,18 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 
 	for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
 		l = &pcb_uilayer.array[n];
-		if (l->cookie == NULL) {
-			l->cookie = cookie;
+		if (l->meta.real.cookie == NULL) {
+			l->meta.real.cookie = cookie;
 			goto found;
 		}
 	}
 
 	l = vtlayer_alloc_append(&pcb_uilayer, 1);
 found:;
-	l->cookie = cookie;
-	l->Color = color;
-	l->Name = name;
-	l->On = 1;
+	l->meta.real.cookie = cookie;
+	l->meta.real.color = color;
+	l->meta.real.name = name;
+	l->meta.real.vis = 1;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return l;
 }
@@ -64,11 +64,11 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 	int n;
 	for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
 		pcb_layer_t *l = &pcb_uilayer.array[n];
-		if (l->cookie == cookie) {
+		if (l->meta.real.cookie == cookie) {
 #warning TODO: free all objects
-			l->cookie = NULL;
-			l->Color = l->Name = NULL;
-			l->On = 0;
+			l->meta.real.cookie = NULL;
+			l->meta.real.color = l->meta.real.name = NULL;
+			l->meta.real.vis = 0;
 			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 	}

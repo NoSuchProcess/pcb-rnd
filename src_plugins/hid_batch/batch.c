@@ -87,7 +87,7 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		unsigned int gflg = pcb_layergrp_flags(PCB, lg);
 		for (j = 0; j < PCB_MAX_LAYER; j++)
 			putchar(j == lg ? '#' : '-');
-		printf(" %c %s\n", (gflg & PCB_LYT_TOP) ? 'c' : (gflg & PCB_LYT_BOTTOM) ? 's' : '-', PCB->Data->Layer[i].Name);
+		printf(" %c %s\n", (gflg & PCB_LYT_TOP) ? 'c' : (gflg & PCB_LYT_BOTTOM) ? 's' : '-', PCB->Data->Layer[i].meta.real.name);
 	}
 	return 0;
 }

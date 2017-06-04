@@ -168,7 +168,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	printf("All %d bottom copper layers are:\n", used);
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t layer_id = arr[n];
-		printf(" [%lx] %s \n", layer_id, PCB->Data->Layer[layer_id].Name);
+		printf(" [%lx] %s \n", layer_id, PCB->Data->Layer[layer_id].meta.real.name);
 	}
 
 	/* query by groups (physical layers): any copper in group */
@@ -179,7 +179,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 		printf(" group %ld (%d layers)\n", group_id, PCB->LayerGroups.grp[group_id].len);
 		for(n = 0; n < PCB->LayerGroups.grp[group_id].len; n++) {
 			pcb_layer_id_t layer_id = PCB->LayerGroups.grp[group_id].lid[n];
-			printf("  [%lx] %s\n", layer_id, PCB->Data->Layer[layer_id].Name);
+			printf("  [%lx] %s\n", layer_id, PCB->Data->Layer[layer_id].meta.real.name);
 		}
 	}
 

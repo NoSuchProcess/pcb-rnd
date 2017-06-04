@@ -1346,9 +1346,9 @@ void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 		sprintf(lnp, "design/default_layer_name[%d]", n);
 		nd = conf_lht_get_at(ctx->dst_role, lnp, 1);
 		layer = &PCB->Data->Layer[n];
-		if (strcmp(layer->Name, nd->data.text.value) != 0) {
+		if (strcmp(layer->meta.real.name, nd->data.text.value) != 0) {
 			free(nd->data.text.value);
-			nd->data.text.value = pcb_strdup(layer->Name);
+			nd->data.text.value = pcb_strdup(layer->meta.real.name);
 			conf_makedirty(ctx->dst_role);
 		}
 	}

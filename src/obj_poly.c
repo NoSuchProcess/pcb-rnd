@@ -433,14 +433,14 @@ void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 /* moves a polygon */
 void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		ErasePolygon(Polygon);
 	}
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_move(Polygon, ctx->move.dx, ctx->move.dy);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		DrawPolygon(Layer, Polygon);
 		pcb_draw();
 	}
@@ -450,7 +450,7 @@ void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 /* moves a polygon-point */
 void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
 {
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		ErasePolygon(Polygon);
 	}
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
@@ -459,7 +459,7 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_remove_excess_points(Layer, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		DrawPolygon(Layer, Polygon);
 		pcb_draw();
 	}
@@ -517,7 +517,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	if (((long int) ctx->move.dst_layer == -1) || (Layer == ctx->move.dst_layer))
 		return (Polygon);
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
-	if (Layer->On)
+	if (Layer->meta.real.vis)
 		ErasePolygon(Polygon);
 	/* Move all of the thermals with the polygon */
 	d.snum = pcb_layer_id(PCB->Data, Layer);
@@ -529,7 +529,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	pcb_r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	newone = (struct pcb_polygon_s *) MovePolygonToLayerLowLevel(ctx, Layer, Polygon, ctx->move.dst_layer);
 	pcb_poly_init_clip(PCB->Data, ctx->move.dst_layer, newone);
-	if (ctx->move.dst_layer->On) {
+	if (ctx->move.dst_layer->meta.real.vis) {
 		DrawPolygon(ctx->move.dst_layer, newone);
 		pcb_draw();
 	}
@@ -587,7 +587,7 @@ void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 void *RemovePolygon_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	/* erase from screen */
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		ErasePolygon(Polygon);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -618,7 +618,7 @@ void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *
 	if (contour == 0)
 		return pcb_poly_remove(Layer, Polygon);
 
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		ErasePolygon(Polygon);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -643,7 +643,7 @@ void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *
 
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	/* redraw polygon if necessary */
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		DrawPolygon(Layer, Polygon);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -668,7 +668,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	if (contour_points <= 3)
 		return RemovePolygonContour(ctx, Layer, Polygon, contour);
 
-	if (Layer->On)
+	if (Layer->meta.real.vis)
 		ErasePolygon(Polygon);
 
 	/* insert the polygon-point into the undo list */
@@ -691,7 +691,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 
 	/* redraw polygon if necessary */
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		DrawPolygon(Layer, Polygon);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -730,7 +730,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
 		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
-		color = i->layer->SelectedColor;
+		color = i->layer->meta.real.selected_color;
 	else if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
 		color = conf_core.appearance.color.connected;
 	else if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, polygon)) {
@@ -739,7 +739,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 		color = buf;
 	}
 	else
-		color = i->layer->Color;
+		color = i->layer->meta.real.color;
 	pcb_gui->set_color(Output.fgGC, color);
 
 	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))

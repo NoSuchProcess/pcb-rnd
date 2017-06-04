@@ -97,7 +97,7 @@ static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.grp[group].lid[idx];
-			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].On)
+			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].meta.real.vis)
 				break;
 		}
 		idx = PCB->LayerGroups.grp[group].lid[idx];
@@ -111,7 +111,7 @@ static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 	}
 
 	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
-		return /*pinout ? 1 : */ PCB->Data->Layer[idx].On;
+		return /*pinout ? 1 : */ PCB->Data->Layer[idx].meta.real.vis;
 
 	/* virtual layers */
 	{

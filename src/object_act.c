@@ -128,7 +128,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 				int i;
 				layer = NULL;
 				for (i = 0; i < pcb_max_layer; i++)
-					if (strcmp(PCB->Data->Layer[i].Name, layername) == 0) {
+					if (strcmp(PCB->Data->Layer[i].meta.real.name, layername) == 0) {
 						layer = &(PCB->Data->Layer[i]);
 						break;
 					}
@@ -137,9 +137,9 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 					return 1;
 				}
 			}
-			buf = (char *) malloc(strlen(layer->Name) + strlen("Layer X Attributes"));
-			sprintf(buf, "Layer %s Attributes", layer->Name);
-			pcb_gui->edit_attributes(buf, &(layer->Attributes));
+			buf = (char *) malloc(strlen(layer->meta.real.name) + strlen("Layer X Attributes"));
+			sprintf(buf, "Layer %s Attributes", layer->meta.real.name);
+			pcb_gui->edit_attributes(buf, &(layer->meta.real.Attributes));
 			free(buf);
 			return 0;
 		}

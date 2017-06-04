@@ -255,7 +255,7 @@ static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	{
 		/* check all visible lines of the group member */
 		info.layer = layer;
-		if (info.layer->On) {
+		if (info.layer->meta.real.vis) {
 			pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 		}
 	}
@@ -416,7 +416,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 	{
 		/* check all visible lines of the group member */
-		if (layer->On) {
+		if (layer->meta.real.vis) {
 			info.layer = layer;
 			pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 		}
@@ -452,7 +452,7 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 	{
 		/* check all visible lines of the group member */
-		if (layer->On) {
+		if (layer->meta.real.vis) {
 			info.layer = layer;
 			pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 		}
@@ -490,7 +490,7 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 		{
 			/* check all visible lines of the group member */
-			if (layer->On) {
+			if (layer->meta.real.vis) {
 				info.layer = layer;
 				pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 			}
@@ -512,7 +512,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 	group = pcb_layer_get_group_(Layer);
 	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 	{
-		if (layer->On) {
+		if (layer->meta.real.vis) {
 			pcb_coord_t thick;
 
 			/* the following code just stupidly compares the endpoints
@@ -837,7 +837,7 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 					XORDrawAttachedLine(x1,y1,x2,y2, ptr->Line->Thickness);
 				}
 				else if(conf_core.editor.move_linepoint_uses_route == 0) {
-					pcb_gui->set_color(pcb_crosshair.GC,ptr->Layer->Color);
+					pcb_gui->set_color(pcb_crosshair.GC,ptr->Layer->meta.real.color);
 					XORDrawAttachedLine(x1,y1,x2,y2, ptr->Line->Thickness);
 					/* Draw the DRC outline if it is enabled */
 					if (conf_core.editor.show_drc) {

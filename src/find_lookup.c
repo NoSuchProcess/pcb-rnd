@@ -415,7 +415,7 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 		for(layer = 0; layer < pcb_max_layer; layer++) {
 			if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 				continue;
-			if (LAYER_PTR(layer)->no_drc)
+			if (LAYER_PTR(layer)->meta.real.no_drc)
 				continue;
 			info.layer = layer;
 			/* add touching lines */
@@ -733,7 +733,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 	for(layer = 0; layer < pcb_max_layer; layer++) {
 		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
 			continue;
-		if (LAYER_PTR(layer)->no_drc)
+		if (LAYER_PTR(layer)->meta.real.no_drc)
 			continue;
 		/* do nothing if there are no PV's */
 		if (TotalP + TotalV == 0) {

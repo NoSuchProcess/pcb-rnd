@@ -85,8 +85,8 @@ void pcb_hid_save_and_show_layer_ons(int *save_array)
 {
 	int i;
 	for (i = 0; i < pcb_max_layer; i++) {
-		save_array[i] = PCB->Data->Layer[i].On;
-		PCB->Data->Layer[i].On = 1;
+		save_array[i] = PCB->Data->Layer[i].meta.real.vis;
+		PCB->Data->Layer[i].meta.real.vis = 1;
 	}
 }
 
@@ -94,5 +94,5 @@ void pcb_hid_restore_layer_ons(int *save_array)
 {
 	int i;
 	for (i = 0; i < pcb_max_layer; i++)
-		PCB->Data->Layer[i].On = save_array[i];
+		PCB->Data->Layer[i].meta.real.vis = save_array[i];
 }

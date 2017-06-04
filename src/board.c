@@ -99,7 +99,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->minRing = conf_core.design.min_ring;
 
 	for (i = 0; i < PCB_MAX_LAYER; i++)
-		ptr->Data->Layer[i].Name = pcb_strdup(conf_core.design.default_layer_name[i]);
+		ptr->Data->Layer[i].meta.real.name = pcb_strdup(conf_core.design.default_layer_name[i]);
 
 	pcb_font_create_default(ptr);
 
@@ -168,8 +168,8 @@ void pcb_layer_colors_from_conf(pcb_board_t *ptr)
 
 	/* copy default settings */
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
-		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
-		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];
+		ptr->Data->Layer[i].meta.real.color = conf_core.appearance.color.layer[i];
+		ptr->Data->Layer[i].meta.real.selected_color = conf_core.appearance.color.layer_selected[i];
 	}
 }
 

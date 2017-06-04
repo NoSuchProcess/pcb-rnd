@@ -263,7 +263,7 @@ pcb_layer_id_t pcb_layer_by_name(const char *name)
 {
 	pcb_layer_id_t n;
 	for (n = 0; n < PCB->Data->LayerN; n++)
-		if (strcmp(PCB->Data->Layer[n].Name, name) == 0)
+		if (strcmp(PCB->Data->Layer[n].meta.real.name, name) == 0)
 			return n;
 	return -1;
 }
@@ -276,9 +276,9 @@ void pcb_layers_reset()
 	   for the rest of the code: the (embedded) default design will overwrite this. */
 	/* reset layers */
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
-		if (PCB->Data->Layer[n].Name != NULL)
-			free((char *)PCB->Data->Layer[n].Name);
-		PCB->Data->Layer[n].Name = pcb_strdup("<pcb_layers_reset>");
+		if (PCB->Data->Layer[n].meta.real.name != NULL)
+			free((char *)PCB->Data->Layer[n].meta.real.name);
+		PCB->Data->Layer[n].meta.real.name = pcb_strdup("<pcb_layers_reset>");
 		PCB->Data->Layer[n].grp = -1;
 	}
 
@@ -308,18 +308,18 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 	id = PCB->Data->LayerN++;
 
 	if (lname != NULL) {
-		if (PCB->Data->Layer[id].Name != NULL)
-			free((char *)PCB->Data->Layer[id].Name);
+		if (PCB->Data->Layer[id].meta.real.name != NULL)
+			free((char *)PCB->Data->Layer[id].meta.real.name);
 	}
 
 	layer_clear(&PCB->Data->Layer[id]);
-	PCB->Data->Layer[id].Name = pcb_strdup(lname);
+	PCB->Data->Layer[id].meta.real.name = pcb_strdup(lname);
 
 	/* add layer to group */
 	if (grp >= 0) {
 		PCB->LayerGroups.grp[grp].lid[PCB->LayerGroups.grp[grp].len] = id;
 		PCB->LayerGroups.grp[grp].len++;
-		PCB->Data->Layer[id].On = PCB->Data->Layer[PCB->LayerGroups.grp[grp].lid[0]].On;
+		PCB->Data->Layer[id].meta.real.vis = PCB->Data->Layer[PCB->LayerGroups.grp[grp].lid[0]].meta.real.vis;
 	}
 	PCB->Data->Layer[id].grp = grp;
 
@@ -329,9 +329,9 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 {
-	if (PCB->Data->Layer[layer].Name != NULL)
-		free((char *)PCB->Data->Layer[layer].Name);
-	PCB->Data->Layer[layer].Name = pcb_strdup(lname);
+	if (PCB->Data->Layer[layer].meta.real.name != NULL)
+		free((char *)PCB->Data->Layer[layer].meta.real.name);
+	PCB->Data->Layer[layer].meta.real.name = pcb_strdup(lname);
 	return 0;
 }
 
@@ -367,8 +367,8 @@ static int is_last_bottom_copper_layer(int layer)
 
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
-	free((char*)Layer->Name);
-	Layer->Name = Name;
+	free((char*)Layer->meta.real.name);
+	Layer->meta.real.name = Name;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
@@ -399,10 +399,10 @@ static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gi
 {
 	memset(lp, 0, sizeof(pcb_layer_t));
 	lp->grp = gid;
-	lp->On = 1;
-	lp->Name = pcb_strdup("New Layer");
-	lp->Color = conf_core.appearance.color.layer[idx];
-	lp->SelectedColor = conf_core.appearance.color.layer_selected[idx];
+	lp->meta.real.vis = 1;
+	lp->meta.real.name = pcb_strdup("New Layer");
+	lp->meta.real.color = conf_core.appearance.color.layer[idx];
+	lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[idx];
 	if ((gid >= 0) && (PCB->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
 		switch((PCB->LayerGroups.grp[gid].type) & PCB_LYT_ANYTHING) {
 			case PCB_LYT_MASK:  lp->comb = PCB_LYC_AUTO | PCB_LYC_SUB; break;
@@ -584,7 +584,7 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 	if (id < 0)
 		return NULL;
 	if (id < PCB->Data->LayerN)
-		return PCB->Data->Layer[id].Name;
+		return PCB->Data->Layer[id].meta.real.name;
 	if ((id >= PCB_LAYER_VIRT_MIN) && (id <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[id-PCB_LAYER_VIRT_MIN].name;
 	return NULL;

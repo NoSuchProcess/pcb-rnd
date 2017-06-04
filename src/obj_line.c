@@ -433,14 +433,14 @@ void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 /* moves a line */
 void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	if (Layer->On)
+	if (Layer->meta.real.vis)
 		EraseLine(Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	pcb_line_move(Line, ctx->move.dx, ctx->move.dy);
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		DrawLine(Layer, Line);
 		pcb_draw();
 	}
@@ -451,7 +451,7 @@ void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	if (Layer) {
-		if (Layer->On)
+		if (Layer->meta.real.vis)
 			EraseLine(Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_r_delete_entry(Layer->line_tree, &Line->BoundingBox);
@@ -459,7 +459,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		if (Layer->On) {
+		if (Layer->meta.real.vis) {
 			DrawLine(Layer, Line);
 			pcb_draw();
 		}
@@ -567,7 +567,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
-	if (ctx->move.dst_layer == Layer && Layer->On) {
+	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis) {
 		DrawLine(Layer, Line);
 		pcb_draw();
 	}
@@ -575,13 +575,13 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 		return (Line);
 
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_LINE, Layer, Line, Line);
-	if (Layer->On)
+	if (Layer->meta.real.vis)
 		EraseLine(Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	newone = (pcb_line_t *) MoveLineToLayerLowLevel(ctx, Layer, Line, ctx->move.dst_layer);
 	Line = NULL;
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ctx->move.dst_layer, newone);
-	if (ctx->move.dst_layer->On)
+	if (ctx->move.dst_layer->meta.real.vis)
 		DrawLine(ctx->move.dst_layer, newone);
 	pcb_draw();
 	if (!PCB->ViaOn || ctx->move.more_to_come ||
@@ -676,7 +676,7 @@ void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	/* erase from screen */
-	if (Layer->On) {
+	if (Layer->meta.real.vis) {
 		EraseLine(Line);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -861,12 +861,12 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
-			color = layer->SelectedColor;
+			color = layer->meta.real.selected_color;
 		else
 			color = conf_core.appearance.color.connected;
 	}
 	else
-		color = layer->Color;
+		color = layer->meta.real.color;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, line)) {
 		assert(color != NULL);

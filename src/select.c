@@ -308,7 +308,7 @@ do { \
 			if (!(pcb->InvisibleObjectsOn || !Flag))
 				continue;
 		}
-		else if (!(layer->On || !Flag))
+		else if (!(layer->meta.real.vis || !Flag))
 			continue;
 
 		PCB_LINE_LOOP(layer);
@@ -317,7 +317,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 				append(PCB_TYPE_LINE, layer, line);
-				if (layer->On)
+				if (layer->meta.real.vis)
 					DrawLine(layer, line);
 			}
 		}
@@ -328,7 +328,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc) != Flag) {
 				append(PCB_TYPE_ARC, layer, arc);
-				if (layer->On)
+				if (layer->meta.real.vis)
 					DrawArc(layer, arc);
 			}
 		}
@@ -352,7 +352,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) != Flag) {
 				append(PCB_TYPE_POLYGON, layer, polygon);
-				if (layer->On)
+				if (layer->meta.real.vis)
 					DrawPolygon(layer, polygon);
 			}
 		}

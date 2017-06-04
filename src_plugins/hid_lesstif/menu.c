@@ -92,7 +92,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	if (PCB && PCB->Data) {
 		pcb_data_t *d = PCB->Data;
 		for (i = 0; i < PCB_MAX_LAYER; i++)
-			fg_colors[i] = lesstif_parse_color(d->Layer[i].Color);
+			fg_colors[i] = lesstif_parse_color(d->Layer[i].meta.real.color);
 		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
 		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
 		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
@@ -146,13 +146,13 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 				set = pcb_paste_on(PCB);
 				break;
 			default:									/* layers */
-				set = PCB->Data->Layer[i].On;
+				set = PCB->Data->Layer[i].meta.real.vis;
 				break;
 			}
 
 			stdarg_n = 0;
-			if (i < PCB_MAX_LAYER && PCB->Data->Layer[i].Name) {
-				XmString s = XmStringCreatePCB(PCB->Data->Layer[i].Name);
+			if (i < PCB_MAX_LAYER && PCB->Data->Layer[i].meta.real.name) {
+				XmString s = XmStringCreatePCB(PCB->Data->Layer[i].meta.real.name);
 				stdarg(XmNlabelString, s);
 			}
 			if (!lb->is_pick) {
@@ -188,7 +188,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			name = "Silk";
 			break;
 		default:
-			name = PCB->Data->Layer[current_layer].Name;
+			name = PCB->Data->Layer[current_layer].meta.real.name;
 			break;
 		}
 		stdarg_n = 0;
@@ -231,8 +231,8 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	switch (layer) {
 	case LB_SILK:
 		set = !pcb_silk_on(PCB);
-		PCB->Data->SILKLAYER.On = set;
-		PCB->Data->BACKSILKLAYER.On = set;
+		PCB->Data->SILKLAYER.meta.real.vis = set;
+		PCB->Data->BACKSILKLAYER.meta.real.vis = set;
 		break;
 	case LB_RATS:
 		set = PCB->RatOn = !PCB->RatOn;
@@ -257,7 +257,7 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 		set = pcb_paste_on(PCB);
 		break;
 	default:											/* layers */
-		set = PCB->Data->Layer[layer].On = !PCB->Data->Layer[layer].On;
+		set = PCB->Data->Layer[layer].meta.real.vis = !PCB->Data->Layer[layer].meta.real.vis;
 		break;
 	}
 
@@ -269,7 +269,7 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 			l = PCB->LayerGroups.grp[group].lid[i];
 			if (l != layer && (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK))) {
 				show_one_layer_button(l, set);
-				PCB->Data->Layer[l].On = set;
+				PCB->Data->Layer[l].meta.real.vis = set;
 			}
 		}
 	}
@@ -298,7 +298,7 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 		name = "Silk";
 		break;
 	default:
-		name = PCB->Data->Layer[layer].Name;
+		name = PCB->Data->Layer[layer].meta.real.name;
 		break;
 	}
 	stdarg_n = 0;

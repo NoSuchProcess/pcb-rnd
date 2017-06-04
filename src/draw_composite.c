@@ -143,16 +143,16 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 		}
 
 		{
-			const char *old_color = l->Color;
+			const char *old_color = l->meta.real.color;
 			pcb_hid_gc_t old_fg = Output.fgGC;
 			Output.fgGC = Output.pmGC;
-			l->Color = ctx->color;
+			l->meta.real.color = ctx->color;
 			if (!want_add)
-				l->Color = "erase";
+				l->meta.real.color = "erase";
 			if (l->comb & PCB_LYC_AUTO)
 				draw_auto(ctx, auto_data);
 			pcb_draw_layer(l, ctx->screen);
-			l->Color = old_color;
+			l->meta.real.color = old_color;
 			Output.fgGC = old_fg;
 		}
 	}

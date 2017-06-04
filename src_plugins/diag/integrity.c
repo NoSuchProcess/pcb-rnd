@@ -91,8 +91,8 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	
 		/* check layers */
 		if (data->Layer[n].parent != data)
-			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].Name, data->Layer[n].parent, data);
-		if (name_chk && ((data->Layer[n].Name == NULL) || (*data->Layer[n].Name == '\0')))
+			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].meta.real.name, data->Layer[n].parent, data);
+		if (name_chk && ((data->Layer[n].meta.real.name == NULL) || (*data->Layer[n].meta.real.name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
 
 		/* check layer objects */

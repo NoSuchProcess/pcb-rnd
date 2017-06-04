@@ -178,7 +178,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		lgs = lgss + lgid;
 
 		fprintf(f, "		ha:layer_%d {\n", lid);
-		fprintf(f, "			name={%s}\n", l->Name);
+		fprintf(f, "			name={%s}\n", l->meta.real.name);
 		fprintf(f, "			empty=%s\n", empty ? "yes" : "no");
 		fprintf(f, "			flags=%x\n", lflg);
 		fprintf(f, "			grp=%ld\n", lgid);

@@ -309,9 +309,9 @@ static void prop_preview_init(void)
 	preview_pcb.ViaOn = 1;
 
 	for (n = 0; n < pcb_max_layer; n++) {
-		preview_pcb.Data->Layer[n].On = 1;
-		preview_pcb.Data->Layer[n].Color = pcb_strdup(PCB->Data->Layer[n].Color);
-		preview_pcb.Data->Layer[n].Name = pcb_strdup("preview dummy");
+		preview_pcb.Data->Layer[n].meta.real.vis = 1;
+		preview_pcb.Data->Layer[n].meta.real.color = pcb_strdup(PCB->Data->Layer[n].meta.real.color);
+		preview_pcb.Data->Layer[n].meta.real.name = pcb_strdup("preview dummy");
 		
 	}
 

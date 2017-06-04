@@ -114,7 +114,7 @@ double pcb_poly_area(const pcb_polygon_t *poly);
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
-		if (layer->On)				\
+		if (layer->meta.real.vis) \
 			PCB_POLY_LOOP(layer)
 
 

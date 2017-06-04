@@ -461,7 +461,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 
 				if (lid == drag_lid)
 					continue;
-				t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
+				t = dtext_bg(gc, x, y, 200, 0, l->meta.real.name, COLOR_BG, l->meta.real.color);
 				pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 				if (l->comb & PCB_LYC_SUB) {
 					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1.2, 0, 0, 0, OMIT_NONE);
@@ -469,7 +469,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 				}
 
 				if (redraw_text)
-					t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
+					t = dtext_bg(gc, x, y, 200, 0, l->meta.real.name, COLOR_BG, l->meta.real.color);
 				else
 					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 
@@ -524,7 +524,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 		}
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
-			draw_hover_label(l->Name);
+			draw_hover_label(l->meta.real.name);
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK, MARK_GRP_FRAME);
 			mark_layer_order(cx);
 		}
@@ -724,7 +724,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					else if (check_layer_del(drag_lid) == 0) {
 						g = &PCB->LayerGroups.grp[gactive];
 						pcb_layer_move_to_group(PCB, drag_lid, gactive);
-						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->Name, gactive);
+						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->meta.real.name, gactive);
 						move_layer_to_its_place:;
 						if (lactive_idx < g->len-1) {
 							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(pcb_layer_id_t));
@@ -802,7 +802,7 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 		for(i = 0; i < g->len; i++) {
 			pcb_layer_id_t lid = g->lid[i];
 			pcb_layer_t *l = &PCB->Data->Layer[lid];
-			printf("      [%ld] %s comb=", lid, l->Name);
+			printf("      [%ld] %s comb=", lid, l->meta.real.name);
 			if (l->comb & PCB_LYC_SUB) printf(" sub");
 			if (l->comb & PCB_LYC_AUTO) printf(" auto");
 			printf("\n");
