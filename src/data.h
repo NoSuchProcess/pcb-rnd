@@ -47,8 +47,8 @@ struct pcb_data_s {
 	elementlist_t Element;
 	htsp_t subc;                       /* UID -> pcb_subc_t* */
 /**/
-	pcb_rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
-	 *rat_tree;
+	pcb_rtree_t *via_tree, *subc_tree, *rat_tree;
+	pcb_rtree_t *element_tree, *pin_tree, *pad_tree, *name_tree[3]; /* old element support */
 	pcb_layer_t Layer[PCB_MAX_LAYER]; /* layer TODO: make this dynamic */
 	pcb_plug_io_t *loader;
 	ratlist_t Rat;
