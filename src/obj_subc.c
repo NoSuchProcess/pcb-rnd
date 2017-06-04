@@ -122,22 +122,6 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 {
 	int n;
 
-	/* draw the bounding box */
-#if 0
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 DX + sc->BoundingBox.X1,
-								 DY + sc->BoundingBox.Y1, DX + sc->BoundingBox.X1, DY + sc->BoundingBox.Y2);
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 DX + sc->BoundingBox.X1,
-								 DY + sc->BoundingBox.Y2, DX + sc->BoundingBox.X2, DY + sc->BoundingBox.Y2);
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 DX + sc->BoundingBox.X2,
-								 DY + sc->BoundingBox.Y2, DX + sc->BoundingBox.X2, DY + sc->BoundingBox.Y1);
-	pcb_gui->draw_line(pcb_crosshair.GC,
-								 DX + sc->BoundingBox.X2,
-								 DY + sc->BoundingBox.Y1, DX + sc->BoundingBox.X1, DY + sc->BoundingBox.Y1);
-#endif
-
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *ly = sc->data->Layer + n;
 		pcb_line_t *line;
