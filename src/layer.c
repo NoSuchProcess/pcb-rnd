@@ -102,6 +102,16 @@ do { \
 	} \
 } while(0)
 
+pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
+{
+	/* normal case: a layer is empty if all lists are empty */
+	return
+		(linelist_length(&layer->Line) == 0) &&
+		(arclist_length(&layer->Arc) == 0) &&
+		(polylist_length(&layer->Polygon) == 0) &&
+		(textlist_length(&layer->Text) == 0);
+}
+
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	unsigned int flags;
@@ -134,11 +144,7 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 #warning TODO: check top silk and bottom silk for elements
 
 	/* normal case: a layer is empty if all lists are empty */
-	return
-		(linelist_length(&layer->Line) == 0) &&
-		(arclist_length(&layer->Arc) == 0) &&
-		(polylist_length(&layer->Polygon) == 0) &&
-		(textlist_length(&layer->Text) == 0);
+	return pcb_layer_is_pure_empty(layer);
 }
 
 pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
