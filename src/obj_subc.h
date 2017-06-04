@@ -39,5 +39,14 @@ struct pcb_subc_s {
 /* convert buffer contents into a subcircuit, in-place; returns 0 on success */
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
 
+void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY);
+
+/*** loops ***/
+
+#define PCB_SUBC_LOOP(top) do {                                     \
+	pcb_subc_t *subc;                                                 \
+	gdl_iterator_t __it__;                                            \
+	subclist_foreach(&(top)->subc, &__it__, subc) {
+
 
 #endif
