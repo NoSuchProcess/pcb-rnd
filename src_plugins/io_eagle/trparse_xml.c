@@ -63,6 +63,7 @@ static int eagle_xml_load(trparse_t *pst, const char *fn)
 static int eagle_xml_unload(trparse_t *pst)
 {
 	xmlFreeDoc((xmlDoc *)pst->doc);
+	return 0;
 }
 
 static trnode_t *eagle_xml_children(trparse_t *pst, trnode_t *node)
