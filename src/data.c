@@ -199,13 +199,14 @@ void pcb_data_free(pcb_data_t * data)
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
 	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++) {
-		pcb_attribute_free(&layer->meta.real.Attributes);
+		if (PCB_LAYER_IS_REAL(layer))
+			pcb_attribute_free(&layer->meta.real.Attributes);
 		PCB_TEXT_LOOP(layer);
 		{
 			free(text->TextString);
 		}
 		PCB_END_LOOP;
-		if (layer->meta.real.name)
+		if (PCB_LAYER_IS_REAL(layer))
 			free((char*)layer->meta.real.name);
 		PCB_LINE_LOOP(layer);
 		{
@@ -223,14 +224,16 @@ void pcb_data_free(pcb_data_t * data)
 		}
 		PCB_END_LOOP;
 		list_map0(&layer->Polygon, pcb_polygon_t, pcb_poly_free);
-		if (layer->line_tree)
-			pcb_r_destroy_tree(&layer->line_tree);
-		if (layer->arc_tree)
-			pcb_r_destroy_tree(&layer->arc_tree);
-		if (layer->text_tree)
-			pcb_r_destroy_tree(&layer->text_tree);
-		if (layer->polygon_tree)
-			pcb_r_destroy_tree(&layer->polygon_tree);
+		if (PCB_LAYER_IS_REAL(layer)) {
+			if (layer->line_tree)
+				pcb_r_destroy_tree(&layer->line_tree);
+			if (layer->arc_tree)
+				pcb_r_destroy_tree(&layer->arc_tree);
+			if (layer->text_tree)
+				pcb_r_destroy_tree(&layer->text_tree);
+			if (layer->polygon_tree)
+				pcb_r_destroy_tree(&layer->polygon_tree);
+		}
 	}
 
 	if (data->element_tree)
