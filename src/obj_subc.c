@@ -73,7 +73,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 	sc = pcb_subc_alloc();
 	PCB_SET_PARENT(sc->data, data, buffer->Data);
-	pcb_subclist_append(&sc->data->subc, sc);
+	pcb_subclist_append(&buffer->Data->subc, sc);
 
 	/* create layer matches and copy objects */
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
