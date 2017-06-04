@@ -151,6 +151,10 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 
 		arclist_foreach(&ly->Arc, &it, arc)
 			pcb_gui->draw_arc(pcb_crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+
+		polylist_foreach(&ly->Polygon, &it, poly)
+			XORPolygon(poly, DX, DY, 0);
+
 	}
 
 	/* mark */
