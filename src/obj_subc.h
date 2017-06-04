@@ -36,5 +36,8 @@ struct pcb_subc_s {
 	gdl_elem_t link;
 };
 
+/* convert buffer contents into a subcircuit, in-place; returns 0 on success */
+int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
+
 
 #endif

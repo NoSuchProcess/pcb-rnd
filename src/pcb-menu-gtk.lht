@@ -322,6 +322,7 @@ ha:{
 				ha:Move selected to current layer        = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
 				ha:Remove selected objects               = { a=Shift<Key>Delete; action=RemoveSelected() }
 				ha:Convert selection to element          = { action=Select(Convert) }
+				ha:Convert selection to subcircuit       = { action=Select(ConvertSubc) }
 				-
 				ha:Optimize selected rats                = { li:action={DeleteRats(SelectedRats); AddRats(SelectedRats) } }
 				ha:Auto-route selected rats              = { a=Alt<Key>r; action=AutoRoute(SelectedRats) }
@@ -376,6 +377,7 @@ ha:{
 				-
 				ha:Clear buffer                    = { action=PasteBuffer(Clear) }
 				ha:Convert buffer to element       = { action=PasteBuffer(Convert) }
+				ha:Convert buffer to subcircuit    = { action=PasteBuffer(ConvertSubc) }
 				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
 				ha:Save buffer elements to file    = { action=Save(PasteBuffer) }
 				-

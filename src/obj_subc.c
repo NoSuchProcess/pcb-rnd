@@ -23,3 +23,15 @@
  *
  */
 
+#include "config.h"
+
+#include "buffer.h"
+#include "error.h"
+#include "obj_subc.h"
+
+int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
+{
+
+	pcb_message(PCB_MSG_ERROR, "pcb_subc_convert_from_buffer(): not yet implemented\n");
+	return -1;
+}

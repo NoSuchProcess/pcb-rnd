@@ -771,6 +771,11 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
 			break;
 
+			/* converts buffer contents into an element */
+		case F_ConvertSubc:
+			pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
+			break;
+
 			/* break up element for editing */
 		case F_Restore:
 			pcb_element_smash_buffer(PCB_PASTEBUFFER);
