@@ -128,6 +128,8 @@ struct pcb_layer_s {              /* holds information about one layer */
 	} meta;
 };
 
+#define PCB_LAYER_IS_REAL(layer) \
+	(((layer)->parent != NULL) && ((layer)->parent->parent_type == PCB_PARENT_BOARD))
 
 /* returns the layer number for the passed copper or silk layer pointer */
 pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
