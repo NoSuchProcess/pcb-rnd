@@ -538,8 +538,7 @@ static void XORDrawMoveOrCopy(void)
 	case PCB_TYPE_TEXT:
 		{
 			pcb_text_t *text = (pcb_text_t *) pcb_crosshair.AttachedObject.Ptr2;
-			pcb_box_t *box = &text->BoundingBox;
-			pcb_gui->draw_rect(pcb_crosshair.GC, box->X1 + dx, box->Y1 + dy, box->X2 + dx, box->Y2 + dy);
+			XORDrawText(text, dx, dy);
 			break;
 		}
 
