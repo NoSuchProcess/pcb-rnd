@@ -353,6 +353,13 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 		PCB_END_LOOP;
 	}
 
+	/* draw subcircuit */
+	PCB_SUBC_LOOP(Buffer->Data);
+	{
+		XORDrawSubc(subc, x, y);
+	}
+	PCB_END_LOOP;
+
 	/* and the vias */
 	if (PCB->ViaOn)
 		PCB_VIA_LOOP(Buffer->Data);
@@ -543,6 +550,10 @@ static void XORDrawMoveOrCopy(void)
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_ELEMENT:
 		XORDrawElement((pcb_element_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy);
+		break;
+
+	case PCB_TYPE_SUBC:
+		XORDrawSubc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy);
 		break;
 	}
 

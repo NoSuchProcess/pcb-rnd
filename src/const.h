@@ -69,6 +69,7 @@ typedef enum {
 	PCB_TYPE_POLYGON       = 0x00008,
 	PCB_TYPE_TEXT          = 0x00010,
 	PCB_TYPE_RATLINE       = 0x00020,
+	PCB_TYPE_SUBC          = 0x00040, /* TODO: should be 0x00002 once PCB_TYPE_ELEMENT is removed */
 
 	PCB_TYPE_PIN           = 0x00100, /* objects that are part */
 	PCB_TYPE_PAD           = 0x00200, /* 'pin' of SMD element */
