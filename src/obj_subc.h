@@ -27,12 +27,12 @@
 #define PCB_OBJ_SUBC_H
 
 #include "obj_common.h"
-#include "data.h"
+#include "global_typedefs.h"
 
 struct pcb_subc_s {
 	PCB_ANYOBJECTFIELDS;
 	char uid[64]; /* globally unique ID */
-	pcb_data_t data;
+	pcb_data_t *data;
 	gdl_elem_t link;
 };
 
