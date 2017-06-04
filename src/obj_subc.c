@@ -26,6 +26,7 @@
 #include "config.h"
 
 #include "buffer.h"
+#include "board.h"
 #include "data.h"
 #include "error.h"
 #include "obj_subc.h"
@@ -39,13 +40,78 @@ pcb_subc_t *pcb_subc_alloc(void)
 	return sc;
 }
 
+pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, pcb_layer_t *src)
+{
+	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
+	dst->parent = sc->data;
+	dst->grp = src->grp;
+	dst->comb = src->comb;
+	
+	dst->line_tree = src->line_tree;
+	dst->text_tree = src->text_tree;
+	dst->polygon_tree = src->polygon_tree;
+	dst->subc_tree = src->subc_tree;
+
+
+	dst->meta.bound.real = src;
+	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->grp);
+
+	if (dst->meta.bound.type & PCB_LYT_INTERN) {
+#warning TODO: calculate inner layer stack offset - needs a stack
+		dst->meta.bound.stack_offs = 0;
+	}
+	else
+		dst->meta.bound.stack_offs = 0;
+	return dst;
+}
+
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
+	int n;
 
 	sc = pcb_subc_alloc();
 	PCB_SET_PARENT(sc->data, data, buffer->Data);
+	pcb_subclist_append(&sc->data->subc, sc);
 
+	/* create layer matches and copy objects */
+	for(n = 0; n < PCB_MAX_LAYER; n++) {
+		pcb_layer_t *dst, *src;
+		pcb_line_t *line;
+		pcb_text_t *text;
+		pcb_polygon_t *poly;
+		pcb_arc_t *arc;
+
+		if (pcb_layer_is_pure_empty(&buffer->Data->Layer[n]))
+			continue;
+
+		src = &buffer->Data->Layer[n];
+		dst = pcb_subc_layer_create(sc, src);
+
+		while((line = linelist_first(&src->Line)) != NULL) {
+			linelist_remove(line);
+			linelist_append(&dst->Line, line);
+			PCB_SET_PARENT(line, subc, sc);
+		}
+
+		while((arc = arclist_first(&src->Arc)) != NULL) {
+			arclist_remove(arc);
+			arclist_append(&dst->Arc, arc);
+			PCB_SET_PARENT(arc, subc, sc);
+		}
+
+		while((text = textlist_first(&src->Text)) != NULL) {
+			textlist_remove(text);
+			textlist_append(&dst->Text, text);
+			PCB_SET_PARENT(text, subc, sc);
+		}
+
+		while((poly = polylist_first(&src->Polygon)) != NULL) {
+			polylist_remove(poly);
+			polylist_append(&dst->Polygon, poly);
+			PCB_SET_PARENT(poly, subc, sc);
+		}
+	}
 
 	pcb_message(PCB_MSG_ERROR, "pcb_subc_convert_from_buffer(): not yet implemented\n");
 	return -1;
