@@ -531,7 +531,7 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
-static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0)
+static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
 {
 	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
 	int max, n;
@@ -556,16 +556,21 @@ static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0
 
 		x[n] += Text->X;
 		y[n] += Text->Y;
+
+		if (xordraw && (n > 0))
+			pcb_gui->draw_line(pcb_crosshair.GC, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
+		
 	}
 
-	pcb_gui->fill_polygon(Output.fgGC, poly->PointN, x, y);
+	if (!xordraw)
+		pcb_gui->fill_polygon(Output.fgGC, poly->PointN, x, y);
 }
 
 
 /* ---------------------------------------------------------------------------
  * lowlevel drawing routine for text objects
  */
-void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
+static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
 {
 	pcb_coord_t x = 0;
 	unsigned char *string = (unsigned char *) Text->TextString;
@@ -607,7 +612,10 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 				newline.Point1.Y += Text->Y;
 				newline.Point2.X += Text->X;
 				newline.Point2.Y += Text->Y;
-				_draw_line(&newline);
+				if (xordraw)
+					pcb_gui->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
+				else
+					_draw_line(&newline);
 			}
 
 			/* draw the arcs */
@@ -630,12 +638,15 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 				}
 				newarc.X += Text->X;
 				newarc.Y += Text->Y;
-				_draw_arc(&newarc);
+				if (xordraw)
+					pcb_gui->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
+				else
+					_draw_arc(&newarc);
 			}
 
 			/* draw the polygons */
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
-				draw_text_poly(Text, p, x);
+				draw_text_poly(Text, p, x, xordraw, xordx, xordy);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
@@ -665,6 +676,11 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 		}
 		string++;
 	}
+}
+
+void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
+{
+	DrawTextLowLevel_(Text, min_line_width, 0, 0, 0);
 }
 
 
@@ -704,8 +720,7 @@ void DrawText(pcb_layer_t *Layer, pcb_text_t *Text)
 
 void XORDrawText(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_box_t *box = &text->BoundingBox;
-	pcb_gui->draw_rect(pcb_crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);
+	DrawTextLowLevel_(text, 0, 1, x, y);
 }
 
 /*** init ***/
