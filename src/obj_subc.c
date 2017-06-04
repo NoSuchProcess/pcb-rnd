@@ -120,6 +120,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 {
+	int n;
+
 	/* draw the bounding box */
 #if 0
 	pcb_gui->draw_line(pcb_crosshair.GC,
@@ -136,22 +138,20 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 								 DY + sc->BoundingBox.Y1, DX + sc->BoundingBox.X1, DY + sc->BoundingBox.Y1);
 #endif
 
-#if 0
-	{
-		PCB_ELEMENT_PCB_LINE_LOOP(Element);
-		{
-			pcb_gui->draw_line(pcb_crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
-		}
-		PCB_END_LOOP;
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *ly = sc->data->Layer + n;
+		pcb_line_t *line;
+		pcb_text_t *text;
+		pcb_polygon_t *poly;
+		pcb_arc_t *arc;
+		gdl_iterator_t it;
 
-		/* arc coordinates and angles have to be converted to X11 notation */
-		PCB_ARC_LOOP(Element);
-		{
+		linelist_foreach(&ly->Line, &it, line)
+			pcb_gui->draw_line(pcb_crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
+
+		arclist_foreach(&ly->Arc, &it, arc)
 			pcb_gui->draw_arc(pcb_crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
-		}
-		PCB_END_LOOP;
 	}
-#endif
 
 	/* mark */
 	pcb_gui->draw_line(pcb_crosshair.GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
