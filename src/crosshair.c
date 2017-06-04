@@ -60,7 +60,6 @@ pcb_mark_t pcb_marked;          /* a cross-hair mark */
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void XORPolygon(pcb_polygon_t *, pcb_coord_t, pcb_coord_t, int);
 static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
 static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
@@ -117,7 +116,7 @@ static void draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pc
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
-static void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
+void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {

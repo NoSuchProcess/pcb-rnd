@@ -125,5 +125,8 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 
 /*** utility for plugins ***/
 void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
+void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);
+
+
 
 #endif
