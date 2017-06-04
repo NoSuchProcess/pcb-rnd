@@ -29,13 +29,13 @@
 #ifndef	PCB_DATA_H
 #define	PCB_DATA_H
 
-#include <genht/htsp.h>
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "layer.h"
 #include "crosshair.h"
 #include "buffer.h"
 #include "data_parent.h"
+#include "obj_subc_list.h"
 
 #include "obj_all_list.h"
 
@@ -44,8 +44,8 @@
 struct pcb_data_s {
 	int LayerN;                        /* number of layers in this board */
 	pinlist_t Via;
+	pcb_subclist_t subc;
 	elementlist_t Element;
-	htsp_t subc;                       /* UID -> pcb_subc_t* */
 /**/
 	pcb_rtree_t *via_tree, *subc_tree, *rat_tree;
 	pcb_rtree_t *element_tree, *pin_tree, *pad_tree, *name_tree[3]; /* old element support */
