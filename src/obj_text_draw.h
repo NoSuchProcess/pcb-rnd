@@ -35,3 +35,5 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl);
 void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width);
 void EraseText(pcb_layer_t *Layer, pcb_text_t *Text);
 void DrawText(pcb_layer_t *Layer, pcb_text_t *Text);
+void XORDrawText(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y);
+

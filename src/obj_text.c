@@ -702,6 +702,12 @@ void DrawText(pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_draw_invalidate(Text);
 }
 
+void XORDrawText(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_box_t *box = &text->BoundingBox;
+	pcb_gui->draw_rect(pcb_crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);
+}
+
 /*** init ***/
 static const char *text_cookie = "obj_text";
 

@@ -328,8 +328,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(layer);
 			{
-				pcb_box_t *box = &text->BoundingBox;
-				pcb_gui->draw_rect(pcb_crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);
+				XORDrawText(text, x, y);
 			}
 			PCB_END_LOOP;
 			/* the tmp polygon has n+1 points because the first
