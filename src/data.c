@@ -208,6 +208,8 @@ void pcb_data_free(pcb_data_t * data)
 		PCB_END_LOOP;
 		if (PCB_LAYER_IS_REAL(layer))
 			free((char*)layer->meta.real.name);
+		else
+			free((char*)layer->meta.bound.name);
 		PCB_LINE_LOOP(layer);
 		{
 			if (line->Number)
