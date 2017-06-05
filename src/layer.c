@@ -335,9 +335,14 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 {
-	if (PCB->Data->Layer[layer].meta.real.name != NULL)
+	if (PCB_LAYER_IS_REAL(&PCB->Data->Layer[layer])) {
 		free((char *)PCB->Data->Layer[layer].meta.real.name);
-	PCB->Data->Layer[layer].meta.real.name = pcb_strdup(lname);
+		PCB->Data->Layer[layer].meta.real.name = pcb_strdup(lname);
+	}
+	else {
+		free((char *)PCB->Data->Layer[layer].meta.bound.name);
+		PCB->Data->Layer[layer].meta.bound.name = pcb_strdup(lname);
+	}
 	return 0;
 }
 
@@ -373,8 +378,15 @@ static int is_last_bottom_copper_layer(int layer)
 
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
-	free((char*)Layer->meta.real.name);
-	Layer->meta.real.name = Name;
+#warning TODO: duplicate of pcb_layer_rename()?
+	if (PCB_LAYER_IS_REAL(Layer)) {
+		free((char*)Layer->meta.real.name);
+		Layer->meta.real.name = Name;
+	}
+	else {
+		free((char*)Layer->meta.bound.name);
+		Layer->meta.bound.name = Name;
+	}
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
@@ -624,6 +636,7 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src)
 		dst->meta.bound.real = NULL;
 
 	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->grp);
+	dst->meta.bound.name = pcb_strdup(src->meta.real.name);
 
 	if (dst->meta.bound.type & PCB_LYT_INTERN) {
 #warning TODO: calculate inner layer stack offset - needs a stack
@@ -635,18 +648,30 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src)
 
 pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 {
-	int l;
+	int l, score, best_score = 0;
 	pcb_layergrp_id_t gid;
+	pcb_layer_t *best = NULL;
+
 	if (pcb_layergrp_list(pcb, src->meta.bound.type, &gid, 1) == 1) {
 		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
 		for(l = 0; l < grp->len; l++) {
 			pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
-			if (ly->comb == src->meta.bound.comb)
-				return ly;
+			if (ly->comb == src->meta.bound.comb) {
+				score = 1;
+				if (strcmp(ly->meta.real.name, src->meta.bound.name) == 0)
+					score += 2;
+				else if (pcb_strcasecmp(ly->meta.real.name, src->meta.bound.name) == 0)
+					score ++;
+				if (score > best_score) {
+					best = ly;
+					best_score = score;
+				}
+			}
 		}
 	}
 #warning TODO: calculate inner layer stack offset
-	return 0;
+
+	return best;
 }
 
 
