@@ -815,6 +815,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	GtkTreeIter iter;
 	GtkWidget *hbox, *label;
 	char number[8];								/* if there is more than a million DRC errors ... change this ! */
+	char *markup;
 
 	/* Ensure the required structures are setup */
 	ghid_drc_window_show(common, FALSE);
@@ -831,7 +832,9 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	label = gtk_label_new(number);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	label = gtk_label_new(NULL);
-	gtk_label_set_markup(GTK_LABEL(label), "Place Holder for <b>DRC</b>. <i>Need more work</i>");
+	markup = get_drc_violation_markup(violation_obj);
+	gtk_label_set_markup(GTK_LABEL(label), markup);
+	free(markup);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtkc_hbox_new(FALSE, 0), TRUE, TRUE, 0);
 	gtk_widget_show_all(hbox);
