@@ -164,7 +164,8 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 
 		if (dl->meta.bound.real == NULL)
 			pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer of subcricuit TODO while placing it\n");
-
+		else
+			pcb_layer_link_trees(dl, dl->meta.bound.real);
 
 		linelist_foreach(&sl->Line, &it, line) {
 			nline = pcb_line_dup(dl, line);
