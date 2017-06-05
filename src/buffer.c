@@ -608,7 +608,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	for (i = 0; i < num_layers; i++) {
 		pcb_bool nonempty = pcb_false;
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i];
-		pcb_layer_t *destlayer = /*pcb_layer_resolve_binding(pcb, sourcelayer)*/ LAYER_PTR(i);
+		pcb_layer_t *destlayer = pcb_layer_resolve_binding(pcb, sourcelayer);
 
 		if (destlayer == NULL) {
 #warning TODO: refine this message with some info about the layer details
