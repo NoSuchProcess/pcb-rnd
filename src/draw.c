@@ -169,8 +169,11 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	/* This is the reverse of the order in which we draw them.  */
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_layer_t *first;
-
+	pcb_hid_expose_ctx_t  hid_exp;
 	pcb_bool paste_empty;
+
+	hid_exp.view = *drawn_area;
+	hid_exp.force = 0;
 
 	PCB->Data->SILKLAYER.meta.real.color = conf_core.appearance.color.element;
 	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
@@ -285,12 +288,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_FAB, 0)) {
-		pcb_stub_draw_fab(Output.fgGC);
+		pcb_stub_draw_fab(Output.fgGC, &hid_exp);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) {
-		pcb_stub_draw_csect(Output.fgGC);
+		pcb_stub_draw_csect(Output.fgGC, &hid_exp);
 		pcb_gui->end_layer();
 	}
 
@@ -571,7 +574,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 
 	if (lflg & PCB_LYT_CSECT) {
 		if ((pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) || (e->force)) {
-			pcb_stub_draw_csect(Output.fgGC);
+			pcb_stub_draw_csect(Output.fgGC, e);
 			pcb_gui->end_layer();
 		}
 	}

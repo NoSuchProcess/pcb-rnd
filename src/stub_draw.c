@@ -64,24 +64,24 @@ void dummy_DrawFab(pcb_hid_gc_t gc)
 }
 
 int (*pcb_stub_draw_fab_overhang)(void) = dummy_DrawFab_overhang;
-void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc) = dummy_DrawFab;
+void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_DrawFab;
 
 
 /****** csect - cross section of the board ******/
 
 
-static void dummy_draw_csect(pcb_hid_gc_t gc)
+static void dummy_draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	dummy_draw_text(gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
 }
 
 
-void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc) = dummy_draw_csect;
+void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_draw_csect;
 pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
 
 
 /****** font selector GUI ******/
-static void dummy_draw_fontsel(pcb_hid_gc_t gc)
+static void dummy_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	dummy_draw_text(gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
@@ -90,7 +90,7 @@ static pcb_text_t *dummy_fontsel_text = NULL;
 static pcb_layer_t *dummy_fontsel_layer = NULL;
 static int dummy_fontsel_type = 0;
 
-void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc) = dummy_draw_fontsel;
+void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_draw_fontsel;
 pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
 pcb_text_t **pcb_stub_draw_fontsel_text_obj = &dummy_fontsel_text;
 pcb_layer_t **pcb_stub_draw_fontsel_layer_obj = &dummy_fontsel_layer;
