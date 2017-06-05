@@ -573,6 +573,18 @@ GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing
 	return w;
 }
 
+void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height)
+{
+	/* just in case the size has changed meanwhile */
+	p->view.height = PCB->MaxHeight;
+	p->view.width = PCB->MaxWidth;
+	p->view.canvas_width = canvas_width;
+	p->view.canvas_height = canvas_height;
+
+	pcb_gtk_zoom_view_win(&p->view, x1, y1, x2, y2);
+}
+
+
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw)
 {
 	pcb_layer_id_t lid;
