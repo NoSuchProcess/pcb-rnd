@@ -39,6 +39,7 @@
 #include "wt_preview.h"
 
 #include "copy.h"
+#include "board.h"
 #include "data.h"
 #include "draw.h"
 #include "move.h"
@@ -565,7 +566,10 @@ GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing
 GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose)
 {
 	GtkWidget *w = pcb_gtk_preview_generic_new(com, init_widget, expose, -1, NULL);
+	pcb_gtk_preview_t *p = (pcb_gtk_preview_t *)w;
 	g_object_set(G_OBJECT(w), "kind", PCB_GTK_PREVIEW_BOARD, NULL);
+	p->view.height = PCB->MaxHeight;
+	p->view.width = PCB->MaxWidth;
 	return w;
 }
 
