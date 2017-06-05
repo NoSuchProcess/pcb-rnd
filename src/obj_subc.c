@@ -169,7 +169,28 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 		pcb_arc_t *arc, *narc;
 
 		memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+
+
 		dl->meta.bound.real = NULL;
+		/* bind layer to the stack provided by pcb/dst */
+		if (pcb != NULL) {
+			int l;
+			pcb_layergrp_id_t gid;
+			if (pcb_layergrp_list(pcb, dl->meta.bound.type, &gid, 1) == 1) {
+				pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
+				for(l = 0; l < grp->len; l++) {
+					pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
+					if (ly->comb == sl->meta.bound.comb) {
+						dl->meta.bound.real = ly;
+						break;
+					}
+				}
+			}
+#warning TODO: calculate inner layer stack offset
+		}
+
+		if (dl->meta.bound.real == NULL)
+			pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer of subcricuit TODO while placing it\n");
 
 		while((line = linelist_first(&sl->Line)) != NULL) {
 			nline = pcb_line_dup(dl, line);
@@ -191,11 +212,6 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 /*			PCB_SET_PARENT(poly, layer, dl);*/
 		}
 
-	}
-
-	/* bind layers to the stack provided by pcb/dst */
-	if (pcb != NULL) {
-		
 	}
 }
 
