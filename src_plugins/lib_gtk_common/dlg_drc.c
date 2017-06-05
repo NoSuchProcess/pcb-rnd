@@ -257,12 +257,23 @@ static void row_activated_cb(GtkTreeView * view, GtkTreePath * path, GtkTreeView
 	pcb_center_display(violation->x_coord, violation->y_coord);
 }
 
-static void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * violation)
+/** A (*GtkCallback) function */
+static void unselect_widget(GtkWidget * widget, gpointer data)
+{
+	gtk_widget_set_state(widget, GTK_STATE_NORMAL);
+}
+
+void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * violation)
 {
 	int i;
 
 	if (violation == NULL)
 		return;
+
+	/* Marks DRC error violation as selected line. De-select previous line. */
+	gtk_container_foreach(GTK_CONTAINER(drc_vbox), unselect_widget, NULL);
+	gtk_widget_set_state(widget, GTK_STATE_SELECTED);
+	gtk_widget_queue_draw(drc_vbox);
 
 	unset_found_flags(pcb_false);
 
