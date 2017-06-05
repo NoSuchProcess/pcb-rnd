@@ -595,6 +595,10 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 		return;
 	}
 
+	/* Allocate a temporary stencil bit that will be used for drawing cut-outs 
+	 * (contours) in the polygon. The cut-outs will be drawn as '1' in this 
+	 * temporary stencil plane. 
+	 */
 	stencil_bit = hidgl_assign_clear_stencil_bit();
 	if (!stencil_bit) {
 		printf("hidgl_fill_pcb_polygon: No free stencil bits, aborting polygon\n");
@@ -626,18 +630,23 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value */
 
-	/* Drawing operations now set our reference bit in the stencil buffer */
+	/* Drawing operations now set our reference bit (stencil_bit) in the stencil buffer */
 
 	pcb_r_search(poly->Clipped->contour_tree, clip_box, NULL, do_hole, &info, NULL);
 	hidgl_flush_triangles(&buffer);
 
 	glPopAttrib();								/* Restore the colour and stencil buffer write-mask etc.. */
 
-  glStencilFunc(GL_GEQUAL, assigned_bits & ~stencil_bit, stencil_bit);    /* Pass stencil test if all assigned bits clear, */
-	/* reference is all assigned bits so we set */
-	/* any bits permitted by the stencil writemask */
-
-	/* Drawing operations as masked to areas where the stencil buffer is '0' */
+	/* Set the stencil reference value. Because the stencil buffer is being used as a source (to test the 
+	 * stencil_bit) and a destination (to write to assigned_bits), Both sets of stencil bits must appear   
+	 * in the reference parameter. The mask parameter of the glStencilFunc function selects the bits to 
+	 * be tested (stencil_bits) and the glStencilMask function has already selected the bits to be written 
+	 * to (assigned_bits).
+	 * Because the cut-outs have been set to a 1 in the stencil_bit plane, the polygon will only be 
+	 * written to the assigned_bits plane when stencil_bit is 0. Therefore, the reference value has the 
+	 * assigned_bits set and the stencil_bit cleared. 
+	 */
+	glStencilFunc(GL_GEQUAL, assigned_bits & ~stencil_bit, stencil_bit);   
 
 	/* Draw the polygon outer */
 	tesselate_contour(info.tobj, poly->Clipped->contours, info.vertices, scale);
