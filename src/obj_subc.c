@@ -42,11 +42,13 @@ pcb_subc_t *pcb_subc_alloc(void)
 	return sc;
 }
 
-pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, pcb_layer_t *src)
+static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 {
 	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
 
-	pcb_layer_real2bound(dst, src);
+	memcpy(&dst->meta, &src->meta, sizeof(src->meta));
+	dst->comb = src->comb;
+	dst->grp = -1;
 	dst->parent = sc->data;
 	return dst;
 }
@@ -72,7 +74,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			continue;
 
 		src = &buffer->Data->Layer[n];
-		dst = pcb_subc_layer_create(sc, src);
+		dst = pcb_subc_layer_create_buff(sc, src);
 
 		while((line = linelist_first(&src->Line)) != NULL) {
 			linelist_remove(line);
