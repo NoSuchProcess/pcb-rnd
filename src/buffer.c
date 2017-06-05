@@ -606,7 +606,16 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	if (num_layers == 0) /* some buffers don't have layers, just simple objects */
 		num_layers = pcb->Data->LayerN;
 	for (i = 0; i < num_layers; i++) {
-		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
+		pcb_bool nonempty = pcb_false;
+		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i];
+		pcb_layer_t *destlayer = /*pcb_layer_resolve_binding(pcb, sourcelayer)*/ LAYER_PTR(i);
+
+		if (destlayer == NULL) {
+#warning TODO: refine this message with some info about the layer details
+			if (!pcb_layer_is_pure_empty(sourcelayer))
+				pcb_message(PCB_MSG_WARNING, "Couldn't resolve a buffer layer on the current board\n");
+			continue;
+		}
 
 		if (destlayer->meta.real.vis) {
 			PCB_LINE_LOOP(sourcelayer);
@@ -634,6 +643,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			}
 			PCB_END_LOOP;
 		}
+
+
 	}
 
 	/* paste elements */
