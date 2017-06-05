@@ -783,7 +783,7 @@ GtkCellRenderer *ghid_violation_renderer_new(pcb_gtk_common_t *common)
 
 void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 {
-	GtkWidget *vbox, *hbox, *button, *scrolled_window;
+	GtkWidget *vbox, *hbox, *button, *scrolled_window, *label;
 	GtkCellRenderer *violation_renderer;
 
 	if (drc_window) {
@@ -808,6 +808,12 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 																			G_TYPE_OBJECT);	/* DRC_VIOLATION_OBJ_COL */
 
 	/* New mechanism */
+	hbox = gtkc_hbox_new(FALSE, 0);
+	label = gtk_label_new("No.   Violation details");
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), gtkc_hbox_new(FALSE, 0), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE /* EXPAND */ , TRUE /* FILL */ , 0 /* PADDING */ );
 
