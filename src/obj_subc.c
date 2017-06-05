@@ -45,25 +45,9 @@ pcb_subc_t *pcb_subc_alloc(void)
 pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, pcb_layer_t *src)
 {
 	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
+
+	pcb_layer_real2bound(dst, src);
 	dst->parent = sc->data;
-	dst->grp = src->grp;
-	dst->comb = src->comb;
-	
-	dst->line_tree = src->line_tree;
-	dst->text_tree = src->text_tree;
-	dst->polygon_tree = src->polygon_tree;
-	dst->subc_tree = src->subc_tree;
-
-
-	dst->meta.bound.real = src;
-	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->grp);
-
-	if (dst->meta.bound.type & PCB_LYT_INTERN) {
-#warning TODO: calculate inner layer stack offset - needs a stack
-		dst->meta.bound.stack_offs = 0;
-	}
-	else
-		dst->meta.bound.stack_offs = 0;
 	return dst;
 }
 

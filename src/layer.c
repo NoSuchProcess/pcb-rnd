@@ -608,6 +608,31 @@ pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 	return NULL;
 }
 
+void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src)
+{
+	dst->grp = src->grp;
+	dst->comb = src->comb;
+
+	if (PCB_LAYER_IS_REAL(src)) {
+		dst->meta.bound.real = src;
+		dst->line_tree = src->line_tree;
+		dst->text_tree = src->text_tree;
+		dst->polygon_tree = src->polygon_tree;
+		dst->subc_tree = src->subc_tree;
+	}
+	else
+		dst->meta.bound.real = NULL;
+
+	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->grp);
+
+	if (dst->meta.bound.type & PCB_LYT_INTERN) {
+#warning TODO: calculate inner layer stack offset - needs a stack
+		dst->meta.bound.stack_offs = 0;
+	}
+	else
+		dst->meta.bound.stack_offs = 0;
+}
+
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name))
 {
 	const pcb_layer_type_name_t *n;
