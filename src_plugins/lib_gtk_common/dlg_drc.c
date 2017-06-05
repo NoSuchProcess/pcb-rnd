@@ -820,6 +820,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	//pcb_gtk_preview_t *preview;
 	GtkWidget *preview;
 	int preview_size = VIOLATION_PIXMAP_PIXEL_SIZE - 2 * VIOLATION_PIXMAP_PIXEL_BORDER;
+	GdkPixmap *pixmap;
 
 	/* Ensure the required structures are setup */
 	ghid_drc_window_show(common, FALSE);
@@ -841,11 +842,20 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	free(markup);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtkc_hbox_new(FALSE, 0), TRUE, TRUE, 0);
-	gtk_widget_show_all(hbox);
 
-	preview = pcb_gtk_preview_new(common, common->init_drawing_widget, common->preview_expose, NULL);
-	gtk_widget_set_size_request(preview, preview_size, preview_size);
+	//preview = pcb_gtk_preview_new(common, common->init_drawing_widget, common->preview_expose, NULL);
+	//gtk_widget_set_size_request(preview, preview_size, preview_size);
+	//gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, 0);
+
+	pixmap = common->render_pixmap(violation_obj->x_coord,
+																 violation_obj->y_coord,
+																 VIOLATION_PIXMAP_PCB_SIZE / preview_size,
+																 preview_size, preview_size,
+																 gdk_drawable_get_depth(GDK_DRAWABLE(gtk_widget_get_window(label))));
+	preview = gtk_image_new_from_pixmap(pixmap, NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, 0);
+
+	gtk_widget_show_all(hbox);
 
 	gtk_list_store_append(drc_list_model, &iter);
 	gtk_list_store_set(drc_list_model, &iter, DRC_VIOLATION_NUM_COL, num_violations, DRC_VIOLATION_OBJ_COL, violation_obj, -1);
