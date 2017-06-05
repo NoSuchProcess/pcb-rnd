@@ -137,7 +137,6 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
 
-
 pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 {
 	int n;
@@ -160,21 +159,8 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 
 		dl->meta.bound.real = NULL;
 		/* bind layer to the stack provided by pcb/dst */
-		if (pcb != NULL) {
-			int l;
-			pcb_layergrp_id_t gid;
-			if (pcb_layergrp_list(pcb, dl->meta.bound.type, &gid, 1) == 1) {
-				pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
-				for(l = 0; l < grp->len; l++) {
-					pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
-					if (ly->comb == sl->meta.bound.comb) {
-						dl->meta.bound.real = ly;
-						break;
-					}
-				}
-			}
-#warning TODO: calculate inner layer stack offset
-		}
+		if (pcb != NULL)
+			dl->meta.bound.real = pcb_layer_resolve_binding(pcb, sl);
 
 		if (dl->meta.bound.real == NULL)
 			pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer of subcricuit TODO while placing it\n");

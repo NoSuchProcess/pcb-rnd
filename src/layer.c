@@ -633,6 +633,23 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src)
 		dst->meta.bound.stack_offs = 0;
 }
 
+pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
+{
+	int l;
+	pcb_layergrp_id_t gid;
+	if (pcb_layergrp_list(pcb, src->meta.bound.type, &gid, 1) == 1) {
+		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
+		for(l = 0; l < grp->len; l++) {
+			pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
+			if (ly->comb == src->meta.bound.comb)
+				return ly;
+		}
+	}
+#warning TODO: calculate inner layer stack offset
+	return 0;
+}
+
+
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name))
 {
 	const pcb_layer_type_name_t *n;
