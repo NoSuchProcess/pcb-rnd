@@ -45,6 +45,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
+#include "obj_subc_op.h"
 #include "layer_grp.h"
 #include "event.h"
 
@@ -648,6 +649,14 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		}
 		PCB_END_LOOP;
 	}
+
+	/* paste subcircuits */
+	PCB_SUBC_LOOP(PCB_PASTEBUFFER->Data);
+	{
+		CopySubc(&ctx, subc);
+		changed = pcb_true;
+	}
+	PCB_END_LOOP;
 
 	/* finally the vias */
 	if (pcb->ViaOn) {
