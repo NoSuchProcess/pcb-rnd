@@ -93,25 +93,25 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		while((line = linelist_first(&src->Line)) != NULL) {
 			linelist_remove(line);
 			linelist_append(&dst->Line, line);
-			PCB_SET_PARENT(line, subc, sc);
+			PCB_SET_PARENT(line, layer, dst);
 		}
 
 		while((arc = arclist_first(&src->Arc)) != NULL) {
 			arclist_remove(arc);
 			arclist_append(&dst->Arc, arc);
-			PCB_SET_PARENT(arc, subc, sc);
+			PCB_SET_PARENT(arc, layer, dst);
 		}
 
 		while((text = textlist_first(&src->Text)) != NULL) {
 			textlist_remove(text);
 			textlist_append(&dst->Text, text);
-			PCB_SET_PARENT(text, subc, sc);
+			PCB_SET_PARENT(text, layer, dst);
 		}
 
 		while((poly = polylist_first(&src->Polygon)) != NULL) {
 			polylist_remove(poly);
 			polylist_append(&dst->Polygon, poly);
-			PCB_SET_PARENT(poly, subc, sc);
+			PCB_SET_PARENT(poly, layer, dst);
 		}
 	}
 
