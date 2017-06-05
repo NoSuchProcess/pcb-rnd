@@ -188,7 +188,7 @@ typedef struct hyp_polygon_s {
 } hyp_polygon_t;
 
 hyp_polygon_t *polygon_head = NULL;	/* linked list of all polygons */
-hyp_vertex_t *current_vertex = NULL; /* keeps track where to add next polygon segment when parsing polygons */
+hyp_vertex_t *current_vertex = NULL;	/* keeps track where to add next polygon segment when parsing polygons */
 
 /* origin. Chosen so all coordinates are positive. */
 pcb_coord_t origin_x;
@@ -386,8 +386,10 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 		device_t *dev = hyp_device_by_name(element_name);
 		if (dev != NULL) {
 			/* device on component or solder side? */
-			if (hyp_is_bottom_layer(dev->layer_name))
+			if (hyp_is_bottom_layer(dev->layer_name)) {
 				flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
+				text_direction = 2;
+			}
 			/* create */
 			if (hyp_debug)
 				pcb_printf("creating device \"%s\".\n", dev->ref);
@@ -397,8 +399,7 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 		}
 		else {
 			/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
-			if (hyp_debug)
-			  pcb_printf("device \"%s\" not specified in DEVICE record. continuing.\n", element_name);
+			pcb_printf("device \"%s\" not specified in DEVICE record. Assuming device is on component side.\n", element_name);
 			elem =
 				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), flags, element_name, element_name, NULL, x, y,
 												text_direction, text_scale, flags, pcb_false);
@@ -714,8 +715,16 @@ void hyp_element_silkscreen_new(pcb_data_t * Data, pcb_element_t * Element, pcb_
 	pcb_coord_t x1, x2, y1, y2;
 
 	/* get bounding box of device */
-	x1 = Element->BoundingBox.X1;
-	x2 = Element->BoundingBox.X2;
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Element)) {
+		/* put component part no. bottom left. on solder side bottom left is (X2, Y2) */
+		x1 = Element->BoundingBox.X2;
+		x2 = Element->BoundingBox.X1;
+	}
+	else {
+		/* put component part no. bottom left. on component side bottom left is (X1, Y2) */
+		x1 = Element->BoundingBox.X1;
+		x2 = Element->BoundingBox.X2;
+	};
 	y1 = Element->BoundingBox.Y1;
 	y2 = Element->BoundingBox.Y2;
 
@@ -2381,11 +2390,12 @@ pcb_bool exec_polygon_begin(parse_param * h)
 	hyp_create_layer(h->layer_name);
 
 	/* check for other polygons with this id */
-	for (i = polygon_head; i != NULL; i = i->next)
-		if (h->id == i->hyp_poly_id) {
-			pcb_printf("info: duplicate polygon id %i.\n", h->id);
-			break;
-		}
+	if (hyp_debug)
+		for (i = polygon_head; i != NULL; i = i->next)
+			if (h->id == i->hyp_poly_id) {
+				pcb_printf("info: duplicate polygon id %i.\n", h->id);
+				break;
+			}
 
 	/* create first vertex */
 	new_vertex = malloc(sizeof(hyp_vertex_t));
@@ -2564,11 +2574,12 @@ pcb_bool exec_polyline_begin(parse_param * h)
 	hyp_create_layer(h->layer_name);
 
 	/* check for other polygons with this id */
-	for (i = polygon_head; i != NULL; i = i->next)
-		if (h->id == i->hyp_poly_id) {
-			pcb_printf("info: duplicate polygon id %i.\n", h->id);
-			break;
-		}
+	if (hyp_debug)
+		for (i = polygon_head; i != NULL; i = i->next)
+			if (h->id == i->hyp_poly_id) {
+				pcb_printf("info: duplicate polygon id %i.\n", h->id);
+				break;
+			}
 
 	/* create first vertex */
 	new_vertex = malloc(sizeof(hyp_vertex_t));
