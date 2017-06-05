@@ -277,7 +277,7 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 	gobject_class->get_property = ghid_preview_get_property;
 	gobject_class->constructed = ghid_preview_constructed;
 
-	PCB_GTK_EXPOSE_EVENT(gtk_widget_class) = ghid_preview_expose;
+	PCB_GTK_EXPOSE_EVENT_SET(gtk_widget_class, ghid_preview_expose);
 
 	ghid_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 

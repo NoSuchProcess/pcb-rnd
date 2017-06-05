@@ -71,7 +71,7 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 	return gtk_combo_box_new_with_entry();
 }
 
-#define PCB_GTK_EXPOSE_EVENT(x) (x->draw)
+#define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->draw = (gboolean (*)(GtkWidget *, cairo_t *))val
 typedef struct cairo_t pcb_gtk_expose_t;
 #define PCB_GTK_DRAW_SIGNAL_NAME "draw"
 
@@ -150,7 +150,7 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 	return gtk_combo_box_entry_new_text();
 }
 
-#define PCB_GTK_EXPOSE_EVENT(x) (x->expose_event)
+#define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
 typedef struct GdkEventExpose pcb_gtk_expose_t;
 #define PCB_GTK_DRAW_SIGNAL_NAME "expose_event"
 
