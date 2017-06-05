@@ -31,6 +31,7 @@
 #include "data.h"
 #include "error.h"
 #include "obj_subc.h"
+#include "obj_subc_op.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
 {
@@ -149,3 +150,66 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 	pcb_gui->draw_line(pcb_crosshair.GC, DX - PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
+
+
+pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
+{
+	int n;
+	pcb_subc_t *sc = pcb_subc_alloc();
+	PCB_SET_PARENT(sc->data, data, dst);
+	pcb_subclist_append(&dst->subc, sc);
+
+	/* make a copy */
+	for(n = 0; n < src->data->LayerN; n++) {
+		pcb_layer_t *sl = src->data->Layer + n;
+		pcb_layer_t *dl = sc->data->Layer + n;
+		pcb_line_t *line, *nline;
+		pcb_text_t *text;
+		pcb_polygon_t *poly;
+		pcb_arc_t *arc, *narc;
+
+		memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+		dl->meta.bound.real = NULL;
+
+		while((line = linelist_first(&sl->Line)) != NULL) {
+			nline = pcb_line_dup(dl, line);
+			if (nline != NULL)
+				PCB_SET_PARENT(nline, layer, dl);
+		}
+
+		while((arc = arclist_first(&sl->Arc)) != NULL) {
+			narc = pcb_arc_dup(dl, arc);
+			if (narc != NULL)
+			PCB_SET_PARENT(arc, layer, dl);
+		}
+
+		while((text = textlist_first(&sl->Text)) != NULL) {
+/*			PCB_SET_PARENT(text, layer, dl);*/
+		}
+
+		while((poly = polylist_first(&sl->Polygon)) != NULL) {
+/*			PCB_SET_PARENT(poly, layer, dl);*/
+		}
+
+	}
+
+	/* bind layers to the stack provided by pcb/dst */
+	if (pcb != NULL) {
+		
+	}
+}
+
+/* copies a subcircuit onto the PCB.  Then does a draw. */
+void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
+{
+	pcb_subc_t *sc;
+
+	sc = pcb_subc_dup(PCB, PCB->Data, src);
+
+	/* this call clears the polygons */
+/*	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);*/
+
+/*	DrawElementPinsAndPads(element);*/
+	return (sc);
+}
+
