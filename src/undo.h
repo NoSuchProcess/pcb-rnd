@@ -105,3 +105,6 @@ typedef enum {
 } pcb_undo_op_t;
 
 #endif
+
+/* Returns 0 if undo integrity is not broken */
+int undo_check(void);

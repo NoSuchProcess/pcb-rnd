@@ -1668,3 +1668,29 @@ void undo_dump(void)
 }
 
 #endif
+
+int undo_check(void)
+{
+	size_t n;
+	int last_serial = -2;
+	for(n = 0; n < UndoN; n++) {
+		if (last_serial != UndoList[n].Serial) {
+			if (last_serial > UndoList[n].Serial) {
+#				ifndef NDEBUG
+				printf("Undo broken check #1:\n");
+				undo_dump();
+#				endif
+				return 1;
+			}
+			last_serial = UndoList[n].Serial;
+		}
+	}
+	if (Serial < last_serial) {
+#		ifndef NDEBUG
+		printf("Undo broken check #2:\n");
+		undo_dump();
+#		endif
+		return 1;
+	}
+	return 0;
+}
