@@ -510,6 +510,37 @@ static void ghid_violation_renderer_finalize(GObject * object)
 	G_OBJECT_CLASS(ghid_violation_renderer_parent_class)->finalize(object);
 }
 
+/** Returns the DRC text string using markup feature. Should be freed with free() */
+static char *get_drc_violation_markup(GhidDrcViolation * violation)
+{
+	char *markup;
+
+	if (violation->have_measured) {
+		markup = pcb_strdup_printf("%m+<b>%s (%$mS)</b>\n"
+															 "<span size='1024'> </span>\n"
+															 "<small>"
+															 "<i>%s</i>\n"
+															 "<span size='5120'> </span>\n"
+															 "Required: %$mS"
+															 "</small>",
+															 conf_core.editor.grid_unit->allow,
+															 violation->title, violation->measured_value, violation->explanation, violation->required_value);
+	}
+	else {
+		markup = pcb_strdup_printf("%m+<b>%s</b>\n"
+															 "<span size='1024'> </span>\n"
+															 "<small>"
+															 "<i>%s</i>\n"
+															 "<span size='5120'> </span>\n"
+															 "Required: %$mS"
+															 "</small>",
+															 conf_core.editor.grid_unit->allow,
+															 violation->title, violation->explanation, violation->required_value);
+	}
+
+	return markup;
+}
+
 /*! \brief GObject property setter function
  *
  *  \par Function Description
@@ -541,32 +572,7 @@ static void ghid_violation_renderer_set_property(GObject * object, guint propert
 	if (renderer->violation == NULL)
 		return;
 
-	if (renderer->violation->have_measured) {
-		markup = pcb_strdup_printf("%m+<b>%s (%$mS)</b>\n"
-																 "<span size='1024'> </span>\n"
-																 "<small>"
-																 "<i>%s</i>\n"
-																 "<span size='5120'> </span>\n"
-																 "Required: %$mS"
-																 "</small>",
-																 conf_core.editor.grid_unit->allow,
-																 renderer->violation->title,
-																 renderer->violation->measured_value,
-																 renderer->violation->explanation, renderer->violation->required_value);
-	}
-	else {
-		markup = pcb_strdup_printf("%m+<b>%s</b>\n"
-																 "<span size='1024'> </span>\n"
-																 "<small>"
-																 "<i>%s</i>\n"
-																 "<span size='5120'> </span>\n"
-																 "Required: %$mS"
-																 "</small>",
-																 conf_core.editor.grid_unit->allow,
-																 renderer->violation->title,
-																 renderer->violation->explanation, renderer->violation->required_value);
-	}
-
+	markup = get_drc_violation_markup(renderer->violation);
 	g_object_set(object, "markup", markup, NULL);
 	free(markup);
 }
