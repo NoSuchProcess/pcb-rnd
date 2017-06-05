@@ -831,7 +831,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 
 	/* New mechanism : Pack texts and preview in an horizontal box */
 	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(drc_vbox), hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(drc_vbox), hbox, TRUE, TRUE, VIOLATION_PIXMAP_PIXEL_BORDER);
 	/*FIXME: Do we need to keep the DRC number for this violation ? What for ? */
 	pcb_sprintf(number, " %d ", num_violations);
 	label = gtk_label_new(number);
@@ -853,7 +853,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 																 preview_size, preview_size,
 																 gdk_drawable_get_depth(GDK_DRAWABLE(gtk_widget_get_window(label))));
 	preview = gtk_image_new_from_pixmap(pixmap, NULL);
-	gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, VIOLATION_PIXMAP_PIXEL_BORDER);
 
 	gtk_widget_show_all(hbox);
 
