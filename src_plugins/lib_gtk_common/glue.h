@@ -22,7 +22,7 @@ typedef struct pcb_gtk_common_s {
 	void (*drawing_area_configure_hook)(void *);
 
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
-	gboolean (*preview_expose)(GtkWidget *widget, GdkEventExpose *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
 	void (*draw_grid_local)(pcb_coord_t cx, pcb_coord_t cy);

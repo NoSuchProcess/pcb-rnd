@@ -1221,7 +1221,7 @@ static void ghid_gdk_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 {
 }
 
-static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
+static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * p, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
 {
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkDrawable *save_drawable;
@@ -1230,6 +1230,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
 	int save_width, save_height;
 	double xz, yz, vw, vh;
 	render_priv_t *priv = gport->render_priv;
+	GdkEventExpose *ev = p;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;

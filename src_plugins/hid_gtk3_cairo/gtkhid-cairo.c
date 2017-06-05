@@ -1375,11 +1375,12 @@ static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data
 	//cairo_surface_destroy(surf);
 }
 
-static gboolean ghid_cairo_preview_expose(GtkWidget * widget, GdkEventExpose * ev,
+static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * p,
 																					pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx)
 {
 	GdkWindow *window = gtk_widget_get_window(widget);
 	//GdkDrawable *save_drawable;
+	cairo_t *cr = p;
 	GtkAllocation allocation;			/* Assuming widget is a drawing widget, get the Rectangle allowed for drawing. */
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
