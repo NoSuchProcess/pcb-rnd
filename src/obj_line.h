@@ -51,7 +51,8 @@ void pcb_line_free(pcb_line_t * data);
 
 pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
 pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
-void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line);
+pcb_line_t *pcb_line_dup(pcb_layer_t *Layer, pcb_line_t *src);
+void *pcb_line_destroy(pcb_layer_t *dst, pcb_line_t *src);
 
 
 /* Add objects without creating them or making any "sanity modifications" to them */

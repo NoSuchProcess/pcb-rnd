@@ -216,6 +216,11 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 	return (Line);
 }
 
+pcb_line_t *pcb_line_dup(pcb_layer_t *dst, pcb_line_t *src)
+{
+	return pcb_line_new(dst, src->Point1.X, src->Point1.Y, src->Point2.X, src->Point2.Y, src->Thickness, src->Clearance, src->Flags);
+}
+
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_bbox(Line);
