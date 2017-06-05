@@ -167,6 +167,7 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 		pcb_text_t *text;
 		pcb_polygon_t *poly;
 		pcb_arc_t *arc, *narc;
+		gdl_iterator_t it;
 
 		memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
 
@@ -192,23 +193,24 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 		if (dl->meta.bound.real == NULL)
 			pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer of subcricuit TODO while placing it\n");
 
-		while((line = linelist_first(&sl->Line)) != NULL) {
+
+		linelist_foreach(&sl->Line, &it, line) {
 			nline = pcb_line_dup(dl, line);
 			if (nline != NULL)
 				PCB_SET_PARENT(nline, layer, dl);
 		}
 
-		while((arc = arclist_first(&sl->Arc)) != NULL) {
+		arclist_foreach(&sl->Arc, &it, arc) {
 			narc = pcb_arc_dup(dl, arc);
 			if (narc != NULL)
 			PCB_SET_PARENT(arc, layer, dl);
 		}
 
-		while((text = textlist_first(&sl->Text)) != NULL) {
+		textlist_foreach(&sl->Text, &it, text) {
 /*			PCB_SET_PARENT(text, layer, dl);*/
 		}
 
-		while((poly = polylist_first(&sl->Polygon)) != NULL) {
+		polylist_foreach(&sl->Polygon, &it, poly) {
 /*			PCB_SET_PARENT(poly, layer, dl);*/
 		}
 
