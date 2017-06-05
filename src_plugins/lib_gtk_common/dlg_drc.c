@@ -46,6 +46,7 @@
 #include "obj_arc_draw.h"
 #include "obj_poly_draw.h"
 #include "layer_vis.h"
+#include "wt_preview.h"
 
 #include "compat.h"
 #include "util_str.h"
@@ -816,6 +817,9 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	GtkWidget *hbox, *label;
 	char number[8];								/* if there is more than a million DRC errors ... change this ! */
 	char *markup;
+	//pcb_gtk_preview_t *preview;
+	GtkWidget *preview;
+	int preview_size = VIOLATION_PIXMAP_PIXEL_SIZE - 2 * VIOLATION_PIXMAP_PIXEL_BORDER;
 
 	/* Ensure the required structures are setup */
 	ghid_drc_window_show(common, FALSE);
@@ -838,6 +842,10 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtkc_hbox_new(FALSE, 0), TRUE, TRUE, 0);
 	gtk_widget_show_all(hbox);
+
+	preview = pcb_gtk_preview_new(common, common->init_drawing_widget, common->preview_expose, NULL);
+	gtk_widget_set_size_request(preview, preview_size, preview_size);
+	gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, 0);
 
 	gtk_list_store_append(drc_list_model, &iter);
 	gtk_list_store_set(drc_list_model, &iter, DRC_VIOLATION_NUM_COL, num_violations, DRC_VIOLATION_OBJ_COL, violation_obj, -1);
