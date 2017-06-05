@@ -276,35 +276,37 @@ void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * vio
 	gtk_widget_set_state(widget, GTK_STATE_SELECTED);
 	gtk_widget_queue_draw(drc_vbox);
 
-	unset_found_flags(pcb_false);
+	if (event->type == GDK_2BUTTON_PRESS) {
+		unset_found_flags(pcb_false);
 
-	/* Flag the objects listed against this DRC violation */
-	for (i = 0; i < violation->object_count; i++) {
-		int object_id = violation->object_id_list[i];
-		int object_type = violation->object_type_list[i];
-		int found_type;
-		void *ptr1, *ptr2, *ptr3;
+		/* Flag the objects listed against this DRC violation */
+		for (i = 0; i < violation->object_count; i++) {
+			int object_id = violation->object_id_list[i];
+			int object_type = violation->object_type_list[i];
+			int found_type;
+			void *ptr1, *ptr2, *ptr3;
 
-		found_type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
-		if (found_type == PCB_TYPE_NONE) {
-			pcb_message(PCB_MSG_WARNING, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
-			continue;
+			found_type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
+			if (found_type == PCB_TYPE_NONE) {
+				pcb_message(PCB_MSG_WARNING, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
+				continue;
+			}
+			pcb_undo_add_obj_to_flag(object_type, ptr1, ptr2, ptr3);
+			PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
+			switch (violation->object_type_list[i]) {
+			case PCB_TYPE_LINE:
+			case PCB_TYPE_ARC:
+			case PCB_TYPE_POLYGON:
+				pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
+			}
+			pcb_draw_obj(object_type, ptr1, ptr2);
 		}
-		pcb_undo_add_obj_to_flag(object_type, ptr1, ptr2, ptr3);
-		PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
-		switch (violation->object_type_list[i]) {
-		case PCB_TYPE_LINE:
-		case PCB_TYPE_ARC:
-		case PCB_TYPE_POLYGON:
-			pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
-		}
-		pcb_draw_obj(object_type, ptr1, ptr2);
+		pcb_board_set_changed_flag(pcb_true);
+		pcb_undo_inc_serial();
+		pcb_draw();
+
+		pcb_center_display(violation->x_coord, violation->y_coord);
 	}
-	pcb_board_set_changed_flag(pcb_true);
-	pcb_undo_inc_serial();
-	pcb_draw();
-
-	pcb_center_display(violation->x_coord, violation->y_coord);
 }
 
 
