@@ -47,6 +47,7 @@ struct pcb_text_s {
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 void pcb_text_free(pcb_text_t * data);
 pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, const char *TextString, pcb_flag_t Flags);
+pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src);
 void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);
 
 
