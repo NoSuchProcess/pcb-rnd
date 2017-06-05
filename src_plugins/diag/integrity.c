@@ -135,4 +135,7 @@ void pcb_check_integrity(pcb_board_t *pcb)
 		sprintf(bn, "buffer #%d", n);
 		chk_layers(bn, pcb_buffers[n].Data, PCB_PARENT_INVALID, NULL, 0);
 	}
+
+	if (undo_check() != 0)
+		pcb_message(PCB_MSG_ERROR, CHK "undo\n");
 }
