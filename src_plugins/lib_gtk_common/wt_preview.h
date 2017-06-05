@@ -66,6 +66,7 @@ typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
 	PCB_GTK_PREVIEW_PINOUT,	/**<- render a single element     */
 	PCB_GTK_PREVIEW_LAYER,	/**<- render a specific layer     */
+	PCB_GTK_PREVIEW_BOARD,	/**<- render the board (whole stack) */
 
 	PCB_GTK_PREVIEW_kind_max
 } pcb_gtk_preview_kind_t;
@@ -129,6 +130,10 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com,
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com,
 																		 pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
+
+/** preview widget for a board location (full stack) */
+GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose);
+
 
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw);
 

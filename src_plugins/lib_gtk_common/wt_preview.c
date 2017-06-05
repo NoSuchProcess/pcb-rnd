@@ -249,6 +249,9 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 	case PCB_GTK_PREVIEW_LAYER:
 		return preview->expose(widget, ev, pcb_hid_expose_layer, &preview->expose_data);
 
+	case PCB_GTK_PREVIEW_BOARD:
+		return preview->expose(widget, ev, pcb_hid_expose_all, &preview->expose_data);
+
 	case PCB_GTK_PREVIEW_INVALID:
 	case PCB_GTK_PREVIEW_kind_max:
 		return FALSE;
@@ -557,6 +560,13 @@ static GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_in
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
 {
 	return pcb_gtk_preview_generic_new(com, init_widget, expose, layer, NULL);
+}
+
+GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose)
+{
+	GtkWidget *w = pcb_gtk_preview_generic_new(com, init_widget, expose, -1, NULL);
+	g_object_set(G_OBJECT(w), "kind", PCB_GTK_PREVIEW_BOARD, NULL);
+	return w;
 }
 
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw)
