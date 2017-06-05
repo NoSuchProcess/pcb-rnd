@@ -227,6 +227,13 @@ pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags)
 	return (polygon);
 }
 
+pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
+{
+	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
+	pcb_poly_copy(p, src);
+	return p;
+}
+
 /* creates a new point in a polygon */
 pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
 {

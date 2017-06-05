@@ -150,7 +150,7 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 		pcb_layer_t *dl = sc->data->Layer + n;
 		pcb_line_t *line, *nline;
 		pcb_text_t *text, *ntext;
-		pcb_polygon_t *poly;
+		pcb_polygon_t *poly, *npoly;
 		pcb_arc_t *arc, *narc;
 		gdl_iterator_t it;
 
@@ -185,7 +185,9 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
-/*			PCB_SET_PARENT(poly, layer, dl);*/
+			npoly = pcb_poly_dup(dl, poly);
+			if (npoly != NULL)
+			PCB_SET_PARENT(npoly, layer, dl);
 		}
 
 	}
