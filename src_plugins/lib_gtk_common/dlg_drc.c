@@ -61,7 +61,7 @@
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5
 #define VIOLATION_PIXMAP_PCB_SIZE     PCB_MIL_TO_COORD (100)
 
-static GtkWidget *drc_window, *drc_list;
+static GtkWidget *drc_window, *drc_list, *drc_vbox;
 static GtkListStore *drc_list_model = NULL;
 static int num_violations = 0;
 
@@ -78,8 +78,15 @@ static void drc_close_cb(gpointer data)
 	drc_window = NULL;
 }
 
+/** A (*GtkCallback) function */
+static void destroy_widget(GtkWidget * widget, gpointer data)
+{
+	gtk_widget_destroy(widget);
+}
+
 static void drc_refresh_cb(gpointer data)
 {
+	gtk_container_foreach(GTK_CONTAINER(drc_vbox), destroy_widget, NULL);
 	pcb_hid_actionl("DRC", NULL);
 }
 
@@ -743,6 +750,16 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	drc_list_model = gtk_list_store_new(NUM_DRC_COLUMNS, G_TYPE_INT,	/* DRC_VIOLATION_NUM_COL */
 																			G_TYPE_OBJECT);	/* DRC_VIOLATION_OBJ_COL */
 
+	/* New mechanism */
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE /* EXPAND */ , TRUE /* FILL */ , 0 /* PADDING */ );
+
+	drc_vbox = gtkc_vbox_new(FALSE, 0);
+
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), drc_vbox);
+
+	/* Old mechanism */
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE /* EXPAND */ , TRUE /* FILL */ , 0 /* PADDING */ );
 
@@ -765,6 +782,7 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 																							_("Violation details"),	/* TITLE */
 																							violation_renderer, "violation", DRC_VIOLATION_OBJ_COL, NULL);
 
+	/* Dialog buttons */
 	hbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -789,6 +807,8 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 {
 	GhidDrcViolation *violation_obj;
 	GtkTreeIter iter;
+	GtkWidget *hbox, *label;
+	char number[8];								/* if there is more than a million DRC errors ... change this ! */
 
 	/* Ensure the required structures are setup */
 	ghid_drc_window_show(common, FALSE);
@@ -796,6 +816,19 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	num_violations++;
 
 	violation_obj = ghid_drc_violation_new(violation, /* pixmap */ NULL);
+
+	/* New mechanism : Pack texts and preview in an horizontal box */
+	hbox = gtkc_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(drc_vbox), hbox, TRUE, TRUE, 0);
+	/*FIXME: Do we need to keep the DRC number for this violation ? What for ? */
+	pcb_sprintf(number, " %d ", num_violations);
+	label = gtk_label_new(number);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	label = gtk_label_new(NULL);
+	gtk_label_set_markup(GTK_LABEL(label), "Place Holder for <b>DRC</b>. <i>Need more work</i>");
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), gtkc_hbox_new(FALSE, 0), TRUE, TRUE, 0);
+	gtk_widget_show_all(hbox);
 
 	gtk_list_store_append(drc_list_model, &iter);
 	gtk_list_store_set(drc_list_model, &iter, DRC_VIOLATION_NUM_COL, num_violations, DRC_VIOLATION_OBJ_COL, violation_obj, -1);
