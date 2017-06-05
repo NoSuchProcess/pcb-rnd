@@ -112,7 +112,7 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 		Buffer->Data->parent.any = old_parent;
 		Buffer->Data->parent_type = old_pt;
 		if (pcb != NULL)
-			pcb_data_bind_board_layers(pcb, Buffer->Data);
+			pcb_data_bind_board_layers(pcb, Buffer->Data, 0);
 	}
 }
 

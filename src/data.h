@@ -128,7 +128,7 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data);
 void pcb_data_set_layer_parents(pcb_data_t *data);
 
 /* Set up all data layers as bound layers to pcb's Data */
-void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data);
+void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rtrees);
 
 
 /* Returns the top level pcb related to a data, or NULL if the data is floating

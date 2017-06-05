@@ -620,17 +620,19 @@ pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 	return NULL;
 }
 
-void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src)
+void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 {
 	dst->grp = src->grp;
 	dst->comb = src->comb;
 
 	if (PCB_LAYER_IS_REAL(src)) {
 		dst->meta.bound.real = src;
-		dst->line_tree = src->line_tree;
-		dst->text_tree = src->text_tree;
-		dst->polygon_tree = src->polygon_tree;
-		dst->subc_tree = src->subc_tree;
+		if (share_rtrees) {
+			dst->line_tree = src->line_tree;
+			dst->text_tree = src->text_tree;
+			dst->polygon_tree = src->polygon_tree;
+			dst->subc_tree = src->subc_tree;
+		}
 	}
 	else
 		dst->meta.bound.real = NULL;
