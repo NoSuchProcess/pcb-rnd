@@ -257,6 +257,44 @@ static void row_activated_cb(GtkTreeView * view, GtkTreePath * path, GtkTreeView
 	pcb_center_display(violation->x_coord, violation->y_coord);
 }
 
+static void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * violation)
+{
+	int i;
+
+	if (violation == NULL)
+		return;
+
+	unset_found_flags(pcb_false);
+
+	/* Flag the objects listed against this DRC violation */
+	for (i = 0; i < violation->object_count; i++) {
+		int object_id = violation->object_id_list[i];
+		int object_type = violation->object_type_list[i];
+		int found_type;
+		void *ptr1, *ptr2, *ptr3;
+
+		found_type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
+		if (found_type == PCB_TYPE_NONE) {
+			pcb_message(PCB_MSG_WARNING, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
+			continue;
+		}
+		pcb_undo_add_obj_to_flag(object_type, ptr1, ptr2, ptr3);
+		PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
+		switch (violation->object_type_list[i]) {
+		case PCB_TYPE_LINE:
+		case PCB_TYPE_ARC:
+		case PCB_TYPE_POLYGON:
+			pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
+		}
+		pcb_draw_obj(object_type, ptr1, ptr2);
+	}
+	pcb_board_set_changed_flag(pcb_true);
+	pcb_undo_inc_serial();
+	pcb_draw();
+
+	pcb_center_display(violation->x_coord, violation->y_coord);
+}
+
 
 enum {
 	PROP_TITLE = 1,
@@ -815,6 +853,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	GhidDrcViolation *violation_obj;
 	GtkTreeIter iter;
 	GtkWidget *hbox, *label;
+	GtkWidget *event_box;
 	char number[8];								/* if there is more than a million DRC errors ... change this ! */
 	char *markup;
 	//pcb_gtk_preview_t *preview;
@@ -831,7 +870,11 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 
 	/* New mechanism : Pack texts and preview in an horizontal box */
 	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(drc_vbox), hbox, TRUE, TRUE, VIOLATION_PIXMAP_PIXEL_BORDER);
+	event_box = gtk_event_box_new();
+	gtk_container_add(GTK_CONTAINER(event_box), hbox);
+	g_signal_connect(event_box, "button-press-event", G_CALLBACK(row_clicked_cb), violation_obj);
+	gtk_box_pack_start(GTK_BOX(drc_vbox), event_box, TRUE, TRUE, VIOLATION_PIXMAP_PIXEL_BORDER);
+
 	/*FIXME: Do we need to keep the DRC number for this violation ? What for ? */
 	pcb_sprintf(number, " %d ", num_violations);
 	label = gtk_label_new(number);
@@ -851,11 +894,11 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 																 violation_obj->y_coord,
 																 VIOLATION_PIXMAP_PCB_SIZE / preview_size,
 																 preview_size, preview_size,
-																 gdk_drawable_get_depth(GDK_DRAWABLE(gtk_widget_get_window(label))));
+																 gdk_drawable_get_depth(GDK_DRAWABLE(gtk_widget_get_window(common->top_window))));
 	preview = gtk_image_new_from_pixmap(pixmap, NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, VIOLATION_PIXMAP_PIXEL_BORDER);
 
-	gtk_widget_show_all(hbox);
+	gtk_widget_show_all(event_box);
 
 	gtk_list_store_append(drc_list_model, &iter);
 	gtk_list_store_set(drc_list_model, &iter, DRC_VIOLATION_NUM_COL, num_violations, DRC_VIOLATION_OBJ_COL, violation_obj, -1);
