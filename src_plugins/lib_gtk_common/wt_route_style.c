@@ -347,6 +347,10 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss)
 			}
 		} while (gtk_list_store_remove(rss->model, &iter));
 	}
+
+	/* ugly hack: get the menu updated */
+	rss->com->route_styles_edited_cb();
+
 	rss->action_radio_group = NULL;
 	rss->button_radio_group = NULL;
 	rss->hidden_button = 0;
@@ -382,4 +386,7 @@ void make_route_style_buttons(pcb_gtk_route_style_t * rss)
 		add_route_style_with_hidden_check(rss, &PCB->RouteStyle.array[i]);
 	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);
 	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), rss->com);
+
+	/* ugly hack: get the menu updated */
+	rss->com->route_styles_edited_cb();
 }
