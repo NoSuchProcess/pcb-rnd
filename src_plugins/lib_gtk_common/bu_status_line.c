@@ -46,22 +46,24 @@ void pcb_gtk_status_line_update(GtkWidget *status_line_label, int compat_horiz)
 {
 	const gchar *flag = conf_core.editor.all_direction_lines
 		? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
-	char *text = pcb_strdup_printf(_("%m+<b>view</b>=%s  "
-																	 "<b>grid</b>=%$mS  "
-																	 "%s%s  "
-																	 "<b>line</b>=%mS  "
-																	 "<b>via</b>=%mS (%mS)  %s"
-																	 "<b>clearance</b>=%mS  " "<b>text</b>=%i%%  " "<b>buffer</b>=#%i"),
-																 conf_core.editor.grid_unit->allow,
-																 conf_core.editor.show_solder_side ? _("solder") : _("component"),
-																 PCB->Grid,
-																 flag, conf_core.editor.rubber_band_mode ? ",R  " : "  ",
-																 conf_core.design.line_thickness,
-																 conf_core.design.via_thickness,
-																 conf_core.design.via_drilling_hole,
-																 compat_horiz ? "\n" : "",
-																 conf_core.design.clearance,
-																 conf_core.design.text_scale, conf_core.editor.buffer_number + 1);
+	char *text;
+	text = pcb_strdup_printf(_(
+		"%m+<b>view</b>=%s  "
+		"<b>grid</b>=%$mS  "
+		"%s%s  "
+		"<b>line</b>=%mS  "
+		"<b>via</b>=%mS (%mS)  %s"
+		"<b>clearance</b>=%mS  "
+		"<b>text</b>=%i%%  "
+		"<b>buffer</b>=#%i"),
+		conf_core.editor.grid_unit->allow, conf_core.editor.show_solder_side ? _("solder") : _("component"),
+		PCB->Grid,
+		flag, conf_core.editor.rubber_band_mode ? ",R  " : "  ",
+		conf_core.design.line_thickness,
+		conf_core.design.via_thickness, conf_core.design.via_drilling_hole, compat_horiz ? "\n" : "",
+		conf_core.design.clearance,
+		conf_core.design.text_scale,
+		conf_core.editor.buffer_number + 1);
 
 	pcb_gtk_status_line_set_text(status_line_label, text);
 	free(text);
