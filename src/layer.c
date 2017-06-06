@@ -642,7 +642,10 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 		dst->meta.bound.real = NULL;
 
 	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->grp);
-	dst->meta.bound.name = pcb_strdup(src->meta.real.name);
+	if (src->meta.real.name != NULL)
+		dst->meta.bound.name = pcb_strdup(src->meta.real.name);
+	else
+		dst->meta.bound.name = NULL;
 
 	if (dst->meta.bound.type & PCB_LYT_INTERN) {
 #warning TODO: calculate inner layer stack offset - needs a stack
@@ -664,10 +667,17 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 			pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
 			if (ly->comb == src->meta.bound.comb) {
 				score = 1;
-				if (strcmp(ly->meta.real.name, src->meta.bound.name) == 0)
+
+				if (ly->meta.real.name == src->meta.bound.name) /* mainly for NULL = NULL */
 					score += 2;
-				else if (pcb_strcasecmp(ly->meta.real.name, src->meta.bound.name) == 0)
-					score ++;
+				
+				if ((ly->meta.real.name != NULL) && (src->meta.bound.name != NULL)) {
+					if (strcmp(ly->meta.real.name, src->meta.bound.name) == 0)
+						score += 2;
+					else if (pcb_strcasecmp(ly->meta.real.name, src->meta.bound.name) == 0)
+						score ++;
+				}
+
 				if (score > best_score) {
 					best = ly;
 					best_score = score;
