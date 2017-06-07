@@ -144,6 +144,9 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	PCB_SET_PARENT(sc->data, data, dst);
 	pcb_subclist_append(&dst->subc, sc);
 
+	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
+	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
+
 	/* make a copy */
 	for(n = 0; n < src->data->LayerN; n++) {
 		pcb_layer_t *sl = src->data->Layer + n;
@@ -169,26 +172,34 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 		linelist_foreach(&sl->Line, &it, line) {
 			nline = pcb_line_dup_at(dl, line, dx, dy);
-			if (nline != NULL)
+			if (nline != NULL) {
 				PCB_SET_PARENT(nline, layer, dl);
+				pcb_box_bump_box(&sc->BoundingBox, &nline->BoundingBox);
+			}
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
 			narc = pcb_arc_dup_at(dl, arc, dx, dy);
-			if (narc != NULL)
-			PCB_SET_PARENT(narc, layer, dl);
+			if (narc != NULL) {
+				PCB_SET_PARENT(narc, layer, dl);
+				pcb_box_bump_box(&sc->BoundingBox, &narc->BoundingBox);
+			}
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
 			ntext = pcb_text_dup_at(dl, text, dx, dy);
-			if (ntext != NULL)
-			PCB_SET_PARENT(ntext, layer, dl);
+			if (ntext != NULL) {
+				PCB_SET_PARENT(ntext, layer, dl);
+				pcb_box_bump_box(&sc->BoundingBox, &ntext->BoundingBox);
+			}
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
 			npoly = pcb_poly_dup_at(dl, poly, dx, dy);
-			if (npoly != NULL)
-			PCB_SET_PARENT(npoly, layer, dl);
+			if (npoly != NULL) {
+				PCB_SET_PARENT(npoly, layer, dl);
+				pcb_box_bump_box(&sc->BoundingBox, &npoly->BoundingBox);
+			}
 		}
 
 	}
