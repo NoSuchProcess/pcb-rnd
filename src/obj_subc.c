@@ -32,6 +32,7 @@
 #include "error.h"
 #include "obj_subc.h"
 #include "obj_subc_op.h"
+#include "rtree.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
 {
@@ -203,6 +204,10 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		}
 
 	}
+
+	if (!dst->subc_tree)
+		dst->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)sc, 0);
 }
 
 pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
@@ -217,6 +222,8 @@ void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
 	pcb_subc_t *sc;
 
 	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY);
+
+
 
 	/* this call clears the polygons */
 /*	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);*/
