@@ -540,8 +540,12 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 		lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
 	}
 	else {
-		if ((wrver >= 3) && (layer->meta.bound.stack_offs != 0))
-			lht_dom_hash_put(obj, build_textf("stack_offs", layer->meta.bound.stack_offs));
+		if (wrver >= 3) {
+			if (layer->meta.bound.stack_offs != 0)
+				lht_dom_hash_put(obj, build_textf("stack_offs", layer->meta.bound.stack_offs));
+		}
+		else
+			pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
 	}
 	lht_dom_hash_put(obj, build_attributes(&layer->meta.real.Attributes));
 
