@@ -106,6 +106,11 @@ pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 	return pcb_text_new(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->Direction, src->Scale, src->TextString, src->Flags);
 }
 
+pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, pcb_coord_t dx, pcb_coord_t dy)
+{
+	return pcb_text_new(dst, pcb_font(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->Direction, src->Scale, src->TextString, src->Flags);
+}
+
 void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont)
 {
 	/* calculate size of the bounding box */
