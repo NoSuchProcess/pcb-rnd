@@ -66,6 +66,7 @@ static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, pc
 static pcb_bool SearchArcPointByLocation(int, pcb_layer_t **, pcb_arc_t **, int **);
 static pcb_bool SearchPointByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_point_t **);
 static pcb_bool SearchElementByLocation(int, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
+static pcb_bool SearchSubcByLocation(int, pcb_subc_t **, pcb_subc_t **, pcb_subc_t **, pcb_bool);
 
 /* ---------------------------------------------------------------------------
  * searches a via
@@ -571,6 +572,49 @@ SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** D
 			return pcb_true;
 	}
 	return pcb_false;
+}
+
+static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
+{
+	pcb_subc_t *subc = (pcb_subc_t *) box;
+	struct ans_info *i = (struct ans_info *) cl;
+	double newarea;
+
+	if (PCB_FLAG_TEST(i->locked, subc))
+		return PCB_R_DIR_NOT_FOUND;
+
+	if ((PCB_FRONT(subc) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &subc->BoundingBox)) {
+		/* use the element with the smallest bounding box */
+		newarea = (subc->BoundingBox.X2 - subc->BoundingBox.X1) * (double) (subc->BoundingBox.Y2 - subc->BoundingBox.Y1);
+		if (newarea < i->area) {
+			i->area = newarea;
+			*i->ptr1 = *i->ptr2 = *i->ptr3 = subc;
+			return PCB_R_DIR_FOUND_CONTINUE;
+		}
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * searches a subcircuit
+ * the search starts with the last subcircuit and goes back to the beginning
+ * if more than one subc matches, the smallest one is taken
+ */
+static pcb_bool
+SearchSubcByLocation(int locked, pcb_subc_t **subc, pcb_subc_t ** Dummy1, pcb_subc_t ** Dummy2, pcb_bool BackToo)
+{
+	struct ans_info info;
+
+	/* Both package layers have to be switched on */
+	info.ptr1 = (void **) subc;
+	info.ptr2 = (void **) Dummy1;
+	info.ptr3 = (void **) Dummy2;
+	info.area = PCB_SQUARE(PCB_MAX_COORD);
+	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
+	if (pcb_r_search(PCB->Data->subc_tree, &SearchBox, NULL, subc_callback, &info, NULL))
+		return pcb_true;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1089,6 +1133,14 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 		pcb_box_t *box = &((pcb_element_t *) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT;
+	}
+
+	if (!HigherAvail && Type & PCB_TYPE_SUBC &&
+			SearchSubcByLocation(locked, (pcb_subc_t **) pr1, (pcb_subc_t **) pr2, (pcb_subc_t **) pr3, pcb_false)) {
+		pcb_box_t *box = &((pcb_subc_t *) r1)->BoundingBox;
+		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
+		HigherAvail = PCB_TYPE_SUBC;
+printf("SUBC!\n");
 	}
 
 	for (i = -1; i < pcb_max_layer + 1; i++) {
