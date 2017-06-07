@@ -137,7 +137,7 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
 
-pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
+pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
@@ -168,25 +168,25 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 			pcb_layer_link_trees(dl, dl->meta.bound.real);
 
 		linelist_foreach(&sl->Line, &it, line) {
-			nline = pcb_line_dup(dl, line);
+			nline = pcb_line_dup_at(dl, line, dx, dy);
 			if (nline != NULL)
 				PCB_SET_PARENT(nline, layer, dl);
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
-			narc = pcb_arc_dup(dl, arc);
+			narc = pcb_arc_dup_at(dl, arc, dx, dy);
 			if (narc != NULL)
 			PCB_SET_PARENT(narc, layer, dl);
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
-			ntext = pcb_text_dup(dl, text);
+			ntext = pcb_text_dup_at(dl, text, dx, dy);
 			if (ntext != NULL)
 			PCB_SET_PARENT(ntext, layer, dl);
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
-			npoly = pcb_poly_dup(dl, poly);
+			npoly = pcb_poly_dup_at(dl, poly, dx, dy);
 			if (npoly != NULL)
 			PCB_SET_PARENT(npoly, layer, dl);
 		}
@@ -194,12 +194,18 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 	}
 }
 
+pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
+{
+	return pcb_subc_dup_at(pcb, dst, src, 0, 0);
+}
+
+
 /* copies a subcircuit onto the PCB.  Then does a draw. */
 void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
 {
 	pcb_subc_t *sc;
 
-	sc = pcb_subc_dup(PCB, PCB->Data, src);
+	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY);
 
 	/* this call clears the polygons */
 /*	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);*/
