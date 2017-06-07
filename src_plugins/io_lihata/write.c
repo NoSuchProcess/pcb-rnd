@@ -535,9 +535,16 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 
 	obj = lht_dom_node_alloc(LHT_HASH, layer->meta.real.name);
 
-	lht_dom_hash_put(obj, build_text("visible", layer->meta.real.vis ? "1" : "0"));
+	if (PCB_LAYER_IS_REAL(layer)) {
+		lht_dom_hash_put(obj, build_text("visible", layer->meta.real.vis ? "1" : "0"));
+		lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
+	}
+	else {
+		if ((wrver >= 3) && (layer->meta.bound.stack_offs != 0))
+			lht_dom_hash_put(obj, build_textf("stack_offs", layer->meta.bound.stack_offs));
+	}
 	lht_dom_hash_put(obj, build_attributes(&layer->meta.real.Attributes));
-	lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
+
 	if (wrver >= 2) {
 		lht_dom_hash_put(obj, build_textf("lid", "%ld", lid));
 		lht_dom_hash_put(obj, comb = lht_dom_node_alloc(LHT_HASH, "combining"));
