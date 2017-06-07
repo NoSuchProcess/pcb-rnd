@@ -42,6 +42,7 @@
 #include "write_style.h"
 #include "io_lihata.h"
 #include "paths.h"
+#include "obj_subc_list.h"
 
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"
@@ -49,6 +50,9 @@
 
 static int io_lihata_full_tree = 0;
 static int wrver;
+
+static lht_node_t *build_data(pcb_data_t *data);
+
 
 /* An invalid node will kill any existing node on an overwrite-save-merge */
 static lht_node_t *dummy_node(const char *name)
@@ -457,6 +461,31 @@ static lht_node_t *build_element(pcb_element_t *elem)
 	return obj;
 }
 
+static lht_node_t *build_subc_element(pcb_subc_t *sc)
+{
+#warning subc TODO: implement conversion for backward compatibility
+	pcb_message(PCB_MSG_ERROR, "Can't save subcircuits in lihata versions lower than v3\n");
+	return NULL;
+}
+
+static lht_node_t *build_subc(pcb_subc_t *sc)
+{
+	char buff[128];
+	lht_node_t *obj;
+
+	if (wrver < 3)
+		return build_subc_element(sc);
+
+	sprintf(buff, "subc.%ld", sc->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_attributes(&sc->Attributes));
+	lht_dom_hash_put(obj, build_flags(&sc->Flags, PCB_TYPE_SUBC));
+	lht_dom_hash_put(obj, build_data(sc->data));
+	return obj;
+}
+
+
 static void build_layer_stack_flag(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name)
 {
 	lht_node_t *dst = ctx;
@@ -627,6 +656,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 	lht_node_t *grp, *ndt;
 	pcb_pin_t *pi;
 	pcb_element_t *el;
+	pcb_subc_t *sc;
 	gdl_iterator_t it;
 	pcb_rat_t *line;
 
@@ -644,6 +674,9 @@ static lht_node_t *build_data(pcb_data_t *data)
 
 	for(el = elementlist_first(&data->Element); el != NULL; el = elementlist_next(el))
 		lht_dom_list_append(grp, build_element(el));
+
+	for(sc = pcb_subclist_first(&data->subc); sc != NULL; sc = pcb_subclist_next(sc))
+		lht_dom_list_append(grp, build_subc(sc));
 
 	ratlist_foreach(&data->Rat, &it, line)
 		lht_dom_list_append(grp, build_rat(line));
@@ -1053,6 +1086,11 @@ int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE * FP, const char *old_filena
 int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 2);
+}
+
+int io_lihata_write_pcb_v3(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+{
+	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 3);
 }
 
 int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename)
