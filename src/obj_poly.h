@@ -58,6 +58,7 @@ void pcb_poly_bbox(pcb_polygon_t *Polygon);
 pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_flag_t Flags);
 pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags);
 pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src);
+pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t dx, pcb_coord_t dy);
 pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y);
 pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon);
 void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
@@ -68,7 +69,7 @@ void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon);
 void pcb_poly_flip_side(pcb_layer_t *layer, pcb_polygon_t *polygon);
 
 void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
-pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src);
+pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src, pcb_coord_t dx, pcb_coord_t dy);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);

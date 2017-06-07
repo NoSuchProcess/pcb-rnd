@@ -230,7 +230,14 @@ pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags)
 pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
 {
 	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
-	pcb_poly_copy(p, src);
+	pcb_poly_copy(p, src, 0, 0);
+	return p;
+}
+
+pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t dx, pcb_coord_t dy)
+{
+	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
+	pcb_poly_copy(p, src, dx, dy);
 	return p;
 }
 
@@ -255,7 +262,7 @@ pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon)
 }
 
 /* copies data from one polygon to another; 'Dest' has to exist */
-pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src)
+pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_cardinal_t hole = 0;
 	pcb_cardinal_t n;
@@ -265,7 +272,7 @@ pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src)
 			pcb_poly_hole_new(Dest);
 			hole++;
 		}
-		pcb_poly_point_new(Dest, Src->Points[n].X, Src->Points[n].Y);
+		pcb_poly_point_new(Dest, Src->Points[n].X+dy, Src->Points[n].Y+dx);
 	}
 	pcb_poly_bbox(Dest);
 	Dest->Flags = Src->Flags;
@@ -317,7 +324,7 @@ void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	pcb_polygon_t *polygon;
 
 	polygon = pcb_poly_new(layer, Polygon->Flags);
-	pcb_poly_copy(polygon, Polygon);
+	pcb_poly_copy(polygon, Polygon, 0, 0);
 
 	/* Update the polygon r-tree. Unlike similarly named functions for
 	 * other objects, CreateNewPolygon does not do this as it creates a
@@ -712,8 +719,7 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	pcb_polygon_t *polygon;
 
 	polygon = pcb_poly_new(Layer, pcb_no_flags());
-	pcb_poly_copy(polygon, Polygon);
-	pcb_poly_move(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
+	pcb_poly_copy(polygon, Polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
