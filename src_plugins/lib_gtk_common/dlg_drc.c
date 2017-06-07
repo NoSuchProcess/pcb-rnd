@@ -879,7 +879,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	//pcb_gtk_preview_t *preview;
 	GtkWidget *preview;
 	int preview_size = VIOLATION_PIXMAP_PIXEL_SIZE - 2 * VIOLATION_PIXMAP_PIXEL_BORDER;
-	GdkPixmap *pixmap;
+	//GdkPixmap *pixmap;
 
 	/* Ensure the required structures are setup */
 	ghid_drc_window_show(common, FALSE);
@@ -906,16 +906,20 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtkc_hbox_new(FALSE, 0), TRUE, TRUE, 0);
 
+	//pixmap = common->render_pixmap(violation_obj->x_coord,
+	//                               violation_obj->y_coord,
+	//                               VIOLATION_PIXMAP_PCB_SIZE / preview_size,
+	//                               preview_size, preview_size,
+	//                               gdk_drawable_get_depth(GDK_DRAWABLE(gtk_widget_get_window(common->top_window))));
+	//preview = gtk_image_new_from_pixmap(pixmap, NULL);
 	//preview = pcb_gtk_preview_new(common, common->init_drawing_widget, common->preview_expose, NULL);
-	//gtk_widget_set_size_request(preview, preview_size, preview_size);
-	//gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, 0);
-
-	pixmap = common->render_pixmap(violation_obj->x_coord,
-																 violation_obj->y_coord,
-																 VIOLATION_PIXMAP_PCB_SIZE / preview_size,
-																 preview_size, preview_size,
-																 gdk_drawable_get_depth(GDK_DRAWABLE(gtk_widget_get_window(common->top_window))));
-	preview = gtk_image_new_from_pixmap(pixmap, NULL);
+	preview = pcb_gtk_preview_board_new(common, common->init_drawing_widget, common->preview_expose);
+	gtk_widget_set_size_request(preview, preview_size, preview_size);
+	pcb_gtk_preview_board_zoomto(PCB_GTK_PREVIEW(preview),
+															 violation_obj->x_coord - VIOLATION_PIXMAP_PCB_SIZE,
+															 violation_obj->y_coord - VIOLATION_PIXMAP_PCB_SIZE,
+															 violation_obj->x_coord + VIOLATION_PIXMAP_PCB_SIZE,
+															 violation_obj->y_coord + VIOLATION_PIXMAP_PCB_SIZE, preview_size, preview_size);
 	gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, VIOLATION_PIXMAP_PIXEL_BORDER);
 
 	gtk_widget_show_all(event_box);
