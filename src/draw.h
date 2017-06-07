@@ -74,6 +74,7 @@ extern int pcb_draw_doing_pinout;
 extern pcb_bool pcb_draw_doing_assy;
 
 void pcb_lighten_color(const char *orig, char buf[8], double factor);
+void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 
 
 void pcb_draw(void);

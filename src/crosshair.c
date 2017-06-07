@@ -85,34 +85,6 @@ static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 	}
 }
 
-static void draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-/* TODO: we need a real geo lib... using double here is plain wrong */
-	double dx = x2-x1, dy = y2-y1;
-	double len_squared = dx*dx + dy*dy;
-	int n;
-	const int segs = 11; /* must be odd */
-
-	if (len_squared < 1000000) {
-		/* line too short, just draw it - TODO: magic value; with a proper geo lib this would be gone anyway */
-		pcb_gui->draw_line(pcb_crosshair.GC, x1, y1, x2, y2);
-		return;
-	}
-
-	/* first seg is drawn from x1, y1 with no rounding error due to n-1 == 0 */
-	for(n = 1; n < segs; n+=2)
-		pcb_gui->draw_line(pcb_crosshair.GC,
-			x1 + (dx * (double)(n-1) / (double)segs), y1 + (dy * (double)(n-1) / (double)segs),
-			x1 + (dx * (double)n / (double)segs), y1 + (dy * (double)n / (double)segs));
-
-
-	/* make sure the last segment is drawn properly to x2 and y2, don't leave
-	   room for rounding errors */
-	pcb_gui->draw_line(pcb_crosshair.GC,
-		x2 - (dx / (double)segs), y2 - (dy / (double)segs),
-		x2, y2);
-}
-
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
@@ -127,7 +99,7 @@ void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash
 				continue;
 
 			if (dash_last) {
-				draw_dashed_line(pcb_crosshair.GC,
+				pcb_draw_dashed_line(pcb_crosshair.GC,
 									 polygon->Points[i].X + dx,
 									 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
 				break; /* skip normal line draw below */

@@ -104,6 +104,35 @@ void pcb_lighten_color(const char *orig, char buf[8], double factor)
 	pcb_snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
 }
 
+void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+/* TODO: we need a real geo lib... using double here is plain wrong */
+	double dx = x2-x1, dy = y2-y1;
+	double len_squared = dx*dx + dy*dy;
+	int n;
+	const int segs = 11; /* must be odd */
+
+	if (len_squared < 1000000) {
+		/* line too short, just draw it - TODO: magic value; with a proper geo lib this would be gone anyway */
+		pcb_gui->draw_line(pcb_crosshair.GC, x1, y1, x2, y2);
+		return;
+	}
+
+	/* first seg is drawn from x1, y1 with no rounding error due to n-1 == 0 */
+	for(n = 1; n < segs; n+=2)
+		pcb_gui->draw_line(pcb_crosshair.GC,
+			x1 + (dx * (double)(n-1) / (double)segs), y1 + (dy * (double)(n-1) / (double)segs),
+			x1 + (dx * (double)n / (double)segs), y1 + (dy * (double)n / (double)segs));
+
+
+	/* make sure the last segment is drawn properly to x2 and y2, don't leave
+	   room for rounding errors */
+	pcb_gui->draw_line(pcb_crosshair.GC,
+		x2 - (dx / (double)segs), y2 - (dy / (double)segs),
+		x2, y2);
+}
+
+
 /*
  * initiate the actual redrawing of the updated area
  */
