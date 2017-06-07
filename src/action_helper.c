@@ -1100,7 +1100,7 @@ void pcb_notify_mode(void)
 			pcb_element_t *e = 0;
 
 			if (pcb_gui->shift_is_pressed()) {
-				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
+				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT | PCB_TYPE_SUBC, &ptr1, &ptr2,
 																&ptr3);
 				if (type == PCB_TYPE_ELEMENT) {
 					e = (pcb_element_t *) ptr1;
@@ -1117,7 +1117,7 @@ void pcb_notify_mode(void)
 			if (pcb_buffer_copy_to_layout(PCB, Note.X, Note.Y))
 				pcb_board_set_changed_flag(pcb_true);
 			if (e) {
-				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
+				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT | PCB_TYPE_SUBC, &ptr1, &ptr2,
 																&ptr3);
 				if (type == PCB_TYPE_ELEMENT && ptr1) {
 					int i, save_n;
