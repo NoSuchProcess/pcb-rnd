@@ -224,6 +224,16 @@ static inline PCB_FUNC_UNUSED double pcb_dist2_to_box(const pcb_cheap_point_t * 
 	return pcb_distance(r.X, r.Y, p->X, p->Y);
 }
 
+
+/* Modify dst to include src */
+static inline PCB_FUNC_UNUSED void pcb_box_bump_box(pcb_box_t *dst, pcb_box_t *src)
+{
+	if (src->X1 < dst->X1) dst->X1 = src->X1;
+	if (src->Y1 < dst->Y1) dst->Y1 = src->Y1;
+	if (src->X2 > dst->X2) dst->X2 = src->X2;
+	if (src->Y2 > dst->Y2) dst->Y2 = src->Y2;
+}
+
 pcb_box_t *pcb_box_new(pcb_box_list_t *);
 void pcb_box_free(pcb_box_list_t *);
 void pcb_set_point_bounding_box(pcb_point_t *Pnt);
