@@ -541,8 +541,13 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 	}
 	else {
 		if (wrver >= 3) {
+			lht_node_t *type;
+
 			if (layer->meta.bound.stack_offs != 0)
-				lht_dom_hash_put(obj, build_textf("stack_offs", layer->meta.bound.stack_offs));
+				lht_dom_hash_put(obj, build_textf("stack_offs", "%d", layer->meta.bound.stack_offs));
+
+			lht_dom_hash_put(obj, type = lht_dom_node_alloc(LHT_HASH, "type"));
+			pcb_layer_type_map(layer->meta.bound.type, type, build_layer_stack_flag);
 		}
 		else
 			pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
