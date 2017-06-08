@@ -246,6 +246,8 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 /* Set up dst so that it's a non-real layer bound to src */
 void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees);
 
+/* Assume src is a bound layer; find the closest match in pcb's layer stack */
+pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src);
 
 /* Modify tree pointers in dst to point to src's */
 void pcb_layer_link_trees(pcb_layer_t *dst, const pcb_layer_t *src);
