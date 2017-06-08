@@ -220,19 +220,6 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 	}
 }
 
-static const char *templ_hdr =
-	"# $Id$\n"
-	"# PcbXY Version 1.0\n"
-	"# Date: %UTC%\n"
-	"# Author: %author%\n"
-	"# Title: %title% - PCB X-Y\n"
-	"# RefDes, Description, Value, X, Y, rotation, top/bottom\n"
-	"# X,Y in %suffix%.  rotation in degrees.\n"
-	"# --------------------------------------------\n";
-
-static const char *templ_elem =
-	"%elem.name%,\"%elem.descr%\",\"%elem.value%\",%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
-
 typedef struct {
 	const char *hdr, *elem, *pad, *foot;
 } template_t;
@@ -432,14 +419,16 @@ static int PrintXY(const template_t *templ)
 	return (0);
 }
 
+#include "default_templ.h"
+
 static void xy_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
 	template_t templ;
 
 	memset(&templ, 0, sizeof(templ));
-	templ.hdr = templ_hdr;
-	templ.elem = templ_elem;
+	templ.hdr = templ_xy_hdr;
+	templ.elem = templ_xy_elem;
 
 	if (!options) {
 		xy_get_export_options(0);
