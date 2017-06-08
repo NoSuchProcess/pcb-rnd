@@ -59,13 +59,12 @@ struct _GhidDrcViolation {
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
-	GdkDrawable *pixmap;
 };
 
 /** \return     the GType identifier associated with \ref FIXME. */
 GType ghid_drc_violation_get_type(void);
 
-GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDrawable * pixmap);
+GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation);
 
 /*TODO: split in dlg_drc_cr.h */
 #define GHID_TYPE_VIOLATION_RENDERER           (ghid_violation_renderer_get_type())

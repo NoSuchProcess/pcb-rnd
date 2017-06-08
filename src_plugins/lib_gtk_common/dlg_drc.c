@@ -320,7 +320,6 @@ enum {
 	PROP_MEASURED_VALUE,
 	PROP_REQUIRED_VALUE,
 	PROP_OBJECT_LIST,
-	PROP_PIXMAP
 };
 
 
@@ -343,8 +342,6 @@ static void ghid_drc_violation_finalize(GObject * object)
 	g_free(violation->explanation);
 	g_free(violation->object_id_list);
 	g_free(violation->object_type_list);
-	if (violation->pixmap != NULL)
-		g_object_unref(violation->pixmap);
 
 	G_OBJECT_CLASS(ghid_drc_violation_parent_class)->finalize(object);
 }
@@ -410,11 +407,6 @@ static void ghid_drc_violation_set_property(GObject * object, guint property_id,
 		memcpy(violation->object_id_list, obj_list->id_list, sizeof(long int) * obj_list->count);
 		memcpy(violation->object_type_list, obj_list->type_list, sizeof(int) * obj_list->count);
 		break;
-	case PROP_PIXMAP:
-		if (violation->pixmap)
-			g_object_unref(violation->pixmap);	/* Frees our old reference */
-		violation->pixmap = (GdkDrawable *) g_value_dup_object(value);	/* Takes a new reference */
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
 		return;
@@ -479,8 +471,6 @@ static void ghid_drc_violation_class_init(GhidViolationRendererClass * klass)
 																	g_param_spec_int("required-value", "", "", G_MININT, G_MAXINT, 0., G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_OBJECT_LIST,
 																	g_param_spec_pointer("object-list", "", "", G_PARAM_WRITABLE));
-	g_object_class_install_property(gobject_class, PROP_PIXMAP,
-																	g_param_spec_object("pixmap", "", "", GDK_TYPE_DRAWABLE, G_PARAM_WRITABLE));
 }
 
 /*! \brief Function to retrieve GhidViolationRenderer's GType identifier.
@@ -518,7 +508,7 @@ GType ghid_drc_violation_get_type()
 
 /* API */
 
-GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDrawable * pixmap)
+GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation)
 {
 	object_list obj_list;
 
@@ -535,7 +525,7 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDra
 																					 "have-measured", violation->have_measured,
 																					 "measured-value", violation->measured_value,
 																					 "required-value", violation->required_value,
-																					 "object-list", &obj_list, "pixmap", pixmap, NULL);
+																					 "object-list", &obj_list, NULL);
 }
 
 enum {
@@ -663,48 +653,6 @@ ghid_violation_renderer_get_size(GtkCellRenderer * cell,
 		*height = MAX(*height, VIOLATION_PIXMAP_PIXEL_SIZE);
 }
 
-static void
-ghid_violation_renderer_render(GtkCellRenderer * cell,
-															 GdkDrawable * window,
-															 GtkWidget * widget,
-															 GdkRectangle * background_area,
-															 GdkRectangle * cell_area, GdkRectangle * expose_area, GtkCellRendererState flags)
-{
-	GdkDrawable *mydrawable;
-	GtkStyle *style = gtk_widget_get_style(widget);
-	GhidViolationRenderer *renderer = GHID_VIOLATION_RENDERER(cell);
-	GhidDrcViolation *violation = renderer->violation;
-	int pixmap_size = VIOLATION_PIXMAP_PIXEL_SIZE - 2 * VIOLATION_PIXMAP_PIXEL_BORDER;
-
-	cell_area->width -= VIOLATION_PIXMAP_PIXEL_SIZE;
-	GTK_CELL_RENDERER_CLASS(ghid_violation_renderer_parent_class)->render(cell,
-																																				window,
-																																				widget, background_area, cell_area, expose_area, flags);
-
-	if (violation == NULL)
-		return;
-
-	if (violation->pixmap == NULL) {
-		GdkPixmap *pixmap = renderer->common->render_pixmap(violation->x_coord,
-																					 violation->y_coord,
-																					 VIOLATION_PIXMAP_PCB_SIZE / pixmap_size,
-																					 pixmap_size, pixmap_size,
-																					 gdk_drawable_get_depth(window));
-		g_object_set(violation, "pixmap", pixmap, NULL);
-		g_object_unref(pixmap);
-	}
-
-	if (violation->pixmap == NULL)
-		return;
-
-	mydrawable = GDK_DRAWABLE(violation->pixmap);
-
-	gdk_draw_drawable(window, style->fg_gc[gtk_widget_get_state(widget)],
-										mydrawable, 0, 0,
-										cell_area->x + cell_area->width + VIOLATION_PIXMAP_PIXEL_BORDER,
-										cell_area->y + VIOLATION_PIXMAP_PIXEL_BORDER, -1, -1);
-}
-
 /*! \brief GType class initialiser for GhidViolationRenderer
  *
  *  \par Function Description
@@ -723,7 +671,6 @@ static void ghid_violation_renderer_class_init(GhidViolationRendererClass * klas
 	gobject_class->get_property = ghid_violation_renderer_get_property;
 
 	cellrenderer_class->get_size = ghid_violation_renderer_get_size;
-	cellrenderer_class->render = ghid_violation_renderer_render;
 
 	ghid_violation_renderer_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 
@@ -886,7 +833,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 
 	num_violations++;
 
-	violation_obj = ghid_drc_violation_new(violation, /* pixmap */ NULL);
+	violation_obj = ghid_drc_violation_new(violation);
 
 	/* New mechanism : Pack texts and preview in an horizontal box */
 	hbox = gtkc_hbox_new(FALSE, 0);
