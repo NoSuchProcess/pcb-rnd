@@ -22,7 +22,7 @@ static const char *templ_gxyrs_hdr =
 	"# --------------------------------------------\n";
 
 static const char *templ_gxyrs_elem =
-	"%elem.name%,%elem.x%,%elem.y%,%elem.rot%,%elem.side%,%elem.descr%\n";
+	"%elem.name%,%elem.x%,%elem.y%,%elem.rot%,%elem.side%,\"%elem.value%\",%elem.descr%\n";
 
 static const char *templ_TM220A_hdr = 
 	"#pcb-rnd TM220A xyrs version 1.0\n"
