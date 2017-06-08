@@ -137,9 +137,50 @@ static double xyToAngle(double x, double y, pcb_bool morethan2pins)
 #define MAXREFPINS 32 /* max length of following list */
 static char *reference_pin_names[] = {"1", "2", "A1", "A2", "B1", "B2", 0};
 
+typedef struct {
+	char utcTime[64];
+} subst_ctx_t;
+
+static int subst_cb(void *ctx_, gds_t *s, const char **input)
+{
+	subst_ctx_t *ctx = ctx_;
+	if (strncmp(*input, "UTC%", 4) == 0) {
+		*input += 4;
+		gds_append_str(s, ctx->utcTime);
+		return 0;
+	}
+	if (strncmp(*input, "author%", 7) == 0) {
+		*input += 7;
+		gds_append_str(s, pcb_author());
+		return 0;
+	}
+	if (strncmp(*input, "title%", 6) == 0) {
+		*input += 6;
+		gds_append_str(s, PCB_UNKNOWN(PCB->Name));
+		return 0;
+	}
+	if (strncmp(*input, "suffix%", 7) == 0) {
+		*input += 7;
+		gds_append_str(s, xy_unit->in_suffix);
+		return 0;
+	}
+
+	return -1;
+}
+
+static const char *temp_hdr =
+	"# $Id$\n"
+	"# PcbXY Version 1.0\n"
+	"# Date: %UTC%\n"
+	"# Author: %author%\n"
+	"# Title: %title% - PCB X-Y\n"
+	"# RefDes, Description, Value, X, Y, rotation, top/bottom\n"
+	"# X,Y in %suffix%.  rotation in degrees.\n"
+	"# --------------------------------------------\n";
+
 static int PrintXY(void)
 {
-	char utcTime[64];
+	char *tmp;
 	pcb_coord_t x, y;
 	double theta = 0.0;
 	double sumx, sumy;
@@ -155,7 +196,7 @@ static int PrintXY(void)
 	double padcentrex, padcentrey;
 	double centroidx, centroidy;
 	int found_any_not_at_centroid, found_any, rpindex;
-
+	subst_ctx_t ctx;
 
 	fp = fopen(xy_filename, "w");
 	if (!fp) {
@@ -168,17 +209,13 @@ static int PrintXY(void)
 	{
 		/* avoid gcc complaints */
 		const char *fmt = "%c UTC";
-		strftime(utcTime, sizeof(utcTime), fmt, gmtime(&currenttime));
+		strftime(ctx.utcTime, sizeof(ctx.utcTime), fmt, gmtime(&currenttime));
 	}
-	fprintf(fp, "# $Id");
-	fprintf(fp, "$\n");
-	fprintf(fp, "# PcbXY Version 1.0\n");
-	fprintf(fp, "# Date: %s\n", utcTime);
-	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB X-Y\n", PCB_UNKNOWN(PCB->Name));
-	fprintf(fp, "# RefDes, Description, Value, X, Y, rotation, top/bottom\n");
-	fprintf(fp, "# X,Y in %s.  rotation in degrees.\n", xy_unit->in_suffix);
-	fprintf(fp, "# --------------------------------------------\n");
+
+	tmp = pcb_strdup_subst(temp_hdr, subst_cb, &ctx);
+	fprintf(fp, "%s", tmp);
+	free(tmp);
+
 
 	/*
 	 * For each element we calculate the centroid of the footprint.
