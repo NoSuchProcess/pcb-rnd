@@ -139,6 +139,10 @@ static char *reference_pin_names[] = {"1", "2", "A1", "A2", "B1", "B2", 0};
 
 typedef struct {
 	char utcTime[64];
+	char *name, *descr, *value, *fixed_rotation;
+	pcb_coord_t x, y;
+	double theta;
+	pcb_element_t *element;
 } subst_ctx_t;
 
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
@@ -165,6 +169,45 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		return 0;
 	}
 
+	if (strncmp(*input, "elem.", 5) == 0) {
+		*input += 5;
+		if (strncmp(*input, "name%", 5) == 0) {
+			*input += 5;
+			gds_append_str(s, ctx->name);
+			return 0;
+		}
+		if (strncmp(*input, "descr%", 6) == 0) {
+			*input += 6;
+			gds_append_str(s, ctx->descr);
+			return 0;
+		}
+		if (strncmp(*input, "value%", 6) == 0) {
+			*input += 6;
+			gds_append_str(s, ctx->value);
+			return 0;
+		}
+		if (strncmp(*input, "x%", 2) == 0) {
+			*input += 2;
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->x);
+			return 0;
+		}
+		if (strncmp(*input, "y%", 2) == 0) {
+			*input += 2;
+			pcb_append_printf(s, "%m+%.2mS", xy_unit->allow, ctx->y);
+			return 0;
+		}
+		if (strncmp(*input, "rot%", 4) == 0) {
+			*input += 4;
+			pcb_append_printf(s, "%g", ctx->theta);
+			return 0;
+		}
+		if (strncmp(*input, "side%", 5) == 0) {
+			*input += 5;
+			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "top" : "bottom");
+			return 0;
+		}
+	}
+
 	return -1;
 }
 
@@ -185,16 +228,16 @@ static const char *temp_hdr =
 	"# X,Y in %suffix%.  rotation in degrees.\n"
 	"# --------------------------------------------\n";
 
+static const char *temp_elem =
+	"%elem.name%,\"%elem.descr%\",\"%elem.value%\",%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
+
 static int PrintXY(void)
 {
-	pcb_coord_t x, y;
-	double theta = 0.0;
 	double sumx, sumy;
 	double pin1x = 0.0, pin1y = 0.0;
 	int pin_cnt;
 	time_t currenttime;
 	FILE *fp;
-	char *name, *descr, *value, *fixed_rotation;
 	int pinfound[MAXREFPINS];
 	double pinx[MAXREFPINS];
 	double piny[MAXREFPINS];
@@ -209,6 +252,8 @@ static int PrintXY(void)
 		pcb_gui->log("Cannot open file %s for writing\n", xy_filename);
 		return 1;
 	}
+
+	ctx.theta = 0;
 
 	/* Create a portable timestamp. */
 	currenttime = time(NULL);
@@ -287,18 +332,18 @@ static int PrintXY(void)
 			centroidy = sumy / (double) pin_cnt;
 
 			if (PCB_NSTRCMP(pcb_attribute_get(&element->Attributes, "xy-centre"), "origin") == 0) {
-				x = element->MarkX;
-				y = element->MarkY;
+				ctx.x = element->MarkX;
+				ctx.y = element->MarkY;
 			}
 			else {
-				x = centroidx;
-				y = centroidy;
+				ctx.x = centroidx;
+				ctx.y = centroidy;
 			}
 
-			fixed_rotation = pcb_attribute_get(&element->Attributes, "xy-fixed-rotation");
-			if (fixed_rotation) {
+			ctx.fixed_rotation = pcb_attribute_get(&element->Attributes, "xy-fixed-rotation");
+			if (ctx.fixed_rotation) {
 				/* The user specified a fixed rotation */
-				theta = atof(fixed_rotation);
+				ctx.theta = atof(ctx.fixed_rotation);
 				found_any_not_at_centroid = 1;
 				found_any = 1;
 			}
@@ -306,15 +351,15 @@ static int PrintXY(void)
 				/* Find first reference pin not at the  centroid  */
 				found_any_not_at_centroid = 0;
 				found_any = 0;
-				theta = 0.0;
+				ctx.theta = 0.0;
 				for (rpindex = 0; reference_pin_names[rpindex] && !found_any_not_at_centroid; rpindex++) {
 					if (pinfound[rpindex]) {
 						found_any = 1;
 
 						/* Recenter pin "#1" onto the axis which cross at the part
 						   centroid */
-						pin1x = pinx[rpindex] - x;
-						pin1y = piny[rpindex] - y;
+						pin1x = pinx[rpindex] - ctx.x;
+						pin1y = piny[rpindex] - ctx.y;
 
 						/* flip x, to reverse rotation for elements on back */
 						if (PCB_FRONT(element) != 1)
@@ -322,11 +367,11 @@ static int PrintXY(void)
 
 						/* if only 1 pin, use pin 1's angle */
 						if (pin_cnt == 1) {
-							theta = pinangle[rpindex];
+							ctx.theta = pinangle[rpindex];
 							found_any_not_at_centroid = 1;
 						}
 						else if ((pin1x != 0.0) || (pin1y != 0.0)) {
-							theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
+							ctx.theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
 							found_any_not_at_centroid = 1;
 						}
 					}
@@ -336,28 +381,30 @@ static int PrintXY(void)
 					pcb_message
 						(PCB_MSG_WARNING, "PrintXY(): unable to figure out angle because I could\n"
 						 "     not find a suitable reference pin of element %s\n"
-						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
+						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), ctx.theta);
 				}
 				else if (!found_any_not_at_centroid) {
 					pcb_message
 						(PCB_MSG_WARNING, "PrintXY(): unable to figure out angle of element\n"
 						 "     %s because the reference pin(s) are at the centroid of the part.\n"
-						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
+						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), ctx.theta);
 				}
 			}
 		}
 
 
-		name = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
-		descr = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
-		value = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
+		ctx.name = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
+		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
+		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
 
-		y = PCB->MaxHeight - y;
-		pcb_fprintf(fp, "%m+%s,\"%s\",\"%s\",%mS,%.2mS,%g,%s\n",
-								xy_unit->allow, name, descr, value, x, y, theta, PCB_FRONT(element) == 1 ? "top" : "bottom");
-		free(name);
-		free(descr);
-		free(value);
+		ctx.y = PCB->MaxHeight - ctx.y;
+
+		ctx.element = element;
+		fprintf_templ(fp, &ctx, temp_elem);
+
+		free(ctx.name);
+		free(ctx.descr);
+		free(ctx.value);
 	}
 	PCB_END_LOOP;
 
