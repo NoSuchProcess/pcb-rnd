@@ -28,6 +28,16 @@ extern char *CleanBOMString(const char *in);
 
 const char *xy_cookie = "bom HID";
 
+static const char *format_names[] = {
+#define FORMAT_XY 0
+	"pcb xy",
+#define FORMAT_GXYRS 1
+	"microfab's gxyrs",
+	NULL
+};
+
+
+
 static pcb_hid_attribute_t xy_options[] = {
 /* %start-doc options "8 XY Creation"
 @ftable @code
@@ -53,6 +63,9 @@ Unit of XY dimensions. Defaults to mil.
 	{"xy-in-mm", ATTR_UNDOCUMENTED,
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xymm 2
+	{"format", "file format (template)",
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, format_names, 0},
+#define HA_format 3
 };
 
 #define NUM_OPTIONS (sizeof(xy_options)/sizeof(xy_options[0]))
@@ -427,8 +440,6 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 	template_t templ;
 
 	memset(&templ, 0, sizeof(templ));
-	templ.hdr = templ_xy_hdr;
-	templ.elem = templ_xy_elem;
 
 	if (!options) {
 		xy_get_export_options(0);
@@ -446,6 +457,20 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 			: get_unit_struct("mil");
 	else
 		xy_unit = &get_unit_list()[options[HA_unit].int_value];
+
+
+	switch(options[HA_format].int_value) {
+		case FORMAT_XY:
+			templ.hdr = templ_xy_hdr;
+			templ.elem = templ_xy_elem;
+			break;
+		case FORMAT_GXYRS:
+			break;
+		default:
+			pcb_message(PCB_MSG_ERROR, "Invalid format\n");
+			return;
+	}
+
 	PrintXY(&templ);
 }
 
