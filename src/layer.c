@@ -620,8 +620,14 @@ pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 	return NULL;
 }
 
-void pcb_layer_link_trees(pcb_layer_t *dst, const pcb_layer_t *src)
+void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 {
+	/* we can't link non-existing trees - make sure src does have the trees initialized */
+	if (src->line_tree == NULL) src->line_tree = pcb_r_create_tree(NULL, 0, 0);
+	if (src->text_tree == NULL) src->text_tree = pcb_r_create_tree(NULL, 0, 0);
+	if (src->polygon_tree == NULL) src->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+	if (src->subc_tree == NULL) src->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+
 	dst->line_tree = src->line_tree;
 	dst->text_tree = src->text_tree;
 	dst->polygon_tree = src->polygon_tree;
