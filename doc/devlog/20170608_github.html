@@ -1,0 +1,66 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> How github promotes confusion </H2>
+
+Pcb-rnd is hosted in an svn repository (at svn://repo.hu/pcb-rnd) -
+<b>there is no official git or hg or bazaar repository</b>. As
+it is free software, people are encouraged to make and distribute copies.
+Majority of the cases such behaviour is benefical for users: e.g. when
+a linux distro packages pcb-rnd, helping its users to run it or even
+when an user makes a mirror repository, clearly marked as a mirror.
+<p>
+I also encourage everyone who doesn't like the ways of pcb-rnd but does
+like the code, to fork the project: copy the repository or the code,
+rename it, make whatever modification and publish it.
+<p>
+There is only one use pattern I find harmful: when someone makes a
+fork, clone or mirror without clearly marking it being a copy. Unfortunately
+this has happened on github and gitlab: an user cloned a very old
+version of pcb-rnd and called it simply pcb-rnd. This matters because
+popular web search engines assign high scores to projects hosted on
+github. A potential user who hears about pcb-rnd not from us (the dev team),
+will not know the URL of the project and will use a web search, which then
+promotes github from where he will pull and old version. He may later read
+the doc and figure it's just a random copy of an old version, and go
+and get the latest from the official site, but the point is:
+<ul>
+	<li> he has wasted some time on the wrong version
+	<li> other than being a "honey pot" for unlucky users, such an old copy does not have any benefit for the users or developers
+	<li> the only potential winner of such a deal is github, harvesting some more clicks
+</ul>
+<p>
+But the real lesson learned for me was not this, but how github is not
+motivated in avoiding such confusion.
+<p>
+I first tried to contact the author; github is not helping much in that: there's
+no contact info for the user, not even a captcha-protected email or
+"send a message" form. I'd expect such a service was designed to help
+people work together, which does include contacting others. 
+<p>
+So I went on and found the problematic user's email from other sources.
+I tried to contact him a few times but he ignored my attempts.
+<p>
+After seeing an actual user getting confused on the said github project, I
+decided to contact github and see if they are willing to help in renaming the
+repository to avoid confusion. Well, they are not. I got an answer from the
+support that made it clear they did not even read the request, just copied
+some stock answer. After getting through that layer,they said I should file
+a DMCA takedown request; I asked them whether they think it would apply in case
+of GPL projects but they said they can't answer that and I should consult a
+lawyer! But after reading their own material on DMCA it's pretty clear they
+would simply do nothing even if the said user actually commited copyright
+infirgment.
+<p>
+So my conclusion is: if you ever want to get a project hosted, <b>do NOT
+choose github</b>, becuse:
+<ul>
+	<li> the support doesn't help at all (they don't even read what you write, just send some semi-automatic answer first)
+	<li> they are not really interested in serving the community or the users, but in being the biggest, getting the most clicks - if the path to that is maintaining confusion, that's fine for them
+	<li> they don't seem to care much about users who are not registered or not wanting to do pull requests - to an extent that contacting authors is pretty much impossible as an "outsider"
+</ul>
+Looking at gitlab, I see similar tendencies. Repo.or.cz looks a bit better,
+at least there the owner of a repo has an email address.
+<p>
+(All the above is obviously my personal opinion based on my personal experience.)
