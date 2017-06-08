@@ -1,0 +1,16 @@
+# $Id$
+# PcbXY Version 1.0
+# Date: <date>
+# Author: 
+# Title: Rotated round cap and square pads - PCB X-Y
+# RefDes, Description, Value, X, Y, rotation, top/bottom
+# X,Y in mil.  rotation in degrees.
+# --------------------------------------------
+(unknown),"(unknown)","(unknown)",87.50,450.00,0,top
+(unknown),"(unknown)","(unknown)",50.00,337.50,-90,top
+(unknown),"(unknown)","(unknown)",237.50,450.00,0,top
+(unknown),"(unknown)","(unknown)",50.00,187.50,-90,top
+(unknown),"(unknown)","(unknown)",151.51,323.49,-45,top
+(unknown),"(unknown)","(unknown)",251.51,323.49,-45,top
+(unknown),"(unknown)","(unknown)",159.72,185.82,-22.2185,top
+(unknown),"(unknown)","(unknown)",309.71,185.82,-22.2185,top
