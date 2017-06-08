@@ -64,7 +64,6 @@
 #define VIOLATION_PIXMAP_PCB_SIZE     PCB_MIL_TO_COORD (100)
 
 static GtkWidget *drc_window, *drc_vbox;
-static GtkListStore *drc_list_model = NULL;
 static int num_violations = 0;
 
 /* Remember user window resizes. */
@@ -96,13 +95,6 @@ static void drc_destroy_cb(GtkWidget * widget, gpointer data)
 {
 	drc_window = NULL;
 }
-
-enum {
-	DRC_VIOLATION_NUM_COL = 0,
-	DRC_VIOLATION_OBJ_COL,
-	NUM_DRC_COLUMNS
-};
-
 
 static void unset_found_flags(int AndDraw)
 {
@@ -462,31 +454,6 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation)
 																					 "object-list", &obj_list, NULL);
 }
 
-enum {
-	PROP_VIOLATION = 1,
-};
-
-
-static GObjectClass *ghid_violation_renderer_parent_class = NULL;
-
-/*! \brief GObject finalise handler
- *
- *  \par Function Description
- *  Just before the GhidViolationRenderer GObject is finalized, free our
- *  allocated data, and then chain up to the parent's finalize handler.
- *
- *  \param [in] widget  The GObject being finalized.
- */
-static void ghid_violation_renderer_finalize(GObject * object)
-{
-	GhidViolationRenderer *renderer = GHID_VIOLATION_RENDERER(object);
-
-	if (renderer->violation != NULL)
-		g_object_unref(renderer->violation);
-
-	G_OBJECT_CLASS(ghid_violation_renderer_parent_class)->finalize(object);
-}
-
 /** Returns the DRC text string using markup feature. Should be freed with free() */
 static char *get_drc_violation_markup(GhidDrcViolation * violation)
 {
@@ -518,138 +485,9 @@ static char *get_drc_violation_markup(GhidDrcViolation * violation)
 	return markup;
 }
 
-/*! \brief GObject property setter function
- *
- *  \par Function Description
- *  Setter function for GhidViolationRenderer's GObject properties,
- *  "settings-name" and "toplevel".
- *
- *  \param [in]  object       The GObject whose properties we are setting
- *  \param [in]  property_id  The numeric id. under which the property was
- *                            registered with g_object_class_install_property()
- *  \param [in]  value        The GValue the property is being set from
- *  \param [in]  pspec        A GParamSpec describing the property being set
- */
-static void ghid_violation_renderer_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
-{
-	GhidViolationRenderer *renderer = GHID_VIOLATION_RENDERER(object);
-	char *markup;
-
-	switch (property_id) {
-	case PROP_VIOLATION:
-		if (renderer->violation != NULL)
-			g_object_unref(renderer->violation);
-		renderer->violation = (GhidDrcViolation *) g_value_dup_object(value);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
-		return;
-	}
-
-	if (renderer->violation == NULL)
-		return;
-
-	markup = get_drc_violation_markup(renderer->violation);
-	g_object_set(object, "markup", markup, NULL);
-	free(markup);
-}
-
-/*! \brief GObject property getter function
- *
- *  \par Function Description
- *  Getter function for GhidViolationRenderer's GObject properties.
- *
- *  \param [in]  object       The GObject whose properties we are getting
- *  \param [in]  property_id  The numeric id. under which the property was
- *                            registered with g_object_class_install_property()
- *  \param [out] value        The GValue in which to return the value of the property
- *  \param [in]  pspec        A GParamSpec describing the property being got
- */
-static void ghid_violation_renderer_get_property(GObject * object, guint property_id, GValue * value, GParamSpec * pspec)
-{
-	switch (property_id) {
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
-	}
-
-}
-
-static void
-ghid_violation_renderer_get_size(GtkCellRenderer * cell,
-																 GtkWidget * widget,
-																 GdkRectangle * cell_area, gint * x_offset, gint * y_offset, gint * width, gint * height)
-{
-	GTK_CELL_RENDERER_CLASS(ghid_violation_renderer_parent_class)->get_size(cell,
-																																					widget, cell_area, x_offset, y_offset, width, height);
-	if (width != NULL)
-		*width += VIOLATION_PIXMAP_PIXEL_SIZE;
-	if (height != NULL)
-		*height = MAX(*height, VIOLATION_PIXMAP_PIXEL_SIZE);
-}
-
-/*! \brief GType class initialiser for GhidViolationRenderer
- *
- *  \par Function Description
- *  GType class initialiser for GhidViolationRenderer. We override our parent
- *  virtual class methods as needed and register our GObject properties.
- *
- *  \param [in]  klass       The GhidViolationRendererClass we are initialising
- */
-static void ghid_violation_renderer_class_init(GhidViolationRendererClass * klass)
-{
-	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
-	GtkCellRendererClass *cellrenderer_class = GTK_CELL_RENDERER_CLASS(klass);
-
-	gobject_class->finalize = ghid_violation_renderer_finalize;
-	gobject_class->set_property = ghid_violation_renderer_set_property;
-	gobject_class->get_property = ghid_violation_renderer_get_property;
-
-	cellrenderer_class->get_size = ghid_violation_renderer_get_size;
-
-	ghid_violation_renderer_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
-
-	g_object_class_install_property(gobject_class, PROP_VIOLATION,
-																	g_param_spec_object("violation", "", "", GHID_TYPE_DRC_VIOLATION, G_PARAM_WRITABLE));
-}
-
-/*! \brief Function to retrieve GhidViolationRenderer's GType identifier.
- *
- *  \par Function Description
- *  Function to retrieve GhidViolationRenderer's GType identifier.
- *  Upon first call, this registers the GhidViolationRenderer in the GType system.
- *  Subsequently it returns the saved value from its first execution.
- *
- *  \return the GType identifier associated with GhidViolationRenderer.
- */
-GType ghid_violation_renderer_get_type()
-{
-	static GType ghid_violation_renderer_type = 0;
-
-	if (!ghid_violation_renderer_type) {
-		static const GTypeInfo ghid_violation_renderer_info = {
-			sizeof(GhidViolationRendererClass),
-			NULL,											/* base_init */
-			NULL,											/* base_finalize */
-			(GClassInitFunc) ghid_violation_renderer_class_init,
-			NULL,											/* class_finalize */
-			NULL,											/* class_data */
-			sizeof(GhidViolationRenderer),
-			0,												/* n_preallocs */
-			NULL,											/* instance_init */
-		};
-
-		ghid_violation_renderer_type =
-			g_type_register_static(GTK_TYPE_CELL_RENDERER_TEXT, "GhidViolationRenderer",
-														 &ghid_violation_renderer_info, (GTypeFlags) 0);
-	}
-
-	return ghid_violation_renderer_type;
-}
-
 void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 {
 	GtkWidget *vbox, *hbox, *button, *scrolled_window, *label;
-	//GtkCellRenderer *violation_renderer;
 
 	if (drc_window) {
 		if (raise)
@@ -668,9 +506,6 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	gtk_container_add(GTK_CONTAINER(drc_window), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_box_set_spacing(GTK_BOX(vbox), 6);
-
-	drc_list_model = gtk_list_store_new(NUM_DRC_COLUMNS, G_TYPE_INT,	/* DRC_VIOLATION_NUM_COL */
-																			G_TYPE_OBJECT);	/* DRC_VIOLATION_OBJ_COL */
 
 	/* V/Hbox mechanism */
 	hbox = gtkc_hbox_new(FALSE, 0);
@@ -711,7 +546,6 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violation_t * violation)
 {
 	GhidDrcViolation *violation_obj;
-	GtkTreeIter iter;
 	GtkWidget *hbox, *label;
 	GtkWidget *event_box;
 	char number[8];								/* if there is more than a million DRC errors ... change this ! */
@@ -754,17 +588,10 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	gtk_box_pack_start(GTK_BOX(hbox), preview, FALSE, FALSE, VIOLATION_PIXMAP_PIXEL_BORDER);
 
 	gtk_widget_show_all(event_box);
-
-	gtk_list_store_append(drc_list_model, &iter);
-	gtk_list_store_set(drc_list_model, &iter, DRC_VIOLATION_NUM_COL, num_violations, DRC_VIOLATION_OBJ_COL, violation_obj, -1);
-
-	g_object_unref(violation_obj);	/* The list store takes its own reference */
 }
 
 void ghid_drc_window_reset_message(void)
 {
-	if (drc_list_model != NULL)
-		gtk_list_store_clear(drc_list_model);
 	num_violations = 0;
 }
 
