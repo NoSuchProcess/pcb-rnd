@@ -35,6 +35,8 @@ static const char *format_names[] = {
 	"microfab's gxyrs",
 #define FORMAT_TM220TM240 2
 	"TM220/TM240 format",
+#define FORMAT_KICADPOS 3
+	"KiCad .pos format",
 	NULL
 };
 
@@ -473,6 +475,10 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 		case FORMAT_TM220TM240:
 			templ.hdr = templ_TM220TM240_hdr;
 			templ.elem = templ_TM220TM240_elem;
+			break;
+		case FORMAT_KICADPOS:
+			templ.hdr = templ_KICADPOS_hdr;
+			templ.elem = templ_KICADPOS_elem;
 			break;
 		default:
 			pcb_message(PCB_MSG_ERROR, "Invalid format\n");

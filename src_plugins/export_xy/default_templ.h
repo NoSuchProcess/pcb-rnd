@@ -36,3 +36,12 @@ static const char *templ_TM220TM240_hdr =
 
 static const char *templ_TM220TM240_elem =
 	"%elem.name%,%elem.side%,%elem.x%,%elem.y%,%elem.rot%\n";
+
+static const char *templ_KICADPOS_hdr =
+        "###pcb-rnd KiCad .pos compatible xyrs version 1.0\n"
+        "###Date: %UTC%, Author: %author%, Title: %title% - pcb-rnd gxyrs\n"
+        "## Unit = %suffix%., Angle = degrees.\n"
+        "#, Ref, Val, Package, PosX, PosY, Rot, Side\n";
+
+static const char *templ_KICADPOS_elem =
+        ",%elem.name%,\"%elem.value%\",%elem.descr%,%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
