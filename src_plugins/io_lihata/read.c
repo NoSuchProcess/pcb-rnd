@@ -560,12 +560,19 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	ly->meta.real.name = pcb_strdup(grp->name);
 	ly->parent = dt;
 
-	parse_bool(&ly->meta.real.vis, lht_dom_hash_get(grp, "visible"));
-	if (pcb != NULL) {
-		int grp_id;
-		parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
-		dt->Layer[layer_id].grp = grp_id;
-/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->meta.real.name, grp_id);*/
+	if (bound) {
+		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
+		
+	}
+	else {
+		/* real */
+		parse_bool(&ly->meta.real.vis, lht_dom_hash_get(grp, "visible"));
+		if (pcb != NULL) {
+			int grp_id;
+			parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
+			dt->Layer[layer_id].grp = grp_id;
+	/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->meta.real.name, grp_id);*/
+		}
 	}
 
 	ncmb = lht_dom_hash_get(grp, "combining");
