@@ -33,8 +33,8 @@ static const char *format_names[] = {
 	"pcb xy",
 #define FORMAT_GXYRS 1
 	"microfab's gxyrs",
-#define FORMAT_TM220A 2
-	"TM220A format",
+#define FORMAT_TM220TM240 2
+	"TM220/TM240 format",
 	NULL
 };
 
@@ -470,9 +470,9 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 			templ.hdr = templ_gxyrs_hdr;
 			templ.elem = templ_gxyrs_elem;
 			break;
-		case FORMAT_TM220A:
-			templ.hdr = templ_TM220A_hdr;
-			templ.elem = templ_TM220A_elem;
+		case FORMAT_TM220TM240:
+			templ.hdr = templ_TM220TM240_hdr;
+			templ.elem = templ_TM220TM240_elem;
 			break;
 		default:
 			pcb_message(PCB_MSG_ERROR, "Invalid format\n");

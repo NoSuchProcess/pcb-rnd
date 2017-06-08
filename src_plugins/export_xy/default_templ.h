@@ -24,8 +24,8 @@ static const char *templ_gxyrs_hdr =
 static const char *templ_gxyrs_elem =
 	"%elem.name%,%elem.x%,%elem.y%,%elem.rot%,%elem.side%,\"%elem.value%\",%elem.descr%\n";
 
-static const char *templ_TM220A_hdr = 
-	"#pcb-rnd TM220A xyrs version 1.0\n"
+static const char *templ_TM220TM240_hdr = 
+	"#pcb-rnd TM220A/TM240A xyrs version 1.0\n"
 	"#Date: %UTC%\n"
 	"#Author: %author%\n"
 	"#Title: %title% - pcb-rnd gxyrs\n"
@@ -34,5 +34,5 @@ static const char *templ_TM220A_hdr =
 	"# X,Y in %suffix%.  rotation in degrees.\n"
         "# --------------------------------------------\n";
 
-static const char *templ_TM220A_elem =
+static const char *templ_TM220TM240_elem =
 	"%elem.name%,%elem.side%,%elem.x%,%elem.y%,%elem.rot%\n";
