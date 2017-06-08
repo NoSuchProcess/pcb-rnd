@@ -1,7 +1,5 @@
 Ready to blog:
-- fp_board
-- bitmap -> silkscreen insertion dialogue - bitmap() (another chance to spam edakrill)
-- Ade's route stuff, current state, with video
+- xyrs template based exporter, once x,y dimension working
 
 less urgent, almost finished:
 - braille font
