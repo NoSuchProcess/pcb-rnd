@@ -548,6 +548,24 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	return 0;
 }
 
+static int parse_layer_type(pcb_layer_type_t *dst, lht_node_t *nd, const char *loc)
+{
+	lht_node_t *flg;
+	lht_dom_iterator_t itt;
+
+	if (nd == NULL)
+		return -1;
+
+	for(flg = lht_dom_first(&itt, nd); flg != NULL; flg = lht_dom_next(&itt)) {
+		pcb_layer_type_t val = pcb_layer_type_str2bit(flg->name);
+		if (val == 0)
+			pcb_message(PCB_MSG_ERROR, "Invalid type name: '%s' in %s (ignoring the type flag)\n", flg->name, loc);
+		*dst |= val;
+	}
+
+	return 0;
+}
+
 static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, int bound)
 {
 	lht_node_t *n, *lst, *ncmb;
@@ -562,7 +580,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 
 	if (bound) {
 		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
-		
+		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, lht_dom_hash_get(grp, "type"), "bound layer");
 	}
 	else {
 		/* real */
@@ -830,7 +848,7 @@ static void layer_fixup(pcb_board_t *pcb)
 
 static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 {
-	lht_node_t *grps, *grp, *name, *type, *flg, *layers, *lyr;
+	lht_node_t *grps, *grp, *name, *layers, *lyr;
 	lht_dom_iterator_t it, itt;
 	long int n;
 
@@ -860,7 +878,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			pcb->LayerGroups.len = gid+1;
 		g->valid = 1;
 
-		/* set name */
+		/* set name and type*/
 		name = lht_dom_hash_get(grp, "name");
 		if ((name == NULL) || (name->type != LHT_TEXT) || (name->data.text.value == NULL)) {
 			g->name = malloc(32);
@@ -868,17 +886,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		}
 		else
 			g->name = pcb_strdup(name->data.text.value);
-
-		/* set type flags */
-		type = lht_dom_hash_get(grp, "type");
-		if (type != NULL) {
-			for(flg = lht_dom_first(&itt, type); flg != NULL; flg = lht_dom_next(&itt)) {
-				pcb_layer_type_t val = pcb_layer_type_str2bit(flg->name);
-				if (val == 0)
-					pcb_message(PCB_MSG_ERROR, "Invalid type name: '%s' in group '%s' (ignoring the type flag)\n", flg->name, g->name);
-				g->type |= val;
-			}
-		}
+		parse_layer_type(&g->type, lht_dom_hash_get(grp, "type"), g->name);
 
 		/* load layers */
 		layers = lht_dom_hash_get(grp, "layers");
