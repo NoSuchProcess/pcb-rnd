@@ -50,7 +50,7 @@
 vtptr_t post_ids, post_thermal;
 static int rdver;
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd);
+static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, int bound_layers);
 
 
 /* Collect objects that has unknown ID on a list. Once all objects with
@@ -548,7 +548,7 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id)
+static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, int bound)
 {
 	lht_node_t *n, *lst, *ncmb;
 	lht_dom_iterator_t it;
@@ -605,7 +605,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	return 0;
 }
 
-static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp)
+static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int bound_layers)
 {
 	int id;
 	lht_node_t *n;
@@ -613,7 +613,7 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp)
 
 	for(id = 0, n = lht_dom_first(&it, grp); n != NULL; id++, n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			parse_data_layer(pcb, dt, n, id);
+			parse_data_layer(pcb, dt, n, id, bound_layers);
 
 	return 0;
 }
@@ -740,7 +740,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	parse_id(&sc->ID, obj, 5);
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
-	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"));
+	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"), 1);
 	return 0;
 }
 
@@ -897,7 +897,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
+static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, int bound_layers)
 {
 	pcb_data_t *dt;
 	lht_node_t *grp;
@@ -910,7 +910,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
-		parse_data_layers(pcb, dt, grp);
+		parse_data_layers(pcb, dt, grp, bound_layers);
 
 	if (rdver == 1)
 		layer_fixup(pcb);
@@ -1239,7 +1239,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((parse_data(pcb, sub)) == NULL))
+	if ((sub != NULL) && ((parse_data(pcb, sub, 0)) == NULL))
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "styles");
