@@ -772,6 +772,9 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
 	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"), 1);
+
+	pcb_add_subc_to_data(dt, sc);
+
 	return 0;
 }
 
