@@ -40,7 +40,7 @@ Name of the XY output file.
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xyfile 0
 
-/* %start-doc options "8 BOM Creation"
+/* %start-doc options "8 XY Creation"
 @ftable @code
 @item --xy-unit <unit>
 Unit of XY dimensions. Defaults to mil.
@@ -334,13 +334,13 @@ static int PrintXY(void)
 
 				if (!found_any) {
 					pcb_message
-						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle because I could\n"
+						(PCB_MSG_WARNING, "PrintXY(): unable to figure out angle because I could\n"
 						 "     not find a suitable reference pin of element %s\n"
 						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 				}
 				else if (!found_any_not_at_centroid) {
 					pcb_message
-						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle of element\n"
+						(PCB_MSG_WARNING, "PrintXY(): unable to figure out angle of element\n"
 						 "     %s because the reference pin(s) are at the centroid of the part.\n"
 						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 				}
