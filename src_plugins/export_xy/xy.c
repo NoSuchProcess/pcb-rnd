@@ -168,6 +168,13 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	return -1;
 }
 
+static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
+{
+	char *tmp = pcb_strdup_subst(templ, subst_cb, ctx);
+	fprintf(f, "%s", tmp);
+	free(tmp);
+}
+
 static const char *temp_hdr =
 	"# $Id$\n"
 	"# PcbXY Version 1.0\n"
@@ -180,7 +187,6 @@ static const char *temp_hdr =
 
 static int PrintXY(void)
 {
-	char *tmp;
 	pcb_coord_t x, y;
 	double theta = 0.0;
 	double sumx, sumy;
@@ -212,9 +218,7 @@ static int PrintXY(void)
 		strftime(ctx.utcTime, sizeof(ctx.utcTime), fmt, gmtime(&currenttime));
 	}
 
-	tmp = pcb_strdup_subst(temp_hdr, subst_cb, &ctx);
-	fprintf(fp, "%s", tmp);
-	free(tmp);
+	fprintf_templ(fp, &ctx, temp_hdr);
 
 
 	/*
