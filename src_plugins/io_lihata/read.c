@@ -50,6 +50,9 @@
 vtptr_t post_ids, post_thermal;
 static int rdver;
 
+static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd);
+
+
 /* Collect objects that has unknown ID on a list. Once all objects with
    known-IDs are allocated, the unknonw-ID objects are allocated a fresh
    ID. This makes sure they don't occupy IDs that would be used by known-ID
@@ -730,6 +733,18 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
+static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
+{
+	pcb_subc_t *sc = pcb_subc_alloc(dt);
+
+	parse_id(&sc->ID, obj, 5);
+	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
+	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
+	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"));
+	return 0;
+}
+
+
 static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_node_t *grp)
 {
 	lht_node_t *n;
@@ -1192,6 +1207,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	switch(rdver) {
 		case 1: loader = &plug_io_lihata_v1; break;
 		case 2: loader = &plug_io_lihata_v2; break;
+		case 3: loader = &plug_io_lihata_v3; break;
 		default:
 			pcb_message(PCB_MSG_ERROR, "Lihata board version %d not supported; must be 1 or 2.\n", rdver);
 			return -1;
