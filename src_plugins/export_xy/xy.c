@@ -213,12 +213,14 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 
 static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 {
-	char *tmp = pcb_strdup_subst(templ, subst_cb, ctx);
-	fprintf(f, "%s", tmp);
-	free(tmp);
+	if (templ != NULL) {
+		char *tmp = pcb_strdup_subst(templ, subst_cb, ctx);
+		fprintf(f, "%s", tmp);
+		free(tmp);
+	}
 }
 
-static const char *temp_hdr =
+static const char *templ_hdr =
 	"# $Id$\n"
 	"# PcbXY Version 1.0\n"
 	"# Date: %UTC%\n"
@@ -228,8 +230,12 @@ static const char *temp_hdr =
 	"# X,Y in %suffix%.  rotation in degrees.\n"
 	"# --------------------------------------------\n";
 
-static const char *temp_elem =
+static const char *templ_elem =
 	"%elem.name%,\"%elem.descr%\",\"%elem.value%\",%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
+
+static const char *templ_pad = NULL;
+
+static const char *templ_foot = NULL;
 
 static int PrintXY(void)
 {
@@ -263,7 +269,7 @@ static int PrintXY(void)
 		strftime(ctx.utcTime, sizeof(ctx.utcTime), fmt, gmtime(&currenttime));
 	}
 
-	fprintf_templ(fp, &ctx, temp_hdr);
+	fprintf_templ(fp, &ctx, templ_hdr);
 
 
 	/*
@@ -400,13 +406,26 @@ static int PrintXY(void)
 		ctx.y = PCB->MaxHeight - ctx.y;
 
 		ctx.element = element;
-		fprintf_templ(fp, &ctx, temp_elem);
+		fprintf_templ(fp, &ctx, templ_elem);
+		PCB_PIN_LOOP(element);
+		{
+			fprintf_templ(fp, &ctx, templ_pad);
+		}
+		PCB_END_LOOP;
+
+		PCB_PAD_LOOP(element);
+		{
+			fprintf_templ(fp, &ctx, templ_pad);
+		}
+		PCB_END_LOOP;
 
 		free(ctx.name);
 		free(ctx.descr);
 		free(ctx.value);
 	}
 	PCB_END_LOOP;
+
+	fprintf_templ(fp, &ctx, templ_foot);
 
 	fclose(fp);
 
