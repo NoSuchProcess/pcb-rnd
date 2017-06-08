@@ -760,6 +760,8 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 			parse_rat(dt, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
 			parse_element(pcb_for_font, dt, n);
+		else if (strncmp(n->name, "subc.", 5) == 0)
+			parse_subc(pcb_for_font, dt, n);
 	}
 
 	return 0;
