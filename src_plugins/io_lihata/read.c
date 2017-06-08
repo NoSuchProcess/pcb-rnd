@@ -581,6 +581,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	if (bound) {
 		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
 		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, lht_dom_hash_get(grp, "type"), "bound layer");
+		dt->Layer[layer_id].meta.bound.real = pcb_layer_resolve_binding(pcb, &dt->Layer[layer_id]);
 	}
 	else {
 		/* real */
@@ -923,7 +924,8 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, int bound_layers
 		return NULL;
 
 	dt = pcb_buffer_new(pcb);
-	pcb->Data = dt;
+	if (!bound_layers)
+		pcb->Data = dt;
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
