@@ -615,6 +615,7 @@ SearchSubcByLocation(int locked, pcb_subc_t **subc, pcb_subc_t ** Dummy1, pcb_su
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	if (pcb_r_search(PCB->Data->subc_tree, &SearchBox, NULL, subc_callback, &info, NULL))
 		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
