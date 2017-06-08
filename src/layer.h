@@ -105,7 +105,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 	/* for bound layers these point to the board layer's*/
 	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
-	pcb_rtree_t *subc_tree;        /* TODO: decide whether this lists subcircuits or parts of subcircuits */
 
 	union {
 		struct { /* A real board layer */
