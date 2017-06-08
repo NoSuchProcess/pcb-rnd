@@ -43,6 +43,12 @@ pcb_subc_t *pcb_subc_alloc(void)
 	return sc;
 }
 
+void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
+{
+	PCB_SET_PARENT(sc->data, data, dt);
+	pcb_subclist_append(&dt->subc, sc);
+}
+
 static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 {
 	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
@@ -60,8 +66,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	int n;
 
 	sc = pcb_subc_alloc();
-	PCB_SET_PARENT(sc->data, data, buffer->Data);
-	pcb_subclist_append(&buffer->Data->subc, sc);
+	pcb_add_subc_to_data(buffer->Data, sc);
 
 	/* create layer matches and copy objects */
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
