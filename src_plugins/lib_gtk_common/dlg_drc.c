@@ -63,7 +63,7 @@
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5
 #define VIOLATION_PIXMAP_PCB_SIZE     PCB_MIL_TO_COORD (100)
 
-static GtkWidget *drc_window, *drc_list, *drc_vbox;
+static GtkWidget *drc_window, *drc_vbox;
 static GtkListStore *drc_list_model = NULL;
 static int num_violations = 0;
 
@@ -190,72 +190,6 @@ static void unset_found_flags(int AndDraw)
 			pcb_draw();
 		}
 	}
-}
-
-static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_data)
-{
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	GhidDrcViolation *violation;
-	int i;
-
-	if (!gtk_tree_selection_get_selected(selection, &model, &iter)) {
-		unset_found_flags(pcb_true);
-		return;
-	}
-
-	/* Check the selected node has children, if so; return. */
-	if (gtk_tree_model_iter_has_child(model, &iter))
-		return;
-
-	gtk_tree_model_get(model, &iter, DRC_VIOLATION_OBJ_COL, &violation, -1);
-
-	unset_found_flags(pcb_false);
-
-	if (violation == NULL)
-		return;
-
-	/* Flag the objects listed against this DRC violation */
-	for (i = 0; i < violation->object_count; i++) {
-		int object_id = violation->object_id_list[i];
-		int object_type = violation->object_type_list[i];
-		int found_type;
-		void *ptr1, *ptr2, *ptr3;
-
-		found_type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
-		if (found_type == PCB_TYPE_NONE) {
-			pcb_message(PCB_MSG_WARNING, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
-			continue;
-		}
-		pcb_undo_add_obj_to_flag(object_type, ptr1, ptr2, ptr3);
-		PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
-		switch (violation->object_type_list[i]) {
-		case PCB_TYPE_LINE:
-		case PCB_TYPE_ARC:
-		case PCB_TYPE_POLYGON:
-			pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
-		}
-		pcb_draw_obj(object_type, ptr1, ptr2);
-	}
-	pcb_board_set_changed_flag(pcb_true);
-	pcb_undo_inc_serial();
-	pcb_draw();
-}
-
-static void row_activated_cb(GtkTreeView * view, GtkTreePath * path, GtkTreeViewColumn * column, gpointer user_data)
-{
-	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkTreeIter iter;
-	GhidDrcViolation *violation;
-
-	gtk_tree_model_get_iter(model, &iter, path);
-
-	gtk_tree_model_get(model, &iter, DRC_VIOLATION_OBJ_COL, &violation, -1);
-
-	if (violation == NULL)
-		return;
-
-	pcb_center_display(violation->x_coord, violation->y_coord);
 }
 
 /** A (*GtkCallback) function */
@@ -712,28 +646,10 @@ GType ghid_violation_renderer_get_type()
 	return ghid_violation_renderer_type;
 }
 
-/*! \brief Convenience function to create a new violation renderer
- *
- *  \par Function Description
- *  Convenience function which creates a GhidViolationRenderer.
- *
- *  \return  The GhidViolationRenderer created.
- */
-GtkCellRenderer *ghid_violation_renderer_new(pcb_gtk_common_t *common)
-{
-	GhidViolationRenderer *renderer;
-
-	renderer = (GhidViolationRenderer *) g_object_new(GHID_TYPE_VIOLATION_RENDERER, "ypad", 6, NULL);
-	renderer->common = common;
-
-	return GTK_CELL_RENDERER(renderer);
-}
-
-
 void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 {
 	GtkWidget *vbox, *hbox, *button, *scrolled_window, *label;
-	GtkCellRenderer *violation_renderer;
+	//GtkCellRenderer *violation_renderer;
 
 	if (drc_window) {
 		if (raise)
@@ -756,7 +672,7 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	drc_list_model = gtk_list_store_new(NUM_DRC_COLUMNS, G_TYPE_INT,	/* DRC_VIOLATION_NUM_COL */
 																			G_TYPE_OBJECT);	/* DRC_VIOLATION_OBJ_COL */
 
-	/* New mechanism */
+	/* V/Hbox mechanism */
 	hbox = gtkc_hbox_new(FALSE, 0);
 	label = gtk_label_new("No.   Violation details");
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -770,29 +686,6 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), drc_vbox);
-
-	/* Old mechanism */
-	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	//gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE /* EXPAND */ , TRUE /* FILL */ , 0 /* PADDING */ );
-
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-	drc_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(drc_list_model));
-	gtk_container_add(GTK_CONTAINER(scrolled_window), drc_list);
-
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(drc_list), TRUE);
-	g_signal_connect(gtk_tree_view_get_selection(GTK_TREE_VIEW(drc_list)), "changed", G_CALLBACK(selection_changed_cb), NULL);
-	g_signal_connect(drc_list, "row-activated", G_CALLBACK(row_activated_cb), NULL);
-
-	violation_renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(drc_list), -1,	/* APPEND */
-																							_("No."),	/* TITLE */
-																							violation_renderer, "text", DRC_VIOLATION_NUM_COL, NULL);
-
-	violation_renderer = ghid_violation_renderer_new(common);
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(drc_list), -1,	/* APPEND */
-																							_("Violation details"),	/* TITLE */
-																							violation_renderer, "violation", DRC_VIOLATION_OBJ_COL, NULL);
 
 	/* Dialog buttons */
 	hbox = gtk_hbutton_box_new();
@@ -823,10 +716,8 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	GtkWidget *event_box;
 	char number[8];								/* if there is more than a million DRC errors ... change this ! */
 	char *markup;
-	//pcb_gtk_preview_t *preview;
 	GtkWidget *preview;
 	int preview_size = VIOLATION_PIXMAP_PIXEL_SIZE - 2 * VIOLATION_PIXMAP_PIXEL_BORDER;
-	//GdkPixmap *pixmap;
 
 	/* Ensure the required structures are setup */
 	ghid_drc_window_show(common, FALSE);
@@ -835,7 +726,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 
 	violation_obj = ghid_drc_violation_new(violation);
 
-	/* New mechanism : Pack texts and preview in an horizontal box */
+	/* Pack texts and preview in an horizontal box (within an event box) */
 	hbox = gtkc_hbox_new(FALSE, 0);
 	event_box = gtk_event_box_new();
 	gtk_container_add(GTK_CONTAINER(event_box), hbox);
@@ -853,13 +744,6 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtkc_hbox_new(FALSE, 0), TRUE, TRUE, 0);
 
-	//pixmap = common->render_pixmap(violation_obj->x_coord,
-	//                               violation_obj->y_coord,
-	//                               VIOLATION_PIXMAP_PCB_SIZE / preview_size,
-	//                               preview_size, preview_size,
-	//                               gdk_drawable_get_depth(GDK_DRAWABLE(gtk_widget_get_window(common->top_window))));
-	//preview = gtk_image_new_from_pixmap(pixmap, NULL);
-	//preview = pcb_gtk_preview_new(common, common->init_drawing_widget, common->preview_expose, NULL);
 	preview = pcb_gtk_preview_board_new(common, common->init_drawing_widget, common->preview_expose);
 	gtk_widget_set_size_request(preview, preview_size, preview_size);
 	pcb_gtk_preview_board_zoomto(PCB_GTK_PREVIEW(preview),
