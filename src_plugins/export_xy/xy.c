@@ -233,11 +233,11 @@ static const char *templ_hdr =
 static const char *templ_elem =
 	"%elem.name%,\"%elem.descr%\",\"%elem.value%\",%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
 
-static const char *templ_pad = NULL;
+typedef struct {
+	const char *hdr, *elem, *pad, *foot;
+} template_t;
 
-static const char *templ_foot = NULL;
-
-static int PrintXY(void)
+static int PrintXY(const template_t *templ)
 {
 	double sumx, sumy;
 	double pin1x = 0.0, pin1y = 0.0;
@@ -269,7 +269,7 @@ static int PrintXY(void)
 		strftime(ctx.utcTime, sizeof(ctx.utcTime), fmt, gmtime(&currenttime));
 	}
 
-	fprintf_templ(fp, &ctx, templ_hdr);
+	fprintf_templ(fp, &ctx, templ->hdr);
 
 
 	/*
@@ -406,16 +406,16 @@ static int PrintXY(void)
 		ctx.y = PCB->MaxHeight - ctx.y;
 
 		ctx.element = element;
-		fprintf_templ(fp, &ctx, templ_elem);
+		fprintf_templ(fp, &ctx, templ->elem);
 		PCB_PIN_LOOP(element);
 		{
-			fprintf_templ(fp, &ctx, templ_pad);
+			fprintf_templ(fp, &ctx, templ->pad);
 		}
 		PCB_END_LOOP;
 
 		PCB_PAD_LOOP(element);
 		{
-			fprintf_templ(fp, &ctx, templ_pad);
+			fprintf_templ(fp, &ctx, templ->pad);
 		}
 		PCB_END_LOOP;
 
@@ -425,7 +425,7 @@ static int PrintXY(void)
 	}
 	PCB_END_LOOP;
 
-	fprintf_templ(fp, &ctx, templ_foot);
+	fprintf_templ(fp, &ctx, templ->foot);
 
 	fclose(fp);
 
@@ -435,6 +435,11 @@ static int PrintXY(void)
 static void xy_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
+	template_t templ;
+
+	memset(&templ, 0, sizeof(templ));
+	templ.hdr = templ_hdr;
+	templ.elem = templ_elem;
 
 	if (!options) {
 		xy_get_export_options(0);
@@ -452,7 +457,7 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 			: get_unit_struct("mil");
 	else
 		xy_unit = &get_unit_list()[options[HA_unit].int_value];
-	PrintXY();
+	PrintXY(&templ);
 }
 
 static int xy_usage(const char *topic)
