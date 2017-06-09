@@ -214,7 +214,7 @@ static void append_clean(gds_t *dst, const char *text)
 {
 	const char *s;
 	for(s = text; *s != '\0'; s++)
-		if (isalnum(*s))
+		if (isalnum(*s) || (*s == '.') || (*s == '-') || (*s == '+'))
 			gds_append(dst, *s);
 		else
 			gds_append(dst, '_');
