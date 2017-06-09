@@ -32,7 +32,7 @@ static const char *format_names[] = {
 #define FORMAT_XY 0
 	"pcb xy",
 #define FORMAT_GXYRS 1
-	"microfab's gxyrs",
+	"Macrofab's gxyrs",
 #define FORMAT_TM220TM240 2
 	"TM220/TM240 format",
 #define FORMAT_KICADPOS 3
