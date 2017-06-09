@@ -773,7 +773,13 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
 	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"), 1);
 
+	pcb_data_bbox(&sc->BoundingBox, sc->data);
+
 	pcb_add_subc_to_data(dt, sc);
+
+	if (!dt->subc_tree)
+		dt->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)sc, 0);
 
 	return 0;
 }
