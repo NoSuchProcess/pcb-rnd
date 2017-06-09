@@ -146,6 +146,7 @@ static double xyToAngle(double x, double y, pcb_bool morethan2pins)
 	}
 }
 
+
 /*
  * In order of preference.
  * Includes numbered and BGA pins.
@@ -160,7 +161,55 @@ typedef struct {
 	pcb_coord_t x, y;
 	double theta;
 	pcb_element_t *element;
+	pcb_coord_t pad_w, pad_h;
 } subst_ctx_t;
+
+static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element)
+{
+	pcb_box_t box, tmp;
+	box.X1 = box.Y1 = PCB_MAX_COORD;
+	box.X2 = box.Y2 = -PCB_MAX_COORD;
+
+	PCB_PIN_LOOP(element);
+	{
+		pcb_pin_copper_bbox(&tmp, pin);
+		pcb_box_bump_box(&box, &tmp);
+	}
+	PCB_END_LOOP;
+
+	PCB_PAD_LOOP(element);
+	{
+		pcb_pad_copper_bbox(&tmp, pad);
+		pcb_box_bump_box(&box, &tmp);
+	}
+	PCB_END_LOOP;
+
+	ctx->pad_w = box.X2 - box.X1;
+	ctx->pad_h = box.Y2 - box.Y1;
+}
+
+static void calc_pad_bbox(subst_ctx_t *ctx)
+{
+#if 0
+	/* this is what we would do if we wanted to return the pre-rotation state */
+	if ((ctx->theta == 0) || (ctx->theta == 180)) {
+		calc_pad_bbox_(ctx, ctx->element);
+		return;
+	}
+	if ((ctx->theta == 90) || (ctx->theta == 270)) {
+		pcb_coord_t tmp;
+		calc_pad_bbox_(ctx, ctx->element);
+		tmp = ctx->pad_w;
+		ctx->pad_w = ctx->pad_h;
+		ctx->pad_h = tmp;
+		return;
+	}
+	pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet\n");
+#endif
+
+	calc_pad_bbox_(ctx, ctx->element);
+}
+
 
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
@@ -223,6 +272,21 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "top" : "bottom");
 			return 0;
 		}
+		if (strncmp(*input, "pad_width%", 10) == 0) {
+			*input += 10;
+			if (ctx->pad_w == 0)
+				calc_pad_bbox(ctx);
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_w);
+			return 0;
+		}
+		if (strncmp(*input, "pad_height%", 11) == 0) {
+			*input += 11;
+			if (ctx->pad_h == 0)
+				calc_pad_bbox(ctx);
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_h);
+			return 0;
+		}
+
 	}
 
 	return -1;
@@ -287,6 +351,7 @@ static int PrintXY(const template_t *templ)
 		pin_cnt = 0;
 		sumx = 0.0;
 		sumy = 0.0;
+		ctx.pad_w = ctx.pad_h = 0;
 
 		/*
 		 * iterate over the pins and pads keeping a running count of how
