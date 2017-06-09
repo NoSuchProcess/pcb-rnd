@@ -44,4 +44,4 @@ static const char *templ_KICADPOS_hdr =
 	"#, Ref, Val, Package, PosX, PosY, Rot, Side\n";
 
 static const char *templ_KICADPOS_elem =
-	",%elem.name%,\"%elem.value%\",%elem.descr%,%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
+	",\"%elem.name%\",\"%elem.value%\",\"%elem.descr%\",%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
