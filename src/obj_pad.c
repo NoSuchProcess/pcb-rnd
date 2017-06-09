@@ -186,21 +186,21 @@ void pcb_pad_copper_bbox(pcb_box_t *out, pcb_pad_t *Pad)
 		bty = width * sin(theta + M_PI / 4) * sqrt(2.0);
 
 
-		Pad->BoundingBox.X1 = MIN(MIN(Pad->Point1.X - btx, Pad->Point1.X - bty), MIN(Pad->Point2.X + btx, Pad->Point2.X + bty));
-		Pad->BoundingBox.X2 = MAX(MAX(Pad->Point1.X - btx, Pad->Point1.X - bty), MAX(Pad->Point2.X + btx, Pad->Point2.X + bty));
-		Pad->BoundingBox.Y1 = MIN(MIN(Pad->Point1.Y + btx, Pad->Point1.Y - bty), MIN(Pad->Point2.Y - btx, Pad->Point2.Y + bty));
-		Pad->BoundingBox.Y2 = MAX(MAX(Pad->Point1.Y + btx, Pad->Point1.Y - bty), MAX(Pad->Point2.Y - btx, Pad->Point2.Y + bty));
+		out->X1 = MIN(MIN(Pad->Point1.X - btx, Pad->Point1.X - bty), MIN(Pad->Point2.X + btx, Pad->Point2.X + bty));
+		out->X2 = MAX(MAX(Pad->Point1.X - btx, Pad->Point1.X - bty), MAX(Pad->Point2.X + btx, Pad->Point2.X + bty));
+		out->Y1 = MIN(MIN(Pad->Point1.Y + btx, Pad->Point1.Y - bty), MIN(Pad->Point2.Y - btx, Pad->Point2.Y + bty));
+		out->Y2 = MAX(MAX(Pad->Point1.Y + btx, Pad->Point1.Y - bty), MAX(Pad->Point2.Y - btx, Pad->Point2.Y + bty));
 	}
 	else {
 		/* Adjust for our discrete polygon approximation */
 		width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
 
-		Pad->BoundingBox.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - width;
-		Pad->BoundingBox.X2 = MAX(Pad->Point1.X, Pad->Point2.X) + width;
-		Pad->BoundingBox.Y1 = MIN(Pad->Point1.Y, Pad->Point2.Y) - width;
-		Pad->BoundingBox.Y2 = MAX(Pad->Point1.Y, Pad->Point2.Y) + width;
+		out->X1 = MIN(Pad->Point1.X, Pad->Point2.X) - width;
+		out->X2 = MAX(Pad->Point1.X, Pad->Point2.X) + width;
+		out->Y1 = MIN(Pad->Point1.Y, Pad->Point2.Y) - width;
+		out->Y2 = MAX(Pad->Point1.Y, Pad->Point2.Y) + width;
 	}
-	pcb_close_box(&Pad->BoundingBox);
+	pcb_close_box(out);
 }
 
 /* changes the nopaste flag of a pad */
