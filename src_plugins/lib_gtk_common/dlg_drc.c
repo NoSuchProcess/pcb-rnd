@@ -580,6 +580,7 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 
 	preview = pcb_gtk_preview_board_new(common, common->init_drawing_widget, common->preview_expose);
 	gtk_widget_set_size_request(preview, preview_size, preview_size);
+	gtk_widget_set_events(preview, GDK_EXPOSURE_MASK);
 	pcb_gtk_preview_board_zoomto(PCB_GTK_PREVIEW(preview),
 															 violation_obj->x_coord - VIOLATION_PIXMAP_PCB_SIZE,
 															 violation_obj->y_coord - VIOLATION_PIXMAP_PCB_SIZE,
