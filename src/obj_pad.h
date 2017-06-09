@@ -49,6 +49,10 @@ pcb_pad_t *pcb_element_pad_new_rect(pcb_element_t *Element, pcb_coord_t X1, pcb_
 
 void pcb_pad_bbox(pcb_pad_t *Pad);
 
+/* Calculate the net copper bbox and return it in out */
+void pcb_pad_copper_bbox(pcb_box_t *out, pcb_pad_t *Pad);
+
+
 pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 
 /* hash */

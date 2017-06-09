@@ -237,6 +237,32 @@ void pcb_pin_bbox(pcb_pin_t *Pin)
 	pcb_close_box(&Pin->BoundingBox);
 }
 
+void pcb_pin_copper_bbox(pcb_box_t *out, pcb_pin_t *Pin)
+{
+	pcb_coord_t width;
+
+	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
+		pcb_polyarea_t *p = pcb_poly_from_pin(Pin, PIN_SIZE(Pin), 0);
+		pcb_polyarea_bbox(p, out);
+		pcb_polyarea_free(&p);
+		return;
+	}
+
+	/* the bounding box covers the extent of influence
+	 * so it must include the clearance values too
+	 */
+	width = PIN_SIZE(Pin) / 2;
+
+	/* Adjust for our discrete polygon approximation */
+	width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
+
+	out->X1 = Pin->X - width;
+	out->Y1 = Pin->Y - width;
+	out->X2 = Pin->X + width;
+	out->Y2 = Pin->Y + width;
+	pcb_close_box(out);
+}
+
 void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
 {
 	pcb_r_delete_entry(Data->via_tree, (pcb_box_t *) Via);

@@ -52,6 +52,10 @@ pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via);
 void pcb_pin_bbox(pcb_pin_t *Pin);
 
+/* return the net copper bounding box in out */
+void pcb_pin_copper_bbox(pcb_box_t *out, pcb_pin_t *Pin);
+
+
 void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
 void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *Via);
 void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via);

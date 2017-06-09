@@ -161,6 +161,48 @@ void pcb_pad_bbox(pcb_pad_t *Pad)
 	pcb_close_box(&Pad->BoundingBox);
 }
 
+void pcb_pad_copper_bbox(pcb_box_t *out, pcb_pad_t *Pad)
+{
+	pcb_coord_t width;
+	pcb_coord_t deltax;
+	pcb_coord_t deltay;
+
+	/* the bounding box covers the extent of influence
+	 * so it must include the clearance values too
+	 */
+	width = (Pad->Thickness + 1) / 2;
+	deltax = Pad->Point2.X - Pad->Point1.X;
+	deltay = Pad->Point2.Y - Pad->Point1.Y;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad) && deltax != 0 && deltay != 0) {
+		/* slanted square pad */
+		double theta;
+		pcb_coord_t btx, bty;
+
+		/* T is a vector half a thickness long, in the direction of
+		   one of the corners.  */
+		theta = atan2(deltay, deltax);
+		btx = width * cos(theta + M_PI / 4) * sqrt(2.0);
+		bty = width * sin(theta + M_PI / 4) * sqrt(2.0);
+
+
+		Pad->BoundingBox.X1 = MIN(MIN(Pad->Point1.X - btx, Pad->Point1.X - bty), MIN(Pad->Point2.X + btx, Pad->Point2.X + bty));
+		Pad->BoundingBox.X2 = MAX(MAX(Pad->Point1.X - btx, Pad->Point1.X - bty), MAX(Pad->Point2.X + btx, Pad->Point2.X + bty));
+		Pad->BoundingBox.Y1 = MIN(MIN(Pad->Point1.Y + btx, Pad->Point1.Y - bty), MIN(Pad->Point2.Y - btx, Pad->Point2.Y + bty));
+		Pad->BoundingBox.Y2 = MAX(MAX(Pad->Point1.Y + btx, Pad->Point1.Y - bty), MAX(Pad->Point2.Y - btx, Pad->Point2.Y + bty));
+	}
+	else {
+		/* Adjust for our discrete polygon approximation */
+		width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
+
+		Pad->BoundingBox.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - width;
+		Pad->BoundingBox.X2 = MAX(Pad->Point1.X, Pad->Point2.X) + width;
+		Pad->BoundingBox.Y1 = MIN(Pad->Point1.Y, Pad->Point2.Y) - width;
+		Pad->BoundingBox.Y2 = MAX(Pad->Point1.Y, Pad->Point2.Y) + width;
+	}
+	pcb_close_box(&Pad->BoundingBox);
+}
+
 /* changes the nopaste flag of a pad */
 pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 {
