@@ -210,6 +210,15 @@ static void calc_pad_bbox(subst_ctx_t *ctx)
 	calc_pad_bbox_(ctx, ctx->element);
 }
 
+static void append_clean(gds_t *dst, const char *text)
+{
+	const char *s;
+	for(s = text; *s != '\0'; s++)
+		if (isalnum(*s))
+			gds_append(dst, *s);
+		else
+			gds_append(dst, '_');
+}
 
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
@@ -242,14 +251,29 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			gds_append_str(s, ctx->name);
 			return 0;
 		}
+		if (strncmp(*input, "name_%", 6) == 0) {
+			*input += 6;
+			append_clean(s, ctx->name);
+			return 0;
+		}
 		if (strncmp(*input, "descr%", 6) == 0) {
 			*input += 6;
 			gds_append_str(s, ctx->descr);
 			return 0;
 		}
+		if (strncmp(*input, "descr_%", 7) == 0) {
+			*input += 7;
+			append_clean(s, ctx->descr);
+			return 0;
+		}
 		if (strncmp(*input, "value%", 6) == 0) {
 			*input += 6;
 			gds_append_str(s, ctx->value);
+			return 0;
+		}
+		if (strncmp(*input, "value_%", 7) == 0) {
+			*input += 7;
+			append_clean(s, ctx->value);
 			return 0;
 		}
 		if (strncmp(*input, "x%", 2) == 0) {
