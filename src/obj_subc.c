@@ -240,3 +240,21 @@ void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
 	return (sc);
 }
 
+#include "conf_core.h"
+#include "draw.h"
+pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_subc_t *subc = (pcb_subc_t *) b;
+	pcb_box_t *bb = &subc->BoundingBox;
+	int invisible = 0;
+
+	pcb_gui->set_color(Output.fgGC, invisible ? conf_core.appearance.color.invisible_mark : conf_core.appearance.color.element);
+	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
+	pcb_gui->set_line_width(Output.fgGC, 0);
+	pcb_draw_dashed_line(Output.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1);
+	pcb_draw_dashed_line(Output.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2);
+	pcb_draw_dashed_line(Output.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1);
+	pcb_draw_dashed_line(Output.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2);
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}

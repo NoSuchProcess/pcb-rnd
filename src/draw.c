@@ -285,6 +285,10 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		/* Draw element Marks */
 		if (PCB->PinOn)
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
+
+/*		if (PCB->PinOn)*/
+			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
+
 		/* Draw rat lines on top */
 		if (pcb_layer_gui_set_vlayer(PCB_VLY_RATS, 0)) {
 			pcb_draw_rats(drawn_area);
