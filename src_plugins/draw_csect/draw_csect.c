@@ -383,7 +383,7 @@ static void draw_hover_label(const char *str)
 }
 
 /* Draw the cross-section layer */
-static void draw_csect(pcb_hid_gc_t gc)
+static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_layergrp_id_t gid;
 	int ystart = 10, x, y, last_copper_step = 5, has_outline = 0;
