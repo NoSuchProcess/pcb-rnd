@@ -57,7 +57,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	AddTextToBuffer,
 	AddPolygonToBuffer,
 	AddViaToBuffer,
-	AddElementToBuffer,
+	pcb_elemop_add_to_buffer,
 	NULL,
 	NULL,
 	NULL,
@@ -74,7 +74,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	MoveTextToBuffer,
 	MovePolygonToBuffer,
 	MoveViaToBuffer,
-	MoveElementToBuffer,
+	pcb_elemop_move_to_buffer,
 	NULL,
 	NULL,
 	NULL,
@@ -656,7 +656,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			printf("In CopyPastebufferToLayout, pasting element %s\n", element->Name[1].TextString);
 #endif
 			if (PCB_FRONT(element) || pcb->InvisibleObjectsOn) {
-				CopyElement(&ctx, element);
+				pcb_elemop_copy(&ctx, element);
 				changed = pcb_true;
 			}
 		}

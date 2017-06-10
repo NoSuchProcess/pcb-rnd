@@ -1101,7 +1101,7 @@ void *pcb_element_remove(pcb_element_t *Element)
 	ctx.remove.destroy_target = NULL;
 	PCB_CLEAR_PARENT(Element);
 
-	return RemoveElement_op(&ctx, Element);
+	return pcb_elemop_remove(&ctx, Element);
 }
 
 /* rotate an element in 90 degree steps */
@@ -1256,7 +1256,7 @@ int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2)
 
 /*** ops ***/
 /* copies a element to buffer */
-void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_add_to_buffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_element_t *element;
 
@@ -1284,7 +1284,7 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* moves a element to buffer without allocating memory for pins/names */
-void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
+void *pcb_elemop_move_to_buffer(pcb_opctx_t *ctx, pcb_element_t * element)
 {
 	/*
 	 * Delete the element from the source (remove it from trees,
@@ -1329,7 +1329,7 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 
 
 /* changes the drilling hole of all pins of an element; returns pcb_true if changed */
-void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
 	pcb_coord_t value;
@@ -1363,7 +1363,7 @@ void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* changes ring dia of all pins of an element; returns pcb_true if changed */
-void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
 	pcb_coord_t value;
@@ -1395,7 +1395,7 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* changes the clearance of all pins of an element; returns pcb_true if changed */
-void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
 	pcb_coord_t value;
@@ -1453,7 +1453,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* changes the scaling factor of an element's outline; returns pcb_true if changed */
-void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_coord_t value;
 	pcb_bool changed = pcb_false;
@@ -1491,7 +1491,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* changes the scaling factor of a elementname object; returns pcb_true if changed */
-void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
 		: PCB_ELEM_TEXT_DESCRIPTION(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
@@ -1516,7 +1516,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 
-void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
@@ -1530,7 +1530,7 @@ void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 	return pcb_element_text_change(PCB, PCB->Data, Element, PCB_ELEMNAME_IDX_VISIBLE(), ctx->chgname.new_name);
 }
 
-void *ChangeElementNonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_nonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
@@ -1540,7 +1540,7 @@ void *ChangeElementNonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 
 /* changes the square flag of all pins on an element */
-void *ChangeElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
@@ -1560,7 +1560,7 @@ void *ChangeElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* sets the square flag of all pins on an element */
-void *SetElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
@@ -1580,7 +1580,7 @@ void *SetElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* clears the square flag of all pins on an element */
-void *ClrElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
@@ -1600,7 +1600,7 @@ void *ClrElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* changes the octagon flags of all pins of an element */
-void *ChangeElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
@@ -1616,7 +1616,7 @@ void *ChangeElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* sets the octagon flags of all pins of an element */
-void *SetElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_set_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
@@ -1632,7 +1632,7 @@ void *SetElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* clears the octagon flags of all pins of an element */
-void *ClrElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_clear_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
@@ -1648,11 +1648,11 @@ void *ClrElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* copies an element onto the PCB.  Then does a draw. */
-void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_copy(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 
 #ifdef DEBUG
-	printf("Entered CopyElement, trying to copy element %s\n", Element->Name[1].TextString);
+	printf("Entered pcb_elemop_copy, trying to copy element %s\n", Element->Name[1].TextString);
 #endif
 
 	pcb_element_t *element = pcb_element_copy(PCB->Data,
@@ -1670,13 +1670,13 @@ void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 		DrawElementPinsAndPads(element);
 	}
 #ifdef DEBUG
-	printf(" ... Leaving CopyElement.\n");
+	printf(" ... Leaving pcb_elemop_copy.\n");
 #endif
 	return (element);
 }
 
 /* moves all names of an element to a new position */
-void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (pcb_silk_on(PCB) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElementName(Element);
@@ -1707,7 +1707,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* moves an element */
-void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_move(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool didDraw = pcb_false;
 
@@ -1733,7 +1733,7 @@ void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* destroys a element */
-void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_destroy(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (ctx->remove.destroy_target->element_tree)
 		pcb_r_delete_entry(ctx->remove.destroy_target->element_tree, (pcb_box_t *) Element);
@@ -1765,7 +1765,7 @@ void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* removes an element */
-void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	/* erase from screen */
 	if ((pcb_silk_on(PCB) || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
@@ -1779,7 +1779,7 @@ void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* rotates an element */
-void *Rotate90Element(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_rotate90(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElement(Element);
 	pcb_element_rotate90(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
@@ -1791,7 +1791,7 @@ void *Rotate90Element(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* ----------------------------------------------------------------------
  * rotates the name of an element
  */
-void *Rotate90ElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElementName(Element);
 	PCB_ELEMENT_PCB_TEXT_LOOP(Element);

@@ -117,7 +117,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 			memset(&op, 0, sizeof(op));
 			op.buffer.dst = calloc(sizeof(pcb_data_t), 1);
 			pcb_data_set_layer_parents(op.buffer.dst);
-			AddElementToBuffer(&op, element);
+			pcb_elemop_add_to_buffer(&op, element);
 
 			f = fopen(tmp_name, "w");
 			memset(&buff2, 0, sizeof(buff2));

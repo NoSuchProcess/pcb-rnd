@@ -28,26 +28,26 @@
 
 #include "operation.h"
 
-void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element);
-void *ClrElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *SetElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ClrElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *SetElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElementNonetlist(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *Rotate90Element(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *Rotate90ElementName(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_add_to_buffer(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_move_to_buffer(pcb_opctx_t *ctx, pcb_element_t * element);
+void *pcb_elemop_clear_octagon(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_set_octagon(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_nonetlist(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_copy(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_move(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_destroy(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_rotate90(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element);
 
