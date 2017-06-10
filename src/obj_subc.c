@@ -32,6 +32,7 @@
 #include "error.h"
 #include "obj_subc.h"
 #include "obj_subc_op.h"
+#include "obj_text_draw.h"
 #include "rtree.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
