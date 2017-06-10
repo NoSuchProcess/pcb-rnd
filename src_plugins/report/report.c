@@ -95,7 +95,7 @@ static int ReportDrills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		thestring++;
 	for (n = 0; n < AllDrills->DrillN; n++) {
 		pcb_sprintf(thestring,
-								"%10m*\t\t%d\t\t%d\t\t%d\t\t%d\n",
+								"%10m*\t\t\t%d\t\t%d\t\t%d\t\t\t\t%d\n",
 								conf_core.editor.grid_unit->suffix,
 								AllDrills->Drill[n].DrillSize,
 								AllDrills->Drill[n].PinCount, AllDrills->Drill[n].ViaCount,
