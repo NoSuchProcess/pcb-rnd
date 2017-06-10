@@ -42,5 +42,12 @@ void *ChangeSubcName(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *DestroySubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *RemoveSubc_op(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
+void *ClrSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *SetSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ClrSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *SetSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
+
 
 #endif

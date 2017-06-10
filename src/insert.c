@@ -57,6 +57,7 @@ static pcb_opfunc_t InsertFunctions = {
 	NULL,
 	pcb_arc_insert_point,
 	InsertPointIntoRat,
+	NULL,
 	NULL
 };
 

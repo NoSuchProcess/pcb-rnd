@@ -382,6 +382,42 @@ void *RemoveSubc_op(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	abort();
 }
 
+void *ClrSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *SetSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ChangeSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ClrSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *SetSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
 
 #include "conf_core.h"
 #include "draw.h"
