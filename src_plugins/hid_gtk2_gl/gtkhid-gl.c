@@ -860,11 +860,10 @@ void ghid_gl_screen_update(void)
 }
 
 #define Z_NEAR 3.0
-gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t * p, void *vport)
+gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	GHidPort * port = vport;
 	render_priv_t *priv = port->render_priv;
-	GdkEventExpose *ev = p;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
 
@@ -976,14 +975,13 @@ void ghid_gl_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 	return;
 }
 
-gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * p, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
+gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
 {
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
 	render_priv_t *priv = gport->render_priv;
-	GdkEventExpose *ev = p;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
