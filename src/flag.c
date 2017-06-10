@@ -29,26 +29,23 @@
 #include "config.h"
 #include "flag.h"
 #include "operation.h"
+#include "obj_all_op.h"
 
 pcb_opfunc_t ChgFlagFunctions = {
-#if 0
-	Rotate90Line,
-	Rotate90Text,
-	Rotate90Polygon,
-	NULL,
-	Rotate90Element,
-	Rotate90ElementName,
+	ChgFlagLine,
+	ChgFlagText,
+	ChgFlagPolygon,
 	NULL,
 	NULL,
-	Rotate90LinePoint,
-	NULL,
-	Rotate90Arc,
 	NULL,
 	NULL,
-	Rotate90Subc
-#else
-	NULL
-#endif
+	NULL,
+	NULL,
+	NULL,
+	ChgFlagArc,
+	NULL,
+	NULL,
+	ChgFlagSubc
 };
 
 

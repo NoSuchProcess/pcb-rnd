@@ -849,6 +849,15 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 	return (line);
 }
 
+#define PCB_LINE_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_RAT | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_RUBBEREND | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
+void *ChgFlagLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+{
+	if ((ctx->chgflag.flag & PCB_LINE_FLAGS) != ctx->chgflag.flag)
+		return NULL;
+	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Line);
+}
+
+
 /*** draw ***/
 void _draw_line(pcb_line_t * line)
 {

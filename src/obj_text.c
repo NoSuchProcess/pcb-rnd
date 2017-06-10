@@ -538,6 +538,15 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, layer, text);
 }
 
+#define PCB_TEXT_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
+void *ChgFlagText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+{
+	if ((ctx->chgflag.flag & PCB_TEXT_FLAGS) != ctx->chgflag.flag)
+		return NULL;
+	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Text);
+}
+
+
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256

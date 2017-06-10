@@ -744,6 +744,16 @@ void *Rotate90Polygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 	return Polygon;
 }
 
+#define PCB_POLY_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
+void *ChgFlagPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+{
+	if ((ctx->chgflag.flag & PCB_POLY_FLAGS) != ctx->chgflag.flag)
+		return NULL;
+	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Polygon);
+}
+
+
+
 /*** draw ***/
 pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 {
