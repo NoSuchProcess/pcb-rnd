@@ -1647,3 +1647,9 @@ RemovePolygonPoint -> pcb_polyop_remove_point
 CopyPolygon -> pcb_polyop_copy
 Rotate90Polygon -> pcb_polyop_rotate90
 ChgFlagPolygon -> pcb_polyop_change_flag
+AddRatToBuffer -> pcb_ratop_add_to_buffer
+MoveRatToBuffer -> pcb_ratop_move_to_buffer
+InsertPointIntoRat -> pcb_ratop_insert_point
+MoveRatToLayer -> pcb_ratop_move_to_layer
+DestroyRat -> pcb_ratop_destroy
+RemoveRat -> pcb_ratop_remove

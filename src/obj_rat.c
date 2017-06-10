@@ -113,7 +113,7 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 	{
 		if ((!selected) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			changed = pcb_true;
-			RemoveRat(&ctx, line);
+			pcb_ratop_remove(&ctx, line);
 		}
 	}
 	PCB_END_LOOP;
@@ -127,7 +127,7 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 
 /*** ops ***/
 /* copies a rat-line to paste buffer */
-void *AddRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
+void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	return (pcb_rat_new(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
 		Rat->Point2.X, Rat->Point2.Y, Rat->group1, Rat->group2, Rat->Thickness,
@@ -135,7 +135,7 @@ void *AddRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /* moves a rat-line to paste buffer */
-void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
+void *pcb_ratop_move_to_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
 	pcb_r_delete_entry(ctx->buffer.src->rat_tree, (pcb_box_t *) rat);
 
@@ -154,7 +154,7 @@ void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 }
 
 /* inserts a point into a rat-line */
-void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
+void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	pcb_line_t *newone;
 
@@ -177,7 +177,7 @@ void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /* moves a line between layers */
-void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
+void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 {
 	pcb_line_t *newone;
 	/*pcb_coord_t X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
@@ -203,7 +203,7 @@ void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 }
 
 /* destroys a rat */
-void *DestroyRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
+void *pcb_ratop_destroy(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	if (ctx->remove.destroy_target->rat_tree)
 		pcb_r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
@@ -213,7 +213,7 @@ void *DestroyRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /* removes a rat */
-void *RemoveRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
+void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	/* erase from screen and memory */
 	if (PCB->RatOn) {

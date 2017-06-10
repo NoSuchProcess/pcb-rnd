@@ -51,7 +51,7 @@ static pcb_opfunc_t RemoveFunctions = {
 	pcb_lineop_remove_point,
 	pcb_polyop_remove_point,
 	pcb_arcop_remve,
-	RemoveRat,
+	pcb_ratop_remove,
 	pcb_arcop_remove_point,
 	RemoveSubc_op
 };
@@ -68,7 +68,7 @@ static pcb_opfunc_t DestroyFunctions = {
 	NULL,
 	pcb_polyop_destroy_point,
 	pcb_arcop_destroy,
-	DestroyRat,
+	pcb_ratop_destroy,
 	NULL,
 	DestroySubc
 };

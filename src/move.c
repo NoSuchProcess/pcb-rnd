@@ -77,7 +77,7 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_move_to_layer,
-	MoveRatToLayer,
+	pcb_ratop_move_to_layer,
 	NULL,
 	NULL
 };
