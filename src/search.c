@@ -68,6 +68,33 @@ static pcb_bool SearchPointByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb
 static pcb_bool SearchElementByLocation(int, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
 static pcb_bool SearchSubcByLocation(int, pcb_subc_t **, pcb_subc_t **, pcb_subc_t **, pcb_bool);
 
+/* Returns whether global (on-data) object is part of a subc */
+static int is_gobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+{
+	if (pt != PCB_PARENT_DATA)
+		return 0;
+
+	if (p->data == NULL)
+		return 0;
+	
+	return (p->data->parent_type == PCB_PARENT_SUBC);
+}
+
+/* Returns whether layer object is part of a subc */
+static int is_lobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+{
+	if (pt != PCB_PARENT_LAYER)
+		return 0;
+
+	if (p->layer == NULL)
+		return 0;
+	
+	if (p->layer->parent == NULL)
+		return 0;
+
+	return (p->layer->parent->parent_type == PCB_PARENT_SUBC);
+}
+
 /* ---------------------------------------------------------------------------
  * searches a via
  */
@@ -83,6 +110,9 @@ static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_pin_t *pin = (pcb_pin_t *) box;
 	pcb_any_obj_t *ptr1 = pin->Element ? pin->Element : pin;
+
+	if (is_gobj_in_subc(pin->parent_type, &pin->parent))
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(i->locked, ptr1))
 		return PCB_R_DIR_NOT_FOUND;
@@ -184,10 +214,14 @@ struct line_info {
 	int locked;
 };
 
+
 static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 {
 	struct line_info *i = (struct line_info *) cl;
 	pcb_line_t *l = (pcb_line_t *) box;
+
+	if (is_lobj_in_subc(l->parent_type, &l->parent))
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(i->locked, l))
 		return PCB_R_DIR_NOT_FOUND;
@@ -265,6 +299,9 @@ static pcb_r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 	struct arc_info *i = (struct arc_info *) cl;
 	pcb_arc_t *a = (pcb_arc_t *) box;
 
+	if (is_lobj_in_subc(a->parent_type, &a->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
 	if (PCB_FLAG_TEST(i->locked, a))
 		return PCB_R_DIR_NOT_FOUND;
 
@@ -294,6 +331,9 @@ static pcb_r_dir_t text_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
+
+	if (is_lobj_in_subc(text->parent_type, &text->parent))
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(i->locked, text))
 		return PCB_R_DIR_NOT_FOUND;
@@ -326,6 +366,9 @@ static pcb_r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_polygon_t *polygon = (pcb_polygon_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
+
+	if (is_lobj_in_subc(polygon->parent_type, &polygon->parent))
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(i->locked, polygon))
 		return PCB_R_DIR_NOT_FOUND;
@@ -362,6 +405,9 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
 	double d;
 
+	if (is_lobj_in_subc(line->parent_type, &line->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
 	if (PCB_FLAG_TEST(i->locked, line))
 		return PCB_R_DIR_NOT_FOUND;
 
@@ -392,6 +438,8 @@ static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
 	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
 	double d;
 
+	if (is_lobj_in_subc(arc->parent_type, &arc->parent))
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(i->locked, arc))
 		return PCB_R_DIR_NOT_FOUND;
