@@ -34,7 +34,7 @@
 pcb_opfunc_t ChgFlagFunctions = {
 	pcb_lineop_change_flag,
 	ChgFlagText,
-	ChgFlagPolygon,
+	pcb_polyop_change_flag,
 	NULL,
 	NULL,
 	NULL,

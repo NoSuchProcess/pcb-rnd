@@ -318,7 +318,7 @@ double pcb_poly_area(const pcb_polygon_t *poly)
 
 /*** ops ***/
 /* copies a polygon to buffer */
-void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 	pcb_polygon_t *polygon;
@@ -340,7 +340,7 @@ void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 
 
 /* moves a polygon to buffer. Doesn't allocate memory for the points */
-void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t * polygon)
+void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t * polygon)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 
@@ -361,7 +361,7 @@ void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t *
 }
 
 /* Handle attempts to change the clearance of a polygon. */
-void *ChangePolygonClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly)
+void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly)
 {
 	static int shown_this_message = 0;
 	if (!shown_this_message) {
@@ -376,7 +376,7 @@ void *ChangePolygonClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 }
 
 /* changes the CLEARPOLY flag of a polygon */
-void *ChangePolyClear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
@@ -389,7 +389,7 @@ void *ChangePolyClear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 }
 
 /* inserts a point into a polygon */
-void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_point_t save;
 	pcb_cardinal_t n;
@@ -445,7 +445,7 @@ void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 }
 
 /* moves a polygon */
-void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	if (Layer->meta.real.vis) {
 		ErasePolygon(Polygon);
@@ -462,7 +462,7 @@ void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 }
 
 /* moves a polygon-point */
-void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
+void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
 {
 	if (Layer->meta.real.vis) {
 		ErasePolygon(Polygon);
@@ -481,7 +481,7 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 }
 
 /* moves a polygon between layers; lowlevel routines */
-void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_polygon_t * polygon, pcb_layer_t * Destination)
+void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_polygon_t * polygon, pcb_layer_t * Destination)
 {
 	pcb_r_delete_entry(Source->polygon_tree, (pcb_box_t *) polygon);
 
@@ -519,7 +519,7 @@ pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 }
 
 /* moves a polygon between layers */
-void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
+void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
 {
 	pcb_polygon_t *newone;
 	struct mptlc d;
@@ -541,7 +541,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	pcb_r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	d.type = PCB_TYPE_VIA;
 	pcb_r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
-	newone = (struct pcb_polygon_s *) MovePolygonToLayerLowLevel(ctx, Layer, Polygon, ctx->move.dst_layer);
+	newone = (struct pcb_polygon_s *) pcb_polyop_move_to_layer_low(ctx, Layer, Polygon, ctx->move.dst_layer);
 	pcb_poly_init_clip(PCB->Data, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->meta.real.vis) {
 		DrawPolygon(ctx->move.dst_layer, newone);
@@ -552,7 +552,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 
 
 /* destroys a polygon from a layer */
-void *DestroyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_free_fields(Polygon);
@@ -563,7 +563,7 @@ void *DestroyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygo
 }
 
 /* removes a polygon-point from a polygon and destroys the data */
-void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
+void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
 {
 	pcb_cardinal_t point_idx;
 	pcb_cardinal_t i;
@@ -577,7 +577,7 @@ void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 	contour_points = contour_end - contour_start;
 
 	if (contour_points <= 3)
-		return RemovePolygonContour(ctx, Layer, Polygon, contour);
+		return pcb_polyop_remove_counter(ctx, Layer, Polygon, contour);
 
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 
@@ -598,7 +598,7 @@ void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 }
 
 /* removes a polygon from a layer */
-void *RemovePolygon_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
@@ -619,12 +619,12 @@ void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	return RemovePolygon_op(&ctx, Layer, Polygon);
+	return pcb_polyop_remove(&ctx, Layer, Polygon);
 }
 
 /* Removes a contour from a polygon.
    If removing the outer contour, it removes the whole polygon. */
-void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_cardinal_t contour)
+void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_cardinal_t contour)
 {
 	pcb_cardinal_t contour_start, contour_end, contour_points;
 	pcb_cardinal_t i;
@@ -666,7 +666,7 @@ void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *
 }
 
 /* removes a polygon-point from a polygon */
-void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
+void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
 {
 	pcb_cardinal_t point_idx;
 	pcb_cardinal_t i;
@@ -680,7 +680,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	contour_points = contour_end - contour_start;
 
 	if (contour_points <= 3)
-		return RemovePolygonContour(ctx, Layer, Polygon, contour);
+		return pcb_polyop_remove_counter(ctx, Layer, Polygon, contour);
 
 	if (Layer->meta.real.vis)
 		ErasePolygon(Polygon);
@@ -714,7 +714,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 }
 
 /* copies a polygon */
-void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_polygon_t *polygon;
 
@@ -729,7 +729,7 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	return (polygon);
 }
 
-void *Rotate90Polygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	if (Layer->meta.real.vis)
 		ErasePolygon(Polygon);
@@ -745,7 +745,7 @@ void *Rotate90Polygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 }
 
 #define PCB_POLY_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
-void *ChgFlagPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	if ((ctx->chgflag.flag & PCB_POLY_FLAGS) != ctx->chgflag.flag)
 		return NULL;

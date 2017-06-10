@@ -28,22 +28,22 @@
 
 #include "operation.h"
 
-void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t * polygon);
-void *ChangePolygonClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly);
-void *ChangePolyClear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point);
-void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_polygon_t * polygon, pcb_layer_t * Destination);
-void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * Polygon);
-void *DestroyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point);
-void *RemovePolygon_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_cardinal_t contour);
-void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point);
-void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *Rotate90Polygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void *ChgFlagPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t * polygon);
+void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly);
+void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point);
+void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_polygon_t * polygon, pcb_layer_t * Destination);
+void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * Polygon);
+void *pcb_polyop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point);
+void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_cardinal_t contour);
+void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point);
+void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 
 

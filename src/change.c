@@ -47,7 +47,7 @@
 static pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_lineop_change_size,
 	ChangeTextSize,
-	ChangePolyClear,
+	pcb_polyop_change_clear,
 	pcb_viaop_change_size,
 	pcb_elemop_change_size,						/* changes silk screen line width */
 	pcb_elemop_change_name_size,
@@ -64,7 +64,7 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 static pcb_opfunc_t Change1stSizeFunctions = {
 	pcb_lineop_change_size,
 	ChangeTextSize,
-	ChangePolyClear,
+	pcb_polyop_change_clear,
 	pcb_viaop_change_size,
 	pcb_elemop_change_1st_size,
 	pcb_elemop_change_name_size,
@@ -115,7 +115,7 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 static pcb_opfunc_t ChangeClearSizeFunctions = {
 	pcb_lineop_change_clear_size,
 	NULL,
-	ChangePolygonClearSize,				/* just to tell the user not to :-) */
+	pcb_polyop_change_clear_size,				/* just to tell the user not to :-) */
 	pcb_viaop_change_clear_size,
 	pcb_elemop_change_clear_size,
 	NULL,
