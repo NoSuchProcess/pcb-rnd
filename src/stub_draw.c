@@ -58,7 +58,7 @@ int dummy_DrawFab_overhang(void)
 	return 0;
 }
 
-void dummy_DrawFab(pcb_hid_gc_t gc)
+void dummy_DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	dummy_draw_text(gc, "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded");
 }
