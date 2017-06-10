@@ -160,6 +160,7 @@ static char *reference_pin_names[] = {"1", "2", "A1", "A2", "B1", "B2", 0};
 typedef struct {
 	char utcTime[64];
 	char *name, *descr, *value, *fixed_rotation;
+	char *pad_netname;
 	pcb_coord_t x, y;
 	double theta;
 	pcb_element_t *element;
