@@ -42,6 +42,7 @@ pcb_subc_t *pcb_subc_alloc(void)
 	pcb_subc_t *sc;
 	sc = calloc(sizeof(pcb_subc_t), 1);
 	sc->data = pcb_data_new(NULL);
+	sc->type = PCB_TYPE_SUBC;
 	PCB_SET_PARENT(sc->data, subc, sc);
 	return sc;
 }
