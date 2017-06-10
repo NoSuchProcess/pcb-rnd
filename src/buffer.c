@@ -606,7 +606,6 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	if (num_layers == 0) /* some buffers don't have layers, just simple objects */
 		num_layers = pcb->Data->LayerN;
 	for (i = 0; i < num_layers; i++) {
-		pcb_bool nonempty = pcb_false;
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i];
 		pcb_layer_t *destlayer = pcb_layer_resolve_binding(pcb, sourcelayer);
 
