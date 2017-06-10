@@ -534,6 +534,11 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return (F->Element(ctx, (pcb_element_t *) Ptr1));
 		break;
 
+	case PCB_TYPE_SUBC:
+		if (F->subc)
+			return (F->subc(ctx, (pcb_subc_t *) Ptr1));
+		break;
+
 	case PCB_TYPE_PIN:
 		if (F->Pin)
 			return (F->Pin(ctx, (pcb_element_t *) Ptr1, (pcb_pin_t *) Ptr2));

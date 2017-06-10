@@ -123,6 +123,7 @@ typedef struct {
 	void *(*Arc)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_arc_t *);
 	void *(*Rat)(pcb_opctx_t *ctx, pcb_rat_t *);
 	void *(*ArcPoint)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_arc_t *, int *end_id);
+	void *(*subc)(pcb_opctx_t *ctx, pcb_subc_t *);
 } pcb_opfunc_t;
 
 #endif

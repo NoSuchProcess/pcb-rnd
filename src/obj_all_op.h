@@ -6,3 +6,4 @@
 #include "obj_poly_op.h"
 #include "obj_text_op.h"
 #include "obj_rat_op.h"
+#include "obj_subc_op.h"
