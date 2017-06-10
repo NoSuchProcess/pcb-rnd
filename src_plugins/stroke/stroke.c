@@ -160,6 +160,7 @@ int pplg_check_ver_stroke(int ver_needed) { return 0; }
 
 int pplg_uninit_stroke(void)
 {
+	return 0;
 }
 
 int pplg_init_stroke(void)
