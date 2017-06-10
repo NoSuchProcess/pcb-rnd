@@ -57,7 +57,8 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 	NULL,
 	ChangeArcSize,
 	NULL,
-	NULL
+	NULL,
+	ChangeSubcSize
 };
 
 static pcb_opfunc_t Change1stSizeFunctions = {
@@ -73,7 +74,8 @@ static pcb_opfunc_t Change1stSizeFunctions = {
 	NULL,
 	ChangeArcSize,
 	NULL,
-	NULL
+	NULL,
+	ChangeSubc1stSize
 };
 
 static pcb_opfunc_t Change2ndSizeFunctions = {
@@ -89,7 +91,8 @@ static pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	ChangeSubc2ndSize
 };
 
 static pcb_opfunc_t ChangeThermalFunctions = {
@@ -121,7 +124,8 @@ static pcb_opfunc_t ChangeClearSizeFunctions = {
 	NULL,
 	ChangeArcClearSize,
 	NULL,
-	NULL
+	NULL,
+	ChangeSubcClearSize
 };
 
 static pcb_opfunc_t ChangeNameFunctions = {
@@ -137,7 +141,8 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	ChangeSubcName
 };
 
 static pcb_opfunc_t ChangePinnumFunctions = {
@@ -185,7 +190,8 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	ChangeSubcNonetlist,
 };
 
 static pcb_opfunc_t ChangeJoinFunctions = {

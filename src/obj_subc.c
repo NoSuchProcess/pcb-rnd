@@ -321,6 +321,67 @@ void *Rotate90Subc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	return pcb_subc_op(PCB->Data, sc, &Rotate90Functions, ctx);
 }
 
+void *MoveSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *AddSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+
+void *ChangeSubcSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ChangeSubcClearSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ChangeSubc1stSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ChangeSubc2ndSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ChangeSubcNonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *ChangeSubcName(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *DestroySubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
+void *RemoveSubc_op(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+#warning subc TODO
+	abort();
+}
+
 
 #include "conf_core.h"
 #include "draw.h"

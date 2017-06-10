@@ -53,6 +53,7 @@ static pcb_opfunc_t RemoveFunctions = {
 	RemoveArc_op,
 	RemoveRat,
 	RemoveArcPoint_op,
+	RemoveSubc_op
 };
 
 static pcb_opfunc_t DestroyFunctions = {
@@ -68,7 +69,8 @@ static pcb_opfunc_t DestroyFunctions = {
 	DestroyPolygonPoint,
 	DestroyArc,
 	DestroyRat,
-	NULL
+	NULL,
+	DestroySubc
 };
 
 /* ----------------------------------------------------------------------

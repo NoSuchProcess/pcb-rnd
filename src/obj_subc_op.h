@@ -31,6 +31,16 @@
 void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src);
 void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *Rotate90Subc(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *MoveSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *AddSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubcSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubcClearSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubc1stSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubc2ndSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubcNonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *ChangeSubcName(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *DestroySubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *RemoveSubc_op(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
 
 #endif

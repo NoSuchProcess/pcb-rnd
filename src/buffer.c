@@ -65,7 +65,8 @@ static pcb_opfunc_t AddBufferFunctions = {
 	NULL,
 	AddArcToBuffer,
 	AddRatToBuffer,
-	NULL
+	NULL,
+	AddSubcToBuffer
 };
 
 static pcb_opfunc_t MoveBufferFunctions = {
@@ -81,7 +82,8 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	NULL,
 	MoveArcToBuffer,
 	MoveRatToBuffer,
-	NULL
+	NULL,
+	MoveSubcToBuffer
 };
 
 /* ---------------------------------------------------------------------------
