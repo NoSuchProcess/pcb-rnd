@@ -66,7 +66,7 @@ pcb_opfunc_t Rotate90Functions = {
 	pcb_arcop_rotate90,
 	NULL,
 	NULL,
-	Rotate90Subc
+	pcb_subcop_rotate90
 };
 
 /* ---------------------------------------------------------------------------

@@ -298,7 +298,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 
 /* copies a subcircuit onto the PCB.  Then does a draw. */
-void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
+void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 {
 	pcb_subc_t *sc;
 
@@ -312,108 +312,108 @@ void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 extern pcb_opfunc_t MoveFunctions, Rotate90Functions, ChgFlagFunctions;
 
-void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	return pcb_subc_op(PCB->Data, sc, &MoveFunctions, ctx);
 }
 
-void *Rotate90Subc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	return pcb_subc_op(PCB->Data, sc, &Rotate90Functions, ctx);
 }
 
-void *MoveSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *AddSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
 
-void *ChangeSubcSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ChangeSubcClearSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_clear_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ChangeSubc1stSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_1st_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ChangeSubc2ndSize(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_2nd_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ChangeSubcNonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_nonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ChangeSubcName(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *DestroySubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *RemoveSubc_op(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ClrSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_clear_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *SetSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_set_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ChangeSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ClrSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_clear_square(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *SetSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_set_square(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
 }
 
-void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_square(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
@@ -421,7 +421,7 @@ void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 
 #define PCB_SUBC_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
-void *ChgFlagSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	if ((ctx->chgflag.flag & PCB_SUBC_FLAGS) != ctx->chgflag.flag)
 		return NULL;

@@ -58,7 +58,7 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_arcop_change_size,
 	NULL,
 	NULL,
-	ChangeSubcSize
+	pcb_subcop_change_size
 };
 
 static pcb_opfunc_t Change1stSizeFunctions = {
@@ -75,7 +75,7 @@ static pcb_opfunc_t Change1stSizeFunctions = {
 	pcb_arcop_change_size,
 	NULL,
 	NULL,
-	ChangeSubc1stSize
+	pcb_subcop_change_1st_size
 };
 
 static pcb_opfunc_t Change2ndSizeFunctions = {
@@ -92,7 +92,7 @@ static pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeSubc2ndSize
+	pcb_subcop_change_2nd_size
 };
 
 static pcb_opfunc_t ChangeThermalFunctions = {
@@ -126,7 +126,7 @@ static pcb_opfunc_t ChangeClearSizeFunctions = {
 	pcb_arcop_change_clear_size,
 	NULL,
 	NULL,
-	ChangeSubcClearSize
+	pcb_subcop_change_clear_size
 };
 
 static pcb_opfunc_t ChangeNameFunctions = {
@@ -143,7 +143,7 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeSubcName
+	pcb_subcop_change_name
 };
 
 static pcb_opfunc_t ChangePinnumFunctions = {
@@ -177,7 +177,7 @@ static pcb_opfunc_t ChangeSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeSubcSquare
+	pcb_subcop_change_square
 };
 
 static pcb_opfunc_t ChangeNonetlistFunctions = {
@@ -194,7 +194,7 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeSubcNonetlist,
+	pcb_subcop_change_nonetlist,
 };
 
 static pcb_opfunc_t ChangeJoinFunctions = {
@@ -228,7 +228,7 @@ static pcb_opfunc_t ChangeOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeSubcOctagon,
+	pcb_subcop_change_octagon,
 };
 
 static pcb_opfunc_t ChangeMaskSizeFunctions = {
@@ -266,7 +266,7 @@ static pcb_opfunc_t SetSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	SetSubcSquare
+	pcb_subcop_set_square
 };
 
 static pcb_opfunc_t SetJoinFunctions = {
@@ -300,7 +300,7 @@ static pcb_opfunc_t SetOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	SetSubcOctagon
+	pcb_subcop_set_octagon
 };
 
 static pcb_opfunc_t ClrSquareFunctions = {
@@ -317,7 +317,7 @@ static pcb_opfunc_t ClrSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ClrSubcSquare,
+	pcb_subcop_clear_square,
 };
 
 static pcb_opfunc_t ClrJoinFunctions = {
@@ -351,7 +351,7 @@ static pcb_opfunc_t ClrOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ClrSubcOctagon
+	pcb_subcop_clear_octagon
 };
 
 static pcb_opfunc_t ChangeRadiusFunctions = {

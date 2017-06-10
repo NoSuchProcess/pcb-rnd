@@ -62,7 +62,7 @@ pcb_opfunc_t MoveFunctions = {
 	pcb_arcop_move,
 	NULL,
 	NULL,
-	MoveSubc
+	pcb_subcop_move
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {

@@ -28,28 +28,28 @@
 
 #include "operation.h"
 
-void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src);
-void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *Rotate90Subc(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *MoveSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *AddSubcToBuffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubcSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubcClearSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubc1stSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubc2ndSize(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubcNonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubcName(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *DestroySubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *RemoveSubc_op(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src);
+void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_clear_size(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_1st_size(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_2nd_size(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_nonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
-void *ClrSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *SetSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubcOctagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ClrSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *SetSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
-void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_clear_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_set_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_clear_square(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_set_square(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_square(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
-void *ChgFlagSubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
+void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
 
 #endif

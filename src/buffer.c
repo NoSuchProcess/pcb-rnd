@@ -66,7 +66,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	pcb_arcop_add_to_buffer,
 	pcb_ratop_add_to_buffer,
 	NULL,
-	AddSubcToBuffer
+	pcb_subcop_add_to_buffer
 };
 
 static pcb_opfunc_t MoveBufferFunctions = {
@@ -83,7 +83,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_arcop_move_to_buffer,
 	pcb_ratop_move_to_buffer,
 	NULL,
-	MoveSubcToBuffer
+	pcb_subcop_move_to_buffer
 };
 
 /* ---------------------------------------------------------------------------
@@ -666,7 +666,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	/* paste subcircuits */
 	PCB_SUBC_LOOP(PCB_PASTEBUFFER->Data);
 	{
-		CopySubc(&ctx, subc);
+		pcb_subcop_copy(&ctx, subc);
 		changed = pcb_true;
 	}
 	PCB_END_LOOP;
