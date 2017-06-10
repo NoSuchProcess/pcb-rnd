@@ -308,8 +308,7 @@ void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
 	return (sc);
 }
 
-extern pcb_opfunc_t MoveFunctions, Rotate90Functions;
-
+extern pcb_opfunc_t MoveFunctions, Rotate90Functions, ChgFlagFunctions;
 
 void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
@@ -416,6 +415,19 @@ void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO
 	abort();
+}
+
+void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, int redraw)
+{
+	pcb_opctx_chgflag_t ctx;
+
+	ctx.pcb = pcb;
+	ctx.how = how;
+	ctx.flag = PCB_FLAG_SELECTED;
+
+	pcb_subc_op(PCB->Data, sc, &ChgFlagFunctions, &ctx);
+	if (redraw)
+		DrawSubc(sc);
 }
 
 

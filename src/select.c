@@ -199,6 +199,10 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 	case PCB_TYPE_ELEMENT:
 		pcb_select_element(pcb, (pcb_element_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
 		break;
+
+	case PCB_TYPE_SUBC:
+		pcb_select_subc(pcb, (pcb_subc_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
+		break;
 	}
 	pcb_draw();
 	pcb_undo_inc_serial();
