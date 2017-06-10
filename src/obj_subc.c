@@ -227,7 +227,7 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 }
 
 
-/* moves a subc by +-X and +-Y */
+/* Execute an operation on all children on an sc and update the bbox of the sc */
 void pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx)
 {
 	int n;
