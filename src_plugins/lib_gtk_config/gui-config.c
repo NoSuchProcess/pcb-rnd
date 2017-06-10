@@ -1410,17 +1410,17 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 typedef struct {
 	conf_native_t *cfg;
 	int idx;
-	GdkColor *color;
+	pcb_gtk_color_t *color;
 	GtkWidget *button;
 	pcb_gtk_common_t *com;
 } cfg_color_idx_t;
 
 static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 {
-	GdkColor new_color;
+	pcb_gtk_color_t new_color;
 	const char *str, *lcpath = "appearance/color/layer", *lspath = "appearance/color/layer_selected";
 
-	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
+	gtkc_color_button_get_color(button, &new_color);
 	str = ci->com->get_color_name(&new_color);
 
 	if ((strcmp(ci->cfg->hash_path, lcpath) == 0) || (strcmp(ci->cfg->hash_path, lspath) == 0)) {
@@ -1458,7 +1458,7 @@ static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, co
 		ci = malloc(sizeof(cfg_color_idx_t));
 		ci->cfg = cfg;
 		ci->idx = idx;
-		ci->color = calloc(sizeof(GdkColor), cfg->array_size);
+		ci->color = calloc(sizeof(pcb_gtk_color_t), cfg->array_size);
 		if (idx == 0)
 			conf_hid_set_data(cfg, ghid_conf_id, ci);
 	}
@@ -1466,7 +1466,7 @@ static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, co
 	com->map_color_string(cfg->val.color[idx], &(ci->color[idx]));
 
 	title = g_strdup_printf(_("pcb-rnd %s Color"), cfg->description);
-	ci->button = gtk_color_button_new_with_color(&(ci->color[idx]));
+	ci->button = gtkc_color_button_new_with_color(&(ci->color[idx]));
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(ci->button), title);
 	g_free(title);
 
@@ -1487,7 +1487,7 @@ void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int i
 		cfg_color_idx_t *ci = conf_hid_get_data(cfg, ghid_conf_id);
 
 		com->map_color_string(cfg->val.color[idx], &(ci->color[idx]));
-		gtk_color_button_set_color(GTK_COLOR_BUTTON(ci->button), &(ci->color[idx]));
+		gtkc_color_button_set_color(ci->button, &(ci->color[idx]));
 	}
 }
 
@@ -1726,7 +1726,7 @@ static struct {
 	GtkAdjustment *edit_idx_adj;
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
-	GdkColor color;
+	pcb_gtk_color_t color;
 	gtk_conf_list_t cl;
 
 	GtkListStore *src_l, *res_l;
@@ -2326,8 +2326,8 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 		break;
 	case CFN_COLOR:
 		{
-			GdkColor clr;
-			gtk_color_button_get_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &clr);
+			pcb_gtk_color_t clr;
+			gtkc_color_button_get_color(auto_tab_widgets.edit_color, &clr);
 			new_val = com->get_color_name(&clr);
 			update_clr = 1;
 		}

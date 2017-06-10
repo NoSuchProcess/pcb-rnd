@@ -24,6 +24,9 @@
 #define PCB_GTK_COMPAT_H
 
 #ifdef PCB_GTK3
+
+typedef GdkRGBA pcb_gtk_color_t;
+
 /** hbox/vbox creation, similar to gtk2's */
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 {
@@ -37,6 +40,23 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, spacing);
 	gtk_box_set_homogeneous(GTK_BOX(box), homogenous);
 	return box;
+}
+
+/* color button */
+
+static inline GtkWidget *gtkc_color_button_new_with_color(pcb_gtk_color_t *color)
+{
+	return gtk_color_button_new_with_rgba(color);
+}
+
+static inline void gtkc_color_button_set_color(GtkWidget *button, pcb_gtk_color_t *color)
+{
+	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(button), color);
+}
+
+static inline void gtkc_color_button_get_color(GtkWidget *button, pcb_gtk_color_t *color)
+{
+	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(button), color);
 }
 
 /* combo box text API, GTK3, GTK2.24 compatible. */
@@ -108,6 +128,8 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 #else
 /* GTK2 */
 
+typedef GdkColor pcb_gtk_color_t;
+
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 {
 	return gtk_hbox_new(homogenous, spacing);
@@ -116,6 +138,23 @@ static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 {
 	return gtk_vbox_new(homogenous, spacing);
+}
+
+/* color button */
+
+static inline GtkWidget *gtkc_color_button_new_with_color(pcb_gtk_color_t *color)
+{
+	return gtk_color_button_new_with_color(color);
+}
+
+static inline void gtkc_color_button_set_color(GtkWidget *button, pcb_gtk_color_t *color)
+{
+	gtk_color_button_set_color(GTK_COLOR_BUTTON(button), color);
+}
+
+static inline void gtkc_color_button_get_color(GtkWidget *button, pcb_gtk_color_t *color)
+{
+	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), color);
 }
 
 /* combo box text API, GTK2.4 compatible, GTK3 incompatible. */
