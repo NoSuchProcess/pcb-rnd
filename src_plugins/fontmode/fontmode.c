@@ -81,8 +81,6 @@ static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 
 static void add_poly(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t ox, pcb_coord_t oy)
 {
-	int n;
-	pcb_point_t *pnt;
 	pcb_polygon_t *np;
 	
 	/* alloc */
