@@ -72,7 +72,7 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 }
 
 #define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->draw = (gboolean (*)(GtkWidget *, cairo_t *))val
-typedef struct cairo_t pcb_gtk_expose_t;
+typedef cairo_t pcb_gtk_expose_t;
 #define PCB_GTK_DRAW_SIGNAL_NAME "draw"
 
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
