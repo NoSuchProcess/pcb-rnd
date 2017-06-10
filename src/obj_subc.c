@@ -34,6 +34,7 @@
 #include "obj_subc_op.h"
 #include "obj_text_draw.h"
 #include "rtree.h"
+#include "draw.h"
 #include "operation.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
@@ -226,6 +227,18 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 	return pcb_subc_dup_at(pcb, dst, src, 0, 0);
 }
 
+/* erases a subc on a layer */
+static void EraseSubc(pcb_subc_t *sc)
+{
+	pcb_draw_invalidate(sc);
+/*	pcb_flag_erase(&sc->Flags); ??? */
+}
+
+static void DrawSubc(pcb_subc_t *sc)
+{
+	pcb_draw_invalidate(sc);
+}
+
 
 /* Execute an operation on all children on an sc and update the bbox of the sc */
 void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx)
@@ -235,7 +248,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
 	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
 
-/*	EraseSubc(Element);*/
+	EraseSubc(sc);
 
 	if (Data->subc_tree != NULL)
 		pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
@@ -276,7 +289,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	pcb_close_box(&sc->BoundingBox);
 	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
-/*	DrawSubc(Element);*/
+	DrawSubc(sc);
 	pcb_draw();
 	return sc;
 }
