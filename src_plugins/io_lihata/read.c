@@ -44,6 +44,7 @@
 #include "polygon.h"
 #include "conf_core.h"
 #include "obj_all.h"
+#include "obj_subc.h"
 #include "io_lihata.h"
 
 #warning TODO: put these in a gloal load-context-struct
