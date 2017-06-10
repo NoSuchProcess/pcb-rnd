@@ -27,6 +27,8 @@ const char *ghid_cairo_menu_cookie = "gtk3 hid menu, cairo";
 
 pcb_hid_t gtk3_cairo_hid;
 
+void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid);
+
 void gtk3_cairo_parse_arguments(int *argc, char ***argv)
 {
 	ghid_cairo_install(&ghidgui->common, NULL);
