@@ -46,8 +46,7 @@ pcb_subc_t *pcb_subc_alloc(void)
 
 void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
 {
-#warning TODO: parent should be sc
-	PCB_SET_PARENT(sc->data, data, dt);
+	PCB_SET_PARENT(sc->data, subc, sc);
 	pcb_subclist_append(&dt->subc, sc);
 }
 
