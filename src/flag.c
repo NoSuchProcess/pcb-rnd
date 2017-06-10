@@ -42,7 +42,7 @@ pcb_opfunc_t ChgFlagFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChgFlagArc,
+	pcb_arcop_change_flag,
 	NULL,
 	NULL,
 	ChgFlagSubc

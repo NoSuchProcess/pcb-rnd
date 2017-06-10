@@ -50,9 +50,9 @@ static pcb_opfunc_t RemoveFunctions = {
 	NULL,
 	RemoveLinePoint,
 	RemovePolygonPoint,
-	RemoveArc_op,
+	pcb_arcop_remve,
 	RemoveRat,
-	RemoveArcPoint_op,
+	pcb_arcop_remove_point,
 	RemoveSubc_op
 };
 
@@ -67,7 +67,7 @@ static pcb_opfunc_t DestroyFunctions = {
 	NULL,
 	NULL,
 	DestroyPolygonPoint,
-	DestroyArc,
+	pcb_arcop_destroy,
 	DestroyRat,
 	NULL,
 	DestroySubc

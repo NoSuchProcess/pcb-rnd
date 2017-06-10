@@ -63,7 +63,7 @@ pcb_opfunc_t Rotate90Functions = {
 	NULL,
 	Rotate90LinePoint,
 	NULL,
-	Rotate90Arc,
+	pcb_arcop_rotate90,
 	NULL,
 	NULL,
 	Rotate90Subc

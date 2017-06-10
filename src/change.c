@@ -55,7 +55,7 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 	ChangePadSize,
 	NULL,
 	NULL,
-	ChangeArcSize,
+	pcb_arcop_change_size,
 	NULL,
 	NULL,
 	ChangeSubcSize
@@ -72,7 +72,7 @@ static pcb_opfunc_t Change1stSizeFunctions = {
 	ChangePadSize,
 	NULL,
 	NULL,
-	ChangeArcSize,
+	pcb_arcop_change_size,
 	NULL,
 	NULL,
 	ChangeSubc1stSize
@@ -123,7 +123,7 @@ static pcb_opfunc_t ChangeClearSizeFunctions = {
 	ChangePadClearSize,
 	NULL,
 	NULL,
-	ChangeArcClearSize,
+	pcb_arcop_change_clear_size,
 	NULL,
 	NULL,
 	ChangeSubcClearSize
@@ -208,7 +208,7 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeArcJoin,
+	pcb_arcop_change_join,
 	NULL,
 	NULL,
 	NULL
@@ -280,7 +280,7 @@ static pcb_opfunc_t SetJoinFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	SetArcJoin,
+	pcb_arcop_set_join,
 	NULL,
 	NULL,
 	NULL
@@ -331,7 +331,7 @@ static pcb_opfunc_t ClrJoinFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ClrArcJoin,
+	pcb_arcop_clear_join,
 	NULL,
 	NULL,
 	NULL
@@ -365,7 +365,7 @@ static pcb_opfunc_t ChangeRadiusFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeArcRadius,
+	pcb_arcop_change_radius,
 	NULL,
 	NULL,
 	NULL
@@ -382,7 +382,7 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	ChangeArcAngle,
+	pcb_arcop_change_angle,
 	NULL,
 	NULL,
 	NULL

@@ -28,24 +28,24 @@
 
 #include "operation.h"
 
-void *AddArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *MoveArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_arc_t *arc);
-void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *ChangeArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *SetArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *ClrArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *CopyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *MoveArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_arc_t * arc, pcb_layer_t * Destination);
-void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc);
-void *DestroyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *RemoveArcPoint_op(pcb_opctx_t *ctx, pcb_layer_t *l, pcb_arc_t *a, int *end_id);
-void *Rotate90Arc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
-void *ChgFlagArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_arc_t *arc);
+void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_arc_t * arc, pcb_layer_t * Destination);
+void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc);
+void *pcb_arcop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_remve(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *l, pcb_arc_t *a, int *end_id);
+void *pcb_arcop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
+void *pcb_arcop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc);
 
 
 void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc);

@@ -63,7 +63,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	AddArcToBuffer,
+	pcb_arcop_add_to_buffer,
 	AddRatToBuffer,
 	NULL,
 	AddSubcToBuffer
@@ -80,7 +80,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	MoveArcToBuffer,
+	pcb_arcop_move_to_buffer,
 	MoveRatToBuffer,
 	NULL,
 	MoveSubcToBuffer
@@ -627,7 +627,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			PCB_END_LOOP;
 			PCB_ARC_LOOP(sourcelayer);
 			{
-				if (CopyArc(&ctx, destlayer, arc))
+				if (pcb_arcop_copy(&ctx, destlayer, arc))
 					changed = 1;
 			}
 			PCB_END_LOOP;

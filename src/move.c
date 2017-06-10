@@ -59,7 +59,7 @@ pcb_opfunc_t MoveFunctions = {
 	NULL,
 	MoveLinePoint,
 	MovePolygonPoint,
-	MoveArc,
+	pcb_arcop_move,
 	NULL,
 	NULL,
 	MoveSubc
@@ -76,7 +76,7 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	MoveArcToLayer,
+	pcb_arcop_move_to_layer,
 	MoveRatToLayer,
 	NULL,
 	NULL

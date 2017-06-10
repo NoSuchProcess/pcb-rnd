@@ -298,7 +298,7 @@ pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc)
 /***** operations *****/
 
 /* copies an arc to buffer */
-void *AddArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 
@@ -308,7 +308,7 @@ void *AddArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* moves an arc to buffer */
-void *MoveArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
+void *pcb_arcop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 
@@ -331,7 +331,7 @@ void *MoveArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
 }
 
 /* changes the size of an arc */
-void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Thickness + ctx->chgsize.delta;
 
@@ -353,7 +353,7 @@ void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* changes the clearance size of an arc */
-void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Clearance + ctx->chgsize.delta;
 
@@ -382,7 +382,7 @@ void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* changes the radius of an arc (is_primary 0=width or 1=height or 2=both) */
-void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_coord_t value, *dst;
 	void *a0, *a1;
@@ -394,8 +394,8 @@ void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		case 0: dst = &Arc->Width; break;
 		case 1: dst = &Arc->Height; break;
 		case 2:
-			ctx->chgsize.is_primary = 0; a0 = ChangeArcRadius(ctx, Layer, Arc);
-			ctx->chgsize.is_primary = 1; a1 = ChangeArcRadius(ctx, Layer, Arc);
+			ctx->chgsize.is_primary = 0; a0 = pcb_arcop_change_radius(ctx, Layer, Arc);
+			ctx->chgsize.is_primary = 1; a1 = pcb_arcop_change_radius(ctx, Layer, Arc);
 			if ((a0 != NULL) || (a1 != NULL))
 				return Arc;
 			return NULL;
@@ -419,7 +419,7 @@ void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* changes the angle of an arc (is_primary 0=start or 1=end) */
-void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_angle_t value, *dst;
 	void *a0, *a1;
@@ -431,8 +431,8 @@ void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		case 0: dst = &Arc->StartAngle; break;
 		case 1: dst = &Arc->Delta; break;
 		case 2:
-			ctx->chgangle.is_primary = 0; a0 = ChangeArcAngle(ctx, Layer, Arc);
-			ctx->chgangle.is_primary = 1; a1 = ChangeArcAngle(ctx, Layer, Arc);
+			ctx->chgangle.is_primary = 0; a0 = pcb_arcop_change_angle(ctx, Layer, Arc);
+			ctx->chgangle.is_primary = 1; a1 = pcb_arcop_change_angle(ctx, Layer, Arc);
 			if ((a0 != NULL) || (a1 != NULL))
 				return Arc;
 			return NULL;
@@ -459,7 +459,7 @@ void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* changes the clearance flag of an arc */
-void *ChangeArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
@@ -479,23 +479,23 @@ void *ChangeArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* sets the clearance flag of an arc */
-void *SetArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
-	return ChangeArcJoin(ctx, Layer, Arc);
+	return pcb_arcop_change_join(ctx, Layer, Arc);
 }
 
 /* clears the clearance flag of an arc */
-void *ClrArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
-	return ChangeArcJoin(ctx, Layer, Arc);
+	return pcb_arcop_change_join(ctx, Layer, Arc);
 }
 
 /* copies an arc */
-void *CopyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_arc_t *arc;
 
@@ -510,7 +510,7 @@ void *CopyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* moves an arc */
-void *MoveArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
@@ -529,7 +529,7 @@ void *MoveArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* moves an arc between layers; lowlevel routines */
-void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_arc_t * arc, pcb_layer_t * Destination)
+void *pcb_arcop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_arc_t * arc, pcb_layer_t * Destination)
 {
 	pcb_r_delete_entry(Source->arc_tree, (pcb_box_t *) arc);
 
@@ -547,7 +547,7 @@ void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_arc_t *
 
 
 /* moves an arc between layers */
-void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
+void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 {
 	pcb_arc_t *newone;
 
@@ -565,7 +565,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	if (Layer->meta.real.vis)
 		EraseArc(Arc);
-	newone = (pcb_arc_t *) MoveArcToLayerLowLevel(ctx, Layer, Arc, ctx->move.dst_layer);
+	newone = (pcb_arc_t *) pcb_arcop_move_to_layer_low(ctx, Layer, Arc, ctx->move.dst_layer);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, ctx->move.dst_layer, Arc);
 	if (ctx->move.dst_layer->meta.real.vis)
 		DrawArc(ctx->move.dst_layer, newone);
@@ -574,7 +574,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 }
 
 /* destroys an arc from a layer */
-void *DestroyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 
@@ -585,7 +585,7 @@ void *DestroyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* removes an arc from a layer */
-void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_remve(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
@@ -598,9 +598,9 @@ void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	return NULL;
 }
 
-void *RemoveArcPoint_op(pcb_opctx_t *ctx, pcb_layer_t *l, pcb_arc_t *a, int *end_id)
+void *pcb_arcop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *l, pcb_arc_t *a, int *end_id)
 {
-	return RemoveArc_op(ctx, l, a);
+	return pcb_arcop_remve(ctx, l, a);
 }
 
 void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
@@ -611,7 +611,7 @@ void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	return RemoveArc_op(&ctx, Layer, Arc);
+	return pcb_arcop_remve(&ctx, Layer, Arc);
 }
 
 /* rotates an arc */
@@ -663,7 +663,7 @@ void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
 }
 
 /* rotates an arc */
-void *Rotate90Arc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	EraseArc(Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -704,7 +704,7 @@ void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 }
 
 #define PCB_ARC_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_RUBBEREND | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
-void *ChgFlagArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arcop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if ((ctx->chgflag.flag & PCB_ARC_FLAGS) != ctx->chgflag.flag)
 		return NULL;
