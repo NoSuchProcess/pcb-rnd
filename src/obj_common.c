@@ -53,6 +53,7 @@ int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t
 		return 0;
 	case PCB_TYPE_VIA:
 	case PCB_TYPE_ELEMENT:
+	case PCB_TYPE_SUBC:
 		*res = *(pcb_box_t *)Ptr1;
 		return 0;
 	case PCB_TYPE_POLYGON_POINT:
