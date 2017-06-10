@@ -39,6 +39,7 @@
 #include "action_helper.h"
 #include "crosshair.h"
 #include "conf_core.h"
+#include "undo.h"
 
 #include "in_keyboard.h"
 #include "bu_status_line.h"
