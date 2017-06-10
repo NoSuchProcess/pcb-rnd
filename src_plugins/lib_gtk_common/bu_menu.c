@@ -95,7 +95,6 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 	char *menu_label;
 	lht_node_t *n_action = pcb_hid_cfg_menu_field(sub_res, PCB_MF_ACTION, NULL);
 	lht_node_t *n_keydesc = pcb_hid_cfg_menu_field(sub_res, PCB_MF_ACCELERATOR, NULL);
-	int is_main;
 
 	/* Resolve accelerator and save it */
 	if (n_keydesc != NULL) {
@@ -106,9 +105,6 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 		else
 			pcb_hid_cfg_error(sub_res, "No action specified for key accel\n");
 	}
-
-	is_main = (sub_res->parent->type == LHT_LIST) && (sub_res->parent->name != NULL)
-		&& (strcmp(sub_res->parent->name, "main_menu") == 0);
 
 	/* Resolve menu name */
 	tmp_val = sub_res->name;
