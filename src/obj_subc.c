@@ -252,6 +252,7 @@ void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 /*	EraseSubc(Element);*/
 	pcb_subc_move(PCB->Data, sc, ctx->move.dx, ctx->move.dy);
 /*	DrawSubc(Element);*/
+	return sc;
 }
 
 
