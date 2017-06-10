@@ -500,6 +500,7 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	}
 
 	pcb_add_polygon_on_layer(ly, poly);
+	pcb_poly_init_clip(ly->parent, ly, poly);
 
 	return 0;
 }
