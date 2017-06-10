@@ -90,7 +90,6 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, 
 static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * sub_res)
 {
 	const char *tmp_val;
-	gchar mnemonic = 0;
 	GtkAction *action = NULL;
 	char *accel = NULL;
 	char *menu_label;
@@ -110,11 +109,6 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 
 	is_main = (sub_res->parent->type == LHT_LIST) && (sub_res->parent->name != NULL)
 		&& (strcmp(sub_res->parent->name, "main_menu") == 0);
-
-	/* Resolve the mnemonic */
-	tmp_val = pcb_hid_cfg_menu_field_str(sub_res, PCB_MF_MNEMONIC);
-	if (tmp_val)
-		mnemonic = tmp_val[0];
 
 	/* Resolve menu name */
 	tmp_val = sub_res->name;
