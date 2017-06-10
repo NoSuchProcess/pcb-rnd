@@ -692,7 +692,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			else if (drag_dellayer) {
 				if (lactive >= 0) {
 					char tmp[32];
-					sprintf(tmp, "%d", lactive);
+					sprintf(tmp, "%ld", lactive);
 					pcb_hid_actionl("MoveLayer", tmp, "-1", NULL);
 				}
 				drag_dellayer = 0;
