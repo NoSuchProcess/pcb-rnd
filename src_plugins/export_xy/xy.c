@@ -160,7 +160,7 @@ static char *reference_pin_names[] = {"1", "2", "A1", "A2", "B1", "B2", 0};
 typedef struct {
 	char utcTime[64];
 	char *name, *descr, *value, *fixed_rotation;
-	char *pad_netname;
+	const char *pad_netname;
 	pcb_coord_t x, y;
 	double theta;
 	pcb_element_t *element;
@@ -545,15 +545,27 @@ static int PrintXY(const template_t *templ)
 		fprintf_templ(fp, &ctx, templ->elem);
 		PCB_PIN_LOOP(element);
 		{
+			pcb_lib_menu_t *m = pcb_netlist_find_net4pin(PCB, pin);
+			if (m != NULL)
+				ctx.pad_netname = m->Name;
+			else
+				ctx.pad_netname = NULL;
 			fprintf_templ(fp, &ctx, templ->pad);
 		}
 		PCB_END_LOOP;
 
 		PCB_PAD_LOOP(element);
 		{
+			pcb_lib_menu_t *m = pcb_netlist_find_net4pad(PCB, pad);
+			if (m != NULL)
+				ctx.pad_netname = m->Name;
+			else
+				ctx.pad_netname = NULL;
 			fprintf_templ(fp, &ctx, templ->pad);
 		}
 		PCB_END_LOOP;
+
+		ctx.pad_netname = NULL;
 
 		free(ctx.name);
 		free(ctx.descr);
