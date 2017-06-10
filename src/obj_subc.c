@@ -228,12 +228,14 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 
 
 /* Execute an operation on all children on an sc and update the bbox of the sc */
-void pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx)
+void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx)
 {
 	int n;
 
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
 	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
+
+/*	EraseSubc(Element);*/
 
 	if (Data->subc_tree != NULL)
 		pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
@@ -274,6 +276,9 @@ void pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opc
 
 	pcb_close_box(&sc->BoundingBox);
 	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
+/*	DrawSubc(Element);*/
+	pcb_draw();
+	return sc;
 }
 
 
@@ -295,20 +300,12 @@ extern pcb_opfunc_t MoveFunctions, Rotate90Functions;
 
 void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-/*	EraseSubc(Element);*/
-	pcb_subc_op(PCB->Data, sc, &MoveFunctions, ctx);
-/*	DrawSubc(Element);*/
-	return sc;
+	return pcb_subc_op(PCB->Data, sc, &MoveFunctions, ctx);
 }
 
 void *Rotate90Subc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-/*	EraseElement(Element);*/
-	pcb_subc_op(PCB->Data, sc, &Rotate90Functions, ctx);
-
-/*	DrawElement(Element);*/
-	pcb_draw();
-	return sc;
+	return pcb_subc_op(PCB->Data, sc, &Rotate90Functions, ctx);
 }
 
 
