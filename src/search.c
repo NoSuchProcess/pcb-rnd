@@ -1141,7 +1141,6 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 		pcb_box_t *box = &((pcb_subc_t *) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_SUBC;
-printf("SUBC!\n");
 	}
 
 	for (i = -1; i < pcb_max_layer + 1; i++) {
@@ -1229,6 +1228,13 @@ printf("SUBC!\n");
 		return (PCB_TYPE_ELEMENT);
 	}
 
+	if (HigherAvail & PCB_TYPE_SUBC) {
+		*Result1 = r1;
+		*Result2 = r2;
+		*Result3 = r3;
+		return (PCB_TYPE_SUBC);
+	}
+
 	/* search the 'invisible objects' last */
 	if (!PCB->InvisibleObjectsOn)
 		return (PCB_TYPE_NONE);
@@ -1244,6 +1250,10 @@ printf("SUBC!\n");
 	if (Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(locked, (pcb_element_t **) Result1, (pcb_element_t **) Result2, (pcb_element_t **) Result3, pcb_true))
 		return (PCB_TYPE_ELEMENT);
+
+	if (Type & PCB_TYPE_SUBC &&
+			SearchSubcByLocation(locked, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, pcb_true))
+		return (PCB_TYPE_SUBC);
 
 	return (PCB_TYPE_NONE);
 }
