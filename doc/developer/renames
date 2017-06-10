@@ -1593,3 +1593,11 @@ DestroyElement -> pcb_elemop_destroy
 RemoveElement_op -> pcb_elemop_remove
 Rotate90Element -> pcb_elemop_rotate90
 Rotate90ElementName -> pcb_elemop_rotate90_name
+ChangePadSize -> pcb_padop_change_size
+ChangePadClearSize -> pcb_padop_change_clear_size
+ChangePadName -> pcb_padop_change_name
+ChangePadNum -> pcb_padop_change_num
+ChangePadSquare -> pcb_padop_change_square
+SetPadSquare -> pcb_padop_set_square
+ClrPadSquare -> pcb_padop_clear_square
+ChangePadMaskSize -> pcb_padop_change_mask_size

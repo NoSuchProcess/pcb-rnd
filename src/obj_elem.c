@@ -1553,7 +1553,7 @@ void *pcb_elemop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
-		ans = ChangePadSquare(ctx, Element, pad);
+		ans = pcb_padop_change_square(ctx, Element, pad);
 	}
 	PCB_END_LOOP;
 	return (ans);
@@ -1573,7 +1573,7 @@ void *pcb_elemop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
-		ans = SetPadSquare(ctx, Element, pad);
+		ans = pcb_padop_set_square(ctx, Element, pad);
 	}
 	PCB_END_LOOP;
 	return (ans);
@@ -1593,7 +1593,7 @@ void *pcb_elemop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
-		ans = ClrPadSquare(ctx, Element, pad);
+		ans = pcb_padop_clear_square(ctx, Element, pad);
 	}
 	PCB_END_LOOP;
 	return (ans);
