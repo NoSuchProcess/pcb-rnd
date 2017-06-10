@@ -709,6 +709,7 @@ void *pcb_arcop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 	if ((ctx->chgflag.flag & PCB_ARC_FLAGS) != ctx->chgflag.flag)
 		return NULL;
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Arc);
+	return Arc;
 }
 
 

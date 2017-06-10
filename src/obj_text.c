@@ -544,6 +544,7 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	if ((ctx->chgflag.flag & PCB_TEXT_FLAGS) != ctx->chgflag.flag)
 		return NULL;
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Text);
+	return Text;
 }
 
 
