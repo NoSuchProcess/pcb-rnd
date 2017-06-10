@@ -48,7 +48,7 @@
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static pcb_opfunc_t MoveFunctions = {
+pcb_opfunc_t MoveFunctions = {
 	MoveLine,
 	MoveText,
 	MovePolygon,

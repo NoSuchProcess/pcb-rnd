@@ -52,7 +52,7 @@
 /* ----------------------------------------------------------------------
  * some local identifiers
  */
-static pcb_opfunc_t Rotate90Functions = {
+pcb_opfunc_t Rotate90Functions = {
 	Rotate90Line,
 	Rotate90Text,
 	NULL,

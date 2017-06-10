@@ -34,6 +34,7 @@
 #include "obj_subc_op.h"
 #include "obj_text_draw.h"
 #include "rtree.h"
+#include "operation.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
 {
@@ -225,8 +226,9 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 	return pcb_subc_dup_at(pcb, dst, src, 0, 0);
 }
 
+
 /* moves a subc by +-X and +-Y */
-void pcb_subc_move(pcb_data_t *Data, pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx)
 {
 	int n;
 
@@ -250,85 +252,28 @@ void pcb_subc_move(pcb_data_t *Data, pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t
 
 		linelist_foreach(&sl->Line, &it, line) {
 			pcb_r_delete_entry(sl->line_tree, (pcb_box_t *)line);
-			pcb_line_move(line, dx, dy);
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_LINE, sl, line, line);
 			pcb_r_insert_entry(sl->line_tree, (pcb_box_t *)line, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &line->BoundingBox);
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
 			pcb_r_delete_entry(sl->arc_tree, (pcb_box_t *)arc);
-			pcb_arc_move(arc, dx, dy);
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_ARC, sl, arc, arc);
 			pcb_r_insert_entry(sl->arc_tree, (pcb_box_t *)arc, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &arc->BoundingBox);
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
 			pcb_r_delete_entry(sl->text_tree, (pcb_box_t *)text);
-			pcb_text_move(text, dx, dy);
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_TEXT, sl, text, text);
 			pcb_r_insert_entry(sl->text_tree, (pcb_box_t *)text, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &text->BoundingBox);
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
 			pcb_r_delete_entry(sl->polygon_tree, (pcb_box_t *)poly);
-			pcb_poly_move(poly, dx, dy);
-			pcb_r_insert_entry(sl->polygon_tree, (pcb_box_t *)poly, 0);
-			pcb_box_bump_box(&sc->BoundingBox, &poly->BoundingBox);
-		}
-
-	}
-
-	pcb_close_box(&sc->BoundingBox);
-	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
-}
-
-/* rotates a subc by steps*90 deg around cx;cy */
-void pcb_subc_rotate90(pcb_data_t *Data, pcb_subc_t *sc, pcb_coord_t cx, pcb_coord_t cy, unsigned steps)
-{
-	int n;
-
-	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
-	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
-
-	if (Data->subc_tree != NULL)
-		pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
-	else
-		Data->subc_tree = pcb_r_create_tree(NULL, 0, 0);
-
-
-	for(n = 0; n < sc->data->LayerN; n++) {
-		pcb_layer_t *sl = sc->data->Layer + n;
-		pcb_line_t *line;
-		pcb_text_t *text;
-		pcb_polygon_t *poly;
-		pcb_arc_t *arc;
-		gdl_iterator_t it;
-
-
-		linelist_foreach(&sl->Line, &it, line) {
-			pcb_r_delete_entry(sl->line_tree, (pcb_box_t *)line);
-			pcb_line_rotate90(line, cx, cy, steps);
-			pcb_r_insert_entry(sl->line_tree, (pcb_box_t *)line, 0);
-			pcb_box_bump_box(&sc->BoundingBox, &line->BoundingBox);
-		}
-
-		arclist_foreach(&sl->Arc, &it, arc) {
-			pcb_r_delete_entry(sl->arc_tree, (pcb_box_t *)arc);
-			pcb_arc_rotate90(arc, cx, cy, steps);
-			pcb_r_insert_entry(sl->arc_tree, (pcb_box_t *)arc, 0);
-			pcb_box_bump_box(&sc->BoundingBox, &arc->BoundingBox);
-		}
-
-		textlist_foreach(&sl->Text, &it, text) {
-			pcb_r_delete_entry(sl->text_tree, (pcb_box_t *)text);
-			pcb_text_rotate90(text, cx, cy, steps);
-			pcb_r_insert_entry(sl->text_tree, (pcb_box_t *)text, 0);
-			pcb_box_bump_box(&sc->BoundingBox, &text->BoundingBox);
-		}
-
-		polylist_foreach(&sl->Polygon, &it, poly) {
-			pcb_r_delete_entry(sl->polygon_tree, (pcb_box_t *)poly);
-			pcb_poly_rotate90(poly, cx, cy, steps);
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_POLYGON, sl, poly, poly);
 			pcb_r_insert_entry(sl->polygon_tree, (pcb_box_t *)poly, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &poly->BoundingBox);
 		}
@@ -347,18 +292,19 @@ void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY);
 
-
-
 #warning TODO:
 /*	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);*/
 
 	return (sc);
 }
 
+extern pcb_opfunc_t MoveFunctions, Rotate90Functions;
+
+
 void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 /*	EraseSubc(Element);*/
-	pcb_subc_move(PCB->Data, sc, ctx->move.dx, ctx->move.dy);
+	pcb_subc_op(PCB->Data, sc, &MoveFunctions, ctx);
 /*	DrawSubc(Element);*/
 	return sc;
 }
@@ -366,7 +312,8 @@ void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *Rotate90Subc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 /*	EraseElement(Element);*/
-	pcb_subc_rotate90(PCB->Data, sc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	pcb_subc_op(PCB->Data, sc, &Rotate90Functions, ctx);
+
 /*	DrawElement(Element);*/
 	pcb_draw();
 	return sc;
