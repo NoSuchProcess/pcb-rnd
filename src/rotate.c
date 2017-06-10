@@ -65,7 +65,8 @@ static pcb_opfunc_t Rotate90Functions = {
 	NULL,
 	Rotate90Arc,
 	NULL,
-	NULL
+	NULL,
+	Rotate90Subc
 };
 
 /* ---------------------------------------------------------------------------

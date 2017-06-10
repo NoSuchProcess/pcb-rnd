@@ -282,6 +282,63 @@ void pcb_subc_move(pcb_data_t *Data, pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t
 	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
 }
 
+/* rotates a subc by steps*90 deg around cx;cy */
+void pcb_subc_rotate90(pcb_data_t *Data, pcb_subc_t *sc, pcb_coord_t cx, pcb_coord_t cy, unsigned steps)
+{
+	int n;
+
+	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
+	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
+
+	if (Data->subc_tree != NULL)
+		pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
+	else
+		Data->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+
+
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *sl = sc->data->Layer + n;
+		pcb_line_t *line;
+		pcb_text_t *text;
+		pcb_polygon_t *poly;
+		pcb_arc_t *arc;
+		gdl_iterator_t it;
+
+
+		linelist_foreach(&sl->Line, &it, line) {
+			pcb_r_delete_entry(sl->line_tree, (pcb_box_t *)line);
+			pcb_line_rotate90(line, cx, cy, steps);
+			pcb_r_insert_entry(sl->line_tree, (pcb_box_t *)line, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &line->BoundingBox);
+		}
+
+		arclist_foreach(&sl->Arc, &it, arc) {
+			pcb_r_delete_entry(sl->arc_tree, (pcb_box_t *)arc);
+			pcb_arc_rotate90(arc, cx, cy, steps);
+			pcb_r_insert_entry(sl->arc_tree, (pcb_box_t *)arc, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &arc->BoundingBox);
+		}
+
+		textlist_foreach(&sl->Text, &it, text) {
+			pcb_r_delete_entry(sl->text_tree, (pcb_box_t *)text);
+			pcb_text_rotate90(text, cx, cy, steps);
+			pcb_r_insert_entry(sl->text_tree, (pcb_box_t *)text, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &text->BoundingBox);
+		}
+
+		polylist_foreach(&sl->Polygon, &it, poly) {
+			pcb_r_delete_entry(sl->polygon_tree, (pcb_box_t *)poly);
+			pcb_poly_rotate90(poly, cx, cy, steps);
+			pcb_r_insert_entry(sl->polygon_tree, (pcb_box_t *)poly, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &poly->BoundingBox);
+		}
+
+	}
+
+	pcb_close_box(&sc->BoundingBox);
+	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
+}
+
 
 /* copies a subcircuit onto the PCB.  Then does a draw. */
 void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
@@ -303,6 +360,15 @@ void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
 /*	EraseSubc(Element);*/
 	pcb_subc_move(PCB->Data, sc, ctx->move.dx, ctx->move.dy);
 /*	DrawSubc(Element);*/
+	return sc;
+}
+
+void *Rotate90Subc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+/*	EraseElement(Element);*/
+	pcb_subc_rotate90(PCB->Data, sc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+/*	DrawElement(Element);*/
+	pcb_draw();
 	return sc;
 }
 
