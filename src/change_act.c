@@ -1172,8 +1172,8 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 	if (function && *function && style && *style) {
 		pcb_bool absolute;
 
-		kind = pcb_get_value(style, NULL, &absolute, NULL);
-		if (absolute)
+		kind = pcb_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
+		if (absolute && (kind <= 5))
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
 				if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
