@@ -1056,7 +1056,6 @@ extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_index, new_index;
-	int new_top = -1;
 
 	if (argc != 2) {
 		pcb_message(PCB_MSG_ERROR, "Usage; MoveLayer(old,new)");
@@ -1083,13 +1082,11 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		new_index = INDEXOFCURRENT - 1;
 		if (new_index < 0)
 			return 1;
-		new_top = new_index;
 	}
 	else if (strcmp(argv[1], "down") == 0) {
 		new_index = INDEXOFCURRENT + 1;
 		if (new_index >= pcb_max_layer)
 			return 1;
-		new_top = new_index;
 	}
 	else if (strncmp(argv[1], "step", 4) == 0) {
 		pcb_layer_t *l = CURRENT;
