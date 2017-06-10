@@ -228,7 +228,58 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 /* moves a subc by +-X and +-Y */
 void pcb_subc_move(pcb_data_t *Data, pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy)
 {
-	pcb_message(PCB_MSG_ERROR, "pcb_subc_move() not yet implemented\n");
+	int n;
+
+	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
+	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
+
+	if (Data->subc_tree != NULL)
+		pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
+	else
+		Data->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+
+
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *sl = sc->data->Layer + n;
+		pcb_line_t *line;
+		pcb_text_t *text;
+		pcb_polygon_t *poly;
+		pcb_arc_t *arc;
+		gdl_iterator_t it;
+
+
+		linelist_foreach(&sl->Line, &it, line) {
+			pcb_r_delete_entry(sl->line_tree, (pcb_box_t *)line);
+			pcb_line_move(line, dx, dy);
+			pcb_r_insert_entry(sl->line_tree, (pcb_box_t *)line, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &line->BoundingBox);
+		}
+
+		arclist_foreach(&sl->Arc, &it, arc) {
+			pcb_r_delete_entry(sl->arc_tree, (pcb_box_t *)arc);
+			pcb_arc_move(arc, dx, dy);
+			pcb_r_insert_entry(sl->arc_tree, (pcb_box_t *)arc, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &arc->BoundingBox);
+		}
+
+		textlist_foreach(&sl->Text, &it, text) {
+			pcb_r_delete_entry(sl->text_tree, (pcb_box_t *)text);
+			pcb_text_move(text, dx, dy);
+			pcb_r_insert_entry(sl->text_tree, (pcb_box_t *)text, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &text->BoundingBox);
+		}
+
+		polylist_foreach(&sl->Polygon, &it, poly) {
+			pcb_r_delete_entry(sl->polygon_tree, (pcb_box_t *)poly);
+			pcb_poly_move(poly, dx, dy);
+			pcb_r_insert_entry(sl->polygon_tree, (pcb_box_t *)poly, 0);
+			pcb_box_bump_box(&sc->BoundingBox, &poly->BoundingBox);
+		}
+
+	}
+
+	pcb_close_box(&sc->BoundingBox);
+	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
 }
 
 
