@@ -2328,8 +2328,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 		{
 			GdkColor clr;
 			gtk_color_button_get_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &clr);
-			sprintf(buff, "#%02x%02x%02x", (clr.red >> 8) & 0xFF, (clr.green >> 8) & 0xFF, (clr.blue >> 8) & 0xFF);
-			new_val = buff;
+			new_val = com->get_color_name(&clr);
 			update_clr = 1;
 		}
 		break;
