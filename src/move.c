@@ -52,7 +52,7 @@ pcb_opfunc_t MoveFunctions = {
 	pcb_lineop_move,
 	MoveText,
 	MovePolygon,
-	MoveVia,
+	pcb_viaop_move,
 	pcb_elemop_move,
 	pcb_elemop_move_name,
 	NULL,

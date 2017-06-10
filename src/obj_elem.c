@@ -1548,7 +1548,7 @@ void *pcb_elemop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		ans = ChangePinSquare(ctx, Element, pin);
+		ans = pcb_pinop_change_square(ctx, Element, pin);
 	}
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
@@ -1568,7 +1568,7 @@ void *pcb_elemop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		ans = SetPinSquare(ctx, Element, pin);
+		ans = pcb_pinop_set_square(ctx, Element, pin);
 	}
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
@@ -1588,7 +1588,7 @@ void *pcb_elemop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		ans = ClrPinSquare(ctx, Element, pin);
+		ans = pcb_pinop_clear_square(ctx, Element, pin);
 	}
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
@@ -1608,7 +1608,7 @@ void *pcb_elemop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		ChangePinOctagon(ctx, Element, pin);
+		pcb_pinop_change_octagon(ctx, Element, pin);
 		result = Element;
 	}
 	PCB_END_LOOP;
@@ -1624,7 +1624,7 @@ void *pcb_elemop_set_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		SetPinOctagon(ctx, Element, pin);
+		pcb_pinop_set_octagon(ctx, Element, pin);
 		result = Element;
 	}
 	PCB_END_LOOP;
@@ -1640,7 +1640,7 @@ void *pcb_elemop_clear_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		ClrPinOctagon(ctx, Element, pin);
+		pcb_pinop_clear_octagon(ctx, Element, pin);
 		result = Element;
 	}
 	PCB_END_LOOP;

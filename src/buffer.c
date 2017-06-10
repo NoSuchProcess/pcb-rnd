@@ -56,7 +56,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	pcb_lineop_add_to_buffer,
 	AddTextToBuffer,
 	AddPolygonToBuffer,
-	AddViaToBuffer,
+	pcb_viaop_add_to_buffer,
 	pcb_elemop_add_to_buffer,
 	NULL,
 	NULL,
@@ -73,7 +73,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_lineop_move_to_buffer,
 	MoveTextToBuffer,
 	MovePolygonToBuffer,
-	MoveViaToBuffer,
+	pcb_viaop_move_to_buffer,
 	pcb_elemop_move_to_buffer,
 	NULL,
 	NULL,
@@ -676,7 +676,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		changed |= (pinlist_length(&(PCB_PASTEBUFFER->Data->Via)) != 0);
 		PCB_VIA_LOOP(PCB_PASTEBUFFER->Data);
 		{
-			CopyVia(&ctx, via);
+			pcb_viaop_copy(&ctx, via);
 		}
 		PCB_END_LOOP;
 	}

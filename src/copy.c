@@ -46,7 +46,7 @@ static pcb_opfunc_t CopyFunctions = {
 	pcb_lineop_copy,
 	CopyText,
 	CopyPolygon,
-	CopyVia,
+	pcb_viaop_copy,
 	pcb_elemop_copy,
 	NULL,
 	NULL,
