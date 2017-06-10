@@ -53,7 +53,7 @@
  * some local identifiers
  */
 static pcb_opfunc_t AddBufferFunctions = {
-	AddLineToBuffer,
+	pcb_lineop_add_to_buffer,
 	AddTextToBuffer,
 	AddPolygonToBuffer,
 	AddViaToBuffer,
@@ -70,7 +70,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 };
 
 static pcb_opfunc_t MoveBufferFunctions = {
-	MoveLineToBuffer,
+	pcb_lineop_move_to_buffer,
 	MoveTextToBuffer,
 	MovePolygonToBuffer,
 	MoveViaToBuffer,
@@ -621,7 +621,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		if (destlayer->meta.real.vis) {
 			PCB_LINE_LOOP(sourcelayer);
 			{
-				if (CopyLine(&ctx, destlayer, line))
+				if (pcb_lineop_copy(&ctx, destlayer, line))
 					changed = 1;
 			}
 			PCB_END_LOOP;

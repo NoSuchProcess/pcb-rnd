@@ -28,27 +28,27 @@
 
 #include "operation.h"
 
-void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *ChangeLineName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *SetLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *ClrLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line);
-void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
-void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
-void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_line_t * line, pcb_layer_t * Destination);
-void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line);
-void *DestroyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
-void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *Rotate90LinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
-void *Rotate90Line(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
-void *ChgFlagLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line);
+void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
+void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
+void *pcb_lineop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_line_t * line, pcb_layer_t * Destination);
+void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line);
+void *pcb_lineop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
+void *pcb_lineop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_rotate90_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point);
+void *pcb_lineop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
+void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
 
 
 

@@ -752,7 +752,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 			pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr[i].Layer,
 						 ptr[i].Line, ptr[i].MovedPoint,
 						 ptr[i].DX, ptr[i].DY);
-			MoveLinePoint(ctx[i], ptr[i].Layer, ptr[i].Line, ptr[i].MovedPoint);
+			pcb_lineop_move_point(ctx[i], ptr[i].Layer, ptr[i].Line, ptr[i].MovedPoint);
 		}
 		rbnd->RubberbandN = 0;
 	}
@@ -764,7 +764,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 			{
 				/* first clear any marks that we made in the line flags */
 				PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-				MoveLinePointWithRoute(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
+				pcb_lineop_move_point_with_route(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
 			}
 			else
 			{
@@ -774,7 +774,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 
 				/* TODO: Move the entire line using the route calculator when 
 				 * advanced features such as push-n-shove are implemented. */
-				MoveLinePoint(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
+				pcb_lineop_move_point(ctx[0], ptr->Layer, ptr->Line, ptr->MovedPoint);
 			}
 
 			rbnd->RubberbandN--;

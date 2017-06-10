@@ -49,7 +49,7 @@
  * some local identifiers
  */
 pcb_opfunc_t MoveFunctions = {
-	MoveLine,
+	pcb_lineop_move,
 	MoveText,
 	MovePolygon,
 	MoveVia,
@@ -57,7 +57,7 @@ pcb_opfunc_t MoveFunctions = {
 	MoveElementName,
 	NULL,
 	NULL,
-	MoveLinePoint,
+	pcb_lineop_move_point,
 	MovePolygonPoint,
 	pcb_arcop_move,
 	NULL,
@@ -66,7 +66,7 @@ pcb_opfunc_t MoveFunctions = {
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {
-	MoveLineToLayer,
+	pcb_lineop_move_to_layer,
 	MoveTextToLayer,
 	MovePolygonToLayer,
 	NULL,
@@ -142,17 +142,17 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT,
 						 Ptr1, line, &line->Point1,
 						 ctx1.move.dx, ctx1.move.dy);
-			MoveLinePoint(&ctx1, Ptr1, line, &line->Point1);
+			pcb_lineop_move_point(&ctx1, Ptr1, line, &line->Point1);
 
 			/* Move point2 form line */
 			pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT,
 						 Ptr1, line, &line->Point2,
 						 ctx2.move.dx, ctx2.move.dy);
-			ptr2 = MoveLinePoint(&ctx2, Ptr1, line, &line->Point2);
+			ptr2 = pcb_lineop_move_point(&ctx2, Ptr1, line, &line->Point2);
 		}
 		/* Otherwise make a normal move */
 		else if(Type == PCB_TYPE_LINE_POINT) {
-			ptr2 = MoveLinePointWithRoute(&ctx1, Ptr1, Ptr2, Ptr3);
+			ptr2 = pcb_lineop_move_point_with_route(&ctx1, Ptr1, Ptr2, Ptr3);
 		}
 		else {
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);

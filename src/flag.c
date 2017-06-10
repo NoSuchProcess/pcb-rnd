@@ -32,7 +32,7 @@
 #include "obj_all_op.h"
 
 pcb_opfunc_t ChgFlagFunctions = {
-	ChgFlagLine,
+	pcb_lineop_change_flag,
 	ChgFlagText,
 	ChgFlagPolygon,
 	NULL,

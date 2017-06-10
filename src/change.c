@@ -45,7 +45,7 @@
  * some local identifiers
  */
 static pcb_opfunc_t ChangeSizeFunctions = {
-	ChangeLineSize,
+	pcb_lineop_change_size,
 	ChangeTextSize,
 	ChangePolyClear,
 	ChangeViaSize,
@@ -62,7 +62,7 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 };
 
 static pcb_opfunc_t Change1stSizeFunctions = {
-	ChangeLineSize,
+	pcb_lineop_change_size,
 	ChangeTextSize,
 	ChangePolyClear,
 	ChangeViaSize,
@@ -113,7 +113,7 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 };
 
 static pcb_opfunc_t ChangeClearSizeFunctions = {
-	ChangeLineClearSize,
+	pcb_lineop_change_clear_size,
 	NULL,
 	ChangePolygonClearSize,				/* just to tell the user not to :-) */
 	ChangeViaClearSize,
@@ -130,7 +130,7 @@ static pcb_opfunc_t ChangeClearSizeFunctions = {
 };
 
 static pcb_opfunc_t ChangeNameFunctions = {
-	ChangeLineName,
+	pcb_lineop_change_name,
 	ChangeTextName,
 	NULL,
 	ChangeViaName,
@@ -198,7 +198,7 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 };
 
 static pcb_opfunc_t ChangeJoinFunctions = {
-	ChangeLineJoin,
+	pcb_lineop_change_join,
 	ChangeTextJoin,
 	NULL,
 	NULL,
@@ -270,7 +270,7 @@ static pcb_opfunc_t SetSquareFunctions = {
 };
 
 static pcb_opfunc_t SetJoinFunctions = {
-	SetLineJoin,
+	pcb_lineop_set_join,
 	SetTextJoin,
 	NULL,
 	NULL,
@@ -321,7 +321,7 @@ static pcb_opfunc_t ClrSquareFunctions = {
 };
 
 static pcb_opfunc_t ClrJoinFunctions = {
-	ClrLineJoin,
+	pcb_lineop_clear_join,
 	ClrTextJoin,
 	NULL,
 	NULL,

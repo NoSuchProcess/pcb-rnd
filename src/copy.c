@@ -43,7 +43,7 @@
  * some local identifiers
  */
 static pcb_opfunc_t CopyFunctions = {
-	CopyLine,
+	pcb_lineop_copy,
 	CopyText,
 	CopyPolygon,
 	CopyVia,

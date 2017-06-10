@@ -289,7 +289,7 @@ double pcb_line_area(const pcb_line_t *line)
 /*** ops ***/
 
 /* copies a line to buffer */
-void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
@@ -303,7 +303,7 @@ void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* moves a line to buffer */
-void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
+void *pcb_lineop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 
@@ -326,7 +326,7 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 }
 
 /* changes the size of a line */
-void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
 
@@ -348,7 +348,7 @@ void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /*changes the clearance size of a line */
-void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
 
@@ -377,7 +377,7 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 }
 
 /* changes the name of a line */
-void *ChangeLineName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	char *old = Line->Number;
 
@@ -387,7 +387,7 @@ void *ChangeLineName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* changes the clearance flag of a line */
-void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return (NULL);
@@ -407,23 +407,23 @@ void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* sets the clearance flag of a line */
-void *SetLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
-	return ChangeLineJoin(ctx, Layer, Line);
+	return pcb_lineop_change_join(ctx, Layer, Line);
 }
 
 /* clears the clearance flag of a line */
-void *ClrLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
-	return ChangeLineJoin(ctx, Layer, Line);
+	return pcb_lineop_change_join(ctx, Layer, Line);
 }
 
 /* copies a line */
-void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
 
@@ -441,7 +441,7 @@ void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* moves a line */
-void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (Layer->meta.real.vis)
 		EraseLine(Line);
@@ -458,7 +458,7 @@ void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* moves one end of a line */
-void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
+void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	if (Layer) {
 		if (Layer->meta.real.vis)
@@ -492,11 +492,11 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 }
 
 /* moves one end of a line */
-void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
+void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	if ((conf_core.editor.move_linepoint_uses_route == 0) || !Layer) {
 		pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, Layer, Line, Point, ctx->move.dx, ctx->move.dy);
-		return MoveLinePoint(ctx, Layer, Line, Point);
+		return pcb_lineop_move_point(ctx, Layer, Line, Point);
 	}
 	else {
 		/* Move with Route Code */
@@ -528,7 +528,7 @@ void *MoveLinePointWithRoute(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 }
 
 /* moves a line between layers; lowlevel routines */
-void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_line_t * line, pcb_layer_t * Destination)
+void *pcb_lineop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_line_t * line, pcb_layer_t * Destination)
 {
 	pcb_r_delete_entry(Source->line_tree, (pcb_box_t *) line);
 
@@ -566,7 +566,7 @@ static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 	longjmp(i->env, 1);
 }
 
-void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
+void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 {
 	struct via_info info;
 	pcb_box_t sb;
@@ -588,7 +588,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 	if (Layer->meta.real.vis)
 		EraseLine(Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	newone = (pcb_line_t *) MoveLineToLayerLowLevel(ctx, Layer, Line, ctx->move.dst_layer);
+	newone = (pcb_line_t *) pcb_lineop_move_to_layer_low(ctx, Layer, Line, ctx->move.dst_layer);
 	Line = NULL;
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->meta.real.vis)
@@ -627,7 +627,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 }
 
 /* destroys a line from a layer */
-void *DestroyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	free(Line->Number);
@@ -664,7 +664,7 @@ static pcb_r_dir_t remove_point(const pcb_box_t * b, void *cl)
 }
 
 /* removes a line point, or a line if the selected point is the end */
-void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
+void *pcb_lineop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	pcb_point_t other;
 	struct rlp_info info;
@@ -676,14 +676,14 @@ void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 	info.point = Point;
 	if (setjmp(info.env) == 0) {
 		pcb_r_search(Layer->line_tree, (const pcb_box_t *) Point, NULL, remove_point, &info, NULL);
-		return RemoveLine_op(ctx, Layer, Line);
+		return pcb_lineop_remove(ctx, Layer, Line);
 	}
 	pcb_move_obj(PCB_TYPE_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
-	return (RemoveLine_op(ctx, Layer, Line));
+	return (pcb_lineop_remove(ctx, Layer, Line));
 }
 
 /* removes a line from a layer */
-void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
@@ -704,7 +704,7 @@ void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line)
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	return RemoveLine_op(&ctx, Layer, Line);
+	return pcb_lineop_remove(&ctx, Layer, Line);
 }
 
 /* rotates a line in 90 degree steps */
@@ -788,7 +788,7 @@ static void rotate_line2(pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* rotates a line's point */
-void *Rotate90LinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
+void *pcb_lineop_rotate90_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	pcb_point_t *center;
 
@@ -806,7 +806,7 @@ void *Rotate90LinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, 
 }
 
 /* rotates a line */
-void *Rotate90Line(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	rotate_line1(Layer, Line);
 	pcb_point_rotate90(&Line->Point1, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
@@ -816,7 +816,7 @@ void *Rotate90Line(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* inserts a point into a line */
-void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
 	pcb_coord_t X, Y;
@@ -850,7 +850,7 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 }
 
 #define PCB_LINE_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_RAT | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_RUBBEREND | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
-void *ChgFlagLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if ((ctx->chgflag.flag & PCB_LINE_FLAGS) != ctx->chgflag.flag)
 		return NULL;

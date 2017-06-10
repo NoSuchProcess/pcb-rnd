@@ -40,7 +40,7 @@
  * some local types
  */
 static pcb_opfunc_t RemoveFunctions = {
-	RemoveLine_op,
+	pcb_lineop_remove,
 	RemoveText_op,
 	RemovePolygon_op,
 	RemoveVia,
@@ -48,7 +48,7 @@ static pcb_opfunc_t RemoveFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	RemoveLinePoint,
+	pcb_lineop_remove_point,
 	RemovePolygonPoint,
 	pcb_arcop_remve,
 	RemoveRat,
@@ -57,7 +57,7 @@ static pcb_opfunc_t RemoveFunctions = {
 };
 
 static pcb_opfunc_t DestroyFunctions = {
-	DestroyLine,
+	pcb_lineop_destroy,
 	DestroyText,
 	DestroyPolygon,
 	DestroyVia,

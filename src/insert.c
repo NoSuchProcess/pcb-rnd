@@ -45,7 +45,7 @@
  * some local identifiers
  */
 static pcb_opfunc_t InsertFunctions = {
-	InsertPointIntoLine,
+	pcb_lineop_insert_point,
 	NULL,
 	InsertPointIntoPolygon,
 	NULL,

@@ -53,7 +53,7 @@
  * some local identifiers
  */
 pcb_opfunc_t Rotate90Functions = {
-	Rotate90Line,
+	pcb_lineop_rotate90,
 	Rotate90Text,
 	Rotate90Polygon,
 	NULL,
@@ -61,7 +61,7 @@ pcb_opfunc_t Rotate90Functions = {
 	Rotate90ElementName,
 	NULL,
 	NULL,
-	Rotate90LinePoint,
+	pcb_lineop_rotate90_point,
 	NULL,
 	pcb_arcop_rotate90,
 	NULL,
