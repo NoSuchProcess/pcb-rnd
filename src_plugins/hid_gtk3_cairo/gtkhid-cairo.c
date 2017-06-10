@@ -899,6 +899,14 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 	cairo_fill(cr);
 }
 
+/** Fills the drawing with only \p bg_color */
+static void erase_with_background_color(cairo_t * cr, GdkRGBA * bg_color)
+{
+	gdk_cairo_set_source_rgba(cr, bg_color);
+	cairo_rectangle(cr, 0.0, 0.0, gport->view.canvas_width, gport->view.canvas_height);
+	cairo_fill(cr);
+}
+
 static void redraw_region(GdkRectangle * rect)
 {
 	int eleft, eright, etop, ebottom;
@@ -953,9 +961,7 @@ static void redraw_region(GdkRectangle * rect)
 		ebottom = tmp;
 	}
 
-	gdk_cairo_set_source_rgba(priv->cr, &priv->bg_color);
-	cairo_rectangle(priv->cr, 0.0, 0.0, gport->view.canvas_width, gport->view.canvas_height);
-	cairo_fill(priv->cr);
+	erase_with_background_color(priv->cr, &priv->bg_color);
 
 	gdk_cairo_set_source_rgba(priv->cr, &priv->offlimits_color);
 	if (eleft > 0) {
@@ -1414,9 +1420,7 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
 	/* clear background */
-	//cairo_rectangle();
-	//cairo_fill();
-	//gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
+	erase_with_background_color(cr, &priv->bg_color);
 
 	/* call the drawing routine */
 	expcall(&gtk3_cairo_hid, ctx);
