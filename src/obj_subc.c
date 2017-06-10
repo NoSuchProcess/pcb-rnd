@@ -251,30 +251,22 @@ void pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opc
 
 
 		linelist_foreach(&sl->Line, &it, line) {
-			pcb_r_delete_entry(sl->line_tree, (pcb_box_t *)line);
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_LINE, sl, line, line);
-			pcb_r_insert_entry(sl->line_tree, (pcb_box_t *)line, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &line->BoundingBox);
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
-			pcb_r_delete_entry(sl->arc_tree, (pcb_box_t *)arc);
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_ARC, sl, arc, arc);
-			pcb_r_insert_entry(sl->arc_tree, (pcb_box_t *)arc, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &arc->BoundingBox);
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
-			pcb_r_delete_entry(sl->text_tree, (pcb_box_t *)text);
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_TEXT, sl, text, text);
-			pcb_r_insert_entry(sl->text_tree, (pcb_box_t *)text, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &text->BoundingBox);
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
-			pcb_r_delete_entry(sl->polygon_tree, (pcb_box_t *)poly);
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_POLYGON, sl, poly, poly);
-			pcb_r_insert_entry(sl->polygon_tree, (pcb_box_t *)poly, 0);
 			pcb_box_bump_box(&sc->BoundingBox, &poly->BoundingBox);
 		}
 
