@@ -281,7 +281,7 @@ static void layer_popup(pcb_gtk_layersel_t *ls, int button, pcb_layer_id_t lid, 
 static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_ls_lyr_t *lsl)
 {
 	pcb_gtk_layersel_t *ls = lsl->lsg->ls;
-	int n, is_on, normal = 1;
+	int is_on, normal = 1;
 
 	if (event->type != GDK_BUTTON_PRESS) /* ignore excess events on double or triple buttons */
 		return TRUE;
