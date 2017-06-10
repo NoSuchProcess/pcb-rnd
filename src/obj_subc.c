@@ -216,6 +216,8 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	if (!dst->subc_tree)
 		dst->subc_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)sc, 0);
+
+	return sc;
 }
 
 pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
