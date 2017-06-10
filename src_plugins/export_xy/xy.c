@@ -190,6 +190,23 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element)
 	ctx->pad_h = box.Y2 - box.Y1;
 }
 
+static void count_pins_pads(subst_ctx_t *ctx, pcb_element_t *element, int *pins, int *pads)
+{
+	*pins = *pads = 0;
+
+	PCB_PIN_LOOP(element);
+	{
+		(*pins)++;
+	}
+	PCB_END_LOOP;
+
+	PCB_PAD_LOOP(element);
+	{
+		(*pads)++;
+	}
+	PCB_END_LOOP;
+}
+
 static void calc_pad_bbox(subst_ctx_t *ctx)
 {
 #if 0
