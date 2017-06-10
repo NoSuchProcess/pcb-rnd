@@ -40,9 +40,6 @@ pcb_bool pcb_select_object(pcb_board_t *pcb);
 pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *, pcb_bool);
 long int *pcb_list_block(pcb_board_t *pcb, pcb_box_t *Box, int *len);
 
-void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
-pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type);
-
 pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool);
 
 

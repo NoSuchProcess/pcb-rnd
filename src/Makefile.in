@@ -108,6 +108,7 @@ put /local/pcb/OBJS [@
 	obj_subc_list.o
 	obj_text.o
 	obj_text_list.o
+	operation.o
 	paths.o
 	pcb_bool.o
 	pcb-printf.o

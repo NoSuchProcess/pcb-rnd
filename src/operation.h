@@ -126,4 +126,7 @@ typedef struct {
 	void *(*subc)(pcb_opctx_t *ctx, pcb_subc_t *);
 } pcb_opfunc_t;
 
+void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type);
+
 #endif
