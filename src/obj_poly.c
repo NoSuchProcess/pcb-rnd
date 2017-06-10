@@ -729,6 +729,21 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	return (polygon);
 }
 
+void *Rotate90Polygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+{
+	if (Layer->meta.real.vis)
+		ErasePolygon(Polygon);
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	pcb_poly_rotate90(Polygon, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
+	if (Layer->meta.real.vis) {
+		DrawPolygon(Layer, Polygon);
+		pcb_draw();
+	}
+	return Polygon;
+}
+
 /*** draw ***/
 pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 {

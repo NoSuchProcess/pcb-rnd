@@ -55,7 +55,7 @@
 pcb_opfunc_t Rotate90Functions = {
 	Rotate90Line,
 	Rotate90Text,
-	NULL,
+	Rotate90Polygon,
 	NULL,
 	Rotate90Element,
 	Rotate90ElementName,
