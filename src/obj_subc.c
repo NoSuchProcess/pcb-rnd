@@ -225,6 +225,12 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 	return pcb_subc_dup_at(pcb, dst, src, 0, 0);
 }
 
+/* moves a subc by +-X and +-Y */
+void pcb_subc_move(pcb_data_t *Data, pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy)
+{
+	pcb_message(PCB_MSG_ERROR, "pcb_subc_move() not yet implemented\n");
+}
+
 
 /* copies a subcircuit onto the PCB.  Then does a draw. */
 void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
@@ -235,12 +241,19 @@ void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 
 
-	/* this call clears the polygons */
+#warning TODO:
 /*	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);*/
 
-/*	DrawElementPinsAndPads(element);*/
 	return (sc);
 }
+
+void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+/*	EraseSubc(Element);*/
+	pcb_subc_move(PCB->Data, sc, ctx->move.dx, ctx->move.dy);
+/*	DrawSubc(Element);*/
+}
+
 
 #include "conf_core.h"
 #include "draw.h"

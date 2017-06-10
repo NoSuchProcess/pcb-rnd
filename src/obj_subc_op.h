@@ -29,6 +29,7 @@
 #include "operation.h"
 
 void *CopySubc(pcb_opctx_t *ctx, pcb_subc_t *src);
+void *MoveSubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
 
 #endif
