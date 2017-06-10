@@ -243,8 +243,6 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
 	int pin_cnt = 0;
 	int pad_cnt = 0;
-	int *pins = &pin_cnt;
-	int *pads = &pad_cnt;
 	subst_ctx_t *ctx = ctx_;
 	if (strncmp(*input, "UTC%", 4) == 0) {
 		*input += 4;
@@ -345,10 +343,10 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "smdvsthru%", 10) == 0) {
 			*input += 10;
-			count_pins_pads(ctx, ctx->element, pins, pads);
-			if (*pins > 0) {
+			count_pins_pads(ctx, ctx->element, &pin_cnt, &pad_cnt);
+			if (pin_cnt > 0) {
 				pcb_append_printf(s, "PTH");
-			} else if (*pads > 0) {
+			} else if (pad_cnt > 0) {
 				pcb_append_printf(s, "SMD");
 			} else {
 				pcb_append_printf(s, "0");
