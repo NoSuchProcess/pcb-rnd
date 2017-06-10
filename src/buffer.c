@@ -54,7 +54,7 @@
  */
 static pcb_opfunc_t AddBufferFunctions = {
 	pcb_lineop_add_to_buffer,
-	AddTextToBuffer,
+	pcb_textop_add_to_buffer,
 	pcb_polyop_add_to_buffer,
 	pcb_viaop_add_to_buffer,
 	pcb_elemop_add_to_buffer,
@@ -71,7 +71,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 
 static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_lineop_move_to_buffer,
-	MoveTextToBuffer,
+	pcb_textop_move_to_buffer,
 	pcb_polyop_move_to_buffer,
 	pcb_viaop_move_to_buffer,
 	pcb_elemop_move_to_buffer,
@@ -633,7 +633,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(sourcelayer);
 			{
-				if (CopyText(&ctx, destlayer, text))
+				if (pcb_textop_copy(&ctx, destlayer, text))
 					changed = 1;
 			}
 			PCB_END_LOOP;

@@ -46,7 +46,7 @@
  */
 static pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_lineop_change_size,
-	ChangeTextSize,
+	pcb_textop_change_size,
 	pcb_polyop_change_clear,
 	pcb_viaop_change_size,
 	pcb_elemop_change_size,						/* changes silk screen line width */
@@ -63,7 +63,7 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 
 static pcb_opfunc_t Change1stSizeFunctions = {
 	pcb_lineop_change_size,
-	ChangeTextSize,
+	pcb_textop_change_size,
 	pcb_polyop_change_clear,
 	pcb_viaop_change_size,
 	pcb_elemop_change_1st_size,
@@ -131,7 +131,7 @@ static pcb_opfunc_t ChangeClearSizeFunctions = {
 
 static pcb_opfunc_t ChangeNameFunctions = {
 	pcb_lineop_change_name,
-	ChangeTextName,
+	pcb_textop_change_name,
 	NULL,
 	pcb_viaop_change_name,
 	pcb_elemop_change_name,
@@ -199,7 +199,7 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 
 static pcb_opfunc_t ChangeJoinFunctions = {
 	pcb_lineop_change_join,
-	ChangeTextJoin,
+	pcb_textop_change_join,
 	NULL,
 	NULL,
 	NULL,
@@ -271,7 +271,7 @@ static pcb_opfunc_t SetSquareFunctions = {
 
 static pcb_opfunc_t SetJoinFunctions = {
 	pcb_lineop_set_join,
-	SetTextJoin,
+	pcb_textop_set_join,
 	NULL,
 	NULL,
 	NULL,
@@ -322,7 +322,7 @@ static pcb_opfunc_t ClrSquareFunctions = {
 
 static pcb_opfunc_t ClrJoinFunctions = {
 	pcb_lineop_clear_join,
-	ClrTextJoin,
+	pcb_textop_clear_join,
 	NULL,
 	NULL,
 	NULL,

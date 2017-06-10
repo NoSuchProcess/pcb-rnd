@@ -41,7 +41,7 @@
  */
 static pcb_opfunc_t RemoveFunctions = {
 	pcb_lineop_remove,
-	RemoveText_op,
+	pcb_textop_remove,
 	pcb_polyop_remove,
 	pcb_viaop_remove,
 	pcb_elemop_remove,
@@ -58,7 +58,7 @@ static pcb_opfunc_t RemoveFunctions = {
 
 static pcb_opfunc_t DestroyFunctions = {
 	pcb_lineop_destroy,
-	DestroyText,
+	pcb_textop_destroy,
 	pcb_polyop_destroy,
 	pcb_viaop_destroy,
 	pcb_elemop_destroy,

@@ -257,7 +257,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 /*** ops ***/
 /* copies a text to buffer */
-void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 
@@ -265,7 +265,7 @@ void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 }
 
 /* moves a text to buffer without allocating memory for the name */
-void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
+void *pcb_textop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 
@@ -286,7 +286,7 @@ void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 }
 
 /* changes the scaling factor of a text object */
-void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
 		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
@@ -310,7 +310,7 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 
 /* sets data of a text object and calculates bounding box; memory must have
    already been allocated the one for the new string is allocated */
-void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	char *old = Text->TextString;
 
@@ -330,7 +330,7 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 }
 
 /* changes the clearance flag of a text */
-void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
@@ -350,23 +350,23 @@ void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 }
 
 /* sets the clearance flag of a text */
-void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
-	return ChangeTextJoin(ctx, Layer, Text);
+	return pcb_textop_change_join(ctx, Layer, Text);
 }
 
 /* clears the clearance flag of a text */
-void *ClrTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
-	return ChangeTextJoin(ctx, Layer, Text);
+	return pcb_textop_change_join(ctx, Layer, Text);
 }
 
 /* copies a text */
-void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_text_t *text;
 
@@ -378,7 +378,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 }
 
 /* moves a text object */
-void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
@@ -396,7 +396,7 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 }
 
 /* moves a text object between layers; lowlevel routines */
-void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t * text, pcb_layer_t * Destination)
+void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t * text, pcb_layer_t * Destination)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Source, text);
 	pcb_r_delete_entry(Source->text_tree, (pcb_box_t *) text);
@@ -422,7 +422,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 }
 
 /* moves a text object between layers */
-void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
+void *pcb_textop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, text)) {
 		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
@@ -432,7 +432,7 @@ void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 		pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_TEXT, layer, text, text);
 		if (layer->meta.real.vis)
 			EraseText(layer, text);
-		text = MoveTextToLayerLowLevel(ctx, layer, text, ctx->move.dst_layer);
+		text = pcb_textop_move_to_layer_low(ctx, layer, text, ctx->move.dst_layer);
 		if (ctx->move.dst_layer->meta.real.vis)
 			DrawText(ctx->move.dst_layer, text);
 		if (layer->meta.real.vis || ctx->move.dst_layer->meta.real.vis)
@@ -442,7 +442,7 @@ void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 }
 
 /* destroys a text from a layer */
-void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	free(Text->TextString);
 	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
@@ -453,7 +453,7 @@ void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 }
 
 /* removes a text from a layer */
-void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
@@ -475,7 +475,7 @@ void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text)
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	return RemoveText_op(&ctx, Layer, Text);
+	return pcb_textop_remove(&ctx, Layer, Text);
 }
 
 /* rotates a text in 90 degree steps; only the bounding box is rotated,
@@ -496,7 +496,7 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 }
 
 /* rotates a text object and redraws it */
-void *Rotate90Text(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	EraseText(Layer, Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -539,7 +539,7 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 }
 
 #define PCB_TEXT_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
-void *ChgFlagText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if ((ctx->chgflag.flag & PCB_TEXT_FLAGS) != ctx->chgflag.flag)
 		return NULL;

@@ -44,7 +44,7 @@
  */
 static pcb_opfunc_t CopyFunctions = {
 	pcb_lineop_copy,
-	CopyText,
+	pcb_textop_copy,
 	pcb_polyop_copy,
 	pcb_viaop_copy,
 	pcb_elemop_copy,

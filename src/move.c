@@ -50,7 +50,7 @@
  */
 pcb_opfunc_t MoveFunctions = {
 	pcb_lineop_move,
-	MoveText,
+	pcb_textop_move,
 	pcb_polyop_move,
 	pcb_viaop_move,
 	pcb_elemop_move,
@@ -67,7 +67,7 @@ pcb_opfunc_t MoveFunctions = {
 
 static pcb_opfunc_t MoveToLayerFunctions = {
 	pcb_lineop_move_to_layer,
-	MoveTextToLayer,
+	pcb_textop_move_to_layer,
 	pcb_polyop_move_to_layer,
 	NULL,
 	NULL,
