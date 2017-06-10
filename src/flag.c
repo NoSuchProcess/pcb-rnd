@@ -28,6 +28,31 @@
 #include <string.h>
 #include "config.h"
 #include "flag.h"
+#include "operation.h"
+
+pcb_opfunc_t ChgFlagFunctions = {
+#if 0
+	Rotate90Line,
+	Rotate90Text,
+	Rotate90Polygon,
+	NULL,
+	Rotate90Element,
+	Rotate90ElementName,
+	NULL,
+	NULL,
+	Rotate90LinePoint,
+	NULL,
+	Rotate90Arc,
+	NULL,
+	NULL,
+	Rotate90Subc
+#else
+	NULL
+#endif
+};
+
+
+
 
 /* This just fills in a pcb_flag_t with current flags.  */
 pcb_flag_t pcb_flag_make(unsigned int flags)

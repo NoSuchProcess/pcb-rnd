@@ -95,6 +95,12 @@ typedef struct {
 	unsigned number;             /* number of rotations */
 } pcb_opctx_rotate_t;
 
+typedef struct {
+	pcb_board_t *pcb;
+	unsigned long how; /* pcb_change_flag_t */
+	unsigned long flag; /* pcb_flag_values_t */
+} pcb_opctx_chgflag_t;
+
 typedef union {
 	pcb_opctx_buffer_t buffer;
 	pcb_opctx_chgname_t chgname;
@@ -106,6 +112,7 @@ typedef union {
 	pcb_opctx_move_t move;
 	pcb_opctx_remove_t remove;
 	pcb_opctx_rotate_t rotate;
+	pcb_opctx_chgflag_t chgflag;
 } pcb_opctx_t;
 
 /* pointer to low-level operation (copy, move and rotate) functions */
