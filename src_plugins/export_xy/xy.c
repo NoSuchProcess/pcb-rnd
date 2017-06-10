@@ -32,10 +32,12 @@ static const char *format_names[] = {
 #define FORMAT_XY 0
 	"pcb xy",
 #define FORMAT_GXYRS 1
-	"Macrofab's gxyrs",
-#define FORMAT_TM220TM240 2
+	"gxyrs",
+#define FORMAT_MACROFAB 2
+	"Macrofab's xyrs",
+#define FORMAT_TM220TM240 3
 	"TM220/TM240",
-#define FORMAT_KICADPOS 3
+#define FORMAT_KICADPOS 4
 	"KiCad .pos",
 	NULL
 };
@@ -291,9 +293,19 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			pcb_append_printf(s, "%g", ctx->theta);
 			return 0;
 		}
+		if (strncmp(*input, "270-rot%", 8) == 0) {
+			*input += 8;
+			pcb_append_printf(s, "%g", (270-ctx->theta));
+			return 0;
+		}
 		if (strncmp(*input, "side%", 5) == 0) {
 			*input += 5;
 			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "top" : "bottom");
+			return 0;
+		}
+		if (strncmp(*input, "num-side%", 9) == 0) {
+			*input += 9;
+			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "1" : "2");
 			return 0;
 		}
 		if (strncmp(*input, "pad_width%", 10) == 0) {
@@ -310,7 +322,13 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_h);
 			return 0;
 		}
-
+		if (strncmp(*input, "smdvsthru%", 10) == 0) {
+			*input += 10;
+/*			if (ctx->pad_h == 0)     something clever goes here
+				calc_pad_bbox(ctx); */
+			pcb_append_printf(s, "SMD");/* default to SMD for now*/
+			return 0;
+		}
 	}
 
 	return -1;
@@ -560,6 +578,10 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 		case FORMAT_GXYRS:
 			templ.hdr = templ_gxyrs_hdr;
 			templ.elem = templ_gxyrs_elem;
+			break;
+		case FORMAT_MACROFAB:
+			templ.hdr = templ_macrofab_hdr;
+			templ.elem = templ_macrofab_elem;
 			break;
 		case FORMAT_TM220TM240:
 			templ.hdr = templ_TM220TM240_hdr;

@@ -24,6 +24,18 @@ static const char *templ_gxyrs_hdr =
 static const char *templ_gxyrs_elem =
 	"%elem.name_% %elem.x% %elem.y% %elem.rot% %elem.side% %elem.pad_width% %elem.pad_height% %elem.value_% %elem.descr_%\n";
 
+static const char *templ_macrofab_hdr =
+	"#pcb-rnd Macrofab export version 1.0\n"
+	"#Date: %UTC%\n"
+	"#Author: %author%\n"
+	"#Title: %title% - pcb-rnd Macrofab export\n"
+	"#Placement data:\n"
+	"#Designator X-Loc Y-Loc Rotation Side Type X-Size Y-Size Value Footprint Type\n"
+	"# --------------------------------------------\n";
+
+static const char *templ_macrofab_elem =
+        "%elem.name_%\t%elem.x%\t%elem.y%\t%elem.270-rot%\t%elem.num-side%\t%elem.pad_width%\t%elem.pad_height%\t%elem.value_%\t%elem.descr_%\t%elem.smdvsthru%\n";
+
 static const char *templ_TM220TM240_hdr = 
 	"#pcb-rnd TM220A/TM240A xyrs version 1.0\n"
 	"#Date: %UTC%\n"
