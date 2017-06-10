@@ -35,6 +35,7 @@
 #include "obj_text_draw.h"
 #include "rtree.h"
 #include "draw.h"
+#include "flag.h"
 #include "operation.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
@@ -235,7 +236,7 @@ static void EraseSubc(pcb_subc_t *sc)
 /*	pcb_flag_erase(&sc->Flags); ??? */
 }
 
-static void DrawSubc(pcb_subc_t *sc)
+void DrawSubc(pcb_subc_t *sc)
 {
 	pcb_draw_invalidate(sc);
 }
@@ -439,6 +440,7 @@ void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 	ctx.flag = PCB_FLAG_SELECTED;
 
 	pcb_subc_op(PCB->Data, sc, &ChgFlagFunctions, &ctx);
+	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, sc);
 	if (redraw)
 		DrawSubc(sc);
 }

@@ -47,6 +47,7 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY);
 
 #include "rtree.h"
 pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl);
+void DrawSubc(pcb_subc_t *sc);
 
 
 /*** loops ***/
