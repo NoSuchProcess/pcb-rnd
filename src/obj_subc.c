@@ -418,6 +418,18 @@ void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	abort();
 }
 
+
+#define PCB_SUBC_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
+void *ChgFlagSubc(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+	if ((ctx->chgflag.flag & PCB_SUBC_FLAGS) != ctx->chgflag.flag)
+		return NULL;
+	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, sc);
+#warning subc TODO (revise flags)
+	abort();
+}
+
+
 void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, int redraw)
 {
 	pcb_opctx_chgflag_t ctx;

@@ -49,5 +49,7 @@ void *ClrSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *SetSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
 void *ChangeSubcSquare(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
+void *ChgFlagSubc(pcb_opctx_t *ctx, pcb_subc_t *sc);
+
 
 #endif
