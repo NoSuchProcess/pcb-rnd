@@ -561,8 +561,6 @@ int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2)
 	if (lid1 == lid2)
 		return 0;
 
-	printf("SWAP: %d %d\n", lid1, lid2);
-
 	layer_move(&l1tmp, &PCB->Data->Layer[lid1]);
 	layer_move(&l2tmp, &PCB->Data->Layer[lid2]);
 
