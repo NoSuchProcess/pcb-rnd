@@ -376,8 +376,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	return pcb_subc_dup_at(PCB, ctx->buffer.dst, sc, 0, 0);
 }
 
 
