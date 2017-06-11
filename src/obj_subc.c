@@ -36,6 +36,7 @@
 #include "rtree.h"
 #include "draw.h"
 #include "flag.h"
+#include "polygon.h"
 #include "operation.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
@@ -324,8 +325,47 @@ void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	int n;
+
+	if (ctx->buffer.pcb->Data->subc_tree != NULL)
+		pcb_r_delete_entry(ctx->buffer.pcb->Data->subc_tree, (pcb_box_t *)sc);
+
+	pcb_subclist_remove(sc);
+	pcb_subclist_append(&ctx->buffer.dst->subc, sc);
+
+	EraseSubc(sc);
+
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *sl = sc->data->Layer + n;
+		pcb_line_t *line;
+		pcb_text_t *text;
+		pcb_polygon_t *poly;
+		pcb_arc_t *arc;
+		gdl_iterator_t it;
+
+		linelist_foreach(&sl->Line, &it, line) {
+			pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_LINE, sl, line);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, line);
+		}
+
+		arclist_foreach(&sl->Arc, &it, arc) {
+			pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_ARC, sl, arc);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, arc);
+		}
+
+		textlist_foreach(&sl->Text, &it, text) {
+			pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_LINE, sl, text);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, text);
+		}
+
+		polylist_foreach(&sl->Polygon, &it, poly) {
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, poly);
+		}
+
+	}
+
+	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
+	return sc;
 }
 
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
