@@ -179,6 +179,9 @@ typedef struct {
 			CFT_COLOR pin_name;
 			CFT_COLOR element;
 			CFT_COLOR element_nonetlist;
+			CFT_COLOR subc;
+			CFT_COLOR subc_selected;
+			CFT_COLOR subc_nonetlist;
 			CFT_COLOR rat;
 			CFT_COLOR invisible_objects;
 			CFT_COLOR invisible_mark;

@@ -173,6 +173,9 @@ li:pcb-rnd-conf-v1 {
 				pin_name = {#ff0000}
 				element = {#000000}
 				element_nonetlist = {#777777}
+				subc = {#CC0000}
+				subc_nonetlist = {#551111}
+				subc_selected = {#00ffff}
 				rat = {#b8860b}
 				invisible_objects = {#cccccc}
 				invisible_mark = {#cccccc}
