@@ -57,3 +57,25 @@ static const char *templ_KICADPOS_hdr =
 
 static const char *templ_KICADPOS_elem =
 	",\"%elem.name%\",\"%elem.value%\",\"%elem.descr%\",%elem.x%,%elem.y%,%elem.rot%,%elem.side%\n";
+
+static const char *templ_NCAP_hdr =
+	"ncapture 0\n"
+	"4\n"
+	"%boardw%\n"
+        "%boardh%\n"
+	"80hmmm\n"
+	"-30hmmm\n";
+
+static const char *templ_NCAP_elem =
+	"0\n"
+	"0\n"
+	"%elem.pincount%\n"
+	"1\n"
+	"%elem.name%\n"
+	"%elem.90rot%\n"
+	"%elem.x%\n"
+	"%elem.y%\n"
+	"0\n";
+
+static const char *templ_NCAP_pad =
+	"%pad.netname%\n";

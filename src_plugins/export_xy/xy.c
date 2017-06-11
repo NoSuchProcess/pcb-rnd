@@ -39,6 +39,8 @@ static const char *format_names[] = {
 	"TM220/TM240",
 #define FORMAT_KICADPOS 4
 	"KiCad .pos",
+#define FORMAT_NCAP 5
+	"ncap export",
 	NULL
 };
 
@@ -265,7 +267,16 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		gds_append_str(s, xy_unit->in_suffix);
 		return 0;
 	}
-
+	if (strncmp(*input, "boardw%", 7) == 0) {
+		*input += 7;
+		pcb_append_printf(s, "%m+%mS", xy_unit->allow, PCB->MaxWidth);
+		return 0;
+	}
+	if (strncmp(*input, "boardh%", 7) == 0) {
+		*input += 7;
+		pcb_append_printf(s, "%m+%mS", xy_unit->allow, PCB->MaxHeight);
+		return 0;
+	}
 	if (strncmp(*input, "elem.", 5) == 0) {
 		*input += 5;
 		if (strncmp(*input, "name%", 5) == 0) {
@@ -305,7 +316,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "y%", 2) == 0) {
 			*input += 2;
-			pcb_append_printf(s, "%m+%.2mS", xy_unit->allow, ctx->y);
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->y);
 			return 0;
 		}
 		if (strncmp(*input, "rot%", 4) == 0) {
@@ -316,6 +327,24 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		if (strncmp(*input, "270-rot%", 8) == 0) {
 			*input += 8;
 			pcb_append_printf(s, "%g", (270-ctx->theta));
+			return 0;
+		}
+		if (strncmp(*input, "90rot%", 6) == 0) {
+			*input += 6;
+			if (ctx->theta == 0) {
+				pcb_append_printf(s, "0");
+			} else if (ctx->theta == 90) {
+				pcb_append_printf(s, "1");
+			} else if (ctx->theta == 180) {
+				pcb_append_printf(s, "2");
+			} else {
+				pcb_append_printf(s, "3");
+			}
+			return 0;
+		}
+		if (strncmp(*input, "ncapbbox%", 9) == 0) {
+			*input += 9;
+			/* need to calculate element bounding box */
 			return 0;
 		}
 		if (strncmp(*input, "side%", 5) == 0) {
@@ -354,6 +383,30 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			}
 			return 0;
 		}
+		if (strncmp(*input, "pincount%", 9) == 0) {
+			*input += 9;
+			count_pins_pads(ctx, ctx->element, &pin_cnt, &pad_cnt);
+			if (pin_cnt > 0) {
+				pcb_append_printf(s, "%d", pin_cnt);
+			} else if (pad_cnt > 0) {
+				pcb_append_printf(s, "%d", pad_cnt);
+			} else {
+				pcb_append_printf(s, "0");
+			}
+			return 0;
+		}
+	}
+        if (strncmp(*input, "pad.", 4) == 0) {
+                *input += 4;
+                if (strncmp(*input, "netname%", 8) == 0) {
+                        *input += 8;
+                        if (ctx->pad_netname != '\0') {
+                                pcb_append_printf(s, "%s", ctx->pad_netname);
+                        } else {
+                                pcb_append_printf(s, "NC");
+                        }
+                        return 0;
+                }
 	}
 
 	return -1;
@@ -627,6 +680,11 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 		case FORMAT_KICADPOS:
 			templ.hdr = templ_KICADPOS_hdr;
 			templ.elem = templ_KICADPOS_elem;
+			break;
+		case FORMAT_NCAP:
+			templ.hdr = templ_NCAP_hdr;
+			templ.elem = templ_NCAP_elem;
+			templ.pad = templ_NCAP_pad;
 			break;
 		default:
 			pcb_message(PCB_MSG_ERROR, "Invalid format\n");
