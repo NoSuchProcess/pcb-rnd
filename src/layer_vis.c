@@ -145,6 +145,8 @@ void pcb_layervis_reset_stack(void)
 	PCB->InvisibleObjectsOn = pcb_true;
 	PCB->PinOn = pcb_true;
 	PCB->ViaOn = pcb_true;
+	PCB->SubcOn = pcb_true;
+	PCB->SubcPartsOn = pcb_true;
 	PCB->RatOn = pcb_true;
 
 	/* Bring the top copper group to the front and make it active.  */

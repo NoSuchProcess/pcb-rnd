@@ -71,7 +71,8 @@ struct pcb_board_s {
 	pcb_bool Changed,									/* layout has been changed */
 	  ViaOn,											/* visibility flags */
 	  RatOn, InvisibleObjectsOn, PinOn,
-	  RatDraw;										/* we're drawing rats */
+	  RatDraw,										/* we're drawing rats */
+	  SubcOn, SubcPartsOn;
 	pcb_coord_t CursorX,									/* cursor position as saved with layout */
 	  CursorY;
 	pcb_coord_t Bloat,									/* drc sizes saved with layout */

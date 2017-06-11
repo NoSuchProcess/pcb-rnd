@@ -500,6 +500,9 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_box_t *bb = &subc->BoundingBox;
 	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
 
+	if (!PCB->SubcOn)
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	pcb_gui->set_color(Output.fgGC, selected ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 	pcb_gui->set_line_width(Output.fgGC, 0);
