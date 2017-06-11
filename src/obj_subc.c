@@ -347,28 +347,29 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		linelist_foreach(&sl->Line, &it, line) {
 			pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_LINE, sl, line);
 			pcb_r_delete_entry(sl->line_tree, (pcb_box_t *)line);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, line);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
 			pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_ARC, sl, arc);
 			pcb_r_delete_entry(sl->arc_tree, (pcb_box_t *)arc);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, arc);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, arc);
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
 			pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_LINE, sl, text);
 			pcb_r_delete_entry(sl->text_tree, (pcb_box_t *)text);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, text);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, text);
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
 			pcb_r_delete_entry(sl->polygon_tree, (pcb_box_t *)poly);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, poly);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
 		}
 
 	}
 
+	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
 	return sc;
 }
