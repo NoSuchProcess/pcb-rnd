@@ -286,7 +286,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		if (PCB->PinOn)
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
 
-/*		if (PCB->PinOn)*/
+		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
 
 		/* Draw rat lines on top */
