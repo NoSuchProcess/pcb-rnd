@@ -213,8 +213,9 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 				pcb_box_bump_box(&sc->BoundingBox, &npoly->BoundingBox);
 			}
 		}
-
 	}
+
+	sc->data->LayerN = src->data->LayerN;
 
 	pcb_close_box(&sc->BoundingBox);
 
