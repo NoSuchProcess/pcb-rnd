@@ -497,7 +497,7 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
-	int invisible = 0;
+	int invisible = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
 
 	pcb_gui->set_color(Output.fgGC, invisible ? conf_core.appearance.color.invisible_mark : conf_core.appearance.color.element);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
