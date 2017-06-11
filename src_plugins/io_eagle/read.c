@@ -882,7 +882,7 @@ static int eagle_read_poly(read_state_t *st, xmlNode *subtree, void *obj, int ty
 				case IN_ELEM:
 				break;
 			case ON_BOARD:
-                        	size_bump(st, x, y);
+				size_bump(st, x, y);
 				break;
 			}
 		}
