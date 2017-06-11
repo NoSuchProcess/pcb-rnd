@@ -153,7 +153,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 {
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
-	PCB_SET_PARENT(sc->data, data, dst);
+	PCB_SET_PARENT(sc->data, subc, sc);
 	pcb_subclist_append(&dst->subc, sc);
 
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
