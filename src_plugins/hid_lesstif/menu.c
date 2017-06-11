@@ -67,7 +67,10 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 #define LB_BACK	(PCB_MAX_LAYER+4)
 #define LB_MASK	(PCB_MAX_LAYER+5)
 #define LB_PASTE	(PCB_MAX_LAYER+6)
-#define LB_NUM  (PCB_MAX_LAYER+7)
+#define LB_SUBC	(PCB_MAX_LAYER+7)
+#define LB_SUBC_PARTS	(PCB_MAX_LAYER+8)
+
+#define LB_NUM  (PCB_MAX_LAYER+9)
 
 typedef struct {
 	Widget w[LB_NUM];
@@ -96,6 +99,8 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
 		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
 		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
+		fg_colors[LB_SUBC] = lesstif_parse_color(conf_core.appearance.color.subc);
+		fg_colors[LB_SUBC_PARTS] = lesstif_parse_color(conf_core.appearance.color.subc);
 		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
 		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
 		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
@@ -108,6 +113,8 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
 		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
 		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
+		fg_colors[LB_SUBC] = lesstif_parse_color(conf_core.appearance.color.subc);
+		fg_colors[LB_SUBC_PARTS] = lesstif_parse_color(conf_core.appearance.color.subc);
 		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
 		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
 		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
@@ -132,6 +139,12 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 				break;
 			case LB_PINS:
 				set = PCB->PinOn;
+				break;
+			case LB_SUBC:
+				set = PCB->SubcOn;
+				break;
+			case LB_SUBC_PARTS:
+				set = PCB->SubcPartsOn;
 				break;
 			case LB_VIAS:
 				set = PCB->ViaOn;
@@ -240,6 +253,12 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	case LB_PINS:
 		set = PCB->PinOn = !PCB->PinOn;
 		break;
+	case LB_SUBC:
+		set = PCB->SubcOn = !PCB->SubcOn;
+		break;
+	case LB_SUBC_PARTS:
+		set = PCB->SubcPartsOn = !PCB->SubcPartsOn;
+		break;
 	case LB_VIAS:
 		set = PCB->ViaOn = !PCB->ViaOn;
 		break;
@@ -336,6 +355,12 @@ static void insert_layerview_buttons(Widget menu)
 			break;
 		case LB_PINS:
 			name = "Pins/Pads";
+			break;
+		case LB_SUBC:
+			name = "Subcircuits";
+			break;
+		case LB_SUBC_PARTS:
+			name = "Subc. parts";
 			break;
 		case LB_VIAS:
 			name = "Vias";

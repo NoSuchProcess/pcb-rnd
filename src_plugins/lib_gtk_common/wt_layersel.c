@@ -557,6 +557,8 @@ typedef struct {
 } virt_layers_t;
 
 static const virt_layers_t virts[] = {
+	{ "Subcircuits",&conf_core.appearance.color.subc,              vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, SubcOn) },
+	{ "Subc. parts",&conf_core.appearance.color.subc,              vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, SubcPartsOn) },
 	{ "Pins/Pads",  &conf_core.appearance.color.pin,               vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, PinOn) },
 	{ "Vias",       &conf_core.appearance.color.via,               vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, ViaOn) },
 	{ "Far side",   &conf_core.appearance.color.invisible_objects, vis_virt, ev_lyr_no_select,  offsetof(pcb_board_t, InvisibleObjectsOn) },
