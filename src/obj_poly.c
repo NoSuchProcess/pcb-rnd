@@ -272,7 +272,7 @@ pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src, pcb_coord_
 			pcb_poly_hole_new(Dest);
 			hole++;
 		}
-		pcb_poly_point_new(Dest, Src->Points[n].X+dy, Src->Points[n].Y+dx);
+		pcb_poly_point_new(Dest, Src->Points[n].X+dx, Src->Points[n].Y+dy);
 	}
 	pcb_poly_bbox(Dest);
 	Dest->Flags = Src->Flags;
