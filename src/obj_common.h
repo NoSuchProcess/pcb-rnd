@@ -49,6 +49,7 @@ typedef enum pcb_objtype_e {
 	PCB_OBJ_PIN       = 0x000080,
 	PCB_OBJ_VIA       = 0x000100,
 	PCB_OBJ_ELEMENT   = 0x000200,
+	PCB_OBJ_SUBC      = 0x000400,
 
 	/* more abstract objects */
 	PCB_OBJ_NET       = 0x100001,
