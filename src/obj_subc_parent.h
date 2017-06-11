@@ -23,38 +23,38 @@
  *
  */
 
-#ifndef PCB_OBJ_SUBC_H
-#define PCB_OBJ_SUBC_H
+#ifndef PCB_OBJ_SUBC_PARENT_H
+#define PCB_OBJ_SUBC_PARENT_H
 
-#include "obj_common.h"
-#include "global_typedefs.h"
+#include "data.h"
+#include "data_parent.h"
+#include "layer.h"
 
-struct pcb_subc_s {
-	PCB_ANYOBJECTFIELDS;
-	char uid[64]; /* globally unique ID */
-	pcb_data_t *data;
-	gdl_elem_t link;
-};
+/* Returns whether global (on-data) object is part of a subc */
+static inline PCB_FUNC_UNUSED int pcb_is_gobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+{
+	if (pt != PCB_PARENT_DATA)
+		return 0;
 
+	if (p->data == NULL)
+		return 0;
+	
+	return (p->data->parent_type == PCB_PARENT_SUBC);
+}
 
-void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc);
+/* Returns whether layer object is part of a subc */
+static inline PCB_FUNC_UNUSED int pcb_is_lobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+{
+	if (pt != PCB_PARENT_LAYER)
+		return 0;
 
+	if (p->layer == NULL)
+		return 0;
+	
+	if (p->layer->parent == NULL)
+		return 0;
 
-/* convert buffer contents into a subcircuit, in-place; returns 0 on success */
-int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
-
-void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY);
-
-#include "rtree.h"
-pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl);
-void DrawSubc(pcb_subc_t *sc);
-
-/*** loops ***/
-
-#define PCB_SUBC_LOOP(top) do {                                     \
-	pcb_subc_t *subc;                                                 \
-	gdl_iterator_t __it__;                                            \
-	subclist_foreach(&(top)->subc, &__it__, subc) {
-
+	return (p->layer->parent->parent_type == PCB_PARENT_SUBC);
+}
 
 #endif
