@@ -40,7 +40,7 @@ static const char *format_names[] = {
 #define FORMAT_KICADPOS 4
 	"KiCad .pos",
 #define FORMAT_NCAP 5
-	"ncap export",
+	"ncap export (WIP)",
 	NULL
 };
 
@@ -167,6 +167,7 @@ typedef struct {
 	double theta;
 	pcb_element_t *element;
 	pcb_coord_t pad_w, pad_h;
+	int element_num;
 } subst_ctx_t;
 
 static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element)
@@ -352,6 +353,11 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "top" : "bottom");
 			return 0;
 		}
+		if (strncmp(*input, "element_num%", 12) == 0) {
+			*input += 12;
+			pcb_append_printf(s, "%d", ctx->element_num);
+			return 0;
+		}
 		if (strncmp(*input, "num-side%", 9) == 0) {
 			*input += 9;
 			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "1" : "2");
@@ -448,6 +454,7 @@ static int PrintXY(const template_t *templ)
 	}
 
 	ctx.theta = 0;
+	ctx.element_num = 0;
 
 	/* Create a portable timestamp. */
 	currenttime = time(NULL);
@@ -472,6 +479,7 @@ static int PrintXY(const template_t *templ)
 		sumx = 0.0;
 		sumy = 0.0;
 		ctx.pad_w = ctx.pad_h = 0;
+		ctx.element_num++;
 
 		/*
 		 * iterate over the pins and pads keeping a running count of how

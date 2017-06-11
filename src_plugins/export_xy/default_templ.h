@@ -67,7 +67,7 @@ static const char *templ_NCAP_hdr =
 	"-30hmmm\n";
 
 static const char *templ_NCAP_elem =
-	"0\n"
+	"%elem.element_num%\n"
 	"0\n"
 	"%elem.pincount%\n"
 	"1\n"
