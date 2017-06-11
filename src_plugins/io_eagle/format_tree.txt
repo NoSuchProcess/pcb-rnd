@@ -1,0 +1,41 @@
+XML:
+
+eagle
+ drawing
+  settings
+  grid
+  layers
+   layer [name, color, fill, visible, active, number]
+  board
+   plain
+   libraries
+    library
+     description
+     packages
+      package [name]
+       description
+       wire [x1, y1, x2, y2, width, layer]
+       hole [name, x, y, drill, diameter, shape]
+       pad  [name, x, y, drill, diameter, shape]x
+       circle [x, y, radius, width, layer]
+       smd [x, y, dx, dy, rot, layer]     (smd pad)
+       text [x, y, size, rot, layer]
+       rectangle [x1, y1, x2, y2, layer]
+   attributes
+   variantdefs
+   classes
+   description
+   designrules
+   autorouter
+   elements
+    element [name, library, package, value, x, y, rot]
+   signals
+    signal [name]
+     contactref [element, pad]
+     wire [x1, y1, x2, y2, width, layer]
+     polygon [layer]
+      vertex [x, y]
+     via [name, x, y, drill, diameter, shape]
+ compatibility
+  @text
+
