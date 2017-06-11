@@ -187,6 +187,22 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		PCB_ENDALL_LOOP;
 	}
 
+	if (type & PCB_TYPE_SUBC && F->subc) {
+		PCB_SUBC_LOOP(pcb->Data);
+		{
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
+				if (Reset) {
+					pcb_undo_add_obj_to_flag(PCB_TYPE_SUBC, subc, subc, subc);
+					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, subc);
+				}
+				F->subc(ctx, subc);
+				changed = pcb_true;
+			}
+		}
+		PCB_END_LOOP;
+	}
+
+
 	/* elements silkscreen */
 	if (type & PCB_TYPE_ELEMENT && pcb_silk_on(pcb) && F->Element) {
 		PCB_ELEMENT_LOOP(pcb->Data);
