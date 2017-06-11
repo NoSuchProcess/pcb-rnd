@@ -42,6 +42,8 @@
 #include "obj_line.h"
 #include "obj_line_op.h"
 
+#include "obj_subc_parent.h"
+
 /* TODO: maybe remove this and move lines from draw here? */
 #include "draw.h"
 #include "obj_line_draw.h"
@@ -900,7 +902,12 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 
 pcb_r_dir_t draw_line_callback(const pcb_box_t * b, void *cl)
 {
-	draw_line((pcb_layer_t *) cl, (pcb_line_t *) b);
+	pcb_line_t *line = (pcb_line_t *)b;
+
+	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(line->parent_type, &line->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
+	draw_line((pcb_layer_t *)cl, line);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

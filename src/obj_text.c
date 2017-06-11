@@ -44,6 +44,8 @@
 #include "obj_poly_draw.h"
 #include "obj_arc_draw.h"
 
+#include "obj_subc_parent.h"
+
 /* TODO: remove this if draw.c is moved here: */
 #include "draw.h"
 #include "obj_line_draw.h"
@@ -710,6 +712,9 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 	pcb_text_t *text = (pcb_text_t *) b;
 	int min_silk_line;
 	unsigned int flg = 0;
+
+	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(text->parent_type, &text->parent))
+		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 		pcb_gui->set_color(Output.fgGC, layer->meta.real.selected_color);

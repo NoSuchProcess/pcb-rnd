@@ -44,6 +44,8 @@
 #include "obj_poly_list.h"
 #include "obj_poly_draw.h"
 
+#include "obj_subc_parent.h"
+
 /* TODO: get rid of these: */
 #include "draw.h"
 
@@ -764,6 +766,9 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 	char buf[sizeof("#XXXXXX")];
 
 	if (!polygon->Clipped)
+		return PCB_R_DIR_NOT_FOUND;
+
+	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(polygon->parent_type, &polygon->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))

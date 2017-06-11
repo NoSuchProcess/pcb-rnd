@@ -41,6 +41,8 @@
 #include "obj_arc.h"
 #include "obj_arc_op.h"
 
+#include "obj_subc_parent.h"
+
 /* TODO: could be removed if draw.c could be split up */
 #include "draw.h"
 #include "obj_arc_draw.h"
@@ -757,7 +759,12 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 
 pcb_r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl)
 {
-	draw_arc((pcb_layer_t *) cl, (pcb_arc_t *) b);
+	pcb_arc_t *arc = (pcb_arc_t *)b;
+
+	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(arc->parent_type, &arc->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
+	draw_arc((pcb_layer_t *)cl, arc);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
