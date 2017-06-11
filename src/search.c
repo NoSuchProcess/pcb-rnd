@@ -1184,7 +1184,7 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 		HigherAvail = PCB_TYPE_ELEMENT;
 	}
 
-	if (!HigherAvail && Type & PCB_TYPE_SUBC &&
+	if (!HigherAvail && Type & PCB_TYPE_SUBC && PCB->SubcOn &&
 			SearchSubcByLocation(locked, (pcb_subc_t **) pr1, (pcb_subc_t **) pr2, (pcb_subc_t **) pr3, pcb_false)) {
 		pcb_box_t *box = &((pcb_subc_t *) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
@@ -1299,7 +1299,7 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 			SearchElementByLocation(locked, (pcb_element_t **) Result1, (pcb_element_t **) Result2, (pcb_element_t **) Result3, pcb_true))
 		return (PCB_TYPE_ELEMENT);
 
-	if (Type & PCB_TYPE_SUBC &&
+	if (Type & PCB_TYPE_SUBC && PCB->SubcOn &&
 			SearchSubcByLocation(locked, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, pcb_true))
 		return (PCB_TYPE_SUBC);
 

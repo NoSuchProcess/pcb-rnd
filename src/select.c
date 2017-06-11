@@ -365,28 +365,30 @@ do { \
 	}
 	PCB_END_LOOP;
 
-	PCB_SUBC_LOOP(pcb->Data);
-	{
-		if (PCB_POLYGON_NEAR_BOX(subc, Box)
-				&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)
-				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) != Flag) {
+	if (PCB->SubcOn) {
+		PCB_SUBC_LOOP(pcb->Data);
+		{
+			if (PCB_POLYGON_NEAR_BOX(subc, Box)
+					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)
+					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) != Flag) {
 
-			if (len == NULL) {
-				pcb_select_subc(PCB, subc, Flag, 1);
-			}
-			else {
-				if (used >= alloced) {
-					alloced += 64;
-					list = realloc(list, sizeof(*list) * alloced);
+				if (len == NULL) {
+					pcb_select_subc(PCB, subc, Flag, 1);
 				}
-				list[used] = subc->ID;
-				used++;
+				else {
+					if (used >= alloced) {
+						alloced += 64;
+						list = realloc(list, sizeof(*list) * alloced);
+					}
+					list[used] = subc->ID;
+					used++;
+				}
+				changed = 1;
+				DrawSubc(subc);
 			}
-			changed = 1;
-			DrawSubc(subc);
 		}
+		PCB_END_LOOP;
 	}
-	PCB_END_LOOP;
 
 	/* elements */
 	PCB_ELEMENT_LOOP(pcb->Data);
