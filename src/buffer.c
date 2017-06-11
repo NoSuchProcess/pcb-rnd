@@ -118,11 +118,8 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	}
 }
 
-/* ----------------------------------------------------------------------
- * copies all selected and visible objects to the paste buffer
- * returns true if any objects have been removed
- */
-void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
+/* add or move selected */
+static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
 {
 	pcb_opctx_t ctx;
 
@@ -139,7 +136,7 @@ void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t
 	pcb_notify_crosshair_change(pcb_false);
 	ctx.buffer.src = pcb->Data;
 	ctx.buffer.dst = Buffer->Data;
-	pcb_selected_operation(pcb, &AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
+	pcb_selected_operation(pcb, fnc, &ctx, pcb_false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
 	if (X || Y) {
@@ -151,6 +148,18 @@ void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t
 		Buffer->Y = pcb_crosshair.Y;
 	}
 	pcb_notify_crosshair_change(pcb_true);
+}
+
+/* adds all selected and visible objects to the paste buffer returns true if any objects have been removed */
+void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
+{
+	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected);
+}
+
+/* moves all selected and visible objects to the paste buffer returns true if any objects have been removed */
+void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
+{
+	pcb_buffer_toss_selected(&MoveBufferFunctions, pcb, Buffer, X, Y, LeaveSelected);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -786,6 +795,11 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			/* copies objects to paste buffer */
 		case F_AddSelected:
 			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
+			break;
+
+			/* moves objects to paste buffer */
+		case F_MoveSelected:
+			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
 			break;
 
 			/* converts buffer contents into an element */
