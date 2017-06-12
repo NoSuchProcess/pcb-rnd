@@ -424,8 +424,12 @@ void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	EraseSubc(sc);
+	if (!ctx->remove.bulk)
+		pcb_draw();
+	pcb_undo_move_obj_to_remove(PCB_TYPE_SUBC, sc, sc, sc);
+	PCB_CLEAR_PARENT(sc);
+	return NULL;
 }
 
 void *pcb_subcop_clear_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
