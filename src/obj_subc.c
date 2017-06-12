@@ -216,6 +216,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	}
 
 	sc->data->LayerN = src->data->LayerN;
+	memcpy(&sc->Flags, &src->Flags, sizeof(sc->Flags));
 
 	pcb_close_box(&sc->BoundingBox);
 
