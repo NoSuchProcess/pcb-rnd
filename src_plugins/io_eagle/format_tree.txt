@@ -65,8 +65,8 @@ bin:
   <elements>
    0x2e/boardpackage?
     0x2f/boarkpackage2???
-    0x34/?
-    0x35/?
+    0x34/smashedname?? -> description?
+    0x35/smashedvalue?? -> description?
   <signals>
    0x1c/boardnet -> signal
     0x3e/boardconnection -> contactref
