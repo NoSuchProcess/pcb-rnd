@@ -176,7 +176,10 @@ static void DrawFab(pcb_hid_gc_t gc)
 	int i, n, yoff, total_drills = 0, ds = 0, found;
 	char utcTime[64];
 	AllDrills = GetDrillInfo(PCB->Data);
-	RoundDrillInfo(AllDrills, PCB_MIL_TO_COORD(1));
+	if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+		RoundDrillInfo(AllDrills, PCB_MIL_TO_COORD(1));
+	else
+		RoundDrillInfo(AllDrills, PCB_MM_TO_COORD(0.01));
 	yoff = -TEXT_LINE;
 
 	/* count how many drill description lines will be needed */
@@ -217,9 +220,16 @@ static void DrawFab(pcb_hid_gc_t gc)
 			text_at(gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
 		pcb_gui->set_color(gc, conf_core.appearance.color.element);
-		text_at(gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize) + 0.0004);
-		if (plated_sym != -1 && unplated_sym != -1)
-			text_at(gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize) + 0.0004);
+		if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+			text_at(gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
+		else
+			text_at(gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%1.2f", PCB_COORD_TO_MM(drill->DrillSize));
+		if (plated_sym != -1 && unplated_sym != -1) {
+			if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+				text_at(gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
+			else
+				text_at(gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%1.2f", PCB_COORD_TO_MM(drill->DrillSize));
+		}
 		yoff -= TEXT_LINE;
 		total_drills += drill->PinCount;
 		total_drills += drill->ViaCount;
@@ -227,7 +237,10 @@ static void DrawFab(pcb_hid_gc_t gc)
 
 	pcb_gui->set_color(gc, conf_core.appearance.color.element);
 	text_at(gc, 0, yoff, PCB_MIL_TO_COORD(9), "Symbol");
-	text_at(gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");
+	if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+		text_at(gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");
+	else
+		text_at(gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (mm)");
 	text_at(gc, PCB_MIL_TO_COORD(950), yoff, PCB_MIL_TO_COORD(9), "Count");
 	text_at(gc, PCB_MIL_TO_COORD(1300), yoff, PCB_MIL_TO_COORD(9), "Plated?");
 	yoff -= TEXT_LINE;
