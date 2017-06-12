@@ -69,7 +69,7 @@ bin:
     0x35/?
   <signals>
    0x1c/boardnet -> signal
-    0x3e/??
+    0x3e/boardconnection -> contactref
     0x21/polygon
      0x22/line (->vertex?)
     0x22/line
