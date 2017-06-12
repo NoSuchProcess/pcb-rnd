@@ -47,7 +47,7 @@ bin:
  0x12/grid
  0x13/layer
  0x1b/board
-  <libs>
+  <libraries>
    0x19/library?
     0x1e/package
      0x21/polygon
@@ -59,16 +59,16 @@ bin:
      0x25/circle
      0x31/text?
      0x28/hole
-  <globals>
+  <plain (globals)>
    0x22/line
    0x26/rectangle
-  <pkg-refs>
+  <elements>
    0x2e/boardpackage?
     0x2f/boarkpackage2???
     0x34/?
     0x35/?
-  <nets>
-   0x1c/boardnet
+  <signals>
+   0x1c/boardnet -> signal
     0x3e/??
     0x21/polygon
      0x22/line (->vertex?)
