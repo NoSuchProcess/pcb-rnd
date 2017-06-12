@@ -377,7 +377,11 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-	return pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0);
+	pcb_subc_t *nsc;
+	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0);
+	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED)
+		pcb_select_subc(ctx->buffer.pcb, nsc, PCB_CHGFLG_CLEAR, 0);
+	return nsc;
 }
 
 
