@@ -1126,7 +1126,7 @@ static int eagle_read_ver(xmlChar *ver)
 		return -1;
 	}
 	v2 = strtol((char *)end+1, &end, 10);
-	if (*end != '.') {
+	if (*end != '.' && *end != '\0') {
 		pcb_message(PCB_MSG_ERROR, "malformed version string [2] in <eagle>\n");
 		return -1;
 	}
