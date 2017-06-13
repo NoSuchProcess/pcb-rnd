@@ -25,8 +25,9 @@
 
 extern char *CleanBOMString(const char *in);
 
-
 const char *xy_cookie = "bom HID";
+
+static int verbose_rot = 1;
 
 static const char *format_names[] = {
 #define FORMAT_XY 0
@@ -112,6 +113,9 @@ static pcb_hid_attribute_t *xy_get_export_options(int *n)
 static double xyToAngle(double x, double y, pcb_bool morethan2pins)
 {
 	double d = atan2(-y, x) * 180.0 / M_PI;
+
+		if (verbose_rot)
+			pcb_trace(" xyToAngle: %f %f %d ->%f\n", x, y, morethan2pins, d);
 
 	/* IPC 7351 defines different rules for 2 pin elements */
 	if (morethan2pins) {
@@ -592,6 +596,9 @@ static int PrintXY(const template_t *templ)
 						if (PCB_FRONT(element) != 1)
 							pin1x = -pin1x;
 
+						if (verbose_rot)
+							pcb_trace("xy rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), pin_cnt, pin1x, pin1y);
+
 						/* if only 1 pin, use pin 1's angle */
 						if (pin_cnt == 1) {
 							ctx.theta = pinangle[rpindex];
@@ -601,6 +608,8 @@ static int PrintXY(const template_t *templ)
 							ctx.theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
 							found_any_not_at_centroid = 1;
 						}
+						if (verbose_rot)
+							pcb_trace(" ->theta=%f\n", ctx.theta);
 					}
 				}
 
