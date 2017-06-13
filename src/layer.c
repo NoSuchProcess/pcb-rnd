@@ -670,17 +670,19 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
 		for(l = 0; l < grp->len; l++) {
 			pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
-			if (ly->comb == src->meta.bound.comb) {
+			if ((ly->comb & PCB_LYC_SUB) == (src->meta.bound.comb & PCB_LYC_SUB)) {
 				score = 1;
+				if (ly->comb == src->meta.bound.comb)
+					score++;
 
 				if (ly->meta.real.name == src->meta.bound.name) /* mainly for NULL = NULL */
-					score += 2;
+					score += 4;
 				
 				if ((ly->meta.real.name != NULL) && (src->meta.bound.name != NULL)) {
 					if (strcmp(ly->meta.real.name, src->meta.bound.name) == 0)
-						score += 2;
+						score += 4;
 					else if (pcb_strcasecmp(ly->meta.real.name, src->meta.bound.name) == 0)
-						score ++;
+						score += 2;
 				}
 
 				if (score > best_score) {
