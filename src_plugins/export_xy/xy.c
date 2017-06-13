@@ -329,8 +329,8 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			pcb_append_printf(s, "%g", ctx->theta);
 			return 0;
 		}
-                if (strncmp(*input, "siderot%", 8) == 0) {
-                        *input += 8;
+		if (strncmp(*input, "siderot%", 8) == 0) {
+			*input += 8;
 			if (PCB_FRONT(ctx->element) == 1) {
 				if (ctx->theta > 0 && ctx->theta < 180) { 
 					pcb_append_printf(s, "%g", (360 - ctx->theta));
@@ -343,7 +343,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 				pcb_append_printf(s, "%g", ctx->theta);
 			}
 			return 0;
-                }
+		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
 			*input += 8;
 			pcb_append_printf(s, "%g", (270-ctx->theta));
