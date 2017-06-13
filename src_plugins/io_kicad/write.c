@@ -896,6 +896,9 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos); 
 
 		fprintf(FP, "%*s", indentation + 2, "");
+		fprintf(FP, "(descr \"%s\")\n", currentElementName);
+
+		fprintf(FP, "%*s", indentation + 2, "");
 
 		pcb_fprintf(FP, "(fp_text reference \"%s\" (at 0.0 -2.56) ", currentElementRef); 
 		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
