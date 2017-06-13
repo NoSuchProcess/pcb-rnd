@@ -586,7 +586,7 @@ static int PrintXY(const template_t *templ)
 							pin1x = -pin1x;
 
 						if (verbose_rot)
-							pcb_trace("xy rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), pin_cnt, pin1x, pin1y);
+							pcb_trace("\nxy rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), pin_cnt, pin1x, pin1y);
 
 						/* if only 1 pin, use pin 1's angle */
 						if (pin_cnt == 1) {
