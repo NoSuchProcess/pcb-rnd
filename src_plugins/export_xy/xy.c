@@ -168,7 +168,7 @@ typedef struct {
 	char *name, *descr, *value, *fixed_rotation;
 	const char *pad_netname;
 	pcb_coord_t x, y;
-	double theta;
+	double theta, xray_theta;
 	pcb_element_t *element;
 	pcb_coord_t pad_w, pad_h;
 	int element_num;
@@ -331,9 +331,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "siderot%", 8) == 0) {
 			*input += 8;
-			if (!PCB_FRONT(ctx->element))
-				ctx->theta = 360 - ctx->theta;
-			pcb_append_printf(s, "%g", ctx->theta);
+			pcb_append_printf(s, "%g", ctx->xray_theta);
 			return 0;
 		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
@@ -343,10 +341,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "side270-rot%", 12) == 0) {
 			*input += 12;
-			if (!PCB_FRONT(ctx->element))
-				ctx->theta = 270 - ctx->theta;
-			ctx->theta = 270 - ctx->theta;
-			pcb_append_printf(s, "%g", ctx->theta);
+			pcb_append_printf(s, "%g", (270-ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "90rot%", 6) == 0) {
@@ -581,10 +576,6 @@ static int PrintXY(const template_t *templ)
 						pin1x = pinx[rpindex] - ctx.x;
 						pin1y = piny[rpindex] - ctx.y;
 
-						/* flip x, to reverse rotation for elements on back */
-						if (PCB_FRONT(element) != 1)
-							pin1x = -pin1x;
-
 						if (verbose_rot)
 							pcb_trace("\nxy rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), pin_cnt, pin1x, pin1y);
 
@@ -593,9 +584,18 @@ static int PrintXY(const template_t *templ)
 							ctx.theta = pinangle[rpindex];
 							found_any_not_at_centroid = 1;
 						}
-						else if ((pin1x != 0.0) || (pin1y != 0.0)) {
-							ctx.theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
-							found_any_not_at_centroid = 1;
+						else {
+							if ((pin1x != 0.0) || (pin1y != 0.0))
+								ctx.xray_theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
+
+							/* flip x, to reverse rotation for elements on back */
+							if (PCB_FRONT(element) != 1)
+								pin1x = -pin1x;
+
+							if ((pin1x != 0.0) || (pin1y != 0.0)) {
+								ctx.theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
+								found_any_not_at_centroid = 1;
+							}
 						}
 						if (verbose_rot)
 							pcb_trace(" ->theta=%f\n", ctx.theta);
