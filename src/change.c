@@ -44,7 +44,7 @@
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static pcb_opfunc_t ChangeSizeFunctions = {
+pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_lineop_change_size,
 	pcb_textop_change_size,
 	pcb_polyop_change_clear,
@@ -61,7 +61,7 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_subcop_change_size
 };
 
-static pcb_opfunc_t Change1stSizeFunctions = {
+pcb_opfunc_t Change1stSizeFunctions = {
 	pcb_lineop_change_size,
 	pcb_textop_change_size,
 	pcb_polyop_change_clear,
@@ -78,7 +78,7 @@ static pcb_opfunc_t Change1stSizeFunctions = {
 	pcb_subcop_change_1st_size
 };
 
-static pcb_opfunc_t Change2ndSizeFunctions = {
+pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
