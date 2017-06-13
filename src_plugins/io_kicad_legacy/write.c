@@ -1070,6 +1070,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 		fputs("Op 0 0 0\n",FP);
 		fprintf(FP, "T0 0 -4000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, element->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
 		fprintf(FP, "T1 0 -5000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, element->Name[PCB_ELEMNAME_IDX_VALUE].TextString);
+		fprintf(FP, "T2 0 -6000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString);
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
 
