@@ -16,6 +16,7 @@
 #include "plugins.h"
 #include "compat_misc.h"
 #include "obj_pinvia.h"
+#include "netlist.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
