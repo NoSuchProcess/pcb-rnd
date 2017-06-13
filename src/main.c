@@ -561,7 +561,12 @@ int main(int argc, char *argv[])
 	if (pcb_gui->printer || pcb_gui->exporter) {
 		/* Workaround to fix batch output for non-C locales */
 		setlocale(LC_NUMERIC, "C");
-		pcb_gui->do_export(0);
+		if (pcb_data_is_empty(PCB->Data)) {
+			pcb_message(PCB_MSG_ERROR, "Can't export empty board - the board needs to contain at least one object.\n");
+			exit(1);
+		}
+		else
+			pcb_gui->do_export(0);
 		exit(0);
 	}
 
