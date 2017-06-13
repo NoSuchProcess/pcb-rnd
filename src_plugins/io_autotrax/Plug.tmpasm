@@ -1,0 +1,13 @@
+put /local/pcb/mod {io_autotrax}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/io_autotrax/io_autotrax.o
+	$(PLUGDIR)/io_autotrax/netlist.o
+	$(PLUGDIR)/io_autotrax/footprint.o
+	$(PLUGDIR)/io_autotrax/parse.o
+@]
+
+switch /local/pcb/io_autotrax/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
