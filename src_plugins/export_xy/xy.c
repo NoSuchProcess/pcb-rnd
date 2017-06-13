@@ -331,17 +331,9 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "siderot%", 8) == 0) {
 			*input += 8;
-			if (PCB_FRONT(ctx->element) == 1) {
-				if (ctx->theta > 0 && ctx->theta < 180) { 
-					pcb_append_printf(s, "%g", (360 - ctx->theta));
-				} else if (ctx->theta > 180 && ctx->theta < 360) {
-					pcb_append_printf(s, "%g", (ctx->theta - 180));
-				} else {
-					pcb_append_printf(s, "%g", ctx->theta); /* 0 or 360 */
-				}
-			} else {
-				pcb_append_printf(s, "%g", ctx->theta);
-			}
+			if (!PCB_FRONT(ctx->element))
+				ctx->theta = 360 - ctx->theta;
+			pcb_append_printf(s, "%g", ctx->theta);
 			return 0;
 		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
@@ -351,13 +343,10 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "side270-rot%", 12) == 0) {
 			*input += 12;
-			if (270-ctx->theta > 0 && 270-ctx->theta < 180) {
-				pcb_append_printf(s, "%g", (360 - (270-ctx->theta)));
-			} else if (270-ctx->theta > 180 && 270-ctx->theta < 360) {
-				pcb_append_printf(s, "%g", (270-ctx->theta - 180));
-			} else {
-				pcb_append_printf(s, "%g", 270-ctx->theta); /* 0 or 360 */
-			}
+			if (!PCB_FRONT(ctx->element))
+				ctx->theta = 270 - ctx->theta;
+			ctx->theta = 270 - ctx->theta;
+			pcb_append_printf(s, "%g", ctx->theta);
 			return 0;
 		}
 		if (strncmp(*input, "90rot%", 6) == 0) {
