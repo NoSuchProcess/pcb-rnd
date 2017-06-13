@@ -27,7 +27,7 @@ extern char *CleanBOMString(const char *in);
 
 const char *xy_cookie = "bom HID";
 
-static int verbose_rot = 1;
+static const int verbose_rot = 0;
 
 static const char *format_names[] = {
 #define FORMAT_XY 0
