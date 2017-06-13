@@ -637,6 +637,7 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 {
 	dst->grp = src->grp;
 	dst->comb = src->comb;
+	dst->meta.bound.comb = src->comb;
 
 	if (PCB_LAYER_IS_REAL(src)) {
 		dst->meta.bound.real = src;
