@@ -112,7 +112,7 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL
 };
 
-static pcb_opfunc_t ChangeClearSizeFunctions = {
+pcb_opfunc_t ChangeClearSizeFunctions = {
 	pcb_lineop_change_clear_size,
 	NULL,
 	pcb_polyop_change_clear_size,				/* just to tell the user not to :-) */

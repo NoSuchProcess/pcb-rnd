@@ -321,7 +321,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 	return (sc);
 }
 
-extern pcb_opfunc_t MoveFunctions, Rotate90Functions, ChgFlagFunctions, ChangeSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;
+extern pcb_opfunc_t MoveFunctions, Rotate90Functions, ChgFlagFunctions, ChangeSizeFunctions, ChangeClearSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;
 
 void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
@@ -401,8 +401,8 @@ void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_change_clear_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeClearSizeFunctions, ctx);
+	return sc;
 }
 
 void *pcb_subcop_change_1st_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
