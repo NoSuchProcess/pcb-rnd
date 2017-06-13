@@ -49,6 +49,14 @@ pcb_subc_t *pcb_subc_alloc(void)
 	return sc;
 }
 
+void *pcb_subc_free(pcb_subc_t *sc)
+{
+	pcb_subclist_remove(sc);
+	pcb_data_free(sc->data);
+	free(sc);
+}
+
+
 void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
 {
 	PCB_SET_PARENT(sc->data, subc, sc);
@@ -423,8 +431,12 @@ void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	if (ctx->remove.pcb->Data->subc_tree != NULL)
+		pcb_r_delete_entry(ctx->remove.pcb->Data->subc_tree, (pcb_box_t *)sc);
+
+	pcb_subclist_remove(sc);
+	EraseSubc(sc);
+	pcb_subc_free(sc);
 }
 
 void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
