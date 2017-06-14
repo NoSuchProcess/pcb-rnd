@@ -503,11 +503,11 @@ void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, int redraw)
 {
-	pcb_opctx_chgflag_t ctx;
+	pcb_opctx_t ctx;
 
-	ctx.pcb = pcb;
-	ctx.how = how;
-	ctx.flag = PCB_FLAG_SELECTED;
+	ctx.chgflag.pcb = pcb;
+	ctx.chgflag.how = how;
+	ctx.chgflag.flag = PCB_FLAG_SELECTED;
 
 	pcb_subc_op(PCB->Data, sc, &ChgFlagFunctions, &ctx);
 	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, sc);
