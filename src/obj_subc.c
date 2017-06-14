@@ -122,14 +122,23 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 	}
 
-	pcb_message(PCB_MSG_ERROR, "pcb_subc_convert_from_buffer(): not yet implemented\n");
-	return -1;
+	{ /* convert globals */
+		pcb_pin_t *via;
+
+		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
+			pinlist_remove(via);
+			pinlist_append(&sc->data->Via, via);
+			PCB_SET_PARENT(via, data, sc->data);
+		}
+	}
+	return 0;
 }
 
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 {
 	int n;
 
+	/* draw per layer objects */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *ly = sc->data->Layer + n;
 		pcb_line_t *line;
@@ -151,6 +160,23 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 			XORDrawText(text, DX, DY);
 	}
 
+	/* draw global objects */
+	{
+		pcb_pin_t *via;
+		gdl_iterator_t it;
+
+		pinlist_foreach(&sc->data->Via, &it, via) {
+			pcb_coord_t ox, oy;
+			ox = via->X;
+			oy = via->Y;
+			via->X += DX;
+			via->Y += DY;
+			pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, via, pcb_true, pcb_false);
+			via->X = ox;
+			via->Y = oy;
+		}
+	}
+
 	/* mark */
 	pcb_gui->draw_line(pcb_crosshair.GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
 	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
@@ -168,7 +194,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
 	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
 
-	/* make a copy */
+	/* make a copy of layer data */
 	for(n = 0; n < src->data->LayerN; n++) {
 		pcb_layer_t *sl = src->data->Layer + n;
 		pcb_layer_t *dl = sc->data->Layer + n;
@@ -223,8 +249,20 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			}
 		}
 	}
-
 	sc->data->LayerN = src->data->LayerN;
+
+	{ /* make a copy of global data */
+		pcb_pin_t *via, *nvia;
+
+		while((via = pinlist_first(&src->data->Via)) != NULL) {
+			nvia = pcb_via_dup_at(sc->data, via, dx, dy);
+			if (nvia != NULL) {
+				PCB_SET_PARENT(via, data, sc->data);
+				pcb_box_bump_box(&sc->BoundingBox, &nvia->BoundingBox);
+			}
+		}
+	}
+
 	memcpy(&sc->Flags, &src->Flags, sizeof(sc->Flags));
 
 	pcb_close_box(&sc->BoundingBox);
