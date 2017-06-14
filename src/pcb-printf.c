@@ -418,9 +418,9 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
 int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 {
 	gds_t spec;
-	const char *qstr;
+	const char *qstr, *needsq;
 	char tmp[128]; /* large enough for rendering a long long int */
-	int tmplen, retval = -1, slot_recursion = 0;
+	int tmplen, retval = -1, slot_recursion = 0, mq_has_spec;
 	char *dot, *free_fmt = NULL;
 	enum pcb_allow_e mask = PCB_UNIT_ALLOW_ALL;
 
@@ -436,12 +436,13 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 			int count, i;
 
 			gds_truncate(&spec, 0);
+			mq_has_spec = 0;
 
 			/* Get printf sub-specifiers */
 			if (gds_append(&spec, *fmt++) != 0) goto err;
 			while (isdigit(*fmt) || *fmt == '.' || *fmt == ' ' || *fmt == '*'
 						 || *fmt == '#' || *fmt == 'l' || *fmt == 'L' || *fmt == 'h'
-						 || *fmt == '+' || *fmt == '-' || *fmt == '[') {
+						 || *fmt == '+' || *fmt == '-' || *fmt == '[' || *fmt == '{') {
 				if (*fmt == '*') {
 					char itmp[32];
 					int ilen;
@@ -481,6 +482,17 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				memset(&new_spec, 0, sizeof(new_spec));
 				gds_truncate(&spec, 0);
 				goto new_fmt;
+			}
+			if ((spec.array[0] == '%') && (spec.array[1] == '{')) {
+				/* {} specifier for %mq */
+				const char *end;
+				gds_truncate(&spec, 0);
+				end = strchr(fmt, '}');
+				if (end == NULL)
+					goto err;
+				gds_append_len(&spec, fmt, end-fmt);
+				fmt = end+1;
+				mq_has_spec = 1;
 			}
 			else
 				slot_recursion = 0;
@@ -579,7 +591,11 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				switch (*fmt) {
 				case 'q':
 					qstr = va_arg(args, const char *);
-					if (QstringToString(string, qstr, '"', '\\', " ()\"\\") != 0) goto err;
+					if (mq_has_spec)
+						needsq = spec.array;
+					else
+						needsq = " \"\\";
+					if (QstringToString(string, qstr, '"', '\\', needsq) != 0) goto err;
 					break;
 				case 'I':
 					if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_NM, PCB_UNIT_NO_SUFFIX) != 0) goto err;
