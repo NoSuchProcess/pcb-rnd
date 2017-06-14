@@ -144,6 +144,16 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	return (Via);
 }
 
+pcb_pin_t *pcb_via_dup(pcb_data_t *data, pcb_pin_t *src)
+{
+	return pcb_via_new(data, src->X, src->Y, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
+}
+
+pcb_pin_t *pcb_via_dup_at(pcb_data_t *data, pcb_pin_t *src, pcb_coord_t dx, pcb_coord_t dy)
+{
+	return pcb_via_new(data, src->X+dx, src->Y+dy, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
+}
+
 /* creates a new pin in an element */
 pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
 {

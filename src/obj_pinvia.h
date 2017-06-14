@@ -48,6 +48,8 @@ pcb_pin_t *pcb_pin_alloc(pcb_element_t * element);
 void pcb_pin_free(pcb_pin_t * data);
 
 pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags);
+pcb_pin_t *pcb_via_dup(pcb_data_t *data, pcb_pin_t *src);
+pcb_pin_t *pcb_via_dup_at(pcb_data_t *data, pcb_pin_t *src, pcb_coord_t dx, pcb_coord_t dy);
 pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags);
 void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via);
 void pcb_pin_bbox(pcb_pin_t *Pin);
