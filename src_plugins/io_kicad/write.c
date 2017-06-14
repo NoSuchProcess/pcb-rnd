@@ -689,7 +689,7 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
 		localFlag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21) ) { /* copper or silk layer text */
-				fprintf(FP, "%*s(gr_text \"%s\" ", indentation, "", text->TextString);
+				pcb_fprintf(FP, "%*s(gr_text %[4] ", indentation, "", text->TextString);
 				defaultXSize = 5*PCB_SCALE_TEXT(mWidth, text->Scale)/6; /* IIRC kicad treats this as kerned width of upper case m */
 				defaultYSize = defaultXSize;
 				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
