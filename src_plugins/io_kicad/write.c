@@ -893,17 +893,17 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		}
 
 		fprintf(FP, "%*s", indentation, "");
-		fprintf(FP,  "(module \"%s\" (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n",
+		pcb_fprintf(FP,  "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n",
 								currentElementName, kicad_sexpr_layer_to_text(copperLayer));
 		fprintf(FP, "%*s", indentation + 2, "");
 		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos); 
 
 		fprintf(FP, "%*s", indentation + 2, "");
-		fprintf(FP, "(descr \"%s\")\n", currentElementName);
+		pcb_fprintf(FP, "(descr %[4])\n", currentElementName);
 
 		fprintf(FP, "%*s", indentation + 2, "");
 
-		pcb_fprintf(FP, "(fp_text reference \"%s\" (at 0.0 -2.56) ", currentElementRef); 
+		pcb_fprintf(FP, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef); 
 		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
 
 		fprintf(FP, "%*s", indentation + 4, "");
@@ -913,7 +913,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		fprintf(FP, "%*s", indentation + 2, "");
 		printf("Element SilkLayer: %s\n", kicad_sexpr_layer_to_text(silkLayer));
 
-		pcb_fprintf(FP, "(fp_text value \"%s\" (at 0.0 -1.27) ", currentElementVal);
+		pcb_fprintf(FP, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
 		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
 
 		fprintf(FP, "%*s", indentation + 4, "");
