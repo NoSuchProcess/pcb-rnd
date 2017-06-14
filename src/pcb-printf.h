@@ -35,7 +35,7 @@
  *  it.
  *
  * The new coord/angle specifiers are:
- *   %mI    outout a raw internal coordinate without any suffix
+ *   %mI    output a raw internal coordinate without any suffix
  *   %mm    output a measure in mm
  *   %mM    output a measure in scaled (mm/um) metric
  *   %ml    output a measure in mil
