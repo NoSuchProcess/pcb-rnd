@@ -103,6 +103,9 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	int sheetWidth = A4WidthMil;
 	int paperSize = 4; /* default paper size is A4 */
 
+	/* Kicad string quoting pattern: protect parenthesis, whitespace, quote and backslash */
+	pcb_printf_slot[4] = "%{()\t\r\n \"\\}mq";
+
 	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")",FP);
 
 	fprintf(FP, "\n%*s(general\n", baseSExprIndent, "");
