@@ -322,6 +322,8 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 }
 
 extern pcb_opfunc_t MoveFunctions, Rotate90Functions, ChgFlagFunctions, ChangeSizeFunctions, ChangeClearSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;
+extern pcb_opfunc_t ChangeOctagonFunctions, SetOctagonFunctions, ClrOctagonFunctions;
+extern pcb_opfunc_t ChangeSquareFunctions, SetSquareFunctions, ClrSquareFunctions;
 
 void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
@@ -451,38 +453,38 @@ void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_clear_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ClrOctagonFunctions, ctx);
+	return sc;
 }
 
 void *pcb_subcop_set_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &SetOctagonFunctions, ctx);
+	return sc;
 }
 
 void *pcb_subcop_change_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeOctagonFunctions, ctx);
+	return sc;
 }
 
 void *pcb_subcop_clear_square(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ClrSquareFunctions, ctx);
+	return sc;
 }
 
 void *pcb_subcop_set_square(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &SetSquareFunctions, ctx);
+	return sc;
 }
 
 void *pcb_subcop_change_square(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeSquareFunctions, ctx);
+	return sc;
 }
 
 

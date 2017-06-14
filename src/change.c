@@ -163,7 +163,7 @@ static pcb_opfunc_t ChangePinnumFunctions = {
 	NULL
 };
 
-static pcb_opfunc_t ChangeSquareFunctions = {
+pcb_opfunc_t ChangeSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -214,7 +214,7 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 	NULL
 };
 
-static pcb_opfunc_t ChangeOctagonFunctions = {
+pcb_opfunc_t ChangeOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -252,7 +252,7 @@ static pcb_opfunc_t ChangeMaskSizeFunctions = {
 	NULL
 };
 
-static pcb_opfunc_t SetSquareFunctions = {
+pcb_opfunc_t SetSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -286,7 +286,7 @@ static pcb_opfunc_t SetJoinFunctions = {
 	NULL
 };
 
-static pcb_opfunc_t SetOctagonFunctions = {
+pcb_opfunc_t SetOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -303,7 +303,7 @@ static pcb_opfunc_t SetOctagonFunctions = {
 	pcb_subcop_set_octagon
 };
 
-static pcb_opfunc_t ClrSquareFunctions = {
+pcb_opfunc_t ClrSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -337,7 +337,7 @@ static pcb_opfunc_t ClrJoinFunctions = {
 	NULL
 };
 
-static pcb_opfunc_t ClrOctagonFunctions = {
+pcb_opfunc_t ClrOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
