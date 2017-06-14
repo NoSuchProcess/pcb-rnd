@@ -806,8 +806,9 @@ int write_kicad_equipotential_netlists(FILE * FP, pcb_board_t *Layout, pcb_cardi
                 menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
 		netlist = &menu->Entry[0];
 		if (netlist != NULL) {
-			fprintf(FP, "%*s(net %d %s)\n", indentation, "", netNumber, pcb_netlist_name(menu));  /* netlist 0 was used for unconnected pads  */
-                }
+			fprintf(FP, "%*s(net %d ", indentation, "", netNumber);  /* netlist 0 was used for unconnected pads  */
+			pcb_fprintf(FP, "%[4])\n", pcb_netlist_name(menu)); 
+		}
         }
 	return 0;
 }
