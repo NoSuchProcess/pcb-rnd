@@ -7,7 +7,7 @@ LDLIBS = -lm
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 LIBPCB_BASE= $(SRC)/unit.o $(SRC)/compat_misc.o
 
-all: tester tester_spd prcli
+all: tester tester_spd prcli prclimq
 
 ROOT=../..
 include $(ROOT)/Makefile.conf
@@ -18,7 +18,11 @@ test: tester.diff
 
 prcli: prcli.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS)
 
+prclimq: prclimq.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS)
+
 prcli.o: prcli.c
+
+prclimq.o: prclimq.c
 
 tester: tester.o $(SRC)/pcb-printf.o $(LIBPCB_BASE)  $(GDS)
 	$(CC) $(LDFLAGS) -o tester tester.o $(SRC)/pcb-printf.o $(LIBPCB_BASE)  $(GDS) $(LDLIBS)
