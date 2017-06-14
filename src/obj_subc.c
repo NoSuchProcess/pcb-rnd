@@ -38,6 +38,7 @@
 #include "flag.h"
 #include "polygon.h"
 #include "operation.h"
+#include "undo.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
 {
