@@ -34,7 +34,7 @@
  *  code elsewhere in the project will make it worth
  *  it.
  *
- * The new specifiers are:
+ * The new coord/angle specifiers are:
  *   %mI    outout a raw internal coordinate without any suffix
  *   %mm    output a measure in mm
  *   %mM    output a measure in scaled (mm/um) metric
@@ -72,6 +72,12 @@
  * The usual printf(3) precision and length modifiers should work with
  * any format specifier that outputs coords, e.g. %.3mm will output in
  * mm up to 3 decimal digits after the decimal point.
+ *
+ * The new string specifiers are:
+ *   %mq    output a quoted string (""); quote if contains quote. Use
+ *          backslash to protect quotes within the quoted string. Modifiers:
+ *           {chars} start quoting if any of these appear
+ *
  *
  * KNOWN ISSUES:
  *   No support for %zu size_t printf spec
