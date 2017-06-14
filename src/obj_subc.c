@@ -50,7 +50,7 @@ pcb_subc_t *pcb_subc_alloc(void)
 	return sc;
 }
 
-void *pcb_subc_free(pcb_subc_t *sc)
+void pcb_subc_free(pcb_subc_t *sc)
 {
 	pcb_subclist_remove(sc);
 	pcb_data_free(sc->data);
@@ -440,6 +440,7 @@ void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	pcb_subclist_remove(sc);
 	EraseSubc(sc);
 	pcb_subc_free(sc);
+	return NULL;
 }
 
 void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
