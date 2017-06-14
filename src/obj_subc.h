@@ -39,6 +39,7 @@ struct pcb_subc_s {
 
 void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc);
 
+void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, int redraw);
 
 /* convert buffer contents into a subcircuit, in-place; returns 0 on success */
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
