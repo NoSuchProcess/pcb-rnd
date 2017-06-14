@@ -340,6 +340,8 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	}
 
+#warning subc TODO: via
+
 	pcb_close_box(&sc->BoundingBox);
 	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
 	DrawSubc(sc);
@@ -419,6 +421,9 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		}
 
 	}
+
+#warning subc TODO: via
+
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
