@@ -382,6 +382,27 @@ static int CoordsToHumanString(gds_t *dest, pcb_coord_t coord, const gds_t *prin
 	return retval;
 }
 
+int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char *needq)
+{
+	const char *s;
+
+	/* check if quoting is needed */
+	if (strpbrk(qstr, needq) == NULL) {
+		gds_append_str(dest, qstr);
+		return 0;
+	}
+
+	/* wrap in quotes and protect escape and quote chars */
+	gds_append(dest, q);
+	for(s = qstr; *s != '\0'; s++) {
+		if ((*s == esc) || (*s == q))
+			gds_append(dest, esc);
+		gds_append(dest, *s);
+	}
+	gds_append(dest, q);
+	return 0;
+}
+
 /* \brief Main low level pcb-printf function
  * \par Function Description
  * This is a printf wrapper that accepts new format specifiers to
@@ -397,6 +418,7 @@ static int CoordsToHumanString(gds_t *dest, pcb_coord_t coord, const gds_t *prin
 int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 {
 	gds_t spec;
+	const char *qstr;
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0;
 	char *dot, *free_fmt = NULL;
@@ -551,10 +573,14 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				++fmt;
 				if (*fmt == '*')
 					ext_unit = va_arg(args, const char *);
-				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f')
+				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q')
 					value[0] = va_arg(args, pcb_coord_t);
 				count = 1;
 				switch (*fmt) {
+				case 'q':
+					qstr = va_arg(args, const char *);
+					if (QstringToString(string, qstr, '"', '\\', " ()\"\\") != 0) goto err;
+					break;
 				case 'I':
 					if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_NM, PCB_UNIT_NO_SUFFIX) != 0) goto err;
 					break;
