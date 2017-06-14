@@ -979,7 +979,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 			current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
 			fprintf(FP, "%*s", indentation + 4, "");
 			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
-				fprintf(FP, "(net %d \"%s\")\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+				pcb_fprintf(FP, "(net %d %[4])\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
 				fprintf(FP, "(net 0 \"\")\n"); /* unconnected pads have zero for net */
 			}
@@ -1030,7 +1030,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 			current_pin_menu = pcb_netlist_find_net4pad(Layout, pad);
 			fprintf(FP, "%*s", indentation + 4, "");
 			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
-				fprintf(FP, "(net %d \"%s\")\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+				pcb_fprintf(FP, "(net %d %[4])\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
 				fprintf(FP, "(net 0 \"\")\n"); /* unconnected pads have zero for net */
 			}
