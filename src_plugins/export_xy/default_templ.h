@@ -30,7 +30,7 @@ static const char *templ_macrofab_hdr =
 	"#Author: %author%\n"
 	"#Title: %title% - pcb-rnd Macrofab export\n"
 	"#Placement data:\n"
-	"#Designator X-Loc Y-Loc Rotation Side Type X-Size Y-Size Value Footprint Type\n"
+	"#Designator X-Loc Y-Loc Rotation Side X-Size Y-Size Value Footprint Type\n"
 	"# --------------------------------------------\n";
 
 static const char *templ_macrofab_elem =
