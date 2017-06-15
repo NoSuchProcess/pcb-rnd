@@ -53,7 +53,7 @@ static char * kicad_sexpr_layer_to_text(int layer);
 static int write_kicad_layout_via_drill_size(FILE * FP, pcb_cardinal_t indentation);
 
 /* writes the buffer to file */
-int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
+int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
 	pcb_message(PCB_MSG_ERROR, "can't save buffer in s-expr yet, please use kicad legacy for this\n");
 	return -1;

@@ -586,16 +586,22 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 /* ---------------------------------------------------------------------------
  * writes the buffer to file
  */
-int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
+int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
 	pcb_cardinal_t i;
 
-	LayersFixup();
-
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
-	WriteViaData(FP, buff->Data);
+
+	if (!elem_only) {
+		LayersFixup();
+		WriteViaData(FP, buff->Data);
+	}
+
 	io_pcb_WriteElementData(ctx, FP, buff->Data);
-	WriteLayers(FP, buff->Data);
+
+	if (!elem_only)
+		WriteLayers(FP, buff->Data);
+
 	return (0);
 }
 

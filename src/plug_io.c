@@ -280,13 +280,13 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 }
 
 
-int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt)
+int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool elem_only)
 {
 	int res, newfmt = 0;
 	pcb_plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);
 
 	if (p != NULL) {
-		res = p->write_buffer(p, f, buff);
+		res = p->write_buffer(p, f, buff, elem_only);
 		newfmt = 1;
 	}
 
@@ -636,7 +636,7 @@ int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 
 	if (PCB_SWAP_IDENT)
 		pcb_buffers_flip_side(PCB);
-	result = pcb_write_pipe(Filename, pcb_false, fmt);
+	result = pcb_write_pipe(Filename, pcb_false, fmt, pcb_true);
 	if (PCB_SWAP_IDENT)
 		pcb_buffers_flip_side(PCB);
 	return (result);
@@ -650,10 +650,10 @@ int pcb_save_pcb(const char *file, const char *fmt)
 	int retcode;
 
 	if (pcb_gui->notify_save_pcb == NULL)
-		return pcb_write_pipe(file, pcb_true, fmt);
+		return pcb_write_pipe(file, pcb_true, fmt, pcb_false);
 
 	pcb_gui->notify_save_pcb(file, pcb_false);
-	retcode = pcb_write_pipe(file, pcb_true, fmt);
+	retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false);
 	pcb_gui->notify_save_pcb(file, pcb_true);
 
 	return retcode;
@@ -713,7 +713,7 @@ void pcb_save_in_tmp(void)
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
 		pcb_message(PCB_MSG_INFO, _("Trying to save your layout in '%s'\n"), filename);
-		pcb_write_pcb_file(filename, pcb_true, DEFAULT_FMT, pcb_true);
+		pcb_write_pcb_file(filename, pcb_true, DEFAULT_FMT, pcb_true, pcb_false);
 	}
 }
 
@@ -797,7 +797,7 @@ void pcb_backup(void)
 		}
 	}
 
-	pcb_write_pcb_file(filename, pcb_true, NULL, pcb_true);
+	pcb_write_pcb_file(filename, pcb_true, NULL, pcb_true, pcb_false);
 	free(filename);
 }
 
@@ -811,7 +811,7 @@ void pcb_backup(void)
 void pcb_tmp_data_save(void)
 {
 	char *fn = pcb_build_fn(conf_core.rc.emergency_name);
-	pcb_write_pcb_file(fn, pcb_true, NULL, pcb_true);
+	pcb_write_pcb_file(fn, pcb_true, NULL, pcb_true, pcb_false);
 	if (TMPFilename != NULL)
 		free(TMPFilename);
 	TMPFilename = fn;
@@ -828,20 +828,20 @@ void pcb_tmp_data_remove(void)
 #endif
 
 /* Write the pcb file, a footprint or a buffer */
-static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const char *new_path, const char *fmt, pcb_bool emergency)
+static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const char *new_path, const char *fmt, pcb_bool emergency, pcb_bool elem_only)
 {
 	if (thePcb) {
 		if (PCB->is_footprint)
 			return pcb_write_element_data(fp, PCB->Data, fmt);
 		return pcb_write_pcb(fp, old_path, new_path, fmt, emergency);
 	}
-	return pcb_write_buffer(fp, PCB_PASTEBUFFER, fmt);
+	return pcb_write_buffer(fp, PCB_PASTEBUFFER, fmt, elem_only);
 }
 
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency)
+int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool elem_only)
 {
 	FILE *fp;
 	int result, overwrite;
@@ -871,7 +871,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 		return (-1);
 	}
 
-	result = pcb_write_file(fp, thePcb, fn_tmp, Filename, fmt, emergency);
+	result = pcb_write_file(fp, thePcb, fn_tmp, Filename, fmt, emergency, elem_only);
 
 	fclose(fp);
 	if (fn_tmp != NULL) {
@@ -887,7 +887,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
  * writes to pipe using the command defined by conf_core.rc.save_command
  * %f are replaced by the passed filename
  */
-int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt)
+int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool elem_only)
 {
 	FILE *fp;
 	int result;
@@ -895,7 +895,7 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 	static gds_t command;
 
 	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
-		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false);
+		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false, elem_only);
 
 	/* setup commandline */
 	gds_truncate(&command,0);
@@ -916,7 +916,7 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 		return (-1);
 	}
 
-	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, pcb_false);
+	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, pcb_false, elem_only);
 
 	return (pclose(fp) ? (-1) : result);
 }

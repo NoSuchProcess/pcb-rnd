@@ -77,7 +77,7 @@ struct pcb_plug_io_s {
 
 
 	/* Write the buffer to a file. Return 0 on success. */
-	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
+	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only);
 
 	/* Write element data to a file. Return 0 on success. */
 	int (*write_element)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e);
@@ -108,7 +108,7 @@ extern pcb_plug_io_t *pcb_plug_io_chain;
 int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings, int ignore_missing);
 int pcb_parse_element(pcb_data_t *Ptr, const char *name);
 int pcb_parse_font(pcb_font_t *Ptr, const char *Filename);
-int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
+int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool elem_only);
 int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
@@ -129,8 +129,8 @@ void pcb_sort_netlist(void);
 void pcb_print_quoted_string(FILE *, const char *);
 void pcb_library_sort(pcb_lib_t *lib);
 void pcb_set_some_route_style();
-int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency);
-int pcb_write_pipe(const char *, pcb_bool, const char *fmt);
+int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool elem_only);
+int pcb_write_pipe(const char *, pcb_bool, const char *fmt, pcb_bool elem_only);
 
 #ifndef HAS_ATEXIT
 void pcb_tmp_data_save(void);
