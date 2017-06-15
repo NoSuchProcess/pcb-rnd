@@ -315,7 +315,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	else
 		Data->subc_tree = pcb_r_create_tree(NULL, 0, 0);
 
-
+	/* execute on layer locals */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *sl = sc->data->Layer + n;
 		pcb_line_t *line;
@@ -347,7 +347,17 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	}
 
-#warning subc TODO: via
+
+	/* execute on globals */
+	{
+		pcb_pin_t *via;
+		gdl_iterator_t it;
+
+		pinlist_foreach(&sc->data->Via, &it, via) {
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_VIA, sc->data, via, via);
+			pcb_box_bump_box(&sc->BoundingBox, &via->BoundingBox);
+		}
+	}
 
 	pcb_close_box(&sc->BoundingBox);
 	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
