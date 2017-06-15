@@ -22,25 +22,30 @@
  *
  */
 
-#include "config.h
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "footprint.h"
+/*#include "footprint.h"*/
+
+#include "plugins.h"
+#include "plug_io.h"
+#include "write.h"
+/*#include "read.h"
+#include "read_net.h" */
+#include "hid_actions.h"
 
 #include "board.h"
-#include "netlist.h"
+/*#include "netlist.h"*/
 #include "conf_core.h"
 #include "buffer.h"
-#include "plugins.h"
 #include "hid.h"
-#include "hid_actions.h"
 #include "action_helper.h"
 #include "compat_misc.h"
 
-
+static pcb_plug_io_t io_autotrax;
 static const char *autotrax_cookie = "autotrax IO";
 
 static const char pcb_acts_Saveautotrax[] = "SaveAutotrax(type, filename)";
@@ -51,29 +56,15 @@ int io_autotrax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
 
-	if ((strcmp(fmt, "autotra") != 0) ||
+	if ((strcmp(fmt, "autotrax") != 0) ||
 		((typ & (~(PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER | PCB_IOT_PCB))) != 0))
 		return 0;
 
 	return 100;
 }
 
-static int pcb_act_Saveautotrax(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	const char *fname, *type = argv[0];
-	if (argc < 1)t
-		PCB_ACT_FAIL(Saveautotrax);
-
-	fname = (argc > 1) ? argv[1] : NULL;
-
-	if (pcb_strcasecmp(type, "board-footprints") == 0)
-		return tedax_fp_save(PCB->Data, argv[1]);
-
-	PCB_ACT_FAIL(Saveautotrax);
-}
-
-PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie)
-
+/*PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie) 
+*/
 int pplg_check_ver_io_autotrax(int ver_needed) { return 0; }
 
 void pplg_uninit_io_autotrax(void)
@@ -89,8 +80,8 @@ int pplg_init_io_autotrax(void)
 	/* register the IO hook */
 	io_autotrax.plugin_data = NULL;
 	io_autotrax.fmt_support_prio = io_autotrax_fmt;
-	io_autotrax.test_parse_pcb = io_autotrax_test_parse_pcb;
-	io_autotrax.parse_pcb = io_autotrax_read_pcb;
+	io_autotrax.test_parse_pcb = NULL; /*io_autotrax_test_parse_pcb;*/
+	io_autotrax.parse_pcb = NULL; /*io_autotrax_read_pcb;*/
 	io_autotrax.parse_element = NULL;
 	io_autotrax.parse_font = NULL;
 	io_autotrax.write_buffer = io_autotrax_write_buffer;
@@ -106,8 +97,8 @@ int pplg_init_io_autotrax(void)
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_autotrax);
 
-	PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie);
-
+/*	PCB_REGISTER_ACTIONS(autotrax_action_list, autotrax_cookie);
+*/
 	/* TODO: Alloc plugin-globals here. */
 
 	return 0;

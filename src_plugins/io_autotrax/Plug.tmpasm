@@ -1,9 +1,7 @@
 put /local/pcb/mod {io_autotrax}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_autotrax/io_autotrax.o
-	$(PLUGDIR)/io_autotrax/netlist.o
-	$(PLUGDIR)/io_autotrax/footprint.o
-	$(PLUGDIR)/io_autotrax/parse.o
+	$(PLUGDIR)/io_autotrax/write.o
 @]
 
 switch /local/pcb/io_autotrax/controls
