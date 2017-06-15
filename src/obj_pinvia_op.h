@@ -58,3 +58,5 @@ void *pcb_viaop_copy(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_move(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_destroy(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_remove(pcb_opctx_t *ctx, pcb_pin_t *Via);
+void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_data_t *data, pcb_pin_t *pin);
+

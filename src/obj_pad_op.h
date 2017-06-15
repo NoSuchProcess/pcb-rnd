@@ -36,6 +36,8 @@ void *pcb_padop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_
 void *pcb_padop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
 void *pcb_padop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
 void *pcb_padop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *pcb_padop_change_flag(pcb_opctx_t *ctx, pcb_data_t *data, pcb_pad_t *pad);
+
 
 
 
