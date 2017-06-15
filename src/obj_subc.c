@@ -406,6 +406,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 	EraseSubc(sc);
 
+	/* move layer local */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *sl = sc->data->Layer + n;
 		pcb_line_t *line;
@@ -439,7 +440,18 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 	}
 
-#warning subc TODO: via
+
+	/* move globals */
+	{
+		pcb_pin_t *via;
+		gdl_iterator_t it;
+
+		pinlist_foreach(&sc->data->Via, &it, via) {
+			pcb_r_delete_entry(sc->data->via_tree, (pcb_box_t *)via);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
+		}
+	}
+
 
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
