@@ -251,6 +251,13 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	}
 	sc->data->LayerN = src->data->LayerN;
 
+	/* bind the via rtree so that vias added in this subc show up on the board */
+	if (pcb != NULL) {
+		if (pcb->Data->via_tree == NULL)
+			pcb->Data->via_tree = pcb_r_create_tree(NULL, 0, 0);
+		sc->data->via_tree = pcb->Data->via_tree;
+	}
+
 	{ /* make a copy of global data */
 		pcb_pin_t *via, *nvia;
 		gdl_iterator_t it;
