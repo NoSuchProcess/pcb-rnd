@@ -51,7 +51,7 @@
 vtptr_t post_ids, post_thermal;
 static int rdver;
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, int bound_layers);
+static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, pcb_data_t *subc_parent);
 
 
 /* Collect objects that has unknown ID on a list. Once all objects with
@@ -568,10 +568,11 @@ static int parse_layer_type(pcb_layer_type_t *dst, lht_node_t *nd, const char *l
 	return 0;
 }
 
-static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, int bound)
+static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, pcb_data_t *subc_parent)
 {
 	lht_node_t *n, *lst, *ncmb;
 	lht_dom_iterator_t it;
+	int bound = (subc_parent != NULL);
 
 	pcb_layer_t *ly = &dt->Layer[layer_id];
 	if (layer_id >= dt->LayerN)
@@ -588,6 +589,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			pcb_layer_link_trees(&dt->Layer[layer_id], dt->Layer[layer_id].meta.bound.real);
 		else
 			pcb_message(PCB_MSG_WARNING, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].meta.bound.name);
+		dt->via_tree = subc_parent->via_tree;
 	}
 	else {
 		/* real */
@@ -638,7 +640,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	return 0;
 }
 
-static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int bound_layers)
+static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, pcb_data_t *subc_parent)
 {
 	int id;
 	lht_node_t *n;
@@ -646,7 +648,7 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, 
 
 	for(id = 0, n = lht_dom_first(&it, grp); n != NULL; id++, n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			parse_data_layer(pcb, dt, n, id, bound_layers);
+			parse_data_layer(pcb, dt, n, id, subc_parent);
 
 	return 0;
 }
@@ -773,7 +775,12 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	parse_id(&sc->ID, obj, 5);
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
-	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"), 1);
+
+
+	if (!dt->via_tree)
+		dt->via_tree = pcb_r_create_tree(NULL, 0, 0);
+
+	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"), dt);
 
 	pcb_data_bbox(&sc->BoundingBox, sc->data);
 
@@ -931,10 +938,11 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, int bound_layers)
+static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, pcb_data_t *subc_parent)
 {
 	pcb_data_t *dt;
 	lht_node_t *grp;
+	int bound_layers = (subc_parent != NULL);
 
 	if (nd->type != LHT_HASH)
 		return NULL;
@@ -945,7 +953,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, int bound_layers
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
-		parse_data_layers(pcb, dt, grp, bound_layers);
+		parse_data_layers(pcb, dt, grp, subc_parent);
 
 	if (rdver == 1)
 		layer_fixup(pcb);
@@ -1274,7 +1282,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((parse_data(pcb, sub, 0)) == NULL))
+	if ((sub != NULL) && ((parse_data(pcb, sub, NULL)) == NULL))
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "styles");
