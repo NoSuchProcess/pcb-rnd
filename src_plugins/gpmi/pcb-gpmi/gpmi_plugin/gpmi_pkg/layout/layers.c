@@ -35,7 +35,7 @@ int layout_resolve_layer(const char *name)
 	if (name == NULL)
 		return -2;
 	for(n = 0; n < PCB_MAX_LAYER + 2; n++)
-		if ((PCB->Data->Layer[n].Name != NULL) && (strcmp(PCB->Data->Layer[n].Name, name) == 0))
+		if ((PCB->Data->Layer[n].meta.real.name != NULL) && (strcmp(PCB->Data->Layer[n].meta.real.name, name) == 0))
 			return n;
 	return -1;
 }
@@ -53,13 +53,13 @@ int layout_get_max_layer()
 const char *layout_layer_name(int layer)
 {
 	layer_check(layer)("");
-	return PCB->Data->Layer[layer].Name;
+	return PCB->Data->Layer[layer].meta.real.name;
 }
 
 const char *layout_layer_color(int layer)
 {
 	layer_check(layer)("");
-	return PCB->Data->Layer[layer].Color;
+	return PCB->Data->Layer[layer].meta.real.color;
 }
 
 int layout_layer_field(int layer, layer_field_t fld)
@@ -70,8 +70,8 @@ int layout_layer_field(int layer, layer_field_t fld)
 		case LFLD_NUM_TEXTS: return textlist_length(&(PCB->Data->Layer[layer].Text));
 		case LFLD_NUM_POLYS: return polylist_length(&(PCB->Data->Layer[layer].Polygon));
 		case LFLD_NUM_ARCS:  return arclist_length(&(PCB->Data->Layer[layer].Arc));
-		case LFLD_VISIBLE:   return PCB->Data->Layer[layer].On;
-		case LFLD_NODRC:     return PCB->Data->Layer[layer].no_drc;
+		case LFLD_VISIBLE:   return PCB->Data->Layer[layer].meta.real.vis;
+		case LFLD_NODRC:     return PCB->Data->Layer[layer].meta.real.no_drc;
 	}
 	return -1;
 }
