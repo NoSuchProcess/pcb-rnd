@@ -105,7 +105,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	physicalLayerCount = pcb_layergrp_list(PCB, PCB_LYT_COPPER, NULL, 0);
 
 	if (physicalLayerCount > 6) {
-		pcb_message(PCB_MSG_ERROR, "Warning: Physical layer count exceeds protel autotrax layer support for 6 layers.");
+		pcb_message(PCB_MSG_ERROR, "Warning: Physical layer count exceeds protel autotrax layer support for 6 layers.\n");
 		/*return -1;*/
 	}
 
@@ -136,7 +136,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	}
 
         if (innerCount > 4) {
-                pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner layers.");
+                pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner layers.\n");
                 /*return -1;*/
         }
 
@@ -300,6 +300,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	/* last are the autotrax netlist descriptors */
 	write_autotrax_equipotential_netlists(FP, PCB);
 
+	fputs("ENDPCB\n",FP); /*autotrax footer*/
+
 	return (0);
 }
 
@@ -420,7 +422,7 @@ int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			xStart = arc->X + xOffset;
 			yStart = arc->Y + yOffset;
 
-			pcb_fprintf(FP, "FA\n%.0ml %.0ml %.0ml %.0ml %ml %d %d\n",
+			pcb_fprintf(FP, "FA\n%.0ml %.0ml %.0ml %d %.0ml %d\n",
                                 xStart, yStart, radius, arcSegments,
                                 arc->Thickness, currentLayer);
 
@@ -741,7 +743,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
-	pcb_coord_t xPos, yPos;
+	pcb_coord_t xPos, yPos, yPos2, yPos3;
 
 	pcb_element_t *element;
 	pcb_lib_menu_t *current_pin_menu;
@@ -777,10 +779,12 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		fprintf(FP, "%s\n", element->Name[PCB_ELEMNAME_IDX_VALUE].TextString);/* designator */
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* designator */
 			xPos, yPos, silkLayer);
+		yPos2 = yPos + PCB_MIL_TO_COORD(200);
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* pattern */
-			xPos, yPos + 200, silkLayer);
+			xPos, yPos2, silkLayer);
+		yPos3 = yPos2 + PCB_MIL_TO_COORD(200);
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* comment field */
-			xPos, yPos + 400, silkLayer);
+			xPos, yPos3, silkLayer);
 
 		pinlist_foreach(&element->Pin, &it, pin) {
 
@@ -792,7 +796,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
                                 padShape = 1; /* circular */
 			}
 
-			pcb_fprintf(FP, "CP\t%s\n%ml %ml %ml %ml %d %ml 1 %d\n",
+			pcb_fprintf(FP, "CP\t%s\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\n",
 				(char *) PCB_EMPTY(pin->Number), /* or ->Name? */
 				pin->X - element->MarkX,
 				pin->Y - element->MarkY,
@@ -802,28 +806,28 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		padlist_foreach(&element->Pad, &it, pad) {
 			padShape = 2; /* rectangular */
 
-			pcb_fprintf(FP, "CP\n%ml %ml ", /* positions of pad */
+			pcb_fprintf(FP, "CP\n%.0ml %.0ml ", /* positions of pad */
 				(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
 				(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
 					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%ml %ml ",
+				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
 					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
 					 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%ml %ml ",
+				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
 					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 					 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%ml %ml ",
+				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 					 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%ml %ml ",
+				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			}
@@ -847,7 +851,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
 
 			if ((arc->Delta >= 360.0) || (arc->Delta <= -360.0)) { /* it's a circle */
-				pcb_fprintf(FP, "CA %.0ml %.0ml %.0ml %d %.0mk %d\n",
+				pcb_fprintf(FP, "CA %.0ml %.0ml %.0ml %d %.0ml %.0ml %d\n",
 						arc->X - element->MarkX, /* x_1 centre */
 						arc->Y - element->MarkY, /* y_2 centre */
 						(arc->Height + arc->Width)/2, /* average */
