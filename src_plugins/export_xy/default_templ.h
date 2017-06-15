@@ -30,11 +30,11 @@ static const char *templ_macrofab_hdr =
 	"#Author: %author%\n"
 	"#Title: %title% - pcb-rnd Macrofab export\n"
 	"#Placement data:\n"
-	"#Designator X-Loc Y-Loc Rotation Side X-Size Y-Size Value Footprint Type\n"
+	"#Designator X-Loc Y-Loc Rotation Side Type X-Size Y-Size Value Footprint\n"
 	"# --------------------------------------------\n";
 
 static const char *templ_macrofab_elem =
-        "%elem.name_%\t%elem.x%\t%elem.y%\t%elem.siderot%\t%elem.num-side%\t%elem.pad_width%\t%elem.pad_height%\t%elem.value_%\t%elem.descr_%\t%elem.smdvsthru%\n";
+        "%elem.name_%\t%elem.x%\t%elem.y%\t%elem.siderot%\t%elem.num-side%\t%elem.smdvsthru%\t%elem.pad_width%\t%elem.pad_height%\t%elem.value_%\t%elem.descr_%\n";
 
 static const char *templ_TM220TM240_hdr = 
 	"#pcb-rnd TM220A/TM240A xyrs version 1.0\n"
