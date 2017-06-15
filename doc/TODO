@@ -25,7 +25,6 @@
 
 For the next release:
 - BUGS:
-	- pcb-rnd --export -> insta segfault [report: miloh]
 	- backup save triggers save in pcb indirectly, and that changes the layer stackup which may ruin the board (add new mask layers, wait for a save, draw on them after a save, they become silk) [report: Ade]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- library window: allow long tags and long location text to split

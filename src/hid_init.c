@@ -166,11 +166,18 @@ pcb_hid_t *pcb_hid_find_exporter(const char *which)
 {
 	int i;
 
+	if (which == NULL) {
+		fprintf(stderr, "Invalid exporter: need an exporter name, one of:");
+		goto list;
+	}
+
 	for (i = 0; i < pcb_hid_num_hids; i++)
 		if (pcb_hid_list[i]->exporter && strcmp(which, pcb_hid_list[i]->name) == 0)
 			return pcb_hid_list[i];
 
 	fprintf(stderr, "Invalid exporter %s, available ones:", which);
+
+	list:;
 	for (i = 0; i < pcb_hid_num_hids; i++)
 		if (pcb_hid_list[i]->exporter)
 			fprintf(stderr, " %s", pcb_hid_list[i]->name);
