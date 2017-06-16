@@ -315,9 +315,14 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	pcb_polyarea_t *p, *p2, *m;
 	pcb_coord_t t = 0.5 * pcb->ThermScale * pin->Clearance;
 	pcb_coord_t w = pin->Thickness + pin->Clearance;
+	int shape = PCB_FLAG_SQUARE_GET(pin);
 
-	p = pcb_poly_from_octagon(pin->X, pin->Y, w, PCB_FLAG_SQUARE_GET(pin));
-	p2 = pcb_poly_from_octagon(pin->X, pin->Y, pin->Thickness, PCB_FLAG_SQUARE_GET(pin));
+	/* temporary work around corner case on square+octagon shape with large clearance */
+	if (shape <= 1)
+		shape = 17;
+
+	p = pcb_poly_from_octagon(pin->X, pin->Y, w, shape);
+	p2 = pcb_poly_from_octagon(pin->X, pin->Y, pin->Thickness, shape);
 	/* make full clearance ring */
 	pcb_polyarea_boolean_free(p, p2, &m, PCB_PBO_SUB);
 	switch (style) {

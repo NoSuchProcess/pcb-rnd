@@ -776,6 +776,8 @@ pcb_polyarea_t *pcb_poly_from_pin(pcb_pin_t * pin, pcb_coord_t thick, pcb_coord_
 	else {
 		size = (thick + clear + 1) / 2;
 		if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin)) {
+			if (PCB_FLAG_SQUARE_GET(pin) <= 1)
+				size /= 2;
 			return pcb_poly_from_octagon(pin->X, pin->Y, size + size, PCB_FLAG_SQUARE_GET(pin));
 		}
 	}
