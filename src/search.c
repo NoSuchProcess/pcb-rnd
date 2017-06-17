@@ -72,9 +72,9 @@ static pcb_bool SearchSubcByLocation(unsigned long, pcb_subc_t **, pcb_subc_t **
 
 /* return not-found for subc parts and locked items unless objst says otherwise
    obj is the object to be checked if part of subc; check lock on locked_obj */
-#define TEST_OBJST(objst, obj, locked_obj) \
+#define TEST_OBJST(objst, locality, obj, locked_obj) \
 do { \
-	if (!(objst & PCB_TYPE_SUBC_PART) && (pcb_is_gobj_in_subc(obj->parent_type, &obj->parent))) \
+	if (!(objst & PCB_TYPE_SUBC_PART) && (pcb_is_ ## locality ## obj_in_subc(obj->parent_type, &obj->parent))) \
 		return PCB_R_DIR_NOT_FOUND; \
 	if (!(objst & PCB_TYPE_LOCKED) && (PCB_FLAG_TEST(objst & PCB_FLAG_LOCK, locked_obj))) \
 		return PCB_R_DIR_NOT_FOUND; \
@@ -96,7 +96,7 @@ static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 	pcb_pin_t *pin = (pcb_pin_t *) box;
 	pcb_any_obj_t *ptr1 = pin->Element ? pin->Element : pin;
 
-	TEST_OBJST(i->objst, pin, ptr1);
+	TEST_OBJST(i->objst, g, pin, ptr1);
 
 	if (!pcb_is_point_in_pin(PosX, PosY, SearchRadius, pin))
 		return PCB_R_DIR_NOT_FOUND;
@@ -150,7 +150,7 @@ static pcb_r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_any_obj_t *ptr1 = pad->Element;
 
-	TEST_OBJST(i->objst, pad, ptr1);
+	TEST_OBJST(i->objst, g, pad, ptr1);
 
 	if (PCB_FRONT(pad) || i->BackToo) {
 		if (pcb_is_point_in_pad(PosX, PosY, SearchRadius, pad)) {
@@ -200,7 +200,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 	struct line_info *i = (struct line_info *) cl;
 	pcb_line_t *l = (pcb_line_t *) box;
 
-	TEST_OBJST(i->objst, l, l);
+	TEST_OBJST(i->objst, l, l, l);
 
 	if (!pcb_is_point_in_pad(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
 		return PCB_R_DIR_NOT_FOUND;
@@ -231,7 +231,7 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	pcb_line_t *line = (pcb_line_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
-	TEST_OBJST(i->objst, line, line);
+	TEST_OBJST(i->objst, l, line, line);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, line) ?
 			(pcb_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
@@ -274,7 +274,7 @@ static pcb_r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 	struct arc_info *i = (struct arc_info *) cl;
 	pcb_arc_t *a = (pcb_arc_t *) box;
 
-	TEST_OBJST(i->objst, a, a);
+	TEST_OBJST(i->objst, l, a, a);
 
 	if (!pcb_is_point_on_arc(PosX, PosY, SearchRadius, a))
 		return 0;
@@ -303,7 +303,7 @@ static pcb_r_dir_t text_callback(const pcb_box_t * box, void *cl)
 	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
-	TEST_OBJST(i->objst, text, text);
+	TEST_OBJST(i->objst, l, text, text);
 
 	if (PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		*i->ptr2 = *i->ptr3 = text;
@@ -334,7 +334,7 @@ static pcb_r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 	pcb_polygon_t *polygon = (pcb_polygon_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
-	TEST_OBJST(i->objst, polygon, polygon);
+	TEST_OBJST(i->objst, l, polygon, polygon);
 
 	if (pcb_poly_is_point_in_p(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
@@ -368,7 +368,7 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
 	double d;
 
-	TEST_OBJST(i->objst, line, line);
+	TEST_OBJST(i->objst, l, line, line);
 
 	/* some stupid code to check both points */
 	d = pcb_distance(PosX, PosY, line->Point1.X, line->Point1.Y);
@@ -397,7 +397,7 @@ static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
 	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
 	double d;
 
-	TEST_OBJST(i->objst, arc, arc);
+	TEST_OBJST(i->objst, l, arc, arc);
 
 	/* some stupid code to check both points */
 	pcb_arc_get_end(arc, 0, &ab.X1, &ab.Y1);
@@ -493,7 +493,7 @@ static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 	pcb_element_t *element = (pcb_element_t *) text->Element;
 	double newarea;
 
-	TEST_OBJST(i->objst, text, text);
+	TEST_OBJST(i->objst, l, text, text);
 
 	if ((PCB_FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		/* use the text with the smallest bounding box */
@@ -537,7 +537,7 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 	double newarea;
 
-	TEST_OBJST(i->objst, element, element);
+	TEST_OBJST(i->objst, g, element, element);
 
 	if ((PCB_FRONT(element) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &element->VBox) && pcb_element_silk_vis(element)) {
 		/* use the element with the smallest bounding box */
@@ -581,7 +581,7 @@ static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 	double newarea;
 
-	TEST_OBJST(i->objst, subc, subc);
+	TEST_OBJST(i->objst, g, subc, subc);
 
 	if ((PCB_FRONT(subc) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &subc->BoundingBox)) {
 		/* use the element with the smallest bounding box */
