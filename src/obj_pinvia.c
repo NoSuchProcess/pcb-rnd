@@ -841,7 +841,7 @@ void *pcb_viaop_remove(pcb_opctx_t *ctx, pcb_pin_t *Via)
 }
 
 #define PCB_PIN_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_HOLE | PCB_FLAG_PININPOLY | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
-void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_data_t *data, pcb_pin_t *pin)
+void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin)
 {
 	if ((ctx->chgflag.flag & PCB_PIN_FLAGS) != ctx->chgflag.flag)
 		return NULL;
