@@ -1,0 +1,76 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> subcircuit roadmap: element names </h2>
+
+<pre>
+&gt; So that brings up another question: how is the displayed element name
+&gt; going to change behavior in future versions of pcb-rnd?
+</pre>
+
+
+Good question. I've been thinking about this a lot lately.
+<p>
+<h3> The current situation in full details </h3>
+<p>
+there are exactly 3 pcb text objects attached to each pcb element object. 
+A text object has size, coordinate, font ID, rotation and string (plus 
+the usual background info like rtree entry). Although you see only one of 
+these at any given time, the code maintains all three.
+<p>
+And although the coordinate and rotation and size and font, or in other 
+words, everything but the string, need to be the same, we still store 
+all these data 3 times... Every code that needs to touch an element text 
+also needs to repeat all these ugly hacks; like the code that can move an 
+element text really needs to move 3 to keep all coords in sync.
+<p>
+On one hand I like to be able to globally change whether we show refdes or 
+value, but on the other hand I often want to see both. And even more: it's 
+a different use case to see data on the screen or see the artwork on silk.
+<p>
+<h3>So my plan for subcircuits</h3>
+
+<ul>
+<li>1. We will be able to have as many text objects as the user wants, on 
+whichever layer (including mask or even paste)
+
+<li>2. we'll have some metadata for each object (text objects included) that 
+tells the role of the object.
+
+<li>3. The role won't be one of 3 sacred roles some holy priests invents in 
+the initial implementation, but user defined. The default convention 
+obviously will be our usual 3 roles: refdes, value, footprint name.
+
+<li>4. Because of 2. and 3., we will be able to identify what objects make up 
+a refdes; these objects can be multiple texts, rectangles, can be on silk 
+or any other layer. For example if I don't have silk but have mask, I 
+could move my refdes' to mask. Or even to copper.
+
+<li>5. The UI... we'd have two different things there:
+
+<ul>
+	<li> We'd have some GUI aid to display data on some overlay UI layer, 
+independenlty of whether the data land on silk or not. So you'd be able 
+to look at the value of all components on screen, without this affecting 
+the silk layer in any way. This feature would be close to what we have now 
+in the sense that you could globally tell it which role to show; but more 
+like a set of checkboxes than a radio button: I often want to see both 
+refdes and value.
+
+	<li> Then we'd have some per-subcircuit control over which elements are 
+hidden, so you won't need to get all them on silk. E.g. you'd show refdes 
+and element-outline related objects but hide the others. This would be 
+subcircuit-local, we wouldn't have a global setting for this. We could 
+still have scripts and actions to make mass-changes possible, but the 
+actual bit for show/hide is stored per subcircuit instance. This would let 
+us print the value of some important elements, or even all resistors while 
+none of the ICs.
+</ul>
+</ul>
+
+<p>
+
+<b>Most of this wouldn't happen in the first implementation of subcircuits 
+but would be added gradually.</b>
+
