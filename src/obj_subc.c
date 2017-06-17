@@ -207,7 +207,6 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		pcb_layer_t *dl = sc->data->Layer + n;
 		pcb_line_t *line, *nline;
 		pcb_text_t *text, *ntext;
-		pcb_polygon_t *poly, *npoly;
 		pcb_arc_t *arc, *narc;
 		gdl_iterator_t it;
 
@@ -248,13 +247,6 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			}
 		}
 
-		polylist_foreach(&sl->Polygon, &it, poly) {
-			npoly = pcb_poly_dup_at(dl, poly, dx, dy);
-			if (npoly != NULL) {
-				PCB_SET_PARENT(npoly, layer, dl);
-				pcb_box_bump_box(&sc->BoundingBox, &npoly->BoundingBox);
-			}
-		}
 	}
 	sc->data->LayerN = src->data->LayerN;
 
@@ -274,6 +266,22 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (nvia != NULL) {
 				PCB_SET_PARENT(via, data, sc->data);
 				pcb_box_bump_box(&sc->BoundingBox, &nvia->BoundingBox);
+			}
+		}
+	}
+
+	/* make a copy of polygons at the end so clipping caused by other objects are calculated only once */
+	for(n = 0; n < src->data->LayerN; n++) {
+		pcb_layer_t *sl = src->data->Layer + n;
+		pcb_layer_t *dl = sc->data->Layer + n;
+		pcb_polygon_t *poly, *npoly;
+		gdl_iterator_t it;
+
+		polylist_foreach(&sl->Polygon, &it, poly) {
+			npoly = pcb_poly_dup_at(dl, poly, dx, dy);
+			if (npoly != NULL) {
+				PCB_SET_PARENT(npoly, layer, dl);
+				pcb_box_bump_box(&sc->BoundingBox, &npoly->BoundingBox);
 			}
 		}
 	}
