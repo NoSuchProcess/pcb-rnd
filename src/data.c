@@ -369,7 +369,14 @@ pcb_data_t *pcb_data_new(pcb_board_t *parent)
 
 pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 {
+	while((data != NULL) && (data->parent_type == PCB_PARENT_SUBC))
+		data = data->parent.subc->parent.data;
+
+	if (data == NULL)
+		return NULL;
+
 	if (data->parent_type == PCB_PARENT_BOARD)
 		return data->parent.board;
+
 	return NULL;
 }
