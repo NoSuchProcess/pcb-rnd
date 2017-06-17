@@ -142,6 +142,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 	}
 	PCB_END_LOOP;
+#warning subc TODO
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		MyMoveViaLowLevel(PCB->Data, via, dx, dy);

@@ -338,6 +338,7 @@ static void apply_vendor_map(void)
 		}
 		PCB_END_LOOP;
 
+#warning subc TODO
 		/* and now the pins */
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
