@@ -48,7 +48,7 @@ bin:
  0x1300/layer
  0x1b00/board
   <libraries>
-   0x1900/library?
+   0x1900/packages (->library?)
     0x1e00/package
      0x2100/polygon
       0x2200/line (->vertex?)
@@ -74,4 +74,4 @@ bin:
      0x2200/line (->vertex?)
     0x2200/line
     0x2900/via
-    0x1c00/boardnet?????
+
