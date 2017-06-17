@@ -241,6 +241,7 @@ pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t
 	pcb_board_t *pcb;
 	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
 	pcb_poly_copy(p, src, dx, dy);
+	pcb_add_polygon_on_layer(dst, p);
 
 	pcb = pcb_data_get_top(dst->parent);
 	if (pcb != NULL)
