@@ -87,7 +87,7 @@ struct ans_info {
 	void **ptr1, **ptr2, **ptr3;
 	pcb_bool BackToo;
 	double area;
-	unsigned long objst;										/* This will be zero or PCB_FLAG_LOCK and/or PCB_FLAG_SUBC_PART */
+	unsigned long objst;
 };
 
 static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
