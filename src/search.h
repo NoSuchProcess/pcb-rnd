@@ -158,7 +158,7 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coor
 pcb_bool pcb_is_point_in_pad(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pad_t *);
 pcb_bool pcb_is_point_in_box(pcb_coord_t, pcb_coord_t, pcb_box_t *, pcb_coord_t);
 
-int pcb_search_obj_by_location(unsigned, void **, void **, void **, pcb_coord_t, pcb_coord_t, pcb_coord_t);
+int pcb_search_obj_by_location(unsigned long, void **, void **, void **, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 int pcb_search_screen(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
 int pcb_search_grid_slop(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
 int pcb_search_obj_by_id(pcb_data_t *, void **, void **, void **, int, int);

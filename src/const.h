@@ -81,9 +81,10 @@ typedef enum {
 	PCB_TYPE_ELEMENT_ARC   = 0x08000,
 
 	PCB_TYPE_LOCKED        = 0x10000, /* used to tell search to include locked items. */
-	PCB_TYPE_NET           = 0x20000, /* used to select whole net. */
+	PCB_TYPE_SUBC_PART     = 0x20000, /* used to tell search to include objects that are part of a subcircuit */
+	PCB_TYPE_NET           = 0x40000, /* used to select whole net. */
 
-	PCB_TYPE_ARC_POINT     = 0x40000,
+	PCB_TYPE_ARC_POINT     = 0x80000,
 
 	/* groups/properties */
 	PCB_TYPEMASK_PIN       = (PCB_TYPE_VIA | PCB_TYPE_PIN),
