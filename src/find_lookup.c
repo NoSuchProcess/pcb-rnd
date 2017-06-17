@@ -252,16 +252,16 @@ void pcb_layout_lookup_init(void)
 
 		if (pcb_layer_flags(PCB, i) & PCB_LYT_COPPER) {
 
-		if (linelist_length(&layer->Line)) {
-			LineList[i].Size = linelist_length(&layer->Line);
+		if ((layer->line_tree != NULL) && (layer->line_tree->size > 0)) {
+			LineList[i].Size = layer->line_tree->size;
 			LineList[i].Data = (void **) calloc(LineList[i].Size, sizeof(pcb_line_t *));
 		}
-		if (arclist_length(&layer->Arc)) {
-			ArcList[i].Size = arclist_length(&layer->Arc);
+		if ((layer->arc_tree != NULL) && (layer->arc_tree->size > 0)) {
+			ArcList[i].Size = layer->arc_tree->size;
 			ArcList[i].Data = (void **) calloc(ArcList[i].Size, sizeof(pcb_arc_t *));
 		}
-		if (polylist_length(&layer->Polygon)) {
-			PolygonList[i].Size = polylist_length(&layer->Polygon);
+		if ((layer->polygon_tree != NULL) && (layer->polygon_tree->size > 0)) {
+			PolygonList[i].Size = layer->polygon_tree->size;
 			PolygonList[i].Data = (void **) calloc(PolygonList[i].Size, sizeof(pcb_polygon_t *));
 		}
 
