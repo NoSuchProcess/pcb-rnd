@@ -1375,6 +1375,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 		PCB_END_LOOP;
 	}
 
+#warning subc TODO
 	if (type == PCB_TYPE_ELEMENT || type == PCB_TYPE_PAD || type == PCB_TYPE_PIN
 			|| type == PCB_TYPE_ELEMENT_LINE || type == PCB_TYPE_ELEMENT_NAME || type == PCB_TYPE_ELEMENT_ARC)
 		/* check pins and elementnames too */

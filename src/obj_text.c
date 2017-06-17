@@ -778,7 +778,7 @@ static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 		} PCB_END_LOOP;
 	} PCB_END_LOOP;
-
+#warning subc TODO
 
 	if (need_redraw)
 		pcb_gui->invalidate_all(); /* can't just redraw the text, as the old text may have been bigger, before the change! */

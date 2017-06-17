@@ -144,6 +144,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 			return 0;
 		}
 
+#warning subc TODO
 	case F_Element:
 		{
 			int n_found = 0;
@@ -877,6 +878,7 @@ static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_co
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+#warning subc TODO
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
@@ -951,6 +953,7 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
+#warning subc TODO
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
@@ -994,7 +997,7 @@ int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		printf("%d %s\n", pcb_element_get_orientation(element), PCB_ELEM_NAME_REFDES(element));
 	}
 	PCB_END_LOOP;
-
+#warning subc TODO
 	return 0;
 }
 

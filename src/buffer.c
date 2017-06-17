@@ -270,6 +270,8 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	}
 	PCB_END_LOOP;
 
+#warning subc TODO
+
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
@@ -325,6 +327,8 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		pcb_element_rotate(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
 	PCB_END_LOOP;
+
+#warning subc TODO
 
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
@@ -474,6 +478,9 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 		pcb_element_mirror(Buffer->Data, element, 0);
 	}
 	PCB_END_LOOP;
+
+#warning subc TODO
+
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);

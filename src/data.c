@@ -195,6 +195,7 @@ void pcb_data_free(pcb_data_t * data)
 		pcb_element_destroy(element);
 	}
 	PCB_END_LOOP;
+#warning subc TODO
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
@@ -302,6 +303,7 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
 		};
 	}
 	PCB_END_LOOP;
+#warning subc TODO
 	PCB_LINE_ALL_LOOP(Data);
 	{
 		out->X1 = MIN(out->X1, line->Point1.X - line->Thickness / 2);
