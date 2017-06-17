@@ -101,24 +101,28 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			linelist_remove(line);
 			linelist_append(&dst->Line, line);
 			PCB_SET_PARENT(line, layer, dst);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
 		}
 
 		while((arc = arclist_first(&src->Arc)) != NULL) {
 			arclist_remove(arc);
 			arclist_append(&dst->Arc, arc);
 			PCB_SET_PARENT(arc, layer, dst);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, arc);
 		}
 
 		while((text = textlist_first(&src->Text)) != NULL) {
 			textlist_remove(text);
 			textlist_append(&dst->Text, text);
 			PCB_SET_PARENT(text, layer, dst);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, text);
 		}
 
 		while((poly = polylist_first(&src->Polygon)) != NULL) {
 			polylist_remove(poly);
 			polylist_append(&dst->Polygon, poly);
 			PCB_SET_PARENT(poly, layer, dst);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
 		}
 	}
 
@@ -129,8 +133,10 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			pinlist_remove(via);
 			pinlist_append(&sc->data->Via, via);
 			PCB_SET_PARENT(via, data, sc->data);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
 		}
 	}
+
 	return 0;
 }
 
