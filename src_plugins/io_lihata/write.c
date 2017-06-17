@@ -53,6 +53,11 @@ static int wrver;
 
 static lht_node_t *build_data(pcb_data_t *data);
 
+#define lht_dom_list_append_safe(lst, item) \
+do { \
+	if (item != NULL) \
+		lht_dom_list_append(lst, item); \
+} while(0)
 
 /* An invalid node will kill any existing node on an overwrite-save-merge */
 static lht_node_t *dummy_node(const char *name)
@@ -692,7 +697,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 		lht_dom_list_append(grp, build_element(el));
 
 	for(sc = pcb_subclist_first(&data->subc); sc != NULL; sc = pcb_subclist_next(sc))
-		lht_dom_list_append(grp, build_subc(sc));
+		lht_dom_list_append_safe(grp, build_subc(sc));
 
 	ratlist_foreach(&data->Rat, &it, line)
 		lht_dom_list_append(grp, build_rat(line));
