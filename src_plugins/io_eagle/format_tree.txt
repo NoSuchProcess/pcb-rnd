@@ -42,11 +42,14 @@ eagle
 
 bin:
 
-0x1000/start (->eagle?)
+0x1000/start (->drawing?)
  0x1100/settings?
  0x1200/grid
- 0x1300/layer
+ 0x1300/layer !!!
  0x1b00/board
+  <plain (globals)>
+   0x2200/line
+   0x2600/rectangle
   <libraries>
    0x1900/packages (->library?)
     0x1e00/package
@@ -59,9 +62,6 @@ bin:
      0x2500/circle
      0x3100/text?
      0x2800/hole
-  <plain (globals)>
-   0x2200/line
-   0x2600/rectangle
   <elements>
    0x2e00/boardpackage?
     0x2f00/boarkpackage2???
