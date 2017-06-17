@@ -238,7 +238,7 @@ pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
 
 	pcb = pcb_data_get_top(dst->parent);
 	if (pcb != NULL)
-		pcb_poly_init_clip(pcb, dst, p);
+		pcb_poly_init_clip(pcb->Data, dst, p);
 	return p;
 }
 
@@ -251,7 +251,7 @@ pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t
 
 	pcb = pcb_data_get_top(dst->parent);
 	if (pcb != NULL)
-		pcb_poly_init_clip(pcb, dst, p);
+		pcb_poly_init_clip(pcb->Data, dst, p);
 	return p;
 }
 
