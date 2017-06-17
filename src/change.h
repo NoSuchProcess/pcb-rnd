@@ -30,6 +30,7 @@
 #define	PCB_CHANGE_H
 
 #include "config.h"
+#include "flag.h"
 
 /* ---------------------------------------------------------------------------
  * some defines
@@ -106,5 +107,8 @@ pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool absolute);
 pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt);
 pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt);
+
+/* Change flag flg of an object in a way dictated by 'how' */
+void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t flg, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 #endif

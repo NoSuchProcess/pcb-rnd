@@ -31,26 +31,6 @@
 #include "operation.h"
 #include "obj_all_op.h"
 
-pcb_opfunc_t ChgFlagFunctions = {
-	pcb_lineop_change_flag,
-	pcb_textop_change_flag,
-	pcb_polyop_change_flag,
-	pcb_pinop_change_flag,
-	NULL,
-	NULL,
-	pcb_pinop_change_flag,
-	pcb_padop_change_flag,
-	NULL,
-	NULL,
-	pcb_arcop_change_flag,
-	NULL,
-	NULL,
-	pcb_subcop_change_flag
-};
-
-
-
-
 /* This just fills in a pcb_flag_t with current flags.  */
 pcb_flag_t pcb_flag_make(unsigned int flags)
 {

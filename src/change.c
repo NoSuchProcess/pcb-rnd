@@ -388,6 +388,25 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 	NULL
 };
 
+pcb_opfunc_t ChgFlagFunctions = {
+	pcb_lineop_change_flag,
+	pcb_textop_change_flag,
+	pcb_polyop_change_flag,
+	pcb_pinop_change_flag,
+	NULL,
+	NULL,
+	pcb_pinop_change_flag,
+	pcb_padop_change_flag,
+	NULL,
+	NULL,
+	pcb_arcop_change_flag,
+	NULL,
+	NULL,
+	pcb_subcop_change_flag
+};
+
+
+
 /* ----------------------------------------------------------------------
  * changes the thermals on all selected and visible pins
  * and/or vias. Returns pcb_true if anything has changed
@@ -1266,4 +1285,15 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 		return (Ptr3);
 	}
 	return (NULL);
+}
+
+void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t flag, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+{
+	pcb_opctx_t ctx;
+
+	ctx.chgflag.pcb = pcb;
+	ctx.chgflag.how = how;
+	ctx.chgflag.flag = flag;
+
+	pcb_object_operation(&ChgFlagFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 }
