@@ -331,6 +331,13 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		}
 		PCB_END_LOOP;
 	}
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		pcb_flag_change(PCB, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND, PCB_TYPE_SUBC, subc, subc, subc);
+	}
+	PCB_END_LOOP;
+
 	PCB_END_LOOP;
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
@@ -392,6 +399,14 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 		}
 	}
 	PCB_ENDALL_LOOP;
+
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		pcb_flag_change(PCB, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND, PCB_TYPE_SUBC, subc, subc, subc);
+	}
+	PCB_END_LOOP;
+
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
 	return change;
