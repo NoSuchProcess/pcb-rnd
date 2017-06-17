@@ -42,36 +42,36 @@ eagle
 
 bin:
 
-0x10/eagle?
- 0x11/settings?
- 0x12/grid
- 0x13/layer
- 0x1b/board
+0x1000/start (->eagle?)
+ 0x1100/settings?
+ 0x1200/grid
+ 0x1300/layer
+ 0x1b00/board
   <libraries>
-   0x19/library?
-    0x1e/package
-     0x21/polygon
-      0x22/line (->vertex?)
-     0x26/rectangle
-     0x22/line (->wire?)
-     0x2d/smd
-     0x2a/pad
-     0x25/circle
-     0x31/text?
-     0x28/hole
+   0x1900/library?
+    0x1e00/package
+     0x2100/polygon
+      0x2200/line (->vertex?)
+     0x2600/rectangle
+     0x2200/line (->wire?)
+     0x2d00/smd
+     0x2a00/pad
+     0x2500/circle
+     0x3100/text?
+     0x2800/hole
   <plain (globals)>
-   0x22/line
-   0x26/rectangle
+   0x2200/line
+   0x2600/rectangle
   <elements>
-   0x2e/boardpackage?
-    0x2f/boarkpackage2???
-    0x34/smashedname?? -> description?
-    0x35/smashedvalue?? -> description?
+   0x2e00/boardpackage?
+    0x2f00/boarkpackage2???
+    0x3400/smashedname?? -> description?
+    0x3500/smashedvalue?? -> description?
   <signals>
-   0x1c/boardnet -> signal
-    0x3e/boardconnection -> contactref
-    0x21/polygon
-     0x22/line (->vertex?)
-    0x22/line
-    0x29/via
-    0x1c/boardnet?????
+   0x1c00/boardnet -> signal
+    0x3e00/boardconnection -> contactref
+    0x2100/polygon
+     0x2200/line (->vertex?)
+    0x2200/line
+    0x2900/via
+    0x1c00/boardnet?????
