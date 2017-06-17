@@ -116,6 +116,7 @@ For the next release:
 	  draw a line on a layer and a poly on another and change whether they are in
 	  the same layer group
 - BUG: 'double click to close' missing for polygon holes [report:miloh]
+- BUG: segfault on printactions() action 
 
 LATER RELEASES:
 - parametric footprint gtk attribute box for editing: also mention the default value in the tooltip [report: agaran]
