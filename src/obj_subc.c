@@ -354,7 +354,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		gdl_iterator_t it;
 
 		pinlist_foreach(&sc->data->Via, &it, via) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_VIA, sc->data, via, via);
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_VIA, via, via, via);
 			pcb_box_bump_box(&sc->BoundingBox, &via->BoundingBox);
 		}
 	}
