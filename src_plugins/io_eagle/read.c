@@ -44,6 +44,7 @@
 #include "hid_actions.h"
 #include "trparse.h"
 #include "trparse_xml.h"
+#include "trparse_bin.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
 #define EAGLE_TEXT_SIZE_100 PCB_MM_TO_COORD(2)
@@ -1227,7 +1228,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st_uninit(&st);
 
-	pcb_trace("Houston, the Eagle has landed. %d\n", res);
+	pcb_trace("Houston, the Eagle-xml has landed. %d\n", res);
 
 	return 0;
 
@@ -1239,6 +1240,49 @@ err:;
 
 int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
+	int res, old_leni;
+	read_state_t st;
+
+	static const dispatch_t disp[] = { /* possible children of root */
+		{"drawing",        eagle_read_drawing},
+		{NULL, NULL}
+	};
+
+	st.parser.calls = &trparse_bin_calls;
+
+	if (st.parser.calls->load(&st.parser, Filename) != 0)
+		return -1;
+
+	st.pcb = pcb;
+
+	st_init(&st);
+
+#warning TODO: find and read the DRC block
+#if 0
+	dr = eagle_xml_path(&st, st.parser.root, "drawing", "board", "designrules", NULL);
+	if (dr != NULL)
+		eagle_read_design_rules(&st, dr);
+	else
+		pcb_message(PCB_MSG_WARNING, "can't find design rules\n");
+#endif
+
+	old_leni = pcb_create_being_lenient;
+	pcb_create_being_lenient = 1;
+	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
+	if (res == 0)
+		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
+	pcb_create_being_lenient = old_leni;
+
+	st_uninit(&st);
+
+	pcb_trace("Houston, the Eagle-bin has landed. %d\n", res);
+
+	return 0;
+
+err:;
+	st_uninit(&st);
+	pcb_trace("Eagle XML parsing error. Bailing out now.\n");
 	return -1;
+
 }
 
