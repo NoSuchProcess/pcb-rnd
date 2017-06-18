@@ -756,6 +756,7 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 			templ.elem = templ_gxyrs_elem;
 			break;
 		case FORMAT_MACROFAB:
+			xy_unit = get_unit_struct("mil"); /* Macrofab requires mils */
 			templ.hdr = templ_macrofab_hdr;
 			templ.elem = templ_macrofab_elem;
 			break;
