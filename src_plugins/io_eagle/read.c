@@ -185,6 +185,11 @@ int io_eagle_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Fi
 	return 0;
 }
 
+int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+{
+	return 0;
+}
+
 /* Return a node attribute value converted to long, or return invalid_val
    for synatx error or if the attribute doesn't exist */
 static long eagle_get_attrl(xmlNode *nd, const char *name, long invalid_val)
@@ -1226,6 +1231,11 @@ int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename
 err:;
 	st_uninit(&st);
 	pcb_trace("Eagle XML parsing error. Bailing out now.\n");
+	return -1;
+}
+
+int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
+{
 	return -1;
 }
 
