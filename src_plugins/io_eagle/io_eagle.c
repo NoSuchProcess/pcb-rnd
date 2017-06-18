@@ -77,21 +77,21 @@ int pplg_init_io_eagle(void)
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
 
 	/* register the IO hook */
-	io_eagle_xml.plugin_data = NULL;
-	io_eagle_xml.fmt_support_prio = io_eagle_fmt;
-	io_eagle_xml.test_parse_pcb = io_eagle_test_parse_pcb_bin;
-	io_eagle_xml.parse_pcb = io_eagle_read_pcb_bin;
-/*	io_eagle_xml.parse_element = NULL;
-	io_eagle_xml.parse_font = NULL;
-	io_eagle_xml.write_buffer = io_eagle_write_buffer;
-	io_eagle_xml.write_element = io_eagle_write_element;
-	io_eagle_xml.write_pcb = io_eagle_write_pcb;*/
-	io_eagle_xml.default_fmt = "eagle";
-	io_eagle_xml.description = "eagle bin";
-	io_eagle_xml.save_preference_prio = 30;
-	io_eagle_xml.default_extension = ".brd";
-	io_eagle_xml.fp_extension = ".???";
-	io_eagle_xml.mime_type = "application/x-eagle-pcb";
+	io_eagle_bin.plugin_data = NULL;
+	io_eagle_bin.fmt_support_prio = io_eagle_fmt;
+	io_eagle_bin.test_parse_pcb = io_eagle_test_parse_pcb_bin;
+	io_eagle_bin.parse_pcb = io_eagle_read_pcb_bin;
+/*	io_eagle_bin.parse_element = NULL;
+	io_eagle_bin.parse_font = NULL;
+	io_eagle_bin.write_buffer = io_eagle_write_buffer;
+	io_eagle_bin.write_element = io_eagle_write_element;
+	io_eagle_bin.write_pcb = io_eagle_write_pcb;*/
+	io_eagle_bin.default_fmt = "eagle";
+	io_eagle_bin.description = "eagle bin";
+	io_eagle_bin.save_preference_prio = 30;
+	io_eagle_bin.default_extension = ".brd";
+	io_eagle_bin.fp_extension = ".???";
+	io_eagle_bin.mime_type = "application/x-eagle-pcb";
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
 
