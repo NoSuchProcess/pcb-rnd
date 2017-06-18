@@ -28,6 +28,7 @@
 #include "action_helper.h"
 #include "conf_core.h"
 #include "plug_io.h"
+#include "event.h"
 
 
 static const char pcb_acts_load_font_from[] = "LoadFontFrom([file, id])";
@@ -78,6 +79,7 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	}
 	
 	res = pcb_parse_font(fnt, fname);
+	pcb_event(PCB_EVENT_FONT_CHANGED, "i", fid);
 	if (res != 0) {
 		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
 		pcb_del_font(&PCB->fontkit, fnt->id);

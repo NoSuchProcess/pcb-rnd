@@ -312,8 +312,6 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	if (f->id > fk->last_id)
 		fk->last_id = f->id;
 
-	pcb_event(PCB_EVENT_FONT_CHANGED, "i", f->id);
-
 	return f;
 }
 
