@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd - license </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+</head>
+<body>
+<H1> pick and place - origin </H1>
+
+<h2> A. simplest case: recangular board, implicit outline, implicit P&amp;P origin </h2>
+<p>
+Assume a <a href="orig_impl.lht">board</a> of 775*725 mils needs to be
+created. The P&amp;P fab says coord 0;0 is the lower left corner. The board
+fab says they need the centerline of toolpath on the outlnie layer for
+milling.
+<p>
+By far the simplest way to handle this board is to rely on builtin defaults:
+<ul>
+	<li> board size (width and height) specifies the outline of a rectangular board
+	<li> if the outline layer exists but is empty, an implicit rectangular outline is drawn, matching board sizes
+	<li> implicit P&amp;P origin is the lower left corner
+</ul>
+<p>
+Setting it up:
+<ul>
+	<li> 1. start pcb-rnd with no board - this gets the default board template
+	<li> 2. change board width &amp; height (gtk: file/preferences/user PoV/sizes)
+	<li> 3. do the layout
+	<li> 4. when exporting gerber, enable the 'all layers' option to get the implicit outline layer
+	<li> 5. export the xy
+</ul>
+<p>
+
+<table border="1" cellspacing="0">
+<tr><th>Pros<th>Cons
+<tr>
+<td><ul>
+	<li> easy to set up
+	<li> no need to draw the outline
+</ul>
+<td><ul>
+	<li> limited drawing area - unsuitable for editing small boards
+	<li> supports rectangular shapes only
+</ul>
+</table>
+
+<h2> B. recangular board, explicit outline, explicit P&amp;P origin </h2>
+<p>
+Assume another <a href="orig_sq.lht">board</a> of 775*725 mils needs to
+be created. The P&amp;P fab says coord 0;0 is the lower left corner. The
+board fab says they need the centerline of toolpath on the outlnie layer
+for milling.
+<p>
+This time the virtual board (canvas, drawing area) will be larger and the
+board outline of a 775*725 will be manually drawn. Since pcb-rnd won't make
+a guess of where the lower-left corner is, an explicit origin mark
+needs to be added for the pick&amp;place process.
+Setting it up, assuming the GTK HID:
+<ul>
+	<li> 1. start pcb-rnd with no board - this gets the default board template
+	<li> 2. draw the 775*725 mils box on the outline layer anywhere in the drawing area
+	<li> 3. do the layout within this box
+	<li> 4. draw a short line on a random layer - this will be the P&amp;P mark
+	<li> 5. drag&amp;drop move the endpoint of the unselected mark line to its other endpoint - this will result in a 0 long line, which looks like a filled circle; with 's' increase the size so that it's easily visible
+	<li> 6. select the mark, drag&amp;drop move it to the lower left corner of the outline box
+	<li> 7. the mark still selected, press ctrl+e and click on the "add attribue" button in the property editor
+	<li> 8. type in "pnp-origin" in the "Attribute key" and "yes" in the "Attribute value" field; click ok and close the property editor
+	<li> 9. export the gerber and xy files
+</ul>
+<p>
+There is a <a href="TODO">video tutorial</a> available on steps 4..8.
+<p>
+Note 1: the mark is not explicitly visible in the XY file. It is not explicitly
+passed to the P&amp;P fab. Instead, all element coordinates are calculated considering
+the mark's center as 0;0.
+<p>
+Note 2: still, the mark is not hidden or suppressed by pcb-rnd from any
+of the output. It must be a line, but it can be on any of the layers.
+Thus the mark potentially would show up on the board. There are multiple
+options to make the mark disappear:
+<ul>
+	<li> make the mark diameter smaller that the router mill bit diameter and place
+	     the mark on a copper layer; the board fab will have the copper dot, but it
+	     will be milled away.
+	<li> same trick should work with silk as well
+	<li> or even on the solder mask layer where this object would be a small cutout over void
+	<li> make a new (copper) layer, place the mark there and don't send this layer's gerber export
+       (later on pcb-rnd will support documentation layers which are more dedicated for this sort of use)
+</ul>
+<p>
+<table border="1" cellspacing="0">
+<tr><th>Pros<th>Cons
+<tr>
+<td><ul>
+	<li> drawing area (canvas) is bigger than the board: easier to edit
+	<li> can handle slots, cut-outs on the outline layer
+	<li> if the pick and place fab requires a slight offset on the placement, it is easy to move the mark
+</ul>
+<td><ul>
+	<li> requires more steps to set up
+</ul>
+</table>
+
+<h2> C. round board, explicit outline, explicit P&amp;P origin </h2>
+<p>
+Assume a third <a href="orig_round.lht">board</a> shaped as a 700 mil
+diameter circle. The P&amp;P fab says coord 0;0 is the lower left corner of
+the bounding box of the circle. The board fab says they need the
+centerline of toolpath on the outlnie layer for milling.
+<p>
+The process is the same as in example A. The only extra consideration
+is how to find the coords of the P&amp;P origin mark; for this the P&amp;P fab
+house needs to be consulted.
+<p>
+There is a <a href="TODO">video tutorial</a> available on using temporary
+lines to aid placing the mark for a round lower-left corner.
+
+</body>
+</html>
