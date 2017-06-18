@@ -1,3 +1,4 @@
+9600	configure	eagle bin parser
 9271	configure	core cleanup (split select.c and operation.c)
 9036	configure	diag configuration for integrity checks
 9025	configure	new source files for eagle subformats
