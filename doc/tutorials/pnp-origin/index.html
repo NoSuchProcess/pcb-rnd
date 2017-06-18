@@ -115,5 +115,39 @@ house needs to be consulted.
 There is a <a href="https://archive.org/details/pcb-rnd-xy-origin-round">video tutorial</a> available on using temporary
 lines to aid placing the mark for a round lower-left corner.
 
+<h2> D. different P&amp;P origin for different fabs</h2>
+<p>
+If the same board is populated by two different fabs who want different
+origins, as long as they are also using different file formats, it is possible
+to use two marks. The mechanism for finding the relevant mark is this:
+<ul>
+	<li> look for a line that has attribute pnp-origin-<i>FORMAT</i> where <i>FORMAT</i> is the name of the format, e.g. gxyrs or Macrofab
+	<li> if that's not found, look for a line that has attribute pnp-origin
+	<li> if that's not found, use the bottom-left corner of the drawing area
+</ul>
+<p>
+This means the origin can be a different mark per format and/or a fallback
+mark can be also added.
+
+<h2> E. mark shapes</h2>
+<p>
+In the above examples we used a zero-length line for the mark, which looked
+like a filled circle. The code will find the first line with the right attribute
+and use the center point of that line. For a zero-length line the center point
+is the same as the two endpoints or the center of the filled circle it produces
+on the screen.
+<p>
+It is possible to use non-zero-length lines for the mark. For example two lines
+arranged in a + or x shape, either or both lines having the pnp-origin
+attribute. If the mark is symmetrical, the crossing point happens to be the
+middle of the line, which is what the code is after.
+<p>
+Of course it's also possible to use a single, non-zer-length line as mark,
+but then it's harder to see the middle point as an user. It may still work
+in some simple cases, e.g. a 45 degree short line segment symmetrically placed
+on the corner of a 90 degree outline corner.
+
+
+
 </body>
 </html>
