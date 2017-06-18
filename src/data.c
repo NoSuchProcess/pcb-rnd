@@ -179,10 +179,13 @@ void pcb_loop_all(void *ctx,
 void pcb_data_free(pcb_data_t * data)
 {
 	pcb_layer_t *layer;
-	int i;
+	int i, subc;
 
 	if (data == NULL)
 		return;
+
+	subc = (data->parent_type == PCB_PARENT_SUBC);
+
 
 	PCB_VIA_LOOP(data);
 	{
@@ -195,7 +198,13 @@ void pcb_data_free(pcb_data_t * data)
 		pcb_element_destroy(element);
 	}
 	PCB_END_LOOP;
-#warning subc TODO
+
+	PCB_SUBC_LOOP(data);
+	{
+		pcb_subc_free(subc);
+	}
+	PCB_END_LOOP;
+
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
@@ -239,6 +248,7 @@ void pcb_data_free(pcb_data_t * data)
 		}
 	}
 
+	if (!subc) {
 	if (data->element_tree)
 		pcb_r_destroy_tree(&data->element_tree);
 	for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++)
@@ -252,6 +262,8 @@ void pcb_data_free(pcb_data_t * data)
 		pcb_r_destroy_tree(&data->pad_tree);
 	if (data->rat_tree)
 		pcb_r_destroy_tree(&data->rat_tree);
+	}
+
 	/* clear struct */
 	memset(data, 0, sizeof(pcb_data_t));
 }
