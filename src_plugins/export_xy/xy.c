@@ -671,7 +671,14 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
 		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
 
-		ctx.y = PCB->MaxHeight - ctx.y;
+		/* translate the xy coords using explicit or implicit origin; implicit origin
+		   is lower left corner (looking from top) of board extents */
+		if (ctx.origin_score > 0) {
+			ctx.y = ctx.oy - ctx.y;
+			ctx.x = ctx.x - ctx.ox;
+		}
+		else
+			ctx.y = PCB->MaxHeight - ctx.y;
 
 		ctx.element = element;
 		fprintf_templ(fp, &ctx, templ->elem);
