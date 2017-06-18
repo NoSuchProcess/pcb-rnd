@@ -757,7 +757,7 @@ static int pcb_text_font_chg_data(pcb_data_t *data, pcb_font_id_t fid)
 {
 	int need_redraw = 0;
 
-	LAYER_LOOP(PCB->Data, pcb_max_layer); {
+	LAYER_LOOP(data, data->LayerN); {
 		PCB_TEXT_LOOP(layer); {
 			if (text->fid == fid) {
 				pcb_text_update(layer, text);
@@ -766,16 +766,24 @@ static int pcb_text_font_chg_data(pcb_data_t *data, pcb_font_id_t fid)
 		} PCB_END_LOOP;
 	} PCB_END_LOOP;
 
-	PCB_ELEMENT_LOOP(PCB->Data); {
+	PCB_ELEMENT_LOOP(data); {
 		PCB_ELEMENT_PCB_TEXT_LOOP(element); {
 			if (text->fid == fid) {
-				pcb_element_text_update(PCB, PCB->Data, element, n);
+				pcb_element_text_update(PCB, data, element, n);
 				need_redraw = 1;
 			}
 		} PCB_END_LOOP;
 	} PCB_END_LOOP;
 
-#warning subc TODO
+	PCB_SUBC_LOOP(data); {
+		int chg = pcb_text_font_chg_data(subc->data, fid);
+		if (chg) {
+			need_redraw = 1;
+			pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
+			pcb_subc_bbox(subc);
+			pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc, 0);
+		}
+	} PCB_END_LOOP;
 
 	return need_redraw;
 }
