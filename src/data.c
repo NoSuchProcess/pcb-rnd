@@ -249,19 +249,19 @@ void pcb_data_free(pcb_data_t * data)
 	}
 
 	if (!subc) {
-	if (data->element_tree)
-		pcb_r_destroy_tree(&data->element_tree);
-	for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++)
-		if (data->name_tree[i])
-			pcb_r_destroy_tree(&data->name_tree[i]);
-	if (data->via_tree)
-		pcb_r_destroy_tree(&data->via_tree);
-	if (data->pin_tree)
-		pcb_r_destroy_tree(&data->pin_tree);
-	if (data->pad_tree)
-		pcb_r_destroy_tree(&data->pad_tree);
-	if (data->rat_tree)
-		pcb_r_destroy_tree(&data->rat_tree);
+		if (data->element_tree)
+			pcb_r_destroy_tree(&data->element_tree);
+		for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++)
+			if (data->name_tree[i])
+				pcb_r_destroy_tree(&data->name_tree[i]);
+		if (data->via_tree)
+			pcb_r_destroy_tree(&data->via_tree);
+		if (data->pin_tree)
+			pcb_r_destroy_tree(&data->pin_tree);
+		if (data->pad_tree)
+			pcb_r_destroy_tree(&data->pad_tree);
+		if (data->rat_tree)
+			pcb_r_destroy_tree(&data->rat_tree);
 	}
 
 	/* clear struct */
