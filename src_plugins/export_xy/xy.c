@@ -156,6 +156,7 @@ static double xyToAngle(double x, double y, pcb_bool morethan2pins)
 }
 
 
+
 /*
  * In order of preference.
  * Includes numbered and BGA pins.
@@ -173,7 +174,53 @@ typedef struct {
 	pcb_element_t *element;
 	pcb_coord_t pad_w, pad_h;
 	int element_num;
+	pcb_coord_t ox, oy;
+	int origin_score;
+	char *origin_tmp;
 } subst_ctx_t;
+
+/* Find the pick and place 0;0 mark, if there is any */
+static void find_origin_bump(void *ctx_, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
+{
+	subst_ctx_t *ctx = ctx_;
+	char *attr;
+	int score;
+
+	/* first look for the format-specific attribute */
+	attr = pcb_attribute_get(&line->Attributes, ctx->origin_tmp);
+	if (attr != NULL) {
+		score = 2;
+		goto found;
+	}
+
+	/* then for the generic pnp-specific attribute */
+	attr = pcb_attribute_get(&line->Attributes, "pnp-origin");
+	if (attr != NULL) {
+		score = 1;
+		goto found;
+	}
+	return;
+
+	found:;
+	if (score > ctx->origin_score) {
+		ctx->origin_score = score;
+		ctx->ox = (line->BoundingBox.X1 + line->BoundingBox.X2) / 2;
+		ctx->oy = (line->BoundingBox.Y1 + line->BoundingBox.Y2) / 2;
+	}
+}
+
+
+static void find_origin(subst_ctx_t *ctx, const char *format_name)
+{
+	char tmp[128];
+	pcb_snprintf(tmp, sizeof(tmp), "pnp-origin-%s", format_name);
+
+	ctx->origin_score = 0;
+	ctx->ox = ctx->oy = 0;
+	ctx->origin_tmp = tmp;
+
+	pcb_loop_layers(ctx, NULL, find_origin_bump, NULL, NULL, NULL);
+}
 
 static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element)
 {
@@ -444,7 +491,7 @@ typedef struct {
 	const char *hdr, *elem, *pad, *foot;
 } template_t;
 
-static int PrintXY(const template_t *templ)
+static int PrintXY(const template_t *templ, const char *format_name)
 {
 	double sumx, sumy;
 	double pin1x = 0.0, pin1y = 0.0;
@@ -477,8 +524,9 @@ static int PrintXY(const template_t *templ)
 		strftime(ctx.utcTime, sizeof(ctx.utcTime), fmt, gmtime(&currenttime));
 	}
 
-	fprintf_templ(fp, &ctx, templ->hdr);
+	find_origin(&ctx, format_name);
 
+	fprintf_templ(fp, &ctx, templ->hdr);
 
 	/*
 	 * For each element we calculate the centroid of the footprint.
@@ -722,7 +770,7 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 			return;
 	}
 
-	PrintXY(&templ);
+	PrintXY(&templ, options[HA_format].str_value);
 }
 
 static int xy_usage(const char *topic)
