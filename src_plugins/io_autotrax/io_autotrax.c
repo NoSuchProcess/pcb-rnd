@@ -50,7 +50,7 @@ static const char *autotrax_cookie = "autotrax IO";
 
 static const char pcb_acts_Saveautotrax[] = "SaveAutotrax(type, filename)";
 static const char pcb_acth_Saveautotrax[] = "Saves the specific type of data in an autotrax file. Type can be: board-footprints";
-/*static const char *autotrax_cookie = "Autotrax importer";
+/*static const char *autotrax_cookie = "Protel Autotrax importer";
 */
 static const char pcb_acts_LoadAutotraxFrom[] = "LoadAutotraxFrom(filename)";
 static const char pcb_acth_LoadAutotraxFrom[] = "Loads the specified autotrax layout.";
@@ -61,7 +61,7 @@ int io_autotrax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
 
-	if ((strcmp(fmt, "autotrax") != 0) ||
+	if ((strcmp(fmt, "Protel autotrax") != 0) ||
 		((typ & (~(PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER | PCB_IOT_PCB))) != 0))
 		return 0;
 
@@ -120,8 +120,8 @@ int pplg_init_io_autotrax(void)
 	io_autotrax.write_buffer = io_autotrax_write_buffer;
 	io_autotrax.write_element = io_autotrax_write_element;
 	io_autotrax.write_pcb = io_autotrax_write_pcb;
-	io_autotrax.default_fmt = "autotrax";
-	io_autotrax.description = "Autotrax";
+	io_autotrax.default_fmt = "Protel autotrax";
+	io_autotrax.description = "Protel autotrax";
 	io_autotrax.save_preference_prio = 80;
 	io_autotrax.default_extension = ".PCB";
 	io_autotrax.fp_extension = ".PCB";
