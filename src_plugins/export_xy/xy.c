@@ -36,7 +36,7 @@ static const char *format_names[] = {
 #define FORMAT_GXYRS 1
 	"gxyrs",
 #define FORMAT_MACROFAB 2
-	"Macrofab's xyrs",
+	"Macrofab",
 #define FORMAT_TM220TM240 3
 	"TM220/TM240",
 #define FORMAT_KICADPOS 4
