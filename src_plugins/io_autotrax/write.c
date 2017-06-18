@@ -179,7 +179,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 
 	printf("About to write outline tracks to Protel Autotrax file.\n");
 	/* we now proceed to write the outline tracks to the autotrax file, layer by layer */
-	currentAutotraxLayer = 11; /* 11 is the "board layer" in autotrax */
+	currentAutotraxLayer = 8; /* 11 is the "board layer" in autotrax, and 12 the keepout */
 	if (outlineCount > 0 )  {
 		for (i = 0; i < outlineCount; i++) /* write top copper tracks, if any */
 			{
@@ -189,14 +189,14 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 										LayoutXOffset, LayoutYOffset);
 			}
 	} else { /* no outline layer per se, export the board margins instead...*/
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1",
-					0, 0, PCB->MaxWidth, 0);
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1",
-					PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1",
-					PCB->MaxWidth, PCB->MaxHeight, 0, PCB->MaxHeight);
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1",
-					0, PCB->MaxHeight, 0, 0);
+				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
+					0, 0, PCB->MaxWidth, 0, currentAutotraxLayer);
+				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
+					PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight, currentAutotraxLayer);
+				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
+					PCB->MaxWidth, PCB->MaxHeight, 0, PCB->MaxHeight, currentAutotraxLayer);
+				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
+					0, PCB->MaxHeight, 0, 0, currentAutotraxLayer);
 	}
 
 	printf("About to write bottom silk elements to Protel Autotrax file.\n");
@@ -356,7 +356,7 @@ int write_autotrax_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset,
 	int viaDrillMil = 25; /* a reasonable default */
 	/* write information about via */
 	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "FV\n%.0ml %.0ml %.0mk %d\n", /* testing kicad printf */
+		pcb_fprintf(FP, "FV\n%.0ml %.0ml %.0ml %d\n", /* testing kicad printf */
 				via->X + xOffset, via->Y + yOffset, via->Thickness, viaDrillMil);
 	}
 	return 0;
@@ -374,7 +374,7 @@ int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number,
 		int localFlag = 0;
 		int userRouted = 1;
 		linelist_foreach(&layer->Line, &it, line) {
-			pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml %ml %d %d\n",
+			pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\n",
 				line->Point1.X + xOffset, line->Point1.Y + yOffset,
 				line->Point2.X + xOffset, line->Point2.Y + yOffset,
 				line->Thickness, currentLayer, userRouted);
@@ -842,7 +842,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 
 		}
 		linelist_foreach(&element->Line, &it, line) { /* autotrax supports tracks in COMPs */
-			pcb_fprintf(FP, "CT\n%.0mk %.0mk %.0mk %.0mk %.0mk %d 1\n",
+			pcb_fprintf(FP, "CT\n%.0ml %.0ml %.0ml %.0ml %.0ml %d 1\n",
 					line->Point1.X - element->MarkX,
 					line->Point1.Y - element->MarkY,
 					line->Point2.X - element->MarkX,
@@ -904,6 +904,7 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 			miny = maxy = polygon->Points[0].Y;
 
 			/* now the fill zone outline is defined by a rectangle enclosing the poly*/
+			/* hmm. or, could use a bounding box... */
 			for (i = 0; i < polygon->PointN; i++) {
 				if (minx > polygon->Points[i].X) {
 					minx = polygon->Points[i].X;
