@@ -187,6 +187,9 @@ int io_eagle_test_parse_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char
 
 int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
 {
+	unsigned char buff[2];
+	if ((fread(buff, 1, 2, f) == 2) && (buff[0] == 0x10) && (buff[1] == 0x00))
+		return 1;
 	return 0;
 }
 
