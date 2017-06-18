@@ -302,6 +302,12 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 	return pcb_subc_dup_at(pcb, dst, src, 0, 0);
 }
 
+void pcb_subc_bbox(pcb_subc_t *sc)
+{
+	pcb_data_bbox(&sc->BoundingBox, sc->data);
+}
+
+
 /* erases a subc on a layer */
 static void EraseSubc(pcb_subc_t *sc)
 {
