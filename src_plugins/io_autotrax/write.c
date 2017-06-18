@@ -111,6 +111,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 
 	/* component "COMP" descriptions come next */
 
+	printf("About to write layout elements to Protel Autotrax file.\n");
 	write_autotrax_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
@@ -176,6 +177,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		outlineLayers = NULL;
 	}
 
+	printf("About to write outline tracks to Protel Autotrax file.\n");
 	/* we now proceed to write the outline tracks to the autotrax file, layer by layer */
 	currentAutotraxLayer = 11; /* 11 is the "board layer" in autotrax */
 	if (outlineCount > 0 )  {
@@ -197,6 +199,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 					0, PCB->MaxHeight, 0, 0);
 	}
 
+	printf("About to write bottom silk elements to Protel Autotrax file.\n");
 	/* we now proceed to write the bottom silk lines, arcs, text to the autotrax file, using layer 8 */
 	currentAutotraxLayer = 8; /* 8 is the "bottom overlay" layer in autotrax */
 	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
@@ -211,6 +214,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 									LayoutXOffset, LayoutYOffset);
 		}
 
+	printf("About to write bottom copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the bottom copper features to the autorax file, layer by layer */
 	currentAutotraxLayer = 6; /* 6 is the bottom layer in autotrax */
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
@@ -221,10 +225,11 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 								LayoutXOffset, LayoutYOffset);
 			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
 		}
 
+	printf("About to write internal copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the internal copper features to the autotrax file, layer by layer */
 	if (innerCount > 0) {
 		currentGroup = pcb_layer_get_group(PCB, innerLayers[0]);
@@ -237,28 +242,30 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 			} /* autotrax inner layers are layers 2 to 5 inclusive */
 			write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
+			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
-                        write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
+                        write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
 		}
 
+	printf("About to write top copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the top copper features to the autotrax file, layer by layer */
 	currentAutotraxLayer = 1; /* 1 is the top most copper layer in autotrax */
 	for (i = 0; i < topCount; i++) /* write top copper features, if any */
 		{
 			write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
+			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
+			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
 		}
 
+	printf("About to write top silk features to Protel Autotrax file.\n");
 	/* we now proceed to write the top silk lines, arcs, text to the autotrax file, using layer 7*/
 	currentAutotraxLayer = 7; /* 7 is the top silk layer in autotrax */
 	for (i = 0; i < topSilkCount; i++) /* write top silk features, if any */
@@ -269,12 +276,12 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 									LayoutXOffset, LayoutYOffset);
 			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}
 
 	/* having done the graphical elements, we move onto vias */ 
-
+	printf("About to write vias to Protel Autotrax file.\n");
 	write_autotrax_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* now free memory from arrays that were used */
@@ -297,6 +304,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		free(outlineLayers);
 	}
 
+	printf("About to write nestlists to Protel Autotrax file.\n");
 	/* last are the autotrax netlist descriptors */
 	write_autotrax_equipotential_netlists(FP, PCB);
 
@@ -400,22 +408,19 @@ int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 				radius = arc->Width;
 			}
 			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
-				arcSegments |= 0x1111;
+				arcSegments |= 0x0F;
 			}
-			if (arc->StartAngle == 0.0 && arc->Delta >= 90.0 ) {
-				arcSegments |= 0x0010;
-			}
-                        if (arc->StartAngle == 0.0 && arc->Delta >= 90.0 ) {
-				arcSegments |= 0x0010;
+                        if (arc->StartAngle <= 0.0 && (arc->StartAngle + arc->Delta) >= 90.0 ) {
+				arcSegments |= 0x02;
 			}
 			if (arc->StartAngle <= 90.0 && (arc->StartAngle + arc->Delta) >= 180.0 ) {
-				arcSegments |= 0x0100;
+				arcSegments |= 0x04;
 			}
 			if (arc->StartAngle <= 180.0 && (arc->StartAngle + arc->Delta) >= 270.0 ) {
-				arcSegments |= 0x1000;
+				arcSegments |= 0x08;
 			}
 			if (arc->StartAngle <= 270.0 && (arc->StartAngle + arc->Delta) >= 360.0 ) {
-				arcSegments |= 0x0001;
+				arcSegments |= 0x01;
 			}
 			/* may need to think about cases with negative Delta as well */
 			/* consider exporting segments for arcs not made up of 90 degree quadrants */
