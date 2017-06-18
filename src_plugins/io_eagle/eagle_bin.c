@@ -1209,18 +1209,17 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 }
 
 
-int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn)
+int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 {
 	long test = -1;
 	long *numblocks = &test;
 	int res = 0;
-	egb_node_t *root;
 
 	printf("blocks remaining prior to function call = %ld\n", *numblocks);
 
-	root = egb_node_alloc(0, "eagle");
+	*root = egb_node_alloc(0, "eagle");
 
-	res = read_block(numblocks, 1, ctx, f, fn, root);
+	res = read_block(numblocks, 1, ctx, f, fn, *root);
 	if (res < 0) {
 		return res;
 	}
@@ -1231,10 +1230,6 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn)
 	/* need to test if < v4 as v3.xx seems to have no DRC or Netclass or Free Text sections at the end */
 	read_notes(ctx, f, fn);
 	read_drc(ctx, f, fn);
-
-	printf("@@@ tree @@@\n");
-	egb_dump(stdout, root);
-	egb_node_free(root);
 
 	return 0;
 }

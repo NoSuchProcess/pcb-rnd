@@ -30,38 +30,62 @@
 #include <assert.h>
 
 #include "error.h"
+#include "egb_tree.h"
+#include "eagle_bin.h"
 
 #include "trparse.h"
 #include "trparse_bin.h"
 
 static int eagle_bin_load(trparse_t *pst, const char *fn)
 {
+	egb_node_t *root;
+	FILE *f;
+	int res;
 
-/*
-	pst->doc = doc;
+	f = fopen(fn, "rb");
+	if (f == NULL)
+		return -1;
+
+	res = pcb_egle_bin_load(NULL, f, fn, &root);
+
+	fclose(f);
+
+
+	printf("@@@ eagle_bin_tree @@@\n");
+	egb_dump(stdout, root);
+
+	if (res != 0) {
+		printf("FAILED TO LOAD: %d\n", res);
+		return -1;
+	}
+
+	pst->doc = NULL;
 	pst->root = root;
-*/
 
-	return -1;
+	return 0;
 }
 
 static int eagle_bin_unload(trparse_t *pst)
 {
-	return -1;
+	egb_node_free(pst->root);
+	return 0;
 }
 
 static trnode_t *eagle_bin_children(trparse_t *pst, trnode_t *node)
 {
-	return NULL;
+	egb_node_t *nd = (egb_node_t *)node;
+	return (trnode_t *)nd->first_child;
 }
 
 static trnode_t *eagle_bin_next(trparse_t *pst, trnode_t *node)
 {
-	return NULL;
+	egb_node_t *nd = (egb_node_t *)node;
+	return (trnode_t *)nd->next;
 }
 
 static int eagle_bin_is_text(trparse_t *pst, trnode_t *node)
 {
+#warning TODO
 	return 0;
 }
 

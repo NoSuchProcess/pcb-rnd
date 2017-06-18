@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "egb_tree.h"
 
 typedef enum pcb_eagle_binkw_s {
 	PCB_EGKW_SECT_START = 0x1000, /*0x1080*/
@@ -52,4 +53,6 @@ typedef enum pcb_eagle_binkw_s {
 	PCB_EGKW_SECT_FREETEXT = 0x1312
 } pcb_eagle_binkw_t;
 
-int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn);
+int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root);
+
+

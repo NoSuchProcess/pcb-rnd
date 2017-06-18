@@ -1,5 +1,6 @@
 /* eagle binary file tree representation */
-
+#ifndef PCB_EGB_TREE_H
+#define PCB_EGB_TREE_H
 #include <stdio.h>
 #include <genht/htss.h>
 
@@ -23,3 +24,5 @@ void egb_node_prop_set(egb_node_t *node, const char *key, const char *val);
 char *egb_node_prop_get(egb_node_t *node, const char *key);
 
 void egb_dump(FILE *f, egb_node_t *node);
+
+#endif
