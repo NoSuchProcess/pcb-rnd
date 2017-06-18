@@ -54,6 +54,7 @@ void pcb_subc_free(pcb_subc_t *sc)
 {
 	pcb_subclist_remove(sc);
 	pcb_data_free(sc->data);
+	free(sc->data);
 	free(sc);
 }
 
