@@ -928,8 +928,8 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h \
- obj_pinvia.h hid.h hid_nogui.h hid_attrib.h hid_helper.h hid_init.h \
- ../src_plugins/export_xy/default_templ.h
+ obj_pinvia.h netlist.h route_style.h hid.h hid_nogui.h hid_attrib.h \
+ hid_helper.h hid_init.h ../src_plugins/export_xy/default_templ.h
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -4551,12 +4551,12 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
- ../src_3rd/genregex/regex.h change.h board.h const.h macro.h \
+ ../src_3rd/genregex/regex.h change.h flag.h board.h const.h macro.h \
  vtroutestyle.h attrib.h layer.h obj_all_list.h obj_arc_list.h \
  obj_common.h ../src_3rd/liblihata/genht/hash.h \
- ../src_3rd/genlist/gendlist.h flag.h data_parent.h obj_arc.h \
- obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
- obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
+ ../src_3rd/genlist/gendlist.h data_parent.h obj_arc.h obj_elem_list.h \
+ obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h obj_pad.h \
+ obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
  ../src_3rd/liblihata/genht/htip.h obj_poly.h polyarea.h obj_poly_list.h \
  box.h math_helper.h move.h misc_util.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h obj_text_list.h obj_rat_list.h obj_rat.h \
@@ -5629,7 +5629,7 @@ obj_arc.o: obj_arc.c ../config.h compat_nls.h board.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h obj_arc_op.h \
- operation.h draw.h obj_arc_draw.h
+ operation.h obj_subc_parent.h draw.h obj_arc_draw.h
 obj_arc_list.o: obj_arc_list.c obj_arc_list.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  globalconst.h ../config.h attrib.h global_typedefs.h pcb_bool.h unit.h \
@@ -5728,7 +5728,8 @@ obj_line.o: obj_line.c ../config.h undo.h library.h global_typedefs.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
  list_conf.h compat_nls.h compat_misc.h rotate.h obj_line_op.h \
- operation.h draw.h obj_line_draw.h obj_rat_draw.h obj_pinvia_draw.h
+ operation.h obj_subc_parent.h draw.h obj_line_draw.h obj_rat_draw.h \
+ obj_pinvia_draw.h
 obj_line_drcenf.o: obj_line_drcenf.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -5849,7 +5850,7 @@ obj_poly.o: obj_poly.c ../config.h board.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h obj_poly_op.h operation.h \
- obj_poly_draw.h draw.h
+ obj_poly_draw.h obj_subc_parent.h draw.h
 obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  globalconst.h ../config.h attrib.h global_typedefs.h pcb_bool.h unit.h \
@@ -5901,8 +5902,8 @@ obj_subc.o: obj_subc.c ../config.h buffer.h obj_common.h \
  ../src_3rd/liblihata/genht/ht.h obj_text_list.h obj_rat_list.h obj_rat.h \
  layer_grp.h library.h rats_patch.h crosshair.h vtonpoint.h hid.h error.h \
  drc.h route.h data.h obj_subc_list.h obj_subc.h rtree.h ht_subc.h \
- obj_subc_op.h operation.h obj_text_draw.h draw.h polygon.h conf_core.h \
- conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ obj_subc_op.h operation.h obj_text_draw.h draw.h polygon.h undo.h \
+ conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
@@ -5931,12 +5932,13 @@ obj_text.o: obj_text.c ../config.h rotate.h global_typedefs.h pcb_bool.h \
  layer_grp.h library.h rats_patch.h data.h crosshair.h vtonpoint.h hid.h \
  error.h drc.h route.h buffer.h obj_subc_list.h obj_subc.h rtree.h \
  ht_subc.h compat_misc.h compat_nls.h undo.h polygon.h event.h \
- obj_text_op.h operation.h obj_poly_draw.h obj_arc_draw.h draw.h \
- obj_line_draw.h obj_text_draw.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/genvector/vtp0.h list_conf.h
+ obj_text_op.h operation.h obj_poly_draw.h obj_arc_draw.h \
+ obj_subc_parent.h draw.h obj_line_draw.h obj_text_draw.h conf_core.h \
+ conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h
 obj_text_list.o: obj_text_list.c obj_poly_list.h obj_poly.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  globalconst.h ../config.h attrib.h global_typedefs.h pcb_bool.h unit.h \
@@ -6059,9 +6061,9 @@ plug_io.o: plug_io.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h change.h data.h layer.h \
- attrib.h obj_all_list.h obj_arc_list.h obj_common.h \
- ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
+ ../src_3rd/genlist/gendlist.h globalconst.h change.h flag.h data.h \
+ layer.h attrib.h obj_all_list.h obj_arc_list.h obj_common.h \
+ ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h \
  data_parent.h obj_arc.h obj_elem_list.h obj_elem.h obj_line_list.h \
  obj_line.h obj_pad_list.h obj_pad.h obj_pinvia_list.h obj_pinvia.h \
  obj_text.h font.h ../src_3rd/liblihata/genht/htip.h obj_poly.h \
