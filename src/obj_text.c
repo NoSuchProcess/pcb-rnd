@@ -751,15 +751,11 @@ void XORDrawText(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
 /*** init ***/
 static const char *text_cookie = "obj_text";
 
-static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
+/* Recursively update the text objects of data and subcircuits; returns non-zero
+   if a redraw is needed */
+static int pcb_text_font_chg_data(pcb_data_t *data, pcb_font_id_t fid)
 {
-	pcb_font_id_t fid;
 	int need_redraw = 0;
-
-	if ((argc < 2) || (argv[1].type != PCB_EVARG_INT))
-		return;
-
-	fid = argv[1].d.i;
 
 	LAYER_LOOP(PCB->Data, pcb_max_layer); {
 		PCB_TEXT_LOOP(layer); {
@@ -778,12 +774,22 @@ static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 		} PCB_END_LOOP;
 	} PCB_END_LOOP;
+
 #warning subc TODO
 
-	if (need_redraw)
+	return need_redraw;
+}
+
+static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+
+	if ((argc < 2) || (argv[1].type != PCB_EVARG_INT))
+		return;
+
+	if (pcb_text_font_chg_data(PCB->Data, argv[1].d.i))
 		pcb_gui->invalidate_all(); /* can't just redraw the text, as the old text may have been bigger, before the change! */
 
-	pcb_trace("font change %d\n", fid);
+	pcb_trace("font change %d\n", argv[1].d.i);
 }
 
 void pcb_text_init(void)
