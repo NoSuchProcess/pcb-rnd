@@ -567,6 +567,7 @@ int main(int argc, char *argv[])
 		}
 		else
 			pcb_gui->do_export(0);
+		pcb_main_uninit();
 		exit(0);
 	}
 
