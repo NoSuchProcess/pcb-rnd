@@ -29,7 +29,7 @@
 #include "plug_io.h"
 #include "read.h"
 
-static pcb_plug_io_t io_eagle;
+static pcb_plug_io_t io_eagle_xml;
 static const char *eagle_cookie = "eagle plugin";
 
 int io_eagle_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
@@ -58,23 +58,23 @@ int pplg_init_io_eagle(void)
 {
 
 	/* register the IO hook */
-	io_eagle.plugin_data = NULL;
-	io_eagle.fmt_support_prio = io_eagle_fmt;
-	io_eagle.test_parse_pcb = io_eagle_test_parse_pcb;
-	io_eagle.parse_pcb = io_eagle_read_pcb;
-/*	io_eagle.parse_element = NULL;
-	io_eagle.parse_font = NULL;
-	io_eagle.write_buffer = io_eagle_write_buffer;
-	io_eagle.write_element = io_eagle_write_element;
-	io_eagle.write_pcb = io_eagle_write_pcb;*/
-	io_eagle.default_fmt = "eagle";
-	io_eagle.description = "eagle xml";
-	io_eagle.save_preference_prio = 40;
-	io_eagle.default_extension = ".eagle_pcb";
-	io_eagle.fp_extension = ".eagle_mod";
-	io_eagle.mime_type = "application/x-eagle-pcb";
+	io_eagle_xml.plugin_data = NULL;
+	io_eagle_xml.fmt_support_prio = io_eagle_fmt;
+	io_eagle_xml.test_parse_pcb = io_eagle_test_parse_pcb;
+	io_eagle_xml.parse_pcb = io_eagle_read_pcb;
+/*	io_eagle_xml.parse_element = NULL;
+	io_eagle_xml.parse_font = NULL;
+	io_eagle_xml.write_buffer = io_eagle_write_buffer;
+	io_eagle_xml.write_element = io_eagle_write_element;
+	io_eagle_xml.write_pcb = io_eagle_write_pcb;*/
+	io_eagle_xml.default_fmt = "eagle";
+	io_eagle_xml.description = "eagle xml";
+	io_eagle_xml.save_preference_prio = 40;
+	io_eagle_xml.default_extension = ".eagle_pcb";
+	io_eagle_xml.fp_extension = ".eagle_mod";
+	io_eagle_xml.mime_type = "application/x-eagle-pcb";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle);
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
 
 	return 0;
 }
