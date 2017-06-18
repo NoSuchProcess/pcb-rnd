@@ -270,7 +270,11 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	}
 	PCB_END_LOOP;
 
-#warning subc TODO
+	PCB_SUBC_LOOP(Buffer->Data);
+	{
+		pcb_obj_rotate90(PCB_TYPE_SUBC, subc, subc, subc, Buffer->X, Buffer->Y, Number);
+	}
+	PCB_END_LOOP;
 
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
