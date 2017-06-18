@@ -1,7 +1,7 @@
 #include "board.h"
 #include "conf.h"
-int io_eagle_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f);
-int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
+int io_eagle_test_parse_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f);
+int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
 
 int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f);
 int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest);

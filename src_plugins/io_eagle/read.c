@@ -167,7 +167,7 @@ static int eagle_read_nop(read_state_t *st, xmlNode *subtree, void *obj, int typ
 
 
 
-int io_eagle_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+int io_eagle_test_parse_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
 {
 	char line[1024];
 	int found = 0, lineno = 0;
@@ -1184,7 +1184,7 @@ static void st_uninit(read_state_t *st)
 	st->parser.calls->unload(&st->parser);
 }
 
-int io_eagle_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
+int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	xmlNode *dr;
 	int res, old_leni;

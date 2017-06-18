@@ -60,8 +60,8 @@ int pplg_init_io_eagle(void)
 	/* register the IO hook */
 	io_eagle_xml.plugin_data = NULL;
 	io_eagle_xml.fmt_support_prio = io_eagle_fmt;
-	io_eagle_xml.test_parse_pcb = io_eagle_test_parse_pcb;
-	io_eagle_xml.parse_pcb = io_eagle_read_pcb;
+	io_eagle_xml.test_parse_pcb = io_eagle_test_parse_pcb_xml;
+	io_eagle_xml.parse_pcb = io_eagle_read_pcb_xml;
 /*	io_eagle_xml.parse_element = NULL;
 	io_eagle_xml.parse_font = NULL;
 	io_eagle_xml.write_buffer = io_eagle_write_buffer;
