@@ -51,7 +51,7 @@
 vtptr_t post_ids, post_thermal;
 static int rdver;
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, pcb_data_t *subc_parent);
+static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent);
 
 
 /* Collect objects that has unknown ID on a list. Once all objects with
@@ -780,7 +780,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	if (!dt->via_tree)
 		dt->via_tree = pcb_r_create_tree(NULL, 0, 0);
 
-	sc->data = parse_data(pcb, lht_dom_hash_get(obj, "data"), dt);
+	parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt);
 
 	pcb_add_subc_to_data(dt, sc);
 	pcb_data_bbox(&sc->BoundingBox, sc->data);
@@ -937,7 +937,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, pcb_data_t *subc_parent)
+static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent)
 {
 	pcb_data_t *dt;
 	lht_node_t *grp;
@@ -946,7 +946,11 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd, pcb_data_t *subc
 	if (nd->type != LHT_HASH)
 		return NULL;
 
-	dt = pcb_buffer_new(pcb);
+	if (dst == NULL)
+		dt = pcb_buffer_new(pcb);
+	else
+		dt = dst;
+
 	if (!bound_layers)
 		pcb->Data = dt;
 
@@ -1281,7 +1285,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((parse_data(pcb, sub, NULL)) == NULL))
+	if ((sub != NULL) && ((parse_data(pcb, NULL, sub, NULL)) == NULL))
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "styles");
