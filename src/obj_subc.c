@@ -62,6 +62,7 @@ void pcb_subc_free(pcb_subc_t *sc)
 void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
 {
 	PCB_SET_PARENT(sc->data, subc, sc);
+	PCB_SET_PARENT(sc, data, dt);
 	pcb_subclist_append(&dt->subc, sc);
 }
 
