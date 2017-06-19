@@ -251,6 +251,8 @@ void pcb_data_free(pcb_data_t * data)
 	if (!subc) {
 		if (data->element_tree)
 			pcb_r_destroy_tree(&data->element_tree);
+		if (data->subc_tree)
+			pcb_r_destroy_tree(&data->subc_tree);
 		for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++)
 			if (data->name_tree[i])
 				pcb_r_destroy_tree(&data->name_tree[i]);
@@ -315,7 +317,14 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
 		};
 	}
 	PCB_END_LOOP;
-#warning subc TODO
+	PCB_SUBC_LOOP(Data);
+	{
+		out->X1 = MIN(out->X1, subc->BoundingBox.X1);
+		out->Y1 = MIN(out->Y1, subc->BoundingBox.Y1);
+		out->X2 = MAX(out->X2, subc->BoundingBox.X2);
+		out->Y2 = MAX(out->Y2, subc->BoundingBox.Y2);
+	}
+	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Data);
 	{
 		out->X1 = MIN(out->X1, line->Point1.X - line->Thickness / 2);
