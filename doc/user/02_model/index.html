@@ -433,14 +433,18 @@ the intended (changed) netlist.
 <p>
 <table border=1>
 	<caption><b>Pcb-rnd Terminology</b>
-	<tr><th> Physical board          <th> pcb-rnd 
-	<tr><td> layer                   <td> layer group
-	<tr><td> copper layer            <td> layer group with copper layers
-	<tr><td> substrate               <td> N/A
-	<tr><td> contour of the board    <td> outline layer
-	<tr><td> outline routing path    <td> outline layer
-	<tr><td> polygon pour            <td> polygon
-	<tr><td> plane                   <td> polygon
-	<tr><td> mask                    <td> mask (available: auto, add, subtract)
-	<tr><td> silk                    <td> silk (available: auto, add, subtract)
+	<tr><th> Physical board            <th> pcb-rnd <th> Description
+	<tr><td> Layer                     <td> Layer Group <td> enables the user to design complex physical constructions
+	<tr><td> copper layer              <td> layer group with copper layers <td> designed with one to many pcb-rnd layers
+	<tr><td> top/component copper layer<td> layer group with copper layers <td> any group of copper layers defined as the 'top' of a board
+	<tr><td> bottom/solder copper layer<td> layer group with copper layers <td>
+	any group of copper layers defined as the 'bottom' of a board
+	<tr><td> substrate                 <td> N/A<td> pcb-rnd does not currently handle phyiscal substrate information 
+	<tr><td> contour of the board      <td> outline layer<td> designed using standard pcb-rnd elemnts
+	<tr><td> outline routing path      <td> outline layer<td> designed using standard pcb-rnd elemnts
+	<tr><td> polygon pour              <td> polygon<td> an object available for design in any layer group
+	<tr><td> plane                     <td> polygon<td> see above 
+	<tr><td> mask                      <td> layer group with mask layers<td> design layers available: automatic, additive, subtractive
+	<tr><td> silk                      <td> layer group with silk layers<td> design layers available: automatic, additive, subtractive
+	<tr><td> N/A	                     <td> Rats <td> assistve layer automatically generated with netlist and copper layer group connection data
 </table>
