@@ -681,7 +681,7 @@ int pcb_drc_all(void)
 			}
 		}
 		PCB_END_LOOP;
-#warning subc TODO
+#warning subc term TODO
 	}
 
 
