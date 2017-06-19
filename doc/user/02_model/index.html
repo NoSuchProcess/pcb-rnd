@@ -94,6 +94,7 @@ layer group the location is always global. The table below lists whether a
 combination is supported or not.
 <p>
 <table border=1>
+	<caption><b>Layer Combination Support</b>
 	<tr><th> &nbsp; <th> top <th> bottom <th> intern <th> global <th> composite
 	<tr><th> copper <td> yes <td> yes    <td> yes    <td> no     <td> no
 	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no     <td> TODO
@@ -113,6 +114,7 @@ Objects have flags that control their behavior. The following flags are common
 to all objects:
 <p>
 <table>
+	<caption><b>Object Flags</b>
 	<tr><th>name        <th> description
 	<tr><td>selected    <td> selected by the user ("cyan")
 	<tr><td>found       <td> found as a galvanic connection in the last connection lookup ("green")
@@ -139,9 +141,8 @@ the "clearpoly" flag set and the line has the "clearline" flag set. If either
 of these flags is not set, no gap is made - or in pcb-rnd terminology,
 the line is joined to the polygon.
 <p>
-Extra object flags:
-<p>
 <table>
+	<caption><b>Line Object Flags</b>
 	<tr><th>name        <th> description
 	<tr><td>clearline   <td> clears polygons with the "clearpoly" flag in the same layer group
 </table>
@@ -156,9 +157,8 @@ behave like lines in all respects.
 Although the arc is described with it's center, radius, start and end
 angles, the user interface may offer drawing arcs by endpoints.
 <p>
-Extra object flags:
-<p>
 <table>
+	<caption><b>Arc Object Flags</b>
 	<tr><th>name        <th> description
 	<tr><td>clearline   <td> clears polygons with the "clearpoly" flag in the same layer group
 </table>
@@ -195,9 +195,9 @@ polygon. This is risky: the program will indicate connection between polygon
 islands that are not really connected, only because they are part of the same
 polygon!
 <p>
-Extra object flags:
 <p>
 <table border=1>
+	<caption><b>Polygon Object Flags</b>
 	<tr><th>name        <th> description
 	<tr><td>clearpoly   <td> should have clearance around objects, if the objects have the appropriate flags too
 	<tr><td>fullpoly    <td> keep all islands, not only the largest
@@ -231,6 +231,7 @@ A copper ring also has a per layer property whether or how it connects to
 the surrounding polygon on the given layer; this is called the thermal style
 of the via. The following options are available:
 <table border=1>
+	<caption><b>Via Object options</b>
 	<tr><th>thermal style <th> appearance
 	<tr><td>no connection <td> <img src=TODO alt="TODO">
 	<tr><td>solid        <td> <img src=TODO alt="TODO">
@@ -240,9 +241,10 @@ of the via. The following options are available:
 	<tr><td>sharp x 45   <td> <img src=TODO alt="TODO">
 </table>
 <p>
-The shape of the copper annulus (the ring) is also selectable from a predefined
+The shape of the copper annulus (the pad ring) is also selectable from a predefined
 set of symmetrical and asymmetrical set:
 <table border=1>
+	<caption><b>Via Annulus Shapes</b>
 	<tr><th>shape          <th> appearance
 	<tr><td>ring (default) <td> <img src=TODO alt="TODO">
 	<tr><td>square         <td> <img src=TODO alt="TODO">
@@ -293,6 +295,7 @@ Currently an element or footprint can contain the following objects:
 An element has the following properties:
 <p>
 <table border=1>
+	<caption><b>Element Properties</b>
 	<tr><th>element property   <th> description
 	<tr><td> name: refdes      <td> unique identifier, e.g. "C42"
 	<tr><td> name: value       <td> informal value, e.g. "15 pF"
@@ -302,6 +305,7 @@ An element has the following properties:
 Extra object flags:
 <p>
 <table border=1>
+	<caption><b>Element Flags</b>
 	<tr><th>name        <th> description
 	<tr><td>ONSOLDER    <td> when set, the element is on the bottom side, else it's on the top side
 	<tr><td>NONETLIST   <td> when set, the element is not intended to be on the netlist; useful for elements that are not present on the schematics and are placed during the layout design
@@ -325,6 +329,7 @@ Pin numbers are in the same namespace as pad numbers.
 A pin has the following properties:
 <p>
 <table border=1>
+	<caption><b>Pin Properties</b>
 	<tr><th>name        <th> description
 	<tr><td>name        <td> pin name, e.g. "base"
 	<tr><td>number      <td> pin name, e.g. 2
@@ -334,6 +339,7 @@ A pin has the following properties:
 Extra object flags:
 <p>
 <table border=1>
+	<caption><b>Pin Element Flags</b>
 	<tr><th>name        <th> description
 	<tr><td>via flags   <td> (extra flags listed for vias are applicable to pins too)
 	<tr><td>WARN        <td> the pin contributes to a short circuit ("orange mark")
@@ -349,6 +355,7 @@ A pad is always on either the top or the bottom copper layer group.
 A pad has the following properties:
 <p>
 <table border=1>
+	<caption><b>Pad Properties</b>
 	<tr><th>name        <th> description
 	<tr><td>name        <td> pin name, e.g. "base"
 	<tr><td>number      <td> pin name, e.g. 2
@@ -358,6 +365,7 @@ A pad has the following properties:
 Extra object flags:
 <p>
 <table border=1>
+	<caption><b>Pad Object Flags</b>
 	<tr><th>name        <th> description
 	<tr><td>via flags   <td> (extra flags listed for vias are applicable to pins too)
 	<tr><td>WARN        <td> the pin contributes to a short circuit ("orange mark")
@@ -424,6 +432,7 @@ the intended (changed) netlist.
 <h3> 2.5. comparison of terms </h3>
 <p>
 <table border=1>
+	<caption><b>pc-brnd Terminology Sources</b>
 	<tr><th> physical board term     <th> pcb-rnd term
 	<tr><td> layer                   <td> layer group
 	<tr><td> copper layer            <td> layer group with copper layers
