@@ -1507,6 +1507,8 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	switch (type) {
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
+		if (pcb_data_get_top(Data) == NULL) /* don't do it if not on a board */
+			break;
 		if (type == PCB_TYPE_PIN || ptr1 == ptr2 || ptr1 == NULL) {
 			LAYER_LOOP(Data, pcb_max_layer);
 			{
