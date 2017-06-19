@@ -1285,7 +1285,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((parse_data(pcb, NULL, sub, NULL)) == NULL))
+	if ((sub != NULL) && ((parse_data(pcb, pcb->Data, sub, NULL)) == NULL))
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "styles");
