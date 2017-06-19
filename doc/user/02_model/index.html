@@ -10,7 +10,7 @@
 
 <h2> 2. Model of the world  </h2>
 <p>
-Pcb-rnd is designed to handle geometric data of a PCB. This section describes
+Pcb-rnd is designed to handle the geometric data of a PCB. This section describes
 how pcb-rnd represents reality (e.g. copper shapes) in memory.
 
 <h3> 2.1. board </h3>
@@ -31,21 +31,25 @@ A netlist is a list of named <i>nets</i>. Each net consists of a list of
 <i>terminals</i> (pins or pads) to connect. A terminal is given as
 elementname-pinname, e.g. U4-7 means "pin number 7 in element called U4".
 <p>
-<b>Font</b>, which is always embedded in the design file to guarantee
+<b>Fonts</b> are always embedded in the design file in order to guarantee
 that the file can be ported and will look the same on different hosts.
 <p>
 Misc editor settings, such as grid size and offset.
 
 <h3> 2.2. layers </h3>
+<p> 
+Pcb-rnd aides the user in creating real pcb product, composed of real
+<i>physical layers</i>. pcb-rnd also refers to layers to conceptualize this
+process, but pcb-rnd layers are different than the <i>physical layers</i>. 
 <p>
-Unlike a <i>physical layer</i>, a pcb-rnd layer has no thickness. It is a
-2 dimensional, logical canvas, similar to layers in image manipulation software
-like gimp. There are <i>explicit</i> and <i>virtual</i> layers. An explicit
+Unlike a <i>physical layer</i>, a pcb-rnd layer has no thickness. It is a 2
+dimensional, logical canvas, similar to layers in image manipulation software
+like gimp. In pcb-rnd there are <i>explicit</i> and <i>virtual</i> layers. An explicit
 layer contains drawing primitives (objects) placed by the user. The user has
-full control over an explicit layer: objects can be added or removed or
-changed any time. A virtual layer has no such flexibility: pcb-rnd computes
-its content from explicit layers and there's no way to change the result
-directly. A layer is always part of a <i>layer group</i>.
+full control over an explicit layer: objects can be added or removed or changed
+any time. A virtual layer has no such flexibility: pcb-rnd computes its content
+from explicit layers and there's no way to change the result directly. A layer
+is always part of a <i>layer group</i>.
 
 <h3> 2.3. layer groups </h3>
 <p>
@@ -68,21 +72,21 @@ is built of layer groups. Substrates are layer groups without drawable
 layers in them. The mask, paste, silk layer groups behave the same and
 can host zero or more logical layers.
 <p>
-Each laeyr group has a type. Types are:
+Each layer group has a type. Types are:
 <ul>
-	<li> copper for signal layers
-	<li> silk for silkscreen layers
-	<li> outline for the contour of the board and slots and cutouts
-	<li> mask for solder masks
-	<li> paste for solder paste
+	<li> <b>copper</b> for signal layers
+	<li> <b>silk</b> for silkscreen layers
+	<li> <b>outline</b> for the contour of the board and slots and cutouts
+	<li> <b>mask</b> for solder masks
+	<li> <b>paste</b> for solder paste
 </ul>
 <p>
 Each layer group has a location. Locations are:
 <ul>
-	<li> top (used to be the "component side" in the age of thru-hole components)
-	<li> bottom (used to be the "solder side" in the age of thru-hole components)
-	<li> intern (sandwiched between other layers)
-	<li> global (affects all physical layers, thus has no specific location)
+	<li><b>top</b> (used to be the "component side" in the age of thru-hole components)
+	<li><b>bottom</b> (used to be the "solder side" in the age of thru-hole components)
+	<li><b>intern</b> (sandwiched between other layers)
+	<li><b>global</b> (affects all physical layers, thus has no specific location)
 </ul>
 <p>
 Not all combination of type and location are supported: e.g. for an outline
