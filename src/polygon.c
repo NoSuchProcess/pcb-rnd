@@ -1198,6 +1198,8 @@ static pcb_bool inhibit = pcb_false;
 
 int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_polygon_t * p)
 {
+	pcb_board_t *pcb;
+
 	if (inhibit)
 		return 0;
 	if (!PCB_LAYER_IS_REAL(layer))
@@ -1212,6 +1214,12 @@ int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_polygon_t * p)
 	if (!p->Clipped)
 		return 0;
 	assert(pcb_poly_valid(p->Clipped));
+
+	/* calculate clipping for the real data (in case of subcircuits) */
+	pcb = pcb_data_get_top(Data);
+	if (pcb != NULL)
+		Data = pcb->Data;
+
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, p))
 		clearPoly(Data, layer, p, NULL, 0);
 	else
