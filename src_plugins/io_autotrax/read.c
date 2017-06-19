@@ -693,6 +693,256 @@ static int autotrax_parse_free_via(read_state_t *st, FILE *FP)
 	return 0;
 }
 
+/* autotrax_pcb free pad*/
+/* FP
+x y xsize ysize shape holesize pwr/gnd layer
+padname
+*/
+static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
+{
+	int index = 0;
+	char line[30]; /* line is 4 x 32000 = 23 characters at most */
+	char coord[6];
+
+	int i;
+	int c;
+	char *end, *padname;
+	double val;
+
+	int Shape = 0;
+	int Connects = 0;
+	int PCBLayer = 0; /* sane default value */
+
+	pcb_coord_t X, Y, Xsize, Ysize, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
+
+	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+
+	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
+
+	padname = "";
+	index =0;
+
+	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 45) || (c == '\n' && index == 0) ) {
+		line[index] = c;
+		index ++;
+	}
+	if (index > 42) {
+		pcb_printf("error parsing free pad line; too long\n");
+		return -1;
+	}
+	line[index] = ' ';
+	index++;
+	line[index] = '\0';
+	printf("About to parse autotrax free pad: %s\n", line);  
+	index = 0;
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad X\n");
+        	return -1;
+	}
+	X = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad X : %ml\n", X);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad Y\n");
+        	return -1;
+	}
+	Y = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad Y : %ml\n", Y);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad Xsize\n");
+        	return -1;
+	}
+	Xsize = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad Xsize : %ml\n", Xsize);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad Ysize\n");
+        	return -1;
+	}
+	Ysize = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad Ysize : %ml\n", Ysize);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	Shape = atoi(coord); 
+	pcb_printf("Found free pad shape : %d\n", Shape);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index ++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad drill\n");
+        	return -1;
+	}
+	Drill = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad drill : %ml\n", Drill);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	Connects = atoi(coord); 
+	pcb_printf("Found free pad connections : %d\n", Connects);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	PCBLayer = atoi(coord); 
+	pcb_printf("Found free pad Layer : %d\n", PCBLayer);
+/*  
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	padname = strdup(coord);
+	pcb_printf("Found free pad name : %s\n", name);
+*/
+
+	Thickness = MAX(Xsize, Ysize);
+	if (Shape == 2  || Shape == 4) { /* square (2) or rounded rect (4) */ 
+		Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
+		Thickness = MIN(Xsize, Ysize);
+	} else if (Shape == 3) {  /* octagon */
+		Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
+	}
+
+/*
+currently ignore:
+shape
+1 Circular
+5 Cross Hair Target
+6 Moiro Target
+*/
+	if (Shape != 5 && Shape != 6) {
+		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, padname, Flags);
+		pcb_printf("\tnew free pad/hole created; need to check connects\n");
+	} else {
+		pcb_printf("\tnew free pad not created; as it is a Cross Hair Target or Moiro target\n");
+	}
+	return 0;
+}
+
+
+static int autotrax_parse_free_fill(read_state_t *st, FILE *FP)
+{
+	int index = 0;
+	char line[30]; /* line is 4 x 32000 + layer = 26 characters at most */
+	char coord[6];
+
+	int i;
+	int c;
+
+	pcb_polygon_t *polygon = NULL;
+	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
+	char *end;
+	double val;
+	pcb_coord_t X1, Y1, X2, Y2;
+	int PCBLayer = 0;
+
+	index =0;
+	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 29) || (c == '\n' && index == 0) ) {
+		line[index] = c;
+		index ++;
+	}
+	if (index > 27) {
+		pcb_printf("error parsing free fill line; too long\n");
+		return -1;
+	}
+	line[index] = ' ';
+	index++;
+	line[index] = '\0';
+	index = 0;
+	printf("About to parse free fill line: %s\n", line); 
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free fill X1\n");
+        	return -1;
+	}
+	X1 = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found fill X1 : %ml\n", X1);
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	Y1 = PCB_MIL_TO_COORD(atoi(coord));
+	pcb_printf("Found fill Y1 : %ml\n", Y1);
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index ++;
+	X2 = PCB_MIL_TO_COORD(atoi(coord));
+	pcb_printf("Found fill X2 : %ml\n", X2);
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	Y2 = PCB_MIL_TO_COORD(atoi(coord));
+	pcb_printf("Found fill Y2 : %ml\n", Y2);
+
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	PCBLayer = atoi(coord); 
+	pcb_printf("Found fill layer : %d\n", PCBLayer);
+	if (PCBLayer >= 0 || PCBLayer <= 10) {
+		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
+	} else {
+		pcb_printf("Invalid free fill layer found : %d\n", PCBLayer);
+	}
+	if (polygon != NULL) {
+		pcb_poly_point_new(polygon, X1, Y1);
+		pcb_poly_point_new(polygon, X2, Y1);
+		pcb_poly_point_new(polygon, X2, Y2);
+		pcb_poly_point_new(polygon, X1, Y2);
+		pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCBLayer], polygon);
+		pcb_poly_init_clip(st->PCB->Data, &st->PCB->Data->Layer[PCBLayer], polygon);
+		return 0;
+	}
+	return -1;
+}
 
 /* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
 static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_name, unsigned int mask)
@@ -1745,92 +1995,6 @@ static int autotrax_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
 }
 
-static int autotrax_parse_zone(read_state_t *st, FILE *FP)
-{
-	int index = 0;
-	char line[30]; /* line is 4 x 32000 + layer = 26 characters at most */
-	char coord[6];
-
-	int i;
-	int c;
-
-	pcb_polygon_t *polygon = NULL;
-	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
-	char *end;
-	double val;
-	pcb_coord_t X1, Y1, X2, Y2;
-	int PCBLayer = 0;
-
-	index =0;
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 29) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 27) {
-		pcb_printf("error parsing free fill line; too long\n");
-		return -1;
-	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	index = 0;
-	printf("About to parse free fill line: %s\n", line); 
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free fill X1\n");
-        	return -1;
-	}
-	X1 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found fill X1 : %ml\n", X1);
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	Y1 = PCB_MIL_TO_COORD(atoi(coord));
-	pcb_printf("Found fill Y1 : %ml\n", Y1);
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	X2 = PCB_MIL_TO_COORD(atoi(coord));
-	pcb_printf("Found fill X2 : %ml\n", X2);
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	Y2 = PCB_MIL_TO_COORD(atoi(coord));
-	pcb_printf("Found fill Y2 : %ml\n", Y2);
-
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	PCBLayer = atoi(coord); 
-	pcb_printf("Found fill layer : %d\n", PCBLayer);
-	if (PCBLayer >= 0 || PCBLayer <= 10) {
-		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
-	} else {
-		pcb_printf("Invalid free fill layer found : %d\n", PCBLayer);
-	}
-	if (polygon != NULL) {
-		pcb_poly_point_new(polygon, X1, Y1);
-		pcb_poly_point_new(polygon, X2, Y1);
-		pcb_poly_point_new(polygon, X2, Y2);
-		pcb_poly_point_new(polygon, X1, Y2);
-		pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCBLayer], polygon);
-		pcb_poly_init_clip(st->PCB->Data, &st->PCB->Data->Layer[PCBLayer], polygon);
-		return 0;
-	}
-	return -1;
-}
 	
 int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
@@ -1894,9 +2058,10 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 				autotrax_parse_free_via(&st, FP);
 			} else if (strncmp(s, "FF",2) == 0 ) {
 				printf("Found free fill\n");
-				autotrax_parse_zone(&st, FP);
+				autotrax_parse_free_fill(&st, FP);
 			} else if (strncmp(s, "FP",2) == 0 ) {
 				printf("Found free pad\n");
+				autotrax_parse_free_pad(&st, FP);
 			} else if (strncmp(s, "FS",2) == 0 ) {
 				printf("Found free String\n");
 				autotrax_parse_free_text(&st, FP);
