@@ -222,10 +222,10 @@ checker code skips texts.
 
 <h4> 2.4.5. Via Objects </h4>
 <p>
-A via is a galvanized hole that connects copper rings on multiple layers.
-Pcb-rnd currently has two limitations: there are no blind or buried vias -
-a hole always punches all layers; there's no pad stack support, the copper
-ring around the hole on each layer have the same sizes.
+A via is an electrically connected hole that connects copper rings to multiple layers.
+Since a via hole always punches all layer groups and places the same ring on
+any outside layer groups, blind or bured vias and individually defined layer padstacks
+(e.g. with changing ring shape) are not explictly designable in pcb-rnd. 
 <p>
 A copper ring also has a per layer property whether or how it connects to
 the surrounding polygon on the given layer; this is called the thermal style
