@@ -13,7 +13,7 @@
 Pcb-rnd is designed to handle the geometric data of a PCB. This section describes
 how pcb-rnd represents reality (e.g. copper shapes) in memory.
 
-<h3> 2.1. board </h3>
+<h3> 2.1. Board </h3>
 <p>
 Each design pcb-rnd handles is a <i>board</i>. The board has global properties and hosts
 layers. Most drawing primitives (objects) are on layers. This section describes
@@ -36,7 +36,7 @@ that the file can be ported and will look the same on different hosts.
 <p>
 Misc editor settings, such as grid size and offset.
 
-<h3> 2.2. layers </h3>
+<h3> 2.2. Layers </h3>
 <p> 
 Pcb-rnd aides the user in creating real pcb product, composed of real
 <i>physical layers</i>. pcb-rnd also refers to layers to conceptualize this
@@ -51,7 +51,7 @@ any time. A virtual layer has no such flexibility: pcb-rnd computes its content
 from explicit layers and there's no way to change the result directly. A layer
 is always part of a <i>layer group</i>.
 
-<h3> 2.3. layer groups </h3>
+<h3> 2.3. Layer Groups </h3>
 <p>
 One or more explicit layers form a <i>layer group</i>. All pcb-rnd layers
 of a layer group will end up on the same physical layer. The visibility of
@@ -103,7 +103,7 @@ combination is supported or not.
 	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no     <td> yes
 </table>
 
-<h3> 2.4. Basic drawing objects </h3>
+<h3> 2.4. Basic Drawing Objects </h3>
 <p>
 Pcb-rnd supports a small number of basic drawing objects, from which complex
 objects can be build. The following figure demonstrates all basic objects:
@@ -123,7 +123,7 @@ to all objects:
 </table>
 
 
-<h4> 2.4.1. Line objects </h4>
+<h4> 2.4.1. Line Objects </h4>
 <p>
 Lines are round ended straight line segments with a width and
 a clearance. The above image shows 3 lines connected. Lines are mainly
@@ -147,7 +147,7 @@ the line is joined to the polygon.
 	<tr><td>clearline   <td> clears polygons with the "clearpoly" flag in the same layer group
 </table>
 
-<h4> 2.4.2. Arc objects </h4>
+<h4> 2.4.2. Arc Objects </h4>
 <p>
 Arcs are round ended circular arcs with trace width and clearance. They
 behave like lines in all respects.
@@ -163,7 +163,7 @@ angles, the user interface may offer drawing arcs by endpoints.
 	<tr><td>clearline   <td> clears polygons with the "clearpoly" flag in the same layer group
 </table>
 
-<h4> 2.4.3. Polygon objects </h4>
+<h4> 2.4.3. Polygon Objects </h4>
 <p>
 Polygons are solid, filled copper areas with optional holes in them. Polygon
 contour consists of lines - when they look curvy, it's really high resolution
@@ -203,7 +203,7 @@ polygon!
 	<tr><td>fullpoly    <td> keep all islands, not only the largest
 </table>
 
-<h4> 2.4.4. text objects </h4>
+<h4> 2.4.4. Text Objects </h4>
 <p>
 A text object is string and a series of symbols (pcb-rnd's terminology for
 glyph). Symbols are built of lines and are stored in the font. Each board
@@ -220,7 +220,7 @@ The clearance around text is rendered as a round corner rectangular cutout.
 Bug: copper text can not participate in short circuits, the galvanic connection
 checker code skips texts.
 
-<h4> 2.4.5. via objects </h4>
+<h4> 2.4.5. Via Objects </h4>
 <p>
 A via is a galvanized hole that connects copper rings on multiple layers.
 Pcb-rnd currently has two limitations: there are no blind or buried vias -
@@ -252,7 +252,7 @@ set of symmetrical and asymmetrical set:
 	<tr><td>asymmetrical   <td> <img src=TODO alt="TODO">
 </table>
 
-<h4> 2.4.6. element objects and footprints </h4>
+<h4> 2.4.6. Element Objects and Footprints </h4>
 
 <p>
 An element is an instance of a footprint that is already placed on the
@@ -313,7 +313,7 @@ Extra object flags:
 	<tr><td>DISPLAYNAME <td> when set the names of pins are shown
 </table>
 
-<h4> 2.4.7. pins of elements </h4>
+<h4> 2.4.7. Pins of Elements </h4>
 
 A pin of an element is really a via, plus some metadata and capabilities:
 <ul>
@@ -345,7 +345,7 @@ Extra object flags:
 	<tr><td>WARN        <td> the pin contributes to a short circuit ("orange mark")
 </table>
 
-<h4> 2.4.8. pads of elements </h4>
+<h4> 2.4.8. Pads of Elements </h4>
 <p>
 A pad is an smd pad of an element. It is modelled as a line segment, usually
 with square cap - this makes the pad look like a rectangle. A pad has
@@ -372,12 +372,12 @@ Extra object flags:
 	<tr><td>EDGE2       <td> indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)
 </table>
 
-<h4> 2.4.9. rat line objects </h4>
+<h4> 2.4.9. Rat line Objects </h4>
 <p>
 A rat line represents a logical connection that is not yet realized in copper.
 It connects two drawing primitives.
 
-<h4> 2.4.10. netlists </h4>
+<h4> 2.4.10. Netlists </h4>
 <p>
 A netlist is a list of named logical networks. Each network is a list of
 netlist terminals that should be connected. A netlist terminal is a pair
@@ -429,7 +429,7 @@ annotation from the schematics editor to pcb-rnd will then cancel
 the netlist/element changes as the new netlist import netlist matches
 the intended (changed) netlist.
 
-<h3> 2.5. comparison of terms </h3>
+<h3> 2.5. Comparison of Physical world and pcb-rnd world terminology </h3>
 <p>
 <table border=1>
 	<caption><b>Pcb-rnd Terminology</b>
