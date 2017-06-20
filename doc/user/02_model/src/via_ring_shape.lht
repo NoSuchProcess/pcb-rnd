@@ -66,7 +66,7 @@ ha:pcb-rnd-board-v2 {
 
    li:objects {
     ha:via.107 {
-     x=3.76mm; y=3.525mm; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
+     x=150.0mil; y=140.0mil; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
      ha:flags {
       via=1
      }
@@ -84,10 +84,10 @@ ha:pcb-rnd-board-v2 {
        ha:polygon.124 {
         li:geometry {
           ta:contour {
-           { 7.05mm; 7.285mm }
-           { 0.47mm; 7.285mm }
-           { 0.47mm; 0.47mm }
-           { 7.05mm; 0.47mm }
+           { 25.0mil; 25.0mil }
+           { 275.0mil; 25.0mil }
+           { 275.0mil; 275.0mil }
+           { 25.0mil; 275.0mil }
           }
         }
 
@@ -162,7 +162,7 @@ ha:pcb-rnd-board-v2 {
 
       li:objects {
        ha:text.119 {
-        string=Ring; x=109.2519685mil; y=5.95mm; scale=80; fid=0; direction=0;
+        string=Ring; x=110mil; y=5.95mm; scale=80; fid=0; direction=0;
         ha:flags {
          clearline=1
         }

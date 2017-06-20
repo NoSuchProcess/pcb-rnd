@@ -63,7 +63,7 @@ ha:pcb-rnd-board-v2 {
 
    li:objects {
     ha:via.132 {
-     x=150.0mil; y=150.0mil; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
+     x=150.0mil; y=140.0mil; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
      ha:flags {
       via=1
       square=1
@@ -161,7 +161,7 @@ ha:pcb-rnd-board-v2 {
 
       li:objects {
        ha:text.132 {
-        string=Square; x=75.0mil; y=225.0mil; scale=85; fid=0; direction=0;
+        string=Square; x=75.0mil; y=230.0mil; scale=85; fid=0; direction=0;
         ha:flags {
          clearline=1
         }

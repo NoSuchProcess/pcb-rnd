@@ -64,7 +64,7 @@ ha:pcb-rnd-board-v2 {
 
    li:objects {
     ha:via.107 {
-     x=3.801mm; y=3.62mm; hole=47.24mil; mask=0.0; thickness=3.24612mm; clearance=50.0mil;
+     x=150mil; y=150mil; hole=47.24mil; mask=0.0; thickness=3.11912mm; clearance=50.0mil;
      ha:flags {
       via=1
      }
