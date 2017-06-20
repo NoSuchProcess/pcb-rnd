@@ -45,6 +45,7 @@
 #include "macro.h"
 #include "obj_all.h"
 #include "rotate.h"
+#include "../src_plugins/boardflip/boardflip.h"
 
 typedef struct {
 	pcb_board_t *PCB;
@@ -82,43 +83,9 @@ static int autotrax_error(gsxl_node_t *subtree, char *fmt, ...)
 	return -1;
 }
 
-/* Search the dispatcher table for subtree->str, execute the parser on match
-   with the children ("parameters") of the subtree */
-static int autotrax_dispatch(read_state_t *st, gsxl_node_t *subtree, const dispatch_t *disp_table)
-{
-	const dispatch_t *d;
-
-	/* do not tolerate empty/NIL node */
-	if (subtree->str == NULL)
-		return autotrax_error(subtree, "unexpected empty/NIL subtree");
-
-	for(d = disp_table; d->node_name != NULL; d++)
-		if (strcmp(d->node_name, subtree->str) == 0)
-			return d->parser(st, subtree->children);
-
-	/* node name not found in the dispatcher table */
-	return autotrax_error(subtree, "Unknown node: '%s'", subtree->str);
-}
-
 /* Take each children of tree and execute them using autotrax_dispatch
    Useful for procssing nodes that may host various subtrees of different
    nodes ina  flexible way. Return non-zero if any subtree processor failed. */
-static int autotrax_foreach_dispatch(read_state_t *st, gsxl_node_t *tree, const dispatch_t *disp_table)
-{
-	gsxl_node_t *n;
-
-	for(n = tree; n != NULL; n = n->next)
-		if (autotrax_dispatch(st, n, disp_table) != 0)
-			return -1;
-
-	return 0; /* success */
-}
-
-/* No-op: ignore the subtree */
-static int autotrax_parse_nop(read_state_t *st, gsxl_node_t *subtree)
-{
-	return 0;
-}
 
 /* autotrax_pcb/version */
 static int autotrax_parse_version(read_state_t *st, gsxl_node_t *subtree)
@@ -132,7 +99,6 @@ static int autotrax_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	return autotrax_error(subtree, "unexpected layout version");
 }
 
-static int autotrax_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree); /* for layout layer definitions */
 static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree); /* describes netlists for the layout */
 static int autotrax_get_layeridx(read_state_t *st, const char *autotrax_name);
 
@@ -153,25 +119,19 @@ do { \
 #define BV(bit) (1<<(bit))
 
 
-/* autotrax_free_string */
+/* autotrax_free_text */
 static int autotrax_parse_free_text(read_state_t *st, FILE *FP)
 {
 
-	gsxl_node_t *l, *n, *m;
 	int i, heightMil;
-	unsigned long tally = 0, required;
 
 	char *end;
 	double val;
 	pcb_coord_t X, Y, linewidth;
 	int scaling = 100;
-	int textLength = 0;
-	int mirrored = 0;
-	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
-
 
 	int index = 0;
 	char line[35]; /* line is 4 x 32000 + layer + 1 + 1 = 33 characters at most */
@@ -966,6 +926,9 @@ static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_na
 static int autotrax_create_layers(read_state_t *st)
 {
 	unsigned int res;
+	pcb_layer_id_t id = -1;
+	pcb_layergrp_id_t gid = -1;
+	pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 
 	/* set up the hash for implicit layers */
 	res = 0;
@@ -984,9 +947,6 @@ static int autotrax_create_layers(read_state_t *st)
 	}
 
 	pcb_layergrp_fix_old_outline(PCB);
-
-	pcb_layer_id_t id = -1;
-	pcb_layergrp_id_t gid = -1;
 	
 	pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
 	id = pcb_layer_create(gid, "Bottom");
@@ -996,7 +956,6 @@ static int autotrax_create_layers(read_state_t *st)
 	id = pcb_layer_create(gid, "Top");
 	htsi_set(&st->layer_k2i, pcb_strdup("Top"), id);
 
-	pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
 	htsi_set(&st->layer_k2i, pcb_strdup("Mid1"), id);
 
@@ -1065,7 +1024,6 @@ static int autotrax_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int square = 0;
 	int throughHole = 0;
 	int foundRefdes = 0;
-	int foundValue = 0;
 	int refdesScaling  = 100;
 	int moduleEmpty = 1;
 	unsigned int moduleRotation = 0; /* for rotating modules */
@@ -1209,7 +1167,6 @@ static int autotrax_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 8);
 				printf("\tfp_text value found: '%s'\n", textLabel);
 				moduleValue = text;
-				foundValue = 1;
 				printf("\tmoduleValue now: '%s'\n", moduleValue);
 			} else if (strcmp("hide", textLabel) == 0) {
 				pcb_printf("\tignoring fp_text \"hide\" flag\n");
@@ -1358,8 +1315,6 @@ static int autotrax_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 		X = refdesX;
 		Y = refdesY;
-		glyphWidth = 1.27;
-		glyphWidth = glyphWidth * refdesScaling/100.0;
 
 		if (mirrored != 0) {
 			if (direction%2 == 0) {
@@ -2006,10 +1961,12 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	int c, readres = 0;
 	pcb_box_t boardSize, *box;
 	read_state_t st;
-	gsx_parse_res_t res;
 	FILE *FP;
 
-		FP = fopen(Filename, "r");
+	int index = 0;
+	char line[1024], *s;
+
+	FP = fopen(Filename, "r");
 	if (FP == NULL)
 		return -1;
 
@@ -2019,10 +1976,6 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
-
-
-	int index = 0;
-	char line[1024], *s;
 
 	while (!feof(FP)) {
 		index =0;
