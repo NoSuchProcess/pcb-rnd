@@ -222,30 +222,37 @@ checker code skips texts.
 
 <h4> 2.4.5. Via Objects </h4>
 <p>
-A via is an electrically connected hole that connects copper rings to multiple layers.
-Since a via hole always punches all layer groups and places the same ring on
-any outside layer groups, blind or bured vias and individually defined layer padstacks
-(e.g. with changing ring shape) are not explictly designable in pcb-rnd. 
+A via is an electrically connected hole that connects copper rings to multiple
+layers. Thermal relief styles are availabe to both pads and pins, and the shape
+styles of a via are available to pins. Since a via hole always punches all layer
+groups and applies the same ring style on any outside layer groups, blind or
+bured vias and individually defined layer padstacks (e.g. with changing ring
+shape per layer) are not explictly designable in pcb-rnd. 
 <p>
-A copper ring also has a per layer property whether or how it connects to
-the surrounding polygon on the given layer; this is called the thermal style
-of the via. The following options are available:
+A thermal relief property is added to the copper rings of a via when it is
+connected to the surrounding polygon of any individual layer. Physical designs
+may use thermal reliefs to enable easy hand soldering, or reduce occurance of
+tombstoning in automated production.
+<p>
+The following thermal relief options are available:
 <table border=1>
-	<caption><b>Via Object options</b>
-	<tr><th>thermal style <th> appearance/thermal relief style
+	<caption><b>Pad/Pin/Via Thermal Relief</b>
+	<tr><th>Thermal Relief <th> Appearance 
 	<tr><td>no connection<td> <img src="via_therm_noconn.png" alt="unconnected via">
 	<tr><td>solid        <td> <img src="via_therm_solid.png"  alt="solid thermal">
 	<tr><td>round x 90   <td> <img src="via_therm_round_x90.png"  alt="Thermal relief arc style">
-	<tr><td>round x 45   <td> <img src="via_therm_round_x45.png"  alt="Thermal relief arc style, rot. 45 deg.">
-	<tr><td>sharp x 90   <td> <img src="via_therm_sharp_x90.png"  alt="Thermal relief, crossbar style, 90 deg.">
-	<tr><td>sharp x 45   <td> <img src="via_therm_sharp_x45.png"  alt="Thermal relief, crossbar style, 45 deg.">
+	<tr><td>round x 45   <td> <img src="via_therm_round_x45.png"  alt="Thermal relief arc style, 45deg">
+	<tr><td>crossbar x 90<td> <img src="via_therm_sharp_x90.png"  alt="Thermal relief crossbar style, 90deg">
+	<tr><td>crossbar x 45<td> <img src="via_therm_sharp_x45.png"  alt="Thermal relief crossbar style, 45deg">
 </table>
 <p>
-The shape of the copper annulus (the pad ring) is also selectable from a predefined
-set of symmetrical and asymmetrical set:
+A variety of pin pad shapes are also available to the pcb-rnd user.  The copper
+annulus (ring) on the outside layer groups is selectable from a predefined set
+of shapes that provide solderability or can be used to indicate a special pin.
+Flags in the via object define the shape used. 
 <table border=1>
 	<caption><b>Via Annulus Shape Syles</b>
-	<tr><th>shape          <th> appearance
+	<tr><th>Shape          <th> Appearance
 	<tr><td>ring (default) <td> <img src="via_ring_shape.png" alt="Ring via style">
 	<tr><td>square         <td> <img src="via_square_shape.png" alt="Square via style">
 	<tr><td>octagon        <td> <img src="via_octagon_shape.png" alt="Octogonal via style">
