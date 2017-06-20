@@ -1,10 +1,8 @@
 ha:pcb-rnd-board-v2 {
 
  ha:attributes {
-   {PCB::loader}=geda/pcb - nanometer
    {PCB::grid::unit}=mil
-   {PCB::conf::editor/buffer_number}=0
-   {PCB::conf::editor/draw_grid}=true
+   {PCB::conf::editor/draw_grid}=false
  }
 
  li:styles {
@@ -162,8 +160,8 @@ ha:pcb-rnd-board-v2 {
      visible=1
 
       li:objects {
-       ha:text.131 {
-        string=Via, Square; x=25.0mil; y=225.0mil; scale=85; fid=0; direction=0;
+       ha:text.132 {
+        string=Square; x=75.0mil; y=225.0mil; scale=85; fid=0; direction=0;
         ha:flags {
          clearline=1
         }

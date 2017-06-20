@@ -5,6 +5,7 @@ ha:pcb-rnd-board-v2 {
    {PCB::grid::unit}=mil
    {PCB::conf::editor/buffer_number}=0
    {PCB::conf::editor/draw_grid}=true
+    {PCB::conf::editor/grid}=235.00 um
  }
 
  li:styles {
@@ -55,7 +56,7 @@ ha:pcb-rnd-board-v2 {
     min_silk = 7.0mil
    }
    ha:grid {
-    spacing = 25.0mil
+    spacing = 0.235mm
     offs_x = 0.0
     offs_y = 0.0
    }
@@ -65,7 +66,7 @@ ha:pcb-rnd-board-v2 {
 
    li:objects {
     ha:via.107 {
-     x=150.0mil; y=125.0mil; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
+     x=3.76mm; y=3.525mm; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
      ha:flags {
       via=1
      }
@@ -80,13 +81,13 @@ ha:pcb-rnd-board-v2 {
      visible=1
 
       li:objects {
-       ha:polygon.111 {
+       ha:polygon.124 {
         li:geometry {
           ta:contour {
-           { 25.0mil; 25.0mil }
-           { 275.0mil; 25.0mil }
-           { 275.0mil; 250.0mil }
-           { 25.0mil; 250.0mil }
+           { 7.05mm; 7.285mm }
+           { 0.47mm; 7.285mm }
+           { 0.47mm; 0.47mm }
+           { 7.05mm; 0.47mm }
           }
         }
 
@@ -160,8 +161,8 @@ ha:pcb-rnd-board-v2 {
      visible=1
 
       li:objects {
-       ha:text.110 {
-        string=Via, Ring; x=75.0mil; y=200.0mil; scale=80; fid=0; direction=0;
+       ha:text.119 {
+        string=Ring; x=109.2519685mil; y=5.95mm; scale=80; fid=0; direction=0;
         ha:flags {
          clearline=1
         }
@@ -2208,6 +2209,7 @@ ha:pcb-rnd-board-v2 {
    ha:editor {
     grid_unit = mil
     buffer_number = 0
+     grid = 235.00 um
    }
   }
  }

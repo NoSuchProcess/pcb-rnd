@@ -81,14 +81,15 @@ ha:pcb-rnd-board-v2 {
      ha:combining {     }
      visible=1
 
+
       li:objects {
-       ha:polygon.111 {
+       ha:polygon.117 {
         li:geometry {
           ta:contour {
            { 25.0mil; 25.0mil }
            { 275.0mil; 25.0mil }
-           { 275.0mil; 250.0mil }
-           { 25.0mil; 250.0mil }
+           { 275.0mil; 275.0mil }
+           { 25.0mil; 275.0mil }
           }
         }
 
@@ -111,6 +112,7 @@ ha:pcb-rnd-board-v2 {
      group=3
      ha:combining {     }
      visible=1
+
     }
 
     ha:comp-power {
@@ -162,8 +164,8 @@ ha:pcb-rnd-board-v2 {
      visible=1
 
       li:objects {
-       ha:text.110 {
-        string=Via, Ring; x=75.0mil; y=200.0mil; scale=80; fid=0; direction=0;
+       ha:text.118 {
+        string=Octagon; x=75.0mil; y=225.0mil; scale=80; fid=0; direction=0;
         ha:flags {
          clearline=1
         }

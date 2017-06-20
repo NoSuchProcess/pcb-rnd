@@ -1,10 +1,9 @@
 ha:pcb-rnd-board-v2 {
 
  ha:attributes {
-   {PCB::loader}=geda/pcb - nanometer
    {PCB::grid::unit}=mil
-   {PCB::conf::editor/buffer_number}=0
    {PCB::conf::editor/draw_grid}=true
+   {PCB::conf::editor/grid}=181.00 um
  }
 
  li:styles {
@@ -55,7 +54,7 @@ ha:pcb-rnd-board-v2 {
     min_silk = 7.0mil
    }
    ha:grid {
-    spacing = 25.0mil
+    spacing = 0.485mm
     offs_x = 0.0
     offs_y = 0.0
    }
@@ -65,7 +64,7 @@ ha:pcb-rnd-board-v2 {
 
    li:objects {
     ha:via.127 {
-     x=175.0mil; y=150.0mil; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
+     x=4.365mm; y=3.395mm; hole=47.24mil; mask=0.0; thickness=137.8mil; clearance=50.0mil;
      ha:flags {
       via=1
       square=1
@@ -82,11 +81,11 @@ ha:pcb-rnd-board-v2 {
      visible=1
 
       li:objects {
-       ha:polygon.122 {
+       ha:polygon.132 {
         li:geometry {
           ta:contour {
-           { 25.0mil; 50.0mil }
-           { 275.0mil; 50.0mil }
+           { 25.0mil; 25.0mil }
+           { 275.0mil; 25.0mil }
            { 275.0mil; 275.0mil }
            { 25.0mil; 275.0mil }
           }
@@ -162,7 +161,7 @@ ha:pcb-rnd-board-v2 {
      visible=1
 
       li:objects {
-       ha:text.110 {
+       ha:text.123 {
         string=Via, Asym.; x=50.0mil; y=225.0mil; scale=80; fid=0; direction=0;
         ha:flags {
          clearline=1
@@ -2210,6 +2209,7 @@ ha:pcb-rnd-board-v2 {
    ha:editor {
     grid_unit = mil
     buffer_number = 0
+     grid = 485.00 um
    }
   }
  }
