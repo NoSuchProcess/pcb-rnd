@@ -706,7 +706,7 @@ static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
 
 	int i;
 	int c;
-	char *end, *padname;
+	char *end, padname[32];
 	double val;
 
 	int Shape = 0;
@@ -720,7 +720,7 @@ static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
-	padname = "";
+/*	padname = "";*/	
 	index =0;
 
 	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 45) || (c == '\n' && index == 0) ) {
@@ -822,36 +822,41 @@ static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
 	coord[i] = '\0';
 	PCBLayer = atoi(coord); 
 	pcb_printf("Found free pad Layer : %d\n", PCBLayer);
-/*  
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
+/* now find name as string on next line and copy it */
+	index = 0;
+	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
+		padname[index] = c;
+		index++;
 	}
-	coord[i] = '\0';
-	index++;
-	padname = strdup(coord);
-	pcb_printf("Found free pad name : %s\n", name);
-*/
+	padname[index] = '\0';
+	pcb_printf("Found free pad name : %s\n", padname);
 
-	Thickness = MAX(Xsize, Ysize);
-	if (Shape == 2  || Shape == 4) { /* square (2) or rounded rect (4) */ 
+	Thickness = MIN(Xsize, Ysize);
+	if ((Shape == 2  || Shape == 4) ) { /* && PCBLayer == 1) { square (2) or rounded rect (4) on top layer */ 
 		Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
-		Thickness = MIN(Xsize, Ysize);
-	} else if (Shape == 3) {  /* octagon */
+/*	} else if ((Shape == 2  || Shape == 4) && PCBLayer == 6) { bottom layer 
+		Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); actually a rectangle, but... */
+	} else if (Shape == 3) { /*  && PCBLayer == 1) top layer */
 		Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
-	}
+/*	} else if (Shape == 3 && PCBLayer == 6) {  bottom layer 
+		Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); */
+	}		
 
-/*
-currently ignore:
-shape
-1 Circular
-5 Cross Hair Target
-6 Moiro Target
+/* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
+	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
+	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
+	The onsolder flags are reduntant for now with vias.
+
+	currently ignore:
+	shape:
+		5 Cross Hair Target
+		6 Moiro Target
 */
-	if (Shape != 5 && Shape != 6) {
+	if (Shape == 5 && Shape == 6) {
+		pcb_printf("\tnew free pad not created; as it is a Cross Hair Target or Moiro target\n");
+	} else {
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, padname, Flags);
 		pcb_printf("\tnew free pad/hole created; need to check connects\n");
-	} else {
-		pcb_printf("\tnew free pad not created; as it is a Cross Hair Target or Moiro target\n");
 	}
 	return 0;
 }
@@ -2073,7 +2078,11 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	pcb_printf("Maximum X, Y dimensions (mil) of imported Protel autotrax layout: %.0ml, %.0ml\n", box->X2, box->Y2);
 	Ptr->MaxWidth = box->X2;
 	Ptr->MaxHeight = box->Y2;
-	
+
+	if (1) {
+		pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
+	}
+
 	/*pcb_layer_auto_fixup(Ptr);  this crashes things immeditely on load */
 
 #warning TODO: free the layer hash
