@@ -918,10 +918,16 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 			return pcb_true;
 
 		/* now check all polygons */
-		polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-			if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
-					&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_ARC, Arc, PCB_FCT_COPPER))
-				return pcb_true;
+		{
+			pcb_rtree_it_t it;
+			pcb_box_t *b;
+			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
+				pcb_polygon_t *polygon = (pcb_polygon_t *)b;
+				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
+						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_ARC, Arc, PCB_FCT_COPPER))
+					return pcb_true;
+			}
+			pcb_r_end(&it);
 		}
 	}
 
@@ -1037,14 +1043,15 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 			return pcb_true;
 		/* now check all polygons */
 		if (PolysTo) {
-			gdl_iterator_t it;
-			pcb_polygon_t *polygon;
-
-			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
+			pcb_rtree_it_t it;
+			pcb_box_t *b;
+			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
+				pcb_polygon_t *polygon = (pcb_polygon_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_line_in_poly(Line, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_LINE, Line, PCB_FCT_COPPER))
 					return pcb_true;
 			}
+			pcb_r_end(&it);
 		}
 	}
 
@@ -1423,11 +1430,17 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 
 		/* handle normal layers */
 		/* check all polygons */
-		polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-			if (!PCB_FLAG_TEST(TheFlag, polygon)
-					&& pcb_is_poly_in_poly(polygon, Polygon)
-					&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_POLYGON, Polygon, PCB_FCT_COPPER))
-				return pcb_true;
+		{
+			pcb_rtree_it_t it;
+			pcb_box_t *b;
+			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
+				pcb_polygon_t *polygon = (pcb_polygon_t *)b;
+				if (!PCB_FLAG_TEST(TheFlag, polygon)
+						&& pcb_is_poly_in_poly(polygon, Polygon)
+						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_POLYGON, Polygon, PCB_FCT_COPPER))
+					return pcb_true;
+			}
+			pcb_r_end(&it);
 		}
 
 		info.layer = layer;
