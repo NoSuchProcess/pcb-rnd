@@ -1036,7 +1036,10 @@ static pcb_box_t *pcb_r_next_(pcb_rtree_it_t *it, struct rtree_node *curr)
 /*			printf("rdy2 get [%d]: %p\n", it->num_ready-1, it->ready[it->num_ready-1]);*/
 			return it->ready[--it->num_ready];
 		}
-		assert(!"pcb_r_next_: empty leaf?!");
+		
+		/* empty leaf: ignore */
+		curr = NULL;
+		goto got_filled;
 	}
 
 	/* current is a level, add to the open list and retry until a leaf is found */
