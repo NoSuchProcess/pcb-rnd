@@ -63,10 +63,22 @@ typedef struct {								/* rubberband lines for element moves */
 } pcb_rubberband_t;
 
 typedef struct {
+	pcb_layer_t * Layer;					/* Layer that holds the arc */
+	pcb_arc_t 	* Arc;						/* The arc itself */
+	int						Ends;						/* 1 = first end, 2 = second end, 3 = both ends */
+} pcb_rubberband_arc_t;
+
+
+typedef struct {
 	pcb_cardinal_t RubberbandN,  /* number of lines in array */
 		RubberbandMax;
 	pcb_rubberband_t *Rubberband;
+
+	pcb_cardinal_t RubberbandArcN,  /* number of lines in array */
+		RubberbandArcMax;
+	pcb_rubberband_arc_t *RubberbandArcs;
 } rubber_ctx_t;
+
 static rubber_ctx_t rubber_band_state;
 
 
@@ -81,7 +93,9 @@ struct rubber_info {
 
 
 static pcb_rubberband_t *pcb_rubber_band_alloc(rubber_ctx_t *rbnd);
+static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd);
 static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint);
+static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end);
 static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *);
 static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *);
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
@@ -89,11 +103,11 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_polygon_t *);
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_point_t *);
+
+static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
+
 static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl);
-
-
-
-
+static pcb_r_dir_t rubber_callback_arc(const pcb_box_t * b, void *cl);
 
 static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 {
@@ -224,6 +238,77 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	if ((dist2 <= 0) && !have_point2)
 		pcb_rubber_band_create(rbnd, i->layer, line, &line->Point2);
 #endif
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+static pcb_r_dir_t rubber_callback_arc(const pcb_box_t * b, void *cl)
+{
+	pcb_arc_t *arc = (pcb_arc_t *) b;
+	struct rubber_info *i = (struct rubber_info *) cl;
+	rubber_ctx_t *rbnd = i->rbnd;
+	double x, y, rad, dist1, dist2;
+	pcb_coord_t t;
+	pcb_coord_t ex1, ey1;
+	pcb_coord_t ex2, ey2;
+	int n = 0;
+	int have_point1 = 0;
+	int have_point2 = 0;
+
+	/* If the arc is locked then don't add it to the rubberband list. */
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* Don't add the arc if both ends of it are already in the list. */
+	for(n = 0; n < rbnd->RubberbandArcN; n++)
+		if (rbnd->RubberbandArcs[n].Arc == arc) {
+			have_point1 = rbnd->RubberbandArcs[n].Ends & 1;
+			have_point2 = rbnd->RubberbandArcs[n].Ends & 2;
+		}
+
+	if(have_point1 && have_point2)
+			return PCB_R_DIR_NOT_FOUND;
+
+	/* Calculate the arc end points */	
+	pcb_arc_get_end(arc,0,&ex1, &ey1);
+	pcb_arc_get_end(arc,1,&ex2, &ey2);
+
+	/* circular search region */
+	t = arc->Thickness / 2;
+
+	if (i->radius < 0)
+		rad = 0;										/* require exact match */
+	else
+		rad = PCB_SQUARE(i->radius + t);
+
+	x = (i->X - ex1);
+	x *= x;
+	y = (i->Y - ey1);
+	y *= y;
+	dist1 = x + y - rad;
+
+	x = (i->X - ex2);
+	x *= x;
+	y = (i->Y - ey2);
+	y *= y;
+	dist2 = x + y - rad;
+
+	if (dist1 > 0 && dist2 > 0)
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* The Arc end-point is touching so create an entry in the rubberband arc list */
+
+#ifdef CLOSEST_ONLY							/* keep this to remind me */
+	if ((dist1 < dist2) && !have_point1)
+		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 1);
+	else if(!have_point2)
+		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 2);
+#else
+	if ((dist1 <= 0) && !have_point1)
+		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 1);
+	if ((dist2 <= 0) && !have_point2)
+		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 2);
+#endif
+		
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -425,6 +510,40 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 }
 
 /* ---------------------------------------------------------------------------
+ * checks all visible arcs which belong to the same group as the passed line.
+ * If one of the endpoints of the arc lays * inside the passed line,
+ * the scanned arc is added to the 'rubberband' list
+ */
+static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, pcb_bool Exact)
+{
+	pcb_layergrp_id_t group;
+	struct rubber_info info;
+	pcb_coord_t t = Line->Thickness / 2;
+
+	/* lookup layergroup and check all visible arcs in this group */
+	info.radius = Exact ? -1 : MAX(Line->Thickness / 2, 1);
+	info.box.X1 = LinePoint->X - t;
+	info.box.X2 = LinePoint->X + t;
+	info.box.Y1 = LinePoint->Y - t;
+	info.box.Y2 = LinePoint->Y + t;
+	info.line = Line;
+	info.rbnd = rbnd;
+	info.X = LinePoint->X;
+	info.Y = LinePoint->Y;
+
+	group = pcb_layer_get_group_(Layer);
+	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
+	{
+		/* check all visible lines of the group member */
+		if (layer->meta.real.vis) {
+			info.layer = layer;
+			pcb_r_search(layer->arc_tree, &info.box, NULL, rubber_callback_arc, &info, NULL);
+		}
+	}
+	PCB_END_LOOP;
+}
+
+/* ---------------------------------------------------------------------------
  * checks all visible lines which belong to the same group as the passed arc.
  * If one of the endpoints of the line is on the selected arc end,
  * the scanned line is added to the 'rubberband' list
@@ -583,8 +702,10 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		}
 
 	case PCB_TYPE_LINE_POINT:
-		if (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1)) & PCB_LYT_COPPER)
+		if (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1)) & PCB_LYT_COPPER)	{
 			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
+			CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
+		}
 		break;
 
 	case PCB_TYPE_ARC_POINT:
@@ -665,6 +786,20 @@ static pcb_rubberband_t *pcb_rubber_band_alloc(rubber_ctx_t *rbnd)
 	return (ptr + rbnd->RubberbandN++);
 }
 
+static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd)
+{
+	pcb_rubberband_arc_t *ptr = rbnd->RubberbandArcs;
+
+	/* realloc new memory if necessary and clear it */
+	if (rbnd->RubberbandArcN >= rbnd->RubberbandArcMax) {
+		rbnd->RubberbandArcMax += STEP_RUBBERBAND;
+		ptr = (pcb_rubberband_arc_t *) realloc(ptr, rbnd->RubberbandArcMax * sizeof(pcb_rubberband_arc_t));
+		rbnd->RubberbandArcs = ptr;
+		memset(ptr + rbnd->RubberbandArcN, 0, STEP_RUBBERBAND * sizeof(pcb_rubberband_arc_t));
+	}
+	return (ptr + rbnd->RubberbandArcN++);
+}
+
 /* ---------------------------------------------------------------------------
  * adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
@@ -685,11 +820,32 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 	return (ptr);
 }
 
+static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int end)
+{
+	pcb_rubberband_arc_t *ptr = NULL;
+	int n;
+
+	for(n = 0; (n < rbnd->RubberbandArcN) && (ptr == NULL); n++) 
+		if (rbnd->RubberbandArcs[n].Arc == Arc) 
+			ptr = &rbnd->RubberbandArcs[n];
+
+	if(ptr == NULL) {
+		ptr = pcb_rubber_band_arc_alloc(rbnd);
+		ptr->Layer = Layer;
+		ptr->Arc = Arc;
+	}
+	
+	ptr->Ends |= end;
+	
+	return (ptr);
+}
+
 /*** event handlers ***/
 static void rbe_reset(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	rbnd->RubberbandN = 0;
+	rbnd->RubberbandArcN = 0;
 }
 
 static void rbe_remove_element(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -1117,3 +1273,4 @@ int pplg_init_rubberband_orig(void)
 
 	return 0;
 }
+
