@@ -95,7 +95,7 @@ int pcb_r_region_is_empty(pcb_rtree_t * rtree, const pcb_box_t * region);
 
 void pcb_r_dump_tree(struct rtree_node *, int);
 
-#define PCB_RTREE_EMPTY(rt) ((rt == NULL) || ((rt)->size == 0))
+#define PCB_RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
 
 
 /* -- Iterate through an rtree; DO NOT modify the tree while iterating -- */
