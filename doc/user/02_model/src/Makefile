@@ -25,46 +25,46 @@ all: ../objects_basic.png ../objects_complex.png ../obj_line.png \
 	mv obj_arc.png ../obj_arc.png
 
 ../via_therm_noconn.png: via_therm_noconn.lht
-	$(PCBRND) -x png --dpi 450 $<
+	$(PCBRND) -x png --dpi 450 via_therm_noconn.lht 
 	mv via_therm_noconn.png ../
 
 # make thermal style images
 ../via_therm_solid.png: via_therm_solid.lht
-	$(PCBRND) -x png --dpi 450 $<
+	$(PCBRND) -x png --dpi 450 via_therm_solid.lht
 	mv via_therm_solid.png ../
 
 ../via_therm_round_x90.png: via_therm_round_x90.lht
-	$(PCBRND) -x png --dpi 450 $<
+	$(PCBRND) -x png --dpi 450 via_therm_round_x90.lht
 	mv via_therm_round_x90.png ../
 
 ../via_therm_round_x45.png: via_therm_round_x45.lht
-	$(PCBRND) -x png --dpi 450 $<
+	$(PCBRND) -x png --dpi 450 via_therm_round_x45.lht 
 	mv via_therm_round_x45.png ../
 
 ../via_therm_sharp_x90.png: via_therm_sharp_x90.lht
-	$(PCBRND) -x png --dpi 450 $<
+	$(PCBRND) -x png --dpi 450 via_therm_sharp_x90.lht
 	mv via_therm_sharp_x90.png ../
 
 ../via_therm_sharp_x45.png: via_therm_sharp_x45.lht
-	$(PCBRND) -x png --dpi 450 $<
+	$(PCBRND) -x png --dpi 450 via_therm_sharp_x45.lht 
 	mv via_therm_sharp_x45.png ../
 
 #make shapes for shape table
 via_ring_shape.png: via_ring_shape.lht
-	$(PCBRND) -x png --dpi 450 $<
-	mv $@ ../
+	$(PCBRND) -x png --dpi 450 via_ring_shape.lht
+	mv via_ring_shape.png ../
 
 via_square_shape.png: via_square_shape.lht
-	$(PCBRND) -x png --dpi 450 $<
-	mv $@ ../
+	$(PCBRND) -x png --dpi 450 via_square_shape.lht
+	mv via_square_shape.png ../
 
 via_octagon_shape.png: via_octagon_shape.lht
-	$(PCBRND) -x png --dpi 450 $<
-	mv $@ ../
+	$(PCBRND) -x png --dpi 450 via_octagon_shape.lht
+	mv via_octagon_shape.png ../
 
 via_asym_shape.png: via_asym_shape.lht
-	$(PCBRND) -x png --dpi 450 $<
-	mv $@ ../
+	$(PCBRND) -x png --dpi 450 via_asym_shape.lht 
+	mv via_asym_shape.png ../
 
 clean: $(CLEANRULES) 
 	-rm $(CLEANFILES)
