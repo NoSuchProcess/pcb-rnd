@@ -924,7 +924,7 @@ static routedata_t *CreateRouteData()
 		vtptr_init(&layergroupboxes[i]);
 		PCB_COPPER_GROUP_LOOP(PCB->Data, i);
 		{
-			if (linelist_length(&layer->Line) || arclist_length(&layer->Arc))
+			if ((layer->line_tree->size > 0) || (layer->arc_tree->size > 0))
 				usedGroup[i] = pcb_true;
 			else
 				usedGroup[i] = pcb_false;
