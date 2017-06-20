@@ -1059,6 +1059,8 @@ pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it)
 	it->open = NULL;
 	it->alloced = it->used = 0;
 	it->num_ready = 0;
+	if (tree == NULL)
+		return NULL;
 	return pcb_r_next_(it, tree->root);
 }
 
