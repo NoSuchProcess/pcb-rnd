@@ -25,8 +25,10 @@
 
 For the next release:
 - SUBC BUGS:
-	- copper polygon-in-subcircuit: line->poly connection for 'f' doesn't work
+	- find_lookup.c: 'f' arc->line fails
+	- find_lookup.c: 'f' line->arc fails
 	- ctrl+c copy a subc ruins the original subc somehow - like if a second copy was placed over it (rotate to see)
+	- check all polylist, linelist, arclist, textlist iterations: might need to do rtree iterations instead
 - BUGS:
 	- solder paste layer doesn't have selected color, selection is not visible
 	- add attribute to a line (ctrl+e); select the line; drag & drop move the line -> attributes are lost
