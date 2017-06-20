@@ -26,7 +26,6 @@
 For the next release:
 - SUBC BUGS:
 	- ctrl+c copy a subc ruins the original subc somehow - like if a second copy was placed over it (rotate to see)
-	- check all polylist, linelist, arclist, textlist iterations: might need to do rtree iterations instead
 	- undo doesn't work
 - BUGS:
 	- find_lookup.c: 'f' arc<->line fails with \_ arcs bugfiles/arc_find.lht
