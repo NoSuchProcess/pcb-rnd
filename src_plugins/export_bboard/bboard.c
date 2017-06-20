@@ -49,6 +49,7 @@
 #include "compat_fs.h"
 #include "misc_util.h"
 #include "obj_all.h"
+#include "rtree.h"
 
 #include "hid.h"
 #include "hid_attrib.h"
@@ -507,7 +508,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	for (i = 0; i < pcb_max_layer; i++) {
 		layer = PCB->Data->Layer + i;
-		if (linelist_length(&layer->Line) > 0)
+		if (!PCB_RTREE_EMPTY(layer->line_tree))
 			group_data[pcb_layer_get_group(PCB, i)].draw = 1;
 	}
 
