@@ -379,8 +379,128 @@ static int autotrax_parse_free_track(read_state_t *st, FILE *FP)
 	return -1;
 }
 
+static int autotrax_parse_component_track(pcb_element_t *el, FILE *FP)
+{
+	int index = 0;
+	char line[35]; /* line is 4 x 32000 + layer + 1 + 1 = 33 characters at most */
+	char coord[6];
 
+	int i;
+	int c;
+	char *end;
+	double val;
 
+	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
+	int PCBLayer = 0; /* sane default value */
+
+	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+	index = 0;
+
+	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 34) || (c == '\n' && index == 0) ) {
+		line[index] = c;
+		index ++;
+	}
+	if (index > 33) {
+		pcb_printf("error parsing free track line; too long\n");
+		return -1;
+	}
+	line[index] = ' ';
+	index++;
+	line[index] = '\0';
+	printf("About to parse autotrax free track: %s\n", line);  
+	index = 0;
+	while(line[index] == ' ') { /* skip white space */
+		index++;
+	}
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free track X1\n");
+        	return -1;
+	}
+	X1 = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free track X1 : %ml\n", X1);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free track Y1\n");
+        	return -1;
+	}
+	Y1 = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free track Y1 : %ml\n", Y1);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index ++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free track X2\n");
+        	return -1;
+	}
+	X2 = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free track X2 : %ml\n", X2);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free track Y2\n");
+        	return -1;
+	}
+	Y2 = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free track Y2 : %ml\n", Y2);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free track width\n");
+        	return -1;
+	}
+	Thickness = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free track width : %ml\n", Thickness);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = atoi(coord);
+	if (*end != 0) {
+		pcb_printf("error parsing free track layer\n");
+        	return -1;
+	}
+	PCBLayer = val; 
+	pcb_printf("Found free track layer : %d\n", PCBLayer);
+	/* ignore user routed flag */
+
+	if (PCBLayer >= 0 || PCBLayer <= 10) {
+		pcb_element_line_new(el, X1, Y1, X2, Y2, Thickness);
+		pcb_printf("\tnew free line in component created\n");
+		return 0;
+	} else {
+		pcb_printf("Invalid component layer found : %d\n", PCBLayer);
+	}
+	return -1;
+}
 
 /* autotrax_pcb free arc parser */
 static int autotrax_parse_free_arc(read_state_t *st, FILE *FP)
@@ -821,6 +941,175 @@ static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
 	return 0;
 }
 
+static int autotrax_parse_component_pad(pcb_element_t *el, FILE *FP)
+{
+	int index = 0;
+	char line[30]; /* line is 4 x 32000 = 23 characters at most */
+	char coord[6];
+
+	int i;
+	int c;
+	char *end, padname[32];
+	double val;
+
+	int Shape = 0;
+	int Connects = 0;
+	int PCBLayer = 0; /* sane default value */
+
+	pcb_coord_t moduleX, moduleY, X, Y, Xsize, Ysize, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
+
+	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+
+	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
+
+/*	padname = "";*/	
+	index =0;
+
+	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 45) || (c == '\n' && index == 0) ) {
+		line[index] = c;
+		index ++;
+	}
+	if (index > 42) {
+		pcb_printf("error parsing free pad line; too long\n");
+		return -1;
+	}
+	line[index] = ' ';
+	index++;
+	line[index] = '\0';
+	printf("About to parse autotrax free pad: %s\n", line);  
+	index = 0;
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad X\n");
+        	return -1;
+	}
+	X = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad X : %ml\n", X);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad Y\n");
+        	return -1;
+	}
+	Y = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad Y : %ml\n", Y);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad Xsize\n");
+        	return -1;
+	}
+	Xsize = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad Xsize : %ml\n", Xsize);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad Ysize\n");
+        	return -1;
+	}
+	Ysize = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad Ysize : %ml\n", Ysize);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	Shape = atoi(coord); 
+	pcb_printf("Found free pad shape : %d\n", Shape);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index ++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing free pad drill\n");
+        	return -1;
+	}
+	Drill = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found free pad drill : %ml\n", Drill);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	Connects = atoi(coord); 
+	pcb_printf("Found free pad connections : %d\n", Connects);
+/*  */
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	PCBLayer = atoi(coord); 
+	pcb_printf("Found free pad Layer : %d\n", PCBLayer);
+/* now find name as string on next line and copy it */
+	index = 0;
+	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
+		padname[index] = c;
+		index++;
+	}
+	padname[index] = '\0';
+	pcb_printf("Found free pad name : %s\n", padname);
+
+	Thickness = MIN(Xsize, Ysize);
+	if ((Shape == 2  || Shape == 4) ) { /* && PCBLayer == 1) { square (2) or rounded rect (4) on top layer */ 
+		Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
+	} else if ((Shape == 2  || Shape == 4) && PCBLayer == 6) { /* bottom layer */ 
+		Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); /*actually a rectangle, but... */
+	} else if (Shape == 3) { /*  && PCBLayer == 1) top layer*/ 
+		Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
+	} else if (Shape == 3 && PCBLayer == 6) {  /*bottom layer */
+		Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
+	}		
+
+/* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
+	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
+	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
+	The onsolder flags are reduntant for now with vias.
+
+	currently ignore:
+	shape:
+		5 Cross Hair Target
+		6 Moiro Target
+*/
+	if (Shape == 5 && Shape == 6) {
+		pcb_printf("\tnew free pad not created; as it is a Cross Hair Target or Moiro target\n");
+	} else {
+		if (Shape == 2 && Drill ==0) {/* is probably SMD */
+			pcb_element_pad_new_rect(el, moduleX - Xsize/2, moduleY - Ysize/2, Xsize/2 + moduleX, Ysize/2 + moduleY, Clearance, 
+				Clearance, padname, padname, Flags);
+		} else {
+			pcb_element_pin_new(el, X + moduleX, Y + moduleY, Thickness, Clearance, Clearance,  
+				Drill, padname, padname, Flags);
+		}
+		pcb_printf("\tnew component pad/hole created; need to check connects\n");
+	}
+	return 0;
+}
+
 
 static int autotrax_parse_free_fill(read_state_t *st, FILE *FP)
 {
@@ -1006,20 +1295,12 @@ static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree)
 		return 0;
 }
 
-static int autotrax_parse_module(read_state_t *st, gsxl_node_t *subtree)
+static int autotrax_parse_component(read_state_t *st, FILE *FP)
 {
-
-	gsxl_node_t *l, *n, *m, *p;
 	int i;
 	int scaling = 100;
-	int textLength = 0;
-	int mirrored = 0;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
-	int moduleLayer = 0; /* used in case empty module element layer defs found */
-	int kicadLayer = 15; /* default = top side */
-	int moduleOnTop = 1;
-	int padLayerDefCount = 0;
 	int SMD = 0;
 	int square = 0;
 	int throughHole = 0;
@@ -1037,922 +1318,128 @@ static int autotrax_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
 	char * end, * textLabel, * text;
-	char * moduleName, * moduleRefdes, * moduleValue, * pinName;
+	char moduleName[33], moduleRefdes[33], moduleValue[33], pinName[33], coord[10];
 	pcb_element_t *newModule;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
-	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	Clearance = PCB_MIL_TO_COORD(10); /* start with something bland here */
 
-	moduleName = NULL;
-	moduleRefdes = "";
-	moduleValue = "";
+	int index = 0;
+	int c;
+	char *s, line[1024];
 
-	if (subtree->str != NULL) {
-		printf("Name of module element being parsed: '%s'\n", subtree->str);
-		moduleName = subtree->str;
+	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
+		moduleRefdes[index] = c;
+		index++;
+	}
+	moduleRefdes[index] = '\0';
+	pcb_printf("Found component refdes : %s\n", moduleRefdes);
 
-		SEEN_NO_DUP(tally, 0);
-		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
-			if (n->str != NULL && strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
-				SEEN_NO_DUP(tally, 1);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\tlayer: '%s'\n", (n->children->str));
-					PCBLayer = autotrax_get_layeridx(st, n->children->str);
-					moduleLayer = PCBLayer;
-					if (PCBLayer < 0) {
-						return autotrax_error(subtree, "module layer error - layer < 0.");
-					} else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-							TextFlags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-							moduleOnTop = 0;
-					}
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module layer node");
-				}
-			} else if (n->str != NULL && strcmp("tedit", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\ttedit: '%s'\n", (n->children->str));
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module tedit node");
-				}
-			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
-				SEEN_NO_DUP(tally, 3);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\ttstamp: '%s'\n", (n->children->str));
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module tstamp node");
-				}
-			} else if (n->str != NULL && strcmp("attr", n->str) == 0) {
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\tmodule attribute \"attr\": '%s' (not used)\n", (n->children->str));
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module attr node");
-				}
-			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
-				SEEN_NO_DUP(tally, 4);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\tat x: '%s'\n", (n->children->str));
-					SEEN_NO_DUP(tally, 5); /* same as ^= 1 was */
-						val = strtod(n->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing module X.");
-						} else {
-							moduleX = PCB_MM_TO_COORD(val);
-						}
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module X node");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					pcb_printf("\tat y: '%s'\n", (n->children->next->str));
-					SEEN_NO_DUP(tally, 6);	
-						val = strtod(n->children->next->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing module Y.");
-						} else {
-							moduleY = PCB_MM_TO_COORD(val);
-						}
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module Y node");
-				}
-				if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-					pcb_printf("\tmodule rotation: '%s'\n", (n->children->next->next->str));
-					val = strtod(n->children->next->next->str, &end);
-					if (*end != 0) {
-						pcb_printf("\tmodule (at) \"rotation\" value error\n");
-						return autotrax_error(subtree, "error parsing module rotation.");
-					} else {
-						moduleRotation = (int)val;
-					}
-				} else {
-					pcb_printf("\tno module (at) \"rotation\" value found'\n");
-				}
-			/* if we have been provided with a Module Name and location, create a new Element with default "" and "" for refdes and value fields */
-				if (moduleName != NULL && moduleDefined == 0) {
-					moduleDefined = 1; /* but might be empty, wait and see */
-					printf("Have new module name and location, defining module/element %s\n", moduleName);
-						newModule = pcb_element_new(st->PCB->Data, NULL,
-										 pcb_font(st->PCB, 0, 1), Flags,
-										 moduleName, moduleRefdes, moduleValue,
-										 moduleX, moduleY, direction,
-										 refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
-					pcb_move_obj(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()],  &newModule->Name[PCB_ELEMNAME_IDX_VISIBLE()], X, Y);
-					moduleRefdes = NULL;
-					moduleValue = NULL;
-				}
-			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
-				pcb_printf("module 3D model found and ignored\n");
-			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
-					pcb_printf("fp_text found\n");
-					featureTally = 0;
+	index = 0;
+	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
+		moduleName[index] = c;
+		index++;
+	}
+	moduleName[index] = '\0';
+	pcb_printf("Found component name : %s\n", moduleName);
 
-/* ********************************************************** */
+	index = 0;
+	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
+		moduleValue[index] = c;
+		index++;
+	}
+	moduleValue[index] = '\0';
+	pcb_printf("Found component description : %s\n", moduleValue);
 
-	if (n->children != NULL && n->children->str != NULL) {
-		textLabel = n->children->str;
-		printf("fp_text element being parsed for %s - label: '%s'\n", moduleName, textLabel);
-		if (n->children->next != NULL && n->children->next->str != NULL) {
-			text = n->children->next->str;
-			if (strcmp("reference", textLabel) == 0) {
-				SEEN_NO_DUP(tally, 7);
-				printf("\tfp_text reference found: '%s'\n", textLabel);
-				moduleRefdes = text;
-				foundRefdes = 1;
-				for (i = 0; text[i] != 0; i++) {
-					textLength++;
-				}
-				printf("\tmoduleRefdes now: '%s'\n", moduleRefdes);
-			} else if (strcmp("value", textLabel) == 0) {
-				SEEN_NO_DUP(tally, 8);
-				printf("\tfp_text value found: '%s'\n", textLabel);
-				moduleValue = text;
-				printf("\tmoduleValue now: '%s'\n", moduleValue);
-			} else if (strcmp("hide", textLabel) == 0) {
-				pcb_printf("\tignoring fp_text \"hide\" flag\n");
-			} 
-		} else {
-			text = textLabel; /* just a single string, no reference or value */ 
-		}
-
-		printf("\tfp_text element length: '%d'\n", textLength);
-		for(l = n->children->next->next, i = 0; l != NULL; l = l->next, i++) { /*fixed this */
-			if (l->str != NULL && strcmp("at", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 0);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\ttext at x: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 1);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing module fp_text X.");
-						} else {
-							X = PCB_MM_TO_COORD(val);
-							if (foundRefdes) {
-								refdesX = X;
-								pcb_printf("\tRefdesX = %mm\n", refdesX);
-							}
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected empty/NULL module fp_text X node");
-					}
-					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("\ttext at y: '%s'\n", (l->children->next->str));
-						SEEN_NO_DUP(featureTally, 2);
-						val = strtod(l->children->next->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing module fp_text Y.");
-						} else {
-							Y = PCB_MM_TO_COORD(val);
-							if (foundRefdes) {
-								refdesY = Y;
-								pcb_printf("\tRefdesY = %mm\n", refdesY);
-							}
-						}	
-						if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
-							pcb_printf("\ttext rotation: '%s'\n", (l->children->next->next->str));
-							val = strtod(l->children->next->next->str, &end);
-							if (*end != 0) {
-								return autotrax_error(subtree, "error parsing module fp_text rotation.");
-							} else {
-								direction = 0;  /* default */
-								if (val > 45.0 && val <= 135.0) {
-									direction = 1;
-								} else if (val > 135.0 && val <= 225.0) {
-									direction = 2;
-								} else if (val > 225.0 && val <= 315.0) {
-									direction = 3;
-								}
-								printf("\tkicad angle: %f,   Direction %d\n", val, direction);
-							}
-							SEEN_NO_DUP(featureTally, 3);
-						} 
-					} else {
-						return autotrax_error(subtree, "unexpected empty/NULL module fp_text Y node");
-					}
-			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
-				SEEN_NO_DUP(featureTally, 4);
-				if (l->children != NULL && l->children->str != NULL) {
-					pcb_printf("\ttext layer: '%s'\n", (l->children->str));
-					PCBLayer = autotrax_get_layeridx(st, l->children->str);
-					if (PCBLayer < 0) {
-						pcb_printf("\ttext layer not defined for module text, default being used.\n");
-						Flags = pcb_flag_make(0);
-						/*return -1;*/
-					} else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-					}
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module fp_text layer node");
-				}
-			} else if (l->str != NULL && strcmp("hide", l->str) == 0) {
-				pcb_printf("\tfp_text hidden flag \"hide\" found and ignored.\n");
-			} else if (l->str != NULL && strcmp("justify", l->str) == 0) {/*this may be unnecessary here*/
-				pcb_printf("\tfp_text justify flag found and ignored.\n");
-			} else if (l->str != NULL && strcmp("effects", l->str) == 0) {
-				SEEN_NO_DUP(featureTally, 5);
-				for(m = l->children; m != NULL; m = m->next) {
-					/*printf("\tstepping through effects def, looking at %s\n", m->str);*/ 
-					if (m->str != NULL && strcmp("font", m->str) == 0) {
-						SEEN_NO_DUP(featureTally, 6);
-						for(p = m->children; p != NULL; p = p->next) {
-							if (m->str != NULL && strcmp("size", p->str) == 0) {
-								SEEN_NO_DUP(featureTally, 7);
-								if (p->children != NULL && p->children->str != NULL) {
-									pcb_printf("\tfont sizeX: '%s'\n", (p->children->str));
-									val = strtod(p->children->str, &end);
-									if (*end != 0) {
-										return autotrax_error(subtree, "error parsing module fp_text font size X.");
-									} else {
-										scaling = (int) (100*val/1.27); /* standard glyph width ~= 1.27mm */
-										if (foundRefdes) {
-											refdesScaling = scaling;
-											/*foundRefdes = 0;*/
-										}
-									}
-								} else {
-									return autotrax_error(subtree, "unexpected empty/NULL module fp_text X size node");
-								}
-								if (p->children->next != NULL && p->children->next->str != NULL) {
-									pcb_printf("\tfont sizeY: '%s'\n", (p->children->next->str));
-								} else {
-									return autotrax_error(subtree, "unexpected empty/NULL module fp_text Y size node");
-								}
-							} else if (strcmp("thickness", p->str) == 0) {
-								SEEN_NO_DUP(featureTally, 8);
-								if (p->children != NULL && p->children->str != NULL) {
-									pcb_printf("\tfont thickness: '%s'\n", (p->children->str));
-								} else {
-									return autotrax_error(subtree, "unexpected empty/NULL module fp_text thickness node");
-								}
-							}
-						}
-					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
-						SEEN_NO_DUP(featureTally, 9);
-						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("\ttext justification: '%s'\n", (m->children->str));
-							if (strcmp("mirror", m->children->str) == 0) {
-								mirrored = 1;
-							}
-						} else {
-							return autotrax_error(subtree, "unexpected empty/NULL module fp_text justify node");
-						}
-					} else {
-						if (m->str != NULL) {
-							printf("Unknown text effects argument %s:", m->str);
-						}
-						return autotrax_error(subtree, "unknown fp_text text effects argument null node");
-					}
-				}
-			} 				
+/* with the header read, we now ignore the locations for the text fields... */
+	for (index = 0; index < 2; index++) {
+		while (!feof(FP) && (c = fgetc(FP) != '\n')) {
+			printf("Skipping component text field coordinates, and XY data lines %d\n", index);
 		}
 	}
-	required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
-	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-#warning TODO: this will never be NULL; what are we trying to check here?
-		if (&st->PCB->fontkit.dflt == NULL) {
-			pcb_font_create_default(st->PCB);
-		}
 
-		X = refdesX;
-		Y = refdesY;
-
-		if (mirrored != 0) {
-			if (direction%2 == 0) {
-				direction += 2;
-				direction = direction%4;
-			}
-			if (direction == 0 ) {
-				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 1 ) {
-				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 2 ) {
-				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y -= PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
-			} else if (direction == 3 ) {
-				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			}
-		} else { /* not back of board text */
-			if (direction == 0 ) {
-				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 1 ) {
-				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 2 ) {
-				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y += PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
-			} else if (direction == 3 ) {
-				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			}
-		}
-
-		/* if we  update X, Y for text fields (refdes, value), we would do it here */
+	index =0;
+	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 29) || (c == '\n' && index == 0) ) {
+		line[index] = c;
+		index ++;
 	}
-
-
-/* ********************************************************** */
-
-			} else if (n->str != NULL && strcmp("descr", n->str) == 0) {
-				SEEN_NO_DUP(tally, 9);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\tmodule descr: '%s'\n", (n->children->str));
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module descr node");
+	if (index > 27) {
+		pcb_printf("error parsing component location line; too long\n");
+		return -1;
+	}
+	line[index] = ' ';
+	index++;
+	line[index] = '\0';
+	index = 0;
+	printf("About to parse component location line: %s\n", line); 
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	val = strtod(coord, &end);
+	if (*end != 0) {
+		pcb_printf("error parsing component X location\n");
+        	return -1;
+	}
+	moduleX = PCB_MIL_TO_COORD(val);
+	pcb_printf("Found moduleX : %ml\n", moduleX);
+	for (i = 0; line[index] != ' '; i++, index++) {
+		coord[i] = line[index];
+	}
+	coord[i] = '\0';
+	index++;
+	moduleY = PCB_MIL_TO_COORD(atoi(coord));
+	pcb_printf("Found moduleY : %ml\n", moduleY);
+	
+	printf("Have new module name and location, defining module/element %s\n", moduleName);
+	newModule = pcb_element_new(st->PCB->Data, NULL, 
+								pcb_font(st->PCB, 0, 1), Flags,
+								moduleName, moduleRefdes, moduleValue,
+								moduleX, moduleY, direction,
+								refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
+	
+	while (!feof(FP)) {
+		index =0;
+		while (!feof(FP) && (c = fgetc(FP)) != '\n' && index < 1023) {
+			line[index] = c;
+			index ++;
+		}
+		index++;
+		line[index] = '\0';
+		s = line;
+		if (index > 7) {
+			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
+				printf("Finished parsing component\n");
+				if (moduleEmpty) { /* should try and use module empty function here */
+					Thickness = PCB_MM_TO_COORD(0.200);
+					pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1,
+ Thickness);
+					pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
 				}
-			} else if (n->str != NULL && strcmp("tags", n->str) == 0) {
-				SEEN_NO_DUP(tally, 10);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\tmodule tags: '%s'\n", (n->children->str)); /* maye be more than one? */
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module tags node");
-				}
-			} else if (n->str != NULL && strcmp("path", n->str) == 0) {
-				SEEN_NO_DUP(tally, 11);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\tmodule path: '%s'\n", (n->children->str));
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module path node");
-				}
-			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
-				SEEN_NO_DUP(tally, 12);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("\tmodule model provided: '%s'\n", (n->children->str));
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module model node");
-				}
-			/* pads next  - have thru_hole, circle, rect, roundrect, to think about*/ 
-			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
-				featureTally = 0;
-				padLayerDefCount = 0;
-				padRotation = 0;
-				if (n->children != 0 && n->children->str != NULL) {
-					printf("pad name found: %s\n", n->children->str);
-					pinName = n->children->str;
-					SEEN_NO_DUP(featureTally, 0);
-					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("\tpad type: '%s'\n", (n->children->next->str));
-						if (strcmp("thru_hole", n->children->next->str) == 0) {
-							SMD = 0;
-							throughHole = 1;
-						} else {
-							SMD = 1;
-							throughHole = 0;
-						}
-						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-							pcb_printf("\tpad shape: '%s'\n", (n->children->next->next->str));
-							if (strcmp("circle", n->children->next->next->str) == 0) {
-								square = 0;
-							} else {
-								square = 1; /* this will catch obround, roundrect, trapezoidal as well. Kicad does not do octagonal pads */
-							}
-						} else {
-							return autotrax_error(subtree, "unexpected empty/NULL module pad shape node");
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected empty/NULL module pad type node");
-					}
-				} else {
-					return autotrax_error(subtree, "unexpected empty/NULL module pad name  node");
-				}
-				if (n->children->next->next->next == NULL || n->children->next->next->next->str == NULL) {
-					return autotrax_error(subtree, "unexpected empty/NULL module node");
-				}
-				for (m = n->children->next->next->next; m != NULL; m = m->next) {
-					if (m != NULL) {
-						printf("\tstepping through module pad defs, looking at: %s\n", m->str);
-					} else {
-						printf("error in pad def\n");
-					}
-					if (m->str != NULL && strcmp("at", m->str) == 0) {
-						SEEN_NO_DUP(featureTally, 1);
-						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("\tpad X position:\t'%s'\n", (m->children->str));
-							val = strtod(m->children->str, &end);
-							if (*end != 0) {
-								return autotrax_error(subtree, "error parsing module pad X.");
-							} else {
-								X = PCB_MM_TO_COORD(val);
-							}
-							if (m->children->next != NULL && m->children->next->str != NULL) {
-								pcb_printf("\tpad Y position:\t'%s'\n", (m->children->next->str));
-								val = strtod(m->children->next->str, &end);
-								if (*end != 0) {
-									return autotrax_error(subtree, "error parsing module pad Y.");
-								} else {
-									Y = PCB_MM_TO_COORD(val);
-								}
-							} else {
-								return autotrax_error(subtree, "unexpected empty/NULL module X node");
-							}
-							if (m->children->next->next != NULL && m->children->next->next->str != NULL) {
-								pcb_printf("\tpad rotation:\t'%s'\n", (m->children->next->next->str));
-								val = strtod(m->children->next->next->str, &end);
-								if (*end != 0) {
-									pcb_printf("Odd pad rotation def ignored.");
-								} else {
-									padRotation = (int) val;
-								}
-							}
-						} else {
-							return autotrax_error(subtree, "unexpected empty/NULL module Y node");
-						}
-					} else if (m->str != NULL && strcmp("layers", m->str) == 0) {
-						if (SMD) { /* skip testing for pins */
-							SEEN_NO_DUP(featureTally, 2);
-							kicadLayer = 15;
-							for(l = m->children; l != NULL; l = l->next) {
-								if (l->str != NULL) {
-									PCBLayer = autotrax_get_layeridx(st, l->str);
-									if (PCBLayer < 0) {
-										/* we ignore *.mask, *.paste, etc., if valid layer def already found */
-										printf("Unknown layer definition: %s\n", l->str);
-										if (!padLayerDefCount) {
-											printf("Default placement of pad is the copper layer defined for module as a whole\n");
-
-											/*return -1;*/
-											if (!moduleOnTop) {
-												kicadLayer = 0;
-											}
-										}
-									} else if (PCBLayer < -1) {
-										printf("\tUnimplemented layer definition: %s\n", l->str);
-									} else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-										kicadLayer = 0;
-										padLayerDefCount++;
-									} else if (padLayerDefCount) {
-										printf("More than one valid pad layer found, only using the first one found for layer.\n");
-										padLayerDefCount++;
-									} else {
-										padLayerDefCount++;
-										printf("Valid layer defs found for current pad: %d\n", padLayerDefCount);
-									}
-									pcb_printf("\tpad layer: '%s',  PCB layer number %d\n", (l->str), autotrax_get_layeridx(st, l->str));
-								} else {
-									return autotrax_error(subtree, "unexpected empty/NULL module layer node");
-								}
-							}
-						} else {	
-							printf("\tIgnoring layer definitions for through hole pin\n");
-						}
-					} else if (m->str != NULL && strcmp("drill", m->str) == 0) {
-						SEEN_NO_DUP(featureTally, 3);
-						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("\tdrill size: '%s'\n", (m->children->str));
-							val = strtod(m->children->str, &end);
-							if (*end != 0) {
-								return autotrax_error(subtree, "error parsing module pad drill.");
-							} else {
-								drill = PCB_MM_TO_COORD(val);
-							}
-
-						} else {
-							return autotrax_error(subtree, "unexpected empty/NULL module pad drill node");
-						}
-					} else if (m->str != NULL && strcmp("net", m->str) == 0) { 
-						SEEN_NO_DUP(featureTally, 4);
-						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("\tpad's net number:\t'%s'\n", (m->children->str));
-							if (m->children->next != NULL && m->children->next->str != NULL) {
-								pcb_printf("\tpad's net name:\t'%s'\n", (m->children->next->str));
-							} else {
-								return autotrax_error(subtree, "unexpected empty/NULL module pad net name node");
-							}
-						} else {
-							return autotrax_error(subtree, "unexpected empty/NULL module pad net node");
-						}
-					} else if (m->str != NULL && strcmp("size", m->str) == 0) {
-						SEEN_NO_DUP(featureTally, 5);
-						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("\tpad X size:\t'%s'\n", (m->children->str));
-							val = strtod(m->children->str, &end);
-							if (*end != 0) {
-								return autotrax_error(subtree, "error parsing module pad size X.");
-							} else {
-								padXsize = PCB_MM_TO_COORD(val);
-							}
-							if (m->children->next != NULL && m->children->next->str != NULL) {
-								pcb_printf("\tpad Y size:\t'%s'\n", (m->children->next->str));
-								val = strtod(m->children->next->str, &end);
-								if (*end != 0) {
-									return autotrax_error(subtree, "error parsing module pad size Y.");
-								} else {
-									padYsize = PCB_MM_TO_COORD(val);
-								}
-							} else {
-								return autotrax_error(subtree, "unexpected empty/NULL module pad Y size node");
-							}
-						} else {
-							return autotrax_error(subtree, "unexpected empty/NULL module pad X size node");
-						}
-					} else {
-						if (m->str != NULL) {
-							printf("Unknown pad argument %s:", m->str);
-						}
-					} 
-					printf("\tFinished stepping through pad args\n");
-				}
-				printf("\tfinished pad parse\n");
-				if (throughHole == 1  &&  newModule != NULL) {
-					printf("\tcreating new pin %s in element\n", pinName);
-					required = BV(0) | BV(1) | BV(3) | BV(5);
-        				if ((featureTally & required) == required) {
-						moduleEmpty = 0;
-						pcb_element_pin_new(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
-								Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
-					} else {
-						return autotrax_error(subtree, "malformed module pad/pin definition.");
-					}
-				} else if (newModule != NULL) {
-					printf("\tcreating new pad %s in element\n", pinName);
-                                        required = BV(0) | BV(1) | BV(2) | BV(5);
-                                        if ((featureTally & required) == required) {
-						if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
-							Y1 = Y2 = Y;
-							X1 = X - (padXsize - padYsize)/2;
-							X2 = X + (padXsize - padYsize)/2;
-							Thickness = padYsize;
-						} else { /* rectangular pad, taller than wide */
-							X1 = X2 = X;
-							Y1 = Y - (padYsize - padXsize)/2;
-							Y2 = Y + (padYsize - padXsize)/2;
-							Thickness = padXsize;
-						}
-						if (square && kicadLayer) {
-							Flags = pcb_flag_make(PCB_FLAG_SQUARE);
-						} else if (kicadLayer) {
-							Flags = pcb_flag_make(0);
-						} else if (square && !kicadLayer) {
-							Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
-						} else {
-							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-						}
-						moduleEmpty = 0;
-						if (padRotation != 0) {
-							padRotation = padRotation/90;/*ignore rotation != n*90*/
-							PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
-							PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
-							pcb_printf("\t Pad rotation %d applied\n", padRotation);
-						}
-						pcb_element_pad_new(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
-								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
-					} else {
-						return autotrax_error(subtree, "error parsing incomplete module definition.");
-					}
-				} else {
-					return autotrax_error(subtree, "error - unable to create incomplete module definition.");
-				}
-
-			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
-					pcb_printf("fp_line found\n");
-					featureTally = 0;
-
-/* ********************************************************** */
-
-	if (n->children->str != NULL) {
-		for(l = n->children; l != NULL; l = l->next) {
-			printf("\tnow looking at fp_line text: '%s'\n", l->str);
-			if (l->str != NULL && strcmp("start", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 0);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_line start at x: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 1); 
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_line start X.");
-						} else {
-							X1 = PCB_MM_TO_COORD(val) + moduleX;
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_line start X null node.");
-					}
-					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("\tfp_line start at y: '%s'\n", (l->children->next->str));
-						SEEN_NO_DUP(featureTally, 2);	
-						val = strtod(l->children->next->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_line start Y.");
-						} else {
-							Y1 = PCB_MM_TO_COORD(val) + moduleY;
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_line start Y null node.");
-					}
-			} else if (l->str != NULL && strcmp("end", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 3);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_line end at x: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 4);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_line end X.");
-						} else {
-							X2 = PCB_MM_TO_COORD(val) + moduleX;
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_line end X null node.");
-					}
-					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("\tfp_line end at y: '%s'\n", (l->children->next->str));
-						SEEN_NO_DUP(featureTally, 5);	
-						val = strtod(l->children->next->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_line end Y.");
-						} else {
-							Y2 = PCB_MM_TO_COORD(val) + moduleY;
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_line end Y null node.");
-					}
-			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 6);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_line layer: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 7);
-						PCBLayer = autotrax_get_layeridx(st, l->children->str);
-						if (PCBLayer < 0) {
-							pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, using module layer.\n");
-							PCBLayer = moduleLayer;
-							return 0;
-						}
-					} else {
-						pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_line element\n");
-						PCBLayer = moduleLayer; /* default to module layer */
-						/* return -1; */
-					}
-			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 8);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_line width: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 9);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_line width.");
-						} else {
-							Thickness = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_line width null node.");
-					}
-			} else if (l->str != NULL && strcmp("angle", l->str) == 0) { /* unlikely to be used or seen */
-					SEEN_NO_DUP(featureTally, 10);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_line angle: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 11);
-					} else {
-						return autotrax_error(subtree, "unexpected fp_line angle null node.");
-					}
-			} else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
-					SEEN_NO_DUP(featureTally, 12);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_line net: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 13);
-					} else {
-						return autotrax_error(subtree, "unexpected fp_line net null node.");
-					}
-			} else {
-				if (l->str != NULL) {
-					printf("Unknown fp_line argument %s:", l->str);
-				}
-				return autotrax_error(subtree, "unexpected fp_line null node.");
+				pcb_element_bbox(st->PCB->Data, newModule, pcb_font(PCB, 0, 1));
+				return 0;
+			}
+		} else if (index > 2) {
+			if (strncmp(s, "CT",2) == 0 ) {
+				printf("Found component track\n");
+				autotrax_parse_component_track(&newModule, FP);
+			} else if (strncmp(s, "CA",2) == 0 ) {
+				printf("Found component arc\n");
+			} else if (strncmp(s, "CV",2) == 0 ) {
+				printf("Found component via\n");
+/*				autotrax_parse_component_via(&newModule, FP);*/
+			} else if (strncmp(s, "CF",2) == 0 ) {
+				printf("Found component fill\n");
+			} else if (strncmp(s, "CP",2) == 0 ) {
+				printf("Found component pad\n");
+				autotrax_parse_component_pad(&newModule, FP);
+			} else if (strncmp(s, "CS",2) == 0 ) {
+				printf("Found component String\n");
 			}
 		}
-	}
-	required = BV(0) | BV(3) | BV(6) | BV(8);
-	if (((featureTally & required) == required) && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
-		moduleEmpty = 0;
-		pcb_element_line_new(newModule, X1, Y1, X2, Y2, Thickness);
-		pcb_printf("\tnew fp_line on layer created\n");
-	}
-
-/* ********************************************************** */
-
-			} else if ((n->str != NULL && strcmp("fp_arc", n->str) == 0) || (n->str != NULL && strcmp("fp_circle", n->str) == 0)) {
-					pcb_printf("fp_arc or fp_circle found\n");
-					featureTally = 0;
-
-/* ********************************************************** */
-
-	if (subtree->str != NULL) {
-		printf("fp_arc being parsed: '%s'\n", subtree->str);		
-		for(l = n->children; l != NULL; l = l->next) {
-			if (l->str != NULL && strcmp("start", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 0);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_arc centre at x: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 1);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc X.");
-						} else {
-							centreX = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc start X null node.");
-					}
-					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("\tfp_arc centre at y: '%s'\n", (l->children->next->str));
-						SEEN_NO_DUP(featureTally, 2);	
-						val = strtod(l->children->next->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc Y.");
-						} else {
-							centreY = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc start Y null node.");
-					}
-			} else if (l->str != NULL && strcmp("center", l->str) == 0) { /* this lets us parse a circle too */
-					SEEN_NO_DUP(featureTally, 0);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_arc centre at x: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 1);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc centre X.");
-						} else {
-							centreX = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc centre X null node.");
-					}
-					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("\tfp_arc centre at y: '%s'\n", (l->children->next->str));
-						SEEN_NO_DUP(featureTally, 2);
-						val = strtod(l->children->next->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc centre Y.");
-						} else {
-							centreY = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc centre Y null node.");
-					}
-			} else if (l->str != NULL && strcmp("end", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 3);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_arc end at x: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 4);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc end X.");
-						} else {
-							endX = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc end X null node.");
-					}
-					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("\tfp_arc end at y: '%s'\n", (l->children->next->str));
-						SEEN_NO_DUP(featureTally, 5);
-						val = strtod(l->children->next->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc end Y.");
-						} else {
-							endY = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc end Y null node.");
-					}
-			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 6);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_arc layer: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 7);
-						PCBLayer = autotrax_get_layeridx(st, l->children->str);
-						if (PCBLayer < 0) {
-							pcb_message(PCB_MSG_ERROR, "\tinvalid gr_arc layer def, using module default layer.\n");
-							PCBLayer = moduleLayer; /* revert to default */
-						}
-					} else {
-						PCBLayer = moduleLayer;
-						pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_arc element.\n");
-					}
-			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 8);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_arc width: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 9);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc width.");
-						} else {
-							Thickness = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc width null node.");
-					}
-			} else if (l->str != NULL && strcmp("angle", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 10);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_arc angle CW rotation: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 11);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return autotrax_error(subtree, "error parsing fp_arc angle.");
-						} else {
-							delta = val;
-						}
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc angle null node.");
-					}
-			} else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
-					SEEN_NO_DUP(featureTally, 12);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("\tfp_arc net: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 13);
-					} else {
-						return autotrax_error(subtree, "unexpected fp_arc net null node.");
-					}
-			} else {
-				if (n->str != NULL) {
-					printf("Unknown gr_arc argument %s:", l->str);
-				}
-				return autotrax_error(subtree, "unexpected fp_arc null node.");
-			}
-		}
-	}
-        required = BV(0) | BV(6) | BV(8);
-        if (((featureTally & required) == required) && newModule != NULL) {
-		moduleEmpty = 0;
-		/* need start, layer, thickness at a minimum */
-		/* same code used above for gr_arc parsing */
-		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
-		if (width < 1) { /* degenerate case */
-			startAngle = 0;
-		} else {
-			endAngle = 180+180*atan2(-(endY - centreY), endX - centreX)/M_PI; /* avoid using atan2 with zero parameters */
-			pcb_printf("\tcalculated end angle: '%f'\n", endAngle);
-			if (endAngle < 0.0) {
-				endAngle += 360.0; /*make it 0...360 */
-				pcb_printf("\tadjusted end angle: '%f'\n", endAngle);
-			}
-			startAngle = (endAngle - delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
-			pcb_printf("\tcalculated start angle: '%f'\n", startAngle);
-			if (startAngle > 360.0) {
-				startAngle -= 360.0;
-			}
-			if (startAngle < 0.0) {
-				startAngle += 360.0;
-			}
-			pcb_printf("\tadjusted start angle: '%f'\n", startAngle);
-		}
-		pcb_element_arc_new(newModule, moduleX + centreX, moduleY + centreY, width, height, startAngle, delta, Thickness); /* was endAngle */
-
-	}
-
-/* ********************************************************** */
-
-
-			} else {
-				if (n->str != NULL) {
-					printf("Unknown pad argument : %s\n", n->str);
-				}
-			} 
-		}
-
-
-		if (newModule != NULL) {
-			if (moduleEmpty) { /* should try and use module empty function here */
-				Thickness = PCB_MM_TO_COORD(0.200);
-				pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
-				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
-			}
-                        pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
-			if (moduleRotation != 0) {
-				pcb_printf("Applying module rotation of %d here.", moduleRotation);
-				moduleRotation = moduleRotation/90;/* ignore rotation != n*90 for now*/
-				pcb_element_rotate90(PCB->Data, newModule, moduleX, moduleY, moduleRotation);
-				/* can test for rotation != n*90 degrees if necessary, and call
-				 * void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element,
-				 *		pcb_coord_t X, pcb_coord_t Y, double 
-				 *		cosa, double sina, pcb_angle_t angle);
-				 */
-			}
-			/*pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));*/
-
-			/* update the newly created module's refdes field, if available */
-			if (moduleDefined && moduleRefdes) {
-				printf("have Refdes for module/element %s, updating new module\n", moduleRefdes);
-				free(newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
-				newModule->Name[PCB_ELEMNAME_IDX_REFDES].TextString = pcb_strdup(moduleRefdes);
-			}
-			/* update the newly created module's value field, if available */
-			if (moduleDefined && moduleValue) {
-				printf("have Value for module/element %s, updating new module\n", moduleValue);
-				free(newModule->Name[PCB_ELEMNAME_IDX_VALUE].TextString);
-				newModule->Name[PCB_ELEMNAME_IDX_VALUE].TextString = pcb_strdup(moduleValue);
-			}
-			return 0;
-		} else {
-			return autotrax_error(subtree, "unable to create incomplete module.");
-		}
-	} else {
-		return autotrax_error(subtree, "module parsing failure.");
-	}
+	} 
 }
 
 	
@@ -2003,6 +1490,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		} else if (index > 4) {
 			if (strncmp(line, "COMP",4) == 0 ) {
 				printf("Found component\n");
+				autotrax_parse_component(&st, FP);
 			}
 		} else if (index > 2) {
 			if (strncmp(s, "FT",2) == 0 ) {
