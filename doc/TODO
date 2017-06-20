@@ -25,12 +25,11 @@
 
 For the next release:
 - SUBC BUGS:
-	- find_lookup.c: 'f' arc->line fails
-	- find_lookup.c: 'f' line->arc fails
 	- ctrl+c copy a subc ruins the original subc somehow - like if a second copy was placed over it (rotate to see)
 	- check all polylist, linelist, arclist, textlist iterations: might need to do rtree iterations instead
 	- undo doesn't work
 - BUGS:
+	- find_lookup.c: 'f' arc<->line fails with \_ arcs bugfiles/arc_find.lht
 	- solder paste layer doesn't have selected color, selection is not visible
 	- add attribute to a line (ctrl+e); select the line; drag & drop move the line -> attributes are lost
 	- backup save triggers save in pcb indirectly, and that changes the layer stackup which may ruin the board (add new mask layers, wait for a save, draw on them after a save, they become silk) [report: Ade]
