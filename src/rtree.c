@@ -53,10 +53,7 @@
  * This requires that the corner points not be equal!
  */
 
-/* the number of entries in each rtree node
- * 4 - 7 seem to be pretty good settings
- */
-#define M_SIZE 6
+#define M_SIZE PCB_RTREE_SIZE
 
 /* it seems that sorting the leaf order slows us down
  * but sometimes gives better routes
@@ -1003,3 +1000,79 @@ pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * box)
 #endif
 	return r;
 }
+
+
+static pcb_box_t *pcb_r_next_(pcb_rtree_it_t *it, struct rtree_node *curr)
+{
+	int n;
+
+	/* as long as we have boxes ready, ignore the tree */
+	if (it->num_ready > 0) {
+/*		printf("rdy1 get [%d]: %p\n", it->num_ready-1, it->ready[it->num_ready-1]);*/
+		return it->ready[--it->num_ready];
+	}
+
+	if (curr == NULL) {
+
+		got_filled:;
+
+		/* Next: get an element from the open list */
+		if (it->used <= 0)
+			return NULL;
+
+		curr = it->open[--it->used];
+/*		printf("open get [%d]: %p\n", it->used, curr);*/
+	}
+
+	if (curr->flags.is_leaf) {
+		/* current is leaf: copy children to the ready list and return the first */
+		for(it->num_ready = 0; it->num_ready < M_SIZE; it->num_ready++) {
+			if (curr->u.rects[it->num_ready].bptr == NULL)
+				break;
+			it->ready[it->num_ready] = curr->u.rects[it->num_ready].bptr;
+/*			printf("rdy  add [%d]: %p\n", it->num_ready, it->ready[it->num_ready]);*/
+		}
+		if (it->num_ready > 0) {
+/*			printf("rdy2 get [%d]: %p\n", it->num_ready-1, it->ready[it->num_ready-1]);*/
+			return it->ready[--it->num_ready];
+		}
+		assert(!"pcb_r_next_: empty leaf?!");
+	}
+
+	/* current is a level, add to the open list and retry until a leaf is found */
+	for(n = 0; n < M_SIZE; n++) {
+		if (curr->u.kids[n] != NULL) {
+			if (it->used >= it->alloced) {
+				it->alloced += 128;
+				it->open = realloc(it->open, it->alloced * sizeof(struct rtree_node *));
+			}
+			it->open[it->used] = curr->u.kids[n];
+/*			printf("open add [%d]: %p\n", it->used, it->open[it->used]);*/
+			it->used++;
+		}
+	}
+	goto got_filled;
+}
+
+pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it)
+{
+	it->open = NULL;
+	it->alloced = it->used = 0;
+	it->num_ready = 0;
+	return pcb_r_next_(it, tree->root);
+}
+
+pcb_box_t *pcb_r_next(pcb_rtree_it_t *it)
+{
+	struct rtree_node *curr;
+
+	return pcb_r_next_(it, NULL);
+}
+
+void pcb_r_end(pcb_rtree_it_t *it)
+{
+	free(it->open);
+	it->open = NULL;
+	it->alloced = it->used = 0;
+}
+

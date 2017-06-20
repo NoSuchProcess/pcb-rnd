@@ -44,6 +44,7 @@ typedef struct pcb_polygon_s pcb_polygon_t;
 typedef struct pcb_pad_s pcb_pad_t;
 typedef struct pcb_pin_s pcb_pin_t;
 typedef struct pcb_rtree_s pcb_rtree_t;
+typedef struct pcb_rtree_it_s pcb_rtree_it_t;
 typedef struct pcb_ratspatch_line_s pcb_ratspatch_line_t;
 typedef struct pcb_element_s pcb_element_t;
 typedef struct pcb_subc_s pcb_subc_t;

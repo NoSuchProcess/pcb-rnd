@@ -40,6 +40,19 @@ struct pcb_rtree_s {
 	int size;											/* number of entries in tree */
 };
 
+/* the number of entries in each rtree node
+ * 4 - 7 seem to be pretty good settings
+ */
+#define PCB_RTREE_SIZE 6
+
+
+struct pcb_rtree_it_s {
+	struct rtree_node **open;
+	int used, alloced;
+	pcb_box_t *ready[PCB_RTREE_SIZE + 1];
+	int num_ready;
+};
+
 /* callback direction to the search engine */
 typedef enum pcb_r_dir_e {
 	PCB_R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
@@ -81,5 +94,18 @@ pcb_r_dir_t pcb_r_search(pcb_rtree_t * rtree, const pcb_box_t * starting_region,
 int pcb_r_region_is_empty(pcb_rtree_t * rtree, const pcb_box_t * region);
 
 void pcb_r_dump_tree(struct rtree_node *, int);
+
+
+/* -- Iterate through an rtree; DO NOT modify the tree while iterating -- */
+
+/* Get the first item, get fields of iterator set up; return can be casted to an object; returns NULL if rtree is empty */
+pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it);
+
+/* Get the next item, return can be casted to an object; returns NULL if no more items */
+pcb_box_t *pcb_r_next(pcb_rtree_it_t *it);
+
+/* Free fields of the iterator */
+void pcb_r_end(pcb_rtree_it_t *it);
+
 
 #endif
