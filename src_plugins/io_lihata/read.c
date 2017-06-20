@@ -1303,11 +1303,19 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 	/* Run poly clipping at the end so we have all IDs and we can
 	   announce the clipping (it's slow, we may need a progress bar) */
-	PCB_POLY_ALL_LOOP(pcb->Data);
 	{
-		pcb_poly_init_clip(pcb->Data, layer, polygon);
+		pcb_rtree_it_t it;
+		pcb_box_t *b;
+		int l;
+		for(l = 0; l < pcb->Data->LayerN; l++) {
+			pcb_layer_t *layer = pcb->Data->Layer + l;
+			for(b = pcb_r_first(layer->polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
+				pcb_polygon_t *p = (pcb_polygon_t *)b;
+				pcb_poly_init_clip(pcb->Data, layer, p);
+			}
+			pcb_r_end(&it);
+		}
 	}
-	PCB_ENDALL_LOOP;
 
 	sub = lht_dom_hash_get(nd, "pcb-rnd-conf-v1");
 	if (sub != NULL)
