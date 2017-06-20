@@ -107,10 +107,10 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 {
 	/* normal case: a layer is empty if all lists are empty */
 	return
-		(linelist_length(&layer->Line) == 0) &&
-		(arclist_length(&layer->Arc) == 0) &&
-		(polylist_length(&layer->Polygon) == 0) &&
-		(textlist_length(&layer->Text) == 0);
+		PCB_RTREE_EMPTY(layer->line_tree) && 
+		PCB_RTREE_EMPTY(layer->arc_tree) && 
+		PCB_RTREE_EMPTY(layer->polygon_tree) && 
+		PCB_RTREE_EMPTY(layer->text_tree);
 }
 
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
