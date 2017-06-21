@@ -383,14 +383,15 @@ padname
 */
 static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
+	int padargcount = 7;
+	double results[7];
+	int maxtext = 32;
+
 	int index = 0;
 	char line[30]; /* line is 4 x 32000 = 23 characters at most */
 	char coord[6];
 
-	int i;
-	int c;
-	char *end, padname[32];
-	double val;
+	char padname[32];
 
 	int Shape = 0;
 	int Connects = 0;
@@ -406,112 +407,32 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 /*	padname = "";*/	
 	index =0;
 
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 45) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 42) {
-		pcb_printf("error parsing free pad line; too long\n");
+	if (!autotrax_bring_back_eight_track(FP, results, padargcount)) {
+		printf("error parsing pad text\n");
 		return -1;
 	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	printf("About to parse autotrax free pad: %s\n", line);  
-	index = 0;
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad X\n");
-		return -1;
-	}
-	X = PCB_MIL_TO_COORD(val);
+	X = PCB_MIL_TO_COORD(results[0]);
 	pcb_printf("Found free pad X : %ml\n", X);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad Y\n");
-		return -1;
-	}
-	Y = PCB_MIL_TO_COORD(val);
+	Y = PCB_MIL_TO_COORD(results[1]);
 	pcb_printf("Found free pad Y : %ml\n", Y);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad Xsize\n");
-		return -1;
-	}
-	Xsize = PCB_MIL_TO_COORD(val);
+	Xsize = PCB_MIL_TO_COORD(results[2]);
 	pcb_printf("Found free pad Xsize : %ml\n", Xsize);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad Ysize\n");
-		return -1;
-	}
-	Ysize = PCB_MIL_TO_COORD(val);
+	Ysize = PCB_MIL_TO_COORD(results[3]);
 	pcb_printf("Found free pad Ysize : %ml\n", Ysize);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	Shape = atoi(coord); 
+	Shape = (int)results[4]; 
 	pcb_printf("Found free pad shape : %d\n", Shape);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad drill\n");
+	Drill = PCB_MIL_TO_COORD(results[5]);
+	pcb_printf("Found free pad drill : %ml\n", Drill);
+	Connects = (int)results[5];
+	PCBLayer = (int)results[6]; 
+	pcb_printf("Found free pad Layer : %d\n", PCBLayer);
+
+/* now find name as string on next line and copy it */
+
+	if (read_a_text_line(FP, padname, maxtext) == 0) {
+		pcb_printf("error parsing free string text line; empty\n");
 		return -1;
 	}
-	Drill = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free pad drill : %ml\n", Drill);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	Connects = atoi(coord); 
-	pcb_printf("Found free pad connections : %d\n", Connects);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	PCBLayer = atoi(coord); 
-	pcb_printf("Found free pad Layer : %d\n", PCBLayer);
-/* now find name as string on next line and copy it */
-	index = 0;
-	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
-		padname[index] = c;
-		index++;
-	}
-	padname[index] = '\0';
 	pcb_printf("Found free pad name : %s\n", padname);
 
 	Thickness = MIN(Xsize, Ysize);
