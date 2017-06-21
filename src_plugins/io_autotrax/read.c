@@ -265,6 +265,8 @@ Bit 0 : RU quadrant
 Bit 1 : LU quadrant
 Bit 2 : LL quadrant
 Bit 3 : LR quadrant
+
+TODO: This needs further testing to ensure the document used reflects actual outputs from protel autotrax
 */
 	if (segments == 10) { /* LU + RL quadrants */
 		startAngle = 90.0;
@@ -293,13 +295,13 @@ Bit 3 : LR quadrant
 		delta = 90.0;
 	} else if (segments == 3) { /* Upper half */
 		startAngle = 180.0;
-		delta = -180.0;
+		delta = -180.0; /* this seems to fix IC notches */
 	} else if (segments == 6) { /* Left half */
 		startAngle = 270.0;
 		delta = 180.0;
 	} else if (segments == 12) { /* Lower half */
 		startAngle = 0.0;
-		delta = -180.0;
+		delta = -180.0;  /* this seems to fix IC notches */
 	} else if (segments == 9) { /* Right half */
 		startAngle = 90.0;
 		delta = 180.0;
