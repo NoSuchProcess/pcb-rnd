@@ -1,5 +1,5 @@
 /*
- *                            COPYRIGHT
+ *			    COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas

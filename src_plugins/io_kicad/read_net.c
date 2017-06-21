@@ -1,5 +1,5 @@
 /*
- *														COPYRIGHT
+ *				COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
  *	Copyright (C) 2017 Tibor 'Igor2' Palinkas
@@ -223,8 +223,8 @@ int pcb_act_LoadeeschemaFrom(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load eeschema netlist file...",
-																"Picks a eeschema netlist file to load.\n",
-																default_file, ".net", "eeschema", HID_FILESELECT_READ);
+					"Picks a eeschema netlist file to load.\n",
+					default_file, ".net", "eeschema", HID_FILESELECT_READ);
 		if (fname == NULL)
 			PCB_ACT_FAIL(LoadeeschemaFrom);
 		if (default_file != NULL) {

@@ -486,8 +486,8 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-        required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
-        if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
+	required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
+	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew gr_line on layer created\n");
 		return 0;
@@ -643,8 +643,8 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-        required = BV(0) | BV(1) | BV(2) | BV(3); /* | BV(4); not needed for circles */
-        if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
+	required = BV(0) | BV(1) | BV(2) | BV(3); /* | BV(4); not needed for circles */
+	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
 		deltaX = endX - centreX;
 		deltaY = endY - centreY;
@@ -780,8 +780,8 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-        required = BV(0) | BV(1);
-        if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
+	required = BV(0) | BV(1);
+	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
 		return 0;
 	}
@@ -902,8 +902,8 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-        required = BV(0) | BV(1) | BV(2) | BV(3);
-        if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
+	required = BV(0) | BV(1) | BV(2) | BV(3);
+	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew segment on layer created\n");
 		return 0;
@@ -1632,7 +1632,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (throughHole == 1  &&  newModule != NULL) {
 					printf("\tcreating new pin %s in element\n", pinName);
 					required = BV(0) | BV(1) | BV(3) | BV(5);
-        				if ((featureTally & required) == required) {
+					if ((featureTally & required) == required) {
 						moduleEmpty = 0;
 						pcb_element_pin_new(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
 								Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
@@ -1641,8 +1641,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					}
 				} else if (newModule != NULL) {
 					printf("\tcreating new pad %s in element\n", pinName);
-                                        required = BV(0) | BV(1) | BV(2) | BV(5);
-                                        if ((featureTally & required) == required) {
+					required = BV(0) | BV(1) | BV(2) | BV(5);
+					if ((featureTally & required) == required) {
 						if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
 							Y1 = Y2 = Y;
 							X1 = X - (padXsize - padYsize)/2;
@@ -1948,8 +1948,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-        required = BV(0) | BV(6) | BV(8);
-        if (((featureTally & required) == required) && newModule != NULL) {
+	required = BV(0) | BV(6) | BV(8);
+	if (((featureTally & required) == required) && newModule != NULL) {
 		moduleEmpty = 0;
 		/* need start, layer, thickness at a minimum */
 		/* same code used above for gr_arc parsing */
@@ -1994,7 +1994,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
 				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
 			}
-                        pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
+			pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
 			if (moduleRotation != 0) {
 				pcb_printf("Applying module rotation of %d here.", moduleRotation);
 				moduleRotation = moduleRotation/90;/* ignore rotation != n*90 for now*/
@@ -2220,7 +2220,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"page",       kicad_parse_page_size},
 		{"layers",     kicad_parse_layer_definitions}, /* board layer defs */
 		{"setup",      kicad_parse_nop},
-		{"net",        kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
+		{"net",	kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class",  kicad_parse_nop},
 		{"module",     kicad_parse_module},  /* for footprints */
 		{"dimension",  kicad_parse_nop},  /* for dimensioning features */

@@ -204,7 +204,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	currentGroup = 0;
 
 	/* figure out which pcb layers are bottom copper and make a list */
-        bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
+	bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
 	if (bottomCount > 0 ) {
 		bottomLayers = malloc(sizeof(pcb_layer_id_t) * bottomCount);
 		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottomCount);
@@ -213,7 +213,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	}
 
 	/* figure out which pcb layers are internal copper layers and make a list */
-        innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
+	innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
 	if (innerCount > 0 ) {
 		innerLayers = malloc(sizeof(pcb_layer_id_t) * innerCount);
 		pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, innerCount);
@@ -222,7 +222,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	}
 
 	/* figure out which pcb layers are top copper and make a list */
-        topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
+	topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	if (topCount > 0 ) {
 		topLayers = malloc(sizeof(pcb_layer_id_t) * topCount);
 		pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, topCount);
@@ -231,7 +231,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	}
 
 	/* figure out which pcb layers are bottom silk and make a list */
-        bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
+	bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	if (bottomSilkCount > 0 ) {
 		bottomSilk = malloc(sizeof(pcb_layer_id_t) * bottomSilkCount);
 		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottomSilkCount);
@@ -251,7 +251,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	/* figure out which pcb layers are outlines and make a list */
  	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
 	if (outlineCount > 0) {
-                outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
+		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
 		pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
 	} else {
 		outlineLayers = NULL;
@@ -396,7 +396,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 
 	/*
 	  * now we proceed to write polygons for each layer, and iterate much like we did for tracks
-         */
+	 */
 
 	/* we now proceed to write the bottom silk polygons  to the kicad legacy file, using layer 20 */
 	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
@@ -468,7 +468,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	if (outlineCount > 0) {
 		free(outlineLayers);
 	}
-        return (0);
+	return (0);
 }
 
 
@@ -793,7 +793,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 int write_kicad_equipotential_netlists(FILE * FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
 {
-        int n; /* code mostly lifted from netlist.c */ 
+	int n; /* code mostly lifted from netlist.c */ 
 	int netNumber;
 	pcb_lib_menu_t *menu;
 	pcb_lib_entry_t *netlist;
@@ -802,14 +802,14 @@ int write_kicad_equipotential_netlists(FILE * FP, pcb_board_t *Layout, pcb_cardi
 	fprintf(FP, "\n%*s(net 0 \"\")\n", indentation, "");
 
 	/* now we step through any available netlists and generate descriptors */
-        for (n = 0, netNumber = 1; n < Layout->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++, netNumber ++) {
-                menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
+	for (n = 0, netNumber = 1; n < Layout->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++, netNumber ++) {
+		menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
 		netlist = &menu->Entry[0];
 		if (netlist != NULL) {
 			fprintf(FP, "%*s(net %d ", indentation, "", netNumber);  /* netlist 0 was used for unconnected pads  */
 			pcb_fprintf(FP, "%[4])\n", pcb_netlist_name(menu)); 
 		}
-        }
+	}
 	return 0;
 }
 
