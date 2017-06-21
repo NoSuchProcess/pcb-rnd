@@ -83,167 +83,83 @@ static int autotrax_error(gsxl_node_t *subtree, char *fmt, ...)
 	return -1;
 }
 
-/* Take each children of tree and execute them using autotrax_dispatch
-   Useful for procssing nodes that may host various subtrees of different
-   nodes in a flexible way. Return non-zero if any subtree processor failed. */
 
-/* autotrax_pcb/version */
-static int autotrax_parse_version(read_state_t *st, gsxl_node_t *subtree)
-{
-	if (subtree->str != NULL) {
-		int ver = atoi(subtree->str);
-		printf("kicad version: '%s' == %d\n", subtree->str, ver);
-		if (ver == 3 || ver == 4 || ver == 20170123)
-			return 0;
-	}
-	return autotrax_error(subtree, "unexpected layout version");
-}
 
 static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree); /* describes netlists for the layout */
+
 static int autotrax_get_layeridx(read_state_t *st, const char *autotrax_name);
 
-#define SEEN_NO_DUP(bucket, bit) \
-do { \
-	int __mask__ = (1<<(bit)); \
-	if ((bucket) & __mask__) \
-		return -1; \
-	bucket |= __mask__; \
-} while(0)
+static int read_a_text_line(FILE *FP, char * line, int maxread) {
+	int index = 0;
+	int c;
+	/* we avoid up to one '\n' if it is at the beginning of the line */
+	while ((!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < (maxread-1))) || (c == '\n' && index == 0) ) {
+		line[index] = c;
+		index ++;
+	}
+	line[index] = '\0';
+	return index;
+}
 
-#define SEEN(bucket, bit) \
-do { \
-	int __mask__ = (1<<(bit)); \
-	bucket |= __mask__; \
-} while(0)
-
-#define BV(bit) (1<<(bit))
-
+static int autotrax_bring_back_eight_track(FILE * FP, double * results, int numresults) {
+	int maxread = 40; /*sufficient for all normal protel autotrax line reads */
+	char line[41];
+	char *end;
+	int maxresult = 8; /* no more than 8 fields are present in protel autotrax subtypes */
+	int iter;
+	if (numresults > maxresult) {
+		printf("Too many result fields requested from line parser.\n");
+		return -1;
+	}
+	read_a_text_line(FP, line, maxread);
+	for (iter = 0 ; iter < numresults; iter++) {
+		results[iter] = strtod(line, &end);
+		/*printf("current coord: %d, \t\tand current end: %s\n", (int)results[iter], end);*/
+		strcpy(line, end);
+	}
+	return 1;
+}
 
 /* autotrax_free_text/component_text */
 static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
+	int textargcount = 6;
+	double results[6];
+	int maxtext = 32;
 
-	int i, heightMil;
+	int heightMil;
 
-	char *end;
-	double val;
+	char line[45];
 	pcb_coord_t X, Y, linewidth;
 	int scaling = 100;
 	unsigned direction = 0; /* default is horizontal */
-	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
+	pcb_flag_t Flags = pcb_flag_make(0); /* default */
 	int PCBLayer = 0; /* sane default value */
 
-	int index = 0;
-	char line[35]; /* line is 4 x 32000 + layer + 1 + 1 = 33 characters at most */
-	char coord[6];
-
-	int c;
-
-	index =0;
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 34) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 33) {
-		pcb_printf("error parsing free track line; too long\n");
+	if (!autotrax_bring_back_eight_track(FP, results, textargcount)) {
+		printf("error parsing text\n");
 		return -1;
 	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	printf("About to parse autotrax free text: %s\n", line);
-	index = 0;
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free text X\n");
-		return -1;
-	}
-	X = PCB_MIL_TO_COORD(val);
+
+	X = PCB_MIL_TO_COORD(results[0]);
 	pcb_printf("Found free text X : %ml\n", X);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free text Y\n");
-		return -1;
-	}
-	Y = PCB_MIL_TO_COORD(val);
+	Y = PCB_MIL_TO_COORD(results[1]);
 	pcb_printf("Found free text Y : %ml\n", Y);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free text height\n");
-		return -1;
-	}
-	heightMil = (int)val;
+	heightMil = (int)results[2];
 	scaling = (100*heightMil)/60;
 	pcb_printf("Found free text height(mil) : %d, giving scaling: %d\n", heightMil, scaling);
-
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free text rotation\n");
-		return -1;
-	}
-	direction = (int)val;
+	direction = (int)results[3];
 	pcb_printf("Found free text rotation : %d\n", direction);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free text linewidth\n");
-		return -1;
-	}
-	linewidth = PCB_MIL_TO_COORD(val);
+	linewidth = PCB_MIL_TO_COORD(results[4]);
 	pcb_printf("Found free text linewidth : %ml\n", linewidth);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = atoi(coord);
-	if (*end != 0) {
-		pcb_printf("error parsing free text layer\n");
-		return -1;
-	}
-	PCBLayer = val; 
+	PCBLayer = (int)results[5]; 
 	pcb_printf("Found free text layer : %d\n", PCBLayer);
 	/* ignore user routed flag */
 
-	index= 0; /* reset index for following text line for display  */
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 34) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 32) {
-		pcb_printf("error parsing free string text line; too long\n");
+	if (read_a_text_line(FP, line, maxtext) == 0) {
+		pcb_printf("error parsing free string text line; empty\n");
 		return -1;
 	}
-	line[index] = '\0';
 
 	pcb_printf("Found text string for display : %s\n", line);
 
@@ -263,122 +179,37 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 		}
 	}
 	return -1;
-
 }
 
 /* autotrax_pcb/free_track/component_track */
 static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int index = 0;
-	char line[35]; /* line is 4 x 32000 + layer + 1 + 1 = 33 characters at most */
-	char coord[6];
+	int trackargcount = 7;
+	double results[7];
 
-	int i;
-	int c;
-	char *end;
-	double val;
-
-	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
+	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
 	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
-	index = 0;
 
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 34) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 33) {
-		pcb_printf("error parsing free track line; too long\n");
+	if (!autotrax_bring_back_eight_track(FP, results, trackargcount)) {
+		printf("error parsing track text\n");
 		return -1;
 	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	printf("About to parse autotrax free track: %s\n", line);  
-	index = 0;
-	while(line[index] == ' ') { /* skip white space */
-		index++;
-	}
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track X1\n");
-		return -1;
-	}
-	X1 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track X1 : %ml\n", X1);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track Y1\n");
-		return -1;
-	}
-	Y1 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track Y1 : %ml\n", Y1);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track X2\n");
-		return -1;
-	}
-	X2 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track X2 : %ml\n", X2);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track Y2\n");
-		return -1;
-	}
-	Y2 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track Y2 : %ml\n", Y2);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track width\n");
-		return -1;
-	}
-	Thickness = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track width : %ml\n", Thickness);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = atoi(coord);
-	if (*end != 0) {
-		pcb_printf("error parsing free track layer\n");
-		return -1;
-	}
-	PCBLayer = val; 
-	pcb_printf("Found free track layer : %d\n", PCBLayer);
-	/* ignore user routed flag */
+	X1 = PCB_MIL_TO_COORD(results[0]);
+	pcb_printf("Found track X1 : %ml\n", X1);
+	Y1 = PCB_MIL_TO_COORD(results[1]);
+	pcb_printf("Found track Y1 : %ml\n", Y1);
+	X2 = PCB_MIL_TO_COORD(results[2]);
+	pcb_printf("Found track X2 : %ml\n", X2);
+	Y2 = PCB_MIL_TO_COORD(results[3]);
+	pcb_printf("Found track Y2 : %ml\n", Y2);
+	Thickness = PCB_MIL_TO_COORD(results[4]);
+	pcb_printf("Found track width : %ml\n", Thickness);
+	PCBLayer = (int)results[5]; 
+	pcb_printf("Found track layer : %d\n", PCBLayer);
+	/* ignore user routed flag in results[6]*/
 
 	if (PCBLayer >= 0 || PCBLayer <= 10) {
 		if (el == NULL && st != NULL) {
@@ -397,15 +228,8 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 /* autotrax_pcb free arc and component arc parser */
 static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int index = 0;
-	char line[34]; /* line is 3 x 32000 + segments + width + layer = 29 characters at most */
-	char coord[6];
-
-	int i;
-	int c;
-	char *end;
-	double val;
-
+	int arcargcount = 6;
+	double results[6];
 	int segments = 15; /* full circle by default */ 
 
 	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius; /* radius may in fact be diameter */
@@ -417,97 +241,22 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
-	index =0;
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 34) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 32) {
-		pcb_printf("error parsing free arc line; too long\n");
+	if (!autotrax_bring_back_eight_track(FP, results, arcargcount)) {
+		printf("error parsing arc text\n");
 		return -1;
 	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	printf("About to parse autotrax free arc: %s\n", line);  
-	index = 0;
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free arc centre X\n");
-		return -1;
-	}
-	centreX = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free arc centre X : %ml\n", centreX);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free arc centre Y\n");
-		return -1;
-	}
-	centreY = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free arc Y : %ml\n", centreY);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free arc radius\n");
-		return -1;
-	}
-	radius = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free arc radius : %ml\n", radius);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0 || val > 15 || val < 1) {
-		pcb_printf("error parsing free arc segments\n");
-		return -1;
-	}
-	segments = (int)val;
-	pcb_printf("Found free track segments : %d\n", segments);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free arc width\n");
-		return -1;
-	}
-	Thickness = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free arc width : %ml\n", Thickness);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = atoi(coord);
-	if (*end != 0) {
-		pcb_printf("error parsing free track layer\n");
-		return -1;
-	}
-	PCBLayer = val; 
-	pcb_printf("Found free track layer : %d\n", PCBLayer);
+	centreX = PCB_MIL_TO_COORD(results[0]);
+	pcb_printf("Found arc centre X : %ml\n", centreX);
+	centreY = PCB_MIL_TO_COORD(results[1]);
+	pcb_printf("Found arc Y : %ml\n", centreY);
+	radius = PCB_MIL_TO_COORD(results[2]);
+	pcb_printf("Found arc radius : %ml\n", radius);
+	segments = (int)results[3];
+	pcb_printf("Found arc segments : %d\n", segments);
+	Thickness = PCB_MIL_TO_COORD(results[4]);
+	pcb_printf("Found arc width : %ml\n", Thickness);
+	PCBLayer = (int)results[5]; 
+	pcb_printf("Found arc layer : %d\n", PCBLayer);
 
 	width = height = radius;
 
@@ -585,14 +334,9 @@ Bit 3 : LR quadrant
 /* autotrax_pcb/via */
 static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int index = 0;
-	char line[30]; /* line is 4 x 32000 = 23 characters at most */
-	char coord[6];
-
-	int i;
-	int c;
-	char *end, *name;
-	double val;
+	int viaargcount = 4;
+	double results[4];
+	char * name;
 
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
@@ -602,73 +346,22 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
 	name = ""; /*not used*/
-	index =0;
 
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 25) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 25) {
-		pcb_printf("error parsing free via line; too long\n");
+	if (!autotrax_bring_back_eight_track(FP, results, viaargcount)) {
+		printf("error parsing via text\n");
 		return -1;
 	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	printf("About to parse autotrax free via: %s\n", line);  
-	index = 0;
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free via X\n");
-		return -1;
-	}
-	X = PCB_MIL_TO_COORD(val);
+
+	X = PCB_MIL_TO_COORD(results[0]);
 	pcb_printf("Found free via X : %ml\n", X);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free via Y\n");
-		return -1;
-	}
-	Y = PCB_MIL_TO_COORD(val);
+	Y = PCB_MIL_TO_COORD(results[1]);
 	pcb_printf("Found free via Y : %ml\n", Y);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free via diameter\n");
-		return -1;
-	}
-	Thickness = PCB_MIL_TO_COORD(val);
+	Thickness = PCB_MIL_TO_COORD(results[2]);
 	pcb_printf("Found free via diameter : %ml\n", Thickness);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free via drill\n");
-		return -1;
-	}
-	Drill = PCB_MIL_TO_COORD(val);
+	Drill = PCB_MIL_TO_COORD(results[3]);
 	pcb_printf("Found free track drill : %ml\n", Drill);
+
+
 /*  */
 	if (el == NULL) {
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
@@ -888,76 +581,32 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int index = 0;
-	char line[30]; /* line is 4 x 32000 + layer = 26 characters at most */
-	char coord[6];
-
-	int i;
-	int c;
+	int fillargcount = 5;
+	double results[5];
 
 	pcb_polygon_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
-	char *end;
-	double val;
 	pcb_coord_t X1, Y1, X2, Y2, Clearance;
 	int PCBLayer = 0;
 
 	Clearance = PCB_MIL_TO_COORD(10);
 
-	index =0;
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 29) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 27) {
-		pcb_printf("error parsing free fill line; too long\n");
+	if (!autotrax_bring_back_eight_track(FP, results, fillargcount)) {
+		printf("error parsing fill text\n");
 		return -1;
 	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	index = 0;
-	printf("About to parse free fill line: %s\n", line); 
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free fill X1\n");
-		return -1;
-	}
-	X1 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found fill X1 : %ml\n", X1);
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	Y1 = PCB_MIL_TO_COORD(atoi(coord));
-	pcb_printf("Found fill Y1 : %ml\n", Y1);
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	X2 = PCB_MIL_TO_COORD(atoi(coord));
-	pcb_printf("Found fill X2 : %ml\n", X2);
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	Y2 = PCB_MIL_TO_COORD(atoi(coord));
-	pcb_printf("Found fill Y2 : %ml\n", Y2);
 
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	PCBLayer = atoi(coord); 
+	X1 = PCB_MIL_TO_COORD(results[0]);
+	pcb_printf("Found fill X1 : %ml\n", X1);
+	Y1 = PCB_MIL_TO_COORD(results[1]);
+	pcb_printf("Found fill Y1 : %ml\n", Y1);
+	X2 = PCB_MIL_TO_COORD(results[2]);
+	pcb_printf("Found fill X2 : %ml\n", X2);
+	Y2 = PCB_MIL_TO_COORD(results[3]);
+	pcb_printf("Found fill Y2 : %ml\n", Y2);
+	PCBLayer = (int)results[4];
 	pcb_printf("Found fill layer : %d\n", PCBLayer);
+
 
 	if ((PCBLayer >= 0 || PCBLayer <= 10) && el == NULL) {
 		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
@@ -998,7 +647,7 @@ static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_na
 	return 0;
 }
 
-/* Parse a layer definition and do all the administration needed for the layer */
+/* Try to create a set of default layers, since protel has a atstic stackup */
 static int autotrax_create_layers(read_state_t *st)
 {
 	unsigned int res;
@@ -1084,86 +733,40 @@ static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree)
 
 static int autotrax_parse_component(read_state_t *st, FILE *FP)
 {
-	int i;
+	int coordresultcount = 2;
+	double results[2];
 	int refdesScaling = 100;
 	pcb_coord_t moduleX, moduleY, Thickness;
-	double val;
 	unsigned direction = 0; /* default is horizontal */
-	char * end;
-	char moduleName[33], moduleRefdes[33], moduleValue[33], coord[10];
+	char moduleName[33], moduleRefdes[33], moduleValue[33];
 	pcb_element_t *newModule;
-
-	pcb_element_t *el;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
 
-	int index = 0;
-	int c;
-	char *s, line[1024];
+	int length = 0;
+	int maxtext = 33;
+	char *s, line[33];
+	int nonempty = 0;
 
-	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
-		moduleRefdes[index] = c;
-		index++;
-	}
-	moduleRefdes[index] = '\0';
+	read_a_text_line(FP, moduleRefdes, maxtext);
 	pcb_printf("Found component refdes : %s\n", moduleRefdes);
-
-	index = 0;
-	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
-		moduleName[index] = c;
-		index++;
-	}
-	moduleName[index] = '\0';
+	read_a_text_line(FP, moduleName, maxtext);
 	pcb_printf("Found component name : %s\n", moduleName);
-
-	index = 0;
-	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
-		moduleValue[index] = c;
-		index++;
-	}
-	moduleValue[index] = '\0';
+	read_a_text_line(FP, moduleValue, maxtext);
 	pcb_printf("Found component description : %s\n", moduleValue);
 
-/* with the header read, we now ignore the locations for the text fields... */
-	for (index = 0; index < 2; index++) {
-		while (!feof(FP) && (c = fgetc(FP) != '\n')) {
-			printf("Skipping component text field coordinates, and XY data lines %d\n", index);
-		}
-	}
+/* with the header read, we now ignore the locations for the text fields in the next two lines... */
+	read_a_text_line(FP, line, maxtext);
+	read_a_text_line(FP, line, maxtext);
 
-	index =0;
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 29) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 27) {
-		pcb_printf("error parsing component location line; too long\n");
+	if (!autotrax_bring_back_eight_track(FP, results, coordresultcount)) {
+		printf("error parsing component coordinates\n");
 		return -1;
 	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	index = 0;
-	printf("About to parse component location line: %s\n", line); 
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing component X location\n");
-		return -1;
-	}
-	moduleX = PCB_MIL_TO_COORD(val);
+	moduleX = PCB_MIL_TO_COORD(results[0]);
 	pcb_printf("Found moduleX : %ml\n", moduleX);
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	moduleY = PCB_MIL_TO_COORD(atoi(coord));
+	moduleY = PCB_MIL_TO_COORD(results[1]);
 	pcb_printf("Found moduleY : %ml\n", moduleY);
 	
 	printf("Have new module name and location, defining module/element %s\n", moduleName);
@@ -1173,43 +776,34 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 								moduleX, moduleY, direction,
 								refdesScaling, TextFlags, pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
 
-	el = newModule;
-	
 	while (!feof(FP)) {
-		index =0;
-		while (!feof(FP) && (c = fgetc(FP)) != '\n' && index < 1023) {
-			line[index] = c;
-			index ++;
-		}
-		index++;
-		line[index] = '\0';
+		length = read_a_text_line(FP, line, maxtext);
+		nonempty = 0;
 		s = line;
-		int nonempty = 0;
-		if (index > 7) {
+		if (length > 7) {
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
 				printf("Finished parsing component\n");
 				if (!nonempty) { /* should try and use module empty function here */
 					Thickness = PCB_MM_TO_COORD(0.200);
-					pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1,
- Thickness);
+					pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
 					pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
 				}
 				pcb_element_bbox(st->PCB->Data, newModule, pcb_font(PCB, 0, 1));
 				return 0;
 			}
-		} else if (index > 2) {
+		} else if (length > 2) {
 			if (strncmp(s, "CT",2) == 0 ) {
 				printf("Found component track\n");
-				nonempty != autotrax_parse_track(&st, FP, newModule);
+				nonempty |= autotrax_parse_track(&st, FP, newModule);
 			} else if (strncmp(s, "CA",2) == 0 ) {
 				printf("Found component arc\n");
-				nonempty != autotrax_parse_arc(&st, FP, newModule);
+				nonempty |= autotrax_parse_arc(&st, FP, newModule);
 			} else if (strncmp(s, "CV",2) == 0 ) {
 				printf("Found component via\n");
-				nonempty != autotrax_parse_via(&st, FP, newModule);
+				nonempty |= autotrax_parse_via(&st, FP, newModule);
 			} else if (strncmp(s, "CF",2) == 0 ) {
 				printf("Found component fill\n");
-				nonempty != autotrax_parse_fill(&st, FP, newModule);
+				nonempty |= autotrax_parse_fill(&st, FP, newModule);
 			} else if (strncmp(s, "CP",2) == 0 ) {
 				printf("Found component pad\n");
 				nonempty |= autotrax_parse_pad(&newModule, FP, newModule);
@@ -1225,15 +819,17 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 	
 int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
-	int c, readres = 0;
+	int readres = 0;
 	pcb_box_t boardSize, *box;
 	read_state_t st;
 	FILE *FP;
 
 	pcb_element_t *el = NULL;
 
-	int index = 0;
-	char line[1024], *s;
+	int length = 0;
+	int maxtext = 1024;
+	char line[1024];
+	char *s;
 
 	FP = fopen(Filename, "r");
 	if (FP == NULL)
@@ -1247,15 +843,9 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
 
 	while (!feof(FP)) {
-		index =0;
-		while (!feof(FP) && (c = fgetc(FP)) != '\n' && index < 1023) {
-			line[index] = c;
-			index ++;
-		}
-		index++;
-		line[index] = '\0';
+		length = read_a_text_line(FP, line, maxtext);
 		s = line;
-		if (index > 10) {
+		if (length > 10) {
 			if (strncmp(line, "PCB FILE 4", 10) == 0 ) {
 				printf("Found Protel Autotrax version 4\n");
 				autotrax_create_layers(&st);
@@ -1263,18 +853,18 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 				printf("Found Protel Easytrax version 5\n");
 				autotrax_create_layers(&st);
 			}
-		} else if (index > 6) {
+		} else if (length > 6) {
 			if (strncmp(s, "ENDPCB",6) == 0 ) {
 				printf("Found end of file\n");
 			} else if (strncmp(s, "NETDEF",6) == 0 ) {
 				printf("Found net definition\n");
 			}
-		} else if (index > 4) {
+		} else if (length > 4) {
 			if (strncmp(line, "COMP",4) == 0 ) {
 				printf("Found component\n");
 				autotrax_parse_component(&st, FP);
 			}
-		} else if (index > 2) {
+		} else if (length > 2) {
 			if (strncmp(s, "FT",2) == 0 ) {
 				printf("Found free track\n");
 				autotrax_parse_track(&st, FP, el);
