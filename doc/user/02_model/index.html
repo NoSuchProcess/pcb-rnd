@@ -382,7 +382,10 @@ Extra object flags:
 <h4> 2.4.9. Rat line Objects </h4>
 <p>
 A rat line represents a logical connection that is not yet realized in copper.
-It connects two drawing primitives.
+It requires a loaded netlist for generation, and relies on calculations for any
+existing coppre layers that connect terminals on the pcb-rnd board.  Rat
+connections are straight line connections between the terminals of any two
+drawing primitives that aren't yet connected  
 
 <h4> 2.4.10. Netlists </h4>
 <p>
@@ -440,17 +443,17 @@ the intended (changed) netlist.
 <p>
 <table border=1>
 	<caption><b>Pcb-rnd Terminology</b>
-	<tr><th> Physical board            <th> pcb-rnd <th> Description
-	<tr><td> Layer                     <td> Layer Group <td> enables the user to design complex physical constructions
-	<tr><td> copper layer              <td> layer group with copper layers <td> designed with one to many pcb-rnd layers
-	<tr><td> top/component copper layer<td> layer group with copper layers <td> any group of copper layers defined as the 'top' of a board
-	<tr><td> bottom/solder copper layer<td> layer group with copper layers <td> any group of copper layers defined as the 'bottom' of a board
-	<tr><td> substrate                 <td> layer group makred as substrate, hosting no logical layers<td> pcb-rnd does not yet handle properties of phyiscal substrate information
-	<tr><td> contour of the board      <td> outline layer<td> designed using standard pcb-rnd elemnts
-	<tr><td> outline routing path      <td> outline layer<td> designed using standard pcb-rnd elemnts
-	<tr><td> polygon pour              <td> polygon<td> an object available for design in any layer group
-	<tr><td> plane                     <td> polygon<td> see above 
-	<tr><td> mask                      <td> layer group with mask layers<td> design layers available: automatic, additive, subtractive
-	<tr><td> silk                      <td> layer group with silk layers<td> design layers available: automatic, additive, subtractive
-	<tr><td> N/A                       <td> Rats <td> assistve layer automatically generated with netlist and copper layer group connection data
+	<tr><th> Physical board            <th> pcb-rnd                                                   <th> Description
+	<tr><td> Layer                     <td> Layer Group                                               <td> enables the user to design complex physical constructions
+	<tr><td> Copper layer              <td> Layer group with copper layers                            <td> designed with one to many pcb-rnd layers
+	<tr><td> Component/Top copper layer<td> Layer group with copper layers                            <td> any group of copper layers defined as the 'top' of a board
+	<tr><td> Solder/bottom copper layer<td> Layer group with copper layers                            <td> any group of copper layers defined as the 'bottom' of a board
+	<tr><td> Substrate                 <td> Layer group marked as substrate, hosting no logical layers<td> pcb-rnd does not yet handle properties of phyiscal substrate information
+	<tr><td> Contour of the board      <td> Outline layer                                             <td> designed using standard pcb-rnd elemnts
+	<tr><td> Outline routing path      <td> Outline layer                                             <td> designed using standard pcb-rnd elemnts
+	<tr><td> Polygon pour              <td> Polygon                                                   <td> an object available for design in any layer group
+	<tr><td> Plane                     <td> Polygon                                                   <td> see above 
+	<tr><td> Mask                      <td> A layer group adjacent to the outside copper layer group  <td> design layers available: automatic, additive, subtractive
+	<tr><td> Silk                      <td> A layer group adjacent to the mask layer group            <td> design layers available: automatic, additive, subtractive
+	<tr><td> N/A, or poss. net/circuit <td> Rats                                                      <td> assistive layer automatically generated with netlist and copper layer group connection data
 </table>
