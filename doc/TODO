@@ -125,6 +125,7 @@ For the next release:
 	  the same layer group
 - BUG: 'double click to close' missing for polygon holes [report:miloh]
 - BUG: segfault on printactions() action (configure with --debug) [report:miloh]
+- DOC: developer doc/developer/data.html is out of date [report:miloh]
 
 LATER RELEASES:
 - parametric footprint gtk attribute box for editing: also mention the default value in the tooltip [report: agaran]
