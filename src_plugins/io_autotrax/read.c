@@ -293,13 +293,13 @@ Bit 3 : LR quadrant
 		delta = 90.0;
 	} else if (segments == 3) { /* Upper half */
 		startAngle = 180.0;
-		delta = 180.0;
+		delta = -180.0;
 	} else if (segments == 6) { /* Left half */
 		startAngle = 270.0;
 		delta = 180.0;
 	} else if (segments == 12) { /* Lower half */
 		startAngle = 0.0;
-		delta = 180.0;
+		delta = -180.0;
 	} else if (segments == 9) { /* Right half */
 		startAngle = 90.0;
 		delta = 180.0;
