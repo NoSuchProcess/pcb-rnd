@@ -3,7 +3,7 @@
  *
  *	pcb-rnd, interactive printed circuit board design
  *	Copyright (C) 2016 Tibor 'Igor2' Palinkas
- *     Copyright (C) 2016 Erich S. Heinzle
+ *	Copyright (C) 2016, 2017 Erich S. Heinzle
  *
  *	This program is free software; you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	currentGroup = 0;
 
 	/* figure out which pcb layers are bottom copper and make a list */
-        bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
+	bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
 	if (bottomCount > 0 ) {
 		bottomLayers = malloc(sizeof(pcb_layer_id_t) * bottomCount);
 		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottomCount);
@@ -128,7 +128,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	}
 
 	/* figure out which pcb layers are internal copper layers and make a list */
-        innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
+	innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
 	if (innerCount > 0 ) {
 		innerLayers = malloc(sizeof(pcb_layer_id_t) * innerCount);
 		pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, innerCount);
@@ -136,13 +136,13 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		innerLayers = NULL;
 	}
 
-        if (innerCount > 4) {
-                pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner layers.\n");
-                /*return -1;*/
-        }
+	if (innerCount > 4) {
+		pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner layers.\n");
+		/*return -1;*/
+	}
 
 	/* figure out which pcb layers are top copper and make a list */
-        topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
+	topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	if (topCount > 0 ) {
 		topLayers = malloc(sizeof(pcb_layer_id_t) * topCount);
 		pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, topCount);
@@ -151,7 +151,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	}
 
 	/* figure out which pcb layers are bottom silk and make a list */
-        bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
+	bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	if (bottomSilkCount > 0 ) {
 		bottomSilk = malloc(sizeof(pcb_layer_id_t) * bottomSilkCount);
 		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottomSilkCount);
@@ -171,7 +171,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	/* figure out which pcb layers are outlines and make a list */
  	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
 	if (outlineCount > 0) {
-                outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
+		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
 		pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
 	} else {
 		outlineLayers = NULL;
@@ -244,7 +244,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 								LayoutXOffset, LayoutYOffset);
 			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
-                        write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
+			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
 			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
 								LayoutXOffset, LayoutYOffset);
@@ -410,7 +410,7 @@ int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
 				arcSegments |= 0x0F;
 			}
-                        if (arc->StartAngle <= 0.0 && (arc->StartAngle + arc->Delta) >= 90.0 ) {
+			if (arc->StartAngle <= 0.0 && (arc->StartAngle + arc->Delta) >= 90.0 ) {
 				arcSegments |= 0x02;
 			}
 			if (arc->StartAngle <= 90.0 && (arc->StartAngle + arc->Delta) >= 180.0 ) {
@@ -428,8 +428,8 @@ int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			yStart = arc->Y + yOffset;
 
 			pcb_fprintf(FP, "FA\n%.0ml %.0ml %.0ml %d %.0ml %d\n",
-                                xStart, yStart, radius, arcSegments,
-                                arc->Thickness, currentLayer);
+				xStart, yStart, radius, arcSegments,
+				arc->Thickness, currentLayer);
 
 			localFlag |= 1;
 		}
@@ -798,7 +798,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 			} else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin)) {
 				padShape = 3;
 			} else {
-                                padShape = 1; /* circular */
+				padShape = 1; /* circular */
 			}
 
 			pcb_fprintf(FP, "CP\t%s\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\n",
@@ -920,7 +920,7 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 				}
 			}
 			pcb_fprintf(FP, "FF\n%.0ml %.0ml %.0ml %.0ml %d\n",
-                                        minx + xOffset, miny + yOffset,
+					minx + xOffset, miny + yOffset,
 					maxx + xOffset, maxy + yOffset, currentLayer);
 
 			localFlag |= 1;
