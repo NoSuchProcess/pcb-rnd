@@ -44,7 +44,7 @@ static void grid_units_button_cb(GtkWidget * widget, gpointer data)
  * and relative cursor labels from growing and shrinking as you
  * move the cursor around.
  */
-static void absolute_label_size_req_cb(GtkWidget * widget, GtkRequisition * req, gpointer data)
+static void absolute_label_size_req_cb(GtkWidget * widget, GdkRectangle * req, gpointer data)
 {
 
 	static gint w = 0;
@@ -54,7 +54,7 @@ static void absolute_label_size_req_cb(GtkWidget * widget, GtkRequisition * req,
 		req->width = w;
 }
 
-static void relative_label_size_req_cb(GtkWidget * widget, GtkRequisition * req, gpointer data)
+static void relative_label_size_req_cb(GtkWidget * widget, GdkRectangle * req, gpointer data)
 {
 
 	static gint w = 0;
@@ -90,7 +90,7 @@ void make_cursor_position_labels(GtkWidget *hbox, pcb_gtk_cursor_pos_t *cps)
 	label = gtk_label_new("");
 	gtk_container_add(GTK_CONTAINER(frame), label);
 	cps->cursor_position_absolute_label = label;
-	g_signal_connect(G_OBJECT(label), "size-request", G_CALLBACK(absolute_label_size_req_cb), NULL);
+	g_signal_connect(G_OBJECT(label), "size-allocate", G_CALLBACK(absolute_label_size_req_cb), NULL);
 
 
 	/* The relative cursor position label
@@ -102,7 +102,7 @@ void make_cursor_position_labels(GtkWidget *hbox, pcb_gtk_cursor_pos_t *cps)
 	label = gtk_label_new(" __.__  __.__ ");
 	gtk_container_add(GTK_CONTAINER(frame), label);
 	cps->cursor_position_relative_label = label;
-	g_signal_connect(G_OBJECT(label), "size-request", G_CALLBACK(relative_label_size_req_cb), NULL);
+	g_signal_connect(G_OBJECT(label), "size-allocate", G_CALLBACK(relative_label_size_req_cb), NULL);
 }
 
 void ghid_cursor_position_label_set_text(pcb_gtk_cursor_pos_t *cps, gchar * text)
