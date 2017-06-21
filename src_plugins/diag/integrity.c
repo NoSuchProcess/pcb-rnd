@@ -43,6 +43,8 @@
 			pcb_message(PCB_MSG_ERROR, CHK "%s " name " field ." #fld " value mismatch (" fmt " != " fmt ")\n", whose, obj->ID, (st1)->fld, (st2)->fld); \
 	} while(0)
 
+static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk);
+
 
 static void chk_element(const char *whose, pcb_element_t *elem)
 {
@@ -70,6 +72,11 @@ static void chk_element(const char *whose, pcb_element_t *elem)
 		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], Direction, "%d");
 		check_field_eq("element name", elem, &elem->Name[n], &elem->Name[0], fid, "%d");
 	}
+}
+
+static void chk_subc(const char *whose, pcb_subc_t *subc)
+{
+	chk_layers("subc", subc->data, PCB_PARENT_SUBC, subc, 0);
 }
 
 /* Check layers and objects: walk the tree top->down and check ->parent
@@ -115,6 +122,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	{
 		pcb_pin_t *via;
 		pcb_element_t *elem;
+		pcb_subc_t *subc;
 
 		for(via = pinlist_first(&data->Via); via != NULL; via = pinlist_next(via))
 			check_parent("via", via, PCB_PARENT_DATA, data);
@@ -123,7 +131,13 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 			check_parent("element", elem, PCB_PARENT_DATA, data);
 			chk_element(whose, elem);
 		}
+
+		for(subc = pcb_subclist_first(&data->subc); subc != NULL; subc = pcb_subclist_next(subc)) {
+			check_parent("subc", subc, PCB_PARENT_DATA, data);
+			chk_subc(whose, subc);
+		}
 	}
+#warning subc TODO: check buffers: parents
 }
 
 void pcb_check_integrity(pcb_board_t *pcb)
