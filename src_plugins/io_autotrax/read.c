@@ -119,8 +119,8 @@ do { \
 #define BV(bit) (1<<(bit))
 
 
-/* autotrax_free_text */
-static int autotrax_parse_free_text(read_state_t *st, FILE *FP)
+/* autotrax_free_text/component_text */
+static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 
 	int i, heightMil;
@@ -245,18 +245,29 @@ static int autotrax_parse_free_text(read_state_t *st, FILE *FP)
 	}
 	line[index] = '\0';
 
-	pcb_printf("Found free text string for display : %s\n", line);
+	pcb_printf("Found text string for display : %s\n", line);
 
 	/* ABOUT HERE, CAN DO ROTATION/DIRECTION CONVERSION */
 
-	if (line[0] != '\0') {
-		pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, line, Flags);
+	if (PCBLayer >= 0 || PCBLayer <= 10) {
+		if (el == NULL && st != NULL && line[0] != '\0') {
+			pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, line, Flags);
+			pcb_printf("\tnew free text on layer %d created\n", PCBLayer);
+			return 1;
+		} else if (el != NULL && st != NULL && line[0] != '\0') {
+			pcb_printf("\ttext within component not supported\n");
+			return 1;
+		} else if (line[0] == '\0') {
+			pcb_printf("\tempty free/component text field ignored\n"); /* this may change with subcircuits */
+			return 0;
+		}
 	}
-	return 0; /* create new font */
+	return -1;
+
 }
 
-/* autotrax_pcb/free_track */
-static int autotrax_parse_free_track(read_state_t *st, FILE *FP)
+/* autotrax_pcb/free_track/component_track */
+static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int index = 0;
 	char line[35]; /* line is 4 x 32000 + layer + 1 + 1 = 33 characters at most */
@@ -370,140 +381,21 @@ static int autotrax_parse_free_track(read_state_t *st, FILE *FP)
 	/* ignore user routed flag */
 
 	if (PCBLayer >= 0 || PCBLayer <= 10) {
-		pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
-		pcb_printf("\tnew free line on layer %d created\n", PCBLayer);
-		return 0;
-	} else {
-		pcb_printf("Invalid layer found : %d\n", PCBLayer);
+		if (el == NULL && st != NULL) {
+			pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+			pcb_printf("\tnew free line on layer %d created\n", PCBLayer);
+			return 1;
+		} else if (el != NULL && st != NULL) {
+			pcb_element_line_new(el, X1, Y1, X2, Y2, Thickness);
+			pcb_printf("\tnew free line in component created\n");
+			return 1;
+		}
 	}
 	return -1;
 }
 
-static int autotrax_parse_component_track(pcb_element_t *el, FILE *FP)
-{
-	int index = 0;
-	char line[35]; /* line is 4 x 32000 + layer + 1 + 1 = 33 characters at most */
-	char coord[6];
-
-	int i;
-	int c;
-	char *end;
-	double val;
-
-	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
-	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer = 0; /* sane default value */
-
-	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
-	index = 0;
-
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 34) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 33) {
-		pcb_printf("error parsing free track line; too long\n");
-		return -1;
-	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	printf("About to parse autotrax free track: %s\n", line);  
-	index = 0;
-	while(line[index] == ' ') { /* skip white space */
-		index++;
-	}
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track X1\n");
-        	return -1;
-	}
-	X1 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track X1 : %ml\n", X1);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track Y1\n");
-        	return -1;
-	}
-	Y1 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track Y1 : %ml\n", Y1);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track X2\n");
-        	return -1;
-	}
-	X2 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track X2 : %ml\n", X2);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track Y2\n");
-        	return -1;
-	}
-	Y2 = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track Y2 : %ml\n", Y2);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free track width\n");
-        	return -1;
-	}
-	Thickness = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free track width : %ml\n", Thickness);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = atoi(coord);
-	if (*end != 0) {
-		pcb_printf("error parsing free track layer\n");
-        	return -1;
-	}
-	PCBLayer = val; 
-	pcb_printf("Found free track layer : %d\n", PCBLayer);
-	/* ignore user routed flag */
-
-	if (PCBLayer >= 0 || PCBLayer <= 10) {
-		pcb_element_line_new(el, X1, Y1, X2, Y2, Thickness);
-		pcb_printf("\tnew free line in component created\n");
-		return 0;
-	} else {
-		pcb_printf("Invalid component layer found : %d\n", PCBLayer);
-	}
-	return -1;
-}
-
-/* autotrax_pcb free arc parser */
-static int autotrax_parse_free_arc(read_state_t *st, FILE *FP)
+/* autotrax_pcb free arc and component arc parser */
+static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int index = 0;
 	char line[34]; /* line is 3 x 32000 + segments + width + layer = 29 characters at most */
@@ -516,7 +408,7 @@ static int autotrax_parse_free_arc(read_state_t *st, FILE *FP)
 
 	int segments = 15; /* full circle by default */ 
 
-	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
+	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius; /* radius may in fact be diameter */
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t delta = 360.0;
 
@@ -617,7 +509,7 @@ static int autotrax_parse_free_arc(read_state_t *st, FILE *FP)
 	PCBLayer = val; 
 	pcb_printf("Found free track layer : %d\n", PCBLayer);
 
-	width = height = 2*radius;
+	width = height = radius;
 
 /* we now need to decrypt the segments value. Some definitions will represent two arcs.
 Bit 0 : RU quadrant
@@ -676,12 +568,22 @@ Bit 3 : LR quadrant
 		delta = 270.0;
 	}  
 
-	pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
-	return 0;
+	if (PCBLayer >= 0 || PCBLayer <= 10) {
+		if (el == NULL && st != NULL) {
+			pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
+			pcb_printf("\tnew free arc on layer %d created\n", PCBLayer);
+			return 1;
+		} else if (el != NULL && st != NULL) {
+			pcb_element_arc_new(el, centreX, centreY, width, height, startAngle, delta, Thickness);
+			pcb_printf("\tnew arc in component created\n");
+			return 1;
+		}
+	}
+	return -1;
 }
 
 /* autotrax_pcb/via */
-static int autotrax_parse_free_via(read_state_t *st, FILE *FP)
+static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int index = 0;
 	char line[30]; /* line is 4 x 32000 = 23 characters at most */
@@ -768,17 +670,25 @@ static int autotrax_parse_free_via(read_state_t *st, FILE *FP)
 	Drill = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free track drill : %ml\n", Drill);
 /*  */
-	pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
-	pcb_printf("\tnew free via created\n");
-	return 0;
+	if (el == NULL) {
+		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
+		pcb_printf("\tnew free via created\n");
+		return 1;
+	} else if (el != NULL && st != NULL) {
+		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
+		pcb_printf("\tnew free via created\n");
+		return 1;
+	}
+	return -1;
+
 }
 
 /* autotrax_pcb free pad*/
-/* FP
+/* FP or CP
 x y xsize ysize shape holesize pwr/gnd layer
 padname
 */
-static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
+static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int index = 0;
 	char line[30]; /* line is 4 x 32000 = 23 characters at most */
@@ -912,6 +822,19 @@ static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
 	pcb_printf("Found free pad name : %s\n", padname);
 
 	Thickness = MIN(Xsize, Ysize);
+
+/* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
+	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
+	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
+	The onsolder flags are reduntant for now with vias.
+
+	currently ignore:
+	shape:
+		5 Cross Hair Target
+		6 Moiro Target
+*/
+
+
 	if ((Shape == 2  || Shape == 4) ) { /* && PCBLayer == 1) { square (2) or rounded rect (4) on top layer */ 
 		Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
 /*	} else if ((Shape == 2  || Shape == 4) && PCBLayer == 6) { bottom layer 
@@ -922,196 +845,48 @@ static int autotrax_parse_free_pad(read_state_t *st, FILE *FP)
 		Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); */
 	}		
 
-/* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
-	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
-	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
-	The onsolder flags are reduntant for now with vias.
 
-	currently ignore:
-	shape:
-		5 Cross Hair Target
-		6 Moiro Target
-*/
-	if (Shape == 5 && Shape == 6) {
+	if (Shape == 5 && Shape == 6 && el == NULL) {
 		pcb_printf("\tnew free pad not created; as it is a Cross Hair Target or Moiro target\n");
-	} else {
+	} else if (Shape == 5 && Shape == 6 && el != NULL) {
+		pcb_printf("\tnew pad not created in element; as it is a Cross Hair Target or Moiro target\n");
+	} else if (st != NULL && el == NULL) {
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, padname, Flags);
 		pcb_printf("\tnew free pad/hole created; need to check connects\n");
-	}
-	return 0;
-}
+		return 0;
+	} else if (st != NULL && el != NULL) {
+		if ((Shape == 2  || Shape == 4)  && PCBLayer == 1) { /* square (2) or rounded rect (4) on top layer */ 
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
+		} else if ((Shape == 2  || Shape == 4) && PCBLayer == 6) { /* bottom layer */ 
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); /*actually a rectangle, but... */
+		} else if (Shape == 3 && PCBLayer == 1) {/* top layer*/ 
+			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
+		} else if (Shape == 3 && PCBLayer == 6) {  /*bottom layer */
+			Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
+		}		
 
-static int autotrax_parse_component_pad(pcb_element_t *el, FILE *FP)
-{
-	int index = 0;
-	char line[30]; /* line is 4 x 32000 = 23 characters at most */
-	char coord[6];
-
-	int i;
-	int c;
-	char *end, padname[32];
-	double val;
-
-	int Shape = 0;
-	int Connects = 0;
-	int PCBLayer = 0; /* sane default value */
-
-	pcb_coord_t moduleX, moduleY, X, Y, Xsize, Ysize, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
-	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-
-	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
-
-	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
-
-/*	padname = "";*/	
-	index =0;
-
-	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 45) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
-	}
-	if (index > 42) {
-		pcb_printf("error parsing free pad line; too long\n");
-		return -1;
-	}
-	line[index] = ' ';
-	index++;
-	line[index] = '\0';
-	printf("About to parse autotrax free pad: %s\n", line);  
-	index = 0;
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad X\n");
-        	return -1;
-	}
-	X = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free pad X : %ml\n", X);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad Y\n");
-        	return -1;
-	}
-	Y = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free pad Y : %ml\n", Y);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad Xsize\n");
-        	return -1;
-	}
-	Xsize = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free pad Xsize : %ml\n", Xsize);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad Ysize\n");
-        	return -1;
-	}
-	Ysize = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free pad Ysize : %ml\n", Ysize);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	Shape = atoi(coord); 
-	pcb_printf("Found free pad shape : %d\n", Shape);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	index ++;
-	val = strtod(coord, &end);
-	if (*end != 0) {
-		pcb_printf("error parsing free pad drill\n");
-        	return -1;
-	}
-	Drill = PCB_MIL_TO_COORD(val);
-	pcb_printf("Found free pad drill : %ml\n", Drill);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	Connects = atoi(coord); 
-	pcb_printf("Found free pad connections : %d\n", Connects);
-/*  */
-	for (i = 0; line[index] != ' '; i++, index++) {
-		coord[i] = line[index];
-	}
-	coord[i] = '\0';
-	PCBLayer = atoi(coord); 
-	pcb_printf("Found free pad Layer : %d\n", PCBLayer);
-/* now find name as string on next line and copy it */
-	index = 0;
-	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < 32)) {
-		padname[index] = c;
-		index++;
-	}
-	padname[index] = '\0';
-	pcb_printf("Found free pad name : %s\n", padname);
-
-	Thickness = MIN(Xsize, Ysize);
-	if ((Shape == 2  || Shape == 4) ) { /* && PCBLayer == 1) { square (2) or rounded rect (4) on top layer */ 
-		Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
-	} else if ((Shape == 2  || Shape == 4) && PCBLayer == 6) { /* bottom layer */ 
-		Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); /*actually a rectangle, but... */
-	} else if (Shape == 3) { /*  && PCBLayer == 1) top layer*/ 
-		Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
-	} else if (Shape == 3 && PCBLayer == 6) {  /*bottom layer */
-		Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
-	}		
-
-/* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
-	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
-	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
-	The onsolder flags are reduntant for now with vias.
-
-	currently ignore:
-	shape:
-		5 Cross Hair Target
-		6 Moiro Target
-*/
-	if (Shape == 5 && Shape == 6) {
-		pcb_printf("\tnew free pad not created; as it is a Cross Hair Target or Moiro target\n");
-	} else {
 		if (Shape == 2 && Drill ==0) {/* is probably SMD */
-			pcb_element_pad_new_rect(el, moduleX - Xsize/2, moduleY - Ysize/2, Xsize/2 + moduleX, Ysize/2 + moduleY, Clearance, 
-				Clearance, padname, padname, Flags);
+/*			pcb_element_pad_new_rect(el, el->X - Xsize/2, el->Y - Ysize/2, Xsize/2 + el->X, Ysize/2 + el->Y, Clearance, 
+				Clearance, padname, padname, Flags);*/
+/*			pcb_element_pad_new_rect(el, X - Xsize/2, Y - Ysize/2, X + Xsize/2, Ysize/2 + Y, Clearance, 
+				Clearance, padname, padname, Flags);*/
+			return 1;
 		} else {
-			pcb_element_pin_new(el, X + moduleX, Y + moduleY, Thickness, Clearance, Clearance,  
+/*			pcb_element_pin_new(el, X + el->X, Y + el->Y, Thickness, Clearance, Clearance,  
+				Drill, padname, padname, Flags);*/
+			pcb_element_pin_new(el, X, Y , Thickness, Clearance, Clearance,  
 				Drill, padname, padname, Flags);
+			return 1;
 		}
 		pcb_printf("\tnew component pad/hole created; need to check connects\n");
+		return 1;
 	}
-	return 0;
+	pcb_printf("\tfailed to parse new pad/hole CP/FP\n");	
+	return -1;
 }
 
 
-static int autotrax_parse_free_fill(read_state_t *st, FILE *FP)
+static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int index = 0;
 	char line[30]; /* line is 4 x 32000 + layer = 26 characters at most */
@@ -1124,8 +899,10 @@ static int autotrax_parse_free_fill(read_state_t *st, FILE *FP)
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	char *end;
 	double val;
-	pcb_coord_t X1, Y1, X2, Y2;
+	pcb_coord_t X1, Y1, X2, Y2, Clearance;
 	int PCBLayer = 0;
+
+	Clearance = PCB_MIL_TO_COORD(10);
 
 	index =0;
 	while ((!feof(FP) && (c = fgetc(FP)) != '\n' && index < 29) || (c == '\n' && index == 0) ) {
@@ -1181,19 +958,29 @@ static int autotrax_parse_free_fill(read_state_t *st, FILE *FP)
 	coord[i] = '\0';
 	PCBLayer = atoi(coord); 
 	pcb_printf("Found fill layer : %d\n", PCBLayer);
-	if (PCBLayer >= 0 || PCBLayer <= 10) {
+
+	if ((PCBLayer >= 0 || PCBLayer <= 10) && el == NULL) {
 		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
-	} else {
+	} else if ((PCBLayer < 0 || PCBLayer > 10) && el == NULL){
 		pcb_printf("Invalid free fill layer found : %d\n", PCBLayer);
 	}
-	if (polygon != NULL) {
+
+	if (polygon != NULL && el == NULL && st != NULL) { /* a free fill, not in an element */ 
 		pcb_poly_point_new(polygon, X1, Y1);
 		pcb_poly_point_new(polygon, X2, Y1);
 		pcb_poly_point_new(polygon, X2, Y2);
 		pcb_poly_point_new(polygon, X1, Y2);
 		pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCBLayer], polygon);
 		pcb_poly_init_clip(st->PCB->Data, &st->PCB->Data->Layer[PCBLayer], polygon);
-		return 0;
+		return 1;
+	} else if (polygon == NULL && el != NULL && st != NULL && PCBLayer == 1 ) { /* in an element, top layer copper */
+		flags = pcb_flag_make(0);
+		pcb_element_pad_new_rect(el, X1, Y1, X2, Y2, Clearance, Clearance, "", "", flags);
+		return 1;
+	} else if (polygon == NULL && el != NULL && st != NULL && PCBLayer == 6 ) { /* in an element, bottom layer copper */
+		flags = pcb_flag_make(0);
+		pcb_element_pad_new_rect(el, X1, Y1, X2, Y2, Clearance, Clearance, "", "", flags);				
+		return 1;
 	}
 	return -1;
 }
@@ -1298,32 +1085,18 @@ static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree)
 static int autotrax_parse_component(read_state_t *st, FILE *FP)
 {
 	int i;
-	int scaling = 100;
-	int moduleDefined = 0;
-	int PCBLayer = 0;
-	int SMD = 0;
-	int square = 0;
-	int throughHole = 0;
-	int foundRefdes = 0;
 	int refdesScaling  = 100;
-	int moduleEmpty = 1;
-	unsigned int moduleRotation = 0; /* for rotating modules */
-	unsigned int padRotation = 0; /* for rotating pads */
-	unsigned long tally = 0, featureTally = 0, required;
-	pcb_coord_t moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
-	pcb_angle_t startAngle = 0.0;
-	pcb_angle_t endAngle = 0.0;
-	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
+	pcb_coord_t moduleX, moduleY, Thickness;
 	double val;
-	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
-	char * end, * textLabel, * text;
-	char moduleName[33], moduleRefdes[33], moduleValue[33], pinName[33], coord[10];
+	char * end;
+	char moduleName[33], moduleRefdes[33], moduleValue[33], coord[10];
 	pcb_element_t *newModule;
+
+	pcb_element_t *el;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
-	Clearance = PCB_MIL_TO_COORD(10); /* start with something bland here */
 
 	int index = 0;
 	int c;
@@ -1399,6 +1172,8 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 								moduleName, moduleRefdes, moduleValue,
 								moduleX, moduleY, direction,
 								refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
+
+	el = newModule;
 	
 	while (!feof(FP)) {
 		index =0;
@@ -1409,10 +1184,11 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 		index++;
 		line[index] = '\0';
 		s = line;
+		int nonempty = 0;
 		if (index > 7) {
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
 				printf("Finished parsing component\n");
-				if (moduleEmpty) { /* should try and use module empty function here */
+				if (!nonempty) { /* should try and use module empty function here */
 					Thickness = PCB_MM_TO_COORD(0.200);
 					pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1,
  Thickness);
@@ -1424,22 +1200,26 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 		} else if (index > 2) {
 			if (strncmp(s, "CT",2) == 0 ) {
 				printf("Found component track\n");
-				autotrax_parse_component_track(&newModule, FP);
+				nonempty != autotrax_parse_track(&st, FP, newModule);
 			} else if (strncmp(s, "CA",2) == 0 ) {
 				printf("Found component arc\n");
+				nonempty != autotrax_parse_arc(&st, FP, newModule);
 			} else if (strncmp(s, "CV",2) == 0 ) {
 				printf("Found component via\n");
-/*				autotrax_parse_component_via(&newModule, FP);*/
+				nonempty != autotrax_parse_via(&st, FP, newModule);
 			} else if (strncmp(s, "CF",2) == 0 ) {
 				printf("Found component fill\n");
+				nonempty != autotrax_parse_fill(&st, FP, newModule);
 			} else if (strncmp(s, "CP",2) == 0 ) {
 				printf("Found component pad\n");
-				autotrax_parse_component_pad(&newModule, FP);
+				nonempty |= autotrax_parse_pad(&newModule, FP, newModule);
 			} else if (strncmp(s, "CS",2) == 0 ) {
 				printf("Found component String\n");
+				nonempty |= autotrax_parse_text(&newModule, FP, newModule);
 			}
 		}
-	} 
+	}
+	return -1; /* should not get here */ 
 }
 
 	
@@ -1449,6 +1229,8 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	pcb_box_t boardSize, *box;
 	read_state_t st;
 	FILE *FP;
+
+	pcb_element_t *el = NULL;
 
 	int index = 0;
 	char line[1024], *s;
@@ -1495,22 +1277,22 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		} else if (index > 2) {
 			if (strncmp(s, "FT",2) == 0 ) {
 				printf("Found free track\n");
-				autotrax_parse_free_track(&st, FP);	
+				autotrax_parse_track(&st, FP, el);
 			} else if (strncmp(s, "FA",2) == 0 ) {
 				printf("Found free arc\n");
-				autotrax_parse_free_arc(&st, FP);
+				autotrax_parse_arc(&st, FP, el);
 			} else if (strncmp(s, "FV",2) == 0 ) {
 				printf("Found free via\n");
-				autotrax_parse_free_via(&st, FP);
+				autotrax_parse_via(&st, FP, el);
 			} else if (strncmp(s, "FF",2) == 0 ) {
 				printf("Found free fill\n");
-				autotrax_parse_free_fill(&st, FP);
+				autotrax_parse_fill(&st, FP, el);
 			} else if (strncmp(s, "FP",2) == 0 ) {
 				printf("Found free pad\n");
-				autotrax_parse_free_pad(&st, FP);
+				autotrax_parse_pad(&st, FP, el);
 			} else if (strncmp(s, "FS",2) == 0 ) {
 				printf("Found free String\n");
-				autotrax_parse_free_text(&st, FP);
+				autotrax_parse_text(&st, FP, el);
 			}
 		}
 	} 
