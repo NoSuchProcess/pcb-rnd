@@ -85,7 +85,7 @@ static int autotrax_error(gsxl_node_t *subtree, char *fmt, ...)
 
 /* Take each children of tree and execute them using autotrax_dispatch
    Useful for procssing nodes that may host various subtrees of different
-   nodes ina  flexible way. Return non-zero if any subtree processor failed. */
+   nodes in a flexible way. Return non-zero if any subtree processor failed. */
 
 /* autotrax_pcb/version */
 static int autotrax_parse_version(read_state_t *st, gsxl_node_t *subtree)
@@ -151,7 +151,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	line[index] = ' ';
 	index++;
 	line[index] = '\0';
-	printf("About to parse autotrax free text: %s\n", line);  
+	printf("About to parse autotrax free text: %s\n", line);
 	index = 0;
 /*  */
 	for (i = 0; line[index] != ' '; i++, index++) {
@@ -161,7 +161,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free text X\n");
-        	return -1;
+		return -1;
 	}
 	X = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free text X : %ml\n", X);
@@ -174,7 +174,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free text Y\n");
-        	return -1;
+		return -1;
 	}
 	Y = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free text Y : %ml\n", Y);
@@ -187,7 +187,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free text height\n");
-        	return -1;
+		return -1;
 	}
 	heightMil = (int)val;
 	scaling = (100*heightMil)/60;
@@ -202,7 +202,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free text rotation\n");
-        	return -1;
+		return -1;
 	}
 	direction = (int)val;
 	pcb_printf("Found free text rotation : %d\n", direction);
@@ -215,7 +215,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free text linewidth\n");
-        	return -1;
+		return -1;
 	}
 	linewidth = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free text linewidth : %ml\n", linewidth);
@@ -228,7 +228,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = atoi(coord);
 	if (*end != 0) {
 		pcb_printf("error parsing free text layer\n");
-        	return -1;
+		return -1;
 	}
 	PCBLayer = val; 
 	pcb_printf("Found free text layer : %d\n", PCBLayer);
@@ -309,7 +309,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free track X1\n");
-        	return -1;
+		return -1;
 	}
 	X1 = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free track X1 : %ml\n", X1);
@@ -322,7 +322,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free track Y1\n");
-        	return -1;
+		return -1;
 	}
 	Y1 = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free track Y1 : %ml\n", Y1);
@@ -335,7 +335,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free track X2\n");
-        	return -1;
+		return -1;
 	}
 	X2 = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free track X2 : %ml\n", X2);
@@ -348,7 +348,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free track Y2\n");
-        	return -1;
+		return -1;
 	}
 	Y2 = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free track Y2 : %ml\n", Y2);
@@ -361,7 +361,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free track width\n");
-        	return -1;
+		return -1;
 	}
 	Thickness = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free track width : %ml\n", Thickness);
@@ -374,7 +374,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = atoi(coord);
 	if (*end != 0) {
 		pcb_printf("error parsing free track layer\n");
-        	return -1;
+		return -1;
 	}
 	PCBLayer = val; 
 	pcb_printf("Found free track layer : %d\n", PCBLayer);
@@ -439,7 +439,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free arc centre X\n");
-        	return -1;
+		return -1;
 	}
 	centreX = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free arc centre X : %ml\n", centreX);
@@ -452,7 +452,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free arc centre Y\n");
-        	return -1;
+		return -1;
 	}
 	centreY = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free arc Y : %ml\n", centreY);
@@ -465,7 +465,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free arc radius\n");
-        	return -1;
+		return -1;
 	}
 	radius = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free arc radius : %ml\n", radius);
@@ -478,7 +478,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0 || val > 15 || val < 1) {
 		pcb_printf("error parsing free arc segments\n");
-        	return -1;
+		return -1;
 	}
 	segments = (int)val;
 	pcb_printf("Found free track segments : %d\n", segments);
@@ -491,7 +491,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free arc width\n");
-        	return -1;
+		return -1;
 	}
 	Thickness = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free arc width : %ml\n", Thickness);
@@ -504,7 +504,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = atoi(coord);
 	if (*end != 0) {
 		pcb_printf("error parsing free track layer\n");
-        	return -1;
+		return -1;
 	}
 	PCBLayer = val; 
 	pcb_printf("Found free track layer : %d\n", PCBLayer);
@@ -626,7 +626,7 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free via X\n");
-        	return -1;
+		return -1;
 	}
 	X = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free via X : %ml\n", X);
@@ -639,7 +639,7 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free via Y\n");
-        	return -1;
+		return -1;
 	}
 	Y = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free via Y : %ml\n", Y);
@@ -652,7 +652,7 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free via diameter\n");
-        	return -1;
+		return -1;
 	}
 	Thickness = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free via diameter : %ml\n", Thickness);
@@ -665,7 +665,7 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free via drill\n");
-        	return -1;
+		return -1;
 	}
 	Drill = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free track drill : %ml\n", Drill);
@@ -735,7 +735,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free pad X\n");
-        	return -1;
+		return -1;
 	}
 	X = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free pad X : %ml\n", X);
@@ -748,7 +748,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free pad Y\n");
-        	return -1;
+		return -1;
 	}
 	Y = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free pad Y : %ml\n", Y);
@@ -761,7 +761,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free pad Xsize\n");
-        	return -1;
+		return -1;
 	}
 	Xsize = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free pad Xsize : %ml\n", Xsize);
@@ -774,7 +774,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free pad Ysize\n");
-        	return -1;
+		return -1;
 	}
 	Ysize = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free pad Ysize : %ml\n", Ysize);
@@ -794,7 +794,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free pad drill\n");
-        	return -1;
+		return -1;
 	}
 	Drill = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found free pad drill : %ml\n", Drill);
@@ -926,7 +926,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing free fill X1\n");
-        	return -1;
+		return -1;
 	}
 	X1 = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found fill X1 : %ml\n", X1);
@@ -988,14 +988,14 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 /* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
 static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_name, unsigned int mask)
 {
-        pcb_layer_id_t id;
-        if (pcb_layer_list(mask, &id, 1) != 1) {
-                pcb_layergrp_id_t gid;
-                pcb_layergrp_list(PCB, mask, &gid, 1);
-                id = pcb_layer_create(gid, autotrax_name);
-        }
-        htsi_set(&st->layer_k2i, pcb_strdup(autotrax_name), id);
-        return 0;
+	pcb_layer_id_t id;
+	if (pcb_layer_list(mask, &id, 1) != 1) {
+		pcb_layergrp_id_t gid;
+		pcb_layergrp_list(PCB, mask, &gid, 1);
+		id = pcb_layer_create(gid, autotrax_name);
+	}
+	htsi_set(&st->layer_k2i, pcb_strdup(autotrax_name), id);
+	return 0;
 }
 
 /* Parse a layer definition and do all the administration needed for the layer */
@@ -1019,7 +1019,7 @@ static int autotrax_create_layers(read_state_t *st)
 	if (res != 0) {
 		pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
 		pcb_layergrp_inhibit_dec();
-                return -1;
+		return -1;
 	}
 
 	pcb_layergrp_fix_old_outline(PCB);
@@ -1085,7 +1085,7 @@ static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree)
 static int autotrax_parse_component(read_state_t *st, FILE *FP)
 {
 	int i;
-	int refdesScaling  = 100;
+	int refdesScaling = 100;
 	pcb_coord_t moduleX, moduleY, Thickness;
 	double val;
 	unsigned direction = 0; /* default is horizontal */
@@ -1154,7 +1154,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 	val = strtod(coord, &end);
 	if (*end != 0) {
 		pcb_printf("error parsing component X location\n");
-        	return -1;
+		return -1;
 	}
 	moduleX = PCB_MIL_TO_COORD(val);
 	pcb_printf("Found moduleX : %ml\n", moduleX);
@@ -1171,7 +1171,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 								pcb_font(st->PCB, 0, 1), Flags,
 								moduleName, moduleRefdes, moduleValue,
 								moduleX, moduleY, direction,
-								refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
+								refdesScaling, TextFlags, pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
 
 	el = newModule;
 	
