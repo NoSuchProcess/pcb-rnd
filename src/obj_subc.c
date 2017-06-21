@@ -335,10 +335,12 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	EraseSubc(sc);
 
-	if (Data->subc_tree != NULL)
-		pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
-	else
-		Data->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+	if (pcb_data_get_top(Data) != NULL) {
+		if (Data->subc_tree != NULL)
+			pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
+		else
+			Data->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+	}
 
 	/* execute on layer locals */
 	for(n = 0; n < sc->data->LayerN; n++) {
@@ -385,7 +387,8 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	}
 
 	pcb_close_box(&sc->BoundingBox);
-	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
+	if (pcb_data_get_top(Data) != NULL)
+		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
 	DrawSubc(sc);
 	pcb_draw();
 	return sc;
@@ -489,7 +492,7 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	pcb_subc_t *nsc;
 	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0);
 	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED)
-		pcb_select_subc(ctx->buffer.pcb, nsc, PCB_CHGFLG_CLEAR, 0);
+		pcb_select_subc(NULL, nsc, PCB_CHGFLG_CLEAR, 0);
 	return nsc;
 }
 
@@ -606,7 +609,7 @@ void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 	ctx.chgflag.how = how;
 	ctx.chgflag.flag = PCB_FLAG_SELECTED;
 
-	pcb_subc_op(PCB->Data, sc, &ChgFlagFunctions, &ctx);
+	pcb_subc_op((pcb == NULL ? NULL : pcb->Data), sc, &ChgFlagFunctions, &ctx);
 	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, sc);
 	if (redraw)
 		DrawSubc(sc);
