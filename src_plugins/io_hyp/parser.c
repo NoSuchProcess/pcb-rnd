@@ -1078,6 +1078,9 @@ void hyp_draw_polyline(hyp_polygon_t * polyline)
 	if ((polyline == NULL) || (polyline->vertex == NULL))
 		return;
 
+	if (hyp_debug)
+		pcb_printf("draw polyline:  drawing poly id=%i.\n", polyline->hyp_poly_id);
+
 	layer = pcb_get_layer(hyp_create_layer(polyline->layer_name));
 
 	xpos = polyline->vertex->x1;
@@ -1130,6 +1133,9 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 
 	if ((polygon == NULL) || (polygon->vertex == NULL))
 		return;
+
+	if (hyp_debug)
+		pcb_printf("draw polygon:   drawing poly id=%i.\n", polygon->hyp_poly_id);
 
 	layer = pcb_get_layer(hyp_create_layer(polygon->layer_name));
 
@@ -1192,20 +1198,41 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 void hyp_draw_polygons()
 {
 	hyp_polygon_t *i;
+	int l, layer_count = 0;
+	pcb_layer_id_t *layer_array = NULL;
 
 #ifdef XXX
 	hyp_dump_polygons();					/* more debugging */
 #endif
 
-	/* loop over all created polygons and draw them */
-	for (i = polygon_head; i != NULL; i = i->next) {
+	/* get list of copper layer id's */
+	layer_count = pcb_layer_list(PCB_LYT_COPPER, NULL, 0);
+	if (layer_count <= 0)
+		return;
+	layer_array = malloc(sizeof(pcb_layer_id_t) * layer_count);
+	if (layer_array == NULL)
+		return;
+	layer_count = pcb_layer_list(PCB_LYT_COPPER, layer_array, layer_count);
+
+	/* loop over all layers */
+	for (l = 0; l < layer_count; l++) {
+		pcb_layer_id_t layer_id = layer_array[l];
 		if (hyp_debug)
-			pcb_printf("draw polygons: drawing poly id=%i.\n", i->hyp_poly_id);
-		if (i->is_polygon)
-			hyp_draw_polygon(i);
-		else
-			hyp_draw_polyline(i);
+			pcb_printf("draw polygons: layer %lx \"%s\"\n", layer_id, pcb_layer_name(layer_id));
+
+		/* loop over all polygons of the layer and draw them */
+		for (i = polygon_head; i != NULL; i = i->next) {
+			/* check polygon is on layer */
+			if (layer_id != hyp_create_layer(i->layer_name))
+				continue;
+			/* polygon or polyline? */
+			if (i->is_polygon)
+				hyp_draw_polygon(i);
+			else
+				hyp_draw_polyline(i);
+		}
 	}
+
 	return;
 }
 
