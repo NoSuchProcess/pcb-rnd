@@ -123,9 +123,11 @@ static int autotrax_bring_back_eight_track(FILE * FP, double * results, int numr
 	if (strlen == 0) {
 		printf("Too many newlines in file. Unable to parse properly.\n");
 		return -1;
-	} else if (strlen <= maxread) { /* add some padding if safe to do so to make strtod behave nicely. Likely CR related */
+/*
+	} else if (strlen <= maxread) { /add some padding if safe to do so to make strtod behave nicely. Likely CR related /
 		line[strlen] = ' ';
 		line[strlen+1] = ' ';	
+*/
 	}
 	for (iter = 0 ; iter < numresults; iter++) {
 		results[iter] = strtod(line, &end);
@@ -733,7 +735,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 
 	while (!feof(FP)) {
 		length = read_a_text_line(FP, line, maxtext);
-		if (line[0] == '\0') {
+		if (length == 0) {
 			length = read_a_text_line(FP, line, maxtext);
 		}
 		nonempty = 0;
