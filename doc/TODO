@@ -25,7 +25,6 @@
 
 For the next release:
 - SUBC BUGS:
-	- ctrl+c copy a subc ruins the original subc somehow - like if a second copy was placed over it (rotate to see)
 	- undo doesn't work
 	- missing manual layer binding (reuse csect!)
 - BUGS:
