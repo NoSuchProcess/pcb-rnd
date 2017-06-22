@@ -89,29 +89,44 @@ static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree); /* descri
 
 static int autotrax_get_layeridx(read_state_t *st, const char *autotrax_name);
 
+/* a simple line retrieval routine that ideally has maxread to be 2 less than * line in size */ 
 static int read_a_text_line(FILE *FP, char * line, int maxread) {
 	int index = 0;
 	int c;
 	/* we avoid up to one '\n' if it is at the beginning of the line */
-	while ((!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < (maxread-1))) || (c == '\n' && index == 0) ) {
-		line[index] = c;
-		index ++;
+	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < (maxread-1))) {
+		if (c != 0x0D) { /*carriage return found in some old files prior to newline*/
+			line[index] = c;
+			index ++;
+		}
 	}
 	line[index] = '\0';
+	/*printf("Line returned:\n%s\n", line);*/
 	return index;
 }
 
 static int autotrax_bring_back_eight_track(FILE * FP, double * results, int numresults) {
-	int maxread = 40; /*sufficient for all normal protel autotrax line reads */
-	char line[41];
+	int maxread = 42; /*sufficient for all normal protel autotrax line reads, plus a safety margin */
+	char line[43];
 	char *end;
 	int maxresult = 8; /* no more than 8 fields are present in protel autotrax subtypes */
 	int iter;
+	int strlen = 0;
 	if (numresults > maxresult) {
 		printf("Too many result fields requested from line parser.\n");
 		return -1;
 	}
-	read_a_text_line(FP, line, maxread);
+	strlen = read_a_text_line(FP, line, maxread);
+	if (strlen == 0) {
+		strlen = read_a_text_line(FP, line, maxread);
+	}
+	if (strlen == 0) {
+		printf("Too many newlines in file. Unable to parse properly.\n");
+		return -1;
+	} else if (strlen <= maxread) { /* add some padding if safe to do so to make strtod behave nicely. Likely CR related */
+		line[strlen] = ' ';
+		line[strlen+1] = ' ';	
+	}
 	for (iter = 0 ; iter < numresults; iter++) {
 		results[iter] = strtod(line, &end);
 		/*printf("current coord: %d, \t\tand current end: %s\n", (int)results[iter], end);*/
@@ -157,9 +172,9 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	/* ignore user routed flag */
 
 	if (read_a_text_line(FP, line, maxtext) == 0) {
-		pcb_printf("error parsing free string text line; empty\n");
-		return -1;
-	}
+		pcb_printf("error parsing free string text line; empty field\n");
+		strcpy(line, "(empty text field)");
+	} /* this helps the parser fail more gracefully if excessive newlines, or empty text field */
 
 	pcb_printf("Found text string for display : %s\n", line);
 
@@ -672,16 +687,33 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 	char *s, line[33];
 	int nonempty = 0;
 
-	read_a_text_line(FP, moduleRefdes, maxtext);
+	length = read_a_text_line(FP, moduleRefdes, maxtext); /* this breaks mildly with excess newlines */
+	if (length == 0) {
+		strcpy(moduleRefdes, "unknown");
+	}
 	pcb_printf("Found component refdes : %s\n", moduleRefdes);
-	read_a_text_line(FP, moduleName, maxtext);
+	length = read_a_text_line(FP, moduleName, maxtext);
+	if (length == 0) {
+		strcpy(moduleName, "unknown");
+	}
+	printf("ModuleRefdes: %s\n", moduleRefdes);
 	pcb_printf("Found component name : %s\n", moduleName);
-	read_a_text_line(FP, moduleValue, maxtext);
+	length = read_a_text_line(FP, moduleValue, maxtext);
+		if (length == 0) {
+		strcpy(moduleValue, "unknown");
+	}
 	pcb_printf("Found component description : %s\n", moduleValue);
 
 /* with the header read, we now ignore the locations for the text fields in the next two lines... */
-	read_a_text_line(FP, line, maxtext);
-	read_a_text_line(FP, line, maxtext);
+/* we also allow up to two empty lines in case of extra newlines */
+	length = read_a_text_line(FP, line, maxtext);
+	if (length == 0) {
+		read_a_text_line(FP, line, maxtext);
+	}
+	length = read_a_text_line(FP, line, maxtext);
+	if (length == 0) {
+		read_a_text_line(FP, line, maxtext);
+	}
 
 	if (!autotrax_bring_back_eight_track(FP, results, coordresultcount)) {
 		printf("error parsing component coordinates\n");
@@ -701,9 +733,12 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 
 	while (!feof(FP)) {
 		length = read_a_text_line(FP, line, maxtext);
+		if (line[0] == '\0') {
+			length = read_a_text_line(FP, line, maxtext);
+		}
 		nonempty = 0;
 		s = line;
-		if (length > 7) {
+		if (length >= 7) {
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
 				printf("Finished parsing component\n");
 				if (!nonempty) { /* should try and use module empty function here */
@@ -714,7 +749,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 				pcb_element_bbox(st->PCB->Data, newModule, pcb_font(PCB, 0, 1));
 				return 0;
 			}
-		} else if (length > 2) {
+		} else if (length >= 2) {
 			if (strncmp(s, "CT",2) == 0 ) {
 				printf("Found component track\n");
 				nonempty |= autotrax_parse_track(&st, FP, newModule);
@@ -750,6 +785,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	pcb_element_t *el = NULL;
 
 	int length = 0;
+	int finished = 0;
 	int maxtext = 1024;
 	char line[1024];
 	char *s;
@@ -765,10 +801,13 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.settings_dest = settings_dest;
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
 
-	while (!feof(FP)) {
+	while (!feof(FP) && !finished) {
 		length = read_a_text_line(FP, line, maxtext);
+		if (length == 0) { /* deal with up to one additional newline per line*/
+			length = read_a_text_line(FP, line, maxtext);
+		}
 		s = line;
-		if (length > 10) {
+		if (length >= 10) {
 			if (strncmp(line, "PCB FILE 4", 10) == 0 ) {
 				printf("Found Protel Autotrax version 4\n");
 				autotrax_create_layers(&st);
@@ -776,18 +815,19 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 				printf("Found Protel Easytrax version 5\n");
 				autotrax_create_layers(&st);
 			}
-		} else if (length > 6) {
+		} else if (length >= 6) {
 			if (strncmp(s, "ENDPCB",6) == 0 ) {
 				printf("Found end of file\n");
+				finished = 1;
 			} else if (strncmp(s, "NETDEF",6) == 0 ) {
 				printf("Found net definition\n");
 			}
-		} else if (length > 4) {
+		} else if (length >= 4) {
 			if (strncmp(line, "COMP",4) == 0 ) {
 				printf("Found component\n");
 				autotrax_parse_component(&st, FP);
 			}
-		} else if (length > 2) {
+		} else if (length >= 2) {
 			if (strncmp(s, "FT",2) == 0 ) {
 				printf("Found free track\n");
 				autotrax_parse_track(&st, FP, el);
