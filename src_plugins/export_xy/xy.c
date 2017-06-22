@@ -173,6 +173,7 @@ typedef struct {
 	double theta, xray_theta;
 	pcb_element_t *element;
 	pcb_coord_t pad_w, pad_h;
+	pcb_coord_t prpad_w, prpad_h;
 	int element_num;
 	pcb_coord_t ox, oy;
 	int origin_score;
@@ -222,7 +223,7 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	pcb_loop_layers(ctx, NULL, find_origin_bump, NULL, NULL, NULL);
 }
 
-static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element)
+static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element, pcb_coord_t *pw, pcb_coord_t *ph)
 {
 	pcb_box_t box, tmp;
 	box.X1 = box.Y1 = PCB_MAX_COORD;
@@ -242,8 +243,8 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element)
 	}
 	PCB_END_LOOP;
 
-	ctx->pad_w = box.X2 - box.X1;
-	ctx->pad_h = box.Y2 - box.Y1;
+	*pw = box.X2 - box.X1;
+	*ph = box.Y2 - box.Y1;
 }
 
 static void count_pins_pads(subst_ctx_t *ctx, pcb_element_t *element, int *pins, int *pads)
@@ -263,26 +264,22 @@ static void count_pins_pads(subst_ctx_t *ctx, pcb_element_t *element, int *pins,
 	PCB_END_LOOP;
 }
 
-static void calc_pad_bbox(subst_ctx_t *ctx, int prerot)
+static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coord_t *ph)
 {
 	if (prerot) {
 		/* this is what we would do if we wanted to return the pre-rotation state */
 		if ((ctx->theta == 0) || (ctx->theta == 180)) {
-			calc_pad_bbox_(ctx, ctx->element);
+			calc_pad_bbox_(ctx, ctx->element, pw, ph);
 			return;
 		}
 		if ((ctx->theta == 90) || (ctx->theta == 270)) {
-			pcb_coord_t tmp;
-			calc_pad_bbox_(ctx, ctx->element);
-			tmp = ctx->pad_w;
-			ctx->pad_w = ctx->pad_h;
-			ctx->pad_h = tmp;
+			calc_pad_bbox_(ctx, ctx->element, ph, pw);
 			return;
 		}
 		pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet\n");
 	}
 
-	calc_pad_bbox_(ctx, ctx->element);
+	calc_pad_bbox_(ctx, ctx->element, pw, ph);
 }
 
 static void append_clean(gds_t *dst, const char *text)
@@ -427,30 +424,22 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "pad_width%", 10) == 0) {
 			*input += 10;
-			if (ctx->pad_w == 0)
-				calc_pad_bbox(ctx, 0);
 			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_w);
 			return 0;
 		}
 		if (strncmp(*input, "pad_height%", 11) == 0) {
 			*input += 11;
-			if (ctx->pad_h == 0)
-				calc_pad_bbox(ctx, 0);
 			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_h);
 			return 0;
 		}
 		if (strncmp(*input, "pad_width_prerot%", 17) == 0) {
 			*input += 17;
-			if (ctx->pad_w == 0)
-				calc_pad_bbox(ctx, 1);
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_w);
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->prpad_w);
 			return 0;
 		}
 		if (strncmp(*input, "pad_height_prerot%", 18) == 0) {
 			*input += 18;
-			if (ctx->pad_h == 0)
-				calc_pad_bbox(ctx, 1);
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_h);
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->prpad_h);
 			return 0;
 		}
 		if (strncmp(*input, "smdvsthru%", 10) == 0) {
@@ -695,7 +684,10 @@ static int PrintXY(const template_t *templ, const char *format_name)
 			ctx.y = PCB->MaxHeight - ctx.y;
 
 		ctx.element = element;
+		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h);
+		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h);
 		fprintf_templ(fp, &ctx, templ->elem);
+
 		PCB_PIN_LOOP(element);
 		{
 			pcb_lib_menu_t *m = pcb_netlist_find_net4pin(PCB, pin);
