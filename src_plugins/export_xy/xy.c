@@ -172,6 +172,7 @@ typedef struct {
 	pcb_coord_t x, y;
 	double theta, xray_theta;
 	pcb_element_t *element;
+	pcb_coord_t pad_cx, pad_cy;
 	pcb_coord_t pad_w, pad_h;
 	pcb_coord_t prpad_w, prpad_h;
 	int element_num;
@@ -223,7 +224,7 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	pcb_loop_layers(ctx, NULL, find_origin_bump, NULL, NULL, NULL);
 }
 
-static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element, pcb_coord_t *pw, pcb_coord_t *ph)
+static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
 {
 	pcb_box_t box, tmp;
 	box.X1 = box.Y1 = PCB_MAX_COORD;
@@ -245,6 +246,8 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element, pcb_coord_t
 
 	*pw = box.X2 - box.X1;
 	*ph = box.Y2 - box.Y1;
+	*pcx = (box.X2 + box.X1)/2;
+	*pcy = (box.Y2 + box.Y1)/2;
 }
 
 static void count_pins_pads(subst_ctx_t *ctx, pcb_element_t *element, int *pins, int *pads)
@@ -264,22 +267,22 @@ static void count_pins_pads(subst_ctx_t *ctx, pcb_element_t *element, int *pins,
 	PCB_END_LOOP;
 }
 
-static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coord_t *ph)
+static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
 {
 	if (prerot) {
 		/* this is what we would do if we wanted to return the pre-rotation state */
 		if ((ctx->theta == 0) || (ctx->theta == 180)) {
-			calc_pad_bbox_(ctx, ctx->element, pw, ph);
+			calc_pad_bbox_(ctx, ctx->element, pw, ph, pcx, pcy);
 			return;
 		}
 		if ((ctx->theta == 90) || (ctx->theta == 270)) {
-			calc_pad_bbox_(ctx, ctx->element, ph, pw);
+			calc_pad_bbox_(ctx, ctx->element, ph, pw, pcx, pcy);
 			return;
 		}
 		pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet\n");
 	}
 
-	calc_pad_bbox_(ctx, ctx->element, pw, ph);
+	calc_pad_bbox_(ctx, ctx->element, pw, ph, pcx, pcy);
 }
 
 static void append_clean(gds_t *dst, const char *text)
@@ -367,6 +370,16 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		if (strncmp(*input, "y%", 2) == 0) {
 			*input += 2;
 			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->y);
+			return 0;
+		}
+		if (strncmp(*input, "padcx%", 6) == 0) {
+			*input += 6;
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_cx);
+			return 0;
+		}
+		if (strncmp(*input, "padcy%", 6) == 0) {
+			*input += 6;
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_cy);
 			return 0;
 		}
 		if (strncmp(*input, "rot%", 4) == 0) {
@@ -488,6 +501,18 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 		fprintf(f, "%s", tmp);
 		free(tmp);
 	}
+}
+
+static void xy_translate(subst_ctx_t *ctx, pcb_coord_t *x, pcb_coord_t *y)
+{
+		/* translate the xy coords using explicit or implicit origin; implicit origin
+		   is lower left corner (looking from top) of board extents */
+		if (ctx->origin_score > 0) {
+			*y = ctx->oy - *y;
+			*x = *x - ctx->ox;
+		}
+		else
+			*y = PCB->MaxHeight - *y;
 }
 
 typedef struct {
@@ -674,18 +699,13 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
 		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
 
-		/* translate the xy coords using explicit or implicit origin; implicit origin
-		   is lower left corner (looking from top) of board extents */
-		if (ctx.origin_score > 0) {
-			ctx.y = ctx.oy - ctx.y;
-			ctx.x = ctx.x - ctx.ox;
-		}
-		else
-			ctx.y = PCB->MaxHeight - ctx.y;
+		xy_translate(&ctx, &ctx.x, &ctx.y);
 
 		ctx.element = element;
-		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h);
-		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h);
+		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
+		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.pad_cx, &ctx.pad_cy);
+		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
+
 		fprintf_templ(fp, &ctx, templ->elem);
 
 		PCB_PIN_LOOP(element);

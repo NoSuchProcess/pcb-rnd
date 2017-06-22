@@ -34,7 +34,7 @@ static const char *templ_macrofab_hdr =
 	"# --------------------------------------------\n";
 
 static const char *templ_macrofab_elem =
-        "%elem.name_%\t%elem.x%\t%elem.y%\t%elem.siderot%\t%elem.num-side%\t%elem.smdvsthru%\t%elem.pad_width_prerot%\t%elem.pad_height_prerot%\t%elem.value_%\t%elem.descr_%\n";
+        "%elem.name_%\t%elem.padcx%\t%elem.padcy%\t%elem.siderot%\t%elem.num-side%\t%elem.smdvsthru%\t%elem.pad_width_prerot%\t%elem.pad_height_prerot%\t%elem.value_%\t%elem.descr_%\n";
 
 static const char *templ_TM220TM240_hdr = 
 	"#pcb-rnd TM220A/TM240A xyrs version 1.0\n"
