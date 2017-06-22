@@ -1,5 +1,5 @@
 /*
- *														COPYRIGHT
+ *				COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
  *	Copyright (C) 2016 Tibor 'Igor2' Palinkas
@@ -362,6 +362,17 @@ int write_autotrax_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset,
 	return 0;
 }
 
+int write_autotrax_track(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_line_t *line, pcb_cardinal_t layer)
+{
+	int userRouted = 1;
+			pcb_fprintf(FP, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\n",
+				line->Point1.X + xOffset, line->Point1.Y + yOffset,
+				line->Point2.X + xOffset, line->Point2.Y + yOffset,
+				line->Thickness, layer, userRouted);
+	return 0;
+}
+
+
 int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number,
 		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
@@ -372,12 +383,9 @@ int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->meta.real.name && *layer->meta.real.name)) {
 		int localFlag = 0;
-		int userRouted = 1;
 		linelist_foreach(&layer->Line, &it, line) {
-			pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\n",
-				line->Point1.X + xOffset, line->Point1.Y + yOffset,
-				line->Point2.X + xOffset, line->Point2.Y + yOffset,
-				line->Thickness, currentLayer, userRouted);
+			pcb_fprintf(FP, "FT\n");
+			write_autotrax_track(FP, xOffset, yOffset, line, currentLayer);
 			localFlag |= 1;
 		}
 		return localFlag;
@@ -386,51 +394,71 @@ int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	}
 }
 
-int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
-		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arcStart, pcb_angle_t arcDelta)
 {
-	gdl_iterator_t it;
-	pcb_arc_t *arc;
-	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
-	pcb_cardinal_t currentLayer = number;
-	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
-	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
-	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
+	int arcSegments = 15;
+	/* 15 = circle, bit 1 = LUQ, bit 2 = LLQ, bit 3 = LRQ, bit 4 = URQ */
+	if (arcDelta == -360 ) { /* it's a circle */
+		arcDelta = 360;
+	}
+	if (arcDelta < 0 ) {
+		arcDelta = -arcDelta;
+		arcStart -= arcDelta;
+	}
 
-	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) ){ /*|| (layer->meta.real.name && *layer->meta.real.name)) { */
-		int localFlag = 0;
-		int arcSegments = 0; /* 15 = circle, bit 1 = LUQ, bit 2 = LLQ, bit 3 = LRQ, bit 4 = URQ */ 
-		arclist_foreach(&layer->Arc, &it, arc) {
+	while (arcStart < 0) {
+		arcStart += 360;
+	}
+	while (arcStart > 360) {
+		arcStart -= 360;
+	}
+	if (arcDelta >= 360) { /* it's a circle */
+		arcSegments |= 0x0F;
+	} else {
+		if (arcStart <= 0.0 && (arcStart + arcDelta) >= 90.0 ) {
+			arcSegments |= 0x02;
+		}
+		if (arcStart <= 90.0 && (arcStart + arcDelta) >= 180.0 ) {
+			arcSegments |= 0x04;
+		}
+		if (arcStart <= 180.0 && (arcStart + arcDelta) >= 270.0 ) {
+			arcSegments |= 0x08;
+		}
+		if (arcStart <= 270.0 && (arcStart + arcDelta) >= 360.0 ) {
+			arcSegments |= 0x01;
+		}
+	}	
+	return arcSegments;
+}
+
+int autotrax_arc_output(FILE *FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_arc_t * arc, int currentLayer) 
+{
+	pcb_coord_t radius;
 			if (arc->Width > arc->Height) {
 				radius = arc->Height;
 			} else {
 				radius = arc->Width;
 			}
-			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
-				arcSegments |= 0x0F;
-			}
-			if (arc->StartAngle <= 0.0 && (arc->StartAngle + arc->Delta) >= 90.0 ) {
-				arcSegments |= 0x02;
-			}
-			if (arc->StartAngle <= 90.0 && (arc->StartAngle + arc->Delta) >= 180.0 ) {
-				arcSegments |= 0x04;
-			}
-			if (arc->StartAngle <= 180.0 && (arc->StartAngle + arc->Delta) >= 270.0 ) {
-				arcSegments |= 0x08;
-			}
-			if (arc->StartAngle <= 270.0 && (arc->StartAngle + arc->Delta) >= 360.0 ) {
-				arcSegments |= 0x01;
-			}
-			/* may need to think about cases with negative Delta as well */
-			/* consider exporting segments for arcs not made up of 90 degree quadrants */
-			xStart = arc->X + xOffset;
-			yStart = arc->Y + yOffset;
-
-			pcb_fprintf(FP, "FA\n%.0ml %.0ml %.0ml %d %.0ml %d\n",
-				xStart, yStart, radius, arcSegments,
+			pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\n",
+				arc->X + xOffset, arc->Y + yOffset, radius,
+				pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta),
 				arc->Thickness, currentLayer);
+	return 0;
+}
 
+int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
+		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+{
+	gdl_iterator_t it;
+	pcb_arc_t *arc;
+	pcb_cardinal_t currentLayer = number;
+
+	/* write information about non empty layers */
+	if (!pcb_layer_is_empty_(PCB, layer) ){ /*|| (layer->meta.real.name && *layer->meta.real.name)) { */
+		int localFlag = 0;
+		arclist_foreach(&layer->Arc, &it, arc) {
+			pcb_fprintf(FP, "FA\n");
+			autotrax_arc_output(FP, xOffset, yOffset, arc, currentLayer);
 			localFlag |= 1;
 		}
 		return localFlag;
@@ -511,20 +539,12 @@ int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number,
 int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 
-
-	/*
-	write_kicad_legacy_module_header(FP);
-	fputs("io_kicad_legacy_write_element()", FP);
-	return 0;
-	*/
-
-
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_element_t *element;
 
-	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
+	pcb_cardinal_t currentLayer = 7;
 
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
@@ -571,57 +591,18 @@ int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 		 */
 
 		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
-		fprintf(FP, "$MODULE %s\n", currentElementName);
-		fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
-		fprintf(FP, "Li %s\n", currentElementName);
-		fprintf(FP, "Cd %s\n", currentElementName);
-		fputs("Sc 0\n",FP);
-		fputs("AR\n",FP);
-		fputs("Op 0 0 0\n",FP);
-		fputs("T0 0 -6.000 1.524 1.524 0 0.305 N V 21 N \"S***\"\n",FP); /*1.524 is basically 600 decimil, 0.305 is ~= 120 decimil */
+		fprintf(FP, "COMP\n%s\n", currentElementName);
+		fprintf(FP, "%s\n", element->Name[1].TextString);
+		fprintf(FP, "%s\n", element->Name[2].TextString);
 
 		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "DS %.3mm %.3mm %.3mm %.3mm %.3mm ",
-									line->Point1.X - element->MarkX,
-									line->Point1.Y - element->MarkY,
-									line->Point2.X - element->MarkX,
-									line->Point2.Y - element->MarkY,
-									line->Thickness);
-			fputs("21\n",FP); /* an arbitrary Kicad layer, front silk, need to refine this */
+			pcb_fprintf(FP, "CT\n");
+			write_autotrax_track(FP, element->MarkX, element->MarkY, line, currentLayer);
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
-			pcb_arc_get_end(arc, 0, &arcStartX, &arcStartY);
-			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
-			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
-				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
-										arc->X - element->MarkX, /* x_1 centre */
-										arc->Y - element->MarkY, /* y_2 centre */
-										arcStartX - element->MarkX, /* x on circle */
-										arcStartY - element->MarkY, /* y on circle */
-										arc->Thickness); /* stroke thickness */
-			} else {
-				/*
-				   as far as can be determined from the Kicad documentation,
-				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
-
-				   the origin for rotation is the positive x direction, and going CW
-
-				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
-				   with rotation CCW, so we need to reverse delta angle
-
-				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
-				   NB it is in degrees in the newer s-file kicad module/footprint format
-				*/
-				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %mA %.3mm ",
-										arc->X - element->MarkX, /* x_1 centre */
-										arc->Y - element->MarkY, /* y_2 centre */
-										arcEndX - element->MarkX, /* x on arc */
-										arcEndY - element->MarkY, /* y on arc */
-										arc->Delta, /* CW delta angle in decidegrees */
-										arc->Thickness); /* stroke thickness */
-			}
-			fputs("21\n",FP); /* and now append a suitable Kicad layer, front silk = 21 */
+			pcb_fprintf(FP, "CA\n");
+			autotrax_arc_output(FP, element->MarkX, element->MarkY, arc, currentLayer);
 		}
 
 		pinlist_foreach(&element->Pin, &it, pin) {
@@ -688,16 +669,8 @@ int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			}
 
-			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
-
-			fputs("Dr 0 0 0\n",FP); /* drill details; zero size; x,y pos vs pad location */
-
-			fputs("At SMD N 00888000\n", FP); /* SMD pin, need to use right layer mask */
-
-			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
-			fputs("$EndPAD\n",FP);
 		}
-		fprintf(FP, "$EndMODULE %s\n", currentElementName);		
+		fprintf(FP, "ENDCOMP\n");		
 	}
 	/* Release unique name utility memory */
 	unm_uninit(&group1);
@@ -747,7 +720,6 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
-	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
 	pcb_coord_t xPos, yPos, yPos2, yPos3;
 
 	pcb_element_t *element;
@@ -801,12 +773,12 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 				padShape = 1; /* circular */
 			}
 
-			pcb_fprintf(FP, "CP\t%s\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\n",
-				(char *) PCB_EMPTY(pin->Number), /* or ->Name? */
+			pcb_fprintf(FP, "CP\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\n%s\n",
 				pin->X - element->MarkX,
 				pin->Y - element->MarkY,
 				pin->Thickness, pin->Thickness, padShape,
-				pin->DrillingHole, copperLayer);
+				pin->DrillingHole, copperLayer,
+				(char *) PCB_EMPTY(pin->Number)); /* or ->Name? */
 		}
 		padlist_foreach(&element->Pad, &it, pad) {
 			padShape = 2; /* rectangular */
@@ -852,27 +824,14 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 
 		arclist_foreach(&element->Arc, &it, arc) {
 
-			pcb_arc_get_end(arc, 0, &arcStartX, &arcStartY);
-			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
-
 			if ((arc->Delta >= 360.0) || (arc->Delta <= -360.0)) { /* it's a circle */
-				pcb_fprintf(FP, "CA %.0ml %.0ml %.0ml %d %.0ml %.0ml %d\n",
+				pcb_fprintf(FP, "CA %.0ml %.0ml %.0ml %d %.0ml %d\n",
 						arc->X - element->MarkX, /* x_1 centre */
 						arc->Y - element->MarkY, /* y_2 centre */
-						(arc->Height + arc->Width)/2, /* average */
+						(arc->Height + arc->Width)/2, /* average radius*/
 						15, /* (1 & 2 & 4 & 8 = 15 = 4 segments = circle */
-						arcStartY - element->MarkY, /* y on circle */
 						arc->Thickness, silkLayer); /* stroke thickness,layer*/
-			} else {
-				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA %.0mk ",
-										arc->X - element->MarkX, /* x_1 centre */
-										arc->Y - element->MarkY, /* y_2 centre */
-										arcEndX - element->MarkX, /* x on arc */
-										arcEndY - element->MarkY, /* y on arc */
-										arc->Delta, /* CW delta angle in decidegrees */
-										arc->Thickness); /* stroke thickness */
 			}
-			fprintf(FP, "%d\n", silkLayer); /* and now append a suitable Kicad layer, front silk = 21, back silk 20 */
 		}
 
 		fprintf(FP, "ENDCOMP\n");
