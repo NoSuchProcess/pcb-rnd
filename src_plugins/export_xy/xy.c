@@ -263,24 +263,24 @@ static void count_pins_pads(subst_ctx_t *ctx, pcb_element_t *element, int *pins,
 	PCB_END_LOOP;
 }
 
-static void calc_pad_bbox(subst_ctx_t *ctx)
+static void calc_pad_bbox(subst_ctx_t *ctx, int prerot)
 {
-#if 0
-	/* this is what we would do if we wanted to return the pre-rotation state */
-	if ((ctx->theta == 0) || (ctx->theta == 180)) {
-		calc_pad_bbox_(ctx, ctx->element);
-		return;
+	if (prerot) {
+		/* this is what we would do if we wanted to return the pre-rotation state */
+		if ((ctx->theta == 0) || (ctx->theta == 180)) {
+			calc_pad_bbox_(ctx, ctx->element);
+			return;
+		}
+		if ((ctx->theta == 90) || (ctx->theta == 270)) {
+			pcb_coord_t tmp;
+			calc_pad_bbox_(ctx, ctx->element);
+			tmp = ctx->pad_w;
+			ctx->pad_w = ctx->pad_h;
+			ctx->pad_h = tmp;
+			return;
+		}
+		pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet\n");
 	}
-	if ((ctx->theta == 90) || (ctx->theta == 270)) {
-		pcb_coord_t tmp;
-		calc_pad_bbox_(ctx, ctx->element);
-		tmp = ctx->pad_w;
-		ctx->pad_w = ctx->pad_h;
-		ctx->pad_h = tmp;
-		return;
-	}
-	pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet\n");
-#endif
 
 	calc_pad_bbox_(ctx, ctx->element);
 }
@@ -428,14 +428,28 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		if (strncmp(*input, "pad_width%", 10) == 0) {
 			*input += 10;
 			if (ctx->pad_w == 0)
-				calc_pad_bbox(ctx);
+				calc_pad_bbox(ctx, 0);
 			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_w);
 			return 0;
 		}
 		if (strncmp(*input, "pad_height%", 11) == 0) {
 			*input += 11;
 			if (ctx->pad_h == 0)
-				calc_pad_bbox(ctx);
+				calc_pad_bbox(ctx, 0);
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_h);
+			return 0;
+		}
+		if (strncmp(*input, "pad_width_prerot%", 17) == 0) {
+			*input += 17;
+			if (ctx->pad_w == 0)
+				calc_pad_bbox(ctx, 1);
+			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_w);
+			return 0;
+		}
+		if (strncmp(*input, "pad_height_prerot%", 18) == 0) {
+			*input += 18;
+			if (ctx->pad_h == 0)
+				calc_pad_bbox(ctx, 1);
 			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_h);
 			return 0;
 		}
