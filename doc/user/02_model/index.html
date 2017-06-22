@@ -38,18 +38,35 @@ Misc editor settings, such as grid size and offset.
 
 <h3> 2.2. Layers </h3>
 <p> 
-Pcb-rnd aides the user in creating real pcb product, composed of real
-<i>physical layers</i>. pcb-rnd also refers to layers to conceptualize this
-process, but pcb-rnd layers are different than the <i>physical layers</i>. 
+The main use of pcb-rnd is to aide the user in the process of producing real
+pcbs composed of real <i>physical layers</i>. pcb-rnd also refers to layers to
+conceptualize this process, but pcb-rnd layers are different than the
+<i>physical layers</i>. 
 <p>
-Unlike a <i>physical layer</i>, a pcb-rnd layer has no thickness. It is a 2
-dimensional, logical canvas, similar to layers in image manipulation software
-like gimp. In pcb-rnd there are <i>explicit</i> and <i>virtual</i> layers. An explicit
-layer contains drawing primitives (objects) placed by the user. The user has
-full control over an explicit layer: objects can be added or removed or changed
-any time. A virtual layer has no such flexibility: pcb-rnd computes its content
-from explicit layers and there's no way to change the result directly. A layer
-is always part of a <i>layer group</i>.
+Unlike a <i>physical layer</i>, a pcb-rnd layer has no thickness. Any pcb-rnd
+layer is always part of a <i>layer group</i>. It is a 2 dimensional logical
+canvas, similar to layers in image manipulation software like GIMP. In pcb-rnd
+there are <i>explicit</i>, <i>virtual</i> or <i>implicit</i> layers. An
+explicit layer contains drawing primitives (<a href="#objects">objects</a>)
+placed by the user. The user has full control over an explicit layer: objects
+can be added or removed or changed any time. A virtual or implicit layer has no
+such flexibility: pcb-rnd computes its content from explicit layers and there's
+no way for the user to change the result directly.
+<p>
+Pcb-rnd currently maintains some layers types as virtual layers for
+compatability with the PCB package. In a pcb-rnd board design started from
+default configuration options, the mask, silk, and paste layers currently start
+out as virtual layers. The content for these layers is computed by pcb-rnd as
+for a virtual or explicit layer, until the user decides to use features that
+require user control over one or more of the layers in the group. At that
+point, the virtual layer is replaced with an explicit layer group. 
+<p>
+For example, in pcb-rnd when using one of the gtk GUIs, if the user right
+clicks on a solder mask ('mask') layer and choose an option to 'insert new
+layer before this one', pcb-rnd replaces the virtual mask layer with an explicit
+mask layer group. The mask layer group can contain one to many pcb-rnd layers
+each with individual settings to control implicit generation, and additive or
+subtractive behavior when adding objects to the layers. 
 
 <h3> 2.3. Layer Groups </h3>
 <p>
@@ -103,7 +120,7 @@ combination is supported or not.
 	<tr><th> outline<td> no  <td> no     <td> no     <td> yes    <td> no
 </table>
 
-<h3> 2.4. Basic Drawing Objects </h3>
+<h3 id="objects"> 2.4. Basic Drawing Objects </h3>
 <p>
 Pcb-rnd supports a small number of basic drawing objects, from which complex
 objects can be build. The following figure demonstrates all basic objects:
