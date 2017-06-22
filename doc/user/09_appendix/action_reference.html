@@ -1,0 +1,555 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../default.css">
+</head>
+<body>
+<h1> pcb-rnd - User Manual: Appendix </h1>
+<p>
+<h2> Action Reference</h2>
+
+<table border=1
+<caption><b>pcb-rnd v1.2.3 action list</b>
+<th>Action<th>Action Description
+<tr><td>AElementSetAttr</tr></td>
+<tr><td>DSets or clears an element-specific attribute.</tr></td>
+<tr><td>SElementSetAttr(refdes,name[,value])</tr></td>
+<tr><td>Asmartdisperse</tr></td>
+<tr><td>APasteBuffer</tr></td>
+<tr><td>DVarious operations on the paste buffer.</tr></td>
+<tr><td>SPasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)</tr></td>
+<tr><td>SPasteBuffer(Rotate, 1..3)</tr></td>
+<tr><td>SPasteBuffer(Convert|Restore|Mirror)</tr></td>
+<tr><td>SPasteBuffer(ToLayout, X, Y, units)</tr></td>
+<tr><td>SPasteBuffer(Save, Filename, [format], [force])</tr></td>
+<tr><td>AChangeDrillSize</tr></td>
+<tr><td>DChanges the drilling hole size of objects.</tr></td>
+<tr><td>SChangeDrillSize(Object, delta|style)</tr></td>
+<tr><td>SChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</tr></td>
+<tr><td>ALoadhypFrom</tr></td>
+<tr><td>DLoads the specified Hyperlynx file.</tr></td>
+<tr><td>SLoadhypFrom(filename[, "debug"]...)</tr></td>
+<tr><td>ASetOctagon</tr></td>
+<tr><td>DSets the octagon-flag of objects.</tr></td>
+<tr><td>SSetOctagon(Object|ToggleObject|SelectedElements|Selected)</tr></td>
+<tr><td>Aaligntext</tr></td>
+<tr><td>DAlign Text Elements</tr></td>
+<tr><td>SAlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</tr></td>
+<tr><td>ADisplay</tr></td>
+<tr><td>DSeveral display-related actions.</tr></td>
+<tr><td>SDisplay(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName)</tr></td>
+<tr><td>SDisplay(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)</tr></td>
+<tr><td>SDisplay(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)</tr></td>
+<tr><td>SDisplay(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)</tr></td>
+<tr><td>SDisplay(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)</tr></td>
+<tr><td>SDisplay(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)</tr></td>
+<tr><td>SDisplay(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</tr></td>
+<tr><td>ADeleteRats</tr></td>
+<tr><td>DDelete rat lines.</tr></td>
+<tr><td>SDeleteRats(AllRats|Selected|SelectedRats)</tr></td>
+<tr><td>ACursor</tr></td>
+<tr><td>DMove the cursor.</tr></td>
+<tr><td>SCursor(Type,DeltaUp,DeltaRight,Units)</tr></td>
+<tr><td>AChkBuffer</tr></td>
+<tr><td>DReturn 1 if currently selected buffer's index matches idx</tr></td>
+<tr><td>SChkBuffer(idx)</tr></td>
+<tr><td>AChkMode</tr></td>
+<tr><td>DReturn 1 if the currently selected mode is the expected_mode</tr></td>
+<tr><td>SChkMode(expected_mode)</tr></td>
+<tr><td>Anetlist</tr></td>
+<tr><td>DPerform various actions on netlists.</tr></td>
+<tr><td>SNet(find|select|rats|norats|clear[,net[,pin]])</tr></td>
+<tr><td>SNet(freeze|thaw|forcethaw)</tr></td>
+<tr><td>SNet(swap)</tr></td>
+<tr><td>SNet(add,net,pin)</tr></td>
+<tr><td>ALoadFontFrom</tr></td>
+<tr><td>DLoad PCB font from a file</tr></td>
+<tr><td>SLoadFontFrom([file, id])</tr></td>
+<tr><td>ALoadFrom</tr></td>
+<tr><td>DLoad layout data from a file.</tr></td>
+<tr><td>SLoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format])</tr></td>
+<tr><td>AChangeAngle</tr></td>
+<tr><td>DChanges the start angle, delta angle or both angles of an arc.</tr></td>
+<tr><td>SChangeAngle(Object, start|delta|both, delta)</tr></td>
+<tr><td>SChangeAngle(SelectedObjects|Selected, start|delta|both, delta)</tr></td>
+<tr><td>SChangeAngle(SelectedArcs, start|delta|both, delta)</tr></td>
+<tr><td>AToggleView</tr></td>
+<tr><td>DToggle the visibility of the specified layer or layer group.</tr></td>
+<tr><td>SToggleView(1..MAXLAYER)</tr></td>
+<tr><td>SToggleView(layername)</tr></td>
+<tr><td>SToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)</tr></td>
+<tr><td>SToggleView(All, Open|Vis, Set|Clear|Toggle)</tr></td>
+<tr><td>ACreateText</tr></td>
+<tr><td>DCreate a new text object</tr></td>
+<tr><td>SCreateText(layer, fontID, X, Y, direction, scale, text)</tr></td>
+<tr><td>AMarkCrosshair</tr></td>
+<tr><td>DSet/Reset the pcb_crosshair mark.</tr></td>
+<tr><td>SMarkCrosshair()</tr></td>
+<tr><td>SMarkCrosshair(Center)</tr></td>
+<tr><td>ALoadTedaxFrom</tr></td>
+<tr><td>DLoads the specified block from a tedax file. Type can be: netlist or footprint.</tr></td>
+<tr><td>SLoadTedaxFrom(type, filename)</tr></td>
+<tr><td>AMoveToCurrentLayer</tr></td>
+<tr><td>DMoves objects to the current layer.</tr></td>
+<tr><td>SMoveToCurrentLayer(Object|SelectedObjects)</tr></td>
+<tr><td>ASetThermal</tr></td>
+<tr><td>DSet the thermal (on the current layer) of pins or vias to the given style.</tr></td>
+<tr><td>DStyle = 0 means no thermal.</tr></td>
+<tr><td>DStyle = 1 has diagonal fingers with sharp edges.</tr></td>
+<tr><td>DStyle = 2 has horizontal and vertical fingers with sharp edges.</tr></td>
+<tr><td>DStyle = 3 is a solid connection to the plane.Style = 4 has diagonal fingers with rounded edges.</tr></td>
+<tr><td>DStyle = 5 has horizontal and vertical fingers with rounded edges.</tr></td>
+<tr><td>SSetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</tr></td>
+<tr><td>Apropedit</tr></td>
+<tr><td>DRun the property editor</tr></td>
+<tr><td>Spropedit()</tr></td>
+<tr><td>Apscalib</tr></td>
+<tr><td>AEditLayer</tr></td>
+<tr><td>DChange a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.</tr></td>
+<tr><td>SEditlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]</tr></td>
+<tr><td>SEditlayer([@layer], attrib, key=value)</tr></td>
+<tr><td>ASetFlag</tr></td>
+<tr><td>DSets flags on objects.</tr></td>
+<tr><td>SSetFlag(Object|Selected|SelectedObjects, flag)</tr></td>
+<tr><td>SSetFlag(SelectedLines|SelectedPins|SelectedVias, flag)</tr></td>
+<tr><td>SSetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)</tr></td>
+<tr><td>SSetFlag(SelectedElements, flag)</tr></td>
+<tr><td>Sflag = square | octagon | thermal | join</tr></td>
+<tr><td>AClrFlag</tr></td>
+<tr><td>DClears flags on objects.</tr></td>
+<tr><td>SClrFlag(Object|Selected|SelectedObjects, flag)</tr></td>
+<tr><td>SClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)</tr></td>
+<tr><td>SClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)</tr></td>
+<tr><td>SClrFlag(SelectedElements, flag)</tr></td>
+<tr><td>Sflag = square | octagon | thermal | join</tr></td>
+<tr><td>APrintUsage</tr></td>
+<tr><td>DPrint command line arguments of pcb-rnd or a plugin loaded.</tr></td>
+<tr><td>SPrintUsage()</tr></td>
+<tr><td>SPrintUsage(plugin)</tr></td>
+<tr><td>AClearSquare</tr></td>
+<tr><td>DClears the square-flag of pins and pads.</tr></td>
+<tr><td>SClearSquare(ToggleObject|SelectedElements|SelectedPins)</tr></td>
+<tr><td>AChangeHole</tr></td>
+<tr><td>DChanges the hole flag of objects.</tr></td>
+<tr><td>SChangeHole(ToggleObject|Object|SelectedVias|Selected)</tr></td>
+<tr><td>Aconf</tr></td>
+<tr><td>DPerform various operations on the configuration tree.</tr></td>
+<tr><td>Sconf(set, path, value, [role], [policy]) - change a config setting to an absolute value</tr></td>
+<tr><td>Sconf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)</tr></td>
+<tr><td>Sconf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config</tr></td>
+<tr><td>Sconf(reset, role) - reset the in-memory lihata of a role</tr></td>
+<tr><td>Sconf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</tr></td>
+<tr><td>Adistributetext</tr></td>
+<tr><td>DDistribute Text Elements</tr></td>
+<tr><td>SDistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</tr></td>
+<tr><td>ADumpActions</tr></td>
+<tr><td>DDump all actions available.</tr></td>
+<tr><td>SDumpActions()</tr></td>
+<tr><td>AAttributes</tr></td>
+<tr><td>DLet the user edit the attributes of the layout, current or given</tr></td>
+<tr><td>Dlayer, or selected element.</tr></td>
+<tr><td>SAttributes(Layout|Layer|Element)</tr></td>
+<tr><td>SAttributes(Layer,layername)</tr></td>
+<tr><td>ARenumberBlock</tr></td>
+<tr><td>AToggleHideName</tr></td>
+<tr><td>DToggles the visibility of element names.</tr></td>
+<tr><td>SToggleHideName(Object|SelectedElements)</tr></td>
+<tr><td>ARenumberBuffer</tr></td>
+<tr><td>AAutoRoute</tr></td>
+<tr><td>DAuto-route some or all rat lines.</tr></td>
+<tr><td>SAutoRoute(AllRats|SelectedRats)</tr></td>
+<tr><td>AReplaceFootprint</tr></td>
+<tr><td>DReplace the footprint of the selected components with the footprint specified.</tr></td>
+<tr><td>SReplaceFootprint()</tr></td>
+<tr><td>Anet</tr></td>
+<tr><td>DPerform various actions on netlists.</tr></td>
+<tr><td>SNet(find|select|rats|norats|clear[,net[,pin]])</tr></td>
+<tr><td>SNet(freeze|thaw|forcethaw)</tr></td>
+<tr><td>SNet(swap)</tr></td>
+<tr><td>SNet(add,net,pin)</tr></td>
+<tr><td>ALoadFootprint</tr></td>
+<tr><td>DLoads a single footprint by name.</tr></td>
+<tr><td>Spcb_load_footprint(filename[,refdes,value])</tr></td>
+<tr><td>ANew</tr></td>
+<tr><td>DStarts a new layout.</tr></td>
+<tr><td>SNew([name])</tr></td>
+<tr><td>ARipUp</tr></td>
+<tr><td>DRipup auto-routed tracks, or convert an element to parts.</tr></td>
+<tr><td>SRipUp(All|Selected|Element)</tr></td>
+<tr><td>AImport</tr></td>
+<tr><td>DImport schematics.</tr></td>
+<tr><td>SImport()</tr></td>
+<tr><td>SImport([gnetlist|make[,source,source,...]])</tr></td>
+<tr><td>SImport(setnewpoint[,(mark|center|X,Y)])</tr></td>
+<tr><td>SImport(setdisperse,D,units)</tr></td>
+<tr><td>ADumpCsect</tr></td>
+<tr><td>DPrint the cross-section of the board (layer stack)</tr></td>
+<tr><td>SDumpCsect()</tr></td>
+<tr><td>ARedo</tr></td>
+<tr><td>DRedo recent "undo" operations.</tr></td>
+<tr><td>Spcb_redo()</tr></td>
+<tr><td>AExport</tr></td>
+<tr><td>DExport the current layout, e.g. Export(png, --dpi, 600)</tr></td>
+<tr><td>SExport(exporter, [exporter-args])</tr></td>
+<tr><td>AFreeRotateBuffer</tr></td>
+<tr><td>DRotates the current paste buffer contents by the specified angle.  The</tr></td>
+<tr><td>Dangle is given in degrees.  If no angle is given, the user is prompted</tr></td>
+<tr><td>Dfor one.</tr></td>
+<tr><td>Spcb_buffer_free_rotate([Angle])</tr></td>
+<tr><td>ABoardFlip</tr></td>
+<tr><td>AMoveLayer</tr></td>
+<tr><td>DMoves/Creates/Deletes Layers.</tr></td>
+<tr><td>SMoveLayer(old,new)</tr></td>
+<tr><td>ALibraryChanged</tr></td>
+<tr><td>DTells the GUI that the libraries have changed.</tr></td>
+<tr><td>SLibraryChanged()</tr></td>
+<tr><td>ASavePatch</tr></td>
+<tr><td>DSave netlist patch for back annotation.</tr></td>
+<tr><td>SSavePatch(filename)</tr></td>
+<tr><td>ACreateMenu</tr></td>
+<tr><td>DCreates a new menu, popup (only path specified) or submenu (at least path and action are specified)</tr></td>
+<tr><td>SCreateMenu(path | path, action, mnemonic, accel, tooltip, cookie)</tr></td>
+<tr><td>AChkGridUnits</tr></td>
+<tr><td>DReturn 1 if currently selected grid unit matches the expected (normally mm or mil)</tr></td>
+<tr><td>SChkGridUnits(expected)</tr></td>
+<tr><td>AChangeSquare</tr></td>
+<tr><td>DChanges the square flag of pins and pads.</tr></td>
+<tr><td>SChangeSquare(ToggleObject)</tr></td>
+<tr><td>SChangeSquare(SelectedElements|SelectedPins)</tr></td>
+<tr><td>SChangeSquare(Selected|SelectedObjects)</tr></td>
+<tr><td>Adjopt</tr></td>
+<tr><td>DPerform various optimizations on the current board.</tr></td>
+<tr><td>Sdjopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)</tr></td>
+<tr><td>Sdjopt(auto) - all of the above</tr></td>
+<tr><td>Sdjopt(miter)</tr></td>
+<tr><td>APrintCopyright</tr></td>
+<tr><td>DPrint copyright notice.</tr></td>
+<tr><td>SPrintCopyright()</tr></td>
+<tr><td>ALoadLtspiceFrom</tr></td>
+<tr><td>DLoads the specified ltspice .net and .asc file - the netlist must be mentor netlist.</tr></td>
+<tr><td>SLoadLtspiceFrom(filename)</tr></td>
+<tr><td>ADumpPlugins</tr></td>
+<tr><td>DPrint plugins loaded in a format digestable by scripts.</tr></td>
+<tr><td>SDumpPlugins()</tr></td>
+<tr><td>ASaveFontTo</tr></td>
+<tr><td>DSave PCB font to a file</tr></td>
+<tr><td>SSaveFontTo([file, id])</tr></td>
+<tr><td>AExecuteFile</tr></td>
+<tr><td>DRun actions from the given file.</tr></td>
+<tr><td>SExecuteFile(filename)</tr></td>
+<tr><td>AChangePinName</tr></td>
+<tr><td>DSets the name of a specific pin on a specific element.</tr></td>
+<tr><td>SChangePinName(ElementName,PinNumber,PinName)</tr></td>
+<tr><td>ARouteStyle</tr></td>
+<tr><td>DCopies the indicated routing style into the current sizes.</tr></td>
+<tr><td>SRouteStyle(1|2|3|4)</tr></td>
+<tr><td>ASwitchHID</tr></td>
+<tr><td>DSwitch to another HID.</tr></td>
+<tr><td>SSwitchHID(lesstif|gtk|batch)</tr></td>
+<tr><td>AGlobalPuller</tr></td>
+<tr><td>DPull all traces tight.</tr></td>
+<tr><td>Spcb_act_GlobalPuller()</tr></td>
+<tr><td>ASetSquare</tr></td>
+<tr><td>Dsets the square-flag of objects.</tr></td>
+<tr><td>SSetSquare(ToggleObject|SelectedElements|SelectedPins)</tr></td>
+<tr><td>ARenumber</tr></td>
+<tr><td>DRenumber all elements.  The changes will be recorded to filename</tr></td>
+<tr><td>Dfor use in backannotating these changes to the schematic.</tr></td>
+<tr><td>SRenumber()</tr></td>
+<tr><td>SRenumber(filename)</tr></td>
+<tr><td>ASaveTedax</tr></td>
+<tr><td>DSaves the specific type of data in a tEDAx file. Type can be: board-footprints</tr></td>
+<tr><td>SSaveTedax(type, filename)</tr></td>
+<tr><td>ARouteStylesChanged</tr></td>
+<tr><td>DTells the GUI that the routing styles have changed.</tr></td>
+<tr><td>SRouteStylesChanged()</tr></td>
+<tr><td>APolygon</tr></td>
+<tr><td>DSome polygon related stuff.</tr></td>
+<tr><td>SPolygon(Close|PreviousPoint)</tr></td>
+<tr><td>Aautocrop</tr></td>
+<tr><td>ASelectLayer</tr></td>
+<tr><td>DSelect which layer is the current layer.</tr></td>
+<tr><td>SSelectLayer(1..MAXLAYER|Silk|Rats)</tr></td>
+<tr><td>Adistribute</tr></td>
+<tr><td>DDistribute Elements</tr></td>
+<tr><td>SDistribute(Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</tr></td>
+<tr><td>AConnection</tr></td>
+<tr><td>DSearches connections of the object at the cursor position.</tr></td>
+<tr><td>SConnection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</tr></td>
+<tr><td>Aquery</tr></td>
+<tr><td>DPerform various queries on PCB data.</tr></td>
+<tr><td>Squery(dump, expr) - dry run: compile and dump an expression</tr></td>
+<tr><td>AChangeFlag</tr></td>
+<tr><td>DSets or clears flags on objects.</tr></td>
+<tr><td>SChangeFlag(Object|Selected|SelectedObjects, flag, value)</tr></td>
+<tr><td>SChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)</tr></td>
+<tr><td>SChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)</tr></td>
+<tr><td>SChangeFlag(SelectedElements, flag, value)</tr></td>
+<tr><td>Sflag = square | octagon | thermal | join</tr></td>
+<tr><td>Svalue = 0 | 1</tr></td>
+<tr><td>AListRotations</tr></td>
+<tr><td>AReport</tr></td>
+<tr><td>DProduce various report.</tr></td>
+<tr><td>SReport(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name])</tr></td>
+<tr><td>AUndo</tr></td>
+<tr><td>DUndo recent changes.</tr></td>
+<tr><td>Spcb_undo()</tr></td>
+<tr><td>Spcb_undo(ClearList)</tr></td>
+<tr><td>ACycleDrag</tr></td>
+<tr><td>DCycle through which object is being dragged</tr></td>
+<tr><td>SCycleDrag()</tr></td>
+<tr><td>APrintVersion</tr></td>
+<tr><td>DPrint version.</tr></td>
+<tr><td>SPrintVersion()</tr></td>
+<tr><td>ATeardrops</tr></td>
+<tr><td>AFontEdit</tr></td>
+<tr><td>DConvert the current font to a PCB for editing.</tr></td>
+<tr><td>SFontEdit()</tr></td>
+<tr><td>Ah</tr></td>
+<tr><td>DPrint a help message for commands.</tr></td>
+<tr><td>Sh</tr></td>
+<tr><td>AApplyVendor</tr></td>
+<tr><td>DApplies the currently loaded vendor drill table to the current design.</tr></td>
+<tr><td>SApplyVendor()</tr></td>
+<tr><td>APuller</tr></td>
+<tr><td>DPull an arc-line junction tight.</tr></td>
+<tr><td>Spcb_act_Puller()</tr></td>
+<tr><td>Al</tr></td>
+<tr><td>DLoads layout data.</tr></td>
+<tr><td>Sl [name] [format]</tr></td>
+<tr><td>Am</tr></td>
+<tr><td>DLoads a layout into the current buffer.</tr></td>
+<tr><td>Sm [name]</tr></td>
+<tr><td>ADelete</tr></td>
+<tr><td>DDelete stuff.</tr></td>
+<tr><td>SDelete(Object|Selected)</tr></td>
+<tr><td>SDelete(AllRats|SelectedRats)</tr></td>
+<tr><td>ADisperseElements</tr></td>
+<tr><td>DDisperses elements.</tr></td>
+<tr><td>SDisperseElements(All|Selected)</tr></td>
+<tr><td>Aq</tr></td>
+<tr><td>DQuits the application after confirming.</tr></td>
+<tr><td>Sq</tr></td>
+<tr><td>ASetValue</tr></td>
+<tr><td>DChange various board-wide values and sizes.</tr></td>
+<tr><td>SSetValue(Grid|Line|LineSize|Text|TextScale|ViaDrillingHole|Via|ViaSize, delta)</tr></td>
+<tr><td>As</tr></td>
+<tr><td>DSaves layout data.</tr></td>
+<tr><td>Ss [name]</tr></td>
+<tr><td>AMessage</tr></td>
+<tr><td>DWrites a message to the log window.</tr></td>
+<tr><td>Spcb_message(message)</tr></td>
+<tr><td>AMode</tr></td>
+<tr><td>DChange or use the tool mode.</tr></td>
+<tr><td>SMode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)</tr></td>
+<tr><td>SMode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)</tr></td>
+<tr><td>SMode(Notify|Release|Cancel|Stroke)</tr></td>
+<tr><td>SMode(Save|Restore)</tr></td>
+<tr><td>AChangeNonetlist</tr></td>
+<tr><td>DChanges the nonetlist flag of elements.</tr></td>
+<tr><td>SChangeNonetlist(ToggleObject)</tr></td>
+<tr><td>SChangeNonetlist(SelectedElements)</tr></td>
+<tr><td>SChangeNonetlist(Selected|SelectedObjects)</tr></td>
+<tr><td>Aw</tr></td>
+<tr><td>DSaves layout data.</tr></td>
+<tr><td>Sw [name]</tr></td>
+<tr><td>AMoveObject</tr></td>
+<tr><td>DMoves the object under the crosshair.</tr></td>
+<tr><td>Spcb_move_obj(X,Y,dim)</tr></td>
+<tr><td>AAtomic</tr></td>
+<tr><td>DSave or restore the undo serial number.</tr></td>
+<tr><td>SAtomic(Save|Restore|Close|Block)</tr></td>
+<tr><td>AFullScreen</tr></td>
+<tr><td>DHide widgets to get edit area full screen</tr></td>
+<tr><td>Spcb_act_FullScreen(on|off|toggle)</tr></td>
+<tr><td>AChkGridSize</tr></td>
+<tr><td>DReturn 1 if the currently selected grid matches the expected_size. If argument is "none" return 1 if there is no grid.</tr></td>
+<tr><td>SChkGridSize(expected_size)</tr></td>
+<tr><td>SChkGridSize(none)</tr></td>
+<tr><td>ALoadTinycadFrom</tr></td>
+<tr><td>DLoads the specified tinycad .net file - the netlist must be tinycad netlist output.</tr></td>
+<tr><td>SLoadTinycadFrom(filename)</tr></td>
+<tr><td>AExecCommand</tr></td>
+<tr><td>DRuns a command.</tr></td>
+<tr><td>SExecCommand(command)</tr></td>
+<tr><td>APrintPaths</tr></td>
+<tr><td>DPrint full paths and search paths.</tr></td>
+<tr><td>SPrintPaths()</tr></td>
+<tr><td>AChkElementName</tr></td>
+<tr><td>DReturn 1 if currently shown element label (name) type matches the expected</tr></td>
+<tr><td>SChkElementName(1) - expect description</tr></td>
+<tr><td>SChkElementName(2) - expect refdes</tr></td>
+<tr><td>SChkElementName(3) - expect value</tr></td>
+<tr><td>AReportObject</tr></td>
+<tr><td>DReport on the object under the crosshair</tr></td>
+<tr><td>SReportObject()</tr></td>
+<tr><td>ASaveTo</tr></td>
+<tr><td>DSaves data to a file.</tr></td>
+<tr><td>SSaveTo(Layout|LayoutAs,filename)</tr></td>
+<tr><td>SSaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)</tr></td>
+<tr><td>SSaveTo(PasteBuffer,filename)</tr></td>
+<tr><td>AChangeJoin</tr></td>
+<tr><td>DChanges the join (clearance through polygons) of objects.</tr></td>
+<tr><td>SChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected)</tr></td>
+<tr><td>APCBChanged</tr></td>
+<tr><td>DTells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</tr></td>
+<tr><td>SPCBChanged([revert])</tr></td>
+<tr><td>AChangeClearSize</tr></td>
+<tr><td>DChanges the clearance size of objects.</tr></td>
+<tr><td>SChangeClearSize(Object, delta|style)</tr></td>
+<tr><td>SChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)</tr></td>
+<tr><td>SChangeClearSize(SelectedLines|SelectedArcs, delta|style)</tr></td>
+<tr><td>SChangeClearSize(Selected|SelectedObjects, delta|style)</tr></td>
+<tr><td>AUnloadVendor</tr></td>
+<tr><td>DUnloads the current vendor drill mapping table.</tr></td>
+<tr><td>SUnloadVendor()</tr></td>
+<tr><td>ALoadVendorFrom</tr></td>
+<tr><td>DLoads the specified vendor lihata file.</tr></td>
+<tr><td>SLoadVendorFrom(filename)</tr></td>
+<tr><td>ALoadMentorFrom</tr></td>
+<tr><td>DLoads the specified Mentor Graphics Design Capture schematics flat .edf file.</tr></td>
+<tr><td>SLoadMentorFrom(filename)</tr></td>
+<tr><td>Apropset</tr></td>
+<tr><td>DChange the named property of all selected objects to/by value</tr></td>
+<tr><td>Spropset(name, value)</tr></td>
+<tr><td>Aq!</tr></td>
+<tr><td>DQuits the application without confirming.</tr></td>
+<tr><td>Sq!</tr></td>
+<tr><td>AUnselect</tr></td>
+<tr><td>DUnselects the object at the pointer location or the specified objects.</tr></td>
+<tr><td>SUnselect(All|Block|Connection)</tr></td>
+<tr><td>SUnselect(ElementByName|ObjectByName|PadByName|PinByName)</tr></td>
+<tr><td>SUnselect(ElementByName|ObjectByName|PadByName|PinByName, Name)</tr></td>
+<tr><td>SUnselect(TextByName|ViaByName)</tr></td>
+<tr><td>SUnselect(TextByName|ViaByName, Name)</tr></td>
+<tr><td>ANetlistChanged</tr></td>
+<tr><td>DTells the GUI that the netlist has changed.</tr></td>
+<tr><td>SNetlistChanged()</tr></td>
+<tr><td>AChangeSize</tr></td>
+<tr><td>DChanges the size of objects.</tr></td>
+<tr><td>SChangeSize(Object, delta|style)</tr></td>
+<tr><td>SChangeSize(SelectedObjects|Selected, delta|style)</tr></td>
+<tr><td>SChangeSize(SelectedLines|SelectedPins|SelectedVias, delta|style)</tr></td>
+<tr><td>SChangeSize(SelectedPads|SelectedTexts|SelectedNames, delta|style)</tr></td>
+<tr><td>SChangeSize(SelectedElements, delta|style)</tr></td>
+<tr><td>APrintActions</tr></td>
+<tr><td>DPrint all actions available.</tr></td>
+<tr><td>SPrintActions()</tr></td>
+<tr><td>Ajostle</tr></td>
+<tr><td>DMove lines out of the way</tr></td>
+<tr><td>SJostle(diameter)</tr></td>
+<tr><td>AChangeOctagon</tr></td>
+<tr><td>DChanges the octagon-flag of pins and vias.</tr></td>
+<tr><td>SChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)</tr></td>
+<tr><td>SChangeOctagon(SelectedElements|SelectedPins|SelectedVias)</tr></td>
+<tr><td>ARemoveMenu</tr></td>
+<tr><td>DRecursively removes a new menu, popup (only path specified) or submenu. </tr></td>
+<tr><td>SRemoveMenu(path|cookie)</tr></td>
+<tr><td>AFlip</tr></td>
+<tr><td>DFlip an element to the opposite side of the board.</tr></td>
+<tr><td>SFlip(Object|Selected|SelectedElements)</tr></td>
+<tr><td>AChangeSizes</tr></td>
+<tr><td>DChanges all sizes of objects.</tr></td>
+<tr><td>SChangeSizes(Object, delta|style)</tr></td>
+<tr><td>SChangeSizes(SelectedObjects|Selected, delta|style)</tr></td>
+<tr><td>SChangeSizes(SelectedLines|SelectedPins|SelectedVias, delta|style)</tr></td>
+<tr><td>SChangeSizes(SelectedPads|SelectedTexts|SelectedNames, delta|style)</tr></td>
+<tr><td>SChangeSizes(SelectedElements, delta|style)</tr></td>
+<tr><td>AManagePlugins</tr></td>
+<tr><td>DManage plugins dialog.</tr></td>
+<tr><td>SManagePlugins()</tr></td>
+<tr><td>Aalign</tr></td>
+<tr><td>DAlign Elements</tr></td>
+<tr><td>SAlign(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</tr></td>
+<tr><td>Ale</tr></td>
+<tr><td>DLoads an element into the current buffer.</tr></td>
+<tr><td>Sle [name]</tr></td>
+<tr><td>AMorphPolygon</tr></td>
+<tr><td>DConverts dead polygon islands into separate polygons.</tr></td>
+<tr><td>Spcb_poly_morph(Object|Selected)</tr></td>
+<tr><td>AAddRats</tr></td>
+<tr><td>DAdd one or more rat lines to the board.</tr></td>
+<tr><td>SAddRats(AllRats|SelectedRats|Close)</tr></td>
+<tr><td>ALoadEeschemaFrom</tr></td>
+<tr><td>DLoads the specified eeschema .net file - the netlist must be an s-expression.</tr></td>
+<tr><td>SLoadEeschemaFrom(filename)</tr></td>
+<tr><td>AElementList</tr></td>
+<tr><td>DAdds the given element if it doesn't already exist.</tr></td>
+<tr><td>SElementList(Start|Done|Need,<refdes>,<footprint>,<value>)</tr></td>
+<tr><td>AAutoPlaceSelected</tr></td>
+<tr><td>DAuto-place selected components.</tr></td>
+<tr><td>SAutoPlaceSelected()</tr></td>
+<tr><td>ADRC</tr></td>
+<tr><td>DInvoke the DRC check.</tr></td>
+<tr><td>SDRC()</tr></td>
+<tr><td>Arn</tr></td>
+<tr><td>DReads netlist.</tr></td>
+<tr><td>Srn [name]</tr></td>
+<tr><td>AFontSave</tr></td>
+<tr><td>DConvert the current PCB back to a font.</tr></td>
+<tr><td>SFontSave()</tr></td>
+<tr><td>AEditGroup</tr></td>
+<tr><td>DChange a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.</tr></td>
+<tr><td>SEditgroup([@group], [name=text|type=+bit|type=-bit])]</tr></td>
+<tr><td>SEditlayer([@layer], attrib, key=value)</tr></td>
+<tr><td>Afp_rehash</tr></td>
+<tr><td>DFlush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</tr></td>
+<tr><td>Sfp_rehash()</tr></td>
+<tr><td>AQuit</tr></td>
+<tr><td>DQuits the application after confirming.</tr></td>
+<tr><td>SQuit()</tr></td>
+<tr><td>ALoadDsnFrom</tr></td>
+<tr><td>DLoads the specified routed dsn file.</tr></td>
+<tr><td>SLoadDsnFrom(filename)</tr></td>
+<tr><td>AClearOctagon</tr></td>
+<tr><td>DClears the octagon-flag of pins and vias.</tr></td>
+<tr><td>SClearOctagon(ToggleObject|Object|SelectedObjects|Selected)</tr></td>
+<tr><td>SClearOctagon(SelectedElements|SelectedPins|SelectedVias)</tr></td>
+<tr><td>ARemoveSelected</tr></td>
+<tr><td>DRemoves any selected objects.</tr></td>
+<tr><td>Spcb_remove_selected()</tr></td>
+<tr><td>AMinClearGap</tr></td>
+<tr><td>DEnsures that polygons are a minimum distance from objects.</tr></td>
+<tr><td>SMinClearGap(delta)</tr></td>
+<tr><td>SMinClearGap(Selected, delta)</tr></td>
+<tr><td>ASetSame</tr></td>
+<tr><td>DSets current layer and sizes to match indicated item.</tr></td>
+<tr><td>SSetSame()</tr></td>
+<tr><td>Awq</tr></td>
+<tr><td>DSaves the layout data and quits.</tr></td>
+<tr><td>Swq</tr></td>
+<tr><td>AChangePaste</tr></td>
+<tr><td>DChanges the no paste flag of objects.</tr></td>
+<tr><td>SChangePaste(ToggleObject|Object|SelectedPads|Selected)</tr></td>
+<tr><td>APolyCombine</tr></td>
+<tr><td>ASelect</tr></td>
+<tr><td>DToggles or sets the selection.</tr></td>
+<tr><td>SSelect(Object|ToggleObject)</tr></td>
+<tr><td>SSelect(All|Block|Connection)</tr></td>
+<tr><td>SSelect(ElementByName|ObjectByName|PadByName|PinByName)</tr></td>
+<tr><td>SSelect(ElementByName|ObjectByName|PadByName|PinByName, Name)</tr></td>
+<tr><td>SSelect(TextByName|ViaByName|NetByName)</tr></td>
+<tr><td>SSelect(TextByName|ViaByName|NetByName, Name)</tr></td>
+<tr><td>SSelect(Convert)</tr></td>
+<tr><td>AMinMaskGap</tr></td>
+<tr><td>DEnsures the mask is a minimum distance from pins and pads.</tr></td>
+<tr><td>SMinMaskGap(delta)</tr></td>
+<tr><td>SMinMaskGap(Selected, delta)</tr></td>
+<tr><td>AChangeName</tr></td>
+<tr><td>DSets the name (or pin number) of objects.</tr></td>
+<tr><td>SChangeName(Object)</tr></td>
+<tr><td>SChangeName(Object|"Number")</tr></td>
+<tr><td>SChangeName(Layout|Layer)</tr></td>
+<tr><td>ALoadMucsFrom</tr></td>
+<tr><td>DLoads the specified mucs routing file.</tr></td>
+<tr><td>SLoadMucsFrom(filename)</tr></td>
+<tr><td>AGetStyle</tr></td>
+<tr><td>DReturn integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</tr></td>
+<tr><td>SGetStyle()</tr></td>
+<tr><td>AChangeRadius</tr></td>
+<tr><td>DChanges the width or height (radius) of an arc.</tr></td>
+<tr><td>SChangeRadius(Object, width|x|height|y|both, delta)</tr></td>
+<tr><td>SChangeRadius(SelectedObjects|Selected, width|x|height|y|both, delta)</tr></td>
+<tr><td>SChangeRadius(SelectedArcs, width|x|height|y|both, delta)</tr></td>
