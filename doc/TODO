@@ -26,7 +26,6 @@
 For the next release:
 - SUBC BUGS:
 	- undo doesn't work
-	- ctrl+x cut, paste, select, copy -> crash (cut&paste messed up the bound layer name)
 - SUBC missing features:
 	- break up buffer subc
 	- save and load subc from buffer
