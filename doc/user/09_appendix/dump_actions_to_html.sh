@@ -22,13 +22,12 @@
 
 cat table_opener.html > action_reference.html 
 pcb-rnd --dump-actions | sed -e 's/\(^.\)/\1 /g' >> actions.list
-awk '{
-  if ($1 == "A")
-    {printf "<tr><td> %s </td>\n", $2 }
-  else if ($1 == "D")
-    {printf "<td> %s </td>\n<td>", $2 }
-  else if ($1 == "S")
-    {printf " %s ,", $2 }
-}' actions.list >> action_reference.html
+awk '
+
+($1 == "A") { printf "<tr><td> %s </td>\n", $2; next }
+($1 == "D") { printf "<td> %s </td>\n<td>", $2; next }
+($1 == "S") { printf " %s ,", $2; next }
+
+' actions.list >> action_reference.html
 
 
