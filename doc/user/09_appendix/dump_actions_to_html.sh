@@ -54,7 +54,7 @@ BEGIN {
 	next
 }
 
-/^D"/ {
+/^D/ {
 	sub("^D", "", $0)
 	d = d "<br>" $0
 	next
