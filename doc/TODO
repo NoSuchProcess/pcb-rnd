@@ -26,10 +26,12 @@
 For the next release:
 - SUBC BUGS:
 	- undo doesn't work
+	- ctrl+x cut, paste, select, copy -> crash (cut&paste messed up the bound layer name)
 - SUBC missing features:
 	- break up buffer subc
 	- save and load subc from buffer
 	- manual layer binding (reuse csect?)
+	- ctrl+e propedig on subc
 - BUGS:
 	- find_lookup.c: 'f' arc<->line fails with \_ arcs bugfiles/arc_find.lht
 	- solder paste layer doesn't have selected color, selection is not visible
