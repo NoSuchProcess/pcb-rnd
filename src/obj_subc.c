@@ -228,6 +228,8 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		}
 		else if (pcb != NULL) {
 			/* copying from buffer to board */
+			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+			dl->meta.bound.name = pcb_strdup(sl->meta.bound.name);
 			dl->meta.bound.real = pcb_layer_resolve_binding(pcb, sl);
 
 			if (dl->meta.bound.real == NULL)
@@ -453,6 +455,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	/* move layer local */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *sl = sc->data->Layer + n;
+		pcb_layer_t *dl = ctx->buffer.dst->Layer + n;
 		pcb_line_t *line;
 		pcb_text_t *text;
 		pcb_polygon_t *poly;
@@ -482,6 +485,10 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
 		}
 
+		/* keep only the layer binding match, unbound other aspects */
+		sl->meta.bound.real = NULL;
+		sl->arc_tree = sl->line_tree = sl->text_tree = sl->polygon_tree = NULL;
+		printf("unbound %p %d %s\n", sl, n, sl->meta.bound.name);
 	}
 
 
