@@ -83,6 +83,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	int n;
 
 	sc = pcb_subc_alloc();
+	sc->ID = pcb_create_ID_get();
 	pcb_add_subc_to_data(buffer->Data, sc);
 
 	/* create layer matches and copy objects */
@@ -196,6 +197,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 {
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
+	sc->ID = pcb_create_ID_get();
 	PCB_SET_PARENT(sc->data, subc, sc);
 	PCB_SET_PARENT(sc, data, dst);
 	pcb_subclist_append(&dst->subc, sc);
