@@ -7,7 +7,6 @@
 #        dump_string('D', desc);
 #        dump_string('S', synt);
 
-cat table_opener.html > action_reference.html 
 
 (
 	cd ../../../src
@@ -28,11 +27,24 @@ function flush_sd()
 }
 
 BEGIN {
+	q="\""
 # first line of input is the version
 	getline pcb_rnd_ver
-
-	print "some headers here..."
-	print pcb_rnd_ver
+	print "<!DOCTYPE HTML PUBLIC " q "-//W3C//DTD HTML 4.01 Transitional//EN" q " " q "http://www.w3.org/TR/html4/loose.dtd"  q ">"
+	print "<html>"
+	print "<head>"
+	print "<title> pcb-rnd user manual </title>"
+	print "<meta http-equiv=" q "Content-Type" q " content=" q "text/html;charset=us-ascii" q ">"
+	print "<link rel=" q "stylesheet" q " type=" q "text/css" q " href=" q " ../default.css" q ">"
+	print "</head>"
+	print "<body>"
+	print "<p>"
+	print "<h2> Pcb-rnd Action Reference</h2>"
+	print "<table border=1>"
+	print "<caption><b>"
+	print  pcb_rnd_ver
+	print "</b>"
+	print "<th>Action<th> Description <th> Syntax"
 }
 
 /^A/ {

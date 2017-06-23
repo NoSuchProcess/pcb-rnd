@@ -1,926 +1,453 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title> pcb-rnd user manual </title>
-	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
-	<link rel="stylesheet" type="text/css" href="../default.css">
+<title> pcb-rnd user manual </title>
+<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+<link rel="stylesheet" type="text/css" href=" ../default.css">
 </head>
 <body>
 <p>
-<h2> Action Reference</h2>
-<table border=1> 
-<caption><b>pcb-rnd v1.2.3 actions</b>
+<h2> Pcb-rnd Action Reference</h2>
+<table border=1>
+<caption><b>
+PCB version 1.2.3
+</b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
-<td> Sets </td>
-<td> ElementSetAttr(refdes,name[,value]) ,<tr><td> smartdisperse </td>
+<td></td>
+<td>ElementSetAttr(refdes,name[,value])</td>
+<tr><td> smartdisperse </td>
 <tr><td> PasteBuffer </td>
-<td> Various </td>
-<td> PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER) , PasteBuffer(Rotate, , PasteBuffer(Convert|Restore|Mirror) , PasteBuffer(ToLayout, , PasteBuffer(Save, ,<tr><td> ChangeDrillSize </td>
-<td> Changes </td>
-<td> ChangeDrillSize(Object, , ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, ,<tr><td> LoadhypFrom </td>
-<td> Loads </td>
-<td> LoadhypFrom(filename[, ,<tr><td> SetOctagon </td>
-<td> Sets </td>
-<td> SetOctagon(Object|ToggleObject|SelectedElements|Selected) ,<tr><td> aligntext </td>
-<td> Align </td>
-<td> AlignText(X/Y, ,<tr><td> Display </td>
-<td> Several </td>
-<td> Display(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName) , Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection) , Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames) , Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin) , Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes) , Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef) , Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames) ,<tr><td> DeleteRats </td>
-<td> Delete </td>
-<td> DeleteRats(AllRats|Selected|SelectedRats) ,<tr><td> Cursor </td>
-<td> Move </td>
-<td> Cursor(Type,DeltaUp,DeltaRight,Units) ,<tr><td> ChkBuffer </td>
-<td> Return </td>
-<td> ChkBuffer(idx) ,<tr><td> ChkMode </td>
-<td> Return </td>
-<td> ChkMode(expected_mode) ,<tr><td> netlist </td>
-<td> Perform </td>
-<td> Net(find|select|rats|norats|clear[,net[,pin]]) , Net(freeze|thaw|forcethaw) , Net(swap) , Net(add,net,pin) ,<tr><td> LoadFontFrom </td>
-<td> Load </td>
-<td> LoadFontFrom([file, ,<tr><td> LoadFrom </td>
-<td> Load </td>
-<td> LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format]) ,<tr><td> ChangeAngle </td>
-<td> Changes </td>
-<td> ChangeAngle(Object, , ChangeAngle(SelectedObjects|Selected, , ChangeAngle(SelectedArcs, ,<tr><td> ToggleView </td>
-<td> Toggle </td>
-<td> ToggleView(1..MAXLAYER) , ToggleView(layername) , ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide) , ToggleView(All, ,<tr><td> CreateText </td>
-<td> Create </td>
-<td> CreateText(layer, ,<tr><td> MarkCrosshair </td>
-<td> Set/Reset </td>
-<td> MarkCrosshair() , MarkCrosshair(Center) ,<tr><td> LoadTedaxFrom </td>
-<td> Loads </td>
-<td> LoadTedaxFrom(type, ,<tr><td> MoveToCurrentLayer </td>
-<td> Moves </td>
-<td> MoveToCurrentLayer(Object|SelectedObjects) ,<tr><td> SetThermal </td>
-<td> Set </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td> SetThermal(Object|SelectedPins|SelectedVias|Selected, ,<tr><td> propedit </td>
-<td> Run </td>
-<td> propedit() ,<tr><td> pscalib </td>
+<td></td>
+<td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(Save, Filename, [format], [force])</td>
+<tr><td> ChangeDrillSize </td>
+<td></td>
+<td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td>
+<tr><td> LoadhypFrom </td>
+<td></td>
+<td>LoadhypFrom(filename[, "debug"]...)</td>
+<tr><td> SetOctagon </td>
+<td></td>
+<td>SetOctagon(Object|ToggleObject|SelectedElements|Selected)</td>
+<tr><td> aligntext </td>
+<td></td>
+<td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td>
+<tr><td> Display </td>
+<td></td>
+<td>Display(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td>
+<tr><td> DeleteRats </td>
+<td></td>
+<td>DeleteRats(AllRats|Selected|SelectedRats)</td>
+<tr><td> Cursor </td>
+<td></td>
+<td>Cursor(Type,DeltaUp,DeltaRight,Units)</td>
+<tr><td> ChkBuffer </td>
+<td></td>
+<td>ChkBuffer(idx)</td>
+<tr><td> ChkMode </td>
+<td></td>
+<td>ChkMode(expected_mode)</td>
+<tr><td> netlist </td>
+<td></td>
+<td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td>
+<tr><td> LoadFontFrom </td>
+<td></td>
+<td>LoadFontFrom([file, id])</td>
+<tr><td> LoadFrom </td>
+<td></td>
+<td>LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format])</td>
+<tr><td> ChangeAngle </td>
+<td></td>
+<td>ChangeAngle(Object, start|delta|both, delta)<br>ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)<br>ChangeAngle(SelectedArcs, start|delta|both, delta)</td>
+<tr><td> ToggleView </td>
+<td></td>
+<td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td>
+<tr><td> CreateText </td>
+<td></td>
+<td>CreateText(layer, fontID, X, Y, direction, scale, text)</td>
+<tr><td> MarkCrosshair </td>
+<td></td>
+<td>MarkCrosshair()<br>MarkCrosshair(Center)</td>
+<tr><td> LoadTedaxFrom </td>
+<td></td>
+<td>LoadTedaxFrom(type, filename)</td>
+<tr><td> MoveToCurrentLayer </td>
+<td></td>
+<td>MoveToCurrentLayer(Object|SelectedObjects)</td>
+<tr><td> SetThermal </td>
+<td></td>
+<td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td>
+<tr><td> propedit </td>
+<td></td>
+<td>propedit()</td>
+<tr><td> pscalib </td>
 <tr><td> EditLayer </td>
-<td> Change </td>
-<td> Editlayer([@layer], , Editlayer([@layer], ,<tr><td> SetFlag </td>
-<td> Sets </td>
-<td> SetFlag(Object|Selected|SelectedObjects, , SetFlag(SelectedLines|SelectedPins|SelectedVias, , SetFlag(SelectedPads|SelectedTexts|SelectedNames, , SetFlag(SelectedElements, , flag ,<tr><td> ClrFlag </td>
-<td> Clears </td>
-<td> ClrFlag(Object|Selected|SelectedObjects, , ClrFlag(SelectedLines|SelectedPins|SelectedVias, , ClrFlag(SelectedPads|SelectedTexts|SelectedNames, , ClrFlag(SelectedElements, , flag ,<tr><td> PrintUsage </td>
-<td> Print </td>
-<td> PrintUsage() , PrintUsage(plugin) ,<tr><td> ClearSquare </td>
-<td> Clears </td>
-<td> ClearSquare(ToggleObject|SelectedElements|SelectedPins) ,<tr><td> ChangeHole </td>
-<td> Changes </td>
-<td> ChangeHole(ToggleObject|Object|SelectedVias|Selected) ,<tr><td> conf </td>
-<td> Perform </td>
-<td> conf(set, , conf(delta, , conf(toggle, , conf(reset, , conf(iseq, ,<tr><td> distributetext </td>
-<td> Distribute </td>
-<td> DistributeText(Y, ,<tr><td> DumpActions </td>
-<td> Dump </td>
-<td> DumpActions() ,<tr><td> Attributes </td>
-<td> Let </td>
-<td><td> layer, </td>
-<td> Attributes(Layout|Layer|Element) , Attributes(Layer,layername) ,<tr><td> RenumberBlock </td>
+<td></td>
+<td>Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]<br>Editlayer([@layer], attrib, key=value)</td>
+<tr><td> SetFlag </td>
+<td></td>
+<td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = square | octagon | thermal | join</td>
+<tr><td> ClrFlag </td>
+<td></td>
+<td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = square | octagon | thermal | join</td>
+<tr><td> PrintUsage </td>
+<td></td>
+<td>PrintUsage()<br>PrintUsage(plugin)</td>
+<tr><td> ClearSquare </td>
+<td></td>
+<td>ClearSquare(ToggleObject|SelectedElements|SelectedPins)</td>
+<tr><td> ChangeHole </td>
+<td></td>
+<td>ChangeHole(ToggleObject|Object|SelectedVias|Selected)</td>
+<tr><td> conf </td>
+<td></td>
+<td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td>
+<tr><td> distributetext </td>
+<td></td>
+<td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td>
+<tr><td> DumpActions </td>
+<td></td>
+<td>DumpActions()</td>
+<tr><td> Attributes </td>
+<td></td>
+<td>Attributes(Layout|Layer|Element)<br>Attributes(Layer,layername)</td>
+<tr><td> RenumberBlock </td>
 <tr><td> ToggleHideName </td>
-<td> Toggles </td>
-<td> ToggleHideName(Object|SelectedElements) ,<tr><td> RenumberBuffer </td>
+<td></td>
+<td>ToggleHideName(Object|SelectedElements)</td>
+<tr><td> RenumberBuffer </td>
 <tr><td> AutoRoute </td>
-<td> Auto-route </td>
-<td> AutoRoute(AllRats|SelectedRats) ,<tr><td> ReplaceFootprint </td>
-<td> Replace </td>
-<td> ReplaceFootprint() ,<tr><td> net </td>
-<td> Perform </td>
-<td> Net(find|select|rats|norats|clear[,net[,pin]]) , Net(freeze|thaw|forcethaw) , Net(swap) , Net(add,net,pin) ,<tr><td> LoadFootprint </td>
-<td> Loads </td>
-<td> pcb_load_footprint(filename[,refdes,value]) ,<tr><td> New </td>
-<td> Starts </td>
-<td> New([name]) ,<tr><td> RipUp </td>
-<td> Ripup </td>
-<td> RipUp(All|Selected|Element) ,<tr><td> Import </td>
-<td> Import </td>
-<td> Import() , Import([gnetlist|make[,source,source,...]]) , Import(setnewpoint[,(mark|center|X,Y)]) , Import(setdisperse,D,units) ,<tr><td> DumpCsect </td>
-<td> Print </td>
-<td> DumpCsect() ,<tr><td> Redo </td>
-<td> Redo </td>
-<td> pcb_redo() ,<tr><td> Export </td>
-<td> Export </td>
-<td> Export(exporter, ,<tr><td> FreeRotateBuffer </td>
-<td> Rotates </td>
-<td><td> angle </td>
-<td><td> for </td>
-<td> pcb_buffer_free_rotate([Angle]) ,<tr><td> BoardFlip </td>
+<td></td>
+<td>AutoRoute(AllRats|SelectedRats)</td>
+<tr><td> ReplaceFootprint </td>
+<td></td>
+<td>ReplaceFootprint()</td>
+<tr><td> net </td>
+<td></td>
+<td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td>
+<tr><td> LoadFootprint </td>
+<td></td>
+<td>pcb_load_footprint(filename[,refdes,value])</td>
+<tr><td> New </td>
+<td></td>
+<td>New([name])</td>
+<tr><td> RipUp </td>
+<td></td>
+<td>RipUp(All|Selected|Element)</td>
+<tr><td> Import </td>
+<td></td>
+<td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td>
+<tr><td> DumpCsect </td>
+<td></td>
+<td>DumpCsect()</td>
+<tr><td> Redo </td>
+<td></td>
+<td>pcb_redo()</td>
+<tr><td> Export </td>
+<td></td>
+<td>Export(exporter, [exporter-args])</td>
+<tr><td> FreeRotateBuffer </td>
+<td></td>
+<td>pcb_buffer_free_rotate([Angle])</td>
+<tr><td> BoardFlip </td>
 <tr><td> MoveLayer </td>
-<td> Moves/Creates/Deletes </td>
-<td> MoveLayer(old,new) ,<tr><td> LibraryChanged </td>
-<td> Tells </td>
-<td> LibraryChanged() ,<tr><td> SavePatch </td>
-<td> Save </td>
-<td> SavePatch(filename) ,<tr><td> CreateMenu </td>
-<td> Creates </td>
-<td> CreateMenu(path ,<tr><td> ChkGridUnits </td>
-<td> Return </td>
-<td> ChkGridUnits(expected) ,<tr><td> ChangeSquare </td>
-<td> Changes </td>
-<td> ChangeSquare(ToggleObject) , ChangeSquare(SelectedElements|SelectedPins) , ChangeSquare(Selected|SelectedObjects) ,<tr><td> djopt </td>
-<td> Perform </td>
-<td> djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull) , djopt(auto) , djopt(miter) ,<tr><td> PrintCopyright </td>
-<td> Print </td>
-<td> PrintCopyright() ,<tr><td> LoadLtspiceFrom </td>
-<td> Loads </td>
-<td> LoadLtspiceFrom(filename) ,<tr><td> DumpPlugins </td>
-<td> Print </td>
-<td> DumpPlugins() ,<tr><td> SaveFontTo </td>
-<td> Save </td>
-<td> SaveFontTo([file, ,<tr><td> ExecuteFile </td>
-<td> Run </td>
-<td> ExecuteFile(filename) ,<tr><td> ChangePinName </td>
-<td> Sets </td>
-<td> ChangePinName(ElementName,PinNumber,PinName) ,<tr><td> RouteStyle </td>
-<td> Copies </td>
-<td> RouteStyle(1|2|3|4) ,<tr><td> SwitchHID </td>
-<td> Switch </td>
-<td> SwitchHID(lesstif|gtk|batch) ,<tr><td> GlobalPuller </td>
-<td> Pull </td>
-<td> pcb_act_GlobalPuller() ,<tr><td> SetSquare </td>
-<td> sets </td>
-<td> SetSquare(ToggleObject|SelectedElements|SelectedPins) ,<tr><td> Renumber </td>
-<td> Renumber </td>
-<td><td> for </td>
-<td> Renumber() , Renumber(filename) ,<tr><td> SaveTedax </td>
-<td> Saves </td>
-<td> SaveTedax(type, ,<tr><td> RouteStylesChanged </td>
-<td> Tells </td>
-<td> RouteStylesChanged() ,<tr><td> Polygon </td>
-<td> Some </td>
-<td> Polygon(Close|PreviousPoint) ,<tr><td> autocrop </td>
+<td></td>
+<td>MoveLayer(old,new)</td>
+<tr><td> LibraryChanged </td>
+<td></td>
+<td>LibraryChanged()</td>
+<tr><td> SavePatch </td>
+<td></td>
+<td>SavePatch(filename)</td>
+<tr><td> CreateMenu </td>
+<td></td>
+<td>CreateMenu(path | path, action, mnemonic, accel, tooltip, cookie)</td>
+<tr><td> ChkGridUnits </td>
+<td></td>
+<td>ChkGridUnits(expected)</td>
+<tr><td> ChangeSquare </td>
+<td></td>
+<td>ChangeSquare(ToggleObject)<br>ChangeSquare(SelectedElements|SelectedPins)<br>ChangeSquare(Selected|SelectedObjects)</td>
+<tr><td> djopt </td>
+<td></td>
+<td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td>
+<tr><td> PrintCopyright </td>
+<td></td>
+<td>PrintCopyright()</td>
+<tr><td> LoadLtspiceFrom </td>
+<td></td>
+<td>LoadLtspiceFrom(filename)</td>
+<tr><td> DumpPlugins </td>
+<td></td>
+<td>DumpPlugins()</td>
+<tr><td> SaveFontTo </td>
+<td></td>
+<td>SaveFontTo([file, id])</td>
+<tr><td> ExecuteFile </td>
+<td></td>
+<td>ExecuteFile(filename)</td>
+<tr><td> ChangePinName </td>
+<td></td>
+<td>ChangePinName(ElementName,PinNumber,PinName)</td>
+<tr><td> RouteStyle </td>
+<td></td>
+<td>RouteStyle(1|2|3|4)</td>
+<tr><td> SwitchHID </td>
+<td></td>
+<td>SwitchHID(lesstif|gtk|batch)</td>
+<tr><td> GlobalPuller </td>
+<td></td>
+<td>pcb_act_GlobalPuller()</td>
+<tr><td> SetSquare </td>
+<td></td>
+<td>SetSquare(ToggleObject|SelectedElements|SelectedPins)</td>
+<tr><td> Renumber </td>
+<td></td>
+<td>Renumber()<br>Renumber(filename)</td>
+<tr><td> SaveTedax </td>
+<td></td>
+<td>SaveTedax(type, filename)</td>
+<tr><td> RouteStylesChanged </td>
+<td></td>
+<td>RouteStylesChanged()</td>
+<tr><td> Polygon </td>
+<td></td>
+<td>Polygon(Close|PreviousPoint)</td>
+<tr><td> autocrop </td>
 <tr><td> SelectLayer </td>
-<td> Select </td>
-<td> SelectLayer(1..MAXLAYER|Silk|Rats) ,<tr><td> distribute </td>
-<td> Distribute </td>
-<td> Distribute(Y, ,<tr><td> Connection </td>
-<td> Searches </td>
-<td> Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset) ,<tr><td> query </td>
-<td> Perform </td>
-<td> query(dump, ,<tr><td> ChangeFlag </td>
-<td> Sets </td>
-<td> ChangeFlag(Object|Selected|SelectedObjects, , ChangeFlag(SelectedLines|SelectedPins|SelectedVias, , ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, , ChangeFlag(SelectedElements, , flag , value ,<tr><td> ListRotations </td>
+<td></td>
+<td>SelectLayer(1..MAXLAYER|Silk|Rats)</td>
+<tr><td> distribute </td>
+<td></td>
+<td>Distribute(Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td>
+<tr><td> Connection </td>
+<td></td>
+<td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td>
+<tr><td> query </td>
+<td></td>
+<td>query(dump, expr) - dry run: compile and dump an expression</td>
+<tr><td> ChangeFlag </td>
+<td></td>
+<td>ChangeFlag(Object|Selected|SelectedObjects, flag, value)<br>ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)<br>ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)<br>ChangeFlag(SelectedElements, flag, value)<br>flag = square | octagon | thermal | join<br>value = 0 | 1</td>
+<tr><td> ListRotations </td>
 <tr><td> Report </td>
-<td> Produce </td>
-<td> Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name]) ,<tr><td> Undo </td>
-<td> Undo </td>
-<td> pcb_undo() , pcb_undo(ClearList) ,<tr><td> CycleDrag </td>
-<td> Cycle </td>
-<td> CycleDrag() ,<tr><td> PrintVersion </td>
-<td> Print </td>
-<td> PrintVersion() ,<tr><td> Teardrops </td>
+<td></td>
+<td>Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name])</td>
+<tr><td> Undo </td>
+<td></td>
+<td>pcb_undo()<br>pcb_undo(ClearList)</td>
+<tr><td> CycleDrag </td>
+<td></td>
+<td>CycleDrag()</td>
+<tr><td> PrintVersion </td>
+<td></td>
+<td>PrintVersion()</td>
+<tr><td> Teardrops </td>
 <tr><td> FontEdit </td>
-<td> Convert </td>
-<td> FontEdit() ,<tr><td> h </td>
-<td> Print </td>
-<td> h ,<tr><td> ApplyVendor </td>
-<td> Applies </td>
-<td> ApplyVendor() ,<tr><td> Puller </td>
-<td> Pull </td>
-<td> pcb_act_Puller() ,<tr><td> l </td>
-<td> Loads </td>
-<td> l ,<tr><td> m </td>
-<td> Loads </td>
-<td> m ,<tr><td> Delete </td>
-<td> Delete </td>
-<td> Delete(Object|Selected) , Delete(AllRats|SelectedRats) ,<tr><td> DisperseElements </td>
-<td> Disperses </td>
-<td> DisperseElements(All|Selected) ,<tr><td> q </td>
-<td> Quits </td>
-<td> q ,<tr><td> SetValue </td>
-<td> Change </td>
-<td> SetValue(Grid|Line|LineSize|Text|TextScale|ViaDrillingHole|Via|ViaSize, ,<tr><td> s </td>
-<td> Saves </td>
-<td> s ,<tr><td> Message </td>
-<td> Writes </td>
-<td> pcb_message(message) ,<tr><td> Mode </td>
-<td> Change </td>
-<td> Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer) , Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via) , Mode(Notify|Release|Cancel|Stroke) , Mode(Save|Restore) ,<tr><td> ChangeNonetlist </td>
-<td> Changes </td>
-<td> ChangeNonetlist(ToggleObject) , ChangeNonetlist(SelectedElements) , ChangeNonetlist(Selected|SelectedObjects) ,<tr><td> w </td>
-<td> Saves </td>
-<td> w ,<tr><td> MoveObject </td>
-<td> Moves </td>
-<td> pcb_move_obj(X,Y,dim) ,<tr><td> Atomic </td>
-<td> Save </td>
-<td> Atomic(Save|Restore|Close|Block) ,<tr><td> FullScreen </td>
-<td> Hide </td>
-<td> pcb_act_FullScreen(on|off|toggle) ,<tr><td> ChkGridSize </td>
-<td> Return </td>
-<td> ChkGridSize(expected_size) , ChkGridSize(none) ,<tr><td> LoadTinycadFrom </td>
-<td> Loads </td>
-<td> LoadTinycadFrom(filename) ,<tr><td> ExecCommand </td>
-<td> Runs </td>
-<td> ExecCommand(command) ,<tr><td> PrintPaths </td>
-<td> Print </td>
-<td> PrintPaths() ,<tr><td> ChkElementName </td>
-<td> Return </td>
-<td> ChkElementName(1) , ChkElementName(2) , ChkElementName(3) ,<tr><td> ReportObject </td>
-<td> Report </td>
-<td> ReportObject() ,<tr><td> SaveTo </td>
-<td> Saves </td>
-<td> SaveTo(Layout|LayoutAs,filename) , SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename) , SaveTo(PasteBuffer,filename) ,<tr><td> ChangeJoin </td>
-<td> Changes </td>
-<td> ChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected) ,<tr><td> PCBChanged </td>
-<td> Tells </td>
-<td> PCBChanged([revert]) ,<tr><td> ChangeClearSize </td>
-<td> Changes </td>
-<td> ChangeClearSize(Object, , ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, , ChangeClearSize(SelectedLines|SelectedArcs, , ChangeClearSize(Selected|SelectedObjects, ,<tr><td> UnloadVendor </td>
-<td> Unloads </td>
-<td> UnloadVendor() ,<tr><td> LoadVendorFrom </td>
-<td> Loads </td>
-<td> LoadVendorFrom(filename) ,<tr><td> LoadMentorFrom </td>
-<td> Loads </td>
-<td> LoadMentorFrom(filename) ,<tr><td> propset </td>
-<td> Change </td>
-<td> propset(name, ,<tr><td> q! </td>
-<td> Quits </td>
-<td> q! ,<tr><td> Unselect </td>
-<td> Unselects </td>
-<td> Unselect(All|Block|Connection) , Unselect(ElementByName|ObjectByName|PadByName|PinByName) , Unselect(ElementByName|ObjectByName|PadByName|PinByName, , Unselect(TextByName|ViaByName) , Unselect(TextByName|ViaByName, ,<tr><td> NetlistChanged </td>
-<td> Tells </td>
-<td> NetlistChanged() ,<tr><td> ChangeSize </td>
-<td> Changes </td>
-<td> ChangeSize(Object, , ChangeSize(SelectedObjects|Selected, , ChangeSize(SelectedLines|SelectedPins|SelectedVias, , ChangeSize(SelectedPads|SelectedTexts|SelectedNames, , ChangeSize(SelectedElements, ,<tr><td> PrintActions </td>
-<td> Print </td>
-<td> PrintActions() ,<tr><td> jostle </td>
-<td> Move </td>
-<td> Jostle(diameter) ,<tr><td> ChangeOctagon </td>
-<td> Changes </td>
-<td> ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected) , ChangeOctagon(SelectedElements|SelectedPins|SelectedVias) ,<tr><td> RemoveMenu </td>
-<td> Recursively </td>
-<td> RemoveMenu(path|cookie) ,<tr><td> Flip </td>
-<td> Flip </td>
-<td> Flip(Object|Selected|SelectedElements) ,<tr><td> ChangeSizes </td>
-<td> Changes </td>
-<td> ChangeSizes(Object, , ChangeSizes(SelectedObjects|Selected, , ChangeSizes(SelectedLines|SelectedPins|SelectedVias, , ChangeSizes(SelectedPads|SelectedTexts|SelectedNames, , ChangeSizes(SelectedElements, ,<tr><td> ManagePlugins </td>
-<td> Manage </td>
-<td> ManagePlugins() ,<tr><td> align </td>
-<td> Align </td>
-<td> Align(X/Y, ,<tr><td> le </td>
-<td> Loads </td>
-<td> le ,<tr><td> MorphPolygon </td>
-<td> Converts </td>
-<td> pcb_poly_morph(Object|Selected) ,<tr><td> AddRats </td>
-<td> Add </td>
-<td> AddRats(AllRats|SelectedRats|Close) ,<tr><td> LoadEeschemaFrom </td>
-<td> Loads </td>
-<td> LoadEeschemaFrom(filename) ,<tr><td> ElementList </td>
-<td> Adds </td>
-<td> ElementList(Start|Done|Need,<refdes>,<footprint>,<value>) ,<tr><td> AutoPlaceSelected </td>
-<td> Auto-place </td>
-<td> AutoPlaceSelected() ,<tr><td> DRC </td>
-<td> Invoke </td>
-<td> DRC() ,<tr><td> rn </td>
-<td> Reads </td>
-<td> rn ,<tr><td> FontSave </td>
-<td> Convert </td>
-<td> FontSave() ,<tr><td> EditGroup </td>
-<td> Change </td>
-<td> Editgroup([@group], , Editlayer([@layer], ,<tr><td> fp_rehash </td>
-<td> Flush </td>
-<td> fp_rehash() ,<tr><td> Quit </td>
-<td> Quits </td>
-<td> Quit() ,<tr><td> LoadDsnFrom </td>
-<td> Loads </td>
-<td> LoadDsnFrom(filename) ,<tr><td> ClearOctagon </td>
-<td> Clears </td>
-<td> ClearOctagon(ToggleObject|Object|SelectedObjects|Selected) , ClearOctagon(SelectedElements|SelectedPins|SelectedVias) ,<tr><td> RemoveSelected </td>
-<td> Removes </td>
-<td> pcb_remove_selected() ,<tr><td> MinClearGap </td>
-<td> Ensures </td>
-<td> MinClearGap(delta) , MinClearGap(Selected, ,<tr><td> SetSame </td>
-<td> Sets </td>
-<td> SetSame() ,<tr><td> wq </td>
-<td> Saves </td>
-<td> wq ,<tr><td> ChangePaste </td>
-<td> Changes </td>
-<td> ChangePaste(ToggleObject|Object|SelectedPads|Selected) ,<tr><td> PolyCombine </td>
+<td></td>
+<td>FontEdit()</td>
+<tr><td> h </td>
+<td></td>
+<td>h</td>
+<tr><td> ApplyVendor </td>
+<td></td>
+<td>ApplyVendor()</td>
+<tr><td> Puller </td>
+<td></td>
+<td>pcb_act_Puller()</td>
+<tr><td> l </td>
+<td></td>
+<td>l [name] [format]</td>
+<tr><td> m </td>
+<td></td>
+<td>m [name]</td>
+<tr><td> Delete </td>
+<td></td>
+<td>Delete(Object|Selected)<br>Delete(AllRats|SelectedRats)</td>
+<tr><td> DisperseElements </td>
+<td></td>
+<td>DisperseElements(All|Selected)</td>
+<tr><td> q </td>
+<td></td>
+<td>q</td>
+<tr><td> SetValue </td>
+<td></td>
+<td>SetValue(Grid|Line|LineSize|Text|TextScale|ViaDrillingHole|Via|ViaSize, delta)</td>
+<tr><td> s </td>
+<td></td>
+<td>s [name]</td>
+<tr><td> Message </td>
+<td></td>
+<td>pcb_message(message)</td>
+<tr><td> Mode </td>
+<td></td>
+<td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td>
+<tr><td> ChangeNonetlist </td>
+<td></td>
+<td>ChangeNonetlist(ToggleObject)<br>ChangeNonetlist(SelectedElements)<br>ChangeNonetlist(Selected|SelectedObjects)</td>
+<tr><td> w </td>
+<td></td>
+<td>w [name]</td>
+<tr><td> MoveObject </td>
+<td></td>
+<td>pcb_move_obj(X,Y,dim)</td>
+<tr><td> Atomic </td>
+<td></td>
+<td>Atomic(Save|Restore|Close|Block)</td>
+<tr><td> FullScreen </td>
+<td></td>
+<td>pcb_act_FullScreen(on|off|toggle)</td>
+<tr><td> ChkGridSize </td>
+<td></td>
+<td>ChkGridSize(expected_size)<br>ChkGridSize(none)</td>
+<tr><td> LoadTinycadFrom </td>
+<td></td>
+<td>LoadTinycadFrom(filename)</td>
+<tr><td> ExecCommand </td>
+<td></td>
+<td>ExecCommand(command)</td>
+<tr><td> PrintPaths </td>
+<td></td>
+<td>PrintPaths()</td>
+<tr><td> ChkElementName </td>
+<td></td>
+<td>ChkElementName(1) - expect description<br>ChkElementName(2) - expect refdes<br>ChkElementName(3) - expect value</td>
+<tr><td> ReportObject </td>
+<td></td>
+<td>ReportObject()</td>
+<tr><td> SaveTo </td>
+<td></td>
+<td>SaveTo(Layout|LayoutAs,filename)<br>SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)<br>SaveTo(PasteBuffer,filename)</td>
+<tr><td> ChangeJoin </td>
+<td></td>
+<td>ChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected)</td>
+<tr><td> PCBChanged </td>
+<td></td>
+<td>PCBChanged([revert])</td>
+<tr><td> ChangeClearSize </td>
+<td></td>
+<td>ChangeClearSize(Object, delta|style)<br>ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)<br>ChangeClearSize(SelectedLines|SelectedArcs, delta|style)<br>ChangeClearSize(Selected|SelectedObjects, delta|style)</td>
+<tr><td> UnloadVendor </td>
+<td></td>
+<td>UnloadVendor()</td>
+<tr><td> LoadVendorFrom </td>
+<td></td>
+<td>LoadVendorFrom(filename)</td>
+<tr><td> LoadMentorFrom </td>
+<td></td>
+<td>LoadMentorFrom(filename)</td>
+<tr><td> propset </td>
+<td></td>
+<td>propset(name, value)</td>
+<tr><td> q! </td>
+<td></td>
+<td>q!</td>
+<tr><td> Unselect </td>
+<td></td>
+<td>Unselect(All|Block|Connection)<br>Unselect(ElementByName|ObjectByName|PadByName|PinByName)<br>Unselect(ElementByName|ObjectByName|PadByName|PinByName, Name)<br>Unselect(TextByName|ViaByName)<br>Unselect(TextByName|ViaByName, Name)</td>
+<tr><td> NetlistChanged </td>
+<td></td>
+<td>NetlistChanged()</td>
+<tr><td> ChangeSize </td>
+<td></td>
+<td>ChangeSize(Object, delta|style)<br>ChangeSize(SelectedObjects|Selected, delta|style)<br>ChangeSize(SelectedLines|SelectedPins|SelectedVias, delta|style)<br>ChangeSize(SelectedPads|SelectedTexts|SelectedNames, delta|style)<br>ChangeSize(SelectedElements, delta|style)</td>
+<tr><td> PrintActions </td>
+<td></td>
+<td>PrintActions()</td>
+<tr><td> jostle </td>
+<td></td>
+<td>Jostle(diameter)</td>
+<tr><td> ChangeOctagon </td>
+<td></td>
+<td>ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)<br>ChangeOctagon(SelectedElements|SelectedPins|SelectedVias)</td>
+<tr><td> RemoveMenu </td>
+<td></td>
+<td>RemoveMenu(path|cookie)</td>
+<tr><td> Flip </td>
+<td></td>
+<td>Flip(Object|Selected|SelectedElements)</td>
+<tr><td> ChangeSizes </td>
+<td></td>
+<td>ChangeSizes(Object, delta|style)<br>ChangeSizes(SelectedObjects|Selected, delta|style)<br>ChangeSizes(SelectedLines|SelectedPins|SelectedVias, delta|style)<br>ChangeSizes(SelectedPads|SelectedTexts|SelectedNames, delta|style)<br>ChangeSizes(SelectedElements, delta|style)</td>
+<tr><td> ManagePlugins </td>
+<td></td>
+<td>ManagePlugins()</td>
+<tr><td> align </td>
+<td></td>
+<td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td>
+<tr><td> le </td>
+<td></td>
+<td>le [name]</td>
+<tr><td> MorphPolygon </td>
+<td></td>
+<td>pcb_poly_morph(Object|Selected)</td>
+<tr><td> AddRats </td>
+<td></td>
+<td>AddRats(AllRats|SelectedRats|Close)</td>
+<tr><td> LoadEeschemaFrom </td>
+<td></td>
+<td>LoadEeschemaFrom(filename)</td>
+<tr><td> ElementList </td>
+<td></td>
+<td>ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)</td>
+<tr><td> AutoPlaceSelected </td>
+<td></td>
+<td>AutoPlaceSelected()</td>
+<tr><td> DRC </td>
+<td></td>
+<td>DRC()</td>
+<tr><td> rn </td>
+<td></td>
+<td>rn [name]</td>
+<tr><td> FontSave </td>
+<td></td>
+<td>FontSave()</td>
+<tr><td> EditGroup </td>
+<td></td>
+<td>Editgroup([@group], [name=text|type=+bit|type=-bit])]<br>Editlayer([@layer], attrib, key=value)</td>
+<tr><td> fp_rehash </td>
+<td></td>
+<td>fp_rehash()</td>
+<tr><td> Quit </td>
+<td></td>
+<td>Quit()</td>
+<tr><td> LoadDsnFrom </td>
+<td></td>
+<td>LoadDsnFrom(filename)</td>
+<tr><td> ClearOctagon </td>
+<td></td>
+<td>ClearOctagon(ToggleObject|Object|SelectedObjects|Selected)<br>ClearOctagon(SelectedElements|SelectedPins|SelectedVias)</td>
+<tr><td> RemoveSelected </td>
+<td></td>
+<td>pcb_remove_selected()</td>
+<tr><td> MinClearGap </td>
+<td></td>
+<td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td>
+<tr><td> SetSame </td>
+<td></td>
+<td>SetSame()</td>
+<tr><td> wq </td>
+<td></td>
+<td>wq</td>
+<tr><td> ChangePaste </td>
+<td></td>
+<td>ChangePaste(ToggleObject|Object|SelectedPads|Selected)</td>
+<tr><td> PolyCombine </td>
 <tr><td> Select </td>
-<td> Toggles </td>
-<td> Select(Object|ToggleObject) , Select(All|Block|Connection) , Select(ElementByName|ObjectByName|PadByName|PinByName) , Select(ElementByName|ObjectByName|PadByName|PinByName, , Select(TextByName|ViaByName|NetByName) , Select(TextByName|ViaByName|NetByName, , Select(Convert) ,<tr><td> MinMaskGap </td>
-<td> Ensures </td>
-<td> MinMaskGap(delta) , MinMaskGap(Selected, ,<tr><td> ChangeName </td>
-<td> Sets </td>
-<td> ChangeName(Object) , ChangeName(Object|"Number") , ChangeName(Layout|Layer) ,<tr><td> LoadMucsFrom </td>
-<td> Loads </td>
-<td> LoadMucsFrom(filename) ,<tr><td> GetStyle </td>
-<td> Return </td>
-<td> GetStyle() ,<tr><td> ChangeRadius </td>
-<td> Changes </td>
-<td> ChangeRadius(Object, , ChangeRadius(SelectedObjects|Selected, , ChangeRadius(SelectedArcs, ,<tr><td> ElementSetAttr </td>
-<td> Sets </td>
-<td> ElementSetAttr(refdes,name[,value]) ,<tr><td> smartdisperse </td>
-<tr><td> PasteBuffer </td>
-<td> Various </td>
-<td> PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER) , PasteBuffer(Rotate, , PasteBuffer(Convert|Restore|Mirror) , PasteBuffer(ToLayout, , PasteBuffer(Save, ,<tr><td> ChangeDrillSize </td>
-<td> Changes </td>
-<td> ChangeDrillSize(Object, , ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, ,<tr><td> LoadhypFrom </td>
-<td> Loads </td>
-<td> LoadhypFrom(filename[, ,<tr><td> SetOctagon </td>
-<td> Sets </td>
-<td> SetOctagon(Object|ToggleObject|SelectedElements|Selected) ,<tr><td> aligntext </td>
-<td> Align </td>
-<td> AlignText(X/Y, ,<tr><td> Display </td>
-<td> Several </td>
-<td> Display(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName) , Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection) , Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames) , Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin) , Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes) , Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef) , Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames) ,<tr><td> DeleteRats </td>
-<td> Delete </td>
-<td> DeleteRats(AllRats|Selected|SelectedRats) ,<tr><td> Cursor </td>
-<td> Move </td>
-<td> Cursor(Type,DeltaUp,DeltaRight,Units) ,<tr><td> ChkBuffer </td>
-<td> Return </td>
-<td> ChkBuffer(idx) ,<tr><td> ChkMode </td>
-<td> Return </td>
-<td> ChkMode(expected_mode) ,<tr><td> netlist </td>
-<td> Perform </td>
-<td> Net(find|select|rats|norats|clear[,net[,pin]]) , Net(freeze|thaw|forcethaw) , Net(swap) , Net(add,net,pin) ,<tr><td> LoadFontFrom </td>
-<td> Load </td>
-<td> LoadFontFrom([file, ,<tr><td> LoadFrom </td>
-<td> Load </td>
-<td> LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format]) ,<tr><td> ChangeAngle </td>
-<td> Changes </td>
-<td> ChangeAngle(Object, , ChangeAngle(SelectedObjects|Selected, , ChangeAngle(SelectedArcs, ,<tr><td> ToggleView </td>
-<td> Toggle </td>
-<td> ToggleView(1..MAXLAYER) , ToggleView(layername) , ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide) , ToggleView(All, ,<tr><td> CreateText </td>
-<td> Create </td>
-<td> CreateText(layer, ,<tr><td> MarkCrosshair </td>
-<td> Set/Reset </td>
-<td> MarkCrosshair() , MarkCrosshair(Center) ,<tr><td> LoadTedaxFrom </td>
-<td> Loads </td>
-<td> LoadTedaxFrom(type, ,<tr><td> MoveToCurrentLayer </td>
-<td> Moves </td>
-<td> MoveToCurrentLayer(Object|SelectedObjects) ,<tr><td> SetThermal </td>
-<td> Set </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td> SetThermal(Object|SelectedPins|SelectedVias|Selected, ,<tr><td> propedit </td>
-<td> Run </td>
-<td> propedit() ,<tr><td> pscalib </td>
-<tr><td> EditLayer </td>
-<td> Change </td>
-<td> Editlayer([@layer], , Editlayer([@layer], ,<tr><td> SetFlag </td>
-<td> Sets </td>
-<td> SetFlag(Object|Selected|SelectedObjects, , SetFlag(SelectedLines|SelectedPins|SelectedVias, , SetFlag(SelectedPads|SelectedTexts|SelectedNames, , SetFlag(SelectedElements, , flag ,<tr><td> ClrFlag </td>
-<td> Clears </td>
-<td> ClrFlag(Object|Selected|SelectedObjects, , ClrFlag(SelectedLines|SelectedPins|SelectedVias, , ClrFlag(SelectedPads|SelectedTexts|SelectedNames, , ClrFlag(SelectedElements, , flag ,<tr><td> PrintUsage </td>
-<td> Print </td>
-<td> PrintUsage() , PrintUsage(plugin) ,<tr><td> ClearSquare </td>
-<td> Clears </td>
-<td> ClearSquare(ToggleObject|SelectedElements|SelectedPins) ,<tr><td> ChangeHole </td>
-<td> Changes </td>
-<td> ChangeHole(ToggleObject|Object|SelectedVias|Selected) ,<tr><td> conf </td>
-<td> Perform </td>
-<td> conf(set, , conf(delta, , conf(toggle, , conf(reset, , conf(iseq, ,<tr><td> distributetext </td>
-<td> Distribute </td>
-<td> DistributeText(Y, ,<tr><td> DumpActions </td>
-<td> Dump </td>
-<td> DumpActions() ,<tr><td> Attributes </td>
-<td> Let </td>
-<td><td> layer, </td>
-<td> Attributes(Layout|Layer|Element) , Attributes(Layer,layername) ,<tr><td> RenumberBlock </td>
-<tr><td> ToggleHideName </td>
-<td> Toggles </td>
-<td> ToggleHideName(Object|SelectedElements) ,<tr><td> RenumberBuffer </td>
-<tr><td> AutoRoute </td>
-<td> Auto-route </td>
-<td> AutoRoute(AllRats|SelectedRats) ,<tr><td> ReplaceFootprint </td>
-<td> Replace </td>
-<td> ReplaceFootprint() ,<tr><td> net </td>
-<td> Perform </td>
-<td> Net(find|select|rats|norats|clear[,net[,pin]]) , Net(freeze|thaw|forcethaw) , Net(swap) , Net(add,net,pin) ,<tr><td> LoadFootprint </td>
-<td> Loads </td>
-<td> pcb_load_footprint(filename[,refdes,value]) ,<tr><td> New </td>
-<td> Starts </td>
-<td> New([name]) ,<tr><td> RipUp </td>
-<td> Ripup </td>
-<td> RipUp(All|Selected|Element) ,<tr><td> Import </td>
-<td> Import </td>
-<td> Import() , Import([gnetlist|make[,source,source,...]]) , Import(setnewpoint[,(mark|center|X,Y)]) , Import(setdisperse,D,units) ,<tr><td> DumpCsect </td>
-<td> Print </td>
-<td> DumpCsect() ,<tr><td> Redo </td>
-<td> Redo </td>
-<td> pcb_redo() ,<tr><td> Export </td>
-<td> Export </td>
-<td> Export(exporter, ,<tr><td> FreeRotateBuffer </td>
-<td> Rotates </td>
-<td><td> angle </td>
-<td><td> for </td>
-<td> pcb_buffer_free_rotate([Angle]) ,<tr><td> BoardFlip </td>
-<tr><td> MoveLayer </td>
-<td> Moves/Creates/Deletes </td>
-<td> MoveLayer(old,new) ,<tr><td> LibraryChanged </td>
-<td> Tells </td>
-<td> LibraryChanged() ,<tr><td> SavePatch </td>
-<td> Save </td>
-<td> SavePatch(filename) ,<tr><td> CreateMenu </td>
-<td> Creates </td>
-<td> CreateMenu(path ,<tr><td> ChkGridUnits </td>
-<td> Return </td>
-<td> ChkGridUnits(expected) ,<tr><td> ChangeSquare </td>
-<td> Changes </td>
-<td> ChangeSquare(ToggleObject) , ChangeSquare(SelectedElements|SelectedPins) , ChangeSquare(Selected|SelectedObjects) ,<tr><td> djopt </td>
-<td> Perform </td>
-<td> djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull) , djopt(auto) , djopt(miter) ,<tr><td> PrintCopyright </td>
-<td> Print </td>
-<td> PrintCopyright() ,<tr><td> LoadLtspiceFrom </td>
-<td> Loads </td>
-<td> LoadLtspiceFrom(filename) ,<tr><td> DumpPlugins </td>
-<td> Print </td>
-<td> DumpPlugins() ,<tr><td> SaveFontTo </td>
-<td> Save </td>
-<td> SaveFontTo([file, ,<tr><td> ExecuteFile </td>
-<td> Run </td>
-<td> ExecuteFile(filename) ,<tr><td> ChangePinName </td>
-<td> Sets </td>
-<td> ChangePinName(ElementName,PinNumber,PinName) ,<tr><td> RouteStyle </td>
-<td> Copies </td>
-<td> RouteStyle(1|2|3|4) ,<tr><td> SwitchHID </td>
-<td> Switch </td>
-<td> SwitchHID(lesstif|gtk|batch) ,<tr><td> GlobalPuller </td>
-<td> Pull </td>
-<td> pcb_act_GlobalPuller() ,<tr><td> SetSquare </td>
-<td> sets </td>
-<td> SetSquare(ToggleObject|SelectedElements|SelectedPins) ,<tr><td> Renumber </td>
-<td> Renumber </td>
-<td><td> for </td>
-<td> Renumber() , Renumber(filename) ,<tr><td> SaveTedax </td>
-<td> Saves </td>
-<td> SaveTedax(type, ,<tr><td> RouteStylesChanged </td>
-<td> Tells </td>
-<td> RouteStylesChanged() ,<tr><td> Polygon </td>
-<td> Some </td>
-<td> Polygon(Close|PreviousPoint) ,<tr><td> autocrop </td>
-<tr><td> SelectLayer </td>
-<td> Select </td>
-<td> SelectLayer(1..MAXLAYER|Silk|Rats) ,<tr><td> distribute </td>
-<td> Distribute </td>
-<td> Distribute(Y, ,<tr><td> Connection </td>
-<td> Searches </td>
-<td> Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset) ,<tr><td> query </td>
-<td> Perform </td>
-<td> query(dump, ,<tr><td> ChangeFlag </td>
-<td> Sets </td>
-<td> ChangeFlag(Object|Selected|SelectedObjects, , ChangeFlag(SelectedLines|SelectedPins|SelectedVias, , ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, , ChangeFlag(SelectedElements, , flag , value ,<tr><td> ListRotations </td>
-<tr><td> Report </td>
-<td> Produce </td>
-<td> Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name]) ,<tr><td> Undo </td>
-<td> Undo </td>
-<td> pcb_undo() , pcb_undo(ClearList) ,<tr><td> CycleDrag </td>
-<td> Cycle </td>
-<td> CycleDrag() ,<tr><td> PrintVersion </td>
-<td> Print </td>
-<td> PrintVersion() ,<tr><td> Teardrops </td>
-<tr><td> FontEdit </td>
-<td> Convert </td>
-<td> FontEdit() ,<tr><td> h </td>
-<td> Print </td>
-<td> h ,<tr><td> ApplyVendor </td>
-<td> Applies </td>
-<td> ApplyVendor() ,<tr><td> Puller </td>
-<td> Pull </td>
-<td> pcb_act_Puller() ,<tr><td> l </td>
-<td> Loads </td>
-<td> l ,<tr><td> m </td>
-<td> Loads </td>
-<td> m ,<tr><td> Delete </td>
-<td> Delete </td>
-<td> Delete(Object|Selected) , Delete(AllRats|SelectedRats) ,<tr><td> DisperseElements </td>
-<td> Disperses </td>
-<td> DisperseElements(All|Selected) ,<tr><td> q </td>
-<td> Quits </td>
-<td> q ,<tr><td> SetValue </td>
-<td> Change </td>
-<td> SetValue(Grid|Line|LineSize|Text|TextScale|ViaDrillingHole|Via|ViaSize, ,<tr><td> s </td>
-<td> Saves </td>
-<td> s ,<tr><td> Message </td>
-<td> Writes </td>
-<td> pcb_message(message) ,<tr><td> Mode </td>
-<td> Change </td>
-<td> Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer) , Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via) , Mode(Notify|Release|Cancel|Stroke) , Mode(Save|Restore) ,<tr><td> ChangeNonetlist </td>
-<td> Changes </td>
-<td> ChangeNonetlist(ToggleObject) , ChangeNonetlist(SelectedElements) , ChangeNonetlist(Selected|SelectedObjects) ,<tr><td> w </td>
-<td> Saves </td>
-<td> w ,<tr><td> MoveObject </td>
-<td> Moves </td>
-<td> pcb_move_obj(X,Y,dim) ,<tr><td> Atomic </td>
-<td> Save </td>
-<td> Atomic(Save|Restore|Close|Block) ,<tr><td> FullScreen </td>
-<td> Hide </td>
-<td> pcb_act_FullScreen(on|off|toggle) ,<tr><td> ChkGridSize </td>
-<td> Return </td>
-<td> ChkGridSize(expected_size) , ChkGridSize(none) ,<tr><td> LoadTinycadFrom </td>
-<td> Loads </td>
-<td> LoadTinycadFrom(filename) ,<tr><td> ExecCommand </td>
-<td> Runs </td>
-<td> ExecCommand(command) ,<tr><td> PrintPaths </td>
-<td> Print </td>
-<td> PrintPaths() ,<tr><td> ChkElementName </td>
-<td> Return </td>
-<td> ChkElementName(1) , ChkElementName(2) , ChkElementName(3) ,<tr><td> ReportObject </td>
-<td> Report </td>
-<td> ReportObject() ,<tr><td> SaveTo </td>
-<td> Saves </td>
-<td> SaveTo(Layout|LayoutAs,filename) , SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename) , SaveTo(PasteBuffer,filename) ,<tr><td> ChangeJoin </td>
-<td> Changes </td>
-<td> ChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected) ,<tr><td> PCBChanged </td>
-<td> Tells </td>
-<td> PCBChanged([revert]) ,<tr><td> ChangeClearSize </td>
-<td> Changes </td>
-<td> ChangeClearSize(Object, , ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, , ChangeClearSize(SelectedLines|SelectedArcs, , ChangeClearSize(Selected|SelectedObjects, ,<tr><td> UnloadVendor </td>
-<td> Unloads </td>
-<td> UnloadVendor() ,<tr><td> LoadVendorFrom </td>
-<td> Loads </td>
-<td> LoadVendorFrom(filename) ,<tr><td> LoadMentorFrom </td>
-<td> Loads </td>
-<td> LoadMentorFrom(filename) ,<tr><td> propset </td>
-<td> Change </td>
-<td> propset(name, ,<tr><td> q! </td>
-<td> Quits </td>
-<td> q! ,<tr><td> Unselect </td>
-<td> Unselects </td>
-<td> Unselect(All|Block|Connection) , Unselect(ElementByName|ObjectByName|PadByName|PinByName) , Unselect(ElementByName|ObjectByName|PadByName|PinByName, , Unselect(TextByName|ViaByName) , Unselect(TextByName|ViaByName, ,<tr><td> NetlistChanged </td>
-<td> Tells </td>
-<td> NetlistChanged() ,<tr><td> ChangeSize </td>
-<td> Changes </td>
-<td> ChangeSize(Object, , ChangeSize(SelectedObjects|Selected, , ChangeSize(SelectedLines|SelectedPins|SelectedVias, , ChangeSize(SelectedPads|SelectedTexts|SelectedNames, , ChangeSize(SelectedElements, ,<tr><td> PrintActions </td>
-<td> Print </td>
-<td> PrintActions() ,<tr><td> jostle </td>
-<td> Move </td>
-<td> Jostle(diameter) ,<tr><td> ChangeOctagon </td>
-<td> Changes </td>
-<td> ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected) , ChangeOctagon(SelectedElements|SelectedPins|SelectedVias) ,<tr><td> RemoveMenu </td>
-<td> Recursively </td>
-<td> RemoveMenu(path|cookie) ,<tr><td> Flip </td>
-<td> Flip </td>
-<td> Flip(Object|Selected|SelectedElements) ,<tr><td> ChangeSizes </td>
-<td> Changes </td>
-<td> ChangeSizes(Object, , ChangeSizes(SelectedObjects|Selected, , ChangeSizes(SelectedLines|SelectedPins|SelectedVias, , ChangeSizes(SelectedPads|SelectedTexts|SelectedNames, , ChangeSizes(SelectedElements, ,<tr><td> ManagePlugins </td>
-<td> Manage </td>
-<td> ManagePlugins() ,<tr><td> align </td>
-<td> Align </td>
-<td> Align(X/Y, ,<tr><td> le </td>
-<td> Loads </td>
-<td> le ,<tr><td> MorphPolygon </td>
-<td> Converts </td>
-<td> pcb_poly_morph(Object|Selected) ,<tr><td> AddRats </td>
-<td> Add </td>
-<td> AddRats(AllRats|SelectedRats|Close) ,<tr><td> LoadEeschemaFrom </td>
-<td> Loads </td>
-<td> LoadEeschemaFrom(filename) ,<tr><td> ElementList </td>
-<td> Adds </td>
-<td> ElementList(Start|Done|Need,<refdes>,<footprint>,<value>) ,<tr><td> AutoPlaceSelected </td>
-<td> Auto-place </td>
-<td> AutoPlaceSelected() ,<tr><td> DRC </td>
-<td> Invoke </td>
-<td> DRC() ,<tr><td> rn </td>
-<td> Reads </td>
-<td> rn ,<tr><td> FontSave </td>
-<td> Convert </td>
-<td> FontSave() ,<tr><td> EditGroup </td>
-<td> Change </td>
-<td> Editgroup([@group], , Editlayer([@layer], ,<tr><td> fp_rehash </td>
-<td> Flush </td>
-<td> fp_rehash() ,<tr><td> Quit </td>
-<td> Quits </td>
-<td> Quit() ,<tr><td> LoadDsnFrom </td>
-<td> Loads </td>
-<td> LoadDsnFrom(filename) ,<tr><td> ClearOctagon </td>
-<td> Clears </td>
-<td> ClearOctagon(ToggleObject|Object|SelectedObjects|Selected) , ClearOctagon(SelectedElements|SelectedPins|SelectedVias) ,<tr><td> RemoveSelected </td>
-<td> Removes </td>
-<td> pcb_remove_selected() ,<tr><td> MinClearGap </td>
-<td> Ensures </td>
-<td> MinClearGap(delta) , MinClearGap(Selected, ,<tr><td> SetSame </td>
-<td> Sets </td>
-<td> SetSame() ,<tr><td> wq </td>
-<td> Saves </td>
-<td> wq ,<tr><td> ChangePaste </td>
-<td> Changes </td>
-<td> ChangePaste(ToggleObject|Object|SelectedPads|Selected) ,<tr><td> PolyCombine </td>
-<tr><td> Select </td>
-<td> Toggles </td>
-<td> Select(Object|ToggleObject) , Select(All|Block|Connection) , Select(ElementByName|ObjectByName|PadByName|PinByName) , Select(ElementByName|ObjectByName|PadByName|PinByName, , Select(TextByName|ViaByName|NetByName) , Select(TextByName|ViaByName|NetByName, , Select(Convert) ,<tr><td> MinMaskGap </td>
-<td> Ensures </td>
-<td> MinMaskGap(delta) , MinMaskGap(Selected, ,<tr><td> ChangeName </td>
-<td> Sets </td>
-<td> ChangeName(Object) , ChangeName(Object|"Number") , ChangeName(Layout|Layer) ,<tr><td> LoadMucsFrom </td>
-<td> Loads </td>
-<td> LoadMucsFrom(filename) ,<tr><td> GetStyle </td>
-<td> Return </td>
-<td> GetStyle() ,<tr><td> ChangeRadius </td>
-<td> Changes </td>
-<td> ChangeRadius(Object, , ChangeRadius(SelectedObjects|Selected, , ChangeRadius(SelectedArcs, ,<tr><td> ElementSetAttr </td>
-<td> Sets </td>
-<td> ElementSetAttr(refdes,name[,value]) ,<tr><td> smartdisperse </td>
-<tr><td> PasteBuffer </td>
-<td> Various </td>
-<td> PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER) , PasteBuffer(Rotate, , PasteBuffer(Convert|Restore|Mirror) , PasteBuffer(ToLayout, , PasteBuffer(Save, ,<tr><td> ChangeDrillSize </td>
-<td> Changes </td>
-<td> ChangeDrillSize(Object, , ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, ,<tr><td> LoadhypFrom </td>
-<td> Loads </td>
-<td> LoadhypFrom(filename[, ,<tr><td> SetOctagon </td>
-<td> Sets </td>
-<td> SetOctagon(Object|ToggleObject|SelectedElements|Selected) ,<tr><td> aligntext </td>
-<td> Align </td>
-<td> AlignText(X/Y, ,<tr><td> Display </td>
-<td> Several </td>
-<td> Display(NameOnPCB|Description|Value|Grid|Redraw|Pinout|PinOrPadName) , Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection) , Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames) , Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin) , Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes) , Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef) , Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames) ,<tr><td> DeleteRats </td>
-<td> Delete </td>
-<td> DeleteRats(AllRats|Selected|SelectedRats) ,<tr><td> Cursor </td>
-<td> Move </td>
-<td> Cursor(Type,DeltaUp,DeltaRight,Units) ,<tr><td> ChkBuffer </td>
-<td> Return </td>
-<td> ChkBuffer(idx) ,<tr><td> ChkMode </td>
-<td> Return </td>
-<td> ChkMode(expected_mode) ,<tr><td> netlist </td>
-<td> Perform </td>
-<td> Net(find|select|rats|norats|clear[,net[,pin]]) , Net(freeze|thaw|forcethaw) , Net(swap) , Net(add,net,pin) ,<tr><td> LoadFontFrom </td>
-<td> Load </td>
-<td> LoadFontFrom([file, ,<tr><td> LoadFrom </td>
-<td> Load </td>
-<td> LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format]) ,<tr><td> ChangeAngle </td>
-<td> Changes </td>
-<td> ChangeAngle(Object, , ChangeAngle(SelectedObjects|Selected, , ChangeAngle(SelectedArcs, ,<tr><td> ToggleView </td>
-<td> Toggle </td>
-<td> ToggleView(1..MAXLAYER) , ToggleView(layername) , ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide) , ToggleView(All, ,<tr><td> CreateText </td>
-<td> Create </td>
-<td> CreateText(layer, ,<tr><td> MarkCrosshair </td>
-<td> Set/Reset </td>
-<td> MarkCrosshair() , MarkCrosshair(Center) ,<tr><td> LoadTedaxFrom </td>
-<td> Loads </td>
-<td> LoadTedaxFrom(type, ,<tr><td> MoveToCurrentLayer </td>
-<td> Moves </td>
-<td> MoveToCurrentLayer(Object|SelectedObjects) ,<tr><td> SetThermal </td>
-<td> Set </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td><td> Style </td>
-<td> SetThermal(Object|SelectedPins|SelectedVias|Selected, ,<tr><td> propedit </td>
-<td> Run </td>
-<td> propedit() ,<tr><td> pscalib </td>
-<tr><td> EditLayer </td>
-<td> Change </td>
-<td> Editlayer([@layer], , Editlayer([@layer], ,<tr><td> SetFlag </td>
-<td> Sets </td>
-<td> SetFlag(Object|Selected|SelectedObjects, , SetFlag(SelectedLines|SelectedPins|SelectedVias, , SetFlag(SelectedPads|SelectedTexts|SelectedNames, , SetFlag(SelectedElements, , flag ,<tr><td> ClrFlag </td>
-<td> Clears </td>
-<td> ClrFlag(Object|Selected|SelectedObjects, , ClrFlag(SelectedLines|SelectedPins|SelectedVias, , ClrFlag(SelectedPads|SelectedTexts|SelectedNames, , ClrFlag(SelectedElements, , flag ,<tr><td> PrintUsage </td>
-<td> Print </td>
-<td> PrintUsage() , PrintUsage(plugin) ,<tr><td> ClearSquare </td>
-<td> Clears </td>
-<td> ClearSquare(ToggleObject|SelectedElements|SelectedPins) ,<tr><td> ChangeHole </td>
-<td> Changes </td>
-<td> ChangeHole(ToggleObject|Object|SelectedVias|Selected) ,<tr><td> conf </td>
-<td> Perform </td>
-<td> conf(set, , conf(delta, , conf(toggle, , conf(reset, , conf(iseq, ,<tr><td> distributetext </td>
-<td> Distribute </td>
-<td> DistributeText(Y, ,<tr><td> DumpActions </td>
-<td> Dump </td>
-<td> DumpActions() ,<tr><td> Attributes </td>
-<td> Let </td>
-<td><td> layer, </td>
-<td> Attributes(Layout|Layer|Element) , Attributes(Layer,layername) ,<tr><td> RenumberBlock </td>
-<tr><td> ToggleHideName </td>
-<td> Toggles </td>
-<td> ToggleHideName(Object|SelectedElements) ,<tr><td> RenumberBuffer </td>
-<tr><td> AutoRoute </td>
-<td> Auto-route </td>
-<td> AutoRoute(AllRats|SelectedRats) ,<tr><td> ReplaceFootprint </td>
-<td> Replace </td>
-<td> ReplaceFootprint() ,<tr><td> net </td>
-<td> Perform </td>
-<td> Net(find|select|rats|norats|clear[,net[,pin]]) , Net(freeze|thaw|forcethaw) , Net(swap) , Net(add,net,pin) ,<tr><td> LoadFootprint </td>
-<td> Loads </td>
-<td> pcb_load_footprint(filename[,refdes,value]) ,<tr><td> New </td>
-<td> Starts </td>
-<td> New([name]) ,<tr><td> RipUp </td>
-<td> Ripup </td>
-<td> RipUp(All|Selected|Element) ,<tr><td> Import </td>
-<td> Import </td>
-<td> Import() , Import([gnetlist|make[,source,source,...]]) , Import(setnewpoint[,(mark|center|X,Y)]) , Import(setdisperse,D,units) ,<tr><td> DumpCsect </td>
-<td> Print </td>
-<td> DumpCsect() ,<tr><td> Redo </td>
-<td> Redo </td>
-<td> pcb_redo() ,<tr><td> Export </td>
-<td> Export </td>
-<td> Export(exporter, ,<tr><td> FreeRotateBuffer </td>
-<td> Rotates </td>
-<td><td> angle </td>
-<td><td> for </td>
-<td> pcb_buffer_free_rotate([Angle]) ,<tr><td> BoardFlip </td>
-<tr><td> MoveLayer </td>
-<td> Moves/Creates/Deletes </td>
-<td> MoveLayer(old,new) ,<tr><td> LibraryChanged </td>
-<td> Tells </td>
-<td> LibraryChanged() ,<tr><td> SavePatch </td>
-<td> Save </td>
-<td> SavePatch(filename) ,<tr><td> CreateMenu </td>
-<td> Creates </td>
-<td> CreateMenu(path ,<tr><td> ChkGridUnits </td>
-<td> Return </td>
-<td> ChkGridUnits(expected) ,<tr><td> ChangeSquare </td>
-<td> Changes </td>
-<td> ChangeSquare(ToggleObject) , ChangeSquare(SelectedElements|SelectedPins) , ChangeSquare(Selected|SelectedObjects) ,<tr><td> djopt </td>
-<td> Perform </td>
-<td> djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull) , djopt(auto) , djopt(miter) ,<tr><td> PrintCopyright </td>
-<td> Print </td>
-<td> PrintCopyright() ,<tr><td> LoadLtspiceFrom </td>
-<td> Loads </td>
-<td> LoadLtspiceFrom(filename) ,<tr><td> DumpPlugins </td>
-<td> Print </td>
-<td> DumpPlugins() ,<tr><td> SaveFontTo </td>
-<td> Save </td>
-<td> SaveFontTo([file, ,<tr><td> ExecuteFile </td>
-<td> Run </td>
-<td> ExecuteFile(filename) ,<tr><td> ChangePinName </td>
-<td> Sets </td>
-<td> ChangePinName(ElementName,PinNumber,PinName) ,<tr><td> RouteStyle </td>
-<td> Copies </td>
-<td> RouteStyle(1|2|3|4) ,<tr><td> SwitchHID </td>
-<td> Switch </td>
-<td> SwitchHID(lesstif|gtk|batch) ,<tr><td> GlobalPuller </td>
-<td> Pull </td>
-<td> pcb_act_GlobalPuller() ,<tr><td> SetSquare </td>
-<td> sets </td>
-<td> SetSquare(ToggleObject|SelectedElements|SelectedPins) ,<tr><td> Renumber </td>
-<td> Renumber </td>
-<td><td> for </td>
-<td> Renumber() , Renumber(filename) ,<tr><td> SaveTedax </td>
-<td> Saves </td>
-<td> SaveTedax(type, ,<tr><td> RouteStylesChanged </td>
-<td> Tells </td>
-<td> RouteStylesChanged() ,<tr><td> Polygon </td>
-<td> Some </td>
-<td> Polygon(Close|PreviousPoint) ,<tr><td> autocrop </td>
-<tr><td> SelectLayer </td>
-<td> Select </td>
-<td> SelectLayer(1..MAXLAYER|Silk|Rats) ,<tr><td> distribute </td>
-<td> Distribute </td>
-<td> Distribute(Y, ,<tr><td> Connection </td>
-<td> Searches </td>
-<td> Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset) ,<tr><td> query </td>
-<td> Perform </td>
-<td> query(dump, ,<tr><td> ChangeFlag </td>
-<td> Sets </td>
-<td> ChangeFlag(Object|Selected|SelectedObjects, , ChangeFlag(SelectedLines|SelectedPins|SelectedVias, , ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, , ChangeFlag(SelectedElements, , flag , value ,<tr><td> ListRotations </td>
-<tr><td> Report </td>
-<td> Produce </td>
-<td> Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name]) ,<tr><td> Undo </td>
-<td> Undo </td>
-<td> pcb_undo() , pcb_undo(ClearList) ,<tr><td> CycleDrag </td>
-<td> Cycle </td>
-<td> CycleDrag() ,<tr><td> PrintVersion </td>
-<td> Print </td>
-<td> PrintVersion() ,<tr><td> Teardrops </td>
-<tr><td> FontEdit </td>
-<td> Convert </td>
-<td> FontEdit() ,<tr><td> h </td>
-<td> Print </td>
-<td> h ,<tr><td> ApplyVendor </td>
-<td> Applies </td>
-<td> ApplyVendor() ,<tr><td> Puller </td>
-<td> Pull </td>
-<td> pcb_act_Puller() ,<tr><td> l </td>
-<td> Loads </td>
-<td> l ,<tr><td> m </td>
-<td> Loads </td>
-<td> m ,<tr><td> Delete </td>
-<td> Delete </td>
-<td> Delete(Object|Selected) , Delete(AllRats|SelectedRats) ,<tr><td> DisperseElements </td>
-<td> Disperses </td>
-<td> DisperseElements(All|Selected) ,<tr><td> q </td>
-<td> Quits </td>
-<td> q ,<tr><td> SetValue </td>
-<td> Change </td>
-<td> SetValue(Grid|Line|LineSize|Text|TextScale|ViaDrillingHole|Via|ViaSize, ,<tr><td> s </td>
-<td> Saves </td>
-<td> s ,<tr><td> Message </td>
-<td> Writes </td>
-<td> pcb_message(message) ,<tr><td> Mode </td>
-<td> Change </td>
-<td> Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer) , Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via) , Mode(Notify|Release|Cancel|Stroke) , Mode(Save|Restore) ,<tr><td> ChangeNonetlist </td>
-<td> Changes </td>
-<td> ChangeNonetlist(ToggleObject) , ChangeNonetlist(SelectedElements) , ChangeNonetlist(Selected|SelectedObjects) ,<tr><td> w </td>
-<td> Saves </td>
-<td> w ,<tr><td> MoveObject </td>
-<td> Moves </td>
-<td> pcb_move_obj(X,Y,dim) ,<tr><td> Atomic </td>
-<td> Save </td>
-<td> Atomic(Save|Restore|Close|Block) ,<tr><td> FullScreen </td>
-<td> Hide </td>
-<td> pcb_act_FullScreen(on|off|toggle) ,<tr><td> ChkGridSize </td>
-<td> Return </td>
-<td> ChkGridSize(expected_size) , ChkGridSize(none) ,<tr><td> LoadTinycadFrom </td>
-<td> Loads </td>
-<td> LoadTinycadFrom(filename) ,<tr><td> ExecCommand </td>
-<td> Runs </td>
-<td> ExecCommand(command) ,<tr><td> PrintPaths </td>
-<td> Print </td>
-<td> PrintPaths() ,<tr><td> ChkElementName </td>
-<td> Return </td>
-<td> ChkElementName(1) , ChkElementName(2) , ChkElementName(3) ,<tr><td> ReportObject </td>
-<td> Report </td>
-<td> ReportObject() ,<tr><td> SaveTo </td>
-<td> Saves </td>
-<td> SaveTo(Layout|LayoutAs,filename) , SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename) , SaveTo(PasteBuffer,filename) ,<tr><td> ChangeJoin </td>
-<td> Changes </td>
-<td> ChangeJoin(ToggleObject|SelectedLines|SelectedArcs|Selected) ,<tr><td> PCBChanged </td>
-<td> Tells </td>
-<td> PCBChanged([revert]) ,<tr><td> ChangeClearSize </td>
-<td> Changes </td>
-<td> ChangeClearSize(Object, , ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, , ChangeClearSize(SelectedLines|SelectedArcs, , ChangeClearSize(Selected|SelectedObjects, ,<tr><td> UnloadVendor </td>
-<td> Unloads </td>
-<td> UnloadVendor() ,<tr><td> LoadVendorFrom </td>
-<td> Loads </td>
-<td> LoadVendorFrom(filename) ,<tr><td> LoadMentorFrom </td>
-<td> Loads </td>
-<td> LoadMentorFrom(filename) ,<tr><td> propset </td>
-<td> Change </td>
-<td> propset(name, ,<tr><td> q! </td>
-<td> Quits </td>
-<td> q! ,<tr><td> Unselect </td>
-<td> Unselects </td>
-<td> Unselect(All|Block|Connection) , Unselect(ElementByName|ObjectByName|PadByName|PinByName) , Unselect(ElementByName|ObjectByName|PadByName|PinByName, , Unselect(TextByName|ViaByName) , Unselect(TextByName|ViaByName, ,<tr><td> NetlistChanged </td>
-<td> Tells </td>
-<td> NetlistChanged() ,<tr><td> ChangeSize </td>
-<td> Changes </td>
-<td> ChangeSize(Object, , ChangeSize(SelectedObjects|Selected, , ChangeSize(SelectedLines|SelectedPins|SelectedVias, , ChangeSize(SelectedPads|SelectedTexts|SelectedNames, , ChangeSize(SelectedElements, ,<tr><td> PrintActions </td>
-<td> Print </td>
-<td> PrintActions() ,<tr><td> jostle </td>
-<td> Move </td>
-<td> Jostle(diameter) ,<tr><td> ChangeOctagon </td>
-<td> Changes </td>
-<td> ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected) , ChangeOctagon(SelectedElements|SelectedPins|SelectedVias) ,<tr><td> RemoveMenu </td>
-<td> Recursively </td>
-<td> RemoveMenu(path|cookie) ,<tr><td> Flip </td>
-<td> Flip </td>
-<td> Flip(Object|Selected|SelectedElements) ,<tr><td> ChangeSizes </td>
-<td> Changes </td>
-<td> ChangeSizes(Object, , ChangeSizes(SelectedObjects|Selected, , ChangeSizes(SelectedLines|SelectedPins|SelectedVias, , ChangeSizes(SelectedPads|SelectedTexts|SelectedNames, , ChangeSizes(SelectedElements, ,<tr><td> ManagePlugins </td>
-<td> Manage </td>
-<td> ManagePlugins() ,<tr><td> align </td>
-<td> Align </td>
-<td> Align(X/Y, ,<tr><td> le </td>
-<td> Loads </td>
-<td> le ,<tr><td> MorphPolygon </td>
-<td> Converts </td>
-<td> pcb_poly_morph(Object|Selected) ,<tr><td> AddRats </td>
-<td> Add </td>
-<td> AddRats(AllRats|SelectedRats|Close) ,<tr><td> LoadEeschemaFrom </td>
-<td> Loads </td>
-<td> LoadEeschemaFrom(filename) ,<tr><td> ElementList </td>
-<td> Adds </td>
-<td> ElementList(Start|Done|Need,<refdes>,<footprint>,<value>) ,<tr><td> AutoPlaceSelected </td>
-<td> Auto-place </td>
-<td> AutoPlaceSelected() ,<tr><td> DRC </td>
-<td> Invoke </td>
-<td> DRC() ,<tr><td> rn </td>
-<td> Reads </td>
-<td> rn ,<tr><td> FontSave </td>
-<td> Convert </td>
-<td> FontSave() ,<tr><td> EditGroup </td>
-<td> Change </td>
-<td> Editgroup([@group], , Editlayer([@layer], ,<tr><td> fp_rehash </td>
-<td> Flush </td>
-<td> fp_rehash() ,<tr><td> Quit </td>
-<td> Quits </td>
-<td> Quit() ,<tr><td> LoadDsnFrom </td>
-<td> Loads </td>
-<td> LoadDsnFrom(filename) ,<tr><td> ClearOctagon </td>
-<td> Clears </td>
-<td> ClearOctagon(ToggleObject|Object|SelectedObjects|Selected) , ClearOctagon(SelectedElements|SelectedPins|SelectedVias) ,<tr><td> RemoveSelected </td>
-<td> Removes </td>
-<td> pcb_remove_selected() ,<tr><td> MinClearGap </td>
-<td> Ensures </td>
-<td> MinClearGap(delta) , MinClearGap(Selected, ,<tr><td> SetSame </td>
-<td> Sets </td>
-<td> SetSame() ,<tr><td> wq </td>
-<td> Saves </td>
-<td> wq ,<tr><td> ChangePaste </td>
-<td> Changes </td>
-<td> ChangePaste(ToggleObject|Object|SelectedPads|Selected) ,<tr><td> PolyCombine </td>
-<tr><td> Select </td>
-<td> Toggles </td>
-<td> Select(Object|ToggleObject) , Select(All|Block|Connection) , Select(ElementByName|ObjectByName|PadByName|PinByName) , Select(ElementByName|ObjectByName|PadByName|PinByName, , Select(TextByName|ViaByName|NetByName) , Select(TextByName|ViaByName|NetByName, , Select(Convert) ,<tr><td> MinMaskGap </td>
-<td> Ensures </td>
-<td> MinMaskGap(delta) , MinMaskGap(Selected, ,<tr><td> ChangeName </td>
-<td> Sets </td>
-<td> ChangeName(Object) , ChangeName(Object|"Number") , ChangeName(Layout|Layer) ,<tr><td> LoadMucsFrom </td>
-<td> Loads </td>
-<td> LoadMucsFrom(filename) ,<tr><td> GetStyle </td>
-<td> Return </td>
-<td> GetStyle() ,<tr><td> ChangeRadius </td>
-<td> Changes </td>
-<td> ChangeRadius(Object, , ChangeRadius(SelectedObjects|Selected, , ChangeRadius(SelectedArcs, ,
+<td></td>
+<td>Select(Object|ToggleObject)<br>Select(All|Block|Connection)<br>Select(ElementByName|ObjectByName|PadByName|PinByName)<br>Select(ElementByName|ObjectByName|PadByName|PinByName, Name)<br>Select(TextByName|ViaByName|NetByName)<br>Select(TextByName|ViaByName|NetByName, Name)<br>Select(Convert)</td>
+<tr><td> MinMaskGap </td>
+<td></td>
+<td>MinMaskGap(delta)<br>MinMaskGap(Selected, delta)</td>
+<tr><td> ChangeName </td>
+<td></td>
+<td>ChangeName(Object)<br>ChangeName(Object|"Number")<br>ChangeName(Layout|Layer)</td>
+<tr><td> LoadMucsFrom </td>
+<td></td>
+<td>LoadMucsFrom(filename)</td>
+<tr><td> GetStyle </td>
+<td></td>
+<td>GetStyle()</td>
+<tr><td> ChangeRadius </td>
+<td></td>
+<td>ChangeRadius(Object, width|x|height|y|both, delta)<br>ChangeRadius(SelectedObjects|Selected, width|x|height|y|both, delta)<br>ChangeRadius(SelectedArcs, width|x|height|y|both, delta)</td>
