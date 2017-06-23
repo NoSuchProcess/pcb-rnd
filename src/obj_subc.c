@@ -39,6 +39,7 @@
 #include "polygon.h"
 #include "operation.h"
 #include "undo.h"
+#include "compat_misc.h"
 
 pcb_subc_t *pcb_subc_alloc(void)
 {
@@ -195,12 +196,15 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 
 pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
+	pcb_board_t *src_pcb;
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
 	sc->ID = pcb_create_ID_get();
 	PCB_SET_PARENT(sc->data, subc, sc);
 	PCB_SET_PARENT(sc, data, dst);
 	pcb_subclist_append(&dst->subc, sc);
+
+	src_pcb = pcb_data_get_top(src->data);
 
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
 	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
@@ -214,18 +218,24 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		pcb_arc_t *arc, *narc;
 		gdl_iterator_t it;
 
-		memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
-
-
-		dl->meta.bound.real = NULL;
-		/* bind layer to the stack provided by pcb/dst */
-		if (pcb != NULL)
+		/* bind layer/resolve layers */
+		if (pcb != NULL) {
+			/* copying from buffer to board */
 			dl->meta.bound.real = pcb_layer_resolve_binding(pcb, sl);
 
-		if (dl->meta.bound.real == NULL)
-			pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer of subcricuit TODO while placing it\n");
-		else
-			pcb_layer_link_trees(dl, dl->meta.bound.real);
+			if (dl->meta.bound.real == NULL)
+				pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer of subcricuit TODO1 while placing it\n");
+			else
+				pcb_layer_link_trees(dl, dl->meta.bound.real);
+		}
+		else {
+			/* copying from board to buffer */
+			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+
+			dl->meta.bound.real = NULL;
+			dl->meta.bound.name = pcb_strdup(sl->meta.bound.name);
+		}
+
 
 		linelist_foreach(&sl->Line, &it, line) {
 			nline = pcb_line_dup_at(dl, line, dx, dy);
