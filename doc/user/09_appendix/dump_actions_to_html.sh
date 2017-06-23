@@ -24,9 +24,9 @@ cat table_opener.html > action_reference.html
 pcb-rnd --dump-actions | sed -e 's/\(^.\)/\1 /g' >> actions.list
 awk '
 
-($1 == "A") { printf "<tr><td> %s </td>\n", $2; next }
-($1 == "D") { printf "<td> %s </td>\n<td>", $2; next }
-($1 == "S") { printf " %s ,", $2; next }
+($1 == "A") { $1=""; printf "<tr><td> %s </td>\n", $0; next }
+($1 == "D") { $1=""; printf "<td> %s </td>\n<td>", $2; next }
+($1 == "S") { $1=""; printf " %s ,", $2; next }
 
 ' actions.list >> action_reference.html
 
