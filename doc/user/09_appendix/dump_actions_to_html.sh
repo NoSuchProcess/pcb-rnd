@@ -25,8 +25,8 @@ pcb-rnd --dump-actions | sed -e 's/\(^.\)/\1 /g' >> actions.list
 awk '
 
 ($1 == "A") { $1=""; printf "<tr><td> %s </td>\n", $0; next }
-($1 == "D") { $1=""; printf "<td> %s </td>\n<td>", $2; next }
-($1 == "S") { $1=""; printf " %s ,", $2; next }
+($1 == "D") { $1=""; printf "<td> %s </td>\n<td>", $0; next }
+($1 == "S") { $1=""; printf " %s ,", $0; next }
 
 ' actions.list >> action_reference.html
 
