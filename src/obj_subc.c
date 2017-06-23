@@ -402,8 +402,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY);
 
-#warning TODO:
-/*	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);*/
+	pcb_undo_add_obj_to_create(PCB_TYPE_SUBC, sc, sc, sc);
 
 	return (sc);
 }
