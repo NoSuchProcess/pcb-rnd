@@ -1270,7 +1270,7 @@ int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result
  * the results.
  * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
  */
-int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
+static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
 	if (type == PCB_TYPE_LINE || type == PCB_TYPE_LINE_POINT) {
 		PCB_LINE_ALL_LOOP(Base);
@@ -1378,17 +1378,17 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 #warning subc TODO: once elements are gone, rewrite these to search the rtree instead of recursion
 	PCB_SUBC_LOOP(Base);
 	{
+		int res;
 		if (type == PCB_TYPE_SUBC) {
 			if (subc->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *)subc;
 				return PCB_TYPE_SUBC;
 			}
 		}
-		else {
-			int res = pcb_search_obj_by_id(subc->data, Result1, Result2, Result3, ID, type);
-			if (res != 0)
-				return res;
-		}
+
+		res = pcb_search_obj_by_id_(subc->data, Result1, Result2, Result3, ID, type);
+		if (res != PCB_TYPE_NONE)
+			return res;
 	}
 	PCB_END_LOOP;
 
@@ -1454,9 +1454,17 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 	}
 	PCB_END_LOOP;
 
-	pcb_message(PCB_MSG_ERROR, "hace: Internal error, search for ID %d failed\n", ID);
 	return (PCB_TYPE_NONE);
 }
+
+int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
+{
+	int res = pcb_search_obj_by_id_(Base, Result1, Result2, Result3, ID, type);
+	if (res == PCB_TYPE_NONE)
+		pcb_message(PCB_MSG_ERROR, "hace: Internal error, search for ID %d failed\n", ID);
+	return res;
+}
+
 
 /* ---------------------------------------------------------------------------
  * searches for an element by its board name.
