@@ -219,7 +219,14 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		gdl_iterator_t it;
 
 		/* bind layer/resolve layers */
-		if (pcb != NULL) {
+		if ((pcb != NULL) && (pcb == src_pcb)) {
+			/* copy within the same board */
+			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+			dl->meta.bound.name = pcb_strdup(sl->meta.bound.name);
+			if (dl->meta.bound.real != NULL)
+				pcb_layer_link_trees(dl, dl->meta.bound.real);
+		}
+		else if (pcb != NULL) {
 			/* copying from buffer to board */
 			dl->meta.bound.real = pcb_layer_resolve_binding(pcb, sl);
 
