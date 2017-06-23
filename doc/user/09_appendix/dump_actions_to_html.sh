@@ -21,7 +21,11 @@
 #TODO: fix escape parsing in syntax sections 
 
 cat table_opener.html > action_reference.html 
-pcb-rnd --dump-actions | awk '
+
+(
+	pcb-rnd --version
+	pcb-rnd --dump-actions
+) | awk '
 
 function flush_sd()
 {
@@ -33,6 +37,14 @@ function flush_sd()
 	}
 	s=""
 	d=""
+}
+
+BEGIN {
+# first line of input is the version
+	getline pcb_rnd_ver
+
+	print "some headers here..."
+	print pcb_rnd_ver
 }
 
 /^A/ {
