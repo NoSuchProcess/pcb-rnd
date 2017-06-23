@@ -27,6 +27,8 @@ awk '
 function flush_sd()
 {
 	if (s != "") {
+		sub("^<br>", "", d)
+		sub("^<br>", "", s)
 		print "<td>" d "</td>"
 		print "<td>" s "</td>"
 	}
@@ -43,19 +45,13 @@ function flush_sd()
 
 ($1 == "D") {
 	$1="";
-	if (d == "")
-		d = $0
-	else
-		d = d "<br>" $0
+	d = d "<br>" $0
 	next
 }
 
 ($1 == "S") {
 	$1=""
-	if (s == "")
-		s = $0
-	else
-		s = s "<br>" $0
+	s = s "<br>" $0
 	next
 }
 
