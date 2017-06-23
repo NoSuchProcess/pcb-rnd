@@ -1378,7 +1378,13 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 #warning subc TODO: once elements are gone, rewrite these to search the rtree instead of recursion
 	PCB_SUBC_LOOP(Base);
 	{
-		int res = pcb_search_obj_by_id(subc->data, Result1, Result2, Result3, ID, type);
+		int res;
+		if ((type == PCB_TYPE_SUBC) && (subc->ID == ID)) {
+			*Result1 = *Result2 = *Result3 = (void *)subc;
+			return PCB_TYPE_SUBC;
+		}
+
+		res = pcb_search_obj_by_id(subc->data, Result1, Result2, Result3, ID, type);
 		if (res != 0)
 			return res;
 	}
