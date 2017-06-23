@@ -68,6 +68,10 @@ BEGIN {
 
 END {
 	flush_sd()
+	print "</table>"
+	print "</body>"
+	print "</html>"
+
 }
 
 ' >> action_reference.html
