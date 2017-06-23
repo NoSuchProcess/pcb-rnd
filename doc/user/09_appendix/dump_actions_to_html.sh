@@ -21,8 +21,7 @@
 #TODO: fix escape parsing in syntax sections 
 
 cat table_opener.html > action_reference.html 
-pcb-rnd --dump-actions >> actions.list
-awk '
+pcb-rnd --dump-actions | awk '
 
 function flush_sd()
 {
@@ -59,6 +58,6 @@ END {
 	flush_sd()
 }
 
-' actions.list >> action_reference.html
+' >> action_reference.html
 
 
