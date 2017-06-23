@@ -74,6 +74,6 @@ END {
 
 }
 
-' >> action_reference.html
+' > action_reference.html
 
 
