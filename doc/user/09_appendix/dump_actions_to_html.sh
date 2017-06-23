@@ -21,7 +21,7 @@
 #TODO: fix escape parsing in syntax sections 
 
 cat table_opener.html > action_reference.html 
-pcb-rnd --dump-actions | sed -e 's/\(^.\)/\1 /g' >> actions.list
+pcb-rnd --dump-actions >> actions.list
 awk '
 
 function flush_sd()
@@ -36,21 +36,21 @@ function flush_sd()
 	d=""
 }
 
-($1 == "A") {
+/^A/ {
 	flush_sd()
-	$1=""
+	sub("^A", "", $0)
 	printf "<tr><td> %s </td>\n", $0
 	next
 }
 
-($1 == "D") {
-	$1="";
+/^D"/ {
+	sub("^D", "", $0)
 	d = d "<br>" $0
 	next
 }
 
-($1 == "S") {
-	$1=""
+/^S/ {
+	sub("^S", "", $0)
 	s = s "<br>" $0
 	next
 }
