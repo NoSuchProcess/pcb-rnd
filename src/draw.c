@@ -482,6 +482,9 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 	case PCB_TYPE_ELEMENT:
 		EraseElement((pcb_element_t *) ptr);
 		break;
+	case PCB_TYPE_SUBC:
+		EraseSubc((pcb_subc_t *)ptr);
+		break;
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ELEMENT_LINE:
 	case PCB_TYPE_RATLINE:
