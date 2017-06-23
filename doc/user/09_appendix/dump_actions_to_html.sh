@@ -10,6 +10,7 @@
 cat table_opener.html > action_reference.html 
 
 (
+	cd ../../../src
 	pcb-rnd --version
 	pcb-rnd --dump-actions
 ) | awk '
