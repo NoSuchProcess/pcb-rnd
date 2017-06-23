@@ -177,7 +177,7 @@ static const char pcb_acth_PrintVersion[] = "Print version.";
 
 int pcb_act_PrintVersion(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	printf("PCB version %s\n", PCB_VERSION);
+	printf("pcb-rnd version %s\n", PCB_VERSION);
 	return 0;
 }
 

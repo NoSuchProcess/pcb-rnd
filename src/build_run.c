@@ -70,7 +70,7 @@ char *pcb_get_info_program(void)
 	if (first_time) {
 		first_time = 0;
 		gds_init(&info);
-		gds_append_str(&info, "This is PCB-rnd " PCB_VERSION " (" PCB_REVISION ")" "\n an interactive ");
+		gds_append_str(&info, "This is pcb-rnd " PCB_VERSION " (" PCB_REVISION ")" "\n an interactive ");
 		gds_append_str(&info, "printed circuit board editor\n");
 		gds_append_str(&info, "pcb-rnd forked from gEDA/PCB.");
 		gds_append_str(&info, "\n\n" "PCB is by harry eaton and others\n\n");
