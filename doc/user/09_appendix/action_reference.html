@@ -10,7 +10,7 @@
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-PCB version 1.2.3
+pcb-rnd version 1.2.3, Revision: 9745
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
@@ -75,7 +75,7 @@ PCB version 1.2.3
 <td>Moves objects to the current layer.</td>
 <td>MoveToCurrentLayer(Object|SelectedObjects)</td>
 <tr><td> SetThermal </td>
-<td>Set the thermal (on the current layer) of pins or vias to the given style.<br>Style = 0 means no thermal.<br>Style = 1 has diagonal fingers with sharp edges.<br>Style = 2 has horizontal and vertical fingers with sharp edges.<br>Style = 3 is a solid connection to the plane.Style = 4 has diagonal fingers with rounded edges.<br>Style = 5 has horizontal and vertical fingers with rounded edges.</td>
+<td>Set the thermal (on the current layer) of pins or vias to the given style.<br>Style = 0 means no thermal.<br>Style = 1 has diagonal fingers with sharp edges.<br>Style = 2 has horizontal and vertical fingers with sharp edges.<br>Style = 3 is a solid connection to the plane.<br>Style = 4 has diagonal fingers with rounded edges.<br>Style = 5 has horizontal and vertical fingers with rounded edges.</td>
 <td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td>
 <tr><td> propedit </td>
 <td>Run the property editor</td>
@@ -183,6 +183,9 @@ PCB version 1.2.3
 <tr><td> SaveFontTo </td>
 <td>Save PCB font to a file</td>
 <td>SaveFontTo([file, id])</td>
+<tr><td> integrity </td>
+<td>perform integrirty check on the current board and generate errors if needed</td>
+<td>integrity()</td>
 <tr><td> ExecuteFile </td>
 <td>Run actions from the given file.</td>
 <td>ExecuteFile(filename)</td>
@@ -239,6 +242,9 @@ PCB version 1.2.3
 <tr><td> CycleDrag </td>
 <td>Cycle through which object is being dragged</td>
 <td>CycleDrag()</td>
+<tr><td> EvalConf </td>
+<td>Perform various operations on the configuration tree.</td>
+<td>EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database</td>
 <tr><td> PrintVersion </td>
 <td>Print version.</td>
 <td>PrintVersion()</td>
@@ -246,6 +252,9 @@ PCB version 1.2.3
 <tr><td> FontEdit </td>
 <td>Convert the current font to a PCB for editing.</td>
 <td>FontEdit()</td>
+<tr><td> dumpconf </td>
+<td>Perform various operations on the configuration tree.</td>
+<td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td>
 <tr><td> h </td>
 <td>Print a help message for commands.</td>
 <td>h</td>
@@ -294,6 +303,18 @@ PCB version 1.2.3
 <tr><td> Atomic </td>
 <td>Save or restore the undo serial number.</td>
 <td>Atomic(Save|Restore|Close|Block)</td>
+<tr><td> dumplayers </td>
+<td>Print info about each layer</td>
+<td>dumplayers()</td>
+<tr><td> dumpfonts </td>
+<td>Print info about fonts</td>
+<td>dumpfonts()</td>
+<tr><td> Ð¦k´ü </td>
+<td>ÿ</td>
+<td>LoadVendorFrom</td>
+<tr><td> d1 </td>
+<td>debug action for development</td>
+<td>d1()</td>
 <tr><td> FullScreen </td>
 <td>Hide widgets to get edit area full screen</td>
 <td>pcb_act_FullScreen(on|off|toggle)</td>
@@ -375,9 +396,15 @@ PCB version 1.2.3
 <tr><td> align </td>
 <td>Align Elements</td>
 <td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td>
+<tr><td> dumpundo </td>
+<td>Print info about fonts</td>
+<td>dumpfonts()</td>
 <tr><td> le </td>
 <td>Loads an element into the current buffer.</td>
 <td>le [name]</td>
+<tr><td> Ð¦k´ü </td>
+<td>ÿ</td>
+<td>LoadVendorFrom</td>
 <tr><td> MorphPolygon </td>
 <td>Converts dead polygon islands into separate polygons.</td>
 <td>pcb_poly_morph(Object|Selected)</td>

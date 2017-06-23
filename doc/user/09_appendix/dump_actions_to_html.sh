@@ -10,8 +10,9 @@
 
 (
 	cd ../../../src
-	pcb-rnd --version
-	pcb-rnd --dump-actions
+	./pcb-rnd --version
+	svn info ^/ | awk '/Revision:/ {print $0}'
+	./pcb-rnd --dump-actions
 ) | awk '
 
 function flush_sd()
@@ -30,6 +31,7 @@ BEGIN {
 	q="\""
 # first line of input is the version
 	getline pcb_rnd_ver
+	getline pcb_rnd_rev
 	print "<!DOCTYPE HTML PUBLIC " q "-//W3C//DTD HTML 4.01 Transitional//EN" q " " q "http://www.w3.org/TR/html4/loose.dtd"  q ">"
 	print "<html>"
 	print "<head>"
@@ -42,7 +44,7 @@ BEGIN {
 	print "<h2> Pcb-rnd Action Reference</h2>"
 	print "<table border=1>"
 	print "<caption><b>"
-	print  pcb_rnd_ver
+	print  pcb_rnd_ver ", " pcb_rnd_rev
 	print "</b>"
 	print "<th>Action<th> Description <th> Syntax"
 }
