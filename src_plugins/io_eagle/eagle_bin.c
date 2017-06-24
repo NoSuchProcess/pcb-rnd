@@ -109,7 +109,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_UKNOWN11, 0xFFFF },
+	{ PCB_EGKW_SECT_UNKNOWN11, 0xFFFF, "unknown11" },
 	{ PCB_EGKW_SECT_GRID, 0xFFFF, "grid",
 		{ /* field match */
 			TERM

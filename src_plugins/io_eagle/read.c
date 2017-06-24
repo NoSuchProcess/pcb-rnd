@@ -1101,6 +1101,7 @@ static int eagle_read_drawing(read_state_t *st, trnode_t *subtree, void *obj, in
 		{"grid",      eagle_read_nop},
 		{"layers",    eagle_read_layers},
 		{"board",     eagle_read_board},
+		{"unknown11", eagle_read_nop}, /* TODO: temporary; from the binary tree */
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
