@@ -49,9 +49,13 @@
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
 #define EAGLE_TEXT_SIZE_100 PCB_MM_TO_COORD(2)
 
+#define PARENT(node)   st->parser.calls->parent(&st->parser, node)
 #define CHILDREN(node) st->parser.calls->children(&st->parser, node)
 #define NEXT(node)     st->parser.calls->next(&st->parser, node)
 #define NODENAME(node) st->parser.calls->nodename(node)
+
+#define GET_PROP(node, key) NULL
+#define GET_TEXT(node) NULL
 
 #define STRCMP(s1, s2) st->parser.calls->strcmp(s1,s2)
 #define IS_TEXT(node)  st->parser.calls->is_text(&st->parser, node)
@@ -87,7 +91,7 @@ typedef struct read_state_s {
 
 typedef struct {
 	const char *node_name;
-	int (*parser)(read_state_t *st, xmlNode *subtree, void *obj, int type);
+	int (*parser)(read_state_t *st, trnode_t *subtree, void *obj, int type);
 } dispatch_t;
 
 typedef enum {
@@ -98,9 +102,9 @@ typedef enum {
 
 /* Xml path walk that's much simpler than xpath; the ... is a NULL
    terminated list of node names */
-static xmlNode *eagle_xml_path(read_state_t *st, xmlNode *subtree, ...)
+static trnode_t *eagle_xml_path(read_state_t *st, trnode_t *subtree, ...)
 {
-	xmlNode *nd = subtree;
+	trnode_t *nd = subtree;
 	const char *target;
 	va_list ap;
 
@@ -125,17 +129,17 @@ static xmlNode *eagle_xml_path(read_state_t *st, xmlNode *subtree, ...)
 
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
-static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *disp_table, void *obj, int type)
+static int eagle_dispatch(read_state_t *st, trnode_t *subtree, const dispatch_t *disp_table, void *obj, int type)
 {
 	const dispatch_t *d;
-	const xmlChar *name;
+	const char *name;
 
 	/* do not tolerate empty/NIL node */
 	if (NODENAME(subtree) == NULL)
 		return -1;
 
-	if (subtree->type == XML_TEXT_NODE)
-		name = (const xmlChar *)"@text";
+	if (IS_TEXT(subtree))
+		name = "@text";
 	else
 		name = NODENAME(subtree);
 
@@ -151,9 +155,9 @@ static int eagle_dispatch(read_state_t *st, xmlNode *subtree, const dispatch_t *
 /* Take each children of tree and execute them using eagle_dispatch
    Useful for procssing nodes that may host various subtrees of different
    nodes ina  flexible way. Return non-zero if any subtree processor failed. */
-static int eagle_foreach_dispatch(read_state_t *st, xmlNode *tree, const dispatch_t *disp_table, void *obj, int type)
+static int eagle_foreach_dispatch(read_state_t *st, trnode_t *tree, const dispatch_t *disp_table, void *obj, int type)
 {
-	xmlNode *n;
+	trnode_t *n;
 
 	for(n = tree; n != NULL; n = NEXT(n))
 		if (eagle_dispatch(st, n, disp_table, obj, type) != 0)
@@ -163,7 +167,7 @@ static int eagle_foreach_dispatch(read_state_t *st, xmlNode *tree, const dispatc
 }
 
 /* No-op: ignore the subtree */
-static int eagle_read_nop(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_nop(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	return 0;
 }
@@ -198,15 +202,15 @@ int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char
 
 /* Return a node attribute value converted to long, or return invalid_val
    for synatx error or if the attribute doesn't exist */
-static long eagle_get_attrl(xmlNode *nd, const char *name, long invalid_val)
+static long eagle_get_attrl(trnode_t *nd, const char *name, long invalid_val)
 {
-	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	char *p = GET_PROP(nd, name);
 	char *end;
 	long res;
 
 	if (p == NULL)
 		return invalid_val;
-	res = strtol((char *)p, &end, 10);
+	res = strtol(p, &end, 10);
 	if (*end != '\0')
 		return invalid_val;
 	return res;
@@ -214,15 +218,15 @@ static long eagle_get_attrl(xmlNode *nd, const char *name, long invalid_val)
 
 /* Return a node attribute value converted to double, or return invalid_val
    for synatx error or if the attribute doesn't exist */
-static double eagle_get_attrd(xmlNode *nd, const char *name, double invalid_val)
+static double eagle_get_attrd(trnode_t *nd, const char *name, double invalid_val)
 {
-	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	char *p = GET_PROP(nd, name);
 	char *end;
 	double res;
 
 	if (p == NULL)
 		return invalid_val;
-	res = strtod((char *)p, &end);
+	res = strtod(p, &end);
 	if (*end != '\0')
 		return invalid_val;
 	return res;
@@ -230,50 +234,50 @@ static double eagle_get_attrd(xmlNode *nd, const char *name, double invalid_val)
 
 /* Return a node attribute value converted to char *, or return invalid_val
    if the attribute doesn't exist */
-static const char *eagle_get_attrs(xmlNode *nd, const char *name, const char *invalid_val)
+static const char *eagle_get_attrs(trnode_t *nd, const char *name, const char *invalid_val)
 {
-	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	const char *p = GET_PROP(nd, name);
 	if (p == NULL)
 		return invalid_val;
-	return (const char *)p;
+	return p;
 }
 
 /* Return a node attribute value converted to coord, or return invalid_val
    if the attribute doesn't exist */
-static pcb_coord_t eagle_get_attrc(xmlNode *nd, const char *name, pcb_coord_t invalid_val)
+static pcb_coord_t eagle_get_attrc(trnode_t *nd, const char *name, pcb_coord_t invalid_val)
 {
-	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	char *p = GET_PROP(nd, name);
 	pcb_coord_t c;
 	pcb_bool succ;
 
 	if (p == NULL)
 		return invalid_val;
 
-	c = pcb_get_value((char *)p, "mm", NULL, &succ);
+	c = pcb_get_value(p, "mm", NULL, &succ);
 	if (!succ)
 		return invalid_val;
 	return c;
 }
 
 /* same as eagle_get_attrc() but assume the input has units */
-static pcb_coord_t eagle_get_attrcu(xmlNode *nd, const char *name, pcb_coord_t invalid_val)
+static pcb_coord_t eagle_get_attrcu(trnode_t *nd, const char *name, pcb_coord_t invalid_val)
 {
-	xmlChar *p = xmlGetProp(nd, (xmlChar *)name);
+	const char *p = GET_PROP(nd, name);
 	pcb_coord_t c;
 	pcb_bool succ;
 
 	if (p == NULL)
 		return invalid_val;
 
-	c = pcb_get_value((char *)p, NULL, NULL, &succ);
+	c = pcb_get_value(p, NULL, NULL, &succ);
 	if (!succ)
 		return invalid_val;
 	return c;
 }
 
-static int eagle_read_layers(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	xmlNode *n;
+	trnode_t *n;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "layer") == 0) {
@@ -362,7 +366,7 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 /****************** drawing primitives ******************/
 
 
-static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 /*	eagle_loc_t loc = type; */
 /*	pcb_text_t *text; */
@@ -382,7 +386,7 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	}
 
 #warning TODO: need to convert
-	text_val = (const char *)xmlNodeGetContent(CHILDREN(subtree));
+	text_val = (const char *)GET_TEXT(CHILDREN(subtree));
 	X = eagle_get_attrc(subtree, "x", -1);
 	Y = eagle_get_attrc(subtree, "y", -1);
 	height = PCB_MM_TO_COORD(eagle_get_attrc(subtree, "size", -1));
@@ -412,7 +416,7 @@ static int eagle_read_text(read_state_t *st, xmlNode *subtree, void *obj, int ty
 }
 
 
-static int eagle_read_circle(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
 	pcb_arc_t *circ;
@@ -458,7 +462,7 @@ static int eagle_read_circle(read_state_t *st, xmlNode *subtree, void *obj, int 
 	return 0;
 }
 
-static int eagle_read_rect(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
 	pcb_line_t *lin1, *lin2, *lin3, *lin4;
@@ -541,7 +545,7 @@ static int eagle_read_rect(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	return 0;
 }
 
-static int eagle_read_wire(read_state_t * st, xmlNode * subtree, void *obj, int type)
+static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
@@ -592,7 +596,7 @@ static int eagle_read_wire(read_state_t * st, xmlNode * subtree, void *obj, int 
 	return 0;
 }
 
-static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	pcb_coord_t x, y, dx, dy;
 	pcb_pad_t *pad;
@@ -672,7 +676,7 @@ static int eagle_read_smd(read_state_t *st, xmlNode *subtree, void *obj, int typ
 	return 0;
 }
 
-static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj, int type, int hole)
+static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj, int type, int hole)
 {
 	eagle_loc_t loc = type;
 	pcb_coord_t x, y, drill, dia;
@@ -723,17 +727,17 @@ static int eagle_read_pad_or_hole(read_state_t *st, xmlNode *subtree, void *obj,
 	return 0;
 }
 
-static int eagle_read_hole(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_hole(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	return eagle_read_pad_or_hole(st, subtree, obj, type, 1);
 }
 
-static int eagle_read_pad(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_pad(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	return eagle_read_pad_or_hole(st, subtree, obj, type, 0);
 }
 
-static int eagle_read_via(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_via(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	return eagle_read_pad_or_hole(st, subtree, obj, ON_BOARD, 0);
 }
@@ -742,23 +746,24 @@ static int eagle_read_via(read_state_t *st, xmlNode *subtree, void *obj, int typ
 /****************** composite objects ******************/
 
 /* Save the relative coords and size of the each relevant text fields */
-static int eagle_read_pkg_txt(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	pcb_element_t *elem = obj;
 	pcb_coord_t size;
-	xmlNode *n;
+	trnode_t *n;
 	pcb_text_t *t;
+	const char *cont;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n))
 		if (IS_TEXT(n))
 			break;
 
-	if ((n == NULL) || (n->content == NULL))
+	if ((n == NULL) || ((cont = GET_TEXT(n)) == NULL))
 		return 0;
 
-	if (STRCMP(n->content, ">NAME") == 0)
+	if (STRCMP(cont, ">NAME") == 0)
 		t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
-	else if (STRCMP(n->content, ">VALUE") == 0)
+	else if (STRCMP(cont, ">VALUE") == 0)
 		t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
 	else
 		return 0;
@@ -771,7 +776,7 @@ static int eagle_read_pkg_txt(read_state_t *st, xmlNode *subtree, void *obj, int
 	return 0;
 }
 
-static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *elem)
+static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *elem)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
 		{"description", eagle_read_nop},
@@ -789,9 +794,9 @@ static int eagle_read_pkg(read_state_t *st, xmlNode *subtree, pcb_element_t *ele
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, elem, IN_ELEM);
 }
 
-static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	xmlNode *n;
+	trnode_t *n;
 	eagle_library_t *lib = obj;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
@@ -816,9 +821,9 @@ static int eagle_read_lib_pkgs(read_state_t *st, xmlNode *subtree, void *obj, in
 	return 0;
 }
 
-static int eagle_read_libs(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_libs(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	xmlNode *n;
+	trnode_t *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"description", eagle_read_nop},
 		{"packages",    eagle_read_lib_pkgs},
@@ -844,7 +849,7 @@ static int eagle_read_libs(read_state_t *st, xmlNode *subtree, void *obj, int ty
 	return 0;
 }
 
-static int eagle_read_contactref(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	const char *elem, *pad, *net;
 	char conn[256];
@@ -858,7 +863,7 @@ static int eagle_read_contactref(read_state_t *st, xmlNode *subtree, void *obj, 
 		return 0;
 	}
 
-	net = eagle_get_attrs(subtree->parent, "name", NULL);
+	net = eagle_get_attrs(PARENT(subtree), "name", NULL);
 
 	pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
 
@@ -867,13 +872,13 @@ static int eagle_read_contactref(read_state_t *st, xmlNode *subtree, void *obj, 
 }
 
 
-static int eagle_read_poly(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
 	eagle_layer_t *ly;
 	long ln = eagle_get_attrl(subtree, "layer", -1);
 	pcb_polygon_t *poly;
-	xmlNode *n;
+	trnode_t *n;
 
 	ly = eagle_layer_get(st, ln);
 	if (ly->ly < 0) {
@@ -906,9 +911,9 @@ static int eagle_read_poly(read_state_t *st, xmlNode *subtree, void *obj, int ty
 }
 
 
-static int eagle_read_signals(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	xmlNode *n;
+	trnode_t *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
@@ -960,7 +965,7 @@ static int eagle_rot2steps(const char *rot)
 	return -1;
 }
 
-static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *elem, pcb_text_t *text, pcb_text_t *def_text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
+static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *elem, pcb_text_t *text, pcb_text_t *def_text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
 {
 	int direction = 0, TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);
 	pcb_flag_t TextFlags = pcb_no_flags();
@@ -989,9 +994,9 @@ static void eagle_read_elem_text(read_state_t *st, xmlNode *nd, pcb_element_t *e
 	text->Element = elem;
 }
 
-static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	xmlNode *n;
+	trnode_t *n;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
@@ -1068,7 +1073,7 @@ static int eagle_read_elements(read_state_t *st, xmlNode *subtree, void *obj, in
 	return 0;
 }
 
-static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
 		{"plain",       eagle_read_nop},
@@ -1088,7 +1093,7 @@ static int eagle_read_board(read_state_t *st, xmlNode *subtree, void *obj, int t
 }
 
 
-static int eagle_read_drawing(read_state_t *st, xmlNode *subtree, void *obj, int type)
+static int eagle_read_drawing(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	static const dispatch_t disp[] = { /* possible children of <drawing> */
 		{"settings",  eagle_read_nop},
@@ -1101,9 +1106,9 @@ static int eagle_read_drawing(read_state_t *st, xmlNode *subtree, void *obj, int
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, 0);
 }
 
-static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
+static int eagle_read_design_rules(read_state_t *st, trnode_t *subtree)
 {
-	xmlNode *n;
+	trnode_t *n;
 	const char *name;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
@@ -1121,7 +1126,7 @@ static int eagle_read_design_rules(read_state_t *st, xmlNode *subtree)
 	return 0;
 }
 
-static int eagle_read_ver(xmlChar *ver)
+static int eagle_read_ver(char *ver)
 {
 	int v1, v2, v3;
 	char *end;
@@ -1131,17 +1136,17 @@ static int eagle_read_ver(xmlChar *ver)
 		return -1;
 	}
 
-	v1 = strtol((char *)ver, &end, 10);
+	v1 = strtol(ver, &end, 10);
 	if (*end != '.') {
 		pcb_message(PCB_MSG_ERROR, "malformed version string [1] in <eagle>\n");
 		return -1;
 	}
-	v2 = strtol((char *)end+1, &end, 10);
+	v2 = strtol(end+1, &end, 10);
 	if (*end != '.' && *end != '\0') {
 		pcb_message(PCB_MSG_ERROR, "malformed version string [2] in <eagle>\n");
 		return -1;
 	}
-	v3 = strtol((char *)end+1, &end, 10);
+	v3 = strtol(end+1, &end, 10);
 	if (*end != '\0') {
 		pcb_message(PCB_MSG_ERROR, "malformed version string [3] in <eagle>\n");
 		return -1;
@@ -1192,7 +1197,7 @@ static void st_uninit(read_state_t *st)
 
 int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
-	xmlNode *dr;
+	trnode_t *dr;
 	int res, old_leni;
 	read_state_t st;
 
@@ -1208,7 +1213,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (st.parser.calls->load(&st.parser, Filename) != 0)
 		return -1;
 
-	if (eagle_read_ver(xmlGetProp(st.parser.root, (xmlChar *)"version")) < 0)
+	if (eagle_read_ver(GET_PROP(st.parser.root, "version")) < 0)
 		goto err;
 
 	st.pcb = pcb;
