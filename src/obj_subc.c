@@ -488,7 +488,6 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		/* keep only the layer binding match, unbound other aspects */
 		sl->meta.bound.real = NULL;
 		sl->arc_tree = sl->line_tree = sl->text_tree = sl->polygon_tree = NULL;
-		printf("unbound %p %d %s\n", sl, n, sl->meta.bound.name);
 	}
 
 
