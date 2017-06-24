@@ -592,7 +592,13 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bo
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
-	if (!elem_only) {
+	if (elem_only) {
+		if (elementlist_length(&buff->Data->Element) == 0) {
+			pcb_message(PCB_MSG_ERROR, "Buffer has no elements!\n");
+			return -1;
+		}
+	}
+	else {
 		LayersFixup();
 		WriteViaData(FP, buff->Data);
 	}

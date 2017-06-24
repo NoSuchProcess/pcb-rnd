@@ -43,7 +43,7 @@
 int io_autotrax_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
 	/*fputs("io_kicad_legacy_write_buffer()", FP); */
-
+#warning TODO rewrite this from kicad to autotrax or remove it
 	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n",FP);
 	fputs("Units mm\n",FP);
 	fputs("$INDEX\n",FP);

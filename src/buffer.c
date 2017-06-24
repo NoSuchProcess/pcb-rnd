@@ -841,10 +841,6 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			break;
 
 		case F_Save:
-			if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) == 0) {
-				pcb_message(PCB_MSG_ERROR, _("Buffer has no elements!\n"));
-				break;
-			}
 			free_name = pcb_false;
 			if (argc <= 1) {
 				name = pcb_gui->fileselect(_("Save Paste Buffer As ..."),
