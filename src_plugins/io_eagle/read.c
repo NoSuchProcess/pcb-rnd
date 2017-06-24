@@ -54,8 +54,9 @@
 #define NEXT(node)     st->parser.calls->next(&st->parser, node)
 #define NODENAME(node) st->parser.calls->nodename(node)
 
-#define GET_PROP(node, key) NULL
-#define GET_TEXT(node) NULL
+#define GET_PROP(node, key) st->parser.calls->prop(&st->parser, node, key)
+#define GET_PROP_(st, node, key) (st)->parser.calls->prop(&((st)->parser), node, key)
+#define GET_TEXT(node)      st->parser.calls->text(&st->parser, node)
 
 #define STRCMP(s1, s2) st->parser.calls->strcmp(s1,s2)
 #define IS_TEXT(node)  st->parser.calls->is_text(&st->parser, node)
@@ -202,9 +203,9 @@ int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char
 
 /* Return a node attribute value converted to long, or return invalid_val
    for synatx error or if the attribute doesn't exist */
-static long eagle_get_attrl(trnode_t *nd, const char *name, long invalid_val)
+static long eagle_get_attrl(read_state_t *st, trnode_t *nd, const char *name, long invalid_val)
 {
-	char *p = GET_PROP(nd, name);
+	const char *p = GET_PROP(nd, name);
 	char *end;
 	long res;
 
@@ -218,9 +219,9 @@ static long eagle_get_attrl(trnode_t *nd, const char *name, long invalid_val)
 
 /* Return a node attribute value converted to double, or return invalid_val
    for synatx error or if the attribute doesn't exist */
-static double eagle_get_attrd(trnode_t *nd, const char *name, double invalid_val)
+static double eagle_get_attrd(read_state_t *st, trnode_t *nd, const char *name, double invalid_val)
 {
-	char *p = GET_PROP(nd, name);
+	const char *p = GET_PROP(nd, name);
 	char *end;
 	double res;
 
@@ -234,7 +235,7 @@ static double eagle_get_attrd(trnode_t *nd, const char *name, double invalid_val
 
 /* Return a node attribute value converted to char *, or return invalid_val
    if the attribute doesn't exist */
-static const char *eagle_get_attrs(trnode_t *nd, const char *name, const char *invalid_val)
+static const char *eagle_get_attrs(read_state_t *st, trnode_t *nd, const char *name, const char *invalid_val)
 {
 	const char *p = GET_PROP(nd, name);
 	if (p == NULL)
@@ -244,9 +245,9 @@ static const char *eagle_get_attrs(trnode_t *nd, const char *name, const char *i
 
 /* Return a node attribute value converted to coord, or return invalid_val
    if the attribute doesn't exist */
-static pcb_coord_t eagle_get_attrc(trnode_t *nd, const char *name, pcb_coord_t invalid_val)
+static pcb_coord_t eagle_get_attrc(read_state_t *st, trnode_t *nd, const char *name, pcb_coord_t invalid_val)
 {
-	char *p = GET_PROP(nd, name);
+	const char *p = GET_PROP(nd, name);
 	pcb_coord_t c;
 	pcb_bool succ;
 
@@ -260,7 +261,7 @@ static pcb_coord_t eagle_get_attrc(trnode_t *nd, const char *name, pcb_coord_t i
 }
 
 /* same as eagle_get_attrc() but assume the input has units */
-static pcb_coord_t eagle_get_attrcu(trnode_t *nd, const char *name, pcb_coord_t invalid_val)
+static pcb_coord_t eagle_get_attrcu(read_state_t *st, trnode_t *nd, const char *name, pcb_coord_t invalid_val)
 {
 	const char *p = GET_PROP(nd, name);
 	pcb_coord_t c;
@@ -287,13 +288,13 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			pcb_layergrp_id_t gid;
 			pcb_layergrp_t *grp;
 
-			ly->name    = eagle_get_attrs(n, "name", NULL);
-			ly->color   = eagle_get_attrl(n, "color", -1);
-			ly->fill    = eagle_get_attrl(n, "fill", -1);
-			ly->visible = eagle_get_attrl(n, "visible", -1);
-			ly->active  = eagle_get_attrl(n, "active", -1);
+			ly->name    = eagle_get_attrs(st, n, "name", NULL);
+			ly->color   = eagle_get_attrl(st, n, "color", -1);
+			ly->fill    = eagle_get_attrl(st, n, "fill", -1);
+			ly->visible = eagle_get_attrl(st, n, "visible", -1);
+			ly->active  = eagle_get_attrl(st, n, "active", -1);
 			ly->ly      = -1;
-			id = eagle_get_attrl(n, "number", -1);
+			id = eagle_get_attrl(st, n, "number", -1);
 			if (id >= 0)
 				htip_set(&st->layers, id, ly);
 
@@ -370,7 +371,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 {
 /*	eagle_loc_t loc = type; */
 /*	pcb_text_t *text; */
-	long ln = eagle_get_attrl(subtree, "layer", -1);
+	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 /*	eagle_layer_t *ly; */
 	pcb_coord_t X, Y, height;
 	const char *rot, *text_val;
@@ -387,10 +388,10 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 #warning TODO: need to convert
 	text_val = (const char *)GET_TEXT(CHILDREN(subtree));
-	X = eagle_get_attrc(subtree, "x", -1);
-	Y = eagle_get_attrc(subtree, "y", -1);
-	height = PCB_MM_TO_COORD(eagle_get_attrc(subtree, "size", -1));
-	rot = eagle_get_attrs(subtree, "rot", NULL);
+	X = eagle_get_attrc(st, subtree, "x", -1);
+	Y = eagle_get_attrc(st, subtree, "y", -1);
+	height = PCB_MM_TO_COORD(eagle_get_attrc(st, subtree, "size", -1));
+	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	if (rot == NULL) {
 		rot = "R0";
 	}
@@ -420,7 +421,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 {
 	eagle_loc_t loc = type;
 	pcb_arc_t *circ;
-	long ln = eagle_get_attrl(subtree, "layer", -1);
+	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	eagle_layer_t *ly;
 
 	switch(loc) {
@@ -440,13 +441,13 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 			circ = pcb_arc_alloc(pcb_get_layer(ly->ly));
 			break;
 	}
-	circ->X = eagle_get_attrc(subtree, "x", -1);
-	circ->Y = eagle_get_attrc(subtree, "y", -1);
-	circ->Width = eagle_get_attrc(subtree, "radius", -1);
+	circ->X = eagle_get_attrc(st, subtree, "x", -1);
+	circ->Y = eagle_get_attrc(st, subtree, "y", -1);
+	circ->Width = eagle_get_attrc(st, subtree, "radius", -1);
 	circ->Height = circ->Width; /* no ellipse support */
 	circ->StartAngle = 0;
 	circ->Delta = 360;
-	circ->Thickness = eagle_get_attrc(subtree, "width", -1);
+	circ->Thickness = eagle_get_attrc(st, subtree, "width", -1);
 	circ->Clearance = st->md_wire_wire*2;
 	circ->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
@@ -466,7 +467,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 {
 	eagle_loc_t loc = type;
 	pcb_line_t *lin1, *lin2, *lin3, *lin4;
-	long ln = eagle_get_attrl(subtree, "layer", -1);
+	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	eagle_layer_t *ly;
 	unsigned long int flags;
 
@@ -500,15 +501,15 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 			break;
 	}
 
-	lin1->Point1.X = eagle_get_attrc(subtree, "x1", -1);
-	lin1->Point1.Y = eagle_get_attrc(subtree, "y1", -1);
-	lin1->Point2.X = eagle_get_attrc(subtree, "x2", -1);
+	lin1->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
+	lin1->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
+	lin1->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
 	lin1->Point2.Y = lin1->Point1.Y;
 
 	lin2->Point1.X = lin1->Point2.X;
 	lin2->Point1.Y = lin1->Point2.Y;
 	lin2->Point2.X = lin1->Point2.X;
-	lin2->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
+	lin2->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
 
 	lin3->Point1.X = lin2->Point2.X;
 	lin3->Point1.Y = lin2->Point2.Y;
@@ -549,7 +550,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 {
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
-	long ln = eagle_get_attrl(subtree, "layer", -1);
+	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	eagle_layer_t *ly;
 	unsigned long flags;
 
@@ -574,11 +575,11 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		lin = pcb_line_alloc(pcb_get_layer(ly->ly));
 	}
 
-	lin->Point1.X = eagle_get_attrc(subtree, "x1", -1);
-	lin->Point1.Y = eagle_get_attrc(subtree, "y1", -1);
-	lin->Point2.X = eagle_get_attrc(subtree, "x2", -1);
-	lin->Point2.Y = eagle_get_attrc(subtree, "y2", -1);
-	lin->Thickness = eagle_get_attrc(subtree, "width", -1);
+	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
+	lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
+	lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
+	lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
+	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1);
 	lin->Clearance = st->md_wire_wire*2;
 	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 	lin->ID = pcb_create_ID_get();
@@ -600,18 +601,18 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 {
 	pcb_coord_t x, y, dx, dy;
 	pcb_pad_t *pad;
-	long ln = eagle_get_attrl(subtree, "layer", -1);
+	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	const char *name, *rot;
 
 	assert(type == IN_ELEM);
 
-	name = eagle_get_attrs(subtree, "name", NULL);
-	x = eagle_get_attrc(subtree, "x", 0);
-	y = eagle_get_attrc(subtree, "y", 0);
-	dx = eagle_get_attrc(subtree, "dx", 0);
-	dy = eagle_get_attrc(subtree, "dy", 0);
+	name = eagle_get_attrs(st, subtree, "name", NULL);
+	x = eagle_get_attrc(st, subtree, "x", 0);
+	y = eagle_get_attrc(st, subtree, "y", 0);
+	dx = eagle_get_attrc(st, subtree, "dx", 0);
+	dy = eagle_get_attrc(st, subtree, "dy", 0);
 
-	rot = eagle_get_attrs(subtree, "rot", NULL);
+	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 
 	if (dx < 0) {
 		x -= dx;
@@ -683,12 +684,12 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	pcb_pin_t *pin;
 	const char *name, *shape;
 
-	name = eagle_get_attrs(subtree, "name", NULL);
-	x = eagle_get_attrc(subtree, "x", 0);
-	y = eagle_get_attrc(subtree, "y", 0);
-	drill = eagle_get_attrc(subtree, "drill", 0);
-	dia = eagle_get_attrc(subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
-	shape = eagle_get_attrs(subtree, "shape", 0);
+	name = eagle_get_attrs(st, subtree, "name", NULL);
+	x = eagle_get_attrc(st, subtree, "x", 0);
+	y = eagle_get_attrc(st, subtree, "y", 0);
+	drill = eagle_get_attrc(st, subtree, "drill", 0);
+	dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
+	shape = eagle_get_attrs(st, subtree, "shape", 0);
 
 
 	if ((dia - drill) / 2.0 < st->ms_width)
@@ -768,9 +769,9 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	else
 		return 0;
 
-	size = eagle_get_attrc(subtree, "size", EAGLE_TEXT_SIZE_100);
-	t->X = eagle_get_attrc(subtree, "x", 0);
-	t->Y = eagle_get_attrc(subtree, "y", 0);
+	size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
+	t->X = eagle_get_attrc(st, subtree, "x", 0);
+	t->Y = eagle_get_attrc(st, subtree, "y", 0);
 	t->Scale = (int)(((double)EAGLE_TEXT_SIZE_100 / (double)size) * 100.0);
 
 	return 0;
@@ -801,7 +802,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "package") == 0) {
-			const char *name = eagle_get_attrs(n, "name", NULL);
+			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			pcb_element_t *elem;
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring package with no name\n");
@@ -833,7 +834,7 @@ static int eagle_read_libs(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "library") == 0) {
-			const char *name = eagle_get_attrs(n, "name", NULL);
+			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			eagle_library_t *lib;
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring library with no name\n");
@@ -854,8 +855,8 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 	const char *elem, *pad, *net;
 	char conn[256];
 
-	elem = eagle_get_attrs(subtree, "element", NULL);
-	pad = eagle_get_attrs(subtree, "pad", NULL);
+	elem = eagle_get_attrs(st, subtree, "element", NULL);
+	pad = eagle_get_attrs(st, subtree, "pad", NULL);
 
 
 	if ((elem == NULL) || (pad == NULL)) {
@@ -863,7 +864,7 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 		return 0;
 	}
 
-	net = eagle_get_attrs(PARENT(subtree), "name", NULL);
+	net = eagle_get_attrs(st, PARENT(subtree), "name", NULL);
 
 	pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
 
@@ -876,7 +877,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 {
 	eagle_loc_t loc = type;
 	eagle_layer_t *ly;
-	long ln = eagle_get_attrl(subtree, "layer", -1);
+	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_polygon_t *poly;
 	trnode_t *n;
 
@@ -891,8 +892,8 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "vertex") == 0) {
 			pcb_coord_t x, y;
-			x = eagle_get_attrc(n, "x", 0);
-			y = eagle_get_attrc(n, "y", 0);
+			x = eagle_get_attrc(st, n, "x", 0);
+			y = eagle_get_attrc(st, n, "y", 0);
 			pcb_poly_point_new(poly, x, y);
 			switch (loc) {
 				case IN_ELEM:
@@ -928,7 +929,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "signal") == 0) {
-			const char *name = eagle_get_attrs(n, "name", NULL);
+			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
 				continue;
@@ -975,14 +976,14 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 	y += def_text->Y + EAGLE_TEXT_SIZE_100;
 
 	for(nd = CHILDREN(nd); nd != NULL; nd = NEXT(nd)) {
-		const char *this_attr = eagle_get_attrs(nd, "name", "");
+		const char *this_attr = eagle_get_attrs(st, nd, "name", "");
 		if ((STRCMP(NODENAME(nd), "attribute") == 0) && (strcmp(attname, this_attr) == 0)) {
-			direction = eagle_rot2steps(eagle_get_attrs(nd, "rot", NULL));
+			direction = eagle_rot2steps(eagle_get_attrs(st, nd, "rot", NULL));
 			if (direction < 0)
 				direction = 0;
-			size = eagle_get_attrc(nd, "size", -1);
-			x = eagle_get_attrc(nd, "x", x);
-			y = eagle_get_attrc(nd, "y", y);
+			size = eagle_get_attrc(st, nd, "size", -1);
+			x = eagle_get_attrc(st, nd, "x", x);
+			y = eagle_get_attrc(st, nd, "y", y);
 			break;
 		}
 	}
@@ -1001,10 +1002,10 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
 			pcb_coord_t x, y;
-			const char *name = eagle_get_attrs(n, "name", NULL);
-			const char *lib = eagle_get_attrs(n, "library", NULL);
-			const char *pkg = eagle_get_attrs(n, "package", NULL);
-			const char *val = eagle_get_attrs(n, "value", NULL);
+			const char *name = eagle_get_attrs(st, n, "name", NULL);
+			const char *lib = eagle_get_attrs(st, n, "library", NULL);
+			const char *pkg = eagle_get_attrs(st, n, "package", NULL);
+			const char *val = eagle_get_attrs(st, n, "value", NULL);
 			pcb_element_t *elem, *new_elem;
 			const char *rot;
 			int steps, back = 0;
@@ -1028,9 +1029,9 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				continue;
 			}
 
-			x = eagle_get_attrc(n, "x", -1);
-			y = eagle_get_attrc(n, "y", -1);
-			rot = eagle_get_attrs(n, "rot", NULL);
+			x = eagle_get_attrc(st, n, "x", -1);
+			y = eagle_get_attrc(st, n, "y", -1);
+			rot = eagle_get_attrs(st, n, "rot", NULL);
 			if ((rot != NULL) && (*rot == 'M')) {
 				rot++;
 				back = 1;
@@ -1114,19 +1115,19 @@ static int eagle_read_design_rules(read_state_t *st, trnode_t *subtree)
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "param") != 0)
 			continue;
-		name = eagle_get_attrs(n, "name", NULL);
-		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(n, "value", 0);
-		else if (strcmp(name, "msWidth") == 0) st->ms_width = eagle_get_attrcu(n, "value", 0);
-		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrd(n, "value", 0);
-		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrd(n, "value", 0);
-		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(n, "value", 0);
+		name = eagle_get_attrs(st, n, "name", NULL);
+		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(st, n, "value", 0);
+		else if (strcmp(name, "msWidth") == 0) st->ms_width = eagle_get_attrcu(st, n, "value", 0);
+		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrd(st, n, "value", 0);
+		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrd(st, n, "value", 0);
+		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(st, n, "value", 0);
 	}
 	if ((st->rv_pad_top != st->rv_pad_inner) || (st->rv_pad_top != st->rv_pad_inner))
 		pcb_message(PCB_MSG_WARNING, "top/inner/bottom default pad sizes differ - using top size only\n");
 	return 0;
 }
 
-static int eagle_read_ver(char *ver)
+static int eagle_read_ver(const char *ver)
 {
 	int v1, v2, v3;
 	char *end;
@@ -1213,7 +1214,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (st.parser.calls->load(&st.parser, Filename) != 0)
 		return -1;
 
-	if (eagle_read_ver(GET_PROP(st.parser.root, "version")) < 0)
+	if (eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0)
 		goto err;
 
 	st.pcb = pcb;

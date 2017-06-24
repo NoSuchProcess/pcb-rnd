@@ -96,6 +96,19 @@ const char *eagle_bin_nodename(trnode_t *node)
 	return (const char *)nd->id_name;
 }
 
+static const char *eagle_bin_prop(trparse_t *pst, trnode_t *node, const char *key)
+{
+	egb_node_t *nd = (egb_node_t *)node;
+#warning TODO
+	return NULL;
+}
+
+static const char *eagle_bin_text(trparse_t *pst, trnode_t *node)
+{
+	egb_node_t *nd = (egb_node_t *)node;
+#warning TODO
+	return NULL;
+}
 
 static int eagle_bin_is_text(trparse_t *pst, trnode_t *node)
 {
@@ -111,6 +124,8 @@ trparse_calls_t trparse_bin_calls = {
 	eagle_bin_children,
 	eagle_bin_next,
 	eagle_bin_nodename,
+	eagle_bin_prop,
+	eagle_bin_text,
 	strcmp,
 	eagle_bin_is_text
 };
