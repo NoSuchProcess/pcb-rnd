@@ -673,7 +673,6 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs)
 		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc, 0);
 }
 
-/* changes the side of the board an element is on; returns pcb_true if done */
 pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 {
 	pcb_opctx_t ctx;
@@ -683,8 +682,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
 		return (pcb_false);
 
-#warning subc TODO: not enough to mirror
-/*	pcb_undo_add_obj_to_mirror(PCB_TYPE_SUBC, subc, subc, subc, yoff);*/
+	pcb_undo_add_obj_to_mirror(PCB_TYPE_SUBC, subc, subc, subc, yoff);
 
 	/* move subc into a local "buffer" */
 	memset(&ctx, 0, sizeof(ctx));
