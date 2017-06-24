@@ -403,3 +403,27 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 
 	return NULL;
 }
+
+void pcb_data_mirror(pcb_data_t *data)
+{
+	PCB_VIA_LOOP(data);
+	{
+		pcb_via_mirror(data, via);
+	}
+	PCB_END_LOOP;
+	PCB_LINE_ALL_LOOP(data);
+	{
+		pcb_line_mirror(layer, line);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_ARC_ALL_LOOP(data);
+	{
+		pcb_arc_mirror(layer, arc);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_POLY_ALL_LOOP(data);
+	{
+		pcb_poly_mirror(layer, polygon);
+	}
+	PCB_ENDALL_LOOP;
+}

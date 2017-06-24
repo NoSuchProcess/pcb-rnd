@@ -136,4 +136,7 @@ void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rt
 pcb_board_t *pcb_data_get_top(pcb_data_t *data);
 
 
+void pcb_data_mirror(pcb_data_t *data);
+
+
 #endif

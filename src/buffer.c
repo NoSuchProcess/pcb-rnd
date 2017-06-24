@@ -418,7 +418,6 @@ void pcb_uninit_buffers(pcb_board_t *pcb)
 	}
 }
 
-
 void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	int i, num_layers;
@@ -442,26 +441,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
-	PCB_VIA_LOOP(Buffer->Data);
-	{
-		pcb_via_mirror(Buffer->Data, via);
-	}
-	PCB_END_LOOP;
-	PCB_LINE_ALL_LOOP(Buffer->Data);
-	{
-		pcb_line_mirror(layer, line);
-	}
-	PCB_ENDALL_LOOP;
-	PCB_ARC_ALL_LOOP(Buffer->Data);
-	{
-		pcb_arc_mirror(layer, arc);
-	}
-	PCB_ENDALL_LOOP;
-	PCB_POLY_ALL_LOOP(Buffer->Data);
-	{
-		pcb_poly_mirror(layer, polygon);
-	}
-	PCB_ENDALL_LOOP;
+	pcb_data_mirror(Buffer->Data);
 	pcb_set_buffer_bbox(Buffer);
 }
 
