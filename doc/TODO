@@ -26,13 +26,13 @@
 For the next release:
 - SUBC BUGS:
 	- ctrl+x cut to buffer -> valgrind errors in rtree on pcb free
+	- ctrl+x rotate -> segf
 	- don't save unused layers with subc
 	- undo doesn't work:
 		- selection
 		- cut to paste buffer (ctrl+x)
 - SUBC missing features:
 	- move to other side
-	- mirror
 	- manual layer binding (reuse csect?)
 	- ctrl+e propedig on subc
 - BUGS:
