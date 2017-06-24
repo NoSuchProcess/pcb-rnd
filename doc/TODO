@@ -25,6 +25,7 @@
 
 For the next release:
 - SUBC BUGS:
+	- ctrl+x cut to buffer -> valgrind errors in rtree on pcb free
 	- don't save unused layers with subc
 	- undo doesn't work:
 		- selection
