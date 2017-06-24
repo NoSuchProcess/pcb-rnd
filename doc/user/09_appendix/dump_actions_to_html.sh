@@ -14,6 +14,7 @@
 	svn info ^/ | awk '/Revision:/ {
 		print $0
 		got_rev=1
+		exit
 		}
 		END {
 			if (!got_rev)
