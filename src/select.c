@@ -201,7 +201,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 		break;
 
 	case PCB_TYPE_SUBC:
-		pcb_select_subc(pcb, (pcb_subc_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
+		pcb_subc_select(pcb, (pcb_subc_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
 		break;
 	}
 	pcb_draw();
@@ -373,7 +373,7 @@ do { \
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) != Flag) {
 
 				if (len == NULL) {
-					pcb_select_subc(PCB, subc, Flag, 1);
+					pcb_subc_select(PCB, subc, Flag, 1);
 				}
 				else {
 					if (used >= alloced) {

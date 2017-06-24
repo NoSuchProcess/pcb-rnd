@@ -517,7 +517,7 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	pcb_subc_t *nsc;
 	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0);
 	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED)
-		pcb_select_subc(NULL, nsc, PCB_CHGFLG_CLEAR, 0);
+		pcb_subc_select(NULL, nsc, PCB_CHGFLG_CLEAR, 0);
 	return nsc;
 }
 
@@ -646,7 +646,7 @@ void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 }
 
 
-void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, int redraw)
+void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, int redraw)
 {
 	pcb_opctx_t ctx;
 
