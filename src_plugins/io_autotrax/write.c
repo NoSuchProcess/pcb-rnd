@@ -559,6 +559,8 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 	int padShape = 1; /* 1=circle, 2=Rectangle, 3=Octagonal, 4=Rounded Rectangle, 
 			5=Cross Hair Target, 6=Moiro Target*/ 
 	int drillHole = 0; /* for SMD */
+
+	pcb_box_t *box;
 	
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
@@ -569,8 +571,12 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
 			continue;
 
-		xPos = element->MarkX + xOffset;
-		yPos = element->MarkY + yOffset;
+		box = &element->BoundingBox;
+		xPos = (box->X1 + box->X2)/2 + xOffset;
+		yPos = PCB->MaxHeight - ((box->Y1 + box->Y2)/2 + yOffset);
+		yPos2 = yPos - PCB_MIL_TO_COORD(200);
+		yPos3 = yPos2 - PCB_MIL_TO_COORD(200);
+
 		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element)) {
 			silkLayer = 8;
 			copperLayer = 6;
@@ -583,13 +589,11 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		fprintf(FP, "%s\n", element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString);/* designator */
 		fprintf(FP, "%s\n", element->Name[PCB_ELEMNAME_IDX_VALUE].TextString);/* designator */
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* designator */
-			xPos, PCB->MaxHeight - yPos, silkLayer);
-		yPos2 = yPos + PCB_MIL_TO_COORD(200);
+			xPos, yPos, silkLayer);
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* pattern */
-			xPos, PCB->MaxHeight - yPos2, silkLayer);
-		yPos3 = yPos2 + PCB_MIL_TO_COORD(200);
+			xPos, yPos2, silkLayer);
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* comment field */
-			xPos, PCB->MaxHeight - yPos3, silkLayer);
+			xPos, yPos3, silkLayer);
 
 		pinlist_foreach(&element->Pin, &it, pin) {
 
