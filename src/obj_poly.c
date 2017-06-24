@@ -145,13 +145,13 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t X, 
 	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 }
 
-void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon)
+void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t y_offs)
 {
 	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *)polygon);
 	PCB_POLY_POINT_LOOP(polygon);
 	{
 		point->X = PCB_SWAP_X(point->X);
-		point->Y = PCB_SWAP_Y(point->Y);
+		point->Y = PCB_SWAP_Y(point->Y) + y_offs;
 	}
 	PCB_END_LOOP;
 	pcb_poly_bbox(polygon);

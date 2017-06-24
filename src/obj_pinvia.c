@@ -281,10 +281,10 @@ void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t
 	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 }
 
-void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *via)
+void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *via, pcb_coord_t y_offs)
 {
 	via->X = PCB_SWAP_X(via->X);
-	via->Y = PCB_SWAP_Y(via->Y);
+	via->Y = PCB_SWAP_Y(via->Y) + y_offs;
 }
 
 void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via)

@@ -62,7 +62,7 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);
 void pcb_line_bbox(pcb_line_t *Line);
 void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
-void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line);
+void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t y_offs);
 void pcb_line_flip_side(pcb_layer_t *layer, pcb_line_t *line);
 
 pcb_coord_t pcb_line_length(const pcb_line_t *line);

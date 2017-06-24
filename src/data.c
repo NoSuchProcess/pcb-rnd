@@ -404,26 +404,26 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 	return NULL;
 }
 
-void pcb_data_mirror(pcb_data_t *data)
+void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs)
 {
 	PCB_VIA_LOOP(data);
 	{
-		pcb_via_mirror(data, via);
+		pcb_via_mirror(data, via, y_offs);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(data);
 	{
-		pcb_line_mirror(layer, line);
+		pcb_line_mirror(layer, line, y_offs);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(data);
 	{
-		pcb_arc_mirror(layer, arc);
+		pcb_arc_mirror(layer, arc, y_offs);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(data);
 	{
-		pcb_poly_mirror(layer, polygon);
+		pcb_poly_mirror(layer, polygon, y_offs);
 	}
 	PCB_ENDALL_LOOP;
 }

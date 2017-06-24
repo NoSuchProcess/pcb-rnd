@@ -59,7 +59,7 @@ void pcb_pin_copper_bbox(pcb_box_t *out, pcb_pin_t *Pin);
 
 
 void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
-void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *Via);
+void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t y_offs);
 void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via);
 
 /* hash */

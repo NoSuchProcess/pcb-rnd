@@ -65,7 +65,7 @@ void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 
 void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 void pcb_poly_rotate(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
-void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon);
+void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t y_offs);
 void pcb_poly_flip_side(pcb_layer_t *layer, pcb_polygon_t *polygon);
 
 void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
