@@ -17,7 +17,7 @@
 
 function flush_sd()
 {
-	if (s != "") {
+	if (s != "" || d != "" ) {
 		sub("^<br>", "", d)
 		sub("^<br>", "", s)
 		print "<td>" d "</td>"
