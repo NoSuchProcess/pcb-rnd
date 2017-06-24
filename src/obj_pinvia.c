@@ -871,6 +871,7 @@ void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin)
 {
 	if ((ctx->chgflag.flag & PCB_PIN_FLAGS) != ctx->chgflag.flag)
 		return NULL;
+	pcb_undo_add_obj_to_flag(PCB_FLAG_TEST(PCB_FLAG_PIN, pin) ? PCB_TYPE_PIN : PCB_TYPE_VIA, pin, pin, pin);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, pin);
 	return pin;
 }

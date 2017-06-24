@@ -865,6 +865,7 @@ void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 {
 	if ((ctx->chgflag.flag & PCB_LINE_FLAGS) != ctx->chgflag.flag)
 		return NULL;
+	pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, Line, Line, Line);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Line);
 	return Line;
 }
