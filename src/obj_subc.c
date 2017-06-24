@@ -437,7 +437,8 @@ void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-	return pcb_subc_op(pcb_data_get_top(sc->data), sc, &Rotate90Functions, ctx);
+	pcb_board_t *pcb = pcb_data_get_top(sc->data);
+	return pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &Rotate90Functions, ctx);
 }
 
 void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
