@@ -26,7 +26,6 @@
 For the next release:
 - SUBC BUGS:
 	- undo doesn't work:
-		- selection
 		- cut to paste buffer (ctrl+x)
 - SUBC missing features:
 	- manual layer binding (reuse csect?)
