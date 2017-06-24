@@ -657,6 +657,20 @@ void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 		DrawSubc(sc);
 }
 
+/* mirrors the coordinates of a subcircuit; an additional offset is passed */
+void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs)
+{
+	if (data->subc_tree != NULL)
+		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
+
+	pcb_data_mirror(subc->data, y_offs);
+	pcb_subc_bbox(subc);
+
+	if (data->subc_tree != NULL)
+		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc, 0);
+}
+
+
 
 #include "conf_core.h"
 #include "draw.h"
