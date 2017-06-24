@@ -72,6 +72,12 @@ static int eagle_bin_unload(trparse_t *pst)
 	return 0;
 }
 
+static trnode_t *eagle_bin_parent(trparse_t *pst, trnode_t *node)
+{
+	egb_node_t *nd = (egb_node_t *)node;
+	return (trnode_t *)nd->parent;
+}
+
 static trnode_t *eagle_bin_children(trparse_t *pst, trnode_t *node)
 {
 	egb_node_t *nd = (egb_node_t *)node;
@@ -101,6 +107,7 @@ static int eagle_bin_is_text(trparse_t *pst, trnode_t *node)
 trparse_calls_t trparse_bin_calls = {
 	eagle_bin_load,
 	eagle_bin_unload,
+	eagle_bin_parent,
 	eagle_bin_children,
 	eagle_bin_next,
 	eagle_bin_nodename,
