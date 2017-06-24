@@ -39,18 +39,9 @@
 
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
 
-/* writes the buffer to file - library file for autotrax isa FAT or similar ; tricky */
-int io_autotrax_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
-{
-#warning TODO rewrite this from kicad to autotrax or remove it
-	/*pcb_write_element_data(FP, buff->Data, "autotrax");*/
-	return (0);
-}
-
 /* ---------------------------------------------------------------------------
  * writes autotrax vias to file
  */
-
 int write_autotrax_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
 	gdl_iterator_t it;
@@ -65,6 +56,9 @@ int write_autotrax_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset,
 	return 0;
 }
 
+/* ---------------------------------------------------------------------------
+ * writes generic autotrax track descriptor line for components and layouts 
+ */
 int write_autotrax_track(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_line_t *line, pcb_cardinal_t layer)
 {
 	int userRouted = 1;
@@ -75,6 +69,9 @@ int write_autotrax_track(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pc
 	return 0;
 }
 
+/* ---------------------------------------------------------------------------
+ * generates an autotrax arc "segments" value to approximate an arc being exported  
+ */
 int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arcStart, pcb_angle_t arcDelta)
 {
 	int arcSegments = 15;
@@ -112,6 +109,9 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arcStart, pcb_angle_t arcDelta)
 	return arcSegments;
 }
 
+/* ---------------------------------------------------------------------------
+ * writes generic autotrax arc descriptor line for components and layouts 
+ */
 int write_autotrax_arc(FILE *FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_arc_t * arc, int currentLayer) 
 {
 	pcb_coord_t radius;
@@ -127,6 +127,31 @@ int write_autotrax_arc(FILE *FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_a
 	return 0;
 }
 
+/* ---------------------------------------------------------------------------
+ * writes netlist data in autotrax format
+ */
+int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
+{
+	
+	/* now we step through any available netlists and generate descriptors */
+
+	if (PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN) {
+		int n, p;
+
+		for (n = 0; n < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; n++) {
+			pcb_lib_menu_t *menu = &PCB->NetlistLib[PCB_NETLIST_INPUT].Menu[n];
+			fprintf(FP, "NETDEF\n");
+			pcb_fprintf(FP, "%s\n", &menu->Name[2]);
+			fprintf(FP, "(\n");
+			for (p = 0; p < menu->EntryN; p++) {
+				pcb_lib_entry_t *entry = &menu->Entry[p];
+				pcb_fprintf(FP, "%s", entry->ListEntry);
+			}
+			fprintf(FP, ")\n");
+		}
+	}
+	return 0;
+}
 
 /* ---------------------------------------------------------------------------
  * writes autotrax PCB to file
@@ -426,6 +451,9 @@ int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	}
 }
 
+/* ---------------------------------------------------------------------------
+ * writes autotrax arcs for layouts 
+ */
 int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
@@ -447,6 +475,9 @@ int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	}
 }
 
+/* ---------------------------------------------------------------------------
+ * writes generic autotrax text descriptor line layouts onl, since no text in .fp 
+ */
 int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number,
 			 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
@@ -509,185 +540,6 @@ int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number,
 		return 0;
 	}
 }
-
-/* ---------------------------------------------------------------------------
- * writes element data for use in a library; not tested
- */
-int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
-{
-
-	gdl_iterator_t eit;
-	pcb_line_t *line;
-	pcb_arc_t *arc;
-	pcb_element_t *element;
-
-	pcb_cardinal_t currentLayer = 7;
-
-	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
-	const char * currentElementName;
-
-	elementlist_dedup_initializer(ededup);
-	/* Now initialize the group with defaults */
-	unm_init(&group1);
-
-	elementlist_foreach(&Data->Element, &eit, element) {
-		gdl_iterator_t it;
-		pcb_pin_t *pin;
-		pcb_pad_t *pad;
-
-		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
-
-		/* TOOD: Footprint name element->Name[0].TextString */
-
-		/* only non empty elements */
-		if (!linelist_length(&element->Line)
-			&& !pinlist_length(&element->Pin)
-			&& !arclist_length(&element->Arc)
-			&& !padlist_length(&element->Pad))
-			continue;
-		/* the coordinates and text-flags are the same for
-		 * both names of an element
-		 */
-		/* the following element summary is not used
-			 in kicad; the module's header contains this
-			 information
-
-			 fprintf(FP, "\nDS %s ", F2S(element, PCB_TYPE_ELEMENT));
-			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
-			 fputc(' ', FP);
-			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)));
-			 fputc(' ', FP);
-			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)));
-			 pcb_fprintf(FP, " %mm %mm %mm %mm %d %d %s]\n(\n",
-			 element->MarkX, element->MarkY,
-			 PCB_ELEM_TEXT_DESCRIPTION(element).X - element->MarkX,
-			 PCB_ELEM_TEXT_DESCRIPTION(element).Y - element->MarkY,
-			 PCB_ELEM_TEXT_DESCRIPTION(element).Direction,
-			 PCB_ELEM_TEXT_DESCRIPTION(element).Scale, F2S(&(PCB_ELEM_TEXT_DESCRIPTION(element)), PCB_TYPE_ELEMENT_NAME));
-
-		*/
-
-		/*		//WriteAttributeList(FP, &element->Attributes, "\t");
-		 */
-
-		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
-		fprintf(FP, "COMP\n%s\n", currentElementName);
-		fprintf(FP, "%s\n", element->Name[1].TextString);
-		fprintf(FP, "%s\n", element->Name[2].TextString);
-
-		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "CT\n");
-			write_autotrax_track(FP, element->MarkX, element->MarkY, line, currentLayer);
-		}
-
-		arclist_foreach(&element->Arc, &it, arc) {
-			pcb_fprintf(FP, "CA\n");
-			write_autotrax_arc(FP, element->MarkX, element->MarkY, arc, currentLayer);
-		}
-
-		pinlist_foreach(&element->Pin, &it, pin) {
-			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
-
-			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
-				pin->X - element->MarkX,
-				pin->Y - element->MarkY);
-
-			fputs("Sh ",FP); /* pin shape descriptor */
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Number));
-
-			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
-				fputs(" R ",FP); /* square */
-			} else {
-				fputs(" C ",FP); /* circular */
-			}
-
-			pcb_fprintf(FP, "%.3mm %.3mm ", pin->Thickness, pin->Thickness); /* height = width */
-			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
-
-			fputs("Dr ",FP); /* drill details; size and x,y pos relative to pad location */
-			pcb_fprintf(FP, "%mm 0 0\n", pin->DrillingHole);
-
-			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
-
-			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
-			/*
-				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
-				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
-			*/
-			fputs("$EndPAD\n",FP);
-		}
-		padlist_foreach(&element->Pad, &it, pad) {
-			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
-
-			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
-					(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
-					(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
-
-			fputs("Sh ",FP); /* pin shape descriptor */
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Number));
-			fputs(" R ",FP); /* rectangular, not a pin */
-
-			if ((pad->Point1.X-pad->Point2.X) <= 0
-				&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-					pcb_fprintf(FP, "%.3mm %.3mm ",
-					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
-			} else if ((pad->Point1.X-pad->Point2.X) <= 0
-				&& (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-					pcb_fprintf(FP, "%.3mm %.3mm ",
-					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
-			} else if ((pad->Point1.X-pad->Point2.X) > 0
-				&& (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-					pcb_fprintf(FP, "%.3mm %.3mm ",
-					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
-			} else if ((pad->Point1.X-pad->Point2.X) > 0
-				&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-					pcb_fprintf(FP, "%.3mm %.3mm ",
-					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
-			}
-
-		}
-		fprintf(FP, "ENDCOMP\n");		
-	}
-	/* Release unique name utility memory */
-	unm_uninit(&group1);
-	/* free the state used for deduplication */
-	elementlist_dedup_free(ededup);
-
-	return 0;
-}
-
-
-/* ---------------------------------------------------------------------------
- * writes netlist data in kicad legacy format for use in a layout .brd file
- */
-
-int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
-{
-	
-	/* now we step through any available netlists and generate descriptors */
-
-	if (PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN) {
-		int n, p;
-
-		for (n = 0; n < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; n++) {
-			pcb_lib_menu_t *menu = &PCB->NetlistLib[PCB_NETLIST_INPUT].Menu[n];
-			fprintf(FP, "NETDEF\n");
-			pcb_printf(FP, "%s\n", &menu->Name[2]);
-			fprintf(FP, "(\n");
-			for (p = 0; p < menu->EntryN; p++) {
-				pcb_lib_entry_t *entry = &menu->Entry[p];
-				pcb_printf(FP, "%s", entry->ListEntry);
-			}
-			fprintf(FP, ")\n");
-		}
-	}
-	return 0;
-}
-
 
 /* ---------------------------------------------------------------------------
  * writes element data in autotrax format for use in a layout .PCB file
