@@ -1162,8 +1162,9 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_
 	/* create the doc */
 	io_lihata_full_tree = 1;
 	doc = lht_dom_init();
-	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v1");
-	lht_dom_list_append(doc->root, build_subc_element(pcb_subclist_first(&buff->Data->subc)));
+	wrver = 3;
+	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v3");
+	lht_dom_list_append(doc->root, build_subc(pcb_subclist_first(&buff->Data->subc)));
 
 	res = lht_dom_export(doc->root, f, "");
 
