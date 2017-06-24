@@ -13,9 +13,10 @@
 	./pcb-rnd --version
 	svn info ^/ | awk '/Revision:/ {
 		print $0
+		got_rev=1
 		}
 		END {
-			if ($0 == "")
+			if (!got_rev)
 			print "Rev unknown"
 		}
 		'
