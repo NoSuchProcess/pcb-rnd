@@ -14,7 +14,7 @@
 	svn info ^/ | awk '/Revision:/ {
 		print $0
 		}
-	 	END {
+		END {
 			if ($0 == "")
 			print "Rev unknown"
 		}
