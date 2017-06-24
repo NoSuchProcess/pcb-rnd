@@ -23,5 +23,7 @@
 int io_lihata_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f);
 int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
 int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
+int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
+
 
 

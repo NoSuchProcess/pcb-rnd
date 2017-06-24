@@ -65,7 +65,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v3.fmt_support_prio = io_lihata_fmt;
 	plug_io_lihata_v3.test_parse_pcb = io_lihata_test_parse_pcb;
 	plug_io_lihata_v3.parse_pcb = io_lihata_parse_pcb;
-	plug_io_lihata_v3.parse_element = NULL;
+	plug_io_lihata_v3.parse_element = io_lihata_parse_element;
 	plug_io_lihata_v3.parse_font = io_lihata_parse_font;
 	plug_io_lihata_v3.write_font = io_lihata_write_font;
 	plug_io_lihata_v3.write_buffer = io_lihata_write_buffer;

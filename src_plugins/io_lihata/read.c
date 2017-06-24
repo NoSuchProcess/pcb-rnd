@@ -1415,3 +1415,28 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 	lht_dom_uninit(doc);
 	return res;
 }
+
+int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
+{
+	int res;
+	char *errmsg;
+	lht_doc_t *doc = lht_dom_load(name, &errmsg);
+
+	if (doc == NULL) {
+		if (!pcb_io_err_inhibit)
+			pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", name, errmsg);
+		return -1;
+	}
+
+	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-subcircuit-v3"))) {
+		if (!pcb_io_err_inhibit)
+			pcb_message(PCB_MSG_ERROR, "Not a subcircuit lihata.\n");
+		return -1;
+	}
+
+	res = parse_subc(PCB, Ptr, doc->root->data.list.first);
+
+	lht_dom_uninit(doc);
+	return res;
+}
+
