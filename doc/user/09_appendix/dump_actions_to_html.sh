@@ -11,7 +11,14 @@
 (
 	cd ../../../src
 	./pcb-rnd --version
-	svn info ^/ | awk '/Revision:/ {print $0}'
+	svn info ^/ | awk '/Revision:/ {
+		print $0
+		}
+	 	END {
+			if ($0 == "")
+			print "Rev unknown"
+		}
+		'
 	./pcb-rnd --dump-actions
 ) | awk '
 
