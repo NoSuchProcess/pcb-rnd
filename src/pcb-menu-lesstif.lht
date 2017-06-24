@@ -43,7 +43,7 @@ ha:{
 						ha:Import tEDAx schematics           = { action=LoadTedaxFrom(netlist) }
 						ha:Import KiCad/eeschema schematics  = { action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = { action=LoadMentorFrom() }
-						ha:Load element data to paste-buffer = { li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
+						ha:Load element/subcircuit data to paste-buffer = { li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = { li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 						ha:Load netlist file                 = { action=Load(Netlist) }
 						ha:Load vendor resource file         = { action=LoadVendor() }
