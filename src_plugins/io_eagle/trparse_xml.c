@@ -78,6 +78,12 @@ static trnode_t *eagle_xml_next(trparse_t *pst, trnode_t *node)
 	return (trnode_t *)nd->next;
 }
 
+const char *eagle_xml_nodename(trnode_t *node)
+{
+	xmlNode *nd = (xmlNode *)node;
+	return (const char *)nd->name;
+}
+
 static int eagle_xml_strcmp(const char *s1, const char *s2)
 {
 	return xmlStrcmp((const xmlChar *)s1, (const xmlChar *)s2);
@@ -94,6 +100,7 @@ trparse_calls_t trparse_xml_calls = {
 	eagle_xml_unload,
 	eagle_xml_children,
 	eagle_xml_next,
+	eagle_xml_nodename,
 	eagle_xml_strcmp,
 	eagle_xml_is_text
 };

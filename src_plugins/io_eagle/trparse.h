@@ -10,6 +10,7 @@ typedef struct trparse_calls_s {
 
 	trnode_t *(*children)(trparse_t *pst, trnode_t *node);
 	trnode_t *(*next)(trparse_t *pst, trnode_t *node);
+	const char *(*nodename)(trnode_t *node);
 
 	int (*strcmp)(const char *s1, const char *s2);
 	int (*is_text)(trparse_t *pst, trnode_t *node);
