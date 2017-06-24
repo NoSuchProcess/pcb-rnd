@@ -676,13 +676,12 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs)
 pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 {
 	pcb_opctx_t ctx;
-	pcb_subc_t *newsc;
+	pcb_subc_t *newsc, *newsc2;
 	int n;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
 		return (pcb_false);
 
-	pcb_undo_add_obj_to_mirror(PCB_TYPE_SUBC, subc, subc, subc, yoff);
 
 	/* move subc into a local "buffer" */
 	memset(&ctx, 0, sizeof(ctx));
@@ -690,6 +689,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 	ctx.buffer.dst = pcb_data_new(NULL);
 	ctx.buffer.src = PCB->Data;
 	newsc = pcb_subcop_move_to_buffer(&ctx, subc);
+
 
 	/* mirror object geometry and stackup */
 	pcb_subc_mirror(NULL, newsc, yoff);
@@ -702,7 +702,10 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 	}
 
 	/* place the new subc */
-	pcb_subc_dup_at(PCB, PCB->Data, newsc, 0, 0);
+	newsc2 = pcb_subc_dup_at(PCB, PCB->Data, newsc, 0, 0);
+	newsc2->ID = newsc->ID;
+	pcb_undo_add_subc_to_otherside(PCB_TYPE_SUBC, newsc2, newsc2, newsc2, yoff);
+
 	pcb_data_free(ctx.buffer.dst);
 	return pcb_true;
 }

@@ -168,6 +168,7 @@ static pcb_bool UndoInsertContour(UndoListTypePtr);
 static pcb_bool UndoMoveToLayer(UndoListTypePtr);
 static pcb_bool UndoFlag(UndoListTypePtr);
 static pcb_bool UndoMirror(UndoListTypePtr);
+static pcb_bool UndoOtherSide(UndoListTypePtr);
 static pcb_bool UndoChangeSize(UndoListTypePtr);
 static pcb_bool UndoChange2ndSize(UndoListTypePtr);
 static pcb_bool UndoChangeAngles(UndoListTypePtr);
@@ -570,6 +571,30 @@ static pcb_bool UndoMirror(UndoListTypePtr Entry)
 		return (pcb_true);
 	}
 	pcb_message(PCB_MSG_ERROR, "hace Internal error: UndoMirror on object type %d\n", type);
+	return (pcb_false);
+}
+
+/* ---------------------------------------------------------------------------
+ * recovers a subc from an other-side  operation
+ * returns pcb_true if anything has been recovered
+ */
+static pcb_bool UndoOtherSide(UndoListTypePtr Entry)
+{
+	void *ptr1, *ptr2, *ptr3;
+	int type;
+
+	/* lookup entry by ID */
+	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+	if (type == PCB_TYPE_SUBC) {
+		pcb_subc_t *subc = (pcb_subc_t *)ptr3;
+		if (andDraw)
+			EraseSubc(subc);
+		pcb_subc_change_side(subc, Entry->Data.Move.DY);
+		if (andDraw)
+			DrawSubc(subc);
+		return (pcb_true);
+	}
+	pcb_message(PCB_MSG_ERROR, "hace Internal error: UndoOtherside on object type %x\n", type);
 	return (pcb_false);
 }
 
@@ -1045,6 +1070,11 @@ static int PerformUndo(UndoListTypePtr ptr)
 		if (UndoMirror(ptr))
 			return (PCB_UNDO_MIRROR);
 		break;
+
+	case PCB_UNDO_OTHERSIDE:
+		if (UndoOtherSide(ptr))
+			return (PCB_UNDO_OTHERSIDE);
+		break;
 	}
 	return 0;
 }
@@ -1200,6 +1230,19 @@ void pcb_undo_add_obj_to_mirror(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 
 	if (!Locked) {
 		undo = GetUndoSlot(PCB_UNDO_MIRROR, PCB_OBJECT_ID(Ptr3), Type);
+		undo->Data.Move.DY = yoff;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * adds an subc to the list of objects tossed to the other side
+ */
+void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff)
+{
+	UndoListTypePtr undo;
+
+	if (!Locked) {
+		undo = GetUndoSlot(PCB_UNDO_OTHERSIDE, PCB_OBJECT_ID(Ptr3), Type);
 		undo->Data.Move.DY = yoff;
 	}
 }
@@ -1640,6 +1683,7 @@ static const char *undo_type2str(int type)
 		case PCB_UNDO_CHANGESIZE: return "changesize";
 		case PCB_UNDO_CHANGE2NDSIZE: return "change2ndsize";
 		case PCB_UNDO_MIRROR: return "mirror";
+		case PCB_UNDO_OTHERSIDE: return "otherside";
 		case PCB_UNDO_CHANGECLEARSIZE: return "chngeclearsize";
 		case PCB_UNDO_CHANGEMASKSIZE: return "changemasksize";
 		case PCB_UNDO_CHANGEANGLES: return "changeangles";

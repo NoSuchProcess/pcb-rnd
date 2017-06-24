@@ -54,6 +54,7 @@ void pcb_undo_add_obj_to_change_pinnum(int, void *, void *, void *, char *);
 void pcb_undo_add_obj_to_rotate(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, pcb_uint8_t);
 void pcb_undo_add_obj_to_create(int, void *, void *, void *);
 void pcb_undo_add_obj_to_mirror(int, void *, void *, void *, pcb_coord_t);
+void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff);
 void pcb_undo_add_obj_to_move_to_layer(int, void *, void *, void *);
 void pcb_undo_add_obj_to_flag(int, void *, void *, void *);
 void pcb_undo_add_obj_to_size(int, void *, void *, void *);
@@ -101,7 +102,8 @@ typedef enum {
 	PCB_UNDO_CLEAR             = 0x040000, /* clear/restore to polygons */
 	PCB_UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
 	PCB_UNDO_CHANGEPINNUM      = 0x100000, /* change of pin number */
-	PCB_UNDO_CHANGERADII       = 0x200000  /* change arc radii */
+	PCB_UNDO_CHANGERADII       = 0x200000, /* change arc radii */
+	PCB_UNDO_OTHERSIDE         = 0x400000  /* change side of board (subcircuit) */
 } pcb_undo_op_t;
 
 #endif
