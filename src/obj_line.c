@@ -772,8 +772,10 @@ static void rotate_line1(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	EraseLine(Line);
 	if (Layer) {
-		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
+		if (PCB_LAYER_IS_REAL(Layer))
+			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		if (Layer->line_tree != NULL)
+			pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	}
 	else
 		pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) Line);
@@ -783,8 +785,10 @@ static void rotate_line2(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_bbox(Line);
 	if (Layer) {
-		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
-		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		if (Layer->line_tree != NULL)
+			pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
+		if (PCB_LAYER_IS_REAL(Layer))
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
 	}
 	else {
