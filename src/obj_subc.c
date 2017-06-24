@@ -650,6 +650,8 @@ void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 {
 	pcb_opctx_t ctx;
 
+	pcb_undo_add_obj_to_flag(PCB_TYPE_SUBC, sc, sc, sc);
+
 	ctx.chgflag.pcb = pcb;
 	ctx.chgflag.how = how;
 	ctx.chgflag.flag = PCB_FLAG_SELECTED;
