@@ -411,6 +411,11 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs)
 		pcb_via_mirror(data, via, y_offs);
 	}
 	PCB_END_LOOP;
+	PCB_SUBC_LOOP(data);
+	{
+		pcb_subc_mirror(data, subc, y_offs);
+	}
+	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(data);
 	{
 		pcb_line_mirror(layer, line, y_offs);
