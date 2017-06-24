@@ -379,7 +379,7 @@ ha:{
 				ha:Convert buffer to element       = { action=PasteBuffer(Convert) }
 				ha:Convert buffer to subcircuit    = { action=PasteBuffer(ConvertSubc) }
 				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
-				ha:Save buffer elements to file    = { action=Save(PasteBuffer) }
+				ha:Save buffer elements/subcircuits to file    = { action=Save(PasteBuffer) }
 				-
 				ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a=Shift<Key>1; action=PasteBuffer(1); update_on={editor/buffer_number} }
 				ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a=Shift<Key>2; action=PasteBuffer(2); update_on={editor/buffer_number} }
