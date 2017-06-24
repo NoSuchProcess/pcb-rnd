@@ -663,16 +663,51 @@ void pcb_select_subc(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 /* mirrors the coordinates of a subcircuit; an additional offset is passed */
 void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs)
 {
-	if (data->subc_tree != NULL)
+	if ((data != NULL) && (data->subc_tree != NULL))
 		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
 
 	pcb_data_mirror(subc->data, y_offs);
 	pcb_subc_bbox(subc);
 
-	if (data->subc_tree != NULL)
+	if ((data != NULL) && (data->subc_tree != NULL))
 		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc, 0);
 }
 
+/* changes the side of the board an element is on; returns pcb_true if done */
+pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
+{
+	pcb_opctx_t ctx;
+	pcb_subc_t *newsc;
+	int n;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
+		return (pcb_false);
+
+#warning subc TODO: not enough to mirror
+/*	pcb_undo_add_obj_to_mirror(PCB_TYPE_SUBC, subc, subc, subc, yoff);*/
+
+	/* move subc into a local "buffer" */
+	memset(&ctx, 0, sizeof(ctx));
+	ctx.buffer.pcb = pcb_data_get_top(subc->data);
+	ctx.buffer.dst = pcb_data_new(NULL);
+	ctx.buffer.src = PCB->Data;
+	newsc = pcb_subcop_move_to_buffer(&ctx, subc);
+
+	/* mirror object geometry and stackup */
+	pcb_subc_mirror(NULL, newsc, yoff);
+	for(n = 0; n < newsc->data->LayerN; n++) {
+		pcb_layer_t *ly = newsc->data->Layer + n;
+		if (ly->meta.bound.type & PCB_LYT_TOP)
+			ly->meta.bound.type = (ly->meta.bound.type & ~PCB_LYT_TOP) | PCB_LYT_BOTTOM;
+		else if (ly->meta.bound.type & PCB_LYT_BOTTOM)
+			ly->meta.bound.type = (ly->meta.bound.type & ~PCB_LYT_BOTTOM) | PCB_LYT_TOP;
+	}
+
+	/* place the new subc */
+	pcb_subc_dup_at(PCB, PCB->Data, newsc, 0, 0);
+	pcb_data_free(ctx.buffer.dst);
+	return pcb_true;
+}
 
 
 #include "conf_core.h"
