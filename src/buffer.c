@@ -728,7 +728,10 @@ void pcb_buffer_set_number(int Number)
 
 static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)\n"
-	"PasteBuffer(Rotate, 1..3)\n" "PasteBuffer(Convert|Restore|Mirror)\n" "PasteBuffer(ToLayout, X, Y, units)\n" "PasteBuffer(Save, Filename, [format], [force])";
+	"PasteBuffer(Rotate, 1..3)\n"
+	"PasteBuffer(Convert|Restore|Mirror)\n"
+	"PasteBuffer(ToLayout, X, Y, units)\n"
+	"PasteBuffer(Save, Filename, [format], [force])";
 
 static const char pcb_acth_PasteBuffer[] = "Various operations on the paste buffer.";
 
