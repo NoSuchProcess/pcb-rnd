@@ -86,7 +86,7 @@ typedef struct {
 #define TERM {0}
 
 static const pcb_eagle_script_t pcb_eagle_script[] = {
-	{ PCB_EGKW_SECT_START, 0xFF7F, "start",
+	{ PCB_EGKW_SECT_START, 0xFF7F, "drawing",
 		{ /* field match */
 			TERM
 		},
