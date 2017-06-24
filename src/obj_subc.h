@@ -45,6 +45,8 @@ void pcb_subc_bbox(pcb_subc_t *sc);
 
 /* convert buffer contents into a subcircuit, in-place; returns 0 on success */
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
+pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff);
+
 
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY);
 
