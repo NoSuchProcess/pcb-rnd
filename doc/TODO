@@ -31,7 +31,6 @@ For the next release:
 		- selection
 		- cut to paste buffer (ctrl+x)
 - SUBC missing features:
-	- break up buffer subc
 	- move to other side
 	- mirror
 	- manual layer binding (reuse csect?)
