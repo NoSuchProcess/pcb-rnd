@@ -1140,3 +1140,35 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 	io_lihata_full_tree = 0;
 	return res;
 }
+
+int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only)
+{
+	int res;
+	lht_doc_t *doc;
+
+	if (!elem_only) {
+		pcb_message(PCB_MSG_ERROR, "Can't save full buffer (yet), only a single subcircuits from a buffer\n");
+		return -1;
+	}
+	if (pcb_subclist_length(&buff->Data->subc) > 1) {
+		pcb_message(PCB_MSG_ERROR, "Can't save more than one subcircuit from a buffer\n");
+		return -1;
+	}
+	if (pcb_subclist_length(&buff->Data->subc) < 1) {
+		pcb_message(PCB_MSG_ERROR, "there's no subcircuit in the buffer\n");
+		return -1;
+	}
+
+	/* create the doc */
+	io_lihata_full_tree = 1;
+	doc = lht_dom_init();
+	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v1");
+	lht_dom_list_append(doc->root, build_subc_element(pcb_subclist_first(&buff->Data->subc)));
+
+	res = lht_dom_export(doc->root, f, "");
+
+	lht_dom_uninit(doc);
+	io_lihata_full_tree = 0;
+	return res;
+}
+

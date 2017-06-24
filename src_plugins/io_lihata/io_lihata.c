@@ -32,12 +32,19 @@ conf_io_lihata_t conf_io_lihata;
 
 int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
+	int lih = (strcmp(fmt, "lihata") == 0);
+
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
 
-	if ((strcmp(fmt, "lihata") != 0) ||
-		((typ & (~(/*PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER |*/ PCB_IOT_PCB | PCB_IOT_FONT))) != 0))
+	if ((lih) && (typ & PCB_IOT_BUFFER) && (ctx->write_buffer != NULL))
+		return 40;
+
+/*PCB_IOT_FOOTPRINT |*/
+
+	if (!lih || ((typ & (~(PCB_IOT_PCB | PCB_IOT_FONT))) != 0))
 		return 0;
+
 	if (wr)
 		return ctx->save_preference_prio;
 	return 100;
@@ -61,7 +68,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v3.parse_element = NULL;
 	plug_io_lihata_v3.parse_font = io_lihata_parse_font;
 	plug_io_lihata_v3.write_font = io_lihata_write_font;
-	plug_io_lihata_v3.write_buffer = NULL;
+	plug_io_lihata_v3.write_buffer = io_lihata_write_buffer;
 	plug_io_lihata_v3.write_element = NULL;
 	plug_io_lihata_v3.write_pcb = io_lihata_write_pcb_v3;
 	plug_io_lihata_v3.default_fmt = "lihata";
