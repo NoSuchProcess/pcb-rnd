@@ -171,10 +171,9 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	pcb_layergrp_id_t group, gbottom, gtop;
 	pcb_layer_t *clayer, *slayer;
 
-	if (elementlist_length(&Buffer->Data->Element) != 1) {
-		pcb_message(PCB_MSG_ERROR, _("Error!  Buffer doesn't contain a single element\n"));
+	if (elementlist_length(&Buffer->Data->Element) != 1)
 		return (pcb_false);
-	}
+
 	/*
 	 * At this point the buffer should contain just a single element.
 	 * Now we detach the single element from the buffer and then clear the

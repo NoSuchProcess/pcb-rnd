@@ -828,7 +828,8 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 			/* break up element for editing */
 		case F_Restore:
-			pcb_element_smash_buffer(PCB_PASTEBUFFER);
+			if (!pcb_element_smash_buffer(PCB_PASTEBUFFER))
+				pcb_message(PCB_MSG_ERROR, _("Error!  Buffer doesn't contain a single element\n"));
 			break;
 
 			/* Mirror buffer */
