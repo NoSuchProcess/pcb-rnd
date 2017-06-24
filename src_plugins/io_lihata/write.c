@@ -662,7 +662,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 	}
 	else {
 		/* keep the original order from v2, to minimize diffs */
-		for(n = 0; n < pcb_max_layer; n++) {
+		for(n = 0; n < data->LayerN; n++) {
 			pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
 			lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
 		}
