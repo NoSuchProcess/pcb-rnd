@@ -39,21 +39,94 @@
 
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
 
-/* writes the buffer to file - this can be abused to generate the library file for autotrax */
+/* writes the buffer to file - library file for autotrax isa FAT or similar ; tricky */
 int io_autotrax_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
-	/*fputs("io_kicad_legacy_write_buffer()", FP); */
 #warning TODO rewrite this from kicad to autotrax or remove it
-	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n",FP);
-	fputs("Units mm\n",FP);
-	fputs("$INDEX\n",FP);
-	io_kicad_legacy_write_element_index(FP, buff->Data);
-	fputs("$EndINDEX\n",FP);
-
-	pcb_write_element_data(FP, buff->Data, "kicadl");
-
+	/*pcb_write_element_data(FP, buff->Data, "autotrax");*/
 	return (0);
 }
+
+/* ---------------------------------------------------------------------------
+ * writes autotrax vias to file
+ */
+
+int write_autotrax_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
+{
+	gdl_iterator_t it;
+	pcb_pin_t *via;
+	int viaDrillMil = 25; /* a reasonable default */
+	/* write information about via */
+	pinlist_foreach(&Data->Via, &it, via) {
+		pcb_fprintf(FP, "FV\n%.0ml %.0ml %.0ml %d\n", /* testing kicad printf */
+				via->X + xOffset, PCB->MaxHeight - (via->Y + yOffset),
+				via->Thickness, viaDrillMil);
+	}
+	return 0;
+}
+
+int write_autotrax_track(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_line_t *line, pcb_cardinal_t layer)
+{
+	int userRouted = 1;
+			pcb_fprintf(FP, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\n",
+				line->Point1.X + xOffset, PCB->MaxHeight - (line->Point1.Y + yOffset),
+				line->Point2.X + xOffset, PCB->MaxHeight - (line->Point2.Y + yOffset),
+				line->Thickness, layer, userRouted);
+	return 0;
+}
+
+int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arcStart, pcb_angle_t arcDelta)
+{
+	int arcSegments = 15;
+	/* 15 = circle, bit 1 = LUQ, bit 2 = LLQ, bit 3 = LRQ, bit 4 = URQ */
+	if (arcDelta == -360 ) { /* it's a circle */
+		arcDelta = 360;
+	}
+	if (arcDelta < 0 ) {
+		arcDelta = -arcDelta;
+		arcStart -= arcDelta;
+	}
+
+	while (arcStart < 0) {
+		arcStart += 360;
+	}
+	while (arcStart > 360) {
+		arcStart -= 360;
+	}
+	if (arcDelta >= 360) { /* it's a circle */
+		arcSegments |= 0x0F;
+	} else {
+		if (arcStart <= 0.0 && (arcStart + arcDelta) >= 90.0 ) {
+			arcSegments |= 0x02;
+		}
+		if (arcStart <= 90.0 && (arcStart + arcDelta) >= 180.0 ) {
+			arcSegments |= 0x04;
+		}
+		if (arcStart <= 180.0 && (arcStart + arcDelta) >= 270.0 ) {
+			arcSegments |= 0x08;
+		}
+		if (arcStart <= 270.0 && (arcStart + arcDelta) >= 360.0 ) {
+			arcSegments |= 0x01;
+		}
+	}	
+	return arcSegments;
+}
+
+int write_autotrax_arc(FILE *FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_arc_t * arc, int currentLayer) 
+{
+	pcb_coord_t radius;
+			if (arc->Width > arc->Height) {
+				radius = arc->Height;
+			} else {
+				radius = arc->Width;
+			}
+			pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\n",
+				arc->X + xOffset, PCB->MaxHeight - (arc->Y + yOffset), radius,
+				pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta),
+				arc->Thickness, currentLayer);
+	return 0;
+}
+
 
 /* ---------------------------------------------------------------------------
  * writes autotrax PCB to file
@@ -65,12 +138,9 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	/*fputs("io_autotrax_write_pcb()", FP);*/
 
 	pcb_cardinal_t i;
-	int autotraxLayerCount = 0;
 	int physicalLayerCount = 0;
-	int layer = 0;
 	int currentAutotraxLayer = 0;
 	int currentGroup = 0;
-	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10); 
 
 	int bottomCount;
 	pcb_layer_id_t *bottomLayers;
@@ -85,8 +155,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	int outlineCount;
 	pcb_layer_id_t *outlineLayers;
 
-	pcb_coord_t LayoutXOffset;
-	pcb_coord_t LayoutYOffset;
+	pcb_coord_t LayoutXOffset = 0;
+	pcb_coord_t LayoutYOffset = 0;
 
 	/* autotrax expects layout dimensions to be specified in mils */
 	int maxWidthMil = 32000;
@@ -183,10 +253,12 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	if (outlineCount > 0 )  {
 		for (i = 0; i < outlineCount; i++) /* write top copper tracks, if any */
 			{
-				write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[outlineLayers[i]]),
-										LayoutXOffset, LayoutYOffset);
-				write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[outlineLayers[i]]),
-										LayoutXOffset, LayoutYOffset);
+				write_autotrax_layout_tracks(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[outlineLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
+				write_autotrax_layout_arcs(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[outlineLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
 			}
 	} else { /* no outline layer per se, export the board margins instead...*/
 				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
@@ -204,14 +276,18 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	currentAutotraxLayer = 8; /* 8 is the "bottom overlay" layer in autotrax */
 	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
 		{
-			write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_tracks(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_arcs(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_text(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
 		}
 
 	printf("About to write bottom copper features to Protel Autotrax file.\n");
@@ -219,14 +295,18 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	currentAutotraxLayer = 6; /* 6 is the bottom layer in autotrax */
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
 		{
-			write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_tracks(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_arcs(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_text(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[bottomLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
 		}
 
 	printf("About to write internal copper features to Protel Autotrax file.\n");
@@ -240,14 +320,18 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 				currentGroup = pcb_layer_get_group(PCB, innerLayers[i]);
 				currentAutotraxLayer++;
 			} /* autotrax inner layers are layers 2 to 5 inclusive */
-			write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[innerLayers[i]]),
-								LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_tracks(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[innerLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_arcs(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[innerLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_text(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[innerLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[innerLayers[i]]),
+						LayoutXOffset, LayoutYOffset);
 		}
 
 	printf("About to write top copper features to Protel Autotrax file.\n");
@@ -255,13 +339,17 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	currentAutotraxLayer = 1; /* 1 is the top most copper layer in autotrax */
 	for (i = 0; i < topCount; i++) /* write top copper features, if any */
 		{
-			write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
+			write_autotrax_layout_tracks(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
+			write_autotrax_layout_arcs(FP, currentAutotraxLayer, 
+						&(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
+			write_autotrax_layout_text(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[topLayers[i]]),
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer, 
+						&(PCB->Data->Layer[topLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
 		}
 
@@ -270,14 +358,18 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	currentAutotraxLayer = 7; /* 7 is the top silk layer in autotrax */
 	for (i = 0; i < topSilkCount; i++) /* write top silk features, if any */
 		{
-			write_autotrax_layout_tracks(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_arcs(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_text(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
-			write_autotrax_layout_polygons(FP, currentAutotraxLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_tracks(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[topSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_arcs(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[topSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_text(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[topSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
+			write_autotrax_layout_polygons(FP, currentAutotraxLayer,
+						&(PCB->Data->Layer[topSilk[i]]),
+						LayoutXOffset, LayoutYOffset);
 		}
 
 	/* having done the graphical elements, we move onto vias */ 
@@ -313,66 +405,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	return (0);
 }
 
-/* ---------------------------------------------------------------------------
- * writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX
- * which may be useful for a library export for autotrax
- */
-int io_kicad_legacy_write_element_index(FILE * FP, pcb_data_t *Data)
-{
-	gdl_iterator_t eit;
-	pcb_element_t *element;
-	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
-
-	elementlist_dedup_initializer(ededup);
-
-	/* Now initialize the group with defaults */
-	unm_init(&group1);
-
-	elementlist_foreach(&Data->Element, &eit, element) {
-		elementlist_dedup_skip(ededup, element);
-		/* skip duplicate elements */
-		/* only non empty elements */
-
-		if (!linelist_length(&element->Line)
-				&& !pinlist_length(&element->Pin)
-				&& !arclist_length(&element->Arc)
-				&& !padlist_length(&element->Pad))
-			continue;
-
-		fprintf(FP, "%s\n", unm_name(&group1, element->Name[0].TextString, element));
-
-	}
-	/* Release unique name utility memory */
-	unm_uninit(&group1);
-	/* free the state used for deduplication */
-	elementlist_dedup_free(ededup);
-	return 0;
-}
-
-int write_autotrax_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
-{
-	gdl_iterator_t it;
-	pcb_pin_t *via;
-	int viaDrillMil = 25; /* a reasonable default */
-	/* write information about via */
-	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "FV\n%.0ml %.0ml %.0ml %d\n", /* testing kicad printf */
-				via->X + xOffset, via->Y + yOffset, via->Thickness, viaDrillMil);
-	}
-	return 0;
-}
-
-int write_autotrax_track(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_line_t *line, pcb_cardinal_t layer)
-{
-	int userRouted = 1;
-			pcb_fprintf(FP, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\n",
-				line->Point1.X + xOffset, line->Point1.Y + yOffset,
-				line->Point2.X + xOffset, line->Point2.Y + yOffset,
-				line->Thickness, layer, userRouted);
-	return 0;
-}
-
-
 int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number,
 		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
@@ -394,58 +426,6 @@ int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	}
 }
 
-int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arcStart, pcb_angle_t arcDelta)
-{
-	int arcSegments = 15;
-	/* 15 = circle, bit 1 = LUQ, bit 2 = LLQ, bit 3 = LRQ, bit 4 = URQ */
-	if (arcDelta == -360 ) { /* it's a circle */
-		arcDelta = 360;
-	}
-	if (arcDelta < 0 ) {
-		arcDelta = -arcDelta;
-		arcStart -= arcDelta;
-	}
-
-	while (arcStart < 0) {
-		arcStart += 360;
-	}
-	while (arcStart > 360) {
-		arcStart -= 360;
-	}
-	if (arcDelta >= 360) { /* it's a circle */
-		arcSegments |= 0x0F;
-	} else {
-		if (arcStart <= 0.0 && (arcStart + arcDelta) >= 90.0 ) {
-			arcSegments |= 0x02;
-		}
-		if (arcStart <= 90.0 && (arcStart + arcDelta) >= 180.0 ) {
-			arcSegments |= 0x04;
-		}
-		if (arcStart <= 180.0 && (arcStart + arcDelta) >= 270.0 ) {
-			arcSegments |= 0x08;
-		}
-		if (arcStart <= 270.0 && (arcStart + arcDelta) >= 360.0 ) {
-			arcSegments |= 0x01;
-		}
-	}	
-	return arcSegments;
-}
-
-int autotrax_arc_output(FILE *FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_arc_t * arc, int currentLayer) 
-{
-	pcb_coord_t radius;
-			if (arc->Width > arc->Height) {
-				radius = arc->Height;
-			} else {
-				radius = arc->Width;
-			}
-			pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\n",
-				arc->X + xOffset, arc->Y + yOffset, radius,
-				pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta),
-				arc->Thickness, currentLayer);
-	return 0;
-}
-
 int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
@@ -458,7 +438,7 @@ int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number,
 		int localFlag = 0;
 		arclist_foreach(&layer->Arc, &it, arc) {
 			pcb_fprintf(FP, "FA\n");
-			autotrax_arc_output(FP, xOffset, yOffset, arc, currentLayer);
+			write_autotrax_arc(FP, xOffset, yOffset, arc, currentLayer);
 			localFlag |= 1;
 		}
 		return localFlag;
@@ -476,9 +456,6 @@ int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number,
 
 	pcb_coord_t defaultStrokeThickness, strokeThickness, textHeight;
 	int rotation;
-	pcb_coord_t textOffsetX;
-	pcb_coord_t textOffsetY;
-
 	int localFlag;
 
 	gdl_iterator_t it;
@@ -494,7 +471,7 @@ int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number,
 		localFlag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if (currentLayer < 9)  { /* copper or silk layer text */
-				fputs("FT\n", FP);
+				fputs("FS\n", FP);
 				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
 				textHeight = PCB_SCALE_TEXT(mHeight, text->Scale);
 				rotation = 0;
@@ -511,7 +488,7 @@ int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number,
 					rotation = 0;
 				}
 				pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\n",
-					text->X + xOffset, text->Y + yOffset, textHeight,
+					text->X + xOffset, PCB->MaxHeight - (text->Y + yOffset), textHeight,
 					rotation + autotraxMirrored, strokeThickness, currentLayer);
 				for (index = 0; index < 32; index++) {
 					if (text->TextString[index] == '\0') {
@@ -534,7 +511,7 @@ int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number,
 }
 
 /* ---------------------------------------------------------------------------
- * writes element data in kicad legacy format for use in a .mod library
+ * writes element data for use in a library; not tested
  */
 int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
@@ -563,7 +540,10 @@ int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 		/* TOOD: Footprint name element->Name[0].TextString */
 
 		/* only non empty elements */
-		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
+		if (!linelist_length(&element->Line)
+			&& !pinlist_length(&element->Pin)
+			&& !arclist_length(&element->Arc)
+			&& !padlist_length(&element->Pad))
 			continue;
 		/* the coordinates and text-flags are the same for
 		 * both names of an element
@@ -602,15 +582,15 @@ int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 		arclist_foreach(&element->Arc, &it, arc) {
 			pcb_fprintf(FP, "CA\n");
-			autotrax_arc_output(FP, element->MarkX, element->MarkY, arc, currentLayer);
+			write_autotrax_arc(FP, element->MarkX, element->MarkY, arc, currentLayer);
 		}
 
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
 
 			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
-									pin->X - element->MarkX,
-									pin->Y - element->MarkY);
+				pin->X - element->MarkX,
+				pin->Y - element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Number));
@@ -640,33 +620,33 @@ int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
 
 			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
-									(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
-									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
+					(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
+					(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Number));
 			fputs(" R ",FP); /* rectangular, not a pin */
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
-					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
+				&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
+					pcb_fprintf(FP, "%.3mm %.3mm ",
+					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
+					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
-								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
+				&& (pad->Point1.Y-pad->Point2.Y) > 0 ) {
+					pcb_fprintf(FP, "%.3mm %.3mm ",
+					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
+					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
-								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
+				&& (pad->Point1.Y-pad->Point2.Y) > 0 ) {
+					pcb_fprintf(FP, "%.3mm %.3mm ",
+					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
+					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
-								 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
+				&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
+					pcb_fprintf(FP, "%.3mm %.3mm ",
+					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
+					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			}
 
 		}
@@ -687,8 +667,6 @@ int io_autotrax_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 {
-	pcb_lib_menu_t *menu;
-	pcb_lib_entry_t *netlist;
 	
 	/* now we step through any available netlists and generate descriptors */
 
@@ -712,7 +690,7 @@ int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 
 
 /* ---------------------------------------------------------------------------
- * writes element data in kicad legacy format for use in a layout .brd file
+ * writes element data in autotrax format for use in a layout .PCB file
  */
 int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
@@ -723,8 +701,6 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 	pcb_coord_t xPos, yPos, yPos2, yPos3;
 
 	pcb_element_t *element;
-	pcb_lib_menu_t *current_pin_menu;
-	pcb_lib_menu_t *current_pad_menu;
 
 	int silkLayer = 7;  /* hard coded default, 7 is bottom silk */ 
 	int copperLayer = 1; /* hard coded default, 1 is bottom copper */
@@ -755,13 +731,13 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		fprintf(FP, "%s\n", element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString);/* designator */
 		fprintf(FP, "%s\n", element->Name[PCB_ELEMNAME_IDX_VALUE].TextString);/* designator */
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* designator */
-			xPos, yPos, silkLayer);
+			xPos, PCB->MaxHeight - yPos, silkLayer);
 		yPos2 = yPos + PCB_MIL_TO_COORD(200);
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* pattern */
-			xPos, yPos2, silkLayer);
+			xPos, PCB->MaxHeight - yPos2, silkLayer);
 		yPos3 = yPos2 + PCB_MIL_TO_COORD(200);
 		pcb_fprintf(FP, "%.0ml %.0ml 100 0 10 %d\n", /* comment field */
-			xPos, yPos3, silkLayer);
+			xPos, PCB->MaxHeight - yPos3, silkLayer);
 
 		pinlist_foreach(&element->Pin, &it, pin) {
 
@@ -775,7 +751,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 
 			pcb_fprintf(FP, "CP\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\n%s\n",
 				pin->X - element->MarkX,
-				pin->Y - element->MarkY,
+				PCB->MaxHeight -  (pin->Y - element->MarkY),
 				pin->Thickness, pin->Thickness, padShape,
 				pin->DrillingHole, copperLayer,
 				(char *) PCB_EMPTY(pin->Number)); /* or ->Name? */
@@ -785,28 +761,28 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 
 			pcb_fprintf(FP, "CP\n%.0ml %.0ml ", /* positions of pad */
 				(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
-				(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
+				PCB->MaxHeight - ((pad->Point1.Y + pad->Point2.Y)/2- element->MarkY));
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
 					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
+					PCB->MaxHeight - (pad->Point2.Y-pad->Point1.Y + pad->Thickness)); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
 					 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
+					PCB->MaxHeight - (pad->Point1.Y-pad->Point2.Y + pad->Thickness)); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 					 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-					pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
+					PCB->MaxHeight - (pad->Point1.Y-pad->Point2.Y + pad->Thickness)); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 					 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-					pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
+					PCB->MaxHeight - (pad->Point2.Y-pad->Point1.Y + pad->Thickness)); /* height */
 			}
 
 			pcb_fprintf(FP, "%d %d 1 %d\n%s\n", padShape, drillHole,
@@ -814,24 +790,13 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 
 		}
 		linelist_foreach(&element->Line, &it, line) { /* autotrax supports tracks in COMPs */
-			pcb_fprintf(FP, "CT\n%.0ml %.0ml %.0ml %.0ml %.0ml %d 1\n",
-					line->Point1.X - element->MarkX,
-					line->Point1.Y - element->MarkY,
-					line->Point2.X - element->MarkX,
-					line->Point2.Y - element->MarkY,
-					line->Thickness, silkLayer);
+			pcb_fprintf(FP, "CT\n");
+			write_autotrax_track(FP, element->MarkX, element->MarkY, line, silkLayer);
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
-
-			if ((arc->Delta >= 360.0) || (arc->Delta <= -360.0)) { /* it's a circle */
-				pcb_fprintf(FP, "CA %.0ml %.0ml %.0ml %d %.0ml %d\n",
-						arc->X - element->MarkX, /* x_1 centre */
-						arc->Y - element->MarkY, /* y_2 centre */
-						(arc->Height + arc->Width)/2, /* average radius*/
-						15, /* (1 & 2 & 4 & 8 = 15 = 4 segments = circle */
-						arc->Thickness, silkLayer); /* stroke thickness,layer*/
-			}
+			pcb_fprintf(FP, "CA\n");
+			write_autotrax_arc(FP, element->MarkX, element->MarkY, arc, silkLayer);
 		}
 
 		fprintf(FP, "ENDCOMP\n");
@@ -879,8 +844,9 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 				}
 			}
 			pcb_fprintf(FP, "FF\n%.0ml %.0ml %.0ml %.0ml %d\n",
-					minx + xOffset, miny + yOffset,
-					maxx + xOffset, maxy + yOffset, currentLayer);
+					minx + xOffset, PCB->MaxHeight - (miny + yOffset),
+					maxx + xOffset, PCB->MaxHeight - (maxy + yOffset),
+					currentLayer);
 
 			localFlag |= 1;
 		}
