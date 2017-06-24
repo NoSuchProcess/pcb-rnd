@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "error.h"
@@ -95,5 +96,6 @@ trparse_calls_t trparse_bin_calls = {
 	eagle_bin_unload,
 	eagle_bin_children,
 	eagle_bin_next,
+	strcmp,
 	eagle_bin_is_text
 };
