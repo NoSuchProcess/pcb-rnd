@@ -518,6 +518,26 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	return nsc;
 }
 
+/* break buffer subc into pieces */
+pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
+{
+	pcb_subc_t *subc;
+	int n;
+
+	if (pcb_subclist_length(&buff->Data->subc) != 1)
+		return (pcb_false);
+
+	subc = pcb_subclist_first(&buff->Data->subc);
+	pcb_subclist_remove(subc);
+
+	pcb_data_free(buff->Data);
+	buff->Data = subc->data;
+	buff->Data->parent_type = PCB_PARENT_INVALID;
+	buff->Data->parent.data = NULL;
+
+	return (pcb_true);
+}
+
 
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
