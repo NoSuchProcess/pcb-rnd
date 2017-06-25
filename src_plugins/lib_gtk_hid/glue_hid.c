@@ -456,6 +456,11 @@ static int ghid_usage(const char *topic)
 	return 0;
 }
 
+static void ghid_drc_window_reset_message_glue()
+{
+	ghid_drc_window_reset_message(&ghidgui->drcwin);
+}
+
 static void ghid_drc_window_append_violation_glue(pcb_drc_violation_t *violation)
 {
 	ghid_drc_window_append_violation(&ghidgui->drcwin, &ghidgui->common, violation);
@@ -469,7 +474,7 @@ static int ghid_drc_window_throw_dialog_glue()
 pcb_hid_drc_gui_t ghid_drc_gui = {
 	1,  /* log_drc_overview */
 	0,  /* log_drc_details */
-	ghid_drc_window_reset_message,
+	ghid_drc_window_reset_message_glue,
 	ghid_drc_window_append_violation_glue,
 	ghid_drc_window_throw_dialog_glue,
 };
