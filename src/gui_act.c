@@ -884,7 +884,7 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 /* -------------------------------------------------------------------------- */
 
-static const char pcb_acts_Message[] = "pcb_message(message)";
+static const char pcb_acts_Message[] = "message(message)";
 
 static const char pcb_acth_Message[] = "Writes a message to the log window.";
 
