@@ -429,7 +429,7 @@
  plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h \
- compat_fs.h misc_util.h obj_all.h hid.h hid_attrib.h hid_nogui.h \
+ compat_fs.h misc_util.h obj_all.h rtree.h hid.h hid_attrib.h hid_nogui.h \
  hid_draw_helpers.h hid_init.h hid_helper.h
 ../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
@@ -1850,6 +1850,14 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h hid.h dolists.h
+../src_plugins/io_eagle/eagle_bin.o: ../src_plugins/io_eagle/eagle_bin.c \
+ ../src_plugins/io_eagle/eagle_bin.h ../src_plugins/io_eagle/egb_tree.h \
+ ../src_3rd/liblihata/genht/htss.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h
+../src_plugins/io_eagle/egb_tree.o: ../src_plugins/io_eagle/egb_tree.c \
+ ../src_3rd/liblihata/genht/hash.h ../src_plugins/io_eagle/egb_tree.h \
+ ../src_3rd/liblihata/genht/htss.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h
 ../src_plugins/io_eagle/io_eagle.o: ../src_plugins/io_eagle/io_eagle.c \
  ../config.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
@@ -1896,10 +1904,14 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h error.h \
  polygon.h rtree.h hid_actions.h ../src_plugins/io_eagle/trparse.h \
- ../src_plugins/io_eagle/trparse_xml.h
+ ../src_plugins/io_eagle/trparse_xml.h \
+ ../src_plugins/io_eagle/trparse_bin.h
 ../src_plugins/io_eagle/trparse_bin.o: \
  ../src_plugins/io_eagle/trparse_bin.c ../config.h error.h \
- ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_bin.h
+ ../src_plugins/io_eagle/egb_tree.h ../src_3rd/liblihata/genht/htss.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_plugins/io_eagle/eagle_bin.h ../src_plugins/io_eagle/trparse.h \
+ ../src_plugins/io_eagle/trparse_bin.h
 ../src_plugins/io_eagle/trparse_xml.o: \
  ../src_plugins/io_eagle/trparse_xml.c ../config.h error.h \
  ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h
@@ -4638,6 +4650,9 @@
 ../src_3rd/liblihata/genht/htsp.o: ../src_3rd/liblihata/genht/htsp.c \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/liblihata/genht/ht.c
+../src_3rd/liblihata/genht/htss.o: ../src_3rd/liblihata/genht/htss.c \
+ ../src_3rd/liblihata/genht/htss.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/liblihata/genht/ht.c
 ../src_3rd/liblihata/hash_str.o: ../src_3rd/liblihata/hash_str.c
 ../src_3rd/liblihata/lihata.o: ../src_3rd/liblihata/lihata.c \
  ../src_3rd/liblihata/lihata.h
@@ -5124,7 +5139,7 @@ font_act.o: font_act.c ../config.h board.h const.h macro.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
- list_conf.h plug_io.h
+ list_conf.h plug_io.h event.h
 fptr_cast.o: fptr_cast.c ../config.h fptr_cast.h
 free_atexit.o: free_atexit.c ../config.h
 funchash.o: funchash.c ../src_3rd/liblihata/genht/htpi.h \
@@ -5903,11 +5918,11 @@ obj_subc.o: obj_subc.c ../config.h buffer.h obj_common.h \
  layer_grp.h library.h rats_patch.h crosshair.h vtonpoint.h hid.h error.h \
  drc.h route.h data.h obj_subc_list.h obj_subc.h rtree.h ht_subc.h \
  obj_subc_op.h operation.h obj_text_draw.h draw.h polygon.h undo.h \
- conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
- list_conf.h
+ compat_misc.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h
 obj_subc_list.o: obj_subc_list.c ../config.h obj_subc.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  globalconst.h attrib.h global_typedefs.h pcb_bool.h unit.h data_parent.h \
