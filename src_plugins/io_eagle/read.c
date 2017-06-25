@@ -401,11 +401,14 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		printf("text rot: %s\n", rot);
 		if (deg < 45 || deg >= 315) {
 			text_direction = 0;
-		} else if (deg < 135 && deg >= 45) {
+		}
+		else if (deg < 135 && deg >= 45) {
 			text_direction = 1;
-		} else if (deg < 225 && deg >= 135) {
+		}
+		else if (deg < 225 && deg >= 135) {
 			text_direction = 2;
-		} else {
+		}
+		else {
 			text_direction = 3;
 		}
 	}
@@ -557,46 +560,50 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 
 	if (lt != NULL) {
 		pcb_trace("Found wire type %ld\n", lt);
-	} else {
+	}
+	else {
 		pcb_trace("Found null wire type 'lt'\n");
 	}
 	if (ln != NULL) {
 		pcb_trace("Found wire layer %ld\n", ln);
-	} else {
+	}
+	else {
 		pcb_trace("Found null wire layer number 'ln'");
 	}
 
 	ly = eagle_layer_get(st, ln); 
 	if (ly != NULL) {
 		pcb_trace("Allocated layer 'ly' via eagle_layer_get(st, ln)\n");
-	} else {
+	}
+	else {
 		pcb_trace("Failed to allocate layer 'ly' via eagle_layer_get(st, ln)\n");
 	}
 
 	switch (loc) {
-	case IN_ELEM:
-		if (ly->ly < 0)
-			return 0;
-		flags = pcb_layer_flags(st->pcb, ly->ly);
-		if (!(flags & PCB_LYT_SILK)) /* consider silk lines only */
-			return 0;
-		lin = pcb_element_line_alloc((pcb_element_t *) obj);
-		if (flags & PCB_LYT_BOTTOM)
-			PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
-		break;
-	case ON_BOARD:
-		if (ly->ly < 0) {
-			pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
-			return 0;
-		}
-		lin = pcb_line_alloc(pcb_get_layer(ly->ly));
+		case IN_ELEM:
+			if (ly->ly < 0)
+				return 0;
+			flags = pcb_layer_flags(st->pcb, ly->ly);
+			if (!(flags & PCB_LYT_SILK)) /* consider silk lines only */
+				return 0;
+			lin = pcb_element_line_alloc((pcb_element_t *) obj);
+			if (flags & PCB_LYT_BOTTOM)
+				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
+			break;
+		case ON_BOARD:
+			if (ly->ly < 0) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
+				return 0;
+			}
+			lin = pcb_line_alloc(pcb_get_layer(ly->ly));
 	}
 	if (lt == -1) {
 		lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
 		lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
 		lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
 		lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
-	} else if (lt == 0) {
+	}
+	else if (lt == 0) {
 		lin->Point1.X = eagle_get_attrc(st, subtree, "linetype_0_x1", -1);
 		lin->Point1.Y = eagle_get_attrc(st, subtree, "linetype_0_y1", -1);
 		lin->Point2.X = eagle_get_attrc(st, subtree, "linetype_0_x2", -1);
