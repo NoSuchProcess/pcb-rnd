@@ -128,7 +128,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_LAYERS, 0xFF7F, "layers",
+	{ PCB_EGKW_SECT_LAYERS, 0xFF7F, "layer",
 		{ /* field match */
 			TERM
 		},
