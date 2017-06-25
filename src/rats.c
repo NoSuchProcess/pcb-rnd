@@ -712,13 +712,13 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	if (changed) {
 		pcb_undo_inc_serial();
 		if (ratlist_length(&PCB->Data->Rat) > 0) {
-			pcb_message(PCB_MSG_WARNING, "%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
+			pcb_message(PCB_MSG_INFO, "%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
 		}
 		return (pcb_true);
 	}
 	if (!SelectedOnly && !Warned) {
 		if (!ratlist_length(&PCB->Data->Rat) && !badnet)
-			pcb_message(PCB_MSG_WARNING, _("Congratulations!!\n" "The layout is complete and has no shorted nets.\n"));
+			pcb_message(PCB_MSG_INFO, _("Congratulations!!\n" "The layout is complete and has no shorted nets.\n"));
 		else
 			pcb_message(PCB_MSG_WARNING, _("Nothing more to add, but there are\n"
 								"either rat-lines in the layout, disabled nets\n" "in the net-list, or missing components\n"));
