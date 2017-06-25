@@ -61,6 +61,14 @@ struct _GhidDrcViolation {
 	int *object_type_list;
 };
 
+/** Holds data needed to render a DRC window displaying DRC violations. */
+typedef struct pcb_gtk_drcwin_s {
+	GtkWidget *drc_window;
+	GtkWidget *drc_vbox;
+	int num_violations;
+	
+} pcb_gtk_drcwin_t;
+
 /** \return     the GType identifier associated with \ref FIXME. */
 GType ghid_drc_violation_get_type(void);
 
