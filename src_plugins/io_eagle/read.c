@@ -553,23 +553,23 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
 	if (lt != NULL) {
-		pcb_printf("Found wire type %ld\n", lt);
+		pcb_trace("Found wire type %ld\n", lt);
 	} else {
-		pcb_printf("Found null wire type 'lt'\n");
+		pcb_trace("Found null wire type 'lt'\n");
 	}
 	if (ln != NULL) {
-		pcb_printf("Found wire layer %ld\n", ln);
+		pcb_trace("Found wire layer %ld\n", ln);
 	} else {
-		pcb_printf("Found null wire layer number 'ln'");
+		pcb_trace("Found null wire layer number 'ln'");
 	}
 	eagle_layer_t *ly;
 	unsigned long flags;
 
 	ly = eagle_layer_get(st, ln); 
 	if (ly != NULL) {
-		pcb_printf("Allocated layer 'ly' via eagle_layer_get(st, ln)\n");
+		pcb_trace("Allocated layer 'ly' via eagle_layer_get(st, ln)\n");
 	} else {
-		pcb_printf("Failed to allocate layer 'ly' via eagle_layer_get(st, ln)\n");
+		pcb_trace("Failed to allocate layer 'ly' via eagle_layer_get(st, ln)\n");
 	}
 
 	switch (loc) {
@@ -584,13 +584,12 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 			PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
 		break;
 	case ON_BOARD:
-		if (0) { /* && ly->ly < 0) {*/
+		if (ly->ly < 0) {
 			pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
 			return 0;
 		}
-		lin = pcb_line_alloc(pcb_get_layer(1)); /*ly->ly));*/
+		lin = pcb_line_alloc(pcb_get_layer(ly->ly));
 	}
-	lt = 0; /* try this */
 	if (lt == -1) {
 		lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
 		lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
@@ -603,7 +602,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		lin->Point2.Y = eagle_get_attrc(st, subtree, "linetype_0_y2", -1);
 	}
 	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1);
-		pcb_printf("new line thickness: %ml\n", lin->Thickness);
+		pcb_trace("new line thickness: %ml\n", lin->Thickness);
 		lin->Thickness = 1270;
 	lin->Clearance = st->md_wire_wire*2;
 	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
@@ -615,7 +614,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		case ON_BOARD:
 			size_bump(st, lin->Point1.X + lin->Thickness, lin->Point1.Y + lin->Thickness);
 			size_bump(st, lin->Point2.X + lin->Thickness, lin->Point2.Y + lin->Thickness);
-			pcb_add_line_on_layer(pcb_get_layer(1),lin); /*ly->ly), lin);*/
+			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin);
 			break;
 	}
 
@@ -941,10 +940,10 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 {
 	trnode_t *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
-		{"contactref",  eagle_read_nop}, /*contactref},*/
+		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
-		{"polygon",     eagle_read_nop}, /*poly},*/
-		{"via",         eagle_read_nop}, /*via},*/
+		{"polygon",     eagle_read_poly},
+		{"via",         eagle_read_via},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
