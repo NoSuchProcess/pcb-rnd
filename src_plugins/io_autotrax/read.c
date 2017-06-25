@@ -567,9 +567,9 @@ static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_na
 }
 
 /* Try to create a set of default layers, since protel has a atstic stackup */
-static int autotrax_create_layers(read_state_t *st)
+static int autotrax_create_layers(read_state_t *st, pcb_layer_id_t *stackup)
 {
-	pcb_layer_id_t stackup[14];
+	/*pcb_layer_id_t stackup[14];*/
 	unsigned int res;
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
@@ -637,8 +637,8 @@ static int autotrax_create_layers(read_state_t *st)
 
 	pcb_layergrp_fix_old_outline(PCB);
 
-	stackup[12] = pcb_layer_id(PCB->Data, PCB_LYT_OUTLINE);	
-	stackup[13] = pcb_layer_id(PCB->Data, PCB_LYT_MISC);	
+	/*stackup[12] = pcb_layer_id(PCB->Data, PCB_LYT_OUTLINE);	
+	stackup[13] = pcb_layer_id(PCB->Data, PCB_LYT_MISC);	*/
 
 	pcb_layergrp_inhibit_dec();
 
@@ -815,10 +815,10 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		if (length >= 10) {
 			if (strncmp(line, "PCB FILE 4", 10) == 0 ) {
 				printf("Found Protel Autotrax version 4\n");
-				autotrax_create_layers(&st);
+				autotrax_create_layers(&st, &stackup);
 			} else if (strncmp(line, "PCB FILE 5", 10) == 0 ) {
 				printf("Found Protel Easytrax version 5\n");
-				autotrax_create_layers(&st);
+				autotrax_create_layers(&st, &stackup);
 			}
 		} else if (length >= 6) {
 			if (strncmp(s, "ENDPCB",6) == 0 ) {
