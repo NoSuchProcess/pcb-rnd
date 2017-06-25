@@ -123,11 +123,6 @@ static int autotrax_bring_back_eight_track(FILE * FP, double * results, int numr
 	if (strlen == 0) {
 		printf("Too many newlines in file. Unable to parse properly.\n");
 		return -1;
-/*
-	} else if (strlen <= maxread) { /add some padding if safe to do so to make strtod behave nicely. Likely CR related /
-		line[strlen] = ' ';
-		line[strlen+1] = ' ';	
-*/
 	}
 	for (iter = 0 ; iter < numresults; iter++) {
 		results[iter] = strtod(line, &end);
@@ -406,7 +401,6 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	double results[7];
 	int maxtext = 32;
 
-	int index = 0;
 	char line[30]; /* line is 4 x 32000 = 23 characters at most */
 	char coord[6];
 
@@ -422,9 +416,6 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
-
-/*	padname = "";*/	
-	index =0;
 
 	if (!autotrax_bring_back_eight_track(FP, results, padargcount)) {
 		printf("error parsing pad text\n");
@@ -467,21 +458,9 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 		6 Moiro Target
 */
 
-
-	if ((Shape == 2  || Shape == 4) ) { /* && PCBLayer == 1) { square (2) or rounded rect (4) on top layer */ 
-		Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
-/*	} else if ((Shape == 2  || Shape == 4) && PCBLayer == 6) { bottom layer 
-		Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); actually a rectangle, but... */
-	} else if (Shape == 3) { /*  && PCBLayer == 1) top layer */
-		Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
-/*	} else if (Shape == 3 && PCBLayer == 6) {  bottom layer 
-		Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); */
-	}		
-
-
-	if (Shape == 5 && Shape == 6 && el == NULL) {
+	if ((Shape == 5 || Shape == 6 ) && el == NULL) {
 		pcb_printf("\tnew free pad not created; as it is a Cross Hair Target or Moiro target\n");
-	} else if (Shape == 5 && Shape == 6 && el != NULL) {
+	} else if ((Shape == 5 || Shape == 6) && el != NULL) {
 		pcb_printf("\tnew pad not created in element; as it is a Cross Hair Target or Moiro target\n");
 	} else if (st != NULL && el == NULL) {
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, padname, Flags);
@@ -498,7 +477,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
 		}		
 
-		if (Shape == 2 && Drill ==0) {/* is probably SMD */
+		if (Shape == 2 && Drill == 0) {/* is probably SMD */
 /*			pcb_element_pad_new_rect(el, el->X - Xsize/2, el->Y - Ysize/2, Xsize/2 + el->X, Ysize/2 + el->Y, Clearance, 
 				Clearance, padname, padname, Flags);*/
 /*			pcb_element_pad_new_rect(el, X - Xsize/2, Y - Ysize/2, X + Xsize/2, Ysize/2 + Y, Clearance, 
@@ -590,6 +569,7 @@ static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_na
 /* Try to create a set of default layers, since protel has a atstic stackup */
 static int autotrax_create_layers(read_state_t *st)
 {
+	pcb_layer_id_t stackup[14];
 	unsigned int res;
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
@@ -611,35 +591,57 @@ static int autotrax_create_layers(read_state_t *st)
 		return -1;
 	}
 
+	stackup[7] = pcb_layer_get_top_silk();
+	stackup[8] = pcb_layer_get_bottom_silk();
+
 	pcb_layergrp_fix_old_outline(PCB);
 	
 	pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
 	id = pcb_layer_create(gid, "Bottom");
 	htsi_set(&st->layer_k2i, pcb_strdup("Bottom"), id);
+	stackup[6] = id;
 
 	pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
 	id = pcb_layer_create(gid, "Top");
 	htsi_set(&st->layer_k2i, pcb_strdup("Top"), id);
+	stackup[1] = id;
 
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
 	htsi_set(&st->layer_k2i, pcb_strdup("Mid1"), id);
+	stackup[2] = id;
 
 	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid2");
 	htsi_set(&st->layer_k2i, pcb_strdup("Mid2"), id);
+	stackup[3] = id;
 
 	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid3");
 	htsi_set(&st->layer_k2i, pcb_strdup("Mid3"), id);
+	stackup[4] = id;
 
 	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid4");
 	htsi_set(&st->layer_k2i, pcb_strdup("Mid4"), id);
+	stackup[5] = id;
+
+	g = pcb_get_grp_new_intern(PCB, -1);
+	id = pcb_layer_create(g - PCB->LayerGroups.grp, "GND");
+	htsi_set(&st->layer_k2i, pcb_strdup("GND"), id);
+	stackup[9] = id;
+
+	g = pcb_get_grp_new_intern(PCB, -1);
+	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
+	htsi_set(&st->layer_k2i, pcb_strdup("Power"), id);
+	stackup[10] = id;
 
 	pcb_layergrp_fix_old_outline(PCB);
 
+	stackup[12] = pcb_layer_id(PCB->Data, PCB_LYT_OUTLINE);	
+	stackup[13] = pcb_layer_id(PCB->Data, PCB_LYT_MISC);	
+
 	pcb_layergrp_inhibit_dec();
-	
+
 	return 0;
 }
 
@@ -785,6 +787,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	FILE *FP;
 
 	pcb_element_t *el = NULL;
+	pcb_layer_id_t stackup[14];
 
 	int length = 0;
 	int finished = 0;
