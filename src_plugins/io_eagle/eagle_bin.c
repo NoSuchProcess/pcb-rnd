@@ -138,8 +138,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"side", T_BMB, 2, 0x10},
 			{"visible", T_UBF, 2, BITFIELD(1, 2, 3)},
-			{"available", T_BMB, 2, 0x02},
-			{"layer",T_INT, 3, 1},
+			{"active", T_BMB, 2, 0x02},
+			{"number",T_INT, 3, 1},
 			{"other",T_INT, 4, 1},
 			{"fill", T_UBF, 5, BITFIELD(1, 0, 3)},
 			{"color",T_UBF, 6, BITFIELD(1, 0, 5)},
@@ -188,7 +188,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"children", T_INT, 8, 4},
-			{"libname",  T_STR, 16, 8},
+			{"library",  T_STR, 16, 8},
 			TERM
 		},
 	},
@@ -202,7 +202,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"children", T_INT, 8, 4},
-			{"libname",  T_STR, 16, 8},
+			{"library",  T_STR, 16, 8},
 			TERM
 		},
 	},
@@ -218,7 +218,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"subsects", T_INT, 4, 4},
 			{"children", T_INT, 8, 2},
 			{"desc",  T_STR, 10, 6},
-			{"libname",  T_STR, 16, 8},
+			{"library",  T_STR, 16, 8},
 			TERM
 		},
 	},
@@ -364,9 +364,9 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"miny",  T_INT, 6, 2},
 			{"maxx",  T_INT, 8, 2},
 			{"maxy",  T_INT, 10, 2},
-			{"width_2",  T_INT, 12, 2},
-			{"spacing_2",  T_INT, 14, 2},
-			{"isolate_2",  T_INT, 16, 2},
+			{"width",  T_INT, 12, 2},
+			{"spacing",  T_INT, 14, 2},
+			{"isolate",  T_INT, 16, 2},
 			{"layer",  T_INT, 18, 1},
 			{"pour",  T_BMB, 19, 0x01},
 			{"rank",  T_BMB, 19, BITFIELD(1, 1, 3)},
@@ -375,7 +375,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_LINE, 0xFF43, "line",
+	{ PCB_EGKW_SECT_LINE, 0xFF43, "wire",
 		{ /* field match */
 			TERM
 		},
@@ -384,7 +384,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
-			{"width_2",  T_INT, 20, 2},
+			{"width",  T_INT, 20, 2},
 			{"stflags",  T_BMB, 22, 0x20},
 			{"linetype",  T_INT, 23, 1},
 			{"linetype_0_x1",  T_INT, 4, 4},
@@ -411,7 +411,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
-			{"width_2",  T_INT, 20, 2},
+			{"width",  T_INT, 20, 2},
 			{"clockwise",  T_BMB, 22, 0x20},
 			{"arctype",  T_INT, 23, 1},
 			{"arctype_0_negflags", T_INT, 19, 1},
@@ -438,10 +438,10 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"layer", T_INT, 3, 1},
-			{"x1",  T_INT, 4, 4},
-			{"y1",  T_INT, 8, 4},
-			{"r",  T_INT, 12, 4},
-			{"width_2", T_INT, 20, 4},
+			{"x",  T_INT, 4, 4},
+			{"y",  T_INT, 8, 4},
+			{"radius",  T_INT, 12, 4},
+			{"width", T_INT, 20, 4},
 			TERM
 		},
 	},
@@ -457,8 +457,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"x1",  T_INT, 4, 4},
 			{"y1",  T_INT, 8, 4},
 			{"x2",  T_INT, 12, 4},
-			{"y3",  T_INT, 16, 4},
-			{"angle",  T_INT, 20, 2},
+			{"y2",  T_INT, 16, 4},
+			{"rot",  T_INT, 20, 2},
 			TERM
 		},
 	},
@@ -487,7 +487,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"x", T_INT, 4, 4},
 			{"y", T_INT, 8, 4},
-			{"width_2", T_INT, 12, 4},
+			{"diameter", T_INT, 12, 4},
+			{"drill", T_INT, 12, 4}, /* try duplicating field */
 			TERM
 		},
 	},
@@ -502,8 +503,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"shape", T_INT, 2, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"drill_2",  T_INT, 12, 2},
-			{"diameter_2",  T_INT, 14, 2},
+			{"drill",  T_INT, 12, 2},
+			{"diameter",  T_INT, 14, 2},
 			{"layers",  T_INT, 16, 1}, /*not 1:1 mapping */
 			{"stop",  T_BMB, 17, 0x01},
 			TERM
@@ -520,8 +521,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"shape", T_INT, 2, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"drill_2",  T_INT, 12, 2},
-			{"diameter_2",  T_INT, 14, 2},
+			{"drill",  T_INT, 12, 2},
+			{"diameter",  T_INT, 14, 2},
 			{"angle",  T_INT, 16, 2},
 			{"stop",  T_BMB, 18, 0x01},
 			{"thermals",  T_BMB, 18, 0x04},
@@ -542,8 +543,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"layer", T_INT, 3, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"width_2",  T_INT, 12, 2},
-			{"height_2",  T_INT, 14, 2},
+			{"width",  T_INT, 12, 2},
+			{"height",  T_INT, 14, 2},
 			{"angle",  T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"stop",  T_BMB, 18, 0x01},
 			{"cream",  T_BMB, 18, 0x02},
@@ -602,9 +603,9 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"libno",  T_INT, 12, 2},
-			{"pacno",  T_INT, 14, 2},
-			{"angle",  T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"library",  T_INT, 12, 2},
+			{"package",  T_INT, 14, 2},
+			{"rot",  T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"mirrored", T_BMB, 17, 0x10},
 			{"spin", T_BMB, 17, 0x40},
 			TERM
@@ -658,7 +659,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/
@@ -682,7 +683,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/
@@ -692,7 +693,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_SMASHEDNAME, 0xFF73, "smashedname", /* text base section equiv. */
+	{ PCB_EGKW_SECT_SMASHEDNAME, 0xFF73, "name", /* text base section equiv. */
 		{ /* field match */
 			TERM
 		},
@@ -706,7 +707,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/
@@ -716,7 +717,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_SMASHEDVALUE, 0xFF73, "smashedvalue",  /* text base section equiv. */
+	{ PCB_EGKW_SECT_SMASHEDVALUE, 0xFF73, "value",  /* text base section equiv. */
 		{ /* field match */
 			TERM
 		},
@@ -730,7 +731,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/
@@ -773,7 +774,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/
@@ -797,7 +798,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/
@@ -821,7 +822,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/
@@ -878,7 +879,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
-			{"angle" , T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
 			/*bool(self._get_uint16_mask(16, 0x1000))*/

@@ -551,6 +551,8 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
+	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
+	pcb_printf("Found wire type %ld\n", lt);
 	eagle_layer_t *ly;
 	unsigned long flags;
 
@@ -575,10 +577,17 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		lin = pcb_line_alloc(pcb_get_layer(ly->ly));
 	}
 
-	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
-	lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
-	lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
-	lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
+	if (lt == -1) {
+		lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
+		lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
+		lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
+		lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
+	} else if (lt == 0) {
+		lin->Point1.X = eagle_get_attrc(st, subtree, "linetype_0_x1", -1);
+		lin->Point1.Y = eagle_get_attrc(st, subtree, "linetype_0_y1", -1);
+		lin->Point2.X = eagle_get_attrc(st, subtree, "linetype_0_x2", -1);
+		lin->Point2.Y = eagle_get_attrc(st, subtree, "linetype_0_y2", -1);
+	}
 	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1);
 	lin->Clearance = st->md_wire_wire*2;
 	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
@@ -932,7 +941,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
-				continue;
+				continue; 
 			}
 			eagle_foreach_dispatch(st, CHILDREN(n), disp, (char *)name, ON_BOARD);
 		}
@@ -997,15 +1006,28 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 
 static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	trnode_t *n;
+	trnode_t *l, *m, *n;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
 			pcb_coord_t x, y;
-			const char *name = eagle_get_attrs(st, n, "name", NULL);
+			l = n;
+			if (NEXT(n) != NULL) {
+				m = NEXT(n);
+				while(m != NULL && NEXT(m) != NULL) {
+					m = NEXT(m);
+                                        /*printf("Found element node name %s.\n", NODENAME(m));*/
+                                        if (STRCMP(NODENAME(m), "element2") == 0) {
+                                                printf("Found element2.\n");
+						l = m;
+                                        }
+                                }
+			}
+			const char *name = eagle_get_attrs(st, l, "name", NULL);
+			const char *val = eagle_get_attrs(st, l, "value", NULL);
 			const char *lib = eagle_get_attrs(st, n, "library", NULL);
 			const char *pkg = eagle_get_attrs(st, n, "package", NULL);
-			const char *val = eagle_get_attrs(st, n, "value", NULL);
+			/*printf("Element name has been found : %s\n", name);*/
 			pcb_element_t *elem, *new_elem;
 			const char *rot;
 			int steps, back = 0;
