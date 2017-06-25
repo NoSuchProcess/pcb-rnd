@@ -73,7 +73,7 @@ static gint drc_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 	return FALSE;
 }
 
-static void drc_close_cb(gpointer data)
+static void drc_close_cb(GtkButton *button, gpointer data)
 {
 	gtk_widget_destroy(drc_window);
 	drc_window = NULL;
@@ -85,7 +85,7 @@ static void destroy_widget(GtkWidget * widget, gpointer data)
 	gtk_widget_destroy(widget);
 }
 
-static void drc_refresh_cb(gpointer data)
+static void drc_refresh_cb(GtkButton *button, gpointer data)
 {
 	gtk_container_foreach(GTK_CONTAINER(drc_vbox), destroy_widget, NULL);
 	pcb_hid_actionl("DRC", NULL);
