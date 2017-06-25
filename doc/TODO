@@ -129,6 +129,7 @@ For the next release:
 - BUG: segfault on printactions() action (configure with --debug) [report:miloh]
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
 - BUG: -dump-plugindirs doesn't exist yet, see warning in main.c:489
+- BUG: --dump-actions lists incorrect syntax for 'message' action [report:miloh]
 
 LATER RELEASES:
 - parametric footprint gtk attribute box for editing: also mention the default value in the tooltip [report: agaran]
