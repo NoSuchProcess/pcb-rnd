@@ -610,6 +610,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		lin->Point2.Y = eagle_get_attrc(st, subtree, "linetype_0_y2", -1);
 	}
 	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1);
+#warning TODO: remove this
 		pcb_trace("new line thickness: %ml\n", lin->Thickness);
 		lin->Thickness = 1270;
 	lin->Clearance = st->md_wire_wire*2;
