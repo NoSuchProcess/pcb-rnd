@@ -14,6 +14,7 @@
 typedef struct pcb_gtk_common_s {
 	void *gport;      /* Opaque pointer back to the HID's interna struct - used when common calls a HID function */
 	GtkWidget *top_window;
+	GtkWidget *drc_window;
 
 	/* rendering */
 	void *(*render_pixmap)(int cx, int cy, double zoom, int width, int height, int depth);

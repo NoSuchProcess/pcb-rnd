@@ -507,6 +507,7 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 	tw->com->load_bg_image();
 
 	ghid_build_pcb_top_window(tw);
+	tw->com->drc_window = NULL;
 	ghid_install_accel_groups(GTK_WINDOW(tw->com->top_window), tw);
 	ghid_update_toggle_flags(tw);
 

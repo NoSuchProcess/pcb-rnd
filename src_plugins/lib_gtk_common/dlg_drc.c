@@ -63,7 +63,7 @@
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5
 #define VIOLATION_PIXMAP_PCB_SIZE     PCB_MIL_TO_COORD (100)
 
-static GtkWidget *drc_window, *drc_vbox;
+static GtkWidget *drc_vbox;
 static int num_violations = 0;
 
 /* Remember user window resizes. */
@@ -75,8 +75,9 @@ static gint drc_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 
 static void drc_close_cb(GtkButton *button, gpointer data)
 {
-	gtk_widget_destroy(drc_window);
-	drc_window = NULL;
+	pcb_gtk_common_t *com = data;
+
+	gtk_widget_hide(com->drc_window);
 }
 
 /** A (*GtkCallback) function */
@@ -93,7 +94,9 @@ static void drc_refresh_cb(GtkButton *button, gpointer data)
 
 static void drc_destroy_cb(GtkWidget * widget, gpointer data)
 {
-	drc_window = NULL;
+	pcb_gtk_common_t *com = data;
+
+	com->drc_window = NULL;
 }
 
 static void unset_found_flags(int AndDraw)
@@ -488,15 +491,17 @@ static char *get_drc_violation_markup(GhidDrcViolation * violation)
 void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 {
 	GtkWidget *vbox, *hbox, *button, *scrolled_window, *label;
+	GtkWidget *drc_window;
 
-	if (drc_window) {
+	if (common->drc_window) {
 		if (raise)
-			gtk_window_present(GTK_WINDOW(drc_window));
+			gtk_window_present(GTK_WINDOW(common->drc_window));
 		return;
 	}
 
 	drc_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	g_signal_connect(G_OBJECT(drc_window), "destroy", G_CALLBACK(drc_destroy_cb), NULL);
+	common->drc_window = drc_window;
+	g_signal_connect(G_OBJECT(drc_window), "destroy", G_CALLBACK(drc_destroy_cb), common);
 	g_signal_connect(G_OBJECT(drc_window), "configure_event", G_CALLBACK(drc_window_configure_event_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(drc_window), _("pcb-rnd DRC"));
 	gtk_window_set_role(GTK_WINDOW(drc_window), "PCB_DRC");
@@ -534,7 +539,7 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(drc_close_cb), NULL);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(drc_close_cb), common);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	wplc_place(WPLC_DRC, drc_window);
