@@ -171,6 +171,7 @@ put /local/pcb/OBJS [@
 	../src_3rd/genregex/regex_se.o
 	../src_3rd/genregex/regex.o
 	../src_3rd/qparse/qparse.o
+	../src_3rd/libminuid/libminuid.a
 @]
 
 put /local/pcb/LIBS_3RD [@
@@ -311,6 +312,9 @@ buildin.h: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 
 $(PUPLUG):
 	cd ../src_3rd/puplug && make
+
+../src_3rd/libminuid/libminuid.a: ../src_3rd/libminuid/libminuid.c ../src_3rd/libminuid/libminuid.h
+	cd  ../src_3rd/libminuid && make libminuid.a
 
 @]
 

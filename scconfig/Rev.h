@@ -1,1 +1,1 @@
-static const int myrev = 9600;
+static const int myrev = 9824;
