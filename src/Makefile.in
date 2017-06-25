@@ -171,11 +171,11 @@ put /local/pcb/OBJS [@
 	../src_3rd/genregex/regex_se.o
 	../src_3rd/genregex/regex.o
 	../src_3rd/qparse/qparse.o
-	../src_3rd/libminuid/libminuid.a
 @]
 
 put /local/pcb/LIBS_3RD [@
 	../src_3rd/puplug/libpuplug.a
+	../src_3rd/libminuid/libminuid.a
 @]
 
 put /local/pcb/LIBS /local/pcb/LIBS_3RD
