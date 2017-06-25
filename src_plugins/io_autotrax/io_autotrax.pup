@@ -1,6 +1,6 @@
 $class import
 $short autotrax (freeware PCB layout tool)
 $long Import and export autotrax layouts and footprints.
-$state works
-default buildin
+$state work-in-progress
+default disable
 autoload 1
