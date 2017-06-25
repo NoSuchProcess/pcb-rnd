@@ -40,6 +40,9 @@
 #include "operation.h"
 #include "undo.h"
 #include "compat_misc.h"
+#include "math_helper.h"
+
+#define SUBC_AUX_NAME "subc-aux"
 
 pcb_subc_t *pcb_subc_alloc(void)
 {
@@ -67,6 +70,7 @@ void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
 	pcb_subclist_append(&dt->subc, sc);
 }
 
+
 static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 {
 	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
@@ -84,6 +88,71 @@ static pcb_line_t *add_aux_line(pcb_layer_t *aux, const char *key, const char *v
 	pcb_attribute_put(&l->Attributes, key, val, 1);
 	return l;
 }
+
+static pcb_line_t *find_aux_line(pcb_layer_t *aux, const char *key)
+{
+	pcb_line_t *line;
+	gdl_iterator_t it;
+	linelist_foreach(&aux->Line, &it, line) {
+		const char *val = pcb_attribute_get(&line->Attributes, "subc-role");
+		if ((val != NULL) && (strcmp(val, key) == 0))
+			return line;
+	}
+	return NULL;
+}
+
+static int pcb_subc_cache_update(pcb_subc_t *sc)
+{
+	if (sc->aux_layer == NULL) {
+		int n;
+		for(n = 0; n < sc->data->LayerN; n++) {
+			if (strcmp(sc->data->Layer[n].meta.bound.name, SUBC_AUX_NAME) == 0) {
+				sc->aux_layer = sc->data->Layer + n;
+				break;
+			}
+		}
+	}
+
+	if (sc->aux_cache[0] != NULL)
+		return 0;
+
+	if (sc->aux_layer == NULL) {
+		pcb_message(PCB_MSG_WARNING, "Can't find subc aux layer\n");
+		return -1;
+	}
+
+	sc->aux_cache[PCB_SUBCH_ORIGIN] = find_aux_line(sc->aux_layer, "origin");
+	sc->aux_cache[PCB_SUBCH_X] = find_aux_line(sc->aux_layer, "x");
+	sc->aux_cache[PCB_SUBCH_Y] = find_aux_line(sc->aux_layer, "y");
+
+	return 0;
+}
+
+int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y)
+{
+	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_ORIGIN] == NULL))
+		return -1;
+
+	*x = sc->aux_cache[PCB_SUBCH_ORIGIN]->Point1.X;
+	*y = sc->aux_cache[PCB_SUBCH_ORIGIN]->Point1.Y;
+	return 0;
+}
+
+int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot)
+{
+	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_X] == NULL))
+		return -1;
+
+	*rot = PCB_RAD_TO_DEG * atan2(sc->aux_cache[PCB_SUBCH_X]->Point2.Y - sc->aux_cache[PCB_SUBCH_X]->Point1.Y, sc->aux_cache[PCB_SUBCH_X]->Point2.X - sc->aux_cache[PCB_SUBCH_X]->Point1.X);
+	return 0;
+}
+
+
+static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
+{
+	sc->aux_cache[0] = NULL;
+}
+
 
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
@@ -143,7 +212,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		pcb_coord_t unit = PCB_MM_TO_COORD(1);
 
 		memset(aux, 0, sizeof(pcb_layer_t));
-		aux->meta.bound.name = pcb_strdup("subc-aux");
+		aux->meta.bound.name = pcb_strdup(SUBC_AUX_NAME);
 		aux->meta.bound.type = PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC;
 		aux->grp = -1;
 		aux->parent = sc->data;

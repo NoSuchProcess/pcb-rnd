@@ -29,10 +29,19 @@
 #include "obj_common.h"
 #include "global_typedefs.h"
 
+typedef enum pcb_subc_cached_s {
+	PCB_SUBCH_ORIGIN,
+	PCB_SUBCH_X,
+	PCB_SUBCH_Y,
+	PCB_SUBCH_max
+} pcb_subc_cached_t;
+
 struct pcb_subc_s {
 	PCB_ANYOBJECTFIELDS;
 	char uid[64]; /* globally unique ID */
 	pcb_data_t *data;
+	pcb_line_t *aux_cache[PCB_SUBCH_max];
+	pcb_layer_t *aux_layer;
 	gdl_elem_t link;
 };
 
@@ -59,6 +68,10 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY);
 pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl);
 void DrawSubc(pcb_subc_t *sc);
 void EraseSubc(pcb_subc_t *sc);
+
+/* calculate geometrical properties using the aux layer; return 0 on success */
+int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y);
+int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot);
 
 /*** loops ***/
 
