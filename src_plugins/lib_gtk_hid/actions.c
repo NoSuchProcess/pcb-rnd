@@ -241,7 +241,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
-		ghid_drc_window_show(&ghidgui->common, raise);
+		ghid_drc_window_show(&ghidgui->drcwin, raise);
 	}
 	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "Search") == 0) {
 		ghid_search_window_show(gport->top_window, raise);

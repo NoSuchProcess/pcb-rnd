@@ -159,6 +159,7 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 
 	ghid_create_pcb_widgets(&ghidgui->topwin, gport->top_window);
+	ghidgui->drcwin.drc_window = NULL;    /* DRC window is not built, yet    */
 
 	gport->mouse.drawing_area = ghidgui->topwin.drawing_area;
 	gport->drawing_area = ghidgui->topwin.drawing_area;
@@ -457,12 +458,12 @@ static int ghid_usage(const char *topic)
 
 static void ghid_drc_window_append_violation_glue(pcb_drc_violation_t *violation)
 {
-	ghid_drc_window_append_violation(&ghidgui->common, violation);
+	ghid_drc_window_append_violation(&ghidgui->drcwin, &ghidgui->common, violation);
 }
 
 static int ghid_drc_window_throw_dialog_glue()
 {
-	return ghid_drc_window_throw_dialog(&ghidgui->common);
+	return ghid_drc_window_throw_dialog(&ghidgui->drcwin);
 }
 
 pcb_hid_drc_gui_t ghid_drc_gui = {

@@ -56,15 +56,12 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 /** \file   dlg_drc.c
-    \brief  Implementation of \ref FIXME dialog.
+    \brief  Implementation of \ref pcb_gtk_drcwin_t DRC dialog.
  */
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5
 #define VIOLATION_PIXMAP_PCB_SIZE     PCB_MIL_TO_COORD (100)
-
-static GtkWidget *drc_vbox;
-static int num_violations = 0;
 
 /* Remember user window resizes. */
 static gint drc_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
@@ -75,9 +72,9 @@ static gint drc_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 
 static void drc_close_cb(GtkButton *button, gpointer data)
 {
-	pcb_gtk_common_t *com = data;
+	pcb_gtk_drcwin_t *p = data;
 
-	gtk_widget_hide(com->drc_window);
+	gtk_widget_hide(p->drc_window);
 }
 
 /** A (*GtkCallback) function */
@@ -88,15 +85,18 @@ static void destroy_widget(GtkWidget * widget, gpointer data)
 
 static void drc_refresh_cb(GtkButton *button, gpointer data)
 {
-	gtk_container_foreach(GTK_CONTAINER(drc_vbox), destroy_widget, NULL);
+	pcb_gtk_drcwin_t *p = data;
+
+	p->num_violations = 0;
+	gtk_container_foreach(GTK_CONTAINER(p->drc_vbox), destroy_widget, NULL);
 	pcb_hid_actionl("DRC", NULL);
 }
 
 static void drc_destroy_cb(GtkWidget * widget, gpointer data)
 {
-	pcb_gtk_common_t *com = data;
+	pcb_gtk_drcwin_t *p = data;
 
-	com->drc_window = NULL;
+	p->drc_window = NULL;
 }
 
 static void unset_found_flags(int AndDraw)
@@ -196,14 +196,16 @@ static void unselect_widget(GtkWidget * widget, gpointer data)
 void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * violation)
 {
 	int i;
+	GtkWidget *parent;
 
 	if (violation == NULL)
 		return;
 
 	/* Marks DRC error violation as selected line. De-select previous line. */
-	gtk_container_foreach(GTK_CONTAINER(drc_vbox), unselect_widget, NULL);
+	parent = gtk_widget_get_parent(widget);
+	gtk_container_foreach(GTK_CONTAINER(parent), unselect_widget, NULL);
 	gtk_widget_set_state(widget, GTK_STATE_SELECTED);
-	gtk_widget_queue_draw(drc_vbox);
+	gtk_widget_queue_draw(parent);
 
 	if (event->type == GDK_2BUTTON_PRESS) {
 		unset_found_flags(pcb_false);
@@ -488,20 +490,20 @@ static char *get_drc_violation_markup(GhidDrcViolation * violation)
 	return markup;
 }
 
-void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
+void ghid_drc_window_show(pcb_gtk_drcwin_t *drcwin, gboolean raise)
 {
 	GtkWidget *vbox, *hbox, *button, *scrolled_window, *label;
 	GtkWidget *drc_window;
 
-	if (common->drc_window) {
+	if (drcwin->drc_window) {
 		if (raise)
-			gtk_window_present(GTK_WINDOW(common->drc_window));
+			gtk_window_present(GTK_WINDOW(drcwin->drc_window));
 		return;
 	}
 
 	drc_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	common->drc_window = drc_window;
-	g_signal_connect(G_OBJECT(drc_window), "destroy", G_CALLBACK(drc_destroy_cb), common);
+	drcwin->drc_window = drc_window;
+	g_signal_connect(G_OBJECT(drc_window), "destroy", G_CALLBACK(drc_destroy_cb), drcwin);
 	g_signal_connect(G_OBJECT(drc_window), "configure_event", G_CALLBACK(drc_window_configure_event_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(drc_window), _("pcb-rnd DRC"));
 	gtk_window_set_role(GTK_WINDOW(drc_window), "PCB_DRC");
@@ -522,10 +524,10 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE /* EXPAND */ , TRUE /* FILL */ , 0 /* PADDING */ );
 
-	drc_vbox = gtkc_vbox_new(FALSE, 0);
+	drcwin->drc_vbox = gtkc_vbox_new(FALSE, 0);
 
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), drc_vbox);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), drcwin->drc_vbox);
 
 	/* Dialog buttons */
 	hbox = gtk_hbutton_box_new();
@@ -535,11 +537,11 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	gtk_box_set_spacing(GTK_BOX(hbox), 6);
 
 	button = gtk_button_new_from_stock(GTK_STOCK_REFRESH);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(drc_refresh_cb), NULL);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(drc_refresh_cb), drcwin);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(drc_close_cb), common);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(drc_close_cb), drcwin);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	wplc_place(WPLC_DRC, drc_window);
@@ -548,7 +550,7 @@ void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 	gtk_widget_show_all(drc_window);
 }
 
-void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violation_t * violation)
+void ghid_drc_window_append_violation(pcb_gtk_drcwin_t *drcwin, pcb_gtk_common_t *common, pcb_drc_violation_t * violation)
 {
 	GhidDrcViolation *violation_obj;
 	GtkWidget *hbox, *label;
@@ -559,9 +561,9 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	int preview_size = VIOLATION_PIXMAP_PIXEL_SIZE - 2 * VIOLATION_PIXMAP_PIXEL_BORDER;
 
 	/* Ensure the required structures are setup */
-	ghid_drc_window_show(common, FALSE);
+	ghid_drc_window_show(drcwin, FALSE);
 
-	num_violations++;
+	drcwin->num_violations += 1;
 
 	violation_obj = ghid_drc_violation_new(violation);
 
@@ -570,10 +572,10 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	event_box = gtk_event_box_new();
 	gtk_container_add(GTK_CONTAINER(event_box), hbox);
 	g_signal_connect(event_box, "button-press-event", G_CALLBACK(row_clicked_cb), violation_obj);
-	gtk_box_pack_start(GTK_BOX(drc_vbox), event_box, TRUE, TRUE, VIOLATION_PIXMAP_PIXEL_BORDER);
+	gtk_box_pack_start(GTK_BOX(drcwin->drc_vbox), event_box, TRUE, TRUE, VIOLATION_PIXMAP_PIXEL_BORDER);
 
 	/*FIXME: Do we need to keep the DRC number for this violation ? What for ? */
-	pcb_sprintf(number, " %d ", num_violations);
+	pcb_sprintf(number, " %d ", drcwin->num_violations);
 	label = gtk_label_new(number);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	label = gtk_label_new(NULL);
@@ -596,13 +598,13 @@ void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violatio
 	gtk_widget_show_all(event_box);
 }
 
-void ghid_drc_window_reset_message(void)
+void ghid_drc_window_reset_message(pcb_gtk_drcwin_t *drcwin)
 {
-	num_violations = 0;
+	drcwin->num_violations = 0;
 }
 
-int ghid_drc_window_throw_dialog(pcb_gtk_common_t *common)
+int ghid_drc_window_throw_dialog(pcb_gtk_drcwin_t *drcwin)
 {
-	ghid_drc_window_show(common, TRUE);
+	ghid_drc_window_show(drcwin, TRUE);
 	return 1;
 }

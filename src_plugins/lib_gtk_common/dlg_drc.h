@@ -101,10 +101,10 @@ GType ghid_violation_renderer_get_type(void);
 
 GtkCellRenderer *ghid_violation_renderer_new(pcb_gtk_common_t *common);
 
-void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise);
-void ghid_drc_window_reset_message(void);
-void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violation_t * violation);
+void ghid_drc_window_show(pcb_gtk_drcwin_t *drcwin, gboolean raise);
+void ghid_drc_window_reset_message(pcb_gtk_drcwin_t *drcwin);
+void ghid_drc_window_append_violation(pcb_gtk_drcwin_t *drcwin, pcb_gtk_common_t *common, pcb_drc_violation_t * violation);
 void ghid_drc_window_append_messagev(const char *fmt, va_list va);
-int ghid_drc_window_throw_dialog(pcb_gtk_common_t *common);
+int ghid_drc_window_throw_dialog(pcb_gtk_drcwin_t *drcwin);
 
 #endif /* PCB_GTK_DLG_DRC_H */
