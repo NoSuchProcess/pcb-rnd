@@ -99,8 +99,7 @@ const char *eagle_bin_nodename(trnode_t *node)
 static const char *eagle_bin_prop(trparse_t *pst, trnode_t *node, const char *key)
 {
 	egb_node_t *nd = (egb_node_t *)node;
-#warning TODO
-	return NULL;
+	return egb_node_prop_get(nd, key);
 }
 
 static const char *eagle_bin_text(trparse_t *pst, trnode_t *node)
