@@ -733,6 +733,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	/* set clear button of library_window */
 	library_window->button_edit = GTK_BUTTON(button);
+	gtk_widget_set_tooltip_text(button, "Edit parameters of a\nparametric footprint");
 
 	/* CLEAR */
 	button = GTK_WIDGET(g_object_new(GTK_TYPE_BUTTON,
@@ -746,7 +747,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	/* set clear button of library_window */
 	library_window->button_clear = GTK_BUTTON(button);
-
+	gtk_widget_set_tooltip_text(button, "Clear the filter entry");
 
 	/* create the refresh button */
 	button = GTK_WIDGET(g_object_new(GTK_TYPE_BUTTON,
@@ -758,6 +759,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	/* add the refresh button to the filter area */
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(button, "clicked", G_CALLBACK(library_window_callback_refresh_library), library_window);
+	gtk_widget_set_tooltip_text(button, "Refresh the library window tree\n(GUI-only refresh)");
 
 	/* add the filter area to the vertical box */
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
