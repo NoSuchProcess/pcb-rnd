@@ -78,6 +78,13 @@ static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 	return dst;
 }
 
+static pcb_line_t *add_aux_line(pcb_layer_t *aux, const char *key, const char *val, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	pcb_line_t *l = pcb_line_new(aux, x1, y1, x2, y2, PCB_MM_TO_COORD(0.1), 0, pcb_no_flags());
+	pcb_attribute_put(&l->Attributes, key, val, 1);
+	return l;
+}
+
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
@@ -129,6 +136,23 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
 		}
 	}
+
+	/* create aux layer */
+	{
+		pcb_layer_t *aux = &sc->data->Layer[sc->data->LayerN++];
+		pcb_coord_t unit = PCB_MM_TO_COORD(1);
+
+		memset(aux, 0, sizeof(pcb_layer_t));
+		aux->meta.bound.name = pcb_strdup("subc-aux");
+		aux->meta.bound.type = PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC;
+		aux->grp = -1;
+		aux->parent = sc->data;
+
+		add_aux_line(aux, "subc-role", "origin", buffer->X, buffer->Y, buffer->X, buffer->Y);
+		add_aux_line(aux, "subc-role", "x", buffer->X, buffer->Y, buffer->X+unit, buffer->Y);
+		add_aux_line(aux, "subc-role", "y", buffer->X, buffer->Y, buffer->X, buffer->Y+unit);
+	}
+
 
 	{ /* convert globals */
 		pcb_pin_t *via;
