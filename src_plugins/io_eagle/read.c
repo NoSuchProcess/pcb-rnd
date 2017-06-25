@@ -414,7 +414,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	}
 	
 
-	pcb_printf("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, height, text_val, ln, text_direction);
+	pcb_trace("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, height, text_val, ln, text_direction);
 
 	return 0;
 }
@@ -610,9 +610,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		lin->Point2.Y = eagle_get_attrc(st, subtree, "linetype_0_y2", -1);
 	}
 	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1);
-#warning TODO: remove this
-		pcb_trace("new line thickness: %ml\n", lin->Thickness);
-		lin->Thickness = 1270;
+	pcb_trace("new line thickness: %ml\n", lin->Thickness);
 	lin->Clearance = st->md_wire_wire*2;
 	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 	lin->ID = pcb_create_ID_get();
@@ -702,7 +700,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 		}
 	}
 
-	pcb_printf("%mm %mm -> %mm %mm\n", x, y, dx, dy);
+	pcb_trace("%mm %mm -> %mm %mm\n", x, y, dx, dy);
 
 	if (ln == 16)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pad);
@@ -1114,7 +1112,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			if (back)
 				pcb_element_change_side(new_elem, 2 * y - st->pcb->MaxHeight);
 
-			printf("placing %s: %s/%s -> %p\n", name, lib, pkg, (void *)elem);
+			pcb_trace("placing %s: %s/%s -> %p\n", name, lib, pkg, (void *)elem);
 		}
 	}
 	return 0;
