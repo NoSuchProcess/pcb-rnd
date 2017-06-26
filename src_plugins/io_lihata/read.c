@@ -28,6 +28,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <liblihata/tree.h>
+#include <libminuid/libminuid.h>
 #include "config.h"
 #include "board.h"
 #include "data.h"
@@ -45,6 +46,7 @@
 #include "conf_core.h"
 #include "obj_all.h"
 #include "obj_subc.h"
+#include "pcb_minuid.h"
 #include "io_lihata.h"
 
 #warning TODO: put these in a gloal load-context-struct

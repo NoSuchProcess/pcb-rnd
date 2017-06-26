@@ -37,6 +37,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <sys/stat.h>
 #include <time.h>								/* Seed for srand() */
 #include <locale.h>
+#include <libminuid/libminuid.h>
 
 #include "board.h"
 #include "error.h"
@@ -58,6 +59,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "vtptr.h"
 #include "layer_vis.h"
 #include "obj_text.h"
+#include "pcb_minuid.h"
 
 #include "hid_actions.h"
 #include "hid_init.h"
@@ -322,7 +324,9 @@ int main(int argc, char *argv[])
 	 * - register 'call on exit()' function
 	 */
 
+
 	/* Minimal conf setup before we do anything else */
+	pcb_minuid_init();
 	conf_init();
 	conf_core_init();
 	conf_core_postproc(); /* to get all the paths initialized */

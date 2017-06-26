@@ -111,6 +111,7 @@ put /local/pcb/OBJS [@
 	operation.o
 	paths.o
 	pcb_bool.o
+	pcb_minuid.o
 	pcb-printf.o
 	plugins.o
 	plug_import.o

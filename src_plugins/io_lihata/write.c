@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <liblihata/tree.h>
+#include <libminuid/libminuid.h>
 #include "config.h"
 #include "board.h"
 #include "data.h"
@@ -43,6 +44,7 @@
 #include "io_lihata.h"
 #include "paths.h"
 #include "obj_subc_list.h"
+#include "pcb_minuid.h"
 
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"
