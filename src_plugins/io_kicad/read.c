@@ -66,8 +66,7 @@ static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
 
 
 	gds_init(&str);
-#warning TODO: include location info here:
-	pcb_append_printf(&str, "io_kicad parse error: ");
+	pcb_append_printf(&str, "io_kicad parse error at %d.%d: ", subtree->line, subtree->col);
 
 	va_start(ap, fmt);
 	pcb_append_vprintf(&str, fmt, ap);
