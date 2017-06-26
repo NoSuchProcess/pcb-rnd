@@ -95,7 +95,7 @@ static int parse_minuid(minuid_bin_t res, lht_node_t *nd)
 {
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return -1;
-	if (strlen(nd->data.text.value) != sizeof(minuid_bin_t)-1)
+	if (strlen(nd->data.text.value) != sizeof(minuid_str_t)-1)
 		return -1;
 	minuid_str2bin(res, (char *)nd->data.text.value);
 	return 0;
