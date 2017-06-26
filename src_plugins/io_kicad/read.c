@@ -1010,8 +1010,21 @@ static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
 {
 	htsi_entry_t *e;
 	e = htsi_getentry(&st->layer_k2i, kicad_name);
-	if (e == NULL)
+	if (e == NULL) {
+		if ((kicad_name[0] == 'I') && (kicad_name[1] == 'n')) {
+			/* Workaround: specal case InX.Cu, where X is an integer */
+			char *end;
+			long id = strtol(kicad_name+2, &end, 10);
+			if ((strcasecmp(end, ".Cu") == 0) && (id >= 1) && (id <=30)) {
+				if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN) == 0) {
+					pcb_trace("Created implicit copper layer %s as %d\n", kicad_name, id);
+					return kicad_get_layeridx(st, kicad_name);
+				}
+				pcb_trace("Failed to create implicit copper layer %s as %d\n", kicad_name, id);
+			}
+		}
 		return -1;
+	}
 	return e->value;
 }
 
