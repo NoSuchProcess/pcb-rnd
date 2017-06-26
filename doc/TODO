@@ -228,3 +228,9 @@ Low prio:
 - unify gui invocation options: why do pcb --help gtk & pcb --help lesstif show different input methods [report:miloh]
 - consider allowing negative Delta to be specified in CTRL-E property inspector
 - consider a simple all in one function to create a default layer stackup for static/predictable layer formats being imported, to simplify importer coding
+- trace length calculator:
+	- click a line or arc or via
+	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
+	- stop at the first junction (anywhere where more than 2 objects are connected)
+	- stop at polygons
+	- display the number of vias and net trace length along the found objects
