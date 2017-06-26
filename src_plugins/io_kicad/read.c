@@ -594,7 +594,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tgr_arc layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer < 0) {
-							return kicad_error(subtree, "gr_arc layer parse error.");
+							return kicad_error(subtree, "gr_arc layer parse error: \"%s\" not found", n->children->str);
 						}
 					} else {
 						return kicad_error(subtree, "unexpected empty/NULL gr_arc layer.");
