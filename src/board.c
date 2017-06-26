@@ -315,3 +315,35 @@ void pcb_board_changed(int reverted)
 {
 	pcb_event(PCB_EVENT_BOARD_CHANGED, "i", reverted);
 }
+
+int pcb_board_normalize(pcb_board_t *pcb)
+{
+	pcb_box_t b;
+	pcb_coord_t dx = 0, dy = 0;
+	int chg = 0;
+	
+	if (pcb_data_bbox(&b, pcb->Data) == NULL)
+		return -1;
+
+	if ((b.X2 - b.X1) > pcb->MaxWidth) {
+		pcb->MaxWidth = b.X2 - b.X1;
+		chg++;
+	}
+
+	if ((b.Y2 - b.Y1) > pcb->MaxHeight) {
+		pcb->MaxHeight = b.Y2 - b.Y1;
+		chg++;
+	}
+
+	if (b.X1 < 0)
+		dx = -b.X1;
+	if (b.Y1 < 0)
+		dy = -b.Y1;
+
+	if ((dx > 0) || (dy > 0)) {
+		pcb_data_move(pcb->Data, dx, dy);
+		chg++;
+	}
+
+	return chg;
+}

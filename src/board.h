@@ -162,9 +162,14 @@ void pcb_board_set_clearance(pcb_coord_t Width);
 /* sets a text scaling */
 void pcb_board_set_text_scale(int Scale);
 
+/* make sure the data of the board fits the PCB (move it out from negative,
+   make the board large enough); returns -1 on error, the number of changes on success */
+int pcb_board_normalize(pcb_board_t *pcb);
+
 /* sets or resets changed flag and redraws status */
 void pcb_board_set_changed_flag(pcb_bool New);
 
 void pcb_board_changed(int reverted);
+
 
 #endif
