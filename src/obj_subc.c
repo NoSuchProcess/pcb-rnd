@@ -41,6 +41,7 @@
 #include "undo.h"
 #include "compat_misc.h"
 #include "math_helper.h"
+#include "pcb_minuid.h"
 
 #define SUBC_AUX_NAME "subc-aux"
 
@@ -51,6 +52,7 @@ pcb_subc_t *pcb_subc_alloc(void)
 	sc->data = pcb_data_new(NULL);
 	sc->type = PCB_OBJ_SUBC;
 	PCB_SET_PARENT(sc->data, subc, sc);
+	minuid_gen(&pcb_minuid, sc->uid);
 	return sc;
 }
 
@@ -293,6 +295,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
 	sc->ID = pcb_create_ID_get();
+	minuid_cpy(sc->uid, src->uid);
 	PCB_SET_PARENT(sc->data, subc, sc);
 	PCB_SET_PARENT(sc, data, dst);
 	pcb_subclist_append(&dst->subc, sc);

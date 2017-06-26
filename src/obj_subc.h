@@ -26,8 +26,10 @@
 #ifndef PCB_OBJ_SUBC_H
 #define PCB_OBJ_SUBC_H
 
+#include <libminuid/libminuid.h>
 #include "obj_common.h"
 #include "global_typedefs.h"
+
 
 typedef enum pcb_subc_cached_s {
 	PCB_SUBCH_ORIGIN,
@@ -38,7 +40,7 @@ typedef enum pcb_subc_cached_s {
 
 struct pcb_subc_s {
 	PCB_ANYOBJECTFIELDS;
-	char uid[64]; /* globally unique ID */
+	minuid_bin_t uid;
 	pcb_data_t *data;
 	pcb_line_t *aux_cache[PCB_SUBCH_max];
 	pcb_layer_t *aux_layer;
