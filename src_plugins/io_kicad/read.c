@@ -81,6 +81,29 @@ static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
 	return -1;
 }
 
+static int kicad_warning(gsxl_node_t *subtree, char *fmt, ...)
+{
+	gds_t str;
+	va_list ap;
+
+	gds_init(&str);
+	pcb_append_printf(&str, "io_kicad warning at %d.%d: ", subtree->line, subtree->col);
+
+	va_start(ap, fmt);
+	pcb_append_vprintf(&str, fmt, ap);
+	va_end(ap);
+	
+	gds_append(&str, '\n');
+
+#warning TODO: do not printf here:
+	pcb_message(PCB_MSG_WARNING, "%s", str.array);
+
+	gds_uninit(&str);
+	return 0;
+}
+
+
+
 /* Search the dispatcher table for subtree->str, execute the parser on match
    with the children ("parameters") of the subtree */
 static int kicad_dispatch(read_state_t *st, gsxl_node_t *subtree, const dispatch_t *disp_table)
@@ -594,7 +617,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tgr_arc layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer < 0) {
-							return kicad_error(subtree, "gr_arc layer parse error: \"%s\" not found", n->children->str);
+							return kicad_warning(subtree, "gr_arc: \"%s\" not found", n->children->str);
 						}
 					} else {
 						return kicad_error(subtree, "unexpected empty/NULL gr_arc layer.");
@@ -859,7 +882,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tsegment layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer < 0) {
-							return kicad_error(subtree, "error parsing segment layer");
+							return kicad_warning(subtree, "error parsing segment layer");
 						}
 					} else {
 						return kicad_error(subtree, "unexpected empty/NULL segment layer node");
@@ -2105,7 +2128,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					pcb_printf("\tzone layer:\t'%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer < 0) {
-						return kicad_error(subtree, "parse error: zone layer <0.");
+						return kicad_warning(subtree, "parse error: zone layer <0.");
 					}
 					polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
 				} else {
