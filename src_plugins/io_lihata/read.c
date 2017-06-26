@@ -90,6 +90,17 @@ static int parse_text(char **res, lht_node_t *nd)
 	return 0;
 }
 
+/* Load a minuid from a text node into res. Return 0 on success */
+static int parse_minuid(minuid_bin_t res, lht_node_t *nd)
+{
+	if ((nd == NULL) || (nd->type != LHT_TEXT))
+		return -1;
+	if (strlen(nd->data.text.value) != sizeof(minuid_bin_t)-1)
+		return -1;
+	minuid_str2bin(res, (char *)nd->data.text.value);
+	return 0;
+}
+
 /* Load the pcb_coord_t value of a text node into res. Return 0 on success */
 static int parse_coord(pcb_coord_t *res, lht_node_t *nd)
 {
@@ -779,7 +790,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	parse_id(&sc->ID, obj, 5);
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
-
+	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
 
 	if (!dt->via_tree)
 		dt->via_tree = pcb_r_create_tree(NULL, 0, 0);
