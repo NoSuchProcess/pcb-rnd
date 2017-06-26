@@ -105,6 +105,13 @@ static lht_node_t *build_textf(const char *key, const char *fmt, ...)
 	return field;
 }
 
+static lht_node_t *build_minuid(const char *key, minuid_bin_t val)
+{
+	minuid_str_t tmp;
+	minuid_bin2str(tmp, val);
+	return build_text(key, tmp);
+}
+
 static lht_node_t *build_board_meta(pcb_board_t *pcb)
 {
 	lht_node_t *meta, *grp;
@@ -489,6 +496,8 @@ static lht_node_t *build_subc(pcb_subc_t *sc)
 	lht_dom_hash_put(obj, build_attributes(&sc->Attributes));
 	lht_dom_hash_put(obj, build_flags(&sc->Flags, PCB_TYPE_SUBC));
 	lht_dom_hash_put(obj, build_data(sc->data));
+	lht_dom_hash_put(obj, build_minuid("uid", sc->uid));
+
 	return obj;
 }
 
