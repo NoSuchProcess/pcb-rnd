@@ -2306,6 +2306,10 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	pcb_layer_auto_fixup(Ptr);
 
+	if (pcb_board_normalize(Ptr) > 0)
+		pcb_message(PCB_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
+
+
 #warning TODO: free the layer hash
 
 	return readres;
