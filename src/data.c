@@ -34,6 +34,7 @@
 #include "list_common.h"
 #include "obj_all.h"
 #include "layer_it.h"
+#include "operation.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers
@@ -429,6 +430,49 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs)
 	PCB_POLY_ALL_LOOP(data);
 	{
 		pcb_poly_mirror(layer, polygon, y_offs);
+	}
+	PCB_ENDALL_LOOP;
+}
+
+extern pcb_opfunc_t MoveFunctions;
+void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
+{
+
+	void *result;
+	pcb_opctx_t ctx;
+
+	ctx.move.pcb = pcb_data_get_top(data);
+	ctx.move.dx = dx;
+	ctx.move.dy = dy;
+
+	PCB_VIA_LOOP(data);
+	{
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_PIN, via, via, via);
+	}
+	PCB_END_LOOP;
+	PCB_SUBC_LOOP(data);
+	{
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_SUBC, subc, subc, subc);
+	}
+	PCB_END_LOOP;
+	PCB_LINE_ALL_LOOP(data);
+	{
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_LINE, layer, line, line);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_ARC_ALL_LOOP(data);
+	{
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_ARC, layer, arc, arc);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_TEXT_ALL_LOOP(data);
+	{
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_TEXT, layer, text, text);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_POLY_ALL_LOOP(data);
+	{
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_POLYGON, layer, polygon, polygon);
 	}
 	PCB_ENDALL_LOOP;
 }
