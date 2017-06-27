@@ -135,6 +135,7 @@ static int tinycad_parse_net(FILE *fn)
 				}
 			}
 		}
+		qparse_free(argc, &argv);
 	}
 
 	sym_flush(&sattr);
