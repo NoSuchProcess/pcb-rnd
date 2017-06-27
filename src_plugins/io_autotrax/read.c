@@ -46,6 +46,35 @@
 #include "obj_all.h"
 #include "rotate.h"
 #include "../src_plugins/boardflip/boardflip.h"
+#include "hid_actions.h"
+
+
+/* the following sym_attr_t struct, #define... and sym_flush() routine could go in a shared lib */
+
+typedef struct {
+	char *refdes;
+	char *value;
+	char *footprint;
+} symattr_t;
+
+#define null_empty(s) ((s) == NULL ? "" : (s))
+
+static void sym_flush(symattr_t *sattr)
+{
+	if (sattr->refdes != NULL) {
+/*	      pcb_trace("protel autotrax sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
+		if (sattr->footprint == NULL)
+			pcb_message(PCB_MSG_ERROR, "protel autotrax: not importing refdes=%s: no footprint specified\n", sattr->refdes);
+		else
+			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+	}
+	free(sattr->refdes); sattr->refdes = NULL;
+	free(sattr->value); sattr->value = NULL;
+	free(sattr->footprint); sattr->footprint = NULL;
+}
+
+
+/* the followinf read_state_t struct could go in a shared lib for parsers doing layer mapping */
 
 typedef struct {
 	pcb_board_t *PCB;
@@ -55,36 +84,7 @@ typedef struct {
 	htsi_t layer_protel2i; /* protel layer name-to-index hash; name is the protel layer, index is the pcb-rnd layer index */
 } read_state_t;
 
-typedef struct {
-	const char *node_name;
-	int (*parser)(read_state_t *st, gsxl_node_t *subtree);
-} dispatch_t;
-
-static int autotrax_error(gsxl_node_t *subtree, char *fmt, ...)
-{
-	gds_t str;
-	va_list ap;
-
-
-	gds_init(&str);
-#warning TODO: include location info here:
-	pcb_append_printf(&str, "io_autotrax parse error: ");
-
-	va_start(ap, fmt);
-	pcb_append_vprintf(&str, fmt, ap);
-	va_end(ap);
-	
-	gds_append(&str, '\n');
-
-	pcb_message(PCB_MSG_ERROR, "%s", str.array);
-
-	gds_uninit(&str);
-	return -1;
-}
-
-
-
-static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree); /* describes netlists for the layout */
+static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
 
 static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer);
 
@@ -106,10 +106,11 @@ static int read_a_text_line(FILE *FP, char * line, int maxread) {
 		}
 	}
 	line[index] = '\0';
-	/*printf("Line returned:\n%s\n", line);*/
+	/*pcb_trace("Line returned:\n%s\n", line);*/
 	return index;
 }
 
+/* the following routine could be replaced with calls to qparse returning argc, argv */
 static int autotrax_bring_back_eight_track(FILE * FP, double * results, int numresults) {
 	int maxread = 42; /*sufficient for all normal protel autotrax line reads, plus a safety margin */
 	char line[43];
@@ -178,7 +179,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_trace("Found free text linewidth : %ld\n", linewidth);
 	PCBLayer = autotrax_get_layeridx(st, (int)results[5]); 
 	pcb_trace("Found free text layer : %d\n", PCBLayer);
-	/* ignore user routed flag */
+	/* we ignore the user routed flag */
 
 	if ((strlen = read_a_text_line(FP, line, maxtext)) == 0) {
 		pcb_trace("error parsing free string text line; empty field\n");
@@ -206,7 +207,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	return -1;
 }
 
-/* autotrax_pcb/free_track/component_track */
+/* autotrax_pcb free_track/component_track */
 static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int trackargcount = 7;
@@ -219,7 +220,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
 	if (!autotrax_bring_back_eight_track(FP, results, trackargcount)) {
-		printf("error parsing track text\n");
+		pcb_trace("error parsing track text\n");
 		return -1;
 	}
 	X1 = PCB_MIL_TO_COORD(results[0]);
@@ -234,7 +235,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_trace("Found track width : %ml\n", Thickness);
 	PCBLayer = autotrax_get_layeridx(st, (int)results[5]); 
 	pcb_trace("Found track layer : %d\n", PCBLayer);
-	/* ignore user routed flag in results[6]*/
+	/* we ignore the user routed flag in results[6]*/
 
 	if (PCBLayer >= 0) {
 		if (el == NULL && st != NULL) {
@@ -257,7 +258,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	double results[6];
 	int segments = 15; /* full circle by default */ 
 
-	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius; /* radius may in fact be diameter */
+	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t delta = 360.0;
 
@@ -291,7 +292,8 @@ Bit 1 : LU quadrant
 Bit 2 : LL quadrant
 Bit 3 : LR quadrant
 
-TODO: This needs further testing to ensure the document used reflects actual outputs from protel autotrax
+TODO: This needs further testing to ensure the refererence
+document used reflects actual outputs from protel autotrax
 */
 	if (segments == 10) { /* LU + RL quadrants */
 		startAngle = 90.0;
@@ -358,7 +360,7 @@ TODO: This needs further testing to ensure the document used reflects actual out
 	return -1;
 }
 
-/* autotrax_pcb/via */
+/* autotrax_pcb via parser */
 static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int viaargcount = 4;
@@ -401,10 +403,10 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 }
 
-/* autotrax_pcb free pad*/
-/* FP or CP
+/* autotrax_pcb free or component pad
 x y xsize ysize shape holesize pwr/gnd layer
 padname
+may need to think about hybrid outputs, like pad + hole, to match possible features in protel autotrax
 */
 static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
@@ -454,6 +456,9 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	}
 	pcb_trace("Found free pad name : %s\n", padname);
 
+	/* these features can have connections to GND and PWR	
+	   planes specified in protel autotrax (seems rare though)
+	   so we warn the user is this is the case */ 
 	switch (Connects) {
 		case 1:	pcb_message(PCB_MSG_ERROR, "pin clears PWR/GND.\n");
 			break;
@@ -472,7 +477,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 /* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
 	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
 	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
-	The onsolder flags are reduntant for now with vias.
+	The onsolder flags are redundant for now with vias.
 
 	currently ignore:
 	shape:
@@ -504,7 +509,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 		} else if (Shape == 3 && AutotraxLayer == 6) {  /*bottom layer */
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
 		}		
-/* # TODO  not yet processing SMD pads */
+/* # TODO  not yet processing SMD pads - need examples to work with */
 		if (Shape == 2 && Drill == 0) {/* is probably SMD */
 /*			pcb_element_pad_new_rect(el, el->X - Xsize/2, el->Y - Ysize/2, Xsize/2 + el->X, Ysize/2 + el->Y, Clearance, 
 				Clearance, padname, padname, Flags);*/
@@ -525,7 +530,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	return -1;
 }
 
-
+/* protel autorax free fill (rectangular pour) parser - the closest thing protel autotrax has to a polygon */
 static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int fillargcount = 5;
@@ -581,6 +586,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	return -1;
 }
 
+/* the following three functions could potetially go in a shared alien format parser lib */ 
 /* Register an autotrax layer in the layer hash after looking up the pcb-rnd equivalent */
 static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_layer, unsigned int mask)
 {
@@ -597,7 +603,7 @@ static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_la
 /* create a set of default layers, since protel has a static stackup */
 static int autotrax_create_layers(read_state_t *st)
 {
-	/*pcb_layer_id_t stackup[14];*/
+
 	unsigned int res;
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
@@ -701,24 +707,112 @@ static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer)
 	return e->value;
 }
 
-/* autotrax_pcb  parse (net  ) ;   used for net descriptions for the entire layout */
-static int autotrax_parse_net(read_state_t *st, gsxl_node_t *subtree)
+/* autotrax_pcb  autotrax_parse_net ;   used to read net descriptions for the entire layout */
+static int autotrax_parse_net(read_state_t *st, FILE *FP)
 {
-		if (subtree != NULL && subtree->str != NULL) {
-			pcb_trace("net number: '%s'\n", subtree->str);
-		} else {
-			pcb_trace("missing net number in net descriptors");
-			return autotrax_error(subtree, "missing net number in net descriptors.");
+	symattr_t sattr;
+
+	char line[65];
+	char *netname;
+	int length = 0;
+	int in_comp = 0;
+	int in_net = 1;
+	int in_node_table = 0;
+	int endpcb = 0;
+	int maxread = 64;
+
+	netname = NULL;
+
+	memset(&sattr, 0, sizeof(sattr));
+	pcb_hid_actionl("ElementList", "start", NULL);
+	pcb_hid_actionl("Netlist", "Freeze", NULL);
+	pcb_hid_actionl("Netlist", "Clear", NULL);
+
+	/* next line is the netlist name */
+	pcb_trace("About to read netdef section.\n");
+	length = read_a_text_line(FP, line, maxread);
+	pcb_trace("new netlist being added: %s.\n", line);
+	netname = pcb_strdup(line);
+	length = read_a_text_line(FP, line, maxread);
+	pcb_trace("netlist visibility flag: %s.\n", line);
+	while (!feof(FP) && !endpcb && in_net) { 
+		length = read_a_text_line(FP, line, maxread);
+		if (strncmp(line, "[", 1) == 0 ) {
+			pcb_trace("Entering netlist component definition.\n");
+			in_comp = 1;
+			while (in_comp) {
+				length = read_a_text_line(FP, line, maxread);
+				if (length == 0) {
+					pcb_trace("Unexpected empty line in netlist component def.\n");
+				} else {
+					length = read_a_text_line(FP, line, maxread);
+					if (length == 0) {
+						pcb_trace("Unexpected empty REFDES.\n");
+					} else {
+						sym_flush(&sattr);
+						free(sattr.refdes);
+						sattr.refdes = pcb_strdup(line);
+					}
+					length = read_a_text_line(FP, line, maxread);
+					if (length == 0) {
+						pcb_trace("Unexpected empty PACKAGE.\n");
+						free(sattr.footprint);
+						sattr.footprint = pcb_strdup(line);
+					}
+					length = read_a_text_line(FP, line, maxread);
+					if (length == 0) {
+						free(sattr.value);
+						sattr.value = pcb_strdup("value");
+					} else {
+						free(sattr.value);
+						sattr.value = pcb_strdup(line);
+					}
+				}
+				while ((length = read_a_text_line(FP, line, maxread)) == 0) {
+					/* clear empty lines in COMP definition */	
+				}					
+				if (strncmp(line, "]", 1) == 0 ) {
+					in_comp = 0;	
+				}
+			}
+		} else if (strncmp(line, "(", 1) == 0) {
+			pcb_trace("Entering netlist node definitions.\n");
+			in_net = 1;
+ 			while (in_net || in_node_table) {
+				while ((length = read_a_text_line(FP, line, maxread)) == 0) {
+					/* skip empty lines */
+				}
+				if (strncmp(line, ")", 1) == 0) {
+					in_net = 0;
+				} else if (strncmp(line, "{", 1) == 0) {
+					in_node_table = 1;
+					in_net = 0;
+				} else if (strncmp(line, "}", 1) == 0) {
+					in_node_table = 0;
+				} else if (!in_node_table) {
+					pcb_trace("processing node definition:  %s\n", line);
+					if (line != NULL && netname != NULL) {
+						pcb_trace("Adding node to net: %s, %s\n",
+								line, netname);
+						pcb_hid_actionl("Netlist", "Add", netname, line, NULL);
+					}
+				}
+			}
+		} else if (length >= 6 && strncmp(line, "ENDPCB", 6) == 0 ) {
+			pcb_trace("End of protel Autotrax file found in netlist section?!\n");
+			endpcb = 1; /* if we get here, something went wrong */
 		}
-		if (subtree->next != NULL && subtree->next->str != NULL) {
-			pcb_trace("\tcorresponding net label: '%s'\n", (subtree->next->str));
-		} else {
-			pcb_trace("missing net label in net descriptors");
-			return autotrax_error(subtree, "missing net label in net descriptors.");
-		}
-		return 0;
+	}
+	sym_flush(&sattr);
+	pcb_hid_actionl("Netlist", "Sort", NULL);
+	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	pcb_hid_actionl("ElementList", "Done", NULL);
+
+	return 0;
 }
 
+/* protel autotrax component definition parser */
+/* no mark() or location as such it seems */
 static int autotrax_parse_component(read_state_t *st, FILE *FP)
 {
 	int coordresultcount = 2;
@@ -779,7 +873,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 								pcb_font(st->PCB, 0, 1), Flags,
 								moduleName, moduleRefdes, moduleValue,
 								moduleX, moduleY, direction,
-								refdesScaling, TextFlags, pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
+								refdesScaling, TextFlags, pcb_false);
 
 	while (!feof(FP)) {
 		length = read_a_text_line(FP, line, maxtext);
@@ -790,33 +884,33 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 		s = line;
 		if (length >= 7) {
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
-				printf("Finished parsing component\n");
-				if (!nonempty) { /* should try and use module empty function here */
+				pcb_trace("Finished parsing component\n");
+				if (!nonempty) { /* could try and use module empty function here */
 					Thickness = PCB_MM_TO_COORD(0.200);
 					pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
-					pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
+					pcb_trace("\tEmpty Module!! 1nm line created at module centroid.\n");
 				}
 				pcb_element_bbox(st->PCB->Data, newModule, pcb_font(PCB, 0, 1));
 				return 0;
 			}
 		} else if (length >= 2) {
 			if (strncmp(s, "CT",2) == 0 ) {
-				printf("Found component track\n");
+				pcb_trace("Found component track\n");
 				nonempty |= autotrax_parse_track(st, FP, newModule);
 			} else if (strncmp(s, "CA",2) == 0 ) {
-				printf("Found component arc\n");
+				pcb_trace("Found component arc\n");
 				nonempty |= autotrax_parse_arc(st, FP, newModule);
 			} else if (strncmp(s, "CV",2) == 0 ) {
-				printf("Found component via\n");
+				pcb_trace("Found component via\n");
 				nonempty |= autotrax_parse_via(st, FP, newModule);
 			} else if (strncmp(s, "CF",2) == 0 ) {
-				printf("Found component fill\n");
+				pcb_trace("Found component fill\n");
 				nonempty |= autotrax_parse_fill(st, FP, newModule);
 			} else if (strncmp(s, "CP",2) == 0 ) {
-				printf("Found component pad\n");
+				pcb_trace("Found component pad\n");
 				nonempty |= autotrax_parse_pad(st, FP, newModule);
 			} else if (strncmp(s, "CS",2) == 0 ) {
-				printf("Found component String\n");
+				pcb_trace("Found component String\n");
 				nonempty |= autotrax_parse_text(st, FP, newModule);
 			}
 		}
@@ -859,42 +953,43 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		s = line;
 		if (length >= 10) {
 			if (strncmp(line, "PCB FILE 4", 10) == 0 ) {
-				printf("Found Protel Autotrax version 4\n");
+				pcb_trace("Found Protel Autotrax version 4\n");
 				autotrax_create_layers(&st);
 			} else if (strncmp(line, "PCB FILE 5", 10) == 0 ) {
-				printf("Found Protel Easytrax version 5\n");
+				pcb_trace("Found Protel Easytrax version 5\n");
 				autotrax_create_layers(&st);
 			}
 		} else if (length >= 6) {
 			if (strncmp(s, "ENDPCB",6) == 0 ) {
-				printf("Found end of file\n");
+				pcb_trace("Found end of file\n");
 				finished = 1;
 			} else if (strncmp(s, "NETDEF",6) == 0 ) {
-				printf("Found net definition\n");
+				pcb_trace("Found net definition\n");
+				autotrax_parse_net(&st, FP);
 			}
 		} else if (length >= 4) {
 			if (strncmp(line, "COMP",4) == 0 ) {
-				printf("Found component\n");
+				pcb_trace("Found component\n");
 				autotrax_parse_component(&st, FP);
 			}
 		} else if (length >= 2) {
 			if (strncmp(s, "FT",2) == 0 ) {
-				printf("Found free track\n");
+				pcb_trace("Found free track\n");
 				autotrax_parse_track(&st, FP, el);
 			} else if (strncmp(s, "FA",2) == 0 ) {
-				printf("Found free arc\n");
+				pcb_trace("Found free arc\n");
 				autotrax_parse_arc(&st, FP, el);
 			} else if (strncmp(s, "FV",2) == 0 ) {
-				printf("Found free via\n");
+				pcb_trace("Found free via\n");
 				autotrax_parse_via(&st, FP, el);
 			} else if (strncmp(s, "FF",2) == 0 ) {
-				printf("Found free fill\n");
+				pcb_trace("Found free fill\n");
 				autotrax_parse_fill(&st, FP, el);
 			} else if (strncmp(s, "FP",2) == 0 ) {
-				printf("Found free pad\n");
+				pcb_trace("Found free pad\n");
 				autotrax_parse_pad(&st, FP, el);
 			} else if (strncmp(s, "FS",2) == 0 ) {
-				printf("Found free String\n");
+				pcb_trace("Found free String\n");
 				autotrax_parse_text(&st, FP, el);
 			}
 		}
@@ -905,10 +1000,10 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	Ptr->MaxWidth = box->X2;
 	Ptr->MaxHeight = box->Y2;
 
-	if (1) {
-		pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
-	}
-
+	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */	
+	pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
+	
+	/* not sure if this is required: */
 	/*pcb_layer_auto_fixup(Ptr);  this crashes things immeditely on load */
 
 #warning TODO: free the layer hash
@@ -926,12 +1021,12 @@ int io_autotrax_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char 
 			while(isspace(*s)) s++; /* strip leading whitespace */
 			if (strncmp(s, "PCB FILE 4", 10) == 0 || strncmp(s, "PCB FILE 5", 10) == 0)
 				return 1;
-			if ((*s == '\r') || (*s == '\n') || (*s == '#') || (*s == '\0')) /* ignore empty lines and comments */
+			if ((*s == '\r') || (*s == '\n') || (*s == '#') || (*s == '\0'))
+				/* ignore empty lines and comments */
 				continue;
 			return 0;
 		}
 	}
 
-	/* hit eof before seeing a valid root -> bad */
 	return 0;
 }
