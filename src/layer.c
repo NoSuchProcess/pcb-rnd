@@ -159,7 +159,7 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 {
 	if (Layer->parent != Data) {
 		/* the only case this makes sense is when we are resolving a bound layer */
-		if (!PCB_LAYER_IS_REAL(Layer))
+		if ((!PCB_LAYER_IS_REAL(Layer)) && (Layer->meta.bound.real != NULL))
 			return pcb_layer_id(Data, Layer->meta.bound.real);
 		assert(!"pcb_layer_id: invalid layer id for bound layer - pelase report this bug");
 		return -1;
