@@ -608,3 +608,10 @@ int ghid_drc_window_throw_dialog(pcb_gtk_drcwin_t *drcwin)
 	ghid_drc_window_show(drcwin, TRUE);
 	return 1;
 }
+
+void pcb_gtk_drcwin_init(pcb_gtk_drcwin_t *drcwin)
+{
+	drcwin->drc_window = NULL;
+	drcwin->drc_vbox = NULL;
+	drcwin->num_violations = 0;
+}

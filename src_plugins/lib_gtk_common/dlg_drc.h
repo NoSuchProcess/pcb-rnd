@@ -101,6 +101,8 @@ GType ghid_violation_renderer_get_type(void);
 
 GtkCellRenderer *ghid_violation_renderer_new(pcb_gtk_common_t *common);
 
+/** Initializes the \p drcwin structure. Use only once at start-up. */
+void pcb_gtk_drcwin_init(pcb_gtk_drcwin_t *drcwin);
 void ghid_drc_window_show(pcb_gtk_drcwin_t *drcwin, gboolean raise);
 void ghid_drc_window_reset_message(pcb_gtk_drcwin_t *drcwin);
 void ghid_drc_window_append_violation(pcb_gtk_drcwin_t *drcwin, pcb_gtk_common_t *common, pcb_drc_violation_t * violation);

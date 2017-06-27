@@ -159,7 +159,7 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 
 	ghid_create_pcb_widgets(&ghidgui->topwin, gport->top_window);
-	ghidgui->drcwin.drc_window = NULL;    /* DRC window is not built, yet    */
+	pcb_gtk_drcwin_init(&ghidgui->drcwin);     /* DRC window is not built, yet    */
 
 	gport->mouse.drawing_area = ghidgui->topwin.drawing_area;
 	gport->drawing_area = ghidgui->topwin.drawing_area;
