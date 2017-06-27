@@ -3,4 +3,5 @@ $short autotrax (freeware PCB layout tool)
 $long Import and export autotrax layouts and footprints.
 $state work-in-progress
 default disable
+dep boardflip
 autoload 1
