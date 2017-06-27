@@ -724,9 +724,6 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 	netname = NULL;
 
 	memset(&sattr, 0, sizeof(sattr));
-	pcb_hid_actionl("ElementList", "start", NULL);
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
 
 	/* next line is the netlist name */
 	pcb_trace("About to read netdef section.\n");
@@ -804,9 +801,6 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 		}
 	}
 	sym_flush(&sattr);
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
-	pcb_hid_actionl("ElementList", "Done", NULL);
 
 	return 0;
 }
@@ -930,6 +924,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 
 	int length = 0;
 	int finished = 0;
+	int netdefs = 0;
 	int maxtext = 1024;
 	char line[1024];
 	char *s;
@@ -965,6 +960,12 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 				finished = 1;
 			} else if (strncmp(s, "NETDEF",6) == 0 ) {
 				pcb_trace("Found net definition\n");
+				if (netdefs == 0) {
+					pcb_hid_actionl("ElementList", "start", NULL);
+					pcb_hid_actionl("Netlist", "Freeze", NULL);
+					pcb_hid_actionl("Netlist", "Clear", NULL);
+				}
+				netdefs |= 1;
 				autotrax_parse_net(&st, FP);
 			}
 		} else if (length >= 4) {
@@ -993,7 +994,12 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 				autotrax_parse_text(&st, FP, el);
 			}
 		}
-	} 
+	}
+	if (netdefs) {
+		pcb_hid_actionl("Netlist", "Sort", NULL);
+		pcb_hid_actionl("Netlist", "Thaw", NULL);
+		pcb_hid_actionl("ElementList", "Done", NULL);
+	}
 	fclose(FP);
 	box = pcb_data_bbox(&boardSize, Ptr->Data);
 	pcb_trace("Maximum X, Y dimensions (mil) of imported Protel autotrax layout: %ld, %ld\n", box->X2, box->Y2);
