@@ -500,10 +500,10 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Connects = pcb_get_value_ex(argv[6], NULL, NULL, NULL, NULL, &success);
 			valid &= success; /* which specifies GND or Power connection for pin/pad/via */
 			pcb_trace("Found pad Connects PWR/GND : %ld\n", Connects);
-			PCBLayer = autotrax_get_layeridx(st,
-					pcb_get_value_ex(argv[6], NULL, NULL, NULL, NULL, &success));
+			AutotraxLayer = pcb_get_value_ex(argv[7], NULL, NULL, NULL, NULL, &success);
+			PCBLayer = autotrax_get_layeridx(st, AutotraxLayer);
 			valid &= success;
-			pcb_trace("Found pad layer : %d\n", PCBLayer);
+			pcb_trace("Found Autotrax and pcb-rnd pad layer : %d, %d\n", AutotraxLayer, PCBLayer);
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
@@ -571,10 +571,10 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_trace("\tnew free pad/hole created; need to check connects\n");
 		return 0;
 	} else if (st != NULL && el != NULL) { /* pad within element */
-		if ((Shape == 2  || Shape == 4)  && AutotraxLayer == 1) { /* square (2) or rounded rect (4) on top layer */ 
-			Flags = pcb_flag_make(PCB_FLAG_SQUARE); /* actually a rectangle, but... */
-		} else if ((Shape == 2  || Shape == 4) && AutotraxLayer == 6) { /* bottom layer */ 
-			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); /*actually a rectangle, but... */
+		if ((Shape == 2  || Shape == 4)  && AutotraxLayer == 6) { /* square (2) or rounded rect (4) on top layer */ 
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); /* actually a rectangle, but... */
+		} else if ((Shape == 2  || Shape == 4)) { /* bottom layer */ 
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE); /*actually a rectangle, but... */
 		} else if (Shape == 3 && AutotraxLayer == 1) {/* top layer*/ 
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
 		} else if (Shape == 3 && AutotraxLayer == 6) {  /*bottom layer */
