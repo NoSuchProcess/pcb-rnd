@@ -1913,9 +1913,8 @@
  board.h vtroutestyle.h rats_patch.h board.h netlist.h route_style.h \
  conf_core.h buffer.h hid.h action_helper.h compat_misc.h dolists.h
 ../src_plugins/io_autotrax/read.o: ../src_plugins/io_autotrax/read.c \
- ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
- ../src_3rd/gensexpr/gsx_parse.h ../src_3rd/liblihata/genht/htsi.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/htsi.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/qparse/qparse.h \
  compat_misc.h ../config.h board.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \

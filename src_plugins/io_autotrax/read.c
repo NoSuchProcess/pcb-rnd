@@ -24,10 +24,13 @@
  *	Thomas.Nau@rz.uni-ulm.de
  *
  */
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <gensexpr/gsxl.h>
 #include <genht/htsi.h>
+#include <qparse/qparse.h>
 #include "compat_misc.h"
 #include "config.h"
 #include "board.h"
@@ -48,6 +51,19 @@
 #include "../src_plugins/boardflip/boardflip.h"
 #include "hid_actions.h"
 
+
+#define MAXREAD 45
+
+/* remove leading whitespace */
+#define ltrim(s) while(isspace(*s)) s++
+
+/* remove trailing newline */
+#define rtrim(s) \
+	do { \
+		char *end; \
+		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
+			*end = '\0'; \
+	} while(0)
 
 /* the following sym_attr_t struct, #define... and sym_flush() routine could go in a shared lib */
 
@@ -80,7 +96,6 @@ typedef struct {
 	pcb_board_t *PCB;
 	const char *Filename;
 	conf_role_t settings_dest;
-	gsxl_dom_t dom;
 	htsi_t layer_protel2i; /* protel layer name-to-index hash; name is the protel layer, index is the pcb-rnd layer index */
 } read_state_t;
 
@@ -147,62 +162,65 @@ static int autotrax_bring_back_eight_track(FILE * FP, double * results, int numr
 /* autotrax_free_text/component_text */
 static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int textargcount = 6;
-	double results[6];
-	int maxtext = 32;
-
-	int strlen = 0;
 	int heightMil;
 
-	char line[45];
+	char line[MAXREAD], *t;
 	pcb_coord_t X, Y, linewidth;
 	int scaling = 100;
 	unsigned direction = 0; /* default is horizontal */
 	pcb_flag_t Flags = pcb_flag_make(0); /* default */
 	int PCBLayer = 0; /* sane default value */
 
-	if (!autotrax_bring_back_eight_track(FP, results, textargcount)) {
-		pcb_trace("error parsing protel text field attributes\n");
-		return -1;
+	if (fgets(line, sizeof(line), FP) != NULL) {
+		int argc;
+		char **argv, *s;
+
+		s = line;
+		ltrim(s);
+		rtrim(s);
+		argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
+		if (argc > 5) {
+			X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", NULL);
+			pcb_trace("Found free text X : %ld\n", X);
+			Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", NULL);
+			pcb_trace("Found free text Y : %ld\n", Y);
+			heightMil = pcb_get_value_ex(argv[2], NULL, NULL, NULL, NULL, NULL);
+			scaling = (100*heightMil)/60;
+			pcb_trace("Found free text height(mil) : %d, giving scaling: %d\n", heightMil, scaling);
+			direction = pcb_get_value_ex(argv[3], NULL, NULL, NULL, NULL, NULL);
+			pcb_trace("Found free text rotation : %d\n", direction);
+			linewidth = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", NULL);
+			pcb_trace("Found free text linewidth : %ld\n", linewidth);
+			PCBLayer = autotrax_get_layeridx(st,
+					pcb_get_value_ex(argv[5], NULL, NULL, NULL, "mil", NULL)); 
+			pcb_trace("Found free text layer : %d\n", PCBLayer);
+			/* we ignore the user routed flag */
+		} else {
+			pcb_trace("error: insufficient free string attribute fields\n");
+		}
 	}
-
-	X = PCB_MIL_TO_COORD(results[0]);
-	pcb_trace("Found free text X : %ld\n", X);
-	Y = PCB_MIL_TO_COORD(results[1]);
-	pcb_trace("Found free text Y : %ld\n", Y);
-	heightMil = (int)results[2];
-	scaling = (100*heightMil)/60;
-	pcb_trace("Found free text height(mil) : %d, giving scaling: %d\n", heightMil, scaling);
-	direction = (int)results[3];
-	pcb_trace("Found free text rotation : %d\n", direction);
-	linewidth = PCB_MIL_TO_COORD(results[4]);
-	pcb_trace("Found free text linewidth : %ld\n", linewidth);
-	PCBLayer = autotrax_get_layeridx(st, (int)results[5]); 
-	pcb_trace("Found free text layer : %d\n", PCBLayer);
-	/* we ignore the user routed flag */
-
-	if ((strlen = read_a_text_line(FP, line, maxtext)) == 0) {
+	if (fgets(line, sizeof(line), FP) == NULL) {
 		pcb_trace("error parsing free string text line; empty field\n");
 		strcpy(line, "(empty text field)");
 	} /* this helps the parser fail more gracefully if excessive newlines, or empty text field */
 
 	pcb_trace("Found text string for display : %s\n", line);
+	t = line;
+	ltrim(t);
+	rtrim(t); /*need to remove trailing '\r' to avoid rendering oddities */
 
 	/* ABOUT HERE, CAN DO ROTATION/DIRECTION CONVERSION */
 
 	if (PCBLayer >= 0) {
-		if (el == NULL && st != NULL && strlen != 0) {
-			pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, line, Flags);
+		if (el == NULL && st != NULL) {
+			pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, t, Flags);
 			pcb_trace("\tnew free text on layer %d created\n", PCBLayer);
 			return 1;
-		} else if (el != NULL && st != NULL && strlen != 0) {
+		} else if (el != NULL && st != NULL) {
 			pcb_trace("\ttext within component not supported\n");
 			/* this may change with subcircuits */
 			return 1;
-		} else if (strlen == 0) {
-			pcb_trace("\tempty free/component text field ignored\n");
-			return 0;
-		}
+		} 
 	}
 	return -1;
 }
