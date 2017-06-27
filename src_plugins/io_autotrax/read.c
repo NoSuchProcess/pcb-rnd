@@ -24,6 +24,8 @@
  *	Thomas.Nau@rz.uni-ulm.de
  *
  */
+
+#include "config.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +34,6 @@
 #include <genht/htsi.h>
 #include <qparse/qparse.h>
 #include "compat_misc.h"
-#include "config.h"
 #include "board.h"
 #include "plug_io.h"
 #include "error.h"
@@ -103,62 +104,6 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists
 
 static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer);
 
-/* a simple line retrieval routine that ideally has maxread to be 2 less than * line in size */ 
-static int read_a_text_line(FILE *FP, char * line, int maxread) {
-	int index = 0;
-	int c;
-	/* we avoid up to one '\n' if it is at the beginning of the line */
-	while (!feof(FP) && ((c = fgetc(FP)) != '\n') && (index < (maxread-1))) {
-		if ((c == '\t' || c == ' ') && index == 0) {
-			/* strip leading tabs, spaces */ 
-		} else if ((c == '\t' || c == ' ' ) && line[index-1] != ' ') {
-			line[index] = ' '; /* avoid repeated tabs or spaces */
-			index++;
-		} else if (c != 0x0D && c != ' ' && c != '\t') {
-			/*carriage return found in some pathological old files prior to newline*/
-			line[index] = c; /* let all other stuff through for now */
-			index++;
-		}
-	}
-	line[index] = '\0';
-	/*pcb_trace("Line returned:\n%s\n", line);*/
-	return index;
-}
-
-/* the following routine could be replaced with calls to qparse returning argc, argv */
-static int autotrax_bring_back_eight_track(FILE * FP, double * results, int numresults) {
-	int maxread = 42; /*sufficient for all normal protel autotrax line reads, plus a safety margin */
-	char line[43];
-	char *current, *next;
-	int maxresult = 8; /* no more than 8 fields are present in protel autotrax subtypes */
-	int iter = 0;
-	int strlen = 0;
-	if (numresults > maxresult) {
-		pcb_trace("Too many result fields requested from line parser.\n");
-		return -1;
-	}
-	strlen = read_a_text_line(FP, line, maxread);
-	if (strlen == 0) {
-		strlen = read_a_text_line(FP, line, maxread);
-	}
-	if (strlen == 0) {
-		pcb_trace("Too many newlines in file. Unable to parse properly.\n");
-		return -1;
-	}
-	pcb_trace("segment: %s\n", line);
-	current = line;
-	/* no leading or double spaces to worry about; taken care of by line retrieval routine */ 
-	for (; *current != '\0' && iter < numresults; iter++, next++) {
-		next = current + 1;
-		while (*next != ' ' && *next != '\0') {
-			next ++;
-		}
-		results[iter] = strtod(current, &next);
-		current = next;
-	}
-	return iter;
-}
-
 /* autotrax_free_text/component_text */
 static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
@@ -192,13 +137,17 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			linewidth = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", NULL);
 			pcb_trace("Found free text linewidth : %ld\n", linewidth);
 			PCBLayer = autotrax_get_layeridx(st,
-					pcb_get_value_ex(argv[5], NULL, NULL, NULL, "mil", NULL)); 
+					pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, NULL)); 
 			pcb_trace("Found free text layer : %d\n", PCBLayer);
 			/* we ignore the user routed flag */
+			qparse_free(argc, &argv);
 		} else {
 			pcb_trace("error: insufficient free string attribute fields\n");
+			qparse_free(argc, &argv);
+			return -1;
 		}
 	}
+
 	if (fgets(line, sizeof(line), FP) == NULL) {
 		pcb_trace("error parsing free string text line; empty field\n");
 		strcpy(line, "(empty text field)");
@@ -220,6 +169,9 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			pcb_trace("\ttext within component not supported\n");
 			/* this may change with subcircuits */
 			return 1;
+		} else if (strlen(t) == 0){
+			pcb_trace("\tempty text not placed on layout\n");
+			return 0;
 		} 
 	}
 	return -1;
@@ -228,36 +180,61 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 /* autotrax_pcb free_track/component_track */
 static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int trackargcount = 7;
-	double results[7];
-
+	char line[MAXREAD];
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
+        int success;
+        int valid = 1;
 
 	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
-	if (!autotrax_bring_back_eight_track(FP, results, trackargcount)) {
-		pcb_trace("error parsing track text\n");
+        if (fgets(line, sizeof(line), FP) != NULL) {
+                int argc;
+                char **argv, *s;
+
+                s = line;
+                ltrim(s);
+                rtrim(s);
+                argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
+                if (argc > 5) {
+                        X1 = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			valid &= success;
+                        pcb_trace("Found tarck X1 : %ld\n", X1);
+                        Y1 = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found track Y1 : %ld\n", Y1);
+                        X2 = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found track X2 : %ld\n", X2);
+                        Y2 = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found track Y2 : %ld\n", Y2);
+                        Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found track linewidth : %ld\n", Thickness);
+                        PCBLayer = autotrax_get_layeridx(st,
+                                        pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success));
+                        valid &= success;
+			pcb_trace("Found track layer : %d\n", PCBLayer);
+                        /* we ignore the user routed flag */
+			qparse_free(argc, &argv);
+                } else {
+                        pcb_trace("error: insufficient track attribute fields\n");
+			qparse_free(argc, &argv);
+			return -1;
+                }
+        }
+
+	if (! valid) {
+		pcb_trace("error: text attributes unable to be parsed:\n\t%s\n", line);
 		return -1;
 	}
-	X1 = PCB_MIL_TO_COORD(results[0]);
-	pcb_trace("Found track X1 : %ml\n", X1);
-	Y1 = PCB_MIL_TO_COORD(results[1]);
-	pcb_trace("Found track Y1 : %ml\n", Y1);
-	X2 = PCB_MIL_TO_COORD(results[2]);
-	pcb_trace("Found track X2 : %ml\n", X2);
-	Y2 = PCB_MIL_TO_COORD(results[3]);
-	pcb_trace("Found track Y2 : %ml\n", Y2);
-	Thickness = PCB_MIL_TO_COORD(results[4]);
-	pcb_trace("Found track width : %ml\n", Thickness);
-	PCBLayer = autotrax_get_layeridx(st, (int)results[5]); 
-	pcb_trace("Found track layer : %d\n", PCBLayer);
-	/* we ignore the user routed flag in results[6]*/
 
 	if (PCBLayer >= 0) {
 		if (el == NULL && st != NULL) {
-			pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+			pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2,
+				Thickness, Clearance, Flags);
 			pcb_trace("\tnew free line on layer %d created\n", PCBLayer);
 			return 1;
 		} else if (el != NULL && st != NULL) {
@@ -272,9 +249,10 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 /* autotrax_pcb free arc and component arc parser */
 static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int arcargcount = 6;
-	double results[6];
+	char line[MAXREAD];
 	int segments = 15; /* full circle by default */ 
+        int success;
+        int valid = 1;
 
 	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
 	pcb_angle_t startAngle = 0.0;
@@ -285,22 +263,47 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
-	if (!autotrax_bring_back_eight_track(FP, results, arcargcount)) {
-		pcb_trace("error parsing arc text attribute line\n");
+	if (fgets(line, sizeof(line), FP) != NULL) {
+                int argc;
+                char **argv, *s;
+                s = line;
+                ltrim(s);
+                rtrim(s);
+                argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
+                if (argc > 5) {
+                        centreX = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			valid &= success;
+                        pcb_trace("Found arc centreX : %ld\n", centreX);
+                        centreY = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found arc centreY : %ld\n", centreY);
+                        radius = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found arc radius : %ld\n", radius);
+                        segments = pcb_get_value_ex(argv[3], NULL, NULL, NULL, NULL, &success);
+                        valid &= success;
+			pcb_trace("Found ard segments : %ld\n", segments);
+                        Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found arc linewidth : %ld\n", Thickness);
+                        PCBLayer = autotrax_get_layeridx(st,
+                                        pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success));
+			valid &= success;
+                        pcb_trace("Found arc layer : %d\n", PCBLayer);
+                        /* we ignore the user routed flag */
+			qparse_free(argc, &argv);
+                } else { 
+			qparse_free(argc, &argv);
+			pcb_trace("error: insufficient track attribute fields\n");
+			return -1;
+                }
+	}
+
+	if (! valid) {
+		pcb_trace("error: arc attributes unable to be parsed:\n\t%s\n", line);
 		return -1;
 	}
-	centreX = PCB_MIL_TO_COORD(results[0]);
-	pcb_trace("Found arc centre X : %ml\n", centreX);
-	centreY = PCB_MIL_TO_COORD(results[1]);
-	pcb_trace("Found arc Y : %ml\n", centreY);
-	radius = PCB_MIL_TO_COORD(results[2]);
-	pcb_trace("Found arc radius : %ml\n", radius);
-	segments = (int)results[3];
-	pcb_trace("Found arc segments : %d\n", segments);
-	Thickness = PCB_MIL_TO_COORD(results[4]);
-	pcb_trace("Found arc width : %ml\n", Thickness);
-	PCBLayer = autotrax_get_layeridx(st, (int)results[5]); 
-	pcb_trace("Found arc layer : %d\n", PCBLayer);
+
 
 	width = height = radius;
 
@@ -381,9 +384,10 @@ document used reflects actual outputs from protel autotrax
 /* autotrax_pcb via parser */
 static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int viaargcount = 4;
-	double results[4];
+	char line[MAXREAD];
 	char * name;
+	int success;
+	int valid = 1;
 
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 	pcb_flag_t Flags = pcb_flag_make(0);
@@ -392,21 +396,41 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
-	if (!autotrax_bring_back_eight_track(FP, results, viaargcount)) {
-		pcb_trace("error parsing via attribute text\n");
-		return -1;
-	}
 
 	name = pcb_strdup("unnamed");
 
-	X = PCB_MIL_TO_COORD(results[0]);
-	pcb_trace("Found free via X : %ld\n", X);
-	Y = PCB_MIL_TO_COORD(results[1]);
-	pcb_trace("Found free via Y : %ld\n", Y);
-	Thickness = PCB_MIL_TO_COORD(results[2]);
-	pcb_trace("Found free via diameter : %ld\n", Thickness);
-	Drill = PCB_MIL_TO_COORD(results[3]);
-	pcb_trace("Found free track drill : %ld\n", Drill);
+        if (fgets(line, sizeof(line), FP) != NULL) {
+                int argc;
+                char **argv, *s;
+                s = line;
+                ltrim(s);
+                rtrim(s);
+                argc = qparse2(s, &argv, 0);
+                if (argc >= 4) {
+                        X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found via X : %ld\n", X);
+                        Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found via Y : %ld\n", Y);
+                        Thickness = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found via Thickness : %ld\n", Thickness);
+                        Drill = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+			pcb_trace("Found via Drill : %ld\n", Drill);
+			qparse_free(argc, &argv);
+                } else {
+			qparse_free(argc, &argv);
+                        pcb_trace("error: insufficient via attribute fields\n");
+			return -1;
+                }
+	}
+
+        if (! valid) {
+                pcb_trace("error: via attributes unable to be parsed:\n\t%s\n", line);
+                return -1;
+        }
 
 	if (el == NULL) {
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
@@ -428,15 +452,15 @@ may need to think about hybrid outputs, like pad + hole, to match possible featu
 */
 static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int padargcount = 7;
-	double results[7];
-	int maxtext = 32;
 
-	char padname[32];
+	char line[MAXREAD], *s;
 	int Connects = 0;
 	int Shape = 0;
 	int AutotraxLayer = 0;
 	int PCBLayer = 0; /* sane default value */
+
+	int valid = 1;
+	int success;
 
 	pcb_coord_t X, Y, Xsize, Ysize, Thickness, Clearance, Mask, Drill; 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
@@ -445,34 +469,63 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
-	if (!autotrax_bring_back_eight_track(FP, results, padargcount)) {
-		pcb_trace("error parsing pad attribute text\n");
-		return -1;
-	}
-	X = PCB_MIL_TO_COORD(results[0]);
-	pcb_trace("Found free pad X : %ld\n", X);
-	Y = PCB_MIL_TO_COORD(results[1]);
-	pcb_trace("Found free pad Y : %ld\n", Y);
-	Xsize = PCB_MIL_TO_COORD(results[2]);
-	pcb_trace("Found free pad Xsize : %ld\n", Xsize);
-	Ysize = PCB_MIL_TO_COORD(results[3]);
-	pcb_trace("Found free pad Ysize : %ld\n", Ysize);
-	Shape = (int)results[4]; 
-	pcb_trace("Found free pad shape : %d\n", Shape);
-	Drill = PCB_MIL_TO_COORD(results[5]);
-	pcb_trace("Found free pad drill : %ld\n", Drill);
-	Connects = (int)results[5];  /* which specifies GND or Power connection for pin/pad/via */
-	AutotraxLayer = (int)results[6];
-	PCBLayer = autotrax_get_layeridx(st, (int)results[6]); 
-	pcb_trace("Found free pad Layer : %d\n", PCBLayer);
+
+
+        if (fgets(line, sizeof(line), FP) != NULL) {
+                int argc;
+                char **argv;
+                s = line;
+                ltrim(s);
+                rtrim(s);
+                argc = qparse2(s, &argv, 0);
+                if (argc > 6) {
+                        X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found pad X : %ld\n", X);
+                        Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found pad Y : %ld\n", Y);
+                        Xsize = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found pad Xsize : %ld\n", Xsize);
+                        Ysize = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found pad Ysize : %ld\n", Ysize);
+                        Shape = pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success);
+                        valid &= success;
+                        pcb_trace("Found pad Shape : %ld\n", Shape);
+                        Drill = pcb_get_value_ex(argv[5], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found pad Drill : %ld\n", Drill);
+                        Connects = pcb_get_value_ex(argv[6], NULL, NULL, NULL, NULL, &success);
+                        valid &= success; /* which specifies GND or Power connection for pin/pad/via */
+                        pcb_trace("Found pad Connects PWR/GND : %ld\n", Connects);
+                        PCBLayer = autotrax_get_layeridx(st,
+                                        pcb_get_value_ex(argv[6], NULL, NULL, NULL, NULL, &success));
+                        valid &= success;
+                        pcb_trace("Found pad layer : %d\n", PCBLayer);
+                        qparse_free(argc, &argv);
+                } else {
+                        qparse_free(argc, &argv);
+                        pcb_trace("error: insufficient pad attribute fields\n");
+                        return -1;
+                }
+        }
+
+        if (! valid) {
+                pcb_trace("error: pad attributes unable to be parsed:\n\t%s\n", line);
+                return -1;
+        }
 
 /* now find name as string on next line and copy it */
 
-	if (read_a_text_line(FP, padname, maxtext) == 0) {
+	if (fgets(line, sizeof(line), FP) == NULL) {
 		pcb_trace("error parsing pad free string text line; empty\n");
 		return -1;
 	}
-	pcb_trace("Found free pad name : %s\n", padname);
+	s = line;
+	rtrim(s); /* avoid rendering oddities on layout, and netlist matching confusion */
+	pcb_trace("Found free pad name : %s\n", line);
 
 	/* these features can have connections to GND and PWR	
 	   planes specified in protel autotrax (seems rare though)
@@ -514,7 +567,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 		}
 		/* should this in fact be an SMD pad, +/- a hole in it ? */
-		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, padname, Flags);
+		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, line, Flags);
 		pcb_trace("\tnew free pad/hole created; need to check connects\n");
 		return 0;
 	} else if (st != NULL && el != NULL) { /* pad within element */
@@ -530,15 +583,15 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 /* # TODO  not yet processing SMD pads - need examples to work with */
 		if (Shape == 2 && Drill == 0) {/* is probably SMD */
 /*			pcb_element_pad_new_rect(el, el->X - Xsize/2, el->Y - Ysize/2, Xsize/2 + el->X, Ysize/2 + el->Y, Clearance, 
-				Clearance, padname, padname, Flags);*/
+				Clearance, line, linee, Flags);*/
 /*			pcb_element_pad_new_rect(el, X - Xsize/2, Y - Ysize/2, X + Xsize/2, Ysize/2 + Y, Clearance, 
-				Clearance, padname, padname, Flags);*/
+				Clearance, line, line, Flags);*/
 			return 1;
 		} else {
 /*			pcb_element_pin_new(el, X + el->X, Y + el->Y, Thickness, Clearance, Clearance,  
-				Drill, padname, padname, Flags);*/
+				Drill, line, line, Flags);*/
 			pcb_element_pin_new(el, X, Y , Thickness, Clearance, Clearance,  
-				Drill, padname, padname, Flags);
+				Drill, line, line, Flags);
 			return 1;
 		}
 		pcb_trace("\tnew component pad/hole created; need to check connects\n");
@@ -551,9 +604,9 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 /* protel autorax free fill (rectangular pour) parser - the closest thing protel autotrax has to a polygon */
 static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int fillargcount = 5;
-	double results[5];
-
+	int success;
+	int valid = 1;
+	char line[MAXREAD];
 	pcb_polygon_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	pcb_coord_t X1, Y1, X2, Y2, Clearance;
@@ -561,22 +614,42 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	Clearance = PCB_MIL_TO_COORD(10);
 
-	if (!autotrax_bring_back_eight_track(FP, results, fillargcount)) {
-		pcb_trace("error parsing fill attribute text\n");
-		return -1;
-	}
+        if (fgets(line, sizeof(line), FP) != NULL) {
+                int argc;
+                char **argv, *s;
+                s = line;
+                ltrim(s);
+                rtrim(s);
+                argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
+                if (argc >= 5) {
+                        X1 = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found fill X1 : %ld\n", X1);
+                        Y1 = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found fill Y1 : %ld\n", Y1);
+                        X2 = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found fill X2 : %ld\n", X2);
+                        Y2 = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found fill Y2 : %ld\n", Y2);
+                        PCBLayer = autotrax_get_layeridx(st,
+                                        pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success));
+                        valid &= success;
+                        pcb_trace("Found fill layer : %d\n", PCBLayer);
+                        qparse_free(argc, &argv);
+                } else {
+                        qparse_free(argc, &argv);
+                        pcb_trace("error: insufficient fill attribute fields\n");
+                        return -1;
+                }
+        }
 
-	X1 = PCB_MIL_TO_COORD(results[0]);
-	pcb_trace("Found fill X1 : %ld\n", X1);
-	Y1 = PCB_MIL_TO_COORD(results[1]);
-	pcb_trace("Found fill Y1 : %ld\n", Y1);
-	X2 = PCB_MIL_TO_COORD(results[2]);
-	pcb_trace("Found fill X2 : %ld\n", X2);
-	Y2 = PCB_MIL_TO_COORD(results[3]);
-	pcb_trace("Found fill Y2 : %ld\n", Y2);
-	PCBLayer = autotrax_get_layeridx(st, (int)results[4]);
-	pcb_trace("Found fill layer : %d\n", PCBLayer);
-
+        if (! valid) {
+                pcb_trace("error: fill attributes unable to be parsed:\n\t%s\n", line);
+                return -1;
+        }
 
 	if (PCBLayer >= 0 && el == NULL) {
 		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
@@ -730,14 +803,13 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 {
 	symattr_t sattr;
 
-	char line[65];
-	char *netname;
+	char line[MAXREAD];
+	char *netname, *s;
 	int length = 0;
 	int in_comp = 0;
 	int in_net = 1;
 	int in_node_table = 0;
 	int endpcb = 0;
-	int maxread = 64;
 
 	netname = NULL;
 
@@ -745,45 +817,59 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 
 	/* next line is the netlist name */
 	pcb_trace("About to read netdef section.\n");
-	length = read_a_text_line(FP, line, maxread);
-	pcb_trace("new netlist being added: %s.\n", line);
-	netname = pcb_strdup(line);
-	length = read_a_text_line(FP, line, maxread);
+	
+	if (fgets(line, sizeof(line), FP) != NULL) {
+		s = line;
+		rtrim(s);
+		pcb_trace("new netlist being added: %s.\n", line);
+		netname = pcb_strdup(line);
+	} else {
+		pcb_trace("empty netlist name found.\n");
+		return -1;
+	}
+	fgets(line, sizeof(line), FP);
+        s = line;
+        rtrim(s);
 	pcb_trace("netlist visibility flag: %s.\n", line);
-	while (!feof(FP) && !endpcb && in_net) { 
-		length = read_a_text_line(FP, line, maxread);
+	while (!feof(FP) && !endpcb && in_net) {
+		fgets(line, sizeof(line), FP);
 		if (strncmp(line, "[", 1) == 0 ) {
 			pcb_trace("Entering netlist component definition.\n");
 			in_comp = 1;
 			while (in_comp) {
-				length = read_a_text_line(FP, line, maxread);
-				if (length == 0) {
+				if (fgets(line, sizeof(line), FP) == NULL) {
 					pcb_trace("Unexpected empty line in netlist component def.\n");
 				} else {
-					length = read_a_text_line(FP, line, maxread);
-					if (length == 0) {
+					if (fgets(line, sizeof(line), FP) == NULL) {
 						pcb_trace("Unexpected empty REFDES.\n");
 					} else {
+				                s = line;
+				                rtrim(s);
 						sym_flush(&sattr);
 						free(sattr.refdes);
 						sattr.refdes = pcb_strdup(line);
 					}
-					length = read_a_text_line(FP, line, maxread);
-					if (length == 0) {
+					if (fgets(line, sizeof(line), FP) == NULL) {
 						pcb_trace("Unexpected empty PACKAGE.\n");
+						free(sattr.footprint);
+                                                sattr.footprint = pcb_strdup("unknown");
+					} else {
+				                s = line;
+				                rtrim(s);
 						free(sattr.footprint);
 						sattr.footprint = pcb_strdup(line);
 					}
-					length = read_a_text_line(FP, line, maxread);
-					if (length == 0) {
+					if (fgets(line, sizeof(line), FP) == NULL) {
 						free(sattr.value);
 						sattr.value = pcb_strdup("value");
 					} else {
+						s = line;
+						rtrim(s);
 						free(sattr.value);
 						sattr.value = pcb_strdup(line);
 					}
 				}
-				while ((length = read_a_text_line(FP, line, maxread)) == 0) {
+				while (fgets(line, sizeof(line), FP) == NULL) {
 					/* clear empty lines in COMP definition */	
 				}					
 				if (strncmp(line, "]", 1) == 0 ) {
@@ -794,7 +880,7 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 			pcb_trace("Entering netlist node definitions.\n");
 			in_net = 1;
  			while (in_net || in_node_table) {
-				while ((length = read_a_text_line(FP, line, maxread)) == 0) {
+				while (fgets(line, sizeof(line), FP) == NULL) {
 					/* skip empty lines */
 				}
 				if (strncmp(line, ")", 1) == 0) {
@@ -805,6 +891,8 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 				} else if (strncmp(line, "}", 1) == 0) {
 					in_node_table = 0;
 				} else if (!in_node_table) {
+					s = line;
+					rtrim(s);
 					pcb_trace("processing node definition:  %s\n", line);
 					if (line != NULL && netname != NULL) {
 						pcb_trace("Adding node to net: %s, %s\n",
@@ -827,58 +915,76 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 /* no mark() or location as such it seems */
 static int autotrax_parse_component(read_state_t *st, FILE *FP)
 {
-	int coordresultcount = 2;
-	double results[2];
+	int success;
+	int valid = 1;
 	int refdesScaling = 100;
 	pcb_coord_t moduleX, moduleY, Thickness;
 	unsigned direction = 0; /* default is horizontal */
-	char moduleName[33], moduleRefdes[33], moduleValue[33];
+	char moduleName[MAXREAD], moduleRefdes[MAXREAD], moduleValue[MAXREAD];
 	pcb_element_t *newModule;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
 
-	int length = 0;
-	int maxtext = 33;
-	char *s, line[33];
+	char *s, line[MAXREAD];
 	int nonempty = 0;
+	int length = 0;
 
-	length = read_a_text_line(FP, moduleRefdes, maxtext); /* this breaks mildly with excess newlines */
-	if (length == 0) {
+	if (fgets(moduleRefdes, sizeof(moduleRefdes), FP) == NULL) {
 		strcpy(moduleRefdes, "unknown");
 	}
+	s = moduleRefdes;
+	rtrim(s); /* avoid rendering oddities on layout */
 	pcb_trace("Found component refdes : %s\n", moduleRefdes);
-	length = read_a_text_line(FP, moduleName, maxtext);
-	if (length == 0) {
+	if (fgets(moduleName, sizeof(moduleName), FP) == NULL) {
 		strcpy(moduleName, "unknown");
 	}
-	pcb_trace("ModuleRefdes: %s\n", moduleRefdes);
+	s = moduleName;
+	rtrim(s); /* avoid rendering oddities on layout */
 	pcb_trace("Found component name : %s\n", moduleName);
-	length = read_a_text_line(FP, moduleValue, maxtext);
-		if (length == 0) {
+	if (fgets(moduleValue, sizeof(moduleValue), FP) == NULL) {
 		strcpy(moduleValue, "unknown");
 	}
+	s = moduleValue;
+	rtrim(s); /* avoid rendering oddities on layout */
 	pcb_trace("Found component description : %s\n", moduleValue);
 
 /* with the header read, we now ignore the locations for the text fields in the next two lines... */
 /* we also allow up to two empty lines in case of extra newlines */
-	length = read_a_text_line(FP, line, maxtext);
-	if (length == 0) {
-		read_a_text_line(FP, line, maxtext);
+	if (fgets(line, sizeof(line), FP) == NULL) {
+		fgets(line, sizeof(line), FP);
 	}
-	length = read_a_text_line(FP, line, maxtext);
-	if (length == 0) {
-		read_a_text_line(FP, line, maxtext);
+	if (fgets(line, sizeof(line), FP) == NULL) {
+		fgets(line, sizeof(line), FP);
 	}
 
-	if (!autotrax_bring_back_eight_track(FP, results, coordresultcount)) {
-		pcb_trace("error parsing component coordinates\n");
-		return -1;
-	}
-	moduleX = PCB_MIL_TO_COORD(results[0]);
-	pcb_trace("Found moduleX : %ld\n", moduleX);
-	moduleY = PCB_MIL_TO_COORD(results[1]);
-	pcb_trace("Found moduleY : %ld\n", moduleY);
+        if (fgets(line, sizeof(line), FP) != NULL) {
+                int argc;
+                char **argv, *s;
+                s = line;
+                ltrim(s);
+                rtrim(s);
+                argc = qparse2(s, &argv, 0);
+                if (argc >= 2) {
+                        moduleX = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found COMP moduleX : %ld\n", moduleX);
+                        moduleY = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+                        valid &= success;
+                        pcb_trace("Found COMP moduleY : %ld\n", moduleY);
+                        qparse_free(argc, &argv);
+                } else {
+                        qparse_free(argc, &argv);
+                        pcb_trace("error: insufficient COMP attribute fields\n");
+                        return -1;
+                }
+        }
+
+        if (! valid) {
+                pcb_trace("error: COMP attributes unable to be parsed:\n\t%s\n", line);
+                return -1;
+        }
+
 	
 	pcb_trace("Have new module name and location, defining module/element %s\n", moduleName);
 	newModule = pcb_element_new(st->PCB->Data, NULL, 
@@ -888,12 +994,12 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 								refdesScaling, TextFlags, pcb_false);
 
 	while (!feof(FP)) {
-		length = read_a_text_line(FP, line, maxtext);
-		if (length == 0) {
-			length = read_a_text_line(FP, line, maxtext);
+		if (fgets(line, sizeof(line), FP) == NULL) {
+			fgets(line, sizeof(line), FP);
 		}
 		nonempty = 0;
 		s = line;
+		length = strlen(line);
 		if (length >= 7) {
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
 				pcb_trace("Finished parsing component\n");
@@ -943,7 +1049,6 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	int length = 0;
 	int finished = 0;
 	int netdefs = 0;
-	int maxtext = 1024;
 	char line[1024];
 	char *s;
 
@@ -959,11 +1064,12 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	htsi_init(&st.layer_protel2i, strhash, strkeyeq);
 
 	while (!feof(FP) && !finished) {
-		length = read_a_text_line(FP, line, maxtext);
-		if (length == 0) { /* deal with up to one additional newline per line*/
-			length = read_a_text_line(FP, line, maxtext);
-		}
+		if (fgets(line, sizeof(line), FP) == NULL) {
+                      fgets(line, sizeof(line), FP);
+                }
 		s = line;
+		rtrim(s);
+		length = strlen(line);
 		if (length >= 10) {
 			if (strncmp(line, "PCB FILE 4", 10) == 0 ) {
 				pcb_trace("Found Protel Autotrax version 4\n");
