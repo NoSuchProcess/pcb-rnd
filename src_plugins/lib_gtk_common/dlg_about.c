@@ -86,6 +86,7 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	gtk_about_dialog_set_documenters(about, NULL);
 	gtk_about_dialog_set_translator_credits(about, _("translator-credits"));
 
+	gtk_window_set_transient_for(GTK_WINDOW(w), GTK_WINDOW(top_window));
 	gtk_dialog_run(GTK_DIALOG(w));
 	gtk_widget_destroy(w);
 }
