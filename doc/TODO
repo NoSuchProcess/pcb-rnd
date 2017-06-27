@@ -40,6 +40,7 @@ For the next release:
 	- undo on new layer from right-click menu in gtk layerselk doesn't work
 	- replace default font with OSI lht font, load a file with embedded default font -> get both fonts in the same slot [report: miloh]
 	- place via, rect around it, thermal; select all, ctrl+x -> crash; ctrl+c doesn't
+- csect can't make a layer outline
 - gtk layersel feature requests:
 	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - cleanup: remove mnemonic from the menu system
