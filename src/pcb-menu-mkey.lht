@@ -363,7 +363,7 @@ ha:{
 		ha:Buffer {
 			m=B
 			li:submenu {
-				ha:Cut selection to buffer = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
+				ha:Cut selection to buffer = { li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer) } }
 				ha:Paste buffer to layout  = { action=Mode(PasteBuffer) }
 				-
 				ha:Rotate buffer 90 deg CCW   = { a={{<key>e; <key>r}; {Shift<Key>F7};}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
