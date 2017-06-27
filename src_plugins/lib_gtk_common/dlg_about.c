@@ -47,7 +47,7 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	GtkAboutDialog *about = GTK_ABOUT_DIALOG(w);
 
 	/* Add the compile options button */
-	button = gtk_button_new_from_stock(_("_Options"));
+	button = gtk_button_new_with_mnemonic(_("_Options"));
 	/*gtk_widget_set_can_default(button, TRUE);*/
 	gtk_widget_show(button);
 	action_area = gtk_dialog_get_action_area(GTK_DIALOG(about));
