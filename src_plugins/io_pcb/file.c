@@ -481,7 +481,7 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
  */
 static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
 {
-	unsigned long lflg = pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, layer));
+	unsigned long lflg = pcb_layer_flags_(PCB, layer);
 	/* The old PCB format encodes some properties in layer names - have to
 	   alter the real layer name before save to get the same effect */
 	if (lflg & PCB_LYT_OUTLINE) {

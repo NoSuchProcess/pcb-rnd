@@ -51,6 +51,7 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	/*gtk_widget_set_can_default(button, TRUE);*/
 	gtk_widget_show(button);
 
+#if 0
 #ifdef PCB_GTK3
 	action_area = gtk_dialog_get_header_bar(GTK_DIALOG(about));
 	gtk_container_add (GTK_CONTAINER (action_area), button);
@@ -58,6 +59,7 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	action_area = gtk_dialog_get_action_area(GTK_DIALOG(about));
 	gtk_box_pack_end(GTK_BOX(action_area), button, FALSE, TRUE, 0);
 	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX(action_area), button, TRUE);
+#endif
 #endif
 	g_signal_connect(button, "clicked", G_CALLBACK(display_options_dialog), about);
 

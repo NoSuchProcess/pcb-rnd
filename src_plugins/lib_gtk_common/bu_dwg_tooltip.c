@@ -59,7 +59,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 		return NULL;
 
 	/* don't mess with silk objects! */
-	if ((type & PCB_SILK_TYPE) && (pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1)) & PCB_LYT_SILK))
+	if ((type & PCB_SILK_TYPE) && (pcb_layer_flags_(PCB, (pcb_layer_t *) ptr1) & PCB_LYT_SILK))
 		return NULL;
 
 	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD)
