@@ -69,6 +69,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	pcb_subcop_add_to_buffer
 };
 
+#warning TODO: rename this; move_to_buffer is also used to move from buffer to pcb
 static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_lineop_move_to_buffer,
 	pcb_textop_move_to_buffer,
