@@ -155,22 +155,19 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
 		} else {
-			pcb_trace("error: insufficient free string attribute fields\n");
-			pcb_message(PCB_MSG_ERROR, "Insufficient free string attribute fields, file:%d\n", st->lineno);
+			pcb_message(PCB_MSG_ERROR, "Insufficient free string attribute fields, %s:%d\n", st->Filename, st->lineno);
 			qparse_free(argc, &argv);
 			return -1;
 		}
 	}
 
 	if (! valid) {
-		pcb_trace("error: text field attributes unable to be parsed:\n\t%s\n", line);
-		pcb_message(PCB_MSG_ERROR, "Failed to parse text attribute fields, file:%d\n", st->lineno);
+		pcb_message(PCB_MSG_ERROR, "Failed to parse text attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-		pcb_trace("error parsing free string text line; empty field\n");
-		pcb_message(PCB_MSG_ERROR, "Empty free string text field, file:%d\n", st->lineno);
+		pcb_message(PCB_MSG_ERROR, "Empty free string text field, %s:%d\n", st->Filename, st->lineno);
 		strcpy(line, "(empty text field)");
 	} /* this helps the parser fail more gracefully if excessive newlines, or empty text field */
 
@@ -198,8 +195,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			/* this may change with subcircuits */
 			return 1;
 		} else if (strlen(t) == 0){
-			pcb_trace("\tempty text not placed on layout\n");
-			pcb_message(PCB_MSG_ERROR, "Empty free string not placed on layout, file:%d\n", st->lineno);
+			pcb_message(PCB_MSG_ERROR, "Empty free string not placed on layout, %s:%d\n", st->Filename, st->lineno);
 			return 0;
 		} 
 	}
@@ -249,16 +245,14 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
 		} else {
-			pcb_trace("error: insufficient track attribute fields\n");
-			pcb_message(PCB_MSG_ERROR, "Insufficient track attribute fields, file:%d\n", st->lineno);
+			pcb_message(PCB_MSG_ERROR, "Insufficient track attribute fields, %s:%d\n", st->Filename, st->lineno);
 			qparse_free(argc, &argv);
 			return -1;
 		}
 	}
 
 	if (! valid) {
-		pcb_trace("error: track attributes unable to be parsed:\n\t%s\n", line);
-		pcb_message(PCB_MSG_ERROR, "Failed to parse track attribute fields, file:%d\n", st->lineno);
+		pcb_message(PCB_MSG_ERROR, "Failed to parse track attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -325,15 +319,13 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 			qparse_free(argc, &argv);
 		} else { 
 			qparse_free(argc, &argv);
-			pcb_trace("error: insufficient arc attribute fields\n");
-			pcb_message(PCB_MSG_ERROR, "Insufficient arc attribute fields, file:%d\n", st->lineno);
+			pcb_message(PCB_MSG_ERROR, "Insufficient arc attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (! valid) {
-		pcb_message(PCB_MSG_ERROR, "Unable to parse arc attribute fields, file:%d\n", st->lineno);
-		pcb_trace("error: arc attributes unable to be parsed:\n\t%s\n", line);
+		pcb_message(PCB_MSG_ERROR, "Unable to parse arc attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -455,15 +447,13 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient via attribute fields, file:%d\n", st->lineno);
-			pcb_trace("error: insufficient via attribute fields\n");
+			pcb_message(PCB_MSG_ERROR, "Insufficient via attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (! valid) {
-		pcb_message(PCB_MSG_ERROR, "Unable to parse via attribute fields, file:%d\n", st->lineno);
-		pcb_trace("error: via attributes unable to be parsed:\n\t%s\n", line);
+		pcb_message(PCB_MSG_ERROR, "Unable to parse via attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -540,23 +530,20 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, file:%d\n", st->lineno);
-			pcb_trace("error: insufficient pad attribute fields\n");
+			pcb_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (! valid) {
-		pcb_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, file:%d\n", st->lineno);
-		pcb_trace("error: pad attributes unable to be parsed:\n\t%s\n", line);
+		pcb_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
 /* now find name as string on next line and copy it */
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error parsing pad text field line, file:%d\n", st->lineno);
-		pcb_trace("error parsing pad free string text line; empty\n");
+		pcb_message(PCB_MSG_ERROR, "Error parsing pad text field line, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 	s = line;
@@ -567,15 +554,15 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	   planes specified in protel autotrax (seems rare though)
 	   so we warn the user is this is the case */ 
 	switch (Connects) {
-		case 1:	pcb_message(PCB_MSG_ERROR, "pin clears PWR/GND, file:%d.\n", st->lineno);
+		case 1:	pcb_message(PCB_MSG_ERROR, "pin clears PWR/GND, %s:%d.\n", st->Filename, st->lineno);
 			break;
-		case 2: pcb_message(PCB_MSG_ERROR, "pin requires relief to GND plane, file:%d.\n", st->lineno);
+		case 2: pcb_message(PCB_MSG_ERROR, "pin requires relief to GND plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
-		case 4: pcb_message(PCB_MSG_ERROR, "pin requires relief to PWR plane, file:%d.\n", st->lineno);
+		case 4: pcb_message(PCB_MSG_ERROR, "pin requires relief to PWR plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
-		case 3: pcb_message(PCB_MSG_ERROR, "pin should connect to PWR plane, file:%d.\n", st->lineno);
+		case 3: pcb_message(PCB_MSG_ERROR, "pin should connect to PWR plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
-		case 5: pcb_message(PCB_MSG_ERROR, "pin should connect to GND plane, file:%d.\n", st->lineno);
+		case 5: pcb_message(PCB_MSG_ERROR, "pin should connect to GND plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
 	}
 
@@ -633,8 +620,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_trace("\tnew component pad/hole created; need to check connects\n");
 		return 1;
 	}
-	pcb_message(PCB_MSG_ERROR, "Failed to parse new pad, file:%d\n", st->lineno);
-	pcb_trace("\tfailed to parse new pad/hole CP/FP\n");	
+	pcb_message(PCB_MSG_ERROR, "Failed to parse new pad, %s:%d\n", st->Filename, st->lineno);
 	return -1;
 }
 
@@ -678,23 +664,20 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient fill attribute fields, file:%d\n", st->lineno);
-			pcb_trace("error: insufficient fill attribute fields\n");
+			pcb_message(PCB_MSG_ERROR, "Insufficient fill attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (! valid) {
-		pcb_message(PCB_MSG_ERROR, "Fill attribute fields unable to be parsed, file:%d\n", st->lineno);
-		pcb_trace("error: fill attributes unable to be parsed:\n\t%s\n", line);
+		pcb_message(PCB_MSG_ERROR, "Fill attribute fields unable to be parsed, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
 	if (PCB_layer >= 0 && el == NULL) {
 		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCB_layer], flags);
 	} else if (PCB_layer < 0 && el == NULL){
-		pcb_message(PCB_MSG_ERROR, "Invalid free fill layer found, file:%d\n", st->lineno);
-		pcb_trace("Invalid free fill layer found : %d\n", PCB_layer);
+		pcb_message(PCB_MSG_ERROR, "Invalid free fill layer found, %s:%d\n", st->Filename, st->lineno);
 	}
 
 	if (polygon != NULL && el == NULL && st != NULL) { /* a free fill, not in an element */ 
@@ -864,8 +847,7 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 		pcb_trace("new netlist being added: %s.\n", line);
 		netname = pcb_strdup(line);
 	} else {
-		pcb_message(PCB_MSG_ERROR, "Empty netlist name found, file:%d\n", st->lineno);
-		pcb_trace("empty netlist name found.\n");
+		pcb_message(PCB_MSG_ERROR, "Empty netlist name found, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 	fgetline(line, sizeof(line), FP, st->lineno);
@@ -879,12 +861,10 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 			in_comp = 1;
 			while (in_comp) {
 				if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Empty line in netlist COMP, file:%d\n", st->lineno);
-					pcb_trace("Unexpected empty line in netlist component def.\n");
+					pcb_message(PCB_MSG_ERROR, "Empty line in netlist COMP, %s:%d\n", st->Filename, st->lineno);
 				} else {
 					if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-						pcb_message(PCB_MSG_ERROR, "Empty netlist REFDES, file:%d\n", st->lineno);
-						pcb_trace("Unexpected empty REFDES.\n");
+						pcb_message(PCB_MSG_ERROR, "Empty netlist REFDES, %s:%d\n", st->Filename, st->lineno);
 					} else {
 						s = line;
 						rtrim(s);
@@ -893,8 +873,7 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 						sattr.refdes = pcb_strdup(line);
 					}
 					if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-						pcb_message(PCB_MSG_ERROR, "Empty NETDEF package, file:%d\n", st->lineno);
-						pcb_trace("Unexpected empty PACKAGE.\n");
+						pcb_message(PCB_MSG_ERROR, "Empty NETDEF package, %s:%d\n", st->Filename, st->lineno);
 						free(sattr.footprint);
 						sattr.footprint = pcb_strdup("unknown");
 					} else {
@@ -946,7 +925,7 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 				}
 			}
 		} else if (length >= 6 && strncmp(line, "ENDPCB", 6) == 0 ) {
-			pcb_trace("End of protel Autotrax file found in netlist section?!\n");
+			pcb_message(PCB_MSG_ERROR, "End of protel Autotrax file found in netlist section?!, %s:%d\n", st->Filename, st->lineno);
 			endpcb = 1; /* if we get here, something went wrong */
 		}
 	}
@@ -1019,15 +998,13 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient COMP attribute fields, file:%d\n", st->lineno);
-			pcb_trace("error: insufficient COMP attribute fields\n");
+			pcb_message(PCB_MSG_ERROR, "Insufficient COMP attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (! valid) {
-		pcb_message(PCB_MSG_ERROR, "Unable to parse COMP attributes, file:%d\n", st->lineno);
-		pcb_trace("error: COMP attributes unable to be parsed:\n\t%s\n", line);
+		pcb_message(PCB_MSG_ERROR, "Unable to parse COMP attributes, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -1052,8 +1029,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 				if (!nonempty) { /* could try and use module empty function here */
 					Thickness = PCB_MM_TO_COORD(0.200);
 					pcb_element_line_new(new_module, module_X, module_Y, module_X+1, module_Y+1, Thickness);
-					pcb_trace("\tEmpty Module!! 1nm line created at module centroid.\n");
-					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, file:%d\n", st->lineno);
+					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, %s:%d\n", st->Filename, st->lineno);
 				}
 				pcb_element_bbox(st->PCB->Data, new_module, pcb_font(PCB, 0, 1));
 				return 0;
