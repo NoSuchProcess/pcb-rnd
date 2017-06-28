@@ -558,7 +558,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	int n;
 	pcb_board_t *dst_top = pcb_data_get_top(ctx->buffer.dst);
-	int dst_is_pcb = (dst_top->Data == ctx->buffer.dst);
+	int dst_is_pcb = ((dst_top != NULL) && (dst_top->Data == ctx->buffer.dst));
 
 	EraseSubc(sc);
 
