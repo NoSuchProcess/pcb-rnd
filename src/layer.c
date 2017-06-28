@@ -115,25 +115,10 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
-	unsigned int flags;
+	unsigned int flags = pcb_layer_flags_(pcb, layer);
 
-#warning subc TODO: centralize this (flags/type lookup by layer pointer)
-	if (PCB_LAYER_IS_REAL(layer)) {
-		pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
-
-		if (lid < 0)
-			return 1;
-
-		flags = pcb_layer_flags(pcb, lid);
-	}
-	else {
-		if (layer->meta.bound.real != NULL) {
-			pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
-			flags = pcb_layer_flags(pcb, lid);
-		}
-		else
-			flags = layer->meta.bound.type;
-	}
+	if (flags == 0)
+		return 1;
 
 	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_TOP)) { /* if our layer is the top copper layer and we have an element pad on it, it's non-empty */
 		PCB_PAD_ALL_LOOP(pcb->Data);
@@ -215,6 +200,28 @@ unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx)
 
 	l = &pcb->Data->Layer[layer_idx];
 	return pcb_layergrp_flags(pcb, l->grp);
+}
+
+unsigned int pcb_layer_flags_(pcb_board_t *pcb, pcb_layer_t *layer)
+{
+	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
+	if (PCB_LAYER_IS_REAL(layer)) {
+		pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
+
+		if (lid < 0)
+			return 0;
+
+		return pcb_layer_flags(pcb, lid);
+	}
+
+	/* bound layer: if it is already bound to a real layer, use that, whatever it is (manual binding may override our local type match pattern) */
+	if (layer->meta.bound.real != NULL) {
+		pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
+		return pcb_layer_flags(pcb, lid);
+	}
+
+	/* bound layer without a real layer binding: use the type match */
+	return layer->meta.bound.type;
 }
 
 #define APPEND(n) \
