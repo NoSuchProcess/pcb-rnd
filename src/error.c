@@ -84,7 +84,7 @@ void pcb_trace(const char *Format, ...)
 #ifndef NDEBUG
 	va_list args;
 	va_start(args, Format);
-	vfprintf(stderr, Format, args);
+	pcb_vfprintf(stderr, Format, args);
 	va_end(args);
 #endif
 }
