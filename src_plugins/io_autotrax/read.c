@@ -107,14 +107,14 @@ static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer);
 /* autotrax_free_text/component_text */
 static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
-	int heightMil;
-	int AutotraxLayer;
+	int height_mil;
+	int autotrax_layer;
 	char line[MAXREAD], *t;
 	pcb_coord_t X, Y, linewidth;
 	int scaling = 100;
 	unsigned direction = 0; /* default is horizontal */
 	pcb_flag_t Flags = pcb_flag_make(0); /* default */
-	int PCBLayer = 0; /* sane default value */
+	int PCB_layer = 0; /* sane default value */
 
 	if (fgets(line, sizeof(line), FP) != NULL) {
 		int argc;
@@ -129,16 +129,16 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			pcb_trace("Found free text X : %ld\n", X);
 			Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", NULL);
 			pcb_trace("Found free text Y : %ld\n", Y);
-			heightMil = pcb_get_value_ex(argv[2], NULL, NULL, NULL, NULL, NULL);
-			scaling = (100*heightMil)/60;
-			pcb_trace("Found free text height(mil) : %d, giving scaling: %d\n", heightMil, scaling);
+			height_mil = pcb_get_value_ex(argv[2], NULL, NULL, NULL, NULL, NULL);
+			scaling = (100*height_mil)/60;
+			pcb_trace("Found free text height(mil) : %d, giving scaling: %d\n", height_mil, scaling);
 			direction = pcb_get_value_ex(argv[3], NULL, NULL, NULL, NULL, NULL);
 			pcb_trace("Found free text rotation : %d\n", direction);
 			linewidth = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", NULL);
 			pcb_trace("Found free text linewidth : %ld\n", linewidth);
-			AutotraxLayer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, NULL);
-			PCBLayer = autotrax_get_layeridx(st, AutotraxLayer);
-			pcb_trace("Found free text layer : %d\n", PCBLayer);
+			autotrax_layer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, NULL);
+			PCB_layer = autotrax_get_layeridx(st, autotrax_layer);
+			pcb_trace("Found free text layer : %d\n", PCB_layer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
 		} else {
@@ -160,17 +160,17 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	/* # TODO - ABOUT HERE, CAN DO ROTATION/DIRECTION CONVERSION */
 
-	if (AutotraxLayer == 6 || AutotraxLayer == 8) {
+	if (autotrax_layer == 6 || autotrax_layer == 8) {
 		Flags = pcb_flag_make(PCB_FLAG_ONSOLDER | PCB_FLAG_CLEARLINE); 
-	}
-	if ((AutotraxLayer >= 1 && AutotraxLayer <= 8) || AutotraxLayer == 9 || AutotraxLayer == 10) {
+	} else if ((autotrax_layer >= 1 && autotrax_layer <= 5)
+				|| autotrax_layer == 7 || autotrax_layer == 9 || autotrax_layer == 10) {
 		Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 	} /* flags do not seem to be honoured */
 
-	if (PCBLayer >= 0) {
+	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
-			pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, t, Flags);
-			pcb_trace("\tnew free text on layer %d created\n", PCBLayer);
+			pcb_text_new( &st->PCB->Data->Layer[PCB_layer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, t, Flags);
+			pcb_trace("\tnew free text on layer %d created\n", PCB_layer);
 			return 1;
 		} else if (el != NULL && st != NULL) {
 			pcb_trace("\ttext within component not supported\n");
@@ -190,7 +190,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	char line[MAXREAD];
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer = 0; /* sane default value */
+	int PCB_layer = 0; /* sane default value */
 	int success;
 	int valid = 1;
 
@@ -220,10 +220,10 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			pcb_trace("Found track linewidth : %ld\n", Thickness);
-			PCBLayer = autotrax_get_layeridx(st,
+			PCB_layer = autotrax_get_layeridx(st,
 					pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success));
 			valid &= success;
-			pcb_trace("Found track layer : %d\n", PCBLayer);
+			pcb_trace("Found track layer : %d\n", PCB_layer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
 		} else {
@@ -238,11 +238,11 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 		return -1;
 	}
 
-	if (PCBLayer >= 0) {
+	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
-			pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2,
+			pcb_line_new( &st->PCB->Data->Layer[PCB_layer], X1, Y1, X2, Y2,
 				Thickness, Clearance, Flags);
-			pcb_trace("\tnew free line on layer %d created\n", PCBLayer);
+			pcb_trace("\tnew free line on layer %d created\n", PCB_layer);
 			return 1;
 		} else if (el != NULL && st != NULL) {
 			pcb_element_line_new(el, X1, Y1, X2, Y2, Thickness);
@@ -262,11 +262,11 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int valid = 1;
 
 	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
-	pcb_angle_t startAngle = 0.0;
+	pcb_angle_t start_angle = 0.0;
 	pcb_angle_t delta = 360.0;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer = 0; /* sane default value */
+	int PCB_layer = 0; /* sane default value */
 
 	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
@@ -293,10 +293,10 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			pcb_trace("Found arc linewidth : %ld\n", Thickness);
-			PCBLayer = autotrax_get_layeridx(st,
+			PCB_layer = autotrax_get_layeridx(st,
 					pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success));
 			valid &= success;
-			pcb_trace("Found arc layer : %d\n", PCBLayer);
+			pcb_trace("Found arc layer : %d\n", PCB_layer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
 		} else { 
@@ -324,63 +324,63 @@ TODO: This needs further testing to ensure the refererence
 document used reflects actual outputs from protel autotrax
 */
 	if (segments == 10) { /* LU + RL quadrants */
-		startAngle = 90.0;
+		start_angle = 90.0;
 		delta = 90.0;
-		pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
-		startAngle = 270.0;
+		pcb_arc_new( &st->PCB->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		start_angle = 270.0;
 	} else if (segments == 5) { /* RU + LL quadrants */
-		startAngle = 0.0;
+		start_angle = 0.0;
 		delta = 90.0;
-		pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
-		startAngle = 180.0;
+		pcb_arc_new( &st->PCB->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		start_angle = 180.0;
 	} else if (segments >= 15) { /* whole circle */
-		startAngle = 0.0;
+		start_angle = 0.0;
 		delta = 360.0;
 	} else if (segments == 1) { /* RU quadrant */
-		startAngle = 180.0;
+		start_angle = 180.0;
 		delta = 90.0;
 	} else if (segments == 2) { /* LU quadrant */
-		startAngle = 270.0;
+		start_angle = 270.0;
 		delta = 90.0;
 	} else if (segments == 4) { /* LL quadrant */
-		startAngle = 0.0;
+		start_angle = 0.0;
 		delta = 90.0;
 	} else if (segments == 8) { /* RL quadrant */
-		startAngle = 90.0;
+		start_angle = 90.0;
 		delta = 90.0;
 	} else if (segments == 3) { /* Upper half */
-		startAngle = 180.0;
+		start_angle = 180.0;
 		delta = -180.0; /* this seems to fix IC notches */
 	} else if (segments == 6) { /* Left half */
-		startAngle = 270.0;
+		start_angle = 270.0;
 		delta = 180.0;
 	} else if (segments == 12) { /* Lower half */
-		startAngle = 0.0;
+		start_angle = 0.0;
 		delta = -180.0;  /* this seems to fix IC notches */
 	} else if (segments == 9) { /* Right half */
-		startAngle = 90.0;
+		start_angle = 90.0;
 		delta = 180.0;
 	} else if (segments == 14) { /* not RUQ */
-		startAngle = -90.0;
+		start_angle = -90.0;
 		delta = 270.0;
 	} else if (segments == 13) { /* not LUQ */
-		startAngle = 0.0;
+		start_angle = 0.0;
 		delta = 270.0;
 	} else if (segments == 11) { /* not LLQ */
-		startAngle = 90.0;
+		start_angle = 90.0;
 		delta = 270.0;
 	} else if (segments == 7) { /* not RLQ */
-		startAngle = 180.0;
+		start_angle = 180.0;
 		delta = 270.0;
 	}  
 
-	if (PCBLayer >= 0) {
+	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
-			pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
-			pcb_trace("\tnew free arc on layer %d created\n", PCBLayer);
+			pcb_arc_new( &st->PCB->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+			pcb_trace("\tnew free arc on layer %d created\n", PCB_layer);
 			return 1;
 		} else if (el != NULL && st != NULL) {
-			pcb_element_arc_new(el, centreX, centreY, width, height, startAngle, delta, Thickness);
+			pcb_element_arc_new(el, centreX, centreY, width, height, start_angle, delta, Thickness);
 			pcb_trace("\tnew arc in component created\n");
 			return 1;
 		}
@@ -453,7 +453,7 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 }
 
 /* autotrax_pcb free or component pad
-x y xsize ysize shape holesize pwr/gnd layer
+x y X_size Y_size shape holesize pwr/gnd layer
 padname
 may need to think about hybrid outputs, like pad + hole, to match possible features in protel autotrax
 */
@@ -463,13 +463,13 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	char line[MAXREAD], *s;
 	int Connects = 0;
 	int Shape = 0;
-	int AutotraxLayer = 0;
-	int PCBLayer = 0; /* sane default value */
+	int autotrax_layer = 0;
+	int PCB_layer = 0; /* sane default value */
 
 	int valid = 1;
 	int success;
 
-	pcb_coord_t X, Y, Xsize, Ysize, Thickness, Clearance, Mask, Drill; 
+	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill; 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 
 	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
@@ -492,12 +492,12 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			pcb_trace("Found pad Y : %ld\n", Y);
-			Xsize = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+			X_size = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			pcb_trace("Found pad Xsize : %ld\n", Xsize);
-			Ysize = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+			pcb_trace("Found pad X_size : %ld\n", X_size);
+			Y_size = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			pcb_trace("Found pad Ysize : %ld\n", Ysize);
+			pcb_trace("Found pad Y_size : %ld\n", Y_size);
 			Shape = pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success);
 			valid &= success;
 			pcb_trace("Found pad Shape : %ld\n", Shape);
@@ -507,10 +507,10 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Connects = pcb_get_value_ex(argv[6], NULL, NULL, NULL, NULL, &success);
 			valid &= success; /* which specifies GND or Power connection for pin/pad/via */
 			pcb_trace("Found pad Connects PWR/GND : %ld\n", Connects);
-			AutotraxLayer = pcb_get_value_ex(argv[7], NULL, NULL, NULL, NULL, &success);
-			PCBLayer = autotrax_get_layeridx(st, AutotraxLayer);
+			autotrax_layer = pcb_get_value_ex(argv[7], NULL, NULL, NULL, NULL, &success);
+			PCB_layer = autotrax_get_layeridx(st, autotrax_layer);
 			valid &= success;
-			pcb_trace("Found Autotrax and pcb-rnd pad layer : %d, %d\n", AutotraxLayer, PCBLayer);
+			pcb_trace("Found Autotrax and pcb-rnd pad layer : %d, %d\n", autotrax_layer, PCB_layer);
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
@@ -550,7 +550,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			break;
 	}
 
-	Thickness = MIN(Xsize, Ysize);
+	Thickness = MIN(X_size, Y_size);
 
 /* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
 	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
@@ -578,20 +578,20 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_trace("\tnew free pad/hole created; need to check connects\n");
 		return 0;
 	} else if (st != NULL && el != NULL) { /* pad within element */
-		if ((Shape == 2  || Shape == 4)  && AutotraxLayer == 6) { /* square (2) or rounded rect (4) on top layer */ 
+		if ((Shape == 2  || Shape == 4)  && autotrax_layer == 6) { /* square (2) or rounded rect (4) on top layer */ 
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); /* actually a rectangle, but... */
 		} else if ((Shape == 2  || Shape == 4)) { /* bottom layer */ 
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE); /*actually a rectangle, but... */
-		} else if (Shape == 3 && AutotraxLayer == 1) {/* top layer*/ 
+		} else if (Shape == 3 && autotrax_layer == 1) {/* top layer*/ 
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
-		} else if (Shape == 3 && AutotraxLayer == 6) {  /*bottom layer */
+		} else if (Shape == 3 && autotrax_layer == 6) {  /*bottom layer */
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
 		}		
 /* # TODO  not yet processing SMD pads - need examples to work with */
 		if (Shape == 2 && Drill == 0) {/* is probably SMD */
-/*			pcb_element_pad_new_rect(el, el->X - Xsize/2, el->Y - Ysize/2, Xsize/2 + el->X, Ysize/2 + el->Y, Clearance, 
+/*			pcb_element_pad_new_rect(el, el->X - X_size/2, el->Y - Y_size/2, X_size/2 + el->X, Y_size/2 + el->Y, Clearance, 
 				Clearance, line, linee, Flags);*/
-/*			pcb_element_pad_new_rect(el, X - Xsize/2, Y - Ysize/2, X + Xsize/2, Ysize/2 + Y, Clearance, 
+/*			pcb_element_pad_new_rect(el, X - X_size/2, Y - Y_size/2, X + X_size/2, Y_size/2 + Y, Clearance, 
 				Clearance, line, line, Flags);*/
 			return 1;
 		} else {
@@ -617,7 +617,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_polygon_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	pcb_coord_t X1, Y1, X2, Y2, Clearance;
-	int PCBLayer = 0;
+	int PCB_layer = 0;
 
 	Clearance = PCB_MIL_TO_COORD(10);
 
@@ -641,10 +641,10 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Y2 = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			pcb_trace("Found fill Y2 : %ld\n", Y2);
-			PCBLayer = autotrax_get_layeridx(st,
+			PCB_layer = autotrax_get_layeridx(st,
 					pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success));
 			valid &= success;
-			pcb_trace("Found fill layer : %d\n", PCBLayer);
+			pcb_trace("Found fill layer : %d\n", PCB_layer);
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
@@ -658,10 +658,10 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		return -1;
 	}
 
-	if (PCBLayer >= 0 && el == NULL) {
-		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
-	} else if (PCBLayer < 0 && el == NULL){
-		pcb_trace("Invalid free fill layer found : %d\n", PCBLayer);
+	if (PCB_layer >= 0 && el == NULL) {
+		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCB_layer], flags);
+	} else if (PCB_layer < 0 && el == NULL){
+		pcb_trace("Invalid free fill layer found : %d\n", PCB_layer);
 	}
 
 	if (polygon != NULL && el == NULL && st != NULL) { /* a free fill, not in an element */ 
@@ -669,14 +669,14 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_poly_point_new(polygon, X2, Y1);
 		pcb_poly_point_new(polygon, X2, Y2);
 		pcb_poly_point_new(polygon, X1, Y2);
-		pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCBLayer], polygon);
-		pcb_poly_init_clip(st->PCB->Data, &st->PCB->Data->Layer[PCBLayer], polygon);
+		pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCB_layer], polygon);
+		pcb_poly_init_clip(st->PCB->Data, &st->PCB->Data->Layer[PCB_layer], polygon);
 		return 1;
-	} else if (polygon == NULL && el != NULL && st != NULL && PCBLayer == 1 ) { /* in an element, top layer copper */
+	} else if (polygon == NULL && el != NULL && st != NULL && PCB_layer == 1 ) { /* in an element, top layer copper */
 		flags = pcb_flag_make(0);
 		pcb_element_pad_new_rect(el, X1, Y1, X2, Y2, Clearance, Clearance, "", "", flags);
 		return 1;
-	} else if (polygon == NULL && el != NULL && st != NULL && PCBLayer == 6 ) { /* in an element, bottom layer copper */
+	} else if (polygon == NULL && el != NULL && st != NULL && PCB_layer == 6 ) { /* in an element, bottom layer copper */
 		flags = pcb_flag_make(0);
 		pcb_element_pad_new_rect(el, X1, Y1, X2, Y2, Clearance, Clearance, "", "", flags);				
 		return 1;
@@ -768,38 +768,38 @@ static int autotrax_create_layers(read_state_t *st)
 /* Returns the pcb-rnd layer index for a autotrax_layer number, or -1 if not found */
 static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer)
 {
-	char *textName;
+	char *text_name;
 	htsi_entry_t *e;
 
 	switch (autotrax_layer) {
-		case 1:	textName = pcb_strdup("Top");
+		case 1:	text_name = pcb_strdup("Top");
 			break;
-		case 2:	textName = pcb_strdup("2");
+		case 2:	text_name = pcb_strdup("2");
 			break;
-		case 3:	textName = pcb_strdup("3");
+		case 3:	text_name = pcb_strdup("3");
 			break;
-		case 4:	textName = pcb_strdup("4");
+		case 4:	text_name = pcb_strdup("4");
 			break;
-		case 5:	textName = pcb_strdup("5");
+		case 5:	text_name = pcb_strdup("5");
 			break;
-		case 6:	textName = pcb_strdup("Bottom");
+		case 6:	text_name = pcb_strdup("Bottom");
 			break;
-		case 7:	textName = pcb_strdup("TopSilk");
+		case 7:	text_name = pcb_strdup("TopSilk");
 			break;
-		case 8:	textName = pcb_strdup("BottomSilk");
+		case 8:	text_name = pcb_strdup("BottomSilk");
 			break;
-		case 9:	textName = pcb_strdup("9");
+		case 9:	text_name = pcb_strdup("9");
 			break;
-		case 10:	textName = pcb_strdup("10");
+		case 10:	text_name = pcb_strdup("10");
 			break;
-		case 11:	textName = pcb_strdup("11");
+		case 11:	text_name = pcb_strdup("11");
 			break;
-		case 12:	textName = pcb_strdup("12");
+		case 12:	text_name = pcb_strdup("12");
 			break;
-		default: textName = pcb_strdup("13");
+		default: text_name = pcb_strdup("13");
 	}
 
-	e = htsi_getentry(&st->layer_protel2i, textName);
+	e = htsi_getentry(&st->layer_protel2i, text_name);
 	if (e == NULL)
 		return -1;
 	return e->value;
@@ -924,37 +924,37 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 {
 	int success;
 	int valid = 1;
-	int refdesScaling = 100;
-	pcb_coord_t moduleX, moduleY, Thickness;
+	int refdes_scaling = 100;
+	pcb_coord_t module_X, module_Y, Thickness;
 	unsigned direction = 0; /* default is horizontal */
-	char moduleName[MAXREAD], moduleRefdes[MAXREAD], moduleValue[MAXREAD];
-	pcb_element_t *newModule;
+	char module_name[MAXREAD], module_refdes[MAXREAD], module_value[MAXREAD];
+	pcb_element_t *new_module;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
+	pcb_flag_t text_flags = pcb_flag_make(0); /* start with something bland here */
 
 	char *s, line[MAXREAD];
 	int nonempty = 0;
 	int length = 0;
 
-	if (fgets(moduleRefdes, sizeof(moduleRefdes), FP) == NULL) {
-		strcpy(moduleRefdes, "unknown");
+	if (fgets(module_refdes, sizeof(module_refdes), FP) == NULL) {
+		strcpy(module_refdes, "unknown");
 	}
-	s = moduleRefdes;
+	s = module_refdes;
 	rtrim(s); /* avoid rendering oddities on layout */
-	pcb_trace("Found component refdes : %s\n", moduleRefdes);
-	if (fgets(moduleName, sizeof(moduleName), FP) == NULL) {
-		strcpy(moduleName, "unknown");
+	pcb_trace("Found component refdes : %s\n", module_refdes);
+	if (fgets(module_name, sizeof(module_name), FP) == NULL) {
+		strcpy(module_name, "unknown");
 	}
-	s = moduleName;
+	s = module_name;
 	rtrim(s); /* avoid rendering oddities on layout */
-	pcb_trace("Found component name : %s\n", moduleName);
-	if (fgets(moduleValue, sizeof(moduleValue), FP) == NULL) {
-		strcpy(moduleValue, "unknown");
+	pcb_trace("Found component name : %s\n", module_name);
+	if (fgets(module_value, sizeof(module_value), FP) == NULL) {
+		strcpy(module_value, "unknown");
 	}
-	s = moduleValue;
+	s = module_value;
 	rtrim(s); /* avoid rendering oddities on layout */
-	pcb_trace("Found component description : %s\n", moduleValue);
+	pcb_trace("Found component description : %s\n", module_value);
 
 /* with the header read, we now ignore the locations for the text fields in the next two lines... */
 /* we also allow up to two empty lines in case of extra newlines */
@@ -973,12 +973,12 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
 		if (argc >= 2) {
-			moduleX = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			module_X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			pcb_trace("Found COMP moduleX : %ld\n", moduleX);
-			moduleY = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+			pcb_trace("Found COMP module_X : %ld\n", module_X);
+			module_Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			pcb_trace("Found COMP moduleY : %ld\n", moduleY);
+			pcb_trace("Found COMP module_Y : %ld\n", module_Y);
 			qparse_free(argc, &argv);
 		} else {
 			qparse_free(argc, &argv);
@@ -993,12 +993,12 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 	}
 
 	
-	pcb_trace("Have new module name and location, defining module/element %s\n", moduleName);
-	newModule = pcb_element_new(st->PCB->Data, NULL, 
+	pcb_trace("Have new module name and location, defining module/element %s\n", module_name);
+	new_module = pcb_element_new(st->PCB->Data, NULL, 
 								pcb_font(st->PCB, 0, 1), Flags,
-								moduleName, moduleRefdes, moduleValue,
-								moduleX, moduleY, direction,
-								refdesScaling, TextFlags, pcb_false);
+								module_name, module_refdes, module_value,
+								module_X, module_Y, direction,
+								refdes_scaling, text_flags, pcb_false);
 
 	while (!feof(FP)) {
 		if (fgets(line, sizeof(line), FP) == NULL) {
@@ -1012,31 +1012,31 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 				pcb_trace("Finished parsing component\n");
 				if (!nonempty) { /* could try and use module empty function here */
 					Thickness = PCB_MM_TO_COORD(0.200);
-					pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
+					pcb_element_line_new(new_module, module_X, module_Y, module_X+1, module_Y+1, Thickness);
 					pcb_trace("\tEmpty Module!! 1nm line created at module centroid.\n");
 				}
-				pcb_element_bbox(st->PCB->Data, newModule, pcb_font(PCB, 0, 1));
+				pcb_element_bbox(st->PCB->Data, new_module, pcb_font(PCB, 0, 1));
 				return 0;
 			}
 		} else if (length >= 2) {
 			if (strncmp(s, "CT",2) == 0 ) {
 				pcb_trace("Found component track\n");
-				nonempty |= autotrax_parse_track(st, FP, newModule);
+				nonempty |= autotrax_parse_track(st, FP, new_module);
 			} else if (strncmp(s, "CA",2) == 0 ) {
 				pcb_trace("Found component arc\n");
-				nonempty |= autotrax_parse_arc(st, FP, newModule);
+				nonempty |= autotrax_parse_arc(st, FP, new_module);
 			} else if (strncmp(s, "CV",2) == 0 ) {
 				pcb_trace("Found component via\n");
-				nonempty |= autotrax_parse_via(st, FP, newModule);
+				nonempty |= autotrax_parse_via(st, FP, new_module);
 			} else if (strncmp(s, "CF",2) == 0 ) {
 				pcb_trace("Found component fill\n");
-				nonempty |= autotrax_parse_fill(st, FP, newModule);
+				nonempty |= autotrax_parse_fill(st, FP, new_module);
 			} else if (strncmp(s, "CP",2) == 0 ) {
 				pcb_trace("Found component pad\n");
-				nonempty |= autotrax_parse_pad(st, FP, newModule);
+				nonempty |= autotrax_parse_pad(st, FP, new_module);
 			} else if (strncmp(s, "CS",2) == 0 ) {
 				pcb_trace("Found component String\n");
-				nonempty |= autotrax_parse_text(st, FP, newModule);
+				nonempty |= autotrax_parse_text(st, FP, new_module);
 			}
 		}
 	}
@@ -1047,7 +1047,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int readres = 0;
-	pcb_box_t boardSize, *box;
+	pcb_box_t board_size, *box;
 	read_state_t st;
 	FILE *FP;
 
@@ -1132,7 +1132,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		pcb_hid_actionl("ElementList", "Done", NULL);
 	}
 	fclose(FP);
-	box = pcb_data_bbox(&boardSize, Ptr->Data);
+	box = pcb_data_bbox(&board_size, Ptr->Data);
 	pcb_trace("Maximum X, Y dimensions (mil) of imported Protel autotrax layout: %ld, %ld\n", box->X2, box->Y2);
 	Ptr->MaxWidth = box->X2;
 	Ptr->MaxHeight = box->Y2;
