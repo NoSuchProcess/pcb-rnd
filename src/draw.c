@@ -390,7 +390,6 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 {
 	pcb_draw_info_t info;
 	pcb_box_t scr2;
-	pcb_layer_id_t lid;
 	unsigned int lflg = 0;
 
 	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
@@ -421,9 +420,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	/* draw the layer text on screen */
 	pcb_r_search(Layer->text_tree, screen, NULL, draw_text_callback, Layer, NULL);
 
-	lid = pcb_layer_id(PCB->Data, Layer);
-	if (lid >= 0)
-		lflg = pcb_layer_flags(PCB, lid);
+	lflg = pcb_layer_flags_(PCB, Layer);
 
 	/* The implicit outline rectangle (or automatic outline rectanlge).
 	   We should check for pcb_gui->gui here, but it's kinda cool seeing the

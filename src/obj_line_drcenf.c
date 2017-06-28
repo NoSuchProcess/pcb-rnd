@@ -47,7 +47,7 @@ void pcb_line_adjust_attached(void)
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 	int flags = conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0;
 
-	if (conf_core.editor.auto_drc && (pcb_layer_flags(PCB,pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER))
+	if (conf_core.editor.auto_drc && (pcb_layer_flags_(PCB, CURRENT) & PCB_LYT_COPPER))
 		flags |= PCB_FLAG_FOUND;
 
 	/* I need at least one point */

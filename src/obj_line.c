@@ -598,7 +598,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	pcb_draw();
 	if (!PCB->ViaOn || ctx->move.more_to_come ||
 			pcb_layer_get_group_(Layer) ==
-			pcb_layer_get_group_(ctx->move.dst_layer) || !(pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, Layer)) & PCB_LYT_COPPER) || !(pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, ctx->move.dst_layer)) & PCB_LYT_COPPER))
+			pcb_layer_get_group_(ctx->move.dst_layer) || !(pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, Layer)) & PCB_LYT_COPPER) || !(pcb_layer_flags_(PCB, ctx->move.dst_layer) & PCB_LYT_COPPER))
 		return (newone);
 	/* consider via at Point1 */
 	sb.X1 = newone->Point1.X - newone->Thickness / 2;
