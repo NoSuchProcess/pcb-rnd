@@ -116,12 +116,24 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	unsigned int flags;
-	pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
 
-	if (lid < 0)
-		return 1;
+#warning subc TODO: centralize this (flags/type lookup by layer pointer)
+	if (PCB_LAYER_IS_REAL(layer)) {
+		pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
 
-	flags = pcb_layer_flags(pcb, lid);
+		if (lid < 0)
+			return 1;
+
+		flags = pcb_layer_flags(pcb, lid);
+	}
+	else {
+		if (layer->meta.bound.real != NULL) {
+			pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
+			flags = pcb_layer_flags(pcb, lid);
+		}
+		else
+			flags = layer->meta.bound.type;
+	}
 
 	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_TOP)) { /* if our layer is the top copper layer and we have an element pad on it, it's non-empty */
 		PCB_PAD_ALL_LOOP(pcb->Data);
