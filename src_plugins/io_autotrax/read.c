@@ -108,7 +108,7 @@ static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer);
 static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int heightMil;
-
+	int AutotraxLayer;
 	char line[MAXREAD], *t;
 	pcb_coord_t X, Y, linewidth;
 	int scaling = 100;
@@ -136,8 +136,8 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			pcb_trace("Found free text rotation : %d\n", direction);
 			linewidth = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", NULL);
 			pcb_trace("Found free text linewidth : %ld\n", linewidth);
-			PCBLayer = autotrax_get_layeridx(st,
-					pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, NULL)); 
+			AutotraxLayer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, NULL);
+			PCBLayer = autotrax_get_layeridx(st, AutotraxLayer);
 			pcb_trace("Found free text layer : %d\n", PCBLayer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
@@ -158,7 +158,14 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	ltrim(t);
 	rtrim(t); /*need to remove trailing '\r' to avoid rendering oddities */
 
-	/* ABOUT HERE, CAN DO ROTATION/DIRECTION CONVERSION */
+	/* # TODO - ABOUT HERE, CAN DO ROTATION/DIRECTION CONVERSION */
+
+	if (AutotraxLayer == 6 || AutotraxLayer == 8) {
+		Flags = pcb_flag_make(PCB_FLAG_ONSOLDER | PCB_FLAG_CLEARLINE); 
+	}
+	if ((AutotraxLayer >= 1 && AutotraxLayer <= 8) || AutotraxLayer == 9 || AutotraxLayer == 10) {
+		Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+	} /* flags do not seem to be honoured */
 
 	if (PCBLayer >= 0) {
 		if (el == NULL && st != NULL) {
