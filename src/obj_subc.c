@@ -289,12 +289,23 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
 
-pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy)
+#define MAYBE_KEEP_ID(dst, src) \
+do { \
+	if ((keep_ids) && (dst != NULL)) \
+		dst->ID = src->ID; \
+} while(0)
+
+pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy, pcb_bool keep_ids)
 {
 	pcb_board_t *src_pcb;
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
-	sc->ID = pcb_create_ID_get();
+
+	if (keep_ids)
+		sc->ID = src->ID;
+	else
+		sc->ID = pcb_create_ID_get();
+
 	minuid_cpy(sc->uid, src->uid);
 	PCB_SET_PARENT(sc->data, subc, sc);
 	PCB_SET_PARENT(sc, data, dst);
@@ -344,6 +355,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 		linelist_foreach(&sl->Line, &it, line) {
 			nline = pcb_line_dup_at(dl, line, dx, dy);
+			MAYBE_KEEP_ID(nline, line);
 			if (nline != NULL) {
 				PCB_SET_PARENT(nline, layer, dl);
 				pcb_box_bump_box(&sc->BoundingBox, &nline->BoundingBox);
@@ -352,6 +364,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 		arclist_foreach(&sl->Arc, &it, arc) {
 			narc = pcb_arc_dup_at(dl, arc, dx, dy);
+			MAYBE_KEEP_ID(narc, arc);
 			if (narc != NULL) {
 				PCB_SET_PARENT(narc, layer, dl);
 				pcb_box_bump_box(&sc->BoundingBox, &narc->BoundingBox);
@@ -360,6 +373,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 		textlist_foreach(&sl->Text, &it, text) {
 			ntext = pcb_text_dup_at(dl, text, dx, dy);
+			MAYBE_KEEP_ID(ntext, text);
 			if (ntext != NULL) {
 				PCB_SET_PARENT(ntext, layer, dl);
 				pcb_box_bump_box(&sc->BoundingBox, &ntext->BoundingBox);
@@ -382,6 +396,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 		pinlist_foreach(&src->data->Via, &it, via) {
 			nvia = pcb_via_dup_at(sc->data, via, dx, dy);
+			MAYBE_KEEP_ID(nvia, via);
 			if (nvia != NULL)
 				pcb_box_bump_box(&sc->BoundingBox, &nvia->BoundingBox);
 		}
@@ -396,6 +411,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
 			npoly = pcb_poly_dup_at(dl, poly, dx, dy);
+			MAYBE_KEEP_ID(npoly, poly);
 			if (npoly != NULL) {
 				PCB_SET_PARENT(npoly, layer, dl);
 				pcb_box_bump_box(&sc->BoundingBox, &npoly->BoundingBox);
@@ -418,7 +434,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 {
-	return pcb_subc_dup_at(pcb, dst, src, 0, 0);
+	return pcb_subc_dup_at(pcb, dst, src, 0, 0, pcb_false);
 }
 
 void pcb_subc_bbox(pcb_subc_t *sc)
@@ -515,7 +531,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 {
 	pcb_subc_t *sc;
 
-	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY);
+	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY, pcb_false);
 
 	pcb_undo_add_obj_to_create(PCB_TYPE_SUBC, sc, sc, sc);
 
@@ -659,7 +675,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_t *nsc;
-	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0);
+	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0, pcb_true);
 	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED)
 		pcb_subc_select(NULL, nsc, PCB_CHGFLG_CLEAR, 0);
 	return nsc;
@@ -848,7 +864,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 	}
 
 	/* place the new subc */
-	newsc2 = pcb_subc_dup_at(PCB, PCB->Data, newsc, 0, 0);
+	newsc2 = pcb_subc_dup_at(PCB, PCB->Data, newsc, 0, 0, pcb_true);
 	newsc2->ID = newsc->ID;
 	pcb_undo_add_subc_to_otherside(PCB_TYPE_SUBC, newsc2, newsc2, newsc2, yoff);
 
