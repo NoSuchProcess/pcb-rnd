@@ -66,6 +66,10 @@
 			*end = '\0'; \
 	} while(0)
 
+/* read the next line, increasing the line number lineno */
+#define fgetline(s, size, stream, lineno) \
+	((lineno)++,fgets((s), (size), (stream)))
+
 /* the following sym_attr_t struct, #define... and sym_flush() routine could go in a shared lib */
 
 typedef struct {
@@ -98,6 +102,7 @@ typedef struct {
 	const char *Filename;
 	conf_role_t settings_dest;
 	htsi_t layer_protel2i; /* protel layer name-to-index hash; name is the protel layer, index is the pcb-rnd layer index */
+	int lineno;
 } read_state_t;
 
 static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
@@ -116,7 +121,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_flag_t Flags = pcb_flag_make(0); /* default */
 	int PCB_layer = 0; /* sane default value */
 
-	if (fgets(line, sizeof(line), FP) != NULL) {
+	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
 		char **argv, *s;
 
@@ -1068,6 +1073,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.PCB = Ptr;
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
+	st.lineno = 0;
 	htsi_init(&st.layer_protel2i, strhash, strkeyeq);
 
 	while (!feof(FP) && !finished) {
