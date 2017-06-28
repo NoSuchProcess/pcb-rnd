@@ -29,12 +29,10 @@
 #include "board.h"
 #include "plug_io.h"
 #include "error.h"
-#include "../io_kicad/uniq_name.h"
 #include "data.h"
 #include "write.h"
 #include "layer.h"
 #include "const.h"
-/*#include "netlist.h"*/
 #include "obj_all.h"
 
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
@@ -49,7 +47,7 @@ int write_autotrax_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset,
 	int viaDrillMil = 25; /* a reasonable default */
 	/* write information about via */
 	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "FV\n%.0ml %.0ml %.0ml %d\n", /* testing kicad printf */
+		pcb_fprintf(FP, "FV\n%.0ml %.0ml %.0ml %d\n", 
 				via->X + xOffset, PCB->MaxHeight - (via->Y + yOffset),
 				via->Thickness, viaDrillMil);
 	}
@@ -69,14 +67,14 @@ int write_autotrax_track(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pc
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
+/* -------------------------------------------------------------------------------
  * generates an autotrax arc "segments" value to approximate an arc being exported  
  */
 int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arcStart, pcb_angle_t arcDelta)
 {
-	int arcSegments = 15;
+	int arcSegments = 0; /* start with no arc segments */
 	/* 15 = circle, bit 1 = LUQ, bit 2 = LLQ, bit 3 = LRQ, bit 4 = URQ */
-	if (arcDelta == -360 ) { /* it's a circle */
+	if (arcDelta == -360 ) { /* it's a circle */	
 		arcDelta = 360;
 	}
 	if (arcDelta < 0 ) {
@@ -90,20 +88,21 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arcStart, pcb_angle_t arcDelta)
 	while (arcStart > 360) {
 		arcStart -= 360;
 	}
+	/* pcb_printf("Arc start: %ma, Arc delta: %ma\n", arcStart, arcDelta); */
 	if (arcDelta >= 360) { /* it's a circle */
 		arcSegments |= 0x0F;
 	} else {
 		if (arcStart <= 0.0 && (arcStart + arcDelta) >= 90.0 ) {
-			arcSegments |= 0x02;
+			arcSegments |= 0x04; /* LLQ */
 		}
 		if (arcStart <= 90.0 && (arcStart + arcDelta) >= 180.0 ) {
-			arcSegments |= 0x04;
+			arcSegments |= 0x08; /* LRQ */
 		}
 		if (arcStart <= 180.0 && (arcStart + arcDelta) >= 270.0 ) {
-			arcSegments |= 0x08;
+			arcSegments |= 0x01; /* URQ */
 		}
 		if (arcStart <= 270.0 && (arcStart + arcDelta) >= 360.0 ) {
-			arcSegments |= 0x01;
+			arcSegments |= 0x02; /* ULQ */
 		}
 	}	
 	return arcSegments;
@@ -132,7 +131,10 @@ int write_autotrax_arc(FILE *FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_a
  */
 int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 {
-	
+	int showStatus = 0;
+	/* show status can be 0 or 1 for a net:
+	   0 hide rats nest
+	   1 show rats nest */
 	/* now we step through any available netlists and generate descriptors */
 
 	if (PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN) {
@@ -142,10 +144,11 @@ int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 			pcb_lib_menu_t *menu = &PCB->NetlistLib[PCB_NETLIST_INPUT].Menu[n];
 			fprintf(FP, "NETDEF\n");
 			pcb_fprintf(FP, "%s\n", &menu->Name[2]);
+			pcb_fprintf(FP, "%d\n", showStatus);
 			fprintf(FP, "(\n");
 			for (p = 0; p < menu->EntryN; p++) {
 				pcb_lib_entry_t *entry = &menu->Entry[p];
-				pcb_fprintf(FP, "%s", entry->ListEntry);
+				pcb_fprintf(FP, "%s\n", entry->ListEntry);
 			}
 			fprintf(FP, ")\n");
 		}
@@ -158,10 +161,6 @@ int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
  */
 int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
-	/* this is the first step in exporting a layout; */
-
-	/*fputs("io_autotrax_write_pcb()", FP);*/
-
 	pcb_cardinal_t i;
 	int physicalLayerCount = 0;
 	int currentAutotraxLayer = 0;
@@ -199,14 +198,14 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	/* here we count the copper layers to be exported to the autotrax file */
 	physicalLayerCount = pcb_layergrp_list(PCB, PCB_LYT_COPPER, NULL, 0);
 
-	if (physicalLayerCount > 6) {
-		pcb_message(PCB_MSG_ERROR, "Warning: Physical layer count exceeds protel autotrax layer support for 6 layers.\n");
+	if (physicalLayerCount > 8) {
+		pcb_message(PCB_MSG_ERROR, "Warning: Physical layer count exceeds protel autotrax layer support for 6 layers plus GND and PWR planes.\n");
 		/*return -1;*/
 	}
 
 	/* component "COMP" descriptions come next */
 
-	printf("About to write layout elements to Protel Autotrax file.\n");
+	pcb_trace("About to write layout elements to Protel Autotrax file.\n");
 	write_autotrax_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
@@ -232,7 +231,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	}
 
 	if (innerCount > 4) {
-		pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner layers.\n");
+		pcb_message(PCB_MSG_ERROR, "Warning: Inner layer count exceeds protel autotrax maximum of 4 inner copper layers.\n");
 		/*return -1;*/
 	}
 
@@ -272,7 +271,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		outlineLayers = NULL;
 	}
 
-	printf("About to write outline tracks to Protel Autotrax file.\n");
+	pcb_trace("About to write outline tracks to Protel Autotrax file.\n");
 	/* we now proceed to write the outline tracks to the autotrax file, layer by layer */
 	currentAutotraxLayer = 8; /* 11 is the "board layer" in autotrax, and 12 the keepout */
 	if (outlineCount > 0 )  {
@@ -285,18 +284,9 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						&(PCB->Data->Layer[outlineLayers[i]]),
 						LayoutXOffset, LayoutYOffset);
 			}
-	} else { /* no outline layer per se, export the board margins instead...*/
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
-					0, 0, PCB->MaxWidth, 0, currentAutotraxLayer);
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
-					PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight, currentAutotraxLayer);
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
-					PCB->MaxWidth, PCB->MaxHeight, 0, PCB->MaxHeight, currentAutotraxLayer);
-				pcb_fprintf(FP, "FT\n%.0ml %.0ml %.0ml %.0ml 10 %d 1\n",
-					0, PCB->MaxHeight, 0, 0, currentAutotraxLayer);
 	}
 
-	printf("About to write bottom silk elements to Protel Autotrax file.\n");
+	pcb_trace("About to write bottom silk elements to Protel Autotrax file.\n");
 	/* we now proceed to write the bottom silk lines, arcs, text to the autotrax file, using layer 8 */
 	currentAutotraxLayer = 8; /* 8 is the "bottom overlay" layer in autotrax */
 	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
@@ -315,7 +305,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	printf("About to write bottom copper features to Protel Autotrax file.\n");
+	pcb_trace("About to write bottom copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the bottom copper features to the autorax file, layer by layer */
 	currentAutotraxLayer = 6; /* 6 is the bottom layer in autotrax */
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
@@ -334,7 +324,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	printf("About to write internal copper features to Protel Autotrax file.\n");
+	pcb_trace("About to write internal copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the internal copper features to the autotrax file, layer by layer */
 	if (innerCount > 0) {
 		currentGroup = pcb_layer_get_group(PCB, innerLayers[0]);
@@ -359,7 +349,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	printf("About to write top copper features to Protel Autotrax file.\n");
+	pcb_trace("About to write top copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the top copper features to the autotrax file, layer by layer */
 	currentAutotraxLayer = 1; /* 1 is the top most copper layer in autotrax */
 	for (i = 0; i < topCount; i++) /* write top copper features, if any */
@@ -378,7 +368,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	printf("About to write top silk features to Protel Autotrax file.\n");
+	pcb_trace("About to write top silk features to Protel Autotrax file.\n");
 	/* we now proceed to write the top silk lines, arcs, text to the autotrax file, using layer 7*/
 	currentAutotraxLayer = 7; /* 7 is the top silk layer in autotrax */
 	for (i = 0; i < topSilkCount; i++) /* write top silk features, if any */
@@ -398,7 +388,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		}
 
 	/* having done the graphical elements, we move onto vias */ 
-	printf("About to write vias to Protel Autotrax file.\n");
+	pcb_trace("About to write vias to Protel Autotrax file.\n");
 	write_autotrax_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* now free memory from arrays that were used */
@@ -421,7 +411,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		free(outlineLayers);
 	}
 
-	printf("About to write nestlists to Protel Autotrax file.\n");
+	pcb_trace("About to write nestlists to Protel Autotrax file.\n");
 	/* last are the autotrax netlist descriptors */
 	write_autotrax_equipotential_netlists(FP, PCB);
 
@@ -550,7 +540,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
-	pcb_coord_t xPos, yPos, yPos2, yPos3;
+	pcb_coord_t xPos, yPos, yPos2, yPos3, textOffset;
 
 	pcb_element_t *element;
 
@@ -561,6 +551,8 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 	int drillHole = 0; /* for SMD */
 
 	pcb_box_t *box;
+
+	textOffset = PCB_MIL_TO_COORD(400); /* this gives good placement of refdes relative to element */
 	
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
@@ -573,7 +565,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 
 		box = &element->BoundingBox;
 		xPos = (box->X1 + box->X2)/2 + xOffset;
-		yPos = PCB->MaxHeight - ((box->Y1 + box->Y2)/2 + yOffset);
+		yPos = PCB->MaxHeight - (box->Y1 + yOffset - textOffset);
 		yPos2 = yPos - PCB_MIL_TO_COORD(200);
 		yPos3 = yPos2 - PCB_MIL_TO_COORD(200);
 
@@ -607,7 +599,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 
 			pcb_fprintf(FP, "CP\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\n%s\n",
 				pin->X - element->MarkX,
-				PCB->MaxHeight -  (pin->Y - element->MarkY),
+				PCB->MaxHeight -  (pin->Y),/* - element->MarkY), */
 				pin->Thickness, pin->Thickness, padShape,
 				pin->DrillingHole, copperLayer,
 				(char *) PCB_EMPTY(pin->Number)); /* or ->Name? */
@@ -647,12 +639,12 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		}
 		linelist_foreach(&element->Line, &it, line) { /* autotrax supports tracks in COMPs */
 			pcb_fprintf(FP, "CT\n");
-			write_autotrax_track(FP, element->MarkX, element->MarkY, line, silkLayer);
+			write_autotrax_track(FP, element->MarkX, PCB->MaxHeight - element->MarkY, line, silkLayer);
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
 			pcb_fprintf(FP, "CA\n");
-			write_autotrax_arc(FP, element->MarkX, element->MarkY, arc, silkLayer);
+			write_autotrax_arc(FP, element->MarkX, PCB->MaxHeight - element->MarkY, arc, silkLayer);
 		}
 
 		fprintf(FP, "ENDCOMP\n");
