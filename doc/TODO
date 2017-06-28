@@ -131,6 +131,8 @@ For the next release:
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
 - BUG: -dump-plugindirs doesn't exist yet, see warning in main.c:489
 - BUG: --dump-actions lists incorrect syntax for 'message' action, verify fix in -r9838 [report/fix:miloh]
+- BUG: flags do not seem to be honoured when io_autotrax read.c tries to create top or bottom text; mirrored text ensues, possibly related to boardlfip done after file loaded
+
 
 LATER RELEASES:
 - SUBC missing features:
