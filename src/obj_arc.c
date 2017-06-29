@@ -225,14 +225,27 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 	return (Arc);
 }
 
+static pcb_arc_t *pcb_arc_copy_meta(pcb_arc_t *dst, pcb_arc_t *src)
+{
+	if (dst == NULL)
+		return NULL;
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	return dst;
+}
+
+
 pcb_arc_t *pcb_arc_dup(pcb_layer_t *dst, pcb_arc_t *src)
 {
-	return pcb_arc_new(dst, src->X, src->Y, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags);
+	pcb_arc_t *a = pcb_arc_new(dst, src->X, src->Y, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags);
+	pcb_arc_copy_meta(a, src);
+	return a;
 }
 
 pcb_arc_t *pcb_arc_dup_at(pcb_layer_t *dst, pcb_arc_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
-	return pcb_arc_new(dst, src->X+dx, src->Y+dy, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags);
+	pcb_arc_t *a = pcb_arc_new(dst, src->X+dx, src->Y+dy, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags);
+	pcb_arc_copy_meta(a, src);
+	return a;
 }
 
 
@@ -303,10 +316,12 @@ pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc)
 void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-
-	return (pcb_arc_new(layer, Arc->X, Arc->Y,
+	pcb_arc_t *a = pcb_arc_new(layer, Arc->X, Arc->Y,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
+
+	pcb_arc_copy_meta(a, Arc);
+	return a;
 }
 
 /* moves an arc to buffer */
@@ -506,6 +521,7 @@ void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 														Arc->Delta, Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND));
 	if (!arc)
 		return (arc);
+	pcb_arc_copy_meta(arc, Arc);
 	DrawArc(Layer, arc);
 	pcb_undo_add_obj_to_create(PCB_TYPE_ARC, Layer, arc, arc);
 	return (arc);
@@ -696,6 +712,8 @@ void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle + 360.0, arc->Thickness, arc->Clearance, arc->Flags);
 	else
 		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle, arc->Thickness, arc->Clearance, arc->Flags);
+
+	pcb_arc_copy_meta(new_arc, arc);
 
 	if (new_arc != NULL) {
 		PCB_FLAG_CHANGE(PCB_CHGFLG_SET, PCB_FLAG_FOUND, new_arc);
