@@ -39,6 +39,7 @@
 
 #include "obj_pinvia.h"
 #include "obj_pinvia_op.h"
+#include "obj_subc_parent.h"
 
 /* TODO: consider removing this by moving pin/via functions here: */
 #include "draw.h"
@@ -1035,7 +1036,10 @@ static void draw_via(pcb_pin_t *via, pcb_bool draw_hole)
 
 pcb_r_dir_t draw_via_callback(const pcb_box_t * b, void *cl)
 {
-	draw_via((pcb_pin_t *) b, pcb_false);
+	pcb_pin_t *via = (pcb_pin_t *)b;
+
+	if (PCB->SubcPartsOn || !pcb_is_gobj_in_subc(via->parent_type, &via->parent))
+		draw_via(via, pcb_false);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -1047,6 +1051,9 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 	char buf[sizeof("#XXXXXX")];
 
 	if ((plated == 0 && !PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) || (plated == 1 && PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
+	if (!PCB->SubcPartsOn && pcb_is_gobj_in_subc(pv->parent_type, &pv->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (conf_core.editor.thin_draw) {

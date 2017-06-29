@@ -5977,7 +5977,8 @@ obj_pinvia.o: obj_pinvia.c ../config.h board.h const.h macro.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
  list_conf.h polygon.h compat_nls.h compat_misc.h stub_vendor.h rotate.h \
- obj_pinvia_op.h operation.h draw.h obj_text_draw.h obj_pinvia_draw.h
+ obj_pinvia_op.h operation.h obj_subc_parent.h draw.h obj_text_draw.h \
+ obj_pinvia_draw.h
 obj_pinvia_list.o: obj_pinvia_list.c obj_pinvia_list.h obj_pinvia.h \
  obj_common.h ../src_3rd/liblihata/genht/hash.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h ../config.h attrib.h \
