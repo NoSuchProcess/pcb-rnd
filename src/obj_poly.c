@@ -231,12 +231,21 @@ pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags)
 	return (polygon);
 }
 
+static pcb_polygon_t *pcb_poly_copy_meta(pcb_polygon_t *dst, pcb_polygon_t *src)
+{
+	if (dst == NULL)
+		return NULL;
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	return dst;
+}
+
 pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
 {
 	pcb_board_t *pcb;
 	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
 	pcb_poly_copy(p, src, 0, 0);
 	pcb_add_polygon_on_layer(dst, p);
+	pcb_poly_copy_meta(p, src);
 
 	pcb = pcb_data_get_top(dst->parent);
 	if (pcb != NULL)
@@ -250,6 +259,7 @@ pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t
 	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
 	pcb_poly_copy(p, src, dx, dy);
 	pcb_add_polygon_on_layer(dst, p);
+	pcb_poly_copy_meta(p, src);
 
 	pcb = pcb_data_get_top(dst->parent);
 	if (pcb != NULL)
@@ -341,6 +351,7 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 
 	polygon = pcb_poly_new(layer, Polygon->Flags);
 	pcb_poly_copy(polygon, Polygon, 0, 0);
+	pcb_poly_copy_meta(polygon, Polygon);
 
 	/* Update the polygon r-tree. Unlike similarly named functions for
 	 * other objects, CreateNewPolygon does not do this as it creates a
@@ -736,6 +747,7 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 
 	polygon = pcb_poly_new(Layer, pcb_no_flags());
 	pcb_poly_copy(polygon, Polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
+	pcb_poly_copy_meta(polygon, Polygon);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
