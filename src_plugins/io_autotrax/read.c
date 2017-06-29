@@ -487,7 +487,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int valid = 1;
 	int success;
 
-	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill; 
+	pcb_coord_t X, Y, X_size, Y_size, pad_x1, pad_x2, pad_y1, pad_y2, Thickness, Clearance, Mask, Drill; 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 
 	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
@@ -581,8 +581,10 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	if ((Shape == 5 || Shape == 6 ) && el == NULL) {
 		pcb_trace("\tnew free pad not created; Cross Hair/Moiro target not supported\n");
+		return 0;
 	} else if ((Shape == 5 || Shape == 6) && el != NULL) {
 		pcb_trace("\tnew element pad not created; Cross Hair/Moiro targets not supported\n");
+		return 0;
 	} else if (st != NULL && el == NULL) { /* pad not within element, i.e. a free pad/pin/via */
 		if (Shape == 3) {
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
@@ -591,34 +593,38 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 		}
 		/* should this in fact be an SMD pad, +/- a hole in it ? */
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, line, Flags);
-		pcb_trace("\tnew free pad/hole created; need to check connects\n");
-		return 0;
+		pcb_trace("\tnew free via created; need to check connects\n");
+		return 1;
 	} else if (st != NULL && el != NULL) { /* pad within element */
-		if ((Shape == 2  || Shape == 4)  && autotrax_layer == 6) { /* square (2) or rounded rect (4) on top layer */ 
-			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER); /* actually a rectangle, but... */
+
+		/* first we sort out pad shapes, and layer flags */
+		if ((Shape == 2  || Shape == 4)  && autotrax_layer == 6) {
+			/* square (2) or rounded rect (4) on top layer */ 
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
+			/* actually a rectangle, but... */
 		} else if ((Shape == 2  || Shape == 4)) { /* bottom layer */ 
-			Flags = pcb_flag_make(PCB_FLAG_SQUARE); /*actually a rectangle, but... */
+			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
+			/*actually a rectangle, but... */
 		} else if (Shape == 3 && autotrax_layer == 1) {/* top layer*/ 
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
 		} else if (Shape == 3 && autotrax_layer == 6) {  /*bottom layer */
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
-		}		
-/* # TODO  not yet processing SMD pads - need examples to work with */
-		if (Shape == 2 && Drill == 0) {/* is probably SMD */
-/*			pcb_element_pad_new_rect(el, el->X - X_size/2, el->Y - Y_size/2, X_size/2 + el->X, Y_size/2 + el->Y, Clearance, 
-				Clearance, line, linee, Flags);*/
-/*			pcb_element_pad_new_rect(el, X - X_size/2, Y - Y_size/2, X + X_size/2, Y_size/2 + Y, Clearance, 
-				Clearance, line, line, Flags);*/
+		}
+/*Pads
+FP
+x y xsize ysize shape holesize pwr/gnd layer
+padname
+*/
+		if (Drill == 0) {/* SMD */
+			pcb_element_pad_new_rect(el, X + X_size/2, Y + Y_size/2,
+						X - X_size/2, Y - Y_size/2,
+						Clearance, Clearance, line, line, Flags);
 			return 1;
-		} else {
-/*			pcb_element_pin_new(el, X + el->X, Y + el->Y, Thickness, Clearance, Clearance,  
-				Drill, line, line, Flags);*/
+		} else { /* not SMD */
 			pcb_element_pin_new(el, X, Y , Thickness, Clearance, Clearance,  
 				Drill, line, line, Flags);
 			return 1;
 		}
-		pcb_trace("\tnew component pad/hole created; need to check connects\n");
-		return 1;
 	}
 	pcb_message(PCB_MSG_ERROR, "Failed to parse new pad, %s:%d\n", st->Filename, st->lineno);
 	return -1;
@@ -1026,13 +1032,13 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 		if (length >= 7) {
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
 				pcb_trace("Finished parsing component\n");
-				if (!nonempty) { /* could try and use module empty function here */
-					Thickness = PCB_MM_TO_COORD(0.200);
-					pcb_element_line_new(new_module, module_X, module_Y, module_X+1, module_Y+1, Thickness);
-					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, %s:%d\n", st->Filename, st->lineno);
+				if (nonempty) { /* could try and use module empty function here */
+					pcb_element_bbox(st->PCB->Data, new_module, pcb_font(PCB, 0, 1));
+					return 0;
+				} else {
+					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, not added to layout, %s:%d\n", st->Filename, st->lineno);
+					return 0;
 				}
-				pcb_element_bbox(st->PCB->Data, new_module, pcb_font(PCB, 0, 1));
-				return 0;
 			}
 		} else if (length >= 2) {
 			if (strncmp(s, "CT",2) == 0 ) {
