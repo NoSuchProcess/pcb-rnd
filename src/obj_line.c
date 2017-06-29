@@ -218,14 +218,26 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 	return (Line);
 }
 
+static pcb_line_t *pcb_line_copy_meta(pcb_line_t *dst, pcb_line_t *src)
+{
+	if (dst == NULL)
+		return NULL;
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	if (src->Number != NULL)
+		dst->Number = pcb_strdup(src->Number);
+	return dst;
+}
+
 pcb_line_t *pcb_line_dup(pcb_layer_t *dst, pcb_line_t *src)
 {
-	return pcb_line_new(dst, src->Point1.X, src->Point1.Y, src->Point2.X, src->Point2.Y, src->Thickness, src->Clearance, src->Flags);
+	pcb_line_t *l = pcb_line_new(dst, src->Point1.X, src->Point1.Y, src->Point2.X, src->Point2.Y, src->Thickness, src->Clearance, src->Flags);
+	return pcb_line_copy_meta(l, src);
 }
 
 pcb_line_t *pcb_line_dup_at(pcb_layer_t *dst, pcb_line_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
-	return pcb_line_new(dst, src->Point1.X + dx, src->Point1.Y + dy, src->Point2.X + dx, src->Point2.Y + dy, src->Thickness, src->Clearance, src->Flags);
+	pcb_line_t *l = pcb_line_new(dst, src->Point1.X + dx, src->Point1.Y + dy, src->Point2.X + dx, src->Point2.Y + dy, src->Thickness, src->Clearance, src->Flags);
+	return pcb_line_copy_meta(l, src);
 }
 
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
@@ -289,19 +301,15 @@ double pcb_line_area(const pcb_line_t *line)
 
 
 /*** ops ***/
-
 /* copies a line to buffer */
 void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-
 	line = pcb_line_new(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
 															Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
-	if (line && Line->Number)
-		line->Number = pcb_strdup(Line->Number);
-	return (line);
+	return pcb_line_copy_meta(line, Line);
 }
 
 /* moves a line to buffer */
@@ -435,8 +443,7 @@ void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND));
 	if (!line)
 		return (line);
-	if (Line->Number)
-		line->Number = pcb_strdup(Line->Number);
+	pcb_line_copy_meta(line, Line);
 	DrawLine(Layer, line);
 	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, Layer, line, line);
 	return (line);
