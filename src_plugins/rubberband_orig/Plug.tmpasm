@@ -3,6 +3,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/rubberband_orig/rubberband.o
 	$(PLUGDIR)/rubberband_orig/fgeometry.o
 @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/rubberband_orig/rubberband_conf.h}
 
 switch /local/pcb/rubberband_orig/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

@@ -53,6 +53,10 @@
 
 #include "polygon.h"
 
+#include "rubberband_conf.h"
+conf_rubberband_orig_t conf_rbo;
+
+
 typedef struct {								/* rubberband lines for element moves */
 	pcb_layer_t *Layer;						/* layer that holds the line */
 	pcb_line_t *Line;							/* the line itself */
@@ -1255,6 +1259,7 @@ int pplg_check_ver_rubberband_orig(int ver_needed) { return 0; }
 void pplg_uninit_rubberband_orig(void)
 {
 	pcb_event_unbind_allcookie(rubber_cookie);
+	conf_unreg_fields("plugins/rubberband_orig/");
 }
 
 int pplg_init_rubberband_orig(void)
@@ -1270,6 +1275,10 @@ int pplg_init_rubberband_orig(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_FIT_CROSSHAIR, rbe_fit_crosshair, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, rbe_constrain_main_line, ctx, rubber_cookie);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc,flags);
+#include "rubberband_conf_fields.h"
 
 	return 0;
 }

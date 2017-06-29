@@ -1,3 +1,4 @@
+9919	configure	rubberband_orig got its own config subtree
 9840	configure	compile and link libminuid
 9600	configure	eagle bin parser
 9271	configure	core cleanup (split select.c and operation.c)
