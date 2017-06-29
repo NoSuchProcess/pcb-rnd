@@ -858,6 +858,7 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 	 * invalidate the line pointer
 	 */
 	if ((line = pcb_line_new_merge(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
+		pcb_line_copy_meta(line, Line);
 		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, Layer, line, line);
 		DrawLine(Layer, line);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, line);
