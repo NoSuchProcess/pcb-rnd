@@ -487,7 +487,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int valid = 1;
 	int success;
 
-	pcb_coord_t X, Y, X_size, Y_size, pad_x1, pad_x2, pad_y1, pad_y2, Thickness, Clearance, Mask, Drill; 
+	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill; 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 
 	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
@@ -743,28 +743,21 @@ static int autotrax_create_layers(read_state_t *st)
 		return -1;
 	}
 
-	pcb_layergrp_fix_old_outline(PCB);
-	
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
 	htsi_set(&st->layer_protel2i, pcb_strdup("2"), id);
 
-	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid2");
 	htsi_set(&st->layer_protel2i, pcb_strdup("3"), id);
 
-	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid3");
 	htsi_set(&st->layer_protel2i, pcb_strdup("4"), id);
 
-	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid4");
 	htsi_set(&st->layer_protel2i, pcb_strdup("5"), id);
 
-	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "GND");
 	htsi_set(&st->layer_protel2i, pcb_strdup("9"), id);
 
-	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
 	htsi_set(&st->layer_protel2i, pcb_strdup("10"), id);
 
@@ -776,7 +769,6 @@ static int autotrax_create_layers(read_state_t *st)
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "KeepOut");
 	htsi_set(&st->layer_protel2i, pcb_strdup("12"), id);
 
-	g = pcb_get_grp_new_misc(PCB);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Multi");
 	htsi_set(&st->layer_protel2i, pcb_strdup("13"), id);
 
@@ -1164,7 +1156,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
 	
 	/* not sure if this is required: */
-	/*pcb_layer_auto_fixup(Ptr);  this crashes things immeditely on load */
+	pcb_layer_auto_fixup(Ptr); /* this crashes things immeditely on load */
 
 #warning TODO: free the layer hash
 
