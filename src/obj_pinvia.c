@@ -144,14 +144,28 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	return (Via);
 }
 
+static pcb_pin_t *pcb_via_copy_meta(pcb_pin_t *dst, pcb_pin_t *src)
+{
+	if (dst == NULL)
+		return NULL;
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	if (src->Number != NULL)
+		dst->Number = pcb_strdup(src->Number);
+	if (src->Name != NULL)
+		dst->Name = pcb_strdup(src->Name);
+	return dst;
+}
+
 pcb_pin_t *pcb_via_dup(pcb_data_t *data, pcb_pin_t *src)
 {
-	return pcb_via_new(data, src->X, src->Y, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
+	pcb_pin_t *p = pcb_via_new(data, src->X, src->Y, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
+	return pcb_via_copy_meta(p, src);
 }
 
 pcb_pin_t *pcb_via_dup_at(pcb_data_t *data, pcb_pin_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
-	return pcb_via_new(data, src->X+dx, src->Y+dy, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
+	pcb_pin_t *p = pcb_via_new(data, src->X+dx, src->Y+dy, src->Thickness, src->Clearance, src->Mask, src->DrillingHole, src->Name, src->Flags);
+	return pcb_via_copy_meta(p, src);
 }
 
 /* creates a new pin in an element */
@@ -325,7 +339,8 @@ unsigned int pcb_pin_hash(const pcb_element_t *e, const pcb_pin_t *p)
 /* copies a via to paste buffer */
 void *pcb_viaop_add_to_buffer(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	return (pcb_via_new(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+	pcb_pin_t *v = pcb_via_new(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
+	return pcb_via_copy_meta(v, Via);
 }
 
 /* moves a via to paste buffer without allocating memory for the name */
