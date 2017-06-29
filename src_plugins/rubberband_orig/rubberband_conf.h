@@ -6,7 +6,7 @@
 typedef struct {
 	const struct plugins {
 		const struct rubberband_orig {
-			CFT_BOOLEAN new_arc_mode;   /* TODO */
+			CFT_BOOLEAN enable_rubberband_arcs;   /* TODO: Enable to allow attached arcs to rubberband. */
 		} rubberband_orig;
 	} plugins;
 } conf_rubberband_orig_t;

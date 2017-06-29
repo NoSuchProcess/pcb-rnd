@@ -108,6 +108,8 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, p
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_polygon_t *);
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_point_t *);
 
+static void	calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,pcb_coord_t group_dx,pcb_coord_t group_dy,pcb_route_t * route);
+
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
 
 static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl);
@@ -708,7 +710,9 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 	case PCB_TYPE_LINE_POINT:
 		if (pcb_layer_flags_(PCB, (pcb_layer_t *) Ptr1) & PCB_LYT_COPPER)	{
 			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
-			CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
+
+			if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
+				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
 		}
 		break;
 
@@ -941,12 +945,15 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 			ptr++;
 		}
 	}
+
+	/* TODO: Move rubberband arcs. */
 }
 
 static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rubberband_t *ptr;
+	pcb_rubberband_arc_t *arcptr;
 	pcb_cardinal_t i;
 	pcb_coord_t group_dx = argv[1].d.c, group_dy = argv[2].d.c;
 	pcb_coord_t dx = group_dx, dy = group_dy;
@@ -1037,6 +1044,23 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 
 		ptr++;
 		i--;
+	}
+
+	/* draw the attached rubberband arcs */
+	if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
+		pcb_route_t route;
+		pcb_route_init(&route);
+		i = rbnd->RubberbandArcN;
+		arcptr = rbnd->RubberbandArcs;
+	
+		while (i) {
+			calculate_route_rubber_arc_point_move(arcptr,group_dx,group_dy,&route);
+			pcb_route_draw(&route,pcb_crosshair.GC);
+			pcb_route_reset(&route);
+			arcptr++;
+			i--;
+		}
+		pcb_route_destroy(&route);
 	}
 }
 
@@ -1281,5 +1305,11 @@ int pplg_init_rubberband_orig(void)
 #include "rubberband_conf_fields.h"
 
 	return 0;
+}
+
+static void	
+calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,pcb_coord_t group_dx,pcb_coord_t group_dy,pcb_route_t * route)
+{
+	/* TODO: Calculate a new route that represents the arc if the endpoint was moved by dx,dy. */
 }
 
