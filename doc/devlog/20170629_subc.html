@@ -1,0 +1,156 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> subcircuit: how does this clean things up today </h2>
+
+<H3> pcb_data_t </H3>
+<p>
+Subcircuits use pcb_data_t to store their children objects. This is the
+same struct that pcb_board_t uses for a PCB board and the same struct that
+makes up a paste buffer. 
+<p>
+Elements (footprints) on the other hand were designed to use custom structs.
+That is the reason for all the restrictions on what an element can be built of.
+These restrictions do not exist for subcircuits.
+<p>
+This helps cleaning up the broken internal data model of original pcb:
+there's only one way to make a new level of the data tree for holding
+drawing primitives, and it is pcb_data_t. This lets the code traverse
+the tree from the root toward the leaves.
+
+<H3> parents </H3>
+Symmetrically, each object now properly references its parent. Today this
+lets the code:
+<ul>
+	<li> traverse the data tree from a leaf toward the root
+	<li> decide whether a given object is part of a subcircuit, buffer or a board
+</ul>
+<p>
+This is another important step in cleaning up the broken internal data model
+we inherited.
+
+<H3> uid </H3>
+<p>
+Some exporters need to build a list of unique element references - that is, if
+the board uses 15 instances of 1206, the exporter would need to recognize that
+and store only one copy and 15 references. This is done with a special hashing
+algorithm that "reverse engineers" the elements and try to figure if two elements
+are really the same, even tho they are rotated.
+<p>
+With subcircuits, this won't be done in such a complicated, indirect way because
+subcircuits get an unique ID when they are born and copies share the same UID.
+The UID is "globally" unique; that means it's not only unique within a board
+or within a library or within an installation or system. If users share their
+subcircuit libs, the same 1206 got from the same lib will have the same UID
+on all copies and boards and it will be trivial to determine whether two
+subcircuits are really the same.
+
+<H3> aux layer and vectors </H3>
+<p>
+Another crucial misfeature of elements is the lack of rotation and mirror
+information. That is, if the user places an element on a board and the element
+is rotated or moved to the other side, it is just modified in the data model
+as if it was the natural orientation of the element. In other words, looking
+at an element in the original geda/PCB model, it is impossible to
+reliable determine the rotation. All the pick&place exporters are just
+making educate guesses with a lot of limitations, e.g. only N*90 degree
+rotations can be detected properly.
+<p>
+In subcircuits there is a layer called 'aux', which contains line objects
+labelled with attributes. The aux layer doesn't turn into copper, silk, paste
+or mask, it's rather a documentation layer. The lines it hosts undergo all
+transformations the host subcircuit undergoes: if the parent is rotated,
+all lines are rotated. When a new subcircuit is created, a few line objects
+like the origin point and two lines (unity-vectors in X and Y directions) are
+automatically placed on the aux layer.
+<p>
+Whenever the rotation needs to be determined, the code can just look at what
+happened to these X and Y unity vectors knowing how they looked originally and
+calculates the rotation to a fraction of a degree. Without any heuristics or
+guesses.
+<p>
+How is it better than just storing the transformations:
+<ul>
+	<li> more reliable; any subc-global code needs to execute on all objects already;
+	     storing transformation info separately would mean all transformation code
+	     needs to be revised and the metadata update added. Miss one, and the
+	     metadata stats to lie. With this trick, it's impossible to miss one.
+	<li> more extensible: specific exporters may need new points or vectors for
+	     whatever reason, e.g. a custom centroid for a pick&place, or even
+	     a custom rotation vector. In this model, these are just more lines
+	     with new, custom, plugin-specific attributes that are then automatically
+	     handled by existing code, without having to register anything anywhere.
+	     This is how plugins in pcb-rnd can extend infrastructure without any
+	     footprint in core
+	<li> one unity-vector could reveal rotation; two can reveal rotation and
+	     mirroring. We do not scale subcircuits (yet?), but two vectors could
+	     be used to measure the scale as well. Which means if we later implement
+	     scaling, it will just work, without having to add another set of metadata,
+	     without having to worry now what we'd need to add to get scaling work later.
+</ul>
+
+<H3> bound layers </H3>
+Paste buffers and subcircuits don't really have a layer stack, because they
+are board-independent. Paste buffers need to be able to copy random objects
+on random layers from one board to another, even if the boards have different
+layer stacks, in a sensible way. The original code (and current mainline code)
+has hardwired layer references in pcb_data_t, which means this is impossible;
+any paste-buffer copy will work properly only if the source and target boards
+have the same layer stack.
+<p>
+A sensible way is to solve this problem is to remember layer binding patterns
+instead of specific fixed layers. A fixed layer reference is like "layer 4" and
+is always referring to the current layer stack. One board may have bottom silk as
+layer 4, while another board may have an internal copper layer or the outline layer
+as layer 4.
+<p>
+A layer binding pattern is something like a recipe on how to find the best
+match for a layer, e.g. "a top copper layer", or "the second internal copper
+layer counted from the top copper layer", or "a positively drawn mask layer on
+the top side". Subcircuits and buffers in pcb-rnd use such layer binding patters.
+When a board object becomes part of a subcircuit or is copied into a paste
+buffer, the code abstracts the board specific layer binding into such a generic
+pattern. When the subcircuit or buffer is then copied back to a board, the
+code finds the best fit layer. This is called layer resolution.
+(The original layer binding patterns are also kept in subcircuits, so multiple
+abstractions and resolutions won't degrade the match pattern.)
+
+<H3> on-screen indication of subc </H3>
+<p>
+Subcircuits are optionally indicated with a dashed rectangle at their bounding
+box and their origin diamond. Old elements rely on silk screen outline and
+sometimes largish elements without a clear silk screen box may include remote
+pins that make the element much larger than they first appear. The only way
+to figure the bounding box is grabbing the element - which most often happens
+by accident, not suspecting some free space in the middle of the board is really
+under a large element. This problem is fixed with the subcircuit bounding box
+visualization.
+<p>
+Two new virtual layers are introduced:
+<ul>
+	<li> one controls whether the subcircuit bounding box and origin should
+	be shown; when hidden, subcircuits are "locked": they don't react on moving/rotating/etc.
+	which makes it easy to edit other objects under largish subcircuits; Note:
+	for elements, the same could be achieved by turning off the silk layer or
+	pins/pads; but that means side effects; the new system for subcircuits is
+	more orthogonal, turning off the virtual layer of subcircuits won't hide
+	pins or silk as a side effect.
+
+	<li> the other controls whether objects being part of subcircuits are shown
+	or not; this is similar to the old pins/pads virtual layer with elements,
+	except it works on all subcircuit-donated objects, not just pins and pads.
+</ul>
+
+<H3> layer side effects </H3>
+<p>
+When an element is rendered, a thin black diamond is drawn on screen. This
+diamond looks like if it was on the silk screen - it always has the same
+color as the corresponding silk screen.
+<p>
+Subcircuits use a separate virtual layer ("subcircuit parts") and
+a different color (red by default) for drawing the diamond and a dashed
+bounding box around the subcircuit. This makes it easier to see what's
+auto-generated eye-candy and what's really on the silk screen
+
+
