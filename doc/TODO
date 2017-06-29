@@ -25,6 +25,7 @@
 
 For the next release:
 - SUBC BUGS:
+	- ctrl+x on random objects asserts
 	- 'b' for back side broke
 	- cut to paste buffer (ctrl+x), undo, polygons are not clipper properly, even other polys on the board layer behave strangely
 	- figure what to do with the mark, using subc's cache
