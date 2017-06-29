@@ -28,7 +28,6 @@ For the next release:
 	- ctrl+x on random objects asserts
 	- 'b' for back side broke
 	- cut to paste buffer (ctrl+x), undo, polygons are not clipper properly, even other polys on the board layer behave strangely
-	- figure what to do with the mark, using subc's cache
 - BUGS:
 	- find_lookup.c: 'f' arc<->line fails with \_ arcs bugfiles/arc_find.lht
 	- solder paste layer doesn't have selected color, selection is not visible
@@ -63,7 +62,6 @@ For the next release:
 	- unify how output files are accessed/checked: confirmation on overwrite
 - extend the DRC window to be a generic location list
 	- buttons to select one or all items or all items including locked
-	- multiple DRC windows
 	- io infra for save incompatibility note with DRC list
 	- import sch. shouldn't select elements to be removed but put them on a drc list
 	- display number of items at top of drc window
