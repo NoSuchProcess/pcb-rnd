@@ -225,7 +225,7 @@ Low prio:
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - examine current handling of long options [miloh]
 - --dump-actions shows gpmi paths ( is this related? it looks unexpected to me)
-- unify gui invocation options: why do pcb --help gtk & pcb --help lesstif show different input methods [report:miloh]
+- unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh]
 - consider allowing negative Delta to be specified in CTRL-E property inspector
 - consider a simple all in one function to create a default layer stackup for static/predictable layer formats being imported, to simplify importer coding
 - trace length calculator:
