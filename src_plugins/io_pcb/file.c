@@ -698,10 +698,18 @@ int io_pcb_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *File
 			while(isspace(*s)) s++;
 			if ((strncmp(s, "# release: pcb", 14) == 0) )
 				return 1;
-			if ((strncmp(s, "PCB", 3) == 0) && ((s[3] == '(') || (s[3] == '[')))
-				return 1;
-			if ((strncmp(s, "Element", 7) == 0) && ((s[7] == '(') || (s[7] == '[')))
-				return 1;
+			if (strncmp(s, "PCB", 3) == 0) {
+				char *b = s+3;
+				while(isspace(*b)) b++;
+				if ((*b == '(') || (*b == '['))
+					return 1;
+			}
+			if (strncmp(s, "Element", 7) == 0) {
+				char *b = s+7;
+				while(isspace(*b)) b++;
+				if ((*b == '(') || (*b == '['))
+					return 1;
+			}
 			if ((*s == '\r') || (*s == '\n') || (*s == '#') || (*s == '\0')) /* ignore empty lines and comments */
 				continue;
 			/* non-comment, non-empty line: tolerate at most 16 of these before giving up */
