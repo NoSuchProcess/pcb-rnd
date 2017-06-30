@@ -121,7 +121,7 @@ For the next release:
 	  draw a line on a layer and a poly on another and change whether they are in
 	  the same layer group
 - BUG: 'double click to close' missing for polygon holes [report:miloh]
-- BUG: segfault on printactions() action (configure with --debug) - this is
+- BUG: segfault on printactions() action (configure with gpmi) - this is
 	likely due to some actions with junk characters (see action following
 	'dumpfont' in dump-actions)  [report:miloh]
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
