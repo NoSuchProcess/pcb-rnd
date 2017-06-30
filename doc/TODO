@@ -125,7 +125,6 @@ For the next release:
 	likely due to some actions with junk characters (see action following
 	'dumpfont' in dump-actions)  [report:miloh]
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
-- BUG: -dump-plugindirs doesn't exist yet, see warning in main.c:489
 
 
 LATER RELEASES:
