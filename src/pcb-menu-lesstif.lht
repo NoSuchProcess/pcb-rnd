@@ -121,7 +121,7 @@ ha:{
 						ha:mil = { checked=ChkGridUnits(mil); action=SetUnits(mil) }
 						ha:mm = { checked=ChkGridUnits(mm); action=SetUnits(mm) }
 						ha:Display grid = { checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
-						ha:Realign grid = { li:action={GetXY(Click to set the grid origin); Display(ToggleGrid)} }
+						ha:Realign grid = { action={Display(ToggleGrid)} }
 						ha:No Grid = { checked=ChkGridSize(none); action=SetValue(Grid,1) }
 						-
 						ha:0.1 mil = { checked=ChkGridSize(0.1mil); li:action={SetUnits(mil); SetValue(Grid,0.1mil)} }
