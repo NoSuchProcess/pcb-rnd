@@ -103,7 +103,7 @@ For the next release:
 	- switch the lesstif HID over from attribs to conf
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- increments are not really implemented
-- action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
+- action bug: gui_act.c shouldn't reference Crosshair.X directly; check r9932 to see how to fix it
 - next_gui: keep them open, hide
 - look for #warnings
 - libstroke: zoom
