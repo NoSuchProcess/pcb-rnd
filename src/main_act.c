@@ -268,6 +268,20 @@ int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	return 0;
 }
 
+
+static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
+
+static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories in a format digestable by scripts.";
+
+int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const char **p;
+	for(p = pcb_pup_paths; *p != NULL; p++)
+		printf("%s\n", *p);
+
+	return 0;
+}
+
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t main_action_list[] = {
@@ -291,6 +305,9 @@ pcb_hid_action_t main_action_list[] = {
 	,
 	{"DumpPlugins", 0, pcb_act_DumpPlugins,
 	 pcb_acth_DumpPlugins, pcb_acts_DumpPlugins}
+	,
+	{"DumpPluginDirs", 0, pcb_act_DumpPluginDirs,
+	 pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs}
 };
 
 PCB_REGISTER_ACTIONS(main_action_list, NULL)

@@ -278,6 +278,7 @@ const char *pcb_action_args[] = {
 	NULL, "-show-actions", "PrintActions()",     "Print all available actions (human readable) and exit",
 	NULL, "-dump-actions", "DumpActions()",      "Print all available actions (script readable) and exit",
 	NULL, "-dump-plugins", "DumpPlugins()",      "Print all available plugins (script readable) and exit",
+	NULL, "-dump-plugindirs", "DumpPluginDirs()","Print directories plugins might be loaded from and exit",
 	NULL, "-show-paths",   "PrintPaths()",       "Print all configured paths and exit",
 	NULL, "-dump-config",  "dumpconf(native,1)", "Print the config tree and exit",
 	"V",  "-version",      "PrintVersion()",     "Print version info and exit",
