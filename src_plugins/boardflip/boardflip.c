@@ -82,7 +82,7 @@ static double aflip(double a, pcb_bool flip_x, pcb_bool flip_y)
 	return a;
 }
 
-void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord_t xo, pcb_coord_t yo, pcb_bool elem_swap_sides)
+void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord_t xo, pcb_coord_t yo, pcb_bool et_swap_sides)
 {
 	LAYER_LOOP(data, pcb_max_layer);
 	{
@@ -105,7 +105,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 			pcb_r_delete_entry(layer->text_tree, (pcb_box_t *)text);
 			XFLIP(text->X);
 			YFLIP(text->Y);
-			if (ONLY1)
+			if (et_swap_sides && ONLY1)
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 			pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 			pcb_r_insert_entry(layer->text_tree, (pcb_box_t *)text, 0);
@@ -170,14 +170,14 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	{
 		XFLIP(element->MarkX);
 		YFLIP(element->MarkY);
-		if ((elem_swap_sides) && (ONLY1))
+		if (et_swap_sides && ONLY1)
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, element);
 		PCB_ELEMENT_PCB_TEXT_LOOP(element);
 		{
 			pcb_r_delete_entry(data->name_tree[n], (pcb_box_t *)text);
 			XFLIP(text->X);
 			YFLIP(text->Y);
-			if (elem_swap_sides)
+			if (et_swap_sides)
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 			pcb_r_insert_entry(data->name_tree[n], (pcb_box_t *)text, 0);
 		}
@@ -218,7 +218,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 			XFLIP(pad->Point2.X);
 			YFLIP(pad->Point1.Y);
 			YFLIP(pad->Point2.Y);
-			if ((elem_swap_sides) && (ONLY1))
+			if (et_swap_sides && ONLY1)
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
 			pcb_pad_bbox(pad);
 			pcb_r_insert_entry(data->pad_tree, (pcb_box_t *)pad, 0);
