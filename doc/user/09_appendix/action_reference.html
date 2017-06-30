@@ -10,7 +10,7 @@
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-pcb-rnd version 1.2.3, Revision: 9746
+pcb-rnd version 1.2.3, Revision: 9933
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
@@ -252,15 +252,15 @@ pcb-rnd version 1.2.3, Revision: 9746
 <tr><td> FontEdit </td>
 <td>Convert the current font to a PCB for editing.</td>
 <td>FontEdit()</td>
-<tr><td> dumpconf </td>
-<td>Perform various operations on the configuration tree.</td>
-<td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td>
 <tr><td> h </td>
 <td>Print a help message for commands.</td>
 <td>h</td>
 <tr><td> ApplyVendor </td>
 <td>Applies the currently loaded vendor drill table to the current design.</td>
 <td>ApplyVendor()</td>
+<tr><td> dumpconf </td>
+<td>Perform various operations on the configuration tree.</td>
+<td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td>
 <tr><td> Puller </td>
 <td>Pull an arc-line junction tight.</td>
 <td>pcb_act_Puller()</td>
@@ -287,7 +287,7 @@ pcb-rnd version 1.2.3, Revision: 9746
 <td>s [name]</td>
 <tr><td> Message </td>
 <td>Writes a message to the log window.</td>
-<td>pcb_message(message)</td>
+<td>message(message)</td>
 <tr><td> Mode </td>
 <td>Change or use the tool mode.</td>
 <td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td>
@@ -309,9 +309,6 @@ pcb-rnd version 1.2.3, Revision: 9746
 <tr><td> dumpfonts </td>
 <td>Print info about fonts</td>
 <td>dumpfonts()</td>
-<tr><td> £Geÿ </td>
-<td>ÿ</td>
-<td>LoadVendorFrom</td>
 <tr><td> d1 </td>
 <td>debug action for development</td>
 <td>d1()</td>
@@ -402,9 +399,6 @@ pcb-rnd version 1.2.3, Revision: 9746
 <tr><td> le </td>
 <td>Loads an element into the current buffer.</td>
 <td>le [name]</td>
-<tr><td> £Geÿ </td>
-<td>ÿ</td>
-<td>LoadVendorFrom</td>
 <tr><td> MorphPolygon </td>
 <td>Converts dead polygon islands into separate polygons.</td>
 <td>pcb_poly_morph(Object|Selected)</td>
@@ -472,6 +466,9 @@ pcb-rnd version 1.2.3, Revision: 9746
 <tr><td> LoadMucsFrom </td>
 <td>Loads the specified mucs routing file.</td>
 <td>LoadMucsFrom(filename)</td>
+<tr><td> DumpPluginDirs </td>
+<td>Print plugins directories in a format digestable by scripts.</td>
+<td>DumpPluginDirs()</td>
 <tr><td> GetStyle </td>
 <td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td>
 <td>GetStyle()</td>
