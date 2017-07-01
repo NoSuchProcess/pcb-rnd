@@ -45,7 +45,7 @@ For the next release:
 	- replace font in slot (even in default)
 	- ttf import?
 - cleanup: revise strftime() calls, especially in exporters:
-	- make a config.h format string, don't depend on %c
+	- make a config.h format string, don't depend on %c - use pcb_print_utc() instead
 	- make the format more ISO-like
 	- make sure to use this in all the exported comments but don't break file formats
 - fp_board: extend the API so that the element can be presented without saving to a file
