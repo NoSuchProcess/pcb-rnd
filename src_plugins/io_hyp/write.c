@@ -52,6 +52,35 @@ static int write_hdr(hyp_wr_t *wr)
 static int write_foot(hyp_wr_t *wr)
 {
 	fprintf(wr->f, "{END}\n");
+	return 0;
+}
+
+static void write_line(hyp_wr_t *wr, const char *cmd, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	if (cmd == NULL)
+		cmd = "TODO";
+	pcb_fprintf(wr->f, "  (%s X1=%me Y1=%me X2=%me Y2=%me)\n", cmd, x1, y1, x2, y2);
+}
+
+static int write_board(hyp_wr_t *wr)
+{
+	pcb_layer_id_t lid;
+
+	fprintf(wr->f, "{BOARD\n");
+
+	if (pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1) != 12) {
+		/* implicit outline */
+		fprintf(wr->f, "* implicit outline derived from board width and height\n");
+		write_line(wr, "PERIMETER_SEGMENT", 0, 0, PCB->MaxWidth, 0);
+		write_line(wr, "PERIMETER_SEGMENT", 0, 0, 0, PCB->MaxHeight);
+		write_line(wr, "PERIMETER_SEGMENT", PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
+		write_line(wr, "PERIMETER_SEGMENT", 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
+	}
+	else {
+		/* explicit outline */
+	}
+	fprintf(wr->f, "}\n");
+	return 0;
 }
 
 int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency)
@@ -65,6 +94,8 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 	if (write_hdr(&wr) != 0)
 		return -1;
 
+	if (write_board(&wr) != 0)
+		return -1;
 
 	if (write_foot(&wr) != 0)
 		return -1;
