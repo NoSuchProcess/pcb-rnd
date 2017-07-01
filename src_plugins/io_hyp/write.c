@@ -55,11 +55,9 @@ static int write_foot(hyp_wr_t *wr)
 	return 0;
 }
 
-static void write_line(hyp_wr_t *wr, const char *cmd, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void write_pr_line(hyp_wr_t *wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	if (cmd == NULL)
-		cmd = "TODO";
-	pcb_fprintf(wr->f, "  (%s X1=%me Y1=%me X2=%me Y2=%me)\n", cmd, x1, y1, x2, y2);
+	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, y1, x2, y2);
 }
 
 static int write_board(hyp_wr_t *wr)
@@ -71,10 +69,10 @@ static int write_board(hyp_wr_t *wr)
 	if (pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1) != 1) {
 		/* implicit outline */
 		fprintf(wr->f, "* implicit outline derived from board width and height\n");
-		write_line(wr, "PERIMETER_SEGMENT", 0, 0, PCB->MaxWidth, 0);
-		write_line(wr, "PERIMETER_SEGMENT", 0, 0, 0, PCB->MaxHeight);
-		write_line(wr, "PERIMETER_SEGMENT", PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
-		write_line(wr, "PERIMETER_SEGMENT", 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
+		write_pr_line(wr, 0, 0, PCB->MaxWidth, 0);
+		write_pr_line(wr, 0, 0, 0, PCB->MaxHeight);
+		write_pr_line(wr, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
+		write_pr_line(wr, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
 	}
 	else {
 		/* explicit outline */
@@ -84,7 +82,7 @@ static int write_board(hyp_wr_t *wr)
 		pcb_arc_t *arc;
 
 		linelist_foreach(&l->Line, &it, line) {
-			write_line(wr, "PERIMETER_SEGMENT", line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			write_pr_line(wr, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
 		arclist_foreach(&l->Arc, &it, arc) {
 /*			write_arc(wr, "PERIMETER_ARC", arc); */
