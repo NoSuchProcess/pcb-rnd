@@ -125,6 +125,32 @@ static int write_board(hyp_wr_t *wr)
 	return 0;
 }
 
+static int write_lstack(hyp_wr_t *wr)
+{
+	int n;
+
+	fprintf(wr->f, "{STACKUP\n");
+	for(n = 0; n < wr->pcb->LayerGroups.len; n++) {
+		pcb_layergrp_t *grp = &wr->pcb->LayerGroups.grp[n];
+		const char *name = grp->name;
+
+		if (grp->type & PCB_LYT_COPPER) {
+			pcb_fprintf(wr->f, "  (SIGNAL T=0.003500 L=%[4])\n", name);
+		}
+		else if (grp->type & PCB_LYT_SUBSTRATE) {
+			char tmp[128];
+			if (name == NULL) {
+				sprintf(tmp, "dielectric layer %d", n);
+				name = tmp;
+			}
+			pcb_fprintf(wr->f, "  (DIELECTRIC T=0.160000 L=%[4])\n", name);
+		}
+	}
+
+	fprintf(wr->f, "}\n");
+}
+
+
 int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	hyp_wr_t wr;
@@ -134,10 +160,15 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 	wr.f = f;
 	wr.fn = new_filename;
 
+	pcb_printf_slot[4] = "%{{\\}\\()\t\r\n \"}mq";
+
 	if (write_hdr(&wr) != 0)
 		return -1;
 
 	if (write_board(&wr) != 0)
+		return -1;
+
+	if (write_lstack(&wr) != 0)
 		return -1;
 
 	if (write_foot(&wr) != 0)
