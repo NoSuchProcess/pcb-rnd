@@ -32,6 +32,9 @@ typedef struct hyp_wr_s {
 	pcb_board_t *pcb;
 	FILE *f;
 	const char *fn;
+	struct {
+		unsigned elliptic:1;
+	} warn;
 } hyp_wr_t;
 
 
@@ -60,6 +63,36 @@ static void write_pr_line(hyp_wr_t *wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, y1, x2, y2);
 }
 
+static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc)
+{
+	pcb_coord_t x1, y1, x2, y2;
+
+	if (arc->Width != arc->Height) {
+		if (!wr->warn.elliptic) {
+			pcb_message(PCB_MSG_WARNING, "Elliptic arcs are not supported - omitting all elliptic arcs\n");
+			wr->warn.elliptic = 1;
+		}
+		return;
+	}
+
+	if (arc->Delta >= 0) {
+		pcb_arc_get_end(arc, 0, &x1, &y1);
+		pcb_arc_get_end(arc, 1, &x2, &y2);
+	}
+	else {
+		pcb_arc_get_end(arc, 1, &x1, &y1);
+		pcb_arc_get_end(arc, 0, &x2, &y2);
+	}
+
+	pcb_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me)\n", cmd, x1, y1, x2, y2, arc->X, arc->Y, arc->Width);
+}
+
+static void write_pr_arc(hyp_wr_t *wr, pcb_arc_t *arc)
+{
+	fprintf(wr->f, "  ");
+	write_arc_(wr, "PERIMETER_ARC", arc);
+}
+
 static int write_board(hyp_wr_t *wr)
 {
 	pcb_layer_id_t lid;
@@ -85,7 +118,7 @@ static int write_board(hyp_wr_t *wr)
 			write_pr_line(wr, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
 		arclist_foreach(&l->Arc, &it, arc) {
-/*			write_arc(wr, "PERIMETER_ARC", arc); */
+			write_pr_arc(wr, arc);
 		}
 	}
 	fprintf(wr->f, "}\n");
@@ -96,6 +129,7 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 {
 	hyp_wr_t wr;
 
+	memset(&wr, 0, sizeof(wr));
 	wr.pcb = PCB;
 	wr.f = f;
 	wr.fn = new_filename;
