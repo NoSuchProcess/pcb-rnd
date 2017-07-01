@@ -493,7 +493,6 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 						break;
 					}
 				}
-				fprintf(stderr, "END: '%s' '%s'\n", fmt, end);
 				if (*end == '\0')
 					goto err;
 				gds_append_len(&spec, fmt, end-fmt);
