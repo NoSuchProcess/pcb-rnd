@@ -68,7 +68,7 @@ static int write_board(hyp_wr_t *wr)
 
 	fprintf(wr->f, "{BOARD\n");
 
-	if (pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1) != 12) {
+	if (pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1) != 1) {
 		/* implicit outline */
 		fprintf(wr->f, "* implicit outline derived from board width and height\n");
 		write_line(wr, "PERIMETER_SEGMENT", 0, 0, PCB->MaxWidth, 0);
@@ -78,6 +78,17 @@ static int write_board(hyp_wr_t *wr)
 	}
 	else {
 		/* explicit outline */
+		pcb_layer_t *l = pcb_get_layer(lid);
+		gdl_iterator_t it;
+		pcb_line_t *line;
+		pcb_arc_t *arc;
+
+		linelist_foreach(&l->Line, &it, line) {
+			write_line(wr, "PERIMETER_SEGMENT", line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+		}
+		arclist_foreach(&l->Arc, &it, arc) {
+/*			write_arc(wr, "PERIMETER_ARC", arc); */
+		}
 	}
 	fprintf(wr->f, "}\n");
 	return 0;
