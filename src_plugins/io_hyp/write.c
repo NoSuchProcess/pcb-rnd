@@ -32,6 +32,8 @@ typedef struct hyp_wr_s {
 	pcb_board_t *pcb;
 	FILE *f;
 	const char *fn;
+
+	const char *ln_top, *ln_bottom; /* "layer name" for top and bottom groups */
 	struct {
 		unsigned elliptic:1;
 	} warn;
@@ -136,6 +138,10 @@ static int write_lstack(hyp_wr_t *wr)
 
 		if (grp->type & PCB_LYT_COPPER) {
 			pcb_fprintf(wr->f, "  (SIGNAL T=0.003500 L=%[4])\n", name);
+			if (grp->type & PCB_LYT_TOP)
+				wr->ln_top = name;
+			else if (grp->type & PCB_LYT_BOTTOM)
+				wr->ln_bottom = name;
 		}
 		else if (grp->type & PCB_LYT_SUBSTRATE) {
 			char tmp[128];
@@ -148,6 +154,33 @@ static int write_lstack(hyp_wr_t *wr)
 	}
 
 	fprintf(wr->f, "}\n");
+	return 0;
+}
+
+static int write_devices(hyp_wr_t *wr)
+{
+	gdl_iterator_t it;
+	pcb_element_t *elem;
+	int cnt;
+
+	fprintf(wr->f, "{DEVICES\n");
+
+	cnt = 0;
+	elementlist_foreach(&wr->pcb->Data->Element, &it, elem) {
+		const char *layer;
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, elem))
+			layer = wr->ln_bottom;
+		else
+			layer = wr->ln_top;
+		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", PCB_ELEM_NAME_REFDES(elem), PCB_ELEM_NAME_DESCRIPTION(elem), layer);
+		cnt++;
+	}
+
+	if (cnt == 0)
+		pcb_message(PCB_MSG_WARNING, "There is no element on the board - this limites the use of the resulting .hyp file, as it won't be able to connect to a simulation\n");
+
+	fprintf(wr->f, "}\n");
+	return 0;
 }
 
 
@@ -169,6 +202,9 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 		return -1;
 
 	if (write_lstack(&wr) != 0)
+		return -1;
+
+	if (write_devices(&wr) != 0)
 		return -1;
 
 	if (write_foot(&wr) != 0)
