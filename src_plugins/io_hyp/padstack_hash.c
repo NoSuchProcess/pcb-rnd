@@ -81,6 +81,9 @@ void pcb_pshash_init(pcb_pshash_hash_t *psh)
 
 void pcb_pshash_uninit(pcb_pshash_hash_t *psh)
 {
+	htpp_entry_t *e;
+	for (e = htpp_first(&psh->ht); e; e = htpp_next(&psh->ht, e))
+		free(e->key);
 
 	htpp_uninit(&psh->ht);
 }
