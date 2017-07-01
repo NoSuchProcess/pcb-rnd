@@ -64,7 +64,9 @@ void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via);
 
 /* hash */
 int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t *e2, const pcb_pin_t *p2);
+int pcb_pin_eq_padstack(const pcb_pin_t *p1, const pcb_pin_t *p2);
 unsigned int pcb_pin_hash(const pcb_element_t *e, const pcb_pin_t *p);
+unsigned int pcb_pin_hash_padstack(const pcb_pin_t *p);
 
 
 pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);

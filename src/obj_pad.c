@@ -227,6 +227,15 @@ int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t
 	return 1;
 }
 
+int pcb_pad_eq_padstack(const pcb_pad_t *p1, const pcb_pad_t *p2)
+{
+	if (pcb_field_neq(p1, p2, Thickness) || pcb_field_neq(p1, p2, Clearance)) return 0;
+	if (PCB_ABS(p1->Point1.X - p1->Point2.X) != PCB_ABS(p2->Point1.X - p2->Point2.X)) return 0;
+	if (PCB_ABS(p1->Point1.Y - p1->Point2.Y) != PCB_ABS(p2->Point1.Y - p2->Point2.Y)) return 0;
+	if (pcb_field_neq(p1, p2, Mask)) return 0;
+	return 1;
+}
+
 unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p)
 {
 	return
@@ -235,6 +244,15 @@ unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p)
 		pcb_hash_element_ox(e, p->Point2.X) ^ pcb_hash_element_oy(e, p->Point2.Y) ^
 		pcb_hash_coord(p->Mask) ^
 		pcb_hash_str(p->Name) ^ pcb_hash_str(p->Number);
+}
+
+unsigned int pcb_pad_hash_padstack(const pcb_pad_t *p)
+{
+	return
+		pcb_hash_coord(p->Thickness) ^ pcb_hash_coord(p->Clearance) ^
+		pcb_hash_coord(PCB_ABS(p->Point1.X - p->Point2.X)) ^
+		pcb_hash_coord(PCB_ABS(p->Point1.Y - p->Point2.Y)) ^
+		pcb_hash_coord(p->Mask);
 }
 
 
