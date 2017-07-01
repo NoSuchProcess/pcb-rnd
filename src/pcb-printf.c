@@ -487,8 +487,14 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				/* {} specifier for %mq */
 				const char *end;
 				gds_truncate(&spec, 0);
-				end = strchr(fmt, '}');
-				if (end == NULL)
+				for(end = fmt; *end != '\0'; end++) {
+					if ((end[0] != '\\') && (end[1] == '}')) {
+						end++;
+						break;
+					}
+				}
+				fprintf(stderr, "END: '%s' '%s'\n", fmt, end);
+				if (*end == '\0')
 					goto err;
 				gds_append_len(&spec, fmt, end-fmt);
 				fmt = end+1;
