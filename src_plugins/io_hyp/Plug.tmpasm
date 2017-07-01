@@ -6,6 +6,7 @@ append /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_hyp/hyp_y.o
 	$(PLUGDIR)/io_hyp/parser.o
 	$(PLUGDIR)/io_hyp/write.o
+	$(PLUGDIR)/io_hyp/padstack_hash.o
 @]
 
 put /local/pcb/mod/YACC {$(PLUGDIR)/io_hyp/hyp_y}

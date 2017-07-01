@@ -2084,6 +2084,14 @@
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/io_hyp/parser.h \
  pcb_bool.h board.h const.h vtroutestyle.h rats_patch.h board.h \
  ../src_plugins/io_hyp/write.h dolists.h
+../src_plugins/io_hyp/padstack_hash.o: \
+ ../src_plugins/io_hyp/padstack_hash.c ../config.h \
+ ../src_3rd/liblihata/genht/htpp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_plugins/io_hyp/padstack_hash.h obj_pad.h obj_common.h \
+ ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
+ globalconst.h attrib.h global_typedefs.h pcb_bool.h unit.h data_parent.h \
+ obj_pinvia.h
 ../src_plugins/io_hyp/parser.o: ../src_plugins/io_hyp/parser.c \
  ../src_plugins/io_hyp/parser.h pcb_bool.h board.h ../config.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
