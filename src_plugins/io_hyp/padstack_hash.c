@@ -132,7 +132,7 @@ static const char *pcb_pshash_pp(pcb_pshash_hash_t *psh, pcb_pshash_item_t *key,
 }
 
 
-const char *pcb_pshash_pad(pcb_pshash_hash_t *psh, pcb_pad_t *pad, int *new_item)
+const char *pcb_pshash_pad(pcb_pshash_hash_t *psh, const pcb_pad_t *pad, int *new_item)
 {
 	pcb_pshash_item_t key;
 	key.is_pad = 1;
@@ -140,7 +140,7 @@ const char *pcb_pshash_pad(pcb_pshash_hash_t *psh, pcb_pad_t *pad, int *new_item
 	return pcb_pshash_pp(psh, &key, new_item);
 }
 
-const char *pcb_pshash_pin(pcb_pshash_hash_t *psh, pcb_pin_t *pin, int *new_item)
+const char *pcb_pshash_pin(pcb_pshash_hash_t *psh, const pcb_pin_t *pin, int *new_item)
 {
 	pcb_pshash_item_t key;
 	key.is_pad = 0;

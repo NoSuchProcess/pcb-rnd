@@ -39,5 +39,5 @@ void pcb_pshash_uninit(pcb_pshash_hash_t *psh);
    If new_item == NULL: look up existing pin or pad.
    return unique name or NULL if not found (or can't be added)
    */
-const char *pcb_pshash_pad(pcb_pshash_hash_t *psh, pcb_pad_t *pad, int *new_item);
-const char *pcb_pshash_pin(pcb_pshash_hash_t *psh, pcb_pin_t *pin, int *new_item);
+const char *pcb_pshash_pad(pcb_pshash_hash_t *psh, const pcb_pad_t *pad, int *new_item);
+const char *pcb_pshash_pin(pcb_pshash_hash_t *psh, const pcb_pin_t *pin, int *new_item);
