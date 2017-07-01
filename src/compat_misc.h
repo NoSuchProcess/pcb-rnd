@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 long pcb_rand(void);
 
@@ -44,5 +45,8 @@ int pcb_strcasecmp(const char *s1, const char *s2);
 int pcb_strncasecmp(const char *s1, const char *s2, size_t n);
 
 int pcb_setenv(const char *name, const char *val, int overwrite);
+
+/* Print a date in UTC; if when is 0, print current date */
+size_t pcb_print_utc(char *out, size_t out_len, time_t when);
 
 #endif /* PCB_COMPAT_MISC_H */

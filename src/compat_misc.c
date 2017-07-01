@@ -178,3 +178,11 @@ int pcb_setenv(const char *name, const char *val, int overwrite)
 #endif
 }
 
+size_t pcb_print_utc(char *out, size_t out_len, time_t when)
+{
+	static const char *fmt = "%Y-%m-%d %H:%M:%S UTC";
+	if (when <= 0)
+		when = time(NULL);
+
+	return strftime(out, out_len, fmt, gmtime(&when));
+}
