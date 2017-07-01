@@ -26,6 +26,7 @@
 #include <genht/htpp.h>
 
 #include "padstack_hash.h"
+#include "obj_elem.h"
 #include "obj_pad.h"
 #include "obj_pinvia.h"
 
@@ -41,22 +42,22 @@ typedef struct pcb_pshash_item_s {
 
 static unsigned int pcb_pshash_padhash(const pcb_pshash_item_t *key)
 {
-	return pcb_pad_hash(NULL, key->ptr.pad);
+	return pcb_pad_hash_padstack(key->ptr.pad);
 }
 
 static unsigned int pcb_pshash_pinhash(const pcb_pshash_item_t *key)
 {
-	return pcb_pin_hash(NULL, key->ptr.pin);
+	return pcb_pin_hash_padstack(key->ptr.pin);
 }
 
 static int pcb_pshash_padeq(const pcb_pshash_item_t *key1, const pcb_pshash_item_t *key2)
 {
-	return pcb_pad_eq(NULL, key1->ptr.pad, NULL, key2->ptr.pad);
+	return pcb_pad_eq_padstack(key1->ptr.pad, key2->ptr.pad);
 }
 
 static int pcb_pshash_pineq(const pcb_pshash_item_t *key1, const pcb_pshash_item_t *key2)
 {
-	return pcb_pin_eq(NULL, key1->ptr.pin, NULL, key2->ptr.pin);
+	return pcb_pin_eq_padstack(key1->ptr.pin, key2->ptr.pin);
 }
 
 

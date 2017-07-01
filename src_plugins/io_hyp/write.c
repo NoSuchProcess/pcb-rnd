@@ -27,6 +27,7 @@
 #include "board.h"
 #include "data.h"
 #include "compat_misc.h"
+#include "padstack_hash.h"
 
 typedef struct hyp_wr_s {
 	pcb_board_t *pcb;
@@ -34,6 +35,7 @@ typedef struct hyp_wr_s {
 	const char *fn;
 
 	const char *ln_top, *ln_bottom; /* "layer name" for top and bottom groups */
+	pcb_pshash_hash_t psh;
 	struct {
 		unsigned elliptic:1;
 	} warn;
@@ -183,6 +185,53 @@ static int write_devices(hyp_wr_t *wr)
 	return 0;
 }
 
+static void write_padstack_pv(hyp_wr_t *wr, const pcb_pin_t *pin)
+{
+	int new_item;
+	const char *name = pcb_pshash_pin(&wr->psh, pin, &new_item);
+	if (!new_item)
+		return;
+
+	pcb_fprintf(wr->f, "{PADSTACK=%s, %me\n", name, pin->DrillingHole);
+#warning TODO: pin shapes and thermal
+	pcb_fprintf(wr->f, "  (MDEF, 0, %me, %me, 0, M)\n", pin->Thickness, pin->Thickness);
+	fprintf(wr->f, "}\n");
+}
+
+static void write_padstack_pad(hyp_wr_t *wr, const pcb_pad_t *pad)
+{
+	int new_item;
+	const char *name = pcb_pshash_pad(&wr->psh, pad, &new_item), *side;
+	if (!new_item)
+		return;
+
+	side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? wr->ln_bottom : wr->ln_top;
+
+	fprintf(wr->f, "{PADSTACK=%s,\n", name);
+	pcb_fprintf(wr->f, "  (%[4], 1, %me, %me, 0, M)\n", side, PCB_ABS(pad->Point1.X - pad->Point2.X) + pad->Thickness, PCB_ABS(pad->Point1.Y - pad->Point2.Y) + pad->Thickness);
+	fprintf(wr->f, "}\n");
+}
+
+static int write_padstack(hyp_wr_t *wr)
+{
+	gdl_iterator_t it, it2;
+	pcb_element_t *elem;
+	pcb_pin_t *pin;
+	pcb_pad_t *pad;
+
+	elementlist_foreach(&wr->pcb->Data->Element, &it, elem) {
+		pinlist_foreach(&elem->Pin, &it2, pin) {
+			write_padstack_pv(wr, pin);
+		}
+		padlist_foreach(&elem->Pad, &it2, pad) {
+			write_padstack_pad(wr, pad);
+		}
+	}
+	pinlist_foreach(&wr->pcb->Data->Via, &it, pin) {
+		write_padstack_pv(wr, pin);
+	}
+}
+
 
 int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
@@ -193,23 +242,33 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 	wr.f = f;
 	wr.fn = new_filename;
 
+	pcb_pshash_init(&wr.psh);
+
 	pcb_printf_slot[4] = "%{{\\}\\()\t\r\n \"}mq";
 
 	if (write_hdr(&wr) != 0)
-		return -1;
+		goto err;
 
 	if (write_board(&wr) != 0)
-		return -1;
+		goto err;
 
 	if (write_lstack(&wr) != 0)
-		return -1;
+		goto err;
 
 	if (write_devices(&wr) != 0)
-		return -1;
+		goto err;
+
+	if (write_padstack(&wr) != 0)
+		goto err;
 
 	if (write_foot(&wr) != 0)
-		return -1;
+		goto err;
 
+	pcb_pshash_uninit(&wr.psh);
 	return 0;
+
+	err:;
+	pcb_pshash_uninit(&wr.psh);
+	return -1;
 }
 
