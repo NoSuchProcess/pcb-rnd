@@ -125,7 +125,7 @@ For the next release:
 	likely due to some actions with junk characters (see action following
 	'dumpfont' in dump-actions)  [report:miloh]
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
-
+- BUG: arc bounding boxes not correctly found in some cases. Noticed on export to io_autotrax due to need to establish bounding box of board contents, including arcs, to allow subsequent board flip. 
 
 LATER RELEASES:
 - SUBC missing features:
