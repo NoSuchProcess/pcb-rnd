@@ -77,7 +77,7 @@
  * The new string specifiers are:
  *   %mq    output a quoted string (""); quote if contains quote. Use
  *          backslash to protect quotes within the quoted string. Modifiers:
- *           {chars} start quoting if any of these appear
+ *           {chars} start quoting if any of these appear; "\}" in {chars} is a plain '}'
  *
  *
  * KNOWN ISSUES:
