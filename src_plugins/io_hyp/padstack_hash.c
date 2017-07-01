@@ -29,6 +29,16 @@
 #include "obj_pad.h"
 #include "obj_pinvia.h"
 
+typedef struct pcb_pshash_item_s {
+	char name[16];
+	int is_pad;
+	union {
+		const pcb_pin_t *pin;
+		const pcb_pad_t *pad;
+		const void *any;
+	} ptr;
+} pcb_pshash_item_t;
+
 static unsigned int pcb_pshash_padhash(const pcb_pshash_item_t *key)
 {
 	return pcb_pad_hash(NULL, key->ptr.pad);
