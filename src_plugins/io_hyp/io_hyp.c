@@ -41,6 +41,7 @@
 #include "plug_io.h"
 #include "parser.h"
 #include "board.h"
+#include "write.h"
 
 static const char *hyp_cookie = "hyp importer";
 
@@ -160,8 +161,8 @@ int pplg_init_io_hyp(void)
 /*	io_hyp.parse_element = NULL;
 	io_hyp.parse_font = NULL;
 	io_hyp.write_buffer = io_hyp_write_buffer;
-	io_hyp.write_element = io_hyp_write_element;
-	io_hyp.write_pcb = io_hyp_write_pcb;*/
+	io_hyp.write_element = io_hyp_write_element;*/
+	io_hyp.write_pcb = io_hyp_write_pcb;
 	io_hyp.default_fmt = "hyp";
 	io_hyp.description = "hyperlinks";
 	io_hyp.save_preference_prio = 30;
