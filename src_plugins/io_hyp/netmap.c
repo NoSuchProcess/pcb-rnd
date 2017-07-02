@@ -47,7 +47,6 @@ static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
 	if (map->curr_net == NULL)
 		map->curr_net = alloc_net(map);
 
-	pcb_trace(" %x %p\n", obj->type, obj);
 	htpp_set(&map->o2n, obj, map->curr_net);
 	htpp_set(&map->n2o, map->curr_net, obj);
 	return 1;
@@ -64,11 +63,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if ((layer != NULL) && (pcb_layer_flags_(map->pcb, layer) & PCB_LYT_COPPER) == 0)
 		return;
 
-	pcb_trace("OBJ/%x on layer %s\n", obj->type, layer == NULL ? "<global>" : layer->meta.real.name);
-
 	pcb_lookup_conn_by_obj(map, obj, 0, found);
-
-	pcb_trace(" <- net is %s\n", map->curr_net->Name);
 }
 
 static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
@@ -101,8 +96,7 @@ static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	map->curr_net = pcb_netlist_find_net4pin(map->pcb, pin);
 	if (map->curr_net == NULL)
 		map->curr_net = alloc_net(map);
-	pcb_trace("pin! on net %s\n", map->curr_net->Name);
-	
+
 	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pin, 0, found);
 }
 
@@ -116,8 +110,7 @@ static void list_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	map->curr_net = pcb_netlist_find_net4pad(map->pcb, pad);
 	if (map->curr_net == NULL)
 		map->curr_net = alloc_net(map);
-	pcb_trace("pad! on net %s\n", map->curr_net->Name);
-	
+
 	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pad, 0, found);
 }
 
