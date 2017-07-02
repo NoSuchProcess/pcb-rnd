@@ -129,10 +129,12 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 		}
 		if (fgets(line, sizeof(line) - 1, stdin) == NULL) {
 			uninit_batch();
-			return;
+			goto quit;
 		}
 		pcb_hid_parse_command(line);
 	}
+
+	quit:;
 	batch_end();
 }
 
