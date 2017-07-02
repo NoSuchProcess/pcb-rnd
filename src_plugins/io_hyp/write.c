@@ -89,6 +89,13 @@ static void write_pv(hyp_wr_t *wr, pcb_pin_t *pin)
 	pcb_fprintf(wr->f, "  (%s X=%me Y=%me P=%[4])\n", pin->type == PCB_OBJ_PIN ? "PIN R=ref" : "VIA", pin->X, pin->Y, pcb_pshash_pin(&wr->psh, pin, NULL));
 }
 
+static void write_pad(hyp_wr_t *wr, pcb_pad_t *pad)
+{
+	pcb_fprintf(wr->f, "  (PIN R=ref X=%me Y=%me P=%[4])\n",
+		(pad->Point1.X + pad->Point2.X)/2, (pad->Point1.Y + pad->Point2.Y)/2,
+		pcb_pshash_pad(&wr->psh, pad, NULL));
+}
+
 
 static void write_line(hyp_wr_t *wr, pcb_line_t *line)
 {
@@ -287,10 +294,10 @@ static int write_nets(hyp_wr_t *wr)
 				case PCB_OBJ_ARC:  write_arc(wr, (pcb_arc_t *)o->obj); break;
 				case PCB_OBJ_PIN:
 				case PCB_OBJ_VIA:  write_pv(wr, (pcb_pin_t *)o->obj); break;
+				case PCB_OBJ_PAD:  write_pad(wr, (pcb_pad_t *)o->obj); break;
 
 				case PCB_OBJ_POLYGON:
 				case PCB_OBJ_RAT:
-				case PCB_OBJ_PAD:
 					break; /* not yet done */
 
 				case PCB_OBJ_TEXT:
