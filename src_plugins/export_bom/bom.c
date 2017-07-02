@@ -224,18 +224,10 @@ static void print_and_free(FILE * fp, BomList * bom)
 static int PrintBOM(void)
 {
 	char utcTime[64];
-	time_t currenttime;
 	FILE *fp;
 	BomList *bom = NULL;
 
-	/* Create a portable timestamp. */
-	currenttime = time(NULL);
-	{
-		/* avoid gcc complaints */
-		const char *fmt = "%c UTC";
-		strftime(utcTime, sizeof(utcTime), fmt, gmtime(&currenttime));
-	}
-
+	pcb_print_utc(utcTime, sizeof(utcTime), 0);
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
