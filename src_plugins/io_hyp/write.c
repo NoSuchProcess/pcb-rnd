@@ -84,6 +84,12 @@ static void write_pr_line(hyp_wr_t *wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, y1, x2, y2);
 }
 
+static void write_pv(hyp_wr_t *wr, pcb_pin_t *pin)
+{
+	pcb_fprintf(wr->f, "  (%s X=%me Y=%me P=%[4])\n", pin->type == PCB_OBJ_PIN ? "PIN R=ref" : "VIA", pin->X, pin->Y, pcb_pshash_pin(&wr->psh, pin, NULL));
+}
+
+
 static void write_line(hyp_wr_t *wr, pcb_line_t *line)
 {
 	pcb_fprintf(wr->f, "  (SEG X1=%me Y1=%me X2=%me Y2=%me W=%me L=%[4])\n",
@@ -279,12 +285,12 @@ static int write_nets(hyp_wr_t *wr)
 			switch(o->obj->type) {
 				case PCB_OBJ_LINE: write_line(wr, (pcb_line_t *)o->obj); break;
 				case PCB_OBJ_ARC:  write_arc(wr, (pcb_arc_t *)o->obj); break;
+				case PCB_OBJ_PIN:
+				case PCB_OBJ_VIA:  write_pv(wr, (pcb_pin_t *)o->obj); break;
 
 				case PCB_OBJ_POLYGON:
 				case PCB_OBJ_RAT:
 				case PCB_OBJ_PAD:
-				case PCB_OBJ_PIN:
-				case PCB_OBJ_VIA:
 					break; /* not yet done */
 
 				case PCB_OBJ_TEXT:
