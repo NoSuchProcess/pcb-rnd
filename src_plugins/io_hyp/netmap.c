@@ -28,6 +28,8 @@
 #include "netmap.h"
 #include "data.h"
 #include "find.h"
+#include "netlist.h"
+#include "pcb-printf.h"
 
 #define APPEND(a,b,c,d,e)
 
@@ -35,7 +37,18 @@ static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
 {
 	pcb_netmap_t *map = ctx;
 	pcb_trace(" %x %p\n", obj->type, obj);
+	htpp_set(&map->o2n, obj, map->curr_net);
+	htpp_set(&map->n2o, map->curr_net, obj);
 	return 1;
+}
+
+static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
+{
+	dyn_net_t *dn = calloc(sizeof(dyn_net_t), 1);
+	dn->next = map->dyn_nets;
+	map->dyn_nets = dn;
+	dn->net.Name = pcb_strdup_printf("netmap_anon_%d", map->anon_cnt++);
+	return &dn->net;
 }
 
 static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
@@ -59,8 +72,12 @@ static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	if (htpp_get(&map->o2n, pin) != NULL)
 		return;
 
-	pcb_trace("pin!\n");
-	pcb_lookup_conn_by_obj(map, pin, 0, found);
+	map->curr_net = pcb_netlist_find_net4pin(map->pcb, pin);
+	if (map->curr_net == NULL)
+		map->curr_net = alloc_net(map);
+	pcb_trace("pin! on net %s\n", map->curr_net == NULL ? "???" : map->curr_net->Name);
+	
+	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pin, 0, found);
 }
 
 static void list_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
@@ -78,6 +95,8 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 	htpp_init(&map->o2n, ptrhash, ptrkeyeq);
 	htpp_init(&map->n2o, ptrhash, ptrkeyeq);
 	map->anon_cnt = 0;
+	map->curr_net = NULL;
+	map->dyn_nets = 0;
 	map->pcb = pcb;
 
 /* step 1: find known nets (from pins and pads) */
@@ -118,7 +137,15 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 
 int pcb_netmap_uninit(pcb_netmap_t *map)
 {
+	dyn_net_t *dn, *next;
+
 	htpp_uninit(&map->o2n);
 	htpp_uninit(&map->n2o);
+
+	for(dn = map->dyn_nets; dn != NULL; dn = next) {
+		next = dn->next;
+		free(dn->net.Name);
+		free(dn);
+	}
 }
 

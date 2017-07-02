@@ -22,11 +22,21 @@
 
 #include <genht/htpp.h>
 #include "board.h"
+#include "library.h"
+
+typedef struct dyn_net_s dyn_net_t;
+
+struct dyn_net_s {
+	pcb_lib_menu_t net;
+	dyn_net_t *next;
+};
 
 typedef struct pcb_netmap_s {
 	htpp_t o2n, n2o;
 	pcb_cardinal_t anon_cnt;
 	pcb_board_t *pcb;
+	pcb_lib_menu_t *curr_net;
+	dyn_net_t *dyn_nets;
 } pcb_netmap_t;
 
 int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb);
