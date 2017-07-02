@@ -3895,7 +3895,6 @@ static int dxf_export_xref_file(void)
 	int found_pin1;
 	int found_pin2;
 	int pin_cnt;
-	time_t currenttime;
 	DxfList *dxf;
 	DxfList *lastb;
 	char *dxf_block_name;
@@ -3929,8 +3928,8 @@ static int dxf_export_xref_file(void)
 	/*
 	 * create a portable timestamp.
 	 */
-	currenttime = time(NULL);
-	strftime(utcTime, sizeof(utcTime), "%c UTC", gmtime(&currenttime));
+	pcb_print_utc(utcTime, sizeof(utcTime), 0);
+
 	if (dxf_verbose) {
 		/* report at the beginning of each file */
 		fprintf(stderr, "DXF: Board Name: %s, %s \n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(name));
@@ -4519,13 +4518,8 @@ printf("SET LAYER: %s\n", dxf_filename);
 		if (dxf_verbose) {
 			fprintf(stderr, "DXF: Start of page %d for group %ld flags %x\n", pagecount, group, flags);
 		}
-		if (group < 0 || group != lastgroup) {
-			/* create a portable timestamp */
-			currenttime = time(NULL);
-			/* avoid gcc complaints */
-			fmt = pcb_strdup("%c UTC");
-			strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
-		}
+		if (group < 0 || group != lastgroup)
+			pcb_print_utc(utcTime, sizeof(utcTime), 0);
 		if (dxf_verbose) {
 			/* report at the beginning of each file */
 			fprintf(stderr, "DXF: Board Name: %s, %s \n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(name));
