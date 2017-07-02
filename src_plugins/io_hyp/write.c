@@ -298,7 +298,7 @@ static int write_nets(hyp_wr_t *wr)
 	for(e = htpp_first(&map.n2o); e != NULL; e = htpp_next(&map.n2o, e)) {
 		dyn_obj_t *o;
 		pcb_lib_menu_t *net = e->key;
-		pcb_fprintf(wr->f, "{NET=%[4],\n", net->Name);
+		pcb_fprintf(wr->f, "{NET=%[4],\n", net->Name+2);
 		for(o = e->value; o != NULL; o = o->next) {
 			switch(o->obj->type) {
 				case PCB_OBJ_LINE: write_line(wr, (pcb_line_t *)o->obj); break;
