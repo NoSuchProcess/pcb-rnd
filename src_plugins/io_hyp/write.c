@@ -68,7 +68,14 @@ static void write_pr_line(hyp_wr_t *wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, y1, x2, y2);
 }
 
-static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc)
+static void write_line(hyp_wr_t *wr, pcb_line_t *line)
+{
+	pcb_fprintf(wr->f, "  (SEG X1=%me Y1=%me X2=%me Y2=%me W=%me L=%[4])\n",
+		line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
+		line->Thickness, "TODO:layer");
+}
+
+static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc, const char *layer)
 {
 	pcb_coord_t x1, y1, x2, y2;
 
@@ -89,13 +96,22 @@ static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc)
 		pcb_arc_get_end(arc, 0, &x2, &y2);
 	}
 
-	pcb_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me)\n", cmd, x1, y1, x2, y2, arc->X, arc->Y, arc->Width);
+	pcb_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me", cmd, x1, y1, x2, y2, arc->X, arc->Y, arc->Width);
+	if (layer != NULL)
+		pcb_fprintf(wr->f, " L=%[4]", layer);
+	fprintf(wr->f, ")\n");
 }
 
 static void write_pr_arc(hyp_wr_t *wr, pcb_arc_t *arc)
 {
 	fprintf(wr->f, "  ");
-	write_arc_(wr, "PERIMETER_ARC", arc);
+	write_arc_(wr, "PERIMETER_ARC", arc, NULL);
+}
+
+static void write_arc(hyp_wr_t *wr, pcb_arc_t *arc)
+{
+	fprintf(wr->f, "  ");
+	write_arc_(wr, "CURVE", arc, "TODO:layer");
 }
 
 static int write_board(hyp_wr_t *wr)
@@ -233,6 +249,39 @@ static int write_padstack(hyp_wr_t *wr)
 	}
 }
 
+static int write_nets(hyp_wr_t *wr)
+{
+	htpp_entry_t *e;
+	pcb_netmap_t map;
+
+	pcb_netmap_init(&map, wr->pcb);
+	for(e = htpp_first(&map.n2o); e != NULL; e = htpp_next(&map.n2o, e)) {
+		dyn_obj_t *o;
+		pcb_lib_menu_t *net = e->key;
+		pcb_fprintf(wr->f, "{NET=%[4],\n", net->Name);
+		for(o = e->value; o != NULL; o = o->next) {
+			switch(o->obj->type) {
+				case PCB_OBJ_LINE: write_line(wr, (pcb_line_t *)o->obj); break;
+				case PCB_OBJ_ARC:  write_arc(wr, (pcb_arc_t *)o->obj); break;
+
+				case PCB_OBJ_POLYGON:
+				case PCB_OBJ_RAT:
+				case PCB_OBJ_PAD:
+				case PCB_OBJ_PIN:
+				case PCB_OBJ_VIA:
+					break; /* not yet done */
+
+				case PCB_OBJ_TEXT:
+				case PCB_OBJ_ELEMENT:
+				case PCB_OBJ_SUBC:
+					break; /* silenlty ignore these */
+			}
+		}
+		fprintf(wr->f, "}\n");
+	}
+
+	pcb_netmap_uninit(&map);
+}
 
 int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
@@ -262,8 +311,12 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 	if (write_padstack(&wr) != 0)
 		goto err;
 
+	if (write_nets(&wr) != 0)
+		goto err;
+
 	if (write_foot(&wr) != 0)
 		goto err;
+
 
 	pcb_pshash_uninit(&wr.psh);
 	return 0;
