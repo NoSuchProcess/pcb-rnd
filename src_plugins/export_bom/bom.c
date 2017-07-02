@@ -299,6 +299,7 @@ int pplg_check_ver_export_bom(int ver_needed) { return 0; }
 
 void pplg_uninit_export_bom(void)
 {
+	pcb_hid_remove_attributes_by_cookie(bom_cookie);
 }
 
 int pplg_init_export_bom(void)
