@@ -86,13 +86,24 @@ static void write_pr_line(hyp_wr_t *wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 
 static void write_pv(hyp_wr_t *wr, pcb_pin_t *pin)
 {
-	pcb_fprintf(wr->f, "  (%s X=%me Y=%me P=%[4])\n", pin->type == PCB_OBJ_PIN ? "PIN R=ref" : "VIA", pin->X, pin->Y, pcb_pshash_pin(&wr->psh, pin, NULL));
+	if (pin->type == PCB_OBJ_PIN) {
+		pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
+			pin->X, pin->Y,
+			PCB_ELEM_NAME_REFDES((pcb_element_t *)pin->Element), pin->Number,
+			pcb_pshash_pin(&wr->psh, pin, NULL));
+	}
+	else {
+		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n",
+			pin->X, pin->Y,
+			pcb_pshash_pin(&wr->psh, pin, NULL));
+	}
 }
 
 static void write_pad(hyp_wr_t *wr, pcb_pad_t *pad)
 {
-	pcb_fprintf(wr->f, "  (PIN R=ref X=%me Y=%me P=%[4])\n",
+	pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
 		(pad->Point1.X + pad->Point2.X)/2, (pad->Point1.Y + pad->Point2.Y)/2,
+		PCB_ELEM_NAME_REFDES((pcb_element_t *)pad->Element), pad->Number,
 		pcb_pshash_pad(&wr->psh, pad, NULL));
 }
 
