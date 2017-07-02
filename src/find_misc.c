@@ -288,13 +288,10 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 		case PCB_OBJ_SUBC:    type = PCB_TYPE_SUBC; break;
 		default: return 0;
 	}
-	
 
 	pcb_conn_lookup_init();
 	ListStart(type, obj->parent.any, obj, obj);
 	DoIt(pcb_true, AndDraw);
-
-
 
 	for (i = 0; i < pcb_max_layer; i++) {
 		for(n = 0; n < LineList[i].Number; n++)
