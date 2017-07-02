@@ -37,11 +37,35 @@ typedef struct hyp_wr_s {
 
 	const char *ln_top, *ln_bottom; /* "layer name" for top and bottom groups */
 	pcb_pshash_hash_t psh;
+	char *elem_name;
+	size_t elem_name_len;
 	struct {
 		unsigned elliptic:1;
 	} warn;
 } hyp_wr_t;
 
+
+static const char *safe_element_name(hyp_wr_t *wr, pcb_element_t *elem)
+{
+	const char *orig = PCB_ELEM_NAME_REFDES(elem);
+	char *s;
+	int len;
+
+	if (strchr(orig, '.') == NULL)
+		return orig;
+
+	len = strlen(orig);
+	if (wr->elem_name_len < len) {
+		wr->elem_name = realloc(wr->elem_name, len+1);
+		wr->elem_name_len = len;
+	}
+	memcpy(wr->elem_name, orig, len+1);
+	for(s = wr->elem_name; *s != '\0'; s++)
+		if (*s == '.')
+			*s = '_';
+
+	return wr->elem_name;
+}
 
 static int write_hdr(hyp_wr_t *wr)
 {
@@ -89,7 +113,7 @@ static void write_pv(hyp_wr_t *wr, pcb_pin_t *pin)
 	if (pin->type == PCB_OBJ_PIN) {
 		pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
 			pin->X, pin->Y,
-			PCB_ELEM_NAME_REFDES((pcb_element_t *)pin->Element), pin->Number,
+			safe_element_name(wr, pin->Element), pin->Number,
 			pcb_pshash_pin(&wr->psh, pin, NULL));
 	}
 	else {
@@ -103,7 +127,7 @@ static void write_pad(hyp_wr_t *wr, pcb_pad_t *pad)
 {
 	pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
 		(pad->Point1.X + pad->Point2.X)/2, (pad->Point1.Y + pad->Point2.Y)/2,
-		PCB_ELEM_NAME_REFDES((pcb_element_t *)pad->Element), pad->Number,
+		safe_element_name(wr, (pcb_element_t *)pad->Element), pad->Number,
 		pcb_pshash_pad(&wr->psh, pad, NULL));
 }
 
@@ -231,7 +255,7 @@ static int write_devices(hyp_wr_t *wr)
 			layer = wr->ln_bottom;
 		else
 			layer = wr->ln_top;
-		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", PCB_ELEM_NAME_REFDES(elem), PCB_ELEM_NAME_DESCRIPTION(elem), layer);
+		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_element_name(wr, elem), PCB_ELEM_NAME_DESCRIPTION(elem), layer);
 		cnt++;
 	}
 
@@ -359,10 +383,12 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 
 
 	pcb_pshash_uninit(&wr.psh);
+	free(wr.elem_name);
 	return 0;
 
 	err:;
 	pcb_pshash_uninit(&wr.psh);
+	free(wr.elem_name);
 	return -1;
 }
 
