@@ -1231,6 +1231,7 @@ int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
 
 void pplg_uninit_export_gerber(void)
 {
+	pcb_hid_remove_attributes_by_cookie(gerber_cookie);
 }
 
 int pplg_init_export_gerber(void)
