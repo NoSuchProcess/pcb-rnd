@@ -326,6 +326,7 @@ int pplg_check_ver_hid_batch(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_batch(void)
 {
+	pcb_event_unbind_allcookie(batch_cookie);
 }
 
 int pplg_init_hid_batch(void)
