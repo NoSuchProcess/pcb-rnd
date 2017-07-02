@@ -39,6 +39,7 @@ typedef struct hyp_wr_s {
 	pcb_pshash_hash_t psh;
 	char *elem_name;
 	size_t elem_name_len;
+	pcb_cardinal_t poly_id;
 	struct {
 		unsigned elliptic:1;
 	} warn;
@@ -129,6 +130,28 @@ static void write_pad(hyp_wr_t *wr, pcb_pad_t *pad)
 		(pad->Point1.X + pad->Point2.X)/2, (pad->Point1.Y + pad->Point2.Y)/2,
 		safe_element_name(wr, (pcb_element_t *)pad->Element), pad->Number,
 		pcb_pshash_pad(&wr->psh, pad, NULL));
+}
+
+static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
+{
+	pcb_point_t *p;
+	pcb_cardinal_t n, end;
+
+	p = poly->Points;
+
+	pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
+		get_layer_name(wr, poly->parent_type, poly->parent.layer),
+		wr->poly_id++,
+		p->X, p->Y);
+
+	if (poly->HoleIndexN < 1)
+		end = poly->PointN;
+	else
+		end = poly->HoleIndex[0];
+	for(p++, n = 0; n < end; n++,p++)
+		pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", p->X, p->Y);
+
+	fprintf(wr->f, "  }\n");
 }
 
 
@@ -330,8 +353,8 @@ static int write_nets(hyp_wr_t *wr)
 				case PCB_OBJ_PIN:
 				case PCB_OBJ_VIA:  write_pv(wr, (pcb_pin_t *)o->obj); break;
 				case PCB_OBJ_PAD:  write_pad(wr, (pcb_pad_t *)o->obj); break;
+				case PCB_OBJ_POLYGON: write_poly(wr, (pcb_polygon_t *)o->obj); break;
 
-				case PCB_OBJ_POLYGON:
 				case PCB_OBJ_RAT:
 					break; /* not yet done */
 
