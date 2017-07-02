@@ -63,6 +63,22 @@ static int write_foot(hyp_wr_t *wr)
 	return 0;
 }
 
+static const char *get_layer_name(hyp_wr_t *wr, pcb_parenttype_t pt, pcb_layer_t *l)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *g;
+
+	if (pt != PCB_PARENT_LAYER)
+		return NULL;
+
+	gid = pcb_layer_get_group_(l);
+	if (gid < 0)
+		return NULL;
+
+	g = pcb_get_layergrp(wr->pcb, gid);
+	return g->name;
+}
+
 static void write_pr_line(hyp_wr_t *wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, y1, x2, y2);
@@ -72,7 +88,7 @@ static void write_line(hyp_wr_t *wr, pcb_line_t *line)
 {
 	pcb_fprintf(wr->f, "  (SEG X1=%me Y1=%me X2=%me Y2=%me W=%me L=%[4])\n",
 		line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
-		line->Thickness, "TODO:layer");
+		line->Thickness, get_layer_name(wr, line->parent_type, line->parent.layer));
 }
 
 static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc, const char *layer)
@@ -111,7 +127,7 @@ static void write_pr_arc(hyp_wr_t *wr, pcb_arc_t *arc)
 static void write_arc(hyp_wr_t *wr, pcb_arc_t *arc)
 {
 	fprintf(wr->f, "  ");
-	write_arc_(wr, "CURVE", arc, "TODO:layer");
+	write_arc_(wr, "CURVE", arc, get_layer_name(wr, arc->parent_type, arc->parent.layer));
 }
 
 static int write_board(hyp_wr_t *wr)
