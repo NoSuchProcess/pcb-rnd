@@ -305,6 +305,10 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 			cnt += cb(ctx, (pcb_any_obj_t *)PolygonList[i].Data[n]);
 	}
 
+	for (i = 0; i < 2; i++)
+		for(n = 0; n < PadList[i].Number; n++)
+			cnt += cb(ctx, (pcb_any_obj_t *)PadList[i].Data[n]);
+
 	for(n = 0; n < PVList.Number; n++)
 		cnt += cb(ctx, (pcb_any_obj_t *)PVList.Data[n]);
 	for(n = 0; n < RatList.Number; n++)
