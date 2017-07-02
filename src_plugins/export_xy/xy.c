@@ -524,7 +524,6 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	double sumx, sumy;
 	double pin1x = 0.0, pin1y = 0.0;
 	int pin_cnt;
-	time_t currenttime;
 	FILE *fp;
 	int pinfound[MAXREFPINS];
 	double pinx[MAXREFPINS];
@@ -544,13 +543,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	ctx.theta = 0;
 	ctx.element_num = 0;
 
-	/* Create a portable timestamp. */
-	currenttime = time(NULL);
-	{
-		/* avoid gcc complaints */
-		const char *fmt = "%c UTC";
-		strftime(ctx.utcTime, sizeof(ctx.utcTime), fmt, gmtime(&currenttime));
-	}
+	pcb_print_utc(utcTime, sizeof(utcTime), 0);
 
 	find_origin(&ctx, format_name);
 
