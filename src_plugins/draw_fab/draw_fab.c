@@ -248,11 +248,8 @@ static void DrawFab(pcb_hid_gc_t gc)
 					"There are %d different drill sizes used in this layout, %d holes total", AllDrills->DrillN, total_drills);
 	/* Create a portable timestamp. */
 
-	if (!conf_draw_fab.plugins.draw_fab.omit_date) {
-		const char *fmt = "%c UTC";
-		time_t currenttime = time(NULL);
-		strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
-	}
+	if (!conf_draw_fab.plugins.draw_fab.omit_date)
+		pcb_print_utc(utcTime, sizeof(utcTime), 0);
 	else
 		strcpy(utcTime, "<date>");
 
