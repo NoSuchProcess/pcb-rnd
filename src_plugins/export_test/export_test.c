@@ -106,7 +106,6 @@ static int Printexport_test(void)
 	int found_pin1;
 	int found_pin2;
 	int pin_cnt;
-	time_t currenttime;
 	FILE *fp;
 	export_testList *export_test = NULL;
 	char *name, *descr, *value;
@@ -118,13 +117,7 @@ static int Printexport_test(void)
 		return 1;
 	}
 
-	/* Create a portable timestamp. */
-	currenttime = time(NULL);
-	{
-		/* avoid gcc complaints */
-		const char *fmt = "%c UTC";
-		strftime(utcTime, sizeof(utcTime), fmt, gmtime(&currenttime));
-	}
+	pcb_print_utc(utcTime, sizeof(utcTime), 0);
 	fprintf(fp, "# $Id");
 	fprintf(fp, "$\n");
 	fprintf(fp, "# PcbXY Version 1.0\n");
