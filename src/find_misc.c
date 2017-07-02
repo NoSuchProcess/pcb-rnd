@@ -269,6 +269,51 @@ void pcb_lookup_conn_by_pin(int type, void *ptr1)
 	pcb_conn_lookup_uninit();
 }
 
+pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool AndDraw, pcb_cardinal_t (*cb)(void *ctx, pcb_any_obj_t *obj))
+{
+	pcb_cardinal_t i, n, cnt = 0;
+	unsigned long type;
+
+#warning TODO: keep only PCB_OBJ_*
+	switch(obj->type) {
+		case PCB_OBJ_LINE:    type = PCB_TYPE_LINE; break;
+		case PCB_OBJ_TEXT:    type = PCB_TYPE_TEXT; break;
+		case PCB_OBJ_POLYGON: type = PCB_TYPE_POLYGON; break;
+		case PCB_OBJ_ARC:     type = PCB_TYPE_ARC; break;
+		case PCB_OBJ_RAT:     type = PCB_TYPE_RATLINE; break;
+		case PCB_OBJ_PAD:     type = PCB_TYPE_PAD; break;
+		case PCB_OBJ_PIN:     type = PCB_TYPE_PIN; break;
+		case PCB_OBJ_VIA:     type = PCB_TYPE_VIA; break;
+		case PCB_OBJ_ELEMENT: type = PCB_TYPE_ELEMENT; break;
+		case PCB_OBJ_SUBC:    type = PCB_TYPE_SUBC; break;
+		default: return 0;
+	}
+	
+
+	pcb_conn_lookup_init();
+	ListStart(type, obj->parent.any, obj, obj);
+	DoIt(pcb_true, AndDraw);
+
+
+
+	for (i = 0; i < pcb_max_layer; i++) {
+		for(n = 0; n < LineList[i].Number; n++)
+			cnt += cb(ctx, (pcb_any_obj_t *)LineList[i].Data[n]);
+		for(n = 0; n < ArcList[i].Number; n++)
+			cnt += cb(ctx, (pcb_any_obj_t *)ArcList[i].Data[n]);
+		for(n = 0; n < PolygonList[i].Number; n++)
+			cnt += cb(ctx, (pcb_any_obj_t *)PolygonList[i].Data[n]);
+	}
+
+	for(n = 0; n < PVList.Number; n++)
+		cnt += cb(ctx, (pcb_any_obj_t *)PVList.Data[n]);
+	for(n = 0; n < RatList.Number; n++)
+		cnt += cb(ctx, (pcb_any_obj_t *)RatList.Data[n]);
+
+	pcb_conn_lookup_uninit();
+	return cnt;
+}
+
 
 /* ---------------------------------------------------------------------------
  * find connections for rats nesting

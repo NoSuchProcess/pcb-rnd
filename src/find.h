@@ -88,6 +88,8 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *, pcb_polygon_t *);
 pcb_bool pcb_is_arc_in_poly(pcb_arc_t *, pcb_polygon_t *);
 pcb_bool pcb_is_pad_in_poly(pcb_pad_t *, pcb_polygon_t *);
 
+pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool AndDraw, pcb_cardinal_t (*cb)(void *ctx, pcb_any_obj_t *obj));
+
 /* find_clear.c */
 pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag);
 pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag);
