@@ -28,6 +28,7 @@
 #include "data.h"
 #include "compat_misc.h"
 #include "padstack_hash.h"
+#include "netmap.h"
 
 typedef struct hyp_wr_s {
 	pcb_board_t *pcb;
