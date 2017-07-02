@@ -43,12 +43,19 @@ static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
 static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
 {
 	pcb_netmap_t *map = ctx;
+	dyn_obj_t *d, *dl;
 
 	if (map->curr_net == NULL)
 		map->curr_net = alloc_net(map);
 
 	htpp_set(&map->o2n, obj, map->curr_net);
-	htpp_set(&map->n2o, map->curr_net, obj);
+
+	dl = htpp_get(&map->n2o, map->curr_net);
+	d = malloc(sizeof(dyn_obj_t));
+	d->obj = obj;
+	d->next = dl;
+	htpp_set(&map->n2o, map->curr_net, d);
+
 	return 1;
 }
 
@@ -159,15 +166,28 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 
 int pcb_netmap_uninit(pcb_netmap_t *map)
 {
-	dyn_net_t *dn, *next;
+
+	{
+		htpp_entry_t *e;
+		for(e = htpp_first(&map->n2o); e != NULL; e = htpp_next(&map->n2o, e)) {
+			dyn_obj_t *o, *next;
+			for(o = e->value; o != NULL; o = next) {
+				next = o->next;
+				free(o);
+			}
+		}
+	}
+
+	{
+		dyn_net_t *dn, *next;
+		for(dn = map->dyn_nets; dn != NULL; dn = next) {
+			next = dn->next;
+			free(dn->net.Name);
+			free(dn);
+		}
+	}
 
 	htpp_uninit(&map->o2n);
 	htpp_uninit(&map->n2o);
-
-	for(dn = map->dyn_nets; dn != NULL; dn = next) {
-		next = dn->next;
-		free(dn->net.Name);
-		free(dn);
-	}
 }
 

@@ -25,14 +25,21 @@
 #include "library.h"
 
 typedef struct dyn_net_s dyn_net_t;
+typedef struct dyn_obj_s dyn_obj_t;
 
 struct dyn_net_s {
 	pcb_lib_menu_t net;
 	dyn_net_t *next;
 };
 
+struct dyn_obj_s {
+	pcb_any_obj_t *obj;
+	dyn_obj_t *next;
+};
+
 typedef struct pcb_netmap_s {
-	htpp_t o2n, n2o;
+	htpp_t o2n;   /* of (pcb_lib_menu_t *); tells the net for an object */
+	htpp_t n2o;   /* of (dyn_obj_t *); tells the object list for a net */
 	pcb_cardinal_t anon_cnt;
 	pcb_board_t *pcb;
 	pcb_lib_menu_t *curr_net;
