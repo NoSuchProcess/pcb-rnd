@@ -31,17 +31,6 @@
 #include "netlist.h"
 #include "pcb-printf.h"
 
-#define APPEND(a,b,c,d,e)
-
-static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
-{
-	pcb_netmap_t *map = ctx;
-	pcb_trace(" %x %p\n", obj->type, obj);
-	htpp_set(&map->o2n, obj, map->curr_net);
-	htpp_set(&map->n2o, map->curr_net, obj);
-	return 1;
-}
-
 static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
 {
 	dyn_net_t *dn = calloc(sizeof(dyn_net_t), 1);
@@ -51,18 +40,55 @@ static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
 	return &dn->net;
 }
 
+static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
+{
+	pcb_netmap_t *map = ctx;
+
+	if (map->curr_net == NULL)
+		map->curr_net = alloc_net(map);
+
+	pcb_trace(" %x %p\n", obj->type, obj);
+	htpp_set(&map->o2n, obj, map->curr_net);
+	htpp_set(&map->n2o, map->curr_net, obj);
+	return 1;
+}
+
+static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_obj_t *obj)
+{
+	pcb_netmap_t *map = ctx;
+	map->curr_net = NULL;
+
+	if (htpp_get(&map->o2n, obj) != NULL)
+		return;
+
+	if ((layer != NULL) && (pcb_layer_flags_(map->pcb, layer) & PCB_LYT_COPPER) == 0)
+		return;
+
+	pcb_trace("OBJ/%x on layer %s\n", obj->type, layer == NULL ? "<global>" : layer->meta.real.name);
+
+	pcb_lookup_conn_by_obj(map, obj, 0, found);
+
+	pcb_trace(" <- net is %s\n", map->curr_net->Name);
+}
+
 static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
+	list_obj(ctx, pcb, layer, (pcb_any_obj_t *)line);
 }
 
 static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
-	APPEND(ctx, PCB_OBJ_ARC, arc, PCB_PARENT_LAYER, layer);
+	list_obj(ctx, pcb, layer, (pcb_any_obj_t *)arc);
 }
 
 static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly)
 {
-	APPEND(ctx, PCB_OBJ_POLYGON, poly, PCB_PARENT_LAYER, layer);
+	list_obj(ctx, pcb, layer, (pcb_any_obj_t *)poly);
+}
+
+static void list_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
+{
+	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)via);
 }
 
 static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin)
@@ -75,20 +101,26 @@ static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	map->curr_net = pcb_netlist_find_net4pin(map->pcb, pin);
 	if (map->curr_net == NULL)
 		map->curr_net = alloc_net(map);
-	pcb_trace("pin! on net %s\n", map->curr_net == NULL ? "???" : map->curr_net->Name);
+	pcb_trace("pin! on net %s\n", map->curr_net->Name);
 	
 	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pin, 0, found);
 }
 
 static void list_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
 {
-	APPEND(ctx, PCB_OBJ_PAD, pad, PCB_PARENT_ELEMENT, element);
+	pcb_netmap_t *map = ctx;
+
+	if (htpp_get(&map->o2n, pad) != NULL)
+		return;
+
+	map->curr_net = pcb_netlist_find_net4pad(map->pcb, pad);
+	if (map->curr_net == NULL)
+		map->curr_net = alloc_net(map);
+	pcb_trace("pad! on net %s\n", map->curr_net->Name);
+	
+	pcb_lookup_conn_by_obj(map, (pcb_any_obj_t *)pad, 0, found);
 }
 
-static void list_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
-{
-	APPEND(ctx, PCB_OBJ_VIA, via, PCB_PARENT_DATA, pcb->Data);
-}
 
 int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 {
@@ -115,7 +147,6 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL /* via */
 	);
 
-#if 0
 	/* step 2: find unknown nets and uniquely name them */
 	pcb_loop_all(map,
 		NULL, /* layer */
@@ -131,8 +162,6 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* pad */
 		list_via_cb
 	);
-#endif
-
 }
 
 int pcb_netmap_uninit(pcb_netmap_t *map)
