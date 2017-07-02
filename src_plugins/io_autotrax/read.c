@@ -726,7 +726,9 @@ static int autotrax_create_layers(read_state_t *st)
 
 	unsigned int res;
 	pcb_layer_id_t id = -1;
-	pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
+	pcb_layergrp_t *g;
+
+	pcb_layer_group_setup_default(&st->PCB->LayerGroups);
 
 	/* set up the hash for implicit layers */
 	res = 0;
@@ -743,6 +745,7 @@ static int autotrax_create_layers(read_state_t *st)
 		return -1;
 	}
 
+	g = pcb_get_grp_new_intern(PCB, -1);
 	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
 	htsi_set(&st->layer_protel2i, pcb_strdup("2"), id);
 
