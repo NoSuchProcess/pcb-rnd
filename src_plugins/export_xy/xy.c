@@ -543,7 +543,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	ctx.theta = 0;
 	ctx.element_num = 0;
 
-	pcb_print_utc(utcTime, sizeof(utcTime), 0);
+	pcb_print_utc(ctx.utcTime, sizeof(ctx.utcTime), 0);
 
 	find_origin(&ctx, format_name);
 
