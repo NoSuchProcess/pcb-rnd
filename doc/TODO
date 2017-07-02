@@ -35,11 +35,6 @@ For the next release:
 	- replace default font with OSI lht font, load a file with embedded default font -> get both fonts in the same slot [report: miloh]
 	- place via, rect around it, thermal; select all, ctrl+x -> crash; ctrl+c doesn't
 - csect can't make a layer outline
-- gtk layersel feature requests:
-	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
-- cleanup: remove mnemonic from the menu system
-	- check the central code and struct fields
-	- remove "m=" fields from the menu lihata files
 - fontsel:
 	- replace font in slot (even in default)
 	- ttf import?
@@ -47,51 +42,42 @@ For the next release:
 	- make a config.h format string, don't depend on %c - use pcb_print_utc() instead
 	- make the format more ISO-like
 	- make sure to use this in all the exported comments but don't break file formats
-- fp_board: extend the API so that the element can be presented without saving to a file
-- layer rewrite: central menu buttons
-	- lesstif needs to remember the widgets via lb->w in menu.c
-	- rewrite the central code for callbacks?
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
-	- unify how output files are accessed/checked: confirmation on overwrite
-- extend the DRC window to be a generic location list
-	- buttons to select one or all items or all items including locked
-	- io infra for save incompatibility note with DRC list
-	- import sch. shouldn't select elements to be removed but put them on a drc list
-	- display number of items at top of drc window
-	- export to file 
 - hid_gtk? bug: moving with cursor keys snapping to a via - can't leave with cursor keys!
-- io_pcb: new, optional "layer tag" field in mainline's file format
-- inconsistencies in UI/terminology:
-	- allow clearance to be set to 0 in the route style [report: miloh]
-	- similar thing on hole size [report: miloh]
-	- report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
-- GTK layers [report: Ade]:
-	- move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h)
-- layer group rewrite:
-	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-	- make the color config dynamic too; invent color for new layers
 - BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc and it will calculate a self-intersecting clearance [report:Evan]
 - draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numbering, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
-- pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
-- unravel the undo code
-	- grid size change should be undoable? [report:Evan]
-	- maybe other conf settings too?
-- search for move.dst_layer - don't compare pointer to -1!
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
-- Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
-- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
-- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
-- improve locking:
-	- consider a move-only lock
-	- when thermal and some other operations are applied on a locked element, indicate it
+- action bug: gui_act.c shouldn't reference Crosshair.X directly; check r9932 to see how to fix it
+- gtk hid: display element numbers; flip board with tab: numbers get mirrored [report:Evan]
+- BUG: 'double click to close' missing for polygon holes [report:miloh]
+- BUG: segfault on printactions() action (configure with gpmi) - this is
+	likely due to some actions with junk characters (see action following
+	'dumpfont' in dump-actions)  [report:miloh]
+- DOC: developer doc/developer/data.html is out of date [report:miloh]
+- BUG: arc bounding boxes not correctly found in some cases. Noticed on export to io_autotrax due to need to establish bounding box of board contents, including arcs, to allow subsequent board flip. 
+
+LATER RELEASES:
+- layer rewrite:
+	- catch the layer change signal from polygons and reclip; Evan's test case:
+	  draw a line on a layer and a poly on another and change whether they are in
+	  the same layer group
+- check gpmi when pcb-rnd is fully linstalled - broken symlinks?
+- multi-key: display state on the gui
+- cleanup/rewrite resources:
+	- load/swap menus (TODO#1)
+	- gpmi:
+		- hid: hid_destroy (pair of hid_create)
+		- cleanup on unload: remove menus
+- TODO#3: works only on US keyboard
+- next_gui: keep them open, hide
+- look for #warnings
 - conf:
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- config pov: change prio
@@ -102,33 +88,40 @@ For the next release:
 	- switch the lesstif HID over from attribs to conf
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- increments are not really implemented
-- action bug: gui_act.c shouldn't reference Crosshair.X directly; check r9932 to see how to fix it
-- next_gui: keep them open, hide
-- look for #warnings
-- libstroke: zoom
-- cleanup/rewrite resources:
-	- load/swap menus (TODO#1)
-	- gpmi:
-		- hid: hid_destroy (pair of hid_create)
-		- cleanup on unload: remove menus
-- check gpmi when pcb-rnd is fully linstalled - broken symlinks?
-- multi-key: display state on the gui
-- TODO#3: works only on US keyboard
-- gtk hid: display element numbers; flip board with tab: numbers get mirrored [report:Evan]
-- layer rewrite:
-	- catch the layer change signal from polygons and reclip; Evan's test case:
-	  draw a line on a layer and a poly on another and change whether they are in
-	  the same layer group
-- BUG: 'double click to close' missing for polygon holes [report:miloh]
-- BUG: segfault on printactions() action (configure with gpmi) - this is
-	likely due to some actions with junk characters (see action following
-	'dumpfont' in dump-actions)  [report:miloh]
-- DOC: developer doc/developer/data.html is out of date [report:miloh]
-- BUG: arc bounding boxes not correctly found in some cases. Noticed on export to io_autotrax due to need to establish bounding box of board contents, including arcs, to allow subsequent board flip. 
-
-LATER RELEASES:
+- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
+- bug: search for move.dst_layer - don't compare pointer to -1!
+- unravel the undo code
+	- grid size change should be undoable? [report:Evan]
+	- maybe other conf settings too?
+- pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
+- layer group rewrite:
+	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
+	- make the color config dynamic too; invent color for new layers
+- GTK layers [report: Ade]:
+	- move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h)
+- inconsistencies in UI/terminology:
+	- allow clearance to be set to 0 in the route style [report: miloh]
+	- similar thing on hole size [report: miloh]
+	- report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
+- io_pcb: new, optional "layer tag" field in mainline's file format
+- extend the DRC window to be a generic location list
+	- buttons to select one or all items or all items including locked
+	- io infra for save incompatibility note with DRC list
+	- import sch. shouldn't select elements to be removed but put them on a drc list
+	- display number of items at top of drc window
+	- export to file 
+- biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
+	- unify how output files are accessed/checked: confirmation on overwrite
+- layer rewrite: central menu buttons
+	- lesstif needs to remember the widgets via lb->w in menu.c
+	- rewrite the central code for callbacks?
+- fp_board: extend the API so that the element can be presented without saving to a file
+- gtk layersel feature requests:
+	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
+- cleanup: remove mnemonic from the menu system
+	- check the central code and struct fields
+	- remove "m=" fields from the menu lihata files
 - SUBC missing features:
-
 	- manual layer binding (reuse csect?)
 	- ctrl+e propedig on subc
 - parametric footprint gtk attribute box for editing: also mention the default value in the tooltip [report: agaran]
@@ -174,13 +167,17 @@ CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
 
 
-
-
 FEATURES
 - BUILD: menuconfig and a config file for scconfig
 - menu item for export of multiple selected layout elements to discrete .fp files
 
 Low prio:
+- libstroke: zoom
+- improve locking:
+	- consider a move-only lock
+	- when thermal and some other operations are applied on a locked element, indicate it
+- Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
+- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
 - bug: redrawbug1: grap c1, the diagonal trace gets drawn over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
 - bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
