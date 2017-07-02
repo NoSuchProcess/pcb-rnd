@@ -134,24 +134,31 @@ static void write_pad(hyp_wr_t *wr, pcb_pad_t *pad)
 
 static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
 {
-	pcb_point_t *p;
 	pcb_cardinal_t n, end;
+	pcb_pline_t *pl;
+	pcb_vnode_t *v;
 
-	p = poly->Points;
 
-	pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
-		get_layer_name(wr, poly->parent_type, poly->parent.layer),
-		wr->poly_id++,
-		p->X, p->Y);
+	if (poly->Clipped == NULL)
+		pcb_poly_init_clip(poly);
 
-	if (poly->HoleIndexN < 1)
-		end = poly->PointN;
-	else
-		end = poly->HoleIndex[0];
-	for(p++, n = 0; n < end; n++,p++)
-		pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", p->X, p->Y);
+	if (poly->Clipped == NULL)
+		return;
 
-	fprintf(wr->f, "  }\n");
+	pl = poly->Clipped->contours;
+	do {
+		v = pl->head.next;
+
+		pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
+			get_layer_name(wr, poly->parent_type, poly->parent.layer),
+			wr->poly_id++,
+			v->point[0], v->point[1]);
+
+		for(v = v->next; v != pl->head.next; v = v->next)
+			pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);
+
+		fprintf(wr->f, "  }\n");
+	} while ((pl = pl->next) != NULL);
 }
 
 
