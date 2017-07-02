@@ -38,10 +38,6 @@ For the next release:
 - fontsel:
 	- replace font in slot (even in default)
 	- ttf import?
-- cleanup: revise strftime() calls, especially in exporters:
-	- make a config.h format string, don't depend on %c - use pcb_print_utc() instead
-	- make the format more ISO-like
-	- make sure to use this in all the exported comments but don't break file formats
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
