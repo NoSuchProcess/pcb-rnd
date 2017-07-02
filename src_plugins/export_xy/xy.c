@@ -820,6 +820,7 @@ int pplg_check_ver_export_xy(int ver_needed) { return 0; }
 
 void pplg_uninit_export_xy(void)
 {
+	pcb_hid_remove_attributes_by_cookie(xy_cookie);
 }
 
 int pplg_init_export_xy(void)
