@@ -20,6 +20,15 @@
  *
  */
 
+#include <genht/htpp.h>
 #include "board.h"
 
-int pcb_netmap(pcb_board_t *pcb);
+typedef struct pcb_netmap_s {
+	htpp_t o2n, n2o;
+	pcb_cardinal_t anon_cnt;
+	pcb_board_t *pcb;
+} pcb_netmap_t;
+
+int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb);
+int pcb_netmap_uninit(pcb_netmap_t *map);
+

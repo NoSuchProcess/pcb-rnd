@@ -26,12 +26,20 @@
 #include <genht/htpp.h>
 
 #include "netmap.h"
+#include "data.h"
+#include "find.h"
 
 #define APPEND(a,b,c,d,e)
 
+static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
+{
+	pcb_netmap_t *map = ctx;
+	pcb_trace(" %x %p\n", obj->type, obj);
+	return 1;
+}
+
 static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
-	APPEND(ctx, PCB_OBJ_LINE, line, PCB_PARENT_LAYER, layer);
 }
 
 static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
@@ -46,7 +54,13 @@ static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_po
 
 static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin)
 {
-	APPEND(ctx, PCB_OBJ_PIN, pin, PCB_PARENT_ELEMENT, element);
+	pcb_netmap_t *map = ctx;
+
+	if (htpp_get(&map->o2n, pin) != NULL)
+		return;
+
+	pcb_trace("pin!\n");
+	pcb_lookup_conn_by_obj(map, pin, 0, found);
 }
 
 static void list_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
@@ -59,12 +73,32 @@ static void list_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	APPEND(ctx, PCB_OBJ_VIA, via, PCB_PARENT_DATA, pcb->Data);
 }
 
-int pcb_netmap(pcb_board_t *pcb)
+int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 {
-	htpp_t ht;
-	htpp_init(&ht, ptrhash, ptrkeyeq);
+	htpp_init(&map->o2n, ptrhash, ptrkeyeq);
+	htpp_init(&map->n2o, ptrhash, ptrkeyeq);
+	map->anon_cnt = 0;
+	map->pcb = pcb;
 
-	pcb_loop_all(&ht,
+/* step 1: find known nets (from pins and pads) */
+	pcb_loop_all(map,
+		NULL, /* layer */
+		NULL, /* line */
+		NULL, /* arc */
+		NULL, /* text */
+		NULL, /* poly */
+		NULL, /* element */
+		NULL, /* eline */
+		NULL, /* earc */
+		NULL, /* etext */
+		list_epin_cb,
+		list_epad_cb,
+		NULL /* via */
+	);
+
+#if 0
+	/* step 2: find unknown nets and uniquely name them */
+	pcb_loop_all(map,
 		NULL, /* layer */
 		list_line_cb,
 		list_arc_cb,
@@ -74,10 +108,17 @@ int pcb_netmap(pcb_board_t *pcb)
 		NULL, /* eline */
 		NULL, /* earc */
 		NULL, /* etext */
-		list_epin_cb,
-		list_epad_cb,
+		NULL, /* pin */
+		NULL, /* pad */
 		list_via_cb
 	);
+#endif
 
-	htpp_uninit(&ht);
 }
+
+int pcb_netmap_uninit(pcb_netmap_t *map)
+{
+	htpp_uninit(&map->o2n);
+	htpp_uninit(&map->n2o);
+}
+
