@@ -107,6 +107,7 @@ typedef struct {
 	pcb_coord_t minimum_comp_pin_drill;
 	int trax_version;
 	int ignored_keepout_element;
+	int ignored_layer_zero_element;
 } read_state_t;
 
 static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
@@ -188,6 +189,17 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 		Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 	} /* flags do not seem to be honoured */
 
+
+	if (autotrax_layer == 12) {
+		pcb_trace("Ignoring keepout text on auto/easytrax layer 12\n");
+		st->ignored_keepout_element++;
+		return 0;
+	} else if (autotrax_layer == 0) {
+		pcb_message(PCB_MSG_ERROR, "Ignored text on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
+		st->ignored_layer_zero_element++;
+		return 0;
+	}
+
 	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
 			pcb_text_new( &st->PCB->Data->Layer[PCB_layer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, t, Flags);
@@ -263,9 +275,15 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	if (autotrax_layer == 12) {
 		pcb_trace("Ignoring keepout track(s) on auto/easytrax layer 12\n");
-		st->ignored_keepout_element |= 1;
+		st->ignored_keepout_element++;
 		return 0;
-	} else if (PCB_layer >= 0) {
+	} else if (autotrax_layer == 0) {
+		pcb_message(PCB_MSG_ERROR, "Ignored track on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
+		st->ignored_layer_zero_element++;
+		return 0;
+	} 
+
+	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
 			pcb_line_new( &st->PCB->Data->Layer[PCB_layer], X1, Y1, X2, Y2,
 				Thickness, Clearance, Flags);
@@ -402,6 +420,17 @@ document used reflects actual outputs from protel autotrax
 		start_angle = 180.0;
 		delta = 270.0;
 	}  
+
+
+	if (autotrax_layer == 12) {
+		pcb_trace("Ignoring keepout arc(s) on auto/easytrax layer 12\n");
+		st->ignored_keepout_element++;
+		return 0;
+	} else if (autotrax_layer == 0) {
+		pcb_message(PCB_MSG_ERROR, "Ignored arc on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
+		st->ignored_layer_zero_element++;
+		return 0;
+	} 
 
 	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
@@ -594,6 +623,12 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 		6 Moiro Target
 */
 
+	if (autotrax_layer == 0) {
+		pcb_message(PCB_MSG_ERROR, "Ignored pad on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
+		st->ignored_layer_zero_element++;
+		return 0;
+	}
+
 	/* Easytrax seems to specify zero drill for some component pins, and round free pins/pads */
 	if (((st->trax_version == 5) && (X_size == Y_size) && component && (Drill == 0))
  		|| ((st->trax_version == 5) && (X_size == Y_size) && (Shape == 1) && (Drill == 0))) {
@@ -701,6 +736,12 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_message(PCB_MSG_ERROR, "Fill attribute fields unable to be parsed, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
+
+	if (autotrax_layer == 0) {
+		pcb_message(PCB_MSG_ERROR, "Ignored fill on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
+		st->ignored_layer_zero_element++;
+		return 0;
+	} 
 
 	if (PCB_layer >= 0 && el == NULL) {
 		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCB_layer], flags);
@@ -1058,6 +1099,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.minimum_comp_pin_drill = PCB_MIL_TO_COORD(30); /* Easytrax PCB FILE 5 uses zero in COMP pins */
 	st.trax_version = 4; /* assume autotrax, not easytrax */
 	st.ignored_keepout_element = 0;
+	st.ignored_layer_zero_element = 0;
 
 	while (!feof(FP) && !finished) {
 		if (fgetline(line, sizeof(line), FP, st.lineno) == NULL) {
@@ -1126,7 +1168,10 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	box = pcb_data_bbox(&board_size, Ptr->Data);
 	pcb_trace("Maximum X, Y dimensions (mil) of imported Protel autotrax layout: %ld, %ld\n", box->X2, box->Y2);
 	if (st.ignored_keepout_element) {
-		pcb_message(PCB_MSG_ERROR, "Ignored keepout track(s) on auto/easytrax layer 12\n");
+		pcb_message(PCB_MSG_ERROR, "Ignored %d keepout track(s) on auto/easytrax layer 12\n", st.ignored_keepout_element);
+	}
+	if (st.ignored_layer_zero_element) {
+		pcb_message(PCB_MSG_ERROR, "Ignored %d auto/easytrax layer zero feature(s)\n", st.ignored_layer_zero_element);
 	}
 
 	Ptr->MaxWidth = box->X2;
