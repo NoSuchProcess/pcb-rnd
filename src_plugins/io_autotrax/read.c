@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <genht/htsi.h>
 #include <qparse/qparse.h>
 #include "compat_misc.h"
 #include "board.h"
@@ -53,7 +52,7 @@
 #include "hid_actions.h"
 
 
-#define MAXREAD 45
+#define MAXREAD 255
 
 /* remove leading whitespace */
 #define ltrim(s) while(isspace(*s)) s++
@@ -101,19 +100,17 @@ typedef struct {
 	pcb_board_t *PCB;
 	const char *Filename;
 	conf_role_t settings_dest;
-	htsi_t layer_protel2i; /* protel layer name-to-index hash; name is the protel layer, index is the pcb-rnd layer index */
+	pcb_layer_id_t protel_to_stackup[13];
 	int lineno;
 } read_state_t;
 
 static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
 
-static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer);
-
 /* autotrax_free_text/component_text */
 static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int height_mil;
-	int autotrax_layer;
+	int autotrax_layer = 0;
 	char line[MAXREAD], *t;
 	int success;
 	int valid = 1;
@@ -121,7 +118,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int scaling = 100;
 	unsigned direction = 0; /* default is horizontal */
 	pcb_flag_t Flags = pcb_flag_make(0); /* default */
-	int PCB_layer = 0; /* sane default value */
+	pcb_layer_id_t PCB_layer;
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
@@ -149,8 +146,8 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			valid &= success;
 			pcb_trace("Found free text linewidth : %ld\n", linewidth);
 			autotrax_layer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
-			valid &= success;
-			PCB_layer = autotrax_get_layeridx(st, autotrax_layer);
+			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
+			PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
 			pcb_trace("Found free text layer : %d\n", PCB_layer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
@@ -208,7 +205,8 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	char line[MAXREAD];
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCB_layer = 0; /* sane default value */
+	pcb_layer_id_t PCB_layer;
+	int autotrax_layer = 0;
 	int success;
 	int valid = 1;
 
@@ -238,9 +236,9 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			pcb_trace("Found track linewidth : %ld\n", Thickness);
-			PCB_layer = autotrax_get_layeridx(st,
-					pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success));
-			valid &= success;
+			autotrax_layer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
+			PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
+			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			pcb_trace("Found track layer : %d\n", PCB_layer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
@@ -278,13 +276,14 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int segments = 15; /* full circle by default */ 
 	int success;
 	int valid = 1;
+	int autotrax_layer = 0;
 
 	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
 	pcb_angle_t start_angle = 0.0;
 	pcb_angle_t delta = 360.0;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCB_layer = 0; /* sane default value */
+	pcb_layer_id_t PCB_layer;
 
 	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
@@ -311,9 +310,9 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			pcb_trace("Found arc linewidth : %ld\n", Thickness);
-			PCB_layer = autotrax_get_layeridx(st,
-					pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success));
-			valid &= success;
+			autotrax_layer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
+			PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
+			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			pcb_trace("Found arc layer : %d\n", PCB_layer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
@@ -482,7 +481,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int Connects = 0;
 	int Shape = 0;
 	int autotrax_layer = 0;
-	int PCB_layer = 0; /* sane default value */
+	pcb_layer_id_t PCB_layer;
 
 	int valid = 1;
 	int success;
@@ -524,8 +523,8 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 			valid &= success; /* which specifies GND or Power connection for pin/pad/via */
 			pcb_trace("Found pad Connects PWR/GND : %ld\n", Connects);
 			autotrax_layer = pcb_get_value_ex(argv[7], NULL, NULL, NULL, NULL, &success);
-			PCB_layer = autotrax_get_layeridx(st, autotrax_layer);
-			valid &= success;
+			PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
+			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			pcb_trace("Found Autotrax and pcb-rnd pad layer : %d, %d\n", autotrax_layer, PCB_layer);
 			qparse_free(argc, &argv);
 		} else {
@@ -635,11 +634,12 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	int success;
 	int valid = 1;
+	int autotrax_layer = 0;
 	char line[MAXREAD];
 	pcb_polygon_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	pcb_coord_t X1, Y1, X2, Y2, Clearance;
-	int PCB_layer = 0;
+	pcb_layer_id_t PCB_layer;
 
 	Clearance = PCB_MIL_TO_COORD(10);
 
@@ -663,9 +663,9 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 			Y2 = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			pcb_trace("Found fill Y2 : %ld\n", Y2);
-			PCB_layer = autotrax_get_layeridx(st,
-					pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success));
-			valid &= success;
+			autotrax_layer = pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success);
+			PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
+			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			pcb_trace("Found fill layer : %d\n", PCB_layer);
 			qparse_free(argc, &argv);
 		} else {
@@ -706,9 +706,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	return -1;
 }
 
-/* the following three functions could potetially go in a shared alien format parser lib */ 
-/* Register an autotrax layer in the layer hash after looking up the pcb-rnd equivalent */
-static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_layer, unsigned int mask)
+static pcb_layer_id_t autotrax_reg_layer(read_state_t *st, const char *autotrax_layer, unsigned int mask)
 {
 	pcb_layer_id_t id;
 	if (pcb_layer_list(mask, &id, 1) != 1) {
@@ -716,110 +714,53 @@ static unsigned int autotrax_reg_layer(read_state_t *st, const char *autotrax_la
 		pcb_layergrp_list(PCB, mask, &gid, 1);
 		id = pcb_layer_create(gid, autotrax_layer);
 	}
-	htsi_set(&st->layer_protel2i, pcb_strdup(autotrax_layer), id);
-	return 0;
+	return id;
 }
 
 /* create a set of default layers, since protel has a static stackup */
 static int autotrax_create_layers(read_state_t *st)
 {
-
-	unsigned int res;
-	pcb_layer_id_t id = -1;
+	
 	pcb_layergrp_t *g;
 
 	pcb_layer_group_setup_default(&st->PCB->LayerGroups);
 
-	/* set up the hash for implicit layers */
-	res = 0;
-	res |= autotrax_reg_layer(st, "TopSilk", PCB_LYT_SILK | PCB_LYT_TOP);
-	res |= autotrax_reg_layer(st, "BottomSilk", PCB_LYT_SILK | PCB_LYT_BOTTOM);
+	st->protel_to_stackup[7] = autotrax_reg_layer(st, "top silk", PCB_LYT_SILK | PCB_LYT_TOP);
+	st->protel_to_stackup[8] = autotrax_reg_layer(st, "bottom silk", PCB_LYT_SILK | PCB_LYT_BOTTOM);
 
-	/* for modules */
-	res |= autotrax_reg_layer(st, "Top", PCB_LYT_COPPER | PCB_LYT_TOP);
-	res |= autotrax_reg_layer(st, "Bottom", PCB_LYT_COPPER | PCB_LYT_BOTTOM);
-
-	if (res != 0) {
-		pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
-		pcb_layergrp_inhibit_dec();
-		return -1;
-	}
+	st->protel_to_stackup[1] = autotrax_reg_layer(st, "top copper", PCB_LYT_COPPER | PCB_LYT_TOP);
+	st->protel_to_stackup[6] = autotrax_reg_layer(st, "bottom copper", PCB_LYT_COPPER | PCB_LYT_BOTTOM);
 
 	g = pcb_get_grp_new_intern(PCB, -1);
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
-	htsi_set(&st->layer_protel2i, pcb_strdup("2"), id);
-
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid2");
-	htsi_set(&st->layer_protel2i, pcb_strdup("3"), id);
-
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid3");
-	htsi_set(&st->layer_protel2i, pcb_strdup("4"), id);
-
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid4");
-	htsi_set(&st->layer_protel2i, pcb_strdup("5"), id);
-
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "GND");
-	htsi_set(&st->layer_protel2i, pcb_strdup("9"), id);
-
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
-	htsi_set(&st->layer_protel2i, pcb_strdup("10"), id);
+	st->protel_to_stackup[2] = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
 
 	g = pcb_get_grp_new_intern(PCB, -1);
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Substrate");
-	htsi_set(&st->layer_protel2i, pcb_strdup("11"), id);
+	st->protel_to_stackup[3] = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid2");
 
-	g = pcb_get_grp_new_misc(PCB);
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "KeepOut");
-	htsi_set(&st->layer_protel2i, pcb_strdup("12"), id);
+	g = pcb_get_grp_new_intern(PCB, -1);
+	st->protel_to_stackup[4]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid3");
 
-	id = pcb_layer_create(g - PCB->LayerGroups.grp, "Multi");
-	htsi_set(&st->layer_protel2i, pcb_strdup("13"), id);
+	g = pcb_get_grp_new_intern(PCB, -1);
+	st->protel_to_stackup[5]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid4");
+
+	g = pcb_get_grp_new_intern(PCB, -1);
+	st->protel_to_stackup[9]  = pcb_layer_create(g - PCB->LayerGroups.grp, "GND");
+
+	g = pcb_get_grp_new_intern(PCB, -1);
+	st->protel_to_stackup[10]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
+
+	g = pcb_get_grp_new_intern(PCB, -1);
+	st->protel_to_stackup[12] = pcb_layer_create(g - PCB->LayerGroups.grp, "KeepOut");
+
+	g = pcb_get_grp_new_intern(PCB, -1);
+	st->protel_to_stackup[13]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Multi");
 
 	pcb_layergrp_fix_old_outline(PCB);
+	st->protel_to_stackup[11]  = autotrax_reg_layer(st, "outline", PCB_LYT_OUTLINE);
 
 	pcb_layergrp_inhibit_dec();
 
 	return 0;
-}
-
-/* Returns the pcb-rnd layer index for a autotrax_layer number, or -1 if not found */
-static int autotrax_get_layeridx(read_state_t *st, const int autotrax_layer)
-{
-	char *text_name;
-	htsi_entry_t *e;
-
-	switch (autotrax_layer) {
-		case 1:	text_name = pcb_strdup("Top");
-			break;
-		case 2:	text_name = pcb_strdup("2");
-			break;
-		case 3:	text_name = pcb_strdup("3");
-			break;
-		case 4:	text_name = pcb_strdup("4");
-			break;
-		case 5:	text_name = pcb_strdup("5");
-			break;
-		case 6:	text_name = pcb_strdup("Bottom");
-			break;
-		case 7:	text_name = pcb_strdup("TopSilk");
-			break;
-		case 8:	text_name = pcb_strdup("BottomSilk");
-			break;
-		case 9:	text_name = pcb_strdup("9");
-			break;
-		case 10:	text_name = pcb_strdup("10");
-			break;
-		case 11:	text_name = pcb_strdup("11");
-			break;
-		case 12:	text_name = pcb_strdup("12");
-			break;
-		default: text_name = pcb_strdup("13");
-	}
-
-	e = htsi_getentry(&st->layer_protel2i, text_name);
-	if (e == NULL)
-		return -1;
-	return e->value;
 }
 
 /* autotrax_pcb  autotrax_parse_net ;   used to read net descriptions for the entire layout */
@@ -942,7 +883,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 	int success;
 	int valid = 1;
 	int refdes_scaling = 100;
-	pcb_coord_t module_X, module_Y, Thickness;
+	pcb_coord_t module_X, module_Y;
 	unsigned direction = 0; /* default is horizontal */
 	char module_name[MAXREAD], module_refdes[MAXREAD], module_value[MAXREAD];
 	pcb_element_t *new_module;
@@ -1086,7 +1027,6 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	st.lineno = 0;
-	htsi_init(&st.layer_protel2i, strhash, strkeyeq);
 
 	while (!feof(FP) && !finished) {
 		if (fgetline(line, sizeof(line), FP, st.lineno) == NULL) {
@@ -1158,10 +1098,8 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */	
 	pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
 	
-	/* not sure if this is required: */
-	pcb_layer_auto_fixup(Ptr); /* this crashes things immeditely on load */
-
-#warning TODO: free the layer hash
+	/* still not sure if this is required: */
+	pcb_layer_auto_fixup(Ptr);
 
 	return readres;
 }
