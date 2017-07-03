@@ -130,21 +130,21 @@ static int action_gpmi_rehash(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 static void register_actions()
 {
-	pcb_hid_action_t act;
+	static pcb_hid_action_t act1, act2;
 
-	act.name           = "gpmi_scripts";
-	act.need_coord_msg = NULL;
-	act.description    = "Manage gpmi scripts";
-	act.syntax         = "TODO";
-	act.trigger_cb     = action_gpmi_scripts;
-	pcb_hid_register_action(&act, gpmi_cookie, 0);
+	act1.name           = "gpmi_scripts";
+	act1.need_coord_msg = NULL;
+	act1.description    = "Manage gpmi scripts";
+	act1.syntax         = "TODO";
+	act1.trigger_cb     = action_gpmi_scripts;
+	pcb_hid_register_action(&act1, gpmi_cookie, 0);
 
-	act.name           = "rehash";
-	act.need_coord_msg = NULL;
-	act.description    = "Reload all gpmi scripts";
-	act.syntax         = "TODO";
-	act.trigger_cb     = action_gpmi_rehash;
-	pcb_hid_register_action(&act, gpmi_cookie, 0);
+	act2.name           = "rehash";
+	act2.need_coord_msg = NULL;
+	act2.description    = "Reload all gpmi scripts";
+	act2.syntax         = "TODO";
+	act2.trigger_cb     = action_gpmi_rehash;
+	pcb_hid_register_action(&act2, gpmi_cookie, 0);
 }
 
 static gpmi_package *pkg_scripts = NULL;
