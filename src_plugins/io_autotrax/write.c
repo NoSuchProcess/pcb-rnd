@@ -697,6 +697,11 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 					current_layer);
 
 			local_flag |= 1;
+/* here we need to test for non rectangular polygons to flag imperfect export to easy/autotrax
+
+			if (helper_clipped_polygon_type_function(clipped_thing)) {
+				pcb_message(PCB_MSG_ERROR, "Polygon exported as a bounding box only.\n");
+			}*/
 		}
 		return local_flag;
 	} else {
