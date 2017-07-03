@@ -23,6 +23,9 @@
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 
+
+- polygon helper functions to flag non rectangular clipped polygons being exported to formats which only support rectangles, i.e. write.c in io_autotrax, +/- export a hatched version with outline 
+
 For the next release:
 - BUGS:
 	- solder paste layer doesn't have selected color, selection is not visible
