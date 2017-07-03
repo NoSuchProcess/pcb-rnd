@@ -411,7 +411,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		free(outlineLayers);
 	}
 
-	pcb_trace("About to write nestlists to Protel Autotrax file.\n");
+	pcb_trace("About to write netlists to Protel Autotrax file.\n");
 	/* last are the autotrax netlist descriptors */
 	write_autotrax_equipotential_netlists(FP, PCB);
 
