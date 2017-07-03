@@ -103,6 +103,7 @@ typedef struct {
 	pcb_layer_id_t protel_to_stackup[13];
 	int lineno;
 	pcb_coord_t mask_clearance;
+	pcb_coord_t copper_clearance;
 } read_state_t;
 
 static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
@@ -212,7 +213,8 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int success;
 	int valid = 1;
 
-	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+	Thickness= 0;
+	Clearance = st->copper_clearance; /* start with sane default */
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
@@ -287,7 +289,8 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_id_t PCB_layer;
 
-	Clearance = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+	Thickness = 0;
+	Clearance = st->copper_clearance; /* start with sane default */
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
@@ -419,10 +422,9 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_flag_t Flags = pcb_flag_make(0);
 
 	Thickness = 0;
-	Clearance = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+	Clearance = st->copper_clearance; /* start with sane default */
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
-
 
 	name = pcb_strdup("unnamed");
 
@@ -495,7 +497,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 
 	Thickness = 0;
-	Clearance = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+	Clearance = st->copper_clearance; /* start with sane default */
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
@@ -648,7 +650,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_coord_t X1, Y1, X2, Y2, Clearance;
 	pcb_layer_id_t PCB_layer;
 
-	Clearance = PCB_MIL_TO_COORD(10);
+	Clearance = st->copper_clearance; /* start with sane default */
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
@@ -1039,7 +1041,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	st.lineno = 0;
-	st.mask_clearance = PCB_MIL_TO_COORD(10);
+	st.mask_clearance = st.copper_clearance = PCB_MIL_TO_COORD(10); /* sensible default values */
 
 	while (!feof(FP) && !finished) {
 		if (fgetline(line, sizeof(line), FP, st.lineno) == NULL) {
