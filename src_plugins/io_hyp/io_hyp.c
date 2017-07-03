@@ -164,7 +164,7 @@ int pplg_init_io_hyp(void)
 	io_hyp.write_element = io_hyp_write_element;*/
 	io_hyp.write_pcb = io_hyp_write_pcb;
 	io_hyp.default_fmt = "hyp";
-	io_hyp.description = "hyperlinks";
+	io_hyp.description = "hyperlynx";
 	io_hyp.save_preference_prio = 30;
 	io_hyp.default_extension = ".hyp";
 #warning TODO: look these up
