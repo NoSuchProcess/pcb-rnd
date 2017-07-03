@@ -30,13 +30,7 @@ For the next release:
 	- solder paste layer doesn't have selected color, selection is not visible
 	- backup save triggers save in pcb indirectly, and that changes the layer stackup which may ruin the board (add new mask layers, wait for a save, draw on them after a save, they become silk) [report: Ade]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
-	- library window: allow long tags and long location text to split
-	- undo on new layer from right-click menu in gtk layerselk doesn't work
 	- replace default font with OSI lht font, load a file with embedded default font -> get both fonts in the same slot [report: miloh]
-- csect can't make a layer outline
-- fontsel:
-	- replace font in slot (even in default)
-	- ttf import?
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
@@ -46,7 +40,6 @@ For the next release:
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
-- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check r9932 to see how to fix it
@@ -56,6 +49,12 @@ For the next release:
 - BUG: arc bounding boxes not correctly found in some cases. Noticed on export to io_autotrax due to need to establish bounding box of board contents, including arcs, to allow subsequent board flip. 
 
 LATER RELEASES:
+- csect can't make a layer outline
+- fontsel:
+	- replace font in slot (even in default)
+	- ttf import?
+- library window: allow long tags and long location text to split
+- undo on new layer from right-click menu in gtk layerselk doesn't work
 - layer rewrite:
 	- catch the layer change signal from polygons and reclip; Evan's test case:
 	  draw a line on a layer and a poly on another and change whether they are in
@@ -154,6 +153,8 @@ LATER RELEASES:
 	- project specific menus from extra lihata files - maybe from project.lht
 - main.c:
 	- SIGPIPE - detect it (needed for popen)
+- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
+
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
