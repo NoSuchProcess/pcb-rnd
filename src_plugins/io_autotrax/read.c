@@ -102,6 +102,7 @@ typedef struct {
 	conf_role_t settings_dest;
 	pcb_layer_id_t protel_to_stackup[13];
 	int lineno;
+	pcb_coord_t mask_clearance;
 } read_state_t;
 
 static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
@@ -417,7 +418,8 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 	pcb_flag_t Flags = pcb_flag_make(0);
 
-	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+	Thickness = 0;
+	Clearance = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
@@ -457,6 +459,8 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 		return -1;
 	}
 
+	Mask = Thickness + st->mask_clearance;
+
 	if (el == NULL) {
 		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
 		pcb_trace("\tnew free via created\n");
@@ -490,7 +494,8 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill; 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 
-	Clearance = Mask = Thickness = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
+	Thickness = 0;
+	Clearance = PCB_MIL_TO_COORD(10); /* start with sane default of ten mil */
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
@@ -567,6 +572,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 	}
 
 	Thickness = MIN(X_size, Y_size);
+	Mask = Thickness + st->mask_clearance;
 
 /* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
 	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
@@ -618,10 +624,10 @@ padname
 		if (Drill == 0) {/* SMD */
 			pcb_element_pad_new_rect(el, X + X_size/2, Y + Y_size/2,
 						X - X_size/2, Y - Y_size/2,
-						Clearance, Clearance, line, line, Flags);
+						Clearance, Mask, line, line, Flags);
 			return 1;
 		} else { /* not SMD */
-			pcb_element_pin_new(el, X, Y , Thickness, Clearance, Clearance,  
+			pcb_element_pin_new(el, X, Y , Thickness, Clearance, Mask,  
 				Drill, line, line, Flags);
 			return 1;
 		}
@@ -1033,6 +1039,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	st.lineno = 0;
+	st.mask_clearance = PCB_MIL_TO_COORD(10);
 
 	while (!feof(FP) && !finished) {
 		if (fgetline(line, sizeof(line), FP, st.lineno) == NULL) {
