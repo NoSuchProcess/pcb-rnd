@@ -691,6 +691,19 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	else
 		sc->data->via_tree = NULL;
 
+	/* init poly clips */
+	if (dst_is_pcb) {
+		for(n = 0; n < sc->data->LayerN; n++) {
+			pcb_polygon_t *poly;
+			gdl_iterator_t it;
+			pcb_layer_t *sl = sc->data->Layer + n;
+
+			polylist_foreach(&sl->Polygon, &it, poly) {
+				pcb_poly_init_clip(ctx->buffer.dst, sl->meta.bound.real, poly);
+			}
+		}
+	}
+
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
 	return sc;
