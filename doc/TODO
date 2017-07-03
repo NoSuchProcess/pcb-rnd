@@ -35,7 +35,6 @@ For the next release:
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - hid_gtk? bug: moving with cursor keys snapping to a via - can't leave with cursor keys!
-- BUG: arc_clr_polygbug.lht: small radius arc clearance bug (eventually leads to self intersecting poly) [report:Evan]
 - draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numbering, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
