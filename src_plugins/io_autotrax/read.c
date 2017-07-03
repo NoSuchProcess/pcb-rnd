@@ -199,10 +199,10 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	}
 	return -1;
 }
-
 /* autotrax_pcb free_track/component_track */
 static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
+
 	char line[MAXREAD];
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
@@ -723,6 +723,7 @@ static int autotrax_create_layers(read_state_t *st)
 {
 	
 	pcb_layergrp_t *g;
+	pcb_layer_id_t id;
 
 	pcb_layer_group_setup_default(&st->PCB->LayerGroups);
 
@@ -731,6 +732,16 @@ static int autotrax_create_layers(read_state_t *st)
 
 	st->protel_to_stackup[1] = autotrax_reg_layer(st, "top copper", PCB_LYT_COPPER | PCB_LYT_TOP);
 	st->protel_to_stackup[6] = autotrax_reg_layer(st, "bottom copper", PCB_LYT_COPPER | PCB_LYT_BOTTOM);
+
+	if (pcb_layer_list(PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
+		pcb_layergrp_id_t gid;
+		pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
+		st->protel_to_stackup[12] = pcb_layer_create(gid, "Keepout");
+		pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
+		st->protel_to_stackup[13] = pcb_layer_create(gid, "Multi");
+	} else {
+		pcb_message(PCB_MSG_ERROR, "Unable to create Keepout, Multi layers in default top silk group\n");
+	}
 
 	g = pcb_get_grp_new_intern(PCB, -1);
 	st->protel_to_stackup[2] = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
@@ -749,12 +760,6 @@ static int autotrax_create_layers(read_state_t *st)
 
 	g = pcb_get_grp_new_intern(PCB, -1);
 	st->protel_to_stackup[10]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
-
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[12] = pcb_layer_create(g - PCB->LayerGroups.grp, "KeepOut");
-
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[13]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Multi");
 
 	pcb_layergrp_fix_old_outline(PCB);
 	st->protel_to_stackup[11]  = autotrax_reg_layer(st, "outline", PCB_LYT_OUTLINE);
