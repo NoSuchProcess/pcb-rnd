@@ -140,6 +140,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 			scaling = (100*height_mil)/60;
 			pcb_trace("Found free text height(mil) : %d, giving scaling: %d\n", height_mil, scaling);
 			direction = pcb_get_value_ex(argv[3], NULL, NULL, NULL, NULL, &success);
+			direction = direction%4; /* ignore mirroring */
 			valid &= success;
 			pcb_trace("Found free text rotation : %d\n", direction);
 			linewidth = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
