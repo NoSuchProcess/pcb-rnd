@@ -106,6 +106,7 @@ typedef struct {
 	pcb_coord_t copper_clearance;
 	pcb_coord_t minimum_comp_pin_drill;
 	int trax_version;
+	int ignored_keepout_element;
 } read_state_t;
 
 static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
@@ -260,7 +261,11 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 		return -1;
 	}
 
-	if (PCB_layer >= 0) {
+	if (autotrax_layer == 12) {
+		pcb_trace("Ignoring keepout track(s) on auto/easytrax layer 12\n");
+		st->ignored_keepout_element |= 1;
+		return 0;
+	} else if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
 			pcb_line_new( &st->PCB->Data->Layer[PCB_layer], X1, Y1, X2, Y2,
 				Thickness, Clearance, Flags);
@@ -1052,6 +1057,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.mask_clearance = st.copper_clearance = PCB_MIL_TO_COORD(10); /* sensible default values */
 	st.minimum_comp_pin_drill = PCB_MIL_TO_COORD(30); /* Easytrax PCB FILE 5 uses zero in COMP pins */
 	st.trax_version = 4; /* assume autotrax, not easytrax */
+	st.ignored_keepout_element = 0;
 
 	while (!feof(FP) && !finished) {
 		if (fgetline(line, sizeof(line), FP, st.lineno) == NULL) {
@@ -1119,6 +1125,10 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	fclose(FP);
 	box = pcb_data_bbox(&board_size, Ptr->Data);
 	pcb_trace("Maximum X, Y dimensions (mil) of imported Protel autotrax layout: %ld, %ld\n", box->X2, box->Y2);
+	if (st.ignored_keepout_element) {
+		pcb_message(PCB_MSG_ERROR, "Ignored keepout track(s) on auto/easytrax layer 12\n");
+	}
+
 	Ptr->MaxWidth = box->X2;
 	Ptr->MaxHeight = box->Y2;
 
