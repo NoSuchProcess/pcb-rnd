@@ -492,7 +492,7 @@ pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_co
 }
 
 #define ARC_ANGLE 5
-static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
+static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick, int end_caps)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -540,8 +540,11 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	ang = a->StartAngle + a->Delta;
 	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
 	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
+
 	/* add the round cap at the end */
-	pcb_poly_frac_circle(contour, ends.X2, ends.Y2, v, 2);
+	if (end_caps)
+		pcb_poly_frac_circle(contour, ends.X2, ends.Y2, v, 2);
+
 	/* and now do the outer arc (going backwards) */
 	rx = (a->Width + half) * (1 + radius_adj);
 	ry = (a->Width + half) * (1 + radius_adj);
@@ -556,7 +559,9 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	ang = a->StartAngle;
 	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
 	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
-	pcb_poly_frac_circle(contour, ends.X1, ends.Y1, v, 2);
+	if (end_caps)
+		pcb_poly_frac_circle(contour, ends.X1, ends.Y1, v, 2);
+
 	/* now we have the whole contour */
 	if (!(np = pcb_poly_from_contour(contour)))
 		return NULL;
@@ -568,14 +573,39 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * a, pcb_coord_t thick)
 {
 	double delta;
 	pcb_arc_t seg1, seg2;
-	pcb_polyarea_t *tmp1, *tmp2, *res;
+	pcb_coord_t half;
 
 	delta = (a->Delta < 0) ? -a->Delta : a->Delta;
 
+	half = (thick + 1) / 2;
+
+	/* corner case: can't even calculate the end cap properly because radius
+	   is so small that there's no inner arc of the clearance */
+	if ((a->Width - half <= 0) || (a->Height - half <= 0)) {
+		pcb_line_t lin = {0};
+		pcb_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
+
+		tmp_arc = ArcPolyNoIntersect(a, thick, 0);
+
+		pcb_arc_get_end(a, 0, &lin.Point1.X, &lin.Point1.Y);
+		lin.Point2.X = lin.Point1.X;
+		lin.Point2.Y = lin.Point1.Y;
+		tmp1 = pcb_poly_from_line(&lin, thick);
+
+		pcb_arc_get_end(a, 1, &lin.Point1.X, &lin.Point1.Y);
+		lin.Point2.X = lin.Point1.X;
+		lin.Point2.Y = lin.Point1.Y;
+		tmp2 = pcb_poly_from_line(&lin, thick);
+
+		pcb_polyarea_boolean_free(tmp1, tmp2, &ends, PCB_PBO_UNITE);
+		pcb_polyarea_boolean_free(ends, tmp_arc, &res, PCB_PBO_UNITE);
+		return res;
+	}
+
 	/* If the arc segment would self-intersect, we need to construct it as the union of
 	   two non-intersecting segments */
-
 	if (2 * M_PI * a->Width * (1. - (double) delta / 360.) - thick < MIN_CLEARANCE_BEFORE_BISECT) {
+		pcb_polyarea_t *tmp1, *tmp2, *res;
 		int half_delta = a->Delta / 2;
 
 		seg1 = seg2 = *a;
@@ -583,13 +613,13 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * a, pcb_coord_t thick)
 		seg2.Delta -= half_delta;
 		seg2.StartAngle += half_delta;
 
-		tmp1 = ArcPolyNoIntersect(&seg1, thick);
-		tmp2 = ArcPolyNoIntersect(&seg2, thick);
+		tmp1 = ArcPolyNoIntersect(&seg1, thick, 1);
+		tmp2 = ArcPolyNoIntersect(&seg2, thick, 1);
 		pcb_polyarea_boolean_free(tmp1, tmp2, &res, PCB_PBO_UNITE);
 		return res;
 	}
 
-	return ArcPolyNoIntersect(a, thick);
+	return ArcPolyNoIntersect(a, thick, 1);
 }
 
 pcb_polyarea_t *pcb_poly_from_line(pcb_line_t * L, pcb_coord_t thick)
