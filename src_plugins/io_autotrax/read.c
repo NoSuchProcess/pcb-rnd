@@ -104,6 +104,8 @@ typedef struct {
 	int lineno;
 	pcb_coord_t mask_clearance;
 	pcb_coord_t copper_clearance;
+	pcb_coord_t minimum_comp_pin_drill;
+	int trax_version;
 } read_state_t;
 
 static int autotrax_parse_net(read_state_t *st, FILE *FP); /* describes netlists for the layout */
@@ -481,7 +483,7 @@ x y X_size Y_size shape holesize pwr/gnd layer
 padname
 may need to think about hybrid outputs, like pad + hole, to match possible features in protel autotrax
 */
-static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
+static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int component)
 {
 
 	char line[MAXREAD], *s;
@@ -587,6 +589,12 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el)
 		6 Moiro Target
 */
 
+	/* Easytrax seems to specify zero drill for some component pins, and round free pins/pads */
+	if (((st->trax_version == 5) && (X_size == Y_size) && component && (Drill == 0))
+ 		|| ((st->trax_version == 5) && (X_size == Y_size) && (Shape == 1) && (Drill == 0))) {
+		Drill = st->minimum_comp_pin_drill;/* ?may be better off using half the thickness for drill */ 
+	}
+
 	if ((Shape == 5 || Shape == 6 ) && el == NULL) {
 		pcb_trace("\tnew free pad not created; Cross Hair/Moiro target not supported\n");
 		return 0;
@@ -623,7 +631,7 @@ FP
 x y xsize ysize shape holesize pwr/gnd layer
 padname
 */
-		if (Drill == 0) {/* SMD */
+		if (Drill == 0 && (X_size != Y_size)) {/* SMD */
 			pcb_element_pad_new_rect(el, X + X_size/2, Y + Y_size/2,
 						X - X_size/2, Y - Y_size/2,
 						Clearance, Mask, line, line, Flags);
@@ -1005,7 +1013,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 				nonempty |= autotrax_parse_fill(st, FP, new_module);
 			} else if (strncmp(s, "CP",2) == 0 ) {
 				pcb_trace("Found component pad\n");
-				nonempty |= autotrax_parse_pad(st, FP, new_module);
+				nonempty |= autotrax_parse_pad(st, FP, new_module, 1); /* flag in COMP */
 			} else if (strncmp(s, "CS",2) == 0 ) {
 				pcb_trace("Found component String\n");
 				nonempty |= autotrax_parse_text(st, FP, new_module);
@@ -1042,6 +1050,8 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.settings_dest = settings_dest;
 	st.lineno = 0;
 	st.mask_clearance = st.copper_clearance = PCB_MIL_TO_COORD(10); /* sensible default values */
+	st.minimum_comp_pin_drill = PCB_MIL_TO_COORD(30); /* Easytrax PCB FILE 5 uses zero in COMP pins */
+	st.trax_version = 4; /* assume autotrax, not easytrax */
 
 	while (!feof(FP) && !finished) {
 		if (fgetline(line, sizeof(line), FP, st.lineno) == NULL) {
@@ -1053,9 +1063,11 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		if (length >= 10) {
 			if (strncmp(line, "PCB FILE 4", 10) == 0 ) {
 				pcb_trace("Found Protel Autotrax version 4\n");
+				st.trax_version = 4;
 				autotrax_create_layers(&st);
 			} else if (strncmp(line, "PCB FILE 5", 10) == 0 ) {
 				pcb_trace("Found Protel Easytrax version 5\n");
+				st.trax_version = 5;
 				autotrax_create_layers(&st);
 			}
 		} else if (length >= 6) {
@@ -1092,7 +1104,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 				autotrax_parse_fill(&st, FP, el);
 			} else if (strncmp(s, "FP",2) == 0 ) {
 				pcb_trace("Found free pad\n");
-				autotrax_parse_pad(&st, FP, el);
+				autotrax_parse_pad(&st, FP, el, 0); /* flag not in a component */
 			} else if (strncmp(s, "FS",2) == 0 ) {
 				pcb_trace("Found free String\n");
 				autotrax_parse_text(&st, FP, el);
