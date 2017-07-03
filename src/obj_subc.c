@@ -612,10 +612,17 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 		if (dst_is_pcb) {
 			dl = pcb_layer_resolve_binding(dst_top, sl);
-			if (dl != NULL)
+			if (dl != NULL) {
 				pcb_layer_link_trees(sl, dl);
-			else
+			}
+			else {
+				/* need to create the trees so that move and other ops work */
+				if (sl->line_tree == NULL) sl->line_tree = pcb_r_create_tree(NULL, 0, 0);
+				if (sl->arc_tree == NULL) sl->arc_tree = pcb_r_create_tree(NULL, 0, 0);
+				if (sl->text_tree == NULL) sl->text_tree = pcb_r_create_tree(NULL, 0, 0);
+				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 				pcb_message(PCB_MSG_ERROR, "Couldn't bind subc layer TODO on buffer move\n");
+			}
 		}
 		else
 			dl = ctx->buffer.dst->Layer + n;
