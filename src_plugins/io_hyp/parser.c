@@ -1891,7 +1891,8 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	}
 
 	/* name */
-	name = pin_name;
+	name = device_name;
+	number = pin_name;
 
 	if ((drillinghole > 0) && (element != NULL)) {
 		/* create */
