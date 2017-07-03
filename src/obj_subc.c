@@ -613,7 +613,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		if (dst_is_pcb) {
 			dl = pcb_layer_resolve_binding(dst_top, sl);
 			if (dl != NULL)
-				pcb_layer_link_trees(dl, sl);
+				pcb_layer_link_trees(sl, dl);
 			else
 				pcb_message(PCB_MSG_ERROR, "Couldn't bind subc layer TODO on buffer move\n");
 		}
