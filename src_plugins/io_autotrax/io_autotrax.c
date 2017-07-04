@@ -33,8 +33,7 @@
 #include "plugins.h"
 #include "plug_io.h"
 #include "write.h"
-#include "read.h"/*
-#include "read_net.h" */
+#include "read.h"
 #include "hid_actions.h"
 
 #include "board.h"
