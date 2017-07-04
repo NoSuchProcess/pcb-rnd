@@ -1,0 +1,5 @@
+$class lib
+$short polygon helpers
+$long functions to help plugins processing polygons
+$state works
+default disable-all
