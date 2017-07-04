@@ -76,6 +76,27 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);
 
 double pcb_poly_area(const pcb_polygon_t *poly);
 
+/*** helpers for iterating over countours */
+
+/*** Polygon helpers on the clopped polygon ***/
+typedef enum {
+	PCB_POLYEV_ISLAND_START,
+	PCB_POLYEV_ISLAND_POINT,
+	PCB_POLYEV_ISLAND_END,
+	PCB_POLYEV_HOLE_START,
+	PCB_POLYEV_HOLE_POINT,
+	PCB_POLYEV_HOLE_END
+} pcb_poly_event_t;
+
+/* return non-zero to quit mapping immediatley */
+typedef int pcb_poly_map_cb_t(pcb_polygon_t *p, void *ctx, pcb_poly_event_t ev, pcb_coord_t x, pcb_coord_t y);
+
+/* call cb for each point of each island and cutout */
+void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb);
+
+
+/*** loops ***/
+
 #define PCB_POLY_LOOP(layer) do {                                    \
   pcb_polygon_t *polygon;                                             \
   gdl_iterator_t __it__;                                            \

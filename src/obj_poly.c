@@ -783,6 +783,31 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 }
 
 
+/*** iteration helpers ***/
+void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb)
+{
+	pcb_polyarea_t *pa;
+	pcb_pline_t *pl;
+
+	pa = p->Clipped;
+	do {
+		int cidx;
+		for(cidx = 0, pl = pa->contours; pl != NULL; cidx++, pl = pl->next) {
+			pcb_vnode_t *v;
+			cb(p, ctx, (cidx == 0 ? PCB_POLYEV_ISLAND_START : PCB_POLYEV_HOLE_START), 0, 0);
+			v = pa->contours->head.next;
+			do {
+				cb(p, ctx, (cidx == 0 ? PCB_POLYEV_ISLAND_POINT : PCB_POLYEV_HOLE_POINT), v->point[0], v->point[1]);
+			} while ((v = v->next) != pa->contours->head.next);
+
+			cb(p, ctx, (cidx == 0 ? PCB_POLYEV_ISLAND_END : PCB_POLYEV_HOLE_END), 0, 0);
+		}
+		pa = pa->f;
+	} while(pa != p->Clipped);
+}
+
+
+
 
 /*** draw ***/
 pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
