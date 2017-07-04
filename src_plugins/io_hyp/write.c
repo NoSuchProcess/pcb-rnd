@@ -27,6 +27,7 @@
 #include "board.h"
 #include "data.h"
 #include "compat_misc.h"
+#include "polygon.h"
 #include "src_plugins/lib_padstack_hash/padstack_hash.h"
 #include "src_plugins/lib_netmap/netmap.h"
 
@@ -137,8 +138,10 @@ static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
 	pcb_pline_t *pl;
 	pcb_vnode_t *v;
 
-	if (poly->Clipped == NULL)
-		pcb_poly_init_clip(poly);
+	if (poly->Clipped == NULL) {
+		pcb_layer_t *l = poly->parent.layer;
+		pcb_poly_init_clip(l->parent, l, poly);
+	}
 
 	if (poly->Clipped == NULL)
 		return;
