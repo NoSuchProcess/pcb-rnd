@@ -1,0 +1,54 @@
+<h2> different faces of a polygon </H2>
+
+In pcb-rnd polygons have three possible appearance:
+<ul>
+	<li> points: the as-drawn version
+	<li> clipped: the as-shown version, with holes
+	<li> no-holes: the as-shown version, without holes
+</ul>
+
+<h3> Iterators: looping on clipped polygon geometry </H3>
+
+The following code prints all contours and holes of a polygon, using loops
+iterators. The same iterator holds all states, so that it points to:
+<ul>
+	<li> one polygon
+	<li> one of the islands of that polygon
+	<li> either the outer contour or one of the holes in that polygon (cntr)
+	<li> one of the points in cntr
+</ul>
+
+<pre>
+void print_poly(pcb_polygon_t *polygon)
+{
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+
+	/* first, iterate over all islands of a polygon */
+	for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_coord_t x, y;
+		pcb_pline_t *pl;
+		int go;
+
+		printf(" island\n");
+		/* check if we have a contour for the given island */
+		pl = pcb_poly_contour(&it);
+		if (pl != NULL) {
+			printf("  contour:\n");
+			/* iterate over the vectors of the contour */
+			for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y)) {
+				pcb_printf("   %mm %mm\n", x, y);
+			}
+			
+			/* iterate over all holes within this island */
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
+				printf("  hole:\n");
+				/* iterate over the vectors of the given hole */
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y)) {
+					pcb_printf("   %mm %mm\n", x, y);
+				}
+			}
+		}
+	}
+}
+</pre>
