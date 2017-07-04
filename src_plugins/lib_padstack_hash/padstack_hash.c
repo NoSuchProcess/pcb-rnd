@@ -149,3 +149,14 @@ const char *pcb_pshash_pin(pcb_pshash_hash_t *psh, const pcb_pin_t *pin, int *ne
 	return pcb_pshash_pp(psh, &key, new_item);
 }
 
+
+int pplg_check_ver_lib_padstack_hash(int ver_needed) { return 0; }
+
+void pplg_uninit_lib_padstack_hash(void)
+{
+}
+
+int pplg_init_lib_padstack_hash(void)
+{
+	return 0;
+}

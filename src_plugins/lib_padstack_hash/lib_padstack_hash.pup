@@ -1,0 +1,5 @@
+$class lib
+$short abstract and hash pad stacks from pids, vias and pads
+$long hash table for building a library of unque pad statcks
+$state works
+default disable-all
