@@ -367,6 +367,15 @@ static int write_nets(hyp_wr_t *wr)
 				case PCB_OBJ_TEXT:
 				case PCB_OBJ_ELEMENT:
 				case PCB_OBJ_SUBC:
+				case PCB_OBJ_POINT:
+				case PCB_OBJ_NET:
+				case PCB_OBJ_LAYER:
+				case PCB_OBJ_ELINE:
+				case PCB_OBJ_EARC:
+				case PCB_OBJ_ETEXT:
+				case PCB_OBJ_CLASS_MASK:
+				case PCB_OBJ_CLASS_OBJ:
+				case PCB_OBJ_ANY:
 					break; /* silenlty ignore these */
 			}
 		}
