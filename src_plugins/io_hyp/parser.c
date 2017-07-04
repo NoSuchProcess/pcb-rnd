@@ -25,6 +25,8 @@
  *   set tabstop=2
  */
 
+#define MAX_STRING 256
+
 #include "parser.h"
 #include "hyp_l.h"
 #include "hyp_y.h"
@@ -118,6 +120,8 @@ typedef struct device_s {
 } device_t;
 
 device_t *device_head;
+int unknown_device_number;
+int unknown_pin_number;
 
 /* padstack */
 
@@ -276,6 +280,8 @@ void hyp_init(void)
 
 	/* clear devices */
 	device_head = NULL;
+	unknown_device_number = 0;
+	unknown_pin_number = 0;
 
 	/* clear pads */
 	component_side_pads = NULL;
@@ -841,7 +847,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	pcb_layer_id_t layer_id;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
-	char new_layer_name[PCB_MAX_LAYER];
+	char new_layer_name[MAX_STRING];
 	int n;
 
 	layer_id = -1;
@@ -1883,16 +1889,27 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 			pin_name = pcb_strdup(dot + 1);
 		}
 
-		if (hyp_debug)
-			pcb_printf("draw padstack: device_name = \"%s\" pin_name = \"%s\"\n", device_name, pin_name);
+		/* make sure device and pin name have valid values, even if reference has wrong format */
+		if ((device_name == NULL) || (strcmp(device_name, "") == 0)) {
+			device_name = malloc(MAX_STRING);
+			pcb_sprintf(device_name, "NONAME%0d", unknown_device_number++);
+		}
+
+		if ((pin_name == NULL) || (strcmp(pin_name, "") == 0)) {
+			pin_name = malloc(MAX_STRING);
+			pcb_sprintf(pin_name, "NONUMBER%0d", unknown_pin_number++);
+		}
 
 		/* find device by name */
 		element = hyp_create_element_by_name(device_name, x, y);
 	}
 
-	/* name */
+	/* name and number NULL if no reference given */
 	name = device_name;
 	number = pin_name;
+
+	if (hyp_debug)
+		pcb_printf("draw padstack: device_name = \"%s\" pin_name = \"%s\"\n", name, number);
 
 	if ((drillinghole > 0) && (element != NULL)) {
 		/* create */
@@ -1973,21 +1990,27 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		if ((layer_name != NULL) && hyp_is_bottom_layer(layer_name)) {
 			if (solder_side_pads == NULL)
 				solder_side_pads =
-					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_flag_make(PCB_FLAG_ONSOLDER), NULL, NULL, NULL, 0, 0, 0, 500,
-													pcb_flag_make(PCB_FLAG_ONSOLDER), pcb_false);
+					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_flag_make(PCB_FLAG_ONSOLDER), "Bottom layer pads", "PAD_BOT",
+													NULL, 0, 0, 0, 500, pcb_flag_make(PCB_FLAG_ONSOLDER), pcb_false);
 			element = solder_side_pads;
 		}
 		else {
 			if (component_side_pads == NULL)
 				component_side_pads =
-					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), NULL, NULL, NULL, 0, 0, 0, 500, pcb_no_flags(),
-													pcb_false);
+					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), "Top layer pads", "PAD_TOP", NULL, 0, 0, 0, 500,
+													pcb_no_flags(), pcb_false);
 			element = component_side_pads;
 		}
 	}
 
 	if (element != NULL) {
-		/* create */
+		/* create pad number */
+		if ((number == NULL) || (strcmp(number, "") == 0)) {
+			number = malloc(MAX_STRING);
+			pcb_sprintf(number, "NONUMBER%0d", unknown_pin_number++);
+		}
+
+		/* create pad */
 		pcb_element_pad_new(element, x1, y1, x2, y2, thickness, clearance, mask, name, number, flags);
 		/* update bounding box */
 		pcb_element_bbox(hyp_dest, element, pcb_font(PCB, 0, 1));
