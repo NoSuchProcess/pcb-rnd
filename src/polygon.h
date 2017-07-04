@@ -92,7 +92,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, pcb_polyarea_t *
 
 void pcb_poly_square_pin_factors(int style, double *xm, double *ym);
 
-int pcb_pline_is_rectangle(pcb_pline_t *pl);
+pcb_bool pcb_pline_is_rectangle(pcb_pline_t *pl);
 
 
 #endif
