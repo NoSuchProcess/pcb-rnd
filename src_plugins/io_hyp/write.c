@@ -134,10 +134,8 @@ static void write_pad(hyp_wr_t *wr, pcb_pad_t *pad)
 
 static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
 {
-	pcb_cardinal_t n, end;
 	pcb_pline_t *pl;
 	pcb_vnode_t *v;
-
 
 	if (poly->Clipped == NULL)
 		pcb_poly_init_clip(poly);
