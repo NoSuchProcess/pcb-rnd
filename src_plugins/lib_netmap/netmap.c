@@ -30,6 +30,7 @@
 #include "find.h"
 #include "netlist.h"
 #include "pcb-printf.h"
+#include "plugins.h"
 
 static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
 {
@@ -191,3 +192,14 @@ int pcb_netmap_uninit(pcb_netmap_t *map)
 	htpp_uninit(&map->n2o);
 }
 
+
+int pplg_check_ver_lib_netmap(int ver_needed) { return 0; }
+
+void pplg_uninit_lib_netmap(void)
+{
+}
+
+int pplg_init_lib_netmap(void)
+{
+	return 0;
+}
