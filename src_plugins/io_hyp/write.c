@@ -53,6 +53,9 @@ static const char *safe_element_name(hyp_wr_t *wr, pcb_element_t *elem)
 	char *s;
 	int len;
 
+	if (orig == NULL)
+		return orig;
+
 	if (strchr(orig, '.') == NULL)
 		return orig;
 
