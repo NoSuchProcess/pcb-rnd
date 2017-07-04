@@ -40,6 +40,8 @@
 #include "data.h"
 #include "search.h"
 #include "rotate.h"
+#include "hid_actions.h"
+#include "plug_io.h"
 #include "compat_misc.h"
 
 /*
@@ -313,6 +315,10 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 
 	hyp_init();
 
+  /* clear netlist */
+	pcb_hid_actionl("Netlist", "Freeze", NULL);
+	pcb_hid_actionl("Netlist", "Clear", NULL);
+
 	hyp_reset_layers();
 
 	/* set shared board */
@@ -337,6 +343,10 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	/* clear */
 	hyp_dest = NULL;
 
+	/* sort netlist */
+	pcb_hid_actionl("Netlist", "Sort", NULL);
+	pcb_hid_actionl("Netlist", "Thaw", NULL);
+
 	return (retval);
 }
 
@@ -357,6 +367,20 @@ padstack_t *hyp_padstack_by_name(char *padstack_name)
 		if (strcmp(i->name, padstack_name) == 0)
 			return i;
 	return NULL;
+}
+
+/* add pin to net */
+void hyp_add_netlist(char *device_name, char *pin_name)
+{
+	char conn[MAX_STRING];
+
+	pcb_printf(">%s<XXX\n", net_name);
+
+	if ((net_name != NULL) && (device_name != NULL) && (pin_name != NULL)) {
+		pcb_snprintf(conn, sizeof(conn), "%s-%s", device_name, pin_name);
+		pcb_hid_actionl("Netlist", "Add", net_name, conn, NULL);
+	}
+	return;
 }
 
 /*
@@ -1887,6 +1911,8 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		if (dot != NULL) {
 			*dot = '\0';
 			pin_name = pcb_strdup(dot + 1);
+			/* add pin to current net */
+			hyp_add_netlist(device_name, pin_name);
 		}
 
 		/* make sure device and pin name have valid values, even if reference has wrong format */
