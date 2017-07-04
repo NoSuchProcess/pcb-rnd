@@ -341,6 +341,7 @@ static int write_padstack(hyp_wr_t *wr)
 	pinlist_foreach(&wr->pcb->Data->Via, &it, pin) {
 		write_padstack_pv(wr, pin);
 	}
+	return 0;
 }
 
 static int write_nets(hyp_wr_t *wr)
@@ -375,6 +376,7 @@ static int write_nets(hyp_wr_t *wr)
 	}
 
 	pcb_netmap_uninit(&map);
+	return 0;
 }
 
 int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency)
