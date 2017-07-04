@@ -1926,3 +1926,24 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 
 	pcb_board_set_changed_flag(pcb_true);
 }
+
+int pcb_pline_is_rectangle(pcb_pline_t *pl)
+{
+	int n;
+	pcb_coord_t x[4], y[4];
+	pcb_vnode_t *v;
+
+	v = pl->head.next;
+	n = 0;
+	do {
+		x[n] = v->point[0];
+		y[n] = v->point[1];
+		n++;
+		v = v->next;
+	} while((n < 4) && (v != pl->head.next));
+	
+	if (n != 4)
+		return 0;
+
+	return sqr(x[0] - x[2]) * sqr(y[0] - y[2]) == sqr(x[1] - x[3]) * sqr(y[1] - y[3]);
+}
