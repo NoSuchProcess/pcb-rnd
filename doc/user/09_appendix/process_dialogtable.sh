@@ -10,7 +10,7 @@ BEGIN {
 	print "<head>"
 	print "<title> pcb-rnd </title>"
 	print "<meta http-equiv=" q "Content-Type" q " content=" q "text/html;charset=us-ascii" q ">"
-	print "<link rel=" q "stylesheet" q " type=" q "text/css" q " href=" q " ./default.css" q ">"
+	print "<link rel=" q "stylesheet" q " type=" q "text/css" q " href=" q " ../default.css" q ">"
 	print "</head>"
 	print "<body>"
 	print "<p>"
