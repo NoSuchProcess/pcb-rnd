@@ -161,6 +161,9 @@ static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
 		for(v = v->next; v != pl->head.next; v = v->next)
 			pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);
 
+		v = pl->head.next; /* repeat first point */
+		pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);
+
 		fprintf(wr->f, "  }\n");
 	} while ((pl = pl->next) != NULL);
 }
@@ -196,7 +199,7 @@ static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc, const char
 
 	pcb_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me", cmd, x1, y1, x2, y2, arc->X, arc->Y, arc->Width);
 	if (layer != NULL)
-		pcb_fprintf(wr->f, " L=%[4]", layer);
+		pcb_fprintf(wr->f, " W=%me L=%[4]", arc->Thickness, layer);
 	fprintf(wr->f, ")\n");
 }
 
@@ -209,7 +212,7 @@ static void write_pr_arc(hyp_wr_t *wr, pcb_arc_t *arc)
 static void write_arc(hyp_wr_t *wr, pcb_arc_t *arc)
 {
 	fprintf(wr->f, "  ");
-	write_arc_(wr, "CURVE", arc, get_layer_name(wr, arc->parent_type, arc->parent.layer));
+	write_arc_(wr, "ARC", arc, get_layer_name(wr, arc->parent_type, arc->parent.layer));
 }
 
 static int write_board(hyp_wr_t *wr)

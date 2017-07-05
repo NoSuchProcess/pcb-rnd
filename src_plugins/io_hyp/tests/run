@@ -1,6 +1,8 @@
 #!/bin/bash
 #
 # Read all hyperlynx test files and export them twice, once as hyperlynx and once as png.
+# Run from this directory. 
+# ./run
 #
 OUTDIR=/tmp/
 for INFILE in test*/*.hyp
@@ -10,9 +12,10 @@ do
   LOGFILE=${OUTDIR}/`basename ${INFILE} .hyp`.log
   PNGFILE=${OUTDIR}/`basename ${INFILE} .hyp`.png
 
-  ~/src/trunk/src/pcb-rnd --gui batch  <<[EOD] > ${LOGFILE} 2>&1
+  ../../../src/pcb-rnd --gui batch  <<[EOD] > ${LOGFILE} 2>&1
 LoadhypFrom(${INFILE}, debug)
 SaveTo(LayoutAs, ${OUTFILE}, hyperlynx)
 Export(png, --outfile, ${PNGFILE}, --dpi, 300)
 [EOD]
 done
+#not truncated
