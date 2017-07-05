@@ -111,6 +111,11 @@ pcb_coord_t layer_clearance[PCB_MAX_LAYER];	/* separation between fill copper an
 char *net_name;									/* name of current copper */
 pcb_coord_t net_clearance;			/* distance between PLANE polygon and net copper */
 
+/* netlist */
+void hyp_netlist_begin();
+void hyp_netlist_add(char *device_name, char *pin_name);
+void hyp_netlist_end();
+
 /* devices */
 
 typedef struct device_s {
@@ -155,6 +160,8 @@ padstack_t *current_padstack;
 	/* pads */
 pcb_element_t *component_side_pads;
 pcb_element_t *solder_side_pads;
+#define PAD_TOP "PAD_TOP"
+#define PAD_BOTTOM "PAD_BOTTOM"
 
 	/* polygons */
 
@@ -315,9 +322,7 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 
 	hyp_init();
 
-  /* clear netlist */
-	pcb_hid_actionl("Netlist", "Freeze", NULL);
-	pcb_hid_actionl("Netlist", "Clear", NULL);
+	hyp_netlist_begin();
 
 	hyp_reset_layers();
 
@@ -343,9 +348,7 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	/* clear */
 	hyp_dest = NULL;
 
-	/* sort netlist */
-	pcb_hid_actionl("Netlist", "Sort", NULL);
-	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	hyp_netlist_end();
 
 	return (retval);
 }
@@ -369,15 +372,38 @@ padstack_t *hyp_padstack_by_name(char *padstack_name)
 	return NULL;
 }
 
+/*
+ * netlist - assign pin or pad to net
+ */
+
+void hyp_netlist_begin()
+{
+	/* clear netlist */
+	pcb_hid_actionl("Netlist", "Freeze", NULL);
+	pcb_hid_actionl("Netlist", "Clear", NULL);
+	return;
+}
+
 /* add pin to net */
-void hyp_add_netlist(char *device_name, char *pin_name)
+void hyp_netlist_add(char *device_name, char *pin_name)
 {
 	char conn[MAX_STRING];
+
+	if (hyp_debug)
+		pcb_printf("netlist net: '%s' device: '%s' pin: '%s'\n", net_name, device_name, pin_name);
 
 	if ((net_name != NULL) && (device_name != NULL) && (pin_name != NULL)) {
 		pcb_snprintf(conn, sizeof(conn), "%s-%s", device_name, pin_name);
 		pcb_hid_actionl("Netlist", "Add", net_name, conn, NULL);
 	}
+	return;
+}
+
+void hyp_netlist_end()
+{
+	/* sort netlist */
+	pcb_hid_actionl("Netlist", "Sort", NULL);
+	pcb_hid_actionl("Netlist", "Thaw", NULL);
 	return;
 }
 
@@ -1909,8 +1935,6 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		if (dot != NULL) {
 			*dot = '\0';
 			pin_name = pcb_strdup(dot + 1);
-			/* add pin to current net */
-			hyp_add_netlist(device_name, pin_name);
 		}
 
 		/* make sure device and pin name have valid values, even if reference has wrong format */
@@ -1938,6 +1962,8 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	if ((drillinghole > 0) && (element != NULL)) {
 		/* create */
 		pcb_element_pin_new(element, x, y, thickness, clearance, mask, drillinghole, name, number, flags);
+		/* add pin to current net */
+		hyp_netlist_add(name, number);
 		/* update bounding box */
 		pcb_element_bbox(hyp_dest, element, pcb_font(PCB, 0, 1));
 		return;
@@ -2012,18 +2038,24 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	/* create dummy element on top or bottom layer for pads without pin reference */
 	if (element == NULL) {
 		if ((layer_name != NULL) && hyp_is_bottom_layer(layer_name)) {
-			if (solder_side_pads == NULL)
+			if (solder_side_pads == NULL) {
 				solder_side_pads =
-					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_flag_make(PCB_FLAG_ONSOLDER), "Bottom layer pads", "PAD_BOT",
-													NULL, 0, 0, 0, 500, pcb_flag_make(PCB_FLAG_ONSOLDER), pcb_false);
+					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_flag_make(PCB_FLAG_ONSOLDER), "Bottom layer pads",
+													PAD_BOTTOM, NULL, 0, 0, 0, 500, pcb_flag_make(PCB_FLAG_ONSOLDER), pcb_false);
+				PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, solder_side_pads);
+			}
 			element = solder_side_pads;
+			name = PAD_BOTTOM;
 		}
 		else {
-			if (component_side_pads == NULL)
+			if (component_side_pads == NULL) {
 				component_side_pads =
-					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), "Top layer pads", "PAD_TOP", NULL, 0, 0, 0, 500,
+					pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), "Top layer pads", PAD_TOP, NULL, 0, 0, 0, 500,
 													pcb_no_flags(), pcb_false);
+				PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, component_side_pads);
+			}
 			element = component_side_pads;
+			name = PAD_TOP;
 		}
 	}
 
@@ -2036,6 +2068,8 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 
 		/* create pad */
 		pcb_element_pad_new(element, x1, y1, x2, y2, thickness, clearance, mask, name, number, flags);
+		/* add pad to current net */
+		hyp_netlist_add(name, number);
 		/* update bounding box */
 		pcb_element_bbox(hyp_dest, element, pcb_font(PCB, 0, 1));
 		return;

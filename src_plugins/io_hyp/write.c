@@ -322,7 +322,7 @@ static void write_padstack_pad(hyp_wr_t *wr, const pcb_pad_t *pad)
 
 	side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? wr->ln_bottom : wr->ln_top;
 
-	fprintf(wr->f, "{PADSTACK=%s,\n", name);
+	fprintf(wr->f, "{PADSTACK=%s\n", name);
 	pcb_fprintf(wr->f, "  (%[4], 1, %me, %me, 0, M)\n", side, PCB_ABS(pad->Point1.X - pad->Point2.X) + pad->Thickness, PCB_ABS(pad->Point1.Y - pad->Point2.Y) + pad->Thickness);
 	fprintf(wr->f, "}\n");
 }
@@ -357,7 +357,7 @@ static int write_nets(hyp_wr_t *wr)
 	for(e = htpp_first(&map.n2o); e != NULL; e = htpp_next(&map.n2o, e)) {
 		dyn_obj_t *o;
 		pcb_lib_menu_t *net = e->key;
-		pcb_fprintf(wr->f, "{NET=%[4],\n", net->Name+2);
+		pcb_fprintf(wr->f, "{NET=%[4]\n", net->Name+2);
 		for(o = e->value; o != NULL; o = o->next) {
 			switch(o->obj->type) {
 				case PCB_OBJ_LINE: write_line(wr, (pcb_line_t *)o->obj); break;
@@ -382,7 +382,7 @@ static int write_nets(hyp_wr_t *wr)
 				case PCB_OBJ_CLASS_MASK:
 				case PCB_OBJ_CLASS_OBJ:
 				case PCB_OBJ_ANY:
-					break; /* silenlty ignore these */
+					break; /* silently ignore these */
 			}
 		}
 		fprintf(wr->f, "}\n");
@@ -403,7 +403,7 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 
 	pcb_pshash_init(&wr.psh);
 
-	pcb_printf_slot[4] = "%{{\\}\\()\t\r\n \"}mq";
+	pcb_printf_slot[4] = "%{{\\}\\()\t\r\n \"=}mq";
 
 	if (write_hdr(&wr) != 0)
 		goto err;
