@@ -20,3 +20,8 @@
  *
  */
 
+#include "obj_poly.h"
+
+
+void pcb_pline_fprint_anim(FILE *f, pcb_pline_t *pl);
+

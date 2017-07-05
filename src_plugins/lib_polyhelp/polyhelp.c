@@ -23,11 +23,23 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <genht/htpp.h>
 
 #include "polyhelp.h"
 #include "plugins.h"
 
+
+void pcb_pline_fprint_anim(FILE *f, pcb_pline_t *pl)
+{
+	pcb_vnode_t *v, *n;
+	fprintf(f, "!pline start\n");
+	v = pl;
+	do {
+		n = v->next;
+		pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
+	}
+	while ((v = v->next) != pl);
+	fprintf(f, "!pline end\n");
+}
 
 int pplg_check_ver_lib_polyhelp(int ver_needed) { return 0; }
 
