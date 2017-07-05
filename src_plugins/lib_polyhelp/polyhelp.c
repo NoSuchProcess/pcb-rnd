@@ -93,6 +93,7 @@ pcb_pline_t *pcb_pline_dup_offset(pcb_pline_t *src, pcb_coord_t offs)
 {
 	pcb_vnode_t *p = NULL, *v, *n;
 	double nx, ny, px, py;
+	int num_pts, i;
 
 fprintf(stdout, "!offs start\n");
 
@@ -100,7 +101,14 @@ fprintf(stdout, "!offs start\n");
 	pcb_pline_fprint_anim(stdout, src);
 
 	v = &src->head;
+	num_pts = 0;
+	do {
+		num_pts++;
+	} while((v = v->next) != &src->head);
 
+
+	v = &src->head;
+	i = 0;
 	do {
 		n = v->next;
 		fprintf(stdout, "color black\n");
@@ -139,8 +147,9 @@ pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)nx1, (pcb_coord_
 		v = v->next;
 		px = nx;
 		py = ny;
+		i++;
 	}
-	while(v != &src->head);
+	while(i <= num_pts);
 fprintf(stdout, "!offs end\n");
 	return NULL;
 }
