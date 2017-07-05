@@ -24,4 +24,7 @@
 
 
 void pcb_pline_fprint_anim(FILE *f, pcb_pline_t *pl);
+pcb_pline_t *pcb_pline_dup_offset(pcb_pline_t *src, pcb_coord_t offs);
+
+
 
