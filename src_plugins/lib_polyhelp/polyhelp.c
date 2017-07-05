@@ -125,15 +125,15 @@ fprintf(stdout, "!offs start\n");
 		if (p != NULL) {
 			double xi, yi, vx1, vy1, vx2, vy2, nx1, ny1, nx2, ny2;
 			
-			vx1 = p->point[0] + px*offs;
-			vy1 = p->point[1] + py*offs;
-			vx2 = v->point[0] + px*offs;
-			vy2 = v->point[1] + py*offs;
+			vx1 = p->point[0] - px*offs;
+			vy1 = p->point[1] - py*offs;
+			vx2 = v->point[0] - px*offs;
+			vy2 = v->point[1] - py*offs;
 
-			nx1 = v->point[0] + nx*offs;
-			ny1 = v->point[1] + ny*offs;
-			nx2 = n->point[0] + nx*offs;
-			ny2 = n->point[1] + ny*offs;
+			nx1 = v->point[0] - nx*offs;
+			ny1 = v->point[1] - ny*offs;
+			nx2 = n->point[0] - nx*offs;
+			ny2 = n->point[1] - ny*offs;
 
 pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)vx1, (pcb_coord_t)vy1, (pcb_coord_t)vx2, (pcb_coord_t)vy2);
 pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)nx1, (pcb_coord_t)ny1, (pcb_coord_t)nx2, (pcb_coord_t)ny2);
