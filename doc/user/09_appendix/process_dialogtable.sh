@@ -16,9 +16,9 @@ BEGIN {
 	print "<p>"
 	print "<table border=1>"
 	print "<caption><b>"
-	print  "pcb-rnd dialog behaviors" ", " pcb_rnd_rev
-	print "</b>"
 	getline
+	print  $0 ", " pcb_rnd_rev
+	print "</b>"
 	getline
 	i = 0
 	while (i < NF ) {
