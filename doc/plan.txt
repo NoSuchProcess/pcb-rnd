@@ -30,7 +30,9 @@ user manual
 			footprint
 			import
 			export
-	4. user interface (hid plugins)
+	4. invocation
+		TODO
+	5. user interface (hid plugins)
 		under the hood: actions
 		gtk
 			main window
@@ -45,8 +47,6 @@ user manual
 		(lesstif: low prio)
 		(remote: not finished yet)
 		(sdl: not even started yet)
-	5. invocation
-		TODO
 	6. feature plugins
 		autoplace
 		autoroute
