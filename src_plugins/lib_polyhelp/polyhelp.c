@@ -92,6 +92,8 @@ static void ll_intersect(double *xi, double *yi, double ax1, double ay1, double 
 pcb_pline_t *pcb_pline_dup_offset(pcb_pline_t *src, pcb_coord_t offs)
 {
 	pcb_vnode_t *p = NULL, *v, *n;
+	pcb_vector_t tmp;
+	pcb_pline_t *res = NULL;
 	double nx, ny, px, py;
 	int num_pts, i;
 
@@ -138,9 +140,16 @@ fprintf(stdout, "!offs start\n");
 pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)vx1, (pcb_coord_t)vy1, (pcb_coord_t)vx2, (pcb_coord_t)vy2);
 pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)nx1, (pcb_coord_t)ny1, (pcb_coord_t)nx2, (pcb_coord_t)ny2);
 
-			
+
 			ll_intersect(&xi, &yi, vx1, vy1, vx2, vy2, nx1, ny1, nx2, ny2);
 			cross(stdout, (pcb_coord_t)xi, (pcb_coord_t)yi);
+
+			tmp[0] = xi;
+			tmp[1] = yi;
+			if (res == NULL)
+				res = pcb_poly_contour_new(tmp);
+			else
+				pcb_poly_vertex_include(res->head.prev, pcb_poly_node_create(tmp));
 		}
 
 		p = v;
@@ -150,8 +159,12 @@ pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)nx1, (pcb_coord_
 		i++;
 	}
 	while(i <= num_pts);
+
+	fprintf(stdout, "color green\n");
+	pcb_pline_fprint_anim(stdout, res);
+
 fprintf(stdout, "!offs end\n");
-	return NULL;
+	return res;
 }
 
 
