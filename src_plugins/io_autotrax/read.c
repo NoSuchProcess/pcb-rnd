@@ -368,57 +368,59 @@ Bit 1 : LU quadrant
 Bit 2 : LL quadrant
 Bit 3 : LR quadrant
 
+Since the board will be flipped, we should swap upper and lower quadrants
+
 TODO: This needs further testing to ensure the refererence
 document used reflects actual outputs from protel autotrax
 */
 	if (segments == 10) { /* LU + RL quadrants */
-		start_angle = 90.0;
-		delta = 90.0;
-		pcb_arc_new( &st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
-		start_angle = 270.0;
-	} else if (segments == 5) { /* RU + LL quadrants */
-		start_angle = 0.0;
-		delta = 90.0;
-		pcb_arc_new( &st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
 		start_angle = 180.0;
+		delta = 90.0;
+		pcb_arc_new( &st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		start_angle = 0.0;
+	} else if (segments == 5) { /* RU + LL quadrants */
+		start_angle = 270.0;
+		delta = 90.0;
+		pcb_arc_new( &st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		start_angle = 90.0;
 	} else if (segments >= 15) { /* whole circle */
 		start_angle = 0.0;
 		delta = 360.0;
 	} else if (segments == 1) { /* RU quadrant */
-		start_angle = 180.0;
-		delta = 90.0;
-	} else if (segments == 2) { /* LU quadrant */
-		start_angle = 270.0;
-		delta = 90.0;
-	} else if (segments == 4) { /* LL quadrant */
-		start_angle = 0.0;
-		delta = 90.0;
-	} else if (segments == 8) { /* RL quadrant */
 		start_angle = 90.0;
 		delta = 90.0;
-	} else if (segments == 3) { /* Upper half */
+	} else if (segments == 2) { /* LU quadrant */
+		start_angle = 0.0;
+		delta = 90.0;
+	} else if (segments == 4) { /* LL quadrant */
+		start_angle = 270.0;
+		delta = 90.0;
+	} else if (segments == 8) { /* RL quadrant */
 		start_angle = 180.0;
-		delta = -180.0; /* this seems to fix IC notches */
+		delta = 90.0;
+	} else if (segments == 3) { /* Upper half */
+		start_angle = 0.0;
+		delta = 180.0;
 	} else if (segments == 6) { /* Left half */
 		start_angle = 270.0;
 		delta = 180.0;
 	} else if (segments == 12) { /* Lower half */
-		start_angle = 0.0;
-		delta = -180.0;  /* this seems to fix IC notches */
+		start_angle = 180.0;
+		delta = 180.0;
 	} else if (segments == 9) { /* Right half */
 		start_angle = 90.0;
 		delta = 180.0;
 	} else if (segments == 14) { /* not RUQ */
-		start_angle = -90.0;
+		start_angle = 180.0;
 		delta = 270.0;
 	} else if (segments == 13) { /* not LUQ */
-		start_angle = 0.0;
-		delta = 270.0;
-	} else if (segments == 11) { /* not LLQ */
 		start_angle = 90.0;
 		delta = 270.0;
+	} else if (segments == 11) { /* not LLQ */
+		start_angle = 0.0;
+		delta = 270.0;
 	} else if (segments == 7) { /* not RLQ */
-		start_angle = 180.0;
+		start_angle = 270.0;
 		delta = 270.0;
 	}  
 
