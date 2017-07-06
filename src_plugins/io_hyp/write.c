@@ -153,10 +153,16 @@ static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
 	do {
 		v = pl->head.next;
 
-		pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
-			get_layer_name(wr, poly->parent_type, poly->parent.layer),
-			wr->poly_id++,
-			v->point[0], v->point[1]);
+		if (pl == poly->Clipped->contours)
+			pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
+				get_layer_name(wr, poly->parent_type, poly->parent.layer),
+				++wr->poly_id,
+				v->point[0], v->point[1]);
+		else 
+			/* hole. Use same ID as polygon. */
+			pcb_fprintf(wr->f, "  {POLYVOID ID=%d X=%me Y=%me\n",
+				wr->poly_id,
+				v->point[0], v->point[1]);
 
 		for(v = v->next; v != pl->head.next; v = v->next)
 			pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);

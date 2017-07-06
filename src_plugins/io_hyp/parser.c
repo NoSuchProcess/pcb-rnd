@@ -1205,10 +1205,15 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 				pcb_poly_contour_pre(contour, pcb_false);
 
 				/* check contour valid */
+				/* XXX 
+				 * sometimes pcb_polyarea_contour_check() returns true, even though the polygon is fine. 
+				 */
 				if (pcb_polyarea_contour_check(contour)) {
 					if (hyp_debug)
-						pcb_printf("draw polygon: bad contour. skipping.\n");
+						pcb_printf("draw polygon: bad contour? continuing.\n");
+#ifdef XXX
 					return;
+#endif
 				}
 
 				/* set orientation for outer contour, negative for holes */
