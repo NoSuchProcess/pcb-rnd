@@ -51,6 +51,7 @@
 #include "../src_plugins/boardflip/boardflip.h"
 #include "hid_actions.h"
 
+#define PCB REPLACE_THIS
 
 #define MAXREAD 255
 
