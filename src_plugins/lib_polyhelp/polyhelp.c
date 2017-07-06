@@ -29,6 +29,7 @@
 #include "polygon.h"
 #include "plugins.h"
 #include "pcb-printf.h"
+#include "obj_line.h"
 
 
 
