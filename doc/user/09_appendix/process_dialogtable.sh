@@ -45,8 +45,8 @@ BEGIN {
 END {
 	print "</table>"
 	print "</body>"
-	print "</html>"
 	getline
 	print $0 "<br>"
+	print "</html>"
 }
 '  pcb-rnd-dialogs
