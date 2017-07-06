@@ -31,4 +31,6 @@ pcb_pline_t *pcb_pline_dup_offset(pcb_pline_t *src, pcb_coord_t offs);
    narrower than thickness) */
 void pcb_pline_to_lines(pcb_layer_t *dst, pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
 
-
+/* Returns whether the clipped polygon is a simple rectangle (single island,
+   no-hole rectangle). */
+pcb_bool pcb_cpoly_is_simple_rect(pcb_polygon_t *p);

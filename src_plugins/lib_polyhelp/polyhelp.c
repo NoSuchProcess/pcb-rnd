@@ -26,6 +26,7 @@
 #include <math.h>
 
 #include "polyhelp.h"
+#include "polygon.h"
 #include "plugins.h"
 #include "pcb-printf.h"
 
@@ -181,6 +182,14 @@ void pcb_pline_to_lines(pcb_layer_t *dst, pcb_pline_t *src, pcb_coord_t thicknes
 	pcb_poly_contour_del(&track);
 }
 
+pcb_bool pcb_cpoly_is_simple_rect(pcb_polygon_t *p)
+{
+	if (p->Clipped->f != p->Clipped)
+		return pcb_false; /* more than one islands */
+	if (p->Clipped->contours->next != NULL)
+		return pcb_false; /* has holes */
+	return pcb_pline_is_rectangle(p->Clipped->contours);
+}
 
 int pplg_check_ver_lib_polyhelp(int ver_needed) { return 0; }
 
