@@ -26,5 +26,9 @@
 void pcb_pline_fprint_anim(FILE *f, pcb_pline_t *pl);
 pcb_pline_t *pcb_pline_dup_offset(pcb_pline_t *src, pcb_coord_t offs);
 
+/* Add lines on dst tracing pline from the inner side (no line will extend
+   outside of the original pline, except when the original polygon has a hair
+   narrower than thickness) */
+void pcb_pline_to_lines(pcb_layer_t *dst, pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
 
 

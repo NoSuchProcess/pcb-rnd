@@ -167,6 +167,20 @@ fprintf(stdout, "!offs end\n");
 	return res;
 }
 
+void pcb_pline_to_lines(pcb_layer_t *dst, pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+{
+	pcb_vnode_t *v, *n;
+	pcb_pline_t *track = pcb_pline_dup_offset(src, -((thickness/2)+1));
+
+	v = &track->head;
+	do {
+		n = v->next;
+		pcb_line_new(dst, v->point[0], v->point[1], n->point[0], n->point[1], thickness, clearance, flags);
+	}
+	while((v = v->next) != &track->head);
+	pcb_poly_contour_del(&track);
+}
+
 
 int pplg_check_ver_lib_polyhelp(int ver_needed) { return 0; }
 
