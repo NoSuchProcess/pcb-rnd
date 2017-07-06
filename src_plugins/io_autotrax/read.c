@@ -1186,6 +1186,8 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	/* still not sure if this is required: */
 	pcb_layer_auto_fixup(Ptr);
 
+	pcb_board_normalize(Ptr);
+
 	return readres;
 }
 
