@@ -591,9 +591,13 @@ void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_b
 void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	pcb_dhlp_thindraw_pcb_polygon(gc, poly, clip_box);
+	/* Disable thindraw poly filling until it is fixed. The poly fill overwrites lines and
+	 * arcs that are drawn underneath.
+	 * 
 	ghid_gl_set_alpha_mult(gc, 0.25);
 	ghid_gl_fill_pcb_polygon(gc, poly, clip_box);
 	ghid_gl_set_alpha_mult(gc, 1.0);
+	*/
 }
 
 void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
