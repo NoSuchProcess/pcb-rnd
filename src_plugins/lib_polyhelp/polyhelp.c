@@ -33,9 +33,9 @@
 
 
 
-void pcb_pline_fprint_anim(FILE *f, pcb_pline_t *pl)
+void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 {
-	pcb_vnode_t *v, *n;
+	const pcb_vnode_t *v, *n;
 	fprintf(f, "!pline start\n");
 	v = &pl->head;
 	do {
@@ -91,9 +91,9 @@ static void ll_intersect(double *xi, double *yi, double ax1, double ay1, double 
 }
 
 
-pcb_pline_t *pcb_pline_dup_offset(pcb_pline_t *src, pcb_coord_t offs)
+pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 {
-	pcb_vnode_t *p = NULL, *v, *n;
+	const pcb_vnode_t *p = NULL, *v, *n;
 	pcb_vector_t tmp;
 	pcb_pline_t *res = NULL;
 	double nx, ny, px, py;
@@ -169,9 +169,9 @@ fprintf(stdout, "!offs end\n");
 	return res;
 }
 
-void pcb_pline_to_lines(pcb_layer_t *dst, pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+void pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
 {
-	pcb_vnode_t *v, *n;
+	const pcb_vnode_t *v, *n;
 	pcb_pline_t *track = pcb_pline_dup_offset(src, -((thickness/2)+1));
 
 	v = &track->head;
@@ -198,7 +198,7 @@ pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src)
 }
 
 
-pcb_bool pcb_cpoly_is_simple_rect(pcb_polygon_t *p)
+pcb_bool pcb_cpoly_is_simple_rect(const pcb_polygon_t *p)
 {
 	if (p->Clipped->f != p->Clipped)
 		return pcb_false; /* more than one islands */
