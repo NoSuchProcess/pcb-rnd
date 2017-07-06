@@ -675,6 +675,15 @@ void PostLoadElementPCB()
 	yyPCB->MaxWidth = e->BoundingBox.X2;
 	yyPCB->MaxHeight = e->BoundingBox.Y2;
 	yyPCB->is_footprint = 1;
+
+	{
+		pcb_layergrp_id_t gid;
+		assert(pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1) == 1);
+		pcb_layer_create(gid, "top copper");
+		assert(pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1) == 1);
+		pcb_layer_create(gid, "bottom copper");
+	}
+
 }
 
 
