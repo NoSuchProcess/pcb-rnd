@@ -9,7 +9,7 @@
 
 
 (
-	cd ../../../src
+	cd ../../../../src
 	./pcb-rnd --version
 	svn info ^/ | awk '/Revision:/ {
 		print $0
@@ -85,6 +85,6 @@ END {
 
 }
 
-' > action_reference.html
+' 
 
 
