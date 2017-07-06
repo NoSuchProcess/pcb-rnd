@@ -97,7 +97,7 @@ static void sym_flush(symattr_t *sattr)
 /* the followinf read_state_t struct could go in a shared lib for parsers doing layer mapping */
 
 typedef struct {
-	pcb_board_t *PCB;
+	pcb_board_t *pcb;
 	const char *Filename;
 	conf_role_t settings_dest;
 	pcb_layer_id_t protel_to_stackup[13];
@@ -202,7 +202,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
-			pcb_text_new( &st->PCB->Data->Layer[PCB_layer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, t, Flags);
+			pcb_text_new( &st->pcb->Data->Layer[PCB_layer], pcb_font(st->pcb, 0, 1), X, Y, direction, scaling, t, Flags);
 			pcb_trace("\tnew free text on layer %d created\n", PCB_layer);
 			return 1;
 		} else if (el != NULL && st != NULL) {
@@ -285,7 +285,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 
 	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
-			pcb_line_new( &st->PCB->Data->Layer[PCB_layer], X1, Y1, X2, Y2,
+			pcb_line_new( &st->pcb->Data->Layer[PCB_layer], X1, Y1, X2, Y2,
 				Thickness, Clearance, Flags);
 			pcb_trace("\tnew free line on layer %d created\n", PCB_layer);
 			return 1;
@@ -373,12 +373,12 @@ document used reflects actual outputs from protel autotrax
 	if (segments == 10) { /* LU + RL quadrants */
 		start_angle = 90.0;
 		delta = 90.0;
-		pcb_arc_new( &st->PCB->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		pcb_arc_new( &st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
 		start_angle = 270.0;
 	} else if (segments == 5) { /* RU + LL quadrants */
 		start_angle = 0.0;
 		delta = 90.0;
-		pcb_arc_new( &st->PCB->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+		pcb_arc_new( &st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
 		start_angle = 180.0;
 	} else if (segments >= 15) { /* whole circle */
 		start_angle = 0.0;
@@ -434,7 +434,7 @@ document used reflects actual outputs from protel autotrax
 
 	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
-			pcb_arc_new( &st->PCB->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
+			pcb_arc_new( &st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags);
 			pcb_trace("\tnew free arc on layer %d created\n", PCB_layer);
 			return 1;
 		} else if (el != NULL && st != NULL) {
@@ -500,11 +500,11 @@ static int autotrax_parse_via(read_state_t *st, FILE *FP, pcb_element_t *el)
 	Mask = Thickness + st->mask_clearance;
 
 	if (el == NULL) {
-		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
+		pcb_via_new( st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
 		pcb_trace("\tnew free via created\n");
 		return 1;
 	} else if (el != NULL && st != NULL) {
-		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
+		pcb_via_new( st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
 		pcb_trace("\tnew free via created\n");
 		return 1;
 	}
@@ -648,7 +648,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 		}
 		/* should this in fact be an SMD pad, +/- a hole in it ? */
-		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, line, Flags);
+		pcb_via_new( st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, line, Flags);
 		pcb_trace("\tnew free via created; need to check connects\n");
 		return 1;
 	} else if (st != NULL && el != NULL) { /* pad within element */
@@ -744,7 +744,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	} 
 
 	if (PCB_layer >= 0 && el == NULL) {
-		polygon = pcb_poly_new(&st->PCB->Data->Layer[PCB_layer], flags);
+		polygon = pcb_poly_new(&st->pcb->Data->Layer[PCB_layer], flags);
 	} else if (PCB_layer < 0 && el == NULL){
 		pcb_message(PCB_MSG_ERROR, "Invalid free fill layer found, %s:%d\n", st->Filename, st->lineno);
 	}
@@ -754,8 +754,8 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_poly_point_new(polygon, X2, Y1);
 		pcb_poly_point_new(polygon, X2, Y2);
 		pcb_poly_point_new(polygon, X1, Y2);
-		pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCB_layer], polygon);
-		pcb_poly_init_clip(st->PCB->Data, &st->PCB->Data->Layer[PCB_layer], polygon);
+		pcb_add_polygon_on_layer(&st->pcb->Data->Layer[PCB_layer], polygon);
+		pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCB_layer], polygon);
 		return 1;
 	} else if (polygon == NULL && el != NULL && st != NULL && PCB_layer == 1 ) { /* in an element, top layer copper */
 		flags = pcb_flag_make(0);
@@ -787,7 +787,7 @@ static int autotrax_create_layers(read_state_t *st)
 	pcb_layergrp_t *g;
 	pcb_layer_id_t id;
 
-	pcb_layer_group_setup_default(&st->PCB->LayerGroups);
+	pcb_layer_group_setup_default(&st->pcb->LayerGroups);
 
 	st->protel_to_stackup[7] = autotrax_reg_layer(st, "top silk", PCB_LYT_SILK | PCB_LYT_TOP);
 	st->protel_to_stackup[8] = autotrax_reg_layer(st, "bottom silk", PCB_LYT_SILK | PCB_LYT_BOTTOM);
@@ -823,7 +823,7 @@ static int autotrax_create_layers(read_state_t *st)
 	g = pcb_get_grp_new_intern(PCB, -1);
 	st->protel_to_stackup[10]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
 
-	g = pcb_get_grp_new_intern(st->PCB, -1);
+	g = pcb_get_grp_new_intern(st->pcb, -1);
 	g->name = pcb_strdup("outline");
 	g->type = PCB_LYT_OUTLINE;
 	st->protel_to_stackup[11]  = autotrax_reg_layer(st, "outline", PCB_LYT_OUTLINE);
@@ -1022,8 +1022,8 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 
 	
 	pcb_trace("Have new module name and location, defining module/element %s\n", module_name);
-	new_module = pcb_element_new(st->PCB->Data, NULL, 
-								pcb_font(st->PCB, 0, 1), Flags,
+	new_module = pcb_element_new(st->pcb->Data, NULL, 
+								pcb_font(st->pcb, 0, 1), Flags,
 								module_name, module_refdes, module_value,
 								module_X, module_Y, direction,
 								refdes_scaling, text_flags, pcb_false);
@@ -1039,7 +1039,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
 				pcb_trace("Finished parsing component\n");
 				if (nonempty) { /* could try and use module empty function here */
-					pcb_element_bbox(st->PCB->Data, new_module, pcb_font(PCB, 0, 1));
+					pcb_element_bbox(st->pcb->Data, new_module, pcb_font(PCB, 0, 1));
 					return 0;
 				} else {
 					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, not added to layout, %s:%d\n", st->Filename, st->lineno);
@@ -1093,7 +1093,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 
 	/* set up the parse context */
 	memset(&st, 0, sizeof(st));
-	st.PCB = Ptr;
+	st.pcb = Ptr;
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	st.lineno = 0;
