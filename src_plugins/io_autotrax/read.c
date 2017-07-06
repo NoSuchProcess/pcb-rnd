@@ -823,7 +823,9 @@ static int autotrax_create_layers(read_state_t *st)
 	g = pcb_get_grp_new_intern(PCB, -1);
 	st->protel_to_stackup[10]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
 
-	pcb_layergrp_fix_old_outline(PCB);
+	g = pcb_get_grp_new_intern(st->PCB, -1);
+	g->name = pcb_strdup("outline");
+	g->type = PCB_LYT_OUTLINE;
 	st->protel_to_stackup[11]  = autotrax_reg_layer(st, "outline", PCB_LYT_OUTLINE);
 
 	pcb_layergrp_inhibit_dec();
