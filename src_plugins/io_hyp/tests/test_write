@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Read, write and readback hyperlynx file.
+# Run from io_hyp/tests directory. 
+# ./test_write
+#
+OUTDIR=/tmp
+INFILE=test00/test00.hyp
+OUTFILE=${OUTDIR}/`basename ${INFILE} .hyp`_2.hyp
+PNG1FILE=${OUTDIR}/`basename ${INFILE} .hyp`_1.png
+PNG2FILE=${OUTDIR}/`basename ${INFILE} .hyp`_2.png
+
+../../../src/pcb-rnd --gui batch  <<[EOD] >/dev/null 2>&1
+LoadhypFrom(${INFILE})
+Export(png, --outfile, ${PNG1FILE}, --dpi, 300)
+SaveTo(LayoutAs, ${OUTFILE}, hyperlynx)
+[EOD]
+../../../src/pcb-rnd --gui batch  <<[EOD] >/dev/null 2>&1
+LoadhypFrom(${OUTFILE})
+Export(png, --outfile, ${PNG2FILE}, --dpi, 300)
+[EOD]
+ls -l ${PNG1FILE} ${PNG2FILE}
+#not truncated
