@@ -188,7 +188,7 @@ static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc, const char
 		return;
 	}
 
-	if (arc->Delta >= 0) {
+	if ((arc->Delta >= 0) != (layer == NULL)) {
 		pcb_arc_get_end(arc, 0, &x1, &y1);
 		pcb_arc_get_end(arc, 1, &x2, &y2);
 	}
