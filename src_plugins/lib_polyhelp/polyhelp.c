@@ -182,6 +182,21 @@ void pcb_pline_to_lines(pcb_layer_t *dst, pcb_pline_t *src, pcb_coord_t thicknes
 	pcb_poly_contour_del(&track);
 }
 
+pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src)
+{
+	const pcb_vnode_t *v, *n;
+
+	v = &src->head;
+	do {
+		n = v->next;
+		if ((v->point[0] != n->point[0]) && (v->point[1] != n->point[1]))
+			return pcb_false;
+	}
+	while((v = v->next) != &src->head);
+	return pcb_true;
+}
+
+
 pcb_bool pcb_cpoly_is_simple_rect(pcb_polygon_t *p)
 {
 	if (p->Clipped->f != p->Clipped)

@@ -34,3 +34,7 @@ void pcb_pline_to_lines(pcb_layer_t *dst, pcb_pline_t *src, pcb_coord_t thicknes
 /* Returns whether the clipped polygon is a simple rectangle (single island,
    no-hole rectangle). */
 pcb_bool pcb_cpoly_is_simple_rect(pcb_polygon_t *p);
+
+/* Returns whether all edges of a pline are axis aligned */
+pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src);
+
