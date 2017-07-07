@@ -7,7 +7,7 @@ DRC check,	nk,		alt-c,		drc,		normal,	modeless
 netlist,	nk,		alt-c,		netlist,	normal,	modeless
 command entry,	:,		esc,		nk,		locks,	modeless
 pinout,		shift-d,	alt-c,		display(pinout),normal,	modeless
-font selector,	ctl-sh-f,	esc,		nk,		top,	modeless
+font selector,	ctl-sh-f,	esc,		fontsel,	top,	modeless
 preferences,	nk,		alt-o,		nk,		normal,	modeless
 contextmenu,	sh-rghtclk,	esc,		nk,		na,	na
 route styles,	nk,		esc,		route_styles,	locks,	modal
