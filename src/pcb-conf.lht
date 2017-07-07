@@ -91,7 +91,9 @@ li:pcb-rnd-conf-v1 {
 			library_shell = {}
 
 			emergency_name = {PCB.%ld.save}
+			emergency_format = {lihata}
 			backup_name = {PCB.%P.backup}
+			backup_format = {lihata}
 
 			li:library_search_paths = {
 				../pcblib

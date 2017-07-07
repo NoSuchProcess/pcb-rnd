@@ -711,9 +711,10 @@ void pcb_save_in_tmp(void)
 
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
+		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_FMT : conf_core.rc.emergency_name;
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
 		pcb_message(PCB_MSG_INFO, _("Trying to save your layout in '%s'\n"), filename);
-		pcb_write_pcb_file(filename, pcb_true, DEFAULT_FMT, pcb_true, pcb_false);
+		pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false);
 	}
 }
 
@@ -778,7 +779,7 @@ void pcb_enable_autosave(void)
  */
 void pcb_backup(void)
 {
-	char *filename = NULL;
+	char *filename = NULL, *fmt = NULL;
 
 	if (PCB && PCB->Filename) {
 		filename = (char *) malloc(sizeof(char) * (strlen(PCB->Filename) + 2));
@@ -797,7 +798,9 @@ void pcb_backup(void)
 		}
 	}
 
-	pcb_write_pcb_file(filename, pcb_true, NULL, pcb_true, pcb_false);
+	if ((conf_core.rc.backup_format != NULL) && (strcmp(conf_core.rc.backup_format, "original") != 0))
+		fmt = conf_core.rc.backup_format;
+	pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false);
 	free(filename);
 }
 
