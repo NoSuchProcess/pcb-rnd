@@ -34,6 +34,7 @@
 #include "layer.h"
 #include "const.h"
 #include "obj_all.h"
+#include "../lib_polyhelp/polyhelp.h"
 
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
 
@@ -66,6 +67,20 @@ int write_autotrax_track(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pc
 				line->Thickness, layer, user_routed);
 	return 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * writes autotrax track descriptor for a pair of polyline vertices 
+ */
+int write_autotrax_pline_segment(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t Thickness, pcb_cardinal_t layer)
+{
+	int user_routed = 1;
+		pcb_fprintf(FP, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n",
+			x1 + xOffset, PCB->MaxHeight - (y1 + yOffset),
+			x2 + xOffset, PCB->MaxHeight - (y2 + yOffset),
+			Thickness, layer, user_routed);
+        return 0;
+}
+
 
 /* -------------------------------------------------------------------------------
  * generates an autotrax arc "segments" value to approximate an arc being exported  
@@ -656,43 +671,107 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 	pcb_polygon_t *polygon;
 	pcb_cardinal_t current_layer = number;
 
+	pcb_poly_it_t poly_it;
+	pcb_polyarea_t *pa;
+
 	pcb_coord_t minx, miny, maxx, maxy;
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) ) { /*|| (layer->meta.real.name && *layer->meta.real.name)) {*/
 		int local_flag = 0;
+
 		polylist_foreach(&layer->Polygon, &it, polygon) {
+			if (pcb_cpoly_is_simple_rect(polygon)) {
+				pcb_trace(" simple rectangular polyogon\n");
 
-			minx = maxx = polygon->Points[0].X;
-			miny = maxy = polygon->Points[0].Y;
+				minx = maxx = polygon->Points[0].X;
+				miny = maxy = polygon->Points[0].Y;
 
-			/* now the fill zone outline is defined by a rectangle enclosing the poly*/
-			/* hmm. or, could use a bounding box... */
-			for (i = 0; i < polygon->PointN; i++) {
-				if (minx > polygon->Points[i].X) {
-					minx = polygon->Points[i].X;
+				/* now the fill zone outline is defined by a rectangle enclosing the poly*/
+				/* hmm. or, could use a bounding box... */
+				for (i = 0; i < polygon->PointN; i++) {
+					if (minx > polygon->Points[i].X) {
+						minx = polygon->Points[i].X;
+					}
+					if (maxx < polygon->Points[i].X) {
+						maxx = polygon->Points[i].X;
+					}
+					if (miny > polygon->Points[i].Y) {
+						miny = polygon->Points[i].Y;
+					}
+					if (maxy < polygon->Points[i].Y) {
+						maxy = polygon->Points[i].Y;
+					}
 				}
-				if (maxx < polygon->Points[i].X) {
-					maxx = polygon->Points[i].X;
-				}
-				if (miny > polygon->Points[i].Y) {
-					miny = polygon->Points[i].Y;
-				}
-				if (maxy < polygon->Points[i].Y) {
-					maxy = polygon->Points[i].Y;
-				}
-			}
-			pcb_fprintf(FP, "FF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n",
-					minx + xOffset, PCB->MaxHeight - (miny + yOffset),
-					maxx + xOffset, PCB->MaxHeight - (maxy + yOffset),
-					current_layer);
+				pcb_fprintf(FP, "FF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n",
+						minx + xOffset, PCB->MaxHeight - (miny + yOffset),
+						maxx + xOffset, PCB->MaxHeight - (maxy + yOffset),
+						current_layer);
 
-			local_flag |= 1;
+				local_flag |= 1;
 /* here we need to test for non rectangular polygons to flag imperfect export to easy/autotrax
 
 			if (helper_clipped_polygon_type_function(clipped_thing)) {
 				pcb_message(PCB_MSG_ERROR, "Polygon exported as a bounding box only.\n");
 			}*/
+			} else {
+				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
+					pcb_coord_t Thickness, x, y, x_first, y_first, x_prev, y_prev;
+					pcb_pline_t *pl;
+					int go;
+					pcb_trace(" poly island\n");
+					/* check if we have a contour for the given island */
+					pl = pcb_poly_contour(&poly_it);
+					if (pl != NULL) {
+						x_prev = y_prev = 0;
+						Thickness = PCB_MIL_TO_COORD(10);
+						for(go = pcb_poly_vect_first(&poly_it, &x, &y);
+							go; go = pcb_poly_vect_next(&poly_it, &x, &y)) {
+							if (x_prev != 0 && y_prev != 0) {
+								write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x, y, Thickness, current_layer);
+                        					local_flag |= 1;
+								pcb_printf("   %mm %mm\n", x, y);
+							}
+							if (x_prev == 0 && y_prev == 0) {
+								x_first = x;
+								y_first = y;
+							}
+							x_prev = x;
+							y_prev = y;
+						}
+						if (x != 0 && y != 0
+                                                	&& x_prev != 0 && y_prev != 0) {
+							write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x_first, y_first, Thickness, current_layer);
+						}
+						/* iterate over all holes within this island */
+						for(pl = pcb_poly_hole_first(&poly_it);
+							pl != NULL; pl = pcb_poly_hole_next(&poly_it)) {
+							pcb_trace(" poly hole:\n");
+							x_prev = y_prev = 0;
+						/* iterate over the vectors of the given hole */
+							for(go = pcb_poly_vect_first(&poly_it, &x, &y); go;
+								go = pcb_poly_vect_next(&poly_it, &x, &y)) {
+
+								if (x_prev != 0 && y_prev != 0) {
+                                                                	write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x, y, Thickness, current_layer);
+                                                                	local_flag |= 1;
+                                                                	pcb_printf("   %mm %mm\n", x, y);
+                                                        	}
+                                                        	if (x_prev == 0 && y_prev == 0) {
+                                                                	x_first = x;
+                                                                	y_first = y;
+                                                        	}
+                                                        	x_prev = x;
+                                                        	y_prev = y;
+                                                	}
+							if (x != 0 && y != 0
+								&& x_prev != 0 && y_prev != 0) {
+                                                		write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x_first, y_first, Thickness, current_layer);
+							}
+						}
+					}	
+				}
+			}
 		}
 		return local_flag;
 	} else {
