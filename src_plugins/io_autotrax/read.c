@@ -187,7 +187,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 	/* # TODO - ABOUT HERE, CAN DO ROTATION/DIRECTION CONVERSION */
 
 	if (autotrax_layer == 6 || autotrax_layer == 8) {
-		Flags = pcb_flag_make(PCB_FLAG_ONSOLDER | PCB_FLAG_CLEARLINE); 
+		Flags = pcb_flag_make(PCB_FLAG_ONSOLDER | PCB_FLAG_CLEARLINE);
 	} else if ((autotrax_layer >= 1 && autotrax_layer <= 5)
 				|| autotrax_layer == 7 || autotrax_layer == 9 || autotrax_layer == 10) {
 		Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
@@ -216,7 +216,7 @@ static int autotrax_parse_text(read_state_t *st, FILE *FP, pcb_element_t *el)
 		} else if (strlen(t) == 0){
 			pcb_message(PCB_MSG_ERROR, "Empty free string not placed on layout, %s:%d\n", st->Filename, st->lineno);
 			return 0;
-		} 
+		}
 	}
 	return -1;
 }
@@ -285,7 +285,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_message(PCB_MSG_ERROR, "Ignored track on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
 		return 0;
-	} 
+	}
 
 	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
@@ -306,7 +306,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 {
 	char line[MAXREAD];
-	int segments = 15; /* full circle by default */ 
+	int segments = 15; /* full circle by default */
 	int success;
 	int valid = 1;
 	int autotrax_layer = 0;
@@ -350,7 +350,7 @@ static int autotrax_parse_arc(read_state_t *st, FILE *FP, pcb_element_t *el)
 			pcb_trace("Found arc layer : %d\n", PCB_layer);
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
-		} else { 
+		} else {
 			qparse_free(argc, &argv);
 			pcb_message(PCB_MSG_ERROR, "Insufficient arc attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
@@ -425,8 +425,7 @@ document used reflects actual outputs from protel autotrax
 	} else if (segments == 7) { /* not RLQ */
 		start_angle = 270.0;
 		delta = 270.0;
-	}  
-
+	}
 
 	if (autotrax_layer == 12) {
 		pcb_trace("Ignoring keepout arc(s) on auto/easytrax layer 12\n");
@@ -436,7 +435,7 @@ document used reflects actual outputs from protel autotrax
 		pcb_message(PCB_MSG_ERROR, "Ignored arc on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
 		return 0;
-	} 
+	}
 
 	if (PCB_layer >= 0) {
 		if (el == NULL && st != NULL) {
@@ -535,7 +534,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	int valid = 1;
 	int success;
 
-	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill; 
+	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 
 	Thickness = 0;
@@ -599,9 +598,9 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	rtrim(s); /* avoid rendering oddities on layout, and netlist matching confusion */
 	pcb_trace("Found free pad name : %s\n", line);
 
-	/* these features can have connections to GND and PWR	
+	/* these features can have connections to GND and PWR
 	   planes specified in protel autotrax (seems rare though)
-	   so we warn the user is this is the case */ 
+	   so we warn the user is this is the case */
 	switch (Connects) {
 		case 1:	pcb_message(PCB_MSG_ERROR, "pin clears PWR/GND, %s:%d.\n", st->Filename, st->lineno);
 			break;
@@ -618,7 +617,8 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	Thickness = MIN(X_size, Y_size);
 	Mask = Thickness + st->mask_clearance;
 
-/* 	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
+/*
+	TODO: having fully parsed the free pad, and determined, rectangle vs octagon vs round
 	the problem is autotrax can define an SMD pad, but we have to map this to a pin, since a
 	discrete element would be needed for a standalone pad. Padstacks may allow more flexibility
 	The onsolder flags are redundant for now with vias.
@@ -637,8 +637,8 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 
 	/* Easytrax seems to specify zero drill for some component pins, and round free pins/pads */
 	if (((st->trax_version == 5) && (X_size == Y_size) && component && (Drill == 0))
- 		|| ((st->trax_version == 5) && (X_size == Y_size) && (Shape == 1) && (Drill == 0))) {
-		Drill = st->minimum_comp_pin_drill;/* ?may be better off using half the thickness for drill */ 
+		|| ((st->trax_version == 5) && (X_size == Y_size) && (Shape == 1) && (Drill == 0))) {
+		Drill = st->minimum_comp_pin_drill;/* ?may be better off using half the thickness for drill */
 	}
 
 	if ((Shape == 5 || Shape == 6 ) && el == NULL) {
@@ -650,7 +650,7 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 	} else if (st != NULL && el == NULL) { /* pad not within element, i.e. a free pad/pin/via */
 		if (Shape == 3) {
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
-		} else if (Shape == 2 || Shape == 4) {	
+		} else if (Shape == 2 || Shape == 4) {
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 		}
 		/* should this in fact be an SMD pad, +/- a hole in it ? */
@@ -661,16 +661,16 @@ static int autotrax_parse_pad(read_state_t *st, FILE *FP, pcb_element_t *el, int
 
 		/* first we sort out pad shapes, and layer flags */
 		if ((Shape == 2  || Shape == 4)  && autotrax_layer == 6) {
-			/* square (2) or rounded rect (4) on top layer */ 
+			/* square (2) or rounded rect (4) on top layer */
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
 			/* actually a rectangle, but... */
-		} else if ((Shape == 2  || Shape == 4)) { /* bottom layer */ 
+		} else if ((Shape == 2  || Shape == 4)) { /* bottom layer */
 			Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 			/*actually a rectangle, but... */
-		} else if (Shape == 3 && autotrax_layer == 1) {/* top layer*/ 
+		} else if (Shape == 3 && autotrax_layer == 1) {/* top layer*/
 			Flags = pcb_flag_make(PCB_FLAG_OCTAGON);
 		} else if (Shape == 3 && autotrax_layer == 6) {  /*bottom layer */
-			Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER); 
+			Flags = pcb_flag_make(PCB_FLAG_OCTAGON | PCB_FLAG_ONSOLDER);
 		}
 /*Pads
 FP
@@ -683,7 +683,7 @@ padname
 						Clearance, Mask, line, line, Flags);
 			return 1;
 		} else { /* not SMD */
-			pcb_element_pin_new(el, X, Y , Thickness, Clearance, Mask,  
+			pcb_element_pin_new(el, X, Y , Thickness, Clearance, Mask,
 				Drill, line, line, Flags);
 			return 1;
 		}
@@ -747,7 +747,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_message(PCB_MSG_ERROR, "Ignored fill on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
 		return 0;
-	} 
+	}
 
 	if (PCB_layer >= 0 && el == NULL) {
 		polygon = pcb_poly_new(&st->pcb->Data->Layer[PCB_layer], flags);
@@ -755,7 +755,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_message(PCB_MSG_ERROR, "Invalid free fill layer found, %s:%d\n", st->Filename, st->lineno);
 	}
 
-	if (polygon != NULL && el == NULL && st != NULL) { /* a free fill, not in an element */ 
+	if (polygon != NULL && el == NULL && st != NULL) { /* a free fill, not in an element */
 		pcb_poly_point_new(polygon, X1, Y1);
 		pcb_poly_point_new(polygon, X2, Y1);
 		pcb_poly_point_new(polygon, X2, Y2);
@@ -769,7 +769,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		return 1;
 	} else if (polygon == NULL && el != NULL && st != NULL && PCB_layer == 6 ) { /* in an element, bottom layer copper */
 		flags = pcb_flag_make(0);
-		pcb_element_pad_new_rect(el, X1, Y1, X2, Y2, Clearance, Clearance, "", "", flags);				
+		pcb_element_pad_new_rect(el, X1, Y1, X2, Y2, Clearance, Clearance, "", "", flags);
 		return 1;
 	}
 	return -1;
@@ -911,16 +911,16 @@ static int autotrax_parse_net(read_state_t *st, FILE *FP)
 					}
 				}
 				while (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-					/* clear empty lines in COMP definition */	
-				}					
+					/* clear empty lines in COMP definition */
+				}
 				if (strncmp(line, "]", 1) == 0 ) {
-					in_comp = 0;	
+					in_comp = 0;
 				}
 			}
 		} else if (strncmp(line, "(", 1) == 0) {
 			pcb_trace("Entering netlist node definitions.\n");
 			in_net = 1;
- 			while (in_net || in_node_table) {
+			while (in_net || in_node_table) {
 				while (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
 					/* skip empty lines */
 				}
@@ -1028,7 +1028,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 
 	
 	pcb_trace("Have new module name and location, defining module/element %s\n", module_name);
-	new_module = pcb_element_new(st->pcb->Data, NULL, 
+	new_module = pcb_element_new(st->pcb->Data, NULL,
 								pcb_font(st->pcb, 0, 1), Flags,
 								module_name, module_refdes, module_value,
 								module_X, module_Y, direction,
@@ -1074,7 +1074,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 			}
 		}
 	}
-	return -1; /* should not get here */ 
+	return -1; /* should not get here */
 }
 
 	
@@ -1185,7 +1185,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	Ptr->MaxWidth = box->X2;
 	Ptr->MaxHeight = box->Y2;
 
-	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */	
+	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */
 	pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
 	
 	/* still not sure if this is required: */
