@@ -205,7 +205,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 
 	/* component "COMP" descriptions come next */
 
-	pcb_trace("About to write layout elements to Protel Autotrax file.\n");
 	write_autotrax_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
@@ -271,7 +270,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		outlineLayers = NULL;
 	}
 
-	pcb_trace("About to write outline tracks to Protel Autotrax file.\n");
 	/* we now proceed to write the outline tracks to the autotrax file, layer by layer */
 	current_autotrax_layer = 8; /* 11 is the "board layer" in autotrax, and 12 the keepout */
 	if (outline_count > 0 )  {
@@ -286,7 +284,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 			}
 	}
 
-	pcb_trace("About to write bottom silk elements to Protel Autotrax file.\n");
 	/* we now proceed to write the bottom silk lines, arcs, text to the autotrax file, using layer 8 */
 	current_autotrax_layer = 8; /* 8 is the "bottom overlay" layer in autotrax */
 	for (i = 0; i < bottom_silk_count; i++) /* write bottom silk lines, if any */
@@ -305,7 +302,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	pcb_trace("About to write bottom copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the bottom copper features to the autorax file, layer by layer */
 	current_autotrax_layer = 6; /* 6 is the bottom layer in autotrax */
 	for (i = 0; i < bottom_count; i++) /* write bottom copper tracks, if any */
@@ -324,7 +320,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	pcb_trace("About to write internal copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the internal copper features to the autotrax file, layer by layer */
 	if (inner_count > 0) {
 		current_group = pcb_layer_get_group(PCB, innerLayers[0]);
@@ -349,7 +344,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	pcb_trace("About to write top copper features to Protel Autotrax file.\n");
 	/* we now proceed to write the top copper features to the autotrax file, layer by layer */
 	current_autotrax_layer = 1; /* 1 is the top most copper layer in autotrax */
 	for (i = 0; i < top_count; i++) /* write top copper features, if any */
@@ -368,7 +362,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 						LayoutXOffset, LayoutYOffset);
 		}
 
-	pcb_trace("About to write top silk features to Protel Autotrax file.\n");
 	/* we now proceed to write the top silk lines, arcs, text to the autotrax file, using layer 7*/
 	current_autotrax_layer = 7; /* 7 is the top silk layer in autotrax */
 	for (i = 0; i < top_silk_count; i++) /* write top silk features, if any */
@@ -388,7 +381,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		}
 
 	/* having done the graphical elements, we move onto vias */ 
-	pcb_trace("About to write vias to Protel Autotrax file.\n");
 	write_autotrax_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* now free memory from arrays that were used */
@@ -411,7 +403,6 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 		free(outlineLayers);
 	}
 
-	pcb_trace("About to write netlists to Protel Autotrax file.\n");
 	/* last are the autotrax netlist descriptors */
 	write_autotrax_equipotential_netlists(FP, PCB);
 
