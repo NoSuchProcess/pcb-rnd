@@ -604,8 +604,8 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 			}
 
 			pcb_fprintf(FP, "CP\r\n%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n%s\r\n",
-				pin->X , /*- element->MarkX,*/
-				PCB->MaxHeight -  (pin->Y),/* - element->MarkY), */
+				pin->X ,
+				PCB->MaxHeight -  (pin->Y),
 				pin->Thickness, pin->Thickness, pad_shape,
 				pin->DrillingHole, copper_layer,
 				(char *) PCB_EMPTY(pin->Number)); /* or ->Name? */
@@ -614,29 +614,29 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 			pad_shape = 2; /* rectangular */
 
 			pcb_fprintf(FP, "CP\r\n%.0ml %.0ml ", /* positions of pad */
-				(pad->Point1.X + pad->Point2.X)/2, /*- element->MarkX,*/
-				PCB->MaxHeight - ((pad->Point1.Y + pad->Point2.Y)/2)); /*(- element->MarkY));*/
+				(pad->Point1.X + pad->Point2.X)/2, 
+				PCB->MaxHeight - ((pad->Point1.Y + pad->Point2.Y)/2));
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
 					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-					PCB->MaxHeight - (pad->Point2.Y-pad->Point1.Y + pad->Thickness)); /* height */
+					(pad->Point2.Y-pad->Point1.Y + pad->Thickness)); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
 					 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
-					PCB->MaxHeight - (pad->Point1.Y-pad->Point2.Y + pad->Thickness)); /* height */
+					(pad->Point1.Y-pad->Point2.Y + pad->Thickness)); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 					 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-					PCB->MaxHeight - (pad->Point1.Y-pad->Point2.Y + pad->Thickness)); /* height */
+					(pad->Point1.Y-pad->Point2.Y + pad->Thickness)); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 					 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
 				pcb_fprintf(FP, "%.0ml %.0ml ",
 					pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
-					PCB->MaxHeight - (pad->Point2.Y-pad->Point1.Y + pad->Thickness)); /* height */
+					(pad->Point2.Y-pad->Point1.Y + pad->Thickness)); /* height */
 			}
 
 			pcb_fprintf(FP, "%d %d 1 %d\r\n%s\r\n", pad_shape, drill_hole,
@@ -645,16 +645,12 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		}
 		linelist_foreach(&element->Line, &it, line) { /* autotrax supports tracks in COMPs */
 			pcb_fprintf(FP, "CT\r\n");
-			write_autotrax_track(FP, 0, /* element->MarkX,*/
-				0, /*PCB->MaxHeight, - element->MarkY,*/
-				line, silk_layer);
+			write_autotrax_track(FP, 0, 0, line, silk_layer);
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
 			pcb_fprintf(FP, "CA\r\n");
-			write_autotrax_arc(FP, 0, /*element->MarkX,*/
-				0, /*PCB->MaxHeight, - element->MarkY,*/
-				arc, silk_layer);
+			write_autotrax_arc(FP, 0, 0, arc, silk_layer);
 		}
 
 		fprintf(FP, "ENDCOMP\r\n");
