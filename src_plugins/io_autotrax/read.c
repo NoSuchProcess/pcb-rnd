@@ -777,7 +777,7 @@ static pcb_layer_id_t autotrax_reg_layer(read_state_t *st, const char *autotrax_
 	pcb_layer_id_t id;
 	if (pcb_layer_list(mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
-		pcb_layergrp_list(PCB, mask, &gid, 1);
+		pcb_layergrp_list(st->pcb, mask, &gid, 1);
 		id = pcb_layer_create(gid, autotrax_layer);
 	}
 	return id;
@@ -800,31 +800,31 @@ static int autotrax_create_layers(read_state_t *st)
 
 	if (pcb_layer_list(PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
 		pcb_layergrp_id_t gid;
-		pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
+		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
 		st->protel_to_stackup[12] = pcb_layer_create(gid, "Keepout");
-		pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
+		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
 		st->protel_to_stackup[13] = pcb_layer_create(gid, "Multi");
 	} else {
 		pcb_message(PCB_MSG_ERROR, "Unable to create Keepout, Multi layers in default top silk group\n");
 	}
 
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[2] = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid1");
+	g = pcb_get_grp_new_intern(st->pcb, -1);
+	st->protel_to_stackup[2] = pcb_layer_create(g - st->pcb->LayerGroups.grp, "Mid1");
 
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[3] = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid2");
+	g = pcb_get_grp_new_intern(st->pcb, -1);
+	st->protel_to_stackup[3] = pcb_layer_create(g - st->pcb->LayerGroups.grp, "Mid2");
 
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[4]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid3");
+	g = pcb_get_grp_new_intern(st->pcb, -1);
+	st->protel_to_stackup[4]  = pcb_layer_create(g - st->pcb->LayerGroups.grp, "Mid3");
 
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[5]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Mid4");
+	g = pcb_get_grp_new_intern(st->pcb, -1);
+	st->protel_to_stackup[5]  = pcb_layer_create(g - st->pcb->LayerGroups.grp, "Mid4");
 
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[9]  = pcb_layer_create(g - PCB->LayerGroups.grp, "GND");
+	g = pcb_get_grp_new_intern(st->pcb, -1);
+	st->protel_to_stackup[9]  = pcb_layer_create(g - st->pcb->LayerGroups.grp, "GND");
 
-	g = pcb_get_grp_new_intern(PCB, -1);
-	st->protel_to_stackup[10]  = pcb_layer_create(g - PCB->LayerGroups.grp, "Power");
+	g = pcb_get_grp_new_intern(st->pcb, -1);
+	st->protel_to_stackup[10]  = pcb_layer_create(g - st->pcb->LayerGroups.grp, "Power");
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
 	g->name = pcb_strdup("outline");
@@ -1042,7 +1042,7 @@ static int autotrax_parse_component(read_state_t *st, FILE *FP)
 			if (strncmp(line, "ENDCOMP", 7) == 0 ) {
 				pcb_trace("Finished parsing component\n");
 				if (nonempty) { /* could try and use module empty function here */
-					pcb_element_bbox(st->pcb->Data, new_module, pcb_font(PCB, 0, 1));
+					pcb_element_bbox(st->pcb->Data, new_module, pcb_font(st->pcb, 0, 1));
 					return 0;
 				} else {
 					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, not added to layout, %s:%d\n", st->Filename, st->lineno);
