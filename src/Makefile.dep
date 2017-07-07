@@ -231,8 +231,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h error.h event.h \
- ../src_plugins/diag/integrity.h ../src_plugins/lib_polyhelp/polyhelp.h \
- obj_poly.h dolists.h ../src_plugins/diag/diag_conf_fields.h
+ ../src_plugins/diag/integrity.h dolists.h \
+ ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
  ../config.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -1958,7 +1958,8 @@
  ../src_3rd/genvector/vtp0.h list_conf.h error.h data.h crosshair.h \
  vtonpoint.h hid.h error.h drc.h route.h buffer.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h \
- ../src_plugins/io_autotrax/write.h layer.h const.h obj_all.h
+ ../src_plugins/io_autotrax/write.h layer.h const.h obj_all.h \
+ ../src_plugins/io_autotrax/../lib_polyhelp/polyhelp.h obj_poly.h
 ../src_plugins/io_eagle/eagle_bin.o: ../src_plugins/io_eagle/eagle_bin.c \
  ../src_plugins/io_eagle/eagle_bin.h ../src_plugins/io_eagle/egb_tree.h \
  ../src_3rd/liblihata/genht/htss.h ../src_3rd/liblihata/genht/ht.h \
