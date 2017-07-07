@@ -28,7 +28,7 @@
 
 For the next release:
 - BUGS:
-	- composite silk layer highlight bug: add a second, non-auto silk layer; place an element; select the element -> element silk is not cyan
+	- composite silk layer highlight bug: add a second, non-auto silk layer; place an element; select the element -> element silk is not cyan; reason: composite layer is drawn with mask, mask loses color on blotting (affect gtk only)
 	- solder paste layer doesn't have selected color, selection is not visible
 	- backup save triggers save in pcb indirectly, and that changes the layer stackup which may ruin the board (add new mask layers, wait for a save, draw on them after a save, they become silk) [report: Ade]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
