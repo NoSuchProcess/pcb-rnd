@@ -1,11 +1,87 @@
 <h2> different faces of a polygon </H2>
-
+<p>
 In pcb-rnd polygons have three possible appearance:
 <ul>
 	<li> points: the as-drawn version
 	<li> clipped: the as-shown version, with holes
 	<li> no-holes: the as-shown version, without holes
 </ul>
+
+<H3> The as-drawn version </H3>
+<p>
+The as-drawn version is a list of points (corners), as drawn
+by the user. The points are stored in an array of x;y coordinates.
+There is a single, continous, dynamically allocated array for all points,
+including the outer contour and the holes.
+<p>
+The points are stored in the <i>Points[]</i> field. The HoleIndex[]
+field lists the starting index of each hole. For example a
+rectangular polygon with 2 triangle holes is stored as:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> index          <th> 0. <th> 1. <th> 2. <th> 3. <th> 4.   <th> 5.   <th> 6.   <th> 7.   <th> 8.   <th> 9.
+	<tr><th> Points[] value <td> c1 <td> c2 <td> c3 <td> c4 <td> h1.1 <td> h1.2 <td> h1.3 <td> h2.1 <td> h2.2 <td> h2.3
+	<tr><th> part of  <td colspan=4> outer contour  <td colspan=3> hole 1       <td colspan=3> hole 2
+</table>
+<p>
+The array length of Points[] is 10, the length of the correspoding HoleIndex[] is 2.
+The values of HoleIndex[] is {4, 7}, indicating that the corners of first hole
+starts at 4 while the corners of the second hole starts at 7.
+<p>
+If HoldeIndex[] is NULL, there are no holes and all points are part of the
+outer contour. The Outer contour must contain at least 3 points.
+<p>
+The as-drawn version always contains the contour of a single island
+and 0 or more holes - none of them can intersect or touch any contour or
+hole of the same polygon. This also means a contour or hole can not be
+self-intersecting.
+<p>
+The as-drawn version is stored to make editing possible. It is
+not affected by other objects (e.g. clearances) or flags of the polygon.
+The as-drawn points exist and are stored even if they are not visible
+(clipped).
+
+
+<H3> The clipped version </H3>
+<p>
+The polygon is clipped by an object if both the polygon and the object have
+the correspoding 'clear' flag set. A clipped polygon typically has a much
+more complex shape than the as-drawn polygon, due to the clearance cutouts
+(not to be confused with user drawn holes). The clipped polygon is the actual
+"in-copper" shape of the polygon.
+<p>
+In some cases the clearance cutouts slice the polygon in multiple components
+or in other word <i>islands</i>. If the polygon is <i>full</i> (set by
+a polygon flag), all islands are kept, else only the largest island is kept.
+(Note: the find code handles all islands of a full polygon as one polygon: it
+indicates connection between them even if there is no connection, which makes
+full polygons dangerous on copper layers.)
+<p>
+The clipped polygon is stored in the polyarea field Clipped. It is a doubly
+linked circular list (link fields are .f for forward and .b for backward). Each
+item on the list is an island of the polygon. If Clipped is NULL, the
+polygon clipping is not yet compiled for the given polygon; call pcb_poly_init_clip().
+<p>
+Each island is a polyarea, which consists of an outer contour and 0 or more
+holes - all correspoding to the actual cutouts created by user-drawn polygon
+holes and/or clearance cutouts. These contours are stored in a singly linked
+list of plines. The first element of the list is the pline for the outer
+contour and always exists. The next 0 or more plines, using the .next field
+of the pline, are the contours of the cutouts (holes).
+<p>
+A pline consists of a circular, doubly linked list of points; traversing using
+the .next field, the points are ordered in counter-clockwise.
+
+<H3> The no-holes version </H3>
+<p>
+Some export plugins (and/or export formats) don't support holes in polygons.
+The no-hole version of the polygon is stored in the .NoHoles filed and is
+a list of islands, each specified with an outer countour that are crafted
+to include the holes. This is done by slicing an island at each hole. 
+TODO: check how it looks, include image
+
+
+<h2> How to code with polygons </h2>
 
 <h3> Iterators: looping on clipped polygon geometry </H3>
 
