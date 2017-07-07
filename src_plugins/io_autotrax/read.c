@@ -52,6 +52,9 @@
 #include "hid_actions.h"
 
 #define PCB REPLACE_THIS
+#define pcb_trace pcb_trace_nop
+
+static void pcb_trace_nop(const char *fmt, ...) {}
 
 #define MAXREAD 255
 
