@@ -676,6 +676,7 @@ void PostLoadElementPCB()
 	yyPCB->MaxHeight = e->BoundingBox.Y2;
 	yyPCB->is_footprint = 1;
 
+	/* opening a footprint: we don't have a layer stack; make sure top and bottom copper exist */
 	{
 		pcb_layergrp_id_t gid;
 		int res;
