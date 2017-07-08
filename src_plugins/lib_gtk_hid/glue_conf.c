@@ -55,6 +55,14 @@ void ghid_confchg_flip(conf_native_t *cfg)
 	ghidgui->common.set_status_line_label();
 }
 
+void ghid_confchg_grid(conf_native_t *cfg)
+{
+	/* test if PCB struct doesn't exist at startup */
+	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
+		return;
+	ghidgui->common.set_status_line_label();
+}
+
 void ghid_confchg_fullscreen(conf_native_t *cfg)
 {
 	if (ghidgui->hid_active)
@@ -81,7 +89,8 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 
 void ghid_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside;
+	static conf_hid_callbacks_t 
+		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid;
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
@@ -89,4 +98,5 @@ void ghid_conf_regs(const char *cookie)
 	init_conf_watch(&cbs_refraction, "editor/line_refraction", ghid_confchg_line_refraction);
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
 	init_conf_watch(&cbs_show_sside, "editor/show_solder_side", ghid_confchg_flip);
+	init_conf_watch(&cbs_grid, "editor/grid", ghid_confchg_grid);
 }
