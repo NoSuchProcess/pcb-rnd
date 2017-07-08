@@ -277,7 +277,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	}
 
 	/* figure out which pcb layers are outlines and make a list */
- 	outline_count = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
+	outline_count = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
 	if (outline_count > 0) {
 		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outline_count);
 		pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outline_count);
@@ -596,7 +596,7 @@ int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *D
 		pinlist_foreach(&element->Pin, &it, pin) {
 
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
- 				pad_shape = 2;
+				pad_shape = 2;
 			} else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin)) {
 				pad_shape = 3;
 			} else {
@@ -739,8 +739,7 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 							x_prev = x;
 							y_prev = y;
 						}
-						if (x != 0 && y != 0
-                                                	&& x_prev != 0 && y_prev != 0) {
+						if (x != 0 && y != 0 && x_prev != 0 && y_prev != 0) {
 							write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x_first, y_first, Thickness, current_layer);
 						}
 						/* iterate over all holes within this island */
