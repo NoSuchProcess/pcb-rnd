@@ -55,12 +55,15 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 	fprintf(f, "!pline end\n");
 }
 
+#if 0
+/* debug helper */
 static void cross(FILE *f, pcb_coord_t x, pcb_coord_t y)
 {
 	static pcb_coord_t cs = PCB_MM_TO_COORD(0.2);
 	pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x - cs, y, x + cs, y);
 	pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x, y - cs, x, y + cs);
 }
+#endif
 
 static void norm(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
