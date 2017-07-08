@@ -34,14 +34,11 @@ int io_autotrax_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff);
 int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
 int write_autotrax_module_header(FILE * FP);
 int write_autotrax_layout_header(FILE * FP);
-int write_autotrax_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t MaxWidth, pcb_coord_t MaxHeight);
-int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer,
-						pcb_coord_t MaxWidth, pcb_coord_t MaxHeight);
-int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer,
-						pcb_coord_t xOffset, pcb_coord_t yOffset);
-int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer,
-						pcb_coord_t xOffset, pcb_coord_t yOffset);
+int write_autotrax_vias(FILE * FP, pcb_data_t *Data);
+int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer);
+int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer);
+int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer);
 int write_autotrax_equipotential_netlists(FILE * FP, pcb_board_t *Layout);
-int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset);
-int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer,								pcb_coord_t xOffset, pcb_coord_t yOffset);
+int write_autotrax_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data);
+int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer);
 
