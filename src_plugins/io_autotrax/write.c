@@ -78,7 +78,7 @@ int write_autotrax_pline_segment(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOf
 			x1 + xOffset, PCB->MaxHeight - (y1 + yOffset),
 			x2 + xOffset, PCB->MaxHeight - (y2 + yOffset),
 			Thickness, layer, user_routed);
-        return 0;
+	return 0;
 }
 
 
@@ -119,7 +119,7 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 		if (arc_start <= 270.0 && (arc_start + arc_delta) >= 360.0 ) {
 			arc_segments |= 0x02; /* ULQ */
 		}
-	}	
+	}
 	return arc_segments;
 }
 
@@ -129,15 +129,15 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 int write_autotrax_arc(FILE *FP, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_arc_t * arc, int current_layer) 
 {
 	pcb_coord_t radius;
-			if (arc->Width > arc->Height) {
-				radius = arc->Height;
-			} else {
-				radius = arc->Width;
-			}
-			pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n",
-				arc->X + xOffset, PCB->MaxHeight - (arc->Y + yOffset), radius,
-				pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta),
-				arc->Thickness, current_layer);
+	if (arc->Width > arc->Height) {
+		radius = arc->Height;
+	} else {
+		radius = arc->Width;
+	}
+	pcb_fprintf(FP, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n",
+		arc->X + xOffset, PCB->MaxHeight - (arc->Y + yOffset), radius,
+		pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta),
+		arc->Thickness, current_layer);
 	return 0;
 }
 
