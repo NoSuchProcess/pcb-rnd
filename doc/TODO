@@ -36,7 +36,6 @@ For the next release:
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numbering, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
