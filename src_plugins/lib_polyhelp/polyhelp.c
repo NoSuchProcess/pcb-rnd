@@ -347,6 +347,25 @@ static pcb_r_dir_t pcb_cploy_hatch_edge_hor(const pcb_box_t *region, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+static pcb_r_dir_t pcb_cploy_hatch_edge_ver(const pcb_box_t *region, void *cl)
+{
+	intersect_t *is = (intersect_t *)cl;
+	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)region;
+
+	if (e->x1 != e->x2) {
+		/* consider only non-vertical edges */
+		if (e->y1 != e->y2) {
+			double x = ((double)e->y2 - (double)e->y1) / ((double)e->x2 - (double)e->x1) * ((double)is->at - (double)e->x1) + (double)e->y1;
+			is->coord[is->used] = x;
+		}
+		else
+			is->coord[is->used] = e->y1; /* faster method for vertical */
+		is->used++;
+	}
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
 static int coord_cmp(const void *p1, const void *p2)
 {
 	const pcb_coord_t *c1 = p1, *c2 = p2;
@@ -379,7 +398,6 @@ void pcb_cpoly_hatch(const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coo
 			scan.Y1 = y;
 			scan.Y2 = y+1;
 
-			pcb_printf("hatch! %mm\n", y);
 			is->used = 0;
 			is->at = y;
 			pcb_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_hor, is, NULL);
@@ -388,6 +406,25 @@ void pcb_cpoly_hatch(const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coo
 				cb(ctx, is->coord[n-1], y, is->coord[n], y);
 		}
 	}
+
+	if (dir & PCB_CPOLY_HATCH_VERTICAL) {
+		pcb_coord_t x;
+
+		for(x = etr->bbox.X1; x <= etr->bbox.X2; x += period) {
+			scan.Y1 = -PCB_MAX_COORD;
+			scan.Y2 = PCB_MAX_COORD;
+			scan.X1 = x;
+			scan.X2 = x+1;
+
+			is->used = 0;
+			is->at = x;
+			pcb_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_ver, is, NULL);
+			qsort(is->coord, is->used, sizeof(pcb_coord_t), coord_cmp);
+			for(n = 1; n < is->used; n+=2) /* call the callback for the odd scan lines */
+				cb(ctx, x, is->coord[n-1], x, is->coord[n]);
+		}
+	}
+
 	free(is);
 	pcb_cpoly_edgetree_destroy(etr);
 }
