@@ -1,5 +1,5 @@
 Ready to blog:
-- xyrs template based exporter, once x,y dimension working
+- PolyHatch() action
 
 less urgent, almost finished:
 - braille font
