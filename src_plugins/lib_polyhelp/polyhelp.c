@@ -32,6 +32,13 @@
 #include "obj_line.h"
 #include "box.h"
 
+/* for the action: */
+static const char *polyhelp_cookie = "lib_polyhelp";
+#include <string.h>
+#include "board.h"
+#include "data.h"
+#include "conf_core.h"
+#include "hid_actions.h"
 
 void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 {
@@ -455,14 +462,79 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly
 }
 
 
+static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [combination of h|v|c])\n";
+static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer";
+static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_coord_t period = 0;
+	pcb_cpoly_hatchdir_t dir = 0;
+	pcb_flag_t flg;
+	int want_contour = 0, cont_specd = 0;
+
+	if (argc > 0) {
+		pcb_bool succ;
+		period = pcb_get_value(argv[0], NULL, NULL, &succ);
+		if (!succ) {
+			pcb_message(PCB_MSG_ERROR, "Invalid spacing value - must be a coordinate\n");
+			return -1;
+		}
+	}
+
+	if (argc > 1) {
+		if (strchr(argv[1], 'c')) want_contour = 1;
+		if (strchr(argv[1], 'h')) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
+		if (strchr(argv[1], 'v')) dir |= PCB_CPOLY_HATCH_VERTICAL;
+		cont_specd = 1;
+	}
+
+	if (!cont_specd == 0) {
+		dir = PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL;
+		want_contour = 1;
+	}
+	if (period == 0)
+		period = conf_core.design.line_thickness * 2;
+
+	flg = pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0);
+	PCB_POLY_ALL_LOOP(PCB->Data); {
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
+			continue;
+		if (want_contour) {
+			pcb_poly_it_t it;
+			pcb_polyarea_t *pa;
+			for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+				pcb_pline_t *pl = pcb_poly_contour(&it);
+				if (pl != NULL) { /* we have a contour */
+					pcb_pline_to_lines(CURRENT, pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+					for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
+						pcb_pline_to_lines(CURRENT, pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+				}
+			}
+		}
+		pcb_cpoly_hatch_lines(CURRENT, polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+	} PCB_ENDALL_LOOP;
+	return 0;
+}
+
+
+
+static pcb_hid_action_t polyhelp_action_list[] = {
+	{"PolyHatch", 0, pcb_act_PolyHatch,
+	 pcb_acth_PolyHatch, pcb_acts_PolyHatch}
+};
+PCB_REGISTER_ACTIONS(polyhelp_action_list, polyhelp_cookie)
+
 
 int pplg_check_ver_lib_polyhelp(int ver_needed) { return 0; }
 
 void pplg_uninit_lib_polyhelp(void)
 {
+	pcb_hid_remove_actions_by_cookie(polyhelp_cookie);
 }
+
+#include "dolists.h"
 
 int pplg_init_lib_polyhelp(void)
 {
+	PCB_REGISTER_ACTIONS(polyhelp_action_list, polyhelp_cookie);
 	return 0;
 }
