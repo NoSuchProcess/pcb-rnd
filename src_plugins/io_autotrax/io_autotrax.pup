@@ -3,5 +3,6 @@ $short autotrax (freeware PCB layout tool)
 $long Import and export autotrax layouts and footprints.
 $state work-in-progress
 default buildin
-dep boardflip lib_polyhelp
+dep boardflip
+dep lib_polyhelp
 autoload 1
