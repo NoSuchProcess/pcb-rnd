@@ -469,7 +469,7 @@ static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		cont_specd = 1;
 	}
 
-	if (!cont_specd == 0) {
+	if (cont_specd == 0) {
 		dir = PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL;
 		want_contour = 1;
 	}
