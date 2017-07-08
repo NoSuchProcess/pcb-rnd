@@ -1240,15 +1240,23 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 	return processed;
 }
 
+/* take each /drawing/layer and move them into a newly created /drawing/layers/ */
 static int postproc_layers(void *ctx, egb_node_t *root)
 {
-	egb_node_t *n, *p;
+	egb_node_t *n, *prev, *next;
 	egb_node_t *layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
-	for(n = root->first_child->first_child, p = NULL; n != NULL; p = n, n = n->next) {
+	egb_node_t *drawing = root->first_child;
+
+	for(n = drawing->first_child, prev = NULL; n != NULL; n = next) {
+		next = n->next; /* need to save this because unlink() will ruin it */
 		if (n->id == PCB_EGKW_SECT_LAYER) {
-#warning TODO: reparent these
+			egb_node_unlink(drawing, prev, n);
+			egb_node_append(layers, n);
 		}
+		else
+			prev = n;
 	}
+
 	return 0;
 }
 
