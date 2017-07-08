@@ -296,7 +296,6 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_polygon_t *src, pcb_co
 	res->bbox.X2 = res->bbox.Y2 = -PCB_MAX_COORD;
 
 	for(pa = pcb_poly_island_first(src, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_coord_t x, y;
 		pcb_pline_t *pl, *track;
 
 		pl = pcb_poly_contour(&it);
