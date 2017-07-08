@@ -14,7 +14,7 @@ digraph gr {
 	tinycad [label="TinyCAD" shape=box]
 	web [label="JavaScript based\nweb application\n(work in progress)" shape=box color="#aaaaaa" fontcolor="#aaaaaa"]
 	fidocadj [label="FidoCadj\nartistic PCBs\n(experimental support)" shape=box]
-	autotrax [label="Protel\nautotrax/easytraxs\n" shape=box]
+	autotrax [label="Protel\nautotrax/easytrax\n" shape=box]
 	eagle [label="Eagle" shape=box]
 	hyp [label="Hyperlynx" shape=box]
 
