@@ -41,7 +41,6 @@ For the next release:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
 + grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
-- action bug: gui_act.c shouldn't reference Crosshair.X directly; check r9932 to see how to fix it
 + BUG: 'double click to close' missing for polygon holes [report:miloh]
 - gtk hid: display element numbers; flip board with tab: numbers get mirrored [report:Evan]
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
