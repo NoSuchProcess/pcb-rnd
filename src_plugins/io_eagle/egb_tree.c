@@ -26,14 +26,12 @@
 
 /* Eagle binary tree store */
 
+#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <genht/hash.h>
 #include "egb_tree.h"
-
-#warning remove this on integration
-extern char *strdup(const char *s);
-#define pcb_strdup(s) strdup(s)
+#include "compat_misc.h"
 
 egb_node_t *egb_node_alloc(int id, const char *id_name)
 {
