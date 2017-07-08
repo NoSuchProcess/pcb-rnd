@@ -195,8 +195,11 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		{
 			int type;
 			void *ptr1, *ptr2, *ptr3;
+			pcb_coord_t x, y;
 
-			if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+			pcb_gui->get_coords("Click on object to chnage", &x, &y);
+
+			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
@@ -394,8 +397,11 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
 
-		if (funcid == F_Object)
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+		if (funcid == F_Object) {
+			pcb_coord_t x, y;
+			pcb_gui->get_coords("Click on object to change size of", &x, &y);
+			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+		}
 
 		if (strcmp(argv[1], "style") == 0) {
 			if (pcb_get_style_size(funcid, &value, type, 0) != 0)
@@ -1099,7 +1105,7 @@ static int pcb_act_ClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -1168,6 +1174,7 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 	void *ptr1, *ptr2, *ptr3;
 	int type, kind;
 	int err = 0;
+	pcb_coord_t gx, gy;
 
 	if (function && *function && style && *style) {
 		pcb_bool absolute;
@@ -1176,7 +1183,8 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 		if (absolute && (kind <= 5))
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
-				if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				pcb_gui->get_coords("Click on object for SetThermal", &gx, &gy);
+				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -1384,8 +1392,11 @@ static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_c
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
 
-		if (funcid == F_Object)
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+		if (funcid == F_Object) {
+			pcb_coord_t x, y;
+			pcb_gui->get_coords("Click on object to change angle of", &x, &y);
+			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+		}
 
 		{ /* convert angle from string */
 			char *end;
@@ -1456,8 +1467,11 @@ static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
 
-		if (funcid == F_Object)
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+		if (funcid == F_Object) {
+			pcb_coord_t x, y;
+			pcb_gui->get_coords("Click on object to change radius of", &x, &y);
+			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+		}
 
 		value = pcb_get_value(delta, units, &absolute, NULL);
 
