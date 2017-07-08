@@ -38,8 +38,8 @@ pcb_bool pcb_cpoly_is_simple_rect(const pcb_polygon_t *p);
 /* Returns whether all edges of a pline are axis aligned */
 pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src);
 
+/*** Generate an rtree of all edges if a polygon */
 
-/*** hatching ***/
 typedef struct {
 	pcb_box_t bbox;
 	pcb_coord_t x1, y1, x2, y2;
@@ -52,6 +52,12 @@ typedef struct {
 	pcb_cpoly_edge_t edges[1];
 } pcb_cpoly_edgetree_t;
 
+pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_polygon_t *src, pcb_coord_t offs);
+void pcb_cpoly_edgetree_destroy(pcb_cpoly_edgetree_t *etr);
+
+
+/*** hatching ***/
+
 /* bitfield to request horizontal and/or vertical hatching or striping */
 typedef enum {
 	PCB_CPOLY_HATCH_HORIZONTAL = 1,
@@ -61,3 +67,7 @@ typedef enum {
 /* hatch a polygon with horizontal and/or vertical lines drawn on dst,
    one line per period */
 void pcb_poly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
+
+/* Generic hor-ver hatch with a callback */
+void pcb_cpoly_hatch(const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t offs, pcb_coord_t period, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2));
+
