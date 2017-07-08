@@ -43,14 +43,27 @@ struct egb_node_s {
 };
 
 
+/* Allocate a new floating node */
 egb_node_t *egb_node_alloc(int id, const char *id_name);
+
+/* Link a floating node into the tree, appending it as the last
+   child of parent. Returns the node. */
 egb_node_t *egb_node_append(egb_node_t *parent, egb_node_t *node);
+
+/* Unlink a node from its parent, making the node a floating node.
+   Returns the node */
 egb_node_t *egb_node_unlink(egb_node_t *parent, egb_node_t *prev, egb_node_t *node);
+
+/* Free a subtree (without unlinking) */
 void egb_node_free(egb_node_t *node);
 
+/* Set a named property of a node to val */
 void egb_node_prop_set(egb_node_t *node, const char *key, const char *val);
+
+/* Return the value of a named property of a node */
 char *egb_node_prop_get(egb_node_t *node, const char *key);
 
+/* Print the indented tree in text to f */
 void egb_dump(FILE *f, egb_node_t *node);
 
 #endif
