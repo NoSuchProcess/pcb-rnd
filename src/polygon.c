@@ -1390,6 +1390,69 @@ void pcb_polygon_copy_attached_to_layer(void)
 	pcb_undo_inc_serial();
 }
 
+/* ---------------------------------------------------------------------------
+ * close polygon hole if possible
+ */
+void pcb_polygon_close_hole(void)
+{
+	pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
+
+	/* check number of points */
+	if (n >= 3) {
+		/* if 45 degree lines are what we want do a quick check
+		 * if closing the polygon makes sense
+		 */
+		if (!conf_core.editor.all_direction_lines) {
+			pcb_coord_t dx, dy;
+
+			dx = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].X - pcb_crosshair.AttachedPolygon.Points[0].X);
+			dy = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].Y - pcb_crosshair.AttachedPolygon.Points[0].Y);
+			if (!(dx == 0 || dy == 0 || dx == dy)) {
+				pcb_message(PCB_MSG_ERROR, _("Cannot close polygon hole because 45 degree lines are requested.\n"));
+				return;
+			}
+		}
+		pcb_polygon_hole_create_from_attached();
+		pcb_draw();
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, _("A polygon hole has to have at least 3 points\n"));
+}
+
+/* ---------------------------------------------------------------------------
+ * creates a hole of attached polygon shape in the underneath polygon
+ */
+void pcb_polygon_hole_create_from_attached(void)
+{
+	pcb_polyarea_t *original, *new_hole, *result;
+	pcb_flag_t Flags;
+	
+	/* Create pcb_polyarea_ts from the original polygon
+	 * and the new hole polygon */
+	original = pcb_poly_from_poly((pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2);
+	new_hole = pcb_poly_from_poly(&pcb_crosshair.AttachedPolygon);
+
+	/* Subtract the hole from the original polygon shape */
+	pcb_polyarea_boolean_free(original, new_hole, &result, PCB_PBO_SUB);
+
+	/* Convert the resulting polygon(s) into a new set of nodes
+	 * and place them on the page. Delete the original polygon.
+	 */
+	pcb_undo_save_serial();
+	Flags = ((pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2)->Flags;
+	pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
+	pcb_remove_object(PCB_TYPE_POLYGON,
+							 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+	pcb_undo_restore_serial();
+	pcb_undo_inc_serial();
+
+	/* reset state of attached line */
+	memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
+	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_added_lines = 0;
+}
+
 /* find polygon holes in range, then call the callback function for
  * each hole. If the callback returns non-zero, stop
  * the search.

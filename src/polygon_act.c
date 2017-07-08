@@ -93,7 +93,7 @@ static int pcb_act_MorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_polygon_syntax[] = "Polygon(Close|PreviousPoint)";
+static const char pcb_polygon_syntax[] = "Polygon(Close|CloseHole|PreviousPoint)";
 
 static const char pcb_acth_Polygon[] = "Some polygon related stuff.";
 
@@ -107,6 +107,10 @@ Polygons need a special action routine to make life easier.
 Creates the final segment of the polygon.  This may fail if clipping
 to 45 degree lines is switched on, in which case a warning is issued.
 
+@item CloseHole
+Creates the final segment of the polygon hole.  This may fail if clipping
+to 45 degree lines is switched on, in which case a warning is issued.
+
 @item PreviousPoint
 Resets the newly entered corner to the previous one. The Undo action
 will call Polygon(PreviousPoint) when appropriate to do so.
@@ -118,14 +122,19 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 static int pcb_act_Polygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
-	if (function && conf_core.editor.mode == PCB_MODE_POLYGON) {
+	if (function && ((conf_core.editor.mode == PCB_MODE_POLYGON) || (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE))) {
 		pcb_notify_crosshair_change(pcb_false);
 		switch (pcb_funchash_get(function, NULL)) {
 			/* close open polygon if possible */
 		case F_Close:
 			pcb_polygon_close_poly();
 			break;
-
+			
+			/* close open polygon hole if possible */
+		case F_CloseHole:
+			pcb_polygon_close_hole();
+			break;
+		
 			/* go back to the previous point */
 		case F_PreviousPoint:
 			pcb_polygon_go_to_prev_point();

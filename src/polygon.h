@@ -61,6 +61,8 @@ pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *, pcb_polygon_t *);
 void pcb_polygon_go_to_prev_point(void);
 void pcb_polygon_close_poly(void);
 void pcb_polygon_copy_attached_to_layer(void);
+void pcb_polygon_close_hole(void);
+void pcb_polygon_hole_create_from_attached(void);
 int pcb_poly_holes(pcb_polygon_t * ptr, const pcb_box_t * range, int (*callback) (pcb_pline_t *, void *user_data), void *user_data);
 int pcb_poly_plows(pcb_data_t *, int, void *, void *,
 								 pcb_r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_polygon_t *, int, void *, void *));
