@@ -133,7 +133,6 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 			ny2 = n->point[1] - ny*offs;
 
 			ll_intersect(&xi, &yi, vx1, vy1, vx2, vy2, nx1, ny1, nx2, ny2);
-			cross(stdout, (pcb_coord_t)xi, (pcb_coord_t)yi);
 
 			tmp[0] = xi;
 			tmp[1] = yi;
