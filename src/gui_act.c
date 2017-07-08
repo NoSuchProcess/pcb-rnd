@@ -611,6 +611,7 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	const char *function = PCB_ACTION_ARG(0);
 
 	if (function) {
+		/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 		Note.X = pcb_crosshair.X;
 		Note.Y = pcb_crosshair.Y;
 		pcb_notify_crosshair_change(pcb_false);
