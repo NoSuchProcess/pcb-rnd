@@ -1,0 +1,10 @@
+put /local/pcb/mod {millpath}
+append /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/millpath/millpath.o
+@]
+
+switch /local/pcb/millpath/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

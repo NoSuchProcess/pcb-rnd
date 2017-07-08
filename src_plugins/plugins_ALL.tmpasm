@@ -69,6 +69,7 @@ include {../src_plugins/lib_netmap/Plug.tmpasm}
 include {../src_plugins/lib_padstack_hash/Plug.tmpasm}
 include {../src_plugins/lib_polyhelp/Plug.tmpasm}
 include {../src_plugins/loghid/Plug.tmpasm}
+include {../src_plugins/millpath/Plug.tmpasm}
 include {../src_plugins/mincut/Plug.tmpasm}
 include {../src_plugins/oldactions/Plug.tmpasm}
 include {../src_plugins/polycombine/Plug.tmpasm}
