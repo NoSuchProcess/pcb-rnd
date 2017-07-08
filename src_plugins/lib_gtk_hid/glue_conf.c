@@ -31,6 +31,8 @@
 #include "conf_core.h"
 #include "gui.h"
 
+#warning TODO: cleanup: make a generic status line update callback instead of this code dup
+
 void ghid_confchg_line_refraction(conf_native_t *cfg)
 {
 	/* test if PCB struct doesn't exist at startup */
