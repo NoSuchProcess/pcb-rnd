@@ -81,6 +81,33 @@ int write_autotrax_pline_segment(FILE * FP, pcb_coord_t xOffset, pcb_coord_t yOf
 	return 0;
 }
 
+typedef struct {
+	FILE * file;
+	pcb_cardinal_t layer;
+	pcb_coord_t thickness, xOffset, yOffset;
+} autotrax_hatch_ctx_t;
+
+
+static void autotrax_hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	autotrax_hatch_ctx_t *ctx = (autotrax_hatch_ctx_t *)ctx_;
+	write_autotrax_pline_segment(ctx->file, ctx->xOffset, ctx->yOffset, x1, y1, x2, y2, ctx->thickness, ctx->layer);
+}
+
+/* ---------------------------------------------------------------------------
+ * generates autotrax tracks to cross hatch a complex polygon being exported 
+ */
+void autotrax_cpoly_hatch_lines(FILE * FP, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+{
+	autotrax_hatch_ctx_t ctx;
+
+	ctx.file = FP;
+	ctx.layer = layer;
+	ctx.thickness = thickness;
+	ctx.xOffset = xOffset;
+	ctx.yOffset = yOffset;
+	pcb_cpoly_hatch(src, dir, (thickness/2)+1, period, &ctx, autotrax_hatch_cb);
+}
 
 /* -------------------------------------------------------------------------------
  * generates an autotrax arc "segments" value to approximate an arc being exported  
@@ -715,16 +742,18 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 				pcb_message(PCB_MSG_ERROR, "Polygon exported as a bounding box only.\n");
 			}*/
 			} else {
+				pcb_coord_t Thickness, x, y, x_first, y_first, x_prev, y_prev;
+				Thickness = PCB_MIL_TO_COORD(10);
+				autotrax_cpoly_hatch_lines(FP, polygon, 1, Thickness*3, Thickness, current_layer, xOffset, yOffset);
+				autotrax_cpoly_hatch_lines(FP, polygon, 2, Thickness*3, Thickness, current_layer, xOffset, yOffset);
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
-					pcb_coord_t Thickness, x, y, x_first, y_first, x_prev, y_prev;
+					/* now generate cross hatch lines for polygon island export */
 					pcb_pline_t *pl;
 					int go;
-					pcb_trace(" poly island\n");
 					/* check if we have a contour for the given island */
 					pl = pcb_poly_contour(&poly_it);
 					if (pl != NULL) {
 						x_prev = y_prev = 0;
-						Thickness = PCB_MIL_TO_COORD(10);
 						for(go = pcb_poly_vect_first(&poly_it, &x, &y);
 							go; go = pcb_poly_vect_next(&poly_it, &x, &y)) {
 							if (x_prev != 0 && y_prev != 0) {
@@ -745,7 +774,6 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 						/* iterate over all holes within this island */
 						for(pl = pcb_poly_hole_first(&poly_it);
 							pl != NULL; pl = pcb_poly_hole_next(&poly_it)) {
-							pcb_trace(" poly hole:\n");
 							x_prev = y_prev = 0;
 						/* iterate over the vectors of the given hole */
 							for(go = pcb_poly_vect_first(&poly_it, &x, &y); go; go = pcb_poly_vect_next(&poly_it, &x, &y)) {
