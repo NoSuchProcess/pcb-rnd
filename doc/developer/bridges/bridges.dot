@@ -2,7 +2,7 @@ digraph gr {
 	rankdir=LR
 	nodesep=0.6
 	
-	pcbrnd [label="pcb-rnd" style=filled fillcolor=cyan shape=box height=12 width=2]
+	pcbrnd [label="pcb-rnd" style=filled fillcolor=cyan shape=box height=18 width=2]
 	kicad [label="KiCad\npcbnew" shape=box]
 	eeschema [label="KiCad\neeschema" shape=box]
 	pcb [label="gEDA/PCB" shape=box]

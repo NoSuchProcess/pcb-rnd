@@ -27,7 +27,7 @@
 </g>
 <!-- pcbrnd -->
 <g id="node1" class="node"><title>pcbrnd</title>
-<polygon fill="cyan" stroke="black" points="451,-1106 307,-1106 307,-242 451,-242 451,-1106"/>
+<polygon fill="cyan" stroke="black" points="451,-1322 307,-1322 307,-26 451,-26 451,-1322"/>
 <text text-anchor="middle" x="379" y="-670.3" font-family="Times,serif" font-size="14.00">pcb&#45;rnd</text>
 </g>
 <!-- kicad -->
@@ -104,9 +104,9 @@
 </g>
 <!-- autotrax -->
 <g id="node13" class="node"><title>autotrax</title>
-<polygon fill="none" stroke="black" points="740.113,-726 625.113,-726 625.113,-688 740.113,-688 740.113,-726"/>
+<polygon fill="none" stroke="black" points="737.613,-726 627.613,-726 627.613,-688 737.613,-688 737.613,-726"/>
 <text text-anchor="middle" x="682.613" y="-710.8" font-family="Times,serif" font-size="14.00">Protel</text>
-<text text-anchor="middle" x="682.613" y="-695.8" font-family="Times,serif" font-size="14.00">autotrax/easytraxs</text>
+<text text-anchor="middle" x="682.613" y="-695.8" font-family="Times,serif" font-size="14.00">autotrax/easytrax</text>
 </g>
 <!-- pcbrnd&#45;&gt;autotrax -->
 <g id="edge5" class="edge"><title>pcbrnd&#45;&gt;autotrax</title>
@@ -190,7 +190,7 @@
 </g>
 <!-- pcbrnd&#45;&gt;breadboard -->
 <g id="edge13" class="edge"><title>pcbrnd&#45;&gt;breadboard</title>
-<path fill="none" stroke="black" d="M353.254,-1106.42C340.062,-1201.6 319.876,-1285.09 289,-1322 256.01,-1361.44 198.038,-1376.4 154.034,-1381.97"/>
+<path fill="none" stroke="black" d="M306.792,-1293.49C301.295,-1304.77 295.376,-1314.38 289,-1322 256.01,-1361.44 198.038,-1376.4 154.034,-1381.97"/>
 <polygon fill="black" stroke="black" points="153.564,-1378.5 144.023,-1383.11 154.354,-1385.46 153.564,-1378.5"/>
 <text text-anchor="middle" x="239.5" y="-1378.8" font-family="Times,serif" font-size="14.00">.png</text>
 </g>
@@ -201,7 +201,7 @@
 </g>
 <!-- pcbrnd&#45;&gt;BoM -->
 <g id="edge14" class="edge"><title>pcbrnd&#45;&gt;BoM</title>
-<path fill="none" stroke="black" d="M340.301,-1106.27C327.784,-1168.63 311.135,-1220.38 289,-1246 250.056,-1291.07 178.015,-1302.78 133.527,-1305.54"/>
+<path fill="none" stroke="black" d="M306.874,-1217.57C301.353,-1228.98 295.407,-1238.59 289,-1246 250.056,-1291.07 178.015,-1302.78 133.527,-1305.54"/>
 <polygon fill="black" stroke="black" points="133.204,-1302.05 123.39,-1306.04 133.551,-1309.04 133.204,-1302.05"/>
 <text text-anchor="middle" x="239.5" y="-1300.8" font-family="Times,serif" font-size="14.00">text</text>
 </g>
@@ -212,7 +212,7 @@
 </g>
 <!-- pcbrnd&#45;&gt;XY -->
 <g id="edge15" class="edge"><title>pcbrnd&#45;&gt;XY</title>
-<path fill="none" stroke="black" d="M309.457,-1106.38C303.156,-1122.01 296.347,-1134.86 289,-1144 249.384,-1193.31 174.96,-1213.86 130.7,-1222.02"/>
+<path fill="none" stroke="black" d="M306.921,-1112.45C301.339,-1125.35 295.372,-1136.07 289,-1144 249.384,-1193.31 174.96,-1213.86 130.7,-1222.02"/>
 <polygon fill="black" stroke="black" points="129.929,-1218.6 120.67,-1223.75 131.12,-1225.49 129.929,-1218.6"/>
 <text text-anchor="middle" x="239.5" y="-1224.8" font-family="Times,serif" font-size="14.00">.xy</text>
 <text text-anchor="middle" x="239.5" y="-1209.8" font-family="Times,serif" font-size="14.00">for pick and place</text>
@@ -394,8 +394,8 @@
 </g>
 <!-- edif&#45;&gt;pcbrnd -->
 <g id="edge24" class="edge"><title>edif&#45;&gt;pcbrnd</title>
-<path fill="none" stroke="black" d="M120.382,-117.014C162.478,-125.083 246.322,-147.408 289,-202 295.044,-209.731 300.729,-220.031 306.07,-232.361"/>
-<polygon fill="black" stroke="black" points="302.864,-233.768 309.899,-241.691 309.34,-231.111 302.864,-233.768"/>
+<path fill="none" stroke="black" d="M120.382,-117.014C162.478,-125.083 246.322,-147.408 289,-202 293.816,-208.161 298.405,-215.953 302.773,-225.103"/>
+<polygon fill="black" stroke="black" points="299.605,-226.594 306.893,-234.284 305.992,-223.727 299.605,-226.594"/>
 </g>
 <!-- netlist -->
 <g id="node21" class="node"><title>netlist</title>
@@ -404,8 +404,8 @@
 </g>
 <!-- netlist&#45;&gt;pcbrnd -->
 <g id="edge26" class="edge"><title>netlist&#45;&gt;pcbrnd</title>
-<path fill="none" stroke="black" d="M126.105,-37.1321C169.793,-43.2944 248.507,-61.181 289,-112 307.581,-135.32 322.348,-178.892 334.066,-231.87"/>
-<polygon fill="black" stroke="black" points="330.693,-232.829 336.219,-241.868 337.536,-231.356 330.693,-232.829"/>
+<path fill="none" stroke="black" d="M126.105,-37.1321C169.793,-43.2944 248.507,-61.181 289,-112 293.74,-117.949 298.232,-125.216 302.489,-133.621"/>
+<polygon fill="black" stroke="black" points="299.389,-135.253 306.84,-142.785 305.712,-132.25 299.389,-135.253"/>
 <text text-anchor="middle" x="239.5" y="-115.8" font-family="Times,serif" font-size="14.00">pcb .net</text>
 </g>
 <!-- ps&#45;&gt;pcbrnd -->
