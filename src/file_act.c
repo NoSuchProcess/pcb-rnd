@@ -303,8 +303,10 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		void *ptrtmp;
 		FILE *fp;
 		pcb_bool result;
+		pcb_coord_t x, y;
 
-		if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
+		pcb_gui->get_coords("Click on an element", &x, &y);
+		if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 			element = (pcb_element_t *) ptrtmp;
 			if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 				pcb_lookup_element_conns(element, fp);

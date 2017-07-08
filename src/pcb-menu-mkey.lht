@@ -73,7 +73,7 @@ ha:{
 				-
 				ha:Save connection data of {
 					li:submenu {
-						ha:a single element                  = {                  li:action={ GetXY(Click to set the element mark <>); Save(ElementConnections)}}
+						ha:a single element                  = {                  li:action={ Save(ElementConnections) }
 						ha:all elements                      = {                  action=Save(AllConnections) }
 						ha:unused pins                       = {                  action=Save(AllUnusedPins) }
 						ha:netlist patch for back annotation = {a=Alt Ctrl<Key>b; action=SavePatch() }
