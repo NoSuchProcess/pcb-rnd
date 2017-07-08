@@ -24,52 +24,8 @@
  *
  */
 
-
-/*
-
-Here's a brief tour of the data and life of a polygon, courtesy of Ben
-Jackson:
-
-A PCB pcb_polygon_t contains an array of points outlining the polygon.
-This is what is manipulated by the UI and stored in the saved PCB.
-
-A pcb_polygon_t also contains a pcb_polyarea_t called 'Clipped' which is
-computed dynamically by InitClip every time a board is loaded.  The
-point array is converted to a pcb_polyarea_t by original_poly and then holes
-are cut in it by clearPoly.  After that it is maintained dynamically
-as parts are added, moved or removed (this is why sometimes bugs can
-be fixed by just re-loading the board).
-
-A pcb_polyarea_t consists of a linked list of pcb_pline_t structures.  The head of
-that list is pcb_polyarea_t.contours.  The first contour is an outline of a
-filled region.  All of the subsequent pcb_pline_ts are holes cut out of that
-first contour.  pcb_polyarea_ts are in a doubly-linked list and each member
-of the list is an independent (non-overlapping) area with its own
-outline and holes.  The function biggest() finds the largest pcb_polyarea_t
-so that pcb_polygon_t.Clipped points to that shape.  The rest of the
-polygon still exists, it's just ignored when turning the polygon into
-copper.
-
-The first pcb_polyarea_t in pcb_polygon_t.Clipped is what is used for the vast
-majority of Polygon related tests.  The basic logic for an
-intersection is "is the target shape inside pcb_polyarea_t.contours and NOT
-fully enclosed in any of pcb_polyarea_t.contours.next... (the holes)".
-
-The polygon dicer (NoHolesPolygonDicer and r_NoHolesPolygonDicer)
-emits a series of "simple" pcb_pline_t shapes.  That is, the pcb_pline_t isn't
-linked to any other "holes" outlines).  That's the meaning of the first
-test in r_NoHolesPolygonDicer.  It is testing to see if the pcb_pline_t
-contour (the first, making it a solid outline) has a valid next
-pointer (which would point to one or more holes).  The dicer works by
-recursively chopping the polygon in half through the first hole it
-sees (which is guaranteed to eliminate at least that one hole).  The
-dicer output is used for HIDs which cannot render things with holes
-(which would require erasure).
-
-*/
-
-/* special polygon editing routines
- */
+/* pcb-rnd specific polygon editing routines
+   see doc/developer/polygon.html for more info */
 
 #include "config.h"
 #include "conf_core.h"
