@@ -66,7 +66,7 @@ typedef enum {
 
 /* hatch a polygon with horizontal and/or vertical lines drawn on dst,
    one line per period */
-void pcb_poly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
+void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
 
 /* Generic hor-ver hatch with a callback */
 void pcb_cpoly_hatch(const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t offs, pcb_coord_t period, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2));

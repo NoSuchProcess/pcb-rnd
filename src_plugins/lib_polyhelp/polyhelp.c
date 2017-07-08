@@ -441,7 +441,7 @@ static void hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2,
 	pcb_line_new(ctx->dst, x1, y1, x2, y2, ctx->thickness, ctx->clearance, ctx->flags);
 }
 
-void pcb_poly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
 {
 	hatch_ctx_t ctx;
 
