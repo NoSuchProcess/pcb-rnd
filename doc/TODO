@@ -31,7 +31,7 @@ For the next release:
 	- composite silk layer highlight bug: add a second, non-auto silk layer; place an element; select the element -> element silk is not cyan; reason: composite layer is drawn with mask, mask loses color on blotting (affect gtk only)
 	- solder paste layer doesn't have selected color, selection is not visible
 	- backup save triggers save in pcb indirectly, and that changes the layer stackup which may ruin the board (add new mask layers, wait for a save, draw on them after a save, they become silk) [report: Ade]
-	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
+	+ cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- replace default font with OSI lht font, load a file with embedded default font -> get both fonts in the same slot [report: miloh]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
