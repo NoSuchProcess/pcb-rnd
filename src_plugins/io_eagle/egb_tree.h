@@ -45,6 +45,7 @@ struct egb_node_s {
 
 egb_node_t *egb_node_alloc(int id, const char *id_name);
 egb_node_t *egb_node_append(egb_node_t *parent, egb_node_t *node);
+egb_node_t *egb_node_unlink(egb_node_t *parent, egb_node_t *prev, egb_node_t *node);
 void egb_node_free(egb_node_t *node);
 
 void egb_node_prop_set(egb_node_t *node, const char *key, const char *val);

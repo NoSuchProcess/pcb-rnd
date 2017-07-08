@@ -26,6 +26,7 @@
 
 /* Eagle binary tree store */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <genht/hash.h>
 #include "egb_tree.h"
@@ -90,6 +91,29 @@ void egb_node_free(egb_node_t *node)
 	}
 	free(node);
 }
+
+egb_node_t *egb_node_unlink(egb_node_t *parent, egb_node_t *prev, egb_node_t *node)
+{
+	if (parent->first_child == node) {
+		assert(prev == NULL);
+		parent->first_child = node->next;
+	}
+	else {
+		assert(prev != NULL);
+		assert(prev->next == node);
+	}
+
+	if (parent->last_child == node)
+		parent->last_child = prev;
+
+	if (prev != NULL)
+		prev->next = node->next;
+
+	node->parent = NULL;
+	node->next = NULL;
+	return node;
+}
+
 
 static char inds[] = "                                                               ";
 static void egb_dump_(FILE *f, int ind, egb_node_t *node)
