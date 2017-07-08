@@ -30,7 +30,7 @@
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "obj_line.h"
-
+#include "box.h"
 
 
 void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
@@ -206,6 +206,110 @@ pcb_bool pcb_cpoly_is_simple_rect(const pcb_polygon_t *p)
 		return pcb_false; /* has holes */
 	return pcb_pline_is_rectangle(p->Clipped->contours);
 }
+
+static void add_track_seg(pcb_box_t *bbox, pcb_rtree_t *edges, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	pcb_box_t b;
+
+	if (x1 <= x2) {
+		b.X1 = x1;
+		b.X2 = x2;
+	}
+	else {
+		b.X1 = x2;
+		b.X2 = x1;
+	}
+	if (y1 <= y2) {
+		b.Y1 = y1;
+		b.Y2 = y2;
+	}
+	else {
+		b.Y1 = y2;
+		b.Y2 = y1;
+	}
+	pcb_box_bump_box(bbox, &b);
+	pcb_r_insert_entry(edges, &b, 1);
+}
+
+static void add_track(pcb_box_t *bbox, pcb_rtree_t *edges, 	pcb_poly_it_t *it, pcb_pline_t *track)
+{
+	int go;
+	pcb_coord_t x, y, px, py;
+
+	for(go = pcb_poly_vect_first(it, &x, &y); go; go = pcb_poly_vect_next(it, &x, &y)) {
+		add_track_seg(bbox, edges, px, py, x, y);
+		px = x;
+		py = y;
+	}
+
+	pcb_poly_vect_first(it, &x, &y);
+	add_track_seg(bbox, edges, px, py, x, y);
+}
+
+
+/* collect all edge lines (contour and holes) in an rtree, calculate the bbox */
+pcb_rtree_t *pcb_poly_edge_tree(const pcb_polygon_t *src, pcb_coord_t offs, pcb_box_t *bbox)
+{
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+	pcb_rtree_t *edges = pcb_r_create_tree(NULL, 0, 0);
+
+	bbox->X1 = bbox->Y1 = PCB_MAX_COORD;
+	bbox->X2 = bbox->Y2 = -PCB_MAX_COORD;
+
+	for(pa = pcb_poly_island_first(src, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_coord_t x, y;
+		pcb_pline_t *pl, *track;
+
+		pl = pcb_poly_contour(&it);
+		if (pl != NULL) { /* we have a contour */
+			track = pcb_pline_dup_offset(pl, -offs);
+			add_track(bbox, edges, &it, track);
+			pcb_poly_contour_del(&track);
+
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
+				track = pcb_pline_dup_offset(pl, +offs);
+				add_track(bbox, edges, &it, track);
+				pcb_poly_contour_del(&track);
+			}
+		}
+	}
+
+	return edges;
+}
+
+void pcb_poly_hatch(const pcb_polygon_t *src, pcb_coord_t offs, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2))
+{
+	pcb_box_t bbox;
+	pcb_rtree_t *rt = pcb_poly_edge_tree(src, offs, &bbox);
+
+	pcb_r_destroy_tree(&rt);
+}
+
+
+typedef struct {
+	pcb_layer_t *dst;
+	pcb_coord_t thickness, clearance;
+	pcb_flag_t flags;
+} hatch_ctx_t;
+
+static void hatch_cb(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+
+}
+
+void pcb_poly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+{
+	hatch_ctx_t ctx;
+	ctx.dst = dst;
+	ctx.thickness = thickness;
+	ctx.clearance = clearance;
+	ctx.flags = flags;
+
+	pcb_poly_hatch(src, (thickness/2)+1, &ctx, hatch_cb);
+}
+
+
 
 int pplg_check_ver_lib_polyhelp(int ver_needed) { return 0; }
 
