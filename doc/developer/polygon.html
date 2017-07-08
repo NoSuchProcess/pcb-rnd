@@ -39,7 +39,7 @@ self-intersecting.
 The as-drawn version is stored to make editing possible. It is
 not affected by other objects (e.g. clearances) or flags of the polygon.
 The as-drawn points exist and are stored even if they are not visible
-(clipped).
+(clipped). The UI maniulates the as-drawn version.
 
 
 <H3> The clipped version </H3>
@@ -71,6 +71,17 @@ of the pline, are the contours of the cutouts (holes).
 <p>
 A pline consists of a circular, doubly linked list of points; traversing using
 the .next field, the points are ordered in counter-clockwise.
+<p>
+The clipped polygon shall be updated by any code that changes:
+<ul>
+	<li> the as-drawn points of the polygon
+	<li> geomerty of any object that may overlap with the polygon (so that clearance changes are applied)
+</ul>
+<p>
+When some code forgets to update clippig, the clipped polygon doesn't match
+the clearances dictated by other objects; a reload of the board "fixes" the
+problem by forcing the clip. (Native save files contain the as-drawn poly only,
+not the (outdated) clipped poly).
 
 <H3> The no-holes version </H3>
 <p>
@@ -80,6 +91,25 @@ a list of islands, each specified with an outer countour that are crafted
 to include the holes. This is done by slicing an island at each hole. 
 TODO: check how it looks, include image
 
+<H3> Further comments by Ben Jackson </H3>
+As extracted from the original code comments:
+<pre>
+The first pcb_polyarea_t in pcb_polygon_t.Clipped is what is used for the vast
+majority of Polygon related tests.  The basic logic for an
+intersection is "is the target shape inside pcb_polyarea_t.contours and NOT
+fully enclosed in any of pcb_polyarea_t.contours.next... (the holes)".
+
+The polygon dicer (NoHolesPolygonDicer and r_NoHolesPolygonDicer)
+emits a series of "simple" pcb_pline_t shapes.  That is, the pcb_pline_t isn't
+linked to any other "holes" outlines).  That's the meaning of the first
+test in r_NoHolesPolygonDicer.  It is testing to see if the pcb_pline_t
+contour (the first, making it a solid outline) has a valid next
+pointer (which would point to one or more holes).  The dicer works by
+recursively chopping the polygon in half through the first hole it
+sees (which is guaranteed to eliminate at least that one hole).  The
+dicer output is used for HIDs which cannot render things with holes
+(which would require erasure).
+</pre>
 
 <h2> How to code with polygons </h2>
 
