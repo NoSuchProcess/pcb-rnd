@@ -744,8 +744,7 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 			} else {
 				pcb_coord_t Thickness, x, y, x_first, y_first, x_prev, y_prev;
 				Thickness = PCB_MIL_TO_COORD(10);
-				autotrax_cpoly_hatch_lines(FP, polygon, 1, Thickness*3, Thickness, current_layer, xOffset, yOffset);
-				autotrax_cpoly_hatch_lines(FP, polygon, 2, Thickness*3, Thickness, current_layer, xOffset, yOffset);
+				autotrax_cpoly_hatch_lines(FP, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness*3, Thickness, current_layer, xOffset, yOffset);
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
 					/* now generate cross hatch lines for polygon island export */
 					pcb_pline_t *pl;
