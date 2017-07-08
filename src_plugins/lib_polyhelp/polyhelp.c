@@ -38,6 +38,8 @@ static const char *polyhelp_cookie = "lib_polyhelp";
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
+#include "compat_misc.h"
+#include "hid_attrib.h"
 #include "hid_actions.h"
 
 void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
@@ -439,7 +441,7 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly
 }
 
 
-static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [combination of h|v|c])\n";
+static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [combination of h|v|c])\nPolyHatch(interactive)\n";
 static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer";
 static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -448,30 +450,77 @@ static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	pcb_flag_t flg;
 	int want_contour = 0, cont_specd = 0;
 
-	if (argc > 0) {
-		pcb_bool succ;
-		period = pcb_get_value(argv[0], NULL, NULL, &succ);
-		if (!succ) {
-			pcb_message(PCB_MSG_ERROR, "Invalid spacing value - must be a coordinate\n");
-			return -1;
+	if ((argc > 0) && (pcb_strcasecmp(argv[0], "interactive") == 0)) {
+		pcb_hid_attribute_t attrs[5];
+#define nattr sizeof(attrs)/sizeof(attrs[0])
+		static pcb_hid_attr_val_t results[nattr] = { {0}, {1}, {1}, {1}, {1} };
+
+		memset(attrs, 0, sizeof(attrs));
+
+		results[0].coord_value = conf_core.design.line_thickness * 2;
+		attrs[0].name = "Spacing";
+		attrs[0].help_text = "Distance between centerlines of adjacent hatch lines for vertical and horizontal hatching";
+		attrs[0].type = PCB_HATT_COORD;
+		attrs[0].default_val.coord_value = results[0].coord_value;
+		attrs[0].min_val = 1;
+		attrs[0].max_val = PCB_MM_TO_COORD(100);
+
+		attrs[1].name = "Draw contour";
+		attrs[1].help_text = "Draw the contour of the polygon";
+		attrs[1].type = PCB_HATT_BOOL;
+		attrs[1].default_val.int_value = results[1].int_value;
+
+		attrs[2].name = "Draw horizontal hatch";
+		attrs[2].help_text = "Draw evenly spaced horizontal hatch lines";
+		attrs[2].type = PCB_HATT_BOOL;
+		attrs[2].default_val.int_value = results[2].int_value;
+
+		attrs[3].name = "Draw vertical hatch";
+		attrs[3].help_text = "Draw evenly spaced vertical hatch lines";
+		attrs[3].type = PCB_HATT_BOOL;
+		attrs[3].default_val.int_value = results[3].int_value;
+
+		attrs[4].name = "Clear-line";
+		attrs[4].help_text = "Hatch lines have clearance";
+		attrs[4].type = PCB_HATT_BOOL;
+		attrs[4].default_val.int_value = results[4].int_value;
+
+		if (pcb_gui->attribute_dialog(attrs, nattr, results, "Polygon hatch", "Hatch a polygon") != 0)
+			return 1;
+
+		period = results[0].coord_value;
+		if (results[1].int_value) want_contour = 1;
+		if (results[2].int_value) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
+		if (results[3].int_value) dir |= PCB_CPOLY_HATCH_VERTICAL;
+		flg = pcb_flag_make(results[4].int_value ? PCB_FLAG_CLEARLINE : 0);
+	}
+	else {
+		if (argc > 0) {
+			pcb_bool succ;
+			period = pcb_get_value(argv[0], NULL, NULL, &succ);
+			if (!succ) {
+				pcb_message(PCB_MSG_ERROR, "Invalid spacing value - must be a coordinate\n");
+				return -1;
+			}
 		}
+
+		if (argc > 1) {
+			if (strchr(argv[1], 'c')) want_contour = 1;
+			if (strchr(argv[1], 'h')) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
+			if (strchr(argv[1], 'v')) dir |= PCB_CPOLY_HATCH_VERTICAL;
+			cont_specd = 1;
+		}
+
+		if (cont_specd == 0) {
+			dir = PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL;
+			want_contour = 1;
+		}
+		if (period == 0)
+			period = conf_core.design.line_thickness * 2;
+
+		flg = pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0);
 	}
 
-	if (argc > 1) {
-		if (strchr(argv[1], 'c')) want_contour = 1;
-		if (strchr(argv[1], 'h')) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
-		if (strchr(argv[1], 'v')) dir |= PCB_CPOLY_HATCH_VERTICAL;
-		cont_specd = 1;
-	}
-
-	if (cont_specd == 0) {
-		dir = PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL;
-		want_contour = 1;
-	}
-	if (period == 0)
-		period = conf_core.design.line_thickness * 2;
-
-	flg = pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0);
 	PCB_POLY_ALL_LOOP(PCB->Data); {
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 			continue;
