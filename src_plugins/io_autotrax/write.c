@@ -729,7 +729,7 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 							go; go = pcb_poly_vect_next(&poly_it, &x, &y)) {
 							if (x_prev != 0 && y_prev != 0) {
 								write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x, y, Thickness, current_layer);
-                        					local_flag |= 1;
+								local_flag |= 1;
 								pcb_printf("   %mm %mm\n", x, y);
 							}
 							if (x_prev == 0 && y_prev == 0) {
@@ -749,27 +749,25 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number,
 							pcb_trace(" poly hole:\n");
 							x_prev = y_prev = 0;
 						/* iterate over the vectors of the given hole */
-							for(go = pcb_poly_vect_first(&poly_it, &x, &y); go;
-								go = pcb_poly_vect_next(&poly_it, &x, &y)) {
-
+							for(go = pcb_poly_vect_first(&poly_it, &x, &y); go; go = pcb_poly_vect_next(&poly_it, &x, &y)) {
 								if (x_prev != 0 && y_prev != 0) {
-                                                                	write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x, y, Thickness, current_layer);
-                                                                	local_flag |= 1;
-                                                                	pcb_printf("   %mm %mm\n", x, y);
-                                                        	}
-                                                        	if (x_prev == 0 && y_prev == 0) {
-                                                                	x_first = x;
-                                                                	y_first = y;
-                                                        	}
-                                                        	x_prev = x;
-                                                        	y_prev = y;
-                                                	}
+									write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x, y, Thickness, current_layer);
+									local_flag |= 1;
+									pcb_printf("   %mm %mm\n", x, y);
+								}
+								if (x_prev == 0 && y_prev == 0) {
+									x_first = x;
+									y_first = y;
+								}
+								x_prev = x;
+								y_prev = y;
+							}
 							if (x != 0 && y != 0
 								&& x_prev != 0 && y_prev != 0) {
-                                                		write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x_first, y_first, Thickness, current_layer);
+								write_autotrax_pline_segment(FP, xOffset, yOffset, x_prev, y_prev, x_first, y_first, Thickness, current_layer);
 							}
 						}
-					}	
+					}
 				}
 			}
 		}
