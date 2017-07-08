@@ -207,55 +207,83 @@ pcb_bool pcb_cpoly_is_simple_rect(const pcb_polygon_t *p)
 	return pcb_pline_is_rectangle(p->Clipped->contours);
 }
 
-static void add_track_seg(pcb_box_t *bbox, pcb_rtree_t *edges, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+pcb_cardinal_t pcb_cpoly_num_corners(const pcb_polygon_t *src)
 {
-	pcb_box_t b;
+	pcb_cardinal_t res = 0;
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
 
-	if (x1 <= x2) {
-		b.X1 = x1;
-		b.X2 = x2;
+
+	for(pa = pcb_poly_island_first(src, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_pline_t *pl;
+
+		pl = pcb_poly_contour(&it);
+		if (pl != NULL) { /* we have a contour */
+			res += pl->Count;
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
+				res += pl->Count;
+		}
 	}
-	else {
-		b.X1 = x2;
-		b.X2 = x1;
-	}
-	if (y1 <= y2) {
-		b.Y1 = y1;
-		b.Y2 = y2;
-	}
-	else {
-		b.Y1 = y2;
-		b.Y2 = y1;
-	}
-	pcb_box_bump_box(bbox, &b);
-	pcb_r_insert_entry(edges, &b, 1);
+
+	return res;
 }
 
-static void add_track(pcb_box_t *bbox, pcb_rtree_t *edges, 	pcb_poly_it_t *it, pcb_pline_t *track)
+static void add_track_seg(pcb_cpoly_edgetree_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	pcb_cpoly_edge_t *e = &dst->edges[dst->used++];
+	pcb_box_t *b = &e->bbox;
+
+	if (x1 <= x2) {
+		b->X1 = x1;
+		b->X2 = x2;
+	}
+	else {
+		b->X1 = x2;
+		b->X2 = x1;
+	}
+	if (y1 <= y2) {
+		b->Y1 = y1;
+		b->Y2 = y2;
+	}
+	else {
+		b->Y1 = y2;
+		b->Y2 = y1;
+	}
+	pcb_box_bump_box(&dst->bbox, b);
+	pcb_r_insert_entry(dst->edge_tree, (pcb_box_t *)e, 0);
+}
+
+static void add_track(pcb_cpoly_edgetree_t *dst, pcb_poly_it_t *it, pcb_pline_t *track)
 {
 	int go;
 	pcb_coord_t x, y, px, py;
 
 	for(go = pcb_poly_vect_first(it, &x, &y); go; go = pcb_poly_vect_next(it, &x, &y)) {
-		add_track_seg(bbox, edges, px, py, x, y);
+		add_track_seg(dst, px, py, x, y);
 		px = x;
 		py = y;
 	}
 
 	pcb_poly_vect_first(it, &x, &y);
-	add_track_seg(bbox, edges, px, py, x, y);
+	add_track_seg(dst, px, py, x, y);
 }
 
 
 /* collect all edge lines (contour and holes) in an rtree, calculate the bbox */
-pcb_rtree_t *pcb_poly_edge_tree(const pcb_polygon_t *src, pcb_coord_t offs, pcb_box_t *bbox)
+pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_polygon_t *src, pcb_coord_t offs)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
-	pcb_rtree_t *edges = pcb_r_create_tree(NULL, 0, 0);
+	pcb_cpoly_edgetree_t *res;
+	pcb_cardinal_t alloced = pcb_cpoly_num_corners(src) * sizeof(pcb_cpoly_edge_t);
 
-	bbox->X1 = bbox->Y1 = PCB_MAX_COORD;
-	bbox->X2 = bbox->Y2 = -PCB_MAX_COORD;
+	res = malloc(sizeof(pcb_cpoly_edgetree_t) + alloced);
+
+	res->alloced = alloced;
+	res->used = 0;
+	res->edge_tree = pcb_r_create_tree(NULL, 0, 0);
+	res->bbox.X1 = res->bbox.Y1 = PCB_MAX_COORD;
+	res->bbox.X2 = res->bbox.Y2 = -PCB_MAX_COORD;
 
 	for(pa = pcb_poly_island_first(src, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		pcb_coord_t x, y;
@@ -264,26 +292,31 @@ pcb_rtree_t *pcb_poly_edge_tree(const pcb_polygon_t *src, pcb_coord_t offs, pcb_
 		pl = pcb_poly_contour(&it);
 		if (pl != NULL) { /* we have a contour */
 			track = pcb_pline_dup_offset(pl, -offs);
-			add_track(bbox, edges, &it, track);
+			add_track(res, &it, track);
 			pcb_poly_contour_del(&track);
 
 			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
 				track = pcb_pline_dup_offset(pl, +offs);
-				add_track(bbox, edges, &it, track);
+				add_track(res, &it, track);
 				pcb_poly_contour_del(&track);
 			}
 		}
 	}
 
-	return edges;
+	return res;
+}
+
+void pcb_cpoly_edgetree_destroy(pcb_cpoly_edgetree_t *etr)
+{
+	pcb_r_destroy_tree(&etr->edge_tree);
+	free(etr);
 }
 
 void pcb_poly_hatch(const pcb_polygon_t *src, pcb_coord_t offs, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2))
 {
-	pcb_box_t bbox;
-	pcb_rtree_t *rt = pcb_poly_edge_tree(src, offs, &bbox);
+	pcb_cpoly_edgetree_t *etr = pcb_cpoly_edgetree_create(src, offs);
 
-	pcb_r_destroy_tree(&rt);
+	pcb_cpoly_edgetree_destroy(etr);
 }
 
 

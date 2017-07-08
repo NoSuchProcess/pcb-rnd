@@ -38,3 +38,14 @@ pcb_bool pcb_cpoly_is_simple_rect(const pcb_polygon_t *p);
 /* Returns whether all edges of a pline are axis aligned */
 pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src);
 
+typedef struct {
+	pcb_box_t bbox;
+	pcb_coord_t x1, y1, x2, y2;
+} pcb_cpoly_edge_t;
+
+typedef struct {
+	pcb_rtree_t *edge_tree;
+	pcb_box_t bbox;
+	pcb_cardinal_t used, alloced;
+	pcb_cpoly_edge_t edges[1];
+} pcb_cpoly_edgetree_t;
