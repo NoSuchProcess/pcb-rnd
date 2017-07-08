@@ -1051,6 +1051,12 @@ void pcb_notify_mode(void)
 						pcb_hid_actionl("Polygon", "CloseHole", NULL);
 						break;
 					}
+					
+					/* Someone clicking twice on the same point ('doubleclick'): close polygon hole */
+					if (n >= 3 && points[n - 1].X == pcb_crosshair.AttachedLine.Point2.X && points[n - 1].Y == pcb_crosshair.AttachedLine.Point2.Y) {
+						pcb_hid_actionl("Polygon", "CloseHole", NULL);
+						break;
+					}
 
 					/* create new point if it's the first one or if it's
 					 * different to the last one
