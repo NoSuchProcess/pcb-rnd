@@ -128,7 +128,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_LAYERS, 0xFF7F, "layer",
+	{ PCB_EGKW_SECT_LAYER, 0xFF7F, "layer",
 		{ /* field match */
 			TERM
 		},
@@ -1245,7 +1245,7 @@ static int postproc_layers(void *ctx, egb_node_t *root)
 	egb_node_t *n, *p;
 	egb_node_t *layers = egb_node_append(root, egb_node_alloc(0, "layers"));
 	for(n = root->first_child->first_child, p = NULL; n != NULL; p = n, n = n->next) {
-		if (n->id == PCB_EGKW_SECT_LAYERS) {
+		if (n->id == PCB_EGKW_SECT_LAYER) {
 #warning TODO: reparent these
 		}
 	}
