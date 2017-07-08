@@ -1045,6 +1045,8 @@ int read_drc(void *ctx, FILE *f, const char *fn)
 		return -1;
 	}
 
+#warning TODO: put this in the tree instead of printing
+
 	/* first ~134 bytes contain the most useful DRC stuff, such as
 	# wire2wire wire2pad wire2via pad2pad pad2via via2via pad2smd via2smd smd2smd
 	self.clearances, data = _cut('<9I', data, 36)i.e. 9 integers, 4 bytes each
@@ -1238,6 +1240,22 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 	return processed;
 }
 
+static int postproc_layers(void *ctx, egb_node_t *root)
+{
+	egb_node_t *n, *p;
+	egb_node_t *layers = egb_node_append(root, egb_node_alloc(0, "layers"));
+	for(n = root->first_child->first_child, p = NULL; n != NULL; p = n, n = n->next) {
+		if (n->id == PCB_EGKW_SECT_LAYERS) {
+#warning TODO: reparent these
+		}
+	}
+	return 0;
+}
+
+static int postproc(void *ctx, egb_node_t *root)
+{
+	return postproc_layers(ctx, root);
+}
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 {
@@ -1261,6 +1279,6 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 	read_notes(ctx, f, fn);
 	read_drc(ctx, f, fn);
 
-	return 0;
+	return postproc(ctx, *root);
 }
 
