@@ -106,9 +106,6 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 	double nx, ny, px, py;
 	int num_pts, i;
 
-fprintf(stdout, "!offs start\n");
-
-	fprintf(stdout, "color blue\n");
 	pcb_pline_fprint_anim(stdout, src);
 
 	v = &src->head;
@@ -122,16 +119,7 @@ fprintf(stdout, "!offs start\n");
 	i = 0;
 	do {
 		n = v->next;
-		fprintf(stdout, "color black\n");
-		cross(stdout, v->point[0], v->point[1]);
 		norm(&nx, &ny, v->point[0], v->point[1], n->point[0], n->point[1]);
-
-		fprintf(stdout, "color red\n");
-		{
-			static pcb_coord_t as = PCB_MM_TO_COORD(1);
-			pcb_coord_t mx = (v->point[0] + n->point[0]) / 2, my = (v->point[1] + n->point[1]) / 2;
-			pcb_fprintf(stdout, "line %#mm %#mm %#mm %#mm\n", mx, my, (pcb_coord_t)(mx+nx*as), (pcb_coord_t)(my+ny*as));
-		}
 
 		if (p != NULL) {
 			double xi, yi, vx1, vy1, vx2, vy2, nx1, ny1, nx2, ny2;
@@ -145,10 +133,6 @@ fprintf(stdout, "!offs start\n");
 			ny1 = v->point[1] - ny*offs;
 			nx2 = n->point[0] - nx*offs;
 			ny2 = n->point[1] - ny*offs;
-
-pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)vx1, (pcb_coord_t)vy1, (pcb_coord_t)vx2, (pcb_coord_t)vy2);
-pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)nx1, (pcb_coord_t)ny1, (pcb_coord_t)nx2, (pcb_coord_t)ny2);
-
 
 			ll_intersect(&xi, &yi, vx1, vy1, vx2, vy2, nx1, ny1, nx2, ny2);
 			cross(stdout, (pcb_coord_t)xi, (pcb_coord_t)yi);
@@ -169,10 +153,8 @@ pcb_fprintf(stdout, " line %#mm %#mm %#mm %#mm\n", (pcb_coord_t)nx1, (pcb_coord_
 	}
 	while(i <= num_pts);
 
-	fprintf(stdout, "color green\n");
 	pcb_pline_fprint_anim(stdout, res);
 
-fprintf(stdout, "!offs end\n");
 	return res;
 }
 
