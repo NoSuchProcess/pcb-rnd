@@ -144,6 +144,15 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 		if (arc_start <= 270.0 && (arc_start + arc_delta) >= 360.0 ) {
 			arc_segments |= 0x02; /* ULQ */
 		}
+		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 450.0 ) {
+			arc_segments |= 0x04; /* LLQ */
+		}
+		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 540.0 ) {
+			arc_segments |= 0x08; /* LRQ */
+		}
+		if (arc_start <= 360.0 && (arc_start + arc_delta) >= 630.0 ) {
+			arc_segments |= 0x01; /* URQ */
+		}
 	}
 	return arc_segments;
 }
@@ -711,56 +720,35 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number, pcb_layer_t
 				pcb_message(PCB_MSG_ERROR, "Polygon exported as a bounding box only.\n");
 			}*/
 			} else {
-				pcb_coord_t Thickness, x, y, x_first, y_first, x_prev, y_prev;
+				pcb_coord_t Thickness;
 				Thickness = PCB_MIL_TO_COORD(10);
 				autotrax_cpoly_hatch_lines(FP, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness*3, Thickness, current_layer);
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
 					/* now generate cross hatch lines for polygon island export */
-					pcb_pline_t *pl;
-					int go;
+					pcb_pline_t *pl, *track;
 					/* check if we have a contour for the given island */
 					pl = pcb_poly_contour(&poly_it);
 					if (pl != NULL) {
-						x_prev = y_prev = 0;
-						for(go = pcb_poly_vect_first(&poly_it, &x, &y);
-							go; go = pcb_poly_vect_next(&poly_it, &x, &y)) {
-							if (x_prev != 0 && y_prev != 0) {
-								write_autotrax_pline_segment(FP, x_prev, y_prev, x, y, Thickness, current_layer);
-								local_flag |= 1;
-								pcb_printf("   %mm %mm\n", x, y);
-							}
-							if (x_prev == 0 && y_prev == 0) {
-								x_first = x;
-								y_first = y;
-							}
-							x_prev = x;
-							y_prev = y;
-						}
-						if (x != 0 && y != 0 && x_prev != 0 && y_prev != 0) {
-							write_autotrax_pline_segment(FP, x_prev, y_prev, x_first, y_first, Thickness, current_layer);
-						}
+						const pcb_vnode_t *v, *n;
+						track = pcb_pline_dup_offset(pl, -((Thickness/2)+1));
+						v = &track->head;
+						do {
+							n = v->next;
+							write_autotrax_pline_segment(FP, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
+						} while ((v = v->next) != &track->head);
+						pcb_poly_contour_del(&track);
+
 						/* iterate over all holes within this island */
 						for(pl = pcb_poly_hole_first(&poly_it);
 							pl != NULL; pl = pcb_poly_hole_next(&poly_it)) {
-							x_prev = y_prev = 0;
-						/* iterate over the vectors of the given hole */
-							for(go = pcb_poly_vect_first(&poly_it, &x, &y); go; go = pcb_poly_vect_next(&poly_it, &x, &y)) {
-								if (x_prev != 0 && y_prev != 0) {
-									write_autotrax_pline_segment(FP, x_prev, y_prev, x, y, Thickness, current_layer);
-									local_flag |= 1;
-									pcb_printf("   %mm %mm\n", x, y);
-								}
-								if (x_prev == 0 && y_prev == 0) {
-									x_first = x;
-									y_first = y;
-								}
-								x_prev = x;
-								y_prev = y;
-							}
-							if (x != 0 && y != 0
-								&& x_prev != 0 && y_prev != 0) {
-								write_autotrax_pline_segment(FP, x_prev, y_prev, x_first, y_first, Thickness, current_layer);
-							}
+							const pcb_vnode_t *v, *n;
+							track = pcb_pline_dup_offset(pl, -((Thickness/2)+1));
+							v = &track->head;
+							do {
+								n = v->next;
+								write_autotrax_pline_segment(FP, v->point[0], v->point[1], n->point[0], n->point[1], Thickness, current_layer);
+							} while ((v = v->next) != &track->head);
+							pcb_poly_contour_del(&track);
 						}
 					}
 				}
