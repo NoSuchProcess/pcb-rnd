@@ -1320,6 +1320,9 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (ans != PCB_TYPE_NONE) {
 		pcb_pad_t *pad = (pcb_pad_t *) ptr2;
 		check_snap_object(&snap_data, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y) / 2, pcb_true);
+		pcb_crosshair.snapped_pad = pad;
+	} else {
+		pcb_crosshair.snapped_pad = 0;
 	}
 
 	ans = PCB_TYPE_NONE;
@@ -1334,6 +1337,9 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (ans != PCB_TYPE_NONE) {
 		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 		check_snap_object(&snap_data, pin->X, pin->Y, pcb_true);
+		pcb_crosshair.snapped_pin = pin;
+	} else {
+		pcb_crosshair.snapped_pin = 0;
 	}
 
 	ans = PCB_TYPE_NONE;
@@ -1347,6 +1353,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (ans != PCB_TYPE_NONE) {
 		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 		check_snap_object(&snap_data, pin->X, pin->Y, pcb_true);
+		pcb_crosshair.snapped_pin = pin;
 	}
 
 	ans = PCB_TYPE_NONE;

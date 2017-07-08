@@ -1375,6 +1375,41 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	dy = pcb_get_value_ex(argv[2], argv[3], NULL, extra_units_y, "", NULL);
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
+	
+	/* Allow leaving snapped pin/pad */
+	if (pcb_crosshair.snapped_pad) {
+		pcb_pad_t *pad = pcb_crosshair.snapped_pad;
+		pcb_coord_t width = pad->Thickness;
+		pcb_coord_t height = pcb_distance(pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y)+width;
+		if (pad->Point1.Y == pad->Point2.Y) {
+			pcb_coord_t tmp = width;
+			width = height;
+			height = tmp;
+		}
+		if (dx < 0) {
+			dx -= width/2;
+		} else if (dx > 0) {
+			dx += width/2;
+		}
+		if (dy < 0) {
+			dy -= height/2;
+		} else if (dy > 0) {
+			dy += height/2;
+		}
+	} else if (pcb_crosshair.snapped_pin) {
+		pcb_pin_t *pin = pcb_crosshair.snapped_pin;
+		pcb_coord_t radius = pin->Thickness/2;
+		if (dx < 0) {
+			dx -= radius;
+		} else if (dx > 0) {
+			dx += radius;
+		}
+		if (dy < 0) {
+			dy -= radius;
+		} else if (dy > 0) {
+			dy += radius;
+		}
+	}
 
 	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
 	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
