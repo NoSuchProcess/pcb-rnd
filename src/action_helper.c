@@ -1048,32 +1048,7 @@ void pcb_notify_mode(void)
 
 					/* check if this is the last point of a polygon */
 					if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-						/* Create pcb_polyarea_ts from the original polygon
-						 * and the new hole polygon */
-						original = pcb_poly_from_poly((pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2);
-						new_hole = pcb_poly_from_poly(&pcb_crosshair.AttachedPolygon);
-
-						/* Subtract the hole from the original polygon shape */
-						pcb_polyarea_boolean_free(original, new_hole, &result, PCB_PBO_SUB);
-
-						/* Convert the resulting polygon(s) into a new set of nodes
-						 * and place them on the page. Delete the original polygon.
-						 */
-						pcb_undo_save_serial();
-						Flags = ((pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2)->Flags;
-						pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
-						pcb_remove_object(PCB_TYPE_POLYGON,
-												 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
-						pcb_undo_restore_serial();
-						pcb_undo_inc_serial();
-						pcb_draw();
-
-						/* reset state of attached line */
-						memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
-						pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-						pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-						pcb_added_lines = 0;
-
+						pcb_hid_actionl("Polygon", "CloseHole", NULL);
 						break;
 					}
 
