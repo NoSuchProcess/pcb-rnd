@@ -14,6 +14,9 @@ digraph gr {
 	tinycad [label="TinyCAD" shape=box]
 	web [label="JavaScript based\nweb application\n(work in progress)" shape=box color="#aaaaaa" fontcolor="#aaaaaa"]
 	fidocadj [label="FidoCadj\nartistic PCBs\n(experimental support)" shape=box]
+	autotrax [label="Protel\nautotrax/easytraxs\n" shape=box]
+	eagle [label="Eagle" shape=box]
+	hyp [label="Hyperlynx" shape=box]
 
 	subgraph cluster_HID {
 		label = "HID - user interface"
@@ -68,12 +71,18 @@ digraph gr {
 		pcb
 		freerouting
 		fidocadj
+		autotrax
+		eagle
+		hyp
 	}
 
 	pcbrnd -> kicad [label="board: legacy format"]
 	pcbrnd -> kicad [label="board: s-expression" dir=both]
 	pcbrnd -> kicad [label="footprint: s-expression" dir=both]
 	pcbrnd -> fidocadj [label="board" dir=both]
+	pcbrnd -> autotrax [label="board" dir=both]
+	pcbrnd -> eagle [label="board: xml" dir=both]
+	pcbrnd -> hyp [label="board: .hyp" dir=both]
 
 	eeschema -> pcbrnd [label="netlist"]
 
