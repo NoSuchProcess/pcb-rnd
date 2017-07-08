@@ -95,14 +95,14 @@ typedef int pcb_poly_map_cb_t(pcb_polygon_t *p, void *ctx, pcb_poly_event_t ev, 
 void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb);
 
 typedef struct pcb_poly_it_s {
-	pcb_polygon_t *p;
+	const pcb_polygon_t *p;
 	pcb_polyarea_t *pa;
 	pcb_pline_t *cntr;
 	pcb_vnode_t *v;
 } pcb_poly_it_t;
 
 /* Set the iterator to the first island of the polygon; returns NULL if no contour available */
-static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_first(pcb_polygon_t *p, pcb_poly_it_t *it)
+static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_first(const pcb_polygon_t *p, pcb_poly_it_t *it)
 {
 	it->p = p;
 	it->pa = p->Clipped;
