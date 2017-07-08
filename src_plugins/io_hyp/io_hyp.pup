@@ -1,4 +1,4 @@
-$class import
+$class io
 $short hyperlynx .hyp loader
 $long Import plugin for hyperlynx geometry (no polygons yet).
 $state works
