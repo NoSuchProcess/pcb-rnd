@@ -282,6 +282,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		DrawEverything_holes(drawn_area);
 
 	if (pcb_gui->gui) {
+		/* Draw pins' and pads' names */
+		pcb_draw_ppv_names(PCB_SWAP_IDENT ? solder : component, drawn_area);
+		
 		/* Draw element Marks */
 		if (PCB->PinOn)
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
@@ -381,6 +384,32 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 	}
 	if (PCB->PinOn || pcb_draw_doing_assy)
 		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
+}
+
+/* ---------------------------------------------------------------------------
+ * Draws pins' and pads' names - Always draws for non-gui HIDs,
+ * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
+ */
+void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
+{
+	int side;
+	unsigned int gflg = pcb_layergrp_flags(PCB, group);
+
+	if (PCB->PinOn || !pcb_gui->gui) {
+		/* draw element pins' names */
+		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_name_callback, NULL, NULL);
+
+		/* draw element pads' names */
+		if (gflg & PCB_LYT_TOP) {
+			side = PCB_COMPONENT_SIDE;
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_name_callback, &side, NULL);
+		}
+
+		if (gflg & PCB_LYT_BOTTOM) {
+			side = PCB_SOLDER_SIDE;
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_name_callback, &side, NULL);
+		}
+	}
 }
 
 #include "draw_composite.c"

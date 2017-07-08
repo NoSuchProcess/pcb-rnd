@@ -30,6 +30,7 @@
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
 pcb_r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_pad_name_callback(const pcb_box_t * b, void *cl);
 pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl);
 #endif
 

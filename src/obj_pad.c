@@ -506,7 +506,7 @@ void draw_pad(pcb_pad_t * pad)
 
 	_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
 
-	if (pcb_draw_doing_pinout || PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
+	if (pcb_draw_doing_pinout)
 		draw_pad_name(pad);
 }
 
@@ -517,6 +517,18 @@ pcb_r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_ON_SIDE(pad, *side))
 		draw_pad(pad);
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t draw_pad_name_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_pad_t *pad = (pcb_pad_t *) b;
+	int *side = cl;
+
+	if (PCB_ON_SIDE(pad, *side)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
+			draw_pad_name(pad);
+	}
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

@@ -1013,8 +1013,8 @@ static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)
 		pcb_gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
 	else
 		pcb_gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
-
-	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pv))
+	
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) && pcb_draw_doing_pinout)
 		_draw_pv_name(pv);
 }
 
@@ -1027,6 +1027,18 @@ void draw_pin(pcb_pin_t *pin, pcb_bool draw_hole)
 pcb_r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl)
 {
 	draw_pin((pcb_pin_t *) b, pcb_false);
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+void draw_pin_name(pcb_pin_t *pin)
+{
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
+		_draw_pv_name(pin); 
+}
+
+pcb_r_dir_t draw_pin_name_callback(const pcb_box_t * b, void *cl)
+{
+	draw_pin_name((pcb_pin_t *) b);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
