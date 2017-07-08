@@ -967,7 +967,7 @@ int read_notes(void *ctx, FILE *f, const char *fn)
 		printf("Start of pre-DRC free text section found.\n");
 	} else {
 		printf("Failed to find 0x1312 start of pre-DRC free text section.\n");
-                return -1;
+		return -1;
 	}
 
 	text_remaining = notes_length = (int)load_long(block, 4, 2);
@@ -980,7 +980,7 @@ int read_notes(void *ctx, FILE *f, const char *fn)
 			return -1;
 		}
 		text_remaining -= 400;
-    	}
+	}
 	if (fread(free_text, 1, text_remaining, f) != text_remaining) {
 		printf("E: short attempted free text block read. Truncated file?\n");
 		return -1;
@@ -1029,7 +1029,7 @@ int read_drc(void *ctx, FILE *f, const char *fn)
 					return -1;
 				}
 				if (load_long(block, 0, 1) == 0x78
- 					&& load_long(block, 1, 1) == 0x56
+					&& load_long(block, 1, 1) == 0x56
 					&& load_long(block, 2, 1) == 0x34
 					&& load_long(block, 3, 1) == 0x12) {
 						DRC_preamble_end_found = 1;
