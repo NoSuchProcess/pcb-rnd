@@ -232,6 +232,11 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	int max_width_mil = 32000;
 	int max_height_mil = 32000;
 
+	if (pcb_board_normalize(PCB) < 0) {
+		pcb_message(PCB_MSG_ERROR, "Unable to normalise layout prior to attempting export.\n");
+		return -1;
+	}
+
 	fputs("PCB FILE 4\r\n",FP); /*autotrax header*/
 
 	/* we sort out if the layout dimensions exceed the autotrax maxima */
