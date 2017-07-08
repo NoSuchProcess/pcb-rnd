@@ -47,9 +47,6 @@ static int pcb_act_Delete(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	const char *function = PCB_ACTION_ARG(0);
 	int id = pcb_funchash_get(function, NULL);
 
-	Note.X = pcb_crosshair.X;
-	Note.Y = pcb_crosshair.Y;
-
 	if (id == -1) {								/* no arg */
 		if (pcb_remove_selected() == pcb_false)
 			id = F_Object;
@@ -57,6 +54,7 @@ static int pcb_act_Delete(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	switch (id) {
 	case F_Object:
+		pcb_gui->get_coords("Click on object to delete", &Note.X, &Note.Y);
 		pcb_crosshair_save_mode();
 		pcb_crosshair_set_mode(PCB_MODE_REMOVE);
 		pcb_notify_mode();
