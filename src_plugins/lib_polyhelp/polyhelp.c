@@ -106,8 +106,6 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 	double nx, ny, px, py;
 	int num_pts, i;
 
-	pcb_pline_fprint_anim(stdout, src);
-
 	v = &src->head;
 	num_pts = 0;
 	do {
@@ -152,8 +150,6 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 		i++;
 	}
 	while(i <= num_pts);
-
-	pcb_pline_fprint_anim(stdout, res);
 
 	return res;
 }
