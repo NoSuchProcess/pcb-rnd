@@ -46,7 +46,6 @@ For the next release:
 - gtk hid: display element numbers; flip board with tab: numbers get mirrored [report:Evan]
 - BUG: 'double click to close' missing for polygon holes [report:miloh]
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
-+ BUG: arc bounding boxes not correctly found in some cases. Noticed on export to io_autotrax due to need to establish bounding box of board contents, including arcs, to allow subsequent board flip. work/bugfiles/arcExample.lht and .PCB 
 
 LATER RELEASES:
 - csect can't make a layer outline
