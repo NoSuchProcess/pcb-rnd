@@ -122,6 +122,8 @@ int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delt
 		arc_start -= arc_delta;
 	}
 
+#warning TODO arc segments less than 90 degrees do not convert well.
+
 	while (arc_start < 0) {
 		arc_start += 360;
 	}
