@@ -1,5 +1,5 @@
 $class lib
 $short polygon helpers
-$long functions to help plugins processing polygons
+$long functions to help plugins processing polygons and PolyHatch() action
 $state works
-default disable-all
+default buildin
