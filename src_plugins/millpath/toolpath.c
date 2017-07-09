@@ -31,6 +31,7 @@
 #include "layer_ui.h"
 #include "polygon.h"
 
+#include "src_plugins/lib_polyhelp/polyhelp.h"
 
 extern const char *pcb_millpath_cookie;
 
