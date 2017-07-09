@@ -119,9 +119,6 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 
 	if (result->fill != NULL)
 		pcb_poly_remove(result->res_ply, result->fill);
-
-	result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
-	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);
 }
 
 static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
@@ -130,17 +127,38 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	int has_otl;
 
 	result->grp = pcb_get_layergrp(pcb, layer->grp);
-	has_otl = (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, &otl, 1) == 1)
+	has_otl = (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, &otl, 1) == 1);
 
+	if (has_otl) { /* if there's an outline layer, the remove-poly shouldn't be bigger than that */
+		pcb_line_t *line;
+		pcb_arc_t *arc;
+		pcb_rtree_it_t it;
+		pcb_box_t otlbb;
+		pcb_layergrp_t *og = pcb_get_layergrp(pcb, otl);
+		int n;
+		
+		otlbb.X1 = otlbb.Y1 = PCB_MAX_COORD;
+		otlbb.X2 = otlbb.Y2 = -PCB_MAX_COORD;
 
-	if (has_otl) {
-#warning TODO: determine outline bbox
+		for(n = 0; n < og->len; n++) {
+			pcb_layer_t *l = pcb_get_layer(og->lid[n]);
+			if (l == NULL)
+				continue;
+
+			for(line = (pcb_line_t *)pcb_r_first(l->line_tree, &it); line != NULL; line = (pcb_line_t *)pcb_r_next(&it))
+				pcb_box_bump_box(&otlbb, (pcb_box_t *)line);
+			pcb_r_end(&it);
+
+			for(arc = (pcb_arc_t *)pcb_r_first(l->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)pcb_r_next(&it))
+				pcb_box_bump_box(&otlbb, (pcb_box_t *)arc);
+			pcb_r_end(&it);
+		}
+		result->fill = pcb_poly_new_from_rectangle(result->res_ply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	}
 	else
 		result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
 
 	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);
-
 
 	sub_group_all(pcb, result, result->grp, 0);
 	if (has_otl)
