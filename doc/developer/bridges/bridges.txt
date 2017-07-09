@@ -127,18 +127,93 @@ cell-width 15
 
 
 
-<- pcbrnd bbrd.n
+-> pcbrnd bbrd.n
 	label .png
 
-<- pcbrnd bom_.n
+-> pcbrnd bom_.n
 	label text
 
-<- pcbrnd xy__.n
+-> pcbrnd xy__.n
 	label .xy
 
-<- pcbrnd gerb.n
+-> pcbrnd gerb.n
 	label .grb, .cnc
 
 -> eesc.e pcbrnd
 	label import\nschematics
+
+-> pcbrnd ipcd.n
+	label IPC356D
+
+-> pcbrnd lpr_.n
+	label ps
+
+-> pcbrnd stat.n
+	label lihata
+
+-> pcbrnd ps__.n
+	label postscript
+
+-> pcbrnd svg_.n
+	label svg
+
+-> pcbrnd png_.n
+
+-> pcbrnd nelm.n
+
+
+
+-> mucs.e pcbrnd
+	label import\nnetlist
+
+-> lept.e pcbrnd
+	label import\nschematics
+
+-> ltsp.e pcbrnd
+	label import\nschematics
+
+-> tcad.e pcbrnd
+	label import\nschematics
+
+-> edif.e pcbrnd
+	label import\nschematics
+
+-> netl.e pcbrnd
+	label import\nnetlist
+
+
+
+
+<-> hyp_.s pcbrnd
+	label board
+
+<-> gsch.s pcbrnd
+	label schematics
+
+<-> gpcb.s pcbrnd
+	label board
+
+<-> kica.s pcbrnd
+	label board
+
+<-> frt_.s pcbrnd
+	label board
+
+<-> fido.s pcbrnd
+	label board
+
+<-> prtl.s pcbrnd
+	label board
+
+<-> eagl.s pcbrnd
+	label board
+
+
+<-> pcbrnd batch.w
+
+<-> pcbrnd gtk.w
+
+<-> pcbrnd lesstif.w
+
+<-> pcbrnd remote.w
 
