@@ -198,25 +198,26 @@ static pcb_hid_gc_t ghid_cairo_make_gc(void)
 	return rv;
 }
 
-static void set_clip(render_priv_t * priv, cairo_t * cr)
-{
-	if (cr == NULL)
-		return;
-
-	if (priv->clip) {
-		gdk_cairo_rectangle(cr, &priv->clip_rect);
-		cairo_clip(cr);
-	}
-	else {
-		/*FIXME: do nothing if no clipping ? */
-		//cairo_mask(cr, NULL);
-		//gdk_gc_set_clip_mask(gc, NULL);
-	}
-}
+/*TODO: check if clipping is not necessary */
+//static void set_clip(render_priv_t * priv, cairo_t * cr)
+//{
+//	if (cr == NULL)
+//		return;
+//
+//	if (priv->clip) {
+//		gdk_cairo_rectangle(cr, &priv->clip_rect);
+//		cairo_clip(cr);
+//	}
+//	else {
+//		/*FIXME: do nothing if no clipping ? */
+//		//cairo_mask(cr, NULL);
+//		//gdk_gc_set_clip_mask(gc, NULL);
+//	}
+//}
 
 static inline void ghid_cairo_draw_grid_global(cairo_t *cr)
 {
-	render_priv_t *priv = gport->render_priv;
+	//render_priv_t *priv = gport->render_priv;
 	pcb_coord_t x, y, x1, y1, x2, y2, grd;
 	int n, i;
 	static GdkPoint *points = NULL;
@@ -705,7 +706,7 @@ static int use_gc(pcb_hid_gc_t gc)
 {
 	render_priv_t *priv = gport->render_priv;
 	cairo_t *cr = priv->cr;
-	GdkWindow *window = gtk_widget_get_window(gport->top_window);
+	//GdkWindow *window = gtk_widget_get_window(gport->top_window);
 
 	if (gc->me_pointer != &gtk3_cairo_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
@@ -1125,7 +1126,7 @@ static void ghid_cairo_notify_mark_change(pcb_bool changes_complete)
 
 static void draw_right_cross(cairo_t * cr, gint x, gint y)
 {
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
+	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	cr_draw_line(cr, FALSE, x, 0, x, gport->view.canvas_height);
 	cr_draw_line(cr, FALSE, 0, y, gport->view.canvas_width, y);
@@ -1135,7 +1136,7 @@ static void draw_right_cross(cairo_t * cr, gint x, gint y)
 
 static void draw_slanted_cross(cairo_t * xor_gc, gint x, gint y)
 {
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
+	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	gint x0, y0, x1, y1;
 
 	x0 = x + (gport->view.canvas_height - y);
@@ -1163,7 +1164,7 @@ static void draw_slanted_cross(cairo_t * xor_gc, gint x, gint y)
 
 static void draw_dozen_cross(cairo_t * xor_gc, gint x, gint y)
 {
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
+	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	gint x0, y0, x1, y1;
 	gdouble tan60 = sqrt(3);
 
@@ -1231,8 +1232,8 @@ static void show_crosshair(gboolean paint_new_location)
 	//GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	gint x, y;
 	static gint x_prev = -1, y_prev = -1;
-	static cairo_t *xor_gc;
-	static GdkColor cross_color;
+	//static cairo_t *xor_gc;
+	//static GdkColor cross_color;
 	cairo_t *cr;
 
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
@@ -1396,7 +1397,7 @@ static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data
 static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * p,
 																					pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t * ctx)
 {
-	GdkWindow *window = gtk_widget_get_window(widget);
+	//GdkWindow *window = gtk_widget_get_window(widget);
 	//GdkDrawable *save_drawable;
 	cairo_t *cr = p;
 	GtkAllocation allocation;			/* Assuming widget is a drawing widget, get the Rectangle allowed for drawing. */
@@ -1475,8 +1476,8 @@ static void ghid_cairo_finish_debug_draw(void)
 
 static void draw_lead_user(render_priv_t * priv)
 {
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
-	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
+	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
+	//GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	int i;
 	pcb_lead_user_t *lead_user = &gport->lead_user;
 	pcb_coord_t radius = lead_user->radius;
