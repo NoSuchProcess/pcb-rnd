@@ -180,7 +180,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	sub_global_all(pcb, result, layer);
 }
 
-static void trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, int extra_offs)
+static void trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -189,9 +189,9 @@ static void trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_
 	for(pa = pcb_poly_island_first(result->fill, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		pcb_pline_t *pl = pcb_poly_contour(&it);
 		if (pl != NULL) { /* we have a contour */
-			pcb_pline_to_lines(result->res_path, pl, tool_dia, 0, pcb_no_flags());
+			pcb_pline_to_lines(result->res_path, pl, tool_dia + extra_offs, 0, pcb_no_flags());
 			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
-				pcb_pline_to_lines(result->res_path, pl, tool_dia, 0, pcb_no_flags());
+				pcb_pline_to_lines(result->res_path, pl, tool_dia + extra_offs, 0, pcb_no_flags());
 		}
 	}
 }
