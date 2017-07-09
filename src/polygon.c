@@ -1543,6 +1543,21 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t 
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+int pcb_poly_sub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *obj)
+{
+	if (subtract_plow(Data, Layer, Polygon, type, NULL, obj) == PCB_R_DIR_FOUND_CONTINUE)
+		return 0;
+	return -1;
+}
+
+int pcb_poly_unsub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *obj)
+{
+	if (add_plow(Data, Layer, Polygon, type, NULL, obj) == PCB_R_DIR_FOUND_CONTINUE)
+		return 0;
+	return -1;
+}
+
+
 static pcb_r_dir_t plow_callback(const pcb_box_t * b, void *cl)
 {
 	struct plow_info *plow = (struct plow_info *) cl;

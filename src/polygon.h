@@ -100,4 +100,9 @@ pcb_bool pcb_pline_is_rectangle(pcb_pline_t *pl);
    success. */
 int pcb_poly_subtract(pcb_polyarea_t *np1, pcb_polygon_t *p, pcb_bool fnp);
 
+/* Subtract or unsubtract obj from poly; Layer is used for looking up thermals */
+int pcb_poly_sub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *obj);
+int pcb_poly_unsub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *obj);
+
+
 #endif
