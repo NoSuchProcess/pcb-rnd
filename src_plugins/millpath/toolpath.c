@@ -44,7 +44,8 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 	if (result->fill != NULL)
 		pcb_poly_remove(result->lres, result->fill);
 
-	pcb_poly_new_from_rectangle(result->lres, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
+	result->fill = pcb_poly_new_from_rectangle(result->lres, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
+	pcb_poly_init_clip(pcb->Data, result->lres, result->fill);
 
 	return 0;
 }

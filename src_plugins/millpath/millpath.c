@@ -24,12 +24,26 @@
 #include "action_helper.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "toolpath.h"
+
+#include "board.h"
+#include "data.h"
+#include "layer.h"
 
 const char *pcb_millpath_cookie = "millpath plugin";
 
+pcb_tlp_session_t ctx;
+
+static const char pcb_acts_mill[] = "mill()";
+static const char pcb_acth_mill[] = "Calculate toolpath for milling away copper";
+int pcb_act_mill(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_tlp_mill_copper_layer(&ctx, CURRENT);
+}
+
 
 pcb_hid_action_t millpath_action_list[] = {
-0
+	{"mill", 0, pcb_act_mill, pcb_acth_mill, pcb_acts_mill}
 };
 
 PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
