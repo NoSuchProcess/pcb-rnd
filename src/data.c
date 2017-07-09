@@ -450,6 +450,11 @@ void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_PIN, via, via, via);
 	}
 	PCB_END_LOOP;
+	PCB_ELEMENT_LOOP(data);
+	{
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_ELEMENT, element, element, element);
+	}
+	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);
 	{
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_SUBC, subc, subc, subc);
