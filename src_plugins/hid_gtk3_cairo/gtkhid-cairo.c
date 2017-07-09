@@ -469,8 +469,13 @@ static void ghid_cairo_draw_bg_image(void)
 		h_scaled = h;
 	}
 
-	if (pixbuf);									//gdk_pixbuf_render_to_drawable(pixbuf, gport->drawable, priv->bg_gc,
-	//                              src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+	if (pixbuf) {
+		gdk_cairo_set_source_pixbuf(priv->cr, pixbuf, src_x, src_y);
+		cairo_rectangle(priv->cr, dst_x, dst_y, gport->view.canvas_width, gport->view.canvas_height);
+		cairo_fill(priv->cr);
+		//gdk_pixbuf_render_to_drawable(pixbuf, gport->drawable, priv->bg_gc,
+		//                              src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+	}
 }
 
 #define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
