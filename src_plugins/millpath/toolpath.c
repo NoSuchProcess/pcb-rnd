@@ -104,9 +104,13 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 	}
 	pcb_r_end(&it);
 
-	for(pad = (pcb_pad_t *)pcb_r_first(pcb->Data->pad_tree, &it); pad != NULL; pad = (pcb_pad_t *)pcb_r_next(&it)) {
-#warning TODO: only on the side we are on
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PAD, pad);
+	if (result->grp->type & ((PCB_LYT_BOTTOM) | (PCB_LYT_TOP))) {
+		int is_solder = !!(result->grp->type & PCB_LYT_BOTTOM);
+		for(pad = (pcb_pad_t *)pcb_r_first(pcb->Data->pad_tree, &it); pad != NULL; pad = (pcb_pad_t *)pcb_r_next(&it)) {
+			printf("FLG %d %d\n", PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), is_solder);
+			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == is_solder)
+				pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PAD, pad);
+		}
 	}
 	pcb_r_end(&it);
 }
