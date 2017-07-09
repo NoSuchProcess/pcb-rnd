@@ -21,6 +21,7 @@
  */
 
 #include "layer.h"
+#include "layer_grp.h"
 #include "polygon.h"
 
 typedef struct pcb_tlp_tools_s    pcb_tlp_tools_t;
@@ -52,8 +53,13 @@ struct pcb_tlp_seg_s {
 
 struct pcb_tlp_session_s {
 	pcb_tlp_tools_t *tools;
+
+	/* temp data */
 	pcb_layer_t *lres;       /* resulting copper */
 	pcb_polygon_t *fill;     /* base fill */
+
+	pcb_layergrp_t *grp;
+	
 	/* TODO: list on segments */
 };
 

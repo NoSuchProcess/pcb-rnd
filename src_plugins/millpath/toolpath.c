@@ -28,6 +28,7 @@
 #include "data.h"
 #include "flag.h"
 #include "layer.h"
+#include "layer_grp.h"
 #include "layer_ui.h"
 #include "obj_line.h"
 #include "obj_arc.h"
@@ -87,6 +88,8 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
 	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
+	int n;
+
 	if (result->lres == NULL)
 		result->lres = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", "#EE9922");
 
@@ -96,7 +99,13 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 	result->fill = pcb_poly_new_from_rectangle(result->lres, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	pcb_poly_init_clip(pcb->Data, result->lres, result->fill);
 
-	sub_layer_all(pcb, result, layer);
+	result->grp = pcb_get_layergrp(pcb, layer->grp);
+
+	for(n = 0; n < result->grp->len; n++) {
+		pcb_layer_t *l = pcb_get_layer(result->grp->lid[n]);
+		if (l != NULL)
+			sub_layer_all(pcb, result, l);
+	}
 
 	sub_global_all(pcb, result, layer);
 
