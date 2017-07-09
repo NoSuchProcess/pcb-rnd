@@ -1319,24 +1319,24 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 			map_color_string("blue", &priv->grid_color);
 		//set_special_grid_color();
 
+		if (priv->surface)
+			cairo_surface_destroy(priv->surface);
+
+		/* Creates a single cairo surface/context for off-line painting */
+		priv->surface = gdk_window_create_similar_surface(gtk_widget_get_window(port->drawing_area),
+																											CAIRO_CONTENT_COLOR_ALPHA,
+																											gtk_widget_get_allocated_width(port->drawing_area),
+																											gtk_widget_get_allocated_height(port->drawing_area));
+		if (priv->cr)
+			cairo_destroy(priv->cr);
+		priv->cr = cairo_create(priv->surface);
+
+		//if (port->mask) {
+		//  gdk_pixmap_unref(port->mask);
+		//  port->mask = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
+		//}
 		done_once = 1;
 	}
-
-	if (priv->surface)
-		cairo_surface_destroy(priv->surface);
-
-	priv->surface = gdk_window_create_similar_surface(gtk_widget_get_window(port->drawing_area),
-																										CAIRO_CONTENT_COLOR_ALPHA,
-																										gtk_widget_get_allocated_width(port->drawing_area),
-																										gtk_widget_get_allocated_height(port->drawing_area));
-	if (priv->cr)
-		cairo_destroy(priv->cr);
-	priv->cr = cairo_create(priv->surface);
-
-	//if (port->mask) {
-	//  gdk_pixmap_unref(port->mask);
-	//  port->mask = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
-	//}
 }
 
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
@@ -1427,11 +1427,12 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
 	/* clear background */
-	erase_with_background_color(cr, &priv->bg_color);
+	erase_with_background_color(priv->cr, &priv->bg_color);
 
-	priv->cr = cr;
-	/* call the drawing routine */
+	/* calls the off-line drawing routine */
 	expcall(&gtk3_cairo_hid, ctx);
+	/* paints on the widget */
+	cr_paint_from_surface(cr, priv->surface);
 
 	//gport->drawable = save_drawable;
 	gport->view = save_view;
