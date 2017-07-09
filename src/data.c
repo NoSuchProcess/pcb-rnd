@@ -288,11 +288,11 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 
 pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
 {
-	/* FIX ME: use r_search to do this much faster */
-
 	/* preset identifiers with highest and lowest possible values */
 	out->X1 = out->Y1 = PCB_MAX_COORD;
 	out->X2 = out->Y2 = -PCB_MAX_COORD;
+
+#warning subc TODO: use rtree loops here for efficiency
 
 	/* now scan for the lowest/highest X and Y coordinate */
 	PCB_VIA_LOOP(Data);
