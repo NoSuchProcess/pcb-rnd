@@ -845,6 +845,14 @@ static void cr_draw_rect(pcb_hid_gc_t gc, int fill, pcb_coord_t x1, pcb_coord_t 
 		cairo_stroke(priv->cr);
 }
 
+/** Paints the \p surface onto the \p cr cairo context */
+static void cr_paint_from_surface(cairo_t * cr, cairo_surface_t * surface)
+{
+	cairo_set_source_surface(cr, surface, 0, 0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint(cr);
+}
+
 static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	cr_draw_rect(gc, FALSE, x1, y1,x2, y2);
@@ -1336,18 +1344,16 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_ex
 {
 	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;
-	cairo_t *cr = p;
 	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	//gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
 	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
+
 	//cairo_save(cr);
-	cairo_set_source_surface(cr, priv->surface, 0, 0);
-	cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
+	cr_paint_from_surface(p, priv->surface);
 	//cairo_restore(cr);
 
-	priv->cr_drawing_area = cr;
+	priv->cr_drawing_area = p;
 
 	show_crosshair(TRUE);
 
