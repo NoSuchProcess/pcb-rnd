@@ -109,11 +109,8 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 	pcb_r_end(&it);
 }
 
-int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
+static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
-	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
-	pcb_layergrp_id_t otl;
-
 	if (result->res_ply == NULL)
 		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", "#EE9922");
 
@@ -125,14 +122,39 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 
 	result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);
+}
+
+static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
+{
+	pcb_layergrp_id_t otl;
+	int has_otl;
 
 	result->grp = pcb_get_layergrp(pcb, layer->grp);
+	has_otl = (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, &otl, 1) == 1)
+
+
+	if (has_otl) {
+#warning TODO: determine outline bbox
+	}
+	else
+		result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
+
+	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);
+
+
 	sub_group_all(pcb, result, result->grp, 0);
-	if (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, &otl, 1) == 1)
+	if (has_otl)
 		sub_group_all(pcb, result, pcb_get_layergrp(pcb, otl), 1);
 
 	sub_global_all(pcb, result, layer);
+}
 
+int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
+{
+	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
+
+	setup_ui_layers(pcb, result, layer);
+	setup_remove_poly(pcb, result, layer);
 
 	return 0;
 }
