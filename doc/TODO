@@ -59,6 +59,9 @@ LATER RELEASES:
 	- catch the layer change signal from polygons and reclip; Evan's test case:
 	  draw a line on a layer and a poly on another and change whether they are in
 	  the same layer group
+- GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
+		- allow GTK to handle keys in preview
+		- use the zoompan engine for the zooming. Modifiy API if necessary
 - check gpmi when pcb-rnd is fully linstalled - broken symlinks?
 - multi-key: display state on the gui
 - cleanup/rewrite resources:
