@@ -42,8 +42,6 @@ For the next release:
 - gtk hid: display element numbers; flip board with tab: numbers get mirrored [report:Evan]
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
 
-- BUG - polygon cross hatching in lib_polyhelp seems to shift crosshatching in x-direction on export in io_autotrax format when silk text overlaps boundaries of board, see .lht board in bug_files
-
 LATER RELEASES:
 - csect can't make a layer outline
 - fontsel:
