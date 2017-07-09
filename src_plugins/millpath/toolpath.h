@@ -20,31 +20,41 @@
  *
  */
 
-#include "config.h"
-#include "action_helper.h"
-#include "plugins.h"
-#include "hid_actions.h"
+#include "layer.h"
+#include "polygon.h"
 
-const char *pcb_millpath_cookie = "millpath plugin";
+typedef struct pcb_tlp_tools_s    pcb_tlp_tools_t;
+typedef struct pcb_tlp_line_s     pcb_tlp_line_t;
+typedef struct pcb_tlp_seg_s      pcb_tlp_seg_t;
+typedef struct pcb_tlp_session_s  pcb_tlp_session_t;
+
+typedef enum pcb_tlp_segtype_s {
+	PCB_TLP_SEG_LINE
+} pcb_tlp_segtype_t;
 
 
-pcb_hid_action_t millpath_action_list[] = {
-0
+struct pcb_tlp_tools_s {
+	int used;          /* number of tools */
+	pcb_coord_t *dia;  /* tool diameters */
 };
 
-PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
+struct pcb_tlp_line_s {
+	pcb_coord_t x1, y1, x2, y2;
+};
 
-int pplg_check_ver_millpath(int ver_needed) { return 0; }
+struct pcb_tlp_seg_s {
+	pcb_tlp_segtype_t type;
+	union {
+		pcb_tlp_line_t line;
+	} seg;
+	/* TODO: list link */
+};
 
-void pplg_uninit_millpath(void)
-{
-	pcb_hid_remove_actions_by_cookie(pcb_millpath_cookie);
-}
+struct pcb_tlp_session_s {
+	pcb_tlp_tools_t *tools;
+	pcb_layer_t *lres;       /* resulting copper */
+	pcb_polygon_t *fill;     /* base fill */
+	/* TODO: list on segments */
+};
 
-
-#include "dolists.h"
-int pplg_init_millpath(void)
-{
-	PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
-	return 0;
-}
+int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer);

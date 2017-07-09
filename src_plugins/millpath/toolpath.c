@@ -21,30 +21,30 @@
  */
 
 #include "config.h"
-#include "action_helper.h"
-#include "plugins.h"
-#include "hid_actions.h"
 
-const char *pcb_millpath_cookie = "millpath plugin";
+#include "toolpath.h"
+
+#include "board.h"
+#include "data.h"
+#include "flag.h"
+#include "layer.h"
+#include "layer_ui.h"
+#include "polygon.h"
 
 
-pcb_hid_action_t millpath_action_list[] = {
-0
-};
+extern const char *pcb_millpath_cookie;
 
-PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
-
-int pplg_check_ver_millpath(int ver_needed) { return 0; }
-
-void pplg_uninit_millpath(void)
+int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
-	pcb_hid_remove_actions_by_cookie(pcb_millpath_cookie);
-}
+	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
+	if (result->lres == NULL)
+		result->lres = pcb_uilayer_alloc(pcb_millpath_cookie, "postmill copper", "#EE9922");
 
+	if (result->fill != NULL)
+		pcb_poly_remove(result->lres, result->fill);
 
-#include "dolists.h"
-int pplg_init_millpath(void)
-{
-	PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
+	pcb_poly_new_from_rectangle(result->lres, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
+
 	return 0;
 }
+

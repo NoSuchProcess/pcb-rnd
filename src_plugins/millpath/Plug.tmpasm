@@ -1,6 +1,7 @@
 put /local/pcb/mod {millpath}
 append /local/pcb/mod/OBJS [@
  $(PLUGDIR)/millpath/millpath.o
+ $(PLUGDIR)/millpath/toolpath.o
 @]
 
 switch /local/pcb/millpath/controls
