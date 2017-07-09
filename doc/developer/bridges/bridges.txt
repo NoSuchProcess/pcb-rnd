@@ -1,0 +1,144 @@
+
+                    [hyp_]                                  [gsch]
+               [kica]    [gpcb]   [ frt_ ]   [fido]    [prtl]    [eagl]
+
+[eesc]         *pcbrnd-----------------------------------------------+         [batch  ]
+[mucs]         |                                                     |
+[lept]         |                                                     |         [gtk     ]
+[ltsp]         |                                                     |
+[tcad]         |                                                     |         [lesstif]
+[edif]         |                                                     |
+[netl]         +-----------------------------------------------------+         [remote]
+
+               [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_]
+                    [stat]    [ps__]    [svg_]    [png_]    [nelm]
+
+%%
+
+%png
+cell-height 40
+cell-width 15
+
+[]
+	shape box
+
+[pcbrnd]
+	label pcb-rnd
+
+[eesc]
+	label kicad\neeschema
+
+[mucs]
+	label mucs PCB\nautorouter
+
+[lept]
+	label lepton\nEDA
+
+[ltsp]
+	label LTSpice
+	
+[tcad]
+	label TinyCAD
+
+[edif]
+	label (any)\nEDIF
+
+[netl]
+	label (any)\nnetlist
+
+[bbrd]
+	label breadboard
+
+
+[hyp_]
+	label Mentor\nhyperlynx
+
+[gsch]
+	label gEDA\ngschenm
+
+[kica]
+	label kicad\npcbnew
+
+[gpcb]
+	label gEDA\npcb
+
+[frt_]
+	label freerouting.net\nautorouter
+
+[fido]
+	label FidoCadJ\n(board)
+
+[prtl]
+	label Protel\nAutotrax
+
+[eagl]
+	label Eagle\n(board)
+
+
+
+[bbrd]
+	label breadboard
+
+[bom_]
+	label BOM
+
+[xy__]
+	label XY\ntemplated
+
+[gerb]
+	label gerber
+
+[ipcd]
+	label ipcd356\ne-tester
+
+[lpr_]
+	label lpr\n(print)
+
+[stat]
+	label stat\nstatistics
+
+[ps__]
+	label ps\npostscript
+
+[svg_]
+	label svg
+
+[png_]
+	label png\njpg, bmp
+
+[nelm]
+	label nelma\n(sim)
+
+
+
+
+
+[batch]
+	label batch\nCLI/automation
+
+[gtk]
+	label gtk\ngdk or gl render
+
+[lesstif]
+	label lesstif\n(motif)
+
+[remote]
+	label remote\n(network)
+
+
+
+<- pcbrnd bbrd.n
+	label .png
+
+<- pcbrnd bom_.n
+	label text
+
+<- pcbrnd xy__.n
+	label .xy
+
+<- pcbrnd gerb.n
+	label .grb, .cnc
+
+-> eesc.e pcbrnd
+	label import\nschematics
+
