@@ -52,7 +52,7 @@ struct pcb_tlp_seg_s {
 };
 
 struct pcb_tlp_session_s {
-	pcb_tlp_tools_t *tools;
+	const pcb_tlp_tools_t *tools;
 	pcb_coord_t edge_clearance; /* when milling copper, keep this clearance from the edges */
 
 	/* temp data */

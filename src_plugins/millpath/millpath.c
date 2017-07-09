@@ -32,13 +32,19 @@
 
 const char *pcb_millpath_cookie = "millpath plugin";
 
-pcb_tlp_session_t ctx;
+static pcb_tlp_session_t ctx;
+static pcb_coord_t tool_dias[] = {
+	PCB_MM_TO_COORD(0.5),
+	PCB_MM_TO_COORD(3)
+};
+static pcb_tlp_tools_t tools = { sizeof(tool_dias)/sizeof(tool_dias[0]), tool_dias};
 
 static const char pcb_acts_mill[] = "mill()";
 static const char pcb_acth_mill[] = "Calculate toolpath for milling away copper";
 int pcb_act_mill(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ctx.edge_clearance = PCB_MM_TO_COORD(0.05);
+	ctx.tools = &tools;
 	return pcb_tlp_mill_copper_layer(&ctx, CURRENT);
 }
 

@@ -174,6 +174,8 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 	setup_ui_layers(pcb, result, layer);
 	setup_remove_poly(pcb, result, layer);
 
+	
+
 	return 0;
 }
 
