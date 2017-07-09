@@ -167,6 +167,22 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	sub_global_all(pcb, result, layer);
 }
 
+static void trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, int extra_offs)
+{
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+	pcb_coord_t tool_dia = result->tools->dia[tool_idx];
+	
+	for(pa = pcb_poly_island_first(result->fill, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_pline_t *pl = pcb_poly_contour(&it);
+		if (pl != NULL) { /* we have a contour */
+			pcb_pline_to_lines(result->res_path, pl, tool_dia, 0, pcb_no_flags());
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
+				pcb_pline_to_lines(result->res_path, pl, tool_dia, 0, pcb_no_flags());
+		}
+	}
+}
+
 int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
 	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
@@ -174,7 +190,7 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 	setup_ui_layers(pcb, result, layer);
 	setup_remove_poly(pcb, result, layer);
 
-	
+	trace_contour(pcb, result, 0, 0);
 
 	return 0;
 }
