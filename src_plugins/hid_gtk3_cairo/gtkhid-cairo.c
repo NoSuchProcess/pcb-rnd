@@ -79,7 +79,7 @@ typedef struct render_priv_s {
 
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
-	//cairo_t *cr;                  /**< cairo context */
+	cairo_t *cr;													/**< local cairo context */
 	//cairo_surface_t *surface;     /**< a surface */
 
 	const char *colorname;
@@ -178,15 +178,16 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 	return 0;
 }
 
+/** Do not clean up internal structures, as they will be used probably elsewhere. */
 static void ghid_cairo_destroy_gc(pcb_hid_gc_t gc)
 {
-	//if (gc->cr)
-	//  //g_object_unref(gc->gc);
-	//if (gc->colorname != NULL)
-	//	g_free(gc->colorname);
 	g_free(gc);
 }
 
+/** called from pcb_hid_t->make_gc() . Use only this to hold pointers, do not
+    own references, avoid costly memory allocation that needs to be destroyed with
+    ghid_cairo_destroy_gc().
+ */
 static pcb_hid_gc_t ghid_cairo_make_gc(void)
 {
 	pcb_hid_gc_t rv;
