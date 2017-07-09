@@ -29,23 +29,76 @@
 #include "flag.h"
 #include "layer.h"
 #include "layer_ui.h"
+#include "obj_line.h"
+#include "obj_arc.h"
+#include "obj_poly.h"
 #include "polygon.h"
 
 #include "src_plugins/lib_polyhelp/polyhelp.h"
 
 extern const char *pcb_millpath_cookie;
 
+static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
+{
+	pcb_line_t *line;
+	pcb_arc_t *arc;
+	pcb_text_t *text;
+	pcb_rtree_it_t it;
+
+	for(line = (pcb_line_t *)pcb_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)pcb_r_next(&it))
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_LINE, line);
+	pcb_r_end(&it);
+
+	for(arc = (pcb_arc_t *)pcb_r_first(layer->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)pcb_r_next(&it))
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_ARC, arc);
+	pcb_r_end(&it);
+
+	for(text = (pcb_text_t *)pcb_r_first(layer->text_tree, &it); text != NULL; text = (pcb_text_t *)pcb_r_next(&it))
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_ARC, text);
+	pcb_r_end(&it);
+
+#warning TODO: subs poly: not supported by core
+}
+
+static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
+{
+	pcb_pin_t *pin;
+	pcb_pad_t *pad;
+	pcb_rtree_it_t it;
+
+#warning TODO: thermals: find out if any of our layers has thermal for the pin and if so, use that layer
+	for(pin = (pcb_pin_t *)pcb_r_first(pcb->Data->via_tree, &it); pin != NULL; pin = (pcb_pin_t *)pcb_r_next(&it)) {
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_VIA, pin);
+	}
+	pcb_r_end(&it);
+
+	for(pin = (pcb_pin_t *)pcb_r_first(pcb->Data->pin_tree, &it); pin != NULL; pin = (pcb_pin_t *)pcb_r_next(&it)) {
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PIN, pin);
+	}
+	pcb_r_end(&it);
+
+	for(pad = (pcb_pad_t *)pcb_r_first(pcb->Data->pad_tree, &it); pad != NULL; pad = (pcb_pad_t *)pcb_r_next(&it)) {
+#warning TODO: only on the side we are on
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PAD, pad);
+	}
+	pcb_r_end(&it);
+}
+
 int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
 	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
 	if (result->lres == NULL)
-		result->lres = pcb_uilayer_alloc(pcb_millpath_cookie, "postmill copper", "#EE9922");
+		result->lres = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", "#EE9922");
 
 	if (result->fill != NULL)
 		pcb_poly_remove(result->lres, result->fill);
 
 	result->fill = pcb_poly_new_from_rectangle(result->lres, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	pcb_poly_init_clip(pcb->Data, result->lres, result->fill);
+
+	sub_layer_all(pcb, result, layer);
+
+	sub_global_all(pcb, result, layer);
 
 	return 0;
 }
