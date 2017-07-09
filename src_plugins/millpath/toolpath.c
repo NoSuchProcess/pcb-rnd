@@ -95,18 +95,22 @@ static void sub_group_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 
 static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
-	pcb_pin_t *pin;
+	pcb_pin_t *pin, pin_tmp;
 	pcb_pad_t *pad;
 	pcb_rtree_it_t it;
 
 #warning TODO: thermals: find out if any of our layers has thermal for the pin and if so, use that layer
 	for(pin = (pcb_pin_t *)pcb_r_first(pcb->Data->via_tree, &it); pin != NULL; pin = (pcb_pin_t *)pcb_r_next(&it)) {
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_VIA, pin);
+		memcpy(&pin_tmp, pin, sizeof(pin_tmp));
+		pin_tmp.Clearance = 1;
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_VIA, &pin_tmp);
 	}
 	pcb_r_end(&it);
 
 	for(pin = (pcb_pin_t *)pcb_r_first(pcb->Data->pin_tree, &it); pin != NULL; pin = (pcb_pin_t *)pcb_r_next(&it)) {
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PIN, pin);
+		memcpy(&pin_tmp, pin, sizeof(pin_tmp));
+		pin_tmp.Clearance = 1;
+		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PIN, &pin_tmp);
 	}
 	pcb_r_end(&it);
 
