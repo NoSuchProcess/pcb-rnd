@@ -38,6 +38,7 @@ static const char pcb_acts_mill[] = "mill()";
 static const char pcb_acth_mill[] = "Calculate toolpath for milling away copper";
 int pcb_act_mill(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	ctx.edge_clearance = PCB_MM_TO_COORD(0.05);
 	return pcb_tlp_mill_copper_layer(&ctx, CURRENT);
 }
 
