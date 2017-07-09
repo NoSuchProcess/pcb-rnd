@@ -50,7 +50,11 @@ LATER RELEASES:
 	- replace font in slot (even in default)
 	- ttf import?
 - library window: allow long tags and long location text to split
-- undo on new layer from right-click menu in gtk layerselk doesn't work
+- undo on new layer from right-click menu in gtk layersel doesn't work
+- GTK layers [report: Ade]:
+	- move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h)
+- gtk layersel feature requests:
+	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - layer rewrite:
 	- catch the layer change signal from polygons and reclip; Evan's test case:
 	  draw a line on a layer and a poly on another and change whether they are in
@@ -84,8 +88,10 @@ LATER RELEASES:
 - layer group rewrite:
 	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 	- make the color config dynamic too; invent color for new layers
-- GTK layers [report: Ade]:
-	- move the layer+selected color change from the preferences menu to the layer popup (but this should probably live in gui-config.h)
+- layer groups from config (e.g. CLI) is ignored
+- layer rewrite: central menu buttons
+	- lesstif needs to remember the widgets via lb->w in menu.c
+	- rewrite the central code for callbacks?
 - inconsistencies in UI/terminology:
 	- allow clearance to be set to 0 in the route style [report: miloh]
 	- similar thing on hole size [report: miloh]
@@ -99,12 +105,7 @@ LATER RELEASES:
 	- export to file 
 - biggish revamp of the export menu. The whole GUI is clearly designed for the case of only a very few exporters and we now have a lot. 
 	- unify how output files are accessed/checked: confirmation on overwrite
-- layer rewrite: central menu buttons
-	- lesstif needs to remember the widgets via lb->w in menu.c
-	- rewrite the central code for callbacks?
 - fp_board: extend the API so that the element can be presented without saving to a file
-- gtk layersel feature requests:
-	- consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - cleanup: remove mnemonic from the menu system
 	- check the central code and struct fields
 	- remove "m=" fields from the menu lihata files
@@ -118,7 +119,6 @@ LATER RELEASES:
 - lihata board/fp format:
 	- pads should be polygons (0 long line can't be rotated!)
 	- footprint orientation with a vector (just a second point)
-- layer groups from config (e.g. CLI) is ignored
 - res:
 	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
 	- re-add dynamic menus after a gui change:
