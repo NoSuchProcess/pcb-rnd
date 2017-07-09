@@ -31,8 +31,10 @@
 #include "layer_grp.h"
 #include "layer_ui.h"
 #include "obj_line.h"
+#include "obj_line_op.h"
 #include "obj_arc.h"
 #include "obj_poly.h"
+#include "obj_poly_op.h"
 #include "polygon.h"
 
 #include "src_plugins/lib_polyhelp/polyhelp.h"
@@ -111,6 +113,9 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 
 static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
+	gdl_iterator_t it;
+	pcb_line_t *line;
+
 	if (result->res_ply == NULL)
 		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", "#EE9922");
 
@@ -120,6 +125,9 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 	if (result->fill != NULL)
 		pcb_polyop_destroy(NULL, result->res_ply, result->fill);
 
+	linelist_foreach(&result->res_path->Line, &it, line) {
+		pcb_lineop_destroy(NULL, result->res_path, line);
+	}
 }
 
 static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
