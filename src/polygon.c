@@ -705,7 +705,7 @@ pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, pcb_coord_t clear)
 	return np;
 }
 
-/* clear np1 from the polygon */
+/* clear np1 from the polygon - should be inline with -O3 */
 static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 {
 	pcb_polyarea_t *merged = NULL, *np = np1;
@@ -741,6 +741,11 @@ static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 		pcb_message(PCB_MSG_WARNING, "Polygon cleared out of existence near (%$mm, %$mm)\n",
 						(p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
 	return 1;
+}
+
+int pcb_poly_subtract(pcb_polyarea_t *np1, pcb_polygon_t *p, pcb_bool fnp)
+{
+	return Subtract(np1, p, fnp);
 }
 
 /* create a polygon of the pin clearance */

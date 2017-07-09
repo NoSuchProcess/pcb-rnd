@@ -96,5 +96,8 @@ void pcb_poly_square_pin_factors(int style, double *xm, double *ym);
 
 pcb_bool pcb_pline_is_rectangle(pcb_pline_t *pl);
 
+/* clear np1 from the polygon; also free np1 if fnp is true. Returns 1 on
+   success. */
+int pcb_poly_subtract(pcb_polyarea_t *np1, pcb_polygon_t *p, pcb_bool fnp);
 
 #endif
