@@ -114,14 +114,17 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 	pcb_board_t *pcb = pcb_data_get_top(layer->parent);
 	pcb_layergrp_id_t otl;
 
-	if (result->lres == NULL)
-		result->lres = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", "#EE9922");
+	if (result->res_ply == NULL)
+		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", "#EE9922");
+
+	if (result->res_path == NULL)
+		result->res_path = pcb_uilayer_alloc(pcb_millpath_cookie, "mill toolpath", "#886611");
 
 	if (result->fill != NULL)
-		pcb_poly_remove(result->lres, result->fill);
+		pcb_poly_remove(result->res_ply, result->fill);
 
-	result->fill = pcb_poly_new_from_rectangle(result->lres, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
-	pcb_poly_init_clip(pcb->Data, result->lres, result->fill);
+	result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
+	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);
 
 	result->grp = pcb_get_layergrp(pcb, layer->grp);
 	sub_group_all(pcb, result, result->grp, 0);
@@ -129,6 +132,7 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 		sub_group_all(pcb, result, pcb_get_layergrp(pcb, otl), 1);
 
 	sub_global_all(pcb, result, layer);
+
 
 	return 0;
 }

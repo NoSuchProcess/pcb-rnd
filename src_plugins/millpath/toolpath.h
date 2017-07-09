@@ -56,7 +56,8 @@ struct pcb_tlp_session_s {
 	pcb_coord_t edge_clearance; /* when milling copper, keep this clearance from the edges */
 
 	/* temp data */
-	pcb_layer_t *lres;       /* resulting copper */
+	pcb_layer_t *res_ply;    /* resulting "remove" polygon */
+	pcb_layer_t *res_path;   /* resulting toolpath */
 	pcb_polygon_t *fill;     /* base fill */
 
 	pcb_layergrp_t *grp;
