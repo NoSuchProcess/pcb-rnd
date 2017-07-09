@@ -1435,61 +1435,10 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	return FALSE;
 }
 
+/* TODO: obsolete this function ; retire 'render_pixmap()' from 'struct pcb_gtk_common_t'. */
 static void *ghid_cairo_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
 {
-	GdkPixbuf *pixbuf;
-	//GdkDrawable *save_drawable;
-	//pcb_gtk_view_t save_view;
-	//int save_width, save_height;
-	//pcb_hid_expose_ctx_t ectx;
-	//render_priv *priv = gport->render_priv;
-	//
-	//save_drawable = gport->drawable;
-	//save_view = gport->view;
-	//save_width = gport->view.canvas_width;
-	//save_height = gport->view.canvas_height;
-	//
-	//pixmap = gdk_pixmap_new(NULL, width, height, depth);
-	//
-	///* Setup drawable and zoom factor for drawing routines
-	// */
-	//
-	//gport->drawable = pixmap;
-	//gport->view.coord_per_px = zoom;
-	//gport->view.canvas_width = width;
-	//gport->view.canvas_height = height;
-	//gport->view.width = width * gport->view.coord_per_px;
-	//gport->view.height = height * gport->view.coord_per_px;
-	//gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
-	//gport->view.x0 -= gport->view.height / 2;
-	//gport->view.y0 = conf_core.editor.view.flip_y ? PCB->MaxHeight - cy : cy;
-	//gport->view.y0 -= gport->view.width / 2;
-	//
-	///* clear background */
-	//gdk_draw_rectangle(pixmap, priv->bg_gc, TRUE, 0, 0, width, height);
-	//
-	///* call the drawing routine */
-	//ectx.view.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
-	//ectx.view.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
-	//ectx.view.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
-	//ectx.view.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
-	//
-	//ectx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X1));
-	//ectx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X2));
-	//ectx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y1));
-	//ectx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y2));
-	//
-	//ectx.force = 0;
-	//ectx.content.elem = NULL;
-	//
-	//pcb_hid_expose_all(&gtk3_cairo_hid, &ectx);
-	//
-	//gport->drawable = save_drawable;
-	//gport->view = save_view;
-	//gport->view.canvas_width = save_width;
-	//gport->view.canvas_height = save_height;
-
-	return pixbuf;
+	return NULL;
 }
 
 static pcb_hid_t *ghid_cairo_request_debug_draw(void)
