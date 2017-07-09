@@ -50,20 +50,26 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 
 	for(line = (pcb_line_t *)pcb_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)pcb_r_next(&it)) {
 		memcpy(&line_tmp, line, sizeof(line_tmp));
+		PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &line_tmp);
 		if (centerline) {
 			line_tmp.Thickness = 1;
 			line_tmp.Clearance = result->edge_clearance;
 		}
+		else
+			line_tmp.Clearance = 0;
 		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_LINE, &line_tmp);
 	}
 	pcb_r_end(&it);
 
 	for(arc = (pcb_arc_t *)pcb_r_first(layer->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)pcb_r_next(&it)) {
 		memcpy(&arc_tmp, arc, sizeof(arc_tmp));
+		PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &arc_tmp);
 		if (centerline) {
 			arc_tmp.Thickness = 1;
 			arc_tmp.Clearance = result->edge_clearance;
 		}
+		else
+			arc_tmp.Clearance = 0;
 		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_ARC, &arc_tmp);
 	}
 	pcb_r_end(&it);
