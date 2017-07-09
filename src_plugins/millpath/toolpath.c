@@ -118,7 +118,8 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 		result->res_path = pcb_uilayer_alloc(pcb_millpath_cookie, "mill toolpath", "#886611");
 
 	if (result->fill != NULL)
-		pcb_poly_remove(result->res_ply, result->fill);
+		pcb_polyop_destroy(NULL, result->res_ply, result->fill);
+
 }
 
 static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
