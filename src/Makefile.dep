@@ -4227,7 +4227,7 @@
  obj_poly.h polyarea.h obj_poly_list.h box.h math_helper.h macro.h move.h \
  misc_util.h ht_element.h ../src_3rd/liblihata/genht/ht.h obj_text_list.h \
  obj_rat_list.h obj_rat.h layer_grp.h ../src_plugins/millpath/toolpath.h \
- layer.h polygon.h rtree.h board.h const.h vtroutestyle.h \
+ layer.h layer_grp.h polygon.h rtree.h board.h const.h vtroutestyle.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h library.h rats_patch.h board.h \
  data.h crosshair.h vtonpoint.h route.h buffer.h obj_subc_list.h \
@@ -4244,13 +4244,14 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  obj_poly.h polyarea.h obj_poly_list.h box.h math_helper.h macro.h move.h \
  misc_util.h ht_element.h ../src_3rd/liblihata/genht/ht.h obj_text_list.h \
- obj_rat_list.h obj_rat.h polygon.h rtree.h board.h const.h \
- vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer.h layer_grp.h library.h \
+ obj_rat_list.h obj_rat.h layer_grp.h layer.h polygon.h rtree.h board.h \
+ const.h vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer_grp.h library.h \
  rats_patch.h board.h data.h crosshair.h vtonpoint.h hid.h error.h drc.h \
  route.h buffer.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h ht_subc.h flag.h layer_ui.h \
- ../src_plugins/lib_polyhelp/polyhelp.h obj_poly.h
+ ../src_3rd/libminuid/libminuid.h ht_subc.h flag.h layer_ui.h obj_line.h \
+ obj_line_op.h operation.h obj_arc.h obj_poly.h obj_poly_op.h \
+ ../src_plugins/lib_polyhelp/polyhelp.h
 ../src_plugins/mincut/pcb-mincut/graph.o: \
  ../src_plugins/mincut/pcb-mincut/graph.c \
  ../src_plugins/mincut/pcb-mincut/graph.h \
