@@ -80,7 +80,7 @@ cell-height 36
 	label Mentor\nhyperlynx
 
 [gsch]
-	label gEDA\ngschenm
+	label gEDA\ngschem
 
 [kica]
 	label kicad\npcbnew
