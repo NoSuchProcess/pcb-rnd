@@ -14,13 +14,13 @@
 
 	<polygon fill="#00ffff" stroke="#000000"  points="224,165.6 1072,165.6  1072,410.4 224,410.4"/>
 	<text fill="#000000" text-anchor="middle" x="648" y="288" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">pcb-rnd</tspan></text>
-	<polygon fill="#eeeeee" stroke="#eeeeee"  points="192,-14.4 1120,-14.4  1120,122.4 192,122.4"/>
+	<polygon fill="#cccccc" stroke="#cccccc"  points="192,-14.4 1120,-14.4  1120,122.4 192,122.4"/>
 	<text fill="#000000" text-anchor="middle" x="656" y="54" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em"></tspan></text>
-	<polygon fill="#eeeeee" stroke="#eeeeee"  points="192,453.6 1120,453.6  1120,590.4 192,590.4"/>
+	<polygon fill="#cccccc" stroke="#cccccc"  points="192,453.6 1120,453.6  1120,590.4 192,590.4"/>
 	<text fill="#000000" text-anchor="middle" x="656" y="522" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em"></tspan></text>
-	<polygon fill="#eeeeee" stroke="#eeeeee"  points="1152,129.6 1328,129.6  1328,446.4 1152,446.4"/>
+	<polygon fill="#cccccc" stroke="#cccccc"  points="1152,129.6 1328,129.6  1328,446.4 1152,446.4"/>
 	<text fill="#000000" text-anchor="middle" x="1240" y="288" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em"></tspan></text>
-	<polygon fill="#eeeeee" stroke="#eeeeee"  points="0,129.6 96,129.6  96,446.4 0,446.4"/>
+	<polygon fill="#cccccc" stroke="#cccccc"  points="0,129.6 96,129.6  96,446.4 0,446.4"/>
 	<text fill="#000000" text-anchor="middle" x="48" y="288" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em"></tspan></text>
 	<polygon fill="none" stroke="#000000"  points="224,21.6 416,21.6  416,50.4 224,50.4"/>
 	<text fill="#000000" text-anchor="middle" x="320" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">kicad</tspan><tspan x="320" dy="1em">pcbnew</tspan></text>

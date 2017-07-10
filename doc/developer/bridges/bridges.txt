@@ -30,20 +30,20 @@ cell-height 36
 
 
 [inp]
-	linecolor #eeeeee
-	bgcolor #eeeeee
+	linecolor #cccccc
+	bgcolor #cccccc
 
 [io]
-	linecolor #eeeeee
-	bgcolor #eeeeee
+	linecolor #cccccc
+	bgcolor #cccccc
 
 [out]
-	linecolor #eeeeee
-	bgcolor #eeeeee
+	linecolor #cccccc
+	bgcolor #cccccc
 
 [hid]
-	linecolor #eeeeee
-	bgcolor #eeeeee
+	linecolor #cccccc
+	bgcolor #cccccc
 
 
 [pcbrnd]
