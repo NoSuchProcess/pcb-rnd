@@ -1,28 +1,55 @@
-             [kica        ]        [gpcb   ]    [hyp_]    [gsch]
-                           [ frt_ ]        [fido]    [prtl]    [eagl]
-
-[eesc]       *pcbrnd-----------------------------------------------+    [batch  ]
-[mucs]       |                                                     |
-[lept]       |                                                     |    [gtk     ]
-[ltsp]       |                                                     |
-[tcad]       |                                                     |    [lesstif]
-[edif]       |                                                     |
-[netl]       +-----------------------------------------------------+    [remote]
-
-             [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_]   [web     ]
-                  [stat]    [ps__]    [svg_]    [png_]    [nelm]
-
+            *io--------------------------------------------------------+
+            | [kica        ]        [gpcb   ]    [hyp_]    [gsch]      |
+            |               [ frt_ ]        [fido]    [prtl]    [eagl] |
+            +----------------------------------------------------------+
+*inp---+                                                                *hid--------+
+|[eesc]|      *pcbrnd-----------------------------------------------+   |[batch  ]  |
+|[mucs]|      |                                                     |   |           |
+|[lept]|      |                                                     |   |[gtk     ] |
+|[ltsp]|      |                                                     |   |           |
+|[tcad]|      |                                                     |   |[lesstif]  |
+|[edif]|      |                                                     |   |           |
+|[netl]|      +-----------------------------------------------------+   |[remote]   |
++------+                                                                +-----------+
+            *out-------------------------------------------------------+
+            | [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_] | [web     ]
+            |      [stat]    [ps__]    [svg_]    [png_]    [nelm]      |
+            +----------------------------------------------------------+
 %%
 
 %png
-cell-height 40
 cell-width 20
+cell-height 40
+
+%svg
+cell-width 16
+cell-height 36
 
 []
 	shape box
 
+
+[inp]
+	linecolor #eeeeee
+	bgcolor #eeeeee
+
+[io]
+	linecolor #eeeeee
+	bgcolor #eeeeee
+
+[out]
+	linecolor #eeeeee
+	bgcolor #eeeeee
+
+[hid]
+	linecolor #eeeeee
+	bgcolor #eeeeee
+
+
 [pcbrnd]
 	label pcb-rnd
+	bgcolor #00ffff
+
 
 [eesc]
 	label kicad\neeschema
@@ -126,6 +153,8 @@ cell-width 20
 
 [web]
 	label web client\n(javascript)
+	linecolor #aaaaaa
+	textcolor #aaaaaa
 
 
 -> pcbrnd bbrd.n
