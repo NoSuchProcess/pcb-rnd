@@ -1,6 +1,6 @@
 
-                    [hyp_]                                  [gsch]
-               [kica]    [gpcb]   [ frt_ ]   [fido]    [prtl]    [eagl]
+               [kica        ]        [gpcb   ]    [hyp_]    [gsch]
+                             [ frt_ ]        [fido]    [prtl]    [eagl]
 
 [eesc]         *pcbrnd-----------------------------------------------+         [batch  ]
 [mucs]         |                                                     |
@@ -10,7 +10,7 @@
 [edif]         |                                                     |
 [netl]         +-----------------------------------------------------+         [remote]
 
-               [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_]
+               [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_]        [web     ]
                     [stat]    [ps__]    [svg_]    [png_]    [nelm]
 
 %%
@@ -125,6 +125,8 @@ cell-width 15
 [remote]
 	label remote\n(network)
 
+[web]
+	label web client\n(javascript)
 
 
 -> pcbrnd bbrd.n
@@ -190,11 +192,20 @@ cell-width 15
 <-> gsch.s pcbrnd
 	label schematics
 
-<-> gpcb.s pcbrnd
+<-> gpcb.s-0.3 pcbrnd
 	label board
 
-<-> kica.s pcbrnd
-	label board
+<-> gpcb.s+0.3 pcbrnd
+	label footprint
+
+<-> kica.s-0.4 pcbrnd
+	label board\ns-expr
+
+-> kica.s pcbrnd
+	label board\nlegace
+
+<-> kica.s+0.4 pcbrnd
+	label footprint\ns-expr
 
 <-> frt_.s pcbrnd
 	label board
@@ -217,3 +228,5 @@ cell-width 15
 
 <-> pcbrnd remote.w
 
+<-> remote.s web
+	label TCP/IP
