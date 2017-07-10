@@ -1,23 +1,22 @@
+             [kica        ]        [gpcb   ]    [hyp_]    [gsch]
+                           [ frt_ ]        [fido]    [prtl]    [eagl]
 
-               [kica        ]        [gpcb   ]    [hyp_]    [gsch]
-                             [ frt_ ]        [fido]    [prtl]    [eagl]
+[eesc]       *pcbrnd-----------------------------------------------+    [batch  ]
+[mucs]       |                                                     |
+[lept]       |                                                     |    [gtk     ]
+[ltsp]       |                                                     |
+[tcad]       |                                                     |    [lesstif]
+[edif]       |                                                     |
+[netl]       +-----------------------------------------------------+    [remote]
 
-[eesc]         *pcbrnd-----------------------------------------------+         [batch  ]
-[mucs]         |                                                     |
-[lept]         |                                                     |         [gtk     ]
-[ltsp]         |                                                     |
-[tcad]         |                                                     |         [lesstif]
-[edif]         |                                                     |
-[netl]         +-----------------------------------------------------+         [remote]
-
-               [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_]        [web     ]
-                    [stat]    [ps__]    [svg_]    [png_]    [nelm]
+             [bbrd]    [bom_]    [xy__]    [gerb]    [ipcd]    [lpr_]   [web     ]
+                  [stat]    [ps__]    [svg_]    [png_]    [nelm]
 
 %%
 
 %png
 cell-height 40
-cell-width 15
+cell-width 20
 
 []
 	shape box
