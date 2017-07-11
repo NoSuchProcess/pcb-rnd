@@ -301,7 +301,7 @@ static inline void ghid_cairo_draw_grid_global(cairo_t *cr)
 static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
 	render_priv_t *priv = gport->render_priv;
-	cairo_t *cr = priv->cr_drawing_area;
+	cairo_t *cr = priv->cr;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
 	static int apoints = 0, npoints = 0, old_radius = 0;
