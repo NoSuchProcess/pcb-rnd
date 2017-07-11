@@ -807,7 +807,7 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	cairo_save(priv->cr);
 	/*FIXME: this will draw an arc of a circle, not an ellipse ! Explore matrix transformation here. */
 	cairo_arc(priv->cr, pcb_round(Vxd(cx)), pcb_round(Vyd(cy)), Vzd(radius),
-						(start_angle + 180) * (M_PI / 180.0), delta_angle * (M_PI / 180.0));
+						(start_angle) * (M_PI / 180.0), delta_angle * (M_PI / 180.0));
 	cairo_stroke(priv->cr);
 	cairo_restore(priv->cr);
 	//gdk_draw_arc(gport->drawable, priv->u_gc, 0,
