@@ -257,10 +257,7 @@ static int autotrax_parse_track(read_state_t *st, FILE *FP, pcb_element_t *el)
 		return -1;
 	}
 
-	if (autotrax_layer == 12) {
-		st->ignored_keepout_element++;
-		return 0;
-	} else if (autotrax_layer == 0) {
+	if (autotrax_layer == 0) {
 		pcb_message(PCB_MSG_ERROR, "Ignored track on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
 		return 0;
@@ -398,10 +395,7 @@ document used reflects actual outputs from protel autotrax
 		delta = 270.0;
 	}
 
-	if (autotrax_layer == 12) {
-		st->ignored_keepout_element++;
-		return 0;
-	} else if (autotrax_layer == 0) {
+	if (autotrax_layer == 0) {
 		pcb_message(PCB_MSG_ERROR, "Ignored arc on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
 		return 0;
@@ -749,7 +743,7 @@ static int autotrax_create_layers(read_state_t *st)
 	if (pcb_layer_list(PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
-		st->protel_to_stackup[12] = pcb_layer_create(gid, "Keepout");
+		st->protel_to_stackup[11] = pcb_layer_create(gid, "Board"); /* != outline, cutouts */
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
 		st->protel_to_stackup[13] = pcb_layer_create(gid, "Multi");
 	} else {
@@ -775,9 +769,9 @@ static int autotrax_create_layers(read_state_t *st)
 	st->protel_to_stackup[10]  = pcb_layer_create(g - st->pcb->LayerGroups.grp, "Power");
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	g->name = pcb_strdup("outline");
-	g->type = PCB_LYT_OUTLINE;
-	st->protel_to_stackup[11]  = autotrax_reg_layer(st, "outline", PCB_LYT_OUTLINE);
+	g->name = pcb_strdup("outline");/* equivalent to keepout = layer 12 in autotrax */
+	g->type = PCB_LYT_OUTLINE;	/* and includes cutouts */
+	st->protel_to_stackup[12]  = autotrax_reg_layer(st, "outline", PCB_LYT_OUTLINE);
 
 	pcb_layergrp_inhibit_dec();
 

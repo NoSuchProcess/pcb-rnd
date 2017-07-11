@@ -324,8 +324,8 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 	}
 
 	/* we now proceed to write the outline tracks to the autotrax file, layer by layer */
-	current_autotrax_layer = 8; /* 11 is the "board layer" in autotrax, and 12 the keepout */
-	if (outline_count > 0 )  {
+	current_autotrax_layer = 12; /* 11 is the "board layer" in autotrax, and 12 the keepout */
+	if (outline_count > 0 )  { /* Steven at airborn.com.au tells me outline <=> layer 12 */ 
 		for (i = 0; i < outline_count; i++) /* write top copper tracks, if any */
 			{
 				write_autotrax_layout_tracks(FP, current_autotrax_layer,
