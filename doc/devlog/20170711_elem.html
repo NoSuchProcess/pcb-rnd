@@ -1,0 +1,141 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> element-resrtictions: why is it not a file format issue? </h2>
+<p>
+Because this topic comes up from time to time, and by now I have actual 
+data (implementation costs) on it, I decided to write a short analysis on:
+<ul>
+	<li>why we have the "element restrictions" problem in the first place
+
+	<li>different ways to resolve the "element restrictions" problem
+
+	<li>measured (or partly estimated) cost of some of these
+
+	<li>conclusion: why simply changing the element file format won't help
+</ul>
+
+<p>
+Note: A <a href="20170629_subc.html"> solution </a> (including a global data srtuct cleanup) is 
+<b>being implemented in pcb-rnd</b>.
+
+<p>
+A random quote from the geda-user mailing list:
+<pre>
+> Maybe you composed the footprint entirely of atoms that are not elegible
+> to be included in a pcb footprint. Due to restrictions in the file
+> format,
+</pre>
+
+<p>
+It is a common pattern that users express element restrictions are really
+file format restrictions. Unfortunately this is not the case. Unfortunately,
+because fixing a mere file format would be much cheaper.
+
+<h3> The problem <//h3>
+<p>
+Elements contain element-specific drawing primitives and the code has 
+special casing for these in every little corner. Extending/replacing the 
+file format is a relatively small effort, affecting a small part of the 
+code base. Adding support for polygons, copper lines, vias, arbitrary 
+text, etc. in elements is a huge effort because it really touches 
+everything from the famous find.c through all drawing pimitive holding 
+data structures to draw.c.
+<p>
+When you see a silk line or silk arc on screen, produced by an element, it 
+is not really just a line or arc. It is really an element-line and an 
+element-arc. Yes, these are separate, special drawing primitives that work 
+only in elements; elements can't consists of plain line or arcs. Majority 
+of the code simply has an "if" or a separate "case" branch or a separate 
+callback function for handling each of these element-* object. The data 
+structs don't hold a list of drawing primitives; they hold a list and an 
+rtree of lines, another list and rtree of arcs, etc. And yes, this means 
+a specific element-line and element-arc list within elements. Plus these 
+element-objects ignore layers: instead of being on a layer, they are 
+either on the top or on the bottom side. For silk and pads it's fine, but 
+if you want outline, paste, inner copper layers, that's 1000 other special 
+casing.
+<p>
+For example if you wanted to have non-pad copper lines in a pcb footprint, 
+extending the existing code base, you'd need to:
+<ul>
+  <li> decide to introduce an element-copper-line drawing primitive (estimated 
+cost: at most an hour to add it in all the central lists of magic numbers 
+and names)
+
+  <li> go and grep the code for handling plain old lines in any way, and copy 
+all code and introduce an element-copper-line drawing primitive (estimated 
+cost: days or weeks!!!)
+
+  <li> reimplement the which-side-is-this-on hack for your new object 
+(estimated cost: many hours or days)
+
+  <li> add a printf in file.c and a yacc/lex section for the new drawing 
+primitive (estimated cost: at most 1..2 hours)
+
+</ul>
+<p>
+(Or you can chose to rather implement a generic object grouping feature of 
+the existing primitives: line, arc, text, poly, via, and say element-* 
+special casing should be just removed as groups can replace elements. This 
+is what I am doing in pcb-rnd with subcircuits, see below)
+<p>
+This is why, contrary to the popular belief, simply changing the file 
+format to xml or json or whatever-else won't magically fix the problem. 
+Instead rewriting 1/3 of the code base would. Then whether you keep the 
+.fp/.pcb format (and upgrade it to handle the new situation) or introduce 
+a new file format is a tiny implementation detail.
+<p>
+Note: I'm saying this after implementing a new native file format 
+(lihata), working on half dozen alien board/footprint file formats _and_ 
+being halfway through resolving the element restrictions by replacing 
+elements with subcircuits in pcb-rnd.
+
+
+
+<h3> evidences: data </h3>
+
+<p>
+Below I'm sharing objective data on this topic. Talking in pcb-rnd net 
+development times, implementing support for a new footprint file format is 
+ranging from a few hours to 1..2 days, if the format is reasonable. For 
+example implementing a working plugin for tEDAx that loads netlist, loads 
+and saves footprints took less than 14 hours total. Note: this is the time 
+spent on a new, non-native format _and_ a netlist load. Extending the 
+.fp/.pcb format would be way cheaper, so you can take this as a very 
+permissive upper estimation.
+<p>
+Implementing half of the subcircuits took me 85 hours so far: we have 
+generic grouping, with dynamic layer binding; we can save and load the 
+result; we can have any object on any layer; we keep track of 
+rotation/mirroring/scaling; we have and unique ID to keep track on what 
+subcircuit is cloned from what other subcircuit. What's still missing for 
+replacing elements, and we will have in the next development cycle: 
+"terminals" (turning any copper object into a pin or pad).
+<p>
+By the time subcircuits will be able to fully replace footprints/elements, 
+I estimate total expense between 180..200 hours. And these "low" numbers 
+are possible only because I had already invested more than 130 hours in 
+the layer rewrite before I started on subcircuits. If we account the the 
+element-restriction-resolving parts of the layer rewrite in this effort, 
+the final "element rewrite" cost would be over 250 hours (from which more 
+than half are already spent and only the other part is estimation).
+
+
+<H3> Conclusion </H3>
+<p>
+250 hours of subcircuits+layers (half spent, half estimated) vs. 14 hours 
+of a file format (spent).
+<p>
+So a [new footprint file format + new netlist format] was less than 6% of 
+the half-measured-half-estimated cost of solving the element restriction 
+problem in case of pcb-rnd.
+<p>
+Of course different projects and different developers would make different 
+choices, and with subcircuits I am really doing the most flexible thing 
+possible: i just decided to really clean up the data model, not just hack 
+in polygons and copper lines.
+<p>
+But I still say that with even a cheaper, more hackish element upgrade the 
+file format issue is only 5..15% of the whole problem.
