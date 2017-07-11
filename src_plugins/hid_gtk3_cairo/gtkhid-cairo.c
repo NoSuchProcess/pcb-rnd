@@ -1303,6 +1303,7 @@ static void ghid_cairo_init_drawing_widget(GtkWidget * widget, void *vport)
 {
 }
 
+/** Call-back function only applied to drawing_area, after some resizing or initialisation. */
 static void ghid_cairo_drawing_area_configure_hook(void *vport)
 {
 	GHidPort *port = vport;
@@ -1330,24 +1331,24 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 			map_color_string("blue", &priv->grid_color);
 		//set_special_grid_color();
 
-		if (priv->surface)
-			cairo_surface_destroy(priv->surface);
-
-		/* Creates a single cairo surface/context for off-line painting */
-		priv->surface = gdk_window_create_similar_surface(gtk_widget_get_window(port->drawing_area),
-																											CAIRO_CONTENT_COLOR_ALPHA,
-																											gtk_widget_get_allocated_width(port->drawing_area),
-																											gtk_widget_get_allocated_height(port->drawing_area));
-		if (priv->cr)
-			cairo_destroy(priv->cr);
-		priv->cr = cairo_create(priv->surface);
-
 		//if (port->mask) {
 		//  gdk_pixmap_unref(port->mask);
 		//  port->mask = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
 		//}
 		done_once = 1;
 	}
+
+	if (priv->surface)
+		cairo_surface_destroy(priv->surface);
+
+	/* Creates a single cairo surface/context for off-line painting */
+	priv->surface = gdk_window_create_similar_surface(gtk_widget_get_window(port->drawing_area),
+																										CAIRO_CONTENT_COLOR_ALPHA,
+																										gtk_widget_get_allocated_width(port->drawing_area),
+																										gtk_widget_get_allocated_height(port->drawing_area));
+	if (priv->cr)
+		cairo_destroy(priv->cr);
+	priv->cr = cairo_create(priv->surface);
 }
 
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
