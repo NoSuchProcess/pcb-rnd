@@ -1,0 +1,87 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> why not sql? </h2>
+
+Question on geda-user:
+<pre>
+> If you're going to replace the entire data model, why not use SQLite?
+> This would give you an almost free replacement for the convoluted and
+> buggy rtree and undo implementations as well as providing file format
+> accessible to almost every language anyone might care to use.
+</pre>
+
+<p>
+First of all: my goal is exactly not 
+to rewrite the whole data model in one big go, but to gradually upgrade it 
+and slowly replace elements with subcircuits while keeping everything 
+compatible and working all the time. I also want to keep the good part and 
+replace the bad parts only. Glib is already replaced, and I am going to 
+keep rtree. If you want to learn more about the process, please read the 
+oldest devblog entry I linked in the other mail.
+
+<p>
+Why not SQL: because I prefer simplicity, portability and want to 
+cut down mega-lib dependencies instead of introducing more of them. Sqlite 
+is 50k sloc, while the complete pcb-rnd source is 200k sloc. If you want 
+to use or contribute to projects where this does not matter, please chose 
+gEDA/PCB or kicad.
+
+<p>
+Purpose/functionality/capability: my opinion is that sqlite, and sql in 
+general would be an inefficient, bloated solution that would attempt to 
+fix something that's not really broken, taking away energies from fields 
+where we do have things to fix or implement. In return sql is not that 
+efficient on spatial data as people love to believe^1. Just because it's 
+huge and popular and everyone tries to use it doesn't mean it's the good 
+solution for every possible problem.
+
+<p>
+"Don't fix what's not broken" (especially not with a worse 
+solution):
+
+<ul>
+<li> we already have a very good native file format, lihata, there's 0 reason 
+to replace it. The lihata parser is  very small, it's trivial to make
+bindings to from any language or even  reimplement it in any language.
+Contribute bindings if your favorite  language doesn't have support. If
+you can't stand lihata, just don't use  pcb-rnd.
+
+<li> the rtree code works fine, there's no known bug at the moment. If you 
+know about bugs, be constructive: report them, patch them, commit the fix.
+
+<li> same for the undo engine: no known bug.
+</ul>
+
+<p>
+(Note: I have plans to rewrite parts of the undo engine to make it more 
+extensible from plugins (cost estimation: 20..30 hours), but it's somehwat 
+unrelated.)
+
+<p>
+
+<h3> Conclusion </h3>
+
+If you want sqlite, that's not pcb-rnd, that's another  project. Levente
+once started such a project but it didn't get too far -  maybe go and
+pick that up. Or try selling the idea to mainline or kicad.  Or fork
+kicad or mainline or pcb-rnd, rename, add sql, see if users are  really
+turned on by it. You said sqlite is an "almost free replacement",  so
+this must be a real quick project for you.
+
+
+<h3> Footnote </h3>
+
+<p>
+^1: we did test that once for a challenge24 task, with postgresql's spatial 
+support and the result was so disappointing that we ended up implementing 
+a custom solution in C. If you disagree, and think sql will be more 
+efficient than rtree: go and implement a script that loads a complex board 
+into sql and execute and time 1M screen-searches with the rtree code and 
+the sql version. Although other disadvantages of sql would make it a no-go 
+for pcb-rnd even if you could get similar efficiency, it'd be still an 
+interesting result to achieve!
+
+
+
