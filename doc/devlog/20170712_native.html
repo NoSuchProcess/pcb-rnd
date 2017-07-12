@@ -1,0 +1,69 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> Native file format vs. alien file formats </h2>
+
+<H3> Terminology </h3>
+<p>
+All board, subcircuit, fonts and footprint file formats are implemented
+in plugins. Plugins are optional - it is even possible to compiel
+pcb-rnd with all file format support turned off. The only format core
+supports is the in-memory representation, which is never saved to a file
+directly.
+<p>
+There are 3 type of plugins doing file format read/write (doing the
+conversion between the in-memory representation of core and actual file
+formats):
+<ul>
+	<li> <i>export_</i> plugins: the in-memory data is exported to a file format without
+	     any hope that it could be imported back again; e.g. exporting a board
+	     as png or svg. This operation often lose a lot of metadata - the
+	     result <b>looks</b> good but deep down it doesn't <b>mean</b> the same
+	     as the in-memory representation.
+	<li> <i>import_</i> plugins: the output of some external program is imported into
+	     memory; this operation is not meant to be lossless either and usually
+	     covers only a small portion of all data. Typical example:
+	     importing a netlist.
+	<li> <i>io_</i> plugins: save data from memory, load data to memory; 
+	     save-load round trips should produce acceptable results, although
+	     lossless operation is usually not assumed in either load or save
+	     (except for the native format).
+</ul>
+<p>
+Orthogonal to this, pcb-rnd terminology <i>native file format</i> and
+<i>alien file format</i> is also defined. There is always one io_ plugin
+that is required to perform perfect, lossless save and load. This
+plugin, and its file format is called <i>native</i>, while all other io
+plugins are called <i>alien</i>.
+<p>
+The only difference is the above requirement; in any other aspect io
+plugins are all equal. It is possible that an alien io_ plugin also
+happens to produce perfectly lossless round trips. It is possible to
+compile pcb-rnd with the native format disabled.
+
+<H3> Rationale </h3>
+<p>
+As the core of pcb-rnd is developed, the in-memory representation of the
+data model changes. Alien formats are usually formats defined for other
+projects; these formats try to track changes in the data model of those
+other projects. If pcb-rnd had to keep perfect compatibility with any of
+those, that'd mean pcb-rnd core and data model couldn't evolve
+naturally, but would be bound to and restricted by that other project's
+design. To avoid that, and to guarantee that pcb-rnd has a file format
+that supports all features of core at any given time, a pcb-rnd-specific
+(<i>native</i>) file format.
+<p>
+In theory pcb-rnd could support multiple native file formats. In
+practice, it would be an overhead in development: any change or new
+feature in core would need to be tracked by more than one io plugin.
+<p>
+On the other side, having the second format as alien has no real
+drawback for the end user long term. Assuming the second format is a
+pcb-rnd-specific format too, and pcb-rnd developers are free to change
+the format specification, even as an alien format it will tend to track
+core features eventually. The only difference is that it is not
+guaranteed that the latest core features are always immediately
+accessible in the second, non-native format.
+
+
