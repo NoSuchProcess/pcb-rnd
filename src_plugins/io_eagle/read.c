@@ -58,7 +58,7 @@
 #define GET_PROP_(st, node, key) (st)->parser.calls->prop(&((st)->parser), node, key)
 #define GET_TEXT(node)      st->parser.calls->text(&st->parser, node)
 
-#define STRCMP(s1, s2) st->parser.calls->strcmp(s1,s2)
+#define STRCMP(s1, s2) st->parser.calls->str_cmp(s1,s2)
 #define IS_TEXT(node)  st->parser.calls->is_text(&st->parser, node)
 
 typedef struct eagle_layer_s {
