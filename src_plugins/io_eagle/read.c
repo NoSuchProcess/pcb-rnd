@@ -1,5 +1,5 @@
 /*
- *														COPYRIGHT
+ *				COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
  *	Copyright (C) 2017 Tibor 'Igor2' Palinkas
@@ -26,7 +26,7 @@
  */
 
 #include "config.h"
-
+#include "string.h" /* try this */
 #include <stdlib.h>
 #include <assert.h>
 #include <libxml/tree.h>
@@ -196,8 +196,12 @@ int io_eagle_test_parse_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char
 int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
 {
 	unsigned char buff[2];
-	if ((fread(buff, 1, 2, f) == 2) && (buff[0] == 0x10) && (buff[1] == 0x00))
-		return 1;
+	int read_length = fread(buff, 1, 2, f);
+	if ((read_length == 2) && (buff[0] == 0x10) && (buff[1] == 0x00)) {
+		return 1; /* Eagle v4, v5 */ 
+	} else if ((read_length == 2) && (buff[0] == 0x10) && (buff[1] == 0x80)) {
+		return 1; /* Eagle v3 */
+	}
 	return 0;
 }
 
@@ -279,8 +283,9 @@ static pcb_coord_t eagle_get_attrcu(read_state_t *st, trnode_t *nd, const char *
 static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	trnode_t *n;
-
+	printf("eagle_read_layers about to look at children of: %s\n", NODENAME(subtree));
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
+		printf("eagle_read_layers now looking at node name: %s\n", NODENAME(n));
 		if (STRCMP(NODENAME(n), "layer") == 0) {
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
 			int id, reuse = 0;
@@ -295,6 +300,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->active  = eagle_get_attrl(st, n, "active", -1);
 			ly->ly      = -1;
 			id = eagle_get_attrl(st, n, "number", -1);
+			pcb_printf("Found eagle layer number: %d\nAbout to htip_set...\n", id);
 			if (id >= 0)
 				htip_set(&st->layers, id, ly);
 
@@ -320,6 +326,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					grp = pcb_get_grp_new_intern(st->pcb, -1);
 					ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
 					pcb_layergrp_fix_turn_to_outline(grp);
+					printf("Created outline layer: %s\n", ly->name);
 					break;
 
 				default:
@@ -327,6 +334,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 						/* new internal layer */
 						grp = pcb_get_grp_new_intern(st->pcb, -1);
 						ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
+					printf("Created inner layer: %s\n", ly->name);
 					}
 			}
 			if (typ != 0) {
@@ -334,11 +342,13 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					pcb_layer_list(typ, &ly->ly, 1);
 				if ((ly->ly < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
 					ly->ly = pcb_layer_create(gid, ly->name);
+					printf("Created other layer type: %s\n", ly->name);
 			}
 		}
 	}
 	pcb_layer_group_setup_silks(&st->pcb->LayerGroups);
 	pcb_layer_auto_fixup(st->pcb);
+	printf("Finished processing layers.\n");
 	return 0;
 }
 
@@ -577,6 +587,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	}
 	else {
 		pcb_trace("Failed to allocate layer 'ly' via eagle_layer_get(st, ln)\n");
+		return 0;
 	}
 
 	switch (loc) {
@@ -1038,12 +1049,12 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				m = NEXT(n);
 				while(m != NULL && NEXT(m) != NULL) {
 					m = NEXT(m);
-                                        /*printf("Found element node name %s.\n", NODENAME(m));*/
-                                        if (STRCMP(NODENAME(m), "element2") == 0) {
-                                                printf("Found element2.\n");
+					/*printf("Found element node name %s.\n", NODENAME(m));*/
+					if (STRCMP(NODENAME(m), "element2") == 0) {
+						printf("Found element2.\n");
 						l = m;
-                                        }
-                                }
+					}
+				}
 			}
 			const char *name = eagle_get_attrs(st, l, "name", NULL);
 			const char *val = eagle_get_attrs(st, l, "value", NULL);
@@ -1140,15 +1151,17 @@ static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int 
 
 static int eagle_read_drawing(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
+	
 	static const dispatch_t disp[] = { /* possible children of <drawing> */
 		{"settings",  eagle_read_nop},
-		{"grid",      eagle_read_nop},
 		{"layers",    eagle_read_layers},
+		{"grid",      eagle_read_nop},
 		{"board",     eagle_read_board},
 		{"unknown11", eagle_read_nop}, /* TODO: temporary; from the binary tree */
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
+
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, 0);
 }
 
@@ -1247,7 +1260,16 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	int res, old_leni;
 	read_state_t st;
 
-	static const dispatch_t disp[] = { /* possible children of root */
+	static const dispatch_t disp_1[] = { /* possible children of root */
+		{"layers",         eagle_read_layers}, /* this is hanging off root */
+		{"drawing",        eagle_read_nop},
+		{"compatibility",  eagle_read_nop},
+		{"@text",          eagle_read_nop},
+		{NULL, NULL}
+	};
+
+	static const dispatch_t disp_2[] = { /* possible children of root */
+		{"layers",         eagle_read_nop},
 		{"drawing",        eagle_read_drawing},
 		{"compatibility",  eagle_read_nop},
 		{"@text",          eagle_read_nop},
@@ -1274,7 +1296,8 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
-	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
+	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_1, NULL, 0);
+	res |= eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_2, NULL, 0);
 	if (res == 0)
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
@@ -1296,8 +1319,16 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	int res, old_leni;
 	read_state_t st;
 
-	static const dispatch_t disp[] = { /* possible children of root */
-		{"drawing",        eagle_read_drawing},
+	static const dispatch_t disp_1[] = { /* possible children of root */
+		{"drawing",        eagle_read_nop},
+		{"layers",         eagle_read_layers}, /* trying this */
+		{NULL, NULL}
+	};
+
+
+	static const dispatch_t disp_2[] = { /* possible children of root */
+		{"drawing",	   eagle_read_drawing},
+		{"layers",         eagle_read_nop},
 		{NULL, NULL}
 	};
 
@@ -1321,7 +1352,10 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
-	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
+	pcb_trace("About to dispatch to layer handler.\n");
+	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_1, NULL, 0);
+	pcb_trace("About to dispatch to board handler.\n");
+	res |= eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_2, NULL, 0);
 	if (res == 0)
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;

@@ -1,5 +1,5 @@
 /*
- *														COPYRIGHT
+ *				COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
  *	Copyright (C) 2017 Tibor 'Igor2' Palinkas
@@ -1249,15 +1249,19 @@ static int postproc_layers(void *ctx, egb_node_t *root)
 	egb_node_t *layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
 	egb_node_t *drawing = root->first_child;
 
+	int layer_count = 0;
 	for(n = drawing->first_child, prev = NULL; n != NULL; n = next) {
 		next = n->next; /* need to save this because unlink() will ruin it */
 		if (n->id == PCB_EGKW_SECT_LAYER) {
+			printf("Appended layer PCB_EGKW_SECT_LAYER %d\n", layer_count++);
 			egb_node_unlink(drawing, prev, n);
 			egb_node_append(layers, n);
 		}
 		else
 			prev = n;
 	}
+
+	printf("Finished post-processing %d PCB_EGKW_SECT_LAYER blocks\n", layer_count);
 
 	return 0;
 }
