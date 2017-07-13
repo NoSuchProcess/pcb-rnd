@@ -1682,6 +1682,10 @@ the same as a special layer, the layer is chosen over the special layer.
 static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_layer_id_t lid;
+
+	if (argc < 1)
+		PCB_ACT_FAIL(toggleview); /* argv[0] is a must */
+
 	if (pcb_strcasecmp(argv[0], "all") == 0) {
 		pcb_bool_op_t open = PCB_BOOL_PRESERVE, vis = PCB_BOOL_PRESERVE, user = PCB_BOOL_PRESERVE;
 		if (argc < 3)
