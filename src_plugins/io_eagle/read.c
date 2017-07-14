@@ -47,7 +47,7 @@
 #include "trparse_bin.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
-#define EAGLE_TEXT_SIZE_100 PCB_MM_TO_COORD(2)
+#define EAGLE_TEXT_SIZE_100 PCB_MIL_TO_COORD(50)
 
 #define PARENT(node)   st->parser.calls->parent(&st->parser, node)
 #define CHILDREN(node) st->parser.calls->children(&st->parser, node)
@@ -385,7 +385,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 /*	eagle_layer_t *ly; */
 	pcb_coord_t X, Y, height;
 	const char *rot, *text_val;
-	unsigned int text_direction = 0;
+	unsigned int text_direction = 0, text_scaling = 100;
 
 	if (CHILDREN(subtree) == NULL) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
@@ -400,7 +400,8 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	text_val = (const char *)GET_TEXT(CHILDREN(subtree));
 	X = eagle_get_attrc(st, subtree, "x", -1);
 	Y = eagle_get_attrc(st, subtree, "y", -1);
-	height = PCB_MM_TO_COORD(eagle_get_attrc(st, subtree, "size", -1));
+	height = eagle_get_attrc(st, subtree, "size", -1);
+	text_scaling = (int)((double)height/(double)EAGLE_TEXT_SIZE_100 * 100);
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	if (rot == NULL) {
 		rot = "R0";
@@ -424,7 +425,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	}
 	
 
-	pcb_trace("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, height, text_val, ln, text_direction);
+	pcb_trace("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, text_scaling, text_val, ln, text_direction);
 
 	return 0;
 }
@@ -812,9 +813,9 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 		return 0;
 
 	size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
-	t->X = eagle_get_attrc(st, subtree, "x", 0);
-	t->Y = eagle_get_attrc(st, subtree, "y", 0);
-	t->Scale = (int)(((double)EAGLE_TEXT_SIZE_100 / (double)size) * 100.0);
+	t->X = PCB_MIL_TO_COORD(200); /*eagle_get_attrc(st, subtree, "x", 0);*/
+	t->Y = -PCB_MIL_TO_COORD(200); /*eagle_get_attrc(st, subtree, "y", 0);*/
+	t->Scale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
 
 	return 0;
 }
@@ -1014,8 +1015,8 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 	pcb_flag_t TextFlags = pcb_no_flags();
 	pcb_coord_t size;
 
-	x += def_text->X;
-	y += def_text->Y + EAGLE_TEXT_SIZE_100;
+	/*x += def_text->X;
+	y += def_text->Y + EAGLE_TEXT_SIZE_100; */
 
 	for(nd = CHILDREN(nd); nd != NULL; nd = NEXT(nd)) {
 		const char *this_attr = eagle_get_attrs(st, nd, "name", "");
@@ -1024,14 +1025,15 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 			if (direction < 0)
 				direction = 0;
 			size = eagle_get_attrc(st, nd, "size", -1);
-			x = eagle_get_attrc(st, nd, "x", x);
-			y = eagle_get_attrc(st, nd, "y", y);
+			x += eagle_get_attrc(st, nd, "x", x);
+			y += eagle_get_attrc(st, nd, "y", y);
 			break;
 		}
 	}
 
 	if (size >= 0)
-		TextScale = (int)(((double)EAGLE_TEXT_SIZE_100 / (double)size) * 100.0);
+		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
+	pcb_trace("About to use text scale %d for element.\n", TextScale); 
 
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
 	text->Element = elem;
