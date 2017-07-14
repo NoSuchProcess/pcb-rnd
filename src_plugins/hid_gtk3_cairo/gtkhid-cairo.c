@@ -494,7 +494,7 @@ static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 		return;
 	switch (use_it) {
 	case HID_MASK_OFF:
-		//gport->drawable = gport->pixmap;
+		//priv->drawable = priv->pixmap;
 		mask_seq = 0;
 		break;
 
@@ -502,20 +502,23 @@ static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 		/* The HID asks not to receive this mask type, so warn if we get it */
 		g_return_if_reached();
 
-	case HID_MASK_CLEAR:
-		//if (!gport->mask)
-		//  gport->mask = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
-		//gport->drawable = gport->mask;
+	case HID_MASK_INIT:
+		//ghid_mask_setup(priv);
 		mask_seq = 0;
-		//if (!priv->mask_gc) {
-		//  priv->mask_gc = gdk_gc_new(gport->drawable);
-		//  gdk_gc_set_clip_origin(priv->mask_gc, 0, 0);
-		//  set_clip(priv, priv->mask_gc);
-		//}
-		color.pixel = 1;
-		//gdk_gc_set_foreground(priv->mask_gc, &color);
-		//gdk_draw_rectangle(gport->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+
+		/* clear the mask */
 		color.pixel = 0;
+		//gdk_gc_set_foreground(priv->mask_gc, &color);
+		//gdk_draw_rectangle(priv->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+		break;
+
+	case HID_MASK_CLEAR:
+		//color.pixel = 0;
+		//gdk_gc_set_foreground(priv->mask_gc, &color);
+		break;
+
+	case HID_MASK_SET:
+		color.pixel = 1;
 		//gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
 
@@ -525,9 +528,8 @@ static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 			mask_seq_id = 1;
 		mask_seq = mask_seq_id;
 
-		//gport->drawable = gport->pixmap;
+		//priv->drawable = priv->pixmap;
 		break;
-
 	}
 	cur_mask = use_it;
 }
