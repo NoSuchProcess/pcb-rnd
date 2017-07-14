@@ -711,7 +711,7 @@ void hyp_perimeter()
 
 				if ((last_x == i->x1) && (last_y == i->y1)) {
 					if (!hyp_segment_connected(i->x2, i->y2, begin_x, begin_y, i))
-						continue;						/* XXX Checkme */
+						continue;
 					/* first point of segment is last point of current edge: add segment to edge */
 					segment_found = pcb_true;
 					hyp_perimeter_segment_add(i, pcb_true);
@@ -720,7 +720,7 @@ void hyp_perimeter()
 				}
 				else if ((last_x == i->x2) && (last_y == i->y2)) {
 					if (!hyp_segment_connected(i->x1, i->y1, begin_x, begin_y, i))
-						continue;						/* XXX Checkme */
+						continue;
 					/* last point of segment is last point of current edge: add segment to edge back to front */
 					segment_found = pcb_true;
 					/* add segment back to front */
@@ -763,7 +763,6 @@ void hyp_perimeter()
  * silkscreen a simple box around an element
  */
 
-/* XXX check if all this can be done without looking inside element. easiest solution would be to put this in obj_elem.c */
 void hyp_element_silkscreen_new(pcb_data_t * Data, pcb_element_t * Element, pcb_font_t * Font)
 {
 	pcb_coord_t x1, x2, y1, y2;
@@ -1205,16 +1204,8 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 				pcb_poly_contour_pre(contour, pcb_false);
 
 				/* check contour valid */
-				/* XXX 
-				 * sometimes pcb_polyarea_contour_check() returns true, even though the polygon is fine. 
-				 */
-				if (pcb_polyarea_contour_check(contour)) {
-					if (hyp_debug)
-						pcb_printf("draw polygon: bad contour? continuing.\n");
-#ifdef XXX
-					return;
-#endif
-				}
+				if (pcb_polyarea_contour_check(contour) && hyp_debug)
+					pcb_printf("draw polygon: bad contour? continuing.\n");
 
 				/* set orientation for outer contour, negative for holes */
 				if (contour->Flags.orient != (outer_contour ? PCB_PLF_DIR : PCB_PLF_INV))
@@ -1871,7 +1862,7 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	mask = 0;
 	flags = pcb_no_flags();
 
-	/* loop over padstack, and choose one entry to implement via. this is suboptimal. XXX fixme 
+	/* loop over padstack, and choose one entry to implement via. this is suboptimal. 
 	 * order chosen:
 	 * - top layer
 	 * - bottom layer
@@ -2434,7 +2425,6 @@ pcb_bool exec_useg(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	/* XXX fixme. I want to put an unrouted segment between two layers, not two layer groups. */
 	/* lookup layer group begin and end layer are on */
 	layer1_grp_id = pcb_layer_get_group(PCB, hyp_create_layer(h->layer1_name));
 	layer2_grp_id = pcb_layer_get_group(PCB, hyp_create_layer(h->layer2_name));
