@@ -48,13 +48,12 @@ static const char *hyp_cookie = "hyp importer";
 
 static pcb_plug_io_t io_hyp;
 
-int io_hyp_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
+int io_hyp_fmt(pcb_plug_io_t * ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
 
-	if ((strcmp(fmt, "hyp") != 0) ||
-		((typ & (~(PCB_IOT_PCB))) != 0))
+	if ((strcmp(fmt, "hyp") != 0) || ((typ & (~(PCB_IOT_PCB))) != 0))
 		return 0;
 
 	return 70;
@@ -118,13 +117,13 @@ pcb_hid_action_t hyp_action_list[] = {
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 
 /* cheap, partial read of the file to determine if it is worth running the real parser */
-int io_hyp_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+		 int io_hyp_test_parse_pcb(pcb_plug_io_t * ctx, pcb_board_t * Ptr, const char *Filename, FILE * f)
 {
 	char line[1024];
 	int found = 0, lineno = 0;
 
 	/* look for {VERSION and {BOARD in the first 32 lines, not assuming indentation */
-	while(fgets(line, sizeof(line), f) != NULL) {
+	while (fgets(line, sizeof(line), f) != NULL) {
 		if ((found == 0) && (strstr(line, "{VERSION=")))
 			found = 1;
 		if ((found == 1) && (strstr(line, "{BOARD")))
@@ -136,14 +135,17 @@ int io_hyp_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *File
 	return 0;
 }
 
-int io_hyp_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
+int io_hyp_read_pcb(pcb_plug_io_t * ctx, pcb_board_t * pcb, const char *Filename, conf_role_t settings_dest)
 {
 	int res = hyp_parse(pcb->Data, Filename, 0);
 	pcb_layer_auto_fixup(pcb);
 	return res;
 }
 
-int pplg_check_ver_io_hyp(int ver_needed) { return 0; }
+int pplg_check_ver_io_hyp(int ver_needed)
+{
+	return 0;
+}
 
 void pplg_uninit_io_hyp(void)
 {
@@ -175,7 +177,7 @@ int pplg_init_io_hyp(void)
 
 
 	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
-	return 0;
+		return 0;
 }
 
 /* not truncated */

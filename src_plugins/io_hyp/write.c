@@ -36,7 +36,7 @@ typedef struct hyp_wr_s {
 	FILE *f;
 	const char *fn;
 
-	const char *ln_top, *ln_bottom; /* "layer name" for top and bottom groups */
+	const char *ln_top, *ln_bottom;	/* "layer name" for top and bottom groups */
 	pcb_pshash_hash_t psh;
 	char *elem_name;
 	size_t elem_name_len;
@@ -47,7 +47,7 @@ typedef struct hyp_wr_s {
 } hyp_wr_t;
 
 
-static const char *safe_element_name(hyp_wr_t *wr, pcb_element_t *elem)
+static const char *safe_element_name(hyp_wr_t * wr, pcb_element_t * elem)
 {
 	const char *orig = PCB_ELEM_NAME_REFDES(elem);
 	char *s;
@@ -61,18 +61,18 @@ static const char *safe_element_name(hyp_wr_t *wr, pcb_element_t *elem)
 
 	len = strlen(orig);
 	if (wr->elem_name_len < len) {
-		wr->elem_name = realloc(wr->elem_name, len+1);
+		wr->elem_name = realloc(wr->elem_name, len + 1);
 		wr->elem_name_len = len;
 	}
-	memcpy(wr->elem_name, orig, len+1);
-	for(s = wr->elem_name; *s != '\0'; s++)
+	memcpy(wr->elem_name, orig, len + 1);
+	for (s = wr->elem_name; *s != '\0'; s++)
 		if (*s == '.')
 			*s = '_';
 
 	return wr->elem_name;
 }
 
-static int write_hdr(hyp_wr_t *wr)
+static int write_hdr(hyp_wr_t * wr)
 {
 	char dt[128];
 
@@ -86,13 +86,13 @@ static int write_hdr(hyp_wr_t *wr)
 	return 0;
 }
 
-static int write_foot(hyp_wr_t *wr)
+static int write_foot(hyp_wr_t * wr)
 {
 	fprintf(wr->f, "{END}\n");
 	return 0;
 }
 
-static const char *get_layer_name(hyp_wr_t *wr, pcb_parenttype_t pt, pcb_layer_t *l)
+static const char *get_layer_name(hyp_wr_t * wr, pcb_parenttype_t pt, pcb_layer_t * l)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
@@ -108,35 +108,30 @@ static const char *get_layer_name(hyp_wr_t *wr, pcb_parenttype_t pt, pcb_layer_t
 	return g->name;
 }
 
-static void write_pr_line(hyp_wr_t *wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void write_pr_line(hyp_wr_t * wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, y1, x2, y2);
 }
 
-static void write_pv(hyp_wr_t *wr, pcb_pin_t *pin)
+static void write_pv(hyp_wr_t * wr, pcb_pin_t * pin)
 {
 	if (pin->type == PCB_OBJ_PIN) {
 		pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
-			pin->X, pin->Y,
-			safe_element_name(wr, pin->Element), pin->Number,
-			pcb_pshash_pin(&wr->psh, pin, NULL));
+								pin->X, pin->Y, safe_element_name(wr, pin->Element), pin->Number, pcb_pshash_pin(&wr->psh, pin, NULL));
 	}
 	else {
-		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n",
-			pin->X, pin->Y,
-			pcb_pshash_pin(&wr->psh, pin, NULL));
+		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n", pin->X, pin->Y, pcb_pshash_pin(&wr->psh, pin, NULL));
 	}
 }
 
-static void write_pad(hyp_wr_t *wr, pcb_pad_t *pad)
+static void write_pad(hyp_wr_t * wr, pcb_pad_t * pad)
 {
 	pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
-		(pad->Point1.X + pad->Point2.X)/2, (pad->Point1.Y + pad->Point2.Y)/2,
-		safe_element_name(wr, (pcb_element_t *)pad->Element), pad->Number,
-		pcb_pshash_pad(&wr->psh, pad, NULL));
+							(pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y) / 2,
+							safe_element_name(wr, (pcb_element_t *) pad->Element), pad->Number, pcb_pshash_pad(&wr->psh, pad, NULL));
 }
 
-static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
+static void write_poly(hyp_wr_t * wr, pcb_polygon_t * poly)
 {
 	pcb_pline_t *pl;
 	pcb_vnode_t *v;
@@ -155,19 +150,15 @@ static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
 
 		if (pl == poly->Clipped->contours)
 			pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
-				get_layer_name(wr, poly->parent_type, poly->parent.layer),
-				++wr->poly_id,
-				v->point[0], v->point[1]);
-		else 
+									get_layer_name(wr, poly->parent_type, poly->parent.layer), ++wr->poly_id, v->point[0], v->point[1]);
+		else
 			/* hole. Use same ID as polygon. */
-			pcb_fprintf(wr->f, "  {POLYVOID ID=%d X=%me Y=%me\n",
-				wr->poly_id,
-				v->point[0], v->point[1]);
+			pcb_fprintf(wr->f, "  {POLYVOID ID=%d X=%me Y=%me\n", wr->poly_id, v->point[0], v->point[1]);
 
-		for(v = v->next; v != pl->head.next; v = v->next)
+		for (v = v->next; v != pl->head.next; v = v->next)
 			pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);
 
-		v = pl->head.next; /* repeat first point */
+		v = pl->head.next;					/* repeat first point */
 		pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);
 
 		fprintf(wr->f, "  }\n");
@@ -175,14 +166,14 @@ static void write_poly(hyp_wr_t *wr, pcb_polygon_t *poly)
 }
 
 
-static void write_line(hyp_wr_t *wr, pcb_line_t *line)
+static void write_line(hyp_wr_t * wr, pcb_line_t * line)
 {
 	pcb_fprintf(wr->f, "  (SEG X1=%me Y1=%me X2=%me Y2=%me W=%me L=%[4])\n",
-		line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
-		line->Thickness, get_layer_name(wr, line->parent_type, line->parent.layer));
+							line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
+							line->Thickness, get_layer_name(wr, line->parent_type, line->parent.layer));
 }
 
-static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc, const char *layer)
+static void write_arc_(hyp_wr_t * wr, const char *cmd, pcb_arc_t * arc, const char *layer)
 {
 	pcb_coord_t x1, y1, x2, y2;
 
@@ -209,19 +200,19 @@ static void write_arc_(hyp_wr_t *wr, const char *cmd, pcb_arc_t *arc, const char
 	fprintf(wr->f, ")\n");
 }
 
-static void write_pr_arc(hyp_wr_t *wr, pcb_arc_t *arc)
+static void write_pr_arc(hyp_wr_t * wr, pcb_arc_t * arc)
 {
 	fprintf(wr->f, "  ");
 	write_arc_(wr, "PERIMETER_ARC", arc, NULL);
 }
 
-static void write_arc(hyp_wr_t *wr, pcb_arc_t *arc)
+static void write_arc(hyp_wr_t * wr, pcb_arc_t * arc)
 {
 	fprintf(wr->f, "  ");
 	write_arc_(wr, "ARC", arc, get_layer_name(wr, arc->parent_type, arc->parent.layer));
 }
 
-static int write_board(hyp_wr_t *wr)
+static int write_board(hyp_wr_t * wr)
 {
 	pcb_layer_id_t lid;
 
@@ -253,12 +244,12 @@ static int write_board(hyp_wr_t *wr)
 	return 0;
 }
 
-static int write_lstack(hyp_wr_t *wr)
+static int write_lstack(hyp_wr_t * wr)
 {
 	int n;
 
 	fprintf(wr->f, "{STACKUP\n");
-	for(n = 0; n < wr->pcb->LayerGroups.len; n++) {
+	for (n = 0; n < wr->pcb->LayerGroups.len; n++) {
 		pcb_layergrp_t *grp = &wr->pcb->LayerGroups.grp[n];
 		const char *name = grp->name;
 
@@ -283,7 +274,7 @@ static int write_lstack(hyp_wr_t *wr)
 	return 0;
 }
 
-static int write_devices(hyp_wr_t *wr)
+static int write_devices(hyp_wr_t * wr)
 {
 	gdl_iterator_t it;
 	pcb_element_t *elem;
@@ -298,18 +289,20 @@ static int write_devices(hyp_wr_t *wr)
 			layer = wr->ln_bottom;
 		else
 			layer = wr->ln_top;
-		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_element_name(wr, elem), PCB_ELEM_NAME_DESCRIPTION(elem), layer);
+		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_element_name(wr, elem), PCB_ELEM_NAME_DESCRIPTION(elem),
+								layer);
 		cnt++;
 	}
 
 	if (cnt == 0)
-		pcb_message(PCB_MSG_WARNING, "There is no element on the board - this limites the use of the resulting .hyp file, as it won't be able to connect to a simulation\n");
+		pcb_message(PCB_MSG_WARNING,
+								"There is no element on the board - this limites the use of the resulting .hyp file, as it won't be able to connect to a simulation\n");
 
 	fprintf(wr->f, "}\n");
 	return 0;
 }
 
-static void write_padstack_pv(hyp_wr_t *wr, const pcb_pin_t *pin)
+static void write_padstack_pv(hyp_wr_t * wr, const pcb_pin_t * pin)
 {
 	int new_item;
 	const char *name = pcb_pshash_pin(&wr->psh, pin, &new_item);
@@ -322,7 +315,7 @@ static void write_padstack_pv(hyp_wr_t *wr, const pcb_pin_t *pin)
 	fprintf(wr->f, "}\n");
 }
 
-static void write_padstack_pad(hyp_wr_t *wr, const pcb_pad_t *pad)
+static void write_padstack_pad(hyp_wr_t * wr, const pcb_pad_t * pad)
 {
 	int new_item;
 	const char *name = pcb_pshash_pad(&wr->psh, pad, &new_item), *side;
@@ -332,11 +325,12 @@ static void write_padstack_pad(hyp_wr_t *wr, const pcb_pad_t *pad)
 	side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? wr->ln_bottom : wr->ln_top;
 
 	fprintf(wr->f, "{PADSTACK=%s\n", name);
-	pcb_fprintf(wr->f, "  (%[4], 1, %me, %me, 0, M)\n", side, PCB_ABS(pad->Point1.X - pad->Point2.X) + pad->Thickness, PCB_ABS(pad->Point1.Y - pad->Point2.Y) + pad->Thickness);
+	pcb_fprintf(wr->f, "  (%[4], 1, %me, %me, 0, M)\n", side, PCB_ABS(pad->Point1.X - pad->Point2.X) + pad->Thickness,
+							PCB_ABS(pad->Point1.Y - pad->Point2.Y) + pad->Thickness);
 	fprintf(wr->f, "}\n");
 }
 
-static int write_padstack(hyp_wr_t *wr)
+static int write_padstack(hyp_wr_t * wr)
 {
 	gdl_iterator_t it, it2;
 	pcb_element_t *elem;
@@ -357,41 +351,51 @@ static int write_padstack(hyp_wr_t *wr)
 	return 0;
 }
 
-static int write_nets(hyp_wr_t *wr)
+static int write_nets(hyp_wr_t * wr)
 {
 	htpp_entry_t *e;
 	pcb_netmap_t map;
 
 	pcb_netmap_init(&map, wr->pcb);
-	for(e = htpp_first(&map.n2o); e != NULL; e = htpp_next(&map.n2o, e)) {
+	for (e = htpp_first(&map.n2o); e != NULL; e = htpp_next(&map.n2o, e)) {
 		dyn_obj_t *o;
 		pcb_lib_menu_t *net = e->key;
-		pcb_fprintf(wr->f, "{NET=%[4]\n", net->Name+2);
-		for(o = e->value; o != NULL; o = o->next) {
-			switch(o->obj->type) {
-				case PCB_OBJ_LINE: write_line(wr, (pcb_line_t *)o->obj); break;
-				case PCB_OBJ_ARC:  write_arc(wr, (pcb_arc_t *)o->obj); break;
-				case PCB_OBJ_PIN:
-				case PCB_OBJ_VIA:  write_pv(wr, (pcb_pin_t *)o->obj); break;
-				case PCB_OBJ_PAD:  write_pad(wr, (pcb_pad_t *)o->obj); break;
-				case PCB_OBJ_POLYGON: write_poly(wr, (pcb_polygon_t *)o->obj); break;
+		pcb_fprintf(wr->f, "{NET=%[4]\n", net->Name + 2);
+		for (o = e->value; o != NULL; o = o->next) {
+			switch (o->obj->type) {
+			case PCB_OBJ_LINE:
+				write_line(wr, (pcb_line_t *) o->obj);
+				break;
+			case PCB_OBJ_ARC:
+				write_arc(wr, (pcb_arc_t *) o->obj);
+				break;
+			case PCB_OBJ_PIN:
+			case PCB_OBJ_VIA:
+				write_pv(wr, (pcb_pin_t *) o->obj);
+				break;
+			case PCB_OBJ_PAD:
+				write_pad(wr, (pcb_pad_t *) o->obj);
+				break;
+			case PCB_OBJ_POLYGON:
+				write_poly(wr, (pcb_polygon_t *) o->obj);
+				break;
 
-				case PCB_OBJ_RAT:
-					break; /* not yet done */
+			case PCB_OBJ_RAT:
+				break;									/* not yet done */
 
-				case PCB_OBJ_TEXT:
-				case PCB_OBJ_ELEMENT:
-				case PCB_OBJ_SUBC:
-				case PCB_OBJ_POINT:
-				case PCB_OBJ_NET:
-				case PCB_OBJ_LAYER:
-				case PCB_OBJ_ELINE:
-				case PCB_OBJ_EARC:
-				case PCB_OBJ_ETEXT:
-				case PCB_OBJ_CLASS_MASK:
-				case PCB_OBJ_CLASS_OBJ:
-				case PCB_OBJ_ANY:
-					break; /* silently ignore these */
+			case PCB_OBJ_TEXT:
+			case PCB_OBJ_ELEMENT:
+			case PCB_OBJ_SUBC:
+			case PCB_OBJ_POINT:
+			case PCB_OBJ_NET:
+			case PCB_OBJ_LAYER:
+			case PCB_OBJ_ELINE:
+			case PCB_OBJ_EARC:
+			case PCB_OBJ_ETEXT:
+			case PCB_OBJ_CLASS_MASK:
+			case PCB_OBJ_CLASS_OBJ:
+			case PCB_OBJ_ANY:
+				break;									/* silently ignore these */
 			}
 		}
 		fprintf(wr->f, "}\n");
@@ -401,7 +405,7 @@ static int write_nets(hyp_wr_t *wr)
 	return 0;
 }
 
-int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	hyp_wr_t wr;
 
@@ -440,9 +444,8 @@ int io_hyp_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, cons
 	free(wr.elem_name);
 	return 0;
 
-	err:;
+err:;
 	pcb_pshash_uninit(&wr.psh);
 	free(wr.elem_name);
 	return -1;
 }
-
