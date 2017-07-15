@@ -1056,11 +1056,6 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "symbols");
 
-	for(n = 0; n < sizeof(font->Symbol) / sizeof(font->Symbol[0]); n++) {
-		font->Symbol[n].LineN = 0;
-		font->Symbol[n].Valid = 0;
-	}
-
 	for(sym = lht_dom_first(&it, grp); sym != NULL; sym = lht_dom_next(&it)) {
 		int chr;
 		if (sym->type != LHT_HASH)
