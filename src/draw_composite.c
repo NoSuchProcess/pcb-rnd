@@ -162,14 +162,14 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 
 int pcb_draw_layer_is_comp(pcb_layer_id_t id)
 {
+	int n;
 	pcb_layergrp_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].grp);
 	if (g == NULL) return 0;
 
-	/* silk has special rules because the original format/model had 1 (auto+)
-	   silk layer in the layer group */
-	if (g->type & PCB_LYT_SILK)
-		return ((g->len != 1) ||
-			((PCB->Data->Layer[id].comb & (PCB_LYC_AUTO | PCB_LYC_SUB)) != PCB_LYC_AUTO));
+	/* as long as we are doing only positive compositing, we can go without compositing */
+	for(n = 0; n < g->len; n++)
+		if (PCB->Data->Layer[g->lid[n]].comb & (PCB_LYC_SUB))
+			return 1;
 
-	return (g->len > 0);
+	return 0;
 }
