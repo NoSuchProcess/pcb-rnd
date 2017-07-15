@@ -983,7 +983,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
-		{"polygon",     eagle_read_poly},
+		{"polygon",     eagle_read_nop}, /*poly},*/
 		{"via",         eagle_read_via},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
@@ -1065,20 +1065,20 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 
 static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	trnode_t *l, *m, *n;
+	trnode_t *l, *m, *n, *p;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
 			pcb_coord_t x, y;
 			l = n;
-			if (NEXT(n) != NULL) {
-				m = NEXT(n);
+			if (CHILDREN(n) != NULL) {
+				p = m = CHILDREN(n);
 				while(m != NULL && NEXT(m) != NULL) {
 					m = NEXT(m);
-					/*printf("Found element node name %s.\n", NODENAME(m));*/
-					if (STRCMP(NODENAME(m), "element2") == 0) {
-						printf("Found element2.\n");
-						l = m;
+					printf("Found element node name %s.\n", NODENAME(m));
+					if (STRCMP(NODENAME(m), "name") == 0) {
+						printf("Found element2 name.\n");
+						l = p;
 					}
 				}
 			}
