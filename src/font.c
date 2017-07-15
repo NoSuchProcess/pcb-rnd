@@ -315,7 +315,6 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	return f;
 }
 
-
 void pcb_font_free(pcb_font_t *f)
 {
 	int i;
@@ -335,7 +334,7 @@ void pcb_font_free(pcb_font_t *f)
 			arclist_remove(a);
 		}
 		
-		f->Symbol[i].Valid = pcb_false;
+		memset (&f->Symbol[i], 0, sizeof(f->Symbol[0]));
 	}
 	free(f->name);
 	f->name = NULL;
