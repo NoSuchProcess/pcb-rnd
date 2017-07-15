@@ -1,3 +1,5 @@
+# NOTE: aagraph is at svn://repo.hu/projects/aagraph/trunk
+
 bridges.svg: bridges.txt
 	aagraph -Tsvg bridges.txt > bridges.svg
 
