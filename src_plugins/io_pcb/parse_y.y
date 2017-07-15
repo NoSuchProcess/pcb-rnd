@@ -276,9 +276,8 @@ parsefont
 					YYABORT;
 				}
 				*yyFontkitValid = pcb_false;
-				for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
-					free (yyFont->Symbol[i].Line);
-				memset(yyFont->Symbol, 0, sizeof(yyFont->Symbol));
+				pcb_font_free (yyFont);
+				yyFont->id = 0;
 			}
 		  symbols
 			{
