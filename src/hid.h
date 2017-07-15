@@ -195,6 +195,14 @@ struct hid_s {
 	   punches through everything. */
 	unsigned holes_after:1;
 
+	/* If set, enable the fake composite layer draw optimization, that is:
+	   if all layers in a compositing layer group are positive, no composition
+	   is done but layers are just drawn. Useful for software render HIDs with
+	   no transluency; causes problems with transluent rendering: different
+	   layers within the same group will be darker on overlap */
+	unsigned enable_fake_composite:1;
+
+
 	/* lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
 	   gtk only allows negative drawing.
 	   using the mask is to get rat transparency */

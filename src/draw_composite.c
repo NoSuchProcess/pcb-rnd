@@ -207,7 +207,8 @@ int pcb_draw_layer_is_comp(pcb_layer_id_t id)
 /* Draw a layer group with fake or real compositing */
 static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
 {
-	if (pcb_draw_layergrp_is_comp(ctx->grp))
+	int enable_fake = (pcb_gui != NULL) && (pcb_gui->enable_fake_composite);
+	if (!enable_fake || pcb_draw_layergrp_is_comp(ctx->grp))
 		comp_draw_layer_real(ctx, draw_auto, auto_data);
 	else
 		comp_draw_layer_fake(ctx, draw_auto, auto_data);

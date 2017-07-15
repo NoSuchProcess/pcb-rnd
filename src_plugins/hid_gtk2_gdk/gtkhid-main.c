@@ -47,6 +47,7 @@ int pplg_init_hid_gtk2_gdk(void)
 	ghid_win32_init();
 
 	ghid_glue_hid_init(&gtk2_gdk_hid);
+	gtk2_gdk_hid.enable_fake_composite = 1;
 	ghid_glue_common_init();
 
 	gtk2_gdk_hid.parse_arguments = gtk2_gdk_parse_arguments;
