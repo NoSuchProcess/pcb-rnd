@@ -1046,7 +1046,6 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 {
 	lht_node_t *grp, *sym;
 	lht_dom_iterator_t it;
-	int n;
 
 	if (nd->type != LHT_HASH)
 		return -1;
