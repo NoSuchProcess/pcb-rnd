@@ -329,7 +329,7 @@ void pcb_font_free(pcb_font_t *f)
 			polylist_remove(p);
 		}
 
-		for(a = arclist_first(&f->Symbol[i].arcs); p != NULL; p = arclist_first(&f->Symbol[i].arcs)) {
+		for(a = arclist_first(&f->Symbol[i].arcs); a != NULL; a = arclist_first(&f->Symbol[i].arcs)) {
 			pcb_arc_free(a);
 			arclist_remove(a);
 		}
