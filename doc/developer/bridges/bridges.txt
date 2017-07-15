@@ -17,14 +17,6 @@
             +----------------------------------------------------------+
 %%
 
-%png
-cell-width 20
-cell-height 40
-
-%svg
-cell-width 16
-cell-height 36
-
 []
 	shape box
 
@@ -32,18 +24,30 @@ cell-height 36
 [inp]
 	linecolor #cccccc
 	bgcolor #cccccc
+	textcolor #884433
+	label input-only
+	valign top
 
 [io]
 	linecolor #cccccc
 	bgcolor #cccccc
+	textcolor #884433
+	label input-output
+	valign top
 
 [out]
 	linecolor #cccccc
 	bgcolor #cccccc
+	textcolor #884433
+	label output-only
+	valign bottom
 
 [hid]
 	linecolor #cccccc
 	bgcolor #cccccc
+	textcolor #884433
+	label HID (GUI)
+	valign top
 
 
 [pcbrnd]
