@@ -334,6 +334,8 @@ void pcb_font_free(pcb_font_t *f)
 			pcb_arc_free(a);
 			arclist_remove(a);
 		}
+		
+		f->Symbol[i].Valid = pcb_false;
 	}
 	free(f->name);
 	f->name = NULL;
