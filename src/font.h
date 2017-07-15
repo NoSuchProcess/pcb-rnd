@@ -83,6 +83,9 @@ void pcb_fontkit_free(pcb_fontkit_t *fk);
 pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name);
 int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id);
 
+/* Reset the fontkit so that only the default font is kept and all extra fonts are purged */
+void pcb_fontkit_reset(pcb_fontkit_t *fk);
+
 /* Unlink the font from pcb, but do not free anything but return the font */
 pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, pcb_font_id_t id);
 
