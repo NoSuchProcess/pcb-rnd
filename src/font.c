@@ -319,8 +319,22 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 static void pcb_font_free(pcb_font_t *f)
 {
 	int i;
-	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
+	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
+		pcb_polygon_t *p;
+		pcb_arc_t *a;
+
 		free(f->Symbol[i].Line);
+
+		for(p = polylist_first(&f->Symbol[i].polys); p != NULL; p = polylist_first(&f->Symbol[i].polys)) {
+			pcb_poly_free(p);
+			polylist_remove(p);
+		}
+
+		for(a = arclist_first(&f->Symbol[i].arcs); p != NULL; p = arclist_first(&f->Symbol[i].arcs)) {
+			pcb_arc_free(a);
+			arclist_remove(a);
+		}
+	}
 	free(f->name);
 	f->name = NULL;
 	f->id = -1;
