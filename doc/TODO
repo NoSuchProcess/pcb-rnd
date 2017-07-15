@@ -153,6 +153,11 @@ LATER RELEASES:
 	- SIGPIPE - detect it (needed for popen)
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 
+GTK3:
+	- overlapping objects (e.g. 2 fat lines crossing on silk) are darker on the overlap; we need uniform color
+	- mouse scroll wheel doesn't work in cross section
+	- zoom hangs: press 'z' on the drawing area -> hang
+	- xor draw fails after 'i' library footprint placement; in fail mode there's no xor outline of buffer; drawing a line fixes it
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
