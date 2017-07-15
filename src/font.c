@@ -316,7 +316,7 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 }
 
 
-static void pcb_font_free(pcb_font_t *f)
+void pcb_font_free(pcb_font_t *f)
 {
 	int i;
 	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
