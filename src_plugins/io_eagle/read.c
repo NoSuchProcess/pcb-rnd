@@ -84,6 +84,9 @@ typedef struct read_state_s {
 	htip_t layers;
 	htsp_t libs;
 
+	/* current element refdes X, Y, height, and value X, Y, height */
+	pcb_coord_t refdes_x, refdes_y, refdes_scale, value_x, value_y, value_scale;
+
 	/* design rules */
 	pcb_coord_t md_wire_wire; /* minimal distance between wire and wire (clearance) */
 	pcb_coord_t ms_width; /* minimal trace width */
@@ -795,7 +798,8 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	pcb_element_t *elem = obj;
 	pcb_coord_t size;
 	trnode_t *n;
-	pcb_text_t *t;
+#warning subc TODO subcircuits will allow distinct refdes, descr and value text field attributes
+/*	pcb_text_t *t;*/
 	const char *cont;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n))
@@ -805,17 +809,21 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	if ((n == NULL) || ((cont = GET_TEXT(n)) == NULL))
 		return 0;
 
-	if (STRCMP(cont, ">NAME") == 0)
-		t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
-	else if (STRCMP(cont, ">VALUE") == 0)
-		t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
-	else
+	if (STRCMP(cont, ">NAME") == 0) {
+/*		t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];*/
+		size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
+		st->refdes_scale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
+		st->refdes_x = eagle_get_attrc(st, subtree, "x", 0);
+		st->refdes_y = eagle_get_attrc(st, subtree, "y", 0);
+	} else if (STRCMP(cont, ">VALUE") == 0) {
+/*		t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];*/
+		size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
+		st->value_scale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
+		st->value_x = eagle_get_attrc(st, subtree, "x", 0);
+		st->value_y = eagle_get_attrc(st, subtree, "y", 0); 
+	} else {
 		return 0;
-
-	size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
-	t->X = PCB_MIL_TO_COORD(200); /*eagle_get_attrc(st, subtree, "x", 0);*/
-	t->Y = -PCB_MIL_TO_COORD(200); /*eagle_get_attrc(st, subtree, "y", 0);*/
-	t->Scale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
+	}
 
 	return 0;
 }
@@ -834,7 +842,6 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *el
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
-
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, elem, IN_ELEM);
 }
 
@@ -842,6 +849,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 {
 	trnode_t *n;
 	eagle_library_t *lib = obj;
+	pcb_text_t *t;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "package") == 0) {
@@ -859,6 +867,20 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 				free(elem);
 				continue;
 			}
+#warning subc TODO subcircuits can have distinct refdes, value, description text attributes
+                        t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
+                        t->X = st->refdes_x;
+                        t->Y = st->refdes_y;
+                        t->Scale = st->refdes_scale;
+                        t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
+                        t->X = st->refdes_x;
+                        t->Y = st->refdes_y;
+                        t->Scale = st->refdes_scale;
+                        t = &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION];
+                        t->X = st->refdes_x;
+                        t->Y = st->refdes_y;
+                        t->Scale = st->refdes_scale;
+
 			htsp_set(&lib->elems, (char *)name, elem);
 		}
 	}
@@ -1030,12 +1052,14 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 			break;
 		}
 	}
-
-	if (size >= 0)
+#warning subc TODO can have unique text scaling in subcircuits
+/*	if (size >= 0)
 		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
 	pcb_trace("About to use text scale %d for element.\n", TextScale); 
 
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
+*/
+	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, st->refdes_scale, TextFlags);
 	text->Element = elem;
 }
 
@@ -1107,10 +1131,17 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			}
 			PCB_END_LOOP;
 
+#warning subc TODO this code ensures mainline element refdes, value, descr texts all get refdes x,y,scale
+			st->refdes_x = st->refdes_y = 0;
+			st->value_x = st->value_y = 0;
+			st->refdes_scale = st->value_scale = 100; /* default values */
 			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_DESCRIPTION(new_elem), &PCB_ELEM_TEXT_DESCRIPTION(elem), x, y, "PROD_ID", pkg);
 			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_REFDES(new_elem), &PCB_ELEM_TEXT_REFDES(elem), x, y, "NAME", name);
 			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_VALUE(new_elem), &PCB_ELEM_TEXT_VALUE(elem), x, y, "VALUE", val);
 
+			pcb_trace("used refdes x: %ml\n", st->refdes_x);
+			pcb_trace("used refdes y: %ml\n", st->refdes_y);
+			pcb_trace("used refdes scale: %d\n", st->refdes_scale);
 			if (rot != NULL) {
 				steps = eagle_rot2steps(rot);
 				if (steps > 0)
@@ -1126,6 +1157,9 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				pcb_element_change_side(new_elem, 2 * y - st->pcb->MaxHeight);
 
 			pcb_trace("placing %s: %s/%s -> %p\n", name, lib, pkg, (void *)elem);
+			if (st->refdes_x != st->value_x || st->refdes_y != st->value_y || st->refdes_scale != st->value_scale) {
+				pcb_message(PCB_MSG_WARNING, "element \"value\" text x ,y, scaling != those of refdes text; set to refdes x, y, scaling.\n");
+			}
 		}
 	}
 	return 0;
