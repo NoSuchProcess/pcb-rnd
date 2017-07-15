@@ -1090,6 +1090,8 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 
 	if (nd->type != LHT_HASH)
 		return -1;
+	
+	pcb_fontkit_reset (fk);
 
 	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
 		pcb_font_t *f;
@@ -1101,8 +1103,11 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 				continue; /* ingore fonts with invalid name for now - maybe it'd be safer to read the ID field */
 			f = pcb_new_font(fk, id, NULL);
 		}
-		else
+		else {
+			pcb_font_free (&fk->dflt);
+			fk->dflt.id = 0;
 			f = &fk->dflt;
+		}
 
 #warning TODO: check return val
 		parse_font(f, n);
