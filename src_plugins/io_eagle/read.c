@@ -868,18 +868,18 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 				continue;
 			}
 #warning subc TODO subcircuits can have distinct refdes, value, description text attributes
-                        t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
-                        t->X = st->refdes_x;
-                        t->Y = st->refdes_y;
-                        t->Scale = st->refdes_scale;
-                        t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
-                        t->X = st->refdes_x;
-                        t->Y = st->refdes_y;
-                        t->Scale = st->refdes_scale;
-                        t = &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION];
-                        t->X = st->refdes_x;
-                        t->Y = st->refdes_y;
-                        t->Scale = st->refdes_scale;
+			t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
+			t->X = st->refdes_x;
+			t->Y = st->refdes_y;
+			t->Scale = st->refdes_scale;
+			t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
+			t->X = st->refdes_x;
+			t->Y = st->refdes_y;
+			t->Scale = st->refdes_scale;
+			t = &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION];
+			t->X = st->refdes_x;
+			t->Y = st->refdes_y;
+			t->Scale = st->refdes_scale;
 
 			htsp_set(&lib->elems, (char *)name, elem);
 		}
