@@ -1093,12 +1093,13 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					continue;
 				}
 				elem = eagle_libelem_by_name(st, lib, pkg);
-				if (elem == NULL) {
-					pcb_message(PCB_MSG_WARNING, "Library element not found: %s/%s\n", lib, pkg);
-					continue;
-				}
 			}
 
+			/* sanity checks: the element exists and is non-empty */
+			if (elem == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Library element not found: %s/%s\n", lib, pkg);
+				continue;
+			}
 			if (pcb_element_is_empty(elem)) {
 				pcb_message(PCB_MSG_WARNING, "Not placing empty element: %s/%s\n", lib, pkg);
 				continue;
