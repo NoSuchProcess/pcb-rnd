@@ -354,7 +354,7 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 	return htip_get(&st->layers, id);
 }
 
-static pcb_element_t *eagle_libelem_get(read_state_t *st, const char *lib, const char *elem)
+static pcb_element_t *eagle_libelem_by_name(read_state_t *st, const char *lib, const char *elem)
 {
 	eagle_library_t *l;
 	l = htsp_get(&st->libs, lib);
@@ -1077,23 +1077,28 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			}
 			name = eagle_get_attrs(st, l, "name", NULL);
 			val = eagle_get_attrs(st, l, "value", NULL);
-			lib = eagle_get_attrs(st, n, "library", NULL);
-			pkg = eagle_get_attrs(st, n, "package", NULL);
 
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring element with no name\n");
 				continue;
 			}
-			if ((lib == NULL) || (pkg == NULL)) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring element with incomplete library reference\n");
-				continue;
+
+			/* need to get these as string because error messages will use them */
+			lib = eagle_get_attrs(st, n, "library", NULL);
+			pkg = eagle_get_attrs(st, n, "package", NULL);
+
+			{ /* xml: library and package are named */
+				if ((lib == NULL) || (pkg == NULL)) {
+					pcb_message(PCB_MSG_WARNING, "Ignoring element with incomplete library reference\n");
+					continue;
+				}
+				elem = eagle_libelem_by_name(st, lib, pkg);
+				if (elem == NULL) {
+					pcb_message(PCB_MSG_WARNING, "Library element not found: %s/%s\n", lib, pkg);
+					continue;
+				}
 			}
 
-			elem = eagle_libelem_get(st, lib, pkg);
-			if (elem == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Library element not found: %s/%s\n", lib, pkg);
-				continue;
-			}
 			if (pcb_element_is_empty(elem)) {
 				pcb_message(PCB_MSG_WARNING, "Not placing empty element: %s/%s\n", lib, pkg);
 				continue;
