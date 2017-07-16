@@ -1192,7 +1192,20 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 
 static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-#warning TODO: process these probably no-net-no-signal objects
+	static const dispatch_t disp[] = { /* possible children of <library> */
+		{"contactref",  eagle_read_contactref},
+		{"wire",        eagle_read_wire},
+#warning TODO enable polygons again, ASAP:
+		{"polygon",     eagle_read_nop}, /*poly},*/
+		{"via",         eagle_read_via},
+		{"text",        eagle_read_text},
+		{"@text",       eagle_read_nop},
+		{NULL, NULL}
+	};
+
+#warning TODO: test (should process these probably no-net-no-signal objects)
+
+	return eagle_foreach_dispatch(st, subtree, disp, NULL, ON_BOARD);
 }
 
 static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int type)
