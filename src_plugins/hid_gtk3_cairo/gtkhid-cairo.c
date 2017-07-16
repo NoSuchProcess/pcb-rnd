@@ -60,9 +60,9 @@ typedef struct render_priv_s {
 	GdkRGBA grid_color;										/**< cached grid color                  */
 	GdkRGBA crosshair_color;							/**< cached crosshair color             */
 
-	cairo_surface_t *surface;							/**< cairo surface for off-line painting            */
-	cairo_t *cr;													/**< cairo context for off-line painting            */
-	cairo_t *cr_drawing_area;							/**< cairo context connected to gport->drawing_area */
+	cairo_t *cr;													/**< pointer to current drawing context             */
+	cairo_surface_t *surf_da;							/**< cairo surface connected to gport->drawing_area */
+	cairo_t *cr_drawing_area;							/**< cairo context created from surf_da             */
 
 	//GdkPixmap *pixmap, *mask;
 
@@ -79,7 +79,7 @@ typedef struct render_priv_s {
 
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
-	cairo_t *cr;													/**< local cairo context */
+	//cairo_t *cr;													/**< local cairo context */
 	//cairo_surface_t *surface;     /**< a surface */
 
 	const char *colorname;
@@ -421,7 +421,7 @@ static void ghid_cairo_draw_grid(void)
 	}
 
 	ghid_cairo_draw_grid_global(cr);
-  cairo_restore(cr);
+	cairo_restore(cr);
 }
 
 /* ------------------------------------------------------------ */
@@ -1252,7 +1252,8 @@ static void show_crosshair(gboolean paint_new_location)
 
 	/* FIXME: when CrossColor changed from config */
 	map_color_string(conf_core.appearance.color.cross, &priv->crosshair_color);
-	cr = priv->cr_drawing_area;
+	//cr = priv->cr_drawing_area;
+	cr = priv->cr;
 	gdk_cairo_set_source_rgba(cr, &priv->crosshair_color);
 	cairo_set_line_width(cr, 1.0);
 
@@ -1287,8 +1288,9 @@ static void ghid_cairo_init_renderer(int *argc, char ***argv, void *vport)
 	GHidPort *port = vport;
 	/* Init any GC's required */
 	port->render_priv = g_new0(render_priv_t, 1);
-	port->render_priv->surface = NULL;
 	port->render_priv->cr = NULL;
+	port->render_priv->surf_da = NULL;
+	port->render_priv->cr_drawing_area = NULL;
 }
 
 static void ghid_cairo_shutdown_renderer(void *vport)
@@ -1296,9 +1298,10 @@ static void ghid_cairo_shutdown_renderer(void *vport)
 	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;
 
-	cairo_surface_destroy(priv->surface);
-	priv->surface = NULL;
-	cairo_destroy(priv->cr);
+	cairo_surface_destroy(priv->surf_da);
+	priv->surf_da = NULL;
+	cairo_destroy(priv->cr_drawing_area);
+	priv->cr_drawing_area = NULL;
 	priv->cr = NULL;
 
 	g_free(port->render_priv);
@@ -1344,17 +1347,18 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 		done_once = 1;
 	}
 
-	if (priv->surface)
-		cairo_surface_destroy(priv->surface);
+	if (priv->surf_da)
+		cairo_surface_destroy(priv->surf_da);
 
 	/* Creates a single cairo surface/context for off-line painting */
-	priv->surface = gdk_window_create_similar_surface(gtk_widget_get_window(port->drawing_area),
+	priv->surf_da = gdk_window_create_similar_surface(gtk_widget_get_window(port->drawing_area),
 																										CAIRO_CONTENT_COLOR_ALPHA,
 																										gtk_widget_get_allocated_width(port->drawing_area),
 																										gtk_widget_get_allocated_height(port->drawing_area));
-	if (priv->cr)
-		cairo_destroy(priv->cr);
-	priv->cr = cairo_create(priv->surface);
+	if (priv->cr_drawing_area)
+		cairo_destroy(priv->cr_drawing_area);
+	priv->cr_drawing_area = cairo_create(priv->surf_da);
+	priv->cr = priv->cr_drawing_area;
 }
 
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
@@ -1367,11 +1371,7 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_ex
 	//gdk_draw_drawable(window, priv->bg_gc, port->pixmap,
 	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 
-	//cairo_save(cr);
-	cr_paint_from_surface(p, priv->surface);
-	//cairo_restore(cr);
-
-	priv->cr_drawing_area = p;
+	cr_paint_from_surface(p, priv->surf_da);
 
 	show_crosshair(TRUE);
 
@@ -1411,7 +1411,6 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 {
 	//GdkWindow *window = gtk_widget_get_window(widget);
 	//GdkDrawable *save_drawable;
-	cairo_t *cr = p;
 	GtkAllocation allocation;			/* Assuming widget is a drawing widget, get the Rectangle allowed for drawing. */
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
@@ -1444,15 +1443,15 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
 	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
-	/* clear background */
-	erase_with_background_color(priv->cr, &priv->bg_color);
-
+	/* Change current pointer to draw in this widget, draws, then come back to pointer to drawing_area. */
+	priv->cr = p;
+	cairo_save(p);
 	/* calls the off-line drawing routine */
 	expcall(&gtk3_cairo_hid, ctx);
-	/* paints on the widget */
-	cr_paint_from_surface(cr, priv->surface);
-
+	cairo_restore(p);
+	priv->cr = priv->cr_drawing_area;
 	//gport->drawable = save_drawable;
+
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
