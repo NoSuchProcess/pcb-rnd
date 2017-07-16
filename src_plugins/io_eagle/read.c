@@ -798,12 +798,13 @@ static int eagle_read_via(read_state_t *st, trnode_t *subtree, void *obj, int ty
 /* Save the relative coords and size of the each relevant text fields */
 static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	pcb_element_t *elem = obj;
 	pcb_coord_t size;
 	trnode_t *n;
+	const char *cont;
+
 #warning subc TODO subcircuits will allow distinct refdes, descr and value text field attributes
 /*	pcb_text_t *t;*/
-	const char *cont;
+/*	pcb_element_t *elem = obj;*/
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n))
 		if (IS_TEXT(n))
@@ -1037,9 +1038,8 @@ static int eagle_rot2steps(const char *rot)
 
 static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *elem, pcb_text_t *text, pcb_text_t *def_text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
 {
-	int direction = 0, TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);
+	int direction = 0;
 	pcb_flag_t TextFlags = pcb_no_flags();
-	pcb_coord_t size;
 
 	/*x += def_text->X;
 	y += def_text->Y + EAGLE_TEXT_SIZE_100; */
@@ -1050,14 +1050,17 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 			direction = eagle_rot2steps(eagle_get_attrs(st, nd, "rot", NULL));
 			if (direction < 0)
 				direction = 0;
-			size = eagle_get_attrc(st, nd, "size", -1);
+/*			size = eagle_get_attrc(st, nd, "size", -1);*/
 			x += eagle_get_attrc(st, nd, "x", x);
 			y += eagle_get_attrc(st, nd, "y", y);
 			break;
 		}
 	}
 #warning subc TODO can have unique text scaling in subcircuits
-/*	if (size >= 0)
+/*
+	int TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);
+	pcb_coord_t size;
+	if (size >= 0)
 		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
 	pcb_trace("About to use text scale %d for element.\n", TextScale); 
 
