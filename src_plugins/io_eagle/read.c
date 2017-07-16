@@ -108,7 +108,7 @@ typedef enum {
 
 /* Xml path walk that's much simpler than xpath; the ... is a NULL
    terminated list of node names */
-static trnode_t *eagle_xml_path(read_state_t *st, trnode_t *subtree, ...)
+static trnode_t *eagle_trpath(read_state_t *st, trnode_t *subtree, ...)
 {
 	trnode_t *nd = subtree;
 	const char *target;
@@ -1073,7 +1073,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 	if (st->elem_by_name)
 		nlib = NULL;
 	else
-		nlib = eagle_xml_path(st, st->parser.root, "drawing", "board", "libraries", NULL);
+		nlib = eagle_trpath(st, st->parser.root, "drawing", "board", "libraries", NULL);
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
@@ -1345,7 +1345,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	st.elem_by_name = 1;
 	st_init(&st);
 
-	dr = eagle_xml_path(&st, st.parser.root, "drawing", "board", "designrules", NULL);
+	dr = eagle_trpath(&st, st.parser.root, "drawing", "board", "designrules", NULL);
 	if (dr != NULL)
 		eagle_read_design_rules(&st, dr);
 	else
@@ -1401,7 +1401,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 #warning TODO: find and read the DRC block
 #if 0
-	dr = eagle_xml_path(&st, st.parser.root, "drawing", "board", "designrules", NULL);
+	dr = eagle_trpath(&st, st.parser.root, "drawing", "board", "designrules", NULL);
 	if (dr != NULL)
 		eagle_read_design_rules(&st, dr);
 	else
