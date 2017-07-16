@@ -29,8 +29,6 @@
 #include "string.h" /* try this */
 #include <stdlib.h>
 #include <assert.h>
-#include <libxml/tree.h>
-#include <libxml/parser.h>
 
 #include "../src_plugins/boardflip/boardflip.h"
 
