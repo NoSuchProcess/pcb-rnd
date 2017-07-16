@@ -1202,7 +1202,7 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 
 #warning TODO: test (should process these probably no-net-no-signal objects)
 
-	return eagle_foreach_dispatch(st, subtree, disp, NULL, ON_BOARD);
+	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, ON_BOARD);
 }
 
 static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int type)
