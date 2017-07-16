@@ -373,8 +373,10 @@ static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, lon
 
 	/* count children of that library so n ends up at the pkgth package */
 	for(n = CHILDREN(n); (n != NULL) && (pkgi > 0); n = NEXT(n), pkgi--) ;
+	if (n == NULL)
+		return NULL;
 
-	return n;
+	return st->parser.calls->get_user_data(n);
 }
 
 static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
@@ -883,6 +885,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 			t->Scale = st->refdes_scale;
 
 			htsp_set(&lib->elems, (char *)name, elem);
+			st->parser.calls->set_user_data(n, elem);
 		}
 	}
 	return 0;
