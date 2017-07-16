@@ -365,18 +365,26 @@ static pcb_element_t *eagle_libelem_by_name(read_state_t *st, const char *lib, c
 static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, long libi, long pkgi)
 {
 	trnode_t *n;
+	pcb_element_t *res;
 
 	/* count children of libs so n ends up at the libith library */
 	for(n = CHILDREN(libs); (n != NULL) && (libi > 0); n = NEXT(n), libi--) ;
-	if (n == NULL)
+	if (n == NULL) {
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find lib by idx:\n");
 		return NULL;
+	}
 
 	/* count children of that library so n ends up at the pkgth package */
 	for(n = CHILDREN(n); (n != NULL) && (pkgi > 0); n = NEXT(n), pkgi--) ;
-	if (n == NULL)
+	if (n == NULL) {
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find pkg by idx:\n");
 		return NULL;
+	}
 
-	return st->parser.calls->get_user_data(n);
+	res = st->parser.calls->get_user_data(n);
+	if (res == NULL)
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() found the element node in the tree but there's no element instance associated with it:\n");
+	return res;
 }
 
 static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
