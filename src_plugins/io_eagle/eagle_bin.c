@@ -36,6 +36,7 @@
 
 #include "eagle_bin.h"
 #include "egb_tree.h"
+#include "error.h"
 
 /* Describe a bitfield: width of the field that hosts the bitfield, first
 and last bit offsets, inclusive. Bit offsets are starting from 0 at LSB. */
@@ -1242,6 +1243,28 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 	return processed;
 }
 
+static egb_node_t *find_node(egb_node_t *first, int id)
+{
+	egb_node_t *n;
+
+	for(n = first; n != NULL; n = n->next)
+		if (n->id == id)
+			return n;
+
+	return NULL;
+}
+
+static egb_node_t *find_node_name(egb_node_t *first, const char *id_name)
+{
+	egb_node_t *n;
+
+	for(n = first; n != NULL; n = n->next)
+		if (strcmp(n->id_name, id_name) == 0)
+			return n;
+
+	return NULL;
+}
+
 /* take each /drawing/layer and move them into a newly created /drawing/layers/ */
 static int postproc_layers(void *ctx, egb_node_t *root)
 {
@@ -1249,11 +1272,9 @@ static int postproc_layers(void *ctx, egb_node_t *root)
 	egb_node_t *layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
 	egb_node_t *drawing = root->first_child;
 
-	int layer_count = 0;
 	for(n = drawing->first_child, prev = NULL; n != NULL; n = next) {
 		next = n->next; /* need to save this because unlink() will ruin it */
 		if (n->id == PCB_EGKW_SECT_LAYER) {
-			printf("Appended layer PCB_EGKW_SECT_LAYER %d\n", layer_count++);
 			egb_node_unlink(drawing, prev, n);
 			egb_node_append(layers, n);
 		}
@@ -1261,14 +1282,44 @@ static int postproc_layers(void *ctx, egb_node_t *root)
 			prev = n;
 	}
 
-	printf("Finished post-processing %d PCB_EGKW_SECT_LAYER blocks\n", layer_count);
+	return 0;
+}
+
+/* insert a library node above each packages node to match the xml */
+static int postproc_libs(void *ctx, egb_node_t *root)
+{
+	egb_node_t *n, *lib;
+	egb_node_t *drawing = root->first_child;
+	egb_node_t *board, *libraries;
+
+	board = find_node(drawing->first_child, PCB_EGKW_SECT_BOARD);
+	if (board == NULL)
+		return -1;
+
+	libraries = find_node_name(board->first_child, "libraries");
+	if (libraries == NULL)
+		return -1;
+
+	for(n = libraries->first_child; n != NULL; n = libraries->first_child) {
+		if (n->id == PCB_EGKW_SECT_LIBRARY)
+			break;
+
+		if (n->id != PCB_EGKW_SECT_PACKAGES) {
+			pcb_message(PCB_MSG_ERROR, "postproc_libs(): unexpected node under libraries (must be packages)\n");
+			return -1;
+		}
+
+		egb_node_unlink(libraries, NULL, n);
+		lib = egb_node_append(libraries, egb_node_alloc(PCB_EGKW_SECT_LIBRARY, "library"));
+		egb_node_append(lib, n);
+	}
 
 	return 0;
 }
 
 static int postproc(void *ctx, egb_node_t *root)
 {
-	return postproc_layers(ctx, root);
+	return postproc_layers(ctx, root) || postproc_libs(ctx, root);
 }
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
