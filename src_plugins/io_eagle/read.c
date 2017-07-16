@@ -89,6 +89,7 @@ typedef struct read_state_s {
 	pcb_coord_t ms_width; /* minimal trace width */
 	double rv_pad_top, rv_pad_inner, rv_pad_bottom; /* pad size-to-drill ration on different layers */
 
+	const char *default_unit; /* assumed unit for unitless coord values */
 	unsigned elem_by_name:1; /* whether elements are addressed by name (or by index in the lib) */
 } read_state_t;
 
@@ -260,7 +261,7 @@ static pcb_coord_t eagle_get_attrc(read_state_t *st, trnode_t *nd, const char *n
 	if (p == NULL)
 		return invalid_val;
 
-	c = pcb_get_value(p, "mm", NULL, &succ);
+	c = pcb_get_value(p, st->default_unit, NULL, &succ);
 	if (!succ)
 		return invalid_val;
 	return c;
@@ -1374,6 +1375,8 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st.pcb = pcb;
 	st.elem_by_name = 1;
+	st.default_unit = "mm";
+
 	st_init(&st);
 
 	dr = eagle_trpath(&st, st.parser.root, "drawing", "board", "designrules", NULL);
@@ -1427,6 +1430,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st.pcb = pcb;
 	st.elem_by_name = 0;
+	st.default_unit = "cmil";
 
 	st_init(&st);
 
