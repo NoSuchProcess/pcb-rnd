@@ -286,9 +286,8 @@ static pcb_coord_t eagle_get_attrcu(read_state_t *st, trnode_t *nd, const char *
 static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	trnode_t *n;
-	printf("eagle_read_layers about to look at children of: %s\n", NODENAME(subtree));
+
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
-		printf("eagle_read_layers now looking at node name: %s\n", NODENAME(n));
 		if (STRCMP(NODENAME(n), "layer") == 0) {
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
 			int id, reuse = 0;
@@ -303,7 +302,6 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->active  = eagle_get_attrl(st, n, "active", -1);
 			ly->ly      = -1;
 			id = eagle_get_attrl(st, n, "number", -1);
-			pcb_printf("Found eagle layer number: %d\nAbout to htip_set...\n", id);
 			if (id >= 0)
 				htip_set(&st->layers, id, ly);
 
@@ -329,7 +327,6 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					grp = pcb_get_grp_new_intern(st->pcb, -1);
 					ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
 					pcb_layergrp_fix_turn_to_outline(grp);
-					printf("Created outline layer: %s\n", ly->name);
 					break;
 
 				default:
@@ -337,7 +334,6 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 						/* new internal layer */
 						grp = pcb_get_grp_new_intern(st->pcb, -1);
 						ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
-					printf("Created inner layer: %s\n", ly->name);
 					}
 			}
 			if (typ != 0) {
@@ -345,13 +341,11 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					pcb_layer_list(typ, &ly->ly, 1);
 				if ((ly->ly < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
 					ly->ly = pcb_layer_create(gid, ly->name);
-					printf("Created other layer type: %s\n", ly->name);
 			}
 		}
 	}
 	pcb_layer_group_setup_silks(&st->pcb->LayerGroups);
 	pcb_layer_auto_fixup(st->pcb);
-	printf("Finished processing layers.\n");
 	return 0;
 }
 
@@ -412,7 +406,6 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 	if (rot[0] == 'R') {
 		int deg = atoi(rot+1);
-		printf("text rot: %s\n", rot);
 		if (deg < 45 || deg >= 315) {
 			text_direction = 0;
 		}
@@ -676,7 +669,6 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 	if ((rot != NULL) && (rot[0] == 'R')) { 
 		int deg = atoi(rot+1);
-		printf("smd pad rot? %s %d\n", rot, deg);
 		switch(deg) {
 			case 0:
 				x -= dx/2;
@@ -740,8 +732,6 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 
 	if ((dia - drill) / 2.0 < st->ms_width)
 		dia = drill + 2*st->ms_width;
-
-/*	pcb_printf("dia=%mm drill=%mm\n", dia, drill);*/
 
 	switch((eagle_loc_t)type) {
 		case IN_ELEM:
@@ -859,7 +849,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 				pcb_message(PCB_MSG_WARNING, "Ignoring package with no name\n");
 				continue;
 			}
-			printf(" pkg %s\n", name);
+
 			elem = calloc(sizeof(pcb_element_t), 1);
 			eagle_read_pkg(st, n, elem);
 			if (pcb_element_is_empty(elem)) {
@@ -906,7 +896,7 @@ static int eagle_read_libs(read_state_t *st, trnode_t *subtree, void *obj, int t
 				continue;
 			}
 			lib = calloc(sizeof(eagle_library_t), 1);
-			printf("Name: %s\n", name);
+
 			htsp_init(&lib->elems, strhash, strkeyeq);
 			eagle_foreach_dispatch(st, CHILDREN(n), disp, lib, 0);
 			htsp_set(&st->libs, (char *)name, lib);
@@ -1080,9 +1070,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				p = m = CHILDREN(n);
 				while(m != NULL && NEXT(m) != NULL) {
 					m = NEXT(m);
-					printf("Found element node name %s.\n", NODENAME(m));
 					if (STRCMP(NODENAME(m), "name") == 0) {
-						printf("Found element2 name.\n");
 						l = p;
 					}
 				}
