@@ -532,7 +532,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	lin4->Point2.Y = lin1->Point1.Y;
 
 #warning hard coded rectangle line thicknesses need to be changed to design rules value
- 
+
 	lin1->Thickness = PCB_MIL_TO_COORD(10);
 	lin2->Thickness = lin1->Thickness;
 	lin3->Thickness = lin1->Thickness;
@@ -1358,7 +1358,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 
 	static const dispatch_t disp_2[] = { /* possible children of root */
-		{"drawing",	   eagle_read_drawing},
+		{"drawing",        eagle_read_drawing},
 		{"layers",         eagle_read_nop},
 		{NULL, NULL}
 	};
