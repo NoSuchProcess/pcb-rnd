@@ -41,7 +41,6 @@ For the next release:
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
 
 LATER RELEASES:
-- pcb_get_value*() should handle coord overflow and clamp
 - composite layer draw API cleanup [Ade]:
 	- composite silk layer highlight bug: add a second, sub silk layer; place an element; select the element -> element silk is not cyan; reason: real composite layer is drawn with mask, mask loses color on blotting (affect gtk only)
 	- (the same happens on paste, probably on mask too)
