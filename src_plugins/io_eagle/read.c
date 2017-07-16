@@ -369,7 +369,7 @@ static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, lon
 	pcb_element_t *res;
 
 	/* count children of libs so n ends up at the libith library */
-	for(n = CHILDREN(libs); (n != NULL) && (libi > 0); n = NEXT(n), libi--) ;
+	for(n = CHILDREN(libs); (n != NULL) && (libi > 1); n = NEXT(n), libi--) ;
 	if (n == NULL) {
 		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find lib by idx:\n");
 		return NULL;
@@ -387,7 +387,7 @@ static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, lon
 	}
 
 	/* count children of that library so n ends up at the pkgth package */
-	for(n = CHILDREN(n); (n != NULL) && (pkgi > 0); n = NEXT(n), pkgi--) ;
+	for(n = CHILDREN(n); (n != NULL) && (pkgi > 1); n = NEXT(n), pkgi--) ;
 	if (n == NULL) {
 		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find pkg by idx:\n");
 		return NULL;
