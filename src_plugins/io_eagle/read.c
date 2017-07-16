@@ -1071,6 +1071,10 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
 			pcb_coord_t x, y;
+			const char *name, *val, *lib, *pkg, *rot;
+			pcb_element_t *elem, *new_elem;
+			int steps, back = 0;
+
 			l = n;
 			if (CHILDREN(n) != NULL) {
 				p = m = CHILDREN(n);
@@ -1083,14 +1087,10 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					}
 				}
 			}
-			const char *name = eagle_get_attrs(st, l, "name", NULL);
-			const char *val = eagle_get_attrs(st, l, "value", NULL);
-			const char *lib = eagle_get_attrs(st, n, "library", NULL);
-			const char *pkg = eagle_get_attrs(st, n, "package", NULL);
-			/*printf("Element name has been found : %s\n", name);*/
-			pcb_element_t *elem, *new_elem;
-			const char *rot;
-			int steps, back = 0;
+			name = eagle_get_attrs(st, l, "name", NULL);
+			val = eagle_get_attrs(st, l, "value", NULL);
+			lib = eagle_get_attrs(st, n, "library", NULL);
+			pkg = eagle_get_attrs(st, n, "package", NULL);
 
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring element with no name\n");
