@@ -990,6 +990,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 #warning TODO enable polygons again, ASAP:
 		{"polygon",     eagle_read_nop}, /*poly},*/
 		{"via",         eagle_read_via},
+		{"text",        eagle_read_text},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
