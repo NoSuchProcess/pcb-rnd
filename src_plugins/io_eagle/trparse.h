@@ -18,6 +18,9 @@ typedef struct trparse_calls_s {
 
 	int (*str_cmp)(const char *s1, const char *s2);
 	int (*is_text)(trparse_t *pst, trnode_t *node);
+
+	void *(*get_user_data)(trnode_t *node);
+	void (*set_user_data)(trnode_t *node, void *data);
 } trparse_calls_t;
 
 

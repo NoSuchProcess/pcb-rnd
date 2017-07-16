@@ -40,6 +40,7 @@ struct egb_node_s {
 	egb_node_t *parent;
 	egb_node_t *next;
 	egb_node_t *first_child, *last_child;
+	void *user_data;
 };
 
 

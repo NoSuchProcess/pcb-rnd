@@ -115,6 +115,18 @@ static int eagle_bin_is_text(trparse_t *pst, trnode_t *node)
 	return 0;
 }
 
+static void *eagle_bin_get_user_data(trnode_t *node)
+{
+	egb_node_t *nd = (egb_node_t *)node;
+	return nd->user_data;
+}
+
+static void eagle_bin_set_user_data(trnode_t *node, void *data)
+{
+	egb_node_t *nd = (egb_node_t *)node;
+	nd->user_data = data;
+}
+
 
 trparse_calls_t trparse_bin_calls = {
 	eagle_bin_load,
@@ -126,5 +138,7 @@ trparse_calls_t trparse_bin_calls = {
 	eagle_bin_prop,
 	eagle_bin_text,
 	strcmp,
-	eagle_bin_is_text
+	eagle_bin_is_text,
+	eagle_bin_get_user_data,
+	eagle_bin_set_user_data
 };

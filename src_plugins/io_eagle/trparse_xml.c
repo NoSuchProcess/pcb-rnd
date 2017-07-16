@@ -112,6 +112,18 @@ static int eagle_xml_is_text(trparse_t *pst, trnode_t *node)
 	return ((xmlNode *)node)->type == XML_TEXT_NODE;
 }
 
+static void *eagle_xml_get_user_data(trnode_t *node)
+{
+	xmlNode *nd = (xmlNode *)node;
+	return nd->_private;
+}
+
+static void eagle_xml_set_user_data(trnode_t *node, void *data)
+{
+	xmlNode *nd = (xmlNode *)node;
+	nd->_private = data;
+}
+
 
 trparse_calls_t trparse_xml_calls = {
 	eagle_xml_load,
@@ -123,5 +135,7 @@ trparse_calls_t trparse_xml_calls = {
 	eagle_xml_prop,
 	eagle_xml_text,
 	eagle_xml_strcmp,
-	eagle_xml_is_text
+	eagle_xml_is_text,
+	eagle_xml_get_user_data,
+	eagle_xml_set_user_data
 };
