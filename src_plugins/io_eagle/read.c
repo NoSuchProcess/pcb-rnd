@@ -1002,7 +1002,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
 #warning TODO enable polygons again, ASAP:
-		{"polygon",     eagle_read_nop}, /*poly},*/
+		{"polygon",     eagle_read_poly},
 		{"via",         eagle_read_via},
 		{"text",        eagle_read_text},
 		{"@text",       eagle_read_nop},
