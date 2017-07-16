@@ -1189,10 +1189,15 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 	return 0;
 }
 
+static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int type)
+{
+#warning TODO: process these probably no-net-no-signal objects
+}
+
 static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	static const dispatch_t disp[] = { /* possible children of <board> */
-		{"plain",       eagle_read_nop},
+		{"plain",       eagle_read_plain},
 		{"libraries",   eagle_read_libs},
 		{"attributes",  eagle_read_nop},
 		{"variantdefs", eagle_read_nop},
