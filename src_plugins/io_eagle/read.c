@@ -578,13 +578,13 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
 
-	if (lt != NULL) {
+	if (lt != -1) {
 		pcb_trace("Found wire type %ld\n", lt);
 	}
 	else {
 		pcb_trace("Found null wire type 'lt'\n");
 	}
-	if (ln != NULL) {
+	if (ln != -1) {
 		pcb_trace("Found wire layer %ld\n", ln);
 	}
 	else {
