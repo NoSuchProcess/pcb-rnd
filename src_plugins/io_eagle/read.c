@@ -1001,7 +1001,6 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
-#warning TODO enable polygons again, ASAP:
 		{"polygon",     eagle_read_poly},
 		{"via",         eagle_read_via},
 		{"text",        eagle_read_text},
@@ -1209,8 +1208,8 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
-#warning TODO enable polygons again, ASAP:
-		{"polygon",     eagle_read_nop}, /*poly},*/
+		{"polygon",     eagle_read_poly},
+		{"rectangle",   eagle_read_rect},
 		{"via",         eagle_read_via},
 		{"text",        eagle_read_text},
 		{"hole",        eagle_read_hole},
