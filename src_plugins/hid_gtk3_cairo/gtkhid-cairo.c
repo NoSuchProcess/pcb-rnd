@@ -135,7 +135,15 @@ static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2
 		cairo_stroke(cr);
 }
 
-/** TODO: Does this function have some specifics in cairo ?  or is it general ? */
+static void start_subcomposite(void)
+{
+}
+
+static void end_subcomposite(void)
+{
+}
+
+/** Called once per layer group. */
 static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int idx = group;
@@ -149,6 +157,8 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 		idx = PCB->LayerGroups.grp[group].lid[idx];
 	}
 
+	start_subcomposite();
+
 	/* non-virtual layers with group visibility */
 	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
@@ -156,6 +166,7 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis /*&& !pinout */ );
 	}
 
+	/* normal layers */
 	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
 		return /*pinout ? 1 : */ PCB->Data->Layer[idx].meta.real.vis;
 
@@ -180,6 +191,12 @@ static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t la
 		}
 	}
 	return 0;
+}
+
+/** Called when all primitives of the current group have been created. */
+static void ghid_cairo_end_layer_group(void)
+{
+	end_subcomposite();
 }
 
 /** Do not clean up internal structures, as they will be used probably elsewhere. */
@@ -1554,6 +1571,7 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		hid->notify_crosshair_change = ghid_cairo_notify_crosshair_change;
 		hid->notify_mark_change = ghid_cairo_notify_mark_change;
 		hid->set_layer_group = ghid_cairo_set_layer_group;
+		hid->end_layer = ghid_cairo_end_layer_group;
 		hid->make_gc = ghid_cairo_make_gc;
 		hid->destroy_gc = ghid_cairo_destroy_gc;
 		hid->use_mask = ghid_cairo_use_mask;
