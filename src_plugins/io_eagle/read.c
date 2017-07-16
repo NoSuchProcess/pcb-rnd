@@ -1445,10 +1445,5 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb_trace("Houston, the Eagle-bin has landed. %d\n", res);
 
 	return 0;
-
-err:;
-	st_uninit(&st);
-	pcb_trace("Eagle XML parsing error. Bailing out now.\n");
-	return -1;
 }
 
