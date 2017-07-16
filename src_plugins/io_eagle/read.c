@@ -26,7 +26,6 @@
  */
 
 #include "config.h"
-#include "string.h" /* try this */
 #include <stdlib.h>
 #include <assert.h>
 
