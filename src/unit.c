@@ -234,7 +234,7 @@ double pcb_coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
 	return x * unit->scale_factor * base;
 }
 
-/* \brief Convert a given unit to pcb coords
+/* \brief Convert a given unit to pcb coords; clamp at the end of the ranges
  *
  * \param [in] unit  The unit to convert from
  * \param [in] x     The quantity to convert
@@ -243,12 +243,21 @@ double pcb_coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
  */
 pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x)
 {
-	double base;
+	double base, res;
+
 	if (unit == NULL)
 		return -1;
-	base = unit->family == PCB_UNIT_METRIC ? PCB_MM_TO_COORD(x)
-		: PCB_MIL_TO_COORD(x);
-	return pcb_round(base/unit->scale_factor);
+
+	base = unit->family == PCB_UNIT_METRIC ? PCB_MM_TO_COORD(x) : PCB_MIL_TO_COORD(x);
+	res = pcb_round(base/unit->scale_factor);
+
+	/* clamp */
+	if (res >= (double)COORD_MAX)
+		return COORD_MAX;
+	if (res <= -1.0 * (double)COORD_MAX)
+		return -COORD_MAX;
+
+	return res;
 }
 
 /* \brief Return how many PCB-internal-Coord-unit a unit translates to
