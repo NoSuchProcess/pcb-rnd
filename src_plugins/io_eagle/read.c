@@ -365,9 +365,19 @@ static pcb_element_t *eagle_libelem_by_name(read_state_t *st, const char *lib, c
 	return htsp_get(&l->elems, elem);
 }
 
-static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, long libi, long pkgi)
+static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, long libi, long pkgi)
 {
-	return NULL;
+	trnode_t *n;
+
+	/* count children of libs so n ends up at the libith library */
+	for(n = CHILDREN(libs); (n != NULL) && (libi > 0); n = NEXT(n), libi--) ;
+	if (n == NULL)
+		return NULL;
+
+	/* count children of that library so n ends up at the pkgth package */
+	for(n = CHILDREN(n); (n != NULL) && (pkgi > 0); n = NEXT(n), pkgi--) ;
+
+	return n;
 }
 
 static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
@@ -1059,7 +1069,11 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 
 static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	trnode_t *l, *m, *n, *p;
+	trnode_t *l, *m, *n, *p, *nlib;
+	if (st->elem_by_name)
+		nlib = NULL;
+	else
+		nlib = eagle_xml_path(st, st->parser.root, "drawing", "board", "libraries", NULL);
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
@@ -1104,7 +1118,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					pcb_message(PCB_MSG_WARNING, "Ignoring element with broken library reference: %s/%s\n", lib, pkg);
 					continue;
 				}
-				elem = eagle_libelem_by_idx(st, libi, pkgi);
+				elem = eagle_libelem_by_idx(st, nlib, libi, pkgi);
 			}
 
 			/* sanity checks: the element exists and is non-empty */
