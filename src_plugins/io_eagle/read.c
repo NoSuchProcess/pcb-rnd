@@ -375,6 +375,17 @@ static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, lon
 		return NULL;
 	}
 
+	if (STRCMP(NODENAME(n), "library") != 0) {
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() expected library node:\n");
+		return NULL;
+	}
+	n = CHILDREN(n);
+
+	if (STRCMP(NODENAME(n), "packages") != 0) {
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() expected packages node:\n");
+		return NULL;
+	}
+
 	/* count children of that library so n ends up at the pkgth package */
 	for(n = CHILDREN(n); (n != NULL) && (pkgi > 0); n = NEXT(n), pkgi--) ;
 	if (n == NULL) {
