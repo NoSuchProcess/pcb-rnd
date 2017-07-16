@@ -376,10 +376,7 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 
 static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-/*	eagle_loc_t loc = type; */
-/*	pcb_text_t *text; */
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
-/*	eagle_layer_t *ly; */
 	pcb_coord_t X, Y, height;
 	const char *rot, *text_val;
 	unsigned int text_direction = 0, text_scaling = 100;
