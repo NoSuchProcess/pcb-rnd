@@ -867,7 +867,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 		if (STRCMP(NODENAME(n), "package") == 0) {
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			pcb_element_t *elem;
-			if (name == NULL) {
+			if ((st->elem_by_name) && (name == NULL)) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring package with no name\n");
 				continue;
 			}
@@ -893,7 +893,8 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 			t->Y = st->refdes_y;
 			t->Scale = st->refdes_scale;
 
-			htsp_set(&lib->elems, (char *)name, elem);
+			if (st->elem_by_name)
+				htsp_set(&lib->elems, (char *)name, elem);
 			st->parser.calls->set_user_data(n, elem);
 		}
 	}
@@ -914,15 +915,19 @@ static int eagle_read_libs(read_state_t *st, trnode_t *subtree, void *obj, int t
 		if (STRCMP(NODENAME(n), "library") == 0) {
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			eagle_library_t *lib;
-			if (name == NULL) {
+			if ((st->elem_by_name) && (name == NULL)) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring library with no name\n");
 				continue;
 			}
 			lib = calloc(sizeof(eagle_library_t), 1);
 
-			htsp_init(&lib->elems, strhash, strkeyeq);
+			if (st->elem_by_name)
+				htsp_init(&lib->elems, strhash, strkeyeq);
+
 			eagle_foreach_dispatch(st, CHILDREN(n), disp, lib, 0);
-			htsp_set(&st->libs, (char *)name, lib);
+
+			if (st->elem_by_name)
+				htsp_set(&st->libs, (char *)name, lib);
 		}
 	}
 	return 0;
