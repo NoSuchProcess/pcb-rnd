@@ -1196,6 +1196,7 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 		{"polygon",     eagle_read_nop}, /*poly},*/
 		{"via",         eagle_read_via},
 		{"text",        eagle_read_text},
+		{"hole",        eagle_read_hole},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
