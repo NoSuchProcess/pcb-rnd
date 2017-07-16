@@ -416,7 +416,6 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 			text_direction = 3;
 		}
 	}
-	
 
 	pcb_trace("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, text_scaling, text_val, ln, text_direction);
 
@@ -1398,6 +1397,5 @@ err:;
 	st_uninit(&st);
 	pcb_trace("Eagle XML parsing error. Bailing out now.\n");
 	return -1;
-
 }
 
