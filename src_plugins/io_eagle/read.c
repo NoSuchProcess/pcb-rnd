@@ -91,6 +91,8 @@ typedef struct read_state_s {
 	pcb_coord_t md_wire_wire; /* minimal distance between wire and wire (clearance) */
 	pcb_coord_t ms_width; /* minimal trace width */
 	double rv_pad_top, rv_pad_inner, rv_pad_bottom; /* pad size-to-drill ration on different layers */
+
+	unsigned elem_by_name:1; /* whether elements are addressed by name (or by index in the lib) */
 } read_state_t;
 
 typedef struct {
@@ -361,6 +363,11 @@ static pcb_element_t *eagle_libelem_by_name(read_state_t *st, const char *lib, c
 	if (l == NULL)
 		return NULL;
 	return htsp_get(&l->elems, elem);
+}
+
+static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, long libi, long pkgi)
+{
+	return NULL;
 }
 
 static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
@@ -1083,12 +1090,21 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			lib = eagle_get_attrs(st, n, "library", NULL);
 			pkg = eagle_get_attrs(st, n, "package", NULL);
 
-			{ /* xml: library and package are named */
+			if (st->elem_by_name) { /* xml: library and package are named */
 				if ((lib == NULL) || (pkg == NULL)) {
 					pcb_message(PCB_MSG_WARNING, "Ignoring element with incomplete library reference\n");
 					continue;
 				}
 				elem = eagle_libelem_by_name(st, lib, pkg);
+			}
+			else {
+				long libi = eagle_get_attrl(st, n, "library", -1);
+				long pkgi = eagle_get_attrl(st, n, "package", -1);
+				if ((libi < 0) || (pkgi < 0)) {
+					pcb_message(PCB_MSG_WARNING, "Ignoring element with broken library reference: %s/%s\n", lib, pkg);
+					continue;
+				}
+				elem = eagle_libelem_by_idx(st, libi, pkgi);
 			}
 
 			/* sanity checks: the element exists and is non-empty */
@@ -1312,7 +1328,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		goto err;
 
 	st.pcb = pcb;
-
+	st.elem_by_name = 1;
 	st_init(&st);
 
 	dr = eagle_xml_path(&st, st.parser.root, "drawing", "board", "designrules", NULL);
@@ -1365,6 +1381,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		return -1;
 
 	st.pcb = pcb;
+	st.elem_by_name = 0;
 
 	st_init(&st);
 
