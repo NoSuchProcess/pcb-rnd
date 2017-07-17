@@ -432,6 +432,7 @@ net
 net_separation
   : plane_separation { if (exec_net_plane_separation(&h)) YYERROR; } net_copper
   | net_copper
+  ;
 
 net_copper
   : net_subrecord_list '}'
