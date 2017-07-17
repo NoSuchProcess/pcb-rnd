@@ -59,6 +59,9 @@ pcb_unit_t Units[] = {
 	{0, "um", NULL, 'u', 1000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_UM, 2,
 	 0.005, 0.05, 0.25, 5, 25,
 	 {""}},
+	{0, "du", NULL, 'd', 10000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_DU, 2, /* eagle bin decimicron */
+	 0.005, 0.05, 0.25, 5, 25,
+	 {""}},
 	{0, "nm", NULL, 'n', 1000000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_NM, 0,
 	 5, 50, 2500, 5000, 25000,
 	 {""}},
@@ -120,6 +123,10 @@ pcb_increments_t increments[] = {
 	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
 	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
 	{"um", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
+	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
+	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
+	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"du", PCB_MM_TO_COORD3(0.1, 0.01, 1.0), /* du = eagle bin 0.1 micron = "decimicron" unit */
 	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
 	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
 	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},

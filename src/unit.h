@@ -41,6 +41,7 @@ enum pcb_allow_e {
 	PCB_UNIT_ALLOW_CM = 8,
 	PCB_UNIT_ALLOW_M = 16,
 	PCB_UNIT_ALLOW_KM = 32,
+	PCB_UNIT_ALLOW_DU = 64, /* "du" = 0.1 micron "decimicron" units, for eagle bin */
 
 	PCB_UNIT_ALLOW_CMIL = 1024,
 	PCB_UNIT_ALLOW_MIL = 2048,
@@ -48,7 +49,7 @@ enum pcb_allow_e {
 
 	PCB_UNIT_ALLOW_DMIL = 8192, /* for kicad legacy decimil units */
 
-	PCB_UNIT_ALLOW_METRIC = PCB_UNIT_ALLOW_NM | PCB_UNIT_ALLOW_UM | PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_CM | PCB_UNIT_ALLOW_M | PCB_UNIT_ALLOW_KM,
+	PCB_UNIT_ALLOW_METRIC = PCB_UNIT_ALLOW_NM | PCB_UNIT_ALLOW_DU | PCB_UNIT_ALLOW_UM | PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_CM | PCB_UNIT_ALLOW_M | PCB_UNIT_ALLOW_KM,
 	PCB_UNIT_ALLOW_IMPERIAL = PCB_UNIT_ALLOW_DMIL | PCB_UNIT_ALLOW_CMIL | PCB_UNIT_ALLOW_MIL | PCB_UNIT_ALLOW_IN,
 	/* This is all units allowed in parse_l.l */
 #if 0
@@ -128,6 +129,7 @@ void pcb_units_init(void);
 #define PCB_MIL_TO_COORD(n)	((n) * 25400.0)
 #define PCB_COORD_TO_MM(n)	((n) / 1000000.0)
 #define PCB_MM_TO_COORD(n)	((n) * 1000000.0)
+#define PCB_DU_TO_COORD(n)	((n) * 100.0)
 #define PCB_COORD_TO_INCH(n)	(PCB_COORD_TO_MIL(n) / 1000.0)
 #define PCB_INCH_TO_COORD(n)	(PCB_MIL_TO_COORD(n) * 1000.0)
 #define PCB_COORD_TO_DECIMIL(n)    (PCB_COORD_TO_MIL(n) * 10.0)
