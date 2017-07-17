@@ -1045,18 +1045,26 @@ static int eagle_rot2steps(const char *rot)
 	int deg;
 	char *end;
 
-	if ((rot == NULL) || (rot[0] != 'R'))
+	if (rot == NULL) {
 		return -1;
-
-	deg = strtol(rot+1, &end, 10);
-	if (*end != '\0')
-		return -1;
+	} else if (rot[0] != 'R') {
+		deg = strtol(rot, &end, 10);
+		if (*end != '\0')
+                	return -1;
+        } else {
+		deg = strtol(rot+1, &end, 10);
+		if (*end != '\0')
+			return -1;
+	}
 
 	switch(deg) {
 		case 0: return 0;
 		case 90: return 3;
 		case 180: return 2;
 		case 270: return 1;
+		case 1024: return 3;
+		case 2048: return 2;
+		case 3072: return 1; /* n*1024 rotations need testing */
 	}
 	return -1;
 }
