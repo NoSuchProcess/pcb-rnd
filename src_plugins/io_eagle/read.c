@@ -1119,13 +1119,14 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 						l = p;
 					}
 				}
+				name = eagle_get_attrs(st, l, "name", NULL);
+				val = eagle_get_attrs(st, l, "value", NULL);
 			}
-			name = eagle_get_attrs(st, l, "name", NULL);
-			val = eagle_get_attrs(st, l, "value", NULL);
-
 			if (name == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring element with no name\n");
-				continue;
+				pcb_message(PCB_MSG_WARNING, "Element name not found in tree\n");
+				name = pcb_strdup("refdes_not_found");
+				val = pcb_strdup("parse_error");
+				/*continue;*/
 			}
 
 			/* need to get these as string because error messages will use them */
