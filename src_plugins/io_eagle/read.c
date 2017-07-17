@@ -1222,6 +1222,7 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 		{"polygon",     eagle_read_poly},
 		{"rectangle",   eagle_read_rect},
 		{"via",         eagle_read_via},
+		{"circle",      eagle_read_circle},
 		{"text",        eagle_read_text},
 		{"hole",        eagle_read_hole},
 		{"@text",       eagle_read_nop},
@@ -1445,8 +1446,11 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st.pcb = pcb;
 	st.elem_by_name = 0;
-	st.default_unit = "cmil";
-
+	st.default_unit = "du"; /* du = decimicron = 0.1 micron unit for eagle bin format */
+#warning TODO have defaults for v3 binary + design rule override for v4, v5 binary:
+	st.ms_width = PCB_MIL_TO_COORD(15);
+	st.rv_pad_top = PCB_MIL_TO_COORD(10); /*wild guess*/
+	st.md_wire_wire = PCB_MIL_TO_COORD(10);
 	st_init(&st);
 
 #warning TODO: find and read the DRC block
