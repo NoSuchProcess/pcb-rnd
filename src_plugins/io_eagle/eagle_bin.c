@@ -916,9 +916,20 @@ static unsigned long load_ulong(unsigned char *src, int offs, unsigned long len)
 
 static long load_long(unsigned char *src, int offs, unsigned long len)
 {
-	long max_pos = 0x7FFFFFFF;
-	long mask = 0x80000000;
+	unsigned long max_pos;
+	unsigned long mask;
 	unsigned long field = load_ulong(src, offs, len);
+	int n;
+	if (len == 0) {
+                return 0;
+	}
+	max_pos = 0xff;
+	mask = 0x80;
+	for(n = 1; n < len; n++) {
+		max_pos = (max_pos << 8) + max_pos; /* to get 0xFF...FF */
+		mask <<= 8; /* to get 0x80...00 */
+	}
+	max_pos = max_pos-mask; /* to get 0x7F....FF */
 	if (field&mask) {
 		return -(long)((max_pos - 1) - (field & max_pos));
 	} else {
