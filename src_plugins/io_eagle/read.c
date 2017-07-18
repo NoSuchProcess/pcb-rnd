@@ -1430,6 +1430,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (res == 0)
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
+	pcb_board_normalize(pcb);
 
 	st_uninit(&st);
 
@@ -1493,7 +1494,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (res == 0)
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
-
+	pcb_board_normalize(pcb);
 	st_uninit(&st);
 
 	pcb_trace("Houston, the Eagle-bin has landed. %d\n", res);
