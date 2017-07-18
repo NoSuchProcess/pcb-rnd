@@ -1123,7 +1123,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "element") == 0) {
 			pcb_coord_t x, y;
-			const char *name, *val, *lib, *pkg, *rot;
+			const char *name, *val, *lib, *pkg, *rot, *mirrored;
 			pcb_element_t *elem, *new_elem;
 			int steps, back = 0;
 
@@ -1180,8 +1180,11 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			x = eagle_get_attrc(st, n, "x", -1);
 			y = eagle_get_attrc(st, n, "y", -1);
 			rot = eagle_get_attrs(st, n, "rot", NULL);
+			mirrored = eagle_get_attrs(st, n, "mirrored", NULL);
 			if ((rot != NULL) && (*rot == 'M')) {
 				rot++;
+				back = 1;
+			} else if ((mirrored != NULL) && (*mirrored == '1')) {
 				back = 1;
 			}
 
