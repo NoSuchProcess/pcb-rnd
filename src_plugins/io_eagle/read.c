@@ -631,7 +631,6 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
 	eagle_layer_t *ly;
-	pcb_coord_t extra_thickness = 0;
 	unsigned long flags;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
@@ -688,9 +687,8 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		lin->Point2.X = eagle_get_attrc(st, subtree, "linetype_0_x2", -1);
 		lin->Point2.Y = eagle_get_attrc(st, subtree, "linetype_0_y2", -1);
 	}
-	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1);
-	extra_thickness = eagle_get_attrc(st, subtree, "width2", 0);
-	lin->Thickness += extra_thickness;
+	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1); /* bin format is half the width*/
+	lin->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);
 	pcb_trace("new line thickness: %ml\n", lin->Thickness);
 	lin->Clearance = st->md_wire_wire*2;
 	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);

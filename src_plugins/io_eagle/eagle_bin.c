@@ -388,7 +388,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
 			{"width",  T_INT, 20, 2},
-			{"width2",  T_INT, 20, 2}, /* for additional thickness */
+			{"width_doubling_bin",  T_INT, 20, 2}, /* for additional thickness */
 			{"stflags",  T_BMB, 22, 0x20},
 			{"linetype",  T_INT, 23, 1},
 			{"linetype_0_x1",  T_INT, 4, 4},
