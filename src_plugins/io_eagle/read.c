@@ -688,6 +688,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		lin->Point2.X = eagle_get_attrc(st, subtree, "linetype_0_x2", -1);
 		lin->Point2.Y = eagle_get_attrc(st, subtree, "linetype_0_y2", -1);
 	}
+#warning TODO can remove this if dealt with in binary tree post processor code:
 	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1); /* bin format is half the width*/
 	lin->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);
 	pcb_trace("new line thickness: %ml\n", lin->Thickness);
@@ -894,7 +895,7 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 
 static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *elem)
 {
-	static const dispatch_t disp[] = { /* possible children of <board> */
+	static const dispatch_t disp[] = { /* possible children of package */
 		{"description", eagle_read_nop},
 		{"wire",        eagle_read_wire},
 		{"hole",        eagle_read_hole},
@@ -905,6 +906,7 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *el
 		{"rectangle",   eagle_read_rect},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
+#warning subc TODO can dd polygon to package
 	};
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, elem, IN_ELEM);
 }
@@ -1037,6 +1039,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 					size_bump(st, x, y);
 					break;
 			}
+#warning TODO can remove the following if dealt with in post processor for binary tree
 		} else if (STRCMP(NODENAME(n), "wire") == 0) { /* binary format vertices it seems */
 			pcb_coord_t x, y;
 			x = eagle_get_attrc(st, n, "linetype_0_x1", 0);
@@ -1147,6 +1150,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			l = n;
 			if (CHILDREN(n) != NULL) {
 				p = m = CHILDREN(n);
+#warning TODO can simplify  the following if element2 dealt with in post processor for binary tree
 				while(m != NULL) {
 					if (STRCMP(NODENAME(m), "name") == 0) {
 						l = p;
