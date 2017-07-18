@@ -39,6 +39,7 @@
 #include "polygon.h"
 #include "rtree.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 #include "trparse.h"
 #include "trparse_xml.h"
 #include "trparse_bin.h"
@@ -1146,22 +1147,23 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			l = n;
 			if (CHILDREN(n) != NULL) {
 				p = m = CHILDREN(n);
-				while(m != NULL && NEXT(m) != NULL) {
-					m = NEXT(m);
+				while(m != NULL) {
 					if (STRCMP(NODENAME(m), "name") == 0) {
 						l = p;
+					} else if (STRCMP(NODENAME(m), "element2") == 0) {
+						l = p;
 					}
+					m = NEXT(m);
 				}
 				name = eagle_get_attrs(st, l, "name", NULL);
 				val = eagle_get_attrs(st, l, "value", NULL);
 			}
-			if (name == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Element name not found in tree\n");
-				name = pcb_strdup("refdes_not_found");
-				val = pcb_strdup("parse_error");
-				/*continue;*/
-			}
-
+                        if (name == NULL) {
+                                pcb_message(PCB_MSG_WARNING, "Element name not found in tree\n");
+                                name = pcb_strdup("refdes_not_found");
+                                val = pcb_strdup("parse_error");
+                                /*continue;*/
+                        }
 			/* need to get these as string because error messages will use them */
 			lib = eagle_get_attrs(st, n, "library", NULL);
 			pkg = eagle_get_attrs(st, n, "package", NULL);
@@ -1262,6 +1264,7 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 		{"circle",      eagle_read_circle},
 		{"text",        eagle_read_text},
 		{"hole",        eagle_read_hole},
+		{"dimension",   eagle_read_nop},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
