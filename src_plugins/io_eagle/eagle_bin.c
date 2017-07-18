@@ -1339,6 +1339,7 @@ static int postproc_libs(void *ctx, egb_node_t *root)
 static int postproc(void *ctx, egb_node_t *root)
 {
 	return postproc_layers(ctx, root) || postproc_libs(ctx, root);
+#warning TODO still need to merge element/element2; and post-process the non type 0 wire types
 }
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
