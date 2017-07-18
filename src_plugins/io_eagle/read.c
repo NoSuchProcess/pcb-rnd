@@ -1031,10 +1031,25 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 			pcb_poly_point_new(poly, x, y);
 			switch (loc) {
 				case IN_ELEM:
-				break;
-			case ON_BOARD:
-				size_bump(st, x, y);
-				break;
+					break;
+				case ON_BOARD:
+					size_bump(st, x, y);
+					break;
+			}
+		} else if (STRCMP(NODENAME(n), "wire") == 0) { /* binary format vertices it seems */
+			pcb_coord_t x, y;
+			x = eagle_get_attrc(st, n, "linetype_0_x1", 0);
+			y = eagle_get_attrc(st, n, "linetype_0_y1", 0);
+			pcb_poly_point_new(poly, x, y);
+			x = eagle_get_attrc(st, n, "linetype_0_x2", 0);
+			y = eagle_get_attrc(st, n, "linetype_0_y2", 0);
+			pcb_poly_point_new(poly, x, y);
+			switch (loc) {
+				case IN_ELEM:
+					break;
+				case ON_BOARD:
+					size_bump(st, x, y);
+					break;
 			}
 		}
 	}
