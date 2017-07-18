@@ -388,6 +388,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
 			{"width",  T_INT, 20, 2},
+			{"width2",  T_INT, 20, 2}, /* for additional thickness */
 			{"stflags",  T_BMB, 22, 0x20},
 			{"linetype",  T_INT, 23, 1},
 			{"linetype_0_x1",  T_INT, 4, 4},
@@ -915,7 +916,14 @@ static unsigned long load_ulong(unsigned char *src, int offs, unsigned long len)
 
 static long load_long(unsigned char *src, int offs, unsigned long len)
 {
-	return (long)load_ulong(src, offs, len);
+	long max_pos = 0x7FFFFFFF;
+	long mask = 0x80000000;
+	unsigned long field = load_ulong(src, offs, len);
+	if (field&mask) {
+		return -(long)((max_pos - 1) - (field & max_pos));
+	} else {
+		return (long)(field & max_pos);
+	}
 }
 
 static int load_bmb(unsigned char *src, int offs, unsigned long len)
