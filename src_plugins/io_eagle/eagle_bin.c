@@ -526,7 +526,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"drill",  T_INT, 12, 2},
 			{"diameter",  T_INT, 14, 2},
-			{"angle",  T_INT, 16, 2},
+			{"rot",  T_INT, 16, 2},
 			{"stop",  T_BMB, 18, 0x01},
 			{"thermals",  T_BMB, 18, 0x04},
 			{"first",  T_BMB, 18, 0x08},
@@ -548,7 +548,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"width",  T_INT, 12, 2},
 			{"height",  T_INT, 14, 2},
-			{"angle",  T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"rot",  T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"stop",  T_BMB, 18, 0x01},
 			{"cream",  T_BMB, 18, 0x02},
 			{"thermals",  T_BMB, 18, 0x04},
@@ -571,7 +571,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"direction",  T_UBF, 12, BITFIELD(1, 0, 3)},
 			{"length",  T_UBF, 12, BITFIELD(1, 4, 5)},
-			{"angle",  T_UBF, 12, BITFIELD(1, 6, 7)},
+			{"rot",  T_UBF, 12, BITFIELD(1, 6, 7)},
 			{"direction",  T_UBF, 12, BITFIELD(1, 0, 3)},
 			{"swaplevel",  T_INT, 13, 1},
 			{"name",  T_STR, 14, 10},
@@ -640,7 +640,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"placed", T_INT, 12, 2}, /* == True for v4 */
 			{"gateno", T_INT, 14, 2},
-			{"angle",  T_UBF, 16, BITFIELD(2, 10, 11)},
+			{"rot",  T_UBF, 16, BITFIELD(2, 10, 11)},
 			/* _get_uint16_mask(16, 0x0c00) */
 			{"mirrored",  T_UBF, 16, BITFIELD(2, 12, 12)},
 			/* _get_uint16_mask(16, 0x1000) */

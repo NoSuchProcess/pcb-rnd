@@ -407,6 +407,44 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 		st->pcb->MaxHeight = y;
 }
 
+/* Convert eagle Rxxx or binary n*1024 string to degrees */
+static int eagle_rot2degrees(const char *rot)
+{
+	int deg;
+	char *end;
+
+	if (rot == NULL) {
+		return -1;
+	} else if (rot[0] != 'R') {
+		deg = strtol(rot, &end, 10);
+		if (*end != '\0')
+			return -1;
+		deg = deg*(double)360/4096;
+	} else {
+		deg = strtol(rot+1, &end, 10);
+		if (*end != '\0')
+			return -1;
+	}
+	while (deg > 360) {
+		deg -= 360;
+	}
+	return (int) deg;
+}
+
+/* Convert eagle Rxxx string to pcb-rnd 90-deg rotation steps */
+static int eagle_rot2steps(const char *rot)
+{
+	int deg = eagle_rot2degrees(rot);
+
+	switch(deg) {
+		case 0: return 0;
+		case 90: return 3;
+		case 180: return 2;
+		case 270: return 1;
+	}
+	return -1;
+}
+
 /****************** drawing primitives ******************/
 
 
@@ -674,6 +712,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	pcb_pad_t *pad;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	const char *name, *rot;
+	int deg = 0;
 
 	assert(type == IN_ELEM);
 
@@ -684,6 +723,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	dy = eagle_get_attrc(st, subtree, "dy", 0);
 
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
+	deg = eagle_rot2degrees(rot);
 
 	if (dx < 0) {
 		x -= dx;
@@ -696,47 +736,46 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	}
 
 	if (rot == NULL) {
-		rot = "R0";
+		deg = 0;
+	} else {
+		deg = eagle_rot2degrees(rot);
 	}
 
-	if ((rot != NULL) && (rot[0] == 'R')) { 
-		int deg = atoi(rot+1);
-		switch(deg) {
-			case 0:
-				x -= dx/2;
-				y -= dy/2;
-				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-					x+dx, y+dy, x, y,
+	switch(deg) {
+		case 0:
+			x -= dx/2;
+			y -= dy/2;
+			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+				x+dx, y+dy, x, y,
+				conf_core.design.clearance, conf_core.design.clearance,
+				name, name, pcb_flag_make(0));
+			break;
+		case 180:
+			x -= dx/2;
+			y -= dy/2;
+			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+				x+dx, y+dy, x, y,
+				conf_core.design.clearance, conf_core.design.clearance,
+				name, name, pcb_flag_make(0));
+			break;
+		case 90:
+			y -= dx/2;
+			x -= dy/2;
+			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+				x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
 					conf_core.design.clearance, conf_core.design.clearance,
-					name, name, pcb_flag_make(0));
-				break;
-			case 180:
-				x -= dx/2;
-				y -= dy/2;
-				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-					x+dx, y+dy, x, y,
-					conf_core.design.clearance, conf_core.design.clearance,
-					name, name, pcb_flag_make(0));
-				break;
-			case 90:
-				y -= dx/2;
-				x -= dy/2;
-				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-					x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
-					conf_core.design.clearance, conf_core.design.clearance,
-					name, name, pcb_flag_make(0));
-				break;
-			case 270:
-				y -= dx/2;
-				x -= dy/2;
-				pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
-					x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
-					conf_core.design.clearance, conf_core.design.clearance,
-					name, name, pcb_flag_make(0));
-				break;
-			default:
-				pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation of smd pad: %s\n", rot);
-		}
+				name, name, pcb_flag_make(0));
+			break;
+		case 270:
+			y -= dx/2;
+			x -= dy/2;
+			pad = pcb_element_pad_new_rect((pcb_element_t *)obj,
+				x+dy, y+dx, x, y, /* swap coords for 90, 270 rotation */
+				conf_core.design.clearance, conf_core.design.clearance,
+				name, name, pcb_flag_make(0));
+			break;
+		default:
+			pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation of smd pad: %s\n", rot);
 	}
 
 	pcb_trace("%mm %mm -> %mm %mm\n", x, y, dx, dy);
@@ -1037,36 +1076,6 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 	pcb_hid_actionl("Netlist", "Thaw", NULL);
 
 	return 0;
-}
-
-/* Convert eagle Rxxx string to pcb-rnd 90-deg rotation steps */
-static int eagle_rot2steps(const char *rot)
-{
-	int deg;
-	char *end;
-
-	if (rot == NULL) {
-		return -1;
-	} else if (rot[0] != 'R') {
-		deg = strtol(rot, &end, 10);
-		if (*end != '\0')
-                	return -1;
-        } else {
-		deg = strtol(rot+1, &end, 10);
-		if (*end != '\0')
-			return -1;
-	}
-
-	switch(deg) {
-		case 0: return 0;
-		case 90: return 3;
-		case 180: return 2;
-		case 270: return 1;
-		case 1024: return 3;
-		case 2048: return 2;
-		case 3072: return 1; /* n*1024 rotations need testing */
-	}
-	return -1;
 }
 
 static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *elem, pcb_text_t *text, pcb_text_t *def_text, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *str)
