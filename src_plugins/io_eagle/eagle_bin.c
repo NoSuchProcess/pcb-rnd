@@ -901,10 +901,14 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 	{ 0 }
 };
 
-static unsigned long load_ulong(unsigned char *src, int offs, unsigned long len)
+static unsigned long load_ulong_se(unsigned char *src, int offs, unsigned long len, int sign_extend)
 {
 	int n;
 	unsigned long l = 0;
+
+	if ((sign_extend) && (src[offs+len-1] & 0x80))
+		l = -1;
+
 	for(n = 0; n < len; n++) {
 		l <<= 8;
 		l |= src[offs+len-n-1];
@@ -912,29 +916,14 @@ static unsigned long load_ulong(unsigned char *src, int offs, unsigned long len)
 	return l;
 }
 
-/* a bifield -> signed long conversion function is needed */
+static unsigned long load_ulong(unsigned char *src, int offs, unsigned long len)
+{
+	return load_ulong_se(src, offs, len, 0);
+}
 
 static long load_long(unsigned char *src, int offs, unsigned long len)
 {
-	unsigned long max_pos;
-	unsigned long mask;
-	unsigned long field = load_ulong(src, offs, len);
-	int n;
-	if (len == 0) {
-                return 0;
-	}
-	max_pos = 0xff;
-	mask = 0x80;
-	for(n = 1; n < len; n++) {
-		max_pos = (max_pos << 8) + max_pos; /* to get 0xFF...FF */
-		mask <<= 8; /* to get 0x80...00 */
-	}
-	max_pos = max_pos-mask; /* to get 0x7F....FF */
-	if (field&mask) {
-		return -(long)((max_pos - 1) - (field & max_pos));
-	} else {
-		return (long)(field & max_pos);
-	}
+	return (long)load_ulong_se(src, offs, len, 1);
 }
 
 static int load_bmb(unsigned char *src, int offs, unsigned long len)
