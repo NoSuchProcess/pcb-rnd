@@ -10,7 +10,7 @@
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-pcb-rnd version 1.2.3, Revision: 9933
+pcb-rnd version 1.2.3, Revision: 10393
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
@@ -215,7 +215,7 @@ pcb-rnd version 1.2.3, Revision: 9933
 <td>RouteStylesChanged()</td>
 <tr><td> Polygon </td>
 <td>Some polygon related stuff.</td>
-<td>Polygon(Close|PreviousPoint)</td>
+<td>Polygon(Close|CloseHole|PreviousPoint)</td>
 <tr><td> autocrop </td>
 <tr><td> SelectLayer </td>
 <td>Select which layer is the current layer.</td>
@@ -417,6 +417,9 @@ pcb-rnd version 1.2.3, Revision: 9933
 <tr><td> DRC </td>
 <td>Invoke the DRC check.</td>
 <td>DRC()</td>
+<tr><td> PolyHatch </td>
+<td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer</td>
+<td>PolyHatch([spacing], [combination of h|v|c])<br>PolyHatch(interactive)</td>
 <tr><td> rn </td>
 <td>Reads netlist.</td>
 <td>rn [name]</td>
