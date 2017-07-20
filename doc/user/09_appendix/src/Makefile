@@ -2,10 +2,10 @@ CLEANFILES=../action_reference.html ../dialogtable.html
 
 all:  ../action_reference.html ../dialogtable.html
 
-../action_reference.html: dump_actions_to_html.sh
+../action_reference.html : ./dump_actions_to_html.sh ../../../../src/pcb-rnd
 	./dump_actions_to_html.sh > ../action_reference.html
 
-../dialogtable.html:  pcb-rnd-dialogs
+../dialogtable.html: pcb-rnd-dialogs ./process_dialogtable.sh ../../../../src/pcb-rnd
 	./process_dialogtable.sh > ../dialogtable.html
 
 clean:  
