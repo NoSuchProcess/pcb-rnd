@@ -722,7 +722,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 		//else {
 		//  gdk_gc_set_foreground(gc->gc, &cc->color);
 		//}
-		cc->color.alpha = conf_core.appearance.layer_alpha;
+		cc->color.alpha = 1.0;
 		gdk_cairo_set_source_rgba(cr, &cc->color);
 	}
 }
