@@ -365,7 +365,7 @@ static inline void ghid_cairo_draw_grid_global(cairo_t *cr)
 static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
 	render_priv_t *priv = gport->render_priv;
-	cairo_t *cr = priv->cr;
+	cairo_t *cr = priv->cr_target;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
 	static int apoints = 0, npoints = 0, old_radius = 0;
@@ -449,7 +449,7 @@ static void ghid_cairo_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 static void ghid_cairo_draw_grid(void)
 {
 	render_priv_t *priv = gport->render_priv;
-	cairo_t *cr = priv->cr;
+	cairo_t *cr = priv->cr_target;
 
 	if (cr == NULL)
 		return;
@@ -930,8 +930,8 @@ static void cr_draw_rect(pcb_hid_gc_t gc, int fill, pcb_coord_t x1, pcb_coord_t 
 static void cr_paint_from_surface(cairo_t * cr, cairo_surface_t * surface)
 {
 	cairo_set_source_surface(cr, surface, 0, 0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
+	cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+	cairo_paint_with_alpha(cr, 1.0);
 }
 
 static void ghid_cairo_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -993,8 +993,8 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 static void erase_with_background_color(cairo_t * cr, GdkRGBA * bg_color)
 {
 	gdk_cairo_set_source_rgba(cr, bg_color);
-	cairo_rectangle(cr, 0.0, 0.0, gport->view.canvas_width, gport->view.canvas_height);
-	cairo_fill(cr);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint_with_alpha(cr, 1.0);
 }
 
 static void redraw_region(GdkRectangle * rect)
@@ -1436,7 +1436,9 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_ex
 
 	cr_paint_from_surface(p, priv->surf_da);
 
+	priv->cr = p;
 	show_crosshair(TRUE);
+	priv->cr = priv->cr_drawing_area;
 
 	return FALSE;
 }
