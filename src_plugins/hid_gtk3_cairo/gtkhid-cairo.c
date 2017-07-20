@@ -61,8 +61,16 @@ typedef struct render_priv_s {
 	GdkRGBA crosshair_color;							/**< cached crosshair color             */
 
 	cairo_t *cr;													/**< pointer to current drawing context             */
+	cairo_t *cr_target;										/**< pointer to destination widget drawing context  */
+
 	cairo_surface_t *surf_da;							/**< cairo surface connected to gport->drawing_area */
 	cairo_t *cr_drawing_area;							/**< cairo context created from surf_da             */
+
+	cairo_surface_t *surf_ui;							/**< cairo surface gathering visual feedback to user */
+	cairo_t *cr_ui;												/**< cairo context created from surf_ui             */
+
+	cairo_surface_t *surf_layer;					/**< cairo surface for temporary layer composition  */
+	cairo_t *cr_layer;										/**< cairo context created from surf_layer          */
 
 	//GdkPixmap *pixmap, *mask;
 
@@ -79,8 +87,6 @@ typedef struct render_priv_s {
 
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
-	//cairo_t *cr;													/**< local cairo context */
-	//cairo_surface_t *surface;     /**< a surface */
 
 	const char *colorname;
 	pcb_coord_t width;
@@ -1303,11 +1309,14 @@ static void show_crosshair(gboolean paint_new_location)
 static void ghid_cairo_init_renderer(int *argc, char ***argv, void *vport)
 {
 	GHidPort *port = vport;
+
 	/* Init any GC's required */
 	port->render_priv = g_new0(render_priv_t, 1);
 	port->render_priv->cr = NULL;
 	port->render_priv->surf_da = NULL;
 	port->render_priv->cr_drawing_area = NULL;
+	port->render_priv->surf_ui = NULL;
+	port->render_priv->cr_ui = NULL;
 }
 
 static void ghid_cairo_shutdown_renderer(void *vport)
