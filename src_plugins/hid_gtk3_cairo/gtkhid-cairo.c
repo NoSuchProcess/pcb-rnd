@@ -162,12 +162,32 @@ static void cr_create_similar_surface_and_context(cairo_surface_t ** psurf, cair
 	*pcr = cr;
 }
 
+/** Creates or reuses a context to render a single layer group with "union" type of shape rendering. */
 static void start_subcomposite(void)
 {
+	render_priv_t *priv = gport->render_priv;
+	cairo_t *cr;
+
+	if (priv->surf_layer == NULL)
+		cr_create_similar_surface_and_context(&priv->surf_layer, &priv->cr_layer, gport);
+	cr = priv->cr_layer;
+	cairo_save(cr);
+	cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+	cairo_paint(cr);
+	cairo_restore(cr);
+	cairo_set_operator(priv->cr, CAIRO_OPERATOR_SOURCE);
+	priv->cr = priv->cr_layer;
 }
 
+/** Applies the layer composited so far, to the target, using translucency. */
 static void end_subcomposite(void)
 {
+	render_priv_t *priv = gport->render_priv;
+
+	cairo_set_operator(priv->cr_target, CAIRO_OPERATOR_OVER);
+	cairo_set_source_surface(priv->cr_target, priv->surf_layer, 0, 0);
+	cairo_paint_with_alpha(priv->cr_target, conf_core.appearance.layer_alpha);
+	priv->cr = priv->cr_target;
 }
 
 /** Called once per layer group. */
@@ -983,7 +1003,7 @@ static void redraw_region(GdkRectangle * rect)
 	pcb_hid_expose_ctx_t ctx;
 	render_priv_t *priv = gport->render_priv;
 
-	if (priv->cr == NULL)
+	if (priv->cr_drawing_area == NULL)
 	  return;
 
 	if (rect != NULL) {
@@ -1030,6 +1050,10 @@ static void redraw_region(GdkRectangle * rect)
 		etop = ebottom;
 		ebottom = tmp;
 	}
+
+	/* Paints only on the drawing_area */
+	priv->cr = priv->cr_drawing_area;
+	priv->cr_target = priv->cr_drawing_area;
 
 	erase_with_background_color(priv->cr, &priv->bg_color);
 
@@ -1483,6 +1507,7 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
 	/* Change current pointer to draw in this widget, draws, then come back to pointer to drawing_area. */
+	priv->cr_target = p;
 	priv->cr = p;
 	cairo_save(p);
 	/* calls the off-line drawing routine */
