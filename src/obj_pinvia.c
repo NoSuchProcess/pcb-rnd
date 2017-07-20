@@ -957,7 +957,8 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 static void _draw_pv_name(pcb_pin_t * pv)
 {
 	pcb_box_t box;
-	pcb_bool vert;
+	pcb_bool vert, flip_x, flip_y;
+	pcb_coord_t x_off, y_off;
 	pcb_text_t text;
 	char buff[128];
 	const char *pn;
@@ -980,25 +981,31 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	text.TextString = buff;
 
 	vert = PCB_FLAG_TEST(PCB_FLAG_EDGE2, pv);
+	flip_x = conf_core.editor.view.flip_x;
+	flip_y = conf_core.editor.view.flip_y;
 
 	if (vert) {
-		box.X1 = pv->X - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
-		box.Y1 = pv->Y - pv->DrillingHole / 2 - conf_core.appearance.pinout.text_offset_x;
+		x_off = -pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		y_off = -pv->DrillingHole / 2 - conf_core.appearance.pinout.text_offset_x;
+		box.X1 = pv->X + (flip_x ? -x_off : x_off);
+		box.Y1 = pv->Y + (flip_y ? -y_off : y_off);
 	}
 	else {
-		box.X1 = pv->X + pv->DrillingHole / 2 + conf_core.appearance.pinout.text_offset_x;
-		box.Y1 = pv->Y - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		x_off = pv->DrillingHole / 2 + conf_core.appearance.pinout.text_offset_x;
+		y_off = -pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		box.X1 = pv->X + (flip_x ? -x_off : x_off);
+		box.Y1 = pv->Y + (flip_y ? -y_off : y_off);
 	}
 
 	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
 
-	text.Flags = pcb_no_flags();
+	text.Flags = (flip_x ^ flip_y) ? pcb_flag_make (PCB_FLAG_ONSOLDER) : pcb_no_flags();
 	/* Set font height to approx 56% of pin thickness */
 	text.Scale = 56 * pv->Thickness / PCB_FONT_CAPHEIGHT;
 	text.X = box.X1;
 	text.Y = box.Y1;
 	text.fid = 0;
-	text.Direction = vert ? 1 : 0;
+	text.Direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
 
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;

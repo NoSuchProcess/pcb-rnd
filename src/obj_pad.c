@@ -413,7 +413,8 @@ void *pcb_padop_change_flag(pcb_opctx_t *ctx, pcb_data_t *data, pcb_pad_t *pad)
 static void draw_pad_name(pcb_pad_t * pad)
 {
 	pcb_box_t box;
-	pcb_bool vert;
+	pcb_bool vert, flip_x, flip_y;
+	pcb_coord_t x_off, y_off;
 	pcb_text_t text;
 	char buff[128];
 	const char *pn;
@@ -435,29 +436,31 @@ static void draw_pad_name(pcb_pad_t * pad)
 
 	/* should text be vertical ? */
 	vert = (pad->Point1.X == pad->Point2.X);
+	flip_x = conf_core.editor.view.flip_x;
+	flip_y = conf_core.editor.view.flip_y;
 
 	if (vert) {
-		box.X1 = pad->Point1.X - pad->Thickness / 2;
-		box.Y1 = MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2;
-		box.X1 += conf_core.appearance.pinout.text_offset_y;
-		box.Y1 -= conf_core.appearance.pinout.text_offset_x;
+		x_off = -pad->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		y_off = pad->Thickness / 2 - conf_core.appearance.pinout.text_offset_x;
+		box.X1 = pad->Point1.X + (flip_x ? -x_off : x_off);
+		box.Y1 = flip_y ? (MIN(pad->Point1.Y, pad->Point2.Y) - y_off) : (MAX(pad->Point1.Y, pad->Point2.Y) + y_off);
 	}
 	else {
-		box.X1 = MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2;
-		box.Y1 = pad->Point1.Y - pad->Thickness / 2;
-		box.X1 += conf_core.appearance.pinout.text_offset_x;
-		box.Y1 += conf_core.appearance.pinout.text_offset_y;
+		x_off = -pad->Thickness / 2 + conf_core.appearance.pinout.text_offset_x;
+		y_off = -pad->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		box.X1 = flip_x ? (MAX(pad->Point1.X, pad->Point2.X) - x_off) : (MIN(pad->Point1.X, pad->Point2.X) + x_off);
+		box.Y1 = pad->Point1.Y + (flip_y ? -y_off : y_off);
 	}
 
 	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
 
-	text.Flags = pcb_no_flags();
+	text.Flags = (flip_x ^ flip_y) ? pcb_flag_make (PCB_FLAG_ONSOLDER) : pcb_no_flags();
 	/* Set font height to approx 90% of pin thickness */
 	text.Scale = 90 * pad->Thickness / PCB_FONT_CAPHEIGHT;
 	text.X = box.X1;
 	text.Y = box.Y1;
 	text.fid = 0;
-	text.Direction = vert ? 1 : 0;
+	text.Direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
 
 	DrawTextLowLevel(&text, 0);
 }
