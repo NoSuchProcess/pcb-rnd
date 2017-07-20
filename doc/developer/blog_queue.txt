@@ -1,5 +1,4 @@
 Ready to blog:
-- PolyHatch() action
 
 less urgent, almost finished:
 - braille font
