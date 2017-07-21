@@ -141,6 +141,18 @@ static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2
 		cairo_stroke(cr);
 }
 
+/** Destroys surface and context. */
+static void cr_destroy_surf_and_context(cairo_surface_t ** psurf, cairo_t ** pcr)
+{
+	if (*psurf)
+		cairo_surface_destroy(*psurf);
+	if (*pcr)
+		cairo_destroy(*pcr);
+
+	*psurf = NULL;
+	*pcr = NULL;
+}
+
 /** First, frees previous surface and context, then creates new ones, similar to drawing_area. */
 static void cr_create_similar_surface_and_context(cairo_surface_t ** psurf, cairo_t ** pcr, void *vport)
 {
@@ -148,17 +160,14 @@ static void cr_create_similar_surface_and_context(cairo_surface_t ** psurf, cair
 	cairo_surface_t *surface;
 	cairo_t *cr;
 
-	if (*psurf)
-		cairo_surface_destroy(*psurf);
+	cr_destroy_surf_and_context(psurf, pcr);
 
 	surface = gdk_window_create_similar_surface(gtk_widget_get_window(port->drawing_area),
 																							CAIRO_CONTENT_COLOR_ALPHA,
 																							gtk_widget_get_allocated_width(port->drawing_area),
 																							gtk_widget_get_allocated_height(port->drawing_area));
-	*psurf = surface;
-	if (*pcr)
-		cairo_destroy(*pcr);
 	cr = cairo_create(surface);
+	*psurf = surface;
 	*pcr = cr;
 }
 
