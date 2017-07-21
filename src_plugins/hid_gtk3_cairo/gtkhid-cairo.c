@@ -1398,6 +1398,7 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 	GHidPort *port = vport;
 	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
+	cairo_t *cr;
 
 	gport->drawing_allowed = pcb_true;
 
@@ -1430,7 +1431,14 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 	/* Creates a single cairo surface/context for off-line painting */
 	cr_create_similar_surface_and_context(&priv->surf_da, &priv->cr_drawing_area, port);
 
-	priv->cr = priv->cr_drawing_area;
+	/* Creates a surface/context for painting user inter-action feedback (ghosts) */
+	cr_create_similar_surface_and_context(&priv->surf_ui, &priv->cr_ui, port);
+	/* Erases the surface, and points to it */
+	cr = priv->cr_ui;
+	cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+	cairo_paint_with_alpha(cr, 1.0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	priv->cr = priv->cr_ui;
 }
 
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
@@ -1444,10 +1452,14 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_ex
 	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 
 	cr_paint_from_surface(p, priv->surf_da);
+	cr_paint_from_surface(p, priv->surf_ui);
+	cairo_set_operator(priv->cr_ui, CAIRO_OPERATOR_CLEAR);
+	cairo_paint_with_alpha(priv->cr_ui, 1.0);
+	cairo_set_operator(priv->cr_ui, CAIRO_OPERATOR_SOURCE);
 
 	priv->cr = p;
 	show_crosshair(TRUE);
-	priv->cr = priv->cr_drawing_area;
+	priv->cr = priv->cr_ui;
 
 	return FALSE;
 }
