@@ -1273,6 +1273,53 @@ static egb_node_t *find_node_name(egb_node_t *first, const char *id_name)
 	return NULL;
 }
 
+/* look for elements, and subsequent element2 blocks, and copy name/value fields to element */
+static int postproc_elements(void *ctx, egb_node_t *root)
+{
+	htss_entry_t *e;
+	egb_node_t *board, *el1, *el2, *n, *q, *next, *next2;
+	egb_node_t *drawing = root->first_child;
+
+	for(n = drawing->first_child, board = NULL; board == NULL && n != NULL; n = next) {
+		next = n->next; /* need to save this because unlink() will ruin it */
+		if (board == NULL && n->id == PCB_EGKW_SECT_BOARD) {
+			pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
+			board = n;
+		}
+        }
+
+        for(n = board->first_child, el1 = NULL; el1 == NULL && n != NULL; n = n->next) {
+		pcb_trace("found board subnode ID: %d\n", n->id);
+                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
+                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
+                        el1 = n->first_child;
+                } 
+        }
+
+        for(n = el1; n != NULL; n = next) {
+                next = n->next; /* need to save this because unlink() will ruin it */
+                pcb_trace("inspecting el1 subnode: %d\n", n->id);
+                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT2) {
+                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT2\n");
+                        el2 = n;
+			for(q = el2->first_child; q != NULL; q = next2) {
+                        	next2 = q->next;
+				for (e = htss_first(&q->props); e; e = htss_next(&q->props, e)) {
+	                           	if (strcmp(e->key, "name") == 0) {
+						egb_node_prop_set(n, "name", e->value);
+                                                pcb_trace("Moved name %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
+                                        }
+                                        else if (strcmp(e->key, "value") == 0) {
+						egb_node_prop_set(n, "value", e->value);
+                                                pcb_trace("Moved value %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
+                                        }
+				}
+			}
+                }
+        }
+	return 0;
+}
+
 /* take each /drawing/layer and move them into a newly created /drawing/layers/ */
 static int postproc_layers(void *ctx, egb_node_t *root)
 {
@@ -1327,7 +1374,7 @@ static int postproc_libs(void *ctx, egb_node_t *root)
 
 static int postproc(void *ctx, egb_node_t *root)
 {
-	return postproc_layers(ctx, root) || postproc_libs(ctx, root);
+	return postproc_layers(ctx, root) || postproc_libs(ctx, root) || postproc_elements(ctx, root);
 #warning TODO still need to merge element/element2; and post-process the non type 0 wire types
 }
 
