@@ -1134,7 +1134,7 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 
 static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	trnode_t *l, *m, *n, *p, *nlib;
+	trnode_t *n, *nlib;
 	if (st->elem_by_name)
 		nlib = NULL;
 	else
@@ -1147,27 +1147,14 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			pcb_element_t *elem, *new_elem;
 			int steps, back = 0;
 
-			l = n;
-			if (CHILDREN(n) != NULL) {
-				p = m = CHILDREN(n);
-#warning TODO can simplify  the following if element2 dealt with in post processor for binary tree
-				while(m != NULL) {
-					if (STRCMP(NODENAME(m), "name") == 0) {
-						l = p;
-					} else if (STRCMP(NODENAME(m), "element2") == 0) {
-						l = p;
-					}
-					m = NEXT(m);
-				}
-				name = eagle_get_attrs(st, l, "name", NULL);
-				val = eagle_get_attrs(st, l, "value", NULL);
+			name = eagle_get_attrs(st, n, "name", NULL);
+			val = eagle_get_attrs(st, n, "value", NULL);
+
+			if (name == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Element name not found in tree\n");
+				name = pcb_strdup("refdes_not_found");
+				val = pcb_strdup("parse_error");
 			}
-                        if (name == NULL) {
-                                pcb_message(PCB_MSG_WARNING, "Element name not found in tree\n");
-                                name = pcb_strdup("refdes_not_found");
-                                val = pcb_strdup("parse_error");
-                                /*continue;*/
-                        }
 			/* need to get these as string because error messages will use them */
 			lib = eagle_get_attrs(st, n, "library", NULL);
 			pkg = eagle_get_attrs(st, n, "package", NULL);
