@@ -1229,7 +1229,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				if (steps > 0)
 					pcb_element_rotate90(st->pcb->Data, new_elem, x, y, steps);
 				else
-					pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation '%s': %s/%s\n", rot, lib, pkg);
+					pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation '%s': %s/%s/%s\n", rot, name, pkg, lib);
 			}
 
 			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
