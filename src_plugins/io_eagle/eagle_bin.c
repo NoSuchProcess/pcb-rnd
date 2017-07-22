@@ -1286,37 +1286,37 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 			pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
 			board = n;
 		}
-        }
+	}
 
-        for(n = board->first_child, el1 = NULL; el1 == NULL && n != NULL; n = n->next) {
+	for(n = board->first_child, el1 = NULL; el1 == NULL && n != NULL; n = n->next) {
 		pcb_trace("found board subnode ID: %d\n", n->id);
-                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
-                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
-                        el1 = n->first_child;
-                } 
-        }
+		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
+			pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
+			el1 = n->first_child;
+		} 
+	}
 
-        for(n = el1; n != NULL; n = next) {
-                next = n->next; /* need to save this because unlink() will ruin it */
-                pcb_trace("inspecting el1 subnode: %d\n", n->id);
-                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT2) {
-                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT2\n");
-                        el2 = n;
+	for(n = el1; n != NULL; n = next) {
+		next = n->next; /* need to save this because unlink() will ruin it */
+		pcb_trace("inspecting el1 subnode: %d\n", n->id);
+		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT2) {
+			pcb_trace("Found PCB_EKGW_SECT_ELEMENT2\n");
+			el2 = n;
 			for(q = el2->first_child; q != NULL; q = next2) {
-                        	next2 = q->next;
+				next2 = q->next;
 				for (e = htss_first(&q->props); e; e = htss_next(&q->props, e)) {
-	                           	if (strcmp(e->key, "name") == 0) {
+				   	if (strcmp(e->key, "name") == 0) {
 						egb_node_prop_set(n, "name", e->value);
-                                                pcb_trace("Moved name %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
-                                        }
-                                        else if (strcmp(e->key, "value") == 0) {
+						pcb_trace("Moved name %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
+					}
+					else if (strcmp(e->key, "value") == 0) {
 						egb_node_prop_set(n, "value", e->value);
-                                                pcb_trace("Moved value %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
-                                        }
+						pcb_trace("Moved value %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
+					}
 				}
 			}
-                }
-        }
+		}
+	}
 	return 0;
 }
 
