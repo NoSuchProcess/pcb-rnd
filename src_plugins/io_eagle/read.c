@@ -1223,6 +1223,9 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			pcb_trace("used refdes scale: %d\n", st->refdes_scale);
 			if (rot != NULL) {
 				steps = eagle_rot2steps(rot);
+				if (back) {
+					steps = (steps + 2)%4;
+				}
 				if (steps > 0)
 					pcb_element_rotate90(st->pcb->Data, new_elem, x, y, steps);
 				else
@@ -1278,6 +1281,7 @@ static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int 
 		{"autorouter",  eagle_read_nop},
 		{"elements",    eagle_read_elements},
 		{"signals",     eagle_read_signals},
+		{"errors",      eagle_read_nop},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
