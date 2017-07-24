@@ -1046,6 +1046,11 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 #if IO_LIHATA_SAVE_BACKUP_IN_PCB
 	{
 		const char *fnpat = conf_io_lihata.plugins.io_lihata.aux_pcb_pattern;
+
+		/* Backup in .pcb before saving in .lht so if the save code crashes,
+		   the board is preserved. WARNING: since .pcb can't represent a lot
+		   of details, it may degrade the board _before_ we save it in lht.
+		   Thus this feature should be disabled */
 		if ((fnpat != NULL) && (*fnpat != '\0')) {
 			char *orig_fn, *end;
 			char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb, NULL);
