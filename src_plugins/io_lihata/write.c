@@ -1045,27 +1045,27 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 
 #if IO_LIHATA_SAVE_BACKUP_IN_PCB
 	{
-	const char *fnpat = conf_io_lihata.plugins.io_lihata.aux_pcb_pattern;
-	if ((fnpat != NULL) && (*fnpat != '\0')) {
-		char *orig_fn, *end;
-		char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb, NULL);
-		
-		orig_fn = PCB->Filename;
-		PCB->Filename = NULL;
+		const char *fnpat = conf_io_lihata.plugins.io_lihata.aux_pcb_pattern;
+		if ((fnpat != NULL) && (*fnpat != '\0')) {
+			char *orig_fn, *end;
+			char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb, NULL);
+			
+			orig_fn = PCB->Filename;
+			PCB->Filename = NULL;
 
-		/* avoid .lht.lht.pcb */
-		end = pcb_fn + strlen(pcb_fn) - 1;
-		if ((end-11 > pcb_fn) && (strcmp(end-11, ".lht.lht.pcb") == 0))
-			strcpy(end-11, ".lht.pcb");
+			/* avoid .lht.lht.pcb */
+			end = pcb_fn + strlen(pcb_fn) - 1;
+			if ((end-11 > pcb_fn) && (strcmp(end-11, ".lht.lht.pcb") == 0))
+				strcpy(end-11, ".lht.pcb");
 
-		fprintf(stderr, "NOTE: io_lihata_write_pcb will save to '%s' but first saves in '%s': res=%d (expected: 0)\n", new_filename, pcb_fn, pcb_save_pcb(pcb_fn, "pcb"));
-		free(pcb_fn);
-		
-		/* restore these because SaveTo() has changed them */
-		free(PCB->Filename);
-		PCB->Filename = orig_fn;
-		PCB->Data->loader = ctx;
-	}
+			fprintf(stderr, "NOTE: io_lihata_write_pcb will save to '%s' but first saves in '%s': res=%d (expected: 0)\n", new_filename, pcb_fn, pcb_save_pcb(pcb_fn, "pcb"));
+			free(pcb_fn);
+			
+			/* restore these because SaveTo() has changed them */
+			free(PCB->Filename);
+			PCB->Filename = orig_fn;
+			PCB->Data->loader = ctx;
+		}
 	}
 #endif
 
