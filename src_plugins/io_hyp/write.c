@@ -290,13 +290,16 @@ static int write_devices(hyp_wr_t * wr)
 
 	cnt = 0;
 	elementlist_foreach(&wr->pcb->Data->Element, &it, elem) {
-		const char *layer;
+		const char *layer, *descr;
 		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, elem))
 			layer = wr->ln_bottom;
 		else
 			layer = wr->ln_top;
-		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_element_name(wr, elem), PCB_ELEM_NAME_DESCRIPTION(elem),
-								layer);
+		descr = PCB_ELEM_NAME_DESCRIPTION(elem);
+		if (descr == NULL)
+			descr = "?";
+
+		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_element_name(wr, elem), descr, layer);
 		cnt++;
 	}
 
