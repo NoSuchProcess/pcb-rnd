@@ -46,6 +46,11 @@ typedef struct hyp_wr_s {
 	} warn;
 } hyp_wr_t;
 
+/* pcb-rnd y-axis points down; hyperlynx y-axis points up */
+static pcb_coord_t flip(pcb_coord_t y)
+{
+	return (PCB->MaxHeight - y);
+}
 
 static const char *safe_element_name(hyp_wr_t * wr, pcb_element_t * elem)
 {
@@ -110,24 +115,24 @@ static const char *get_layer_name(hyp_wr_t * wr, pcb_parenttype_t pt, pcb_layer_
 
 static void write_pr_line(hyp_wr_t * wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, y1, x2, y2);
+	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, flip(y1), x2, flip(y2));
 }
 
 static void write_pv(hyp_wr_t * wr, pcb_pin_t * pin)
 {
 	if (pin->type == PCB_OBJ_PIN) {
 		pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
-								pin->X, pin->Y, safe_element_name(wr, pin->Element), pin->Number, pcb_pshash_pin(&wr->psh, pin, NULL));
+								pin->X, flip(pin->Y), safe_element_name(wr, pin->Element), pin->Number, pcb_pshash_pin(&wr->psh, pin, NULL));
 	}
 	else {
-		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n", pin->X, pin->Y, pcb_pshash_pin(&wr->psh, pin, NULL));
+		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n", pin->X, flip(pin->Y), pcb_pshash_pin(&wr->psh, pin, NULL));
 	}
 }
 
 static void write_pad(hyp_wr_t * wr, pcb_pad_t * pad)
 {
 	pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n",
-							(pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y) / 2,
+							(pad->Point1.X + pad->Point2.X) / 2, flip((pad->Point1.Y + pad->Point2.Y) / 2),
 							safe_element_name(wr, (pcb_element_t *) pad->Element), pad->Number, pcb_pshash_pad(&wr->psh, pad, NULL));
 }
 
@@ -150,16 +155,16 @@ static void write_poly(hyp_wr_t * wr, pcb_polygon_t * poly)
 
 		if (pl == poly->Clipped->contours)
 			pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
-									get_layer_name(wr, poly->parent_type, poly->parent.layer), ++wr->poly_id, v->point[0], v->point[1]);
+									get_layer_name(wr, poly->parent_type, poly->parent.layer), ++wr->poly_id, v->point[0], flip(v->point[1]));
 		else
 			/* hole. Use same ID as polygon. */
-			pcb_fprintf(wr->f, "  {POLYVOID ID=%d X=%me Y=%me\n", wr->poly_id, v->point[0], v->point[1]);
+			pcb_fprintf(wr->f, "  {POLYVOID ID=%d X=%me Y=%me\n", wr->poly_id, v->point[0], flip(v->point[1]));
 
 		for (v = v->next; v != pl->head.next; v = v->next)
-			pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);
+			pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], flip(v->point[1]));
 
 		v = pl->head.next;					/* repeat first point */
-		pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], v->point[1]);
+		pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], flip(v->point[1]));
 
 		fprintf(wr->f, "  }\n");
 	} while ((pl = pl->next) != NULL);
@@ -169,7 +174,7 @@ static void write_poly(hyp_wr_t * wr, pcb_polygon_t * poly)
 static void write_line(hyp_wr_t * wr, pcb_line_t * line)
 {
 	pcb_fprintf(wr->f, "  (SEG X1=%me Y1=%me X2=%me Y2=%me W=%me L=%[4])\n",
-							line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
+							line->Point1.X, flip(line->Point1.Y), line->Point2.X, flip(line->Point2.Y),
 							line->Thickness, get_layer_name(wr, line->parent_type, line->parent.layer));
 }
 
@@ -185,7 +190,7 @@ static void write_arc_(hyp_wr_t * wr, const char *cmd, pcb_arc_t * arc, const ch
 		return;
 	}
 
-	if ((arc->Delta >= 0) != (layer == NULL)) {
+	if ((arc->Delta >= 0) == (layer == NULL)) {
 		pcb_arc_get_end(arc, 0, &x1, &y1);
 		pcb_arc_get_end(arc, 1, &x2, &y2);
 	}
@@ -194,7 +199,8 @@ static void write_arc_(hyp_wr_t * wr, const char *cmd, pcb_arc_t * arc, const ch
 		pcb_arc_get_end(arc, 0, &x2, &y2);
 	}
 
-	pcb_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me", cmd, x1, y1, x2, y2, arc->X, arc->Y, arc->Width);
+	pcb_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me", cmd, x1, flip(y1), x2, flip(y2), arc->X,
+							flip(arc->Y), arc->Width);
 	if (layer != NULL)
 		pcb_fprintf(wr->f, " W=%me L=%[4]", arc->Thickness, layer);
 	fprintf(wr->f, ")\n");
