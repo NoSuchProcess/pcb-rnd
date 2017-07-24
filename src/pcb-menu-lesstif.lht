@@ -68,7 +68,7 @@ ha:{
 				}
 				-
 				ha:Save connection data of... = { foreground=grey50; sensitive=false }
-				ha: a single element = { li:action=Save(ElementConnections) }
+				ha: a single element = { action=Save(ElementConnections) }
 				ha: all elements = { action=Save(AllConnections) }
 				ha: unused pins = { action=Save(AllUnusedPins) }
 				-
