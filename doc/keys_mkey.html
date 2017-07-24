@@ -44,7 +44,7 @@
 	<td> <I>Toggle Layer 1</I><br>ToggleView(1) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>1-shift
-	<td> <I>Buffer/Select Buffer #1</I><br>PasteBuffer(1)
+	<td> <I>File/Buffer/Select Buffer #1</I><br>PasteBuffer(1)
 <tr bgcolor="#FFFFFF">
 	<th align=left>2
 	<td> <I>Select Layer 2</I><br>SelectLayer(2) 
@@ -59,7 +59,7 @@
 	<td> <I>Toggle Layer 2</I><br>ToggleView(2) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>2-shift
-	<td> <I>Buffer/Select Buffer #2</I><br>PasteBuffer(2)
+	<td> <I>File/Buffer/Select Buffer #2</I><br>PasteBuffer(2)
 <tr bgcolor="#DDFFFF">
 	<th align=left>3
 	<td> <I>Select Layer 3</I><br>SelectLayer(3) 
@@ -74,7 +74,7 @@
 	<td> <I>Toggle Layer 3</I><br>ToggleView(3) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>3-shift
-	<td> <I>Buffer/Select Buffer #3</I><br>PasteBuffer(3)
+	<td> <I>File/Buffer/Select Buffer #3</I><br>PasteBuffer(3)
 <tr bgcolor="#FFFFFF">
 	<th align=left>4
 	<td> <I>Select Layer 4</I><br>SelectLayer(4) 
@@ -89,7 +89,7 @@
 	<td> <I>Toggle Layer 4</I><br>ToggleView(4) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>4-shift
-	<td> <I>Buffer/Select Buffer #4</I><br>PasteBuffer(4)
+	<td> <I>File/Buffer/Select Buffer #4</I><br>PasteBuffer(4)
 <tr bgcolor="#DDFFFF">
 	<th align=left>5
 	<td> <I>Select Layer 5</I><br>SelectLayer(5) 
@@ -104,7 +104,7 @@
 	<td> <I>Toggle Layer 5</I><br>ToggleView(5) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>5-shift
-	<td> <I>Buffer/Select Buffer #5</I><br>PasteBuffer(5)
+	<td> <I>File/Buffer/Select Buffer #5</I><br>PasteBuffer(5)
 <tr bgcolor="#FFFFFF">
 	<th align=left>6
 	<td> <I>Select Layer 6</I><br>SelectLayer(6) 
@@ -181,11 +181,29 @@
 	<th align=left>a<br>&nbsp;c
 	<td> <I>Library</I><br>DoWindows(Library) 
 <tr bgcolor="#DDFFFF">
+	<th align=left>a<br>&nbsp;l
+	<td> <I>Line</I><br>Mode(Line)
+<tr bgcolor="#FFFFFF">
+	<th align=left>a<br>&nbsp;n
+	<td> <I>Line</I><br>Mode(Line)
+<tr bgcolor="#DDFFFF">
+	<th align=left>a<br>&nbsp;p
+	<td> <I>Rectangle</I><br>Mode(Rectangle)
+<tr bgcolor="#FFFFFF">
+	<th align=left>a<br>&nbsp;r
+	<td> <I>Arc</I><br>Mode(Arc)
+<tr bgcolor="#DDFFFF">
+	<th align=left>a<br>&nbsp;t
+	<td> <I>Text</I><br>Mode(Text)
+<tr bgcolor="#FFFFFF">
+	<th align=left>a<br>&nbsp;v
+	<td> <I>Rectangle</I><br>Mode(Rectangle)
+<tr bgcolor="#DDFFFF">
 	<th align=left>b
 	<td> <I>Flip Object</I><br>Flip(Object) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>b-alt-ctrl
-	<td> <I>netlist patch for back annotation</I><br>SavePatch() 
+	<td> <I>a single element/netlist patch for back annotation</I><br>SavePatch() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>b-shift
 	<td> <I>Move selected elements to other side</I><br>Flip(SelectedElements) 
@@ -239,7 +257,13 @@
 	<td> <I>Edit name of/Change font on layout</I><br>FontSel(Object) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;i
-	<td> <I>Buffer/Mirror buffer (up/down)</I><br>Mode(PasteBuffer); PasteBuffer(Mirror)
+	<td> <I>File/Buffer/Mirror buffer (up/down)</I><br>Mode(PasteBuffer); PasteBuffer(Mirror)
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;l
+	<td> <I>Lock</I><br>Mode(Lock)
+<tr bgcolor="#FFFFFF">
+	<th align=left>e<br>&nbsp;l-shift
+	<td> <I>Lock</I><br>Mode(Lock)
 <tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;r
 	<td> <I>Rotate buffer 90 deg CCW</I><br>
@@ -256,62 +280,104 @@
 	<th align=left>enter
 	<td> <I>Click</I><br>Mode(Notify); Mode(Release)
 <tr bgcolor="#FFFFFF">
+	<th align=left>escape
+	<td> <I>Cancel</I><br>Mode(Escape)
+<tr bgcolor="#DDFFFF">
 	<th align=left>f-alt-shift
 	<td> <I>Replace footprint</I><br>ReplaceFootprint() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f-ctrl
 	<td> <I>Lookup connection to object</I><br>GetXY(Click on the object); Connection(Find)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f-ctrl-shift
 	<td> <I>Font selector</I><br>FontSel() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f-shift
 	<td> <I>Reset all connections</I><br>Connection(Reset); Display(Redraw)
+<tr bgcolor="#DDFFFF">
+	<th align=left>f1
+	<td> <I>Via</I><br>Mode(Via)
 <tr bgcolor="#FFFFFF">
+	<th align=left>f10
+	<td> <I>Thermal</I><br>Mode(Thermal)
+<tr bgcolor="#DDFFFF">
+	<th align=left>f11
+	<td> <I>Arrow</I><br>Mode(Arrow)
+<tr bgcolor="#FFFFFF">
+	<th align=left>f12
+	<td> <I>Lock</I><br>Mode(Lock)
+<tr bgcolor="#DDFFFF">
+	<th align=left>f2
+	<td> <I>Line</I><br>Mode(Line)
+<tr bgcolor="#FFFFFF">
+	<th align=left>f3
+	<td> <I>Arc</I><br>Mode(Arc)
+<tr bgcolor="#DDFFFF">
+	<th align=left>f4
+	<td> <I>Text</I><br>Mode(Text)
+<tr bgcolor="#FFFFFF">
+	<th align=left>f5
+	<td> <I>Rectangle</I><br>Mode(Rectangle)
+<tr bgcolor="#DDFFFF">
+	<th align=left>f6
+	<td> <I>Polygon</I><br>Mode(Polygon)
+<tr bgcolor="#FFFFFF">
+	<th align=left>f7
+	<td> <I>Buffer</I><br>Mode(PasteBuffer)
+<tr bgcolor="#DDFFFF">
+	<th align=left>f8
+	<td> <I>Remove</I><br>Mode(Remove)
+<tr bgcolor="#FFFFFF">
+	<th align=left>f9
+	<td> <I>Rotate</I><br>Mode(Rotate)
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;a
 	<td> <I>Save Layout As...</I><br>Save(LayoutAs)
-<tr bgcolor="#DDFFFF">
-	<th align=left>f<br>&nbsp;c
-	<td> <I>Quit Program</I><br>Quit() 
 <tr bgcolor="#FFFFFF">
-	<th align=left>f<br>&nbsp;i
-	<td> <I>Export layout...</I><br>ExportGUI()
+	<th align=left>f<br>&nbsp;c
+	<td> <I>Save connection data of/Quit Program</I><br>Quit() 
 <tr bgcolor="#DDFFFF">
+	<th align=left>f<br>&nbsp;i
+	<td> <I>Save connection data of/Export layout...</I><br>ExportGUI()
+<tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;n
 	<td> <I>Start New Layout</I><br>New() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;o
 	<td> <I>Load layout</I><br>Load(Layout)
-<tr bgcolor="#DDFFFF">
-	<th align=left>f<br>&nbsp;p
-	<td> <I>Print layout...</I><br>Print()
 <tr bgcolor="#FFFFFF">
+	<th align=left>f<br>&nbsp;p
+	<td> <I>Save connection data of/Print layout...</I><br>Print()
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;r
 	<td> <I>Revert</I><br>Load(Revert,none)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;s
 	<td> <I>Save Layout</I><br>Save(Layout)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>g
 	<td> <I>Grid +5mil</I><br>SetValue(Grid,+5,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>g-ctrl
 	<td> <I>Grid +0.05mm</I><br>SetValue(Grid,+0.05,mm) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>g-ctrl-shift
 	<td> <I>Grid -0.05mm</I><br>SetValue(Grid,-0.05,mm) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>g-shift
 	<td> <I>Grid -5mil</I><br>SetValue(Grid,-5,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>h-ctrl
 	<td> <I>ChangeHole Object</I><br>ChangeHole(Object) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>h-shift
 	<td> <I>ToggleHideName SelectedElement</I><br>ToggleHideName(SelectedElements) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>h<br>&nbsp;a
 	<td> <I>About...</I><br>About() 
+<tr bgcolor="#FFFFFF">
+	<th align=left>insert
+	<td> <I>Insert Point</I><br>Mode(InsertPoint)
 <tr bgcolor="#DDFFFF">
 	<th align=left>j
 	<td> <I>ChangeJoin Object</I><br>ChangeJoin(Object) 
@@ -395,7 +461,7 @@
 	<td> <I>ChangeSquare Object</I><br>ChangeSquare(ToggleObject) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>q-ctrl
-	<td> <I>Quit Program</I><br>Quit() 
+	<td> <I>Save connection data of/Quit Program</I><br>Quit() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>r-alt
 	<td> <I>Auto-route selected rats</I><br>AutoRoute(SelectedRats) 
@@ -500,7 +566,7 @@
 	<td> <I>Cycle object being dragged</I><br>CycleDrag() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>x-ctrl
-	<td> <I>Cut selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)
+	<td> <I>Cut selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(MoveSelected); Mode(PasteBuffer)
 <tr bgcolor="#FFFFFF">
 	<th align=left>x-shift
 	<td> <I>Swap nets on two selected pins</I><br>net(swap) 
