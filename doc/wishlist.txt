@@ -1,15 +1,17 @@
 Active user wishes:
-	W1: cschem [Chris]
 	W2: (BLOCKED: lihata testing) proper primitives [Chris]
-	W3: (BLOCKED: lihata testing) more generic footprints [Chris, Evan]
 	W4: user doc [Miloh]
 	W5: (BLOCKED: lihata testing) 3d modeller export [Miloh, Evan]
 	W7: (BLOCKED: lihata testing) programmable drc (star grounding) [James]
-	W8: (BLOCKED: need resources) gl support [Erich, Evan]
 	W9: push & shove [Erich, Evan]
+
+Being done:
+	W1: cschem [Chris]
+	W3: more generic footprints [Chris, Evan] -> subcircuits
 
 User wishes fulfilled:
 	W6:  GUI access to object attributes: gtk editor, find/select by attrib [James]
+	W8: gl support [Erich, Evan]
 
 Plan (parallel threads of development):
 
