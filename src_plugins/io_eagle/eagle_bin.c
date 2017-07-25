@@ -1273,6 +1273,52 @@ static egb_node_t *find_node_name(egb_node_t *first, const char *id_name)
 	return NULL;
 }
 
+static int postprocess_wires(void *ctx, egb_node_t *root)
+{
+	htss_entry_t *e;
+	egb_node_t *n, *first_c, *wire_t;
+	int line_type = -1;
+
+	if (root->id == PCB_EGKW_SECT_LINE) {
+		pcb_trace("######## found a line ######\n");
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e))
+			if (strcmp(e->key, "linetype") == 0 && strcmp(e->value, "0") == 0) {
+				line_type = 0;
+				pcb_trace("Found linetype 0\n");
+			} else if (strcmp(e->key, "linetype") == 0 && strcmp(e->value, "129") == 0) {
+				line_type = 129;
+				pcb_trace("Found linetype 129\n");
+			} 
+	}
+
+	switch(line_type) {
+		case 0:		pcb_trace("Process linetype 0\n");
+				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+                                        if (strcmp(e->key, "linetype_0_x1") == 0) {
+                                                egb_node_prop_set(root, "x1", e->value);
+                                                pcb_trace("Created x1: %s\n", e->value);
+                                        } else if (strcmp(e->key, "linetype_0_y1") == 0) {
+						egb_node_prop_set(root, "y1", e->value);
+						pcb_trace("Created y1: %s\n", e->value);
+					} else if (strcmp(e->key, "linetype_0_x2") == 0) {
+						egb_node_prop_set(root, "x2", e->value);
+						pcb_trace("Created x2: %s\n", e->value);
+					} else if (strcmp(e->key, "linetype_0_y2") == 0) {
+						egb_node_prop_set(root, "y2", e->value);
+						pcb_trace("Created y2: %s\n", e->value);
+                                        } /* add width doubling routine here */
+                                }
+				break;
+		case 129:	pcb_trace("Process linetype 129\n");
+				break;
+	}
+
+	for(n = root->first_child; n != NULL; n = n->next)
+		postprocess_wires(ctx, n);
+	return 0;
+}
+
+
 /* look for elements, and subsequent element2 blocks, and copy name/value fields to element */
 static int postproc_elements(void *ctx, egb_node_t *root)
 {
@@ -1374,7 +1420,8 @@ static int postproc_libs(void *ctx, egb_node_t *root)
 
 static int postproc(void *ctx, egb_node_t *root)
 {
-	return postproc_layers(ctx, root) || postproc_libs(ctx, root) || postproc_elements(ctx, root);
+	return postproc_layers(ctx, root) || postproc_libs(ctx, root)
+		|| postproc_elements(ctx, root) || postprocess_wires(ctx, root);
 }
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)

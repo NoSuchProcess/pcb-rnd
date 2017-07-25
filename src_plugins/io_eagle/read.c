@@ -676,19 +676,11 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 			}
 			lin = pcb_line_alloc(pcb_get_layer(ly->ly));
 	}
-	if (lt == -1) {
-		lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
-		lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
-		lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
-		lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
-	}
-	else if (lt == 0) {
-		lin->Point1.X = eagle_get_attrc(st, subtree, "linetype_0_x1", -1);
-		lin->Point1.Y = eagle_get_attrc(st, subtree, "linetype_0_y1", -1);
-		lin->Point2.X = eagle_get_attrc(st, subtree, "linetype_0_x2", -1);
-		lin->Point2.Y = eagle_get_attrc(st, subtree, "linetype_0_y2", -1);
-	}
-#warning TODO can remove this if dealt with in binary tree post processor code:
+	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
+	lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
+	lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
+	lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
+#warning TODO can remove if width dealt with in binary tree post processor code, but this is v. simple:
 	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1); /* bin format is half the width*/
 	lin->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);
 	pcb_trace("new line thickness: %ml\n", lin->Thickness);
