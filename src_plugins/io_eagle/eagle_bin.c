@@ -1294,10 +1294,10 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 	switch(line_type) {
 		case 0:		pcb_trace("Process linetype 0\n");
 				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
-                                        if (strcmp(e->key, "linetype_0_x1") == 0) {
-                                                egb_node_prop_set(root, "x1", e->value);
-                                                pcb_trace("Created x1: %s\n", e->value);
-                                        } else if (strcmp(e->key, "linetype_0_y1") == 0) {
+					if (strcmp(e->key, "linetype_0_x1") == 0) {
+						egb_node_prop_set(root, "x1", e->value);
+						pcb_trace("Created x1: %s\n", e->value);
+					} else if (strcmp(e->key, "linetype_0_y1") == 0) {
 						egb_node_prop_set(root, "y1", e->value);
 						pcb_trace("Created y1: %s\n", e->value);
 					} else if (strcmp(e->key, "linetype_0_x2") == 0) {
@@ -1306,8 +1306,8 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 					} else if (strcmp(e->key, "linetype_0_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
 						pcb_trace("Created y2: %s\n", e->value);
-                                        } /* add width doubling routine here */
-                                }
+					} /* add width doubling routine here */
+				}
 				break;
 		case 129:	pcb_trace("Process linetype 129\n");
 				break;
