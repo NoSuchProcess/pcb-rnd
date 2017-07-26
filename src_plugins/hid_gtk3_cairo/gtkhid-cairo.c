@@ -88,7 +88,9 @@ typedef struct render_priv_s {
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 
-	const char *colorname;
+	const char *colorname;								/**< current color name for this GC.    */
+	GdkRGBA color;												/**< current color      for this GC.    */
+
 	pcb_coord_t width;
 	pcb_cap_style_t cap;
 	cairo_line_join_t join;
@@ -102,6 +104,16 @@ static void draw_lead_user(render_priv_t * priv_);
 /*../src_plugins/hid_gtk3_cairo/gtkhid-cairo.c:1541:26: warning: assignment from incompatible pointer type [-Wincompatible-pointer-types]
    common->get_color_name = get_color_name;
 */
+
+/** Duplicates the source fields to destination. */
+static copy_color(GdkRGBA * dest, GdkRGBA * source)
+{
+	dest->red = source->red;
+	dest->green = source->green;
+	dest->blue = source->blue;
+	dest->alpha = source->alpha;
+}
+
 static const gchar *get_color_name(GdkRGBA * color)
 {
 	static char tmp[16];
@@ -669,10 +681,6 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 	static void *cache = 0;
 	pcb_hidval_t cval;
 	render_priv_t *priv = gport->render_priv;
-	cairo_t *cr = priv->cr;
-
-	if (cr == NULL)
-		return;
 
 	if (name == NULL) {
 		fprintf(stderr, "ghid_cairo_set_color():  name = NULL, setting to magenta\n");
@@ -692,11 +700,13 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 	//  gport->colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (strcmp(name, "erase") == 0) {
-		gdk_cairo_set_source_rgba(cr, &priv->bg_color);
+		copy_color(&gc->color, &priv->bg_color);
+		//gdk_cairo_set_source_rgba(cr, &priv->bg_color);
 		//gdk_gc_set_foreground(gc->gc, &gport->bg_color);
 	}
 	else if (strcmp(name, "drill") == 0) {
-		gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
+		copy_color(&gc->color, &priv->offlimits_color);
+		//gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
 		//gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);
 	}
 	else {
@@ -732,7 +742,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 		//  gdk_gc_set_foreground(gc->gc, &cc->color);
 		//}
 		cc->color.alpha = 1.0;
-		gdk_cairo_set_source_rgba(cr, &cc->color);
+		copy_color(&gc->color, &cc->color);
 	}
 }
 
@@ -800,7 +810,8 @@ static int use_gc(pcb_hid_gc_t gc)
 	if (cr == NULL)
 		return 0;
 
-	ghid_cairo_set_color(gc, gc->colorname);
+	//ghid_cairo_set_color(gc, gc->colorname);
+	gdk_cairo_set_source_rgba(cr, &gc->color);
 	ghid_cairo_set_line_width(gc, gc->width);
 	ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
 
