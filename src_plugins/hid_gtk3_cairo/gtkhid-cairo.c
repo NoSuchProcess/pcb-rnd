@@ -772,13 +772,13 @@ static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 static void ghid_cairo_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	render_priv_t *priv = gport->render_priv;
+	//render_priv_t *priv = gport->render_priv;
 
-	if (priv->cr == NULL)
-		return;
+	//if (priv->cr == NULL)
+	//	return;
 
 	gc->width = width;
-	cairo_set_line_width(priv->cr, Vz(gc->width));
+	//cairo_set_line_width(priv->cr, Vz(gc->width));
 	//if (gc->gc)
 	//  gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
@@ -808,7 +808,8 @@ static int use_gc(pcb_hid_gc_t gc)
 
 	//ghid_cairo_set_color(gc, gc->colorname);
 	gdk_cairo_set_source_rgba(cr, &gc->color);
-	ghid_cairo_set_line_width(gc, gc->width);
+	//ghid_cairo_set_line_width(gc, gc->width);
+	cairo_set_line_width(cr, Vz(gc->width));
 	//ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
 	cairo_set_line_cap(cr, gc->cap);
 	cairo_set_line_join(cr, gc->join);
