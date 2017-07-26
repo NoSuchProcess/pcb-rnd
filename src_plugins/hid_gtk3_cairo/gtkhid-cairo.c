@@ -92,7 +92,7 @@ typedef struct hid_gc_s {
 	GdkRGBA color;												/**< current color      for this GC.    */
 
 	pcb_coord_t width;
-	pcb_cap_style_t cap;
+	cairo_line_cap_t cap;
 	cairo_line_join_t join;
 	gchar xor_mask;
 	gint mask_seq;
@@ -748,28 +748,24 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 
 static void ghid_cairo_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
-	render_priv_t *priv = gport->render_priv;
 	cairo_line_cap_t cap = CAIRO_LINE_CAP_BUTT;
-
-	if (priv->cr == NULL)
-		return;
+	cairo_line_join_t join = CAIRO_LINE_JOIN_MITER;
 
 	switch (style) {
 	case Trace_Cap:
 	case Round_Cap:
 		cap = CAIRO_LINE_CAP_ROUND;
-		gc->join = CAIRO_LINE_JOIN_ROUND;
+		join = CAIRO_LINE_JOIN_ROUND;
 		break;
 	case Square_Cap:
 	case Beveled_Cap:
 		cap = CAIRO_LINE_CAP_SQUARE;
-		gc->join = CAIRO_LINE_JOIN_MITER;
+		join = CAIRO_LINE_JOIN_MITER;
 		break;
 	}
-	gc->cap = style;
+	gc->cap = cap;
+	gc->join = join;
 
-	cairo_set_line_cap(priv->cr, cap);
-	cairo_set_line_join(priv->cr, gc->join);
 	//if (gc->gc)
 	//  gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
@@ -813,7 +809,10 @@ static int use_gc(pcb_hid_gc_t gc)
 	//ghid_cairo_set_color(gc, gc->colorname);
 	gdk_cairo_set_source_rgba(cr, &gc->color);
 	ghid_cairo_set_line_width(gc, gc->width);
-	ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
+	//ghid_cairo_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
+	cairo_set_line_cap(cr, gc->cap);
+	cairo_set_line_join(cr, gc->join);
+
 
 	//if (!gc->gc) {
 	//  gc->gc = gdk_gc_new(window);
