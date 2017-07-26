@@ -106,7 +106,7 @@ static void draw_lead_user(render_priv_t * priv_);
 */
 
 /** Duplicates the source fields to destination. */
-static copy_color(GdkRGBA * dest, GdkRGBA * source)
+static void copy_color(GdkRGBA * dest, GdkRGBA * source)
 {
 	dest->red = source->red;
 	dest->green = source->green;
