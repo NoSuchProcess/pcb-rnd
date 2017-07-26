@@ -119,6 +119,7 @@ li:pcb-rnd-conf-v1 {
 #			rat_command = {}
 			li:preferred_gui = { gtk2_gl; gtk2_gdk; lesstif }
 			save_final_fallback_fmt = lihata
+			save_fp_fmt = mainline
 		} # rc
 
 		ha:design {
