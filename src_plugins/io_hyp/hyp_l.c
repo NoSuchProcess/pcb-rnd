@@ -3041,7 +3041,7 @@ case 92:
 YY_DO_BEFORE_ACTION; /* set up hyytext again */
 YY_RULE_SETUP
 #line 262 "hyp_l.l"
-{BEGIN STATE_STRING; return H_VAL;}
+{if (section == H_DEVICES) BEGIN STATE_STRING; return H_VAL;}
 	YY_BREAK
 case 93:
 *yy_cp = (yy_hold_char); /* undo effects of setting up hyytext */

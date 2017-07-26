@@ -259,7 +259,7 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
 "USE_DIE_FOR_METAL"/{LHS}           {return H_USE_DIE_FOR_METAL;}
 "V"/{LHS}           {BEGIN STATE_STRING; return H_V;}
 "V?"/{LHS}          {return H_V_QM;}
-"VAL"/{LHS}         {BEGIN STATE_STRING; return H_VAL;}
+"VAL"/{LHS}         {if (section == H_DEVICES) BEGIN STATE_STRING; return H_VAL;}
 "W"/{LHS}           {return H_W;}
 "X"/{LHS}           {return H_X;}
 "X1"/{LHS}          {return H_X1;}
