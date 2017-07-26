@@ -125,7 +125,7 @@ STRING              [^ \t\v\f\r\n\{\}\(\)=\"]+|"("[[:alnum:]]+")"
 QUOTED_STRING       \"([^\"\n]|\"\")*\"
 
 /* an unquoted string with spaces */
-CHARS_AND_SPACES       [^\t\v\f\r\n\{\}\(\)=\"\,]+
+CHARS_AND_SPACES       [^\t\v\f\r\n\{\}\(\)=\"]+
 
 /* all variables used in assignments */
 VARIABLE            ("A"|"A1"|"A2"|"BR"|"C"|"C\?"|"CO\?"|"D"|"ER"|"F"|"ID"|"L"|"L1"|"L2"|"LPS"|"LT"|"M"|"N"|"NAME"|"P"|"PKG"|"PR\?"|"PS"|"R"|"REF"|"S"|"SX"|"SY"|"S1"|"S1X"|"S1Y"|"S2"|"S2X"|"S2Y"|"T"|"TC"|"USE_DIE_FOR_METAL"|"V"|"V\?"|"VAL"|"W"|"X"|"X1"|"X2"|"XC"|"Y"|"Y1"|"Y2"|"YC"|"Z"|"ZL"|"ZLEN"|"ZW")
@@ -327,23 +327,32 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
 {EMPTY_STRING}      { yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return H_STRING; } /* emit empty string and reprocess */
 
 {STRING_W_SPACES}   {
-                      char *s = pcb_strdup(hyytext);
+                      /*
+                       * Commas are not allowed in strings in the padstack section unless the string is enclosed in double quotes (").
+                       */
 
-                      BEGIN INITIAL; 
-
-                      /* strip final ' VAR=' */
-                      if ((strlen(s) != 0) && (s[strlen(s)-1] == '=')) {
-                        char* space = strrchr(s, ' ');
-                        /* strip trailing spaces */
-                        if (space != NULL)
-                          while ((space >= s) && (*space == ' ')) *space-- = '\0';
-                        yyless(strlen(s));
-                        if (strchr(s, ' ') != NULL) hyyerror("warning: unquoted string contains space");
-                        }
-
-                      hyylval.strval = s;
-
-                      return H_STRING;
+                      if ((section == H_PADSTACK) && strchr(hyytext, ','))
+                        REJECT 
+                      else 
+                      { 
+                        char *s = pcb_strdup(hyytext);
+  
+                        BEGIN INITIAL; 
+  
+                        /* strip final ' VAR=' */
+                        if ((strlen(s) != 0) && (s[strlen(s)-1] == '=')) {
+                          char* space = strrchr(s, ' ');
+                          /* strip trailing spaces */
+                          if (space != NULL)
+                            while ((space >= s) && (*space == ' ')) *space-- = '\0';
+                          yyless(strlen(s));
+                          if (strchr(s, ' ') != NULL) hyyerror("warning: unquoted string contains space");
+                          }
+  
+                        hyylval.strval = s;
+  
+                        return H_STRING;
+                      }
                     }
 }
 
@@ -365,8 +374,7 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
                       /* string */
   {STRING}            { 
                         /*
-                         * Commas are not allowed in strings in the padstack section
-                         * unless the string is enclosed in double quotes (").
+                         * Commas are not allowed in strings in the padstack section unless the string is enclosed in double quotes (").
                          */
 
                         if ((section == H_PADSTACK) && strchr(hyytext, ','))
