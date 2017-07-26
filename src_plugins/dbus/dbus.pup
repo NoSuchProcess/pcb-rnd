@@ -1,7 +1,7 @@
 $class feature
 $short DBUS interface
 $long Remote control PCB using DBUS.
-$state WIP
+$state deprecated
 $lstate needs to install the xml?
 default disable
 autoload 1
