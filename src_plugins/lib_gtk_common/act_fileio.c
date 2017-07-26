@@ -143,13 +143,17 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coo
 			formats_param = (const char **) avail.digest;
 			extensions_param = (const char **) avail.extension;
 			fmt_param = &fmt;
-			fmt = 0;
-			for (n = 0; n < num_fmts; n++) {
-				if (strstr(avail.plug[n]->description, "mainline") != NULL) {
+			fmt = -1;
+
+			for (n = 0; n < num_fmts; n++)
+				if (strstr(avail.plug[n]->description, "mainline") != NULL)
 					fmt = n;
-					name_in = pcb_concat("unnamed.fp", NULL);
-				}
-			}
+
+			if (fmt < 0) /* fallback: choose the frist format */
+				fmt = 0;
+
+			name_in = pcb_concat("unnamed", avail.plug[fmt]->fp_extension, NULL);
+
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
