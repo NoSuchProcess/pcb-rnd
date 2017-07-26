@@ -27,8 +27,8 @@ The other half is the actual board data, stored in a <i>pcb_data_t</i> field.
 Relevant structs, variables and functions are in board.[ch].
 
 <h3> data </h3>
-A <i>pcb_data_t</i> contains everything to describe a "subcircuit" related
-to an existing board:
+A <i>pcb_data_t</i> contains everything to describe the 2d geometry of
+an existing board:
 <ul>
 	<li> per-layer objects (e.g. lines, arcs, polygons)
 	<li> global objects (e.g. elements, vias)
@@ -36,11 +36,29 @@ to an existing board:
 </ul>
 <p>
 Relevant structs, variables and functions are in data.[ch].
+<p>
+However, it does not contain the layer stackup, but references to it.
+This means a data_t can be copied or moved from within one board to
+another, even with mismatching layer stack. When a pcb_data_t is within a
+pcb_board_t, the layer references are fixed, pointing to actual layers
+within the board's layer stack (e.g. "layer 3 in the stack"). Such a layer is
+also called a <i>real</i> layer. When a
+pcb_data_t is used outside of a board (e.g. as a buffer), a generalized,
+recipe-like layer description is used (e.g. "second copper layer counted
+from the top"). Such a layer is not a <i>real</i> layer, but can be <i>bound</i>
+to a real layer. The binding means that while it keeps it's recipe-like
+description, it is also referring to an actual layer of the stack of the
+current PCB structure. (This happens to subcircuits: they are specified
+with generalized, recipe-like layers that are bound to the board's layer stack
+once the subcircuit is placed on the board.)
 
 <h3> buffers </h3>
 Paste buffers are <i>pcb_buffer_t</i>; the main field is <i>pcb_data_t</i>.
 <p>
 Relevant structs, variables and functions are in buffer.[ch].
+<p>
+A paste buffer doesn't have a layer stack. When data is copied from a board
+to a buffer, the layer references are generalized.
 
 <h3> terminology: layers and layer groups</h3>
 <i>Layers</i> are abstract canvases also serving as a logical grouping
@@ -83,11 +101,16 @@ There are a few virtual layers:
 	<li> fab - no layer struct, calculated on-the-fly from drill/hole data
 </ul>
 
+
 <h3> pcb_data_t: global data </h3>
 Global data affect all layers. The most trivial example is <i>via</i>:
-it has a hole and the same copper ring on all layers. The other global
+it has a hole and the same copper ring on all layers. Another global
 object pcb_data_t holds is an element. An element can have pads
 on two copper layers and pins that affect all layers the same way as vias.
+<p>
+The third global object is subcircuit; using tis own layer list, it potentially
+can affect all layers of the board. The children objects of a subcircuit is
+a pcb_data_t, which allows arbitrary (loop-free) recursion in data.
 
 <h3> pcb_data_t: layer-local data </h3>
 The data struct has a <i>pcb_layer_t</i> for each logical layer, to host

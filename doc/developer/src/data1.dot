@@ -17,7 +17,7 @@ digraph pcb_data {
 	pcb_buffer_t -> pcb_data_t
 	pcb_buffer_t [shape=box]
 
-	DataType_lists [label="layer-independent lists:\nrats\nvias\nelements"]
+	DataType_lists [label="layer-independent lists:\nrats\nvias\nelements\nsubcircuits"]
 	DataType_rtrees [label="layer-independent rtrees"]
 	DataType_LayerN [label="LayerN: number of\nlayers in use"]
 	DataType_layers [label="an array of layers"]
