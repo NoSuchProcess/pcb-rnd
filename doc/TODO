@@ -31,7 +31,6 @@ For the next release:
 	+ backup save triggers save in pcb indirectly, and that changes the layer stackup which may ruin the board (add new mask layers, wait for a save, draw on them after a save, they become silk) [report: Ade]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
-- save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
 - DOC: developer doc/developer/data.html is out of date [report:miloh]
 
 LATER RELEASES:
