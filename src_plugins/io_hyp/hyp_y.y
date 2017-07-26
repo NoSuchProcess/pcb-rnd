@@ -39,6 +39,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include "hyp_l.h"
 
 void hyyerror(const char *);
 

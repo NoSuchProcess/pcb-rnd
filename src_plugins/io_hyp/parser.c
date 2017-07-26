@@ -329,6 +329,9 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	/* set shared board */
 	hyp_dest = dest;
 
+	/* reset line number to first line */
+	hyyset_lineno(1);
+
 	/* parse hyperlynx file */
 	hyyin = fopen(fname, "r");
 	if (hyyin == NULL)
