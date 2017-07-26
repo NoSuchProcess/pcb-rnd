@@ -1957,8 +1957,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h error.h \
- polygon.h rtree.h hid_actions.h ../src_plugins/io_eagle/trparse.h \
- ../src_plugins/io_eagle/trparse_xml.h \
+ polygon.h rtree.h hid_actions.h compat_misc.h \
+ ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h \
  ../src_plugins/io_eagle/trparse_bin.h
 ../src_plugins/io_eagle/trparse_bin.o: \
  ../src_plugins/io_eagle/trparse_bin.c ../config.h error.h \
