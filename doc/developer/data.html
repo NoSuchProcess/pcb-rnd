@@ -5,10 +5,12 @@
 
 <h2> concepts </h2>
 
+<p>
 Convention: typedef'd types are called pcb_*_t - the corresponding struct
 is pcb_*_s.
 
 <h3> board </h3>
+<p>
 There is only one board being edited. A board is the model of the whole world
 for pcb-rnd - any other, auxiliary data is only a partial description of a board.
 The data struct for board is <i>pcb_board_t</i>. As of now, pcb-rnd edits only one
@@ -27,6 +29,7 @@ The other half is the actual board data, stored in a <i>pcb_data_t</i> field.
 Relevant structs, variables and functions are in board.[ch].
 
 <h3> data </h3>
+<p>
 A <i>pcb_data_t</i> contains everything to describe the 2d geometry of
 an existing board:
 <ul>
@@ -53,6 +56,7 @@ with generalized, recipe-like layers that are bound to the board's layer stack
 once the subcircuit is placed on the board.)
 
 <h3> buffers </h3>
+<p>
 Paste buffers are <i>pcb_buffer_t</i>; the main field is <i>pcb_data_t</i>.
 <p>
 Relevant structs, variables and functions are in buffer.[ch].
@@ -61,6 +65,7 @@ A paste buffer doesn't have a layer stack. When data is copied from a board
 to a buffer, the layer references are generalized.
 
 <h3> terminology: layers and layer groups</h3>
+<p>
 <i>Layers</i> are abstract canvases also serving as a logical grouping
 of drawing primitives. Every <i>layer</i> is part of exactly one <i>layer
 group</i>. A <i>layer group</i> is close to what a physical layer is on
@@ -103,6 +108,7 @@ There are a few virtual layers:
 
 
 <h3> pcb_data_t: global data </h3>
+<p>
 Global data affect all layers. The most trivial example is <i>via</i>:
 it has a hole and the same copper ring on all layers. Another global
 object pcb_data_t holds is an element. An element can have pads
@@ -113,10 +119,12 @@ can affect all layers of the board. The children objects of a subcircuit is
 a pcb_data_t, which allows arbitrary (loop-free) recursion in data.
 
 <h3> pcb_data_t: layer-local data </h3>
+<p>
 The data struct has a <i>pcb_layer_t</i> for each logical layer, to host
 the per layer objects (drawing primitives).
 
 <h3> the layer struct </h3>
+<p>
 Layer data is stored in struct <i>pcb_layer_t</i>. A layer has a list
 for each object type (drawing primitive type): arcs, lines, polygons, etc.
 <p>
