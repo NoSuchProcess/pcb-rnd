@@ -140,20 +140,33 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coo
 		prompt = _("Save element as");
 		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
 		if (num_fmts > 0) {
+			const char *default_pattern = "mainline";
 			formats_param = (const char **) avail.digest;
 			extensions_param = (const char **) avail.extension;
 			fmt_param = &fmt;
 			fmt = -1;
 
+			/* look for exact match, case sensitive */
 			for (n = 0; n < num_fmts; n++)
-				if (strstr(avail.plug[n]->description, "mainline") != NULL)
+				if (strcasecmp(avail.plug[n]->description, default_pattern) == 0)
 					fmt = n;
+
+			/* look for exact match, case insensitive */
+			if (fmt < 0)
+				for (n = 0; n < num_fmts; n++)
+					if (strcmp(avail.plug[n]->description, default_pattern) == 0)
+						fmt = n;
+
+			/* look for partial match */
+			if (fmt < 0)
+				for (n = 0; n < num_fmts; n++)
+					if (strstr(avail.plug[n]->description, default_pattern) != NULL)
+						fmt = n;
 
 			if (fmt < 0) /* fallback: choose the frist format */
 				fmt = 0;
 
 			name_in = pcb_concat("unnamed", avail.plug[fmt]->fp_extension, NULL);
-
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
