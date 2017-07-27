@@ -115,6 +115,12 @@ int pcb_layergrp_step_layer(pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta);
 /* Return the array index of lid within the grp's lid list or -1 if not on the list */
 int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, pcb_layer_id_t lid);
 
+/* Calculate the distance between gid1 and gid2 in the stack, in number of
+   layer groups matching mask. The result is placed in *diff. Returns 0 on success.
+   Typical use case: gid1 is an internal copper layer, gid2 is the top copper layer,
+   mask is PCB_LYT_COPPER -> *diff is the copper index of the internal layer from top */
+int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, pcb_layer_type_t mask, int *diff);
+
 
 /* Enable/disable inhibition of layer changed events during layer group updates */
 void pcb_layergrp_inhibit_inc(void);

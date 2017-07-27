@@ -678,6 +678,27 @@ pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name)
 	return -1;
 }
 
+int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, pcb_layer_type_t mask, int *diff)
+{
+	int gid, d, cnt;
+
+	if ((gid1 < 0) || (gid2 < 0))
+		return -1;
+	if (gid1 == gid2) {
+		*diff = 0;
+		return 0;
+	}
+
+	d = (gid1 < gid2) ? +1 : -1;
+	cnt = 0;
+	for(gid = gid1; gid != gid2; gid += d) {
+		if (pcb->LayerGroups.grp[gid].type & mask)
+			cnt++;
+	}
+	*diff = cnt;
+	return 0;
+}
+
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
