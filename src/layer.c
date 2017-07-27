@@ -679,9 +679,19 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	else
 		dst->meta.bound.name = NULL;
 
-	if (dst->meta.bound.type & PCB_LYT_INTERN) {
-#warning TODO: calculate inner layer stack offset - needs a stack
-		dst->meta.bound.stack_offs = 0;
+	if ((dst->meta.bound.type & PCB_LYT_INTERN) && (dst->meta.bound.type & PCB_LYT_COPPER)) {
+		int from_top, from_bottom, res;
+		
+		res = pcb_layergrp_dist(PCB, src->grp, pcb_layergrp_get_top_copper(), PCB_LYT_COPPER, &from_top);
+		res |= pcb_layergrp_dist(PCB, src->grp, pcb_layergrp_get_bottom_copper(), PCB_LYT_COPPER, &from_bottom);
+		if (res == 0) {
+			if (from_top <= from_bottom)
+				dst->meta.bound.stack_offs = from_top;
+			else
+				dst->meta.bound.stack_offs = -from_bottom;
+		}
+		else
+			pcb_message(PCB_MSG_ERROR, "Internal error: can't figure the inter copper\nlayer offset for %s\n", src->meta.real.name);
 	}
 	else
 		dst->meta.bound.stack_offs = 0;
