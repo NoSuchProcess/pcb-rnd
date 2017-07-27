@@ -2058,10 +2058,10 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		}
 	}
 
-	/* put element "on solder side" if needed */
+	/* check element and pad on same (component/solder) side */
 	if ((element != NULL) && (layer_name != NULL)
 			&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != hyp_is_bottom_layer(layer_name)))
-		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, element);
+		pcb_printf("draw padstack: device \"%s\" and pad \"%s\" on different layers. continuing.\n", name, ref);
 
 	/* create pad */
 	if (element != NULL) {
