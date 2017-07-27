@@ -699,6 +699,35 @@ int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_
 	return 0;
 }
 
+pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int steps, pcb_layer_type_t mask)
+{
+	int d, cnt;
+
+	if (gid < 0)
+		return -1;
+
+	if (steps == 0)
+		return gid;
+
+	if (steps < 0) {
+		d = -1;
+		steps = -steps;
+	}
+	else
+		d = 1;
+
+	for(gid += d;; gid += d) {
+		if ((gid < 0) || (gid >= pcb->LayerGroups.len))
+			return -1;
+		if ((pcb->LayerGroups.grp[gid].type & mask) == mask) {
+			steps--;
+			if (steps == 0)
+				return gid;
+		}
+	}
+	return -1;
+}
+
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {

@@ -121,6 +121,11 @@ int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, pcb_layer_id_t lid);
    mask is PCB_LYT_COPPER -> *diff is the copper index of the internal layer from top */
 int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, pcb_layer_type_t mask, int *diff);
 
+/* walk the given amount steps on the stack among layer groups matching mask.
+   A negative step goes upward.
+   Typical use: "return the 2nd copper layer below this one" */
+pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int steps, pcb_layer_type_t mask);
+
 
 /* Enable/disable inhibition of layer changed events during layer group updates */
 void pcb_layergrp_inhibit_inc(void);
