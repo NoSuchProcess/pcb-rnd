@@ -314,27 +314,43 @@ static int write_devices(hyp_wr_t * wr)
 static void write_padstack_pv(hyp_wr_t * wr, const pcb_pin_t * pin)
 {
 	int new_item;
+	int pin_shape;
 	const char *name = pcb_pshash_pin(&wr->psh, pin, &new_item);
 	if (!new_item)
 		return;
 
+	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
+		pin_shape = 2;
+	else if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
+		pin_shape = 1;
+	else
+		pin_shape = 0;
+
 	pcb_fprintf(wr->f, "{PADSTACK=%s, %me\n", name, pin->DrillingHole);
 #warning TODO: pin shapes and thermal
-	pcb_fprintf(wr->f, "  (MDEF, 0, %me, %me, 0, M)\n", pin->Thickness, pin->Thickness);
+	pcb_fprintf(wr->f, "  (MDEF, %d, %me, %me, 0, M)\n", pin_shape, pin->Thickness, pin->Thickness);
 	fprintf(wr->f, "}\n");
 }
 
 static void write_padstack_pad(hyp_wr_t * wr, const pcb_pad_t * pad)
 {
 	int new_item;
+	int pad_shape;
 	const char *name = pcb_pshash_pad(&wr->psh, pad, &new_item), *side;
 	if (!new_item)
 		return;
 
+	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pad))
+		pad_shape = 2;
+	else if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad))
+		pad_shape = 1;
+	else
+		pad_shape = 0;
+
 	side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? wr->ln_bottom : wr->ln_top;
 
 	fprintf(wr->f, "{PADSTACK=%s\n", name);
-	pcb_fprintf(wr->f, "  (%[4], 1, %me, %me, 0, M)\n", side, PCB_ABS(pad->Point1.X - pad->Point2.X) + pad->Thickness,
+	pcb_fprintf(wr->f, "  (%[4], %d, %me, %me, 0, M)\n", side, pad_shape, PCB_ABS(pad->Point1.X - pad->Point2.X) + pad->Thickness,
 							PCB_ABS(pad->Point1.Y - pad->Point2.Y) + pad->Thickness);
 	fprintf(wr->f, "}\n");
 }

@@ -2058,6 +2058,12 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		}
 	}
 
+	/* put element "on solder side" if needed */
+	if ((element != NULL) && (layer_name != NULL)
+			&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != hyp_is_bottom_layer(layer_name)))
+		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, element);
+
+	/* create pad */
 	if (element != NULL) {
 		/* create pad number */
 		if ((number == NULL) || (strcmp(number, "") == 0)) {
