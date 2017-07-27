@@ -34,7 +34,7 @@ A <i>pcb_data_t</i> contains everything to describe the 2d geometry of
 an existing board:
 <ul>
 	<li> per-layer objects (e.g. lines, arcs, polygons)
-	<li> global objects (e.g. elements, vias)
+	<li> global objects (e.g. elements, subcircuits, vias)
 	<li> temporary logical connections (rat lines)
 </ul>
 <p>
@@ -101,8 +101,9 @@ the code detects the name of the layer is "outline" anywhere, it branches.
 <p>
 There are a few virtual layers:
 <ul>
-	<li> solder mask - no layer struct, calculated on-the-fly from pad data
-	<li> paste - no layer struct, calculated on-the-fly from pad data
+	<li> [top|bottom] mask - no layer struct, calculated on-the-fly from pad data
+	<li> [top|bottom] paste - no layer struct, calculated on-the-fly from pad data
+	<li> Subcircuits - no layer struct, calculated on-the-fly from pad data
 	<li> fab - no layer struct, calculated on-the-fly from drill/hole data
 </ul>
 
