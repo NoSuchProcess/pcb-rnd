@@ -703,7 +703,20 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 	pcb_layergrp_id_t gid;
 	pcb_layer_t *best = NULL;
 
-	if (pcb_layergrp_list(pcb, src->meta.bound.type, &gid, 1) == 1) {
+	/* look up the layer group; for internal copper this means counting the offset */
+	if ((src->meta.bound.type & PCB_LYT_INTERN) && (src->meta.bound.type & PCB_LYT_COPPER) && (src->meta.bound.stack_offs != 0)) {
+		if (src->meta.bound.stack_offs < 0)
+			gid = pcb_layergrp_get_bottom_copper();
+		else
+			gid = pcb_layergrp_get_top_copper();
+		gid = pcb_layergrp_step(pcb, gid, src->meta.bound.stack_offs, PCB_LYT_COPPER | PCB_LYT_INTERN);
+	}
+	else {
+		if (pcb_layergrp_list(pcb, src->meta.bound.type, &gid, 1) != 1)
+			return NULL;
+	}
+
+	{
 		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
 		for(l = 0; l < grp->len; l++) {
 			pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
@@ -729,7 +742,6 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 			}
 		}
 	}
-#warning TODO: calculate inner layer stack offset
 
 	return best;
 }
