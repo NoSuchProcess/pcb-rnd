@@ -175,6 +175,9 @@ pcb_layergrp_id_t pcb_layergrp_get_bottom_paste();
 pcb_layergrp_id_t pcb_layergrp_get_top_paste();
 pcb_layergrp_id_t pcb_layergrp_get_bottom_silk();
 pcb_layergrp_id_t pcb_layergrp_get_top_silk();
+pcb_layergrp_id_t pcb_layergrp_get_bottom_copper();
+pcb_layergrp_id_t pcb_layergrp_get_top_copper();
+
 
 /* return whether any silk or mask or paste layer group is visible */
 int pcb_silk_on(pcb_board_t *pcb);

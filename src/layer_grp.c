@@ -735,6 +735,18 @@ pcb_layergrp_id_t pcb_layergrp_get_top_silk()
 	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
 }
 
+pcb_layergrp_id_t pcb_layergrp_get_bottom_copper()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
+}
+
+pcb_layergrp_id_t pcb_layergrp_get_top_copper()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_COPPER);
+}
+
 /* Note: these function is in this file mainly to access the static inlines */
 int pcb_silk_on(pcb_board_t *pcb)
 {
