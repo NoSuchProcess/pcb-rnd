@@ -31,7 +31,6 @@ For the next release:
 	+ backup save triggers save in pcb indirectly, and that changes the layer stackup which may ruin the board (add new mask layers, wait for a save, draw on them after a save, they become silk) [report: Ade]
 	+ copy & paste on internal copper layer moves objects to another layer. add a new internal copper layer group. draw some lines/arcs. copy them to the buffer. When you paste them, they appear on the wrong layer [report: Ade]
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
-+ DOC: developer doc/developer/data.html is out of date [report:miloh]
 
 LATER RELEASES:
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
