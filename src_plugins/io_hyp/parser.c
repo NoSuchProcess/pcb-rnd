@@ -359,7 +359,14 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 /* print error message */
 void hyp_error(const char *msg)
 {
-	pcb_message(PCB_MSG_ERROR, "line %d: %s at '%s'\n", hyylineno, msg, hyytext);
+	enum pcb_message_level level;
+
+	if (strcasestr(msg, "warning"))
+		level = PCB_MSG_WARNING;
+	else
+		level = PCB_MSG_ERROR;
+
+	pcb_message(level, "line %d: %s at '%s'\n", hyylineno, msg, hyytext);
 }
 
 /*
