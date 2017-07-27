@@ -692,6 +692,8 @@ int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_
 	d = (gid1 < gid2) ? +1 : -1;
 	cnt = 0;
 	for(gid = gid1; gid != gid2; gid += d) {
+		if ((gid < 0) || (gid >= pcb->LayerGroups.len))
+			return -1;
 		if ((pcb->LayerGroups.grp[gid].type & mask) == mask)
 			cnt++;
 	}
