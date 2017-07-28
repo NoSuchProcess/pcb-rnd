@@ -783,6 +783,9 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 		return -1;
 	}
 
+#warning TODO: make this initialization a common function with write_kicad_layout()
+	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
+
 	return write_kicad_layout_elements(FP, PCB, Data, 0, 0, 0);
 }
 
