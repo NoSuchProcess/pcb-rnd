@@ -52,6 +52,7 @@ static unsigned int pcb_pshash_pinhash(const pcb_pshash_item_t *key)
 
 static int pcb_pshash_padeq(const pcb_pshash_item_t *key1, const pcb_pshash_item_t *key2)
 {
+#warning padstack TODO: move these tests to  pcb_pad_eq_padstack
 	return (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, key1->ptr.pad) == PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, key2->ptr.pad)) &&
 		(PCB_FLAG_TEST(PCB_FLAG_SQUARE, key1->ptr.pad) == PCB_FLAG_TEST(PCB_FLAG_SQUARE, key2->ptr.pad)) &&
 		(PCB_FLAG_TEST(PCB_FLAG_OCTAGON, key1->ptr.pad) == PCB_FLAG_TEST(PCB_FLAG_OCTAGON, key2->ptr.pad)) &&
@@ -60,6 +61,7 @@ static int pcb_pshash_padeq(const pcb_pshash_item_t *key1, const pcb_pshash_item
 
 static int pcb_pshash_pineq(const pcb_pshash_item_t *key1, const pcb_pshash_item_t *key2)
 {
+#warning padstack TODO: move these tests to  pcb_pin_eq_padstack
 	return (PCB_FLAG_TEST(PCB_FLAG_SQUARE, key1->ptr.pin) == PCB_FLAG_TEST(PCB_FLAG_SQUARE, key2->ptr.pin)) &&
 		(PCB_FLAG_TEST(PCB_FLAG_OCTAGON, key1->ptr.pin) == PCB_FLAG_TEST(PCB_FLAG_OCTAGON, key2->ptr.pin)) &&
 		pcb_pin_eq_padstack(key1->ptr.pin, key2->ptr.pin);
