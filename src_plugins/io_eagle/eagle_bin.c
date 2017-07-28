@@ -418,6 +418,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
 			{"width",  T_INT, 20, 2},
+			{"width_doubling_bin",  T_INT, 20, 2}, /* for additional thickness */
 			{"clockwise",  T_BMB, 22, 0x20},
 			{"arctype",  T_INT, 23, 1},
 			{"arc_negflags", T_INT, 19, 1},
@@ -1277,15 +1278,15 @@ static egb_node_t *find_node_name(egb_node_t *first, const char *id_name)
 
 static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 {
-        htss_entry_t *e;
-        egb_node_t *n;
+	htss_entry_t *e;
+	egb_node_t *n;
 
-	char *itoa_buffer;
+	char itoa_buffer[64];
 	long c, cx, cy, x1, x2, y1, y2, x3, y3, radius;
 
 	c = 0;
 
-	if (linetype == 0x81 || arctype == 0) {
+	if (linetype == 0x81 || linetype == -127 || arctype == 0) {
 
 /*		if self.linetype == 0x81:
 			# 4 4-byte fields each contain 3 bytes of x1, y1, x2, y2 respectively.
@@ -1307,23 +1308,23 @@ count
 			c, x1, y1, x2, y2 = struct.unpack('<iiiii', xydata)
 */
 			for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
-                                        if (strcmp(e->key, "arc_x1") == 0) {
-                                                x1 = atoi(e->value);
-                                                pcb_trace("arc x1: %s, %ld\n", e->value, x1);
+			if (strcmp(e->key, "arc_x1") == 0) {
+						x1 = atoi(e->value);
+						pcb_trace("arc x1: %s, %ld\n", e->value, x1);
 						egb_node_prop_set(elem, "x1", e->value);
-                                        } else if (strcmp(e->key, "arc_y1") == 0) {
+					} else if (strcmp(e->key, "arc_y1") == 0) {
 						y1 = atoi(e->value);
-                                                pcb_trace("arc y1: %s, %ld\n", e->value, y1);
+						pcb_trace("arc y1: %s, %ld\n", e->value, y1);
 						egb_node_prop_set(elem, "y1", e->value);
-                                        } else if (strcmp(e->key, "arc_x2") == 0) {
+					} else if (strcmp(e->key, "arc_x2") == 0) {
 						x2 = atoi(e->value);
-                                                pcb_trace("arc x2: %s, %ld\n", e->value, x2);
+						pcb_trace("arc x2: %s, %ld\n", e->value, x2);
 						egb_node_prop_set(elem, "x2", e->value);
-                                        } else if (strcmp(e->key, "arc_y2") == 0) {
+					} else if (strcmp(e->key, "arc_y2") == 0) {
 						y2 = atoi(e->value);
-                                                pcb_trace("arc y2: %s, %ld\n", e->value, y2);
+						pcb_trace("arc y2: %s, %ld\n", e->value, y2);
 						egb_node_prop_set(elem, "y2", e->value);
-                                        } else if (strcmp(e->key, "arc_c1") == 0) {
+					} else if (strcmp(e->key, "arc_c1") == 0) {
 						c += atoi(e->value);
 						pcb_trace("c1: %s, %ld\n", e->value, c);
 					} else if (strcmp(e->key, "arc_c2") == 0) {
@@ -1335,7 +1336,7 @@ count
 						pcb_trace("c: %ld\n", c);
 					}
 					/* add width doubling routine here */
-                        }
+			}
 
 		x3 = (x1+x2)/2;
 		y3 = (y1+y2)/2;
@@ -1347,9 +1348,9 @@ count
 			cy = c;
 			cx = (y3-cy)*(y2-y1)/(x2-x1) + x3;
 		}
-                radius = (long)pcb_distance((double)cx, (double)cy, (double)x1, (double)y1);
-                sprintf(itoa_buffer, "%ld", radius);
-                egb_node_prop_set(elem, "radius", itoa_buffer);
+		radius = (long)pcb_distance((double)cx, (double)cy, (double)x2, (double)y2);
+		sprintf(itoa_buffer, "%ld", radius);
+		egb_node_prop_set(elem, "radius", itoa_buffer);
 
 		sprintf(itoa_buffer, "%ld", cx);
 		egb_node_prop_set(elem, "x", itoa_buffer);
@@ -1370,21 +1371,33 @@ count
 				self.cx = (y3-cy)*(y2-y1)/float(x2-x1)+x3
 				xst, yst = '?', ''
 */
-	} else if (linetype > 0 || arctype > 0) {
-                        for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
-                                        if (strcmp(e->key, "arctype_other_x1") == 0) {
-                                                x1 = atoi(e->value);
-                                                pcb_trace("arc x1: %s, %ld\n", e->value, x1);
-                                        } else if (strcmp(e->key, "arctype_other_y1") == 0) {
-                                                y1 = atoi(e->value);
-                                                pcb_trace("arc y1: %s, %ld\n", e->value, y1);
-                                        } else if (strcmp(e->key, "arctype_other_x2") == 0) {
-                                                x2 = atoi(e->value);
-                                                pcb_trace("arc x2: %s, %ld\n", e->value, x2);
-                                        } else if (strcmp(e->key, "arctype_other_y2") == 0) {
-                                                y2 = atoi(e->value);
-                                                pcb_trace("arc y2: %s, %ld\n", e->value, y2);
-                                        }
+	} else if ((linetype > 0 && linetype != 0x81) || arctype > 0) {
+			for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
+					if (strcmp(e->key, "arctype_other_x1") == 0) {
+						x1 = atoi(e->value);
+						pcb_trace("arc x1: %s, %ld\n", e->value, x1);
+					} else if (strcmp(e->key, "arctype_other_y1") == 0) {
+						y1 = atoi(e->value);
+						pcb_trace("arc y1: %s, %ld\n", e->value, y1);
+					} else if (strcmp(e->key, "arctype_other_x2") == 0) {
+						x2 = atoi(e->value);
+						pcb_trace("arc x2: %s, %ld\n", e->value, x2);
+					} else if (strcmp(e->key, "arctype_other_y2") == 0) {
+						y2 = atoi(e->value);
+						pcb_trace("arc y2: %s, %ld\n", e->value, y2);
+					} else if (strcmp(e->key, "linetype_0_x1") == 0) {
+						x1 = atoi(e->value);
+						pcb_trace("arc x1: %s, %ld\n", e->value, x1);
+					} else if (strcmp(e->key, "linetype_0_y1") == 0) {
+						y1 = atoi(e->value);
+						pcb_trace("arc y1: %s, %ld\n", e->value, y1);
+					} else if (strcmp(e->key, "linetype_0_x2") == 0) {
+						x2 = atoi(e->value);
+						pcb_trace("arc x2: %s, %ld\n", e->value, x2);
+					} else if (strcmp(e->key, "linetype_0_y2") == 0) {
+						y2 = atoi(e->value);
+						pcb_trace("arc y2: %s, %ld\n", e->value, y2);
+					}
 			}
 /* arctype = {0x00: '', 0x01: '90 downleft', 0x02: '90 downright', 0x03: '90 upright', 0x0
 4: '90 upleft', 0x05: '180 left', 0x06: '180 right', 0x07: '180 down', 0x08: '180 up'} */
@@ -1418,7 +1431,8 @@ count
 				egb_node_prop_set(elem, "StartAngle", "0");
 				egb_node_prop_set(elem, "Delta", "360");
 			}
-			radius = (long)pcb_distance((double)cx, (double)cy, (double)x1, (double)y1);
+			radius = (long)(pcb_distance((double)cx, (double)cy, (double)x2, (double)y2));
+			pcb_trace("Using radius for post-processed arc: %ld\n", radius);	
 			sprintf(itoa_buffer, "%ld", radius);
 			egb_node_prop_set(elem, "radius", itoa_buffer);
 
@@ -1466,27 +1480,27 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 			if (strcmp(e->key, "linetype") == 0 && strcmp(e->value, "0") == 0) {
 				line_type = 0;
 				pcb_trace("Found linetype 0\n");
-			} else if (strcmp(e->key, "linetype") == 0 && strcmp(e->value, "129") == 0) {
-				line_type = 129;
-				pcb_trace("Found linetype 129\n");
-			} 
+			} else if (strcmp(e->key, "linetype") == 0) {
+				pcb_trace("Found linetype: %s\n", e->value);
+				line_type = atoi(e->value);
+			}
 	}
 
 	switch(line_type) {
-		case 0:		pcb_trace("Process linetype 0\n");
+		case 0:		/*pcb_trace("Process linetype 0\n");*/
 				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 					if (strcmp(e->key, "linetype_0_x1") == 0) {
 						egb_node_prop_set(root, "x1", e->value);
-						pcb_trace("Created x1: %s\n", e->value);
+						/*pcb_trace("Created x1: %s\n", e->value); */
 					} else if (strcmp(e->key, "linetype_0_y1") == 0) {
 						egb_node_prop_set(root, "y1", e->value);
-						pcb_trace("Created y1: %s\n", e->value);
+						/*pcb_trace("Created y1: %s\n", e->value);*/
 					} else if (strcmp(e->key, "linetype_0_x2") == 0) {
 						egb_node_prop_set(root, "x2", e->value);
-						pcb_trace("Created x2: %s\n", e->value);
+						/*pcb_trace("Created x2: %s\n", e->value);*/
 					} else if (strcmp(e->key, "linetype_0_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
-						pcb_trace("Created y2: %s\n", e->value);
+						/*pcb_trace("Created y2: %s\n", e->value);*/
 					} /* add width doubling routine here */
 				}
 				break;
@@ -1494,8 +1508,8 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 				break;
 	}
 
-	if (line_type > 0) {
-		pcb_trace("Treating linetype %d as arc\n.", line_type);
+	if (line_type > 0 || line_type == -127) {
+		pcb_trace("Treating linetype %d as arc########################\n", line_type);
 		arc_decode(ctx, root, -1, line_type);
 	}
 
@@ -1540,24 +1554,25 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 					} /* add width doubling routine here */
 				}
 				break;
+/*		case -1:	break;*/
 		default:	pcb_trace("Post-processing arctype %d\n", arc_type);
 				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 					if (strcmp(e->key, "arctype_other_x1") == 0) {
-                                                egb_node_prop_set(root, "x1", e->value);
-                                                pcb_trace("Created arc x1: %s\n", e->value);
-                                        } else if (strcmp(e->key, "arctype_other_y1") == 0) {
-                                                egb_node_prop_set(root, "y1", e->value);
-                                                pcb_trace("Created arc y1: %s\n", e->value);
-                                        } else if (strcmp(e->key, "arctype_other_x2") == 0) {
-                                                egb_node_prop_set(root, "x2", e->value);
-                                                pcb_trace("Created arc x2: %s\n", e->value);
-                                        } else if (strcmp(e->key, "arctype_other_y2") == 0) {
-                                                egb_node_prop_set(root, "y2", e->value);
-                                                pcb_trace("Created arc y2: %s\n", e->value);
-                                        } /* add width doubling routine here */
+						egb_node_prop_set(root, "x1", e->value);
+						pcb_trace("Created arc x1: %s\n", e->value);
+					} else if (strcmp(e->key, "arctype_other_y1") == 0) {
+						egb_node_prop_set(root, "y1", e->value);
+						pcb_trace("Created arc y1: %s\n", e->value);
+					} else if (strcmp(e->key, "arctype_other_x2") == 0) {
+						egb_node_prop_set(root, "x2", e->value);
+						pcb_trace("Created arc x2: %s\n", e->value);
+					} else if (strcmp(e->key, "arctype_other_y2") == 0) {
+						egb_node_prop_set(root, "y2", e->value);
+						pcb_trace("Created arc y2: %s\n", e->value);
+					} /* add width doubling routine here */
 				}
 	}
-	if (arc_type != -1) {
+	if (arc_type >= 0) {
 		pcb_trace("Proceeding with arc decode call\n");
 		arc_decode(ctx, root, arc_type, -1);
 	}

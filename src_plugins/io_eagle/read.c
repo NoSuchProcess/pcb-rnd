@@ -531,6 +531,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	circ->StartAngle = eagle_get_attrc(st, subtree, "StartAngle", 0);
 	circ->Delta = eagle_get_attrc(st, subtree, "Delta", 360);
 	circ->Thickness = eagle_get_attrc(st, subtree, "width", -1);
+        circ->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);	
 	circ->Clearance = st->md_wire_wire*2;
 	circ->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
@@ -640,6 +641,10 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 
 	if (lt != -1) {
 		pcb_trace("Found wire type %ld\n", lt);
+	}
+	else if (lt > 0 || lt == -127) {
+		pcb_trace("Using circle routine to process wire type 'lt'\n");
+		return eagle_read_circle(st, subtree, obj, type);
 	}
 	else {
 		pcb_trace("Found null wire type 'lt'\n");
