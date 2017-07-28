@@ -509,10 +509,10 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 
 	switch(loc) {
 		case IN_ELEM:
-			if ((ln != 121) && (ln != 122) && (ln != 51) && (ln != 52)) /* consider silk circles only */
-				return 0;
+			if ((ln != 21) && (ln != 22) && (ln != 51) && (ln != 52)) /* consider silk circles only */
+				return 0; /* 121, 122 are negative silk, top, bottom, ignor for now */
 			circ = pcb_element_arc_alloc((pcb_element_t *)obj);
-			if ((ln == 122) || (ln == 52))
+			if ((ln == 22) || (ln == 52))
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, circ);
 			break;
 		case ON_BOARD:
@@ -528,8 +528,8 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	circ->Y = eagle_get_attrc(st, subtree, "y", -1);
 	circ->Width = eagle_get_attrc(st, subtree, "radius", -1);
 	circ->Height = circ->Width; /* no ellipse support */
-	circ->StartAngle = 0;
-	circ->Delta = 360;
+	circ->StartAngle = eagle_get_attrc(st, subtree, "StartAngle", 0);
+	circ->Delta = eagle_get_attrc(st, subtree, "Delta", 360);
 	circ->Thickness = eagle_get_attrc(st, subtree, "width", -1);
 	circ->Clearance = st->md_wire_wire*2;
 	circ->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
@@ -894,6 +894,7 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *el
 		{"wire",        eagle_read_wire},
 		{"hole",        eagle_read_hole},
 		{"circle",      eagle_read_circle},
+		{"arc",         eagle_read_circle},
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
 		{"text",        eagle_read_pkg_txt},
@@ -1065,6 +1066,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
+		{"arc",         eagle_read_circle}, /*binary format */
 		{"polygon",     eagle_read_poly},
 		{"via",         eagle_read_via},
 		{"text",        eagle_read_text},
@@ -1246,6 +1248,7 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"contactref",  eagle_read_contactref},
 		{"wire",        eagle_read_wire},
+		{"arc",         eagle_read_circle}, /* binary format */
 		{"polygon",     eagle_read_poly},
 		{"rectangle",   eagle_read_rect},
 		{"via",         eagle_read_via},
