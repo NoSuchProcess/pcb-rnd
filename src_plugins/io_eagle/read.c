@@ -311,6 +311,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 				case 1: typ = PCB_LYT_COPPER | PCB_LYT_TOP; break;
 				case 16: typ = PCB_LYT_COPPER | PCB_LYT_BOTTOM; break;
 				case 121:
+				case 21: /* tplace element silk */
 				case 25: /* names */
 				case 27: /* values */
 				case 39: /* keepout */
@@ -318,6 +319,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					typ = PCB_LYT_SILK | PCB_LYT_TOP;
 					break;
 				case 122:
+				case 22: /* bplace element silk */
 				case 26: /* names */
 				case 28: /* values */
 				case 40: /* keepout */
