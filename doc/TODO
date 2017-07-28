@@ -28,7 +28,6 @@
 
 For the next release:
 - BUGS:
-	+ with footprint open on pcb-rnd svn r10419 save-as kicad s-expression creates empty .kicad_pcb file and then crashes. Saving to kicad legacy seems to work. [report:celem]
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
 	- Rotate a line and then undo. Connected lines become corrupted. [report:Ade]
 
