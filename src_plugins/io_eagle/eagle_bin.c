@@ -1551,7 +1551,7 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 					} else if (strcmp(e->key, "arctype_0_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
 						pcb_trace("Created arc y2: %s\n", e->value);
-					} /* add width doubling routine here */
+					} /* could add width doubling routine here */
 				}
 				break;
 /*		case -1:	break;*/
@@ -1569,7 +1569,7 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 					} else if (strcmp(e->key, "arctype_other_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
 						pcb_trace("Created arc y2: %s\n", e->value);
-					} /* add width doubling routine here */
+					} /* could add width doubling routine here */
 				}
 	}
 	if (arc_type >= 0) {
@@ -1591,7 +1591,7 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 	egb_node_t *drawing = root->first_child;
 
 	for(n = drawing->first_child, board = NULL; board == NULL && n != NULL; n = next) {
-		next = n->next; /* need to save this because unlink() will ruin it */
+		next = n->next;
 		if (board == NULL && n->id == PCB_EGKW_SECT_BOARD) {
 			pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
 			board = n;
@@ -1607,7 +1607,7 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 	}
 
 	for(n = el1; n != NULL; n = next) {
-		next = n->next; /* need to save this because unlink() will ruin it */
+		next = n->next;
 		pcb_trace("inspecting el1 subnode: %d\n", n->id);
 		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT2) {
 			pcb_trace("Found PCB_EKGW_SECT_ELEMENT2\n");
@@ -1615,17 +1615,30 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 			for(q = el2->first_child; q != NULL; q = next2) {
 				next2 = q->next;
 				for (e = htss_first(&q->props); e; e = htss_next(&q->props, e)) {
-				   	if (strcmp(e->key, "name") == 0) {
+					if (strcmp(e->key, "name") == 0) {
 						egb_node_prop_set(n, "name", e->value);
-						pcb_trace("Moved name %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
+						pcb_trace("Copied name %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
 					}
 					else if (strcmp(e->key, "value") == 0) {
 						egb_node_prop_set(n, "value", e->value);
-						pcb_trace("Moved value %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
+						pcb_trace("Copied value %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
 					}
 				}
 			}
 		}
+		/* we now add element x,y fields to refdes/value element2 node */
+                for (e = htss_first(&n->props); e; e = htss_next(&n->props, e)) {
+                        if (strcmp(e->key, "x") == 0) {
+                                egb_node_prop_set(el2, "x", e->value);
+                                pcb_trace("Added element x %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
+                        }
+                        else if (strcmp(e->key, "y") == 0) {
+                                egb_node_prop_set(el2, "y", e->value);
+                                pcb_trace("Added element y %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
+                        }
+                }
+		/* could potentially add default size, rot to text somewhere around here
+		   or look harder for other optional nodes defining these parameters here */
 	}
 	return 0;
 }
