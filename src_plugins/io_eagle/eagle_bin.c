@@ -1371,6 +1371,23 @@ count
 				self.cx = (y3-cy)*(y2-y1)/float(x2-x1)+x3
 				xst, yst = '?', ''
 */
+
+                        if (cx == x2 && cy == y1 && x2 < x1 && y2 > y1) {
+                                egb_node_prop_set(elem, "StartAngle", "90");
+                                egb_node_prop_set(elem, "Delta", "180");
+                        } else if (cx == x1 && cy == y2 && x2 < x1 && y1 > y2) {
+                                egb_node_prop_set(elem, "StartAngle", "0");
+                                egb_node_prop_set(elem, "Delta", "90");
+                        } else if (cx == x2 && cy == y1 && x2 > x1 && y1 > y2) {
+                                egb_node_prop_set(elem, "StartAngle", "270");
+                                egb_node_prop_set(elem, "Delta", "90");
+                        } else if (cx == x1 && cy == y2 && x2 > x1 && y2 > y1) {
+                                egb_node_prop_set(elem, "StartAngle", "180");
+                                egb_node_prop_set(elem, "Delta", "90");
+			}
+#warning TODO still need to figure out non-trivial  90 degree arcs start and delta
+
+
 	} else if ((linetype > 0 && linetype != 0x81) || arctype > 0) {
 			for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
 					if (strcmp(e->key, "arctype_other_x1") == 0) {
@@ -1404,22 +1421,22 @@ count
 			if (linetype == 0x78 || arctype == 0x01) {
 				cx = MIN(x1, x2);
 				cy = MIN(y1, y2);
-				egb_node_prop_set(elem, "StartAngle", "180");
+				egb_node_prop_set(elem, "StartAngle", "90");
 				egb_node_prop_set(elem, "Delta", "90");
 			} else if (linetype == 0x79 || arctype == 0x02) {
 				cx = MAX(x1, x2);
 				cy = MIN(y1, y2);
-				egb_node_prop_set(elem, "StartAngle", "270");
+				egb_node_prop_set(elem, "StartAngle", "0");
 				egb_node_prop_set(elem, "Delta", "90");
 			} else if (linetype == 0x7a || arctype == 0x03) {
 				cx = MAX(x1, x2);
 				cy = MAX(y1, y2);
-				egb_node_prop_set(elem, "StartAngle", "0");
+				egb_node_prop_set(elem, "StartAngle", "270");
 				egb_node_prop_set(elem, "Delta", "90");
 			} else if (linetype == 0x7b || arctype == 0x04) {
 				cx = MIN(x1, x2);
 				cy = MAX(y1, y2);
-				egb_node_prop_set(elem, "StartAngle", "90");
+				egb_node_prop_set(elem, "StartAngle", "180");
 				egb_node_prop_set(elem, "Delta", "90");
 			} else if (linetype == 0x7c || linetype == 0x7d
 					|| linetype == 0x7e || linetype == 0x7f
