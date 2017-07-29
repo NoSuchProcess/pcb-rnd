@@ -213,14 +213,14 @@ pcb_coord_t origin_y;
 
 /* meter to pcb_coord_t */
 
-pcb_coord_t inline m2coord(double m)
+static pcb_coord_t m2coord(double m)
 {
 	return ((pcb_coord_t) PCB_MM_TO_COORD(1000.0 * m));
 }
 
 /* xy coordinates to pcb_coord_t, without offset */
 
-pcb_coord_t inline xy2coord(double f)
+static pcb_coord_t xy2coord(double f)
 {
 	return (m2coord(unit * f));
 }
@@ -228,21 +228,21 @@ pcb_coord_t inline xy2coord(double f)
 
 /* x coordinates to pcb_coord_t, with offset */
 
-pcb_coord_t inline x2coord(double f)
+static pcb_coord_t x2coord(double f)
 {
 	return (m2coord(unit * f) - origin_x);
 }
 
 /* y coordinates to pcb_coord_t, with offset */
 
-pcb_coord_t inline y2coord(double f)
+static pcb_coord_t y2coord(double f)
 {
 	return (origin_y - m2coord(unit * f));
 }
 
 /* z coordinates to pcb_coord_t. No offset needed. */
 
-pcb_coord_t inline z2coord(double f)
+static pcb_coord_t z2coord(double f)
 {
 	return (m2coord(metal_thickness_unit * f));
 }
