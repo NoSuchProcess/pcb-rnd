@@ -1372,21 +1372,20 @@ count
 				xst, yst = '?', ''
 */
 
-                        if (cx == x2 && cy == y1 && x2 < x1 && y2 > y1) {
-                                egb_node_prop_set(elem, "StartAngle", "90");
-                                egb_node_prop_set(elem, "Delta", "180");
-                        } else if (cx == x1 && cy == y2 && x2 < x1 && y1 > y2) {
-                                egb_node_prop_set(elem, "StartAngle", "0");
-                                egb_node_prop_set(elem, "Delta", "90");
-                        } else if (cx == x2 && cy == y1 && x2 > x1 && y1 > y2) {
-                                egb_node_prop_set(elem, "StartAngle", "270");
-                                egb_node_prop_set(elem, "Delta", "90");
-                        } else if (cx == x1 && cy == y2 && x2 > x1 && y2 > y1) {
-                                egb_node_prop_set(elem, "StartAngle", "180");
-                                egb_node_prop_set(elem, "Delta", "90");
+			if (cx == x2 && cy == y1 && x2 < x1 && y2 > y1) {
+				egb_node_prop_set(elem, "StartAngle", "90");
+				egb_node_prop_set(elem, "Delta", "180");
+			} else if (cx == x1 && cy == y2 && x2 < x1 && y1 > y2) {
+				egb_node_prop_set(elem, "StartAngle", "0");
+				egb_node_prop_set(elem, "Delta", "90");
+			} else if (cx == x2 && cy == y1 && x2 > x1 && y1 > y2) {
+				egb_node_prop_set(elem, "StartAngle", "270");
+				egb_node_prop_set(elem, "Delta", "90");
+			} else if (cx == x1 && cy == y2 && x2 > x1 && y2 > y1) {
+				egb_node_prop_set(elem, "StartAngle", "180");
+				egb_node_prop_set(elem, "Delta", "90");
 			}
-#warning TODO still need to figure out non-trivial  90 degree arcs start and delta
-
+#warning TODO still need to figure out non-trivial non 90 degree arcs start and delta for 0x81, 0x00
 
 	} else if ((linetype > 0 && linetype != 0x81) || arctype > 0) {
 			for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
@@ -1438,16 +1437,28 @@ count
 				cy = MAX(y1, y2);
 				egb_node_prop_set(elem, "StartAngle", "180");
 				egb_node_prop_set(elem, "Delta", "90");
-			} else if (linetype == 0x7c || linetype == 0x7d
-					|| linetype == 0x7e || linetype == 0x7f
-					|| arctype == 0x05  || arctype == 0x06
-					|| arctype == 0x07  || arctype == 0x08) {
+			} else if (linetype == 0x7c || arctype == 0x05) {
 				cx = (x1 + x2)/2;
 				cy = (y1 + y2)/2;
-#warning TODO -> need to figure out the start, delta here:
+				egb_node_prop_set(elem, "StartAngle", "90");
+				egb_node_prop_set(elem, "Delta", "180");
+			} else if (linetype == 0x7d || arctype == 0x06) {
+				cx = (x1 + x2)/2;
+				cy = (y1 + y2)/2;
+				egb_node_prop_set(elem, "StartAngle", "90");
+				egb_node_prop_set(elem, "Delta", "180");
+			} else if (linetype == 0x7e || arctype == 0x07) {
+				cx = (x1 + x2)/2;
+				cy = (y1 + y2)/2;
+				egb_node_prop_set(elem, "StartAngle", "180");
+				egb_node_prop_set(elem, "Delta", "180");
+			} else if (linetype == 0x7e || arctype == 0x07) {
+				cx = (x1 + x2)/2;
+				cy = (y1 + y2)/2;
 				egb_node_prop_set(elem, "StartAngle", "0");
-				egb_node_prop_set(elem, "Delta", "360");
+				egb_node_prop_set(elem, "Delta", "180");
 			}
+
 			radius = (long)(pcb_distance((double)cx, (double)cy, (double)x2, (double)y2));
 			pcb_trace("Using radius for post-processed arc: %ld\n", radius);	
 			sprintf(itoa_buffer, "%ld", radius);
@@ -1644,16 +1655,16 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 			}
 		}
 		/* we now add element x,y fields to refdes/value element2 node */
-                for (e = htss_first(&n->props); e; e = htss_next(&n->props, e)) {
-                        if (strcmp(e->key, "x") == 0) {
-                                egb_node_prop_set(el2, "x", e->value);
-                                pcb_trace("Added element x %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
-                        }
-                        else if (strcmp(e->key, "y") == 0) {
-                                egb_node_prop_set(el2, "y", e->value);
-                                pcb_trace("Added element y %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
-                        }
-                }
+		for (e = htss_first(&n->props); e; e = htss_next(&n->props, e)) {
+			if (strcmp(e->key, "x") == 0) {
+				egb_node_prop_set(el2, "x", e->value);
+				pcb_trace("Added element x %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
+			}
+			else if (strcmp(e->key, "y") == 0) {
+				egb_node_prop_set(el2, "y", e->value);
+				pcb_trace("Added element y %s to PCB_EKGW_SECT_ELEMENT2\n", e->value);
+			}
+		}
 		/* could potentially add default size, rot to text somewhere around here
 		   or look harder for other optional nodes defining these parameters here */
 	}
