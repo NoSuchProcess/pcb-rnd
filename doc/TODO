@@ -29,7 +29,7 @@
 For the next release:
 - BUGS:
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
-	- Rotate a line and then undo. Connected lines become corrupted. [report:Ade]
+	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 
 LATER RELEASES:
 - feature req:
