@@ -804,7 +804,7 @@ static int xy_usage(const char *topic)
 {
 	fprintf(stderr, "\nXY exporter command line arguments:\n\n");
 	pcb_hid_usage(xy_options, sizeof(xy_options) / sizeof(xy_options[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x xy foo.pcb [xy_options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x xy [xy_options] foo.pcb\n\n");
 	return 0;
 }
 

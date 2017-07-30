@@ -1608,7 +1608,7 @@ static int ps_usage(const char *topic)
 {
 	fprintf(stderr, "\nps exporter command line arguments:\n\n");
 	pcb_hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x ps foo.pcb [ps options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x ps [ps options] foo.pcb\n\n");
 	return 0;
 }
 

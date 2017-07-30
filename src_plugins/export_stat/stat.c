@@ -320,7 +320,7 @@ static int stat_usage(const char *topic)
 {
 	fprintf(stderr, "\nstat exporter command line arguments:\n\n");
 	pcb_hid_usage(stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x stat foo.pcb [stat options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x stat [stat options] foo.pcb\n\n");
 	return 0;
 }
 

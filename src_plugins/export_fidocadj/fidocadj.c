@@ -327,7 +327,7 @@ static int fidocadj_usage(const char *topic)
 {
 	fprintf(stderr, "\nfidocadj exporter command line arguments:\n\n");
 	pcb_hid_usage(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x fidocadj foo.pcb [fidocadj options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x fidocadj [fidocadj options] foo.pcb\n\n");
 	return 0;
 }
 

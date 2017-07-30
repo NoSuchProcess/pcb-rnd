@@ -1673,7 +1673,7 @@ static int png_usage(const char *topic)
 {
 	fprintf(stderr, "\npng exporter command line arguments:\n\n");
 	pcb_hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x png foo.pcb [png options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x png [png options] foo.pcb\n\n");
 	return 0;
 }
 

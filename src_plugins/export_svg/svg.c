@@ -715,7 +715,7 @@ static int svg_usage(const char *topic)
 {
 	fprintf(stderr, "\nsvg exporter command line arguments:\n\n");
 	pcb_hid_usage(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x svg foo.pcb [svg options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x svg [svg options] foo.pcb\n\n");
 	return 0;
 }
 

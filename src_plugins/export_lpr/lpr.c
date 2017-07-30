@@ -114,7 +114,7 @@ static int lpr_usage(const char *topic)
 {
 	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
 	pcb_hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x lpr foo.pcb [lpr options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x lpr [lpr options] foo.pcb\n\n");
 	return 0;
 }
 

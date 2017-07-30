@@ -1215,7 +1215,7 @@ static int gerber_usage(const char *topic)
 {
 	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
 	pcb_hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gerber foo.pcb [gerber options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gerber [gerber options] foo.pcb\n\n");
 	return 0;
 }
 

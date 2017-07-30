@@ -282,7 +282,7 @@ static int bom_usage(const char *topic)
 {
 	fprintf(stderr, "\nbom exporter command line arguments:\n\n");
 	pcb_hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x bom foo.pcb [bom_options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x bom [bom_options] foo.pcb\n\n");
 	return 0;
 }
 

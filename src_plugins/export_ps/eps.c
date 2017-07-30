@@ -606,7 +606,7 @@ static int eps_usage(const char *topic)
 {
 	fprintf(stderr, "\neps exporter command line arguments:\n\n");
 	pcb_hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x eps foo.pcb [eps options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x eps [eps options] foo.pcb\n\n");
 	return 0;
 }
 

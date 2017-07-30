@@ -869,7 +869,7 @@ static int gcode_usage(const char *topic)
 {
 	fprintf(stderr, "\ngcode exporter command line arguments:\n\n");
 	pcb_hid_usage(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gcode foo.pcb [gcode options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gcode [gcode options] foo.pcb\n\n");
 	return 0;
 }
 

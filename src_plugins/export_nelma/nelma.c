@@ -955,7 +955,7 @@ static int nelma_usage(const char *topic)
 {
 	fprintf(stderr, "\nnelma exporter command line arguments:\n\n");
 	pcb_hid_usage(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]));
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x nelma foo.pcb [nelma options]\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x nelma [nelma options] foo.pcb\n\n");
 	return 0;
 }
 
