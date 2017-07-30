@@ -1283,7 +1283,8 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 
 	char itoa_buffer[64];
 	long c, cx, cy, x1, x2, y1, y2, x3, y3, radius;
-
+	double theta;
+	double delta_x, delta_y;
 	c = 0;
 
 	if (linetype == 0x81 || linetype == -127 || arctype == 0) {
@@ -1374,7 +1375,7 @@ count
 
 			if (cx == x2 && cy == y1 && x2 < x1 && y2 > y1) {
 				egb_node_prop_set(elem, "StartAngle", "90");
-				egb_node_prop_set(elem, "Delta", "180");
+				egb_node_prop_set(elem, "Delta", "90");
 			} else if (cx == x1 && cy == y2 && x2 < x1 && y1 > y2) {
 				egb_node_prop_set(elem, "StartAngle", "0");
 				egb_node_prop_set(elem, "Delta", "90");
@@ -1384,6 +1385,26 @@ count
 			} else if (cx == x1 && cy == y2 && x2 > x1 && y2 > y1) {
 				egb_node_prop_set(elem, "StartAngle", "180");
 				egb_node_prop_set(elem, "Delta", "90");
+			} else {
+#warning TODO probably need negative flags applied to c, x1, x2, y1, y2
+				delta_x = (double)(x1 - cx);
+				delta_y = (double)(y1 - cy);
+				theta = atan2(delta_y, delta_x);
+				theta = PCB_RAD_TO_DEG*theta;
+				theta += 180; /* make it conform to pcb-rnd coord origin -ve X */
+				sprintf(itoa_buffer, "%ld", (long)theta);
+				egb_node_prop_set(elem, "StartAngle", itoa_buffer);
+
+				theta = acos(((x1-cx)*(x2-cx)+(y1-cy)*(y2-cy))/(radius*radius));
+				theta = PCB_RAD_TO_DEG*theta;
+				if ((cy > y1 && cy > y2 && x2 < x1)
+						|| (cy < y1 && cy < y2 && x2 > x1)
+						|| (cx > x1 && cx > x2 && y2 > y1)
+						|| (cx < x1 && cx < x2 && y1 > y2) ) {
+					theta += 90;
+				}
+				sprintf(itoa_buffer, "%ld", (long)theta);
+				egb_node_prop_set(elem, "Delta", itoa_buffer);
 			}
 #warning TODO still need to figure out non-trivial non 90 degree arcs start and delta for 0x81, 0x00
 
@@ -1437,15 +1458,15 @@ count
 				cy = MAX(y1, y2);
 				egb_node_prop_set(elem, "StartAngle", "180");
 				egb_node_prop_set(elem, "Delta", "90");
-			} else if (linetype == 0x7c || arctype == 0x05) {
+			} else if (linetype == 0x7c || arctype == 0x05) { /* 124 */
 				cx = (x1 + x2)/2;
 				cy = (y1 + y2)/2;
 				egb_node_prop_set(elem, "StartAngle", "90");
 				egb_node_prop_set(elem, "Delta", "180");
-			} else if (linetype == 0x7d || arctype == 0x06) {
+			} else if (linetype == 0x7d || arctype == 0x06) { /* 125 */
 				cx = (x1 + x2)/2;
 				cy = (y1 + y2)/2;
-				egb_node_prop_set(elem, "StartAngle", "90");
+				egb_node_prop_set(elem, "StartAngle", "270");
 				egb_node_prop_set(elem, "Delta", "180");
 			} else if (linetype == 0x7e || arctype == 0x07) {
 				cx = (x1 + x2)/2;

@@ -28,6 +28,7 @@
 #include "config.h"
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 
 #include "../src_plugins/boardflip/boardflip.h"
 
