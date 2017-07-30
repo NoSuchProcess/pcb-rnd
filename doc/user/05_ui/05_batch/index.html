@@ -8,12 +8,15 @@
 <body>
 <h1> pcb-rnd - user manual </h1>
 
-<h2> 5.5 Batch Interface</h2>
+<h2> 5.5 Batch User Interface</h2>
 <p>
 
-Pcb-rnd comes with a headless user interface. The interface presents itself
-as a prompt where the user can enter pcb-rnd actions. This is useful for testing
-and some automation
+Pcb-rnd comes with a interpreter which is known as the batch ui. This batch UI
+is a default buildin and can be summond at any time when running pcb-rnd (see
+code below). Batch mode will compile and run as the default user interface when pcb-rnd is
+compiled on systems without any gui libs installed.
+
+The batch UI is useful for automation, test, and debugging.
 <p>
 <code>
 ./pcb-rnd --gui batch
