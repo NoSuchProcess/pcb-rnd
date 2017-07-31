@@ -12,11 +12,11 @@ test_export:
 	@$E -f bboard ; \
 	$E -f nelma ; \
 	$E -f bom ; \
-	$E -f dsn 2>/dev/null; \
+	$E -f dsn ;\
 	$E -f IPC-D-356 ; \
 	$E -f eps ; \
 	$E -f ps ; \
-	$E -f XY ; \
+	$E -f XY  2>/dev/null; \
 	$E -f openscad ; \
 	$E -f png ; \
 	$E -f gerber ; \
