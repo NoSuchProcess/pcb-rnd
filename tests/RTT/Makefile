@@ -20,7 +20,7 @@ test_export:
 	$E -f openscad ; \
 	$E -f png ; \
 	$E -f gerber ; \
-	$E -f svg
+	$E -f svg 2>/dev/null;
 
 clean:
 	$(SCCBOX) rm -f out/* diff/*
