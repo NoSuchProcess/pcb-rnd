@@ -6,6 +6,7 @@ all=0
 valg=0
 global_args="-c rc/quiet=1"
 test_announce=0
+verbose=0
 
 if test -z "$pcb_rnd_bin"
 then
@@ -159,6 +160,11 @@ run_test()
 		valgr="valgrind -v --log-file=$fn.vlog"
 	fi
 
+	if test "$verbose" -gt 0
+	then
+		echo "=== Test: $fmt $fn ==="
+	fi
+
 	# run and save stderr in file res2 and stdout in variable res
 	res2=`mktemp`
 	res=`$valgr $pcb_rnd_bin -x "$fmt" $global_args $fmt_args "$fn" 2>$res2`
@@ -193,6 +199,7 @@ do
 		-b) pcb_rnd_bin=$2; shift 1;;
 		-a) all=1;;
 		-V) valg=1;;
+		-v) verbose=1;;
 		*)
 			if test -z "$fn"
 			then
