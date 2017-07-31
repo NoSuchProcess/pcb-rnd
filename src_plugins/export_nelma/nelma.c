@@ -967,6 +967,7 @@ int pplg_check_ver_export_nelma(int ver_needed) { return 0; }
 
 int pplg_uninit_export_nelma(void)
 {
+	pcb_hid_remove_attributes_by_cookie(nelma_cookie);
 }
 
 int pplg_init_export_nelma(void)
