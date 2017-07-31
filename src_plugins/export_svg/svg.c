@@ -67,6 +67,7 @@ typedef struct hid_gc_s {
 	int width;
 	char *color;
 	int erase, drill;
+	unsigned warned_elliptical:1;
 } hid_gc_s;
 
 static const char *CAPS(pcb_cap_style_t cap)
@@ -392,7 +393,7 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 
 static pcb_hid_gc_t svg_make_gc(void)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
+	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
 	rv->me_pointer = &svg_hid;
 	rv->cap = Trace_Cap;
 	rv->width = 1;
@@ -615,7 +616,10 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	if (height > maxdiff)
 		maxdiff = height;
 	if (diff2 > maxdiff / 1000) {
-		pcb_message(PCB_MSG_ERROR, "Can't draw elliptical arc on svg; object omitted; expect BROKEN TRACE\n");
+		if (!gc->warned_elliptical) {
+			pcb_message(PCB_MSG_ERROR, "Can't draw elliptical arc on svg; object omitted; expect BROKEN TRACE\n");
+			gc->warned_elliptical = 1;
+		}
 		return;
 	}
 
