@@ -1,3 +1,5 @@
+This is the old test suite inherited from mainline.
+
 Please read this file before making any modifications to the test suite.
 
 **********************************************************************
