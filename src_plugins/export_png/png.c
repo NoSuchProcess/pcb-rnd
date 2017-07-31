@@ -1683,6 +1683,7 @@ int pplg_check_ver_export_png(int ver_needed) { return 0; }
 
 void pplg_uninit_export_png(void)
 {
+	pcb_hid_remove_attributes_by_cookie(png_cookie);
 }
 
 int pplg_init_export_png(void)
