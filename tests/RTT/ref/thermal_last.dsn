@@ -33,12 +33,12 @@
     )
   )
   (placement
-    (component 6
-      (place 6 2.540000 10.160000 front 0 (PN 0))
+    (component 5
+      (place 5 2.540000 10.160000 front 0 (PN 0))
     )
   )
   (library
-    (image 6
+    (image 5
       (pin Th_round_3015995 1 0 0)
     )
     (padstack Th_round_3015995

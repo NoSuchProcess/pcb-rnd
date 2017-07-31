@@ -33,19 +33,19 @@
     )
   )
   (placement
-    (component 9
+    (component 8
       (place "U1" 6.350000 8.890000 front 0 (PN 0))
     )
-    (component 21
+    (component 20
       (place "U2" 6.350000 3.810000 back 0 (PN 0))
     )
   )
   (library
-    (image 9
+    (image 8
       (pin Th_square_2032000 "1" -3.810000 0.000000)
       (pin Th_round_2032000 "2" 3.810000 0.000000)
     )
-    (image 21
+    (image 20
       (pin Th_square_2032000 "1" 3.810000 0.000000)
       (pin Th_round_2032000 "2" -3.810000 0.000000)
     )
