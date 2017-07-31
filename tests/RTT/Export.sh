@@ -152,14 +152,28 @@ cmp_fmt()
 
 run_test()
 {
-	local fn="$1" valgr
+	local fn="$1" valgr res res2
 
 	if test "$valg" -gt 0
 	then
 		valgr="valgrind -v --log-file=$fn.vlog"
 	fi
 
-	$valgr $pcb_rnd_bin -x "$fmt" $global_args $fmt_args "$fn"
+	# run and save stderr in file res2 and stdout in variable res
+	res2=`mktemp`
+	res=`$valgr $pcb_rnd_bin -x "$fmt" $global_args $fmt_args "$fn" 2>$res2`
+
+	# special case error: empty design is not exported; skip the file
+	if test ! -z "$res"
+	then
+		case "$res" in
+			*"export empty board"*) return 0 ;;
+		esac
+	fi
+
+	# print error messages to the log
+	sed "s/^/[pcb-rnd:stderr]  /" < $res2
+	rm $res2
 
 	base=${fn%%.pcb}
 	ref_fn=ref/$base$ext
