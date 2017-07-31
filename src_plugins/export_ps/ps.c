@@ -1138,6 +1138,8 @@ static void ps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
+	double w;
+
 	if ((width == 0) && (height == 0)) /* degenerate case, do not draw */
 		return;
 	if (delta_angle > 0) {
@@ -1152,8 +1154,11 @@ static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coo
 	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);
 #endif
 	use_gc(gc);
+	w = width;
+	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
+		w = 0.0001;
 	pcb_fprintf(global.f, "%ma %ma %mi %mi %mi %mi %g a\n",
-							sa, ea, -width, height, cx, cy, (double) (global.linewidth + 2 * global.bloat) /(double) width);
+							sa, ea, -width, height, cx, cy, (double)(global.linewidth + 2 * global.bloat) / w);
 }
 
 static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
