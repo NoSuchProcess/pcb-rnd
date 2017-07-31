@@ -225,23 +225,29 @@ then
 	echo -n "$fmt: ... "
 fi
 
-bad=0
+bad=""
 if test "$all" -gt 0
 then
 	for n in `ls *.lht *.pcb 2>/dev/null`
 	do
-		run_test "$n" || bad=1
+		run_test "$n" || bad="$bad $n"
 	done
 else
-	run_test "$fn" || bad=1
+	run_test "$fn" || bad="$bad $n"
 fi
 
-if test $bad -gt 0
+if test ! -z "$bad"
 then
-	echo "$fmt: ... BROKEN"
+	if test "$verbose" -gt 0
+	then
+		echo "$fmt: ... BROKEN: $bad"
+	else
+		echo "$fmt: ... BROKEN"
+	fi
+	exit 1
 else
 	echo "ok"
+	exit 0
 fi
 
-exit $bad
 
