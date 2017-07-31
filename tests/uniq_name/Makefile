@@ -1,6 +1,6 @@
 ROOT=../..
 UNM=$(ROOT)/src_plugins/io_kicad
-LHT=$(ROOT)/src_3rd/liblihata
+LHT=$(ROOT)/src_3rd
 SRC=$(ROOT)/src
 
 CFLAGS = -Wall -I$(UNM) -I$(LHT) -I$(SRC) -I$(ROOT)
