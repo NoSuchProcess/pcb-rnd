@@ -1140,8 +1140,12 @@ static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coo
 	pcb_angle_t sa, ea;
 	double w;
 
-	if ((width == 0) && (height == 0)) /* degenerate case, do not draw */
+	if ((width == 0) && (height == 0)) {
+		/* degenerate case, draw dot */
+		ps_draw_line(gc, cx, cy, cx, cy);
 		return;
+	}
+
 	if (delta_angle > 0) {
 		sa = start_angle;
 		ea = start_angle + delta_angle;
