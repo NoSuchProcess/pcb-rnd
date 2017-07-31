@@ -120,6 +120,8 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 	l.Point2.X = PCB_MM_TO_COORD(x2);
 	l.Point2.Y = PCB_MM_TO_COORD(y2);
 	l.Thickness = PCB_MM_TO_COORD(thick);
+	if (l.Thickness == 0)
+		l.Thickness = 1;
 	_draw_line(&l);
 }
 
@@ -132,6 +134,8 @@ static void dline_(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y
 	l.Point2.X = x2;
 	l.Point2.Y = y2;
 	l.Thickness = PCB_MM_TO_COORD(thick);
+	if (l.Thickness == 0)
+		l.Thickness = 1;
 	_draw_line(&l);
 }
 
