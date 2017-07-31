@@ -91,10 +91,10 @@ hid_bom2 | bom_general.pcb | bom | --bomfile test.bom | | bom:test.bom
 hid_bom3 | bom_general.pcb | bom | --xyfile  test.xy  | | bom:bom_general.bom
 hid_bom4 | bom_general.pcb | bom | --xy-in-mm | |  bom:bom_general.bom
 
-hid_bom1 | bom_general.pcb | XY | | | xy:bom_general.xy
-hid_bom2 | bom_general.pcb | XY | --bomfile test.bom | | xy:bom_general.xy
-hid_bom3 | bom_general.pcb | XY | --xyfile  test.xy  | | xy:test.xy
-hid_bom4 | bom_general.pcb | XY | --xy-in-mm | |  xy:bom_general.xy
+hid_xy1 | bom_general.pcb | XY | | | xy:bom_general.xy
+hid_xy2 | bom_general.pcb | XY | --bomfile test.bom | | xy:bom_general.xy
+hid_xy3 | bom_general.pcb | XY | --xyfile  test.xy  | | xy:test.xy
+hid_xy4 | bom_general.pcb | XY | --xy-in-mm | |  xy:bom_general.xy
 
 
 
