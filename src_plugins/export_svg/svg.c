@@ -646,10 +646,10 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	ea = start_angle + delta_angle;
 
 	/* calculate the endpoints */
-	x2 = cx + (width * cos(sa * M_PI / 180));
-	y2 = cy + (width * sin(sa * M_PI / 180));
-	x1 = cx + (width * cos(ea * M_PI / 180))+diff;
-	y1 = cy + (width * sin(ea * M_PI / 180))+diff;
+	x2 = pcb_round((double)cx + ((double)width * cos(sa * M_PI / 180)));
+	y2 = pcb_round((double)cy + ((double)width * sin(sa * M_PI / 180)));
+	x1 = pcb_round((double)cx + ((double)width * cos(ea * M_PI / 180))+diff);
+	y1 = pcb_round((double)cy + ((double)width * sin(ea * M_PI / 180))+diff);
 
 	draw_arc(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
