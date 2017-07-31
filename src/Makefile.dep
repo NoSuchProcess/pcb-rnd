@@ -1907,7 +1907,8 @@
 ../src_plugins/io_eagle/eagle_bin.o: ../src_plugins/io_eagle/eagle_bin.c \
  ../config.h ../src_plugins/io_eagle/eagle_bin.h \
  ../src_plugins/io_eagle/egb_tree.h ../src_3rd/genht/htss.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h error.h
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h error.h \
+ math_helper.h misc_util.h unit.h pcb_bool.h
 ../src_plugins/io_eagle/egb_tree.o: ../src_plugins/io_eagle/egb_tree.c \
  ../config.h ../src_3rd/genht/hash.h ../src_plugins/io_eagle/egb_tree.h \
  ../src_3rd/genht/htss.h ../src_3rd/genht/ht.h \
@@ -1998,7 +1999,8 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h obj_poly.h \
  polyarea.h obj_poly_list.h box.h math_helper.h move.h misc_util.h \
  ht_element.h ../src_3rd/genht/ht.h obj_text_list.h obj_rat_list.h \
- obj_rat.h layer_grp.h library.h rats_patch.h board.h
+ obj_rat.h layer_grp.h library.h rats_patch.h board.h \
+ ../src_plugins/io_hyp/hyp_l.h
 ../src_plugins/io_hyp/io_hyp.o: ../src_plugins/io_hyp/io_hyp.c \
  ../config.h action_helper.h global_typedefs.h pcb_bool.h unit.h \
  compat_nls.h hid.h error.h drc.h attrib.h layer.h globalconst.h \
