@@ -2,6 +2,9 @@ E = ./Export.sh -t -a
 
 all:
 
+ROOT=../..
+include $(ROOT)/Makefile.conf
+
 test:
 	@make test_export && echo "*** export: QC PASS ***"
 
@@ -18,3 +21,6 @@ test_export:
 	$E -f png ; \
 	$E -f gerber ; \
 	$E -f svg
+
+clean:
+	$(SCCBOX) rm -f out/* diff/*
