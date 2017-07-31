@@ -528,10 +528,6 @@ for t in $all_tests ; do
 	pcb_flags="${args}"
     fi
 
-    if test "X${hid}" = "Xgerber" ; then
-	pcb_flags="--fab-author Fab_Author ${pcb_flags}"
-    fi
-
     ######################################################################
     #
     # Set up the run directory
