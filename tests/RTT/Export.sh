@@ -178,7 +178,7 @@ run_test()
 	fi
 
 	# print error messages to the log
-	sed "s/^/[pcb-rnd:stderr]  /" < $res2
+	sed "s/^/[pcb-rnd:stderr]  /" < $res2 >&2
 	rm $res2
 
 	base=${fn%%.pcb}
