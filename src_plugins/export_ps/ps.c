@@ -1161,7 +1161,7 @@ static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coo
 	w = width;
 	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
 		w = 0.0001;
-	pcb_fprintf(global.f, "%ma %ma %mi %mi %mi %mi %g a\n",
+	pcb_fprintf(global.f, "%ma %ma %mi %mi %mi %mi %f a\n",
 							sa, ea, -width, height, cx, cy, (double)(global.linewidth + 2 * global.bloat) / w);
 }
 
