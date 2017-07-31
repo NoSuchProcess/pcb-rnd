@@ -554,6 +554,14 @@ static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
+	double w;
+
+	if ((width == 0) && (height == 0)) {
+		/* degenerate case, draw dot */
+		eps_draw_line(gc, cx, cy, cx, cy);
+		return;
+	}
+
 	if (delta_angle > 0) {
 		sa = start_angle;
 		ea = start_angle + delta_angle;
@@ -566,7 +574,10 @@ static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);
 #endif
 	use_gc(gc);
-	pcb_fprintf(f, "%ma %ma %mi %mi %mi %mi %g a\n", sa, ea, -width, height, cx, cy, (double) linewidth / width);
+	w = width;
+	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
+		w = 0.0001;
+	pcb_fprintf(f, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double) linewidth / w);
 }
 
 static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
