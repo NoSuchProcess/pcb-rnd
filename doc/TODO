@@ -32,6 +32,7 @@ For the next release:
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 
 LATER RELEASES:
+- BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
 - feature req:
 	- if the library path starts with a "?", the path is optional; so we don't get warnings for ./footprints [report: celem]
 	- add some sort of $(project_path) and/or $(design_path) so we don't need to use ./ and we won't depend on CWD [report: celem]
@@ -46,7 +47,7 @@ LATER RELEASES:
 - Rubberband Arcs:
 	- Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Ade]
 	- Rubberband move line endpoints ignores connected arc endpoints. [Ade]
-- csect can't make a layer outline
+- bug: csect can't make a layer outline
 - fontsel:
 	- replace font in slot (even in default)
 	- ttf import?
