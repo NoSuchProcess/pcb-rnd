@@ -452,12 +452,13 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick, int 
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
-	pcb_vector_t v;
+	pcb_vector_t v, v2;
 	pcb_box_t ends;
 	int i, segs;
 	double ang, da, rx, ry;
 	long half;
 	double radius_adj;
+	pcb_coord_t edx, edy;
 
 	if (thick <= 0)
 		return NULL;
@@ -511,6 +512,19 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick, int 
 		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 		ang += da;
 	}
+
+	/* explicitly draw the last point if the manhattan-distance is large enough */
+	ang = a->StartAngle;
+	v2[0] = a->X - rx * cos(ang * PCB_M180);
+	v2[1] = a->Y + ry * sin(ang * PCB_M180);
+	edx = (v[0] - v2[0]);
+	edy = (v[1] - v2[1]);
+	if (edx < 0) edx = -edx;
+	if (edy < 0) edy = -edy;
+	if (edx+edy > PCB_MM_TO_COORD(0.001))
+		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v2));
+
+
 	/* now add other round cap */
 	ang = a->StartAngle;
 	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
