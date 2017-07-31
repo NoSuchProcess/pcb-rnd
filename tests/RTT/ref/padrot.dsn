@@ -34,28 +34,28 @@
   )
   (placement
     (component 8
-      (place "null" 2.222500 11.430000 front 0 (PN 0))
+      (place "R1" 2.222500 11.430000 front 0 (PN 0))
     )
     (component 17
-      (place "null" 1.270000 8.572500 front 0 (PN 0))
+      (place "R3" 1.270000 8.572500 front 0 (PN 0))
     )
     (component 26
-      (place "null" 6.032500 11.430000 front 0 (PN 0))
+      (place "R2" 6.032500 11.430000 front 0 (PN 0))
     )
     (component 35
-      (place "null" 1.270000 4.762500 front 0 (PN 0))
+      (place "R6" 1.270000 4.762500 front 0 (PN 0))
     )
     (component 44
-      (place "null" 3.848481 8.216519 front 0 (PN 0))
+      (place "R4" 3.848481 8.216519 front 0 (PN 0))
     )
     (component 53
-      (place "null" 6.388481 8.216519 front 0 (PN 0))
+      (place "R5" 6.388481 8.216519 front 0 (PN 0))
     )
     (component 62
-      (place "null" 4.056761 4.719828 front 0 (PN 0))
+      (place "R7" 4.056761 4.719828 front 0 (PN 0))
     )
     (component 71
-      (place "null" 7.866761 4.719828 front 0 (PN 0))
+      (place "R8" 7.866761 4.719828 front 0 (PN 0))
     )
   )
   (library
