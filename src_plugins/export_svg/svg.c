@@ -598,11 +598,26 @@ static void draw_arc(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_
 
 static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	pcb_coord_t x1, y1, x2, y2, diff = 0;
+	pcb_coord_t x1, y1, x2, y2, diff = 0, diff2, maxdiff;
 	pcb_angle_t sa, ea;
 
-	if (width == 0) /* degenerate case: do not draw r=0 arc, some rendering engines may not like that */
+ /* degenerate case: r=0 means a single dot */
+	if ((width == 0) && (height == 0)) {
+		draw_line(gc, cx, cy, cx, cy);
 		return;
+	}
+
+	/* detect elliptical arcs: if diff between radii is above 0.1% */
+	diff2 = width - height;
+	if (diff2 < 0)
+		diff2 = -diff2;
+	maxdiff = width;
+	if (height > maxdiff)
+		maxdiff = height;
+	if (diff2 > maxdiff / 1000) {
+		pcb_message(PCB_MSG_ERROR, "Can't draw elliptical arc on svg; object omitted; expect BROKEN TRACE\n");
+		return;
+	}
 
 	TRX(cx); TRY(cy);
 
