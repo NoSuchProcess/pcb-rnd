@@ -12,9 +12,7 @@
 </g>
 <g id="layer_3_top">
 <!--normal-->
- <path d="M 2.54000000 5.08000000 A 0.0000 0.0000 0 0 1 2.5400 5.0800" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round" fill="none"/>
- <path d="M 5.08000000 6.35000000 A 1.2700 1.2700 0 0 1 3.8100 5.0800" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round" fill="none"/>
- <path d="M 7.62000000 5.08000000 A 0.0000 0.0000 0 0 1 7.6200 5.0800" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round" fill="none"/>
+ <line x1="7.6200" y1="5.0800" x2="7.6200" y2="5.0800" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
 </g>
 <g id="layer_1_topsilk">
 </g>
