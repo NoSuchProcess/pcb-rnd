@@ -164,7 +164,7 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 		value = value_local;
 
 	if (allow == 0)
-		allow = PCB_UNIT_ALLOW_ALL;
+		allow = PCB_UNIT_ALLOW_ALL_SANE;
 
 	i = printf_spec_->used + 64;
 	if (i > sizeof(printf_spec_new_local))
@@ -422,7 +422,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0, mq_has_spec;
 	char *dot, *free_fmt = NULL;
-	enum pcb_allow_e mask = PCB_UNIT_ALLOW_ALL;
+	enum pcb_allow_e mask = PCB_UNIT_ALLOW_ALL_SANE;
 
 	gds_init(&spec);
 
@@ -644,7 +644,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				case '2':
 				case 'D':
 					value[count++] = va_arg(args, pcb_coord_t);
-					if (CoordsToString(string, value, count, &spec, mask & PCB_UNIT_ALLOW_ALL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, count, &spec, mask & PCB_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 					break;
 				case 'd':
 					value[1] = va_arg(args, pcb_coord_t);
@@ -661,7 +661,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 							}
 						}
 						if (!found)
-							if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_ALL, suffix) != 0) goto err;
+							if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 					}
 					break;
 				case 'a':
@@ -700,7 +700,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 							}
 						}
 						if (!found)
-							if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_ALL, suffix) != 0) goto err;
+							if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 					}
 					break;
 				}
