@@ -739,10 +739,14 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	x = eagle_get_attrc(st, subtree, "x", 0);
 	y = eagle_get_attrc(st, subtree, "y", 0);
 	dx = eagle_get_attrc(st, subtree, "dx", 0);
+	dx += eagle_get_attrc(st, subtree, "dx_bin_doubling", 0);
 	dy = eagle_get_attrc(st, subtree, "dy", 0);
+	dy += eagle_get_attrc(st, subtree, "dy_bin_doubling", 0);
 
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	deg = eagle_rot2degrees(rot);
+
+#warning TODO need to load thermals flags to set clearance.
 
 	if (dx < 0) {
 		x -= dx;
