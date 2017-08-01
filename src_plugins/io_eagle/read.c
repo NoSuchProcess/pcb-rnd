@@ -500,6 +500,16 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	return 0;
 }
 
+static long eagle_degrees_to_pcb_degrees(long const eagle_degrees) {
+	long e_degrees = eagle_degrees;
+	while (e_degrees < 0) {
+		e_degrees += 360;
+	}
+	while (e_degrees > 360) {
+		e_degrees -= 360;
+	}
+	return (360 - e_degrees);
+}
 
 static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
@@ -511,7 +521,12 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	switch(loc) {
 		case IN_ELEM:
 			if ((ln != 21) && (ln != 22) && (ln != 51) && (ln != 52)) /* consider silk circles only */
-				return 0; /* 121, 122 are negative silk, top, bottom, ignor for now */
+				return 0; /* 121, 122 are negative silk, top, bottom, ignore for now */
+			if (((ln == 51) || (ln == 52))
+				&& ((eagle_get_attrl(st, subtree, "arctype", -1) != -1)
+				|| (eagle_get_attrl(st, subtree, "linetype", -1) != -1)))
+				return 0; /* we don't draw tDocu for arcs, only for actual circles */
+
 			circ = pcb_element_arc_alloc((pcb_element_t *)obj);
 			if ((ln == 22) || (ln == 52))
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, circ);
@@ -529,8 +544,8 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	circ->Y = eagle_get_attrc(st, subtree, "y", -1);
 	circ->Width = eagle_get_attrc(st, subtree, "radius", -1);
 	circ->Height = circ->Width; /* no ellipse support */
-	circ->StartAngle = eagle_get_attrl(st, subtree, "StartAngle", 0);
-	circ->Delta = eagle_get_attrl(st, subtree, "Delta", 360);
+	circ->StartAngle = eagle_degrees_to_pcb_degrees(eagle_get_attrl(st, subtree, "StartAngle", 0));
+	circ->Delta = -eagle_get_attrl(st, subtree, "Delta", -360);
 	circ->Thickness = eagle_get_attrc(st, subtree, "width", -1);
         circ->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);	
 	circ->Clearance = st->md_wire_wire*2;
@@ -642,14 +657,15 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 
 	if (lt != -1) {
 		pcb_trace("Found wire type %ld\n", lt);
+	} else {
+		pcb_trace("Found null wire type 'lt'\n");
 	}
+
 	if (lt > 0 || lt == -127) {
 		pcb_trace("Using circle routine to process wire type 'lt'\n");
 		return eagle_read_circle(st, subtree, obj, type);
 	}
-	else {
-		pcb_trace("Found null wire type 'lt'\n");
-	}
+
 	if (ln != -1) {
 		pcb_trace("Found wire layer %ld\n", ln);
 	}
