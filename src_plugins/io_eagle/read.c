@@ -414,7 +414,7 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 /* Convert eagle Rxxx or binary n*1024 string to degrees */
 static int eagle_rot2degrees(const char *rot)
 {
-	int deg;
+	long deg;
 	char *end;
 
 	if (rot == NULL) {
@@ -423,13 +423,20 @@ static int eagle_rot2degrees(const char *rot)
 		deg = strtol(rot, &end, 10);
 		if (*end != '\0')
 			return -1;
-		deg = deg*(double)360/4096;
+		if (deg == 0) {
+			/* v3,4,5 the same */
+		} else if (deg >= 1024) {
+			deg = (360*deg)/4096; /* v4, v5 do n*1024 */
+		} else {
+			deg = deg && 0x00f0; /* only need bottom 4 bits for v3, it seems*/
+			deg = deg*90;
+		}
 	} else {
 		deg = strtol(rot+1, &end, 10);
 		if (*end != '\0')
 			return -1;
 	}
-	while (deg > 360) {
+	while (deg >= 360) {
 		deg -= 360;
 	}
 	return (int) deg;
@@ -1257,7 +1264,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				if (steps > 0)
 					pcb_element_rotate90(st->pcb->Data, new_elem, x, y, steps);
 				else
-					pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation '%s': %s/%s/%s\n", rot, name, pkg, lib);
+					pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg element rotation/steps '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
 			}
 
 			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
