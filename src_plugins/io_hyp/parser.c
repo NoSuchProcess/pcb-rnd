@@ -43,6 +43,7 @@
 #include "hid_actions.h"
 #include "plug_io.h"
 #include "compat_misc.h"
+#include <string.h>
 
 /*
  * the board is shared between all routines.
@@ -361,7 +362,7 @@ void hyp_error(const char *msg)
 {
 	enum pcb_message_level level;
 
-	if (strcasestr(msg, "warning"))
+	if (strstr(msg, "warning"))
 		level = PCB_MSG_WARNING;
 	else
 		level = PCB_MSG_ERROR;
@@ -1589,6 +1590,10 @@ pcb_bool exec_options(parse_param * h)
 pcb_bool exec_signal(parse_param * h)
 {
 	pcb_layer_id_t signal_layer_id;
+
+	if ((h->layer_name != NULL) && (pcb_layer_by_name(h->layer_name) >= 0))
+		pcb_message(PCB_MSG_WARNING, "duplicate SIGNAL layer name \"%s\"\n", h->layer_name);
+
 	signal_layer_id = hyp_create_layer(h->layer_name);
 
 	layer_is_plane[signal_layer_id] = pcb_false;
@@ -1624,6 +1629,10 @@ pcb_bool exec_dielectric(parse_param * h)
 pcb_bool exec_plane(parse_param * h)
 {
 	pcb_layer_id_t plane_layer_id;
+
+	if ((h->layer_name != NULL) && (pcb_layer_by_name(h->layer_name) >= 0))
+		pcb_message(PCB_MSG_WARNING, "duplicate PLANE layer name \"%s\"\n", h->layer_name);
+
 	plane_layer_id = hyp_create_layer(h->layer_name);
 
 	layer_is_plane[plane_layer_id] = pcb_true;
