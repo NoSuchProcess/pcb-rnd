@@ -273,11 +273,11 @@ parsefont
 				if (!yyFont)
 				{
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
-					*yyFontkitValid = pcb_false;
-					pcb_font_free (yyFont);
 					YYABORT;
 				}
 				*yyFontkitValid = pcb_false;
+				pcb_font_free (yyFont);
+				yyFont->id = 0;
 			}
 		  symbols
 			{
