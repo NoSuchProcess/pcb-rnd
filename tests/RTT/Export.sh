@@ -132,6 +132,12 @@ cmp_fmt()
 			test "$res" -lt 8 && rm diff/$bn
 			test "$res" -lt 8
 			;;
+		bboard)
+			bn=`basename $out`
+			res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+			test "$res" -lt 8 && rm diff/$bn
+			test "$res" -lt 8
+			;;
 		gerber)
 			for n in $ref.gbr/*.gbr
 			do
