@@ -2077,7 +2077,7 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	}
 
 	/* check element and pad on same (component/solder) side */
-	if ((element != NULL) && (layer_name != NULL)
+	if ((element != NULL) && (layer_name != NULL) && (strcmp(layer_name, "MDEF") != 0) && (strcmp(layer_name, "ADEF") != 0)
 			&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != hyp_is_bottom_layer(layer_name)))
 		pcb_message(PCB_MSG_WARNING, "draw padstack: device \"%s\" and pad \"%s\" on different layers. continuing.\n", name, ref);
 
