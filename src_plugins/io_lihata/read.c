@@ -1099,6 +1099,7 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 		}
 		else {
 			pcb_font_free (&fk->dflt);
+			fk->dflt.id = 0; /* restore default font's ID */
 			f = &fk->dflt;
 		}
 
