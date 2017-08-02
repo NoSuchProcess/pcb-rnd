@@ -31,6 +31,7 @@
 
 #include "board.h"
 #include "build_run.h"
+#include "compat_misc.h"
 #include "data.h"
 #include "draw.h"
 #include "../report/drill.h"

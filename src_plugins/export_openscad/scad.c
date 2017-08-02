@@ -38,6 +38,7 @@
 #include <time.h>
 
 #include "board.h"
+#include "compat_misc.h"
 #include "math_helper.h"
 #include "data.h"
 #include "error.h"

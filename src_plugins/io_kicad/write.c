@@ -26,6 +26,7 @@
  */
 #include <math.h>
 #include "config.h"
+#include "compat_misc.h"
 #include "board.h"
 #include "plug_io.h"
 #include "error.h"
