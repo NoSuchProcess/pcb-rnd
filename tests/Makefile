@@ -1,4 +1,5 @@
 test:
+	cd RTT && $(MAKE) all && $(MAKE) test
 	cd pcbflags && $(MAKE) all && $(MAKE) test
 	cd conf && $(MAKE) all && $(MAKE) test
 	cd strflags && $(MAKE) all && $(MAKE) test
@@ -13,6 +14,7 @@ test:
 	@echo "+-------------------------------------------------+"
 
 clean:
+	cd RTT && $(MAKE) clean
 	cd pcbflags && $(MAKE) clean
 	cd conf && $(MAKE) clean
 	cd strflags && $(MAKE) clean
