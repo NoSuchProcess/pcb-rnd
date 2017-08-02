@@ -939,7 +939,7 @@ static void scad_emit_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_
 
 	if (!zero_length) {
 		angle = -(atan2(-(float) (y2 - y1), -(float) (x2 - x1))) / M_PI * 180.;
-		length = sqrt((float) (x2 - x1) * (float) (x2 - x1) + (float) (y2 - y1) * (float) (y2 - y1));
+		length = sqrt((double) (x2 - x1) * (double) (x2 - x1) + (double) (y2 - y1) * (double) (y2 - y1));
 		if (gc->cap == Square_Cap) {
 			length += (float) gc->width;
 		}
@@ -998,16 +998,16 @@ static void scad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_c
 		angle = ((float) (sa) + ((float) delta_angle * (float) i / (float) n_steps)) * M_PI / 180.;
 
 		if (i) {
-			x = (int) ((float) width * cos(angle)) + cx;
-			y = -(int) ((float) height * sin(angle)) + cy;
+			x = (int) pcb_round((float) width * cos(angle) + cx);
+			y = -(int) pcb_round((float) height * sin(angle) + cy);
 			scad_emit_line(gc, ox, oy, x, y, (i == (n_steps)) ? SCAD_EL_LASTPOLY : SCAD_EL_POLY);
 
 			ox = x;
 			oy = y;
 		}
 		else {
-			ox = (int) ((float) width * cos(angle)) + cx;
-			oy = -(int) ((float) height * sin(angle)) + cy;
+			ox = (int) pcb_round((float) width * cos(angle) + cx);
+			oy = -(int) pcb_round((float) height * sin(angle) + cy);
 		}
 	}
 }
