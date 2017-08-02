@@ -43,6 +43,10 @@ struct pcb_text_s {
 	gdl_elem_t link;              /* a text is in a list of a layer or an element */
 };
 
+/* These need to be carefully written to avoid overflows, and return
+   a Coord type.  */
+#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)pcb_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
+#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)pcb_round((COORD) * (100.0 / (double)(TEXTSCALE))))
 
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 void pcb_text_free(pcb_text_t * data);

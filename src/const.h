@@ -29,11 +29,6 @@
 #ifndef	PCB_CONST_H
 #define	PCB_CONST_H
 
-/* These need to be carefully written to avoid overflows, and return
-   a Coord type.  */
-#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)pcb_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
-#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)pcb_round((COORD) * (100.0 / (double)(TEXTSCALE))))
-
 /* ---------------------------------------------------------------------------
  * modes
  */
