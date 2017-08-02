@@ -4,7 +4,7 @@ TRUNK=../..
 
 all=0
 valg=0
-global_args="-c rc/quiet=1"
+global_args="-c rc/quiet=1 -c rc/default_pcb_file={}"
 test_announce=0
 verbose=0
 
