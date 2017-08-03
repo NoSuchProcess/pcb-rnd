@@ -202,7 +202,7 @@ do
 	in
 		--list)
 			$pcb_rnd_bin -x nonexistentexporter 2>&1 | sed '
-				/available/ { s/^[^:]*: *//; q; }
+				/available/ { s/^[^:]*: *//; s/ /\n/g; q; }
 				{ d }
 			'
 			exit 0;;
