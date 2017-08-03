@@ -200,6 +200,12 @@ while test $# -gt 0
 do
 	case "$1"
 	in
+		--list)
+			$pcb_rnd_bin -x nonexistentexporter 2>&1 | sed '
+				/available/ { s/^[^:]*: *//; q; }
+				{ d }
+			'
+			exit 0;;
 		-t) test_announce=1;;
 		-f|-x) fmt=$2; shift 1;;
 		-b) pcb_rnd_bin=$2; shift 1;;
