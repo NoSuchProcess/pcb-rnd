@@ -32,11 +32,11 @@ LIB_3RD_OBJS= \
 	../../src_3rd/liblihata/tree_table.o \
 	../../src_3rd/liblihata/tree_symlink.o \
 	../../src_3rd/liblihata/tree_path.o \
-	../../src_3rd/liblihata/genht/hash.o \
-	../../src_3rd/liblihata/genht/htsp.o \
-	../../src_3rd/liblihata/genht/htpi.o \
-	../../src_3rd/liblihata/genht/htip.o \
-	../../src_3rd/liblihata/genht/htpp.o \
+	../../src_3rd/genht/hash.o \
+	../../src_3rd/genht/htsp.o \
+	../../src_3rd/genht/htpi.o \
+	../../src_3rd/genht/htip.o \
+	../../src_3rd/genht/htpp.o \
 	../../src_3rd/genvector/gds_char.o \
 	../../src_3rd/genvector/vtp0.o
 
