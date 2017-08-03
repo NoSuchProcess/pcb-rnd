@@ -34,6 +34,8 @@ char *pcb_get_info_compile_options(void);
 
 char *pcb_get_infostr(void);
 
+/* Author's name: either from the config system (typically from the design) or
+   as a last resort from the OS */
 const char *pcb_author(void);
 
 void pcb_catch_signal(int Signal);

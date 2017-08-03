@@ -31,7 +31,10 @@
 
 long pcb_rand(void);
 
+/* Gets the user's real name when available; normally shouldn't be used,
+   consider using pcb_author() that allows config override */
 const char *pcb_get_user_name(void);
+
 int pcb_getpid(void);
 
 char *pcb_strndup(const char *s, int len);
