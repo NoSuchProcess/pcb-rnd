@@ -31,6 +31,9 @@ For the next release:
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	- io_pcb font parser succeeds(?) but clears the font id as if it had failed. Causes a duplicate font with id #0 [report:Ade]
+	- RTT:
+		- don't fail if an exporter is unavailable
+		- at the end fail if a test fails
 
 LATER RELEASES:
 - BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
