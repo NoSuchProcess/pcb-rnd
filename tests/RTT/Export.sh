@@ -179,7 +179,7 @@ run_test()
 	if test ! -z "$res"
 	then
 		case "$res" in
-			*"export empty board"*) return 0 ;;
+			*"export empty board"*) rm $res2; return 0 ;;
 		esac
 	fi
 
