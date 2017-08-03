@@ -28,7 +28,11 @@ do
 		have_=`echo "$have"|grep "^$fmt$"`
 		if test ! -z "$have_"
 		then
-			$tester -f $fmt $args
+			eval "$tester -f $fmt $args"
+			if test "$?" -ne "0"
+			then
+				fail=1
+			fi
 		else
 			echo "$fmt: SKIP (plugin not enabled)"
 		fi
