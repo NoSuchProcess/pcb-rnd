@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 </head>
 <body>
-<H1> The new config system in pcb-rnd </H1>
+<H1> The pcb-rnd config system</H1>
 <H2> User documentation </H2>
 As of 1.1.0, pcb-rnd switched to a <a href="syntax.html">lihata</a> based configuration system.
 The purpose of this document is to describes the basic system design going into
@@ -23,8 +23,8 @@ are constantly reading these in-memory representations to decide how to
 carry out their tasks.
 <p>
 Config settings are imported from multiple sources: from different files,
-from environment variables, from command line arguments, from the .pcb
-files on load. Any source can define any part of the <i>config tree</i>.
+from environment variables, from command line arguments, from the opened (.pcb
+or .lht) files on load. Any source can define any part of the <i>config tree</i>.
 When the configuration is processed, each source is read into a temporary
 tree and then all the temporary trees are merged into the final
 <i>config tree</i>. The following diagram demonstrates all configuration
