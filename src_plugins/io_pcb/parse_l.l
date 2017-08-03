@@ -82,6 +82,7 @@ conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
 int *yyFontkitValid;
 int yy_parse_tags;
+pcb_bool yyFontReset;
 
 static int parse_number (void);
 static void add_tag(char *line);
@@ -334,6 +335,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yyData = Ptr;
 	pcb_data_set_layer_parents(Ptr);
 	yyFont = pcb_font(PCB, 0, 1);
+	yyFontReset = pcb_false;
 	yyFontkitValid = NULL;
 	yyElement = NULL;
 
@@ -377,6 +379,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
+	yyFontReset = pcb_true;
 	yyFontkitValid = NULL;
 	yyElement = NULL;
 	yy_settings_dest = settings_dest;
@@ -454,6 +457,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yyFont = Ptr;
 	yyFontkitValid = &valid;
 	yyElement = NULL;
+	yyFontReset = pcb_false;
 
 	yy_settings_dest = CFR_invalid;
 	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename);

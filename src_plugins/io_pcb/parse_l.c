@@ -720,6 +720,7 @@ conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
 int *yyFontkitValid;
 int yy_parse_tags;
+pcb_bool yyFontReset;
 
 static int parse_number (void);
 static void add_tag(char *line);
@@ -734,7 +735,7 @@ int	yyparse(void);
  */
 static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename);
 
-#line 738 "parse_l.c"
+#line 739 "parse_l.c"
 
 #define INITIAL 0
 
@@ -921,10 +922,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 111 "parse_l.l"
+#line 112 "parse_l.l"
 
 
-#line 928 "parse_l.c"
+#line 929 "parse_l.c"
 
 	if ( !(yy_init) )
 		{
@@ -1019,227 +1020,227 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 113 "parse_l.l"
+#line 114 "parse_l.l"
 { return(T_FILEVERSION); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 114 "parse_l.l"
+#line 115 "parse_l.l"
 { return(T_PCB); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 115 "parse_l.l"
+#line 116 "parse_l.l"
 { return(T_GRID); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 116 "parse_l.l"
+#line 117 "parse_l.l"
 { return(T_CURSOR); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 117 "parse_l.l"
+#line 118 "parse_l.l"
 { return(T_THERMAL); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 118 "parse_l.l"
+#line 119 "parse_l.l"
 { return(T_AREA); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 119 "parse_l.l"
+#line 120 "parse_l.l"
 { return(T_DRC); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 120 "parse_l.l"
+#line 121 "parse_l.l"
 { return(T_FLAGS); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 121 "parse_l.l"
+#line 122 "parse_l.l"
 { return(T_LAYER); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 122 "parse_l.l"
+#line 123 "parse_l.l"
 { return(T_PIN); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 123 "parse_l.l"
+#line 124 "parse_l.l"
 { return(T_PAD); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 124 "parse_l.l"
+#line 125 "parse_l.l"
 { return(T_VIA); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 125 "parse_l.l"
+#line 126 "parse_l.l"
 { return(T_LINE); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 126 "parse_l.l"
+#line 127 "parse_l.l"
 { return(T_RAT); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 127 "parse_l.l"
+#line 128 "parse_l.l"
 { return(T_RECTANGLE); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 128 "parse_l.l"
+#line 129 "parse_l.l"
 { return(T_TEXT); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 129 "parse_l.l"
+#line 130 "parse_l.l"
 { return(T_ELEMENTLINE); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 130 "parse_l.l"
+#line 131 "parse_l.l"
 { return(T_ELEMENTARC); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 131 "parse_l.l"
+#line 132 "parse_l.l"
 { return(T_ELEMENT); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 132 "parse_l.l"
+#line 133 "parse_l.l"
 { return(T_SYMBOLLINE); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 133 "parse_l.l"
+#line 134 "parse_l.l"
 { return(T_SYMBOL); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 134 "parse_l.l"
+#line 135 "parse_l.l"
 { return(T_MARK); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 135 "parse_l.l"
+#line 136 "parse_l.l"
 { return(T_GROUPS); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 136 "parse_l.l"
+#line 137 "parse_l.l"
 { return(T_STYLES); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 137 "parse_l.l"
+#line 138 "parse_l.l"
 { return(T_POLYGON); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 138 "parse_l.l"
+#line 139 "parse_l.l"
 { return(T_POLYGON_HOLE); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 139 "parse_l.l"
+#line 140 "parse_l.l"
 { return(T_ARC); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 140 "parse_l.l"
+#line 141 "parse_l.l"
 { return(T_NETLIST); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 141 "parse_l.l"
+#line 142 "parse_l.l"
 { return(T_NET); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 142 "parse_l.l"
+#line 143 "parse_l.l"
 { return(T_CONN); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 143 "parse_l.l"
+#line 144 "parse_l.l"
 { return(T_NETLISTPATCH); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 144 "parse_l.l"
+#line 145 "parse_l.l"
 { return(T_ADD_CONN); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 145 "parse_l.l"
+#line 146 "parse_l.l"
 { return(T_DEL_CONN); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 146 "parse_l.l"
+#line 147 "parse_l.l"
 { return(T_CHANGE_ATTRIB); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 147 "parse_l.l"
+#line 148 "parse_l.l"
 { return(T_ATTRIBUTE); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 149 "parse_l.l"
+#line 150 "parse_l.l"
 { return T_NM; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 150 "parse_l.l"
+#line 151 "parse_l.l"
 { return T_UM; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 151 "parse_l.l"
+#line 152 "parse_l.l"
 { return T_MM; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 152 "parse_l.l"
+#line 153 "parse_l.l"
 { return T_M; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 153 "parse_l.l"
+#line 154 "parse_l.l"
 { return T_KM; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 154 "parse_l.l"
+#line 155 "parse_l.l"
 { return T_UMIL; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 155 "parse_l.l"
+#line 156 "parse_l.l"
 { return T_CMIL; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 156 "parse_l.l"
+#line 157 "parse_l.l"
 { return T_MIL; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 157 "parse_l.l"
+#line 158 "parse_l.l"
 { return T_IN; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 159 "parse_l.l"
+#line 160 "parse_l.l"
 {
 						pcb_lval.integer = (unsigned) *(pcb_text+1);
 						return(CHAR_CONST);
@@ -1247,17 +1248,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 163 "parse_l.l"
+#line 164 "parse_l.l"
 {	return parse_number(); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 164 "parse_l.l"
+#line 165 "parse_l.l"
 {	pcb_lval.integer = pcb_round (strtod (pcb_text, NULL)); return INTEGER; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 166 "parse_l.l"
+#line 167 "parse_l.l"
 {	unsigned n;
 				sscanf((char *) pcb_text, "%x", &n);
 				pcb_lval.integer = n;
@@ -1266,7 +1267,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 171 "parse_l.l"
+#line 172 "parse_l.l"
 {
 						char	*p1, *p2;
 
@@ -1302,23 +1303,23 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 203 "parse_l.l"
+#line 204 "parse_l.l"
 { if (yy_parse_tags) { add_tag(pcb_text); }}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 204 "parse_l.l"
+#line 205 "parse_l.l"
 {}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 205 "parse_l.l"
+#line 206 "parse_l.l"
 {}
 	YY_BREAK
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 206 "parse_l.l"
+#line 207 "parse_l.l"
 {
 #ifndef FLEX_SCANNER
 						pcb_lineno++;
@@ -1327,20 +1328,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 211 "parse_l.l"
+#line 212 "parse_l.l"
 {}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 212 "parse_l.l"
+#line 213 "parse_l.l"
 { return(*pcb_text); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 214 "parse_l.l"
+#line 215 "parse_l.l"
 ECHO;
 	YY_BREAK
-#line 1344 "parse_l.c"
+#line 1345 "parse_l.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2350,7 +2351,7 @@ void pcb_free (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 214 "parse_l.l"
+#line 215 "parse_l.l"
 
 
 
@@ -2475,6 +2476,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yyData = Ptr;
 	pcb_data_set_layer_parents(Ptr);
 	yyFont = pcb_font(PCB, 0, 1);
+	yyFontReset = pcb_false;
 	yyFontkitValid = NULL;
 	yyElement = NULL;
 
@@ -2518,6 +2520,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
+	yyFontReset = pcb_true;
 	yyFontkitValid = NULL;
 	yyElement = NULL;
 	yy_settings_dest = settings_dest;
@@ -2595,6 +2598,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yyFont = Ptr;
 	yyFontkitValid = &valid;
 	yyElement = NULL;
+	yyFontReset = pcb_false;
 
 	yy_settings_dest = CFR_invalid;
 	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename);

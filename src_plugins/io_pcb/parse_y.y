@@ -70,6 +70,7 @@ extern	pcb_board_t *	yyPCB;
 extern	pcb_data_t *	yyData;
 extern	pcb_element_t *yyElement;
 extern	pcb_font_t *	yyFont;
+extern	pcb_bool	yyFontReset;
 extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;
@@ -275,9 +276,11 @@ parsefont
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
+				if (yyFontReset) {
+					pcb_font_free (yyFont);
+					yyFont->id = 0;
+				}
 				*yyFontkitValid = pcb_false;
-				pcb_font_free (yyFont);
-				yyFont->id = 0;
 			}
 		  symbols
 			{
