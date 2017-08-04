@@ -40,6 +40,8 @@ LATER RELEASES:
 - feature req: show grid in both mm and mil in the status bar [report:smilie]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
+- update /usr/share/pcb-rnd/default.pcb to default lihata 
+	- after switch, update doc/conf and doc/user references to conf settings from .pcb to .lht as needed 
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - composite layer draw API cleanup [Ade]:
 	- composite silk layer highlight bug: add a second, sub silk layer; place an element; select the element -> element silk is not cyan; reason: real composite layer is drawn with mask, mask loses color on blotting (affect gtk only)
