@@ -23,6 +23,38 @@
 <!--AUTO navbar end-->
 
 <H1> pcb-rnd motivation </H1>
+
+<H2> Phase 3: community requested features (from 2016 onward)  </H2>
+Overlapping phase 2 there is an ongoing
+<a href="http://igor2.repo.hu/cgi-bin/pcb-rnd-poll.cgi"> feature poll </a>. If there
+are enough <b>active</b> users/testers for a feature, it gets implemented in
+phase 3.
+<p>
+There is a small, active, constructive community forming around pcb-rnd. Future
+directions will be mainly set by their need.
+
+<H2> Phase 2: major cleanups (2015..2016) </H2>
+In the first phase I was mostly implementing a set of small features and fixes.
+As I got more familiar with the code base, I decided to bite the bullet and
+do some refactoring:
+<ul>
+	<li> replaced the <a href="features/pcb-fp.html">footprint mapping/loading code</a>; instead of a hardwired m4 dependency, parametric (generated-on-the-fly) footprints can be written in any language
+	<li> replaced the default footprint library shipped with the software; the <a href="features/pcblib.html"> new library </a> ships a small, well organized collection of essentials, omitting special/rarely used footprints
+	<li> got the code much more modular - <a href="developer/mods3"> a lot of core code got converted into plugins </a>
+	<li> threw out the resource parser and file format (manu.res and friends) <a href="features/res.html"> in favor of lihata;</a> this removed a lot of code duplication and a strangely designed resource tree data structure I really hated; as a side effect the gtk hid has multi-stroke hotkeys
+	<li> <a href="features/unglib.html">replaced glib</a> with a set of <a href="http://repo.hu/projects/articles/minilibs"> mini libs </a> in core and most of the plugins; at the end only the gtk hid should depend on glib; this made the code easier to maintain and debug; a lot of checks are now compile-time (through the C type system) instead of runtime (glib lists)
+	<li> replaced the settings/rc/preferences system with a central, <a href="conf/"> lihata based configuration system </a> - long term hid attributes will be converted too
+</ul>
+<p>
+Plans for the future includes:
+<ul>
+	<li> turning most of the core code into a library for external tools to reuse
+	<li> extending the core to provide an infrastructure for composite objects handled by plugins
+	<li> support for saving and loading pcb and footprint files in the lihata format
+	<li> plans for a set of smallish features that can be implemented in a weekend or two each.
+</ul>
+
+
 <H2> Phase 1: At the beginning... (2013..2014)</H2>
 I use PCB a lot on various computers. I used to try to join the mainstream
 development with small contribution (minor patches) and was active on
@@ -79,34 +111,5 @@ Footnotes:
 	<li> ^1: this may have changed lately and pcb developers are more open to newcomers; there seems to be a shortage of developers tho, which still makes it slow to get bigger patches through
 </ul>
 
-<H2> Phase 2: major cleanups (2015..2016) </H2>
-In the first phase I was mostly implementing a set of small features and fixes.
-As I got more familiar with the code base, I decided to bite the bullet and
-do some refactoring:
-<ul>
-	<li> replaced the <a href="features/pcb-fp.html">footprint mapping/loading code</a>; instead of a hardwired m4 dependency, parametric (generated-on-the-fly) footprints can be written in any language
-	<li> replaced the default footprint library shipped with the software; the <a href="features/pcblib.html"> new library </a> ships a small, well organized collection of essentials, omitting special/rarely used footprints
-	<li> got the code much more modular - <a href="developer/mods3"> a lot of core code got converted into plugins </a>
-	<li> threw out the resource parser and file format (manu.res and friends) <a href="features/res.html"> in favor of lihata;</a> this removed a lot of code duplication and a strangely designed resource tree data structure I really hated; as a side effect the gtk hid has multi-stroke hotkeys
-	<li> <a href="features/unglib.html">replaced glib</a> with a set of <a href="http://repo.hu/projects/articles/minilibs"> mini libs </a> in core and most of the plugins; at the end only the gtk hid should depend on glib; this made the code easier to maintain and debug; a lot of checks are now compile-time (through the C type system) instead of runtime (glib lists)
-	<li> replaced the settings/rc/preferences system with a central, <a href="conf/"> lihata based configuration system </a> - long term hid attributes will be converted too
-</ul>
-<p>
-Plans for the future includes:
-<ul>
-	<li> turning most of the core code into a library for external tools to reuse
-	<li> extending the core to provide an infrastructure for composite objects handled by plugins
-	<li> support for saving and loading pcb and footprint files in the lihata format
-	<li> plans for a set of smallish features that can be implemented in a weekend or two each.
-</ul>
-
-<H2> Phase 3: community requested features (from 2016 onward)  </H2>
-Overlapping phase 2 there is an ongoing
-<a href="http://igor2.repo.hu/cgi-bin/pcb-rnd-poll.cgi"> feature poll </a>. If there
-are enough <b>active</b> users/testers for a feature, it gets implemented in
-phase 3.
-<p>
-There is a small, active, constructive community forming around pcb-rnd. Future
-directions will be mainly set by their need.
 </body>
 </html>
