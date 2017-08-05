@@ -1,3 +1,235 @@
+pcb-rnd 1.2.4 (r10606)
+~~~~~~~~~~~~~~~~~~~~~
+	[subc]
+		-Fix: saving buffer elements shouldn't ever save layer data; introduce an explicit flag for indicating the element-only intention to the io_ plugins so they don't have to guess from buffer layer names
+		-Fix: poly plow: don't attempt to plow thermal if we are not on a board (but in a buffer - because of dynamic layer bindings)
+		-Fix: find.c lookup code works in line->poly, arc->poly and poly->poly directions
+		-Fix: autoroute should look at the rtree, not at the lists, to determine (recursively) if a layer is empty
+		-Fix: bboard uses rtree instead of list for determining if a layer is to be exported, because of subc
+		-Fix: don't check buffer validity in core before save, but check it in each io plugin because validity depends on the format
+		-Fix: RemoveList of undo shouldn't set data->parent to PCB, as it is really independent of the PCB
+		-Add: subcircuit object
+		-Add: data model: consistent implementation of parent object, for all existing data
+		-Add: integrity() checks for global object direct parents (via, element)
+		-Add: pcb_text_dup() for pasting subcircuit text
+		-Add: pcb_poly_dup() so that subcircuit paste can copy polygons
+		-Add: poly dup_at()
+		-Add: dup_at() for atomic objects
+		-Add: missing Rotate90 operation for polygons - required for canonical operations on subc
+		-Add: dup() functions for vias
+		-Split: move text's XORDraw out from crosshair.c so that it can be reused in subc drawing
+		-Update: menu files: save buffer is elements or subcircuits; load element/subcircuit in file/import
+
+	[core]
+		-Fix: break up buffer elements used the same copper layer for both top and bottom pads (bisecting thanks to: miloh)
+		-Fix: limit thermal flag value to the supported range
+		-Fix: don't run export on an empty board: it's probably an user mistake and some of the exporters would crash anyway (reported by miloh)
+		-Fix: line mirror should update bbox and rtree
+		-Fix: pinvia mirror should update rtree and bbox
+		-Fix: arc, line, pinvia and poly mirror wont' segfault if rtree is NULL (typical for buffer)
+		-Fix: remaining rats or finishing the rats is no warning, but info
+		-Fix: pcb_trace() should use pcb_printf() for the pcb-specific types
+		-Fix: preserve attributes on line/arc/text/poly dup/copy/move
+		-Fix: when split a line/arc because of insert point, copy metadata from the old line segment to the new
+		-Fix: don't lose via name, number and attributes on copy/move
+		-Fix: find-by-obj shouldn't ignore pads
+		-Fix: Arc intersection bug
+		-Fix: arc polygon clearance bug: arc conversion to polygon broke if radius was smaller than clearance (resulted in broken end cap and self intersection); implement a more expensive but safe way to construct it from three objects - such small arcs are rare anyway
+		-Fix: Moving cursor with keyboard allows now leaving snapped pin/pad
+		-Fix: actions don't rely on implicit XY coords, run the GetXY() (explicit query for coords); makes a difference when called from meny
+		-Fix: draw pins'/pads' names above the silk layer
+		-Fix: toggleview() shouldn't crash on no-arg
+		-Fix: when converting a value with unit to coord, clamp the result to COORD_MAX (instead of overflow)
+		-Fix: mirrored pins/pads numbers after board flip
+		-Fix: clearance for odd shapes on square+octagon
+		-Fix: polygon arc clearance drawing rounding error: make sure the last point of the outer arc approximation is drawn; also make sure end cap starts exactly where contour ends
+		-Fix: proper rounding in arc endpoing calculation
+		-Fix: text line rounding error
+		-Add: PasteBuffer() action for moving selection instead of a copy&erase combo (it should keep the ID)
+		-Add: pcb-printf: %mq support (generic, configurable quoted strings)
+		-Add: rtree iterator
+		-Add: y_offs option to all low level mirror functions
+		-Add: low level pcb_data_t move function
+		-Add: pcb_data_t normalizer (to fix up board-too-small and negative coords)
+		-Add: DumpPluginDirs() action and --dump-plugindirs command line switch to ease debugging
+		-Add: central UTC date print for the export strftime %c unification
+		-Add: pin/via and pad hashing functions geared for padstacks (ignore coords and names)
+		-Add: help function to make a net connection list starting from an arbitrary object
+		-Add: poly contour coord map function that iterates over all islands and holes
+		-Add: polygon contour loop helpers
+		-Add: helper function to determine if a pline is rectangle or not
+		-Add: configurable backup format
+		-Add: close polygon hole by double click
+		-Cleanup: arc, line, element, pad, pinvia, poly, rat, subc, text op function names unified
+
+	[layer]
+		-Fix: don't segfault on resolving a bound layer ID without binding, rather assert
+		-Fix: compositing: the function that decides whether a group is compositing should only care about negative composites
+		-Fix: fake composite draw: optimization that temporarily fixes the compioste silk and paste missing select color bug for the most common cases
+		-Fix: do the fake composite layer draw hack optimization only for renderers that explicitly enable it because it interferes with transluency (useful mostly for sw rendering)
+		-Fix: layer group vs. layer confisuion made pad->ratline jump in find.c impossible
+		-Add: function to calculate the distance between two groups on the stack
+		-Add: function to count layer groups of a given type stepping through the layer stack in a given direction
+		-Add: when abstracting an intern copper layer, calculate the copper layer offset
+		-Cleanup: rename to pcb_layergrp_* for type naming unification
+
+	[build]
+		-Update: move genht out of liblihata to get a flat project structure
+
+	[lib_polyhelp]
+		-Add: function to trace a poly contour, from within the poly, with lines
+		-Add: function to print a pline as an animator script
+		-Add: horizontal and vertical hatching
+		-Add: generic poly contour/hatch action: PolyHatch()
+
+	[diag]
+		-Add: auto-integrity checks when enabled
+		-Add: check the undo stack integrity as part of the global checks
+
+	[boardflip]
+		-Fix: make the on-solder toggle flag univeral that affects not only elements but text (for mirroring)
+
+	[dbus]
+		-Change: mark the plugin deprecated
+
+	[draw_fab]
+		-Fix: drill size units depend on the units setting in gui
+
+	[report]
+		-Fix: broken tabs
+
+	[rubberband]
+		-Add: arc list to the rubberband context and associated helper functions.
+		-Add: Use rubberband arc settings to enable/disable rubberband arcs. Added placeholder function to calculate route for rubberbanding an arc.
+
+	[export_xy]
+		-Add: template based output formats
+		-Add: templates for gxyrs, TM220A p&p, macrofab, KiCad .pos
+		-Fix: use the central UTC print function instead of strftime %c
+		-Fix: cookie should not be bom's
+
+	[export_ps]
+		-Fix: attribute leak on uninit
+		-Fix: arc corner case: don't div with zero if width is 0
+		-Fix: r=0 arc is a point
+		-Fix: don't use %g for potentially large values, it will break the ps syntax with exponents
+
+	[export_svg]
+		-Fix: attribute leak on uninit
+		-Fix: detect ellipitcal arcs and refuse to draw them
+		-Fix: warn for elliptical arcs only once per gc (which is similar to once per export) to avoid flood of error messages
+		-Fix: arc endpoint rounding bug; it is more portable and more reproducible to use pcb_round()
+
+	[export_*, import_*]
+		-Fix: use the central utc print function instead of strftime %c
+		-Fix: import_tinycad memleak: free argc, argv after use by qparse
+		-Fix: export_gerber: use pcb_author() instead of getting the user name directly to allow config override (all other exporters do this)
+		-Fix: export_nelma: attribute leak on uninit
+		-Fix: export_openscad: rounding errors
+		-Fix: export_png: attribute leak on uninit
+		-Add: config setting for default save fp format
+		-Add: io_hyp: write .hyp files
+
+	[io_eagle]
+		-Fix: bottom side element rotation.
+		-Fix: improved n*90 arc type parsing. non n*90 arcs still need work.
+		-Fix: pad dimensions now being parsed
+		-Add: infrastructure for abstracting the low level tree (xml vs. binary formats)
+		-Add: parse the binary format
+		-Add: "du" decimicron unit to unit.c and unit.h for eagle bin format
+
+	[io_autotrax]
+		- Add: read Protel autotrax/easytrax board files
+		- Add: write Protel autotrax/easytrax board files
+
+	[io_kicad]
+		-Fix: ignore objects on unknown or unsupported layers with a bold warning, instead of returnning an error
+		-Add: support for bleeding edge kicad 20170123 and (dimension ...) item on layouts
+		-Add: infra for proper error reporting
+		-Add: save: (descr "description") field to s-expression modules
+		-Add: properly quote strings on save
+		-Add: call the board normalizer after load because kicad accepts negative coords and we don't
+		-Add: workaround for auto-creating In*.Cu layers - kicad seems to do the same
+
+	[io_lihata]
+		-Fix: when a .pcb backup file would be saved as .lht.lht.pcb, simplify it to .lht.pcb
+		-Fix: starting from v2, save data's number-of-layers, not PCB's - subcircuits typically have less layers
+		-Fix: reset fontkit and default font in parse_fontkit
+		-Fix: remove backup save in .pcb as it has side effects that might change the board _before_ the lht save
+		-Add: format version v3: subcircuits
+
+	[io_pcb]
+		-Fix: accept whitespace in read-check between pcb and brakcet, element and bracket (so valid files are not refused)
+		-Fix: make sure there's a top copper layer and a bottom copper layer when loading an .fp file directly
+		-Fix: creating top and bottom copper should look up the layer group even in non-debug builds
+		-Fix: free default font memory properly when parsing font from file
+		-Fix: font reset mechanism for loading the (optional) font from a .pcb file and for loading a font from a font file; fixes double font load when the default font is changed
+
+	[draw_csect]
+		-Fix: never draw 0 thick lines, round them up to 1 nm; some exporters hate 0 thickness
+
+	[font]
+		-Fix: when moving a text without selection, draw the real outline, not the bounding box outline
+		-Fix: generate the font change event after reading the new font, not before, so that the bounding boxes are calculated properly
+		-Fix: generate the font change event with the right font ID
+		-Fix: pcb_font_free() sould free polygons and arcs of glyphs and clean the list items for reuse
+		-Fix: don't overwrite valid loaded fonts' ID and don't free them after loading
+		-Add: XORDrawText() draws the real outline of the text, not the bounding box
+
+	[tests]
+		-Fix: build error in uniq_name (genht moved)
+		-Fix: orig: separate XY and bom testing; the plugin got split long ago
+		-Fix: orig: uniq name for xy tests
+		-Fix: orig: rename gerber3 reference layer file names to match the current stackup
+		-Fix: orig: don't test bottom layer on gerber3: it's empty
+		-Fix: conf and porpedit test build: genht relocation
+		-Del: don't set the fab user with a non-standard flag
+		-Add: cli tester for pcb-printf %mq
+		-Add: enable RTT by default
+
+	[tests/RTT]
+		-Fix: don't consider "can't export empty design" an error
+		-Fix: reset search path for default.pcb so the embedded version is used even if there are others installed (to guarantee persistent IDs)
+		-Fix: use compare(1) for bboard png comparison - different libpngs will result in different binary files
+		-Fix: use explicit TEST author for testing the text drawn on some output
+		-Fix: all-input/all-format test fails at the end if any test fails (but always attempts to run all tests)
+		-Fix: run only those RTTs that have their plugins compiled
+		-Del: remove the breadboard tests for now: these input don't make much sense in that context
+		-Add: make clean removes everything from diff/ and out/
+		-Add: export test: -v for verbose mode
+		-Add: in verbose mode, print all test names that failed
+		-Update: refs for the new padrot input and rounding error fixes
+		-Update: RTT: gerber refs for drill rounding bug fix and composite layers on mask
+		-Update: RTT: get gerber tests to export the csect
+
+	[gtk]
+		-Fix: lib_gtk_hid shouldn't use the plugin control of lib_gtk_common (for cflags and ldflags)
+		-Fix: gl: composite layer stenciling
+		-Fix: gl: Disable thin-draw poly filling in the GL gui to match other HIDs
+		-Fix: board-preview sets board extents as drawing size for proper zoom
+		-Fix: undo bug: when gtk needs to run a getxy loop, it shall save the undo serial because the button release event in core is going to restore it
+		-Fix: route style crash on menu: get the menu updated when route styles change
+		-Fix: do not hardwire the .fp extension when saving a footprint, rather use what the io_plugin recommends
+		-Add: create tooltips for the mode buttons
+		-Add: make the DRC dialog reentrant
+		-Add: use the new fp save format conf setting to chose fp format we are going to use
+		-Change: DRC dialog uses the preview widget instead of pixbuf (portability)
+
+	[doc]
+		-Add: pick and place and xy origin tutorial
+		-Add: implicit outline/origin board example for the xy origin tutorial
+		-Add: design files for via thermals and via shape styles
+		-Add: outline the user facing doc about pcb-rnd data
+		-Add: incomplete intro to the user data doc
+		-Add: initial v1.2.3 action reference appendix page
+		-Add: initial combined pcbfab/pcbCAD/pcb-rnd glossary
+		-Add: initial external resources links page
+		-Add: table of dialog behaviors
+		-Add: developer doc about polygon internals
+		-Update: bridges with 3 new io_; replace grpahviz with aagraph
+		-Update: developer/data.html for subcircuits
+
+
 pcb-rnd 1.2.3 (r8962)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
