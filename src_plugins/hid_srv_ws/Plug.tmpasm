@@ -1,7 +1,14 @@
 put /local/pcb/mod {hid_srv_ws}
-append /local/pcb/mod/OBJS [@
+append /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_srv_ws/server.o
 @]
+
+switch /local/pcb/hid_srv_ws/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/LDFLAGS  {-lwebsockets }
+	end
+end
 
 switch /local/pcb/hid_srv_ws/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
