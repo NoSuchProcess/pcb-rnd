@@ -4,7 +4,7 @@ TRUNK=../..
 
 all=0
 valg=0
-global_args="-c design/fab_author=TEST -c rc/quiet=1 -c rc/default_pcb_file={} -c rc/default_font_file={}"
+global_args="-c design/fab_author=TEST -c rc/quiet=1 -c rc/default_pcb_file={} -c rc/default_font_file=./default_font"
 test_announce=0
 verbose=0
 
