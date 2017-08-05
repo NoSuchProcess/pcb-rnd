@@ -161,6 +161,7 @@ LATER RELEASES:
 	- SIGPIPE - detect it (needed for popen)
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - BUG: subc ctl-i 'report' doesn't work on subc: hover over object in subc, press ctl-i msg warning: 'Nothing found to report on" issued, [report: Miloh]
+- BUG: in both gtk guis, clicking Subcircuits layer control box 'off' effectively locks all subc, but gui lock tool doesn't work on subc. [report: Miloh]
 
 GTK3:
 	- overlapping objects (e.g. 2 fat lines crossing on silk) are darker on the overlap; we need uniform color
