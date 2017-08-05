@@ -34,6 +34,7 @@ For the next release:
 	+ io_pcb font parser succeeds(?) but clears the font id as if it had failed. Causes a duplicate font with id #0 [report:Ade]
 
 LATER RELEASES:
+- feature: fp_wget cache dir confiurable [report: agaran]
 - BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
 - feature req:
 	- if the library path starts with a "?", the path is optional; so we don't get warnings for ./footprints [report: celem]
