@@ -28,6 +28,7 @@
 
 For the next release:
 - BUGS:
+	- make distclean doesn't remove everything from tests/RTT [report: Alain]
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	+ io_pcb font parser succeeds(?) but clears the font id as if it had failed. Causes a duplicate font with id #0 [report:Ade]
