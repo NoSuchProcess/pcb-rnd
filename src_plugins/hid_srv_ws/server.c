@@ -29,6 +29,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <libwebsockets.h>
 
 #include "plugins.h"
@@ -48,6 +50,8 @@ typedef struct {
 	struct lws_pollfd pollfds[WS_MAX_FDS];
 	int fd_lookup[WS_MAX_FDS];
 	int count_pollfds;
+	int listen_fd;
+	pid_t pid;
 } hid_srv_ws_t;
 
 static hid_srv_ws_t hid_srv_ws_ctx;
@@ -65,6 +69,10 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 				lwsl_err("LWS_CALLBACK_ADD_POLL_FD: too many sockets to track\n");
 				return 1;
 			}
+
+			/* assume the first fd added via this callback is the listener */
+			if (ctx->listen_fd < 0)
+				ctx->listen_fd = pa->fd;
 
 			ctx->fd_lookup[pa->fd] = ctx->count_pollfds;
 			ctx->pollfds[ctx->count_pollfds].fd = pa->fd;
@@ -96,9 +104,11 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 
 static int callback_dumb_increment(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
+	hid_srv_ws_t *ctx = &hid_srv_ws_ctx;
+
 	switch (reason) {
 		case LWS_CALLBACK_ESTABLISHED: /* just log message that someone is connecting */
-			pcb_message(PCB_MSG_INFO, "websocket: connection established\n");
+			pcb_message(PCB_MSG_INFO, "websocket [%d]: high level connection established\n", ctx->pid);
 			break;
 			
 		case LWS_CALLBACK_RECEIVE: {
@@ -120,8 +130,7 @@ static int callback_dumb_increment(struct lws *wsi, enum lws_callback_reasons re
 			/* log what we recieved and what we're going to send as a response.
 			   that disco syntax `%.*s` is used to print just a part of our buffer
 			   http://stackoverflow.com/questions/5189071/print-part-of-char-array */
-			pcb_message(PCB_MSG_INFO, "websocket: received data: %s, replying: %.*s\n", (char *) in, (int) len,
-			buf + LWS_SEND_BUFFER_PRE_PADDING);
+			pcb_message(PCB_MSG_INFO, "websocket [%d]: received data: %s, replying: %.*s\n", ctx->pid, (char *)in, (int)len, buf + LWS_SEND_BUFFER_PRE_PADDING);
 
 			/* send response
 			   just notice that we have to tell where exactly our response starts. That's
@@ -135,7 +144,7 @@ static int callback_dumb_increment(struct lws *wsi, enum lws_callback_reasons re
 			}
 			
 		case LWS_CALLBACK_CLOSED:
-			pcb_message(PCB_MSG_INFO, "websocket: connection closed\n");
+			pcb_message(PCB_MSG_INFO, "websocket [%d]: connection closed\n", ctx->pid);
 			break;
 			
 		default:
@@ -183,9 +192,32 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 		if (n != 0) {
 			for(n = 0; n < ctx->count_pollfds; n++) {
 				if (ctx->pollfds[n].revents) {
-				/* returns immediately if the fd does not match anything under libwebsocketscontrol */
-					if (lws_service_fd(ctx->context, &ctx->pollfds[n]) < 0)
-						return -1;
+					if (ctx->pollfds[n].fd == ctx->listen_fd) {
+						/* listening socket: fork for each client */
+						pid_t p;
+						
+						p = fork();
+						if (p == 0) {
+							/* child: client */
+							if (lws_service_fd(ctx->context, &ctx->pollfds[n]) < 0)
+								return -1;
+							close(ctx->pollfds[n].fd);
+							ctx->pollfds[n].fd = -ctx->pollfds[n].fd;
+							ctx->pid = getpid();
+							pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
+						}
+						else {
+							/* parent: announce the fork but don't do anything else */
+							pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn forked\n", ctx->pid);
+						}
+#warning TODO: rather communicate back from the client
+						sleep(1);
+					}
+					else {
+						/* returns immediately if the fd does not match anything under libwebsocketscontrol */
+						if (lws_service_fd(ctx->context, &ctx->pollfds[n]) < 0)
+							return -1;
+					}
 				}
 			}
 			
@@ -227,7 +259,8 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 		.user = ctx
 	};
 
-/*	context_info.user = ctx;*/
+	ctx->listen_fd = -1;
+	ctx->pid = getpid();
 
 	/* create lws context representing this server */
 	ctx->context = lws_create_context(&context_info);
@@ -236,7 +269,7 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 		return -1;
 	}
 
-	pcb_message(PCB_MSG_INFO, "websockets: listening for clients\n");
+	pcb_message(PCB_MSG_INFO, "websockets [%d]: listening for clients\n", ctx->pid);
 
 	return 0;
 }
