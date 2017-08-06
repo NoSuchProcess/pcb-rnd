@@ -51,11 +51,13 @@ static int max_clients = 3;
 typedef struct {
 	struct lws_context *context;
 	struct lws_pollfd pollfds[WS_MAX_FDS];
-	int fd_lookup[WS_MAX_FDS];
+	int fd_lookup[1024];
 	int count_pollfds;
 	int listen_fd;
 	pid_t pid;
 	int num_clients;
+
+	int c2s[2]; /* Client to server communication; 0 is read by the server, 1 is written by clients */
 } hid_srv_ws_t;
 
 static hid_srv_ws_t hid_srv_ws_ctx;
@@ -173,6 +175,21 @@ static struct lws_protocols protocols[] = {
 	{ NULL, NULL, 0, 0 }   /* End of list */
 };
 
+static void recv_server_msg(hid_srv_ws_t *ctx)
+{
+	char msg[256];
+	int len;
+
+	*msg = 0;
+	len = recv(ctx->c2s[0], msg, sizeof(msg), MSG_DONTWAIT);
+	msg[len] = '\0';
+	printf("SERVER MSG: %d/'%s'\n", len, msg);
+}
+
+static void send_server_msg(hid_srv_ws_t *ctx)
+{
+	send(ctx->c2s[1], "jajj", 4, 0);
+}
 
 static int src_ws_mainloop(hid_srv_ws_t *ctx)
 {
@@ -193,7 +210,11 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 		if (n != 0) {
 			for(n = 0; n < ctx->count_pollfds; n++) {
 				if (ctx->pollfds[n].revents) {
-					if (ctx->pollfds[n].fd == ctx->listen_fd) {
+					if (ctx->pollfds[n].fd == ctx->c2s[0]) {
+						printf("SERVER MSG\n");
+						recv_server_msg(ctx);
+					}
+					else if (ctx->pollfds[n].fd == ctx->listen_fd) {
 						/* listening socket: fork for each client */
 						pid_t p;
 						
@@ -203,15 +224,19 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 							if (lws_service_fd(ctx->context, &ctx->pollfds[n]) < 0)
 								return -1;
 							close(ctx->pollfds[n].fd);
-							ctx->pollfds[n].fd = -ctx->pollfds[n].fd;
+							ctx->pollfds[n].fd = -ctx->pollfds[n].fd; /* disable listen */
+							close(ctx->pollfds[0].fd);
+							ctx->pollfds[0].fd = -ctx->pollfds[0].fd; /* disable server reads */
 							ctx->pid = getpid();
 							ctx->num_clients++;
+
 							if (ctx->num_clients >= max_clients) {
 								pcb_message(PCB_MSG_INFO, "websocket [%d]: client conn refused - too many clients\n", ctx->pid);
 								exit(1);
 							}
 							else
 								pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
+							send_server_msg(ctx);
 						}
 						else {
 							/* parent: announce the fork but don't do anything else */
@@ -268,6 +293,15 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 #endif
 		.user = ctx
 	};
+
+	if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, ctx->c2s) != 0) {
+		pcb_message(PCB_MSG_ERROR, "websockets [%d]: can't create c2s socketpair\n", ctx->pid);
+		return -1;
+	}
+
+	ctx->pollfds[0].fd = ctx->c2s[0];
+	ctx->pollfds[0].events = POLLIN;
+	ctx->count_pollfds = 1;
 
 	ctx->listen_fd = -1;
 	ctx->pid = getpid();
