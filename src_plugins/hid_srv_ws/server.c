@@ -62,8 +62,10 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 			}
 
 			/* assume the first fd added via this callback is the listener */
-			if (ctx->listen_fd < 0)
+			if (ctx->listen_fd < 0) {
 				ctx->listen_fd = pa->fd;
+				ctx->listen_idx = ctx->count_pollfds;
+			}
 
 			ctx->fd_lookup[pa->fd] = ctx->count_pollfds;
 			ctx->pollfds[ctx->count_pollfds].fd = pa->fd;
@@ -205,16 +207,18 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 							}
 							else
 								pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
-							hid_ws_send_msg(ctx);
+							hid_ws_send_msg(ctx, PCB_C2S_MSG_START);
 						}
 						else {
-							/* parent: announce the fork but don't do anything else */
+							/* parent */
+							if (ctx->pollfds[n].fd > 0)
+								ctx->pollfds[n].fd = -ctx->pollfds[n].fd; /* disable listen until the client finished accepting */
 							pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn forked\n", ctx->pid);
-#warning TODO: rather communicate back from the client
-							sleep(1);
 							ctx->num_clients++;
-							if (ctx->num_clients >= max_clients) /* throttle excess forking */
+							if (ctx->num_clients >= max_clients) { /* throttle excess forking */
 								sleep(5);
+								ctx->num_clients++;
+							}
 						}
 					}
 					else {

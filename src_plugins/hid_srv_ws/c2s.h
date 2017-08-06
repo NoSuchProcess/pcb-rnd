@@ -21,5 +21,10 @@
  */
 
 #include "server.h"
+
+typedef enum {
+	PCB_C2S_MSG_START
+} pcb_c2s_msg_t;
+
 void hid_ws_recv_msg(hid_srv_ws_t *ctx);
-void hid_ws_send_msg(hid_srv_ws_t *ctx);
+void hid_ws_send_msg(hid_srv_ws_t *ctx, pcb_c2s_msg_t msg);

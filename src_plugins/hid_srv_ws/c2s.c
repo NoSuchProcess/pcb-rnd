@@ -32,18 +32,37 @@
 #include "server.h"
 #include "c2s.h"
 
+typedef struct {
+	pcb_c2s_msg_t msg;
+} dgram_t;
+
 void hid_ws_recv_msg(hid_srv_ws_t *ctx)
 {
-	char msg[256];
+	dgram_t dg;
 	int len;
 
-	*msg = 0;
-	len = recv(ctx->c2s[0], msg, sizeof(msg), MSG_DONTWAIT);
-	msg[len] = '\0';
-	pcb_message(PCB_MSG_INFO, "SERVER MSG: %d/'%s'\n", len, msg);
+	len = recv(ctx->c2s[0], &dg, sizeof(dg), MSG_DONTWAIT);
+	if (len != sizeof(dg)) {
+		pcb_message(PCB_MSG_ERROR, "websocket [%d]: server msg invliad size %d (expected %d)\n", ctx->pid, len, sizeof(dg));
+		return;
+	}
+
+	switch(dg.msg) {
+		case PCB_C2S_MSG_START:
+			if (ctx->pollfds[ctx->listen_idx].fd < 0)
+				ctx->pollfds[ctx->listen_idx].fd = -ctx->pollfds[ctx->listen_idx].fd; /* enable listen because the client finished accepting the connection */
+			pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn acked, reenabling listen\n", ctx->pid);
+			break;
+		default:
+			pcb_message(PCB_MSG_ERROR, "websocket [%d]: server msg invliad msg %d\n", ctx->pid, dg.msg);
+	}
 }
 
-void hid_ws_send_msg(hid_srv_ws_t *ctx)
+void hid_ws_send_msg(hid_srv_ws_t *ctx, pcb_c2s_msg_t msg)
 {
-	send(ctx->c2s[1], "jajj", 4, 0);
+	dgram_t dg;
+
+	dg.msg = msg;
+
+	send(ctx->c2s[1], &dg, sizeof(dg), 0);
 }
