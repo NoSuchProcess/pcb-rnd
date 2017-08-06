@@ -45,6 +45,9 @@ extern void pcb_set_hid_name(const char *new_hid_name);
    because each client is forked; leave some room for retries and whatnot */
 #define WS_MAX_FDS 8
 
+#warning TODO: make this a configuration
+static int max_clients = 3;
+
 typedef struct {
 	struct lws_context *context;
 	struct lws_pollfd pollfds[WS_MAX_FDS];
@@ -52,6 +55,7 @@ typedef struct {
 	int count_pollfds;
 	int listen_fd;
 	pid_t pid;
+	int num_clients;
 } hid_srv_ws_t;
 
 static hid_srv_ws_t hid_srv_ws_ctx;
@@ -201,14 +205,23 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 							close(ctx->pollfds[n].fd);
 							ctx->pollfds[n].fd = -ctx->pollfds[n].fd;
 							ctx->pid = getpid();
-							pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
+							ctx->num_clients++;
+							if (ctx->num_clients >= max_clients) {
+								pcb_message(PCB_MSG_INFO, "websocket [%d]: client conn refused - too many clients\n", ctx->pid);
+								exit(1);
+							}
+							else
+								pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
 						}
 						else {
 							/* parent: announce the fork but don't do anything else */
 							pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn forked\n", ctx->pid);
-						}
 #warning TODO: rather communicate back from the client
-						sleep(1);
+							sleep(1);
+							ctx->num_clients++;
+							if (ctx->num_clients >= max_clients) /* throttle excess forking */
+								sleep(5);
+						}
 					}
 					else {
 						/* returns immediately if the fd does not match anything under libwebsocketscontrol */
