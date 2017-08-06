@@ -29,36 +29,21 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/types.h>
 #include <unistd.h>
-#include <libwebsockets.h>
 
 #include "plugins.h"
 #include "error.h"
+
+#include "server.h"
+#include "c2s.h"
 
 int pplg_check_ver_hid_srv_ws(int ver_needed) { return 0; }
 
 extern int pplg_init_hid_remote(void);
 extern void pcb_set_hid_name(const char *new_hid_name);
 
-/* Number of sockets to handle - need one listening socket and one accepted
-   because each client is forked; leave some room for retries and whatnot */
-#define WS_MAX_FDS 8
-
 #warning TODO: make this a configuration
 static int max_clients = 3;
-
-typedef struct {
-	struct lws_context *context;
-	struct lws_pollfd pollfds[WS_MAX_FDS];
-	int fd_lookup[1024];
-	int count_pollfds;
-	int listen_fd;
-	pid_t pid;
-	int num_clients;
-
-	int c2s[2]; /* Client to server communication; 0 is read by the server, 1 is written by clients */
-} hid_srv_ws_t;
 
 static hid_srv_ws_t hid_srv_ws_ctx;
 
@@ -175,22 +160,6 @@ static struct lws_protocols protocols[] = {
 	{ NULL, NULL, 0, 0 }   /* End of list */
 };
 
-static void recv_server_msg(hid_srv_ws_t *ctx)
-{
-	char msg[256];
-	int len;
-
-	*msg = 0;
-	len = recv(ctx->c2s[0], msg, sizeof(msg), MSG_DONTWAIT);
-	msg[len] = '\0';
-	printf("SERVER MSG: %d/'%s'\n", len, msg);
-}
-
-static void send_server_msg(hid_srv_ws_t *ctx)
-{
-	send(ctx->c2s[1], "jajj", 4, 0);
-}
-
 static int src_ws_mainloop(hid_srv_ws_t *ctx)
 {
 	unsigned int ms, ms_1sec = 0;
@@ -212,7 +181,7 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 				if (ctx->pollfds[n].revents) {
 					if (ctx->pollfds[n].fd == ctx->c2s[0]) {
 						printf("SERVER MSG\n");
-						recv_server_msg(ctx);
+						hid_ws_recv_msg(ctx);
 					}
 					else if (ctx->pollfds[n].fd == ctx->listen_fd) {
 						/* listening socket: fork for each client */
@@ -236,7 +205,7 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 							}
 							else
 								pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
-							send_server_msg(ctx);
+							hid_ws_send_msg(ctx);
 						}
 						else {
 							/* parent: announce the fork but don't do anything else */

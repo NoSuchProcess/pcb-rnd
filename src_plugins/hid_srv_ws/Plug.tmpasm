@@ -1,6 +1,7 @@
 put /local/pcb/mod {hid_srv_ws}
 append /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_srv_ws/server.o
+	$(PLUGDIR)/hid_srv_ws/c2s.o
 @]
 
 switch /local/pcb/hid_srv_ws/controls
