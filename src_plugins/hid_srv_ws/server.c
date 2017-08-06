@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <genht/hash.h>
 
 #include "plugins.h"
@@ -265,6 +267,23 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 	return 0;
 }
 
+static void srv_ws_sigchld(int sig)
+{
+	pid_t p;
+	int st;
+	hid_srv_ws_t *ctx = &hid_srv_ws_ctx;
+	hid_srv_ws_client_t *cl;
+
+	p = wait(&st);
+
+	cl = htip_get(&ctx->clients, p);
+	if (cl != NULL) {
+		ctx->num_clients--;
+		htip_pop(&ctx->clients, p);
+		pcb_message(PCB_MSG_INFO, "websocket [%d]: sigchld ack'd\n", p);
+		free(cl);
+	}
+}
 
 static int srv_ws_listen(hid_srv_ws_t *ctx)
 {
@@ -298,6 +317,7 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 	htip_init(&ctx->clients, longhash, longkeyeq);
 	htip_init(&ctx->fd_lookup, longhash, longkeyeq);
 
+	signal(SIGCHLD, srv_ws_sigchld);
 
 	/* create lws context representing this server */
 	ctx->context = lws_create_context(&context_info);
