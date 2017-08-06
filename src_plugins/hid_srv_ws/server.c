@@ -82,13 +82,10 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 			break;
 
 		case LWS_CALLBACK_DEL_POLL_FD:
-			if (!--ctx->count_pollfds)
-				break;
-			n = ctx->fd_lookup[pa->fd];
-			/* have the last guy take up the vacant slot */
-			ctx->pollfds[n] = ctx->pollfds[ctx->count_pollfds];
-			ctx->fd_lookup[ctx->pollfds[ctx->count_pollfds].fd] = n;
-			break;
+			/* the server process has 1 listening socket; the client process has 1
+			   client sokcet. Any socket close means the main task is over. */
+			pcb_message(PCB_MSG_INFO, "websocket [%d]: connection closed, exiting\n", ctx->pid);
+			exit(0);
 
 		case LWS_CALLBACK_CHANGE_MODE_POLL_FD:
 			ctx->pollfds[ctx->fd_lookup[pa->fd]].events = pa->events;
