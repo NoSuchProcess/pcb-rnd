@@ -25,6 +25,7 @@
 
 #include <sys/types.h>
 #include <libwebsockets.h>
+#include <genht/htip.h>
 
 /* Number of sockets to handle - need one listening socket and one accepted
    because each client is forked; leave some room for retries and whatnot */
@@ -40,6 +41,12 @@ typedef struct {
 	int num_clients;
 
 	int c2s[2]; /* Client to server communication; 0 is read by the server, 1 is written by clients */
+
+	htip_t clients;
 } hid_srv_ws_t;
+
+typedef struct {
+	char *user;
+} hid_srv_ws_client_t;
 
 #endif

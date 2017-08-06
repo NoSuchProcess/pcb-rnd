@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <genht/hash.h>
 
 #include "plugins.h"
 #include "error.h"
@@ -46,6 +47,7 @@ extern void pcb_set_hid_name(const char *new_hid_name);
 static int max_clients = 3;
 
 static hid_srv_ws_t hid_srv_ws_ctx;
+
 
 static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
@@ -211,6 +213,8 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 						}
 						else {
 							/* parent */
+							hid_srv_ws_client_t *cl = calloc(sizeof(hid_srv_ws_client_t), 1);
+							htip_set(&ctx->clients, p, cl);
 							if (ctx->pollfds[n].fd > 0)
 								ctx->pollfds[n].fd = -ctx->pollfds[n].fd; /* disable listen until the client finished accepting */
 							pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn forked\n", ctx->pid);
@@ -240,8 +244,17 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 		} else {
 			/* no revents, but before polling again, make lws check for any timeouts */
 			if (ms - ms_1sec > 1000) {
+				static int ctr = 0;
 				lws_service_fd(ctx->context, NULL);
 				ms_1sec = ms;
+				
+				if ((ctx->pollfds[0].fd > 0) && ((ctr++ % 5) == 0)) { /* server: print client stats */
+					htip_entry_t *e;
+					pcb_message(PCB_MSG_INFO, "Client stats:\n");
+					for (e = htip_first(&ctx->clients); e; e = htip_next(&ctx->clients, e)) {
+						pcb_message(PCB_MSG_INFO, "[%d]\n", e->key);
+					}
+				}
 			}
 		}
 	}
@@ -278,6 +291,8 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 
 	ctx->listen_fd = -1;
 	ctx->pid = getpid();
+	htip_init(&ctx->clients, longhash, longkeyeq);
+
 
 	/* create lws context representing this server */
 	ctx->context = lws_create_context(&context_info);
