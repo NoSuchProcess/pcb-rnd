@@ -189,7 +189,6 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 			for(n = 0; n < ctx->count_pollfds; n++) {
 				if (ctx->pollfds[n].revents) {
 					if (ctx->pollfds[n].fd == ctx->c2s[0]) {
-						printf("SERVER MSG\n");
 						hid_ws_recv_msg(ctx);
 					}
 					else if (ctx->pollfds[n].fd == ctx->listen_fd) {
@@ -237,17 +236,7 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 					}
 				}
 			}
-			
-			/* if needed, force-service wsis that may not have read all input */
-			/* NOTE: lws_service_adjust_timeout() is not available in v2.0 (version of package in debian) */
-			/*
-			while (!lws_service_adjust_timeout(context, 1, 0)) {
-				lwsl_notice("extpoll doing forced service!\n");
-				lws_service_tsi(context, -1, 0);
-			}
-			*/
 		}
-
 
 		/* no revents, but before polling again, make lws check for any timeouts */
 		if (ms - ms_1sec > 1000) {
@@ -338,7 +327,6 @@ void pplg_uninit_hid_srv_ws(void)
 
 int pplg_init_hid_srv_ws(void)
 {
-	printf("WS: waiting for connections\n");
 	pcb_set_hid_name("remote");
 	if (srv_ws_listen(&hid_srv_ws_ctx) != 0)
 		return -1;
