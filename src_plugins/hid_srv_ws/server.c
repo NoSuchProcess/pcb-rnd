@@ -277,7 +277,7 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 		0              /* max frame size / rx buffer */
 	},
 	{
-		"dumb-increment-protocol", /* protocol name - very important! */
+		"remote-hid-protocol",     /* protocol name - very important! */
 		callback_dumb_increment,   /* callback */
 		0,                         /* we don't use any per session data */
 		0                          /* max frame size / rx buffer */
