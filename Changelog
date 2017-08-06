@@ -26,7 +26,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Fix: don't run export on an empty board: it's probably an user mistake and some of the exporters would crash anyway (reported by miloh)
 		-Fix: line mirror should update bbox and rtree
 		-Fix: pinvia mirror should update rtree and bbox
-		-Fix: arc, line, pinvia and poly mirror wont' segfault if rtree is NULL (typical for buffer)
+		-Fix: arc, line, pinvia and poly mirror won't segfault if rtree is NULL (typical for buffer)
 		-Fix: remaining rats or finishing the rats is no warning, but info
 		-Fix: pcb_trace() should use pcb_printf() for the pcb-specific types
 		-Fix: preserve attributes on line/arc/text/poly dup/copy/move
@@ -36,7 +36,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Fix: Arc intersection bug
 		-Fix: arc polygon clearance bug: arc conversion to polygon broke if radius was smaller than clearance (resulted in broken end cap and self intersection); implement a more expensive but safe way to construct it from three objects - such small arcs are rare anyway
 		-Fix: Moving cursor with keyboard allows now leaving snapped pin/pad
-		-Fix: actions don't rely on implicit XY coords, run the GetXY() (explicit query for coords); makes a difference when called from meny
+		-Fix: actions don't rely on implicit XY coords, run the GetXY() (explicit query for coords); makes a difference when called from many
 		-Fix: draw pins'/pads' names above the silk layer
 		-Fix: toggleview() shouldn't crash on no-arg
 		-Fix: when converting a value with unit to coord, clamp the result to COORD_MAX (instead of overflow)
@@ -65,9 +65,9 @@ pcb-rnd 1.2.4 (r10606)
 	[layer]
 		-Fix: don't segfault on resolving a bound layer ID without binding, rather assert
 		-Fix: compositing: the function that decides whether a group is compositing should only care about negative composites
-		-Fix: fake composite draw: optimization that temporarily fixes the compioste silk and paste missing select color bug for the most common cases
-		-Fix: do the fake composite layer draw hack optimization only for renderers that explicitly enable it because it interferes with transluency (useful mostly for sw rendering)
-		-Fix: layer group vs. layer confisuion made pad->ratline jump in find.c impossible
+		-Fix: fake composite draw: optimization that temporarily fixes the composite silk and paste missing select color bug for the most common cases
+		-Fix: do the fake composite layer draw hack optimization only for renderers that explicitly enable it because it interferes with translucency (useful mostly for sw rendering)
+		-Fix: layer group vs. layer confusion made pad->ratline jump in find.c impossible
 		-Add: function to calculate the distance between two groups on the stack
 		-Add: function to count layer groups of a given type stepping through the layer stack in a given direction
 		-Add: when abstracting an intern copper layer, calculate the copper layer offset
@@ -87,7 +87,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Add: check the undo stack integrity as part of the global checks
 
 	[boardflip]
-		-Fix: make the on-solder toggle flag univeral that affects not only elements but text (for mirroring)
+		-Fix: make the on-solder toggle flag universal that affects not only elements but text (for mirroring)
 
 	[dbus]
 		-Change: mark the plugin deprecated
@@ -159,7 +159,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Add: format version v3: subcircuits
 
 	[io_pcb]
-		-Fix: accept whitespace in read-check between pcb and brakcet, element and bracket (so valid files are not refused)
+		-Fix: accept whitespace in read-check between pcb and bracket, element and bracket (so valid files are not refused)
 		-Fix: make sure there's a top copper layer and a bottom copper layer when loading an .fp file directly
 		-Fix: creating top and bottom copper should look up the layer group even in non-debug builds
 		-Fix: free default font memory properly when parsing font from file
@@ -172,7 +172,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Fix: when moving a text without selection, draw the real outline, not the bounding box outline
 		-Fix: generate the font change event after reading the new font, not before, so that the bounding boxes are calculated properly
 		-Fix: generate the font change event with the right font ID
-		-Fix: pcb_font_free() sould free polygons and arcs of glyphs and clean the list items for reuse
+		-Fix: pcb_font_free() should free polygons and arcs of glyphs and clean the list items for reuse
 		-Fix: don't overwrite valid loaded fonts' ID and don't free them after loading
 		-Add: XORDrawText() draws the real outline of the text, not the bounding box
 
@@ -182,7 +182,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Fix: orig: uniq name for xy tests
 		-Fix: orig: rename gerber3 reference layer file names to match the current stackup
 		-Fix: orig: don't test bottom layer on gerber3: it's empty
-		-Fix: conf and porpedit test build: genht relocation
+		-Fix: conf and propedit test build: genht relocation
 		-Del: don't set the fab user with a non-standard flag
 		-Add: cli tester for pcb-printf %mq
 		-Add: enable RTT by default
@@ -212,7 +212,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Fix: do not hardwire the .fp extension when saving a footprint, rather use what the io_plugin recommends
 		-Add: create tooltips for the mode buttons
 		-Add: make the DRC dialog reentrant
-		-Add: use the new fp save format conf setting to chose fp format we are going to use
+		-Add: use the new fp save format conf setting to choose fp format we are going to use
 		-Change: DRC dialog uses the preview widget instead of pixbuf (portability)
 
 	[doc]
@@ -226,7 +226,7 @@ pcb-rnd 1.2.4 (r10606)
 		-Add: initial external resources links page
 		-Add: table of dialog behaviors
 		-Add: developer doc about polygon internals
-		-Update: bridges with 3 new io_; replace grpahviz with aagraph
+		-Update: bridges with 3 new io_; replace graphviz with aagraph
 		-Update: developer/data.html for subcircuits
 
 
