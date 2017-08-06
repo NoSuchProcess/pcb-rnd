@@ -55,6 +55,7 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 	struct lws_pollargs *pa = (struct lws_pollargs *)in;
 /*	hid_srv_ws_t *ctx = lws_wsi_user(wsi); why does this return NULL???? */
 	hid_srv_ws_t *ctx = &hid_srv_ws_ctx;
+	struct lws_pollfd *lwsp;
 
 	switch (reason) {
 		case LWS_CALLBACK_ADD_POLL_FD:
@@ -69,7 +70,7 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 				ctx->listen_idx = ctx->count_pollfds;
 			}
 
-			ctx->fd_lookup[pa->fd] = ctx->count_pollfds;
+			htip_set(&ctx->fd_lookup, pa->fd, &ctx->pollfds[ctx->count_pollfds]);
 			ctx->pollfds[ctx->count_pollfds].fd = pa->fd;
 			ctx->pollfds[ctx->count_pollfds].events = pa->events;
 			ctx->pollfds[ctx->count_pollfds].revents = 0;
@@ -83,7 +84,9 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 			exit(0);
 
 		case LWS_CALLBACK_CHANGE_MODE_POLL_FD:
-			ctx->pollfds[ctx->fd_lookup[pa->fd]].events = pa->events;
+			lwsp = htip_get(&ctx->fd_lookup, pa->fd);
+			if (lwsp != NULL)
+				lwsp->events = pa->events;
 			break;
 			
 		default:
@@ -292,6 +295,7 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 	ctx->listen_fd = -1;
 	ctx->pid = getpid();
 	htip_init(&ctx->clients, longhash, longkeyeq);
+	htip_init(&ctx->fd_lookup, longhash, longkeyeq);
 
 
 	/* create lws context representing this server */

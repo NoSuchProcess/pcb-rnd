@@ -34,7 +34,7 @@
 typedef struct {
 	struct lws_context *context;
 	struct lws_pollfd pollfds[WS_MAX_FDS];
-	int fd_lookup[1024];
+	htip_t fd_lookup;
 	int count_pollfds;
 	int listen_fd, listen_idx;
 	pid_t pid;
