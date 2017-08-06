@@ -153,42 +153,42 @@ static int callback_dumb_increment(struct lws *wsi, enum lws_callback_reasons re
 
 static void hid_ws_new_client(hid_srv_ws_t *ctx, int n)
 {
-						/* listening socket: fork for each client */
-						pid_t p;
-						
-						p = fork();
-						if (p == 0) {
-							/* child: client */
-							if (lws_service_fd(ctx->context, &ctx->pollfds[n]) < 0)
-								exit(1);
-							close(ctx->pollfds[n].fd);
-							ctx->pollfds[n].fd = -ctx->pollfds[n].fd; /* disable listen */
-							close(ctx->pollfds[0].fd);
-							ctx->pollfds[0].fd = -ctx->pollfds[0].fd; /* disable server reads */
-							ctx->pid = getpid();
-							ctx->num_clients++;
+	/* listening socket: fork for each client */
+	pid_t p;
+	
+	p = fork();
+	if (p == 0) {
+		/* child: client */
+		if (lws_service_fd(ctx->context, &ctx->pollfds[n]) < 0)
+			exit(1);
+		close(ctx->pollfds[n].fd);
+		ctx->pollfds[n].fd = -ctx->pollfds[n].fd; /* disable listen */
+		close(ctx->pollfds[0].fd);
+		ctx->pollfds[0].fd = -ctx->pollfds[0].fd; /* disable server reads */
+		ctx->pid = getpid();
+		ctx->num_clients++;
 
-							if (ctx->num_clients >= max_clients) {
-								pcb_message(PCB_MSG_INFO, "websocket [%d]: client conn refused - too many clients\n", ctx->pid);
-								exit(1);
-							}
-							else
-								pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
-							hid_ws_send_msg(ctx, PCB_C2S_MSG_START);
-						}
-						else {
-							/* parent */
-							hid_srv_ws_client_t *cl = calloc(sizeof(hid_srv_ws_client_t), 1);
-							htip_set(&ctx->clients, p, cl);
-							if (ctx->pollfds[n].fd > 0)
-								ctx->pollfds[n].fd = -ctx->pollfds[n].fd; /* disable listen until the client finished accepting */
-							pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn forked\n", ctx->pid);
-							ctx->num_clients++;
-							if (ctx->num_clients >= max_clients) { /* throttle excess forking */
-								sleep(5);
-								ctx->num_clients--; /* it was refused in the client */
-							}
-						}
+		if (ctx->num_clients >= max_clients) {
+			pcb_message(PCB_MSG_INFO, "websocket [%d]: client conn refused - too many clients\n", ctx->pid);
+			exit(1);
+		}
+		else
+			pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn accepted\n", ctx->pid);
+		hid_ws_send_msg(ctx, PCB_C2S_MSG_START);
+	}
+	else {
+		/* parent */
+		hid_srv_ws_client_t *cl = calloc(sizeof(hid_srv_ws_client_t), 1);
+		htip_set(&ctx->clients, p, cl);
+		if (ctx->pollfds[n].fd > 0)
+			ctx->pollfds[n].fd = -ctx->pollfds[n].fd; /* disable listen until the client finished accepting */
+		pcb_message(PCB_MSG_INFO, "websocket [%d]: new client conn forked\n", ctx->pid);
+		ctx->num_clients++;
+		if (ctx->num_clients >= max_clients) { /* throttle excess forking */
+			sleep(5);
+			ctx->num_clients--; /* it was refused in the client */
+		}
+	}
 }
 
 static struct lws_protocols protocols[] = {
