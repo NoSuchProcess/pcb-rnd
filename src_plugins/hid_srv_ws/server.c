@@ -224,7 +224,7 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 							ctx->num_clients++;
 							if (ctx->num_clients >= max_clients) { /* throttle excess forking */
 								sleep(5);
-								ctx->num_clients++;
+								ctx->num_clients--; /* it was refused in the client */
 							}
 						}
 					}
@@ -253,9 +253,9 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 				
 				if ((ctx->pollfds[0].fd > 0) && ((ctr++ % 5) == 0)) { /* server: print client stats */
 					htip_entry_t *e;
-					pcb_message(PCB_MSG_INFO, "Client stats:\n");
+					pcb_message(PCB_MSG_INFO, "websocket [%d] Client stats (%d):\n", ctx->pid, ctx->num_clients);
 					for (e = htip_first(&ctx->clients); e; e = htip_next(&ctx->clients, e)) {
-						pcb_message(PCB_MSG_INFO, "[%d]\n", e->key);
+						pcb_message(PCB_MSG_INFO, " [%d]\n", e->key);
 					}
 				}
 			}
