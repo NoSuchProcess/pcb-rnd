@@ -244,19 +244,20 @@ static int src_ws_mainloop(hid_srv_ws_t *ctx)
 				lws_service_tsi(context, -1, 0);
 			}
 			*/
-		} else {
-			/* no revents, but before polling again, make lws check for any timeouts */
-			if (ms - ms_1sec > 1000) {
-				static int ctr = 0;
-				lws_service_fd(ctx->context, NULL);
-				ms_1sec = ms;
-				
-				if ((ctx->pollfds[0].fd > 0) && ((ctr++ % 5) == 0)) { /* server: print client stats */
-					htip_entry_t *e;
-					pcb_message(PCB_MSG_INFO, "websocket [%d] Client stats (%d):\n", ctx->pid, ctx->num_clients);
-					for (e = htip_first(&ctx->clients); e; e = htip_next(&ctx->clients, e)) {
-						pcb_message(PCB_MSG_INFO, " [%d]\n", e->key);
-					}
+		}
+
+
+		/* no revents, but before polling again, make lws check for any timeouts */
+		if (ms - ms_1sec > 1000) {
+			static int ctr = 0;
+			lws_service_fd(ctx->context, NULL);
+			ms_1sec = ms;
+			
+			if ((ctx->pollfds[0].fd > 0) && ((ctr++ % 5) == 0)) { /* server: print client stats */
+				htip_entry_t *e;
+				pcb_message(PCB_MSG_INFO, "websocket [%d] Client stats (%d):\n", ctx->pid, ctx->num_clients);
+				for (e = htip_first(&ctx->clients); e; e = htip_next(&ctx->clients, e)) {
+					pcb_message(PCB_MSG_INFO, " [%d]\n", e->key);
 				}
 			}
 		}
