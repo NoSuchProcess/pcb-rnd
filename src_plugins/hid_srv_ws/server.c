@@ -191,22 +191,6 @@ static void hid_ws_new_client(hid_srv_ws_t *ctx, int n)
 	}
 }
 
-static struct lws_protocols protocols[] = {
-	/* first protocol must always be HTTP handler */
-	{
-		"http-only",   /* name */
-		callback_http, /* callback */
-		0,             /* per_session_data_size */
-		0              /* max frame size / rx buffer */
-	},
-	{
-		"dumb-increment-protocol", /* protocol name - very important! */
-		callback_dumb_increment,   /* callback */
-		0,                         /* we don't use any per session data */
-		0                          /* max frame size / rx buffer */
-	},
-	{ NULL, NULL, 0, 0 }   /* End of list */
-};
 
 static int src_ws_mainloop(hid_srv_ws_t *ctx)
 {
@@ -283,6 +267,24 @@ static int srv_ws_listen(hid_srv_ws_t *ctx)
 
 #warning TODO: get these from the conf
 	int port = 9000;
+
+	static struct lws_protocols protocols[] = {
+	/* first protocol must always be HTTP handler */
+	{
+		"http-only",   /* name */
+		callback_http, /* callback */
+		0,             /* per_session_data_size */
+		0              /* max frame size / rx buffer */
+	},
+	{
+		"dumb-increment-protocol", /* protocol name - very important! */
+		callback_dumb_increment,   /* callback */
+		0,                         /* we don't use any per session data */
+		0                          /* max frame size / rx buffer */
+	},
+	{ NULL, NULL, 0, 0 }   /* End of list */
+	};
+
 	struct lws_context_creation_info context_info = {
 		.port = port, .iface = NULL, .protocols = protocols, .extensions = NULL,
 #ifdef WANT_SSL
