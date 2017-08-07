@@ -154,7 +154,7 @@ static void pcb_draw_rats(const pcb_box_t *drawn_area)
 	 */
 	if (pcb_gui->can_mask_clear_rats)
 		pcb_gui->use_mask(HID_MASK_CLEAR);
-	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, draw_rat_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, pcb_rat_draw_callback, NULL, NULL);
 	if (pcb_gui->can_mask_clear_rats)
 		pcb_gui->use_mask(HID_MASK_OFF);
 }

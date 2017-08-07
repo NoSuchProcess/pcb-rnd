@@ -104,7 +104,7 @@ static int pcb_act_AddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			if (shorty) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, shorty, shorty, shorty);
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, shorty);
-				DrawRat(shorty);
+				pcb_rat_invalidate_draw(shorty);
 				pcb_draw();
 				pcb_center_display((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
 			}

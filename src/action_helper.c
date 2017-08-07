@@ -745,7 +745,7 @@ void pcb_notify_mode(void)
 				pcb_added_lines++;
 				pcb_undo_add_obj_to_create(PCB_TYPE_RATLINE, line, line, line);
 				pcb_undo_inc_serial();
-				DrawRat(line);
+				pcb_rat_invalidate_draw(line);
 				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
 				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 				pcb_draw();

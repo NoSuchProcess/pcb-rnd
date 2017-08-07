@@ -139,7 +139,7 @@ static void DrawNewConnections(void)
 	if (PCB->RatOn) {
 		position = RatList.DrawLocation;
 		for (; position < RatList.Number; position++)
-			DrawRat(RATLIST_ENTRY(position));
+			pcb_rat_invalidate_draw(RATLIST_ENTRY(position));
 		RatList.DrawLocation = RatList.Number;
 	}
 }
@@ -402,7 +402,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
-				DrawRat(line);
+				pcb_rat_invalidate_draw(line);
 			change = pcb_true;
 		}
 	}

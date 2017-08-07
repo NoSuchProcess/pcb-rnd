@@ -163,7 +163,7 @@ void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 	if (!newone)
 		return newone;
 	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, newone, newone);
-	EraseRat(Rat);
+	pcb_rat_invalidate_erase(Rat);
 	pcb_line_invalidate_draw(CURRENT, newone);
 	newone = pcb_line_new_merge(CURRENT, Rat->Point2.X, Rat->Point2.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
@@ -195,7 +195,7 @@ void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 		return (NULL);
 	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, ctx->move.dst_layer, newone, newone);
 	if (PCB->RatOn)
-		EraseRat(Rat);
+		pcb_rat_invalidate_erase(Rat);
 	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	pcb_line_invalidate_draw(ctx->move.dst_layer, newone);
 	pcb_draw();
@@ -217,7 +217,7 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	/* erase from screen and memory */
 	if (PCB->RatOn) {
-		EraseRat(Rat);
+		pcb_rat_invalidate_erase(Rat);
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
@@ -227,7 +227,7 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /*** draw ***/
-pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 
@@ -257,7 +257,7 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void EraseRat(pcb_rat_t *Rat)
+void pcb_rat_invalidate_erase(pcb_rat_t *Rat)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		pcb_coord_t w = Rat->Thickness;
@@ -275,7 +275,7 @@ void EraseRat(pcb_rat_t *Rat)
 	pcb_flag_erase(&Rat->Flags);
 }
 
-void DrawRat(pcb_rat_t *Rat)
+void pcb_rat_invalidate_draw(pcb_rat_t *Rat)
 {
 	if (conf_core.appearance.rat_thickness < 20)
 		Rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;

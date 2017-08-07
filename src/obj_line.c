@@ -487,13 +487,13 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 	else {												/* must be a rat */
 
 		if (PCB->RatOn)
-			EraseRat((pcb_rat_t *) Line);
+			pcb_rat_invalidate_erase((pcb_rat_t *) Line);
 		pcb_r_delete_entry(PCB->Data->rat_tree, &Line->BoundingBox);
 		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(PCB->Data->rat_tree, &Line->BoundingBox, 0);
 		if (PCB->RatOn) {
-			DrawRat((pcb_rat_t *) Line);
+			pcb_rat_invalidate_draw((pcb_rat_t *) Line);
 			pcb_draw();
 		}
 		return (Line);
@@ -800,7 +800,7 @@ static void rotate_line2(pcb_layer_t *Layer, pcb_line_t *Line)
 	}
 	else {
 		pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) Line, 0);
-		DrawRat((pcb_rat_t *) Line);
+		pcb_rat_invalidate_draw((pcb_rat_t *) Line);
 	}
 	pcb_draw();
 }

@@ -142,7 +142,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 
 			pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, ptr1, ptr1, ptr1);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, rat);
-			DrawRat(rat);
+			pcb_rat_invalidate_draw(rat);
 			break;
 		}
 
@@ -295,7 +295,7 @@ do { \
 		if (PCB_LINE_NEAR_BOX((pcb_line_t *) line, Box) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 			append(PCB_TYPE_RATLINE, line, line);
 			if (pcb->RatOn)
-				DrawRat(line);
+				pcb_rat_invalidate_draw(line);
 		}
 	}
 	PCB_END_LOOP;
@@ -529,7 +529,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, line);
-			DrawRat(line);
+			pcb_rat_invalidate_draw(line);
 			changed = pcb_true;
 		}
 	}

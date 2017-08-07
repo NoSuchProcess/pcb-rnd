@@ -868,7 +868,7 @@ static void rbe_remove_element(void *user_data, int argc, pcb_event_arg_t argv[]
 	ptr = rbnd->Rubberband;
 	for (i = 0; i < rbnd->RubberbandN; i++) {
 		if (PCB->RatOn)
-			EraseRat((pcb_rat_t *) ptr->Line);
+			pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
 		if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line))
 			pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 		else
@@ -1097,7 +1097,7 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 		}
 		else {
 			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
-			DrawRat((pcb_rat_t *) ptr->Line);
+			pcb_rat_invalidate_draw((pcb_rat_t *) ptr->Line);
 		}
 		rbnd->RubberbandN--;
 		ptr++;
@@ -1121,7 +1121,7 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 		ptr = rbnd->Rubberband;
 		for (i = 0; i < rbnd->RubberbandN; i++, ptr++) {
 			if (PCB->RatOn)
-				EraseRat((pcb_rat_t *) ptr->Line);
+				pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
 			pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 		}
 		pcb_undo_inc_serial();

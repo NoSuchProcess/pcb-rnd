@@ -28,8 +28,8 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void EraseRat(pcb_rat_t *Rat);
-void DrawRat(pcb_rat_t *Rat);
+void pcb_rat_invalidate_erase(pcb_rat_t *Rat);
+void pcb_rat_invalidate_draw(pcb_rat_t *Rat);

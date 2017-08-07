@@ -614,7 +614,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					if (distance == 0)
 						PCB_FLAG_SET(PCB_FLAG_VIA, line);
 					pcb_undo_add_obj_to_create(PCB_TYPE_RATLINE, line, line, line);
-					DrawRat(line);
+					pcb_rat_invalidate_draw(line);
 					changed = pcb_true;
 				}
 			}

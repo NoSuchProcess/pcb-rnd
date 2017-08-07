@@ -143,7 +143,7 @@ static void unset_found_flags(int AndDraw)
 		if (PCB_FLAG_TEST(flag, line)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 			PCB_FLAG_CLEAR(flag, line);
-			DrawRat(line);
+			pcb_rat_invalidate_draw(line);
 			change = pcb_true;
 		}
 	}

@@ -4668,7 +4668,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 #ifdef DEBUG_STALE_RATS
 				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, pcb_true, line);
-				DrawRat(line, 0);
+				pcb_rat_invalidate_draw(line, 0);
 #endif /* DEBUG_STALE_RATS */
 				pcb_message(PCB_MSG_ERROR, "The rats nest is stale! Aborting autoroute...\n");
 				goto donerouting;

@@ -558,7 +558,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_RATLINE:
 		if (PCB->RatOn)
-			DrawRat((pcb_rat_t *) ptr2);
+			pcb_rat_invalidate_draw((pcb_rat_t *) ptr2);
 		break;
 	case PCB_TYPE_PIN:
 		if (PCB->PinOn)
