@@ -444,7 +444,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, NULL);
 
 	/* draw the layer arcs on screen */
-	pcb_r_search(Layer->arc_tree, screen, NULL, draw_arc_callback, Layer, NULL);
+	pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, NULL);
 
 	/* draw the layer text on screen */
 	pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, NULL);

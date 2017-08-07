@@ -1708,3 +1708,4 @@ XORDrawText -> pcb_text_draw_xor
 DrawTextLowLevel -> pcb_text_draw
 EraseText -> pcb_text_invalidate_erase
 DrawText -> pcb_text_invalidate_draw
+draw_arc_callback -> pcb_arc_draw_callback

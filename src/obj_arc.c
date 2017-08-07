@@ -778,7 +778,7 @@ void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc)
 	pcb_arc_draw_(arc);
 }
 
-pcb_r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_arc_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *)b;
 
