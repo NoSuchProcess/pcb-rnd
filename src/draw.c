@@ -287,7 +287,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		
 		/* Draw element Marks */
 		if (PCB->PinOn)
-			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
+			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, pcb_elem_mark_draw_callback, NULL, NULL);
 
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
@@ -506,7 +506,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		pcb_poly_invalidate_erase((pcb_polygon_t *) ptr);
 		break;
 	case PCB_TYPE_ELEMENT:
-		EraseElement((pcb_element_t *) ptr);
+		pcb_elem_invalidate_erase((pcb_element_t *) ptr);
 		break;
 	case PCB_TYPE_SUBC:
 		EraseSubc((pcb_subc_t *)ptr);
@@ -554,7 +554,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_ELEMENT:
 		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
-			DrawElement((pcb_element_t *) ptr2);
+			pcb_elem_invalidate_draw((pcb_element_t *) ptr2);
 		break;
 	case PCB_TYPE_RATLINE:
 		if (PCB->RatOn)
@@ -570,7 +570,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_ELEMENT_NAME:
 		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
-			DrawElementName((pcb_element_t *) ptr1);
+			pcb_elem_name_invalidate_draw((pcb_element_t *) ptr1);
 		break;
 	}
 }
@@ -615,7 +615,7 @@ void pcb_hid_expose_pinout(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 	pcb_hid_t *old_gui = expose_begin(hid);
 
 	pcb_draw_doing_pinout = pcb_true;
-	draw_element(ctx->content.elem);
+	pcb_elem_draw(ctx->content.elem);
 	pcb_draw_doing_pinout = pcb_false;
 
 	expose_end(old_gui);

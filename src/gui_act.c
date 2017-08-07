@@ -237,7 +237,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 		case F_Description:
 			PCB_ELEMENT_LOOP(PCB->Data);
 			{
-				EraseElementName(element);
+				pcb_elem_name_invalidate_erase(element);
 			}
 			PCB_END_LOOP;
 			switch (id) {
@@ -268,7 +268,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 			}
 			PCB_ELEMENT_LOOP(PCB->Data);
 			{
-				DrawElementName(element);
+				pcb_elem_name_invalidate_draw(element);
 			}
 			PCB_END_LOOP;
 			pcb_draw();
@@ -941,9 +941,9 @@ static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pc
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr3);
-					EraseElementName((pcb_element_t *) ptr2);
+					pcb_elem_name_invalidate_erase((pcb_element_t *) ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
-					DrawElementName((pcb_element_t *) ptr2);
+					pcb_elem_name_invalidate_draw((pcb_element_t *) ptr2);
 					pcb_draw();
 					pcb_undo_inc_serial();
 				}
@@ -958,9 +958,9 @@ static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pc
 					if ((PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_REFDES(element)))
 							&& (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
 						pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
-						EraseElementName(element);
+						pcb_elem_name_invalidate_erase(element);
 						PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, element);
-						DrawElementName(element);
+						pcb_elem_name_invalidate_draw(element);
 						changed = pcb_true;
 					}
 				}

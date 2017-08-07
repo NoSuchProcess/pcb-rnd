@@ -457,10 +457,10 @@ pcb_bool pcb_element_change_side(pcb_element_t *Element, pcb_coord_t yoff)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (pcb_false);
-	EraseElement(Element);
+	pcb_elem_invalidate_erase(Element);
 	pcb_undo_add_obj_to_mirror(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
 	pcb_element_mirror(PCB->Data, Element, yoff);
-	DrawElement(Element);
+	pcb_elem_invalidate_draw(Element);
 	return (pcb_true);
 }
 
@@ -491,7 +491,7 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 #endif
 
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
-		EraseElementName(Element);
+		pcb_elem_name_invalidate_erase(Element);
 
 	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 
@@ -501,7 +501,7 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
 
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
-		DrawElementName(Element);
+		pcb_elem_name_invalidate_draw(Element);
 
 	return old;
 }
@@ -509,20 +509,20 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 void pcb_element_text_update(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which)
 {
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
-		EraseElementName(Element);
+		pcb_elem_name_invalidate_erase(Element);
 
 	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 	pcb_text_bbox(pcb_font(PCB, 0, 1), &Element->Name[which]);
 	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
 
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
-		DrawElementName(Element);
+		pcb_elem_name_invalidate_draw(Element);
 }
 
 void pcb_element_text_set_font(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which, pcb_font_id_t fid)
 {
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
-		EraseElementName(Element);
+		pcb_elem_name_invalidate_erase(Element);
 
 	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 	Element->Name[which].fid = fid;
@@ -530,7 +530,7 @@ void pcb_element_text_set_font(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t
 	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
 
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
-		DrawElementName(Element);
+		pcb_elem_name_invalidate_draw(Element);
 }
 
 /* copies data from one element to another and creates the destination; if necessary */
@@ -1460,7 +1460,7 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	if (pcb_silk_on(PCB))
-		EraseElement(Element);
+		pcb_elem_invalidate_erase(Element);
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : line->Thickness + ctx->chgsize.delta;
@@ -1482,7 +1482,7 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	PCB_END_LOOP;
 	if (pcb_silk_on(PCB)) {
-		DrawElement(Element);
+		pcb_elem_invalidate_draw(Element);
 	}
 	if (changed)
 		return (Element);
@@ -1498,7 +1498,7 @@ void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
 	if (value <= PCB_MAX_TEXTSCALE && value >= PCB_MIN_TEXTSCALE) {
-		EraseElementName(Element);
+		pcb_elem_name_invalidate_erase(Element);
 		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 		{
 			pcb_undo_add_obj_to_size(PCB_TYPE_ELEMENT_NAME, Element, text, text);
@@ -1508,7 +1508,7 @@ void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
 		PCB_END_LOOP;
-		DrawElementName(Element);
+		pcb_elem_name_invalidate_draw(Element);
 		return (Element);
 	}
 	return (NULL);
@@ -1662,11 +1662,11 @@ void *pcb_elemop_copy(pcb_opctx_t *ctx, pcb_element_t *Element)
 	/* this call clears the polygons */
 	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);
 	if (pcb_silk_on(PCB) && (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
-		DrawElementName(element);
-		DrawElementPackage(element);
+		pcb_elem_name_invalidate_draw(element);
+		pcb_elem_package_invalidate_draw(element);
 	}
 	if (PCB->PinOn) {
-		DrawElementPinsAndPads(element);
+		pcb_elem_pp_invalidate_draw(element);
 	}
 #ifdef DEBUG
 	printf(" ... Leaving pcb_elemop_copy.\n");
@@ -1678,7 +1678,7 @@ void *pcb_elemop_copy(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (pcb_silk_on(PCB) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
-		EraseElementName(Element);
+		pcb_elem_name_invalidate_erase(Element);
 		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 		{
 			if (PCB->Data->name_tree[n])
@@ -1688,7 +1688,7 @@ void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
 		PCB_END_LOOP;
-		DrawElementName(Element);
+		pcb_elem_name_invalidate_draw(Element);
 		pcb_draw();
 	}
 	else {
@@ -1711,19 +1711,19 @@ void *pcb_elemop_move(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_bool didDraw = pcb_false;
 
 	if (pcb_silk_on(PCB) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
-		EraseElement(Element);
+		pcb_elem_invalidate_erase(Element);
 		pcb_element_move(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
-		DrawElementName(Element);
-		DrawElementPackage(Element);
+		pcb_elem_name_invalidate_draw(Element);
+		pcb_elem_package_invalidate_draw(Element);
 		didDraw = pcb_true;
 	}
 	else {
 		if (PCB->PinOn)
-			EraseElementPinsAndPads(Element);
+			pcb_elem_pp_invalidate_erase(Element);
 		pcb_element_move(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
 	}
 	if (PCB->PinOn) {
-		DrawElementPinsAndPads(Element);
+		pcb_elem_pp_invalidate_draw(Element);
 		didDraw = pcb_true;
 	}
 	if (didDraw)
@@ -1768,7 +1768,7 @@ void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	/* erase from screen */
 	if ((pcb_silk_on(PCB) || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
-		EraseElement(Element);
+		pcb_elem_invalidate_erase(Element);
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
@@ -1780,9 +1780,9 @@ void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* rotates an element */
 void *pcb_elemop_rotate90(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	EraseElement(Element);
+	pcb_elem_invalidate_erase(Element);
 	pcb_element_rotate90(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	DrawElement(Element);
+	pcb_elem_invalidate_draw(Element);
 	pcb_draw();
 	return (Element);
 }
@@ -1792,7 +1792,7 @@ void *pcb_elemop_rotate90(pcb_opctx_t *ctx, pcb_element_t *Element)
  */
 void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	EraseElementName(Element);
+	pcb_elem_name_invalidate_erase(Element);
 	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1800,13 +1800,13 @@ void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
 	PCB_END_LOOP;
-	DrawElementName(Element);
+	pcb_elem_name_invalidate_draw(Element);
 	pcb_draw();
 	return (Element);
 }
 
 /*** draw ***/
-void draw_element_name(pcb_element_t * element)
+void pcb_elem_name_draw(pcb_element_t * element)
 {
 	if ((conf_core.editor.hide_names && pcb_gui->gui) || PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
 		return;
@@ -1828,7 +1828,7 @@ void draw_element_name(pcb_element_t * element)
 
 }
 
-pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_elem_name_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
 	pcb_element_t *element = (pcb_element_t *) text->Element;
@@ -1838,11 +1838,11 @@ pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_ON_SIDE(element, *side))
-		draw_element_name(element);
+		pcb_elem_name_draw(element);
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-void draw_element_pins_and_pads(pcb_element_t * element)
+void pcb_elem_pp_draw(pcb_element_t * element)
 {
 	PCB_PAD_LOOP(element);
 	{
@@ -1858,7 +1858,7 @@ void draw_element_pins_and_pads(pcb_element_t * element)
 }
 
 
-void draw_element_package(pcb_element_t * element)
+void pcb_elem_package_draw(pcb_element_t * element)
 {
 	/* set color and draw lines, arcs, text and pins */
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
@@ -1883,20 +1883,20 @@ void draw_element_package(pcb_element_t * element)
 	PCB_END_LOOP;
 }
 
-void draw_element(pcb_element_t *element)
+void pcb_elem_draw(pcb_element_t *element)
 {
-	draw_element_package(element);
-	draw_element_name(element);
-	draw_element_pins_and_pads(element);
+	pcb_elem_package_draw(element);
+	pcb_elem_name_draw(element);
+	pcb_elem_pp_draw(element);
 }
 
-pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_elem_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_element_t *element = (pcb_element_t *) b;
 	int *side = cl;
 
 	if (PCB_ON_SIDE(element, *side))
-		draw_element_package(element);
+		pcb_elem_package_draw(element);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -1938,7 +1938,7 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 	}
 }
 
-pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_elem_mark_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_element_t *element = (pcb_element_t *) b;
 
@@ -1946,7 +1946,7 @@ pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void EraseElement(pcb_element_t *Element)
+void pcb_elem_invalidate_erase(pcb_element_t *Element)
 {
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
@@ -1958,12 +1958,12 @@ void EraseElement(pcb_element_t *Element)
 		pcb_arc_invalidate_erase(arc);
 	}
 	PCB_END_LOOP;
-	EraseElementName(Element);
-	EraseElementPinsAndPads(Element);
+	pcb_elem_name_invalidate_erase(Element);
+	pcb_elem_pp_invalidate_erase(Element);
 	pcb_flag_erase(&Element->Flags);
 }
 
-void EraseElementPinsAndPads(pcb_element_t *Element)
+void pcb_elem_pp_invalidate_erase(pcb_element_t *Element)
 {
 	PCB_PIN_LOOP(Element);
 	{
@@ -1977,7 +1977,7 @@ void EraseElementPinsAndPads(pcb_element_t *Element)
 	PCB_END_LOOP;
 }
 
-void EraseElementName(pcb_element_t *Element)
+void pcb_elem_name_invalidate_erase(pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element)) {
 		return;
@@ -1985,21 +1985,21 @@ void EraseElementName(pcb_element_t *Element)
 	pcb_text_invalidate_draw(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
 }
 
-void DrawElement(pcb_element_t *Element)
+void pcb_elem_invalidate_draw(pcb_element_t *Element)
 {
-	DrawElementPackage(Element);
-	DrawElementName(Element);
-	DrawElementPinsAndPads(Element);
+	pcb_elem_package_invalidate_draw(Element);
+	pcb_elem_name_invalidate_draw(Element);
+	pcb_elem_pp_invalidate_draw(Element);
 }
 
-void DrawElementName(pcb_element_t *Element)
+void pcb_elem_name_invalidate_draw(pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element))
 		return;
 	pcb_text_invalidate_draw(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
 }
 
-void DrawElementPackage(pcb_element_t *Element)
+void pcb_elem_package_invalidate_draw(pcb_element_t *Element)
 {
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
@@ -2013,7 +2013,7 @@ void DrawElementPackage(pcb_element_t *Element)
 	PCB_END_LOOP;
 }
 
-void DrawElementPinsAndPads(pcb_element_t *Element)
+void pcb_elem_pp_invalidate_draw(pcb_element_t *Element)
 {
 	PCB_PAD_LOOP(Element);
 	{

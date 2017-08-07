@@ -1732,3 +1732,17 @@ EraseVia -> pcb_via_invalidate_erase
 ErasePin -> pcb_pin_invalidate_erase
 DrawVia -> pcb_via_invalidate_draw
 DrawPin -> pcb_pin_invalidate_draw
+draw_element_name_callback -> pcb_elem_name_draw_callback
+draw_element_mark_callback -> pcb_elem_mark_draw_callback
+draw_element_callback -> pcb_elem_draw_callback
+draw_element_pins_and_pads -> pcb_elem_pp_draw
+draw_element_package -> pcb_elem_package_draw
+draw_element_name -> pcb_elem_name_draw
+draw_element -> pcb_elem_draw
+EraseElementPinsAndPads -> pcb_elem_pp_invalidate_erase
+EraseElementName -> pcb_elem_name_invalidate_erase
+EraseElement -> pcb_elem_invalidate_erase
+DrawElementPinsAndPads -> pcb_elem_pp_invalidate_draw
+DrawElementPackage -> pcb_elem_package_invalidate_draw
+DrawElementName -> pcb_elem_name_invalidate_draw
+DrawElement -> pcb_elem_invalidate_draw

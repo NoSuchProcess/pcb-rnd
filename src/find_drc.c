@@ -649,7 +649,7 @@ int pcb_drc_all(void)
 				int buflen;
 
 				PCB_FLAG_SET(TheFlag, element);
-				DrawElement(element);
+				pcb_elem_invalidate_draw(element);
 				drcerr_count++;
 				SetThing(PCB_TYPE_ELEMENT, element, element, element);
 				LocateError(&x, &y);

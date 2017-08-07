@@ -80,11 +80,11 @@ void pcb_select_element(pcb_board_t *pcb, pcb_element_t *element, pcb_change_fla
 	if (redraw) {
 		if (pcb_silk_on(pcb) && ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn))
 			if (pcb_silk_on(pcb)) {
-				DrawElementName(element);
-				DrawElementPackage(element);
+				pcb_elem_name_invalidate_draw(element);
+				pcb_elem_package_invalidate_draw(element);
 			}
 		if (pcb->PinOn)
-			DrawElementPinsAndPads(element);
+			pcb_elem_pp_invalidate_draw(element);
 	}
 }
 
@@ -99,7 +99,7 @@ void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int 
 	PCB_END_LOOP;
 
 	if (redraw)
-		DrawElementName(element);
+		pcb_elem_name_invalidate_draw(element);
 }
 
 
@@ -408,7 +408,7 @@ do { \
 					}
 					PCB_END_LOOP;
 					if (pcb_silk_on(pcb))
-						DrawElementName(element);
+						pcb_elem_name_invalidate_draw(element);
 				}
 				if ((pcb->PinOn || !Flag) && PCB_ELEMENT_NEAR_BOX(element, Box))
 					if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
@@ -432,7 +432,7 @@ do { \
 						}
 						PCB_END_LOOP;
 						if (pcb->PinOn)
-							DrawElement(element);
+							pcb_elem_invalidate_draw(element);
 						gotElement = pcb_true;
 					}
 			}
@@ -723,8 +723,8 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);
 				}
 				PCB_END_LOOP;
-				DrawElementName(element);
-				DrawElement(element);
+				pcb_elem_name_invalidate_draw(element);
+				pcb_elem_invalidate_draw(element);
 				changed = pcb_true;
 			}
 		}

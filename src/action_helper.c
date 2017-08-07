@@ -686,7 +686,7 @@ void pcb_notify_mode(void)
 				/* always re-draw it since I'm too lazy
 				 * to tell if a selected flag changed
 				 */
-				DrawElement(element);
+				pcb_elem_invalidate_draw(element);
 				pcb_draw();
 				pcb_hid_actionl("Report", "Object", NULL);
 			}
@@ -1108,14 +1108,14 @@ void pcb_notify_mode(void)
 
 					for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
 						if (i == save_n)
-							EraseElementName(e);
+							pcb_elem_name_invalidate_erase(e);
 						pcb_r_delete_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));
 						memcpy(&(e->Name[i]), &(estr[i]), sizeof(pcb_text_t));
 						e->Name[i].Element = e;
 						pcb_text_bbox(pcb_font(PCB, 0, 1), &(e->Name[i]));
 						pcb_r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]), 0);
 						if (i == save_n)
-							DrawElementName(e);
+							pcb_elem_name_invalidate_draw(e);
 					}
 				}
 			}

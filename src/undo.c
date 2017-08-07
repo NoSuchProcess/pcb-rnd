@@ -564,10 +564,10 @@ static pcb_bool UndoMirror(UndoListTypePtr Entry)
 	if (type == PCB_TYPE_ELEMENT) {
 		pcb_element_t *element = (pcb_element_t *) ptr3;
 		if (andDraw)
-			EraseElement(element);
+			pcb_elem_invalidate_erase(element);
 		pcb_element_mirror(PCB->Data, element, Entry->Data.Move.DY);
 		if (andDraw)
-			DrawElement(element);
+			pcb_elem_invalidate_draw(element);
 		return (pcb_true);
 	}
 	pcb_message(PCB_MSG_ERROR, "hace Internal error: UndoMirror on object type %d\n", type);

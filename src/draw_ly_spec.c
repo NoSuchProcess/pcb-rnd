@@ -105,8 +105,8 @@ static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 	int side = (*(unsigned long *)lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE);
 
 	/* draw package */
-	pcb_r_search(PCB->Data->element_tree, ctx->screen, NULL, draw_element_callback, &side, NULL);
-	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], ctx->screen, NULL, draw_element_name_callback, &side, NULL);
+	pcb_r_search(PCB->Data->element_tree, ctx->screen, NULL, pcb_elem_draw_callback, &side, NULL);
+	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], ctx->screen, NULL, pcb_elem_name_draw_callback, &side, NULL);
 }
 
 static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)

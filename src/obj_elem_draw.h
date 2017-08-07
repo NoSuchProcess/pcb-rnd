@@ -28,21 +28,21 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_elem_name_draw_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_elem_mark_draw_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_elem_draw_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void draw_element_package(pcb_element_t * element);
-void draw_element_name(pcb_element_t * element);
-void draw_element_pins_and_pads(pcb_element_t * element);
-void draw_element(pcb_element_t *element);
+void pcb_elem_package_draw(pcb_element_t * element);
+void pcb_elem_name_draw(pcb_element_t * element);
+void pcb_elem_pp_draw(pcb_element_t * element);
+void pcb_elem_draw(pcb_element_t *element);
 
-void EraseElement(pcb_element_t *Element);
-void EraseElementPinsAndPads(pcb_element_t *Element);
-void EraseElementName(pcb_element_t *Element);
+void pcb_elem_invalidate_erase(pcb_element_t *Element);
+void pcb_elem_pp_invalidate_erase(pcb_element_t *Element);
+void pcb_elem_name_invalidate_erase(pcb_element_t *Element);
 
-void DrawElement(pcb_element_t *Element);
-void DrawElementName(pcb_element_t *Element);
-void DrawElementPackage(pcb_element_t *Element);
-void DrawElementPinsAndPads(pcb_element_t *Element);
+void pcb_elem_invalidate_draw(pcb_element_t *Element);
+void pcb_elem_name_invalidate_draw(pcb_element_t *Element);
+void pcb_elem_package_invalidate_draw(pcb_element_t *Element);
+void pcb_elem_pp_invalidate_draw(pcb_element_t *Element);
