@@ -1,5 +1,5 @@
-pcb-rnd 1.2.4 (r10606)
-~~~~~~~~~~~~~~~~~~~~~
+pcb-rnd 1.2.4 (r10635)
+~~~~~~~~~~~~~~~~~~~~~~
 	[subc]
 		-Fix: saving buffer elements shouldn't ever save layer data; introduce an explicit flag for indicating the element-only intention to the io_ plugins so they don't have to guess from buffer layer names
 		-Fix: poly plow: don't attempt to plow thermal if we are not on a board (but in a buffer - because of dynamic layer bindings)
