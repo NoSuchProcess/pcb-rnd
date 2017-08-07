@@ -281,7 +281,7 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 			XORPolygon(poly, DX, DY, 0);
 
 		textlist_foreach(&ly->Text, &it, text)
-			XORDrawText(text, DX, DY);
+			pcb_text_draw_xor(text, DX, DY);
 	}
 
 	/* draw global objects */

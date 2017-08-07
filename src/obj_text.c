@@ -311,14 +311,14 @@ void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		return (NULL);
 	if (value <= PCB_MAX_TEXTSCALE && value >= PCB_MIN_TEXTSCALE && value != Text->Scale) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_TEXT, Layer, Text, Text);
-		EraseText(Layer, Text);
+		pcb_text_invalidate_erase(Layer, Text);
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		Text->Scale = value;
 		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-		DrawText(Layer, Text);
+		pcb_text_invalidate_draw(Layer, Text);
 		return (Text);
 	}
 	return (NULL);
@@ -332,7 +332,7 @@ void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
-	EraseText(Layer, Text);
+	pcb_text_invalidate_erase(Layer, Text);
 	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	Text->TextString = ctx->chgname.new_name;
@@ -341,7 +341,7 @@ void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	DrawText(Layer, Text);
+	pcb_text_invalidate_draw(Layer, Text);
 	return (old);
 }
 
@@ -350,7 +350,7 @@ void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
-	EraseText(Layer, Text);
+	pcb_text_invalidate_erase(Layer, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -361,7 +361,7 @@ void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
-	DrawText(Layer, Text);
+	pcb_text_invalidate_draw(Layer, Text);
 	return (Text);
 }
 
@@ -389,7 +389,7 @@ void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	text = pcb_text_new(Layer, pcb_font(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	pcb_text_copy_meta(text, Text);
-	DrawText(Layer, text);
+	pcb_text_invalidate_draw(Layer, text);
 	pcb_undo_add_obj_to_create(PCB_TYPE_TEXT, Layer, text, text);
 	return (text);
 }
@@ -400,9 +400,9 @@ void *pcb_textop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	if (Layer->meta.real.vis) {
-		EraseText(Layer, Text);
+		pcb_text_invalidate_erase(Layer, Text);
 		pcb_text_move(Text, ctx->move.dx, ctx->move.dy);
-		DrawText(Layer, Text);
+		pcb_text_invalidate_draw(Layer, Text);
 		pcb_draw();
 	}
 	else
@@ -448,10 +448,10 @@ void *pcb_textop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t
 	if (ctx->move.dst_layer != layer) {
 		pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_TEXT, layer, text, text);
 		if (layer->meta.real.vis)
-			EraseText(layer, text);
+			pcb_text_invalidate_erase(layer, text);
 		text = pcb_textop_move_to_layer_low(ctx, layer, text, ctx->move.dst_layer);
 		if (ctx->move.dst_layer->meta.real.vis)
-			DrawText(ctx->move.dst_layer, text);
+			pcb_text_invalidate_draw(ctx->move.dst_layer, text);
 		if (layer->meta.real.vis || ctx->move.dst_layer->meta.real.vis)
 			pcb_draw();
 	}
@@ -474,7 +474,7 @@ void *pcb_textop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
-		EraseText(Layer, Text);
+		pcb_text_invalidate_erase(Layer, Text);
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -515,13 +515,13 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 /* rotates a text object and redraws it */
 void *pcb_textop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	EraseText(Layer, Text);
+	pcb_text_invalidate_erase(Layer, Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	pcb_text_rotate90(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	DrawText(Layer, Text);
+	pcb_text_invalidate_draw(Layer, Text);
 	pcb_draw();
 	return (Text);
 }
@@ -716,13 +716,13 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 	}
 }
 
-void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
+void pcb_text_draw(pcb_text_t *Text, pcb_coord_t min_line_width)
 {
 	DrawTextLowLevel_(Text, min_line_width, 0, 0, 0);
 }
 
 
-pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_layer_t *layer = cl;
 	pcb_text_t *text = (pcb_text_t *) b;
@@ -744,22 +744,22 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 		min_silk_line = PCB->minSlk;
 	else
 		min_silk_line = PCB->minWid;
-	DrawTextLowLevel(text, min_silk_line);
+	pcb_text_draw(text, min_silk_line);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* erases a text on a layer */
-void EraseText(pcb_layer_t *Layer, pcb_text_t *Text)
+void pcb_text_invalidate_erase(pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_draw_invalidate(Text);
 }
 
-void DrawText(pcb_layer_t *Layer, pcb_text_t *Text)
+void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_draw_invalidate(Text);
 }
 
-void XORDrawText(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
+void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
 {
 	DrawTextLowLevel_(text, 0, 1, x, y);
 }

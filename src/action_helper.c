@@ -956,7 +956,7 @@ void pcb_notify_mode(void)
 																		Note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {
 						pcb_undo_add_obj_to_create(PCB_TYPE_TEXT, CURRENT, text, text);
 						pcb_undo_inc_serial();
-						DrawText(CURRENT, text);
+						pcb_text_invalidate_draw(CURRENT, text);
 						pcb_draw();
 					}
 				}

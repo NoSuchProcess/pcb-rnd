@@ -462,7 +462,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 	text.fid = 0;
 	text.Direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
 
-	DrawTextLowLevel(&text, 0);
+	pcb_text_draw(&text, 0);
 }
 
 static void _draw_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)

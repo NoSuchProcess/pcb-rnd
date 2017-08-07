@@ -1703,3 +1703,8 @@ DrawPolygon -> pcb_poly_invalidate_draw
 draw_rat_callback -> pcb_rat_draw_callback
 EraseRat -> pcb_rat_invalidate_erase
 DrawRat -> pcb_rat_invalidate_draw
+draw_text_callback -> pcb_text_draw_callback
+XORDrawText -> pcb_text_draw_xor
+DrawTextLowLevel -> pcb_text_draw
+EraseText -> pcb_text_invalidate_erase
+DrawText -> pcb_text_invalidate_draw

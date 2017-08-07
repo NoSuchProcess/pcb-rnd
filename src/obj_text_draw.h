@@ -29,11 +29,11 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width);
-void EraseText(pcb_layer_t *Layer, pcb_text_t *Text);
-void DrawText(pcb_layer_t *Layer, pcb_text_t *Text);
-void XORDrawText(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y);
+void pcb_text_draw(pcb_text_t *Text, pcb_coord_t min_line_width);
+void pcb_text_invalidate_erase(pcb_layer_t *Layer, pcb_text_t *Text);
+void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text);
+void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y);
 

@@ -1009,7 +1009,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
-	DrawTextLowLevel(&text, 0);
+	pcb_text_draw(&text, 0);
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout--;
 }

@@ -58,7 +58,7 @@ static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char 
 	t.Scale = scale;
 	t.fid = fid;
 	t.Flags = pcb_no_flags();
-	DrawTextLowLevel(&t, 0);
+	pcb_text_draw(&t, 0);
 	return &t;
 }
 

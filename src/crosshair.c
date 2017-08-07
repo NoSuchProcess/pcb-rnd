@@ -301,7 +301,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(layer);
 			{
-				XORDrawText(text, x, y);
+				pcb_text_draw_xor(text, x, y);
 			}
 			PCB_END_LOOP;
 			/* the tmp polygon has n+1 points because the first
@@ -511,7 +511,7 @@ static void XORDrawMoveOrCopy(void)
 	case PCB_TYPE_TEXT:
 		{
 			pcb_text_t *text = (pcb_text_t *) pcb_crosshair.AttachedObject.Ptr2;
-			XORDrawText(text, dx, dy);
+			pcb_text_draw_xor(text, dx, dy);
 			break;
 		}
 

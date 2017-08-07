@@ -164,7 +164,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			layer = (pcb_layer_t *) ptr1;
 			pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, ptr1, ptr2, ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, text);
-			DrawText(layer, text);
+			pcb_text_invalidate_draw(layer, text);
 			break;
 		}
 
@@ -346,7 +346,7 @@ do { \
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
 					append(PCB_TYPE_TEXT, layer, text);
 					if (pcb_text_is_visible(PCB, layer, text))
-						DrawText(layer, text);
+						pcb_text_invalidate_draw(layer, text);
 				}
 			}
 		}
@@ -689,7 +689,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, layer, text, text);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);
-			DrawText(layer, text);
+			pcb_text_invalidate_draw(layer, text);
 			changed = pcb_true;
 		}
 	}

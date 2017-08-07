@@ -447,7 +447,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	pcb_r_search(Layer->arc_tree, screen, NULL, draw_arc_callback, Layer, NULL);
 
 	/* draw the layer text on screen */
-	pcb_r_search(Layer->text_tree, screen, NULL, draw_text_callback, Layer, NULL);
+	pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, NULL);
 
 	lflg = pcb_layer_flags_(PCB, Layer);
 
@@ -500,7 +500,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		break;
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_ELEMENT_NAME:
-		EraseText((pcb_layer_t *) lptr, (pcb_text_t *) ptr);
+		pcb_text_invalidate_erase((pcb_layer_t *) lptr, (pcb_text_t *) ptr);
 		break;
 	case PCB_TYPE_POLYGON:
 		pcb_poly_invalidate_erase((pcb_polygon_t *) ptr);
@@ -546,7 +546,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_TEXT:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			DrawText((pcb_layer_t *) ptr1, (pcb_text_t *) ptr2);
+			pcb_text_invalidate_draw((pcb_layer_t *) ptr1, (pcb_text_t *) ptr2);
 		break;
 	case PCB_TYPE_POLYGON:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)

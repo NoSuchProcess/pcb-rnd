@@ -1824,7 +1824,7 @@ void draw_element_name(pcb_element_t * element)
 	else
 		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.invisible_objects);
 
-	DrawTextLowLevel(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk);
+	pcb_text_draw(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk);
 
 }
 
@@ -1982,7 +1982,7 @@ void EraseElementName(pcb_element_t *Element)
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element)) {
 		return;
 	}
-	DrawText(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
+	pcb_text_invalidate_draw(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
 }
 
 void DrawElement(pcb_element_t *Element)
@@ -1996,7 +1996,7 @@ void DrawElementName(pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element))
 		return;
-	DrawText(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
+	pcb_text_invalidate_draw(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
 }
 
 void DrawElementPackage(pcb_element_t *Element)
