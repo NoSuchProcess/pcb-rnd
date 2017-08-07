@@ -98,10 +98,6 @@ pcb-rnd 1.2.4 (r10606)
 	[report]
 		-Fix: broken tabs
 
-	[rubberband]
-		-Add: arc list to the rubberband context and associated helper functions.
-		-Add: Use rubberband arc settings to enable/disable rubberband arcs. Added placeholder function to calculate route for rubberbanding an arc.
-
 	[export_xy]
 		-Add: template based output formats
 		-Add: templates for gxyrs, TM220A p&p, macrofab, KiCad .pos
