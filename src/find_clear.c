@@ -63,7 +63,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_CLEAR(flag, pad);
 				if (AndDraw)
-					DrawPad(pad);
+					pcb_pad_invalidate_draw(pad);
 				change = pcb_true;
 			}
 		}

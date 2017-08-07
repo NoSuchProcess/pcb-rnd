@@ -109,7 +109,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 				fputc('\n', FP);
 
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, pad);
-				DrawPad(pad);
+				pcb_pad_invalidate_draw(pad);
 			}
 
 			/* reset found objects for the next pin */

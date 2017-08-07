@@ -1428,7 +1428,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		if (value <= PCB_MAX_PINORVIASIZE && value >= PCB_MIN_PINORVIAHOLE && value != pad->Clearance) {
 			changed = pcb_true;
 			pcb_undo_add_obj_to_clear_size(PCB_TYPE_PAD, Element, pad, pad);
-			ErasePad(pad);
+			pcb_pad_invalidate_erase(pad);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			pcb_r_delete_entry(PCB->Data->pad_tree, &pad->BoundingBox);
 			pad->Clearance = value;
@@ -1440,7 +1440,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 			pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, pad);
-			DrawPad(pad);
+			pcb_pad_invalidate_draw(pad);
 		}
 	}
 	PCB_END_LOOP;
@@ -1847,7 +1847,7 @@ void draw_element_pins_and_pads(pcb_element_t * element)
 	PCB_PAD_LOOP(element);
 	{
 		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
-			draw_pad(pad);
+			pcb_pad_draw(pad);
 	}
 	PCB_END_LOOP;
 	PCB_PIN_LOOP(element);
@@ -1972,7 +1972,7 @@ void EraseElementPinsAndPads(pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
-		ErasePad(pad);
+		pcb_pad_invalidate_erase(pad);
 	}
 	PCB_END_LOOP;
 }
@@ -2018,7 +2018,7 @@ void DrawElementPinsAndPads(pcb_element_t *Element)
 	PCB_PAD_LOOP(Element);
 	{
 		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
-			DrawPad(pad);
+			pcb_pad_invalidate_draw(pad);
 	}
 	PCB_END_LOOP;
 	PCB_PIN_LOOP(Element);

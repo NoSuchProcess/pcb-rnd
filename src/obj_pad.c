@@ -208,10 +208,10 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (pcb_false);
-	ErasePad(Pad);
+	pcb_pad_invalidate_erase(Pad);
 	pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, Pad, Pad, Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
-	DrawPad(Pad);
+	pcb_pad_invalidate_draw(Pad);
 	pcb_draw();
 	return (pcb_true);
 }
@@ -269,14 +269,14 @@ void *pcb_padop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 		pcb_undo_add_obj_to_size(PCB_TYPE_PAD, Element, Pad, Pad);
 		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-		ErasePad(Pad);
+		pcb_pad_invalidate_erase(Pad);
 		pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask += value - Pad->Thickness;
 		Pad->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
 		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-		DrawPad(Pad);
+		pcb_pad_invalidate_draw(Pad);
 		return (Pad);
 	}
 	return (NULL);
@@ -301,13 +301,13 @@ void *pcb_padop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_
 		return NULL;
 	pcb_undo_add_obj_to_clear_size(PCB_TYPE_PAD, Element, Pad, Pad);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	ErasePad(Pad);
+	pcb_pad_invalidate_erase(Pad);
 	pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 	Pad->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
 	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	DrawPad(Pad);
+	pcb_pad_invalidate_draw(Pad);
 	return Pad;
 }
 
@@ -318,9 +318,9 @@ void *pcb_padop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 
 	Element = Element;						/* get rid of 'unused...' warnings */
 	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad)) {
-		ErasePadName(Pad);
+		pcb_pad_name_invalidate_erase(Pad);
 		Pad->Name = ctx->chgname.new_name;
-		DrawPadName(Pad);
+		pcb_pad_name_invalidate_draw(Pad);
 	}
 	else
 		Pad->Name = ctx->chgname.new_name;
@@ -334,9 +334,9 @@ void *pcb_padop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *
 
 	Element = Element;						/* get rid of 'unused...' warnings */
 	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad)) {
-		ErasePadName(Pad);
+		pcb_pad_name_invalidate_erase(Pad);
 		Pad->Number = ctx->chgname.new_name;
-		DrawPadName(Pad);
+		pcb_pad_name_invalidate_draw(Pad);
 	}
 	else
 		Pad->Number = ctx->chgname.new_name;
@@ -348,14 +348,14 @@ void *pcb_padop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
-	ErasePad(Pad);
+	pcb_pad_invalidate_erase(Pad);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, Element, Pad, Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SQUARE, Pad);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	DrawPad(Pad);
+	pcb_pad_invalidate_draw(Pad);
 	return (Pad);
 }
 
@@ -390,11 +390,11 @@ void *pcb_padop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 		value = Pad->Thickness;
 	if (value != Pad->Mask) {
 		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
-		ErasePad(Pad);
+		pcb_pad_invalidate_erase(Pad);
 		pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask = value;
 		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
-		DrawPad(Pad);
+		pcb_pad_invalidate_draw(Pad);
 		return (Pad);
 	}
 	return (NULL);
@@ -478,7 +478,7 @@ static void _draw_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool
 		pcb_gui->fill_pcb_pad(gc, pad, clear, mask);
 }
 
-void draw_pad(pcb_pad_t * pad)
+void pcb_pad_draw(pcb_pad_t * pad)
 {
 	const char *color = NULL;
 	char buf[sizeof("#XXXXXX")];
@@ -513,17 +513,17 @@ void draw_pad(pcb_pad_t * pad)
 		draw_pad_name(pad);
 }
 
-pcb_r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_pad_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
 
 	if (PCB_ON_SIDE(pad, *side))
-		draw_pad(pad);
+		pcb_pad_draw(pad);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t draw_pad_name_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_pad_name_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
@@ -535,7 +535,7 @@ pcb_r_dir_t draw_pad_name_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_pad_clear_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
@@ -545,7 +545,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 }
 
 /* draws solder paste layer for a given side of the board - only pads get paste */
-void pcb_draw_paste_auto(int side, const pcb_box_t * drawn_area)
+void pcb_pad_paste_draw(int side, const pcb_box_t * drawn_area)
 {
 	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.paste);
 	PCB_PAD_ALL_LOOP(PCB->Data);
@@ -593,27 +593,27 @@ static void GatherPadName(pcb_pad_t *Pad)
 	return;
 }
 
-void ErasePad(pcb_pad_t *Pad)
+void pcb_pad_invalidate_erase(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
 	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad))
-		ErasePadName(Pad);
+		pcb_pad_name_invalidate_erase(Pad);
 	pcb_flag_erase(&Pad->Flags);
 }
 
-void ErasePadName(pcb_pad_t *Pad)
+void pcb_pad_name_invalidate_erase(pcb_pad_t *Pad)
 {
 	GatherPadName(Pad);
 }
 
-void DrawPad(pcb_pad_t *Pad)
+void pcb_pad_invalidate_draw(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
 	if (pcb_draw_doing_pinout || PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad))
-		DrawPadName(Pad);
+		pcb_pad_name_invalidate_draw(Pad);
 }
 
-void DrawPadName(pcb_pad_t *Pad)
+void pcb_pad_name_invalidate_draw(pcb_pad_t *Pad)
 {
 	GatherPadName(Pad);
 }

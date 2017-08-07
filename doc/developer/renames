@@ -1709,3 +1709,12 @@ DrawTextLowLevel -> pcb_text_draw
 EraseText -> pcb_text_invalidate_erase
 DrawText -> pcb_text_invalidate_draw
 draw_arc_callback -> pcb_arc_draw_callback
+draw_pad_name_callback -> pcb_pad_name_draw_callback
+pcb_draw_paste_auto -> pcb_pad_paste_draw
+ErasePadName -> pcb_pad_name_invalidate_erase
+DrawPadName -> pcb_pad_name_invalidate_draw
+draw_pad_callback -> pcb_pad_draw_callback
+clear_pad_callback -> pcb_pad_clear_callback
+draw_pad -> pcb_pad_draw
+ErasePad -> pcb_pad_invalidate_erase
+DrawPad -> pcb_pad_invalidate_draw

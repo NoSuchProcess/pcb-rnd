@@ -32,7 +32,7 @@
 
 static void pcb_draw_paste_auto_(comp_ctx_t *ctx, void *side)
 {
-	pcb_draw_paste_auto(*(int *)side, ctx->screen);
+	pcb_pad_paste_draw(*(int *)side, ctx->screen);
 }
 
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
@@ -54,7 +54,7 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 
 
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) /* fallback: no layers -> original code: draw a single auto-add */
-		pcb_draw_paste_auto(side, drawn_area);
+		pcb_pad_paste_draw(side, drawn_area);
 	else {
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
 		comp_finish(&cctx);
@@ -66,7 +66,7 @@ static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 {
 	pcb_r_search(PCB->Data->pin_tree, ctx->screen, NULL, clear_pin_callback, NULL, NULL);
 	pcb_r_search(PCB->Data->via_tree, ctx->screen, NULL, clear_pin_callback, NULL, NULL);
-	pcb_r_search(PCB->Data->pad_tree, ctx->screen, NULL, clear_pad_callback, side, NULL);
+	pcb_r_search(PCB->Data->pad_tree, ctx->screen, NULL, pcb_pad_clear_callback, side, NULL);
 }
 
 static void pcb_draw_mask(int side, const pcb_box_t *screen)

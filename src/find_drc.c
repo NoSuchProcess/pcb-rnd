@@ -519,7 +519,7 @@ int pcb_drc_all(void)
 			if (pad->Thickness < PCB->minWid) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_SET(TheFlag, pad);
-				DrawPad(pad);
+				pcb_pad_invalidate_draw(pad);
 				drcerr_count++;
 				SetThing(PCB_TYPE_PAD, element, pad, pad);
 				LocateError(&x, &y);

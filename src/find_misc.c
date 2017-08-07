@@ -117,7 +117,7 @@ static void DrawNewConnections(void)
 			position = PadList[i].DrawLocation;
 
 			for (; position < PadList[i].Number; position++)
-				DrawPad(PADLIST_ENTRY(i, position));
+				pcb_pad_invalidate_draw(PADLIST_ENTRY(i, position));
 			PadList[i].DrawLocation = PadList[i].Number;
 		}
 
@@ -369,7 +369,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_CLEAR(TheFlag, pad);
 				if (AndDraw)
-					DrawPad(pad);
+					pcb_pad_invalidate_draw(pad);
 				change = pcb_true;
 			}
 		}

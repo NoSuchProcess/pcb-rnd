@@ -189,7 +189,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 	case PCB_TYPE_PAD:
 		pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, ptr1, ptr2, ptr2);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pad_t *) ptr2);
-		DrawPad((pcb_pad_t *) ptr2);
+		pcb_pad_invalidate_draw((pcb_pad_t *) ptr2);
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:
@@ -427,7 +427,7 @@ do { \
 							if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag) {
 								append(PCB_TYPE_PAD, element, pad);
 								if (pcb->PinOn)
-									DrawPad(pad);
+									pcb_pad_invalidate_draw(pad);
 							}
 						}
 						PCB_END_LOOP;
@@ -454,7 +454,7 @@ do { \
 							&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == PCB_SWAP_IDENT || pcb->InvisibleObjectsOn || !Flag)) {
 						append(PCB_TYPE_PAD, element, pad);
 						if (pcb->PinOn)
-							DrawPad(pad);
+							pcb_pad_invalidate_draw(pad);
 					}
 				}
 				PCB_END_LOOP;
@@ -582,7 +582,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
-				DrawPad(pad);
+				pcb_pad_invalidate_draw(pad);
 				changed = pcb_true;
 			}
 		}
@@ -752,7 +752,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 			if (pad->Name && REGEXEC(pad->Name)) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
-				DrawPad(pad);
+				pcb_pad_invalidate_draw(pad);
 				changed = pcb_true;
 			}
 	}

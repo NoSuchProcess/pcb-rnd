@@ -258,7 +258,7 @@ void pcb_clear_warnings()
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, pad);
-			DrawPad(pad);
+			pcb_pad_invalidate_draw(pad);
 		}
 	}
 	PCB_ENDALL_LOOP;

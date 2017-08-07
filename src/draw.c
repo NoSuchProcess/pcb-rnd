@@ -232,7 +232,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB_VLY_INVISIBLE, 0)) {
 		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
 		pcb_draw_silk(PCB_LYT_INVISIBLE_SIDE(), drawn_area);
-		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
+		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
 		pcb_gui->end_layer();
 	}
 
@@ -368,12 +368,12 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 		/* draw element pads */
 		if (gflg & PCB_LYT_TOP) {
 			side = PCB_COMPONENT_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
 		}
 
 		if (gflg & PCB_LYT_BOTTOM) {
 			side = PCB_SOLDER_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
 		}
 	}
 
@@ -402,12 +402,12 @@ void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 		/* draw element pads' names */
 		if (gflg & PCB_LYT_TOP) {
 			side = PCB_COMPONENT_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_name_callback, &side, NULL);
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_name_draw_callback, &side, NULL);
 		}
 
 		if (gflg & PCB_LYT_BOTTOM) {
 			side = PCB_SOLDER_SIDE;
-			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_name_callback, &side, NULL);
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_name_draw_callback, &side, NULL);
 		}
 	}
 }
@@ -517,7 +517,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		pcb_line_invalidate_erase((pcb_line_t *) ptr);
 		break;
 	case PCB_TYPE_PAD:
-		ErasePad((pcb_pad_t *) ptr);
+		pcb_pad_invalidate_erase((pcb_pad_t *) ptr);
 		break;
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_ELEMENT_ARC:
@@ -566,7 +566,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_PAD:
 		if (PCB->PinOn)
-			DrawPad((pcb_pad_t *) ptr2);
+			pcb_pad_invalidate_draw((pcb_pad_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT_NAME:
 		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))

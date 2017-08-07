@@ -131,7 +131,7 @@ static void unset_found_flags(int AndDraw)
 			if (PCB_FLAG_TEST(flag, pad)) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_CLEAR(flag, pad);
-				DrawPad(pad);
+				pcb_pad_invalidate_draw(pad);
 				change = pcb_true;
 			}
 		}

@@ -471,9 +471,9 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 					PCB_PAD_LOOP((pcb_element_t *) ptr1);
 					{
 						if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
-							ErasePadName(pad);
+							pcb_pad_name_invalidate_erase(pad);
 						else
-							DrawPadName(pad);
+							pcb_pad_name_invalidate_draw(pad);
 						pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, ptr1, pad, pad);
 						PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, pad);
 					}
@@ -497,9 +497,9 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 
 				case PCB_TYPE_PAD:
 					if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2))
-						ErasePadName((pcb_pad_t *) ptr2);
+						pcb_pad_name_invalidate_erase((pcb_pad_t *) ptr2);
 					else
-						DrawPadName((pcb_pad_t *) ptr2);
+						pcb_pad_name_invalidate_draw((pcb_pad_t *) ptr2);
 					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
 					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
