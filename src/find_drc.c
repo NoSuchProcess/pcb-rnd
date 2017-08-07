@@ -434,7 +434,7 @@ int pcb_drc_all(void)
 			if (arc->Thickness < PCB->minWid) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
 				PCB_FLAG_SET(TheFlag, arc);
-				DrawArc(layer, arc);
+				pcb_arc_invalidate_draw(layer, arc);
 				drcerr_count++;
 				SetThing(PCB_TYPE_ARC, layer, arc, arc);
 				LocateError(&x, &y);

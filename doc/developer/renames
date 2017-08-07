@@ -1688,3 +1688,7 @@ DestroyText -> pcb_textop_destroy
 RemoveText_op -> pcb_textop_remove
 Rotate90Text -> pcb_textop_rotate90
 ChgFlagText -> pcb_textop_change_flag
+EraseArc -> pcb_arc_invalidate_erase
+DrawArc -> pcb_arc_invalidate_draw
+_draw_arc -> pcb_arc_draw_
+draw_arc -> pcb_arc_draw

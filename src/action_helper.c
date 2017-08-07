@@ -274,7 +274,7 @@ void pcb_clear_warnings()
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, arc);
-			DrawArc(layer, arc);
+			pcb_arc_invalidate_draw(layer, arc);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -654,7 +654,7 @@ void pcb_notify_mode(void)
 						pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
 						pcb_undo_inc_serial();
 						pcb_added_lines++;
-						DrawArc(CURRENT, arc);
+						pcb_arc_invalidate_draw(CURRENT, arc);
 						pcb_draw();
 						pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 					}

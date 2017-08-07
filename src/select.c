@@ -153,7 +153,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			layer = (pcb_layer_t *) ptr1;
 			pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, ptr1, ptr2, ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, arc);
-			DrawArc(layer, arc);
+			pcb_arc_invalidate_draw(layer, arc);
 			break;
 		}
 
@@ -334,7 +334,7 @@ do { \
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc) != Flag) {
 				append(PCB_TYPE_ARC, layer, arc);
 				if (layer->meta.real.vis)
-					DrawArc(layer, arc);
+					pcb_arc_invalidate_draw(layer, arc);
 			}
 		}
 		PCB_END_LOOP;
@@ -550,7 +550,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, arc);
-			DrawArc(layer, arc);
+			pcb_arc_invalidate_draw(layer, arc);
 			changed = pcb_true;
 		}
 	}

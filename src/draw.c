@@ -521,7 +521,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		break;
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_ELEMENT_ARC:
-		EraseArc((pcb_arc_t *) ptr);
+		pcb_arc_invalidate_erase((pcb_arc_t *) ptr);
 		break;
 	default:
 		pcb_message(PCB_MSG_ERROR, "hace: Internal ERROR, trying to erase an unknown type\n");
@@ -542,7 +542,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_ARC:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			DrawArc((pcb_layer_t *) ptr1, (pcb_arc_t *) ptr2);
+			pcb_arc_invalidate_draw((pcb_layer_t *) ptr1, (pcb_arc_t *) ptr2);
 		break;
 	case PCB_TYPE_TEXT:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)

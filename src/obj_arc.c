@@ -356,14 +356,14 @@ void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 		return (NULL);
 	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Arc->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
+		pcb_arc_invalidate_erase(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Thickness = value;
 		pcb_arc_bbox(Arc);
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
+		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
 	return (NULL);
@@ -381,7 +381,7 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 	value = MIN(PCB_MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Arc->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
+		pcb_arc_invalidate_erase(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Clearance = value;
@@ -392,7 +392,7 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 		pcb_arc_bbox(Arc);
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
+		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
 	return (NULL);
@@ -422,14 +422,14 @@ void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 	value = MIN(PCB_MAX_ARCSIZE, MAX(value, PCB_MIN_ARCSIZE));
 	if (value != *dst) {
 		pcb_undo_add_obj_to_change_radii(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
+		pcb_arc_invalidate_erase(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		*dst = value;
 		pcb_arc_bbox(Arc);
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
+		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
 	return (NULL);
@@ -462,14 +462,14 @@ void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Ar
 
 	if (value != *dst) {
 		pcb_undo_add_obj_to_change_angles(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
+		pcb_arc_invalidate_erase(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		*dst = value;
 		pcb_arc_bbox(Arc);
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
+		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
 	return (NULL);
@@ -480,7 +480,7 @@ void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
-	EraseArc(Arc);
+	pcb_arc_invalidate_erase(Arc);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_false);
@@ -491,7 +491,7 @@ void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_true);
 	}
-	DrawArc(Layer, Arc);
+	pcb_arc_invalidate_draw(Layer, Arc);
 	return (Arc);
 }
 
@@ -522,7 +522,7 @@ void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	if (!arc)
 		return (arc);
 	pcb_arc_copy_meta(arc, Arc);
-	DrawArc(Layer, arc);
+	pcb_arc_invalidate_draw(Layer, arc);
 	pcb_undo_add_obj_to_create(PCB_TYPE_ARC, Layer, arc, arc);
 	return (arc);
 }
@@ -533,9 +533,9 @@ void *pcb_arcop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	if (Layer->meta.real.vis) {
-		EraseArc(Arc);
+		pcb_arc_invalidate_erase(Arc);
 		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
-		DrawArc(Layer, Arc);
+		pcb_arc_invalidate_draw(Layer, Arc);
 		pcb_draw();
 	}
 	else {
@@ -574,7 +574,7 @@ void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t *
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis) {
-		DrawArc(Layer, Arc);
+		pcb_arc_invalidate_draw(Layer, Arc);
 		pcb_draw();
 	}
 	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
@@ -582,11 +582,11 @@ void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t *
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_ARC, Layer, Arc, Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	if (Layer->meta.real.vis)
-		EraseArc(Arc);
+		pcb_arc_invalidate_erase(Arc);
 	newone = (pcb_arc_t *) pcb_arcop_move_to_layer_low(ctx, Layer, Arc, ctx->move.dst_layer);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, ctx->move.dst_layer, Arc);
 	if (ctx->move.dst_layer->meta.real.vis)
-		DrawArc(ctx->move.dst_layer, newone);
+		pcb_arc_invalidate_draw(ctx->move.dst_layer, newone);
 	pcb_draw();
 	return (newone);
 }
@@ -607,7 +607,7 @@ void *pcb_arcop_remve(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
-		EraseArc(Arc);
+		pcb_arc_invalidate_erase(Arc);
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
@@ -685,13 +685,13 @@ void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
 /* rotates an arc */
 void *pcb_arcop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	EraseArc(Arc);
+	pcb_arc_invalidate_erase(Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_arc_rotate90(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-	DrawArc(Layer, Arc);
+	pcb_arc_invalidate_draw(Layer, Arc);
 	pcb_draw();
 	return (Arc);
 }
@@ -737,7 +737,7 @@ void *pcb_arcop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 
 
 /*** draw ***/
-void _draw_arc(pcb_arc_t * arc)
+void pcb_arc_draw_(pcb_arc_t * arc)
 {
 	if (!arc->Thickness)
 		return;
@@ -753,7 +753,7 @@ void _draw_arc(pcb_arc_t * arc)
 	pcb_gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 }
 
-void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
+void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -775,7 +775,7 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 		color = buf;
 	}
 	pcb_gui->set_color(Output.fgGC, color);
-	_draw_arc(arc);
+	pcb_arc_draw_(arc);
 }
 
 pcb_r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl)
@@ -785,12 +785,12 @@ pcb_r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(arc->parent_type, &arc->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	draw_arc((pcb_layer_t *)cl, arc);
+	pcb_arc_draw((pcb_layer_t *)cl, arc);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* erases an arc on a layer */
-void EraseArc(pcb_arc_t *Arc)
+void pcb_arc_invalidate_erase(pcb_arc_t *Arc)
 {
 	if (!Arc->Thickness)
 		return;
@@ -798,7 +798,7 @@ void EraseArc(pcb_arc_t *Arc)
 	pcb_flag_erase(&Arc->Flags);
 }
 
-void DrawArc(pcb_layer_t *Layer, pcb_arc_t *Arc)
+void pcb_arc_invalidate_draw(pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_draw_invalidate(Arc);
 }

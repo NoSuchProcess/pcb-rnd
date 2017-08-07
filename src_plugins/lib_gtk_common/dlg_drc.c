@@ -163,7 +163,7 @@ static void unset_found_flags(int AndDraw)
 		if (PCB_FLAG_TEST(flag, arc)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
 			PCB_FLAG_CLEAR(flag, arc);
-			DrawArc(layer, arc);
+			pcb_arc_invalidate_draw(layer, arc);
 			change = pcb_true;
 		}
 	}

@@ -1878,7 +1878,7 @@ void draw_element_package(pcb_element_t * element)
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(element);
 	{
-		_draw_arc(arc);
+		pcb_arc_draw_(arc);
 	}
 	PCB_END_LOOP;
 }
@@ -1955,7 +1955,7 @@ void EraseElement(pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
-		EraseArc(arc);
+		pcb_arc_invalidate_erase(arc);
 	}
 	PCB_END_LOOP;
 	EraseElementName(Element);
@@ -2008,7 +2008,7 @@ void DrawElementPackage(pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
-		DrawArc(NULL, arc);
+		pcb_arc_invalidate_draw(NULL, arc);
 	}
 	PCB_END_LOOP;
 }

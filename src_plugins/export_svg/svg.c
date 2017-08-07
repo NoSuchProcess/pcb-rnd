@@ -574,7 +574,7 @@ static void svg_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	draw_line(gc, x1, y1, x2, y2);
 }
 
-static void draw_arc(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t r, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t stroke, int large, int sweep)
+static void pcb_arc_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t r, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t stroke, int large, int sweep)
 {
 	if ((photo_mode) && (!gc->erase) && (mask_mode == HID_MASK_OFF)) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
@@ -651,7 +651,7 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	x1 = pcb_round((double)cx + ((double)width * cos(ea * M_PI / 180))+diff);
 	y1 = pcb_round((double)cy + ((double)width * sin(ea * M_PI / 180))+diff);
 
-	draw_arc(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
+	pcb_arc_draw(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
 
 static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_coord_t stroke)

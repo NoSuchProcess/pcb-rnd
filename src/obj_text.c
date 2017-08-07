@@ -679,7 +679,7 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 				if (xordraw)
 					pcb_gui->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
 				else
-					_draw_arc(&newarc);
+					pcb_arc_draw_(&newarc);
 			}
 
 			/* draw the polygons */

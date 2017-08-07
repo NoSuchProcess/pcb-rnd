@@ -114,7 +114,7 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 				pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
 			PCB_FLAG_CLEAR(flag, arc);
 			if (AndDraw)
-				DrawArc(layer, arc);
+				pcb_arc_invalidate_draw(layer, arc);
 			change = pcb_true;
 		}
 	}

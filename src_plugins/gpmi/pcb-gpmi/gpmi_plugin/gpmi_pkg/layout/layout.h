@@ -289,7 +289,7 @@ void draw_set_draw_faded(dctx_t *ctx, int faded);
 void draw_line(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 
 /*
-void draw_arc(dctx_t *ctx, int cx_, int cy_, int xradius_, int yradius_, double start_angle_, double delta_angle_);
+void pcb_arc_draw(dctx_t *ctx, int cx_, int cy_, int xradius_, int yradius_, double start_angle_, double delta_angle_);
 void draw_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 void fill_circle(dctx_t *ctx, int cx_, int cy_, int radius_);
 void fill_polygon(dctx_t *ctx, int n_ints_, int *x_, int *y_);

@@ -997,7 +997,7 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 		op.obj.arc = arc;
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
-		DrawArc(NULL, arc);
+		pcb_arc_invalidate_draw(NULL, arc);
 		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 	else {
@@ -1018,7 +1018,7 @@ void DrawLineOrArc(int type, void *obj)
 		break;
 	case PCB_TYPE_ARC_POINT:
 		/* See comment above */
-		DrawArc(NULL, (pcb_arc_t *) obj);
+		pcb_arc_invalidate_draw(NULL, (pcb_arc_t *) obj);
 		break;
 	}
 }

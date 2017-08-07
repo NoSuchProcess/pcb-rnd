@@ -31,7 +31,7 @@
 pcb_r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void _draw_arc(pcb_arc_t * arc);
-void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc);
-void EraseArc(pcb_arc_t *Arc);
-void DrawArc(pcb_layer_t *Layer, pcb_arc_t *Arc);
+void pcb_arc_draw_(pcb_arc_t * arc);
+void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc);
+void pcb_arc_invalidate_erase(pcb_arc_t *Arc);
+void pcb_arc_invalidate_draw(pcb_layer_t *Layer, pcb_arc_t *Arc);
