@@ -461,9 +461,9 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 					PCB_PIN_LOOP((pcb_element_t *) ptr1);
 					{
 						if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
-							ErasePinName(pin);
+							pcb_pin_name_invalidate_erase(pin);
 						else
-							DrawPinName(pin);
+							pcb_pin_name_invalidate_draw(pin);
 						pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, ptr1, pin, pin);
 						PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, pin);
 					}
@@ -485,9 +485,9 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 
 				case PCB_TYPE_PIN:
 					if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
-						ErasePinName((pcb_pin_t *) ptr2);
+						pcb_pin_name_invalidate_erase((pcb_pin_t *) ptr2);
 					else
-						DrawPinName((pcb_pin_t *) ptr2);
+						pcb_pin_name_invalidate_draw((pcb_pin_t *) ptr2);
 					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
 					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
@@ -508,9 +508,9 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 					break;
 				case PCB_TYPE_VIA:
 					if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
-						EraseViaName((pcb_pin_t *) ptr2);
+						pcb_via_name_invalidate_erase((pcb_pin_t *) ptr2);
 					else
-						DrawViaName((pcb_pin_t *) ptr2);
+						pcb_via_name_invalidate_draw((pcb_pin_t *) ptr2);
 					pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
 					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);

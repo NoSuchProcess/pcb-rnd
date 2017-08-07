@@ -28,20 +28,20 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t draw_pin_name_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t draw_via_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_pin_draw_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_pin_name_draw_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_pin_clear_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_via_draw_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_hole_draw_callback(const pcb_box_t * b, void *cl);
 #endif
 
 
-void draw_pin(pcb_pin_t *pin, pcb_bool draw_hole);
-void EraseVia(pcb_pin_t *Via);
-void EraseViaName(pcb_pin_t *Via);
-void ErasePin(pcb_pin_t *Pin);
-void ErasePinName(pcb_pin_t *Pin);
-void DrawVia(pcb_pin_t *Via);
-void DrawViaName(pcb_pin_t *Via);
-void DrawPin(pcb_pin_t *Pin);
-void DrawPinName(pcb_pin_t *Pin);
+void pcb_pin_draw(pcb_pin_t *pin, pcb_bool draw_hole);
+void pcb_via_invalidate_erase(pcb_pin_t *Via);
+void pcb_via_name_invalidate_erase(pcb_pin_t *Via);
+void pcb_pin_invalidate_erase(pcb_pin_t *Pin);
+void pcb_pin_name_invalidate_erase(pcb_pin_t *Pin);
+void pcb_via_invalidate_draw(pcb_pin_t *Via);
+void pcb_via_name_invalidate_draw(pcb_pin_t *Via);
+void pcb_pin_invalidate_draw(pcb_pin_t *Pin);
+void pcb_pin_name_invalidate_draw(pcb_pin_t *Pin);

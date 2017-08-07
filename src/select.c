@@ -122,7 +122,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 	case PCB_TYPE_VIA:
 		pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, ptr1, ptr1, ptr1);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr1);
-		DrawVia((pcb_pin_t *) ptr1);
+		pcb_via_invalidate_draw((pcb_pin_t *) ptr1);
 		break;
 
 	case PCB_TYPE_LINE:
@@ -183,7 +183,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 	case PCB_TYPE_PIN:
 		pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, ptr1, ptr2, ptr2);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2);
-		DrawPin((pcb_pin_t *) ptr2);
+		pcb_pin_invalidate_draw((pcb_pin_t *) ptr2);
 		break;
 
 	case PCB_TYPE_PAD:
@@ -418,7 +418,7 @@ do { \
 							if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin) != Flag) {
 								append(PCB_TYPE_PIN, element, pin);
 								if (pcb->PinOn)
-									DrawPin(pin);
+									pcb_pin_invalidate_draw(pin);
 							}
 						}
 						PCB_END_LOOP;
@@ -443,7 +443,7 @@ do { \
 							 && PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin) != Flag)) {
 						append(PCB_TYPE_PIN, element, pin);
 						if (pcb->PinOn)
-							DrawPin(pin);
+							pcb_pin_invalidate_draw(pin);
 					}
 				}
 				PCB_END_LOOP;
@@ -471,7 +471,7 @@ do { \
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, via) != Flag) {
 			append(PCB_TYPE_VIA, via, via);
 			if (pcb->ViaOn)
-				DrawVia(via);
+				pcb_via_invalidate_draw(via);
 		}
 	}
 	PCB_END_LOOP;
@@ -572,7 +572,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pin);
-				DrawPin(pin);
+				pcb_pin_invalidate_draw(pin);
 				changed = pcb_true;
 			}
 		}
@@ -595,7 +595,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, via);
-			DrawVia(via);
+			pcb_via_invalidate_draw(via);
 			changed = pcb_true;
 		}
 	}
@@ -738,7 +738,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin) != Flag) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pin);
-			DrawPin(pin);
+			pcb_pin_invalidate_draw(pin);
 			changed = pcb_true;
 		}
 	}
@@ -764,7 +764,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 				&& via->Name && REGEXEC(via->Name) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, via) != Flag) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, via);
-			DrawVia(via);
+			pcb_via_invalidate_draw(via);
 			changed = pcb_true;
 		}
 	}

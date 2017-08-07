@@ -129,10 +129,10 @@ static void DrawNewConnections(void)
 
 		if (PCB_FLAG_TEST(PCB_FLAG_PIN, pv)) {
 			if (PCB->PinOn)
-				DrawPin(pv);
+				pcb_pin_invalidate_draw(pv);
 		}
 		else if (PCB->ViaOn)
-			DrawVia(pv);
+			pcb_via_invalidate_draw(pv);
 		PVList.DrawLocation++;
 	}
 	/* draw the new rat-lines */
@@ -343,7 +343,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 			PCB_FLAG_CLEAR(TheFlag, via);
 			if (AndDraw)
-				DrawVia(via);
+				pcb_via_invalidate_draw(via);
 			change = pcb_true;
 		}
 	}
@@ -357,7 +357,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 				PCB_FLAG_CLEAR(TheFlag, pin);
 				if (AndDraw)
-					DrawPin(pin);
+					pcb_pin_invalidate_draw(pin);
 				change = pcb_true;
 			}
 		}

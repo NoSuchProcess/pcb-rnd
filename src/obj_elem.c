@@ -1343,7 +1343,7 @@ void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 				&& value != pin->DrillingHole) {
 			changed = pcb_true;
 			pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, pin, pin);
-			ErasePin(pin);
+			pcb_pin_invalidate_erase(pin);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->DrillingHole = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
@@ -1351,7 +1351,7 @@ void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pin->Thickness = value;
 			}
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
-			DrawPin(pin);
+			pcb_pin_invalidate_draw(pin);
 		}
 	}
 	PCB_END_LOOP;
@@ -1375,7 +1375,7 @@ void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		if (value <= PCB_MAX_PINORVIASIZE && value >= pin->DrillingHole + PCB_MIN_PINORVIACOPPER && value != pin->Thickness) {
 			changed = pcb_true;
 			pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, pin, pin);
-			ErasePin(pin);
+			pcb_pin_invalidate_erase(pin);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Thickness = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
@@ -1383,7 +1383,7 @@ void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pin->Thickness = value;
 			}
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
-			DrawPin(pin);
+			pcb_pin_invalidate_draw(pin);
 		}
 	}
 	PCB_END_LOOP;
@@ -1409,7 +1409,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 				&& value != pin->Clearance) {
 			changed = pcb_true;
 			pcb_undo_add_obj_to_clear_size(PCB_TYPE_PIN, Element, pin, pin);
-			ErasePin(pin);
+			pcb_pin_invalidate_erase(pin);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Clearance = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
@@ -1417,7 +1417,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pin->Thickness = value;
 			}
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
-			DrawPin(pin);
+			pcb_pin_invalidate_draw(pin);
 		}
 	}
 	PCB_END_LOOP;
@@ -1852,7 +1852,7 @@ void draw_element_pins_and_pads(pcb_element_t * element)
 	PCB_END_LOOP;
 	PCB_PIN_LOOP(element);
 	{
-		draw_pin(pin, pcb_true);
+		pcb_pin_draw(pin, pcb_true);
 	}
 	PCB_END_LOOP;
 }
@@ -1967,7 +1967,7 @@ void EraseElementPinsAndPads(pcb_element_t *Element)
 {
 	PCB_PIN_LOOP(Element);
 	{
-		ErasePin(pin);
+		pcb_pin_invalidate_erase(pin);
 	}
 	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
@@ -2023,7 +2023,7 @@ void DrawElementPinsAndPads(pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_PIN_LOOP(Element);
 	{
-		DrawPin(pin);
+		pcb_pin_invalidate_draw(pin);
 	}
 	PCB_END_LOOP;
 }

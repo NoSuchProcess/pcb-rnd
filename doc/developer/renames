@@ -1718,3 +1718,17 @@ clear_pad_callback -> pcb_pad_clear_callback
 draw_pad -> pcb_pad_draw
 ErasePad -> pcb_pad_invalidate_erase
 DrawPad -> pcb_pad_invalidate_draw
+draw_pin_name_callback -> pcb_pin_name_draw_callback
+EraseViaName -> pcb_via_name_invalidate_erase
+ErasePinName -> pcb_pin_name_invalidate_erase
+DrawViaName -> pcb_via_name_invalidate_draw
+DrawPinName -> pcb_pin_name_invalidate_draw
+draw_pin_callback -> pcb_pin_draw_callback
+clear_pin_callback -> pcb_pin_clear_callback
+draw_via_callback -> pcb_via_draw_callback
+draw_hole_callback -> pcb_hole_draw_callback
+draw_pin -> pcb_pin_draw
+EraseVia -> pcb_via_invalidate_erase
+ErasePin -> pcb_pin_invalidate_erase
+DrawVia -> pcb_via_invalidate_draw
+DrawPin -> pcb_pin_invalidate_draw

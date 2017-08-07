@@ -2877,7 +2877,7 @@ static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 		live_via = pcb_via_new(PCB->Data, X, Y, radius * 2,
 														2 * AutoRouteParameters.style->Clearance, 0, AutoRouteParameters.style->Hole, NULL, pcb_flag_make(0));
 		if (live_via != NULL)
-			DrawVia(live_via);
+			pcb_via_invalidate_draw(live_via);
 	}
 
 	/* a via cuts through every layer group */
@@ -4101,7 +4101,7 @@ static void ripout_livedraw_obj(routebox_t * rb)
 		rb->livedraw_obj.line = NULL;
 	}
 	if (rb->type == VIA && rb->livedraw_obj.via) {
-		EraseVia(rb->livedraw_obj.via);
+		pcb_via_invalidate_erase(rb->livedraw_obj.via);
 		pcb_destroy_object(PCB->Data, PCB_TYPE_VIA, rb->livedraw_obj.via, NULL, NULL);
 		rb->livedraw_obj.via = NULL;
 	}

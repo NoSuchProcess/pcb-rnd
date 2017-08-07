@@ -465,7 +465,7 @@ int pcb_drc_all(void)
 			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 				PCB_FLAG_SET(TheFlag, pin);
-				DrawPin(pin);
+				pcb_pin_invalidate_draw(pin);
 				drcerr_count++;
 				SetThing(PCB_TYPE_PIN, element, pin, pin);
 				LocateError(&x, &y);
@@ -488,7 +488,7 @@ int pcb_drc_all(void)
 			if (pin->DrillingHole < PCB->minDrill) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 				PCB_FLAG_SET(TheFlag, pin);
-				DrawPin(pin);
+				pcb_pin_invalidate_draw(pin);
 				drcerr_count++;
 				SetThing(PCB_TYPE_PIN, element, pin, pin);
 				LocateError(&x, &y);
@@ -550,7 +550,7 @@ int pcb_drc_all(void)
 			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 				PCB_FLAG_SET(TheFlag, via);
-				DrawVia(via);
+				pcb_via_invalidate_draw(via);
 				drcerr_count++;
 				SetThing(PCB_TYPE_VIA, via, via, via);
 				LocateError(&x, &y);
@@ -573,7 +573,7 @@ int pcb_drc_all(void)
 			if (via->DrillingHole < PCB->minDrill) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 				PCB_FLAG_SET(TheFlag, via);
-				DrawVia(via);
+				pcb_via_invalidate_draw(via);
 				drcerr_count++;
 				SetThing(PCB_TYPE_VIA, via, via, via);
 				LocateError(&x, &y);

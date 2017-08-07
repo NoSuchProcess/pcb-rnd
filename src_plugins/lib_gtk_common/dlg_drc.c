@@ -109,7 +109,7 @@ static void unset_found_flags(int AndDraw)
 		if (PCB_FLAG_TEST(flag, via)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 			PCB_FLAG_CLEAR(flag, via);
-			DrawVia(via);
+			pcb_via_invalidate_draw(via);
 			change = pcb_true;
 		}
 	}
@@ -121,7 +121,7 @@ static void unset_found_flags(int AndDraw)
 			if (PCB_FLAG_TEST(flag, pin)) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 				PCB_FLAG_CLEAR(flag, pin);
-				DrawPin(pin);
+				pcb_pin_invalidate_draw(pin);
 				change = pcb_true;
 			}
 		}

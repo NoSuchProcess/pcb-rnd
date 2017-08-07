@@ -166,8 +166,8 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_bo
 	if (!draw_plated && draw_unplated)
 		plated = 0;
 
-	pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
-	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
+	pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_hole_draw_callback, &plated, NULL);
+	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_hole_draw_callback, &plated, NULL);
 }
 
 static void DrawEverything_holes(const pcb_box_t * drawn_area)
@@ -363,7 +363,7 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 	if (PCB->PinOn || !pcb_gui->gui) {
 		/* draw element pins */
-		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_pin_draw_callback, NULL, NULL);
 
 		/* draw element pads */
 		if (gflg & PCB_LYT_TOP) {
@@ -379,11 +379,11 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 	/* draw vias */
 	if (PCB->ViaOn || !pcb_gui->gui) {
-		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_via_callback, NULL, NULL);
-		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_via_draw_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_hole_draw_callback, NULL, NULL);
 	}
 	if (PCB->PinOn || pcb_draw_doing_assy)
-		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_hole_draw_callback, NULL, NULL);
 }
 
 /* ---------------------------------------------------------------------------
@@ -397,7 +397,7 @@ void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 	if (PCB->PinOn || !pcb_gui->gui) {
 		/* draw element pins' names */
-		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_name_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_pin_name_draw_callback, NULL, NULL);
 
 		/* draw element pads' names */
 		if (gflg & PCB_LYT_TOP) {
@@ -496,7 +496,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 	switch (type) {
 	case PCB_TYPE_VIA:
 	case PCB_TYPE_PIN:
-		ErasePin((pcb_pin_t *) ptr);
+		pcb_pin_invalidate_erase((pcb_pin_t *) ptr);
 		break;
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_ELEMENT_NAME:
@@ -534,7 +534,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 	switch (type) {
 	case PCB_TYPE_VIA:
 		if (PCB->ViaOn)
-			DrawVia((pcb_pin_t *) ptr2);
+			pcb_via_invalidate_draw((pcb_pin_t *) ptr2);
 		break;
 	case PCB_TYPE_LINE:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)
@@ -562,7 +562,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_PIN:
 		if (PCB->PinOn)
-			DrawPin((pcb_pin_t *) ptr2);
+			pcb_pin_invalidate_draw((pcb_pin_t *) ptr2);
 		break;
 	case PCB_TYPE_PAD:
 		if (PCB->PinOn)

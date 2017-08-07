@@ -570,7 +570,7 @@ static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 			 pcb_via_new(PCB->Data, i->X, i->Y,
 										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 		pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-		DrawVia(via);
+		pcb_via_invalidate_draw(via);
 	}
 	longjmp(i->env, 1);
 }

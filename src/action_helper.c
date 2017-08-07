@@ -242,7 +242,7 @@ void pcb_clear_warnings()
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pin)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, pin);
-			DrawPin(pin);
+			pcb_pin_invalidate_draw(pin);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -250,7 +250,7 @@ void pcb_clear_warnings()
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, via)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, via);
-			DrawVia(via);
+			pcb_via_invalidate_draw(via);
 		}
 	}
 	PCB_END_LOOP;
@@ -602,7 +602,7 @@ void pcb_notify_mode(void)
 				if (pcb_gui->shift_is_pressed())
 					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
 				pcb_undo_inc_serial();
-				DrawVia(via);
+				pcb_via_invalidate_draw(via);
 				pcb_draw();
 			}
 			break;
@@ -798,7 +798,7 @@ void pcb_notify_mode(void)
 			}
 
 			if(via)
-				DrawVia(via);
+				pcb_via_invalidate_draw(via);
 
 			pcb_draw();
 			pcb_undo_inc_serial();
@@ -866,7 +866,7 @@ void pcb_notify_mode(void)
 														 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 					pcb_obj_add_attribs(via, PCB->pen_attr);
 					pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-					DrawVia(via);
+					pcb_via_invalidate_draw(via);
 				}
 				/* copy the coordinates */
 				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
