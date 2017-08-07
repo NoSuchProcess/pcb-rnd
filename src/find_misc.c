@@ -106,7 +106,7 @@ static void DrawNewConnections(void)
 			/* draw all new polygons */
 			position = PolygonList[layer].DrawLocation;
 			for (; position < PolygonList[layer].Number; position++)
-				DrawPolygon(LAYER_PTR(layer), POLYGONLIST_ENTRY(layer, position));
+				pcb_poly_invalidate_draw(LAYER_PTR(layer), POLYGONLIST_ENTRY(layer, position));
 			PolygonList[layer].DrawLocation = PolygonList[layer].Number;
 		}
 	}
@@ -438,7 +438,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 				pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			PCB_FLAG_CLEAR(TheFlag, polygon);
 			if (AndDraw)
-				DrawPolygon(layer, polygon);
+				pcb_poly_invalidate_draw(layer, polygon);
 			change = pcb_true;
 		}
 	}

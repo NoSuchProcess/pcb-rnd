@@ -282,7 +282,7 @@ void pcb_clear_warnings()
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, polygon);
-			DrawPolygon(layer, polygon);
+			pcb_poly_invalidate_draw(layer, polygon);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -932,7 +932,7 @@ void pcb_notify_mode(void)
 				pcb_obj_add_attribs(polygon, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 				pcb_undo_inc_serial();
-				DrawPolygon(CURRENT, polygon);
+				pcb_poly_invalidate_draw(CURRENT, polygon);
 				pcb_draw();
 			}
 

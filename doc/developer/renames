@@ -1697,3 +1697,6 @@ _draw_line -> pcb_line_draw_
 draw_line -> pcb_line_draw
 EraseLine -> pcb_line_invalidate_erase
 DrawLine -> pcb_line_invalidate_draw
+draw_poly_callback -> pcb_poly_draw_callback
+ErasePolygon -> pcb_poly_invalidate_erase
+DrawPolygon -> pcb_poly_invalidate_draw

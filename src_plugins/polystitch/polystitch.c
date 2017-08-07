@@ -185,8 +185,8 @@ static void stitch_them()
 	int ii, oo;
 	double best = -1, dist;
 
-	ErasePolygon(inner_poly);
-	ErasePolygon(outer_poly);
+	pcb_poly_invalidate_erase(inner_poly);
+	pcb_poly_invalidate_erase(outer_poly);
 
 	/* This is O(n^2) but there's not a lot we can do about that.  */
 	for (i = 0; i < inner_poly->PointN; i++)
@@ -220,7 +220,7 @@ static void stitch_them()
 	pcb_r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly, 0);
 	pcb_poly_remove_excess_points(poly_layer, outer_poly);
 	pcb_poly_init_clip(PCB->Data, poly_layer, outer_poly);
-	DrawPolygon(poly_layer, outer_poly);
+	pcb_poly_invalidate_draw(poly_layer, outer_poly);
 	pcb_draw();
 
 	pcb_poly_remove(poly_layer, inner_poly);

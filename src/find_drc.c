@@ -291,7 +291,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 doIsBad:
 	pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 	PCB_FLAG_SET(PCB_FLAG_FOUND, polygon);
-	DrawPolygon(layer, polygon);
+	pcb_poly_invalidate_draw(layer, polygon);
 	pcb_draw_obj(type, ptr1, ptr2);
 	drcerr_count++;
 	LocateError(&x, &y);

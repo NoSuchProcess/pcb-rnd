@@ -173,7 +173,7 @@ static void unset_found_flags(int AndDraw)
 		if (PCB_FLAG_TEST(flag, polygon)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			PCB_FLAG_CLEAR(flag, polygon);
-			DrawPolygon(layer, polygon);
+			pcb_poly_invalidate_draw(layer, polygon);
 			change = pcb_true;
 		}
 	}

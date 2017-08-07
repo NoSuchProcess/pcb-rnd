@@ -126,7 +126,7 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 				pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			PCB_FLAG_CLEAR(flag, polygon);
 			if (AndDraw)
-				DrawPolygon(layer, polygon);
+				pcb_poly_invalidate_draw(layer, polygon);
 			change = pcb_true;
 		}
 	}

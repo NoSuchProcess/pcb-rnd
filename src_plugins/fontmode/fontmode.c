@@ -90,7 +90,7 @@ static void add_poly(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t ox, pc
 	/* add */
 	pcb_add_polygon_on_layer(layer, np);
 	pcb_poly_init_clip(PCB->Data, layer, np);
-	DrawPolygon(layer, np);
+	pcb_poly_invalidate_draw(layer, np);
 }
 
 static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)

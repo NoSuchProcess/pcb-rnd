@@ -435,7 +435,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 
 	/* print the non-clearing polys */
-	pcb_r_search(Layer->polygon_tree, screen, NULL, draw_poly_callback, &info, NULL);
+	pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_callback, &info, NULL);
 
 	if (conf_core.editor.check_planes)
 		return;
@@ -503,7 +503,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		EraseText((pcb_layer_t *) lptr, (pcb_text_t *) ptr);
 		break;
 	case PCB_TYPE_POLYGON:
-		ErasePolygon((pcb_polygon_t *) ptr);
+		pcb_poly_invalidate_erase((pcb_polygon_t *) ptr);
 		break;
 	case PCB_TYPE_ELEMENT:
 		EraseElement((pcb_element_t *) ptr);
@@ -550,7 +550,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_POLYGON:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			DrawPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
+			pcb_poly_invalidate_draw((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT:
 		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))

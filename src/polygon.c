@@ -1394,7 +1394,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	pcb_add_polygon_on_layer(CURRENT, polygon);
 
 	pcb_poly_init_clip(PCB->Data, CURRENT, polygon);
-	DrawPolygon(CURRENT, polygon);
+	pcb_poly_invalidate_draw(CURRENT, polygon);
 	pcb_board_set_changed_flag(pcb_true);
 
 	/* reset state of attached line */
@@ -1827,7 +1827,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_polygon_t *poly)
 		return pcb_false;
 	if (poly->Clipped->f == poly->Clipped)
 		return pcb_false;
-	ErasePolygon(poly);
+	pcb_poly_invalidate_erase(poly);
 	start = p = poly->Clipped;
 	/* This is ugly. The creation of the new polygons can cause
 	 * all of the polygon pointers (including the one we're called
@@ -1866,7 +1866,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_polygon_t *poly)
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
 			pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) newone, 0);
-			DrawPolygon(layer, newone);
+			pcb_poly_invalidate_draw(layer, newone);
 		}
 		else {
 			pcb_polyarea_t *t = p;
@@ -1968,7 +1968,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 			Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 
-		DrawPolygon(Layer, Polygon);
+		pcb_poly_invalidate_draw(Layer, Polygon);
 		/* add to undo list */
 		pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	}

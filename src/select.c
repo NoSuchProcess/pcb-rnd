@@ -175,7 +175,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			layer = (pcb_layer_t *) ptr1;
 			pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, ptr1, ptr2, ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, poly);
-			DrawPolygon(layer, poly);
+			pcb_poly_invalidate_draw(layer, poly);
 			/* changing memory order no longer effects draw order */
 			break;
 		}
@@ -358,7 +358,7 @@ do { \
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) != Flag) {
 				append(PCB_TYPE_POLYGON, layer, polygon);
 				if (layer->meta.real.vis)
-					DrawPolygon(layer, polygon);
+					pcb_poly_invalidate_draw(layer, polygon);
 			}
 		}
 		PCB_END_LOOP;
@@ -560,7 +560,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)) {
 			pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, polygon);
-			DrawPolygon(layer, polygon);
+			pcb_poly_invalidate_draw(layer, polygon);
 			changed = pcb_true;
 		}
 	}
