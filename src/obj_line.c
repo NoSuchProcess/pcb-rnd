@@ -344,14 +344,14 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		return (NULL);
 	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Line->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_LINE, Layer, Line, Line);
-		EraseLine(Line);
+		pcb_line_invalidate_erase(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		Line->Thickness = value;
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		DrawLine(Layer, Line);
+		pcb_line_invalidate_draw(Layer, Line);
 		return (Line);
 	}
 	return (NULL);
@@ -370,7 +370,7 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 	if (value != Line->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_TYPE_LINE, Layer, Line, Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		EraseLine(Line);
+		pcb_line_invalidate_erase(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		Line->Clearance = value;
 		if (Line->Clearance == 0) {
@@ -380,7 +380,7 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		DrawLine(Layer, Line);
+		pcb_line_invalidate_draw(Layer, Line);
 		return (Line);
 	}
 	return (NULL);
@@ -401,7 +401,7 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return (NULL);
-	EraseLine(Line);
+	pcb_line_invalidate_erase(Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -412,7 +412,7 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_true);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
-	DrawLine(Layer, Line);
+	pcb_line_invalidate_draw(Layer, Line);
 	return (Line);
 }
 
@@ -444,7 +444,7 @@ void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	if (!line)
 		return (line);
 	pcb_line_copy_meta(line, Line);
-	DrawLine(Layer, line);
+	pcb_line_invalidate_draw(Layer, line);
 	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, Layer, line, line);
 	return (line);
 }
@@ -453,14 +453,14 @@ void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (Layer->meta.real.vis)
-		EraseLine(Line);
+		pcb_line_invalidate_erase(Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	pcb_line_move(Line, ctx->move.dx, ctx->move.dy);
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	if (Layer->meta.real.vis) {
-		DrawLine(Layer, Line);
+		pcb_line_invalidate_draw(Layer, Line);
 		pcb_draw();
 	}
 	return (Line);
@@ -471,7 +471,7 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 {
 	if (Layer) {
 		if (Layer->meta.real.vis)
-			EraseLine(Line);
+			pcb_line_invalidate_erase(Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_r_delete_entry(Layer->line_tree, &Line->BoundingBox);
 		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
@@ -479,7 +479,7 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 		pcb_r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		if (Layer->meta.real.vis) {
-			DrawLine(Layer, Line);
+			pcb_line_invalidate_draw(Layer, Line);
 			pcb_draw();
 		}
 		return (Line);
@@ -587,7 +587,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis) {
-		DrawLine(Layer, Line);
+		pcb_line_invalidate_draw(Layer, Line);
 		pcb_draw();
 	}
 	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
@@ -595,13 +595,13 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_LINE, Layer, Line, Line);
 	if (Layer->meta.real.vis)
-		EraseLine(Line);
+		pcb_line_invalidate_erase(Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	newone = (pcb_line_t *) pcb_lineop_move_to_layer_low(ctx, Layer, Line, ctx->move.dst_layer);
 	Line = NULL;
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->meta.real.vis)
-		DrawLine(ctx->move.dst_layer, newone);
+		pcb_line_invalidate_draw(ctx->move.dst_layer, newone);
 	pcb_draw();
 	if (!PCB->ViaOn || ctx->move.more_to_come ||
 			pcb_layer_get_group_(Layer) ==
@@ -696,7 +696,7 @@ void *pcb_lineop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
-		EraseLine(Line);
+		pcb_line_invalidate_erase(Line);
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
@@ -777,7 +777,7 @@ void pcb_line_flip_side(pcb_layer_t *layer, pcb_line_t *line)
 
 static void rotate_line1(pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	EraseLine(Line);
+	pcb_line_invalidate_erase(Line);
 	if (Layer) {
 		if (PCB_LAYER_IS_REAL(Layer))
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -796,7 +796,7 @@ static void rotate_line2(pcb_layer_t *Layer, pcb_line_t *Line)
 			pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		if (PCB_LAYER_IS_REAL(Layer))
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		DrawLine(Layer, Line);
+		pcb_line_invalidate_draw(Layer, Line);
 	}
 	else {
 		pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) Line, 0);
@@ -845,7 +845,7 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 	X = Line->Point2.X;
 	Y = Line->Point2.Y;
 	pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, ctx->insert.x - X, ctx->insert.y - Y);
-	EraseLine(Line);
+	pcb_line_invalidate_erase(Line);
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	Line->Point2.X = ctx->insert.x;
@@ -853,14 +853,14 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 	pcb_line_bbox(Line);
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	DrawLine(Layer, Line);
+	pcb_line_invalidate_draw(Layer, Line);
 	/* we must create after playing with Line since creation may
 	 * invalidate the line pointer
 	 */
 	if ((line = pcb_line_new_merge(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
 		pcb_line_copy_meta(line, Line);
 		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, Layer, line, line);
-		DrawLine(Layer, line);
+		pcb_line_invalidate_draw(Layer, line);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, line);
 		/* creation call adds it to the rtree */
 	}
@@ -880,7 +880,7 @@ void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 
 
 /*** draw ***/
-void _draw_line(pcb_line_t * line)
+void pcb_line_draw_(pcb_line_t * line)
 {
 	PCB_DRAW_BBOX(line);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
@@ -892,7 +892,7 @@ void _draw_line(pcb_line_t * line)
 	pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 }
 
-void draw_line(pcb_layer_t * layer, pcb_line_t * line)
+void pcb_line_draw(pcb_layer_t * layer, pcb_line_t * line)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -915,28 +915,28 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 	}
 
 	pcb_gui->set_color(Output.fgGC, color);
-	_draw_line(line);
+	pcb_line_draw_(line);
 }
 
-pcb_r_dir_t draw_line_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *)b;
 
 	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(line->parent_type, &line->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	draw_line((pcb_layer_t *)cl, line);
+	pcb_line_draw((pcb_layer_t *)cl, line);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* erases a line on a layer */
-void EraseLine(pcb_line_t *Line)
+void pcb_line_invalidate_erase(pcb_line_t *Line)
 {
 	pcb_draw_invalidate(Line);
 	pcb_flag_erase(&Line->Flags);
 }
 
-void DrawLine(pcb_layer_t *Layer, pcb_line_t *Line)
+void pcb_line_invalidate_draw(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_draw_invalidate(Line);
 }

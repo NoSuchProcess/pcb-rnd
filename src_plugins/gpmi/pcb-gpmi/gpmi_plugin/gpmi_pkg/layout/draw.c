@@ -37,7 +37,7 @@ void draw_set_draw_faded(dctx_t *ctx, int faded)
 	hid->set_draw_faded(gc, faded);
 }
 
-void draw_line(dctx_t *ctx, int x1, int y1, int x2, int y2)
+void pcb_line_draw(dctx_t *ctx, int x1, int y1, int x2, int y2)
 {
 	setup("draw_line");
 	hid->draw_line(gc, x1, y1, x2, y2);

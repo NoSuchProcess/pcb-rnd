@@ -1692,3 +1692,8 @@ EraseArc -> pcb_arc_invalidate_erase
 DrawArc -> pcb_arc_invalidate_draw
 _draw_arc -> pcb_arc_draw_
 draw_arc -> pcb_arc_draw
+draw_line_callback -> pcb_line_draw_callback
+_draw_line -> pcb_line_draw_
+draw_line -> pcb_line_draw
+EraseLine -> pcb_line_invalidate_erase
+DrawLine -> pcb_line_invalidate_draw

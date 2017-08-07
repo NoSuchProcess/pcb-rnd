@@ -102,7 +102,7 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 				pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
 			PCB_FLAG_CLEAR(flag, line);
 			if (AndDraw)
-				DrawLine(layer, line);
+				pcb_line_invalidate_draw(layer, line);
 			change = pcb_true;
 		}
 	}

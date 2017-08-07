@@ -1873,7 +1873,7 @@ void draw_element_package(pcb_element_t * element)
 	/* draw lines, arcs, text and pins */
 	PCB_ELEMENT_PCB_LINE_LOOP(element);
 	{
-		_draw_line(line);
+		pcb_line_draw_(line);
 	}
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(element);
@@ -1950,7 +1950,7 @@ void EraseElement(pcb_element_t *Element)
 {
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
-		EraseLine(line);
+		pcb_line_invalidate_erase(line);
 	}
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
@@ -2003,7 +2003,7 @@ void DrawElementPackage(pcb_element_t *Element)
 {
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
-		DrawLine(NULL, line);
+		pcb_line_invalidate_draw(NULL, line);
 	}
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);

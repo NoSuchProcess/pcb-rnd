@@ -653,7 +653,7 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 				if (xordraw)
 					pcb_gui->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
 				else
-					_draw_line(&newline);
+					pcb_line_draw_(&newline);
 			}
 
 			/* draw the arcs */

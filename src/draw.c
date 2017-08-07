@@ -441,7 +441,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 		return;
 
 	/* draw all visible lines this layer */
-	pcb_r_search(Layer->line_tree, screen, NULL, draw_line_callback, Layer, NULL);
+	pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, NULL);
 
 	/* draw the layer arcs on screen */
 	pcb_r_search(Layer->arc_tree, screen, NULL, draw_arc_callback, Layer, NULL);
@@ -514,7 +514,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ELEMENT_LINE:
 	case PCB_TYPE_RATLINE:
-		EraseLine((pcb_line_t *) ptr);
+		pcb_line_invalidate_erase((pcb_line_t *) ptr);
 		break;
 	case PCB_TYPE_PAD:
 		ErasePad((pcb_pad_t *) ptr);
@@ -538,7 +538,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_LINE:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			DrawLine((pcb_layer_t *) ptr1, (pcb_line_t *) ptr2);
+			pcb_line_invalidate_draw((pcb_layer_t *) ptr1, (pcb_line_t *) ptr2);
 		break;
 	case PCB_TYPE_ARC:
 		if (((pcb_layer_t *) ptr1)->meta.real.vis)

@@ -28,10 +28,10 @@
 
 /* Include rtree.h for this */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t draw_line_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void _draw_line(pcb_line_t * line);
-void draw_line(pcb_layer_t * layer, pcb_line_t * line);
-void EraseLine(pcb_line_t *Line);
-void DrawLine(pcb_layer_t *Layer, pcb_line_t *Line);
+void pcb_line_draw_(pcb_line_t * line);
+void pcb_line_draw(pcb_layer_t * layer, pcb_line_t * line);
+void pcb_line_invalidate_erase(pcb_line_t *Line);
+void pcb_line_invalidate_draw(pcb_layer_t *Layer, pcb_line_t *Line);

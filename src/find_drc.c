@@ -403,7 +403,7 @@ int pcb_drc_all(void)
 			if (line->Thickness < PCB->minWid) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
 				PCB_FLAG_SET(TheFlag, line);
-				DrawLine(layer, line);
+				pcb_line_invalidate_draw(layer, line);
 				drcerr_count++;
 				SetThing(PCB_TYPE_LINE, layer, line, line);
 				LocateError(&x, &y);
@@ -608,7 +608,7 @@ int pcb_drc_all(void)
 		{
 			if (line->Thickness < PCB->minSlk) {
 				PCB_FLAG_SET(TheFlag, line);
-				DrawLine(layer, line);
+				pcb_line_invalidate_draw(layer, line);
 				drcerr_count++;
 				SetThing(PCB_TYPE_LINE, layer, line, line);
 				LocateError(&x, &y);

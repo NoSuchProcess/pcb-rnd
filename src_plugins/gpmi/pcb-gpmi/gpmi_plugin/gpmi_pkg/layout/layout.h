@@ -286,7 +286,7 @@ void draw_set_draw_xor(dctx_t *ctx, int xor);
 void draw_set_draw_faded(dctx_t *ctx, int faded);
 
 /* Debug draw: draw a line using the current style settings */
-void draw_line(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
+void pcb_line_draw(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 
 /*
 void pcb_arc_draw(dctx_t *ctx, int cx_, int cy_, int xradius_, int yradius_, double start_angle_, double delta_angle_);

@@ -473,7 +473,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 																			p_obj->point2.Y - apply_to_line->Point2.Y );
 						
 					/* Move the existing line point/s */
-					EraseLine(apply_to_line);
+					pcb_line_invalidate_erase(apply_to_line);
 					pcb_r_delete_entry(apply_to_line_layer->line_tree, (pcb_box_t *) apply_to_line);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, apply_to_line_layer, apply_to_line);
 					apply_to_line->Point1.X = p_obj->point1.X;
@@ -483,7 +483,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 					pcb_line_bbox(apply_to_line);
 					pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) apply_to_line, 0);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, apply_to_line);
-					DrawLine(layer, apply_to_line);
+					pcb_line_invalidate_draw(layer, apply_to_line);
 					apply_to_line_layer = layer;
 
 					/* The existing line has been used so forget about it. */
@@ -505,7 +505,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 							line->Number = pcb_strdup(number);
 						pcb_added_lines++;
 						pcb_obj_add_attribs(line, PCB->pen_attr);
-						DrawLine(layer, line);
+						pcb_line_invalidate_draw(layer, line);
 						pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, line, line);
 						applied = 1;
 					}

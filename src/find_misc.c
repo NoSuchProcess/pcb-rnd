@@ -94,7 +94,7 @@ static void DrawNewConnections(void)
 			/* draw all new lines */
 			position = LineList[layer].DrawLocation;
 			for (; position < LineList[layer].Number; position++)
-				DrawLine(LAYER_PTR(layer), LINELIST_ENTRY(layer, position));
+				pcb_line_invalidate_draw(LAYER_PTR(layer), LINELIST_ENTRY(layer, position));
 			LineList[layer].DrawLocation = LineList[layer].Number;
 
 			/* draw all new arcs */
@@ -414,7 +414,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 				pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
 			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
-				DrawLine(layer, line);
+				pcb_line_invalidate_draw(layer, line);
 			change = pcb_true;
 		}
 	}

@@ -71,7 +71,7 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 	l.Point2.X = PCB_MM_TO_COORD(x2);
 	l.Point2.Y = PCB_MM_TO_COORD(y2);
 	l.Thickness = PCB_MM_TO_COORD(thick);
-	_draw_line(&l);
+	pcb_line_draw_(&l);
 }
 
 static void dchkbox(pcb_hid_gc_t gc, int x0, int y0, int checked)

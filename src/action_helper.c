@@ -266,7 +266,7 @@ void pcb_clear_warnings()
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, line)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, line);
-			DrawLine(layer, line);
+			pcb_line_invalidate_draw(layer, line);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -846,7 +846,7 @@ void pcb_notify_mode(void)
 				pcb_added_lines++;
 				pcb_obj_add_attribs(line, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
-				DrawLine(CURRENT, line);
+				pcb_line_invalidate_draw(CURRENT, line);
 				/* place a via if vias are visible, the layer is
 				   in a new group since the last line and there
 				   isn't a pin already here */
@@ -888,7 +888,7 @@ void pcb_notify_mode(void)
 				pcb_obj_add_attribs(line, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
 				pcb_undo_inc_serial();
-				DrawLine(CURRENT, line);
+				pcb_line_invalidate_draw(CURRENT, line);
 				/* move to new start point */
 				pcb_crosshair.AttachedLine.Point1.X = Note.X;
 				pcb_crosshair.AttachedLine.Point1.Y = Note.Y;

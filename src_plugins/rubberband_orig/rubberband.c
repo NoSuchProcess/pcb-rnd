@@ -1081,7 +1081,7 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 		*changed = 1;
 		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
 		pcb_undo_add_obj_to_rotate(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, cx, cy, steps);
-		EraseLine(ptr->Line);
+		pcb_line_invalidate_erase(ptr->Line);
 		if (ptr->Layer) {
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			pcb_r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
@@ -1093,7 +1093,7 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 		if (ptr->Layer) {
 			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
-			DrawLine(ptr->Layer, ptr->Line);
+			pcb_line_invalidate_draw(ptr->Layer, ptr->Line);
 		}
 		else {
 			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);

@@ -967,7 +967,7 @@ static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 		op.obj.line = line;
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
-		DrawLine(NULL, line);
+		pcb_line_invalidate_draw(NULL, line);
 		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 	else {
@@ -1010,11 +1010,11 @@ void DrawLineOrArc(int type, void *obj)
 	switch (type) {
 	case PCB_TYPE_LINE_POINT:
 		/* Attention: We can use a NULL pointer here for the layer,
-		 * because it is not used in the DrawLine() function anyways.
-		 * ATM DrawLine() only calls AddPart() internally, which invalidates
+		 * because it is not used in the pcb_line_invalidate_draw() function anyways.
+		 * ATM pcb_line_invalidate_draw() only calls AddPart() internally, which invalidates
 		 * the area specified by the line's bounding box.
 		 */
-		DrawLine(NULL, (pcb_line_t *) obj);
+		pcb_line_invalidate_draw(NULL, (pcb_line_t *) obj);
 		break;
 	case PCB_TYPE_ARC_POINT:
 		/* See comment above */

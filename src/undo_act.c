@@ -185,7 +185,7 @@ int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					if (conf_core.editor.auto_drc) {
 						/* undo loses PCB_FLAG_FOUND */
 						PCB_FLAG_SET(PCB_FLAG_FOUND, ptr2);
-						DrawLine(CURRENT, ptr2);
+						pcb_line_invalidate_draw(CURRENT, ptr2);
 					}
 					pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ptr2->Point2.X;
 					pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;

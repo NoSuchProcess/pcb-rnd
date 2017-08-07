@@ -3006,7 +3006,7 @@ RD_DrawLine(routedata_t * rd,
 																					2 * qhthick, 0, pcb_flag_make(0));
 		rb->livedraw_obj.line = line;
 		if (line != NULL)
-			DrawLine(layer, line);
+			pcb_line_invalidate_draw(layer, line);
 	}
 
 	/* and to the via space structures */
@@ -4096,7 +4096,7 @@ static void ripout_livedraw_obj(routebox_t * rb)
 {
 	if (rb->type == LINE && rb->livedraw_obj.line) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.grp[rb->group].lid[0]);
-		EraseLine(rb->livedraw_obj.line);
+		pcb_line_invalidate_erase(rb->livedraw_obj.line);
 		pcb_destroy_object(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
 	}

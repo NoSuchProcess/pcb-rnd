@@ -545,7 +545,7 @@ static void svg_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	draw_fill_rect(gc, x1, y1, x2-x1, y2-y1);
 }
 
-static void draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void pcb_line_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	if ((photo_mode) && (!gc->erase) && (mask_mode == HID_MASK_OFF)) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
@@ -571,7 +571,7 @@ static void draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord
 static void svg_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
-	draw_line(gc, x1, y1, x2, y2);
+	pcb_line_draw(gc, x1, y1, x2, y2);
 }
 
 static void pcb_arc_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t r, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t stroke, int large, int sweep)
@@ -604,7 +604,7 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 
  /* degenerate case: r=0 means a single dot */
 	if ((width == 0) && (height == 0)) {
-		draw_line(gc, cx, cy, cx, cy);
+		pcb_line_draw(gc, cx, cy, cx, cy);
 		return;
 	}
 
