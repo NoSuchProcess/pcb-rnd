@@ -37,9 +37,9 @@ const char *gerber_cookie = "gerber HID";
 
 #define SUFF_LEN 256
 
-/*----------------------------------------------------------------------------*/
-/* Function prototypes                                                        */
-/*----------------------------------------------------------------------------*/
+#if SUFF_LEN < PCB_DERIVE_FN_SUFF_LEN
+#	error SUFF_LEN needs at least PCB_DERIVE_FN_SUFF_LEN
+#endif
 
 static pcb_hid_attribute_t *gerber_get_export_options(int *n);
 static void gerber_do_export(pcb_hid_attr_val_t * options);
