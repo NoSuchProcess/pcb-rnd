@@ -105,7 +105,7 @@ int pcb_act_Atomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_Undo[] = "pcb_undo()\n" "pcb_undo(ClearList)";
+static const char pcb_acts_Undo[] = "undo()\n" "undo(ClearList)";
 
 static const char pcb_acth_Undo[] = "Undo recent changes.";
 
@@ -245,7 +245,7 @@ int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_Redo[] = "pcb_redo()";
+static const char pcb_acts_Redo[] = "redo()";
 
 static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
 
