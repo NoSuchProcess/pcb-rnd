@@ -35,6 +35,8 @@ const char *gerber_cookie = "gerber HID";
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented Gerber function %s.\n", func); abort()
 
+#define SUFF_LEN 256
+
 /*----------------------------------------------------------------------------*/
 /* Function prototypes                                                        */
 /*----------------------------------------------------------------------------*/
@@ -564,7 +566,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 			outline_layer = PCB->Data->Layer + i;
 
 	i = strlen(fnbase);
-	filename = (char *) realloc(filename, i + 40);
+	filename = (char *) realloc(filename, i + SUFF_LEN);
 	strcpy(filename, fnbase);
 	strcat(filename, ".");
 	filesuff = filename + strlen(filename);
