@@ -154,7 +154,6 @@ static pcb_bool andDraw = pcb_true;
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static UndoListTypePtr GetUndoSlot(int, int, int);
 static void DrawRecoveredObject(int, void *, void *, void *);
 static pcb_bool UndoRotate(UndoListTypePtr);
 static pcb_bool UndoChangeName(UndoListTypePtr);
@@ -181,7 +180,7 @@ static int PerformUndo(UndoListTypePtr);
 /* ---------------------------------------------------------------------------
  * adds a command plus some data to the undo list
  */
-static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
+static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind, size_t item_len)
 {
 	UndoListTypePtr ptr;
 	void *ptr1, *ptr2, *ptr3;
@@ -198,9 +197,9 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 		size_t size;
 
 		UndoMax += STEP_UNDOLIST;
-		size = UndoMax * sizeof(UndoListType);
+		size = UndoMax * item_len;
 		UndoList = (UndoListTypePtr) realloc(UndoList, size);
-		memset(&UndoList[UndoN], 0, STEP_REMOVELIST * sizeof(UndoListType));
+		memset(&UndoList[UndoN], 0, STEP_REMOVELIST * item_len);
 
 		/* ask user to flush the table because of it's size */
 		if (size > limit) {
@@ -1215,7 +1214,7 @@ void pcb_undo_add_obj_to_clear_poly(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CLEAR, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_CLEAR, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.ClearPoly.Clear = clear;
 		undo->Data.ClearPoly.Layer = (pcb_layer_t *) Ptr1;
 	}
@@ -1229,7 +1228,7 @@ void pcb_undo_add_obj_to_mirror(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_MIRROR, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_MIRROR, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.Move.DY = yoff;
 	}
 }
@@ -1242,7 +1241,7 @@ void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_OTHERSIDE, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_OTHERSIDE, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.Move.DY = yoff;
 	}
 }
@@ -1255,7 +1254,7 @@ void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_ROTATE, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_ROTATE, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.Rotate.CenterX = CenterX;
 		undo->Data.Rotate.CenterY = CenterY;
 		undo->Data.Rotate.Steps = Steps;
@@ -1274,7 +1273,7 @@ void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (!RemoveList)
 		RemoveList = pcb_buffer_new(NULL);
 
-	GetUndoSlot(PCB_UNDO_REMOVE, PCB_OBJECT_ID(Ptr3), Type);
+	GetUndoSlot(PCB_UNDO_REMOVE, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 	pcb_move_obj_to_buffer(PCB, RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 }
 
@@ -1295,7 +1294,7 @@ void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, pcb_card
 				/* save the ID of the parent object; else it will be
 				 * impossible to recover the point
 				 */
-				undo = GetUndoSlot(PCB_UNDO_REMOVE_POINT, PCB_OBJECT_ID(polygon), PCB_TYPE_POLYGON);
+				undo = GetUndoSlot(PCB_UNDO_REMOVE_POINT, PCB_OBJECT_ID(polygon), PCB_TYPE_POLYGON, sizeof(UndoListType));
 				undo->Data.RemovedPoint.X = polygon->Points[index].X;
 				undo->Data.RemovedPoint.Y = polygon->Points[index].Y;
 				undo->Data.RemovedPoint.ID = polygon->Points[index].ID;
@@ -1323,7 +1322,7 @@ void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, pcb_card
 void pcb_undo_add_obj_to_insert_point(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (!Locked)
-		GetUndoSlot(PCB_UNDO_INSERT_POINT, PCB_OBJECT_ID(Ptr3), Type);
+		GetUndoSlot(PCB_UNDO_INSERT_POINT, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 }
 
 static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
@@ -1337,7 +1336,7 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
 	if (!RemoveList)
 		RemoveList = pcb_buffer_new(NULL);
 
-	undo = GetUndoSlot(undo_type, PCB_OBJECT_ID(Ptr2), Type);
+	undo = GetUndoSlot(undo_type, PCB_OBJECT_ID(Ptr2), Type, sizeof(UndoListType));
 	copy = (pcb_any_obj_t *) pcb_copy_obj_to_buffer(PCB, RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 	undo->Data.CopyID = copy->ID;
 }
@@ -1368,7 +1367,7 @@ void pcb_undo_add_obj_to_move(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_MOVE, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_MOVE, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.Move.DX = DX;
 		undo->Data.Move.DY = DY;
 	}
@@ -1382,7 +1381,7 @@ void pcb_undo_add_obj_to_change_name(int Type, void *Ptr1, void *Ptr2, void *Ptr
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGENAME, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGENAME, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.ChangeName.Name = OldName;
 	}
 }
@@ -1395,7 +1394,7 @@ void pcb_undo_add_obj_to_change_pinnum(int Type, void *Ptr1, void *Ptr2, void *P
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGEPINNUM, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGEPINNUM, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.ChangeName.Name = OldName;
 	}
 }
@@ -1408,7 +1407,7 @@ void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *P
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_MOVETOLAYER, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_MOVETOLAYER, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.MoveToLayer.OriginalLayer = pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1);
 	}
 }
@@ -1419,7 +1418,7 @@ void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *P
 void pcb_undo_add_obj_to_create(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (!Locked)
-		GetUndoSlot(PCB_UNDO_CREATE, PCB_OBJECT_ID(Ptr3), Type);
+		GetUndoSlot(PCB_UNDO_CREATE, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 	pcb_poly_clear_from_poly(PCB->Data, Type, Ptr1, Ptr2);
 }
 
@@ -1431,7 +1430,7 @@ void pcb_undo_add_obj_to_flag(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_FLAG, PCB_OBJECT_ID(Ptr2), Type);
+		undo = GetUndoSlot(PCB_UNDO_FLAG, PCB_OBJECT_ID(Ptr2), Type, sizeof(UndoListType));
 		undo->Data.Flags = ((pcb_pin_t *) Ptr2)->Flags;
 	}
 }
@@ -1444,7 +1443,7 @@ void pcb_undo_add_obj_to_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGESIZE, PCB_OBJECT_ID(ptr2), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGESIZE, PCB_OBJECT_ID(ptr2), Type, sizeof(UndoListType));
 		switch (Type) {
 		case PCB_TYPE_PIN:
 		case PCB_TYPE_VIA:
@@ -1477,7 +1476,7 @@ void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGECLEARSIZE, PCB_OBJECT_ID(ptr2), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGECLEARSIZE, PCB_OBJECT_ID(ptr2), Type, sizeof(UndoListType));
 		switch (Type) {
 		case PCB_TYPE_PIN:
 		case PCB_TYPE_VIA:
@@ -1504,7 +1503,7 @@ void pcb_undo_add_obj_to_mask_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGEMASKSIZE, PCB_OBJECT_ID(ptr2), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGEMASKSIZE, PCB_OBJECT_ID(ptr2), Type, sizeof(UndoListType));
 		switch (Type) {
 		case PCB_TYPE_PIN:
 		case PCB_TYPE_VIA:
@@ -1525,7 +1524,7 @@ void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGE2NDSIZE, PCB_OBJECT_ID(ptr2), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGE2NDSIZE, PCB_OBJECT_ID(ptr2), Type, sizeof(UndoListType));
 		if (Type == PCB_TYPE_PIN || Type == PCB_TYPE_VIA)
 			undo->Data.Size = ((pcb_pin_t *) ptr2)->DrillingHole;
 	}
@@ -1541,7 +1540,7 @@ void pcb_undo_add_obj_to_change_angles(int Type, void *Ptr1, void *Ptr2, void *P
 	pcb_arc_t *a = (pcb_arc_t *) Ptr3;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGEANGLES, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGEANGLES, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.AngleChange.angle[0] = a->StartAngle;
 		undo->Data.AngleChange.angle[1] = a->Delta;
 	}
@@ -1557,7 +1556,7 @@ void pcb_undo_add_obj_to_change_radii(int Type, void *Ptr1, void *Ptr2, void *Pt
 	pcb_arc_t *a = (pcb_arc_t *) Ptr3;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_CHANGERADII, PCB_OBJECT_ID(Ptr3), Type);
+		undo = GetUndoSlot(PCB_UNDO_CHANGERADII, PCB_OBJECT_ID(Ptr3), Type, sizeof(UndoListType));
 		undo->Data.Move.DX = a->Width;
 		undo->Data.Move.DY = a->Height;
 	}
@@ -1571,7 +1570,7 @@ void pcb_undo_add_layer_move(int old_index, int new_index)
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_LAYERMOVE, 0, 0);
+		undo = GetUndoSlot(PCB_UNDO_LAYERMOVE, 0, 0, sizeof(UndoListType));
 		undo->Data.LayerChange.old_index = old_index;
 		undo->Data.LayerChange.new_index = new_index;
 	}
@@ -1587,7 +1586,7 @@ void pcb_undo_add_netlist_lib(pcb_lib_t *lib)
 	pcb_lib_t *old;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_NETLISTCHANGE, 0, 0);
+		undo = GetUndoSlot(PCB_UNDO_NETLISTCHANGE, 0, 0, sizeof(UndoListType));
 		/* keep track of where the data needs to go */
 		undo->Data.NetlistChange.lib = lib;
 
