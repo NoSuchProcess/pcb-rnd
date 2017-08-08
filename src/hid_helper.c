@@ -85,7 +85,7 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 		res = "bottom";
 	}
 	else {
-		static char buf[20];
+		static char buf[PCB_DERIVE_FN_SUFF_LEN];
 		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 1))
 			res = single_name;
 		sprintf(buf, "group%ld", group);
