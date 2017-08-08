@@ -139,6 +139,7 @@ put /local/pcb/OBJS [@
 	stub_vendor.o
 	undo.o
 	undo_act.o
+	undo_old.o
 	unit.o
 	vtlibrary.o
 	vtonpoint.o
