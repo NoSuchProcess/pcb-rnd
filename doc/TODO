@@ -242,3 +242,4 @@ Low prio:
 	- stop at the first junction (anywhere where more than 2 objects are connected)
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
+- miter bug;  miter crosses SMT pads under certain conditions [report: celem/miloh] 
