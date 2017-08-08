@@ -36,6 +36,7 @@
 #include "stub_stroke.h"
 #include "rotate.h"
 #include "undo.h"
+#include "undo_act.h"
 #include "error.h"
 #include "plugins.h"
 #include "compat_nls.h"

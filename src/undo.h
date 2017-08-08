@@ -71,11 +71,6 @@ void pcb_undo_lock(void);
 void pcb_undo_unlock(void);
 pcb_bool pcb_undoing(void);
 
-/* Publish actions - these may be useful for other actions */
-int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
-int pcb_act_Redo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
-int pcb_act_Atomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
-
 /* ---------------------------------------------------------------------------
  * define supported types of undo operations
  * note these must be separate bits now

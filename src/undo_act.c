@@ -34,6 +34,7 @@
 #include "funchash_core.h"
 
 #include "undo.h"
+#include "undo_act.h"
 #include "polygon.h"
 #include "search.h"
 

@@ -4683,8 +4683,8 @@
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h data.h \
  crosshair.h vtonpoint.h hid.h error.h drc.h route.h buffer.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
- ht_subc.h crosshair.h stub_stroke.h rotate.h undo.h error.h plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ht_subc.h crosshair.h stub_stroke.h rotate.h undo.h undo_act.h error.h \
+ plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_nls.h
 ../src_plugins/teardrops/teardrops.o: \
@@ -6591,7 +6591,8 @@ undo_act.o: undo_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  vtonpoint.h hid.h error.h drc.h route.h buffer.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h \
  action_helper.h funchash_core.h funchash.h funchash_core_list.h undo.h \
- polygon.h search.h rats.h netlist.h route_style.h obj_line_draw.h
+ undo_act.h polygon.h search.h rats.h netlist.h route_style.h \
+ obj_line_draw.h
 unit.o: unit.c ../config.h compat_misc.h compat_nls.h unit.h
 vtlibrary.o: vtlibrary.c vtlibrary.h \
  ../src_3rd/genvector/genvector_impl.h \
