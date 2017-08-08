@@ -177,14 +177,32 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr);
 static pcb_bool UndoClearPoly(UndoListTypePtr);
 static int PerformUndo(UndoListTypePtr);
 
+static pcb_undo_old_free(UndoListTypePtr ptr)
+{
+	void *ptr1, *ptr2, *ptr3;
+	int type;
+
+	switch (ptr->Type) {
+		case PCB_UNDO_CHANGENAME:
+		case PCB_UNDO_CHANGEPINNUM:
+			free(ptr->Data.ChangeName.Name);
+			break;
+		case PCB_UNDO_REMOVE:
+			type = pcb_search_obj_by_id(RemoveList, &ptr1, &ptr2, &ptr3, ptr->ID, ptr->Kind);
+			if (type != PCB_TYPE_NONE)
+				pcb_destroy_object(RemoveList, type, ptr1, ptr2, ptr3);
+			break;
+		default:
+			break;
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * adds a command plus some data to the undo list
  */
 static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind, size_t item_len)
 {
 	UndoListTypePtr ptr;
-	void *ptr1, *ptr2, *ptr3;
-	int type;
 	size_t limit = ((size_t)conf_core.editor.undo_warning_size) * 1024;
 
 #ifdef DEBUG_ID
@@ -212,20 +230,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind, size_t ite
 	/* free structures from the pruned redo list */
 
 	for (ptr = &UndoList[UndoN]; RedoN; ptr++, RedoN--)
-		switch (ptr->Type) {
-		case PCB_UNDO_CHANGENAME:
-		case PCB_UNDO_CHANGEPINNUM:
-			free(ptr->Data.ChangeName.Name);
-			break;
-		case PCB_UNDO_REMOVE:
-			type = pcb_search_obj_by_id(RemoveList, &ptr1, &ptr2, &ptr3, ptr->ID, ptr->Kind);
-			if (type != PCB_TYPE_NONE) {
-				pcb_destroy_object(RemoveList, type, ptr1, ptr2, ptr3);
-			}
-			break;
-		default:
-			break;
-		}
+		pcb_undo_old_free(ptr);
 
 	if (between_increment_and_restore)
 		added_undo_between_increment_and_restore = pcb_true;
