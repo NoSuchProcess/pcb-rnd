@@ -307,6 +307,8 @@ static const char *name_style_names[] = {
 	"eagle",
 #define NAME_STYLE_HACKVANA 4
 	"hackvana",
+#define NAME_STYLE_UNIVERSAL 5
+	"universal",
 	NULL
 };
 
@@ -493,6 +495,64 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 	strcpy(dest, suff);
 }
 
+/* Very similar to layer_type_to_file_name() but appends the group name _and_ the magic suffix */
+static void assign_universal_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
+{
+	char *suff;
+	int name_len;
+	pcb_layergrp_t *g;
+	pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, lid);
+
+	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
+		suff = "gtl";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
+		suff = "gbl";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
+		suff = "gto";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
+		suff = "gbo";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_MASK))
+		suff = "gts";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
+		suff = "gbs";
+	else if (fmatch(flags, PCB_LYT_PDRILL))
+		suff = "drl";
+	else if (fmatch(flags, PCB_LYT_UDRILL))
+		suff = "_NPTH.drl";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
+		suff = "gtp";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_PASTE))
+		suff = "gbp";
+	else if (fmatch(flags, PCB_LYT_INVIS))
+		suff = "inv";
+	else if (fmatch(flags, PCB_LYT_FAB))
+		suff = "fab";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_ASSY))
+		suff = "ast";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
+		suff = "asb";
+	else if (fmatch(flags, PCB_LYT_OUTLINE))
+		suff = "gm1";
+	else {
+		static char buf[20];
+		sprintf(buf, "g%ld", gid);
+		suff = buf;
+	}
+
+	/* insert group name if available */
+	g = pcb_get_layergrp(PCB, gid);
+	if (g != NULL) {
+		name_len = strlen(g->name);
+		if (name_len >= SUFF_LEN-5)
+			name_len = SUFF_LEN-5; /* truncate group name */
+		memcpy(dest, g->name, name_len);
+		dest += name_len;
+		*dest = '.';
+		dest++;
+	}
+	strcpy(dest, suff);
+}
+
 
 #undef fmatch
 
@@ -518,6 +578,9 @@ static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flag
 		return;
 	case NAME_STYLE_HACKVANA:
 		assign_hackvana_file_suffix(dest, lid, flags);
+		return;
+	case NAME_STYLE_UNIVERSAL:
+		assign_universal_file_suffix(dest, lid, flags);
 		return;
 	}
 
