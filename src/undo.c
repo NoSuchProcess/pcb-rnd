@@ -1191,10 +1191,9 @@ void pcb_undo_clear_list(pcb_bool Force)
 
 	if (UndoN && (Force || pcb_gui->confirm_dialog("OK to clear 'undo' buffer?", 0))) {
 		/* release memory allocated by objects in undo list */
-		for (undo = UndoList; UndoN; undo++, UndoN--) {
-			if ((undo->Type == PCB_UNDO_CHANGENAME) || (undo->Type == PCB_UNDO_CHANGEPINNUM))
-				free(undo->Data.ChangeName.Name);
-		}
+		for (undo = UndoList; UndoN; undo++, UndoN--)
+			pcb_undo_old_free(undo);
+
 		free(UndoList);
 		UndoList = NULL;
 		if (RemoveList) {
