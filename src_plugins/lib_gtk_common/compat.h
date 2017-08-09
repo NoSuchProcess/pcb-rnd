@@ -51,12 +51,12 @@ static inline GtkWidget *gtkc_color_button_new_with_color(pcb_gtk_color_t *color
 
 static inline void gtkc_color_button_set_color(GtkWidget *button, pcb_gtk_color_t *color)
 {
-	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(button), color);
+	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(button), color);
 }
 
 static inline void gtkc_color_button_get_color(GtkWidget *button, pcb_gtk_color_t *color)
 {
-	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(button), color);
+	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), color);
 }
 
 /* combo box text API, GTK3, GTK2.24 compatible. */
