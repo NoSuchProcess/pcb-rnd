@@ -87,7 +87,8 @@ void make_cursor_position_labels(GtkWidget *hbox, pcb_gtk_cursor_pos_t *cps)
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 0);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
 
-	label = gtk_label_new("");
+	/* Using a text will reserve a default width to the widget : */
+	label = gtk_label_new(" ___.__ ");
 	gtk_container_add(GTK_CONTAINER(frame), label);
 	cps->cursor_position_absolute_label = label;
 	g_signal_connect(G_OBJECT(label), "size-allocate", G_CALLBACK(absolute_label_size_req_cb), NULL);
