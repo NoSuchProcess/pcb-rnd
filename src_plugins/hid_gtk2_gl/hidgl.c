@@ -579,13 +579,14 @@ static GLint stencil_bits;
 static int dirty_bits = 0;
 static int assigned_bits = 0;
 
-/* FIXME: JUST DRAWS THE FIRST PIECE.. TODO: SUPPORT FOR FULLPOLY POLYGONS */
 void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale)
 {
 	int vertex_count = 0;
 	pcb_pline_t *contour;
 	struct do_hole_info info;
 	int stencil_bit;
+	pcb_polyarea_t * p_area;
+	const int fullpoly = PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly);
 
 	info.scale = scale;
 	global_scale = scale;
@@ -610,16 +611,24 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 
 	/* Walk the polygon structure, counting vertices */
 	/* This gives an upper bound on the amount of storage required */
-	for (contour = poly->Clipped->contours; contour != NULL; contour = contour->next)
-		vertex_count = MAX(vertex_count, contour->Count);
+	p_area = poly->Clipped;
+	do {
+		for (contour = p_area->contours; contour != NULL; contour = contour->next)
+			vertex_count = MAX(vertex_count, contour->Count);
+		p_area = p_area->f;
+	} while (fullpoly && (p_area != poly->Clipped));
 
+	/* Allocate a vertex buffer */
 	info.vertices = malloc(sizeof(GLdouble) * vertex_count * 3);
+
+	/* Setup the tesselator */
 	info.tobj = gluNewTess();
 	gluTessCallback(info.tobj, GLU_TESS_BEGIN, (_GLUfuncptr) myBegin);
 	gluTessCallback(info.tobj, GLU_TESS_VERTEX, (_GLUfuncptr) myVertex);
 	gluTessCallback(info.tobj, GLU_TESS_COMBINE, (_GLUfuncptr) myCombine);
 	gluTessCallback(info.tobj, GLU_TESS_ERROR, (_GLUfuncptr) myError);
 
+	/* Setup the stencil buffer */
 	glPushAttrib(GL_STENCIL_BUFFER_BIT);	/* Save the write mask etc.. for final restore */
 	glEnable(GL_STENCIL_TEST);
 	glPushAttrib(GL_STENCIL_BUFFER_BIT |	/* Resave the stencil write-mask etc.., and */
@@ -632,8 +641,12 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 
 	/* Drawing operations now set our reference bit (stencil_bit) in the stencil buffer */
 
-	pcb_r_search(poly->Clipped->contour_tree, clip_box, NULL, do_hole, &info, NULL);
-	hidgl_flush_triangles(&buffer);
+	p_area = poly->Clipped;
+	do {
+		pcb_r_search(p_area->contour_tree, clip_box, NULL, do_hole, &info, NULL);
+		hidgl_flush_triangles(&buffer);
+		p_area = p_area->f;
+	} while (fullpoly && (p_area != poly->Clipped));
 
 	glPopAttrib();								/* Restore the colour and stencil buffer write-mask etc.. */
 
@@ -649,8 +662,13 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 	glStencilFunc(GL_GEQUAL, assigned_bits & ~stencil_bit, stencil_bit);   
 
 	/* Draw the polygon outer */
-	tesselate_contour(info.tobj, poly->Clipped->contours, info.vertices, scale);
-	hidgl_flush_triangles(&buffer);
+
+	p_area = poly->Clipped;
+	do {
+		tesselate_contour(info.tobj, p_area->contours, info.vertices, scale);
+		hidgl_flush_triangles(&buffer);
+		p_area = p_area->f;
+	} while (fullpoly && (p_area != poly->Clipped));
 
 	/* Unassign our stencil buffer bit */
 	hidgl_return_stencil_bit(stencil_bit);
