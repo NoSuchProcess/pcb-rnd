@@ -1080,113 +1080,6 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 	return FALSE;
 }
 
-/*GdkPixmap*/void *ghid_gl_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
-{
-	GdkGLConfig *glconfig;
-	GdkPixmap *pixmap;
-	GdkGLPixmap *glpixmap;
-	GdkGLContext *glcontext;
-	GdkGLDrawable *gldrawable;
-	render_priv_t *priv = gport->render_priv;
-	pcb_gtk_view_t save_view;
-	int save_width, save_height;
-	pcb_hid_expose_ctx_t ctx;
-
-	save_view = gport->view;
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
-
-	/* Setup rendering context for drawing routines
-	 */
-
-	glconfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGB | GDK_GL_MODE_STENCIL | GDK_GL_MODE_SINGLE);
-
-	pixmap = gdk_pixmap_new(NULL, width, height, depth);
-	glpixmap = gdk_pixmap_set_gl_capability(pixmap, glconfig, NULL);
-	gldrawable = GDK_GL_DRAWABLE(glpixmap);
-	glcontext = gdk_gl_context_new(gldrawable, NULL, TRUE, GDK_GL_RGBA_TYPE);
-
-	/* Setup zoom factor for drawing routines */
-
-	gport->view.coord_per_px = zoom;
-	gport->view.canvas_width = width;
-	gport->view.canvas_height = height;
-	gport->view.width = width * gport->view.coord_per_px;
-	gport->view.height = height * gport->view.coord_per_px;
-	gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
-	gport->view.x0 -= gport->view.height / 2;
-	gport->view.y0 = conf_core.editor.view.flip_y ? PCB->MaxHeight - cy : cy;
-	gport->view.y0 -= gport->view.width / 2;
-
-	/* make GL-context "current" */
-	if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext)) {
-		return NULL;
-	}
-	gport->render_priv->in_context = pcb_true;
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport(0, 0, width, height);
-
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, width, height, 0, 0, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -Z_NEAR);
-
-	glClearColor(priv->bg_color.red / 65535., priv->bg_color.green / 65535., priv->bg_color.blue / 65535., 1.);
-	glStencilMask(~0);
-	glClearStencil(0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	hidgl_reset_stencil_usage();
-
-	/* call the drawing routine */
-	hidgl_init_triangle_array(&buffer);
-	ghid_gl_invalidate_current_gc();
-	glPushMatrix();
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
-					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
-		     -gport->view.x0,
-		     conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
-
-	ctx.view.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
-	ctx.view.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
-	ctx.view.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
-	ctx.view.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
-
-	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
-	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
-	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
-	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
-
-	pcb_hid_expose_all(&gtk2_gl_hid, &ctx);
-	hidgl_flush_triangles(&buffer);
-	glPopMatrix();
-
-	glFlush();
-
-	/* end drawing to current GL-context */
-	gport->render_priv->in_context = pcb_false;
-	gdk_gl_drawable_gl_end(gldrawable);
-
-	gdk_pixmap_unset_gl_capability(pixmap);
-
-	g_object_unref(glconfig);
-	g_object_unref(glcontext);
-
-	gport->view = save_view;
-	gport->view.canvas_width = save_width;
-	gport->view.canvas_height = save_height;
-
-	return pixmap;
-}
-
 pcb_hid_t *ghid_gl_request_debug_draw(void)
 {
 	GHidPort *port = gport;
@@ -1276,7 +1169,6 @@ static void draw_lead_user(render_priv_t * priv)
 void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
 	if (common != NULL) {
-	common->render_pixmap = ghid_gl_render_pixmap;
 	common->init_drawing_widget = ghid_gl_init_drawing_widget;
 	common->drawing_realize = ghid_gl_port_drawing_realize_cb;
 	common->drawing_area_expose = ghid_gl_drawing_area_expose_cb;

@@ -1557,12 +1557,6 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	return FALSE;
 }
 
-/* TODO: obsolete this function ; retire 'render_pixmap()' from 'struct pcb_gtk_common_t'. */
-static void *ghid_cairo_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth)
-{
-	return NULL;
-}
-
 static pcb_hid_t *ghid_cairo_request_debug_draw(void)
 {
 	/* No special setup requirements, drawing goes into
@@ -1629,7 +1623,6 @@ static void draw_lead_user(render_priv_t * priv)
 void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 {
 	if (common != NULL) {
-		common->render_pixmap = ghid_cairo_render_pixmap;
 		common->init_drawing_widget = ghid_cairo_init_drawing_widget;
 		common->drawing_realize = ghid_cairo_port_drawing_realize_cb;
 		common->drawing_area_expose = ghid_cairo_drawing_area_expose_cb;
