@@ -71,6 +71,7 @@
 #include "rtree.h"
 
 
+static void hidgl_clean_stencil_bits(int bits);
 
 triangle_buffer buffer;
 float global_depth = 0;
@@ -596,10 +597,7 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 		return;
 	}
 
-	/* Allocate a temporary stencil bit that will be used for drawing cut-outs 
-	 * (contours) in the polygon. The cut-outs will be drawn as '1' in this 
-	 * temporary stencil plane. 
-	 */
+	/* Allocate a temporary stencil bit that will be used for drawing the polygon. */
 	stencil_bit = hidgl_assign_clear_stencil_bit();
 	if (!stencil_bit) {
 		printf("hidgl_fill_pcb_polygon: No free stencil bits, aborting polygon\n");
@@ -631,42 +629,45 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 	/* Setup the stencil buffer */
 	glPushAttrib(GL_STENCIL_BUFFER_BIT);	/* Save the write mask etc.. for final restore */
 	glEnable(GL_STENCIL_TEST);
-	glPushAttrib(GL_STENCIL_BUFFER_BIT |	/* Resave the stencil write-mask etc.., and */
-							 GL_COLOR_BUFFER_BIT);	/* the colour buffer write mask etc.. for part way restore */
-	glStencilMask(stencil_bit);		/* Only write to our stencil bit */
-	glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, ref value is our bit */
-	glColorMask(0, 0, 0, 0);			/* Disable writting in color buffer */
 
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value */
-
-	/* Drawing operations now set our reference bit (stencil_bit) in the stencil buffer */
-
+	/* Drawing operations now set our reference bit (stencil_bit) in the stencil buffer. 
+	 * Walk the polygon structure. Each iteration draws an island. For each island, all 
+	 * of the island's cutouts are drawn to the stencil buffer as a '1'. Then the island
+	 * is drawn and areas where the stencil is set to a '1' are masked and not drawn.
+	 */
 	p_area = poly->Clipped;
 	do {
+		hidgl_clean_stencil_bits(stencil_bit);	/* Clear the stencil buffer (for our stencil bit) */
+
+		glPushAttrib(GL_STENCIL_BUFFER_BIT |	/* Resave the stencil write-mask etc.., and */
+								 GL_COLOR_BUFFER_BIT);	/* the colour buffer write mask etc.. for part way restore */
+		glStencilMask(stencil_bit);		/* Only write to our stencil bit */
+		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, ref value is our bit */
+		glColorMask(0, 0, 0, 0);			/* Disable writting in color buffer */
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value */
+
+		/* Find and draw the cutouts into the sencil buffer */
 		pcb_r_search(p_area->contour_tree, clip_box, NULL, do_hole, &info, NULL);
 		hidgl_flush_triangles(&buffer);
-		p_area = p_area->f;
-	} while (fullpoly && (p_area != poly->Clipped));
 
-	glPopAttrib();								/* Restore the colour and stencil buffer write-mask etc.. */
+		glPopAttrib();								/* Restore the colour and stencil buffer write-mask etc.. */
 
-	/* Set the stencil reference value. Because the stencil buffer is being used as a source (to test the 
-	 * stencil_bit) and a destination (to write to assigned_bits), Both sets of stencil bits must appear   
-	 * in the reference parameter. The mask parameter of the glStencilFunc function selects the bits to 
-	 * be tested (stencil_bits) and the glStencilMask function has already selected the bits to be written 
-	 * to (assigned_bits).
-	 * Because the cut-outs have been set to a 1 in the stencil_bit plane, the polygon will only be 
-	 * written to the assigned_bits plane when stencil_bit is 0. Therefore, the reference value has the 
-	 * assigned_bits set and the stencil_bit cleared. 
-	 */
-	glStencilFunc(GL_GEQUAL, assigned_bits & ~stencil_bit, stencil_bit);   
+		/* Set the stencil reference value. 
+		 * Because the stencil buffer is being used as a source (to test the stencil_bit) and a destination 
+		 * (to write to assigned_bits), Both sets of stencil bits must appear in the reference parameter. 
+		 * The mask parameter of the glStencilFunc function selects the bits to be tested (stencil_bits) and 
+		 * the glStencilMask function has already selected the bits to be written to (assigned_bits).
+		 * Because the cut-outs have been set to a '1' in the stencil_bit plane, the polygon will only be
+		 * written to the assigned_bits plane when stencil_bit is '0'. Therefore, the reference value has the
+		 * assigned_bits set and the stencil_bit cleared.
+		 */
 
-	/* Draw the polygon outer */
+		glStencilFunc(GL_GEQUAL, assigned_bits & ~stencil_bit, stencil_bit);  
 
-	p_area = poly->Clipped;
-	do {
+		/* Draw the island to the colour buffer */
 		tesselate_contour(info.tobj, p_area->contours, info.vertices, scale);
 		hidgl_flush_triangles(&buffer);
+
 		p_area = p_area->f;
 	} while (fullpoly && (p_area != poly->Clipped));
 
@@ -706,13 +707,18 @@ int hidgl_stencil_bits(void)
 	return stencil_bits;
 }
 
-static void hidgl_clean_unassigned_stencil(void)
+static void hidgl_clean_stencil_bits(int bits)
 {
 	glPushAttrib(GL_STENCIL_BUFFER_BIT);
-	glStencilMask(~assigned_bits);
+	glStencilMask(bits);
 	glClearStencil(0);
 	glClear(GL_STENCIL_BUFFER_BIT);
 	glPopAttrib();
+}
+
+static void hidgl_clean_unassigned_stencil(void)
+{
+	hidgl_clean_stencil_bits(~assigned_bits);
 }
 
 int hidgl_assign_clear_stencil_bit(void)
