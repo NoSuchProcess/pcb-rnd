@@ -1,0 +1,112 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> undo cleanup </h2>
+<p>
+I'm announcing a new minilib called libuundo that provides an 
+application-agnostic undo mechanism.
+<p>
+Doc: <a href="http://repo.hu/projects/libuundo/">http://repo.hu/projects/libuundo/</a>
+<p>
+Source: svn://repo.hu/libuundo/trunk
+<p>
+The rest of this mail is dealing with "why do I think we need that" and 
+"how does it solve those problems".
+
+
+<h3> What's wrong with pcb-rnd's (and pcb's) current undo code? </h3>
+<p>
+The current undo code (as of pcb-rnd r10665 and pcb 4.0.0) is too 
+centralized. There is a list of undoable actions and associated 
+undo-data declared in a central place (undo.c) in core. If any part of the 
+code introduces a new undoable action, it's not just that that part of the 
+code starts to depend on undo, but undo starts to depend on that part of 
+the code too, because half of the implementation needs to go in undo.c. 
+This does not help making the code modular.
+<p>
+pcb-rnd's modularity also heavily depends on plugins. The above setup 
+works only as long as new undoable actions are never programmed in 
+plugins. This is a severe limitation on what code can be moved out from 
+core to plugins and forces some new code to go in core instead of a 
+plugin. Or alternatively forces plugins to implement some actions that are 
+not undoable.
+<p>
+(This does not affect the case when the plugin operation can be carried 
+out exclusibely by calls to existing core function that already have undo 
+capability. While this is a common pattern, we also have the other pattern 
+where atomic undoable functionality need to be implemented in plugins)
+<p>
+Another problem related to plugins is that undo.c has no privisions for 
+unloadable plugins - that is, even if plugins could register undo items on 
+the list, once the plugin is unloaded we'd have a broken undo list. With 
+the current code it would be hard or impossible to detect this condition, 
+so the only safe option would be to clear the whole undo history any time 
+any plugin is unloaded.
+<p>
+Two levels merged: undo.c contains both the high level "maintain a list of 
+undo/redo items" and the low level "how to undo this specific operation" 
+functions and their undo data. Because of the undo data, and because the 
+undo list item is basically a big union of all those data, the two levels 
+can not be separated, the high level needs to know the struct sizes of the 
+low level. With the current way the data is stored 
+(uniform-item-width array with realloc) this can not be fixed.
+<p>
+Finally, reusability and license: undo.c is GPL2+, which is totally fine 
+for pcb-rnd and pcb. Other applications could benefit from the high level 
+part of the undo mechanism. It makes sense to copy the code from pcb-rnd 
+(or pcb) or even make this high level part a reusable lib. However, GPL2+ 
+might be too restrictive for applications licensed even under other FLOS 
+software licenses. Because of the history of the project and potentially 
+many authors of the file, it's probably not feasible to try to change the 
+license.
+
+
+<h3>How does libuundo solve these</h3>
+<ul>
+<li> reuse: libuundo is a very small library, independent of pcb-rnd or pcb; 
+the API is small too, it's easy to reuse in random applications
+
+<li> license: libuundo is written from scratch, under LGPL2+, which is more 
+liberal on library-reuse. The library is single-author so far, so it's 
+easy to extend licensing (e.g. dual license if a project finds even LGPL 
+too restrictive)
+
+<li> levels: libuundo implements the high level only, the low level is up to 
+the caller; the API is baed on function callbacks provided by the 
+application
+
+<li> variable item data size: each undo item can have a different sized 
+user-data
+
+<li> modularity: because of the function callbacks, the low level undo code 
+does not need to be centralized; plugins can implement their undo/redo 
+without having to place code in core
+
+<li> plugin provisions: without libuundo implementing or using any plugin 
+system, it provides an API that lets the application track which plugin 
+registered with undo item. It is possible to check the undo list upon a 
+plugin unload and do a selective clear.
+</ul>
+
+<h3>Plans in pcb-rnd regarding to libuundo</h3>
+<p>
+I've already split the high level and low-level, except for the structs, 
+in pcb-rnd.
+<p>
+The next step will be to finish this split by removing most of the code 
+for the high level and use libuundo instead.
+<p>
+The old, centralized undo will become a single "operator" in the new 
+system. Thus we will get the same functionality mostly working the same 
+way, but already being able to register new undo operators even from 
+plugins.
+<p>
+Later on, the old, centralized undo will be slowly rewritten so that each 
+undoable action will be a separate uundo operator placed in the module 
+that is responsible for it. Eventually this will remove the centralized 
+low level part.
+<p>
+(Obviously I think mainline pcb and gschem could benefit from a similar 
+move, but I am not making any suggestion)
+
