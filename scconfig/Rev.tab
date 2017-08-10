@@ -1,3 +1,4 @@
+10672	configure	switching over to libuundo
 10662	configure	split undo code, preparing for a more modular undo
 10356	configure	move genht out of liblihata
 10285	configure	control variable name fix in 3 lib plugins
