@@ -43,6 +43,8 @@
 #include "config.h"
 
 #include <assert.h>
+#include <libuundo/uundo.h>
+#include <libuundo/uundo_debug.h>
 
 #include "board.h"
 #include "change.h"
