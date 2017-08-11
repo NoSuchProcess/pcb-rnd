@@ -25,7 +25,12 @@
 
 /* Terminals: within a subcircuit, a terminal is a point of netlist connection.
    Subcircuit objects can be tagged to belong to a terminal, by terminal ID
-   (similar tothe old pin number concept). */
+   (similar tothe old pin number concept).
+
+   A terminals is a str->ptr hash, keyed by terminal name. Each item is
+   a vtp0_t vector cotaining one or more pcb_any_obj_t * pointers to the
+   objects making up that terminal.
+*/
 
 #ifndef PCB_OBJ_TERM_H
 #define PCB_OBJ_TERM_H
