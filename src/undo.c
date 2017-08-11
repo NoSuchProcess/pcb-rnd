@@ -97,10 +97,9 @@ int pcb_undo(pcb_bool draw)
 		return 0;
 	}
 
-#ifdef TODO
-	if (ptr->Serial > Serial) {
+	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial > pcb_uundo.serial)) {
 		pcb_message(PCB_MSG_ERROR, _("ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
-							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
+							"       Please save your work and report this bug.\n"), pcb_uundo.tail->serial, pcb_uundo.serial);
 
 	/* It is likely that the serial number got corrupted through some bad
 		 * use of the pcb_undo_save_serial() / pcb_undo_restore_serial() APIs.
@@ -109,10 +108,9 @@ int pcb_undo(pcb_bool draw)
 		 * operation on the undo stack in the hope that this might clear
 		 * the problem and  allow the user to hit Undo again.
 		 */
-		Serial = ptr->Serial + 1;
+		pcb_uundo.serial = pcb_uundo.tail->serial + 1;
 		return 0;
 	}
-#endif
 
 	pcb_undo_lock(); /* lock undo module to prevent from loops */
 	res = uundo_undo(&pcb_uundo);
@@ -140,10 +138,10 @@ int pcb_redo(pcb_bool draw)
 		return 0;
 	}
 
-#if TODO
-	if (ptr->Serial < Serial) {
+	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->next != NULL) && (pcb_uundo.tail->next->serial > pcb_uundo.serial)) {
+
 		pcb_message(PCB_MSG_ERROR, _("ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
-							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
+							"       Please save your work and report this bug.\n"), pcb_uundo.tail->next->serial, pcb_uundo.serial);
 
 		/* It is likely that the serial number got corrupted through some bad
 		 * use of the pcb_undo_save_serial() / pcb_undo_restore_serial() APIs.
@@ -152,10 +150,10 @@ int pcb_redo(pcb_bool draw)
 		 * operation on the redo stack in the hope that this might clear
 		 * the problem and  allow the user to hit Redo again.
 		 */
-		Serial = ptr->Serial;
+
+		pcb_uundo.serial = pcb_uundo.tail->next->serial;
 		return 0;
 	}
-#endif
 
 	pcb_undo_lock(); /* lock undo module to prevent from loops */
 	res = uundo_redo(&pcb_uundo);
