@@ -81,6 +81,7 @@ typedef struct render_priv_s {
 	//GdkGC *grid_gc;
 	pcb_bool clip;
 	GdkRectangle clip_rect;
+	int xor_mode;													/**< 1 if drawn in XOR mode, 0 otherwise*/
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
 } render_priv_t;
@@ -785,6 +786,9 @@ static void ghid_cairo_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 
 static void ghid_cairo_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 {
+	render_priv_t *priv = gport->render_priv;
+
+	priv->xor_mode = (xor_mask) ? 1 : 0;
 	//gc->xor_mask = xor_mask;
 	//if (!gc->gc)
 	//  return;
