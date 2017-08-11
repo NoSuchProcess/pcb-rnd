@@ -35,6 +35,7 @@ For the next release:
 
 LATER RELEASES:
 - feature: fp_wget cache dir confiurable [report: agaran]
+- BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
 - feature req:
 	- if the library path starts with a "?", the path is optional; so we don't get warnings for ./footprints [report: celem]
