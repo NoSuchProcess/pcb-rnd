@@ -1167,29 +1167,16 @@ static void ghid_cairo_notify_crosshair_change(pcb_bool changes_complete)
 	if (gport->drawing_area == NULL)
 		return;
 
+	/* Keeps track of calls (including XOR draw mode), and draws only when complete and final. */
 	if (changes_complete)
 		priv->attached_invalidate_depth--;
+	else
+		priv->attached_invalidate_depth = 1 + priv->xor_mode;
 
-	if (priv->attached_invalidate_depth < 0) {
-		priv->attached_invalidate_depth = 0;
-		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
-		   is not expected to occur, but we will try to handle it gracefully.
-		   As we know the crosshair will have been shown already, we must
-		   repaint the entire view to be sure not to leave an artefact.
-		 */
+	if (changes_complete && gport->drawing_area != NULL && priv->attached_invalidate_depth <= 0) {
+		/* Queues a GTK redraw when changes are complete */
 		ghid_cairo_invalidate_all();
-		return;
-	}
-
-	if (priv->attached_invalidate_depth == 0)
-		pcb_draw_attached();
-
-	if (!changes_complete) {
-		priv->attached_invalidate_depth++;
-	}
-	else if (gport->drawing_area != NULL) {
-		/* Queue a GTK expose when changes are complete */
-		ghid_draw_area_update(gport, NULL);
+		priv->attached_invalidate_depth = 0;
 	}
 }
 
