@@ -30,10 +30,12 @@
 #define	PCB_UNDO_H
 
 #include <stdlib.h>
+#include <libuundo/uundo.h>
 
 /* Temporary for compatibility */
 #include "undo_old.h"
 
+void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len);
 int pcb_undo(pcb_bool);
 int pcb_redo(pcb_bool);
 void pcb_undo_inc_serial(void);
@@ -49,8 +51,6 @@ pcb_bool pcb_undoing(void);
 int undo_check(void);
 
 void undo_dump(void);
-
-void *GetUndoSlot(int CommandType, int ID, int Kind, size_t item_len);
 
 /* temporary */
 #include "pcb_bool.h"

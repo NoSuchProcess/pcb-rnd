@@ -90,9 +90,6 @@ typedef enum {
 	PCB_UNDO_OTHERSIDE         = 0x400000  /* change side of board (subcircuit) */
 } pcb_undo_op_t;
 
-int pcb_undo_old_perform(void *ptr);
-void pcb_undo_old_free(void *ptr_);
-
 const char *undo_type2str(int type);
 
 #endif
