@@ -103,8 +103,8 @@ static int pcb_undo_old_undo(void *udata);
 
 void pcb_undo_old_print(void *udata, char *dst, size_t dst_len)
 {
-#ifndef NDEBUG
 	UndoListType *slot = udata;
+#ifndef NDEBUG
 	const char *res = undo_type2str(slot->Type);
 	strcpy(dst, res);
 #else
