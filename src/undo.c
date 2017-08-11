@@ -198,11 +198,10 @@ void pcb_undo_save_serial(void)
 void pcb_undo_inc_serial(void)
 {
 	if (!Locked) {
-#if TODO
 		/* Set the changed flag if anything was added prior to this bump */
-		if (UndoN > 0 && UndoList[UndoN - 1].Serial == Serial)
+		if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial == pcb_uundo.serial))
 			pcb_board_set_changed_flag(pcb_true);
-#endif
+
 		uundo_inc_serial(&pcb_uundo);
 		pcb_bumped = pcb_true;
 		between_increment_and_restore = pcb_true;
