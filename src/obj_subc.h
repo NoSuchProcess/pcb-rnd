@@ -27,6 +27,7 @@
 #define PCB_OBJ_SUBC_H
 
 #include <libminuid/libminuid.h>
+#include <genht/htsp.h>
 #include "obj_common.h"
 #include "global_typedefs.h"
 
@@ -42,6 +43,7 @@ struct pcb_subc_s {
 	PCB_ANYOBJECTFIELDS;
 	minuid_bin_t uid;
 	pcb_data_t *data;
+	htsp_t terminals;
 	pcb_line_t *aux_cache[PCB_SUBCH_max];
 	pcb_layer_t *aux_layer;
 	gdl_elem_t link;

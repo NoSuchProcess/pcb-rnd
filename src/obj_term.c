@@ -25,3 +25,5 @@
 
 #include "config.h"
 
+#include "obj_term.h"
+
