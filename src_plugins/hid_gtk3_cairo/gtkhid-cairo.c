@@ -1111,13 +1111,10 @@ static void redraw_region(GdkRectangle * rect)
 	pcb_hid_expose_all(&gtk3_cairo_hid, &ctx);
 	ghid_cairo_draw_grid();
 
-	/* In some cases we are called with the crosshair still off */
-	if (priv->attached_invalidate_depth == 0)
-		pcb_draw_attached();
-
-	/* In some cases we are called with the mark still off */
-	if (priv->mark_invalidate_depth == 0)
-		pcb_draw_mark();
+	/* Draws "GUI" information on top of design */
+	priv->cr = priv->cr_drawing_area;
+	pcb_draw_attached();
+	pcb_draw_mark();
 
 	draw_lead_user(priv);
 
@@ -1454,10 +1451,6 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_ex
 	//                  ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 
 	cr_paint_from_surface(p, priv->surf_da);
-	cr_paint_from_surface(p, priv->surf_ui);
-	cairo_set_operator(priv->cr_ui, CAIRO_OPERATOR_CLEAR);
-	cairo_paint_with_alpha(priv->cr_ui, 1.0);
-	cairo_set_operator(priv->cr_ui, CAIRO_OPERATOR_SOURCE);
 
 	priv->cr = p;
 	show_crosshair(TRUE);
