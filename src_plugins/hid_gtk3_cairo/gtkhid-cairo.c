@@ -1461,17 +1461,6 @@ static void ghid_cairo_screen_update(void)
 
 static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 {
-	//GHidPort *port = data;
-	//render_priv_t *priv = port->render_priv;
-  //cairo_surface_t *surf;
-  //
-	//surf = gdk_window_create_similar_surface(gtk_widget_get_window(widget),
-	//																				 CAIRO_CONTENT_COLOR_ALPHA,
-	//																				 gport->view.canvas_width, gport->view.canvas_height);
-	////surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-	////																	gport->view.canvas_width, gport->view.canvas_height);
-	//priv->cr = cairo_create(surf);
-	//cairo_surface_destroy(surf);
 }
 
 static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * p,
