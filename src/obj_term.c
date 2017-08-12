@@ -107,6 +107,29 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
 
 pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
 {
+	htsp_entry_t *e;
+	vtp0_t *v;
+	size_t n;
+	char *name;
+
+	e = htsp_getentry(terminals, tname);
+	if (e == NULL)
+		return PCB_TERM_ERR_TERM_NOT_FOUND;
+
+	v = e->value;
+	name = e->key;
+
+	/* unlink all objects from this terminal */
+	for(n = 0; n < v->used; n++) {
+		pcb_any_obj_t *obj = v->array[n];
+		obj->term = NULL;
+	}
+
+	htsp_delentry(terminals, e);
+	free(name);
+	vtp0_uninit(v);
+	free(v);
+
 	return PCB_TERM_ERR_SUCCESS;
 }
 
