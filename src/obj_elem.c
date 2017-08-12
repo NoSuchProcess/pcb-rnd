@@ -1873,7 +1873,7 @@ void pcb_elem_package_draw(pcb_element_t * element)
 	/* draw lines, arcs, text and pins */
 	PCB_ELEMENT_PCB_LINE_LOOP(element);
 	{
-		pcb_line_draw_(line);
+		pcb_line_draw_(line, 0);
 	}
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(element);

@@ -465,8 +465,16 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	if (conf_core.editor.check_planes)
 		return;
 
-	/* draw all visible lines this layer */
-	pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, NULL);
+	lflg = pcb_layer_flags_(PCB, Layer);
+
+	if (lflg & PCB_LYT_COPPER) {
+		/* draw all visible lines this layer - with terminal gfx */
+		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, Layer, NULL);
+	}
+	else {
+		/* draw all visible lines this layer */
+		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, NULL);
+	}
 
 	/* draw the layer arcs on screen */
 	pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, NULL);
@@ -474,7 +482,6 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	/* draw the layer text on screen */
 	pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, NULL);
 
-	lflg = pcb_layer_flags_(PCB, Layer);
 
 	/* The implicit outline rectangle (or automatic outline rectanlge).
 	   We should check for pcb_gui->gui here, but it's kinda cool seeing the

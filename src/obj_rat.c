@@ -253,7 +253,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 		pcb_gui->draw_arc(Output.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else
-		pcb_line_draw_((pcb_line_t *) rat);
+		pcb_line_draw_((pcb_line_t *) rat, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

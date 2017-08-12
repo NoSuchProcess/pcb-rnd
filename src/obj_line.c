@@ -899,12 +899,12 @@ void pcb_line_draw_label(pcb_line_t *line)
 }
 
 
-void pcb_line_draw_(pcb_line_t * line)
+void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 {
 	PCB_DRAW_BBOX(line);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 	if (!conf_core.editor.thin_draw) {
-		if (line->term != NULL) {
+		if ((line->term != NULL) && (allow_term_gfx)) {
 			pcb_gui->set_line_width(Output.padGC, line->Thickness);
 			pcb_gui->draw_line(Output.padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 			pcb_gui->set_line_width(Output.fgGC, line->Thickness/4);
@@ -924,7 +924,7 @@ void pcb_line_draw_(pcb_line_t * line)
 	}
 }
 
-void pcb_line_draw(pcb_layer_t * layer, pcb_line_t * line)
+static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_gfx)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -947,7 +947,7 @@ void pcb_line_draw(pcb_layer_t * layer, pcb_line_t * line)
 	}
 
 	pcb_gui->set_color(Output.fgGC, color);
-	pcb_line_draw_(line);
+	pcb_line_draw_(line, allow_term_gfx);
 }
 
 pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl)
@@ -957,7 +957,18 @@ pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(line->parent_type, &line->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	pcb_line_draw((pcb_layer_t *)cl, line);
+	pcb_line_draw((pcb_layer_t *)cl, line, 0);
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t pcb_line_draw_term_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_line_t *line = (pcb_line_t *)b;
+
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(line->parent_type, &line->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
+	pcb_line_draw((pcb_layer_t *)cl, line, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

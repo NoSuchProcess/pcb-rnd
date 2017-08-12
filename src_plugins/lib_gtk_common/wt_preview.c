@@ -86,13 +86,13 @@ static void preview_set_data(pcb_gtk_preview_t * preview, pcb_element_t * elemen
 	pcb_element_copy(NULL, &preview->element, element, FALSE, 0, 0);
 	PCB_PIN_LOOP(&preview->element);
 	{
-		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pin);
+		PCB_FLAG_SET(PCB_FLAG_TERMNAME, pin);
 	}
 	PCB_END_LOOP;
 
 	PCB_PAD_LOOP(&preview->element);
 	{
-		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pad);
+		PCB_FLAG_SET(PCB_FLAG_TERMNAME, pad);
 	}
 	PCB_END_LOOP;
 
