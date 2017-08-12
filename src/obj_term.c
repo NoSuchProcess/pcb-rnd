@@ -147,6 +147,7 @@ pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
 pcb_term_err_t pcb_term_init(htsp_t *terminals)
 {
 	htsp_init(terminals, strhash, strkeyeq);
+	return PCB_TERM_ERR_SUCCESS;
 }
 
 pcb_term_err_t pcb_term_uninit(htsp_t *terminals)
@@ -156,6 +157,7 @@ pcb_term_err_t pcb_term_uninit(htsp_t *terminals)
 	for (e = htsp_first(terminals); e; e = htsp_next(terminals, e))
 		pcb_term_remove_entry(terminals, e);
 	htsp_uninit(terminals);
+	return PCB_TERM_ERR_SUCCESS;
 }
 
 /*** undoable term rename ***/
