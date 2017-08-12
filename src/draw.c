@@ -702,7 +702,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	}
 }
 
-static void label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, const char *lab)
+void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab)
 {
 	pcb_bool flip_x = conf_core.editor.view.flip_x;
 	pcb_bool flip_y = conf_core.editor.view.flip_y;
@@ -716,27 +716,27 @@ static void label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double s
 	text->fid = 0;
 	text->Scale = scale;
 	text->Direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
+
+	pcb_text_bbox(NULL, text);
+
+	if (centered) {
+		pcb_coord_t dx, dy;
+		dx = (text->BoundingBox.X2 - text->BoundingBox.X1) / 2;
+		dy = (text->BoundingBox.Y2 - text->BoundingBox.Y1) / 2;
+		text->X -= dx;
+		text->Y -= dy;
+		text->BoundingBox.X1 -= dx;
+		text->BoundingBox.X2 -= dx;
+		text->BoundingBox.Y1 -= dy;
+		text->BoundingBox.Y2 -= dy;
+	}
 }
 
 void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab)
 {
 	pcb_text_t text;
 
-	label_setup(&text, x, y, scale, vert, lab);
-
-	if (centered) {
-		pcb_coord_t dx, dy;
-		pcb_text_bbox(NULL, &text);
-		dx = (text.BoundingBox.X2 - text.BoundingBox.X1) / 2;
-		dy = (text.BoundingBox.Y2 - text.BoundingBox.Y1) / 2;
-		text.X -= dx;
-		text.Y -= dy;
-		text.BoundingBox.X1 -= dx;
-		text.BoundingBox.X2 -= dx;
-		text.BoundingBox.Y1 -= dy;
-		text.BoundingBox.Y2 -= dy;
-		pcb_text_bbox(NULL, &text);
-	}
+	pcb_term_label_setup(&text, x, y, scale, vert, centered, lab);
 
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
