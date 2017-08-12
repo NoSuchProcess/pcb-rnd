@@ -726,6 +726,15 @@ void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double
 		pcb_coord_t dx, dy;
 		dx = (text->BoundingBox.X2 - text->BoundingBox.X1) / 2;
 		dy = (text->BoundingBox.Y2 - text->BoundingBox.Y1) / 2;
+
+		/* make sure the offset is in-line with the flip and our sick y coords for vertical */
+		if ((vert) && (!(flip_x ^ flip_y)))
+			dy = -dy;
+		if (flip_x)
+			dx = -dx;
+		if (flip_y)
+			dy = -dy;
+
 		text->X -= dx;
 		text->Y -= dy;
 		text->BoundingBox.X1 -= dx;
