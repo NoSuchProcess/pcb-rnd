@@ -886,9 +886,14 @@ void *pcb_lineop_invalidate_label(pcb_opctx_t *ctx, pcb_line_t *line)
 
 
 /*** draw ***/
-void pcb_line_name_invalidate_draw(pcb_line_t *lineline)
+void pcb_line_name_invalidate_draw(pcb_line_t *line)
 {
-#warning term TODO: need to get label sizes
+	if (line->term != NULL) {
+		pcb_text_t text;
+		pcb_term_label_setup(&text, (line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
+			100.0, pcb_false, pcb_true, line->term);
+		pcb_draw_invalidate(&text);
+	}
 }
 
 void pcb_line_draw_label(pcb_line_t *line)
