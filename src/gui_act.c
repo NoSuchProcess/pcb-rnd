@@ -522,7 +522,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				}
 
 				/* toggle terminal ID print for subcircuit parts */
-				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA | PCB_TYPE_LINE, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
 				if (type) {
 					pcb_any_obj_t *obj = ptr2;
 
@@ -532,10 +532,10 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 							pcb_message(PCB_MSG_ERROR, "subc: subc pin display toggle is not yet implemented\n");
 							return 0;
 						case PCB_TYPE_VIA:
+						case PCB_TYPE_LINE:
 							pcb_obj_invalidate_label(type, ptr1, ptr2, ptr3);
 							break;
 #warning term TODO: these; also convert this into an op so we don't need the switch here
-						case PCB_TYPE_LINE:
 						case PCB_TYPE_ARC:
 						case PCB_TYPE_POLYGON:
 						case PCB_TYPE_TEXT:

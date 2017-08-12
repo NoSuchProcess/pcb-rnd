@@ -910,7 +910,7 @@ void pcb_line_draw_(pcb_line_t * line)
 
 	pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 
-	if (pcb_draw_doing_pinout)
+	if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, line))
 		pcb_line_draw_name(line);
 }
 
