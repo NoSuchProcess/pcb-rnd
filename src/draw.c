@@ -663,3 +663,26 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 		conf_force_set_bool(conf_core.editor.view.flip_y, fy);
 	}
 }
+
+void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, const char *lab)
+{
+	pcb_text_t text;
+	pcb_bool flip_x = conf_core.editor.view.flip_x;
+	pcb_bool flip_y = conf_core.editor.view.flip_y;
+
+	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
+
+	text.TextString = (char *)lab;
+	text.Flags = (flip_x ^ flip_y) ? pcb_flag_make(PCB_FLAG_ONSOLDER) : pcb_no_flags();
+	text.X = x;
+	text.Y = y;
+	text.fid = 0;
+	text.Scale = scale;
+	text.Direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
+
+	if (pcb_gui->gui)
+		pcb_draw_doing_pinout++;
+	pcb_text_draw(&text, 0);
+	if (pcb_gui->gui)
+		pcb_draw_doing_pinout--;
+}
