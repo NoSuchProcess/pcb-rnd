@@ -1419,6 +1419,7 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 
 	/* Creates a single cairo surface/context for off-line painting */
 	cr_create_similar_surface_and_context(&priv->surf_da, &priv->cr_drawing_area, port);
+  cr_create_similar_surface_and_context(&priv->surf_layer, &priv->cr_layer, port);
 	priv->cr = priv->cr_drawing_area;
 }
 
