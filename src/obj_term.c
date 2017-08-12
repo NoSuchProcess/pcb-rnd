@@ -51,16 +51,13 @@ pcb_term_err_t pcb_term_name_is_valid(const char *tname)
 	return PCB_TERM_ERR_SUCCESS;
 }
 
-pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, const pcb_any_obj_t *obj)
+pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, pcb_any_obj_t *obj)
 {
 	htsp_entry_t *e;
 	vtp0_t *v;
 
-#warning TODO
-/*
 	if (obj->term != NULL)
 		return PCB_TERM_ERR_ALREADY_TERMINAL;
-*/
 
 	if (term_name_invalid(tname))
 		return PCB_TERM_ERR_INVALID_NAME;
@@ -71,7 +68,7 @@ pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, const pcb_any_
 		tname = pcb_strdup(tname);
 		v = malloc(sizeof(vtp0_t));
 		vtp0_init(v);
-		htsp_set(terminals, tname, v);
+		htsp_set(terminals, (char *)tname, v);
 	}
 	else {
 		/* need to use the ones from the hash to avoid extra allocation/leak */
@@ -79,14 +76,13 @@ pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, const pcb_any_
 		tname = e->key;
 	}
 
-#warning TODO
-/*	obj->term = tname;*/
+	obj->term = tname;
 	vtp0_append(v, obj);
 
 	return PCB_TERM_ERR_SUCCESS;
 }
 
-pcb_term_err_t pcb_term_del(htsp_t *terminals, const pcb_any_obj_t *obj)
+pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
 {
 	return PCB_TERM_ERR_SUCCESS;
 }
