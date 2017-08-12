@@ -47,6 +47,12 @@ typedef enum pcb_term_err_e {
 	PCB_TERM_ERR_INVALID_NAME
 } pcb_term_err_t;
 
+/* Initialize a clean hash of terminals for a subcircuit */
+pcb_term_err_t pcb_term_init(htsp_t *terminals);
+
+/* Remove all objects from all terminals and destroy the hash */
+pcb_term_err_t pcb_term_uninit(htsp_t *terminals);
+
 /* Determines if tname is a valid terminal name */
 pcb_term_err_t pcb_term_name_is_valid(const char *tname);
 

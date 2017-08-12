@@ -108,19 +108,11 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
 	return PCB_TERM_ERR_NOT_IN_TERMINAL;
 }
 
-pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
+static pcb_term_err_t pcb_term_remove_entry(htsp_t *terminals, htsp_entry_t *e)
 {
-	htsp_entry_t *e;
-	vtp0_t *v;
+	vtp0_t *v = e->value;
+	char *name = e->key;
 	size_t n;
-	char *name;
-
-	e = htsp_getentry(terminals, tname);
-	if (e == NULL)
-		return PCB_TERM_ERR_TERM_NOT_FOUND;
-
-	v = e->value;
-	name = e->key;
 
 	/* unlink all objects from this terminal */
 	for(n = 0; n < v->used; n++) {
@@ -136,3 +128,27 @@ pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
 	return PCB_TERM_ERR_SUCCESS;
 }
 
+pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
+{
+	htsp_entry_t *e;
+
+	e = htsp_getentry(terminals, tname);
+	if (e == NULL)
+		return PCB_TERM_ERR_TERM_NOT_FOUND;
+
+	return pcb_term_remove_entry(terminals, e);
+}
+
+pcb_term_err_t pcb_term_init(htsp_t *terminals)
+{
+	htsp_init(terminals, strhash, strkeyeq);
+}
+
+pcb_term_err_t pcb_term_uninit(htsp_t *terminals)
+{
+	htsp_entry_t *e;
+
+	for (e = htsp_first(terminals); e; e = htsp_next(terminals, e))
+		pcb_term_remove_entry(terminals, e);
+	htsp_uninit(terminals);
+}
