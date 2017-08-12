@@ -71,7 +71,7 @@ typedef struct hid_gc_s {
 
 static void draw_lead_user(render_priv_t * priv);
 
-static const gchar *get_color_name(GdkColor * color)
+static const gchar *get_color_name(pcb_gtk_color_t * color)
 {
 	static char tmp[16];
 

@@ -98,11 +98,6 @@ typedef struct hid_gc_s {
 
 static void draw_lead_user(render_priv_t * priv_);
 
-#warning TODO: replace GdkRGBA with pcb_gtk_color_t to avoid incompatible pointer type
-/*../src_plugins/hid_gtk3_cairo/gtkhid-cairo.c:1541:26: warning: assignment from incompatible pointer type [-Wincompatible-pointer-types]
-   common->get_color_name = get_color_name;
-*/
-
 /** Duplicates the source fields to destination. */
 static void copy_color(GdkRGBA * dest, GdkRGBA * source)
 {
@@ -112,7 +107,7 @@ static void copy_color(GdkRGBA * dest, GdkRGBA * source)
 	dest->alpha = source->alpha;
 }
 
-static const gchar *get_color_name(GdkRGBA * color)
+static const gchar *get_color_name(pcb_gtk_color_t * color)
 {
 	static char tmp[16];
 
@@ -1594,7 +1589,6 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		common->draw_grid_local = ghid_cairo_draw_grid_local;
 		common->drawing_area_configure_hook = ghid_cairo_drawing_area_configure_hook;
 		common->shutdown_renderer = ghid_cairo_shutdown_renderer;
-#warning TODO: change common API to use compatibility layer :  pcb_gtk_color_t
 		common->get_color_name = get_color_name;
 		common->map_color_string = map_color_string;
 	}
