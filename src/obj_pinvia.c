@@ -905,6 +905,15 @@ void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin)
 	return pin;
 }
 
+void *pcb_pinop_invalidate_label(pcb_opctx_t *ctx, pcb_pin_t *pin)
+{
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
+		pcb_pin_name_invalidate_erase(pin);
+	else
+		pcb_pin_name_invalidate_draw(pin);
+	return pin;
+}
+
 
 /*** draw ***/
 
