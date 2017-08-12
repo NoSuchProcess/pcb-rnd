@@ -77,6 +77,10 @@ struct pcb_box_s {  /* a bounding box */
 	pcb_coord_t X2, Y2;     /* and lower right corner */
 };
 
+/* Return the user readable name of an object type in a string; never NULL */
+const char *pcb_obj_type_name(pcb_objtype_t type);
+
+
 int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
 
 /* memset object to 0, but keep the link field */

@@ -35,6 +35,26 @@
 #include "obj_common.h"
 #include "obj_arc_ui.h"
 
+const char *pcb_obj_type_name(pcb_objtype_t type)
+{
+	switch(type) {
+		case PCB_OBJ_VOID:    return "void";
+		case PCB_OBJ_POINT:   return "point";
+		case PCB_OBJ_LINE:    return "line";
+		case PCB_OBJ_TEXT:    return "text";
+		case PCB_OBJ_POLYGON: return "polygon";
+		case PCB_OBJ_ARC:     return "arc";
+		case PCB_OBJ_RAT:     return "ratline";
+		case PCB_OBJ_PAD:     return "pad";
+		case PCB_OBJ_PIN:     return "pin";
+		case PCB_OBJ_VIA:     return "via";
+		case PCB_OBJ_ELEMENT: return "element";
+		case PCB_OBJ_SUBC:    return "subcircuit";
+		case PCB_OBJ_NET:     return "net";
+		case PCB_OBJ_LAYER:   return "layer";
+	}
+	return "<unknown/composite>";
+}
 
 /* returns a pointer to an objects bounding box;
  * data is valid until the routine is called again
