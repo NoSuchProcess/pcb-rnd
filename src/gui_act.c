@@ -450,10 +450,12 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 			/* toggle displaying of pin/pad/via names */
 		case F_PinOrPadName:
 			{
+				int type;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_coord_t x, y;
 				pcb_gui->get_coords(_("Click on an element"), &x, &y);
 
+				/* old code for elements */
 				switch (pcb_search_screen(x, y,
 														 PCB_TYPE_ELEMENT | PCB_TYPE_PIN | PCB_TYPE_PAD |
 														 PCB_TYPE_VIA, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
@@ -517,6 +519,35 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 					pcb_undo_inc_serial();
 					pcb_draw();
 					break;
+				}
+
+				/* toggle terminal ID print for subcircuit parts */
+				type = pcb_search_screen(x, y, PCB_TYPE_SUBC_PART | PCB_TYPE_VIA, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+				if (type) {
+					pcb_any_obj_t *obj = ptr2;
+
+					switch(type) {
+						case PCB_TYPE_VIA:
+							if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *)ptr2))
+								pcb_pin_name_invalidate_erase((pcb_pin_t *)ptr2);
+							else
+								pcb_pin_name_invalidate_draw((pcb_pin_t *)ptr2);
+							break;
+#warning term TODO: these; also convert this into an op so we don't need the switch here
+						case PCB_TYPE_LINE:
+						case PCB_TYPE_ARC:
+						case PCB_TYPE_POLYGON:
+						case PCB_TYPE_TEXT:
+
+						default:
+							return; /* nothing else can have a displayed name */
+					}
+
+					pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr3);
+					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, obj);
+					pcb_board_set_changed_flag(pcb_true);
+					pcb_undo_inc_serial();
+					pcb_draw();
 				}
 				break;
 			}
