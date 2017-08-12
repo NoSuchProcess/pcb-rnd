@@ -57,4 +57,41 @@ static inline PCB_FUNC_UNUSED int pcb_is_lobj_in_subc(pcb_parenttype_t pt, pcb_p
 	return (p->layer->parent->parent_type == PCB_PARENT_SUBC);
 }
 
+/* Returns whether an object is part of a subc */
+static inline PCB_FUNC_UNUSED int pcb_is_obj_in_subc(pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_VIA:
+		case PCB_OBJ_SUBC:
+			return pcb_is_gobj_in_subc(obj->parent_type, &obj->parent);
+
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_POLYGON:
+		case PCB_OBJ_TEXT:
+		case PCB_OBJ_ARC:
+			return pcb_is_lobj_in_subc(obj->parent_type, &obj->parent);
+
+#if 0
+		case PCB_OBJ_RATLINE:
+			/* easy case: can not be in a subc at all */
+			return 0;
+
+		case PCB_OBJ_PIN:
+		case PCB_OBJ_PAD:
+		case PCB_OBJ_ELEMENT_NAME:
+		case PCB_OBJ_ELEMENT:
+		case PCB_OBJ_ELEMENT_LINE:
+		case PCB_OBJ_ELEMENT_ARC:
+			/* easy case: these obsolete constructs can not be in a subc at all */
+			return 0;
+#endif
+
+		default:
+			/* anything else: virtual */
+			return 0;
+	}
+	return 0;
+}
+
+
 #endif
