@@ -33,6 +33,11 @@
 #include "compat_misc.h"
 #include "obj_common.h"
 #include "obj_term.h"
+#include "obj_subc_parent.h"
+#include "pcb-printf.h"
+#include "undo.h"
+
+static const char core_term_cookie[] = "core-term";
 
 static int term_name_invalid(const char *tname)
 {
@@ -151,4 +156,93 @@ pcb_term_err_t pcb_term_uninit(htsp_t *terminals)
 	for (e = htsp_first(terminals); e; e = htsp_next(terminals, e))
 		pcb_term_remove_entry(terminals, e);
 	htsp_uninit(terminals);
+}
+
+/*** undoable term rename ***/
+
+typedef struct {
+	pcb_any_obj_t *obj;
+	char str[1];
+} term_rename_t;
+
+static int undo_term_rename_swap(void *udata)
+{
+	char *old_term = NULL;
+	pcb_subc_t *subc;
+	term_rename_t *r = udata;
+	int res = 0;
+
+	subc = pcb_obj_parent_subc(r->obj);
+	if (subc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Undo error: terminal rename: object %ld not part of a terminal\n", r->obj->ID);
+		return -1;
+	}
+
+	/* remove from previous terminal */
+	if (r->obj->term != NULL) {
+		old_term = pcb_strdup(r->obj->term);
+		res |= pcb_term_del(&subc->terminals, r->obj);
+	}
+
+	/* add to new terminal */
+	if (*r->str != '\0')
+		res |= pcb_term_add(&subc->terminals, r->str, r->obj);
+
+	/* swap name: redo & undo are symmetric; we made sure to have enough room for either old or new name */
+	if (old_term == NULL)
+		*r->str = '\0';
+	else
+		strcpy(r->str, old_term);
+
+	free(old_term);
+
+	return res;
+}
+
+static void undo_term_rename_print(void *udata, char *dst, size_t dst_len)
+{
+	term_rename_t *r = udata;
+	pcb_snprintf(dst, dst_len, "term_rename: %s #%ld to '%s'\n",
+		pcb_obj_type_name(r->obj->type), r->obj->ID, r->str);
+}
+
+static const uundo_oper_t undo_term_rename = {
+	core_term_cookie,
+	NULL, /* free */
+	undo_term_rename_swap,
+	undo_term_rename_swap,
+	undo_term_rename_print
+};
+
+pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *new_name)
+{
+	int nname_len = 0, oname_len = 0, len;
+	term_rename_t *r;
+	pcb_subc_t *subc;
+
+	if ((new_name == NULL) && (obj->term == NULL))
+		return PCB_TERM_ERR_NO_CHANGE;
+
+	if (((new_name != NULL) && (obj->term != NULL)) && (strcmp(new_name, obj->term) == 0))
+		return PCB_TERM_ERR_NO_CHANGE;
+
+	subc = pcb_obj_parent_subc(obj);
+	if (subc == NULL)
+		return PCB_TERM_ERR_NOT_IN_SUBC;
+
+	if (new_name != NULL)
+		nname_len = strlen(new_name);
+
+	if (obj->term != NULL)
+		oname_len = strlen(obj->term);
+
+	len = nname_len > oname_len ? nname_len : oname_len; /* +1 for the terminator is implied by sizeof(->str) */
+
+	r = pcb_undo_alloc(pcb, &undo_term_rename, sizeof(term_rename_t) + len);
+	r->obj = obj;
+	memcpy(r->str, new_name, nname_len+1);
+	undo_term_rename_swap(r);
+
+	pcb_undo_inc_serial();
+	return PCB_TERM_ERR_SUCCESS;
 }
