@@ -69,12 +69,15 @@ pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX 
 
 int pcb_draw_doing_pinout = 0;
 pcb_bool pcb_draw_doing_assy = pcb_false;
+static vtp0_t delayed_labels;
+pcb_bool delayed_labels_enabled = pcb_false;
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
 static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *);
+static void pcb_draw_obj_label(pcb_any_obj_t *obj);
 
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area);
@@ -83,6 +86,12 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area);
 static void pcb_draw_rats(const pcb_box_t *);
 static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area);
 
+
+void pcb_draw_delay_label_add(pcb_any_obj_t *obj)
+{
+	if (delayed_labels_enabled)
+		vtp0_append(&delayed_labels, obj);
+}
 
 
 #warning TODO: this should be cached
@@ -206,6 +215,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	PCB->Data->SILKLAYER.meta.real.color = conf_core.appearance.color.element;
 	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
+
+	delayed_labels_enabled = pcb_true;
+	vtp0_truncate(&delayed_labels, 0);
 
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
@@ -350,6 +362,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->end_layer();
 	}
 
+	delayed_labels_enabled = pcb_false;
+	vtp0_truncate(&delayed_labels, 0);
 }
 
 /* ---------------------------------------------------------------------------
@@ -414,6 +428,12 @@ void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 	if (PCB->ViaOn || !pcb_gui->gui) {
 		/* draw element pins' names */
 		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_pin_name_draw_callback, NULL, NULL);
+	}
+
+	if (PCB->PinOn || !pcb_gui->gui) {
+		size_t n;
+		for(n = 0; n < delayed_labels.used; n++)
+			pcb_draw_obj_label(delayed_labels.array[n]);
 	}
 }
 
@@ -577,6 +597,14 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
 			pcb_elem_name_invalidate_draw((pcb_element_t *) ptr1);
 		break;
+	}
+}
+
+static void pcb_draw_obj_label(pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_LINE: pcb_line_draw_label((pcb_line_t *)obj); return;
+		default: break;
 	}
 }
 

@@ -112,4 +112,8 @@ int pcb_draw_layergrp_is_comp(pcb_layergrp_t *g);
 /* Draw (render) a terminal label */
 void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, const char *lab);
 
+/* Schedule an object to be called again at the end for drawing its labels 
+   on top of everything. */
+void pcb_draw_delay_label_add(pcb_any_obj_t *obj);
+
 #endif
