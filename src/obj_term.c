@@ -100,6 +100,7 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
 			vtp0_remove(v, n, 1);
 			if (v->used == 0)
 				pcb_term_remove(terminals, obj->term);
+			obj->term = NULL;
 			return PCB_TERM_ERR_SUCCESS;
 		}
 	}
