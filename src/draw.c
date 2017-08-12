@@ -216,8 +216,6 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	PCB->Data->SILKLAYER.meta.real.color = conf_core.appearance.color.element;
 	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
 
-	delayed_labels_enabled = pcb_true;
-	vtp0_truncate(&delayed_labels, 0);
 
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
@@ -361,9 +359,6 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
 		pcb_gui->end_layer();
 	}
-
-	delayed_labels_enabled = pcb_false;
-	vtp0_truncate(&delayed_labels, 0);
 }
 
 /* ---------------------------------------------------------------------------
@@ -623,6 +618,9 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 {
 	pcb_hid_t *old_gui = pcb_gui;
 
+	delayed_labels_enabled = pcb_true;
+	vtp0_truncate(&delayed_labels, 0);
+
 	pcb_gui = hid;
 	Output.fgGC = pcb_gui->make_gc();
 	Output.padGC = pcb_gui->make_gc();
@@ -632,6 +630,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	hid->set_color(Output.pmGC, "erase");
 	hid->set_color(Output.bgGC, "drill");
 	hid->set_color(Output.padGC, conf_core.appearance.color.pin);
+
 	return old_gui;
 }
 
@@ -642,6 +641,9 @@ static void expose_end(pcb_hid_t *old_gui)
 	pcb_gui->destroy_gc(Output.bgGC);
 	pcb_gui->destroy_gc(Output.pmGC);
 	pcb_gui = old_gui;
+
+	delayed_labels_enabled = pcb_false;
+	vtp0_truncate(&delayed_labels, 0);
 }
 
 void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
