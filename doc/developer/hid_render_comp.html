@@ -1,0 +1,69 @@
+<html>
+<body>
+<h1> HID: rendering vs. composite layers </h1>
+<p>
+All rendering is driven by the core. The core undrestands the PCB stackup,
+layers, layer groups, compositions within the layer groups, extra labels,
+layer visibility, etc. The HID is a slave device that takes drawing
+instructions and blindly executes them.
+<p>
+However, the HID has a chance to alter which layer groups are drawn, using
+the <i>set_layer_group</i> hooks return value.
+<p>
+
+The rendering is done in bursts. A burst may redraw only a small window
+of the screen. Each bursts draws multiple layer groups, in Z-order, from
+bottom (furthest from the eye of the user) to up (closest to the eye of
+the user). Each layer group is drawn on a transparent sketch canvas. In positive mode,
+objects are drawn with multiple colors on each sketch canvas. In negative mode
+pixels are erased from the sketch canvas, making the affected pixels transparent again. Drawing
+on a layer group (either positively or negatively) should
+<b>overwrite</b> pixels on the same layer group. In other words, there's
+no transluency between two overlapping objects drawm on the same layer
+group.
+
+<p>
+There is a so called <i>output</i> canvas, which shall be cleared to
+the background color upon <i>render_burst</i> / <i>start</i>. The background
+color shall be fetched from the config tree (appearance/color/background).
+<p>
+The following steps are taken by the core in a burst:
+<ul>
+	<li> 1. call to the <i>render_burst</i> hook with <i>start</i>
+	<li> 2. <i>set_layer_group</i> is called for the next layer; depending on the return value, the core will skip to stpe 7.
+	<li> 3. <i>set_drawing_mode</i> is called with <i>reset</i>
+	<li> 3. <i>set_drawing_mode</i> is called with <i>positive</i> or <i>negative</i> to set draw or erase
+	<li> 4. objects are drawn
+	<li> 5. if there are subsequent composite layers, the core will jump back to 3.
+	<li> 6. <i>set_drawing_mode</i> is called with <i>flush</i>
+	<li> 7. if there are further groups, the core jumps back to step 3.
+	<li> 8. call to the <i>render_burst</i> hook with <i>end</i>
+</ul>
+<p>
+When <i>set_drawing_mode</i> / <i>reset</i> is called, the HID needs to
+create a new sketch canvas, all pixels initialized to transparent. The
+core may switch between positive and negative draw any time. When
+<i>set_drawing_mode</i> / <i>flush</i> is called, the current sketch
+canvas needs to be blitted onto the output (in a HID-specific way) and
+the sketch canvas can be destroyed. The output canvas shall be flushed to
+the screen upon <i>render_burst</i> / <i>end</i>.
+<p>
+Optional optimization: the most common case is when only positively drawn
+layers are used to draw the final output. Drawing on separate sketch canvases and
+blitting them onto an output buffer is a waste in this setup. To give HIDs a
+chance to avoid the extra copies, <i>set_drawing_mode</i> calls have an
+argument called <i>direct</i>. When the <i>direct</i> is set, it is safe
+to directly draw on the output canvas, without allocating a sketch canvas. The
+core guarantees the followings:
+<ul>
+	<li> all calls of <i>set_drawing_mode</i> within drawing a layer group will have the same <i>direct</i> argument
+	<li> if <i>direct</i> is set for a layer group, <i>set_drawing_mode</i> will not be called with <i>negative</i>
+	<li> only the first N consecutive layer groups can be <i>direct</i>; once a group is drawn with <i>direct</i> unset, all subsequent groups will be drawn with <i>direct</i> unset
+</ul>
+<p>
+It is possible that the core would draw the whole board in <i>direct</i>
+mode. It is safe to ignore the <i>direct</i> argument and always use the
+more expensive, sketch-canvas+blitting method.
+
+</body>
+</html>
