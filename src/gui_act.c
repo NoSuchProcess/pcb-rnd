@@ -522,11 +522,15 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				}
 
 				/* toggle terminal ID print for subcircuit parts */
-				type = pcb_search_screen(x, y, PCB_TYPE_SUBC_PART | PCB_TYPE_VIA, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
 				if (type) {
 					pcb_any_obj_t *obj = ptr2;
 
 					switch(type) {
+						case PCB_TYPE_SUBC:
+#warning term TODO: when we have the op, loop
+							pcb_message(PCB_MSG_ERROR, "subc: subc pin display toggle is not yet implemented\n");
+							return;
 						case PCB_TYPE_VIA:
 							if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *)ptr2))
 								pcb_pin_name_invalidate_erase((pcb_pin_t *)ptr2);
