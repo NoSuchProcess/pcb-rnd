@@ -624,12 +624,14 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	pcb_gui = hid;
 	Output.fgGC = pcb_gui->make_gc();
 	Output.padGC = pcb_gui->make_gc();
+	Output.padselGC = pcb_gui->make_gc();
 	Output.bgGC = pcb_gui->make_gc();
 	Output.pmGC = pcb_gui->make_gc();
 
 	hid->set_color(Output.pmGC, "erase");
 	hid->set_color(Output.bgGC, "drill");
 	hid->set_color(Output.padGC, conf_core.appearance.color.pin);
+	hid->set_color(Output.padselGC, conf_core.appearance.color.pin_selected);
 
 	return old_gui;
 }
@@ -638,6 +640,7 @@ static void expose_end(pcb_hid_t *old_gui)
 {
 	pcb_gui->destroy_gc(Output.fgGC);
 	pcb_gui->destroy_gc(Output.padGC);
+	pcb_gui->destroy_gc(Output.padselGC);
 	pcb_gui->destroy_gc(Output.bgGC);
 	pcb_gui->destroy_gc(Output.pmGC);
 	pcb_gui = old_gui;
