@@ -878,8 +878,27 @@ void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 	return Line;
 }
 
+void *pcb_lineop_invalidate_label(pcb_opctx_t *ctx, pcb_line_t *line)
+{
+	pcb_line_name_invalidate_draw(line);
+	return line;
+}
+
 
 /*** draw ***/
+void pcb_line_name_invalidate_draw(pcb_line_t *lineline)
+{
+#warning term TODO: need to get label sizes
+}
+
+void pcb_line_draw_name(pcb_line_t *line)
+{
+	if (line->term != NULL)
+		pcb_term_label_draw((line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
+			100.0, 0, line->term);
+}
+
+
 void pcb_line_draw_(pcb_line_t * line)
 {
 	PCB_DRAW_BBOX(line);
@@ -890,6 +909,9 @@ void pcb_line_draw_(pcb_line_t * line)
 		pcb_gui->set_line_width(Output.fgGC, line->Thickness);
 
 	pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+
+	if (pcb_draw_doing_pinout)
+		pcb_line_draw_name(line);
 }
 
 void pcb_line_draw(pcb_layer_t * layer, pcb_line_t * line)
