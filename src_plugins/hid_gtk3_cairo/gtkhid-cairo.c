@@ -120,7 +120,7 @@ static const gchar *get_color_name(pcb_gtk_color_t * color)
 }
 
 /** Returns TRUE if \p color_string has been successfully parsed to \p color. */
-static pcb_bool map_color_string(const char *color_string, GdkRGBA * color)
+static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * color)
 {
 	pcb_bool parsed;
 
