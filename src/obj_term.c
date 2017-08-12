@@ -25,5 +25,79 @@
 
 #include "config.h"
 
+#include <ctype.h>
+#include <genht/htsp.h>
+#include <genvector/vtp0.h>
+
+#include "compat_misc.h"
+#include "obj_common.h"
 #include "obj_term.h"
+
+static int term_name_invalid(const char *tname)
+{
+	if ((tname == NULL) || (*tname == '\0'))
+		return 1;
+	for(;*tname != '\0'; tname++)
+		if ((!isalnum(*tname)) && (*tname != '_') && (*tname != '-'))
+			return 1;
+	return 0;
+}
+
+pcb_term_err_t pcb_term_name_is_valid(const char *tname)
+{
+	if (term_name_invalid(tname))
+		return PCB_TERM_ERR_INVALID_NAME;
+
+	return PCB_TERM_ERR_SUCCESS;
+}
+
+pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, const pcb_any_obj_t *obj)
+{
+	htsp_entry_t *e;
+	vtp0_t *v;
+
+#warning TODO
+/*
+	if (obj->term != NULL)
+		return PCB_TERM_ERR_ALREADY_TERMINAL;
+*/
+
+	if (term_name_invalid(tname))
+		return PCB_TERM_ERR_INVALID_NAME;
+
+	e = htsp_getentry(terminals, tname);
+	if (e == NULL) {
+		/* allocate new terminal */
+		tname = pcb_strdup(tname);
+		v = malloc(sizeof(vtp0_t));
+		vtp0_init(v);
+		htsp_set(terminals, tname, v);
+	}
+	else {
+		/* need to use the ones from the hash to avoid extra allocation/leak */
+		v = e->value;
+		tname = e->key;
+	}
+
+#warning TODO
+/*	obj->term = tname;*/
+	vtp0_append(v, obj);
+
+	return PCB_TERM_ERR_SUCCESS;
+}
+
+pcb_term_err_t pcb_term_del(htsp_t *terminals, const pcb_any_obj_t *obj)
+{
+	return PCB_TERM_ERR_SUCCESS;
+}
+
+pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
+{
+	return PCB_TERM_ERR_SUCCESS;
+}
+
+vtp0_t *pcb_term_get(htsp_t *terminals, const char *tname)
+{
+	return NULL;
+}
 
