@@ -116,6 +116,7 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	pcb_objtype_t type; \
 	pcb_parenttype_t parent_type; \
 	pcb_parent_t parent; \
+	const char *term; \
 	pcb_attribute_list_t Attributes
 
 	/*  struct pcb_lib_entry_t *net */
