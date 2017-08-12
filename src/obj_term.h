@@ -39,16 +39,22 @@
 #include <genvector/vtp0.h>
 #include "obj_common.h"
 
-/* Add obj to a list of terminals named tname. Sets the term field of obj if
-   it is unset (else fails). Returns 0 on success, -1 on fail. */
-int pcb_term_add(htsp_t *terminals, const char *tname, const pcb_any_obj_t *obj);
+typedef enum pcb_term_err_e {
+	PCB_TERM_ERR_SUCCESS = 0,
+	PCB_TERM_ERR_ALREADY_TERMINAL, /* object is already in a terminal, can not be added in another */
+	PCB_TERM_ERR_INVALID_NAME
+} pcb_term_err_t;
 
-/* Remove obj from terminal tname. Sets obj's term to NULL. Returns 0 on
-   success (obj removed) or -1 on error. Removes terminal if it becomes empty. */
-int pcb_term_del(htsp_t *terminals, const pcb_any_obj_t *obj);
+/* Add obj to a list of terminals named tname. Sets the term field of obj if
+   it is unset (else fails). */
+pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, const pcb_any_obj_t *obj);
+
+/* Remove obj from terminal tname. Sets obj's term to NULL. Removes
+   terminal if it becomes empty. */
+pcb_term_err_t pcb_term_del(htsp_t *terminals, const pcb_any_obj_t *obj);
 
 /* Remove a terminal from, calling pcb_term_del() on all objects in it. */
-int pcb_term_remove(htsp_t *terminals, const char *tname);
+pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname);
 
 /* Returns a vector of (pcb_any_obj_t *) containing all objects for the named
    termina. Returns 0 if tname doesn't exist in terminals. */
