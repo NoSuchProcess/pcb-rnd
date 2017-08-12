@@ -72,7 +72,7 @@ typedef enum {
 	PCB_FLAG_PININPOLY    = 0x00010, /*!< For pins and pads, this flag is used internally to indicate that the pin or pad overlaps a polygon on some layer.*/
 	PCB_FLAG_CLEARPOLY    = 0x00010, /*!< For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. */
 	PCB_FLAG_HIDENAME     = 0x00010, /*!< For elements, when set the name of the element is hidden. */
-	PCB_FLAG_DISPLAYNAME  = 0x00020, /*!< For elements, when set the names of pins are shown. */
+	PCB_FLAG_DISPLAYNAME  = 0x00020, /*!< OBSOLETE: For elements, when set the names of pins are shown. */
 	PCB_FLAG_CLEARLINE    = 0x00020, /*!< For lines and arcs, the line/arc will clear polygons instead of connecting to them. */
 	PCB_FLAG_FULLPOLY     = 0x00020, /*!< For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one). */
 	PCB_FLAG_SELECTED     = 0x00040, /*!< Set when the object is selected. */
@@ -90,7 +90,8 @@ typedef enum {
 	PCB_FLAG_VISIT        = 0x08000, /*!< marker to avoid re-visiting an object */
 	PCB_FLAG_NONETLIST    = 0x10000, /* element is not on the netlist and should not interfere with the netlist */
 	PCB_FLAG_MINCUT       = 0x20000, /* used by the mincut short find code */
-	PCB_FLAG_ONPOINT      = 0x40000  /*!< crosshair is on line point or arc point */
+	PCB_FLAG_ONPOINT      = 0x40000, /*!< crosshair is on line point or arc point */
+	PCB_FLAG_TERMNAME     = 0x80000  /*!< when set the names of pins are shown. */
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
 } pcb_flag_values_t;
 

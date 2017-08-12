@@ -574,7 +574,7 @@ void *pcb_viaop_change_name(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	char *old = Via->Name;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Via)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Via)) {
 		pcb_pin_name_invalidate_erase(Via);
 		Via->Name = ctx->chgname.new_name;
 		pcb_pin_name_invalidate_draw(Via);
@@ -590,7 +590,7 @@ void *pcb_pinop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 	char *old = Pin->Name;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pin)) {
 		pcb_pin_name_invalidate_erase(Pin);
 		Pin->Name = ctx->chgname.new_name;
 		pcb_pin_name_invalidate_draw(Pin);
@@ -606,7 +606,7 @@ void *pcb_pinop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *
 	char *old = Pin->Number;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pin)) {
 		pcb_pin_name_invalidate_erase(Pin);
 		Pin->Number = ctx->chgname.new_name;
 		pcb_pin_name_invalidate_draw(Pin);
@@ -907,7 +907,7 @@ void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin)
 
 void *pcb_pinop_invalidate_label(pcb_opctx_t *ctx, pcb_pin_t *pin)
 {
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, pin))
 		pcb_pin_name_invalidate_erase(pin);
 	else
 		pcb_pin_name_invalidate_draw(pin);
@@ -1038,7 +1038,7 @@ pcb_r_dir_t pcb_pin_draw_callback(const pcb_box_t * b, void *cl)
 
 static void draw_pin_name(pcb_pin_t *pin)
 {
-	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && PCB_FLAG_TEST(PCB_FLAG_TERMNAME, pin))
 		_draw_pv_name(pin);
 }
 
@@ -1147,7 +1147,7 @@ static void GatherPVName(pcb_pin_t *Ptr)
 void pcb_via_invalidate_erase(pcb_pin_t *Via)
 {
 	pcb_draw_invalidate(Via);
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Via))
 		pcb_via_name_invalidate_erase(Via);
 	pcb_flag_erase(&Via->Flags);
 }
@@ -1160,7 +1160,7 @@ void pcb_via_name_invalidate_erase(pcb_pin_t *Via)
 void pcb_pin_invalidate_erase(pcb_pin_t *Pin)
 {
 	pcb_draw_invalidate(Pin);
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pin))
 		pcb_pin_name_invalidate_erase(Pin);
 	pcb_flag_erase(&Pin->Flags);
 }
@@ -1173,7 +1173,7 @@ void pcb_pin_name_invalidate_erase(pcb_pin_t *Pin)
 void pcb_via_invalidate_draw(pcb_pin_t *Via)
 {
 	pcb_draw_invalidate(Via);
-	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Via))
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Via))
 		pcb_via_name_invalidate_draw(Via);
 }
 
@@ -1185,7 +1185,7 @@ void pcb_via_name_invalidate_draw(pcb_pin_t *Via)
 void pcb_pin_invalidate_draw(pcb_pin_t *Pin)
 {
 	pcb_draw_invalidate(Pin);
-	if ((!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin))
+	if ((!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pin))
 			|| pcb_draw_doing_pinout)
 		pcb_pin_name_invalidate_draw(Pin);
 }

@@ -317,7 +317,7 @@ void *pcb_padop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 	char *old = Pad->Name;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pad)) {
 		pcb_pad_name_invalidate_erase(Pad);
 		Pad->Name = ctx->chgname.new_name;
 		pcb_pad_name_invalidate_draw(Pad);
@@ -333,7 +333,7 @@ void *pcb_padop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *
 	char *old = Pad->Number;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pad)) {
 		pcb_pad_name_invalidate_erase(Pad);
 		Pad->Number = ctx->chgname.new_name;
 		pcb_pad_name_invalidate_draw(Pad);
@@ -529,7 +529,7 @@ pcb_r_dir_t pcb_pad_name_draw_callback(const pcb_box_t * b, void *cl)
 	int *side = cl;
 
 	if (PCB_ON_SIDE(pad, *side)) {
-		if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
+		if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, pad))
 			draw_pad_name(pad);
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -596,7 +596,7 @@ static void GatherPadName(pcb_pad_t *Pad)
 void pcb_pad_invalidate_erase(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
-	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pad))
 		pcb_pad_name_invalidate_erase(Pad);
 	pcb_flag_erase(&Pad->Flags);
 }
@@ -609,7 +609,7 @@ void pcb_pad_name_invalidate_erase(pcb_pad_t *Pad)
 void pcb_pad_invalidate_draw(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
-	if (pcb_draw_doing_pinout || PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad))
+	if (pcb_draw_doing_pinout || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, Pad))
 		pcb_pad_name_invalidate_draw(Pad);
 }
 
