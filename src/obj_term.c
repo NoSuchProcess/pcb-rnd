@@ -98,6 +98,8 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
 	for(n = 0; n < v->used; n++) {
 		if (v->array[n] == obj) {
 			vtp0_remove(v, n, 1);
+			if (v->used == 0)
+				pcb_term_remove(terminals, obj->term);
 			return PCB_TERM_ERR_SUCCESS;
 		}
 	}
