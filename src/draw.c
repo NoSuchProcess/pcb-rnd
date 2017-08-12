@@ -410,6 +410,11 @@ void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_name_draw_callback, &side, NULL);
 		}
 	}
+
+	if (PCB->ViaOn || !pcb_gui->gui) {
+		/* draw element pins' names */
+		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_pin_name_draw_callback, NULL, NULL);
+	}
 }
 
 #include "draw_composite.c"
