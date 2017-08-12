@@ -707,8 +707,6 @@ void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double
 	pcb_bool flip_x = conf_core.editor.view.flip_x;
 	pcb_bool flip_y = conf_core.editor.view.flip_y;
 
-	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
-
 	text->TextString = (char *)lab;
 	text->Flags = (flip_x ^ flip_y) ? pcb_flag_make(PCB_FLAG_ONSOLDER) : pcb_no_flags();
 	text->X = x;
@@ -735,6 +733,8 @@ void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double
 void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab)
 {
 	pcb_text_t text;
+
+	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
 
 	pcb_term_label_setup(&text, x, y, scale, vert, centered, lab);
 
