@@ -1036,7 +1036,7 @@ pcb_r_dir_t pcb_pin_draw_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void draw_pin_name(pcb_pin_t *pin)
+static void draw_pin_name(pcb_pin_t *pin)
 {
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
 		_draw_pv_name(pin);
