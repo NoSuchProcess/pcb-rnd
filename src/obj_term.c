@@ -167,6 +167,9 @@ typedef struct {
 	char str[1];
 } term_rename_t;
 
+#warning TODO: get rid of the two parallel type systems
+extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
+
 static int undo_term_rename_swap(void *udata)
 {
 	char *old_term = NULL;
@@ -184,13 +187,13 @@ static int undo_term_rename_swap(void *udata)
 	if (r->obj->term != NULL) {
 		old_term = pcb_strdup(r->obj->term);
 		res |= pcb_term_del(&subc->terminals, r->obj);
-#warning TODO: redraw via op: see pcb_pin_name_invalidate_erase; test case: enable pin display for a via; rename via; won't show up till scroll
+		pcb_obj_invalidate_label(pcb_obj_type2oldtype(r->obj->type), r->obj->parent.any, r->obj, r->obj);
 	}
 
 	/* add to new terminal */
 	if (*r->str != '\0') {
 		res |= pcb_term_add(&subc->terminals, r->str, r->obj);
-#warning TODO: redraw via op: see pcb_pin_name_invalidate_draw; test case: enable pin display for a via; rename via; won't show up till scroll
+		pcb_obj_invalidate_label(pcb_obj_type2oldtype(r->obj->type), r->obj->parent.any, r->obj, r->obj);
 	}
 
 	/* swap name: redo & undo are symmetric; we made sure to have enough room for either old or new name */
@@ -200,7 +203,6 @@ static int undo_term_rename_swap(void *udata)
 		strcpy(r->str, old_term);
 
 	free(old_term);
-
 
 	return res;
 }

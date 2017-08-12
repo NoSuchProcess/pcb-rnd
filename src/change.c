@@ -1257,7 +1257,8 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 	if (parent_subc != NULL) {
 		name = pcb_gui->prompt_for(_("Enter terminal ID:"), PCB_EMPTY(obj->term));
 		pcb_term_undoable_rename(PCB, obj, name);
-		return;
+		pcb_draw();
+		return Ptr3;
 	}
 
 	switch (Type) {
