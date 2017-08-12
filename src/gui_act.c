@@ -530,12 +530,9 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 						case PCB_TYPE_SUBC:
 #warning term TODO: when we have the op, loop
 							pcb_message(PCB_MSG_ERROR, "subc: subc pin display toggle is not yet implemented\n");
-							return;
+							return 0;
 						case PCB_TYPE_VIA:
-							if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *)ptr2))
-								pcb_pin_name_invalidate_erase((pcb_pin_t *)ptr2);
-							else
-								pcb_pin_name_invalidate_draw((pcb_pin_t *)ptr2);
+							pcb_obj_invalidate_label(type, ptr1, ptr2, ptr3);
 							break;
 #warning term TODO: these; also convert this into an op so we don't need the switch here
 						case PCB_TYPE_LINE:
@@ -544,7 +541,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 						case PCB_TYPE_TEXT:
 
 						default:
-							return; /* nothing else can have a displayed name */
+							return 0; /* nothing else can have a displayed name */
 					}
 
 					pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr3);
