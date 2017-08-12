@@ -1228,6 +1228,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 	char *name = NULL;
 	char msg[513];
 	pcb_any_obj_t *obj = Ptr2;
+	pcb_subc_t *parent_subc;
 
 	/* if passed an element name, make it an element reference instead */
 	if (Type == PCB_TYPE_ELEMENT_NAME) {
@@ -1236,9 +1237,10 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 		Ptr3 = Ptr1;
 	}
 
-	if (pcb_obj_parent_subc(obj)) {
+	parent_subc = pcb_obj_parent_subc(obj);
+	if (parent_subc != NULL) {
 		name = pcb_gui->prompt_for(_("Enter terminal ID:"), PCB_EMPTY(obj->term));
-/*		pcb_term_undoable_rename()*/
+		pcb_term_undoable_rename(PCB, obj, name);
 		return;
 	}
 
