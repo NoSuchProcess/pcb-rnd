@@ -66,9 +66,6 @@ typedef struct render_priv_s {
 	cairo_surface_t *surf_da;							/**< cairo surface connected to gport->drawing_area */
 	cairo_t *cr_drawing_area;							/**< cairo context created from surf_da             */
 
-	cairo_surface_t *surf_ui;							/**< cairo surface gathering visual feedback to user */
-	cairo_t *cr_ui;												/**< cairo context created from surf_ui             */
-
 	cairo_surface_t *surf_layer;					/**< cairo surface for temporary layer composition  */
 	cairo_t *cr_layer;										/**< cairo context created from surf_layer          */
 
@@ -1368,8 +1365,6 @@ static void ghid_cairo_init_renderer(int *argc, char ***argv, void *vport)
 	port->render_priv->cr = NULL;
 	port->render_priv->surf_da = NULL;
 	port->render_priv->cr_drawing_area = NULL;
-	port->render_priv->surf_ui = NULL;
-	port->render_priv->cr_ui = NULL;
 }
 
 static void ghid_cairo_shutdown_renderer(void *vport)
@@ -1429,15 +1424,7 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 
 	/* Creates a single cairo surface/context for off-line painting */
 	cr_create_similar_surface_and_context(&priv->surf_da, &priv->cr_drawing_area, port);
-
-	/* Creates a surface/context for painting user inter-action feedback (ghosts) */
-	cr_create_similar_surface_and_context(&priv->surf_ui, &priv->cr_ui, port);
-	/* Erases the surface, and points to it */
-	cr = priv->cr_ui;
-	cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-	cairo_paint_with_alpha(cr, 1.0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	priv->cr = priv->cr_ui;
+	priv->cr = priv->cr_drawing_area;
 }
 
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
@@ -1454,7 +1441,7 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_ex
 
 	priv->cr = p;
 	show_crosshair(TRUE);
-	priv->cr = priv->cr_ui;
+	priv->cr = priv->cr_drawing_area;
 
 	return FALSE;
 }
