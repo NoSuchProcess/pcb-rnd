@@ -119,8 +119,6 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	const char *term; \
 	pcb_attribute_list_t Attributes
 
-	/*  struct pcb_lib_entry_t *net */
-
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define	PCB_ANYLINEFIELDS			\
 	PCB_ANYOBJECTFIELDS;		\
