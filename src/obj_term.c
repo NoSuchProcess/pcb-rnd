@@ -25,6 +25,7 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <ctype.h>
 #include <genht/htsp.h>
 #include <genvector/vtp0.h>
@@ -84,7 +85,24 @@ pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, pcb_any_obj_t 
 
 pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
 {
-	return PCB_TERM_ERR_SUCCESS;
+	vtp0_t *v;
+	size_t n;
+
+	if (obj->term == NULL)
+		return PCB_TERM_ERR_NOT_IN_TERMINAL;
+
+	v = htsp_get(terminals, obj->term);
+	if (v == NULL)
+		return PCB_TERM_ERR_TERM_NOT_FOUND;
+
+	for(n = 0; n < v->used; n++) {
+		if (v->array[n] == obj) {
+			vtp0_remove(v, n, 1);
+			return PCB_TERM_ERR_SUCCESS;
+		}
+	}
+
+	return PCB_TERM_ERR_NOT_IN_TERMINAL;
 }
 
 pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
