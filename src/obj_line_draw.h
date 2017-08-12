@@ -35,3 +35,5 @@ void pcb_line_draw_(pcb_line_t * line);
 void pcb_line_draw(pcb_layer_t * layer, pcb_line_t * line);
 void pcb_line_invalidate_erase(pcb_line_t *Line);
 void pcb_line_invalidate_draw(pcb_layer_t *Layer, pcb_line_t *Line);
+void pcb_line_draw_label(pcb_line_t *line);
+

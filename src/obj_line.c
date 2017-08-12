@@ -891,7 +891,7 @@ void pcb_line_name_invalidate_draw(pcb_line_t *lineline)
 #warning term TODO: need to get label sizes
 }
 
-void pcb_line_draw_name(pcb_line_t *line)
+void pcb_line_draw_label(pcb_line_t *line)
 {
 	if (line->term != NULL)
 		pcb_term_label_draw((line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
@@ -910,8 +910,10 @@ void pcb_line_draw_(pcb_line_t * line)
 
 	pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 
-	if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, line))
-		pcb_line_draw_name(line);
+	if (line->term != NULL) {
+		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, line))
+			pcb_draw_delay_label_add(line);
+	}
 }
 
 void pcb_line_draw(pcb_layer_t * layer, pcb_line_t * line)
