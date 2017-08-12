@@ -109,23 +109,21 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 /* Any object that uses the "object flags" defined in const.h, or
    exists as an object on the pcb, MUST be defined using this as the
    first fields, either directly or through PCB_ANYLINEFIELDS.  */
-#define PCB_ANYOBJECTFIELDS			\
-	pcb_box_t		BoundingBox;	\
-	long int	ID;		\
-	pcb_flag_t	Flags; \
-	pcb_objtype_t type; \
-	pcb_parenttype_t parent_type; \
-	pcb_parent_t parent; \
-	const char *term; \
+#define PCB_ANYOBJECTFIELDS \
+	pcb_box_t            BoundingBox; \
+	long int             ID; \
+	pcb_flag_t           Flags; \
+	pcb_objtype_t        type; \
+	pcb_parenttype_t     parent_type; \
+	pcb_parent_t         parent; \
+	const char           *term; \
 	pcb_attribute_list_t Attributes
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
-#define	PCB_ANYLINEFIELDS			\
-	PCB_ANYOBJECTFIELDS;		\
-	pcb_coord_t		Thickness,      \
-                        Clearance;      \
-	pcb_point_t	Point1,		\
-			Point2
+#define PCB_ANYLINEFIELDS \
+	PCB_ANYOBJECTFIELDS; \
+	pcb_coord_t Thickness, Clearance; \
+	pcb_point_t Point1, Point2
 
 /* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
    based on this. */
