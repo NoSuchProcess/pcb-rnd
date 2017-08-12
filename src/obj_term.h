@@ -60,7 +60,7 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, const pcb_any_obj_t *obj);
 pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname);
 
 /* Returns a vector of (pcb_any_obj_t *) containing all objects for the named
-   termina. Returns 0 if tname doesn't exist in terminals. */
+   termina. Returns NULL if tname doesn't exist in terminals. */
 vtp0_t *pcb_term_get(htsp_t *terminals, const char *tname);
 
 #endif
