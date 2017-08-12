@@ -1010,7 +1010,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	/* Set font height to approx 56% of pin thickness */
 	scale = 56 * pv->Thickness / PCB_FONT_CAPHEIGHT;
 
-	pcb_term_label_draw(box.X1, box.Y1, scale, vert, buff);
+	pcb_term_label_draw(box.X1, box.Y1, scale, vert, pcb_false, buff);
 }
 
 static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)

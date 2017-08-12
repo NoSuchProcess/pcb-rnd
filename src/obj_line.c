@@ -895,7 +895,7 @@ void pcb_line_draw_label(pcb_line_t *line)
 {
 	if (line->term != NULL)
 		pcb_term_label_draw((line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			100.0, 0, line->term);
+			100.0, pcb_false, pcb_true, line->term);
 }
 
 
