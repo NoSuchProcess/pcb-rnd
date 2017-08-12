@@ -32,6 +32,7 @@
 #include "error.h"
 #include "obj_subc.h"
 #include "obj_subc_op.h"
+#include "obj_term.h"
 #include "obj_text_draw.h"
 #include "rtree.h"
 #include "draw.h"
@@ -53,11 +54,13 @@ pcb_subc_t *pcb_subc_alloc(void)
 	sc->type = PCB_OBJ_SUBC;
 	PCB_SET_PARENT(sc->data, subc, sc);
 	minuid_gen(&pcb_minuid, sc->uid);
+	pcb_term_init(&sc->terminals);
 	return sc;
 }
 
 void pcb_subc_free(pcb_subc_t *sc)
 {
+	pcb_term_uninit(&sc->terminals);
 	pcb_subclist_remove(sc);
 	pcb_data_free(sc->data);
 	free(sc->data);
