@@ -406,6 +406,22 @@ pcb_opfunc_t ChgFlagFunctions = {
 	pcb_subcop_change_flag
 };
 
+static pcb_opfunc_t InvalLabelFunctions = {
+	/*pcb_lineop_invalidate_label*/ NULL,
+	/*pcb_textop_invalidate_label*/ NULL,
+	/*pcb_polyop_invalidate_label*/ NULL,
+	pcb_pinop_invalidate_label,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	/*pcb_arcop_invalidate_label*/ NULL,
+	NULL,
+	NULL,
+	/*pcb_subcop_invalidate_flag*/ NULL
+};
 
 
 /* ----------------------------------------------------------------------
@@ -1307,4 +1323,11 @@ void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t 
 	ctx.chgflag.flag = flag;
 
 	pcb_object_operation(&ChgFlagFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+}
+
+void *pcb_obj_invalidate_label(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+{
+	pcb_opctx_t ctx;
+	ctx.noarg.pcb = PCB;
+	return pcb_object_operation(&InvalLabelFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 }
