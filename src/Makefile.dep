@@ -5019,7 +5019,7 @@ change.o: change.c ../config.h conf_core.h conf.h global_typedefs.h \
  select.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  hid_actions.h compat_nls.h obj_all_op.h obj_arc_op.h obj_elem_op.h \
  obj_line_op.h obj_pad_op.h obj_pinvia_op.h obj_poly_op.h obj_text_op.h \
- obj_rat_op.h obj_subc_op.h
+ obj_rat_op.h obj_subc_op.h obj_subc_parent.h
 change_act.o: change_act.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -6093,12 +6093,12 @@ obj_subc.o: obj_subc.c ../config.h buffer.h obj_common.h \
  layer_grp.h library.h rats_patch.h crosshair.h vtonpoint.h hid.h error.h \
  drc.h route.h data.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
- ht_subc.h obj_subc_op.h operation.h obj_text_draw.h draw.h polygon.h \
- undo.h ../src_3rd/libuundo/uundo.h undo_old.h compat_misc.h pcb_minuid.h \
+ ht_subc.h obj_subc_op.h operation.h obj_term.h \
+ ../src_3rd/genvector/vtp0.h obj_text_draw.h draw.h polygon.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h compat_misc.h pcb_minuid.h \
  conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genvector/vtp0.h list_conf.h
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h
 obj_subc_list.o: obj_subc_list.c ../config.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h obj_common.h \
@@ -6107,12 +6107,13 @@ obj_subc_list.o: obj_subc_list.c ../config.h obj_subc.h \
  rtree.h obj_subc_list.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
-obj_term.o: obj_term.c ../config.h obj_term.h ../src_3rd/genht/htsp.h \
+obj_term.o: obj_term.c ../config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h obj_common.h \
+ ../src_3rd/genvector/genvector_undef.h compat_misc.h obj_common.h \
  ../src_3rd/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
- globalconst.h attrib.h global_typedefs.h pcb_bool.h unit.h data_parent.h
+ globalconst.h attrib.h global_typedefs.h pcb_bool.h unit.h data_parent.h \
+ obj_term.h
 obj_text.o: obj_text.c ../config.h rotate.h global_typedefs.h pcb_bool.h \
  unit.h board.h const.h macro.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
