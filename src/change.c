@@ -40,6 +40,7 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
+#include "obj_subc_parent.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -1226,6 +1227,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 {
 	char *name = NULL;
 	char msg[513];
+	pcb_any_obj_t *obj = Ptr2;
 
 	/* if passed an element name, make it an element reference instead */
 	if (Type == PCB_TYPE_ELEMENT_NAME) {
@@ -1233,6 +1235,13 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 		Ptr2 = Ptr1;
 		Ptr3 = Ptr1;
 	}
+
+	if (pcb_is_obj_in_subc(obj)) {
+		name = pcb_gui->prompt_for(_("Enter terminal ID:"), PCB_EMPTY(obj->term));
+/*		pcb_term_undoable_rename()*/
+		return;
+	}
+
 	switch (Type) {
 	case PCB_TYPE_LINE:
 		name = pcb_gui->prompt_for(_("Linename:"), PCB_EMPTY(((pcb_line_t *) Ptr2)->Number));
