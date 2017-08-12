@@ -283,6 +283,7 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 		case PCB_OBJ_VIA:     return PCB_TYPE_VIA;
 		case PCB_OBJ_ELEMENT: return PCB_TYPE_ELEMENT;
 		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
+		default: return 0;
 	}
 	return 0;
 }
