@@ -45,6 +45,9 @@ typedef enum pcb_term_err_e {
 	PCB_TERM_ERR_INVALID_NAME
 } pcb_term_err_t;
 
+/* Determines if tname is a valid terminal name */
+pcb_term_err_t pcb_term_name_is_valid(const char *tname);
+
 /* Add obj to a list of terminals named tname. Sets the term field of obj if
    it is unset (else fails). */
 pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, const pcb_any_obj_t *obj);
