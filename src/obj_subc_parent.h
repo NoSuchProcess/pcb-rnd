@@ -30,35 +30,39 @@
 #include "data_parent.h"
 #include "layer.h"
 
-/* Returns whether global (on-data) object is part of a subc */
-static inline PCB_FUNC_UNUSED int pcb_is_gobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+/* Returns the subc a global (on-data) object is part of (or NULL if not part of any subc) */
+static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_gobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
 {
 	if (pt != PCB_PARENT_DATA)
-		return 0;
+		return NULL;
 
 	if (p->data == NULL)
-		return 0;
+		return NULL;
 	
-	return (p->data->parent_type == PCB_PARENT_SUBC);
+	if (p->data->parent_type == PCB_PARENT_SUBC)
+		return p->data->parent.subc;
+	return NULL;
 }
 
-/* Returns whether layer object is part of a subc */
-static inline PCB_FUNC_UNUSED int pcb_is_lobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+/* Returns the subc a layer object is part of (or NULL if not part of any subc) */
+static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_lobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
 {
 	if (pt != PCB_PARENT_LAYER)
-		return 0;
+		return NULL;
 
 	if (p->layer == NULL)
-		return 0;
+		return NULL;
 	
 	if (p->layer->parent == NULL)
-		return 0;
+		return NULL;
 
-	return (p->layer->parent->parent_type == PCB_PARENT_SUBC);
+	if (p->layer->parent->parent_type == PCB_PARENT_SUBC)
+		return p->layer->parent->parent.subc;
+	return NULL;
 }
 
-/* Returns whether an object is part of a subc */
-static inline PCB_FUNC_UNUSED int pcb_is_obj_in_subc(pcb_any_obj_t *obj)
+/* Returns the subc an object is part of (or NULL if not part of any subc) */
+static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_obj_in_subc(pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
 		case PCB_OBJ_VIA:
