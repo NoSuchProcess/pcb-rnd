@@ -269,25 +269,31 @@ void pcb_lookup_conn_by_pin(int type, void *ptr1)
 	pcb_conn_lookup_uninit();
 }
 
+#warning TODO: keep only PCB_OBJ_* and remove this function
+unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
+{
+	switch(type) {
+		case PCB_OBJ_LINE:    return PCB_TYPE_LINE;
+		case PCB_OBJ_TEXT:    return PCB_TYPE_TEXT;
+		case PCB_OBJ_POLYGON: return PCB_TYPE_POLYGON;
+		case PCB_OBJ_ARC:     return PCB_TYPE_ARC;
+		case PCB_OBJ_RAT:     return PCB_TYPE_RATLINE;
+		case PCB_OBJ_PAD:     return PCB_TYPE_PAD;
+		case PCB_OBJ_PIN:     return PCB_TYPE_PIN;
+		case PCB_OBJ_VIA:     return PCB_TYPE_VIA;
+		case PCB_OBJ_ELEMENT: return PCB_TYPE_ELEMENT;
+		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
+	}
+	return 0;
+}
+
 pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool AndDraw, pcb_cardinal_t (*cb)(void *ctx, pcb_any_obj_t *obj))
 {
 	pcb_cardinal_t i, n, cnt = 0;
-	unsigned long type;
+	unsigned long type = pcb_obj_type2oldtype(obj->type);
 
-#warning TODO: keep only PCB_OBJ_*
-	switch(obj->type) {
-		case PCB_OBJ_LINE:    type = PCB_TYPE_LINE; break;
-		case PCB_OBJ_TEXT:    type = PCB_TYPE_TEXT; break;
-		case PCB_OBJ_POLYGON: type = PCB_TYPE_POLYGON; break;
-		case PCB_OBJ_ARC:     type = PCB_TYPE_ARC; break;
-		case PCB_OBJ_RAT:     type = PCB_TYPE_RATLINE; break;
-		case PCB_OBJ_PAD:     type = PCB_TYPE_PAD; break;
-		case PCB_OBJ_PIN:     type = PCB_TYPE_PIN; break;
-		case PCB_OBJ_VIA:     type = PCB_TYPE_VIA; break;
-		case PCB_OBJ_ELEMENT: type = PCB_TYPE_ELEMENT; break;
-		case PCB_OBJ_SUBC:    type = PCB_TYPE_SUBC; break;
-		default: return 0;
-	}
+	if (type == 0)
+		return 0;
 
 	pcb_conn_lookup_init();
 	ListStart(type, obj->parent.any, obj, obj);
