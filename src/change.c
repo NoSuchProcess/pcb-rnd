@@ -1236,7 +1236,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 		Ptr3 = Ptr1;
 	}
 
-	if (pcb_is_obj_in_subc(obj)) {
+	if (pcb_obj_parent_subc(obj)) {
 		name = pcb_gui->prompt_for(_("Enter terminal ID:"), PCB_EMPTY(obj->term));
 /*		pcb_term_undoable_rename()*/
 		return;

@@ -782,7 +782,7 @@ pcb_r_dir_t pcb_arc_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *)b;
 
-	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(arc->parent_type, &arc->parent))
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
 	pcb_arc_draw((pcb_layer_t *)cl, arc);

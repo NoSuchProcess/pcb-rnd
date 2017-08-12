@@ -729,7 +729,7 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 	int min_silk_line;
 	unsigned int flg = 0;
 
-	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(text->parent_type, &text->parent))
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))

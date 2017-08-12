@@ -820,7 +820,7 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 	if (!polygon->Clipped)
 		return PCB_R_DIR_NOT_FOUND;
 
-	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(polygon->parent_type, &polygon->parent))
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))

@@ -31,7 +31,7 @@
 #include "layer.h"
 
 /* Returns the subc a global (on-data) object is part of (or NULL if not part of any subc) */
-static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_gobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_gobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p)
 {
 	if (pt != PCB_PARENT_DATA)
 		return NULL;
@@ -45,7 +45,7 @@ static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_gobj_in_subc(pcb_parenttype_t p
 }
 
 /* Returns the subc a layer object is part of (or NULL if not part of any subc) */
-static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_lobj_in_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_lobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p)
 {
 	if (pt != PCB_PARENT_LAYER)
 		return NULL;
@@ -62,18 +62,18 @@ static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_lobj_in_subc(pcb_parenttype_t p
 }
 
 /* Returns the subc an object is part of (or NULL if not part of any subc) */
-static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_is_obj_in_subc(pcb_any_obj_t *obj)
+static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_obj_parent_subc(pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
 		case PCB_OBJ_VIA:
 		case PCB_OBJ_SUBC:
-			return pcb_is_gobj_in_subc(obj->parent_type, &obj->parent);
+			return pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
 
 		case PCB_OBJ_LINE:
 		case PCB_OBJ_POLYGON:
 		case PCB_OBJ_TEXT:
 		case PCB_OBJ_ARC:
-			return pcb_is_lobj_in_subc(obj->parent_type, &obj->parent);
+			return pcb_lobj_parent_subc(obj->parent_type, &obj->parent);
 
 #if 0
 		case PCB_OBJ_RATLINE:

@@ -1070,7 +1070,7 @@ pcb_r_dir_t pcb_via_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *via = (pcb_pin_t *)b;
 
-	if (PCB->SubcPartsOn || !pcb_is_gobj_in_subc(via->parent_type, &via->parent))
+	if (PCB->SubcPartsOn || !pcb_gobj_parent_subc(via->parent_type, &via->parent))
 		draw_via(via, pcb_false);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
@@ -1085,7 +1085,7 @@ pcb_r_dir_t pcb_hole_draw_callback(const pcb_box_t * b, void *cl)
 	if ((plated == 0 && !PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) || (plated == 1 && PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	if (!PCB->SubcPartsOn && pcb_is_gobj_in_subc(pv->parent_type, &pv->parent))
+	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(pv->parent_type, &pv->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (conf_core.editor.thin_draw) {

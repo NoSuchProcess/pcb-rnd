@@ -922,7 +922,7 @@ pcb_r_dir_t pcb_line_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *)b;
 
-	if (!PCB->SubcPartsOn && pcb_is_lobj_in_subc(line->parent_type, &line->parent))
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(line->parent_type, &line->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
 	pcb_line_draw((pcb_layer_t *)cl, line);

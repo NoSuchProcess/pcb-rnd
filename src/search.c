@@ -74,7 +74,7 @@ static pcb_bool SearchSubcByLocation(unsigned long, pcb_subc_t **, pcb_subc_t **
    obj is the object to be checked if part of subc; check lock on locked_obj */
 #define TEST_OBJST(objst, locality, obj, locked_obj) \
 do { \
-	if (!(objst & PCB_TYPE_SUBC_PART) && (pcb_is_ ## locality ## obj_in_subc(obj->parent_type, &obj->parent))) \
+	if (!(objst & PCB_TYPE_SUBC_PART) && (pcb_ ## locality ## obj_parent_subc(obj->parent_type, &obj->parent))) \
 		return PCB_R_DIR_NOT_FOUND; \
 	if (!(objst & PCB_TYPE_LOCKED) && (PCB_FLAG_TEST(objst & PCB_FLAG_LOCK, locked_obj))) \
 		return PCB_R_DIR_NOT_FOUND; \
