@@ -136,8 +136,3 @@ pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname)
 	return PCB_TERM_ERR_SUCCESS;
 }
 
-vtp0_t *pcb_term_get(htsp_t *terminals, const char *tname)
-{
-	return NULL;
-}
-
