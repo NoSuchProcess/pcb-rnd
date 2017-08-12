@@ -965,10 +965,13 @@ static void _draw_pv_name(pcb_pin_t * pv)
 
 	PCB_DRAW_BBOX(pv);
 
-	if (!pv->Name || !pv->Name[0]) {
+#warning subc TODO: remove the name/number logics when elements are removed
+	if (pv->term != NULL)
+		pn = pv->term;
+	else if (!pv->Name || !pv->Name[0]) { /* old: elements */
 		pn = PCB_EMPTY(pv->Number);
 	}
-	else {
+	else { /* old: elements */
 		pn = PCB_EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
 		if (pn == NULL)
 			pn = "n/a";
