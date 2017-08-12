@@ -886,12 +886,28 @@ void *pcb_lineop_invalidate_label(pcb_opctx_t *ctx, pcb_line_t *line)
 
 
 /*** draw ***/
+
+static pcb_bool is_line_term_vert(const pcb_line_t *line)
+{
+	pcb_coord_t dx, dy;
+
+	dx = line->Point1.X - line->Point2.X;
+	if (dx < 0)
+		dx = -dx;
+
+	dy = line->Point1.Y - line->Point2.Y;
+	if (dy < 0)
+		dy = -dy;
+
+	return dx < dy;
+}
+
 void pcb_line_name_invalidate_draw(pcb_line_t *line)
 {
 	if (line->term != NULL) {
 		pcb_text_t text;
 		pcb_term_label_setup(&text, (line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			100.0, pcb_false, pcb_true, line->term);
+			100.0, is_line_term_vert(line), pcb_true, line->term);
 		pcb_draw_invalidate(&text);
 	}
 }
@@ -900,7 +916,7 @@ void pcb_line_draw_label(pcb_line_t *line)
 {
 	if (line->term != NULL)
 		pcb_term_label_draw((line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			100.0, pcb_false, pcb_true, line->term);
+			100.0, is_line_term_vert(line), pcb_true, line->term);
 }
 
 
