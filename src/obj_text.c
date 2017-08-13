@@ -565,6 +565,11 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	return Text;
 }
 
+void *pcb_textop_invalidate_label(pcb_opctx_t *ctx, pcb_text_t *text)
+{
+	pcb_text_name_invalidate_draw(text);
+	return text;
+}
 
 /*** draw ***/
 
@@ -716,9 +721,48 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 	}
 }
 
-void pcb_text_draw_(pcb_text_t *Text, pcb_coord_t min_line_width, int allow_term_gfx)
+static pcb_bool is_text_term_vert(const pcb_text_t *text)
 {
-	DrawTextLowLevel_(Text, min_line_width, 0, 0, 0);
+	pcb_coord_t dx, dy;
+
+	dx = text->BoundingBox.X2 - text->BoundingBox.X1;
+	if (dx < 0)
+		dx = -dx;
+
+	dy = text->BoundingBox.Y2 - text->BoundingBox.Y1;
+	if (dy < 0)
+		dy = -dy;
+
+	return dx < dy;
+}
+
+
+void pcb_text_name_invalidate_draw(pcb_text_t *txt)
+{
+	if (txt->term != NULL) {
+		pcb_text_t text;
+		pcb_term_label_setup(&text, (txt->BoundingBox.X1 + txt->BoundingBox.X2)/2, (txt->BoundingBox.Y1 + txt->BoundingBox.Y2)/2,
+			100.0, is_text_term_vert(txt), pcb_true, txt->term);
+		pcb_draw_invalidate(&text);
+	}
+}
+
+void pcb_text_draw_label(pcb_polygon_t *text)
+{
+	if (text->term != NULL)
+		pcb_term_label_draw((text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
+			100.0, is_text_term_vert(text), pcb_true, text->term);
+}
+
+
+void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term_gfx)
+{
+	DrawTextLowLevel_(text, min_line_width, 0, 0, 0);
+
+	if (text->term != NULL) {
+		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, text))
+			pcb_draw_delay_label_add((pcb_any_obj_t *)text);
+	}
 }
 
 static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_gfx)
@@ -751,6 +795,18 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	pcb_text_draw(layer, text, 0);
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_layer_t *layer = cl;
+	pcb_text_t *text = (pcb_text_t *) b;
+
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
+	pcb_text_draw(layer, text, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

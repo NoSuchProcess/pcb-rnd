@@ -473,6 +473,9 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 		/* draw the layer arcs on screen */
 		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_term_callback, Layer, NULL);
+
+		/* draw the layer text on screen */
+		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_term_callback, Layer, NULL);
 	}
 	else {
 		/* draw all visible lines this layer */
@@ -480,12 +483,10 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 		/* draw the layer arcs on screen */
 		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, NULL);
+
+		/* draw the layer text on screen */
+		pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, NULL);
 	}
-
-
-	/* draw the layer text on screen */
-	pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, NULL);
-
 
 	/* The implicit outline rectangle (or automatic outline rectanlge).
 	   We should check for pcb_gui->gui here, but it's kinda cool seeing the
@@ -617,6 +618,7 @@ static void pcb_draw_obj_label(pcb_any_obj_t *obj)
 		case PCB_OBJ_LINE:    pcb_line_draw_label((pcb_line_t *)obj); return;
 		case PCB_OBJ_ARC:     pcb_arc_draw_label((pcb_arc_t *)obj); return;
 		case PCB_OBJ_POLYGON: pcb_poly_draw_label((pcb_polygon_t *)obj); return;
+		case PCB_OBJ_TEXT:    pcb_text_draw_label((pcb_text_t *)obj); return;
 		default: break;
 	}
 }

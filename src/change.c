@@ -408,7 +408,7 @@ pcb_opfunc_t ChgFlagFunctions = {
 
 static pcb_opfunc_t InvalLabelFunctions = {
 	pcb_lineop_invalidate_label,
-	/*pcb_textop_invalidate_label*/ NULL,
+	pcb_textop_invalidate_label,
 	pcb_polyop_invalidate_label,
 	pcb_pinop_invalidate_label,
 	NULL,
