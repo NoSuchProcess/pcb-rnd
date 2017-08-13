@@ -40,6 +40,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <libminuid/libminuid.h>
 
 #include "board.h"
+#include "data.h"
 #include "error.h"
 #include "plug_io.h"
 #include "buffer.h"
