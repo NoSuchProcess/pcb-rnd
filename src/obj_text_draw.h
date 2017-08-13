@@ -38,4 +38,6 @@ void pcb_text_invalidate_erase(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y);
 void pcb_text_name_invalidate_draw(pcb_text_t *txt);
+void pcb_text_draw_label(pcb_text_t *text);
+
 
