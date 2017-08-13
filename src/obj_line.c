@@ -878,7 +878,7 @@ void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 	return Line;
 }
 
-void *pcb_lineop_invalidate_label(pcb_opctx_t *ctx, pcb_line_t *line)
+void *pcb_lineop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_line_t *line)
 {
 	pcb_line_name_invalidate_draw(line);
 	return line;

@@ -735,7 +735,7 @@ void *pcb_arcop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 	return Arc;
 }
 
-void *pcb_arcop_invalidate_label(pcb_opctx_t *ctx, pcb_arc_t *arc)
+void *pcb_arcop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	pcb_arc_name_invalidate_draw(arc);
 	return arc;

@@ -806,7 +806,7 @@ void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb)
 	} while(pa != p->Clipped);
 }
 
-void *pcb_polyop_invalidate_label(pcb_opctx_t *ctx, pcb_polygon_t *poly)
+void *pcb_polyop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_polygon_t *poly)
 {
 	pcb_poly_name_invalidate_draw(poly);
 	return poly;

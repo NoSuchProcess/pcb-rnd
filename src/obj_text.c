@@ -565,7 +565,7 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	return Text;
 }
 
-void *pcb_textop_invalidate_label(pcb_opctx_t *ctx, pcb_text_t *text)
+void *pcb_textop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_text_t *text)
 {
 	pcb_text_name_invalidate_draw(text);
 	return text;
