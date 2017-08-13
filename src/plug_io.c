@@ -282,12 +282,12 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 
 int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool elem_only)
 {
-	int res, newfmt = 0;
+	int res/*, newfmt = 0*/;
 	pcb_plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);
 
 	if (p != NULL) {
 		res = p->write_buffer(p, f, buff, elem_only);
-		newfmt = 1;
+		/*newfmt = 1;*/
 	}
 
 /*	if ((res == 0) && (newfmt))
@@ -319,12 +319,12 @@ int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt)
 
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
 {
-	int res, newfmt = 0;
+	int res/*, newfmt = 0*/;
 	pcb_plug_io_t *p = find_writer(PCB_IOT_FONT, fmt);
 
 	if (p != NULL) {
 		res = p->write_font(p, Ptr, Filename);
-		newfmt = 1;
+		/*newfmt = 1;*/
 	}
 	else
 		res = -1;
