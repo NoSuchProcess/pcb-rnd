@@ -1069,8 +1069,6 @@ pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it)
 
 pcb_box_t *pcb_r_next(pcb_rtree_it_t *it)
 {
-	struct rtree_node *curr;
-
 	return pcb_r_next_(it, NULL);
 }
 
