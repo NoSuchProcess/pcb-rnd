@@ -453,6 +453,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	info.drawn_area = screen;
 	info.layer = Layer;
 
+	lflg = pcb_layer_flags_(PCB, Layer);
 
 	if (lflg & PCB_LYT_COPPER) {
 		/* print the non-clearing polys */
@@ -465,8 +466,6 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 
 	if (conf_core.editor.check_planes)
 		return;
-
-	lflg = pcb_layer_flags_(PCB, Layer);
 
 	if (lflg & PCB_LYT_COPPER) {
 		/* draw all visible lines this layer - with terminal gfx */

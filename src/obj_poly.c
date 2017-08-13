@@ -850,9 +850,32 @@ void pcb_poly_draw_label(pcb_polygon_t *poly)
 void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
 	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
+	{
 		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, drawn_area);
-	else
-		pcb_gui->fill_pcb_polygon(Output.fgGC, polygon, drawn_area);
+	}
+	else {
+		if ((polygon->term != NULL) && (allow_term_gfx)) {
+			pcb_vnode_t *n, *head;
+			int i;
+
+			pcb_hid_gc_t gc = PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) ? Output.padselGC : Output.padGC;
+			pcb_gui->fill_pcb_polygon(gc, polygon, drawn_area);
+			head = &polygon->Clipped->contours->head;
+
+			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
+				pcb_coord_t x, y, r;
+				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
+				y = (n->prev->point[1] + n->point[1] + n->next->point[1]) / 3;
+
+#warning subc TODO: check if x;y is within the poly, but use a cheaper method than the official
+				r = PCB_MM_TO_COORD(0.2);
+				pcb_gui->set_line_width(Output.fgGC, r);
+				pcb_gui->draw_line(Output.fgGC, x, y, x, y);
+			}
+		}
+		else
+			pcb_gui->fill_pcb_polygon(Output.fgGC, polygon, drawn_area);
+	}
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
 	if (pcb_gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
