@@ -9,8 +9,9 @@ instructions and blindly executes them.
 <p>
 However, the HID has a chance to alter which layer groups are drawn, using
 the <i>set_layer_group</i> hooks return value.
-<p>
 
+<H2> Bursts and layer groups </H2>
+<p>
 The rendering is done in bursts. A burst may redraw only a small window
 of the screen. Each bursts draws multiple layer groups, in Z-order, from
 bottom (furthest from the eye of the user) to up (closest to the eye of
@@ -64,6 +65,19 @@ core guarantees the followings:
 It is possible that the core would draw the whole board in <i>direct</i>
 mode. It is safe to ignore the <i>direct</i> argument and always use the
 more expensive, sketch-canvas+blitting method.
+
+<H2> GCs </H2>
+<p>
+The API contains Graphic Context, or GC for short.  A GC is a pen with
+properties like color and tip shape. The core will initialize multiple
+GCs for the drawing and will pass a GC pointer with each drawing command. 
+<p>
+Note: this concept is orthogonal to the above canvas based drawing.
+Regardless of which GC is used, the object being drawn always ends up
+making modificatios to the currently active (sketch) canvas.
+<p>
+A GC can be initialized only after <i>render_burst</i> / <i>start</i>
+and all GCs will be uninitialzed before <i>render_burst</i> / <i>end</i>.
 
 </body>
 </html>
