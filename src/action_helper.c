@@ -1034,8 +1034,6 @@ void pcb_notify_mode(void)
 				{
 					pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
 					pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
-					pcb_polyarea_t *original, *new_hole, *result;
-					pcb_flag_t Flags;
 
 					/* do update of position; use the 'PCB_MODE_LINE' mechanism */
 					pcb_notify_line();
