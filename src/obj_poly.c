@@ -862,6 +862,7 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 			pcb_gui->fill_pcb_polygon(gc, polygon, drawn_area);
 			head = &polygon->Clipped->contours->head;
 
+			pcb_gui->set_line_cap(Output.fgGC, Square_Cap);
 			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
 				pcb_coord_t x, y, r;
 				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
