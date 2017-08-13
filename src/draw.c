@@ -465,14 +465,18 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	if (lflg & PCB_LYT_COPPER) {
 		/* draw all visible lines this layer - with terminal gfx */
 		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_term_callback, Layer, NULL);
+
+		/* draw the layer arcs on screen */
+		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_term_callback, Layer, NULL);
 	}
 	else {
 		/* draw all visible lines this layer */
 		pcb_r_search(Layer->line_tree, screen, NULL, pcb_line_draw_callback, Layer, NULL);
+
+		/* draw the layer arcs on screen */
+		pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, NULL);
 	}
 
-	/* draw the layer arcs on screen */
-	pcb_r_search(Layer->arc_tree, screen, NULL, pcb_arc_draw_callback, Layer, NULL);
 
 	/* draw the layer text on screen */
 	pcb_r_search(Layer->text_tree, screen, NULL, pcb_text_draw_callback, Layer, NULL);
@@ -606,6 +610,7 @@ static void pcb_draw_obj_label(pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
 		case PCB_OBJ_LINE: pcb_line_draw_label((pcb_line_t *)obj); return;
+		case PCB_OBJ_ARC:  pcb_arc_draw_label((pcb_line_t *)obj); return;
 		default: break;
 	}
 }

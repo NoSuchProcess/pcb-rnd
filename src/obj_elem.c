@@ -1878,7 +1878,7 @@ void pcb_elem_package_draw(pcb_element_t * element)
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(element);
 	{
-		pcb_arc_draw_(arc);
+		pcb_arc_draw_(arc, 0);
 	}
 	PCB_END_LOOP;
 }

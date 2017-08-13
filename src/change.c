@@ -417,7 +417,7 @@ static pcb_opfunc_t InvalLabelFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	/*pcb_arcop_invalidate_label*/ NULL,
+	pcb_arcop_invalidate_label,
 	NULL,
 	NULL,
 	/*pcb_subcop_invalidate_flag*/ NULL
