@@ -56,6 +56,8 @@
 #define SUBTRACT_PIN_VIA_BATCH_SIZE 100
 #define SUBTRACT_LINE_BATCH_SIZE 20
 
+#define sqr(x) ((x)*(x))
+
 static double rotate_circle_seg[4];
 
 void pcb_polygon_init(void)
