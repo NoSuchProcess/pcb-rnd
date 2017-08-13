@@ -2631,7 +2631,7 @@ static double dot(pcb_vector_t A, pcb_vector_t B)
 	return (double) A[0] * (double) B[0] + (double) A[1] * (double) B[1];
 }
 
-/* Compute whether point is inside a triangle formed by 3 other pints */
+/* Compute whether point is inside a triangle formed by 3 other points */
 /* Algorithm from http://www.blackpawn.com/texts/pointinpoly/default.html */
 static int point_in_triangle(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t P)
 {
