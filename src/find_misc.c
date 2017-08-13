@@ -25,6 +25,8 @@
  *
  */
 
+#include "change.h"
+
 static void DrawNewConnections(void);
 
 /* ---------------------------------------------------------------------------

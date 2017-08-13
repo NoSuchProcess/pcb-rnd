@@ -5262,7 +5262,7 @@ find.o: find.c ../config.h const.h math_helper.h conf_core.h conf.h \
  hid_actions.h compat_misc.h event.h layer_vis.h obj_all.h find_geo.c \
  find_lookup.c compat_nls.h board.h rats_patch.h find_drc.c \
  obj_arc_draw.h obj_pad_draw.h obj_rat_draw.h obj_line_draw.h \
- obj_elem_draw.h obj_poly_draw.h obj_pinvia_draw.h find_misc.c \
+ obj_elem_draw.h obj_poly_draw.h obj_pinvia_draw.h find_misc.c change.h \
  find_clear.c find_debug.c find_print.c
 find_act.o: find_act.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
