@@ -810,23 +810,32 @@ void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb)
 
 
 /*** draw ***/
-pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
+
+void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
-	pcb_draw_info_t *i = cl;
-	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
+	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
+		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, drawn_area);
+	else
+		pcb_gui->fill_pcb_polygon(Output.fgGC, polygon, drawn_area);
+
+	/* If checking planes, thin-draw any pieces which have been clipped away */
+	if (pcb_gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
+		pcb_polygon_t poly = *polygon;
+
+		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
+			pcb_gui->thindraw_pcb_polygon(Output.fgGC, &poly, drawn_area);
+	}
+}
+
+static void pcb_poly_draw(pcb_layer_t *layer, pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
+{
 	static const char *color;
 	char buf[sizeof("#XXXXXX")];
-
-	if (!polygon->Clipped)
-		return PCB_R_DIR_NOT_FOUND;
-
-	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
-		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
 		color = conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
-		color = i->layer->meta.real.selected_color;
+		color = layer->meta.real.selected_color;
 	else if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
 		color = conf_core.appearance.color.connected;
 	else if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, polygon)) {
@@ -835,21 +844,24 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 		color = buf;
 	}
 	else
-		color = i->layer->meta.real.color;
+		color = layer->meta.real.color;
 	pcb_gui->set_color(Output.fgGC, color);
 
-	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
-		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
-	else
-		pcb_gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
+	pcb_poly_draw_(polygon, drawn_area, allow_term_gfx);
+}
 
-	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (pcb_gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
-		pcb_polygon_t poly = *polygon;
+pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_draw_info_t *i = cl;
+	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 
-		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
-			pcb_gui->thindraw_pcb_polygon(Output.fgGC, &poly, i->drawn_area);
-	}
+	if (!polygon->Clipped)
+		return PCB_R_DIR_NOT_FOUND;
+
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
+	pcb_poly_draw(i->layer, polygon, i->drawn_area, 0);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
