@@ -36,3 +36,5 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx);
 void pcb_arc_invalidate_erase(pcb_arc_t *Arc);
 void pcb_arc_invalidate_draw(pcb_layer_t *Layer, pcb_arc_t *Arc);
 void pcb_arc_name_invalidate_draw(pcb_arc_t *arc);
+void pcb_arc_draw_label(pcb_arc_t *arc);
+
