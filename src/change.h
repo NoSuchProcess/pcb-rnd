@@ -30,7 +30,10 @@
 #define	PCB_CHANGE_H
 
 #include "config.h"
+#include "board.h"
 #include "flag.h"
+#include "pcb_bool.h"
+#include "unit.h"
 
 /* ---------------------------------------------------------------------------
  * some defines
