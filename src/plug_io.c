@@ -779,7 +779,8 @@ void pcb_enable_autosave(void)
  */
 void pcb_backup(void)
 {
-	char *filename = NULL, *fmt = NULL;
+	char *filename = NULL;
+	const char *fmt = NULL;
 
 	if (PCB && PCB->Filename) {
 		filename = (char *) malloc(sizeof(char) * (strlen(PCB->Filename) + 2));
