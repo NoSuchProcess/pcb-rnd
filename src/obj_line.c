@@ -942,7 +942,7 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 
 	if (line->term != NULL) {
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, line))
-			pcb_draw_delay_label_add(line);
+			pcb_draw_delay_label_add((pcb_any_obj_t *)line);
 	}
 }
 
