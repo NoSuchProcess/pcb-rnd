@@ -23,10 +23,18 @@
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 
-
 - polygon helper functions to flag non rectangular clipped polygons being exported to formats which only support rectangles, i.e. write.c in io_autotrax, +/- export a hatched version with outline 
 
+
 For the next release:
+- subc/term:
+	- name a terminal, name it again with 'n' but cancel -> crash
+	- remove Line->Number and *->Number: we use ->term
+	- integrity check: term cross-linking
+	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
+	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
+- namespace renames:
+	- GetObjectBoundingBox
 - BUGS:
 	- make distclean doesn't remove everything from tests/RTT [report: Alain]
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
