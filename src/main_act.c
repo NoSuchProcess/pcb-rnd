@@ -275,7 +275,7 @@ static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories in a fo
 
 int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char **p;
+	char **p;
 	for(p = pcb_pup_paths; *p != NULL; p++)
 		printf("%s\n", *p);
 
