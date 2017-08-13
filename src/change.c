@@ -393,7 +393,7 @@ pcb_opfunc_t ChgFlagFunctions = {
 	pcb_lineop_change_flag,
 	pcb_textop_change_flag,
 	pcb_polyop_change_flag,
-	pcb_pinop_change_flag,
+	pcb_viaop_change_flag,
 	NULL,
 	NULL,
 	pcb_pinop_change_flag,
