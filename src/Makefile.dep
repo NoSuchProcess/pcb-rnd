@@ -5019,7 +5019,7 @@ change.o: change.c ../config.h conf_core.h conf.h global_typedefs.h \
  select.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  hid_actions.h compat_nls.h obj_all_op.h obj_arc_op.h obj_elem_op.h \
  obj_line_op.h obj_pad_op.h obj_pinvia_op.h obj_poly_op.h obj_text_op.h \
- obj_rat_op.h obj_subc_op.h obj_subc_parent.h
+ obj_rat_op.h obj_subc_op.h obj_subc_parent.h obj_term.h
 change_act.o: change_act.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
