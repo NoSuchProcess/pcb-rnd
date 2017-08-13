@@ -732,7 +732,6 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 {
 	pcb_subc_t *subc;
-	int n;
 
 	if (pcb_subclist_length(&buff->Data->subc) != 1)
 		return (pcb_false);
