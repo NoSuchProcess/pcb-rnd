@@ -33,6 +33,7 @@
 #include "error.h"
 #include "undo.h"
 #include "funchash_core.h"
+#include "change.h"
 
 #include "draw.h"
 #include "search.h"
