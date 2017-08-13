@@ -900,8 +900,6 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
 		pcb_layer_id_t layer;
-		pcb_polygon_t *polygon;
-		gdl_iterator_t it;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
@@ -1423,8 +1421,6 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 /* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
 		pcb_layer_id_t layer;
-		gdl_iterator_t it;
-		pcb_polygon_t *polygon;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
