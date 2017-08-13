@@ -30,6 +30,7 @@
 #include <genht/htsp.h>
 #include <genvector/vtp0.h>
 
+#include "change.h"
 #include "compat_misc.h"
 #include "obj_common.h"
 #include "obj_term.h"
