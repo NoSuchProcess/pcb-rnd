@@ -1824,7 +1824,7 @@ void pcb_elem_name_draw(pcb_element_t * element)
 	else
 		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.invisible_objects);
 
-	pcb_text_draw(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk);
+	pcb_text_draw_(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk);
 
 }
 

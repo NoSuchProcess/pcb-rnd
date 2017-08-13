@@ -67,7 +67,7 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 	t.Scale = scale;
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
-	pcb_text_draw(&t, 0);
+	pcb_text_draw_(&t, 0);
 	return &t;
 }
 
@@ -83,7 +83,7 @@ static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, cons
 	t.Scale = scale;
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
-	pcb_text_draw(&t, th);
+	pcb_text_draw_(&t, th);
 	return &t;
 }
 
@@ -102,11 +102,11 @@ static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, c
 
 	if (pcb_gui->gui) { /* it is unreadable on black&white and on most exporters */
 		pcb_gui->set_color(gc, bgcolor);
-		pcb_text_draw(&t, 1000000);
+		pcb_text_draw_(&t, 1000000);
 	}
 
 	pcb_gui->set_color(gc, fgcolor);
-	pcb_text_draw(&t, 0);
+	pcb_text_draw_(&t, 0);
 
 	return &t;
 }

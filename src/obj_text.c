@@ -716,21 +716,15 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 	}
 }
 
-void pcb_text_draw(pcb_text_t *Text, pcb_coord_t min_line_width)
+void pcb_text_draw_(pcb_text_t *Text, pcb_coord_t min_line_width)
 {
 	DrawTextLowLevel_(Text, min_line_width, 0, 0, 0);
 }
 
-
-pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
+static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text)
 {
-	pcb_layer_t *layer = cl;
-	pcb_text_t *text = (pcb_text_t *) b;
 	int min_silk_line;
 	unsigned int flg = 0;
-
-	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
-		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 		pcb_gui->set_color(Output.fgGC, layer->meta.real.selected_color);
@@ -744,7 +738,19 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 		min_silk_line = PCB->minSlk;
 	else
 		min_silk_line = PCB->minWid;
-	pcb_text_draw(text, min_silk_line);
+
+	pcb_text_draw_(text, min_silk_line);
+}
+
+pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_layer_t *layer = cl;
+	pcb_text_t *text = (pcb_text_t *) b;
+
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
+	pcb_text_draw(layer, text);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
