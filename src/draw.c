@@ -454,8 +454,14 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	info.layer = Layer;
 
 
-	/* print the non-clearing polys */
-	pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_callback, &info, NULL);
+	if (lflg & PCB_LYT_COPPER) {
+		/* print the non-clearing polys */
+		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_term_callback, &info, NULL);
+	}
+	else {
+		/* print the non-clearing polys */
+		pcb_r_search(Layer->polygon_tree, screen, NULL, pcb_poly_draw_callback, &info, NULL);
+	}
 
 	if (conf_core.editor.check_planes)
 		return;
@@ -609,8 +615,9 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 static void pcb_draw_obj_label(pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
-		case PCB_OBJ_LINE: pcb_line_draw_label((pcb_line_t *)obj); return;
-		case PCB_OBJ_ARC:  pcb_arc_draw_label((pcb_line_t *)obj); return;
+		case PCB_OBJ_LINE:    pcb_line_draw_label((pcb_line_t *)obj); return;
+		case PCB_OBJ_ARC:     pcb_arc_draw_label((pcb_arc_t *)obj); return;
+		case PCB_OBJ_POLYGON: pcb_poly_draw_label((pcb_polygon_t *)obj); return;
 		default: break;
 	}
 }

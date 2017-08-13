@@ -806,10 +806,46 @@ void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb)
 	} while(pa != p->Clipped);
 }
 
-
-
+void *pcb_polyop_invalidate_label(pcb_opctx_t *ctx, pcb_polygon_t *poly)
+{
+	pcb_poly_name_invalidate_draw(poly);
+	return poly;
+}
 
 /*** draw ***/
+
+static pcb_bool is_poly_term_vert(const pcb_polygon_t *poly)
+{
+	pcb_coord_t dx, dy;
+
+	dx = poly->BoundingBox.X2 - poly->BoundingBox.X1;
+	if (dx < 0)
+		dx = -dx;
+
+	dy = poly->BoundingBox.Y2 - poly->BoundingBox.Y1;
+	if (dy < 0)
+		dy = -dy;
+
+	return dx < dy;
+}
+
+
+void pcb_poly_name_invalidate_draw(pcb_polygon_t *poly)
+{
+	if (poly->term != NULL) {
+		pcb_text_t text;
+		pcb_term_label_setup(&text, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
+			100.0, is_poly_term_vert(poly), pcb_true, poly->term);
+		pcb_draw_invalidate(&text);
+	}
+}
+
+void pcb_poly_draw_label(pcb_polygon_t *poly)
+{
+	if (poly->term != NULL)
+		pcb_term_label_draw((poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
+			100.0, is_poly_term_vert(poly), pcb_true, poly->term);
+}
 
 void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
@@ -824,6 +860,11 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
 			pcb_gui->thindraw_pcb_polygon(Output.fgGC, &poly, drawn_area);
+	}
+
+	if (polygon->term != NULL) {
+		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, polygon))
+			pcb_draw_delay_label_add((pcb_any_obj_t *)polygon);
 	}
 }
 
@@ -862,6 +903,22 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	pcb_poly_draw(i->layer, polygon, i->drawn_area, 0);
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_draw_info_t *i = cl;
+	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
+
+	if (!polygon->Clipped)
+		return PCB_R_DIR_NOT_FOUND;
+
+	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
+	pcb_poly_draw(i->layer, polygon, i->drawn_area, 1);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
