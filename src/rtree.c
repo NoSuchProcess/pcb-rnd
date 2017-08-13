@@ -1029,7 +1029,7 @@ static pcb_box_t *pcb_r_next_(pcb_rtree_it_t *it, struct rtree_node *curr)
 		for(it->num_ready = 0; it->num_ready < M_SIZE; it->num_ready++) {
 			if (curr->u.rects[it->num_ready].bptr == NULL)
 				break;
-			it->ready[it->num_ready] = curr->u.rects[it->num_ready].bptr;
+			it->ready[it->num_ready] = (pcb_box_t *)curr->u.rects[it->num_ready].bptr;
 /*			printf("rdy  add [%d]: %p\n", it->num_ready, it->ready[it->num_ready]);*/
 		}
 		if (it->num_ready > 0) {
