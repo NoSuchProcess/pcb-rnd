@@ -1,0 +1,121 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> drawing primitives roadmap </h2>
+
+<h3> 1. current situation </h3>
+<p>
+A drawing primitive is an atomic object that the board (e.g. layers) is
+built of. gEDA/pcb has the following drawing primitives:
+<p>
+<table border=1 cellspacing=0>
+<tr><th> primitive   <th> scope  <th> limitation
+<tr><td> line        <td> layer  <td> none
+<tr><td> arc         <td> layer  <td> none
+<tr><td> text        <td> layer  <td> supported only one font
+<tr><td> polygon     <td> layer  <td> none
+<tr><td> via         <td> global <td> same ring (pad) on all layers; limited number of shapes; no bbvia in pcb-rnd yet
+<tr><td> element     <td> global <td> can host only element-* objects, pins and pads
+<tr><td> element-line<td> element<td> only on silk
+<tr><td> element-arc <td> element<td> only on silk
+<tr><td> element-text<td> element<td> only on silk, only one of value, refdes and device
+<tr><td> pad         <td> element<td> only line shape, only on top or bottom copper layer
+<tr><td> pin         <td> element<td> only via shape
+</table>
+<p>
+What pcb-rnd has at the moment (summer of 2017, version 1.2.4) is basically
+the same, except full multi-font support and a basic support for subcircuits:
+<table border=1 cellspacing=0>
+<tr><th> primitive   <th> scope  <th> limitation
+<tr><td> text        <td> layer  <td> none
+<tr><td> subcircuit  <td> global <td> can not interact with the netlist
+</table>
+A subcircuit can hold line, arc, text and polygon on any layer and vias.
+
+<h3> 2. goal </h3>
+The following table shows where pcb-rnd will get in a few months:
+<p>
+<table border=1 cellspacing=0>
+<tr><th> primitive   <th> scope  <th> limitation
+<tr><td> line        <td> layer  <td> none
+<tr><td> arc         <td> layer  <td> none
+<tr><td> text        <td> layer  <td> none
+<tr><td> polygon     <td> layer  <td> none
+<tr><td> padstack    <td> global <td> none
+<tr><td> subcircuit  <td> global <td> none
+</table>
+<p>
+This means four major changes: "subcircuits as footprints", "subcircuit
+in subcircuit", "removal of elements" and "padstack instead of via".
+The result is a much cleaner model consisting of less primitives that are
+more universally usable.
+
+<h3> 3. subcircuits as footprints </h3>
+<p>
+For subcircuits to be available as footprints the new "terminal" concept
+is being introduced. A terminal is not a new drawing primitive, but a property
+of existing objects (made of other primitives). If an object is tagged to be
+part of a terminal, it starts acting as a terminal. Copper objects of a terminal
+can accept netlist connections just as pins and pads used to. A terminal has
+an ID that is similar to the old "pin number", "pad number" concepts.
+<p>
+The other important aspect is to be able to assign an ID ("refdes") to the
+subcircuit.
+<p>
+Most of these should be finished in the current development cycle and should
+be released this autumn.
+
+<h3> 4. subcircuits in subcircuits </h3>
+<p>
+Independently of that, to remove the last piece of limitation, a subcircuit
+will be able to host a subcircuit. This will enable users to build hierarchical
+boards, potentially supported by hierarchical netlists.
+<p>
+This may happen in this development cycle or in the next.
+
+<h3> 5. removal of elements </h3>
+<p>
+Once 3. is done, the old element model can be removed. For that, all IO
+plugins need to be upgraded first; they need to:
+<ul>
+	<li> convert elements to subcircuits on load
+	<li> convert subcircuits to elements on save
+</ul>
+
+<h3> 6. padstack instead of via </h3>
+<p>
+Finally, the good old via would be replaced by padstack. A padstack
+is an optional hole, and arbitrary (circle or polygon shaped) pads around
+the hole. Different pads can be created per layer - including not only copper
+layers but all layers, e.g. mask (cutout), paste, silk.
+<p>
+Since the hole is optional, a pad stack can represent a simple smd pad - with
+its paste and mask, without limitations on the shape.
+<p>
+<b>Bonus:</b> the hole doesn't need to be thru-hole, which means
+blind/buried vias.
+<p>
+This would probably happen next year.
+
+<h3> 7. Bonus: extended primitives </h3>
+<p>
+Once the number of the drawing primitives is cut back to 6, as a bonus
+feature it will be easy to implement extended primitives from plugins. An
+extended primitive:
+<ul>
+	<li> contains function pointers to the plugin implementing it
+	<li> is created and edited on the UI the same way as its base primitive
+	<li> saved and loaded as the base primitive + arbitrary metadata intended for the plugin
+	<li> acts as a subcircuit, can create other primitives within
+	<li> optionally can be rendered (drawn) differently than the base primitive; the render code is in the plugin
+</ul>
+<p>
+For example a via stitch can be a polygon or a line with extra parameters to
+specify via geometry and spacing. A polygon version can be used to plant a
+matrix of vias easily; e.g. under the hot center pad of a DC/DC chip. If the
+polygon is resized, the vias are recalculated. A line version would provide the
+center-line for placing a row of vias, e.g. for a waveguide. As the line is
+edited (e.g. endpoint moved, line length extended) the row of vias is recalculated.
+<p>
+This would probably happen next year.
