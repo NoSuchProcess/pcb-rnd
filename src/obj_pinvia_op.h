@@ -58,7 +58,8 @@ void *pcb_viaop_copy(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_move(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_destroy(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_remove(pcb_opctx_t *ctx, pcb_pin_t *Via);
-void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin);
+void *pcb_viaop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin);
+void *pcb_pinop_change_flag(pcb_opctx_t *ctx, pcb_element_t *elem, pcb_pin_t *pin);
 void *pcb_viaop_rotate90(pcb_opctx_t *ctx, pcb_pin_t *via);
 void *pcb_pinop_invalidate_label(pcb_opctx_t *ctx, pcb_pin_t *pin);
 

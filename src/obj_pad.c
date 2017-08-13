@@ -401,7 +401,7 @@ void *pcb_padop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 }
 
 #define PCB_PAD_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_NOPASTE | PCB_FLAG_PININPOLY | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
-void *pcb_padop_change_flag(pcb_opctx_t *ctx, pcb_data_t *data, pcb_pad_t *pad)
+void *pcb_padop_change_flag(pcb_opctx_t *ctx, pcb_element_t *elem, pcb_pad_t *pad)
 {
 	if ((ctx->chgflag.flag & PCB_PAD_FLAGS) != ctx->chgflag.flag)
 		return NULL;
