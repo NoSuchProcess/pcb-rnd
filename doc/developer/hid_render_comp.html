@@ -2,7 +2,7 @@
 <body>
 <h1> HID: rendering vs. composite layers </h1>
 <p>
-All rendering is driven by the core. The core undrestands the PCB stackup,
+All rendering is driven by the core. The core understands the PCB stackup,
 layers, layer groups, compositions within the layer groups, extra labels,
 layer visibility, etc. The HID is a slave device that takes drawing
 instructions and blindly executes them.
@@ -20,7 +20,7 @@ objects are drawn with multiple colors on each sketch canvas. In negative mode
 pixels are erased from the sketch canvas, making the affected pixels transparent again. Drawing
 on a layer group (either positively or negatively) should
 <b>overwrite</b> pixels on the same layer group. In other words, there's
-no transluency between two overlapping objects drawm on the same layer
+no translucency between two overlapping objects drawn on the same layer
 group.
 
 <p>
@@ -31,7 +31,7 @@ color shall be fetched from the config tree (appearance/color/background).
 The following steps are taken by the core in a burst:
 <ul>
 	<li> 1. call to the <i>render_burst</i> hook with <i>start</i>
-	<li> 2. <i>set_layer_group</i> is called for the next layer; depending on the return value, the core will skip to stpe 7.
+	<li> 2. <i>set_layer_group</i> is called for the next layer; depending on the return value, the core will skip to step 7.
 	<li> 3. <i>set_drawing_mode</i> is called with <i>reset</i>
 	<li> 3. <i>set_drawing_mode</i> is called with <i>positive</i> or <i>negative</i> to set draw or erase
 	<li> 4. objects are drawn
@@ -74,10 +74,10 @@ GCs for the drawing and will pass a GC pointer with each drawing command.
 <p>
 Note: this concept is orthogonal to the above canvas based drawing.
 Regardless of which GC is used, the object being drawn always ends up
-making modificatios to the currently active (sketch) canvas.
+making modifications to the currently active (sketch) canvas.
 <p>
 A GC can be initialized only after <i>render_burst</i> / <i>start</i>
-and all GCs will be uninitialzed before <i>render_burst</i> / <i>end</i>.
+and all GCs will be uninitialized before <i>render_burst</i> / <i>end</i>.
 
 </body>
 </html>
