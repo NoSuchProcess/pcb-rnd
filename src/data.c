@@ -437,8 +437,6 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs)
 extern pcb_opfunc_t MoveFunctions;
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 {
-
-	void *result;
 	pcb_opctx_t ctx;
 
 	ctx.move.pcb = pcb_data_get_top(data);
