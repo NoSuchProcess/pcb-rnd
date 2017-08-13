@@ -703,7 +703,7 @@ int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_
 
 pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int steps, pcb_layer_type_t mask)
 {
-	int d, cnt;
+	int d;
 
 	if (gid < 0)
 		return -1;
