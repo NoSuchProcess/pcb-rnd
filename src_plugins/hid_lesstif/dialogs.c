@@ -1561,25 +1561,10 @@ void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_l
 	if (wait_for_dialog(attr_dialog) == 0) {
 		int i;
 		/* Copy the values back */
-		for (i = 0; i < attributes_list->Number; i++) {
-			if (attributes_list->List[i].name)
-				free(attributes_list->List[i].name);
-			if (attributes_list->List[i].value)
-				free(attributes_list->List[i].value);
-		}
-		if (attributes_list->Max < attr_num_rows) {
-			int sz = attr_num_rows * sizeof(pcb_attribute_t);
-			if (attributes_list->List == NULL)
-				attributes_list->List = (pcb_attribute_t *) malloc(sz);
-			else
-				attributes_list->List = (pcb_attribute_t *) realloc(attributes_list->List, sz);
-			attributes_list->Max = attr_num_rows;
-		}
-		for (i = 0; i < attr_num_rows; i++) {
-			attributes_list->List[i].name = pcb_strdup(XmTextFieldGetString(attr_row[i].w_name));
-			attributes_list->List[i].value = pcb_strdup(XmTextFieldGetString(attr_row[i].w_value));
-			attributes_list->Number = attr_num_rows;
-		}
+		pcb_attribute_copyback_begin(attributes_list);
+		for (i = 0; i < attr_num_rows; i++)
+			pcb_attribute_copyback(attributes_list, XmTextFieldGetString(attr_row[i].w_name), XmTextFieldGetString(attr_row[i].w_value));
+		pcb_attribute_copyback_end(attributes_list);
 	}
 
 	return;
