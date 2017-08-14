@@ -67,7 +67,7 @@ int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx);
 /* Frees memory used by an attribute list */
 void pcb_attribute_free(pcb_attribute_list_t *list);
 
-/* Copy eacg attribute from src to dest */
+/* Copy each attribute from src to dest */
 void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, int replace);
 
 /* Copy back a mirrored attribute list, minimizing the changes */
