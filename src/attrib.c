@@ -31,6 +31,12 @@
 #include "compat_misc.h"
 #include "attrib.h"
 
+#define NOTIFY(list, name, value) \
+do { \
+	if (list->post_change != NULL) \
+		list->post_change(list, name, value); \
+} while(0)
+
 char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name)
 {
 	int i;
@@ -54,6 +60,7 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 			if (strcmp(name, list->List[i].name) == 0) {
 				free(list->List[i].value);
 				list->List[i].value = pcb_strdup_null(value);
+				NOTIFY(list, list->List[i].name, list->List[i].value);
 				return 1;
 			}
 	}
@@ -69,6 +76,7 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 	i = list->Number;
 	list->List[i].name = pcb_strdup_null(name);
 	list->List[i].value = pcb_strdup_null(value);
+	NOTIFY(list, list->List[i].name, list->List[i].value);
 	list->Number++;
 	return 0;
 }
@@ -76,11 +84,15 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx)
 {
 	int j;
-	free(list->List[idx].name);
-	free(list->List[idx].value);
+	char *old_name = list->List[idx].name, *old_value = list->List[idx].value;
+
 	for (j = idx; j < list->Number-1; j++)
 		list->List[j] = list->List[j + 1];
 	list->Number--;
+
+	NOTIFY(list, old_name, NULL);
+	free(old_name);
+	free(old_value);
 	return 0;
 }
 

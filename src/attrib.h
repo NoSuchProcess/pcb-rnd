@@ -39,6 +39,7 @@ typedef struct pcb_attribute_s {
 struct pcb_attribute_list_s {
 	int Number, Max;
 	pcb_attribute_t *List;
+	void (*post_change)(pcb_attribute_list_t *list, const char *name, const char *value); /* called after put or remove, but not after free(); value is NULL if removed */
 };
 
 /* Returns NULL if the name isn't found, else the value for that named
