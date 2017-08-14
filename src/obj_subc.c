@@ -46,10 +46,19 @@
 
 #define SUBC_AUX_NAME "subc-aux"
 
+static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+{
+	pcb_subc_t *sc = (pcb_subc_t *)(((char *)list) - offsetof(pcb_subc_t, Attributes));
+	if (strcmp(name, "refdes") == 0)
+		sc->refdes = value;
+	printf("NEW refdes: %s\n", sc->refdes);
+}
+
 pcb_subc_t *pcb_subc_alloc(void)
 {
 	pcb_subc_t *sc;
 	sc = calloc(sizeof(pcb_subc_t), 1);
+	sc->Attributes.post_change = pcb_subc_attrib_post_change;
 	sc->data = pcb_data_new(NULL);
 	sc->type = PCB_OBJ_SUBC;
 	PCB_SET_PARENT(sc->data, subc, sc);

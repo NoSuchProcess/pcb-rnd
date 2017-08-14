@@ -46,6 +46,7 @@ struct pcb_subc_s {
 	htsp_t terminals;
 	pcb_line_t *aux_cache[PCB_SUBCH_max];
 	pcb_layer_t *aux_layer;
+	const char *refdes; /* cached from attributes for fast lookup */
 	gdl_elem_t link;
 };
 
