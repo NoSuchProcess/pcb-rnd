@@ -77,7 +77,7 @@ void pcb_line_free(pcb_line_t * data)
 /**** utility ****/
 struct line_info {
 	pcb_coord_t X1, X2, Y1, Y2;
-	pcb_coord_t Thickness;
+	pcb_coord_t Thickness, Clearance;
 	pcb_flag_t Flags;
 	pcb_line_t test, *ans;
 	jmp_buf env;
@@ -103,8 +103,9 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 	}
 	/* remove unnecessary line points */
 	if (line->Thickness == i->Thickness
-			/* don't merge lines if the clear flags differ  */
-			&& PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) == PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, i)) {
+			/* don't merge lines if the clear flags or clearance differ  */
+			&& PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) == PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, i)
+			&& line->Clearance == i->Clearance) {
 		if (line->Point1.X == i->X1 && line->Point1.Y == i->Y1) {
 			i->test.Point1.X = line->Point2.X;
 			i->test.Point1.Y = line->Point2.Y;
@@ -169,6 +170,7 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y
 	info.Y1 = Y1;
 	info.Y2 = Y2;
 	info.Thickness = Thickness;
+	info.Clearance = Clearance;
 	info.Flags = Flags;
 	info.test.Thickness = 0;
 	info.test.Flags = pcb_no_flags();
