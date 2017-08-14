@@ -76,6 +76,7 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 	i = list->Number;
 	list->List[i].name = pcb_strdup_null(name);
 	list->List[i].value = pcb_strdup_null(value);
+	list->List[i].cpb_written = 1;
 	NOTIFY(list, list->List[i].name, list->List[i].value);
 	list->Number++;
 	return 0;
@@ -126,5 +127,38 @@ void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list
 
 	for (i = 0; i < src->Number; i++)
 		pcb_attribute_put(dest, src->List[i].name, src->List[i].value, replace);
+}
+
+
+void pcb_attribute_copyback_begin(pcb_attribute_list_t *dst)
+{
+	int i;
+
+	for (i = 0; i < dst->Number; i++)
+		dst->List[i].cpb_written = 0;
+}
+
+void pcb_attribute_copyback(pcb_attribute_list_t *dst, const char *name, const char *value)
+{
+	int i;
+	for (i = 0; i < dst->Number; i++) {
+		if (strcmp(name, dst->List[i].name) == 0) {
+			dst->List[i].cpb_written = 1;
+			if (strcmp(value, dst->List[i].value) != 0) {
+				free(dst->List[i].value);
+				dst->List[i].value = pcb_strdup(value);
+				NOTIFY(dst, dst->List[i].name, dst->List[i].value);
+			}
+			return;
+		}
+	}
+}
+
+void pcb_attribute_copyback_end(pcb_attribute_list_t *dst)
+{
+	int i;
+	for (i = 0; i < dst->Number; i++)
+		if (!dst->List[i].cpb_written)
+			pcb_attribute_remove_idx(dst, i);
 }
 

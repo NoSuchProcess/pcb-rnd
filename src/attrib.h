@@ -34,6 +34,7 @@ typedef struct pcb_attribute_list_s pcb_attribute_list_t;
 typedef struct pcb_attribute_s {
 	char *name;
 	char *value;
+	unsigned cpb_written:1; /* copyback: written */
 } pcb_attribute_t;
 
 struct pcb_attribute_list_s {
@@ -45,6 +46,8 @@ struct pcb_attribute_list_s {
 /* Returns NULL if the name isn't found, else the value for that named
    attribute.  */
 char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name);
+pcb_attribute_t *pcb_attribute_get_attr(pcb_attribute_list_t * list, const char *name);
+
 /* Adds an attribute to the list.  If the attribute already exists,
    whether it's replaced or a second copy added depends on
    REPLACE.  Returns non-zero if an existing attribute was replaced.  */
@@ -66,5 +69,10 @@ void pcb_attribute_free(pcb_attribute_list_t *list);
 
 /* Copy eacg attribute from src to dest */
 void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, int replace);
+
+/* Copy back a mirrored attribute list, minimizing the changes */
+void pcb_attribute_copyback_begin(pcb_attribute_list_t *dst);
+void pcb_attribute_copyback(pcb_attribute_list_t *dst, const char *name, const char *value);
+void pcb_attribute_copyback_end(pcb_attribute_list_t *dst);
 
 #endif
