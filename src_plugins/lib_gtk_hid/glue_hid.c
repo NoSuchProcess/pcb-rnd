@@ -22,6 +22,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
 #include "../src_plugins/lib_gtk_common/dlg_progress.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
+#include "../src_plugins/lib_gtk_common/dlg_attributes.h"
 #include "../src_plugins/lib_gtk_common/dlg_drc.h"
 #include "../src_plugins/lib_gtk_common/util_listener.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
