@@ -949,5 +949,8 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_draw_dashed_line(Output.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2);
 	pcb_gui->set_draw_xor(Output.fgGC, 0);
 
+	if (subc->refdes != NULL)
+		pcb_term_label_draw(bb->X1, bb->Y1, 50.0, 0, 0, subc->refdes);
+
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
