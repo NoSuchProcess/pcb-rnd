@@ -340,7 +340,7 @@ void *pcb_lineop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_
 /* changes the size of a line */
 void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return (NULL);
@@ -362,7 +362,7 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 /*changes the clearance size of a line */
 void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);

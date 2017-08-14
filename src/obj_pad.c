@@ -261,7 +261,7 @@ unsigned int pcb_pad_hash_padstack(const pcb_pad_t *p)
 /* changes the size of a pad */
 void *pcb_padop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
-	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pad->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -285,7 +285,7 @@ void *pcb_padop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 /* changes the clearance size of a pad */
 void *pcb_padop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
-	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pad->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -293,9 +293,9 @@ void *pcb_padop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_
 		value = 0;
 	else
 		value = MIN(PCB_MAX_LINESIZE, value);
-	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
+	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < PCB->Bloat * 2)
 		value = 0;
-	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
+	if (ctx->chgsize.value > 0 && value < PCB->Bloat * 2)
 		value = PCB->Bloat * 2 + 2;
 	if (value == Pad->Clearance)
 		return NULL;
@@ -383,10 +383,10 @@ void *pcb_padop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t
 /* changes the mask size of a pad */
 void *pcb_padop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
-	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Mask + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pad->Mask + ctx->chgsize.value;
 
 	value = MAX(value, 0);
-	if (value == Pad->Mask && ctx->chgsize.absolute == 0)
+	if (value == Pad->Mask && ctx->chgsize.value == 0)
 		value = Pad->Thickness;
 	if (value != Pad->Mask) {
 		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);

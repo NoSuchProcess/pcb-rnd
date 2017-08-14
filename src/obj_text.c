@@ -304,8 +304,8 @@ void *pcb_textop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_
 /* changes the scaling factor of a text object */
 void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
-		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
+	int value = ctx->chgsize.is_absolute ? PCB_COORD_TO_MIL(ctx->chgsize.value)
+		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.value);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);

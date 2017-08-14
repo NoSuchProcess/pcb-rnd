@@ -350,7 +350,7 @@ void *pcb_arcop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t 
 /* changes the size of an arc */
 void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
@@ -372,7 +372,7 @@ void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 /* changes the clearance size of an arc */
 void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
@@ -418,7 +418,7 @@ void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 			return NULL;
 	}
 
-	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : (*dst) + ctx->chgsize.delta;
+	value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : (*dst) + ctx->chgsize.value;
 	value = MIN(PCB_MAX_ARCSIZE, MAX(value, PCB_MIN_ARCSIZE));
 	if (value != *dst) {
 		pcb_undo_add_obj_to_change_radii(PCB_TYPE_ARC, Layer, Arc, Arc);
@@ -455,7 +455,7 @@ void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Ar
 			return NULL;
 	}
 
-	value = (ctx->chgangle.absolute) ? ctx->chgangle.absolute : (*dst) + ctx->chgangle.delta;
+	value = (ctx->chgangle.is_absolute) ? ctx->chgangle.value : (*dst) + ctx->chgangle.value;
 	value = fmod(value, 360.0);
 	if (value < 0)
 		value += 360;

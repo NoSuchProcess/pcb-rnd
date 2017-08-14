@@ -456,8 +456,8 @@ pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	change = pcb_selected_operation(PCB, &ChangeSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -478,8 +478,8 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	if (pcb_mask_on(PCB))
 		change = pcb_selected_operation(PCB, &ChangeMaskSizeFunctions, &ctx, pcb_false, types);
@@ -503,8 +503,8 @@ pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool f
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	change = pcb_selected_operation(PCB, &Change2ndSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -660,8 +660,8 @@ pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference,
 
 	ctx.chgangle.pcb = PCB;
 	ctx.chgangle.is_primary = is_start;
-	ctx.chgangle.absolute = (fixIt) ? Difference : 0;
-	ctx.chgangle.delta = Difference;
+	ctx.chgangle.is_absolute = fixIt;
+	ctx.chgangle.value = Difference;
 
 	change = pcb_selected_operation(PCB, &ChangeAngleFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -682,8 +682,8 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = is_start;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	change = pcb_selected_operation(PCB, &ChangeRadiusFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -844,8 +844,8 @@ pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coor
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	change = (pcb_object_operation(&ChangeSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
@@ -866,8 +866,8 @@ pcb_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	change = (pcb_object_operation(&Change1stSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
@@ -888,8 +888,8 @@ pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = is_x;
-	ctx.chgsize.absolute = (fixIt) ? r : 0;
-	ctx.chgsize.delta = r;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = r;
 
 	change = (pcb_object_operation(&ChangeRadiusFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
@@ -900,7 +900,7 @@ pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 }
 
 /* ---------------------------------------------------------------------------
- * changes the angles of the passed object (e.g. arc start/ctx->chgsize.delta)
+ * changes the angles of the passed object (e.g. arc start/ctx->chgsize.value)
  * Returns pcb_true if anything is changed
  */
 pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool fixIt)
@@ -910,8 +910,8 @@ pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
 
 	ctx.chgangle.pcb = PCB;
 	ctx.chgangle.is_primary = is_start;
-	ctx.chgangle.absolute = (fixIt) ? a : 0;
-	ctx.chgangle.delta = a;
+	ctx.chgangle.is_absolute = fixIt;
+	ctx.chgangle.value = a;
 
 	change = (pcb_object_operation(&ChangeAngleFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
@@ -933,8 +933,8 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	if (pcb_mask_on(PCB))
 		change = (pcb_object_operation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
@@ -979,8 +979,8 @@ pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	change = (pcb_object_operation(&Change2ndSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
@@ -1002,8 +1002,8 @@ pcb_bool pcb_chg_obj_mask_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb
 
 	ctx.chgsize.pcb = PCB;
 	ctx.chgsize.is_primary = 1;
-	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
-	ctx.chgsize.delta = Difference;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
 
 	change = (pcb_object_operation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
@@ -1134,7 +1134,7 @@ pcb_bool pcb_chg_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
-	ctx.chgsize.absolute = style;
+	ctx.chgsize.value = style;
 
 	if (pcb_object_operation(&ChangeSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();

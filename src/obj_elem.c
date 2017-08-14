@@ -1337,7 +1337,7 @@ void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->DrillingHole + ctx->chgsize.delta;
+		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : pin->DrillingHole + ctx->chgsize.value;
 		if (value <= PCB_MAX_PINORVIASIZE &&
 				value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - PCB_MIN_PINORVIACOPPER)
 				&& value != pin->DrillingHole) {
@@ -1371,7 +1371,7 @@ void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->DrillingHole + ctx->chgsize.delta;
+		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : pin->DrillingHole + ctx->chgsize.value;
 		if (value <= PCB_MAX_PINORVIASIZE && value >= pin->DrillingHole + PCB_MIN_PINORVIACOPPER && value != pin->Thickness) {
 			changed = pcb_true;
 			pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, pin, pin);
@@ -1403,7 +1403,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	PCB_PIN_LOOP(Element);
 	{
-		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->Clearance + ctx->chgsize.delta;
+		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : pin->Clearance + ctx->chgsize.value;
 		if (value <= PCB_MAX_PINORVIASIZE &&
 				value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - PCB_MIN_PINORVIACOPPER)
 				&& value != pin->Clearance) {
@@ -1424,7 +1424,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 	PCB_PAD_LOOP(Element);
 	{
-		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pad->Clearance + ctx->chgsize.delta;
+		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : pad->Clearance + ctx->chgsize.value;
 		if (value <= PCB_MAX_PINORVIASIZE && value >= PCB_MIN_PINORVIAHOLE && value != pad->Clearance) {
 			changed = pcb_true;
 			pcb_undo_add_obj_to_clear_size(PCB_TYPE_PAD, Element, pad, pad);
@@ -1463,7 +1463,7 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_elem_invalidate_erase(Element);
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
-		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : line->Thickness + ctx->chgsize.delta;
+		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : line->Thickness + ctx->chgsize.value;
 		if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != line->Thickness) {
 			pcb_undo_add_obj_to_size(PCB_TYPE_ELEMENT_LINE, Element, line, line);
 			line->Thickness = value;
@@ -1473,7 +1473,7 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
-		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : arc->Thickness + ctx->chgsize.delta;
+		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : arc->Thickness + ctx->chgsize.value;
 		if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != arc->Thickness) {
 			pcb_undo_add_obj_to_size(PCB_TYPE_ELEMENT_ARC, Element, arc, arc);
 			arc->Thickness = value;
@@ -1492,8 +1492,8 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* changes the scaling factor of a elementname object; returns pcb_true if changed */
 void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
-		: PCB_ELEM_TEXT_DESCRIPTION(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
+	int value = ctx->chgsize.is_absolute ? PCB_COORD_TO_MIL(ctx->chgsize.value)
+		: PCB_ELEM_TEXT_DESCRIPTION(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.value);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);

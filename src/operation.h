@@ -43,14 +43,15 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	int is_primary;  /* whether the primary parameter should be changed */
-	pcb_coord_t delta;     /* change of size */
-	pcb_coord_t absolute;  /* Absolute size */
+	pcb_bool is_absolute;
+	pcb_coord_t value;     /* delta or absolute (depending on is_absoulute) */
 } pcb_opctx_chgsize_t;
 
 typedef struct {
 	pcb_board_t *pcb;
 	int is_primary;                 /* whether the primary parameter should be changed */
-	pcb_angle_t delta, absolute;    /* same as above, but for angles */
+	pcb_bool is_absolute;
+	pcb_angle_t value;     /* same as above, but for angles */
 } pcb_opctx_chgangle_t;
 
 typedef struct {
