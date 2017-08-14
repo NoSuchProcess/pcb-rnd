@@ -66,6 +66,7 @@ static pcb_element_t *find_element_by_refdes(const char *refdes)
 	return NULL;
 }
 
+#warning subc TODO: remove this when removing element support
 static pcb_attribute_t *lookup_attr(pcb_attribute_list_t *list, const char *name)
 {
 	int i;
@@ -75,6 +76,7 @@ static pcb_attribute_t *lookup_attr(pcb_attribute_list_t *list, const char *name
 	return NULL;
 }
 
+#warning subc TODO: remove this when removing element support
 static void delete_attr(pcb_attribute_list_t *list, pcb_attribute_t * attr)
 {
 	int idx = attr - list->List;
@@ -692,6 +694,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 }
 
 /* ---------------------------------------------------------------- */
+#warning subc TODO: remove this when removing element support
 static const char pcb_acts_ElementSetAttr[] = "ElementSetAttr(refdes,name[,value])";
 
 static const char pcb_acth_ElementSetAttr[] = "Sets or clears an element-specific attribute.";
