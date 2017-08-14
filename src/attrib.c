@@ -152,6 +152,7 @@ void pcb_attribute_copyback(pcb_attribute_list_t *dst, const char *name, const c
 			return;
 		}
 	}
+	pcb_attribute_put(dst, name, value, 1);
 }
 
 void pcb_attribute_copyback_end(pcb_attribute_list_t *dst)
