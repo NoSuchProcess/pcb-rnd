@@ -126,6 +126,7 @@ ha:{
 						ha:Layout                     = { action=Attributes(Layout) }
 						ha:CurrentLayer               = { action=Attributes(Layer) }
 						ha:Element                    = { action=Attributes(Element) }
+						ha:Subcircuit                 = { action=Attributes(Subc) }
 					}
 				}
 				ha:Change flags {

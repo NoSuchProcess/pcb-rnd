@@ -87,10 +87,10 @@ static void delete_attr(pcb_attribute_list_t *list, pcb_attribute_t * attr)
 
 /* ------------------------------------------------------------ */
 
-static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element)\n" "Attributes(Layer,layername)";
+static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 
 static const char pcb_acth_Attributes[] =
-	"Let the user edit the attributes of the layout, current or given\n" "layer, or selected element.";
+	"Let the user edit the attributes of the layout, current or given\n" "layer, or selected element or subcircuit.";
 
 /* %start-doc actions Attributes
 
@@ -144,7 +144,6 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 			return 0;
 		}
 
-#warning subc TODO
 	case F_Element:
 		{
 			int n_found = 0;
@@ -180,6 +179,43 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 				buf = pcb_strdup("Unnamed Element Attributes");
 			}
 			pcb_gui->edit_attributes(buf, &(e->Attributes));
+			free(buf);
+			break;
+		}
+
+	case F_Subc:
+		{
+			int n_found = 0;
+			pcb_subc_t *s = NULL;
+			PCB_SUBC_LOOP(PCB->Data);
+			{
+				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
+					s = subc;
+					n_found++;
+				}
+			}
+			PCB_END_LOOP;
+			if (n_found > 1) {
+				pcb_message(PCB_MSG_ERROR, _("Too many subcircuits selected\n"));
+				return 1;
+			}
+			if (n_found == 0) {
+				void *ptrtmp;
+				pcb_gui->get_coords(_("Click on a subcircuit"), &x, &y);
+				if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
+					s = (pcb_subc_t *)ptrtmp;
+				else {
+					pcb_message(PCB_MSG_ERROR, _("No subcricuit found there\n"));
+					return 1;
+				}
+			}
+
+			if (s->refdes != NULL)
+				buf = pcb_strdup_printf("Subcircuit %s Attributes", s->refdes);
+			else
+				buf = pcb_strdup("Unnamed Subcircuit's Attributes");
+
+			pcb_gui->edit_attributes(buf, &(s->Attributes));
 			free(buf);
 			break;
 		}
