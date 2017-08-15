@@ -327,7 +327,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 								&dialog_data.via_hole_entry, PCB_MIN_PINORVIAHOLE, PCB_MAX_PINORVIASIZE - PCB_MIN_PINORVIACOPPER);
 	_table_attach(table, 3, _("Via ring size:"),
 								&dialog_data.via_size_entry, PCB_MIN_PINORVIAHOLE + PCB_MIN_PINORVIACOPPER, PCB_MAX_PINORVIASIZE);
-	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
+	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, 0, PCB_MAX_LINESIZE);
 
 	_table_attach_(table, 5, "", gtk_label_new(""));
 
