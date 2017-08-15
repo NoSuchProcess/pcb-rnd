@@ -1998,7 +1998,7 @@ if the value is interpreted as, for example, a number.
 attribute
 		: T_ATTRIBUTE '(' STRING STRING ')'
 			{
-			  pcb_attribute_put(attr_list, $3, $4 ? $4 : (char *)"", 0);
+			  pcb_attribute_put(attr_list, $3, $4 ? $4 : (char *)"");
 				free ($3);
 				free ($4);
 			}

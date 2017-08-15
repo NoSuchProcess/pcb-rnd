@@ -1506,7 +1506,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (val == NULL)
 				ret |= pcb_attribute_remove(&ly->meta.real.Attributes, key);
 			else
-				ret |= pcb_attribute_put(&ly->meta.real.Attributes, key, val, 1);
+				ret |= pcb_attribute_put(&ly->meta.real.Attributes, key, val);
 			free(key);
 			pcb_board_set_changed_flag(pcb_true);
 		}
@@ -1621,7 +1621,7 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (val == NULL)
 				ret |= pcb_attribute_remove(&g->Attributes, key);
 			else
-				ret |= pcb_attribute_put(&g->Attributes, key, val, 1);
+				ret |= pcb_attribute_put(&g->Attributes, key, val);
 			free(key);
 		}
 #endif

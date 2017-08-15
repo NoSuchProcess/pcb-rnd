@@ -48,14 +48,13 @@ struct pcb_attribute_list_s {
 char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name);
 pcb_attribute_t *pcb_attribute_get_attr(pcb_attribute_list_t * list, const char *name);
 
-/* Adds an attribute to the list.  If the attribute already exists,
-   whether it's replaced or a second copy added depends on
-   REPLACE.  Returns non-zero if an existing attribute was replaced.  */
-int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value, int replace);
+/* Adds an attribute to the list.  If the attribute already exists, the value
+   is replaced. Returns non-zero if an existing attribute was replaced.  */
+int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value);
 /* Simplistic version: Takes a pointer to an object, looks up attributes in it.  */
 #define pcb_attrib_get(OBJ,name) pcb_attribute_get(&(OBJ->Attributes), name)
 /* Simplistic version: Takes a pointer to an object, sets attributes in it.  */
-#define pcb_attrib_put(OBJ,name,value) pcb_attribute_put(&(OBJ->Attributes), name, value, 1)
+#define pcb_attrib_put(OBJ,name,value) pcb_attribute_put(&(OBJ->Attributes), name, value)
 /* Remove an attribute by name; returns number of items removed  */
 int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name);
 /* Simplistic version of Remove.  */
@@ -68,7 +67,7 @@ int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx);
 void pcb_attribute_free(pcb_attribute_list_t *list);
 
 /* Copy each attribute from src to dest */
-void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, int replace);
+void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src);
 
 /* Copy back a mirrored attribute list, minimizing the changes */
 void pcb_attribute_copyback_begin(pcb_attribute_list_t *dst);

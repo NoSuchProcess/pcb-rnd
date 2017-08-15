@@ -131,5 +131,5 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src)
 	pcb_any_obj_t *o = obj;
 	if (src == NULL)
 		return;
-	pcb_attribute_copy_all(&o->Attributes, src, 0);
+	pcb_attribute_copy_all(&o->Attributes, src);
 }

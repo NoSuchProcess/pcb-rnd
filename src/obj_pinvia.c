@@ -149,7 +149,7 @@ static pcb_pin_t *pcb_via_copy_meta(pcb_pin_t *dst, pcb_pin_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	if (src->Number != NULL)
 		dst->Number = pcb_strdup(src->Number);
 	if (src->Name != NULL)

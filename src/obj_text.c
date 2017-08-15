@@ -107,7 +107,7 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 

@@ -224,7 +224,7 @@ static pcb_line_t *pcb_line_copy_meta(pcb_line_t *dst, pcb_line_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	if (src->Number != NULL)
 		dst->Number = pcb_strdup(src->Number);
 	return dst;

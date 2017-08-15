@@ -618,7 +618,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 {
 	pcb_cardinal_t i;
 
-	pcb_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description, 1);
+	pcb_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description);
 
 	LayersFixup();
 

@@ -98,7 +98,7 @@ static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 static pcb_line_t *add_aux_line(pcb_layer_t *aux, const char *key, const char *val, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_line_t *l = pcb_line_new(aux, x1, y1, x2, y2, PCB_MM_TO_COORD(0.1), 0, pcb_no_flags());
-	pcb_attribute_put(&l->Attributes, key, val, 1);
+	pcb_attribute_put(&l->Attributes, key, val);
 	return l;
 }
 
@@ -325,7 +325,7 @@ static pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 

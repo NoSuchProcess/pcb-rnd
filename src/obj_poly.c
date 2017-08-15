@@ -235,7 +235,7 @@ static pcb_polygon_t *pcb_poly_copy_meta(pcb_polygon_t *dst, pcb_polygon_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes, 0);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 

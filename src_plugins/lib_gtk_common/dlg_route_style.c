@@ -152,9 +152,9 @@ static void attr_edited(int col, GtkCellRendererText * cell, gchar * path, gchar
 
 	if (idx >= style->rst->attr.Number) {	/* add new */
 		if (col == 0)
-			pcb_attribute_put(&style->rst->attr, new_text, "n/a", 0);
+			pcb_attribute_put(&style->rst->attr, new_text, "n/a");
 		else
-			pcb_attribute_put(&style->rst->attr, "n/a", new_text, 0);
+			pcb_attribute_put(&style->rst->attr, "n/a", new_text);
 	}
 	else {												/* overwrite existing */
 		char **dest;

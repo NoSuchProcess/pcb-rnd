@@ -745,7 +745,7 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 		delete_attr(&e->Attributes, attr);
 	}
 	if (!attr && value) {
-		pcb_attribute_put(&e->Attributes, name, value, 0);
+		pcb_attribute_put(&e->Attributes, name, value);
 	}
 
 	return 0;

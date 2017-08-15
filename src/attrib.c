@@ -46,23 +46,21 @@ char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name)
 	return NULL;
 }
 
-int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value, int replace)
+int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value)
 {
 	int i;
 
 	if ((name == NULL) || (*name == '\0'))
 		return -1;
 
-	/* If we're allowed to replace an existing attribute, see if we
-	   can.  */
-	if (replace) {
-		for (i = 0; i < list->Number; i++)
-			if (strcmp(name, list->List[i].name) == 0) {
-				free(list->List[i].value);
-				list->List[i].value = pcb_strdup_null(value);
-				NOTIFY(list, list->List[i].name, list->List[i].value);
-				return 1;
-			}
+	/* Replace an existing attribute if there is a name match. */
+	for (i = 0; i < list->Number; i++) {
+		if (strcmp(name, list->List[i].name) == 0) {
+			free(list->List[i].value);
+			list->List[i].value = pcb_strdup_null(value);
+			NOTIFY(list, list->List[i].name, list->List[i].value);
+			return 1;
+		}
 	}
 
 	/* At this point, we're going to need to add a new attribute to the
@@ -121,12 +119,12 @@ void pcb_attribute_free(pcb_attribute_list_t *list)
 	list->Max = 0;
 }
 
-void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, int replace)
+void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src)
 {
 	int i;
 
 	for (i = 0; i < src->Number; i++)
-		pcb_attribute_put(dest, src->List[i].name, src->List[i].value, replace);
+		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
 }
 
 
@@ -152,7 +150,7 @@ void pcb_attribute_copyback(pcb_attribute_list_t *dst, const char *name, const c
 			return;
 		}
 	}
-	pcb_attribute_put(dst, name, value, 1);
+	pcb_attribute_put(dst, name, value);
 }
 
 void pcb_attribute_copyback_end(pcb_attribute_list_t *dst)

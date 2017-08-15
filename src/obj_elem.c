@@ -580,7 +580,7 @@ pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_eleme
 	PCB_END_LOOP;
 
 	for (i = 0; i < Src->Attributes.Number; i++)
-		pcb_attribute_put(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value, 0);
+		pcb_attribute_put(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value);
 
 	Dest->MarkX = Src->MarkX + dx;
 	Dest->MarkY = Src->MarkY + dy;

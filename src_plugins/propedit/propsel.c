@@ -207,7 +207,7 @@ static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 	if ((orig != NULL) && (strcmp(orig, st->value) == 0))
 		return;
 
-	pcb_attribute_put(list, key, st->value, 1);
+	pcb_attribute_put(list, key, st->value);
 	st->set_cnt++;
 }
 
