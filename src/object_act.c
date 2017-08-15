@@ -1016,7 +1016,7 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 	{
 		if (!PCB_FLAGS_TEST(flags, line))
 			continue;
-		if (line->Clearance < value) {
+		if ((line->Clearance != 0) && (line->Clearance < value)) {
 			pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, 0, value, 1);
 			pcb_undo_restore_serial();
 		}
@@ -1026,7 +1026,7 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 	{
 		if (!PCB_FLAGS_TEST(flags, arc))
 			continue;
-		if (arc->Clearance < value) {
+		if ((arc->Clearance != 0) && (arc->Clearance < value)) {
 			pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, 0, value, 1);
 			pcb_undo_restore_serial();
 		}
