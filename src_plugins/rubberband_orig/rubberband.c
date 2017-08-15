@@ -647,7 +647,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 					continue;
-				if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line))
+				if (PCB_OBJ_HAS_CLEARANCE(line))
 					continue;
 				thick = (line->Thickness + 1) / 2;
 				if (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon))
