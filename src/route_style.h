@@ -45,7 +45,7 @@ void pcb_use_route_style(pcb_route_style_t *rst);
 int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
 
 /* Compare supplied parameters to each style in the vector and return the index
-   of the first matching style. All non-0 parameters need to match to accept
+   of the first matching style. All non-(-1) parameters need to match to accept
    a style. Return -1 on no match. */
 int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name);
 

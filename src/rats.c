@@ -221,7 +221,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 			}
 			net = pcb_net_new(Wantlist);
 			if (menu->Style) {
-				int idx = pcb_route_style_lookup(&PCB->RouteStyle, 0, 0, 0, 0, menu->Style);
+				int idx = pcb_route_style_lookup(&PCB->RouteStyle, -1, -1, -1, -1, menu->Style);
 				if (idx >= 0)
 					net->Style = PCB->RouteStyle.array+idx;
 			}
