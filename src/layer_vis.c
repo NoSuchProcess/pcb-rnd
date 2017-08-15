@@ -277,12 +277,19 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 }
 
 
+static void pcb_layer_confchg_color(conf_native_t *cfg)
+{
+	pcb_trace("LAYER COLOR\n");
+}
+
 static const char *layer_vis_cookie = "core_layer_vis";
 
 void layer_vis_init(void)
 {
 	conf_native_t *n_mask = conf_get_field("editor/show_mask");
-	static conf_hid_callbacks_t cbs_mask;
+	conf_native_t *n_c1 = conf_get_field("appearance/color/layer");
+	conf_native_t *n_c2 = conf_get_field("appearance/color/layer_selected");
+	static conf_hid_callbacks_t cbs_mask, cbs_c1, cbs_c2;
 
 	layer_vis_conf_id = conf_hid_reg(layer_vis_cookie, NULL);
 
@@ -291,6 +298,14 @@ void layer_vis_init(void)
 		cbs_mask.val_change_post = layer_vis_chg_mask;
 		conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
 	}
+
+	memset(&cbs_c1, 0, sizeof(conf_hid_callbacks_t));
+	memset(&cbs_c2, 0, sizeof(conf_hid_callbacks_t));
+	cbs_c1.val_change_post = pcb_layer_confchg_color;
+	cbs_c2.val_change_post = pcb_layer_confchg_color;
+	conf_hid_set_cb(n_c1, layer_vis_conf_id, &cbs_c1);
+	conf_hid_set_cb(n_c2, layer_vis_conf_id, &cbs_c2);
+
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 }
