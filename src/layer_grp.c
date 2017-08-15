@@ -629,16 +629,16 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 
 	memset(newg, 0, sizeof(pcb_layer_stack_t));
 
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_PASTE, "top paste");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_SILK, "top silk");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_MASK, "top mask");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top copper");
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_PASTE, "top_paste");
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_SILK, "top_silk");
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_MASK, "top_mask");
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top_copper");
 	NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL);
 
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom copper");
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom silk");
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom_copper");
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom_mask");
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom_silk");
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom_paste");
 
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
 }
