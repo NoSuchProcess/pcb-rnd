@@ -1998,9 +1998,14 @@ if the value is interpreted as, for example, a number.
 attribute
 		: T_ATTRIBUTE '(' STRING STRING ')'
 			{
-			  pcb_attribute_put(attr_list, $3, $4 ? $4 : (char *)"");
-				free ($3);
-				free ($4);
+				char *old_val, *key = $3, *val = $4 ? $4 : (char *)"";
+				old_val = pcb_attribute_get(attr_list, key);
+				if (old_val != NULL)
+					pcb_message(PCB_MSG_ERROR, "mutliple values for attribute %s: '%s' and '%s' - ignoring '%s'\n", key, old_val, val, val);
+				else
+					pcb_attribute_put(attr_list, key, val);
+				free(key);
+				free(val);
 			}
 		;
 
