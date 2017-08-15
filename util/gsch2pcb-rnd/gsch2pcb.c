@@ -246,7 +246,7 @@ lihata_prj:;
 		pcb_message(PCB_MSG_ERROR, "Failed to parse project file %s.\n", path);
 		exit(1);
 	}
-	conf_update(NULL); /* because of our new project file */
+	conf_update(NULL, -1); /* because of our new project file */
 }
 
 static void load_extra_project_files(void)
@@ -394,10 +394,10 @@ int main(int argc, char ** argv)
 	get_args(argc, argv);
 
 	conf_load_all(NULL, NULL);
-	conf_update(NULL);
+	conf_update(NULL, -1);
 
 	load_extra_project_files();
-	conf_update(NULL); /* because of CLI changes */
+	conf_update(NULL, -1); /* because of CLI changes */
 
 	if (!have_cli_project_file && !have_cli_schematics) {
 		if (!pcb_file_readable(LOCAL_PROJECT_FILE)) {
@@ -408,7 +408,7 @@ int main(int argc, char ** argv)
 			pcb_message(PCB_MSG_ERROR, "Failed to load project file %s. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
 			exit(1);
 		}
-		conf_update(NULL); /* because of our new project file */
+		conf_update(NULL, -1); /* because of our new project file */
 	}
 	else if ((local_project_pcb_name != NULL) && (!have_cli_project_file))
 		conf_load_project(NULL, local_project_pcb_name);
@@ -435,7 +435,7 @@ int main(int argc, char ** argv)
 		exit(1);
 	}
 
-	conf_update(NULL); /* because of the project file */
+	conf_update(NULL, -1); /* because of the project file */
 
 	want_method = conf_g2pr.utils.gsch2pcb_rnd.method;
 	if (want_method == NULL) {
@@ -463,7 +463,7 @@ int main(int argc, char ** argv)
 	}
 
 	current_method->init();
-	conf_update(NULL);
+	conf_update(NULL, -1);
 
 
 	current_method->go(); /* the traditional, "parse element and edit the pcb file" approach */
