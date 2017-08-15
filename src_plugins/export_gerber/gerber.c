@@ -532,7 +532,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layer_id_t lid, unsigne
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
 		suff = "asb";
 	else if (fmatch(flags, PCB_LYT_OUTLINE))
-		suff = "gm1";
+		suff = "gko";
 	else {
 		static char buf[20];
 		sprintf(buf, "g%ld", gid);
