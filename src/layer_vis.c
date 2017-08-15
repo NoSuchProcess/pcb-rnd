@@ -215,7 +215,7 @@ void pcb_layervis_restore_stack(void)
 
 static conf_hid_id_t layer_vis_conf_id;
 
-void layer_vis_chg_mask(conf_native_t *cfg)
+void layer_vis_chg_mask(conf_native_t *cfg, int arr_idx)
 {
 	pcb_layer_id_t n;
 	int chg = 0;
@@ -277,9 +277,9 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 }
 
 
-static void pcb_layer_confchg_color(conf_native_t *cfg)
+static void pcb_layer_confchg_color(conf_native_t *cfg, int arr_idx)
 {
-	pcb_trace("LAYER COLOR\n");
+	pcb_trace("LAYER COLOR %d\n", arr_idx);
 }
 
 static const char *layer_vis_cookie = "core_layer_vis";

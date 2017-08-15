@@ -490,7 +490,7 @@ static void set_special_grid_color(void)
 		gdk_gc_set_foreground(priv->grid_gc, &priv->grid_color);
 }
 
-static void ghid_gdk_set_special_colors(conf_native_t *cfg)
+static void ghid_gdk_set_special_colors(conf_native_t *cfg, int arr_idx)
 {
 	render_priv_t *priv = gport->render_priv;
 

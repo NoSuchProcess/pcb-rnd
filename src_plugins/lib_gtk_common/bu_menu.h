@@ -21,7 +21,7 @@ typedef struct _GHidMainMenuClass GHidMainMenuClass;
 typedef struct pcb_gtk_menu_ctx_s {
 	GtkWidget *menu_bar;
 	conf_hid_id_t ghid_menuconf_id;
-	void (*confchg_checkbox)(conf_native_t *cfg);
+	void (*confchg_checkbox)(conf_native_t *cfg, int arr_idx);
 } pcb_gtk_menu_ctx_t;
 
 GType ghid_main_menu_get_type(void);

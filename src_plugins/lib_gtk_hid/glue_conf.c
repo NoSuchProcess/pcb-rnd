@@ -33,7 +33,7 @@
 
 #warning TODO: cleanup: make a generic status line update callback instead of this code dup
 
-void ghid_confchg_line_refraction(conf_native_t *cfg)
+void ghid_confchg_line_refraction(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
@@ -41,7 +41,7 @@ void ghid_confchg_line_refraction(conf_native_t *cfg)
 	ghidgui->common.set_status_line_label();
 }
 
-void ghid_confchg_all_direction_lines(conf_native_t *cfg)
+void ghid_confchg_all_direction_lines(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
@@ -49,7 +49,7 @@ void ghid_confchg_all_direction_lines(conf_native_t *cfg)
 	ghidgui->common.set_status_line_label();
 }
 
-void ghid_confchg_flip(conf_native_t *cfg)
+void ghid_confchg_flip(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
@@ -57,7 +57,7 @@ void ghid_confchg_flip(conf_native_t *cfg)
 	ghidgui->common.set_status_line_label();
 }
 
-void ghid_confchg_grid(conf_native_t *cfg)
+void ghid_confchg_grid(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
@@ -65,21 +65,21 @@ void ghid_confchg_grid(conf_native_t *cfg)
 	ghidgui->common.set_status_line_label();
 }
 
-void ghid_confchg_fullscreen(conf_native_t *cfg)
+void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
 		ghid_fullscreen_apply(&ghidgui->topwin);
 }
 
 
-void ghid_confchg_checkbox(conf_native_t *cfg)
+void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
 		ghid_update_toggle_flags(&ghidgui->topwin);
 }
 
 
-static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func) (conf_native_t *))
+static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
 {
 	conf_native_t *n = conf_get_field(path);
 	if (n != NULL) {

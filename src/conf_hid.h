@@ -6,14 +6,14 @@
 
 typedef struct conf_hid_callbacks_s {
 	/* Called before/after a value of a config item is updated - this doesn't necessarily mean the value actually changes */
-	void (*val_change_pre)(conf_native_t *cfg);
-	void (*val_change_post)(conf_native_t *cfg);
+	void (*val_change_pre)(conf_native_t *cfg, int arr_idx);
+	void (*val_change_post)(conf_native_t *cfg, int arr_idx);
 
 	/* Called when a new config item is added to the database; global-only */
-	void (*new_item_post)(conf_native_t *cfg);
+	void (*new_item_post)(conf_native_t *cfg, int arr_idx);
 
 	/* Called during conf_hid_unreg to get hid-data cleaned up */
-	void (*unreg_item)(conf_native_t *cfg);
+	void (*unreg_item)(conf_native_t *cfg, int arr_idx);
 } conf_hid_callbacks_t;
 
 typedef int conf_hid_id_t;
@@ -45,22 +45,22 @@ void conf_pcb_hid_uninit(void);
 
 
 /* Call the local callback of a native item */
-#define conf_hid_local_cb(native, cb) \
+#define conf_hid_local_cb(native, arr_idx, cb) \
 do { \
 	unsigned int __n__; \
 	for(__n__ = 0; __n__ < vtp0_len(&((native)->hid_callbacks)); __n__++) { \
 		const conf_hid_callbacks_t *cbs = (native)->hid_callbacks.array[__n__]; \
 		if ((cbs != NULL) && (cbs->cb != NULL)) \
-			cbs->cb(native); \
+			cbs->cb(native, arr_idx); \
 	} \
 } while(0)
 
-/* Call the local callback of a native item */
-#define conf_hid_global_cb(native, cb) \
+/* Call the global callback of a native item */
+#define conf_hid_global_cb(native, arr_idx, cb) \
 do { \
 	conf_hid_callbacks_t __cbs__; \
 	int __offs__ = ((char *)&(__cbs__.cb)) - ((char *)&(__cbs__)); \
-	conf_hid_global_cb_(native, __offs__); \
+	conf_hid_global_cb_(native, arr_idx, __offs__); \
 } while(0)
 
 /****** Utility/helper functions  ******/
@@ -69,6 +69,6 @@ do { \
 void conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup);
 
 /****** Internal  ******/
-void conf_hid_global_cb_(conf_native_t *item, int offs);
+void conf_hid_global_cb_(conf_native_t *item, int arr_idx, int offs);
 
 #endif
