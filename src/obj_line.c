@@ -368,17 +368,17 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 		return (NULL);
 	if (value < 0)
 		value = 0;
-	value = MIN(PCB_MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
+	value = MIN(PCB_MAX_LINESIZE, value);
+	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < PCB->Bloat * 2)
+		value = 0;
+	if (ctx->chgsize.value > 0 && value < PCB->Bloat * 2)
+		value = PCB->Bloat * 2 + 2;
 	if (value != Line->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_TYPE_LINE, Layer, Line, Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_line_invalidate_erase(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		Line->Clearance = value;
-		if (Line->Clearance == 0) {
-			PCB_FLAG_CLEAR(PCB_FLAG_CLEARLINE, Line);
-			Line->Clearance = PCB_MIL_TO_COORD(10);
-		}
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
