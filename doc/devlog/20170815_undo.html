@@ -1,0 +1,75 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> Why is it called subcircuit and not footprint? </h2>
+
+This article tries to explain why new term "subcircuit" is introduced
+instead of calling it "footprint2", "footprint+", "new footprints" or
+"pcb-rnd footprints".
+
+<h3> Current situation: element vs. footprint </H3>
+<p>
+The good thing is that there are two terms in parallel, even in pcb. This 
+terminlogy is in pcb since the late 90s.
+<p>
+On the user-level, they are called <i>element</i> and <i>footprint</i>. A footprint is 
+the generic implementation you store in your library, an element is a 
+specific instance that is on your board. You place a footprint on your 
+board, but as soon as you place it, it becomes an element.
+<p>
+On the code-level, the same two things are called element and "library 
+entry". The actual implementation is called element everywhere. If you 
+grep the code (pcb-4.0.0), you will find 161 hits on footprint, mostly in 
+comments and user messages plus a flag called "is_footprint"; then 2686 
+hits on "element". This is because the code is rather consistent about 
+separating the two concepts and the interaction with footprints is really 
+that small.
+<p>
+It is important to note the difference between the two things, and I was 
+glad to find the original software did make the distinction. For example 
+pcb-rnd started to support more than one footprint format, but in the 
+memory, after you load a random footprint from the lib, the resulting 
+element will have only one format, the native format. This means a 
+footprint -> element is also a format conversion. So for pcb-rnd, when 
+loading from a file or lib or web, a gEDA/pcb .fp is a footprint, a kicad 
+module is a footprint, an eagle package is a footprint, a mentor graphics 
+cell is a footprint. (Yes, as you see, every single CAD package has a 
+different name for the same thing).
+<p>
+The other aspect is that an element is always an instance, a copy of the 
+original footprint, with modifications to apply to the local situation. 
+For example you will always change the base coords and almost always will 
+change the refdes and the value.
+<p>
+A third thing is <b>how</b> they are stored. In pcb a footprint is stored on 
+the disk, an element is stored in memory or on the disk (when the board 
+is saved). In pcb-rnd a footprint is on the disk, on the web or lives as 
+an element within another board (in whatever format, e.g. kicad or eagle).
+
+<h3>How does subcircuit affect this?</h3>
+<p>
+On both the user and code level subcircuit is an _element_ replacement. So 
+it doesn't affect the footprint concept at all.
+<p>
+User level: a subcircuit that lives in your local disk library, on 
+edakrill or in an another board is called footprint, just like your kicad 
+module or eagle package is called footprint too. In this specific case the 
+actual implementation is a pcb-rnd subcircuit.
+<p>
+Code level: all the code that handles subcircuit are new, written from 
+scratch; at the end the old element code will be removed. We are having a 
+few months when they run in parallel. Since all new code calls itself 
+"subc", it won't cause any collision with the old code that calls itself 
+"element" or "elem".
+
+<H3> Conclusion</H3>
+<p>
+What is a footprint for pcb, is a footprint for pcb-rnd and 
+subcircuits are footprints and there's zero change on that side. What's an 
+element for pcb will be a subcricuit for pcb-rnd. Renaming that to 
+footprint+ or element+ would make more confusion than usign a different 
+name, like subcircuit. I also plan to support hierarchical pcbs, where 
+subcircuit will be a level of hierarchy, so that would cause more 
+confusion if they were called footprints.
+
