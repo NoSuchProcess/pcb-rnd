@@ -479,7 +479,7 @@ pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
 	/* arcs with clearance never touch polys */
-	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Arc))
 		return pcb_false;
 	if (!Polygon->Clipped)
 		return pcb_false;
@@ -509,7 +509,7 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_polygon_t *Polygon)
 	pcb_polyarea_t *lp;
 
 	/* lines with clearance never touch polygons */
-	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Line))
 		return pcb_false;
 	if (!Polygon->Clipped)
 		return pcb_false;
