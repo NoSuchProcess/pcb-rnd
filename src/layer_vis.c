@@ -279,7 +279,12 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 
 static void pcb_layer_confchg_color(conf_native_t *cfg, int arr_idx)
 {
-	pcb_trace("LAYER COLOR %d\n", arr_idx);
+	pcb_layer_t *lp = pcb_get_layer(arr_idx);
+
+	if (lp != NULL) {
+		lp->meta.real.color = conf_core.appearance.color.layer[arr_idx];
+		lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[arr_idx];
+	}
 }
 
 static const char *layer_vis_cookie = "core_layer_vis";
