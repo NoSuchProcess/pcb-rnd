@@ -508,7 +508,7 @@ int main(int argc, char *argv[])
 
 	/* plugins may have installed their new fields, reinterpret the config
 	   (memory lht -> memory bin) to get the new fields */
-	conf_update(NULL);
+	conf_update(NULL, -1);
 
 	if (main_action != NULL) {
 		pcb_hid_parse_command(main_action);

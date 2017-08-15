@@ -194,7 +194,7 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_message(PCB_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", argv[1]);
 			return 1;
 		}
-		conf_update(argv[1]);
+		conf_update(argv[1], -1);
 	}
 
 	else if (PCB_NSTRCMP(cmd, "reset") == 0) {
@@ -205,7 +205,7 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			return 1;
 		}
 		conf_reset(role, "<action>");
-		conf_update(argv[1]);
+		conf_update(argv[1], -1);
 	}
 
 	else {

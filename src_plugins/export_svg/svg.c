@@ -239,7 +239,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	gds_init(&snormal);
 	pcb_hid_expose_all(&svg_hid, &ctx);
 
-	conf_update(NULL); /* restore forced sets */
+	conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void group_close()

@@ -298,7 +298,7 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	fclose(out);
 
 	/* restore the unique flag setting */
-	conf_update(NULL);
+	conf_update(NULL, -1);
 
 	if (changed) {
 

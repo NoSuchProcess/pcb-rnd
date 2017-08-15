@@ -791,7 +791,7 @@ static void conf_field_clear(conf_native_t *f)
 }
 
 int conf_rev = 0;
-void conf_update(const char *path)
+void conf_update(const char *path, int arr_idx)
 {
 	conf_native_t *n;
 
@@ -813,6 +813,7 @@ void conf_update(const char *path)
 			/* It might be an array element - truncate */
 			field = strrchr(path_, '[');
 			if (field != NULL) {
+				arr_idx = atoi(field+1);
 				*field = '\0';
 				n = conf_get_field(path_);
 			}
@@ -832,7 +833,7 @@ void conf_update(const char *path)
 
 			/* if a valid node is found, update it */
 			if (n != NULL)
-				conf_update(path_);
+				conf_update(path_, arr_idx);
 
 			free(path_);
 			return;
@@ -986,7 +987,7 @@ void conf_load_project(const char *project_fn, const char *pcb_fn)
 			pc = NULL;
 	if (pc == NULL)
 		conf_reset(CFR_PROJECT, "<conf_load_project>");
-	conf_update(NULL);
+	conf_update(NULL, -1);
 }
 
 void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags)
@@ -1279,7 +1280,7 @@ int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_
 	res = conf_set_dry(target, path, arr_idx, new_val, pol);
 	if (res < 0)
 		return res;
-	conf_update(path);
+	conf_update(path, arr_idx);
 	return 0;
 }
 
@@ -1289,7 +1290,7 @@ int conf_del(conf_role_t target, const char *path, int arr_idx)
 	res = conf_set_dry(target, path, arr_idx, NULL, POL_OVERWRITE);
 	if (res < 0)
 		return res;
-	conf_update(path);
+	conf_update(path, arr_idx);
 	return 0;
 }
 

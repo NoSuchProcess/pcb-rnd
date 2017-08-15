@@ -1251,7 +1251,7 @@ static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 	if (conf_insert_tree_as(CFR_DESIGN, sub) != 0)
 		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree found in %s\n", pcb->Filename);
 	else
-		conf_update(NULL);
+		conf_update(NULL, -1);
 }
 
 

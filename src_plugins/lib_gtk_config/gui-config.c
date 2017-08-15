@@ -271,7 +271,7 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 					if (conf_replace_subtree(ctx->dst_role, e->key, ctx->src_role, e->key) != 0)
 						pcb_message(PCB_MSG_ERROR, "Error: failed to save config item %s\n", *p);
 					if (ctx->dst_role < CFR_max_real) {
-						conf_update(e->key);
+						conf_update(e->key, -1);
 						need_update++;
 					}
 				}
@@ -282,7 +282,7 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 			if (conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p) != 0)
 				pcb_message(PCB_MSG_ERROR, "Error: failed to save config item %s\n", *p);
 			if (ctx->dst_role < CFR_max_real) {
-				conf_update(*p);
+				conf_update(*p, -1);
 				need_update++;
 			}
 		}
@@ -1136,7 +1136,7 @@ static void pre_rebuild(gtk_conf_list_t * cl)
 
 static void post_rebuild(gtk_conf_list_t * cl)
 {
-	conf_update("rc/library_search_paths");
+	conf_update("rc/library_search_paths", -1);
 }
 
 
@@ -1352,7 +1352,7 @@ void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 			conf_makedirty(ctx->dst_role);
 		}
 	}
-	conf_update("design/default_layer_name");
+	conf_update("design/default_layer_name", -1);
 	conf_set(CFR_DESIGN, "design/groups", -1, s, POL_OVERWRITE);
 	g_free(s);
 	config_any_replace(ctx, paths);
@@ -2353,7 +2353,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 				conf_set_dry(role, nat->hash_path, -1, pcb_strdup(s), (n == 0) ? POL_OVERWRITE : POL_APPEND);
 				g_free(s);
 			}
-			conf_update(nat->hash_path);
+			conf_update(nat->hash_path, -1);
 			config_auto_save(role);
 		}
 		new_val = NULL;							/* do not run conf_set, but run the rest of the updates */

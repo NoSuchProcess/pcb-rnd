@@ -665,7 +665,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	maybe_close_f(f);
 	f = NULL;
 	pcb_hid_restore_layer_ons(save_ons);
-	conf_update(NULL); /* resotre forced sets */
+	conf_update(NULL, -1); /* resotre forced sets */
 }
 
 static void gerber_parse_arguments(int *argc, char ***argv)

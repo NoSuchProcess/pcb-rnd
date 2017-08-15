@@ -621,7 +621,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	pcb_hid_expose_all(&png_hid, &ctx);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
-	conf_update(NULL); /* restore forced sets */
+	conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void clip(color_struct * dest, color_struct * source)

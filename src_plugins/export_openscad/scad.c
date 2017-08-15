@@ -721,7 +721,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 	fprintf(scad_output, "// END_OF_BOARD\n");
 	fclose(scad_output);
 	quit:;
-	conf_update(NULL); /* restore forced sets */
+	conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void scad_parse_arguments(int *argc, char ***argv)

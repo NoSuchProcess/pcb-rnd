@@ -163,7 +163,7 @@ int conf_insert_tree_as(conf_role_t role, lht_node_t *root);
 void conf_load_project(const char *project_fn, const char *pcb_fn);
 
 /* Update the binary representation from the memory-lht representation */
-void conf_update(const char *path);
+void conf_update(const char *path, int arr_idx);
 
 conf_native_t *conf_get_field(const char *path);
 void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags);
