@@ -7,18 +7,28 @@ valg=0
 global_args="-c design/fab_author=TEST -c rc/quiet=1 -c rc/default_pcb_file={} -c rc/default_font_file=./default_font"
 test_announce=0
 verbose=0
+CONVERT=convert
 
 if test -z "$pcb_rnd_bin"
 then
 	pcb_rnd_bin="$TRUNK/src/pcb-rnd"
 fi
 
+
 fmt_args=""
+
+need_convert()
+{
+	if test -z "`$CONVERT | grep ImageMagick`"
+	then
+		echo "WARNING: ImageMagick convert(1) not found - bitmap compare will be skipped."
+	fi
+}
 
 set_fmt_args()
 {
 	case "$fmt" in
-		bboard) ext=.bbrd.png ;;
+		bboard) need_convert; ext=.bbrd.png ;;
 		nelma) ext=.nelma.em ;;
 		bom) ext=.bom ;;
 		dsn) ext=.dsn ;;
@@ -37,6 +47,7 @@ set_fmt_args()
 			fmt_args="--silk_layers"
 			;;
 		png)
+			need_convert
 			fmt_args="--dpi 1200"
 			ext=.png
 			;;
@@ -120,23 +131,29 @@ cmp_fmt()
 	local ref="$1" out="$2" n bn otmp
 	case "$fmt" in
 		png)
-			bn=`basename $out`
-			res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
-			case "$res" in
-				*widths*)
-					otmp=$out.599.png
-					convert -crop 599x599+0x0 $out  $otmp
-					res=`compare "$ref" "$otmp" -metric AE  diff/$bn 2>&1`
-					;;
-			esac
-			test "$res" -lt 8 && rm diff/$bn
-			test "$res" -lt 8
+			if test ! -z "$CONVERT"
+			then
+				bn=`basename $out`
+				res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+				case "$res" in
+					*widths*)
+						otmp=$out.599.png
+						$CONVERT -crop 599x599+0x0 $out  $otmp
+						res=`compare "$ref" "$otmp" -metric AE  diff/$bn 2>&1`
+						;;
+				esac
+				test "$res" -lt 8 && rm diff/$bn
+				test "$res" -lt 8
+			fi
 			;;
 		bboard)
-			bn=`basename $out`
-			res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
-			test "$res" -lt 8 && rm diff/$bn
-			test "$res" -lt 8
+			if test ! -z "$CONVERT"
+			then
+				bn=`basename $out`
+				res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+				test "$res" -lt 8 && rm diff/$bn
+				test "$res" -lt 8
+			fi
 			;;
 		gerber)
 			for n in $ref.gbr/*.gbr
