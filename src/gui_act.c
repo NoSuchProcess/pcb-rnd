@@ -1170,10 +1170,10 @@ static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole,
 	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
 	if (known < 0) {
 		/* unknown style, set properties */
-		if (Thick != 0)     { pcb_custom_route_style.Thick     = Thick;     conf_set_design("design/line_thickness", "%$mS", Thick); }
-		if (Clearance != 0) { pcb_custom_route_style.Clearance = Clearance; conf_set_design("design/clearance", "%$mS", Clearance); }
-		if (Diameter != 0)  { pcb_custom_route_style.Diameter  = Diameter;  conf_set_design("design/via_thickness", "%$mS", Diameter); }
-		if (Hole != 0)      { pcb_custom_route_style.Hole      = Hole;      conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
+		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     conf_set_design("design/line_thickness", "%$mS", Thick); }
+		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; conf_set_design("design/clearance", "%$mS", Clearance); }
+		if (Diameter != -1)  { pcb_custom_route_style.Diameter  = Diameter;  conf_set_design("design/via_thickness", "%$mS", Diameter); }
+		if (Hole != -1)      { pcb_custom_route_style.Hole      = Hole;      conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
 		PCB->pen_attr = NULL;
 	}
 	else
@@ -1191,7 +1191,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	switch (type) {
 	case PCB_TYPE_LINE:
 		pcb_notify_crosshair_change(pcb_false);
-		set_same_(((pcb_line_t *) ptr2)->Thickness, 0, 0, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
+		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_LINE)
 			pcb_crosshair_set_mode(PCB_MODE_LINE);
@@ -1201,7 +1201,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	case PCB_TYPE_ARC:
 		pcb_notify_crosshair_change(pcb_false);
-		set_same_(((pcb_arc_t *) ptr2)->Thickness, 0, 0, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
+		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_ARC)
 			pcb_crosshair_set_mode(PCB_MODE_ARC);
