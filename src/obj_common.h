@@ -169,4 +169,8 @@ static inline PCB_FUNC_UNUSED unsigned pcb_hash_coord(pcb_coord_t c)
 #define pcb_element_neq_offsx(e1, x1, e2, x2, f) (pcb_element_offs(e1, MarkX, x1, f) != pcb_element_offs(e2, MarkX, x2, f))
 #define pcb_element_neq_offsy(e1, y1, e2, y2, f) (pcb_element_offs(e1, MarkY, y1, f) != pcb_element_offs(e2, MarkY, y2, f))
 
+
+/* check if an object has clearance to polygon */
+#define PCB_OBJ_HAS_CLEARANCE(obj) (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (obj)) && ((obj)->Clearance != 0))
+
 #endif
