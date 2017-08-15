@@ -831,7 +831,7 @@ static int SubtractLine(pcb_line_t * line, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line))
+	if (!PCB_OBJ_HAS_CLEARANCE(line))
 		return 0;
 	if (!(np = pcb_poly_from_line(line, line->Thickness + line->Clearance)))
 		return -1;
@@ -842,7 +842,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc))
+	if (!PCB_OBJ_HAS_CLEARANCE(arc))
 		return 0;
 	if (!(np = pcb_poly_from_arc(arc, arc->Thickness + arc->Clearance)))
 		return -1;
@@ -946,7 +946,7 @@ static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return PCB_R_DIR_NOT_FOUND;
-	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc))
+	if (!PCB_OBJ_HAS_CLEARANCE(arc))
 		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractArc(arc, polygon) < 0)
@@ -985,7 +985,7 @@ static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return PCB_R_DIR_NOT_FOUND;
-	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line))
+	if (!PCB_OBJ_HAS_CLEARANCE(line))
 		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
@@ -1133,7 +1133,7 @@ static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc))
+	if (!PCB_OBJ_HAS_CLEARANCE(arc))
 		return 0;
 
 	/* overlap a bit to prevent gaps from rounding errors */
@@ -1151,7 +1151,7 @@ static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line))
+	if (!PCB_OBJ_HAS_CLEARANCE(line))
 		return 0;
 
 	/* overlap a bit to prevent notches from rounding errors */
