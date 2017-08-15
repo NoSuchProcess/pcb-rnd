@@ -1622,8 +1622,11 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		break;
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
-	case PCB_TYPE_TEXT:
 		/* the cast works equally well for lines and arcs */
+		if (!PCB_OBJ_HAS_CLEARANCE((pcb_line_t *) ptr2))
+			return 0;
+	case PCB_TYPE_TEXT:
+		/* text has no clearance property */
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
 		/* non-copper (e.g. silk, outline) doesn't plow */
