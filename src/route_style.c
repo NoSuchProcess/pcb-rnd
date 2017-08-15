@@ -185,6 +185,7 @@ int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_
 	return -1;
 }
 #undef cmp
+#undef cmps
 
 
 int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
