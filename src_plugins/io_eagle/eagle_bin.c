@@ -553,7 +553,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"dx",  T_INT, 12, 2},
 			{"dx_bin_doubling",  T_INT, 12, 2},
 			{"dy",  T_INT, 14, 2},
-			{"dy_bin_doubling",  T_INT, 12, 2},
+			{"dy_bin_doubling",  T_INT, 14, 2},
 			{"rot",  T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"stop",  T_BMB, 18, 0x01},
 			{"cream",  T_BMB, 18, 0x02},
