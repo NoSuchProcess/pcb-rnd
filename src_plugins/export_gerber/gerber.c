@@ -496,12 +496,11 @@ static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned
 }
 
 /* Very similar to layer_type_to_file_name() but appends the group name _and_ the magic suffix */
-static void assign_universal_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
+static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsigned int flags)
 {
 	char *suff;
 	int name_len;
 	pcb_layergrp_t *g;
-	pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, lid);
 
 	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
 		suff = "gtl";
@@ -557,7 +556,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layer_id_t lid, unsigne
 #undef fmatch
 
 
-static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
+static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags)
 {
 	int fns_style;
 	const char *sext = ".gbr";
@@ -580,7 +579,7 @@ static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flag
 		assign_hackvana_file_suffix(dest, lid, flags);
 		return;
 	case NAME_STYLE_UNIVERSAL:
-		assign_universal_file_suffix(dest, lid, flags);
+		assign_universal_file_suffix(dest, gid, flags);
 		return;
 	}
 
@@ -767,7 +766,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		f = NULL;
 
 		pagecount++;
-		assign_file_suffix(filesuff, layer, flags);
+		assign_file_suffix(filesuff, group, layer, flags);
 		f = fopen(filename, "wb");	/* Binary needed to force CR-LF */
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
