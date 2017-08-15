@@ -36,6 +36,7 @@ For the next release:
 - namespace renames:
 	- GetObjectBoundingBox
 - BUGS:
+	- RTT: gerber shouldn't ingore the cnc files
 	- make distclean doesn't remove everything from tests/RTT [report: Alain]
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
