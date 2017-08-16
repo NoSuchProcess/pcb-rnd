@@ -103,17 +103,8 @@ int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, pcb_coord_t *x, pcb_coord_t *y)
 	pcb_connection_t conn;
 	if (!pcb_rat_seek_pad(pin, &conn, pcb_false))
 		return 1;
-	switch (conn.obj->type) {
-	case PCB_OBJ_PIN:
-		*x = ((pcb_pin_t *) (conn.obj))->X;
-		*y = ((pcb_pin_t *) (conn.obj))->Y;
-		return 0;
-	case PCB_OBJ_PAD:
-		*x = ((pcb_pad_t *) (conn.obj))->Point1.X;
-		*y = ((pcb_pad_t *) (conn.obj))->Point1.Y;
-		return 0;
-	}
-	return 1;
+	pcb_obj_center(conn.obj, x, y);
+	return 0;
 }
 
 void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
