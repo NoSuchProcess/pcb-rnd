@@ -119,7 +119,7 @@ static void nbcb_select_common(pcb_lib_menu_t *net, int pos, int select_flag)
 
 	for (i = net->EntryN, entry = net->Entry; i; i--, entry++)
 		if (pcb_rat_seek_pad(entry, &conn, pcb_false))
-			pcb_rat_find_hook(conn.ptr1, conn.obj, conn.obj, pcb_true, pcb_true);
+			pcb_rat_find_hook(conn.ptr1, conn.obj, pcb_true, pcb_true);
 
 	pcb_select_connection(PCB, select_flag);
 	pcb_reset_conns(pcb_false);

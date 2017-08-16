@@ -329,13 +329,13 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
  * find connections for rats nesting
  * assumes pcb_conn_lookup_init() has already been done
  */
-void pcb_rat_find_hook(void *ptr1, pcb_any_obj_t *obj, void *ptr3, pcb_bool undo, pcb_bool AndRats)
+void pcb_rat_find_hook(void *ptr1, pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats)
 {
 	int type;
 	User = undo;
 	DumpList();
 	type = obj->type == PCB_OBJ_PAD ? PCB_TYPE_PAD : PCB_TYPE_PIN;
-	ListStart(type, ptr1, obj, ptr3);
+	ListStart(type, ptr1, obj, obj);
 	DoIt(AndRats, pcb_false);
 	User = pcb_false;
 }

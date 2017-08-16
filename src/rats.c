@@ -400,7 +400,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
 		a = &Netl->Net[m];
 		pcb_reset_conns(pcb_false);
-		pcb_rat_find_hook(a->Connection[0].ptr1, a->Connection[0].obj, a->Connection[0].obj, pcb_false, AndRats);
+		pcb_rat_find_hook(a->Connection[0].ptr1, a->Connection[0].obj, pcb_false, AndRats);
 		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].obj);
