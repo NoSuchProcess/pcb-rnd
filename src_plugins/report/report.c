@@ -279,16 +279,15 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 			report = pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
 									"CenterPoint(X,Y) = %$mD.\n"
-									"Radius = %$mS, Thickness = %$mS.\n"
-									"Clearance = %$mS.\n"
-									"StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
+									"Width = %$mS.\nClearance = %$mS.\n"
+									"Radius = %$mS, StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
 									"Bounding Box is %$mD, %$mD.\n"
 									"That makes the end points at %$mD and %$mD.\n"
 									"It is on layer %d.\n"
 									"%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_TYPE_ARC),
 									Arc->X, Arc->Y,
-									Arc->Width, Arc->Thickness,
-									Arc->Clearance / 2, Arc->StartAngle, Arc->Delta,
+									Arc->Thickness, Arc->Clearance / 2,
+									Arc->Width, Arc->StartAngle, Arc->Delta,
 									Arc->BoundingBox.X1, Arc->BoundingBox.Y1,
 									Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
 									box.X1, box.Y1,
