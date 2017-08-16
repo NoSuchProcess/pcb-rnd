@@ -224,7 +224,7 @@ static void nogui_log(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	vprintf(fmt, ap);
+	pcb_vfprintf(stdout, fmt, ap);
 	va_end(ap);
 }
 
@@ -249,7 +249,7 @@ static void nogui_logv(enum pcb_message_level level, const char *fmt, va_list ap
 		printf("E:");
 		break;
 	}
-	vprintf(fmt, ap);
+	pcb_vfprintf(stdout, fmt, ap);
 }
 
 /* Return a line of user input text, stripped of any newline characters.
@@ -290,7 +290,7 @@ static int nogui_confirm_dialog(const char *msg, ...)
 
 	do {
 		va_start(args, msg);
-		vprintf(msg, args);
+		pcb_vfprintf(stdout, msg, args);
 		va_end(args);
 
 		printf(" ? 0=cancel 1 = ok : ");
