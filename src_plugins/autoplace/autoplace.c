@@ -156,13 +156,11 @@ static void UpdateXY(pcb_netlist_t *Nets)
 			case PCB_OBJ_PAD:
 				c->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_element_t *) c->ptr1)
 					? SLayer : CLayer;
-				c->X = ((pcb_pad_t *) c->obj)->Point1.X;
-				c->Y = ((pcb_pad_t *) c->obj)->Point1.Y;
+				pcb_obj_center(c->obj, &c->X, &c->Y);
 				break;
 			case PCB_OBJ_PIN:
 				c->group = SLayer;			/* any layer will do */
-				c->X = ((pcb_pin_t *) c->obj)->X;
-				c->Y = ((pcb_pin_t *) c->obj)->Y;
+				pcb_obj_center(c->obj, &c->X, &c->Y);
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Odd connection type encountered in " "UpdateXY");
