@@ -27,6 +27,8 @@
 
 - polygon helper functions to flag non rectangular clipped polygons being exported to formats which only support rectangles, i.e. write.c in io_autotrax, +/- export a hatched version with outline 
 
+- property editor
+	- currently, editor silently censors negative values input by user, i.e. for arc delta values
 
 For the next release:
 - subc/term:
