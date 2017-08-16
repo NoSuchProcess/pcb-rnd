@@ -279,25 +279,16 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 
 	/* And lead the user to the location */
 	if (pcb_rat_seek_pad(node, &conn, pcb_false))
+		pcb_obj_center(conn.obj, &x, &y);
 		switch (conn.obj->type) {
-		case PCB_OBJ_PIN:
-			{
-				pcb_pin_t *pin = (pcb_pin_t *) conn.obj;
-				x = pin->X;
-				y = pin->Y;
+			case PCB_OBJ_PIN:
 				pcb_gui->set_crosshair(x, y, 0);
 				com->lead_user_to_location(x, y);
 				break;
-			}
-		case PCB_OBJ_PAD:
-			{
-				pcb_pad_t *pad = (pcb_pad_t *) conn.obj;
-				x = pad->Point1.X + (pad->Point2.X - pad->Point1.X) / 2;
-				y = pad->Point1.Y + (pad->Point2.Y - pad->Point2.Y) / 2;
+			case PCB_OBJ_PAD:
 				pcb_gui->set_crosshair(x, y, 0);
 				com->lead_user_to_location(x, y);
 				break;
-			}
 		}
 }
 
