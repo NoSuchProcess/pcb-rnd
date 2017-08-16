@@ -28,6 +28,18 @@
 
 For the next release:
 - subc/term:
+	- term netlist connectivity r10843:
+		- netlist.c:114
+		- rats.c:248
+		- rats.c:264
+		- find_misc.c:337
+		- autoplace.c:167
+		- autoroute.c:961
+		- autoroute.c:1000
+		- report.c:769
+		- smartdisperse.c:128
+		- dlg_netlist.c:219
+		- dlg_netlist.c:282
 	- name a terminal, name it again with 'n' but cancel -> crash
 	- remove Line->Number and *->Number: we use ->term
 	- integrity check: term cross-linking
