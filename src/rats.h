@@ -43,8 +43,8 @@
 
 struct pcb_connection_s {  /* holds a connection (rat) */
 	pcb_coord_t X, Y;        /* coordinate of connection */
-	long int type;           /* type of object in ptr1 - 3 */
-	void *ptr1, *ptr2;       /* the object of the connection */
+	void *ptr1;              /* parent of ptr2??? */
+	pcb_any_obj_t *obj;      /* the object of the connection */
 	pcb_layergrp_id_t group; /* the layer group of the connection */
 	pcb_lib_menu_t *menu;    /* the netmenu this *SHOULD* belong too */
 };

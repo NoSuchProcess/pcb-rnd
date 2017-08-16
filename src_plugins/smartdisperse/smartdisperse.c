@@ -101,7 +101,7 @@ static void place(pcb_element_t * element)
 static pcb_coord_t padDX(pcb_connection_t * conn)
 {
 	pcb_element_t *element = (pcb_element_t *) conn->ptr1;
-	pcb_any_line_t *line = (pcb_any_line_t *) conn->ptr2;
+	pcb_any_line_t *line = (pcb_any_line_t *) conn->obj;
 
 	return line->BoundingBox.X1 - (element->BoundingBox.X1 + element->BoundingBox.X2) / 2;
 }
@@ -125,7 +125,7 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 /* ewww, these are actually arrays */
 #define ELEMENT_N(DATA,ELT)	((ELT) - (DATA)->Element)
 #define VISITED(ELT)		(visited[ELEMENT_N(PCB->Data, (ELT))])
-#define IS_ELEMENT(CONN)	((CONN)->type == PCB_TYPE_PAD || (CONN)->type == PCB_TYPE_PIN)
+#define IS_ELEMENT(CONN)	((CONN)->obj->type == PCB_OBJ_PAD || (CONN)->obj->type == PCB_OBJ_PIN)
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 

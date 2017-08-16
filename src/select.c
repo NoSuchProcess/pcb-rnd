@@ -783,7 +783,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 			if (menu->Name && menu->Name[0] != '\0' && menu->Name[1] != '\0' && REGEXEC(menu->Name + 2)) {
 				for (i = menu->EntryN, entry = menu->Entry; i; i--, entry++)
 					if (pcb_rat_seek_pad(entry, &conn, pcb_false))
-						pcb_rat_find_hook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
+						pcb_rat_find_hook(conn.ptr1, conn.obj, conn.obj, pcb_true, pcb_true);
 			}
 		}
 		PCB_END_LOOP;

@@ -766,15 +766,15 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 		}
 
 		if (pcb_rat_seek_pad(net->Entry, &conn, pcb_false)) {
-			switch (conn.type) {
-			case PCB_TYPE_PIN:
-				x = ((pcb_pin_t *) (conn.ptr2))->X;
-				y = ((pcb_pin_t *) (conn.ptr2))->Y;
+			switch (conn.obj->type) {
+			case PCB_OBJ_PIN:
+				x = ((pcb_pin_t *) (conn.obj))->X;
+				y = ((pcb_pin_t *) (conn.obj))->Y;
 				net_found = 1;
 				break;
-			case PCB_TYPE_PAD:
-				x = ((pcb_pad_t *) (conn.ptr2))->Point1.X;
-				y = ((pcb_pad_t *) (conn.ptr2))->Point1.Y;
+			case PCB_OBJ_PAD:
+				x = ((pcb_pad_t *) (conn.obj))->Point1.X;
+				y = ((pcb_pad_t *) (conn.obj))->Point1.Y;
 				net_found = 1;
 				break;
 			}

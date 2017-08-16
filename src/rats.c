@@ -115,9 +115,8 @@ static pcb_bool pcb_term_find_name(const char *ElementName, const char *PinNum, 
 
 	padlist_foreach(&element->Pad, &it, pad) {
 		if (PCB_NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pad))) {
-			conn->type = PCB_TYPE_PAD;
 			conn->ptr1 = element;
-			conn->ptr2 = pad;
+			conn->obj = (pcb_any_obj_t *)pad;
 			conn->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? Sgrp : Cgrp;
 
 			if (PCB_FLAG_TEST(PCB_FLAG_EDGE2, pad)) {
@@ -134,9 +133,8 @@ static pcb_bool pcb_term_find_name(const char *ElementName, const char *PinNum, 
 
 	padlist_foreach(&element->Pin, &it, pin) {
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Number && PCB_NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pin))) {
-			conn->type = PCB_TYPE_PIN;
 			conn->ptr1 = element;
-			conn->ptr2 = pin;
+			conn->obj = (pcb_any_obj_t *)pin;
 			conn->group = Sgrp;			/* any layer will do */
 			conn->X = pin->X;
 			conn->Y = pin->Y;
@@ -231,23 +229,23 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 			PCB_ENTRY_LOOP(menu);
 			{
 				if (pcb_rat_seek_pad(entry, &LastPoint, pcb_false)) {
-					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2))
+					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj))
 						pcb_message(PCB_MSG_ERROR, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
 										PCB_ELEM_NAME_REFDES((pcb_element_t *) LastPoint.ptr1),
-										(LastPoint.type ==
-										 PCB_TYPE_PIN) ? ((pcb_pin_t *) LastPoint.ptr2)->Number : ((pcb_pad_t *) LastPoint.ptr2)->Number);
+										(LastPoint.obj->type ==
+										 PCB_OBJ_PIN) ? ((pcb_pin_t *) LastPoint.obj)->Number : ((pcb_pad_t *) LastPoint.obj)->Number);
 					else {
 						connection = pcb_rat_connection_alloc(net);
 						*connection = LastPoint;
 						/* indicate expect net */
 						connection->menu = menu;
 						/* mark as visited */
-						PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2);
-						if (LastPoint.type == PCB_TYPE_PIN)
-							((pcb_pin_t *) LastPoint.ptr2)->Spare = (void *) menu;
+						PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
+						if (LastPoint.obj->type == PCB_OBJ_PIN)
+							((pcb_pin_t *) LastPoint.obj)->Spare = (void *) menu;
 						else
-							((pcb_pad_t *) LastPoint.ptr2)->Spare = (void *) menu;
+							((pcb_pad_t *) LastPoint.obj)->Spare = (void *) menu;
 					}
 				}
 				else
@@ -259,11 +257,11 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 					/* indicate expect net */
 					connection->menu = menu;
 					/* mark as visited */
-					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2);
-					if (LastPoint.type == PCB_TYPE_PIN)
-						((pcb_pin_t *) LastPoint.ptr2)->Spare = (void *) menu;
+					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
+					if (LastPoint.obj->type == PCB_OBJ_PIN)
+						((pcb_pin_t *) LastPoint.obj)->Spare = (void *) menu;
 					else
-						((pcb_pad_t *) LastPoint.ptr2)->Spare = (void *) menu;
+						((pcb_pad_t *) LastPoint.obj)->Spare = (void *) menu;
 				}
 			}
 			PCB_END_LOOP;
@@ -402,15 +400,15 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
 		a = &Netl->Net[m];
 		pcb_reset_conns(pcb_false);
-		pcb_rat_find_hook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, pcb_false, AndRats);
+		pcb_rat_find_hook(a->Connection[0].ptr1, a->Connection[0].obj, a->Connection[0].obj, pcb_false, AndRats);
 		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].ptr2);
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].obj);
 		for (n = m + 1; n < Netl->NetN; n++) {
 			b = &Netl->Net[n];
 			/* There can be only one connection in net b */
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].ptr2)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].ptr2);
+			if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj);
 				TransferNet(Netl, b, a);
 				/* back up since new subnet is now at old index */
 				n--;
@@ -427,17 +425,15 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn = pcb_rat_connection_alloc(a);
 				conn->X = line->Point1.X;
 				conn->Y = line->Point1.Y;
-				conn->type = PCB_TYPE_LINE;
 				conn->ptr1 = layer;
-				conn->ptr2 = line;
+				conn->obj = (pcb_any_obj_t *)line;
 				conn->group = pcb_layer_get_group_(layer);
 				conn->menu = NULL;			/* agnostic view of where it belongs */
 				conn = pcb_rat_connection_alloc(a);
 				conn->X = line->Point2.X;
 				conn->Y = line->Point2.Y;
-				conn->type = PCB_TYPE_LINE;
 				conn->ptr1 = layer;
-				conn->ptr2 = line;
+				conn->obj = (pcb_any_obj_t *)line;
 				conn->group = pcb_layer_get_group_(layer);
 				conn->menu = NULL;
 			}
@@ -451,9 +447,8 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				/* make point on a vertex */
 				conn->X = polygon->Clipped->contours->head.point[0];
 				conn->Y = polygon->Clipped->contours->head.point[1];
-				conn->type = PCB_TYPE_POLYGON;
 				conn->ptr1 = layer;
-				conn->ptr2 = polygon;
+				conn->obj = (pcb_any_obj_t *)polygon;
 				conn->group = pcb_layer_get_group_(layer);
 				conn->menu = NULL;			/* agnostic view of where it belongs */
 			}
@@ -465,9 +460,8 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn = pcb_rat_connection_alloc(a);
 				conn->X = via->X;
 				conn->Y = via->Y;
-				conn->type = PCB_TYPE_VIA;
 				conn->ptr1 = via;
-				conn->ptr2 = via;
+				conn->obj = (pcb_any_obj_t *)via;
 				conn->group = Sgrp;
 			}
 		}
@@ -567,20 +561,20 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					 * not a daisy chain).  Further prefer to pick an existing
 					 * via in the Net to make that connection.
 					 */
-					if (conn1->type == PCB_TYPE_POLYGON &&
-							(polygon = (pcb_polygon_t *) conn1->ptr2) &&
+					if (conn1->obj->type == PCB_OBJ_POLYGON &&
+							(polygon = (pcb_polygon_t *) conn1->obj) &&
 							!(distance == 0 &&
-								firstpoint && firstpoint->type == PCB_TYPE_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn2->X, conn2->Y, polygon)) {
+								firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn2->X, conn2->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn2;
 						secondpoint = conn1;
 						theSubnet = next;
 						havepoints = pcb_true;
 					}
-					else if (conn2->type == PCB_TYPE_POLYGON &&
-									 (polygon = (pcb_polygon_t *) conn2->ptr2) &&
+					else if (conn2->obj->type == PCB_OBJ_POLYGON &&
+									 (polygon = (pcb_polygon_t *) conn2->obj) &&
 									 !(distance == 0 &&
-										 firstpoint && firstpoint->type == PCB_TYPE_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn1->X, conn1->Y, polygon)) {
+										 firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn1->X, conn1->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn1;
 						secondpoint = conn2;
@@ -682,7 +676,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	{
 		PCB_CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
+			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->obj)) {
 				lonesome = pcb_net_new(Nets);
 				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;
@@ -767,7 +761,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 		Nets = pcb_netlist_new(&result);
 		PCB_CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
+			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->obj)) {
 				lonesome = pcb_net_new(Nets);
 				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;

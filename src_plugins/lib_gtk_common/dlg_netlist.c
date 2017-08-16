@@ -211,13 +211,16 @@ static void node_model_update(pcb_lib_menu_t * menu)
 static void toggle_pin_selected(pcb_lib_entry_t * entry)
 {
 	pcb_connection_t conn;
+	int type;
 
 	if (!pcb_rat_seek_pad(entry, &conn, pcb_false))
 		return;
 
-	pcb_undo_add_obj_to_flag(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
-	PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_any_obj_t *) conn.ptr2);
-	pcb_draw_obj(conn.type, conn.ptr1, conn.ptr2);
+	type = conn.obj->type == PCB_OBJ_PAD ? PCB_TYPE_PAD : PCB_TYPE_PIN;
+
+	pcb_undo_add_obj_to_flag(type, conn.ptr1, conn.obj, conn.obj);
+	PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, conn.obj);
+	pcb_draw_obj(type, conn.ptr1, conn.obj);
 }
 
 /** Callback when the user clicks on a PCB node in the right node treeview.
@@ -276,19 +279,19 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 
 	/* And lead the user to the location */
 	if (pcb_rat_seek_pad(node, &conn, pcb_false))
-		switch (conn.type) {
-		case PCB_TYPE_PIN:
+		switch (conn.obj->type) {
+		case PCB_OBJ_PIN:
 			{
-				pcb_pin_t *pin = (pcb_pin_t *) conn.ptr2;
+				pcb_pin_t *pin = (pcb_pin_t *) conn.obj;
 				x = pin->X;
 				y = pin->Y;
 				pcb_gui->set_crosshair(x, y, 0);
 				com->lead_user_to_location(x, y);
 				break;
 			}
-		case PCB_TYPE_PAD:
+		case PCB_OBJ_PAD:
 			{
-				pcb_pad_t *pad = (pcb_pad_t *) conn.ptr2;
+				pcb_pad_t *pad = (pcb_pad_t *) conn.obj;
 				x = pad->Point1.X + (pad->Point2.X - pad->Point1.X) / 2;
 				y = pad->Point1.Y + (pad->Point2.Y - pad->Point2.Y) / 2;
 				pcb_gui->set_crosshair(x, y, 0);
@@ -515,7 +518,7 @@ static void netlist_select_cb(GtkWidget * widget, gpointer data)
 
 	for (i = selected_net->EntryN, entry = selected_net->Entry; i; i--, entry++)
 		if (pcb_rat_seek_pad(entry, &conn, pcb_false))
-			pcb_rat_find_hook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
+			pcb_rat_find_hook(conn.ptr1, conn.obj, conn.obj, pcb_true, pcb_true);
 
 	pcb_select_connection(PCB, select_flag);
 	pcb_reset_conns(pcb_false);

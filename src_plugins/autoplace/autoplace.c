@@ -152,17 +152,17 @@ static void UpdateXY(pcb_netlist_t *Nets)
 	for (i = 0; i < Nets->NetN; i++) {
 		for (j = 0; j < Nets->Net[i].ConnectionN; j++) {
 			pcb_connection_t *c = &(Nets->Net[i].Connection[j]);
-			switch (c->type) {
-			case PCB_TYPE_PAD:
+			switch (c->obj->type) {
+			case PCB_OBJ_PAD:
 				c->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_element_t *) c->ptr1)
 					? SLayer : CLayer;
-				c->X = ((pcb_pad_t *) c->ptr2)->Point1.X;
-				c->Y = ((pcb_pad_t *) c->ptr2)->Point1.Y;
+				c->X = ((pcb_pad_t *) c->obj)->Point1.X;
+				c->Y = ((pcb_pad_t *) c->obj)->Point1.Y;
 				break;
-			case PCB_TYPE_PIN:
+			case PCB_OBJ_PIN:
 				c->group = SLayer;			/* any layer will do */
-				c->X = ((pcb_pin_t *) c->ptr2)->X;
-				c->Y = ((pcb_pin_t *) c->ptr2)->Y;
+				c->X = ((pcb_pin_t *) c->obj)->X;
+				c->Y = ((pcb_pin_t *) c->obj)->Y;
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Odd connection type encountered in " "UpdateXY");
@@ -323,7 +323,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		minx = maxx = n->Connection[0].X;
 		miny = maxy = n->Connection[0].Y;
 		thegroup = n->Connection[0].group;
-		allpads = (n->Connection[0].type == PCB_TYPE_PAD);
+		allpads = (n->Connection[0].obj->type == PCB_OBJ_PAD);
 		allsameside = pcb_true;
 		for (j = 1; j < n->ConnectionN; j++) {
 			pcb_connection_t *c = &(n->Connection[j]);
@@ -331,7 +331,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			PCB_MAKE_MAX(maxx, c->X);
 			PCB_MAKE_MIN(miny, c->Y);
 			PCB_MAKE_MAX(maxy, c->Y);
-			if (c->type != PCB_TYPE_PAD)
+			if (c->obj->type != PCB_OBJ_PAD)
 				allpads = pcb_false;
 			if (c->group != thegroup)
 				allsameside = pcb_false;

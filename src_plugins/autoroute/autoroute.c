@@ -957,9 +957,9 @@ static routedata_t *CreateRouteData()
 				PCB_CONNECTION_LOOP(net);
 				{
 					routebox_t *rb = NULL;
-					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) connection->ptr2);
-					if (connection->type == PCB_TYPE_LINE) {
-						pcb_line_t *line = (pcb_line_t *) connection->ptr2;
+					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) connection->obj);
+					if (connection->obj->type == PCB_OBJ_LINE) {
+						pcb_line_t *line = (pcb_line_t *) connection->obj;
 
 						/* lines are listed at each end, so skip one */
 						/* this should probably by a macro named "BUMP_LOOP" */
@@ -997,21 +997,21 @@ static routedata_t *CreateRouteData()
 						}
 					}
 					else
-						switch (connection->type) {
-						case PCB_TYPE_PAD:
-							rb = AddPad(layergroupboxes, (pcb_element_t *) connection->ptr1, (pcb_pad_t *) connection->ptr2, rd->styles[j]);
+						switch (connection->obj->type) {
+						case PCB_OBJ_PAD:
+							rb = AddPad(layergroupboxes, (pcb_element_t *) connection->ptr1, (pcb_pad_t *) connection->obj, rd->styles[j]);
 							break;
-						case PCB_TYPE_PIN:
-							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->ptr2, pcb_false, rd->styles[j]);
+						case PCB_OBJ_PIN:
+							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->obj, pcb_false, rd->styles[j]);
 							break;
-						case PCB_TYPE_VIA:
-							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->ptr2, pcb_true, rd->styles[j]);
+						case PCB_OBJ_VIA:
+							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->obj, pcb_true, rd->styles[j]);
 							break;
-						case PCB_TYPE_POLYGON:
+						case PCB_OBJ_POLYGON:
 							rb =
 								AddPolygon(layergroupboxes,
 													 pcb_layer_id(PCB->Data, (pcb_layer_t *) connection->ptr1),
-													 (struct pcb_polygon_s *) connection->ptr2, rd->styles[j]);
+													 (struct pcb_polygon_s *) connection->obj, rd->styles[j]);
 							break;
 						}
 					assert(rb);
