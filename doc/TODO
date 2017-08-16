@@ -5,11 +5,13 @@
 	- keep numeric format: test all
 	- keep unknown subtrees
 
-- replace settings with lihata (conf_*)
-	- TEST:
-		- vendor drill mapping (all functionality, including regex based refdes ignore)
-		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
-		- route style vs. autorouter
+- TEST:
+	- vendor drill mapping (all functionality, including regex based refdes ignore)
+	- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
+	- route style vs. autorouter
+	- smartdisperse (compare to 1.2.4; term changes)
+	- autoplace (compare to 1.2.4; term changes)
+	- autoroute (compare to 1.2.4; term changes)
 
 - query & advanced search
 	- search expr wizard should pick up the expression from the button when clicked
