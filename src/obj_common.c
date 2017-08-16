@@ -133,3 +133,16 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src)
 		return;
 	pcb_attribute_copy_all(&o->Attributes, src);
 }
+
+void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
+{
+	switch (obj->type) {
+		case PCB_OBJ_PIN:
+			*x = ((pcb_pin_t *)(obj))->X;
+			*y = ((pcb_pin_t *)(obj))->Y;
+			break;
+		default:
+			*x = (obj->BoundingBox.X1 + obj->BoundingBox.X2) / 2;
+			*y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2) / 2;
+	}
+}
