@@ -1028,8 +1028,8 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 
 
 	if ((elem == NULL) || (pad == NULL)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring contactref: missing element or pad\n");
-		return 0;
+		pcb_message(PCB_MSG_WARNING, "Failed to parse contactref node: missing \"element\" or \"pad\" netlist attributes\n");
+		return -1;
 	}
 
 	net = eagle_get_attrs(st, PARENT(subtree), "name", NULL);
