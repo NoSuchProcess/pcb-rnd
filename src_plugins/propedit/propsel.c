@@ -93,7 +93,7 @@ static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 {
 	map_chk_skip(ctx, line);
 	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, line->Thickness);
-	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, line->Clearance);
+	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, line->Clearance/2);
 	map_attr(ctx, &line->Attributes);
 }
 
@@ -101,7 +101,7 @@ static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 {
 	map_chk_skip(ctx, arc);
 	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, arc->Thickness);
-	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, arc->Clearance);
+	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, arc->Clearance/2);
 	map_add_prop(ctx, "p/arc/width",       pcb_coord_t, arc->Width);
 	map_add_prop(ctx, "p/arc/height",      pcb_coord_t, arc->Height);
 	map_add_prop(ctx, "p/arc/angle/start", pcb_angle_t, arc->StartAngle);
@@ -149,7 +149,7 @@ static void map_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 {
 	map_chk_skip(ctx, pin);
 	map_add_prop(ctx, "p/pin/thickness", pcb_coord_t, pin->Thickness);
-	map_add_prop(ctx, "p/pin/clearance", pcb_coord_t, pin->Clearance);
+	map_add_prop(ctx, "p/pin/clearance", pcb_coord_t, pin->Clearance/2);
 	map_add_prop(ctx, "p/pin/mask",      pcb_coord_t, pin->Mask);
 	map_add_prop(ctx, "p/pin/hole",      pcb_coord_t, pin->DrillingHole);
 	map_attr(ctx, &pin->Attributes);
@@ -168,7 +168,7 @@ static void map_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	map_chk_skip(ctx, via);
 	map_add_prop(ctx, "p/via/thickness", pcb_coord_t, via->Thickness);
-	map_add_prop(ctx, "p/via/clearance", pcb_coord_t, via->Clearance);
+	map_add_prop(ctx, "p/via/clearance", pcb_coord_t, via->Clearance/2);
 	map_add_prop(ctx, "p/via/mask",      pcb_coord_t, via->Mask);
 	map_add_prop(ctx, "p/via/hole",      pcb_coord_t, via->DrillingHole);
 	map_attr(ctx, &via->Attributes);
@@ -232,7 +232,7 @@ static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 	    pcb_chg_obj_1st_size(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, NULL, st->c*2, st->c_absolute)) DONE;
 }
 
 static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
@@ -251,7 +251,7 @@ static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	    pcb_chg_obj_1st_size(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, NULL, st->c*2, st->c_absolute)) DONE;
 
 	pn = st->name + 6;
 
@@ -368,7 +368,7 @@ static void set_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	    pcb_chg_obj_1st_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c*2, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
 	    pcb_chg_obj_mask_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
@@ -409,7 +409,7 @@ static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	    pcb_chg_obj_1st_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_VIA, via, via, NULL, st->c*2, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
 	    pcb_chg_obj_mask_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
