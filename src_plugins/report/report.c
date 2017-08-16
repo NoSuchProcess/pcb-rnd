@@ -720,7 +720,7 @@ got_net_name:
 	return 0;
 }
 
-static int ReportNetLengthByName(const char *tofind, int x, int y)
+static int ReportNetLengthByName(const char *tofind, pcb_coord_t x, pcb_coord_t y)
 {
 	char *netname = 0;
 	pcb_coord_t length = 0;
@@ -766,20 +766,11 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 		}
 
 		if (pcb_rat_seek_pad(net->Entry, &conn, pcb_false)) {
-			switch (conn.obj->type) {
-			case PCB_OBJ_PIN:
-				x = ((pcb_pin_t *) (conn.obj))->X;
-				y = ((pcb_pin_t *) (conn.obj))->Y;
-				net_found = 1;
-				break;
-			case PCB_OBJ_PAD:
-				x = ((pcb_pad_t *) (conn.obj))->Point1.X;
-				y = ((pcb_pad_t *) (conn.obj))->Point1.Y;
+			pcb_obj_center(conn.obj, &x, &y);
+			if ((conn.obj->type == PCB_OBJ_PIN) || (conn.obj->type == PCB_OBJ_PAD)) {
 				net_found = 1;
 				break;
 			}
-			if (net_found)
-				break;
 		}
 	}
 
