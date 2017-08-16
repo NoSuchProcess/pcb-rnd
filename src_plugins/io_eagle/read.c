@@ -1100,7 +1100,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 {
 	trnode_t *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
-		{"contactref",  eagle_read_contactref},
+		{"contactref",  eagle_read_contactref}, /* if this fails, rest of disp acts up */
 		{"wire",        eagle_read_wire},
 		{"arc",         eagle_read_circle}, /*binary format */
 		{"polygon",     eagle_read_poly},

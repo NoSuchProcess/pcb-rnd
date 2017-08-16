@@ -765,7 +765,9 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"partnumber",  T_INT, 4, 2},
+			{"element",  T_INT, 4, 2}, /*still need to translate element ID number i.e. "5647907" to an instance number, i.e. "Can't find 6 pin 2 called for in netlist."  */
 			{"pin",  T_INT, 6, 2},
+			{"pad",  T_INT, 6, 2}, /*read.c signal dispatch table needs this to behave */
 			TERM
 		},
 	},
