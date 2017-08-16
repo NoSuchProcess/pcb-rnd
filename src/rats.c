@@ -56,7 +56,7 @@
 /* ---------------------------------------------------------------------------
  * some forward declarations
  */
-static pcb_bool FindPad(const char *, const char *, pcb_connection_t *, pcb_bool);
+static pcb_bool pcb_term_find_name(const char *, const char *, pcb_connection_t *, pcb_bool);
 static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(pcb_netlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
@@ -100,9 +100,10 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 }
 
 /* ---------------------------------------------------------------------------
- * Find a particular pad from an element name and pin number
+ * Find a particular terminal from an element/subc name and pin/pad/terminal number
  */
-static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
+#warning term TODO: once pins and pads are gone, move this to obj_term.c
+static pcb_bool pcb_term_find_name(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
 {
 	pcb_element_t *element;
 	gdl_iterator_t it;
@@ -164,7 +165,7 @@ pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_
 		badnet = pcb_true;
 	}
 	else {
-		if (FindPad(ElementName, PinNum, conn, Same))
+		if (pcb_term_find_name(ElementName, PinNum, conn, Same))
 			return (pcb_true);
 		if (Same)
 			return (pcb_false);
