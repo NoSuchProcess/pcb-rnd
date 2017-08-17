@@ -753,7 +753,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	deg = eagle_rot2degrees(rot);
 
-#warning TODO need to load thermals flags to set clearance.
+#warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
 
 	if (dx < 0) {
 		x -= dx;
@@ -830,7 +830,6 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
 	shape = eagle_get_attrs(st, subtree, "shape", 0);
 
-
 	if ((dia - drill) / 2.0 < st->ms_width)
 		dia = drill + 2*st->ms_width;
 
@@ -847,10 +846,11 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 
 	if (hole)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pin);
-
-	if ((shape != NULL) && (strcmp(shape, "octagon") == 0))
+#warning TODO padstacks will allow more pad shapes
+ 	/* shape = {square, round, octagon, long, offset} binary */
+	if ((shape != NULL) && ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0)))
 		PCB_FLAG_SET(PCB_FLAG_OCTAGON, pin);
-	else if ((shape != NULL) && (strcmp(shape, "square") == 0))
+	else if ((shape != NULL) && ((strcmp(shape, "square") == 0) || (strcmp(shape, "0") == 0)))
 		PCB_FLAG_SET(PCB_FLAG_SQUARE, pin);
 	else
 		PCB_FLAG_SET(PCB_FLAG_VIA, pin);
