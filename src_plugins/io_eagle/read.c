@@ -813,7 +813,8 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 	pcb_trace("%mm %mm -> %mm %mm\n", x, y, dx, dy);
 
-	if (roundness != 0) /* round smd pads found in fiducials mostly, it seems */
+#warning TODO padstacks - consider roundrect, oval etc shapes when padstacks available
+	if (roundness >= 65) /* round smd pads found in fiducials, some discretes, it seems */
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, pad);
 
 	if (ln == 16)
