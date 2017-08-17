@@ -15,68 +15,81 @@ static pcb_hid_t logging_hid_;
 static pcb_hid_t *delegatee_ = NULL;
 static FILE *out_ = NULL;
 
-static pcb_hid_attribute_t *log_get_export_options(int *ret) {
+static pcb_hid_attribute_t *log_get_export_options(int *ret)
+{
 	pcb_hid_attribute_t *result = delegatee_->get_export_options(ret);
 	pcb_fprintf(out_, "get_export_options(ret) -> ret=%d\n", *ret);
 	return result;
 }
 
-static void log_do_exit(pcb_hid_t *hid) {
+static void log_do_exit(pcb_hid_t *hid)
+{
 	pcb_fprintf(out_, "do_exit()\n");
 	delegatee_->do_exit(delegatee_);
 }
 
-static void log_parse_arguments(int *argc, char ***argv) {
+static void log_parse_arguments(int *argc, char ***argv)
+{
 	pcb_fprintf(out_, "parse_arguments()\n");
 	delegatee_->parse_arguments(argc, argv);
 }
 
-static void log_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom) {
+static void log_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+{
 	pcb_fprintf(out_, "invalidate_lr(%mm, %mm, %mm, %mm)\n", left, right, top, bottom);
 	delegatee_->invalidate_lr(left, right, top, bottom);
 }
 
-static void log_invalidate_all(void) {
+static void log_invalidate_all(void)
+{
 	pcb_fprintf(out_, "invalidate_all()\n");
 	delegatee_->invalidate_all();
 }
 
-static void log_pcb_notify_mark_change(pcb_bool changes_complete) {
+static void log_pcb_notify_mark_change(pcb_bool changes_complete)
+{
 	pcb_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
 	delegatee_->pcb_notify_mark_change(changes_complete);
 }
 
 static int log_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+{
 	pcb_fprintf(out_, "set_layer(group=%ld, layer=%ld, flags=%lx, empty=%s", group, layer, flags, empty ? "true" : "false");
 	return delegatee_->set_layer_group(group, layer, flags, is_empty);
 }
 
-static void log_end_layer() {
+static void log_end_layer()
+{
 	pcb_fprintf(out_, "end_layer()\n");
 	delegatee_->end_layer();
 }
 
-static pcb_hid_gc_t log_make_gc() {
+static pcb_hid_gc_t log_make_gc()
+{
 	pcb_fprintf(out_, "make_gc()\n");
 	return delegatee_->make_gc();
 }
 
-static void log_destroy_gc(pcb_hid_gc_t gc) {
+static void log_destroy_gc(pcb_hid_gc_t gc)
+{
 	pcb_fprintf(out_, "detroy_gc()\n");
 	delegatee_->destroy_gc(gc);
 }
 
-static void log_use_mask(pcb_mask_op_t use_it) {
+static void log_use_mask(pcb_mask_op_t use_it)
+{
 	pcb_fprintf(out_, "use_mask(%x)\n", use_it);
 	delegatee_->use_mask(use_it);
 }
 
-static void log_set_color(pcb_hid_gc_t gc, const char *name) {
+static void log_set_color(pcb_hid_gc_t gc, const char *name)
+{
 	pcb_fprintf(out_, "set_color(gc, %s)\n", name);
 	delegatee_->set_color(gc, name);
 }
 
-static void log_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style) {
+static void log_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+{
 	const char *txt = "unknown";
 	switch (style) {
 		ENUM_LOG_TEXT(Trace_Cap);
@@ -88,43 +101,51 @@ static void log_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style) {
 	delegatee_->set_line_cap(gc, style);
 }
 
-static void log_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width) {
+static void log_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+{
 	pcb_fprintf(out_, "set_line_width(gc, %d)\n", width);
 	delegatee_->set_line_width(gc, width);
 }
 
-static void log_set_draw_xor(pcb_hid_gc_t gc, int xor) {
+static void log_set_draw_xor(pcb_hid_gc_t gc, int xor)
+{
 	pcb_fprintf(out_, "set_draw_xor(gc, %s)\n", xor ? "true" : "false");
 	delegatee_->set_draw_xor(gc, xor);
 }
 
-static void log_set_draw_faded(pcb_hid_gc_t gc, int faded) {
+static void log_set_draw_faded(pcb_hid_gc_t gc, int faded)
+{
 	pcb_fprintf(out_, "set_draw_faded(gc, %s)\n", faded ? "true" : "false");
 	delegatee_->set_draw_faded(gc, faded);
 }
 
-static void log_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2) {
+static void log_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
 	pcb_fprintf(out_, "draw_line(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
 	delegatee_->draw_line(gc, x1, y1, x2, y2);
 }
 
-static void log_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle) {
+static void log_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+{
 	pcb_fprintf(out_, "draw_arc(gc, %mm, %mm, rx=%mm, ry=%mm, start_angle=%.1f, delta_a=%.1f)\n",
-					cx, cy, xradius, yradius, start_angle, delta_angle);
+		cx, cy, xradius, yradius, start_angle, delta_angle);
 	delegatee_->draw_arc(gc, cx, cy, xradius, yradius, start_angle, delta_angle);
 }
 
-static void log_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2) {
+static void log_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
 	pcb_fprintf(out_, "draw_rect(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
 	delegatee_->draw_rect(gc, x1, y1, x2, y2);
 }
 
-static void log_fill_circle(pcb_hid_gc_t gc, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r) {
+static void log_fill_circle(pcb_hid_gc_t gc, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
+{
 	pcb_fprintf(out_, "fill_circle(gc, %mm, %mm, %mm)\n", x, y, r);
 	delegatee_->fill_circle(gc, x, y, r);
 }
 
-static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y) {
+static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
 	int i;
 	pcb_fprintf(out_, "fill_polygon(gc, %d", n_coords);
 	for (i = 0; i < n_coords; ++i) {
@@ -134,56 +155,66 @@ static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 	delegatee_->fill_polygon(gc, n_coords, x, y);
 }
 
-static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_box_t *clip_box) {
+static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_box_t *clip_box)
+{
 	pcb_fprintf(out_, "fill_pcb_polygon(gc, poly->PointN=%d, ...)\n", poly->PointN);
 	delegatee_->fill_pcb_polygon(gc, poly, clip_box);
 }
 
-static void log_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_box_t *clip_box) {
+static void log_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_box_t *clip_box)
+{
 	pcb_fprintf(out_, "thindraw_pcb_polygon(gc, poly->PointN=%d, ...)\n", poly->PointN);
 	delegatee_->thindraw_pcb_polygon(gc, poly, clip_box);
 }
 
-static void log_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask) {
+static void log_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask)
+{
 	pcb_fprintf(out_, "fill_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
-							pad->Name, clip ? "true" : "false", mask ? "true" : "false");
+		pad->Name, clip ? "true" : "false", mask ? "true" : "false");
 	delegatee_->fill_pcb_pad(gc, pad, clip, mask);
 }
 
-static void log_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask) {
+static void log_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask)
+{
 	pcb_fprintf(out_, "thindraw_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
-							pad->Name, clip ? "true" : "false", mask ? "true" : "false");
+		pad->Name, clip ? "true" : "false", mask ? "true" : "false");
 	delegatee_->thindraw_pcb_pad(gc, pad, clip, mask);
 }
 
-static void log_fill_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask) {
+static void log_fill_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask)
+{
 	pcb_fprintf(out_, "fill_pcb_pv(fg, bg, (%mm, %mm), draw_hole=%s, mask=%s)\n",
-							pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
+		pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
 	delegatee_->fill_pcb_pv(fg, bg, pv, drawHole, mask);
 }
 
-static void log_thindraw_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask) {
+static void log_thindraw_pcb_pv(pcb_hid_gc_t fg, pcb_hid_gc_t bg, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask)
+{
 	pcb_fprintf(out_, "thindraw_pcb_pv(fg, bg, (%mm, %mm), draw_hole=%s, mask=%s)\n",
-							pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
+		pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
 	delegatee_->thindraw_pcb_pv(fg, bg, pv, drawHole, mask);
 }
 
-static void log_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2) {
+static void log_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
 	pcb_fprintf(out_, "fill_rect(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
 	delegatee_->fill_rect(gc, x1, y1, x2, y2);
 }
 
-static void log_report_dialog(const char *title, const char *msg) {
+static void log_report_dialog(const char *title, const char *msg)
+{
 	pcb_fprintf(out_, "report_dialog(\"%s\", \"%s\")\n", title, msg);
 	delegatee_->report_dialog(title, msg);
 }
 
-static void log_beep() {
+static void log_beep()
+{
 	pcb_fprintf(out_, "beep();   BEEEP   .... BEEEEEEEP\n");
 	delegatee_->beep();
 }
 
-pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee) {
+pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee)
+{
 	out_ = log_out;
 	delegatee_ = delegatee;
 
