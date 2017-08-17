@@ -30,6 +30,39 @@
 - property editor
 	- currently, editor silently censors negative values input by user, i.e. for arc delta values
 
+- Eagle binary netlist load using contactref nodes
+	- packages are defined in
+		board/1b00->libraries/0000->library/1500->packages/1900->package/1e00
+	  and load properly
+	- elements are defined in
+		board/1b00->elements/0000->element/2e00->element2/2f00elements
+	  nodes and are postprocessed, and are loaded and placed properly by referencing
+	  the needed package with a libi/pkgi referencing pair
+	- netlist nodes are defined in
+		board/1b00->signals/0000->signal/1c00->contactref/3e00
+	  nodes which look like:
+	     	contactref/3e00 [pin="5" partnumber="14"]
+     		contactref/3e00 [pin="1" partnumber="24"]
+	  in which the "partnumber" is the j-th element placed on the board, apparently based
+	  on the order of the
+		elements->(element->element2) nodes 
+	- this contrasts with XML in which the nodes are defined using the element name:
+		<signal name="GREEN">
+		<contactref element="R2" pad="2"/>
+	- accordingly, the eagle bin code needs to count the 1...j elements as they are placed, and
+	  provide something like a
+		char * binary_element_name_by_placement_idx(long j)
+	  lookup function, to allow an attribute to be added during postprocessing of contactref
+	  nodes, to end up with a binary subtree like
+		contactref/3e00 [pin="1" partnumber="24" element="IC3"]
+	  which will ultimately map to XML
+		<contactref element="IC3" partnumber="24" pin="1" pad="1"/>
+	- the duplication or modification of the pin/pad attributes name does not really need
+	  postprocessing and is trivially done earlier with
+                        {"pin",  T_INT, 6, 2},
+                        {"pad",  T_INT, 6, 2},
+
+
 For the next release:
 - subc/term:
 	- term netlist connectivity r10843:
