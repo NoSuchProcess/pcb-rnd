@@ -446,9 +446,10 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	if (dirty) /* had to replace the filter text, make it effective */
 		attr_change_cb(&attrs[0]);
 
-	ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr);
-
-	sres = gen_cmd(entry->name, attrs, res, numattr, ctx.first_optional);
+	if (ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr) == 0)
+		sres = gen_cmd(entry->name, attrs, res, numattr, ctx.first_optional);
+	else
+		sres = NULL; /* cancel */
 
 	/* clean up */
 	for(n = 0; n < numattr; n++)
