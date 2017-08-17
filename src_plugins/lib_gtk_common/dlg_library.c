@@ -444,8 +444,11 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 		char *orig = pcb_strdup(in_para);
 		name = pcb_gtk_library_param_ui(library_window, entry, in_para, lib_param_chg);
 		lib_param_del_timer(library_window);
-		if (name == NULL)
+		if (name == NULL) {
 			gtk_entry_set_text(library_window->entry_filter, orig);
+			g_source_remove(library_window->filter_timeout); /* block the above edit from collapsing the tree */
+			gtk_tree_model_filter_refilter((GtkTreeModelFilter *) model);
+		}
 		else
 			gtk_entry_set_text(library_window->entry_filter, name);
 		free(orig);
