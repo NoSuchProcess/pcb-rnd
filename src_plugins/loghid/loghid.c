@@ -37,6 +37,9 @@
 
 static const char *loghid_cookie = "loghid plugin";
 
+static pcb_hid_t loghid_gui;
+static pcb_hid_t loghid_exp;
+
 pcb_hid_attribute_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
@@ -46,7 +49,7 @@ pcb_hid_attribute_t loghid_attribute_list[] = {
 
 static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 {
-	pcb_hid_t *target;
+	pcb_hid_t *target, *me;
 	const char *target_name;
 
 	pcb_hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
@@ -54,14 +57,17 @@ static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str_value;
 
-	if (is_gui)
+	if (is_gui) {
 		target = pcb_hid_find_gui(target_name);
-	else
+		me = &loghid_gui;
+	}
+	else {
 		target = pcb_hid_find_exporter(target_name);
+		me = &loghid_exp;
+	}
 
-#warning TODO:
-	fprintf(stderr, "Initialize for delegatee: '%s' -> %p\n", target_name, (void *)target);
-	exit(1); /* to avoid a segfault due to uninitialized hid fields now */
+	create_log_hid(stdout, me, target);
+	target->parse_arguments(argc, argv);
 }
 
 static void loghid_parse_arguments_gui(int *argc, char ***argv)
@@ -106,8 +112,6 @@ void pplg_uninit_loghid(void)
 {
 }
 
-static pcb_hid_t loghid_gui;
-static pcb_hid_t loghid_exp;
 
 int pplg_init_loghid(void)
 {
