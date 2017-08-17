@@ -13,7 +13,7 @@ following arguments:
 int Type, void *Ptr1, void *Ptr2, void *Ptr3
 </pre>
 <p>
-or save data in structs or local variabls with the same types/names.
+or save data in structs or local variables with the same types/names.
 <p>
 This mail, that later will be converted to a devlog, gives an explanation 
 on what it is, when it happened, why I think it is a bad idea and how it 
@@ -67,7 +67,7 @@ without having to wait for it to bite us runtime.^1
 <p>
 A void * is a way to tell the compiler not to care. Since many of those 
 functions need to be able to handle different object types, the original 
-authors though it would be a good idea to tell the compierl not to care 
+authors though it would be a good idea to tell the compiler not to care 
 about the object type at all. The code then looks at the "int Type" arg 
 and _assumes_ ptr1's and ptr2's type, knowing the rigid setup of the 
 tree...
@@ -88,13 +88,13 @@ Reason #4: the combination of the above 3: when it breaks, it's a
 nightmare to figure how it broke. Some reasonable looking part of the code 
 starts doing something with a pin that looks broken. But tracing back 
 where the pin broke is often a challenge, as we never know if a given 
-level of function calls (stack frame) ment it to be a pin or an arc, or 
+level of function calls (stack frame) meant it to be a pin or an arc, or 
 thought that ptr2 is just unused while the callee expected it to be 
 used...
 <p>
 Reason #5: since these assumptions about the tree are hardwired 
 everywhere, it's rather hard to make upgrades to the tree (like the 
-groupping concept subcircuits introduced in pcb-rnd, or just adding yet 
+grouping concept subcircuits introduced in pcb-rnd, or just adding yet 
 another object type). It's especially too easy to miss a new 
 possible combination of ptr1/ptr2 in one of those many calls. For a long 
 time this was one of the main reasons I didn't start the data model 
@@ -126,7 +126,7 @@ means "we had this all the time".
 <h3>4. How it is being solved in pcb-rnd</h3>
 <p>
 Both in pcb and pcb-rnd there's a common header every object struct has. 
-It contains things like the uniqueu ID of the object.
+It contains things like the unique ID of the object.
 <p>
 This common header is extended in pcb-rnd so that it contains the object 
 type and a pointer to the object's parent object. A master-object type is 
@@ -138,7 +138,7 @@ self-contained pcb_any_obj_t and the callee can figure what actual object
 it is and who the parent is.
 <p>
 It's still far from true type safety^3, but at least it's much harder to 
-pass non-object pointers and it's impossible to pass incosistent data 
+pass non-object pointers and it's impossible to pass inconsistent data 
 (Type or Ptr1 not matching Ptr2). It also lets the debugger and the 
 compiler understand what we are doing.
 <p>
