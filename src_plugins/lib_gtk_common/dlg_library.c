@@ -441,13 +441,14 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 
 	if ((entry->type == LIB_FOOTPRINT) && (entry->data.fp.type == PCB_FP_PARAMETRIC)) {
 		const char *in_para = gtk_entry_get_text(library_window->entry_filter);
+		char *orig = pcb_strdup(in_para);
 		name = pcb_gtk_library_param_ui(library_window, entry, in_para, lib_param_chg);
 		lib_param_del_timer(library_window);
-		if (name == NULL) {
-#warning TODO: refresh the display with empty - also for the above returns!
-			return;
-		}
-		gtk_entry_set_text(library_window->entry_filter, name);
+		if (name == NULL)
+			gtk_entry_set_text(library_window->entry_filter, orig);
+		else
+			gtk_entry_set_text(library_window->entry_filter, name);
+		free(orig);
 	}
 	library_window_preview_refresh(library_window, name, entry);
 	free(name);
