@@ -1,0 +1,161 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> The Type/ptr1/ptr2/ptr3 construction and void * </h2>
+
+<p>
+If you ever dared to dive the code of pcb or pcb-rnd, you probably 
+remember a strange construct: many of the function calls take the 
+following arguments:
+
+<pre>
+int Type, void *Ptr1, void *Ptr2, void *Ptr3
+</pre>
+<p>
+or save data in structs or local variabls with the same types/names.
+<p>
+This mail, that later will be converted to a devlog, gives an explanation 
+on what it is, when it happened, why I think it is a bad idea and how it 
+is being fixed in pcb-rnd.
+
+<h3> 1. What it is </H3>
+<p>
+The data model of pcb is a tree, but it is very rigid and restricted. A 
+line is always on a layer, a pin is always in an element. A layer and an 
+element is always in a buffer (e.g. board). The structure of the tree is 
+not just a convention: it's hardwired in every piece of the code. E.g. if 
+you have a line, the code knows/assumes the parent must be a layer, it 
+can't be anything else.
+<p>
+Thus there is "no need for objects to remember their own type or their 
+place in the tree, e.g. remembering their parent".
+<p>
+Instead all searches are done from up to down, e.g. if we are looking for 
+pins, we start from buffer (board) level and we are first iterating over 
+elements and then pins within elements. By the time we find a pin, we have 
+3 info at hand, in local variables:
+<ul>
+<li> the fact that the object we found is a PIN (this is going to be int 
+Type)
+
+<li> the element the pin lives in (this is going to be void *Ptr1)
+
+<li> the pin itself (this is going to be void *Ptr2)
+</ul>
+<p>
+If we are to pass the pin to the next function, we need to pass these 
+info, thus we pass Type, Ptr1, Ptr2 ... and Ptr3.
+<p>
+Ptr3 is unused most of the time; when it is not unused, it's often a 
+"property" or child (in the tree) of Ptr2; e.g. when addressing an 
+endpoint of a line, Ptr2 is the line and Ptr3 refers to the endpoint.
+<p>
+To maximize confusion, when Ptr3 is unused, it's value usually matches 
+Ptr2's and when only one pointer is needed (e.g. in case of an element) 
+all 3 pointers are the same.
+
+<h3>2. Why is it really a bad idea</h3>
+<p>
+Reason #1: theoretical: one of the features C provides over e.g. asm is 
+types: the compiler can understand a bit more about why we do what we do. 
+We have a dedicated type to store the data of a pin, another for line and 
+a third for element. If we accidentally compare a line to a pin or we try 
+to say something like element = pad, because of the mismatching types, the 
+compiler can give a nice warning and we know we did something wrong, 
+without having to wait for it to bite us runtime.^1
+<p>
+A void * is a way to tell the compiler not to care. Since many of those 
+functions need to be able to handle different object types, the original 
+authors though it would be a good idea to tell the compierl not to care 
+about the object type at all. The code then looks at the "int Type" arg 
+and _assumes_ ptr1's and ptr2's type, knowing the rigid setup of the 
+tree...
+<p>
+Reason #2: ... which makes it very very easy to introduce bugs: both the 
+caller and the callee need to have the very same assumptions in every 
+single call/function pair. Pass the wrong object in any pointer and the 
+software starts to misbehave in unexpected ways. There are over 40 
+such type/ptr1/ptr2/ptr3 functions in pcb 4.0.0. The assumptions are not 
+very well documented either.
+<p>
+Reason #3: debugging; modern debuggers like gdb are very handy: they 
+understand a lot of the C syntax and get enough debug info embedded in the 
+executable that they can explore structures and understand data types. 
+Unless we tell them to not do any of that, by using void *.
+<p>
+Reason #4: the combination of the above 3: when it breaks, it's a 
+nightmare to figure how it broke. Some reasonable looking part of the code 
+starts doing something with a pin that looks broken. But tracing back 
+where the pin broke is often a challenge, as we never know if a given 
+level of function calls (stack frame) ment it to be a pin or an arc, or 
+thought that ptr2 is just unused while the callee expected it to be 
+used...
+<p>
+Reason #5: since these assumptions about the tree are hardwired 
+everywhere, it's rather hard to make upgrades to the tree (like the 
+groupping concept subcircuits introduced in pcb-rnd, or just adding yet 
+another object type). It's especially too easy to miss a new 
+possible combination of ptr1/ptr2 in one of those many calls. For a long 
+time this was one of the main reasons I didn't start the data model 
+cleanup in pcb-rnd.
+<p>
+Reason #6: if you have a totally valid pointer to an object you obtained 
+by anything else than a top-down search on the tree, you can't call the 
+functions, because you have no idea what Ptr1 (the parent) should be. The 
+workaround is:
+<ul>
+<li> either to not obtain (save, store, pass) objects without 
+always starting with a top-down search first
+
+<li> or if you ended up with an object like that, just try to repeat a 
+top-down search for that specific object only to figure Ptr1
+</ul>
+<p>
+Needless to say, both workarounds are slow (run-time penalty) and make the 
+code needlessly complicated and somewhat harder to understand 
+(coding-time penalty).
+
+<h3> 3. History: when did this happen? </h3>
+<p>
+The earliest pcb version I found in pcb-history^2 that already showed 
+consistent use of this idiom is version 1.3. That means 1995. So this 
+means "we had this all the time".
+
+
+<h3>4. How it is being solved in pcb-rnd</h3>
+<p>
+Both in pcb and pcb-rnd there's a common header every object struct has. 
+It contains things like the uniqueu ID of the object.
+<p>
+This common header is extended in pcb-rnd so that it contains the object 
+type and a pointer to the object's parent object. A master-object type is 
+introduced, called pcb_any_obj_t - this contains only the header and can 
+represent any actual object.
+<p>
+This means instead of Type/Ptr1/Ptr2, it is enough to pass a single, 
+self-contained pcb_any_obj_t and the callee can figure what actual object 
+it is and who the parent is.
+<p>
+It's still far from true type safety^3, but at least it's much harder to 
+pass non-object pointers and it's impossible to pass incosistent data 
+(Type or Ptr1 not matching Ptr2). It also lets the debugger and the 
+compiler understand what we are doing.
+<p>
+We are in the early phase of this effort, and we are switching over the 
+code gradually. The first major part where Ptr1/Ptr2/Ptr3 started to 
+disappear is the netlist/rat (pin/pad lookup) code.
+
+<H3>Footnotes</h3>
+<p>
+^1: C is not strongly typed, so this mechanism saves us from runtime bugs 
+only to a certain extent. However, proper use of types and const can 
+really catch a lot of bugs compile time.
+<p>
+^2: http://repo.hu/projects/pcb-history/
+<p>
+^3: please DO NOT propose switching to C++ or sql or whatever your 
+favorite programming language is: pcb-rnd won't do that. If you want a 
+project that uses that language/tool, just fork pcb or pcb-rnd and do it.
+
+
