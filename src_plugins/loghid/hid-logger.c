@@ -45,15 +45,15 @@ static void log_invalidate_all(void)
 	delegatee_->invalidate_all();
 }
 
-static void log_pcb_notify_mark_change(pcb_bool changes_complete)
+static void log_notify_mark_change(pcb_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
-	delegatee_->pcb_notify_mark_change(changes_complete);
+	delegatee_->notify_mark_change(changes_complete);
 }
 
 static int log_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	pcb_fprintf(out_, "set_layer(group=%ld, layer=%ld, flags=%lx, empty=%s", group, layer, flags, empty ? "true" : "false");
+	pcb_fprintf(out_, "set_layer(group=%ld, layer=%ld, flags=%lx, empty=%s", group, layer, flags, is_empty ? "true" : "false");
 	return delegatee_->set_layer_group(group, layer, flags, is_empty);
 }
 
