@@ -222,7 +222,7 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	 * replace the functions we want to log.
 	 * We only log 'interesting' functions for now.
 	 */
-/*	logging_hid_ = *delegatee;*/
+	*loghid = *delegatee;
 
 #define REGISTER_IF_NOT_NULL(fun) loghid->fun = delegatee->fun ? log_##fun : NULL
 	REGISTER_IF_NOT_NULL(get_export_options);
