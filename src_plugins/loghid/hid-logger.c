@@ -11,7 +11,6 @@
  * Just having one instance for now. Keeping it
  * local is fine.
  */
-static pcb_hid_t logging_hid_;
 static pcb_hid_t *delegatee_ = NULL;
 static FILE *out_ = NULL;
 
@@ -213,7 +212,7 @@ static void log_beep()
 	delegatee_->beep();
 }
 
-pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee)
+void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 {
 	out_ = log_out;
 	delegatee_ = delegatee;
@@ -223,9 +222,9 @@ pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee)
 	 * replace the functions we want to log.
 	 * We only log 'interesting' functions for now.
 	 */
-	logging_hid_ = *delegatee;
+/*	logging_hid_ = *delegatee;*/
 
-#define REGISTER_IF_NOT_NULL(fun) logging_hid_.fun = delegatee->fun ? log_##fun : NULL
+#define REGISTER_IF_NOT_NULL(fun) loghid->fun = delegatee->fun ? log_##fun : NULL
 	REGISTER_IF_NOT_NULL(get_export_options);
 	REGISTER_IF_NOT_NULL(do_exit);
 	REGISTER_IF_NOT_NULL(parse_arguments);
@@ -258,6 +257,4 @@ pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(beep);
 
 #undef REGISTER_IF_NOT_NULL
-
-	return &logging_hid_;
 }
