@@ -129,7 +129,6 @@ LATER RELEASES:
 	- lesstif needs to remember the widgets via lb->w in menu.c
 	- rewrite the central code for callbacks?
 - inconsistencies in UI/terminology:
-	- similar thing on hole size [report: miloh]
 	+ report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
 - io_pcb: new, optional "layer tag" field in mainline's file format
 - extend the DRC window to be a generic location list
