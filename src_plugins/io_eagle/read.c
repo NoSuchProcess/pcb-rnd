@@ -739,6 +739,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	const char *name, *rot;
 	int deg = 0;
+	long roundness = 0;
 
 	assert(type == IN_ELEM);
 
@@ -752,6 +753,8 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	deg = eagle_rot2degrees(rot);
+
+	roundness = eagle_get_attrl(st, subtree, "roundness", 0);
 
 #warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
 
@@ -809,6 +812,9 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	}
 
 	pcb_trace("%mm %mm -> %mm %mm\n", x, y, dx, dy);
+
+	if (roundness != 0) /* round smd pads found in fiducials mostly, it seems */
+		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, pad);
 
 	if (ln == 16)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, pad);
