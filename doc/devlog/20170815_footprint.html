@@ -4,15 +4,27 @@
 
 <h2> Why is it called subcircuit and not footprint? </h2>
 <p><font size=-2>by Igor2</font></p>
+
 <p>
-This article tries to explain why new term "subcircuit" is introduced
-instead of calling it "footprint2", "footprint+", "new footprints" or
-"pcb-rnd footprints".
+This article tries to explain the existing PCB terminology for
+<i>elements</i>, <i>footprints</i> and the new term <i>subcircuit</i> in
+pcb-rnd. This article also reveals why new term "subcircuit" is
+introduced instead of calling it "footprint2", "footprint+", "new
+footprints" or "pcb-rnd footprints".
+
+<p>
+Quiting the original suggestion from Peter Stuge:
+<pre>
+I only write to ask that you consider calling subcircuits "footprint+",
+"new footprint", "pcb-rnd footprint" or somesuch. What exactly the name
+is is not so important, but since all future footprints will be subcircuits
+I think it *is* important to maintain the existing terminology.
+</pre>
 
 <h3> Current situation: element vs. footprint </H3>
 <p>
 The good thing is that there are two terms in parallel, even in pcb. This 
-terminology is in pcb since the late 90s.
+terminlogy is in pcb since the late 90s.
 <p>
 On the user-level, they are called <i>element</i> and <i>footprint</i>. A footprint is 
 the generic implementation you store in your library, an element is a 
@@ -50,7 +62,7 @@ an element within another board (in whatever format, e.g. kicad or eagle).
 
 <h3>How does subcircuit affect this?</h3>
 <p>
-On both the user and code level subcircuit is an _element_ replacement. So 
+On both the user and code level subcircuit is an <b>element</b> replacement. So 
 it doesn't affect the footprint concept at all.
 <p>
 User level: a subcircuit that lives in your local disk library, on 
@@ -68,8 +80,8 @@ few months when they run in parallel. Since all new code calls itself
 <p>
 What is a footprint for pcb, is a footprint for pcb-rnd and 
 subcircuits are footprints and there's zero change on that side. What's an 
-element for pcb will be a subcircuit for pcb-rnd. Renaming that to 
-footprint+ or element+ would make more confusion than using a different 
+element for pcb will be a subcricuit for pcb-rnd. Renaming that to 
+footprint+ or element+ would make more confusion than usign a different 
 name, like subcircuit. I also plan to support hierarchical pcbs, where 
 subcircuit will be a level of hierarchy, so that would cause more 
 confusion if they were called footprints.
