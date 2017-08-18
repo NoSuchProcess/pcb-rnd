@@ -976,12 +976,12 @@ static pcb_r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
 		if ((rat->group1 == i->layer)
-				&& IsRatPointOnLineEnd(&rat->Point1, &i->line)) {
+				&& IsRatPointOnLineSpec(&rat->Point1, &i->line)) {
 			if (ADD_RAT_TO_LIST(rat, PCB_TYPE_LINE, &i->line, PCB_FCT_RAT))
 				longjmp(i->env, 1);
 		}
 		else if ((rat->group2 == i->layer)
-						 && IsRatPointOnLineEnd(&rat->Point2, &i->line)) {
+						 && IsRatPointOnLineSpec(&rat->Point2, &i->line)) {
 			if (ADD_RAT_TO_LIST(rat, PCB_TYPE_LINE, &i->line, PCB_FCT_RAT))
 				longjmp(i->env, 1);
 		}

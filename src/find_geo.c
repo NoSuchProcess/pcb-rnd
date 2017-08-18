@@ -231,11 +231,20 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point
  */
-static pcb_bool IsRatPointOnLineEnd(pcb_point_t *Point, pcb_line_t *Line)
+static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
 {
+	pcb_coord_t cx, cy;
+
+	/* either end */
 	if ((Point->X == Line->Point1.X && Point->Y == Line->Point1.Y)
 			|| (Point->X == Line->Point2.X && Point->Y == Line->Point2.Y))
 		return (pcb_true);
+
+	/* middle point */
+	pcb_obj_center(Line, &cx, &cy);
+	if ((Point->X == cx) && (Point->Y == cy))
+		return pcb_true;
+
 	return (pcb_false);
 }
 

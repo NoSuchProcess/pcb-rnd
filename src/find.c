@@ -161,7 +161,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *, pcb_cardinal_t);
-static pcb_bool IsRatPointOnLineEnd(pcb_point_t *, pcb_line_t *);
+static pcb_bool IsRatPointOnLineSpec(pcb_point_t *, pcb_line_t *);
 static pcb_bool ArcArcIntersect(pcb_arc_t *, pcb_arc_t *);
 static pcb_bool PrintElementConnections(pcb_element_t *, FILE *, pcb_bool);
 static pcb_bool ListsEmpty(pcb_bool);
