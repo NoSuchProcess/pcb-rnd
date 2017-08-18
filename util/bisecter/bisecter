@@ -134,6 +134,17 @@ cache_get()
 	fi
 }
 
-cache_get $1
+run()
+{
+	local rev=$1 exebn
 
+	shift 1
+	exebn=`basename $exe`
+
+	cache_get $rev
+	./$exebn.$rev "$@"
+	rm $exebn.$rev
+}
+
+run 9950 "$@"
 
