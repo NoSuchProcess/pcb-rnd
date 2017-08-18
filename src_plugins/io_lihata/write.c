@@ -65,7 +65,7 @@ do { \
 static lht_node_t *dummy_node(const char *name)
 {
 	lht_node_t *n;
-	n = lht_dom_node_alloc(LHT_TEXT, "attributes");
+	n = lht_dom_node_alloc(LHT_TEXT, name);
 	n->type = LHT_INVALID_TYPE;
 	return n;
 }
