@@ -115,6 +115,25 @@ cache_build()
 	fi
 }
 
-cache_build $1 1
+cache_get()
+{
+	local rev=$1 exebn
+
+	exebn=`basename $exe`
+
+	if test -f "$cache/$exebn.$rev$cache_compsuffix"
+	then
+		echo "Retrieving $exebn.$rev from cache..."
+		cp $cache/$exebn.$rev$cache_compsuffix .
+		if test ! -z "$cache_decompress"
+		then
+			$cache_decompress "$exebn.$rev$cache_compsuffix"
+		fi
+	else
+		cache_build $rev 1
+	fi
+}
+
+cache_get $1
 
 

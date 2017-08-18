@@ -13,6 +13,9 @@ cache_compress="xz -9"
 # how to decompress executables for the cache
 cache_decompress="xz -d"
 
+# suffix the compressor appends
+cache_compsuffix=".xz"
+
 # url to use
 url=svn://repo.hu/pcb-rnd/trunk
 
