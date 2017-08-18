@@ -153,18 +153,32 @@ help()
 {
 	echo "bisecter - support bisecting by cached executables"
 	echo ""
-	echo "Usage: TODO"
+	echo "Usage: ./bisecter command [args]"
+	echo "Commands:"
+	echo "  build rev       force check out and build rev"
+	echo "  get rev         get the executable of rev in CWD (build if needed)"
+	echo "  co rev          safely check out rev in tmp, but do not compile"
+	echo "  run rev [args]  get rev and run it with args"
+	echo "  help            this help screen"
+	echo ""
 }
 
 cmd="$1"
+if test -z "$cmd"
+then
+	help
+	exit 1
+fi
+
 shift 1
+
 case "$cmd"
 in
 	build) cache_build "$@" ;;
 	get) cache_get "$@" ;;
 	co|checkout) svn_co "$@" && echo "checked out to $tmp/$rev/$1" ;;
 	run) run "$@" ;;
-	help) help ;;
+	*) help ;;
 esac
 
 
