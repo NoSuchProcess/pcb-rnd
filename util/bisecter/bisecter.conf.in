@@ -1,0 +1,21 @@
+# where to do test compilations
+tmp=/tmp/bisecter
+
+# where to cache executables
+cache=./cache
+
+# command to use for stripping executables for the cache
+cache_strip=strip
+
+# how to compress executables for the cache
+cache_compress="xz -9"
+
+# how to uncompress executables for the cache
+cache_compress="xz -d"
+
+# url to use
+url=svn://repo.hu/pcb-rnd/trunk
+
+# ./configure options
+confopts="--debug --all=buildin"
+

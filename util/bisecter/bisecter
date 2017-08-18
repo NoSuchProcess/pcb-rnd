@@ -1,0 +1,65 @@
+#!/bin/sh
+
+if test -z "$CONF"
+then
+	CONF="./bisecter.conf"
+fi
+
+if test ! -f "$CONF"
+then
+	echo "Can't find the config file $CONF; please copy bisect.conf.in to $CONF and edit" >&2
+	exit 1
+fi
+
+	. $CONF
+
+svn_list_externs()
+{
+	svn --xml stat "$1" | awk '
+		BEGIN { q="\"" }
+		function strip(s) {
+			sub("^[^=]*=" q, "", s)
+			sub(q ".*$", "", s)
+			return s
+		}
+		/[<]entry/ { state=1 }
+		(state == 1) && /path=\"/ { path=strip($0) }
+		(state == 1) && /wc-status/ { state = 2 }
+		(state == 2) && /item=\"/ { item=strip($0) }
+		/[<]\/entry/ {
+			if ((item == "external") && (path != ""))
+				print path
+			item=""
+			path=""
+			state = 0
+		}
+	'
+}
+
+svn_get_date()
+{
+	svn info "$1" | awk '
+		/Last Changed Date:/ {
+			print $4, $5
+		}
+	'
+}
+
+svn_co()
+{
+	local rev=$1 dt e
+	svn checkout $url@$rev "$tmp/$rev"
+	dt=`svn_get_date "$tmp/$rev"`
+	for e in `svn_list_externs "$tmp/$rev"`
+	do
+		svn up $e -r "{$dt}"
+	done
+}
+
+svn_cleanup()
+{
+	local rev=$1
+	rm -rf "$tmp/$rev"
+}
+
+svn_co 10000
