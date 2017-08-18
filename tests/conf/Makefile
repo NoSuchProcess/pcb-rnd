@@ -40,6 +40,13 @@ LIB_3RD_OBJS= \
 	../../src_3rd/genvector/gds_char.o \
 	../../src_3rd/genvector/vtp0.o
 
+DEPH = \
+	../../src/conf.h \
+	../../src/conf_hid.h \
+	../../src/conf_core.h \
+	../../src/compat_misc.h \
+	../../src_plugins/diag/diag_conf.h \
+
 OBJS = conftest.o help.o
 
 all: conftest
@@ -50,7 +57,8 @@ include $(ROOT)/Makefile.conf
 conftest: $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS) $(LDLIBS) -o conftest
 
-conftest.o: conftest.c
+conftest.o: conftest.c $(DEPH)
+	$(CC) $(CFLAGS) -c conftest.c -o conftest.o
 
 help.o: help.c
 
