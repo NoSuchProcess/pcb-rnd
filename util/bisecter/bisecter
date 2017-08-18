@@ -234,6 +234,43 @@ bisect()
 	'
 }
 
+near()
+{
+	local rev=$1 exebn
+	exebn=`basename $exe`
+	ls $cache/$exebn.* | gawk -v "front=$cache/$exebn." -v "rev=$rev" '
+	BEGIN {
+		fl=length(front)
+		rev=int(rev)
+	}
+	{
+		r = substr($0, fl+1)
+		sub("[.].*$", "", r)
+		r = int(r)
+		print r
+	}
+	' | sort -n | gawk -v "rev=$rev" '
+	{
+		r=$0
+		if (r == rev) {
+			print r
+			found = 1
+			exit
+		}
+		if (r > rev) {
+			print last, r
+			found = 1
+			exit
+		}
+		last = r
+	}
+	END {
+		if (!found)
+			print last
+	}
+	'
+}
+
 help()
 {
 	echo "bisecter - support bisecting by cached executables"
@@ -264,6 +301,7 @@ in
 	co|checkout) svn_co "$@" && echo "checked out to $tmp/$rev/$1" ;;
 	run) run "$@" ;;
 	bisect) bisect "$@" ;;
+	near) near "$@" ;;
 	*) help ;;
 esac
 
