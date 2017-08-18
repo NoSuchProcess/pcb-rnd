@@ -197,6 +197,8 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	pcb_connection_t LastPoint;
 	pcb_net_t *net;
 	static pcb_netlist_t *Wantlist = NULL;
+	vtp0_t visited;
+	size_t n;
 
 	if (!net_menu->MenuN)
 		return (NULL);
@@ -208,6 +210,8 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	Sgrp = Cgrp = -1;
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
+
+	vtp0_init(&visited);
 
 	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
@@ -254,6 +258,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 						/* mark as visited */
 						PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
 						LastPoint.obj->ratconn = (void *)menu;
+						vtp0_append(&visited, LastPoint.obj);
 					}
 				}
 				else
@@ -267,23 +272,18 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 					/* mark as visited */
 					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
 					LastPoint.obj->ratconn = (void *)menu;
+					vtp0_append(&visited, LastPoint.obj);
 				}
 			}
 			PCB_END_LOOP;
 		}
 		PCB_END_LOOP;
 	}
+
 	/* clear all visit marks */
-	PCB_PIN_ALL_LOOP(PCB->Data);
-	{
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
-	}
-	PCB_ENDALL_LOOP;
-	PCB_PAD_ALL_LOOP(PCB->Data);
-	{
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
-	}
-	PCB_ENDALL_LOOP;
+	for(n = 0; n < visited.used; n++)
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_any_obj_t *)visited.array[n]);
+	vtp0_uninit(&visited);
 	return (Wantlist);
 }
 
