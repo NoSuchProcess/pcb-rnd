@@ -281,6 +281,8 @@ help()
 	echo "  get rev         get the executable of rev in CWD (build if needed)"
 	echo "  co rev          safely check out rev in tmp, but do not compile"
 	echo "  run rev [args]  get rev and run it with args"
+	echo "  near rev        print revisions present in the cache that are close to rev"
+	echo "  bisect [st end] bisect suggestions, optionally between revisions st and end"
 	echo "  help            this help screen"
 	echo ""
 }
