@@ -154,3 +154,17 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 	if (strcmp(name, "term") == 0)
 		obj->term = value;
 }
+
+const char *pcb_obj_id_invalid(const char *id)
+{
+	const char *s;
+	for(s = id; *s != '\0'; s++) {
+		if (isalnum(*s))
+			continue;
+		switch(*s) {
+			case '_': case '.': case '$': case ':': continue;
+		}
+		return s;
+	}
+	return NULL;
+}

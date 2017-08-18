@@ -161,6 +161,9 @@ void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y);
 /* Update cached attributes (->term) */
 void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value);
 
+/* Returns the first invalid character of an ID (terminal, refdes) or NULL */
+const char *pcb_obj_id_invalid(const char *id);
+
 /* compare two fields and return 0 if they are equal */
 #define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 
