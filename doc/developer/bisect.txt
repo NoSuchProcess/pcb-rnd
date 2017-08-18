@@ -53,7 +53,8 @@ or "rev bad", e.g. "8663 good" or "8110 bad".
 
 List the executables available in your cache dir. Especially early in the
 bisecting process, rather find an existing cached rev to test instead of
-a new one - this will speed up the process.
+a new one - this will speed up the process. You can use "./bisecter near rev"
+to find cached revisions near rev.
 
 Not all revisions can be compiled - there are a few that are broken. When
 you find a broken one, try the previous or next revision until you find
