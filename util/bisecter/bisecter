@@ -13,6 +13,11 @@ fi
 
 	. $CONF
 
+wlog()
+{
+	echo "$*"
+}
+
 svn_list_externs()
 {
 	svn --xml stat "$1" | awk '
@@ -62,4 +67,24 @@ svn_cleanup()
 	rm -rf "$tmp/$rev"
 }
 
-svn_co 10000
+cache_build()
+{
+	local rev=$1 redir=">>log.$1 2>&1" exebn
+
+	(echo -n "#########################################"; date) >> log.$1
+
+	wlog "Checkout r$1"
+	eval "svn_co $rev $redir"
+
+	wlog "Compile r$1"
+	eval "(cd $tmp/$rev && ./configure $confopts && make) $redir"
+
+	wlog "Cache r$1"
+	exebn=`basename $exe`
+	cp $tmp/$rev/$exe ./$exebn.$rev
+
+	wlog "Cleanup r$1"
+	eval svn_cleanup $rev $redir
+}
+
+cache_build 7000

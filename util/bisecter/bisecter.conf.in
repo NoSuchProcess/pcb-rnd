@@ -16,6 +16,10 @@ cache_compress="xz -d"
 # url to use
 url=svn://repo.hu/pcb-rnd/trunk
 
+# relative path of the executabe from url
+exe=src/pcb-rnd
+
+
 # ./configure options
 confopts="--debug --all=buildin"
 
