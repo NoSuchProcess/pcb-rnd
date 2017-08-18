@@ -77,5 +77,8 @@ pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname);
 /* Rename an object's ->term field in an undoable way */
 pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *new_name);
 
+/* Look up subc_name/term_name and put the result in conn. Returns true if found */
+pcb_bool pcb_term_find_name(const char *subc_name, const char *term_name, pcb_connection_t *conn, pcb_bool same);
+
 
 #endif

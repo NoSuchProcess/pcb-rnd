@@ -255,3 +255,9 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 	pcb_undo_inc_serial();
 	return PCB_TERM_ERR_SUCCESS;
 }
+
+pcb_bool pcb_term_find_name(const char *subc_name, const char *term_name, pcb_connection_t *conn, pcb_bool same)
+{
+	return pcb_false;
+}
+

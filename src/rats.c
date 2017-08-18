@@ -103,12 +103,17 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
  * Find a particular terminal from an element/subc name and pin/pad/terminal number
  */
 #warning term TODO: once pins and pads are gone, move this to obj_term.c
-static pcb_bool pcb_term_find_name(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
+static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
 {
 	pcb_element_t *element;
 	gdl_iterator_t it;
 	pcb_pad_t *pad;
 	pcb_pin_t *pin;
+
+	/* first check for subcircuits; this is the only one thing we'll need to do
+	   once elements are removed */
+	if (pcb_term_find_name(ElementName, PinNum, conn, Same))
+		return pcb_true;
 
 	if ((element = pcb_search_elem_by_name(PCB->Data, ElementName)) == NULL)
 		return pcb_false;
@@ -163,7 +168,7 @@ pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_
 		badnet = pcb_true;
 	}
 	else {
-		if (pcb_term_find_name(ElementName, PinNum, conn, Same))
+		if (pcb_term_find_name_ppt(ElementName, PinNum, conn, Same))
 			return (pcb_true);
 		if (Same)
 			return (pcb_false);
