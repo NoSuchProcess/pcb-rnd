@@ -36,23 +36,23 @@ const char *pcb_board_get_name(void)
 }
 
 
-void watch_pre(conf_native_t *cfg)
+void watch_pre(conf_native_t *cfg, int idx)
 {
 	printf("watch_pre:  '%s' old value\n", cfg->hash_path);
 }
 
-void watch_post(conf_native_t *cfg)
+void watch_post(conf_native_t *cfg, int idx)
 {
 	printf("watch_post: '%s' new value\n", cfg->hash_path);
 }
 
-void notify_pre(conf_native_t *cfg)
+void notify_pre(conf_native_t *cfg, int idx)
 {
 	if (global_notify)
 		printf("notify_pre:  '%s' old value\n", cfg->hash_path);
 }
 
-void notify_post(conf_native_t *cfg)
+void notify_post(conf_native_t *cfg, int idx)
 {
 	if (global_notify)
 		printf("notify_post: '%s' new value\n", cfg->hash_path);
@@ -140,7 +140,7 @@ void cmd_load(char *arg, int is_text)
 		return;
 	}
 	printf("Result: %d\n", conf_load_as(role, fn, is_text));
-	conf_update(NULL);
+	conf_update(NULL, -1);
 }
 
 conf_policy_t current_policy = POL_OVERWRITE;
@@ -184,7 +184,7 @@ void cmd_chprio(char *arg)
 		sprintf(tmp, "%s-%d", first->name, np);
 		free(first->name);
 		first->name = pcb_strdup(tmp);
-		conf_update(NULL);
+		conf_update(NULL, -1);
 	}
 }
 
@@ -217,7 +217,7 @@ void cmd_chpolicy(char *arg)
 			free(first->name);
 			first->name = pcb_strdup(arg);
 		}
-		conf_update(NULL);
+		conf_update(NULL, -1);
 	}
 }
 
@@ -286,7 +286,7 @@ void cmd_reset(char *arg)
 		}
 		conf_reset(role, "<cmd_reset role>");
 	}
-	conf_update(NULL);
+	conf_update(NULL, -1);
 }
 
 extern void cmd_help(char *arg);
