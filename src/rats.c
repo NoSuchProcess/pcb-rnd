@@ -213,13 +213,13 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	if (Wantlist) {
 		PCB_PIN_ALL_LOOP(PCB->Data);
 		{
-			pin->Spare = NULL;
+			pin->ratconn = NULL;
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
 		}
 		PCB_ENDALL_LOOP;
 		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
-			pad->Spare = NULL;
+			pad->ratconn = NULL;
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
 		}
 		PCB_ENDALL_LOOP;
@@ -254,9 +254,9 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 						/* mark as visited */
 						PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
 						if (LastPoint.obj->type == PCB_OBJ_PIN)
-							((pcb_pin_t *) LastPoint.obj)->Spare = (void *) menu;
+							((pcb_pin_t *) LastPoint.obj)->ratconn = (void *) menu;
 						else
-							((pcb_pad_t *) LastPoint.obj)->Spare = (void *) menu;
+							((pcb_pad_t *) LastPoint.obj)->ratconn = (void *) menu;
 					}
 				}
 				else
@@ -270,9 +270,9 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 					/* mark as visited */
 					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
 					if (LastPoint.obj->type == PCB_OBJ_PIN)
-						((pcb_pin_t *) LastPoint.obj)->Spare = (void *) menu;
+						((pcb_pin_t *) LastPoint.obj)->ratconn = (void *) menu;
 					else
-						((pcb_pad_t *) LastPoint.obj)->Spare = (void *) menu;
+						((pcb_pad_t *) LastPoint.obj)->ratconn = (void *) menu;
 				}
 			}
 			PCB_END_LOOP;
@@ -336,7 +336,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 /* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pin->Element)*/
 		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
-			if (!pin->Spare) {
+			if (!pin->ratconn) {
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
 								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pin->Number));
 				pcb_stub_rat_found_short(pin, NULL, &theNet->Name[2]);
@@ -344,7 +344,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			}
 			newone = pcb_true;
 			for(i = 0; i < vtptr_len(&generic); i++) {
-				if (generic.array[i] == pin->Spare) {
+				if (generic.array[i] == pin->ratconn) {
 					newone = pcb_false;
 					break;
 				}
@@ -352,9 +352,9 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 
 			if (newone) {
 				menu = vtptr_alloc_append(&generic, 1);
-				*menu = pin->Spare;
+				*menu = pin->ratconn;
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-								&theNet->Name[2], &((pcb_lib_menu_t *) (pin->Spare))->Name[2]);
+								&theNet->Name[2], &((pcb_lib_menu_t *) (pin->ratconn))->Name[2]);
 				pcb_stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 			}
 		}
@@ -366,7 +366,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 /* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pad->Element)*/
 		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
-			if (!pad->Spare) {
+			if (!pad->ratconn) {
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
 								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pad->Number));
 				pcb_stub_rat_found_short(NULL, pad, &theNet->Name[2]);
@@ -374,7 +374,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			}
 			newone = pcb_true;
 			for(i = 0; i < vtptr_len(&generic); i++) {
-				if (generic.array[i] == pad->Spare) {
+				if (generic.array[i] == pad->ratconn) {
 					newone = pcb_false;
 					break;
 				}
@@ -382,9 +382,9 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 
 			if (newone) {
 				menu = vtptr_alloc_append(&generic, 1);
-				*menu = pad->Spare;
+				*menu = pad->ratconn;
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-								&theNet->Name[2], &((pcb_lib_menu_t *) (pad->Spare))->Name[2]);
+								&theNet->Name[2], &((pcb_lib_menu_t *) (pad->ratconn))->Name[2]);
 				pcb_stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 			}
 		}

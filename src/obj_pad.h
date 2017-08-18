@@ -36,7 +36,7 @@ struct pcb_pad_s {                  /* a SMD pad */
 	pcb_coord_t Mask;
 	char *Name, *Number;           /* 'Line' */
 	void *Element;
-	void *Spare;
+	void *ratconn;
 	gdl_elem_t link;               /* a pad is in a list (element) */
 };
 

@@ -236,9 +236,9 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 
 		spare = NULL;
 		if (n->to_type == PCB_TYPE_PIN)
-			spare = ((pcb_pin_t *) n->to)->Spare;
+			spare = ((pcb_pin_t *) n->to)->ratconn;
 		if (n->to_type == PCB_TYPE_PAD)
-			spare = ((pcb_pad_t *) n->to)->Spare;
+			spare = ((pcb_pad_t *) n->to)->ratconn;
 		if (spare != NULL) {
 			void *net = &(((pcb_lib_menu_t *) spare)->Name[2]);
 			debprintf(" net=%s\n", net);
@@ -380,8 +380,8 @@ void rat_proc_shorts(void)
 			/* check if the rest of the shorts affect the same nets - ignore them if so */
 			for (i = n->next; i != NULL; i = i->next) {
 				pcb_lib_menu_t *spn, *spi;
-				spn = (n->pin != NULL) ? n->pin->Spare : n->pad->Spare;
-				spi = (i->pin != NULL) ? i->pin->Spare : i->pad->Spare;
+				spn = (n->pin != NULL) ? n->pin->ratconn : n->pad->ratconn;
+				spi = (i->pin != NULL) ? i->pin->ratconn : i->pad->ratconn;
 
 				if ((spn == NULL) || (spi == NULL))
 					continue;

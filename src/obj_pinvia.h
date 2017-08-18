@@ -37,7 +37,7 @@ struct pcb_pin_s {
 	pcb_coord_t X, Y;                   /* center and diameter */
 	char *Name, *Number;
 	void *Element;
-	void *Spare;
+	void *ratconn;
 	gdl_elem_t link;              /* a pin is in a list (element) */
 };
 
