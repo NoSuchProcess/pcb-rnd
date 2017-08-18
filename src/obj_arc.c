@@ -56,6 +56,7 @@ pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 
 	new_obj = calloc(sizeof(pcb_arc_t), 1);
 	new_obj->type = PCB_OBJ_ARC;
+	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(new_obj, layer, layer);
 	arclist_append(&layer->Arc, new_obj);
 

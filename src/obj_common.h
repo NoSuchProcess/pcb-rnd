@@ -158,6 +158,9 @@ static inline PCB_FUNC_UNUSED unsigned pcb_hash_coord(pcb_coord_t c)
 /* Return the geometric center of an object (center of bbox usually) */
 void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y);
 
+/* Update cached attributes (->term) */
+void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value);
+
 /* compare two fields and return 0 if they are equal */
 #define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 

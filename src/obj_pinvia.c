@@ -55,6 +55,7 @@ pcb_pin_t *pcb_via_alloc(pcb_data_t * data)
 
 	new_obj = calloc(sizeof(pcb_pin_t), 1);
 	new_obj->type = PCB_OBJ_VIA;
+	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(new_obj, data, data);
 
 	pinlist_append(&data->Via, new_obj);

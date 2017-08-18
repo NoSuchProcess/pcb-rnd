@@ -61,6 +61,7 @@ pcb_polygon_t *pcb_poly_alloc(pcb_layer_t * layer)
 
 	new_obj = calloc(sizeof(pcb_polygon_t), 1);
 	new_obj->type = PCB_OBJ_POLYGON;
+	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(new_obj, layer, layer);
 
 	polylist_append(&layer->Polygon, new_obj);

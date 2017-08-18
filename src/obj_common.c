@@ -28,6 +28,7 @@
 
 #include "config.h"
 
+#include <stddef.h>
 #include "conf_core.h"
 #include "global_typedefs.h"
 #include "const.h"
@@ -145,4 +146,11 @@ void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
 			*x = (obj->BoundingBox.X1 + obj->BoundingBox.X2) / 2;
 			*y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2) / 2;
 	}
+}
+
+void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+{
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)(((char *)list) - offsetof(pcb_any_obj_t, Attributes));
+	if (strcmp(name, "term") == 0)
+		obj->term = value;
 }
