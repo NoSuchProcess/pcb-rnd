@@ -142,7 +142,10 @@ run()
 	exebn=`basename $exe`
 
 	cache_get $rev
-	./$exebn.$rev "$@"
+	./$exebn.$rev \
+		-c "rc/default_font_file=" \
+		-c "rc/default_pcb_file=" \
+		"$@"
 	rm $exebn.$rev
 }
 
