@@ -268,25 +268,31 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 pcb_any_obj_t *pcb_term_find_name(pcb_data_t *data, const char *subc_name, const char *term_name, pcb_bool same, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out)
 {
 	pcb_subc_t *subc;
+	pcb_layer_t *layer;
+	int l;
+
 	if ((subc = pcb_subc_by_name(PCB->Data, subc_name)) == NULL)
 		return NULL;
 
-	PCB_LINE_ALL_LOOP(data) {
-		CHECK_TERM_LY(line);
-	} PCB_ENDALL_LOOP;
+	layer = data->Layer;
+	for (l = 0; l < data->LayerN; l++, layer++) {
+		PCB_LINE_LOOP(layer) {
+			CHECK_TERM_LY(line);
+		} PCB_END_LOOP;
 
-	PCB_ARC_ALL_LOOP(data) {
-		CHECK_TERM_LY(arc);
-	} PCB_ENDALL_LOOP;
+		PCB_ARC_LOOP(layer) {
+			CHECK_TERM_LY(arc);
+		} PCB_END_LOOP;
 
-	PCB_POLY_ALL_LOOP(data) {
-		CHECK_TERM_LY(polygon);
-	} PCB_ENDALL_LOOP;
+		PCB_POLY_LOOP(layer) {
+			CHECK_TERM_LY(polygon);
+		} PCB_END_LOOP;
 
 
-	PCB_TEXT_ALL_LOOP(data) {
-		CHECK_TERM_LY(text);
-	} PCB_ENDALL_LOOP;
+		PCB_TEXT_LOOP(layer) {
+			CHECK_TERM_LY(text);
+		} PCB_END_LOOP;
+	}
 
 	return NULL;
 }
