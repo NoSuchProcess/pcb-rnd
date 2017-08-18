@@ -1079,9 +1079,7 @@ static pcb_r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) &&
-			((line->Point1.X == i->Point->X &&
-				line->Point1.Y == i->Point->Y) || (line->Point2.X == i->Point->X && line->Point2.Y == i->Point->Y))) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && IsRatPointOnLineSpec(i->Point, line)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_RATLINE, &i->Point, PCB_FCT_RAT))
 			longjmp(i->env, 1);
 	}
