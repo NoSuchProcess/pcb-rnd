@@ -36,6 +36,7 @@
 #include "obj_term.h"
 #include "obj_subc_parent.h"
 #include "pcb-printf.h"
+#include "rats.h"
 #include "undo.h"
 
 static const char core_term_cookie[] = "core-term";
@@ -256,8 +257,29 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 	return PCB_TERM_ERR_SUCCESS;
 }
 
+#define CHECK_TERM_LY(ob) \
+	do { \
+		if (PCB_NSTRCMP(term_name, ob->term) == 0 && (!same || !PCB_FLAG_TEST(PCB_FLAG_DRC, ob))) { \
+			conn->ptr1 = subc; \
+			conn->obj = (pcb_any_obj_t *)ob; \
+			conn->group = layer->grp; \
+			pcb_obj_center((pcb_any_obj_t *)ob, &conn->X, &conn->Y); \
+			return pcb_true; \
+		} \
+	} while(0)
+
 pcb_bool pcb_term_find_name(pcb_data_t *data, const char *subc_name, const char *term_name, pcb_connection_t *conn, pcb_bool same)
 {
+	pcb_subc_t *subc;
+	if ((subc = pcb_subc_by_name(PCB->Data, subc_name)) == NULL)
+		return pcb_false;
+
+	PCB_LINE_ALL_LOOP(data) {
+		CHECK_TERM_LY(line);
+	} PCB_ENDALL_LOOP;
+
 	return pcb_false;
 }
 
+
+#undef CHECK_TERM_LY
