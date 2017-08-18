@@ -51,10 +51,40 @@ user manual
 		autoplace
 		autoroute
 		... (TODO)
-	7. io plugins
-		lihata
-		kicadl
-		kicad s expr
+	7. io and import plugins
+		Comparison table (build from data like tests/RTT/RTT_kicad*)
+		intro: io_lihata extra attention to pcb-rnd's native format
+		IO & Import plugins sorted by capability: Boards, footprints, and netlists parens=(in development)
+			Boards: io plugins that deal with boards  
+				lihata
+				pcb
+				kicadl
+				kicad
+				protel autotrax
+				(eagle)
+			Footprints: io plugins that deal with footprints
+				lihata
+				fp  -- handled by pcb
+				kicadl
+				kicad
+				protel autotrax -- 'components'
+				(eagle)
+				(mentor-cell)
+			Netlists: there are import and io plugins dealing with netlists
+				lihata
+				specctra dsn
+				geda  -- import_netlist plugin
+				tinycad
+				ltspice .net + .asc
+				kicadl
+				kicad
+				tinycad .net 
+				protel autotrax
+				Mentor graphics schematic
+				Electronic Design Interchange Format (EDIF import plugin)
+				tEDAx
+				mucs routing
+				(eagle)
 	8. utilities
 	9. appendix
 		glossary
