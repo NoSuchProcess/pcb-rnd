@@ -241,7 +241,7 @@ static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
 		return (pcb_true);
 
 	/* middle point */
-	pcb_obj_center(Line, &cx, &cy);
+	pcb_obj_center((pcb_any_obj_t *)Line, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
 		return pcb_true;
 
@@ -262,7 +262,7 @@ static pcb_bool IsRatPointOnPoly(pcb_point_t *Point, pcb_polygon_t *polygon)
 		return pcb_true;
 
 	/* middle point */
-	pcb_obj_center(polygon, &cx, &cy);
+	pcb_obj_center((pcb_any_obj_t *)polygon, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
 		return pcb_true;
 
