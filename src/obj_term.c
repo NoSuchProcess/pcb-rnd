@@ -265,6 +265,18 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 		} \
 	} while(0)
 
+#define CHECK_TERM_GL(ob) \
+	do { \
+		if (PCB_NSTRCMP(term_name, ob->term) == 0 && (!same || !PCB_FLAG_TEST(PCB_FLAG_DRC, ob))) { \
+			if (parent_out != NULL) *parent_out = subc; \
+			if (gid_out != NULL) { \
+				*gid_out = -1; \
+				pcb_layergrp_list(pcb, lyt, gid_out, 1); \
+			} \
+			return (pcb_any_obj_t *)ob; \
+		} \
+	} while(0)
+
 pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_type_t lyt, const char *subc_name, const char *term_name, pcb_bool same, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out)
 {
 	pcb_subc_t *subc;
@@ -277,6 +289,14 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 	if ((subc = pcb_subc_by_name(PCB->Data, subc_name)) == NULL)
 		return NULL;
 
+	/* search for global objects: via */
+	if (lyt & (PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_OUTLINE)) {
+		PCB_VIA_LOOP(subc->data) {
+			CHECK_TERM_GL(via);
+		} PCB_END_LOOP;
+	}
+
+	/* search for layer objects */
 	layer = data->Layer;
 	for (l = 0; l < data->LayerN; l++, layer++) {
 		if ((pcb_layer_flags_(pcb, layer) & lyt) == 0)
@@ -302,5 +322,6 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 	return NULL;
 }
 
-
 #undef CHECK_TERM_LY
+#undef CHECK_TERM_GL
+
