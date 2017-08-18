@@ -253,10 +253,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 						connection->menu = menu;
 						/* mark as visited */
 						PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
-						if (LastPoint.obj->type == PCB_OBJ_PIN)
-							((pcb_pin_t *) LastPoint.obj)->ratconn = (void *) menu;
-						else
-							((pcb_pad_t *) LastPoint.obj)->ratconn = (void *) menu;
+						LastPoint.obj->ratconn = (void *)menu;
 					}
 				}
 				else
@@ -269,10 +266,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 					connection->menu = menu;
 					/* mark as visited */
 					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj);
-					if (LastPoint.obj->type == PCB_OBJ_PIN)
-						((pcb_pin_t *) LastPoint.obj)->ratconn = (void *) menu;
-					else
-						((pcb_pad_t *) LastPoint.obj)->ratconn = (void *) menu;
+					LastPoint.obj->ratconn = (void *)menu;
 				}
 			}
 			PCB_END_LOOP;
