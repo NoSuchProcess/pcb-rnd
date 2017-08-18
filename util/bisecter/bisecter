@@ -67,9 +67,26 @@ svn_cleanup()
 	rm -rf "$tmp/$rev"
 }
 
+cache_save()
+{
+	local rev=$1 exebn
+	exebn=`basename $exe`
+
+	cp "$tmp/$rev/$exe" "$cache/$exebn.$rev"
+	if test ! -z "$cache_strip"
+	then
+		eval $cache_strip "$cache/$exebn.$rev" $redir
+	fi
+
+	if test ! -z "$cache_compress"
+	then
+		eval $cache_compress "$cache/$exebn.$rev" $redir
+	fi
+}
+
 cache_build()
 {
-	local rev=$1 redir=">>log.$1 2>&1" exebn
+	local rev=$1 save=$2 redir=">>log.$1 2>&1" exebn
 
 	(echo -n "#########################################"; date) >> log.$1
 
@@ -77,14 +94,27 @@ cache_build()
 	eval "svn_co $rev $redir"
 
 	wlog "Compile r$1"
-	eval "(cd $tmp/$rev && ./configure $confopts && make) $redir"
+	eval "(cd \"$tmp/$rev\" && ./configure $confopts && make) $redir"
 
-	wlog "Cache r$1"
-	exebn=`basename $exe`
-	cp $tmp/$rev/$exe ./$exebn.$rev
+	if test "0$save" -gt 0
+	then
+		exebn=`basename $exe`
+		cp "$tmp/$rev/$exe" "./$exebn.$rev"
+	fi
+
+	wlog "Cache save r$1"
+	cache_save "$rev"
 
 	wlog "Cleanup r$1"
 	eval svn_cleanup $rev $redir
+
+	mv log.$1 $cache
+	if test ! -z "$cache_compress"
+	then
+		$cache_compress "$cache/log.$1"
+	fi
 }
 
-cache_build 7000
+cache_build $1 1
+
+

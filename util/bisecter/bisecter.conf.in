@@ -10,8 +10,8 @@ cache_strip=strip
 # how to compress executables for the cache
 cache_compress="xz -9"
 
-# how to uncompress executables for the cache
-cache_compress="xz -d"
+# how to decompress executables for the cache
+cache_decompress="xz -d"
 
 # url to use
 url=svn://repo.hu/pcb-rnd/trunk
