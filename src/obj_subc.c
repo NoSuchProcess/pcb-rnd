@@ -49,8 +49,13 @@
 static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_subc_t *sc = (pcb_subc_t *)(((char *)list) - offsetof(pcb_subc_t, Attributes));
-	if (strcmp(name, "refdes") == 0)
+	if (strcmp(name, "refdes") == 0) {
+		const char *inv;
 		sc->refdes = value;
+		inv = pcb_obj_id_invalid(sc->refdes);
+		if (inv != NULL)
+			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
+	}
 }
 
 pcb_subc_t *pcb_subc_alloc(void)

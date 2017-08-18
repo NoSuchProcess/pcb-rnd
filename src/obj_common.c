@@ -151,8 +151,13 @@ void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
 void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)(((char *)list) - offsetof(pcb_any_obj_t, Attributes));
-	if (strcmp(name, "term") == 0)
+	if (strcmp(name, "term") == 0) {
+		const char *inv;
 		obj->term = value;
+		inv = pcb_obj_id_invalid(obj->term);
+		if (inv != NULL)
+			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, obj->term);
+	}
 }
 
 const char *pcb_obj_id_invalid(const char *id)
