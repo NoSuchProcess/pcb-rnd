@@ -327,7 +327,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					reuse = 1;
 					typ = PCB_LYT_SILK | PCB_LYT_BOTTOM;
 					break;
-				case 199:
+				case 20: /*199:   20 is dimension, 199 is contour */
 					grp = pcb_get_grp_new_intern(st->pcb, -1);
 					ly->ly = pcb_layer_create(grp - st->pcb->LayerGroups.grp, ly->name);
 					pcb_layergrp_fix_turn_to_outline(grp);
