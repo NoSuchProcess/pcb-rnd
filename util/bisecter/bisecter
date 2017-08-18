@@ -105,6 +105,13 @@ cache_build()
 	wlog "Compile r$1"
 	eval "(cd \"$tmp/$rev\" && ./configure $confopts && make) $redir"
 
+	if test ! -f "$tmp/$rev/$exe"
+	then
+		echo '#!/bin/sh
+		      echo Sorry, revision '$rev' can not be compiled.' > "$tmp/$rev/$exe"
+		chmod +x "$tmp/$rev/$exe"
+	fi
+
 	if test "0$save" -gt 0
 	then
 		exebn=`basename $exe`
