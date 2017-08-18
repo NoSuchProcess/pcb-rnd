@@ -56,7 +56,7 @@
 /* ---------------------------------------------------------------------------
  * some forward declarations
  */
-static pcb_bool pcb_term_find_name(const char *, const char *, pcb_connection_t *, pcb_bool);
+static pcb_bool pcb_term_find_name_ppt(const char *, const char *, pcb_connection_t *, pcb_bool);
 static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(pcb_netlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
@@ -112,7 +112,7 @@ static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinN
 
 	/* first check for subcircuits; this is the only one thing we'll need to do
 	   once elements are removed */
-	if (pcb_term_find_name(ElementName, PinNum, conn, Same))
+	if (pcb_term_find_name(PCB->Data, ElementName, PinNum, conn, Same))
 		return pcb_true;
 
 	if ((element = pcb_search_elem_by_name(PCB->Data, ElementName)) == NULL)
