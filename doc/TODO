@@ -66,8 +66,7 @@
 For the next release:
 - subc/term:
 	- term netlist connectivity r10843:
-		- rats.c:248
-		- rats.c:264
+		- rats.c:913
 		- find_misc.c:337
 		- autoplace.c:167
 		- autoroute.c:961
@@ -76,6 +75,10 @@ For the next release:
 		- smartdisperse.c:128
 		- dlg_netlist.c:219
 		- dlg_netlist.c:282
+	- int conn attribute for subc terminals
+	- far side pad color!!!
+	- via pad color
+	- arc center point should be on the arc
 	- name a terminal, name it again with 'n' but cancel -> crash
 	- remove Line->Number and *->Number: we use ->term
 	- integrity check: term cross-linking
