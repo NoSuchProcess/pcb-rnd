@@ -954,3 +954,15 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
+
+pcb_subc_t *pcb_subc_by_name(pcb_data_t *base, const char *name)
+{
+#warning subc TODO: hierarchy
+	PCB_SUBC_LOOP(base);
+	{
+		if ((subc->refdes != NULL) && (PCB_NSTRCMP(subc->refdes, name) == 0))
+			return subc;
+	}
+	PCB_END_LOOP;
+	return NULL;
+}
