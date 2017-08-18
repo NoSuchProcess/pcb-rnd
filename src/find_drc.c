@@ -717,12 +717,12 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	if (PCB->Shrink != 0) {
 		Bloat = -PCB->Shrink;
 		TheFlag = PCB_FLAG_DRC | PCB_FLAG_SELECTED;
-		ListStart(ptr1, ptr2);
+		ListStart(ptr2);
 		DoIt(pcb_true, pcb_false);
 		/* ok now the shrunk net has the PCB_FLAG_SELECTED set */
 		DumpList();
 		TheFlag = PCB_FLAG_FOUND;
-		ListStart(ptr1, ptr2);
+		ListStart(ptr2);
 		Bloat = 0;
 		drc = pcb_true;									/* abort the search if we find anything not already found */
 		if (DoIt(pcb_true, pcb_false)) {
@@ -734,10 +734,10 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 			drc = pcb_false;
 			Bloat = -PCB->Shrink;
 			TheFlag = PCB_FLAG_SELECTED;
-			ListStart(ptr1, ptr2);
+			ListStart(ptr2);
 			DoIt(pcb_true, pcb_true);
 			DumpList();
-			ListStart(ptr1, ptr2);
+			ListStart(ptr2);
 			TheFlag = PCB_FLAG_FOUND;
 			Bloat = 0;
 			drc = pcb_true;
@@ -768,7 +768,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	drc = pcb_false;
 	pcb_reset_conns(pcb_false);
 	TheFlag = PCB_FLAG_FOUND;
-	ListStart(ptr1, ptr2);
+	ListStart(ptr2);
 	Bloat = PCB->Bloat;
 	drc = pcb_true;
 	while (DoIt(pcb_true, pcb_false)) {
@@ -780,11 +780,11 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		drc = pcb_false;
 		Bloat = 0;
 		TheFlag = PCB_FLAG_SELECTED;
-		ListStart(ptr1, ptr2);
+		ListStart(ptr2);
 		DoIt(pcb_true, pcb_true);
 		DumpList();
 		TheFlag = PCB_FLAG_FOUND;
-		ListStart(ptr1, ptr2);
+		ListStart(ptr2);
 		Bloat = PCB->Bloat;
 		drc = pcb_true;
 		DoIt(pcb_true, pcb_true);
@@ -809,12 +809,12 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		/* highlight the rest of the encroaching net so it's not reported again */
 		TheFlag |= PCB_FLAG_SELECTED;
 		Bloat = 0;
-		ListStart(thing_ptr1, thing_ptr2);
+		ListStart(thing_ptr2);
 		DoIt(pcb_true, pcb_true);
 		DumpList();
 		drc = pcb_true;
 		Bloat = PCB->Bloat;
-		ListStart(ptr1, ptr2);
+		ListStart(ptr2);
 	}
 	drc = pcb_false;
 	DumpList();

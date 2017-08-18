@@ -149,56 +149,52 @@ static void DrawNewConnections(void)
 /*---------------------------------------------------------------------------
  * add the starting object to the list of found objects
  */
-static pcb_bool ListStart(void *ptr1, void *ptr2)
+static pcb_bool ListStart(pcb_any_obj_t *obj)
 {
-	pcb_any_obj_t *obj = ptr2;
 	DumpList();
 	switch (obj->type) {
 	case PCB_OBJ_PIN:
 	case PCB_OBJ_VIA:
 		{
-			if (ADD_PV_TO_LIST((pcb_pin_t *) ptr2, 0, NULL, PCB_FCT_START))
+			if (ADD_PV_TO_LIST((pcb_pin_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
 
 	case PCB_OBJ_RAT:
 		{
-			if (ADD_RAT_TO_LIST((pcb_rat_t *) ptr1, 0, NULL, PCB_FCT_START))
+			if (ADD_RAT_TO_LIST((pcb_rat_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
 
 	case PCB_OBJ_LINE:
 		{
-			pcb_layer_id_t layer = pcb_layer_id(PCB->Data,
-																 (pcb_layer_t *) ptr1);
-
-			if (ADD_LINE_TO_LIST(layer, (pcb_line_t *) ptr2, 0, NULL, PCB_FCT_START))
+			pcb_layer_id_t layer = pcb_layer_id(PCB->Data, obj->parent.layer);
+			if (ADD_LINE_TO_LIST(layer, (pcb_line_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
 
 	case PCB_OBJ_ARC:
 		{
-			pcb_layer_id_t layer = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
-			if (ADD_ARC_TO_LIST(layer, (pcb_arc_t *) ptr2, 0, NULL, PCB_FCT_START))
+			pcb_layer_id_t layer = pcb_layer_id(PCB->Data, obj->parent.layer);
+			if (ADD_ARC_TO_LIST(layer, (pcb_arc_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
 
 	case PCB_OBJ_POLYGON:
 		{
-			pcb_layer_id_t layer = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
-
-			if (ADD_POLYGON_TO_LIST(layer, (pcb_polygon_t *) ptr2, 0, NULL, PCB_FCT_START))
+			pcb_layer_id_t layer = pcb_layer_id(PCB->Data, obj->parent.layer);
+			if (ADD_POLYGON_TO_LIST(layer, (pcb_polygon_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
 
 	case PCB_OBJ_PAD:
 		{
-			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
+			pcb_pad_t *pad = (pcb_pad_t *)obj;
 			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
@@ -249,7 +245,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 	/* now add the object to the appropriate list and start scanning
 	 * This is step (1) from the description
 	 */
-	ListStart(ptr1, ptr2);
+	ListStart(ptr2);
 	DoIt(pcb_true, AndDraw);
 	if (User)
 		pcb_undo_inc_serial();
@@ -267,7 +263,7 @@ void pcb_lookup_conn_by_pin(int type, void *ptr1)
 {
 	User = 0;
 	pcb_conn_lookup_init();
-	ListStart(NULL, ptr1);
+	ListStart(ptr1);
 
 	DoIt(pcb_true, pcb_false);
 
@@ -302,7 +298,7 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 		return 0;
 
 	pcb_conn_lookup_init();
-	ListStart(obj->parent.any, obj);
+	ListStart(obj);
 	DoIt(pcb_true, AndDraw);
 
 	for (i = 0; i < pcb_max_layer; i++) {
@@ -338,7 +334,7 @@ void pcb_rat_find_hook(void *ptr1, pcb_any_obj_t *obj, pcb_bool undo, pcb_bool A
 	User = undo;
 	DumpList();
 	type = obj->type == PCB_OBJ_PAD ? PCB_TYPE_PAD : PCB_TYPE_PIN;
-	ListStart(ptr1, obj);
+	ListStart(obj);
 	DoIt(AndRats, pcb_false);
 	User = pcb_false;
 }

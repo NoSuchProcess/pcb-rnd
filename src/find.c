@@ -172,7 +172,7 @@ static void PrintConnectionListEntry(char *, pcb_element_t *, pcb_bool, FILE *);
 static void PrintPadConnections(pcb_cardinal_t, FILE *, pcb_bool);
 static void PrintPinConnections(FILE *, pcb_bool);
 static void DumpList(void);
-static pcb_bool ListStart(void *, void *);
+static pcb_bool ListStart(pcb_any_obj_t *obj);
 static pcb_bool SetThing(int, void *, void *, void *);
 
 
