@@ -66,10 +66,12 @@ static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 	reassign_no_drc_flags();
 	do {
 		/* lookup connections; these are the steps (2) to (4)
-		 * from the description
-		 */
-		newone = LookupPVConnectionsToPVList() ||
-			LookupLOConnectionsToPVList(AndRats) || LookupLOConnectionsToLOList(AndRats) || LookupPVConnectionsToLOList(AndRats);
+		 * from the description */
+		newone =
+			LookupPVConnectionsToPVList() ||
+			LookupLOConnectionsToPVList(AndRats) ||
+			LookupLOConnectionsToLOList(AndRats) ||
+			LookupPVConnectionsToLOList(AndRats);
 		if (AndDraw)
 			DrawNewConnections();
 	}
