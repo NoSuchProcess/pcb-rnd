@@ -286,7 +286,7 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 	if (lyt == 0)
 		return pcb_false;
 
-	if ((subc = pcb_subc_by_name(PCB->Data, subc_name)) == NULL)
+	if ((subc = pcb_subc_by_name(data, subc_name)) == NULL)
 		return NULL;
 
 	/* search for global objects: via */
@@ -297,8 +297,8 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 	}
 
 	/* search for layer objects */
-	layer = data->Layer;
-	for (l = 0; l < data->LayerN; l++, layer++) {
+	layer = subc->data->Layer;
+	for (l = 0; l < subc->data->LayerN; l++, layer++) {
 		if ((pcb_layer_flags_(pcb, layer) & lyt) == 0)
 			continue;
 		PCB_LINE_LOOP(layer) {
