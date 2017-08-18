@@ -109,11 +109,16 @@ static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinN
 	gdl_iterator_t it;
 	pcb_pad_t *pad;
 	pcb_pin_t *pin;
+	pcb_any_obj_t *obj;
 
 	/* first check for subcircuits; this is the only one thing we'll need to do
 	   once elements are removed */
-	if (pcb_term_find_name(PCB->Data, ElementName, PinNum, conn, Same))
+	obj = pcb_term_find_name(PCB->Data, ElementName, PinNum, Same, &conn->ptr1, &conn->group);
+	if (obj != NULL) {
+		conn->obj = obj;
+		pcb_obj_center(obj, &conn->X, &conn->Y);
 		return pcb_true;
+	}
 
 	if ((element = pcb_search_elem_by_name(PCB->Data, ElementName)) == NULL)
 		return pcb_false;
