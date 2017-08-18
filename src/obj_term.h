@@ -77,8 +77,8 @@ pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname);
 /* Rename an object's ->term field in an undoable way */
 pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *new_name);
 
-/* Look up subc_name/term_name and put the result in conn. Returns the object
+/* Look up subc_name/term_name on layers matching lyt. Returns the object
    or NULL if not found. If the *out parameters are non-NULL, load them */
-pcb_any_obj_t *pcb_term_find_name(pcb_data_t *data, const char *subc_name, const char *term_name, pcb_bool same, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out);
+pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_type_t lyt, const char *subc_name, const char *term_name, pcb_bool same, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out);
 
 #endif

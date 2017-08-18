@@ -114,7 +114,7 @@ static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinN
 
 	/* first check for subcircuits; this is the only one thing we'll need to do
 	   once elements are removed */
-	obj = pcb_term_find_name(PCB->Data, ElementName, PinNum, Same, (pcb_subc_t **)&conn->ptr1, &conn->group);
+	obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, ElementName, PinNum, Same, (pcb_subc_t **)&conn->ptr1, &conn->group);
 	if (obj != NULL) {
 		conn->obj = obj;
 		pcb_obj_center(obj, &conn->X, &conn->Y);
