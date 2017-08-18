@@ -761,7 +761,7 @@ void pcb_text_draw_(pcb_text_t *text, pcb_coord_t min_line_width, int allow_term
 	DrawTextLowLevel_(text, min_line_width, 0, 0, 0);
 
 	if (text->term != NULL) {
-		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, text))
+		if ((allow_term_gfx) && ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, text)))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)text);
 	}
 }
