@@ -1,0 +1,61 @@
+How to bisect
+~~~~~~~~~~~~~
+
+Because of the svn externs in src_3rd, it's not trivial to do bisecting
+manually. There is a script to automate the process.
+
+Realizing disk space is cheap but developer time is expensive, the script
+not just automates the checkout and compilation of specific revisions, it
+also saves the resulting executable in a cache so that it can be reused
+easily without a new checkout/compilation.
+
+
+1. requirements
+
+Install the usual tools required for building pcb-rnd, plus gawk, xz,
+subversion.
+
+
+2. setup
+
+cd trunk/util/bisecter
+cp bisecter.conf.in bisecter.conf
+
+edit bisecter.conf as needed (you might want to change the cache path)
+
+3. recommended process
+
+Open two shells, cd to trunk/util/bisecter on both.
+
+In the first shell, run './bisecter bisect' - this will run and
+interactive script that makes suggestions on which revisions should
+be tested.
+
+In the second shell, type './bisecter run rev args' where rev is the
+revision the script in the first shell suggested, args are arguments
+you'd pass to pcb-rnd. It will check out, compile and run pcb-rnd in
+trunk/util/bisecter. Reproduce the bug and decide if the given revision
+is broken or not. 
+
+If it is not broken, type "good"  in the first shell and press enter;
+if it is broken, type "bad" in the first shell and press enter. The
+script in the first shell will make a new suggestion.
+
+Repeat the process until the script in the first shell prints the results
+and exits.
+
+
+4. Tips and tricks
+
+You do not have to accept the suggested revision, you can pick the revision
+you test. In that case instead of a plain "good" or "bad", type "rev good"
+or "rev bad", e.g. "8663 good" or "8110 bad".
+
+List the executables available in your cache dir. Especially early in the
+bisecting process, rather find an existing cached rev to test instead of
+a new one - this will speed up the process.
+
+Not all revisions can be compiled - there are a few that are broken. When
+you find a broken one, try the previous or next revision until you find
+one that works.
+
