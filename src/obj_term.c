@@ -260,7 +260,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 	do { \
 		if (PCB_NSTRCMP(term_name, ob->term) == 0 && (!same || !PCB_FLAG_TEST(PCB_FLAG_DRC, ob))) { \
 			if (parent_out != NULL) *parent_out = subc; \
-			if (gid_out != NULL) *gid_out = layer->grp; \
+			if (gid_out != NULL) *gid_out = pcb_layer_get_group_(layer); \
 			return (pcb_any_obj_t *)ob; \
 		} \
 	} while(0)
