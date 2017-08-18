@@ -1382,13 +1382,11 @@ static pcb_r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
-		if ((rat->Point1.X == (i->polygon.Clipped->contours->head.point[0]) &&
-				 rat->Point1.Y == (i->polygon.Clipped->contours->head.point[1]) &&
-				 rat->group1 == i->layer) ||
-				(rat->Point2.X == (i->polygon.Clipped->contours->head.point[0]) &&
-				 rat->Point2.Y == (i->polygon.Clipped->contours->head.point[1]) && rat->group2 == i->layer))
+		if ((rat->group1 == i->layer) && IsRatPointOnPoly(&rat->Point1, &i->polygon)
+			|| (rat->group2 == i->layer) && IsRatPointOnPoly(&rat->Point2, &i->polygon)) {
 			if (ADD_RAT_TO_LIST(rat, PCB_TYPE_POLYGON, &i->polygon, PCB_FCT_RAT))
 				longjmp(i->env, 1);
+		}
 	}
 	return PCB_R_DIR_NOT_FOUND;
 }
