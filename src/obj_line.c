@@ -928,7 +928,7 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 	PCB_DRAW_BBOX(line);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 	if (!conf_core.editor.thin_draw) {
-		if ((line->term != NULL) && (allow_term_gfx)) {
+		if ((line->term != NULL) && (allow_term_gfx) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, line)) {
 			pcb_hid_gc_t gc = PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) ? Output.padselGC : Output.padGC;
 			pcb_gui->set_line_width(gc, line->Thickness);
 			pcb_gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
