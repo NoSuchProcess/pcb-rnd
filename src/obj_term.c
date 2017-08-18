@@ -275,6 +275,19 @@ pcb_any_obj_t *pcb_term_find_name(pcb_data_t *data, const char *subc_name, const
 		CHECK_TERM_LY(line);
 	} PCB_ENDALL_LOOP;
 
+	PCB_ARC_ALL_LOOP(data) {
+		CHECK_TERM_LY(arc);
+	} PCB_ENDALL_LOOP;
+
+	PCB_POLY_ALL_LOOP(data) {
+		CHECK_TERM_LY(polygon);
+	} PCB_ENDALL_LOOP;
+
+
+	PCB_TEXT_ALL_LOOP(data) {
+		CHECK_TERM_LY(text);
+	} PCB_ENDALL_LOOP;
+
 	return NULL;
 }
 
