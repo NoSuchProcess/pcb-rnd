@@ -1091,9 +1091,7 @@ static pcb_r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, polygon) && polygon->Clipped &&
-			(i->Point->X == polygon->Clipped->contours->head.point[0]) &&
-			(i->Point->Y == polygon->Clipped->contours->head.point[1])) {
+	if (!PCB_FLAG_TEST(TheFlag, polygon) && polygon->Clipped && IsRatPointOnPoly(i->Point, polygon)) {
 		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_RATLINE, &i->Point, PCB_FCT_RAT))
 			longjmp(i->env, 1);
 	}

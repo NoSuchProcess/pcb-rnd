@@ -229,7 +229,7 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 }
 
 /* ---------------------------------------------------------------------------
- * Tests if point is same as line end point
+ * Tests if point is same as line end point or center point
  */
 static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
 {
@@ -246,6 +246,27 @@ static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
 		return pcb_true;
 
 	return (pcb_false);
+}
+
+/* ---------------------------------------------------------------------------
+ * Tests if rat line point is connected to a polygon
+ */
+static pcb_bool IsRatPointOnPoly(pcb_point_t *Point, pcb_polygon_t *polygon)
+{
+	pcb_coord_t cx, cy;
+
+	/* canonical point */
+	cx = polygon->Clipped->contours->head.point[0];
+	cy = polygon->Clipped->contours->head.point[1];
+	if ((Point->X == cx) && (Point->Y == cy))
+		return pcb_true;
+
+	/* middle point */
+	pcb_obj_center(polygon, &cx, &cy);
+	if ((Point->X == cx) && (Point->Y == cy))
+		return pcb_true;
+
+	return pcb_false;
 }
 
 static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
