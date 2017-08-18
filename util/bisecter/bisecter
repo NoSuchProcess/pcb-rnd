@@ -149,5 +149,22 @@ run()
 	rm $exebn.$rev
 }
 
-run 9950 "$@"
+help()
+{
+	echo "bisecter - support bisecting by cached executables"
+	echo ""
+	echo "Usage: TODO"
+}
+
+cmd="$1"
+shift 1
+case "$cmd"
+in
+	build) cache_build "$@" ;;
+	get) cache_get "$@" ;;
+	co|checkout) svn_co "$@" && echo "checked out to $tmp/$rev/$1" ;;
+	run) run "$@" ;;
+	help) help ;;
+esac
+
 
