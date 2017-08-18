@@ -22,7 +22,8 @@ url=svn://repo.hu/pcb-rnd/trunk
 # relative path of the executabe from url
 exe=src/pcb-rnd
 
-
 # ./configure options
 confopts="--debug --all=buildin"
 
+# first rev that's safe to test
+first_rev=3800

@@ -50,6 +50,15 @@ svn_get_date()
 	'
 }
 
+svn_get_rev()
+{
+	svn info "$1" | awk '
+		/Last Changed Rev:/ {
+			print $4
+		}
+	'
+}
+
 svn_co()
 {
 	local rev=$1 dt e
@@ -149,6 +158,82 @@ run()
 	rm $exebn.$rev
 }
 
+bisect()
+{
+	local first="$1" last="$2"
+
+	if test -z "$first"
+	then
+		first=$first_rev
+	fi
+
+	if test -z "$last"
+	then
+		last=`svn_get_rev $url`
+	fi
+
+	gawk -v "first=$first" -v "last=$last" '
+		BEGIN {
+			print "Bisecting between " first " and " last ", inclusive"
+			print "Usage:"
+			print "  Type \"rev good\" or \"rev bad\""
+			print "  (rev is the revision number you ran; can be omitted when the)"
+			print "  it is the revision that the script last offered)"
+			print ""
+			last_good=first
+			first_bad=last
+			offer()
+		}
+
+		function offer() {
+			if (last_good+1 == first_bad) {
+				print ""
+				print "-------- Result --------"
+				print "last_good=" last_good " first_bad=" first_bad
+				exit 0
+			}
+			offered=int((last_good+first_bad)/2)
+			print ""
+			print "(last_good=" last_good " first_bad=" first_bad ")"
+			print "Next rev to test: " offered
+			printf "> "
+			fflush()
+		}
+
+		{
+			rev=$1
+			if (rev != int(rev)) {
+				rev = offered
+				res = tolower($1)
+			}
+			else
+				res=tolower($2)
+			if (rev <= last_good) {
+				print "rev error " rev ": too low"
+				flush
+				next
+			}
+			if (rev > first_bad) {
+				print "rev error " rev ": too high"
+				flush
+				next
+			}
+
+			if (res == "good")
+				last_good = rev
+			else if (res == "bad")
+				first_bad = rev
+			else {
+				print "Syntax error " $2 ": please say good or bad"
+				flush
+				next
+			}
+
+			offer()
+		}
+	'
+}
+
 help()
 {
 	echo "bisecter - support bisecting by cached executables"
@@ -178,6 +263,7 @@ in
 	get) cache_get "$@" ;;
 	co|checkout) svn_co "$@" && echo "checked out to $tmp/$rev/$1" ;;
 	run) run "$@" ;;
+	bisect) bisect "$@" ;;
 	*) help ;;
 esac
 
