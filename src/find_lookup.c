@@ -1017,7 +1017,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 	info.layer = LayerGroup;
 	EXPAND_BOUNDS(&info.line)
 		/* add the new rat lines */
-		if (setjmp(info.env) == 0)
+	if (setjmp(info.env) == 0)
 		pcb_r_search(PCB->Data->rat_tree, &info.line.BoundingBox, NULL, LOCtoLineRat_callback, &info, NULL);
 	else
 		return pcb_true;
