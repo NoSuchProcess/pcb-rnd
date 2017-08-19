@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <stddef.h>
+#include <ctype.h>
 #include "conf_core.h"
 #include "global_typedefs.h"
 #include "const.h"
