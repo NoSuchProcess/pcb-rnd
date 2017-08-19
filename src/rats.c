@@ -380,7 +380,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			if (!pin->ratconn) {
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
 								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pin->Number));
-				pcb_stub_rat_found_short(pin, &theNet->Name[2]);
+				pcb_stub_rat_found_short((pcb_any_obj_t *)pin, &theNet->Name[2]);
 				continue;
 			}
 			newone = pcb_true;
@@ -396,7 +396,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 				*menu = pin->ratconn;
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((pcb_lib_menu_t *) (pin->ratconn))->Name[2]);
-				pcb_stub_rat_found_short(pin, &theNet->Name[2]);
+				pcb_stub_rat_found_short((pcb_any_obj_t *)pin, &theNet->Name[2]);
 			}
 		}
 	}
@@ -410,7 +410,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			if (!pad->ratconn) {
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
 								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pad->Number));
-				pcb_stub_rat_found_short(pad, &theNet->Name[2]);
+				pcb_stub_rat_found_short((pcb_any_obj_t *)pad, &theNet->Name[2]);
 				continue;
 			}
 			newone = pcb_true;
@@ -426,7 +426,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 				*menu = pad->ratconn;
 				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((pcb_lib_menu_t *) (pad->ratconn))->Name[2]);
-				pcb_stub_rat_found_short(pad, &theNet->Name[2]);
+				pcb_stub_rat_found_short((pcb_any_obj_t *)pad, &theNet->Name[2]);
 			}
 		}
 	}
