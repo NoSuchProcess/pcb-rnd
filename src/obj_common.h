@@ -156,7 +156,8 @@ static inline PCB_FUNC_UNUSED unsigned pcb_hash_coord(pcb_coord_t c)
 	return murmurhash(&(c), sizeof(pcb_coord_t));
 }
 
-/* Return the geometric center of an object (center of bbox usually) */
+/* Return the geometric center of an object, as shown (center of bbox usually,
+   but not for an arc) */
 void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y);
 
 /* Update cached attributes (->term) */
