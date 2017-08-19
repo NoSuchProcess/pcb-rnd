@@ -123,6 +123,10 @@ This is a shortcut for @code{Report(Object)}.
 %end-doc */
 
 #define gen_locked(obj) (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) ? "It is LOCKED.\n" : "")
+#define gen_term(obj) \
+	(((obj)->term != NULL) ? "It is terminal " : ""), \
+	(((obj)->term != NULL) ? (obj)->term : ""), \
+	(((obj)->term != NULL) ? "\n" : "")
 
 static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -150,8 +154,9 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"(X,Y) = %$mD.\n"
 										"It is a pure hole of diameter %$mS.\n"
 										"Name = \"%s\"."
-										"%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
-										via->X, via->Y, via->DrillingHole, PCB_EMPTY(via->Name), gen_locked(via));
+										"%s"
+										"%s%s%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
+										via->X, via->Y, via->DrillingHole, PCB_EMPTY(via->Name), gen_locked(via), gen_term(via));
 			else
 				report = pcb_strdup_printf("%m+VIA ID# %ld;  Flags:%s\n"
 										"(X,Y) = %$mD.\n"
@@ -160,14 +165,15 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"Annulus = %$mS.\n"
 										"Solder mask hole = %$mS (gap = %$mS).\n"
 										"Name = \"%s\"."
-										"%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
+										"%s"
+										"%s%s%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
 										via->X, via->Y,
 										via->Thickness,
 										via->DrillingHole,
 										via->Clearance / 2,
 										(via->Thickness - via->DrillingHole) / 2,
 										via->Mask,
-										(via->Mask - via->Thickness) / 2, PCB_EMPTY(via->Name), gen_locked(via));
+										(via->Mask - via->Thickness) / 2, PCB_EMPTY(via->Name), gen_locked(via), gen_term(via));
 			break;
 		}
 	case PCB_TYPE_PIN:
@@ -235,13 +241,14 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"Width = %$mS.\nClearance = %$mS.\n"
 									"It is on layer %d\n"
 									"and has name \"%s\".\n"
-									"%s", USER_UNITMASK,
+									"%s"
+									"%s%s%s", USER_UNITMASK,
 									line->ID, pcb_strflg_f2s(line->Flags, PCB_TYPE_LINE),
 									line->Point1.X, line->Point1.Y, line->Point1.ID,
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
 									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-									PCB_UNKNOWN(line->Number), gen_locked(line));
+									PCB_UNKNOWN(line->Number), gen_locked(line), gen_term(line));
 			break;
 		}
 	case PCB_TYPE_RATLINE:
@@ -286,7 +293,8 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"Bounding Box is %$mD, %$mD.\n"
 									"That makes the end points at %$mD and %$mD.\n"
 									"It is on layer %d.\n"
-									"%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_TYPE_ARC),
+									"%s"
+									"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_TYPE_ARC),
 									Arc->X, Arc->Y,
 									Arc->Thickness, Arc->Clearance / 2,
 									Arc->Width, Arc->StartAngle, Arc->Delta,
@@ -294,7 +302,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
 									box.X1, box.Y1,
 									box.X2, box.Y2,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc));
+									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc), gen_term(Arc));
 			break;
 		}
 	case PCB_TYPE_POLYGON:
@@ -314,13 +322,14 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"It has %d points and could store %d more\n"
 									"  without using more memory.\n"
 									"It has %d holes and resides on layer %d.\n"
-									"%s", USER_UNITMASK, Polygon->ID,
+									"%s"
+									"%s%s%s", USER_UNITMASK, Polygon->ID,
 									pcb_strflg_f2s(Polygon->Flags, PCB_TYPE_POLYGON),
 									Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
 									Polygon->HoleIndexN,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Polygon));
+									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Polygon), gen_term(Polygon));
 			break;
 		}
 	case PCB_TYPE_PAD:
@@ -433,12 +442,13 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"Direction is %d.\n"
 									"The bounding box is %$mD %$mD.\n"
 									"%s\n"
-									"%s", USER_UNITMASK, text->ID, pcb_strflg_f2s(text->Flags, PCB_TYPE_TEXT),
+									"%s"
+									"%s%s%s", USER_UNITMASK, text->ID, pcb_strflg_f2s(text->Flags, PCB_TYPE_TEXT),
 									text->X, text->Y, PCB_SCALE_TEXT(PCB_FONT_CAPHEIGHT, text->Scale),
 									text->TextString, text->Direction,
 									text->BoundingBox.X1, text->BoundingBox.Y1,
 									text->BoundingBox.X2, text->BoundingBox.Y2,
-									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", gen_locked(text));
+									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", gen_locked(text), gen_term(text));
 			break;
 		}
 	case PCB_TYPE_LINE_POINT:
