@@ -211,12 +211,9 @@ static void node_model_update(pcb_lib_menu_t * menu)
 static void toggle_pin_selected(pcb_lib_entry_t * entry)
 {
 	pcb_connection_t conn;
-	int type;
 
 	if (!pcb_rat_seek_pad(entry, &conn, pcb_false))
 		return;
-
-	type = conn.obj->type == PCB_OBJ_PAD ? PCB_TYPE_PAD : PCB_TYPE_PIN;
 
 	pcb_undo_add_obj_to_flag(conn.obj);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, conn.obj);
