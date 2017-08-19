@@ -213,46 +213,46 @@ static const char *get_termid(pcb_any_obj_t *obj)
 
 static void clear_drc_flag(int clear_ratconn)
 {
-		pcb_rtree_it_t it;
-		pcb_box_t *n;
-		int li;
-		pcb_layer_t *l;
+	pcb_rtree_it_t it;
+	pcb_box_t *n;
+	int li;
+	pcb_layer_t *l;
 
-		for(n = pcb_r_first(PCB->Data->pin_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-			if (clear_ratconn)
-				((pcb_pin_t *)n)->ratconn = NULL;
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
-		}
+	for(n = pcb_r_first(PCB->Data->pin_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+		if (clear_ratconn)
+			((pcb_pin_t *)n)->ratconn = NULL;
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
+	}
+	pcb_r_end(&it);
+
+	for(n = pcb_r_first(PCB->Data->via_tree, &it); n != NULL; n = pcb_r_next(&it))
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
+	pcb_r_end(&it);
+
+	for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+		if (clear_ratconn)
+			((pcb_pad_t *)n)->ratconn = NULL;
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pad_t *)n);
+	}
+	pcb_r_end(&it);
+
+	for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
+		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_line_t *)n);
 		pcb_r_end(&it);
 
-		for(n = pcb_r_first(PCB->Data->via_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
+		for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_arc_t *)n);
 		pcb_r_end(&it);
 
-		for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-			if (clear_ratconn)
-				((pcb_pad_t *)n)->ratconn = NULL;
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pad_t *)n);
-		}
+		for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_polygon_t *)n);
 		pcb_r_end(&it);
 
-		for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
-			for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_line_t *)n);
-			pcb_r_end(&it);
-
-			for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_arc_t *)n);
-			pcb_r_end(&it);
-
-			for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_polygon_t *)n);
-			pcb_r_end(&it);
-
-			for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_text_t *)n);
-			pcb_r_end(&it);
-		}
+		for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_text_t *)n);
+		pcb_r_end(&it);
+	}
 }
 
 /* ---------------------------------------------------------------------------
@@ -363,28 +363,28 @@ static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *g
 	pcb_bool newone;
 	int i;
 
-			if (!term->ratconn) {
-				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to %s terminal %s\n"),
-								&theNet->Name[2], PCB_UNKNOWN(get_refdes(parent)), PCB_UNKNOWN(get_termid(term)));
-				pcb_stub_rat_found_short(term, &theNet->Name[2]);
-				return menu;
-			}
+	if (!term->ratconn) {
+		pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to %s terminal %s\n"),
+						&theNet->Name[2], PCB_UNKNOWN(get_refdes(parent)), PCB_UNKNOWN(get_termid(term)));
+		pcb_stub_rat_found_short(term, &theNet->Name[2]);
+		return menu;
+	}
 
-			newone = pcb_true;
-			for(i = 0; i < vtptr_len(generic); i++) {
-				if (generic->array[i] == term->ratconn) {
-					newone = pcb_false;
-					break;
-				}
-			}
+	newone = pcb_true;
+	for(i = 0; i < vtptr_len(generic); i++) {
+		if (generic->array[i] == term->ratconn) {
+			newone = pcb_false;
+			break;
+		}
+	}
 
-			if (newone) {
-				menu = vtptr_alloc_append(generic, 1);
-				*menu = term->ratconn;
-				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-								&theNet->Name[2], &((pcb_lib_menu_t *) (term->ratconn))->Name[2]);
-				pcb_stub_rat_found_short((pcb_any_obj_t *)term, &theNet->Name[2]);
-			}
+	if (newone) {
+		menu = vtptr_alloc_append(generic, 1);
+		*menu = term->ratconn;
+		pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
+						&theNet->Name[2], &((pcb_lib_menu_t *) (term->ratconn))->Name[2]);
+		pcb_stub_rat_found_short((pcb_any_obj_t *)term, &theNet->Name[2]);
+	}
 	return menu;
 }
 
