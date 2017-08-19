@@ -388,6 +388,73 @@ static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *g
 	return menu;
 }
 
+static void **find_shorts_in_subc(pcb_subc_t *subc_in, vtptr_t *generic, pcb_lib_menu_t *theNet, void **menu, pcb_bool *warn)
+{
+#warning subc TODO: check for nonetlist; ignore subc if found
+	PCB_VIA_LOOP(subc_in->data);
+	{
+		if (via->term == NULL)
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
+			*warn = pcb_true;
+			menu = found_short((pcb_any_obj_t *)subc_in, (pcb_any_obj_t *)via, generic, theNet, menu);
+		}
+	}
+	PCB_END_LOOP;
+
+	PCB_LINE_ALL_LOOP(subc_in->data);
+	{
+		if (line->term == NULL)
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)) {
+			*warn = pcb_true;
+			menu = found_short((pcb_any_obj_t *)subc_in, (pcb_any_obj_t *)line, generic, theNet, menu);
+		}
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_ARC_ALL_LOOP(subc_in->data);
+	{
+		if (arc->term == NULL)
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, arc)) {
+			*warn = pcb_true;
+			menu = found_short((pcb_any_obj_t *)subc_in, (pcb_any_obj_t *)arc, generic, theNet, menu);
+		}
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_POLY_ALL_LOOP(subc_in->data);
+	{
+		if (polygon->term == NULL)
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon)) {
+			*warn = pcb_true;
+			menu = found_short((pcb_any_obj_t *)subc_in, (pcb_any_obj_t *)polygon, generic, theNet, menu);
+		}
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_TEXT_ALL_LOOP(subc_in->data);
+	{
+		if (text->term == NULL)
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, text)) {
+			*warn = pcb_true;
+			menu = found_short((pcb_any_obj_t *)subc_in, (pcb_any_obj_t *)text, generic, theNet, menu);
+		}
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_SUBC_LOOP(subc_in->data);
+	{
+		menu = find_shorts_in_subc(subc, generic, theNet, menu, warn);
+	}
+	PCB_END_LOOP;
+	return menu;
+}
+
+
 static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 {
 	pcb_bool warn = pcb_false;
@@ -420,6 +487,11 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 		}
 	}
 	PCB_ENDALL_LOOP;
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		menu = find_shorts_in_subc(subc, &generic, theNet, menu, &warn);
+	}
+	PCB_END_LOOP;
 	vtptr_uninit(&generic);
 	return (warn);
 }
