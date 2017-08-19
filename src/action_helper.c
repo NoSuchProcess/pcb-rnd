@@ -235,57 +235,73 @@ pcb_bool saved_mode = pcb_false;
 
 static void AdjustAttachedBox(void);
 
+
 void pcb_clear_warnings()
 {
+	pcb_rtree_it_t it;
+	pcb_box_t *n;
+	int li;
+	pcb_layer_t *l;
+
 	conf_core.temp.rat_warn = pcb_false;
-	PCB_PIN_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pin)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN, pin);
-			pcb_pin_invalidate_draw(pin);
+
+	for(n = pcb_r_first(PCB->Data->pin_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+			pcb_pin_invalidate_draw((pcb_pin_t *)n);
 		}
 	}
-	PCB_ENDALL_LOOP;
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_WARN, via)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN, via);
-			pcb_via_invalidate_draw(via);
+	pcb_r_end(&it);
+
+	for(n = pcb_r_first(PCB->Data->via_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+			pcb_via_invalidate_draw((pcb_pin_t *)n);
 		}
 	}
-	PCB_END_LOOP;
-	PCB_PAD_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN, pad);
-			pcb_pad_invalidate_draw(pad);
+	pcb_r_end(&it);
+
+	for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+			pcb_pad_invalidate_draw((pcb_pad_t *)n);
 		}
 	}
-	PCB_ENDALL_LOOP;
-	PCB_LINE_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_WARN, line)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN, line);
-			pcb_line_invalidate_draw(layer, line);
+	pcb_r_end(&it);
+
+	for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
+		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+				pcb_line_invalidate_draw(l, (pcb_line_t *)n);
+			}
 		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_ARC_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN, arc);
-			pcb_arc_invalidate_draw(layer, arc);
+		pcb_r_end(&it);
+
+		for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+				pcb_arc_invalidate_draw(l, (pcb_arc_t *)n);
+			}
 		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_POLY_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN, polygon);
-			pcb_poly_invalidate_draw(layer, polygon);
+		pcb_r_end(&it);
+
+		for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+				pcb_poly_invalidate_draw(l, (pcb_polygon_t *)n);
+			}
 		}
+		pcb_r_end(&it);
+
+		for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+				pcb_text_invalidate_draw(l, (pcb_text_t *)n);
+			}
+		}
+		pcb_r_end(&it);
 	}
-	PCB_ENDALL_LOOP;
 
 	pcb_draw();
 }
