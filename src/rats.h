@@ -50,7 +50,7 @@ struct pcb_connection_s {  /* holds a connection (rat) */
 };
 
 pcb_rat_t *pcb_rat_add_net(void);
-char *pcb_connection_name(int, void *, void *);
+char *pcb_connection_name(pcb_any_obj_t *obj);
 
 pcb_bool pcb_rat_add_all(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
 pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t *, pcb_connection_t *, pcb_bool);

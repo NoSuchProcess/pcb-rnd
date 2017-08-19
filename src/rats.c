@@ -48,6 +48,7 @@
 #include "vtptr.h"
 #include "obj_rat_draw.h"
 #include "obj_term.h"
+#include "obj_subc_parent.h"
 
 #define STEP_POINT 100
 
@@ -944,7 +945,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 
 	/* will work for pins to since the FLAG is common */
 	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);
-	strcpy(name1, pcb_connection_name(found, ptr1, ptr2));
+	strcpy(name1, pcb_connection_name(ptr2));
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 5);
 	if (found == PCB_TYPE_NONE) {
@@ -957,7 +958,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 		return (NULL);
 	}
 	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? Sgrp : Cgrp);
-	name2 = pcb_connection_name(found, ptr1, ptr2);
+	name2 = pcb_connection_name(ptr2);
 
 	menu = pcb_netnode_to_netname(name1);
 	if (menu) {
@@ -1012,25 +1013,30 @@ ratIt:
 }
 
 
-char *pcb_connection_name(int type, void *ptr1, void *ptr2)
+char *pcb_connection_name(pcb_any_obj_t *obj)
 {
 	static char name[256];
-	char *num;
-	pcb_any_obj_t *obj = ptr2;
+	const char *num, *parent = NULL;
+	pcb_subc_t *subc;
 
-	switch (type) {
-	case PCB_TYPE_PIN:
-		num = ((pcb_pin_t *) ptr2)->Number;
+	switch (obj->type) {
+	case PCB_OBJ_PIN:
+		num = ((pcb_pin_t *)obj)->Number;
+		parent = PCB_ELEM_NAME_REFDES((pcb_element_t*)((pcb_pin_t *)obj)->Element);
 		break;
-	case PCB_TYPE_PAD:
-		num = ((pcb_pad_t *) ptr2)->Number;
+	case PCB_OBJ_PAD:
+		num = ((pcb_pad_t *)obj)->Number;
+		parent = PCB_ELEM_NAME_REFDES((pcb_element_t*)((pcb_pad_t *)obj)->Element);
 		break;
 	default:
 		if (obj->term == NULL)
 			return NULL;
 		num = obj->term;
+		subc = pcb_obj_parent_subc(obj);
+		if (subc != NULL)
+			parent = subc->refdes;
 	}
-	strcpy(name, PCB_UNKNOWN(get_refdes(ptr1)));
+	strcpy(name, PCB_UNKNOWN(parent));
 	strcat(name, "-");
 	strcat(name, PCB_UNKNOWN(num));
 	return (name);

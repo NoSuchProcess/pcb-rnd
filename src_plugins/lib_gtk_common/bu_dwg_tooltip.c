@@ -65,7 +65,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD || (((pcb_any_obj_t *)ptr2)->term != NULL))
 		elename = (char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1));
 
-	pinname = pcb_connection_name(type, ptr1, ptr2);
+	pinname = pcb_connection_name(ptr2);
 
 	if (pinname == NULL)
 		return NULL;
