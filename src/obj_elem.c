@@ -68,8 +68,10 @@ pcb_element_t *pcb_element_alloc(pcb_data_t * data)
 	new_obj->type = PCB_OBJ_ELEMENT;
 	PCB_SET_PARENT(new_obj, data, data);
 
-	for(n = 0; n < PCB_MAX_ELEMENTNAMES; n++)
+	for(n = 0; n < PCB_MAX_ELEMENTNAMES; n++) {
 		new_obj->Name[n].type = PCB_OBJ_ETEXT;
+		PCB_SET_PARENT(&new_obj->Name[n], element, new_obj);
+	}
 
 	elementlist_append(&data->Element, new_obj);
 
@@ -491,6 +493,7 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 	char *old = Element->Name[which].TextString;
 
 	Element->Name[which].type = PCB_OBJ_ETEXT;
+	PCB_SET_PARENT(&Element->Name[which], element, Element);
 #ifdef DEBUG
 	printf("In ChangeElementText, updating old TextString %s to %s\n", old, new_name);
 #endif
