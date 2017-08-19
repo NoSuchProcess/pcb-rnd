@@ -59,7 +59,7 @@ static void log_notify_mark_change(pcb_bool changes_complete)
 
 static int log_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	pcb_fprintf(out_, "set_layer(group=%ld, layer=%ld, flags=%lx, empty=%s", group, layer, flags, is_empty ? "true" : "false");
+	pcb_fprintf(out_, "set_layer(group=%ld, layer=%ld, flags=%lx, empty=%s)\n", group, layer, flags, is_empty ? "true" : "false");
 	return delegatee_->set_layer_group(group, layer, flags, is_empty);
 }
 
