@@ -96,7 +96,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 }
 
 /* returns 0 on succes */
-static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
+static int proc_short(pcb_any_obj_t *term, int ignore)
 {
 	pcb_find_callback_t old_cb;
 	pcb_coord_t x, y;
@@ -111,28 +111,8 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 	if (!conf_mincut.plugins.mincut.enable)
 		return bad_gr;
 
-	/* only one should be set, but one must be set */
-	assert((pin != NULL) || (pad != NULL));
-	assert((pin == NULL) || (pad == NULL));
-
-	if (pin != NULL) {
-		debprintf("short on pin!\n");
-		PCB_FLAG_SET(PCB_FLAG_WARN, pin);
-		x = pin->X;
-		y = pin->Y;
-	}
-	else if (pad != NULL) {
-		debprintf("short on pad!\n");
-		PCB_FLAG_SET(PCB_FLAG_WARN, pad);
-		if (PCB_FLAG_TEST(PCB_FLAG_EDGE2, pad)) {
-			x = pad->Point2.X;
-			y = pad->Point2.Y;
-		}
-		else {
-			x = pad->Point1.X;
-			y = pad->Point1.Y;
-		}
-	}
+	pcb_obj_center(term, &x, &y);
+	debprintf("short on terminal\n");
 
 	/* run only if net is not ignored */
 	if (ignore)
@@ -337,21 +317,18 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 typedef struct pinpad_s pinpad_t;
 struct pinpad_s {
 	int ignore;										/* if 1, changed our mind, do not check */
-	pcb_pin_t *pin;
-	pcb_pad_t *pad;
+	pcb_any_obj_t *term;
 	const char *with_net;					/* the name of the net this pin/pad is in short with */
 	pinpad_t *next;
 };
 
 static pinpad_t *shorts = NULL;
 
-void rat_found_short(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net)
+void rat_found_short(pcb_any_obj_t *term, const char *with_net)
 {
 	pinpad_t *pp;
-	pp = malloc(sizeof(pinpad_t));
-	pp->ignore = 0;
-	pp->pin = pin;
-	pp->pad = pad;
+	pp = calloc(sizeof(pinpad_t), 1);
+	pp->term = term;
 	pp->with_net = with_net;
 	pp->next = shorts;
 	shorts = pp;
@@ -364,14 +341,10 @@ void rat_proc_shorts(void)
 	for (n = shorts; n != NULL; n = next) {
 		next = n->next;
 
-		if (n->pin != NULL)
-			PCB_FLAG_SET(PCB_FLAG_WARN, n->pin);
-		if (n->pad != NULL)
-			PCB_FLAG_SET(PCB_FLAG_WARN, n->pad);
-
+		PCB_FLAG_SET(PCB_FLAG_WARN, n->term);
 
 		/* run only if net is not ignored */
-		if ((!bad_gr) && (proc_short(n->pin, n->pad, n->ignore) != 0)) {
+		if ((!bad_gr) && (proc_short(n->term, n->ignore) != 0)) {
 			fprintf(stderr, "Can't run mincut :(\n");
 			bad_gr = 1;
 		}
@@ -380,8 +353,8 @@ void rat_proc_shorts(void)
 			/* check if the rest of the shorts affect the same nets - ignore them if so */
 			for (i = n->next; i != NULL; i = i->next) {
 				pcb_lib_menu_t *spn, *spi;
-				spn = (n->pin != NULL) ? n->pin->ratconn : n->pad->ratconn;
-				spi = (i->pin != NULL) ? i->pin->ratconn : i->pad->ratconn;
+				spn = n->term->ratconn;
+				spi = i->term->ratconn;
 
 				if ((spn == NULL) || (spi == NULL))
 					continue;

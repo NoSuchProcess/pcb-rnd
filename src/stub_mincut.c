@@ -23,23 +23,19 @@
 #include "config.h"
 #include <stdlib.h>
 #include "stub_mincut.h"
-#include "obj_pinvia.h"
-#include "obj_pad.h"
+#include "obj_common.h"
 
 static void stub_rat_proc_shorts_dummy(void)
 {
 }
 
-static void stub_rat_found_short_dummy(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net)
+static void stub_rat_found_short_dummy(pcb_any_obj_t *term, const char *with_net)
 {
 	/* original behavior: just warn at random pins/pads */
-	if (pin != NULL)
-		PCB_FLAG_SET(PCB_FLAG_WARN, pin);
-	if (pad != NULL)
-		PCB_FLAG_SET(PCB_FLAG_WARN, pad);
+	PCB_FLAG_SET(PCB_FLAG_WARN, term);
 
 	stub_rat_proc_shorts_dummy();
 }
 
-void (*pcb_stub_rat_found_short)(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net) = stub_rat_found_short_dummy;
+void (*pcb_stub_rat_found_short)(pcb_any_obj_t *term, const char *with_net) = stub_rat_found_short_dummy;
 void (*pcb_stub_rat_proc_shorts)(void) = stub_rat_proc_shorts_dummy;
