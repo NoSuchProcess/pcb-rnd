@@ -142,6 +142,9 @@ void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
 			*x = ((pcb_pin_t *)(obj))->X;
 			*y = ((pcb_pin_t *)(obj))->Y;
 			break;
+		case PCB_OBJ_ARC:
+			pcb_arc_middle((const pcb_arc_t *)obj, x, y);
+			break;
 		default:
 			*x = (obj->BoundingBox.X1 + obj->BoundingBox.X2) / 2;
 			*y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2) / 2;

@@ -761,6 +761,12 @@ static void arc_label_pos(const pcb_arc_t *arc, pcb_coord_t *x0, pcb_coord_t *y0
 	*vert = (((la < 45) && (la > -45)) || ((la > 135) && (la < 225)));
 }
 
+void pcb_arc_middle(const pcb_arc_t *arc, pcb_coord_t *x, pcb_coord_t *y)
+{
+	pcb_bool_t waste;
+	arc_label_pos(arc, x, y, &waste);
+}
+
 void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 {
 	if (arc->term != NULL) {
