@@ -1122,7 +1122,7 @@ static pcb_r_dir_t LOCtoRatArc_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, arc) && IsRatPointOnLineSpec(i->Point, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && IsRatPointOnArcSpec(i->Point, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_RATLINE, &i->Point, PCB_FCT_RAT))
 			longjmp(i->env, 1);
 	}
