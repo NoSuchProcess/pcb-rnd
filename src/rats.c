@@ -358,10 +358,39 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *De
 	memset(&Netl->Net[Netl->NetN], 0, sizeof(pcb_net_t));
 }
 
+static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *generic, pcb_lib_menu_t *theNet, void **menu)
+{
+	pcb_bool newone;
+	int i;
+
+			if (!term->ratconn) {
+				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to %s terminal %s\n"),
+								&theNet->Name[2], PCB_UNKNOWN(get_refdes(parent)), PCB_UNKNOWN(get_termid(term)));
+				pcb_stub_rat_found_short(term, &theNet->Name[2]);
+				return menu;
+			}
+
+			newone = pcb_true;
+			for(i = 0; i < vtptr_len(generic); i++) {
+				if (generic->array[i] == term->ratconn) {
+					newone = pcb_false;
+					break;
+				}
+			}
+
+			if (newone) {
+				menu = vtptr_alloc_append(generic, 1);
+				*menu = term->ratconn;
+				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
+								&theNet->Name[2], &((pcb_lib_menu_t *) (term->ratconn))->Name[2]);
+				pcb_stub_rat_found_short((pcb_any_obj_t *)term, &theNet->Name[2]);
+			}
+	return menu;
+}
+
 static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 {
-	pcb_bool newone, warn = pcb_false;
-	int i;
+	pcb_bool warn = pcb_false;
 	vtptr_t generic;
 	/* the first connection was starting point so
 	 * the menu is always non-null
@@ -377,27 +406,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 /* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pin->Element)*/
 		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
-			if (!pin->ratconn) {
-				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
-								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pin->Number));
-				pcb_stub_rat_found_short((pcb_any_obj_t *)pin, &theNet->Name[2]);
-				continue;
-			}
-			newone = pcb_true;
-			for(i = 0; i < vtptr_len(&generic); i++) {
-				if (generic.array[i] == pin->ratconn) {
-					newone = pcb_false;
-					break;
-				}
-			}
-
-			if (newone) {
-				menu = vtptr_alloc_append(&generic, 1);
-				*menu = pin->ratconn;
-				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-								&theNet->Name[2], &((pcb_lib_menu_t *) (pin->ratconn))->Name[2]);
-				pcb_stub_rat_found_short((pcb_any_obj_t *)pin, &theNet->Name[2]);
-			}
+			menu = found_short((pcb_any_obj_t *)element, (pcb_any_obj_t *)pin, &generic, theNet, menu);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -407,27 +416,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 /* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pad->Element)*/
 		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
-			if (!pad->ratconn) {
-				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
-								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pad->Number));
-				pcb_stub_rat_found_short((pcb_any_obj_t *)pad, &theNet->Name[2]);
-				continue;
-			}
-			newone = pcb_true;
-			for(i = 0; i < vtptr_len(&generic); i++) {
-				if (generic.array[i] == pad->ratconn) {
-					newone = pcb_false;
-					break;
-				}
-			}
-
-			if (newone) {
-				menu = vtptr_alloc_append(&generic, 1);
-				*menu = pad->ratconn;
-				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-								&theNet->Name[2], &((pcb_lib_menu_t *) (pad->ratconn))->Name[2]);
-				pcb_stub_rat_found_short((pcb_any_obj_t *)pad, &theNet->Name[2]);
-			}
+			menu = found_short((pcb_any_obj_t *)element, (pcb_any_obj_t *)pad, &generic, theNet, menu);
 		}
 	}
 	PCB_ENDALL_LOOP;
