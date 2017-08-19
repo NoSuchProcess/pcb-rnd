@@ -211,6 +211,50 @@ static const char *get_termid(pcb_any_obj_t *obj)
 	}
 }
 
+static void clear_drc_flag(int clear_ratconn)
+{
+		pcb_rtree_it_t it;
+		pcb_box_t *n;
+		int li;
+		pcb_layer_t *l;
+
+		for(n = pcb_r_first(PCB->Data->pin_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+			if (clear_ratconn)
+				((pcb_pin_t *)n)->ratconn = NULL;
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
+		}
+		pcb_r_end(&it);
+
+		for(n = pcb_r_first(PCB->Data->via_tree, &it); n != NULL; n = pcb_r_next(&it))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
+		pcb_r_end(&it);
+
+		for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+			if (clear_ratconn)
+				((pcb_pad_t *)n)->ratconn = NULL;
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pad_t *)n);
+		}
+		pcb_r_end(&it);
+
+		for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
+			for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_line_t *)n);
+			pcb_r_end(&it);
+
+			for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_arc_t *)n);
+			pcb_r_end(&it);
+
+			for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_polygon_t *)n);
+			pcb_r_end(&it);
+
+			for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_text_t *)n);
+			pcb_r_end(&it);
+		}
+}
+
 /* ---------------------------------------------------------------------------
  * Read the library-netlist build a pcb_true Netlist structure
  */
@@ -234,18 +278,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 
 	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
-		PCB_PIN_ALL_LOOP(PCB->Data);
-		{
-			pin->ratconn = NULL;
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
-		}
-		PCB_ENDALL_LOOP;
-		PCB_PAD_ALL_LOOP(PCB->Data);
-		{
-			pad->ratconn = NULL;
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
-		}
-		PCB_ENDALL_LOOP;
+		clear_drc_flag(1);
 		PCB_MENU_LOOP(net_menu);
 		{
 			if (menu->Name[0] == '*' || menu->flag == 0) {
@@ -296,42 +329,8 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	}
 
 	/* clear all visit marks */
-	{
-		pcb_rtree_it_t it;
-		pcb_box_t *n;
-		int li;
-		pcb_layer_t *l;
+	clear_drc_flag(0);
 
-		for(n = pcb_r_first(PCB->Data->pin_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
-		pcb_r_end(&it);
-
-		for(n = pcb_r_first(PCB->Data->via_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
-		pcb_r_end(&it);
-
-		for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pad_t *)n);
-		pcb_r_end(&it);
-
-		for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
-			for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_line_t *)n);
-			pcb_r_end(&it);
-
-			for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_arc_t *)n);
-			pcb_r_end(&it);
-
-			for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_polygon_t *)n);
-			pcb_r_end(&it);
-
-			for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_text_t *)n);
-			pcb_r_end(&it);
-		}
-	}
 	return (Wantlist);
 }
 
