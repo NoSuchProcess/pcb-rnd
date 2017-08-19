@@ -58,14 +58,14 @@ union pcb_parent_s {
 
 #define PCB_SET_PARENT(obj, ptype, parent_ptr) \
 	do { \
-		obj->parent_type = PCB_PARENT_TYPENAME_ ## ptype; \
-		obj->parent.ptype = parent_ptr; \
+		(obj)->parent_type = PCB_PARENT_TYPENAME_ ## ptype; \
+		(obj)->parent.ptype = parent_ptr; \
 	} while(0)
 
 #define PCB_CLEAR_PARENT(obj) \
 	do { \
-		obj->parent_type = PCB_PARENT_INVALID; \
-		obj->parent.any = NULL; \
+		(obj)->parent_type = PCB_PARENT_INVALID; \
+		(obj)->parent.any = NULL; \
 	} while(0)
 
 #endif
