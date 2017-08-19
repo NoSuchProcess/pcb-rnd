@@ -158,7 +158,7 @@ static inline PCB_FUNC_UNUSED unsigned pcb_hash_coord(pcb_coord_t c)
 
 /* Return the geometric center of an object, as shown (center of bbox usually,
    but not for an arc) */
-void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y);
+void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y);
 
 /* Update cached attributes (->term) */
 void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value);

@@ -135,12 +135,12 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src)
 	pcb_attribute_copy_all(&o->Attributes, src);
 }
 
-void pcb_obj_center(pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
+void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
 {
 	switch (obj->type) {
 		case PCB_OBJ_PIN:
-			*x = ((pcb_pin_t *)(obj))->X;
-			*y = ((pcb_pin_t *)(obj))->Y;
+			*x = ((const pcb_pin_t *)(obj))->X;
+			*y = ((const pcb_pin_t *)(obj))->Y;
 			break;
 		case PCB_OBJ_ARC:
 			pcb_arc_middle((const pcb_arc_t *)obj, x, y);
