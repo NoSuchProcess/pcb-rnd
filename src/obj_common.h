@@ -132,14 +132,14 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 
 /* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
    based on this. */
-typedef struct {
+struct pcb_any_obj_s {
 	PCB_ANYOBJECTFIELDS;
-} pcb_any_obj_t;
+};
 
 /* Lines, rats, pads, etc.  */
-typedef struct {
+struct pcb_any_line_s {
 	PCB_ANYLINEFIELDS;
-} pcb_any_line_t;
+};
 
 /*** Functions and macros used for hashing ***/
 

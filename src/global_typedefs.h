@@ -50,6 +50,9 @@ typedef struct pcb_element_s pcb_element_t;
 typedef struct pcb_subc_s pcb_subc_t;
 typedef struct pcb_text_s pcb_text_t;
 
+typedef struct pcb_any_obj_s pcb_any_obj_t;
+typedef struct pcb_any_line_s pcb_any_line_t;
+
 typedef union pcb_parent_s pcb_parent_t;
 
 typedef struct pcb_plug_io_s pcb_plug_io_t;
