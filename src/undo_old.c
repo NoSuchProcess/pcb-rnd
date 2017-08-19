@@ -75,7 +75,6 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void DrawRecoveredObject(int, void *, void *, void *);
 static pcb_bool UndoRotate(UndoListTypePtr);
 static pcb_bool UndoChangeName(UndoListTypePtr);
 static pcb_bool UndoCopyOrCreate(UndoListTypePtr);
@@ -136,12 +135,9 @@ static UndoListType *GetUndoSlot(int CommandType, int ID, int Kind)
 /* ---------------------------------------------------------------------------
  * redraws the recovered object
  */
-static void DrawRecoveredObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+static void DrawRecoveredObject(pcb_any_obj_t *obj)
 {
-	if (Type & (PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ARC))
-		pcb_draw_obj((pcb_any_obj_t *)Ptr2);
-	else
-		pcb_draw_obj((pcb_any_obj_t *)Ptr2);
+	pcb_draw_obj(obj);
 }
 
 /* ---------------------------------------------------------------------------
@@ -545,7 +541,7 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 	if (type != PCB_TYPE_NONE) {
 		pcb_move_obj_to_buffer(PCB, PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 		if (pcb_undo_and_draw)
-			DrawRecoveredObject(type, ptr1, ptr2, ptr3);
+			DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 		Entry->Type = PCB_UNDO_CREATE;
 		return (pcb_true);
 	}
@@ -692,7 +688,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	pcb_move_obj_to_buffer(PCB, RemoveList, PCB->Data, type, ptr1b, ptr2b, ptr3b);
 
 	if (pcb_undo_and_draw)
-		DrawRecoveredObject(Entry->Kind, ptr1, ptr2, ptr3);
+		DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 
 	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB, PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLYGON)
