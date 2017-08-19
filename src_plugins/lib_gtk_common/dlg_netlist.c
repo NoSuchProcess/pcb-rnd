@@ -229,7 +229,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	pcb_lib_menu_t *node_net;
 	pcb_lib_entry_t *node;
 	pcb_connection_t conn;
-	pcb_coord_t x, y;
+	pcb_coord_t x = -1, y;
 	static gchar *node_name;
 	pcb_gtk_common_t *com = data;
 
@@ -277,16 +277,11 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	/* And lead the user to the location */
 	if (pcb_rat_seek_pad(node, &conn, pcb_false))
 		pcb_obj_center(conn.obj, &x, &y);
-		switch (conn.obj->type) {
-			case PCB_OBJ_PIN:
-				pcb_gui->set_crosshair(x, y, 0);
-				com->lead_user_to_location(x, y);
-				break;
-			case PCB_OBJ_PAD:
-				pcb_gui->set_crosshair(x, y, 0);
-				com->lead_user_to_location(x, y);
-				break;
-		}
+	
+	if (x >= 0) {
+		pcb_gui->set_crosshair(x, y, 0);
+		com->lead_user_to_location(x, y);
+	}
 }
 
 /* -------- The net (pcb_lib_menu_t) data model ----------
