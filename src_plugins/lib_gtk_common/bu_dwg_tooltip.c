@@ -39,6 +39,8 @@
 #include "const.h"
 #include "find.h"
 #include "board.h"
+#include "obj_subc.h"
+#include "obj_subc_parent.h"
 
 #define TOOLTIP_UPDATE_DELAY 200
 
@@ -62,8 +64,14 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 	if ((type & PCB_SILK_TYPE) && (pcb_layer_flags_(PCB, (pcb_layer_t *) ptr1) & PCB_LYT_SILK))
 		return NULL;
 
-	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD || (((pcb_any_obj_t *)ptr2)->term != NULL))
-		elename = (char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1));
+	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD) {
+		elename = (const char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1));
+	}
+	else if (((pcb_any_obj_t *)ptr2)->term != NULL) {
+		pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
+		if (subc != NULL)
+			elename = subc->refdes;
+	}
 
 	pinname = pcb_connection_name(ptr2);
 
