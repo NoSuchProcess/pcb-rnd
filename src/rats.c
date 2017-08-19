@@ -802,9 +802,6 @@ static int rat_used(char *name)
 	return 0;
 }
 
-	/* These next two functions moved from the original netlist.c as part of the
-	   |  gui code separation for the Gtk port.
-	 */
 pcb_rat_t *pcb_rat_add_net(void)
 {
 	static int ratDrawn = 0;
