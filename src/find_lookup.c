@@ -1105,7 +1105,7 @@ struct rat_info {
 	jmp_buf env;
 };
 
-static pcb_r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoRatLine_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1117,7 +1117,7 @@ static pcb_r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoRatPoly_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1167,11 +1167,11 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 		/* handle normal layers rats don't ever touch arcs by definition */
 		info.layer = layer;
 		if (setjmp(info.env) == 0)
-			r_search_pt(LAYER_PTR(layer)->line_tree, Point, 1, NULL, LOCtoRat_callback, &info, NULL);
+			r_search_pt(LAYER_PTR(layer)->line_tree, Point, 1, NULL, LOCtoRatLine_callback, &info, NULL);
 		else
 			return pcb_true;
 		if (setjmp(info.env) == 0)
-			r_search_pt(LAYER_PTR(layer)->polygon_tree, Point, 1, NULL, PolygonToRat_callback, &info, NULL);
+			r_search_pt(LAYER_PTR(layer)->polygon_tree, Point, 1, NULL, LOCtoRatPoly_callback, &info, NULL);
 	}
 
 	/* handle the special pad layers */
