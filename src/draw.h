@@ -122,4 +122,8 @@ void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double
    on top of everything. */
 void pcb_draw_delay_label_add(pcb_any_obj_t *obj);
 
+/* Return non-zero if extra terminal graphics should be drawn */
+#define pcb_draw_term_need_gfx(obj) \
+	(((obj)->term != NULL) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, (obj)) && !PCB_FLAG_TEST(PCB_FLAG_WARN, (obj)) && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (obj)))
+
 #endif

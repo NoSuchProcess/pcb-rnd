@@ -855,7 +855,7 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, drawn_area);
 	}
 	else {
-		if ((polygon->term != NULL) && (allow_term_gfx) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_WARN, polygon) && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
+		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon)) {
 			pcb_vnode_t *n, *head;
 			int i;
 

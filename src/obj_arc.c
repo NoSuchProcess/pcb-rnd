@@ -800,7 +800,7 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 
 	if (!conf_core.editor.thin_draw)
 	{
-		if ((arc->term != NULL) && (allow_term_gfx) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_WARN, arc) && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
+		if ((allow_term_gfx) && pcb_draw_term_need_gfx(arc)) {
 			pcb_gui->set_line_width(Output.active_padGC, arc->Thickness);
 			pcb_gui->draw_arc(Output.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			pcb_gui->set_line_width(Output.fgGC, arc->Thickness/4);
