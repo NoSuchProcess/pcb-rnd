@@ -1117,6 +1117,18 @@ static pcb_r_dir_t LOCtoRatLine_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+static pcb_r_dir_t LOCtoRatArc_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_arc_t *arc = (pcb_arc_t *) b;
+	struct rat_info *i = (struct rat_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, arc) && IsRatPointOnLineSpec(i->Point, arc)) {
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_RATLINE, &i->Point, PCB_FCT_RAT))
+			longjmp(i->env, 1);
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
 static pcb_r_dir_t LOCtoRatPoly_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
@@ -1164,8 +1176,11 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 		pcb_layer_id_t layer;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
-		/* handle normal layers rats don't ever touch arcs by definition */
 		info.layer = layer;
+		if (setjmp(info.env) == 0)
+			r_search_pt(LAYER_PTR(layer)->arc_tree, Point, 1, NULL, LOCtoRatArc_callback, &info, NULL);
+		else
+			return pcb_true;
 		if (setjmp(info.env) == 0)
 			r_search_pt(LAYER_PTR(layer)->line_tree, Point, 1, NULL, LOCtoRatLine_callback, &info, NULL);
 		else
