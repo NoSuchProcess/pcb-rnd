@@ -187,10 +187,33 @@ pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_
 	return (pcb_false);
 }
 
+static const char *get_refdes(void *ptr1)
+{
+	pcb_any_obj_t *obj = ptr1;
+	switch(obj->type) {
+		case PCB_OBJ_ELEMENT: return PCB_ELEM_NAME_REFDES((pcb_element_t *)ptr1);
+		case PCB_OBJ_SUBC:
+			if (((pcb_subc_t *)ptr1)->refdes != NULL)
+				return ((pcb_subc_t *)ptr1)->refdes;
+			return "<anon>";
+		default:
+			break;
+	}
+	return "<invalid>";
+}
+
+static const char *get_termid(pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_PIN: return ((pcb_pin_t *)obj)->Number;
+		case PCB_OBJ_PAD: return ((pcb_pad_t *)obj)->Number;
+		default: return obj->term;
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * Read the library-netlist build a pcb_true Netlist structure
  */
-
 pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 {
 	pcb_connection_t *connection;
@@ -247,9 +270,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.obj))
 						pcb_message(PCB_MSG_ERROR, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
-										PCB_ELEM_NAME_REFDES((pcb_element_t *) LastPoint.ptr1),
-										(LastPoint.obj->type ==
-										 PCB_OBJ_PIN) ? ((pcb_pin_t *) LastPoint.obj)->Number : ((pcb_pad_t *) LastPoint.obj)->Number);
+										get_refdes(LastPoint.ptr1), get_termid(LastPoint.obj));
 					else {
 						connection = pcb_rat_connection_alloc(net);
 						*connection = LastPoint;
@@ -808,6 +829,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 	char name1[256], *name2;
 	pcb_cardinal_t group1, group2;
 	char ratname[20];
+	const char *rd;
 	int found;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_lib_menu_t *menu;
@@ -823,7 +845,8 @@ pcb_rat_t *pcb_rat_add_net(void)
 		pcb_message(PCB_MSG_ERROR, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
-	if (PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == NULL || *PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == 0) {
+	rd = get_refdes(ptr1);
+	if ((rd == NULL) || (*rd == 0) || (*rd == '<')) {
 		pcb_message(PCB_MSG_ERROR, _("You must name the starting element first\n"));
 		return (NULL);
 	}
@@ -841,7 +864,8 @@ pcb_rat_t *pcb_rat_add_net(void)
 		pcb_message(PCB_MSG_ERROR, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
-	if (PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == NULL || *PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == 0) {
+	rd = get_refdes(ptr1);
+	if ((rd == NULL) || (*rd == 0) || (*rd == '<')) {
 		pcb_message(PCB_MSG_ERROR, _("You must name the ending element first\n"));
 		return (NULL);
 	}
@@ -916,7 +940,7 @@ char *pcb_connection_name(int type, void *ptr1, void *ptr2)
 	default:
 		return (NULL);
 	}
-	strcpy(name, PCB_UNKNOWN(PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1)));
+	strcpy(name, PCB_UNKNOWN(get_refdes(ptr1)));
 	strcat(name, "-");
 	strcat(name, PCB_UNKNOWN(num));
 	return (name);
