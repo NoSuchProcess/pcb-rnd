@@ -122,6 +122,8 @@ This is a shortcut for @code{Report(Object)}.
 
 %end-doc */
 
+#define gen_locked(obj) (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) ? "It is LOCKED.\n" : "")
+
 static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -149,7 +151,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"It is a pure hole of diameter %$mS.\n"
 										"Name = \"%s\"."
 										"%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
-										via->X, via->Y, via->DrillingHole, PCB_EMPTY(via->Name), PCB_FLAG_TEST(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
+										via->X, via->Y, via->DrillingHole, PCB_EMPTY(via->Name), gen_locked(via));
 			else
 				report = pcb_strdup_printf("%m+VIA ID# %ld;  Flags:%s\n"
 										"(X,Y) = %$mD.\n"
@@ -165,7 +167,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										via->Clearance / 2,
 										(via->Thickness - via->DrillingHole) / 2,
 										via->Mask,
-										(via->Mask - via->Thickness) / 2, PCB_EMPTY(via->Name), PCB_FLAG_TEST(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
+										(via->Mask - via->Thickness) / 2, PCB_EMPTY(via->Name), gen_locked(via));
 			break;
 		}
 	case PCB_TYPE_PIN:
@@ -194,7 +196,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"It is owned by element %$mS.\n"
 										"%s", USER_UNITMASK, Pin->ID, pcb_strflg_f2s(Pin->Flags, PCB_TYPE_PIN),
 										Pin->X, Pin->Y, Pin->DrillingHole,
-										PCB_EMPTY(element->Name[1].TextString), PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
+										PCB_EMPTY(element->Name[1].TextString), gen_locked(Pin));
 			else
 				report = pcb_strdup_printf(
 										"%m+PIN ID# %ld;  Flags:%s\n" "(X,Y) = %$mD.\n"
@@ -213,7 +215,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										Pin->Mask,
 										(Pin->Mask - Pin->Thickness) / 2,
 										PCB_EMPTY(Pin->Name),
-										PCB_EMPTY(element->Name[1].TextString), PCB_EMPTY(Pin->Number), PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
+										PCB_EMPTY(element->Name[1].TextString), PCB_EMPTY(Pin->Number), gen_locked(Pin));
 			break;
 		}
 	case PCB_TYPE_LINE:
@@ -239,7 +241,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
 									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-									PCB_UNKNOWN(line->Number), PCB_FLAG_TEST(PCB_FLAG_LOCK, line) ? "It is LOCKED.\n" : "");
+									PCB_UNKNOWN(line->Number), gen_locked(line));
 			break;
 		}
 	case PCB_TYPE_RATLINE:
@@ -292,7 +294,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
 									box.X1, box.Y1,
 									box.X2, box.Y2,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) ? "It is LOCKED.\n" : "");
+									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc));
 			break;
 		}
 	case PCB_TYPE_POLYGON:
@@ -318,7 +320,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
 									Polygon->HoleIndexN,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon) ? "It is LOCKED.\n" : "");
+									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Polygon));
 			break;
 		}
 	case PCB_TYPE_PAD:
@@ -366,7 +368,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									PCB_EMPTY(element->Name[1].TextString),
 									PCB_EMPTY(Pad->Number),
 									PCB_FLAG_TEST(PCB_FLAG_ONSOLDER,
-														Pad) ? "solder (bottom)" : "component", PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad) ? "It is LOCKED.\n" : "");
+														Pad) ? "solder (bottom)" : "component", gen_locked(Pad));
 			break;
 		}
 	case PCB_TYPE_ELEMENT:
@@ -399,7 +401,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) ? ",\n  but it's hidden" : "",
 									element->MarkX, element->MarkY,
 									PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? "solder (bottom)" : "component",
-									PCB_FLAG_TEST(PCB_FLAG_LOCK, element) ? "It is LOCKED.\n" : "");
+									gen_locked(element));
 			break;
 		}
 	case PCB_TYPE_TEXT:
@@ -436,7 +438,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									text->TextString, text->Direction,
 									text->BoundingBox.X1, text->BoundingBox.Y1,
 									text->BoundingBox.X2, text->BoundingBox.Y2,
-									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", PCB_FLAG_TEST(PCB_FLAG_LOCK, text) ? "It is LOCKED.\n" : "");
+									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", gen_locked(text));
 			break;
 		}
 	case PCB_TYPE_LINE_POINT:
