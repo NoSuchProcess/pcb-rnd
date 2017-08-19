@@ -869,7 +869,7 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 				y = (n->prev->point[1] + n->point[1] + n->next->point[1]) / 3;
 
 #warning subc TODO: check if x;y is within the poly, but use a cheaper method than the official
-				r = PCB_MM_TO_COORD(0.2);
+				r = (PCB_DRAW_TERM_GFX_MIN_WIDTH + PCB_DRAW_TERM_GFX_MAX_WIDTH)/2;
 				pcb_gui->set_line_width(Output.fgGC, r);
 				pcb_gui->draw_line(Output.fgGC, x, y, x, y);
 			}
