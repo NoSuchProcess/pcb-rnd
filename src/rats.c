@@ -1016,6 +1016,7 @@ char *pcb_connection_name(int type, void *ptr1, void *ptr2)
 {
 	static char name[256];
 	char *num;
+	pcb_any_obj_t *obj = ptr2;
 
 	switch (type) {
 	case PCB_TYPE_PIN:
@@ -1025,7 +1026,9 @@ char *pcb_connection_name(int type, void *ptr1, void *ptr2)
 		num = ((pcb_pad_t *) ptr2)->Number;
 		break;
 	default:
-		return (NULL);
+		if (obj->term == NULL)
+			return NULL;
+		num = obj->term;
 	}
 	strcpy(name, PCB_UNKNOWN(get_refdes(ptr1)));
 	strcat(name, "-");
