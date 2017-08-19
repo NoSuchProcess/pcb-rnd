@@ -54,7 +54,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 
 	/* check if there are any pins or pads at that position */
 
-	type = pcb_search_obj_by_location(PCB_TYPE_PIN | PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3, X, Y, Range);
+	type = pcb_search_obj_by_location(PCB_TYPEMASK_TERM, &ptr1, &ptr2, &ptr3, X, Y, Range);
 	if (type == PCB_TYPE_NONE)
 		return NULL;
 
@@ -62,7 +62,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 	if ((type & PCB_SILK_TYPE) && (pcb_layer_flags_(PCB, (pcb_layer_t *) ptr1) & PCB_LYT_SILK))
 		return NULL;
 
-	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD)
+	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD || (((pcb_any_obj_t *)ptr2)->term != NULL))
 		elename = (char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1));
 
 	pinname = pcb_connection_name(type, ptr1, ptr2);
