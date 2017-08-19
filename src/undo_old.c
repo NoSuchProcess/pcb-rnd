@@ -1118,6 +1118,7 @@ void pcb_undo_add_obj_to_create(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with flags changed
  */
+extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 void pcb_undo_add_obj_to_flag(void *obj_)
 {
 	UndoListTypePtr undo;
