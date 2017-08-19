@@ -929,7 +929,8 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 	char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if (Type == PCB_TYPE_VIA) {
+	if ((Type == PCB_TYPE_VIA) && (Pin->term == NULL)) {
+		/* normal via, not a terminal */
 		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, Pin))
 				color = conf_core.appearance.color.warn;
@@ -948,6 +949,7 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 			color = conf_core.appearance.color.via;
 	}
 	else {
+		/* terminal */
 		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, Pin))
 				color = conf_core.appearance.color.warn;
