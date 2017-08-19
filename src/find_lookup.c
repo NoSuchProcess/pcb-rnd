@@ -882,6 +882,26 @@ static pcb_r_dir_t LOCtoArcPad_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+static pcb_r_dir_t LOCtoArcRat_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_rat_t *rat = (pcb_rat_t *)b;
+	struct lo_info *i = (struct lo_info *)cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, rat)) {
+		if ((rat->group1 == i->layer)
+				&& IsRatPointOnArcSpec(&rat->Point1, &i->arc)) {
+			if (ADD_RAT_TO_LIST(rat, PCB_TYPE_ARC, &i->arc, PCB_FCT_RAT))
+				longjmp(i->env, 1);
+		}
+		else if ((rat->group2 == i->layer)
+						 && IsRatPointOnArcSpec(&rat->Point2, &i->arc)) {
+			if (ADD_RAT_TO_LIST(rat, PCB_TYPE_ARC, &i->arc, PCB_FCT_RAT))
+				longjmp(i->env, 1);
+		}
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
 /* ---------------------------------------------------------------------------
  * searches all LOs that are connected to the given arc on the given
  * layergroup. All found connections are added to the list
@@ -897,13 +917,24 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 
 	info.arc = *Arc;
 	EXPAND_BOUNDS(&info.arc);
+
+
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
 		pcb_layer_id_t layer;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
+		info.layer = LayerGroup;
+
+		/* add the new rat lines */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(PCB->Data->rat_tree, &info.arc.BoundingBox, NULL, LOCtoArcRat_callback, &info, NULL);
+		else
+			return pcb_true;
+
 		info.layer = layer;
+
 		/* add arcs */
 		if (setjmp(info.env) == 0)
 			pcb_r_search(LAYER_PTR(layer)->line_tree, &info.arc.BoundingBox, NULL, LOCtoArcLine_callback, &info, NULL);

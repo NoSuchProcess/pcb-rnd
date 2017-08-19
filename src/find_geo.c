@@ -41,6 +41,7 @@
  */
 
 #include "macro.h"
+#include "obj_arc_ui.h"
 
 #define EXPAND_BOUNDS(p) if (Bloat > 0) {\
        (p)->BoundingBox.X1 -= Bloat; \
@@ -242,6 +243,30 @@ static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
 
 	/* middle point */
 	pcb_obj_center((pcb_any_obj_t *)Line, &cx, &cy);
+	if ((Point->X == cx) && (Point->Y == cy))
+		return pcb_true;
+
+	return (pcb_false);
+}
+
+/* ---------------------------------------------------------------------------
+ * Tests if point is same as arc end point or center point
+ */
+static pcb_bool IsRatPointOnArcSpec(pcb_point_t *Point, pcb_arc_t *arc)
+{
+	pcb_coord_t cx, cy;
+
+	/* either end */
+	pcb_arc_get_end(arc, 0, &cx, &cy);
+	if ((Point->X == cx) && (Point->Y == cy))
+		return pcb_true;
+
+	pcb_arc_get_end(arc, 1, &cx, &cy);
+	if ((Point->X == cx) && (Point->Y == cy))
+		return pcb_true;
+
+	/* middle point */
+	pcb_arc_middle(arc, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
 		return pcb_true;
 
