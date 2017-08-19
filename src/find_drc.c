@@ -244,7 +244,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	switch (type) {
 	case PCB_TYPE_LINE:
 		if (line->Clearance < 2 * PCB->Bloat) {
-			pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, line);
 			message = _("Line with insufficient clearance inside polygon\n");
 			goto doIsBad;
@@ -252,7 +252,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 		break;
 	case PCB_TYPE_ARC:
 		if (arc->Clearance < 2 * PCB->Bloat) {
-			pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, arc);
 			message = _("Arc with insufficient clearance inside polygon\n");
 			goto doIsBad;
@@ -261,7 +261,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	case PCB_TYPE_PAD:
 		if (pad->Clearance && pad->Clearance < 2 * PCB->Bloat)
 			if (pcb_is_pad_in_poly(pad, polygon)) {
-				pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr2);
+				pcb_undo_add_obj_to_flag(ptr2);
 				PCB_FLAG_SET(TheFlag, pad);
 				message = _("Pad with insufficient clearance inside polygon\n");
 				goto doIsBad;
@@ -269,7 +269,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 		break;
 	case PCB_TYPE_PIN:
 		if (pin->Clearance && pin->Clearance < 2 * PCB->Bloat) {
-			pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, pin);
 			message = _("Pin with insufficient clearance inside polygon\n");
 			goto doIsBad;
@@ -277,7 +277,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 		break;
 	case PCB_TYPE_VIA:
 		if (pin->Clearance && pin->Clearance < 2 * PCB->Bloat) {
-			pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, pin);
 			message = _("Via with insufficient clearance inside polygon\n");
 			goto doIsBad;
@@ -289,7 +289,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	return PCB_R_DIR_NOT_FOUND;
 
 doIsBad:
-	pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
+	pcb_undo_add_obj_to_flag(polygon);
 	PCB_FLAG_SET(PCB_FLAG_FOUND, polygon);
 	pcb_poly_invalidate_draw(layer, polygon);
 	pcb_draw_obj(type, ptr1, ptr2);
@@ -401,7 +401,7 @@ int pcb_drc_all(void)
 			if (IsBad)
 				break;
 			if (line->Thickness < PCB->minWid) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
+				pcb_undo_add_obj_to_flag(line);
 				PCB_FLAG_SET(TheFlag, line);
 				pcb_line_invalidate_draw(layer, line);
 				drcerr_count++;
@@ -432,7 +432,7 @@ int pcb_drc_all(void)
 			if (IsBad)
 				break;
 			if (arc->Thickness < PCB->minWid) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
+				pcb_undo_add_obj_to_flag(arc);
 				PCB_FLAG_SET(TheFlag, arc);
 				pcb_arc_invalidate_draw(layer, arc);
 				drcerr_count++;
@@ -463,7 +463,7 @@ int pcb_drc_all(void)
 			if (IsBad)
 				break;
 			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
+				pcb_undo_add_obj_to_flag(pin);
 				PCB_FLAG_SET(TheFlag, pin);
 				pcb_pin_invalidate_draw(pin);
 				drcerr_count++;
@@ -486,7 +486,7 @@ int pcb_drc_all(void)
 				pcb_undo(pcb_false);
 			}
 			if (pin->DrillingHole < PCB->minDrill) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
+				pcb_undo_add_obj_to_flag(pin);
 				PCB_FLAG_SET(TheFlag, pin);
 				pcb_pin_invalidate_draw(pin);
 				drcerr_count++;
@@ -517,7 +517,7 @@ int pcb_drc_all(void)
 			if (IsBad)
 				break;
 			if (pad->Thickness < PCB->minWid) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
+				pcb_undo_add_obj_to_flag(pad);
 				PCB_FLAG_SET(TheFlag, pad);
 				pcb_pad_invalidate_draw(pad);
 				drcerr_count++;
@@ -548,7 +548,7 @@ int pcb_drc_all(void)
 			if (IsBad)
 				break;
 			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
+				pcb_undo_add_obj_to_flag(via);
 				PCB_FLAG_SET(TheFlag, via);
 				pcb_via_invalidate_draw(via);
 				drcerr_count++;
@@ -571,7 +571,7 @@ int pcb_drc_all(void)
 				pcb_undo(pcb_false);
 			}
 			if (via->DrillingHole < PCB->minDrill) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
+				pcb_undo_add_obj_to_flag(via);
 				PCB_FLAG_SET(TheFlag, via);
 				pcb_via_invalidate_draw(via);
 				drcerr_count++;

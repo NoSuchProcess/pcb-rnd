@@ -4537,7 +4537,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				if (pin) {
 					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_false);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
-					pcb_undo_add_obj_to_flag(type, pin->Element ? pin->Element : pin, pin, pin);
+					pcb_undo_add_obj_to_flag(pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
 					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_true);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
@@ -4666,7 +4666,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 			b = FindRouteBoxOnLayerGroup(rd, line->Point2.X, line->Point2.Y, line->group2);
 			if (!a || !b) {
 #ifdef DEBUG_STALE_RATS
-				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
+				pcb_undo_add_obj_to_flag(line);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, pcb_true, line);
 				pcb_rat_invalidate_draw(line, 0);
 #endif /* DEBUG_STALE_RATS */

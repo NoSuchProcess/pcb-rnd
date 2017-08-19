@@ -382,7 +382,7 @@ void *pcb_viaop_change_thermal(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_flag(Via);
 	if (!ctx->chgtherm.style)										/* remove the thermals */
 		PCB_FLAG_THERM_CLEAR(INDEXOFCURRENT, Via);
 	else
@@ -398,7 +398,7 @@ void *pcb_pinop_change_thermal(pcb_opctx_t *ctx, pcb_element_t *element, pcb_pin
 {
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, Pin, Pin);
+	pcb_undo_add_obj_to_flag(Pin);
 	if (!ctx->chgtherm.style)										/* remove the thermals */
 		PCB_FLAG_THERM_CLEAR(INDEXOFCURRENT, Pin);
 	else
@@ -626,7 +626,7 @@ void *pcb_viaop_change_square(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_via_invalidate_erase(Via);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, NULL, Via);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, NULL, Via, Via);
+	pcb_undo_add_obj_to_flag(Via);
 	PCB_FLAG_SQUARE_ASSIGN(ctx->chgsize.value, Via);
 	if (ctx->chgsize.value == 0)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Via);
@@ -647,7 +647,7 @@ void *pcb_pinop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_
 	pcb_pin_invalidate_erase(Pin);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, Element, Pin, Pin);
+	pcb_undo_add_obj_to_flag(Pin);
 	PCB_FLAG_SQUARE_ASSIGN(ctx->chgsize.value, Pin);
 	if (ctx->chgsize.value == 0)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Pin);
@@ -686,7 +686,7 @@ void *pcb_viaop_change_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_via_invalidate_erase(Via);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_flag(Via);
 	PCB_FLAG_TOGGLE(PCB_FLAG_OCTAGON, Via);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
@@ -720,7 +720,7 @@ void *pcb_pinop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin
 	pcb_pin_invalidate_erase(Pin);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, Element, Pin, Pin);
+	pcb_undo_add_obj_to_flag(Pin);
 	PCB_FLAG_TOGGLE(PCB_FLAG_OCTAGON, Pin);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -752,7 +752,7 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (pcb_false);
 	pcb_via_invalidate_erase(Via);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_flag(Via);
 	pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
 	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
@@ -901,7 +901,7 @@ void *pcb_viaop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin)
 {
 	if ((ctx->chgflag.flag & PCB_PIN_FLAGS) != ctx->chgflag.flag)
 		return NULL;
-	pcb_undo_add_obj_to_flag(PCB_FLAG_TEST(PCB_FLAG_PIN, pin) ? PCB_TYPE_PIN : PCB_TYPE_VIA, pin, pin, pin);
+	pcb_undo_add_obj_to_flag(pin);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, pin);
 	return pin;
 }

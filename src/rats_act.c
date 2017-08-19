@@ -102,7 +102,7 @@ static int pcb_act_AddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			}
 			PCB_END_LOOP;
 			if (shorty) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, shorty, shorty, shorty);
+				pcb_undo_add_obj_to_flag(shorty);
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, shorty);
 				pcb_rat_invalidate_draw(shorty);
 				pcb_draw();

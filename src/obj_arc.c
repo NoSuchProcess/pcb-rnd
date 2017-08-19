@@ -486,7 +486,7 @@ void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_false);
 	}
-	pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, Layer, Arc, Arc);
+	pcb_undo_add_obj_to_flag(Arc);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Arc);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -731,7 +731,7 @@ void *pcb_arcop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 {
 	if ((ctx->chgflag.flag & PCB_ARC_FLAGS) != ctx->chgflag.flag)
 		return NULL;
-	pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, Arc, Arc, Arc);
+	pcb_undo_add_obj_to_flag(Arc);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Arc);
 	return Arc;
 }

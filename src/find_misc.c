@@ -286,6 +286,11 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 		case PCB_OBJ_VIA:     return PCB_TYPE_VIA;
 		case PCB_OBJ_ELEMENT: return PCB_TYPE_ELEMENT;
 		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
+
+		case PCB_OBJ_ELINE:   return PCB_TYPE_ELEMENT_LINE;
+		case PCB_OBJ_ETEXT:   return PCB_TYPE_ELEMENT_NAME;
+		case PCB_OBJ_EARC:    return PCB_TYPE_ELEMENT_ARC;
+
 		default: return 0;
 	}
 	return 0;
@@ -350,7 +355,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, via)) {
 			if (AndDraw)
-				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
+				pcb_undo_add_obj_to_flag(via);
 			PCB_FLAG_CLEAR(TheFlag, via);
 			if (AndDraw)
 				pcb_via_invalidate_draw(via);
@@ -364,7 +369,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		{
 			if (PCB_FLAG_TEST(TheFlag, pin)) {
 				if (AndDraw)
-					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
+					pcb_undo_add_obj_to_flag(pin);
 				PCB_FLAG_CLEAR(TheFlag, pin);
 				if (AndDraw)
 					pcb_pin_invalidate_draw(pin);
@@ -376,7 +381,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		{
 			if (PCB_FLAG_TEST(TheFlag, pad)) {
 				if (AndDraw)
-					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
+					pcb_undo_add_obj_to_flag(pad);
 				PCB_FLAG_CLEAR(TheFlag, pad);
 				if (AndDraw)
 					pcb_pad_invalidate_draw(pad);
@@ -409,7 +414,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
-				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
+				pcb_undo_add_obj_to_flag(line);
 			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
 				pcb_rat_invalidate_draw(line);
@@ -421,7 +426,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
-				pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
+				pcb_undo_add_obj_to_flag(line);
 			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
 				pcb_line_invalidate_draw(layer, line);
@@ -433,7 +438,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, arc)) {
 			if (AndDraw)
-				pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
+				pcb_undo_add_obj_to_flag(arc);
 			PCB_FLAG_CLEAR(TheFlag, arc);
 			if (AndDraw)
 				pcb_arc_invalidate_draw(layer, arc);
@@ -445,7 +450,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, polygon)) {
 			if (AndDraw)
-				pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
+				pcb_undo_add_obj_to_flag(polygon);
 			PCB_FLAG_CLEAR(TheFlag, polygon);
 			if (AndDraw)
 				pcb_poly_invalidate_draw(layer, polygon);

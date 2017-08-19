@@ -218,7 +218,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 
 	type = conn.obj->type == PCB_OBJ_PAD ? PCB_TYPE_PAD : PCB_TYPE_PIN;
 
-	pcb_undo_add_obj_to_flag(type, conn.ptr1, conn.obj, conn.obj);
+	pcb_undo_add_obj_to_flag(conn.obj);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, conn.obj);
 	pcb_draw_obj(type, conn.ptr1, conn.obj);
 }

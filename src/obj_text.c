@@ -356,7 +356,7 @@ void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
-	pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, Layer, Text, Text);
+	pcb_undo_add_obj_to_flag(Text);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
@@ -561,7 +561,7 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 {
 	if ((ctx->chgflag.flag & PCB_TEXT_FLAGS) != ctx->chgflag.flag)
 		return NULL;
-	pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, Text, Text, Text);
+	pcb_undo_add_obj_to_flag(Text);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Text);
 	return Text;
 }

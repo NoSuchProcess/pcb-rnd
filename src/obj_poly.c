@@ -409,7 +409,7 @@ void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, pcb_true);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+	pcb_undo_add_obj_to_flag(Polygon);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLY, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	pcb_poly_invalidate_draw(Layer, Polygon);
@@ -538,9 +538,9 @@ pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 	if (!PCB_FLAG_THERM_TEST(d->snum, pin) || !pcb_poly_is_point_in_p(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
 		return PCB_R_DIR_NOT_FOUND;
 	if (d->type == PCB_TYPE_PIN)
-		pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, pin->Element, pin, pin);
+		pcb_undo_add_obj_to_flag(pin);
 	else
-		pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, pin, pin, pin);
+		pcb_undo_add_obj_to_flag(pin);
 	PCB_FLAG_THERM_ASSIGN(d->dnum, PCB_FLAG_THERM_GET(d->snum, pin), pin);
 	PCB_FLAG_THERM_CLEAR(d->snum, pin);
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -778,7 +778,7 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 {
 	if ((ctx->chgflag.flag & PCB_POLY_FLAGS) != ctx->chgflag.flag)
 		return NULL;
-	pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, Polygon, Polygon, Polygon);
+	pcb_undo_add_obj_to_flag(Polygon);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Polygon);
 	return Polygon;
 }

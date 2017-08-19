@@ -209,7 +209,7 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (pcb_false);
 	pcb_pad_invalidate_erase(Pad);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, Pad, Pad, Pad);
+	pcb_undo_add_obj_to_flag(Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
 	pcb_pad_invalidate_draw(Pad);
 	pcb_draw();
@@ -351,7 +351,7 @@ void *pcb_padop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_
 	pcb_pad_invalidate_erase(Pad);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, Element, Pad, Pad);
+	pcb_undo_add_obj_to_flag(Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SQUARE, Pad);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);

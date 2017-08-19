@@ -1122,13 +1122,14 @@ void pcb_undo_add_obj_to_create(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with flags changed
  */
-void pcb_undo_add_obj_to_flag(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_add_obj_to_flag(void *obj_)
 {
 	UndoListTypePtr undo;
+	pcb_any_obj_t *obj = obj_;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_FLAG, PCB_OBJECT_ID(Ptr2), Type);
-		undo->Data.Flags = ((pcb_pin_t *) Ptr2)->Flags;
+		undo = GetUndoSlot(PCB_UNDO_FLAG, PCB_OBJECT_ID(obj), pcb_obj_type2oldtype(obj->type));
+		undo->Data.Flags = obj->Flags;
 	}
 }
 

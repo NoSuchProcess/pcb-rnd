@@ -467,7 +467,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 							pcb_pin_name_invalidate_erase(pin);
 						else
 							pcb_pin_name_invalidate_draw(pin);
-						pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, ptr1, pin, pin);
+						pcb_undo_add_obj_to_flag(pin);
 						PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, pin);
 					}
 					PCB_END_LOOP;
@@ -477,7 +477,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 							pcb_pad_name_invalidate_erase(pad);
 						else
 							pcb_pad_name_invalidate_draw(pad);
-						pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, ptr1, pad, pad);
+						pcb_undo_add_obj_to_flag(pad);
 						PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, pad);
 					}
 					PCB_END_LOOP;
@@ -491,7 +491,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 						pcb_pin_name_invalidate_erase((pcb_pin_t *) ptr2);
 					else
 						pcb_pin_name_invalidate_draw((pcb_pin_t *) ptr2);
-					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
+					pcb_undo_add_obj_to_flag(ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, (pcb_pin_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_undo_inc_serial();
@@ -503,7 +503,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 						pcb_pad_name_invalidate_erase((pcb_pad_t *) ptr2);
 					else
 						pcb_pad_name_invalidate_draw((pcb_pad_t *) ptr2);
-					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
+					pcb_undo_add_obj_to_flag(ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, (pcb_pad_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_undo_inc_serial();
@@ -514,7 +514,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 						pcb_via_name_invalidate_erase((pcb_pin_t *) ptr2);
 					else
 						pcb_via_name_invalidate_draw((pcb_pin_t *) ptr2);
-					pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
+					pcb_undo_add_obj_to_flag(ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, (pcb_pin_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_undo_inc_serial();
@@ -543,7 +543,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 							return 0; /* nothing else can have a displayed name */
 					}
 
-					pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr3);
+					pcb_undo_add_obj_to_flag(ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, obj);
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_undo_inc_serial();
@@ -971,7 +971,7 @@ static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pc
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-					pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr3);
+					pcb_undo_add_obj_to_flag(ptr2);
 					pcb_elem_name_invalidate_erase((pcb_element_t *) ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
 					pcb_elem_name_invalidate_draw((pcb_element_t *) ptr2);
@@ -988,7 +988,7 @@ static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pc
 				{
 					if ((PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_REFDES(element)))
 							&& (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
-						pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
+						pcb_undo_add_obj_to_flag(element);
 						pcb_elem_name_invalidate_erase(element);
 						PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, element);
 						pcb_elem_name_invalidate_draw(element);

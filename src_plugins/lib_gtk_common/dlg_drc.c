@@ -107,7 +107,7 @@ static void unset_found_flags(int AndDraw)
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, via)) {
-			pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
+			pcb_undo_add_obj_to_flag(via);
 			PCB_FLAG_CLEAR(flag, via);
 			pcb_via_invalidate_draw(via);
 			change = pcb_true;
@@ -119,7 +119,7 @@ static void unset_found_flags(int AndDraw)
 		PCB_PIN_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(flag, pin)) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
+				pcb_undo_add_obj_to_flag(pin);
 				PCB_FLAG_CLEAR(flag, pin);
 				pcb_pin_invalidate_draw(pin);
 				change = pcb_true;
@@ -129,7 +129,7 @@ static void unset_found_flags(int AndDraw)
 		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(flag, pad)) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
+				pcb_undo_add_obj_to_flag(pad);
 				PCB_FLAG_CLEAR(flag, pad);
 				pcb_pad_invalidate_draw(pad);
 				change = pcb_true;
@@ -141,7 +141,7 @@ static void unset_found_flags(int AndDraw)
 	PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
-			pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
+			pcb_undo_add_obj_to_flag(line);
 			PCB_FLAG_CLEAR(flag, line);
 			pcb_rat_invalidate_draw(line);
 			change = pcb_true;
@@ -151,7 +151,7 @@ static void unset_found_flags(int AndDraw)
 	PCB_LINE_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
-			pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
+			pcb_undo_add_obj_to_flag(line);
 			PCB_FLAG_CLEAR(flag, line);
 			pcb_line_invalidate_draw(layer, line);
 			change = pcb_true;
@@ -161,7 +161,7 @@ static void unset_found_flags(int AndDraw)
 	PCB_ARC_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, arc)) {
-			pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
+			pcb_undo_add_obj_to_flag(arc);
 			PCB_FLAG_CLEAR(flag, arc);
 			pcb_arc_invalidate_draw(layer, arc);
 			change = pcb_true;
@@ -171,7 +171,7 @@ static void unset_found_flags(int AndDraw)
 	PCB_POLY_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, polygon)) {
-			pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
+			pcb_undo_add_obj_to_flag(polygon);
 			PCB_FLAG_CLEAR(flag, polygon);
 			pcb_poly_invalidate_draw(layer, polygon);
 			change = pcb_true;
@@ -222,7 +222,7 @@ void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * vio
 				pcb_message(PCB_MSG_WARNING, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
 				continue;
 			}
-			pcb_undo_add_obj_to_flag(object_type, ptr1, ptr2, ptr3);
+			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
 			switch (violation->object_type_list[i]) {
 			case PCB_TYPE_LINE:

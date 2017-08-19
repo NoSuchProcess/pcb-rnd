@@ -409,7 +409,7 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
-	pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, Layer, Line, Line);
+	pcb_undo_add_obj_to_flag(Line);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_true);
@@ -876,7 +876,7 @@ void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 {
 	if ((ctx->chgflag.flag & PCB_LINE_FLAGS) != ctx->chgflag.flag)
 		return NULL;
-	pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, Line, Line, Line);
+	pcb_undo_add_obj_to_flag(Line);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Line);
 	return Line;
 }

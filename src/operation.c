@@ -129,7 +129,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
+					pcb_undo_add_obj_to_flag(line);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 				}
 				F->Line(ctx, layer, line);
@@ -145,7 +145,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
+					pcb_undo_add_obj_to_flag(arc);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
 				}
 				F->Arc(ctx, layer, arc);
@@ -161,7 +161,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && pcb_text_is_visible(PCB, layer, text)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, layer, text, text);
+					pcb_undo_add_obj_to_flag(text);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, text);
 				}
 				F->Text(ctx, layer, text);
@@ -177,7 +177,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
+					pcb_undo_add_obj_to_flag(polygon);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
 				}
 				F->Polygon(ctx, layer, polygon);
@@ -192,7 +192,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_SUBC, subc, subc, subc);
+					pcb_undo_add_obj_to_flag(subc);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, subc);
 				}
 				F->subc(ctx, subc);
@@ -209,7 +209,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
+					pcb_undo_add_obj_to_flag(element);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, element);
 				}
 				F->Element(ctx, element);
@@ -224,7 +224,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element))) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, &PCB_ELEM_TEXT_VISIBLE(PCB, element), &PCB_ELEM_TEXT_VISIBLE(PCB, element));
+					pcb_undo_add_obj_to_flag(&PCB_ELEM_TEXT_VISIBLE(PCB, element));
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element));
 				}
 				F->ElementName(ctx, element);
@@ -241,7 +241,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin)) {
 					if (Reset) {
-						pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
+						pcb_undo_add_obj_to_flag(pin);
 						PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pin);
 					}
 					F->Pin(ctx, element, pin);
@@ -260,7 +260,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad)) {
 					if (Reset) {
-						pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
+						pcb_undo_add_obj_to_flag(pad);
 						PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pad);
 					}
 					F->Pad(ctx, element, pad);
@@ -278,7 +278,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, via)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
+					pcb_undo_add_obj_to_flag(via);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, via);
 				}
 				F->Via(ctx, via);
@@ -294,7 +294,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 				if (Reset) {
-					pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
+					pcb_undo_add_obj_to_flag(line);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 				}
 				F->Rat(ctx, line);
