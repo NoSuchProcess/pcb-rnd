@@ -855,12 +855,11 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, drawn_area);
 	}
 	else {
-		if ((polygon->term != NULL) && (allow_term_gfx) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_WARN, polygon)) {
+		if ((polygon->term != NULL) && (allow_term_gfx) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_WARN, polygon) && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
 			pcb_vnode_t *n, *head;
 			int i;
 
-			pcb_hid_gc_t gc = PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) ? Output.padselGC : Output.active_padGC;
-			pcb_gui->fill_pcb_polygon(gc, polygon, drawn_area);
+			pcb_gui->fill_pcb_polygon(Output.active_padGC, polygon, drawn_area);
 			head = &polygon->Clipped->contours->head;
 
 			pcb_gui->set_line_cap(Output.fgGC, Square_Cap);
