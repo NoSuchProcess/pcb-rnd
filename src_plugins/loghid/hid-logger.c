@@ -223,6 +223,11 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	out_ = log_out;
 	delegatee_ = delegatee;
 
+	if (delegatee == NULL) {
+		pcb_message(PCB_MSG_ERROR, "loghid: Invalid target HID.\n");
+		exit(1);
+	}
+
 	/*
 	 * Setting up the output hid with a copy from the original, then
 	 * replace the functions we want to log.
