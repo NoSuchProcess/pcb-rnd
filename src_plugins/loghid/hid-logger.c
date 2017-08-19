@@ -45,6 +45,12 @@ static void log_invalidate_all(void)
 	delegatee_->invalidate_all();
 }
 
+static void log_notify_crosshair_change(pcb_bool changes_complete)
+{
+	pcb_fprintf(out_, "pcb_notify_crosshair_change(%s)\n", changes_complete ? "true" : "false");
+	delegatee_->notify_crosshair_change(changes_complete);
+}
+
 static void log_notify_mark_change(pcb_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
@@ -230,6 +236,7 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(parse_arguments);
 	REGISTER_IF_NOT_NULL(invalidate_lr);
 	REGISTER_IF_NOT_NULL(invalidate_all);
+	REGISTER_IF_NOT_NULL(notify_crosshair_change);
 	REGISTER_IF_NOT_NULL(notify_mark_change);
 	REGISTER_IF_NOT_NULL(set_layer_group);
 	REGISTER_IF_NOT_NULL(end_layer);
