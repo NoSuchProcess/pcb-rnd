@@ -454,6 +454,10 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	info.layer = Layer;
 
 	lflg = pcb_layer_flags_(PCB, Layer);
+	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
+		Output.active_padGC = Output.padGC;
+	else
+		Output.active_padGC = Output.backpadGC;
 
 	if (lflg & PCB_LYT_COPPER) {
 		/* print the non-clearing polys */
@@ -465,7 +469,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	}
 
 	if (conf_core.editor.check_planes)
-		return;
+		goto out;
 
 	if (lflg & PCB_LYT_COPPER) {
 		/* draw all visible lines this layer - with terminal gfx */
@@ -497,6 +501,9 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 		pcb_gui->set_line_width(Output.fgGC, PCB->minWid);
 		pcb_gui->draw_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
+
+	out:;
+		Output.active_padGC = NULL;
 }
 
 /* ---------------------------------------------------------------------------
@@ -637,6 +644,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	pcb_gui = hid;
 	Output.fgGC = pcb_gui->make_gc();
 	Output.padGC = pcb_gui->make_gc();
+	Output.backpadGC = pcb_gui->make_gc();
 	Output.padselGC = pcb_gui->make_gc();
 	Output.bgGC = pcb_gui->make_gc();
 	Output.pmGC = pcb_gui->make_gc();
@@ -644,6 +652,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	hid->set_color(Output.pmGC, "erase");
 	hid->set_color(Output.bgGC, "drill");
 	hid->set_color(Output.padGC, conf_core.appearance.color.pin);
+	hid->set_color(Output.backpadGC, conf_core.appearance.color.invisible_objects);
 	hid->set_color(Output.padselGC, conf_core.appearance.color.pin_selected);
 
 	return old_gui;
@@ -653,6 +662,7 @@ static void expose_end(pcb_hid_t *old_gui)
 {
 	pcb_gui->destroy_gc(Output.fgGC);
 	pcb_gui->destroy_gc(Output.padGC);
+	pcb_gui->destroy_gc(Output.backpadGC);
 	pcb_gui->destroy_gc(Output.padselGC);
 	pcb_gui->destroy_gc(Output.bgGC);
 	pcb_gui->destroy_gc(Output.pmGC);
@@ -771,3 +781,4 @@ void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool ve
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout--;
 }
+

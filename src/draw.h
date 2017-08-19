@@ -38,7 +38,7 @@
 typedef struct {								/* holds information about output window */
 	pcb_hid_gc_t bgGC,										/* background and foreground; */
 	  fgGC,												/* changed from some routines */
-	  padGC, padselGC,						/* pads are drawn with this gc */
+	  active_padGC, backpadGC, padGC, padselGC,						/* pads are drawn with this gc */
 	  pmGC;												/* depth 1 pixmap GC to store clip */
 } pcb_output_t;
 

@@ -859,7 +859,7 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 			pcb_vnode_t *n, *head;
 			int i;
 
-			pcb_hid_gc_t gc = PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) ? Output.padselGC : Output.padGC;
+			pcb_hid_gc_t gc = PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) ? Output.padselGC : Output.active_padGC;
 			pcb_gui->fill_pcb_polygon(gc, polygon, drawn_area);
 			head = &polygon->Clipped->contours->head;
 
