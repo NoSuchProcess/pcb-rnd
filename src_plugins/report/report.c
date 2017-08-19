@@ -766,7 +766,7 @@ static int ReportNetLengthByName(const char *tofind, pcb_coord_t x, pcb_coord_t 
 
 		if (pcb_rat_seek_pad(net->Entry, &conn, pcb_false)) {
 			pcb_obj_center(conn.obj, &x, &y);
-			if ((conn.obj->type == PCB_OBJ_PIN) || (conn.obj->type == PCB_OBJ_PAD)) {
+			if ((conn.obj->type == PCB_OBJ_PIN) || (conn.obj->type == PCB_OBJ_PAD) || (conn.obj->term != NULL)) {
 				net_found = 1;
 				break;
 			}
