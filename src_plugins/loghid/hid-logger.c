@@ -77,7 +77,7 @@ static pcb_hid_gc_t log_make_gc()
 
 static void log_destroy_gc(pcb_hid_gc_t gc)
 {
-	pcb_fprintf(out_, "detroy_gc()\n");
+	pcb_fprintf(out_, "destroy_gc()\n");
 	delegatee_->destroy_gc(gc);
 }
 
