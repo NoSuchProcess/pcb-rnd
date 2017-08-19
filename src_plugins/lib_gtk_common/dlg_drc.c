@@ -230,7 +230,7 @@ void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * vio
 			case PCB_TYPE_POLYGON:
 				pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
 			}
-			pcb_draw_obj(object_type, ptr1, ptr2);
+			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 		}
 		pcb_board_set_changed_flag(pcb_true);
 		pcb_undo_inc_serial();

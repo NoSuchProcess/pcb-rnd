@@ -292,7 +292,7 @@ doIsBad:
 	pcb_undo_add_obj_to_flag(polygon);
 	PCB_FLAG_SET(PCB_FLAG_FOUND, polygon);
 	pcb_poly_invalidate_draw(layer, polygon);
-	pcb_draw_obj(type, ptr1, ptr2);
+	pcb_draw_obj((pcb_any_obj_t *)ptr2);
 	drcerr_count++;
 	LocateError(&x, &y);
 	BuildObjectList(&object_count, &object_id_list, &object_type_list);

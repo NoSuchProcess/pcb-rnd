@@ -142,10 +142,10 @@ static void DrawRecoveredObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		pcb_layer_t *layer;
 
 		layer = LAYER_PTR(pcb_layer_id(RemoveList, (pcb_layer_t *) Ptr1));
-		pcb_draw_obj(Type, (void *) layer, Ptr2);
+		pcb_draw_obj((pcb_any_obj_t *)Ptr2);
 	}
 	else
-		pcb_draw_obj(Type, Ptr1, Ptr2);
+		pcb_draw_obj((pcb_any_obj_t *)Ptr2);
 }
 
 /* ---------------------------------------------------------------------------
@@ -242,7 +242,7 @@ static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
 			pcb_erase_obj(type, ptr1, ptr2);
 		((pcb_pin_t *) ptr2)->DrillingHole = Entry->Data.Size;
 		Entry->Data.Size = swap;
-		pcb_draw_obj(type, ptr1, ptr2);
+		pcb_draw_obj((pcb_any_obj_t *)ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -273,7 +273,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
-		pcb_draw_obj(type, ptr1, a);
+		pcb_draw_obj((pcb_any_obj_t *)a);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -304,7 +304,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 		Entry->Data.Move.DX = old_w;
 		Entry->Data.Move.DY = old_h;
-		pcb_draw_obj(type, ptr1, a);
+		pcb_draw_obj((pcb_any_obj_t *)a);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -330,7 +330,7 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		Entry->Data.Size = swap;
 		if (pcb_undo_and_draw)
-			pcb_draw_obj(type, ptr1, ptr2);
+			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -357,7 +357,7 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
 			((pcb_pin_t *) ptr2)->Mask = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		if (pcb_undo_and_draw)
-			pcb_draw_obj(type, ptr1, ptr2);
+			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -391,7 +391,7 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 		Entry->Data.Size = swap;
 		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		if (pcb_undo_and_draw)
-			pcb_draw_obj(type, ptr1, ptr2);
+			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -435,7 +435,7 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 		Entry->Data.Flags = swap;
 
 		if (pcb_undo_and_draw && must_redraw)
-			pcb_draw_obj(type, ptr1, ptr2);
+			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 		return (pcb_true);
 	}
 	pcb_message(PCB_MSG_ERROR, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);

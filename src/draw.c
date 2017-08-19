@@ -573,48 +573,58 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 }
 
 
-void pcb_draw_obj(int type, void *ptr1, void *ptr2)
+void pcb_draw_obj(pcb_any_obj_t *obj)
 {
-	switch (type) {
-	case PCB_TYPE_VIA:
+	switch (obj->type) {
+	case PCB_OBJ_VIA:
 		if (PCB->ViaOn)
-			pcb_via_invalidate_draw((pcb_pin_t *) ptr2);
+			pcb_via_invalidate_draw((pcb_pin_t *)obj);
 		break;
-	case PCB_TYPE_LINE:
-		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			pcb_line_invalidate_draw((pcb_layer_t *) ptr1, (pcb_line_t *) ptr2);
+	case PCB_OBJ_LINE:
+		if (obj->parent.layer->meta.real.vis)
+			pcb_line_invalidate_draw(obj->parent.layer, (pcb_line_t *)obj);
 		break;
-	case PCB_TYPE_ARC:
-		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			pcb_arc_invalidate_draw((pcb_layer_t *) ptr1, (pcb_arc_t *) ptr2);
+	case PCB_OBJ_ARC:
+		if (obj->parent.layer->meta.real.vis)
+			pcb_arc_invalidate_draw(obj->parent.layer, (pcb_arc_t *)obj);
 		break;
-	case PCB_TYPE_TEXT:
-		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			pcb_text_invalidate_draw((pcb_layer_t *) ptr1, (pcb_text_t *) ptr2);
+	case PCB_OBJ_TEXT:
+		if (obj->parent.layer->meta.real.vis)
+			pcb_text_invalidate_draw(obj->parent.layer, (pcb_text_t *)obj);
 		break;
-	case PCB_TYPE_POLYGON:
-		if (((pcb_layer_t *) ptr1)->meta.real.vis)
-			pcb_poly_invalidate_draw((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
+	case PCB_OBJ_POLYGON:
+		if (obj->parent.layer->meta.real.vis)
+			pcb_poly_invalidate_draw(obj->parent.layer, (pcb_polygon_t *)obj);
 		break;
-	case PCB_TYPE_ELEMENT:
-		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
-			pcb_elem_invalidate_draw((pcb_element_t *) ptr2);
+	case PCB_OBJ_ELEMENT:
+		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *)obj) || PCB->InvisibleObjectsOn))
+			pcb_elem_invalidate_draw((pcb_element_t *)obj);
 		break;
-	case PCB_TYPE_RATLINE:
+	case PCB_OBJ_RAT:
 		if (PCB->RatOn)
-			pcb_rat_invalidate_draw((pcb_rat_t *) ptr2);
+			pcb_rat_invalidate_draw((pcb_rat_t *)obj);
 		break;
-	case PCB_TYPE_PIN:
+	case PCB_OBJ_PIN:
 		if (PCB->PinOn)
-			pcb_pin_invalidate_draw((pcb_pin_t *) ptr2);
+			pcb_pin_invalidate_draw((pcb_pin_t *)obj);
 		break;
-	case PCB_TYPE_PAD:
+	case PCB_OBJ_PAD:
 		if (PCB->PinOn)
-			pcb_pad_invalidate_draw((pcb_pad_t *) ptr2);
+			pcb_pad_invalidate_draw((pcb_pad_t *)obj);
 		break;
-	case PCB_TYPE_ELEMENT_NAME:
-		if (pcb_silk_on(PCB) && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
-			pcb_elem_name_invalidate_draw((pcb_element_t *) ptr1);
+	case PCB_OBJ_ETEXT:
+		if (pcb_silk_on(PCB) && (PCB_FRONT(obj->parent.element) || PCB->InvisibleObjectsOn))
+			pcb_elem_name_invalidate_draw(obj->parent.element);
+		break;
+	case PCB_OBJ_POINT:
+	case PCB_OBJ_SUBC:
+	case PCB_OBJ_NET:
+	case PCB_OBJ_LAYER:
+	case PCB_OBJ_ELINE:
+	case PCB_OBJ_EARC:
+	case PCB_OBJ_CLASS_MASK:
+	case PCB_OBJ_CLASS_OBJ:
+	case PCB_OBJ_ANY:
 		break;
 	}
 }

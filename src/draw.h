@@ -80,7 +80,7 @@ void pcb_draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 
 void pcb_draw(void);
 void pcb_redraw(void);
-void pcb_draw_obj(int, void *, void *);
+void pcb_draw_obj(pcb_any_obj_t *obj);
 void pcb_draw_layer(pcb_layer_t *, const pcb_box_t *);
 void pcb_erase_obj(int, void *, void *);
 void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);

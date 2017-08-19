@@ -220,7 +220,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 
 	pcb_undo_add_obj_to_flag(conn.obj);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, conn.obj);
-	pcb_draw_obj(type, conn.ptr1, conn.obj);
+	pcb_draw_obj((pcb_any_obj_t *)conn.obj);
 }
 
 /** Callback when the user clicks on a PCB node in the right node treeview.

@@ -713,7 +713,7 @@ void pcb_notify_mode(void)
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, thing)) {
 					/* this is not un-doable since LOCK isn't */
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, thing);
-					pcb_draw_obj(type, ptr1, ptr2);
+					pcb_draw_obj((pcb_any_obj_t *)ptr2);
 					pcb_draw();
 				}
 				pcb_hid_actionl("Report", "Object", NULL);
