@@ -66,24 +66,17 @@
 For the next release:
 - subc/term:
 	- term netlist connectivity r10843:
-		- rats.c:913
-		- find_misc.c:337
 		- autoplace.c:167
 		- autoroute.c:961
 		- autoroute.c:1000
-		- report.c:769
-		- smartdisperse.c:128
-		- dlg_netlist.c:219
-		- dlg_netlist.c:282
+		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
 	- int conn attribute for subc terminals
-	- far side pad color!!!
-	- via pad color
-	- arc center point should be on the arc
 	- name a terminal, name it again with 'n' but cancel -> crash
 	- remove Line->Number and *->Number: we use ->term
 	- integrity check: term cross-linking
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
+	- 's' on a pad affects the whole subc
 - namespace renames:
 	- GetObjectBoundingBox
 - BUGS:
