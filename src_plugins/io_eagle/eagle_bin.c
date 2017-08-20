@@ -1284,7 +1284,6 @@ static egb_node_t *find_node_name(egb_node_t *first, const char *id_name)
 static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 {
 	htss_entry_t *e;
-	egb_node_t *n;
 
 	char itoa_buffer[64];
 	long c, cx, cy, x1, x2, y1, y2, x3, y3, radius;
@@ -1526,7 +1525,7 @@ static egb_node_t *tree_id_path(egb_node_t *subtree, ...)
 static int postprocess_wires(void *ctx, egb_node_t *root)
 {
 	htss_entry_t *e;
-	egb_node_t *n, *first_c, *wire_t;
+	egb_node_t *n;
 	int line_type = -1;
 
 	if (root->id == PCB_EGKW_SECT_LINE) {
@@ -1576,7 +1575,7 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 static int postprocess_arcs(void *ctx, egb_node_t *root)
 {
 	htss_entry_t *e;
-	egb_node_t *n, *first_c, *arc_t;
+	egb_node_t *n;
 	int arc_type = -1;
 
 	if (root->id == PCB_EGKW_SECT_ARC) {
