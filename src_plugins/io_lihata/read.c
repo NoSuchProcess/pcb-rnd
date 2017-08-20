@@ -379,8 +379,8 @@ static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int n
 		line->ID = 0;
 	else
 		parse_id(&line->ID, obj, 5);
-	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE);
+	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	parse_coord(&line->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&line->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -410,8 +410,8 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	pcb_rat_t rat, *new_rat;
 
 	parse_id(&rat.ID, obj, 4);
-	parse_attributes(&rat.Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE);
+	parse_attributes(&rat.Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	parse_coord(&rat.Point1.X, lht_dom_hash_get(obj, "x1"));
 	parse_coord(&rat.Point1.Y, lht_dom_hash_get(obj, "y1"));
@@ -444,8 +444,8 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 		return -1;
 
 	parse_id(&arc->ID, obj, 4);
-	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ARC);
+	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	parse_coord(&arc->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&arc->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -473,8 +473,8 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	pcb_cardinal_t n = 0, c;
 
 	parse_id(&poly->ID, obj, 8);
-	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_POLYGON);
+	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	geo = lht_dom_hash_get(obj, "geometry");
 	if ((geo != NULL) && (geo->type == LHT_LIST)) {
@@ -543,8 +543,8 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 
 	parse_id(&text->ID, obj, 5);
 
-	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_TEXT);
+	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_int(&text->Scale, lht_dom_hash_get(obj, "scale"));
 	parse_int(&tmp, lht_dom_hash_get(obj, "fid"));
 	text->fid = tmp;
@@ -681,8 +681,8 @@ static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coo
 		return -1;
 
 	parse_id(&via->ID, obj, 4);
-	parse_attributes(&via->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&via->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA);
+	parse_attributes(&via->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	parse_coord(&via->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&via->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -711,8 +711,8 @@ static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coo
 	pad = pcb_pad_alloc(el);
 
 	parse_id(&pad->ID, obj, 4);
-	parse_attributes(&pad->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&pad->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD);
+	parse_attributes(&pad->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	parse_coord(&pad->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&pad->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -745,8 +745,8 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	int onsld;
 
 	parse_id(&elem->ID, obj, 8);
-	parse_attributes(&elem->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&elem->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
+	parse_attributes(&elem->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_coord(&elem->MarkX, lht_dom_hash_get(obj, "x"));
 	parse_coord(&elem->MarkY, lht_dom_hash_get(obj, "y"));
 
@@ -788,8 +788,8 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	pcb_subc_t *sc = pcb_subc_alloc(dt);
 
 	parse_id(&sc->ID, obj, 5);
-	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
+	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
 
 	if (!dt->via_tree)
