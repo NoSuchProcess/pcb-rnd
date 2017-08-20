@@ -221,8 +221,9 @@ bisect()
 				exit 0
 			}
 			offered=int((last_good+first_bad)/2)
+			tries=int(log(first_bad-last_good)/log(2) + 0.5)
 			print ""
-			print "(last_good=" last_good " first_bad=" first_bad ")"
+			print "(last_good=" last_good " first_bad=" first_bad " in about " tries " tries)"
 			print "Next rev to test: " offered
 			printf "> "
 			fflush()
