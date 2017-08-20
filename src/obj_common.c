@@ -162,6 +162,16 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 		if (inv != NULL)
 			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, obj->term);
 	}
+	else if (strcmp(name, "intconn") == 0) {
+		long cid = 0;
+		if (value != NULL) {
+			char *end;
+			cid = strtol(value, &end, 10);
+			if (*end != '\0')
+				cid = 0;
+		}
+		obj->Flags.int_conn_grp = cid;
+	}
 }
 
 const char *pcb_obj_id_invalid(const char *id)
