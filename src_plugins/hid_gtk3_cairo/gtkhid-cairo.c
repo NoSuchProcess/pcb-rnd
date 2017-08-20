@@ -565,11 +565,12 @@ static void ghid_cairo_draw_bg_image(void)
 static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 {
 	static int mask_seq_id = 0;
-	GdkColor color;
+	//GdkRGBA color;
 	render_priv_t *priv = gport->render_priv;
 
 	if (use_it == cur_mask)
 		return;
+
 	switch (use_it) {
 	case HID_MASK_OFF:
 		//priv->drawable = priv->pixmap;
@@ -581,26 +582,37 @@ static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 		g_return_if_reached();
 
 	case HID_MASK_INIT:
+		start_subcomposite();
 		//ghid_mask_setup(priv);
 		mask_seq = 0;
 
 		/* clear the mask */
-		color.pixel = 0;
+		//color.alpha = 0.0;
 		//gdk_gc_set_foreground(priv->mask_gc, &color);
 		//gdk_draw_rectangle(priv->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 		break;
 
 	case HID_MASK_CLEAR:
-		//color.pixel = 0;
+		cairo_set_operator(priv->cr, CAIRO_OPERATOR_CLEAR);
+		//color.alpha = 0.0;
 		//gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
 
 	case HID_MASK_SET:
-		color.pixel = 1;
+		cairo_set_operator(priv->cr, CAIRO_OPERATOR_SOURCE);
+		//color.alpha = 1.0;
 		//gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
 
 	case HID_MASK_AFTER:
+		priv->cr = priv->cr_target;
+		//cairo_set_operator(priv->cr, CAIRO_OPERATOR_OVER);
+		//cairo_set_source_surface(priv->cr, priv->surf_layer, 0, 0);
+		cairo_mask_surface(priv->cr, priv->surf_layer, 0, 0);
+		cairo_fill(priv->cr);
+		//cairo_paint_with_alpha(priv->cr, conf_core.appearance.layer_alpha);
+		//cairo_paint_with_alpha(priv->cr, 1.0);
+
 		mask_seq_id++;
 		if (!mask_seq_id)
 			mask_seq_id = 1;
