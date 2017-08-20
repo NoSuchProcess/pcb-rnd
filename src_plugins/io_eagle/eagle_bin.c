@@ -1371,7 +1371,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 
 			theta_1 = 180 - theta_1; /* eagle coord system */
 			theta_2 = 180 - theta_2; /* eagle coord system */
-			
+
 			delta_theta = (theta_2 - theta_1);
 
 			if (!clockwise) {
@@ -1461,7 +1461,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		}
 
 		radius = (long)(pcb_distance((double)cx, (double)cy, (double)x2, (double)y2));
-		pcb_trace("Using radius for post-processed arc: %ld\n", radius);	
+		pcb_trace("Using radius for post-processed arc: %ld\n", radius);
 		sprintf(itoa_buffer, "%ld", radius);
 		egb_node_prop_set(elem, "radius", itoa_buffer);
 
@@ -1469,7 +1469,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		egb_node_prop_set(elem, "x", itoa_buffer);
 		sprintf(itoa_buffer, "%ld", cy);
 		egb_node_prop_set(elem, "y", itoa_buffer);
-		
+
 	}
 	return 0;
 }
@@ -1657,7 +1657,7 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
 			pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
 			el1 = n->first_child;
-		} 
+		}
 	}
 
 	for(n = el1; n != NULL; n = next) {

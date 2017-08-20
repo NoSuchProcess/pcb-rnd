@@ -203,7 +203,7 @@ int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char
 	unsigned char buff[2];
 	int read_length = fread(buff, 1, 2, f);
 	if ((read_length == 2) && (buff[0] == 0x10) && (buff[1] == 0x00)) {
-		return 1; /* Eagle v4, v5 */ 
+		return 1; /* Eagle v4, v5 */
 	} else if ((read_length == 2) && (buff[0] == 0x10) && (buff[1] == 0x80)) {
 		return 1; /* Eagle v3 */
 	}
@@ -554,7 +554,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	circ->StartAngle = eagle_degrees_to_pcb_degrees(eagle_get_attrl(st, subtree, "StartAngle", 0));
 	circ->Delta = -eagle_get_attrl(st, subtree, "Delta", -360);
 	circ->Thickness = eagle_get_attrc(st, subtree, "width", -1);
-        circ->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);	
+        circ->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);
 	circ->Clearance = st->md_wire_wire*2;
 	circ->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
@@ -680,7 +680,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		pcb_trace("Found null wire layer number 'ln'");
 	}
 
-	ly = eagle_layer_get(st, ln); 
+	ly = eagle_layer_get(st, ln);
 	if (ly != NULL) {
 		pcb_trace("Allocated layer 'ly' via eagle_layer_get(st, ln)\n");
 	}
@@ -915,7 +915,7 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 		size = eagle_get_attrc(st, subtree, "size", EAGLE_TEXT_SIZE_100);
 		st->value_scale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
 		st->value_x = eagle_get_attrc(st, subtree, "x", 0);
-		st->value_y = eagle_get_attrc(st, subtree, "y", 0); 
+		st->value_y = eagle_get_attrc(st, subtree, "y", 0);
 	} else {
 		return 0;
 	}
@@ -1125,7 +1125,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			if (name == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
-				continue; 
+				continue;
 			}
 			eagle_foreach_dispatch(st, CHILDREN(n), disp, (char *)name, ON_BOARD);
 		}
@@ -1166,7 +1166,7 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
 */
 	TextScale = 100; /* hardwired for now */
-/*	pcb_trace("About to use text scale %d for element.\n", TextScale); 
+/*	pcb_trace("About to use text scale %d for element.\n", TextScale);
 
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
 */
@@ -1334,7 +1334,6 @@ static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int 
 
 static int eagle_read_drawing(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	
 	static const dispatch_t disp[] = { /* possible children of <drawing> */
 		{"settings",  eagle_read_nop},
 		{"layers",    eagle_read_layers},
