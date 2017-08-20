@@ -70,13 +70,13 @@ For the next release:
 		- autoroute.c:961
 		- autoroute.c:1000
 		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
-	- int conn attribute for subc terminals
-	- name a terminal, name it again with 'n' but cancel -> crash
+	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 	- remove Line->Number and *->Number: we use ->term
 	- integrity check: term cross-linking
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
 	- 's' on a pad affects the whole subc
+	- 'd' on subc doesn't set all terms
 - namespace renames:
 	- GetObjectBoundingBox
 - BUGS:
