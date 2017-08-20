@@ -567,6 +567,48 @@ static pcb_r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+void LOC_int_conn_element(pcb_element_t *e, int ic, int from_type, void *from_ptr)
+{
+/*	int tlayer = -1;*/
+
+	/* Internal connection: if pins/pads in the same element have the same
+	   internal connection group number, they are connected */
+	PCB_PIN_LOOP(e);
+	{
+		if ((from_ptr != pin) && (ic == PCB_FLAG_INTCONN_GET(pin))) {
+			if (!PCB_FLAG_TEST(TheFlag, pin))
+				ADD_PV_TO_LIST(pin, from_type, from_ptr, PCB_FCT_INTERNAL);
+		}
+	}
+	PCB_END_LOOP;
+
+/*
+	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
+		pcb_layer_id_t layer;
+		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
+		if (layer == PCB_COMPONENT_SIDE)
+			tlayer = PCB_COMPONENT_SIDE;
+		else if (layer == PCB_SOLDER_SIDE)
+			tlayer = PCB_SOLDER_SIDE;
+	}
+*/
+
+/*	if (tlayer >= 0)*/ {
+		PCB_PAD_LOOP(e);
+		{
+			if ((from_ptr != pad) && (ic == PCB_FLAG_INTCONN_GET(pad))) {
+				int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE;
+				if ((!PCB_FLAG_TEST(TheFlag, pad)) /* && (tlayer != padlayer)*/) {
+					ADD_PAD_TO_LIST(padlayer, pad, from_type, from_ptr, PCB_FCT_INTERNAL);
+/*					if (LookupLOConnectionsToPad(pad, LayerGroup))
+						retv = pcb_true;*/
+				}
+			}
+		}
+		PCB_END_LOOP;
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * searches for new PVs that are connected to PVs on the list
  */
@@ -585,21 +627,9 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 		orig_pin = (PVLIST_ENTRY(PVList.Location));
 		info.pv = *orig_pin;
 
-		/* Internal connection: if pins in the same element have the same
-		   internal connection group number, they are connected */
 		ic = PCB_FLAG_INTCONN_GET(orig_pin);
-		if ((info.pv.Element != NULL) && (ic > 0)) {
-			pcb_element_t *e = info.pv.Element;
-			PCB_PIN_LOOP(e);
-			{
-				if ((orig_pin != pin) && (ic == PCB_FLAG_INTCONN_GET(pin))) {
-					if (!PCB_FLAG_TEST(TheFlag, pin))
-						ADD_PV_TO_LIST(pin, PCB_TYPE_PIN, orig_pin, PCB_FCT_INTERNAL);
-				}
-			}
-			PCB_END_LOOP;
-		}
-
+		if ((info.pv.Element != NULL) && (ic > 0))
+			LOC_int_conn_element(info.pv.Element, ic, PCB_TYPE_PIN, orig_pin);
 
 		EXPAND_BOUNDS(&info.pv);
 		if (setjmp(info.env) == 0)
@@ -1295,42 +1325,8 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 	/* Internal connection: if pads in the same element have the same
 	   internal connection group number, they are connected */
 	ic = PCB_FLAG_INTCONN_GET(Pad);
-	if ((Pad->Element != NULL) && (ic > 0)) {
-		pcb_element_t *e = Pad->Element;
-		pcb_pad_t *orig_pad = Pad;
-		int tlayer = -1;
-
-/*fprintf(stderr, "lg===\n");*/
-		for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
-			pcb_layer_id_t layer;
-			layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
-/*fprintf(stderr, "lg: %d\n", layer);*/
-			if (layer == PCB_COMPONENT_SIDE)
-				tlayer = PCB_COMPONENT_SIDE;
-			else if (layer == PCB_SOLDER_SIDE)
-				tlayer = PCB_SOLDER_SIDE;
-		}
-
-/*fprintf(stderr, "tlayer=%d\n", tlayer);*/
-
-		if (tlayer >= 0) {
-			PCB_PAD_LOOP(e);
-			{
-				if ((orig_pad != pad) && (ic == PCB_FLAG_INTCONN_GET(pad))) {
-					int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE;
-/*fprintf(stderr, "layergroup1: %d {%d %d %d} %d \n", tlayer, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE, padlayer);*/
-					if ((!PCB_FLAG_TEST(TheFlag, pad)) && (tlayer != padlayer)) {
-/*fprintf(stderr, "layergroup2\n");*/
-						ADD_PAD_TO_LIST(padlayer, pad, PCB_TYPE_PAD, orig_pad, PCB_FCT_INTERNAL);
-						if (LookupLOConnectionsToPad(pad, LayerGroup))
-							retv = pcb_true;
-					}
-				}
-			}
-			PCB_END_LOOP;
-		}
-	}
-
+	if ((Pad->Element != NULL) && (ic > 0))
+		LOC_int_conn_element(Pad->Element, ic, PCB_TYPE_PAD, Pad);
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad))
 		return (LookupLOConnectionsToLine((pcb_line_t *) Pad, LayerGroup, pcb_false));
