@@ -391,7 +391,9 @@ static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *g
 
 static void **find_shorts_in_subc(pcb_subc_t *subc_in, vtptr_t *generic, pcb_lib_menu_t *theNet, void **menu, pcb_bool *warn)
 {
-#warning subc TODO: check for nonetlist; ignore subc if found
+	if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc_in))
+		return menu;
+
 	PCB_VIA_LOOP(subc_in->data);
 	{
 		if (via->term == NULL)

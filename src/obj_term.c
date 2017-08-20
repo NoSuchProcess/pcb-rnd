@@ -290,6 +290,9 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 	if ((subc = pcb_subc_by_name(data, subc_name)) == NULL)
 		return NULL;
 
+	if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc))
+		return NULL;
+
 	/* search for global objects: via */
 	if (lyt & (PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_OUTLINE)) {
 		PCB_VIA_LOOP(subc->data) {
