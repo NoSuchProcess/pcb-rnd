@@ -1618,5 +1618,8 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		hid->request_debug_draw = ghid_cairo_request_debug_draw;
 		hid->flush_debug_draw = ghid_cairo_flush_debug_draw;
 		hid->finish_debug_draw = ghid_cairo_finish_debug_draw;
+
+		hid->poly_before = 0;     /* no need for redraw, neither before nor after   */
+		hid->poly_after = 0;
 	}
 }
