@@ -474,7 +474,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	{
 		pcb_element_t *e = pin->Element;
 /* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pin->Element)*/
-		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
+		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
 			menu = found_short((pcb_any_obj_t *)element, (pcb_any_obj_t *)pin, &generic, theNet, menu);
 		}
