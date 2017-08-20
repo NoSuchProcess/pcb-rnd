@@ -1476,7 +1476,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 }
 
 /* Return the idxth element instance from the elements subtree, or NULL if not found */
-static egb_node_t *eagle_elem_ref_by_idx(egb_node_t *elements, long idx)
+static egb_node_t *elem_ref_by_idx(egb_node_t *elements, long idx)
 {
 	egb_node_t *n;
 
@@ -1488,16 +1488,16 @@ static egb_node_t *eagle_elem_ref_by_idx(egb_node_t *elements, long idx)
 }
 
 /* Return the refdes of the idxth element instance from the elements subtree, or NULL if not found */
-static const char *eagle_elem_refdes_by_idx(egb_node_t *elements, long idx)
+static const char *elem_refdes_by_idx(egb_node_t *elements, long idx)
 {
-	egb_node_t *e = eagle_elem_ref_by_idx(elements, idx);
+	egb_node_t *e = elem_ref_by_idx(elements, idx);
 	if (e == NULL)
 		return NULL;
 	return egb_node_prop_get(e, "name");
 }
 
 /* bin path walk; the ... is a 0 terminated list of pcb_eagle_binkw_t IDs */
-static egb_node_t *eagle_trpath(egb_node_t *subtree, ...)
+static egb_node_t *tree_id_path(egb_node_t *subtree, ...)
 {
 	egb_node_t *nd = subtree;
 	pcb_eagle_binkw_t target;
