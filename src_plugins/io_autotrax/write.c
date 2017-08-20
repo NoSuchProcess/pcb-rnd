@@ -37,8 +37,6 @@
 #include "obj_all.h"
 #include "../lib_polyhelp/polyhelp.h"
 
-#define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
-
 /* ---------------------------------------------------------------------------
  * writes autotrax vias to file
  */
