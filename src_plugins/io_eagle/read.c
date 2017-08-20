@@ -403,27 +403,6 @@ static pcb_element_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, lon
 	return res;
 }
 
-/* Return the idxth element instance from the elements subtree, or NULL if not found */
-static trnode_t *eagle_elem_ref_by_idx(read_state_t *st, trnode_t *elements, long idx)
-{
-	trnode_t *n;
-
-	/* count children of elelements */
-	for(n = CHILDREN(elements); (n != NULL) && (idx > 1); n = NEXT(n), idx--) ;
-	if (n == NULL)
-		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_elem_ref_by_idx() can't find element placement index %ld\n", idx);
-	return n;
-}
-
-/* Return the refdes of the idxth element instance from the elements subtree, or NULL if not found */
-static const char *eagle_elem_refdes_by_idx(read_state_t *st, trnode_t *elements, long idx)
-{
-	trnode_t *e = eagle_elem_ref_by_idx(st, elements, idx);
-	if (e == NULL)
-		return NULL;
-	return GET_PROP(e, "name");
-}
-
 static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 {
 	if (x > st->pcb->MaxWidth)

@@ -1474,6 +1474,28 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 	return 0;
 }
 
+/* Return the idxth element instance from the elements subtree, or NULL if not found */
+static egb_node_t *eagle_elem_ref_by_idx(egb_node_t *elements, long idx)
+{
+	egb_node_t *n;
+
+	/* count children of elelements */
+	for(n = elements->first_child; (n != NULL) && (idx > 1); n = n->next, idx--) ;
+	if (n == NULL)
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_elem_ref_by_idx() can't find element placement index %ld\n", idx);
+	return n;
+}
+
+/* Return the refdes of the idxth element instance from the elements subtree, or NULL if not found */
+static const char *eagle_elem_refdes_by_idx(egb_node_t *elements, long idx)
+{
+	egb_node_t *e = eagle_elem_ref_by_idx(elements, idx);
+	if (e == NULL)
+		return NULL;
+	return egb_node_prop_get(e, "name");
+}
+
+
 static int postprocess_wires(void *ctx, egb_node_t *root)
 {
 	htss_entry_t *e;
