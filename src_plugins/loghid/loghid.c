@@ -115,8 +115,8 @@ void pplg_uninit_loghid(void)
 
 int pplg_init_loghid(void)
 {
-	memset(&loghid_gui, 0, sizeof(pcb_hid_t));
-	memset(&loghid_exp, 0, sizeof(pcb_hid_t));
+	pcb_hid_nogui_init(&loghid_gui);
+	pcb_hid_nogui_init(&loghid_exp);
 
 	/* gui version */
 	loghid_gui.struct_size = sizeof(pcb_hid_t);
