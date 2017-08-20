@@ -111,11 +111,11 @@ int pcb_draw_layer_is_comp(pcb_layer_id_t lay_id);
 int pcb_draw_layergrp_is_comp(pcb_layergrp_t *g);
 
 /* Draw (render) a terminal label */
-void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab);
+void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn);
 
 /* Similar to pcb_term_label_draw(), but doesn't draw only sets up text with
    its bounding box */
-void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab);
+void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn);
 
 
 /* Schedule an object to be called again at the end for drawing its labels 

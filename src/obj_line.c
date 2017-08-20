@@ -910,7 +910,7 @@ void pcb_line_name_invalidate_draw(pcb_line_t *line)
 	if (line->term != NULL) {
 		pcb_text_t text;
 		pcb_term_label_setup(&text, (line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			100.0, is_line_term_vert(line), pcb_true, line->term);
+			100.0, is_line_term_vert(line), pcb_true, line->term, PCB_FLAG_INTCONN_GET(line));
 		pcb_draw_invalidate(&text);
 	}
 }
@@ -919,7 +919,7 @@ void pcb_line_draw_label(pcb_line_t *line)
 {
 	if (line->term != NULL)
 		pcb_term_label_draw((line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			100.0, is_line_term_vert(line), pcb_true, line->term);
+			100.0, is_line_term_vert(line), pcb_true, line->term, PCB_FLAG_INTCONN_GET(line));
 }
 
 

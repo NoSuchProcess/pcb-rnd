@@ -775,7 +775,7 @@ void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 		pcb_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
-		pcb_term_label_setup(&text, x0, y0, 100.0, vert, pcb_true, arc->term);
+		pcb_term_label_setup(&text, x0, y0, 100.0, vert, pcb_true, arc->term, PCB_FLAG_INTCONN_GET(arc));
 		pcb_draw_invalidate(&text);
 	}
 }
@@ -787,7 +787,7 @@ void pcb_arc_draw_label(pcb_arc_t *arc)
 		pcb_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
-		pcb_term_label_draw(x0, y0, 100.0, vert, pcb_true, arc->term);
+		pcb_term_label_draw(x0, y0, 100.0, vert, pcb_true, arc->term, PCB_FLAG_INTCONN_GET(arc));
 	}
 }
 

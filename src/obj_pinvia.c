@@ -976,7 +976,6 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	pcb_box_t box;
 	pcb_bool vert;
 	pcb_coord_t x_off, y_off;
-	char buff[128];
 	const char *pn;
 	double scale;
 	pcb_bool flip_x = conf_core.editor.view.flip_x;
@@ -996,11 +995,6 @@ static void _draw_pv_name(pcb_pin_t * pv)
 			pn = "n/a";
 	}
 
-	if (PCB_FLAG_INTCONN_GET(pv) > 0)
-		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, PCB_FLAG_INTCONN_GET(pv));
-	else
-		strcpy(buff, pn);
-
 	vert = PCB_FLAG_TEST(PCB_FLAG_EDGE2, pv);
 	if (vert) {
 		x_off = -pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
@@ -1018,7 +1012,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	/* Set font height to approx 56% of pin thickness */
 	scale = 56 * pv->Thickness / PCB_FONT_CAPHEIGHT;
 
-	pcb_term_label_draw(box.X1, box.Y1, scale, vert, pcb_false, buff);
+	pcb_term_label_draw(box.X1, box.Y1, scale, vert, pcb_false, pn, PCB_FLAG_INTCONN_GET(pv));
 }
 
 static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)

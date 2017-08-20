@@ -740,12 +740,20 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	}
 }
 
-void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab)
+static const char *lab_with_intconn(int intconn, const char *lab, char *buff, int bufflen)
+{
+	if (intconn <= 0)
+		return lab;
+	pcb_snprintf(buff, bufflen, "%s[%d]", lab, intconn);
+	return buff;
+}
+
+static void pcb_term_label_setup_(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label)
 {
 	pcb_bool flip_x = conf_core.editor.view.flip_x;
 	pcb_bool flip_y = conf_core.editor.view.flip_y;
 
-	text->TextString = (char *)lab;
+	text->TextString = (char *)label;
 	text->Flags = (flip_x ^ flip_y) ? pcb_flag_make(PCB_FLAG_ONSOLDER) : pcb_no_flags();
 	text->X = x;
 	text->Y = y;
@@ -777,13 +785,26 @@ void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double
 	}
 }
 
-void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab)
+void pcb_term_label_setup(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
+{
+	const char *label;
+	char buff[128];
+
+	label = lab_with_intconn(intconn, lab, buff, sizeof(buff));
+	pcb_term_label_setup_(text, x, y, scale, vert, centered, label);
+}
+
+
+void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
 {
 	pcb_text_t text;
+	const char *label;
+	char buff[128];
+	label = lab_with_intconn(intconn, lab, buff, sizeof(buff));
 
 	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
 
-	pcb_term_label_setup(&text, x, y, scale, vert, centered, lab);
+	pcb_term_label_setup_(&text, x, y, scale, vert, centered, label);
 
 	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
