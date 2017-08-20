@@ -1581,7 +1581,7 @@ pin_hi_format
 				pcb_pin_t *pin = pcb_element_pin_new(yyElement, NU ($3) + yyElement->MarkX,
 					NU ($4) + yyElement->MarkY, NU ($5), NU ($6), NU ($7), NU ($8), $9,
 					$10, $11);
-				pin->intconn = yy_intconn;
+				pcb_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);
 				free ($9);
 				free ($10);
 			}
@@ -1689,7 +1689,7 @@ pad_hi_format
 					NU ($5) + yyElement->MarkX,
 					NU ($6) + yyElement->MarkY, NU ($7), NU ($8), NU ($9),
 					$10, $11, $12);
-				pad->intconn = yy_intconn;
+				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
 				free ($10);
 				free ($11);
 			}

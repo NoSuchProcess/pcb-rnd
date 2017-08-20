@@ -74,4 +74,7 @@ void pcb_attribute_copyback_begin(pcb_attribute_list_t *dst);
 void pcb_attribute_copyback(pcb_attribute_list_t *dst, const char *name, const char *value);
 void pcb_attribute_copyback_end(pcb_attribute_list_t *dst);
 
+/* Set the intconn attribute - hack for compatibility parsing */
+void pcb_attrib_compat_set_intconn(pcb_attribute_list_t *dst, int intconn);
+
 #endif

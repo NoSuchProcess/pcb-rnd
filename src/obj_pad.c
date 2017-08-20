@@ -53,6 +53,7 @@ pcb_pad_t *pcb_pad_alloc(pcb_element_t * element)
 
 	new_obj = calloc(sizeof(pcb_pad_t), 1);
 	new_obj->type = PCB_OBJ_PAD;
+	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(new_obj, element, element);
 
 	padlist_append(&element->Pad, new_obj);

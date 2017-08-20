@@ -2662,7 +2662,7 @@ yyreduce:
 				pcb_pin_t *pin = pcb_element_pin_new(yyElement, NU ((yyvsp[-9].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-8].measure)) + yyElement->MarkY, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].string),
 					(yyvsp[-2].string), (yyvsp[-1].flagtype));
-				pin->intconn = yy_intconn;
+				pcb_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
@@ -2733,7 +2733,7 @@ yyreduce:
 					NU ((yyvsp[-8].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-7].measure)) + yyElement->MarkY, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
 					(yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].flagtype));
-				pad->intconn = yy_intconn;
+				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}

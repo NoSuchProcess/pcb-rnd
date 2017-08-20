@@ -161,3 +161,15 @@ void pcb_attribute_copyback_end(pcb_attribute_list_t *dst)
 			pcb_attribute_remove_idx(dst, i);
 }
 
+
+void pcb_attrib_compat_set_intconn(pcb_attribute_list_t *dst, int intconn)
+{
+	char buff[32];
+
+	if (intconn <= 0)
+		return;
+
+	sprintf(buff, "%d", intconn & 0xFF);
+	pcb_attribute_put(dst, "intconn", buff);
+}
+

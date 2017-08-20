@@ -160,8 +160,11 @@ static lht_node_t *build_attributes(pcb_attribute_list_t *lst)
 		return dummy_node("attributes");
 	ln = lht_dom_node_alloc(LHT_HASH, "attributes");
 
-	for (n = 0; n < lst->Number; n++)
+	for (n = 0; n < lst->Number; n++) {
+		if ((wrver < 3) && (strcmp(lst->List[n].name, "intconn") == 0))
+			continue; /* do not write intconn as attribute for v1 and v2, we used a flag for those */
 		lht_dom_hash_put(ln, build_text(lst->List[n].name, lst->List[n].value));
+	}
 
 	return ln;
 }
