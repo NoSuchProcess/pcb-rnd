@@ -166,7 +166,7 @@ static lht_node_t *build_attributes(pcb_attribute_list_t *lst)
 	return ln;
 }
 
-static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
+static lht_node_t *build_flags(pcb_flag_t *f, int object_type, int intconn)
 {
 	int n, layer, added = 0, thrm = 0;
 	lht_node_t *hsh, *txt, *lst;
@@ -217,8 +217,8 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 		added++;
 	}
 
-	if (f->int_conn_grp > 0) {
-		lht_dom_hash_put(hsh, build_textf("intconn", "%d", f->int_conn_grp));
+	if ((intconn > 0) && (wrver < 3)) {
+		lht_dom_hash_put(hsh, build_textf("intconn", "%d", intconn));
 		added++;
 	}
 
@@ -240,7 +240,7 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pc
 
 	if (!simple) {
 		lht_dom_hash_put(obj, build_attributes(&line->Attributes));
-		lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_TYPE_LINE));
+		lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_TYPE_LINE, line->intconn));
 		lht_dom_hash_put(obj, build_textf("clearance", CFMT, line->Clearance));
 	}
 
@@ -297,7 +297,7 @@ static lht_node_t *build_rat(pcb_rat_t *rat)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&rat->Attributes));
-	lht_dom_hash_put(obj, build_flags(&rat->Flags, PCB_TYPE_LINE));
+	lht_dom_hash_put(obj, build_flags(&rat->Flags, PCB_TYPE_LINE, rat->intconn));
 	lht_dom_hash_put(obj, build_textf("x1", CFMT, rat->Point1.X));
 	lht_dom_hash_put(obj, build_textf("y1", CFMT, rat->Point1.Y));
 	lht_dom_hash_put(obj, build_textf("x2", CFMT, rat->Point2.X));
@@ -317,7 +317,7 @@ static lht_node_t *build_arc(pcb_arc_t *arc, pcb_coord_t dx, pcb_coord_t dy)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&arc->Attributes));
-	lht_dom_hash_put(obj, build_flags(&arc->Flags, PCB_TYPE_ARC));
+	lht_dom_hash_put(obj, build_flags(&arc->Flags, PCB_TYPE_ARC, arc->intconn));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, arc->Thickness));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, arc->Clearance));
 	lht_dom_hash_put(obj, build_textf("x", CFMT, arc->X+dx));
@@ -339,7 +339,7 @@ static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, pcb_coord_t dx, pcb_coo
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&pin->Attributes));
-	lht_dom_hash_put(obj, build_flags(&pin->Flags, PCB_TYPE_VIA));
+	lht_dom_hash_put(obj, build_flags(&pin->Flags, PCB_TYPE_VIA, pin->intconn));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pin->Thickness));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pin->Clearance));
 	lht_dom_hash_put(obj, build_textf("mask", CFMT, pin->Mask));
@@ -360,7 +360,7 @@ static lht_node_t *build_pad(pcb_pad_t *pad, pcb_coord_t dx, pcb_coord_t dy)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&pad->Attributes));
-	lht_dom_hash_put(obj, build_flags(&pad->Flags, PCB_TYPE_PAD));
+	lht_dom_hash_put(obj, build_flags(&pad->Flags, PCB_TYPE_PAD, pad->intconn));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pad->Thickness));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pad->Clearance));
 	lht_dom_hash_put(obj, build_textf("mask", CFMT, pad->Mask));
@@ -383,7 +383,7 @@ static lht_node_t *build_polygon(pcb_polygon_t *poly)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&poly->Attributes));
-	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_TYPE_POLYGON));
+	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_TYPE_POLYGON, poly->intconn));
 
 	geo = lht_dom_node_alloc(LHT_LIST, "geometry");
 	lht_dom_hash_put(obj, geo);
@@ -419,7 +419,7 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&text->Attributes));
-	lht_dom_hash_put(obj, build_flags(&text->Flags, PCB_TYPE_TEXT));
+	lht_dom_hash_put(obj, build_flags(&text->Flags, PCB_TYPE_TEXT, text->intconn));
 	lht_dom_hash_put(obj, build_text("string", text->TextString));
 	lht_dom_hash_put(obj, build_textf("fid", "%ld", text->fid));
 	lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
@@ -446,7 +446,7 @@ static lht_node_t *build_element(pcb_element_t *elem)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&elem->Attributes));
-	lht_dom_hash_put(obj, build_flags(&elem->Flags, PCB_TYPE_ELEMENT));
+	lht_dom_hash_put(obj, build_flags(&elem->Flags, PCB_TYPE_ELEMENT, 0));
 
 
 	/* build drawing primitives */
@@ -494,7 +494,7 @@ static lht_node_t *build_subc(pcb_subc_t *sc)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&sc->Attributes));
-	lht_dom_hash_put(obj, build_flags(&sc->Flags, PCB_TYPE_SUBC));
+	lht_dom_hash_put(obj, build_flags(&sc->Flags, PCB_TYPE_SUBC, 0));
 	lht_dom_hash_put(obj, build_data(sc->data));
 	lht_dom_hash_put(obj, build_minuid("uid", sc->uid));
 

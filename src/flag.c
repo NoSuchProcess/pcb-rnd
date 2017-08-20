@@ -79,9 +79,6 @@ int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2)
 	if (f1->q != f2->q)
 		return 0;
 
-	if (f1->int_conn_grp != f2->int_conn_grp)
-		return 0;
-
 	/* WARNING: ignore unknowns for now: the only place where we use this function,
 	undo.c, won't care */
 

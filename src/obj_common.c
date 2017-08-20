@@ -170,7 +170,7 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 			if (*end != '\0')
 				cid = 0;
 		}
-		obj->Flags.int_conn_grp = cid;
+		obj->intconn = cid;
 	}
 }
 

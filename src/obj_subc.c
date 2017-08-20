@@ -955,7 +955,7 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_gui->set_draw_xor(Output.fgGC, 0);
 
 	if (subc->refdes != NULL)
-		pcb_term_label_draw(bb->X1, bb->Y1, 50.0, 0, 0, subc->refdes, PCB_FLAG_INTCONN_GET(subc));
+		pcb_term_label_draw(bb->X1, bb->Y1, 50.0, 0, 0, subc->refdes, subc->intconn);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }

@@ -428,8 +428,8 @@ static void draw_pad_name(pcb_pad_t * pad)
 			pn = "n/a";
 	}
 
-	if (PCB_FLAG_INTCONN_GET(pad) > 0)
-		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, PCB_FLAG_INTCONN_GET(pad));
+	if (pad->intconn > 0)
+		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, pad->intconn);
 	else
 		strcpy(buff, pn);
 	text.TextString = buff;

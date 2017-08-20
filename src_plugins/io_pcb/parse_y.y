@@ -64,6 +64,7 @@ static	int		pin_num;
 static	pcb_lib_menu_t *Menu;
 static	pcb_bool			LayerFlag[PCB_MAX_LAYER + 2];
 static	int	old_fmt; /* 1 if we are reading a PCB(), 0 if PCB[] */
+static	unsigned char yy_intconn;
 
 extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
@@ -1577,9 +1578,10 @@ pin_hi_format
 			   number, flags */
 		: T_PIN '[' measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				pcb_element_pin_new(yyElement, NU ($3) + yyElement->MarkX,
+				pcb_pin_t *pin = pcb_element_pin_new(yyElement, NU ($3) + yyElement->MarkX,
 					NU ($4) + yyElement->MarkY, NU ($5), NU ($6), NU ($7), NU ($8), $9,
 					$10, $11);
+				pin->intconn = yy_intconn;
 				free ($9);
 				free ($10);
 			}
@@ -1682,11 +1684,12 @@ pad_hi_format
 			/* x1, y1, x2, y2, thickness, clearance, mask, name , pad number, flags */
 		: T_PAD '[' measure measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				pcb_element_pad_new(yyElement, NU ($3) + yyElement->MarkX,
+				pcb_pad_t *pad = pcb_element_pad_new(yyElement, NU ($3) + yyElement->MarkX,
 					NU ($4) + yyElement->MarkY,
 					NU ($5) + yyElement->MarkX,
 					NU ($6) + yyElement->MarkY, NU ($7), NU ($8), NU ($9),
 					$10, $11, $12);
+				pad->intconn = yy_intconn;
 				free ($10);
 				free ($11);
 			}
@@ -1730,7 +1733,7 @@ pad
 		;
 
 flags		: INTEGER	{ $$ = pcb_flag_old($1); }
-		| STRING	{ $$ = pcb_strflg_s2f($1, yyerror); free($1); }
+		| STRING	{ $$ = pcb_strflg_s2f($1, yyerror, &yy_intconn); free($1); }
 		;
 
 symbols

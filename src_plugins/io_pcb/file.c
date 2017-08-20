@@ -77,7 +77,7 @@ static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
  * Flag helper functions
  */
 
-#define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
+#define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE, &((OBJ)->intconn))
 
 /* --------------------------------------------------------------------------- */
 

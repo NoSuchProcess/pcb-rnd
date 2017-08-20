@@ -743,7 +743,7 @@ void pcb_text_name_invalidate_draw(pcb_text_t *txt)
 	if (txt->term != NULL) {
 		pcb_text_t text;
 		pcb_term_label_setup(&text, (txt->BoundingBox.X1 + txt->BoundingBox.X2)/2, (txt->BoundingBox.Y1 + txt->BoundingBox.Y2)/2,
-			100.0, is_text_term_vert(txt), pcb_true, txt->term, PCB_FLAG_INTCONN_GET(txt));
+			100.0, is_text_term_vert(txt), pcb_true, txt->term, txt->intconn);
 		pcb_draw_invalidate(&text);
 	}
 }
@@ -752,7 +752,7 @@ void pcb_text_draw_label(pcb_text_t *text)
 {
 	if (text->term != NULL)
 		pcb_term_label_draw((text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
-			100.0, is_text_term_vert(text), pcb_true, text->term, PCB_FLAG_INTCONN_GET(text));
+			100.0, is_text_term_vert(text), pcb_true, text->term, text->intconn);
 }
 
 

@@ -575,7 +575,7 @@ void LOC_int_conn_element(pcb_element_t *e, int ic, int from_type, void *from_pt
 	   internal connection group number, they are connected */
 	PCB_PIN_LOOP(e);
 	{
-		if ((from_ptr != pin) && (ic == PCB_FLAG_INTCONN_GET(pin))) {
+		if ((from_ptr != pin) && (ic == pin->intconn)) {
 			if (!PCB_FLAG_TEST(TheFlag, pin))
 				ADD_PV_TO_LIST(pin, from_type, from_ptr, PCB_FCT_INTERNAL);
 		}
@@ -596,7 +596,7 @@ void LOC_int_conn_element(pcb_element_t *e, int ic, int from_type, void *from_pt
 /*	if (tlayer >= 0)*/ {
 		PCB_PAD_LOOP(e);
 		{
-			if ((from_ptr != pad) && (ic == PCB_FLAG_INTCONN_GET(pad))) {
+			if ((from_ptr != pad) && (ic == pad->intconn)) {
 				int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE;
 				if ((!PCB_FLAG_TEST(TheFlag, pad)) /* && (tlayer != padlayer)*/) {
 					ADD_PAD_TO_LIST(padlayer, pad, from_type, from_ptr, PCB_FCT_INTERNAL);
@@ -627,7 +627,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 		orig_pin = (PVLIST_ENTRY(PVList.Location));
 		info.pv = *orig_pin;
 
-		ic = PCB_FLAG_INTCONN_GET(orig_pin);
+		ic = orig_pin->intconn;
 		if ((info.pv.Element != NULL) && (ic > 0))
 			LOC_int_conn_element(info.pv.Element, ic, PCB_TYPE_PIN, orig_pin);
 
@@ -1324,7 +1324,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 
 	/* Internal connection: if pads in the same element have the same
 	   internal connection group number, they are connected */
-	ic = PCB_FLAG_INTCONN_GET(Pad);
+	ic = Pad->intconn;
 	if ((Pad->Element != NULL) && (ic > 0))
 		LOC_int_conn_element(Pad->Element, ic, PCB_TYPE_PAD, Pad);
 

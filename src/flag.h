@@ -42,7 +42,6 @@ typedef struct {
 	unsigned long f;							/* generic flags */
 	unsigned char t[(PCB_MAX_LAYER + 1) / 2];	/* thermals */
 	unsigned char q;							/* square geometry flag */
-	unsigned char int_conn_grp;
 	pcb_unknown_flag_t *unknowns;
 } pcb_flag_t;
 
@@ -231,9 +230,6 @@ int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2);
 #define PCB_FLAG_SQUARE_GET(P)		((P)->Flags.q)
 #define PCB_FLAG_SQUARE_CLEAR(P)		(P)->Flags.q = 0
 #define PCB_FLAG_SQUARE_ASSIGN(V,P)	(P)->Flags.q = V
-
-
-#define PCB_FLAG_INTCONN_GET(P)		((P)->Flags.int_conn_grp)
 
 extern int pcb_mem_any_set(unsigned char *, int);
 #define PCB_FLAG_THERM_TEST_ANY(P)	pcb_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))

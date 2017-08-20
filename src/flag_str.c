@@ -319,13 +319,15 @@ static int error_ignore(const char *msg)
 
 static pcb_flag_t empty_flags;
 
-pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits)
+pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn)
 {
 	const char *fp, *ep;
 	int flen;
 	FlagHolder rv;
 	int i;
 
+	if (intconn != NULL)
+		*intconn = 0;
 	rv.Flags = empty_flags;
 
 	if (error == 0)
@@ -355,8 +357,8 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 		else if (flen == 5 && memcmp(fp, "shape", 5) == 0) {
 			rv.Flags.q = atoi(fp + 6);
 		}
-		else if (flen == 7 && memcmp(fp, "intconn", 7) == 0) {
-			rv.Flags.int_conn_grp = atoi(fp + 8);
+		else if (intconn != NULL && flen == 7 && memcmp(fp, "intconn", 7) == 0) {
+			*intconn = atoi(fp + 8);
 		}
 		else {
 			for (i = 0; i < n_flagbits; i++)
@@ -404,9 +406,9 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 	return rv.Flags;
 }
 
-pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg))
+pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg), unsigned char *intconn)
 {
-	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits));
+	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits), intconn);
 }
 
 
@@ -421,7 +423,7 @@ pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg)
  * forcibly set when vias are parsed.
  */
 
-char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits)
+char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn)
 {
 	int len;
 	int i;
@@ -471,11 +473,11 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 			len += 2;
 	}
 
-	if (flags.int_conn_grp > 0) {
+	if ((intconn != NULL) && (*intconn > 0)) {
 		len += sizeof("intconn(.)");
-		if (flags.q > 9)
+		if (*intconn > 9)
 			len++;
-		if (flags.q > 99)
+		if (*intconn > 99)
 			len++;
 	}
 
@@ -515,10 +517,10 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 		bp += sprintf(bp, "shape(%d)", flags.q);
 	}
 
-	if (flags.int_conn_grp > 0) {
+	if ((intconn != NULL) && (*intconn > 0)) {
 		if (bp != buf + 1)
 			*bp++ = ',';
-		bp += sprintf(bp, "intconn(%d)", flags.int_conn_grp);
+		bp += sprintf(bp, "intconn(%d)", *intconn);
 	}
 
 	for (u = flags.unknowns; u != NULL; u = u->next) {
@@ -535,9 +537,9 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 	return buf;
 }
 
-char *pcb_strflg_f2s(pcb_flag_t flags, int object_type)
+char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn)
 {
-	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits));
+	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits), intconn);
 }
 
 
@@ -572,10 +574,10 @@ static pcb_flag_bits_t pcb_flagbits[] = {
 
 char *pcb_strflg_board_f2s(pcb_flag_t flags)
 {
-	return pcb_strflg_common_f2s(flags, PCB_TYPEMASK_ALL, pcb_flagbits, PCB_ENTRIES(pcb_flagbits));
+	return pcb_strflg_common_f2s(flags, PCB_TYPEMASK_ALL, pcb_flagbits, PCB_ENTRIES(pcb_flagbits), NULL);
 }
 
 pcb_flag_t pcb_strflg_board_s2f(const char *flagstring, int (*error) (const char *msg))
 {
-	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, PCB_ENTRIES(pcb_flagbits));
+	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, PCB_ENTRIES(pcb_flagbits), NULL);
 }
