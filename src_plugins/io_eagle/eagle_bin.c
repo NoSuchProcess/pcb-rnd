@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <stdarg.h>
 
 #include "eagle_bin.h"
 #include "egb_tree.h"
@@ -1493,6 +1494,32 @@ static const char *eagle_elem_refdes_by_idx(egb_node_t *elements, long idx)
 	if (e == NULL)
 		return NULL;
 	return egb_node_prop_get(e, "name");
+}
+
+/* bin path walk; the ... is a 0 terminated list of pcb_eagle_binkw_t IDs */
+static egb_node_t *eagle_trpath(egb_node_t *subtree, ...)
+{
+	egb_node_t *nd = subtree;
+	pcb_eagle_binkw_t target;
+	va_list ap;
+
+	va_start(ap, subtree);
+
+	/* get next path element */
+	while((target = va_arg(ap, pcb_eagle_binkw_t)) != NULL) {
+		/* look for target on this level */
+		for(nd = nd->first_child;;nd = nd->next) {
+			if (nd == NULL) {/* target not found on this level */
+				va_end(ap);
+				return NULL;
+			}
+			if (nd->id == target) /* found, skip to next level */
+				break;
+		}
+	}
+
+	va_end(ap);
+	return nd;
 }
 
 
