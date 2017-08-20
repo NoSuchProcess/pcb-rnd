@@ -1505,7 +1505,7 @@ static egb_node_t *tree_id_path(egb_node_t *subtree, ...)
 	va_start(ap, subtree);
 
 	/* get next path element */
-	while((target = va_arg(ap, pcb_eagle_binkw_t)) != NULL) {
+	while((target = va_arg(ap, pcb_eagle_binkw_t)) != 0) {
 		/* look for target on this level */
 		for(nd = nd->first_child;;nd = nd->next) {
 			if (nd == NULL) {/* target not found on this level */
