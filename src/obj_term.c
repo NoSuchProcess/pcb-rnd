@@ -189,6 +189,7 @@ static int undo_term_rename_swap(void *udata)
 		old_term = pcb_strdup(r->obj->term);
 		res |= pcb_term_del(&subc->terminals, r->obj);
 		pcb_obj_invalidate_label(pcb_obj_type2oldtype(r->obj->type), r->obj->parent.any, r->obj, r->obj);
+		r->obj->term = NULL;
 	}
 
 	/* add to new terminal */
