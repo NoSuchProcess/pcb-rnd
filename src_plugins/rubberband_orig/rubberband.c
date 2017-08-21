@@ -42,6 +42,7 @@
 #include "operation.h"
 #include "rotate.h"
 #include "draw.h"
+#include "draw_wireframe.h"
 #include "crosshair.h"
 #include "obj_rat_draw.h"
 #include "obj_line_op.h"
@@ -1001,15 +1002,15 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 			if ((x1 != x2) || (y1 != y2)) {
 				if (PCB_FLAG_TEST(PCB_FLAG_RAT, ptr->Line)) {
 					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.rat);
-					XORDrawAttachedLine(x1,y1,x2,y2, ptr->Line->Thickness);
+					pcb_draw_wireframe_line(pcb_crosshair.GC,x1,y1,x2,y2, ptr->Line->Thickness);
 				}
 				else if(conf_core.editor.move_linepoint_uses_route == 0) {
 					pcb_gui->set_color(pcb_crosshair.GC,ptr->Layer->meta.real.color);
-					XORDrawAttachedLine(x1,y1,x2,y2, ptr->Line->Thickness);
+					pcb_draw_wireframe_line(pcb_crosshair.GC,x1,y1,x2,y2, ptr->Line->Thickness);
 					/* Draw the DRC outline if it is enabled */
 					if (conf_core.editor.show_drc) {
 						pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-						XORDrawAttachedLine(x1,y1,x2,y2,ptr->Line->Thickness + 2 * (PCB->Bloat + 1) );
+						pcb_draw_wireframe_line(pcb_crosshair.GC,x1,y1,x2,y2,ptr->Line->Thickness + 2 * (PCB->Bloat + 1) );
 					}
 				}
 				else {

@@ -34,6 +34,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
+#include "draw_wireframe.h"
 #include "search.h"
 #include "polygon.h"
 #include "hid_actions.h"
@@ -115,25 +116,6 @@ void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash
 }
 
 /*-----------------------------------------------------------
- * Draws the outline of an arc
- */
-static void XORDrawArc(pcb_arc_t * arc)
-{
-	pcb_coord_t wid = arc->Thickness / 2;
-	pcb_coord_t x1,y1,x2,y2;
-
-	pcb_arc_get_end(arc, 0, &x1, &y1);
-	pcb_arc_get_end(arc, 1, &x2, &y2);
-
-	pcb_gui->draw_arc(pcb_crosshair.GC, arc->X, arc->Y, arc->Width + wid, arc->Height + wid, arc->StartAngle, arc->Delta);
-	if (wid > pcb_pixel_slop) {
-		pcb_gui->draw_arc(pcb_crosshair.GC, arc->X, arc->Y, arc->Width - wid, arc->Height - wid, arc->StartAngle, arc->Delta);
-		pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, wid, wid, arc->StartAngle, -180 * SGN(arc->Delta));
-		pcb_gui->draw_arc(pcb_crosshair.GC, x2, y2, wid, wid, arc->StartAngle + arc->Delta, 180 * SGN(arc->Delta));
-	}
-}
-
-/*-----------------------------------------------------------
  * Draws the outline of an attached arc
  */
 static void XORDrawAttachedArc(pcb_coord_t thick)
@@ -165,32 +147,7 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 	arc.Width = arc.Height = wy;
 	arc.Thickness = thick;
 
-	XORDrawArc(&arc);
-}
-
-/*-----------------------------------------------------------
- * Draws the outline of a line
- */
-void XORDrawAttachedLine(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
-{
-	pcb_coord_t dx, dy, ox, oy;
-	double h;
-
-	dx = x2 - x1;
-	dy = y2 - y1;
-	if (dx != 0 || dy != 0)
-		h = 0.5 * thick / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
-	else
-		h = 0.0;
-	ox = dy * h + 0.5 * SGN(dy);
-	oy = -(dx * h + 0.5 * SGN(dx));
-	pcb_gui->draw_line(pcb_crosshair.GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
-	if (coord_abs(ox) >= pcb_pixel_slop || coord_abs(oy) >= pcb_pixel_slop) {
-		pcb_angle_t angle = atan2(dx, dy) * 57.295779;
-		pcb_gui->draw_line(pcb_crosshair.GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
-		pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, thick / 2, thick / 2, angle - 180, 180);
-		pcb_gui->draw_arc(pcb_crosshair.GC, x2, y2, thick / 2, thick / 2, angle, 180);
-	}
+	pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
 }
 
 /* ---------------------------------------------------------------------------
@@ -388,15 +345,17 @@ static void XORDrawMoveOrCopy(void)
 				line.Point2.Y += dy;
 			}
 
-			XORDrawAttachedLine(line.Point1.X, line.Point1.Y,
-								line.Point2.X, line.Point2.Y, line.Thickness);
+			pcb_draw_wireframe_line(pcb_crosshair.GC,
+															line.Point1.X, line.Point1.Y,
+															line.Point2.X, line.Point2.Y, 
+															line.Thickness);
 			
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawAttachedLine(line.Point1.X, line.Point1.Y,
-									line.Point2.X, line.Point2.Y,
-									line.Thickness + 2 * (PCB->Bloat + 1) );
+				pcb_draw_wireframe_line(pcb_crosshair.GC,line.Point1.X, line.Point1.Y,
+																line.Point2.X, line.Point2.Y,
+																line.Thickness + 2 * (PCB->Bloat + 1) );
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
@@ -409,13 +368,13 @@ static void XORDrawMoveOrCopy(void)
 			arc.X += dx;
 			arc.Y += dy;
 
-			XORDrawArc(&arc);
+			pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
 
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
 				arc.Thickness += 2 * (PCB->Bloat + 1);
-				XORDrawArc(&arc);
+				pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
@@ -445,12 +404,13 @@ static void XORDrawMoveOrCopy(void)
 			point2.Y += dy;				
 
 			if(conf_core.editor.move_linepoint_uses_route == 0) {/* config setting for selecting new 45/90 method */ 
-				XORDrawAttachedLine(point1->X, point1->Y, point2.X, point2.Y, line->Thickness);
+				pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y, line->Thickness);
 
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
 					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-					XORDrawAttachedLine(point1->X, point1->Y, point2.X, point2.Y,line->Thickness + 2 * (PCB->Bloat + 1) );
+					pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, 
+																	point2.Y,line->Thickness + 2 * (PCB->Bloat + 1) );
 					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 				}
 			}
@@ -829,10 +789,11 @@ void pcb_draw_attached(void)
 		{
 			/* draw only if starting point exists and the line has length */
 			if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) 
-				XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point1.X,
-														pcb_crosshair.AttachedLine.Point1.Y,
-														pcb_crosshair.AttachedLine.Point2.X,
-														pcb_crosshair.AttachedLine.Point2.Y, 10 );
+				pcb_draw_wireframe_line(pcb_crosshair.GC,
+																pcb_crosshair.AttachedLine.Point1.X,
+																pcb_crosshair.AttachedLine.Point1.Y,
+																pcb_crosshair.AttachedLine.Point2.X,
+																pcb_crosshair.AttachedLine.Point2.Y, 10 );
 		}
 		else if(pcb_crosshair.Route.size > 0)
 		{	
