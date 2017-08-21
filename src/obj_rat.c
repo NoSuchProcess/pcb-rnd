@@ -246,7 +246,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
 
-		if (conf_core.editor.thin_draw)
+		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)
 			pcb_gui->set_line_width(Output.fgGC, 0);
 		else
 			pcb_gui->set_line_width(Output.fgGC, w);

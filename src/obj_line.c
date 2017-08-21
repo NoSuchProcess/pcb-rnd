@@ -46,6 +46,7 @@
 
 /* TODO: maybe remove this and move lines from draw here? */
 #include "draw.h"
+#include "draw_wireframe.h"
 #include "obj_line_draw.h"
 #include "obj_rat_draw.h"
 #include "obj_pinvia_draw.h"
@@ -927,7 +928,7 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 {
 	PCB_DRAW_BBOX(line);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
-	if (!conf_core.editor.thin_draw) {
+	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw) {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(line)) {
 			pcb_gui->set_line_width(Output.active_padGC, line->Thickness);
 			pcb_gui->draw_line(Output.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
@@ -935,12 +936,18 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 		}
 		else
 			pcb_gui->set_line_width(Output.fgGC, line->Thickness);
+		pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 	}
 	else
-		pcb_gui->set_line_width(Output.fgGC, 0);
+	{
+		if(conf_core.editor.thin_draw) {
+			pcb_gui->set_line_width(Output.fgGC, 0);
+			pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+		}
 
-
-	pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+		if(conf_core.editor.wireframe_draw) 
+			pcb_draw_wireframe_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
+	}
 
 	if (line->term != NULL) {
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, line))

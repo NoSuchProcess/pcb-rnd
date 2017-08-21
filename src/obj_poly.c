@@ -850,7 +850,7 @@ void pcb_poly_draw_label(pcb_polygon_t *poly)
 
 void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
-	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
+	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) || conf_core.editor.wireframe_draw)
 	{
 		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, drawn_area);
 	}

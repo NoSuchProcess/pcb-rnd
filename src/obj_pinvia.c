@@ -1018,7 +1018,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 
 static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)
 {
-	if (conf_core.editor.thin_draw)
+	if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)
 		pcb_gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
 	else
 		pcb_gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
@@ -1054,7 +1054,7 @@ pcb_r_dir_t pcb_pin_name_draw_callback(const pcb_box_t * b, void *cl)
 pcb_r_dir_t pcb_pin_clear_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
-	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
+	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw)
 		pcb_gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
 	else
 		pcb_gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
@@ -1090,7 +1090,7 @@ pcb_r_dir_t pcb_hole_draw_callback(const pcb_box_t * b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(pv->parent_type, &pv->parent))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	if (conf_core.editor.thin_draw) {
+	if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			pcb_gui->set_line_cap(Output.fgGC, Round_Cap);
 			pcb_gui->set_line_width(Output.fgGC, 0);

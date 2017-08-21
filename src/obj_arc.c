@@ -37,6 +37,7 @@
 #include "move.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "draw_wireframe.h"
 
 #include "obj_arc.h"
 #include "obj_arc_op.h"
@@ -798,7 +799,7 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 
 	PCB_DRAW_BBOX(arc);
 
-	if (!conf_core.editor.thin_draw)
+	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw)
 	{
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(arc)) {
 			pcb_gui->set_line_width(Output.active_padGC, arc->Thickness);
@@ -807,14 +808,20 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 		}
 		else
 		pcb_gui->set_line_width(Output.fgGC, arc->Thickness);
+		pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
+		pcb_gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 	}
 	else
+	{
 		pcb_gui->set_line_width(Output.fgGC, 0);
+		pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 
-	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
+		if(conf_core.editor.thin_draw)
+			pcb_gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 
-	pcb_gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
-
+		if(conf_core.editor.wireframe_draw)
+			pcb_draw_wireframe_arc(Output.fgGC,arc);
+	}
 	if (arc->term != NULL) {
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, arc))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)arc);
