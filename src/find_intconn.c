@@ -67,3 +67,45 @@ void LOC_int_conn_element(pcb_element_t *e, int ic, int from_type, void *from_pt
 		PCB_END_LOOP;
 	}
 }
+
+static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_ptr)
+{
+	PCB_VIA_LOOP(s->data);
+	{
+		if ((via != from_ptr) && (via->term != NULL) && (via->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, via)))
+			ADD_PV_TO_LIST(via, from_type, from_ptr, PCB_FCT_INTERNAL);
+	}
+	PCB_END_LOOP;
+
+	PCB_LINE_COPPER_LOOP(s->data);
+	{
+		if ((line != from_ptr) && (line->term != NULL) && (line->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, line)))
+			ADD_LINE_TO_LIST(l, line, from_type, from_ptr, PCB_FCT_INTERNAL);
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_ARC_COPPER_LOOP(s->data);
+	{
+		if ((arc != from_ptr) && (arc->term != NULL) && (arc->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, arc)))
+			ADD_ARC_TO_LIST(l, arc, from_type, from_ptr, PCB_FCT_INTERNAL);
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_POLY_COPPER_LOOP(s->data);
+	{
+		if ((polygon != from_ptr) && (polygon->term != NULL) && (polygon->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, polygon)))
+			ADD_POLYGON_TO_LIST(l, polygon, from_type, from_ptr, PCB_FCT_INTERNAL);
+	}
+	PCB_ENDALL_LOOP;
+
+#warning subc TODO
+#if 0
+no find through text yet
+	PCB_TEXT_COPPER_LOOP(s->data);
+	{
+		if ((text != from_ptr) && (text->term != NULL) && (text->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, text)))
+			ADD_TEXT_TO_LIST(l, text, from_type, from_ptr, PCB_FCT_INTERNAL);
+	}
+	PCB_ENDALL_LOOP;
+#endif
+}
