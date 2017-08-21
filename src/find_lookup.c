@@ -174,6 +174,8 @@ pcb_bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
 	return pcb_true;
 }
 
+#include "find_intconn.c"
+
 /* ---------------------------------------------------------------------------
  * releases all allocated memory
  */
@@ -565,48 +567,6 @@ static pcb_r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
-}
-
-void LOC_int_conn_element(pcb_element_t *e, int ic, int from_type, void *from_ptr)
-{
-/*	int tlayer = -1;*/
-
-	/* Internal connection: if pins/pads in the same element have the same
-	   internal connection group number, they are connected */
-	PCB_PIN_LOOP(e);
-	{
-		if ((from_ptr != pin) && (ic == pin->intconn)) {
-			if (!PCB_FLAG_TEST(TheFlag, pin))
-				ADD_PV_TO_LIST(pin, from_type, from_ptr, PCB_FCT_INTERNAL);
-		}
-	}
-	PCB_END_LOOP;
-
-/*
-	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
-		pcb_layer_id_t layer;
-		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
-		if (layer == PCB_COMPONENT_SIDE)
-			tlayer = PCB_COMPONENT_SIDE;
-		else if (layer == PCB_SOLDER_SIDE)
-			tlayer = PCB_SOLDER_SIDE;
-	}
-*/
-
-/*	if (tlayer >= 0)*/ {
-		PCB_PAD_LOOP(e);
-		{
-			if ((from_ptr != pad) && (ic == pad->intconn)) {
-				int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE;
-				if ((!PCB_FLAG_TEST(TheFlag, pad)) /* && (tlayer != padlayer)*/) {
-					ADD_PAD_TO_LIST(padlayer, pad, from_type, from_ptr, PCB_FCT_INTERNAL);
-/*					if (LookupLOConnectionsToPad(pad, LayerGroup))
-						retv = pcb_true;*/
-				}
-			}
-		}
-		PCB_END_LOOP;
-	}
 }
 
 /* ---------------------------------------------------------------------------
