@@ -499,14 +499,14 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	return (warn);
 }
 
-static void gather_subnet_objs(pcb_netlist_t *Netl, pcb_net_t *a)
+static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t *a)
 {
 	pcb_connection_t *conn;
 
 	/* now add other possible attachment points to the subnet */
 	/* e.g. line end-points and vias */
 	/* don't add non-manhattan lines, the auto-router can't route to them */
-	PCB_LINE_ALL_LOOP(PCB->Data);
+	PCB_LINE_ALL_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)
 				&& ((line->Point1.X == line->Point2.X)
@@ -529,7 +529,7 @@ static void gather_subnet_objs(pcb_netlist_t *Netl, pcb_net_t *a)
 	}
 	PCB_ENDALL_LOOP;
 	/* add polygons so the auto-router can see them as targets */
-	PCB_POLY_ALL_LOOP(PCB->Data);
+	PCB_POLY_ALL_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon)) {
 			conn = pcb_rat_connection_alloc(a);
@@ -543,7 +543,7 @@ static void gather_subnet_objs(pcb_netlist_t *Netl, pcb_net_t *a)
 		}
 	}
 	PCB_ENDALL_LOOP;
-	PCB_VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
 			conn = pcb_rat_connection_alloc(a);
@@ -588,7 +588,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 			}
 		}
 
-		gather_subnet_objs(Netl, a);
+		gather_subnet_objs(PCB->Data, Netl, a);
 		if (!NoWarn)
 			Warned |= CheckShorts(a->Connection[0].menu);
 	}
