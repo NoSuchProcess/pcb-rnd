@@ -222,36 +222,36 @@ static void clear_drc_flag(int clear_ratconn)
 	for(n = pcb_r_first(PCB->Data->pin_tree, &it); n != NULL; n = pcb_r_next(&it)) {
 		if (clear_ratconn)
 			((pcb_pin_t *)n)->ratconn = NULL;
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pin_t *)n);
 	}
 	pcb_r_end(&it);
 
 	for(n = pcb_r_first(PCB->Data->via_tree, &it); n != NULL; n = pcb_r_next(&it))
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *)n);
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pin_t *)n);
 	pcb_r_end(&it);
 
 	for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it)) {
 		if (clear_ratconn)
 			((pcb_pad_t *)n)->ratconn = NULL;
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pad_t *)n);
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pad_t *)n);
 	}
 	pcb_r_end(&it);
 
 	for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
 		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_line_t *)n);
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_line_t *)n);
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_arc_t *)n);
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_arc_t *)n);
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_polygon_t *)n);
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_polygon_t *)n);
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_text_t *)n);
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_text_t *)n);
 		pcb_r_end(&it);
 	}
 }
@@ -525,8 +525,8 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 			conn->obj = (pcb_any_obj_t *)line;
 			conn->group = pcb_layer_get_group_(layer);
 			conn->menu = NULL;
-			if (line->term != NULL)
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
+			if PCB_FLAG_TEST(PCB_FLAG_DRC_INTCONN, line)
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, line);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -543,8 +543,8 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 			conn->obj = (pcb_any_obj_t *)polygon;
 			conn->group = pcb_layer_get_group_(layer);
 			conn->menu = NULL;			/* agnostic view of where it belongs */
-			if (polygon->term != NULL)
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, polygon);
+			if PCB_FLAG_TEST(PCB_FLAG_DRC_INTCONN, polygon)
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, polygon);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -557,8 +557,8 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 			conn->ptr1 = via;
 			conn->obj = (pcb_any_obj_t *)via;
 			conn->group = Sgrp;
-			if (via->term != NULL)
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, via);
+			if PCB_FLAG_TEST(PCB_FLAG_DRC_INTCONN, via)
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, via);
 		}
 	}
 	PCB_END_LOOP;

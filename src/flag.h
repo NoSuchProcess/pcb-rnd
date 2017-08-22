@@ -90,7 +90,8 @@ typedef enum {
 	PCB_FLAG_NONETLIST    = 0x10000, /* element is not on the netlist and should not interfere with the netlist */
 	PCB_FLAG_MINCUT       = 0x20000, /* used by the mincut short find code */
 	PCB_FLAG_ONPOINT      = 0x40000, /*!< crosshair is on line point or arc point */
-	PCB_FLAG_TERMNAME     = 0x80000  /*!< when set the names of pins are shown. */
+	PCB_FLAG_TERMNAME     = 0x80000, /*!< when set the names of pins are shown. */
+	PCB_FLAG_DRC_INTCONN  = 0x100000 /*!< Set for objects are put on the DRC mark because of an intconn */
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
 } pcb_flag_values_t;
 
