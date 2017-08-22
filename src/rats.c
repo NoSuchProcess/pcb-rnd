@@ -528,6 +528,7 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 		}
 	}
 	PCB_ENDALL_LOOP;
+#warning term TODO: and what about arcs?
 	/* add polygons so the auto-router can see them as targets */
 	PCB_POLY_COPPER_LOOP(data);
 	{
