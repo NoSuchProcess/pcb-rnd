@@ -23,7 +23,7 @@ url=svn://repo.hu/pcb-rnd/trunk
 exe=src/pcb-rnd
 
 # ./configure options
-confopts="--debug --all=buildin"
+confopts="--debug --all=buildin --disable-acompnet"
 
 # first rev that's safe to test
 first_rev=3800
