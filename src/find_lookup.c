@@ -27,6 +27,7 @@
 
 #include "compat_nls.h"
 #include "board.h"
+#include "obj_subc_parent.h"
 
 static inline pcb_r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * pt,
 															int radius,
@@ -400,12 +401,18 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 {
 	pcb_cardinal_t layer;
 	struct pv_info info;
+	pcb_pin_t *orig_pin;
 
 	/* loop over all PVs currently on list */
 	while (PVList.Location < PVList.Number) {
 		/* get pointer to data */
-		info.pv = *(PVLIST_ENTRY(PVList.Location));
+		orig_pin = (PVLIST_ENTRY(PVList.Location));
+		info.pv = *orig_pin;
 		EXPAND_BOUNDS(&info.pv);
+
+		/* subc intconn jumps */
+		if ((orig_pin->term != NULL) && (orig_pin->intconn > 0))
+			LOC_int_conn_subc(pcb_gobj_parent_subc(orig_pin->parent_type, &orig_pin->parent), orig_pin->intconn, PCB_TYPE_PIN, orig_pin);
 
 		/* check pads */
 		if (setjmp(info.env) == 0)
@@ -591,6 +598,10 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 		if ((info.pv.Element != NULL) && (ic > 0))
 			LOC_int_conn_element(info.pv.Element, ic, PCB_TYPE_PIN, orig_pin);
 
+		/* subc intconn jumps */
+		if ((orig_pin->term != NULL) && (orig_pin->intconn > 0))
+			LOC_int_conn_subc(pcb_gobj_parent_subc(orig_pin->parent_type, &orig_pin->parent), orig_pin->intconn, PCB_TYPE_PIN, orig_pin);
+
 		EXPAND_BOUNDS(&info.pv);
 		if (setjmp(info.env) == 0)
 			pcb_r_search(PCB->Data->via_tree, (pcb_box_t *) & info.pv, NULL, pv_pv_callback, &info, NULL);
@@ -735,8 +746,14 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 
 		/* check all lines */
 		while (LineList[layer].Location < LineList[layer].Number) {
-			info.line = *(LINELIST_ENTRY(layer, LineList[layer].Location));
+			pcb_line_t *orig_line = (LINELIST_ENTRY(layer, LineList[layer].Location));
+			info.line = *orig_line;
 			EXPAND_BOUNDS(&info.line);
+
+			/* subc intconn jumps */
+			if ((orig_line->term != NULL) && (orig_line->intconn > 0))
+				LOC_int_conn_subc(pcb_lobj_parent_subc(orig_line->parent_type, &orig_line->parent), orig_line->intconn, PCB_TYPE_LINE, orig_line);
+
 			if (setjmp(info.env) == 0)
 				pcb_r_search(PCB->Data->via_tree, (pcb_box_t *) & info.line, NULL, pv_line_callback, &info, NULL);
 			else

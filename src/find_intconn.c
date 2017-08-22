@@ -70,6 +70,9 @@ void LOC_int_conn_element(pcb_element_t *e, int ic, int from_type, void *from_pt
 
 static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_ptr)
 {
+	if (s == NULL)
+		return;
+
 	PCB_VIA_LOOP(s->data);
 	{
 		if ((via != from_ptr) && (via->term != NULL) && (via->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, via)))

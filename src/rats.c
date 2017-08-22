@@ -506,7 +506,7 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 	/* now add other possible attachment points to the subnet */
 	/* e.g. line end-points and vias */
 	/* don't add non-manhattan lines, the auto-router can't route to them */
-	PCB_LINE_ALL_LOOP(data);
+	PCB_LINE_COPPER_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)
 				&& ((line->Point1.X == line->Point2.X)
@@ -529,7 +529,7 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 	}
 	PCB_ENDALL_LOOP;
 	/* add polygons so the auto-router can see them as targets */
-	PCB_POLY_ALL_LOOP(data);
+	PCB_POLY_COPPER_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon)) {
 			conn = pcb_rat_connection_alloc(a);
