@@ -83,6 +83,7 @@ For the next release:
 	- "erase" color:
 		- hid->fill_pcb_pv() -> not used by any HID
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
+		- holes_after should be set to 1 everywhere, then removed
 - BUGS:
 	- gtk menu: hotkeys not shown for checkbox menus (settings)
 	- RTT: gerber shouldn't ingore the cnc files

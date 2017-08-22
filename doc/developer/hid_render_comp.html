@@ -87,7 +87,8 @@ regardless of the GC color.
 In positive drawing mode, objects are drawn with whatever color the
 current GC has. The special color "drill" is used to draw holes that go thru
 all layers of the board. It is possible that a drill is drawn over existing
-objects and new objects are drawn on top of a drilled hole.
+objects and new objects are drawn on top of a drilled hole. To get the
+proper order, the HID shall set the .holes_after to 1.
 <p>
 (Note: there's no "erase" color anymore.)
 
