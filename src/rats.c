@@ -499,25 +499,10 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	return (warn);
 }
 
-static pcb_bool gather_subnet_objs(pcb_netlist_t *Netl, pcb_cardinal_t m, pcb_net_t *a)
+static void gather_subnet_objs(pcb_netlist_t *Netl, pcb_net_t *a)
 {
-	pcb_net_t *b;
-	pcb_cardinal_t n;
 	pcb_connection_t *conn;
 
-	/* now anybody connected to the first point has PCB_FLAG_DRC set */
-	/* so move those to this subnet */
-	PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].obj);
-	for (n = m + 1; n < Netl->NetN; n++) {
-		b = &Netl->Net[n];
-		/* There can be only one connection in net b */
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj);
-			TransferNet(Netl, b, a);
-			/* back up since new subnet is now at old index */
-			n--;
-		}
-	}
 	/* now add other possible attachment points to the subnet */
 	/* e.g. line end-points and vias */
 	/* don't add non-manhattan lines, the auto-router can't route to them */
@@ -580,15 +565,30 @@ static pcb_bool gather_subnet_objs(pcb_netlist_t *Netl, pcb_cardinal_t m, pcb_ne
  */
 static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
-	pcb_net_t *a;
+	pcb_net_t *a, *b;
 	pcb_bool Warned = pcb_false;
-	pcb_cardinal_t m;
+	pcb_cardinal_t m, n;
 
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
 		a = &Netl->Net[m];
 		pcb_reset_conns(pcb_false);
 		pcb_rat_find_hook(a->Connection[0].obj, pcb_false, AndRats);
-		gather_subnet_objs(Netl, m, a);
+
+		/* now anybody connected to the first point has PCB_FLAG_DRC set */
+		/* so move those to this subnet */
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].obj);
+		for (n = m + 1; n < Netl->NetN; n++) {
+			b = &Netl->Net[n];
+			/* There can be only one connection in net b */
+			if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj);
+				TransferNet(Netl, b, a);
+				/* back up since new subnet is now at old index */
+				n--;
+			}
+		}
+
+		gather_subnet_objs(Netl, a);
 		if (!NoWarn)
 			Warned |= CheckShorts(a->Connection[0].menu);
 	}
