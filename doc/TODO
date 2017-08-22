@@ -79,6 +79,10 @@ For the next release:
 	- 'd' on subc doesn't set all terms
 - namespace renames:
 	- GetObjectBoundingBox
+- new hid render:
+	- "erase" color:
+		- hid->fill_pcb_pv() -> not used by any HID
+		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
 - BUGS:
 	- gtk menu: hotkeys not shown for checkbox menus (settings)
 	- RTT: gerber shouldn't ingore the cnc files
