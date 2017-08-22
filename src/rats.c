@@ -505,71 +505,71 @@ static pcb_bool gather_subnet_objs(pcb_netlist_t *Netl, pcb_cardinal_t m, pcb_ne
 	pcb_cardinal_t n;
 	pcb_connection_t *conn;
 
-		/* now anybody connected to the first point has PCB_FLAG_DRC set */
-		/* so move those to this subnet */
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].obj);
-		for (n = m + 1; n < Netl->NetN; n++) {
-			b = &Netl->Net[n];
-			/* There can be only one connection in net b */
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj);
-				TransferNet(Netl, b, a);
-				/* back up since new subnet is now at old index */
-				n--;
-			}
+	/* now anybody connected to the first point has PCB_FLAG_DRC set */
+	/* so move those to this subnet */
+	PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].obj);
+	for (n = m + 1; n < Netl->NetN; n++) {
+		b = &Netl->Net[n];
+		/* There can be only one connection in net b */
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj)) {
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].obj);
+			TransferNet(Netl, b, a);
+			/* back up since new subnet is now at old index */
+			n--;
 		}
-		/* now add other possible attachment points to the subnet */
-		/* e.g. line end-points and vias */
-		/* don't add non-manhattan lines, the auto-router can't route to them */
-		PCB_LINE_ALL_LOOP(PCB->Data);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)
-					&& ((line->Point1.X == line->Point2.X)
-							|| (line->Point1.Y == line->Point2.Y))) {
-				conn = pcb_rat_connection_alloc(a);
-				conn->X = line->Point1.X;
-				conn->Y = line->Point1.Y;
-				conn->ptr1 = layer;
-				conn->obj = (pcb_any_obj_t *)line;
-				conn->group = pcb_layer_get_group_(layer);
-				conn->menu = NULL;			/* agnostic view of where it belongs */
-				conn = pcb_rat_connection_alloc(a);
-				conn->X = line->Point2.X;
-				conn->Y = line->Point2.Y;
-				conn->ptr1 = layer;
-				conn->obj = (pcb_any_obj_t *)line;
-				conn->group = pcb_layer_get_group_(layer);
-				conn->menu = NULL;
-			}
+	}
+	/* now add other possible attachment points to the subnet */
+	/* e.g. line end-points and vias */
+	/* don't add non-manhattan lines, the auto-router can't route to them */
+	PCB_LINE_ALL_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)
+				&& ((line->Point1.X == line->Point2.X)
+						|| (line->Point1.Y == line->Point2.Y))) {
+			conn = pcb_rat_connection_alloc(a);
+			conn->X = line->Point1.X;
+			conn->Y = line->Point1.Y;
+			conn->ptr1 = layer;
+			conn->obj = (pcb_any_obj_t *)line;
+			conn->group = pcb_layer_get_group_(layer);
+			conn->menu = NULL;			/* agnostic view of where it belongs */
+			conn = pcb_rat_connection_alloc(a);
+			conn->X = line->Point2.X;
+			conn->Y = line->Point2.Y;
+			conn->ptr1 = layer;
+			conn->obj = (pcb_any_obj_t *)line;
+			conn->group = pcb_layer_get_group_(layer);
+			conn->menu = NULL;
 		}
-		PCB_ENDALL_LOOP;
-		/* add polygons so the auto-router can see them as targets */
-		PCB_POLY_ALL_LOOP(PCB->Data);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon)) {
-				conn = pcb_rat_connection_alloc(a);
-				/* make point on a vertex */
-				conn->X = polygon->Clipped->contours->head.point[0];
-				conn->Y = polygon->Clipped->contours->head.point[1];
-				conn->ptr1 = layer;
-				conn->obj = (pcb_any_obj_t *)polygon;
-				conn->group = pcb_layer_get_group_(layer);
-				conn->menu = NULL;			/* agnostic view of where it belongs */
-			}
+	}
+	PCB_ENDALL_LOOP;
+	/* add polygons so the auto-router can see them as targets */
+	PCB_POLY_ALL_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon)) {
+			conn = pcb_rat_connection_alloc(a);
+			/* make point on a vertex */
+			conn->X = polygon->Clipped->contours->head.point[0];
+			conn->Y = polygon->Clipped->contours->head.point[1];
+			conn->ptr1 = layer;
+			conn->obj = (pcb_any_obj_t *)polygon;
+			conn->group = pcb_layer_get_group_(layer);
+			conn->menu = NULL;			/* agnostic view of where it belongs */
 		}
-		PCB_ENDALL_LOOP;
-		PCB_VIA_LOOP(PCB->Data);
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
-				conn = pcb_rat_connection_alloc(a);
-				conn->X = via->X;
-				conn->Y = via->Y;
-				conn->ptr1 = via;
-				conn->obj = (pcb_any_obj_t *)via;
-				conn->group = Sgrp;
-			}
+	}
+	PCB_ENDALL_LOOP;
+	PCB_VIA_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
+			conn = pcb_rat_connection_alloc(a);
+			conn->X = via->X;
+			conn->Y = via->Y;
+			conn->ptr1 = via;
+			conn->obj = (pcb_any_obj_t *)via;
+			conn->group = Sgrp;
 		}
-		PCB_END_LOOP;
+	}
+	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
