@@ -767,8 +767,14 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 
 		/* check all arcs */
 		while (ArcList[layer].Location < ArcList[layer].Number) {
-			info.arc = *(ARCLIST_ENTRY(layer, ArcList[layer].Location));
+			pcb_arc_t *orig_arc = (ARCLIST_ENTRY(layer, ArcList[layer].Location));
+			info.arc = *orig_arc;
 			EXPAND_BOUNDS(&info.arc);
+
+			/* subc intconn jumps */
+			if ((orig_arc->term != NULL) && (orig_arc->intconn > 0))
+				LOC_int_conn_subc(pcb_lobj_parent_subc(orig_arc->parent_type, &orig_arc->parent), orig_arc->intconn, PCB_TYPE_LINE, orig_arc);
+
 			if (setjmp(info.env) == 0)
 				pcb_r_search(PCB->Data->via_tree, (pcb_box_t *) & info.arc, NULL, pv_arc_callback, &info, NULL);
 			else
@@ -783,8 +789,14 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 		/* now all polygons */
 		info.layer = layer;
 		while (PolygonList[layer].Location < PolygonList[layer].Number) {
-			info.polygon = *(POLYGONLIST_ENTRY(layer, PolygonList[layer].Location));
+			pcb_polygon_t *orig_poly = (POLYGONLIST_ENTRY(layer, PolygonList[layer].Location));
+			info.polygon = *orig_poly;
 			EXPAND_BOUNDS(&info.polygon);
+
+			/* subc intconn jumps */
+			if ((orig_poly->term != NULL) && (orig_poly->intconn > 0))
+				LOC_int_conn_subc(pcb_lobj_parent_subc(orig_poly->parent_type, &orig_poly->parent), orig_poly->intconn, PCB_TYPE_LINE, orig_poly);
+
 			if (setjmp(info.env) == 0)
 				pcb_r_search(PCB->Data->via_tree, (pcb_box_t *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
 			else
