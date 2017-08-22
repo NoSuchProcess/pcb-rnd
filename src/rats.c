@@ -525,10 +525,12 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 			conn->obj = (pcb_any_obj_t *)line;
 			conn->group = pcb_layer_get_group_(layer);
 			conn->menu = NULL;
+			if (line->term != NULL)
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
 		}
 	}
 	PCB_ENDALL_LOOP;
-#warning term TODO: and what about arcs?
+#warning term TODO: and what about arcs and text?
 	/* add polygons so the auto-router can see them as targets */
 	PCB_POLY_COPPER_LOOP(data);
 	{
@@ -541,6 +543,8 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 			conn->obj = (pcb_any_obj_t *)polygon;
 			conn->group = pcb_layer_get_group_(layer);
 			conn->menu = NULL;			/* agnostic view of where it belongs */
+			if (polygon->term != NULL)
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, polygon);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -553,6 +557,8 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 			conn->ptr1 = via;
 			conn->obj = (pcb_any_obj_t *)via;
 			conn->group = Sgrp;
+			if (via->term != NULL)
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, via);
 		}
 	}
 	PCB_END_LOOP;
