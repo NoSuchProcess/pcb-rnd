@@ -555,6 +555,12 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 		}
 	}
 	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(data);
+	{
+		gather_subnet_objs(subc->data, Netl, a);
+	}
+	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
