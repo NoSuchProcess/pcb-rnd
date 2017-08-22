@@ -1021,7 +1021,7 @@ static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)
 	if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)
 		pcb_gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
 	else
-		pcb_gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
+		pcb_gui->fill_pcb_pv(Output.fgGC, Output.drillGC, pv, draw_hole, pcb_false);
 	
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) && pcb_draw_doing_pinout)
 		_draw_pv_name(pv);
@@ -1098,7 +1098,7 @@ pcb_r_dir_t pcb_hole_draw_callback(const pcb_box_t * b, void *cl)
 		}
 	}
 	else
-		pcb_gui->fill_circle(Output.bgGC, pv->X, pv->Y, pv->DrillingHole / 2);
+		pcb_gui->fill_circle(Output.drillGC, pv->X, pv->Y, pv->DrillingHole / 2);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pv))

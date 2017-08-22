@@ -36,7 +36,7 @@
  * some useful values of our widgets
  */
 typedef struct {								/* holds information about output window */
-	pcb_hid_gc_t bgGC,										/* background and foreground; */
+	pcb_hid_gc_t drillGC,										/* drill and foreground; */
 	  fgGC,												/* changed from some routines */
 	  active_padGC, backpadGC, padGC, padselGC,						/* pads are drawn with this gc */
 	  pmGC;												/* depth 1 pixmap GC to store clip */
