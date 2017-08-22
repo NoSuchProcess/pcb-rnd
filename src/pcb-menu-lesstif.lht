@@ -248,6 +248,7 @@ ha:{
 				ha:New polygons are full ones = { checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
 				ha:Show autorouter trials = { checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
 				ha:Highlighting on line, arc points = { checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
+				ha:Wireframe draw = { checked=editor/wireframe_draw; a=Ctrl<Key>w;  action=conf(toggle, editor/wireframe_draw, design) }
 				ha:Thin draw = { checked=editor/thin_draw; a=<Key>|; action=conf(toggle, editor/thin_draw, design) }
 				ha:Thin draw poly = { checked=editor/thin_drawpoly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
 				ha:Check polygons = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
