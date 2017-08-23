@@ -41,6 +41,14 @@ static void extents_use_mask(pcb_mask_op_t use_it)
 {
 }
 
+static void extents_set_drawing_mode(pcb_composite_op_t op, const pcb_box_t *screen)
+{
+}
+
+static void extents_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+{
+}
+
 static void extents_set_color(pcb_hid_gc_t gc, const char *name)
 {
 }
@@ -131,6 +139,8 @@ void hid_extents_init(void)
 	extents_hid.make_gc = extents_make_gc;
 	extents_hid.destroy_gc = extents_destroy_gc;
 	extents_hid.use_mask = extents_use_mask;
+	extents_hid.set_drawing_mode = extents_set_drawing_mode;
+	extents_hid.render_burst = extents_render_burst;
 	extents_hid.set_color = extents_set_color;
 	extents_hid.set_line_cap = extents_set_line_cap;
 	extents_hid.set_line_width = extents_set_line_width;

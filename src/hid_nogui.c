@@ -70,6 +70,17 @@ static void nogui_use_mask(pcb_mask_op_t use_it)
 	CRASH("use_mask");
 }
 
+static void nogui_set_drawing_mode(pcb_composite_op_t op, const pcb_box_t *screen)
+{
+#warning make these crash after the transition
+/*	CRASH("set_drawing_mode");*/
+}
+
+static void nogui_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+{
+	/* the HID may decide to ingore this hook */
+}
+
 static void nogui_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	CRASH("set_color");
@@ -407,6 +418,8 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->make_gc = nogui_make_gc;
 	hid->destroy_gc = nogui_destroy_gc;
 	hid->use_mask = nogui_use_mask;
+	hid->set_drawing_mode = nogui_set_drawing_mode;
+	hid->render_burst = nogui_render_burst;
 	hid->set_color = nogui_set_color;
 	hid->set_line_cap = nogui_set_line_cap;
 	hid->set_line_width = nogui_set_line_width;
