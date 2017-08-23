@@ -70,7 +70,7 @@ static void nogui_use_mask(pcb_mask_op_t use_it)
 	CRASH("use_mask");
 }
 
-static void nogui_set_drawing_mode(pcb_composite_op_t op, const pcb_box_t *screen)
+static void nogui_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 #warning make these crash after the transition
 /*	CRASH("set_drawing_mode");*/
