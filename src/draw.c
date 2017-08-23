@@ -216,6 +216,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	PCB->Data->SILKLAYER.meta.real.color = conf_core.appearance.color.element;
 	PCB->Data->BACKSILKLAYER.meta.real.color = conf_core.appearance.color.invisible_objects;
 
+	pcb_gui->render_burst(PCB_HID_BURST_START, drawn_area);
 
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
@@ -257,7 +258,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (conf_core.editor.check_planes && pcb_gui->gui)
-		return;
+		goto finish;
 
 	/* Draw pins, pads, vias below silk */
 	if (pcb_gui->gui)
@@ -359,6 +360,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
 		pcb_gui->end_layer();
 	}
+
+	finish:;
+	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
 }
 
 /* ---------------------------------------------------------------------------
