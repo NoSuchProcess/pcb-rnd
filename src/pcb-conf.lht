@@ -37,6 +37,7 @@ li:pcb-rnd-conf-v1 {
 			clear_line = 1
 			full_poly = 0
 			unique_names = 0
+			marker_snaps = 1
 			snap_pin = 1
 			snap_offgrid_line = 1
 			highlight_on_point = 0

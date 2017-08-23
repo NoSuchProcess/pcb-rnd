@@ -1038,14 +1038,24 @@ static int pcb_act_MarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb
 		else {
 			pcb_notify_mark_change(pcb_false);
 			pcb_marked.status = pcb_true;
-			pcb_gui->get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
+			if (conf_core.editor.marker_snaps) {
+				pcb_marked.X = pcb_crosshair.X;
+				pcb_marked.Y = pcb_crosshair.Y;
+			}
+			else
+				pcb_gui->get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
 			pcb_notify_mark_change(pcb_true);
 		}
 	}
 	else if (pcb_funchash_get(function, NULL) == F_Center) {
 		pcb_notify_mark_change(pcb_false);
 		pcb_marked.status = pcb_true;
-		pcb_gui->get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
+		if (conf_core.editor.marker_snaps) {
+			pcb_marked.X = pcb_crosshair.X;
+			pcb_marked.Y = pcb_crosshair.Y;
+		}
+		else
+			pcb_gui->get_coords(_("Click on new mark"), &pcb_marked.X, &pcb_marked.Y);
 		pcb_notify_mark_change(pcb_true);
 	}
 	return 0;
