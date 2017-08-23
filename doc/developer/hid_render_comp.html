@@ -93,5 +93,16 @@ proper order, the HID shall set the .holes_after to 1.
 (Note: there's no "erase" color anymore.)
 
 
+<H2> transition </H2>
+<p>
+When switching over an existing HID from the old use_mask() API to the new
+composite API:
+<ul>
+	<li> set .poly_before to 0
+	<li> set .poly_after to 0
+	<li> set .holes_after to 1
+	<li> use an empty function for .use_mask for now
+</ul>
+
 </body>
 </html>
