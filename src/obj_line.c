@@ -945,8 +945,10 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 			pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
 
-		if(conf_core.editor.wireframe_draw) 
+		if(conf_core.editor.wireframe_draw) { 
+			pcb_gui->set_line_width(Output.fgGC, 0);
 			pcb_draw_wireframe_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
+		}
 	}
 
 	if (line->term != NULL) {
