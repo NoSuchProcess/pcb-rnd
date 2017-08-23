@@ -60,7 +60,7 @@ static void comp_start_sub_(comp_ctx_t *ctx)
 		pcb_gui->set_color(Output.pmGC, ctx->color);
 	else {
 		pcb_gui->use_mask(HID_MASK_CLEAR);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, pcb_false, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, Output.direct, ctx->screen);
 	}
 }
 
@@ -70,7 +70,7 @@ static void comp_start_add_(comp_ctx_t *ctx)
 		pcb_gui->set_color(Output.pmGC, "erase");
 	else {
 		pcb_gui->use_mask(HID_MASK_SET);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_false, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
 	}
 }
 
@@ -105,7 +105,7 @@ static void comp_finish(comp_ctx_t *ctx)
 	comp_fill_board(ctx, HID_MASK_AFTER);
 	pcb_gui->use_mask(HID_MASK_OFF);
 
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_false, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, ctx->screen);
 }
 
 static void comp_init(comp_ctx_t *ctx, int negative)
@@ -114,7 +114,7 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 		return;
 
 	pcb_gui->use_mask(HID_MASK_INIT);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_false, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, ctx->screen);
 
 	if (ctx->invert)
 		negative = !negative;
@@ -215,7 +215,12 @@ int pcb_draw_layer_is_comp(pcb_layer_id_t id)
 static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
 {
 	int enable_fake = (pcb_gui != NULL) && (pcb_gui->enable_fake_composite);
-	if (!enable_fake || pcb_draw_layergrp_is_comp(ctx->grp))
+	int is_comp = pcb_draw_layergrp_is_comp(ctx->grp);
+
+	if (is_comp)
+		Output.direct = 0;
+
+	if (!enable_fake || is_comp)
 		comp_draw_layer_real(ctx, draw_auto, auto_data);
 	else
 		comp_draw_layer_fake(ctx, draw_auto, auto_data);

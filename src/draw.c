@@ -662,6 +662,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	Output.padselGC = pcb_gui->make_gc();
 	Output.drillGC = pcb_gui->make_gc();
 	Output.pmGC = pcb_gui->make_gc();
+	Output.direct = 1;
 
 	hid->set_color(Output.pmGC, "erase");
 	hid->set_color(Output.drillGC, "drill");

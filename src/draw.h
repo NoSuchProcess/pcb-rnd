@@ -40,6 +40,7 @@ typedef struct {								/* holds information about output window */
 	  fgGC,												/* changed from some routines */
 	  active_padGC, backpadGC, padGC, padselGC,						/* pads are drawn with this gc */
 	  pmGC;												/* depth 1 pixmap GC to store clip */
+	unsigned direct:1; /* starts as 1 and becomes 0 before the first compositing layer group is reset */
 } pcb_output_t;
 
 extern pcb_output_t Output;
