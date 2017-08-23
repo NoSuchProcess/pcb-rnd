@@ -148,8 +148,8 @@ typedef enum pcb_composite_op_s {
 } pcb_composite_op_t;
 
 typedef enum pcb_burst_op_s {
-	PCB_HID_COMP_START,
-	PCB_HID_COMP_END
+	PCB_HID_BURST_START,
+	PCB_HID_BURST_END
 } pcb_burst_op_t;
 
 typedef struct hid_s pcb_hid_t;
