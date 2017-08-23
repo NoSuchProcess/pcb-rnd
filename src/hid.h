@@ -140,6 +140,18 @@ typedef enum pcb_mask_op_s {
 	HID_MASK_AFTER   /* Polygons being drawn after clears.  */
 } pcb_mask_op_t;
 
+typedef enum pcb_composite_op_s {
+	PCB_HID_COMP_RESET,         /* reset (allocate and clear) the sketch canvas */
+	PCB_HID_COMP_POSITIVE,      /* draw subsequent objects in positive, with color */
+	PCB_HID_COMP_NEGATIVE,      /* draw subsequent objects in negative, ignore color */
+	PCB_HID_COMP_FLUSH          /* combine the sketch canvas onto the output buffer and discard the sketch canvas */
+} pcb_composite_op_t;
+
+typedef enum pcb_burst_op_s {
+	PCB_HID_COMP_START,
+	PCB_HID_COMP_END
+} pcb_burst_op_t;
+
 typedef struct hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
@@ -269,8 +281,18 @@ struct hid_s {
 	   (using regular HID calls) using regular and "erase" colors.  Then
 	   call use_mask(HID_MASK_OFF) to flush the buffer to the HID.  If
 	   you use the "erase" color when use_mask is disabled, it simply
-	   draws in the background color.  */
+	   draws in the background color.
+
+	   OBSOLETE, do not use it, use set_drawing_mode() and render_burst()
+	   */
 	void (*use_mask) (pcb_mask_op_t use_it_);
+
+	/* Composite layer drawing: manipulate the sketch canvas and set
+	   positive or negative drawing mode. The canvas covers the screen box. */
+	void (*set_drawing_mode)(pcb_composite_op_t op, const pcb_box_t *screen);
+
+	/* Announce start/end of a render burst for a specific screen screen box. */
+	void (*render_burst)(pcb_burst_op_t op, const pcb_box_t *screen);
 
 	/* Sets a color.  Names can be like "red" or "#rrggbb" or special
 	   names like "erase".  *Always* use the "erase" color for removing
