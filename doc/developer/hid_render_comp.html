@@ -33,12 +33,12 @@ The following steps are taken by the core in a burst:
 	<li> 1. call to the <i>render_burst</i> hook with <i>start</i>
 	<li> 2. <i>set_layer_group</i> is called for the next layer; depending on the return value, the core will skip to step 7.
 	<li> 3. <i>set_drawing_mode</i> is called with <i>reset</i>
-	<li> 3. <i>set_drawing_mode</i> is called with <i>positive</i> or <i>negative</i> to set draw or erase
-	<li> 4. objects are drawn
-	<li> 5. if there are subsequent composite layers, the core will jump back to 3.
-	<li> 6. <i>set_drawing_mode</i> is called with <i>flush</i>
-	<li> 7. if there are further groups, the core jumps back to step 3.
-	<li> 8. call to the <i>render_burst</i> hook with <i>end</i>
+	<li> 4. <i>set_drawing_mode</i> is called with <i>positive</i> or <i>negative</i> to set draw or erase
+	<li> 5. objects are drawn
+	<li> 6. if there are subsequent composite layers, the core will jump back to 3.
+	<li> 7. <i>set_drawing_mode</i> is called with <i>flush</i>
+	<li> 8. if there are further groups, the core jumps back to step 3.
+	<li> 9. call to the <i>render_burst</i> hook with <i>end</i>
 </ul>
 <p>
 When <i>set_drawing_mode</i> / <i>reset</i> is called, the HID needs to
