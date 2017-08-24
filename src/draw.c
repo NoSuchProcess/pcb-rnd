@@ -533,6 +533,9 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 	pcb_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
 	unsigned int gflg = pcb_layergrp_flags(PCB, group);
 
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
+
 	if (gflg & PCB_LYT_OUTLINE)
 		rv = 0;
 
@@ -547,6 +550,8 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 
 	if (rv && !pcb_gui->gui)
 		pcb_draw_ppv(group, drawn_area);
+
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 }
 
 void pcb_erase_obj(int type, void *lptr, void *ptr)
