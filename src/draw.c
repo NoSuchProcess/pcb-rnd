@@ -355,11 +355,21 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	/* if there's any UI layer, try to draw them */
 	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0)) {
+		int have_canvas = 0;
 		for(i = 0; i < vtlayer_len(&pcb_uilayer); i++)
-			if ((pcb_uilayer.array[i].meta.real.cookie != NULL) && (pcb_uilayer.array[i].meta.real.vis))
+			if ((pcb_uilayer.array[i].meta.real.cookie != NULL) && (pcb_uilayer.array[i].meta.real.vis)) {
+				if (!have_canvas) {
+					pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+					pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
+					have_canvas = 1;
+				}
 				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
+			}
 		pcb_gui->end_layer();
+		if (have_canvas)
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 	}
+
 
 	finish:;
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
