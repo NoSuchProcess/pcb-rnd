@@ -110,11 +110,12 @@ static void comp_finish(comp_ctx_t *ctx)
 
 static void comp_init(comp_ctx_t *ctx, int negative)
 {
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, ctx->screen);
+
 	if (ctx->thin)
 		return;
 
 	pcb_gui->use_mask(HID_MASK_INIT);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, ctx->screen);
 
 	if (ctx->invert)
 		negative = !negative;
