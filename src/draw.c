@@ -737,18 +737,28 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 
 	if (lflg & PCB_LYT_CSECT) {
 		if ((pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) || (e->force)) {
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
 			pcb_stub_draw_csect(Output.fgGC, e);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
 			pcb_gui->end_layer();
 		}
 	}
 	else if (lflg & PCB_LYT_DIALOG) {
 		if ((pcb_layer_gui_set_vlayer(PCB_VLY_DIALOG, 0)) || (e->force)) {
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
 			e->dialog_draw(Output.fgGC, e);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
 			pcb_gui->end_layer();
 		}
 	}
-	else if ((e->content.layer_id >= 0) && (e->content.layer_id < pcb_max_layer))
+	else if ((e->content.layer_id >= 0) && (e->content.layer_id < pcb_max_layer)) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
 		pcb_draw_layer(&(PCB->Data->Layer[e->content.layer_id]), &e->view);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
+	}
 	else
 		pcb_message(PCB_MSG_ERROR, "Internal error: don't know how to draw layer %ld for preview; please report this bug.\n", e->content.layer_id);
 
