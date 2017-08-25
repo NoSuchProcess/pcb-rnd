@@ -80,6 +80,7 @@ For the next release:
 - namespace renames:
 	- GetObjectBoundingBox
 - new hid render:
+	- BUG: Silk layer group with only a single layer does not receive a call to 'set_drawing_mode'. Maybe paste and mask also. [report:Ade]
 	- "erase" color:
 		- hid->fill_pcb_pv() -> not used by any HID
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
