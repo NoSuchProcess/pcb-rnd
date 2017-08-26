@@ -56,28 +56,21 @@ static void comp_fill_board(comp_ctx_t *ctx, int mask_type)
 
 static void comp_start_sub_(comp_ctx_t *ctx)
 {
-	if (ctx->thin)
-		pcb_gui->set_color(Output.pmGC, ctx->color);
-	else {
-		pcb_gui->use_mask(HID_MASK_CLEAR);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, Output.direct, ctx->screen);
-	}
+	pcb_gui->use_mask(HID_MASK_CLEAR);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, Output.direct, ctx->screen);
 }
 
 static void comp_start_add_(comp_ctx_t *ctx)
 {
-	if (ctx->thin)
-		pcb_gui->set_color(Output.pmGC, "erase");
-	else {
-		pcb_gui->use_mask(HID_MASK_SET);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
-	}
+	pcb_gui->use_mask(HID_MASK_SET);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
 }
 
 static void comp_start_sub(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
+		pcb_gui->set_color(Output.pmGC, ctx->color);
 		return;
 	}
 
