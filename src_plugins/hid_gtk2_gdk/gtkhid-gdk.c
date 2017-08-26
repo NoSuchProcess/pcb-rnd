@@ -34,9 +34,9 @@ typedef struct render_priv_s {
 	GdkGC *grid_gc;
 	GdkGC *clear_gc, *copy_gc;
 	GdkColor grid_color, clip_color;
-	GdkPixmap *pixmap; /* base layer */
-	GdkPixmap *sketch_pixel, *sketch_clip; /* sketch layer for compositing (non-direct) */
-	GdkDrawable *out_pixel, *out_clip; /* drawing routines draw to these*/
+	GdkPixmap *base_pixel;                  /* base layer, pixel colors only */
+	GdkPixmap *sketch_pixel, *sketch_clip;  /* sketch layer for compositing (non-direct) */
+	GdkDrawable *out_pixel, *out_clip;      /* currently active pixel and clip pixmaps: drawing routines draw to these*/
 	GdkRectangle clip_rect;
 	pcb_bool clip_rect_valid;
 	int attached_invalidate_depth;
@@ -412,13 +412,13 @@ static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (!priv->pixmap) {
+	if (!priv->base_pixel) {
 		abort();
 		return;
 	}
 
 	if (direct) {
-		priv->out_pixel = priv->pixmap;
+		priv->out_pixel = priv->base_pixel;
 		priv->out_clip = NULL;
 		curr_drawing_mode = PCB_HID_COMP_POSITIVE;
 		return;
@@ -450,9 +450,9 @@ static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 				priv->copy_gc = gdk_gc_new(priv->out_pixel);
 			gdk_gc_set_clip_mask(priv->copy_gc, priv->sketch_clip);
 			gdk_gc_set_clip_origin(priv->copy_gc, 0, 0);
-			gdk_draw_drawable(priv->pixmap, priv->copy_gc, priv->sketch_pixel, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+			gdk_draw_drawable(priv->base_pixel, priv->copy_gc, priv->sketch_pixel, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 
-			priv->out_pixel = priv->pixmap;
+			priv->out_pixel = priv->base_pixel;
 			priv->out_clip = NULL;
 			break;
 	}
@@ -627,7 +627,7 @@ static int use_gc(pcb_hid_gc_t gc)
 		abort();
 	}
 
-	if (!priv->pixmap)
+	if (!priv->base_pixel)
 		return 0;
 
 	if ((!gc->clip_gc) && (priv->out_clip != NULL)) {
@@ -846,7 +846,7 @@ static void redraw_region(GdkRectangle * rect)
 	pcb_hid_expose_ctx_t ctx;
 	render_priv_t *priv = gport->render_priv;
 
-	if (!priv->pixmap)
+	if (!priv->base_pixel)
 		return;
 
 	if (rect != NULL) {
@@ -1191,12 +1191,12 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
 
-	if (priv->pixmap)
-		gdk_pixmap_unref(priv->pixmap);
+	if (priv->base_pixel)
+		gdk_pixmap_unref(priv->base_pixel);
 
-	priv->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
+	priv->base_pixel = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
                                 gport->view.canvas_width, gport->view.canvas_height, -1);
-	priv->out_pixel = priv->pixmap;
+	priv->out_pixel = priv->base_pixel;
 	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {
@@ -1229,10 +1229,10 @@ static void ghid_gdk_screen_update(void)
 	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
-	if (priv->pixmap == NULL)
+	if (priv->base_pixel == NULL)
 		return;
 
-	gdk_draw_drawable(window, priv->bg_gc, priv->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+	gdk_draw_drawable(window, priv->bg_gc, priv->base_pixel, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 	show_crosshair(TRUE);
 }
 
@@ -1242,7 +1242,7 @@ static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expo
 	render_priv_t *priv = port->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
-	gdk_draw_drawable(window, priv->bg_gc, priv->pixmap,
+	gdk_draw_drawable(window, priv->bg_gc, priv->base_pixel,
 										ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 	show_crosshair(TRUE);
 	return FALSE;
