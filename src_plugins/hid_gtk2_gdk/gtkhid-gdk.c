@@ -25,22 +25,20 @@ static void ghid_gdk_screen_update(void);
 */
 #define USE_GC(gc) if (!use_gc(gc)) return
 
-static int cur_mask = -1;
-static int mask_seq = 0;
-
 typedef struct render_priv_s {
 	GdkGC *bg_gc;
 	GdkColor bg_color;
 	GdkGC *offlimits_gc;
 	GdkColor offlimits_color;
-	GdkGC *mask_gc;
-	GdkGC *u_gc;
+	GdkGC *pixel_gc, *clip_gc;
 	GdkGC *grid_gc;
-	GdkColor grid_color;
-	GdkPixmap *pixmap, *mask;
-	GdkDrawable *drawable;				/* Current drawable for drawing routines */
-	pcb_bool clip;
+	GdkGC *clear_gc, *copy_gc;
+	GdkColor grid_color, clip_color;
+	GdkPixmap *pixmap; /* base layer */
+	GdkPixmap *sketch_pixel, *sketch_clip; /* sketch layer for compositing (non-direct) */
+	GdkDrawable *out_pixel, *out_clip; /* drawing routines draw to these*/
 	GdkRectangle clip_rect;
+	pcb_bool clip_rect_valid;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
 } render_priv_t;
@@ -48,13 +46,14 @@ typedef struct render_priv_s {
 
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
-	GdkGC *gc;
+	GdkGC *pixel_gc;
+	GdkGC *clip_gc;
 
 	gchar *colorname;
 	pcb_coord_t width;
 	gint cap, join;
 	gchar xor_mask;
-	gint mask_seq;
+	gint sketch_seq;
 } hid_gc_s;
 
 static void draw_lead_user(render_priv_t *priv_);
@@ -138,8 +137,10 @@ static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 
 static void ghid_gdk_destroy_gc(pcb_hid_gc_t gc)
 {
-	if (gc->gc)
-		g_object_unref(gc->gc);
+	if (gc->pixel_gc)
+		g_object_unref(gc->pixel_gc);
+	if (gc->clip_gc)
+		g_object_unref(gc->clip_gc);
 	if (gc->colorname != NULL)
 		g_free(gc->colorname);
 	g_free(gc);
@@ -155,12 +156,11 @@ static pcb_hid_gc_t ghid_gdk_make_gc(void)
 	return rv;
 }
 
-static void set_clip(render_priv_t * priv, GdkGC * gc)
+static void set_clip(render_priv_t *priv, GdkGC *gc)
 {
 	if (gc == NULL)
 		return;
-
-	if (priv->clip)
+	if (priv->clip_rect_valid)
 		gdk_gc_set_clip_rectangle(gc, &priv->clip_rect);
 	else
 		gdk_gc_set_clip_mask(gc, NULL);
@@ -222,7 +222,7 @@ static inline void ghid_gdk_draw_grid_global(void)
 	for (y = y1; y <= y2; y += grd) {
 		for (i = 0; i < n; i++)
 			points[i].y = Vy(y);
-		gdk_draw_points(priv->drawable, priv->grid_gc, points, n);
+		gdk_draw_points(priv->out_pixel, priv->grid_gc, points, n);
 	}
 }
 
@@ -277,7 +277,7 @@ static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius
 		points_abs[n].y = Vy(points_base[n].y + cy);
 	}
 
-	gdk_draw_points(priv->drawable, priv->grid_gc, points_abs, npoints);
+	gdk_draw_points(priv->out_pixel, priv->grid_gc, points_abs, npoints);
 }
 
 
@@ -327,7 +327,7 @@ static void ghid_gdk_draw_grid(void)
 			priv->grid_color.blue ^= priv->bg_color.blue;
 			gdk_color_alloc(colormap, &priv->grid_color);
 		}
-		priv->grid_gc = gdk_gc_new(priv->drawable);
+		priv->grid_gc = gdk_gc_new(priv->out_pixel);
 		gdk_gc_set_function(priv->grid_gc, GDK_XOR);
 		gdk_gc_set_foreground(priv->grid_gc, &priv->grid_color);
 		gdk_gc_set_clip_origin(priv->grid_gc, 0, 0);
@@ -392,74 +392,75 @@ static void ghid_gdk_draw_bg_image(void)
 	}
 
 	if (pixbuf)
-		gdk_pixbuf_render_to_drawable(pixbuf, priv->drawable, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+		gdk_pixbuf_render_to_drawable(pixbuf, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
-#define WHICH_GC(gc) (((cur_mask == HID_MASK_CLEAR) || (cur_mask == HID_MASK_SET)) ? priv->mask_gc : (gc)->gc)
+static pcb_composite_op_t curr_drawing_mode;
 
-static void ghid_mask_setup(render_priv_t *priv)
+static void ghid_sketch_setup(render_priv_t *priv)
 {
-	if (!priv->mask)
-		priv->mask = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
-	priv->drawable = priv->mask;
-	if (!priv->mask_gc) {
-		priv->mask_gc = gdk_gc_new(priv->drawable);
-		gdk_gc_set_clip_origin(priv->mask_gc, 0, 0);
-		set_clip(priv, priv->mask_gc);
+	if (priv->sketch_pixel == NULL)
+		priv->sketch_pixel = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area), gport->view.canvas_width, gport->view.canvas_height, -1);
+	if (priv->sketch_clip == NULL)
+		priv->sketch_clip = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
+
+	priv->out_pixel = priv->sketch_pixel;
+	priv->out_clip = priv->sketch_clip;
+}
+
+static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+{
+	render_priv_t *priv = gport->render_priv;
+
+	if (!priv->pixmap) {
+		abort();
+		return;
 	}
+
+	if (direct) {
+		priv->out_pixel = priv->pixmap;
+		priv->out_clip = NULL;
+		curr_drawing_mode = PCB_HID_COMP_POSITIVE;
+		return;
+	}
+
+	switch(op) {
+		case PCB_HID_COMP_RESET:
+			ghid_sketch_setup(priv);
+
+		/* clear the canvas */
+			priv->clip_color.pixel = 0;
+			if (priv->clear_gc == NULL)
+				priv->clear_gc = gdk_gc_new(priv->out_clip);
+			gdk_gc_set_foreground(priv->clear_gc, &priv->clip_color);
+			set_clip(priv, priv->clear_gc);
+			gdk_draw_rectangle(priv->out_clip, priv->clear_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+			break;
+
+		case PCB_HID_COMP_POSITIVE:
+			priv->clip_color.pixel = 1;
+			break;
+
+		case PCB_HID_COMP_NEGATIVE:
+			priv->clip_color.pixel = 0;
+			break;
+
+		case PCB_HID_COMP_FLUSH:
+			if (priv->copy_gc == NULL)
+				priv->copy_gc = gdk_gc_new(priv->out_pixel);
+			gdk_gc_set_clip_mask(priv->copy_gc, priv->sketch_clip);
+			gdk_gc_set_clip_origin(priv->copy_gc, 0, 0);
+			gdk_draw_drawable(priv->pixmap, priv->copy_gc, priv->sketch_pixel, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+
+			priv->out_pixel = priv->pixmap;
+			priv->out_clip = NULL;
+			break;
+	}
+	curr_drawing_mode = op;
 }
 
 static void ghid_gdk_use_mask(pcb_mask_op_t use_it)
 {
-	static int mask_seq_id = 0;
-	GdkColor color;
-	render_priv_t *priv = gport->render_priv;
-
-	if (!priv->pixmap)
-		return;
-	if (use_it == cur_mask)
-		return;
-	switch (use_it) {
-	case HID_MASK_OFF:
-		priv->drawable = priv->pixmap;
-		mask_seq = 0;
-		break;
-
-	case HID_MASK_BEFORE:
-		/* The HID asks not to receive this mask type, so warn if we get it */
-		g_return_if_reached();
-
-	case HID_MASK_INIT:
-		ghid_mask_setup(priv);
-		mask_seq = 0;
-
-		/* clear the mask */
-		color.pixel = 0;
-		gdk_gc_set_foreground(priv->mask_gc, &color);
-		gdk_draw_rectangle(priv->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
-		break;
-
-	case HID_MASK_CLEAR:
-		color.pixel = 0;
-		gdk_gc_set_foreground(priv->mask_gc, &color);
-		break;
-
-	case HID_MASK_SET:
-		color.pixel = 1;
-		gdk_gc_set_foreground(priv->mask_gc, &color);
-		break;
-
-	case HID_MASK_AFTER:
-		mask_seq_id++;
-		if (!mask_seq_id)
-			mask_seq_id = 1;
-		mask_seq = mask_seq_id;
-
-		priv->drawable = priv->pixmap;
-		break;
-
-	}
-	cur_mask = use_it;
 }
 
 
@@ -533,16 +534,16 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->colorname = g_strdup(name);
 	}
 
-	if (!gc->gc)
+	if (!gc->pixel_gc)
 		return;
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (strcmp(name, "erase") == 0) {
-		gdk_gc_set_foreground(gc->gc, &priv->bg_color);
+		gdk_gc_set_foreground(gc->pixel_gc, &priv->bg_color);
 	}
 	else if (strcmp(name, "drill") == 0) {
-		gdk_gc_set_foreground(gc->gc, &priv->offlimits_color);
+		gdk_gc_set_foreground(gc->pixel_gc, &priv->offlimits_color);
 	}
 	else {
 		ColorCache *cc;
@@ -570,18 +571,16 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const char *name)
 				gdk_color_alloc(colormap, &cc->xor_color);
 				cc->xor_set = 1;
 			}
-			gdk_gc_set_foreground(gc->gc, &cc->xor_color);
+			gdk_gc_set_foreground(gc->pixel_gc, &cc->xor_color);
 		}
 		else {
-			gdk_gc_set_foreground(gc->gc, &cc->color);
+			gdk_gc_set_foreground(gc->pixel_gc, &cc->color);
 		}
 	}
 }
 
 static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
-	render_priv_t *priv = gport->render_priv;
-
 	switch (style) {
 	case Trace_Cap:
 	case Round_Cap:
@@ -594,25 +593,26 @@ static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 		gc->join = GDK_JOIN_MITER;
 		break;
 	}
-	if (gc->gc)
-		gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+	if (gc->pixel_gc)
+		gdk_gc_set_line_attributes(gc->pixel_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
 static void ghid_gdk_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	render_priv_t *priv = gport->render_priv;
-
 	gc->width = width;
-	if (gc->gc)
-		gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+	if (gc->pixel_gc)
+		gdk_gc_set_line_attributes(gc->pixel_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+	if (gc->clip_gc)
+		gdk_gc_set_line_attributes(gc->clip_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
 static void ghid_gdk_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 {
 	gc->xor_mask = xor_mask;
-	if (!gc->gc)
-		return;
-	gdk_gc_set_function(gc->gc, xor_mask ? GDK_XOR : GDK_COPY);
+	if (gc->pixel_gc != NULL)
+		gdk_gc_set_function(gc->pixel_gc, xor_mask ? GDK_XOR : GDK_COPY);
+	if (gc->clip_gc != NULL)
+		gdk_gc_set_function(gc->clip_gc, xor_mask ? GDK_XOR : GDK_COPY);
 	ghid_gdk_set_color(gc, gc->colorname);
 }
 
@@ -620,6 +620,7 @@ static int use_gc(pcb_hid_gc_t gc)
 {
 	render_priv_t *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
+	int need_setup = 0;
 
 	if (gc->me_pointer != &gtk2_gdk_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
@@ -628,22 +629,30 @@ static int use_gc(pcb_hid_gc_t gc)
 
 	if (!priv->pixmap)
 		return 0;
-	if (!gc->gc) {
-		gc->gc = gdk_gc_new(window);
+
+	if ((!gc->clip_gc) && (priv->out_clip != NULL)) {
+		gc->clip_gc = gdk_gc_new(priv->out_clip);
+		need_setup = 1;
+	}
+
+	if (!gc->pixel_gc) {
+		gc->pixel_gc = gdk_gc_new(window);
+		need_setup = 1;
+	}
+
+	if (need_setup) {
 		ghid_gdk_set_color(gc, gc->colorname);
 		ghid_gdk_set_line_width(gc, gc->width);
 		ghid_gdk_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
 		ghid_gdk_set_draw_xor(gc, gc->xor_mask);
-		gdk_gc_set_clip_origin(gc->gc, 0, 0);
+		gdk_gc_set_clip_origin(gc->pixel_gc, 0, 0);
 	}
-	if (gc->mask_seq != mask_seq) {
-		if (mask_seq)
-			gdk_gc_set_clip_mask(gc->gc, priv->mask);
-		else
-			set_clip(priv, gc->gc);
-		gc->mask_seq = mask_seq;
-	}
-	priv->u_gc = WHICH_GC(gc);
+
+	if (priv->out_clip != NULL)
+		gdk_gc_set_foreground(gc->clip_gc, &priv->clip_color);
+
+	priv->pixel_gc = gc->pixel_gc;
+	priv->clip_gc = gc->clip_gc;
 	return 1;
 }
 
@@ -661,7 +670,10 @@ static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		return;
 
 	USE_GC(gc);
-	gdk_draw_line(priv->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
+	gdk_draw_line(priv->out_pixel, priv->pixel_gc, dx1, dy1, dx2, dy2);
+
+	if (priv->out_clip != NULL)
+		gdk_draw_line(priv->out_clip, priv->clip_gc, dx1, dy1, dx2, dy2);
 }
 
 static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
@@ -700,7 +712,13 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 	if (start_angle >= 180)
 		start_angle -= 360;
 
-	gdk_draw_arc(priv->drawable, priv->u_gc, 0,
+	gdk_draw_arc(priv->out_pixel, priv->pixel_gc, 0,
+							 pcb_round(Vxd(cx) - Vzd(xradius) + 0.5), pcb_round(Vyd(cy) - Vzd(yradius) + 0.5),
+							 pcb_round(vrx2), pcb_round(vry2),
+							 (start_angle + 180) * 64, delta_angle * 64);
+
+	if (priv->out_clip != NULL)
+		gdk_draw_arc(priv->out_clip, priv->clip_gc, 0,
 							 pcb_round(Vxd(cx) - Vzd(xradius) + 0.5), pcb_round(Vyd(cy) - Vzd(yradius) + 0.5),
 							 pcb_round(vrx2), pcb_round(vry2),
 							 (start_angle + 180) * 64, delta_angle * 64);
@@ -738,7 +756,10 @@ static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	}
 
 	USE_GC(gc);
-	gdk_draw_rectangle(priv->drawable, priv->u_gc, FALSE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+	gdk_draw_rectangle(priv->out_pixel, priv->pixel_gc, FALSE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+
+	if (priv->out_clip != NULL)
+		gdk_draw_rectangle(priv->out_clip, priv->clip_gc, FALSE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 
@@ -756,7 +777,10 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 
 	USE_GC(gc);
 	vr = Vz(radius);
-	gdk_draw_arc(priv->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
+	gdk_draw_arc(priv->out_pixel, priv->pixel_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
+
+	if (priv->out_clip != NULL)
+		gdk_draw_arc(priv->out_clip, priv->clip_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
 static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
@@ -775,7 +799,9 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 		points[i].x = Vx(x[i]);
 		points[i].y = Vy(y[i]);
 	}
-	gdk_draw_polygon(priv->drawable, priv->u_gc, 1, points, n_coords);
+	gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
+	if (priv->out_clip != NULL)
+		gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
 }
 
 static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -808,7 +834,10 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		y2 = yy;
 	}
 	USE_GC(gc);
-	gdk_draw_rectangle(priv->drawable, priv->u_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+	gdk_draw_rectangle(priv->out_pixel, priv->pixel_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+
+	if (priv->out_clip != NULL)
+		gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 static void redraw_region(GdkRectangle * rect)
@@ -822,19 +851,18 @@ static void redraw_region(GdkRectangle * rect)
 
 	if (rect != NULL) {
 		priv->clip_rect = *rect;
-		priv->clip = pcb_true;
+		priv->clip_rect_valid = pcb_true;
 	}
 	else {
 		priv->clip_rect.x = 0;
 		priv->clip_rect.y = 0;
 		priv->clip_rect.width = gport->view.canvas_width;
 		priv->clip_rect.height = gport->view.canvas_height;
-		priv->clip = pcb_false;
+		priv->clip_rect_valid = pcb_false;
 	}
 
 	set_clip(priv, priv->bg_gc);
 	set_clip(priv, priv->offlimits_gc);
-	set_clip(priv, priv->mask_gc);
 	set_clip(priv, priv->grid_gc);
 
 	ctx.view.X1 = MIN(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
@@ -866,23 +894,23 @@ static void redraw_region(GdkRectangle * rect)
 	}
 
 	if (eleft > 0)
-		gdk_draw_rectangle(priv->drawable, priv->offlimits_gc, 1, 0, 0, eleft, gport->view.canvas_height);
+		gdk_draw_rectangle(priv->out_pixel, priv->offlimits_gc, 1, 0, 0, eleft, gport->view.canvas_height);
 	else
 		eleft = 0;
 	if (eright < gport->view.canvas_width)
-		gdk_draw_rectangle(priv->drawable, priv->offlimits_gc, 1, eright, 0, gport->view.canvas_width - eright, gport->view.canvas_height);
+		gdk_draw_rectangle(priv->out_pixel, priv->offlimits_gc, 1, eright, 0, gport->view.canvas_width - eright, gport->view.canvas_height);
 	else
 		eright = gport->view.canvas_width;
 	if (etop > 0)
-		gdk_draw_rectangle(priv->drawable, priv->offlimits_gc, 1, eleft, 0, eright - eleft + 1, etop);
+		gdk_draw_rectangle(priv->out_pixel, priv->offlimits_gc, 1, eleft, 0, eright - eleft + 1, etop);
 	else
 		etop = 0;
 	if (ebottom < gport->view.canvas_height)
-		gdk_draw_rectangle(priv->drawable, priv->offlimits_gc, 1, eleft, ebottom, eright - eleft + 1, gport->view.canvas_height - ebottom);
+		gdk_draw_rectangle(priv->out_pixel, priv->offlimits_gc, 1, eleft, ebottom, eright - eleft + 1, gport->view.canvas_height - ebottom);
 	else
 		ebottom = gport->view.canvas_height;
 
-	gdk_draw_rectangle(priv->drawable, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
+	gdk_draw_rectangle(priv->out_pixel, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
 
 	ghid_gdk_draw_bg_image();
 
@@ -899,7 +927,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	draw_lead_user(priv);
 
-	priv->clip = pcb_false;
+	priv->clip_rect_valid = pcb_false;
 
 	/* Rest the clip for bg_gc, as it is used outside this function */
 	gdk_gc_set_clip_mask(priv->bg_gc, NULL);
@@ -1168,17 +1196,17 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 
 	priv->pixmap = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
                                 gport->view.canvas_width, gport->view.canvas_height, -1);
-	priv->drawable = priv->pixmap;
+	priv->out_pixel = priv->pixmap;
 	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {
-		priv->bg_gc = gdk_gc_new(priv->drawable);
+		priv->bg_gc = gdk_gc_new(priv->out_pixel);
 		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
 
-		priv->offlimits_gc = gdk_gc_new(priv->drawable);
+		priv->offlimits_gc = gdk_gc_new(priv->out_pixel);
 		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
@@ -1186,9 +1214,13 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 		done_once = 1;
 	}
 
-	if (priv->mask) {
-		gdk_pixmap_unref(priv->mask);
-		priv->mask = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
+	if (priv->sketch_pixel) {
+		gdk_pixmap_unref(priv->sketch_pixel);
+		priv->sketch_pixel = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area), port->view.canvas_width, port->view.canvas_height, -1);
+	}
+	if (priv->sketch_clip) {
+		gdk_pixmap_unref(priv->sketch_clip);
+		priv->sketch_clip = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
 	}
 }
 
@@ -1235,7 +1267,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 
 	/* Setup drawable and zoom factor for drawing routines
 	 */
-	save_drawable = priv->drawable;
+	save_drawable = priv->out_pixel;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
@@ -1248,7 +1280,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	else
 		gport->view.coord_per_px = yz;
 
-	priv->drawable = window;
+	priv->out_pixel = window;
 	gport->view.canvas_width = allocation.width;
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
@@ -1262,7 +1294,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	/* call the drawing routine */
 	expcall(&gtk2_gdk_hid, ctx);
 
-	priv->drawable = save_drawable;
+	priv->out_pixel = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
@@ -1332,7 +1364,7 @@ static void draw_lead_user(render_priv_t *priv)
 			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 
 		/* Draw an arc at radius */
-		gdk_draw_arc(gport->render_priv->drawable, lead_gc, FALSE,
+		gdk_draw_arc(gport->render_priv->out_pixel, lead_gc, FALSE,
 								 Vx(lead_user->x - radius), Vy(lead_user->y - radius), Vz(2. * radius), Vz(2. * radius), 0, 360 * 64);
 	}
 }
@@ -1364,6 +1396,7 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->make_gc = ghid_gdk_make_gc;
 	hid->destroy_gc = ghid_gdk_destroy_gc;
 	hid->use_mask = ghid_gdk_use_mask;
+	hid->set_drawing_mode = ghid_gdk_set_drawing_mode;
 	hid->set_color = ghid_gdk_set_color;
 	hid->set_line_cap = ghid_gdk_set_line_cap;
 	hid->set_line_width = ghid_gdk_set_line_width;
@@ -1378,5 +1411,9 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->request_debug_draw = ghid_gdk_request_debug_draw;
 	hid->flush_debug_draw = ghid_gdk_flush_debug_draw;
 	hid->finish_debug_draw = ghid_gdk_finish_debug_draw;
+
+	hid->poly_after = 0;
+	hid->poly_before = 0;
+	hid->enable_fake_composite = 0;
 	}
 }
