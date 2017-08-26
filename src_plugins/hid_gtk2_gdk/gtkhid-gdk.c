@@ -1272,7 +1272,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 
 	/* Setup drawable and zoom factor for drawing routines
 	 */
-	save_drawable = priv->out_pixel;
+	save_drawable = priv->base_pixel;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
@@ -1285,7 +1285,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	else
 		gport->view.coord_per_px = yz;
 
-	priv->out_pixel = window;
+	priv->base_pixel = priv->out_pixel = window;
 	gport->view.canvas_width = allocation.width;
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
@@ -1299,7 +1299,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	/* call the drawing routine */
 	expcall(&gtk2_gdk_hid, ctx);
 
-	priv->out_pixel = save_drawable;
+	priv->out_pixel = priv->base_pixel = save_drawable;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
