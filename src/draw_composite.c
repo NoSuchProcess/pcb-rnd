@@ -127,6 +127,7 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 		if (!pcb_gui->poly_before) {
 			/* new way */
 			pcb_gui->use_mask(HID_MASK_SET);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
 			comp_fill_board(ctx, HID_MASK_SET);
 		}
 	}
