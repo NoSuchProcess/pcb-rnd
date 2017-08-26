@@ -817,7 +817,7 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	}
 	gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
 	if (priv->out_clip != NULL)
-		gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
+		gdk_draw_polygon(priv->out_clip, priv->clip_gc, 1, points, n_coords);
 }
 
 static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
