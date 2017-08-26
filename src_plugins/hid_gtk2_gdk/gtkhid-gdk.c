@@ -30,17 +30,22 @@ typedef struct render_priv_s {
 	GdkColor bg_color;
 	GdkGC *offlimits_gc;
 	GdkColor offlimits_color;
-	GdkGC *pixel_gc, *clip_gc;
 	GdkGC *grid_gc;
 	GdkGC *clear_gc, *copy_gc;
-	GdkColor grid_color, clip_color;
-	GdkPixmap *base_pixel;                  /* base layer, pixel colors only */
-	GdkPixmap *sketch_pixel, *sketch_clip;  /* sketch layer for compositing (non-direct) */
-	GdkDrawable *out_pixel, *out_clip;      /* currently active pixel and clip pixmaps: drawing routines draw to these*/
+	GdkColor grid_color;
 	GdkRectangle clip_rect;
 	pcb_bool clip_rect_valid;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
+
+	/* available canvases */
+	GdkPixmap *base_pixel;                  /* base canvas, pixel colors only */
+	GdkPixmap *sketch_pixel, *sketch_clip;  /* sketch canvas for compositing (non-direct) */
+
+	/* currently active: drawing routines draw to these*/
+	GdkDrawable *out_pixel, *out_clip;
+	GdkGC *pixel_gc, *clip_gc;
+	GdkColor clip_color;
 } render_priv_t;
 
 
