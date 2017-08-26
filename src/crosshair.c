@@ -733,6 +733,9 @@ XORDrawPadDRCOutline(pcb_pad_t * pad,pcb_coord_t clearance)
  */
 void pcb_draw_attached(void)
 {
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, NULL);
+
 	switch (conf_core.editor.mode) {
 	case PCB_MODE_VIA:
 		{
@@ -828,6 +831,8 @@ void pcb_draw_attached(void)
 		y2 = pcb_crosshair.AttachedBox.Point2.Y;
 		pcb_gui->draw_rect(pcb_crosshair.GC, x1, y1, x2, y2);
 	}
+
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, NULL);
 }
 
 
@@ -842,8 +847,13 @@ void pcb_draw_mark(void)
 	if (!pcb_marked.status)
 		return;
 
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, NULL);
+
 	pcb_gui->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
 	pcb_gui->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
+
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, NULL);
 }
 
 /* ---------------------------------------------------------------------------
