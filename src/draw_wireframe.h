@@ -28,7 +28,6 @@
 
 #include "config.h"
 #include "hid.h"
-/*#include "board.h"*/
 
 /*-----------------------------------------------------------
  * Draws the outline of an arc
