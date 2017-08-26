@@ -666,6 +666,8 @@ static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	double dx1, dy1, dx2, dy2;
 	render_priv_t *priv = gport->render_priv;
 
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
 	dx1 = Vx((double) x1);
 	dy1 = Vy((double) y1);
 	dx2 = Vx((double) x2);
@@ -686,6 +688,8 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 	gint vrx2, vry2;
 	double w, h, radius;
 	render_priv_t *priv = gport->render_priv;
+
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -734,6 +738,8 @@ static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	gint w, h, lw;
 	render_priv_t *priv = gport->render_priv;
 
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -773,6 +779,8 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 	gint w, h, vr;
 	render_priv_t *priv = gport->render_priv;
 
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
 	if (SIDE_X(cx) < gport->view.x0 - radius
@@ -796,6 +804,8 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	render_priv_t *priv = gport->render_priv;
 	USE_GC(gc);
 
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
 	if (npoints < n_coords) {
 		npoints = n_coords + 1;
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
@@ -813,6 +823,8 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 {
 	gint w, h, lw, xx, yy;
 	render_priv_t *priv = gport->render_priv;
+
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
 
 	lw = gc->width;
 	w = gport->view.canvas_width * gport->view.coord_per_px;
