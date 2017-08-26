@@ -76,8 +76,10 @@ static void comp_start_add_(comp_ctx_t *ctx)
 
 static void comp_start_sub(comp_ctx_t *ctx)
 {
-	if (ctx->thin)
+	if (ctx->thin) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
 		return;
+	}
 
 	if (ctx->invert)
 		comp_start_add_(ctx);
@@ -87,8 +89,10 @@ static void comp_start_sub(comp_ctx_t *ctx)
 
 static void comp_start_add(comp_ctx_t *ctx)
 {
-	if (ctx->thin)
+	if (ctx->thin) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
 		return;
+	}
 
 	if (ctx->invert)
 		comp_start_sub_(ctx);
