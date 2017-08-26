@@ -95,8 +95,11 @@ static void comp_start_add(comp_ctx_t *ctx)
 
 static void comp_finish(comp_ctx_t *ctx)
 {
-	if ((ctx->thin) || (ctx->fake_comp))
+
+	if ((ctx->thin) || (ctx->fake_comp)) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, ctx->screen);
 		return;
+	}
 
 	pcb_gui->use_mask(HID_MASK_AFTER);
 	comp_fill_board(ctx, HID_MASK_AFTER);
