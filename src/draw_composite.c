@@ -222,7 +222,9 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 	if (is_comp)
 		Output.direct = 0;
 
-	if (!enable_fake || is_comp)
+ /* optimization: don't do real compositing in thin draw mode (because that's
+    drawn all-positive) or if every layer is naturally positive */
+	if ((!enable_fake || is_comp) && (!ctx->thin))
 		comp_draw_layer_real(ctx, draw_auto, auto_data);
 	else
 		comp_draw_layer_fake(ctx, draw_auto, auto_data);
