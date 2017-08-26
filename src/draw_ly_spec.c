@@ -87,6 +87,9 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 	cctx.poly_after = pcb_gui->poly_after;
 
 
+	if (!cctx.invert)
+		Output.direct = 0;
+
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-sub */
 		comp_init(&cctx, 1);
 		comp_start_sub(&cctx);
