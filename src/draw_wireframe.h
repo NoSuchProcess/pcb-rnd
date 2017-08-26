@@ -26,7 +26,6 @@
 #ifndef PCB_DRAW_WIREFRAME_H
 #define PCB_DRAW_WIREFRAME_H
 
-
 #include "config.h"
 #include "hid.h"
 /*#include "board.h"*/
@@ -34,11 +33,10 @@
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  */
-static inline PCB_FUNC_UNUSED void 
-pcb_draw_wireframe_arc(pcb_hid_gc_t gc,pcb_arc_t * arc)
+static inline PCB_FUNC_UNUSED void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc)
 {
 	pcb_coord_t wid = arc->Thickness / 2;
-	pcb_coord_t x1,y1,x2,y2;
+	pcb_coord_t x1, y1, x2, y2;
 
 	pcb_arc_get_end(arc, 0, &x1, &y1);
 	pcb_arc_get_end(arc, 1, &x2, &y2);
@@ -54,15 +52,14 @@ pcb_draw_wireframe_arc(pcb_hid_gc_t gc,pcb_arc_t * arc)
 /*-----------------------------------------------------------
  * Draws the outline of a line
  */
-static inline PCB_FUNC_UNUSED void 
-pcb_draw_wireframe_line(pcb_hid_gc_t gc,pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
+static inline PCB_FUNC_UNUSED void pcb_draw_wireframe_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
 {
 	pcb_coord_t dx, dy, ox, oy;
 	double h;
 
 	dx = x2 - x1;
 	dy = y2 - y1;
-	if (dx != 0 || dy != 0)
+	if ((dx != 0) || (dy != 0))
 		h = 0.5 * thick / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
 	else
 		h = 0.0;
