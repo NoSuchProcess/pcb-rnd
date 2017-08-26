@@ -627,6 +627,8 @@ static int use_gc(pcb_hid_gc_t gc)
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
 	int need_setup = 0;
 
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
 	if (gc->me_pointer != &gtk2_gdk_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
 		abort();
