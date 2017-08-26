@@ -293,6 +293,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		DrawEverything_holes(drawn_area);
 
 	if (pcb_gui->gui) {
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
+
 		/* Draw pins' and pads' names */
 		pcb_draw_ppv_names(PCB_SWAP_IDENT ? solder : component, drawn_area);
 		
@@ -308,6 +311,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 			pcb_draw_rats(drawn_area);
 			pcb_gui->end_layer();
 		}
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 	}
 
 	paste_empty = pcb_layer_is_paste_empty(PCB, PCB_COMPONENT_SIDE);
