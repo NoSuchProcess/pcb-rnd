@@ -32,7 +32,6 @@ do { \
 	view_zoom = pd->zoom; \
 	view_width = pd->v_width; \
 	view_height = pd->v_height; \
-	use_mask = 0; \
 	conf_force_set_bool(conf_core.editor.view.flip_x, 0); \
 	conf_force_set_bool(conf_core.editor.view.flip_y, 0); \
 } while(0)

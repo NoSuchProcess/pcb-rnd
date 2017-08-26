@@ -94,7 +94,6 @@ static Pixmap pixmap = 0;
 static Pixmap main_pixmap = 0;
 static Pixmap mask_pixmap = 0;
 static Pixmap mask_bitmap = 0;
-static int use_mask = 0;
 
 static int use_xrender = 0;
 #ifdef HAVE_XRENDER
@@ -232,6 +231,9 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 		 };
 
 PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
+
+static pcb_composite_op_t lesstif_drawing_mode = 0;
+#define use_mask() ((lesstif_drawing_mode == PCB_HID_COMP_POSITIVE) || (lesstif_drawing_mode == PCB_HID_COMP_NEGATIVE))
 
 static void lesstif_use_mask(pcb_mask_op_t use_it);
 static void zoom_max();
@@ -1464,7 +1466,7 @@ static void work_area_make_pixmaps(Dimension width, Dimension height)
 		XFreePixmap(display, mask_bitmap);
 	mask_bitmap = XCreatePixmap(display, window, width, height, 1);
 
-	pixmap = use_mask ? main_pixmap : mask_pixmap;
+	pixmap = use_mask() ? main_pixmap : mask_pixmap;
 	pixmap_w = width;
 	pixmap_h = height;
 }
@@ -2809,46 +2811,57 @@ static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 
 static void lesstif_use_mask(pcb_mask_op_t use_it)
 {
-	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && !use_xrender)
-		use_it = 0;
-	if ((use_it == 0) == (use_mask == 0))
-		return;
-	use_mask = use_it;
-	if (pinout)
-		return;
-	if (!window)
-		return;
-	/*  printf("use_mask(%d)\n", use_it); */
-	if (!mask_pixmap) {
-		mask_pixmap = XCreatePixmap(display, window, pixmap_w, pixmap_h, XDefaultDepth(display, screen));
-		mask_bitmap = XCreatePixmap(display, window, pixmap_w, pixmap_h, 1);
-	}
-	if (use_it) {
-		pixmap = mask_pixmap;
-		XSetForeground(display, my_gc, 0);
-		XSetFunction(display, my_gc, GXcopy);
-		XFillRectangle(display, mask_pixmap, my_gc, 0, 0, view_width, view_height);
-		XFillRectangle(display, mask_bitmap, bclear_gc, 0, 0, view_width, view_height);
-	}
-	else {
-		pixmap = main_pixmap;
-#ifdef HAVE_XRENDER
-		if (use_xrender) {
-			XRenderPictureAttributes pa;
+}
 
-			pa.clip_mask = mask_bitmap;
-			XRenderChangePicture(display, main_picture, CPClipMask, &pa);
-			XRenderComposite(display, PictOpOver, mask_picture, pale_picture,
-											 main_picture, 0, 0, 0, 0, 0, 0, view_width, view_height);
-		}
-		else
+static void lesstif_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+{
+	lesstif_drawing_mode = op;
+	switch(op) {
+		case PCB_HID_COMP_RESET:
+			if (mask_pixmap == 0) {
+				mask_pixmap = XCreatePixmap(display, window, pixmap_w, pixmap_h, XDefaultDepth(display, screen));
+				mask_bitmap = XCreatePixmap(display, window, pixmap_w, pixmap_h, 1);
+			}
+			pixmap = mask_pixmap;
+			XSetForeground(display, my_gc, 0);
+			XSetFunction(display, my_gc, GXcopy);
+			XFillRectangle(display, mask_pixmap, my_gc, 0, 0, view_width, view_height);
+			XFillRectangle(display, mask_bitmap, bclear_gc, 0, 0, view_width, view_height);
+			mask_gc = bset_gc;
+			break;
+
+		case PCB_HID_COMP_POSITIVE:
+			mask_gc = bset_gc;
+			break;
+
+		case PCB_HID_COMP_NEGATIVE:
+			mask_gc = bclear_gc;
+			break;
+
+		case PCB_HID_COMP_FLUSH:
+			pixmap = main_pixmap;
+
+			/* blit back the result */
+#ifdef HAVE_XRENDER
+			if (use_xrender) {
+				XRenderPictureAttributes pa;
+
+				pa.clip_mask = mask_bitmap;
+				XRenderChangePicture(display, main_picture, CPClipMask, &pa);
+				XRenderComposite(display, PictOpOver, mask_picture, pale_picture,
+					main_picture, 0, 0, 0, 0, 0, 0, view_width, view_height);
+			}
+			else
 #endif /* HAVE_XRENDER */
-		{
-			XSetClipMask(display, clip_gc, mask_bitmap);
-			XCopyArea(display, mask_pixmap, main_pixmap, clip_gc, 0, 0, view_width, view_height, 0, 0);
-		}
+			{
+				XSetClipMask(display, clip_gc, mask_bitmap);
+				XCopyArea(display, mask_pixmap, main_pixmap, clip_gc, 0, 0, view_width, view_height, 0, 0);
+			}
+			break;
 	}
 }
+
+
 
 static void lesstif_set_color(pcb_hid_gc_t gc, const char *name)
 {
@@ -2952,11 +2965,7 @@ static void set_gc(pcb_hid_gc_t gc)
 	if (width < 0)
 		width = 0;
 	XSetLineAttributes(display, my_gc, width, LineSolid, cap, join);
-	if (use_mask) {
-		if (gc->erase)
-			mask_gc = bclear_gc;
-		else
-			mask_gc = bset_gc;
+	if (use_mask()) {
 		XSetLineAttributes(display, mask_gc, Vz(gc->width), LineSolid, cap, join);
 	}
 }
@@ -3008,12 +3017,12 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 	set_gc(gc);
 	if (gc->cap == Square_Cap && x1 == x2 && y1 == y2) {
 		XFillRectangle(display, pixmap, my_gc, x1 - vw / 2, y1 - vw / 2, vw, vw);
-		if (use_mask)
+		if (use_mask())
 			XFillRectangle(display, mask_bitmap, mask_gc, x1 - vw / 2, y1 - vw / 2, vw, vw);
 	}
 	else {
 		XDrawLine(display, pixmap, my_gc, x1, y1, x2, y2);
-		if (use_mask)
+		if (use_mask())
 			XDrawLine(display, mask_bitmap, mask_gc, x1, y1, x2, y2);
 	}
 }
@@ -3051,7 +3060,7 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 #endif
 	set_gc(gc);
 	XDrawArc(display, pixmap, my_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
-	if (use_mask && !conf_core.editor.thin_draw)
+	if (use_mask() && !conf_core.editor.thin_draw)
 		XDrawArc(display, mask_bitmap, mask_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
 #warning TODO: make this #if a flag and add it in the gtk hid as well
 #if 0
@@ -3098,13 +3107,13 @@ static void lesstif_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 	}
 	set_gc(gc);
 	XDrawRectangle(display, pixmap, my_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-	if (use_mask)
+	if (use_mask())
 		XDrawRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
 static void lesstif_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
-	if (pinout && use_mask && gc->erase)
+	if (pinout && use_mask() && gc->erase)
 		return;
 	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
@@ -3123,7 +3132,7 @@ static void lesstif_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 #endif
 	set_gc(gc);
 	XFillArc(display, pixmap, my_gc, cx, cy, radius * 2, radius * 2, 0, 360 * 64);
-	if (use_mask)
+	if (use_mask())
 		XFillArc(display, mask_bitmap, mask_gc, cx, cy, radius * 2, radius * 2, 0, 360 * 64);
 }
 
@@ -3150,7 +3159,7 @@ static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x,
 #endif
 	set_gc(gc);
 	XFillPolygon(display, pixmap, my_gc, p, n_coords, Complex, CoordModeOrigin);
-	if (use_mask)
+	if (use_mask())
 		XFillPolygon(display, mask_bitmap, mask_gc, p, n_coords, Complex, CoordModeOrigin);
 }
 
@@ -3183,7 +3192,7 @@ static void lesstif_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 	}
 	set_gc(gc);
 	XFillRectangle(display, pixmap, my_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-	if (use_mask)
+	if (use_mask())
 		XFillRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
@@ -3448,7 +3457,6 @@ static void pinout_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackSt
 	view_zoom = pd->zoom;
 	view_width = pd->v_width;
 	view_height = pd->v_height;
-	use_mask = 0;
 	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
 	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
 /*	region.X1 = 0;
@@ -3728,9 +3736,10 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.name = "lesstif";
 	lesstif_hid.description = "LessTif - a Motif clone for X/Unix";
 	lesstif_hid.gui = 1;
-	lesstif_hid.poly_before = 1;
+	lesstif_hid.poly_before = 0;
+	lesstif_hid.poly_after = 0;
 	lesstif_hid.can_mask_clear_rats = 1;
-	lesstif_hid.enable_fake_composite = 1;
+	lesstif_hid.enable_fake_composite = 0;
 
 	lesstif_hid.get_export_options = lesstif_get_export_options;
 	lesstif_hid.do_export = lesstif_do_export;
@@ -3745,6 +3754,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.make_gc = lesstif_make_gc;
 	lesstif_hid.destroy_gc = lesstif_destroy_gc;
 	lesstif_hid.use_mask = lesstif_use_mask;
+	lesstif_hid.set_drawing_mode = lesstif_set_drawing_mode;
 	lesstif_hid.set_color = lesstif_set_color;
 	lesstif_hid.set_line_cap = lesstif_set_line_cap;
 	lesstif_hid.set_line_width = lesstif_set_line_width;
