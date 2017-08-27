@@ -993,7 +993,7 @@ static void ps_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->erase = 0;
 	}
 	else if (global.mask_mode == HID_MASK_SET) {
-		gc->r = gc->g = gc->b = 255;
+		gc->r = gc->g = gc->b = 0;
 		gc->erase = 1;
 	}
 	else if (strcmp(name, "erase") == 0 || strcmp(name, "drill") == 0) {
