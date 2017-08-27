@@ -54,6 +54,7 @@ typedef struct hid_gc_s {
 	pcb_coord_t width;
 	int color;
 	int erase;
+
 } hid_gc_s;
 
 static pcb_hid_t eps_hid;
@@ -65,6 +66,7 @@ static int lastcolor = -1;
 static int print_group[PCB_MAX_LAYERGRP];
 static int print_layer[PCB_MAX_LAYER];
 static int fast_erase = -1;
+static pcb_composite_op_t drawing_mode;
 
 static pcb_hid_attribute_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -416,33 +418,38 @@ static void eps_destroy_gc(pcb_hid_gc_t gc)
 
 static void eps_use_mask(pcb_mask_op_t use_it)
 {
-	static int mask_pending = 0;
-	switch (use_it) {
-	case HID_MASK_CLEAR:
-		if (!mask_pending) {
-			mask_pending = 1;
+}
+
+static void eps_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+{
+	drawing_mode = op;
+	switch(op) {
+		case PCB_HID_COMP_RESET:
 			fprintf(f, "gsave\n");
-		}
-		break;
-	case HID_MASK_AFTER:
-	case HID_MASK_BEFORE:
-	case HID_MASK_SET:
-		break;
-	case HID_MASK_OFF:
-		if (mask_pending) {
-			mask_pending = 0;
+			break;
+
+		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_NEGATIVE:
+			break;
+
+		case PCB_HID_COMP_FLUSH:
 			fprintf(f, "grestore\n");
 			lastcolor = -1;
-		}
-		break;
+			break;
 	}
 }
+
 
 static void eps_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
 
+	if (drawing_mode == PCB_HID_COMP_NEGATIVE) {
+		gc->color = 0xffffff;
+		gc->erase = 1;
+		return;
+	}
 	if (strcmp(name, "erase") == 0) {
 		gc->color = 0xffffff;
 		gc->erase = fast_erase ? 0 : 1;
@@ -595,6 +602,7 @@ static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb
 		pcb_fprintf(f, "%mi %mi %s\n", x[i], y[i], op);
 		op = "lineto";
 	}
+
 	fprintf(f, "fill\n");
 }
 
@@ -632,7 +640,8 @@ void hid_eps_init()
 	eps_hid.name = "eps";
 	eps_hid.description = "Encapsulated Postscript";
 	eps_hid.exporter = 1;
-	eps_hid.poly_after = 1;
+	eps_hid.poly_before = 0;
+	eps_hid.poly_after = 0;
 
 	eps_hid.get_export_options = eps_get_export_options;
 	eps_hid.do_export = eps_do_export;
@@ -641,6 +650,7 @@ void hid_eps_init()
 	eps_hid.make_gc = eps_make_gc;
 	eps_hid.destroy_gc = eps_destroy_gc;
 	eps_hid.use_mask = eps_use_mask;
+	eps_hid.set_drawing_mode = eps_set_drawing_mode;
 	eps_hid.set_color = eps_set_color;
 	eps_hid.set_line_cap = eps_set_line_cap;
 	eps_hid.set_line_width = eps_set_line_width;
