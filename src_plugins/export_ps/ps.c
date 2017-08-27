@@ -414,7 +414,7 @@ static struct {
 
 	double polygrid;
 
-	pcb_mask_op_t mask_mode;
+	pcb_composite_op_t drawing_mode;
 } global;
 
 static pcb_hid_attribute_t *ps_get_export_options(int *n)
@@ -983,16 +983,21 @@ static void ps_destroy_gc(pcb_hid_gc_t gc)
 
 static void ps_use_mask(pcb_mask_op_t use_it)
 {
-	global.mask_mode = use_it;
 }
+
+static void ps_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+{
+	global.drawing_mode = op;
+}
+
 
 static void ps_set_color(pcb_hid_gc_t gc, const char *name)
 {
-	if (global.mask_mode == HID_MASK_CLEAR) {
+	if (global.drawing_mode == PCB_HID_COMP_NEGATIVE) {
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 0;
 	}
-	else if (global.mask_mode == HID_MASK_SET) {
+	else if (global.drawing_mode == PCB_HID_COMP_POSITIVE) {
 		gc->r = gc->g = gc->b = 0;
 		gc->erase = 1;
 	}
@@ -1593,6 +1598,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->make_gc = ps_make_gc;
 	hid->destroy_gc = ps_destroy_gc;
 	hid->use_mask = ps_use_mask;
+	hid->set_drawing_mode = ps_set_drawing_mode;
 	hid->set_color = ps_set_color;
 	hid->set_line_cap = ps_set_line_cap;
 	hid->set_line_width = ps_set_line_width;
