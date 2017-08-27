@@ -539,7 +539,7 @@ static void svg_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 static void draw_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t w, pcb_coord_t h)
 {
 	const char *clip_color = svg_clip_color(gc);
-	if (photo_mode) {
+	if ((photo_mode) && (clip_color == NULL)) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sdark);
@@ -573,7 +573,7 @@ static void svg_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 static void pcb_line_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	const char *clip_color = svg_clip_color(gc);
-	if (photo_mode) {
+	if ((photo_mode) && (clip_color == NULL)) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
@@ -607,7 +607,7 @@ static void svg_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 static void pcb_arc_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t r, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t stroke, int large, int sweep)
 {
 	const char *clip_color = svg_clip_color(gc);
-	if (photo_mode) {
+	if ((photo_mode) && (clip_color == NULL)) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
@@ -691,7 +691,7 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_coord_t stroke)
 {
 	const char *clip_color = svg_clip_color(gc);
-	if (photo_mode) {
+	if ((photo_mode) && (clip_color == NULL)) {
 		if (!drawing_hole) {
 			pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 			if ((!gc->drill) && (photo_offs != 0)) {
@@ -747,7 +747,7 @@ static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	const char *clip_color = svg_clip_color(gc);
-	if (photo_mode) {
+	if ((photo_mode) && (clip_color == NULL)) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			draw_poly(&sbright, gc, n_coords, x, y, -photo_offs, photo_palette[photo_color].bright);
