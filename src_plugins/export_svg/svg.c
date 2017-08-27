@@ -66,7 +66,7 @@ typedef struct hid_gc_s {
 	pcb_cap_style_t cap;
 	int width;
 	char *color;
-	int erase, drill;
+	int drill;
 	unsigned warned_elliptical:1;
 } hid_gc_s;
 
@@ -87,23 +87,24 @@ static const char *CAPS(pcb_cap_style_t cap)
 static FILE *f = NULL;
 static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
-static pcb_mask_op_t mask_mode = HID_MASK_OFF;
 
-gds_t sbright, sdark, snormal;
+static gds_t sbright, sdark, snormal, sclip;
+static pcb_composite_op_t drawing_mode;
+static int comp_cnt;
 
 /* Photo mode colors and hacks */
-const char *board_color = "#464646";
-const char *mask_color = "#00ff00";
-float mask_opacity_factor = 0.5;
+static const char *board_color = "#464646";
+static const char *mask_color = "#00ff00";
+static float mask_opacity_factor = 0.5;
 
-enum {
+static enum {
 	PHOTO_MASK,
 	PHOTO_SILK,
 	PHOTO_COPPER,
 	PHOTO_INNER
 } photo_color;
 
-struct {
+static struct {
 	const char *bright;
 	const char *normal;
 	const char *dark;
@@ -274,6 +275,8 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	int i;
 	pcb_coord_t w, h, x1, y1, x2, y2;
 
+	comp_cnt = 0;
+
 	if (!options) {
 		svg_get_export_options(0);
 		for (i = 0; i < NUM_OPTIONS; i++)
@@ -408,36 +411,54 @@ static void svg_destroy_gc(pcb_hid_gc_t gc)
 
 static void svg_use_mask(pcb_mask_op_t use_it)
 {
-	mask_mode = use_it;
-	switch(mask_mode) {
-		case HID_MASK_INIT:
-			pcb_append_printf(&snormal, "<!-- MASK: init -->\n");
+}
+
+static void svg_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+{
+	drawing_mode = op;
+	switch(op) {
+		case PCB_HID_COMP_RESET:
+			comp_cnt++;
+			gds_init(&sclip);
+			pcb_append_printf(&snormal, "<!-- Composite: reset -->\n");
 			pcb_append_printf(&snormal, "<defs>\n");
-			pcb_append_printf(&snormal, "<rect id=\"initfill\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\"/>\n", PCB->MaxWidth, PCB->MaxHeight);
-			pcb_append_printf(&snormal, "<mask id=\"Mask\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", PCB->MaxWidth, PCB->MaxHeight);
+			pcb_append_printf(&snormal, "<g id=\"comp_pixel_%d\">\n", comp_cnt);
+			pcb_append_printf(&sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", comp_cnt, PCB->MaxWidth, PCB->MaxHeight);
 			break;
 
-		case HID_MASK_OFF:
-			pcb_append_printf(&snormal, "<!-- MASK: off -->\n");
-			pcb_append_printf(&snormal, "</mask>\n");
+		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_NEGATIVE:
+			break;
+
+		case PCB_HID_COMP_FLUSH:
+			pcb_append_printf(&snormal, "</g>\n");
+			pcb_append_printf(&sclip, "</mask>\n");
+			gds_append_str(&snormal, sclip.array);
 			pcb_append_printf(&snormal, "</defs>\n");
-			pcb_append_printf(&snormal, "<use xlink:href=\"#initfill\" fill=\"%s\" mask=\"url(#Mask)\"/>\n", mask_color);
+			pcb_append_printf(&snormal, "<use xlink:href=\"#comp_pixel_%d\" mask=\"url(#comp_clip_%d)\"/>\n", comp_cnt, comp_cnt);
+			pcb_append_printf(&snormal, "<!-- Composite: finished -->\n");
+			gds_uninit(&sclip);
 			break;
 	}
 }
 
 static const char *svg_color(pcb_hid_gc_t gc)
 {
-	if (mask_mode == HID_MASK_SET)
-		return "#FFFFFF";
-	if (mask_mode == HID_MASK_CLEAR)
-		return "#000000";
 	return gc->color;
+}
+
+static const char *svg_clip_color(pcb_hid_gc_t gc)
+{
+	if (drawing_mode == PCB_HID_COMP_POSITIVE)
+		return "#FFFFFF";
+	if (drawing_mode == PCB_HID_COMP_NEGATIVE)
+		return "#000000";
+	return NULL;
 }
 
 static void svg_set_color(pcb_hid_gc_t gc, const char *name)
 {
-	gc->drill = gc->erase = 0;
+	gc->drill = 0;
 	if (name == NULL)
 		name = "#ff0000";
 	if (strcmp(name, "drill") == 0) {
@@ -445,8 +466,8 @@ static void svg_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->drill = 1;
 	}
 	else if (strcmp(name, "erase") == 0) {
-		name = "#ffffff";
-		gc->erase = 1;
+/*		name = "#ffffff";
+		gc->erase = 1;*/
 	}
 	else if (drawing_mask)
 		name = mask_color;
@@ -517,7 +538,8 @@ static void svg_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 
 static void draw_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t w, pcb_coord_t h)
 {
-	if ((photo_mode) && (!gc->erase) && (mask_mode == HID_MASK_OFF)) {
+	const char *clip_color = svg_clip_color(gc);
+	if (photo_mode) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sdark);
@@ -535,6 +557,9 @@ static void draw_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_
 		indent(&snormal);
 		pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			x1, y1, w, h, svg_color(gc));
+		if (clip_color != NULL)
+			pcb_append_printf(&sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				x1, y1, w, h, clip_color);
 	}
 }
 
@@ -547,7 +572,8 @@ static void svg_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 
 static void pcb_line_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	if ((photo_mode) && (!gc->erase) && (mask_mode == HID_MASK_OFF)) {
+	const char *clip_color = svg_clip_color(gc);
+	if (photo_mode) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
@@ -565,6 +591,10 @@ static void pcb_line_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 		indent(&snormal);
 		pcb_append_printf(&snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 			x1, y1, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
+		if (clip_color != NULL) {
+			pcb_append_printf(&sclip, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+				x1, y1, x2, y2, gc->width, clip_color, CAPS(gc->cap));
+		}
 	}
 }
 
@@ -576,7 +606,8 @@ static void svg_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 
 static void pcb_arc_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t r, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t stroke, int large, int sweep)
 {
-	if ((photo_mode) && (!gc->erase) && (mask_mode == HID_MASK_OFF)) {
+	const char *clip_color = svg_clip_color(gc);
+	if (photo_mode) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
@@ -594,6 +625,9 @@ static void pcb_arc_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 		indent(&snormal);
 		pcb_append_printf(&snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
+		if (clip_color != NULL)
+			pcb_append_printf(&sclip, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+				x1, y1, r, r, large, sweep, x2, y2, gc->width, clip_color, CAPS(gc->cap));
 	}
 }
 
@@ -656,7 +690,8 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 
 static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_coord_t stroke)
 {
-	if ((photo_mode) && (!gc->erase) && (mask_mode == HID_MASK_OFF)) {
+	const char *clip_color = svg_clip_color(gc);
+	if (photo_mode) {
 		if (!drawing_hole) {
 			pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 			if ((!gc->drill) && (photo_offs != 0)) {
@@ -682,6 +717,9 @@ static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 		indent(&snormal);
 		pcb_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			cx, cy, r, stroke, svg_color(gc));
+		if (clip_color != NULL)
+			pcb_append_printf(&sclip, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				cx, cy, r, stroke, clip_color);
 	}
 }
 
@@ -708,7 +746,8 @@ static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 
 static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
-	if ((photo_mode) && (!gc->erase) && (mask_mode == HID_MASK_OFF)) {
+	const char *clip_color = svg_clip_color(gc);
+	if (photo_mode) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			draw_poly(&sbright, gc, n_coords, x, y, -photo_offs, photo_palette[photo_color].bright);
@@ -716,8 +755,11 @@ static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb
 		}
 		draw_poly(&snormal, gc, n_coords, x, y, 0, photo_palette[photo_color].normal);
 	}
-	else
+	else {
 		draw_poly(&snormal, gc, n_coords, x, y, 0, svg_color(gc));
+		if (clip_color != NULL)
+			draw_poly(&sclip, gc, n_coords, x, y, 0, clip_color);
+	}
 }
 
 static void svg_calibrate(double xval, double yval)
@@ -767,6 +809,7 @@ int pplg_init_export_svg(void)
 	svg_hid.make_gc = svg_make_gc;
 	svg_hid.destroy_gc = svg_destroy_gc;
 	svg_hid.use_mask = svg_use_mask;
+	svg_hid.set_drawing_mode = svg_set_drawing_mode;
 	svg_hid.set_color = svg_set_color;
 	svg_hid.set_line_cap = svg_set_line_cap;
 	svg_hid.set_line_width = svg_set_line_width;
