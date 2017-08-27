@@ -529,9 +529,16 @@ static void svg_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t w, pcb_coord_t h, pcb_coord_t stroke)
 {
+	const char *clip_color = svg_clip_color(gc);
+
 	indent(&snormal);
 	pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 		x1, y1, w, h, stroke, svg_color(gc), CAPS(gc->cap));
+	if (clip_color != NULL) {
+		indent(&sclip);
+		pcb_append_printf(&sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			x1, y1, w, h, stroke, clip_color, CAPS(gc->cap));
+	}
 }
 
 static void svg_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
