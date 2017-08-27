@@ -416,6 +416,10 @@ static void svg_use_mask(pcb_mask_op_t use_it)
 static void svg_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	drawing_mode = op;
+
+	if (direct)
+		return;
+
 	switch(op) {
 		case PCB_HID_COMP_RESET:
 			comp_cnt++;
