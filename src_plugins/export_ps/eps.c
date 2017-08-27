@@ -422,6 +422,8 @@ static void eps_use_mask(pcb_mask_op_t use_it)
 
 static void eps_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
+	if (direct)
+		return;
 	drawing_mode = op;
 	switch(op) {
 		case PCB_HID_COMP_RESET:
