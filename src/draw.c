@@ -261,10 +261,13 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		goto finish;
 
 	/* Draw pins, pads, vias below silk */
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
 	if (pcb_gui->gui)
 		pcb_draw_ppv(PCB_SWAP_IDENT ? solder : component, drawn_area);
 	else if (!pcb_gui->holes_after)
 		DrawEverything_holes(drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 
 	/* Draw the solder mask if turned on */
 	gid = pcb_layergrp_get_top_mask();
