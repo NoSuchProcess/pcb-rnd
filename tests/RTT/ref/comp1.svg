@@ -2,99 +2,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1625.6000" height="1625.6000" viewBox="-2.0000 -2.0000 17.7000 17.7000">
 <g id="layer_9_outline">
 <!--normal-->
-<!-- Composite: reset -->
-<defs>
-<g id="comp_pixel_1">
  <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
-</g>
-<mask id="comp_clip_1" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
-</mask>
-</defs>
-<use xlink:href="#comp_pixel_1" mask="url(#comp_clip_1)"/>
-<!-- Composite: finished -->
 </g>
 <g id="layer_7_group7">
 <!--normal-->
-<!-- Composite: reset -->
-<defs>
-<g id="comp_pixel_2">
  <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.2540" fill="#7f7f7f" stroke="none"/>
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
-</g>
-<mask id="comp_clip_2" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
-<circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.2540" fill="#FFFFFF" stroke="none"/>
-<circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#FFFFFF" stroke="none"/>
-</mask>
-</defs>
-<use xlink:href="#comp_pixel_2" mask="url(#comp_clip_2)"/>
-<!-- Composite: finished -->
 </g>
 <g id="layer_5_group5">
 <!--normal-->
-<!-- Composite: reset -->
-<defs>
-<g id="comp_pixel_3">
  <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.2540" fill="#7f7f7f" stroke="none"/>
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
-<mask id="comp_clip_3" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
-<circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.2540" fill="#FFFFFF" stroke="none"/>
-<circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#FFFFFF" stroke="none"/>
-</mask>
-</defs>
-<use xlink:href="#comp_pixel_3" mask="url(#comp_clip_3)"/>
-<!-- Composite: finished -->
-</g>
 <g id="layer_10_bottom">
 <!--normal-->
-<!-- Composite: reset -->
-<defs>
-<g id="comp_pixel_4">
  <line x1="0.6350" y1="3.1750" x2="12.0650" y2="3.1750" stroke-width="0.5080" stroke="#3a5fcd" stroke-linecap="round"/>
  <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.5080" fill="#7f7f7f" stroke="none"/>
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
-<mask id="comp_clip_4" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
-<line x1="0.6350" y1="3.1750" x2="12.0650" y2="3.1750" stroke-width="0.5080" stroke="#FFFFFF" stroke-linecap="round"/>
-<circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.5080" fill="#FFFFFF" stroke="none"/>
-<circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#FFFFFF" stroke="none"/>
-</mask>
-</defs>
-<use xlink:href="#comp_pixel_4" mask="url(#comp_clip_4)"/>
-<!-- Composite: finished -->
-</g>
 <g id="layer_3_top">
 <!--normal-->
-<!-- Composite: reset -->
-<defs>
-<g id="comp_pixel_5">
  <line x1="0.6350" y1="3.8100" x2="12.0650" y2="3.8100" stroke-width="0.5080" stroke="#8b2323" stroke-linecap="round"/>
  <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.5080" fill="#7f7f7f" stroke="none"/>
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
-</g>
-<mask id="comp_clip_5" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
-<line x1="0.6350" y1="3.8100" x2="12.0650" y2="3.8100" stroke-width="0.5080" stroke="#FFFFFF" stroke-linecap="round"/>
-<circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.5080" fill="#FFFFFF" stroke="none"/>
-<circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#FFFFFF" stroke="none"/>
-</mask>
-</defs>
-<use xlink:href="#comp_pixel_5" mask="url(#comp_clip_5)"/>
-<!-- Composite: finished -->
-<!-- Composite: reset -->
-<defs>
-<g id="comp_pixel_6">
-</g>
-<mask id="comp_clip_6" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
-</mask>
-</defs>
-<use xlink:href="#comp_pixel_6" mask="url(#comp_clip_6)"/>
-<!-- Composite: finished -->
 </g>
 <g id="layer_1_topsilk">
 <!--normal-->
 <!-- Composite: reset -->
 <defs>
-<g id="comp_pixel_7">
+<g id="comp_pixel_1">
  <polygon points="0.6350,0.6350 4.4450,0.6350 4.4450,4.4450 0.6350,4.4450 " stroke-width="0.075" stroke="#000000" fill="#000000"/>
  <polygon points="5.0800,0.6350 12.0650,0.6350 12.0650,12.0650 5.0800,12.0650 " stroke-width="0.075" stroke="#000000" fill="#000000"/>
  <polygon points="5.7150,1.2700 11.4300,1.2700 11.4300,11.4300 5.7150,11.4300 " stroke-width="0.075" stroke="erase" fill="erase"/>
@@ -102,7 +38,7 @@
  <path d="M 1.90500000 0.00000000 A 1.9050 1.9050 0 0 1 0.0000 1.9050" stroke-width="0.5080" stroke="erase" stroke-linecap="round" fill="none"/>
  <line x1="2.5400" y1="5.7150" x2="2.5400" y2="3.1750" stroke-width="0.5080" stroke="#000000" stroke-linecap="round"/>
 </g>
-<mask id="comp_clip_7" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
+<mask id="comp_clip_1" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
  <polygon points="0.6350,0.6350 4.4450,0.6350 4.4450,4.4450 0.6350,4.4450 " stroke-width="0.075" stroke="#FFFFFF" fill="#FFFFFF"/>
  <polygon points="5.0800,0.6350 12.0650,0.6350 12.0650,12.0650 5.0800,12.0650 " stroke-width="0.075" stroke="#FFFFFF" fill="#FFFFFF"/>
  <polygon points="5.7150,1.2700 11.4300,1.2700 11.4300,11.4300 5.7150,11.4300 " stroke-width="0.075" stroke="#000000" fill="#000000"/>
@@ -111,7 +47,7 @@
 <line x1="2.5400" y1="5.7150" x2="2.5400" y2="3.1750" stroke-width="0.5080" stroke="#FFFFFF" stroke-linecap="round"/>
 </mask>
 </defs>
-<use xlink:href="#comp_pixel_7" mask="url(#comp_clip_7)"/>
+<use xlink:href="#comp_pixel_1" mask="url(#comp_clip_1)"/>
 <!-- Composite: finished -->
 </g>
 <g id="layer_-1_plated-drill">
