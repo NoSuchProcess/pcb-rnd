@@ -109,7 +109,7 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static color_struct *black = NULL, *white = NULL;
-static gdImagePtr im = NULL, master_im, mask_im = NULL;
+static gdImagePtr im = NULL, master_im, comp_im = NULL;
 static FILE *f = 0;
 static int linewidth = -1;
 static int lastgroup = -1;
@@ -1246,52 +1246,50 @@ static void png_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static int mask_op = 0;
 static void png_use_mask(pcb_mask_op_t use_it)
 {
-	if (photo_mode)
+}
+
+static pcb_composite_op_t drawing_mode;
+static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+{
+	static gdImagePtr dst_im;
+	drawing_mode = op;
+	if (direct)
 		return;
-
-	switch(use_it) {
-		case HID_MASK_OFF:
-			mask_op = 0;
-			break;
-
-		case HID_MASK_BEFORE:
-			break;
-
-		case HID_MASK_INIT:
-			if (mask_im == NULL) {
-				mask_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
-				if (!mask_im) {
+	switch(op) {
+		case PCB_HID_COMP_RESET:
+			if (comp_im == NULL) {
+				comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+				if (!comp_im) {
 					pcb_message(PCB_MSG_ERROR, "png_use_mask():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 					return;
 				}
-				gdImagePaletteCopy(mask_im, im);
 			}
-			im = mask_im;
-			gdImageFilledRectangle(mask_im, 0, 0, gdImageSX(mask_im), gdImageSY(mask_im), white->c);
+			gdImagePaletteCopy(comp_im, im);
+			dst_im = im;
+			im = comp_im;
+			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), white->c);
 			break;
 
-		case HID_MASK_AFTER:
+		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_NEGATIVE:
+			break;
+
+		case PCB_HID_COMP_FLUSH:
 		{
 			int x, y, c;
-			im = master_im;
+			im = dst_im;
+			gdImagePaletteCopy(im, comp_im);
 			for (x = 0; x < gdImageSX(im); x++) {
 				for (y = 0; y < gdImageSY(im); y++) {
-					c = gdImageGetPixel(mask_im, x, y);
+					c = gdImageGetPixel(comp_im, x, y);
 					if (c)
 						gdImageSetPixel(im, x, y, c);
 				}
 			}
+			break;
 		}
-
-		case HID_MASK_CLEAR:
-			mask_op = HID_MASK_CLEAR;
-			break;
-		case HID_MASK_SET:
-			mask_op = HID_MASK_SET;
-			break;
 	}
 }
 
@@ -1305,7 +1303,7 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 	if (name == NULL)
 		name = "#ff0000";
 
-	if (strcmp(name, "erase") == 0 || strcmp(name, "drill") == 0) {
+	if ((strcmp(name, "drill") == 0) || (drawing_mode == PCB_HID_COMP_NEGATIVE)) {
 		gc->color = white;
 		gc->is_erase = 1;
 		return;
@@ -1323,7 +1321,7 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 	else if (name[0] == '#') {
 		gc->color = (color_struct *) malloc(sizeof(color_struct));
 		sscanf(name + 1, "%2x%2x%2x", &(gc->color->r), &(gc->color->g), &(gc->color->b));
-		gc->color->c = gdImageColorAllocate(master_im, gc->color->r, gc->color->g, gc->color->b);
+		gc->color->c = gdImageColorAllocate(im, gc->color->r, gc->color->g, gc->color->b);
 		if (gc->color->c == BADC) {
 			pcb_message(PCB_MSG_ERROR, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return;
@@ -1331,8 +1329,11 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 		cval.ptr = gc->color;
 		pcb_hid_cache_color(1, name, &cval, &color_cache);
 	}
+	else if (strcmp(name, "erase") == 0) {
+		gc->color = black; /* safe to remove */
+	}
 	else {
-		printf("WE SHOULD NOT BE HERE!!!\n");
+		fprintf(stderr, "WE SHOULD NOT BE HERE!!!\n");
 		gc->color = black;
 	}
 
@@ -1356,7 +1357,6 @@ static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 static void use_gc(pcb_hid_gc_t gc)
 {
 	int need_brush = 0;
-	color_struct *clr;
 
 	if (gc->me_pointer != &png_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to png HID\n");
@@ -1372,10 +1372,6 @@ static void use_gc(pcb_hid_gc_t gc)
 		linewidth = gc->width;
 		need_brush = 1;
 	}
-
-	clr = gc->color;
-	if (mask_op == HID_MASK_CLEAR)
-		clr = white;
 
 	need_brush |= (gc->color->r != last_color_r) || (gc->color->g != last_color_g) || (gc->color->b != last_color_b) || (gc->cap != last_cap);
 
@@ -1627,13 +1623,11 @@ static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	else
 		my_bloat = 2 * bloat;
 
-
 	have_outline |= doing_outline;
 
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), gc->color->c);
-
 }
 
 static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
@@ -1706,6 +1700,7 @@ int pplg_init_export_png(void)
 	png_hid.make_gc = png_make_gc;
 	png_hid.destroy_gc = png_destroy_gc;
 	png_hid.use_mask = png_use_mask;
+	png_hid.set_drawing_mode = png_set_drawing_mode;
 	png_hid.set_color = png_set_color;
 	png_hid.set_line_cap = png_set_line_cap;
 	png_hid.set_line_width = png_set_line_width;
