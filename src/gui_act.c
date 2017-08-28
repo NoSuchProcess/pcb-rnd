@@ -49,6 +49,8 @@
 #include "layer_vis.h"
 #include "attrib.h"
 #include "hid_attrib.h"
+#include "operation.h"
+#include "obj_subc_op.h"
 
 #include "obj_elem_draw.h"
 #include "obj_pinvia_draw.h"
@@ -214,6 +216,7 @@ static enum pcb_crosshair_shape_e CrosshairShapeIncrement(enum pcb_crosshair_sha
 	return shape;
 }
 
+extern pcb_opfunc_t ChgFlagFunctions;
 static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_coord_t childY)
 {
 	const char *function, *str_dir;
@@ -526,12 +529,17 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
 				if (type) {
 					pcb_any_obj_t *obj = ptr2;
-
+					pcb_opctx_t opctx;
+					
 					switch(type) {
 						case PCB_TYPE_SUBC:
-#warning term TODO: when we have the op, loop
-							pcb_message(PCB_MSG_ERROR, "subc: subc pin display toggle is not yet implemented\n");
+							opctx.chgflag.pcb = PCB;
+							opctx.chgflag.how = PCB_CHGFLG_TOGGLE;
+							opctx.chgflag.flag = PCB_FLAG_TERMNAME;
+							pcb_subc_op(PCB->Data, (pcb_subc_t *)obj, &ChgFlagFunctions, &opctx);
+							pcb_undo_inc_serial();
 							return 0;
+							break;
 						case PCB_TYPE_VIA:
 						case PCB_TYPE_LINE:
 						case PCB_TYPE_ARC:
