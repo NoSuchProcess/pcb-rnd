@@ -106,12 +106,34 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 	}
 }
 
+static void chk_subc_cache(pcb_subc_t *subc)
+{
+	const char *arefdes = pcb_attribute_get(&subc->Attributes, "refdes");
+
+	if ((arefdes == NULL) && (subc->refdes == NULL))
+		return;
+	if (subc->refdes == NULL) {
+		pcb_message(PCB_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' but no ->refdes set\n", subc->ID, arefdes);
+		return;
+	}
+	if (arefdes == NULL) {
+		pcb_message(PCB_MSG_ERROR, CHK "subc %ld has ->refdes '%s' but no attribute refdes set\n", subc->ID, subc->refdes);
+		return;
+	}
+	if (arefdes != subc->refdes) {
+		pcb_message(PCB_MSG_ERROR, CHK "subc %ld has mismatching pointer of ->refdes ('%s') and attribute refdes ('%s')\n", subc->ID, subc->refdes, arefdes);
+		return;
+	}
+}
+
+
 static void chk_subc(const char *whose, pcb_subc_t *subc)
 {
 	int n;
 	pcb_pin_t *via;
 
 	chk_layers("subc", subc->data, PCB_PARENT_SUBC, subc, 0);
+	chk_subc_cache(subc);
 
 	/* check term chaches */
 	for(via = pinlist_first(&subc->data->Via); via != NULL; via = pinlist_next(via))
