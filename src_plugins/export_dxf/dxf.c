@@ -52,6 +52,12 @@ static pcb_hid_t dxf_hid;
 
 const char *dxf_cookie = "dxf HID";
 
+typedef struct {
+	FILE *f;
+	unsigned long handle;
+} dxf_ctx_t;
+
+dxf_ctx_t dxf_ctx;
 
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
@@ -62,7 +68,6 @@ typedef struct hid_gc_s {
 	unsigned warned_elliptical:1;
 } hid_gc_s;
 
-static FILE *f = NULL;
 
 pcb_hid_attribute_t dxf_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -105,17 +110,15 @@ static pcb_hid_attribute_t *dxf_get_export_options(int *n)
 	return dxf_attribute_list;
 }
 
-void dxf_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_hid_expose_ctx_t ctx;
+	pcb_hid_expose_ctx_t hectx;
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
-
-	f = the_file;
+	hectx.view.X1 = 0;
+	hectx.view.Y1 = 0;
+	hectx.view.X2 = PCB->MaxWidth;
+	hectx.view.Y2 = PCB->MaxHeight;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
@@ -124,7 +127,7 @@ void dxf_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
-	pcb_hid_expose_all(&dxf_hid, &ctx);
+	pcb_hid_expose_all(&dxf_hid, &hectx);
 
 	conf_update(NULL, -1); /* restore forced sets */
 }
@@ -146,20 +149,20 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.dxf";
 
-	f = fopen(filename, "wb");
-	if (!f) {
+	dxf_ctx.f = fopen(filename, "wb");
+	if (!dxf_ctx.f) {
 		perror(filename);
 		return;
 	}
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
-	dxf_hid_export_to_file(f, options);
+	dxf_hid_export_to_file(&dxf_ctx, options);
 
 	pcb_hid_restore_layer_ons(save_ons);
 
-	fclose(f);
-	f = NULL;
+	fclose(dxf_ctx.f);
+	dxf_ctx.f = NULL;
 }
 
 static void dxf_parse_arguments(int *argc, char ***argv)
