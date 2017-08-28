@@ -1,5 +1,8 @@
 put /local/pcb/mod {export_dxf}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_dxf/dxf.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/export_dxf/dxf.o
+	$(PLUGDIR)/export_dxf/lht_template.o
+@]
 
 switch /local/pcb/export_dxf/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
