@@ -71,7 +71,6 @@ For the next release:
 		- autoroute.c:1000
 		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
-	- integrity check: term cross-linking
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
 - namespace renames:
 	- GetObjectBoundingBox
