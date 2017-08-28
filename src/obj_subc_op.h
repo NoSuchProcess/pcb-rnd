@@ -51,5 +51,6 @@ void *pcb_subcop_change_square(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
 void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc);
 
+void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_opctx_t *ctx);
 
 #endif
