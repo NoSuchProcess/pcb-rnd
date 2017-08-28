@@ -57,6 +57,8 @@ typedef struct {
 	unsigned long handle;
 } dxf_ctx_t;
 
+#include "dxf_draw.c"
+
 dxf_ctx_t dxf_ctx;
 
 typedef struct hid_gc_s {

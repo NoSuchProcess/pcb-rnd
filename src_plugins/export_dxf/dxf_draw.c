@@ -35,7 +35,7 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum */
 }
 
-static void dxf_draw_line(dxf_ctx_t *ctx, pcb_line_t *l)
+static void dxf_draw_line_(dxf_ctx_t *ctx, pcb_line_t *l)
 {
 	pcb_coord_t z = 20;
 	fprintf(ctx->f, "0\nLINE\n");
@@ -46,7 +46,7 @@ static void dxf_draw_line(dxf_ctx_t *ctx, pcb_line_t *l)
 	pcb_fprintf(ctx->f, "11\n%mm %mm %mm\n", l->Point2.X, z, l->Point2.Y);
 }
 
-static void dxf_draw_circle(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
+static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
 {
 	pcb_coord_t z = 20;
 	fprintf(ctx->f, "0\nCIRCLE\n");
@@ -57,7 +57,7 @@ static void dxf_draw_circle(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_co
 	pcb_fprintf(ctx->f, "30\n%mm\n", r);
 }
 
-static void dxf_draw_arc(dxf_ctx_t *ctx, pcb_arc_t *arc)
+static void dxf_draw_arc_(dxf_ctx_t *ctx, pcb_arc_t *arc)
 {
 	pcb_coord_t z = 20;
 	fprintf(ctx->f, "0\nARC\n");
