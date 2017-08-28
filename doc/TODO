@@ -71,12 +71,8 @@ For the next release:
 		- autoroute.c:1000
 		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
-	- remove Line->Number and *->Number: we use ->term
 	- integrity check: term cross-linking
-	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
-	- 's' on a pad affects the whole subc
-	- 'd' on subc doesn't set all terms
 - namespace renames:
 	- GetObjectBoundingBox
 - new hid render:
@@ -109,9 +105,9 @@ LATER RELEASES:
 - update /usr/share/pcb-rnd/default.pcb to default lihata 
 	- after switch, update doc/conf and doc/user references to conf settings from .pcb to .lht as needed 
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- composite layer draw API cleanup [Ade]:
-	- composite silk layer highlight bug: add a second, sub silk layer; place an element; select the element -> element silk is not cyan; reason: real composite layer is drawn with mask, mask loses color on blotting (affect gtk only)
-	- (the same happens on paste, probably on mask too)
++ composite layer draw API cleanup [Ade]:
+	+ composite silk layer highlight bug: add a second, sub silk layer; place an element; select the element -> element silk is not cyan; reason: real composite layer is drawn with mask, mask loses color on blotting (affect gtk only)
+	+ (the same happens on paste, probably on mask too)
 - BUG: cycledrag doesn't work on arc endpoint + line endpoint when rubber band is enabled [report:Ade]
 - Rubberband Arcs:
 	- Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Ade]
@@ -224,6 +220,11 @@ LATER RELEASES:
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - BUG: subc ctl-i 'report' doesn't work on subc: hover over object in subc, press ctl-i msg warning: 'Nothing found to report on" issued, [report: Miloh]
 - BUG: in both gtk guis, clicking Subcircuits layer control box 'off' effectively locks all subc, but gui lock tool doesn't work on subc. [report: Miloh]
+
+SUBC: element removal:
+	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
+	- remove Line->Number and *->Number: we use ->term
+
 
 GTK3:
 	- overlapping objects (e.g. 2 fat lines crossing on silk) are darker on the overlap; we need uniform color
