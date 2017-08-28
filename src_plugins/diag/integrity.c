@@ -74,9 +74,68 @@ static void chk_element(const char *whose, pcb_element_t *elem)
 	}
 }
 
+static void chk_term(const char *whose, pcb_any_obj_t *obj)
+{
+	const char *aterm = pcb_attribute_get(&obj->Attributes, "term");
+	const char *s_intconn = pcb_attribute_get(&obj->Attributes, "intconn");
+	
+	if ((aterm == NULL) && (obj->term == NULL))
+		return;
+	if (obj->term == NULL) {
+		pcb_message(PCB_MSG_ERROR, CHK "%s %ld has term attribute '%s' but no ->term set\n", whose, obj->ID, aterm);
+		return;
+	}
+	if (aterm == NULL) {
+		pcb_message(PCB_MSG_ERROR, CHK "%s %ld has ->term '%s' but no attribute term set\n", whose, obj->ID, obj->term);
+		return;
+	}
+	if (aterm != obj->term) {
+		pcb_message(PCB_MSG_ERROR, CHK "%s %ld has mismatching pointer of ->term ('%s') and attribute term ('%s')\n", whose, obj->ID, obj->term, aterm);
+		return;
+	}
+
+	if (s_intconn != NULL) {
+		char *end;
+		long intconn = strtol(s_intconn, &end, 10);
+		if (*end == '\0') {
+			if (intconn != obj->intconn) {
+				pcb_message(PCB_MSG_ERROR, CHK "%s %ld has mismatching intconn: cached is %d, attribute is '%s'\n", whose, obj->ID, obj->intconn, s_intconn);
+				return;
+			}
+		}
+	}
+}
+
 static void chk_subc(const char *whose, pcb_subc_t *subc)
 {
+	int n;
+	pcb_pin_t *via;
+
 	chk_layers("subc", subc->data, PCB_PARENT_SUBC, subc, 0);
+
+	/* check term chaches */
+	for(via = pinlist_first(&subc->data->Via); via != NULL; via = pinlist_next(via))
+		chk_term("via", (pcb_any_obj_t *)via);
+
+	for(n = 0; n < subc->data->LayerN; n++) {
+		pcb_layer_t *ly = &subc->data->Layer[n];
+		pcb_line_t *lin;
+		pcb_arc_t *arc;
+		pcb_text_t *txt;
+		pcb_polygon_t *pol;
+
+		for(lin = linelist_first(&ly->Line); lin != NULL; lin = linelist_next(lin))
+			chk_term("line", (pcb_any_obj_t *)lin);
+
+		for(arc = arclist_first(&ly->Arc); arc != NULL; arc = arclist_next(arc))
+			chk_term("arc", (pcb_any_obj_t *)arc);
+
+		for(txt = textlist_first(&ly->Text); txt != NULL; txt = textlist_next(txt))
+			chk_term("text", (pcb_any_obj_t *)txt);
+
+		for(pol = polylist_first(&ly->Polygon); pol != NULL; pol = polylist_next(pol))
+			chk_term("polygon", (pcb_any_obj_t *)pol);
+	}
 }
 
 /* Check layers and objects: walk the tree top->down and check ->parent
