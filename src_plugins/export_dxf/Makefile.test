@@ -1,0 +1,15 @@
+LHT=../../src_3rd/liblihata
+HT=../../src_3rd/genht
+CFLAGS = -Wall -g -I../../src_3rd -DTESTER
+LDFLAGS =
+OBJS =  $(LHT)/parser.o $(LHT)/lihata.o  $(HT)/htsp.o $(HT)/hash.o \
+  $(LHT)/dom.o $(LHT)/dom_list.o $(LHT)/dom_hash.o $(LHT)/dom_table.o \
+  $(LHT)/tree_path.o $(LHT)/tree.o $(LHT)/tree_list.o $(LHT)/tree_hash.o \
+  $(LHT)/tree_table.o $(LHT)/hash_str.o
+
+lht_template: lht_template.o $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+lht_template.o: lht_template.c
+	$(CC) -c -o $@ $(CFLAGS) lht_template.c
+
