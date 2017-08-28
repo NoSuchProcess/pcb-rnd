@@ -778,6 +778,8 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 {
 	if ((ctx->chgflag.flag & PCB_POLY_FLAGS) != ctx->chgflag.flag)
 		return NULL;
+	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (Polygon->term == NULL))
+		return NULL;
 	pcb_undo_add_obj_to_flag(Polygon);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Polygon);
 	return Polygon;

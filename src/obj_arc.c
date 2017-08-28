@@ -727,10 +727,12 @@ void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 	return new_arc;
 }
 
-#define PCB_ARC_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_RUBBEREND | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
+#define PCB_ARC_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_RUBBEREND | PCB_FLAG_LOCK | PCB_FLAG_VISIT | PCB_FLAG_TERMNAME)
 void *pcb_arcop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if ((ctx->chgflag.flag & PCB_ARC_FLAGS) != ctx->chgflag.flag)
+		return NULL;
+	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (Arc->term == NULL))
 		return NULL;
 	pcb_undo_add_obj_to_flag(Arc);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Arc);
