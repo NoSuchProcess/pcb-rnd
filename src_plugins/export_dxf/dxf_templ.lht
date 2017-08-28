@@ -1,5 +1,5 @@
 ha:template {
-	trim_leading_ws=1
+	trim_indent=1
 	ha:template {
 		li:header {
 			verbatim {
@@ -32,12 +32,12 @@ ha:template {
 				9
 				$EXTMIN
 			}
-			subst {extmin}
+			insert {extmin}
 			verbatim {
 				9
 				$EXTMAX
 			}
-			subst {extmax}
+			insert {extmax}
 			verbatim {
 				9
 				$LIMMIN
@@ -1507,11 +1507,11 @@ ha:template {
 				SECTION
 				2
 				ENTITIES
-				0
 			}
 		}
 		li:footer {
 			verbatim {
+				0
 				ENDSEC
 				0
 				SECTION
