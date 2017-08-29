@@ -20,6 +20,11 @@
   *
   */
 
+#define TRX(x)   (x)
+#define TRY(y)   (PCB->MaxHeight - (y))
+#define TRAA(aa) (180-(aa))
+#define TRDA(da) (-(da))
+
 static void dxf_draw_handle(dxf_ctx_t *ctx)
 {
 	ctx->handle++;
@@ -32,7 +37,7 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "8\n0\n"); /* layer name */
 	fprintf(ctx->f, "6\nByLayer\n"); /* linetype name */
 	fprintf(ctx->f, "62\n256\n"); /* color; 256=ByLayer */
-	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum (width in mm?) */
+	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum (width in mm*100?) */
 }
 
 static void dxf_draw_line_(dxf_ctx_t *ctx, pcb_line_t *l)
@@ -42,8 +47,8 @@ static void dxf_draw_line_(dxf_ctx_t *ctx, pcb_line_t *l)
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbLine\n");
-	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", l->Point1.X, z, l->Point1.Y);
-	pcb_fprintf(ctx->f, "11\n%mm %mm %mm\n", l->Point2.X, z, l->Point2.Y);
+	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(l->Point1.X), z, TRY(l->Point1.Y));
+	pcb_fprintf(ctx->f, "11\n%mm %mm %mm\n", TRX(l->Point2.X), z, TRY(l->Point2.Y));
 }
 
 static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
@@ -53,7 +58,7 @@ static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_c
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
-	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", x, z, y);
+	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(x), z, TRY(y));
 	pcb_fprintf(ctx->f, "30\n%mm\n", r);
 }
 
@@ -64,9 +69,9 @@ static void dxf_draw_arc_(dxf_ctx_t *ctx, pcb_arc_t *arc)
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
-	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", arc->X, z, arc->Y);
+	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(arc->X), z, TRY(arc->Y));
 	pcb_fprintf(ctx->f, "30\n%mm\n", (arc->Width + arc->Height)/2);
 	fprintf(ctx->f, "100\nAcDbArc\n");
-	fprintf(ctx->f, "50\n%f\n", arc->StartAngle);
-	fprintf(ctx->f, "51\n%f\n", arc->Delta);
+	fprintf(ctx->f, "50\n%f\n", TRAA(arc->StartAngle));
+	fprintf(ctx->f, "51\n%f\n", TRDA(arc->Delta));
 }

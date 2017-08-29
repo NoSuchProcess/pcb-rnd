@@ -89,13 +89,6 @@ Name of the file to be exported to. Can contain a path.
 
 #define NUM_OPTIONS (sizeof(dxf_attribute_list)/sizeof(dxf_attribute_list[0]))
 
-#define TRX(x)
-#define TRY(y) \
-do { \
-	y = PCB->MaxHeight - y; \
-} while(0)
-
-
 PCB_REGISTER_ATTRIBUTES(dxf_attribute_list, dxf_cookie)
 
 static pcb_hid_attr_val_t dxf_values[NUM_OPTIONS];
@@ -300,29 +293,24 @@ static void dxf_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void dxf_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	fix_rect_coords();
 }
 
 static void dxf_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	fix_rect_coords();
 }
 
 static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 }
 
 static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	TRX(cx); TRY(cy);
 }
 
 static void dxf_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
-	TRX(cx); TRY(cy);
 }
 
 static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
