@@ -32,7 +32,7 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "8\n0\n"); /* layer name */
 	fprintf(ctx->f, "6\nByLayer\n"); /* linetype name */
 	fprintf(ctx->f, "62\n256\n"); /* color; 256=ByLayer */
-	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum */
+	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum (width in mm?) */
 }
 
 static void dxf_draw_line_(dxf_ctx_t *ctx, pcb_line_t *l)

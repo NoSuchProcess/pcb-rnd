@@ -55,6 +55,7 @@ const char *dxf_cookie = "dxf HID";
 typedef struct {
 	FILE *f;
 	unsigned long handle;
+	lht_doc_t *temp;
 } dxf_ctx_t;
 
 #include "dxf_draw.c"
@@ -134,11 +135,35 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 	conf_update(NULL, -1); /* restore forced sets */
 }
 
+int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)
+{
+	if (strcmp(name, "extmin") == 0)
+		fprintf(f, "10\n0\n20\n0\n30\n0\n");
+	else if (strcmp(name, "extmax") == 0)
+		pcb_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->MaxWidth, PCB->MaxHeight);
+	else {
+		pcb_message(PCB_MSG_ERROR, "Invalid header insertion: '%s'\n", name);
+		return -1;
+	}
+
+	return 0;
+}
+
+int insert_ftr(FILE *f, const char *prefix, char *name, lht_err_t *err)
+{
+	pcb_message(PCB_MSG_ERROR, "Invalid footer insertion: '%s'\n", name);
+	return -1;
+}
+
+
 static void dxf_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER + 2];
 	int i;
+	const char *fn = "dxf_templ.lht";
+	char *errmsg;
+	lht_err_t err;
 
 	if (!options) {
 		dxf_get_export_options(0);
@@ -157,14 +182,27 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
+	dxf_ctx.temp = lht_dom_load(fn, &errmsg);
+	if (dxf_ctx.temp == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't open dxf template: %s\n", fn);
+		fclose(dxf_ctx.f);
+		return;
+	}
+
+	dxf_ctx.handle = 100;
+	if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "header", insert_hdr, &err) != 0)
+		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
 	dxf_hid_export_to_file(&dxf_ctx, options);
 
 	pcb_hid_restore_layer_ons(save_ons);
 
+	if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "footer", insert_ftr, &err) != 0)
+		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+
 	fclose(dxf_ctx.f);
-	dxf_ctx.f = NULL;
 }
 
 static void dxf_parse_arguments(int *argc, char ***argv)
