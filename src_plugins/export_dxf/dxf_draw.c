@@ -48,8 +48,8 @@ static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbLine\n");
-	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(x1), z, TRY(y1));
-	pcb_fprintf(ctx->f, "11\n%mm %mm %mm\n", TRX(x2), z, TRY(y2));
+	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x1), TRY(y1));
+	pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x2), TRY(y2));
 }
 
 static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
@@ -59,7 +59,7 @@ static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_c
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
-	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(x), z, TRY(y));
+	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x), TRY(y));
 	pcb_fprintf(ctx->f, "30\n%mm\n", r);
 }
 
@@ -70,7 +70,7 @@ static void dxf_draw_arc_(dxf_ctx_t *ctx, pcb_arc_t *arc)
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
-	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(arc->X), z, TRY(arc->Y));
+	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(arc->X), TRY(arc->Y));
 	pcb_fprintf(ctx->f, "30\n%mm\n", (arc->Width + arc->Height)/2);
 	fprintf(ctx->f, "100\nAcDbArc\n");
 	fprintf(ctx->f, "50\n%f\n", TRAA(arc->StartAngle));
