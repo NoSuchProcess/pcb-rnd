@@ -274,7 +274,7 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	}
 
 	if ((flags & PCB_LYT_BOTTOM) && (flags & PCB_LYT_COPPER)) {
-		dxf_ctx.layer_name = "top_bottom";
+		dxf_ctx.layer_name = "bottom_copper";
 		return 1;
 	}
 
@@ -361,10 +361,6 @@ static void dxf_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 static void dxf_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	fix_rect_coords();
-}
-
-static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
-{
 }
 
 static void dxf_calibrate(double xval, double yval)

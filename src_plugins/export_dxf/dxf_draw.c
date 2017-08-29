@@ -106,6 +106,51 @@ static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	fprintf(ctx->f, "51\n%f\n", end_angle);
 }
 
+static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	dxf_ctx_t *ctx = &dxf_ctx;
+	int n, to;
+
+#if HATCH_NEEDS_BBOX
+	pcb_coord_t x_min, x_max, y_min, y_max;
+	x_max = x_min = *x;
+	y_max = y_min = *y;
+	for(n = 1; n < n_coords; n++) {
+		if (x[n] < x_min) x_min = x[n];
+		if (x[n] > x_max) x_max = x[n];
+		if (y[n] < y_min) y_min = y[n];
+		if (y[n] > y_max) y_max = y[n];
+	}
+#endif
+
+	fprintf(ctx->f, "0\nHATCH\n");
+	dxf_draw_handle(ctx);
+	dxf_draw_line_props(ctx, gc);
+	fprintf(ctx->f, "100\nAcDbHatch\n");
+	fprintf(ctx->f, "10\n0\n20\n0\n30\n0\n"); /* elevation */
+	fprintf(ctx->f, "210\n0\n220\n0\n230\n1\n"); /* extrusion */
+	fprintf(ctx->f, "2\nSOLID\n");
+	fprintf(ctx->f, "70\n1\n"); /* solid fill */
+	fprintf(ctx->f, "71\n0\n"); /* associativity: non */
+	fprintf(ctx->f, "91\n1\n"); /* number of loops (contours) */
+	fprintf(ctx->f, "92\n0\n"); /* boundary path type: default */
+	fprintf(ctx->f, "93\n%d\n", n_coords);
+
+	for(n = 0; n < n_coords; n++) {
+		to = n+1;
+		if (to == n_coords)
+			to = 0;
+		fprintf(ctx->f, "72\n1\n"); /* edge=line */
+		pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]), TRY(y[n]));
+		pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]), TRY(y[to]));
+	}
+
+	fprintf(ctx->f, "97\n0\n"); /* number of source boundaries */
+	fprintf(ctx->f, "75\n0\n"); /* hatch style: normal, odd parity */
+	fprintf(ctx->f, "76\n1\n"); /* pattern type: predefined */
+	fprintf(ctx->f, "98\n0\n"); /* number of seed points */
+
+}
 
 static void dxf_gen_layer(dxf_ctx_t *ctx, const char *name)
 {
@@ -121,4 +166,3 @@ static void dxf_gen_layer(dxf_ctx_t *ctx, const char *name)
 	fprintf(ctx->f, "370\n15\n"); /* default line width in 0.01mm */
 	fprintf(ctx->f, "390\nF\n"); /* plot style */
 }
-
