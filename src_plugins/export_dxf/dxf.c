@@ -63,6 +63,7 @@ typedef struct {
 	FILE *f;
 	unsigned long handle;
 	lht_doc_t *temp;
+	const char *layer_name;
 } dxf_ctx_t;
 
 static dxf_ctx_t dxf_ctx;
@@ -224,14 +225,40 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_INVIS)
 		return 0;
 
-	if (flags & PCB_LYT_OUTLINE)
+	if (flags & PCB_LYT_OUTLINE) {
+		dxf_ctx.layer_name = "outline";
 		return 1;
+	}
 
-	if (flags & PCB_LYT_PDRILL)
+	if (flags & PCB_LYT_PDRILL) {
+		dxf_ctx.layer_name = "drill_plated";
 		return 1;
+	}
 
-	if (flags & PCB_LYT_UDRILL)
+	if (flags & PCB_LYT_UDRILL) {
+		dxf_ctx.layer_name = "drill_unplated";
 		return 1;
+	}
+
+	if ((flags & PCB_LYT_TOP) && (flags & PCB_LYT_COPPER)) {
+		dxf_ctx.layer_name = "top_copper";
+		return 1;
+	}
+
+	if ((flags & PCB_LYT_TOP) && (flags & PCB_LYT_SILK)) {
+		dxf_ctx.layer_name = "top_silk";
+		return 1;
+	}
+
+	if ((flags & PCB_LYT_BOTTOM) && (flags & PCB_LYT_COPPER)) {
+		dxf_ctx.layer_name = "top_bottom";
+		return 1;
+	}
+
+	if ((flags & PCB_LYT_BOTTOM) && (flags & PCB_LYT_SILK)) {
+		dxf_ctx.layer_name = "bottom_silk";
+		return 1;
+	}
 
 	return 0;
 }
