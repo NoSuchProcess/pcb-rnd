@@ -67,6 +67,7 @@ typedef struct {
 	lht_doc_t *temp;
 	const char *layer_name;
 	unsigned force_thin:1;
+	unsigned enable_force_thin:1;
 } dxf_ctx_t;
 
 static dxf_ctx_t dxf_ctx;
@@ -96,6 +97,18 @@ Name of the file to be exported to. Can contain a path.
 	{"outfile", "Graphics output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dxffile 0
+
+/* %start-doc options "93 DXF Options"
+@ftable @code
+@item --thin
+Draw outline and drills with thin lines.
+@end ftable
+%end-doc
+*/
+	{"thin", "Draw outline and drill with thin lines",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_thin 1
+
 };
 
 #define NUM_OPTIONS (sizeof(dxf_attribute_list)/sizeof(dxf_attribute_list[0]))
@@ -133,6 +146,8 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
+
+	dxf_ctx.enable_force_thin = options[HA_thin].int_value;
 
 	pcb_hid_expose_all(&dxf_hid, &hectx);
 

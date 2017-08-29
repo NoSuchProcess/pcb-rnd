@@ -35,8 +35,9 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx, pcb_hid_gc_t gc)
 	fprintf(ctx->f, "8\n%s\n", ctx->layer_name); /* layer name */
 	fprintf(ctx->f, "6\nByLayer\n"); /* linetype name */
 	fprintf(ctx->f, "62\n256\n"); /* color; 256=ByLayer */
+
 	/* lineweight enum (width in 0.01mm) */
-	if (ctx->force_thin)
+	if (ctx->enable_force_thin && ctx->force_thin)
 		fprintf(ctx->f, "370\n1\n");
 	else
 		fprintf(ctx->f, "370\n%d\n", (int)pcb_round(PCB_COORD_TO_MM(gc->width)*100.0));
