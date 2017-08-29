@@ -58,9 +58,9 @@ typedef struct {
 	lht_doc_t *temp;
 } dxf_ctx_t;
 
-#include "dxf_draw.c"
+static dxf_ctx_t dxf_ctx;
 
-dxf_ctx_t dxf_ctx;
+#include "dxf_draw.c"
 
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
@@ -299,10 +299,6 @@ static void dxf_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 static void dxf_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	fix_rect_coords();
-}
-
-static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
 }
 
 static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)

@@ -40,15 +40,16 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum (width in mm*100?) */
 }
 
-static void dxf_draw_line_(dxf_ctx_t *ctx, pcb_line_t *l)
+static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
+	dxf_ctx_t *ctx = &dxf_ctx;
 	pcb_coord_t z = 20;
 	fprintf(ctx->f, "0\nLINE\n");
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbLine\n");
-	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(l->Point1.X), z, TRY(l->Point1.Y));
-	pcb_fprintf(ctx->f, "11\n%mm %mm %mm\n", TRX(l->Point2.X), z, TRY(l->Point2.Y));
+	pcb_fprintf(ctx->f, "10\n%mm %mm %mm\n", TRX(x1), z, TRY(y1));
+	pcb_fprintf(ctx->f, "11\n%mm %mm %mm\n", TRX(x2), z, TRY(y2));
 }
 
 static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
