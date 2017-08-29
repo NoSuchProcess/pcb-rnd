@@ -1119,6 +1119,9 @@ ha:template {
 				0
 				390
 				F
+			}
+			insert {layers}
+			verbatim {
 				0
 				ENDTAB
 				0

@@ -47,6 +47,13 @@
 #include "hid_helper.h"
 #include "hid_flags.h"
 
+static const char *layer_names[] = {
+	"outline",
+	"bottom_copper", "top_copper",
+	"bottom_silk", "top_silk",
+	"drill_plated", "drill_unplated",
+	NULL
+};
 
 static pcb_hid_t dxf_hid;
 
@@ -134,6 +141,11 @@ int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 		fprintf(f, "10\n0\n20\n0\n30\n0\n");
 	else if (strcmp(name, "extmax") == 0)
 		pcb_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->MaxWidth, PCB->MaxHeight);
+	else if (strcmp(name, "layers") == 0) {
+		const char **s;
+		for(s = layer_names; *s != NULL; s++)
+			dxf_gen_layer(&dxf_ctx, *s);
+	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid header insertion: '%s'\n", name);
 		return -1;

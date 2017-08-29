@@ -35,7 +35,7 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "8\n0\n"); /* layer name */
 	fprintf(ctx->f, "6\nByLayer\n"); /* linetype name */
 	fprintf(ctx->f, "62\n256\n"); /* color; 256=ByLayer */
-	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum (width in mm*100?) */
+	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum (width in 0.01mm) */
 }
 
 static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -99,5 +99,21 @@ static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	fprintf(ctx->f, "100\nAcDbArc\n");
 	fprintf(ctx->f, "50\n%f\n", start_angle);
 	fprintf(ctx->f, "51\n%f\n", end_angle);
+}
+
+
+static void dxf_gen_layer(dxf_ctx_t *ctx, const char *name)
+{
+	fprintf(ctx->f, "0\nLAYER\n");
+	dxf_draw_handle(ctx);
+	fprintf(ctx->f, "330\n2\n"); /* BLOCK_RECORD handle */
+	fprintf(ctx->f, "100\nAcDbSymbolTableRecord\n");
+	fprintf(ctx->f, "100\nAcDbLayerTableRecord\n");
+	fprintf(ctx->f, "2\n%s\n", name);
+	fprintf(ctx->f, "70\n0\n"); /* flags */
+	fprintf(ctx->f, "62\n7\n"); /* color */
+	fprintf(ctx->f, "6\nCONTINUOUS\n"); /* default line type */
+	fprintf(ctx->f, "370\n15\n"); /* default line width in 0.01mm */
+	fprintf(ctx->f, "390\nF\n"); /* plot style */
 }
 
