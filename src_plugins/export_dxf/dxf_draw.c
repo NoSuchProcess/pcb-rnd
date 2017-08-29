@@ -22,8 +22,6 @@
 
 #define TRX(x)   (x)
 #define TRY(y)   (PCB->MaxHeight - (y))
-#define TRAA(aa) (180-(aa))
-#define TRDA(da) (-(da))
 
 static void dxf_draw_handle(dxf_ctx_t *ctx)
 {
@@ -43,7 +41,6 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx)
 static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	dxf_ctx_t *ctx = &dxf_ctx;
-	pcb_coord_t z = 20;
 	fprintf(ctx->f, "0\nLINE\n");
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
@@ -54,7 +51,6 @@ static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 
 static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
 {
-	pcb_coord_t z = 20;
 	fprintf(ctx->f, "0\nCIRCLE\n");
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
@@ -63,16 +59,43 @@ static void dxf_draw_circle_(dxf_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y, pcb_c
 	pcb_fprintf(ctx->f, "30\n%mm\n", r);
 }
 
-static void dxf_draw_arc_(dxf_ctx_t *ctx, pcb_arc_t *arc)
+static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	pcb_coord_t z = 20;
+	pcb_angle_t end_angle, tmp;
+	dxf_ctx_t *ctx = &dxf_ctx;
+
+	if (delta_angle > 0) {
+		end_angle = start_angle-delta_angle;
+		start_angle -= 90;
+		end_angle -= 90;
+
+		if (end_angle >= 360)
+			end_angle -= 360;
+		if (end_angle < 0)
+			end_angle += 360;
+
+		tmp = start_angle;
+		start_angle = end_angle;
+		end_angle = tmp;
+	}
+	else {
+		end_angle = start_angle-delta_angle;
+		start_angle += 90;
+		end_angle += 90;
+
+		if (end_angle >= 360)
+			end_angle -= 360;
+		if (end_angle < 0)
+			end_angle += 360;
+	}
+
 	fprintf(ctx->f, "0\nARC\n");
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
-	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(arc->X), TRY(arc->Y));
-	pcb_fprintf(ctx->f, "30\n%mm\n", (arc->Width + arc->Height)/2);
+	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
+	pcb_fprintf(ctx->f, "40\n%mm\n", (width + height)/2);
 	fprintf(ctx->f, "100\nAcDbArc\n");
-	fprintf(ctx->f, "50\n%f\n", TRAA(arc->StartAngle));
-	fprintf(ctx->f, "51\n%f\n", TRDA(arc->Delta));
+	fprintf(ctx->f, "50\n%f\n", start_angle);
+	fprintf(ctx->f, "51\n%f\n", end_angle);
 }
