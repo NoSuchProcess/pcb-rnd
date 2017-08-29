@@ -36,6 +36,8 @@
 #include "error.h"
 #include "layer.h"
 #include "plugins.h"
+#include "pcb-printf.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -64,20 +66,21 @@ typedef struct {
 	unsigned long handle;
 	lht_doc_t *temp;
 	const char *layer_name;
+	unsigned force_thin:1;
 } dxf_ctx_t;
 
 static dxf_ctx_t dxf_ctx;
 
-#include "dxf_draw.c"
-
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
-	int width;
+	pcb_coord_t width;
 	char *color;
 	int drill;
 	unsigned warned_elliptical:1;
 } hid_gc_s;
+
+#include "dxf_draw.c"
 
 
 pcb_hid_attribute_t dxf_attribute_list[] = {
@@ -225,8 +228,11 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	if (flags & PCB_LYT_INVIS)
 		return 0;
 
+	dxf_ctx.force_thin = 0;
+
 	if (flags & PCB_LYT_OUTLINE) {
 		dxf_ctx.layer_name = "outline";
+		dxf_ctx.force_thin = 1;
 		return 1;
 	}
 

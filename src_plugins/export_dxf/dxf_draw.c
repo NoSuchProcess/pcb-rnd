@@ -29,13 +29,17 @@ static void dxf_draw_handle(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "5\n%lu\n", ctx->handle);
 }
 
-static void dxf_draw_line_props(dxf_ctx_t *ctx)
+static void dxf_draw_line_props(dxf_ctx_t *ctx, pcb_hid_gc_t gc)
 {
 	fprintf(ctx->f, "100\nAcDbEntity\n");
 	fprintf(ctx->f, "8\n%s\n", ctx->layer_name); /* layer name */
 	fprintf(ctx->f, "6\nByLayer\n"); /* linetype name */
 	fprintf(ctx->f, "62\n256\n"); /* color; 256=ByLayer */
-	fprintf(ctx->f, "370\n-1\n"); /* lineweight enum (width in 0.01mm) */
+	/* lineweight enum (width in 0.01mm) */
+	if (ctx->force_thin)
+		fprintf(ctx->f, "370\n15\n");
+	else
+		fprintf(ctx->f, "370\n%d\n", (int)pcb_round(PCB_COORD_TO_MM(gc->width)*100.0));
 }
 
 static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -43,7 +47,7 @@ static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	dxf_ctx_t *ctx = &dxf_ctx;
 	fprintf(ctx->f, "0\nLINE\n");
 	dxf_draw_handle(ctx);
-	dxf_draw_line_props(ctx);
+	dxf_draw_line_props(ctx, gc);
 	fprintf(ctx->f, "100\nAcDbLine\n");
 	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x1), TRY(y1));
 	pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x2), TRY(y2));
@@ -54,7 +58,7 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	dxf_ctx_t *ctx = &dxf_ctx;
 	fprintf(ctx->f, "0\nCIRCLE\n");
 	dxf_draw_handle(ctx);
-	dxf_draw_line_props(ctx);
+	dxf_draw_line_props(ctx, gc);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
 	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
 	pcb_fprintf(ctx->f, "40\n%mm\n", r);
@@ -92,7 +96,7 @@ static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 
 	fprintf(ctx->f, "0\nARC\n");
 	dxf_draw_handle(ctx);
-	dxf_draw_line_props(ctx);
+	dxf_draw_line_props(ctx, gc);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
 	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
 	pcb_fprintf(ctx->f, "40\n%mm\n", (width + height)/2);
