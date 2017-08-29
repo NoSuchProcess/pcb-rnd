@@ -293,7 +293,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (pcb_gui->holes_after)
+	{
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area); 
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
 		DrawEverything_holes(drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
+	}
 
 	if (pcb_gui->gui) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
