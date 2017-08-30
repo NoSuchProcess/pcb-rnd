@@ -100,6 +100,17 @@ Name of the file to be exported to. Can contain a path.
 
 /* %start-doc options "93 DXF Options"
 @ftable @code
+@item --template <string>
+Name of the lihata template file to be used instead of the default dxf template. Can contain a path.
+@end ftable
+%end-doc
+*/
+	{"template", "DXF template (lihata file)",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_template 1
+
+/* %start-doc options "93 DXF Options"
+@ftable @code
 @item --thin
 Draw outline and drills with thin lines.
 @end ftable
@@ -107,7 +118,7 @@ Draw outline and drills with thin lines.
 */
 	{"thin", "Draw outline and drill with thin lines",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_thin 1
+#define HA_thin 2
 
 };
 
@@ -185,7 +196,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER + 2];
 	int i;
-	const char *fn = NULL;
+	const char *fn;
 	char *errmsg;
 	lht_err_t err;
 
@@ -206,6 +217,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
+	fn = options[HA_template].str_value;
 	if (fn == NULL) {
 		fn = "<embedded template>";
 		dxf_ctx.temp = lht_dom_load_string(dxf_templ_default_arr, fn, &errmsg);
