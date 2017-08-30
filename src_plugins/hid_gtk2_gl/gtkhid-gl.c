@@ -18,44 +18,39 @@
 #include "../src_plugins/lib_gtk_hid/coord_conv.h"
 #include "../src_plugins/lib_gtk_hid/render.h"
 
-
-/* The Linux OpenGL ABI 1.0 spec requires that we define
- * GL_GLEXT_PROTOTYPES before including gl.h or glx.h for extensions
- * in order to get prototypes:
- *   http://www.opengl.org/registry/ABI/
- */
-
-#define GL_GLEXT_PROTOTYPES 1
-#ifdef HAVE_OPENGL_GL_H
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
+#include "opengl.h"
 #include <gtk/gtkgl.h>
+#include "draw_gl.h"
 #include "hidgl.h"
 #include "hid_draw_helpers.h"
+#include "stencil_gl.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
+/*=============================================================================
+ *
+ * Data & Types
+ *
+ *===========================================================================*/
 extern pcb_hid_t gtk2_gl_hid;
 
 static pcb_hid_gc_t current_gc = NULL;
-
 /* Sets gport->u_gc to the "right" GC to use (wrt mask or window)
 */
 #define USE_GC(gc) if (!use_gc(gc)) return
 
-static int cur_mask = -1;
+/*static int cur_mask = -1;*/
 
 typedef struct render_priv_s {
-	GdkGLConfig *glconfig;
-	GdkColor bg_color, offlimits_color, grid_color;
-	pcb_bool trans_lines;
-	pcb_bool in_context;
-	int subcomposite_stencil_bit;
-	char *current_colorname;
-	double current_alpha_mult;
+	GdkGLConfig *				glconfig;
+	GdkColor 						bg_color;
+	GdkColor 						offlimits_color;
+	GdkColor 						grid_color;
+	pcb_bool 						trans_lines;
+	pcb_bool 						in_context;
+	int 								subcomposite_stencil_bit;
+	char *							current_colorname;
+	double 							current_alpha_mult;
 } render_priv_t;
 
 
@@ -70,6 +65,17 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static void draw_lead_user(render_priv_t * priv);
+
+void ghid_gl_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+{
+
+}
+
+/*=============================================================================
+ *
+ * Colour Functions
+ *
+ *===========================================================================*/
 
 static const gchar *get_color_name(pcb_gtk_color_t * color)
 {
@@ -103,13 +109,19 @@ static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * col
 }
 
 
+/*=============================================================================
+ *
+ * Sub-Composite
+ *
+ *===========================================================================*/
+#if 0
 static void start_subcomposite(void)
 {
 	render_priv_t *priv = gport->render_priv;
 	int stencil_bit;
 
 	/* Flush out any existing geoemtry to be rendered */
-	hidgl_flush_triangles(&buffer);
+	hidgl_flush_triangles();
 
 	glEnable(GL_STENCIL_TEST);		/* Enable Stencil test */
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value (with 1) */
@@ -126,7 +138,7 @@ static void end_subcomposite(void)
 	render_priv_t *priv = gport->render_priv;
 
 	/* Flush out any existing geoemtry to be rendered */
-	hidgl_flush_triangles(&buffer);
+	hidgl_flush_triangles();
 
 	hidgl_return_stencil_bit(priv->subcomposite_stencil_bit);	/* Relinquish any bitplane we previously used */
 
@@ -136,12 +148,19 @@ static void end_subcomposite(void)
 
 	priv->subcomposite_stencil_bit = 0;
 }
+#endif
 
+/*=============================================================================
+ *
+ * Layer Groups
+ *
+ *===========================================================================*/
 
 int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	render_priv_t *priv = gport->render_priv;
 	int idx = group;
+
 	if (idx >= 0 && idx < pcb_max_group(PCB)) {
 		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
@@ -152,9 +171,18 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 		idx = PCB->LayerGroups.grp[group].lid[idx];
 	}
 
+
+	/* Put the renderer into a good state so that any drawing is done in standard mode */
+	
+	drawgl_flush();
+	drawgl_reset();
+	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+	glDisable(GL_STENCIL_TEST);
+	
+/*
 	end_subcomposite();
 	start_subcomposite();
-
+*/
 	priv->trans_lines = pcb_true;
 
 	/* non-virtual layers with group visibility */
@@ -188,7 +216,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 			/* Disable stencil for cross-section drawing; that code
 			 * relies on overdraw doing the right thing and doesn't
 			 * use layers */
-			glDisable(GL_STENCIL_TEST);
+			/*glDisable(GL_STENCIL_TEST);*/
 			return 0;
 		}
 	}
@@ -197,9 +225,15 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 
 static void ghid_gl_end_layer(void)
 {
-	end_subcomposite();
+	drawgl_flush();
+	drawgl_reset();
 }
 
+/*=============================================================================
+ *
+ * GC
+ *
+ *===========================================================================*/
 void ghid_gl_destroy_gc(pcb_hid_gc_t gc)
 {
 	g_free(gc);
@@ -215,6 +249,13 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 	rv->alpha_mult = 1.0;
 	return rv;
 }
+
+
+/*=============================================================================
+ *
+ * Drawing
+ *
+ *===========================================================================*/
 
 void ghid_gl_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 {
@@ -295,6 +336,7 @@ static void ghid_gl_draw_bg_image(void)
 
 void ghid_gl_use_mask(pcb_mask_op_t use_it)
 {
+#if 0				
 	static int stencil_bit = 0;
 
 	if (use_it == cur_mask)
@@ -342,6 +384,8 @@ void ghid_gl_use_mask(pcb_mask_op_t use_it)
 		break;
 	}
 	cur_mask = use_it;
+#endif
+
 }
 
 
@@ -478,8 +522,16 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	if (!priv->in_context)
 		return;
 
-	hidgl_flush_triangles(&buffer);
-	glColor4d(r, g, b, a);
+
+	/* We need to flush the draw buffer when changing colour so that new primtives
+	 * don't get merged. This actually isn't a problem with the colour but due to 
+	 * way that the final render pass iterates through the primtive buffer in 
+	 * reverse order. If the new primitives are merged with previous ones then they
+	 * will be drawn in the wrong order.
+	 */
+	drawgl_flush();	
+
+	drawgl_set_colour(r,g,b,a);
 }
 
 void ghid_gl_set_color(pcb_hid_gc_t gc, const char *name)
@@ -544,6 +596,7 @@ static int use_gc(pcb_hid_gc_t gc)
 	return 1;
 }
 
+
 void ghid_gl_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	USE_GC(gc);
@@ -562,7 +615,7 @@ void ghid_gl_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 {
 	USE_GC(gc);
 
-	hidgl_draw_rect(x1, y1, x2, y2);
+	drawgl_add_rectangle(x1, y1, x2, y2);
 }
 
 
@@ -771,7 +824,7 @@ void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 {
 	GHidPort * port = vport;
 	render_priv_t *priv;
-
+	
 	port->render_priv = priv = g_new0(render_priv_t, 1);
 
 	gtk_gl_init(argc, argv);
@@ -833,7 +886,7 @@ gboolean ghid_gl_start_drawing(GHidPort * port)
 	GtkWidget *widget = port->drawing_area;
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
-
+	
 	/* make GL-context "current" */
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext))
 		return FALSE;
@@ -880,7 +933,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
 	/* If we don't have any stencil bits available,
 	   we can't use the hidgl polygon drawing routine */
 	/* TODO: We could use the GLU tessellator though */
-	if (hidgl_stencil_bits() == 0)
+	if (stencilgl_bit_count() == 0)
 		gtk2_gl_hid.fill_pcb_polygon = pcb_dhlp_fill_pcb_polygon;
 
 	glEnable(GL_BLEND);
@@ -910,7 +963,7 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	hidgl_reset_stencil_usage();
+	stencilgl_reset_stencil_usage();
 
 	/* Disable the stencil test until we need it - otherwise it gets dirty */
 	glDisable(GL_STENCIL_TEST);
@@ -938,10 +991,10 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
 
 	ghid_gl_draw_bg_image();
 
-	hidgl_init_triangle_array(&buffer);
+/*	hidgl_init_triangle_array(&buffer);*/
 	ghid_gl_invalidate_current_gc();
 	pcb_hid_expose_all(&gtk2_gl_hid, &ctx);
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 
 	ghid_gl_draw_grid(&ctx.view);
 
@@ -949,11 +1002,11 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
 
 	pcb_draw_attached();
 	pcb_draw_mark();
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 
 	ghid_gl_show_crosshair(TRUE);
 
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 
 	draw_lead_user(priv);
 
@@ -971,7 +1024,7 @@ void ghid_gl_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 {
 	GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable(widget);
-
+	
 	if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext))
 		return;
 
@@ -981,7 +1034,7 @@ void ghid_gl_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 
 gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
 {
-	GdkWindow *window = gtk_widget_get_window(widget);
+/*	GdkWindow *window = gtk_widget_get_window(widget);*/
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
@@ -1045,13 +1098,13 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	hidgl_reset_stencil_usage();
+	stencilgl_reset_stencil_usage();
 	glDisable(GL_STENCIL_TEST);
 	glStencilMask(0);
 	glStencilFunc(GL_ALWAYS, 0, 0);
 
 	/* call the drawing routine */
-	hidgl_init_triangle_array(&buffer);
+/*	hidgl_init_triangle_array(&buffer);*/
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
 	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
@@ -1061,7 +1114,7 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 
 	expcall(&gtk2_gl_hid, ctx);
 
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 	glPopMatrix();
 
 	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
@@ -1099,7 +1152,7 @@ pcb_hid_t *ghid_gl_request_debug_draw(void)
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
-	hidgl_init_triangle_array(&buffer);
+/*	hidgl_init_triangle_array(&buffer);*/
 	ghid_gl_invalidate_current_gc();
 
 	/* Setup stenciling */
@@ -1119,7 +1172,7 @@ void ghid_gl_flush_debug_draw(void)
 	GtkWidget *widget = gport->drawing_area;
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 
 	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
 		gdk_gl_drawable_swap_buffers(pGlDrawable);
@@ -1129,7 +1182,7 @@ void ghid_gl_flush_debug_draw(void)
 
 void ghid_gl_finish_debug_draw(void)
 {
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 	glPopMatrix();
 
 	ghid_gl_end_drawing(gport);
@@ -1162,12 +1215,16 @@ static void draw_lead_user(render_priv_t * priv)
 		hidgl_draw_arc(width, lead_user->x, lead_user->y, radius, radius, 0, 360, gport->view.coord_per_px);
 	}
 
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 	glPopAttrib();
 }
 
+
+
+
 void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
+
 	if (common != NULL) {
 	common->init_drawing_widget = ghid_gl_init_drawing_widget;
 	common->drawing_realize = ghid_gl_port_drawing_realize_cb;
@@ -1204,9 +1261,17 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->fill_polygon = ghid_gl_fill_polygon;
 	hid->fill_rect = ghid_gl_fill_rect;
 
+	hid->set_drawing_mode = hidgl_set_drawing_mode;
+	hid->render_burst = ghid_gl_render_burst;
+
 	hid->request_debug_draw = ghid_gl_request_debug_draw;
 	hid->flush_debug_draw = ghid_gl_flush_debug_draw;
 	hid->finish_debug_draw = ghid_gl_finish_debug_draw;
+
+	hid->poly_before = 0;
+	hid->poly_after = 0;
+	hid->enable_fake_composite = 0;
+	hid->holes_after = 1;
 	}
 }
 

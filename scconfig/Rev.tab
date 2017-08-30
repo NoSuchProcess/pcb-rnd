@@ -1,3 +1,4 @@
+11158 configure new source files in hid_gtk2_gl for new HID API
 11156	configure	new source files in core for safe FS access
 11151	configure	new source files in dxf_export
 11051	make clean	new HID API for composite layer drawing

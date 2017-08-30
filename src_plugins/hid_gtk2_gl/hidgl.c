@@ -42,23 +42,7 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
-/* The Linux OpenGL ABI 1.0 spec requires that we define
- * GL_GLEXT_PROTOTYPES before including gl.h or glx.h for extensions
- * in order to get prototypes:
- *   http://www.opengl.org/registry/ABI/
- */
-#define GL_GLEXT_PROTOTYPES 1
-#ifdef HAVE_OPENGL_GL_H
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
-#ifdef HAVE_OPENGL_GLU_H
-#include <OpenGL/glu.h>
-#else
-#include <GL/glu.h>
-#endif
+#include "opengl.h"
 
 #include "action_helper.h"
 #include "crosshair.h"
@@ -69,48 +53,123 @@
 #include "hid.h"
 #include "hidgl.h"
 #include "rtree.h"
+#include "stencil_gl.h"
 
-
-static void hidgl_clean_stencil_bits(int bits);
-
-triangle_buffer buffer;
-float global_depth = 0;
-
-void hidgl_init_triangle_array(triangle_buffer * buffer)
+void hidgl_init(void)
 {
-	buffer->triangle_count = 0;
-	buffer->coord_comp_count = 0;
+	stencilgl_init();
 }
 
-void hidgl_flush_triangles(triangle_buffer * buffer)
+static pcb_composite_op_t composite_op = PCB_HID_COMP_RESET;
+static pcb_bool						direct_mode = pcb_true;
+static int								comp_stencil_bit = 0;
+
+static inline void
+mode_reset(pcb_bool direct,const pcb_box_t * screen)
 {
-	if (buffer->triangle_count == 0)
-		return;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, buffer->triangle_array);
-	glDrawArrays(GL_TRIANGLES, 0, buffer->triangle_count * 3);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	buffer->triangle_count = 0;
-	buffer->coord_comp_count = 0;
+			drawgl_flush();
+			drawgl_reset();
+			glColorMask(0, 0, 0, 0);	/* Disable colour drawing */
+			stencilgl_reset_stencil_usage();
+			comp_stencil_bit = 0;
 }
 
-void hidgl_ensure_triangle_space(triangle_buffer * buffer, int count)
+static inline void
+mode_positive(pcb_bool direct,const pcb_box_t * screen)
 {
-	if (count > TRIANGLE_ARRAY_SIZE) {
-		fprintf(stderr, "Not enough space in vertex buffer\n");
-		fprintf(stderr, "Requested %i triangles, %i available\n", count, TRIANGLE_ARRAY_SIZE);
-		exit(1);
+	if(comp_stencil_bit == 0)
+		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
+	else
+		drawgl_flush();		
+
+	glEnable(GL_STENCIL_TEST);
+	stencilgl_mode_write_set(comp_stencil_bit);
+}
+
+static inline void
+mode_negative(pcb_bool direct,const pcb_box_t * screen)
+{
+	glEnable(GL_STENCIL_TEST);
+
+	if(comp_stencil_bit == 0)	{
+		/* The stencil isn't valid yet which means that this is the first pos/neg mode
+		 * set since the reset. The compositing stencil bit will be allocated. Because 
+		 * this is a negative mode and it's the first mode to be set, the stencil buffer
+		 * will be set to all ones.
+		 */ 
+		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
+		stencilgl_mode_write_set(comp_stencil_bit);
+		drawgl_direct_draw_solid_rectangle(screen->X1,screen->Y1,screen->X2,screen->Y2);
 	}
-	if (count > TRIANGLE_ARRAY_SIZE - buffer->triangle_count)
-		hidgl_flush_triangles(buffer);
+	else
+		drawgl_flush();	
+
+	stencilgl_mode_write_clear(comp_stencil_bit);
+	drawgl_set_marker();
 }
 
-void hidgl_set_depth(float depth)
+static inline void
+mode_flush(pcb_bool direct,const pcb_box_t * screen)
 {
-	global_depth = depth;
+	drawgl_flush();
+	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);	
+
+	if(comp_stencil_bit) {
+		glEnable(GL_STENCIL_TEST);
+
+		/* Setup the stencil to allow writes to the colour buffer if the 
+		 * comp_stencil_bit is set. After the operation, the comp_stencil_bit
+		 * will be cleared so that any further writes to this pixel are disabled.
+		 */
+		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+		glStencilMask(comp_stencil_bit);
+		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
+			
+		/* Draw all primtives through the stencil to the colour buffer. */
+		drawgl_draw_all(comp_stencil_bit);    
+
+	}
+
+	glDisable(GL_STENCIL_TEST);
+	stencilgl_reset_stencil_usage();
+	comp_stencil_bit = 0;
 }
+
+
+void 
+hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t * screen)
+{
+	/* If the previous mode was NEGATIVE then all of the primitives drawn
+	 * in that mode were used only for creating the stencil and will not be 
+	 * drawn directly to the colour buffer. Therefore these primitives can be 
+	 * discarded by rewinding the primitive buffer to the marker that was
+	 * set when entering NEGATIVE mode.
+	 */
+	if(composite_op == PCB_HID_COMP_NEGATIVE)	{
+		drawgl_flush();
+		drawgl_rewind_to_marker();
+	}
+
+	composite_op = op;
+	direct_mode = direct;
+
+	switch(op) {
+		case PCB_HID_COMP_RESET :			mode_reset(direct,screen);			break;
+		case PCB_HID_COMP_POSITIVE : 	mode_positive(direct,screen);		break; 
+  	case PCB_HID_COMP_NEGATIVE :	mode_negative(direct,screen);		break; 
+  	case PCB_HID_COMP_FLUSH :  		mode_flush(direct,screen);			break; 
+		default : break;
+	}
+
+}
+
+
+void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	drawgl_add_triangle(x1, y1, x1, y2, x2, y2);
+	drawgl_add_triangle(x2, y1, x2, y2, x1, y1);
+}
+
 
 void hidgl_draw_grid(pcb_box_t * drawn_area)
 {
@@ -142,21 +201,19 @@ void hidgl_draw_grid(pcb_box_t * drawn_area)
 	n = (int) ((x2 - x1) / PCB->Grid + 0.5) + 1;
 	if (n > npoints) {
 		npoints = n + 10;
-		points = realloc(points, npoints * 3 * sizeof(GLfloat));
+		points = realloc(points, npoints * 2 * sizeof(GLfloat));
 	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, points);
+	glVertexPointer(2, GL_FLOAT, 0, points);
 
 	n = 0;
-	for (x = x1; x <= x2; x += PCB->Grid) {
-		points[3 * n + 0] = x;
-		points[3 * n + 2] = global_depth;
-		n++;
-	}
+	for (x = x1; x <= x2; x += PCB->Grid, ++n) 
+		points[2 * n + 0] = x;
+
 	for (y = y1; y <= y2; y += PCB->Grid) {
 		for (i = 0; i < n; i++)
-			points[3 * i + 1] = y;
+			points[2 * i + 1] = y;
 		glDrawArrays(GL_POINTS, 0, n);
 	}
 
@@ -192,14 +249,14 @@ static void draw_cap(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_angle_
 	if (slices > MAX_TRIANGLES_PER_CAP)
 		slices = MAX_TRIANGLES_PER_CAP;
 
-	hidgl_ensure_triangle_space(&buffer, slices);
+	drawgl_reserve_triangles(slices);
 
 	last_capx = radius * cosf(angle * M_PI / 180.) + x;
 	last_capy = -radius * sinf(angle * M_PI / 180.) + y;
 	for (i = 0; i < slices; i++) {
 		capx = radius * cosf(angle * M_PI / 180. + ((float) (i + 1)) * M_PI / (float) slices) + x;
 		capy = -radius * sinf(angle * M_PI / 180. + ((float) (i + 1)) * M_PI / (float) slices) + y;
-		hidgl_add_triangle(&buffer, last_capx, last_capy, capx, capy, x, y);
+		drawgl_add_triangle(last_capx,last_capy,capx,capy,x,y);
 		last_capx = capx;
 		last_capy = capy;
 	}
@@ -211,64 +268,62 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 	float deltax, deltay, length;
 	float wdx, wdy;
 	int circular_caps = 0;
-	int hairline = 0;
 
 	if (width == 0.0)
-		hairline = 1;
-
-	if (width < scale)
-		width = scale;
-
-	deltax = x2 - x1;
-	deltay = y2 - y1;
-
-	length = sqrt(deltax * deltax + deltay * deltay);
-
-	if (length == 0) {
-		/* Assume the orientation of the line is horizontal */
-		angle = 0;
-		wdx = -width / 2.;
-		wdy = 0;
-		length = 1.;
-		deltax = 1.;
-		deltay = 0.;
-	}
+		drawgl_add_line(x1,y1,x2,y2);
 	else {
-		wdy = deltax * width / 2. / length;
-		wdx = -deltay * width / 2. / length;
+		if (width < scale)
+			width = scale;
 
-		if (deltay == 0.)
-			angle = (deltax < 0) ? 270. : 90.;
-		else
-			angle = 180. / M_PI * atanl(deltax / deltay);
+		deltax = x2 - x1;
+		deltay = y2 - y1;
 
-		if (deltay < 0)
-			angle += 180.;
-	}
+		length = sqrt(deltax * deltax + deltay * deltay);
 
-	switch (cap) {
-	case Trace_Cap:
-	case Round_Cap:
-		circular_caps = 1;
-		break;
+		if (length == 0) {
+			/* Assume the orientation of the line is horizontal */
+			angle = 0;
+			wdx = -width / 2.;
+			wdy = 0;
+			length = 1.;
+			deltax = 1.;
+			deltay = 0.;
+		}
+		else {
+			wdy = deltax * width / 2. / length;
+			wdx = -deltay * width / 2. / length;
 
-	case Square_Cap:
-	case Beveled_Cap:
-		x1 -= deltax * width / 2. / length;
-		y1 -= deltay * width / 2. / length;
-		x2 += deltax * width / 2. / length;
-		y2 += deltay * width / 2. / length;
-		break;
-	}
+			if (deltay == 0.)
+				angle = (deltax < 0) ? 270. : 90.;
+			else
+				angle = 180. / M_PI * atanl(deltax / deltay);
 
-	hidgl_ensure_triangle_space(&buffer, 2);
-	hidgl_add_triangle(&buffer, x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
-	hidgl_add_triangle(&buffer, x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
+			if (deltay < 0)
+				angle += 180.;
+		}
 
-	/* Don't bother capping hairlines */
-	if (circular_caps && !hairline) {
-		draw_cap(width, x1, y1, angle, scale);
-		draw_cap(width, x2, y2, angle + 180., scale);
+		switch (cap) {
+		case Trace_Cap:
+		case Round_Cap:
+			circular_caps = 1;
+			break;
+
+		case Square_Cap:
+		case Beveled_Cap:
+			x1 -= deltax * width / 2. / length;
+			y1 -= deltay * width / 2. / length;
+			x2 += deltax * width / 2. / length;
+			y2 += deltay * width / 2. / length;
+			break;
+		}
+
+		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
+		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
+
+		if (circular_caps) {
+			draw_cap(width, x1, y1, angle, scale);
+			draw_cap(width, x2, y2, angle + 180., scale);
+		}
 	}
 }
 
@@ -289,6 +344,8 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 	int slices;
 	int i;
 	int hairline = 0;
+
+	/* TODO: Draw hairlines as lines instead of triangles ? */
 
 	if (width == 0.0)
 		hairline = 1;
@@ -315,7 +372,7 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 	if (slices > MAX_SLICES_PER_ARC)
 		slices = MAX_SLICES_PER_ARC;
 
-	hidgl_ensure_triangle_space(&buffer, 2 * slices);
+	drawgl_reserve_triangles(2 * slices);
 
 	angle_incr_rad = delta_angle_rad / (float) slices;
 
@@ -332,8 +389,10 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 		inner_y = inner_r * sin_ang + y;
 		outer_x = -outer_r * cos_ang + x;
 		outer_y = outer_r * sin_ang + y;
-		hidgl_add_triangle(&buffer, last_inner_x, last_inner_y, last_outer_x, last_outer_y, outer_x, outer_y);
-		hidgl_add_triangle(&buffer, last_inner_x, last_inner_y, inner_x, inner_y, outer_x, outer_y);
+
+		drawgl_add_triangle( last_inner_x, last_inner_y, last_outer_x, last_outer_y, outer_x, outer_y);
+		drawgl_add_triangle( last_inner_x, last_inner_y, inner_x, inner_y, outer_x, outer_y);
+
 		last_inner_x = inner_x;
 		last_inner_y = inner_y;
 		last_outer_x = outer_x;
@@ -349,25 +408,17 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 					 y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
 }
 
-void hidgl_draw_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-	glBegin(GL_LINE_LOOP);
-	glVertex3f(x1, y1, global_depth);
-	glVertex3f(x1, y2, global_depth);
-	glVertex3f(x2, y2, global_depth);
-	glVertex3f(x2, y1, global_depth);
-	glEnd();
-}
-
-
 void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale)
 {
 #define MIN_TRIANGLES_PER_CIRCLE 6
 #define MAX_TRIANGLES_PER_CIRCLE 360
+			
 	float last_x, last_y;
 	float radius = vr;
 	int slices;
 	int i;
+
+	assert((composite_op == PCB_HID_COMP_POSITIVE) || (composite_op == PCB_HID_COMP_NEGATIVE));
 
 	slices = calc_slices(vr / scale, 2 * M_PI);
 
@@ -377,7 +428,7 @@ void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double sc
 	if (slices > MAX_TRIANGLES_PER_CIRCLE)
 		slices = MAX_TRIANGLES_PER_CIRCLE;
 
-	hidgl_ensure_triangle_space(&buffer, slices);
+	drawgl_reserve_triangles(slices);
 
 	last_x = vx + vr;
 	last_y = vy;
@@ -386,11 +437,12 @@ void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double sc
 		float x, y;
 		x = radius * cosf(((float) (i + 1)) * 2. * M_PI / (float) slices) + vx;
 		y = radius * sinf(((float) (i + 1)) * 2. * M_PI / (float) slices) + vy;
-		hidgl_add_triangle(&buffer, vx, vy, last_x, last_y, x, y);
+		drawgl_add_triangle(vx, vy, last_x, last_y, x, y);
 		last_x = x;
 		last_y = y;
 	}
 }
+
 
 #define MAX_COMBINED_MALLOCS 2500
 static void *combined_to_free[MAX_COMBINED_MALLOCS];
@@ -399,7 +451,6 @@ static int combined_num_to_free = 0;
 static GLenum tessVertexType;
 static int stashed_vertices;
 static int triangle_comp_idx;
-
 
 static void myError(GLenum errno)
 {
@@ -460,11 +511,8 @@ static void myVertex(GLdouble * vertex_data)
 			stashed_vertices++;
 		}
 		else {
-			hidgl_ensure_triangle_space(&buffer, 1);
-			hidgl_add_triangle(&buffer,
-												 triangle_vertices[0], triangle_vertices[1],
-												 triangle_vertices[2], triangle_vertices[3], vertex_data[0], vertex_data[1]);
-
+			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1],
+												 	triangle_vertices[2], triangle_vertices[3], vertex_data[0], vertex_data[1]);
 			if (tessVertexType == GL_TRIANGLE_STRIP) {
 				/* STRIP saves the last two vertices for re-use in the next triangle */
 				triangle_vertices[0] = triangle_vertices[2];
@@ -480,10 +528,8 @@ static void myVertex(GLdouble * vertex_data)
 		triangle_vertices[triangle_comp_idx++] = vertex_data[1];
 		stashed_vertices++;
 		if (stashed_vertices == 3) {
-			hidgl_ensure_triangle_space(&buffer, 1);
-			hidgl_add_triangle(&buffer,
-												 triangle_vertices[0], triangle_vertices[1],
-												 triangle_vertices[2], triangle_vertices[3], triangle_vertices[4], triangle_vertices[5]);
+			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1],
+												 	triangle_vertices[2], triangle_vertices[3], triangle_vertices[4], triangle_vertices[5]);
 			triangle_comp_idx = 0;
 			stashed_vertices = 0;
 		}
@@ -491,6 +537,7 @@ static void myVertex(GLdouble * vertex_data)
 	else
 		printf("Vertex received with unknown type\n");
 }
+
 
 void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -554,6 +601,7 @@ void tesselate_contour(GLUtesselator * tobj, pcb_pline_t * contour, GLdouble * v
 	} while ((vn = vn->next) != &contour->head);
 	gluTessEndContour(tobj);
 	gluTessEndPolygon(tobj);
+	
 }
 
 struct do_hole_info {
@@ -576,16 +624,12 @@ static pcb_r_dir_t do_hole(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static GLint stencil_bits;
-static int dirty_bits = 0;
-static int assigned_bits = 0;
 
 void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale)
 {
 	int vertex_count = 0;
 	pcb_pline_t *contour;
 	struct do_hole_info info;
-	int stencil_bit;
 	pcb_polyarea_t * p_area;
 	const int fullpoly = PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly);
 
@@ -597,15 +641,7 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 		return;
 	}
 
-	/* Allocate a temporary stencil bit that will be used for drawing the polygon. */
-	stencil_bit = hidgl_assign_clear_stencil_bit();
-	if (!stencil_bit) {
-		printf("hidgl_fill_pcb_polygon: No free stencil bits, aborting polygon\n");
-		return;
-	}
-
-	/* Flush out any existing geoemtry to be rendered */
-	hidgl_flush_triangles(&buffer);
+	drawgl_flush();
 
 	/* Walk the polygon structure, counting vertices */
 	/* This gives an upper bound on the amount of storage required */
@@ -626,139 +662,37 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 	gluTessCallback(info.tobj, GLU_TESS_COMBINE, (_GLUfuncptr) myCombine);
 	gluTessCallback(info.tobj, GLU_TESS_ERROR, (_GLUfuncptr) myError);
 
-	/* Setup the stencil buffer */
-	glPushAttrib(GL_STENCIL_BUFFER_BIT);	/* Save the write mask etc.. for final restore */
-	glEnable(GL_STENCIL_TEST);
-
-	/* Drawing operations now set our reference bit (stencil_bit) in the stencil buffer. 
-	 * Walk the polygon structure. Each iteration draws an island. For each island, all 
+	/* Walk the polygon structure. Each iteration draws an island. For each island, all 
 	 * of the island's cutouts are drawn to the stencil buffer as a '1'. Then the island
 	 * is drawn and areas where the stencil is set to a '1' are masked and not drawn.
 	 */
 	p_area = poly->Clipped;
 	do {
-		hidgl_clean_stencil_bits(stencil_bit);	/* Clear the stencil buffer (for our stencil bit) */
 
-		glPushAttrib(GL_STENCIL_BUFFER_BIT |	/* Resave the stencil write-mask etc.., and */
-								 GL_COLOR_BUFFER_BIT);	/* the colour buffer write mask etc.. for part way restore */
-		glStencilMask(stencil_bit);		/* Only write to our stencil bit */
-		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, ref value is our bit */
-		glColorMask(0, 0, 0, 0);			/* Disable writting in color buffer */
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value */
+		/* Create a MASK (stencil). All following drawing will affect the mask only */			
+		drawgl_add_mask_create();
 
-		/* Find and draw the cutouts into the sencil buffer */
+		/* Find and draw the cutouts */
 		pcb_r_search(p_area->contour_tree, clip_box, NULL, do_hole, &info, NULL);
-		hidgl_flush_triangles(&buffer);
+		drawgl_flush();
 
-		glPopAttrib();								/* Restore the colour and stencil buffer write-mask etc.. */
-
-		/* Set the stencil reference value. 
-		 * Because the stencil buffer is being used as a source (to test the stencil_bit) and a destination 
-		 * (to write to assigned_bits), Both sets of stencil bits must appear in the reference parameter. 
-		 * The mask parameter of the glStencilFunc function selects the bits to be tested (stencil_bits) and 
-		 * the glStencilMask function has already selected the bits to be written to (assigned_bits).
-		 * Because the cut-outs have been set to a '1' in the stencil_bit plane, the polygon will only be
-		 * written to the assigned_bits plane when stencil_bit is '0'. Therefore, the reference value has the
-		 * assigned_bits set and the stencil_bit cleared.
+		/* Use the mask while updating the colour buffer. All following drawing will update the 
+		 * colour buffer wherever the mask is not set
 		 */
-
-		glStencilFunc(GL_GEQUAL, assigned_bits & ~stencil_bit, stencil_bit);  
+		drawgl_add_mask_use();
 
 		/* Draw the island to the colour buffer */
 		tesselate_contour(info.tobj, p_area->contours, info.vertices, scale);
-		hidgl_flush_triangles(&buffer);
+
+		/* destroy the current MASK */
+		drawgl_add_mask_destroy();
+		drawgl_flush();
 
 		p_area = p_area->f;
 	} while (fullpoly && (p_area != poly->Clipped));
-
-	/* Unassign our stencil buffer bit */
-	hidgl_return_stencil_bit(stencil_bit);
-
-	glPopAttrib();								/* Restore the stencil buffer write-mask etc.. */
 
 	gluDeleteTess(info.tobj);
 	myFreeCombined();
 	free(info.vertices);
 }
 
-void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-	hidgl_ensure_triangle_space(&buffer, 2);
-	hidgl_add_triangle(&buffer, x1, y1, x1, y2, x2, y2);
-	hidgl_add_triangle(&buffer, x2, y1, x2, y2, x1, y1);
-}
-
-void hidgl_init(void)
-{
-	glGetIntegerv(GL_STENCIL_BITS, &stencil_bits);
-
-	if (stencil_bits == 0) {
-		printf("No stencil bits available.\n" "Cannot mask polygon holes or subcomposite layers\n");
-		/* TODO: Flag this to the HID so it can revert to the dicer? */
-	}
-	else if (stencil_bits == 1) {
-		printf("Only one stencil bitplane avilable\n" "Cannot use stencil buffer to sub-composite layers.\n");
-		/* Do we need to disable that somewhere? */
-	}
-}
-
-int hidgl_stencil_bits(void)
-{
-	return stencil_bits;
-}
-
-static void hidgl_clean_stencil_bits(int bits)
-{
-	glPushAttrib(GL_STENCIL_BUFFER_BIT);
-	glStencilMask(bits);
-	glClearStencil(0);
-	glClear(GL_STENCIL_BUFFER_BIT);
-	glPopAttrib();
-}
-
-static void hidgl_clean_unassigned_stencil(void)
-{
-	hidgl_clean_stencil_bits(~assigned_bits);
-}
-
-int hidgl_assign_clear_stencil_bit(void)
-{
-	int stencil_bitmask = (1 << stencil_bits) - 1;
-	int test;
-	int first_dirty = 0;
-
-	if (assigned_bits == stencil_bitmask) {
-		printf("No more stencil bits available, total of %i already assigned\n", stencil_bits);
-		return 0;
-	}
-
-	/* Look for a bitplane we don't have to clear */
-	for (test = 1; test & stencil_bitmask; test <<= 1) {
-		if (!(test & dirty_bits)) {
-			assigned_bits |= test;
-			dirty_bits |= test;
-			return test;
-		}
-		else if (!first_dirty && !(test & assigned_bits)) {
-			first_dirty = test;
-		}
-	}
-
-	/* Didn't find any non dirty planes. Clear those dirty ones which aren't in use */
-	hidgl_clean_unassigned_stencil();
-	assigned_bits |= first_dirty;
-	dirty_bits = assigned_bits;
-
-	return first_dirty;
-}
-
-void hidgl_return_stencil_bit(int bit)
-{
-	assigned_bits &= ~bit;
-}
-
-void hidgl_reset_stencil_usage(void)
-{
-	assigned_bits = 0;
-	dirty_bits = 0;
-}

@@ -23,42 +23,9 @@
 #ifndef PCB_HID_COMMON_HIDGL_H
 #define PCB_HID_COMMON_HIDGL_H
 
-#define TRIANGLE_ARRAY_SIZE 5461
-typedef struct {
-	GLfloat triangle_array[3 * 3 * TRIANGLE_ARRAY_SIZE];
-	unsigned int triangle_count;
-	unsigned int coord_comp_count;
-} triangle_buffer;
+#include "draw_gl.h"
 
-extern triangle_buffer buffer;
-extern float global_depth;
-
-void hidgl_init_triangle_array(triangle_buffer * buffer);
-void hidgl_flush_triangles(triangle_buffer * buffer);
-void hidgl_ensure_triangle_space(triangle_buffer * buffer, int count);
-
-static inline void
-hidgl_add_triangle_3D(triangle_buffer * buffer,
-											GLfloat x1, GLfloat y1, GLfloat z1,
-											GLfloat x2, GLfloat y2, GLfloat z2, GLfloat x3, GLfloat y3, GLfloat z3)
-{
-	buffer->triangle_array[buffer->coord_comp_count++] = x1;
-	buffer->triangle_array[buffer->coord_comp_count++] = y1;
-	buffer->triangle_array[buffer->coord_comp_count++] = z1;
-	buffer->triangle_array[buffer->coord_comp_count++] = x2;
-	buffer->triangle_array[buffer->coord_comp_count++] = y2;
-	buffer->triangle_array[buffer->coord_comp_count++] = z2;
-	buffer->triangle_array[buffer->coord_comp_count++] = x3;
-	buffer->triangle_array[buffer->coord_comp_count++] = y3;
-	buffer->triangle_array[buffer->coord_comp_count++] = z3;
-	buffer->triangle_count++;
-}
-
-static inline void
-hidgl_add_triangle(triangle_buffer * buffer, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
-{
-	hidgl_add_triangle_3D(buffer, x1, y1, global_depth, x2, y2, global_depth, x3, y3, global_depth);
-}
+/*extern float global_depth;*/
 
 void hidgl_draw_grid(pcb_box_t * drawn_area);
 void hidgl_set_depth(float depth);
@@ -69,11 +36,9 @@ void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double sc
 void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale);
 void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-
 void hidgl_init(void);
-int hidgl_stencil_bits(void);
-int hidgl_assign_clear_stencil_bit(void);
-void hidgl_return_stencil_bit(int bit);
-void hidgl_reset_stencil_usage(void);
+void hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t * screen);
+
 
 #endif /* PCB_HID_COMMON_HIDGL_H  */
+

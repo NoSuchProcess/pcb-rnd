@@ -8,6 +8,7 @@
 #include "plugins.h"
 #include "hid_init.h"
 #include "conf_core.h"
+#include "draw_gl.h"
 
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
@@ -40,6 +41,7 @@ void pplg_uninit_hid_gtk2_gl(void)
 	pcb_event_unbind_allcookie(ghid_gl_cookie);
 	conf_hid_unreg(ghid_gl_cookie);
 	conf_hid_unreg(ghid_gl_menu_cookie);
+	drawgl_uninit();
 }
 
 int pplg_init_hid_gtk2_gl(void)
