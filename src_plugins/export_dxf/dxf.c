@@ -179,13 +179,13 @@ int insert_ftr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 	return -1;
 }
 
-
+extern const char dxf_templ_default_arr[];
 static void dxf_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER + 2];
 	int i;
-	const char *fn = "dxf_templ.lht";
+	const char *fn = NULL;
 	char *errmsg;
 	lht_err_t err;
 
@@ -206,7 +206,13 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
-	dxf_ctx.temp = lht_dom_load(fn, &errmsg);
+	if (fn == NULL) {
+		fn = "<embedded template>";
+		dxf_ctx.temp = lht_dom_load_string(dxf_templ_default_arr, fn, &errmsg);
+	}
+	else
+		dxf_ctx.temp = lht_dom_load(fn, &errmsg);
+
 	if (dxf_ctx.temp == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open dxf template: %s\n", fn);
 		fclose(dxf_ctx.f);
