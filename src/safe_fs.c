@@ -51,14 +51,14 @@ do { \
 
 FILE *pcb_fopen(const char *path, const char *mode)
 {
-	CHECK("fopen", "access", path, NULL, NULL);
+	CHECK("fopen", "access", path, mode, NULL);
 	CHECK("fopen", "fopen", path, mode, NULL);
 	return fopen(path, mode);
 }
 
 FILE *pcb_popen(const char *cmd, const char *mode)
 {
-	CHECK("popen", "access", cmd, NULL, NULL);
+	CHECK("popen", "access", cmd, mode, NULL);
 	CHECK("popen", "exec", cmd, NULL, NULL);
 	CHECK("popen", "popen", cmd, mode, NULL);
 	return popen(cmd, mode);
@@ -66,7 +66,7 @@ FILE *pcb_popen(const char *cmd, const char *mode)
 
 int pcb_system(const char *cmd)
 {
-	CHECK("access", "access", cmd, NULL, -1);
+	CHECK("access", "access", cmd, "r", -1);
 	CHECK("access", "exec", cmd, NULL, -1);
 	CHECK("access", "system", cmd, NULL, -1);
 	return system(cmd);
@@ -74,15 +74,15 @@ int pcb_system(const char *cmd)
 
 int pcb_remove(const char *path)
 {
-	CHECK("remove", "access", path, NULL, -1);
+	CHECK("remove", "access", path, "w", -1);
 	CHECK("remove", "remove", path, NULL, -1);
 	return remove(path);
 }
 
 int pcb_rename(const char *old_path, const char *new_path)
 {
-	CHECK("rename", "access", old_path, NULL, -1);
-	CHECK("rename", "access", new_path, NULL, -1);
+	CHECK("rename", "access", old_path, "w", -1);
+	CHECK("rename", "access", new_path, "w", -1);
 	CHECK("rename", "rename", old_path, new_path, -1);
 	return pcb_rename(old_path, new_path);
 }
