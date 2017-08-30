@@ -504,9 +504,18 @@
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h error.h layer.h \
  plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid.h hid_nogui.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h pcb-printf.h \
+ compat_misc.h ../src_plugins/export_dxf/lht_template.h hid.h hid_nogui.h \
  hid_draw_helpers.h hid_init.h hid_attrib.h hid_color.h hid_helper.h \
  hid_flags.h ../src_plugins/export_dxf/dxf_draw.c dolists.h
+../src_plugins/export_dxf/dxf_templ_lht.o: \
+ ../src_plugins/export_dxf/dxf_templ_lht.c
+../src_plugins/export_dxf/lht_template.o: \
+ ../src_plugins/export_dxf/lht_template.c ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht_inlines.h ../src_3rd/liblihata/tree.h \
+ ../src_plugins/export_dxf/lht_template.h
 ../src_plugins/export_fidocadj/fidocadj.o: \
  ../src_plugins/export_fidocadj/fidocadj.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
