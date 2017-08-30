@@ -131,6 +131,7 @@ put /local/pcb/OBJS [@
 	route.o
 	route_style.o
 	rtree.o
+	safe_fs.o
 	search.o
 	select.o
 	select_act.o
