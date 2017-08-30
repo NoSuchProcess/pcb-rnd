@@ -38,6 +38,7 @@
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "lht_template.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

@@ -28,8 +28,7 @@
 #include <ctype.h>
 #include <liblihata/dom.h>
 #include <liblihata/tree.h>
-
-typedef int (*lht_temp_insert_t)(FILE *f, const char *prefix, char *name, lht_err_t *err);
+#include "lht_template.h"
 
 static void verbatim(FILE *f, const char *prefix, const char *value, int trim_indent)
 {
