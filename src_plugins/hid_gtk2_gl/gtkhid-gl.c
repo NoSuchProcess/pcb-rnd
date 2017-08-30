@@ -27,11 +27,6 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-/*=============================================================================
- *
- * Data & Types
- *
- *===========================================================================*/
 extern pcb_hid_t gtk2_gl_hid;
 
 static pcb_hid_gc_t current_gc = NULL;
@@ -71,12 +66,6 @@ void ghid_gl_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 
 }
 
-/*=============================================================================
- *
- * Colour Functions
- *
- *===========================================================================*/
-
 static const gchar *get_color_name(pcb_gtk_color_t * color)
 {
 	static char tmp[16];
@@ -109,11 +98,6 @@ static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * col
 }
 
 
-/*=============================================================================
- *
- * Sub-Composite
- *
- *===========================================================================*/
 #if 0
 static void start_subcomposite(void)
 {
@@ -149,12 +133,6 @@ static void end_subcomposite(void)
 	priv->subcomposite_stencil_bit = 0;
 }
 #endif
-
-/*=============================================================================
- *
- * Layer Groups
- *
- *===========================================================================*/
 
 int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
@@ -229,11 +207,6 @@ static void ghid_gl_end_layer(void)
 	drawgl_reset();
 }
 
-/*=============================================================================
- *
- * GC
- *
- *===========================================================================*/
 void ghid_gl_destroy_gc(pcb_hid_gc_t gc)
 {
 	g_free(gc);
@@ -250,12 +223,6 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 	return rv;
 }
 
-
-/*=============================================================================
- *
- * Drawing
- *
- *===========================================================================*/
 
 void ghid_gl_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 {

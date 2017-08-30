@@ -49,5 +49,5 @@ void		drawgl_direct_draw_solid_rectangle(GLfloat x1,GLfloat y1,GLfloat x2,GLfloa
 void		drawgl_set_marker();
 void		drawgl_rewind_to_marker();
 
-#endif // ! defined HID_GTK2_GL_DRAW_GL_H
+#endif /* ! defined HID_GTK2_GL_DRAW_GL_H */
 
