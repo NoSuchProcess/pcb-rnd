@@ -2,6 +2,7 @@ put /local/pcb/mod {export_dxf}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/export_dxf/dxf.o
 	$(PLUGDIR)/export_dxf/lht_template.o
+	$(PLUGDIR)/export_dxf/dxf_templ_lht.o
 @]
 
 switch /local/pcb/export_dxf/controls
@@ -9,3 +10,12 @@ switch /local/pcb/export_dxf/controls
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;
 end
+
+# always generate the template lht rule so make dep can be run
+append /local/pcb/CLEANFILES { $(PLUGDIR)/export_dxf/dxf_templ_lht.c }
+append /local/pcb/DEPDEPS { $(PLUGDIR)/export_dxf/dxf_templ_lht.c }
+append /local/pcb/RULES [@
+### export_dxf: dxf template embed
+$(PLUGDIR)/export_dxf/dxf_templ_lht.c: $(PLUGDIR)/export_dxf/dxf_templ.lht $(CQUOTE)
+	$(CQUOTE) -n dxf_templ_default <$(PLUGDIR)/export_dxf/dxf_templ.lht >$(PLUGDIR)/export_dxf/dxf_templ_lht.c
+@]
