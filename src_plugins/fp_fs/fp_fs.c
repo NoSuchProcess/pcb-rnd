@@ -344,6 +344,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	return NULL;
 }
 
+#warning subc TODO: should be handled in io_*
 /* Decide about the type of a footprint file:
    - it is a file element if the first non-comment is "Element(" or "Element["
    - else it is a parametric element (footprint generator) if it contains
@@ -391,6 +392,16 @@ static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 				comment_len = 0;
 				state = ST_COMMENT;
 				break;
+			}
+			else if ((first_element) && (c == 'l')) {
+				char s[23];
+				/* li:pcb-rnd-subcircuit */
+				fgets(s, 21, f);
+				s[20] = '\0';
+				if (strcmp(s, "i:pcb-rnd-subcircuit") == 0) {
+					ret = PCB_FP_FILE;
+					goto out;
+				}
 			}
 			else if ((first_element) && (c == 'E')) {
 				char s[8];
