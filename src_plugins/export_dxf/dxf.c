@@ -71,6 +71,8 @@ typedef struct {
 	unsigned enable_force_thin:1;
 	unsigned poly_fill:1;
 	unsigned poly_contour:1;
+	unsigned drill_fill:1;
+	unsigned drill_contour:1;
 } dxf_ctx_t;
 
 static dxf_ctx_t dxf_ctx;
@@ -132,7 +134,7 @@ Draw outline and drills with thin lines.
 
 /* %start-doc options "93 DXF Options"
 @ftable @code
-@item --polyfill
+@item --poly-fill
 Fill polygons using hatch
 @end ftable
 %end-doc
@@ -143,7 +145,7 @@ Fill polygons using hatch
 
 /* %start-doc options "93 DXF Options"
 @ftable @code
-@item --polyfill
+@item --poly-fill
 Draw polygons contour with thin line
 @end ftable
 %end-doc
@@ -151,6 +153,28 @@ Draw polygons contour with thin line
 	{"poly-contour", "Draw polygons contour with thin line",
 	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
 #define HA_poly_contour 4
+
+/* %start-doc options "93 DXF Options"
+@ftable @code
+@item --drill-fill
+Fill drill circles using hatch
+@end ftable
+%end-doc
+*/
+	{"drill-fill", "Fill drill circles using hatch",
+	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+#define HA_drill_fill 5
+
+/* %start-doc options "93 DXF Options"
+@ftable @code
+@item --polyfill
+Draw drill contour with thin line
+@end ftable
+%end-doc
+*/
+	{"drill-contour", "Draw drill contour with thin line",
+	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+#define HA_drill_contour 6
 
 };
 
@@ -193,6 +217,8 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 	dxf_ctx.enable_force_thin = options[HA_thin].int_value;
 	dxf_ctx.poly_fill = options[HA_poly_fill].int_value;
 	dxf_ctx.poly_contour = options[HA_poly_contour].int_value;
+	dxf_ctx.drill_fill = options[HA_drill_fill].int_value;
+	dxf_ctx.drill_contour = options[HA_drill_contour].int_value;
 
 	pcb_hid_expose_all(&dxf_hid, &hectx);
 

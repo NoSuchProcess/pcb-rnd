@@ -86,19 +86,23 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	dxf_draw_line_props(ctx, &thin);
 
 	/* contour, just in case the hatch fails */
-	fprintf(ctx->f, "100\nAcDbCircle\n");
-	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
-	pcb_fprintf(ctx->f, "40\n%mm\n", r);
+	if (ctx->drill_contour) {
+		fprintf(ctx->f, "100\nAcDbCircle\n");
+		pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
+		pcb_fprintf(ctx->f, "40\n%mm\n", r);
+	}
 
 	/* hatch for fill circle */
-	dxf_hatch_pre(ctx, &thin, 1);
-	pcb_fprintf(ctx->f, "72\n2\n"); /* circular contour */
-	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
-	pcb_fprintf(ctx->f, "40\n%mm\n", r);
-	pcb_fprintf(ctx->f, "50\n0\n");
-	pcb_fprintf(ctx->f, "51\n360\n");
-	pcb_fprintf(ctx->f, "73\n1\n"); /* is closed */
-	dxf_hatch_post(ctx);
+	if (ctx->drill_fill) {
+		dxf_hatch_pre(ctx, &thin, 1);
+		pcb_fprintf(ctx->f, "72\n2\n"); /* circular contour */
+		pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
+		pcb_fprintf(ctx->f, "40\n%mm\n", r);
+		pcb_fprintf(ctx->f, "50\n0\n");
+		pcb_fprintf(ctx->f, "51\n360\n");
+		pcb_fprintf(ctx->f, "73\n1\n"); /* is closed */
+		dxf_hatch_post(ctx);
+	}
 }
 
 static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
