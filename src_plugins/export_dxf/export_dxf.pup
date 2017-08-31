@@ -1,6 +1,6 @@
 $class export
 $short DXF pcb_exporter
 $long Export dxf
-$state WIP
-default disable-all
+$state works
+default buildin
 autoload 1
