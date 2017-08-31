@@ -136,13 +136,15 @@ static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 	fprintf(ctx->f, "92\n0\n"); /* boundary path type: default */
 	fprintf(ctx->f, "93\n%d\n", n_coords);
 
-	for(n = 0; n < n_coords; n++) {
-		to = n+1;
-		if (to == n_coords)
-			to = 0;
-		fprintf(ctx->f, "72\n1\n"); /* edge=line */
-		pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]), TRY(y[n]));
-		pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]), TRY(y[to]));
+	if (ctx->poly_fill) {
+		for(n = 0; n < n_coords; n++) {
+			to = n+1;
+			if (to == n_coords)
+				to = 0;
+			fprintf(ctx->f, "72\n1\n"); /* edge=line */
+			pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]), TRY(y[n]));
+			pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]), TRY(y[to]));
+		}
 	}
 
 	fprintf(ctx->f, "97\n0\n"); /* number of source boundaries */
@@ -150,6 +152,14 @@ static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 	fprintf(ctx->f, "76\n1\n"); /* pattern type: predefined */
 	fprintf(ctx->f, "98\n0\n"); /* number of seed points */
 
+	if (ctx->poly_contour) {
+		for(n = 0; n < n_coords; n++) {
+			to = n+1;
+			if (to == n_coords)
+				to = 0;
+			dxf_draw_line(&thin, x[n], y[n], x[to], y[to]);
+		}
+	}
 }
 
 static void dxf_gen_layer(dxf_ctx_t *ctx, const char *name)
