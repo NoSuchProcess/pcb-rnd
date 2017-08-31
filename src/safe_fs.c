@@ -31,8 +31,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "error.h"
 #include "safe_fs.h"
+
+#include "compat_misc.h"
+#include "error.h"
+#include "globalconst.h"
 #include "paths.h"
 
 /* Evaluates op(arg1,arg2); returns 0 if the operation is permitted */
@@ -98,6 +101,7 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 {
 	FILE *res;
 	char *real_fn = pcb_build_fn(fn);
+	conf_listitem_t *ci;
 
 	if (full_path != NULL)
 		*full_path = NULL;
@@ -114,7 +118,24 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 		return res;
 	}
 
-#warning TODO: path search
+	/* have to search paths */
+	{
+		char tmp[PCB_PATH_MAX];
+
+		for (ci = conflist_first((conflist_t *)paths); ci != NULL; ci = conflist_next(ci)) {
+			const char *p = ci->val.string[0];
+			if (ci->type != CFN_STRING)
+				continue;
+			pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", p, PCB_DIR_SEPARATOR_C, real_fn);
+			res = pcb_fopen(tmp, mode);
+			if (res != NULL) {
+				if (full_path != NULL)
+					*full_path = pcb_strdup(tmp);
+				free(real_fn);
+				return res;
+			}
+		}
+	}
 
 	return NULL;
 }
