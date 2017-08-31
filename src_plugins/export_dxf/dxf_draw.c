@@ -43,6 +43,30 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx, pcb_hid_gc_t gc)
 		fprintf(ctx->f, "370\n%d\n", (int)pcb_round(PCB_COORD_TO_MM(gc->width)*100.0));
 }
 
+static void dxf_hatch_pre(dxf_ctx_t *ctx, pcb_hid_gc_t gc, int n_coords)
+{
+	fprintf(ctx->f, "0\nHATCH\n");
+	dxf_draw_handle(ctx);
+	dxf_draw_line_props(ctx, gc);
+	fprintf(ctx->f, "100\nAcDbHatch\n");
+	fprintf(ctx->f, "10\n0\n20\n0\n30\n0\n"); /* elevation */
+	fprintf(ctx->f, "210\n0\n220\n0\n230\n1\n"); /* extrusion */
+	fprintf(ctx->f, "2\nSOLID\n");
+	fprintf(ctx->f, "70\n1\n"); /* solid fill */
+	fprintf(ctx->f, "71\n0\n"); /* associativity: non */
+	fprintf(ctx->f, "91\n1\n"); /* number of loops (contours) */
+	fprintf(ctx->f, "92\n0\n"); /* boundary path type: default */
+	fprintf(ctx->f, "93\n%d\n", n_coords);
+}
+
+static void dxf_hatch_post(dxf_ctx_t *ctx)
+{
+	fprintf(ctx->f, "97\n0\n"); /* number of source boundaries */
+	fprintf(ctx->f, "75\n0\n"); /* hatch style: normal, odd parity */
+	fprintf(ctx->f, "76\n1\n"); /* pattern type: predefined */
+	fprintf(ctx->f, "98\n0\n"); /* number of seed points */
+}
+
 static void dxf_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	dxf_ctx_t *ctx = &dxf_ctx;
@@ -60,9 +84,21 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	fprintf(ctx->f, "0\nCIRCLE\n");
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx, &thin);
+
+	/* contour, just in case the hatch fails */
 	fprintf(ctx->f, "100\nAcDbCircle\n");
 	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
 	pcb_fprintf(ctx->f, "40\n%mm\n", r);
+
+	/* hatch for fill circle */
+	dxf_hatch_pre(ctx, &thin, 1);
+	pcb_fprintf(ctx->f, "72\n2\n"); /* circular contour */
+	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
+	pcb_fprintf(ctx->f, "40\n%mm\n", r);
+	pcb_fprintf(ctx->f, "50\n0\n");
+	pcb_fprintf(ctx->f, "51\n360\n");
+	pcb_fprintf(ctx->f, "73\n1\n"); /* is closed */
+	dxf_hatch_post(ctx);
 }
 
 static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
@@ -123,20 +159,8 @@ static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 	}
 #endif
 
-	fprintf(ctx->f, "0\nHATCH\n");
-	dxf_draw_handle(ctx);
-	dxf_draw_line_props(ctx, gc);
-	fprintf(ctx->f, "100\nAcDbHatch\n");
-	fprintf(ctx->f, "10\n0\n20\n0\n30\n0\n"); /* elevation */
-	fprintf(ctx->f, "210\n0\n220\n0\n230\n1\n"); /* extrusion */
-	fprintf(ctx->f, "2\nSOLID\n");
-	fprintf(ctx->f, "70\n1\n"); /* solid fill */
-	fprintf(ctx->f, "71\n0\n"); /* associativity: non */
-	fprintf(ctx->f, "91\n1\n"); /* number of loops (contours) */
-	fprintf(ctx->f, "92\n0\n"); /* boundary path type: default */
-	fprintf(ctx->f, "93\n%d\n", n_coords);
-
 	if (ctx->poly_fill) {
+		dxf_hatch_pre(ctx, &thin, n_coords);
 		for(n = 0; n < n_coords; n++) {
 			to = n+1;
 			if (to == n_coords)
@@ -145,12 +169,8 @@ static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 			pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]), TRY(y[n]));
 			pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]), TRY(y[to]));
 		}
+		dxf_hatch_post(ctx);
 	}
-
-	fprintf(ctx->f, "97\n0\n"); /* number of source boundaries */
-	fprintf(ctx->f, "75\n0\n"); /* hatch style: normal, odd parity */
-	fprintf(ctx->f, "76\n1\n"); /* pattern type: predefined */
-	fprintf(ctx->f, "98\n0\n"); /* number of seed points */
 
 	if (ctx->poly_contour) {
 		for(n = 0; n < n_coords; n++) {
