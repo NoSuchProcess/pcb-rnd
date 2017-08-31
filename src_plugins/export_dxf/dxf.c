@@ -69,6 +69,8 @@ typedef struct {
 	const char *layer_name;
 	unsigned force_thin:1;
 	unsigned enable_force_thin:1;
+	unsigned poly_fill:1;
+	unsigned poly_contour:1;
 } dxf_ctx_t;
 
 static dxf_ctx_t dxf_ctx;
@@ -81,6 +83,13 @@ typedef struct hid_gc_s {
 	int drill;
 	unsigned warned_elliptical:1;
 } hid_gc_s;
+
+static struct hid_gc_s thin = {
+	NULL,
+	0, 1,
+	NULL, 0, 0
+};
+
 
 #include "dxf_draw.c"
 
@@ -121,6 +130,28 @@ Draw outline and drills with thin lines.
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_thin 2
 
+/* %start-doc options "93 DXF Options"
+@ftable @code
+@item --polyfill
+Fill polygons using hatch
+@end ftable
+%end-doc
+*/
+	{"poly-fill", "Fill polygons using hatch",
+	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+#define HA_poly_fill 3
+
+/* %start-doc options "93 DXF Options"
+@ftable @code
+@item --polyfill
+Draw polygons contour with thin line
+@end ftable
+%end-doc
+*/
+	{"poly-contour", "Draw polygons contour with thin line",
+	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+#define HA_poly_contour 4
+
 };
 
 #define NUM_OPTIONS (sizeof(dxf_attribute_list)/sizeof(dxf_attribute_list[0]))
@@ -160,6 +191,8 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 	dxf_ctx.enable_force_thin = options[HA_thin].int_value;
+	dxf_ctx.poly_fill = options[HA_poly_fill].int_value;
+	dxf_ctx.poly_contour = options[HA_poly_contour].int_value;
 
 	pcb_hid_expose_all(&dxf_hid, &hectx);
 
