@@ -91,12 +91,6 @@ int pcb_rename(const char *old_path, const char *new_path)
 	return pcb_rename(old_path, new_path);
 }
 
-#warning TODO: temporary, should be in compat_*.c
-static int pcb_path_is_abs(const char *fn)
-{
-	return (*fn == '/');
-}
-
 FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path)
 {
 	FILE *res;
@@ -109,7 +103,7 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 	if (real_fn == NULL)
 		return NULL;
 
-	if (pcb_path_is_abs(fn)) {
+	if (pcb_is_path_abs(fn)) {
 		res = pcb_fopen(real_fn, mode);
 		if ((res != NULL) && (full_path != NULL))
 			*full_path = real_fn;

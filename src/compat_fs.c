@@ -308,3 +308,8 @@ int pcb_is_dir(const char *path)
 		return 0;
 	return S_ISDIR(st.st_mode);
 }
+
+int pcb_is_path_abs(const char *fn)
+{
+	return (*fn == '/');
+}
