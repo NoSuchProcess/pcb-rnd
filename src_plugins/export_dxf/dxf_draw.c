@@ -59,7 +59,7 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	dxf_ctx_t *ctx = &dxf_ctx;
 	fprintf(ctx->f, "0\nCIRCLE\n");
 	dxf_draw_handle(ctx);
-	dxf_draw_line_props(ctx, gc);
+	dxf_draw_line_props(ctx, &thin);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
 	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
 	pcb_fprintf(ctx->f, "40\n%mm\n", r);
