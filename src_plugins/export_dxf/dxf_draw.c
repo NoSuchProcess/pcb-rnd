@@ -92,8 +92,8 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 		pcb_fprintf(ctx->f, "40\n%mm\n", r);
 	}
 
-	/* hatch for fill circle */
-	if (ctx->drill_fill) {
+	/* hatch for fill circle: use it for copper or if explicitly requested */
+	if (ctx->drill_fill || !gc->drawing_hole) {
 		dxf_hatch_pre(ctx, &thin, 1);
 		pcb_fprintf(ctx->f, "72\n2\n"); /* circular contour */
 		pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));

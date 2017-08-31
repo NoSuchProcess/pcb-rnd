@@ -84,6 +84,7 @@ typedef struct hid_gc_s {
 	char *color;
 	int drill;
 	unsigned warned_elliptical:1;
+	unsigned drawing_hole:1;
 } hid_gc_s;
 
 static struct hid_gc_s thin = {
@@ -157,12 +158,12 @@ Draw polygons contour with thin line
 /* %start-doc options "93 DXF Options"
 @ftable @code
 @item --drill-fill
-Fill drill circles using hatch
+Fill drill (hole) circles using hatch
 @end ftable
 %end-doc
 */
-	{"drill-fill", "Fill drill circles using hatch",
-	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+	{"drill-fill", "Fill drill (hole) circles using hatch",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_drill_fill 5
 
 /* %start-doc options "93 DXF Options"
@@ -401,6 +402,8 @@ static void dxf_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 
 static void dxf_set_color(pcb_hid_gc_t gc, const char *name)
 {
+	if (strcmp(name, "drill") == 0)
+		gc->drawing_hole = 1;
 }
 
 static void dxf_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
