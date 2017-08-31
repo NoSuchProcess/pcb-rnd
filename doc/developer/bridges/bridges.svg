@@ -109,7 +109,7 @@
 	</g>
 	<line  marker-end="url(#ahe)"  x1="312" y1="50.4" x2="312" y2="165.6" stroke="#000000"/>
 	<g transform="rotate(-90 312 108)">
-	<text fill="#000000" text-anchor="middle" x="312" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan><tspan x="312" dy="1em">legace</tspan></text>
+	<text fill="#000000" text-anchor="middle" x="312" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan><tspan x="312" dy="1em">legacy</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="665.6" y1="50.4" x2="665.6" y2="165.6" stroke="#000000"/>
 	<g transform="rotate(-90 665.6 108)">

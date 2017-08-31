@@ -239,7 +239,7 @@
 	label board\ns-expr
 
 -> kica.s pcbrnd
-	label board\nlegace
+	label board\nlegacy
 
 <-> kica.s+0.4 pcbrnd
 	label footprint\ns-expr
