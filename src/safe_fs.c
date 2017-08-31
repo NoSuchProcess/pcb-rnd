@@ -33,6 +33,7 @@
 
 #include "error.h"
 #include "safe_fs.h"
+#include "paths.h"
 
 /* Evaluates op(arg1,arg2); returns 0 if the operation is permitted */
 static int pcb_safe_fs_check(const char *op, const char *arg1, const char *arg2)
@@ -85,5 +86,36 @@ int pcb_rename(const char *old_path, const char *new_path)
 	CHECK("rename", "access", new_path, "w", -1);
 	CHECK("rename", "rename", old_path, new_path, -1);
 	return pcb_rename(old_path, new_path);
+}
+
+#warning TODO: temporary, should be in compat_*.c
+static int pcb_path_is_abs(const char *fn)
+{
+	return (*fn == '/');
+}
+
+FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path)
+{
+	FILE *res;
+	char *real_fn = pcb_build_fn(fn);
+
+	if (full_path != NULL)
+		*full_path = NULL;
+
+	if (real_fn == NULL)
+		return NULL;
+
+	if (pcb_path_is_abs(fn)) {
+		res = pcb_fopen(real_fn, mode);
+		if ((res != NULL) && (full_path != NULL))
+			*full_path = real_fn;
+		else
+			free(real_fn);
+		return res;
+	}
+
+#warning TODO: path search
+
+	return NULL;
 }
 

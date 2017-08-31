@@ -26,10 +26,22 @@
 #ifndef PCB_SAFE_FS_H
 #define PCB_SAFE_FS_H
 
+#include <stdio.h>
+
+
 FILE *pcb_fopen(const char *path, const char *mode);
 FILE *pcb_popen(const char *cmd, const char *mode);
 int pcb_system(const char *cmd);
 int pcb_remove(const char *path);
 int pcb_rename(const char *old_path, const char *new_path);
+
+#include "conf.h"
+
+/* Open a file with standard path search and substitutions performed on
+   the file name. If fn is not an absolute path, search paths for the
+   first directory from which fn is accessible. If the call doesn't fail
+   and full_path is not NULL, it is set to point to the final full path
+   (or NULL on failure); the caller needs to call free() on it. */
+FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path);
 
 #endif
