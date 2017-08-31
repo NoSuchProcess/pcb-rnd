@@ -311,5 +311,17 @@ int pcb_is_dir(const char *path)
 
 int pcb_is_path_abs(const char *fn)
 {
+#ifdef __WIN32__
+	/* full path with drive, e.g. c:\foo */
+	if (isalpha(fn[0]) && (fn[1] == ':') && ((fn[2] == '\\') || (fn[2] == '/')))
+		return 1;
+
+	/* full path without drive and remote paths, e.g. \\workgroup\foo */
+	if ((fn[0] == '\\') || (fn[0] == '/')))
+		return 1;
+
+	return 0;
+#else
 	return (*fn == '/');
+#endif
 }
