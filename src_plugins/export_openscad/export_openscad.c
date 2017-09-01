@@ -90,7 +90,7 @@ static pcb_hid_attr_val_t openscad_values[NUM_OPTIONS];
 static pcb_hid_attribute_t *openscad_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
-	const char *suffix = ".openscad";
+	const char *suffix = ".scad";
 
 	if (PCB)
 		pcb_derive_default_filename(PCB->Filename, &openscad_attribute_list[HA_openscadfile], suffix, &last_made_filename);
