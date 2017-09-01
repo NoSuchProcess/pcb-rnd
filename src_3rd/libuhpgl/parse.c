@@ -103,8 +103,8 @@ int uhpgl_parse_open(uhpgl_ctx_t *ctx)
 	}
 	ctx->parser = calloc(sizeof(parse_t), 1);
 	ctx->state.offs = 0;
-	ctx->state.line = 0;
-	ctx->state.col = 0;
+	ctx->state.line = 1;
+	ctx->state.col = 1;
 	return 0;
 }
 
@@ -137,8 +137,17 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 }
 
 /*** the actual parser: low level (tokens) ***/
+#define token_start() \
+do { \
+	p->len = 0; \
+	p->token_offs = ctx->state.offs; \
+	p->token_line = ctx->state.line; \
+	p->token_col = ctx->state.col-1; \
+} while(0)
+
 int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 {
+	int res;
 	decl_parser_ctx;
 
 	ctx->state.col++;
@@ -161,7 +170,7 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 			if (c == ';') /* be liberal: accept multiple terminators or empty instructions */
 				return 0;
 			p->state = ST_INST;
-			p->len = 0;
+			token_start();
 			/* fall through to read the first char */
 		case ST_INST:
 			if (!isalpha(c))
@@ -182,10 +191,11 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 			if ((c == ',') || (c == ';')) {
 				int last = (c == ';');
 				p->token[p->len] = '\0';
-				p->len = 0;
+				res = parse_coord(ctx, strtol(p->token, NULL, 10), last);
+				token_start();
 				if (last)
 					p->state = ST_IDLE;
-				return parse_coord(ctx, strtol(p->token, NULL, 10), last);
+				return res;
 			}
 			if (!isdigit(c))
 				return error(ctx, "Expected digit or separator in coordinate");
