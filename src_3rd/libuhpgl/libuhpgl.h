@@ -66,7 +66,7 @@ typedef struct uhpgl_arc_s {
 	uhpgl_point_t center;
 	uhpgl_coord_t r;
 	uhpgl_point_t startp, endp;
-	uhpgl_angle_t starta, enda;
+	uhpgl_angle_t starta, enda, deltaa;
 } uhpgl_arc_t;
 
 typedef struct uhpgl_wedge_s {
@@ -107,12 +107,12 @@ struct uhpgl_ctx_s {
 		unsigned approx_curve_in_poly:1; /* if 1, use line approx in polygons even if arc() is non-NULL */
 
 		/* callbacks for objects found; if returns non-zero, parsing is abandoned */
-		int (*line)(uhpgl_ctx_t *ctx, uhpgl_line_t line);    /* must NOT be NULL */
-		int (*arc)(uhpgl_ctx_t *ctx, uhpgl_arc_t arc);       /* if NULL, use line() approx */
-		int (*circ)(uhpgl_ctx_t *ctx, uhpgl_arc_t circ);     /* if NULL, use arc() */
-		int (*poly)(uhpgl_ctx_t *ctx, uhpgl_poly_t poly);    /* if NULL, use draw the outline only (even for filled polygons) */
-		int (*wedge)(uhpgl_ctx_t *ctx, uhpgl_wedge_t wedge); /* if NULL, use polygon() */
-		int (*rect)(uhpgl_ctx_t *ctx, uhpgl_rect_t rect);    /* if NULL, use polygon() */
+		int (*line)(uhpgl_ctx_t *ctx, uhpgl_line_t *line);    /* must NOT be NULL */
+		int (*arc)(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc);       /* if NULL, use line() approx */
+		int (*circ)(uhpgl_ctx_t *ctx, uhpgl_arc_t *circ);     /* if NULL, use arc() */
+		int (*poly)(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly);    /* if NULL, use draw the outline only (even for filled polygons) */
+		int (*wedge)(uhpgl_ctx_t *ctx, uhpgl_wedge_t *wedge); /* if NULL, use polygon() */
+		int (*rect)(uhpgl_ctx_t *ctx, uhpgl_rect_t *rect);    /* if NULL, use polygon() */
 	} conf;
 
 	/* current state: read-only for the caller, written by the lib */
