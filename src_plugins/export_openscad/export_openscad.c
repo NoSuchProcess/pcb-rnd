@@ -30,6 +30,7 @@
 #include <assert.h>
 #include <math.h>
 #include <genvector/gds_char.h>
+#include <genht/htsp.h>
 
 #include "compat_misc.h"
 #include "board.h"
@@ -39,6 +40,7 @@
 #include "math_helper.h"
 #include "misc_util.h"
 #include "plugins.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -68,7 +70,7 @@ typedef struct hid_gc_s {
 static FILE *f = NULL;
 unsigned layer_open;
 double layer_thickness = 0.01;
-gds_t layer_calls;
+gds_t layer_calls, model_calls;
 
 pcb_hid_attribute_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -88,6 +90,7 @@ Name of the file to be exported to. Can contain a path.
 #define NUM_OPTIONS (sizeof(openscad_attribute_list)/sizeof(openscad_attribute_list[0]))
 
 #include "scad_draw.c"
+#include "scad_models.c"
 
 PCB_REGISTER_ATTRIBUTES(openscad_attribute_list, openscad_cookie)
 
@@ -155,7 +158,7 @@ static void scad_new_layer(const char *layer_name, int level, const char *color)
 	fprintf(f, "		translate([0,0,%f]) {\n", h);
 	layer_open = 1;
 
-	pcb_append_printf(&layer_calls, "		layer_%s();\n", layer_name);
+	pcb_append_printf(&layer_calls, "	layer_%s();\n", layer_name);
 }
 
 static void openscad_do_export(pcb_hid_attr_val_t * options)
@@ -189,6 +192,9 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 		return -1;
 
 	gds_init(&layer_calls);
+	gds_init(&model_calls);
+
+	scad_insert_models();
 
 	openscad_hid_export_to_file(f, options);
 	scad_close_layer();
@@ -199,6 +205,7 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_restore_layer_ons(save_ons);
 
 	gds_uninit(&layer_calls);
+	gds_uninit(&model_calls);
 
 	fclose(f);
 	f = NULL;
