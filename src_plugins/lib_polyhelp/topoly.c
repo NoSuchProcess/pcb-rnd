@@ -29,6 +29,9 @@
 
 #include "error.h"
 #include "rtree.h"
+#include "obj_arc.h"
+#include "obj_line.h"
+#include "obj_poly.h"
 #include "search.h"
 #include "hid.h"
 
@@ -192,6 +195,7 @@ pcb_polygon_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_to
 	int *end = (int *)(&ends->array[0]);
 	pcb_layer_t *layer = (*obj)->parent.layer;
 	pcb_polygon_t *poly = pcb_poly_alloc(layer);
+	pcb_coord_t x, y;
 
 	obj++;
 	for(n = 1; n < vtp0_len(objs); obj++,end++,n++) {
@@ -202,13 +206,18 @@ pcb_polygon_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_to
 		   end[1] is the starting endpoint of the next *obj */
 		switch((*obj)->type) {
 			case PCB_OBJ_LINE:
-				printf("add point: %d\n", *end);
 				switch(end[0]) {
 					case 0: pcb_poly_point_new(poly, l->Point1.X, l->Point1.Y); break;
 					case 1: pcb_poly_point_new(poly, l->Point2.X, l->Point2.Y); break;
 					default: abort();
 				}
+				break;
 			case PCB_OBJ_ARC:
+#warning TODO: fix this with a real approx
+				pcb_arc_get_end(a, end[0], &x, &y);
+				pcb_poly_point_new(poly, x, y);
+				pcb_arc_middle(a, &x, &y);
+				pcb_poly_point_new(poly, x, y);
 				break;
 			default:
 				pcb_poly_free(poly);
