@@ -1,6 +1,6 @@
 put /local/pcb/mod {export_openscad}
 put /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/export_openscad/scad.o
+	$(PLUGDIR)/export_openscad/export_openscad.o
 @]
 
 switch /local/pcb/export_openscad/controls
