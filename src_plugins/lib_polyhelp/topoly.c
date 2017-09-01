@@ -71,7 +71,7 @@ static pcb_r_dir_t next_conn_found_arc(const pcb_box_t *box, void *cl)
 		pcb_arc_get_end((pcb_arc_t *)obj, n, &ex, &ey);
 		if (NEAR(ctx->tx, ex, ctx->ty, ey)) {
 			ctx->result = obj;
-			return PCB_R_DIR_CANCEL;
+			return PCB_R_DIR_FOUND_CONTINUE;
 		}
 	}
 
@@ -92,12 +92,12 @@ static pcb_r_dir_t next_conn_found_line(const pcb_box_t *box, void *cl)
 
 	if (NEAR(ctx->tx, l->Point1.X, ctx->ty, l->Point1.Y)) {
 		ctx->result = obj;
-		return PCB_R_DIR_CANCEL;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 
 	if (NEAR(ctx->tx, l->Point2.X, ctx->ty, l->Point2.Y)) {
 		ctx->result = obj;
-		return PCB_R_DIR_CANCEL;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 
 	return PCB_R_DIR_NOT_FOUND;
@@ -132,6 +132,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, pcb_any_obj_t *curr)
 
 	for(n = 0; n < 2; n++) {
 		pcb_box_t region;
+		int len;
 
 		region.X1 = cx[n]-1;
 		region.Y1 = cy[n]-1;
@@ -140,11 +141,19 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, pcb_any_obj_t *curr)
 		ctx.tx = cx[n];
 		ctx.ty = cy[n];
 
-		pcb_r_search(curr->parent.layer->arc_tree, &region, NULL, next_conn_found_arc, &ctx, NULL);
+		pcb_r_search(curr->parent.layer->arc_tree, &region, NULL, next_conn_found_arc, &ctx, &len);
+		if (len > 1) {
+			pcb_message(PCB_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
+			return NULL;
+		}
 		if (ctx.result != NULL)
 			return ctx.result;
 
-		pcb_r_search(curr->parent.layer->line_tree, &region, NULL, next_conn_found_line, &ctx, NULL);
+		pcb_r_search(curr->parent.layer->line_tree, &region, NULL, next_conn_found_line, &ctx, &len);
+		if (len > 1) {
+			pcb_message(PCB_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
+			return NULL;
+		}
 		if (ctx.result != NULL)
 			return ctx.result;
 	}
