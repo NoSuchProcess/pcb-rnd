@@ -241,6 +241,17 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		}
 	}
 
+	if (flags & PCB_LYT_COPPER) {
+		if (flags & PCB_LYT_TOP) {
+			scad_new_layer("top_copper", +1, "1,0.4,0.2");
+			return 1;
+		}
+		if (flags & PCB_LYT_BOTTOM) {
+			scad_new_layer("bottom_copper", -1, "1,0.4,0.2");
+			return 1;
+		}
+	}
+
 	return 0;
 }
 
