@@ -38,13 +38,48 @@ static int scad_draw_outline(void)
 	return 0;
 }
 
+static void scad_draw_drill(const pcb_pin_t *pin)
+{
+	pcb_fprintf(f, "	translate([%mm,%mm,0])\n", pin->X, pin->Y);
+	pcb_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", pin->DrillingHole/2);
+}
+
+static void scad_draw_drills(void)
+{
+	pcb_rtree_it_t it;
+	pcb_box_t *obj;
+
+	fprintf(f, "module pcb_drill() {\n");
+
+	for(obj = pcb_r_first(PCB->Data->via_tree, &it); obj != NULL; obj = pcb_r_next(&it))
+		scad_draw_drill((pcb_pin_t *)obj);
+	pcb_r_end(&it);
+
+	PCB_PIN_ALL_LOOP(PCB->Data); {
+		scad_draw_drill(pin);
+	} PCB_ENDALL_LOOP;
+
+
+	fprintf(f, "}\n");
+}
+
 static void scad_draw_finish()
 {
-	fprintf(f, "module pcb_board() {\n");
+	fprintf(f, "module pcb_board_main() {\n");
 	fprintf(f, "	translate ([0, 0, -0.8])\n");
 	fprintf(f, "		linear_extrude(height=1.6)\n");
 	fprintf(f, "			pcb_outline();\n");
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
+
+	fprintf(f, "module pcb_board() {\n");
+	fprintf(f, "	difference() {\n");
+	fprintf(f, "		pcb_board_main();\n");
+	fprintf(f, "		pcb_drill();\n");
+	fprintf(f, "	}\n");
+	fprintf(f, "}\n");
+	fprintf(f, "\n");
+
+
 	fprintf(f, "pcb_board();\n");
 }

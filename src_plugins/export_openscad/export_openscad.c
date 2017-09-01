@@ -151,6 +151,7 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 
 	openscad_hid_export_to_file(f, options);
 
+	scad_draw_drills();
 	scad_draw_finish();
 
 	pcb_hid_restore_layer_ons(save_ons);
@@ -180,10 +181,10 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 	}
 
 	if (flags & PCB_LYT_PDRILL)
-		return 1;
+		return 0;
 
 	if (flags & PCB_LYT_UDRILL)
-		return 1;
+		return 0;
 
 	return 0;
 }
