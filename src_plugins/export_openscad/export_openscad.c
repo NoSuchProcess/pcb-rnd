@@ -30,11 +30,13 @@
 #include <assert.h>
 #include <math.h>
 
-#include "math_helper.h"
+#include "compat_misc.h"
 #include "board.h"
 #include "data.h"
 #include "error.h"
 #include "layer.h"
+#include "math_helper.h"
+#include "misc_util.h"
 #include "plugins.h"
 
 #include "hid.h"
@@ -149,6 +151,8 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
+	scad_draw_primitives();
+
 	openscad_hid_export_to_file(f, options);
 
 	scad_draw_drills();
@@ -185,6 +189,9 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 
 	if (flags & PCB_LYT_UDRILL)
 		return 0;
+
+	if (flags & PCB_LYT_SILK)
+		return 1;
 
 	return 0;
 }
@@ -270,7 +277,13 @@ static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
+	double length, angle;
+
+	length = pcb_distance(x1, y1, x2, y2);
+	angle = atan2((double)y2-y1, (double)x2-x1);
+
+	pcb_fprintf(f, "	pcb_line_rc(%mm, %mm, %mm, %f, %mm, 0.1);\n",
+		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width);
 }
 
 static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)

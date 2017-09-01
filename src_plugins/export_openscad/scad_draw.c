@@ -1,11 +1,23 @@
 #include "../lib_polyhelp/topoly.h"
 
-
 #define TRX(x)
-#define TRY(y) \
-do { \
-	y = PCB->MaxHeight - y; \
-} while(0)
+#define TRY(y) y = (PCB->MaxHeight - (y))
+
+static scad_draw_primitives(void)
+{
+	fprintf(f, "// Round cap line\n");
+	fprintf(f, "module pcb_line_rc(x1, y1, length, angle, width, thick) {\n");
+	fprintf(f, "	translate([x1,y1,0]) {\n");
+	fprintf(f, "		rotate([0,0,angle]) {\n");
+	fprintf(f, "			translate([length/2, 0, 0])\n");
+	fprintf(f, "				cube([length,width, thick], center=true);\n");
+	fprintf(f, "			cylinder(r=width/2, h=thick, center=true, $fn=30);\n");
+	fprintf(f, "			translate([length, 0, 0])\n");
+	fprintf(f, "				cylinder(r=width/2, h=thick, center=true, $fn=30);\n");
+	fprintf(f, "		}\n");
+	fprintf(f, "	}\n");
+	fprintf(f, "}\n");
+}
 
 static int scad_draw_outline(void)
 {
