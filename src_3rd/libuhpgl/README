@@ -1,0 +1,15 @@
+The micro HP-GL library
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Libuhpgl is a small, portable (C89) library for parsing and generating
+HP-GL data. It is designed for use as a converter in an application that
+has its own 2d object model.
+
+To accomodate to the object model of the application, the lib offers different
+options for the drawing primitives, e.g. the application may chose whether to
+support filled polygons or vurves (arcs, circles). The lib loads a sequence
+of HP-GL instructions, builds a complex object (such as a polygon) in memory
+and passes it to the application when all details of the object is already
+known.
+
+
