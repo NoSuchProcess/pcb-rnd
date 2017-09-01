@@ -148,7 +148,7 @@ static void scad_new_layer(const char *layer_name, int level, const char *color)
 	if (level > 0)
 		h = 0.8+(double)level * layer_thickness;
 	else
-		h = -0.8-(double)level * layer_thickness;
+		h = -0.8+(double)level * layer_thickness;
 
 	fprintf(f, "module layer_%s() {\n", layer_name);
 	fprintf(f, "	color([%s])\n", color);
