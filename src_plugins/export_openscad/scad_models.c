@@ -67,6 +67,7 @@ static void scad_insert_models(void)
 {
 	htsp_t models;
 	char *mod;
+	htsp_entry_t *e;
 
 	htsp_init(&models, strhash, strkeyeq);
 
@@ -76,6 +77,8 @@ static void scad_insert_models(void)
 			scad_insert_model(&models, mod, element->MarkX, element->MarkY);
 	} PCB_END_LOOP;
 
-#warning TODO: free strings
+	for (e = htsp_first(&models); e; e = htsp_next(&models, e))
+		free(e->value);
+
 	htsp_uninit(&models);
 }
