@@ -139,7 +139,7 @@ static scad_close_layer()
 	}
 }
 
-static void scad_new_layer(const char *layer_name, int level)
+static void scad_new_layer(const char *layer_name, int level, const char *color)
 {
 	double h;
 
@@ -151,7 +151,8 @@ static void scad_new_layer(const char *layer_name, int level)
 		h = -0.8-(double)level * layer_thickness;
 
 	fprintf(f, "module layer_%s() {\n", layer_name);
-	fprintf(f, "	translate([0,0,%f]) {\n", h);
+	fprintf(f, "	color([%s])\n", color);
+	fprintf(f, "		translate([0,0,%f]) {\n", h);
 	layer_open = 1;
 
 	pcb_append_printf(&layer_calls, "		layer_%s();\n", layer_name);
@@ -231,11 +232,11 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 
 	if (flags & PCB_LYT_SILK) {
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer("top_silk", +2);
+			scad_new_layer("top_silk", +2, "0,0,0");
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer("bottom_silk", -2);
+			scad_new_layer("bottom_silk", -2, "0,0,0");
 			return 1;
 		}
 	}
@@ -329,7 +330,7 @@ static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	length = pcb_distance(x1, y1, x2, y2);
 	angle = atan2((double)y2-y1, (double)x2-x1);
 
-	pcb_fprintf(f, "	pcb_line_rc(%mm, %mm, %mm, %f, %mm, %f);\n",
+	pcb_fprintf(f, "			pcb_line_rc(%mm, %mm, %mm, %f, %mm, %f);\n",
 		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, layer_thickness);
 }
 
