@@ -161,8 +161,10 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 			ctx->state.pen_down = 1;
 			p->state = ST_INST_END;
 			return 0;
-		case inst2num('S','P'):
 		case inst2num('P','A'):
+		case inst2num('P','R'):
+		case inst2num('S','P'):
+/*
 		case inst2num('L','T'):
 		case inst2num('C','T'):
 		case inst2num('C','I'):
@@ -179,6 +181,7 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 		case inst2num('P','M'):
 		case inst2num('E','P'):
 		case inst2num('F','P'):
+*/
 			/* prepare to read coords */
 			p->state = ST_COORDS;
 			return 0;
