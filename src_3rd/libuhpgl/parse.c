@@ -31,7 +31,7 @@ typedef enum state_e {
 	ST_IDLE,
 	ST_INST,
 	ST_INST_END,
-	ST_COORDS
+	ST_NUMBERS
 } state_t;
 
 typedef struct {
@@ -183,7 +183,7 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 		case inst2num('F','P'):
 */
 			/* prepare to read coords */
-			p->state = ST_COORDS;
+			p->state = ST_NUMBERS;
 			return 0;
 	}
 	return error(ctx, "unimplemented instruction");
@@ -267,7 +267,7 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 				return error(ctx, "Expected semicolon to terminate instruction");
 			p->state = ST_IDLE;
 			return 0;
-		case ST_COORDS:
+		case ST_NUMBERS:
 			if ((c == ',') || (c == ';')) {
 				int last = (c == ';');
 				p->token[p->len] = '\0';
