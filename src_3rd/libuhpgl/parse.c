@@ -211,6 +211,16 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 				ctx->state.at.y = p->num[1];
 			}
 			return 0;
+		case inst2num('P','R'):
+			if (p->nums == 2) {
+				p->state = ST_INST_END;
+				if (ctx->state.pen_down)
+					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, ctx->state.at.x + p->num[0], ctx->state.at.y + p->num[1]) < 0)
+						return -1;
+				ctx->state.at.x += p->num[0];
+				ctx->state.at.y += p->num[1];
+			}
+			return 0;
 	}
 	return error(ctx, "unimplemented coord instruction");
 }
