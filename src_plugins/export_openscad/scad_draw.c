@@ -30,7 +30,7 @@ static int scad_draw_outline(void)
 	fprintf(f, "	polygon([\n\t\t");
 	/* we need the as-drawn polygon and we know there are no holes */
 	for(n = 0; n < poly->PointN; n++)
-		pcb_fprintf(f, "[%mm,%mm]%s", poly->Points[n].X, poly->Points[n].X, ((n < (poly->PointN-1)) ? "," : "\n"));
+		pcb_fprintf(f, "[%mm,%mm]%s", poly->Points[n].X, poly->Points[n].Y, ((n < (poly->PointN-1)) ? "," : "\n"));
 	fprintf(f, "	]);\n");
 	fprintf(f, "}\n");
 
@@ -41,8 +41,10 @@ static int scad_draw_outline(void)
 static void scad_draw_finish()
 {
 	fprintf(f, "module pcb_board() {\n");
-	fprintf(f, "	linear_extrude(height=1.6) board_outline();\n");
+	fprintf(f, "	translate ([0, 0, -0.8])\n");
+	fprintf(f, "		linear_extrude(height=1.6)\n");
+	fprintf(f, "			pcb_outline();\n");
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
-	fprintf(f, "pcb_board()");
+	fprintf(f, "pcb_board();\n");
 }
