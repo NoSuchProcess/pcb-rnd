@@ -38,9 +38,21 @@
 
 /*** map the contour ***/
 typedef struct {
-	pcb_any_obj_t *prev, *curr, *result;
+	vtp0_t *list;
+	pcb_any_obj_t *curr, *result;
 	pcb_coord_t tx, ty;
 } next_conn_t;
+
+/* Return whether the object is already on the list (but ignore the start object
+   so we can do a full circle) */
+static int already_found(next_conn_t *ctx, pcb_any_obj_t *obj)
+{
+	int n;
+	for(n = 1; n < vtp0_len(ctx->list); n++)
+		if (ctx->list->array[n] == obj)
+			return 1;
+	return 0;
+}
 
 static pcb_r_dir_t next_conn_found_arc(const pcb_box_t *box, void *cl)
 {
@@ -49,8 +61,11 @@ static pcb_r_dir_t next_conn_found_arc(const pcb_box_t *box, void *cl)
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 	int n;
 
-	if ((obj == ctx->prev) || (obj == ctx->curr))
+	if (obj == ctx->curr)
 		return PCB_R_DIR_NOT_FOUND; /* need the object connected to the other endpoint */
+
+	if (already_found(ctx, obj))
+		return PCB_R_DIR_NOT_FOUND;
 
 	for(n = 0; n < 2; n++) {
 		pcb_arc_get_end((pcb_arc_t *)obj, n, &ex, &ey);
@@ -69,8 +84,11 @@ static pcb_r_dir_t next_conn_found_line(const pcb_box_t *box, void *cl)
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 	pcb_line_t *l = (pcb_line_t *)box;
 
-	if ((obj == ctx->prev) || (obj == ctx->curr))
+	if (obj == ctx->curr)
 		return PCB_R_DIR_NOT_FOUND; /* need the object connected to the other endpoint */
+
+	if (already_found(ctx, obj))
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (NEAR(ctx->tx, l->Point1.X, ctx->ty, l->Point1.Y)) {
 		ctx->result = obj;
@@ -85,7 +103,7 @@ static pcb_r_dir_t next_conn_found_line(const pcb_box_t *box, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_any_obj_t *next_conn(pcb_any_obj_t *prev, pcb_any_obj_t *curr)
+static pcb_any_obj_t *next_conn(vtp0_t *list, pcb_any_obj_t *curr)
 {
 
 	pcb_line_t *l;
@@ -109,7 +127,7 @@ static pcb_any_obj_t *next_conn(pcb_any_obj_t *prev, pcb_any_obj_t *curr)
 	}
 
 	ctx.curr = curr;
-	ctx.prev = prev;
+	ctx.list = list;
 	ctx.result = NULL;
 
 	for(n = 0; n < 2; n++) {
@@ -136,14 +154,14 @@ static pcb_any_obj_t *next_conn(pcb_any_obj_t *prev, pcb_any_obj_t *curr)
 
 static int map_contour(vtp0_t *list, pcb_any_obj_t *start)
 {
-	pcb_any_obj_t *n, *prev = NULL;
+	pcb_any_obj_t *n;
 
 pcb_trace("loop start: %d\n", start->ID);
 	vtp0_append(list, start);
-	for(n = next_conn(NULL, start); n != start; n = next_conn(prev, n)) {
-pcb_trace("      next: %d\n", n->ID);
+	for(n = next_conn(list, start); n != start; n = next_conn(list, n)) {
 		if (n == NULL)
 			return -1;
+pcb_trace("      next: %d\n", n->ID);
 		vtp0_append(list, n);
 	}
 	return 0;
