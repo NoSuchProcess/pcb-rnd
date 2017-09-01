@@ -291,11 +291,12 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 					p->state = ST_IDLE; /* wanted to finish and finished */
 				return res;
 			}
-			if (!isdigit(c))
-				return error(ctx, "Expected digit or separator in number");
-			p->token[p->len] = c;
-			p->len++;
-			return 0;
+			if (isdigit(c) || ((c == '-') && (p->len == 0))) {
+				p->token[p->len] = c;
+				p->len++;
+				return 0;
+			}
+			return error(ctx, "Expected digit or separator in number");
 	}
 	return error(ctx, "Internal error: broken state machine");
 }
