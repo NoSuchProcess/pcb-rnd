@@ -130,7 +130,7 @@ void openscad_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	conf_update(NULL, -1); /* restore forced sets */
 }
 
-static scad_close_layer()
+static void scad_close_layer()
 {
 	if (layer_open) {
 		fprintf(f, "	}\n");
@@ -186,7 +186,7 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	scad_draw_primitives();
 
 	if (scad_draw_outline() < 0)
-		return -1;
+		return;
 
 	gds_init(&layer_calls);
 	gds_init(&model_calls);

@@ -25,7 +25,7 @@
 #define TRX(x)
 #define TRY(y) y = (PCB->MaxHeight - (y))
 
-static scad_draw_primitives(void)
+static void scad_draw_primitives(void)
 {
 	fprintf(f, "// Round cap line\n");
 	fprintf(f, "module pcb_line_rc(x1, y1, length, angle, width, thick) {\n");
