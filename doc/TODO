@@ -72,6 +72,7 @@ For the next release:
 		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
+	- subcircuit offset on paste
 - namespace renames:
 	- GetObjectBoundingBox
 - new hid render:
