@@ -81,6 +81,7 @@ static void scad_draw_finish()
 	fprintf(f, "	translate ([0, 0, -0.8])\n");
 	fprintf(f, "		linear_extrude(height=1.6)\n");
 	fprintf(f, "			pcb_outline();\n");
+	fprintf(f, "%s", layer_calls.array);
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
 

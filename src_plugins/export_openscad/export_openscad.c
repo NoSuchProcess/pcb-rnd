@@ -29,6 +29,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <genvector/gds_char.h>
 
 #include "compat_misc.h"
 #include "board.h"
@@ -65,6 +66,9 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static FILE *f = NULL;
+unsigned layer_open;
+double layer_thickness = 0.01;
+gds_t layer_calls;
 
 pcb_hid_attribute_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -126,6 +130,33 @@ void openscad_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	conf_update(NULL, -1); /* restore forced sets */
 }
 
+static scad_close_layer()
+{
+	if (layer_open) {
+		fprintf(f, "	}\n");
+		fprintf(f, "}\n\n");
+		layer_open = 0;
+	}
+}
+
+static void scad_new_layer(const char *layer_name, int level)
+{
+	double h;
+
+	scad_close_layer();
+
+	if (level > 0)
+		h = 0.8+(double)level * layer_thickness;
+	else
+		h = -0.8-(double)level * layer_thickness;
+
+	fprintf(f, "module layer_%s() {\n", layer_name);
+	fprintf(f, "	translate([0,0,%f]) {\n", h);
+	layer_open = 1;
+
+	pcb_append_printf(&layer_calls, "		layer_%s();\n", layer_name);
+}
+
 static void openscad_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *filename;
@@ -153,12 +184,20 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 
 	scad_draw_primitives();
 
+	if (scad_draw_outline() < 0)
+		return -1;
+
+	gds_init(&layer_calls);
+
 	openscad_hid_export_to_file(f, options);
+	scad_close_layer();
 
 	scad_draw_drills();
 	scad_draw_finish();
 
 	pcb_hid_restore_layer_ons(save_ons);
+
+	gds_uninit(&layer_calls);
 
 	fclose(f);
 	f = NULL;
@@ -170,6 +209,8 @@ static void openscad_parse_arguments(int *argc, char ***argv)
 	pcb_hid_parse_command_line(argc, argv);
 }
 
+
+
 static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	if (flags & PCB_LYT_UI)
@@ -179,8 +220,6 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		return 0;
 
 	if (flags & PCB_LYT_OUTLINE) {
-		if (scad_draw_outline() < 0)
-			return -1;
 		return 0;
 	}
 
@@ -190,8 +229,16 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 	if (flags & PCB_LYT_UDRILL)
 		return 0;
 
-	if (flags & PCB_LYT_SILK)
-		return 1;
+	if (flags & PCB_LYT_SILK) {
+		if (flags & PCB_LYT_TOP) {
+			scad_new_layer("top_silk", +2);
+			return 1;
+		}
+		if (flags & PCB_LYT_BOTTOM) {
+			scad_new_layer("bottom_silk", -2);
+			return 1;
+		}
+	}
 
 	return 0;
 }
@@ -282,8 +329,8 @@ static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	length = pcb_distance(x1, y1, x2, y2);
 	angle = atan2((double)y2-y1, (double)x2-x1);
 
-	pcb_fprintf(f, "	pcb_line_rc(%mm, %mm, %mm, %f, %mm, 0.1);\n",
-		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width);
+	pcb_fprintf(f, "	pcb_line_rc(%mm, %mm, %mm, %f, %mm, %f);\n",
+		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, layer_thickness);
 }
 
 static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
