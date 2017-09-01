@@ -32,6 +32,8 @@
 #include "obj_arc.h"
 #include "obj_line.h"
 #include "obj_poly.h"
+#include "obj_poly_draw.h"
+#include "polygon.h"
 #include "search.h"
 #include "hid.h"
 
@@ -230,6 +232,7 @@ pcb_polygon_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_to
 
 #warning TODO: use pcb_board_set_changed_flag(), but decouple that from PCB
 	pcb->Changed = pcb_true;
+	return poly;
 }
 
 pcb_polygon_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how)
@@ -261,18 +264,69 @@ pcb_polygon_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topol
 	return poly;
 }
 
+#define check(x, y, obj) \
+do { \
+	double dist = (double)x*(double)x + (double)y*(double)y; \
+	if (dist < bestd) { \
+		bestd = dist; \
+		best = (pcb_any_obj_t *)obj; \
+	} \
+} while(0)
 
+pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
+{
+	pcb_layer_id_t lid;
+	pcb_layer_t *layer;
+	pcb_any_obj_t *best = NULL;
+	pcb_coord_t x, y;
+	double bestd = (double)pcb->MaxHeight*(double)pcb->MaxHeight + (double)pcb->MaxWidth*(double)pcb->MaxWidth;
 
-const char pcb_acts_topoly[] = "ToPoly()\n";
+	if (pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1) != 1)
+		return NULL;
+
+	layer = pcb_get_layer(lid);
+	PCB_LINE_LOOP(layer) {
+		check(line->Point1.X, line->Point1.Y, line);
+		check(line->Point2.X, line->Point2.Y, line);
+	}
+	PCB_END_LOOP;
+
+	PCB_ARC_LOOP(layer) {
+
+		pcb_arc_get_end(arc, 0, &x, &y);
+		check(x, y, arc);
+		pcb_arc_get_end(arc, 1, &x, &y);
+		check(x, y, arc);
+		pcb_arc_middle(arc, &x, &y);
+		check(x, y, arc);
+	}
+	PCB_END_LOOP;
+
+	return best;
+}
+#undef check
+
+const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";
 const char pcb_acth_topoly[] = "convert a closed loop of lines and arcs into a polygon";
 int pcb_act_topoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *r1, *r2, *r3;
 
-	pcb_gui->get_coords("Click on a line or arc of the contour loop", &x, &y);
-	if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
-		pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
-		return 1;
+	if (argc == 0) {
+		pcb_gui->get_coords("Click on a line or arc of the contour loop", &x, &y);
+		if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
+			pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
+			return 1;
+		}
+	}
+	if (argc > 0) {
+		if (strcmp(argv[0], "outline") == 0) {
+			r2 = pcb_topoly_find_1st_outline(PCB);
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Invalid first argument\n");
+			return 1;
+		}
 	}
 
 	pcb_topoly_conn(PCB, r2, 0);
