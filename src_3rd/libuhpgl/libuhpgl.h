@@ -118,6 +118,7 @@ struct uhpgl_ctx_s {
 	/* current state: read-only for the caller, written by the lib */
 	struct {
 		int pen;              /* selected pen [0..255] */
+		unsigned pen_down:1;  /* whether pen is down (drawing) */
 		uhpgl_point_t at;     /* last known coordinate of the pen */
 		int ct;               /* Chord Tolerance */
 

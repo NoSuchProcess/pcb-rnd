@@ -25,6 +25,8 @@
 #include "libuhpgl.h"
 #include "parse.h"
 
+#define inst2num(s1, s2) ((((int)s1) << 8) | (int)s2)
+
 typedef enum state_e {
 	ST_IDLE,
 	ST_INST,
@@ -35,8 +37,13 @@ typedef enum state_e {
 typedef struct {
 	size_t token_offs;
 	size_t token_line, token_col;
+	char inst[2];
 	char token[32];
 	int len; /* token length */
+
+	uhpgl_coord_t num[32];
+	int nums;
+
 	state_t state;
 	unsigned error:1;
 	unsigned eof:1;
@@ -123,16 +130,84 @@ int uhpgl_parse_close(uhpgl_ctx_t *ctx)
 	return 0;
 }
 
+/*** execute ***/
+int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl_coord_t x2, uhpgl_coord_t y2)
+{
+	uhpgl_line_t line;
+	line.p1.x = x1;
+	line.p1.y = y1;
+	line.p2.x = x2;
+	line.p2.y = y2;
+	return ctx->conf.line(ctx, &line);
+}
+
 /*** the actual parser: high level (grammar) ***/
 static int parse_inst(uhpgl_ctx_t *ctx)
 {
 	parse_t *p = ctx->parser;
+	p->inst[0] = p->token[0];
+	p->inst[1] = p->token[1];
+	switch(inst2num(p->inst[0], p->inst[1])) {
+		case inst2num('I','N'):
+			/* ignore */
+			p->state = ST_INST_END;
+			return 0;
+		case inst2num('P','U'):
+			ctx->state.pen_down = 0;
+			p->state = ST_INST_END;
+			return 0;
+		case inst2num('P','D'):
+			ctx->state.pen_down = 1;
+			p->state = ST_INST_END;
+			return 0;
+		case inst2num('S','P'):
+		case inst2num('P','A'):
+		case inst2num('L','T'):
+		case inst2num('C','T'):
+		case inst2num('C','I'):
+		case inst2num('A','A'):
+		case inst2num('A','R'):
+		case inst2num('F','T'):
+		case inst2num('P','T'):
+		case inst2num('W','G'):
+		case inst2num('E','W'):
+		case inst2num('R','A'):
+		case inst2num('E','A'):
+		case inst2num('R','R'):
+		case inst2num('E','R'):
+		case inst2num('P','M'):
+		case inst2num('E','P'):
+		case inst2num('F','P'):
+			/* prepare to read coords */
+			p->state = ST_COORDS;
+			return 0;
+	}
 	return error(ctx, "unimplemented instruction");
 }
 
 static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 {
 	parse_t *p = ctx->parser;
+	p->num[p->nums] = coord;
+	p->nums++;
+	switch(inst2num(p->inst[0], p->inst[1])) {
+		case inst2num('S','P'):
+			if ((coord < 0) || (coord > 255))
+				return error(ctx, "invalid pen index");
+			ctx->state.pen = coord;
+			p->state = ST_INST_END;
+			return 0;
+		case inst2num('P','A'):
+			if (p->nums == 2) {
+				p->state = ST_INST_END;
+				if (ctx->state.pen_down)
+					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, p->num[0], p->num[1]) < 0)
+						return -1;
+				ctx->state.at.x = p->num[0];
+				ctx->state.at.y = p->num[1];
+			}
+			return 0;
+	}
 	return error(ctx, "unimplemented coord instruction");
 }
 
@@ -170,6 +245,7 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 			if (c == ';') /* be liberal: accept multiple terminators or empty instructions */
 				return 0;
 			p->state = ST_INST;
+			p->nums = 0;
 			token_start();
 			/* fall through to read the first char */
 		case ST_INST:
@@ -193,12 +269,16 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 				p->token[p->len] = '\0';
 				res = parse_coord(ctx, strtol(p->token, NULL, 10), last);
 				token_start();
-				if (last)
-					p->state = ST_IDLE;
+				if ((p->state == ST_INST_END) && (!last))
+					return error(ctx, "Expected semicolon");
+				else if ((p->state != ST_INST_END) && (last))
+					return error(ctx, "Premature semicolon");
+				else if ((p->state == ST_INST_END) && (last))
+					p->state = ST_IDLE; /* wanted to finish and finished */
 				return res;
 			}
 			if (!isdigit(c))
-				return error(ctx, "Expected digit or separator in coordinate");
+				return error(ctx, "Expected digit or separator in number");
 			p->token[p->len] = c;
 			p->len++;
 			return 0;
