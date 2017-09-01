@@ -344,11 +344,17 @@ static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double length, angle;
+	const char *cap_style;
 
 	length = pcb_distance(x1, y1, x2, y2);
 	angle = atan2((double)y2-y1, (double)x2-x1);
 
-	pcb_fprintf(f, "			pcb_line_rc(%mm, %mm, %mm, %f, %mm, %f);\n",
+	if (gc->cap == Square_Cap)
+		cap_style = "sc";
+	else
+		cap_style = "rc";
+
+	pcb_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
 		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, layer_thickness);
 }
 

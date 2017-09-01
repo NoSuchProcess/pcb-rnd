@@ -10,10 +10,20 @@ static scad_draw_primitives(void)
 	fprintf(f, "	translate([x1,y1,0]) {\n");
 	fprintf(f, "		rotate([0,0,angle]) {\n");
 	fprintf(f, "			translate([length/2, 0, 0])\n");
-	fprintf(f, "				cube([length,width, thick], center=true);\n");
+	fprintf(f, "				cube([length, width, thick], center=true);\n");
 	fprintf(f, "			cylinder(r=width/2, h=thick, center=true, $fn=30);\n");
 	fprintf(f, "			translate([length, 0, 0])\n");
 	fprintf(f, "				cylinder(r=width/2, h=thick, center=true, $fn=30);\n");
+	fprintf(f, "		}\n");
+	fprintf(f, "	}\n");
+	fprintf(f, "}\n");
+
+	fprintf(f, "// Square cap line\n");
+	fprintf(f, "module pcb_line_sc(x1, y1, length, angle, width, thick) {\n");
+	fprintf(f, "	translate([x1,y1,0]) {\n");
+	fprintf(f, "		rotate([0,0,angle]) {\n");
+	fprintf(f, "			translate([length/2, 0, 0])\n");
+	fprintf(f, "				cube([length + width, width, thick], center=true);\n");
 	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
 	fprintf(f, "}\n");
