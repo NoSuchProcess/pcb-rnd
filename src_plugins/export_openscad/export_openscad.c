@@ -81,12 +81,7 @@ Name of the file to be exported to. Can contain a path.
 
 #define NUM_OPTIONS (sizeof(openscad_attribute_list)/sizeof(openscad_attribute_list[0]))
 
-#define TRX(x)
-#define TRY(y) \
-do { \
-	y = PCB->MaxHeight - y; \
-} while(0)
-
+#include "scad_draw.c"
 
 PCB_REGISTER_ATTRIBUTES(openscad_attribute_list, openscad_cookie)
 
@@ -156,6 +151,8 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 
 	openscad_hid_export_to_file(f, options);
 
+	scad_draw_finish();
+
 	pcb_hid_restore_layer_ons(save_ons);
 
 	fclose(f);
@@ -176,8 +173,11 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 	if (flags & PCB_LYT_INVIS)
 		return 0;
 
-	if (flags & PCB_LYT_OUTLINE)
-		return 1;
+	if (flags & PCB_LYT_OUTLINE) {
+		if (scad_draw_outline() < 0)
+			return -1;
+		return 0;
+	}
 
 	if (flags & PCB_LYT_PDRILL)
 		return 1;
