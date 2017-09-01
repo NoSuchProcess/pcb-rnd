@@ -28,13 +28,13 @@
 
 static int dump_line(uhpgl_ctx_t *ctx, uhpgl_line_t *line)
 {
-	printf("line: %ld;%ld  %ld;%ld\n", line->p1.x, line->p1.y, line->p2.x, line->p2.y);
+	printf("line {%d}: %ld;%ld  %ld;%ld\n", line->pen, line->p1.x, line->p1.y, line->p2.x, line->p2.y);
 	return 0;
 }
 
 static void dump_arc_(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc, const char *type)
 {
-	printf("%s: %ld;%ld;%ld %f->%f (%f) (%ld;%ld->%ld;%ld)\n", type,
+	printf("%s {%d}: %ld;%ld;%ld %f->%f (%f) (%ld;%ld->%ld;%ld)\n", type, arc->pen,
 		arc->center.x, arc->center.y, arc->r,
 		arc->starta, arc->enda, arc->deltaa,
 		arc->startp.x, arc->startp.y, arc->endp.x, arc->endp.y);
@@ -49,7 +49,7 @@ static int dump_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 
 static int dump_circ(uhpgl_ctx_t *ctx, uhpgl_arc_t *circ)
 {
-	printf("circ: %ld;%ld;%ld\n",
+	printf("circ {%d}: %ld;%ld;%ld\n", circ->pen,
 		circ->center.x, circ->center.y, circ->r);
 	return 0;
 }
@@ -68,7 +68,7 @@ static int dump_wedge(uhpgl_ctx_t *ctx, uhpgl_wedge_t *wedge)
 
 static int dump_rect(uhpgl_ctx_t *ctx, uhpgl_rect_t *rect)
 {
-	printf("line: %ld;%ld  %ld;%ld\n", rect->p1.x, rect->p1.y, rect->p2.x, rect->p2.y);
+	printf("rect {%d}: %ld;%ld  %ld;%ld\n", rect->pen, rect->p1.x, rect->p1.y, rect->p2.x, rect->p2.y);
 	return 0;
 }
 

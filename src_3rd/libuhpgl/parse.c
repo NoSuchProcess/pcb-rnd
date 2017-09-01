@@ -134,6 +134,7 @@ int uhpgl_parse_close(uhpgl_ctx_t *ctx)
 int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl_coord_t x2, uhpgl_coord_t y2)
 {
 	uhpgl_line_t line;
+	line.pen = ctx->state.pen;
 	line.p1.x = x1;
 	line.p1.y = y1;
 	line.p2.x = x2;

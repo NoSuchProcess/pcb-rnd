@@ -59,10 +59,12 @@ typedef struct uhpgl_obj_s uhpgl_obj_t;
 
 /*** drawing objects ***/
 typedef struct uhpgl_line_s {
+	int pen;
 	uhpgl_point_t p1, p2;
 } uhpgl_line_t;
 
 typedef struct uhpgl_arc_s {
+	int pen;
 	uhpgl_point_t center;
 	uhpgl_coord_t r;
 	uhpgl_point_t startp, endp;
@@ -70,16 +72,19 @@ typedef struct uhpgl_arc_s {
 } uhpgl_arc_t;
 
 typedef struct uhpgl_wedge_s {
+	int pen;
 	uhpgl_arc_t arc;
 	uhpgl_fill_stroke_t fill_stroke;
 } uhpgl_wedge_t;
 
 typedef struct uhpgl_rect_s {
+	int pen;
 	uhpgl_point_t p1, p2; /* p1 is the minimal x;y and p2 is the maximal x;y */
 	uhpgl_fill_stroke_t fill_stroke;
 } uhpgl_rect_t;
 
 typedef struct uhpgl_poly_s {
+	int pen;
 	uhpgl_point_t bb1, bb2; /* bounding box; bb1 is the minimal x;y and bb2 is the maximal x;y */
 	uhpgl_obj_t *outline;   /* outer contour (linked list of non-poly objects) */
 	int num_holes;
