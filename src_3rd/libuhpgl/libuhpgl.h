@@ -109,7 +109,7 @@ struct uhpgl_ctx_s {
 		/* callbacks for objects found; if returns non-zero, parsing is abandoned */
 		int (*line)(uhpgl_ctx_t *ctx, uhpgl_line_t line);    /* must NOT be NULL */
 		int (*arc)(uhpgl_ctx_t *ctx, uhpgl_arc_t arc);       /* if NULL, use line() approx */
-		int (*circle)(uhpgl_ctx_t *ctx, uhpgl_arc_t circle); /* if NULL, use arc() */
+		int (*circ)(uhpgl_ctx_t *ctx, uhpgl_arc_t circ);     /* if NULL, use arc() */
 		int (*poly)(uhpgl_ctx_t *ctx, uhpgl_poly_t poly);    /* if NULL, use draw the outline only (even for filled polygons) */
 		int (*wedge)(uhpgl_ctx_t *ctx, uhpgl_wedge_t wedge); /* if NULL, use polygon() */
 		int (*rect)(uhpgl_ctx_t *ctx, uhpgl_rect_t rect);    /* if NULL, use polygon() */
