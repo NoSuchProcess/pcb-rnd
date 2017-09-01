@@ -24,7 +24,22 @@
 #ifndef LIBUHPGL_PRASE_H
 #define LIBUHPGL_PRASE_H
 
+#include <stdio.h>
 #include "libuhpgl.h"
 
+/* Shall be called before parsing starts (call uhpgl_parse_open() at the end) */
+int uhpgl_parse_open(uhpgl_ctx_t *ctx);
+
+/* Parse next character of a stream; c may be EOF; returns 0 on success */
+int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c);
+
+/* Parse next portion of a stream from a string; returns 0 on success */
+int uhpgl_parse_str(uhpgl_ctx_t *ctx, const char *str);
+
+/* Parse next portion of a stream from a file; returns 0 on success */
+int uhpgl_parse_file(uhpgl_ctx_t *ctx, FILE *f);
+
+/* Shall be called after the last portion parsed; returns 0 on success */
+int uhpgl_parse_close(uhpgl_ctx_t *ctx);
 
 #endif

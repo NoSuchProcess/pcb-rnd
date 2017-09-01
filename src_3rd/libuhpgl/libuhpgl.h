@@ -120,6 +120,10 @@ struct uhpgl_ctx_s {
 		int pen;              /* selected pen [0..255] */
 		uhpgl_point_t at;     /* last known coordinate of the pen */
 		int ct;               /* Chord Tolerance */
+
+		/* last char parsed */
+		size_t offs;
+		size_t line, col;
 	} state;
 
 	/* parser error report: written by the lib, read-only for the caller */
@@ -129,6 +133,7 @@ struct uhpgl_ctx_s {
 		const char *msg;
 	} error;
 
+	void *parser;    /* opaque parser data */
 	void *user_data; /* only used by the caller */
 };
 
