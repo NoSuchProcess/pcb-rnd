@@ -32,6 +32,8 @@
 #include "obj_line.h"
 #include "box.h"
 
+#include "topoly.h"
+
 /* for the action: */
 static const char *polyhelp_cookie = "lib_polyhelp";
 #include <string.h>
