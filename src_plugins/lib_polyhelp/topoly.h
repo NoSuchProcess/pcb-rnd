@@ -35,4 +35,8 @@ typedef enum pcb_topoly_e {
    object is named in start. */
 pcb_polygon_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how);
 
+extern const char pcb_acts_topoly[];
+extern const char pcb_acth_topoly[];
+int pcb_act_topoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+
 #endif

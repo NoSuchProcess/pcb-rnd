@@ -22,11 +22,169 @@
 
 #include "config.h"
 
+#include <genvector/vtp0.h>
+
 #include "topoly.h"
 
+#include "error.h"
+#include "rtree.h"
+#include "search.h"
+#include "hid.h"
+
+#define VALID_TYPE(obj) (((obj)->type == PCB_OBJ_ARC)  || ((obj)->type == PCB_OBJ_LINE))
+#define CONT_TYPE (PCB_TYPE_LINE | PCB_TYPE_ARC)
+
+#define NEAR(x1, x2, y1, y2) (((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) < 4)
+
+/*** map the contour ***/
+typedef struct {
+	pcb_any_obj_t *prev, *curr, *result;
+	pcb_coord_t tx, ty;
+} next_conn_t;
+
+static pcb_r_dir_t next_conn_found_arc(const pcb_box_t *box, void *cl)
+{
+	pcb_coord_t ex, ey;
+	next_conn_t *ctx = cl;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+	int n;
+
+	if ((obj == ctx->prev) || (obj == ctx->curr))
+		return PCB_R_DIR_NOT_FOUND; /* need the object connected to the other endpoint */
+
+	for(n = 0; n < 2; n++) {
+		pcb_arc_get_end((pcb_arc_t *)obj, n, &ex, &ey);
+		if (NEAR(ctx->tx, ex, ctx->ty, ey)) {
+			ctx->result = obj;
+			return PCB_R_DIR_CANCEL;
+		}
+	}
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+static pcb_r_dir_t next_conn_found_line(const pcb_box_t *box, void *cl)
+{
+	next_conn_t *ctx = cl;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+	pcb_line_t *l = (pcb_line_t *)box;
+
+	if ((obj == ctx->prev) || (obj == ctx->curr))
+		return PCB_R_DIR_NOT_FOUND; /* need the object connected to the other endpoint */
+
+	if (NEAR(ctx->tx, l->Point1.X, ctx->ty, l->Point1.Y)) {
+		ctx->result = obj;
+		return PCB_R_DIR_CANCEL;
+	}
+
+	if (NEAR(ctx->tx, l->Point2.X, ctx->ty, l->Point2.Y)) {
+		ctx->result = obj;
+		return PCB_R_DIR_CANCEL;
+	}
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+static pcb_any_obj_t *next_conn(pcb_any_obj_t *prev, pcb_any_obj_t *curr)
+{
+
+	pcb_line_t *l;
+	int n;
+	next_conn_t ctx;
+	pcb_coord_t cx[2], cy[2];
+
+	/* determine the endpoints of the current object */
+	switch(curr->type) {
+		case PCB_OBJ_ARC:
+			pcb_arc_get_end((pcb_arc_t *)curr, 0, &cx[0], &cy[0]);
+			pcb_arc_get_end((pcb_arc_t *)curr, 1, &cx[1], &cy[1]);
+			break;
+		case PCB_OBJ_LINE:
+			l = (pcb_line_t *)curr;
+			cx[0] = l->Point1.X; cy[0] = l->Point1.Y;
+			cx[1] = l->Point2.X; cy[1] = l->Point2.Y;
+			break;
+		default:
+			return NULL;
+	}
+
+	ctx.curr = curr;
+	ctx.prev = prev;
+	ctx.result = NULL;
+
+	for(n = 0; n < 2; n++) {
+		pcb_box_t region;
+
+		region.X1 = cx[n]-1;
+		region.Y1 = cy[n]-1;
+		region.X2 = cx[n]+1;
+		region.Y2 = cy[n]+1;
+		ctx.tx = cx[n];
+		ctx.ty = cy[n];
+
+		pcb_r_search(curr->parent.layer->arc_tree, &region, NULL, next_conn_found_arc, &ctx, NULL);
+		if (ctx.result != NULL)
+			return ctx.result;
+
+		pcb_r_search(curr->parent.layer->line_tree, &region, NULL, next_conn_found_line, &ctx, NULL);
+		if (ctx.result != NULL)
+			return ctx.result;
+	}
+
+	return NULL; /* nothing found */
+}
+
+static int map_contour(vtp0_t *list, pcb_any_obj_t *start)
+{
+	pcb_any_obj_t *n, *prev = NULL;
+
+pcb_trace("loop start: %d\n", start->ID);
+	vtp0_append(list, start);
+	for(n = next_conn(NULL, start); n != start; n = next_conn(prev, n)) {
+pcb_trace("      next: %d\n", n->ID);
+		if (n == NULL)
+			return -1;
+		vtp0_append(list, n);
+	}
+	return 0;
+}
 
 pcb_polygon_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how)
 {
+	vtp0_t objs;
+	int res;
 
+	if (!VALID_TYPE(start)) {
+		pcb_message(PCB_MSG_ERROR, "pcb_topoly_conn(): starting object is not a line or arc\n");
+		return NULL;
+	}
+
+	vtp0_init(&objs);
+	res = map_contour(&objs, start);
+	if (res != 0) {
+		pcb_message(PCB_MSG_ERROR, "pcb_topoly_conn(): failed to find a closed loop of lines and arcs\n");
+		vtp0_uninit(&objs);
+		return NULL;
+	}
+
+	vtp0_uninit(&objs);
+	return NULL;
 }
 
+
+
+const char pcb_acts_topoly[] = "ToPoly()\n";
+const char pcb_acth_topoly[] = "convert a closed loop of lines and arcs into a polygon";
+int pcb_act_topoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	void *r1, *r2, *r3;
+
+	pcb_gui->get_coords("Click on a line or arc of the contour loop", &x, &y);
+	if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
+		pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
+		return 1;
+	}
+
+	pcb_topoly_conn(PCB, r3, 0);
+	return 0;
+}
