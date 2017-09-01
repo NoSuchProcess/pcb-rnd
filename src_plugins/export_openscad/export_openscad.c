@@ -62,9 +62,6 @@ typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	int width;
-	char *color;
-	int drill;
-	unsigned warned_elliptical:1;
 } hid_gc_s;
 
 static FILE *f = NULL;
