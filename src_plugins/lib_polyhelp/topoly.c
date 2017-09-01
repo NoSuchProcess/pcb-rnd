@@ -275,6 +275,6 @@ int pcb_act_topoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 1;
 	}
 
-	pcb_topoly_conn(PCB, r3, 0);
+	pcb_topoly_conn(PCB, r2, 0);
 	return 0;
 }
