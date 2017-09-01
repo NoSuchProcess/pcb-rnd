@@ -27,6 +27,13 @@ static scad_draw_primitives(void)
 	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
 	fprintf(f, "}\n");
+
+
+	fprintf(f, "// filled circle\n");
+	fprintf(f, "module pcb_fcirc(x1, y1, radius, thick) {\n");
+	fprintf(f, "	translate([x1,y1,0])\n");
+	fprintf(f, "		cylinder(r=radius, h=thick, center=true, $fn=30);\n");
+	fprintf(f, "}\n");
 }
 
 static int scad_draw_outline(void)
