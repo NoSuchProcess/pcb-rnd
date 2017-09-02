@@ -21,11 +21,37 @@
 */
 
 #include <stdlib.h>
+#include <math.h>
 #include <ctype.h>
 #include "libuhpgl.h"
 #include "parse.h"
 
 #define inst2num(s1, s2) ((((int)s1) << 8) | (int)s2)
+
+#define CONST_PI       3.14159265358979323846
+#define RAD2DEG(r)     ((r) * 180.0 / CONST_PI)
+#define DEG2RAD(d)     ((d) * CONST_PI / 180.0)
+#define DDIST(dx, dy)  sqrt((double)(dx)*(double)(dx) + (double)(dy)*(double)(dy))
+
+
+/* Implementation idea borrowed from an old gcc */
+static double ROUND(double x)
+{
+	double t;
+
+	if (x >= 0.0) {
+		t = ceil(x);
+		if (t - x > 0.5)
+			t -= 1.0;
+		return t;
+	}
+
+	t = ceil(-x);
+	if ((t + x) > 0.5)
+		t -= 1.0;
+	return -t;
+}
+
 
 typedef enum state_e {
 	ST_IDLE,
@@ -144,10 +170,31 @@ static int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl
 
 static int draw_arc_(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 {
+#warning TODO: set cursor to the end
 	if (ctx->conf.arc != NULL)
 		return ctx->conf.arc(ctx, arc);
 #warning TODO: line approx
 	return -1;
+}
+
+static int draw_arc(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, double da, uhpgl_coord_t res)
+{
+	uhpgl_arc_t arc;
+	arc.pen = ctx->state.pen;
+	arc.center.x = cx;
+	arc.center.y = cy;
+	arc.startp.x = ctx->state.at.x;
+	arc.startp.y = ctx->state.at.y;
+	arc.r = ROUND(DDIST(arc.startp.y - arc.center.y, arc.startp.x - arc.center.x));
+	arc.deltaa = da;
+
+	arc.starta = RAD2DEG(atan2(arc.startp.y - arc.center.y, arc.startp.x - arc.center.x));
+	arc.enda = arc.starta + da;
+
+	arc.endp.x = ROUND((double)cx + arc.r * cos(arc.enda));
+	arc.endp.y = ROUND((double)cy + arc.r * sin(arc.enda));
+
+	return draw_arc_(ctx, &arc);
 }
 
 
@@ -261,10 +308,20 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 					return -1;
 			}
 			return 0;
-/*
 		case inst2num('A','A'):
+			if ((p->nums == 4) || (is_last)) {
+				p->state = ST_INST_END;
+				if (draw_arc(ctx, p->num[0], p->num[1], p->num[2], (p->nums == 4 ? p->num[3] : -1)) < 0)
+					return -1;
+			}
+			return 0;
 		case inst2num('A','R'):
-*/
+			if ((p->nums == 4) || (is_last)) {
+				p->state = ST_INST_END;
+				if (draw_arc(ctx, ctx->state.at.x + p->num[0], ctx->state.at.y + p->num[1], p->num[2], (p->nums == 4 ? p->num[3] : -1)) < 0)
+					return -1;
+			}
+			return 0;
 	}
 	return error(ctx, "unimplemented coord instruction");
 }
