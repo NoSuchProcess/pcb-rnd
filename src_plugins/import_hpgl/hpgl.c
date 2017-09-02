@@ -31,7 +31,9 @@
 #include <libuhpgl/parse.h>
 
 #include "board.h"
+#include "conf_core.h"
 #include "data.h"
+#include "buffer.h"
 #include "error.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
@@ -43,18 +45,30 @@
 
 static const char *hpgl_cookie = "hpgl importer";
 
+#define HPGL2CRD(crd)   (PCB_MM_TO_COORD((double)crd*0.025))
+
 static int load_line(uhpgl_ctx_t *ctx, uhpgl_line_t *line)
 {
+	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
+	pcb_layer_t *layer = &data->Layer[line->pen % data->LayerN];
+	pcb_line_new(layer,
+		HPGL2CRD(line->p1.x), HPGL2CRD(line->p1.y), HPGL2CRD(line->p2.x), HPGL2CRD(line->p2.y), 
+		conf_core.design.line_thickness, 2 * conf_core.design.clearance,
+		pcb_flag_make((conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 	return 0;
 }
 
 static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 {
+	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
+
 	return 0;
 }
 
 static int load_poly(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly)
 {
+	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
+
 	return 0;
 }
 
@@ -76,6 +90,11 @@ static int hpgl_load(const char *fname)
 		return 1;
 	}
 
+	pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+	ctx.user_data = PCB_PASTEBUFFER->Data;
+	PCB_PASTEBUFFER->Data->LayerN = PCB->Data->LayerN;
+	pcb_data_bind_board_layers(PCB, PCB_PASTEBUFFER->Data, 0);
+
 	if ((uhpgl_parse_open(&ctx) == 0) && (uhpgl_parse_file(&ctx, f) == 0) && (uhpgl_parse_close(&ctx) == 0)) {
 		fclose(f);
 		return 0;
@@ -88,7 +107,7 @@ static int hpgl_load(const char *fname)
 }
 
 static const char pcb_acts_LoadHpglFrom[] = "LoadHpglFrom(filename)";
-static const char pcb_acth_LoadHpglFrom[] = "Loads the specified hpgl .net and .asc file - the netlist must be mentor netlist.";
+static const char pcb_acth_LoadHpglFrom[] = "Loads the specified hpgl plot file to the current buffer";
 int pcb_act_LoadHpglFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
