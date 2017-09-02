@@ -1,5 +1,8 @@
 put /local/pcb/mod {import_hpgl}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_hpgl/hpgl.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/import_hpgl/hpgl.o
+	$(SRC_3RD_DIR)/libuhpgl/parse.o
+@]
 
 switch /local/pcb/import_hpgl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

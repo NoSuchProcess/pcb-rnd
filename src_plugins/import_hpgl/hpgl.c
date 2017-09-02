@@ -27,7 +27,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <qparse/qparse.h>
+#include <libuhpgl/libuhpgl.h>
+#include <libuhpgl/parse.h>
 
 #include "board.h"
 #include "data.h"
@@ -42,19 +43,56 @@
 
 static const char *hpgl_cookie = "hpgl importer";
 
+static int load_line(uhpgl_ctx_t *ctx, uhpgl_line_t *line)
+{
+	return 0;
+}
+
+static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
+{
+	return 0;
+}
+
+static int load_poly(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly)
+{
+	return 0;
+}
+
+
 static int hpgl_load(const char *fname)
 {
-	return -1;
+	FILE *f;
+	uhpgl_ctx_t ctx;
+
+	memset(&ctx, 0, sizeof(ctx));
+
+	ctx.conf.line  = load_line;
+	ctx.conf.arc   = load_arc;
+	ctx.conf.poly  = load_poly;
+
+	f = fopen(fname, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Error opening HP-GL %s for read\n", fname);
+		return 1;
+	}
+
+	if ((uhpgl_parse_open(&ctx) == 0) && (uhpgl_parse_file(&ctx, f) == 0) && (uhpgl_parse_close(&ctx) == 0)) {
+		fclose(f);
+		return 0;
+	}
+
+	fclose(f);
+	pcb_message(PCB_MSG_ERROR, "Error loading HP-GL at %s:%d.%d: %s\n", fname, ctx.error.line, ctx.error.col, ctx.error.msg);
+
+	return 1;
 }
 
 static const char pcb_acts_LoadHpglFrom[] = "LoadHpglFrom(filename)";
 static const char pcb_acth_LoadHpglFrom[] = "Loads the specified hpgl .net and .asc file - the netlist must be mentor netlist.";
 int pcb_act_LoadHpglFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *fname = NULL, *end;
-	char *fname_asc, *fname_net, *fname_base;
+	const char *fname = NULL;
 	static char *default_file = NULL;
-	int res;
 
 	fname = argc ? argv[0] : 0;
 
