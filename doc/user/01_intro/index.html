@@ -39,3 +39,32 @@ The typical workflows are:
 <p>
 Black flows are the most commonly used; grey flows are possible, fully
 supported but less often used in practice.
+
+<h3> 1.2. What pcb-rnd is and is not </h3>
+<p>
+Pcb-rnd is a versatile tool for PCB layout design. It is geared to be
+a tool for users with the UNIX mind set:
+<ul>
+	<li> it is small, easy to compile and run, has low resource footprint
+	<li> it is modular - most features are in plugins, the user can chose which plugins to use
+	<li> it is portable - also runs on systems that are not hyped today
+	<li> it works well from both CLI (automation, e.g. called from a Makefile or even using with an interactive action command <i>shell</i>) and GUI
+	<li> it is designed to communicate with other software:
+	<ul>
+		<li> it is easy to remote control
+		<li> it speaks many file formats
+	</ul>
+	<li> it doesn't outsmart the user, it doesn't block the user from doing unusual things; it has support for checking the result and generate warnings
+</ul>
+<p>
+There are a few things that are out of scope for pcb-rnd:
+<ul>
+	<li> 3d editing: pcb-rnd is 2.5d, that means it's basically 2d and understands the 3rd dimension partially; it does load, handle and export 3d data (e.g. element models for an openscad export) but it does not edit 3d data
+	<li> embedded &lt;whatever-non-pcb-editing&gt;: as a UNIX tool, pcb-rnd focuses on one thing, pcb edition, and relies on (and maintins close cooperation with) other tools for:
+	<ul>
+		<li> circuit schematics edition
+		<li> 3d rendering
+		<li> simulation
+	</ul>
+	<li> autorouting - there's a basic built-in autorouter, but it's recommended to use external autorouters (various file formats are supported)
+</ul>
