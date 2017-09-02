@@ -105,6 +105,7 @@ static int hpgl_load(const char *fname)
 
 	if ((uhpgl_parse_open(&ctx) == 0) && (uhpgl_parse_file(&ctx, f) == 0) && (uhpgl_parse_close(&ctx) == 0)) {
 		fclose(f);
+		pcb_hid_actionl("mode", "pastebuffer", NULL);
 		return 0;
 	}
 
