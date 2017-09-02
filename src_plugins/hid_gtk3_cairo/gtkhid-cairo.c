@@ -51,9 +51,8 @@ static void ghid_cairo_screen_update(void);
 */
 #define USE_GC(gc) if (!use_gc(gc)) return
 
-static int cur_mask = -1;
-static int mask_seq = 0;
-
+//static int cur_mask = -1;
+//static int mask_seq = 0;
 static pcb_composite_op_t curr_drawing_mode;
 
 typedef struct render_priv_s {
@@ -95,7 +94,7 @@ typedef struct hid_gc_s {
 	cairo_line_cap_t cap;
 	cairo_line_join_t join;
 	gchar xor_mask;
-	gint mask_seq;
+	//gint mask_seq;
 } hid_gc_s;
 
 static void draw_lead_user(render_priv_t * priv_);
@@ -628,7 +627,7 @@ static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, 
 	curr_drawing_mode = op;
 }
 
-#define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
+//#define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
 
 static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 {
