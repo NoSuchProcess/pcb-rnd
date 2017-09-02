@@ -54,6 +54,8 @@ static void ghid_cairo_screen_update(void);
 static int cur_mask = -1;
 static int mask_seq = 0;
 
+static pcb_composite_op_t curr_drawing_mode;
+
 typedef struct render_priv_s {
 	GdkRGBA bg_color;											/**< cached back-ground color           */
 	GdkRGBA offlimits_color;							/**< cached external board color        */
@@ -560,6 +562,68 @@ static void ghid_cairo_draw_bg_image(void)
 	}
 }
 
+static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+{
+	render_priv_t *priv = gport->render_priv;
+
+	if (!priv->cr) {
+		//abort();
+		return;
+	}
+
+	if (direct) {
+		//priv->out_pixel = priv->base_pixel;
+		//priv->out_clip = NULL;
+		curr_drawing_mode = PCB_HID_COMP_POSITIVE;
+		return;
+	}
+
+	switch(op) {
+		case PCB_HID_COMP_RESET:
+			//ghid_sketch_setup(priv);
+			start_subcomposite();
+
+		/* clear the canvas */
+			//priv->clip_color.pixel = 0;
+			//if (priv->clear_gc == NULL)
+			//	priv->clear_gc = gdk_gc_new(priv->out_clip);
+			//gdk_gc_set_foreground(priv->clear_gc, &priv->clip_color);
+			//set_clip(priv, priv->clear_gc);
+			//gdk_draw_rectangle(priv->out_clip, priv->clear_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+			break;
+
+		case PCB_HID_COMP_POSITIVE:
+			//priv->clip_color.pixel = 1;
+			cairo_set_operator(priv->cr, CAIRO_OPERATOR_SOURCE);
+			break;
+
+		case PCB_HID_COMP_NEGATIVE:
+			//priv->clip_color.pixel = 0;
+			cairo_set_operator(priv->cr, CAIRO_OPERATOR_CLEAR);
+			break;
+
+		case PCB_HID_COMP_FLUSH:
+			priv->cr = priv->cr_target;
+			//cairo_set_operator(priv->cr, CAIRO_OPERATOR_OVER);
+			//cairo_set_source_surface(priv->cr, priv->surf_layer, 0, 0);
+			cairo_mask_surface(priv->cr, priv->surf_layer, 0, 0);
+			cairo_fill(priv->cr);
+			//cairo_paint_with_alpha(priv->cr, conf_core.appearance.layer_alpha);
+			//cairo_paint_with_alpha(priv->cr, 1.0);
+
+			//if (priv->copy_gc == NULL)
+			//	priv->copy_gc = gdk_gc_new(priv->out_pixel);
+			//gdk_gc_set_clip_mask(priv->copy_gc, priv->sketch_clip);
+			//gdk_gc_set_clip_origin(priv->copy_gc, 0, 0);
+			//gdk_draw_drawable(priv->base_pixel, priv->copy_gc, priv->sketch_pixel, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
+      //
+			//priv->out_pixel = priv->base_pixel;
+			//priv->out_clip = NULL;
+			break;
+	}
+	curr_drawing_mode = op;
+}
+
 #define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
 
 static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
@@ -568,7 +632,7 @@ static void ghid_cairo_use_mask(pcb_mask_op_t use_it)
 	//GdkRGBA color;
 	render_priv_t *priv = gport->render_priv;
 
-	if (use_it == cur_mask)
+	//if (use_it == cur_mask)
 		return;
 
 	switch (use_it) {
@@ -1616,6 +1680,7 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		hid->make_gc = ghid_cairo_make_gc;
 		hid->destroy_gc = ghid_cairo_destroy_gc;
 		hid->use_mask = ghid_cairo_use_mask;
+		hid->set_drawing_mode = ghid_cairo_set_drawing_mode;
 		hid->set_color = ghid_cairo_set_color;
 		hid->set_line_cap = ghid_cairo_set_line_cap;
 		hid->set_line_width = ghid_cairo_set_line_width;
