@@ -40,6 +40,8 @@ typedef enum uhpgl_obj_type_s {
 
 typedef enum uhpgl_fill_type_s {
 	UHPGL_FILL_NONE,
+	UHPGL_FILL_PAINT1,
+	UHPGL_FILL_PAINT2,
 	UHPGL_FILL_SINGLE,
 	UHPGL_FILL_CROSS
 } uhpgl_fill_type_t;
@@ -48,6 +50,7 @@ typedef struct uhpgl_fill_stroke_s {
 	uhpgl_fill_type_t  type;       /* UHPGL_FILL_NONE if no fill */
 	uhpgl_coord_t      spacing;
 	uhpgl_angle_t      angle;
+	double             pen_thick;
 	unsigned           stroke:1;   /* 1 if stroked */
 } uhpgl_fill_stroke_t;
 
@@ -126,6 +129,7 @@ struct uhpgl_ctx_s {
 		unsigned pen_down:1;  /* whether pen is down (drawing) */
 		uhpgl_point_t at;     /* last known coordinate of the pen */
 		int ct;               /* Chord Tolerance */
+		uhpgl_fill_stroke_t fill;
 
 		/* last char parsed */
 		size_t offs;

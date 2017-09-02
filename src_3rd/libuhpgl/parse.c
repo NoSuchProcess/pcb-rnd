@@ -245,10 +245,10 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 		case inst2num('C','I'):
 		case inst2num('A','A'):
 		case inst2num('A','R'):
-/*
-		case inst2num('L','T'):
 		case inst2num('F','T'):
 		case inst2num('P','T'):
+/*
+		case inst2num('L','T'):
 		case inst2num('W','G'):
 		case inst2num('E','W'):
 		case inst2num('R','A'):
@@ -336,6 +336,24 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 					return -1;
 			}
 			return 0;
+		case inst2num('F','T'):
+			if (is_last) {
+				switch(p->argc) {
+					case 3: ctx->state.fill.angle = p->argv[2];
+					case 2: ctx->state.fill.spacing = p->argv[1];
+					case 1: ctx->state.fill.type = p->argv[0]; break;
+					case 0: ctx->state.fill.type = 1; break;
+					default:
+						return error(ctx, "Wrong number of arguments (expected 0, 1, 2 or 3)");
+				}
+			}
+			return 0;
+		case inst2num('P','T'):
+			if ((p->argc == 1) && (is_last)) {
+				ctx->state.fill.pen_thick = p->argv[0];
+				return 0;
+			}
+			return error(ctx, "PT needs 1 argument");
 	}
 	return error(ctx, "unimplemented coord instruction");
 }
