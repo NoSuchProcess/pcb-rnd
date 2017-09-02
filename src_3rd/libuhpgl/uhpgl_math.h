@@ -33,4 +33,22 @@
 #define DEG2RAD(d)     ((d) * CONST_PI / 180.0)
 #define DDIST(dx, dy)  sqrt((double)(dx)*(double)(dx) + (double)(dy)*(double)(dy))
 
+/* Implementation idea borrowed from an old gcc */
+static double ROUND(double x)
+{
+	double t;
+
+	if (x >= 0.0) {
+		t = ceil(x);
+		if (t - x > 0.5)
+			t -= 1.0;
+		return t;
+	}
+
+	t = ceil(-x);
+	if ((t + x) > 0.5)
+		t -= 1.0;
+	return -t;
+}
+
 #endif

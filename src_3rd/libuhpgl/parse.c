@@ -25,27 +25,9 @@
 #include "uhpgl_math.h"
 #include "libuhpgl.h"
 #include "parse.h"
+#include "arc_iterate.h"
 
 #define inst2num(s1, s2) ((((int)s1) << 8) | (int)s2)
-
-/* Implementation idea borrowed from an old gcc */
-static double ROUND(double x)
-{
-	double t;
-
-	if (x >= 0.0) {
-		t = ceil(x);
-		if (t - x > 0.5)
-			t -= 1.0;
-		return t;
-	}
-
-	t = ceil(-x);
-	if ((t + x) > 0.5)
-		t -= 1.0;
-	return -t;
-}
-
 
 typedef enum state_e {
 	ST_IDLE,
