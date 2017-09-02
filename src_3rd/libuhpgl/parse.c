@@ -67,7 +67,7 @@ typedef struct {
 	char token[32];
 	int len; /* token length */
 
-	uhpgl_coord_t num[32];
+	double num[32];
 	int nums;
 
 	state_t state;
@@ -380,9 +380,12 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 			return 0;
 		case ST_NUMBERS:
 			if ((c == ',') || (c == ';')) {
+				char *end;
 				int last = (c == ';');
 				p->token[p->len] = '\0';
-				res = parse_coord(ctx, strtol(p->token, NULL, 10), last);
+				res = parse_coord(ctx, strtod(p->token, &end), last);
+				if (*end != '\0')
+					return error(ctx, "Invalid numeric format");
 				token_start();
 				if ((p->state == ST_INST_END) && (!last))
 					return error(ctx, "Expected semicolon");
@@ -392,7 +395,7 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 					p->state = ST_IDLE; /* wanted to finish and finished */
 				return res;
 			}
-			if (isdigit(c) || ((c == '-') && (p->len == 0))) {
+			if (isdigit(c) || (c == '.') || ((c == '-') && (p->len == 0))) {
 				p->token[p->len] = c;
 				p->len++;
 				return 0;
