@@ -27,7 +27,7 @@
 
 /*** low level types ***/
 typedef long int uhpgl_coord_t;  /* 1 unit is 0.025 mm */
-typedef double uhpgl_angle_t;    /* in degrees; absolute angles are [0..360), relative angles are [-360..+360] */
+typedef double uhpgl_angle_t;    /* in degrees; absolute angles are [0..360], relative angles are [-360..+360] */
 
 typedef enum uhpgl_obj_type_s {
 	UHPGL_OBJ_INVALID,

@@ -131,7 +131,7 @@ int uhpgl_parse_close(uhpgl_ctx_t *ctx)
 }
 
 /*** execute ***/
-int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl_coord_t x2, uhpgl_coord_t y2)
+static int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl_coord_t x2, uhpgl_coord_t y2)
 {
 	uhpgl_line_t line;
 	line.pen = ctx->state.pen;
@@ -141,6 +141,35 @@ int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl_coord_
 	line.p2.y = y2;
 	return ctx->conf.line(ctx, &line);
 }
+
+static int draw_arc_(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
+{
+	if (ctx->conf.arc != NULL)
+		return ctx->conf.arc(ctx, arc);
+#warning TODO: line approx
+	return -1;
+}
+
+
+static int draw_circ(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, uhpgl_coord_t r, uhpgl_coord_t res)
+{
+	uhpgl_arc_t arc;
+	arc.pen = ctx->state.pen;
+	arc.center.x = cx;
+	arc.center.y = cy;
+	arc.r = r;
+	arc.startp.x = cx + r;
+	arc.startp.y = cy;
+	arc.endp.x = cx + r;
+	arc.endp.y = cy;
+	arc.starta = 0;
+	arc.enda = 360;
+	arc.deltaa = 360;
+	if (ctx->conf.circ != NULL)
+		return ctx->conf.circ(ctx, &arc);
+	return draw_arc_(ctx, &arc);
+}
+
 
 /*** the actual parser: high level (grammar) ***/
 static int parse_inst(uhpgl_ctx_t *ctx)
@@ -164,10 +193,10 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 		case inst2num('P','A'):
 		case inst2num('P','R'):
 		case inst2num('S','P'):
-/*
-		case inst2num('L','T'):
 		case inst2num('C','T'):
 		case inst2num('C','I'):
+/*
+		case inst2num('L','T'):
 		case inst2num('A','A'):
 		case inst2num('A','R'):
 		case inst2num('F','T'):
@@ -201,6 +230,10 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 			ctx->state.pen = coord;
 			p->state = ST_INST_END;
 			return 0;
+		case inst2num('C','T'):
+			ctx->state.ct = coord;
+			p->state = ST_INST_END;
+			return 0;
 		case inst2num('P','A'):
 			if (p->nums == 2) {
 				p->state = ST_INST_END;
@@ -209,6 +242,13 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 						return -1;
 				ctx->state.at.x = p->num[0];
 				ctx->state.at.y = p->num[1];
+			}
+			return 0;
+		case inst2num('C','I'):
+			if ((p->nums == 2) || (is_last)) {
+				p->state = ST_INST_END;
+				if (draw_circ(ctx, ctx->state.at.x, ctx->state.at.y, p->num[0], (p->nums == 2 ? p->num[1] : -1)) < 0)
+					return -1;
 			}
 			return 0;
 		case inst2num('P','R'):
