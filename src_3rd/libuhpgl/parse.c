@@ -232,7 +232,7 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 			return 0;
 		case inst2num('P','U'):
 			ctx->state.pen_down = 0;
-			p->state = ST_INST_END;
+			p->state = ST_NUMBERS_OR_END;
 			return 0;
 		case inst2num('P','D'):
 			ctx->state.pen_down = 1;
@@ -294,8 +294,10 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 			ctx->state.ct = coord;
 			p->state = ST_INST_END;
 			return 0;
+		case inst2num('P','U'):
 		case inst2num('P','A'):
 		case inst2num('P','D'):
+			p->state = ST_NUMBERS; /* make sure to load even a single pair */
 			if (p->argc == 2) {
 				if (ctx->state.pen_down)
 					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, p->argv[0], p->argv[1]) < 0)
