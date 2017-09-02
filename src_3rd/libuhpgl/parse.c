@@ -191,8 +191,8 @@ static int draw_arc(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, double
 	arc.starta = RAD2DEG(atan2(arc.startp.y - arc.center.y, arc.startp.x - arc.center.x));
 	arc.enda = arc.starta + da;
 
-	arc.endp.x = ROUND((double)cx + arc.r * cos(arc.enda));
-	arc.endp.y = ROUND((double)cy + arc.r * sin(arc.enda));
+	arc.endp.x = ROUND((double)cx + arc.r * cos(DEG2RAD(arc.enda)));
+	arc.endp.y = ROUND((double)cy + arc.r * sin(DEG2RAD(arc.enda)));
 
 	return draw_arc_(ctx, &arc);
 }
