@@ -1,0 +1,6 @@
+$class import
+$short import HP-GL plot files
+$long Emulate a plotter and import the plot as lines, arcs and polygons.
+$state WIP
+default disable-all
+autoload 1
