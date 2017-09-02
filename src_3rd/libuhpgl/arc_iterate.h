@@ -79,7 +79,7 @@ static uhpgl_point_t *uhpgl_arc_it_first_err(uhpgl_arc_it_t *it, const uhpgl_arc
 /* Start an iteration, return the first point */
 static uhpgl_point_t *uhpgl_arc_it_first(uhpgl_ctx_t *ctx, uhpgl_arc_it_t *it, const uhpgl_arc_t *arc, double resolution)
 {
-	if (ctx->state.ct)
+	if (ctx->state.ct == 0)
 		return uhpgl_arc_it_first_ang(it, arc, resolution);
 	return uhpgl_arc_it_first_err(it, arc, resolution);
 }
