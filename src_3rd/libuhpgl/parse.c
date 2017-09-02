@@ -21,18 +21,12 @@
 */
 
 #include <stdlib.h>
-#include <math.h>
 #include <ctype.h>
+#include "uhpgl_math.h"
 #include "libuhpgl.h"
 #include "parse.h"
 
 #define inst2num(s1, s2) ((((int)s1) << 8) | (int)s2)
-
-#define CONST_PI       3.14159265358979323846
-#define RAD2DEG(r)     ((r) * 180.0 / CONST_PI)
-#define DEG2RAD(d)     ((d) * CONST_PI / 180.0)
-#define DDIST(dx, dy)  sqrt((double)(dx)*(double)(dx) + (double)(dy)*(double)(dy))
-
 
 /* Implementation idea borrowed from an old gcc */
 static double ROUND(double x)
