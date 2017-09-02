@@ -67,8 +67,8 @@ typedef struct {
 	char token[32];
 	int len; /* token length */
 
-	double num[32];
-	int nums;
+	double argv[32];
+	int argc;
 
 	state_t state;
 	unsigned error:1;
@@ -268,8 +268,8 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 {
 	parse_t *p = ctx->parser;
-	p->num[p->nums] = coord;
-	p->nums++;
+	p->argv[p->argc] = coord;
+	p->argc++;
 	switch(inst2num(p->inst[0], p->inst[1])) {
 		case inst2num('S','P'):
 			if ((coord < 0) || (coord > 255))
@@ -282,43 +282,43 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 			p->state = ST_INST_END;
 			return 0;
 		case inst2num('P','A'):
-			if (p->nums == 2) {
+			if (p->argc == 2) {
 				p->state = ST_INST_END;
 				if (ctx->state.pen_down)
-					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, p->num[0], p->num[1]) < 0)
+					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, p->argv[0], p->argv[1]) < 0)
 						return -1;
-				ctx->state.at.x = p->num[0];
-				ctx->state.at.y = p->num[1];
+				ctx->state.at.x = p->argv[0];
+				ctx->state.at.y = p->argv[1];
 			}
 			return 0;
 		case inst2num('P','R'):
-			if (p->nums == 2) {
+			if (p->argc == 2) {
 				p->state = ST_INST_END;
 				if (ctx->state.pen_down)
-					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, ctx->state.at.x + p->num[0], ctx->state.at.y + p->num[1]) < 0)
+					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, ctx->state.at.x + p->argv[0], ctx->state.at.y + p->argv[1]) < 0)
 						return -1;
-				ctx->state.at.x += p->num[0];
-				ctx->state.at.y += p->num[1];
+				ctx->state.at.x += p->argv[0];
+				ctx->state.at.y += p->argv[1];
 			}
 			return 0;
 		case inst2num('C','I'):
-			if ((p->nums == 2) || (is_last)) {
+			if ((p->argc == 2) || (is_last)) {
 				p->state = ST_INST_END;
-				if (draw_circ(ctx, ctx->state.at.x, ctx->state.at.y, p->num[0], (p->nums == 2 ? p->num[1] : -1)) < 0)
+				if (draw_circ(ctx, ctx->state.at.x, ctx->state.at.y, p->argv[0], (p->argc == 2 ? p->argv[1] : -1)) < 0)
 					return -1;
 			}
 			return 0;
 		case inst2num('A','A'):
-			if ((p->nums == 4) || (is_last)) {
+			if ((p->argc == 4) || (is_last)) {
 				p->state = ST_INST_END;
-				if (draw_arc(ctx, p->num[0], p->num[1], p->num[2], (p->nums == 4 ? p->num[3] : -1)) < 0)
+				if (draw_arc(ctx, p->argv[0], p->argv[1], p->argv[2], (p->argc == 4 ? p->argv[3] : -1)) < 0)
 					return -1;
 			}
 			return 0;
 		case inst2num('A','R'):
-			if ((p->nums == 4) || (is_last)) {
+			if ((p->argc == 4) || (is_last)) {
 				p->state = ST_INST_END;
-				if (draw_arc(ctx, ctx->state.at.x + p->num[0], ctx->state.at.y + p->num[1], p->num[2], (p->nums == 4 ? p->num[3] : -1)) < 0)
+				if (draw_arc(ctx, ctx->state.at.x + p->argv[0], ctx->state.at.y + p->argv[1], p->argv[2], (p->argc == 4 ? p->argv[3] : -1)) < 0)
 					return -1;
 			}
 			return 0;
@@ -360,7 +360,7 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 			if (c == ';') /* be liberal: accept multiple terminators or empty instructions */
 				return 0;
 			p->state = ST_INST;
-			p->nums = 0;
+			p->argc = 0;
 			token_start();
 			/* fall through to read the first char */
 		case ST_INST:
