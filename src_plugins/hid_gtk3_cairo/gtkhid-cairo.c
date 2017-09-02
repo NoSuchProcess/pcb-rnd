@@ -562,6 +562,10 @@ static void ghid_cairo_draw_bg_image(void)
 	}
 }
 
+void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+{
+}
+
 static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	render_priv_t *priv = gport->render_priv;
@@ -1622,6 +1626,7 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		hid->make_gc = ghid_cairo_make_gc;
 		hid->destroy_gc = ghid_cairo_destroy_gc;
 		hid->use_mask = ghid_cairo_use_mask;
+		hid->render_burst = ghid_cairo_render_burst;
 		hid->set_drawing_mode = ghid_cairo_set_drawing_mode;
 		hid->set_color = ghid_cairo_set_color;
 		hid->set_line_cap = ghid_cairo_set_line_cap;
