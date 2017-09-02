@@ -152,13 +152,25 @@ static int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl
 	return ctx->conf.line(ctx, &line);
 }
 
-static int draw_arc_(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
+static int draw_arc_(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc, double resolution)
 {
+	uhpgl_arc_it_t it;
+	int cnt;
+	uhpgl_point_t *p, prev;
+
 	move_to(ctx, arc->endp.x, arc->endp.y);
 	if (ctx->conf.arc != NULL)
 		return ctx->conf.arc(ctx, arc);
-#warning TODO: line approx
-	return -1;
+
+	for(cnt = 0, p = uhpgl_arc_it_first(ctx, &it, arc, resolution); p != NULL; cnt++, p = uhpgl_arc_it_next(&it)) {
+		if (cnt > 0) {
+			if (draw_line(ctx, prev.x, prev.y, p->x, p->y) != 0)
+				return -1;
+		}
+		prev = *p;
+	}
+
+	return 0;
 }
 
 static int draw_arc(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, double da, uhpgl_coord_t res)
@@ -178,7 +190,7 @@ static int draw_arc(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, double
 	arc.endp.x = ROUND((double)cx + arc.r * cos(DEG2RAD(arc.enda)));
 	arc.endp.y = ROUND((double)cy + arc.r * sin(DEG2RAD(arc.enda)));
 
-	return draw_arc_(ctx, &arc);
+	return draw_arc_(ctx, &arc, res);
 }
 
 
@@ -200,7 +212,7 @@ static int draw_circ(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, uhpgl
 		move_to(ctx, arc.endp.x, arc.endp.y);
 		return ctx->conf.circ(ctx, &arc);
 	}
-	return draw_arc_(ctx, &arc);
+	return draw_arc_(ctx, &arc, res);
 }
 
 
