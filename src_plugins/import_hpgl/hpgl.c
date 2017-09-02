@@ -61,6 +61,14 @@ static int load_line(uhpgl_ctx_t *ctx, uhpgl_line_t *line)
 static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 {
 	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
+	pcb_layer_t *layer = &data->Layer[arc->pen % data->LayerN];
+
+	pcb_arc_new(layer,
+		HPGL2CRD(arc->center.x), HPGL2CRD(arc->center.y),
+		HPGL2CRD(arc->r), HPGL2CRD(arc->r),
+		arc->starta+180, arc->deltaa,
+		conf_core.design.line_thickness, 2 * conf_core.design.clearance,
+		pcb_flag_make((conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 
 	return 0;
 }
@@ -68,7 +76,7 @@ static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 static int load_poly(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly)
 {
 	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
-
+	pcb_message(PCB_MSG_ERROR, "HPGL: polygons are not yet supported\n");
 	return 0;
 }
 
