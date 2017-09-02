@@ -39,10 +39,15 @@ typedef struct uhpgl_arc_it_s {
 /* Do not call directly. Set up iterator for angle based steps. */
 static uhpgl_point_t *uhpgl_arc_it_first_ang(uhpgl_arc_it_t *it, const uhpgl_arc_t *arc, double step)
 {
+	double minstep = 360.0 / (arc->r*CONST_PI*2.0);
+
 	if (step < 0)
 		step = -step;
 	else if (step == 0)
 		step = 5;
+
+	if (step < minstep)
+		step = minstep;
 
 	if (arc->deltaa < 0)
 		step = -step;
