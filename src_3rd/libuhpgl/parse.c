@@ -57,6 +57,7 @@ typedef enum state_e {
 	ST_IDLE,
 	ST_INST,
 	ST_INST_END,
+	ST_NUMBERS_OR_END,
 	ST_NUMBERS
 } state_t;
 
@@ -235,7 +236,7 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 			return 0;
 		case inst2num('P','D'):
 			ctx->state.pen_down = 1;
-			p->state = ST_INST_END;
+			p->state = ST_NUMBERS_OR_END;
 			return 0;
 		case inst2num('P','A'):
 		case inst2num('P','R'):
@@ -265,6 +266,18 @@ static int parse_inst(uhpgl_ctx_t *ctx)
 	return error(ctx, "unimplemented instruction");
 }
 
+/* Consume all current arguments and report end or go on for the next set
+   of arguments; useful for vararg instructions like PA */
+#define shift_all() \
+do { \
+	if (!is_last) {\
+		p->argc = 0; \
+		p->state = ST_NUMBERS; \
+	} \
+	else \
+		p->state = ST_INST_END; \
+} while(0)
+
 static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 {
 	parse_t *p = ctx->parser;
@@ -282,23 +295,24 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 			p->state = ST_INST_END;
 			return 0;
 		case inst2num('P','A'):
+		case inst2num('P','D'):
 			if (p->argc == 2) {
-				p->state = ST_INST_END;
 				if (ctx->state.pen_down)
 					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, p->argv[0], p->argv[1]) < 0)
 						return -1;
 				ctx->state.at.x = p->argv[0];
 				ctx->state.at.y = p->argv[1];
+				shift_all();
 			}
 			return 0;
 		case inst2num('P','R'):
 			if (p->argc == 2) {
-				p->state = ST_INST_END;
 				if (ctx->state.pen_down)
 					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, ctx->state.at.x + p->argv[0], ctx->state.at.y + p->argv[1]) < 0)
 						return -1;
 				ctx->state.at.x += p->argv[0];
 				ctx->state.at.y += p->argv[1];
+				shift_all();
 			}
 			return 0;
 		case inst2num('C','I'):
@@ -374,10 +388,15 @@ int uhpgl_parse_char(uhpgl_ctx_t *ctx, int c)
 			}
 			return 0;
 		case ST_INST_END:
+			got_end:;
 			if (c != ';')
 				return error(ctx, "Expected semicolon to terminate instruction");
 			p->state = ST_IDLE;
 			return 0;
+		case ST_NUMBERS_OR_END:
+			if (c == ';')
+				goto got_end;
+			/* fall thru: number */
 		case ST_NUMBERS:
 			if ((c == ',') || (c == ';')) {
 				char *end;
