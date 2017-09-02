@@ -151,7 +151,7 @@ static int ltspice_parse_asc(FILE *fa)
 							}
 							free(sattr.footprint);
 							sattr.footprint = pcb_strdup(fp);
-                	                	}
+						}
 					}
 				}
 				if (strncmp(s, "SpiceLine", 9) == 0) {
