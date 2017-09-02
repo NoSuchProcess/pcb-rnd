@@ -158,6 +158,12 @@ int uhpgl_parse_close(uhpgl_ctx_t *ctx)
 }
 
 /*** execute ***/
+static void move_to(uhpgl_ctx_t *ctx, uhpgl_coord_t x, uhpgl_coord_t y)
+{
+	ctx->state.at.x = x;
+	ctx->state.at.y = y;
+}
+
 static int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl_coord_t x2, uhpgl_coord_t y2)
 {
 	uhpgl_line_t line;
@@ -166,12 +172,13 @@ static int draw_line(uhpgl_ctx_t *ctx, uhpgl_coord_t x1, uhpgl_coord_t y1, uhpgl
 	line.p1.y = y1;
 	line.p2.x = x2;
 	line.p2.y = y2;
+	move_to(ctx, x2, y2);
 	return ctx->conf.line(ctx, &line);
 }
 
 static int draw_arc_(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 {
-#warning TODO: set cursor to the end
+	move_to(ctx, arc->endp.x, arc->endp.y);
 	if (ctx->conf.arc != NULL)
 		return ctx->conf.arc(ctx, arc);
 #warning TODO: line approx
@@ -213,8 +220,10 @@ static int draw_circ(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, uhpgl
 	arc.starta = 0;
 	arc.enda = 360;
 	arc.deltaa = 360;
-	if (ctx->conf.circ != NULL)
+	if (ctx->conf.circ != NULL) {
+		move_to(ctx, arc.endp.x, arc.endp.y);
 		return ctx->conf.circ(ctx, &arc);
+	}
 	return draw_arc_(ctx, &arc);
 }
 
@@ -299,21 +308,23 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 		case inst2num('P','D'):
 			p->state = ST_NUMBERS; /* make sure to load even a single pair */
 			if (p->argc == 2) {
-				if (ctx->state.pen_down)
+				if (ctx->state.pen_down) {
 					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, p->argv[0], p->argv[1]) < 0)
 						return -1;
-				ctx->state.at.x = p->argv[0];
-				ctx->state.at.y = p->argv[1];
+				}
+				else
+					move_to(ctx, p->argv[0], p->argv[1]);
 				shift_all();
 			}
 			return 0;
 		case inst2num('P','R'):
 			if (p->argc == 2) {
-				if (ctx->state.pen_down)
+				if (ctx->state.pen_down) {
 					if (draw_line(ctx, ctx->state.at.x, ctx->state.at.y, ctx->state.at.x + p->argv[0], ctx->state.at.y + p->argv[1]) < 0)
 						return -1;
-				ctx->state.at.x += p->argv[0];
-				ctx->state.at.y += p->argv[1];
+				}
+				else
+					move_to(ctx, ctx->state.at.x + p->argv[0], ctx->state.at.y + p->argv[1]);
 				shift_all();
 			}
 			return 0;
