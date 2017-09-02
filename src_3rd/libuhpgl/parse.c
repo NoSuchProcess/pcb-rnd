@@ -173,7 +173,7 @@ static int draw_arc_(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc, double resolution)
 	return 0;
 }
 
-static int draw_arc(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, double da, uhpgl_coord_t res)
+static int draw_arc(uhpgl_ctx_t *ctx, uhpgl_coord_t cx, uhpgl_coord_t cy, double da, double res)
 {
 	uhpgl_arc_t arc;
 	arc.pen = ctx->state.pen;
@@ -275,7 +275,7 @@ do { \
 		p->state = ST_INST_END; \
 } while(0)
 
-static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
+static int parse_coord(uhpgl_ctx_t *ctx, double coord, int is_last)
 {
 	parse_t *p = ctx->parser;
 	p->argv[p->argc] = coord;
@@ -326,14 +326,14 @@ static int parse_coord(uhpgl_ctx_t *ctx, long int coord, int is_last)
 		case inst2num('A','A'):
 			if ((p->argc == 4) || (is_last)) {
 				p->state = ST_INST_END;
-				if (draw_arc(ctx, p->argv[0], p->argv[1], p->argv[2], (p->argc == 4 ? p->argv[3] : -1)) < 0)
+				if (draw_arc(ctx, p->argv[0], p->argv[1], p->argv[2], (p->argc == 4 ? p->argv[3] : 0)) < 0)
 					return -1;
 			}
 			return 0;
 		case inst2num('A','R'):
 			if ((p->argc == 4) || (is_last)) {
 				p->state = ST_INST_END;
-				if (draw_arc(ctx, ctx->state.at.x + p->argv[0], ctx->state.at.y + p->argv[1], p->argv[2], (p->argc == 4 ? p->argv[3] : -1)) < 0)
+				if (draw_arc(ctx, ctx->state.at.x + p->argv[0], ctx->state.at.y + p->argv[1], p->argv[2], (p->argc == 4 ? p->argv[3] : 0)) < 0)
 					return -1;
 			}
 			return 0;
