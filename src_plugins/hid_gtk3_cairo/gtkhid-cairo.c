@@ -665,7 +665,7 @@ typedef struct {
 //  //  gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
 //}
 
-static void ghid_cairo_set_special_colors(conf_native_t * cfg, int arr_idx)
+static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
