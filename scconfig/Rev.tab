@@ -1,3 +1,4 @@
+11237	configure	HPGL importer
 11189	configure	replace the openscad exporter
 11159	configure	new source files in hid_gtk2_gl for new HID API
 11156	configure	new source files in core for safe FS access
