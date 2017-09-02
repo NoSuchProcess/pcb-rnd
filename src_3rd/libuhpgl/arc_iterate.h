@@ -87,21 +87,32 @@ static uhpgl_point_t *uhpgl_arc_it_first(uhpgl_ctx_t *ctx, uhpgl_arc_it_t *it, c
 /* Return the next point or NULL if there are no more points */
 static uhpgl_point_t *uhpgl_arc_it_next(uhpgl_arc_it_t *it)
 {
+	uhpgl_coord_t x, y;
 	it->remain--;
 	switch(it->remain) {
 		case 0: /* beyond the endpoint */
 			return NULL;
 		case 1: /* at the endpoint */
+			last_pt:;
 			/* special case: endpoint reached in the previous iterationm remaining correction path is 0 long */
 			if ((it->pt.x == it->arc->endp.x) && (it->pt.y == it->arc->endp.y))
 				return NULL;
 			it->pt = it->arc->endp;
 			return &it->pt;
 		default:
-			it->ang += it->step;
-			it->pt.x = ROUND((double)it->arc->center.x + it->arc->r * cos(DEG2RAD(it->ang)));
-			it->pt.y = ROUND((double)it->arc->center.y + it->arc->r * sin(DEG2RAD(it->ang)));
-			return &it->pt;
+			for(;;) {
+				it->ang += it->step;
+				x = ROUND((double)it->arc->center.x + it->arc->r * cos(DEG2RAD(it->ang)));
+				y = ROUND((double)it->arc->center.y + it->arc->r * sin(DEG2RAD(it->ang)));
+				if ((it->pt.x != x) || (it->pt.y != y)) {
+					it->pt.x = x;
+					it->pt.y = y;
+					return &it->pt;
+				}
+				it->remain--;
+				if (it->remain == 1)
+					goto last_pt;
+			}
 	}
 	return NULL;
 }
