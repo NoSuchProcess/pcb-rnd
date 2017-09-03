@@ -49,9 +49,19 @@
 </defs>
 <use xlink:href="#comp_pixel_1" mask="url(#comp_clip_1)"/>
 <!-- Composite: finished -->
+<!-- Composite: reset -->
+<defs>
+<g id="comp_pixel_2">
 </g>
 <g id="layer_-1_plated-drill">
 <!--normal-->
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
+</g>
+<mask id="comp_clip_2" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
+<circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#FFFFFF" stroke="none"/>
+</mask>
+</defs>
+<use xlink:href="#comp_pixel_2" mask="url(#comp_clip_2)"/>
+<!-- Composite: finished -->
 </g>
 </svg>
