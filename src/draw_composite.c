@@ -37,7 +37,6 @@ typedef struct comp_ctx_s {
 	unsigned invert:1;
 	unsigned poly_before:1;
 	unsigned poly_after:1;
-	unsigned fake_comp:1; /* drawing a compositing layer group in non-compositing mode: all layers are positive! */
 } comp_ctx_t;
 
 static void comp_fill_board(comp_ctx_t *ctx, int mask_type)
@@ -96,7 +95,7 @@ static void comp_start_add(comp_ctx_t *ctx)
 static void comp_finish(comp_ctx_t *ctx)
 {
 
-	if ((ctx->thin) || (ctx->fake_comp)) {
+	if (ctx->thin) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, ctx->screen);
 		return;
 	}
@@ -131,7 +130,6 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 			comp_fill_board(ctx, HID_MASK_SET);
 		}
 	}
-	ctx->fake_comp = 0;
 }
 
 /* Real composite draw: if any layer is negative, we have to use the HID API's
