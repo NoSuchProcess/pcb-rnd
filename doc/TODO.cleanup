@@ -1,0 +1,3 @@
+- remove vtptr.c, use stock vtp0
+- rename Note
+
