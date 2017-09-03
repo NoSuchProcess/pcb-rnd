@@ -16,6 +16,7 @@ struct pcb_hid_attr_val_s {
 };
 
 typedef enum pcb_hids_e {
+	/* atomic entry types */
 	PCB_HATT_LABEL,
 	PCB_HATT_INTEGER,
 	PCB_HATT_REAL,
@@ -25,7 +26,13 @@ typedef enum pcb_hids_e {
 	PCB_HATT_MIXED,
 	PCB_HATT_PATH,
 	PCB_HATT_UNIT,
-	PCB_HATT_COORD
+	PCB_HATT_COORD,
+
+	/* groups (e.g. boxes) */
+	PCB_HATT_BEGIN_HBOX,
+	PCB_HATT_BEGIN_VBOX,
+	PCB_HATT_BEGIN_TABLE, /* min_val is the number of columns */
+	PCB_HATT_END          /* close one level of PCB_HATT_* */
 } pcb_hids_t;
 
 struct pcb_hid_attribute_s {
