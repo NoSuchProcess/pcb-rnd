@@ -73,8 +73,6 @@ For the next release:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
 	- subcircuit offset on paste
-- namespace renames:
-	- GetObjectBoundingBox
 - new hid render:
 	+ BUG: Silk layer groups with only a single layer and via virtual layer do not receive a call to 'set_drawing_mode'. Maybe paste,mask and other virtual layers also. [report:Ade]
 	- "erase" color:
