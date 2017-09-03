@@ -693,11 +693,6 @@ static void nelma_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void nelma_use_mask(pcb_mask_op_t use_it)
-{
-	/* does nothing */
-}
-
 static void nelma_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	if (nelma_im == NULL) {
@@ -989,7 +984,6 @@ int pplg_init_export_nelma(void)
 	nelma_hid.set_layer_group = nelma_set_layer_group;
 	nelma_hid.make_gc = nelma_make_gc;
 	nelma_hid.destroy_gc = nelma_destroy_gc;
-	nelma_hid.use_mask = nelma_use_mask;
 	nelma_hid.set_color = nelma_set_color;
 	nelma_hid.set_line_cap = nelma_set_line_cap;
 	nelma_hid.set_line_width = nelma_set_line_width;

@@ -128,18 +128,6 @@ typedef struct {
 	int (*throw_drc_dialog) (void);
 } pcb_hid_drc_gui_t;
 
-typedef enum pcb_mask_op_s {
-	HID_MASK_OFF,    /* Flushes the buffer and return to non-mask operation.  */
-
-	HID_MASK_BEFORE, /* Polygons being drawn before clears.  */
-
-	HID_MASK_INIT,   /* Initialize a new rendering layer for compositing layers  */
-	HID_MASK_CLEAR,  /* negative-draw on the rendering layer  */
-	HID_MASK_SET,    /* positive-draw on the rendering layer */
-
-	HID_MASK_AFTER   /* Polygons being drawn after clears.  */
-} pcb_mask_op_t;
-
 typedef enum pcb_composite_op_s {
 	PCB_HID_COMP_RESET,         /* reset (allocate and clear) the sketch canvas */
 	PCB_HID_COMP_POSITIVE,      /* draw subsequent objects in positive, with color */
@@ -265,19 +253,6 @@ struct hid_s {
 	/* Make an empty graphics context.  */
 	pcb_hid_gc_t (*make_gc) (void);
 	void (*destroy_gc) (pcb_hid_gc_t gc_);
-
-	/* Special note about the "erase" color: To use this color, you must
-	   use this function to tell the HID when you're using it.  At the
-	   beginning of a layer redraw cycle (i.e. after set_layer), call
-	   use_mask() to redirect output to a buffer.  Draw to the buffer
-	   (using regular HID calls) using regular and "erase" colors.  Then
-	   call use_mask(HID_MASK_OFF) to flush the buffer to the HID.  If
-	   you use the "erase" color when use_mask is disabled, it simply
-	   draws in the background color.
-
-	   OBSOLETE, do not use it, use set_drawing_mode() and render_burst()
-	   */
-	void (*use_mask) (pcb_mask_op_t use_it_);
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */

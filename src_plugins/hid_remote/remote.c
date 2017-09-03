@@ -200,10 +200,6 @@ static void remote_destroy_gc(pcb_hid_gc_t gc)
 		proto_send_del_gc(idx);
 }
 
-static void remote_use_mask(pcb_mask_op_t mask)
-{
-}
-
 static const char *drawing_mode_names[] = { "reset", "positive", "negative", "flush"};
 static void remote_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
 {
@@ -436,7 +432,6 @@ int pplg_init_hid_remote(void)
 	remote_hid.set_layer_group = remote_set_layer_group;
 	remote_hid.make_gc = remote_make_gc;
 	remote_hid.destroy_gc = remote_destroy_gc;
-	remote_hid.use_mask = remote_use_mask;
 	remote_hid.set_drawing_mode = remote_set_drawing_mode;
 	remote_hid.set_color = remote_set_color;
 	remote_hid.set_line_cap = remote_set_line_cap;

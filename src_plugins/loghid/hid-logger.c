@@ -81,12 +81,6 @@ static void log_destroy_gc(pcb_hid_gc_t gc)
 	delegatee_->destroy_gc(gc);
 }
 
-static void log_use_mask(pcb_mask_op_t use_it)
-{
-	pcb_fprintf(out_, "use_mask(%x)\n", use_it);
-	delegatee_->use_mask(use_it);
-}
-
 static void log_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	pcb_fprintf(out_, "set_drawing_mode(%d,%d,[%mm;%mm,%mm;%mm])\n", op, direct, screen->X1, screen->Y1, screen->X2, screen->Y2);
@@ -260,7 +254,6 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(end_layer);
 	REGISTER_IF_NOT_NULL(make_gc);
 	REGISTER_IF_NOT_NULL(destroy_gc);
-	REGISTER_IF_NOT_NULL(use_mask);
 	REGISTER_IF_NOT_NULL(set_drawing_mode);
 	REGISTER_IF_NOT_NULL(render_burst);
 	REGISTER_IF_NOT_NULL(set_color);

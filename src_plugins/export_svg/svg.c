@@ -409,10 +409,6 @@ static void svg_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void svg_use_mask(pcb_mask_op_t use_it)
-{
-}
-
 static void svg_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	drawing_mode = op;
@@ -819,7 +815,6 @@ int pplg_init_export_svg(void)
 	svg_hid.set_layer_group = svg_set_layer_group;
 	svg_hid.make_gc = svg_make_gc;
 	svg_hid.destroy_gc = svg_destroy_gc;
-	svg_hid.use_mask = svg_use_mask;
 	svg_hid.set_drawing_mode = svg_set_drawing_mode;
 	svg_hid.set_color = svg_set_color;
 	svg_hid.set_line_cap = svg_set_line_cap;

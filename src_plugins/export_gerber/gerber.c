@@ -46,7 +46,6 @@ static void gerber_do_export(pcb_hid_attr_val_t * options);
 static void gerber_parse_arguments(int *argc, char ***argv);
 static pcb_hid_gc_t gerber_make_gc(void);
 static void gerber_destroy_gc(pcb_hid_gc_t gc);
-static void gerber_use_mask(pcb_mask_op_t use_it);
 static void gerber_set_color(pcb_hid_gc_t gc, const char *name);
 static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 static void gerber_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
@@ -885,11 +884,6 @@ static void gerber_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void gerber_use_mask(pcb_mask_op_t use_it)
-{
-}
-
-
 static void gerber_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
 {
 	gerber_drawing_mode = op;
@@ -1317,7 +1311,6 @@ int pplg_init_export_gerber(void)
 	gerber_hid.set_layer_group = gerber_set_layer_group;
 	gerber_hid.make_gc = gerber_make_gc;
 	gerber_hid.destroy_gc = gerber_destroy_gc;
-	gerber_hid.use_mask = gerber_use_mask;
 	gerber_hid.set_drawing_mode = gerber_set_drawing_mode;
 	gerber_hid.set_color = gerber_set_color;
 	gerber_hid.set_line_cap = gerber_set_line_cap;

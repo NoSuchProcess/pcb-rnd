@@ -464,11 +464,6 @@ static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 	curr_drawing_mode = op;
 }
 
-static void ghid_gdk_use_mask(pcb_mask_op_t use_it)
-{
-}
-
-
 typedef struct {
 	int color_set;
 	GdkColor color;
@@ -1413,7 +1408,6 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 		hid->set_layer_group = ghid_gdk_set_layer_group;
 		hid->make_gc = ghid_gdk_make_gc;
 		hid->destroy_gc = ghid_gdk_destroy_gc;
-		hid->use_mask = ghid_gdk_use_mask;
 		hid->set_drawing_mode = ghid_gdk_set_drawing_mode;
 		hid->set_color = ghid_gdk_set_color;
 		hid->set_line_cap = ghid_gdk_set_line_cap;

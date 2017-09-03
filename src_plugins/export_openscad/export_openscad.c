@@ -272,10 +272,6 @@ static void openscad_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void openscad_use_mask(pcb_mask_op_t use_it)
-{
-}
-
 static void openscad_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	if (direct)
@@ -416,7 +412,6 @@ int pplg_init_export_openscad(void)
 	openscad_hid.set_layer_group = openscad_set_layer_group;
 	openscad_hid.make_gc = openscad_make_gc;
 	openscad_hid.destroy_gc = openscad_destroy_gc;
-	openscad_hid.use_mask = openscad_use_mask;
 	openscad_hid.set_drawing_mode = openscad_set_drawing_mode;
 	openscad_hid.set_color = openscad_set_color;
 	openscad_hid.set_line_cap = openscad_set_line_cap;

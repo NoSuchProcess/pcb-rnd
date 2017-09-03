@@ -378,10 +378,6 @@ static void dxf_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void dxf_use_mask(pcb_mask_op_t use_it)
-{
-}
-
 static void dxf_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	if (direct)
@@ -490,7 +486,6 @@ int pplg_init_export_dxf(void)
 	dxf_hid.set_layer_group = dxf_set_layer_group;
 	dxf_hid.make_gc = dxf_make_gc;
 	dxf_hid.destroy_gc = dxf_destroy_gc;
-	dxf_hid.use_mask = dxf_use_mask;
 	dxf_hid.set_drawing_mode = dxf_set_drawing_mode;
 	dxf_hid.set_color = dxf_set_color;
 	dxf_hid.set_line_cap = dxf_set_line_cap;

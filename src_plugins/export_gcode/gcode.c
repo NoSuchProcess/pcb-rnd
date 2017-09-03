@@ -587,11 +587,6 @@ static void gcode_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void gcode_use_mask(pcb_mask_op_t use_it)
-{
-	/* does nothing */
-}
-
 static void gcode_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	if (gcode_im == NULL) {
@@ -904,7 +899,6 @@ int pplg_init_export_gcode(void)
 	gcode_hid.set_layer_group = gcode_set_layer_group;
 	gcode_hid.make_gc = gcode_make_gc;
 	gcode_hid.destroy_gc = gcode_destroy_gc;
-	gcode_hid.use_mask = gcode_use_mask;
 	gcode_hid.set_color = gcode_set_color;
 	gcode_hid.set_line_cap = gcode_set_line_cap;
 	gcode_hid.set_line_width = gcode_set_line_width;

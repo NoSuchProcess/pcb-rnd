@@ -981,10 +981,6 @@ static void ps_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void ps_use_mask(pcb_mask_op_t use_it)
-{
-}
-
 static void ps_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	global.drawing_mode = op;
@@ -1597,7 +1593,6 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->set_layer_group = ps_set_layer_group;
 	hid->make_gc = ps_make_gc;
 	hid->destroy_gc = ps_destroy_gc;
-	hid->use_mask = ps_use_mask;
 	hid->set_drawing_mode = ps_set_drawing_mode;
 	hid->set_color = ps_set_color;
 	hid->set_line_cap = ps_set_line_cap;

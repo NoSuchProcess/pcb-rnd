@@ -1246,10 +1246,6 @@ static void png_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void png_use_mask(pcb_mask_op_t use_it)
-{
-}
-
 static pcb_composite_op_t drawing_mode;
 static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
@@ -1262,7 +1258,7 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			if (comp_im == NULL) {
 				comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 				if (!comp_im) {
-					pcb_message(PCB_MSG_ERROR, "png_use_mask():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					pcb_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 					return;
 				}
 			}
@@ -1699,7 +1695,6 @@ int pplg_init_export_png(void)
 	png_hid.set_layer_group = png_set_layer_group;
 	png_hid.make_gc = png_make_gc;
 	png_hid.destroy_gc = png_destroy_gc;
-	png_hid.use_mask = png_use_mask;
 	png_hid.set_drawing_mode = png_set_drawing_mode;
 	png_hid.set_color = png_set_color;
 	png_hid.set_line_cap = png_set_line_cap;

@@ -301,61 +301,6 @@ static void ghid_gl_draw_bg_image(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void ghid_gl_use_mask(pcb_mask_op_t use_it)
-{
-#if 0				
-	static int stencil_bit = 0;
-
-	if (use_it == cur_mask)
-		return;
-
-	/* Flush out any existing geoemtry to be rendered */
-	hidgl_flush_triangles(&buffer);
-
-	switch (use_it) {
-	case HID_MASK_BEFORE:
-		/* The HID asks not to receive this mask type, so warn if we get it */
-		g_return_if_reached();
-
-	case HID_MASK_INIT:
-		glColorMask(0, 0, 0, 0);		/* Disable writting in color buffer */
-		glEnable(GL_STENCIL_TEST);	/* Enable Stencil test */
-		stencil_bit = hidgl_assign_clear_stencil_bit();	/* Get a new (clean) bitplane to stencil with */
-		break;
-
-	case HID_MASK_SET:
-		/* Write '1' to the stencil buffer where we should draw (on mask: "red", "solid")*/
-		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, write stencil_bit */
-		glStencilMask(stencil_bit);	/* Only write to our subcompositing stencil bitplane */
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value (with 1) */
-		break;
-
-	case HID_MASK_CLEAR:
-		/* Write '0' to the stencil buffer where we should clear (on mask: "cutout", "transparent"). */
-		glStencilFunc(GL_ALWAYS, stencil_bit, stencil_bit);	/* Always pass stencil test, write stencil_bit */
-		glStencilMask(stencil_bit);	/* Only write to our subcompositing stencil bitplane */
-		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);	/* Stencil pass => replace stencil value (with 1) */
-		break;
-
-	case HID_MASK_AFTER:
-		/* Drawing operations as masked to areas where the stencil buffer is '0' */
-		glColorMask(1, 1, 1, 1);		/* Enable drawing of r, g, b & a */
-		glStencilFunc(GL_NOTEQUAL, 0, stencil_bit);	/* Draw only where our bit of the stencil buffer is clear */
-		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	/* Stencil buffer read only */
-		break;
-
-	case HID_MASK_OFF:
-		/* Disable stenciling */
-		hidgl_return_stencil_bit(stencil_bit);	/* Relinquish any bitplane we previously used */
-		glDisable(GL_STENCIL_TEST);	/* Disable Stencil test */
-		break;
-	}
-	cur_mask = use_it;
-#endif
-
-}
-
-
 	/* Config helper functions for when the user changes color preferences.
 	   |  set_special colors used in the gtkhid.
 	 */
@@ -1216,7 +1161,6 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->set_layer_group = ghid_gl_set_layer_group;
 	hid->make_gc = ghid_gl_make_gc;
 	hid->destroy_gc = ghid_gl_destroy_gc;
-	hid->use_mask = ghid_gl_use_mask;
 	hid->set_color = ghid_gl_set_color;
 	hid->set_line_cap = ghid_gl_set_line_cap;
 	hid->set_line_width = ghid_gl_set_line_width;

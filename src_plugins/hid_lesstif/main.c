@@ -235,7 +235,6 @@ PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 static pcb_composite_op_t lesstif_drawing_mode = 0;
 #define use_mask() ((lesstif_drawing_mode == PCB_HID_COMP_POSITIVE) || (lesstif_drawing_mode == PCB_HID_COMP_NEGATIVE))
 
-static void lesstif_use_mask(pcb_mask_op_t use_it);
 static void zoom_max();
 static void zoom_to(double factor, int x, int y);
 static void zoom_by(double factor, int x, int y);
@@ -2285,7 +2284,6 @@ static Boolean idle_proc(XtPointer dummy)
 		int mx, my;
 		pcb_hid_expose_ctx_t ctx;
 
-		lesstif_use_mask(0);
 		pixmap = main_pixmap;
 		mx = view_width;
 		my = view_height;
@@ -2354,8 +2352,8 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 		DrawBackgroundImage();
 		pcb_hid_expose_all(&lesstif_hid, &ctx);
+		lesstif_drawing_mode = PCB_HID_COMP_POSITIVE;
 		draw_grid();
-		lesstif_use_mask(0);
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
 		XSetFunction(display, my_gc, GXcopy);
 		XCopyArea(display, main_pixmap, window, my_gc, 0, 0, view_width, view_height, 0, 0);
@@ -2807,10 +2805,6 @@ static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 	if (gc->colorname != NULL)
 		free(gc->colorname);
 	free(gc);
-}
-
-static void lesstif_use_mask(pcb_mask_op_t use_it)
-{
 }
 
 static void lesstif_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
@@ -3752,7 +3746,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.set_layer_group = lesstif_set_layer_group;
 	lesstif_hid.make_gc = lesstif_make_gc;
 	lesstif_hid.destroy_gc = lesstif_destroy_gc;
-	lesstif_hid.use_mask = lesstif_use_mask;
 	lesstif_hid.set_drawing_mode = lesstif_set_drawing_mode;
 	lesstif_hid.set_color = lesstif_set_color;
 	lesstif_hid.set_line_cap = lesstif_set_line_cap;

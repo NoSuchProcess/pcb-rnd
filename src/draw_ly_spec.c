@@ -154,19 +154,10 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 
 static void pcb_draw_rats(const pcb_box_t *drawn_area)
 {
-	/*
-	 * lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
-	 * gtk only allows negative drawing.
-	 * using the mask here is to get rat transparency
-	 */
-	if (pcb_gui->can_mask_clear_rats)
-		pcb_gui->use_mask(HID_MASK_CLEAR);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
 	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, pcb_rat_draw_callback, NULL, NULL);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
-	if (pcb_gui->can_mask_clear_rats)
-		pcb_gui->use_mask(HID_MASK_OFF);
 }
 
 static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area)

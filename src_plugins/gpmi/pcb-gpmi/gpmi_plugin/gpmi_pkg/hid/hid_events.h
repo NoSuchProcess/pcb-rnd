@@ -47,9 +47,6 @@ gpmi_define_event(HIDE_fill_polygon)(void *hid, void *gc, int n_coords, int *x, 
 /* PCB callback events for drawing: draw a filled rectangle */
 gpmi_define_event(HIDE_fill_rect)(void *hid, void *gc, int x1, int y1, int x2, int y2);
 
-/* PCB callback events for drawing: TODO */
-gpmi_define_event(HIDE_use_mask)(void *hid, int use_it);
-
 /* PCB callback events for drawing: create a new graphical context */
 gpmi_define_event(HIDE_make_gc)(void *hid, void *gc);
 

@@ -34,7 +34,6 @@ static void eps_parse_arguments(int *argc, char ***argv);
 static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 static pcb_hid_gc_t eps_make_gc(void);
 static void eps_destroy_gc(pcb_hid_gc_t gc);
-static void eps_use_mask(pcb_mask_op_t use_it);
 static void eps_set_color(pcb_hid_gc_t gc, const char *name);
 static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 static void eps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
@@ -416,10 +415,6 @@ static void eps_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void eps_use_mask(pcb_mask_op_t use_it)
-{
-}
-
 static void eps_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	if (direct)
@@ -651,7 +646,6 @@ void hid_eps_init()
 	eps_hid.set_layer_group = eps_set_layer_group;
 	eps_hid.make_gc = eps_make_gc;
 	eps_hid.destroy_gc = eps_destroy_gc;
-	eps_hid.use_mask = eps_use_mask;
 	eps_hid.set_drawing_mode = eps_set_drawing_mode;
 	eps_hid.set_color = eps_set_color;
 	eps_hid.set_line_cap = eps_set_line_cap;

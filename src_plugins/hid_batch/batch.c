@@ -170,10 +170,6 @@ static void batch_destroy_gc(pcb_hid_gc_t gc)
 {
 }
 
-static void batch_use_mask(pcb_mask_op_t use_it)
-{
-}
-
 static void batch_set_color(pcb_hid_gc_t gc, const char *name)
 {
 }
@@ -350,7 +346,6 @@ int pplg_init_hid_batch(void)
 	batch_hid.set_layer_group = batch_set_layer_group;
 	batch_hid.make_gc = batch_make_gc;
 	batch_hid.destroy_gc = batch_destroy_gc;
-	batch_hid.use_mask = batch_use_mask;
 	batch_hid.set_color = batch_set_color;
 	batch_hid.set_line_cap = batch_set_line_cap;
 	batch_hid.set_line_width = batch_set_line_width;
