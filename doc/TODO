@@ -103,9 +103,6 @@ LATER RELEASES:
 - update /usr/share/pcb-rnd/default.pcb to default lihata 
 	- after switch, update doc/conf and doc/user references to conf settings from .pcb to .lht as needed 
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-+ composite layer draw API cleanup [Ade]:
-	+ composite silk layer highlight bug: add a second, sub silk layer; place an element; select the element -> element silk is not cyan; reason: real composite layer is drawn with mask, mask loses color on blotting (affect gtk only)
-	+ (the same happens on paste, probably on mask too)
 - BUG: cycledrag doesn't work on arc endpoint + line endpoint when rubber band is enabled [report:Ade]
 - Rubberband Arcs:
 	- Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Ade]
