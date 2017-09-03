@@ -25,11 +25,28 @@ pcb-rnd can edit a single board at a time. To edit multiple boards, open
 multiple instances of pcb-rnd.
 
 <h3> 3.2. Paste Buffer</h3>
+There are multiple paste buffers available in pcb-rnd. The user can select
+one of them to be active - most buffer operations will work with the active
+buffer.
+<p>
+Buffers are board-independent: they have their own dynamic size and their
+own virtual layer stack. These enable buffers to act as a proxy between
+different boards and formats.
+<p>
+The following operations can be done with buffers:
+<ul>
+	<li> clear: the content of the buffer is discarded
+	<li> copy from layout: copy objects from the layout to the buffer
+	<li> paste to layout: copy objects from the buffer to the layout
+	<li> load: load buffer from file
+	<li> save element/subcircuit: save elements/subcircuits from buffer to file
+	<li> rotate
+</ul>
 <h3> 3.3. Footprint Libraries</h3>
-<ul> 
-    <li>3.3.1 pcblib
-    <li>3.3.2 static footprints
-    <li>3.3.3 generated footprints
+<ul>
+	<li>3.3.1 pcblib
+	<li>3.3.2 static footprints
+	<li>3.3.3 generated footprints
 </ul>
 <h3> 3.4. file formats</h3>
 <h3> 3.4.1 board formats</h3>
