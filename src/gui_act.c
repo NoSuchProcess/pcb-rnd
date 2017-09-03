@@ -702,6 +702,7 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				case PCB_MODE_LOCK:
 					pcb_crosshair_set_mode(PCB_MODE_NO);
 					pcb_crosshair_set_mode(PCB_MODE_ARROW);
+					Note.Hit = Note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
 					break;
 
 				case PCB_MODE_LINE:
