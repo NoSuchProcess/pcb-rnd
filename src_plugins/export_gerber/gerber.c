@@ -82,13 +82,12 @@ static int verbose;
 static int all_layers;
 static int is_mask, was_drill;
 static int is_drill;
-static int current_mask;
+static pcb_composite_op_t gerber_drawing_mode, drawing_mode_issued;
 static int flash_drills;
 static int copy_outline_mode;
 static int name_style;
 static int want_cross_sect;
 static pcb_layer_t *outline_layer;
-static int mask_issued;
 static int gerber_debug;
 
 enum ApertureShape {
@@ -601,6 +600,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
+	drawing_mode_issued = PCB_HID_COMP_POSITIVE;
+
 	if (!options) {
 		gerber_get_export_options(NULL);
 		for (i = 0; i < NUM_OPTIONS; i++)
@@ -740,7 +741,6 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 
 	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	is_mask = !!(flags & PCB_LYT_MASK);
-	current_mask = 0;
 	if (group < 0 || group != lastgroup) {
 		time_t currenttime;
 		char utcTime[64];
@@ -885,14 +885,16 @@ static void gerber_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-
 static void gerber_use_mask(pcb_mask_op_t use_it)
 {
-	current_mask = use_it;
+}
+
+
+static void gerber_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+{
+	gerber_drawing_mode = op;
 	if ((f != NULL) && (gerber_debug))
-		fprintf(f, "G04 hid debug mask: %d*\r\n", use_it);
-	if ((use_it == HID_MASK_OFF) || (use_it == HID_MASK_INIT))
-		mask_issued = -1;
+		fprintf(f, "G04 hid debug composite: %d*\r\n", op);
 }
 
 static void gerber_set_color(pcb_hid_gc_t gc, const char *name)
@@ -931,14 +933,14 @@ static void gerber_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void use_gc(pcb_hid_gc_t gc, int radius)
 {
-	if ((f != NULL) && (current_mask != mask_issued)) {
-		if (current_mask == HID_MASK_SET) {
+	if ((f != NULL) && (gerber_drawing_mode != drawing_mode_issued)) {
+		if (gerber_drawing_mode == PCB_HID_COMP_POSITIVE) {
 			fprintf(f, "%%LPD*%%\r\n");
-			mask_issued = current_mask;
+			drawing_mode_issued = gerber_drawing_mode;
 		}
-		else if (current_mask == HID_MASK_CLEAR) {
+		else if (gerber_drawing_mode == PCB_HID_COMP_NEGATIVE) {
 			fprintf(f, "%%LPC*%%\r\n");
-			mask_issued = current_mask;
+			drawing_mode_issued = gerber_drawing_mode;
 		}
 	}
 
@@ -1212,7 +1214,7 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 	int firstTime = 1;
 	pcb_coord_t startX = 0, startY = 0;
 
-	if (is_mask && current_mask == HID_MASK_BEFORE)
+	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
 		return;
 
 	use_gc(gc, 10 * 100);
@@ -1316,6 +1318,7 @@ int pplg_init_export_gerber(void)
 	gerber_hid.make_gc = gerber_make_gc;
 	gerber_hid.destroy_gc = gerber_destroy_gc;
 	gerber_hid.use_mask = gerber_use_mask;
+	gerber_hid.set_drawing_mode = gerber_set_drawing_mode;
 	gerber_hid.set_color = gerber_set_color;
 	gerber_hid.set_line_cap = gerber_set_line_cap;
 	gerber_hid.set_line_width = gerber_set_line_width;
