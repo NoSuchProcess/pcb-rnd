@@ -13,7 +13,6 @@ IPC-D-356
 eps
 ps
 XY  2>/dev/null
-openscad
 png
 gerber
 svg 2>/dev/null
