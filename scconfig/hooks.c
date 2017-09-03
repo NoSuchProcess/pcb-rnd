@@ -624,14 +624,6 @@ int hook_detect_target()
 		put("cc/rdynamic", "");
 
 	/* plugin dependencies */
-	if (plug_is_enabled("dbus")) {
-		require("libs/sul/dbus/presents", 0, 0);
-		if (!istrue(get("libs/sul/dbus/presents"))) {
-			report_repeat("WARNING: disabling the DBUS interface plugin because libdbus is not found or not configured...\n");
-			hook_custom_arg("Disable-dbus", NULL);
-		}
-	}
-
 	plugin_deps(1);
 
 	if (plug_is_enabled("gpmi")) {
