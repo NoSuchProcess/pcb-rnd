@@ -302,11 +302,12 @@ void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y
 	send_end(&pctx);
 }
 
-int proto_send_use_mask(const char *name)
+int proto_send_set_drawing_mode(const char *name, int direct)
 {
-	send_begin(&pctx, "umask");
+	send_begin(&pctx, "drwmod");
 	send_open(&pctx, str_is_bin(name), 1);
 	sends(&pctx, name);
+	sendf(&pctx, "%d", direct);
 	send_close(&pctx);
 	send_end(&pctx);
 	return 0;

@@ -45,6 +45,6 @@ void proto_send_draw_arc(int gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wid
 void proto_send_draw_rect(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int is_filled);
 void proto_send_fill_circle(int gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
-int proto_send_use_mask(const char *name);
+int proto_send_set_drawing_mode(const char *name, int direct);
 
 int remote_proto_parse_all();

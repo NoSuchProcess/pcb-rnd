@@ -200,13 +200,17 @@ static void remote_destroy_gc(pcb_hid_gc_t gc)
 		proto_send_del_gc(idx);
 }
 
-static const char *mask_names[] = { "off", "before", "clear", "set", "after" };
 static void remote_use_mask(pcb_mask_op_t mask)
 {
-	if ((mask >= 0) && (mask < sizeof(mask_names) / sizeof(mask_names[0])))
-		proto_send_use_mask(mask_names[mask]);
+}
+
+static const char *drawing_mode_names[] = { "reset", "positive", "negative", "flush"};
+static void remote_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+{
+	if ((op >= 0) && (op < sizeof(drawing_mode_names) / sizeof(drawing_mode_names[0])))
+		proto_send_set_drawing_mode(drawing_mode_names[op], direct);
 	else
-		pcb_message(PCB_MSG_ERROR, "Invalid use_mask %d\n", mask);
+		pcb_message(PCB_MSG_ERROR, "Invalid drawing mode %d\n", op);
 }
 
 static void remote_set_color(pcb_hid_gc_t gc, const char *name)
@@ -403,7 +407,7 @@ static void remote_propedit_add_stat(void *pe, const char *propname, void *propc
 #include "dolists.h"
 
 
-int pplg_check_ver_remote(int ver_needed) { return 0; }
+int pplg_check_ver_hid_remote(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_remote(void)
 {
@@ -433,6 +437,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.make_gc = remote_make_gc;
 	remote_hid.destroy_gc = remote_destroy_gc;
 	remote_hid.use_mask = remote_use_mask;
+	remote_hid.set_drawing_mode = remote_set_drawing_mode;
 	remote_hid.set_color = remote_set_color;
 	remote_hid.set_line_cap = remote_set_line_cap;
 	remote_hid.set_line_width = remote_set_line_width;
