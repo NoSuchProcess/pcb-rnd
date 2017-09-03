@@ -1237,7 +1237,6 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 
 	hid->poly_before = 0;
 	hid->poly_after = 0;
-	hid->enable_fake_composite = 0;
 	hid->holes_after = 1;
 	}
 }

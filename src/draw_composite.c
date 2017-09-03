@@ -173,27 +173,6 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 		comp_start_add(ctx);
 }
 
-/* Fake composite draw: if all layers are positively combined, bypass the
-   compositing and just draw directly (optimization). */
-static void comp_draw_layer_fake(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
-{
-	int n;
-	ctx->fake_comp = 1;
-
-	for(n = 0; n < ctx->grp->len; n++) {
-		pcb_layer_t *l = pcb_get_layer(ctx->grp->lid[n]);
-		const char *old_color = l->meta.real.color;
-
-		l->meta.real.color = ctx->color;
-		if (l->comb & PCB_LYC_AUTO)
-			draw_auto(ctx, auto_data);
-		pcb_draw_layer(l, ctx->screen);
-		l->meta.real.color = old_color;
-	}
-
-}
-
-
 int pcb_draw_layergrp_is_comp(pcb_layergrp_t *g)
 {
 	int n;
@@ -216,16 +195,10 @@ int pcb_draw_layer_is_comp(pcb_layer_id_t id)
 /* Draw a layer group with fake or real compositing */
 static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
 {
-	int enable_fake = (pcb_gui != NULL) && (pcb_gui->enable_fake_composite);
 	int is_comp = pcb_draw_layergrp_is_comp(ctx->grp);
 
 	if (is_comp)
 		Output.direct = 0;
 
- /* optimization: don't do real compositing in thin draw mode (because that's
-    drawn all-positive) or if every layer is naturally positive */
-	if ((!enable_fake || is_comp) && (!ctx->thin))
-		comp_draw_layer_real(ctx, draw_auto, auto_data);
-	else
-		comp_draw_layer_fake(ctx, draw_auto, auto_data);
+	comp_draw_layer_real(ctx, draw_auto, auto_data);
 }

@@ -1432,6 +1432,5 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 
 		hid->poly_after = 0;
 		hid->poly_before = 0;
-		hid->enable_fake_composite = 0;
 	}
 }

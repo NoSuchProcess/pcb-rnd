@@ -3739,7 +3739,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.poly_before = 0;
 	lesstif_hid.poly_after = 0;
 	lesstif_hid.can_mask_clear_rats = 1;
-	lesstif_hid.enable_fake_composite = 0;
 
 	lesstif_hid.get_export_options = lesstif_get_export_options;
 	lesstif_hid.do_export = lesstif_do_export;
