@@ -81,7 +81,6 @@ For the next release:
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
 		- holes_after should be set to 1 everywhere, then removed
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
-		- remove enable_fake, use 'direct' instead
 - BUGS:
 	- gtk menu: hotkeys not shown for checkbox menus (settings)
 	- RTT: gerber shouldn't ingore the cnc files
