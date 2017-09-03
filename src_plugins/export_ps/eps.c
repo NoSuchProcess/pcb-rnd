@@ -246,15 +246,6 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 			print_layer[i] = 1;
 	}
 
-	if (fast_erase) {
-		eps_hid.poly_before = 1;
-		eps_hid.poly_after = 0;
-	}
-	else {
-		eps_hid.poly_before = 0;
-		eps_hid.poly_after = 1;
-	}
-
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
