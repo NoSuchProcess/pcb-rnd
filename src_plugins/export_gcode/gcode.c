@@ -891,7 +891,6 @@ int pplg_init_export_gcode(void)
 	gcode_hid.name = "gcode";
 	gcode_hid.description = "G-CODE export";
 	gcode_hid.exporter = 1;
-	gcode_hid.poly_before = 1;
 
 	gcode_hid.get_export_options = gcode_get_export_options;
 	gcode_hid.do_export = gcode_do_export;

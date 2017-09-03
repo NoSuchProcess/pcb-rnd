@@ -49,9 +49,6 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	cctx.color = conf_core.appearance.color.paste;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
-	cctx.poly_before = pcb_gui->poly_before;
-	cctx.poly_after = pcb_gui->poly_after;
-
 
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) /* fallback: no layers -> original code: draw a single auto-add */
 		pcb_pad_paste_draw(side, drawn_area);
@@ -83,9 +80,6 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 	cctx.color = conf_core.appearance.color.mask;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = pcb_gui->mask_invert;
-	cctx.poly_before = pcb_gui->poly_before;
-	cctx.poly_after = pcb_gui->poly_after;
-
 
 	if (!cctx.invert)
 		Output.direct = 0;
@@ -131,8 +125,6 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	cctx.color = /*PCB->Data->Layer[lid].Color*/ conf_core.appearance.color.element;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
-	cctx.poly_before = pcb_gui->poly_before;
-	cctx.poly_after = pcb_gui->poly_after;
 
 	if ((cctx.grp == NULL) || (cctx.grp->len < 2) ||   /* fallback: no layers -> original code: draw auto+manual */
 			(((cctx.grp->len == 1)) && ((PCB->Data->Layer[lid].comb & (PCB_LYC_AUTO | PCB_LYC_SUB)) == PCB_LYC_AUTO))) {    /* fallback: one positive auto layer -> original code: draw auto+manual */

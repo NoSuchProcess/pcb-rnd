@@ -1423,8 +1423,5 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 		hid->request_debug_draw = ghid_gdk_request_debug_draw;
 		hid->flush_debug_draw = ghid_gdk_flush_debug_draw;
 		hid->finish_debug_draw = ghid_gdk_finish_debug_draw;
-
-		hid->poly_after = 0;
-		hid->poly_before = 0;
 	}
 }

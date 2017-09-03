@@ -176,15 +176,6 @@ struct hid_s {
 	   and EPS exporters.  */
 	unsigned exporter:1;
 
-	/* If set, the redraw code will draw polygons before erasing the
-	   clearances.  */
-	unsigned poly_before:1;
-
-	/* If set, the redraw code will draw polygons after erasing the
-	   clearances.  Note that HIDs may set both of these, in which case
-	   polygons will be drawn twice.  */
-	unsigned poly_after:1;
-
 	/* If set, draw the mask layer inverted. Normally the mask is a filled
 	   rectangle over the board with cutouts at pins/pads. The HIDs
 	   use render in normal mode, gerber renders in inverse mode. */

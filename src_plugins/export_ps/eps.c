@@ -628,8 +628,6 @@ void hid_eps_init()
 	eps_hid.name = "eps";
 	eps_hid.description = "Encapsulated Postscript";
 	eps_hid.exporter = 1;
-	eps_hid.poly_before = 0;
-	eps_hid.poly_after = 0;
 
 	eps_hid.get_export_options = eps_get_export_options;
 	eps_hid.do_export = eps_do_export;

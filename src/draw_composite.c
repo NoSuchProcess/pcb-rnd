@@ -35,16 +35,10 @@ typedef struct comp_ctx_s {
 
 	unsigned thin:1;
 	unsigned invert:1;
-	unsigned poly_before:1;
-	unsigned poly_after:1;
 } comp_ctx_t;
 
-static void comp_fill_board(comp_ctx_t *ctx, int is_before)
+static void comp_fill_board(comp_ctx_t *ctx)
 {
-	/* Skip the mask drawing if the GUI doesn't want this type */
-	if (((is_before==1) && !ctx->poly_before) || ((is_before == 0) && !ctx->poly_after))
-		return;
-
 	pcb_gui->set_color(Output.fgGC, ctx->color);
 	if (ctx->screen == NULL)
 		pcb_gui->fill_rect(Output.fgGC, 0, 0, ctx->pcb->MaxWidth, ctx->pcb->MaxHeight);
@@ -96,7 +90,6 @@ static void comp_finish(comp_ctx_t *ctx)
 		return;
 	}
 
-	comp_fill_board(ctx, 0);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, ctx->screen);
 }
 
@@ -111,14 +104,9 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 		negative = !negative;
 
 	if ((!ctx->thin) && (negative)) {
-		/* old way of drawing the big poly for the negative */
-		comp_fill_board(ctx, 1);
-
-		if (!pcb_gui->poly_before) {
-			/* new way */
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
-			comp_fill_board(ctx, 2);
-		}
+		/* drawing the big poly for the negative */
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
+		comp_fill_board(ctx);
 	}
 }
 

@@ -976,7 +976,6 @@ int pplg_init_export_nelma(void)
 	nelma_hid.name = "nelma";
 	nelma_hid.description = "Numerical analysis package export";
 	nelma_hid.exporter = 1;
-	nelma_hid.poly_before = 1;
 
 	nelma_hid.get_export_options = nelma_get_export_options;
 	nelma_hid.do_export = nelma_do_export;

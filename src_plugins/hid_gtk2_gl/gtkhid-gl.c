@@ -1179,8 +1179,6 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->flush_debug_draw = ghid_gl_flush_debug_draw;
 	hid->finish_debug_draw = ghid_gl_finish_debug_draw;
 
-	hid->poly_before = 0;
-	hid->poly_after = 0;
 	hid->holes_after = 1;
 	}
 }

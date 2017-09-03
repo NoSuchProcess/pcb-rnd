@@ -129,7 +129,6 @@ void hid_extents_init(void)
 	extents_hid.struct_size = sizeof(pcb_hid_t);
 	extents_hid.name = "extents-extents";
 	extents_hid.description = "used to calculate extents";
-	extents_hid.poly_before = 1;
 
 	extents_hid.set_layer_group = extents_set_layer_group;
 	extents_hid.make_gc = extents_make_gc;
