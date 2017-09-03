@@ -587,7 +587,7 @@ int pcb_layergrp_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t
 	return used;
 }
 
-int pcb_layer_group_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
+int pcb_layergrp_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, used = 0;
 	for (group = 0; group < pcb->LayerGroups.len; group++) {
