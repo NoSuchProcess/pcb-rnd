@@ -182,13 +182,13 @@ static void ShowCrosshair(pcb_bool show)
 /* This is the size of the current PCB work area.  */
 /* Use PCB->MaxWidth, PCB->MaxHeight.  */
 /* static int pcb_width, pcb_height; */
-		 static int use_private_colormap = 0;
-		 static int stdin_listen = 0;
-		 static char *background_image_file = 0;
+static int use_private_colormap = 0;
+static int stdin_listen = 0;
+static char *background_image_file = 0;
 
-		 pcb_hid_attribute_t lesstif_attribute_list[] = {
-			 {"install", "Install private colormap",
-				PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
+pcb_hid_attribute_t lesstif_attribute_list[] = {
+	{"install", "Install private colormap",
+		PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
 #define HA_colormap 0
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -198,8 +198,8 @@ Listen for actions on stdin.
 @end ftable
 %end-doc
 */
-			 {"listen", "Listen on standard input for actions",
-				PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &stdin_listen},
+	{"listen", "Listen on standard input for actions",
+		PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &stdin_listen},
 #define HA_listen 1
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -211,8 +211,8 @@ automatically scaled to fit the canvas.
 @end ftable
 %end-doc
 */
-			 {"bg-image", "Background Image",
-				PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, &background_image_file},
+	{"bg-image", "Background Image",
+		PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, &background_image_file},
 #define HA_bg_image 2
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -224,11 +224,11 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 */
 #warning TODO#1: this should be generic and not depend on the HID
 /*
-			 {"pcb-menu", "Location of pcb-menu.res file",
-				PCB_HATT_STRING, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
+	{"pcb-menu", "Location of pcb-menu.res file",
+		PCB_HATT_STRING, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
 #define HA_pcbmenu 3
 */
-		 };
+};
 
 PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
