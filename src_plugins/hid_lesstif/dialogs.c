@@ -613,12 +613,14 @@ static void attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t 
 
 	attrcount = -1;
 	for (i = 0; i < n_attrs; i++) {
+		static char buf[30];
 		Widget w;
 
 		if (attrs[i].help_text == ATTR_UNDOCUMENTED)
 			continue;
 		attrcount++;
 
+		/* Add label */
 		stdarg_n = 0;
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
@@ -629,17 +631,9 @@ static void attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t 
 		stdarg(XmNalignment, XmALIGNMENT_END);
 		w = XmCreateLabel(lform, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 		XtManageChild(w);
-	}
 
-	attrcount = -1;
-	for (i = 0; i < n_attrs; i++) {
-		static char buf[30];
+		/* Add content */
 		stdarg_n = 0;
-
-		if (attrs[i].help_text == ATTR_UNDOCUMENTED)
-			continue;
-		attrcount++;
-
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNtopAttachment, XmATTACH_POSITION);
