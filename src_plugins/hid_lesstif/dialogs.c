@@ -583,7 +583,37 @@ static Widget create_form_ok_dialog(const char *name, int ok)
 	return topform;
 }
 
-static void attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, Widget parent, Widget *wl, int n_attrs, int actual_nattrs)
+static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows)
+{
+	Widget cnt;
+
+	stdarg_n = 0;
+	switch(type) {
+		case 'h': /* "hbox" */
+			stdarg(XmNorientation, XmHORIZONTAL);
+			stdarg(XmNpacking, XmPACK_COLUMN);
+			break;
+		case 'v': /* "vbox" */
+			stdarg(XmNorientation, XmVERTICAL);
+			stdarg(XmNpacking, XmPACK_COLUMN);
+			break;
+		case 't': /* "table" */
+			stdarg(XmNorientation, XmHORIZONTAL);
+			stdarg(XmNpacking, XmPACK_COLUMN);
+			stdarg(XmNnumColumns, num_table_rows);
+			stdarg(XmNisAligned, True);
+			stdarg(XmNentryAlignment, XmALIGNMENT_END);
+			break;
+		default:
+			abort();
+	}
+	cnt = XmCreateRowColumn(parent, name, stdarg_args, stdarg_n);
+	return cnt;
+}
+
+
+/* returns the index of HATT_END where the loop had to stop */
+static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, Widget parent, Widget *wl, int n_attrs, int actual_nattrs, int start_from)
 {
 	int i;
 	Widget lform, form;
@@ -612,7 +642,7 @@ static void attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t 
 	XtManageChild(form);
 
 	attrcount = -1;
-	for (i = 0; i < n_attrs; i++) {
+	for (i = start_from; i < n_attrs; i++) {
 		static char buf[30];
 		Widget w;
 
@@ -643,6 +673,17 @@ static void attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t 
 		stdarg(XmNalignment, XmALIGNMENT_END);
 
 		switch (attrs[i].type) {
+		case PCB_HATT_END:
+			goto end;
+		case PCB_HATT_BEGIN_TABLE:
+			stdarg(XmNcolumns, 13);
+			stdarg(XmNresizeWidth, True);
+			w = wl[i] = pcb_motif_box(form, XmStrCast(attrs[i].name), 't', attrs[i].min_val);
+			printf("table recurse at %d\n", i);
+			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1);
+			printf("table out at %d\n", i);
+			XtManageChild(w);
+			break;
 		case PCB_HATT_LABEL:
 			stdarg(XmNlabelString, empty);
 			wl[i] = XmCreateLabel(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
@@ -719,10 +760,11 @@ static void attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t 
 			wl[i] = XmCreateLabel(form, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
 			break;
 		}
-
-		XtManageChild(wl[i]);
+		if (wl[i] != NULL)
+			XtManageChild(wl[i]);
 	}
-
+	end:;
+	return i;
 }
 
 int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
@@ -740,7 +782,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 			results[i].str_value = pcb_strdup(results[i].str_value);
 	}
 
-	wl = (Widget *) malloc(n_attrs * sizeof(Widget));
+	wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 
 	topform = create_form_ok_dialog(title, 1);
 	dialog = XtParent(topform);
@@ -749,7 +791,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	stdarg(XmNfractionBase, n_attrs);
 	XtSetValues(topform, stdarg_args, stdarg_n);
 
-	attribute_dialog_add(attrs, results, topform, wl, n_attrs, actual_nattrs);
+	attribute_dialog_add(attrs, results, topform, wl, n_attrs, actual_nattrs, 0);
 
 	rv = wait_for_dialog(dialog);
 
