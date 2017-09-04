@@ -587,7 +587,6 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 {
 	Widget cnt;
 
-	stdarg_n = 0;
 	switch(type) {
 		case 'h': /* "hbox" */
 			stdarg(XmNorientation, XmHORIZONTAL);
@@ -612,113 +611,117 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 }
 
 
+/* Count the number of direct children, start_from the first children */
+static int attribute_dialog_num_child(pcb_hid_attribute_t *attrs, int start_from, int n_attrs)
+{
+	int n, level = 1, cnt = 0;
+
+	for(n = start_from; n < n_attrs; n++) {
+		if ((level == 1) && (attrs[n].type != PCB_HATT_END))
+			cnt++;
+		switch(attrs[n].type) {
+			case PCB_HATT_END:
+				level--;
+				if (level == 0)
+					return cnt;
+				break;
+			case PCB_HATT_BEGIN_TABLE:
+			case PCB_HATT_BEGIN_HBOX:
+			case PCB_HATT_BEGIN_VBOX:
+				level++;
+				break;
+			default:
+				break;
+		}
+	}
+	return cnt;
+}
+
 /* returns the index of HATT_END where the loop had to stop */
 static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, Widget parent, Widget *wl, int n_attrs, int actual_nattrs, int start_from)
 {
-	int i;
-	Widget lform, form;
-	int attrcount = 0;
+	int i, numch;
 	static XmString empty = 0;
 
 	if (!empty)
 		empty = XmStringCreatePCB(" ");
 
-	stdarg_n = 0;
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNfractionBase, actual_nattrs);
-	lform = XmCreateForm(parent, XmStrCast("attributes"), stdarg_args, stdarg_n);
-	XtManageChild(lform);
-
-	stdarg_n = 0;
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	stdarg(XmNleftAttachment, XmATTACH_WIDGET);
-	stdarg(XmNleftWidget, lform);
-	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	stdarg(XmNfractionBase, actual_nattrs);
-	form = XmCreateForm(parent, XmStrCast("attributes"), stdarg_args, stdarg_n);
-	XtManageChild(form);
-
-	attrcount = -1;
 	for (i = start_from; i < n_attrs; i++) {
-		static char buf[30];
+		char buf[30];
 		Widget w;
+
+		if (attrs[i].type == PCB_HATT_END)
+			break;
 
 		if (attrs[i].help_text == ATTR_UNDOCUMENTED)
 			continue;
-		attrcount++;
 
 		/* Add label */
 		stdarg_n = 0;
-		stdarg(XmNleftAttachment, XmATTACH_FORM);
-		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		stdarg(XmNtopAttachment, XmATTACH_POSITION);
-		stdarg(XmNtopPosition, attrcount);
-		stdarg(XmNbottomAttachment, XmATTACH_POSITION);
-		stdarg(XmNbottomPosition, attrcount + 1);
 		stdarg(XmNalignment, XmALIGNMENT_END);
-		w = XmCreateLabel(lform, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+		w = XmCreateLabel(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 		XtManageChild(w);
 
 		/* Add content */
 		stdarg_n = 0;
-		stdarg(XmNleftAttachment, XmATTACH_FORM);
-		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		stdarg(XmNtopAttachment, XmATTACH_POSITION);
-		stdarg(XmNtopPosition, attrcount);
-		stdarg(XmNbottomAttachment, XmATTACH_POSITION);
-		stdarg(XmNbottomPosition, attrcount + 1);
 		stdarg(XmNalignment, XmALIGNMENT_END);
 
 		switch (attrs[i].type) {
-		case PCB_HATT_END:
-			goto end;
 		case PCB_HATT_BEGIN_TABLE:
-			stdarg(XmNcolumns, 13);
-			stdarg(XmNresizeWidth, True);
-			w = wl[i] = pcb_motif_box(form, XmStrCast(attrs[i].name), 't', attrs[i].min_val);
-			printf("table recurse at %d\n", i);
-			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1);
-			printf("table out at %d\n", i);
+
+			/* create frame around the content table */
+			stdarg_n = 0;
+			stdarg(XmNalignment, XmALIGNMENT_END);
+			w = XmCreateFrame(parent, XmStrCast("szar"), stdarg_args, stdarg_n);
 			XtManageChild(w);
+
+			/* create content table */
+			numch = attribute_dialog_num_child(attrs, i+1, n_attrs);
+			stdarg_n = 0;
+			stdarg(XmNalignment, XmALIGNMENT_END);
+			numch = numch  / (attrs[i].min_val);
+			w = pcb_motif_box(w, XmStrCast(attrs[i].name), 't', numch);
+			XtManageChild(w);
+
+
+			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1);
+#warning TODO: if table, pad up to even number of items per row
 			break;
 		case PCB_HATT_LABEL:
 			stdarg(XmNlabelString, empty);
-			wl[i] = XmCreateLabel(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			wl[i] = XmCreateLabel(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_BOOL:
 			stdarg(XmNlabelString, empty);
 			stdarg(XmNset, results[i].int_value);
-			wl[i] = XmCreateToggleButton(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			wl[i] = XmCreateToggleButton(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_STRING:
 			stdarg(XmNcolumns, 40);
 			stdarg(XmNresizeWidth, True);
 			stdarg(XmNvalue, results[i].str_value);
-			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_INTEGER:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
 			sprintf(buf, "%d", results[i].int_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_COORD:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
 			pcb_snprintf(buf, sizeof(buf), "%$mS", results[i].coord_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_REAL:
 			stdarg(XmNcolumns, 16);
 			stdarg(XmNresizeWidth, True);
 			pcb_snprintf(buf, sizeof(buf), "%g", results[i].real_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_ENUM:
 			{
@@ -729,13 +732,12 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 				if (empty == 0)
 					empty = XmStringCreatePCB("");
 
-				submenu = XmCreatePulldownMenu(form, XmStrCast(attrs[i].name), stdarg_args + sn, stdarg_n - sn);
+				submenu = XmCreatePulldownMenu(parent, XmStrCast(attrs[i].name), stdarg_args + sn, stdarg_n - sn);
 
 				stdarg_n = sn;
 				stdarg(XmNlabelString, empty);
 				stdarg(XmNsubMenuId, submenu);
-				wl[i] = XmCreateOptionMenu(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
-
+				wl[i] = XmCreateOptionMenu(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 				for (sn = 0; attrs[i].enumerations[sn]; sn++) {
 					Widget btn;
 					XmString label;
@@ -757,19 +759,18 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			}
 			break;
 		default:
-			wl[i] = XmCreateLabel(form, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
+			wl[i] = XmCreateLabel(parent, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
 			break;
 		}
 		if (wl[i] != NULL)
 			XtManageChild(wl[i]);
 	}
-	end:;
 	return i;
 }
 
 int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
 {
-	Widget dialog, topform;
+	Widget dialog, topform, main_tbl;
 	Widget *wl;
 	int i, rv;
 	int actual_nattrs = 0;
@@ -791,7 +792,11 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	stdarg(XmNfractionBase, n_attrs);
 	XtSetValues(topform, stdarg_args, stdarg_n);
 
-	attribute_dialog_add(attrs, results, topform, wl, n_attrs, actual_nattrs, 0);
+
+	stdarg_n = 0;
+	main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', attribute_dialog_num_child(attrs, 0, n_attrs));
+	XtManageChild(main_tbl);
+	attribute_dialog_add(attrs, results, main_tbl, wl, n_attrs, actual_nattrs, 0);
 
 	rv = wait_for_dialog(dialog);
 
