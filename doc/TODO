@@ -77,7 +77,6 @@ For the next release:
 	- BUG: in both gtk guis, clicking Subcircuits layer control box 'off' effectively locks all subc, but gui lock tool doesn't work on subc. [report: Miloh]
 - new hid render:
 	- BUG: font selector crashes the lesstif HID
-	+ BUG: Silk layer groups with only a single layer and via virtual layer do not receive a call to 'set_drawing_mode'. Maybe paste,mask and other virtual layers also. [report:Ade]
 	- "erase" color:
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
 		- holes_after should be set to 1 everywhere, then removed
