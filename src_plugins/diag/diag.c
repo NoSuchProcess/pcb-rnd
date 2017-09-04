@@ -35,6 +35,8 @@
 #include "error.h"
 #include "event.h"
 #include "integrity.h"
+#include "hid.h"
+#include "hid_attrib.h"
 
 conf_diag_t conf_diag;
 
@@ -253,6 +255,49 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+static const char attr_dlg_syntax[] = "attr_dlg()\n";
+static const char attr_dlg_help[] = "test the attribute dialog";
+static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_hid_attribute_t attrs[16];
+#define nattr sizeof(attrs)/sizeof(attrs[0])
+	static pcb_hid_attr_val_t results[nattr] = { 0 };
+	int n;
+	const char *vals[] = { "foo", "bar", "baz", NULL };
+
+
+	memset(attrs, 0, sizeof(attrs));
+
+	attrs[0].name = "pre-label";
+	attrs[0].help_text = "help for label1";
+	attrs[0].type = PCB_HATT_LABEL;
+
+	attrs[1].name = "foo";
+	attrs[1].help_text = "table test";
+	attrs[1].type = PCB_HATT_BEGIN_TABLE;
+	attrs[1].min_val = 2;
+
+	for(n = 2; n < 10; n++) {
+		attrs[n].name = pcb_strdup_printf("opt%d", n+7);
+		attrs[n].help_text = "help";
+		attrs[n].type = PCB_HATT_ENUM;
+		attrs[n].enumerations = vals;
+		attrs[n].default_val.int_value = n % 3;
+	}
+
+	attrs[n].type = PCB_HATT_END;
+	n++;
+
+	attrs[n].name = "post-label";
+	attrs[n].help_text = "help for label2";
+	attrs[n].type = PCB_HATT_LABEL;
+
+
+	pcb_gui->attribute_dialog(attrs, nattr, results, "attr_dlg", "attribute dialog test");
+
+	return 0;
+}
+
 
 static const char d1_syntax[] = "d1()\n";
 static const char d1_help[] = "debug action for development";
@@ -278,6 +323,8 @@ pcb_hid_action_t diag_action_list[] = {
 	 eval_conf_help, eval_conf_syntax},
 	{"d1", 0, pcb_act_d1,
 	 d1_help, d1_syntax},
+	{"attr_dlg", 0, pcb_act_attr_dlg,
+	 attr_dlg_help, attr_dlg_syntax},
 	{"integrity", 0, pcb_act_integrity,
 	 integrity_help, integrity_syntax}
 
