@@ -160,6 +160,7 @@ static double view_zoom = PCB_MIL_TO_COORD(10), prev_view_zoom = PCB_MIL_TO_COOR
 static pcb_bool autofade = 0;
 static pcb_bool crosshair_on = pcb_true;
 
+static void lesstif_reg_attrs(void);
 static void lesstif_begin(void);
 static void lesstif_end(void);
 
@@ -1868,6 +1869,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 	XtSetTypeConverter(XtRString, XtRDouble, pcb_cvt_string_to_double, NULL, 0, XtCacheAll, NULL);
 	XtSetTypeConverter(XtRString, XtRPCBCoord, pcb_cvt_string_to_coord, NULL, 0, XtCacheAll, NULL);
 
+	lesstif_reg_attrs();
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
@@ -3805,11 +3807,18 @@ int pplg_init_hid_lesstif(void)
 	return 0;
 }
 
+static int lesstif_attrs_regd = 0;
+static void lesstif_reg_attrs(void)
+{
+	if (!lesstif_attrs_regd)
+		PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
+	lesstif_attrs_regd = 1;
+}
 
 static void lesstif_begin(void)
 {
 	PCB_REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
-	PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
+	lesstif_reg_attrs();
 	PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
