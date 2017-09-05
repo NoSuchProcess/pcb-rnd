@@ -149,6 +149,9 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				j = ghid_attr_dlg_add(attrs, results, vbox1, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
 				break;
 
+			case PCB_HATT_BEGIN_TABLE:
+				assert(!"TODO");
+
 			case PCB_HATT_LABEL:
 				widget = gtk_label_new(attrs[j].name);
 				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
