@@ -343,8 +343,12 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
 	gtk_container_add(GTK_CONTAINER(content_area), main_vbox);
 
-	vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
-	ghid_attr_dlg_add(attrs, results, vbox, n_attrs, 0, 1);
+	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
+		vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
+		ghid_attr_dlg_add(attrs, results, vbox, n_attrs, 0, 1);
+	}
+	else
+		ghid_attr_dlg_add(attrs, results, main_vbox, n_attrs, 0, 1);
 
 	gtk_widget_show_all(dialog);
 
