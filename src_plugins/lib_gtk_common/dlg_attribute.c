@@ -99,31 +99,10 @@ static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 	change_cb(dst);
 }
 
-int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,
-													const char *title, const char *descr)
+static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, GtkWidget *parent, int n_attrs, int start_from, int add_labels)
 {
-	GtkWidget *dialog;
-	GtkWidget *content_area;
-	GtkWidget *main_vbox, *vbox, *vbox1, *hbox, *entry;
-	GtkWidget *combo;
-	GtkWidget *widget;
-	int i, j, n;
-	int rc = 0;
-
-	dialog = gtk_dialog_new_with_buttons(_(title),
-																			 GTK_WINDOW(top_window),
-																			 (GtkDialogFlags) (GTK_DIALOG_MODAL
-																												 | GTK_DIALOG_DESTROY_WITH_PARENT),
-																			 GTK_STOCK_CANCEL, GTK_RESPONSE_NONE, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
-	gtk_window_set_role(GTK_WINDOW(dialog), "PCB_attribute_editor");
-
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-
-	main_vbox = gtkc_vbox_new(FALSE, 6);
-	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
-	gtk_container_add(GTK_CONTAINER(content_area), main_vbox);
-
-	vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
+	int j, i, n;
+	GtkWidget *combo, *widget, *entry, *vbox1, *hbox;
 
 	/*
 	 * Iterate over all the export options and build up a dialog box
@@ -138,13 +117,13 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 		switch (attrs[j].type) {
 		case PCB_HATT_LABEL:
 			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(vbox), widget, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 			break;
 
 		case PCB_HATT_INTEGER:
 			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 			/*
 			 * FIXME
@@ -162,7 +141,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 		case PCB_HATT_COORD:
 			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 			entry = pcb_gtk_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
 																			attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
@@ -178,7 +157,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 		case PCB_HATT_REAL:
 			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 			/*
 			 * FIXME
@@ -197,7 +176,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 		case PCB_HATT_STRING:
 			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 			entry = gtk_entry_new();
 			gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
@@ -212,7 +191,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 		case PCB_HATT_BOOL:
 			/* put this in a check button */
-			pcb_gtk_check_button_connected(vbox, &widget,
+			pcb_gtk_check_button_connected(parent, &widget,
                                      attrs[j].default_val.int_value,
                                      TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), attrs[j].name);
 			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
@@ -220,7 +199,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 		case PCB_HATT_ENUM:
 			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 		do_enum:
 			combo = gtkc_combo_box_text_new();
@@ -245,7 +224,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 		case PCB_HATT_MIXED:
 			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 			/*
 			 * FIXME
@@ -261,7 +240,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 
 		case PCB_HATT_PATH:
-			vbox1 = ghid_category_vbox(vbox, attrs[j].name, 4, 2, TRUE, TRUE);
+			vbox1 = ghid_category_vbox(parent, attrs[j].name, 4, 2, TRUE, TRUE);
 			entry = gtk_entry_new();
 			gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
 			gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
@@ -275,7 +254,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			n = pcb_get_n_units();
 
 			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 			combo = gtkc_combo_box_text_new();
 			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
@@ -297,7 +276,33 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 			break;
 		}
 	}
+	return j;
+}
 
+int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,
+													const char *title, const char *descr)
+{
+	GtkWidget *dialog;
+	GtkWidget *content_area;
+	GtkWidget *main_vbox, *vbox;
+	int i;
+	int rc = 0;
+
+	dialog = gtk_dialog_new_with_buttons(_(title),
+																			 GTK_WINDOW(top_window),
+																			 (GtkDialogFlags) (GTK_DIALOG_MODAL
+																												 | GTK_DIALOG_DESTROY_WITH_PARENT),
+																			 GTK_STOCK_CANCEL, GTK_RESPONSE_NONE, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	gtk_window_set_role(GTK_WINDOW(dialog), "PCB_attribute_editor");
+
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
+	main_vbox = gtkc_vbox_new(FALSE, 6);
+	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
+	gtk_container_add(GTK_CONTAINER(content_area), main_vbox);
+
+	vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
+	ghid_attr_dlg_add(attrs, results, vbox, n_attrs, 0, 1);
 
 	gtk_widget_show_all(dialog);
 
