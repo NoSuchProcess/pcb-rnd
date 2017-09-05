@@ -106,6 +106,17 @@ static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], ctx->screen, NULL, pcb_elem_name_draw_callback, &side, NULL);
 }
 
+static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
+{
+	if (cctx->grp == NULL)
+		return 1; /* no group means no silk -> fall back to implicit */
+
+	if ((cctx->grp->len == 1) && ((PCB->Data->Layer[lid].comb & (PCB_LYC_AUTO | PCB_LYC_SUB)) == PCB_LYC_AUTO))
+		return 1; /* A single auto-positive layer -> original code: draw auto+manual */
+
+	return 0;
+}
+
 static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 {
 	pcb_layer_id_t lid;
@@ -126,9 +137,8 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
-	if ((cctx.grp == NULL) || (cctx.grp->len < 2) ||   /* fallback: no layers -> original code: draw auto+manual */
-			(((cctx.grp->len == 1)) && ((PCB->Data->Layer[lid].comb & (PCB_LYC_AUTO | PCB_LYC_SUB)) == PCB_LYC_AUTO))) {    /* fallback: one positive auto layer -> original code: draw auto+manual */
-
+	if (pcb_is_silk_old_style(&cctx, lid)) {
+		/* fallback: implicit layer -> original code: draw auto+manual */
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, cctx.screen);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, cctx.screen);
 		pcb_draw_layer(LAYER_PTR(lid), cctx.screen);
