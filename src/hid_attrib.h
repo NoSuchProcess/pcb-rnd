@@ -15,6 +15,11 @@ struct pcb_hid_attr_val_s {
 	pcb_coord_t coord_value;
 };
 
+typedef enum pcb_hatt_compflags_e {
+	PCB_HATF_FRAME   = 1,  /* box/table has a visible frame around it */
+	PCB_HATF_LABEL   = 2   /* direct children print label */
+} pcb_hatt_compflags_t;
+
 typedef enum pcb_hids_e {
 	/* atomic entry types */
 	PCB_HATT_LABEL,
@@ -30,20 +35,16 @@ typedef enum pcb_hids_e {
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
-	PCB_HATT_BEGIN_HBOX_NOLABEL,
 	PCB_HATT_BEGIN_VBOX,
-	PCB_HATT_BEGIN_VBOX_NOLABEL,
 	PCB_HATT_BEGIN_TABLE,         /* min_val is the number of columns */
-	PCB_HATT_BEGIN_TABLE_NOLABEL, /* min_val is the number of columns */
 	PCB_HATT_END          /* close one level of PCB_HATT_* */
 } pcb_hids_t;
 
-/* Returns whether composite type has labels enabled (so that it is not the _NOLABEL variant) */
-#define PCB_HATT_HAS_LABEL(type) \
-	(((type) == PCB_HATT_BEGIN_HBOX) || ((type) == PCB_HATT_BEGIN_VBOX) || ((type) == PCB_HATT_BEGIN_TABLE))
-
 #define PCB_HATT_IS_COMPOSITE(type) \
 	(((type) >= PCB_HATT_BEGIN_HBOX) && ((type) < PCB_HATT_END))
+
+/* field name in struct pcb_hid_attribute_s */
+#define pcb_hatt_flags max_val
 
 struct pcb_hid_attribute_s {
 	const char *name;

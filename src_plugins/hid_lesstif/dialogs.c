@@ -636,9 +636,6 @@ static int attribute_dialog_num_child(pcb_hid_attribute_t *attrs, int start_from
 			case PCB_HATT_BEGIN_TABLE:
 			case PCB_HATT_BEGIN_HBOX:
 			case PCB_HATT_BEGIN_VBOX:
-			case PCB_HATT_BEGIN_TABLE_NOLABEL:
-			case PCB_HATT_BEGIN_HBOX_NOLABEL:
-			case PCB_HATT_BEGIN_VBOX_NOLABEL:
 				level++;
 				break;
 			default:
@@ -681,28 +678,25 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 
 		switch (attrs[i].type) {
 		case PCB_HATT_BEGIN_HBOX:
-		case PCB_HATT_BEGIN_HBOX_NOLABEL:
-			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'h', 0, 0);
+			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'h', 0, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
 			XtManageChild(w);
-			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, PCB_HATT_HAS_LABEL(attrs[i].type));
+			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, (attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_VBOX:
-		case PCB_HATT_BEGIN_VBOX_NOLABEL:
-			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'v', 0, 0);
+			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'v', 0, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
 			XtManageChild(w);
-			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, PCB_HATT_HAS_LABEL(attrs[i].type));
+			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, (attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_TABLE:
-		case PCB_HATT_BEGIN_TABLE_NOLABEL:
 			/* create content table */
 			numch = attribute_dialog_num_child(attrs, i+1, n_attrs);
 			numch = numch  / (attrs[i].min_val);
-			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 't', numch, 1);
+			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 't', numch, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
 			XtManageChild(w);
 
-			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, PCB_HATT_HAS_LABEL(attrs[i].type));
+			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, (attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 #warning TODO: if table, pad up to even number of items per row
 			break;
 		case PCB_HATT_LABEL:
