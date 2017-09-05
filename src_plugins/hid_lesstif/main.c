@@ -1021,20 +1021,14 @@ static void set_scroll(Widget s, int pos, int view, int pcb)
 
 void lesstif_pan_fixup()
 {
-#if 0
-	if (view_left_x > PCB->MaxWidth - (view_width * view_zoom))
-		view_left_x = PCB->MaxWidth - (view_width * view_zoom);
-	if (view_top_y > PCB->MaxHeight - (view_height * view_zoom))
-		view_top_y = PCB->MaxHeight - (view_height * view_zoom);
-	if (view_left_x < 0)
-		view_left_x = 0;
-	if (view_top_y < 0)
-		view_top_y = 0;
-	if (view_width * view_zoom > PCB->MaxWidth && view_height * view_zoom > PCB->MaxHeight) {
-		zoom_by(1, 0, 0);
-		return;
-	}
-#endif
+	if (view_left_x > PCB->MaxWidth + (view_width * view_zoom))
+		view_left_x = PCB->MaxWidth + (view_width * view_zoom);
+	if (view_top_y > PCB->MaxHeight + (view_height * view_zoom))
+		view_top_y = PCB->MaxHeight + (view_height * view_zoom);
+	if (view_left_x < -(view_width * view_zoom))
+		view_left_x = -(view_width * view_zoom);
+	if (view_top_y < -(view_height * view_zoom))
+		view_top_y = -(view_height * view_zoom);
 
 	set_scroll(hscroll, view_left_x, view_width, PCB->MaxWidth);
 	set_scroll(vscroll, view_top_y, view_height, PCB->MaxHeight);
