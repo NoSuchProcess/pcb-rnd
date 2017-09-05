@@ -115,165 +115,165 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 		if (attrs[j].help_text == ATTR_UNDOCUMENTED)
 			continue;
 		switch (attrs[j].type) {
-		case PCB_HATT_LABEL:
-			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
-			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
-			break;
+			case PCB_HATT_LABEL:
+				widget = gtk_label_new(attrs[j].name);
+				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
+				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				break;
 
-		case PCB_HATT_INTEGER:
-			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+			case PCB_HATT_INTEGER:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
-			/*
-			 * FIXME
-			 * need to pick the "digits" argument based on min/max
-			 * values
-			 */
-			ghid_spin_button(hbox, &widget, attrs[j].default_val.int_value,
-											 attrs[j].min_val, attrs[j].max_val, 1.0, 1.0, 0, 0,
-											 intspinner_changed_cb, &(attrs[j]), FALSE, NULL);
-			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				/*
+				 * FIXME
+				 * need to pick the "digits" argument based on min/max
+				 * values
+				 */
+				ghid_spin_button(hbox, &widget, attrs[j].default_val.int_value,
+												 attrs[j].min_val, attrs[j].max_val, 1.0, 1.0, 0, 0,
+												 intspinner_changed_cb, &(attrs[j]), FALSE, NULL);
+				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 
-			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			break;
+				widget = gtk_label_new(attrs[j].name);
+				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				break;
 
-		case PCB_HATT_COORD:
-			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+			case PCB_HATT_COORD:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
-			entry = pcb_gtk_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
-																			attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
-			gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
-			if (attrs[j].default_val.str_value != NULL)
+				entry = pcb_gtk_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
+																				attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
+				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+				if (attrs[j].default_val.str_value != NULL)
+					gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
+				gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
+				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(attrs[j]));
+
+				widget = gtk_label_new(attrs[j].name);
+				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				break;
+
+			case PCB_HATT_REAL:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+
+				/*
+				 * FIXME
+				 * need to pick the "digits" and step size argument more
+				 * intelligently
+				 */
+				ghid_spin_button(hbox, &widget, attrs[j].default_val.real_value,
+												 attrs[j].min_val, attrs[j].max_val, 0.01, 0.01, 3,
+												 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
+
+				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+
+				widget = gtk_label_new(attrs[j].name);
+				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				break;
+
+			case PCB_HATT_STRING:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+
+				entry = gtk_entry_new();
+				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+				if (attrs[j].default_val.str_value != NULL)
+					gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
+				gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
+				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
+
+				widget = gtk_label_new(attrs[j].name);
+				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				break;
+
+			case PCB_HATT_BOOL:
+				/* put this in a check button */
+				pcb_gtk_check_button_connected(parent, &widget,
+                                       attrs[j].default_val.int_value,
+                                       TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), attrs[j].name);
+				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				break;
+
+			case PCB_HATT_ENUM:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+
+			do_enum:
+				combo = gtkc_combo_box_text_new();
+				gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
+				gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
+
+
+				/*
+				 * Iterate through each value and add them to the
+				 * combo box
+				 */
+				i = 0;
+				while (attrs[j].enumerations[i]) {
+					gtkc_combo_box_text_append_text(combo, attrs[j].enumerations[i]);
+					i++;
+				}
+				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
+				widget = gtk_label_new(attrs[j].name);
+				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
+				break;
+
+			case PCB_HATT_MIXED:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+
+				/*
+				 * FIXME
+				 * need to pick the "digits" and step size argument more
+				 * intelligently
+				 */
+				ghid_spin_button(hbox, &widget, attrs[j].default_val.real_value,
+												 attrs[j].min_val, attrs[j].max_val, 0.01, 0.01, 3,
+												 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
+				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+
+				goto do_enum;
+				break;
+
+			case PCB_HATT_PATH:
+				vbox1 = ghid_category_vbox(parent, attrs[j].name, 4, 2, TRUE, TRUE);
+				entry = gtk_entry_new();
+				gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
 				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
-			gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
-			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(attrs[j]));
+				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
 
-			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			break;
+				gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
+				break;
 
-		case PCB_HATT_REAL:
-			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+			case PCB_HATT_UNIT:
+				unit_list = get_unit_list();
+				n = pcb_get_n_units();
 
-			/*
-			 * FIXME
-			 * need to pick the "digits" and step size argument more
-			 * intelligently
-			 */
-			ghid_spin_button(hbox, &widget, attrs[j].default_val.real_value,
-											 attrs[j].min_val, attrs[j].max_val, 0.01, 0.01, 3,
-											 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
-			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				combo = gtkc_combo_box_text_new();
+				gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
+				gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
+				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
 
-			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			break;
-
-		case PCB_HATT_STRING:
-			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
-
-			entry = gtk_entry_new();
-			gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
-			if (attrs[j].default_val.str_value != NULL)
-				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
-			gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
-			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
-
-			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			break;
-
-		case PCB_HATT_BOOL:
-			/* put this in a check button */
-			pcb_gtk_check_button_connected(parent, &widget,
-                                     attrs[j].default_val.int_value,
-                                     TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), attrs[j].name);
-			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
-			break;
-
-		case PCB_HATT_ENUM:
-			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
-
-		do_enum:
-			combo = gtkc_combo_box_text_new();
-			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
-			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
-
-
-			/*
-			 * Iterate through each value and add them to the
-			 * combo box
-			 */
-			i = 0;
-			while (attrs[j].enumerations[i]) {
-				gtkc_combo_box_text_append_text(combo, attrs[j].enumerations[i]);
-				i++;
-			}
-			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
-			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
-			break;
-
-		case PCB_HATT_MIXED:
-			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
-
-			/*
-			 * FIXME
-			 * need to pick the "digits" and step size argument more
-			 * intelligently
-			 */
-			ghid_spin_button(hbox, &widget, attrs[j].default_val.real_value,
-											 attrs[j].min_val, attrs[j].max_val, 0.01, 0.01, 3,
-											 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
-			gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
-
-			goto do_enum;
-			break;
-
-		case PCB_HATT_PATH:
-			vbox1 = ghid_category_vbox(parent, attrs[j].name, 4, 2, TRUE, TRUE);
-			entry = gtk_entry_new();
-			gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
-			gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
-			g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
-
-			gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
-			break;
-
-		case PCB_HATT_UNIT:
-			unit_list = get_unit_list();
-			n = pcb_get_n_units();
-
-			hbox = gtkc_hbox_new(FALSE, 4);
-			gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
-
-			combo = gtkc_combo_box_text_new();
-			gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
-			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
-			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
-
-			/*
-			 * Iterate through each value and add them to the
-			 * combo box
-			 */
-			for (i = 0; i < n; ++i)
-				gtkc_combo_box_text_append_text(combo, unit_list[i].in_suffix);
-			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
-			widget = gtk_label_new(attrs[j].name);
-			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-			break;
-		default:
-			printf("ghid_attribute_dialog: unknown type of HID attribute\n");
-			break;
+				/*
+				 * Iterate through each value and add them to the
+				 * combo box
+				 */
+				for (i = 0; i < n; ++i)
+					gtkc_combo_box_text_append_text(combo, unit_list[i].in_suffix);
+				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
+				widget = gtk_label_new(attrs[j].name);
+				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				break;
+			default:
+				printf("ghid_attribute_dialog: unknown type of HID attribute\n");
+				break;
 		}
 	}
 	return j;
