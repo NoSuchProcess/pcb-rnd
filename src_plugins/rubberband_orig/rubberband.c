@@ -103,7 +103,7 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end);
 static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *);
 static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *);
-static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
+static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *);
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, int *, pcb_bool);
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_polygon_t *);
@@ -484,17 +484,17 @@ static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
 
 /* ---------------------------------------------------------------------------
  * checks all visible lines which belong to the same group as the passed line.
- * If one of the endpoints of the line lays * inside the passed line,
- * the scanned line is added to the 'rubberband' list
+ * If one of the endpoints of the line is connected to an endpoint of the 
+ * passed line, the scanned line is added to the 'rubberband' list
  */
-static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, pcb_bool Exact)
+static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint)
 {
 	pcb_layergrp_id_t group;
 	struct rubber_info info;
 	pcb_coord_t t = Line->Thickness / 2;
 
 	/* lookup layergroup and check all visible lines in this group */
-	info.radius = Exact ? -1 : MAX(Line->Thickness / 2, 1);
+	info.radius = -1;
 	info.box.X1 = LinePoint->X - t;
 	info.box.X2 = LinePoint->X + t;
 	info.box.Y1 = LinePoint->Y - t;
@@ -702,15 +702,15 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
 			if (pcb_layer_flags_(PCB, layer) & PCB_LYT_COPPER) {
-				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1, pcb_false);
-				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2, pcb_false);
+				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1 );
+				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2 );
 			}
 			break;
 		}
 
 	case PCB_TYPE_LINE_POINT:
 		if (pcb_layer_flags_(PCB, (pcb_layer_t *) Ptr1) & PCB_LYT_COPPER)	{
-			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
+			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3);
 
 			if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
 				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
