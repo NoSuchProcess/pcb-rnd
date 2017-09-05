@@ -29,7 +29,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_COORD,
 
 	/* groups (e.g. boxes) */
-	PCB_HATT_BEGIN_HBOX,
+	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
 	PCB_HATT_BEGIN_HBOX_NOLABEL,
 	PCB_HATT_BEGIN_VBOX,
 	PCB_HATT_BEGIN_VBOX_NOLABEL,
@@ -41,6 +41,9 @@ typedef enum pcb_hids_e {
 /* Returns whether composite type has labels enabled (so that it is not the _NOLABEL variant) */
 #define PCB_HATT_HAS_LABEL(type) \
 	(((type) == PCB_HATT_BEGIN_HBOX) || ((type) == PCB_HATT_BEGIN_VBOX) || ((type) == PCB_HATT_BEGIN_TABLE))
+
+#define PCB_HATT_IS_COMPOSITE(type) \
+	(((type) >= PCB_HATT_BEGIN_HBOX) && ((type) < PCB_HATT_END))
 
 struct pcb_hid_attribute_s {
 	const char *name;
