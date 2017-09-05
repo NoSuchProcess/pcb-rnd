@@ -648,7 +648,7 @@ static int attribute_dialog_num_child(pcb_hid_attribute_t *attrs, int start_from
 /* returns the index of HATT_END where the loop had to stop */
 static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, Widget parent, Widget *wl, int n_attrs, int actual_nattrs, int start_from, int add_labels)
 {
-	int i, numch;
+	int len, i, numch, numcol;
 	static XmString empty = 0;
 
 	if (!empty)
@@ -691,13 +691,22 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 
 		case PCB_HATT_BEGIN_TABLE:
 			/* create content table */
-			numch = attribute_dialog_num_child(attrs, i+1, n_attrs);
-			numch = numch  / (attrs[i].min_val);
+			numcol = attrs[i].pcb_hatt_table_cols;
+			len = attribute_dialog_num_child(attrs, i+1, n_attrs);
+			numch = len  / numcol + !!(len % numcol);
 			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 't', numch, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
-			XtManageChild(w);
 
 			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, (attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
-#warning TODO: if table, pad up to even number of items per row
+			while((len % numcol) != 0) {
+				Widget pad;
+
+				stdarg_n = 0;
+				stdarg(XmNalignment, XmALIGNMENT_END);
+				pad = XmCreateLabel(w, XmStrCast("."), stdarg_args, stdarg_n);
+				XtManageChild(pad);
+				len++;
+			}
+			XtManageChild(w);
 			break;
 		case PCB_HATT_LABEL:
 			stdarg(XmNlabelString, empty);
