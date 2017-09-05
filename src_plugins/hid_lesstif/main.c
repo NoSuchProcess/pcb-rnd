@@ -1006,6 +1006,10 @@ static void set_scroll(Widget s, int pos, int view, int pcb)
 	int sz = view * view_zoom;
 	if (sz > pcb)
 		sz = pcb;
+	if (pos > pcb - sz)
+		pos = pcb - sz;
+	if (pos < 0)
+		pos = 0;
 	stdarg_n = 0;
 	stdarg(XmNvalue, pos);
 	stdarg(XmNsliderSize, sz);
