@@ -99,6 +99,18 @@ static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 	change_cb(dst);
 }
 
+static GtkWidget *ghid_attr_dlg_frame(GtkWidget *parent)
+{
+	GtkWidget *box, *fr;
+
+	fr = gtk_frame_new(NULL);
+	gtk_box_pack_start(GTK_BOX(parent), fr, FALSE, FALSE, 0);
+
+	box = gtkc_hbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(fr), box);
+	return box;
+}
+
 static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, GtkWidget *parent, int n_attrs, int start_from, int add_labels)
 {
 	int j, i, n;
@@ -118,12 +130,16 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 			break;
 		switch (attrs[j].type) {
 			case PCB_HATT_BEGIN_HBOX:
+				if (attrs[j].pcb_hatt_flags & PCB_HATF_FRAME)
+					parent = ghid_attr_dlg_frame(parent);
 				hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 				j = ghid_attr_dlg_add(attrs, results, hbox, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
 				break;
 
 			case PCB_HATT_BEGIN_VBOX:
+				if (attrs[j].pcb_hatt_flags & PCB_HATF_FRAME)
+					parent = ghid_attr_dlg_frame(parent);
 				vbox1 = gtkc_vbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), vbox1, FALSE, FALSE, 0);
 				j = ghid_attr_dlg_add(attrs, results, vbox1, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
