@@ -165,8 +165,10 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 												 intspinner_changed_cb, &(attrs[j]), FALSE, NULL);
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 
-				widget = gtk_label_new(attrs[j].name);
-				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				if (add_labels) {
+					widget = gtk_label_new(attrs[j].name);
+					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				}
 				break;
 
 			case PCB_HATT_COORD:
@@ -181,8 +183,10 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(attrs[j]));
 
-				widget = gtk_label_new(attrs[j].name);
-				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				if (add_labels) {
+					widget = gtk_label_new(attrs[j].name);
+					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				}
 				break;
 
 			case PCB_HATT_REAL:
@@ -200,8 +204,10 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 
-				widget = gtk_label_new(attrs[j].name);
-				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				if (add_labels) {
+					widget = gtk_label_new(attrs[j].name);
+					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				}
 				break;
 
 			case PCB_HATT_STRING:
@@ -215,15 +221,17 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
 
-				widget = gtk_label_new(attrs[j].name);
-				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				if (add_labels) {
+					widget = gtk_label_new(attrs[j].name);
+					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				}
 				break;
 
 			case PCB_HATT_BOOL:
 				/* put this in a check button */
 				pcb_gtk_check_button_connected(parent, &widget,
                                        attrs[j].default_val.int_value,
-                                       TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), attrs[j].name);
+                                       TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), (add_labels ? attrs[j].name : NULL));
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 				break;
 
@@ -247,8 +255,10 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 					i++;
 				}
 				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
-				widget = gtk_label_new(attrs[j].name);
-				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				if (add_labels) {
+					widget = gtk_label_new(attrs[j].name);
+					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				}
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
 				break;
 
@@ -270,7 +280,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				break;
 
 			case PCB_HATT_PATH:
-				vbox1 = ghid_category_vbox(parent, attrs[j].name, 4, 2, TRUE, TRUE);
+				vbox1 = ghid_category_vbox(parent, (add_labels ? attrs[j].name : NULL), 4, 2, TRUE, TRUE);
 				entry = gtk_entry_new();
 				gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
 				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
@@ -298,8 +308,10 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				for (i = 0; i < n; ++i)
 					gtkc_combo_box_text_append_text(combo, unit_list[i].in_suffix);
 				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), attrs[j].default_val.int_value);
-				widget = gtk_label_new(attrs[j].name);
-				gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				if (add_labels) {
+					widget = gtk_label_new(attrs[j].name);
+					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				}
 				break;
 			default:
 				printf("ghid_attribute_dialog: unknown type of HID attribute\n");
