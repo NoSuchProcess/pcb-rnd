@@ -665,7 +665,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			continue;
 
 		/* Add label */
-		if (add_labels) {
+		if ((add_labels) || (attrs[i].type == PCB_HATT_LABEL)) {
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_END);
 			w = XmCreateLabel(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
