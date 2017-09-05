@@ -30,10 +30,17 @@ typedef enum pcb_hids_e {
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,
+	PCB_HATT_BEGIN_HBOX_NOLABEL,
 	PCB_HATT_BEGIN_VBOX,
-	PCB_HATT_BEGIN_TABLE, /* min_val is the number of columns */
+	PCB_HATT_BEGIN_VBOX_NOLABEL,
+	PCB_HATT_BEGIN_TABLE,         /* min_val is the number of columns */
+	PCB_HATT_BEGIN_TABLE_NOLABEL, /* min_val is the number of columns */
 	PCB_HATT_END          /* close one level of PCB_HATT_* */
 } pcb_hids_t;
+
+/* Returns whether composite type has labels enabled (so that it is not the _NOLABEL variant) */
+#define PCB_HATT_HAS_LABEL(type) \
+	(((type) == PCB_HATT_BEGIN_HBOX) || ((type) == PCB_HATT_BEGIN_VBOX) || ((type) == PCB_HATT_BEGIN_TABLE))
 
 struct pcb_hid_attribute_s {
 	const char *name;
