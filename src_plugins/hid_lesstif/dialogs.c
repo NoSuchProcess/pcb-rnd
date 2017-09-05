@@ -583,9 +583,17 @@ static Widget create_form_ok_dialog(const char *name, int ok)
 	return topform;
 }
 
-static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows)
+static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame)
 {
 	Widget cnt;
+
+	if (want_frame) {
+		/* create and insert frame around the content table */
+		stdarg(XmNalignment, XmALIGNMENT_END);
+		parent = XmCreateFrame(parent, XmStrCast("box-frame"), stdarg_args, stdarg_n);
+		XtManageChild(parent);
+		stdarg_n = 0;
+	}
 
 	switch(type) {
 		case 'h': /* "hbox" */
@@ -668,21 +676,11 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 
 		switch (attrs[i].type) {
 		case PCB_HATT_BEGIN_TABLE:
-
-			/* create frame around the content table */
-			stdarg_n = 0;
-			stdarg(XmNalignment, XmALIGNMENT_END);
-			w = XmCreateFrame(parent, XmStrCast("szar"), stdarg_args, stdarg_n);
-			XtManageChild(w);
-
 			/* create content table */
 			numch = attribute_dialog_num_child(attrs, i+1, n_attrs);
-			stdarg_n = 0;
-			stdarg(XmNalignment, XmALIGNMENT_END);
 			numch = numch  / (attrs[i].min_val);
-			w = pcb_motif_box(w, XmStrCast(attrs[i].name), 't', numch);
+			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 't', numch, 1);
 			XtManageChild(w);
-
 
 			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1);
 #warning TODO: if table, pad up to even number of items per row
@@ -794,7 +792,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 
 
 	stdarg_n = 0;
-	main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', attribute_dialog_num_child(attrs, 0, n_attrs));
+	main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', attribute_dialog_num_child(attrs, 0, n_attrs), 0);
 	XtManageChild(main_tbl);
 	attribute_dialog_add(attrs, results, main_tbl, wl, n_attrs, actual_nattrs, 0);
 
