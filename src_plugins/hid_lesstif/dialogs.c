@@ -680,6 +680,20 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 		stdarg(XmNalignment, XmALIGNMENT_END);
 
 		switch (attrs[i].type) {
+		case PCB_HATT_BEGIN_HBOX:
+		case PCB_HATT_BEGIN_HBOX_NOLABEL:
+			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'h', 0, 0);
+			XtManageChild(w);
+			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, PCB_HATT_HAS_LABEL(attrs[i].type));
+			break;
+
+		case PCB_HATT_BEGIN_VBOX:
+		case PCB_HATT_BEGIN_VBOX_NOLABEL:
+			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'v', 0, 0);
+			XtManageChild(w);
+			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, PCB_HATT_HAS_LABEL(attrs[i].type));
+			break;
+
 		case PCB_HATT_BEGIN_TABLE:
 		case PCB_HATT_BEGIN_TABLE_NOLABEL:
 			/* create content table */
