@@ -115,8 +115,8 @@ do { \
 
 #define PCB_DAD_BEGIN_TABLE(table, cols) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_TABLE) \
-	PCB_DAD_SET(table, pcb_hatt_table_cols, cols) \
+	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_TABLE); \
+	PCB_DAD_SET(table, pcb_hatt_table_cols, cols); \
 } while(0)
 
 #define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HBOX)
