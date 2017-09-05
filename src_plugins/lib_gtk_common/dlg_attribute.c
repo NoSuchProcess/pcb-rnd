@@ -110,11 +110,25 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 	 * way, any changes to the exporter HID's automatically are
 	 * reflected in this dialog box.
 	 */
-	for (j = 0; j < n_attrs; j++) {
+	for (j = start_from; j < n_attrs; j++) {
 		const pcb_unit_t *unit_list;
 		if (attrs[j].help_text == ATTR_UNDOCUMENTED)
 			continue;
+		if (attrs[j].type == PCB_HATT_END)
+			break;
 		switch (attrs[j].type) {
+			case PCB_HATT_BEGIN_HBOX:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				j = ghid_attr_dlg_add(attrs, results, hbox, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				break;
+
+			case PCB_HATT_BEGIN_VBOX:
+				vbox1 = gtkc_vbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), vbox1, FALSE, FALSE, 0);
+				j = ghid_attr_dlg_add(attrs, results, vbox1, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				break;
+
 			case PCB_HATT_LABEL:
 				widget = gtk_label_new(attrs[j].name);
 				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
