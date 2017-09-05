@@ -259,42 +259,24 @@ static const char attr_dlg_syntax[] = "attr_dlg()\n";
 static const char attr_dlg_help[] = "test the attribute dialog";
 static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_attribute_t attrs[16];
-#define nattr sizeof(attrs)/sizeof(attrs[0])
-	static pcb_hid_attr_val_t results[nattr] = { 0 };
-	int n;
 	const char *vals[] = { "foo", "bar", "baz", NULL };
+	static pcb_hid_attr_val_t results[32] = { 0 };
 
+	PCB_DAD_DECL(foo);
+	PCB_DAD_BEGIN_VBOX(foo);
+		PCB_DAD_LABEL(foo, "text1");
+		PCB_DAD_BEGIN_HBOX(foo);
+			PCB_DAD_LABEL(foo, "text2a");
+			PCB_DAD_LABEL(foo, "text2b");
+			PCB_DAD_LABEL(foo, "text2c");
+			PCB_DAD_LABEL(foo, "text2d");
+		PCB_DAD_END(foo);
+		PCB_DAD_LABEL(foo, "text3");
+	PCB_DAD_END(foo);
 
-	memset(attrs, 0, sizeof(attrs));
+	pcb_gui->attribute_dialog(foo, foo_len, results, "attr_dlg", "attribute dialog test");
 
-	attrs[0].name = "pre-label";
-	attrs[0].help_text = "help for label1";
-	attrs[0].type = PCB_HATT_LABEL;
-
-	attrs[1].name = "foo";
-	attrs[1].help_text = "table test";
-	attrs[1].type = PCB_HATT_BEGIN_TABLE;
-	attrs[1].min_val = 2;
-
-	for(n = 2; n < 10; n++) {
-		attrs[n].name = pcb_strdup_printf("opt%d", n+7);
-		attrs[n].help_text = "help";
-		attrs[n].type = PCB_HATT_ENUM;
-		attrs[n].enumerations = vals;
-		attrs[n].default_val.int_value = n % 3;
-	}
-
-	attrs[n].type = PCB_HATT_END;
-	n++;
-
-	attrs[n].name = "post-label";
-	attrs[n].help_text = "help for label2";
-	attrs[n].type = PCB_HATT_LABEL;
-
-
-	pcb_gui->attribute_dialog(attrs, nattr, results, "attr_dlg", "attribute dialog test");
-
+	PCB_DAD_FREE(foo);
 	return 0;
 }
 
@@ -323,6 +305,8 @@ pcb_hid_action_t diag_action_list[] = {
 	 eval_conf_help, eval_conf_syntax},
 	{"d1", 0, pcb_act_d1,
 	 d1_help, d1_syntax},
+	{"d2", 0, pcb_act_attr_dlg,
+	 attr_dlg_help, attr_dlg_syntax},
 	{"attr_dlg", 0, pcb_act_attr_dlg,
 	 attr_dlg_help, attr_dlg_syntax},
 	{"integrity", 0, pcb_act_integrity,
