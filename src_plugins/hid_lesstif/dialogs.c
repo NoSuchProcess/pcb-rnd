@@ -811,7 +811,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 		attribute_dialog_add(attrs, results, main_tbl, wl, n_attrs, actual_nattrs, 0, 1);
 	}
 	else
-		attribute_dialog_add(attrs, results, topform, wl, n_attrs, actual_nattrs, 0, 1);
+		attribute_dialog_add(attrs, results, topform, wl, n_attrs, actual_nattrs, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
 
 	rv = wait_for_dialog(dialog);

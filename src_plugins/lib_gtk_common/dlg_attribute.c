@@ -352,7 +352,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 		ghid_attr_dlg_add(attrs, results, vbox, n_attrs, 0, 1);
 	}
 	else
-		ghid_attr_dlg_add(attrs, results, main_vbox, n_attrs, 0, 1);
+		ghid_attr_dlg_add(attrs, results, main_vbox, n_attrs, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
 	gtk_widget_show_all(dialog);
 
