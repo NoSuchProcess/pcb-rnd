@@ -810,11 +810,15 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	stdarg(XmNfractionBase, n_attrs);
 	XtSetValues(topform, stdarg_args, stdarg_n);
 
+	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
+		stdarg_n = 0;
+		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', attribute_dialog_num_child(attrs, 0, n_attrs), 0);
+		XtManageChild(main_tbl);
+		attribute_dialog_add(attrs, results, main_tbl, wl, n_attrs, actual_nattrs, 0, 1);
+	}
+	else
+		attribute_dialog_add(attrs, results, topform, wl, n_attrs, actual_nattrs, 0, 1);
 
-	stdarg_n = 0;
-	main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', attribute_dialog_num_child(attrs, 0, n_attrs), 0);
-	XtManageChild(main_tbl);
-	attribute_dialog_add(attrs, results, main_tbl, wl, n_attrs, actual_nattrs, 0, 1);
 
 	rv = wait_for_dialog(dialog);
 
