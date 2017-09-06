@@ -235,5 +235,21 @@ static inline void pcb_gtk_widget_hide_all(GtkWidget *widget)
 	gtk_widget_hide(widget);
 }
 
+/* gtk_table() is depreaceted in gtk3 for gtk_grid, but there's no grid between
+   3.0 and 3.2 so we should stay with table as long as it is not actually
+   removed */
+
+/* create a table with known size (all rows and cols created empty) */
+static inline GtkWidget *gtkc_table_static(int rows, int cols, gboolean homog)
+{
+	return gtk_table_new(rows, cols, homog);
+}
+
+
+/* Attach child in a single cell of the table */
+static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int row, int col)
+{
+	gtk_table_attach(GTK_TABLE(table), child, col, col+1, row, row+1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+}
 
 #endif  /* PCB_GTK_COMPAT_H */
