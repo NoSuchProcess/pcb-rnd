@@ -130,8 +130,15 @@ do { \
 #define PCB_DAD_LABEL(table, text) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
-	PCB_DAD_SET(table, name, text); \
+	PCB_DAD_SET(table, name, pcb_strdup(text)); \
 } while(0);
+
+#define PCB_DAD_LABELF(table, printf_args) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
+	PCB_DAD_SET(table, name, pcb_strdup_printf printf_args); \
+} while(0);
+
 
 #define PCB_DAD_ENUM(table, choices) \
 do { \
@@ -199,6 +206,8 @@ do { \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case PCB_HATT_LABEL: \
+			free(table[table ## _len - 1].name); \
+			break; \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
