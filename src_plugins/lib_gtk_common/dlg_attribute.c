@@ -111,10 +111,15 @@ static GtkWidget *ghid_attr_dlg_frame(GtkWidget *parent)
 	return box;
 }
 
-static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, GtkWidget *parent, int n_attrs, int start_from, int add_labels)
+typedef struct {
+	int cols, rows;
+	int col, row;
+} ghid_attr_tbl_t;
+
+static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, GtkWidget *real_parent, ghid_attr_tbl_t *tbl_st, int n_attrs, int start_from, int add_labels)
 {
 	int j, i, n;
-	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent;
+	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
 
 	/*
 	 * Iterate over all the export options and build up a dialog box
@@ -128,6 +133,21 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 			continue;
 		if (attrs[j].type == PCB_HATT_END)
 			break;
+
+		/* if we are willing a table, allocate parent boxes in row-major */
+		if (tbl_st != NULL) {
+			parent = gtkc_vbox_new(FALSE, 4);
+			gtkc_table_attach1(real_parent, parent, tbl_st->row, tbl_st->col);
+			tbl_st->col++;
+			if (tbl_st->col >= tbl_st->cols) {
+				tbl_st->col = 0;
+				tbl_st->row++;
+			}
+		}
+		else
+			parent = real_parent;
+
+		/* create the actual widget from attrs */
 		switch (attrs[j].type) {
 			case PCB_HATT_BEGIN_HBOX:
 				if (attrs[j].pcb_hatt_flags & PCB_HATF_FRAME)
@@ -136,7 +156,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 					bparent = parent;
 				hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, FALSE, FALSE, 0);
-				j = ghid_attr_dlg_add(attrs, results, hbox, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				j = ghid_attr_dlg_add(attrs, results, hbox, NULL, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
 				break;
 
 			case PCB_HATT_BEGIN_VBOX:
@@ -146,11 +166,21 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 					bparent = parent;
 				vbox1 = gtkc_vbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, FALSE, FALSE, 0);
-				j = ghid_attr_dlg_add(attrs, results, vbox1, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				j = ghid_attr_dlg_add(attrs, results, vbox1, NULL, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
 				break;
 
 			case PCB_HATT_BEGIN_TABLE:
-				assert(!"TODO");
+				{
+					ghid_attr_tbl_t ts;
+					ts.cols = attrs[j].pcb_hatt_table_cols;
+					ts.rows = pcb_hid_atrdlg_num_children(attrs, j+1, n_attrs) / ts.cols;
+					ts.col = 0;
+					ts.row = 0;
+					tbl = gtkc_table_static(ts.cols, ts.rows, 1);
+					gtk_box_pack_start(GTK_BOX(parent), tbl, FALSE, FALSE, 0);
+					j = ghid_attr_dlg_add(attrs, results, tbl, &ts, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				}
+				break;
 
 			case PCB_HATT_LABEL:
 				widget = gtk_label_new(attrs[j].name);
@@ -352,10 +382,10 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
 		vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
-		ghid_attr_dlg_add(attrs, results, vbox, n_attrs, 0, 1);
+		ghid_attr_dlg_add(attrs, results, vbox, NULL, n_attrs, 0, 1);
 	}
 	else
-		ghid_attr_dlg_add(attrs, results, main_vbox, n_attrs, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+		ghid_attr_dlg_add(attrs, results, main_vbox, NULL, n_attrs, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
 	gtk_widget_show_all(dialog);
 
