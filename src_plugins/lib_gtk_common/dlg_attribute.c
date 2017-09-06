@@ -185,6 +185,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 			case PCB_HATT_LABEL:
 				widget = gtk_label_new(attrs[j].name);
 				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
+				gtk_misc_set_alignment(GTK_MISC(widget), 0., 0.5);
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
 				break;
 
