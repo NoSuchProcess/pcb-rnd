@@ -176,7 +176,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 					ts.rows = pcb_hid_atrdlg_num_children(attrs, j+1, n_attrs) / ts.cols;
 					ts.col = 0;
 					ts.row = 0;
-					tbl = gtkc_table_static(ts.cols, ts.rows, 1);
+					tbl = gtkc_table_static(ts.rows, ts.cols, 1);
 					gtk_box_pack_start(GTK_BOX(parent), tbl, FALSE, FALSE, 0);
 					j = ghid_attr_dlg_add(attrs, results, tbl, &ts, n_attrs, j+1, (attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
 				}
