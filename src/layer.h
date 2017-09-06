@@ -124,6 +124,9 @@ struct pcb_layer_s {              /* holds information about one layer */
 			pcb_layer_type_t type;
 			pcb_layer_combining_t comb;
 			int stack_offs;                /* offset in the stack for PCB_LYT_INNER: positive is counted from primary side, negative from the opposite side */
+
+			unsigned user_specified:1;     /* 1 if the user forced the binding */
+			pcb_layer_id_t user_lid;
 		} bound;
 	} meta;
 };
