@@ -638,7 +638,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			continue;
 
 		/* Add label */
-		if ((add_labels) || (attrs[i].type == PCB_HATT_LABEL)) {
+		if ((add_labels) && (attrs[i].type != PCB_HATT_LABEL)) {
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_END);
 			w = XmCreateLabel(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
@@ -682,7 +682,8 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			XtManageChild(w);
 			break;
 		case PCB_HATT_LABEL:
-			stdarg(XmNlabelString, empty);
+			stdarg_n = 0;
+			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
 			wl[i] = XmCreateLabel(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_BOOL:
@@ -726,7 +727,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 				if (empty == 0)
 					empty = XmStringCreatePCB("");
 
-				submenu = XmCreatePulldownMenu(parent, XmStrCast(attrs[i].name == NULL ? "" : attrs[i].name), stdarg_args + sn, stdarg_n - sn);
+				submenu = XmCreatePulldownMenu(parent, XmStrCast(attrs[i].name == NULL ? "anon" : attrs[i].name), stdarg_args + sn, stdarg_n - sn);
 
 				stdarg_n = sn;
 				stdarg(XmNlabelString, empty);
