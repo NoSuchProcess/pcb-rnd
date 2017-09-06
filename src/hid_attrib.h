@@ -131,26 +131,26 @@ do { \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
 	PCB_DAD_SET(table, name, pcb_strdup(text)); \
-} while(0);
+} while(0)
 
 #define PCB_DAD_LABELF(table, printf_args) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
 	PCB_DAD_SET(table, name, pcb_strdup_printf printf_args); \
-} while(0);
+} while(0)
 
 
 #define PCB_DAD_ENUM(table, choices) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_ENUM); \
 	PCB_DAD_SET(table, enumerations, vals); \
-} while(0);
+} while(0)
 
 #define PCB_DAD_INTEGER(table, label) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_INTEGER); \
 	PCB_DAD_SET(table, name, label); \
-} while(0);
+} while(0)
 
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET(table, min_val, val)
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET(table, max_val, val)
@@ -168,7 +168,7 @@ do { \
 		memset(&table[table ## _len], 0, sizeof(table[0])); \
 		table[table ## _len].type = item_type; \
 		table ## _len++; \
-	} while(0);
+	} while(0)
 
 #define PCB_DAD_SET(table, field, value) \
 	table[table ## _len - 1].field = (value)
