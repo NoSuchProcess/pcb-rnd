@@ -93,6 +93,9 @@ extern pcb_hid_attr_node_t *hid_attr_nodes;
 void pcb_hid_usage(pcb_hid_attribute_t * a, int numa);
 void pcb_hid_usage_option(const char *name, const char *help);
 
+/* Count the number of direct children, start_from the first children */
+int pcb_hid_atrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs);
+
 
 /* Helpers for building dynamic attribute dialogs (DAD) */
 #define PCB_DAD_DECL(table) \

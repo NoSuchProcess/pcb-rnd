@@ -223,3 +223,28 @@ void pcb_hid_usage(pcb_hid_attribute_t * a, int numa)
 		pcb_hid_usage_option(a->name, help);
 	}
 }
+
+int pcb_hid_atrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs)
+{
+	int n, level = 1, cnt = 0;
+
+	for(n = start_from; n < n_attrs; n++) {
+		if ((level == 1) && (attrs[n].type != PCB_HATT_END))
+			cnt++;
+		switch(attrs[n].type) {
+			case PCB_HATT_END:
+				level--;
+				if (level == 0)
+					return cnt;
+				break;
+			case PCB_HATT_BEGIN_TABLE:
+			case PCB_HATT_BEGIN_HBOX:
+			case PCB_HATT_BEGIN_VBOX:
+				level++;
+				break;
+			default:
+				break;
+		}
+	}
+	return cnt;
+}

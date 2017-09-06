@@ -618,33 +618,6 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	return cnt;
 }
 
-
-/* Count the number of direct children, start_from the first children */
-static int attribute_dialog_num_child(pcb_hid_attribute_t *attrs, int start_from, int n_attrs)
-{
-	int n, level = 1, cnt = 0;
-
-	for(n = start_from; n < n_attrs; n++) {
-		if ((level == 1) && (attrs[n].type != PCB_HATT_END))
-			cnt++;
-		switch(attrs[n].type) {
-			case PCB_HATT_END:
-				level--;
-				if (level == 0)
-					return cnt;
-				break;
-			case PCB_HATT_BEGIN_TABLE:
-			case PCB_HATT_BEGIN_HBOX:
-			case PCB_HATT_BEGIN_VBOX:
-				level++;
-				break;
-			default:
-				break;
-		}
-	}
-	return cnt;
-}
-
 /* returns the index of HATT_END where the loop had to stop */
 static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, Widget parent, Widget *wl, int n_attrs, int actual_nattrs, int start_from, int add_labels)
 {
@@ -692,7 +665,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 		case PCB_HATT_BEGIN_TABLE:
 			/* create content table */
 			numcol = attrs[i].pcb_hatt_table_cols;
-			len = attribute_dialog_num_child(attrs, i+1, n_attrs);
+			len = pcb_hid_atrdlg_num_children(attrs, i+1, n_attrs);
 			numch = len  / numcol + !!(len % numcol);
 			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 't', numch, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
 
@@ -815,7 +788,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 
 	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
 		stdarg_n = 0;
-		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', attribute_dialog_num_child(attrs, 0, n_attrs), 0);
+		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_atrdlg_num_children(attrs, 0, n_attrs), 0);
 		XtManageChild(main_tbl);
 		attribute_dialog_add(attrs, results, main_tbl, wl, n_attrs, actual_nattrs, 0, 1);
 	}
