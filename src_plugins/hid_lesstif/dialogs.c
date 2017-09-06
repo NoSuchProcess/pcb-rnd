@@ -726,7 +726,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 				if (empty == 0)
 					empty = XmStringCreatePCB("");
 
-				submenu = XmCreatePulldownMenu(parent, XmStrCast(attrs[i].name), stdarg_args + sn, stdarg_n - sn);
+				submenu = XmCreatePulldownMenu(parent, XmStrCast(attrs[i].name == NULL ? "" : attrs[i].name), stdarg_args + sn, stdarg_n - sn);
 
 				stdarg_n = sn;
 				stdarg(XmNlabelString, empty);
