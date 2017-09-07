@@ -112,6 +112,7 @@ do { \
 	free(table); \
 } while(0)
 
+#define PCB_DAD_CURRENT(table) (table ## _len - 1)
 
 #define PCB_DAD_BEGIN(table, item_type) \
 	PCB_DAD_ALLOC(table, item_type);
