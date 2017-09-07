@@ -120,6 +120,13 @@ do { \
 	table ## _result = calloc(PCB_DAD_CURRENT(table)+1, sizeof(pcb_hid_attr_val_t)); \
 } while(0)
 
+#define PCB_DAD_RUN(table, title, descr) \
+do { \
+	if (table ## _result == NULL) \
+		PCB_DAD_ALLOC_RESULT(table); \
+	pcb_gui->attribute_dialog(table, table ## _len, table ## _result, title, descr); \
+} while(0)
+
 #define PCB_DAD_CURRENT(table) (table ## _len - 1)
 
 #define PCB_DAD_BEGIN(table, item_type) \
