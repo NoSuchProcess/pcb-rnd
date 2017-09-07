@@ -1823,7 +1823,16 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 	{ /* interactive mode */
 		int n;
 		const char *vals[] = { "foo", "bar", "baz", NULL };
+		const char *comp[] = { "positive", "negative", NULL };
+		const char *types[] = { "paste", "mask", "silk", "copper", "outline", NULL };
+		const char *side[] = { "top copper", "bottom copper", NULL };
+		const char **layer_names;
 		PCB_DAD_DECL(dlg);
+
+		layer_names = calloc(sizeof(char *), PCB->Data->LayerN+1);
+		for(n = 0; n < PCB->Data->LayerN; n++)
+			layer_names[n] = PCB->Data->Layer[n].meta.real.name;
+		layer_names[n] = NULL;
 
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
 		for(n = 0; n < data->LayerN; n++) {
@@ -1840,15 +1849,13 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 					PCB_DAD_ENUM(dlg, vals);
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_LABEL(dlg, "Type:");
-					PCB_DAD_ENUM(dlg, vals); /* coposite */
-					PCB_DAD_ENUM(dlg, vals); /* lyt */
+					PCB_DAD_ENUM(dlg, comp); /* coposite */
+					PCB_DAD_ENUM(dlg, types); /* lyt */
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_LABEL(dlg, "Stack:");
 					PCB_DAD_ENUM(dlg, vals);
 					PCB_DAD_LABEL(dlg, "from");
-					PCB_DAD_ENUM(dlg, vals);
+					PCB_DAD_ENUM(dlg, side);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 
@@ -1861,7 +1868,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 					else
 						PCB_DAD_LABEL(dlg, "\n\n");
 					PCB_DAD_LABEL(dlg, "Automatic");
-					PCB_DAD_ENUM(dlg, vals);
+					PCB_DAD_ENUM(dlg, layer_names);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		}
@@ -1870,6 +1877,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		PCB_DAD_RUN(dlg, "layer_binding", "Layer bindings");
 
 		PCB_DAD_FREE(dlg);
+		free(layer_names);
 	}
 
 	return 0;
