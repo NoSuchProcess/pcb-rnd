@@ -1823,7 +1823,6 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 	{ /* interactive mode */
 		int n;
 		const char *vals[] = { "foo", "bar", "baz", NULL };
-		static pcb_hid_attr_val_t results[128] = { 0 };
 		PCB_DAD_DECL(dlg);
 
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
@@ -1867,7 +1866,9 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 			PCB_DAD_END(dlg);
 		}
 		PCB_DAD_END(dlg);
-		pcb_gui->attribute_dialog(dlg, dlg_len, results, "layer_binding", "Layer bindings");
+
+		PCB_DAD_RUN(dlg, "layer_binding", "Layer bindings");
+
 		PCB_DAD_FREE(dlg);
 	}
 
