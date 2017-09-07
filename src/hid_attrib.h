@@ -100,6 +100,7 @@ int pcb_hid_atrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int 
 /* Helpers for building dynamic attribute dialogs (DAD) */
 #define PCB_DAD_DECL(table) \
 	pcb_hid_attribute_t *table = NULL; \
+	pcb_hid_attr_val_t *table ## _result = NULL; \
 	int table ## _len = 0; \
 	int table ## _alloced = 0;
 
@@ -110,6 +111,13 @@ do { \
 		PCB_DAD_FREE_FIELD(table, __n__); \
 	} \
 	free(table); \
+	free(table ## _result); \
+} while(0)
+
+#define PCB_DAD_ALLOC_RESULT(table) \
+do { \
+	free(table ## _result); \
+	table ## _result = calloc(PCB_DAD_CURRENT(table)+1, sizeof(pcb_hid_attr_val_t)); \
 } while(0)
 
 #define PCB_DAD_CURRENT(table) (table ## _len - 1)
@@ -139,7 +147,6 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
 	PCB_DAD_SET(table, name, pcb_strdup_printf printf_args); \
 } while(0)
-
 
 #define PCB_DAD_ENUM(table, choices) \
 do { \
