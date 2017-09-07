@@ -96,14 +96,14 @@ void pcb_hid_usage_option(const char *name, const char *help);
 /* Count the number of direct children, start_from the first children */
 int pcb_hid_atrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs);
 
-
-/* Helpers for building dynamic attribute dialogs (DAD) */
+/*** Helpers for building dynamic attribute dialogs (DAD) ***/
 #define PCB_DAD_DECL(table) \
 	pcb_hid_attribute_t *table = NULL; \
 	pcb_hid_attr_val_t *table ## _result = NULL; \
 	int table ## _len = 0; \
 	int table ## _alloced = 0;
 
+/* Free all resources allocated by DAD macros for table */
 #define PCB_DAD_FREE(table) \
 do { \
 	int __n__; \
@@ -114,12 +114,6 @@ do { \
 	free(table ## _result); \
 } while(0)
 
-#define PCB_DAD_ALLOC_RESULT(table) \
-do { \
-	free(table ## _result); \
-	table ## _result = calloc(PCB_DAD_CURRENT(table)+1, sizeof(pcb_hid_attr_val_t)); \
-} while(0)
-
 #define PCB_DAD_RUN(table, title, descr) \
 do { \
 	if (table ## _result == NULL) \
@@ -127,8 +121,10 @@ do { \
 	pcb_gui->attribute_dialog(table, table ## _len, table ## _result, title, descr); \
 } while(0)
 
+/* Return the index of the item currenty being edited */
 #define PCB_DAD_CURRENT(table) (table ## _len - 1)
 
+/* Begin a new box or table */
 #define PCB_DAD_BEGIN(table, item_type) \
 	PCB_DAD_ALLOC(table, item_type);
 
@@ -149,6 +145,7 @@ do { \
 	PCB_DAD_SET(table, name, pcb_strdup(text)); \
 } while(0)
 
+/* Add label usign printf formatting syntax: PCB_DAD_LABELF(tbl, ("a=%d", 12)); */
 #define PCB_DAD_LABELF(table, printf_args) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
@@ -167,13 +164,14 @@ do { \
 	PCB_DAD_SET(table, name, label); \
 } while(0)
 
+/* Set properties of the current item */
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET(table, min_val, val)
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET(table, max_val, val)
 #define PCB_DAD_DEFAULT(table, val)      PCB_DAD_SET_VAL(table, default_val, val)
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET(table, min_val, min),PCB_DAD_SET(table, max_val, max))
 
 
-/* DAD internals (do not use directly) */
+/*** DAD internals (do not use directly) ***/
 #define PCB_DAD_ALLOC(table, item_type) \
 	do { \
 		if (table ## _len >= table ## _alloced) { \
@@ -239,6 +237,12 @@ do { \
 		case PCB_HATT_END: \
 			break; \
 	} \
+} while(0)
+
+#define PCB_DAD_ALLOC_RESULT(table) \
+do { \
+	free(table ## _result); \
+	table ## _result = calloc(PCB_DAD_CURRENT(table)+1, sizeof(pcb_hid_attr_val_t)); \
 } while(0)
 
 #endif
