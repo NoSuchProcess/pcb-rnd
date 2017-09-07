@@ -158,7 +158,7 @@ do { \
 #define PCB_DAD_ENUM(table, choices) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_ENUM); \
-	PCB_DAD_SET(table, enumerations, vals); \
+	PCB_DAD_SET(table, enumerations, choices); \
 } while(0)
 
 #define PCB_DAD_INTEGER(table, label) \
