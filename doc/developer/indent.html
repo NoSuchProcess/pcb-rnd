@@ -2,14 +2,17 @@
 <body>
 <h1> pcb-rnd - indentation </h1>
 
-As of r1022 all old code is converted using indent(1) with the following
-command line:
-
+As of r1022 all old code is converted using indent(1). Our preferred
+coding style is close to what the following command line produces:
 <pre>
 indent --line-length128 -brs -br -nce --tab-size2 -ut -npsl  -npcs -hnl -cli2 -ncs
 </pre>
 <p>
-Contributors are kindly asked to follow this style or run the above commandline
-on their code before sending a patch or committing to svn.
+Contributors are kindly asked to follow this style or run the above
+commandline on their <b>new</b> code before sending a patch or committing
+to svn. The style of existing code lines should <b>not</b> be changed,
+not even the "sorrunding" lines to a largish patch, especially not in the
+same patch/commit with actual code changes.
+
 </body>
 </html>
