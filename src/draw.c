@@ -727,9 +727,14 @@ void pcb_hid_expose_pinout(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 {
 	pcb_hid_t *old_gui = expose_begin(hid);
 
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &ctx->view);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &ctx->view);
+
 	pcb_draw_doing_pinout = pcb_true;
 	pcb_elem_draw(ctx->content.elem);
 	pcb_draw_doing_pinout = pcb_false;
+			
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &ctx->view);
 
 	expose_end(old_gui);
 }
