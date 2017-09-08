@@ -390,8 +390,10 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 		return -1;
 	
 	e = htip_popentry(&fk->fonts, src);
+	((pcb_font_t*) e->value)->id = dst;
 	htip_set(&fk->fonts, dst, e->value);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", src);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", dst);
+	return 0;
 }
 
