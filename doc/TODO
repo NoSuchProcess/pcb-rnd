@@ -89,6 +89,7 @@ For the next release:
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	- ./configure --buildin-hid_gtk3_cairo --buildin-hid_lesstif ; make -s ; ./src/pcb-rnd --gui lesstif |-> core dumps:  Resource error: duplicate key in hash (./pcb-menu-lesstif.lht:182.1)* [report:Alain]
+	- Paste layer does not set the drawing mode. [report:Ade]
 
 LATER RELEASES:
 - feature: fp_wget cache dir confiurable [report: agaran]
