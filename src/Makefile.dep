@@ -190,7 +190,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h error.h event.h \
- ../src_plugins/diag/integrity.h hid.h hid_attrib.h dolists.h \
+ ../src_plugins/diag/integrity.h hid.h hid_attrib.h hid_dad.h \
+ compat_misc.h hid_attrib.h dolists.h \
  ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
  ../config.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -5413,7 +5414,7 @@ gui_act.o: gui_act.c ../config.h board.h const.h macro.h \
  funchash_core.h funchash.h funchash_core_list.h change.h draw.h search.h \
  rats.h netlist.h route_style.h find.h stub_stroke.h hid_actions.h \
  hid_init.h compat_nls.h compat_misc.h event.h layer_vis.h hid_attrib.h \
- operation.h obj_subc_op.h obj_elem_draw.h obj_pinvia_draw.h \
+ hid_dad.h operation.h obj_subc_op.h obj_elem_draw.h obj_pinvia_draw.h \
  obj_pad_draw.h
 heap.o: heap.c ../config.h heap.h
 hid_actions.o: hid_actions.c ../config.h conf_core.h conf.h \

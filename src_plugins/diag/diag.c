@@ -37,6 +37,7 @@
 #include "integrity.h"
 #include "hid.h"
 #include "hid_attrib.h"
+#include "hid_dad.h"
 
 conf_diag_t conf_diag;
 

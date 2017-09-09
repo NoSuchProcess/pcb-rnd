@@ -49,6 +49,7 @@
 #include "layer_vis.h"
 #include "attrib.h"
 #include "hid_attrib.h"
+#include "hid_dad.h"
 #include "operation.h"
 #include "obj_subc_op.h"
 
