@@ -264,7 +264,7 @@ static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	PCB_DAD_DECL(foo);
 	PCB_DAD_BEGIN_VBOX(foo);
 		PCB_DAD_LABEL(foo, "text1");
-		PCB_DAD_BEGIN_HBOX(foo);
+		PCB_DAD_BEGIN_TABLE(foo, 3);
 			PCB_DAD_LABEL(foo, "text2a");
 			PCB_DAD_LABEL(foo, "text2b");
 			PCB_DAD_LABEL(foo, "text2c");
