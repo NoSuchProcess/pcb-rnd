@@ -670,8 +670,6 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 	}
 }
 
-#define change_cb(dst) do { if (dst->change_cb != NULL) dst->change_cb(dst); } while(0)
-
 static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 {
 	lesstif_attr_dlg_t *ctx;
@@ -693,9 +691,11 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 	if (widx >= ctx->n_attrs)
 		return;
 
-	fprintf(stderr, "CHG dlg_widget=%p ctx=%p idx=%d\n", dlg_widget, ctx, widx);
-	attribute_dialog_readres(ctx, widx);
+	if (ctx->attrs[widx].change_cb == NULL)
+		return;
 
+	attribute_dialog_readres(ctx, widx);
+	ctx->attrs[widx].change_cb(&ctx->attrs[widx]);
 }
 
 /* returns the index of HATT_END where the loop had to stop */
