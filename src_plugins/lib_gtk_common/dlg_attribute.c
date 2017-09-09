@@ -452,3 +452,14 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 	return rc;
 }
 
+
+int ghid_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
+		return -1;
+
+	gtk_widget_set_sensitive(ctx->wl[idx], enabled);
+
+	return 0;
+}

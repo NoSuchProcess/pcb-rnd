@@ -899,6 +899,18 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	return rv ? 0 : 1;
 }
 
+int lesstif_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
+		return -1;
+
+	XtSetSensitive(ctx->wl[idx], enabled);
+	return 0;
+}
+
+
 /* ------------------------------------------------------------ */
 
 static const char dowindows_syntax[] = "DoWindows(1|2|3|4)\n" "DoWindows(Layout|Library|Log|Netlist)";

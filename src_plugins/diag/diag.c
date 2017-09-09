@@ -260,6 +260,7 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 static const char attr_dlg_syntax[] = "attr_dlg()\n";
 static const char attr_dlg_help[] = "test the attribute dialog";
 static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr);
+static int attr_idx;
 static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
@@ -277,6 +278,7 @@ static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		PCB_DAD_ENUM(foo, vals);
 			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
+			attr_idx = PCB_DAD_CURRENT(foo);
 		PCB_DAD_INTEGER(foo, "text2e");
 			PCB_DAD_MINVAL(foo, 1);
 			PCB_DAD_MAXVAL(foo, 10);
@@ -292,7 +294,11 @@ static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr)
 {
+	static pcb_bool st;
 	printf("Chg\n");
+
+	st = !st;
+	pcb_gui->att_dlg_widget_state(hid_ctx, attr_idx, st);
 }
 
 

@@ -3402,8 +3402,8 @@ extern int lesstif_close_confirm_dialog();
 
 extern void lesstif_report_dialog(const char *title, const char *msg);
 
-extern int
-lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr);
+extern int lesstif_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr);
+extern int lesstif_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
 
 static void pinout_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
@@ -3778,6 +3778,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.prompt_for = lesstif_prompt_for;
 	lesstif_hid.fileselect = lesstif_fileselect;
 	lesstif_hid.attribute_dialog = lesstif_attribute_dialog;
+	lesstif_hid.att_dlg_widget_state = lesstif_att_dlg_widget_state;
 	lesstif_hid.show_item = lesstif_show_item;
 	lesstif_hid.beep = lesstif_beep;
 	lesstif_hid.progress = lesstif_progress;

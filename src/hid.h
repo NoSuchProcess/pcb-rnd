@@ -430,6 +430,9 @@ struct hid_s {
 	int (*attribute_dialog) (pcb_hid_attribute_t * attrs_,
 													 int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_);
 
+	/* Disable or enable a widget of an active attribute dialog */
+	int (*att_dlg_widget_state)(void *hid_ctx, int idx, pcb_bool enabled);
+
 	/* This causes a second window to display, which only shows the
 	   selected item_. The expose callback is called twice; once to size
 	   the extents of the item, and once to draw it.  To pass magic

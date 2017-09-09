@@ -516,6 +516,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->prompt_for = ghid_prompt_for;
 	dst->fileselect = ghid_fileselect;
 	dst->attribute_dialog = ghid_attribute_dialog_;
+	dst->att_dlg_widget_state = ghid_att_dlg_widget_state;
 	dst->show_item = ghid_show_item;
 	dst->beep = ghid_beep;
 	dst->progress = ghid_progress;
