@@ -38,7 +38,7 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 {
 	const char *fname, *sid;
 	static char *default_file = NULL;
-	pcb_font_id_t fid;
+	pcb_font_id_t fid, dst_fid = -1;
 	pcb_font_t *fnt;
 	int res;
 
@@ -52,9 +52,9 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font(PCB, fid, 0) != NULL) {
-			pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): font ID %d is already taken\n", fid);
-			return 1;
+		if (pcb_font(PCB, fid, 0) != NULL) {	/* font already exists */
+			dst_fid = fid;
+			fid = -1;	/* allocate a new id, which will be later moved to dst_fid */
 		}
 	}
 	else
@@ -84,6 +84,10 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
 		pcb_del_font(&PCB->fontkit, fnt->id);
 		return 1;
+	}
+	
+	if (dst_fid != -1) {
+		pcb_move_font(&PCB->fontkit, fnt->id, dst_fid);
 	}
 
 	pcb_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fnt->id, fname);
