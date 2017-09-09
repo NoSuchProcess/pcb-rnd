@@ -58,3 +58,8 @@ GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label)
 {
 	return gtk_menu_or_checkmenu_item_new(FALSE, label, accel_label);
 }
+
+GtkWidget *pcb_gtk_checkmenu_item_new(const char *label, const char *accel_label)
+{
+	return gtk_menu_or_checkmenu_item_new(TRUE, label, accel_label);
+}
