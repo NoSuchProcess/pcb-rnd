@@ -260,7 +260,6 @@ static const char attr_dlg_help[] = "test the attribute dialog";
 static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
-	static pcb_hid_attr_val_t results[32] = { 0 };
 
 	PCB_DAD_DECL(foo);
 	PCB_DAD_BEGIN_VBOX(foo);
@@ -274,7 +273,7 @@ static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_DAD_LABEL(foo, "text3");
 	PCB_DAD_END(foo);
 
-	pcb_gui->attribute_dialog(foo, foo_len, results, "attr_dlg", "attribute dialog test");
+	PCB_DAD_RUN(foo, "attr_dlg", "attribute dialog test");
 
 	PCB_DAD_FREE(foo);
 	return 0;
