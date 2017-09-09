@@ -622,7 +622,9 @@ typedef struct {
 	pcb_hid_attribute_t *attrs;
 	int n_attrs, actual_nattrs;
 	Widget *wl;
+	Widget **btn; /* enum value buttons */
 	pcb_hid_attr_val_t *results;
+	unsigned inhibit_valchg:1;
 } lesstif_attr_dlg_t;
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
@@ -682,6 +684,9 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 	XtVaGetValues(dlg_widget, XmNuserData, &ctx, NULL);
 
 	if (ctx == NULL)
+		return;
+
+	if (ctx->inhibit_valchg)
 		return;
 
 	for(widx = 0; widx < ctx->n_attrs; widx++)
@@ -819,6 +824,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 				stdarg(XmNlabelString, empty);
 				stdarg(XmNsubMenuId, submenu);
 				ctx->wl[i] = XmCreateOptionMenu(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+				for (sn = 0; ctx->attrs[i].enumerations[sn]; sn++);
+				ctx->btn[i] = calloc(sizeof(Widget), sn);
 				for (sn = 0; ctx->attrs[i].enumerations[sn]; sn++) {
 					Widget btn;
 					XmString label;
@@ -832,6 +839,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 					if (sn == ctx->attrs[i].default_val.int_value)
 						default_button = btn;
 					XtAddCallback(btn, XmNactivateCallback, valchg, ctx->wl[i]);
+					(ctx->btn[i])[sn] = btn;
 				}
 				if (default_button) {
 					stdarg_n = 0;
@@ -850,6 +858,63 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 	return i;
 }
 
+
+static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	char buf[30];
+	int save, n;
+
+	save = ctx->inhibit_valchg;
+	ctx->inhibit_valchg = 1;
+	switch(ctx->attrs[idx].type) {
+		case PCB_HATT_BEGIN_HBOX:
+		case PCB_HATT_BEGIN_VBOX:
+		case PCB_HATT_BEGIN_TABLE:
+			return -1;
+		case PCB_HATT_LABEL:
+			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStrCast(ctx->results[idx].str_value), NULL);
+			break;
+		case PCB_HATT_BOOL:
+			XtVaSetValues(ctx->wl[idx], XmNset, ctx->results[idx].int_value, NULL);
+			break;
+		case PCB_HATT_STRING:
+			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(ctx->results[idx].str_value), NULL);
+			break;
+		case PCB_HATT_INTEGER:
+			sprintf(buf, "%d", ctx->results[idx].int_value);
+			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(buf), NULL);
+			break;
+		case PCB_HATT_COORD:
+			pcb_snprintf(buf, sizeof(buf), "%$mS", ctx->results[idx].coord_value);
+			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(buf), NULL);
+			break;
+		case PCB_HATT_REAL:
+			pcb_snprintf(buf, sizeof(buf), "%g", ctx->results[idx].real_value);
+			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(buf), NULL);
+			break;
+		case PCB_HATT_ENUM:
+			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
+				if (n == ctx->results[idx].int_value) {
+					stdarg_n = 0;
+					stdarg(XmNmenuHistory, (ctx->btn[idx])[n]);
+					XtSetValues(ctx->wl[idx], stdarg_args, stdarg_n);
+					goto ok;
+				}
+			}
+			goto err;
+		default:
+			goto err;
+	}
+
+	ok:;
+	ctx->inhibit_valchg = save;
+	return 0;
+
+	err:;
+	ctx->inhibit_valchg = save;
+	return -1;
+}
+
 int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
 {
 	Widget dialog, topform, main_tbl;
@@ -860,6 +925,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	ctx.results = results;
 	ctx.n_attrs = n_attrs;
 	ctx.actual_nattrs = 0;
+	ctx.inhibit_valchg = 0;
 
 	for (i = 0; i < n_attrs; i++) {
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
@@ -870,6 +936,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	}
 
 	ctx.wl = (Widget *) calloc(n_attrs, sizeof(Widget));
+	ctx.btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
 
 	topform = create_form_ok_dialog(title, 1);
 	dialog = XtParent(topform);
@@ -890,8 +957,10 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 
 	rv = wait_for_dialog(dialog);
 
-	for (i = 0; i < n_attrs; i++)
+	for (i = 0; i < n_attrs; i++) {
 		attribute_dialog_readres(&ctx, i);
+		free(ctx.btn[i]);
+	}
 
 	free(ctx.wl);
 	XtDestroyWidget(dialog);
@@ -917,9 +986,12 @@ int lesstif_att_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
-	ctx->results[idx] = *val;
+	if (attribute_dialog_set(ctx, idx, val) == 0) {
+		ctx->results[idx] = *val;
+		return 0;
+	}
 
-	return 0;
+	return -1;
 }
 
 
