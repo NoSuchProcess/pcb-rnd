@@ -386,12 +386,12 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 	if ((!fk->hash_inited) || (htip_get(&fk->fonts, src) == NULL))
 		return -1;
 	
-	if (pcb_del_font(fk, dst) < 0)
-		return -1;
+	pcb_del_font(fk, dst);
 	
 	e = htip_popentry(&fk->fonts, src);
 	((pcb_font_t*) e->value)->id = dst;
 	htip_set(&fk->fonts, dst, e->value);
+	fk->last_id = MIN(fk->last_id, dst);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", src);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", dst);
 	return 0;
