@@ -695,7 +695,7 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 		return;
 
 	attribute_dialog_readres(ctx, widx);
-	ctx->attrs[widx].change_cb(&ctx->attrs[widx]);
+	ctx->attrs[widx].change_cb(ctx, &ctx->attrs[widx]);
 }
 
 /* returns the index of HATT_END where the loop had to stop */

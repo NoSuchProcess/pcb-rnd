@@ -256,8 +256,10 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+
 static const char attr_dlg_syntax[] = "attr_dlg()\n";
 static const char attr_dlg_help[] = "test the attribute dialog";
+static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr);
 static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
@@ -274,16 +276,23 @@ static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_DAD_LABEL(foo, "text3");
 
 		PCB_DAD_ENUM(foo, vals);
+			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
 		PCB_DAD_INTEGER(foo, "text2e");
 			PCB_DAD_MINVAL(foo, 1);
 			PCB_DAD_MAXVAL(foo, 10);
 			PCB_DAD_DEFAULT(foo, 3);
+			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
 	PCB_DAD_END(foo);
 
 	PCB_DAD_RUN(foo, "attr_dlg", "attribute dialog test");
 
 	PCB_DAD_FREE(foo);
 	return 0;
+}
+
+static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr)
+{
+	printf("Chg\n");
 }
 
 
