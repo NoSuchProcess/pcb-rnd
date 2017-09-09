@@ -271,6 +271,12 @@ static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			PCB_DAD_LABEL(foo, "text2d");
 		PCB_DAD_END(foo);
 		PCB_DAD_LABEL(foo, "text3");
+
+		PCB_DAD_ENUM(foo, vals);
+		PCB_DAD_INTEGER(foo, "text2e");
+			PCB_DAD_MINVAL(foo, 1);
+			PCB_DAD_MAXVAL(foo, 10);
+			PCB_DAD_DEFAULT(foo, 3);
 	PCB_DAD_END(foo);
 
 	PCB_DAD_RUN(foo, "attr_dlg", "attribute dialog test");
