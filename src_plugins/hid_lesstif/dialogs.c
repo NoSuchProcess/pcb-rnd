@@ -625,12 +625,57 @@ typedef struct {
 	pcb_hid_attr_val_t *results;
 } lesstif_attr_dlg_t;
 
+static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
+{
+	char *cp;
+
+	if (ctx->attrs[widx].help_text == ATTR_UNDOCUMENTED)
+		return;
+
+	switch(ctx->attrs[widx].type) {
+		case PCB_HATT_BOOL:
+			ctx->results[widx].int_value = XmToggleButtonGetState(ctx->wl[widx]);
+			break;
+		case PCB_HATT_STRING:
+			ctx->results[widx].str_value = XmTextGetString(ctx->wl[widx]);
+			break;
+		case PCB_HATT_INTEGER:
+			cp = XmTextGetString(ctx->wl[widx]);
+			sscanf(cp, "%d", &ctx->results[widx].int_value);
+			break;
+		case PCB_HATT_COORD:
+			cp = XmTextGetString(ctx->wl[widx]);
+			ctx->results[widx].coord_value = pcb_get_value(cp, NULL, NULL, NULL);
+			break;
+		case PCB_HATT_REAL:
+			cp = XmTextGetString(ctx->wl[widx]);
+			sscanf(cp, "%lg", &ctx->results[widx].real_value);
+			break;
+		case PCB_HATT_ENUM:
+			{
+				const char **uptr;
+				Widget btn;
+
+				stdarg_n = 0;
+				stdarg(XmNmenuHistory, &btn);
+				XtGetValues(ctx->wl[widx], stdarg_args, stdarg_n);
+				stdarg_n = 0;
+				stdarg(XmNuserData, &uptr);
+				XtGetValues(btn, stdarg_args, stdarg_n);
+				ctx->results[widx].int_value = uptr - ctx->attrs[widx].enumerations;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 #define change_cb(dst) do { if (dst->change_cb != NULL) dst->change_cb(dst); } while(0)
 
 static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 {
 	lesstif_attr_dlg_t *ctx;
-	Widget *dlg_widget = (Widget *)dlg_widget_; /* ctx->wl[i] */
+	Widget dlg_widget = (Widget)dlg_widget_; /* ctx->wl[i] */
 	int widx;
 
 	if (dlg_widget == NULL)
@@ -649,7 +694,7 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 		return;
 
 	fprintf(stderr, "CHG dlg_widget=%p ctx=%p idx=%d\n", dlg_widget, ctx, widx);
-
+	attribute_dialog_readres(ctx, widx);
 
 }
 
@@ -845,49 +890,8 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 
 	rv = wait_for_dialog(dialog);
 
-	for (i = 0; i < n_attrs; i++) {
-		char *cp;
-
-		if (attrs[i].help_text == ATTR_UNDOCUMENTED)
-			continue;
-
-		switch (attrs[i].type) {
-		case PCB_HATT_BOOL:
-			results[i].int_value = XmToggleButtonGetState(ctx.wl[i]);
-			break;
-		case PCB_HATT_STRING:
-			results[i].str_value = XmTextGetString(ctx.wl[i]);
-			break;
-		case PCB_HATT_INTEGER:
-			cp = XmTextGetString(ctx.wl[i]);
-			sscanf(cp, "%d", &results[i].int_value);
-			break;
-		case PCB_HATT_COORD:
-			cp = XmTextGetString(ctx.wl[i]);
-			results[i].coord_value = pcb_get_value(cp, NULL, NULL, NULL);
-			break;
-		case PCB_HATT_REAL:
-			cp = XmTextGetString(ctx.wl[i]);
-			sscanf(cp, "%lg", &results[i].real_value);
-			break;
-		case PCB_HATT_ENUM:
-			{
-				const char **uptr;
-				Widget btn;
-
-				stdarg_n = 0;
-				stdarg(XmNmenuHistory, &btn);
-				XtGetValues(ctx.wl[i], stdarg_args, stdarg_n);
-				stdarg_n = 0;
-				stdarg(XmNuserData, &uptr);
-				XtGetValues(btn, stdarg_args, stdarg_n);
-				results[i].int_value = uptr - attrs[i].enumerations;
-			}
-			break;
-		default:
-			break;
-		}
-	}
+	for (i = 0; i < n_attrs; i++)
+		attribute_dialog_readres(&ctx, i);
 
 	free(ctx.wl);
 	XtDestroyWidget(dialog);
