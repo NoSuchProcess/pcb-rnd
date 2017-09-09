@@ -379,6 +379,33 @@ int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
 	return 0;
 }
 
+static void copy_font(pcb_font_t *dst, pcb_font_t *src)
+{
+	int i;
+	
+	memcpy(dst, src, sizeof(pcb_font_t));
+	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
+		pcb_polygon_t *p_src;
+		pcb_arc_t *a_src;
+		
+		dst->Symbol[i].Line = malloc(src->Symbol[i].LineMax);
+		memcpy (dst->Symbol[i].Line, src->Symbol[i].Line, sizeof(pcb_line_t)*src->Symbol[i].LineN);
+
+		for(p_src = polylist_first(&src->Symbol[i].polys); p_src != NULL; p_src = polylist_next(p_src)) {
+			pcb_polygon_t *p_dst = malloc(sizeof(pcb_polygon_t));
+			memcpy(p_dst, p_src, sizeof(pcb_polygon_t));
+			polylist_insert(&dst->Symbol[i].polys, p_dst);
+		}
+
+		for(a_src = arclist_first(&src->Symbol[i].arcs); a_src != NULL; a_src = arclist_next(a_src)) {
+			pcb_arc_t *a_dst = malloc(sizeof(pcb_arc_t));
+			memcpy(a_dst, a_src, sizeof(pcb_arc_t));
+			arclist_insert(&dst->Symbol[i].arcs, a_dst);
+		}
+	}
+	dst->name = pcb_strdup(src->name);
+}
+
 int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 {
 	htip_entry_t *e;
@@ -389,11 +416,19 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 	pcb_del_font(fk, dst);
 	
 	e = htip_popentry(&fk->fonts, src);
-	((pcb_font_t*) e->value)->id = dst;
-	htip_set(&fk->fonts, dst, e->value);
+	if (dst == 0) {
+		pcb_font_free (&fk->dflt);
+		copy_font (&fk->dflt, e->value);
+		pcb_font_free (e->value);
+		fk->dflt.id = 0;
+	} else {
+		htip_set(&fk->fonts, dst, e->value);
+		((pcb_font_t*) e->value)->id = dst;
+	}
 	fk->last_id = MIN(fk->last_id, dst);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", src);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", dst);
+
 	return 0;
 }
 
