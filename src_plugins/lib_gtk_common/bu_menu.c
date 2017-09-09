@@ -199,12 +199,12 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, Gt
 
 	/* By now this runs only for toggle items. */
 	if (action) {
-		GtkWidget *item;
-		gtk_action_set_accel_group(action, menu->accel_group);
-		gtk_action_connect_accelerator(action);
+		GtkWidget *item = pcb_gtk_checkmenu_item_new(menu_label, accel);
+
 		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer) n_action);
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer) sub_res);
-		item = gtk_action_create_menu_item(action);
+		gtk_activatable_set_use_action_appearance(GTK_ACTIVATABLE (item), FALSE);
+		gtk_activatable_set_related_action(GTK_ACTIVATABLE (item), action);
 		gtk_menu_shell_append(shell, item);
 		menu->actions = g_list_append(menu->actions, action);
 		sub_res->user_data = handle_alloc(item, item);
