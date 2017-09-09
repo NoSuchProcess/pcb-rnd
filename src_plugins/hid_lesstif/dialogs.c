@@ -696,6 +696,8 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 	if (widx >= ctx->n_attrs)
 		return;
 
+	ctx->attrs[widx].changed = 1;
+
 	if (ctx->attrs[widx].change_cb == NULL)
 		return;
 
