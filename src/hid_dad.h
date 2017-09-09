@@ -100,7 +100,7 @@ do { \
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET(table, max_val, val)
 #define PCB_DAD_DEFAULT(table, val)      PCB_DAD_SET_VAL(table, default_val, val)
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET(table, min_val, min),PCB_DAD_SET(table, max_val, max))
-
+#define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET(table, change_cb, cb)
 
 /*** DAD internals (do not use directly) ***/
 #define PCB_DAD_ALLOC(table, item_type) \
