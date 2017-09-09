@@ -618,6 +618,13 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	return cnt;
 }
 
+typedef struct {
+	pcb_hid_attribute_t *attrs;
+	int n_attrs, actual_nattrs;
+	Widget *wl;
+	pcb_hid_attr_val_t *results;
+} lesstif_attr_dlg_t;
+
 #define change_cb(dst) do { if (dst->change_cb != NULL) dst->change_cb(dst); } while(0)
 
 static void valchg(Widget w, XtPointer user_data, XtPointer call_data)
@@ -626,7 +633,7 @@ static void valchg(Widget w, XtPointer user_data, XtPointer call_data)
 }
 
 /* returns the index of HATT_END where the loop had to stop */
-static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, Widget parent, Widget *wl, int n_attrs, int actual_nattrs, int start_from, int add_labels)
+static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from, int add_labels)
 {
 	int len, i, numch, numcol;
 	static XmString empty = 0;
@@ -634,21 +641,21 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 	if (!empty)
 		empty = XmStringCreatePCB(" ");
 
-	for (i = start_from; i < n_attrs; i++) {
+	for (i = start_from; i < ctx->n_attrs; i++) {
 		char buf[30];
 		Widget w;
 
-		if (attrs[i].type == PCB_HATT_END)
+		if (ctx->attrs[i].type == PCB_HATT_END)
 			break;
 
-		if (attrs[i].help_text == ATTR_UNDOCUMENTED)
+		if (ctx->attrs[i].help_text == ATTR_UNDOCUMENTED)
 			continue;
 
 		/* Add label */
-		if ((add_labels) && (attrs[i].type != PCB_HATT_LABEL)) {
+		if ((add_labels) && (ctx->attrs[i].type != PCB_HATT_LABEL)) {
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_END);
-			w = XmCreateLabel(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			w = XmCreateLabel(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtManageChild(w);
 		}
 
@@ -656,27 +663,27 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 		stdarg_n = 0;
 		stdarg(XmNalignment, XmALIGNMENT_END);
 
-		switch (attrs[i].type) {
+		switch(ctx->attrs[i].type) {
 		case PCB_HATT_BEGIN_HBOX:
-			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'h', 0, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
 			XtManageChild(w);
-			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, (attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_VBOX:
-			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 'v', 0, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
 			XtManageChild(w);
-			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, (attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_TABLE:
 			/* create content table */
-			numcol = attrs[i].pcb_hatt_table_cols;
-			len = pcb_hid_atrdlg_num_children(attrs, i+1, n_attrs);
+			numcol = ctx->attrs[i].pcb_hatt_table_cols;
+			len = pcb_hid_atrdlg_num_children(ctx->attrs, i+1, ctx->n_attrs);
 			numch = len  / numcol + !!(len % numcol);
-			w = pcb_motif_box(parent, XmStrCast(attrs[i].name), 't', numch, (attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
 
-			i = attribute_dialog_add(attrs, results, w, wl, n_attrs, actual_nattrs, i+1, (attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			while((len % numcol) != 0) {
 				Widget pad;
 
@@ -691,44 +698,44 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 		case PCB_HATT_LABEL:
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-			wl[i] = XmCreateLabel(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			ctx->wl[i] = XmCreateLabel(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case PCB_HATT_BOOL:
 			stdarg(XmNlabelString, empty);
-			stdarg(XmNset, results[i].int_value);
-			wl[i] = XmCreateToggleButton(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
+			stdarg(XmNset, ctx->results[i].int_value);
+			ctx->wl[i] = XmCreateToggleButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
 		case PCB_HATT_STRING:
 			stdarg(XmNcolumns, 40);
 			stdarg(XmNresizeWidth, True);
-			stdarg(XmNvalue, results[i].str_value);
-			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
+			stdarg(XmNvalue, ctx->results[i].str_value);
+			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
 		case PCB_HATT_INTEGER:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
-			sprintf(buf, "%d", results[i].int_value);
+			sprintf(buf, "%d", ctx->results[i].int_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
+			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
 		case PCB_HATT_COORD:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
-			pcb_snprintf(buf, sizeof(buf), "%$mS", results[i].coord_value);
+			pcb_snprintf(buf, sizeof(buf), "%$mS", ctx->results[i].coord_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
+			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
 		case PCB_HATT_REAL:
 			stdarg(XmNcolumns, 16);
 			stdarg(XmNresizeWidth, True);
-			pcb_snprintf(buf, sizeof(buf), "%g", results[i].real_value);
+			pcb_snprintf(buf, sizeof(buf), "%g", ctx->results[i].real_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
+			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
 		case PCB_HATT_ENUM:
 			{
@@ -739,39 +746,39 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 				if (empty == 0)
 					empty = XmStringCreatePCB("");
 
-				submenu = XmCreatePulldownMenu(parent, XmStrCast(attrs[i].name == NULL ? "anon" : attrs[i].name), stdarg_args + sn, stdarg_n - sn);
+				submenu = XmCreatePulldownMenu(parent, XmStrCast(ctx->attrs[i].name == NULL ? "anon" : ctx->attrs[i].name), stdarg_args + sn, stdarg_n - sn);
 
 				stdarg_n = sn;
 				stdarg(XmNlabelString, empty);
 				stdarg(XmNsubMenuId, submenu);
-				wl[i] = XmCreateOptionMenu(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
-				for (sn = 0; attrs[i].enumerations[sn]; sn++) {
+				ctx->wl[i] = XmCreateOptionMenu(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+				for (sn = 0; ctx->attrs[i].enumerations[sn]; sn++) {
 					Widget btn;
 					XmString label;
 					stdarg_n = 0;
-					label = XmStringCreatePCB(attrs[i].enumerations[sn]);
-					stdarg(XmNuserData, &attrs[i].enumerations[sn]);
+					label = XmStringCreatePCB(ctx->attrs[i].enumerations[sn]);
+					stdarg(XmNuserData, &ctx->attrs[i].enumerations[sn]);
 					stdarg(XmNlabelString, label);
 					btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 					XtManageChild(btn);
 					XmStringFree(label);
-					if (sn == attrs[i].default_val.int_value)
+					if (sn == ctx->attrs[i].default_val.int_value)
 						default_button = btn;
-					XtAddCallback(btn, XmNactivateCallback, valchg, wl[i]);
+					XtAddCallback(btn, XmNactivateCallback, valchg, ctx->wl[i]);
 				}
 				if (default_button) {
 					stdarg_n = 0;
 					stdarg(XmNmenuHistory, default_button);
-					XtSetValues(wl[i], stdarg_args, stdarg_n);
+					XtSetValues(ctx->wl[i], stdarg_args, stdarg_n);
 				}
 			}
 			break;
 		default:
-			wl[i] = XmCreateLabel(parent, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
+			ctx->wl[i] = XmCreateLabel(parent, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
 			break;
 		}
-		if (wl[i] != NULL)
-			XtManageChild(wl[i]);
+		if (ctx->wl[i] != NULL)
+			XtManageChild(ctx->wl[i]);
 	}
 	return i;
 }
@@ -779,35 +786,39 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
 {
 	Widget dialog, topform, main_tbl;
-	Widget *wl;
 	int i, rv;
-	int actual_nattrs = 0;
+	lesstif_attr_dlg_t ctx;
+
+	ctx.attrs = attrs;
+	ctx.results = results;
+	ctx.n_attrs = n_attrs;
+	ctx.actual_nattrs = 0;
 
 	for (i = 0; i < n_attrs; i++) {
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
-			actual_nattrs++;
+			ctx.actual_nattrs++;
 		results[i] = attrs[i].default_val;
 		if (results[i].str_value)
 			results[i].str_value = pcb_strdup(results[i].str_value);
 	}
 
-	wl = (Widget *) calloc(n_attrs, sizeof(Widget));
+	ctx.wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 
 	topform = create_form_ok_dialog(title, 1);
 	dialog = XtParent(topform);
 
 	stdarg_n = 0;
-	stdarg(XmNfractionBase, n_attrs);
+	stdarg(XmNfractionBase, ctx.n_attrs);
 	XtSetValues(topform, stdarg_args, stdarg_n);
 
 	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
 		stdarg_n = 0;
-		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_atrdlg_num_children(attrs, 0, n_attrs), 0);
+		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_atrdlg_num_children(ctx.attrs, 0, ctx.n_attrs), 0);
 		XtManageChild(main_tbl);
-		attribute_dialog_add(attrs, results, main_tbl, wl, n_attrs, actual_nattrs, 0, 1);
+		attribute_dialog_add(&ctx, main_tbl, 0, 1);
 	}
 	else
-		attribute_dialog_add(attrs, results, topform, wl, n_attrs, actual_nattrs, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+		attribute_dialog_add(&ctx, topform, 0, (ctx.attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
 
 	rv = wait_for_dialog(dialog);
@@ -820,21 +831,21 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 
 		switch (attrs[i].type) {
 		case PCB_HATT_BOOL:
-			results[i].int_value = XmToggleButtonGetState(wl[i]);
+			results[i].int_value = XmToggleButtonGetState(ctx.wl[i]);
 			break;
 		case PCB_HATT_STRING:
-			results[i].str_value = XmTextGetString(wl[i]);
+			results[i].str_value = XmTextGetString(ctx.wl[i]);
 			break;
 		case PCB_HATT_INTEGER:
-			cp = XmTextGetString(wl[i]);
+			cp = XmTextGetString(ctx.wl[i]);
 			sscanf(cp, "%d", &results[i].int_value);
 			break;
 		case PCB_HATT_COORD:
-			cp = XmTextGetString(wl[i]);
+			cp = XmTextGetString(ctx.wl[i]);
 			results[i].coord_value = pcb_get_value(cp, NULL, NULL, NULL);
 			break;
 		case PCB_HATT_REAL:
-			cp = XmTextGetString(wl[i]);
+			cp = XmTextGetString(ctx.wl[i]);
 			sscanf(cp, "%lg", &results[i].real_value);
 			break;
 		case PCB_HATT_ENUM:
@@ -844,7 +855,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 
 				stdarg_n = 0;
 				stdarg(XmNmenuHistory, &btn);
-				XtGetValues(wl[i], stdarg_args, stdarg_n);
+				XtGetValues(ctx.wl[i], stdarg_args, stdarg_n);
 				stdarg_n = 0;
 				stdarg(XmNuserData, &uptr);
 				XtGetValues(btn, stdarg_args, stdarg_n);
@@ -856,7 +867,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 		}
 	}
 
-	free(wl);
+	free(ctx.wl);
 	XtDestroyWidget(dialog);
 
 	return rv ? 0 : 1;
