@@ -618,6 +618,13 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	return cnt;
 }
 
+#define change_cb(dst) do { if (dst->change_cb != NULL) dst->change_cb(dst); } while(0)
+
+static void valchg(Widget w, XtPointer user_data, XtPointer call_data)
+{
+	printf("CHG!\n");
+}
+
 /* returns the index of HATT_END where the loop had to stop */
 static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *results, Widget parent, Widget *wl, int n_attrs, int actual_nattrs, int start_from, int add_labels)
 {
@@ -690,12 +697,14 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			stdarg(XmNlabelString, empty);
 			stdarg(XmNset, results[i].int_value);
 			wl[i] = XmCreateToggleButton(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
 			break;
 		case PCB_HATT_STRING:
 			stdarg(XmNcolumns, 40);
 			stdarg(XmNresizeWidth, True);
 			stdarg(XmNvalue, results[i].str_value);
 			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
 			break;
 		case PCB_HATT_INTEGER:
 			stdarg(XmNcolumns, 13);
@@ -703,6 +712,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			sprintf(buf, "%d", results[i].int_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
 			break;
 		case PCB_HATT_COORD:
 			stdarg(XmNcolumns, 13);
@@ -710,6 +720,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			pcb_snprintf(buf, sizeof(buf), "%$mS", results[i].coord_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
 			break;
 		case PCB_HATT_REAL:
 			stdarg(XmNcolumns, 16);
@@ -717,6 +728,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 			pcb_snprintf(buf, sizeof(buf), "%g", results[i].real_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(parent, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(wl[i], XmNvalueChangedCallback, valchg, wl[i]);
 			break;
 		case PCB_HATT_ENUM:
 			{
@@ -745,6 +757,7 @@ static int attribute_dialog_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *
 					XmStringFree(label);
 					if (sn == attrs[i].default_val.int_value)
 						default_button = btn;
+					XtAddCallback(btn, XmNactivateCallback, valchg, wl[i]);
 				}
 				if (default_button) {
 					stdarg_n = 0;
