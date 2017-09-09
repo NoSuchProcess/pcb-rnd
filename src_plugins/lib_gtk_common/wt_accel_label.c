@@ -33,14 +33,18 @@
 #include "compat_nls.h"
 #include "compat.h"
 
-GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label)
+static GtkWidget *gtk_menu_or_checkmenu_item_new(int check, const char *label, const char *accel_label)
 {
-	GtkWidget *w = gtk_menu_item_new();
+	GtkWidget *w;
 	GtkWidget *hbox = gtkc_hbox_new(FALSE, 0);
 	GtkWidget *spring = gtkc_hbox_new(FALSE, 0);
 	GtkWidget *l = gtk_label_new(label);
 	GtkWidget *accel = gtk_label_new(accel_label);
 
+	if (check)
+		w = gtk_check_menu_item_new();
+	else
+		w = gtk_menu_item_new();
 	gtk_box_pack_start(GTK_BOX(hbox), l, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), spring, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), accel, FALSE, FALSE, 0);
@@ -48,4 +52,9 @@ GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label)
 	gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(hbox));
 
 	return w;
+}
+
+GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label)
+{
+	return gtk_menu_or_checkmenu_item_new(FALSE, label, accel_label);
 }
