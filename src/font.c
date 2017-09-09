@@ -409,6 +409,7 @@ static void copy_font(pcb_font_t *dst, pcb_font_t *src)
 int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 {
 	htip_entry_t *e;
+	pcb_font_t *src_font;
 	
 	if ((!fk->hash_inited) || (htip_get(&fk->fonts, src) == NULL))
 		return -1;
@@ -416,14 +417,15 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 	pcb_del_font(fk, dst);
 	
 	e = htip_popentry(&fk->fonts, src);
+	src_font = e->value;
 	if (dst == 0) {
 		pcb_font_free (&fk->dflt);
-		copy_font (&fk->dflt, e->value);
-		pcb_font_free (e->value);
+		copy_font (&fk->dflt, src_font);
+		pcb_font_free (src_font);
 		fk->dflt.id = 0;
 	} else {
-		htip_set(&fk->fonts, dst, e->value);
-		((pcb_font_t*) e->value)->id = dst;
+		htip_set(&fk->fonts, dst, src_font);
+		src_font->id = dst;
 	}
 	fk->last_id = MIN(fk->last_id, dst);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", src);
