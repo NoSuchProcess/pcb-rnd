@@ -463,3 +463,15 @@ int ghid_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 
 	return 0;
 }
+
+int ghid_att_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs))
+		return -1;
+
+	ctx->attrs[idx].default_val = *val;
+
+	return 0;
+}

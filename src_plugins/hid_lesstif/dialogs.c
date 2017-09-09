@@ -910,6 +910,18 @@ int lesstif_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 	return 0;
 }
 
+int lesstif_att_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs))
+		return -1;
+
+	ctx->results[idx] = *val;
+
+	return 0;
+}
+
 
 /* ------------------------------------------------------------ */
 
