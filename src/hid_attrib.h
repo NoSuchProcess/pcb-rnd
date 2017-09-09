@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include "hid.h"
+#include "compat_misc.h"
 
 /* Used for HID attributes (exporting and printing, mostly).
    HA_boolean uses int_value, HA_enum sets int_value to the index and
