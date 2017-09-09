@@ -627,9 +627,13 @@ typedef struct {
 
 #define change_cb(dst) do { if (dst->change_cb != NULL) dst->change_cb(dst); } while(0)
 
-static void valchg(Widget w, XtPointer user_data, XtPointer call_data)
+static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 {
-	printf("CHG!\n");
+	lesstif_attr_dlg_t *ctx;
+	Widget *dlg_widget = (Widget *)dlg_widget_; /* ctx->wl[i] */
+	
+	XtVaGetValues(dlg_widget, XmNuserData, &ctx, NULL);
+	fprintf(stderr, "CHG dlg_widget=%p ctx=%p\n", dlg_widget, ctx);
 }
 
 /* returns the index of HATT_END where the loop had to stop */
@@ -637,7 +641,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 {
 	int len, i, numch, numcol;
 	static XmString empty = 0;
-
+fprintf(stderr, "ctx=%p\n", ctx);
 	if (!empty)
 		empty = XmStringCreatePCB(" ");
 
@@ -662,6 +666,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		/* Add content */
 		stdarg_n = 0;
 		stdarg(XmNalignment, XmALIGNMENT_END);
+		stdarg(XmNuserData, ctx);
 
 		switch(ctx->attrs[i].type) {
 		case PCB_HATT_BEGIN_HBOX:
