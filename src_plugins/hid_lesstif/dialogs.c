@@ -631,9 +631,26 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 {
 	lesstif_attr_dlg_t *ctx;
 	Widget *dlg_widget = (Widget *)dlg_widget_; /* ctx->wl[i] */
-	
+	int widx;
+
+	if (dlg_widget == NULL)
+		return;
+
 	XtVaGetValues(dlg_widget, XmNuserData, &ctx, NULL);
-	fprintf(stderr, "CHG dlg_widget=%p ctx=%p\n", dlg_widget, ctx);
+
+	if (ctx == NULL)
+		return;
+
+	for(widx = 0; widx < ctx->n_attrs; widx++)
+		if (ctx->wl[widx] == dlg_widget)
+			break;
+
+	if (widx >= ctx->n_attrs)
+		return;
+
+	fprintf(stderr, "CHG dlg_widget=%p ctx=%p idx=%d\n", dlg_widget, ctx, widx);
+
+
 }
 
 /* returns the index of HATT_END where the loop had to stop */
@@ -641,7 +658,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 {
 	int len, i, numch, numcol;
 	static XmString empty = 0;
-fprintf(stderr, "ctx=%p\n", ctx);
+
 	if (!empty)
 		empty = XmStringCreatePCB(" ");
 
