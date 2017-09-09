@@ -53,10 +53,15 @@ void pcb_gtk_check_button_connected(GtkWidget * box, GtkWidget ** button, gboole
 																		const gchar * string);
 
 
+typedef struct {
+	int dummy;
+} attr_dlg_t;
+
 #define change_cb(ctx, dst) do { if (dst->change_cb != NULL) dst->change_cb(ctx, dst); } while(0)
 
 static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 {
+	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(button));
 	dst->default_val.int_value = gtk_toggle_button_get_active(button);
 	dst->changed = 1;
 	change_cb(NULL, dst);
@@ -64,6 +69,7 @@ static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 
 static void intspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
+	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(spin_button));
 	dst->default_val.int_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
 	dst->changed = 1;
 	change_cb(NULL, dst);
@@ -71,6 +77,7 @@ static void intspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_
 
 static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
+	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(entry));
 	const gchar *s = gtk_entry_get_text(entry);
 	dst->default_val.coord_value = pcb_get_value(s, NULL, NULL, NULL);
 	dst->changed = 1;
@@ -79,6 +86,7 @@ static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 
 static void dblspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
+	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(spin_button));
 	dst->default_val.real_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
 	dst->changed = 1;
 	change_cb(NULL, dst);
@@ -86,6 +94,7 @@ static void dblspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_
 
 static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
+	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(entry));
 	free((char *)dst->default_val.str_value);
 	dst->default_val.str_value = pcb_strdup(gtk_entry_get_text(entry));
 	dst->changed = 1;
@@ -94,6 +103,7 @@ static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 
 static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 {
+	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(combo_box));
 	dst->default_val.int_value = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
 	dst->changed = 1;
 	change_cb(NULL, dst);
@@ -120,6 +130,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 {
 	int j, i, n;
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
+	attr_dlg_t *ctx;
 
 	/*
 	 * Iterate over all the export options and build up a dialog box
@@ -184,6 +195,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 
 			case PCB_HATT_LABEL:
 				widget = gtk_label_new(attrs[j].name);
+				gtk_object_set_user_data(GTK_OBJECT(widget), ctx);
 				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
 				gtk_misc_set_alignment(GTK_MISC(widget), 0., 0.5);
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
@@ -202,6 +214,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 												 attrs[j].min_val, attrs[j].max_val, 1.0, 1.0, 0, 0,
 												 intspinner_changed_cb, &(attrs[j]), FALSE, NULL);
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				gtk_object_set_user_data(GTK_OBJECT(widget), ctx);
 
 				if (add_labels) {
 					widget = gtk_label_new(attrs[j].name);
@@ -216,6 +229,8 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				entry = pcb_gtk_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
 																				attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
 				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+				gtk_object_set_user_data(GTK_OBJECT(entry), ctx);
+
 				if (attrs[j].default_val.str_value != NULL)
 					gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
 				gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
@@ -241,6 +256,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 												 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
 
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				gtk_object_set_user_data(GTK_OBJECT(widget), ctx);
 
 				if (add_labels) {
 					widget = gtk_label_new(attrs[j].name);
@@ -254,6 +270,8 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 
 				entry = gtk_entry_new();
 				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+				gtk_object_set_user_data(GTK_OBJECT(entry), ctx);
+
 				if (attrs[j].default_val.str_value != NULL)
 					gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
 				gtk_widget_set_tooltip_text(entry, attrs[j].help_text);
@@ -271,6 +289,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
                                        attrs[j].default_val.int_value,
                                        TRUE, FALSE, FALSE, 0, set_flag_cb, &(attrs[j]), (add_labels ? attrs[j].name : NULL));
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				gtk_object_set_user_data(GTK_OBJECT(widget), ctx);
 				break;
 
 			case PCB_HATT_ENUM:
@@ -281,7 +300,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				combo = gtkc_combo_box_text_new();
 				gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
 				gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
-
+				gtk_object_set_user_data(GTK_OBJECT(combo), ctx);
 
 				/*
 				 * Iterate through each value and add them to the
@@ -313,6 +332,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 												 attrs[j].min_val, attrs[j].max_val, 0.01, 0.01, 3,
 												 0, dblspinner_changed_cb, &(attrs[j]), FALSE, NULL);
 				gtk_widget_set_tooltip_text(widget, attrs[j].help_text);
+				gtk_object_set_user_data(GTK_OBJECT(widget), ctx);
 
 				goto do_enum;
 				break;
@@ -320,6 +340,8 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 			case PCB_HATT_PATH:
 				vbox1 = ghid_category_vbox(parent, (add_labels ? attrs[j].name : NULL), 4, 2, TRUE, TRUE);
 				entry = gtk_entry_new();
+				gtk_object_set_user_data(GTK_OBJECT(entry), ctx);
+
 				gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
 				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(attrs[j]));
@@ -338,6 +360,7 @@ static int ghid_attr_dlg_add(pcb_hid_attribute_t *attrs, pcb_hid_attr_val_t *res
 				gtk_widget_set_tooltip_text(combo, attrs[j].help_text);
 				gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j]));
+				gtk_object_set_user_data(GTK_OBJECT(combo), ctx);
 
 				/*
 				 * Iterate through each value and add them to the
