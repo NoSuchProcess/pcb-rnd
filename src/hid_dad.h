@@ -95,6 +95,12 @@ do { \
 	PCB_DAD_SET(table, name, label); \
 } while(0)
 
+#define PCB_DAD_BUTTON(table, text) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
+	table[table ## _len - 1].default_val.str_value = text; \
+} while(0)
+
 /* Set properties of the current item */
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET(table, min_val, val)
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET(table, max_val, val)
@@ -136,6 +142,7 @@ do { \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_PATH: \
+		case PCB_HATT_BUTTON: \
 			table[table ## _len - 1].field.str_value = (char *)val; \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
@@ -161,6 +168,7 @@ do { \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_PATH: \
+		case PCB_HATT_BUTTON: \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
