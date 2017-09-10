@@ -159,7 +159,6 @@ int pcb_remote_new_layer(const char *name, pcb_layer_id_t lid, unsigned int gid)
 int proto_send_make_gc(void)
 {
 	proto_node_t *targ;
-	const char *gcs;
 	int gci;
 
 	send_begin(&pctx, "makeGC");
