@@ -411,6 +411,7 @@ static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int n
 static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 {
 	pcb_rat_t rat, *new_rat;
+	int tmp;
 
 	parse_id(&rat.ID, obj, 4);
 	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE, NULL);
@@ -421,8 +422,10 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	parse_coord(&rat.Point2.X, lht_dom_hash_get(obj, "x2"));
 	parse_coord(&rat.Point2.Y, lht_dom_hash_get(obj, "y2"));
 
-	parse_int(&rat.group1, lht_dom_hash_get(obj, "lgrp1"));
-	parse_int(&rat.group2, lht_dom_hash_get(obj, "lgrp2"));
+	parse_int(&tmp, lht_dom_hash_get(obj, "lgrp1"));
+	rat.group1 = tmp;
+	parse_int(&tmp, lht_dom_hash_get(obj, "lgrp2"));
+	rat.group2 = tmp;
 
 	post_id_req(&rat.Point1);
 	post_id_req(&rat.Point2);
