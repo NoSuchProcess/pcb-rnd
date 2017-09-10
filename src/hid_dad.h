@@ -157,7 +157,7 @@ do { \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case PCB_HATT_LABEL: \
-			free(table[table ## _len - 1].name); \
+			free((char *)table[table ## _len - 1].name); \
 			break; \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
