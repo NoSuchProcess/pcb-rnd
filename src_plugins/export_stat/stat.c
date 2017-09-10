@@ -125,7 +125,6 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	int i, lid;
 	pcb_layergrp_id_t lgid;
 	char buff[1024];
-	time_t t;
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
 	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0;
