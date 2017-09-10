@@ -33,6 +33,7 @@
 
 #include "safe_fs.h"
 
+#include "compat_fs.h"
 #include "compat_misc.h"
 #include "error.h"
 #include "globalconst.h"
