@@ -388,22 +388,25 @@ static void copy_font(pcb_font_t *dst, pcb_font_t *src)
 		pcb_polygon_t *p_src;
 		pcb_arc_t *a_src;
 		
-		dst->Symbol[i].Line = malloc(src->Symbol[i].LineMax);
-		memcpy (dst->Symbol[i].Line, src->Symbol[i].Line, sizeof(pcb_line_t)*src->Symbol[i].LineN);
-
-		for(p_src = polylist_first(&src->Symbol[i].polys); p_src != NULL; p_src = polylist_next(p_src)) {
-			pcb_polygon_t *p_dst = malloc(sizeof(pcb_polygon_t));
-			memcpy(p_dst, p_src, sizeof(pcb_polygon_t));
-			polylist_insert(&dst->Symbol[i].polys, p_dst);
+		if (src->Symbol[i].Line) {
+			dst->Symbol[i].Line = malloc(sizeof(pcb_line_t) * src->Symbol[i].LineMax);
+			memcpy(dst->Symbol[i].Line, src->Symbol[i].Line, sizeof(pcb_line_t) * src->Symbol[i].LineN);
 		}
 
+		memset(&dst->Symbol[i].polys, 0, sizeof(polylist_t));
+		for(p_src = polylist_first(&src->Symbol[i].polys); p_src != NULL; p_src = polylist_next(p_src)) {
+			pcb_polygon_t *p_dst = pcb_font_new_poly_in_sym(&dst->Symbol[i], p_src->PointN);
+			memcpy(p_dst->Points, p_src->Points, p_src->PointN * sizeof(pcb_point_t));
+		}
+
+		memset(&dst->Symbol[i].arcs, 0, sizeof(arclist_t));
 		for(a_src = arclist_first(&src->Symbol[i].arcs); a_src != NULL; a_src = arclist_next(a_src)) {
-			pcb_arc_t *a_dst = malloc(sizeof(pcb_arc_t));
-			memcpy(a_dst, a_src, sizeof(pcb_arc_t));
-			arclist_insert(&dst->Symbol[i].arcs, a_dst);
+			pcb_font_new_arc_in_sym(&dst->Symbol[i], a_src->X, a_src->Y, a_src->Width,
+															a_src->StartAngle, a_src->Delta, a_src->Thickness);
 		}
 	}
-	dst->name = pcb_strdup(src->name);
+	if (src->name != NULL)
+		dst->name = pcb_strdup(src->name);
 }
 
 int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
