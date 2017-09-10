@@ -58,6 +58,7 @@ typedef struct {
 	pcb_hid_attr_val_t *results;
 	GtkWidget **wl;
 	int n_attrs;
+	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
 #define change_cb(ctx, dst) do { if (dst->change_cb != NULL) dst->change_cb(ctx, dst); } while(0)
@@ -65,50 +66,72 @@ typedef struct {
 static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(button));
-	dst->default_val.int_value = gtk_toggle_button_get_active(button);
 	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+	dst->default_val.int_value = gtk_toggle_button_get_active(button);
 	change_cb(ctx, dst);
 }
 
 static void intspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(spin_button));
-	dst->default_val.int_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
+
 	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+	dst->default_val.int_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
 	change_cb(ctx, dst);
 }
 
 static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(entry));
-	const gchar *s = gtk_entry_get_text(entry);
-	dst->default_val.coord_value = pcb_get_value(s, NULL, NULL, NULL);
+	const gchar *s;
+
 	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
+	s = gtk_entry_get_text(entry);
+	dst->default_val.coord_value = pcb_get_value(s, NULL, NULL, NULL);
 	change_cb(ctx, dst);
 }
 
 static void dblspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(spin_button));
-	dst->default_val.real_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
+
 	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
+	dst->default_val.real_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
 	change_cb(ctx, dst);
 }
 
 static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(entry));
+
+	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
 	free((char *)dst->default_val.str_value);
 	dst->default_val.str_value = pcb_strdup(gtk_entry_get_text(entry));
-	dst->changed = 1;
 	change_cb(ctx, dst);
 }
 
 static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(combo_box));
-	dst->default_val.int_value = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
+
 	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
+	dst->default_val.int_value = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
 	change_cb(ctx, dst);
 }
 
@@ -397,6 +420,60 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 	return j;
 }
 
+static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	/* create the actual widget from attrs */
+	switch (ctx->attrs[idx].type) {
+		case PCB_HATT_BEGIN_HBOX:
+		case PCB_HATT_BEGIN_VBOX:
+		case PCB_HATT_BEGIN_TABLE:
+		case PCB_HATT_END:
+			goto error;
+
+		case PCB_HATT_LABEL:
+			gtk_label_set_text(GTK_LABEL(ctx->wl[idx]), val->str_value);
+			break;
+
+		case PCB_HATT_INTEGER:
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->int_value);
+			break;
+
+		case PCB_HATT_COORD:
+			pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(ctx->wl[idx]), val->coord_value);
+			break;
+
+		case PCB_HATT_REAL:
+		case PCB_HATT_MIXED:
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->real_value);
+			break;
+
+		case PCB_HATT_STRING:
+		case PCB_HATT_PATH:
+			gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str_value);
+			break;
+
+		case PCB_HATT_BOOL:
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), val->int_value);
+			break;
+
+		case PCB_HATT_ENUM:
+			gtkc_combo_box_set_active(ctx->wl[idx], val->int_value);
+			break;
+
+		case PCB_HATT_UNIT:
+			abort();
+			break;
+	}
+
+	error:;
+	ctx->inhibit_valchg = -1;
+	return 0;
+
+	ok:;
+	ctx->inhibit_valchg = 0;
+	return 0;
+}
+
 int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,
 													const char *title, const char *descr)
 {
@@ -411,6 +488,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 	ctx.results = results;
 	ctx.n_attrs = n_attrs;
 	ctx.wl = calloc(sizeof(GtkWidget *), n_attrs);
+	ctx.inhibit_valchg = 0;
 
 	dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(top_window),
@@ -471,7 +549,10 @@ int ghid_att_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
-	ctx->attrs[idx].default_val = *val;
+	if (ghid_attr_dlg_set(ctx, idx, val) == 0) {
+		ctx->attrs[idx].default_val = *val;
+		return 0;
+	}
 
-	return 0;
+	return -1;
 }

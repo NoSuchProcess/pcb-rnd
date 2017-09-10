@@ -86,6 +86,11 @@ static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 	return gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 }
 
+static inline void gtkc_combo_box_set_active(GtkWidget *combo, int idx)
+{
+	return gtk_combo_box_set_active(GTK_COMBO_BOX(combo), idx);
+}
+
 static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 {
 	return gtk_combo_box_new_with_entry();
@@ -188,6 +193,11 @@ static inline void gtkc_combo_box_text_remove(GtkWidget *combo, gint position)
 static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 {
 	return gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+}
+
+static inline void gtkc_combo_box_set_active(GtkWidget *combo, int idx)
+{
+	return gtk_combo_box_set_active(GTK_COMBO_BOX(combo), idx);
 }
 
 static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
