@@ -147,6 +147,18 @@ static GtkWidget *ghid_attr_dlg_frame(GtkWidget *parent)
 	return box;
 }
 
+static void button_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
+{
+	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(entry));
+
+	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
+	change_cb(ctx, dst);
+}
+
+
 typedef struct {
 	int cols, rows;
 	int col, row;
@@ -412,6 +424,23 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 				}
 				break;
+			case PCB_HATT_BUTTON:
+				hbox = gtkc_hbox_new(FALSE, 4);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+
+				ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].default_val.str_value);
+				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], FALSE, FALSE, 0);
+
+				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
+				g_signal_connect(G_OBJECT(ctx->wl[j]), "pressed", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
+				gtk_object_set_user_data(GTK_OBJECT(ctx->wl[j]), ctx);
+
+				if (add_labels) {
+					widget = gtk_label_new(ctx->attrs[j].name);
+					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
+				}
+				break;
+
 			default:
 				printf("ghid_attribute_dialog: unknown type of HID attribute\n");
 				break;
@@ -465,6 +494,10 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 
 		case PCB_HATT_UNIT:
+			abort();
+			break;
+
+		case PCB_HATT_BUTTON:
 			abort();
 			break;
 	}
