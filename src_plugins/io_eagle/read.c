@@ -1141,7 +1141,7 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 {
 	int direction = 0;
 	pcb_flag_t TextFlags = pcb_no_flags();
-        pcb_coord_t size;
+	pcb_coord_t size;
 
 	x += def_text->X;
 	y += def_text->Y + EAGLE_TEXT_SIZE_100;
