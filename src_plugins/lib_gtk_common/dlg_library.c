@@ -159,7 +159,7 @@ static GObjectClass *library_window_parent_class = NULL;
  */
 static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter * iter, gpointer data)
 {
-	pcb_gtk_library_t *library_window = (pcb_gtk_library_t *) data;
+	pcb_gtk_library_t *lib_window = (pcb_gtk_library_t *) data;
 	const gchar *compname;
 	gchar *compname_upper, *text_upper, *pattern;
 	const gchar *text_;
@@ -170,7 +170,7 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 
 	g_assert(GHID_IS_LIBRARY_WINDOW(data));
 
-	text_ = gtk_entry_get_text(library_window->entry_filter);
+	text_ = gtk_entry_get_text(lib_window->entry_filter);
 	if (strcmp(text_, "") == 0) {
 		return TRUE;
 	}
