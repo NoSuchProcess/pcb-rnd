@@ -332,7 +332,6 @@ void pcb_font_free(pcb_font_t *f)
 
 		for(a = arclist_first(&f->Symbol[i].arcs); a != NULL; a = arclist_first(&f->Symbol[i].arcs)) {
 			pcb_arc_free(a);
-			arclist_remove(a);
 		}
 		
 		memset (&f->Symbol[i], 0, sizeof(f->Symbol[0]));
