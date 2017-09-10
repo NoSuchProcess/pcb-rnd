@@ -789,7 +789,7 @@ static lht_node_t *build_font(pcb_font_t *font)
 
 static lht_node_t *build_fontkit(pcb_fontkit_t *fk)
 {
-	lht_node_t *syms, *ndt, *frt;
+	lht_node_t *ndt, *frt;
 
 	frt = lht_dom_node_alloc(LHT_HASH, "font");
 
