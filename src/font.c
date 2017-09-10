@@ -325,8 +325,9 @@ void pcb_font_free(pcb_font_t *f)
 		free(f->Symbol[i].Line);
 
 		for(p = polylist_first(&f->Symbol[i].polys); p != NULL; p = polylist_first(&f->Symbol[i].polys)) {
-			pcb_poly_free(p);
 			polylist_remove(p);
+			pcb_poly_free_fields(p);
+			free(p);
 		}
 
 		for(a = arclist_first(&f->Symbol[i].arcs); a != NULL; a = arclist_first(&f->Symbol[i].arcs)) {
