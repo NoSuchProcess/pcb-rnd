@@ -422,6 +422,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
+	int save;
+	save = ctx->inhibit_valchg;
+	ctx->inhibit_valchg = 1;
+
 	/* create the actual widget from attrs */
 	switch (ctx->attrs[idx].type) {
 		case PCB_HATT_BEGIN_HBOX:
@@ -465,13 +469,12 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 	}
 
-	error:;
-	ctx->inhibit_valchg = -1;
+	ctx->inhibit_valchg = save;
 	return 0;
 
-	ok:;
-	ctx->inhibit_valchg = 0;
-	return 0;
+	error:;
+	ctx->inhibit_valchg = save;
+	return -1;
 }
 
 int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,
