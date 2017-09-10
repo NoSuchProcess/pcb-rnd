@@ -163,6 +163,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* pad */
 		list_via_cb
 	);
+	return 0;
 }
 
 int pcb_netmap_uninit(pcb_netmap_t *map)
@@ -190,6 +191,7 @@ int pcb_netmap_uninit(pcb_netmap_t *map)
 
 	htpp_uninit(&map->o2n);
 	htpp_uninit(&map->n2o);
+	return 0;
 }
 
 
