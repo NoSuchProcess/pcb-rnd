@@ -171,7 +171,7 @@ static int DrawFab_overhang(void)
 	return (ds + 2) * TEXT_LINE;
 }
 
-static void DrawFab(pcb_hid_gc_t gc)
+static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	DrillInfoTypePtr AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0, found;
