@@ -798,7 +798,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 
 static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
-	pcb_subc_t *sc = pcb_subc_alloc(dt);
+	pcb_subc_t *sc = pcb_subc_alloc();
 	unsigned char intconn = 0;
 
 	parse_id(&sc->ID, obj, 5);
