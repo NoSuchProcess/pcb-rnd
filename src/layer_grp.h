@@ -64,6 +64,8 @@ pcb_layergrp_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 /* Return the gid if grp is in the stackup of pcb (else return -1) */
 pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layergrp_t *grp);
 
+/* Free a layer group (don't free the layers but detach them) */
+int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id);
 
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
 pcb_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, pcb_layer_id_t Layer);
