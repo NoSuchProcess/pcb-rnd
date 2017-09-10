@@ -40,6 +40,7 @@
 #include "plugins.h"
 #include "hid.h"
 #include "mentor_sch_conf.h"
+#include "paths.h"
 
 #include "netlist_helper.h"
 
