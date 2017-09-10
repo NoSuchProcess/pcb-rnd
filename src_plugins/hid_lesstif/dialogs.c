@@ -850,6 +850,11 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 				}
 			}
 			break;
+		case PCB_HATT_BUTTON:
+			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].default_val.str_value));
+			ctx->wl[i] = XmCreatePushButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
+			break;
 		default:
 			ctx->wl[i] = XmCreateLabel(parent, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
 			break;
@@ -873,6 +878,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 		case PCB_HATT_BEGIN_VBOX:
 		case PCB_HATT_BEGIN_TABLE:
 		case PCB_HATT_END:
+		case PCB_HATT_BUTTON:
 			goto err;
 		case PCB_HATT_LABEL:
 			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStrCast(ctx->results[idx].str_value), NULL);
