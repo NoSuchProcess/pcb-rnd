@@ -122,7 +122,6 @@ static pcb_hid_attribute_t *IPCD356_get_export_options(int *n)
  */
 void IPCD356_WriteHeader(FILE * fd)
 {
-	time_t currenttime;
 	char utcTime[64];
 
 	pcb_print_utc(utcTime, sizeof utcTime, 0);
