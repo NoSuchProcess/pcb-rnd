@@ -1,12 +1,8 @@
-/*!
+/*
  *
- * \brief IPC-D-356 Netlist export.
+ * IPC-D-356 Netlist export.
  *
- * \author Copyright (C) 2012 Jerome Marchand (Jerome.Marchand@gmail.com)
- *
- * <hr>
- *
- * <h1><b>Copyright.</b></h1>\n
+ * Copyright (C) 2012 Jerome Marchand (Jerome.Marchand@gmail.com)
  *
  * PCB, interactive printed circuit board design
  *
