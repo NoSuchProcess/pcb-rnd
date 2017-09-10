@@ -48,6 +48,7 @@
 #include "netlist.h"
 #include "conf_core.h"
 #include "obj_pinvia.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
