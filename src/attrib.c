@@ -26,6 +26,7 @@
 
 /* attribute lists */
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "config.h"
 #include "compat_misc.h"
