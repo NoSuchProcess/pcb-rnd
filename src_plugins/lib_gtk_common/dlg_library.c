@@ -780,7 +780,7 @@ static pcb_gtk_common_t *lwcom;
 static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam * construct_params)
 {
 	GObject *object;
-	pcb_gtk_library_t *library_window;
+	pcb_gtk_library_t *lib_window;
 	GtkWidget *content_area;
 	GtkWidget *hpaned, *notebook;
 	GtkWidget *libview;
@@ -789,8 +789,8 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 
 	/* chain up to constructor of parent class */
 	object = G_OBJECT_CLASS(library_window_parent_class)->constructor(type, n_construct_properties, construct_params);
-	library_window = GHID_LIBRARY_WINDOW(object);
-	library_window->param_timer = 0;
+	lib_window = GHID_LIBRARY_WINDOW(object);
+	lib_window->param_timer = 0;
 
 	/* dialog initialization */
 	g_object_set(object,
@@ -800,19 +800,19 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 							 "default-height", 300, "default-width", 400, "modal", FALSE, "window-position", GTK_WIN_POS_NONE,
 							 /* GtkDialog */
 							 "has-separator", TRUE, NULL);
-	g_object_set(gtk_dialog_get_content_area(GTK_DIALOG(library_window)), "homogeneous", FALSE, NULL);
+	g_object_set(gtk_dialog_get_content_area(GTK_DIALOG(lib_window)), "homogeneous", FALSE, NULL);
 
 	/* horizontal pane containing selection and preview */
 	hpaned = GTK_WIDGET(g_object_new(GTK_TYPE_HPANED,
 																	 /* GtkContainer */
 																	 "border-width", 5, NULL));
-	library_window->hpaned = hpaned;
+	lib_window->hpaned = hpaned;
 
 	/* notebook for library views */
 	notebook = GTK_WIDGET(g_object_new(GTK_TYPE_NOTEBOOK, "show-tabs", FALSE, NULL));
-	library_window->viewtabs = GTK_NOTEBOOK(notebook);
+	lib_window->viewtabs = GTK_NOTEBOOK(notebook);
 
-	libview = create_lib_treeview(library_window);
+	libview = create_lib_treeview(lib_window);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), libview, gtk_label_new(_("Libraries")));
 
 	/* include the vertical box in horizontal box */
@@ -844,19 +844,19 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 		gtk_container_add(GTK_CONTAINER(frame), alignment);
 	}
 
-	/* set preview of library_window */
-	library_window->preview = preview;
-	library_window->preview_text = preview_text;
+	/* set preview of library window */
+	lib_window->preview = preview;
+	lib_window->preview_text = preview_text;
 
 	gtk_paned_pack2(GTK_PANED(hpaned), frame, FALSE, FALSE);
 
 	/* add the hpaned to the dialog content area */
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(library_window));
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(lib_window));
 	gtk_box_pack_start(GTK_BOX(content_area), hpaned, TRUE, TRUE, 0);
 	gtk_widget_show_all(hpaned);
 
 	/* now add buttons in the action area */
-	gtk_dialog_add_buttons(GTK_DIALOG(library_window),
+	gtk_dialog_add_buttons(GTK_DIALOG(lib_window),
 												 /*  - close button */
 												 GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
 
