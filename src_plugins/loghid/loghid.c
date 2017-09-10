@@ -32,8 +32,10 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
+#include "hid-logger.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
+#include "hid_nogui.h"
 
 static const char *loghid_cookie = "loghid plugin";
 
