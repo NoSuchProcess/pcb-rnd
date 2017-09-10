@@ -1,3 +1,4 @@
+11396	configure	hid_lesstif linking bug
 11265	configure	deprecate dbus
 11247	configure	HPGL importer
 11189	configure	replace the openscad exporter
