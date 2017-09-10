@@ -1142,6 +1142,7 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 	int direction = 0;
 	pcb_flag_t TextFlags = pcb_no_flags();
 	pcb_coord_t size;
+	int TextScale;
 
 	x += def_text->X;
 	y += def_text->Y + EAGLE_TEXT_SIZE_100;
@@ -1160,7 +1161,7 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 	}
 #warning subc TODO can have unique text scaling in subcircuits
 
-	int TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);
+	TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);
 #warning TODO scaling not behaving due to size read issue so hard wired for now
 /*	if (size >= 0)
 		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
