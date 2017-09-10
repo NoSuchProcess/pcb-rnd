@@ -150,13 +150,13 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coo
 			if (default_pattern != NULL) {
 				/* look for exact match, case sensitive */
 				for (n = 0; n < num_fmts; n++)
-					if (pcb_strcasecmp(avail.plug[n]->description, default_pattern) == 0)
+					if (strcmp(avail.plug[n]->description, default_pattern) == 0)
 						fmt = n;
 
 				/* look for exact match, case insensitive */
 				if (fmt < 0)
 					for (n = 0; n < num_fmts; n++)
-						if (strcmp(avail.plug[n]->description, default_pattern) == 0)
+						if (pcb_strcasecmp(avail.plug[n]->description, default_pattern) == 0)
 							fmt = n;
 
 				/* look for partial match */
