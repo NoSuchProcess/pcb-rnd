@@ -221,10 +221,12 @@ typedef @/local/pcb/long64@    pcb_long64_t;
 #	undef strndup
 #	undef snprintf
 #	undef round
+#	undef strcasecmp
 #	define strdup      never_use_strdup__use_pcb_strdup
 #	define strndup     never_use_strndup__use_pcb_strndup
 #	define snprintf    never_use_snprintf__use_pcb_snprintf
 #	define round       never_use_round__use_pcb_round
+#	define strcasecmp  never_use_strcasecmp__use_pcb_strcasecmp
 #endif
 
 
