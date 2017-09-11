@@ -48,9 +48,12 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 	for(n = 0; n < ctx->data->LayerN; n++) {
 		lb_widx_t *w = ctx->widx + n;
 		pcb_layer_t *layer = ctx->data->Layer + n;
+		pcb_hid_attr_val_t val;
 
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->name, layer->meta.bound.name);
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->comp, layer->meta.bound.comb);
+		val.int_value = layer->meta.bound.name;
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->name, &val);
+		val.int_value = layer->meta.bound.comb;
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->comp, &val);
 	}
 }
 
