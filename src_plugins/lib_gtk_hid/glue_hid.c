@@ -379,6 +379,11 @@ static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_
 	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr, caller_data);
 }
 
+static void *ghid_attr_dlg_new_(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data)
+{
+	return ghid_attr_dlg_new(ghid_port.top_window, attrs, n_attrs, results, title, descr, caller_data);
+}
+
 static void ghid_show_item(void *item)
 {
 	ghid_pinout_window_show(&ghidgui->common, (pcb_element_t *)item);
@@ -515,6 +520,9 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->prompt_for = ghid_prompt_for;
 	dst->fileselect = ghid_fileselect;
 	dst->attribute_dialog = ghid_attribute_dialog_;
+	dst->attr_dlg_new = ghid_attr_dlg_new_;
+	dst->attr_dlg_run = ghid_attr_dlg_run;
+	dst->attr_dlg_free = ghid_attr_dlg_free;
 	dst->attr_dlg_widget_state = ghid_attr_dlg_widget_state;
 	dst->attr_dlg_set_value = ghid_attr_dlg_set_value;
 	dst->show_item = ghid_show_item;

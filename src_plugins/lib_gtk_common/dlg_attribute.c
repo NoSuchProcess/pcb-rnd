@@ -59,6 +59,8 @@ typedef struct {
 	GtkWidget **wl;
 	int n_attrs;
 	void *caller_data;
+	GtkWidget *dialog;
+	int rc;
 	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
@@ -510,30 +512,29 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return -1;
 }
 
-int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
+void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data)
 {
-	GtkWidget *dialog;
 	GtkWidget *content_area;
 	GtkWidget *main_vbox, *vbox;
-	int i;
-	int rc = 0;
-	attr_dlg_t ctx;
-	
-	ctx.attrs = attrs;
-	ctx.results = results;
-	ctx.n_attrs = n_attrs;
-	ctx.wl = calloc(sizeof(GtkWidget *), n_attrs);
-	ctx.caller_data = caller_data;
-	ctx.inhibit_valchg = 0;
+	attr_dlg_t *ctx;
 
-	dialog = gtk_dialog_new_with_buttons(_(title),
+	ctx = malloc(sizeof(attr_dlg_t));
+	ctx->attrs = attrs;
+	ctx->results = results;
+	ctx->n_attrs = n_attrs;
+	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
+	ctx->caller_data = caller_data;
+	ctx->inhibit_valchg = 0;
+	ctx->rc = 0;
+
+	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(top_window),
 																			 (GtkDialogFlags) (GTK_DIALOG_MODAL
 																												 | GTK_DIALOG_DESTROY_WITH_PARENT),
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_NONE, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
-	gtk_window_set_role(GTK_WINDOW(dialog), "PCB_attribute_editor");
+	gtk_window_set_role(GTK_WINDOW(ctx->dialog), "PCB_attribute_editor");
 
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
@@ -541,27 +542,52 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 
 	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
 		vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
-		ghid_attr_dlg_add(&ctx, vbox, NULL, 0, 1);
+		ghid_attr_dlg_add(ctx, vbox, NULL, 0, 1);
 	}
 	else
-		ghid_attr_dlg_add(&ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+		ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
-	gtk_widget_show_all(dialog);
+	gtk_widget_show_all(ctx->dialog);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
-		/* copy over the results */
-		for (i = 0; i < n_attrs; i++) {
-			results[i] = attrs[i].default_val;
-			if (results[i].str_value)
-				results[i].str_value = pcb_strdup(results[i].str_value);
+	return ctx;
+}
+
+int ghid_attr_dlg_run(void *hid_ctx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	if (gtk_dialog_run(GTK_DIALOG(ctx->dialog)) == GTK_RESPONSE_OK)
+		ctx->rc = 0;
+	else
+		ctx->rc = 1;
+	return ctx->rc;
+}
+
+void ghid_attr_dlg_free(void *hid_ctx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	if (ctx->rc == 0) { /* copy over the results */
+		int i;
+		for (i = 0; i < ctx->n_attrs; i++) {
+			ctx->results[i] = ctx->attrs[i].default_val;
+			if (ctx->results[i].str_value)
+				ctx->results[i].str_value = pcb_strdup(ctx->results[i].str_value);
 		}
-		rc = 0;
 	}
-	else
-		rc = 1;
 
-	gtk_widget_destroy(dialog);
-	free(ctx.wl);
+	gtk_widget_destroy(ctx->dialog);
+	free(ctx->wl);
+}
+
+
+int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
+{
+	void *hid_ctx;
+	int rc;
+
+	hid_ctx = ghid_attr_dlg_new(top_window, attrs, n_attrs, results, title, descr, caller_data);
+	rc = ghid_attr_dlg_run(hid_ctx);
+	ghid_attr_dlg_free(hid_ctx);
 
 	return rc;
 }

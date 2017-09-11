@@ -363,8 +363,22 @@ static void remote_stop_block_hook(pcb_hidval_t mlpoll)
 {
 }
 
-static int
-remote_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
+static void *remote_attr_dlg_new(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
+{
+	return NULL;
+}
+
+static int remote_attr_dlg_run(void *hid_ctx)
+{
+	return 0;
+}
+
+static void remote_attr_dlg_free(void *hid_ctx)
+{
+}
+
+
+static int remote_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
 {
 	return 0;
 }
@@ -455,6 +469,9 @@ int pplg_init_hid_remote(void)
 	remote_hid.unwatch_file = remote_unwatch_file;
 	remote_hid.add_block_hook = remote_add_block_hook;
 	remote_hid.stop_block_hook = remote_stop_block_hook;
+	remote_hid.attr_dlg_new = remote_attr_dlg_new;
+	remote_hid.attr_dlg_run = remote_attr_dlg_run;
+	remote_hid.attr_dlg_free = remote_attr_dlg_free;
 	remote_hid.attribute_dialog = remote_attribute_dialog;
 	remote_hid.show_item = remote_show_item;
 	remote_hid.create_menu = remote_create_menu;

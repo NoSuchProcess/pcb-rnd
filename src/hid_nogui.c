@@ -363,6 +363,21 @@ static char *nogui_fileselect(const char *title, const char *descr,
 		return pcb_strdup(answer);
 }
 
+static void *nogui_attr_dlg_new(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
+{
+	CRASH("attr_dlg_new");
+}
+
+static int nogui_attr_dlg_run(void *hid_ctx)
+{
+	CRASH("attr_dlg_run");
+}
+
+static void nogui_attr_dlg_free(void *hid_ctx)
+{
+	CRASH("attr_dlg_free");
+}
+
 static int nogui_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
 {
 	CRASH("attribute_dialog");
@@ -449,6 +464,9 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->report_dialog = nogui_report_dialog;
 	hid->prompt_for = nogui_prompt_for;
 	hid->fileselect = nogui_fileselect;
+	hid->attr_dlg_new = nogui_attr_dlg_new;
+	hid->attr_dlg_run = nogui_attr_dlg_run;
+	hid->attr_dlg_free = nogui_attr_dlg_free;
 	hid->attribute_dialog = nogui_attribute_dialog;
 	hid->show_item = nogui_show_item;
 	hid->beep = nogui_beep;

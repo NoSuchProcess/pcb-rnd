@@ -3402,6 +3402,9 @@ extern int lesstif_close_confirm_dialog();
 
 extern void lesstif_report_dialog(const char *title, const char *msg);
 
+extern void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data);
+extern int lesstif_attr_dlg_run(void *hid_ctx);
+extern void lesstif_attr_dlg_free(void *hid_ctx);
 extern int lesstif_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data);
 extern int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
 extern int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
@@ -3779,6 +3782,9 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.report_dialog = lesstif_report_dialog;
 	lesstif_hid.prompt_for = lesstif_prompt_for;
 	lesstif_hid.fileselect = lesstif_fileselect;
+	lesstif_hid.attr_dlg_new = lesstif_attr_dlg_new;
+	lesstif_hid.attr_dlg_run = lesstif_attr_dlg_run;
+	lesstif_hid.attr_dlg_free = lesstif_attr_dlg_free;
 	lesstif_hid.attribute_dialog = lesstif_attribute_dialog;
 	lesstif_hid.attr_dlg_widget_state = lesstif_attr_dlg_widget_state;
 	lesstif_hid.attr_dlg_set_value = lesstif_attr_dlg_set_value;
