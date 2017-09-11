@@ -220,6 +220,29 @@
  vtonpoint.h hid.h error.h drc.h route.h buffer.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h \
  rtree.h ht_subc.h error.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+../src_plugins/dialogs/dialogs.o: ../src_plugins/dialogs/dialogs.c \
+ ../config.h hid.h error.h drc.h unit.h global_typedefs.h pcb_bool.h \
+ attrib.h layer.h globalconst.h obj_all_list.h obj_arc_list.h \
+ obj_common.h ../src_3rd/genht/hash.h ../src_3rd/genlist/gendlist.h \
+ flag.h data_parent.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht_inlines.h obj_poly.h polyarea.h obj_poly_list.h \
+ box.h math_helper.h macro.h move.h misc_util.h ht_element.h \
+ ../src_3rd/genht/ht.h obj_text_list.h obj_rat_list.h obj_rat.h \
+ layer_grp.h hid_attrib.h hid.h hid_dad.h compat_misc.h hid_attrib.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h action_helper.h \
+ ../src_plugins/dialogs/dlg_test.c \
+ ../src_plugins/dialogs/dlg_layer_binding.c board.h const.h \
+ vtroutestyle.h library.h rats_patch.h board.h data.h crosshair.h \
+ vtonpoint.h route.h buffer.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
+ ht_subc.h const.h obj_subc.h search.h rats.h netlist.h route_style.h \
+ dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -608,8 +631,8 @@
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h list_conf.h \
- obj_pinvia.h hid.h hid_nogui.h hid_helper.h hid_attrib.h hid_init.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ obj_pinvia.h compat_misc.h hid.h hid_nogui.h hid_helper.h hid_attrib.h \
+ hid_init.h plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
@@ -1705,7 +1728,7 @@
  ../src_plugins/import_mentor_sch/mentor_sch_conf.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h conf.h paths.h \
  ../src_plugins/import_mentor_sch/netlist_helper.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h dolists.h \
@@ -1937,7 +1960,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/io_eagle/read.h \
- board.h const.h vtroutestyle.h rats_patch.h board.h conf.h dolists.h
+ board.h const.h vtroutestyle.h rats_patch.h board.h conf.h hid_actions.h \
+ hid.h dolists.h
 ../src_plugins/io_eagle/read.o: ../src_plugins/io_eagle/read.c \
  ../config.h ../src_plugins/boardflip/boardflip.h data.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h layer.h attrib.h obj_all_list.h \
@@ -4171,8 +4195,9 @@
  library.h rats_patch.h error.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_init.h \
- hid_attrib.h dolists.h
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
+ ../src_plugins/loghid/hid-logger.h hid.h hid_init.h hid_attrib.h \
+ hid_nogui.h dolists.h
 ../src_plugins/millpath/millpath.o: ../src_plugins/millpath/millpath.c \
  ../config.h action_helper.h global_typedefs.h pcb_bool.h unit.h \
  plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
@@ -5414,7 +5439,7 @@ gui_act.o: gui_act.c ../config.h board.h const.h macro.h \
  funchash_core.h funchash.h funchash_core_list.h change.h draw.h search.h \
  rats.h netlist.h route_style.h find.h stub_stroke.h hid_actions.h \
  hid_init.h compat_nls.h compat_misc.h event.h layer_vis.h hid_attrib.h \
- hid_dad.h operation.h obj_subc_op.h obj_elem_draw.h obj_pinvia_draw.h \
+ operation.h obj_subc_op.h obj_elem_draw.h obj_pinvia_draw.h \
  obj_pad_draw.h
 heap.o: heap.c ../config.h heap.h
 hid_actions.o: hid_actions.c ../config.h conf_core.h conf.h \
