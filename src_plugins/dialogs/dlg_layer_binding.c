@@ -26,6 +26,20 @@
 #include "obj_subc.h"
 #include "search.h"
 
+static const char *lb_vals[] = { "foo", "bar", "baz", NULL };
+static const char *lb_comp[] = { "positive", "negative", NULL };
+static const char *lb_types[] = { "paste", "mask", "silk", "copper", "outline", NULL };
+static const char *lb_side[] = { "top copper", "bottom copper", NULL };
+
+typedef struct {
+	int name, comp, type, dist, side, layer;
+} lb_widx_t;
+
+typedef struct {
+	const char **layer_names;
+	lb_widx_t *widx;
+} lb_ctx_t;
+
 static const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
 static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
 static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -60,21 +74,20 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 
 	{ /* interactive mode */
 		int n;
-		const char *vals[] = { "foo", "bar", "baz", NULL };
-		const char *comp[] = { "positive", "negative", NULL };
-		const char *types[] = { "paste", "mask", "silk", "copper", "outline", NULL };
-		const char *side[] = { "top copper", "bottom copper", NULL };
-		const char **layer_names;
+		lb_ctx_t ctx;
+
 		PCB_DAD_DECL(dlg);
 
-		layer_names = calloc(sizeof(char *), PCB->Data->LayerN+1);
+		ctx.widx = malloc(sizeof(lb_widx_t) * data->LayerN);
+		ctx.layer_names = calloc(sizeof(char *), PCB->Data->LayerN+1);
 		for(n = 0; n < PCB->Data->LayerN; n++)
-			layer_names[n] = PCB->Data->Layer[n].meta.real.name;
-		layer_names[n] = NULL;
+			ctx.layer_names[n] = PCB->Data->Layer[n].meta.real.name;
+		ctx.layer_names[n] = NULL;
+
 
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
 		for(n = 0; n < data->LayerN; n++) {
-
+			lb_widx_t *w = ctx.widx+n;
 			/* left side */
 			PCB_DAD_BEGIN_VBOX(dlg);
 				if (n == 0)
@@ -84,16 +97,21 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 
 				PCB_DAD_BEGIN_HBOX(dlg);
 					PCB_DAD_LABEL(dlg, "Name:");
-					PCB_DAD_ENUM(dlg, vals);
+					PCB_DAD_ENUM(dlg, lb_vals);
+						w->name = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_ENUM(dlg, comp); /* coposite */
-					PCB_DAD_ENUM(dlg, types); /* lyt */
+					PCB_DAD_ENUM(dlg, lb_comp); /* coposite */
+						w->comp = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_ENUM(dlg, lb_types); /* lyt */
+						w->type = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_ENUM(dlg, vals);
+					PCB_DAD_ENUM(dlg, lb_vals);
+						w->dist = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "from");
-					PCB_DAD_ENUM(dlg, side);
+					PCB_DAD_ENUM(dlg, lb_side);
+						w->side = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 
@@ -106,7 +124,8 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 					else
 						PCB_DAD_LABEL(dlg, "\n\n");
 					PCB_DAD_LABEL(dlg, "Automatic");
-					PCB_DAD_ENUM(dlg, layer_names);
+					PCB_DAD_ENUM(dlg, ctx.layer_names);
+						w->layer = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		}
@@ -115,7 +134,8 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		PCB_DAD_RUN(dlg, "layer_binding", "Layer bindings");
 
 		PCB_DAD_FREE(dlg);
-		free(layer_names);
+		free(ctx.widx);
+		free(ctx.layer_names);
 	}
 
 	return 0;
