@@ -28,19 +28,12 @@
 #include "hid_attrib.h"
 #include "hid_dad.h"
 
-/*
-static const char d1_syntax[] = "d1()\n";
-static const char d1_help[] = "debug action for development";
-static int pcb_act_d1(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	printf("D1!\n");
-	return 0;
-}
-*/
+/* include them all for static inlines */
+#include "dlg_test.c"
 
 pcb_hid_action_t dialogs_action_list[] = {
-/*	{"integrity", 0, pcb_act_integrity,
-	 integrity_help, integrity_syntax}*/
+	{"attr_dlg", 0, pcb_act_attr_dlg,
+	 attr_dlg_help, attr_dlg_syntax},
 };
 
 static const char *dialogs_cookie = "dialogs plugin";

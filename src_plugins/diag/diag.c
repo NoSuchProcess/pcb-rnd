@@ -256,59 +256,6 @@ static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
-
-static const char attr_dlg_syntax[] = "attr_dlg()\n";
-static const char attr_dlg_help[] = "test the attribute dialog";
-static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr);
-static int attr_idx, attr_idx2;
-static int pcb_act_attr_dlg(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	const char *vals[] = { "foo", "bar", "baz", NULL };
-
-	PCB_DAD_DECL(foo);
-	PCB_DAD_BEGIN_VBOX(foo);
-		PCB_DAD_LABEL(foo, "text1");
-		PCB_DAD_BEGIN_TABLE(foo, 3);
-			PCB_DAD_LABEL(foo, "text2a");
-			PCB_DAD_LABEL(foo, "text2b");
-			PCB_DAD_LABEL(foo, "text2c");
-			PCB_DAD_LABEL(foo, "text2d");
-		PCB_DAD_END(foo);
-		PCB_DAD_LABEL(foo, "text3");
-
-		PCB_DAD_ENUM(foo, vals);
-			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-			attr_idx = PCB_DAD_CURRENT(foo);
-		PCB_DAD_INTEGER(foo, "text2e");
-			PCB_DAD_MINVAL(foo, 1);
-			PCB_DAD_MAXVAL(foo, 10);
-			PCB_DAD_DEFAULT(foo, 3);
-			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-			attr_idx2 = PCB_DAD_CURRENT(foo);
-		PCB_DAD_BUTTON(foo, "update!");
-			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-	PCB_DAD_END(foo);
-
-	PCB_DAD_RUN(foo, "attr_dlg", "attribute dialog test");
-
-	PCB_DAD_FREE(foo);
-	return 0;
-}
-
-static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr)
-{
-	static pcb_hid_attr_val_t val;
-	static pcb_bool st;
-	printf("Chg\n");
-
-	st = !st;
-	val.int_value = (val.int_value + 1) % 3;
-/*	pcb_gui->att_dlg_widget_state(hid_ctx, attr_idx, st);*/
-
-	pcb_gui->att_dlg_set_value(hid_ctx, attr_idx, &val);
-}
-
-
 static const char d1_syntax[] = "d1()\n";
 static const char d1_help[] = "debug action for development";
 static int pcb_act_d1(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -333,13 +280,8 @@ pcb_hid_action_t diag_action_list[] = {
 	 eval_conf_help, eval_conf_syntax},
 	{"d1", 0, pcb_act_d1,
 	 d1_help, d1_syntax},
-	{"d2", 0, pcb_act_attr_dlg,
-	 attr_dlg_help, attr_dlg_syntax},
-	{"attr_dlg", 0, pcb_act_attr_dlg,
-	 attr_dlg_help, attr_dlg_syntax},
 	{"integrity", 0, pcb_act_integrity,
 	 integrity_help, integrity_syntax}
-
 };
 
 static const char *diag_cookie = "diag plugin";
