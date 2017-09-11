@@ -26,6 +26,7 @@
 #include <assert.h>
 #include "compat_misc.h"
 #include "hid_attrib.h"
+#include "pcb-printf.h"
 
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
 #define PCB_DAD_DECL(table) \
