@@ -89,8 +89,9 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	if (dst_fid != -1) {
 		pcb_move_font(&PCB->fontkit, fnt->id, dst_fid);
 	}
-
-	pcb_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fnt->id, fname);
+	
+	fid = dst_fid == 0 ? 0 : fnt->id;
+	pcb_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fid, fname);
 	return 0;
 }
 
