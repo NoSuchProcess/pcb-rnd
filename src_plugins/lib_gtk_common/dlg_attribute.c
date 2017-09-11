@@ -58,10 +58,11 @@ typedef struct {
 	pcb_hid_attr_val_t *results;
 	GtkWidget **wl;
 	int n_attrs;
+	void *caller_data;
 	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
-#define change_cb(ctx, dst) do { if (dst->change_cb != NULL) dst->change_cb(ctx, dst); } while(0)
+#define change_cb(ctx, dst) do { if (dst->change_cb != NULL) dst->change_cb(ctx, ctx->caller_data, dst); } while(0)
 
 static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 {
@@ -510,8 +511,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return -1;
 }
 
-int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,
-													const char *title, const char *descr)
+int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
 {
 	GtkWidget *dialog;
 	GtkWidget *content_area;
@@ -524,6 +524,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 	ctx.results = results;
 	ctx.n_attrs = n_attrs;
 	ctx.wl = calloc(sizeof(GtkWidget *), n_attrs);
+	ctx.caller_data = caller_data;
 	ctx.inhibit_valchg = 0;
 
 	dialog = gtk_dialog_new_with_buttons(_(title),

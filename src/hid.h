@@ -427,8 +427,7 @@ struct hid_s {
 	   may use it for a tooltip or text in a dialog box, or a help
 	   string.
 	 */
-	int (*attribute_dialog) (pcb_hid_attribute_t * attrs_,
-													 int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_);
+	int (*attribute_dialog)(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data);
 
 	/* Disable or enable a widget of an active attribute dialog */
 	int (*att_dlg_widget_state)(void *hid_ctx, int idx, pcb_bool enabled);

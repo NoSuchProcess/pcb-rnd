@@ -624,6 +624,7 @@ typedef struct {
 	Widget *wl;
 	Widget **btn; /* enum value buttons */
 	pcb_hid_attr_val_t *results;
+	void *caller_data;
 	unsigned inhibit_valchg:1;
 } lesstif_attr_dlg_t;
 
@@ -702,7 +703,7 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 		return;
 
 	attribute_dialog_readres(ctx, widx);
-	ctx->attrs[widx].change_cb(ctx, &ctx->attrs[widx]);
+	ctx->attrs[widx].change_cb(ctx, ctx->caller_data, &ctx->attrs[widx]);
 }
 
 /* returns the index of HATT_END where the loop had to stop */
@@ -924,7 +925,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 	return -1;
 }
 
-int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
+int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
 {
 	Widget dialog, topform, main_tbl;
 	int i, rv;
@@ -934,6 +935,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	ctx.results = results;
 	ctx.n_attrs = n_attrs;
 	ctx.actual_nattrs = 0;
+	ctx.caller_data = caller_data;
 	ctx.inhibit_valchg = 0;
 
 	for (i = 0; i < n_attrs; i++) {
@@ -1115,7 +1117,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	opts = printer->get_export_options(&n);
 	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
-	if (lesstif_attribute_dialog(opts, n, vals, "Print", "")) {
+	if (lesstif_attribute_dialog(opts, n, vals, "Print", "", NULL)) {
 		free(vals);
 		return 1;
 	}
@@ -1152,7 +1154,7 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	printer->calibrate(0.0, 0.0);
 	if (pcb_gui->attribute_dialog(printer_calibrate_attrs, 3,
 														printer_calibrate_values,
-														"Printer Calibration Values", "Enter calibration values for your printer"))
+														"Printer Calibration Values", "Enter calibration values for your printer", NULL))
 		return 1;
 	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
 	return 0;
@@ -1229,7 +1231,7 @@ static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	opts = printer->get_export_options(&n);
 	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
-	if (lesstif_attribute_dialog(opts, n, vals, "Export", NULL)) {
+	if (lesstif_attribute_dialog(opts, n, vals, "Export", NULL, NULL)) {
 		free(vals);
 		return 1;
 	}

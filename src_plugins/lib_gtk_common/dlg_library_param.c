@@ -311,7 +311,7 @@ static void load_params(char *user_params, char *help_params, pcb_hid_attribute_
 	free(parahlp);
 }
 
-void attr_change_cb(void *hid_xtx, pcb_hid_attribute_t *attr)
+void attr_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	int idx;
 	pcb_gtk_library_param_cb_ctx_t *ctx = attr->user_data;
@@ -444,9 +444,9 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 		res[n] = attrs[n].default_val;
 
 	if (dirty) /* had to replace the filter text, make it effective */
-		attr_change_cb(NULL, &attrs[0]);
+		attr_change_cb(NULL, NULL, &attrs[0]);
 
-	if (ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr) == 0)
+	if (ghid_attribute_dialog(GTK_WINDOW_TOPLEVEL, attrs, numattr, res, "Parametric footprint edition", descr, NULL) == 0)
 		sres = gen_cmd(entry->name, attrs, res, numattr, ctx.first_optional);
 	else
 		sres = NULL; /* cancel */

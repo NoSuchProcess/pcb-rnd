@@ -46,11 +46,11 @@ do { \
 	free(table ## _result); \
 } while(0)
 
-#define PCB_DAD_RUN(table, title, descr) \
+#define PCB_DAD_RUN(table, title, descr, caller_data) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
-	pcb_gui->attribute_dialog(table, table ## _len, table ## _result, title, descr); \
+	pcb_gui->attribute_dialog(table, table ## _len, table ## _result, title, descr, caller_data); \
 } while(0)
 
 /* Return the index of the item currenty being edited */

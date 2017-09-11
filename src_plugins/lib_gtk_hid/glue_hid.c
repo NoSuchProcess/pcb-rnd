@@ -374,10 +374,9 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
 }
 
-static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title,
-																	const char *descr)
+static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
 {
-	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr);
+	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr, caller_data);
 }
 
 static void ghid_show_item(void *item)

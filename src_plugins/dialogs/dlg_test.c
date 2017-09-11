@@ -22,7 +22,7 @@
 
 static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";
-static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr);
+static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static int attr_idx, attr_idx2;
 static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -52,13 +52,13 @@ static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
 	PCB_DAD_END(foo);
 
-	PCB_DAD_RUN(foo, "dlg_test", "attribute dialog test");
+	PCB_DAD_RUN(foo, "dlg_test", "attribute dialog test", NULL);
 
 	PCB_DAD_FREE(foo);
 	return 0;
 }
 
-static void pcb_act_attr_chg(void *hid_ctx, pcb_hid_attribute_t *attr)
+static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	static pcb_hid_attr_val_t val;
 	static pcb_bool st;

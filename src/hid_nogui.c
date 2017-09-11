@@ -363,7 +363,7 @@ static char *nogui_fileselect(const char *title, const char *descr,
 		return pcb_strdup(answer);
 }
 
-static int nogui_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
+static int nogui_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
 {
 	CRASH("attribute_dialog");
 }

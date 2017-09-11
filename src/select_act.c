@@ -64,7 +64,7 @@ static char *gui_get_pat(pcb_search_method_t * method)
 	attrs[1].enumerations = methods;
 	attrs[1].default_val.int_value = results[1].int_value;
 
-	pcb_gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name");
+	pcb_gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name", NULL);
 
 	*method = results[1].int_value;
 	if (results[0].str_value == NULL)

@@ -3402,7 +3402,7 @@ extern int lesstif_close_confirm_dialog();
 
 extern void lesstif_report_dialog(const char *title, const char *msg);
 
-extern int lesstif_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr);
+extern int lesstif_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data);
 extern int lesstif_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
 extern int lesstif_att_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 

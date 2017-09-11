@@ -61,7 +61,7 @@ void ghid_dialog_print(pcb_hid_t * hid, GtkWidget *export_dialog, GtkWidget *top
 		}
 
 		/* non-zero means cancel was picked */
-		if (ghid_attribute_dialog(top_window, attr, n, results, _("PCB Print Layout"), pcb_exporter->description))
+		if (ghid_attribute_dialog(top_window, attr, n, results, _("PCB Print Layout"), pcb_exporter->description, NULL))
 			return;
 
 	}

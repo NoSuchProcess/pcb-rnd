@@ -92,7 +92,7 @@ int pcb_gtk_act_printcalibrate(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	if (pcb_gui->attribute_dialog(printer_calibrate_attrs, 3,
 																printer_calibrate_values,
-																_("Printer Calibration Values"), _("Enter calibration values for your printer")))
+																_("Printer Calibration Values"), _("Enter calibration values for your printer"), NULL))
 		return 1;
 	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
 	return 0;
