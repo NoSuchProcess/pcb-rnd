@@ -366,6 +366,16 @@ void pcb_fontkit_reset(pcb_fontkit_t *fk)
 	fk->last_id = 0;
 }
 
+static void update_last_id(pcb_fontkit_t *fk)
+{
+	pcb_font_id_t id;
+	for (id = fk->last_id; id > 0; id--) {
+		if (htip_has(&fk->fonts, id))
+			break;
+	}
+	fk->last_id = id;
+}
+
 int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
 {
 	htip_entry_t *e;
@@ -376,6 +386,8 @@ int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
 	e = htip_popentry(&fk->fonts, id);
 	pcb_font_free(e->value);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", id);
+	if (id == fk->last_id)
+		update_last_id(fk);
 	return 0;
 }
 
@@ -430,7 +442,9 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 		htip_set(&fk->fonts, dst, src_font);
 		src_font->id = dst;
 	}
-	fk->last_id = MIN(fk->last_id, dst);
+	if (src == fk->last_id)
+		update_last_id (fk);
+	fk->last_id = MAX(fk->last_id, dst);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", src);
 	pcb_event(PCB_EVENT_FONT_CHANGED, "i", dst);
 
