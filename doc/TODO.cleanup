@@ -2,4 +2,5 @@
 - rename:
 	- Note
 	- GetObjectBoundingBox
+- centralize pcb_gui->attribute_dialog()
 
