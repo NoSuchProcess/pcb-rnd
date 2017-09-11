@@ -66,7 +66,7 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	st = !st;
 	val.int_value = (val.int_value + 1) % 3;
-/*	pcb_gui->att_dlg_widget_state(hid_ctx, attr_idx, st);*/
+/*	pcb_gui->attr_dlg_widget_state(hid_ctx, attr_idx, st);*/
 
-	pcb_gui->att_dlg_set_value(hid_ctx, attr_idx, &val);
+	pcb_gui->attr_dlg_set_value(hid_ctx, attr_idx, &val);
 }

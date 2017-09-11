@@ -567,7 +567,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 }
 
 
-int ghid_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
@@ -578,7 +578,7 @@ int ghid_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 	return 0;
 }
 
-int ghid_att_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
 

@@ -49,8 +49,8 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		lb_widx_t *w = ctx->widx + n;
 		pcb_layer_t *layer = ctx->data->Layer + n;
 
-		pcb_gui->att_dlg_set_value(hid_ctx, w->name, layer->meta.bound.name);
-		pcb_gui->att_dlg_set_value(hid_ctx, w->comp, layer->meta.bound.comb);
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->name, layer->meta.bound.name);
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->comp, layer->meta.bound.comb);
 	}
 }
 

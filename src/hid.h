@@ -430,11 +430,11 @@ struct hid_s {
 	int (*attribute_dialog)(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data);
 
 	/* Disable or enable a widget of an active attribute dialog */
-	int (*att_dlg_widget_state)(void *hid_ctx, int idx, pcb_bool enabled);
+	int (*attr_dlg_widget_state)(void *hid_ctx, int idx, pcb_bool enabled);
 
 	/* Change the current value of a widget; same as if the user chaged it,
 	   except the value-changed callback is inhibited */
-	int (*att_dlg_set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 
 
 	/* This causes a second window to display, which only shows the

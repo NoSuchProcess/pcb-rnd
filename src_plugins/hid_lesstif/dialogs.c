@@ -979,7 +979,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	return rv ? 0 : 1;
 }
 
-int lesstif_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 
@@ -990,7 +990,7 @@ int lesstif_att_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 	return 0;
 }
 
-int lesstif_att_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 
