@@ -27,7 +27,7 @@
 #include "search.h"
 
 static const char *lb_vals[] = { "foo", "bar", "baz", NULL };
-static const char *lb_comp[] = { "positive", "negative", NULL };
+static const char *lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
 static const char *lb_types[] = { "paste", "mask", "silk", "copper", "outline", NULL };
 static const char *lb_side[] = { "top copper", "bottom copper", NULL };
 
@@ -41,6 +41,18 @@ typedef struct {
 	pcb_data_t *data;
 	pcb_subc_t *subc;
 } lb_ctx_t;
+
+static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
+{
+	int n;
+	for(n = 0; n < ctx->data->LayerN; n++) {
+		lb_widx_t *w = ctx->widx + n;
+		pcb_layer_t *layer = ctx->data->Layer + n;
+
+		pcb_gui->att_dlg_set_value(hid_ctx, w->name, layer->meta.bound.name);
+		pcb_gui->att_dlg_set_value(hid_ctx, w->comp, layer->meta.bound.comb);
+	}
+}
 
 static const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
 static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
@@ -133,6 +145,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		}
 		PCB_DAD_END(dlg);
 
+/*		lb_data2dialog(&ctx); */
 		PCB_DAD_RUN(dlg, "layer_binding", "Layer bindings", &ctx);
 
 		PCB_DAD_FREE(dlg);
