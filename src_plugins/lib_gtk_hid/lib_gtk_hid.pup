@@ -4,3 +4,4 @@ $long Generic gtk HID implementation, independent of GTK version (2 vs. 3) and r
 $state works
 default disable-all
 dep lib_hid_common
+dep dialogs

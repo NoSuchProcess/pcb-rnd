@@ -1,0 +1,6 @@
+$class feature
+$short HID-independent GUI dialogs
+$long Interactive core functionality: HID-independent GUI dialogs (enabled by GUI HIDs)
+$state works
+default disable
+autoload 1
