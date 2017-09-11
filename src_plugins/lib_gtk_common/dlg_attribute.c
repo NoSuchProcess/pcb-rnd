@@ -136,18 +136,6 @@ static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static GtkWidget *ghid_attr_dlg_frame(GtkWidget *parent)
-{
-	GtkWidget *box, *fr;
-
-	fr = gtk_frame_new(NULL);
-	gtk_box_pack_start(GTK_BOX(parent), fr, FALSE, FALSE, 0);
-
-	box = gtkc_hbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(fr), box);
-	return box;
-}
-
 static void button_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = gtk_object_get_user_data(GTK_OBJECT(entry));
@@ -159,6 +147,17 @@ static void button_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
+static GtkWidget *ghid_attr_dlg_frame(GtkWidget *parent)
+{
+	GtkWidget *box, *fr;
+
+	fr = gtk_frame_new(NULL);
+	gtk_box_pack_start(GTK_BOX(parent), fr, FALSE, FALSE, 0);
+
+	box = gtkc_hbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(fr), box);
+	return box;
+}
 
 typedef struct {
 	int cols, rows;
