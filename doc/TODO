@@ -89,7 +89,7 @@ For the next release:
 	- negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	- parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	- lesstif build: make sure -lXm is before -lXt - that's why lesstif HID is broken on some systems
-	- gtk menu: hotkeys not shown for checkbox menus (settings)
+	+ gtk menu: hotkeys not shown for checkbox menus (settings)
 	- RTT: gerber shouldn't ingore the cnc files
 	- make distclean doesn't remove everything from tests/RTT [report: Alain]
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
