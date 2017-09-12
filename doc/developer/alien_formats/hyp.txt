@@ -1,0 +1,630 @@
+A serias of mails sent by Koen to Igor2:
+
+--
+
+The BOARD section comes after the header. The board section provides 
+enough information to draw the board outline.
+The BOARD section corresponds to the pcb-rnd "outline" layer. The syntax 
+looks like this:
+
+{BOARD
+  (PERIMETER_SEGMENT X1=x1 Y1=y1 X2=x2 Y2=y2)
+  (PERIMETER_ARC X1=x1 Y1=y1 X2=x2 Y2=y2 XC=xc YC=yc R=r)
+}
+
+PERIMETER_SEGMENT is a straight line from (x1, y1) to (x2, y2).
+PERIMETER_ARC is a counterclockwise circle arc (x1, y1) to (x2, y2) with 
+center (xc, yc) and radius r.
+x1, y1. x2, y2, xc, yc, and r are in the unit you chose in the UNITS 
+statement (cm or inch).
+The example above shows only two, but a BOARD section typically has many 
+PERIMETER_SEGMENT and PERIMETER_ARC statements.
+
+Test the correct orientation for the arc: counterclockwise.
+You can mix the PERIMETER_SEGMENT and PERIMETER_ARC any way you want. 
+The order does not matter. Just print one PERIMETER_SEGMENT or 
+PERIMETER_ARC per line.
+
+
+--
+
+
+The STACKUP section defines all layers, both copper and dielectric. This 
+is an example of a two-sided board:
+
+{STACKUP
+  (SIGNAL T=0.003500 L="component")
+  (DIELECTRIC T=0.160000 L="dielectric layer 1")
+  (SIGNAL T=0.003500 L="solder")
+}
+
+The above corresponds to 35um copper on 1.6mm FR4.
+
+Apart from SIGNAL and DIELECTRIC, there's a third type of copper layer, 
+PLANE, not shown here. The difference between SIGNAL and PLANE is that a 
+SIGNAL layer is empty by default, unless you draw something on it, while 
+a PLANE layer is full of copper by default. This can be used for power 
+and ground planes. 
+
+The thickness T is in cm, as that is the UNIT you chose.
+
+The STACKUP is where you can define the properties of the material. Most 
+common are the bulk resistivity of the copper (BR=), or the dielectric 
+constant of the dielectric (ER=).
+  (SIGNAL T=0.000700 BR=resistivity L="component")
+  (DIELECTRIC T=0.002000 ER=epsilon L="dielectric layer 1")
+If you don't say anything, the values default to copper on FR4, which is 
+what most people want.
+
+Look at the layer name. This is the first time we have to print a 
+string.
+Hyperlynx will accept many strings without double quotes, but if the 
+string contains characters like } or ) you may have a problem.
+To avoid these problems, always print a string between double quotes 
+("").
+eg. LAYER="Component"
+If the string contains a double quote, print two double quotes.
+e.g "This is a ""string"" with double quotes."
+
+Give all layers a name. If you don't choose a name, Hyperlynx will 
+choose a name for you, and it probably won't be what you want.
+
+--
+
+A hyperlynx file looks something like this:
+- header
+- board outline
+- stackup: definition of all layers of the board, both copper and 
+dielectric
+- devices: parts list.
+- padstack: definition of the shape of vias, pins and pads
+- net: definition of all copper. A 'net' is connected copper.
+  - straight lines
+  - arcs
+  - polygons
+  - vias: references a padstack.
+  - pins and pads: each pin or pad references a padstack and a device.
+
+  - unrouted segments
+- footer
+
+I'd split this in different functions, so that the order can be changed 
+easily if you want to re-use the code for another export module.
+
+The difference between vias, pins and pads is:
+  - a via has a hole but is not associated with a device
+  - a pin has a hole and a device
+  - a pad does not have a hole, but has a device.
+
+The first piece of code is writing the header and the footer.
+
+The header looks like this:
+
+* test.hyp exported by pcb-rnd 1.2.3 on 01.01.1999 12:45
+{VERSION=2.0}
+{DATA_MODE=DETAILED}
+{UNITS=METRIC LENGTH}
+
+A line that begins with "*" is a comment.
+
+This says you are using centimeters for coordinates and for layer 
+thickness.
+If you would prefer to export coordinates in inches, and layer thickness 
+in ounces per square foot, you could use:
+{UNITS=ENGLISH WEIGHT}
+Your choice.
+
+and the footer is:
+
+{END}
+
+If you want to, tomorrow I'll send the info for the board outline. If 
+there are any questions, just ask.
+
+--
+
+After the STACKUP section, there's the DEVICES section. The DEVICES 
+section is the parts list of the board.
+
+{DEVICES
+  (? REF="U1" NAME="BC548" L="Top")
+  (? REF="R2" NAME="1K2" L="Top")
+  ...
+}
+
+This is where we say which side of the board the component is soldered 
+on. The exact coordinates of the component are specified later, when we 
+handle the PINs and PADs.
+
+The L=layer is the layer the component is soldered on. Use the same 
+layer name as in the STACKUP section.
+
+A board needs at least one component, else there are no pins or pads to 
+connect the simulation to.
+
+--
+
+A PADSTACK section describes the pads of a pin, via or pad.
+You describe the pads of a via, pin or pad once, and refer to it 
+multiple times when creating vias, pins or pads.
+
+A padstack looks like this:
+
+{PADSTACK=name,
+  (layer, shape, x-size, y-size, angle, type)
+  ... more layers
+}
+
+where shape is 0 for circle/ellipse, 1 for square/rectangle, 2 for 
+oblong. angle is the rotation in degrees, counterclockwise.
+
+The "type" parameter is M, A, T.
+M Metal: ordinary copper pad,
+A Antipad: hole around the pad on PLANE layers,
+T Thermal: thermal relief.
+
+Thermal relief is when a pin connects to a ground plane with short, 
+stubby tracks, like spokes on a wheel. This makes the pin easier to 
+solder. If you simply connect the pin to a solid copper  polygon it is 
+difficult to solder, because the direct connection to a big copper 
+surface copper cools the pin too much.
+You don't have to specify the type parameter, but it doesn't hurt.
+
+An example:
+
+{PADSTACK="pad1"
+  ("Top", 1, 0.5, 0.5, 0, M)
+}
+
+The padstack called "pad1" consists of a single pad on the "Top" layer, 
+0.5 cm square.
+
+If the padstack describes a pin or via, you have to specify the diameter 
+of the drill hole:
+
+{PADSTACK=name, diameter
+  (layer, shape, x-size, y-size, angle, type)
+  ... more layers
+}
+
+{PADSTACK="stack2", 0.2
+  ("Top", 0, 0.5, 0.5, 0, M)
+  ("Bottom", 0, 0.5, 0.5, 0, M)
+}
+
+There are two special layer names: MDEF and ADEF.
+If the layer is MDEF (without quotes) this means: size of metal pad on 
+all SIGNAL layers.
+ADEF (without quotes) means size of the hole in the copper on all PLANE 
+layers.
+Using MDEF and ADEF you can define a padstack for a via or pin which 
+will always work, even if layers are added, removed or changed in name. 
+Example:
+
+{PADSTACK="pin1", 0.2
+  (MDEF, 0, 0.5, 0.5, 0, M)
+  (ADEF, 0, 0.5, 0.5, 0, A)
+}
+
+For completeness: You could define thermal relief around a pad.
+
+  (layer, shape copper, x-size copper, y-size copper, angle copper, 
+shape thermal relief, x-size thermal relief, y-size thermal relief, 
+angle thermal relief, T)
+So a single layer may appear up to three times in the same PADSTACK: 
+once for each type (M - metal, A - antipad, T - thermal)
+
+The two padstacks to remember when exporting are the "pad1" and "pin1" 
+examples.
+
+A hyperlynx file contains multiple PADSTACK sections, one per padstack.
+
+When exporting, you have to loop over all vias, pins and pads of the 
+board twice: once when creating the padstacks, and once when creating 
+the vias, pins and pads.
+
+--
+
+The NET section specifies a network of connected copper. A NET is not 
+limited to a single layer, but may be on multiple layers.
+
+The NET section contains subsections:
+ - SEG and ARC to draw line segments and circle arcs
+ - PIN to draw component pads and pins
+ - VIA for vias
+ - POLYGON and POLYVOID to draw polygons with holes
+ - POLYLINE to draw a sequence of line segments and circle arcs
+ - USEG to draw unrouted segments
+
+Each net has a name, e.g. "VCC","CLK", "GND".
+
+{NET="I2C_SCL"
+  (SEG X1=6.500000 Y1=3.000000 X2=6.625000 Y2=3.000000 
+W=0.008333 L="Top")
+  ... other SEG, ARC, PIN, VIA, POLYGON, POLYVOID, POLYLINE, USEG 
+records ...
+}
+
+A hyperlynx file contains multiple NET sections, one per network.
+
+Next: the subsections of the NET section.
+
+--
+
+Often a copper trace is a sequence of straight lines and arcs, all of 
+the same width.
+
+If you have a sequence of line segments and arcs, all of the same net, 
+all on the same layer, all of the same width, you can draw the whole 
+trace as a POLYLINE:
+
+
+{NET=name
+  {POLYLINE L=layer W=width ID=integer_id X=x0 Y=y0
+    (LINE X=x1 Y=y1)
+    (CURVE X1=x2 Y1=y2 X2=x3 Y2=y3 XC=xc YC=yc R=r)
+    (LINE X=x4 Y=y4)
+    ...
+  }
+...
+}
+
+integer_id is a number, which is different for each polyline (and 
+polygon).
+For integer_id, just initialize a number to 0, and increase it id++ 
+every time you draw a polyline or polygon.
+
+How is the POLYLINE above drawn?
+
+First a line from (x0, y0) to (x1, y1) on layer "layer" and width w is 
+drawn.
+Then an arc counterclockwise from (x2, y2) to (x3, y3) with center (xc, 
+yc) and radius r is drawn.
+Where the next LINE begins depends on where the CURVE ends.
+The CURVE begins where the previous segment ends.
+If (x1, y1) is the same as (x2, y2) the CURVE ends at (x3, y3) and a 
+line from (x3, y3) to (x4, y4) is drawn.
+If (x1, y1) is the same as (x3, y3) the CURVE ends at (x2, y2) and a 
+line from (x2, y2) to (x4, y4) is drawn.
+
+An example:
+
+{NET="VCC"
+  {POLYLINE L="component" W=0.1 ID=1 X=6.000000 Y=5.000000
+    (LINE X=8.000000 Y=5.000000)
+    (CURVE X1=8.000000 Y1=5.000000 X2=8.000000 Y2=5.500000 
+XC=8.000000 YC=5.250000 R=0.250000)
+    (LINE X=6.000000 Y=5.500000)
+    ...
+  }
+...
+}
+
+You can have as many LINE and CURVE substatements as you like, and in
+any order.
+
+--
+
+A trace can be defined, not by its shape, but by its delay, 
+characteristic impedance and resistance. This is the unrouted segment 
+USEG.
+
+{NET=net_name
+  (USEG X1=x1 Y1=y1 L1=layer1 X2=x2 Y2=y2 L2=layer2 
+Z=characteristic_impedance D=delay R=resistance )
+  =85
+}
+
+This unrouted segment begins on one layer L1= and end on another L2= 
+.
+
+Another way of defining a trace is by giving width, length and layer.
+The delay and characteristic impedance can be calculated from trace 
+width, trace length and the thickness and epsilon of the dielectric 
+above and below the trace.
+
+  (USEG X1=x1 Y1=y1 L1=layer1 X2=x2 Y2=y2 L2=layer2 
+ZL=trace_layer ZW=trace_width ZLEN=trace_length)
+
+This unrouted segment is a transmission line which begins on one layer 
+L1= and end on another L2= . The microstrip itself is drawn on layer 
+ZL=.
+
+This way you can simulate a trace as a lossy transmission line.
+[ Note: When simulating power supply and ground planes, which are mostly 
+copper, the simulation model is not a transmission line but its 
+two-dimensional equivalent, the transmission plane. ]
+
+--
+
+The difference between a PIN and a VIA is that a PIN belongs to a 
+device.
+
+  (VIA X=x0 Y=y0 P=padstack0)
+
+puts a via at coordinates (x0, y0) according to padstack "padstack0".
+The shape of the pads, whether the via is a through-hole via, a blind or 
+a buried via, is all defined in the padstack.
+
+Example:
+
+  (VIA X=11.750000 Y=5.250000 P="0802pad")
+
+A pin
+
+  (PIN X=x0 Y=y0 R=ref P=padstack0)
+
+puts a pin or pad at coordinates (x0, y0) according to padstack 
+"padstack0".
+The reference is of the format "device_name.pin_name". This requires 
+that "device_name" has been defined in the "DEVICES" section.
+
+Example:
+
+  (PIN X=15 Y=1 R="U1.2" P="smd04")
+
+Here U1.1 is pin "2" of device "U1". To avoid problems, it is better if 
+device and pin names do not contain the "." character.
+
+The shape of the pads, whether the pin is smd or through hole is defined 
+in the padstack.
+
+The simulation connects signal sources to the board at PINs, and 
+measures voltages at PINs.
+
+--
+
+When all else fails, you can always represent copper as a POLYGON.
+
+The POLYGON syntax is very similar to the POLYLINE syntax. Just change 
+POLYLINE into POLYGON.
+
+{NET=name
+  {POLYGON L=layer T=POUR W=width ID=integer_id X=x0 Y=y0
+    (LINE X=x1 Y=y1)
+    (CURVE X1=x2 Y1=y2 X2=x3 Y2=y3 XC=xc YC=yc R=r)
+    (LINE X=x4 Y=y4)
+    ...
+    (LINE X=xn Y=yn)
+  }
+...
+}
+
+The difference is that a POLYGON is closed. A POLYLINE ends at the last 
+point (xn, yn).
+A POLYGON draws a line from the last point (xn, yn) back to (x0, y0).
+
+The T=POUR parameter says the inside of the polygon is filled with 
+copper.
+
+A Hyperlynx polygon has an outline of straight line segments and circle 
+arcs.
+The W=width parameter gives the line width of the outline. You can 
+make a polygon bigger this way.
+
+In the often occurring case of a polygon of only line segments, and zero 
+border width, we get:
+
+{NET=name
+...
+  {POLYGON L=layer T=POUR W=0.0 ID=integer_id X=x0 Y=y0
+    (LINE X=x1 Y=y1)
+    ...
+    (LINE X=xn Y=yn)
+  }
+...
+}
+
+Example:
+
+{NET="VCC"
+  {POLYGON L="TOP" W=0.0 ID=1 X=9.000000 Y=6.500000
+     (LINE X=10.000000 Y=6.500000)
+     (LINE X=10.000000 Y=7.000000)
+     (LINE X=9.500000 Y=7.000000)
+     (LINE X=9.500000 Y=7.500000)
+     (LINE X=9.000000 Y=7.500000)
+     (LINE X=9.000000 Y=6.500000)
+  }
+}
+
+Do not forget that all polygons and polylines should have a different 
+ID= value.
+
+--
+
+A POLYVOID is a hole in a POLYGON. The hole itself is shaped like a 
+polygon, too. The shape of the hole is a sequence of straight lines and 
+circle arcs:
+
+{NET=name
+...
+  {POLYVOID ID=integer_id X=x0 Y=y0
+    (LINE X=x1 Y=y1)
+    (CURVE X1=x2 Y1=y2 X2=x3 Y2=y3 XC=xc YC=yc R=r)
+    (LINE X=x4 Y=y4)
+    ...
+    (LINE X=xn Y=yn)
+  }
+...
+}
+
+The ID= value of the POLYVOID hole is the same as the ID=  value of 
+the POLYGON you want to make a hole in.
+You do not have to specify the layer of the hole, because the hole is on 
+the same layer as the polygon you make a hole in.
+
+Example:
+
+{NET="Ground"
+  {POLYGON L="component" T=POUR W=0.0 ID=3 X=9.000000 
+Y=6.500000
+     (LINE X=10.000000 Y=6.500000)
+     (LINE X=10.000000 Y=7.000000)
+     (LINE X=9.500000 Y=7.000000)
+     (LINE X=9.500000 Y=7.500000)
+     (LINE X=9.000000 Y=7.500000)
+     (LINE X=9.000000 Y=6.500000)
+  }
+  {POLYVOID ID=3 X=9.125000 Y=6.625000
+     (LINE X=9.625000 Y=6.625000)
+     (LINE X=9.625000 Y=6.875000)
+     (LINE X=9.375000 Y=6.875000)
+     (LINE X=9.375000 Y=7.125000)
+     (LINE X=9.125000 Y=7.125000)
+     (LINE X=9.125000 Y=6.625000)
+  }
+}
+
+A polygon can have several holes. Just write several POLYVOID sections.
+In practice, if you only export polygons consisting of straight lines of 
+zero width, you get the following:
+
+{NET=name
+...
+  {POLYGON L=layer T=POUR W=0.0 ID=integer_id X=x0 Y=y0
+    (LINE X=x1 Y=y1)
+    ...
+  }
+  {POLYVOID ID=integer_id X=x0 Y=y0
+    (LINE X=x1 Y=y1)
+    ...
+  }
+  {POLYVOID ID=integer_id X=x0 Y=y0
+    (LINE X=x1 Y=y1)
+    ...
+  }
+...
+}
+
+Where integer_id is the same for the POLYGON and its POLYVOIDs.
+
+Don't forget to end your exported file with {END}
+
+This ends the Hyperlynx exporting HOWTO.
+
+--
+
+Result (sent by Igor2 to Koen):
+
+> The STACKUP section defines all layers, both copper and dielectric. This is an example of a two-sided board:
+>
+> {STACKUP
+>  (SIGNAL T=0.003500 L="component")
+>  (DIELECTRIC T=0.160000 L="dielectric layer 1")
+>  (SIGNAL T=0.003500 L="solder")
+> }
+>
+> The above corresponds to 35um copper on 1.6mm FR4.
+
+Deviation: we don't yet store metadata like layer thickness. We are very 
+close to have it, but still don't have it, so I just hardwired these 
+default values for now.
+
+> Look at the layer name. This is the first time we have to print a string.
+> Hyperlynx will accept many strings without double quotes, but if the string contains characters like } or ) you may have a problem.
+> To avoid these problems, always print a string between double quotes ("").
+> eg. LAYER="Component"
+
+Because of io_kicad, pcb_printf() supports %mq, which gets a list of 
+characters that need quoting and a string and can decide whether quoting 
+is needed or not. So instead of quoting everything, I just configured this 
+to what seemed reasonable and we quote only what needs to be quoted.
+
+The list of characters that need quoting is specified only once; if we 
+figure there's a character left out, it's trivial to add.
+
+--
+
+> A PADSTACK section describes the pads of a pin, via or pad.
+> You describe the pads of a via, pin or pad once, and refer to it multiple times when creating vias, pins or pads.
+>
+> A padstack looks like this:
+>
+> {PADSTACK=name,
+>  (layer, shape, x-size, y-size, angle, type)
+>  ... more layers
+> }
+
+For this I had to write a pad stack hash - in pcb-rnd we don't have 
+central lib/list of geometry, each via and pin specifies its own. This pad 
+stack hash is a hyp-independent lib, I'll move it into a separate plugin 
+this week.
+
+
+>
+> where shape is 0 for circle/ellipse, 1 for square/rectangle, 2 for oblong. angle is the rotation in degrees, counterclockwise.
+
+This is on my TODO; we have more shapes, some are asymmetrical, will have 
+to figure this.
+
+> There are two special layer names: MDEF and ADEF.
+> If the layer is MDEF (without quotes) this means: size of metal pad on all SIGNAL layers.
+> ADEF (without quotes) means size of the hole in the copper on all PLANE layers.
+> Using MDEF and ADEF you can define a padstack for a via or pin which will always work, even if layers are added, removed or changed in name. Example:
+>
+> {PADSTACK="pin1", 0.2
+>  (MDEF, 0, 0.5, 0.5, 0, M)
+>  (ADEF, 0, 0.5, 0.5, 0, A)
+> }
+
+Diversion: at the moment pcb-rnd doesn't support anything else for 
+pins/vias just "same copper ring on all layers", so I used MDEF here.
+
+--
+
+> Apart from SIGNAL and DIELECTRIC, there's a third type of copper layer, PLANE, not shown here. The difference between SIGNAL and PLANE is that a SIGNAL layer is empty by default, unless you draw something on it, while a PLANE layer is full of copper by default. This can be used for power and ground planes.
+
+Diversion: pcb-rnd doesn't support negative drawn copper, so I used SIGNAL 
+and DIELECTRIC only.
+
+--
+
+> Often a copper trace is a sequence of straight lines and arcs, all of the same width.
+>
+> If you have a sequence of line segments and arcs, all of the same net, all on the same layer, all of the same width, you can draw the whole trace as a POLYLINE:
+>
+>
+> {NET=name
+>  {POLYLINE L=layer W=width ID=integer_id X=x0 Y=y0
+>    (LINE X=x1 Y=y1)
+>    (CURVE X1=x2 Y1=y2 X2=x3 Y2=y3 XC=xc YC=yc R=r)
+>    (LINE X=x4 Y=y4)
+>    ...
+>  }
+
+It's good to know; however pcb-rnd doesn't have polylines of any sort, so 
+we are not using this feature.
+
+--
+
+>
+> A trace can be defined, not by its shape, but by its delay, characteristic impedance and resistance. This is the unrouted segment USEG.
+>
+> {NET=net_name
+>  (USEG X1=x1 Y1=y1 L1=layer1 X2=x2 Y2=y2 L2=layer2 Z=characteristic_impedance D=delay R=resistance )
+>  ?
+> }
+>
+> This unrouted segment begins on one layer L1= and end on another L2= .
+
+Question: is USEG the same as rat lines in pcb-rnd? Indication of a 
+logical connection that is derived from the netlist but is not (yet) 
+realized in copper?
+
+--
+
+The netlist feature now works.
+
+We're getting there. I've run some tests, and there are some 
+conclusions:
+
+- all internal layers are called "Intern" instead of the real layer 
+names. This is a problem, because no two layer names may be the same.
+- the board is upside down
+
+The easiest way to check is by importing the 
+io_hyp/tests/test00/test00.hyp file, exporting it as hyperlynx, and 
+importing again.
+
+--
