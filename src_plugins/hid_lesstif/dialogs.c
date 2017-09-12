@@ -673,6 +673,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 		default:
 			break;
 	}
+	ctx->attrs[widx].default_val = ctx->results[widx];
 }
 
 static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
