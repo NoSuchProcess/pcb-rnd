@@ -228,6 +228,8 @@ GTK3:
 	- elliptic arc rendering
 	- layer selector vertical layer group name truncation
 	- main window resize scroll bar warnings
+	- component draw "flicker", depending on pan: http://igor2.repo.hu/tmp/gtk3_bug1a.jpg http://igor2.repo.hu/tmp/gtk3_bug1a.jpg
+	- missing grid points: http://igor2.repo.hu/tmp/gtk3_bug2.png
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
