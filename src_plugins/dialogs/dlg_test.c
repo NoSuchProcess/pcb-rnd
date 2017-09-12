@@ -52,7 +52,7 @@ static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
 	PCB_DAD_END(foo);
 
-	PCB_DAD_RUN(foo, "dlg_test", "attribute dialog test", NULL);
+	PCB_DAD_AUTORUN(foo, "dlg_test", "attribute dialog test", NULL);
 
 	PCB_DAD_FREE(foo);
 	return 0;

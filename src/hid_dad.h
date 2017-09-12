@@ -23,6 +23,7 @@
 #ifndef PCB_HID_DAD_H
 #define PCB_HID_DAD_H
 
+#include <stddef.h>
 #include <assert.h>
 #include "compat_misc.h"
 #include "hid_attrib.h"
@@ -33,12 +34,15 @@
 	pcb_hid_attribute_t *table = NULL; \
 	pcb_hid_attr_val_t *table ## _result = NULL; \
 	int table ## _len = 0; \
-	int table ## _alloced = 0;
+	int table ## _alloced = 0; \
+	void *table ## _hid_ctx = NULL; \
 
 /* Free all resources allocated by DAD macros for table */
 #define PCB_DAD_FREE(table) \
 do { \
 	int __n__; \
+	if (table ## _hid_ctx != NULL) \
+		pcb_gui->attr_dlg_free(table ## _hid_ctx); \
 	for(__n__ = 0; __n__ < table ## _len; __n__++) { \
 		PCB_DAD_FREE_FIELD(table, __n__); \
 	} \
@@ -46,7 +50,16 @@ do { \
 	free(table ## _result); \
 } while(0)
 
-#define PCB_DAD_RUN(table, title, descr, caller_data) \
+#define PCB_DAD_NEW(table, title, descr, caller_data) \
+do { \
+	if (table ## _result == NULL) \
+		PCB_DAD_ALLOC_RESULT(table); \
+	table ## _hid_ctx = pcb_gui->attr_dlg_new(table, table ## _len, table ## _result, title, descr, caller_data); \
+} while(0)
+
+#define PCB_DAD_RUN(table) pcb_gui->attr_dlg_run(table ## _hid_ctx)
+
+#define PCB_DAD_AUTORUN(table, title, descr, caller_data) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \

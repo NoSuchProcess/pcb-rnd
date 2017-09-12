@@ -148,8 +148,10 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		}
 		PCB_DAD_END(dlg);
 
-/*		lb_data2dialog(&ctx); */
-		PCB_DAD_RUN(dlg, "layer_binding", "Layer bindings", &ctx);
+		PCB_DAD_NEW(dlg, "layer_binding", "Layer bindings", &ctx);
+		lb_data2dialog(dlg_hid_ctx, &ctx);
+
+		PCB_DAD_RUN(dlg);
 
 		PCB_DAD_FREE(dlg);
 		free(ctx.widx);
