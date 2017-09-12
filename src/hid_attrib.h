@@ -33,7 +33,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_PATH,                /* WARNING: must be malloc()'d, can't be a (const char *) */
 	PCB_HATT_UNIT,
 	PCB_HATT_COORD,
-	PCB_HATT_BUTTON,              /* psuh button; default value is the label */
+	PCB_HATT_BUTTON,              /* push button; default value is the label */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
