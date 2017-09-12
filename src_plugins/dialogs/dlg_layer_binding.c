@@ -103,12 +103,20 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 	}
 }
 
+static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	lb_ctx_t *ctx = caller_data;
+/*	lb_dialog2data(hid_ctx, ctx);*/
+	lb_data2dialog(hid_ctx, ctx); /* update disables */
+}
+
 static const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
 static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
 static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	lb_ctx_t ctx;
 	int num_copper;
+	pcb_hid_attr_val_t val;
 
 	memset(&ctx, 0, sizeof(ctx));
 
@@ -205,6 +213,8 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		PCB_DAD_END(dlg);
 
 		PCB_DAD_NEW(dlg, "layer_binding", "Layer bindings", &ctx);
+		val.func = lb_attr_chg;
+		pcb_gui->attr_dlg_property(dlg_hid_ctx, PCB_HATP_GLOBAL_CALLBACK, &val);
 		lb_data2dialog(dlg_hid_ctx, &ctx);
 
 		PCB_DAD_RUN(dlg);
