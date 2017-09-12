@@ -26,11 +26,11 @@ typedef enum pcb_hids_e {
 	PCB_HATT_LABEL,
 	PCB_HATT_INTEGER,
 	PCB_HATT_REAL,
-	PCB_HATT_STRING,
+	PCB_HATT_STRING,              /* WARNING: must be malloc()'d, can't be a (const char *) */
 	PCB_HATT_BOOL,
 	PCB_HATT_ENUM,
 	PCB_HATT_MIXED,
-	PCB_HATT_PATH,
+	PCB_HATT_PATH,                /* WARNING: must be malloc()'d, can't be a (const char *) */
 	PCB_HATT_UNIT,
 	PCB_HATT_COORD,
 	PCB_HATT_BUTTON,              /* psuh button; default value is the label */
