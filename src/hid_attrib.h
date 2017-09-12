@@ -13,6 +13,7 @@ struct pcb_hid_attr_val_s {
 	const char *str_value;
 	double real_value;
 	pcb_coord_t coord_value;
+	void (*func)();
 };
 
 typedef enum pcb_hatt_compflags_e {

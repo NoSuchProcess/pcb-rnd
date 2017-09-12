@@ -11,6 +11,13 @@
 #include "layer.h"
 #include "layer_grp.h"
 
+/* attribute dialog properties */
+typedef enum pcb_hat_property_e {
+	PCB_HATP_GLOBAL_CALLBACK,
+	PCB_HATP_max
+} pcb_hat_property_t;
+
+
 typedef enum {
 	PCB_HID_MOUSE_PRESS,
 	PCB_HID_MOUSE_RELEASE,
@@ -433,6 +440,11 @@ struct hid_s {
 	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data); /* returns hid_ctx */
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */
+
+	/* Set a property of an attribute dialog (typical call is between
+	   attr_dlg_new() and attr_dlg_run()) */
+	void (*attr_dlg_property)(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);
+
 
 	/* Disable or enable a widget of an active attribute dialog */
 	int (*attr_dlg_widget_state)(void *hid_ctx, int idx, pcb_bool enabled);

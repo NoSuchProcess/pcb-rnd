@@ -626,6 +626,7 @@ typedef struct {
 	pcb_hid_attr_val_t *results;
 	void *caller_data;
 	Widget dialog;
+	pcb_hid_attr_val_t property[PCB_HATP_max];
 	unsigned inhibit_valchg:1;
 } lesstif_attr_dlg_t;
 
@@ -988,6 +989,13 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 	free(ctx->wl);
 	XtDestroyWidget(ctx->dialog);
 	free(ctx);
+}
+
+void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	if ((prop >= 0) && (prop < PCB_HATP_max))
+		ctx->property[prop] = *val;
 }
 
 int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)

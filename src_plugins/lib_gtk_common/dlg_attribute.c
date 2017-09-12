@@ -61,6 +61,7 @@ typedef struct {
 	void *caller_data;
 	GtkWidget *dialog;
 	int rc;
+	pcb_hid_attr_val_t property[PCB_HATP_max];
 	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
@@ -577,6 +578,14 @@ void ghid_attr_dlg_free(void *hid_ctx)
 
 	gtk_widget_destroy(ctx->dialog);
 	free(ctx->wl);
+}
+
+void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	if ((prop >= 0) && (prop < PCB_HATP_max))
+		ctx->property[prop] = *val;
 }
 
 

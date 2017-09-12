@@ -377,6 +377,9 @@ static void remote_attr_dlg_free(void *hid_ctx)
 {
 }
 
+static void remote_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
+{
+}
 
 static int remote_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
 {
@@ -472,6 +475,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.attr_dlg_new = remote_attr_dlg_new;
 	remote_hid.attr_dlg_run = remote_attr_dlg_run;
 	remote_hid.attr_dlg_free = remote_attr_dlg_free;
+	remote_hid.attr_dlg_property = remote_attr_dlg_property;
 	remote_hid.attribute_dialog = remote_attribute_dialog;
 	remote_hid.show_item = remote_show_item;
 	remote_hid.create_menu = remote_create_menu;

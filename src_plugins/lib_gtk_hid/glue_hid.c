@@ -523,6 +523,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->attr_dlg_new = ghid_attr_dlg_new_;
 	dst->attr_dlg_run = ghid_attr_dlg_run;
 	dst->attr_dlg_free = ghid_attr_dlg_free;
+	dst->attr_dlg_property = ghid_attr_dlg_property;
 	dst->attr_dlg_widget_state = ghid_attr_dlg_widget_state;
 	dst->attr_dlg_set_value = ghid_attr_dlg_set_value;
 	dst->show_item = ghid_show_item;
