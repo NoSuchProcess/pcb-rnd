@@ -109,6 +109,9 @@ do { \
 	PCB_DAD_SET(table, name, label); \
 } while(0)
 
+#define PCB_DAD_STRING(table) \
+	PCB_DAD_ALLOC(table, PCB_HATT_STRING); \
+
 #define PCB_DAD_BUTTON(table, text) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \

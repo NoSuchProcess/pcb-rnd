@@ -28,11 +28,11 @@
 
 static const char *lb_vals[] = { "foo", "bar", "baz", NULL };
 static const char *lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
-static const char *lb_types[] = { "paste", "mask", "silk", "copper", "outline", NULL };
-static const char *lb_side[] = { "top copper", "bottom copper", NULL };
+static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "outline", "virtual", NULL };
+static const char *lb_side[] = { "top", "bottom", NULL };
 
 typedef struct {
-	int name, comp, type, dist, side, layer;
+	int name, comp, type, offs, from, side, layer; /* widet indices */
 } lb_widx_t;
 
 typedef struct {
@@ -40,20 +40,66 @@ typedef struct {
 	lb_widx_t *widx;
 	pcb_data_t *data;
 	pcb_subc_t *subc;
+	int no_layer; /* the "invalid layer" in the layer names enum */
 } lb_ctx_t;
+
+static void set_ly_type(void *hid_ctx, int wid, unsigned long int type)
+{
+	pcb_hid_attr_val_t val;
+
+	val.int_value = 0;
+	if (type & PCB_LYT_PASTE)        val.int_value = 1;
+	else if (type & PCB_LYT_MASK)    val.int_value = 2;
+	else if (type & PCB_LYT_SILK)    val.int_value = 3;
+	else if (type & PCB_LYT_COPPER)  val.int_value = 4;
+	else if (type & PCB_LYT_OUTLINE) val.int_value = 5;
+	else if (type & PCB_LYT_VIRTUAL) val.int_value = 6;
+
+	pcb_gui->attr_dlg_set_value(hid_ctx, wid, &val);
+}
 
 static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 {
 	int n;
+	pcb_bool enable;
+
 	for(n = 0; n < ctx->data->LayerN; n++) {
 		lb_widx_t *w = ctx->widx + n;
 		pcb_layer_t *layer = ctx->data->Layer + n;
 		pcb_hid_attr_val_t val;
 
-		val.int_value = layer->meta.bound.name;
+		/* name and type */
+		val.str_value = layer->meta.bound.name;
 		pcb_gui->attr_dlg_set_value(hid_ctx, w->name, &val);
+
 		val.int_value = layer->meta.bound.comb;
 		pcb_gui->attr_dlg_set_value(hid_ctx, w->comp, &val);
+
+		set_ly_type(hid_ctx, w->type, layer->meta.bound.type);
+
+		/* offset */
+		val.int_value = layer->meta.bound.stack_offs;
+		if (val.int_value < 0)
+			val.int_value = -val.int_value;
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->offs, &val);
+
+		val.int_value = !!(layer->meta.bound.type & PCB_LYT_BOTTOM);
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->side, &val);
+
+		/* enable offset only for copper */
+		enable = (layer->meta.bound.type & PCB_LYT_COPPER);
+		pcb_gui->attr_dlg_widget_state(hid_ctx, w->offs, enable);
+		pcb_gui->attr_dlg_widget_state(hid_ctx, w->from, enable);
+
+		enable = !(layer->meta.bound.type & PCB_LYT_VIRTUAL);
+		pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, enable);
+
+		/* real layer */
+		if (layer->meta.bound.real != NULL)
+			val.int_value = pcb_layer_id(PCB->Data, layer->meta.bound.real);
+		else
+			val.int_value = ctx->no_layer;
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->layer, &val);
 	}
 }
 
@@ -62,6 +108,7 @@ static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
 static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	lb_ctx_t ctx;
+	int num_copper;
 
 	memset(&ctx, 0, sizeof(ctx));
 
@@ -96,11 +143,17 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		PCB_DAD_DECL(dlg);
 
 		ctx.widx = malloc(sizeof(lb_widx_t) * ctx.data->LayerN);
-		ctx.layer_names = calloc(sizeof(char *), PCB->Data->LayerN+1);
+		ctx.layer_names = calloc(sizeof(char *), PCB->Data->LayerN+2);
 		for(n = 0; n < PCB->Data->LayerN; n++)
 			ctx.layer_names[n] = PCB->Data->Layer[n].meta.real.name;
+		ctx.no_layer = n;
+		ctx.layer_names[n] = "invalid/unbound";
+		n++;
 		ctx.layer_names[n] = NULL;
 
+		for(n = 0, num_copper = -1; n < PCB->LayerGroups.len; n++)
+			if (pcb_layergrp_flags(PCB, n) & PCB_LYT_COPPER)
+				num_copper++;
 
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
 		for(n = 0; n < ctx.data->LayerN; n++) {
@@ -114,7 +167,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 
 				PCB_DAD_BEGIN_HBOX(dlg);
 					PCB_DAD_LABEL(dlg, "Name:");
-					PCB_DAD_ENUM(dlg, lb_vals);
+					PCB_DAD_STRING(dlg);
 						w->name = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_HBOX(dlg);
@@ -124,9 +177,12 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 						w->type = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_ENUM(dlg, lb_vals);
-						w->dist = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_INTEGER(dlg, NULL);
+						PCB_DAD_MINVAL(dlg, 0);
+						PCB_DAD_MAXVAL(dlg, num_copper);
+						w->offs = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "from");
+						w->from = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_ENUM(dlg, lb_side);
 						w->side = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
