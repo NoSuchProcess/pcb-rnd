@@ -23,6 +23,7 @@
 #include "board.h"
 #include "data.h"
 #include "const.h"
+#include "compat_misc.h"
 #include "obj_subc.h"
 #include "search.h"
 
@@ -41,9 +42,10 @@ typedef struct {
 	pcb_data_t *data;
 	pcb_subc_t *subc;
 	int no_layer; /* the "invalid layer" in the layer names enum */
+	pcb_hid_attribute_t *attrs;
 } lb_ctx_t;
 
-static void set_ly_type(void *hid_ctx, int wid, unsigned long int type)
+static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 {
 	pcb_hid_attr_val_t val;
 
@@ -58,6 +60,40 @@ static void set_ly_type(void *hid_ctx, int wid, unsigned long int type)
 	pcb_gui->attr_dlg_set_value(hid_ctx, wid, &val);
 }
 
+static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_type_t *type, int *offs)
+{
+	/* clear relevant flags */
+	*type &= ~(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL);
+
+	/* set type */
+	switch(combo_type) {
+		case 1: *type |= PCB_LYT_PASTE; break;
+		case 2: *type |= PCB_LYT_MASK; break;
+		case 3: *type |= PCB_LYT_SILK; break;
+		case 4: *type |= PCB_LYT_COPPER; break;
+		case 5: *type |= PCB_LYT_OUTLINE; break;
+		case 6: *type |= PCB_LYT_VIRTUAL; break;
+	}
+
+	/* set side and offset */
+	if (dlg_offs == 0) {
+		if (combo_side == 0)
+			*type |= PCB_LYT_TOP;
+		else
+			*type |= PCB_LYT_BOTTOM;
+	}
+	else {
+		if (combo_side != 0)
+			dlg_offs = -dlg_offs;
+		*type |= PCB_LYT_INTERN;
+	}
+	*offs = dlg_offs;
+}
+
+
+#define layer_name_mismatch(w, layer) \
+((ctx->attrs[w->name].default_val.str_value == NULL) || (strcmp(layer->meta.bound.name, ctx->attrs[w->name].default_val.str_value) != 0))
+
 static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 {
 	int n;
@@ -69,22 +105,28 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		pcb_hid_attr_val_t val;
 
 		/* name and type */
-		val.str_value = layer->meta.bound.name;
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->name, &val);
+		if (layer_name_mismatch(w, layer)) {
+			val.str_value = pcb_strdup(layer->meta.bound.name);
+			pcb_gui->attr_dlg_set_value(hid_ctx, w->name, &val);
+		}
 
 		val.int_value = layer->meta.bound.comb;
 		pcb_gui->attr_dlg_set_value(hid_ctx, w->comp, &val);
 
 		set_ly_type(hid_ctx, w->type, layer->meta.bound.type);
 
-		/* offset */
-		val.int_value = layer->meta.bound.stack_offs;
-		if (val.int_value < 0)
-			val.int_value = -val.int_value;
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->offs, &val);
-
+		/* side & offset */
 		val.int_value = !!(layer->meta.bound.type & PCB_LYT_BOTTOM);
 		pcb_gui->attr_dlg_set_value(hid_ctx, w->side, &val);
+
+		val.int_value = layer->meta.bound.stack_offs;
+		if (val.int_value < 0) {
+			val.int_value = 1;
+			pcb_gui->attr_dlg_set_value(hid_ctx, w->side, &val);
+			val.int_value = -layer->meta.bound.stack_offs;
+		}
+		pcb_gui->attr_dlg_set_value(hid_ctx, w->offs, &val);
+
 
 		/* enable offset only for copper */
 		enable = (layer->meta.bound.type & PCB_LYT_COPPER);
@@ -103,10 +145,29 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 	}
 }
 
+static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
+{
+	int n;
+
+	for(n = 0; n < ctx->data->LayerN; n++) {
+		lb_widx_t *w = ctx->widx + n;
+		pcb_layer_t *layer = ctx->data->Layer + n;
+
+		if (layer_name_mismatch(w, layer)) {
+			free((char *)layer->meta.bound.name);
+			layer->meta.bound.name = pcb_strdup(ctx->attrs[w->name].default_val.str_value);
+		}
+
+		layer->meta.bound.comb = ctx->attrs[w->comp].default_val.int_value;
+		get_ly_type(ctx->attrs[w->type].default_val.int_value, ctx->attrs[w->side].default_val.int_value, ctx->attrs[w->offs].default_val.int_value, &layer->meta.bound.type, &layer->meta.bound.stack_offs);
+	}
+}
+
+
 static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	lb_ctx_t *ctx = caller_data;
-/*	lb_dialog2data(hid_ctx, ctx);*/
+	lb_dialog2data(hid_ctx, ctx);
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }
 
@@ -211,6 +272,8 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 			PCB_DAD_END(dlg);
 		}
 		PCB_DAD_END(dlg);
+
+		ctx.attrs = dlg;
 
 		PCB_DAD_NEW(dlg, "layer_binding", "Layer bindings", &ctx);
 		val.func = lb_attr_chg;
