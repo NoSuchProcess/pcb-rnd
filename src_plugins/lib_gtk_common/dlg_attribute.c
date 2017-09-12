@@ -65,7 +65,13 @@ typedef struct {
 	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
-#define change_cb(ctx, dst) do { if (dst->change_cb != NULL) dst->change_cb(ctx, ctx->caller_data, dst); } while(0)
+#define change_cb(ctx, dst) \
+	do { \
+		if (ctx->property[PCB_HATP_GLOBAL_CALLBACK].func != NULL) \
+			ctx->property[PCB_HATP_GLOBAL_CALLBACK].func(ctx, ctx->caller_data, dst); \
+		if (dst->change_cb != NULL) \
+			dst->change_cb(ctx, ctx->caller_data, dst); \
+	} while(0) \
 
 static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 {
