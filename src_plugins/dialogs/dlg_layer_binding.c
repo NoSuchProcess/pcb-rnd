@@ -104,6 +104,13 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		pcb_layer_t *layer = ctx->data->Layer + n;
 		pcb_hid_attr_val_t val;
 
+		/* disable comp for copper and outline */
+		enable = !(layer->meta.bound.type & PCB_LYT_COPPER) && !(layer->meta.bound.type & PCB_LYT_OUTLINE);
+		pcb_gui->attr_dlg_widget_state(hid_ctx, w->comp, enable);
+		if (!enable)
+			layer->meta.bound.comb = 0; /* copper and outline must be +manual */
+
+
 		/* name and type */
 		if (layer_name_mismatch(w, layer)) {
 			val.str_value = pcb_strdup(layer->meta.bound.name);
@@ -133,8 +140,9 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->offs, enable);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->from, enable);
 
-		enable = !(layer->meta.bound.type & PCB_LYT_VIRTUAL);
+		enable = !(layer->meta.bound.type & PCB_LYT_VIRTUAL) && !(layer->meta.bound.type & PCB_LYT_OUTLINE);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, enable);
+
 
 		/* real layer */
 		if (layer->meta.bound.real != NULL)
