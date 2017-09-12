@@ -76,6 +76,9 @@ For the next release:
 	- BUG: ctl-i 'report' doesn't work on subc: hover over object in subc, press ctl-i msg warning: 'Nothing found to report on" issued, [report: Miloh]
 	- BUG: in both gtk guis, clicking Subcircuits layer control box 'off' effectively locks all subc, but gui lock tool doesn't work on subc. [report: Miloh]
 	- BUG: no red dashed box around subc in lesstif
+	- BUG: layerbinding dialog on lesstif:
+		- combo box values are not set
+		- text fields are too wide
 - new hid render:
 	- BUG: font selector crashes the lesstif HID
 	- "erase" color:
@@ -83,6 +86,7 @@ For the next release:
 		- holes_after should be set to 1 everywhere, then removed
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
 - BUGS:
+	- negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	- parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	- lesstif build: make sure -lXm is before -lXt - that's why lesstif HID is broken on some systems
 	- gtk menu: hotkeys not shown for checkbox menus (settings)
