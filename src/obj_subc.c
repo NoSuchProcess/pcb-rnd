@@ -768,6 +768,34 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	return (pcb_true);
 }
 
+int pcb_subcop_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
+{
+	int n;
+	pcb_board_t *dst_top = pcb_data_get_top(sc->data);
+	int dst_is_pcb = ((dst_top != NULL) && (dst_top->Data == pcb->Data));
+
+	if (!dst_is_pcb)
+		return -1;
+
+	EraseSubc(sc);
+
+	/* relocate bindings */
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *sl = sc->data->Layer + n;
+		pcb_layer_t *dl = pcb_layer_resolve_binding(dst_top, sl);
+		int src_has_real_layer = (sl->meta.bound.real != NULL);
+
+		if (dl != NULL)
+			if (sl->meta.bound.real == dl->meta.bound.real)
+				continue;
+
+		subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1);
+	}
+
+	subc_relocate_poly_clips(pcb->Data, sc);
+	return 0;
+}
+
 
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {

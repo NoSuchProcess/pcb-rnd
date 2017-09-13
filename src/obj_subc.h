@@ -68,6 +68,9 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff);
 
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY);
 
+/* Redo the binding after the layer binding recipe changed in sc */
+int pcb_subcop_rebind(pcb_board_t *pcb, pcb_subc_t *sc);
+
 #include "rtree.h"
 pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl);
 void DrawSubc(pcb_subc_t *sc);
