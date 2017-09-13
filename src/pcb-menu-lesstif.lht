@@ -200,6 +200,11 @@ ha:{
 						ha:Edit... = { action=AdjustStyle(0) }
 					}
 				}
+				ha:Subcircuit {
+					li:submenu {
+						ha:Layer bindings...          = { action=LayerBinding() }
+					}
+				}
 			}
 		} # Edit
 
