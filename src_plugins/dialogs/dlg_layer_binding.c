@@ -41,6 +41,7 @@ typedef struct {
 	lb_widx_t *widx;
 	pcb_data_t *data;
 	pcb_subc_t *subc;
+	pcb_board_t *pcb;
 	int no_layer; /* the "invalid layer" in the layer names enum */
 	pcb_hid_attribute_t *attrs;
 } lb_ctx_t;
@@ -177,6 +178,8 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 {
 	lb_ctx_t *ctx = caller_data;
 	lb_dialog2data(hid_ctx, ctx);
+	if (ctx->subc != NULL)
+		pcb_subcop_rebind(ctx->pcb, ctx->subc);
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }
 
@@ -220,6 +223,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 
 		PCB_DAD_DECL(dlg);
 
+		ctx.pcb = PCB;
 		ctx.widx = malloc(sizeof(lb_widx_t) * ctx.data->LayerN);
 		ctx.layer_names = calloc(sizeof(char *), PCB->Data->LayerN+2);
 		for(n = 0; n < PCB->Data->LayerN; n++)
