@@ -655,6 +655,9 @@ static void subc_relocate_poly_clips(pcb_data_t *dst, pcb_subc_t *sc)
 			gdl_iterator_t it;
 			pcb_layer_t *sl = sc->data->Layer + n;
 
+			if (sl->meta.bound.real == NULL)
+				continue;
+
 			polylist_foreach(&sl->Polygon, &it, poly) {
 				pcb_poly_init_clip(dst, sl->meta.bound.real, poly);
 			}
