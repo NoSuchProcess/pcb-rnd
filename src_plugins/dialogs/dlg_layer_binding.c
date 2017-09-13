@@ -178,8 +178,10 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 {
 	lb_ctx_t *ctx = caller_data;
 	lb_dialog2data(hid_ctx, ctx);
-	if (ctx->subc != NULL)
-		pcb_subcop_rebind(ctx->pcb, ctx->subc);
+	if (ctx->subc != NULL) {
+		if (pcb_subcop_rebind(ctx->pcb, ctx->subc) > 0)
+			pcb_gui->invalidate_all();
+	}
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }
 
