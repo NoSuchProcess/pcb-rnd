@@ -526,14 +526,12 @@ void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n
 	GtkWidget *main_vbox, *vbox;
 	attr_dlg_t *ctx;
 
-	ctx = malloc(sizeof(attr_dlg_t));
+	ctx = calloc(sizeof(attr_dlg_t), 1);
 	ctx->attrs = attrs;
 	ctx->results = results;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
-	ctx->inhibit_valchg = 0;
-	ctx->rc = 0;
 
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(top_window),

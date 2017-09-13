@@ -937,13 +937,11 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	int i;
 	lesstif_attr_dlg_t *ctx;
 
-	ctx = malloc(sizeof(lesstif_attr_dlg_t));
+	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
 	ctx->attrs = attrs;
 	ctx->results = results;
 	ctx->n_attrs = n_attrs;
-	ctx->actual_nattrs = 0;
 	ctx->caller_data = caller_data;
-	ctx->inhibit_valchg = 0;
 
 	for (i = 0; i < n_attrs; i++) {
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
