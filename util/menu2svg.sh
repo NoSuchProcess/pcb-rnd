@@ -65,11 +65,14 @@ BEGIN {
 #	print "ranksep=4;"
 	print "node [shape=record];"
 
-	path = "/"
-	id = 1
-	PATH2ID[path] = id
-	ID2PATH[id] = path
+	reg_node("/")
+}
 
+function reg_node(path)
+{
+	last_id++
+	PATH2ID[path] = last_id
+	ID2PATH[last_id] = path
 }
 
 function add_ch(parent, child)
@@ -85,12 +88,10 @@ function add_ch(parent, child)
 }
 
 {
-	id++;
 	path=$1
 	KEY[path] = $2
 	ACT[path] = $3
-	PATH2ID[path] = id
-	ID2PATH[id] = path
+	reg_node(path)
 	while(path ~ "/") {
 		parent = path
 		sub("/[^/]*$", "", parent)
@@ -104,6 +105,8 @@ function gen_menus(parent   ,n,child,short,chp)
 {
 	short=parent
 	sub(".*/", "", short)
+	if (!(parent in PATH2ID))
+		reg_node(parent)
 	printf "	m" PATH2ID[parent] " [label=\"<menu> [[" short "]]"
 	for(n = 0; n < NUM_CH[parent]; n++) {
 		child=CH[parent, n]
