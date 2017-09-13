@@ -788,11 +788,16 @@ int pcb_subcop_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 		pcb_layer_t *dl = pcb_layer_resolve_binding(dst_top, sl);
 		int src_has_real_layer = (sl->meta.bound.real != NULL);
 
-		if (dl != NULL)
+		if (dl != NULL) {
 			if (sl->meta.bound.real == dl)
 				continue;
 
-pcb_trace("REBIND! %d %p %p (%s)\n", n, sl->meta.bound.real, dl, dl == NULL ? "-":dl->meta.real.name);
+			/* make sure all trees exist on the dest layer - if these are the first objects there we may need to create them */
+			if (dl->line_tree == NULL) dl->line_tree = pcb_r_create_tree(NULL, 0, 0);
+			if (dl->arc_tree == NULL) dl->arc_tree = pcb_r_create_tree(NULL, 0, 0);
+			if (dl->text_tree == NULL) dl->text_tree = pcb_r_create_tree(NULL, 0, 0);
+			if (dl->polygon_tree == NULL) dl->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+		}
 
 		subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1);
 	}
