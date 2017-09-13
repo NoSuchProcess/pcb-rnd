@@ -789,8 +789,10 @@ int pcb_subcop_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 		int src_has_real_layer = (sl->meta.bound.real != NULL);
 
 		if (dl != NULL)
-			if (sl->meta.bound.real == dl->meta.bound.real)
+			if (sl->meta.bound.real == dl)
 				continue;
+
+pcb_trace("REBIND! %d %p %p (%s)\n", n, sl->meta.bound.real, dl, dl == NULL ? "-":dl->meta.real.name);
 
 		subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1);
 	}
