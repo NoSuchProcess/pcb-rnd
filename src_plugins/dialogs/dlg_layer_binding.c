@@ -150,6 +150,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		else
 			val.int_value = ctx->no_layer;
 		pcb_gui->attr_dlg_set_value(hid_ctx, w->layer, &val);
+		pcb_gui->attr_dlg_widget_state(hid_ctx, w->layer, 0);
 	}
 }
 
