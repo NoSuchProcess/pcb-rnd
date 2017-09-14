@@ -57,6 +57,8 @@ static void help1(void)
 	printf(" --all=plugin               enable all working plugins for dynamic load\n");
 	printf(" --all=buildin              enable all working plugins for static link\n");
 	printf(" --all=disable              disable all plugins (compile core only)\n");
+	printf(" --force-all=plugin         enable even broken plugins for dynamic load\n");
+	printf(" --force-all=buildin        enable even broken plugins for static link\n");
 }
 
 static void help2(void)
@@ -79,7 +81,7 @@ do { \
 		repeat = strclone(msg); \
 } while(0)
 
-static void all_plugin_select(const char *state);
+static void all_plugin_select(const char *state, int force);
 
 /* Runs when a custom command line argument is found
  returns true if no further argument processing should be done */
@@ -109,9 +111,9 @@ int hook_custom_arg(const char *key, const char *value)
 		want_coord_bits = v;
 		return 1;
 	}
-	if (strcmp(key, "all") == 0) {
+	if ((strcmp(key, "all") == 0) || (strcmp(key, "force-all") == 0)) {
 		if ((strcmp(value, sbuildin) == 0) || (strcmp(value, splugin) == 0) || (strcmp(value, sdisable) == 0)) {
-			all_plugin_select(value);
+			all_plugin_select(value, (key[0] == 'f'));
 			return 1;
 		}
 		report("Error: unknown --all argument: %s\n", value);
@@ -186,7 +188,7 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 	}
 }
 
-static void all_plugin_select(const char *state)
+static void all_plugin_select(const char *state, int force)
 {
 	char buff[1024];
 
@@ -194,7 +196,7 @@ static void all_plugin_select(const char *state)
 #undef plugin_header
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_) \
-	if (all_) { \
+	if ((all_) || force) { \
 		sprintf(buff, "/local/pcb/%s/controls", name); \
 		put(buff, state); \
 	}
