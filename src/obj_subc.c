@@ -819,6 +819,9 @@ int pcb_subcop_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 
 		if (subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1) > 0)
 			chgly++;
+
+		if (dl != NULL)
+			pcb_layer_link_trees(sl, dl);
 	}
 
 	if (chgly > 0)
