@@ -45,6 +45,7 @@
 #include "conf_core.h"
 #include "obj_pinvia.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -397,7 +398,7 @@ int IPCD356_Netlist(void)
 	if (IPCD356_filename == NULL)
 		return 1;
 
-	fp = fopen(IPCD356_filename, "w+");
+	fp = pcb_fopen(IPCD356_filename, "w+");
 	if (fp == NULL) {
 		pcb_message(PCB_MSG_ERROR, "error opening %s\n", IPCD356_filename);
 		return 1;
