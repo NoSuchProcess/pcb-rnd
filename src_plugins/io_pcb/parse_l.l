@@ -62,6 +62,7 @@
 #include "compat_cc.h"
 #include "obj_common.h"
 #include "paths.h"
+#include "safe_fs.h"
 
 #define YY_NO_INPUT
 
@@ -247,7 +248,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
             else
               sprintf (tmps, "%s", Filename);
 
-	    yyin = fopen (tmps, "r");
+	    yyin = pcb_fopen(tmps, "r");
 	    if (!yyin)
 	      {
 		return(1);
