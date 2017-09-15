@@ -950,7 +950,7 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_b
 
 	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, pcb_false, elem_only);
 
-	return (pclose(fp) ? (-1) : result);
+	return (pcb_pclose(fp) ? (-1) : result);
 }
 
 
