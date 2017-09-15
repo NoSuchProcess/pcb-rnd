@@ -158,7 +158,6 @@ int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 {
 	/* copy default settings */
 	pcb_layer_colors_from_conf(pcb);
-
 	return 0;
 }
 

@@ -124,6 +124,8 @@ typedef struct {
 			CFT_STRING home;                 /* user's home dir, determined run-time */
 			
 			CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
+
+			CFT_STRING design;               /* directory path of the current design, or <invalid> if the current design doesn't have a file name yet */
 		} path;
 	} rc;
 
@@ -222,4 +224,5 @@ typedef struct {
 extern conf_core_t conf_core;
 void conf_core_init();
 void conf_core_postproc();
+void pcb_conf_ro(const char *path);
 #endif

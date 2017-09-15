@@ -131,6 +131,7 @@ void pcb_library_sort(pcb_lib_t *lib);
 void pcb_set_some_route_style();
 int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool elem_only);
 int pcb_write_pipe(const char *, pcb_bool, const char *fmt, pcb_bool elem_only);
+void pcb_set_design_dir(const char *fn);
 
 #ifndef HAS_ATEXIT
 void pcb_tmp_data_save(void);

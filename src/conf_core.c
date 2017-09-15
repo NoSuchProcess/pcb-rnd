@@ -32,7 +32,7 @@ static char *get_homedir(void)
 	return homedir;
 }
 
-static void conf_ro(const char *path)
+void pcb_conf_ro(const char *path)
 {
 	conf_native_t *n = conf_get_field(path);
 	if (n != NULL) {
@@ -49,11 +49,11 @@ void conf_core_postproc()
 	conf_clamp(CFT_COORD, conf_core.design.max_width, PCB_MIN_SIZE, PCB_MAX_COORD);
 	conf_clamp(CFT_COORD, conf_core.design.max_height, PCB_MIN_SIZE, PCB_MAX_COORD);
 	conf_force_set_bool(conf_core.rc.have_regex, 1);
-	conf_ro("rc/have_regex");
+	pcb_conf_ro("rc/have_regex");
 
-	conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   conf_ro("rc/path/prefix");
-	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       conf_ro("rc/path/lib");
-	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          conf_ro("rc/path/bin");
-	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   conf_ro("rc/path/share");
-	conf_force_set_str(conf_core.rc.path.home, get_homedir());  conf_ro("rc/path/home");
+	conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   pcb_conf_ro("rc/path/prefix");
+	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       pcb_conf_ro("rc/path/lib");
+	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          pcb_conf_ro("rc/path/bin");
+	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   pcb_conf_ro("rc/path/share");
+	conf_force_set_str(conf_core.rc.path.home, get_homedir());  pcb_conf_ro("rc/path/home");
 }

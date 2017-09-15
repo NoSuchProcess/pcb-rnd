@@ -192,6 +192,7 @@ static int pcb_act_New(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		pcb_board_remove(PCB);
 		PCB = pcb_board_new(1);
 		pcb_board_new_postproc(PCB, 1);
+		pcb_set_design_dir(NULL);
 
 		/* setup the new name and reset some values to default */
 		free(PCB->Name);

@@ -103,6 +103,30 @@ static void plug_io_err(int res, const char *what, const char *filename)
 	}
 }
 
+void pcb_set_design_dir(const char *fn)
+{
+	char *end, *rlp = NULL;
+
+	if (fn != NULL)
+		rlp = pcb_lrealpath(fn);
+
+	if (conf_core.rc.path.design != NULL)
+		free(*((CFT_STRING *)(&conf_core.rc.path.design)));
+
+	if (rlp == NULL) {
+		conf_force_set_str(conf_core.rc.path.design, pcb_strdup("<invalid>"));
+		pcb_conf_ro("rc/path/design");
+		return;
+	}
+
+	end = strrchr(rlp, PCB_DIR_SEPARATOR_C);
+	if (end != NULL)
+		*end = '\0';
+
+	conf_force_set_str(conf_core.rc.path.design, rlp);
+	pcb_conf_ro("rc/path/design");
+}
+
 int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings, int ignore_missing)
 {
 	int res = -1, len, n;
@@ -178,6 +202,9 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
+
+	if (res == 0)
+		pcb_set_design_dir(Filename);
 
 	if (load_settings)
 		pcb_event(PCB_EVENT_LOAD_POST, "si", Filename, res);
@@ -361,6 +388,9 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 
 	if ((res == 0) && (newfmt))
 		PCB->Data->loader = p;
+
+	if (res == 0)
+		pcb_set_design_dir(new_filename);
 
 	plug_io_err(res, "write pcb", NULL);
 	return res;
