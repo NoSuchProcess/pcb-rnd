@@ -46,50 +46,90 @@ static int pcb_safe_fs_check(const char *op, const char *arg1, const char *arg2)
 }
 
 /* Evaluate op(arg1,arg2) and print error and return err_ret if not permitted */
-#define CHECK(func, op, arg1, arg2, err_ret) \
+#define CHECK(func, op, arg1, arg2, err_inst) \
 do { \
 	if (pcb_safe_fs_check(op, arg1, arg2) != 0) { \
 		pcb_message(PCB_MSG_ERROR, "File system operation %s(): access denied on %s(%s,%s)\n", func, op, arg1, arg2); \
-		return err_ret; \
+		err_inst; \
 	} \
 } while(0)
 
 FILE *pcb_fopen(const char *path, const char *mode)
 {
-	CHECK("fopen", "access", path, mode, NULL);
-	CHECK("fopen", "fopen", path, mode, NULL);
-	return fopen(path, mode);
+	FILE *f;
+	char *path_exp = pcb_build_fn(path);
+
+	CHECK("fopen", "access", path_exp, mode, NULL);
+	CHECK("fopen", "fopen", path_exp, mode, NULL);
+
+	f = fopen(path_exp, mode);
+	free(path_exp);
+	return f;
 }
 
 FILE *pcb_popen(const char *cmd, const char *mode)
 {
-	CHECK("popen", "access", cmd, mode, NULL);
-	CHECK("popen", "exec", cmd, NULL, NULL);
-	CHECK("popen", "popen", cmd, mode, NULL);
-	return popen(cmd, mode);
+	FILE *f = NULL;
+	char *cmd_exp = pcb_build_fn(cmd);
+
+	CHECK("popen", "access", cmd_exp, mode, goto err);
+	CHECK("popen", "exec", cmd_exp, NULL, goto err);
+	CHECK("popen", "popen", cmd_exp, mode, goto err);
+
+	f = popen(cmd_exp, mode);
+
+	err:;
+	free(cmd_exp);
+	return f;
 }
 
 int pcb_system(const char *cmd)
 {
-	CHECK("access", "access", cmd, "r", -1);
-	CHECK("access", "exec", cmd, NULL, -1);
-	CHECK("access", "system", cmd, NULL, -1);
-	return system(cmd);
+	int res = -1;
+	char *cmd_exp = pcb_build_fn(cmd);
+
+	CHECK("access", "access", cmd_exp, "r", goto err);
+	CHECK("access", "exec", cmd_exp, NULL, goto err);
+	CHECK("access", "system", cmd_exp, NULL, goto err);
+
+	res = system(cmd_exp);
+
+	err:;
+	free(cmd_exp);
+	return res;
 }
 
 int pcb_remove(const char *path)
 {
-	CHECK("remove", "access", path, "w", -1);
-	CHECK("remove", "remove", path, NULL, -1);
-	return remove(path);
+	int res = -1;
+	char *path_exp = pcb_build_fn(path);
+
+	CHECK("remove", "access", path_exp, "w", goto err);
+	CHECK("remove", "remove", path_exp, NULL, goto err);
+
+	res = remove(path);
+
+	err:;
+	free(path_exp);
+	return res;
 }
 
 int pcb_rename(const char *old_path, const char *new_path)
 {
-	CHECK("rename", "access", old_path, "w", -1);
-	CHECK("rename", "access", new_path, "w", -1);
-	CHECK("rename", "rename", old_path, new_path, -1);
-	return pcb_rename(old_path, new_path);
+	int res = -1;
+	char *old_path_exp = pcb_build_fn(old_path);
+	char *new_path_exp = pcb_build_fn(new_path);
+
+	CHECK("rename", "access", old_path_exp, "w", goto err);
+	CHECK("rename", "access", new_path_exp, "w", goto err);
+	CHECK("rename", "rename", old_path_exp, new_path_exp, goto err);
+
+	res = pcb_rename(old_path_exp, new_path_exp);
+
+	err:;
+	free(old_path_exp);
+	free(new_path_exp);
+	return res;
 }
 
 FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path)
