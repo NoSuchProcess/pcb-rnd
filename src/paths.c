@@ -209,37 +209,93 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 
 	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
 		if (conf_core.rc.path.home == NULL) {
-			pcb_message(PCB_MSG_ERROR, "can't resolve home dir required for path %s\n", template);
-			gds_uninit(&s);
-			return NULL;
+			pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
+			goto error;
 		}
 		gds_append_str(&s, conf_core.rc.path.home);
 		template++;
 	}
 
 	for(curr = template;;) {
-		next = strchr(curr, '%');
+		next = strpbrk(curr, "%$");
 		if (next == NULL) {
 			gds_append_str(&s, curr);
 			return s.array;
 		}
 		if (next > curr)
 			gds_append_len(&s, curr, next-curr);
-		next++;
-		if (flags & PCB_SUBST_PERCENT) {
-			switch(*next) {
-				case '%':
-					gds_append(&s, '%');
-					curr = next+1;
-					break;
-				default:
-					if (cb(ctx, &s, &next) != 0) {
-						/* keep the directive intact */
-						gds_append(&s, '%');
+
+		switch(*next) {
+			case '%':
+				if (flags & PCB_SUBST_PERCENT) {
+					next++;
+					switch(*next) {
+						case '%':
+							gds_append(&s, '%');
+							curr = next+1;
+							break;
+						default:
+							if (cb(ctx, &s, &next) != 0) {
+								/* keep the directive intact */
+								gds_append(&s, '%');
+							}
+							curr = next;
 					}
-					curr = next;
-			}
+				}
+			break;
+			case '$':
+				if (flags & PCB_SUBST_PERCENT) {
+					const char *start, *end;
+					next++;
+					switch(*next) {
+						case '(':
+							next++;
+							start = next;
+							end = strchr(next, ')');
+							if (end != NULL) {
+								conf_native_t *cn;
+								char path[256];
+								size_t len = end - start;
+								if (len > sizeof(path) - 1) {
+									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
+									goto error;
+								}
+								memcpy(path, start, len);
+								path[len] = '\0';
+								cn = conf_get_field(path);
+								if (cn == NULL) {
+									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
+									goto error;
+								}
+								if (cn->type != CFN_STRING) {
+									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
+									goto error;
+								}
+								if (cn->val.string[0] != NULL)
+									gds_append_str(&s, cn->val.string[0]);
+								curr = end+1;
+							}
+							else {
+								pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): unterminated $(%s)\n", start);
+								goto error;
+							}
+							break;
+						case '$':
+							gds_append(&s, '$');
+							curr = next+1;
+							break;
+						default:
+							gds_append(&s, '$');
+							curr = next;
+							break;
+					}
+				}
+				break;
 		}
 	}
 	abort(); /* can't get here */
+
+	error:;
+	gds_uninit(&s);
+	return NULL;
 }
