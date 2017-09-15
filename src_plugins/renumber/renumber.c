@@ -37,6 +37,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "netlist.h"
+#include "safe_fs.h"
 
 #include "pcb-printf.h"
 
@@ -100,7 +101,7 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		default_file = pcb_strdup(name);
 	}
 
-	if ((out = fopen(name, "r"))) {
+	if ((out = pcb_fopen(name, "r"))) {
 		fclose(out);
 		if (!pcb_gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0)) {
 			if (free_name && name)
@@ -109,7 +110,7 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		}
 	}
 
-	if ((out = fopen(name, "w")) == NULL) {
+	if ((out = pcb_fopen(name, "w")) == NULL) {
 		pcb_message(PCB_MSG_ERROR, _("Could not open %s\n"), name);
 		if (free_name && name)
 			free((char*)name);
