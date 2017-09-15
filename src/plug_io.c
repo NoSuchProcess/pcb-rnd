@@ -44,6 +44,7 @@
 #include <string.h>
 
 #include "change.h"
+#include "conf.h"
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
@@ -925,13 +926,17 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_b
 	int result;
 	const char *p;
 	static gds_t command;
+	const char *save_cmd;
 
 	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
 		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false, elem_only);
 
+	if (!pcb_conf_cmd_is_safe(rc.save_command, &save_cmd, 1))
+		return -1;
+
 	/* setup commandline */
 	gds_truncate(&command,0);
-	for (p = conf_core.rc.save_command; *p; p++) {
+	for (p = save_cmd; *p; p++) {
 		/* copy character if not special or add string to command */
 		if (!(p[0] == '%' && p[1] == 'f'))
 			gds_append(&command, *p);

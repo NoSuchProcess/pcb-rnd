@@ -2513,6 +2513,7 @@ do { \
 int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int retval;
+	const char *fcmd;
 	yy_parse_tags = 0;
 	yyPCB = Ptr;
 	yyData = NULL;
@@ -2521,10 +2522,15 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yyFontkitValid = NULL;
 	yyElement = NULL;
 	yy_settings_dest = settings_dest;
+
+	if (!pcb_conf_cmd_is_safe(rc.file_command, &fcmd, 1))
+		return -1;
+
 	if (settings_dest != CFR_invalid)
 		conf_reset(settings_dest, Filename);
 	pcb_setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
-	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename);
+
+	retval = Parse(NULL, fcmd, conf_core.rc.file_path, Filename);
 	pcb_setlocale(LC_ALL, "");
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
@@ -2590,6 +2596,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 {
 	int r = 0, valid;
+	const char *fcmd;
 	yy_parse_tags = 1;
 	yyPCB = NULL;
 	yyFont = Ptr;
@@ -2597,8 +2604,11 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yyElement = NULL;
 	yyFontReset = pcb_false;
 
+	if (!pcb_conf_cmd_is_safe(rc.font_command, &fcmd, 1))
+		return -1;
+
 	yy_settings_dest = CFR_invalid;
-	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename);
+	r = Parse(NULL, fcmd, NULL, Filename);
 	if (r == 0) {
 #ifdef DEBUG
 		pcb_message(PCB_MSG_DEBUG, "Found %s in %s\n", Filename, conf_core.rc.font_command);
