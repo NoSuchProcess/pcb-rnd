@@ -34,6 +34,7 @@
 #include "board.h"
 #include "data.h"
 #include "polygon.h"
+#include "safe_fs.h"
 
 #include "action_helper.h"
 #include "hid_actions.h"
@@ -189,7 +190,7 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	/* load and parse the file into a dom tree */
-	f = fopen(fname, "r");
+	f = pcb_fopen(fname, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: can't open %s for read\n", fname);
 		return 1;
