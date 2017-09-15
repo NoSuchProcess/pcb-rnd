@@ -273,7 +273,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.dxf";
 
-	dxf_ctx.f = fopen(filename, "wb");
+	dxf_ctx.f = pcb_fopen(filename, "wb");
 	if (!dxf_ctx.f) {
 		perror(filename);
 		return;
