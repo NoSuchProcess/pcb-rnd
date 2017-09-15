@@ -114,6 +114,12 @@ FILE *pcb_popen(const char *cmd, const char *mode)
 	return f;
 }
 
+int pcb_pclose(FILE *f)
+{
+	return pclose(f);
+}
+
+
 int pcb_system(const char *cmd)
 {
 	int res = -1;

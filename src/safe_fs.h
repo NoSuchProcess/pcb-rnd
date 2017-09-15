@@ -31,6 +31,7 @@
 
 FILE *pcb_fopen(const char *path, const char *mode);
 FILE *pcb_popen(const char *cmd, const char *mode);
+int pcb_pclose(FILE *f);
 int pcb_system(const char *cmd);
 int pcb_remove(const char *path);
 int pcb_rename(const char *old_path, const char *new_path);
