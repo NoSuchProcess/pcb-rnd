@@ -532,8 +532,8 @@ int pplg_init_fp_fs(void)
 {
 	fp_fs.plugin_data = NULL;
 	fp_fs.load_dir = fp_fs_load_dir;
-	fp_fs.fopen = fp_fs_fopen;
-	fp_fs.fclose = fp_fs_fclose;
+	fp_fs.fp_fopen = fp_fs_fopen;
+	fp_fs.fp_fclose = fp_fs_fclose;
 	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 	return 0;
 }

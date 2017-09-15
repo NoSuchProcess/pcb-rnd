@@ -166,8 +166,8 @@ void fp_gedasymbols_init(void)
 {
 	fp_gedasymbols.plugin_data = NULL;
 	fp_gedasymbols.load_dir = fp_gedasymbols_load_dir;
-	fp_gedasymbols.fopen = fp_gedasymbols_fopen;
-	fp_gedasymbols.fclose = fp_gedasymbols_fclose;
+	fp_gedasymbols.fp_fopen = fp_gedasymbols_fopen;
+	fp_gedasymbols.fp_fclose = fp_gedasymbols_fclose;
 
 	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_gedasymbols);
 }

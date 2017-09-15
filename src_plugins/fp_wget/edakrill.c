@@ -258,8 +258,8 @@ void fp_edakrill_init(void)
 {
 	fp_edakrill.plugin_data = NULL;
 	fp_edakrill.load_dir = fp_edakrill_load_dir;
-	fp_edakrill.fopen = fp_edakrill_fopen;
-	fp_edakrill.fclose = fp_edakrill_fclose;
+	fp_edakrill.fp_fopen = fp_edakrill_fopen;
+	fp_edakrill.fp_fclose = fp_edakrill_fclose;
 
 	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_edakrill);
 }

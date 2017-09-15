@@ -52,10 +52,10 @@ struct pcb_plug_fp_s {
    The user has to supply a state integer that will be used by pcb_pcb_fp_fclose().
    Must fill in fctx->backend, may use any other field of fctx as well.
  */
-	FILE *(*fopen)(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
+	FILE *(*fp_fopen)(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
 
 /* Close the footprint file opened by pcb_pcb_fp_fopen(). */
-	void (*fclose)(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx);
+	void (*fp_fclose)(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx);
 };
 
 extern pcb_plug_fp_t *pcb_plug_fp_chain;

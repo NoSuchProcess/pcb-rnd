@@ -106,14 +106,14 @@ const char *pcb_fp_tagname(const void *tagid)
 FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	FILE *res = NULL;
-	PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fopen, res, != NULL, (self, path, name, fctx));
+	PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, path, name, fctx));
 	return res;
 }
 
 void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
-	if ((fctx->backend != NULL) && (fctx->backend->fclose != NULL))
-		fctx->backend->fclose(fctx->backend, f, fctx);
+	if ((fctx->backend != NULL) && (fctx->backend->fp_fclose != NULL))
+		fctx->backend->fp_fclose(fctx->backend, f, fctx);
 }
 
 pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[])

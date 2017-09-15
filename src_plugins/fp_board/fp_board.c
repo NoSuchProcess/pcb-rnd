@@ -165,8 +165,8 @@ int pplg_init_fp_board(void)
 {
 	fp_board.plugin_data = NULL;
 	fp_board.load_dir = fp_board_load_dir;
-	fp_board.fopen = fp_board_fopen;
-	fp_board.fclose = fp_board_fclose;
+	fp_board.fp_fopen = fp_board_fopen;
+	fp_board.fp_fclose = fp_board_fclose;
 	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_board);
 	return 0;
 }
