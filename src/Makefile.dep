@@ -6278,8 +6278,8 @@ plug_io.o: plug_io.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h event.h compat_misc.h \
- route_style.h compat_fs.h compat_nls.h layer_vis.h safe_fs.h \
- compat_inc.h
+ route_style.h compat_fs.h compat_nls.h compat_lrealpath.h layer_vis.h \
+ safe_fs.h compat_inc.h
 plugins.o: plugins.c plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
