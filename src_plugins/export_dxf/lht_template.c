@@ -22,6 +22,11 @@
 
 /* Generate output using a lihata template */
 
+#ifndef TESTER
+#include "config.h"
+#endif
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -105,6 +110,7 @@ int main()
 	char *errmsg;
 	const char *fn = "dxf_templ.lht";
 
+	/* do not do safe_fs here - it's just a test code that never ends up in pcb_rnd */
 	doc = lht_dom_load(fn, &errmsg);
 	if (doc == NULL) {
 		fprintf(stderr, "Error loading %s: %s\n", fn, errmsg);
