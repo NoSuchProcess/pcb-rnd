@@ -39,6 +39,7 @@
 #include "plugins.h"
 #include "plug_import.h"
 #include "error.h"
+#include "safe_fs.h"
 
 
 pcb_plug_import_t *pcb_plug_import_chain = NULL;
@@ -92,7 +93,7 @@ int pcb_import(char *filename, unsigned int aspect)
 		pcb_message(PCB_MSG_ERROR, "Error: need a file name for pcb_import_netlist()\n");
 		return (1); /* nothing to do */
 	}
-	fp = fopen(filename, "r");
+	fp = pcb_fopen(filename, "r");
 
 	plug = find_importer(aspect, fp, filename);
 	if (plug == NULL) {
