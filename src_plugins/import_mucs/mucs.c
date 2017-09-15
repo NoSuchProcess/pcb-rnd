@@ -39,6 +39,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "action_helper.h"
 #include "hid_actions.h"
@@ -80,7 +81,7 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			default_file = pcb_strdup(fname);
 	}
 
-	fi = fopen(fname, "r");
+	fi = pcb_fopen(fname, "r");
 	if (!fi) {
 		pcb_message(PCB_MSG_ERROR, "Can't load mucs unixplot file %s for read\n", fname);
 		return 1;
