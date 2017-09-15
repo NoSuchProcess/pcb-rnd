@@ -45,6 +45,7 @@
 #include "macro.h"
 #include "obj_all.h"
 #include "rotate.h"
+#include "safe_fs.h"
 
 typedef struct {
 	pcb_board_t *PCB;
@@ -2285,7 +2286,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	gsx_parse_res_t res;
 	FILE *FP;
 
-		FP = fopen(Filename, "r");
+	FP = pcb_fopen(Filename, "r");
 	if (FP == NULL)
 		return -1;
 

@@ -38,6 +38,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "action_helper.h"
 #include "hid_actions.h"
@@ -182,7 +183,7 @@ static int eeschema_load(const char *fname_net)
 	int c, ret = 0;
 	gsx_parse_res_t res;
 
-	fn = fopen(fname_net, "r");
+	fn = pcb_fopen(fname_net, "r");
 	if (fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
