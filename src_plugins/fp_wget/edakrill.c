@@ -155,7 +155,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	if (fp_wget_open(url_idx_list, gedasym_cache, &f, &fctx, mode) != 0) {
 		printf("failed to download the new list\n");
-		remove(last_sum_fn); /* make sure it is downloaded next time */
+		pcb_remove(last_sum_fn); /* make sure it is downloaded next time */
 		goto err;
 	}
 
