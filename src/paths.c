@@ -37,33 +37,11 @@ const char *pcb_board_get_filename(void);
 const char *pcb_board_get_name(void);
 int pcb_getpid(void);
 
-static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room);
-
-void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room)
-{
-	for (; numpaths > 0; numpaths--, in++, out++)
-		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, NULL, PCB_SUBST_ALL, extra_room);
-}
-
-void pcb_path_resolve(const char *in, char **out, unsigned int extra_room)
-{
-	pcb_paths_resolve(&in, out, 1, extra_room);
-}
-
-char *pcb_path_resolve_inplace(char *in, unsigned int extra_room)
-{
-	char *out;
-	pcb_path_resolve(in, &out, extra_room);
-	free(in);
-	return out;
-}
 
 int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 {
 	char buff[20];
 	const char *name;
-
-
 
 	switch(**input) {
 		case 'P':
@@ -253,9 +231,26 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 	return NULL;
 }
 
-
 char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags)
 {
 	return pcb_strdup_subst_(template, cb, ctx, flags, 0);
 }
 
+void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room)
+{
+	for (; numpaths > 0; numpaths--, in++, out++)
+		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, NULL, PCB_SUBST_ALL, extra_room);
+}
+
+void pcb_path_resolve(const char *in, char **out, unsigned int extra_room)
+{
+	pcb_paths_resolve(&in, out, 1, extra_room);
+}
+
+char *pcb_path_resolve_inplace(char *in, unsigned int extra_room)
+{
+	char *out;
+	pcb_path_resolve(in, &out, extra_room);
+	free(in);
+	return out;
+}
