@@ -49,6 +49,7 @@
 #include "conf_core.h"
 #include "compat_nls.h"
 #include "macro.h"
+#include "safe_fs.h"
 
 /* opendir, readdir */
 #include "compat_inc.h"
@@ -372,7 +373,7 @@ static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 	if (tags != NULL)
 		*tags = NULL;
 
-	f = fopen(fn, "r");
+	f = pcb_fopen(fn, "r");
 	if (f == NULL)
 		return PCB_FP_INVALID;
 
@@ -504,7 +505,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			free(cmd);
 		}
 		else
-			f = fopen(fullname, "r");
+			f = pcb_fopen(fullname, "r");
 		free(fullname);
 	}
 
