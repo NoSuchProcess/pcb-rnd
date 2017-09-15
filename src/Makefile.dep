@@ -5341,7 +5341,11 @@ hid_cfg.o: hid_cfg.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../config.h hid_cfg.h \
  error.h paths.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h compat_misc.h
+ ../src_3rd/genvector/genvector_undef.h safe_fs.h conf.h \
+ global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h compat_misc.h
 hid_cfg_action.o: hid_cfg_action.c ../config.h hid_cfg_action.h hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \

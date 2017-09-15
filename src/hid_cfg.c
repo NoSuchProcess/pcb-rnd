@@ -31,6 +31,7 @@
 #include "hid_cfg.h"
 #include "error.h"
 #include "paths.h"
+#include "safe_fs.h"
 #include "compat_misc.h"
 
 char hid_cfg_error_shared[1024];
@@ -198,17 +199,13 @@ lht_doc_t *pcb_hid_cfg_load_lht(const char *filename)
 	FILE *f;
 	lht_doc_t *doc;
 	int error = 0;
-	char *efn;
 
-	pcb_path_resolve(filename, &efn, 0);
-
-	f = fopen(efn, "r");
-	if (f == NULL) {
-		free(efn);
+	f = pcb_fopen(filename, "r");
+	if (f == NULL)
 		return NULL;
-	}
+
 	doc = lht_dom_init();
-	lht_dom_loc_newfile(doc, efn);
+	lht_dom_loc_newfile(doc, filename);
 
 	while(!(feof(f))) {
 		lht_err_t err;
@@ -216,7 +213,7 @@ lht_doc_t *pcb_hid_cfg_load_lht(const char *filename)
 		err = lht_dom_parser_char(doc, c);
 		if (err != LHTE_SUCCESS) {
 			if (err != LHTE_STOP) {
-				error = hid_cfg_load_error(doc, efn, err);
+				error = hid_cfg_load_error(doc, filename, err);
 				break;
 			}
 			break; /* error or stop, do not read anymore (would get LHTE_STOP without any processing all the time) */
@@ -229,7 +226,6 @@ lht_doc_t *pcb_hid_cfg_load_lht(const char *filename)
 	}
 	fclose(f);
 
-	free(efn);
 	return doc;
 }
 
