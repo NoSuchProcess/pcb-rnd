@@ -1,8 +1,3 @@
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
-
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -26,7 +21,7 @@ static int mkdirp(const char *dir)
 /* TODO */
 	char buff[8192];
 	sprintf(buff, "mkdir -p '%s'", dir);
-	return system(buff);
+	return pcb_system(buff);
 }
 
 int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode)
@@ -48,7 +43,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		if (f == NULL)
 			goto error;
 		if (!fp_wget_offline)
-			*f = popen(cmd, "r");
+			*f = pcb_popen(cmd, "r");
 		if (*f == NULL)
 			goto error;
 		*fctx = FCTX_POPEN;
@@ -74,7 +69,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 
 		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
 			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
-			system(cmd);
+			pcb_system(cmd);
 		}
 		if (f != NULL) {
 			sprintf(cmd, "%s/%s", cache_path, cdir);
@@ -103,7 +98,7 @@ int fp_wget_close(FILE **f, int *fctx)
 		return -1;
 
 	switch(*fctx) {
-		case FCTX_POPEN:  pclose(*f); *f = NULL; return 0;
+		case FCTX_POPEN: pcb_pclose(*f); *f = NULL; return 0;
 		case FCTX_FOPEN: fclose(*f); *f = NULL; return 0;
 	}
 
