@@ -34,10 +34,6 @@
 #warning TODO: do not hardwire this, make a function to decide
 #define DEFAULT_FMT "pcb"
 
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -946,7 +942,7 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_b
 		}
 	}
 	printf("write to pipe \"%s\"\n", command.array);
-	if ((fp = popen(command.array, "w")) == NULL) {
+	if ((fp = pcb_popen(command.array, "w")) == NULL) {
 		pcb_popen_error_message(command.array);
 		return (-1);
 	}
