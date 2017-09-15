@@ -22,7 +22,7 @@
  Behavior different from the original:
   - use getenv() instead of g_getenv(): on windows this won't do recursive variable expansion
   - use rnd-specific .scm
-  - use popen() instead of glib's spawn (stderr is always printed to stderr)
+  - use pcb_popen() instead of glib's spawn (stderr is always printed to stderr)
  */
 #include "config.h"
 #include "method.h"

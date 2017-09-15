@@ -18,10 +18,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,6 +26,7 @@
 #include "gsch2pcb.h"
 #include "../src_3rd/genvector/vts0.h"
 #include "../src/compat_misc.h"
+#include "../src/safe_fs.h"
 #include "gsch2pcb_rnd_conf.h"
 
 
@@ -115,13 +112,13 @@ int build_and_run_command(const char * format_, ...)
 			printf("%s", SEP_STRING);
 		}
 
-		f = popen(cmd, "r");
+		f = pcb_popen(cmd, "r");
 		while(fgets(line, sizeof(line), f) != NULL) {
 			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				fputs(line, stdout);
 		}
 
-		if (pclose(f) == 0)
+		if (pcb_pclose(f) == 0)
 			result = TRUE;
 		else
 			fprintf(stderr, "Failed to execute external program\n");
