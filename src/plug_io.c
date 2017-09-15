@@ -109,7 +109,7 @@ void pcb_set_design_dir(const char *fn)
 		rlp = pcb_lrealpath(fn);
 
 	if (conf_core.rc.path.design != NULL)
-		free(*((CFT_STRING *)(&conf_core.rc.path.design)));
+		free((char *)(*((CFT_STRING *)(&conf_core.rc.path.design))));
 
 	if (rlp == NULL) {
 		conf_force_set_str(conf_core.rc.path.design, pcb_strdup("<invalid>"));
