@@ -48,6 +48,7 @@
 #include "obj_subc.h"
 #include "pcb_minuid.h"
 #include "io_lihata.h"
+#include "safe_fs.h"
 
 #warning TODO: put these in a gloal load-context-struct
 vtptr_t post_ids, post_thermal;
@@ -1361,8 +1362,13 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int res;
-	char *errmsg;
-	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
+	char *errmsg, *realfn;
+	lht_doc_t *doc = NULL;
+
+	realfn = pcb_fopen_check(Filename, "r");
+	if (realfn != NULL)
+		doc = lht_dom_load(realfn, &errmsg);
+	free(realfn);
 
 	if (doc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
@@ -1428,8 +1434,13 @@ int io_lihata_test_parse_pcb(pcb_plug_io_t *plug_ctx, pcb_board_t *Ptr, const ch
 int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 {
 	int res;
-	char *errmsg;
-	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
+	char *errmsg, *realfn;
+	lht_doc_t *doc = NULL;
+
+	realfn = pcb_fopen_check(Filename, "r");
+	if (realfn != NULL)
+		doc = lht_dom_load(realfn, &errmsg);
+	free(realfn);
 
 	if (doc == NULL) {
 		if (!pcb_io_err_inhibit)
@@ -1451,8 +1462,13 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
 	int res;
-	char *errmsg;
-	lht_doc_t *doc = lht_dom_load(name, &errmsg);
+	char *errmsg, *realfn;
+	lht_doc_t *doc = NULL;
+
+	realfn = pcb_fopen_check(name, "r");
+	if (realfn != NULL)
+		doc = lht_dom_load(name, &errmsg);
+	free(realfn);
 
 	if (doc == NULL) {
 		if (!pcb_io_err_inhibit)
