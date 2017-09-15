@@ -12,6 +12,7 @@
 #include "data.h"
 #include "layer.h"
 #include "pcb-printf.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -320,7 +321,7 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb-out.eps";
 
-	f = fopen(filename, "w");
+	f = pcb_fopen(filename, "w");
 	if (!f) {
 		perror(filename);
 		return;

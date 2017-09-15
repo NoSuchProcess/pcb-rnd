@@ -20,6 +20,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_helper.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -575,7 +576,7 @@ static FILE *psopen(const char *base, const char *which)
 	char *buf, *suff, *buf2;
 
 	if (!global.multi_file)
-		return fopen(base, "w");
+		return pcb_fopen(base, "w");
 
 	buf = (char *) malloc(strlen(base) + strlen(which) + 5);
 
@@ -589,7 +590,7 @@ static FILE *psopen(const char *base, const char *which)
 		sprintf(buf, "%s.%s.ps", base, which);
 	}
 	printf("PS: open %s\n", buf);
-	ps_open_file = fopen(buf, "w");
+	ps_open_file = pcb_fopen(buf, "w");
 	free(buf);
 	return ps_open_file;
 }
@@ -1531,7 +1532,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 		used_popen = 1;
 	}
 	else
-		ps_cal_file = fopen(vals[0].str_value, "w");
+		ps_cal_file = pcb_fopen(vals[0].str_value, "w");
 
 	for (c = 0; calib_lines[c]; c++)
 		fputs(calib_lines[c], ps_cal_file);
