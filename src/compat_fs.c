@@ -46,6 +46,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "globalconst.h"
+#include "safe_fs.h"
 
 #include <genvector/gds_char.h>
 
@@ -90,7 +91,7 @@ int pcb_mkdir(const char *path, int mode)
 int pcb_file_readable(const char *path)
 {
 	FILE *f;
-	f = fopen(path, "r");
+	f = pcb_fopen(path, "r");
 	if (f != NULL) {
 		fclose(f);
 		return 1;

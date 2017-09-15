@@ -4998,9 +4998,15 @@ change_act.o: change_act.c ../config.h conf_core.h conf.h \
  compat_nls.h obj_rat_draw.h
 clip.o: clip.c ../config.h clip.h global_typedefs.h pcb_bool.h unit.h
 compat_fs.o: compat_fs.c ../config.h compat_inc.h compat_fs.h \
- compat_misc.h compat_nls.h globalconst.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h error.h
+ compat_misc.h compat_nls.h globalconst.h safe_fs.h conf.h \
+ global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h error.h
 compat_lrealpath.o: compat_lrealpath.c compat_inc.h ../config.h \
  compat_lrealpath.h compat_misc.h
 compat_misc.o: compat_misc.c ../config.h compat_misc.h compat_inc.h
