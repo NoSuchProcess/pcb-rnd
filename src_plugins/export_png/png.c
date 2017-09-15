@@ -41,6 +41,7 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "plugins.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -895,7 +896,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
-	f = fopen(filename, "wb");
+	f = pcb_fopen(filename, "wb");
 	if (!f) {
 		perror(filename);
 		return;
