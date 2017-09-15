@@ -17,6 +17,7 @@
 #include "compat_misc.h"
 #include "obj_pinvia.h"
 #include "netlist.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -534,7 +535,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	int found_any_not_at_centroid, found_any, rpindex;
 	subst_ctx_t ctx;
 
-	fp = fopen(xy_filename, "w");
+	fp = pcb_fopen(xy_filename, "w");
 	if (!fp) {
 		pcb_gui->log("Cannot open file %s for writing\n", xy_filename);
 		return 1;
