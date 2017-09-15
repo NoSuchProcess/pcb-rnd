@@ -21,10 +21,6 @@
  *
  */
 
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include "config.h"
 #include "board.h"
 #include "plugins.h"
@@ -81,7 +77,7 @@ static int ReadNetlist(const char *filename)
 		command = pcb_build_argfn(conf_core.rc.rat_command, &p);
 
 		/* open pipe to stdout of command */
-		if (*command == '\0' || (fp = popen(command, "r")) == NULL) {
+		if (*command == '\0' || (fp = pcb_popen(command, "r")) == NULL) {
 			pcb_popen_error_message(command);
 			free(command);
 			return (1);
@@ -147,11 +143,11 @@ static int ReadNetlist(const char *filename)
 	}
 	if (!lines) {
 		pcb_message(PCB_MSG_ERROR, _("Empty netlist file!\n"));
-		pclose(fp);
+		pcb_pclose(fp);
 		return (1);
 	}
 	if (used_popen)
-		pclose(fp);
+		pcb_pclose(fp);
 	else
 		fclose(fp);
 	pcb_sort_netlist();
