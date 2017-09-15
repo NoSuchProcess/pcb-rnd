@@ -64,6 +64,7 @@
 #include "compat_fs.h"
 #include "compat_nls.h"
 #include "layer_vis.h"
+#include "safe_fs.h"
 
 /* for opendir */
 #include "compat_inc.h"
@@ -85,7 +86,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 			else {
 				FILE *f;
 				reason = "none of io plugins could successfully read file";
-				f = fopen(filename, "r");
+				f = pcb_fopen(filename, "r");
 				if (f != NULL) {
 					fclose(f);
 					comment = "(unknown/invalid file format?)";
@@ -135,7 +136,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	FILE *ft;
 	int accept_total = 0;
 
-	ft = fopen(Filename, "r");
+	ft = pcb_fopen(Filename, "r");
 	if (ft == NULL) {
 		if (!ignore_missing)
 			pcb_message(PCB_MSG_ERROR, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
@@ -621,7 +622,7 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 					*WasCancelButton = pcb_true;
 			}
 		}
-		if ((fp = fopen(Filename, "w")) == NULL)
+		if ((fp = pcb_fopen(Filename, "w")) == NULL)
 			pcb_open_error_message(Filename);
 	}
 	return (fp);
@@ -900,7 +901,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 		}
 	}
 
-	if ((fp = fopen(Filename, "w")) == NULL) {
+	if ((fp = pcb_fopen(Filename, "w")) == NULL) {
 		pcb_open_error_message(Filename);
 		return (-1);
 	}
