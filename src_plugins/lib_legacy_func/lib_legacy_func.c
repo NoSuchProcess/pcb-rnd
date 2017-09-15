@@ -25,10 +25,6 @@
  *
  */
 
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include <genvector/gds_char.h>
 #include <stdio.h>
 #include "config.h"
@@ -38,6 +34,7 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
+#include "safe_fs.h"
 
 char *ExpandFilename(char *Dirname, char *Filename)
 {
@@ -58,7 +55,7 @@ char *ExpandFilename(char *Dirname, char *Filename)
 	}
 
 	/* execute it with shell */
-	if ((pipe = popen(command, "r")) != NULL) {
+	if ((pipe = pcb_popen(command, "r")) != NULL) {
 		/* discard all but the first returned line */
 		for (;;) {
 			if ((c = fgetc(pipe)) == EOF || c == '\n' || c == '\r')
@@ -68,7 +65,7 @@ char *ExpandFilename(char *Dirname, char *Filename)
 		}
 
 		free(command);
-		if (pclose(pipe)) {
+		if (pcb_pclose(pipe)) {
 			gds_uninit(&answer);
 			return NULL;
 		}
