@@ -32,6 +32,7 @@
 #include <libxml/parser.h>
 
 #include "error.h"
+#include "safe_fs.h"
 
 #include "trparse.h"
 #include "trparse_xml.h"
@@ -40,12 +41,22 @@ static int eagle_xml_load(trparse_t *pst, const char *fn)
 {
 	xmlDoc *doc;
 	xmlNode *root;
+	FILE *f;
+	char *efn;
 
-	doc = xmlReadFile(fn, NULL, 0);
-	if (doc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "xml parsing error\n");
+	f = pcb_fopen_fn(fn, "r", &efn);
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "can't open '%s'\n", fn);
 		return -1;
 	}
+
+	doc = xmlReadFile(efn, NULL, 0);
+	if (doc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "xml parsing error on file %s (%s)\n", fn, efn);
+		free(efn);
+		return -1;
+	}
+	free(efn);
 
 	root = xmlDocGetRootElement(doc);
 	if (xmlStrcmp(root->name, (xmlChar *)"eagle") != 0) {
