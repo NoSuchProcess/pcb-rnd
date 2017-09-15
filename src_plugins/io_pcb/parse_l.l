@@ -30,10 +30,6 @@
 /* lexical definitions to parse ASCII input of PCB and Element description
  */
 
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -264,7 +260,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	    p.params['f'-'a'] = Filename;
 	    command = pcb_build_argfn(Executable, &p);
 	    /* open pipe to stdout of command */
-	    if (*command == '\0' || (yyin = popen(command, "r")) == NULL)
+	    if (*command == '\0' || (yyin = pcb_popen(command, "r")) == NULL)
 	      {
 		pcb_popen_error_message(command);
 		free(command);
@@ -313,7 +309,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 		return returncode;
 
 	if (used_popen)
-	  return(pclose(yyin) ? 1 : returncode);
+	  return(pcb_pclose(yyin) ? 1 : returncode);
 	return(fclose(yyin) ? 1 : returncode);
 }
 
