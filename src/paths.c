@@ -242,7 +242,11 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 							curr = next;
 					}
 				}
-			break;
+				else {
+					gds_append(&s, '%');
+					curr = next+1;
+				}
+				break;
 			case '$':
 				if (flags & PCB_SUBST_PERCENT) {
 					const char *start, *end;
@@ -289,6 +293,10 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 							curr = next;
 							break;
 					}
+				}
+				else {
+					gds_append(&s, '$');
+					curr = next+1;
 				}
 				break;
 		}
