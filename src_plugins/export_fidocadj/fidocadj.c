@@ -44,6 +44,7 @@
 #include "pcb-printf.h"
 #include "compat_misc.h"
 #include "plug_io.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -96,7 +97,7 @@ static int load_lib(htsi_t *ht, const char *fn)
 {
 	FILE *f;
 	char line[1024];
-	f = fopen(fn, "r");
+	f = pcb_fopen(fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open fidocadj PCB library file '%s' for read\n", fn);
 		return -1;
@@ -186,7 +187,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb-rnd-default.fcd";
 
-	f = fopen(filename, "w");
+	f = pcb_fopen(filename, "w");
 	if (!f) {
 		perror(filename);
 		return;
