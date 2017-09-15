@@ -51,6 +51,7 @@
 #include "hid_helper.h"
 #include "layer.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include <gd.h>
@@ -309,7 +310,7 @@ static void gcode_start_png(const char *basename, const char *suffix)
 
 	/* Nelma only works with true color images */
 	gcode_im = gdImageCreate(w, h);
-	gcode_f = fopen(buf, "wb");
+	gcode_f = pcb_fopen(buf, "wb");
 
 	gcode_alloc_colors();
 
@@ -442,7 +443,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 					BM_PUT(bm, r, c, p);
 				}
 			}
-			gcode_f2 = fopen(filename, "wb");
+			gcode_f2 = pcb_fopen(filename, "wb");
 			if (!gcode_f2) {
 				perror(filename);
 				return;
@@ -487,7 +488,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 				d = 0;
 				drill = sort_drill(drill, n_drill);
 				sprintf(filename, "%s.drill.cnc", gcode_basename);
-				gcode_f2 = fopen(filename, "wb");
+				gcode_f2 = pcb_fopen(filename, "wb");
 				if (!gcode_f2) {
 					perror(filename);
 					return;
