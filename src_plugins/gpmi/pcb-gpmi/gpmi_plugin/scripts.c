@@ -15,6 +15,7 @@
 #include "src/compat_fs.h"
 #include "src/compat_misc.h"
 #include "src/pcb-printf.h"
+#include "src/safe_fs.h"
 
 #define CONFNAME "pcb-rnd-gpmi.conf"
 
@@ -238,7 +239,7 @@ void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "pcb-gpmi: opening config: %s\n", cfn);
 #endif
-	f = fopen(cfn, "r");
+	f = pcb_fopen(cfn, "r");
 	if (f == NULL) {
 		free(cfn);
 #ifdef CONFIG_DEBUG
@@ -313,13 +314,13 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 		return -1;
 	}
 
-	fin = fopen(i->conffile_name, "r");
+	fin = pcb_fopen(i->conffile_name, "r");
 	if (fin == NULL) {
 		pcb_message(PCB_MSG_ERROR, "gpmi_hid_script_remove(): can't remove script from configs, can't open %s for read.\n", i->conffile_name);
 		return -1;
 	}
 	tmpfn = pcb_concat(i->conffile_name, ".tmp", NULL);
-	fout = fopen(tmpfn, "w");
+	fout = pcb_fopen(tmpfn, "w");
 	if (fout == NULL) {
 		pcb_message(PCB_MSG_ERROR, "gpmi_hid_script_remove(): can't remove script from configs, can't create %s.\n", tmpfn);
 		fclose(fin);
@@ -372,7 +373,7 @@ int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 	else
 		fn = pcb_concat("plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
 
-	f = fopen(fn, "a");
+	f = pcb_fopen(fn, "a");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "gpmi_hid_script_addcfg: can't open %s for write\n", fn);
 		return -1;
