@@ -41,68 +41,8 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 
 void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
-	const char *subst_to;
-	int subst_offs;
-	for (; numpaths > 0; numpaths--, in++, out++) {
-		if (*in != NULL) {
-			if (**in == '~') {
-				int l1, l2;
-				if (conf_core.rc.path.home == NULL) {
-					pcb_message(PCB_MSG_ERROR, "can't resolve home dir required for path %s\n", *in);
-					exit(1);
-				}
-				subst_to = conf_core.rc.path.home;
-				subst_offs = 1;
-				replace:;
-				/* avoid pcb_concat() here to reduce dependencies for external tools */
-				l1 = strlen(subst_to);
-				l2 = strlen((*in) + 1);
-				*out = malloc(l1 + l2 + 4 + extra_room);
-				sprintf(*out, "%s%s", subst_to, (*in) + subst_offs);
-			}
-			else if (**in == '$') {
-				if ((*in)[1] == '(') {
-					char *end = strchr((*in)+2, ')');
-					if (end != NULL) {
-						char hash_path[128];
-						int len = end - (*in);
-						if (len < sizeof(hash_path)-1) {
-							conf_native_t *cn;
-							const char *si;
-							char *so;
-							int n;
-
-							(*in) += 2;
-							len -= 2;
-							for(si = *in, so = hash_path, n=0; n < len; n++,si++,so++) {
-								if (*si == '.')
-									*so = '/';
-								else
-									*so = *si;
-							}
-							*so = 0;
-							cn = conf_get_field(hash_path);
-							if ((cn != NULL) && (cn->type == CFN_STRING)) {
-								subst_to = cn->val.string[0];
-								subst_offs = len+1;
-								goto replace;
-							}
-						}
-					}
-					pcb_message(PCB_MSG_WARNING, "can't resolve conf-hash dir required for path %s\n", *in);
-					*out = NULL;
-				}
-				else
-					*out = NULL;
-			}
-			else {
-				*out = malloc(strlen(*in) + 1 + extra_room);
-				strcpy(*out, *in);
-			}
-		}
-		else
-			*out = NULL;
-	}
+	for (; numpaths > 0; numpaths--, in++, out++)
+		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, NULL, PCB_SUBST_ALL, extra_room);
 }
 
 void pcb_path_resolve(const char *in, char **out, unsigned int extra_room)
@@ -205,6 +145,9 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 {
 	gds_t s;
 	const char *curr, *next;
+
+	if (template == NULL)
+		return NULL;
 
 	gds_init(&s);
 
