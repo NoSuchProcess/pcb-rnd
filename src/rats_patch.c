@@ -33,6 +33,7 @@
 #include "copy.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "safe_fs.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
@@ -477,7 +478,7 @@ static int pcb_act_SavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 	else
 		fn = argv[0];
-	f = fopen(fn, "w");
+	f = pcb_fopen(fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open netlist patch file %s for writing\n", fn);
 		return 1;
