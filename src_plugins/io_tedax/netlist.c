@@ -33,6 +33,7 @@
 #include "pcb-printf.h"
 #include "compat_misc.h"
 #include "hid_actions.h"
+#include "safe_fs.h"
 
 #include "parse.h"
 
@@ -120,7 +121,7 @@ int tedax_net_load(const char *fname_net)
 	FILE *fn;
 	int ret = 0;
 
-	fn = fopen(fname_net, "r");
+	fn = pcb_fopen(fname_net, "r");
 	if (fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;

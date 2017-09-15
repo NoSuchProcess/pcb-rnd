@@ -38,11 +38,13 @@
 #include "board.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 #include "obj_elem.h"
 #include "obj_line.h"
 #include "obj_arc.h"
 #include "obj_pad.h"
 #include "obj_pinvia.h"
+
 
 static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
@@ -102,7 +104,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 	htsp_t terms;
 	htsp_entry_t *e;
 
-	f = fopen(fn, "w");
+	f = pcb_fopen(fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open %s for writing\n", fn);
 		return -1;
@@ -522,7 +524,7 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi)
 	FILE *f;
 	int ret = 0;
 
-	f = fopen(fn, "r");
+	f = pcb_fopen(fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fn);
 		return -1;
