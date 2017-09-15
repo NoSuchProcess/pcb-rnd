@@ -161,7 +161,7 @@ int pcb_rename(const char *old_path, const char *new_path)
 	CHECK("rename", "access", new_path_exp, "w", goto err);
 	CHECK("rename", "rename", old_path_exp, new_path_exp, goto err);
 
-	res = pcb_rename(old_path_exp, new_path_exp);
+	res = rename(old_path_exp, new_path_exp);
 
 	err:;
 	free(old_path_exp);
