@@ -105,8 +105,8 @@ LATER RELEASES:
 - BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
 - feature req:
-	- if the library path starts with a "?", the path is optional; so we don't get warnings for ./footprints [report: celem]
-	- add some sort of $(project_path) and/or $(design_path) so we don't need to use ./ and we won't depend on CWD [report: celem]
+	+ if the library path starts with a "?", the path is optional; so we don't get warnings for ./footprints [report: celem]
+	+ add some sort of $(project_path) and/or $(design_path) so we don't need to use ./ and we won't depend on CWD [report: celem]
 - feature req: show grid in both mm and mil in the status bar [report:smilie]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
