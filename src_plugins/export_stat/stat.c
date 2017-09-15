@@ -43,6 +43,7 @@
 #include "pcb-printf.h"
 #include "compat_misc.h"
 #include "plug_io.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -143,7 +144,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.stat.lht";
 
-	f = fopen(filename, "w");
+	f = pcb_fopen(filename, "w");
 	if (!f) {
 		perror(filename);
 		return;
