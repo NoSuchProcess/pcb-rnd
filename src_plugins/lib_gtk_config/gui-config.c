@@ -53,6 +53,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "fptr_cast.h"
+#include "safe_fs.h"
 #include <liblihata/tree.h>
 
 #include "gtk_conf_list.h"
@@ -2280,7 +2281,7 @@ static void config_auto_save(conf_role_t role)
 		const char *fn = conf_get_project_conf_name(NULL, pcbfn, &try);
 		if (fn == NULL) {
 			FILE *f;
-			f = fopen(try, "w");
+			f = pcb_fopen(try, "w");
 			if (f == NULL) {
 				pcb_message(PCB_MSG_ERROR, "can not create config to project file: %s\n", try);
 				return;
