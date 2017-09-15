@@ -16,13 +16,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include <stdlib.h>
 #include <string.h>
 #include "graph.h"
+#include "safe_fs.h"
 
 /* allocate a new graph of n nodes with no edges */
 gr_t *gr_alloc(int n)
@@ -100,7 +97,7 @@ int gr_draw(gr_t *g, const char *name, const char *type)
 
 	cmd = malloc(strlen(type)*2 + strlen(name) + 64);
 	sprintf(cmd, "dot -T%s -o %s.%s", type, name, type);
-	f = popen(cmd, "w");
+	f = pcb_popen(cmd, "w");
 	if (f == NULL)
 		return -1;
 
@@ -125,7 +122,7 @@ int gr_draw(gr_t *g, const char *name, const char *type)
 	}
 
 	fprintf(f, "}\n");
-	pclose(f);
+	pcb_pclose(f);
 	return 0;
 }
 
