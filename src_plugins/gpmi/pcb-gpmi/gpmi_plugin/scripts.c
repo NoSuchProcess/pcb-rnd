@@ -339,7 +339,7 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 		return -1;
 	}
 
-	if (rename(tmpfn, i->conffile_name) != 0) {
+	if (pcb_rename(tmpfn, i->conffile_name) != 0) {
 		pcb_message(PCB_MSG_ERROR, "gpmi_hid_script_remove(): can't remove script from configs, can't move %s to %s.\n", tmpfn, i->conffile_name);
 		free(tmpfn);
 		return -1;
