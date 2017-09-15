@@ -4899,7 +4899,7 @@ board.o: board.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genvector/vtp0.h list_conf.h plug_io.h compat_misc.h \
  hid_actions.h paths.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- draw.h event.h defpcb_internal.c
+ draw.h event.h safe_fs.h defpcb_internal.c
 box.o: box.c ../config.h rotate.h global_typedefs.h pcb_bool.h unit.h \
  box.h math_helper.h macro.h move.h obj_common.h ../src_3rd/genht/hash.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h attrib.h \

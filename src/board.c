@@ -35,6 +35,7 @@
 #include "undo.h"
 #include "draw.h"
 #include "event.h"
+#include "safe_fs.h"
 
 pcb_board_t *PCB;
 
@@ -127,7 +128,7 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 		const char *tmp_fn = ".pcb-rnd.default.pcb";
 
 		/* We can parse from file only, make a temp file */
-		f = fopen(tmp_fn, "wb");
+		f = pcb_fopen(tmp_fn, "wb");
 		if (f != NULL) {
 			fwrite(default_pcb_internal, strlen(default_pcb_internal), 1, f);
 			fclose(f);
