@@ -351,9 +351,6 @@ static int fp_read_lib_all_(const char *searchpath)
 	int n_footprints = 0;					/* Running count of footprints found */
 	int res;
 
-	/* Initialize path, working by writing 0 into every byte. */
-	memset(toppath_, 0, sizeof toppath_);
-
 	/* Additional loop to allow for multiple 'newlib' style library directories
 	 * called out in Settings.LibraryTree
 	 */
@@ -363,6 +360,7 @@ static int fp_read_lib_all_(const char *searchpath)
 
 		/* remove trailing path delimiter */
 		strncpy(toppath_, p, sizeof(toppath_) - 1);
+		toppath_[sizeof(toppath_) - 1] = '\0';
 		toppath = toppath_;
 		if (toppath[0] == '?') {
 			toppath++;
