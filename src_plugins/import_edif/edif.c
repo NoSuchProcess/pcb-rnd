@@ -107,6 +107,7 @@
 #include "plugins.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "safe_fs.h"
 
 /* from mymem.h, not include because of the malloc junk */
 pcb_lib_menu_t *pcb_lib_menu_new(pcb_lib_t *, int *idx);
@@ -5868,7 +5869,7 @@ void ParseEDIF(char* filename,FILE* err)
    *	Set up the file state to something useful.
    */
   InFile = filename;
-  Input = fopen(filename,"r");
+  Input = pcb_fopen(filename, "r");
   Error = err;
   LineNumber = 1;
   /*
