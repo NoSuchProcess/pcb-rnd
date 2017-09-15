@@ -1,7 +1,3 @@
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include "config.h"
 
 #include <stdio.h>
@@ -13,6 +9,7 @@
 #include "data.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "../export_ps/ps.h"
@@ -85,7 +82,7 @@ static void lpr_do_export(pcb_hid_attr_val_t * options)
 	filename = options[HA_lprcommand].str_value;
 
 	printf("LPR: open %s\n", filename);
-	f = popen(filename, "w");
+	f = pcb_popen(filename, "w");
 	if (!f) {
 		perror(filename);
 		return;
@@ -93,7 +90,7 @@ static void lpr_do_export(pcb_hid_attr_val_t * options)
 
 	ps_hid_export_to_file(f, options);
 
-	fclose(f);
+	pcb_pclose(f);
 }
 
 static void lpr_parse_arguments(int *argc, char ***argv)
