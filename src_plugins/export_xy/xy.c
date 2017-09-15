@@ -497,7 +497,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 {
 	if (templ != NULL) {
-		char *tmp = pcb_strdup_subst(templ, subst_cb, ctx);
+		char *tmp = pcb_strdup_subst(templ, subst_cb, ctx, PCB_SUBST_PERCENT);
 		fprintf(f, "%s", tmp);
 		free(tmp);
 	}

@@ -121,7 +121,11 @@ typedef enum {
 } pcb_printf_slot_idx_t;
 extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
 
-/* strdup and return a template; also attempt to replace printf-like formatting
+/* strdup and return a string built from a template, controlled by flags:
+
+   PCB_SUBST_HOME: replace leading ~ with the user's home directory
+
+   PCB_SUBST_PERCENT: attempt to replace printf-like formatting
    directives (e.g. %P) using an user provided callback function. The callback
    function needs to recognize the directive at **input (pointing to the byte
    after the %) and append the substitution to s and increase *input to point
@@ -129,8 +133,18 @@ extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
    on unknown directive (which will be copied verbatim). %% will always
    be translated into a single %, without calling cb.
 
-   Implemented in paths.c because it also substituties ~ and $(conf).
+   PCB_SUBST_CONF: replace $(conf) automatically (no callback)
+
+   Implemented in paths.c because it depends on conf_core.h and error.h .
 */
-char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx);
+typedef enum {
+	PCB_SUBST_HOME = 1,
+	PCB_SUBST_PERCENT = 2,
+	PCB_SUBST_CONF = 4,
+
+	PCB_SUBST_ALL = 0xff
+} pcb_strdup_subst_t;
+
+char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags);
 
 #endif

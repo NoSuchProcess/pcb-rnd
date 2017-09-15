@@ -192,15 +192,15 @@ int pcb_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
 
 char *pcb_build_fn(const char *template)
 {
-	return pcb_strdup_subst(template, pcb_build_fn_cb, NULL);
+	return pcb_strdup_subst(template, pcb_build_fn_cb, NULL, PCB_SUBST_ALL);
 }
 
 char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
 {
-	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg);
+	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg, PCB_SUBST_ALL);
 }
 
-char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx)
+char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags)
 {
 	gds_t s;
 	const char *curr, *next;
