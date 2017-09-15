@@ -888,7 +888,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 		fn_tmp = malloc(len+8);
 		memcpy(fn_tmp, Filename, len);
 		strcpy(fn_tmp+len, ".old");
-		if (rename(Filename, fn_tmp) != 0) {
+		if (pcb_rename(Filename, fn_tmp) != 0) {
 			if (emergency) {
 				/* Try an alternative emergency file */
 				strcpy(fn_tmp+len, ".emr");
