@@ -37,6 +37,7 @@ const char *pcb_board_get_filename(void);
 const char *pcb_board_get_name(void);
 int pcb_getpid(void);
 
+static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room);
 
 void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
@@ -200,7 +201,7 @@ char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
 	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg, PCB_SUBST_ALL);
 }
 
-char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags)
+static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room)
 {
 	gds_t s;
 	const char *curr, *next;
@@ -220,6 +221,7 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 		next = strpbrk(curr, "%$");
 		if (next == NULL) {
 			gds_append_str(&s, curr);
+			gds_enlarge(&s, gds_len(&s) + extra_room);
 			return s.array;
 		}
 		if (next > curr)
@@ -307,3 +309,10 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 	gds_uninit(&s);
 	return NULL;
 }
+
+
+char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags)
+{
+	return pcb_strdup_subst_(template, cb, ctx, flags, 0);
+}
+
