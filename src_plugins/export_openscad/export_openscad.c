@@ -175,7 +175,7 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.openscad";
 
-	f = fopen(filename, "wb");
+	f = pcb_fopen(filename, "wb");
 	if (!f) {
 		perror(filename);
 		return;
