@@ -22,6 +22,7 @@
 #include "plugins.h"
 #include "hid_helper.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -766,7 +767,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 
 		pagecount++;
 		assign_file_suffix(filesuff, group, layer, flags);
-		f = fopen(filename, "wb");	/* Binary needed to force CR-LF */
+		f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 			return 1;
