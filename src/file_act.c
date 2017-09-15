@@ -42,6 +42,7 @@
 #include "compat_nls.h"
 #include "hid_init.h"
 #include "layer_vis.h"
+#include "safe_fs.h"
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_ExecCommand[] = "ExecCommand(command)";
@@ -64,7 +65,7 @@ static int pcb_act_ExecCommand(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	command = PCB_ACTION_ARG(0);
 
-	if (system(command))
+	if (pcb_system(command))
 		return 1;
 	return 0;
 }
