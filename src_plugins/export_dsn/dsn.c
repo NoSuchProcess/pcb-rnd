@@ -50,6 +50,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "polygon.h"
 #include "compat_misc.h"
 #include "layer.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_draw_helpers.h"
@@ -489,7 +490,7 @@ static int PrintSPECCTRA(void)
 {
 	FILE *fp;
 	/* Print out the dsn .dsn file. */
-	fp = fopen(dsn_filename, "w");
+	fp = pcb_fopen(dsn_filename, "w");
 	if (!fp) {
 		pcb_message(PCB_MSG_WARNING, "Cannot open file %s for writing\n", dsn_filename);
 		return 1;
