@@ -37,6 +37,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "paths.h"
+#include "safe_fs.h"
 
 static pcb_plug_import_t import_netlist;
 
@@ -65,7 +66,7 @@ static int ReadNetlist(const char *filename)
 	pcb_message(PCB_MSG_INFO, _("Importing PCB netlist %s\n"), filename);
 
 	if (PCB_EMPTY_STRING_P(conf_core.rc.rat_command)) {
-		fp = fopen(filename, "r");
+		fp = pcb_fopen(filename, "r");
 		if (!fp) {
 			pcb_message(PCB_MSG_ERROR, "Cannot open %s for reading", filename);
 			return 1;
