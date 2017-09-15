@@ -37,6 +37,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "action_helper.h"
 #include "hid_actions.h"
@@ -92,7 +93,7 @@ static int hpgl_load(const char *fname)
 	ctx.conf.arc   = load_arc;
 	ctx.conf.poly  = load_poly;
 
-	f = fopen(fname, "r");
+	f = pcb_fopen(fname, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error opening HP-GL %s for read\n", fname);
 		return 1;
