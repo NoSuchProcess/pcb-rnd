@@ -345,22 +345,29 @@ void fp_dump()
  */
 static int fp_read_lib_all_(const char *searchpath)
 {
-	char toppath[PCB_PATH_MAX + 1];	/* String holding abs path to top level library dir */
+	char *toppath, toppath_[PCB_PATH_MAX + 1];	/* String holding abs path to top level library dir */
 	char *libpaths;								/* String holding list of library paths to search */
 	char *p;											/* Helper string used in iteration */
 	int n_footprints = 0;					/* Running count of footprints found */
 	int res;
 
 	/* Initialize path, working by writing 0 into every byte. */
-	memset(toppath, 0, sizeof toppath);
+	memset(toppath_, 0, sizeof toppath_);
 
 	/* Additional loop to allow for multiple 'newlib' style library directories
 	 * called out in Settings.LibraryTree
 	 */
 	libpaths = pcb_strdup(searchpath);
 	for (p = strtok(libpaths, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
+		int silent_fail = 0;
+
 		/* remove trailing path delimiter */
-		strncpy(toppath, p, sizeof(toppath) - 1);
+		strncpy(toppath_, p, sizeof(toppath_) - 1);
+		toppath = toppath_;
+		if (toppath[0] == '?') {
+			toppath++;
+			silent_fail = 1;
+		}
 
 #ifdef DEBUG
 		printf("In ParseLibraryTree, looking for newlib footprints inside top level directory %s ... \n", toppath);
@@ -371,7 +378,7 @@ static int fp_read_lib_all_(const char *searchpath)
 		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, load_dir, res, >= 0, (self, toppath, 0));
 		if (res >= 0)
 			n_footprints += res;
-		else
+		else if (!silent_fail)
 			pcb_message(PCB_MSG_WARNING, "Warning: footprint library list error on %s\n", toppath);
 	}
 
