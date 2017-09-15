@@ -23,11 +23,6 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include "config.h"
 
 #ifdef HAVE_UNISTD_H
@@ -501,7 +496,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			cmd = malloc(strlen(libshell) + strlen(fullname) + strlen(params) + 16);
 			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
-			f = popen(cmd, "r");
+			f = pcb_popen(cmd, "r");
 			free(cmd);
 		}
 		else
@@ -516,7 +511,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 static void fp_fs_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	if (fctx->field[F_IS_PARAMETRIC].i)
-		pclose(f);
+		pcb_pclose(f);
 	else
 		fclose(f);
 }
