@@ -34,6 +34,7 @@
 #include "pcb-printf.h"
 #include "error.h"
 #include "hid_actions.h"
+#include "safe_fs.h"
 
 
 nethlp_ctx_t *nethlp_new(nethlp_ctx_t *prealloc)
@@ -158,7 +159,7 @@ int nethlp_load_part_map(nethlp_ctx_t *nhctx, const char *fn)
 	int cnt, argc, lineno;
 	char line[1024], *argv[8];
 
-	f = fopen(fn, "r");
+	f = pcb_fopen(fn, "r");
 	if (f == NULL)
 		return -1;
 
