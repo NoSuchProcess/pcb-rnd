@@ -215,17 +215,19 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 		if (next > curr)
 			gds_append_len(&s, curr, next-curr);
 		next++;
-		switch(*next) {
-			case '%':
-				gds_append(&s, '%');
-				curr = next+1;
-				break;
-			default:
-				if (cb(ctx, &s, &next) != 0) {
-					/* keep the directive intact */
+		if (flags & PCB_SUBST_PERCENT) {
+			switch(*next) {
+				case '%':
 					gds_append(&s, '%');
-				}
-				curr = next;
+					curr = next+1;
+					break;
+				default:
+					if (cb(ctx, &s, &next) != 0) {
+						/* keep the directive intact */
+						gds_append(&s, '%');
+					}
+					curr = next;
+			}
 		}
 	}
 	abort(); /* can't get here */
