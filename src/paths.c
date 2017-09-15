@@ -206,6 +206,17 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 	const char *curr, *next;
 
 	gds_init(&s);
+
+	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
+		if (conf_core.rc.path.home == NULL) {
+			pcb_message(PCB_MSG_ERROR, "can't resolve home dir required for path %s\n", template);
+			gds_uninit(&s);
+			return NULL;
+		}
+		gds_append_str(&s, conf_core.rc.path.home);
+		template++;
+	}
+
 	for(curr = template;;) {
 		next = strchr(curr, '%');
 		if (next == NULL) {
