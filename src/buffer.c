@@ -48,6 +48,7 @@
 #include "obj_subc_op.h"
 #include "layer_grp.h"
 #include "event.h"
+#include "safe_fs.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -848,7 +849,7 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 			{
 				FILE *exist;
 
-				if ((!force) && ((exist = fopen(name, "r")))) {
+				if ((!force) && ((exist = pcb_fopen(name, "r")))) {
 					fclose(exist);
 					if (pcb_gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
 						pcb_save_buffer_elements(name, fmt);
