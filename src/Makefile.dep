@@ -5021,7 +5021,7 @@ conf.o: conf.c ../src_3rd/genht/hash.h ../src_3rd/liblihata/tree.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h conf_core.h globalconst.h conf_hid.h \
  error.h hid_cfg.h misc_util.h paths.h compat_fs.h compat_misc.h \
- ../src_3rd/genvector/genvector_impl.c
+ safe_fs.h ../src_3rd/genvector/genvector_impl.c
 conf_act.o: conf_act.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \

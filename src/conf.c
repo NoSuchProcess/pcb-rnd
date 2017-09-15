@@ -36,6 +36,7 @@
 #include "paths.h"
 #include "compat_fs.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
@@ -124,10 +125,11 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	if (d == NULL) {
 		FILE *f;
 		char *efn;
-		pcb_path_resolve(fn, &efn, 0);
-		f = fopen(efn, "r");
+
+		f = pcb_fopen_fn(fn, "r", &efn);
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
-			pcb_message(PCB_MSG_ERROR, "error: failed to load lht config: %s\n", efn);
+			pcb_message(PCB_MSG_ERROR, "error: failed to load lht config: %s (%s)\n", fn, efn);
+			free(efn);
 			fclose(f);
 		}
 		free(efn);
@@ -327,9 +329,10 @@ const char *conf_get_user_conf_name()
 
 const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
 {
-	static char res[PCB_PATH_MAX];
+	static char res[PCB_PATH_MAX+1];
 	static const char *project_name = "project.lht";
 	FILE *f;
+	char *efn;
 
 	if (project_fn != NULL) {
 		strncpy(res, project_fn, sizeof(res)-1);
@@ -360,9 +363,12 @@ const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_f
 
 	check:;
 	*try = res;
-	f = fopen(res, "r");
+	f = pcb_fopen_fn(res, "r", &efn);
 	if (f != NULL) {
 		fclose(f);
+		strncpy(res, efn, sizeof(res)-1);
+		res[sizeof(res)-1] = '\0';
+		free(efn);
 		return res;
 	}
 
@@ -1557,12 +1563,10 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 		}
 	}
 
-	pcb_path_resolve(fn, &efn, 0);
-
 	if (r != NULL) {
 		FILE *f;
-		f = fopen(efn, "w");
 
+		f = pcb_fopen_fn(fn, "w", &efn);
 		if ((f == NULL) && (role == CFR_USER)) {
 			/* create the directory and try again */
 			char *path = pcb_strdup(efn), *end;
@@ -1571,7 +1575,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 				*end = '\0';
 				if (pcb_mkdir(path, 0755) == 0) {
 					pcb_message(PCB_MSG_INFO, "Created directory %s for saving %s\n", path, fn);
-					f = fopen(efn, "w");
+					f = pcb_fopen(efn, "w");
 				}
 				else
 					pcb_message(PCB_MSG_ERROR, "Error: failed to create directory %s for saving %s\n", path, efn);
@@ -1603,7 +1607,7 @@ int conf_export_to_file(const char *fn, conf_role_t role, const char *conf_path)
 	if (at == NULL)
 		return -1;
 
-	f = fopen(fn, "w");
+	f = pcb_fopen(fn, "w");
 	if (f == NULL)
 		return -1;
 

@@ -39,6 +39,11 @@ int pcb_rename(const char *old_path, const char *new_path);
    file name, if no, return NULL */
 char *pcb_fopen_check(const char *path, const char *mode);
 
+/* Same as pcb_fopen(), but on success load fn_out() with the malloc()'d
+   file name as it looked after the substitution */
+FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out);
+
+
 #include "conf.h"
 
 /* Open a file with standard path search and substitutions performed on
