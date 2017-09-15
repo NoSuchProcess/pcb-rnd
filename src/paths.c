@@ -129,6 +129,9 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 
 	gds_init(&s);
 
+	if (*template == '?')
+		template++;
+
 	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
 		if (conf_core.rc.path.home == NULL) {
 			pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
