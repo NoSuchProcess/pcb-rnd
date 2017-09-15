@@ -199,3 +199,34 @@ char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
 {
 	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg);
 }
+
+char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx)
+{
+	gds_t s;
+	const char *curr, *next;
+
+	gds_init(&s);
+	for(curr = template;;) {
+		next = strchr(curr, '%');
+		if (next == NULL) {
+			gds_append_str(&s, curr);
+			return s.array;
+		}
+		if (next > curr)
+			gds_append_len(&s, curr, next-curr);
+		next++;
+		switch(*next) {
+			case '%':
+				gds_append(&s, '%');
+				curr = next+1;
+				break;
+			default:
+				if (cb(ctx, &s, &next) != 0) {
+					/* keep the directive intact */
+					gds_append(&s, '%');
+				}
+				curr = next;
+		}
+	}
+	abort(); /* can't get here */
+}

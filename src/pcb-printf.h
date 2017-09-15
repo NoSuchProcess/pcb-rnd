@@ -128,6 +128,8 @@ extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
    beyond the format directive. The callback returns 0 on success or -1
    on unknown directive (which will be copied verbatim). %% will always
    be translated into a single %, without calling cb.
+
+   Implemented in paths.c because it also substituties ~ and $(conf).
 */
 char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx);
 
