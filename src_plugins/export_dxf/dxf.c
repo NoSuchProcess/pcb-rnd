@@ -39,6 +39,7 @@
 #include "pcb-printf.h"
 #include "compat_misc.h"
 #include "lht_template.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -283,8 +284,14 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 		fn = "<embedded template>";
 		dxf_ctx.temp = lht_dom_load_string(dxf_templ_default_arr, fn, &errmsg);
 	}
-	else
-		dxf_ctx.temp = lht_dom_load(fn, &errmsg);
+	else {
+		char *real_fn;
+		dxf_ctx.temp = NULL;
+		real_fn = pcb_fopen_check(fn, "r");
+		if (real_fn != NULL)
+			dxf_ctx.temp = lht_dom_load(real_fn, &errmsg);
+		free(real_fn);
+	}
 
 	if (dxf_ctx.temp == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open dxf template: %s\n", fn);
