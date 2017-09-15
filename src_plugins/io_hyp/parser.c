@@ -43,6 +43,7 @@
 #include "hid_actions.h"
 #include "plug_io.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 #include <string.h>
 
 /*
@@ -334,7 +335,7 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	hyyset_lineno(1);
 
 	/* parse hyperlynx file */
-	hyyin = fopen(fname, "r");
+	hyyin = pcb_fopen(fname, "r");
 	if (hyyin == NULL)
 		return (1);
 	retval = hyyparse();
