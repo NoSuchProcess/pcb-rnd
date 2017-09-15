@@ -21,10 +21,6 @@
  */
 
 /* GUI for parametric footprints parameter exploration */
-
-#define _BSD_SOURCE
-#define _DEFAULT_SOURCE
-
 #include "config.h"
 
 #include <stdio.h>
@@ -33,6 +29,7 @@
 
 #include "hid_attrib.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "dlg_library_param.h"
 #include "dlg_attribute.h"
@@ -347,7 +344,7 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 	ctx.first_optional = -1;
 
 	cmd = pcb_strdup_printf("%s --help", entry->data.fp.loc_info);
-	f = popen(cmd, "r");
+	f = pcb_popen(cmd, "r");
 	free(cmd);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not execute parametric footprint %s\n", entry->data.fp.loc_info);
@@ -416,7 +413,7 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 			append_enum(curr, evl);
 		}
 	}
-	pclose(f);
+	pcb_pclose(f);
 
 	if (filter_txt == NULL) {
 		filter_txt = example;
