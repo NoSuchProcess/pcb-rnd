@@ -2,10 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- *
- *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
- *  this module is also subject to the GNU GPL as described below
+ *  Copyright (C) 2016, 2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
