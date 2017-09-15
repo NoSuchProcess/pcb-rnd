@@ -184,7 +184,7 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 							end = strchr(next, ')');
 							if (end != NULL) {
 								conf_native_t *cn;
-								char path[256], *s;
+								char path[256], *q;
 								size_t len = end - start;
 								if (len > sizeof(path) - 1) {
 									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
@@ -192,9 +192,9 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 								}
 								memcpy(path, start, len);
 								path[len] = '\0';
-								for(s = path; *s != '\0'; s++)
-									if (*s == '.')
-										*s = '/';
+								for(q = path; *q != '\0'; q++)
+									if (*q == '.')
+										*q = '/';
 								cn = conf_get_field(path);
 								if (cn == NULL) {
 									pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
