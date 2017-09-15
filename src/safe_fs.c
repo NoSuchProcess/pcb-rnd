@@ -56,15 +56,30 @@ do { \
 
 FILE *pcb_fopen(const char *path, const char *mode)
 {
-	FILE *f;
+	FILE *f = NULL;
 	char *path_exp = pcb_build_fn(path);
 
-	CHECK("fopen", "access", path_exp, mode, NULL);
-	CHECK("fopen", "fopen", path_exp, mode, NULL);
+	CHECK("fopen", "access", path_exp, mode, goto err);
+	CHECK("fopen", "fopen", path_exp, mode, goto err);
 
 	f = fopen(path_exp, mode);
+
+	err:;
 	free(path_exp);
 	return f;
+}
+
+char *pcb_fopen_check(const char *path, const char *mode)
+{
+	char *path_exp = pcb_build_fn(path);
+
+	CHECK("fopen", "access", path_exp, mode, goto err);
+	CHECK("fopen", "fopen", path_exp, mode, goto err);
+	return path_exp;
+
+	err:;
+	free(path_exp);
+	return NULL;
 }
 
 FILE *pcb_popen(const char *cmd, const char *mode)

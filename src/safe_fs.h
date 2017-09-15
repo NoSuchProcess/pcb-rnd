@@ -35,6 +35,10 @@ int pcb_system(const char *cmd);
 int pcb_remove(const char *path);
 int pcb_rename(const char *old_path, const char *new_path);
 
+/* Check if path could be open with mode; if yes, return the substituted/expanded
+   file name, if no, return NULL */
+char *pcb_fopen_check(const char *path, const char *mode);
+
 #include "conf.h"
 
 /* Open a file with standard path search and substitutions performed on
