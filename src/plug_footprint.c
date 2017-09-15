@@ -361,6 +361,8 @@ static int fp_read_lib_all_(const char *searchpath)
 		/* remove trailing path delimiter */
 		strncpy(toppath_, p, sizeof(toppath_) - 1);
 		toppath_[sizeof(toppath_) - 1] = '\0';
+
+		/* make paths starting with '?' optional (silently fail) */
 		toppath = toppath_;
 		if (toppath[0] == '?') {
 			toppath++;
