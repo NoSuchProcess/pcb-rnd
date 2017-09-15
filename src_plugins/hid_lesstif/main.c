@@ -28,6 +28,7 @@
 #include "event.h"
 #include "error.h"
 #include "plugins.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -946,7 +947,7 @@ PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 
 void LoadBackgroundImage(char *filename)
 {
-	FILE *f = fopen(filename, "rb");
+	FILE *f = pcb_fopen(filename, "rb");
 	if (!f) {
 		if (PCB_NSTRCMP(filename, "pcb-background.ppm"))
 			perror(filename);
