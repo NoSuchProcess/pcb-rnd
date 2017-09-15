@@ -34,6 +34,7 @@
 #include "conf_core.h"
 #include "plug_io.h"
 #include "error.h"
+#include "safe_fs.h"
 
 #define ltrim(s) while(isspace(*s)) (s)++
 
@@ -365,7 +366,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	int level;
 
 
-	f = fopen(fn, "r");
+	f = pcb_fopen(fn, "r");
 	if (f == NULL)
 		goto err;
 
