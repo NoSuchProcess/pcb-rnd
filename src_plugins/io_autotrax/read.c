@@ -47,6 +47,7 @@
 #include "move.h"
 #include "macro.h"
 #include "obj_all.h"
+#include "safe_fs.h"
 #include "rotate.h"
 #include "../src_plugins/boardflip/boardflip.h"
 #include "hid_actions.h"
@@ -1011,7 +1012,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	char line[1024];
 	char *s;
 
-	FP = fopen(Filename, "r");
+	FP = pcb_fopen(Filename, "r");
 	if (FP == NULL)
 		return -1;
 
