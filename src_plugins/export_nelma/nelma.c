@@ -68,6 +68,7 @@
 #include "rats.h"
 #include "plugins.h"
 #include "hid_helper.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -538,7 +539,7 @@ static void nelma_start_png(const char *basename, const char *suffix)
 
 	/* Nelma only works with true color images */
 	nelma_im = gdImageCreate(w, h);
-	nelma_f = fopen(buf, "wb");
+	nelma_f = pcb_fopen(buf, "wb");
 
 	nelma_alloc_colors();
 
@@ -629,7 +630,7 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 	buf = (char *) malloc(sizeof(*buf) * len);
 
 	sprintf(buf, "%s.em", nelma_basename);
-	nelma_config = fopen(buf, "w");
+	nelma_config = pcb_fopen(buf, "w");
 
 	free(buf);
 
