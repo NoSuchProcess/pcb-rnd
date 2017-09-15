@@ -1,3 +1,4 @@
+11529	configure	gsch2pcb-rnd uses safe_fs
 11436	configure	dialogs plugin for moving dialog boxes out from core
 11396	configure	hid_lesstif linking bug
 11265	configure	deprecate dbus

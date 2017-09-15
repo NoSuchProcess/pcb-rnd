@@ -43,6 +43,7 @@
 #include "../src/compat_misc.h"
 #include "../src/compat_fs.h"
 #include "../src/misc_util.h"
+#include "../src/safe_fs.h"
 #include "method.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
@@ -205,7 +206,7 @@ static void load_project(char * path)
 	char *s, buf[1024], config[32], arg[768];
 	int n;
 
-	f = fopen(path, "r");
+	f = pcb_fopen(path, "r");
 	if (!f)
 		return;
 
