@@ -32,6 +32,7 @@
 #include "hid_actions.h"
 #include "undo.h"
 #include "compat_nls.h"
+#include "safe_fs.h"
 
 /* actions about actions
  */
@@ -60,7 +61,7 @@ int pcb_act_ExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	fname = argv[0];
 
-	if ((fp = fopen(fname, "r")) == NULL) {
+	if ((fp = pcb_fopen(fname, "r")) == NULL) {
 		fprintf(stderr, _("Could not open actions file \"%s\".\n"), fname);
 		return 1;
 	}
