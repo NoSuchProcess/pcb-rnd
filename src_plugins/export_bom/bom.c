@@ -14,6 +14,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -237,7 +238,7 @@ static int PrintBOM(void)
 	}
 	PCB_END_LOOP;
 
-	fp = fopen(bom_filename, "w");
+	fp = pcb_fopen(bom_filename, "w");
 	if (!fp) {
 		pcb_gui->log("Cannot open file %s for writing\n", bom_filename);
 		print_and_free(NULL, bom);
