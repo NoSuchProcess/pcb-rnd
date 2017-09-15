@@ -35,6 +35,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #include "action_helper.h"
 #include "hid_actions.h"
@@ -228,12 +229,12 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 	FILE *fn, *fa;
 	int ret = 0;
 
-	fn = fopen(fname_net, "r");
+	fn = pcb_fopen(fname_net, "r");
 	if (fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
 	}
-	fa = fopen(fname_asc, "r");
+	fa = pcb_fopen(fname_asc, "r");
 	if (fa == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_asc);
 		fclose(fn);
