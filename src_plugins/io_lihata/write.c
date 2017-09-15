@@ -45,6 +45,7 @@
 #include "paths.h"
 #include "obj_subc_list.h"
 #include "pcb_minuid.h"
+#include "safe_fs.h"
 
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"
@@ -1088,7 +1089,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		lhtpers_ev_t events;
 
 		if (old_filename != NULL)
-			inf = fopen(old_filename, "r");
+			inf = pcb_fopen(old_filename, "r");
 
 		memset(&events, 0, sizeof(events));
 		events.text = check_text;
@@ -1105,7 +1106,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		if (res != 0) {
 			FILE *fe;
 			char *fe_name = pcb_concat(old_filename, ".mem.lht", NULL);
-			fe = fopen(fe_name, "w");
+			fe = pcb_fopen(fe_name, "w");
 			if (fe != NULL) {
 				res = lht_dom_export(brd->root, fe, "");
 				fclose(fe);
@@ -1144,7 +1145,7 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 	lht_doc_t *doc;
 
 
-	f = fopen(Filename, "w");
+	f = pcb_fopen(Filename, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
 		return -1;
