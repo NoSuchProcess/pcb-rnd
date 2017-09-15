@@ -10,6 +10,7 @@
 #include "plugins.h"
 #include "plug_footprint.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 #define REQUIRE_PATH_PREFIX "wget@edakrill"
 
@@ -138,7 +139,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (md5_new == NULL)
 		goto err;
 
-	f = fopen(last_sum_fn, "r");
+	f = pcb_fopen(last_sum_fn, "r");
 	md5_last = load_md5_sum(f);
 	if (f != NULL)
 		fclose(f);

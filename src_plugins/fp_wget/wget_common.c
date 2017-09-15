@@ -9,6 +9,7 @@
 #include "config.h"
 #include "wget_common.h"
 #include "compat_misc.h"
+#include "safe_fs.h"
 
 enum {
 	FCTX_INVALID = 0,
@@ -77,7 +78,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		}
 		if (f != NULL) {
 			sprintf(cmd, "%s/%s", cache_path, cdir);
-			*f = fopen(cmd, "r");
+			*f = pcb_fopen(cmd, "r");
 			if (*f == NULL)
 				goto error;
 			*fctx = FCTX_FOPEN;
@@ -146,7 +147,7 @@ int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 
 	if ((md5_last == NULL) || (strcmp(md5_last, md5_new) != 0)) {
 		FILE *f;
-		f = fopen(last_fn, "w");
+		f = pcb_fopen(last_fn, "w");
 		fputs(md5_new, f);
 		fclose(f);
 		changed = 1;
