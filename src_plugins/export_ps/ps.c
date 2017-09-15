@@ -1,7 +1,3 @@
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include "config.h"
 
 #include <stdio.h>
@@ -1528,7 +1524,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 		const char *cmd = vals[0].str_value;
 		while (*cmd == ' ' || *cmd == '|')
 			cmd++;
-		ps_cal_file = popen(cmd, "w");
+		ps_cal_file = pcb_popen(cmd, "w");
 		used_popen = 1;
 	}
 	else
@@ -1550,7 +1546,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 	fprintf(ps_cal_file, "%%%%EOF\n");
 
 	if (used_popen)
-		pclose(ps_cal_file);
+		pcb_pclose(ps_cal_file);
 	else
 		fclose(ps_cal_file);
 }
