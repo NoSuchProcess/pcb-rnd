@@ -31,6 +31,7 @@
 #include <assert.h>
 
 #include "error.h"
+#include "safe_fs.h"
 #include "egb_tree.h"
 #include "eagle_bin.h"
 
@@ -43,7 +44,7 @@ static int eagle_bin_load(trparse_t *pst, const char *fn)
 	FILE *f;
 	int res;
 
-	f = fopen(fn, "rb");
+	f = pcb_fopen(fn, "rb");
 	if (f == NULL)
 		return -1;
 
