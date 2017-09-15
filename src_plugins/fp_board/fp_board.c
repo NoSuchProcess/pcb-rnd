@@ -14,6 +14,7 @@
 #include "pcb-printf.h"
 #include "operation.h"
 #include "plug_io.h"
+#include "safe_fs.h"
 
 #define REQUIRE_PATH_PREFIX "board@"
 
@@ -119,7 +120,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 			pcb_data_set_layer_parents(op.buffer.dst);
 			pcb_elemop_add_to_buffer(&op, element);
 
-			f = fopen(tmp_name, "w");
+			f = pcb_fopen(tmp_name, "w");
 			memset(&buff2, 0, sizeof(buff2));
 			buff2.Data = op.buffer.dst;
 			pcb_write_buffer(f, &buff2, "pcb", pcb_true);
@@ -128,7 +129,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 			pcb_data_free(op.buffer.dst);
 			free(op.buffer.dst);
 
-			f = fopen(tmp_name, "r");
+			f = pcb_fopen(tmp_name, "r");
 			break;
 		}
 	} PCB_END_LOOP;
