@@ -7,7 +7,6 @@
 
 - TEST:
 	- vendor drill mapping (all functionality, including regex based refdes ignore)
-	- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
 	- route style vs. autorouter
 	- smartdisperse (compare to 1.2.4; term changes)
 	- autoplace (compare to 1.2.4; term changes)
