@@ -48,17 +48,17 @@ typedef struct {
 
 static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 {
-	pcb_hid_attr_val_t val;
+	int val;
 
-	val.int_value = 0;
-	if (type & PCB_LYT_PASTE)        val.int_value = 1;
-	else if (type & PCB_LYT_MASK)    val.int_value = 2;
-	else if (type & PCB_LYT_SILK)    val.int_value = 3;
-	else if (type & PCB_LYT_COPPER)  val.int_value = 4;
-	else if (type & PCB_LYT_OUTLINE) val.int_value = 5;
-	else if (type & PCB_LYT_VIRTUAL) val.int_value = 6;
+	val = 0;
+	if (type & PCB_LYT_PASTE)        val = 1;
+	else if (type & PCB_LYT_MASK)    val = 2;
+	else if (type & PCB_LYT_SILK)    val = 3;
+	else if (type & PCB_LYT_COPPER)  val = 4;
+	else if (type & PCB_LYT_OUTLINE) val = 5;
+	else if (type & PCB_LYT_VIRTUAL) val = 6;
 
-	pcb_gui->attr_dlg_set_value(hid_ctx, wid, &val);
+	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, val);
 }
 
 static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_type_t *type, int *offs)
@@ -103,7 +103,8 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 	for(n = 0; n < ctx->data->LayerN; n++) {
 		lb_widx_t *w = ctx->widx + n;
 		pcb_layer_t *layer = ctx->data->Layer + n;
-		pcb_hid_attr_val_t val;
+		pcb_layer_id_t lid;
+		int ofs;
 
 		/* disable comp for copper and outline */
 		enable = !(layer->meta.bound.type & PCB_LYT_COPPER) && !(layer->meta.bound.type & PCB_LYT_OUTLINE);
@@ -111,30 +112,23 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		if (!enable)
 			layer->meta.bound.comb = 0; /* copper and outline must be +manual */
 
-
 		/* name and type */
-		if (layer_name_mismatch(w, layer)) {
-			val.str_value = pcb_strdup(layer->meta.bound.name);
-			pcb_gui->attr_dlg_set_value(hid_ctx, w->name, &val);
-		}
+		if (layer_name_mismatch(w, layer))
+			PCB_DAD_SET_VALUE(hid_ctx, w->name, str_value, pcb_strdup(layer->meta.bound.name));
 
-		val.int_value = layer->meta.bound.comb;
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->comp, &val);
+		PCB_DAD_SET_VALUE(hid_ctx, w->comp, int_value, layer->meta.bound.comb);
 
 		set_ly_type(hid_ctx, w->type, layer->meta.bound.type);
 
 		/* side & offset */
-		val.int_value = !!(layer->meta.bound.type & PCB_LYT_BOTTOM);
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->side, &val);
+		PCB_DAD_SET_VALUE(hid_ctx, w->side, int_value, !!(layer->meta.bound.type & PCB_LYT_BOTTOM));
 
-		val.int_value = layer->meta.bound.stack_offs;
-		if (val.int_value < 0) {
-			val.int_value = 1;
-			pcb_gui->attr_dlg_set_value(hid_ctx, w->side, &val);
-			val.int_value = -layer->meta.bound.stack_offs;
+		ofs = layer->meta.bound.stack_offs;
+		if (ofs < 0) {
+			PCB_DAD_SET_VALUE(hid_ctx, w->side, int_value, 1);
+			ofs = -layer->meta.bound.stack_offs;
 		}
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->offs, &val);
-
+		PCB_DAD_SET_VALUE(hid_ctx, w->offs, int_value, ofs);
 
 		/* enable offset only for copper */
 		enable = (layer->meta.bound.type & PCB_LYT_COPPER);
@@ -147,10 +141,10 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		/* real layer */
 		if (layer->meta.bound.real != NULL)
-			val.int_value = pcb_layer_id(PCB->Data, layer->meta.bound.real);
+			lid = pcb_layer_id(PCB->Data, layer->meta.bound.real);
 		else
-			val.int_value = ctx->no_layer;
-		pcb_gui->attr_dlg_set_value(hid_ctx, w->layer, &val);
+			lid = ctx->no_layer;
+		PCB_DAD_SET_VALUE(hid_ctx, w->layer, int_value, lid);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->layer, 0);
 	}
 }
