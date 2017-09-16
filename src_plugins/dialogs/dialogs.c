@@ -26,6 +26,7 @@
 #include "config.h"
 #include "hid.h"
 #include "hid_attrib.h"
+#include "hid_actions.h"
 #include "hid_dad.h"
 #include "action_helper.h"
 
