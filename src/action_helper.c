@@ -712,7 +712,7 @@ void pcb_notify_mode(void)
 
 				DrawSubc(subc);
 				pcb_draw();
-				pcb_hid_actionl("Report", "Object", NULL);
+				pcb_hid_actionl("Report", "Subc", NULL);
 			}
 			else if (type != PCB_TYPE_NONE) {
 				pcb_text_t *thing = (pcb_text_t *) ptr3;
