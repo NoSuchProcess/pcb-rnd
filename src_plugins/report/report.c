@@ -131,10 +131,14 @@ This is a shortcut for @code{Report(Object)}.
 static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
-	int type;
+	int type = REPORT_TYPES;
 	char *report = NULL;
 
-	type = pcb_search_screen(x, y, REPORT_TYPES, &ptr1, &ptr2, &ptr3);
+	if ((argv != NULL) && (argv[0] != NULL)) {
+		if (pcb_strncasecmp(argv[0], "Subc", 4) == 0)
+			type = PCB_TYPE_SUBC;
+	}
+	type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE)
 		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_TYPE_LOCKED, &ptr1, &ptr2, &ptr3);
 
@@ -897,6 +901,10 @@ static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
 		pcb_gui->get_coords("Click on an object", &x, &y);
 		return ReportDialog(argc - 1, argv + 1, x, y);
+	}
+	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
+		pcb_gui->get_coords("Click on a subcircuit", &x, &y);
+		return ReportDialog(argc, argv, x, y);
 	}
 	else if (pcb_strcasecmp(argv[0], "DrillReport") == 0)
 		return ReportDrills(argc - 1, argv + 1, x, y);
