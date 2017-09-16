@@ -706,6 +706,14 @@ void pcb_notify_mode(void)
 				pcb_draw();
 				pcb_hid_actionl("Report", "Object", NULL);
 			}
+			else if (type == PCB_TYPE_SUBC) {
+				pcb_subc_t *subc = (pcb_subc_t *)ptr2;
+				pcb_flag_change(PCB, PCB_CHGFLG_TOGGLE, PCB_FLAG_LOCK, PCB_TYPE_SUBC, ptr1, ptr2, ptr3);
+
+				DrawSubc(subc);
+				pcb_draw();
+				pcb_hid_actionl("Report", "Object", NULL);
+			}
 			else if (type != PCB_TYPE_NONE) {
 				pcb_text_t *thing = (pcb_text_t *) ptr3;
 				PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, thing);
