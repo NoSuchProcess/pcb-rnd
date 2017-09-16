@@ -125,7 +125,7 @@ do { \
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET_ATTR_FIELD(table, min_val, min),PCB_DAD_SET_ATTR_FIELD(table, max_val, max))
 #define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET_ATTR_FIELD(table, change_cb, cb)
 
-
+/* safe way to call gui->attr_dlg_set_value() - resets the unused fields */
 #define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val) \
 	do { \
 		pcb_hid_attr_val_t __val__; \
