@@ -315,7 +315,7 @@ Paper width. Used for x-Axis calibration.
 %end-doc
 */
 	{"xcalib", "Paper width. Used for x-Axis calibration",
-	 PCB_HATT_REAL, 0, 0, {0, 0, 1.0}, 0, 0},
+	 PCB_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
 #define HA_xcalib 14
 
 /* %start-doc options "91 Postscript Export"
@@ -326,7 +326,7 @@ Paper height. Used for y-Axis calibration.
 %end-doc
 */
 	{"ycalib", "Paper height. Used for y-Axis calibration",
-	 PCB_HATT_REAL, 0, 0, {0, 0, 1.0}, 0, 0},
+	 PCB_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
 #define HA_ycalib 15
 
 /* %start-doc options "91 Postscript Export"
