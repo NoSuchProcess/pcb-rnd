@@ -75,7 +75,6 @@ For the next release:
 	- subcircuit offset on paste
 	+ BUG: ctl-r 'report' doesn't work on subc: hover over object in subc, press ctl-r msg warning: 'Nothing found to report on" issued, [report: Miloh]
 	+ BUG: in both gtk guis, clicking Subcircuits layer control box 'off' effectively locks all subc, but gui lock tool doesn't work on subc. [report: Miloh]
-	- BUG: no red dashed box around subc in lesstif
 	- BUG: layerbinding dialog on lesstif:
 		- combo box values are not set
 		- text fields are too wide
