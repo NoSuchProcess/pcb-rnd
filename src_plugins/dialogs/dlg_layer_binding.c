@@ -27,7 +27,6 @@
 #include "obj_subc.h"
 #include "search.h"
 
-static const char *lb_vals[] = { "foo", "bar", "baz", NULL };
 static const char *lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
 static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "outline", "virtual", NULL };
 static const char *lb_side[] = { "top", "bottom", NULL };
