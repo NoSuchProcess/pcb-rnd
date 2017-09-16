@@ -76,37 +76,37 @@ do { \
 #define PCB_DAD_BEGIN_TABLE(table, cols) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_TABLE); \
-	PCB_DAD_SET(table, pcb_hatt_table_cols, cols); \
+	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_table_cols, cols); \
 } while(0)
 
 #define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HBOX)
 #define PCB_DAD_BEGIN_VBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VBOX)
 #define PCB_DAD_END(table)             PCB_DAD_BEGIN(table, PCB_HATT_END)
-#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET(table, pcb_hatt_flags, val)
+#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, val)
 
 #define PCB_DAD_LABEL(table, text) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
-	PCB_DAD_SET(table, name, pcb_strdup(text)); \
+	PCB_DAD_SET_ATTR_FIELD(table, name, pcb_strdup(text)); \
 } while(0)
 
 /* Add label usign printf formatting syntax: PCB_DAD_LABELF(tbl, ("a=%d", 12)); */
 #define PCB_DAD_LABELF(table, printf_args) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
-	PCB_DAD_SET(table, name, pcb_strdup_printf printf_args); \
+	PCB_DAD_SET_ATTR_FIELD(table, name, pcb_strdup_printf printf_args); \
 } while(0)
 
 #define PCB_DAD_ENUM(table, choices) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_ENUM); \
-	PCB_DAD_SET(table, enumerations, choices); \
+	PCB_DAD_SET_ATTR_FIELD(table, enumerations, choices); \
 } while(0)
 
 #define PCB_DAD_INTEGER(table, label) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_INTEGER); \
-	PCB_DAD_SET(table, name, label); \
+	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
 #define PCB_DAD_STRING(table) \
@@ -119,11 +119,11 @@ do { \
 } while(0)
 
 /* Set properties of the current item */
-#define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET(table, min_val, val)
-#define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET(table, max_val, val)
-#define PCB_DAD_DEFAULT(table, val)      PCB_DAD_SET_VAL(table, default_val, val)
-#define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET(table, min_val, min),PCB_DAD_SET(table, max_val, max))
-#define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET(table, change_cb, cb)
+#define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, min_val, val)
+#define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, max_val, val)
+#define PCB_DAD_DEFAULT(table, val)      PCB_DAD_SET_ATTR_FIELD_VAL(table, default_val, val)
+#define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET_ATTR_FIELD(table, min_val, min),PCB_DAD_SET_ATTR_FIELD(table, max_val, max))
+#define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET_ATTR_FIELD(table, change_cb, cb)
 
 
 #define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val) \
@@ -146,10 +146,10 @@ do { \
 		table ## _len++; \
 	} while(0)
 
-#define PCB_DAD_SET(table, field, value) \
+#define PCB_DAD_SET_ATTR_FIELD(table, field, value) \
 	table[table ## _len - 1].field = (value)
 
-#define PCB_DAD_SET_VAL(table, field, val) \
+#define PCB_DAD_SET_ATTR_FIELD_VAL(table, field, val) \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case PCB_HATT_LABEL: \
