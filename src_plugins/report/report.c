@@ -413,6 +413,27 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									gen_locked(element));
 			break;
 		}
+	case PCB_TYPE_SUBC:
+		{
+			pcb_subc_t *subc;
+#ifndef NDEBUG
+			if (pcb_gui->shift_is_pressed()) {
+				pcb_r_dump_tree(PCB->Data->element_tree->root, 0);
+				return 0;
+			}
+#endif
+			subc = (pcb_subc_t *)ptr2;
+			report = pcb_strdup_printf("%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
+									"BoundingBox %$mD %$mD.\n"
+									"Refdes \"%s\".\n"
+									"%s", USER_UNITMASK,
+									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_TYPE_ELEMENT, NULL),
+									subc->BoundingBox.X1, subc->BoundingBox.Y1,
+									subc->BoundingBox.X2, subc->BoundingBox.Y2,
+									PCB_EMPTY(subc->refdes),
+									gen_locked(subc));
+			break;
+		}
 	case PCB_TYPE_TEXT:
 #ifndef NDEBUG
 		if (pcb_gui->shift_is_pressed()) {
