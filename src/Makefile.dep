@@ -1668,8 +1668,8 @@
  ../src_3rd/genvector/vtp0.h list_conf.h data.h crosshair.h vtonpoint.h \
  hid.h error.h drc.h route.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h buffer.h error.h \
- pcb-printf.h compat_misc.h action_helper.h hid_actions.h plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ pcb-printf.h compat_misc.h safe_fs.h action_helper.h hid_actions.h \
+ plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid.h dolists.h
 ../src_plugins/import_ltspice/ltspice.o: \
