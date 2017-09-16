@@ -125,6 +125,15 @@ do { \
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET(table, min_val, min),PCB_DAD_SET(table, max_val, max))
 #define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET(table, change_cb, cb)
 
+
+#define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val) \
+	do { \
+		pcb_hid_attr_val_t __val__; \
+		memset(&__val__, 0, sizeof(__val__)); \
+		__val__.field = val; \
+		pcb_gui->attr_dlg_set_value(hid_ctx, wid, &__val__); \
+	} while(0)
+
 /*** DAD internals (do not use directly) ***/
 #define PCB_DAD_ALLOC(table, item_type) \
 	do { \
