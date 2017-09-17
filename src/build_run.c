@@ -226,7 +226,7 @@ char *pcb_get_infostr(void)
 		tmp = pcb_get_info_copyright();
 		gds_append_str(&info, tmp);
 		gds_append_str(&info, "\n\n");
-		gds_append_str(&info, "It is licensed under the terms of the GNU\n");
+		gds_append_str(&info, "pcb-rnd is licensed under the terms of the GNU\n");
 		gds_append_str(&info, "General Public License version 2\n");
 		gds_append_str(&info, "See the LICENSE file for more information\n\n");
 		tmp = pcb_get_info_websites();
