@@ -72,7 +72,6 @@ For the next release:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
 	- subcircuit offset on paste
-	+ BUG: ctl-r 'report' doesn't work on subc: hover over object in subc, press ctl-r msg warning: 'Nothing found to report on" issued, [report: Miloh]
 	+ BUG: in both gtk guis, clicking Subcircuits layer control box 'off' effectively locks all subc, but gui lock tool doesn't work on subc. [report: Miloh]
 	- BUG: layerbinding dialog on lesstif:
 		- combo box values are not set
