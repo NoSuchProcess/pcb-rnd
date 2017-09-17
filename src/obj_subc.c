@@ -376,8 +376,11 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			dl->meta.bound.name = pcb_strdup(sl->meta.bound.name);
 			dl->meta.bound.real = pcb_layer_resolve_binding(pcb, sl);
 
-			if (dl->meta.bound.real == NULL)
-				pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer of subcricuit TODO1 while placing it\n");
+			if (dl->meta.bound.real == NULL) {
+				char *name = dl->meta.bound.name;
+				if (name == NULL) name = "<anonymous>";
+				pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer %s of subcricuit while placing it\n", name);
+			}
 			else
 				pcb_layer_link_trees(dl, dl->meta.bound.real);
 		}
