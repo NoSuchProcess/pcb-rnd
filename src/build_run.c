@@ -106,18 +106,23 @@ char *pcb_get_info_copyright(void)
 /** pcb_get_info_websites:
  *  Returns a string that has a bunch of information about the websites.
  */
-char *pcb_get_info_websites(void)
+char *pcb_get_info_websites(const char **url_out)
 {
 	static gds_t info;
 	static int first_time = 1;
+	static const char *URL = "http://pcb-rnd.repo.hu\n";
 
 	if (first_time) {
 		first_time = 0;
 		gds_init(&info);
 
 		gds_append_str(&info, "For more information see:\n");
-		gds_append_str(&info, "http://pcb-rnd.repo.hu\n");
+		gds_append_str(&info, URL);
 	}
+
+	if (url_out != NULL)
+		*url_out = URL;
+
 	return info.array;
 }
 
@@ -136,7 +141,7 @@ char *pcb_get_info_comments(void)
 
 		tmp = pcb_get_info_program();
 		gds_append_str(&info, tmp);
-		tmp = pcb_get_info_websites();
+		tmp = pcb_get_info_websites(NULL);
 		gds_append_str(&info, tmp);
 	}
 	return info.array;
@@ -229,7 +234,7 @@ char *pcb_get_infostr(void)
 		gds_append_str(&info, "pcb-rnd is licensed under the terms of the GNU\n");
 		gds_append_str(&info, "General Public License version 2\n");
 		gds_append_str(&info, "See the LICENSE file for more information\n\n");
-		tmp = pcb_get_info_websites();
+		tmp = pcb_get_info_websites(NULL);
 		gds_append_str(&info, tmp);
 
 		tmp = pcb_get_info_compile_options();

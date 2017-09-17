@@ -46,6 +46,7 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	GtkWidget *button;
 	GtkWidget *w = gtk_about_dialog_new();
 	GtkAboutDialog *about = GTK_ABOUT_DIALOG(w);
+	const char *url;
 
 	/* Add the compile options button */
 	button = gtk_button_new_with_mnemonic(_("_Options"));
@@ -63,23 +64,17 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 
 	gtk_about_dialog_set_copyright(about, pcb_get_info_copyright());
 
-	/*TODO: Find a proper way to include the COPYING file and/or display this info :
-	   gds_append_str(&info, "It is licensed under the terms of the GNU\n");
-	   gds_append_str(&info, "General Public License version 2\n");
-	   gds_append_str(&info, "See the LICENSE file for more information\n\n");
-	 */
+	gtk_about_dialog_set_license(about, pcb_get_infostr());
 
-	gtk_about_dialog_set_license(about,
-															 "It is licensed under the terms of the GNU\n" "General Public License version 2\n"
-															 "See the COPYING file for more information\n\n");
 	/* in GTK3:
 	   gtk_about_dialog_set_license_type(about, GTK_LICENSE_GPL_2_0); */
 	/*FIXME: Refactor the string w.r.t. the dialog */
 
 	gtk_about_dialog_set_comments(about, pcb_get_info_comments());
 
-	gtk_about_dialog_set_website(about, "http://repo.hu/projects/pcb-rnd/");
-	gtk_about_dialog_set_website_label(about, "Visit the PCB-rnd website");
+	pcb_get_info_websites(&url);
+	gtk_about_dialog_set_website(about, url);
+	gtk_about_dialog_set_website_label(about, "Visit the pcb-rnd website");
 	gtk_about_dialog_set_documenters(about, NULL);
 	gtk_about_dialog_set_translator_credits(about, _("translator-credits"));
 

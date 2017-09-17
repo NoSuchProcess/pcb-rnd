@@ -28,7 +28,7 @@ void pcb_quit_app(void);
 
 char *pcb_get_info_program(void);
 char *pcb_get_info_copyright(void);
-char *pcb_get_info_websites(void);
+char *pcb_get_info_websites(const char **url_out);
 char *pcb_get_info_comments(void);
 char *pcb_get_info_compile_options(void);
 
