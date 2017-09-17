@@ -643,7 +643,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			}
 			cval = pcb_layer_comb_str2bit(n->name);
 			if (cval == 0)
-				pcb_message(PCB_MSG_WARNING, "Ignoring unknown cmbining flag: '%s'\n", n->name);
+				pcb_message(PCB_MSG_WARNING, "Ignoring unknown combining flag: '%s'\n", n->name);
 			ly->comb |= cval;
 		}
 	}
