@@ -800,7 +800,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
+static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_subc_t **subc_out)
 {
 	pcb_subc_t *sc = pcb_subc_alloc();
 	unsigned char intconn = 0;
@@ -824,6 +824,9 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 		dt->subc_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)sc, 0);
 
+	if (subc_out != NULL)
+		*subc_out = sc;
+
 	return 0;
 }
 
@@ -844,7 +847,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 		else if (strncmp(n->name, "element.", 8) == 0)
 			parse_element(pcb_for_font, dt, n);
 		else if (strncmp(n->name, "subc.", 5) == 0)
-			parse_subc(pcb_for_font, dt, n);
+			parse_subc(pcb_for_font, dt, n, NULL);
 	}
 
 	return 0;
@@ -1279,10 +1282,6 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	lht_node_t *sub;
 	pcb_plug_io_t *loader;
 
-	if ((nd->type != LHT_HASH) || (strncmp(nd->name, "pcb-rnd-board-v", 15) != 0)) {
-		pcb_message(PCB_MSG_ERROR, "Not a board lihata.\n");
-		return -1;
-	}
 	rdver = atoi(nd->name+15);
 	switch(rdver) {
 		case 1: loader = &plug_io_lihata_v1; break;
@@ -1375,7 +1374,27 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		return -1;
 	}
 
-	res = parse_board(Ptr, doc->root);
+	if ((doc->root->type == LHT_HASH) && (strncmp(doc->root->name, "pcb-rnd-board-v", 15) == 0)) {
+		res = parse_board(Ptr, doc->root);
+	}
+	else if ((doc->root->type == LHT_LIST) && (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20) == 0)) {
+		pcb_subc_t *sc;
+
+		Ptr->is_footprint = 1;
+		res = parse_subc(Ptr, Ptr->Data, doc->root->data.list.first, &sc);
+
+		pcb_layer_group_setup_default(&Ptr->LayerGroups);
+		pcb_layer_group_setup_silks(&Ptr->LayerGroups);
+
+/*		pcb_layer_create_all_for_recipe(Ptr, sc->Data->Layers, sc->Data->LayerN) */
+
+		pcb_subcop_rebind(Ptr, sc);
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Error loading '%s': neither a board nor a subcircuit\n", Filename);
+		res = -1;
+	}
+
 	lht_dom_uninit(doc);
 	return res;
 }
@@ -1394,6 +1413,8 @@ void test_parse_ev(lht_parse_t *ctx, lht_event_t ev, lht_node_type_t nt, const c
 	test_parse_t *state = ctx->user_data;
 	if (ev == LHT_OPEN) {
 		if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-board-v", 15) == 0))
+			*state = TPS_GOOD;
+		else if ((nt == LHT_LIST) && (strncmp(name, "pcb-rnd-subcircuit-v", 20) == 0))
 			*state = TPS_GOOD;
 		else
 			*state = TPS_BAD;
@@ -1482,7 +1503,7 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 		return -1;
 	}
 
-	res = parse_subc(NULL, Ptr, doc->root->data.list.first);
+	res = parse_subc(NULL, Ptr, doc->root->data.list.first, NULL);
 
 	lht_dom_uninit(doc);
 	return res;
