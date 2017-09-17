@@ -663,7 +663,6 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 {
 	dst->grp = src->grp;
 	dst->comb = src->comb;
-	dst->meta.bound.comb = src->comb;
 
 	if (PCB_LAYER_IS_REAL(src)) {
 		dst->meta.bound.real = src;
@@ -720,9 +719,9 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
 		for(l = 0; l < grp->len; l++) {
 			pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
-			if ((ly->comb & PCB_LYC_SUB) == (src->meta.bound.comb & PCB_LYC_SUB)) {
+			if ((ly->comb & PCB_LYC_SUB) == (src->comb & PCB_LYC_SUB)) {
 				score = 1;
-				if (ly->comb == src->meta.bound.comb)
+				if (ly->comb == src->comb)
 					score++;
 
 				if (ly->meta.real.name == src->meta.bound.name) /* mainly for NULL = NULL */

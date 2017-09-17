@@ -109,13 +109,13 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		enable = !(layer->meta.bound.type & PCB_LYT_COPPER) && !(layer->meta.bound.type & PCB_LYT_OUTLINE);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->comp, enable);
 		if (!enable)
-			layer->meta.bound.comb = 0; /* copper and outline must be +manual */
+			layer->comb = 0; /* copper and outline must be +manual */
 
 		/* name and type */
 		if (layer_name_mismatch(w, layer))
 			PCB_DAD_SET_VALUE(hid_ctx, w->name, str_value, pcb_strdup(layer->meta.bound.name));
 
-		PCB_DAD_SET_VALUE(hid_ctx, w->comp, int_value, layer->meta.bound.comb);
+		PCB_DAD_SET_VALUE(hid_ctx, w->comp, int_value, layer->comb);
 
 		set_ly_type(hid_ctx, w->type, layer->meta.bound.type);
 
@@ -161,7 +161,7 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 			layer->meta.bound.name = pcb_strdup(ctx->attrs[w->name].default_val.str_value);
 		}
 
-		layer->meta.bound.comb = ctx->attrs[w->comp].default_val.int_value;
+		layer->comb = ctx->attrs[w->comp].default_val.int_value;
 		get_ly_type(ctx->attrs[w->type].default_val.int_value, ctx->attrs[w->side].default_val.int_value, ctx->attrs[w->offs].default_val.int_value, &layer->meta.bound.type, &layer->meta.bound.stack_offs);
 	}
 }
