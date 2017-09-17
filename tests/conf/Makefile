@@ -13,7 +13,8 @@ LIB_PCB_OBJS= \
 	../../src/conf_internal.o \
 	../../src/pcb-printf.o \
 	../../src/compat_misc.o \
-	../../src/compat_fs.o
+	../../src/compat_fs.o \
+	../../src/safe_fs.o
 
 LIB_PLUGIN_OBJS=\
 	../../src_plugins/diag/diag_conf.o
