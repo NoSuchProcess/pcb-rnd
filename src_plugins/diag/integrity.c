@@ -37,6 +37,20 @@
 			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type proken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
 	} while(0)
 
+#define chk_attr(name, obj) \
+	do { \
+		if (((obj)->Attributes.Number > 0) && ((obj)->Attributes.List == NULL)) \
+			pcb_message(PCB_MSG_ERROR, CHK "%s " name " %ld broken empty attribute list\n", whose, (obj)->ID); \
+	} while(0)
+
+#define chk_layer_attr(ly) \
+	do { \
+		if (PCB_LAYER_IS_REAL(ly)) { \
+			if (((ly)->meta.real.Attributes.Number > 0) && ((ly)->meta.real.Attributes.List == NULL)) \
+				pcb_message(PCB_MSG_ERROR, CHK "%s layer %s broken empty attribute list\n", whose, (ly)->meta.real.name); \
+		} \
+	} while(0)
+
 #define check_field_eq(name, obj, st1, st2, fld, fmt) \
 	do { \
 		if ((st1)->fld != (st2)->fld) \
@@ -183,20 +197,28 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].meta.real.name, data->Layer[n].parent, data);
 		if (name_chk && ((data->Layer[n].meta.real.name == NULL) || (*data->Layer[n].meta.real.name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
+		chk_layer_attr(&data->Layer[n]);
 
 		/* check layer objects */
-		for(lin = linelist_first(&data->Layer[n].Line); lin != NULL; lin = linelist_next(lin))
+		for(lin = linelist_first(&data->Layer[n].Line); lin != NULL; lin = linelist_next(lin)) {
 			check_parent("line", lin, PCB_PARENT_LAYER, &data->Layer[n]);
+			chk_attr("line", lin);
+		}
 
-		for(txt = textlist_first(&data->Layer[n].Text); txt != NULL; txt = textlist_next(txt))
+		for(txt = textlist_first(&data->Layer[n].Text); txt != NULL; txt = textlist_next(txt)) {
 			check_parent("text", txt, PCB_PARENT_LAYER, &data->Layer[n]);
+			chk_attr("text", txt);
+		}
 
-		for(poly = polylist_first(&data->Layer[n].Polygon); poly != NULL; poly = polylist_next(poly))
+		for(poly = polylist_first(&data->Layer[n].Polygon); poly != NULL; poly = polylist_next(poly)) {
 			check_parent("polygon", poly, PCB_PARENT_LAYER, &data->Layer[n]);
+			chk_attr("polygon", poly);
+		}
 
-		for(arc = arclist_first(&data->Layer[n].Arc); arc != NULL; arc = arclist_next(arc))
+		for(arc = arclist_first(&data->Layer[n].Arc); arc != NULL; arc = arclist_next(arc)) {
 			check_parent("arc", arc, PCB_PARENT_LAYER, &data->Layer[n]);
-
+			chk_attr("arc", arc);
+		}
 	}
 
 	/* check global objects */
@@ -205,17 +227,21 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		pcb_element_t *elem;
 		pcb_subc_t *subc;
 
-		for(via = pinlist_first(&data->Via); via != NULL; via = pinlist_next(via))
+		for(via = pinlist_first(&data->Via); via != NULL; via = pinlist_next(via)) {
 			check_parent("via", via, PCB_PARENT_DATA, data);
+			chk_attr("via", via);
+		}
 
 		for(elem = elementlist_first(&data->Element); elem != NULL; elem = elementlist_next(elem)) {
 			check_parent("element", elem, PCB_PARENT_DATA, data);
 			chk_element(whose, elem);
+			chk_attr("element", elem);
 		}
 
 		for(subc = pcb_subclist_first(&data->subc); subc != NULL; subc = pcb_subclist_next(subc)) {
 			check_parent("subc", subc, PCB_PARENT_DATA, data);
 			chk_subc(whose, subc);
+			chk_attr("subc", subc);
 		}
 	}
 #warning subc TODO: check buffers: parents
