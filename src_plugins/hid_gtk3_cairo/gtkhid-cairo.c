@@ -373,8 +373,8 @@ static inline void ghid_cairo_draw_grid_global(cairo_t *cr)
 			cairo_move_to(cr, points[i].x, points[i].y);
 			cairo_line_to(cr, points[i].x, points[i].y);
 		}
+		cairo_stroke(cr);
 	}
-	cairo_stroke(cr);
 }
 
 static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
