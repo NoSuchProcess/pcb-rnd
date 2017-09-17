@@ -55,9 +55,7 @@ void pcb_gtk_dlg_about(GtkWidget * top_window)
 	g_signal_connect(button, "clicked", G_CALLBACK(display_options_dialog), about);
 
 	/* We don't want to maintain a list of authors... So, this is the minimum info */
-	const gchar *authors[] = { "For authors, see the (C) in the main dialog",
-		"GTK HID:", "  Bill Wilson", NULL
-	};
+	const gchar *authors[] = { "For authors, see the (C) in the main dialog", NULL };
 
 	gtk_about_dialog_set_program_name(about, "pcb-rnd");
 	gtk_about_dialog_set_version(about, PCB_VERSION);
