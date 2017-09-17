@@ -795,7 +795,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	return (pcb_true);
 }
 
-int pcb_subcop_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
+int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 {
 	int n, chgly = 0;
 	pcb_board_t *dst_top = pcb_data_get_top(sc->data);
