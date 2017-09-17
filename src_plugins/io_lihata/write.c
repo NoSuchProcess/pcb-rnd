@@ -572,7 +572,9 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 		else
 			pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
 	}
-	lht_dom_hash_put(obj, build_attributes(&layer->meta.real.Attributes));
+
+	if (PCB_LAYER_IS_REAL(layer))
+		lht_dom_hash_put(obj, build_attributes(&layer->meta.real.Attributes));
 
 	if (wrver >= 2) {
 		lht_dom_hash_put(obj, build_textf("lid", "%ld", lid));
