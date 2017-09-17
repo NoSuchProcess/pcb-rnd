@@ -736,6 +736,82 @@ pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int
 	return -1;
 }
 
+int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int num_layer)
+{
+	int n, existing_intern = 0, want_intern = 0;
+	static char *anon = "anon";
+
+	for(n = 0; n < pcb->LayerGroups.len; n++)
+		if ((pcb->LayerGroups.grp[n].type & PCB_LYT_COPPER) && (pcb->LayerGroups.grp[n].type & PCB_LYT_INTERN))
+			existing_intern++;
+
+	for(n = 0; n < num_layer; n++) {
+		pcb_layer_t *ly = layer + n;
+		pcb_layer_t *dst = pcb_layer_resolve_binding(pcb, ly);
+		pcb_layergrp_t *grp;
+
+		if (dst != NULL)
+			continue;
+
+		if ((ly->meta.bound.type & PCB_LYT_COPPER) && (ly->meta.bound.type & PCB_LYT_INTERN)) {
+			want_intern++;
+			continue;
+		}
+
+		if (ly->meta.bound.type & PCB_LYT_VIRTUAL) {
+			/* no chance to have this yet */
+			continue;
+		}
+
+
+		if (ly->meta.bound.type & PCB_LYT_COPPER) { /* top or bottom copper */
+			grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, PCB_LYT_COPPER);
+			if (grp != NULL) {
+				pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->meta.bound.name);
+				continue;
+			}
+		}
+
+		grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, ly->meta.bound.type & PCB_LYT_ANYTHING);
+		if (grp != NULL) {
+			pcb_layer_id_t lid = pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->meta.bound.name);
+			pcb_layer_t *nly = pcb_get_layer(lid);
+			nly->comb = ly->comb;
+			continue;
+		}
+
+		pcb_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->meta.bound.name);
+	}
+
+	if (want_intern > existing_intern) {
+		while(want_intern > existing_intern) {
+			pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
+			grp->name = anon;
+			existing_intern++;
+		}
+		/* rename new interns from the recipe layer names */
+		for(n = 0; n < pcb->LayerGroups.len; n++) {
+			if (pcb->LayerGroups.grp[n].name == anon) {
+				int m;
+				for(m = 0; m < num_layer; m++) {
+					pcb_layer_t *ly = layer + m;
+					if ((ly->meta.bound.type & PCB_LYT_COPPER) && (ly->meta.bound.type & PCB_LYT_INTERN)) {
+						int offs = ly->meta.bound.stack_offs;
+						if (offs < 0)
+							offs = existing_intern - offs;
+						if ((offs == n) && (ly->meta.bound.name != NULL)) {
+							pcb->LayerGroups.grp[n].name = pcb_strdup(ly->meta.bound.name);
+							goto found;
+						}
+					}
+				}
+				pcb->LayerGroups.grp[n].name = pcb_strdup("anon-recipe");
+				found:;
+			}
+		}
+	}
+}
+
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
