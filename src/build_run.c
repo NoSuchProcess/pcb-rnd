@@ -72,10 +72,6 @@ char *pcb_get_info_program(void)
 		gds_init(&info);
 		gds_append_str(&info, "This is pcb-rnd " PCB_VERSION " (" PCB_REVISION ")" "\n an interactive ");
 		gds_append_str(&info, "printed circuit board editor\n");
-		gds_append_str(&info, "pcb-rnd forked from gEDA/PCB.");
-		gds_append_str(&info, "\n\n" "PCB is by harry eaton and others\n\n");
-		gds_append_str(&info, "pcb-rnd is a refactored version ");
-		gds_append_str(&info, "with many new features and improvements.\n\n");
 	}
 	return info.array;
 }
@@ -91,12 +87,18 @@ char *pcb_get_info_copyright(void)
 	if (first_time) {
 		first_time = 0;
 		gds_init(&info);
+
+		gds_append_str(&info, "Recent pcb-rnd copyright:\n");
+		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2017 (pcb-rnd)\n");
+		gds_append_str(&info, "For a more complete list of pcb-rnd authors and\ncontributors, see http://repo.hu/cgi-bin/pcb-rnd-people.cgi\n\n");
+
+		gds_append_str(&info, "Historical copyright:\n");
+		gds_append_str(&info, "pcb-rnd was originally forked from gEDA/PCB:\n");
 		gds_append_str(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
 		gds_append_str(&info, "Copyright (C) harry eaton 1998-2007\n");
 		gds_append_str(&info, "Copyright (C) C. Scott Ananian 2001\n");
 		gds_append_str(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
 		gds_append_str(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
-		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2017 (pcb-rnd patches)");
 	}
 	return info.array;
 }
@@ -114,10 +116,7 @@ char *pcb_get_info_websites(void)
 		gds_init(&info);
 
 		gds_append_str(&info, "For more information see:\n");
-		gds_append_str(&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
-		gds_append_str(&info, "PCB homepage: http://pcb.geda-project.org\n");
-		gds_append_str(&info, "gEDA homepage: http://www.geda-project.org\n");
-		gds_append_str(&info, "gEDA Wiki: http://wiki.geda-project.org\n\n");
+		gds_append_str(&info, "http://pcb-rnd.repo.hu\n");
 	}
 	return info.array;
 }
