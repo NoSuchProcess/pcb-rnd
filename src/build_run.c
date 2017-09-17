@@ -89,16 +89,16 @@ char *pcb_get_info_copyright(void)
 		gds_init(&info);
 
 		gds_append_str(&info, "Recent pcb-rnd copyright:\n");
-		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2017 (pcb-rnd)\n");
+		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013..2017 (pcb-rnd)\n");
 		gds_append_str(&info, "For a more complete list of pcb-rnd authors and\ncontributors, see http://repo.hu/cgi-bin/pcb-rnd-people.cgi\n\n");
 
 		gds_append_str(&info, "Historical copyright:\n");
 		gds_append_str(&info, "pcb-rnd was originally forked from gEDA/PCB:\n");
-		gds_append_str(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
-		gds_append_str(&info, "Copyright (C) harry eaton 1998-2007\n");
+		gds_append_str(&info, "Copyright (C) Thomas Nau 1994..1997\n");
+		gds_append_str(&info, "Copyright (C) harry eaton 1998..2007\n");
 		gds_append_str(&info, "Copyright (C) C. Scott Ananian 2001\n");
-		gds_append_str(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
-		gds_append_str(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
+		gds_append_str(&info, "Copyright (C) DJ Delorie 2003..2008\n");
+		gds_append_str(&info, "Copyright (C) Dan McMahill 2003..2008\n\n");
 	}
 	return info.array;
 }
