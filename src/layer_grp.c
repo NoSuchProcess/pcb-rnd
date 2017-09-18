@@ -750,13 +750,13 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		pcb_layer_t *dst = pcb_layer_resolve_binding(pcb, ly);
 		pcb_layergrp_t *grp;
 
-		if (dst != NULL)
-			continue;
-
 		if ((ly->meta.bound.type & PCB_LYT_COPPER) && (ly->meta.bound.type & PCB_LYT_INTERN)) {
 			want_intern++;
 			continue;
 		}
+
+		if (dst != NULL)
+			continue;
 
 		if (ly->meta.bound.type & PCB_LYT_VIRTUAL) {
 			/* no chance to have this yet */
@@ -792,6 +792,9 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 	}
 
 	if (want_intern > existing_intern) {
+		int int_ofs = 0;
+/*pcb_trace("want: %d have: %d\n", want_intern, existing_intern);*/
+		/* create enough dummy internal layers, mark them by name anon */
 		while(want_intern > existing_intern) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
 			grp->name = anon;
@@ -801,14 +804,17 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		for(n = 0; n < pcb->LayerGroups.len; n++) {
 			if (pcb->LayerGroups.grp[n].name == anon) {
 				int m;
+				int_ofs++;
 				for(m = 0; m < num_layer; m++) {
 					pcb_layer_t *ly = layer + m;
 					if ((ly->meta.bound.type & PCB_LYT_COPPER) && (ly->meta.bound.type & PCB_LYT_INTERN)) {
 						int offs = ly->meta.bound.stack_offs;
+/*pcb_trace("offs: %d (%d) == %d\n", offs, existing_intern + offs, int_ofs);*/
 						if (offs < 0)
-							offs = existing_intern - offs;
-						if ((offs == n) && (ly->meta.bound.name != NULL)) {
-							pcb->LayerGroups.grp[n].name = pcb_strdup(ly->meta.bound.name);
+							offs = existing_intern + offs;
+						if ((offs == int_ofs) && (ly->meta.bound.name != NULL)) {
+							pcb->LayerGroups.grp[n].name = pcb_strdup("internal");
+							pcb_layer_create(n, ly->meta.bound.name);
 							goto found;
 						}
 					}
