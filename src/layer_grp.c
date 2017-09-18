@@ -766,7 +766,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 
 		if (ly->meta.bound.type & PCB_LYT_OUTLINE) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
-			grp->type = PCB_LYT_OUTLINE;
+			grp->type = PCB_LYT_OUTLINE | PCB_LYT_INTERN;
 			grp->name = pcb_strdup("outline");
 			pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->meta.bound.name);
 			continue;
