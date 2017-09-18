@@ -368,7 +368,7 @@ do { \
 	if (PCB->SubcOn) {
 		PCB_SUBC_LOOP(pcb->Data);
 		{
-			if (PCB_POLYGON_NEAR_BOX(subc, Box)
+			if (PCB_SUBC_NEAR_BOX(subc, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) != Flag) {
 

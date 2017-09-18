@@ -68,6 +68,9 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 #define	PCB_POLYGON_IN_BOX(p,b)	\
 	(PCB_BOX_IN_BOX(&((p)->BoundingBox), (b)))
 
+#define	PCB_SUBC_IN_BOX(s,b)	\
+	(PCB_BOX_IN_BOX(&((s)->BoundingBox), (b)))
+
 #define	PCB_ELEMENT_IN_BOX(e,b)	\
 	(PCB_BOX_IN_BOX(&((e)->BoundingBox), (b)))
 
@@ -109,6 +112,9 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 #define	PCB_POLYGON_TOUCHES_BOX(p,b)	\
 	(PCB_BOX_TOUCHES_BOX(&((p)->BoundingBox), (b)))
 
+#define	PCB_SUBC_TOUCHES_BOX(s,b)	\
+	(PCB_BOX_TOUCHES_BOX(&((s)->BoundingBox), (b)))
+
 #define	PCB_ELEMENT_TOUCHES_BOX(e,b)	\
 	(PCB_BOX_TOUCHES_BOX(&((e)->BoundingBox), (b)))
 
@@ -136,6 +142,9 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 
 #define	PCB_POLYGON_NEAR_BOX(p,b) \
 	(PCB_IS_BOX_NEGATIVE(b) ? PCB_POLYGON_TOUCHES_BOX(p,b) : PCB_POLYGON_IN_BOX(p,b))
+
+#define	PCB_SUBC_NEAR_BOX(s,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_SUBC_TOUCHES_BOX(s,b) : PCB_SUBC_IN_BOX(s,b))
 
 #define	PCB_ELEMENT_NEAR_BOX(e,b) \
 	(PCB_IS_BOX_NEGATIVE(b) ? PCB_ELEMENT_TOUCHES_BOX(e,b) : PCB_ELEMENT_IN_BOX(e,b))
