@@ -84,7 +84,7 @@ For the next release:
 		- holes_after should be set to 1 everywhere, then removed
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
 - BUGS:
-	- negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
+	+ negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	- parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	- lesstif build: make sure -lXm is before -lXt - that's why lesstif HID is broken on some systems
 	+ gtk menu: hotkeys not shown for checkbox menus (settings)
