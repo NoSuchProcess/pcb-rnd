@@ -844,6 +844,18 @@ pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line)
 pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_arc_t *Arc)
 {
 	pcb_line_t line;
+	pcb_coord_t x, y;
+	pcb_box_t box;
+	
+	/* check if any of arc endpoints is inside the rectangle */
+	box.X1 = X1; box.Y1 = Y1;
+	box.X2 = X2; box.Y2 = Y2;
+	pcb_arc_get_end (Arc, 0, &x, &y);
+	if (PCB_POINT_IN_BOX(x, y, &box))
+		return (pcb_true);
+	pcb_arc_get_end (Arc, 1, &x, &y);
+	if (PCB_POINT_IN_BOX(x, y, &box))
+		return (pcb_true);
 
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
