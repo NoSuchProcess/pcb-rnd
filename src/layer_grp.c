@@ -264,8 +264,9 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	int bl, n;
+	int room = omit_substrate ? 1 : 2;
 
-	if (stack->len+2 >= PCB_MAX_LAYERGRP)
+	if ((stack->len + room) >= PCB_MAX_LAYERGRP)
 		return NULL;
 
 	/* seek the bottom copper layer */
@@ -274,9 +275,9 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 
 			/* insert a new internal layer: move existing layers to make room */
 			for(n = stack->len-1; n >= bl; n--)
-				pcb_layergrp_move_onto(pcb, n+2, n);
+				pcb_layergrp_move_onto(pcb, n+room, n);
 
-			stack->len += 2;
+			stack->len += room;
 
 			stack->grp[bl].name = pcb_strdup("Intern");
 			stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_COPPER;
