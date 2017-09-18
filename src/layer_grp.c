@@ -810,9 +810,9 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 					pcb_layer_t *ly = layer + m;
 					if ((ly->meta.bound.type & PCB_LYT_COPPER) && (ly->meta.bound.type & PCB_LYT_INTERN)) {
 						int offs = ly->meta.bound.stack_offs;
-/*pcb_trace("offs: %d (%d) == %d\n", offs, existing_intern + offs, int_ofs);*/
+/*pcb_trace("offs: %d (%d) == %d\n", offs, existing_intern + offs + 1, int_ofs);*/
 						if (offs < 0)
-							offs = existing_intern + offs;
+							offs = existing_intern + offs + 1;
 						if ((offs == int_ofs) && (ly->meta.bound.name != NULL)) {
 							pcb->LayerGroups.grp[n].name = pcb_strdup("internal");
 							pcb_layer_create(n, ly->meta.bound.name);
