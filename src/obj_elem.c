@@ -208,12 +208,15 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	PCB_END_LOOP;
 	PCB_PIN_LOOP(element);
 	{
+		pcb_pin_t *via;
 		pcb_flag_t f = pcb_no_flags();
 		pcb_flag_add(f, PCB_FLAG_VIA);
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
 			pcb_flag_add(f, PCB_FLAG_HOLE);
 
-		pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
+		via = pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
+		if (pin->Number != NULL)
+			pcb_attribute_put(&via->Attributes, "term", pin->Number);
 	}
 	PCB_END_LOOP;
 
@@ -231,8 +234,11 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		line = pcb_line_new(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
 																pad->Point1.X, pad->Point1.Y,
 																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, pcb_no_flags());
-		if (line)
+		if (line) {
 			line->Number = pcb_strdup_null(pad->Number);
+			if (pad->Number != NULL)
+				pcb_attribute_put(&line->Attributes, "term", pad->Number);
+		}
 	}
 	PCB_END_LOOP;
 	pcb_element_destroy(element);
