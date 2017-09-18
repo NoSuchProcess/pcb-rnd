@@ -119,7 +119,7 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 	(PCB_BOX_TOUCHES_BOX(&((e)->BoundingBox), (b)))
 
 #define PCB_ARC_TOUCHES_BOX(a,b)		\
-	(PCB_BOX_TOUCHES_BOX(&((a)->BoundingBox), (b)))
+	(pcb_is_arc_in_rectangle((b)->X2, (b)->Y2, (b)->X1, (b)->Y1, (a)))
 
 
 /* == the combination of *_IN_* and *_TOUCHES_*: use IN for positive boxes == */
