@@ -212,11 +212,21 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		pcb_flag_t f = pcb_no_flags();
 		pcb_flag_add(f, PCB_FLAG_VIA);
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
-			pcb_flag_add(f, PCB_FLAG_HOLE);
+			f = pcb_flag_add(f, PCB_FLAG_HOLE);
+
+		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
+			f = pcb_flag_add(f, PCB_FLAG_SQUARE);
+		if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
+			f = pcb_flag_add(f, PCB_FLAG_OCTAGON);
 
 		via = pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 		if (pin->Number != NULL)
 			pcb_attribute_put(&via->Attributes, "term", pin->Number);
+		if (pin->Flags.q != 0) {
+			char tmp[16];
+			sprintf(tmp, "%d", pin->Flags.q);
+			pcb_attribute_put(&via->Attributes, "elem_smash_shape_id", tmp);
+		}
 	}
 	PCB_END_LOOP;
 
@@ -238,6 +248,13 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 			line->Number = pcb_strdup_null(pad->Number);
 			if (pad->Number != NULL)
 				pcb_attribute_put(&line->Attributes, "term", pad->Number);
+			if (pad->Flags.q != 0) {
+				char tmp[16];
+				sprintf(tmp, "%d", pad->Flags.q);
+				pcb_attribute_put(&line->Attributes, "elem_smash_shape_id", tmp);
+			}
+			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad))
+				pcb_attribute_put(&line->Attributes, "elem_smash_shape_square", "1");
 		}
 	}
 	PCB_END_LOOP;
