@@ -1382,7 +1382,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 
 		rdver = atoi(doc->root->name+20);
 		Ptr->is_footprint = 1;
-		res = parse_subc(Ptr, Ptr->Data, doc->root->data.list.first, &sc);
+		res = parse_subc(NULL, Ptr->Data, doc->root->data.list.first, &sc);
 
 		pcb_layer_group_setup_default(&Ptr->LayerGroups);
 		pcb_layer_group_setup_silks(&Ptr->LayerGroups);
