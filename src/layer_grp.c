@@ -763,6 +763,14 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			continue;
 		}
 
+		if (ly->meta.bound.type & PCB_LYT_OUTLINE) {
+			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
+			grp->type = PCB_LYT_OUTLINE;
+			grp->name = pcb_strdup("outline");
+			pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->meta.bound.name);
+			continue;
+		}
+
 
 		if (ly->meta.bound.type & PCB_LYT_COPPER) { /* top or bottom copper */
 			grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, PCB_LYT_COPPER);
