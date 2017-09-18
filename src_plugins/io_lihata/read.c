@@ -1380,6 +1380,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	else if ((doc->root->type == LHT_LIST) && (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20) == 0)) {
 		pcb_subc_t *sc;
 
+		rdver = atoi(doc->root->name+20);
 		Ptr->is_footprint = 1;
 		res = parse_subc(Ptr, Ptr->Data, doc->root->data.list.first, &sc);
 
