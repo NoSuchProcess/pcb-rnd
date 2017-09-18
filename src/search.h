@@ -110,7 +110,7 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 	(PCB_BOX_TOUCHES_BOX(&((t)->BoundingBox), (b)))
 
 #define	PCB_POLYGON_TOUCHES_BOX(p,b)	\
-	(PCB_BOX_TOUCHES_BOX(&((p)->BoundingBox), (b)))
+	(pcb_poly_is_rect_in_p((b)->X2, (b)->Y2, (b)->X1, (b)->Y1, (p)))
 
 #define	PCB_SUBC_TOUCHES_BOX(s,b)	\
 	(PCB_BOX_TOUCHES_BOX(&((s)->BoundingBox), (b)))

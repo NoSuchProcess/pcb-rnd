@@ -35,6 +35,7 @@
 #include "data.h"
 #include "draw.h"
 #include "error.h"
+#include "polygon.h"
 #include "search.h"
 #include "select.h"
 #include "undo.h"
