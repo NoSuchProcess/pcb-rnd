@@ -78,7 +78,6 @@ typedef enum {
 	PCB_FLAG_ONSOLDER     = 0x00080, /*!< For elements and pads, indicates that they are on the solder side. */
 	PCB_FLAG_AUTO         = 0x00080, /*!< For lines and vias, indicates that these were created by the autorouter. */
 	PCB_FLAG_SQUARE       = 0x00100, /*!< For pins and pads, indicates a square (vs round) pin/pad. */
-	PCB_FLAG_CLEARPOLYPOLY= 0x00100, /*!< For polygons, apply clearance to nearby polygons */
 	PCB_FLAG_RUBBEREND    = 0x00200, /*!< For lines, used internally for rubber band moves: indicates one end already rubber banding. */
 	PCB_FLAG_WARN         = 0x00200, /*!< For pins, vias, and pads, set to indicate a warning. */
 	PCB_FLAG_USETHERMAL   = 0x00400, /*!< Obsolete, indicates that pins/vias should be drawn with thermal fingers. */
@@ -92,7 +91,8 @@ typedef enum {
 	PCB_FLAG_MINCUT       = 0x20000, /* used by the mincut short find code */
 	PCB_FLAG_ONPOINT      = 0x40000, /*!< crosshair is on line point or arc point */
 	PCB_FLAG_TERMNAME     = 0x80000, /*!< when set the names of pins are shown. */
-	PCB_FLAG_DRC_INTCONN  = 0x100000 /*!< Set for objects are put on the DRC mark because of an intconn */
+	PCB_FLAG_DRC_INTCONN  = 0x100000,/*!< Set for objects are put on the DRC mark because of an intconn */
+	PCB_FLAG_CLEARPOLYPOLY= 0x200000 /*!< For polygons, apply clearance to nearby polygons */
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
 } pcb_flag_values_t;
 
