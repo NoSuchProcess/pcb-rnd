@@ -34,6 +34,7 @@
 
 struct pcb_polygon_s  {           /* holds information about a polygon */
 	PCB_ANYOBJECTFIELDS;
+	pcb_coord_t Clearance;
 	pcb_cardinal_t PointN;       /* number of points in polygon */
 	pcb_cardinal_t PointMax;     /* max number from malloc() */
 	pcb_polyarea_t *Clipped;           /* the clipped region of this polygon */

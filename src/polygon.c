@@ -954,6 +954,24 @@ static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_polygon_t *subpoly = (pcb_polygon_t *)b;
+	struct cpInfo *info = (struct cpInfo *) cl;
+	pcb_polygon_t *polygon;
+
+	/* don't subtract the object that was put back! */
+	if (b == info->other)
+		return PCB_R_DIR_NOT_FOUND;
+	if (!PCB_OBJ_HAS_CLEARANCE(subpoly))
+		return PCB_R_DIR_NOT_FOUND;
+
+	polygon = info->polygon;
+	if (Subtract(subpoly->Clipped, polygon, pcb_false) < 0)
+		longjmp(info->env, 1);
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
 static pcb_r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
@@ -1065,6 +1083,8 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 			pcb_r_search(layer->arc_tree, &region, NULL, arc_sub_callback, &info, &seen);
 			r += seen;
 			pcb_r_search(layer->text_tree, &region, NULL, text_sub_callback, &info, &seen);
+			r += seen;
+			pcb_r_search(layer->polygon_tree, &region, NULL, poly_sub_callback, &info, &seen);
 			r += seen;
 		}
 		PCB_END_LOOP;
