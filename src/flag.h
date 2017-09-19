@@ -78,6 +78,7 @@ typedef enum {
 	PCB_FLAG_ONSOLDER     = 0x00080, /*!< For elements and pads, indicates that they are on the solder side. */
 	PCB_FLAG_AUTO         = 0x00080, /*!< For lines and vias, indicates that these were created by the autorouter. */
 	PCB_FLAG_SQUARE       = 0x00100, /*!< For pins and pads, indicates a square (vs round) pin/pad. */
+	PCB_FLAG_CLEARPOLYPOLY= 0x00100, /*!< For polygons, apply clearance to nearby polygons */
 	PCB_FLAG_RUBBEREND    = 0x00200, /*!< For lines, used internally for rubber band moves: indicates one end already rubber banding. */
 	PCB_FLAG_WARN         = 0x00200, /*!< For pins, vias, and pads, set to indicate a warning. */
 	PCB_FLAG_USETHERMAL   = 0x00400, /*!< Obsolete, indicates that pins/vias should be drawn with thermal fingers. */

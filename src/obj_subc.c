@@ -193,10 +193,32 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		dst = pcb_subc_layer_create_buff(sc, src);
 
 		while((line = linelist_first(&src->Line)) != NULL) {
-			linelist_remove(line);
-			linelist_append(&dst->Line, line);
-			PCB_SET_PARENT(line, layer, dst);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
+			char *sq;
+
+			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
+			if ((sq != NULL) && (*sq == '1')) { /* convert to polygon */
+				pcb_coord_t x[4], y[4];
+				int n;
+
+				pcb_sqline_to_rect(line, x, y);
+
+				poly = pcb_poly_new(dst, pcb_no_flags());
+				for(n = 0; n < 4; n++)
+					pcb_poly_point_new(poly, x[n], y[n]);
+				pcb_add_polygon_on_layer(dst, poly);
+/*				pcb_poly_init_clip(st->pcb->Data, dst, poly);*/
+				PCB_FLAG_SET(PCB_FLAG_CLEARPOLYPOLY, poly);
+				pcb_attribute_copy_all(&poly->Attributes, &line->Attributes);
+
+				pcb_line_free(line);
+			}
+			else {
+				/* copy the line */
+				linelist_remove(line);
+				linelist_append(&dst->Line, line);
+				PCB_SET_PARENT(line, layer, dst);
+				PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
+			}
 		}
 
 		while((arc = arclist_first(&src->Arc)) != NULL) {
