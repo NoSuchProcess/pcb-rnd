@@ -45,34 +45,15 @@
 #include "obj_pad.h"
 #include "obj_pinvia.h"
 
-
 static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
-	double l, vx, vy, nx, ny, width, x1, y1, x2, y2, dx, dy;
+	pcb_coord_t x[4], y[4];
 
-	x1 = Pad->Point1.X;
-	y1 = Pad->Point1.Y;
-	x2 = Pad->Point2.X;
-	y2 = Pad->Point2.Y;
-
-	width = (double)((Pad->Thickness + 1) / 2);
-	dx = x2-x1;
-	dy = y2-y1;
-
-	if ((dx == 0) && (dy == 0))
-		dx = 1;
-
-	l = sqrt((double)dx*(double)dx + (double)dy*(double)dy);
-
-	vx = dx / l;
-	vy = dy / l;
-	nx = -vy;
-	ny = vx;
-
-	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x1 - vx * width + nx * width) - cx, (pcb_coord_t)(y1 - vy * width + ny * width) - cy);
-	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x1 - vx * width - nx * width) - cx, (pcb_coord_t)(y1 - vy * width - ny * width) - cy);
-	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x2 + vx * width - nx * width) - cx, (pcb_coord_t)(y2 + vy * width - ny * width) - cy);
-	pcb_fprintf(f, " %.9mm %.9mm", (pcb_coord_t)(x2 + vx * width + nx * width) - cx, (pcb_coord_t)(y2 + vy * width + ny * width) - cy);
+	pcb_sqline_to_rect((pcb_line_t *)Pad, x, y);
+	pcb_fprintf(f, " %.9mm %.9mm", x[0] - cx, y[0] - cy);
+	pcb_fprintf(f, " %.9mm %.9mm", x[1] - cx, y[1] - cy);
+	pcb_fprintf(f, " %.9mm %.9mm", x[2] - cx, y[2] - cy);
+	pcb_fprintf(f, " %.9mm %.9mm", x[3] - cx, y[3] - cy);
 }
 
 #define elem_layer(elem, obj) \

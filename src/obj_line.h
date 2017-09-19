@@ -68,6 +68,8 @@ void pcb_line_flip_side(pcb_layer_t *layer, pcb_line_t *line);
 pcb_coord_t pcb_line_length(const pcb_line_t *line);
 double pcb_line_area(const pcb_line_t *line);
 
+/* Convert a square cap line (e.g. a gEDA/pcb pad) to 4 corner points of a rectangle */
+void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y);
 
 /* hash */
 int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2);

@@ -303,6 +303,40 @@ double pcb_line_area(const pcb_line_t *line)
 		+ (double)line->Thickness * (double)line->Thickness * M_PI; /* cap circles */
 }
 
+void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y)
+{
+	double l, vx, vy, nx, ny, width, x1, y1, x2, y2, dx, dy;
+
+	x1 = line->Point1.X;
+	y1 = line->Point1.Y;
+	x2 = line->Point2.X;
+	y2 = line->Point2.Y;
+
+	width = (double)((line->Thickness + 1) / 2);
+	dx = x2-x1;
+	dy = y2-y1;
+
+	if ((dx == 0) && (dy == 0))
+		dx = 1;
+
+	l = sqrt((double)dx*(double)dx + (double)dy*(double)dy);
+
+	vx = dx / l;
+	vy = dy / l;
+	nx = -vy;
+	ny = vx;
+
+	x[0] = (pcb_coord_t)pcb_round(x1 - vx * width + nx * width);
+	y[0] = (pcb_coord_t)pcb_round(y1 - vy * width + ny * width);
+	x[1] = (pcb_coord_t)pcb_round(x1 - vx * width - nx * width);
+	y[1] = (pcb_coord_t)pcb_round(y1 - vy * width - ny * width);
+	x[2] = (pcb_coord_t)pcb_round(x2 + vx * width - nx * width);
+	y[2] = (pcb_coord_t)pcb_round(y2 + vy * width - ny * width);
+	x[3] = (pcb_coord_t)pcb_round(x2 + vx * width + nx * width);
+	y[3] = (pcb_coord_t)pcb_round(y2 + vy * width + ny * width);
+}
+
+
 
 /*** ops ***/
 /* copies a line to buffer */
