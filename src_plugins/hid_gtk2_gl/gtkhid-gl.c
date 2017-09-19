@@ -27,6 +27,7 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
+#define Z_NEAR 3.0
 extern pcb_hid_t gtk2_gl_hid;
 
 static pcb_hid_gc_t current_gc = NULL;
@@ -149,6 +150,15 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 		idx = PCB->LayerGroups.grp[group].lid[idx];
 	}
 
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -Z_NEAR);
+		
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
+					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px,
+					 ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / gport->view.coord_per_px);
+	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
+							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
 	
@@ -828,7 +838,6 @@ void ghid_gl_screen_update(void)
 {
 }
 
-#define Z_NEAR 3.0
 gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	GHidPort * port = vport;
@@ -903,10 +912,13 @@ gboolean ghid_gl_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev
 
 	ghid_gl_draw_bg_image();
 
-/*	hidgl_init_triangle_array(&buffer);*/
 	ghid_gl_invalidate_current_gc();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
 	pcb_hid_expose_all(&gtk2_gl_hid, &ctx);
 	drawgl_flush();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
 
 	ghid_gl_draw_grid(&ctx.view);
 
@@ -1016,7 +1028,6 @@ gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hi
 	glStencilFunc(GL_ALWAYS, 0, 0);
 
 	/* call the drawing routine */
-/*	hidgl_init_triangle_array(&buffer);*/
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
 	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
