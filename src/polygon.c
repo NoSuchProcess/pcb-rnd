@@ -1043,12 +1043,19 @@ static int UnsubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 	pcb_layer_t *layer;
 	pcb_data_t *data;
 	int r;
+	pcb_coord_t save;
 
 	layer = frompoly->parent.layer;
 	data = layer->parent;
+
+	/* temporarily remove the clearance */
+	save = subpoly->Clearance;
+	subpoly->Clearance = 0;
+
 	r = pcb_poly_init_clip(data, layer, frompoly);
-printf("RECLIP! %d\n", r);
+
 	pcb_poly_invalidate_draw(layer, frompoly);
+	subpoly->Clearance = save;
 	return 0;
 }
 
