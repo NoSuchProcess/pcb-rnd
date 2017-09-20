@@ -690,7 +690,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	}
 
 	if (PCB_layer >= 0 && el == NULL) {
-		polygon = pcb_poly_new(&st->pcb->Data->Layer[PCB_layer], flags);
+		polygon = pcb_poly_new(&st->pcb->Data->Layer[PCB_layer], 0, flags);
 	} else if (PCB_layer < 0 && el == NULL){
 		pcb_message(PCB_MSG_ERROR, "Invalid free fill layer found, %s:%d\n", st->Filename, st->lineno);
 	}

@@ -202,7 +202,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 				pcb_sqline_to_rect(line, x, y);
 
-				poly = pcb_poly_new(dst, pcb_no_flags());
+				poly = pcb_poly_new(dst, line->Clearance, pcb_no_flags());
 				for(n = 0; n < 4; n++)
 					pcb_poly_point_new(poly, x[n], y[n]);
 				pcb_add_polygon_on_layer(dst, poly);

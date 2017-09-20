@@ -1515,7 +1515,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	int saveID;
 
 	/* move data to layer and clear attached struct */
-	polygon = pcb_poly_new(CURRENT, pcb_no_flags());
+	polygon = pcb_poly_new(CURRENT, 2 * conf_core.design.clearance, pcb_no_flags());
 	saveID = polygon->ID;
 	poly_copy_data(polygon, &pcb_crosshair.AttachedPolygon);
 	polygon->ID = saveID;
@@ -2004,7 +2004,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_polygon_t *poly)
 		pcb_polygon_t *newone;
 
 		if (p->contours->area > PCB->IsleArea) {
-			newone = pcb_poly_new(layer, flags);
+			newone = pcb_poly_new(layer, poly->Clearance, flags);
 			if (!newone)
 				return pcb_false;
 			many = pcb_true;
@@ -2098,7 +2098,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 
 	pa = Input;
 	do {
-		Polygon = pcb_poly_new(Layer, Flags);
+		Polygon = pcb_poly_new(Layer, 2 * conf_core.design.clearance, Flags);
 
 		pline = pa->contours;
 		outer = pcb_true;

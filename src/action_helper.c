@@ -952,7 +952,9 @@ void pcb_notify_mode(void)
 																									 pcb_crosshair.AttachedBox.Point1.X,
 																									 pcb_crosshair.AttachedBox.Point1.Y,
 																									 pcb_crosshair.AttachedBox.Point2.X,
-																									 pcb_crosshair.AttachedBox.Point2.Y, pcb_flag_make(flags))) != NULL) {
+																									 pcb_crosshair.AttachedBox.Point2.Y,
+																									 2 * conf_core.design.clearance,
+																									 pcb_flag_make(flags))) != NULL) {
 				pcb_obj_add_attribs(polygon, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 				pcb_undo_inc_serial();

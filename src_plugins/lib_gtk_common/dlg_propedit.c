@@ -347,7 +347,7 @@ static void prop_preview_init(void)
 	v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer + 0,
 																									 PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
 																									 PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
-																									 pcb_flag_make(PCB_FLAG_CLEARPOLY));
+																									 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
 	pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer + 0, v);
 	PCB = old_pcb;
 

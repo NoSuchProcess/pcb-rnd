@@ -2256,7 +2256,7 @@ yyreduce:
 #line 927 "parse_y.y" /* yacc.c:1646  */
     {
 				pcb_poly_new_from_rectangle(Layer,
-					OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-5].measure)) + OU ((yyvsp[-3].measure)), OU ((yyvsp[-4].measure)) + OU ((yyvsp[-2].measure)), pcb_flag_old((yyvsp[-1].integer)));
+					OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-5].measure)) + OU ((yyvsp[-3].measure)), OU ((yyvsp[-4].measure)) + OU ((yyvsp[-2].measure)), 0, pcb_flag_old((yyvsp[-1].integer)));
 			}
 #line 2262 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2379,7 +2379,7 @@ yyreduce:
   case 101:
 #line 1164 "parse_y.y" /* yacc.c:1646  */
     {
-				Polygon = pcb_poly_new(Layer, (yyvsp[-2].flagtype));
+				Polygon = pcb_poly_new(Layer, 0, (yyvsp[-2].flagtype));
 			}
 #line 2385 "parse_y.c" /* yacc.c:1646  */
     break;

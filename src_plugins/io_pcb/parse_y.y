@@ -926,7 +926,7 @@ layerdefinition
 		| T_RECTANGLE '(' measure measure measure measure INTEGER ')'
 			{
 				pcb_poly_new_from_rectangle(Layer,
-					OU ($3), OU ($4), OU ($3) + OU ($5), OU ($4) + OU ($6), pcb_flag_old($7));
+					OU ($3), OU ($4), OU ($3) + OU ($5), OU ($4) + OU ($6), 0, pcb_flag_old($7));
 			}
 		| text_hi_format
 		| text_newformat
@@ -1162,7 +1162,7 @@ polygon_format
 		: /* flags are passed in */
 		T_POLYGON '(' flags ')' '('
 			{
-				Polygon = pcb_poly_new(Layer, $3);
+				Polygon = pcb_poly_new(Layer, 0, $3);
 			}
 		  polygonpoints
 		  polygonholes ')'

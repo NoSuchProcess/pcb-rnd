@@ -84,7 +84,7 @@ static void add_poly(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t ox, pc
 	pcb_polygon_t *np;
 	
 	/* alloc */
-	np = pcb_poly_new(layer, pcb_no_flags());
+	np = pcb_poly_new(layer, 0, pcb_no_flags());
 	pcb_poly_copy(np, poly, ox, oy);
 
 	/* add */

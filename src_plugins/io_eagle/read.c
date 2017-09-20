@@ -1062,7 +1062,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 		return 0;
 	}
 
-	poly = pcb_poly_new(&st->pcb->Data->Layer[ly->ly], pcb_flag_make(PCB_FLAG_CLEARPOLY));
+	poly = pcb_poly_new(&st->pcb->Data->Layer[ly->ly], 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "vertex") == 0) {

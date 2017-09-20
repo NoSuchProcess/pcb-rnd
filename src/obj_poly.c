@@ -194,9 +194,9 @@ void pcb_poly_bbox(pcb_polygon_t *Polygon)
 }
 
 /* creates a new polygon from the old formats rectangle data */
-pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_flag_t Flags)
+pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
-	pcb_polygon_t *polygon = pcb_poly_new(Layer, Flags);
+	pcb_polygon_t *polygon = pcb_poly_new(Layer, Clearance, Flags);
 	if (!polygon)
 		return (polygon);
 
@@ -219,13 +219,14 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 }
 
 /* creates a new polygon on a layer */
-pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags)
+pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	pcb_polygon_t *polygon = pcb_poly_alloc(Layer);
 
 	/* copy values */
 	polygon->Flags = Flags;
 	polygon->ID = pcb_create_ID_get();
+	polygon->Clearance = Clearance;
 	polygon->Clipped = NULL;
 	polygon->NoHoles = NULL;
 	polygon->NoHolesValid = 0;
@@ -243,7 +244,7 @@ static pcb_polygon_t *pcb_poly_copy_meta(pcb_polygon_t *dst, pcb_polygon_t *src)
 pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
 {
 	pcb_board_t *pcb;
-	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
+	pcb_polygon_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
 	pcb_poly_copy(p, src, 0, 0);
 	pcb_add_polygon_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
@@ -257,7 +258,7 @@ pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
 pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_board_t *pcb;
-	pcb_polygon_t *p = pcb_poly_new(dst, src->Flags);
+	pcb_polygon_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
 	pcb_poly_copy(p, src, dx, dy);
 	pcb_add_polygon_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
@@ -350,7 +351,7 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 	pcb_polygon_t *polygon;
 
-	polygon = pcb_poly_new(layer, Polygon->Flags);
+	polygon = pcb_poly_new(layer, Polygon->Clearance, Polygon->Flags);
 	pcb_poly_copy(polygon, Polygon, 0, 0);
 	pcb_poly_copy_meta(polygon, Polygon);
 
@@ -766,7 +767,7 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 {
 	pcb_polygon_t *polygon;
 
-	polygon = pcb_poly_new(Layer, pcb_no_flags());
+	polygon = pcb_poly_new(Layer, Polygon->Clearance, pcb_no_flags());
 	pcb_poly_copy(polygon, Polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	pcb_poly_copy_meta(polygon, Polygon);
 	if (!Layer->polygon_tree)

@@ -2144,7 +2144,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					if (PCBLayer < 0) {
 						return kicad_warning(subtree, "parse error: zone layer <0.");
 					}
-					polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
+					polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], 0, flags);
 				} else {
 					return kicad_error(subtree, "unexpected zone layer null node.");
 				}

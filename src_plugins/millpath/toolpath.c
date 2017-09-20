@@ -179,10 +179,10 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 				pcb_box_bump_box(&otlbb, (pcb_box_t *)arc);
 			pcb_r_end(&it);
 		}
-		result->fill = pcb_poly_new_from_rectangle(result->res_ply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, pcb_flag_make(PCB_FLAG_FULLPOLY));
+		result->fill = pcb_poly_new_from_rectangle(result->res_ply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	}
 	else
-		result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->MaxWidth, pcb->MaxHeight, pcb_flag_make(PCB_FLAG_FULLPOLY));
+		result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->MaxWidth, pcb->MaxHeight, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
 
 	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);
 
