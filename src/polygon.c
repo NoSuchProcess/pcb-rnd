@@ -954,6 +954,33 @@ static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+/* quick subrtact a line from a polygon, knowing the coords and width */
+static int poly_sub_callback_line(pcb_polygon_t *poly, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t width)
+{
+	static pcb_line_t lin;
+	static int inited = 0;
+	int ret;
+
+	if (!inited) {
+		lin.type = PCB_TYPE_LINE;
+		lin.Flags = pcb_no_flags();
+		PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &lin);
+		lin.Thickness = 0;
+		inited = 1;
+	}
+
+	lin.Point1.X = x1;
+	lin.Point1.Y = y1;
+	lin.Point2.X = x2;
+	lin.Point2.Y = y2;
+	lin.Clearance = width;
+
+	ret = SubtractLine(&lin, poly);
+
+	return ret;
+}
+
+
 static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_polygon_t *subpoly = (pcb_polygon_t *)b;
@@ -965,10 +992,62 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	if (!PCB_OBJ_HAS_CLEARANCE(subpoly))
 		return PCB_R_DIR_NOT_FOUND;
-
 	polygon = info->polygon;
 	if (Subtract(subpoly->Clipped, polygon, pcb_false) < 0)
 		longjmp(info->env, 1);
+
+	{ /* subtract contour lines with the clearance of the polygon */
+
+		pcb_poly_it_t it;
+		pcb_polyarea_t *pa;
+
+		/* first, iterate over all islands of a polygon */
+		for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+			pcb_coord_t x, y, px, py, x0, y0;
+			pcb_pline_t *pl;
+			int go;
+			pcb_cardinal_t cnt;
+
+			/* check if we have a contour for the given island */
+			pl = pcb_poly_contour(&it);
+			if (pl != NULL) {
+				/* iterate over the vectors of the contour */
+				for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
+					if (cnt > 0) {
+						poly_sub_callback_line(polygon, px, py, x, y, subpoly->Clearance);
+					}
+					else {
+						x0 = x;
+						y0 = y;
+					}
+					px = x;
+					py = y;
+				}
+				if (cnt > 0)
+					poly_sub_callback_line(polygon, px, py, x0, y0, subpoly->Clearance);
+
+
+				/* iterate over all holes within this island */
+				for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
+					/* iterate over the vectors of the given hole */
+					for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
+						if (cnt > 0) {
+							poly_sub_callback_line(polygon, px, py, x, y, subpoly->Clearance);
+						}
+						else {
+							x0 = x;
+							y0 = y;
+						}
+						px = x;
+						py = y;
+					}
+					if (cnt > 0)
+						poly_sub_callback_line(polygon, px, py, x0, y0, subpoly->Clearance);
+				}
+			}
+		}
+	}
+
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
