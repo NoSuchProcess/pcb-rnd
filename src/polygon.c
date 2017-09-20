@@ -987,6 +987,10 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_polygon_t *polygon;
 
+	/* don't do clearance in itself */
+	if (subpoly == polygon)
+		return PCB_R_DIR_NOT_FOUND;
+
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return PCB_R_DIR_NOT_FOUND;
