@@ -1022,6 +1022,9 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 		/* else fall back to the string compare below */
 	}
 
+	if (inmem_node->data.text.value == NULL)
+		return LHTPERS_INHIBIT;
+
 	/* classic method: string mismatch => overwrite from mem */
 	if (strcmp(inmem_node->data.text.value, ondisk_value) != 0)
 		return LHTPERS_MEM;
