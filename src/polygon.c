@@ -60,6 +60,9 @@
 
 static double rotate_circle_seg[4];
 
+static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_polygon_t * p);
+static int Unsubtract(pcb_polyarea_t * np1, pcb_polygon_t * p);
+
 void pcb_polygon_init(void)
 {
 	double cos_ang = cos(2.0 * M_PI / PCB_POLY_CIRC_SEGS_F);
@@ -959,7 +962,6 @@ static int poly_sub_callback_line(pcb_polygon_t *poly, pcb_coord_t x1, pcb_coord
 {
 	static pcb_line_t lin;
 	static int inited = 0;
-	int ret;
 
 	if (!inited) {
 		lin.type = PCB_TYPE_LINE;
@@ -975,11 +977,80 @@ static int poly_sub_callback_line(pcb_polygon_t *poly, pcb_coord_t x1, pcb_coord
 	lin.Point2.Y = y2;
 	lin.Clearance = width;
 
-	ret = SubtractLine(&lin, poly);
-
-	return ret;
+	return SubtractLine(&lin, poly);
 }
 
+static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
+{
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+
+	if (Subtract(subpoly->Clipped, frompoly, pcb_false) < 0)
+		return -1;
+
+	/* subtract contour lines with the clearance of the polygon */
+
+	/* first, iterate over all islands of a polygon */
+	for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_coord_t x, y, px, py, x0, y0;
+		pcb_pline_t *pl;
+		int go;
+		pcb_cardinal_t cnt;
+
+		/* check if we have a contour for the given island */
+		pl = pcb_poly_contour(&it);
+		if (pl != NULL) {
+			/* iterate over the vectors of the contour */
+			for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
+				if (cnt > 0) {
+					poly_sub_callback_line(frompoly, px, py, x, y, subpoly->Clearance);
+				}
+				else {
+					x0 = x;
+					y0 = y;
+				}
+				px = x;
+				py = y;
+			}
+			if (cnt > 0)
+				poly_sub_callback_line(frompoly, px, py, x0, y0, subpoly->Clearance);
+
+			/* iterate over all holes within this island */
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
+				/* iterate over the vectors of the given hole */
+				for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
+					if (cnt > 0) {
+						poly_sub_callback_line(frompoly, px, py, x, y, subpoly->Clearance);
+					}
+					else {
+						x0 = x;
+						y0 = y;
+					}
+					px = x;
+					py = y;
+				}
+				if (cnt > 0)
+					poly_sub_callback_line(frompoly, px, py, x0, y0, subpoly->Clearance);
+			}
+		}
+	}
+	return 0;
+}
+
+static int UnsubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
+{
+	/* can't unsub overlapping lines and rects - go the expensive way */
+	pcb_layer_t *layer;
+	pcb_data_t *data;
+	int r;
+
+	layer = frompoly->parent.layer;
+	data = layer->parent;
+	r = pcb_poly_init_clip(data, layer, frompoly);
+printf("RECLIP! %d\n", r);
+	pcb_poly_invalidate_draw(layer, frompoly);
+	return 0;
+}
 
 static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 {
@@ -999,60 +1070,8 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 	if (!PCB_OBJ_HAS_CLEARANCE(subpoly))
 		return PCB_R_DIR_NOT_FOUND;
 
-	if (Subtract(subpoly->Clipped, polygon, pcb_false) < 0)
+	if (SubtractPolyPoly(subpoly, polygon) < 0)
 		longjmp(info->env, 1);
-
-	{ /* subtract contour lines with the clearance of the polygon */
-
-		pcb_poly_it_t it;
-		pcb_polyarea_t *pa;
-
-		/* first, iterate over all islands of a polygon */
-		for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-			pcb_coord_t x, y, px, py, x0, y0;
-			pcb_pline_t *pl;
-			int go;
-			pcb_cardinal_t cnt;
-
-			/* check if we have a contour for the given island */
-			pl = pcb_poly_contour(&it);
-			if (pl != NULL) {
-				/* iterate over the vectors of the contour */
-				for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
-					if (cnt > 0) {
-						poly_sub_callback_line(polygon, px, py, x, y, subpoly->Clearance);
-					}
-					else {
-						x0 = x;
-						y0 = y;
-					}
-					px = x;
-					py = y;
-				}
-				if (cnt > 0)
-					poly_sub_callback_line(polygon, px, py, x0, y0, subpoly->Clearance);
-
-
-				/* iterate over all holes within this island */
-				for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
-					/* iterate over the vectors of the given hole */
-					for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
-						if (cnt > 0) {
-							poly_sub_callback_line(polygon, px, py, x, y, subpoly->Clearance);
-						}
-						else {
-							x0 = x;
-							y0 = y;
-						}
-						px = x;
-						py = y;
-					}
-					if (cnt > 0)
-						poly_sub_callback_line(polygon, px, py, x0, y0, subpoly->Clearance);
-				}
-			}
-		}
-	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
@@ -1626,6 +1645,13 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polyg
 		SubtractArc((pcb_arc_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
+	case PCB_TYPE_POLYGON:
+		if (ptr2 != Polygon) {
+			SubtractPolyPoly((pcb_polygon_t *) ptr2, Polygon);
+			Polygon->NoHolesValid = 0;
+			return PCB_R_DIR_FOUND_CONTINUE;
+		}
+		break;
 	case PCB_TYPE_PAD:
 		SubtractPad((pcb_pad_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
@@ -1651,6 +1677,12 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t 
 	case PCB_TYPE_ARC:
 		UnsubtractArc((pcb_arc_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
+	case PCB_TYPE_POLYGON:
+		if (ptr2 != Polygon) {
+			UnsubtractPolyPoly((pcb_polygon_t *) ptr2, Polygon);
+			return PCB_R_DIR_FOUND_CONTINUE;
+		}
+		break;
 	case PCB_TYPE_PAD:
 		UnsubtractPad((pcb_pad_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1725,11 +1757,18 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			PCB_END_LOOP;
 		}
 		break;
+	case PCB_TYPE_POLYGON:
+		if (!PCB_OBJ_HAS_CLEARANCE((pcb_polygon_t *) ptr2))
+			return 0;
+		goto doit;
+
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
 		/* the cast works equally well for lines and arcs */
 		if (!PCB_OBJ_HAS_CLEARANCE((pcb_line_t *) ptr2))
 			return 0;
+		goto doit;
+
 	case PCB_TYPE_TEXT:
 		/* text has no clearance property */
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
@@ -1738,6 +1777,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 #warning TODO: use pcb_layer_flags_ here - but what PCB?
 		if (!(pcb_layer_flags(PCB, pcb_layer_id(Data, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER)))
 			return 0;
+		doit:;
 		PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(PCB, pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
 		{
 			info.layer = layer;
@@ -1786,16 +1826,14 @@ void pcb_poly_restore_to_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr
 {
 	if (type == PCB_TYPE_POLYGON)
 		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
-	else
-		pcb_poly_plows(Data, type, ptr1, ptr2, add_plow);
+	pcb_poly_plows(Data, type, ptr1, ptr2, add_plow);
 }
 
 void pcb_poly_clear_from_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
 		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
-	else
-		pcb_poly_plows(Data, type, ptr1, ptr2, subtract_plow);
+	pcb_poly_plows(Data, type, ptr1, ptr2, subtract_plow);
 }
 
 pcb_bool pcb_poly_isects_poly(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
