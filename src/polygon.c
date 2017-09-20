@@ -987,6 +987,8 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_polygon_t *polygon;
 
+	polygon = info->polygon;
+
 	/* don't do clearance in itself */
 	if (subpoly == polygon)
 		return PCB_R_DIR_NOT_FOUND;
@@ -996,7 +998,7 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	if (!PCB_OBJ_HAS_CLEARANCE(subpoly))
 		return PCB_R_DIR_NOT_FOUND;
-	polygon = info->polygon;
+
 	if (Subtract(subpoly->Clipped, polygon, pcb_false) < 0)
 		longjmp(info->env, 1);
 
