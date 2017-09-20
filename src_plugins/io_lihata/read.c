@@ -487,6 +487,9 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	pcb_attrib_compat_set_intconn(&poly->Attributes, intconn);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 
+	if (rdver >= 3)
+		parse_coord(&poly->Clearance, lht_dom_hash_get(obj, "clearance"));
+
 	geo = lht_dom_hash_get(obj, "geometry");
 	if ((geo != NULL) && (geo->type == LHT_LIST)) {
 		lht_node_t *cnt;

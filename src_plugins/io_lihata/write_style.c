@@ -279,6 +279,7 @@ static lhtpers_rule_t r_geometry[] = {
 
 static const char *pat_geometry[] = {"li:geometry", "*", NULL};
 static lhtpers_rule_t r_polygon[] = {
+	{pat_clearance,  &style_inline, NULL},
 	{pat_geometry,   &style_nlstruct, r_geometry},
 	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
