@@ -46,5 +46,6 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 void *pcb_polyop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_polygon_t *poly);
+void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly);
 
 

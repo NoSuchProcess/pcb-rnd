@@ -202,7 +202,7 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 static pcb_opfunc_t ChangeJoinFunctions = {
 	pcb_lineop_change_join,
 	pcb_textop_change_join,
-	NULL,
+	pcb_polyop_change_join,
 	NULL,
 	NULL,
 	NULL,

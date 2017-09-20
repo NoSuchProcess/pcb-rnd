@@ -461,6 +461,26 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 	return (&Polygon->Points[ctx->insert.idx]);
 }
 
+/* changes the clearance flag of a line */
+void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly)
+{
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, poly))
+		return (NULL);
+	pcb_line_invalidate_erase(poly);
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLYGON, Layer, poly, poly, pcb_false);
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_POLYGON, Layer, poly);
+	}
+	pcb_undo_add_obj_to_flag(poly);
+	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLYPOLY, poly);
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLYGON, Layer, poly, poly, pcb_true);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_POLYGON, Layer, poly);
+	}
+	pcb_line_invalidate_draw(Layer, poly);
+	return poly;
+}
+
 /* low level routine to move a polygon */
 void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 {
