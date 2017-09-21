@@ -644,6 +644,7 @@ void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 	pcb_cardinal_t contour;
 	pcb_cardinal_t contour_start, contour_end, contour_points;
 
+	pprestore(Polygon);
 	point_idx = pcb_poly_point_idx(Polygon, Point);
 	contour = pcb_poly_contour_point(Polygon, point_idx);
 	contour_start = (contour == 0) ? 0 : Polygon->HoleIndex[contour - 1];
@@ -668,6 +669,7 @@ void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 	pcb_poly_bbox(Polygon);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
+	ppclear(Polygon);
 	return (Polygon);
 }
 
@@ -747,6 +749,8 @@ void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 	pcb_cardinal_t contour;
 	pcb_cardinal_t contour_start, contour_end, contour_points;
 
+	pprestore(Polygon);
+
 	point_idx = pcb_poly_point_idx(Polygon, Point);
 	contour = pcb_poly_contour_point(Polygon, point_idx);
 	contour_start = (contour == 0) ? 0 : Polygon->HoleIndex[contour - 1];
@@ -784,6 +788,8 @@ void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
+
+	ppclear(Polygon);
 	return NULL;
 }
 
