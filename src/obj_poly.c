@@ -348,13 +348,13 @@ double pcb_poly_area(const pcb_polygon_t *poly)
 
 #define ppclear(poly) \
 do { \
-	if (PCB_POLY_HAS_CLEARANCE(poly)) \
+	if (PCB_POLY_HAS_CLEARANCE(poly) && (poly->parent.layer != NULL)) \
 		pcb_poly_clear_from_poly(poly->parent.layer->parent, PCB_TYPE_POLYGON, poly->parent.layer, poly); \
 } while(0)
 
 #define pprestore(poly) \
 do { \
-	if (PCB_POLY_HAS_CLEARANCE(poly)) \
+	if (PCB_POLY_HAS_CLEARANCE(poly) && (poly->parent.layer != NULL)) \
 		pcb_poly_restore_to_poly(poly->parent.layer->parent, PCB_TYPE_POLYGON, poly->parent.layer, poly); \
 } while(0)
 
@@ -401,6 +401,7 @@ void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polyg
 
 	PCB_SET_PARENT(polygon, layer, lay);
 
+	ppclear(polygon);
 	return (polygon);
 }
 
@@ -813,11 +814,13 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 	pcb_poly_init_clip(PCB->Data, Layer, polygon);
 	pcb_poly_invalidate_draw(Layer, polygon);
 	pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, Layer, polygon, polygon);
+	ppclear(polygon);
 	return (polygon);
 }
 
 void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
+	pprestore(Polygon);
 	if (Layer->meta.real.vis)
 		pcb_poly_invalidate_erase(Polygon);
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
@@ -828,6 +831,7 @@ void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 		pcb_poly_invalidate_draw(Layer, Polygon);
 		pcb_draw();
 	}
+	ppclear(Polygon);
 	return Polygon;
 }
 
