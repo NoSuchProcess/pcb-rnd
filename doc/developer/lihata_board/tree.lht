@@ -1,0 +1,64 @@
+ha:lht_tree_doc {
+	li:roots {
+	ha:pcb-rnd-board-v* {
+		type=ha
+		desc {
+			The full, self-contained description of a printed circuit board.
+			This is the root of a board .lht file. The * after the v in the name
+			is an integer which is the format version.
+		}
+		li:chidren {
+			ha:meta {
+				type=ha
+				desc { Any meta-data that won't directly turn into physical material (e.g. copper). }
+				li:children {
+					ha:board_name { valtype=string; desc={User assigned name of the board}}
+					ha:grid {
+						type=ha
+						desc { User interface last grid settings }
+						li:children {
+							ha:offs_x { valtype=coord; desc={grid origin: X offset from 0;0}}
+							ha:offs_y { valtype=coord; desc={grid origin: Y offset from 0;0}}
+							ha:spacing { valtype=coord; desc={distance between two grid points both in X and Y directions }}
+						}
+					}
+					ha:size {
+						type=ha
+						desc { object size related settings }
+						li:children {
+							ha:x { valtype=coord; desc={drawing area size X (width)}}
+							ha:y { valtype=coord; desc={drawing area size Y (height)}}
+							ha:isle_area_nm2 { valtype=double; desc={remove polygon islands smaller than this value, specified in mm<sup>2</sup>}}
+							ha:thermal_scale { valtype=double; desc={scale all thermals on the board by this factor}}
+						}
+					}
+				}
+			}
+			ha:layer_stack {
+			
+			}
+			ha:fontkit {
+			
+			}
+			ha:styles {
+			
+			}
+			ha:netlists {
+			
+			}
+			sy:conf = {/roots/conf}
+			sy:data = {/roots/data}
+			sy:attributes = {/roots/attributes}
+		}
+	}
+	ha:data {
+			
+	}
+	ha:conf {
+			
+	}
+	ha:attributes {
+			
+	}
+	}
+}
