@@ -677,6 +677,7 @@ void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	/* erase from screen */
+	pprestore(Polygon);
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_erase(Polygon);
 		if (!ctx->remove.bulk)
@@ -708,6 +709,8 @@ void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygo
 	if (contour == 0)
 		return pcb_poly_remove(Layer, Polygon);
 
+	pprestore(Polygon);
+
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_erase(Polygon);
 		if (!ctx->remove.bulk)
@@ -732,6 +735,9 @@ void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygo
 	Polygon->HoleIndexN--;
 
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
+
+	ppclear(Polygon);
+
 	/* redraw polygon if necessary */
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_draw(Layer, Polygon);
