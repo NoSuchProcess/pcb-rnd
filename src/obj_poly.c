@@ -535,6 +535,7 @@ void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 /* moves a polygon-point */
 void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
 {
+	pprestore(Polygon);
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_erase(Polygon);
 	}
@@ -548,6 +549,7 @@ void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t 
 		pcb_poly_invalidate_draw(Layer, Polygon);
 		pcb_draw();
 	}
+	ppclear(Polygon);
 	return (Point);
 }
 
