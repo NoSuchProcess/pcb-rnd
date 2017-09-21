@@ -439,6 +439,8 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 	pcb_cardinal_t n;
 	pcb_line_t line;
 
+	pprestore(Polygon);
+
 	if (!ctx->insert.forcible) {
 		/*
 		 * first make sure adding the point is sensible
@@ -474,6 +476,9 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 		pcb_poly_invalidate_draw(Layer, Polygon);
 		pcb_draw();
 	}
+
+	ppclear(Polygon);
+
 	return (&Polygon->Points[ctx->insert.idx]);
 }
 
