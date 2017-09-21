@@ -60,7 +60,6 @@
 
 static double rotate_circle_seg[4];
 
-static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_polygon_t * p);
 static int Unsubtract(pcb_polyarea_t * np1, pcb_polygon_t * p);
 
 void pcb_polygon_init(void)
@@ -1046,23 +1045,13 @@ static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 
 static int UnsubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 {
-	/* can't unsub overlapping lines and rects - go the expensive way */
-	pcb_layer_t *layer;
-	pcb_data_t *data;
-	int r;
-	pcb_coord_t save;
+	pcb_polyarea_t *pa = SubtractPolyPoly_construct(subpoly);
+	if (pa == NULL)
+		return -1;
 
-	layer = frompoly->parent.layer;
-	data = layer->parent;
+	if (!Unsubtract(pa, frompoly))
+		return -1;
 
-	/* temporarily remove the clearance */
-	save = subpoly->Clearance;
-	subpoly->Clearance = 0;
-
-	r = pcb_poly_init_clip(data, layer, frompoly);
-
-	pcb_poly_invalidate_draw(layer, frompoly);
-	subpoly->Clearance = save;
 	return 0;
 }
 
