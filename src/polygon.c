@@ -957,8 +957,8 @@ static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-/* quick subrtact a line from a polygon, knowing the coords and width */
-static int poly_sub_callback_line(pcb_polygon_t *poly, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t width)
+/* quick create a polygon area from a line, knowing the coords and width */
+static pcb_polyarea_t *poly_sub_callback_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t width)
 {
 	static pcb_line_t lin;
 	static int inited = 0;
@@ -977,33 +977,45 @@ static int poly_sub_callback_line(pcb_polygon_t *poly, pcb_coord_t x1, pcb_coord
 	lin.Point2.Y = y2;
 	lin.Clearance = width;
 
-	return SubtractLine(&lin, poly);
+	return pcb_poly_from_line(&lin, width);
 }
 
-static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
+#define pa_append(src) \
+	do { \
+		pcb_polyarea_boolean(ret, src, &tmp, PCB_PBO_UNITE); \
+		pcb_polyarea_free(&ret); \
+		ret = tmp; \
+	} while(0)
+
+
+/* Construct a poly area that represents the enlarged subpoly - so it can be
+   subtracted from the parent poly to form the clearance for subpoly */
+static pcb_polyarea_t *SubtractPolyPoly_construct(pcb_polygon_t *subpoly)
 {
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
-
-	if (Subtract(subpoly->Clipped, frompoly, pcb_false) < 0)
-		return -1;
-
-	/* subtract contour lines with the clearance of the polygon */
-
-	/* first, iterate over all islands of a polygon */
+	pcb_polyarea_t *ret = NULL, *pa, *lin, *tmp;
+	
+	/* iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		pcb_coord_t x, y, px, py, x0, y0;
 		pcb_pline_t *pl;
 		int go;
 		pcb_cardinal_t cnt;
 
-		/* check if we have a contour for the given island */
+		if (ret != NULL)
+			pa_append(tmp);
+		else
+			pcb_polyarea_copy0(&ret, pa);
+
+		/* care about the outer contours only */
 		pl = pcb_poly_contour(&it);
 		if (pl != NULL) {
 			/* iterate over the vectors of the contour */
 			for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
 				if (cnt > 0) {
-					poly_sub_callback_line(frompoly, px, py, x, y, subpoly->Clearance);
+					lin = poly_sub_callback_line(px, py, x, y, subpoly->Clearance);
+					pa_append(lin);
+					pcb_polyarea_free(&lin);
 				}
 				else {
 					x0 = x;
@@ -1012,30 +1024,25 @@ static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 				px = x;
 				py = y;
 			}
-			if (cnt > 0)
-				poly_sub_callback_line(frompoly, px, py, x0, y0, subpoly->Clearance);
-
-			/* iterate over all holes within this island */
-			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
-				/* iterate over the vectors of the given hole */
-				for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
-					if (cnt > 0) {
-						poly_sub_callback_line(frompoly, px, py, x, y, subpoly->Clearance);
-					}
-					else {
-						x0 = x;
-						y0 = y;
-					}
-					px = x;
-					py = y;
-				}
-				if (cnt > 0)
-					poly_sub_callback_line(frompoly, px, py, x0, y0, subpoly->Clearance);
+			if (cnt > 0) {
+				lin = poly_sub_callback_line(px, py, x0, y0, subpoly->Clearance);
+				pa_append(lin);
+				pcb_polyarea_free(&lin);
 			}
 		}
 	}
+	return ret;
+}
+
+static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
+{
+	pcb_polyarea_t *pa = SubtractPolyPoly_construct(subpoly);
+	if (pa == NULL)
+		return -1;
+	Subtract(pa, frompoly, pcb_true);
 	return 0;
 }
+
 
 static int UnsubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 {
