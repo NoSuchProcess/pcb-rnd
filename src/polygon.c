@@ -1511,13 +1511,17 @@ void pcb_polygon_copy_attached_to_layer(void)
 	int saveID;
 
 	/* move data to layer and clear attached struct */
-	polygon = pcb_poly_new(CURRENT, 2 * conf_core.design.clearance, pcb_no_flags());
+	polygon = pcb_poly_new(CURRENT, 0, pcb_no_flags());
 	saveID = polygon->ID;
 	poly_copy_data(polygon, &pcb_crosshair.AttachedPolygon);
+	polygon->Clearance = 2 * conf_core.design.clearance;
 	polygon->ID = saveID;
 	PCB_FLAG_SET(PCB_FLAG_CLEARPOLY, polygon);
 	if (conf_core.editor.full_poly)
 		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, polygon);
+	if (conf_core.editor.clear_polypoly)
+		PCB_FLAG_SET(PCB_FLAG_CLEARPOLYPOLY, polygon);
+
 	memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
 
 	pcb_add_polygon_on_layer(CURRENT, polygon);

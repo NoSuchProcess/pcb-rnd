@@ -24,6 +24,7 @@ typedef struct {
 		CFT_INTEGER mode;                  /* currently active mode */
 		CFT_INTEGER buffer_number;         /* number of the current buffer */
 		CFT_BOOLEAN clear_line;            /* new lines/arc clear polygons. */
+		CFT_BOOLEAN clear_polypoly;        /* new polygons clear polygons. */
 		CFT_BOOLEAN full_poly;             /* new polygons are full polygons. */
 		CFT_BOOLEAN unique_names;          /* force unique names */
 		CFT_BOOLEAN snap_pin;              /* snap to pins and pads */

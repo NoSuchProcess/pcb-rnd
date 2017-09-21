@@ -216,6 +216,7 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	PCB_SET_PARENT(polygon, layer, Layer);
+	pcb_poly_clear_from_poly(Layer->parent, PCB_TYPE_POLYGON, Layer, polygon);
 }
 
 /* creates a new polygon on a layer */

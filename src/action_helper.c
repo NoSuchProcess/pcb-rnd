@@ -948,6 +948,8 @@ void pcb_notify_mode(void)
 			int flags = PCB_FLAG_CLEARPOLY;
 			if (conf_core.editor.full_poly)
 				flags |= PCB_FLAG_FULLPOLY;
+			if (conf_core.editor.clear_polypoly)
+				flags |= PCB_FLAG_CLEARPOLYPOLY;
 			if ((polygon = pcb_poly_new_from_rectangle(CURRENT,
 																									 pcb_crosshair.AttachedBox.Point1.X,
 																									 pcb_crosshair.AttachedBox.Point1.Y,

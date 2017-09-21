@@ -35,6 +35,7 @@ li:pcb-rnd-conf-v1 {
 			mode = 110
 			buffer_number = 0
 			clear_line = 1
+			clear_polypoly = 0
 			full_poly = 0
 			unique_names = 0
 			marker_snaps = 1

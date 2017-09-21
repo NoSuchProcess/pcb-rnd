@@ -278,6 +278,7 @@ ha:{
 				ha:Require unique element names     = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
 				ha:Auto-zero delta measurements     = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
 				ha:New lines, arcs clear polygons   = { checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
+				ha:New polygons clear polygons      = { checked=editor/clear_polypoly; action=conf(toggle, editor/clear_polypoly, design) }
 				ha:New polygons are full ones       = { checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
 				ha:Show autorouter trials           = { checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
 				ha:Highlighting on line, arc points = { checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
