@@ -345,6 +345,19 @@ double pcb_poly_area(const pcb_polygon_t *poly)
 
 
 /*** ops ***/
+
+#define ppclear(data, layer, poly) \
+do { \
+	if (PCB_POLY_HAS_CLEARANCE(poly)) \
+		pcb_poly_clear_from_poly(data, PCB_TYPE_POLYGON, layer, poly); \
+} while(0)
+
+#define pprestore(data, layer, poly) \
+do { \
+	if (PCB_POLY_HAS_CLEARANCE(poly)) \
+		pcb_poly_restore_to_poly(data, PCB_TYPE_POLYGON, layer, poly); \
+} while(0)
+
 /* copies a polygon to buffer */
 void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {

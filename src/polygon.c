@@ -834,7 +834,7 @@ static int SubtractLine(pcb_line_t * line, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_OBJ_HAS_CLEARANCE(line))
+	if (!PCB_NONPOLY_HAS_CLEARANCE(line))
 		return 0;
 	if (!(np = pcb_poly_from_line(line, line->Thickness + line->Clearance)))
 		return -1;
@@ -845,7 +845,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_OBJ_HAS_CLEARANCE(arc))
+	if (!PCB_NONPOLY_HAS_CLEARANCE(arc))
 		return 0;
 	if (!(np = pcb_poly_from_arc(arc, arc->Thickness + arc->Clearance)))
 		return -1;
@@ -949,7 +949,7 @@ static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return PCB_R_DIR_NOT_FOUND;
-	if (!PCB_OBJ_HAS_CLEARANCE(arc))
+	if (!PCB_NONPOLY_HAS_CLEARANCE(arc))
 		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractArc(arc, polygon) < 0)
@@ -1074,7 +1074,7 @@ static pcb_r_dir_t poly_sub_callback(const pcb_box_t *b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return PCB_R_DIR_NOT_FOUND;
-	if (!PCB_OBJ_HAS_CLEARANCE(subpoly))
+	if (!PCB_POLY_HAS_CLEARANCE(subpoly))
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (SubtractPolyPoly(subpoly, polygon) < 0)
@@ -1114,7 +1114,7 @@ static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return PCB_R_DIR_NOT_FOUND;
-	if (!PCB_OBJ_HAS_CLEARANCE(line))
+	if (!PCB_NONPOLY_HAS_CLEARANCE(line))
 		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
@@ -1264,7 +1264,7 @@ static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_OBJ_HAS_CLEARANCE(arc))
+	if (!PCB_NONPOLY_HAS_CLEARANCE(arc))
 		return 0;
 
 	/* overlap a bit to prevent gaps from rounding errors */
@@ -1282,7 +1282,7 @@ static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
 
-	if (!PCB_OBJ_HAS_CLEARANCE(line))
+	if (!PCB_NONPOLY_HAS_CLEARANCE(line))
 		return 0;
 
 	/* overlap a bit to prevent notches from rounding errors */
@@ -1765,14 +1765,14 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		}
 		break;
 	case PCB_TYPE_POLYGON:
-		if (!PCB_OBJ_HAS_CLEARANCE((pcb_polygon_t *) ptr2))
+		if (!PCB_POLY_HAS_CLEARANCE((pcb_polygon_t *) ptr2))
 			return 0;
 		goto doit;
 
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
 		/* the cast works equally well for lines and arcs */
-		if (!PCB_OBJ_HAS_CLEARANCE((pcb_line_t *) ptr2))
+		if (!PCB_NONPOLY_HAS_CLEARANCE((pcb_line_t *) ptr2))
 			return 0;
 		goto doit;
 
