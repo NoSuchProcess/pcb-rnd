@@ -558,6 +558,7 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 {
 	pcb_r_delete_entry(Source->polygon_tree, (pcb_box_t *) polygon);
 
+	pprestore(polygon);
 	polylist_remove(polygon);
 	polylist_append(&Destination->Polygon, polygon);
 
@@ -566,7 +567,7 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 	pcb_r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon, 0);
 
 	PCB_SET_PARENT(polygon, layer, Destination);
-
+	ppclear(polygon);
 	return polygon;
 }
 
