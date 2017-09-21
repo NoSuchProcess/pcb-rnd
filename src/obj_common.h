@@ -182,11 +182,16 @@ const char *pcb_obj_id_invalid(const char *id);
 
 
 /* check if an object has clearance to polygon */
+#define PCB_POLY_HAS_CLEARANCE(ply) \
+	(PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, (ply)) && ((ply)->Clearance != 0))
+
+#define PCB_NONPOLY_HAS_CLEARANCE(obj) \
+	(PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (obj)) && ((obj)->Clearance != 0))
+
 #define PCB_OBJ_HAS_CLEARANCE(obj) \
 	( \
-		((obj)->type == PCB_OBJ_POLYGON) \
-		? (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, (obj)) && ((obj)->Clearance != 0)) \
-		: (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (obj)) && ((obj)->Clearance != 0)) \
+		((obj)->type == PCB_OBJ_POLYGON) ? \
+		PCB_POLY_HAS_CLEARANCE(obj) : PCB_NONPOLY_HAS_CLEARANCE(obj) \
 	)
 
 #endif

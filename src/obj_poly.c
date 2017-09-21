@@ -346,16 +346,16 @@ double pcb_poly_area(const pcb_polygon_t *poly)
 
 /*** ops ***/
 
-#define ppclear(data, layer, poly) \
+#define ppclear(poly) \
 do { \
 	if (PCB_POLY_HAS_CLEARANCE(poly)) \
-		pcb_poly_clear_from_poly(data, PCB_TYPE_POLYGON, layer, poly); \
+		pcb_poly_clear_from_poly(poly->parent.layer->parent, PCB_TYPE_POLYGON, poly->parent.layer, poly); \
 } while(0)
 
-#define pprestore(data, layer, poly) \
+#define pprestore(poly) \
 do { \
 	if (PCB_POLY_HAS_CLEARANCE(poly)) \
-		pcb_poly_restore_to_poly(data, PCB_TYPE_POLYGON, layer, poly); \
+		pcb_poly_restore_to_poly(poly->parent.layer->parent, PCB_TYPE_POLYGON, poly->parent.layer, poly); \
 } while(0)
 
 /* copies a polygon to buffer */
@@ -385,6 +385,8 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t * polygon)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
+
+	pprestore(polygon);
 
 	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 
