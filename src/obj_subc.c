@@ -1040,7 +1040,9 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 	pcb_gui->set_line_width(Output.fgGC, 0);
+	pcb_gui->set_draw_xor(Output.fgGC, 1);
 	pcb_subc_draw_origin(subc, 0, 0);
+	pcb_gui->set_draw_xor(Output.fgGC, 0);
 
 	pcb_gui->set_color(Output.fgGC, selected ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
 	pcb_gui->set_line_width(Output.fgGC, 0);

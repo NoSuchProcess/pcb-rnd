@@ -35,6 +35,7 @@ typedef struct render_priv_s {
 	GdkColor grid_color;
 	GdkRectangle clip_rect;
 	pcb_bool clip_rect_valid;
+	pcb_bool direct;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
 
@@ -422,6 +423,8 @@ static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 		return;
 	}
 
+	priv->direct = direct;
+
 	if (direct) {
 		priv->out_pixel = priv->base_pixel;
 		priv->out_clip = NULL;
@@ -607,12 +610,28 @@ static void ghid_gdk_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 
 static void ghid_gdk_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 {
+	render_priv_t *priv = gport->render_priv;
+
 	gc->xor_mask = xor_mask;
 	if (gc->pixel_gc != NULL)
 		gdk_gc_set_function(gc->pixel_gc, xor_mask ? GDK_XOR : GDK_COPY);
 	if (gc->clip_gc != NULL)
 		gdk_gc_set_function(gc->clip_gc, xor_mask ? GDK_XOR : GDK_COPY);
 	ghid_gdk_set_color(gc, gc->colorname);
+
+	/* If not in direct mode then select the correct drawables so that the sketch and clip
+	 * drawables are not drawn to in XOR mode
+	 */
+	if(!priv->direct)	{
+		/* If xor mode then draw directly to the base drawable */
+		if(xor_mask) {
+			priv->out_pixel = priv->base_pixel;
+			priv->out_clip = NULL;
+		}
+		/* If not in direct mode then draw to the sketch and clip drawables */
+		else
+			ghid_sketch_setup(priv);
+	}
 }
 
 static int use_gc(pcb_hid_gc_t gc)
