@@ -211,6 +211,14 @@ static int pcb_act_New(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 }
 
 /* --------------------------------------------------------------------------- */
+static const char pcb_acts_normalize[] = "Normalize()";
+static const char pcb_acth_normalize[] = "Move all objects within the drawing area, align the drawing to 0;0";
+static int pcb_act_normalize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_board_normalize(PCB);
+}
+
+/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_SaveTo[] =
 	"SaveTo(Layout|LayoutAs,filename)\n"
@@ -394,6 +402,9 @@ pcb_hid_action_t file_action_list[] = {
 	,
 	{"New", 0, pcb_act_New,
 	 pcb_acth_New, pcb_acts_New}
+	,
+	{"Normalize", 0, pcb_act_normalize,
+	 pcb_acth_normalize, pcb_acts_normalize}
 	,
 	{"SaveTo", 0, pcb_act_SaveTo,
 	 pcb_acth_SaveTo, pcb_acts_SaveTo}
