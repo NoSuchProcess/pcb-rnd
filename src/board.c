@@ -321,7 +321,6 @@ void pcb_board_changed(int reverted)
 int pcb_board_normalize(pcb_board_t *pcb)
 {
 	pcb_box_t b;
-	pcb_coord_t dx = 0, dy = 0;
 	int chg = 0;
 	
 	if (pcb_data_bbox(&b, pcb->Data) == NULL)
@@ -337,15 +336,7 @@ int pcb_board_normalize(pcb_board_t *pcb)
 		chg++;
 	}
 
-	if (b.X1 < 0)
-		dx = -b.X1;
-	if (b.Y1 < 0)
-		dy = -b.Y1;
-
-	if ((dx > 0) || (dy > 0)) {
-		pcb_data_move(pcb->Data, dx, dy);
-		chg++;
-	}
+	chg += pcb_data_normalize_(pcb->Data, &b);
 
 	return chg;
 }

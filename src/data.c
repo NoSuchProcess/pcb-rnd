@@ -434,6 +434,36 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs)
 	PCB_ENDALL_LOOP;
 }
 
+int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox)
+{
+	pcb_box_t tmp;
+	pcb_coord_t dx = 0, dy = 0;
+
+	if (data_bbox == NULL) {
+		data_bbox = &tmp;
+		if (pcb_data_bbox(data_bbox, data) == NULL)
+			return -1;
+	}
+
+	if (data_bbox->X1 < 0)
+		dx = -data_bbox->X1;
+	if (data_bbox->Y1 < 0)
+		dy = -data_bbox->Y1;
+
+	if ((dx > 0) || (dy > 0)) {
+		pcb_data_move(data, dx, dy);
+		return 1;
+	}
+
+	return 0;
+}
+
+int pcb_data_normalize(pcb_data_t *data)
+{
+	return pcb_data_normalize_(data, NULL);
+}
+
+
 extern pcb_opfunc_t MoveFunctions;
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 {

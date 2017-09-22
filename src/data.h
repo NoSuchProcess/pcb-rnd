@@ -130,6 +130,11 @@ void pcb_data_set_layer_parents(pcb_data_t *data);
 /* Set up all data layers as bound layers to pcb's Data */
 void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rtrees);
 
+/* Make sure there are no negative coords in data, knowing the bbox of the data */
+int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox);
+
+/* Make sure there are no negative coords in data (calculates the bbox of the data) */
+int pcb_data_normalize(pcb_data_t *data);
 
 /* Returns the top level pcb related to a data, or NULL if the data is floating
    (e.g. is a global buffer) */
