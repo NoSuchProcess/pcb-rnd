@@ -54,10 +54,25 @@ SaveTo(PasteBuffer, "'$2'")
 ' | pcb-rnd --gui batch
 }
 
+help()
+{
+	echo "fp2subc - convert old pcb footprints to subcircuit"
+	echo "fp2subc [-l] [-c key=val] [-p path] fp [subc]"
+	echo "  -l          fp is not a file path, use the normal library search for fp"
+	echo "  --lib       same as -l"
+	echo "  -p path     specify the full path of the pcb-rnd executable to use"
+	echo "  --pcb-rnd   same as -p"
+	echo "  -c key=val  pass on a configuration setting to pcb-rnd"
+	echo "  fp          the path or library name of the footprint"
+	echo "  subc        the path of the output subc file"
+	echo ""
+}
+
 lib=0
 in_fp=""
 out_subc=""
 pcb_rnd=pcb-rnd
+conf=""
 while test $# -gt 0
 do
 	cmd="$1"
@@ -66,6 +81,7 @@ do
 		-p|--pcb-rnd) pcb_rnd="$2"; shift 1;;
 		-c) conf="$conf -c $1"; shift 1;;
 		-l|--lib) lib=1 ;;
+		-h|--help) help; exit 0;;
 		*)
 			if test -z "$in_fp"
 			then
