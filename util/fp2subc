@@ -1,0 +1,108 @@
+#!/bin/sh
+#   fp2subc - convert old pcb footprints to subcircuit
+#   Copyright (C) 2017 Tibor 'Igor2' Palinkas
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#   http://repo.hu/projects/pcb-rnd
+
+
+conv_custom_fp()
+{
+local in_fp out_subc
+in_fp=`realpath $1`
+out_subc="$2"
+echo '
+LoadFrom(ElementToBuffer, "'$in_fp'")
+PasteBuffer(Restore)
+PasteBuffer(ToLayout, 0, 0)
+
+# convert to subc
+Select(All)
+PasteBuffer(ConvertSubc)
+
+# save 
+SaveTo(PasteBuffer, "'$out_subc'")
+' | pcb-rnd --gui batch
+}
+
+conv_lib_fp()
+{
+echo '
+LoadFootprint("'$1'")
+PasteBuffer(Restore)
+PasteBuffer(ToLayout, 0, 0)
+
+# convert to subc
+Select(All)
+PasteBuffer(ConvertSubc)
+
+# save 
+SaveTo(PasteBuffer, "'$2'")
+' | pcb-rnd --gui batch
+}
+
+lib=0
+in_fp=""
+out_subc=""
+pcb_rnd=pcb-rnd
+while test $# -gt 0
+do
+	cmd="$1"
+	shift 1
+	case "$cmd" in
+		-p|--pcb-rnd) pcb_rnd="$2"; shift 1;;
+		-c) conf="$conf -c $1"; shift 1;;
+		-l|--lib) lib=1 ;;
+		*)
+			if test -z "$in_fp"
+			then
+				in_fp="$cmd"
+			else
+				if test -z "$out_subc"
+				then
+					out_subc="$out_subc"
+				else
+					echo "fp2subc error: can't use 3 filenames" >&2
+					exit 1
+				fi
+			fi
+			;;
+	esac
+done
+
+if test -z "$in_fp"
+then
+	echo "fp2subc error: need at least an input file name"
+	exit 1
+fi
+
+if test -z "$out_subc"
+then
+	if test $lib -eq 0
+	then
+		out_subc=`echo "$in_fp" | sed "s/.fp$//;s/$/.subc.lht/"`
+	else
+		out_subc=`echo "$in_fp" | sed "s/[^A-Za-z0-9_.-]*//g;s/.fp$//;s/$/.subc.lht/"`
+	fi
+fi
+
+
+if test $lib -eq 0
+then
+	conv_custom_fp "$in_fp" "$out_subc"
+else
+	conv_lib_fp "$in_fp" "$out_subc"
+fi
