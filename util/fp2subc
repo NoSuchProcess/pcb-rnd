@@ -113,6 +113,7 @@ then
 	else
 		out_subc=`echo "$in_fp" | sed "s/[^A-Za-z0-9_.-]*//g;s/.fp$//;s/$/.subc.lht/"`
 	fi
+	echo "fp2subc: saving subcircuit in $out_subc"
 fi
 
 
