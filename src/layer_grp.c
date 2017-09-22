@@ -825,6 +825,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			}
 		}
 	}
+	return 0;
 }
 
 
