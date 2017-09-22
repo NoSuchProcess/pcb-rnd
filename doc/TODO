@@ -77,6 +77,7 @@ For the next release:
 		- text fields are too wide
 	- BUG: subtractive mask recipe is not surviving save and reload with a simple poly drawn on a explicit mask layer [report: Miloh]
 		- provided we already have a subc with the mask layer, change the binding from +manual to -manual, save, load, it is lost
+	- BUG: subc bounding box expands from its initial size when moved. Load a layout with a subc and the bounding box will be tight to the object. Move the subc object and the bounding box will expand. [report: Ade]
 - new hid render:
 	- BUG: font selector crashes the lesstif HID
 	- "erase" color:
