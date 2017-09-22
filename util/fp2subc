@@ -35,7 +35,7 @@ PasteBuffer(ConvertSubc)
 
 # save 
 SaveTo(PasteBuffer, "'$out_subc'")
-' | pcb-rnd --gui batch
+' | "$pcb_rnd" $conf --gui batch
 }
 
 conv_lib_fp()
@@ -51,7 +51,7 @@ PasteBuffer(ConvertSubc)
 
 # save 
 SaveTo(PasteBuffer, "'$2'")
-' | pcb-rnd --gui batch
+' | "$pcb_rnd" $conf --gui batch
 }
 
 help()
@@ -78,7 +78,7 @@ do
 	cmd="$1"
 	shift 1
 	case "$cmd" in
-		-p|--pcb-rnd) pcb_rnd="$2"; shift 1;;
+		-p|--pcb-rnd) pcb_rnd="$1"; shift 1;;
 		-c) conf="$conf -c $1"; shift 1;;
 		-l|--lib) lib=1 ;;
 		-h|--help) help; exit 0;;
