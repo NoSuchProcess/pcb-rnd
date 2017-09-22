@@ -32,10 +32,78 @@ ha:lht_tree_doc {
 							ha:thermal_scale { valtype=double; desc={scale all thermals on the board by this factor}}
 						}
 					}
+					ha:drc {
+						type=ha
+						desc { design rule checker settings for the old DRC }
+						li:children {
+							ha:bloat { valtype=coord; desc={Minimum copper spacing}}
+							ha:shrink { valtype=coord; desc={Minimum overlap between validly touching copper objects}}
+							ha:min_width { valtype=coord; desc={Minimum copper width}}
+							ha:min_silk { valtype=coord; desc={Minimum silk width}}
+							ha:min_drill { valtype=coord; desc={Minimum drill diameter}}
+							ha:min_ring { valtype=coord; desc={Minimum annular ring width}}
+						}
+					}
+					ha:cursor {
+						type=ha
+						desc { obsolete cursor/view state }
+						li:children {
+							ha:x { valtype=coord; obs=1; desc={last positin, X (horizontal)}}
+							ha:y { valtype=coord; obs=1; desc={last positin, Y (horizontal)}}
+							ha:zoom { valtype=double; obs=1; desc={last view zoom factor}}
+						}
+					}
 				}
 			}
 			ha:layer_stack {
-			
+				type=ha
+				desc { physical layer stack information: geometry and properties of physical layers }
+				li:children {
+					ha:groups {
+						type=li
+						desc { ordered list of physical layers from top to bottom }
+						li:children {
+							ha:INTEGER {
+								type=ha
+								desc { a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node }
+								li:children {
+									ha:name { valtype=string; desc={user assigned name of the layer group, e.g. "top copper"}}
+									ha:type {
+										type=ha
+										desc { a flag-list of layer type flag bits }
+										li:children {
+											ha:min_silk { valtype=coord; desc={Minimum silk width}}
+
+											ha:top        { valtype=flag; desc={location: top side}}
+											ha:bottom     { valtype=flag; desc={location: bottom side}}
+											ha:intern     { valtype=flag; desc={location: internal}}
+											ha:logical    { valtype=flag; desc={location: logical (not in the actual stackup)}}
+											ha:copper     { valtype=flag; desc={material: copper}}
+											ha:silk       { valtype=flag; desc={material: silk}}
+											ha:mask       { valtype=flag; desc={material: mask}}
+											ha:paste      { valtype=flag; desc={material: paste}}
+											ha:outline    { valtype=flag; desc={"material": router path}}
+											ha:rat        { valtype=flag; desc={virtual: rat lines}}
+											ha:invis      { valtype=flag; desc={virtual: invisible }}
+											ha:assy       { valtype=flag; desc={virtual: assembly drawing }}
+											ha:fab        { valtype=flag; desc={virtual: fab drawing }}
+											ha:plateddrill { valtype=flag; desc={drills: plated }}
+											ha:unplateddrill { valtype=flag; desc={drills: unplated }}
+											ha:cross-section { valtype=flag; desc={virtual: cross section drawing }}
+											ha:substrate  { valtype=flag; desc={material: substrate or insulator}}
+											ha:misc       { valtype=flag; desc={virtual: virtual misc layer}}
+											ha:virtual    { valtype=flag; desc={if set, the layer is not a physical layer but a drawing or documentation}}
+										}
+									}
+									ha:layers {
+										type=li
+										desc { ordered list of logical layer IDs hosted by this layer group }
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 			ha:fontkit {
 			
@@ -58,7 +126,11 @@ ha:lht_tree_doc {
 			
 	}
 	ha:attributes {
-			
+		type=ha
+		desc { a hash of attribute key=value pairs }
+		li:children {
+			ha:attrib-key { valtype=string; desc={attribute value}}
+		}
 	}
 	}
 }
