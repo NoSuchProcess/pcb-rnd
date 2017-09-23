@@ -4092,8 +4092,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_line.h box.h macro.h move.h \
- misc_util.h ../src_plugins/lib_polyhelp/topoly.h board.h const.h \
- vtroutestyle.h layer.h obj_all_list.h obj_arc_list.h obj_arc.h \
+ misc_util.h polygon_offs.h ../src_plugins/lib_polyhelp/topoly.h board.h \
+ const.h vtroutestyle.h layer.h obj_all_list.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_elem_list.h obj_elem.h \
  obj_line_list.h obj_line.h obj_pad_list.h obj_pad.h obj_pinvia_list.h \
@@ -6332,7 +6332,7 @@ polygon.o: polygon.c ../config.h conf_core.h conf.h global_typedefs.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h draw.h \
  polygon.h remove.h search.h rats.h netlist.h route_style.h \
  obj_pinvia_therm.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- compat_nls.h obj_all.h obj_poly_draw.h
+ compat_nls.h obj_all.h obj_poly_draw.h polygon_offs.c
 polygon1.o: polygon1.c ../config.h rtree.h global_typedefs.h pcb_bool.h \
  unit.h math_helper.h heap.h compat_cc.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \

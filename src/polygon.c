@@ -2155,3 +2155,5 @@ pcb_bool pcb_pline_is_rectangle(pcb_pline_t *pl)
 
 	return pcb_false;
 }
+
+#include "polygon_offs.c"

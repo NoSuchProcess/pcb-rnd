@@ -57,6 +57,7 @@ typedef struct {
 	const char *name;
 } pcb_layer_type_name_t;
 
+/* update docs: lihata format tree */
 static const pcb_layer_type_name_t pcb_layer_type_names[] = {
 	{ PCB_LYT_TOP,     1, "top" },
 	{ PCB_LYT_BOTTOM,  1, "bottom" },
