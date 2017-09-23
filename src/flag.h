@@ -92,7 +92,8 @@ typedef enum {
 	PCB_FLAG_ONPOINT      = 0x40000, /*!< crosshair is on line point or arc point */
 	PCB_FLAG_TERMNAME     = 0x80000, /*!< when set the names of pins are shown. */
 	PCB_FLAG_DRC_INTCONN  = 0x100000,/*!< Set for objects are put on the DRC mark because of an intconn */
-	PCB_FLAG_CLEARPOLYPOLY= 0x200000 /*!< For polygons, apply clearance to nearby polygons */
+	PCB_FLAG_CLEARPOLYPOLY= 0x200000,/*!< For polygons, apply clearance to nearby polygons */
+	PCB_FLAG_DYNTEXT      = 0x400000 /*!< For text: dynamic string (substitute %patterns%)*/
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
 } pcb_flag_values_t;
 

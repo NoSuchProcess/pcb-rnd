@@ -77,7 +77,8 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{PCB_FLAG_NOPASTE, N("nopaste"), PCB_TYPE_PAD},
 	{PCB_FLAG_NONETLIST, N("nonetlist"), PCB_TYPEMASK_ALL},
 	{PCB_FLAG_TERMNAME, N("termname"), PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_SUBC},
-	{PCB_FLAG_CLEARPOLYPOLY, N("clearpolypoly"), PCB_TYPE_POLYGON}
+	{PCB_FLAG_CLEARPOLYPOLY, N("clearpolypoly"), PCB_TYPE_POLYGON},
+	{PCB_FLAG_DYNTEXT, N("dyntext"), PCB_TYPE_TEXT}
 };
 #undef N
 
