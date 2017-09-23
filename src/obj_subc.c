@@ -267,9 +267,16 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	/* create paste and mask side effects - needed when importing from footprint */
 	{
 		if (top_pads > 0) {
-			if (dst_top_paste == NULL) {
-/*				dst_top_paste = */
-			}
+			if (dst_top_paste == NULL)
+				dst_top_paste = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_PASTE, "top paste");
+			if (dst_top_mask == NULL)
+				dst_top_mask = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_MASK, "top mask");
+		}
+		if (bottom_pads > 0) {
+			if (dst_bottom_paste == NULL)
+				dst_bottom_paste = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
+			if (dst_bottom_mask == NULL)
+				dst_bottom_mask = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
 		}
 	}
 
