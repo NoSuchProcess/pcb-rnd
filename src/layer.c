@@ -746,6 +746,18 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 	return best;
 }
 
+pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name)
+{
+	pcb_layer_t *lay = &data->Layer[data->LayerN++];
+
+	memset(lay, 0, sizeof(pcb_layer_t));
+	lay->meta.bound.name = pcb_strdup(name);
+	lay->meta.bound.type = type;
+	lay->grp = -1;
+	lay->parent = data;
+
+	return lay;
+}
 
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name))
 {
