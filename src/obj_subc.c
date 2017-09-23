@@ -200,7 +200,10 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				dst_top_paste = dst;
 			else if ((ltype & PCB_LYT_PASTE) && (ltype & PCB_LYT_BOTTOM))
 				dst_bottom_paste = dst;
-			else if ((ltype & PCB_LYT_MASK) && (ltype & PCB_LYT_TOP))
+		}
+
+		if (dst->comb & PCB_LYC_SUB) {
+			if ((ltype & PCB_LYT_MASK) && (ltype & PCB_LYT_TOP))
 				dst_top_mask = dst;
 			else if ((ltype & PCB_LYT_MASK) && (ltype & PCB_LYT_BOTTOM))
 				dst_bottom_mask = dst;
@@ -284,14 +287,18 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		if (top_pads > 0) {
 			if (dst_top_paste == NULL)
 				dst_top_paste = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_PASTE, "top paste");
-			if (dst_top_mask == NULL)
+			if (dst_top_mask == NULL) {
 				dst_top_mask = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_MASK, "top mask");
+				dst_top_mask->comb = PCB_LYC_SUB;
+			}
 		}
 		if (bottom_pads > 0) {
 			if (dst_bottom_paste == NULL)
 				dst_bottom_paste = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
-			if (dst_bottom_mask == NULL)
+			if (dst_bottom_mask == NULL) {
 				dst_bottom_mask = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
+				dst_top_mask->comb = PCB_LYC_SUB;
+			}
 		}
 	}
 
