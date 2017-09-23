@@ -361,7 +361,7 @@ static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	pcb_coord_t period = 0;
 	pcb_cpoly_hatchdir_t dir = 0;
 	pcb_flag_t flg;
-	int want_contour = 0, cont_specd = 0;
+	int want_contour = 0, want_poly = 0, cont_specd = 0;
 
 	if ((argc > 0) && (pcb_strcasecmp(argv[0], "interactive") == 0)) {
 		pcb_hid_attribute_t attrs[5];
@@ -419,6 +419,7 @@ static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		if (argc > 1) {
 			if (strchr(argv[1], 'c')) want_contour = 1;
+			if (strchr(argv[1], 'p')) want_poly = 1;
 			if (strchr(argv[1], 'h')) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
 			if (strchr(argv[1], 'v')) dir |= PCB_CPOLY_HATCH_VERTICAL;
 			cont_specd = 1;
@@ -449,16 +450,50 @@ static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				}
 			}
 		}
+		if (want_poly) {
+			pcb_polygon_t *p = pcb_poly_new_from_poly(CURRENT, polygon, period, polygon->Clearance, polygon->Flags);
+			PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
+		}
 		pcb_cpoly_hatch_lines(CURRENT, polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
 	} PCB_ENDALL_LOOP;
 	return 0;
 }
 
+static const char pcb_acts_PolyOffs[] = "PolyOffs(offset)\n";
+static const char pcb_acth_PolyOffs[] = "replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer";
+static int pcb_act_PolyOffs(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_coord_t offs;
+	pcb_bool succ;
+
+	if (argc <= 0) {
+		pcb_message(PCB_MSG_ERROR, "Need an offs value \n");
+		return -1;
+	}
+
+	offs = pcb_get_value(argv[0], NULL, NULL, &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "Invalid offs value - must be a distance\n");
+		return -1;
+	}
+
+	PCB_POLY_ALL_LOOP(PCB->Data); {
+		pcb_polygon_t *p;
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
+			continue;
+
+		p = pcb_poly_new_from_poly(CURRENT, polygon, offs, polygon->Clearance, polygon->Flags);
+		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
+	} PCB_ENDALL_LOOP;
+	return 0;
+}
 
 
 static pcb_hid_action_t polyhelp_action_list[] = {
 	{"PolyHatch", 0, pcb_act_PolyHatch,
 	 pcb_acth_PolyHatch, pcb_acts_PolyHatch},
+	{"PolyOffs", 0, pcb_act_PolyOffs,
+	 pcb_acth_PolyOffs, pcb_acts_PolyOffs},
 	{"ToPoly", 0, pcb_act_topoly,
 	 pcb_acth_topoly, pcb_acts_topoly}
 };
