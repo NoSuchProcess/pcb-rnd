@@ -136,11 +136,25 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) text, 0);
 }
 
+/* Render the string of a text, doing substitution if needed - don't allocate if there's no subst */
+static unsigned char *pcb_text_render_str(pcb_text_t *text)
+{
+	return (unsigned char *)text->TextString;
+}
+
+/* Free rendered if it was allocated */
+static void pcb_text_free_str(pcb_text_t *text, unsigned char *rendered)
+{
+	if ((unsigned char *)text->TextString != rendered)
+		free(rendered);
+}
+
+
 /* creates the bounding box of a text object */
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
 	pcb_symbol_t *symbol;
-	unsigned char *s = (unsigned char *) Text->TextString;
+	unsigned char *s, *rendered = pcb_text_render_str(Text);
 	int i;
 	int space;
 	pcb_coord_t minx, miny, maxx, maxy, tx;
@@ -148,6 +162,8 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_coord_t min_unscaled_radius;
 	pcb_bool first_time = pcb_true;
 	pcb_polygon_t *poly;
+
+	s = rendered;
 
 	if (FontPtr == NULL)
 		FontPtr = pcb_font(PCB, Text->fid, 1);
@@ -266,6 +282,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	Text->BoundingBox.X2 += PCB->Bloat;
 	Text->BoundingBox.Y2 += PCB->Bloat;
 	pcb_close_box(&Text->BoundingBox);
+	pcb_text_free_str(Text, rendered);
 }
 
 
@@ -619,9 +636,11 @@ static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0
 static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
 {
 	pcb_coord_t x = 0;
-	unsigned char *string = (unsigned char *) Text->TextString;
+	unsigned char *string, *rendered = pcb_text_render_str(Text);
 	pcb_cardinal_t n;
 	pcb_font_t *font = pcb_font(PCB, Text->fid, 1);
+
+	string = rendered;
 
 	while (string && *string) {
 		/* draw lines if symbol is valid and data is present */
@@ -722,6 +741,7 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 		}
 		string++;
 	}
+	pcb_text_free_str(Text, rendered);
 }
 
 static pcb_bool is_text_term_vert(const pcb_text_t *text)
