@@ -361,7 +361,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				dst_bottom_paste = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
 			if (dst_bottom_mask == NULL) {
 				dst_bottom_mask = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
-				dst_top_mask->comb = PCB_LYC_SUB;
+				dst_bottom_mask->comb = PCB_LYC_SUB;
 			}
 		}
 		for(n = 0; n < vtp0_len(&paste_pads); n++)
