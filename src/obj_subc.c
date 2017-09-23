@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <genvector/vtp0.h>
+
 #include "buffer.h"
 #include "board.h"
 #include "crosshair.h"
@@ -174,6 +176,9 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	pcb_subc_t *sc;
 	int n, top_pads = 0, bottom_pads = 0;
 	pcb_layer_t *dst_top_mask = NULL, *dst_bottom_mask = NULL, *dst_top_paste = NULL, *dst_bottom_paste = NULL;
+	vtp0_t pads;
+
+	vtp0_init(&pads);
 
 	sc = pcb_subc_alloc();
 	sc->ID = pcb_create_ID_get();
@@ -210,9 +215,10 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 
 		while((line = linelist_first(&src->Line)) != NULL) {
-			char *sq;
+			char *sq, *term;
 
-			if (pcb_attribute_get(&line->Attributes, "elem_smash_pad") != NULL) {
+			term = pcb_attribute_get(&line->Attributes, "elem_smash_pad");
+			if (term != NULL) {
 				if (ltype & PCB_LYT_TOP)
 					top_pads++;
 				else if (ltype & PCB_LYT_BOTTOM)
@@ -234,6 +240,10 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				PCB_FLAG_SET(PCB_FLAG_CLEARPOLYPOLY, poly);
 				pcb_attribute_copy_all(&poly->Attributes, &line->Attributes);
 
+				if (term != NULL) {
+					vtp0_append(&pads, poly);
+				}
+
 				pcb_line_free(line);
 			}
 			else {
@@ -242,6 +252,10 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				linelist_append(&dst->Line, line);
 				PCB_SET_PARENT(line, layer, dst);
 				PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
+
+				if (term != NULL) {
+					vtp0_append(&pads, line);
+				}
 			}
 		}
 
@@ -300,7 +314,12 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				dst_top_mask->comb = PCB_LYC_SUB;
 			}
 		}
+		for(n = 0; n < vtp0_len(&pads); n++) {
+			pcb_any_obj_t *o = pads.array[n];
+		}
 	}
+
+	vtp0_uninit(&pads);
 
 	/* create aux layer */
 	{
