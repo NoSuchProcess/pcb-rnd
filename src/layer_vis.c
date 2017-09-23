@@ -167,10 +167,8 @@ void pcb_layervis_save_stack(void)
 		run = pcb_true;
 	}
 
-	if (SavedStack.cnt != 0) {
-		fprintf(stderr,
-						"pcb_layervis_save_stack()  layerstack was already saved and not" "yet restored.  cnt = %d\n", SavedStack.cnt);
-	}
+	if (SavedStack.cnt != 0)
+		pcb_message(PCB_MSG_ERROR, "pcb_layervis_save_stack()  layerstack was already saved and not yet restored.  cnt = %d\n", SavedStack.cnt);
 
 	for (i = 0; i < pcb_max_layer; i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
@@ -193,11 +191,11 @@ void pcb_layervis_restore_stack(void)
 	pcb_cardinal_t i;
 
 	if (SavedStack.cnt == 0) {
-		fprintf(stderr, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
+		pcb_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
 		return;
 	}
 	else if (SavedStack.cnt != 1) {
-		fprintf(stderr, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
+		pcb_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
 	}
 
 	for (i = 0; i < pcb_max_layer; i++) {
