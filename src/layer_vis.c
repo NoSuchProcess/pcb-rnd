@@ -270,7 +270,23 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 
 static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	pcb_layergrp_id_t gid;
+
 	pcb_layer_vis_change_all(PCB, PCB_BOOL_SET, PCB_BOOL_PRESERVE);
+
+	/* do not show paste and mask by default - they are distractive */
+	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
+		if ((g->type & PCB_LYT_MASK) || (g->type & PCB_LYT_PASTE)) {
+			int n;
+			g->vis = pcb_false;
+			for(n = 0; n < g->len; n++) {
+				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+				l->meta.real.vis = 0;
+			}
+		}
+	}
+
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
