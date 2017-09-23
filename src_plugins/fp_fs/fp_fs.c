@@ -433,7 +433,7 @@ static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 			break;
 		case ST_TAG:
 			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
-				if (tags != NULL) {
+				if ((tags != NULL) && (tag != NULL)) {
 					tag[tused] = '\0';
 					if (Tused >= Talloced) {
 						Talloced += 8;
