@@ -97,6 +97,10 @@ For the next release:
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	- Paste layer does not set the drawing mode. [report:Ade]
 	- GL HID does not draw pin/pad names. [report/fixing:Ade]
+	- GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
+		- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
+		- Lesstif HID does not have this dialog => implement it, using DAD
+		- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 
 LATER RELEASES:
 - feature: fp_wget cache dir confiurable [report: agaran]
