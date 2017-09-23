@@ -264,6 +264,21 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 	}
 
+	{ /* convert globals */
+		pcb_pin_t *via;
+
+		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
+			pinlist_remove(via);
+			pinlist_append(&sc->data->Via, via);
+			PCB_SET_PARENT(via, data, sc->data);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
+			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
+					top_pads++;
+					bottom_pads++;
+			}
+		}
+	}
+
 	/* create paste and mask side effects - needed when importing from footprint */
 	{
 		if (top_pads > 0) {
@@ -291,16 +306,6 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	}
 
 
-	{ /* convert globals */
-		pcb_pin_t *via;
-
-		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
-			pinlist_remove(via);
-			pinlist_append(&sc->data->Via, via);
-			PCB_SET_PARENT(via, data, sc->data);
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
-		}
-	}
 
 	return 0;
 }
