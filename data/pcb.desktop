@@ -1,10 +1,10 @@
 [Desktop Entry]
 Version=1.0
-Name=PCB Designer
+Name=pcb-rnd PCB Designer
 GenericName=PCB Design
 Comment=Create and edit printed circuit board designs
 Type=Application
-Exec=pcb %f
+Exec=pcb-rnd %f
 Icon=pcb
 MimeType=application/x-pcb-layout;application/x-pcb-footprint;
 Categories=Engineering;Electronics;
