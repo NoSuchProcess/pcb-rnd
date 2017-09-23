@@ -172,7 +172,8 @@ static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
-	int n;
+	int n, top_pads = 0, bottom_pads = 0;
+	pcb_layer_t *dst_top_mask = NULL, *dst_bottom_mask = NULL, *dst_top_paste = NULL, *dst_bottom_paste = NULL;
 
 	sc = pcb_subc_alloc();
 	sc->ID = pcb_create_ID_get();
@@ -185,15 +186,35 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		pcb_text_t *text;
 		pcb_polygon_t *poly;
 		pcb_arc_t *arc;
+		pcb_layer_type_t ltype;
 
 		if (pcb_layer_is_pure_empty(&buffer->Data->Layer[n]))
 			continue;
 
 		src = &buffer->Data->Layer[n];
 		dst = pcb_subc_layer_create_buff(sc, src);
+		ltype = dst->meta.bound.type;
+
+		if ((dst->comb & PCB_LYC_SUB) == 0) {
+			if ((ltype & PCB_LYT_PASTE) && (ltype & PCB_LYT_TOP))
+				dst_top_paste = dst;
+			else if ((ltype & PCB_LYT_PASTE) && (ltype & PCB_LYT_BOTTOM))
+				dst_bottom_paste = dst;
+			else if ((ltype & PCB_LYT_MASK) && (ltype & PCB_LYT_TOP))
+				dst_top_mask = dst;
+			else if ((ltype & PCB_LYT_MASK) && (ltype & PCB_LYT_BOTTOM))
+				dst_bottom_mask = dst;
+		}
 
 		while((line = linelist_first(&src->Line)) != NULL) {
 			char *sq;
+
+			if (pcb_attribute_get(&line->Attributes, "elem_smash_pad") != NULL) {
+				if (ltype & PCB_LYT_TOP)
+					top_pads++;
+				else if (ltype & PCB_LYT_BOTTOM)
+					bottom_pads++;
+			}
 
 			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
 			if ((sq != NULL) && (*sq == '1')) { /* convert to polygon */
@@ -243,10 +264,19 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 	}
 
+	/* create paste and mask side effects - needed when importing from footprint */
+	{
+		if (top_pads > 0) {
+			if (dst_top_paste == NULL) {
+/*				dst_top_paste = */
+			}
+		}
+	}
+
 	/* create aux layer */
 	{
-		pcb_layer_t *aux = &sc->data->Layer[sc->data->LayerN++];
 		pcb_coord_t unit = PCB_MM_TO_COORD(1);
+		pcb_layer_t *aux = &sc->data->Layer[sc->data->LayerN++];
 
 		memset(aux, 0, sizeof(pcb_layer_t));
 		aux->meta.bound.name = pcb_strdup(SUBC_AUX_NAME);

@@ -255,6 +255,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 			}
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad))
 				pcb_attribute_put(&line->Attributes, "elem_smash_shape_square", "1");
+			pcb_attribute_put(&line->Attributes, "elem_smash_pad", "1");
 		}
 	}
 	PCB_END_LOOP;
