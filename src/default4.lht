@@ -1,0 +1,171 @@
+# pcb-rnd official 4-layer default board
+
+ha:pcb-rnd-board-v3 {
+ ha:attributes {
+   {PCB::grid::unit}=mil
+ }
+
+ li:styles {
+   ha:Signal {
+    diameter = 2mm
+    thickness = 10.0mil
+    hole = 31.5mil
+    clearance = 20.0mil
+   }
+   ha:Power {
+    diameter = 2.2mm
+    thickness = 20.0mil
+    hole = 1mm
+    clearance = 20.0mil
+   }
+   ha:Fat {
+    diameter = 137.8mil
+    thickness = 80.0mil
+    hole = 47.24mil
+    clearance = 25.0mil
+   }
+   ha:Sig-tight {
+    diameter = 64.0mil
+    thickness = 10.0mil
+    hole = 31.5mil
+    clearance = 12.0mil
+   }
+ }
+
+ ha:meta {
+   ha:size {
+    thermal_scale = 0.500000
+    x = 127.0mm; y = 127.0mm
+    isle_area_nm2 = 200000000.0
+   }
+   ha:drc {
+    min_drill = 15.0mil
+    min_ring = 10.0mil
+    bloat = 12.0mil
+    shrink = 9.0mil
+    min_width = 10.0mil
+    min_silk = 7.0mil
+   }
+   ha:grid {
+    spacing = 25.0mil
+    offs_x = 0.0
+    offs_y = 0.0
+   }
+ }
+
+ ha:data {
+   li:layers {
+     ha:top-sig      { lid=0; group=3; }
+     ha:bottom-sig   { lid=1; group=10; }
+     ha:top-gnd      { lid=2; group=3; }
+     ha:bottom-gnd   { lid=3; group=10; }
+     ha:int-sig2     { lid=4; group=7; }
+     ha:int-sig1     { lid=5; group=5; }
+     ha:outline      { lid=6; group=9; }
+     ha:bottom-silk  { lid=7; group=12; ha:combining { auto=1; } }
+     ha:top-silk     { lid=8; group=1; ha:combining { auto=1; } }
+     ha:top-paste    { lid=9; group=0; ha:combining { auto=1; } }
+     ha:top-mask     { lid=10; group=2; ha:combining { sub=1; auto=1; } }
+     ha:bottom-mask  { lid=11; group=11; ha:combining { sub=1; auto=1; } }
+     ha:bottom-paste { lid=12; group=13; ha:combining { auto=1; } }
+   }
+ }
+
+ ha:layer_stack {
+  li:groups {
+   ha:0 {
+    name = top_paste
+    ha:type { top=1; paste=1; }
+    li:layers { 9; }
+   }
+   ha:1 {
+    name = top_silk
+    ha:type { silk=1; top=1; }
+    li:layers { 8; }
+   }
+   ha:2 {
+    name = top_mask
+    ha:type { top=1; mask=1; }
+    li:layers { 10; }
+   }
+   ha:3 {
+    name = top_copper
+    ha:type { copper=1; top=1; }
+    li:layers { 0; 2; }
+   }
+   ha:4 {
+    ha:type { substrate=1; intern=1; }
+    li:layers { }
+    name = grp_4
+   }
+   ha:5 {
+    name = Intern
+    ha:type { copper=1; intern=1; }
+    li:layers { 5; }
+   }
+   ha:6 {
+    ha:type { substrate=1; intern=1; }
+    li:layers { }
+    name = grp_6
+   }
+   ha:7 {
+    name = Intern
+    ha:type { copper=1; intern=1; }
+    li:layers { 4; }
+   }
+   ha:8 {
+    ha:type { substrate=1; intern=1; }
+    li:layers { }
+    name = grp_8
+   }
+   ha:9 {
+    name = global outline
+    ha:type { outline=1; intern=1; }
+    li:layers { 6; }
+   }
+   ha:10 {
+    name = bottom_copper
+    ha:type { bottom=1; copper=1; }
+    li:layers { 1; 3; }
+   }
+   ha:11 {
+    name = bottom_mask
+    ha:type { bottom=1; mask=1; }
+    li:layers { 11; }
+   }
+   ha:12 {
+    name = bottom_silk
+    ha:type { silk=1; bottom=1; }
+    li:layers { 7; }
+   }
+   ha:13 {
+    name = bottom_paste
+    ha:type { bottom=1; paste=1; }
+    li:layers { 12; }
+   }
+  }
+ }
+
+ li:pcb-rnd-conf-v1 {
+  ha:overwrite {
+   ha:design {
+    min_ring = 10.00 mil
+    clearance = 20.00 mil
+    via_thickness = 2000.00 um
+    via_drilling_hole = 31.50 mil
+    min_slk = 7.00 mil
+    max_height = 5.00000 in
+    line_thickness = 10.00 mil
+    shrink = 9.00 mil
+    poly_isle_area = 200000000.2
+    max_width = 6.00000 in
+    min_wid = 10.00 mil
+    bloat = 12.00 mil
+    min_drill = 15.00 mil
+   }
+   ha:editor {
+     grid_unit = mil
+   }
+  }
+ }
+}

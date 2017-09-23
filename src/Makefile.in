@@ -337,7 +337,8 @@ print [@
 
 pcblib_DATA= \
 	default_font \
-	default.pcb \
+	default2.lht \
+	default4.lht \
 	pcb-menu-lesstif.lht \
 	pcb-menu-gtk.lht \
 	pcb-menu-mkey.lht
@@ -345,7 +346,8 @@ pcblib_DATA= \
 
 EXTRA_DIST= \
 	default_font \
-	default.pcb \
+	default2.lht \
+	default4.lht \
 	pcbtest.sh.in
 
 all-local: pcbtest.sh
@@ -359,8 +361,8 @@ conf_core_fields.h: conf_core.h
 conf_internal.c: pcb-conf.lht $(CQUOTE)
 	$(CQUOTE) -n conf_internal < pcb-conf.lht > conf_internal.c
 
-defpcb_internal.c: default.pcb
-	$(CQUOTE) -n default_pcb_internal < default.pcb > defpcb_internal.c
+defpcb_internal.c: default4.lht
+	$(CQUOTE) -n default_pcb_internal < default4.lht > defpcb_internal.c
 
 # do not make this automatic, most users won't need to regenerate font_internal.c
 gen_font:
@@ -382,7 +384,8 @@ distclean: FORCE
 install_all:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins"
 	$(SCCBOX) $(HOW) "pcb-rnd" "$(BINDIR)/pcb-rnd"
-	$(SCCBOX) $(HOW) "default.pcb" "$(DATADIR)/default.pcb"
+	$(SCCBOX) $(HOW) "default2.lht" "$(DATADIR)/default2.lht"
+	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
 	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(DATADIR)/pcb-conf.lht"
 	$(SCCBOX) $(HOW) "pcb-menu-lesstif.lht" "$(DATADIR)/pcb-menu-lesstif.lht"
 	$(SCCBOX) $(HOW) "pcb-menu-gtk.lht" "$(DATADIR)/pcb-menu-gtk.lht"

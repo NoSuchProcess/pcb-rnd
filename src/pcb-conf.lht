@@ -112,8 +112,8 @@ li:pcb-rnd-conf-v1 {
 				{$(rc.path.share)/default_font}
 			}
 			li:default_pcb_file = {
-				{./default.pcb}
-				{$(rc.path.share)/default.pcb}
+				{./default4.lht}
+				{$(rc.path.share)/default4.lht}
 			}
 
 #			script_filename = {}

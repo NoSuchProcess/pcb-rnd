@@ -32,6 +32,7 @@
 #include "obj_subc.h"
 #include "obj_subc_op.h"
 #include "obj_poly_op.h"
+#include "obj_line_op.h"
 #include "obj_term.h"
 #include "obj_text_draw.h"
 #include "rtree.h"
@@ -201,6 +202,9 @@ static move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t *bot
 	switch(o->type) {
 		case PCB_OBJ_POLYGON:
 			pcb_polyop_move_to_layer_low(NULL, source, (pcb_polygon_t *)o, target);
+			break;
+		case PCB_OBJ_LINE:
+			pcb_lineop_move_to_layer_low(NULL, source, (pcb_polygon_t *)o, target);
 			break;
 		default:
 			assert(!"internal error: invalid mask/paste side effect");

@@ -1,3 +1,4 @@
+11724	configure	new default pcb
 11611	configure	enforce safe_fs
 11529	configure	gsch2pcb-rnd uses safe_fs
 11436	configure	dialogs plugin for moving dialog boxes out from core
