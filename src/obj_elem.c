@@ -176,6 +176,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	pcb_element_t *element;
 	pcb_layergrp_id_t group, gbottom, gtop;
 	pcb_layer_t *clayer, *slayer;
+	char tmp[128];
 
 	if (elementlist_length(&Buffer->Data->Element) != 1)
 		return (pcb_false);
@@ -257,6 +258,8 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad))
 				pcb_attribute_put(&line->Attributes, "elem_smash_shape_square", "1");
 			pcb_attribute_put(&line->Attributes, "elem_smash_pad", "1");
+			pcb_sprintf(tmp, "%$mm", pad->Mask);
+			pcb_attribute_put(&line->Attributes, "elem_smash_pad_mask", tmp);
 		}
 	}
 	PCB_END_LOOP;

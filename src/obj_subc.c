@@ -31,6 +31,7 @@
 #include "error.h"
 #include "obj_subc.h"
 #include "obj_subc_op.h"
+#include "obj_poly_op.h"
 #include "obj_term.h"
 #include "obj_text_draw.h"
 #include "rtree.h"
@@ -190,14 +191,31 @@ static pcb_polygon_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 	return poly;
 }
 
+extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
+
+/* Move the pad-side-effect objects to the appropriate layer */
+static move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t *bottom)
+{
+	pcb_layer_t *source = o->parent.layer;
+	pcb_layer_t *target = (source->meta.bound.type & PCB_LYT_TOP) ? top : bottom;
+	switch(o->type) {
+		case PCB_OBJ_POLYGON:
+			pcb_polyop_move_to_layer_low(NULL, source, (pcb_polygon_t *)o, target);
+			break;
+		default:
+			assert(!"internal error: invalid mask/paste side effect");
+	}
+}
+
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
 	int n, top_pads = 0, bottom_pads = 0;
 	pcb_layer_t *dst_top_mask = NULL, *dst_bottom_mask = NULL, *dst_top_paste = NULL, *dst_bottom_paste = NULL;
-	vtp0_t pads;
+	vtp0_t mask_pads, paste_pads;
 
-	vtp0_init(&pads);
+	vtp0_init(&mask_pads);
+	vtp0_init(&paste_pads);
 
 	sc = pcb_subc_alloc();
 	sc->ID = pcb_create_ID_get();
@@ -234,7 +252,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 
 		while((line = linelist_first(&src->Line)) != NULL) {
-			char *sq, *term;
+			pcb_coord_t mask = 0;
+			char *sq, *term, *smask;
 
 			term = pcb_attribute_get(&line->Attributes, "elem_smash_pad");
 			if (term != NULL) {
@@ -242,6 +261,13 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 					top_pads++;
 				else if (ltype & PCB_LYT_BOTTOM)
 					bottom_pads++;
+				smask = pcb_attribute_get(&line->Attributes, "elem_smash_pad_mask");
+				if (smask != NULL) {
+					pcb_bool success;
+					mask = pcb_get_value_ex(smask, NULL, NULL, NULL, "mm", &success);
+					if (!success)
+						smask = NULL;
+				}
 			}
 
 			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
@@ -249,7 +275,13 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				poly = sqline2term(dst, line);
 
 				if (term != NULL) {
-					vtp0_append(&pads, poly);
+					poly = sqline2term(dst, line);
+					vtp0_append(&paste_pads, poly);
+					if (smask != NULL) {
+						line->Thickness = mask;
+						poly = sqline2term(dst, line);
+						vtp0_append(&mask_pads, poly);
+					}
 				}
 
 				pcb_line_free(line);
@@ -262,7 +294,13 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
 
 				if (term != NULL) {
-					vtp0_append(&pads, line);
+					pcb_line_t *nl = pcb_line_dup(dst, line);
+					vtp0_append(&paste_pads, nl);
+					if (smask != NULL) {
+						nl = pcb_line_dup(dst, line);
+						nl->Thickness = mask;
+						vtp0_append(&mask_pads, nl);
+					}
 				}
 			}
 		}
@@ -322,12 +360,14 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				dst_top_mask->comb = PCB_LYC_SUB;
 			}
 		}
-		for(n = 0; n < vtp0_len(&pads); n++) {
-			pcb_any_obj_t *o = pads.array[n];
-		}
+		for(n = 0; n < vtp0_len(&paste_pads); n++)
+			move_pad_side_effect(paste_pads.array[n], dst_top_paste, dst_bottom_paste);
+		for(n = 0; n < vtp0_len(&mask_pads); n++)
+			move_pad_side_effect(mask_pads.array[n], dst_top_mask, dst_bottom_mask);
 	}
 
-	vtp0_uninit(&pads);
+	vtp0_uninit(&mask_pads);
+	vtp0_uninit(&paste_pads);
 
 	/* create aux layer */
 	{
