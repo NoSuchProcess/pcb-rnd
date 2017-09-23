@@ -209,6 +209,32 @@ pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, p
 	return (polygon);
 }
 
+pcb_polygon_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_polygon_t *src, pcb_coord_t offs, pcb_coord_t Clearance, pcb_flag_t Flags)
+{
+	pcb_coord_t x, y;
+	pcb_poly_it_t it;
+	pcb_pline_t *pl;
+	int go;
+	pcb_polygon_t *polygon = pcb_poly_new(Layer, Clearance, Flags);
+
+	if (!polygon)
+		return (polygon);
+
+	it.pa = src->Clipped;
+	pcb_poly_island_first(src, &it);
+	pl = pcb_poly_contour(&it);
+	it.cntr = pcb_pline_dup_offset(pl, offs);
+	for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+		pcb_poly_point_new(polygon, x, y);
+
+	pcb_poly_contours_free(&it.cntr);
+
+	pcb_add_polygon_on_layer(Layer, polygon);
+	return (polygon);
+}
+
+
+
 void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 {
 	pcb_poly_bbox(polygon);
