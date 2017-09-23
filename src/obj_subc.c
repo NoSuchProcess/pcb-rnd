@@ -1004,8 +1004,8 @@ void *pcb_subcop_change_nonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+	pcb_attribute_put(&sc->Attributes, "refdes", ctx->chgname.new_name);
+	return sc;
 }
 
 void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
