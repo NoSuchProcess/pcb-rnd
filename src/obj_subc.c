@@ -170,6 +170,25 @@ static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 	sc->aux_cache[0] = NULL;
 }
 
+static pcb_polygon_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
+{
+	pcb_polygon_t *poly;
+	pcb_coord_t x[4], y[4];
+	int n;
+
+	pcb_sqline_to_rect(line, x, y);
+
+	poly = pcb_poly_new(dst, line->Clearance, pcb_no_flags());
+	for(n = 0; n < 4; n++)
+		pcb_poly_point_new(poly, x[n], y[n]);
+	PCB_FLAG_SET(PCB_FLAG_CLEARPOLYPOLY, poly);
+	pcb_attribute_copy_all(&poly->Attributes, &line->Attributes);
+
+	pcb_poly_init_clip(dst->parent, dst, poly);
+	pcb_add_polygon_on_layer(dst, poly);
+
+	return poly;
+}
 
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
@@ -227,18 +246,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
 			if ((sq != NULL) && (*sq == '1')) { /* convert to polygon */
-				pcb_coord_t x[4], y[4];
-				int n;
-
-				pcb_sqline_to_rect(line, x, y);
-
-				poly = pcb_poly_new(dst, line->Clearance, pcb_no_flags());
-				for(n = 0; n < 4; n++)
-					pcb_poly_point_new(poly, x[n], y[n]);
-				pcb_add_polygon_on_layer(dst, poly);
-				pcb_poly_init_clip(dst->parent, dst, poly);
-				PCB_FLAG_SET(PCB_FLAG_CLEARPOLYPOLY, poly);
-				pcb_attribute_copy_all(&poly->Attributes, &line->Attributes);
+				poly = sqline2term(dst, line);
 
 				if (term != NULL) {
 					vtp0_append(&pads, poly);
