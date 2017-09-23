@@ -83,7 +83,10 @@ static void log_destroy_gc(pcb_hid_gc_t gc)
 
 static void log_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
-	pcb_fprintf(out_, "set_drawing_mode(%d,%d,[%mm;%mm,%mm;%mm])\n", op, direct, screen->X1, screen->Y1, screen->X2, screen->Y2);
+	if (screen != NULL)
+		pcb_fprintf(out_, "set_drawing_mode(%d,%d,[%mm;%mm,%mm;%mm])\n", op, direct, screen->X1, screen->Y1, screen->X2, screen->Y2);
+	else
+		pcb_fprintf(out_, "set_drawing_mode(%d,%d,[NULL-screen])\n", op, direct);
 	delegatee_->set_drawing_mode(op, direct, screen);
 }
 
