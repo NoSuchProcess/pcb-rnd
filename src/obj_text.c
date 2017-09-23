@@ -136,10 +136,49 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) text, 0);
 }
 
+static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
+{
+	pcb_text_t *text = ctx;
+	char *end, key[128], *path, *attrs;
+	size_t len;
+
+	end = strchr(*input, '%');
+	len = end - *input;
+	if (len > sizeof(key)-1)
+		return -1;
+
+	strncpy(key, *input, len);
+	*input += len+1;
+
+	if ((key[0] == 'a') && (key[1] == '.')) {
+		pcb_attribute_list_t *attr = &text->Attributes;
+		path = key+2;
+		if ((path[0] == 'p') && (memcmp(path, "parent.", 7) == 0)) {
+			pcb_data_t *par = text->parent.layer->parent;
+			if (par->parent_type == PCB_PARENT_SUBC)
+				attr = &par->parent.subc->Attributes;
+			else if (par->parent_type == PCB_PARENT_BOARD)
+				attr = &par->parent.board->Attributes;
+			else
+				attr = NULL;
+			path+=7;
+		}
+		if (attr != NULL) {
+			attrs = pcb_attribute_get(attr, path);
+			if (attrs != NULL)
+				gds_append_str(s, attrs);
+		}
+	}
+	return 0;
+}
+
 /* Render the string of a text, doing substitution if needed - don't allocate if there's no subst */
 static unsigned char *pcb_text_render_str(pcb_text_t *text)
 {
-	return (unsigned char *)text->TextString;
+	if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text))
+		return (unsigned char *)text->TextString;
+
+	return pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
 }
 
 /* Free rendered if it was allocated */
