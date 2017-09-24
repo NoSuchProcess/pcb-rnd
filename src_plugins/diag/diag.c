@@ -26,6 +26,7 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
+#include "flag_str.h"
 #include "layer.h"
 #include "diag_conf.h"
 #include "action_helper.h"
@@ -244,6 +245,44 @@ static int pcb_act_integrity(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	return 0;
 }
 
+static int dumpflag_cb(void *ctx, gds_t *s, const char **input)
+{
+	pcb_flag_bits_t *flag = (pcb_flag_bits_t *)ctx;
+	switch(**input) {
+		case 'm': (*input)++; pcb_append_printf(s, "%lx", flag->mask); break;
+		case 'M': (*input)++; gds_append_str(s, flag->mask_name); break;
+		case 'N': (*input)++; gds_append_str(s, flag->name); break;
+		case 't': (*input)++; pcb_append_printf(s, "%lx", flag->object_types); break;
+		case 'H': (*input)++; gds_append_str(s, flag->name); break;
+		default:
+			return -1;
+	}
+	return 0;
+}
+
+static const char dumpflags_syntax[] = "dumpflags([fmt])\n";
+static const char dumpflags_help[] = "dump flags, optionally using the format string provided by the user";
+static int pcb_act_dumpflags(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int n;
+	const char *default_fmt = "%m (%M %N) for %t:\n  %H\n";
+	const char *fmt;
+
+	if (argc > 0)
+		fmt = argv[0];
+	else
+		fmt = default_fmt;
+printf("fmt='%s'\n", fmt);
+	for(n = 0; n < pcb_object_flagbits_len; n++) {
+		char *tmp;
+		tmp = pcb_strdup_subst(fmt, dumpflag_cb, &pcb_object_flagbits[n], PCB_SUBST_PERCENT);
+		printf("%s", tmp);
+		free(tmp);
+	}
+
+	return 0;
+}
+
 static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 
@@ -281,7 +320,9 @@ pcb_hid_action_t diag_action_list[] = {
 	{"d1", 0, pcb_act_d1,
 	 d1_help, d1_syntax},
 	{"integrity", 0, pcb_act_integrity,
-	 integrity_help, integrity_syntax}
+	 integrity_help, integrity_syntax},
+	{"dumpflags", 0, pcb_act_dumpflags,
+	 dumpflags_help, dumpflags_syntax}
 };
 
 static const char *diag_cookie = "diag plugin";
