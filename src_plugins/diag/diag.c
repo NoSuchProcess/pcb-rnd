@@ -272,10 +272,10 @@ static int pcb_act_dumpflags(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		fmt = argv[0];
 	else
 		fmt = default_fmt;
-printf("fmt='%s'\n", fmt);
+
 	for(n = 0; n < pcb_object_flagbits_len; n++) {
 		char *tmp;
-		tmp = pcb_strdup_subst(fmt, dumpflag_cb, &pcb_object_flagbits[n], PCB_SUBST_PERCENT);
+		tmp = pcb_strdup_subst(fmt, dumpflag_cb, &pcb_object_flagbits[n], PCB_SUBST_PERCENT /*| PCB_SUBST_BACKSLASH*/);
 		printf("%s", tmp);
 		free(tmp);
 	}
