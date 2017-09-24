@@ -211,6 +211,20 @@ static void move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t
 	}
 }
 
+static pcb_coord_t read_mask(pcb_any_obj_t *obj)
+{
+	const char *smask = pcb_attribute_get(&obj->Attributes, "elem_smash_pad_mask");
+	pcb_coord_t mask = 0;
+
+	if (smask != NULL) {
+		pcb_bool success;
+		mask = pcb_get_value_ex(smask, NULL, NULL, NULL, "mm", &success);
+		if (!success)
+			mask = 0;
+	}
+	return mask;
+}
+
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
@@ -257,7 +271,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 		while((line = linelist_first(&src->Line)) != NULL) {
 			pcb_coord_t mask = 0;
-			char *sq, *term, *smask;
+			char *sq, *term;
 
 			term = pcb_attribute_get(&line->Attributes, "elem_smash_pad");
 			if (term != NULL) {
@@ -265,13 +279,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 					top_pads++;
 				else if (ltype & PCB_LYT_BOTTOM)
 					bottom_pads++;
-				smask = pcb_attribute_get(&line->Attributes, "elem_smash_pad_mask");
-				if (smask != NULL) {
-					pcb_bool success;
-					mask = pcb_get_value_ex(smask, NULL, NULL, NULL, "mm", &success);
-					if (!success)
-						smask = NULL;
-				}
+				mask = read_mask(line);
 			}
 
 			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
@@ -281,7 +289,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				if (term != NULL) {
 					poly = sqline2term(dst, line);
 					vtp0_append(&paste_pads, poly);
-					if (smask != NULL) {
+					if (mask > 0) {
 						line->Thickness = mask;
 						poly = sqline2term(dst, line);
 						vtp0_append(&mask_pads, poly);
@@ -300,7 +308,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				if (term != NULL) {
 					pcb_line_t *nl = pcb_line_dup(dst, line);
 					vtp0_append(&paste_pads, nl);
-					if (smask != NULL) {
+					if (mask > 0) {
 						nl = pcb_line_dup(dst, line);
 						nl->Thickness = mask;
 						vtp0_append(&mask_pads, nl);
@@ -340,8 +348,13 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			PCB_SET_PARENT(via, data, sc->data);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
 			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
+				pcb_coord_t mask = read_mask(via);
+				pcb_line_t *line;
 				top_pads++;
 				bottom_pads++;
+
+/*				line = pcb_line_new(sc->Data->Layer[0], via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
+				vtp0_append(&mask_pads, poly);*/
 			}
 		}
 	}
