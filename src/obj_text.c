@@ -178,7 +178,7 @@ static unsigned char *pcb_text_render_str(pcb_text_t *text)
 	if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text))
 		return (unsigned char *)text->TextString;
 
-	return pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	return (unsigned char *)pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
 }
 
 /* Free rendered if it was allocated */
