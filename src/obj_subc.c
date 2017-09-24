@@ -195,7 +195,7 @@ static pcb_polygon_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 
 /* Move the pad-side-effect objects to the appropriate layer */
-static move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t *bottom)
+static void move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t *bottom)
 {
 	pcb_layer_t *source = o->parent.layer;
 	pcb_layer_t *target = (source->meta.bound.type & PCB_LYT_TOP) ? top : bottom;
@@ -204,7 +204,7 @@ static move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t *bot
 			pcb_polyop_move_to_layer_low(NULL, source, (pcb_polygon_t *)o, target);
 			break;
 		case PCB_OBJ_LINE:
-			pcb_lineop_move_to_layer_low(NULL, source, (pcb_polygon_t *)o, target);
+			pcb_lineop_move_to_layer_low(NULL, source, (pcb_line_t *)o, target);
 			break;
 		default:
 			assert(!"internal error: invalid mask/paste side effect");
