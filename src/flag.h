@@ -104,63 +104,13 @@ typedef enum {
  * PCB flags - kept only for file format compatibility reasons; these bits
    should be a mirror of booleans from the conf.
  */
-/* %start-doc pcbfile ~pcbflags
-@node PCBFlags
-@section PCBFlags
-@table @code
-@item 0x00001
-Pinout displays pin numbers instead of pin names.
-@item 0x00002
-Use local reference for moves, by setting the mark at the beginning of
-each move.
-@item 0x00004
-When set, only polygons and their clearances are drawn, to see if
-polygons have isolated regions.
-@item 0x00008
-Display DRC region on crosshair.
-@item 0x00010
-Do all move, mirror, rotate with rubberband connections.
-@item 0x00020
-Display descriptions of elements, instead of refdes.
-@item 0x00040
-Display names of elements, instead of refdes.
-@item 0x00080
-Auto-DRC flag.  When set, PCB doesn't let you place copper that
-violates DRC.
-@item 0x00100
-Enable 'all-direction' lines.
-@item 0x00200
-Switch starting angle after each click.
-@item 0x00400
-Force unique names on board.
-@item 0x00800
-New lines/arc clear polygons.
-@item 0x01000
-pcb_crosshair snaps to pins and pads.
-@item 0x02000
-Show the solder mask layer.
-@item 0x04000
-Draw with thin lines.
-@item 0x08000
-Move items orthogonally.
-@item 0x10000
-Draw autoroute paths real-time.
-@item 0x20000
-New polygons are full ones.
-@item 0x40000
-Names are locked, the mouse cannot select them.
-@item 0x80000
-Everything but names are locked, the mouse cannot select anything else.
-@item 0x100000
-New polygons are full polygons.
-@item 0x200000
-When set, element names are not drawn.
+
+/*
 +@item 0x800000
 +snap to certain off-grid points.
 +@item 0x1000000
 +highlight lines and arcs when the crosshair is on one of their endpoints.
-@end table
-%end-doc */
+*/
 
 #define PCB_FLAGS               0x01ffffff	/* all used flags */
 
