@@ -874,7 +874,19 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (Polygon->term == NULL))
 		return NULL;
 	pcb_undo_add_obj_to_flag(Polygon);
+
+
+	if (ctx->chgflag.flag & (PCB_FLAG_CLEARPOLY | PCB_FLAG_CLEARPOLYPOLY))
+		pcb_poly_restore_to_poly(ctx->chgflag.pcb->Data, PCB_TYPE_POLYGON, Polygon->parent.layer, Polygon);
+
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Polygon);
+
+	if (ctx->chgflag.flag & PCB_FLAG_FULLPOLY)
+		pcb_poly_init_clip(ctx->chgflag.pcb->Data, Polygon->parent.layer, Polygon);
+
+	if (ctx->chgflag.flag & (PCB_FLAG_CLEARPOLY | PCB_FLAG_CLEARPOLYPOLY))
+		pcb_poly_clear_from_poly(ctx->chgflag.pcb->Data, PCB_TYPE_POLYGON, Polygon->parent.layer, Polygon);
+
 	return Polygon;
 }
 

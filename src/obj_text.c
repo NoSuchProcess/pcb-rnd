@@ -623,7 +623,15 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (Text->term == NULL))
 		return NULL;
 	pcb_undo_add_obj_to_flag(Text);
+
+	if (ctx->chgflag.flag & PCB_FLAG_CLEARLINE)
+		pcb_poly_restore_to_poly(ctx->chgflag.pcb->Data, PCB_TYPE_TEXT, Text->parent.layer, Text);
+
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Text);
+
+	if (ctx->chgflag.flag & PCB_FLAG_CLEARLINE)
+		pcb_poly_clear_from_poly(ctx->chgflag.pcb->Data, PCB_TYPE_TEXT, Text->parent.layer, Text);
+
 	return Text;
 }
 
