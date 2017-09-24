@@ -42,6 +42,7 @@ typedef struct {
 	   of these.  */
 	int object_types;
 
+	char *help;
 } pcb_flag_bits_t;
 
 /* All flags natively known by the core */
