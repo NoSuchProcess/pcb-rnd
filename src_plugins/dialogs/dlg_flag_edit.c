@@ -28,6 +28,8 @@ typedef struct{
 	int wid[64];
 	int len;
 	pcb_board_t *pcb;
+	int obj_type;
+	void *ptr1;
 	pcb_any_obj_t *obj;
 	pcb_hid_attribute_t *attrs;
 } fe_ctx_t;
@@ -38,7 +40,25 @@ typedef struct{
 
 static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	int n;
 	fe_ctx_t *ctx = caller_data;
+	unsigned long set = 0, clr = 0;
+
+	for(n = 0; n < ctx->len; n++) {
+		int wid = ctx->wid[n];
+		if ((ctx->attrs[wid].default_val.int_value) && (!PCB_FLAG_TEST(ctx->flag_bit[n], ctx->obj)))
+			set |= ctx->flag_bit[n];
+		else if (!(ctx->attrs[wid].default_val.int_value) && PCB_FLAG_TEST(ctx->flag_bit[n], ctx->obj))
+			clr |= ctx->flag_bit[n];
+	}
+
+	/* Note: this function is called upon each change so only one of these will be non-zero: */
+
+	if (set != 0)
+		pcb_flag_change(ctx->pcb, PCB_CHGFLG_SET, set, ctx->obj_type, ctx->ptr1, ctx->obj, ctx->obj);
+
+	if (clr != 0)
+		pcb_flag_change(ctx->pcb, PCB_CHGFLG_CLEAR, clr, ctx->obj_type, ctx->ptr1, ctx->obj, ctx->obj);
 }
 
 
@@ -49,7 +69,7 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	fe_ctx_t ctx;
 	pcb_hid_attr_val_t val;
-	int type, objtype;
+	int type;
 
 	memset(&ctx, 0, sizeof(ctx));
 
@@ -57,17 +77,16 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		void *ptr1, *ptr2, *ptr3;
 		pcb_gui->get_coords("Click on object to change size of", &x, &y);
 		type = pcb_search_screen(x, y, PCB_FLAGEDIT_TYPES, &ptr1, &ptr2, &ptr3);
+		ctx.ptr1 = ptr1;
 		ctx.obj = (pcb_any_obj_t *)ptr2;
+		ctx.obj_type = type & 0xFFFF;
 	}
 	else
 		PCB_ACT_FAIL(FlagEdit);
 
-	objtype = type & 0xFFFF;
-
-	if (objtype != 0) { /* interactive mode */
+	if (ctx.obj_type != 0) { /* interactive mode */
 		int n;
 		char tmp[128];
-
 		PCB_DAD_DECL(dlg);
 
 		ctx.pcb = PCB;
@@ -76,18 +95,16 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_COMPFLAG(dlg, PCB_HATF_LABEL);
 
-		sprintf(tmp, "Object flags of %x #%ld\n", objtype, ctx.obj->ID);
+		sprintf(tmp, "Object flags of %x #%ld\n", ctx.obj_type, ctx.obj->ID);
 		PCB_DAD_LABEL(dlg, tmp);
 
 		for(n = 0; n < pcb_object_flagbits_len; n++) {
-			if (pcb_object_flagbits[n].object_types & objtype) {
-				printf("name=%s mask=%x\n", pcb_object_flagbits[n].name, pcb_object_flagbits[n].mask);
+			if (pcb_object_flagbits[n].object_types & ctx.obj_type) {
 				PCB_DAD_BOOL(dlg, pcb_object_flagbits[n].name);
 				ctx.wid[ctx.len] = PCB_DAD_CURRENT(dlg);
 				ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;
 				if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
-					PCB_DAD_SET_VALUE(dlg, ctx.wid[ctx.len], int_value, 1);
-			
+					PCB_DAD_DEFAULT(dlg, 1);
 				ctx.len++;
 			}
 		}
@@ -96,6 +113,7 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		ctx.attrs = dlg;
 
 		PCB_DAD_NEW(dlg, "flag_edit", "Edit flags", &ctx);
+
 		val.func = fe_attr_chg;
 		pcb_gui->attr_dlg_property(dlg_hid_ctx, PCB_HATP_GLOBAL_CALLBACK, &val);
 
