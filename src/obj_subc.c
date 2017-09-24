@@ -279,7 +279,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 					top_pads++;
 				else if (ltype & PCB_LYT_BOTTOM)
 					bottom_pads++;
-				mask = read_mask(line);
+				mask = read_mask((pcb_any_obj_t *)line);
 			}
 
 			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
@@ -339,6 +339,18 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 	}
 
+	{ /* check if we have pins - they need mask */
+		pcb_pin_t *via;
+
+		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
+			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
+				top_pads++;
+				bottom_pads++;
+				break;
+			}
+		}
+	}
+
 	/* create paste and mask side effects - needed when importing from footprint */
 	{
 		if (top_pads > 0) {
@@ -368,13 +380,26 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			PCB_SET_PARENT(via, data, sc->data);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
 			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
-				pcb_coord_t mask = read_mask(via);
-				pcb_line_t *line;
-				top_pads++;
-				bottom_pads++;
+				pcb_coord_t mask = read_mask((pcb_any_obj_t *)via);
+				
+				if (mask == 0)
+					mask = via->Mask;
 
-/*				line = pcb_line_new(sc->Data->Layer[0], via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
-				vtp0_append(&mask_pads, poly);*/
+				if (mask > 0) {
+					if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via)) {
+						pcb_line_t line;
+						memset(&line, 0, sizeof(line));
+						line.Point1.X = line.Point2.X = via->X;
+						line.Point1.Y = line.Point2.Y = via->Y;
+						line.Thickness = mask;
+						sqline2term(dst_top_mask, &line);
+						sqline2term(dst_bottom_mask, &line);
+					}
+					else {
+						pcb_line_new(dst_top_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
+						pcb_line_new(dst_bottom_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
+					}
+				}
 			}
 		}
 	}
