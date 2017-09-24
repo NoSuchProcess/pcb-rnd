@@ -347,7 +347,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	{ /* check if we have pins - they need mask */
 		pcb_pin_t *via;
 
-		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
+		for(via = pinlist_first(&buffer->Data->Via); via != NULL; via = pinlist_next(via)) {
 			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
 				top_pads++;
 				bottom_pads++;
