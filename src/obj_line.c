@@ -906,10 +906,13 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 	return (line);
 }
 
-#define PCB_LINE_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_RAT | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_RUBBEREND | PCB_FLAG_LOCK | PCB_FLAG_VISIT | PCB_FLAG_TERMNAME)
 void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	if ((ctx->chgflag.flag & PCB_LINE_FLAGS) != ctx->chgflag.flag)
+	static pcb_flag_values_t pcb_line_flags = 0;
+	if (pcb_line_flags == 0)
+		pcb_line_flags = pcb_obj_valid_flags(PCB_TYPE_LINE);
+
+	if ((ctx->chgflag.flag & pcb_line_flags) != ctx->chgflag.flag)
 		return NULL;
 	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (Line->term == NULL))
 		return NULL;

@@ -31,6 +31,7 @@
 #include <stddef.h>
 #include <ctype.h>
 #include "conf_core.h"
+#include "flag_str.h"
 #include "global_typedefs.h"
 #include "const.h"
 #include "error.h"
@@ -186,4 +187,16 @@ const char *pcb_obj_id_invalid(const char *id)
 		return s;
 	}
 	return NULL;
+}
+
+pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype)
+{
+	pcb_flag_values_t res = 0;
+	int n;
+
+	for(n = 0; n < pcb_object_flagbits_len; n++)
+		if (pcb_object_flagbits[n].object_types & objtype)
+			res |= pcb_object_flagbits[n].mask;
+
+	return res;
 }

@@ -612,10 +612,13 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, layer, text);
 }
 
-#define PCB_TEXT_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT | PCB_FLAG_TERMNAME)
 void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	if ((ctx->chgflag.flag & PCB_TEXT_FLAGS) != ctx->chgflag.flag)
+	static pcb_flag_values_t pcb_text_flags = 0;
+	if (pcb_text_flags == 0)
+		pcb_text_flags = pcb_obj_valid_flags(PCB_TYPE_TEXT);
+
+	if ((ctx->chgflag.flag & pcb_text_flags) != ctx->chgflag.flag)
 		return NULL;
 	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (Text->term == NULL))
 		return NULL;

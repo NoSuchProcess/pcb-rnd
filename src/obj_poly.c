@@ -34,6 +34,7 @@
 #include "compat_nls.h"
 #include "undo.h"
 #include "polygon.h"
+#include "polygon_offs.h"
 #include "rotate.h"
 #include "search.h"
 
@@ -862,10 +863,13 @@ void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 	return Polygon;
 }
 
-#define PCB_POLY_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT)
 void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
-	if ((ctx->chgflag.flag & PCB_POLY_FLAGS) != ctx->chgflag.flag)
+	static pcb_flag_values_t pcb_poly_flags = 0;
+	if (pcb_poly_flags == 0)
+		pcb_poly_flags = pcb_obj_valid_flags(PCB_TYPE_POLYGON);
+
+	if ((ctx->chgflag.flag & pcb_poly_flags) != ctx->chgflag.flag)
 		return NULL;
 	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (Polygon->term == NULL))
 		return NULL;

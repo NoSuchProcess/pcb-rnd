@@ -80,6 +80,9 @@ struct pcb_box_s {  /* a bounding box */
 /* Return the user readable name of an object type in a string; never NULL */
 const char *pcb_obj_type_name(pcb_objtype_t type);
 
+/* returns a flag mask of all valid flags for an (old) object type */
+pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype);
+
 
 int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
 

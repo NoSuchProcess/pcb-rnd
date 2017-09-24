@@ -896,11 +896,13 @@ void *pcb_viaop_rotate90(pcb_opctx_t *ctx, pcb_pin_t *via)
 	return via;
 }
 
-
-#define PCB_PIN_FLAGS (PCB_FLAG_FOUND | PCB_FLAG_HOLE | PCB_FLAG_PININPOLY | PCB_FLAG_SELECTED | PCB_FLAG_AUTO | PCB_FLAG_LOCK | PCB_FLAG_VISIT | PCB_FLAG_TERMNAME)
 void *pcb_viaop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin)
 {
-	if ((ctx->chgflag.flag & PCB_PIN_FLAGS) != ctx->chgflag.flag)
+	static pcb_flag_values_t pcb_pin_flags = 0;
+	if (pcb_pin_flags == 0)
+		pcb_pin_flags = pcb_obj_valid_flags(PCB_TYPE_PIN);
+
+	if ((ctx->chgflag.flag & pcb_pin_flags) != ctx->chgflag.flag)
 		return NULL;
 	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (pin->term == NULL))
 		return NULL;
