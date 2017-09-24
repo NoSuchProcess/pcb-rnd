@@ -147,6 +147,7 @@ ha:{
 						ha:Layer bindings...          = { action=LayerBinding() }
 					}
 				}
+				ha:Object flags...                = { action=FlagEdit() }
 			}
 		} # Edit
 
