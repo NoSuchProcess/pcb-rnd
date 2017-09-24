@@ -63,6 +63,8 @@ static int pick_neigh(sstate_t *st, int node)
 			num_neigh++;
 		}
 	}
+	if (num_neigh == 0)
+		return -1;
 	return st->neigh[pcb_rand() % num_neigh];
 }
 
@@ -116,6 +118,8 @@ int solve_(gr_t *g_, int *cuts)
 		int n1, n2;
 		n2 = pick_del(&st);
 		n1 = pick_neigh(&st, n2);
+		if (n1 < 0)
+			return BAD;
 #ifndef DEBUG_MERGES
 #ifdef DEBUG_SOLVE
 			printf("Merge %d (%s) into %d (%s)\n", n2, st.g->node2name[n2], n1, st.g->node2name[n1]);
