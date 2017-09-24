@@ -33,6 +33,7 @@ typedef struct {
 
 	/* This is the bit that we're setting.  */
 	pcb_flag_values_t mask;
+	const char *mask_name;
 
 	/* The name used in the output file.  */
 	const char *name;

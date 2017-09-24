@@ -51,36 +51,38 @@ typedef struct {
  */
 
 #define N(x) x, sizeof(x)-1
+#define FN(x) x, #x
 pcb_flag_bits_t pcb_object_flagbits[] = {
-	{PCB_FLAG_PIN,           N("pin"),           PCB_TYPEMASK_ALL, "If set, this object is a pin.  This flag is for internal use only." },
-	{PCB_FLAG_VIA,           N("via"),           PCB_TYPEMASK_ALL, "If set, this object is a via.  This flag is for internal use only." },
-	{PCB_FLAG_FOUND,         N("found"),         PCB_TYPEMASK_ALL, "If set, this object has been found by FindConnection()" },
-	{PCB_FLAG_HOLE,          N("hole"),          PCB_TYPEMASK_PIN, "For pins and vias, this flag means that the pin or via is a hole without a copper annulus." },
-	{PCB_FLAG_RAT,           N("rat"),           PCB_TYPE_RATLINE, "If set for a line, indicates that this line is a rat line instead of a copper trace." },
-	{PCB_FLAG_PININPOLY,     N("pininpoly"),     PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "For pins and pads, this flag is used internally to indicate that the pin or pad overlaps a polygon on some layer." },
-	{PCB_FLAG_CLEARPOLY,     N("clearpoly"),     PCB_TYPE_POLYGON, "For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. " },
-	{PCB_FLAG_HIDENAME,      N("hidename"),      PCB_TYPE_ELEMENT, "For elements, when set the name of the element is hidden." },
-	{PCB_FLAG_DISPLAYNAME,   N("showname"),      PCB_TYPE_ELEMENT, "OBSOLETE: For elements, when set the names of pins are shown." },
-	{PCB_FLAG_CLEARLINE,     N("clearline"),     PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_TEXT, "For lines and arcs, the line/arc will clear polygons instead of connecting to them." },
-	{PCB_FLAG_SELECTED,      N("selected"),      PCB_TYPEMASK_ALL, "Set when the object is selected."},
-	{PCB_FLAG_ONSOLDER,      N("onsolder"),      PCB_TYPE_ELEMENT | PCB_TYPE_PAD | PCB_TYPE_TEXT, "For elements and pads, indicates that they are on the solder side."},
-	{PCB_FLAG_AUTO,          N("auto"),          PCB_TYPEMASK_ALL, "For lines and vias, indicates that these were created by the autorouter."},
-	{PCB_FLAG_SQUARE,        N("square"),        PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "For pins and pads, indicates a square (vs round) pin/pad."},
-	{PCB_FLAG_RUBBEREND,     N("rubberend"),     PCB_TYPE_LINE | PCB_TYPE_ARC, "For lines, used internally for rubber band moves: indicates one end already rubber banding."},
-	{PCB_FLAG_WARN,          N("warn"),          PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "For pins, vias, and pads, set to indicate a warning."},
-	{PCB_FLAG_USETHERMAL,    N("usetherm"),      PCB_TYPEMASK_PIN | PCB_TYPE_LINE | PCB_TYPE_ARC, "Obsolete, indicates that pins/vias should be drawn with thermal fingers."},
-	{PCB_FLAG_OCTAGON,       N("octagon"),       PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "Draw pins and vias as octagons." },
-	{PCB_FLAG_DRC,           N("drc"),           PCB_TYPEMASK_ALL, "Set for objects that fail DRC: flag like FOUND flag for DRC checking."},
-	{PCB_FLAG_LOCK,          N("lock"),          PCB_TYPEMASK_ALL, "Set for locked objects."},
-	{PCB_FLAG_EDGE2,         N("edge2"),         PCB_TYPEMASK_ALL, "For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)" },
-	{PCB_FLAG_FULLPOLY,      N("fullpoly"),      PCB_TYPE_POLYGON, "For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one)." },
-	{PCB_FLAG_NOPASTE,       N("nopaste"),       PCB_TYPE_PAD, "Pad should not receive solderpaste.  This is to support fiducials" },
-	{PCB_FLAG_NONETLIST,     N("nonetlist"),     PCB_TYPEMASK_ALL, "element is not on the netlist and should not interfere with the netlist "},
-	{PCB_FLAG_TERMNAME,      N("termname"),      PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_SUBC, "when set the names of pins are shown."},
-	{PCB_FLAG_CLEARPOLYPOLY, N("clearpolypoly"), PCB_TYPE_POLYGON, "For polygons, apply clearance to nearby polygons" },
-	{PCB_FLAG_DYNTEXT,       N("dyntext"),       PCB_TYPE_TEXT, "For text: dynamic string (substitute %patterns%)"}
+	{FN(PCB_FLAG_PIN),           N("pin"),           PCB_TYPEMASK_ALL, "If set, this object is a pin.  This flag is for internal use only." },
+	{FN(PCB_FLAG_VIA),           N("via"),           PCB_TYPEMASK_ALL, "If set, this object is a via.  This flag is for internal use only." },
+	{FN(PCB_FLAG_FOUND),         N("found"),         PCB_TYPEMASK_ALL, "If set, this object has been found by FindConnection()" },
+	{FN(PCB_FLAG_HOLE),          N("hole"),          PCB_TYPEMASK_PIN, "For pins and vias, this flag means that the pin or via is a hole without a copper annulus." },
+	{FN(PCB_FLAG_RAT),           N("rat"),           PCB_TYPE_RATLINE, "If set for a line, indicates that this line is a rat line instead of a copper trace." },
+	{FN(PCB_FLAG_PININPOLY),     N("pininpoly"),     PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "For pins and pads, this flag is used internally to indicate that the pin or pad overlaps a polygon on some layer." },
+	{FN(PCB_FLAG_CLEARPOLY),     N("clearpoly"),     PCB_TYPE_POLYGON, "For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. " },
+	{FN(PCB_FLAG_HIDENAME),      N("hidename"),      PCB_TYPE_ELEMENT, "For elements, when set the name of the element is hidden." },
+	{FN(PCB_FLAG_DISPLAYNAME),   N("showname"),      PCB_TYPE_ELEMENT, "OBSOLETE: For elements, when set the names of pins are shown." },
+	{FN(PCB_FLAG_CLEARLINE),     N("clearline"),     PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_TEXT, "For lines and arcs, the line/arc will clear polygons instead of connecting to them." },
+	{FN(PCB_FLAG_SELECTED),      N("selected"),      PCB_TYPEMASK_ALL, "Set when the object is selected."},
+	{FN(PCB_FLAG_ONSOLDER),      N("onsolder"),      PCB_TYPE_ELEMENT | PCB_TYPE_PAD | PCB_TYPE_TEXT, "For elements and pads, indicates that they are on the solder side."},
+	{FN(PCB_FLAG_AUTO),          N("auto"),          PCB_TYPEMASK_ALL, "For lines and vias, indicates that these were created by the autorouter."},
+	{FN(PCB_FLAG_SQUARE),        N("square"),        PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "For pins and pads, indicates a square (vs round) pin/pad."},
+	{FN(PCB_FLAG_RUBBEREND),     N("rubberend"),     PCB_TYPE_LINE | PCB_TYPE_ARC, "For lines, used internally for rubber band moves: indicates one end already rubber banding."},
+	{FN(PCB_FLAG_WARN),          N("warn"),          PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "For pins, vias, and pads, set to indicate a warning."},
+	{FN(PCB_FLAG_USETHERMAL),    N("usetherm"),      PCB_TYPEMASK_PIN | PCB_TYPE_LINE | PCB_TYPE_ARC, "Obsolete, indicates that pins/vias should be drawn with thermal fingers."},
+	{FN(PCB_FLAG_OCTAGON),       N("octagon"),       PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "Draw pins and vias as octagons." },
+	{FN(PCB_FLAG_DRC),           N("drc"),           PCB_TYPEMASK_ALL, "Set for objects that fail DRC: flag like FOUND flag for DRC checking."},
+	{FN(PCB_FLAG_LOCK),          N("lock"),          PCB_TYPEMASK_ALL, "Set for locked objects."},
+	{FN(PCB_FLAG_EDGE2),         N("edge2"),         PCB_TYPEMASK_ALL, "For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)" },
+	{FN(PCB_FLAG_FULLPOLY),      N("fullpoly"),      PCB_TYPE_POLYGON, "For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one)." },
+	{FN(PCB_FLAG_NOPASTE),       N("nopaste"),       PCB_TYPE_PAD, "Pad should not receive solderpaste.  This is to support fiducials" },
+	{FN(PCB_FLAG_NONETLIST),     N("nonetlist"),     PCB_TYPEMASK_ALL, "element is not on the netlist and should not interfere with the netlist "},
+	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_SUBC, "when set the names of pins are shown."},
+	{FN(PCB_FLAG_CLEARPOLYPOLY), N("clearpolypoly"), PCB_TYPE_POLYGON, "For polygons, apply clearance to nearby polygons" },
+	{FN(PCB_FLAG_DYNTEXT),       N("dyntext"),       PCB_TYPE_TEXT, "For text: dynamic string (substitute %patterns%)"}
 };
 #undef N
+#undef FN
 
 const int pcb_object_flagbits_len = PCB_ENTRIES(pcb_object_flagbits);
 
@@ -546,33 +548,34 @@ char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn)
 
 
 #define N(x) x, sizeof(x)-1
+#define FN(x) x, #x
 static pcb_flag_bits_t pcb_flagbits[] = {
-	{PCB_SHOWNUMBERFLAG,        N("shownumber"),   1, "Pinout displays pin numbers instead of pin names." },
-	{PCB_LOCALREFFLAG,          N("localref"),     1, "Use local reference for moves, by setting the mark at the beginning of each move." },
-	{PCB_CHECKPLANESFLAG,       N("checkplanes"),  1, "When set, only polygons and their clearances are drawn, to see if polygons have isolated regions." },
-	{PCB_SHOWPCB_FLAG_DRC,      N("showdrc"),      1, "Display DRC region on crosshair." },
-	{PCB_RUBBERBANDFLAG,        N("rubberband"),   1, "Do all move, mirror, rotate with rubberband connections." },
-	{PCB_DESCRIPTIONFLAG,       N("description"),  1, "Display descriptions of elements, instead of refdes." },
-	{PCB_NAMEONPCBFLAG,         N("nameonpcb"),    1, "Display names of elements, instead of refdes." },
-	{PCB_AUTOPCB_FLAG_DRC,      N("autodrc"),      1, "Auto-DRC flag.  When set, PCB doesn't let you place copper that violates DRC." },
-	{PCB_ALLDIRECTIONFLAG,      N("alldirection"), 1, "Enable 'all-direction' lines." },
-	{PCB_SWAPSTARTDIRFLAG,      N("swapstartdir"), 1, "Switch starting angle after each click." },
-	{PCB_UNIQUENAMEFLAG,        N("uniquename"),   1, "Force unique names on board." },
-	{PCB_CLEARNEWFLAG,          N("clearnew"),     1, "New lines/arc clear polygons." },
-	{PCB_SNAPPCB_FLAG_PIN,      N("snappin"),      1, "pcb_crosshair snaps to pins and pads." },
-	{PCB_SHOWMASKFLAG,          N("showmask"),     1, "Show the solder mask layer." },
-	{PCB_THINDRAWFLAG,          N("thindraw"),     1, "Draw with thin lines." },
-	{PCB_ORTHOMOVEFLAG,         N("orthomove"),    1, "Move items orthogonally." },
-	{PCB_LIVEROUTEFLAG,         N("liveroute"),    1, "Draw autoroute paths real-time." },
-	{PCB_NEWPCB_FLAG_FULLPOLY,  N("newfullpoly"),  1, "New polygons are full ones." },
-	{PCB_THINDRAWPOLYFLAG,      N("thindrawpoly"), 1, "Thin draw polygon contours instead of filling polygons." },
-	{PCB_LOCKNAMESFLAG,         N("locknames"),    1, "Names are locked, the mouse cannot select them." },
-	{PCB_ONLYNAMESFLAG,         N("onlynames"),    1, "Everything but names are locked, the mouse cannot select anything else." },
-	{PCB_HIDENAMESFLAG,         N("hidenames"),    1, "When set, element names are not drawn." },
-	{PCB_ENABLEPCB_FLAG_MINCUT, N("enablemincut"), 1, "Use the mincut algorithm for finding shorts." },
+	{FN(PCB_SHOWNUMBERFLAG),        N("shownumber"),   1, "Pinout displays pin numbers instead of pin names." },
+	{FN(PCB_LOCALREFFLAG),          N("localref"),     1, "Use local reference for moves, by setting the mark at the beginning of each move." },
+	{FN(PCB_CHECKPLANESFLAG),       N("checkplanes"),  1, "When set, only polygons and their clearances are drawn, to see if polygons have isolated regions." },
+	{FN(PCB_SHOWPCB_FLAG_DRC),      N("showdrc"),      1, "Display DRC region on crosshair." },
+	{FN(PCB_RUBBERBANDFLAG),        N("rubberband"),   1, "Do all move, mirror, rotate with rubberband connections." },
+	{FN(PCB_DESCRIPTIONFLAG),       N("description"),  1, "Display descriptions of elements, instead of refdes." },
+	{FN(PCB_NAMEONPCBFLAG),         N("nameonpcb"),    1, "Display names of elements, instead of refdes." },
+	{FN(PCB_AUTOPCB_FLAG_DRC),      N("autodrc"),      1, "Auto-DRC flag.  When set, PCB doesn't let you place copper that violates DRC." },
+	{FN(PCB_ALLDIRECTIONFLAG),      N("alldirection"), 1, "Enable 'all-direction' lines." },
+	{FN(PCB_SWAPSTARTDIRFLAG),      N("swapstartdir"), 1, "Switch starting angle after each click." },
+	{FN(PCB_UNIQUENAMEFLAG),        N("uniquename"),   1, "Force unique names on board." },
+	{FN(PCB_CLEARNEWFLAG),          N("clearnew"),     1, "New lines/arc clear polygons." },
+	{FN(PCB_SNAPPCB_FLAG_PIN),      N("snappin"),      1, "pcb_crosshair snaps to pins and pads." },
+	{FN(PCB_SHOWMASKFLAG),          N("showmask"),     1, "Show the solder mask layer." },
+	{FN(PCB_THINDRAWFLAG),          N("thindraw"),     1, "Draw with thin lines." },
+	{FN(PCB_ORTHOMOVEFLAG),         N("orthomove"),    1, "Move items orthogonally." },
+	{FN(PCB_LIVEROUTEFLAG),         N("liveroute"),    1, "Draw autoroute paths real-time." },
+	{FN(PCB_NEWPCB_FLAG_FULLPOLY),  N("newfullpoly"),  1, "New polygons are full ones." },
+	{FN(PCB_THINDRAWPOLYFLAG),      N("thindrawpoly"), 1, "Thin draw polygon contours instead of filling polygons." },
+	{FN(PCB_LOCKNAMESFLAG),         N("locknames"),    1, "Names are locked, the mouse cannot select them." },
+	{FN(PCB_ONLYNAMESFLAG),         N("onlynames"),    1, "Everything but names are locked, the mouse cannot select anything else." },
+	{FN(PCB_HIDENAMESFLAG),         N("hidenames"),    1, "When set, element names are not drawn." },
+	{FN(PCB_ENABLEPCB_FLAG_MINCUT), N("enablemincut"), 1, "Use the mincut algorithm for finding shorts." },
 };
 #undef N
-
+#undef FN
 
 char *pcb_strflg_board_f2s(pcb_flag_t flags)
 {
