@@ -103,6 +103,12 @@ do { \
 	PCB_DAD_SET_ATTR_FIELD(table, enumerations, choices); \
 } while(0)
 
+#define PCB_DAD_BOOL(table, label) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_BOOL); \
+	PCB_DAD_SET_ATTR_FIELD(table, name, pcb_strdup(label)); \
+} while(0)
+
 #define PCB_DAD_INTEGER(table, label) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_INTEGER); \
