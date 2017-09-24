@@ -102,6 +102,7 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		for(n = 0; n < pcb_object_flagbits_len; n++) {
 			if (pcb_object_flagbits[n].object_types & ctx.obj_type) {
 				PCB_DAD_BOOL(dlg, pcb_object_flagbits[n].name);
+				PCB_DAD_HELP(dlg, pcb_object_flagbits[n].help);
 				ctx.wid[ctx.len] = PCB_DAD_CURRENT(dlg);
 				ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;
 				if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
