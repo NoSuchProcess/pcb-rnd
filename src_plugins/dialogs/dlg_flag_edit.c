@@ -57,10 +57,6 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		void *ptr1, *ptr2, *ptr3;
 		pcb_gui->get_coords("Click on object to change size of", &x, &y);
 		type = pcb_search_screen(x, y, PCB_FLAGEDIT_TYPES, &ptr1, &ptr2, &ptr3);
-		if (type != PCB_TYPE_SUBC) {
-			pcb_message(PCB_MSG_ERROR, "No subc under the cursor\n");
-			return -1;
-		}
 		ctx.obj = (pcb_any_obj_t *)ptr2;
 	}
 	else
