@@ -22,6 +22,7 @@
 
 #include "flag.h"
 #include "flag_str.h"
+#include "change.h"
 
 typedef struct{
 	unsigned long flag_bit[64];
