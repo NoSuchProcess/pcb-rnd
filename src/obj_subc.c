@@ -271,27 +271,30 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 		while((line = linelist_first(&src->Line)) != NULL) {
 			pcb_coord_t mask = 0;
-			char *sq, *term;
+			char *sq, *termpad;
+			const char *term;
 
-			term = pcb_attribute_get(&line->Attributes, "elem_smash_pad");
-			if (term != NULL) {
+			termpad = pcb_attribute_get(&line->Attributes, "elem_smash_pad");
+			if (termpad != NULL) {
 				if (ltype & PCB_LYT_TOP)
 					top_pads++;
 				else if (ltype & PCB_LYT_BOTTOM)
 					bottom_pads++;
 				mask = read_mask((pcb_any_obj_t *)line);
 			}
-
+			term = pcb_attribute_get(&line->Attributes, "term");
 			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
 			if ((sq != NULL) && (*sq == '1')) { /* convert to polygon */
 				poly = sqline2term(dst, line);
 
-				if (term != NULL) {
+				if (termpad != NULL) {
 					poly = sqline2term(dst, line);
 					vtp0_append(&paste_pads, poly);
 					if (mask > 0) {
 						line->Thickness = mask;
 						poly = sqline2term(dst, line);
+						if (term != NULL)
+							pcb_attribute_put(&poly->Attributes, "term", term);
 						vtp0_append(&mask_pads, poly);
 					}
 				}
@@ -305,12 +308,14 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				PCB_SET_PARENT(line, layer, dst);
 				PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
 
-				if (term != NULL) {
+				if (termpad != NULL) {
 					pcb_line_t *nl = pcb_line_dup(dst, line);
 					vtp0_append(&paste_pads, nl);
 					if (mask > 0) {
 						nl = pcb_line_dup(dst, line);
 						nl->Thickness = mask;
+						if (term != NULL)
+							pcb_attribute_put(&nl->Attributes, "term", term);
 						vtp0_append(&mask_pads, nl);
 					}
 				}
@@ -396,11 +401,20 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 						line.Point1.Y = line.Point2.Y = via->Y;
 						line.Thickness = mask;
 						poly = sqline2term(dst_top_mask, &line);
+						if (term != NULL)
+							pcb_attribute_put(&poly->Attributes, "term", term);
 						poly = sqline2term(dst_bottom_mask, &line);
+						if (term != NULL)
+							pcb_attribute_put(&poly->Attributes, "term", term);
 					}
 					else {
-						pcb_line_new(dst_top_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
-						pcb_line_new(dst_bottom_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
+						pcb_line_t *line;
+						line = pcb_line_new(dst_top_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
+						if (term != NULL)
+							pcb_attribute_put(&line->Attributes, "term", term);
+						line = pcb_line_new(dst_bottom_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
+						if (term != NULL)
+							pcb_attribute_put(&line->Attributes, "term", term);
 					}
 				}
 			}
