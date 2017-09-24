@@ -375,10 +375,12 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		pcb_pin_t *via;
 
 		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
+			const char *term;
 			pinlist_remove(via);
 			pinlist_append(&sc->data->Via, via);
 			PCB_SET_PARENT(via, data, sc->data);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
+			term = pcb_attribute_get(&via->Attributes, "term");
 			if (pcb_attribute_get(&via->Attributes, "elem_smash_pad") != NULL) {
 				pcb_coord_t mask = read_mask((pcb_any_obj_t *)via);
 				
@@ -388,12 +390,13 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				if (mask > 0) {
 					if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via)) {
 						pcb_line_t line;
+						pcb_polygon_t *poly;
 						memset(&line, 0, sizeof(line));
 						line.Point1.X = line.Point2.X = via->X;
 						line.Point1.Y = line.Point2.Y = via->Y;
 						line.Thickness = mask;
-						sqline2term(dst_top_mask, &line);
-						sqline2term(dst_bottom_mask, &line);
+						poly = sqline2term(dst_top_mask, &line);
+						poly = sqline2term(dst_bottom_mask, &line);
 					}
 					else {
 						pcb_line_new(dst_top_mask, via->X, via->Y, via->X, via->Y, mask, 0, pcb_no_flags());
