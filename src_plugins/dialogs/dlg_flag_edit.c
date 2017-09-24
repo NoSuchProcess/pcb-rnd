@@ -25,6 +25,8 @@
 
 typedef struct{
 	unsigned long flag_bit[64];
+	int wid[64];
+	int len;
 	pcb_board_t *pcb;
 	pcb_any_obj_t *obj;
 	pcb_hid_attribute_t *attrs;
@@ -73,8 +75,10 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_DAD_DECL(dlg);
 
 		ctx.pcb = PCB;
+		ctx.len = 0;
 
 		PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_COMPFLAG(dlg, PCB_HATF_LABEL);
 
 		sprintf(tmp, "Object flags of %x #%ld\n", objtype, ctx.obj->ID);
 		PCB_DAD_LABEL(dlg, tmp);
@@ -82,6 +86,13 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		for(n = 0; n < pcb_object_flagbits_len; n++) {
 			if (pcb_object_flagbits[n].object_types & objtype) {
 				printf("name=%s mask=%x\n", pcb_object_flagbits[n].name, pcb_object_flagbits[n].mask);
+				PCB_DAD_BOOL(dlg, pcb_object_flagbits[n].name);
+				ctx.wid[ctx.len] = PCB_DAD_CURRENT(dlg);
+				ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;
+				if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
+					PCB_DAD_SET_VALUE(dlg, ctx.wid[ctx.len], int_value, 1);
+			
+				ctx.len++;
 			}
 		}
 		PCB_DAD_END(dlg);
