@@ -139,7 +139,7 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 	}
 
 	for(curr = template;;) {
-		next = strpbrk(curr, "%$");
+		next = strpbrk(curr, "%$\\");
 		if (next == NULL) {
 			gds_append_str(&s, curr);
 			gds_enlarge(&s, gds_len(&s) + extra_room);
@@ -149,6 +149,25 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 			gds_append_len(&s, curr, next-curr);
 
 		switch(*next) {
+			case '\\':
+				if (flags & PCB_SUBST_BACKSLASH) {
+					char c;
+					next++;
+					switch(*next) {
+						case 'n': c = '\n'; break;
+						case 'r': c = '\r'; break;
+						case 't': c = '\t'; break;
+						case '\\': c = '\\'; break;
+						default: c = *next;
+					}
+					gds_append(&s, c);
+					curr = next;
+				}
+				else {
+					gds_append(&s, *next);
+					curr = next+1;
+				}
+				break;
 			case '%':
 				if (flags & PCB_SUBST_PERCENT) {
 					next++;

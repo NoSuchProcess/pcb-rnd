@@ -141,6 +141,7 @@ typedef enum {
 	PCB_SUBST_HOME = 1,
 	PCB_SUBST_PERCENT = 2,
 	PCB_SUBST_CONF = 4,
+	PCB_SUBST_BACKSLASH = 8, /* substitute \ sequences as printf(3) does */
 
 	PCB_SUBST_ALL = 0xff
 } pcb_strdup_subst_t;
