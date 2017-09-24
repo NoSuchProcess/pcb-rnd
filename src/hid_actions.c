@@ -197,7 +197,7 @@ int pcb_hid_actionl(const char *name, ...)
 
 	va_start(ap, name);
 	while ((arg = va_arg(ap, char *)) != 0)
-		  argv[argc++] = arg;
+		argv[argc++] = arg;
 	va_end(ap);
 	return pcb_hid_actionv(name, argc, argv);
 }
