@@ -33,12 +33,15 @@
 /* include them all for static inlines */
 #include "dlg_test.c"
 #include "dlg_layer_binding.c"
+#include "dlg_flag_edit.c"
 
 pcb_hid_action_t dialogs_action_list[] = {
 	{"dlg_test", 0, pcb_act_dlg_test,
 	 dlg_test_help, dlg_test_syntax},
 	{"LayerBinding", 0, pcb_act_LayerBinding,
-	 pcb_acth_LayerBinding, pcb_acts_LayerBinding}
+	 pcb_acth_LayerBinding, pcb_acts_LayerBinding},
+	{"FlagEdit", 0, pcb_act_FlagEdit,
+	 pcb_acth_FlagEdit, pcb_acts_FlagEdit}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
