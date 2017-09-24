@@ -229,6 +229,8 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 			pcb_attribute_put(&via->Attributes, "elem_smash_shape_id", tmp);
 		}
 		pcb_attribute_put(&via->Attributes, "elem_smash_pad", "1");
+		pcb_sprintf(tmp, "%$mm", pin->Mask);
+		pcb_attribute_put(&pin->Attributes, "elem_smash_pad_mask", tmp);
 	}
 	PCB_END_LOOP;
 
