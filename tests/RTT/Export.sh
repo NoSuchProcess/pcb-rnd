@@ -106,6 +106,7 @@ move_out()
 		gerber)
 			mkdir -p $final_out.gbr
 			mv $raw_out.*.gbr $final_out.gbr
+			mv $raw_out.*.cnc $final_out.gbr 2>/dev/null
 			;;
 		nelma)
 			mv $raw_out $final_out
@@ -156,7 +157,7 @@ cmp_fmt()
 			fi
 			;;
 		gerber)
-			for n in $ref.gbr/*.gbr
+			for n in `ls $ref.gbr/*.gbr $ref.gbr/*.cnc 2>/dev/null`
 			do
 				bn=`basename $n`
 				diff -u "$n" "$out.gbr/$bn"
