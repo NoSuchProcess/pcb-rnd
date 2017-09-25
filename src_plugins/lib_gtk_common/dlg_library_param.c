@@ -397,6 +397,12 @@ char *pcb_gtk_library_param_ui(pcb_gtk_library_t *library_window, pcb_fplibrary_
 				curr->change_cb = attr_change_cb;
 			}
 		}
+		else if (strncmp(cmd, "default:", 6) == 0) {
+			char *nstr;
+			nstr = pcb_strdup_printf("%s\n(default: %s)", curr->help_text, arg);
+			free((char *)curr->help_text);
+			curr->help_text = nstr;
+		}
 		else if (strncmp(cmd, "dim:", 4) == 0) {
 			curr->type = PCB_HATT_COORD;
 			curr->min_val = 0;
