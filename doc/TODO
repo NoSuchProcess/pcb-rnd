@@ -80,13 +80,8 @@ For the next release:
 	+ BUG: subtractive mask recipe is not surviving save and reload with a simple poly drawn on a explicit mask layer [report: Miloh]
 		+ provided we already have a subc with the mask layer, change the binding from +manual to -manual, save, load, it is lost
 	- BUG: subc bounding box expands from its initial size when moved. Load a layout with a subc and the bounding box will be tight to the object. Move the subc object and the bounding box will expand. [report: Ade]
-- new hid render:
-	- BUG: font selector crashes the lesstif HID
-	- "erase" color:
-		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
-		- holes_after should be set to 1 everywhere, then removed
-		- holes should be drawn below silk and mask (maybe this could be a config setting)
 - BUGS:
+	- BUG: font selector crashes the lesstif HID
 	+ negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	- io_lihata: parse_data_layer() doesn't load layer attributes (of real layers)
 	- parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
@@ -108,6 +103,11 @@ LATER RELEASES:
 - BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 - BUG: cycledrag doesn't work on arc endpoint + line endpoint when rubber band is enabled [report:Ade]
+- feautres/cleanup: hid:
+	- "erase" color:
+		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
+		- holes_after should be set to 1 everywhere, then removed
+		- holes should be drawn below silk and mask (maybe this could be a config setting)
 - feature: fp_wget cache dir confiurable [report: agaran]
 - feature in subc/term:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
