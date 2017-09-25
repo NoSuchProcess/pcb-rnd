@@ -1,0 +1,4 @@
+This directory contains information that may help manual validation of
+the sample files.
+
+*.text -> specific distances measured on screen in pcb-rnd
