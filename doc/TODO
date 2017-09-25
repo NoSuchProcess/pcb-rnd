@@ -77,9 +77,6 @@ LATER RELEASES:
 - feature: fp_wget cache dir confiurable [report: agaran]
 - feature in subc/term:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
-- feature req:
-	+ if the library path starts with a "?", the path is optional; so we don't get warnings for ./footprints [report: celem]
-	+ add some sort of $(project_path) and/or $(design_path) so we don't need to use ./ and we won't depend on CWD [report: celem]
 - feature req: show grid in both mm and mil in the status bar [report:smilie]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - update /usr/share/pcb-rnd/default.pcb to default lihata 
