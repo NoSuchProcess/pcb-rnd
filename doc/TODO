@@ -65,9 +65,9 @@ LATER RELEASES:
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
 	- Lesstif HID does not have this dialog => implement it, using DAD
 	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
-- BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
+? BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
-- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
+- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 - BUG: cycledrag doesn't work on arc endpoint + line endpoint when rubber band is enabled [report:Ade]
 - feautres/cleanup: hid:
 	- "erase" color:
