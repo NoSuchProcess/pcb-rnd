@@ -83,7 +83,7 @@ void pcb_gtk_status_line_update(GtkWidget *status_line_label, int compat_horiz)
 {
 	char text[1024];
 	static const pcb_unit_t *unit_mm = NULL, *unit_mil;
-	pcb_unit_t *unit_inv;
+	const pcb_unit_t *unit_inv;
 
 	if (status_line_label == NULL)
 		return;
