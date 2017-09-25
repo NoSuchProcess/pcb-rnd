@@ -24,14 +24,9 @@
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 
-- polygon helper functions to flag non rectangular clipped polygons being exported to formats which only support rectangles, i.e. write.c in io_autotrax, +/- export a hatched version with outline 
-
-- property editor
-	- currently, editor silently censors negative values input by user, i.e. for arc delta values
-
-
 For the next release:
 - BUG: celem's pnp-origin persistent save cant-remove bug: happens only on his board, only if the pnp mark is selected when removed (sample board not public) [report:celem]
+- BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
 - subc/term:
 	- check footprint edit mode: subc save and reload
 	- poly-vs-poly clear: 'j': redraw on clear-lines
