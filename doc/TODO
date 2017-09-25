@@ -34,7 +34,7 @@ For the next release:
 - BUG: celem's pnp-origin persistent save cant-remove bug: happens only on his board, only if the pnp mark is selected when removed (sample board not public) [report:celem]
 - subc/term:
 	- check footprint edit mode: subc save and reload
-	- poly-vs-poly clear: draw the clear-lines
+	- poly-vs-poly clear: 'j': redraw on clear-lines
 	- term netlist connectivity r10843:
 		- autoplace.c:167
 		- autoroute.c:961
