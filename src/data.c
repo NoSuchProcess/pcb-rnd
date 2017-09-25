@@ -292,8 +292,6 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
 	out->X1 = out->Y1 = PCB_MAX_COORD;
 	out->X2 = out->Y2 = -PCB_MAX_COORD;
 
-#warning subc TODO: use rtree loops here for efficiency
-
 	/* now scan for the lowest/highest X and Y coordinate */
 	PCB_VIA_LOOP(Data);
 	{
