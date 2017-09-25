@@ -109,8 +109,6 @@ LATER RELEASES:
 	- gpmi:
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
-- TODO#3: works only on US keyboard
-- next_gui: keep them open, hide
 - look for #warnings
 - conf:
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
@@ -191,6 +189,10 @@ LATER RELEASES:
 SUBC: element removal:
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- remove Line->Number and *->Number: we use ->term
+
+GTK2:
+	- TODO#3: works only on US keyboard
+	- next_gui: keep them open, hide
 
 GTK3:
 	+ overlapping objects (e.g. 2 fat lines crossing on silk) are darker on the overlap; we need uniform color
