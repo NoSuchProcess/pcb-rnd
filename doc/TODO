@@ -40,7 +40,6 @@ For the next release:
 		- autoroute.c:961
 		- autoroute.c:1000
 		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
-	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
 	- subcircuit offset on paste
 	- BUG: layerbinding dialog on lesstif:
 		- combo box values are not set
