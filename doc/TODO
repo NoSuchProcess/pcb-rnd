@@ -72,7 +72,6 @@ For the next release:
 		- autoroute.c:961
 		- autoroute.c:1000
 		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
-	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 	- when a polygon turns into a pad, remove the clear flag so the pad can be connected
 	- subcircuit offset on paste
 	- BUG: layerbinding dialog on lesstif:
@@ -98,25 +97,28 @@ For the next release:
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	- Paste layer does not set the drawing mode. [report:Ade]
 	- GL HID does not draw pin/pad names. [report/fixing:Ade]
-	- GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
-		- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
-		- Lesstif HID does not have this dialog => implement it, using DAD
-		- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
+- BUG: search for move.dst_layer - don't compare pointer to -1! [working-on: wojciechk8]
 
 LATER RELEASES:
-- feature: fp_wget cache dir confiurable [report: agaran]
+- BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
+	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
+	- Lesstif HID does not have this dialog => implement it, using DAD
+	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 - BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: exporters should export empty layers if there are pin/via rings on them; see PATCH.LAYER_GRP_EMPTY
+- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
+- BUG: cycledrag doesn't work on arc endpoint + line endpoint when rubber band is enabled [report:Ade]
+- feature: fp_wget cache dir confiurable [report: agaran]
+- feature in subc/term:
+	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 - feature req:
 	+ if the library path starts with a "?", the path is optional; so we don't get warnings for ./footprints [report: celem]
 	+ add some sort of $(project_path) and/or $(design_path) so we don't need to use ./ and we won't depend on CWD [report: celem]
 - feature req: show grid in both mm and mil in the status bar [report:smilie]
-- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - update /usr/share/pcb-rnd/default.pcb to default lihata 
 	- after switch, update doc/conf and doc/user references to conf settings from .pcb to .lht as needed 
 - HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-- BUG: cycledrag doesn't work on arc endpoint + line endpoint when rubber band is enabled [report:Ade]
 - Rubberband Arcs:
 	- Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Ade]
 	- Rubberband move line endpoints ignores connected arc endpoints. [Ade]
@@ -160,7 +162,6 @@ LATER RELEASES:
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- increments are not really implemented
 - mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
-- bug: search for move.dst_layer - don't compare pointer to -1!
 - unravel the undo code
 	- grid size change should be undoable? [report:Evan]
 	- maybe other conf settings too?
