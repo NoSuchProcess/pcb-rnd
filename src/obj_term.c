@@ -162,7 +162,8 @@ pcb_term_err_t pcb_term_uninit(htsp_t *terminals)
 
 typedef struct {
 	pcb_any_obj_t *obj;
-	char str[1];
+	pcb_flag_t Flags;
+	char str[1]; /* must be the last item, spans longer than 1 */
 } term_rename_t;
 
 #warning TODO: get rid of the two parallel type systems
@@ -174,6 +175,7 @@ static int undo_term_rename_swap(void *udata)
 	pcb_subc_t *subc;
 	term_rename_t *r = udata;
 	int res = 0;
+	pcb_flag_t ftmp;
 
 	subc = pcb_obj_parent_subc(r->obj);
 	if (subc == NULL) {
@@ -202,6 +204,14 @@ static int undo_term_rename_swap(void *udata)
 		strcpy(r->str, old_term);
 
 	free(old_term);
+
+	/* swap flags: redo & undo are symmetric */
+	ftmp = r->obj->Flags;
+	r->obj->Flags = r->Flags;
+	r->Flags = ftmp;
+
+	if (r->obj->type == PCB_OBJ_POLYGON)
+		pcb_poly_init_clip(r->obj->parent.layer->parent, r->obj->parent.layer, r->obj);
 
 	return res;
 }
@@ -248,7 +258,12 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 	r = pcb_undo_alloc(pcb, &undo_term_rename, sizeof(term_rename_t) + len);
 	r->obj = obj;
 	memcpy(r->str, new_name, nname_len+1);
+	r->Flags = obj->Flags;
+	PCB_FLAG_CLEAR(PCB_FLAG_CLEARPOLY, r);
 	undo_term_rename_swap(r);
+
+	if (obj->type == PCB_OBJ_POLYGON)
+		pcb_poly_init_clip(obj->parent.layer->parent, obj->parent.layer, obj);
 
 	pcb_undo_inc_serial();
 	return PCB_TERM_ERR_SUCCESS;
