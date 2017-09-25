@@ -7,4 +7,4 @@ test:
 	@./Test_export.sh && echo "*** export: QC PASS ***"
 
 clean:
-	$(SCCBOX) rm -f out/* diff/*
+	$(SCCBOX) rm -f out/*/* out/* diff/*
