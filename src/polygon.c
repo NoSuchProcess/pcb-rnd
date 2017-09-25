@@ -1035,9 +1035,15 @@ static pcb_polyarea_t *SubtractPolyPoly_construct(pcb_polygon_t *subpoly)
 
 static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 {
-	pcb_polyarea_t *pa = SubtractPolyPoly_construct(subpoly);
+	pcb_polyarea_t *pa;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
+		return -1;
+
+	pa = SubtractPolyPoly_construct(subpoly);
 	if (pa == NULL)
 		return -1;
+
 	Subtract(pa, frompoly, pcb_true);
 	return 0;
 }
@@ -1045,7 +1051,12 @@ static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 
 static int UnsubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 {
-	pcb_polyarea_t *pa = SubtractPolyPoly_construct(subpoly);
+	pcb_polyarea_t *pa;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
+		return -1;
+
+	pa = SubtractPolyPoly_construct(subpoly);
 	if (pa == NULL)
 		return -1;
 
