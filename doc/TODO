@@ -51,7 +51,7 @@ For the next release:
 	- BUG: font selector crashes the lesstif HID
 	+ negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	- io_lihata: parse_data_layer() doesn't load layer attributes (of real layers)
-	- parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
+	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	+ gtk menu: hotkeys not shown for checkbox menus (settings)
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
 	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
