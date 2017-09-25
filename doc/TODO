@@ -86,9 +86,7 @@ LATER RELEASES:
 	- Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Ade]
 	- Rubberband move line endpoints ignores connected arc endpoints. [Ade]
 - bug: csect can't make a layer outline
-- fontsel:
-	+ replace font in slot (even in default)
-	- ttf import?
+- fontsel: ttf import?
 - library window: allow long tags and long location text to split
 - undo on new layer from right-click menu in gtk layersel doesn't work
 - GTK layers [report: Ade]:
