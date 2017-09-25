@@ -429,6 +429,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	pcb_gtk_library_t *library_window = (pcb_gtk_library_t *) user_data;
 	char *name = NULL;
 	pcb_fplibrary_t *entry = NULL;
+	int norefresh = 0;
 
 	lib_param_del_timer(library_window);
 
@@ -449,12 +450,21 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 			gtk_entry_set_text(library_window->entry_filter, orig);
 			g_source_remove(library_window->filter_timeout); /* block the above edit from collapsing the tree */
 			gtk_tree_model_filter_refilter((GtkTreeModelFilter *) model);
+
+			/* cancel means we should skip refreshing the preview with the invalid
+			   text we may have in the filter; also dismiss the preview and clear
+			   the buffer: we may have a valid parametric footprint output in there
+			   that happened before the cancel */
+			norefresh = 1;
+			g_object_set(library_window->preview, "element-data", NULL, NULL);
+			pcb_hid_actionl("PasteBuffer", "clear", NULL);
 		}
 		else
 			gtk_entry_set_text(library_window->entry_filter, name);
 		free(orig);
 	}
-	library_window_preview_refresh(library_window, name, entry);
+	if (!norefresh)
+		library_window_preview_refresh(library_window, name, entry);
 	free(name);
 }
 
