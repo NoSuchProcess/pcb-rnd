@@ -111,7 +111,7 @@ move_out()
 		nelma)
 			mv $raw_out $final_out
 			# do not test the pngs for now
-			rm -f ${raw_out%%nelma.em}.*.png
+			rm -f ${raw_out%%.em}*.png
 			;;
 		remote|ps)
 			gzip $raw_out
