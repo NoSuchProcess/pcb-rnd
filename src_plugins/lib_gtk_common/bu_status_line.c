@@ -46,8 +46,9 @@ void pcb_gtk_status_line_update(GtkWidget *status_line_label, int compat_horiz)
 {
 	const gchar *flag = conf_core.editor.all_direction_lines
 		? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
-	char *text;
-	text = pcb_strdup_printf(_(
+	char text[1024];
+
+	pcb_snprintf(text, sizeof(text), _(
 		"%m+<b>view</b>=%s  "
 		"<b>grid</b>=%$mS  "
 		"<b>line</b>=%mS (%s%s)%s"
@@ -64,6 +65,5 @@ void pcb_gtk_status_line_update(GtkWidget *status_line_label, int compat_horiz)
 		conf_core.editor.buffer_number + 1);
 
 	pcb_gtk_status_line_set_text(status_line_label, text);
-	free(text);
 }
 
