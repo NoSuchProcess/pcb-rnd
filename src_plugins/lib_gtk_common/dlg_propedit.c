@@ -440,7 +440,6 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 	dlg->last_add_iter_valid = 0;
 	dlg->com = com;
 
-	/*window = gtk_window_new(GTK_WINDOW_TOPLEVEL); */
 	window = gtk_dialog_new_with_buttons(_("Edit Properties"),
 																			 GTK_WINDOW(com->top_window),
 																			 GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_OK, NULL);
@@ -506,7 +505,6 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 	p->view.coord_per_px = PCB_MIL_TO_COORD(2.5);
 	pcb_gtk_zoom_post(&p->view);
 
-/*	p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;*/
 	gtk_widget_set_size_request(prv, 200, 200);
 
 	gtk_box_pack_start(GTK_BOX(vbox_edit), prv, TRUE, TRUE, 4);
