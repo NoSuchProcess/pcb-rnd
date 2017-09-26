@@ -55,6 +55,14 @@ objects to one of the existing values, but the user is also free to enter
 a new value.
 <p>
 It is also possible to remove existing attributes or to add new attributes.
+<p>
+Values entered are converted to the right format: for distances, values
+may be suffixed with a unit. If the value starts with + or -, it is interpreted
+as a relative value; e.g. a -1mm for clearance means "decrease the current
+clearance value by 1mm". There are a few fields where negative values are
+acceptable, e.g. arc angles; to enforce a negative value (e.g. -90) to
+overwrite the angle instead of decreasing it by 90, the # prefix should be used
+(i.e. #-90).
 
 <h2> save/load and compatibility </h2>
 Attributes of most objects can not be saved in the original .pcb format.
