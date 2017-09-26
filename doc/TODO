@@ -48,7 +48,11 @@ For the next release:
 	- io_lihata: parse_data_layer() doesn't load layer attributes (of real layers)
 	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
-	- lihata board: move generates much more diff than reasonable: does it renumber IDs?
+	- lihata board persist: 
+		-move generates much more diff than reasonable: does it renumber IDs?
+			- reprod: empty board; draw a poly and a text, non-overlapping; save; backup; grab the unselected poly and drop over the text; save again; text id changes
+		- clearline flag removal bug:
+			- reprod: empty board; draw poly, line in poly; save; backup; press 'j' on line to merge in poly; save; clearline flag is not removed!
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	- Paste layer does not set the drawing mode. [report:Ade]
 	- GL HID does not draw pin/pad names. [report/fixing:Ade]
