@@ -607,11 +607,6 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 		added++;
 	}
 
-	if ((added == 0) && (!io_lihata_full_tree)) {
-		lht_dom_node_free(grp);
-		grp = dummy_node("objects");
-	}
-
 	lht_dom_hash_put(obj, grp);
 
 	return obj;
