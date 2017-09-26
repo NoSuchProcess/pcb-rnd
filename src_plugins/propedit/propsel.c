@@ -441,12 +441,17 @@ int pcb_propsel_set(const char *prop, const char *value)
 	ctx.is_attr = (prop[0] == 'a');
 	ctx.name = prop;
 	ctx.value = value;
-	ctx.c = pcb_get_value_ex(value, NULL, &ctx.c_absolute, NULL, NULL, &ctx.c_valid);
-	ctx.d = strtod(value, &end);
-	ctx.d_valid = (*end == '\0');
 	start = value;
 	while(isspace(*start)) start++;
-	ctx.d_absolute = ((*start != '-') && (*start != '+'));
+	if (*start == '#') {
+		ctx.d_absolute = 1;
+		start++;
+	}
+	else
+		ctx.d_absolute = ((*start != '-') && (*start != '+'));
+	ctx.c = pcb_get_value_ex(start, NULL, &ctx.c_absolute, NULL, NULL, &ctx.c_valid);
+	ctx.d = strtod(start, &end);
+	ctx.d_valid = (*end == '\0');
 	ctx.set_cnt = 0;
 
 	pcb_undo_save_serial();
