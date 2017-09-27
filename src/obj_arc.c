@@ -579,7 +579,7 @@ void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t *
 		pcb_arc_invalidate_draw(Layer, Arc);
 		pcb_draw();
 	}
-	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
+	if (ctx->move.dst_layer == Layer)
 		return (Arc);
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_ARC, Layer, Arc, Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);

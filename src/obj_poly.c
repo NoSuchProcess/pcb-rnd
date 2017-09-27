@@ -631,7 +631,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygo
 		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
-	if (((long int) ctx->move.dst_layer == -1) || (Layer == ctx->move.dst_layer))
+	if (Layer == ctx->move.dst_layer)
 		return (Polygon);
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	if (Layer->meta.real.vis)

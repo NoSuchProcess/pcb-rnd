@@ -628,7 +628,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		pcb_line_invalidate_draw(Layer, Line);
 		pcb_draw();
 	}
-	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
+	if (ctx->move.dst_layer == Layer)
 		return (Line);
 
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_LINE, Layer, Line, Line);
