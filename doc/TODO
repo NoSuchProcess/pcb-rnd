@@ -50,8 +50,6 @@ For the next release:
 	- lihata board persist: 
 		-move generates much more diff than reasonable: does it renumber IDs?
 			- reprod: empty board; draw a poly and a text, non-overlapping; save; backup; grab the unselected poly and drop over the text; save again; text id changes
-		- clearline flag removal bug:
-			- reprod: empty board; draw poly, line in poly; save; backup; press 'j' on line to merge in poly; save; clearline flag is not removed!
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	- Paste layer does not set the drawing mode. Symptom in GL hid is blending shadow when paste overlaps. [report:Ade]
 - BUG: search for move.dst_layer - don't compare pointer to -1! [working-on: wojciechk8]
