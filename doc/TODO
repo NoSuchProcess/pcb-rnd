@@ -49,7 +49,6 @@ For the next release:
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
 	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
 	- Paste layer does not set the drawing mode. Symptom in GL hid is blending shadow when paste overlaps. [report:Ade]
-- BUG: search for move.dst_layer - don't compare pointer to -1! [working-on: wojciechk8]
 
 LATER RELEASES:
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
