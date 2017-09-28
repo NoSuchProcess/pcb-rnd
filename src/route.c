@@ -40,7 +40,7 @@
 #include "obj_arc_draw.h"
 #include "obj_line.h"
 #include "obj_line_op.h"
-
+#include "draw_wireframe.h"
 
 void
 pcb_route_init(pcb_route_t * p_route)
@@ -555,33 +555,6 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
  *===========================================================================*/
 
 /*-----------------------------------------------------------
- * Draws the outline of a line
- *---------------------------------------------------------*/
-void
-pcb_route_draw_line(pcb_hid_gc_t	GC, 
-										pcb_coord_t		x1, 
-										pcb_coord_t		y1, 
-										pcb_coord_t		x2, 
-										pcb_coord_t		y2, 
-										pcb_coord_t		thickness )
-{
-	pcb_coord_t dx = x2 - x1;
-	pcb_coord_t dy = y2 - y1;
-	double h = (dx != 0 || dy != 0) ? (0.5 * thickness / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy))) : 0.0;
-	pcb_coord_t ox = dy * h + 0.5 * SGN(dy);
-	pcb_coord_t oy = -(dx * h + 0.5 * SGN(dx));
-
-	pcb_gui->draw_line(GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
-
-	if (coord_abs(ox) >= pcb_pixel_slop || coord_abs(oy) >= pcb_pixel_slop) {
-		pcb_angle_t angle = atan2(dx, dy) * 57.295779;
-		pcb_gui->draw_line(GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy); 
-		pcb_gui->draw_arc(GC, x1, y1, thickness / 2, thickness / 2, angle - 180, 180);
-		pcb_gui->draw_arc(GC, x2, y2, thickness / 2, thickness / 2, angle, 180);
-	}
-}
-
-/*-----------------------------------------------------------
  * Draws the outline of an arc
  *---------------------------------------------------------*/
 void
@@ -630,7 +603,7 @@ pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC )
 
 		switch(p_obj->type) {
 			case PCB_TYPE_LINE :	
-				pcb_route_draw_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,p_route->thickness);
+				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,p_route->thickness);
 				break;
 
 			case PCB_TYPE_ARC :		
@@ -659,7 +632,7 @@ pcb_route_draw_drc( pcb_route_t * p_route,pcb_hid_gc_t GC )
 
 		switch(p_obj->type) {
 			case PCB_TYPE_LINE :	
-				pcb_route_draw_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,thickness);	
+				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,thickness);	
 				break;
 
 			case PCB_TYPE_ARC :		

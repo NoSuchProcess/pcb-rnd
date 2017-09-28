@@ -179,14 +179,15 @@
  rats_patch.h board.h data.h crosshair.h vtonpoint.h hid.h error.h drc.h \
  route.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
- ht_subc.h layer.h ../src_plugins/diag/diag_conf.h conf.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h action_helper.h hid_actions.h plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h event.h \
+ ht_subc.h flag_str.h layer.h ../src_plugins/diag/diag_conf.h conf.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h conf.h action_helper.h \
+ hid_actions.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h error.h event.h \
  ../src_plugins/diag/integrity.h hid.h hid_attrib.h hid_dad.h \
  compat_misc.h hid_attrib.h dolists.h \
  ../src_plugins/diag/diag_conf_fields.h
@@ -6511,7 +6512,8 @@ route.o: route.c ../config.h compat_misc.h conf_core.h conf.h \
  crosshair.h vtonpoint.h hid.h error.h drc.h route.h buffer.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ht_subc.h find.h polygon.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_line_draw.h obj_arc_draw.h obj_line_op.h operation.h
+ obj_line_draw.h obj_arc_draw.h obj_line_op.h operation.h \
+ draw_wireframe.h
 route_style.o: route_style.c ../config.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h unit.h route_style.h \
