@@ -98,7 +98,7 @@ Name of the file to be exported to. Can contain a path.
 #define HA_silk 2
 
 	{"mask", "enable exporting mask layers",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_mask 3
 
 	{"models", "enable searching and inserting model files",
@@ -371,11 +371,11 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		if (!openscad_attribute_list[HA_mask].default_val.int_value)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer_group("top_mask", +3, "0,0.7,0,0.5");
+			scad_new_layer_group("top_mask", +2, "0,0.7,0,0.5");
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer_group("bottom_mask", -3, "0,0.7,0,0.5");
+			scad_new_layer_group("bottom_mask", -2, "0,0.7,0,0.5");
 			return 1;
 		}
 	}
@@ -384,11 +384,11 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		if (!openscad_attribute_list[HA_silk].default_val.int_value)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer_group("top_silk", +2, "0,0,0");
+			scad_new_layer_group("top_silk", +3, "0,0,0");
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer_group("bottom_silk", -2, "0,0,0");
+			scad_new_layer_group("bottom_silk", -3, "0,0,0");
 			return 1;
 		}
 	}
