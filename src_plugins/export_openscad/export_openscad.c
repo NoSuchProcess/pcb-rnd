@@ -30,6 +30,7 @@
 #include <assert.h>
 #include <math.h>
 #include <genvector/gds_char.h>
+#include <genvector/vti0.h>
 #include <genht/htsp.h>
 
 #include "compat_misc.h"
@@ -66,12 +67,13 @@ typedef struct hid_gc_s {
 
 static FILE *f = NULL;
 static unsigned layer_open;
-static double layer_thickness = 0.01;
-static gds_t layer_calls, layer_group_calls, model_calls;
+static double layer_thickness = 0.01, effective_layer_thickness;
+static gds_t layer_group_calls, model_calls;
 static const char *scad_group_name;
 static int scad_group_level;
 static const char *scad_group_color;
 static int scad_layer_cnt;
+static vti0_t scad_comp;
 
 pcb_hid_attribute_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -159,43 +161,111 @@ static void scad_close_layer()
 	}
 }
 
+static void scad_dump_comp(void)
+{
+	int n, closes = 0;
+
+/*
+	a layer list like this: +4 -5 -0 +6 -7
+	becomes script like this:
+
+	difference()
+	{
+		union() {
+			difference() {
+				4
+				5
+				0
+			}
+			6
+		}
+		7
+	}
+
+*/
+
+	/* add an union or difference on polarity change */
+	for(n = vti0_len(&scad_comp)-2; n >= 0; n--) {
+		int p1 = (scad_comp.array[n]) > 0, p2 = (scad_comp.array[n+1] > 0);
+		if (p2 && !p1) {
+			fprintf(f, "	union() {\n");
+			closes++;
+		}
+		if (!p2 && p1) {
+			fprintf(f, "	difference() {\n");
+			closes++;
+		}
+	}
+
+	/* list layer calls, add a close on polarity change */
+	for(n = 0; n < vti0_len(&scad_comp); n++) {
+		int id = scad_comp.array[n], is_pos = id > 0;
+		if (id < 0)
+			id = -id;
+		fprintf(f, "	layer_%s_%s_%d();\n", scad_group_name, is_pos ? "pos" : "neg", id);
+		if ((n > 0) && (n < vti0_len(&scad_comp)-1)) {
+			int id2 = scad_comp.array[n+1];
+			int p1 = is_pos, p2 = (id2 > 0);
+			if (p2 != p1) {
+				fprintf(f, "}\n");
+				closes--;
+			}
+		}
+	}
+
+	/* the first open needs to be closed manually */
+	if (closes)
+		fprintf(f, "}\n");
+}
 
 static void scad_close_layer_group()
 {
 	if (scad_group_name != NULL) {
 		fprintf(f, "module layer_group_%s() {\n", scad_group_name);
-		fprintf(f, "%s", layer_calls.array);
-		fprintf(f, "}\n");
+		scad_dump_comp();
+		fprintf(f, "}\n\n");
 
-		gds_truncate(&layer_calls, 0);
 		pcb_append_printf(&layer_group_calls, "	layer_group_%s();\n", scad_group_name);
 		scad_group_name = NULL;
 		scad_group_color = NULL;
 		scad_group_level = 0;
+		vti0_truncate(&scad_comp, 0);
 	}
 }
 
 static void scad_new_layer(int is_pos)
 {
 	double h;
-	const char layer_name[1024];
 	scad_layer_cnt++;
 
-	pcb_snprintf(layer_name, sizeof(layer_name), "%s_%s_%d", scad_group_name, is_pos ? "pos" : "neg", scad_layer_cnt);
+	if (is_pos)
+		vti0_append(&scad_comp, scad_layer_cnt);
+	else
+		vti0_append(&scad_comp, -scad_layer_cnt);
 
 	scad_close_layer();
 
-	if (scad_group_level > 0)
-		h = 0.8+(double)scad_group_level * layer_thickness;
-	else
-		h = -0.8+(double)scad_group_level * layer_thickness;
-
-	fprintf(f, "module layer_%s() {\n", layer_name);
+	if (is_pos) {
+		effective_layer_thickness = layer_thickness;
+		if (scad_group_level > 0)
+			h = 0.8+((double)scad_group_level*1.1) * effective_layer_thickness;
+		else
+			h = -0.8+((double)scad_group_level*1.1) * effective_layer_thickness;
+	}
+	else {
+		double mult = 1.5;
+		effective_layer_thickness = layer_thickness * mult;
+		if (scad_group_level > 0)
+			h = 0.8+((double)scad_group_level*1.1) * layer_thickness;
+		else
+			h = -0.8+((double)scad_group_level*1.1) * layer_thickness;
+		h -= effective_layer_thickness/2.0;
+	}
+	fprintf(f, "module layer_%s_%s_%d() {\n", scad_group_name, is_pos ? "pos" : "neg", scad_layer_cnt);
 	fprintf(f, "	color([%s])\n", scad_group_color);
 	fprintf(f, "		translate([0,0,%f]) {\n", h);
 	layer_open = 1;
 
-	pcb_append_printf(&layer_calls, "	layer_%s();\n", layer_name);
 }
 
 
@@ -241,15 +311,15 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	if (scad_draw_outline() < 0)
 		return;
 
-	gds_init(&layer_calls);
 	gds_init(&layer_group_calls);
 	gds_init(&model_calls);
+	vti0_init(&scad_comp);
 
 	if (openscad_attribute_list[HA_models].default_val.int_value)
 		scad_insert_models();
 
 	openscad_hid_export_to_file(f, options);
-	scad_close_layer();
+	scad_close_layer_group();
 
 	if (openscad_attribute_list[HA_drill].default_val.int_value)
 		scad_draw_drills();
@@ -258,9 +328,9 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 
 	pcb_hid_restore_layer_ons(save_ons);
 
-	gds_uninit(&layer_calls);
 	gds_uninit(&layer_group_calls);
 	gds_uninit(&model_calls);
+	vti0_uninit(&scad_comp);
 
 	fclose(f);
 	f = NULL;
@@ -393,7 +463,7 @@ static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 	fix_rect_coords();
 	pcb_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f, %f);\n",
-		x1, y1, x2, y2, 0.0, layer_thickness);
+		x1, y1, x2, y2, 0.0, effective_layer_thickness);
 }
 
 static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -413,7 +483,7 @@ static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		cap_style = "rc";
 
 	pcb_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
-		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, layer_thickness);
+		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, effective_layer_thickness);
 }
 
 static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -463,7 +533,7 @@ static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 {
 	TRX(cx); TRY(cy);
 
-	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, layer_thickness);
+	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, effective_layer_thickness);
 }
 
 static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
@@ -472,7 +542,7 @@ static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	fprintf(f, "			pcb_fill_poly([");
 	for(n = 0; n < n_coords-1; n++)
 		pcb_fprintf(f, "[%mm,%mm],", TRX_(x[n]), TRY_(y[n]));
-	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]), TRY_(y[n]), layer_thickness);
+	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]), TRY_(y[n]), effective_layer_thickness);
 }
 
 static void openscad_calibrate(double xval, double yval)
