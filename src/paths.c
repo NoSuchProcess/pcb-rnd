@@ -190,7 +190,7 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 				}
 				break;
 			case '$':
-				if (flags & PCB_SUBST_PERCENT) {
+				if (flags & PCB_SUBST_CONF) {
 					const char *start, *end;
 					next++;
 					switch(*next) {
