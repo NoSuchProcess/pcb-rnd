@@ -172,7 +172,7 @@ int pcb_rename(const char *old_path, const char *new_path)
 	return res;
 }
 
-static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, char **full_path)
+static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	char tmp[PCB_PATH_MAX];
 	DIR *d;
@@ -190,6 +190,9 @@ static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, c
 	}
 
 	/* no luck, recurse into each subdir */
+	if (!recursive)
+		return NULL;
+
 	d = opendir(from);
 	if (d == NULL)
 		return NULL;
@@ -205,7 +208,7 @@ static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, c
 			continue;
 
 		/* dir: recurse */
-		res = pcb_fopen_at_(tmp, fn, mode, full_path);
+		res = pcb_fopen_at_(tmp, fn, mode, full_path, recursive);
 		if (res != NULL) {
 			closedir(d);
 			return res;
@@ -220,7 +223,7 @@ FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **ful
 	if (full_path != NULL)
 		*full_path = NULL;
 
-	return pcb_fopen_at_(dir, fn, mode, full_path);
+	return pcb_fopen_at_(dir, fn, mode, full_path, recursive);
 }
 
 FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
