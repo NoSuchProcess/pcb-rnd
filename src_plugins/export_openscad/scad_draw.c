@@ -140,15 +140,21 @@ static void scad_draw_finish()
 	fprintf(f, "\n");
 
 	fprintf(f, "module pcb_board() {\n");
-	fprintf(f, "	difference() {\n");
-	fprintf(f, "		pcb_board_main();\n");
+	fprintf(f, "	intersection() {\n");
+	fprintf(f, "		translate ([0, 0, -4])\n");
+	fprintf(f, "			linear_extrude(height=8)\n");
+	fprintf(f, "				pcb_outline();\n");
+	fprintf(f, "		union() {\n");
+	fprintf(f, "			difference() {\n");
+	fprintf(f, "				pcb_board_main();\n");
 	if (openscad_attribute_list[HA_drill].default_val.int_value)
-		fprintf(f, "		pcb_drill();\n");
+		fprintf(f, "				pcb_drill();\n");
+	fprintf(f, "			}\n");
+	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
-	fprintf(f, "%s", model_calls.array);
+	fprintf(f, "		%s", model_calls.array);
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
-
 
 	fprintf(f, "pcb_board();\n");
 }
