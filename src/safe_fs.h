@@ -44,6 +44,11 @@ char *pcb_fopen_check(const char *path, const char *mode);
    file name as it looked after the substitution */
 FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out);
 
+/* Open a file given as a basename fn, under the directory dir, optionally
+   doing a recusrive search in the directory tree. If full_path is not NULL,
+   and the call succeeds, load it with the full path of the file opened. */
+FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
+
 
 #include "conf.h"
 
@@ -54,6 +59,6 @@ FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out);
    (or NULL on failure); the caller needs to call free() on it.
    If recursive is set, all subcirectories under each path is also searched for the file.
    */
-FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, pcb_bool recursive);
+FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
 
 #endif

@@ -172,32 +172,58 @@ int pcb_rename(const char *old_path, const char *new_path)
 	return res;
 }
 
-static FILE *pcb_fopen_at_(const char *dir, const char *fn, char **full_path, pcb_bool recursive)
-{
-
-}
-
-FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **full_path, pcb_bool recursive)
+static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, char **full_path)
 {
 	char tmp[PCB_PATH_MAX];
+	DIR *d;
+	struct dirent *de;
 	FILE *res;
 
+	/* try the trivial: directly under this  dir */
+	pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", from, PCB_DIR_SEPARATOR_C, fn);
+	res = pcb_fopen(tmp, mode);
+
+	if (res != NULL) {
+		if (full_path != NULL)
+			*full_path = pcb_strdup(tmp);
+		return res;
+	}
+
+	/* no luck, recurse into each subdir */
+	d = opendir(from);
+	if (d == NULL)
+		return NULL;
+
+	while((de = readdir(d)) != NULL) {
+		struct stat st;
+		if (de->d_name[0] == '.')
+			continue;
+		pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", from, PCB_DIR_SEPARATOR_C, de->d_name);
+		if (stat(tmp, &st) != 0)
+			continue;
+		if (!S_ISDIR(st.st_mode))
+			continue;
+
+		/* dir: recurse */
+		res = pcb_fopen_at_(tmp, fn, mode, full_path);
+		if (res != NULL) {
+			closedir(d);
+			return res;
+		}
+	}
+	closedir(d);
+	return NULL;
+}
+
+FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **full_path, int recursive)
+{
 	if (full_path != NULL)
 		*full_path = NULL;
 
-	/* try the trivial: directly under the target dir */
-	pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", dir, PCB_DIR_SEPARATOR_C, fn);
-	res = pcb_fopen(tmp, mode);
-	if (res == NULL) {
-		
-	}
-	else if (full_path != NULL)
-		*full_path = pcb_strdup(tmp);
-
-	return res;
+	return pcb_fopen_at_(dir, fn, mode, full_path);
 }
 
-FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, pcb_bool recursive)
+FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	FILE *res;
 	char *real_fn = pcb_build_fn(fn);
