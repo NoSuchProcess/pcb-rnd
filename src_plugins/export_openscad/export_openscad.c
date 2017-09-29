@@ -94,6 +94,10 @@ Name of the file to be exported to. Can contain a path.
 	{"models", "enable searching and inserting model files",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_models 3
+
+	{"drill", "enable drilling holes",
+	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_drill 4
 };
 
 #define NUM_OPTIONS (sizeof(openscad_attribute_list)/sizeof(openscad_attribute_list[0]))
@@ -209,7 +213,9 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	openscad_hid_export_to_file(f, options);
 	scad_close_layer();
 
-	scad_draw_drills();
+	if (openscad_attribute_list[HA_drill].default_val.int_value)
+		scad_draw_drills();
+
 	scad_draw_finish();
 
 	pcb_hid_restore_layer_ons(save_ons);

@@ -142,7 +142,8 @@ static void scad_draw_finish()
 	fprintf(f, "module pcb_board() {\n");
 	fprintf(f, "	difference() {\n");
 	fprintf(f, "		pcb_board_main();\n");
-	fprintf(f, "		pcb_drill();\n");
+	if (openscad_attribute_list[HA_drill].default_val.int_value)
+		fprintf(f, "		pcb_drill();\n");
 	fprintf(f, "	}\n");
 	fprintf(f, "%s", model_calls.array);
 	fprintf(f, "}\n");
