@@ -1197,7 +1197,6 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	if (rbnd->RubberbandN != 2)
 		return;
 			
-	*constrained = 1;
 
 	/* Create float point-vector representations of the lines */
 	fmain = pcb_fline_create_from_points(&line->Point1, &line->Point2);
@@ -1211,6 +1210,13 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 		frub2 = pcb_fline_create_from_points(&rub2->Point1, &rub2->Point2);
 	else
 		frub2 = pcb_fline_create_from_points(&rub2->Point2, &rub2->Point1);
+
+	/* If either of the lines are parallel to the main line then the main line cannot be constrained */
+	if( (fabs(pcb_fvector_dot(fmain.direction,frub1.direction)) > 0.990) ||
+			(fabs(pcb_fvector_dot(fmain.direction,frub2.direction)) > 0.990) ) 
+		return;
+
+	*constrained = 1;
 
 	/* If they are valid (non-null directions) we carry on */
 	if (pcb_fline_is_valid(fmain) && pcb_fline_is_valid(frub1) && pcb_fline_is_valid(frub2)) {
