@@ -74,7 +74,7 @@ static void scad_insert_models(void)
 	PCB_ELEMENT_LOOP(PCB->Data); {
 		mod = pcb_attribute_get(&element->Attributes, "openscad");
 		if (mod != NULL)
-			scad_insert_model(&models, mod, element->MarkX, element->MarkY);
+			scad_insert_model(&models, mod, TRX_(element->MarkX), TRY_(element->MarkY));
 	} PCB_END_LOOP;
 
 	for (e = htsp_first(&models); e; e = htsp_next(&models, e))

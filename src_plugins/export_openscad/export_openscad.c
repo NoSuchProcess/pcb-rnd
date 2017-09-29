@@ -325,6 +325,9 @@ static void openscad_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
+	TRX(x1); TRY(y1);
+	TRX(x2); TRY(y2);
+
 	fix_rect_coords();
 	pcb_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f, %f);\n",
 		x1, y1, x2, y2, 0.0, layer_thickness);
@@ -334,6 +337,9 @@ static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 {
 	double length, angle;
 	const char *cap_style;
+
+	TRX(x1); TRY(y1);
+	TRX(x2); TRY(y2);
 
 	length = pcb_distance(x1, y1, x2, y2);
 	angle = atan2((double)y2-y1, (double)x2-x1);
@@ -349,6 +355,9 @@ static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
+	TRX(x1); TRY(y1);
+	TRX(x2); TRY(y2);
+
 	fix_rect_coords();
 	openscad_draw_line(gc, x1, y1, x2, y1);
 	openscad_draw_line(gc, x2, y1, x2, y2);
@@ -389,6 +398,8 @@ static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 
 static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
+	TRX(cx); TRY(cy);
+
 	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, layer_thickness);
 }
 
@@ -397,8 +408,8 @@ static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	int n;
 	fprintf(f, "			pcb_fill_poly([");
 	for(n = 0; n < n_coords-1; n++)
-		pcb_fprintf(f, "[%mm,%mm],", x[n], y[n]);
-	pcb_fprintf(f, "[%mm,%mm]], %f);\n", x[n], y[n], layer_thickness);
+		pcb_fprintf(f, "[%mm,%mm],", TRX_(x[n]), TRY_(y[n]));
+	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]), TRY_(y[n]), layer_thickness);
 }
 
 static void openscad_calibrate(double xval, double yval)

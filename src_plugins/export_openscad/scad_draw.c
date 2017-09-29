@@ -22,8 +22,11 @@
 
 #include "../lib_polyhelp/topoly.h"
 
+#define TRX_(x) (x)
+#define TRY_(y) (PCB->MaxHeight - (y))
+
 #define TRX(x)
-#define TRY(y) y = (PCB->MaxHeight - (y))
+#define TRY(y) y = TRY_(y)
 
 static void scad_draw_primitives(void)
 {
@@ -93,7 +96,7 @@ static int scad_draw_outline(void)
 	fprintf(f, "	polygon([\n\t\t");
 	/* we need the as-drawn polygon and we know there are no holes */
 	for(n = 0; n < poly->PointN; n++)
-		pcb_fprintf(f, "[%mm,%mm]%s", poly->Points[n].X, poly->Points[n].Y, ((n < (poly->PointN-1)) ? "," : "\n"));
+		pcb_fprintf(f, "[%mm,%mm]%s", TRX_(poly->Points[n].X), TRY_(poly->Points[n].Y), ((n < (poly->PointN-1)) ? "," : "\n"));
 	fprintf(f, "	]);\n");
 	fprintf(f, "}\n");
 
@@ -103,7 +106,7 @@ static int scad_draw_outline(void)
 
 static void scad_draw_drill(const pcb_pin_t *pin)
 {
-	pcb_fprintf(f, "	translate([%mm,%mm,0])\n", pin->X, pin->Y);
+	pcb_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(pin->X), TRY_(pin->Y));
 	pcb_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", pin->DrillingHole/2);
 }
 
