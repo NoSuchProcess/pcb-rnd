@@ -322,11 +322,6 @@ static void openscad_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 		y2 = t; \
 	}
 
-static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
-{
-	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
-	fix_rect_coords();
-}
 
 static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
@@ -350,6 +345,15 @@ static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 	pcb_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
 		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, layer_thickness);
+}
+
+static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	fix_rect_coords();
+	openscad_draw_line(gc, x1, y1, x2, y1);
+	openscad_draw_line(gc, x2, y1, x2, y2);
+	openscad_draw_line(gc, x2, y2, x1, y2);
+	openscad_draw_line(gc, x1, y2, x1, y1);
 }
 
 static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
