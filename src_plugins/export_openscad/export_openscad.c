@@ -93,17 +93,21 @@ Name of the file to be exported to. Can contain a path.
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_copper 1
 
-	{"silk", "enable exporting outer silk layers",
+	{"silk", "enable exporting silk layers",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_silk 2
 
+	{"mask", "enable exporting mask layers",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_mask 3
+
 	{"models", "enable searching and inserting model files",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_models 3
+#define HA_models 4
 
 	{"drill", "enable drilling holes",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_drill 4
+#define HA_drill 5
 };
 
 #define NUM_OPTIONS (sizeof(openscad_attribute_list)/sizeof(openscad_attribute_list[0]))
@@ -253,13 +257,14 @@ static void scad_new_layer(int is_pos)
 			h = -0.8+((double)scad_group_level*1.1) * effective_layer_thickness;
 	}
 	else {
-		double mult = 1.5;
+		double mult = 2.0;
 		effective_layer_thickness = layer_thickness * mult;
 		if (scad_group_level > 0)
 			h = 0.8+((double)scad_group_level*1.1) * layer_thickness;
 		else
 			h = -0.8+((double)scad_group_level*1.1) * layer_thickness;
 		h -= effective_layer_thickness/2.0;
+		effective_layer_thickness+=1.0;
 	}
 	fprintf(f, "module layer_%s_%s_%d() {\n", scad_group_name, is_pos ? "pos" : "neg", scad_layer_cnt);
 	fprintf(f, "	color([%s])\n", scad_group_color);
@@ -361,6 +366,19 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 
 	if (flags & PCB_LYT_UDRILL)
 		return 0;
+
+	if (flags & PCB_LYT_MASK) {
+		if (!openscad_attribute_list[HA_mask].default_val.int_value)
+			return 0;
+		if (flags & PCB_LYT_TOP) {
+			scad_new_layer_group("top_mask", +3, "0,0.7,0,0.5");
+			return 1;
+		}
+		if (flags & PCB_LYT_BOTTOM) {
+			scad_new_layer_group("bottom_mask", -3, "0,0.7,0,0.5");
+			return 1;
+		}
+	}
 
 	if (flags & PCB_LYT_SILK) {
 		if (!openscad_attribute_list[HA_silk].default_val.int_value)
