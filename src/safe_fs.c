@@ -198,6 +198,8 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 			const char *p = ci->val.string[0];
 			if (ci->type != CFN_STRING)
 				continue;
+			if (*p == '?')
+				p++;
 			pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", p, PCB_DIR_SEPARATOR_C, real_fn);
 			res = pcb_fopen(tmp, mode);
 			if (res != NULL) {
