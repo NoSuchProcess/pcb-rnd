@@ -57,6 +57,11 @@ static void scad_draw_primitives(void)
 	fprintf(f, "			cube([x2-x1, y2-y1, thick], center=true);\n");
 	fprintf(f, "}\n");
 
+	fprintf(f, "// filled polygon\n");
+	fprintf(f, "module pcb_fill_poly(coords, thick) {\n");
+	fprintf(f, "	linear_extrude(height=thick)\n");
+	fprintf(f, "		polygon(coords);\n");
+	fprintf(f, "}\n");
 
 	fprintf(f, "// filled circle\n");
 	fprintf(f, "module pcb_fcirc(x1, y1, radius, thick) {\n");

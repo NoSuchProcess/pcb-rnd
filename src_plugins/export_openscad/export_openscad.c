@@ -368,6 +368,11 @@ static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 
 static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
+	int n;
+	fprintf(f, "			pcb_fill_poly([");
+	for(n = 0; n < n_coords-1; n++)
+		pcb_fprintf(f, "[%mm,%mm],", x[n], y[n]);
+	pcb_fprintf(f, "[%mm,%mm]], %f);\n", x[n], y[n], layer_thickness);
 }
 
 static void openscad_calibrate(double xval, double yval)
