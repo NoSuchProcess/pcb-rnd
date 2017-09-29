@@ -358,7 +358,33 @@ static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	TRX(cx); TRY(cy);
+	double a, step = delta_angle/10.0, end_angle = start_angle + delta_angle;
+	int first;
+	pcb_coord_t lx, ly, x, y;
+
+	if (step < 1)
+		step = 1;
+	if (step > 10)
+		step = 10;
+
+	/* only recent versions support angle for rotate_extrude(), so use line approximation for now */
+	fprintf(f, "			// line-approx arc %f .. %f by %f\n", start_angle, end_angle, step);
+
+	for(first = 1, a = start_angle; step > 0 ? (a < end_angle) : (a > end_angle); a += step) {
+		x = (double)cx + cos((180-a) / PCB_RAD_TO_DEG) * (double)width;
+		y = (double)cy + sin((180-a) / PCB_RAD_TO_DEG) * (double)height;
+		if (!first) {
+			fprintf(f, "\t");
+			openscad_draw_line(gc, lx, ly, x, y);
+		}
+		lx = x;
+		ly = y;
+		first = 0;
+	}
+	x = (double)cx + cos((180 - end_angle) / PCB_RAD_TO_DEG) * (double)width;
+	y = (double)cy + sin((180 - end_angle) / PCB_RAD_TO_DEG) * (double)height;
+	fprintf(f, "\t");
+	openscad_draw_line(gc, lx, ly, x, y);
 }
 
 static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
