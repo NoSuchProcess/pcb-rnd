@@ -251,11 +251,23 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 	{
 		for (ci = conflist_first((conflist_t *)paths); ci != NULL; ci = conflist_next(ci)) {
 			const char *p = ci->val.string[0];
+			char *real_p;
+			size_t pl;
+
 			if (ci->type != CFN_STRING)
 				continue;
 			if (*p == '?')
 				p++;
-			res = pcb_fopen_at(p, real_fn, mode, full_path, recursive);
+
+			/* resolve the path from the list, truncate trailing '/' */
+			real_p = pcb_build_fn(p);
+			pl = strlen(real_p);
+			if ((pl > 0) && (real_p[pl-1] == '/'))
+				real_p[pl-1] = '\0';
+	
+			res = pcb_fopen_at(real_p, real_fn, mode, full_path, recursive);
+			free(real_p);
+
 			if (res != NULL) {
 				free(real_fn);
 				return res;
