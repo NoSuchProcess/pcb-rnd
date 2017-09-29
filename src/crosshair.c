@@ -50,6 +50,7 @@
 #include "obj_arc_draw.h"
 #include "obj_text_draw.h"
 #include "obj_arc_ui.h"
+#include "obj_all_op.h"
 
 typedef struct {
 	int x, y;
@@ -316,8 +317,10 @@ static void XORDrawInsertPointObject(void)
  */
 static void XORDrawMoveOrCopy(void)
 {
-	pcb_coord_t dx = pcb_crosshair.X - pcb_crosshair.AttachedObject.X, dy = pcb_crosshair.Y - pcb_crosshair.AttachedObject.Y;
-
+	pcb_coord_t dx = pcb_crosshair.X - pcb_crosshair.AttachedObject.X;
+	pcb_coord_t dy = pcb_crosshair.Y - pcb_crosshair.AttachedObject.Y;
+	int event_sent = 0;
+	
 	switch (pcb_crosshair.AttachedObject.Type) {
 	case PCB_TYPE_VIA:
 		{
@@ -331,19 +334,24 @@ static void XORDrawMoveOrCopy(void)
 			/* We move a local copy of the line -the real line hasn't moved, 
 			 * only the preview.
 			 */			
-			int moved = 0;
+			int constrained = 0;
 			pcb_line_t line;
+			
+			int dx1 = dx, dx2 = dx;
+			int dy1 = dy, dy2 = dy;
+			
 			memcpy(&line, (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
 
-			pcb_event(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pp", &line, &moved);
-			
-			if (!moved)
-			{
-				line.Point1.X += dx;
-				line.Point1.Y += dy;
-				line.Point2.X += dx;
-				line.Point2.Y += dy;
-			}
+			if(conf_core.editor.rubber_band_keep_midlinedir)
+				pcb_event(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", &line, &constrained, &dx1, &dy1, &dx2, &dy2);
+			pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", constrained, dx1, dy1, dx2, dy2);
+
+			event_sent = 1;
+
+			line.Point1.X += dx1;
+			line.Point1.Y += dy1;
+			line.Point2.X += dx2;
+			line.Point2.Y += dy2;
 
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
 															line.Point1.X, line.Point1.Y,
@@ -365,6 +373,9 @@ static void XORDrawMoveOrCopy(void)
 		{
 			/* Make a temporary arc and move it by dx,dy */
 			pcb_arc_t arc = *((pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2);
+			pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, dx, dy, dx, dy);
+			event_sent = 1;
+			
 			arc.X += dx;
 			arc.Y += dy;
 
@@ -438,6 +449,7 @@ static void XORDrawMoveOrCopy(void)
 
 	case PCB_TYPE_ARC_POINT:
 		pcb_arc_ui_move_or_copy(&pcb_crosshair);
+		event_sent = 1;
 		break;
 
 	case PCB_TYPE_POLYGON_POINT:
@@ -487,7 +499,8 @@ static void XORDrawMoveOrCopy(void)
 		break;
 	}
 
-	pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "cc", dx, dy);
+	if(!event_sent)
+		pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
 /* ---------------------------------------------------------------------------
@@ -608,11 +621,8 @@ XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance)
 	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) || (clearance == 0))
 		return;
 	
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv))
-	{
-		
-		if((style==0) || (style==1))
-		{
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv))	{
+		if((style==0) || (style==1)) {
 			pcb_coord_t w = pv->Thickness;
 			pcb_coord_t l = pv->X - (w/2);
 			pcb_coord_t b = pv->Y - (w/2);
@@ -639,8 +649,7 @@ XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance)
 	}
 	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv))
 			draw_pinvia_shape_drc_outline(pcb_crosshair.GC,pv->X,pv->Y,pv->Thickness,clearance,17);
-	else
-	{
+	else {
 			pcb_coord_t r = (pv->Thickness/2)+clearance;
 
 			pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
@@ -757,8 +766,8 @@ void pcb_draw_attached(void)
 				XORDrawPinViaDRCOutline(&via,PCB->Bloat);
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
-			break;
 		}
+		break;
 
 		/* the attached line is used by both LINEMODE, PCB_MODE_POLYGON and PCB_MODE_POLYGON_HOLE */
 	case PCB_MODE_POLYGON:
@@ -783,13 +792,11 @@ void pcb_draw_attached(void)
 				XORDrawAttachedArc(conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
-
 		}
 		break;
 
 	case PCB_MODE_LINE:
-		if(PCB->RatDraw)
-		{
+		if(PCB->RatDraw) {
 			/* draw only if starting point exists and the line has length */
 			if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) 
 				pcb_draw_wireframe_line(pcb_crosshair.GC,
@@ -798,8 +805,7 @@ void pcb_draw_attached(void)
 																pcb_crosshair.AttachedLine.Point2.X,
 																pcb_crosshair.AttachedLine.Point2.Y, 10 );
 		}
-		else if(pcb_crosshair.Route.size > 0)
-		{	
+		else if(pcb_crosshair.Route.size > 0)	{	
 			pcb_route_draw(&pcb_crosshair.Route,pcb_crosshair.GC);
 			if(conf_core.editor.show_drc)
 				pcb_route_draw_drc(&pcb_crosshair.Route,pcb_crosshair.GC);
@@ -1226,9 +1232,6 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 
 	}
-
-	pcb_event(PCB_EVENT_RUBBER_FIT_CROSSHAIR, "pppp", &pcb_crosshair, &pcb_marked,
-											&nearest_grid_x, &nearest_grid_y);
 
 	snap_data.crosshair = &pcb_crosshair;
 	snap_data.nearest_sq_dist = crosshair_sq_dist(&pcb_crosshair, nearest_grid_x, nearest_grid_y);
