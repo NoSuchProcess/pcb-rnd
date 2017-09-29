@@ -330,8 +330,9 @@ static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	fix_rect_coords();
+	pcb_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f);\n",
+		x1, y1, x2, y2, layer_thickness);
 }
 
 static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -358,7 +359,6 @@ static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 
 static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
-/*	TRX(cx); TRY(cy);*/
 	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, layer_thickness);
 }
 
