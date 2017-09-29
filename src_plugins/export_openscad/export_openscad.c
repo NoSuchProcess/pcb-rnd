@@ -82,6 +82,18 @@ Name of the file to be exported to. Can contain a path.
 	{"outfile", "Graphics output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openscadfile 0
+
+	{"copper", "enable exporting outer copper layers",
+	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_copper 1
+
+	{"silk", "enable exporting outer silk layers",
+	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_silk 2
+
+	{"models", "enable searching and inserting model files",
+	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_models 3
 };
 
 #define NUM_OPTIONS (sizeof(openscad_attribute_list)/sizeof(openscad_attribute_list[0]))
@@ -191,7 +203,8 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	gds_init(&layer_calls);
 	gds_init(&model_calls);
 
-	scad_insert_models();
+	if (openscad_attribute_list[HA_models].default_val.int_value)
+		scad_insert_models();
 
 	openscad_hid_export_to_file(f, options);
 	scad_close_layer();
@@ -235,6 +248,8 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		return 0;
 
 	if (flags & PCB_LYT_SILK) {
+		if (!openscad_attribute_list[HA_silk].default_val.int_value)
+			return 0;
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer("top_silk", +2, "0,0,0");
 			return 1;
@@ -246,6 +261,8 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 	}
 
 	if (flags & PCB_LYT_COPPER) {
+		if (!openscad_attribute_list[HA_copper].default_val.int_value)
+			return 0;
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer("top_copper", +1, "1,0.4,0.2");
 			return 1;
