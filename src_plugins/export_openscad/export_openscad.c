@@ -65,9 +65,13 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static FILE *f = NULL;
-unsigned layer_open;
-double layer_thickness = 0.01;
-gds_t layer_calls, model_calls;
+static unsigned layer_open;
+static double layer_thickness = 0.01;
+static gds_t layer_calls, layer_group_calls, model_calls;
+static const char *scad_group_name;
+static int scad_group_level;
+static const char *scad_group_color;
+static int scad_layer_cnt;
 
 pcb_hid_attribute_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -149,30 +153,62 @@ void openscad_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 static void scad_close_layer()
 {
 	if (layer_open) {
-		fprintf(f, "	}\n");
+		fprintf(f, "		}\n");
 		fprintf(f, "}\n\n");
 		layer_open = 0;
 	}
 }
 
-static void scad_new_layer(const char *layer_name, int level, const char *color)
+
+static void scad_close_layer_group()
+{
+	if (scad_group_name != NULL) {
+		fprintf(f, "module layer_group_%s() {\n", scad_group_name);
+		fprintf(f, "%s", layer_calls.array);
+		fprintf(f, "}\n");
+
+		gds_truncate(&layer_calls, 0);
+		pcb_append_printf(&layer_group_calls, "	layer_group_%s();\n", scad_group_name);
+		scad_group_name = NULL;
+		scad_group_color = NULL;
+		scad_group_level = 0;
+	}
+}
+
+static void scad_new_layer(int is_pos)
 {
 	double h;
+	const char layer_name[1024];
+	scad_layer_cnt++;
+
+	pcb_snprintf(layer_name, sizeof(layer_name), "%s_%s_%d", scad_group_name, is_pos ? "pos" : "neg", scad_layer_cnt);
 
 	scad_close_layer();
 
-	if (level > 0)
-		h = 0.8+(double)level * layer_thickness;
+	if (scad_group_level > 0)
+		h = 0.8+(double)scad_group_level * layer_thickness;
 	else
-		h = -0.8+(double)level * layer_thickness;
+		h = -0.8+(double)scad_group_level * layer_thickness;
 
 	fprintf(f, "module layer_%s() {\n", layer_name);
-	fprintf(f, "	color([%s])\n", color);
+	fprintf(f, "	color([%s])\n", scad_group_color);
 	fprintf(f, "		translate([0,0,%f]) {\n", h);
 	layer_open = 1;
 
 	pcb_append_printf(&layer_calls, "	layer_%s();\n", layer_name);
 }
+
+
+static void scad_new_layer_group(const char *group_name, int level, const char *color)
+{
+	scad_close_layer_group();
+
+	scad_group_name = group_name;
+	scad_group_level = level;
+	scad_group_color = color;
+	scad_group_level = level;
+}
+
 
 static void openscad_do_export(pcb_hid_attr_val_t * options)
 {
@@ -199,12 +235,14 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
+	scad_layer_cnt = 0;
 	scad_draw_primitives();
 
 	if (scad_draw_outline() < 0)
 		return;
 
 	gds_init(&layer_calls);
+	gds_init(&layer_group_calls);
 	gds_init(&model_calls);
 
 	if (openscad_attribute_list[HA_models].default_val.int_value)
@@ -221,6 +259,7 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_restore_layer_ons(save_ons);
 
 	gds_uninit(&layer_calls);
+	gds_uninit(&layer_group_calls);
 	gds_uninit(&model_calls);
 
 	fclose(f);
@@ -257,11 +296,11 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		if (!openscad_attribute_list[HA_silk].default_val.int_value)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer("top_silk", +2, "0,0,0");
+			scad_new_layer_group("top_silk", +2, "0,0,0");
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer("bottom_silk", -2, "0,0,0");
+			scad_new_layer_group("bottom_silk", -2, "0,0,0");
 			return 1;
 		}
 	}
@@ -270,11 +309,11 @@ static int openscad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t laye
 		if (!openscad_attribute_list[HA_copper].default_val.int_value)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer("top_copper", +1, "1,0.4,0.2");
+			scad_new_layer_group("top_copper", +1, "1,0.4,0.2");
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer("bottom_copper", -1, "1,0.4,0.2");
+			scad_new_layer_group("bottom_copper", -1, "1,0.4,0.2");
 			return 1;
 		}
 	}
@@ -297,18 +336,19 @@ static void openscad_destroy_gc(pcb_hid_gc_t gc)
 
 static void openscad_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
-	if (direct)
-		return;
-
 	switch(op) {
 		case PCB_HID_COMP_RESET:
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+			scad_new_layer(1);
+			break;
 		case PCB_HID_COMP_NEGATIVE:
+			scad_new_layer(0);
 			break;
 
 		case PCB_HID_COMP_FLUSH:
+			scad_close_layer();
 			break;
 	}
 }
