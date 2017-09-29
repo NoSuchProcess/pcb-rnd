@@ -22,7 +22,7 @@
 
 #include "conf_core.h"
 
-static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, pcb_coord_t y0)
+static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, pcb_coord_t y0, const char *transf, const char *param)
 {
 	FILE *fin;
 	char *ref;
@@ -68,22 +68,35 @@ static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, 
 		}
 	}
 	ref = htsp_get(models, (char *)name);
-	if (ref != NULL)
-		pcb_append_printf(&model_calls, "	translate([%mm,%mm,0.8])\n		%s();\n", x0, y0, ref);
+	if (ref != NULL) {
+		const char *tab = "";
+		pcb_append_printf(&model_calls, "	translate([%mm,%mm,0.8])\n", x0, y0);
+		if (transf != NULL) {
+			pcb_append_printf(&model_calls, "		%s\n", transf);
+			tab = "\t";
+		}
+		if (param != NULL)
+			pcb_append_printf(&model_calls, "		%s%s(%s);\n", tab, ref, param);
+		else
+			pcb_append_printf(&model_calls, "		%s%s();\n", tab, ref);
+	}
 }
 
 static void scad_insert_models(void)
 {
 	htsp_t models;
-	char *mod;
+	const char *mod, *transf, *param;
 	htsp_entry_t *e;
 
 	htsp_init(&models, strhash, strkeyeq);
 
 	PCB_ELEMENT_LOOP(PCB->Data); {
 		mod = pcb_attribute_get(&element->Attributes, "openscad");
-		if (mod != NULL)
-			scad_insert_model(&models, mod, TRX_(element->MarkX), TRY_(element->MarkY));
+		if (mod != NULL) {
+			transf = pcb_attribute_get(&element->Attributes, "openscad-transformation");
+			param = pcb_attribute_get(&element->Attributes, "openscad-param");
+			scad_insert_model(&models, mod, TRX_(element->MarkX), TRY_(element->MarkY), transf, param);
+		}
 	} PCB_END_LOOP;
 
 	for (e = htsp_first(&models); e; e = htsp_next(&models, e))
