@@ -51,7 +51,9 @@ FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out);
    the file name. If fn is not an absolute path, search paths for the
    first directory from which fn is accessible. If the call doesn't fail
    and full_path is not NULL, it is set to point to the final full path
-   (or NULL on failure); the caller needs to call free() on it. */
-FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path);
+   (or NULL on failure); the caller needs to call free() on it.
+   If recursive is set, all subcirectories under each path is also searched for the file.
+   */
+FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, pcb_bool recursive);
 
 #endif

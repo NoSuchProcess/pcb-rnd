@@ -39,6 +39,9 @@
 #include "globalconst.h"
 #include "paths.h"
 
+/* opendir, readdir */
+#include "compat_inc.h"
+
 /* Evaluates op(arg1,arg2); returns 0 if the operation is permitted */
 static int pcb_safe_fs_check(const char *op, const char *arg1, const char *arg2)
 {
@@ -169,7 +172,32 @@ int pcb_rename(const char *old_path, const char *new_path)
 	return res;
 }
 
-FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path)
+static FILE *pcb_fopen_at_(const char *dir, const char *fn, char **full_path, pcb_bool recursive)
+{
+
+}
+
+FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **full_path, pcb_bool recursive)
+{
+	char tmp[PCB_PATH_MAX];
+	FILE *res;
+
+	if (full_path != NULL)
+		*full_path = NULL;
+
+	/* try the trivial: directly under the target dir */
+	pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", dir, PCB_DIR_SEPARATOR_C, fn);
+	res = pcb_fopen(tmp, mode);
+	if (res == NULL) {
+		
+	}
+	else if (full_path != NULL)
+		*full_path = pcb_strdup(tmp);
+
+	return res;
+}
+
+FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, pcb_bool recursive)
 {
 	FILE *res;
 	char *real_fn = pcb_build_fn(fn);
@@ -192,19 +220,14 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 
 	/* have to search paths */
 	{
-		char tmp[PCB_PATH_MAX];
-
 		for (ci = conflist_first((conflist_t *)paths); ci != NULL; ci = conflist_next(ci)) {
 			const char *p = ci->val.string[0];
 			if (ci->type != CFN_STRING)
 				continue;
 			if (*p == '?')
 				p++;
-			pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", p, PCB_DIR_SEPARATOR_C, real_fn);
-			res = pcb_fopen(tmp, mode);
+			res = pcb_fopen_at(p, real_fn, mode, full_path, recursive);
 			if (res != NULL) {
-				if (full_path != NULL)
-					*full_path = pcb_strdup(tmp);
 				free(real_fn);
 				return res;
 			}

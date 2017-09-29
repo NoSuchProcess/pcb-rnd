@@ -20,19 +20,26 @@
   *
   */
 
+#include "conf_core.h"
+
 static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, pcb_coord_t y0)
 {
 	FILE *fin;
 	char *ref;
 
 	if (!htsp_has(models, name)) {
-		char buff[1024];
-		fin = pcb_fopen(name, "r");
+		char buff[1024], *full_path;
+		fin = pcb_fopen_first(&conf_core.rc.library_search_paths, name, "r", &full_path, pcb_true);
+
 		if (fin != NULL) {
 			char *s, *safe_name = pcb_strdup(name);
 			for(s = safe_name; *s != '\0'; s++)
 				if (!isalnum(*s))
 					*s = '_';
+
+			fprintf(f, "// Model loaded from '%s'\n", full_path);
+			free(full_path);
+
 			/* replace the module line */
 			while(fgets(buff, sizeof(buff), fin) != NULL) {
 				if (strstr(buff, "module") != NULL) {
@@ -55,8 +62,10 @@ static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, 
 			htsp_set(models, (char *)name, pcb_strdup(buff));
 			free(safe_name);
 		}
-		else
+		else {
 			htsp_set(models, (char *)name, NULL);
+			pcb_message(PCB_MSG_WARNING, "openscad: can't find model file for %s in the footprint library\n", name);
+		}
 	}
 	ref = htsp_get(models, (char *)name);
 	if (ref != NULL)
