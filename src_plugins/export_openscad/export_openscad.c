@@ -326,8 +326,8 @@ static void openscad_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	fix_rect_coords();
-	pcb_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f);\n",
-		x1, y1, x2, y2, layer_thickness);
+	pcb_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f, %f);\n",
+		x1, y1, x2, y2, 0.0, layer_thickness);
 }
 
 static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)

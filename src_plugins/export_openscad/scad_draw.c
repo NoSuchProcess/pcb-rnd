@@ -51,7 +51,7 @@ static void scad_draw_primitives(void)
 	fprintf(f, "}\n");
 
 	fprintf(f, "// filled rectangle\n");
-	fprintf(f, "module pcb_fill_rect(x1, y1, x2, y2, thick) {\n");
+	fprintf(f, "module pcb_fill_rect(x1, y1, x2, y2, angle, thick) {\n");
 	fprintf(f, "	translate([(x1+x2)/2,(y1+y2)/2,0])\n");
 	fprintf(f, "		rotate([0,0,angle])\n");
 	fprintf(f, "			cube([x2-x1, y2-y1, thick], center=true);\n");
