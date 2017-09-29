@@ -152,7 +152,7 @@ static void scad_draw_finish()
 	fprintf(f, "			}\n");
 	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
-	fprintf(f, "		%s", model_calls.array);
+	fprintf(f, "%s", model_calls.array);
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
 
