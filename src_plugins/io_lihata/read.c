@@ -609,6 +609,8 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 
 	ly->parent = dt;
 
+	parse_attributes(&ly->meta.real.Attributes, lht_dom_hash_get(grp, "attributes"));
+
 	ncmb = lht_dom_hash_get(grp, "combining");
 	if (ncmb != NULL) {
 		if (rdver < 2)
