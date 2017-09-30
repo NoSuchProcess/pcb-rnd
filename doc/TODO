@@ -30,7 +30,6 @@ For the next release:
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
 - subc/term:
 	- check footprint edit mode: subc save and reload
-	- poly-vs-poly clear: 'j': redraw on clear-lines
 	- term netlist connectivity r10843:
 		- autoplace.c:167
 		- autoroute.c:961
