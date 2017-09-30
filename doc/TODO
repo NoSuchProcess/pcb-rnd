@@ -26,7 +26,6 @@
 
 For the next release:
 + BUG: open an .lht file (or just start up pcb-rnd) and element display value is not refdes but value [report: Evan]
-+ BUG: celem's pnp-origin persistent save cant-remove bug: happens only on his board, only if the pnp mark is selected when removed (bug_files/lht_pers_del) [report:celem]
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
 - subc/term:
 	- term netlist connectivity r10843:
