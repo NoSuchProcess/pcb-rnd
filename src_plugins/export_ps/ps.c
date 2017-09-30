@@ -992,7 +992,10 @@ static void ps_set_color(pcb_hid_gc_t gc, const char *name)
 	}
 	else if (global.drawing_mode == PCB_HID_COMP_POSITIVE) {
 		gc->r = gc->g = gc->b = 0;
-		gc->erase = 1;
+		if (strcmp(name, "erase") == 0)
+			gc->erase = 1;
+		else
+			gc->erase = 0;
 	}
 	else if (strcmp(name, "erase") == 0 || strcmp(name, "drill") == 0) {
 		gc->r = gc->g = gc->b = 255;
