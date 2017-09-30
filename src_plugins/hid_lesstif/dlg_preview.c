@@ -13,7 +13,7 @@ static int widget_depth(Widget w) {
 	int save_vx, save_vy, save_vw, save_vh; \
 	int save_fx, save_fy; \
 	double save_vz; \
-	Pixmap save_px
+	Pixmap save_px, save_main_px, save_mask_px, save_mask_bm
 
 #define SHOW_ENTER \
 do { \
@@ -26,7 +26,13 @@ do { \
 	save_fx = conf_core.editor.view.flip_x; \
 	save_fy = conf_core.editor.view.flip_y; \
 	save_px = pixmap; \
-	pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da)); \
+	save_main_px = main_pixmap; \
+	save_mask_px = mask_pixmap; \
+	save_mask_bm = mask_bitmap; \
+	main_pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da)); \
+	mask_pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da)); \
+	mask_bitmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, 1); \
+	pixmap = main_pixmap; \
 	view_left_x = pd->y; \
 	view_top_y = pd->x; \
 	view_zoom = pd->zoom; \
@@ -50,7 +56,12 @@ do { \
 	view_height = save_vh; \
 	XCopyArea(lesstif_display, pixmap, XtWindow(da), gc, 0, 0, pd->v_width, pd->v_height, 0, 0); \
 	XtReleaseGC(da, gc); \
-	XFreePixmap(lesstif_display, pixmap); \
+	XFreePixmap(lesstif_display, main_pixmap); \
+	XFreePixmap(lesstif_display, mask_pixmap); \
+	XFreePixmap(lesstif_display, mask_bitmap); \
+	main_pixmap = save_main_px; \
+	mask_pixmap = save_mask_px; \
+	mask_bitmap = save_mask_bm; \
 	pixmap = save_px; \
 	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx); \
 	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy); \
