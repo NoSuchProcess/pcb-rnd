@@ -62,6 +62,7 @@ do { \
 
 #define SHOW_DRAW \
 do { \
+	XSetForeground(display, bg_gc, bgcolor); \
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height); \
 	pcb_hid_expose_layer(&lesstif_hid, &pd->ctx); \
 } while(0)
