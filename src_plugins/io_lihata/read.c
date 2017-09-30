@@ -816,6 +816,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 
 	if (!dt->via_tree)
 		dt->via_tree = pcb_r_create_tree(NULL, 0, 0);
+	sc->data->via_tree = dt->via_tree;
 
 	pcb_add_subc_to_data(dt, sc);
 
