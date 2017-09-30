@@ -30,8 +30,8 @@ do { \
 	mask_pixmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, widget_depth(da)); \
 	mask_bitmap = XCreatePixmap(XtDisplay(da), XtWindow(da), pd->v_width, pd->v_height, 1); \
 	pixmap = main_pixmap; \
-	view_left_x = pd->y; \
-	view_top_y = pd->x; \
+	view_left_x = pd->x; \
+	view_top_y = pd->y; \
 	view_zoom = pd->zoom; \
 	view_width = pd->v_width; \
 	view_height = pd->v_height; \
