@@ -1168,20 +1168,16 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 	return res;
 }
 
-int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only)
+static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data, int enforce1)
 {
 	int res;
 	lht_doc_t *doc;
 
-	if (!elem_only) {
-		pcb_message(PCB_MSG_ERROR, "Can't save full buffer (yet), only a single subcircuits from a buffer\n");
-		return -1;
-	}
-	if (pcb_subclist_length(&buff->Data->subc) > 1) {
+	if ((enforce1) && (pcb_subclist_length(&data->subc)) > 1) {
 		pcb_message(PCB_MSG_ERROR, "Can't save more than one subcircuit from a buffer\n");
 		return -1;
 	}
-	if (pcb_subclist_length(&buff->Data->subc) < 1) {
+	if (pcb_subclist_length(&data->subc) < 1) {
 		pcb_message(PCB_MSG_ERROR, "there's no subcircuit in the buffer\n");
 		return -1;
 	}
@@ -1191,7 +1187,7 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_
 	doc = lht_dom_init();
 	wrver = 3;
 	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v3");
-	lht_dom_list_append(doc->root, build_subc(pcb_subclist_first(&buff->Data->subc)));
+	lht_dom_list_append(doc->root, build_subc(pcb_subclist_first(&data->subc)));
 
 	res = lht_dom_export(doc->root, f, "");
 
@@ -1200,3 +1196,17 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_
 	return res;
 }
 
+int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only)
+{
+	if (!elem_only) {
+		pcb_message(PCB_MSG_ERROR, "Can't save full buffer (yet), only a single subcircuits from a buffer\n");
+		return -1;
+	}
+
+	return io_lihata_dump_1st_subc(ctx, f, buff->Data, 1);
+}
+
+int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
+{
+	return io_lihata_dump_1st_subc(ctx, f, dt, 1);
+}

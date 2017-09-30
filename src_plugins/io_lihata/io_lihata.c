@@ -69,7 +69,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v3.parse_font = io_lihata_parse_font;
 	plug_io_lihata_v3.write_font = io_lihata_write_font;
 	plug_io_lihata_v3.write_buffer = io_lihata_write_buffer;
-	plug_io_lihata_v3.write_element = NULL;
+	plug_io_lihata_v3.write_element = io_lihata_write_element;
 	plug_io_lihata_v3.write_pcb = io_lihata_write_pcb_v3;
 	plug_io_lihata_v3.default_fmt = "lihata";
 	plug_io_lihata_v3.description = "lihata board v3";
