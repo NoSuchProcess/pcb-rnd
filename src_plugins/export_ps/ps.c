@@ -959,7 +959,10 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 			global.outline_layer != NULL &&
 			global.outline_layer != pcb_get_layer(layer) &&
 			!(flags & PCB_LYT_OUTLINE)) {
+		int save_drill = global.is_drill;
+		global.is_drill = 0;
 		pcb_draw_layer(global.outline_layer, &global.exps.view);
+		global.is_drill = save_drill;
 	}
 
 	return 1;
