@@ -1045,6 +1045,7 @@ static int SubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 		return -1;
 
 	Subtract(pa, frompoly, pcb_true);
+	frompoly->NoHolesValid = 0;
 	return 0;
 }
 
@@ -1062,7 +1063,7 @@ static int UnsubtractPolyPoly(pcb_polygon_t *subpoly, pcb_polygon_t *frompoly)
 
 	if (!Unsubtract(pa, frompoly))
 		return -1;
-
+	frompoly->NoHolesValid = 0;
 	return 0;
 }
 
