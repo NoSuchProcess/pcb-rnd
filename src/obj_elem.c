@@ -137,21 +137,23 @@ pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element)
  */
 pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 {
-	pcb_element_t *element;
-
 	pcb_buffer_clear(PCB, Buffer);
 	if (!pcb_parse_element(Buffer->Data, Name)) {
 		if (conf_core.editor.show_solder_side)
 			pcb_buffer_flip_side(PCB, Buffer);
 		pcb_set_buffer_bbox(Buffer);
+
+		Buffer->X = 0;
+		Buffer->Y = 0;
+
 		if (elementlist_length(&Buffer->Data->Element)) {
-			element = elementlist_first(&Buffer->Data->Element);
+			pcb_element_t *element = elementlist_first(&Buffer->Data->Element);
 			Buffer->X = element->MarkX;
 			Buffer->Y = element->MarkY;
 		}
-		else {
-			Buffer->X = 0;
-			Buffer->Y = 0;
+		else if (elementlist_length(&Buffer->Data->subc)) {
+			pcb_subc_t *subc = elementlist_first(&Buffer->Data->subc);
+			pcb_subc_get_origin(subc, &Buffer->X, &Buffer->Y);
 		}
 		return (pcb_true);
 	}
