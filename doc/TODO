@@ -34,7 +34,6 @@ For the next release:
 		- autoroute.c:961
 		- autoroute.c:1000
 		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
-	- subcircuit offset on paste
 	- BUG: layerbinding dialog on lesstif:
 		- combo box values are not set
 		- text fields are too wide
