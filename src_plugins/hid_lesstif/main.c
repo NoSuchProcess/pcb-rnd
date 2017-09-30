@@ -87,14 +87,10 @@ static Cursor my_cursor = 0;
 static int old_cursor_mode = -1;
 static int over_point = 0;
 
-/* The first is the "current" pixmap.  The main_ is the real one we
-   usually use, the mask_ are the ones for doing polygon masks.  The
-   pixmap is the saved pixels, the bitmap is for the "erase" color.
-   We set pixmap to point to main_pixmap or mask_pixmap as needed.  */
-static Pixmap pixmap = 0;
-static Pixmap main_pixmap = 0;
-static Pixmap mask_pixmap = 0;
-static Pixmap mask_bitmap = 0;
+static Pixmap pixmap = 0;          /* Current pixmap we are drawing to (either main_pixmap in direct mode or mask_pixmap when drawing the sketch) */
+static Pixmap main_pixmap = 0;     /* 'Base pixmap', the final output all sketches are composed onto (then drawn) */
+static Pixmap mask_pixmap = 0;     /* 'Sketch pixmap' for compositing: color array */
+static Pixmap mask_bitmap = 0;     /* 'Sketch transparency bitmap' for compositing: tells which pixels shall be copied and which one are transparent/erased */
 
 static int use_xrender = 0;
 #ifdef HAVE_XRENDER
