@@ -39,18 +39,11 @@ do { \
 
 #define SHOW_LEAVE \
 do { \
-	XGCValues gcv; \
-	GC gc; \
-	memset(&gcv, 0, sizeof(gcv)); \
-	gcv.graphics_exposures = 0; \
-	gc = XtGetGC(da, GCGraphicsExposures, &gcv); \
 	view_left_x = save_vx; \
 	view_top_y = save_vy; \
 	view_zoom = save_vz; \
 	view_width = save_vw; \
 	view_height = save_vh; \
-	XCopyArea(lesstif_display, pixmap, XtWindow(da), gc, 0, 0, pd->v_width, pd->v_height, 0, 0); \
-	XtReleaseGC(da, gc); \
 	XFreePixmap(lesstif_display, main_pixmap); \
 	XFreePixmap(lesstif_display, mask_pixmap); \
 	XFreePixmap(lesstif_display, mask_bitmap); \
@@ -62,9 +55,16 @@ do { \
 
 #define SHOW_DRAW \
 do { \
+	XGCValues gcv; \
+	GC gc; \
+	memset(&gcv, 0, sizeof(gcv)); \
+	gcv.graphics_exposures = 0; \
+	gc = XtGetGC(da, GCGraphicsExposures, &gcv); \
 	XSetForeground(display, bg_gc, bgcolor); \
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height); \
 	pcb_hid_expose_layer(&lesstif_hid, &pd->ctx); \
+	XCopyArea(lesstif_display, pixmap, XtWindow(da), gc, 0, 0, pd->v_width, pd->v_height, 0, 0); \
+	XtReleaseGC(da, gc); \
 } while(0)
 
 static void show_layer_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackStruct * cbs)
