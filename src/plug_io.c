@@ -333,7 +333,7 @@ int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt)
 		newfmt = 1;
 	}
 
-	if (p != NULL)
+	if ((p != NULL) && (p->write_element != NULL))
 		res = p->write_element(p, f, e);
 
 	if ((res == 0) && (newfmt))
