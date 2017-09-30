@@ -139,10 +139,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 					return 1;
 				}
 			}
-			buf = (char *) malloc(strlen(layer->meta.real.name) + strlen("Layer X Attributes"));
-			sprintf(buf, "Layer %s Attributes", layer->meta.real.name);
-			pcb_gui->edit_attributes(buf, &(layer->meta.real.Attributes));
-			free(buf);
+			pcb_layer_edit_attrib(layer);
 			return 0;
 		}
 

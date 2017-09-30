@@ -848,6 +848,13 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 	return 1;
 }
 
+void pcb_layer_edit_attrib(pcb_layer_t *layer)
+{
+	char *buf = pcb_strdup_printf(buf, "Layer %s Attributes", layer->meta.real.name);
+	pcb_gui->edit_attributes(buf, &(layer->meta.real.Attributes));
+	free(buf);
+}
+
 static pcb_layer_id_t pcb_layer_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
 	pcb_layergrp_t *g;
