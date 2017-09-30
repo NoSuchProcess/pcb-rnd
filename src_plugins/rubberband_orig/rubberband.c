@@ -1186,10 +1186,8 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	int * dy1 = argv[4].d.p;  /* in/out */
 	int * dx2 = argv[5].d.p;	/* out */
 	int * dy2 = argv[6].d.p;	/* out */
-	pcb_line_t *rub1 = rbnd->Rubberband[0].Line;
-	pcb_line_t *rub2 = rbnd->Rubberband[1].Line;
-	const int rub1end = rbnd->Rubberband[0].delta_index[0] >= 0 ? 1 : 2;
-	const int rub2end =	rbnd->Rubberband[1].delta_index[0] >= 0 ? 1 : 2;
+	pcb_line_t *rub1, *rub2;
+	int rub1end, rub2end;
 	pcb_fline_t fmain, frub1, frub2;
 	
 	*constrained = 0;
@@ -1197,6 +1195,10 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	if (rbnd->RubberbandN != 2)
 		return;
 			
+	rub1 = rbnd->Rubberband[0].Line;
+	rub2 = rbnd->Rubberband[1].Line;
+	rub1end = rbnd->Rubberband[0].delta_index[0] >= 0 ? 1 : 2;
+	rub2end =	rbnd->Rubberband[1].delta_index[0] >= 0 ? 1 : 2;
 
 	/* Create float point-vector representations of the lines */
 	fmain = pcb_fline_create_from_points(&line->Point1, &line->Point2);
