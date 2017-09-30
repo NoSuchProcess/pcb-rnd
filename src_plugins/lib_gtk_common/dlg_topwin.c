@@ -213,7 +213,7 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 	else
 		filename = g_strdup(PCB->Filename);
 
-	str = g_strdup_printf("%s%s (%s) - pcb-rnd", PCB->Changed ? "*" : "", tw->name_label_string, filename);
+	str = g_strdup_printf("%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", tw->name_label_string, filename, PCB->is_footprint ? "footprint" : "board");
 	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), str);
 	g_free(str);
 	g_free(filename);
