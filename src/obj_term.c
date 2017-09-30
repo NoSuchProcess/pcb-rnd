@@ -210,6 +210,12 @@ static int undo_term_rename_swap(void *udata)
 	r->obj->Flags = r->Flags;
 	r->Flags = ftmp;
 
+	/* Update the attributes */
+	if (r->obj->term != NULL)
+		pcb_attribute_put(&r->obj->Attributes, "term", r->obj->term);
+	else
+		pcb_attribute_remove(&r->obj->Attributes, "term");
+
 	if (r->obj->type == PCB_OBJ_POLYGON)
 		pcb_poly_init_clip(r->obj->parent.layer->parent, r->obj->parent.layer, r->obj);
 
