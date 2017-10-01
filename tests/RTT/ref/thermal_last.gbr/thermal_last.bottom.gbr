@@ -1,5 +1,5 @@
 G04 start of page 5 for group 10 layer_idx 1 *
-G04 Title: (unknown), bottom_copper *
+G04 Title: thermals on the last 2 layers - catch off-by-one bugs due to the 0-base index of thermals, bottom_copper *
 G04 Creator: <version>
 G04 CreationDate: <date>
 G04 For: TEST *
@@ -9,9 +9,7 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNBOTTOM*%
-%ADD20C,0.0394*%
-%ADD19C,0.0866*%
-%ADD18C,0.0200*%
-G54D18*X2500Y37500D02*X47500D01*
-G54D19*X25000Y42500D03*
+%ADD20C,0.0315*%
+%ADD19C,0.0787*%
+G54D19*X10000Y40000D03*
 G54D20*M02*

@@ -1,4 +1,4 @@
-G04 start of page 3 for group 10 layer_idx 1 *
+G04 start of page 5 for group 10 layer_idx 1 *
 G04 Title: thermals vs. multiple layer polygons, bottom_copper *
 G04 Creator: <version>
 G04 CreationDate: <date>
@@ -9,10 +9,10 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNBOTTOM*%
-%ADD16C,0.0315*%
-%ADD15C,0.0787*%
-%ADD14C,0.0001*%
-G54D14*G36*
+%ADD20C,0.0315*%
+%ADD19C,0.0787*%
+%ADD18C,0.0001*%
+G54D18*G36*
 X7500Y42500D02*X13914D01*
 X13400Y41986D01*
 X13519Y41793D01*
@@ -60,8 +60,8 @@ Y15000D01*
 X7500D01*
 Y25000D01*
 G37*
-G54D15*X10000Y40000D03*
+G54D19*X10000Y40000D03*
 X27500D03*
 X10000Y22500D03*
 X27500D03*
-G54D16*M02*
+G54D20*M02*
