@@ -6,7 +6,7 @@
 	- keep unknown subtrees
 
 - TEST:
-	- vendor drill mapping (all functionality, including regex based refdes ignore)
+	- vendor drill mapping (all functionality, including regex based refdes ignore; drc already tested by celem)
 	- route style vs. autorouter
 	- smartdisperse (compare to 1.2.4; term changes)
 	- autoplace (compare to 1.2.4; term changes)
