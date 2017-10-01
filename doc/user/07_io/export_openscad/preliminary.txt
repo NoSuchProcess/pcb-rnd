@@ -40,3 +40,9 @@ A model file shall contain a single module, with "module" and the arbitrary
 module name in the same line, { in the following line. One instance of
 each model is copied into the output file so that the resulting openscad
 script has no external reference and is self-contained.
+
+
+Known bugs:
+	- with pcb elements it's impossible to tell the rotation; this will
+	  be fully solved only with the subcircuit transition. Until that you
+	  will need to manually specify an openscd-transformation for each element
