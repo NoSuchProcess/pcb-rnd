@@ -39,7 +39,7 @@ For the next release:
 	+ negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
-	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade]
+	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade assign:wojciechk8]
 	- Paste layer does not set the drawing mode. Symptom in GL hid is blending shadow when paste overlaps. [report:Ade]
 
 LATER RELEASES:
