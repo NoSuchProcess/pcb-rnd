@@ -354,6 +354,16 @@ void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rt
 	}
 }
 
+void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data)
+{
+	int i;
+	for(i = 0; i < data->LayerN; i++) {
+		pcb_layer_t *sourcelayer = &data->Layer[i];
+		pcb_layer_t *destlayer = pcb_layer_resolve_binding(pcb, sourcelayer);
+		sourcelayer->meta.bound.real = destlayer;
+	}
+}
+
 pcb_data_t *pcb_data_new(pcb_board_t *parent)
 {
 	pcb_data_t *data;
