@@ -15,6 +15,7 @@ static int widget_depth(Widget w) {
 	double save_vz; \
 	Pixmap save_px, save_main_px, save_mask_px, save_mask_bm
 
+/* saving flip setting in this macro is required to properly calculate coordinates of an event (Px, Py functions) */
 #define SHOW_ENTER \
 do { \
 	pinout = 0; \
