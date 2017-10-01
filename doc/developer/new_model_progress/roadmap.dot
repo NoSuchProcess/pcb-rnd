@@ -1,0 +1,68 @@
+digraph roadmap {
+	"2016_4" [label="2016\n4th\nquarter" shape=plaintext]
+	"2017_1" [label="2017\n1st\nquarter" shape=plaintext]
+	"2017_2" [label="2017\n2nd\nquarter" shape=plaintext]
+	"2017_3" [label="2017\n3rd\nquarter" shape=plaintext]
+	"2017_3b" [label="" shape=plaintext]
+	"2017_4" [label="2017\n4th\nquarter" shape=plaintext]
+	"2018_1" [label="2018\n1st\nquarter" shape=plaintext]
+
+	"2016_4" -> "2017_1" [style=invisible arrowhead=none]
+	"2017_1" -> "2017_2" [style=invisible arrowhead=none]
+	"2017_2" -> "2017_3" [style=invisible arrowhead=none]
+	"2017_3" -> "2017_3b" [style=invisible arrowhead=none]
+	"2017_3b" -> "2017_4" [style=invisible arrowhead=none]
+	"2017_4" -> "2018_1" [style=invisible arrowhead=none]
+
+	lihata [color=green label="Lihata:\nNew native file format\nso we can make our changes\nwithout breaking compatibilty\nor having to wait for mainline"]
+	layer [color=green label="layer rewrite:\nmuch more detailed model of\nphysical and logical layers"]
+	subcircuit [color=green label="subcircuit:\nfootprints without special objects"]
+	binding [color=green label="layer binding:\nabstract layer recipes\nthat are board-independent\nand can be applied on a\ngiven board's stackup"]
+	compositing [color=green label="layer compositing:\npositive/nagative drawn layers within a group\nallows drawing paste, mask, inverse silk, etc."]
+	term [color=green label="subcircuit terminals:\ngeneralized pin/pad idea\nthat allows any drawing primitive\nto be a pin or pad"]
+	elem_replace [color=red label="element replacement:\nreplace the old element model\nwith subcircuits\nmake sure subcircuits can do\nanything an element could do"]
+	elem_remove [color=red label="element removal:\nremove elements, element-lines, element-arcs\npins, pads and the old circular-only vias\nin favor of subcircuits and pad stacks"]
+	padstacks [color=red label="pad stacks:\na via (or pin or pad)\nthat can have different,\narbitrary copper shape\non different layer groups"]
+	bbvia [color=red label="blind/buried via:\na pad stack has per layer info on\ncopper shape, it can\nalso have such info about the drill ends"]
+
+	fp_nolimit [color=red shape=box label="goal:\nfootprints without limitations"]
+	clean [color=red shape=box label="goal:\nclean, tree based data structure"]
+
+	recur [color=red label="subcircuit in subcircuit"]
+	hier [color=red label="hierarchical netlists"]
+
+	{ rank=same; "2016_4" lihata}
+	{ rank=same; "2017_1" layer}
+	{ rank=same; "2017_2" compositing}
+	{ rank=same; "2017_3" subcircuit}
+	{ rank=same; "2017_3b" binding term}
+	{ rank=same; "2017_4" padstacks}
+
+	lihata -> layer
+	layer -> subcircuit
+	layer -> binding
+	layer -> compositing
+	subcircuit -> binding
+	subcircuit -> term
+	subcircuit -> elem_replace
+	padstacks -> elem_replace
+	padstacks -> bbvia
+	binding -> elem_replace
+	elem_replace -> elem_remove
+	elem_remove -> clean
+
+
+	compositing -> fp_nolimit
+	binding -> fp_nolimit
+	term -> fp_nolimit
+
+	compositing -> clean
+	binding -> clean
+	term -> clean
+
+	clean -> recur
+	recur -> hier
+
+
+
+}
