@@ -598,7 +598,7 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	switch(type) {
 		case 'h': /* "hbox" */
 			stdarg(XmNorientation, XmHORIZONTAL);
-			stdarg(XmNpacking, XmPACK_COLUMN);
+			stdarg(XmNpacking, XmPACK_TIGHT);
 			break;
 		case 'v': /* "vbox" */
 			stdarg(XmNorientation, XmVERTICAL);
