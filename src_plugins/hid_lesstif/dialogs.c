@@ -639,10 +639,10 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 
 	switch(ctx->attrs[widx].type) {
 		case PCB_HATT_BOOL:
-			ctx->results[widx].int_value = XmToggleButtonGetState(ctx->wl[widx]);
+			ctx->attrs[widx].default_val.int_value = ctx->results[widx].int_value = XmToggleButtonGetState(ctx->wl[widx]);
 			break;
 		case PCB_HATT_STRING:
-			ctx->results[widx].str_value = XmTextGetString(ctx->wl[widx]);
+			ctx->results[widx].str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
 			break;
 		case PCB_HATT_INTEGER:
 			cp = XmTextGetString(ctx->wl[widx]);
@@ -923,6 +923,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 	}
 
 	ok:;
+	ctx->attrs[idx].default_val = *val;
 	ctx->inhibit_valchg = save;
 	return 0;
 
