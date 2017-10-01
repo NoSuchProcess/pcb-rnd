@@ -3446,9 +3446,9 @@ static void pinout_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackSt
 	save_vh = view_height;
 	save_fx = conf_core.editor.view.flip_x;
 	save_fy = conf_core.editor.view.flip_y;
-	save_px = pixmap;
+	save_px = main_pixmap;
 	pinout = pd;
-	pixmap = pd->window;
+	main_pixmap = pd->window;
 	view_left_x = pd->x;
 	view_top_y = pd->y;
 	view_zoom = pd->zoom;
@@ -3470,7 +3470,7 @@ static void pinout_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackSt
 	view_zoom = save_vz;
 	view_width = save_vw;
 	view_height = save_vh;
-	pixmap = save_px;
+	main_pixmap = save_px;
 	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
 	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
 }
