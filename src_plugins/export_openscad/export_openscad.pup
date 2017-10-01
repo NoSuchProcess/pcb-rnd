@@ -3,5 +3,5 @@ $short openscad pcb_exporter
 $long Export openscad
 $state WIP
 dep lib_polyhelp
-default disable-all
+default buildin
 autoload 1
