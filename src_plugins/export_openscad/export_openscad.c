@@ -48,6 +48,7 @@
 #include "hid_draw_helpers.h"
 
 #include "hid_init.h"
+#include "hid_actions.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "hid_helper.h"
@@ -581,6 +582,63 @@ static int openscad_usage(const char *topic)
 	return 0;
 }
 
+
+static const char pcb_acts_scad_export_poly[] = "ScadExportPoly(filename)\n";
+static const char pcb_acth_scad_export_poly[] = "exports all selected polygons to an openscad script; only the outmost contour of each poly is exported";
+static int pcb_act_scad_export_poly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	FILE *f;
+
+	if (argc <= 0) {
+		pcb_message(PCB_MSG_ERROR, "Need a file name to export to.\n");
+		return -1;
+	}
+	f = pcb_fopen(argv[0], "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", argv[0]);
+		return -1;
+	}
+
+
+	PCB_POLY_ALL_LOOP(PCB->Data); {
+		pcb_poly_it_t it;
+		pcb_polyarea_t *pa;
+
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
+			continue;
+
+		/* iterate over all islands of a polygon */
+		for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+			pcb_coord_t x, y;
+			pcb_pline_t *pl;
+			int go;
+
+			/* check if we have a contour for the given island */
+			pl = pcb_poly_contour(&it);
+			if (pl != NULL) {
+				int cnt;
+
+				fprintf(f, "polygon([");
+				/* iterate over the vectors of the contour */
+				for(go = pcb_poly_vect_first(&it, &x, &y),cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++)
+					pcb_fprintf(f, "%s[%mm,%mm]", (cnt > 0 ? "," : ""), x, y);
+				fprintf(f, "]);\n");
+			}
+		}
+	} PCB_ENDALL_LOOP;
+
+	fclose(f);
+	return 0;
+}
+
+
+static pcb_hid_action_t scad_action_list[] = {
+	{"ExportScadPoly", 0, pcb_act_scad_export_poly,
+	pcb_acth_scad_export_poly, pcb_acts_scad_export_poly}
+};
+
+PCB_REGISTER_ACTIONS(scad_action_list, openscad_cookie)
+
 #include "dolists.h"
 
 int pplg_check_ver_export_openscad(int ver_needed) { return 0; }
@@ -588,6 +646,7 @@ int pplg_check_ver_export_openscad(int ver_needed) { return 0; }
 void pplg_uninit_export_openscad(void)
 {
 	pcb_hid_remove_attributes_by_cookie(openscad_cookie);
+	pcb_hid_remove_actions_by_cookie(openscad_cookie);
 }
 
 int pplg_init_export_openscad(void)
@@ -626,6 +685,8 @@ int pplg_init_export_openscad(void)
 	openscad_hid.usage = openscad_usage;
 
 	pcb_hid_register_hid(&openscad_hid);
+
+	PCB_REGISTER_ACTIONS(scad_action_list, openscad_cookie)
 
 	return 0;
 }
