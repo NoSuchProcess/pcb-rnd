@@ -11,6 +11,7 @@ static int widget_depth(Widget w) {
 
 #define SHOW_SAVES \
 	int save_vx, save_vy, save_vw, save_vh; \
+	int save_fx, save_fy; \
 	double save_vz; \
 	Pixmap save_px, save_main_px, save_mask_px, save_mask_bm
 
@@ -22,6 +23,8 @@ do { \
 	save_vz = view_zoom; \
 	save_vw = view_width; \
 	save_vh = view_height; \
+	save_fx = conf_core.editor.view.flip_x; \
+	save_fy = conf_core.editor.view.flip_y; \
 	save_px = pixmap; \
 	save_main_px = main_pixmap; \
 	save_mask_px = mask_pixmap; \
@@ -35,6 +38,8 @@ do { \
 	view_zoom = pd->zoom; \
 	view_width = pd->v_width; \
 	view_height = pd->v_height; \
+	conf_force_set_bool(conf_core.editor.view.flip_x, 0); \
+	conf_force_set_bool(conf_core.editor.view.flip_y, 0); \
 } while(0)
 
 #define SHOW_LEAVE \
@@ -51,6 +56,8 @@ do { \
 	mask_pixmap = save_mask_px; \
 	mask_bitmap = save_mask_bm; \
 	pixmap = save_px; \
+	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx); \
+	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy); \
 } while(0)
 
 #define SHOW_DRAW \
