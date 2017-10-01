@@ -23,6 +23,7 @@
 #include "board.h"
 #include "data.h"
 #include "const.h"
+#include "conf_core.h"
 #include "compat_misc.h"
 #include "obj_subc.h"
 #include "search.h"
@@ -175,6 +176,10 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 		if (pcb_subc_rebind(ctx->pcb, ctx->subc) > 0)
 			pcb_gui->invalidate_all();
 	}
+	else { /* buffer */
+		pcb_data_binding_update(ctx->pcb, ctx->data);
+		pcb_gui->invalidate_all();
+	}
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }
 
@@ -206,9 +211,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		return 1;
 	}
 	else if (pcb_strcasecmp(argv[0], "buffer") == 0) {
-#warning subc TODO
-		pcb_message(PCB_MSG_ERROR, "TODO\n");
-		return 1;
+		ctx.data = PCB_PASTEBUFFER->Data;
 	}
 	else
 		PCB_ACT_FAIL(LayerBinding);
