@@ -237,9 +237,12 @@
  vtroutestyle.h library.h rats_patch.h board.h data.h crosshair.h \
  vtonpoint.h route.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
- ht_subc.h const.h compat_misc.h obj_subc.h search.h rats.h netlist.h \
- route_style.h ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h \
- change.h dolists.h
+ ht_subc.h const.h conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ compat_misc.h obj_subc.h search.h rats.h netlist.h route_style.h \
+ ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h change.h \
+ dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -686,9 +689,9 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h compat_misc.h board.h \
- const.h macro.h vtroutestyle.h attrib.h layer.h obj_all_list.h \
- obj_arc_list.h obj_common.h ../src_3rd/genht/hash.h \
+ ../src_3rd/genlist/gendlist.h globalconst.h ../src_3rd/genvector/vti0.h \
+ compat_misc.h board.h const.h macro.h vtroutestyle.h attrib.h layer.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genht/hash.h \
  ../src_3rd/genlist/gendlist.h flag.h data_parent.h obj_arc.h \
  obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
  obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
@@ -702,8 +705,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h safe_fs.h hid.h hid_nogui.h hid_draw_helpers.h \
- hid_init.h hid_attrib.h hid_color.h hid_helper.h hid_flags.h \
- ../src_plugins/export_openscad/scad_draw.c \
+ hid_init.h hid_actions.h hid_attrib.h hid_color.h hid_helper.h \
+ hid_flags.h ../src_plugins/export_openscad/scad_draw.c \
  ../src_plugins/export_openscad/../lib_polyhelp/topoly.h obj_common.h \
  ../src_plugins/export_openscad/scad_models.c dolists.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
