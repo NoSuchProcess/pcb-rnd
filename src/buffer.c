@@ -614,9 +614,12 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		pcb_layer_t *destlayer = pcb_layer_resolve_binding(pcb, sourcelayer);
 
 		if (destlayer == NULL) {
-#warning TODO: refine this message with some info about the layer details
-			if (!pcb_layer_is_pure_empty(sourcelayer))
-				pcb_message(PCB_MSG_WARNING, "Couldn't resolve a buffer layer on the current board\n");
+			if (!pcb_layer_is_pure_empty(sourcelayer)) {
+				char *src_name = sourcelayer->meta.bound.name;
+				if ((src_name == NULL) || (*src_name == '\0'))
+					src_name = "<anonymous>";
+				pcb_message(PCB_MSG_WARNING, "Couldn't resolve buffer layer #%d (%s) on the current board\n", i, src_name);
+			}
 			continue;
 		}
 
