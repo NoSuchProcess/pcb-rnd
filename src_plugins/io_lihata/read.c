@@ -50,7 +50,7 @@
 #include "io_lihata.h"
 #include "safe_fs.h"
 
-#warning TODO: put these in a gloal load-context-struct
+#warning cleanup TODO: put these in a gloal load-context-struct
 vtptr_t post_ids, post_thermal;
 static int rdver;
 
