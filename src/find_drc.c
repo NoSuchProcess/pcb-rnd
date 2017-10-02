@@ -681,7 +681,7 @@ int pcb_drc_all(void)
 			}
 		}
 		PCB_END_LOOP;
-#warning subc term TODO
+#warning subc TODO term TODO: implement this for subcircuits
 	}
 
 

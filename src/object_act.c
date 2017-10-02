@@ -1043,6 +1043,7 @@ int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	}
 	PCB_END_LOOP;
 #warning subc TODO
+#warning cleanup TODO: move this to oldactions maybe?
 	return 0;
 }
 

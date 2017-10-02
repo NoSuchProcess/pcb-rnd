@@ -70,7 +70,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
-#warning subc term TODO
+#warning subc TODO term TODO: implement this for subc
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
 	return change;

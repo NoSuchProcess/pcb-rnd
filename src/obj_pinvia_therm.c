@@ -38,7 +38,7 @@
 #include "polygon.h"
 #include "obj_pinvia_therm.h"
 
-#warning TODO: remove this, pass on pcb as arg instead
+#warning cleanup TODO: remove this, pass on pcb as arg instead
 static pcb_board_t *pcb;
 
 struct cent {

@@ -272,7 +272,7 @@ void pcb_lookup_conn_by_pin(int type, void *ptr1)
 	pcb_conn_lookup_uninit();
 }
 
-#warning TODO: keep only PCB_OBJ_* and remove this function
+#warning cleanup TODO: keep only PCB_OBJ_* and remove this function
 unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 {
 	switch(type) {

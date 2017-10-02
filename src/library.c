@@ -24,7 +24,7 @@
  *
  */
 
-#warning TODO: replace this with genvect
+#warning cleanup TODO: replace this with genvect
 
 #include <stdlib.h>
 #include <string.h>

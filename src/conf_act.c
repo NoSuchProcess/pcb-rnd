@@ -224,7 +224,7 @@ static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
 static const char ChkMode_help[] = "Return 1 if the currently selected mode is the expected_mode";
 static int pcb_act_ChkMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-#warning TODO: convert this to a compile-time hash
+#warning cleanup TODO: convert this to a compile-time hash; or make the toolbar configurable from the menu file
 	struct {
 		const char *name;
 		int mode;

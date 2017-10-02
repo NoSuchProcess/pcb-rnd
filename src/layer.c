@@ -406,7 +406,7 @@ static int is_last_bottom_copper_layer(int layer)
 
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
-#warning TODO: duplicate of pcb_layer_rename()?
+#warning cleanup TODO: duplicate of pcb_layer_rename()?
 	if (PCB_LAYER_IS_REAL(Layer)) {
 		free((char*)Layer->meta.real.name);
 		Layer->meta.real.name = Name;

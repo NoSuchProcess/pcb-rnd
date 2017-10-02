@@ -24,9 +24,9 @@
  *
  */
 
-#warning TODO: remove this and use genvect
-
+#warning cleanup TODO: remove this and use genvect
 #define STEP_POINT 100
+
 #include <string.h>
 #include "config.h"
 #include "rotate.h"

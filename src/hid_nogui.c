@@ -67,7 +67,7 @@ static void nogui_destroy_gc(pcb_hid_gc_t gc)
 
 static void nogui_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
-#warning TODO: make this crash after the transition
+#warning TODO: make this crash after the set drawing mode transition
 /*	CRASH("set_drawing_mode");*/
 }
 
