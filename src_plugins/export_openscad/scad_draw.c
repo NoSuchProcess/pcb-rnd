@@ -87,7 +87,7 @@ static int scad_draw_outline(void)
 		pcb_poly_point_new(poly, 0, PCB->MaxHeight);
 	}
 	else {
-		poly = pcb_topoly_conn(PCB, start, 0);
+		poly = pcb_topoly_conn(PCB, start, PCB_TOPOLY_FLOATING);
 		if (poly == NULL)
 			return -1;
 	}
