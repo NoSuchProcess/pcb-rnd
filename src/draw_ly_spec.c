@@ -50,8 +50,12 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
-	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) /* fallback: no layers -> original code: draw a single auto-add */
+	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-add */
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, cctx.screen);
 		pcb_pad_paste_draw(side, drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, cctx.screen);
+	}
 	else {
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
 		comp_finish(&cctx);
