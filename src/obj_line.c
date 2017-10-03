@@ -846,16 +846,9 @@ static void rotate_line2(pcb_layer_t *Layer, pcb_line_t *Line)
 /* rotates a line's point */
 void *pcb_lineop_rotate90_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
-	pcb_point_t *center;
-
 	rotate_line1(Layer, Line);
 
-	if ((Point->X == Line->Point1.X) && (Point->Y == Line->Point1.Y))
-		center = &Line->Point2;
-	else
-		center = &Line->Point1;
-
-	pcb_point_rotate90(Point, center->X, center->Y, ctx->rotate.number);
+	pcb_point_rotate90(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 
 	rotate_line2(Layer, Line);
 	return Line;
