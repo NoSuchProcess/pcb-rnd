@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 
-+ BUG: open an .lht file (or just start up pcb-rnd) and element display value is not refdes but value [report: Evan]
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
 	+ BUG: subtractive mask recipe is not surviving save and reload with a simple poly drawn on a explicit mask layer [report: Miloh]
 		+ provided we already have a subc with the mask layer, change the binding from +manual to -manual, save, load, it is lost
