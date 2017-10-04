@@ -39,10 +39,11 @@ For the next release:
 	+ negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
-	- Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade assign:wojciechk8]
+	+ Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade assign:wojciechk8]
 	+ Paste layer does not set the drawing mode. Symptom in GL hid is blending shadow when paste overlaps. Lesstif test pending [report/fixing:Ade]
 
 LATER RELEASES:
+- BUG: gtk2 opengl ignores local grid
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
 	- Lesstif HID does not have this dialog => implement it, using DAD
