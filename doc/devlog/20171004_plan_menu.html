@@ -1,0 +1,25 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> How to clean up the menu system </h2>
+
+What the poll at 
+<a href="http://igor2.repo.hu/cgi-bin/menu-poll.cgi"> http://igor2.repo.hu/cgi-bin/menu-poll.cgi </a>
+suggests:
+
+<b>[multikey2]</b> The default menu file should offer two sets of hotkeys:
+<p>
+<ul>
+	<li> multikey hotkeys (e.g. "f s" for "file, save" or "e c" for "edit, copy", similar to how it is done in gschem)
+	<li> single key hotkey, that always has a modifier if it is a [a..z] (e.g. ctrl+s for save, ctrl+c for copy).
+</ul>
+This would allow the transition to multi-key (pretty much unaviodable if
+we want to add new functions with hotkeys) and still keep single-key items.
+(Multiple hotkeys for the same menu item should work.)
+<p>
+However, we wouldn't be able to keep single key alpha hotkeys, such as
+'o' and 'f' - they will have a multi-key variant and probably a
+single-key-with-modifier variant (and in return some other
+single-key-with-modifier of our less often used hotkeys will lose their
+single-key-with-modifier to make room for these)
