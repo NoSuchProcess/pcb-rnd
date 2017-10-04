@@ -40,7 +40,6 @@ For the next release:
 	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
 	+ Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade assign:wojciechk8]
-	+ Paste layer does not set the drawing mode. Symptom in GL hid is blending shadow when paste overlaps. Lesstif test pending [report/fixing:Ade]
 
 LATER RELEASES:
 - BUG: gtk2 opengl ignores local grid
