@@ -1,0 +1,96 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> How to clean up the mark </h2>
+
+After a discussion on the mailing list, our current plan about mark handling is:
+
+<pre>
+thanks for the answers, I have a better picture on how our users use the 
+mark. Here's my proposal for the cleanup/bugfixes:
+
+1. we should distinguish between user placed marks and automatic marks. 
+Whenever there's an user placed mark, only the mark related actions should 
+remove or move the mark. In other words, if the user explicitly placed the 
+mark, side effect of non-mark-actions shouldn't change the mark.
+
+2. drag&drop-like operations: for those mouse actions that start with a 
+click then move then release, if there is no explicit user mark, the code 
+should place the mark at click and remove it after the release.
+
+3. multi-click, non-drag&drop-like operations shouldn't ever change the 
+mark. (There are too many ways such an operation can end it would be very 
+hard to make it work like 2.)
+
+This means if you want to use the mark for your line length/orientation, 
+you would need to manually place it when starting to draw the line.
+
+<pre>
+
+<h2> examples on how the current implementation is broken </h2>
+
+<pre>
+The whole marker thing is a bug in itself.... Nobody understands what it is 
+intended for and the code uses it random ways - probably developers never 
+understood it either so each part of the code does something randomly.
+
+If anyone is using the mark, please let me know your use patterns. We should 
+probably clean this up a bit, as in the current state it looks like if it did 
+random wierd things.
+
+My experience of the bugs:
+
+The mark is sometimes placed as part of a random operation, for no appearant 
+reason. Some operations remove the mark at the end, some cancels/undos also 
+remove the mark. Others don't, and many operations don't place the mark. When 
+an operation is messing with the mark, the user set mark is moved, so the user 
+loses the original mark position. This has thaught users not to try to use the 
+mark as it randomly jumped away.
+
+Examples of inconsistencies:
+
+1. start drawing a line; mark is placed; press esc after a few line sections, 
+mark is removed; esc sounds like 'cancel', but it doesn't really cancel your 
+lines, merely finishes the mode: switching to the arrow mode with F11 or the 
+toolbar icon does the same, so it feels like the mark is only during the 
+drawing
+
+2. do the same, but instead of esc, undo a few of the last lines; you go on 
+drawing a new line from the original end of the trace where you undoed, but the 
+mark is not moved there; so the mark doesn't mark where you last started to 
+draw lines, but where you first started to draw lines
+
+3. draw a polygon: mark is placed on the start, but is _not_ removed when you 
+finish (while in line it got removed for esc, that simply finished drawing 
+mode); switching to arrow mode won't remove it. so it's not like in point1, 
+marking the start during draw, but it persist
+
+4. now draw a polygon using the rectangle tool: no mark at all, neither during 
+draw, nor persisting after the drawing
+
+5. grab a polygon point for move; while moving it, there'll be a mark at the 
+original position; it's gone after the move - except if the operation is 
+cancelled with esc. I'd expect exactly the opposite to happen: if it has to 
+mess with the mark, it's more useful to see where I succesfully moved a point 
+from than marking where I did _not_ do a change. We have undo anyway, so 
+marking the move start doesn't make much sense either.
+
+6. draw arc -> no mark; start drawing lines, switch to drawing arc in the 
+middle, the arc continues your track from the endpoint of the last line, but 
+the mark is not removed, as if you were still in the line drawing mode... but 
+if you started your track with arc then switched to line in the middle, the 
+mark is placed at the end if the first line segment, which sounds totally 
+broken
+
+7. placing an element won't put a mark there; moving an unselected element will 
+move the mark to the original position; moving a selected element won't do a 
+mark(!). This seems to be universal to all objects: moving by drag&drop marks 
+original location, unless the object is selected
+
+8. drag&drop moving a line endpoint does a mark during the move, and it is left 
+there after 'esc' but removed after a succesful move; same as in 5.
+
+9. ctrl+drag&drop leaves a mark at the original point for some reason, but only 
+if mark was off before the operation
+</pre>
