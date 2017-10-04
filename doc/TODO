@@ -5,7 +5,6 @@
 	+ BUG: subtractive mask recipe is not surviving save and reload with a simple poly drawn on a explicit mask layer [report: Miloh]
 		+ provided we already have a subc with the mask layer, change the binding from +manual to -manual, save, load, it is lost
 - BUGS:
-	+ negative selection in between the arms of an U shaped polygon will select the polygon even if the selection box did not touch the poly [report: Evan]
 	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
 
