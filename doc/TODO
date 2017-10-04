@@ -1,38 +1,7 @@
-- Lihata persistent save:
-	- flag compatibility: save unknown, string-flags as loaded by io_pcb
-	- ind: FONTS: second font indents incorrectly
-	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
-	- keep numeric format: test all
-	- keep unknown subtrees
+1. For the upcoming release ===============================================================================
 
-- TEST:
-	- vendor drill mapping (all functionality, including regex based refdes ignore; drc already tested by celem)
-	- route style vs. autorouter
-	- smartdisperse (compare to 1.2.4; term changes)
-	- autoplace (compare to 1.2.4; term changes)
-	- autoroute (compare to 1.2.4; term changes)
-
-- query & advanced search
-	- search expr wizard should pick up the expression from the button when clicked
-	- field accessors:
-		- pad area
-		- pin area
-		- line (and pad) length and length^2
-	- make a run on a large board, speed test, with -O0 and -O3:
-		- iteration speed (a simple @)
-		- eval speed (a simple @ with a lot of constants in an expr)
-		- geo speed
-		- regex and string cmp match speed vs. select by name
-
-For the next release:
 + BUG: open an .lht file (or just start up pcb-rnd) and element display value is not refdes but value [report: Evan]
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
-- subc/term:
-	- term netlist connectivity r10843:
-		- autoplace.c:167
-		- autoroute.c:961
-		- autoroute.c:1000
-		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
 	+ BUG: subtractive mask recipe is not surviving save and reload with a simple poly drawn on a explicit mask layer [report: Miloh]
 		+ provided we already have a subc with the mask layer, change the binding from +manual to -manual, save, load, it is lost
 - BUGS:
@@ -41,7 +10,14 @@ For the next release:
 	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
 	+ Rotate a line and then undo with rubber band mode is enabled. Connected lines become corrupted. [report:Ade assign:wojciechk8]
 
-LATER RELEASES:
+2. For later releases ===============================================================================
+
+- BUG: subc/term:
+	- term netlist connectivity r10843:
+		- autoplace.c:167
+		- autoroute.c:961
+		- autoroute.c:1000
+		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
 - BUG: gtk2 opengl ignores local grid
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
@@ -165,6 +141,26 @@ LATER RELEASES:
 - main.c:
 	- SIGPIPE - detect it (needed for popen)
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
+- Lihata persistent save:
+	- flag compatibility: save unknown, string-flags as loaded by io_pcb
+	- ind: FONTS: second font indents incorrectly
+	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
+	- keep numeric format: test all
+	- keep unknown subtrees
+
+- query & advanced search
+	- search expr wizard should pick up the expression from the button when clicked
+	- field accessors:
+		- pad area
+		- pin area
+		- line (and pad) length and length^2
+	- make a run on a large board, speed test, with -O0 and -O3:
+		- iteration speed (a simple @)
+		- eval speed (a simple @ with a lot of constants in an expr)
+		- geo speed
+		- regex and string cmp match speed vs. select by name
+
+3. Long term ===============================================================================
 
 SUBC: element removal:
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
@@ -216,8 +212,6 @@ GTK3:
 	  postprocessing and is trivially done earlier with
                         {"pin",  T_INT, 6, 2},
                         {"pad",  T_INT, 6, 2},
-
-
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
 
@@ -226,7 +220,8 @@ FEATURES
 - BUILD: menuconfig and a config file for scconfig
 - menu item for export of multiple selected layout elements to discrete .fp files
 
-Low prio:
+4. Low prio ===============================================================================
+
 - advanced grid settings:
 	- keep two lists of preferred grid sizes, one in mil, one in mm
 	- generate the grid selection menu from those lists
