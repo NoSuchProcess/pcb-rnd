@@ -434,7 +434,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	/* create aux layer */
 	{
 		pcb_coord_t unit = PCB_MM_TO_COORD(1);
-		pcb_layer_t *aux = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC, SUBC_AUX_NAME);
+		pcb_layer_t *aux = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
 
 		add_aux_line(aux, "subc-role", "origin", buffer->X, buffer->Y, buffer->X, buffer->Y);
 		add_aux_line(aux, "subc-role", "x", buffer->X, buffer->Y, buffer->X+unit, buffer->Y);
