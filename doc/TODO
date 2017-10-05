@@ -11,7 +11,6 @@
 		+ provided we already have a subc with the mask layer, change the binding from +manual to -manual, save, load, it is lost
 - BUGS:
 	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
-	+ make distclean doesn't remove everything from tests/RTT [report: Alain]
 
 2. For later releases ===============================================================================
 
