@@ -327,13 +327,13 @@ static void apply_vendor_map(void)
 						changed++;
 					else {
 						pcb_message(PCB_MSG_WARNING, _
-										("Via at %.2f, %.2f not changed.  Possible reasons:\n"
+										("Via at %ml, %ml not changed.  Possible reasons:\n"
 										 "\t- pad size too small\n"
-										 "\t- new size would be too large or too small\n"), 0.01 * via->X, 0.01 * via->Y);
+										 "\t- new size would be too large or too small\n"), via->X, via->Y);
 					}
 				}
 				else {
-					pcb_message(PCB_MSG_WARNING, _("Locked via at %.2f, %.2f not changed.\n"), 0.01 * via->X, 0.01 * via->Y);
+					pcb_message(PCB_MSG_WARNING, _("Locked via at %ml, %ml not changed.\n"), via->X, via->Y);
 				}
 			}
 		}
@@ -358,17 +358,17 @@ static void apply_vendor_map(void)
 								changed++;
 							else {
 								pcb_message(PCB_MSG_WARNING, _
-												("Pin %s (%s) at %.2f, %.2f (element %s, %s, %s) not changed.\n"
+												("Pin %s (%s) at %ml, %ml (element %s, %s, %s) not changed.\n"
 												 "\tPossible reasons:\n"
 												 "\t- pad size too small\n"
 												 "\t- new size would be too large or too small\n"),
 												PCB_UNKNOWN(pin->Number), PCB_UNKNOWN(pin->Name),
-												0.01 * pin->X, 0.01 * pin->Y,
+												pin->X, pin->Y,
 												PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
 							}
 						}
 						else {
-							pcb_message(PCB_MSG_WARNING, _("Locked pin at %-6.2f, %-6.2f not changed.\n"), 0.01 * pin->X, 0.01 * pin->Y);
+							pcb_message(PCB_MSG_WARNING, _("Locked pin at %ml, %ml not changed.\n"), pin->X, pin->Y);
 						}
 					}
 				}
@@ -385,7 +385,7 @@ static void apply_vendor_map(void)
 		if (conf_core.design.via_drilling_hole != vendorDrillMap(Settings.ViaDrillingHole)) {
 			changed++;
 			Settings.ViaDrillingHole = vendorDrillMap(Settings.ViaDrillingHole);
-			pcb_message(PCB_MSG_INFO, _("Adjusted active via hole size to be %6.2f mils\n"), 0.01 * Settings.ViaDrillingHole);
+			pcb_message(PCB_MSG_INFO, _("Adjusted active via hole size to be %ml mils\n"), Settings.ViaDrillingHole);
 		}
 
 		/* and update the vias for the various routing styles */
@@ -394,13 +394,13 @@ static void apply_vendor_map(void)
 				changed++;
 				PCB->RouteStyle[i].Hole = vendorDrillMap(PCB->RouteStyle[i].Hole);
 				pcb_message(PCB_MSG_INFO, _
-								("Adjusted %s routing style via hole size to be %6.2f mils\n"),
-								PCB->RouteStyle[i].Name, 0.01 * PCB->RouteStyle[i].Hole);
+								("Adjusted %s routing style via hole size to be %ml mils\n"),
+								PCB->RouteStyle[i].Name, PCB->RouteStyle[i].Hole);
 				if (PCB->RouteStyle[i].Diameter < PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER) {
 					PCB->RouteStyle[i].Diameter = PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER;
 					pcb_message(PCB_MSG_INFO, _
-									("Increased %s routing style via diameter to %6.2f mils\n"),
-									PCB->RouteStyle[i].Name, 0.01 * PCB->RouteStyle[i].Diameter);
+									("Increased %s routing style via diameter to %ml mils\n"),
+									PCB->RouteStyle[i].Name, PCB->RouteStyle[i].Diameter);
 				}
 			}
 		}
@@ -444,8 +444,8 @@ int vendorDrillMap(int in)
 
 	/* are we larger than the largest drill? */
 	if (in > vendor_drills[n_vendor_drills - 1]) {
-		pcb_message(PCB_MSG_ERROR, _("Vendor drill list does not contain a drill >= %6.2f mil\n"
-							"Using %6.2f mil instead.\n"), 0.01 * in, 0.01 * vendor_drills[n_vendor_drills - 1]);
+		pcb_message(PCB_MSG_ERROR, _("Vendor drill list does not contain a drill >= %ml mil\n"
+							"Using %ml mil instead.\n"), in, vendor_drills[n_vendor_drills - 1]);
 		cached_map = vendor_drills[n_vendor_drills - 1];
 		return vendor_drills[n_vendor_drills - 1];
 	}
