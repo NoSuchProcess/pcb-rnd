@@ -229,7 +229,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
 	int n, top_pads = 0, bottom_pads = 0;
-	pcb_layer_t *dst_top_mask = NULL, *dst_bottom_mask = NULL, *dst_top_paste = NULL, *dst_bottom_paste = NULL;
+	pcb_layer_t *dst_top_mask = NULL, *dst_bottom_mask = NULL, *dst_top_paste = NULL, *dst_bottom_paste = NULL, *dst_top_silk = NULL;
 	vtp0_t mask_pads, paste_pads;
 
 	vtp0_init(&mask_pads);
@@ -260,6 +260,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				dst_top_paste = dst;
 			else if ((ltype & PCB_LYT_PASTE) && (ltype & PCB_LYT_BOTTOM))
 				dst_bottom_paste = dst;
+			else if ((ltype & PCB_LYT_SILK) && (ltype & PCB_LYT_TOP))
+				dst_top_silk = dst;
 		}
 
 		if (dst->comb & PCB_LYC_SUB) {
@@ -439,6 +441,16 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		add_aux_line(aux, "subc-role", "y", buffer->X, buffer->Y, buffer->X, buffer->Y+unit);
 	}
 
+	/* Add refdes */
+	{
+		pcb_attribute_put(&sc->Attributes, "refdes", "U1");
+		if (dst_top_silk == NULL)
+			dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk");
+		if (dst_top_silk != NULL)
+			pcb_text_new(dst_top_silk, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT));
+		else
+			pcb_message(PCB_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
+	}
 
 
 	return 0;
