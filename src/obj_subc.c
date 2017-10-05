@@ -443,7 +443,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 	/* Add refdes */
 	{
-		pcb_attribute_put(&sc->Attributes, "refdes", "U1");
+		pcb_attribute_put(&sc->Attributes, "refdes", "U?");
 		if (dst_top_silk == NULL)
 			dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk");
 		if (dst_top_silk != NULL)
