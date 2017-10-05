@@ -245,7 +245,8 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 					add_to_drills(n->data.text.value);
 			}
 		}
-		pcb_message(PCB_MSG_ERROR, _("Broken drillmap: /drillmap should be a list\n"));
+		else
+			pcb_message(PCB_MSG_ERROR, _("Broken drillmap: /drillmap should be a list\n"));
 	}
 	else
 		pcb_message(PCB_MSG_ERROR, _("No drillmap resource found\n"));
