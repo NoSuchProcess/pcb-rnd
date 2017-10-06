@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2 id=""> Autocrop plugin </h2>
+<p>
+Use the autorcop action to resize your pcb-board to extants 
+<h2 id="description"> Description </h2>
+<p>
+Autocrop finds the extents of your existing layout and resizes the board
+dimensions to contain only your parts plus a margin along the edge.
+<p>
+Syntax:
+<p>
+autocrop();
+<p>
+Use:
+<p>
+Bind autocrop to a key in the appropriate pcb-menu-*.lht for your preferred pcb-rnd gui.
+<p>
+Issues:
+<p>
+<li>Autocrop will move the objects to crop the layout, and as a consequence autocrop() plugin will take time to calcaulate for complex layouts. 
+<li>Autocrop was originally written for the old geda pcb with undo for board size
+<li>Edge clearance is fixed at 5*line spacing
+
+
