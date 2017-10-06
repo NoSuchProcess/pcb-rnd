@@ -27,12 +27,12 @@ sizes to agree with the vendor's drill availability.
 
 <p>
 Many current PCB fabricators offer any drill size within a tolerance with
-just a minimun and maximum. In this case the layout's holes do not need
+just a minimum and maximum. In this case the layout's holes do not need
 to match specific drill sizes but it may be desirable to normalize the
-hole sizes. While the user may want all holes consistant for asthetic
-reasons there may be a fabriction cost cost savings if hole sizes are
-consistant. Likewise, design rules, such as trace width and minimum
-seperation, can impact fabrication cost. In this situation the drills
+hole sizes. While the user may want all holes consistent for aesthetic
+reasons there may be a fabrication cost saving if hole sizes are
+consistent. Likewise, design rules, such as trace width and minimum
+separation, can impact fabrication cost. In this situation the drills
 listed in the vendor files would not be specific drill availability but
 rather normalization values.
 
@@ -56,7 +56,7 @@ may not want to change the drill size can be identified to be left alone
 	     "descr" attributes.
 
 	<li> The file name can be any existing, readable filename. The file name
-	     may be entered in two ways - explicitly or dialogbox search.
+	     may be entered in two ways - explicitly or dialog box search.
 		<ul>
 			<li> LoadVendorFile(your_vendor_filename)
 			<li> LoadVendorFile()
@@ -64,10 +64,9 @@ may not want to change the drill size can be identified to be left alone
 
 	<li> Defaults if no entry provided
 		<ul>
-			<li> vendor file = <strong>vendor.res</strong> (allowed entries:
+			<li> vendor file = <strong>vendor.lht</strong> (allowed entries:
 			     any readable filename in lihata vendor file format)
 			<li> units = <strong>mil</strong> (allowed entries: mil|mils|inch|inches|mm)
-
 			<li> round = <strong>up</strong> (allowed entries up|nearest)
 		</ul>
 	</ul>
