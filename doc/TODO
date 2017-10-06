@@ -1,6 +1,6 @@
 1. For the upcoming release ===============================================================================
 
-- BUG: subc recipe change [report: Ade]
++ BUG: subc recipe change [report: Ade]
 	File -> Import -> Load Element/Subcircuit into buffer, select fp from pcblib (I used 0603.fp)
 	select object, cut to buffer, break into pieces, convert buffer to subc
 	place buffer
