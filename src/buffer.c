@@ -614,7 +614,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		pcb_layer_t *destlayer = pcb_layer_resolve_binding(pcb, sourcelayer);
 
 		if (destlayer == NULL) {
-			if (!pcb_layer_is_pure_empty(sourcelayer)) {
+			if ((!(sourcelayer->meta.bound.type & PCB_LYT_VIRTUAL)) && (!pcb_layer_is_pure_empty(sourcelayer))) {
 				char *src_name = sourcelayer->meta.bound.name;
 				if ((src_name == NULL) || (*src_name == '\0'))
 					src_name = "<anonymous>";
