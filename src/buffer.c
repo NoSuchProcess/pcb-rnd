@@ -615,7 +615,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 
 		if (destlayer == NULL) {
 			if ((!(sourcelayer->meta.bound.type & PCB_LYT_VIRTUAL)) && (!pcb_layer_is_pure_empty(sourcelayer))) {
-				char *src_name = sourcelayer->meta.bound.name;
+				const char *src_name = sourcelayer->meta.bound.name;
 				if ((src_name == NULL) || (*src_name == '\0'))
 					src_name = "<anonymous>";
 				pcb_message(PCB_MSG_WARNING, "Couldn't resolve buffer layer #%d (%s) on the current board\n", i, src_name);
