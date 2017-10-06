@@ -47,10 +47,40 @@ user manual
 		(lesstif: low prio)
 		(remote: not finished yet)
 		(sdl: not even started yet)
-	6. feature plugins
-		autoplace
-		autoroute
-		... (TODO)
+	6. feature plugins							 	First Draft Complete?
+ 		net auto-completion             no              [acompnet]
+ 		crop board to fit objects       yes, buildin    [autocrop]
+ 		auto place components           yes, buildin    [autoplace]
+ 		the original autorouter         yes, buildin    [autoroute]
+ 		flip board objects              yes, buildin    [boardflip]
+ 		diagnostic acts. for devs       no              [diag]
+ 		HID-independent GUI dialogs     yes, buildin    [dialogs]
+ 		distribute and align text       yes, buildin    [distaligntext]
+ 		distribute and align objs       yes, buildin    [distalign]
+ 		djopt board optimization        yes, buildin    [djopt]				y
+ 		draw cross-section (layers)     yes, buildin    [draw_csect]
+ 		fab layer in some exports       yes, buildin    [draw_fab]
+ 		font selection GUI              yes, buildin    [draw_fontsel]
+ 		font editor                     yes, buildin    [fontmode]
+ 		GPMI scripting                  yes, buildin    [gpmi]				y
+ 		push lines out of the way       yes, buildin    [jostle]
+ 		diagnostics: log HID calls      no              [loghid]
+ 		calculate toolpath for milling  no              [millpath]
+ 		minimal cut shorts              yes, buildin    [mincut]
+ 		old/obsolete actions            no              [oldactions]
+ 		combine selected polygons       yes, buildin    [polycombine]
+ 		stitch polygon at cursor        no              [polystitch]
+ 		object property editor          yes, buildin    [propedit]
+ 		puller                          yes, buildin    [puller]
+ 		query language                  yes, buildin    [query]				y
+ 		renumber action                 yes, buildin    [renumber]
+ 		report actions                  yes, buildin    [report]
+ 		the original rubberband         yes, buildin    [rubberband_orig]
+ 		command shorthands              yes, buildin    [shand_cmd]
+ 		netlist based dispenser         yes, buildin    [smartdisperse]
+ 		libstroke gestures              no              [stroke]
+ 		draw teardrops on pins          yes, buildin    [teardrops]
+ 		vendor drill mapping            yes, buildin    [vendordrill]			y
 	7. io and import plugins
 		Comparison table (build from data like tests/RTT/RTT_kicad*)
 		intro: io_lihata extra attention to pcb-rnd's native format
