@@ -14,20 +14,20 @@ Load and Apply vendor file to the current design.
 <p>
 Footprint holes are predefined within each footprint and layer
 characteristics are predefined in the layout file. Consequentially, hole
-sizes may vary among footprints or not match a vendor???s available drill
+sizes may vary among footprints or not match a vendor's available drill
 availability unless manually adjusted. Likewise, predefined layout layer
-characteristics may mismatch a vendor???s specific requirements. For
+characteristics may mismatch a vendor's specific requirements. For
 example one type of Through-Hole resistor footprint may have 40mil holes
 while another may have 43.5 mil holes.
 
 <p>
 Some PCB fabricators have a finite set of drill sizes available. In this
-case loading a vendor file will automatically adjust the layout???s hole
-sizes to agree with the vendor???s drill availability.
+case loading a vendor file will automatically adjust the layout's hole
+sizes to agree with the vendor's drill availability.
 
 <p>
 Many current PCB fabricators offer any drill size within a tolerance with
-just a minimun and maximum. In this case the layout???s holes do not need
+just a minimun and maximum. In this case the layout's holes do not need
 to match specific drill sizes but it may be desirable to normalize the
 hole sizes. While the user may want all holes consistant for asthetic
 reasons there may be a fabriction cost cost savings if hole sizes are
@@ -43,7 +43,7 @@ applied, holes will be automatically adjusted to conform to the drill
 sizes listed in the vendor file and layer characteristics will be used in
 any subsequent Design Rule Checks (DRC).  Some critical parts where you
 may not want to change the drill size can be identified to be left alone
-- ???skipped???.
+- "skipped".
 
 <h2 id="vendor-file-requirements"> Vendor File Requirements </h2>
 <ul>
@@ -51,9 +51,9 @@ may not want to change the drill size can be identified to be left alone
 	<li> The vendor file is a text file in lihata format. It expects a
 	     <strong>drillmap</strong> section and supports two other sections -
 	     <strong>drc</strong> and <strong>skips</strong>. <strong>Skips</strong>
-	     defines elements to be <em> skipped </em>, hence the name. Skips???
-	     regex patterns may only be defined for ???refdes???, ???value??? and
-	     ???descr??? attributes.
+	     defines elements to be <em> skipped </em>, hence the name. Skips'
+	     regex patterns may only be defined for "refdes", "value" and
+	     "descr" attributes.
 
 	<li> The file name can be any existing, readable filename. The file name
 	     may be entered in two ways - explicitly or dialogbox search.
