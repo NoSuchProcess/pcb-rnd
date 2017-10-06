@@ -7,8 +7,6 @@
 	select placed subc, cut to buffer, place buffer
 
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
-	+ BUG: subtractive mask recipe is not surviving save and reload with a simple poly drawn on a explicit mask layer [report: Miloh]
-		+ provided we already have a subc with the mask layer, change the binding from +manual to -manual, save, load, it is lost
 - BUGS:
 	+ parametric footprint dialog cancel leads to error messages on unknown file format [report: Alain]
 
@@ -144,6 +142,8 @@
 - self contained
 	- dialog box to print where the actual files are coming from, including if the font came from embedded/internal (gui version of --show-paths)
 	- project specific menus from extra lihata files - maybe from project.lht
+- vendor drill plugin:
+	- check if we want to keep vendor name
 - main.c:
 	- SIGPIPE - detect it (needed for popen)
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
