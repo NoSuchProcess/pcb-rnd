@@ -6,116 +6,96 @@
 	<link rel="stylesheet" type="text/css" href="../default.css">
 </head>
 <body>
-  <h2 id="loadvendorfrom-action-apply-vendor-drills-and-drc">
-   LoadVendorFrom() Action - Apply Vendor Drills and DRC
-  </h2>
-  <p>
-   Load and Apply vendor file to the current design.
-  </p>
-  <h2 id="description">
-   Description
-  </h2>
-  <p>
-   Footprint holes are predefined within each footprint and layer characteristics are predefined in the layout file. Consequentially, hole sizes may vary among footprints or not match a vendor???s available drill availability unless manually adjusted. Likewise, predefined layout layer characteristics may mismatch a vendor???s specific requirements. For example one type of Through-Hole resistor footprint may have 40mil holes while another may have 43.5 mil holes.
-  </p>
-  <p>
-   Some PCB fabricators have a finite set of drill sizes available. In this case loading a vendor file will automatically adjust the layout???s hole sizes to agree with the vendor???s drill availability.
-  </p>
-  <p>
-   Many current PCB fabricators offer any drill size within a tolerance with just a minimun and maximum. In this case the layout???s holes do not need to match specific drill sizes but it may be desirable to normalize the hole sizes. While the user may want all holes consistant for asthetic reasons there may be a fabriction cost cost savings if hole sizes are consistant. Likewise, design rules, such as trace width and minimum seperation, can impact fabrication cost. In this situation the drills listed in the vendor files would not be specific drill availability but rather normalization values.
-  </p>
-  <p>
-   The LoadVendorFrom() Action enables a file of vendor specific fabrication requirements to be loaded to the current design. When the vendor file is applied, holes will be automatically adjusted to conform to the drill sizes listed in the vendor file and layer characteristics will be used in any subsequent Design Rule Checks (DRC).  Some critical parts where you may not want to change the drill size can be identified to be left alone - ???skipped???.
-  </p>
-  <h2 id="vendor-file-requirements">
-   Vendor File Requirements
-  </h2>
-  <ul>
-   <li>
-    The vendor file is a text file in lihata format. It expects a
-    <strong>
-     drillmap
-    </strong>
-    section and supports two other sections -
-    <strong>
-     drc
-    </strong>
-    and
-    <strong>
-     skips
-    </strong>
-    .
-    <strong>
-     Skips
-    </strong>
-    defines elements to be
-    <em>
-     skipped
-    </em>
-    , hence the name. Skips??? regex patterns may only be defined for ???refdes???, ???value??? and ???descr??? attributes.
-   </li>
-   <li>
-    The file name can be any existing, readable filename. The file name may be entered in two ways - explicitly or dialogbox search.
-    <ul>
-     <li>
-      LoadVendorFile(your_vendor_filename)
-     </li>
-     <li>
-      LoadVendorFile()
-     </li>
-    </ul>
-   </li>
-   <li>
-    Defaults if no entry provided
-    <ul>
-     <li>
-      vendor file =
-      <strong>
-       vendor.res
-      </strong>
-      (allowed entries: any readable filename in lihata vendor file format)
-     </li>
-     <li>
-      units =
-      <strong>
-       mil
-      </strong>
-      (allowed entries: mil|mils|inch|inches|mm)
-     </li>
-     <li>
-      round =
-      <strong>
-       up
-      </strong>
-      (allowed entries up|nearest)
-     </li>
-    </ul>
-   </li>
-  </ul>
-  <h3 id="example-minimal-vendor-file">
-   Example Minimal Vendor File
-  </h3>
-  <pre><code>    ha:vendor_drill_map {
-    vendor = oshpark  # Optional and can be omitted
-    units = mil      # mil|mils|inch|inches|mm - mil is default
-    round = nearest  # up is default
-    li:drillmap = {
-        20
-        25
-        30
-    }
-    li:skips = {
-        refdes = {^J3$}       # Skip J3.
-        refdes = {^U[1-3]$}   # Skip U1, U2, U3
-    }
-    ha:drc = {
-        copper_space = 7
-        copper_width = 7
-        copper_overlap = 4
-        min_ring = 6
-        silk_width = 10
-        min_drill = 20
-    }
+<h2 id=""> LoadVendorFrom() Action - Apply Vendor Drills and DRC </h2>
+<p>
+Load and Apply vendor file to the current design.
+
+<h2 id="description"> Description </h2>
+<p>
+Footprint holes are predefined within each footprint and layer
+characteristics are predefined in the layout file. Consequentially, hole
+sizes may vary among footprints or not match a vendor???s available drill
+availability unless manually adjusted. Likewise, predefined layout layer
+characteristics may mismatch a vendor???s specific requirements. For
+example one type of Through-Hole resistor footprint may have 40mil holes
+while another may have 43.5 mil holes.
+
+<p>
+Some PCB fabricators have a finite set of drill sizes available. In this
+case loading a vendor file will automatically adjust the layout???s hole
+sizes to agree with the vendor???s drill availability.
+
+<p>
+Many current PCB fabricators offer any drill size within a tolerance with
+just a minimun and maximum. In this case the layout???s holes do not need
+to match specific drill sizes but it may be desirable to normalize the
+hole sizes. While the user may want all holes consistant for asthetic
+reasons there may be a fabriction cost cost savings if hole sizes are
+consistant. Likewise, design rules, such as trace width and minimum
+seperation, can impact fabrication cost. In this situation the drills
+listed in the vendor files would not be specific drill availability but
+rather normalization values.
+
+<p>
+The LoadVendorFrom() Action enables a file of vendor specific fabrication
+requirements to be loaded to the current design. When the vendor file is
+applied, holes will be automatically adjusted to conform to the drill
+sizes listed in the vendor file and layer characteristics will be used in
+any subsequent Design Rule Checks (DRC).  Some critical parts where you
+may not want to change the drill size can be identified to be left alone
+- ???skipped???.
+
+<h2 id="vendor-file-requirements"> Vendor File Requirements </h2>
+<ul>
+
+	<li> The vendor file is a text file in lihata format. It expects a
+	     <strong>drillmap</strong> section and supports two other sections -
+	     <strong>drc</strong> and <strong>skips</strong>. <strong>Skips</strong>
+	     defines elements to be <em> skipped </em>, hence the name. Skips???
+	     regex patterns may only be defined for ???refdes???, ???value??? and
+	     ???descr??? attributes.
+
+	<li> The file name can be any existing, readable filename. The file name
+	     may be entered in two ways - explicitly or dialogbox search.
+		<ul>
+			<li> LoadVendorFile(your_vendor_filename)
+			<li> LoadVendorFile()
+		</ul>
+
+	<li> Defaults if no entry provided
+		<ul>
+			<li> vendor file = <strong>vendor.res</strong> (allowed entries:
+			     any readable filename in lihata vendor file format)
+			<li> units = <strong>mil</strong> (allowed entries: mil|mils|inch|inches|mm)
+
+			<li> round = <strong>up</strong> (allowed entries up|nearest)
+		</ul>
+	</ul>
+
+<h3 id="example-minimal-vendor-file">
+	Example Minimal Vendor File
+</h3>
+<pre><code>    ha:vendor_drill_map {
+  vendor = oshpark  # Optional and can be omitted
+  units = mil      # mil|mils|inch|inches|mm - mil is default
+  round = nearest  # up is default
+  li:drillmap = {
+      20
+      25
+      30
+  }
+  li:skips = {
+      refdes = {^J3$}       # Skip J3.
+      refdes = {^U[1-3]$}   # Skip U1, U2, U3
+  }
+  ha:drc = {
+      copper_space = 7
+      copper_width = 7
+      copper_overlap = 4
+      min_ring = 6
+      silk_width = 10
+      min_drill = 20
+  }
 </code></pre>
- </body>
+</body>
 </html>
