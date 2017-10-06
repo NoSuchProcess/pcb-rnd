@@ -60,6 +60,12 @@
 #include "box.h"
 #include "hid_actions.h"
 
+static const char autocrop_description[] =
+        "Autocrops the board dimensions to extants + margin";
+
+static const char autocrop_syntax[] =
+        "autocrop()";
+
 static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, pcb_coord_t dx, pcb_coord_t dy)
 {
 	if (Data) {
@@ -227,7 +233,7 @@ static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 static pcb_hid_action_t autocrop_action_list[] = {
-	{"autocrop", NULL, autocrop, NULL, NULL}
+	{"autocrop", NULL, autocrop, autocrop_description , autocrop_syntax}
 };
 
 char *autocrop_cookie = "autocrop plugin";
