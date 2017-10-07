@@ -228,7 +228,7 @@ static pcb_coord_t read_mask(pcb_any_obj_t *obj)
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
-	int n, top_pads = 0, bottom_pads = 0;
+	int n, top_pads = 0, bottom_pads = 0, has_refdes_text = 0;
 	pcb_layer_t *dst_top_mask = NULL, *dst_bottom_mask = NULL, *dst_top_paste = NULL, *dst_bottom_paste = NULL, *dst_top_silk = NULL;
 	vtp0_t mask_pads, paste_pads;
 
@@ -339,6 +339,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			textlist_append(&dst->Text, text);
 			PCB_SET_PARENT(text, layer, dst);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, text);
+			if ((text->TextString != NULL) && (strstr(text->TextString, "%a.parent.refdes%") != NULL))
+				has_refdes_text = 1;
 		}
 
 		while((poly = polylist_first(&src->Polygon)) != NULL) {
@@ -445,8 +447,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	}
 
 	/* Add refdes */
-	{
-		pcb_attribute_put(&sc->Attributes, "refdes", "U0");
+	pcb_attribute_put(&sc->Attributes, "refdes", "U0");
+	if (!has_refdes_text) {
 		if (dst_top_silk == NULL)
 			dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk");
 		if (dst_top_silk != NULL)
