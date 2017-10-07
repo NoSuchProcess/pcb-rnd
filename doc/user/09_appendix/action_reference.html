@@ -10,7 +10,7 @@
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-pcb-rnd version 1.2.3, Revision: 10393
+pcb-rnd version 1.2.4, Revision: 11962
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
@@ -41,6 +41,9 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> Cursor </td>
 <td>Move the cursor.</td>
 <td>Cursor(Type,DeltaUp,DeltaRight,Units)</td>
+<tr><td> dumpflags </td>
+<td>dump flags, optionally using the format string provided by the user</td>
+<td>dumpflags([fmt])</td>
 <tr><td> ChkBuffer </td>
 <td>Return 1 if currently selected buffer's index matches idx</td>
 <td>ChkBuffer(idx)</td>
@@ -105,12 +108,15 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> distributetext </td>
 <td>Distribute Text Elements</td>
 <td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td>
+<tr><td> dlg_test </td>
+<td>test the attribute dialog</td>
+<td>dlg_test()</td>
 <tr><td> DumpActions </td>
 <td>Dump all actions available.</td>
 <td>DumpActions()</td>
 <tr><td> Attributes </td>
-<td>Let the user edit the attributes of the layout, current or given<br>layer, or selected element.</td>
-<td>Attributes(Layout|Layer|Element)<br>Attributes(Layer,layername)</td>
+<td>Let the user edit the attributes of the layout, current or given<br>layer, or selected element or subcircuit.</td>
+<td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td>
 <tr><td> RenumberBlock </td>
 <tr><td> ToggleHideName </td>
 <td>Toggles the visibility of element names.</td>
@@ -142,7 +148,7 @@ pcb-rnd version 1.2.3, Revision: 10393
 <td>DumpCsect()</td>
 <tr><td> Redo </td>
 <td>Redo recent "undo" operations.</td>
-<td>pcb_redo()</td>
+<td>redo()</td>
 <tr><td> Export </td>
 <td>Export the current layout, e.g. Export(png, --dpi, 600)</td>
 <td>Export(exporter, [exporter-args])</td>
@@ -153,15 +159,18 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> MoveLayer </td>
 <td>Moves/Creates/Deletes Layers.</td>
 <td>MoveLayer(old,new)</td>
+<tr><td> LoadHpglFrom </td>
+<td>Loads the specified hpgl plot file to the current buffer</td>
+<td>LoadHpglFrom(filename)</td>
 <tr><td> LibraryChanged </td>
 <td>Tells the GUI that the libraries have changed.</td>
 <td>LibraryChanged()</td>
-<tr><td> SavePatch </td>
-<td>Save netlist patch for back annotation.</td>
-<td>SavePatch(filename)</td>
 <tr><td> CreateMenu </td>
 <td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td>
 <td>CreateMenu(path | path, action, mnemonic, accel, tooltip, cookie)</td>
+<tr><td> SavePatch </td>
+<td>Save netlist patch for back annotation.</td>
+<td>SavePatch(filename)</td>
 <tr><td> ChkGridUnits </td>
 <td>Return 1 if currently selected grid unit matches the expected (normally mm or mil)</td>
 <td>ChkGridUnits(expected)</td>
@@ -217,12 +226,14 @@ pcb-rnd version 1.2.3, Revision: 10393
 <td>Some polygon related stuff.</td>
 <td>Polygon(Close|CloseHole|PreviousPoint)</td>
 <tr><td> autocrop </td>
+<td>Autocrops the board dimensions to extants + margin</td>
+<td>autocrop()</td>
 <tr><td> SelectLayer </td>
 <td>Select which layer is the current layer.</td>
 <td>SelectLayer(1..MAXLAYER|Silk|Rats)</td>
 <tr><td> distribute </td>
 <td>Distribute Elements</td>
-<td>Distribute(Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td>
+<td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td>
 <tr><td> Connection </td>
 <td>Searches connections of the object at the cursor position.</td>
 <td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td>
@@ -238,7 +249,7 @@ pcb-rnd version 1.2.3, Revision: 10393
 <td>Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name])</td>
 <tr><td> Undo </td>
 <td>Undo recent changes.</td>
-<td>pcb_undo()<br>pcb_undo(ClearList)</td>
+<td>undo()<br>undo(ClearList)</td>
 <tr><td> CycleDrag </td>
 <td>Cycle through which object is being dragged</td>
 <td>CycleDrag()</td>
@@ -252,30 +263,30 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> FontEdit </td>
 <td>Convert the current font to a PCB for editing.</td>
 <td>FontEdit()</td>
+<tr><td> dumpconf </td>
+<td>Perform various operations on the configuration tree.</td>
+<td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td>
 <tr><td> h </td>
 <td>Print a help message for commands.</td>
 <td>h</td>
 <tr><td> ApplyVendor </td>
 <td>Applies the currently loaded vendor drill table to the current design.</td>
 <td>ApplyVendor()</td>
-<tr><td> dumpconf </td>
-<td>Perform various operations on the configuration tree.</td>
-<td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td>
+<tr><td> LayerBinding </td>
+<td>Change the layer binding.</td>
+<td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td>
 <tr><td> Puller </td>
 <td>Pull an arc-line junction tight.</td>
 <td>pcb_act_Puller()</td>
-<tr><td> l </td>
-<td>Loads layout data.</td>
-<td>l [name] [format]</td>
 <tr><td> m </td>
 <td>Loads a layout into the current buffer.</td>
 <td>m [name]</td>
+<tr><td> l </td>
+<td>Loads layout data.</td>
+<td>l [name] [format]</td>
 <tr><td> Delete </td>
 <td>Delete stuff.</td>
 <td>Delete(Object|Selected)<br>Delete(AllRats|SelectedRats)</td>
-<tr><td> DisperseElements </td>
-<td>Disperses elements.</td>
-<td>DisperseElements(All|Selected)</td>
 <tr><td> q </td>
 <td>Quits the application after confirming.</td>
 <td>q</td>
@@ -300,6 +311,9 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> MoveObject </td>
 <td>Moves the object under the crosshair.</td>
 <td>pcb_move_obj(X,Y,dim)</td>
+<tr><td> DisperseElements </td>
+<td>Disperses elements.</td>
+<td>DisperseElements(All|Selected)</td>
 <tr><td> Atomic </td>
 <td>Save or restore the undo serial number.</td>
 <td>Atomic(Save|Restore|Close|Block)</td>
@@ -342,6 +356,9 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> PCBChanged </td>
 <td>Tells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</td>
 <td>PCBChanged([revert])</td>
+<tr><td> Normalize </td>
+<td>Move all objects within the drawing area, align the drawing to 0;0</td>
+<td>Normalize()</td>
 <tr><td> ChangeClearSize </td>
 <td>Changes the clearance size of objects.</td>
 <td>ChangeClearSize(Object, delta|style)<br>ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)<br>ChangeClearSize(SelectedLines|SelectedArcs, delta|style)<br>ChangeClearSize(Selected|SelectedObjects, delta|style)</td>
@@ -381,6 +398,9 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> RemoveMenu </td>
 <td>Recursively removes a new menu, popup (only path specified) or submenu. </td>
 <td>RemoveMenu(path|cookie)</td>
+<tr><td> FlagEdit </td>
+<td>Change the layer binding.</td>
+<td>FlagEdit(object)</td>
 <tr><td> Flip </td>
 <td>Flip an element to the opposite side of the board.</td>
 <td>Flip(Object|Selected|SelectedElements)</td>
@@ -396,12 +416,18 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> dumpundo </td>
 <td>Print info about fonts</td>
 <td>dumpfonts()</td>
+<tr><td> PolyOffs </td>
+<td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td>
+<td>PolyOffs(offset)</td>
 <tr><td> le </td>
 <td>Loads an element into the current buffer.</td>
 <td>le [name]</td>
 <tr><td> MorphPolygon </td>
 <td>Converts dead polygon islands into separate polygons.</td>
 <td>pcb_poly_morph(Object|Selected)</td>
+<tr><td> ToPoly </td>
+<td>convert a closed loop of lines and arcs into a polygon</td>
+<td>ToPoly()<br>ToPoly(outline)</td>
 <tr><td> AddRats </td>
 <td>Add one or more rat lines to the board.</td>
 <td>AddRats(AllRats|SelectedRats|Close)</td>
@@ -429,6 +455,9 @@ pcb-rnd version 1.2.3, Revision: 10393
 <tr><td> EditGroup </td>
 <td>Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.</td>
 <td>Editgroup([@group], [name=text|type=+bit|type=-bit])]<br>Editlayer([@layer], attrib, key=value)</td>
+<tr><td> ExportScadPoly </td>
+<td>exports all selected polygons to an openscad script; only the outmost contour of each poly is exported</td>
+<td>ScadExportPoly(filename)</td>
 <tr><td> fp_rehash </td>
 <td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td>
 <td>fp_rehash()</td>
