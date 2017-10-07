@@ -273,7 +273,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 		while((line = linelist_first(&src->Line)) != NULL) {
 			pcb_coord_t mask = 0;
-			char *sq, *termpad;
+			char *np, *sq, *termpad;
 			const char *term;
 
 			termpad = pcb_attribute_get(&line->Attributes, "elem_smash_pad");
@@ -285,13 +285,15 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				mask = read_mask((pcb_any_obj_t *)line);
 			}
 			term = pcb_attribute_get(&line->Attributes, "term");
+			np = pcb_attribute_get(&line->Attributes, "elem_smash_nopaste");
 			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
 			if ((sq != NULL) && (*sq == '1')) { /* convert to polygon */
 				poly = sqline2term(dst, line);
-
 				if (termpad != NULL) {
-					poly = sqline2term(dst, line);
-					vtp0_append(&paste_pads, poly);
+					if ((np == NULL) || (*np != '1')) {
+						poly = sqline2term(dst, line);
+						vtp0_append(&paste_pads, poly);
+					}
 					if (mask > 0) {
 						line->Thickness = mask;
 						poly = sqline2term(dst, line);
@@ -312,7 +314,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 				if (termpad != NULL) {
 					pcb_line_t *nl = pcb_line_dup(dst, line);
-					vtp0_append(&paste_pads, nl);
+					if ((np == NULL) || (*np != '1'))
+						vtp0_append(&paste_pads, nl);
 					if (mask > 0) {
 						nl = pcb_line_dup(dst, line);
 						nl->Thickness = mask;

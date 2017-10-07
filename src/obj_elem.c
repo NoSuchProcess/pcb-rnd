@@ -261,6 +261,8 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 			}
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad))
 				pcb_attribute_put(&line->Attributes, "elem_smash_shape_square", "1");
+			if (PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad))
+				pcb_attribute_put(&line->Attributes, "elem_smash_nopaste", "1");
 			pcb_attribute_put(&line->Attributes, "elem_smash_pad", "1");
 			pcb_sprintf(tmp, "%$mm", pad->Mask);
 			pcb_attribute_put(&line->Attributes, "elem_smash_pad_mask", tmp);
