@@ -162,6 +162,7 @@
 		- regex and string cmp match speed vs. select by name
 - feature plugins:
 	- autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
+	- distalign doesn't work with subc ( align() and distribute()) [report:Miloh]
 
 3. Long term ===============================================================================
 
