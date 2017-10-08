@@ -3,7 +3,10 @@
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
 
 2. For later releases ===============================================================================
-
+- BUG: whether a layer is bound or not should be an explicit flag, guessing it from the parents seem to be too fragile
+	- see also: import layout to buffer from lihata, without the TODO#5 in io_lihata and core)
+	- after this check that nobody should access ->type directly!
+	- check if loading a board to paste buffer with subcs on it still causes an assert
 - BUGS:
 	- parametric footprint dialog cancel reopens the dialog? [report: Alain]
 - BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
