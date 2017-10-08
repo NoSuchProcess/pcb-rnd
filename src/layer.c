@@ -116,7 +116,13 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
-	unsigned int flags = pcb_layer_flags_(pcb, layer);
+	pcb_layer_type_t flags;
+
+#warning layer TODO#5: temporary is-bound hack until we get an explicit flag */
+	if (layer->parent == pcb->Data)
+		flags = pcb_layer_flags_(pcb, layer);
+	else
+		flags = layer->meta.bound.type;
 
 	if (flags == 0)
 		return 1;
@@ -634,16 +640,22 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 	return NULL;
 }
 
-pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
+#warning layer TODO: this should be the new pcb_get_layer()
+pcb_layer_t *pcb_get_layer2(pcb_board_t *pcb, pcb_layer_id_t id)
 {
-	if ((id >= 0) && (id < PCB->Data->LayerN))
-		return &PCB->Data->Layer[id];
+	if ((id >= 0) && (id < pcb->Data->LayerN))
+		return &pcb->Data->Layer[id];
 	if (id & PCB_LYT_UI) {
 		id &= ~(PCB_LYT_VIRTUAL | PCB_LYT_UI);
 		if ((id >= 0) && (id < vtlayer_len(&pcb_uilayer)))
 			return &(pcb_uilayer.array[id]);
 	}
 	return NULL;
+}
+
+pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
+{
+	return pcb_get_layer2(PCB, id);
 }
 
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
@@ -719,7 +731,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 	{
 		pcb_layergrp_t *grp = pcb->LayerGroups.grp+gid;
 		for(l = 0; l < grp->len; l++) {
-			pcb_layer_t *ly = pcb_get_layer(grp->lid[l]);
+			pcb_layer_t *ly = pcb_get_layer2(pcb, grp->lid[l]);
 			if ((ly->comb & PCB_LYC_SUB) == (src->comb & PCB_LYC_SUB)) {
 				score = 1;
 				if (ly->comb == src->comb)
