@@ -55,7 +55,7 @@ user manual
  		flip board objects              yes, buildin    [boardflip]
  		diagnostic acts. for devs       no              [diag]
  		HID-independent GUI dialogs     yes, buildin    [dialogs]
- 		distribute and align text       yes, buildin    [distaligntext]
+ 		distribute and align text       yes, buildin    [distaligntext]			y
  		distribute and align objs       yes, buildin    [distalign]
  		djopt board optimization        yes, buildin    [djopt]				y
  		draw cross-section (layers)     yes, buildin    [draw_csect]
