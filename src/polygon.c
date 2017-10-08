@@ -1163,8 +1163,15 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	struct cpInfo info;
 	pcb_layergrp_id_t group;
 	unsigned int gflg;
+	pcb_layer_type_t lf;
 
-	if (!(pcb_layer_flags_(PCB, Layer) & PCB_LYT_COPPER)) {
+#warning layer TODO#5: until we have an explicit flag for bound layers, pcb_layer_flags_() makes a mistake
+	if (Data == PCB->Data)
+		lf = pcb_layer_flags_(PCB, Layer);
+	else
+		lf = Layer->meta.bound.type;
+
+	if (!(lf & PCB_LYT_COPPER)) {
 		polygon->NoHolesValid = 0;
 		return 0;
 	}
@@ -1851,7 +1858,7 @@ void pcb_poly_restore_to_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr
 void pcb_poly_clear_from_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
-		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
+		pcb_poly_init_clip(Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 	pcb_poly_plows(Data, type, ptr1, ptr2, subtract_plow);
 }
 
