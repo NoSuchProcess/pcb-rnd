@@ -167,6 +167,7 @@
 	- autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
 	- distalign doesn't work with subc ( align() and distribute()) [report:Miloh]
 	- distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
+	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 
 3. Long term ===============================================================================
 
