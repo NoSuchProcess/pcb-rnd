@@ -44,6 +44,7 @@
 #include "compat_misc.h"
 #include "math_helper.h"
 #include "pcb_minuid.h"
+#include "conf_core.h"
 
 #define SUBC_AUX_NAME "subc-aux"
 
@@ -788,6 +789,9 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY, pcb_false);
 
 	pcb_undo_add_obj_to_create(PCB_TYPE_SUBC, sc, sc, sc);
+
+	if (conf_core.editor.show_solder_side)
+		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 
 	return (sc);
 }
