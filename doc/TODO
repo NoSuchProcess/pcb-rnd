@@ -4,10 +4,16 @@
 
 2. For later releases ===============================================================================
 - BUG: poly-poly term clearance in the same group, but different layer fails:
-	- in pcb_polyop_move()
-	- pprestore() and ppclear() takes the parent of the subc layer and does the plowing only on those instead of on the board
-	- do we need to do it always on the top?
-	- do we need to consider board layers (getting them from bound if needed)?
+	- consider bug_files/term1.lht
+		- in pcb_polyop_move()
+		- pprestore() and ppclear() takes the parent of the subc layer and does the plowing only on those instead of on the board
+		- do we need to do it always on the top?
+		- do we need to consider board layers (getting them from bound if needed)?
+	- check bug_files/subc_b_crash.lht:
+		- drag&drop move the subc
+		- send it to back side, drag&drop move again
+		- -> assert
+		- may be related to bottom side implicit layers: binding fails there
 - BUG: whether a layer is bound or not should be an explicit flag, guessing it from the parents seem to be too fragile
 	- see also: import layout to buffer from lihata, without the TODO#5 in io_lihata and core)
 	- after this check that nobody should access ->type directly!
