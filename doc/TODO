@@ -18,6 +18,7 @@
 	- see also: import layout to buffer from lihata, without the TODO#5 in io_lihata and core)
 	- after this check that nobody should access ->type directly!
 	- check if loading a board to paste buffer with subcs on it still causes an assert
+- subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
 - BUGS:
 	- parametric footprint dialog cancel reopens the dialog? [report: Alain]
 - BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
