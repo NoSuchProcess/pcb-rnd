@@ -3,6 +3,11 @@
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
 
 2. For later releases ===============================================================================
+- BUG: poly-poly term clearance in the same group, but different layer fails:
+	- in pcb_polyop_move()
+	- pprestore() and ppclear() takes the parent of the subc layer and does the plowing only on those instead of on the board
+	- do we need to do it always on the top?
+	- do we need to consider board layers (getting them from bound if needed)?
 - BUG: whether a layer is bound or not should be an explicit flag, guessing it from the parents seem to be too fragile
 	- see also: import layout to buffer from lihata, without the TODO#5 in io_lihata and core)
 	- after this check that nobody should access ->type directly!
