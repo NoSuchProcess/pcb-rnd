@@ -1,3 +1,10 @@
+pcb-rnd 1.2.5b (r10635+bakcports)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	- Fix: import pcb into paste buffer layer binding bug
+	- Fix: gerber drill file units
+	- Fix: RTT tests shouldn't fail if ImageMagick is not installed
+	- Fix: execution bug fix (do not let action scripts load from board files)
+
 pcb-rnd 1.2.4 (r10635)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[subc]
