@@ -3,6 +3,7 @@
 + BUG: property editor silently censors negative values input by user, i.e. for arc delta values [report: Erich]
 
 2. For later releases ===============================================================================
+- BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
 - BUG: poly-poly term clearance in the same group, but different layer fails:
 	- consider bug_files/term1.lht
 		- in pcb_polyop_move()
