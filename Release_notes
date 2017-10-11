@@ -1,18 +1,29 @@
-pcb-rnd 1.2.4
+pcb-rnd 1.2.6
 ~~~~~~~~~~~~~
 
-This release starts the next major undertaking of pcb-rnd: the data
-model cleanup. The internal data model has been upgraded into a more
-proper tree; subcircuits has been added to group arbitrary objects.
+The focus of the release is upgrading subcircuit support with terminals
+so that subcircuits can participate in circuits the same way as elements
+can. This made subcircuits suitable for use as footprints - without any of
+the inherited limitations of elements.
 
-This effort triggered various cleanups and fixes, including a more
-coherent model how layers are stored in buffers and subcircuits, enabling
-them to be reused among boards with different stackups.
+Subcircuit terminals like SMD pads are often polygons and they need to
+clear copper polygons. This is done by introducing a new flag,
+CLEARPOLYPOLY that allows a polygon to have a clearance value and clear
+into other polygons just like lines and arcs. This can be used outside of
+subcircuits as well.
 
-The io_ plugins evolved too: pcb-rnd can read binary board files
-produced by eagle and read/write Protel's autotrax/easytrax format.
+On the way of completing the new layer code, the HID API for rendering
+layers and layer groups had to be rewritten to fully support multi-color,
+composite layer group rendering. This allows the user to have
+selection-color displayed on a composite layer group. It makes the
+rendering API much simpler and orthogonal - makes developer's life
+easier. All HIDs and export plugins are updated for the new API.
 
-The xy_ exporter has been upgraded to use templates for its output format.
-This enables pcb-rnd to support different fabs easier. Adding support
-for a new fab is a question of adding a new template - usually no coding
-required.
+To follow the best pcb-rnd traditions, a few new I/O plugins have been
+added for this release, helping better communication with 2d and 3d
+mechanical CAD applications:
+
+  - openscad exporter rewritten from scratch
+  - a new dxf exporter, written from scratch
+  - a minimalistic importer for HPGL
+
