@@ -50,6 +50,7 @@
 #include "obj_elem.h"
 #include "obj_elem_list.h"
 #include "obj_elem_op.h"
+#include "obj_subc_list.h"
 
 /* TODO: remove this: */
 #include "draw.h"
@@ -151,8 +152,8 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 			Buffer->X = element->MarkX;
 			Buffer->Y = element->MarkY;
 		}
-		else if (elementlist_length(&Buffer->Data->subc)) {
-			pcb_subc_t *subc = elementlist_first(&Buffer->Data->subc);
+		else if (pcb_subclist_length(&Buffer->Data->subc)) {
+			pcb_subc_t *subc = pcb_subclist_first(&Buffer->Data->subc);
 			pcb_subc_get_origin(subc, &Buffer->X, &Buffer->Y);
 		}
 		return (pcb_true);
