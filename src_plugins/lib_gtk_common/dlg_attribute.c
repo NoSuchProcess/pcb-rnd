@@ -576,8 +576,10 @@ void ghid_attr_dlg_free(void *hid_ctx)
 		int i;
 		for (i = 0; i < ctx->n_attrs; i++) {
 			ctx->results[i] = ctx->attrs[i].default_val;
-			if (ctx->results[i].str_value)
+			if (PCB_HAT_IS_STR(ctx->attrs[i].type) && (ctx->results[i].str_value))
 				ctx->results[i].str_value = pcb_strdup(ctx->results[i].str_value);
+			else
+				ctx->results[i].str_value = NULL;
 		}
 	}
 

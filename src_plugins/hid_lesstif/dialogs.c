@@ -948,8 +948,10 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
 			ctx->actual_nattrs++;
 		results[i] = attrs[i].default_val;
-		if (results[i].str_value)
+		if (PCB_HAT_IS_STR(attrs[i].type) && (results[i].str_value))
 			results[i].str_value = pcb_strdup(results[i].str_value);
+		else
+			results[i].str_value = NULL;
 	}
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
