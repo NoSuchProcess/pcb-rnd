@@ -165,7 +165,6 @@ do { \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
-		case PCB_HATT_MIXED: \
 		case PCB_HATT_COORD: \
 		case PCB_HATT_UNIT: \
 			table[table ## _len - 1].field.int_value = (int)val; \
@@ -195,7 +194,6 @@ do { \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
-		case PCB_HATT_MIXED: \
 		case PCB_HATT_COORD: \
 		case PCB_HATT_UNIT: \
 		case PCB_HATT_REAL: \

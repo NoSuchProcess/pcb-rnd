@@ -376,25 +376,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
 				break;
 
-			case PCB_HATT_MIXED:
-				hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
-
-				/*
-				 * FIXME
-				 * need to pick the "digits" and step size argument more
-				 * intelligently
-				 */
-				ghid_spin_button(hbox, &widget, ctx->attrs[j].default_val.real_value,
-												 ctx->attrs[j].min_val, ctx->attrs[j].max_val, 0.01, 0.01, 3,
-												 0, dblspinner_changed_cb, &(ctx->attrs[j]), FALSE, NULL);
-				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
-				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
-				ctx->wl[j] = widget;
-
-				goto do_enum;
-				break;
-
 			case PCB_HATT_PATH:
 				vbox1 = ghid_category_vbox(parent, (add_labels ? ctx->attrs[j].name : NULL), 4, 2, TRUE, TRUE);
 				entry = gtk_entry_new();
@@ -486,7 +467,6 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 
 		case PCB_HATT_REAL:
-		case PCB_HATT_MIXED:
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->real_value);
 			break;
 

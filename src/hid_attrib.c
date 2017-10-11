@@ -82,14 +82,9 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 				if (a->value)
 					*(int *) a->value = a->default_val.int_value;
 				break;
-			case PCB_HATT_MIXED:
-				if (a->value) {
-					*(pcb_hid_attr_val_t *) a->value = a->default_val;
 			case PCB_HATT_UNIT:
-					if (a->value)
-						*(int *) a->value = a->default_val.int_value;
-					break;
-				}
+				if (a->value)
+					*(int *) a->value = a->default_val.int_value;
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
@@ -151,12 +146,8 @@ void pcb_hid_parse_command_line(int *argc, char ***argv)
 						else
 							a->default_val.int_value = bool_val;
 						break;
-					case PCB_HATT_MIXED:
-						a->default_val.real_value = strtod((*argv)[1], &ep);
-						goto do_enum;
 					case PCB_HATT_ENUM:
 						ep = (*argv)[1];
-					do_enum:
 						ok = 0;
 						for (e = 0; a->enumerations[e]; e++)
 							if (strcmp(a->enumerations[e], ep) == 0) {
