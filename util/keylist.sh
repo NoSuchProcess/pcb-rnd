@@ -169,6 +169,14 @@ gen_html()
 		PREFIX[$2, p]++
 	}
 
+	function cleanup(s)
+	{
+		gsub("\260", "\\&deg;", s)
+		gsub("\\\\37777777660", "\\&deg;", s)
+		gsub("\\\\057", "/", s)
+		return s
+	}
+
 	END {
 		q="\""
 		print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
@@ -209,9 +217,8 @@ gen_html()
 
 			print "	<th align=left>" keystr
 			for(h in HIDS) {
-				mn = MENUNAME[h, key]
-				gsub("\260", "\\&deg;", mn)
-				act = ACTION[h, key]
+				mn = cleanup(MENUNAME[h, key])
+				act = cleanup(ACTION[h, key])
 				if ((act == "") && (mn == ""))
 					act = "&nbsp;"
 				else {
