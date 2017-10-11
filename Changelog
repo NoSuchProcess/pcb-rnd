@@ -1,3 +1,247 @@
+pcb-rnd 1.2.6 (r11986)
+~~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-API CHANGE: the attribute system requires unique keys per attribte list; this will keep things concistent as the code used to silently ignore redundant attributes
+		-Fix: don't merge lines (when drawing extension of an existing line) if their clearance differs
+		-Fix: pcb-printf: %mk really prints decimil and not some random "sane" unit
+		-Fix: Mode(escape) should undo Note as well, so if the mouse button is still pressed there won't be a selection box after the release
+		-Fix: select polygon only if the negative selection box really touches it
+		-Fix: function pcb_is_arc_in_rectangle besides crossing, now checks if a whole arc is inside a rectangle
+		-Fix: select arc only if the negative selection box really touches it
+		-Fix: remove duplicate lists of "what flags this object type can have" - rather have a function that calculates it from the flag_str table and cache it
+		-Fix: data bbox shouldn't improvize per object type but should depend on each object's bbox calculation function
+		-Fix: don't change the ID when text is put on a layer - instead, invent the ID when the text is created (to prevent unintentional ID changes, e.g. on lihata load)
+		-Fix: rotate line point relative to the passed rotation axis, not the line endpoint (fixes undo rotate bug)
+		-Move: flag help text from doxygen comments to the struct so the code can use them
+		-Add: attribute post value changed callback
+		-Add: copy-back API in attrib that minimizes changes (helper for HIDs)
+		-Add: new interpretation of clearance=0: same as if the clearline flag is not set
+		-Add: Wireframe draw mode
+		-Add: marker snap depends on config
+		-Add: normalize() action for normalizing (clipping and moving into drawing area) data or the board
+		-Add: pcb_subst_strdup() option for interpreting backslash sequences
+		-Add: flagedit (accessible from the menu)
+
+	[data]
+		-Change: switch over from old default.pcb and implicit mask/paste layers to new, lihata based 2 and 4 layer defaults
+		-Update: names in the desktop file, to pcb-rnd
+
+	[dbus]
+		-Del: retire this old, unused plugin
+
+	[diag]
+		-Add: integrity check: attribute list length
+		-Add: formatted flag dump with new action dumpflag()
+
+	[dialogs]
+		-Add: new plugin for moving dialog boxes to
+		-Add: flagedit dialog
+		-Add: layer bindings dialog
+
+	[doc]
+		-Add: new composite render API documentation
+		-Add: explain paste buffers
+		-Add: refine indent recommendations
+		-Add: alien format description: Koen's documentation on the hyp format
+		-Add: minimal openscad documentation and an example model (for 1206)
+		-Add: vendordrill plugin documentation
+		-Add: document distalign
+		-Add: document autocrop
+
+	[draw_fontsel]
+		-Add: replace font button
+
+	[export_dxf]
+		-Del: retire the old dxf code - will be rewritten from scratch
+		-Add: new, lht based template for the base dxf as saved from librecad
+
+	[export_png]
+		-Change: switch over to the new composite HID API
+
+	[export_ps]
+		-Change: switch over ps output to the new composite API
+		-Change: switch over eps to the new drawing mode API - eps is incompatible with composite layers (lack of features in the postscript language)
+		-Fix: typo made composite layers empty
+		-Fix: proper max val for calib - let x and y calib take values between 0 and 2
+		-Fix: don't omit drill rings when drill helper is on
+		-Fix: when drawing outline on a drill layer (forced by user option), turn off global.is_drill temporarily to get the right colors
+
+	[export_svg]
+		-Change: switch over to the new draw mode HID API
+		-Fix: svg_rect() draws clipping properly
+		-Add: disable photo mode for composite (they are incompatible)
+
+	[font]
+		-Add: be able to replace font in place
+		-Add: be able to replace the default font, font #0
+
+	[fp]
+		-Add: accept footprint library search paths starting with '?' - means errors should be ignored
+		-Change: default config won't emit error on missing library path ../pcblib and ~/pcblib
+
+	[fp_fs]
+		-Fix: don't segfault on tag-looking empty constructs (##) in fp-looking files
+
+	[hid]
+		-API CHANGE: new hid render API with better support for rendering composite layers groups
+		-API CHANGE: new, Dynamic Attribute Dialog (DAD) API
+
+	[hid_gtk2_gdk]
+		-Update: Updated the GTK2 GTK HID to use the new HID API
+		-Fix: preview expose saves/restores the base canvas properly so that preview renders don't mix with the main window's
+		-Fix: typo: filled poly should make changes on the clip buffer when in composite draw
+		-Change: replace the mask based composite drawing code with the new composite API
+		-Cleanup: the pixel/clip naming conventions
+		-Cleanup: reorder priv struct members to group available canvases and currently active drawing settings
+		-Workaround: for the flashing subc border caused by xor draw in non-direct mode
+
+	[hid_gtk2_gl]
+		-Update: Updated the GTK2 GL HID to use the new HID API
+		-Fix: Respect the fullpoly flag when drawing polygons. Draws all poly parts, not just the largest one when the
+		-Fix: Poly islands within holes were not being drawn in fullpoly mode. Reordered the rendering operations so that
+		-Fix: Layer stackup window upside down. The view matrix is now set for each layer group as well as at the
+
+	[hid_lesstif]
+		-Change: update the mask rendering code for the new composite API
+		-Fix: make sure lesstif cli arg attributes are registered before arg parsing so that CLI args are accepted
+		-Fix: save all pixmaps when drawing dialogs (fixes lesstif dialogs crashes)
+		-Fix: swapped coordinates when panning in dialogs - pan works properly in dialogs even if the board is viewed from the solder side
+		-Fix: set proper background color for preview dialogs
+		-Fix: move blit-to-window code from SHOW_LEAVE to SHOW_DRAW (fixes dialog glitches at mouse events)
+		-Fix: save main_pixmap instead of pixmap (fixes pinout preview dialog)
+		-Fix: don't let scroll go too far from the board - avoids runtime lesstif warnings
+		-Add: support for the new attribute dialog features
+
+	[import_hpgl]
+		-Add: libuhpgl, a mini-lib for parsing HPGL
+		-Add: plugin to import lines and arcs from HPGL
+
+	[intconn]
+		-Fix: centralize the element-related so that pin-pad and pad-pin intconn would work too
+		-Fix: short eval code used the wrong check for nonetlist flag indicating intconn jumpers with pins shorted
+		-Fix: remove intconn from flags and make it a good old common struct field - for easier access and cleaner data structs; keep file format compatibility with .pcb, and lihata board v1 and v2
+		-Fix: do not set ->intconn directly, set the attribute instead and let the attribute post hook set the struct field; this will preserve intconn as an attribute on save
+
+	[io]
+		-Add: set conf node rc/paths/design to the directory path of the current design; this can be used in paths as substitutions using $()
+		-Fix: don't crash if the preferred IO plugin doesn't offer saving the footprint
+
+	[io_eagle]
+		-Fix: eagle layer 20 (dimension) [instead of 199 (contour)] now maps to pcb-rnd outline layer
+		-Add: reading in round/square/octagon pin/via flags in binary. Padstacks required for long/rounded.
+		-Add: support for rounded SMD pads. Pads now either square, or round. No roundrects possible yet
+
+	[io_lihata]
+		-Change: bump the priority of lihata v3 so it's the default save format now
+		-Fix: dummy node should be created with the name the caller requested, not hardwired "attributes"
+		-Fix: make sure to parse attributes after flags - attributes may effect flags
+		-Fix: don't attempt to save attributes of bound layers - they have none
+		-Fix: load the layer combination flag before doing the layer binding
+		-Fix: persistent save shouldn't crash if an in-memory text node has NULL value, it should inhibit saving that node instead
+		-Fix: always save layer's obejcts list, even if empty, so the persister can merge the lists
+		-Add: be able to load a subc as a footprint for editing
+		-Add: from version 3 save and load polygon clearance field
+		-Add: write_element hook in the v3 format - save subcircuits
+
+	[layer]
+		-Change: default layer group names should contain _ instead of space because group names potentially end up in file names and we don't like space in file name
+		-Change: default visibility turns off mask and paste layers - they are distractive 99% of the time
+		-Fix: loading a pcb into the buffer should convert real layers to bound layers - that's the only way a buffer can work
+		-Fix: update layer color cache on config change
+		-Fix: single negative silk renders properly
+		-Fix: don't consider a copper layer empty if it has only via/pin rings on it
+		-Add: attribute edition of the current layer in the layer popup menu
+		-Add: menu for buffer layer binding change
+
+	[lib_polyhelp]
+		-Add: PolyOffs() action that duplicates selected polygons with an offset on their size
+		-Add: ToPoly() action that converts any group of objects to a polygon
+
+	[mincut]
+		-Fix: corner case segfault (reported by barjac)
+
+	[openscad]
+		-Del: retire the original openscad exporter; full rewrite follows
+		-Add: rewrite from scratch; support board outline, silk, copper, mask and element models
+
+	[poly]
+		-Add: poly-poly clearance when CLEARPOLYPOLY is set
+
+	[propedit]
+		-Fix: display clearance as copper-to-copper gap width
+		-Add: force absoltue numeric value with a # prefix - useful for arc angles, e.g. #-90 means "value -90" instead of "decrease current value by 90"
+
+	[report]
+		-Fix: use uniform terminology for Clearance and arc width
+		-Add: subcircuit report
+
+	[tests/rtt]
+		-Fix: don't fail if convert(1) (and ImageMagick in general) is not installed
+		-Fix: make clean removes out/*/*
+		-Fix: when dealing with gerbers, don't ignore the drill (*.cnc) files
+		-Fix: remove all nelma png files - not going to compare them
+		-Move: validation helpers into a separate dir to reduce number of files in main dir
+		-Add: composite silk test input
+
+	[rubberband]
+		-Update: Lines must be connected exactly by endpoints to other line endpoints to be considered for rubberbanding
+		-Fix: rubber band keeps middle line dir now snaps to grid, undo works and fixed artifacts when moving line
+		-Fix: Don't keep middle-line dir if the middle line is parallel to any of the rubber lines
+		-Fix: keep middle-line dir would access the rubberband lines before it had established that there are at least 2 rubber lines. caused a crash
+
+	[safe_fs]
+		-Add: safe_fs API for wrapping all file and process access
+		-Add: privisions for regex based rules to deny access
+		-Add: API for opening a file with path substitution
+		-Add: API for searching for a file to open recursively under a directory
+		-Add: pcb_strdup_subst() can replace leading ~ with the user's HOME
+		-Add: leading '?' in a search path means optional (don't throw error if doesn't exist)
+		-Cleanup: unify the support of % and $() replacement in paths
+
+	[scconfig]
+		-Fix: BadWindow bug of hid_lesstif (force-order -lXm before -lXt)
+		-Add: link-time error for using strcasecmp directly or bypassing safe_fs
+		-Add: --force-all to override developer's decision whether a plugin is broken
+
+	[subc]
+		-Change: subc parent API change: don't return int but the parent subc - same for comparison, but more universally usable for other purposes
+		-Fix: don't lose layer combining flag when copying subc from buffer to board
+		-Fix: when loading subc into buffer, properly set up buffer offsets so that subc origin is the same as the buffer's origin
+		-Fix: flip subc when placing on the bottom side
+		-Add: subc terminals that interact with netlist
+		-Add: understand the refdes attribute; print refdes on the subc layer
+		-Add: gui action for editing attributes of a subc
+		-Add: teach fp_fs to accept subcircuits as footpritns
+		-Add: subcircuit build the layer binding dialog
+		-Add: lock tool works on subc
+		-Add: a subcircuit file can be open for editing, as a footprit file
+		-Add: make sure element smash -> convert buffer to subc path preserves as many element features as possible
+		-Add: poly-vs-poly clearance infra (required for subc terminals)
+
+	[tests]
+		-Update: conftest for the new conf_update API
+
+	[text]
+		-Add: new text flag: dynamic string in text (to permit % substitution)
+		-Add: %a.parent.*% parent attribute subsitution
+
+	[undo]
+		-Cleanup: move undo action related call prototypes in a separate header to match the separate .c
+		-Clenaup: move out slot field free code from the slot allocation code (slot allocation will be genealized)
+		-Del: remove local undo list implementation, switch over to libuundo
+		-Add: dynamic, variable size payload on allocation
+
+	[util]
+		-Add: bisect helper script
+		-Add: menu2svg: draw the menu system using graphviz
+		-Add: fp2subc: convert footprint from the old pcb format to subcircuit
+
+	[vendordrill]
+		-Fix: missing else made the loader think /drillmap is not a list
+		-Fix: broken printout units; use %ml for mil instead of manual conversion
+		-Fix: replace all %f with %ml for coordinate prints
+
+
 pcb-rnd 1.2.5b (r10635+bakcports)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	- Fix: import pcb into paste buffer layer binding bug
