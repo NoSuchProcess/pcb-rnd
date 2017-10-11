@@ -2,6 +2,7 @@
 
 
 2. For later releases ===============================================================================
+- cleanup: remove PCB_HATT_MIXED
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 - BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
 - BUG: poly-poly term clearance in the same group, but different layer fails:
