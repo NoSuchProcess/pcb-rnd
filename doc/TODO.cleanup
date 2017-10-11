@@ -1,7 +1,6 @@
-- remove vtptr.c, use stock vtp0
 - rename:
 	- Note
 	- GetObjectBoundingBox
 - centralize pcb_gui->attribute_dialog()
 - replace return (*) with return *
-- remove ocb board Zoom/x/y, move the drc stuff to config
+- remove pcb board Zoom/x/y, move the drc stuff to config
