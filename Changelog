@@ -1,4 +1,4 @@
-pcb-rnd 1.2.6 (r11986)
+pcb-rnd 1.2.6 (r11992)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[core]
 		-API CHANGE: the attribute system requires unique keys per attribte list; this will keep things concistent as the code used to silently ignore redundant attributes
