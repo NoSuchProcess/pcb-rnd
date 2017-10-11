@@ -11,7 +11,7 @@
 #include "compat_misc.h"
 #include "data.h"
 #include "buffer.h"
-#include "vtptr.h"
+#include <genvector/vtp0.h>
 #include "plug_footprint.h"
 
 #include "hid.h"
@@ -26,8 +26,8 @@ static XmString *library_strings = 0;
 static XmString *libnode_strings = 0;
 static int last_pick = -1;
 
-vtptr_t picks;      /* of pcb_fplibrary_t * */
-vtptr_t pick_names; /* of char * */
+vtp0_t picks;      /* of pcb_fplibrary_t * */
+vtp0_t pick_names; /* of char * */
 
 static void pick_net(int pick)
 {
@@ -112,12 +112,12 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 		return;
 
 	if (parent->name != NULL) {
-		vtptr_append(&picks, parent);
+		vtp0_append(&picks, parent);
 		len = strlen(parent->name);
 		s = malloc(len+level+1);
 		for(n = 0; n < level-1; n++) s[n] = ' ';
 		strcpy(s+level-1, parent->name);
-		vtptr_append(&pick_names, s);
+		vtp0_append(&pick_names, s);
 	}
 
 	for(l = parent->data.dir.children.array, n = 0; n < parent->data.dir.children.used; n++,l++)
@@ -136,8 +136,8 @@ void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	for (i = 0; i < pick_names.used; i++)
 		free(pick_names.array[i]);
 
-	vtptr_truncate(&picks, 0);
-	vtptr_truncate(&pick_names, 0);
+	vtp0_truncate(&picks, 0);
+	vtp0_truncate(&pick_names, 0);
 
 	lib_dfs(&pcb_library, 0);
 

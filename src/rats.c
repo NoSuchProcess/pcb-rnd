@@ -45,7 +45,7 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "compat_nls.h"
-#include "vtptr.h"
+#include <genvector/vtp0.h>
 #include "obj_rat_draw.h"
 #include "obj_term.h"
 #include "obj_subc_parent.h"
@@ -359,7 +359,7 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *De
 	memset(&Netl->Net[Netl->NetN], 0, sizeof(pcb_net_t));
 }
 
-static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *generic, pcb_lib_menu_t *theNet, void **menu)
+static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtp0_t *generic, pcb_lib_menu_t *theNet, void **menu)
 {
 	pcb_bool newone;
 	int i;
@@ -372,7 +372,7 @@ static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *g
 	}
 
 	newone = pcb_true;
-	for(i = 0; i < vtptr_len(generic); i++) {
+	for(i = 0; i < vtp0_len(generic); i++) {
 		if (generic->array[i] == term->ratconn) {
 			newone = pcb_false;
 			break;
@@ -380,7 +380,7 @@ static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *g
 	}
 
 	if (newone) {
-		menu = vtptr_alloc_append(generic, 1);
+		menu = vtp0_alloc_append(generic, 1);
 		*menu = term->ratconn;
 		pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 						&theNet->Name[2], &((pcb_lib_menu_t *) (term->ratconn))->Name[2]);
@@ -389,7 +389,7 @@ static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtptr_t *g
 	return menu;
 }
 
-static void **find_shorts_in_subc(pcb_subc_t *subc_in, vtptr_t *generic, pcb_lib_menu_t *theNet, void **menu, pcb_bool *warn)
+static void **find_shorts_in_subc(pcb_subc_t *subc_in, vtp0_t *generic, pcb_lib_menu_t *theNet, void **menu, pcb_bool *warn)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc_in))
 		return menu;
@@ -461,14 +461,14 @@ static void **find_shorts_in_subc(pcb_subc_t *subc_in, vtptr_t *generic, pcb_lib
 static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 {
 	pcb_bool warn = pcb_false;
-	vtptr_t generic;
+	vtp0_t generic;
 	/* the first connection was starting point so
 	 * the menu is always non-null
 	 */
 	void **menu;
 
-	vtptr_init(&generic);
-	menu = vtptr_alloc_append(&generic, 1);
+	vtp0_init(&generic);
+	menu = vtp0_alloc_append(&generic, 1);
 	*menu = theNet;
 	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
@@ -495,7 +495,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 		menu = find_shorts_in_subc(subc, &generic, theNet, menu, &warn);
 	}
 	PCB_END_LOOP;
-	vtptr_uninit(&generic);
+	vtp0_uninit(&generic);
 	return (warn);
 }
 

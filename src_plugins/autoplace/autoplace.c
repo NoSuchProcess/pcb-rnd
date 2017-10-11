@@ -59,7 +59,7 @@
 #include "obj_pinvia.h"
 #include "obj_rat.h"
 #include "board.h"
-#include "vtptr.h"
+#include <genvector/vtp0.h>
 
 
 #define EXPANDRECTXY(r1, x1, y1, x2, y2) { \
@@ -173,15 +173,15 @@ static void UpdateXY(pcb_netlist_t *Nets)
 /* ---------------------------------------------------------------------------
  * Create a list of selected elements.
  */
-static vtptr_t collectSelectedElements()
+static vtp0_t collectSelectedElements()
 {
-	vtptr_t list;
+	vtp0_t list;
 
-	vtptr_init(&list);
+	vtp0_init(&list);
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
-			pcb_element_t **epp = (pcb_element_t **)vtptr_alloc_append(&list, 1);
+			pcb_element_t **epp = (pcb_element_t **)vtp0_alloc_append(&list, 1);
 			*epp = element;
 		}
 	}
@@ -456,7 +456,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	 * aligning to something far away isn't profitable */
 	{
 		/* create r tree */
-		vtptr_t seboxes, ceboxes;
+		vtp0_t seboxes, ceboxes;
 		struct ebox {
 			pcb_box_t box;
 			pcb_element_t *element;
@@ -466,12 +466,12 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		pcb_rtree_t *rt_s, *rt_c;
 		int factor;
 
-		vtptr_init(&seboxes);
-		vtptr_init(&ceboxes);
+		vtp0_init(&seboxes);
+		vtp0_init(&ceboxes);
 
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
-			boxpp = (struct ebox **) vtptr_alloc_append(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? &seboxes : &ceboxes, 1);
+			boxpp = (struct ebox **) vtp0_alloc_append(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? &seboxes : &ceboxes, 1);
 			*boxpp = (struct ebox *) malloc(sizeof(**boxpp));
 			if (*boxpp == NULL) {
 				fprintf(stderr, "malloc() failed in ComputeCost\n");
@@ -482,10 +482,10 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			(*boxpp)->element = element;
 		}
 		PCB_END_LOOP;
-		rt_s = pcb_r_create_tree((const pcb_box_t **) seboxes.array, vtptr_len(&seboxes), 1);
-		rt_c = pcb_r_create_tree((const pcb_box_t **) ceboxes.array, vtptr_len(&ceboxes), 1);
-		vtptr_uninit(&seboxes);
-		vtptr_uninit(&ceboxes);
+		rt_s = pcb_r_create_tree((const pcb_box_t **) seboxes.array, vtp0_len(&seboxes), 1);
+		rt_c = pcb_r_create_tree((const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes), 1);
+		vtp0_uninit(&seboxes);
+		vtp0_uninit(&ceboxes);
 		/* now, for each element, find its neighbor on all four sides */
 		delta4 = 0;
 		for (i = 0; i < 4; i++)
@@ -550,13 +550,13 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
  *     (magnitude of shift decreases over time)
  *  -- Only perturb selected elements (need count/list of selected?) --
  */
-PerturbationType createPerturbation(vtptr_t *selected, double T)
+PerturbationType createPerturbation(vtp0_t *selected, double T)
 {
 	PerturbationType pt = { 0 };
 	/* pick element to perturb */
-	pt.element = (pcb_element_t *) selected->array[pcb_rand() % vtptr_len(selected)];
+	pt.element = (pcb_element_t *) selected->array[pcb_rand() % vtp0_len(selected)];
 	/* exchange, flip/rotate or shift? */
-	switch (pcb_rand() % ((vtptr_len(selected) > 1) ? 3 : 2)) {
+	switch (pcb_rand() % ((vtp0_len(selected) > 1) ? 3 : 2)) {
 	case 0:
 		{														/* shift! */
 			pcb_coord_t grid;
@@ -591,9 +591,9 @@ PerturbationType createPerturbation(vtptr_t *selected, double T)
 		{														/* exchange! */
 			pt.which = EXCHANGE;
 			pt.other = (pcb_element_t *)
-				selected->array[pcb_rand() % (vtptr_len(selected) - 1)];
+				selected->array[pcb_rand() % (vtp0_len(selected) - 1)];
 			if (pt.other == pt.element)
-				pt.other = (pcb_element_t *) selected->array[vtptr_len(selected) - 1];
+				pt.other = (pcb_element_t *) selected->array[vtp0_len(selected) - 1];
 			/* don't allow exchanging a solderside-side SMD component
 			 * with a non-SMD component. */
 			if ((pinlist_length(&(pt.element->Pin)) != 0 /* non-SMD */  &&
@@ -675,12 +675,12 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 pcb_bool AutoPlaceSelected(void)
 {
 	pcb_netlist_t *Nets;
-	vtptr_t Selected;
+	vtp0_t Selected;
 	PerturbationType pt;
 	double C0, T0;
 	pcb_bool changed = pcb_false;
 
-	vtptr_init(&Selected);
+	vtp0_init(&Selected);
 
 	/* (initial netlist processing copied from AddAllRats) */
 	/* the netlist library has the text form
@@ -695,7 +695,7 @@ pcb_bool AutoPlaceSelected(void)
 	}
 
 	Selected = collectSelectedElements();
-	if (vtptr_len(&Selected) == 0) {
+	if (vtp0_len(&Selected) == 0) {
 		pcb_message(PCB_MSG_ERROR, _("No elements selected to autoplace.\n"));
 		goto done;
 	}
@@ -721,7 +721,7 @@ pcb_bool AutoPlaceSelected(void)
 		double T = T0;
 		long steps = 0;
 		int good_moves = 0, moves = 0;
-		const int good_move_cutoff = CostParameter.m * vtptr_len(&Selected);
+		const int good_move_cutoff = CostParameter.m * vtp0_len(&Selected);
 		const int move_cutoff = 2 * good_move_cutoff;
 		printf("Starting cost is %.0f\n", ComputeCost(Nets, T0, 5));
 		C0 = ComputeCost(Nets, T0, T);
@@ -764,6 +764,6 @@ done:
 		pcb_rat_add_all(pcb_false, NULL);
 		pcb_redraw();
 	}
-	vtptr_uninit(&Selected);
+	vtp0_uninit(&Selected);
 	return (changed);
 }

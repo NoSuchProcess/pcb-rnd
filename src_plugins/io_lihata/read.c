@@ -40,7 +40,7 @@
 #include "error.h"
 #include "misc_util.h"
 #include "layer.h"
-#include "vtptr.h"
+#include <genvector/vtp0.h>
 #include "common.h"
 #include "polygon.h"
 #include "conf_core.h"
@@ -51,7 +51,7 @@
 #include "safe_fs.h"
 
 #warning cleanup TODO: put these in a gloal load-context-struct
-vtptr_t post_ids, post_thermal;
+vtp0_t post_ids, post_thermal;
 static int rdver;
 
 static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent);
@@ -61,7 +61,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
    known-IDs are allocated, the unknonw-ID objects are allocated a fresh
    ID. This makes sure they don't occupy IDs that would be used by known-ID
    objects during the load. */
-#define post_id_req(obj) vtptr_append(&post_ids, &((obj)->ID))
+#define post_id_req(obj) vtp0_append(&post_ids, &((obj)->ID))
 
 static int parse_attributes(pcb_attribute_list_t *list, lht_node_t *nd)
 {
@@ -298,11 +298,11 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
    data set to the flag. Look up layer info and fill in thermal flags. This
    needs to be done in a separate pass at the end of parsing because
    vias may precede layers in the lihata input file. */
-static int post_thermal_assign(vtptr_t *pt)
+static int post_thermal_assign(vtp0_t *pt)
 {
 	int i;
 
-	for(i = 0; i < vtptr_len(pt); i++) {
+	for(i = 0; i < vtp0_len(pt); i++) {
 		lht_node_t *n;
 		lht_dom_iterator_t it;
 		io_lihata_flag_holder fh;
@@ -323,7 +323,7 @@ static int post_thermal_assign(vtptr_t *pt)
 		}
 		*f = fh.Flags;
 	}
-	vtptr_uninit(pt);
+	vtp0_uninit(pt);
 	return 0;
 }
 
@@ -350,7 +350,7 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 		thr = lht_dom_hash_get(fn, "thermal");
 		if (thr != NULL) {
 			thr->user_data = f;
-			vtptr_append(&post_thermal, thr);
+			vtp0_append(&post_thermal, thr);
 		}
 
 		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
@@ -1139,14 +1139,14 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 }
 
 
-static void post_ids_assign(vtptr_t *ids)
+static void post_ids_assign(vtp0_t *ids)
 {
 	int n;
-	for(n = 0; n < vtptr_len(ids); n++) {
+	for(n = 0; n < vtp0_len(ids); n++) {
 		long int *id = ids->array[n];
 		*id = pcb_create_ID_get();
 	}
-	vtptr_uninit(ids);
+	vtp0_uninit(ids);
 }
 
 static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
@@ -1300,8 +1300,8 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 
 
-	vtptr_init(&post_ids);
-	vtptr_init(&post_thermal);
+	vtp0_init(&post_ids);
+	vtp0_init(&post_thermal);
 
 	memset(&pcb->LayerGroups, 0, sizeof(pcb->LayerGroups));
 

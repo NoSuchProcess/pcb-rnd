@@ -145,7 +145,6 @@ put /local/pcb/OBJS [@
 	unit.o
 	vtlibrary.o
 	vtonpoint.o
-	vtptr.o
 	vtroutestyle.o
 	buildin.o
 	../src_3rd/liblihata/parser.o
