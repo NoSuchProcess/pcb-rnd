@@ -352,7 +352,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
-			do_enum:
 				combo = gtkc_combo_box_text_new();
 				gtk_widget_set_tooltip_text(combo, ctx->attrs[j].help_text);
 				gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
