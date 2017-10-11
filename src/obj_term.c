@@ -34,6 +34,7 @@
 #include "obj_subc_parent.h"
 #include "pcb-printf.h"
 #include "undo.h"
+#include "polygon.h"
 
 static const char core_term_cookie[] = "core-term";
 
@@ -217,7 +218,7 @@ static int undo_term_rename_swap(void *udata)
 		pcb_attribute_remove(&r->obj->Attributes, "term");
 
 	if (r->obj->type == PCB_OBJ_POLYGON)
-		pcb_poly_init_clip(r->obj->parent.layer->parent, r->obj->parent.layer, r->obj);
+		pcb_poly_init_clip(r->obj->parent.layer->parent, r->obj->parent.layer, (pcb_polygon_t *)r->obj);
 
 	return res;
 }
@@ -269,7 +270,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 	undo_term_rename_swap(r);
 
 	if (obj->type == PCB_OBJ_POLYGON)
-		pcb_poly_init_clip(obj->parent.layer->parent, obj->parent.layer, obj);
+		pcb_poly_init_clip(obj->parent.layer->parent, obj->parent.layer, (pcb_polygon_t *)obj);
 
 	pcb_undo_inc_serial();
 	return PCB_TERM_ERR_SUCCESS;
