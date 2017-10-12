@@ -96,6 +96,7 @@ static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
 
 	memcpy(&dst->meta, &src->meta, sizeof(src->meta));
+	dst->is_bound = 1;
 	dst->comb = src->comb;
 	dst->grp = -1;
 	dst->parent = sc->data;
@@ -573,6 +574,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		gdl_iterator_t it;
 
 		/* bind layer/resolve layers */
+			dl->is_bound = 1;
 		if ((pcb != NULL) && (pcb == src_pcb)) {
 			/* copy within the same board */
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));

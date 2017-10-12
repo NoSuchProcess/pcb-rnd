@@ -677,6 +677,8 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	dst->grp = src->grp;
 	dst->comb = src->comb;
 
+	dst->is_bound = 1;
+
 	if (PCB_LAYER_IS_REAL(src)) {
 		dst->meta.bound.real = src;
 		if (share_rtrees)
@@ -714,6 +716,8 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 	int l, score, best_score = 0;
 	pcb_layergrp_id_t gid;
 	pcb_layer_t *best = NULL;
+
+	assert(src->is_bound);
 
 	/* look up the layer group; for internal copper this means counting the offset */
 	if ((src->meta.bound.type & PCB_LYT_INTERN) && (src->meta.bound.type & PCB_LYT_COPPER) && (src->meta.bound.stack_offs != 0)) {
@@ -763,6 +767,7 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	pcb_layer_t *lay = &data->Layer[data->LayerN++];
 
 	memset(lay, 0, sizeof(pcb_layer_t));
+	lay->is_bound = 1;
 	lay->meta.bound.name = pcb_strdup(name);
 	lay->meta.bound.type = type;
 	lay->grp = -1;

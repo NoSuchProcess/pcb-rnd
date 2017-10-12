@@ -629,6 +629,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	}
 
 	if (bound) {
+		ly->is_bound = 1;
 		ly->meta.bound.name = pcb_strdup(grp->name);
 		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
 		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, lht_dom_hash_get(grp, "type"), "bound layer");
@@ -809,6 +810,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 {
 	pcb_subc_t *sc = pcb_subc_alloc();
 	unsigned char intconn = 0;
+	int n;
 
 	parse_id(&sc->ID, obj, 5);
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, &intconn);
@@ -823,6 +825,9 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	pcb_add_subc_to_data(dt, sc);
 
 	parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt);
+
+	for(n = 0; n < sc->data->LayerN; n++)
+		sc->data->Layer[n].is_bound = 1;
 
 	pcb_data_bbox(&sc->BoundingBox, sc->data);
 

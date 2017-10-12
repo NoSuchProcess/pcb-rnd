@@ -129,6 +129,8 @@ struct pcb_layer_s {              /* holds information about one layer */
 			pcb_layer_id_t user_lid;
 		} bound;
 	} meta;
+
+	unsigned is_bound:1;
 };
 
 #define PCB_LAYER_IS_REAL(layer) \
