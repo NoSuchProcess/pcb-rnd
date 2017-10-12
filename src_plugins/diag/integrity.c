@@ -160,6 +160,9 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 		pcb_text_t *txt;
 		pcb_polygon_t *pol;
 
+		if (!ly->is_bound)
+			pcb_message(PCB_MSG_ERROR, CHK "%ld subc layer %ld is not a bound layer\n", subc->ID, n);
+
 		for(lin = linelist_first(&ly->Line); lin != NULL; lin = linelist_next(lin))
 			chk_term("line", (pcb_any_obj_t *)lin);
 
