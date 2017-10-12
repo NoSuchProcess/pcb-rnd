@@ -1,4 +1,5 @@
 1. For the upcoming release ===============================================================================
+- BUG: load board (that contains subc) to buffer, paste -> subc layers are not rebound to the new board! [report: jg, Else]
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 - BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
 - BUG: poly-poly term clearance in the same group, but different layer fails:
