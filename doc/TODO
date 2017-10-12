@@ -1,7 +1,4 @@
 1. For the upcoming release ===============================================================================
-
-
-2. For later releases ===============================================================================
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 - BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
 - BUG: poly-poly term clearance in the same group, but different layer fails:
@@ -19,7 +16,7 @@
 	- see also: import layout to buffer from lihata, without the TODO#5 in io_lihata and core)
 	- after this check that nobody should access ->type directly!
 	- check if loading a board to paste buffer with subcs on it still causes an assert
-- subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
+- BUG: csect can't make a layer outline
 - BUGS:
 	- parametric footprint dialog cancel reopens the dialog? [report: Alain]
 - BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
@@ -42,6 +39,10 @@
 - BUG: missing subc snap:
 	- polygon pad center snap [report: jg]
 	- subc centroid/origin snap [report: jg]
+
+
+2. For later releases ===============================================================================
+- subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
 - feautres/cleanup: hid:
 	- "erase" color:
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
@@ -57,7 +58,6 @@
 - Rubberband Arcs:
 	- Moving arc endpoints in rubberband mode doesn't move connected lines correctly so they become detached. [Fixing:Ade]
 	- Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- bug: csect can't make a layer outline
 - fontsel: ttf import?
 - library window: allow long tags and long location text to split
 - undo on new layer from right-click menu in gtk layersel doesn't work
