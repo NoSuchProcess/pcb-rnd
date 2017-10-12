@@ -448,9 +448,47 @@ static void XORDrawMoveOrCopy(void)
 		}
 
 	case PCB_TYPE_ARC_POINT:
-		pcb_arc_ui_move_or_copy(&pcb_crosshair);
-		event_sent = 1;
-		break;
+		{
+			pcb_arc_t arc = *((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
+			pcb_coord_t ox1,ox2,oy1,oy2;
+			pcb_coord_t nx1,nx2,ny1,ny2;
+
+			/* Get the initial position of the arc point */
+			pcb_arc_get_end(&arc,0, &ox1, &oy1);
+			pcb_arc_get_end(&arc,1, &ox2, &oy2);
+
+			/* Update the attached arc point */
+			pcb_arc_ui_move_or_copy(&pcb_crosshair);
+
+			/* Update our local arc copy from the attached object */
+			if(pcb_crosshair.AttachedObject.radius != 0) {
+				arc.Width   = pcb_crosshair.AttachedObject.radius;
+				arc.Height  = pcb_crosshair.AttachedObject.radius;
+			}
+			else {
+				arc.StartAngle  = pcb_crosshair.AttachedObject.start_angle;
+				arc.Delta       = pcb_crosshair.AttachedObject.delta_angle;
+			}
+
+			pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
+
+			/* Draw the DRC outline if it is enabled */
+			if (conf_core.editor.show_drc) {
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+				arc.Thickness += 2 * (PCB->Bloat + 1);
+				pcb_draw_wireframe_arc(pcb_crosshair.GC,&arc);
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+			}
+
+			/* Get the new arc point positions, calculate the movement deltas and send them 
+			 * in a rubber_move_draw event */
+			pcb_arc_get_end(&arc,0, &nx1, &ny1);
+			pcb_arc_get_end(&arc,1, &nx2, &ny2);
+
+			pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1,ny1-oy1,nx2-ox2,ny2-oy2);
+			event_sent = 1;
+			break;
+		}
 
 	case PCB_TYPE_POLYGON_POINT:
 		{
