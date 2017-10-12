@@ -12,7 +12,7 @@
 		- send it to back side, drag&drop move again
 		- -> assert
 		- may be related to bottom side implicit layers: binding fails there
-- BUG: whether a layer is bound or not should be an explicit flag, guessing it from the parents seem to be too fragile
++ BUG: whether a layer is bound or not should be an explicit flag, guessing it from the parents seem to be too fragile
 	- see also: import layout to buffer from lihata, without the TODO#5 in io_lihata and core)
 	- after this check that nobody should access ->type directly!
 	- check if loading a board to paste buffer with subcs on it still causes an assert
