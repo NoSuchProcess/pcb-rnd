@@ -63,7 +63,7 @@ pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layergrp_t *grp)
 
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
-	if (PCB_LAYER_IS_REAL(Layer))
+	if (!Layer->is_bound)
 		return Layer->grp;
 
 	if (Layer->meta.bound.real == NULL) /* bound layer without a binding */

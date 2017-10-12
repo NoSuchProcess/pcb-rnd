@@ -1352,7 +1352,8 @@ int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_polygon_t * p)
 
 	if (inhibit)
 		return 0;
-	if (!PCB_LAYER_IS_REAL(layer))
+#warning layer TODO#5
+	if (layer->is_bound)
 		layer = layer->meta.bound.real;
 	if (layer == NULL)
 		return 0;

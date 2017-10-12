@@ -210,14 +210,14 @@ void pcb_data_free(pcb_data_t * data)
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
 	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++) {
-		if (PCB_LAYER_IS_REAL(layer))
+		if (!layer->is_bound)
 			pcb_attribute_free(&layer->meta.real.Attributes);
 		PCB_TEXT_LOOP(layer);
 		{
 			free(text->TextString);
 		}
 		PCB_END_LOOP;
-		if (PCB_LAYER_IS_REAL(layer))
+		if (!layer->is_bound)
 			free((char*)layer->meta.real.name);
 		else
 			free((char*)layer->meta.bound.name);
@@ -237,7 +237,7 @@ void pcb_data_free(pcb_data_t * data)
 		}
 		PCB_END_LOOP;
 		list_map0(&layer->Polygon, pcb_polygon_t, pcb_poly_free);
-		if (PCB_LAYER_IS_REAL(layer)) {
+		if (!layer->is_bound) {
 			if (layer->line_tree)
 				pcb_r_destroy_tree(&layer->line_tree);
 			if (layer->arc_tree)

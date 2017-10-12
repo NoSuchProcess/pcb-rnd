@@ -558,7 +558,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 
 	obj = lht_dom_node_alloc(LHT_HASH, layer->meta.real.name);
 
-	if (PCB_LAYER_IS_REAL(layer)) {
+	if (!layer->is_bound) {
 		lht_dom_hash_put(obj, build_text("visible", layer->meta.real.vis ? "1" : "0"));
 		lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
 	}
@@ -576,7 +576,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 			pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
 	}
 
-	if (PCB_LAYER_IS_REAL(layer))
+	if (!layer->is_bound)
 		lht_dom_hash_put(obj, build_attributes(&layer->meta.real.Attributes));
 
 	if (wrver >= 2) {

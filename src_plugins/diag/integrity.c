@@ -45,7 +45,7 @@
 
 #define chk_layer_attr(ly) \
 	do { \
-		if (PCB_LAYER_IS_REAL(ly)) { \
+		if (!(ly)->is_bound) { \
 			if (((ly)->meta.real.Attributes.Number > 0) && ((ly)->meta.real.Attributes.List == NULL)) \
 				pcb_message(PCB_MSG_ERROR, CHK "%s layer %s broken empty attribute list\n", whose, (ly)->meta.real.name); \
 		} \

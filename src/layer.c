@@ -166,7 +166,7 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 
 	if (Layer->parent != Data) {
 		/* the only case this makes sense is when we are resolving a bound layer */
-		if ((!PCB_LAYER_IS_REAL(Layer)) && (Layer->meta.bound.real != NULL))
+		if ((Layer->is_bound) && (Layer->meta.bound.real != NULL))
 			return pcb_layer_id(Data, Layer->meta.bound.real);
 		assert(!"pcb_layer_id: invalid layer id for bound layer - pelase report this bug");
 		return -1;
@@ -212,7 +212,7 @@ unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx)
 unsigned int pcb_layer_flags_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
-	if (PCB_LAYER_IS_REAL(layer)) {
+	if (!layer->is_bound) {
 		pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
 
 		if (lid < 0)
@@ -369,7 +369,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 {
-	if (PCB_LAYER_IS_REAL(&PCB->Data->Layer[layer])) {
+	if (!PCB->Data->Layer[layer].is_bound) {
 		free((char *)PCB->Data->Layer[layer].meta.real.name);
 		PCB->Data->Layer[layer].meta.real.name = pcb_strdup(lname);
 	}
@@ -413,7 +413,7 @@ static int is_last_bottom_copper_layer(int layer)
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
 #warning cleanup TODO: duplicate of pcb_layer_rename()?
-	if (PCB_LAYER_IS_REAL(Layer)) {
+	if (!Layer->is_bound) {
 		free((char*)Layer->meta.real.name);
 		Layer->meta.real.name = Name;
 	}
@@ -679,7 +679,7 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 
 	dst->is_bound = 1;
 
-	if (PCB_LAYER_IS_REAL(src)) {
+	if (!src->is_bound) {
 		dst->meta.bound.real = src;
 		if (share_rtrees)
 			pcb_layer_link_trees(dst, src);
