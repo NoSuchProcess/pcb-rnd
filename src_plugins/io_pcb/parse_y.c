@@ -2240,9 +2240,9 @@ yyreduce:
 				Layer->parent = yyData;
 
 					/* memory for name is already allocated */
-				if (Layer->meta.real.name != NULL)
-					free((char*)Layer->meta.real.name);
-				Layer->meta.real.name = (yyvsp[-3].string);   /* shouldn't this be strdup()'ed ? */
+				if (Layer->name != NULL)
+					free((char*)Layer->name);
+				Layer->name = (yyvsp[-3].string);   /* shouldn't this be strdup()'ed ? */
 				LayerFlag[(yyvsp[-4].integer)-1] = pcb_true;
 				if (yyData->LayerN < (yyvsp[-4].integer))
 				  yyData->LayerN = (yyvsp[-4].integer);

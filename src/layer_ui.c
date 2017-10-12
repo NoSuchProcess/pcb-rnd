@@ -53,7 +53,7 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 found:;
 	l->meta.real.cookie = cookie;
 	l->meta.real.color = color;
-	l->meta.real.name = name;
+	l->name = name;
 	l->meta.real.vis = 1;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return l;
@@ -67,7 +67,7 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 		if (l->meta.real.cookie == cookie) {
 #warning TODO: free all objects
 			l->meta.real.cookie = NULL;
-			l->meta.real.color = l->meta.real.name = NULL;
+			l->meta.real.color = l->name = NULL;
 			l->meta.real.vis = 0;
 			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		}

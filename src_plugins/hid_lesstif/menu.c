@@ -164,8 +164,8 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 
 			stdarg_n = 0;
-			if (i < PCB_MAX_LAYER && PCB->Data->Layer[i].meta.real.name) {
-				XmString s = XmStringCreatePCB(PCB->Data->Layer[i].meta.real.name);
+			if (i < PCB_MAX_LAYER && PCB->Data->Layer[i].name) {
+				XmString s = XmStringCreatePCB(PCB->Data->Layer[i].name);
 				stdarg(XmNlabelString, s);
 			}
 			if (!lb->is_pick) {
@@ -201,7 +201,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			name = "Silk";
 			break;
 		default:
-			name = PCB->Data->Layer[current_layer].meta.real.name;
+			name = PCB->Data->Layer[current_layer].name;
 			break;
 		}
 		stdarg_n = 0;
@@ -317,7 +317,7 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 		name = "Silk";
 		break;
 	default:
-		name = PCB->Data->Layer[layer].meta.real.name;
+		name = PCB->Data->Layer[layer].name;
 		break;
 	}
 	stdarg_n = 0;

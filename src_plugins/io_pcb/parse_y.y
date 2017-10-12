@@ -893,9 +893,9 @@ layer
 				Layer->parent = yyData;
 
 					/* memory for name is already allocated */
-				if (Layer->meta.real.name != NULL)
-					free((char*)Layer->meta.real.name);
-				Layer->meta.real.name = $4;   /* shouldn't this be strdup()'ed ? */
+				if (Layer->name != NULL)
+					free((char*)Layer->name);
+				Layer->name = $4;   /* shouldn't this be strdup()'ed ? */
 				LayerFlag[$3-1] = pcb_true;
 				if (yyData->LayerN < $3)
 				  yyData->LayerN = $3;

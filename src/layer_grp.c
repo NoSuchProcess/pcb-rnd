@@ -487,7 +487,7 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 }
 
 
-#define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].meta.real.name != NULL) && ((strcmp(pcb->Data->Layer[idx].meta.real.name, "route") == 0 || strcmp(pcb->Data->Layer[(idx)].meta.real.name, "outline") == 0)))
+#define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].name != NULL) && ((strcmp(pcb->Data->Layer[idx].name, "route") == 0 || strcmp(pcb->Data->Layer[(idx)].name, "outline") == 0)))
 int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int LayerN, int oldfmt)
 {
 	const char *s, *start;
@@ -777,7 +777,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
 			grp->type = PCB_LYT_OUTLINE | PCB_LYT_INTERN;
 			grp->name = pcb_strdup("outline");
-			pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->meta.bound.name);
+			pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->name);
 			continue;
 		}
 
@@ -785,20 +785,20 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		if (ly->meta.bound.type & PCB_LYT_COPPER) { /* top or bottom copper */
 			grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, PCB_LYT_COPPER);
 			if (grp != NULL) {
-				pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->meta.bound.name);
+				pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->name);
 				continue;
 			}
 		}
 
 		grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, ly->meta.bound.type & PCB_LYT_ANYTHING);
 		if (grp != NULL) {
-			pcb_layer_id_t lid = pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->meta.bound.name);
+			pcb_layer_id_t lid = pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->name);
 			pcb_layer_t *nly = pcb_get_layer(lid);
 			nly->comb = ly->comb;
 			continue;
 		}
 
-		pcb_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->meta.bound.name);
+		pcb_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->name);
 	}
 
 	if (want_intern > existing_intern) {
@@ -822,9 +822,9 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 /*pcb_trace("offs: %d (%d) == %d\n", offs, existing_intern + offs + 1, int_ofs);*/
 						if (offs < 0)
 							offs = existing_intern + offs + 1;
-						if ((offs == int_ofs) && (ly->meta.bound.name != NULL)) {
+						if ((offs == int_ofs) && (ly->name != NULL)) {
 							pcb->LayerGroups.grp[n].name = pcb_strdup("internal");
-							pcb_layer_create(n, ly->meta.bound.name);
+							pcb_layer_create(n, ly->name);
 							goto found;
 						}
 					}

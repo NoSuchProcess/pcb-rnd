@@ -508,9 +508,9 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	pcb_polygon_t *polygon;
 
 	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) || (layer->meta.real.name && *layer->meta.real.name)) {
+	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
-		pcb_print_quoted_string(FP, layer_name_hack(layer, PCB_EMPTY(layer->meta.real.name)));
+		pcb_print_quoted_string(FP, layer_name_hack(layer, PCB_EMPTY(layer->name)));
 		fputs(")\n(\n", FP);
 		WriteAttributeList(FP, &layer->meta.real.Attributes, "\t");
 
@@ -745,7 +745,7 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 	if (pcb->Data->LayerN >= PCB_MAX_LAYER)
 		return -1;
 	lid = pcb->Data->LayerN;
-	pcb->Data->Layer[lid].meta.real.name = pcb_strdup(name);
+	pcb->Data->Layer[lid].name = pcb_strdup(name);
 	pcb->Data->Layer[lid].parent = pcb->Data;
 	pcb->Data->LayerN++;
 	return lid;
@@ -756,8 +756,8 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 	pcb_layer_id_t lid;
 	for(lid = 0; lid < PCB_MAX_LAYER; lid++) {
 		if (pcb->Data->Layer[lid].grp == 0) {
-			free((char *)pcb->Data->Layer[lid].meta.real.name);
-			pcb->Data->Layer[lid].meta.real.name = pcb_strdup(name);
+			free((char *)pcb->Data->Layer[lid].name);
+			pcb->Data->Layer[lid].name = pcb_strdup(name);
 			return lid;
 		}
 	}
@@ -772,7 +772,7 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 	pcb_layer_group_setup_default(&pcb->LayerGroups);
 
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
-		if (strcmp(pcb->Data->Layer[lid].meta.real.name, "silk") == 0) {
+		if (strcmp(pcb->Data->Layer[lid].name, "silk") == 0) {
 			if (silk < 0)
 				pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
 			else
@@ -781,9 +781,9 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 			silk = lid;
 		}
 		else {
-			if (*pcb->Data->Layer[lid].meta.real.name == '\0') {
-				free((char *)pcb->Data->Layer[lid].meta.real.name);
-				pcb->Data->Layer[lid].meta.real.name = pcb_strdup("anonymous");
+			if (*pcb->Data->Layer[lid].name == '\0') {
+				free((char *)pcb->Data->Layer[lid].name);
+				pcb->Data->Layer[lid].name = pcb_strdup("anonymous");
 			}
 			if (lid == 0)
 				pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);

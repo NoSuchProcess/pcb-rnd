@@ -303,7 +303,7 @@ pcb_layer_id_t pcb_layer_by_name(const char *name)
 {
 	pcb_layer_id_t n;
 	for (n = 0; n < PCB->Data->LayerN; n++)
-		if (strcmp(PCB->Data->Layer[n].meta.real.name, name) == 0)
+		if (strcmp(PCB->Data->Layer[n].name, name) == 0)
 			return n;
 	return -1;
 }
@@ -316,9 +316,9 @@ void pcb_layers_reset()
 	   for the rest of the code: the (embedded) default design will overwrite this. */
 	/* reset layers */
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
-		if (PCB->Data->Layer[n].meta.real.name != NULL)
-			free((char *)PCB->Data->Layer[n].meta.real.name);
-		PCB->Data->Layer[n].meta.real.name = pcb_strdup("<pcb_layers_reset>");
+		if (PCB->Data->Layer[n].name != NULL)
+			free((char *)PCB->Data->Layer[n].name);
+		PCB->Data->Layer[n].name = pcb_strdup("<pcb_layers_reset>");
 		PCB->Data->Layer[n].grp = -1;
 	}
 
@@ -348,12 +348,12 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 	id = PCB->Data->LayerN++;
 
 	if (lname != NULL) {
-		if (PCB->Data->Layer[id].meta.real.name != NULL)
-			free((char *)PCB->Data->Layer[id].meta.real.name);
+		if (PCB->Data->Layer[id].name != NULL)
+			free((char *)PCB->Data->Layer[id].name);
 	}
 
 	layer_clear(&PCB->Data->Layer[id]);
-	PCB->Data->Layer[id].meta.real.name = pcb_strdup(lname);
+	PCB->Data->Layer[id].name = pcb_strdup(lname);
 
 	/* add layer to group */
 	if (grp >= 0) {
@@ -369,14 +369,8 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 {
-	if (!PCB->Data->Layer[layer].is_bound) {
-		free((char *)PCB->Data->Layer[layer].meta.real.name);
-		PCB->Data->Layer[layer].meta.real.name = pcb_strdup(lname);
-	}
-	else {
-		free((char *)PCB->Data->Layer[layer].meta.bound.name);
-		PCB->Data->Layer[layer].meta.bound.name = pcb_strdup(lname);
-	}
+	free((char *)PCB->Data->Layer[layer].name);
+	PCB->Data->Layer[layer].name = pcb_strdup(lname);
 	return 0;
 }
 
@@ -413,14 +407,8 @@ static int is_last_bottom_copper_layer(int layer)
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
 #warning cleanup TODO: duplicate of pcb_layer_rename()?
-	if (!Layer->is_bound) {
-		free((char*)Layer->meta.real.name);
-		Layer->meta.real.name = Name;
-	}
-	else {
-		free((char*)Layer->meta.bound.name);
-		Layer->meta.bound.name = Name;
-	}
+	free((char*)Layer->name);
+	Layer->name = Name;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
@@ -452,7 +440,7 @@ static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gi
 	memset(lp, 0, sizeof(pcb_layer_t));
 	lp->grp = gid;
 	lp->meta.real.vis = 1;
-	lp->meta.real.name = pcb_strdup("New Layer");
+	lp->name = pcb_strdup("New Layer");
 	lp->meta.real.color = conf_core.appearance.color.layer[idx];
 	lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[idx];
 	if ((gid >= 0) && (PCB->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
@@ -634,7 +622,7 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 	if (id < 0)
 		return NULL;
 	if (id < PCB->Data->LayerN)
-		return PCB->Data->Layer[id].meta.real.name;
+		return PCB->Data->Layer[id].name;
 	if ((id >= PCB_LAYER_VIRT_MIN) && (id <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[id-PCB_LAYER_VIRT_MIN].name;
 	return NULL;
@@ -688,10 +676,10 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 		dst->meta.bound.real = NULL;
 
 	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->grp);
-	if (src->meta.real.name != NULL)
-		dst->meta.bound.name = pcb_strdup(src->meta.real.name);
+	if (src->name != NULL)
+		dst->name = pcb_strdup(src->name);
 	else
-		dst->meta.bound.name = NULL;
+		dst->name = NULL;
 
 	if ((dst->meta.bound.type & PCB_LYT_INTERN) && (dst->meta.bound.type & PCB_LYT_COPPER)) {
 		int from_top, from_bottom, res;
@@ -705,7 +693,7 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 				dst->meta.bound.stack_offs = -from_bottom;
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, "Internal error: can't figure the inter copper\nlayer offset for %s\n", src->meta.real.name);
+			pcb_message(PCB_MSG_ERROR, "Internal error: can't figure the inter copper\nlayer offset for %s\n", src->name);
 	}
 	else
 		dst->meta.bound.stack_offs = 0;
@@ -741,13 +729,13 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 				if (ly->comb == src->comb)
 					score++;
 
-				if (ly->meta.real.name == src->meta.bound.name) /* mainly for NULL = NULL */
+				if (ly->name == src->name) /* mainly for NULL = NULL */
 					score += 4;
 				
-				if ((ly->meta.real.name != NULL) && (src->meta.bound.name != NULL)) {
-					if (strcmp(ly->meta.real.name, src->meta.bound.name) == 0)
+				if ((ly->name != NULL) && (src->name != NULL)) {
+					if (strcmp(ly->name, src->name) == 0)
 						score += 4;
-					else if (pcb_strcasecmp(ly->meta.real.name, src->meta.bound.name) == 0)
+					else if (pcb_strcasecmp(ly->name, src->name) == 0)
 						score += 2;
 				}
 
@@ -768,7 +756,7 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 
 	memset(lay, 0, sizeof(pcb_layer_t));
 	lay->is_bound = 1;
-	lay->meta.bound.name = pcb_strdup(name);
+	lay->name = pcb_strdup(name);
 	lay->meta.bound.type = type;
 	lay->grp = -1;
 	lay->parent = data;
@@ -867,7 +855,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 
 void pcb_layer_edit_attrib(pcb_layer_t *layer)
 {
-	char *buf = pcb_strdup_printf("Layer %s Attributes", layer->meta.real.name);
+	char *buf = pcb_strdup_printf("Layer %s Attributes", layer->name);
 	pcb_gui->edit_attributes(buf, &(layer->meta.real.Attributes));
 	free(buf);
 }

@@ -93,7 +93,7 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 
 
 #define layer_name_mismatch(w, layer) \
-((ctx->attrs[w->name].default_val.str_value == NULL) || (strcmp(layer->meta.bound.name, ctx->attrs[w->name].default_val.str_value) != 0))
+((ctx->attrs[w->name].default_val.str_value == NULL) || (strcmp(layer->name, ctx->attrs[w->name].default_val.str_value) != 0))
 
 static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 {
@@ -114,7 +114,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		/* name and type */
 		if (layer_name_mismatch(w, layer))
-			PCB_DAD_SET_VALUE(hid_ctx, w->name, str_value, pcb_strdup(layer->meta.bound.name));
+			PCB_DAD_SET_VALUE(hid_ctx, w->name, str_value, pcb_strdup(layer->name));
 
 		PCB_DAD_SET_VALUE(hid_ctx, w->comp, int_value, layer->comb);
 
@@ -158,8 +158,8 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 		pcb_layer_t *layer = ctx->data->Layer + n;
 
 		if (layer_name_mismatch(w, layer)) {
-			free((char *)layer->meta.bound.name);
-			layer->meta.bound.name = pcb_strdup(ctx->attrs[w->name].default_val.str_value);
+			free((char *)layer->name);
+			layer->name = pcb_strdup(ctx->attrs[w->name].default_val.str_value);
 		}
 
 		layer->comb = ctx->attrs[w->comp].default_val.int_value;
@@ -225,7 +225,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 		ctx.widx = malloc(sizeof(lb_widx_t) * ctx.data->LayerN);
 		ctx.layer_names = calloc(sizeof(char *), PCB->Data->LayerN+2);
 		for(n = 0; n < PCB->Data->LayerN; n++)
-			ctx.layer_names[n] = PCB->Data->Layer[n].meta.real.name;
+			ctx.layer_names[n] = PCB->Data->Layer[n].name;
 		ctx.no_layer = n;
 		ctx.layer_names[n] = "invalid/unbound";
 		n++;

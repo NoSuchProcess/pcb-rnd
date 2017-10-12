@@ -35,7 +35,7 @@ int layout_resolve_layer(const char *name)
 	if (name == NULL)
 		return -2;
 	for(n = 0; n < PCB_MAX_LAYER + 2; n++)
-		if ((PCB->Data->Layer[n].meta.real.name != NULL) && (strcmp(PCB->Data->Layer[n].meta.real.name, name) == 0))
+		if ((PCB->Data->Layer[n].name != NULL) && (strcmp(PCB->Data->Layer[n].name, name) == 0))
 			return n;
 	return -1;
 }
@@ -53,7 +53,7 @@ int layout_get_max_layer()
 const char *layout_layer_name(int layer)
 {
 	layer_check(layer)("");
-	return PCB->Data->Layer[layer].meta.real.name;
+	return PCB->Data->Layer[layer].name;
 }
 
 const char *layout_layer_color(int layer)

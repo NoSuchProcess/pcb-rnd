@@ -449,7 +449,7 @@ int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number, pcb_layer_t *
 	pcb_cardinal_t current_layer = number;
 
 	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) || (layer->meta.real.name && *layer->meta.real.name)) {
+	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
 		int local_flag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
 			pcb_fprintf(FP, "FT\r\n");
@@ -472,7 +472,7 @@ int write_autotrax_layout_arcs(FILE * FP, pcb_cardinal_t number, pcb_layer_t *la
 	pcb_cardinal_t current_layer = number;
 
 	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) ){ /*|| (layer->meta.real.name && *layer->meta.real.name)) { */
+	if (!pcb_layer_is_empty_(PCB, layer) ){ /*|| (layer->name && *layer->name)) { */
 		int local_flag = 0;
 		arclist_foreach(&layer->Arc, &it, arc) {
 			pcb_fprintf(FP, "FA\r\n");
@@ -507,7 +507,7 @@ int write_autotrax_layout_text(FILE * FP, pcb_cardinal_t number, pcb_layer_t *la
 	default_stroke_thickness = 200000;
 
 	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) ) { /*|| (layer->meta.real.name && *layer->meta.real.name)) {*/
+	if (!pcb_layer_is_empty_(PCB, layer) ) { /*|| (layer->name && *layer->name)) {*/
 		local_flag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if (current_layer < 9)  { /* copper or silk layer text */
@@ -689,7 +689,7 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number, pcb_layer_t
 	pcb_coord_t minx, miny, maxx, maxy;
 
 	/* write information about non empty layers */
-	if (!pcb_layer_is_empty_(PCB, layer) ) { /*|| (layer->meta.real.name && *layer->meta.real.name)) {*/
+	if (!pcb_layer_is_empty_(PCB, layer) ) { /*|| (layer->name && *layer->name)) {*/
 		int local_flag = 0;
 
 		polylist_foreach(&layer->Polygon, &it, polygon) {

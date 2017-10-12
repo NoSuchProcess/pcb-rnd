@@ -239,7 +239,7 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 		PCB_QRY_RET_INV(res);
 
 	switch(fh1) {
-		case query_fields_name:     PCB_QRY_RET_STR(res, l->meta.real.name);
+		case query_fields_name:     PCB_QRY_RET_STR(res, l->name);
 		case query_fields_visible:  PCB_QRY_RET_INT(res, l->meta.real.vis);
 		case query_fields_position: PCB_QRY_RET_INT(res, pcb_layer_flags_(PCB, l) & PCB_LYT_ANYWHERE);
 		case query_fields_type:     PCB_QRY_RET_INT(res, pcb_layer_flags_(PCB, l) & PCB_LYT_ANYTHING);

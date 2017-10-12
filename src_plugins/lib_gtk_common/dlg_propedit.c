@@ -311,7 +311,7 @@ static void prop_preview_init(void)
 	for (n = 0; n < pcb_max_layer; n++) {
 		preview_pcb.Data->Layer[n].meta.real.vis = 1;
 		preview_pcb.Data->Layer[n].meta.real.color = pcb_strdup(PCB->Data->Layer[n].meta.real.color);
-		preview_pcb.Data->Layer[n].meta.real.name = pcb_strdup("preview dummy");
+		preview_pcb.Data->Layer[n].name = pcb_strdup("preview dummy");
 		
 	}
 

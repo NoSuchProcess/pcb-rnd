@@ -217,10 +217,7 @@ void pcb_data_free(pcb_data_t * data)
 			free(text->TextString);
 		}
 		PCB_END_LOOP;
-		if (!layer->is_bound)
-			free((char*)layer->meta.real.name);
-		else
-			free((char*)layer->meta.bound.name);
+		free((char*)layer->name);
 		PCB_LINE_LOOP(layer);
 		{
 			if (line->Number)

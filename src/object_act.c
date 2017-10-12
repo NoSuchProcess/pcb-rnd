@@ -130,7 +130,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 				int i;
 				layer = NULL;
 				for (i = 0; i < pcb_max_layer; i++)
-					if (strcmp(PCB->Data->Layer[i].meta.real.name, layername) == 0) {
+					if (strcmp(PCB->Data->Layer[i].name, layername) == 0) {
 						layer = &(PCB->Data->Layer[i]);
 						break;
 					}

@@ -47,7 +47,7 @@
 	do { \
 		if (!(ly)->is_bound) { \
 			if (((ly)->meta.real.Attributes.Number > 0) && ((ly)->meta.real.Attributes.List == NULL)) \
-				pcb_message(PCB_MSG_ERROR, CHK "%s layer %s broken empty attribute list\n", whose, (ly)->meta.real.name); \
+				pcb_message(PCB_MSG_ERROR, CHK "%s layer %s broken empty attribute list\n", whose, (ly)->name); \
 		} \
 	} while(0)
 
@@ -197,8 +197,8 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	
 		/* check layers */
 		if (data->Layer[n].parent != data)
-			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].meta.real.name, data->Layer[n].parent, data);
-		if (name_chk && ((data->Layer[n].meta.real.name == NULL) || (*data->Layer[n].meta.real.name == '\0')))
+			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent proken (%p != %p)\n", whose, n, data->Layer[n].name, data->Layer[n].parent, data);
+		if (name_chk && ((data->Layer[n].name == NULL) || (*data->Layer[n].name == '\0')))
 			pcb_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
 		chk_layer_attr(&data->Layer[n]);
 

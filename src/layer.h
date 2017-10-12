@@ -100,6 +100,8 @@ struct pcb_layer_s {              /* holds information about one layer */
 	arclist_t Arc;
 	pcb_data_t *parent;
 
+	const char *name;              /* layer name */
+
 	pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
 	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
 
@@ -108,7 +110,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 	union {
 		struct { /* A real board layer */
-			const char *name;              /* layer name */
 			pcb_bool vis;                  /* visible flag */
 			const char *color;             /* color */
 			const char *selected_color;
@@ -117,8 +118,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
 		} real;
 		struct { /* A subcircuit layer binding; list data are local but everything else is coming from board layers */
-			const char *name;              /* layer name */
-			pcb_layer_t *real; /* NULL if unbound */
+			pcb_layer_t *real;             /* NULL if unbound */
 
 			/* matching rules */
 			pcb_layer_type_t type;

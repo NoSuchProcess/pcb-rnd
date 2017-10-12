@@ -127,7 +127,7 @@ static int pcb_subc_cache_update(pcb_subc_t *sc)
 	if (sc->aux_layer == NULL) {
 		int n;
 		for(n = 0; n < sc->data->LayerN; n++) {
-			if (strcmp(sc->data->Layer[n].meta.bound.name, SUBC_AUX_NAME) == 0) {
+			if (strcmp(sc->data->Layer[n].name, SUBC_AUX_NAME) == 0) {
 				sc->aux_layer = sc->data->Layer + n;
 				break;
 			}
@@ -578,7 +578,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		if ((pcb != NULL) && (pcb == src_pcb)) {
 			/* copy within the same board */
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
-			dl->meta.bound.name = pcb_strdup(sl->meta.bound.name);
+			dl->name = pcb_strdup(sl->name);
 			dl->comb = sl->comb;
 			if (dl->meta.bound.real != NULL)
 				pcb_layer_link_trees(dl, dl->meta.bound.real);
@@ -586,13 +586,13 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		else if (pcb != NULL) {
 			/* copying from buffer to board */
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
-			dl->meta.bound.name = pcb_strdup(sl->meta.bound.name);
+			dl->name = pcb_strdup(sl->name);
 			dl->meta.bound.real = pcb_layer_resolve_binding(pcb, sl);
 			dl->comb = sl->comb;
 
 			if (dl->meta.bound.real == NULL) {
 				if (!(dl->meta.bound.type & PCB_LYT_VIRTUAL)) {
-					const char *name = dl->meta.bound.name;
+					const char *name = dl->name;
 					if (name == NULL) name = "<anonymous>";
 					pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer %s of subcricuit while placing it\n", name);
 				}
@@ -605,7 +605,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
 
 			dl->meta.bound.real = NULL;
-			dl->meta.bound.name = pcb_strdup(sl->meta.bound.name);
+			dl->name = pcb_strdup(sl->name);
 			dl->comb = sl->comb;
 		}
 
