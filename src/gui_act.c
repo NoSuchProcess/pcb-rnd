@@ -1580,8 +1580,14 @@ static int pcb_act_EditGroup(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layergrp_t *g = NULL;
 
+#warning layer TODO: rewrite this with DAD in two versions (bound and unbound)
+	if (CURRENT->is_bound) {
+		pcb_message(PCB_MSG_ERROR, "Can't edit bound layers yet\n");
+		return 1;
+	}
+
 	if (CURRENT != NULL)
-		g = pcb_get_layergrp(PCB, CURRENT->grp);
+		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
 
 	for(n = 0; n < argc; n++) {
 		if (!explicit && (*argv[n] == '@')) {

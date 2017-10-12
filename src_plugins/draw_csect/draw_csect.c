@@ -707,7 +707,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				if (gactive >= 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 					pcb_layergrp_t *g;
-					if (l->grp == gactive) { /* move within the group */
+					if (l->meta.real.grp == gactive) { /* move within the group */
 						int d, s, at;
 						g = &PCB->LayerGroups.grp[gactive];
 
@@ -810,8 +810,8 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 			if (l->comb & PCB_LYC_SUB) printf(" sub");
 			if (l->comb & PCB_LYC_AUTO) printf(" auto");
 			printf("\n");
-			if (l->grp != gid)
-				printf("         *** broken layer-to-group cross reference: %ld\n", l->grp);
+			if (l->meta.real.grp != gid)
+				printf("         *** broken layer-to-group cross reference: %ld\n", l->meta.real.grp);
 		}
 	}
 	return 0;

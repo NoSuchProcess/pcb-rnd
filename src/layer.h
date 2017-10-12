@@ -102,7 +102,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 	const char *name;              /* layer name */
 
-	pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
 	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
 
 	/* for bound layers these point to the board layer's*/
@@ -110,6 +109,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 	union {
 		struct { /* A real board layer */
+			pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
 			pcb_bool vis;                  /* visible flag */
 			const char *color;             /* color */
 			const char *selected_color;

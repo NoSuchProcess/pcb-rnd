@@ -206,7 +206,7 @@ unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx)
 		return 0;
 
 	l = &pcb->Data->Layer[layer_idx];
-	return pcb_layergrp_flags(pcb, l->grp);
+	return pcb_layergrp_flags(pcb, l->meta.real.grp);
 }
 
 unsigned int pcb_layer_flags_(pcb_board_t *pcb, pcb_layer_t *layer)
@@ -319,7 +319,7 @@ void pcb_layers_reset()
 		if (PCB->Data->Layer[n].name != NULL)
 			free((char *)PCB->Data->Layer[n].name);
 		PCB->Data->Layer[n].name = pcb_strdup("<pcb_layers_reset>");
-		PCB->Data->Layer[n].grp = -1;
+		PCB->Data->Layer[n].meta.real.grp = -1;
 	}
 
 	/* reset layer groups */
@@ -336,7 +336,7 @@ void pcb_layers_reset()
 static void layer_clear(pcb_layer_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_layer_t));
-	dst->grp = -1;
+	dst->meta.real.grp = -1;
 }
 
 pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
@@ -361,7 +361,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
 		PCB->LayerGroups.grp[grp].len++;
 		PCB->Data->Layer[id].meta.real.vis = PCB->Data->Layer[PCB->LayerGroups.grp[grp].lid[0]].meta.real.vis;
 	}
-	PCB->Data->Layer[id].grp = grp;
+	PCB->Data->Layer[id].meta.real.grp = grp;
 
 	PCB->Data->Layer[id].parent = PCB->Data;
 	return id;
@@ -438,7 +438,7 @@ static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gid, pcb_data_t *parent)
 {
 	memset(lp, 0, sizeof(pcb_layer_t));
-	lp->grp = gid;
+	lp->meta.real.grp = gid;
 	lp->meta.real.vis = 1;
 	lp->name = pcb_strdup("New Layer");
 	lp->meta.real.color = conf_core.appearance.color.layer[idx];
@@ -492,9 +492,9 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		if (new_in_grp >= 0)
 			layer_init(lp, new_lid, new_in_grp, PCB->Data);
 		else
-			layer_init(lp, new_lid, PCB->Data->Layer[new_index].grp, PCB->Data);
+			layer_init(lp, new_lid, PCB->Data->Layer[new_index].meta.real.grp, PCB->Data);
 
-		g = pcb_get_layergrp(PCB, lp->grp);
+		g = pcb_get_layergrp(PCB, lp->meta.real.grp);
 
 		if (new_in_grp >= 0) {
 			if (new_index == 0)
@@ -524,7 +524,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 #warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
 
 		/* remove the current lid from its group */
-		g = pcb_get_layergrp(PCB, PCB->Data->Layer[old_index].grp);
+		g = pcb_get_layergrp(PCB, PCB->Data->Layer[old_index].meta.real.grp);
 		grp_idx = pcb_layergrp_index_in_grp(g, old_index);
 		if (grp_idx < 0) {
 			pcb_message(PCB_MSG_ERROR, "Internal error; layer not in group\n");
@@ -662,8 +662,9 @@ void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 
 void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 {
-	dst->grp = src->grp;
 	dst->comb = src->comb;
+
+	assert(!src->is_bound);
 
 	dst->is_bound = 1;
 
@@ -675,7 +676,7 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	else
 		dst->meta.bound.real = NULL;
 
-	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->grp);
+	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->meta.real.grp);
 	if (src->name != NULL)
 		dst->name = pcb_strdup(src->name);
 	else
@@ -684,8 +685,8 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	if ((dst->meta.bound.type & PCB_LYT_INTERN) && (dst->meta.bound.type & PCB_LYT_COPPER)) {
 		int from_top, from_bottom, res;
 		
-		res = pcb_layergrp_dist(PCB, src->grp, pcb_layergrp_get_top_copper(), PCB_LYT_COPPER, &from_top);
-		res |= pcb_layergrp_dist(PCB, src->grp, pcb_layergrp_get_bottom_copper(), PCB_LYT_COPPER, &from_bottom);
+		res = pcb_layergrp_dist(PCB, src->meta.real.grp, pcb_layergrp_get_top_copper(), PCB_LYT_COPPER, &from_top);
+		res |= pcb_layergrp_dist(PCB, src->meta.real.grp, pcb_layergrp_get_bottom_copper(), PCB_LYT_COPPER, &from_bottom);
 		if (res == 0) {
 			if (from_top <= from_bottom)
 				dst->meta.bound.stack_offs = from_top;
@@ -758,7 +759,6 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	lay->is_bound = 1;
 	lay->name = pcb_strdup(name);
 	lay->meta.bound.type = type;
-	lay->grp = -1;
 	lay->parent = data;
 
 	return lay;
@@ -865,7 +865,7 @@ static pcb_layer_id_t pcb_layer_get_cached(pcb_layer_id_t *cache, unsigned int l
 	pcb_layergrp_t *g;
 
 	if (*cache < PCB->Data->LayerN) { /* check if the cache is still pointing to the right layer */
-		pcb_layergrp_id_t gid = PCB->Data->Layer[*cache].grp;
+		pcb_layergrp_id_t gid = PCB->Data->Layer[*cache].meta.real.grp;
 		if ((gid >= 0) && (gid < PCB->LayerGroups.len)) {
 			g = &(PCB->LayerGroups.grp[gid]);
 			if ((g->type & loc) && (g->type & typ) && (g->lid[0] == *cache))

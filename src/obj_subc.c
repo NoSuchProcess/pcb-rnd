@@ -98,7 +98,6 @@ static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 	memcpy(&dst->meta, &src->meta, sizeof(src->meta));
 	dst->is_bound = 1;
 	dst->comb = src->comb;
-	dst->grp = -1;
 	dst->parent = sc->data;
 	return dst;
 }

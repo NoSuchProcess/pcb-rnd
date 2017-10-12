@@ -163,7 +163,7 @@ int pcb_draw_layergrp_is_comp(pcb_layergrp_t *g)
 
 int pcb_draw_layer_is_comp(pcb_layer_id_t id)
 {
-	pcb_layergrp_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].grp);
+	pcb_layergrp_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].meta.real.grp);
 	if (g == NULL) return 0;
 	return pcb_draw_layergrp_is_comp(g);
 }

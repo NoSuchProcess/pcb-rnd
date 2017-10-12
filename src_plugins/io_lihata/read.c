@@ -649,7 +649,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 		if (pcb != NULL) {
 			int grp_id;
 			parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
-			dt->Layer[layer_id].grp = grp_id;
+			dt->Layer[layer_id].meta.real.grp = grp_id;
 	/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->name, grp_id);*/
 		}
 	}
@@ -875,18 +875,18 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layer_group_setup_default(&pcb->LayerGroups);
 
 	/* old silk assumption: last two layers are silk, bottom and top */
-	bottom_silk = pcb->Data->Layer[pcb->Data->LayerN-2].grp;
-	top_silk = pcb->Data->Layer[pcb->Data->LayerN-1].grp;
-	pcb->Data->Layer[pcb->Data->LayerN-2].grp = -1;
-	pcb->Data->Layer[pcb->Data->LayerN-1].grp = -1;
+	bottom_silk = pcb->Data->Layer[pcb->Data->LayerN-2].meta.real.grp;
+	top_silk = pcb->Data->Layer[pcb->Data->LayerN-1].meta.real.grp;
+	pcb->Data->Layer[pcb->Data->LayerN-2].meta.real.grp = -1;
+	pcb->Data->Layer[pcb->Data->LayerN-1].meta.real.grp = -1;
 
 /*	pcb_trace("NAME: '%s' '%s'\n", pcb->Data->Layer[pcb->Data->LayerN-1].Name,pcb->Data->Layer[pcb->Data->LayerN-2].Name);*/
 
 	for(n = 0; n < pcb->Data->LayerN - 2; n++) {
 		pcb_layer_t *l = &pcb->Data->Layer[n];
-		pcb_layergrp_id_t grp = l->grp;
+		pcb_layergrp_id_t grp = l->meta.real.grp;
 		/*pcb_trace("********* l=%d %s g=%ld (top=%ld bottom=%ld)\n", n, l->name, grp, top_silk, bottom_silk);*/
-		l->grp = -1;
+		l->meta.real.grp = -1;
 
 		if (grp == bottom_silk)
 			g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
@@ -894,7 +894,7 @@ static void layer_fixup(pcb_board_t *pcb)
 			g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
 		else
 			g = pcb_get_grp_new_intern(pcb, grp);
-/*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
+/*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.meta.real.grp);*/
 		if (g != NULL) {
 			pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, n);
 			if (strcmp(l->name, "outline") == 0)

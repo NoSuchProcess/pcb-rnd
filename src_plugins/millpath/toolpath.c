@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <assert.h>
+
 #include "toolpath.h"
 
 #include "board.h"
@@ -152,7 +154,9 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	pcb_layergrp_id_t otl;
 	int has_otl;
 
-	result->grp = pcb_get_layergrp(pcb, layer->grp);
+	assert(!layer->is_bound);
+
+	result->grp = pcb_get_layergrp(pcb, layer->meta.real.grp);
 	has_otl = (pcb_layergrp_list(pcb, PCB_LYT_OUTLINE, &otl, 1) == 1);
 
 	if (has_otl) { /* if there's an outline layer, the remove-poly shouldn't be bigger than that */

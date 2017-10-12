@@ -755,7 +755,7 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 {
 	pcb_layer_id_t lid;
 	for(lid = 0; lid < PCB_MAX_LAYER; lid++) {
-		if (pcb->Data->Layer[lid].grp == 0) {
+		if (pcb->Data->Layer[lid].meta.real.grp == 0) {
 			free((char *)pcb->Data->Layer[lid].name);
 			pcb->Data->Layer[lid].name = pcb_strdup(name);
 			return lid;

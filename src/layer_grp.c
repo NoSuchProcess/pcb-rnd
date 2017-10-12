@@ -64,12 +64,12 @@ pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layergrp_t *grp)
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
 	if (!Layer->is_bound)
-		return Layer->grp;
+		return Layer->meta.real.grp;
 
 	if (Layer->meta.bound.real == NULL) /* bound layer without a binding */
 		return -1;
 
-	return Layer->meta.bound.real->grp;
+	return Layer->meta.bound.real->meta.real.grp;
 }
 
 pcb_layergrp_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid)
@@ -99,13 +99,13 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 
 	layer = pcb->Data->Layer + lid;
 	if (gid < 0)
-		gid = layer->grp;
+		gid = layer->meta.real.grp;
 	if (gid >= pcb->LayerGroups.len)
 		return -1;
 
 	grp = &pcb->LayerGroups.grp[gid];
 
-	if (layer->grp != gid)
+	if (layer->meta.real.grp != gid)
 		return -1;
 
 	for(n = 0; n < grp->len; n++) {
@@ -114,7 +114,7 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 			if (remain > 0)
 				memmove(&grp->lid[n], &grp->lid[n+1], remain * sizeof(pcb_layer_id_t));
 			grp->len--;
-			layer->grp = -1;
+			layer->meta.real.grp = -1;
 			NOTIFY();
 			return 0;
 		}
@@ -193,7 +193,7 @@ int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id)
 			free(g->name);
 		for(n = 0; n < g->len; n++) {
 			pcb_layer_t *layer = pcb->Data->Layer + g->lid[n];
-			layer->grp = -1;
+			layer->meta.real.grp = -1;
 		}
 		memset(g, 0, sizeof(pcb_layergrp_t));
 		return 0;
@@ -218,7 +218,7 @@ int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layergrp_id_t dst, pcb_layergrp
 	/* update layer's group refs to the new grp */
 	for(n = 0; n < d->len; n++) {
 		pcb_layer_t *layer = pcb->Data->Layer + d->lid[n];
-		layer->grp = dst;
+		layer->meta.real.grp = dst;
 	}
 
 	memset(s, 0, sizeof(pcb_layergrp_t));
@@ -345,8 +345,8 @@ static void move_grps(pcb_board_t *pcb, pcb_layer_stack_t *stk, pcb_layergrp_id_
 			pcb_layer_id_t lid =stk->grp[g].lid[n];
 			if ((lid >= 0) && (lid < pcb->Data->LayerN)) {
 				pcb_layer_t *l = &pcb->Data->Layer[lid];
-				if (l->grp > 0)
-					l->grp += delta;
+				if (l->meta.real.grp > 0)
+					l->meta.real.grp += delta;
 			}
 		}
 	}
@@ -415,7 +415,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 			}
 			else {
 				/* detach only */
-				l->grp = -1;
+				l->meta.real.grp = -1;
 			}
 		}
 	}
@@ -458,8 +458,8 @@ int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t from, pcb_layergrp_id_
 #warning TODO: use pcb_get_layer when it becomes pcb-safe
 /*		pcb_layer_t *l = pcb_get_layer(stk->grp[to_before].lid[n]);*/
 		pcb_layer_t *l = &pcb->Data->Layer[stk->grp[to_before].lid[n]];
-		if ((l != NULL) && (l->grp > 0))
-			l->grp = to_before;
+		if ((l != NULL) && (l->meta.real.grp > 0))
+			l->meta.real.grp = to_before;
 	}
 
 	NOTIFY();
@@ -614,7 +614,7 @@ int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layergrp_
 
 	grp->lid[grp->len] = layer_id;
 	grp->len++;
-	pcb->Data->Layer[layer_id].grp = group_id;
+	pcb->Data->Layer[layer_id].meta.real.grp = group_id;
 
 	return 0;
 }
