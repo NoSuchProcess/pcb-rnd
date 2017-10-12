@@ -40,7 +40,7 @@
 - BUG: missing subc snap:
 	- polygon pad center snap [report: jg]
 	- subc centroid/origin snap [report: jg]
-
+- subc feature: add "floater" flag to objects to let refdes text move - shall replace "lock names" and "only names"
 
 2. For later releases ===============================================================================
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
