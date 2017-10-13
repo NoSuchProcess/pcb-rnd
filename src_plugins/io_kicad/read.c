@@ -1036,14 +1036,12 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	int i;
 	unsigned int res;
 
-#warning TODO: don't use PCB, use st->pcb
-
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
 			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
 			return kicad_error(subtree, "layer definition found in unexpected location in KiCad layout");
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
 			pcb_layergrp_inhibit_inc();
-			pcb_layer_group_setup_default(&PCB->LayerGroups);
+			pcb_layer_group_setup_default(&st->pcb->LayerGroups);
 
 			/* set up the hash for implicit layers */
 			res = 0;
@@ -2030,18 +2028,18 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
 				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
 			}
-			pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
+			pcb_element_bbox(st->pcb->Data, newModule, pcb_font(PCB, 0, 1));
 			if (moduleRotation != 0) {
 				pcb_printf("Applying module rotation of %d here.", moduleRotation);
 				moduleRotation = moduleRotation/90;/* ignore rotation != n*90 for now*/
-				pcb_element_rotate90(PCB->Data, newModule, moduleX, moduleY, moduleRotation);
+				pcb_element_rotate90(st->pcb->Data, newModule, moduleX, moduleY, moduleRotation);
 				/* can test for rotation != n*90 degrees if necessary, and call
 				 * void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element,
 				 *		pcb_coord_t X, pcb_coord_t Y, double 
 				 *		cosa, double sina, pcb_angle_t angle);
 				 */
 			}
-			/*pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));*/
+			/*pcb_element_bbox(st->pcb->Data, newModule, pcb_font(PCB, 0, 1));*/
 
 			/* update the newly created module's refdes field, if available */
 			if (moduleDefined && moduleRefdes) {
