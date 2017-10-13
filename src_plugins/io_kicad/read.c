@@ -48,7 +48,7 @@
 #include "safe_fs.h"
 
 typedef struct {
-	pcb_board_t *PCB;
+	pcb_board_t *pcb;
 	const char *Filename;
 	conf_role_t settings_dest;
 	gsxl_dom_t dom;
@@ -183,23 +183,23 @@ static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree != NULL && subtree->str != NULL) {
 		printf("page setting being parsed: '%s'\n", subtree->str);		
 			if (strcmp("A4", subtree->str) == 0) {
-				st->PCB->MaxWidth = PCB_MM_TO_COORD(297.0);
-				st->PCB->MaxHeight = PCB_MM_TO_COORD(210.0);
+				st->pcb->MaxWidth = PCB_MM_TO_COORD(297.0);
+				st->pcb->MaxHeight = PCB_MM_TO_COORD(210.0);
 			} else if (strcmp("A3", subtree->str) == 0) {
-				st->PCB->MaxWidth = PCB_MM_TO_COORD(420.0);
-				st->PCB->MaxHeight = PCB_MM_TO_COORD(297.0);
+				st->pcb->MaxWidth = PCB_MM_TO_COORD(420.0);
+				st->pcb->MaxHeight = PCB_MM_TO_COORD(297.0);
 			} else if (strcmp("A2", subtree->str) == 0) {
-				st->PCB->MaxWidth = PCB_MM_TO_COORD(594.0);
-				st->PCB->MaxHeight = PCB_MM_TO_COORD(420.0);
+				st->pcb->MaxWidth = PCB_MM_TO_COORD(594.0);
+				st->pcb->MaxHeight = PCB_MM_TO_COORD(420.0);
 			} else if (strcmp("A1", subtree->str) == 0) {
-				st->PCB->MaxWidth = PCB_MM_TO_COORD(841.0);
-				st->PCB->MaxHeight = PCB_MM_TO_COORD(594.0);
+				st->pcb->MaxWidth = PCB_MM_TO_COORD(841.0);
+				st->pcb->MaxHeight = PCB_MM_TO_COORD(594.0);
 			} else if (strcmp("A0", subtree->str) == 0) {
-				st->PCB->MaxWidth = PCB_MM_TO_COORD(1189.0);
-				st->PCB->MaxHeight = PCB_MM_TO_COORD(841.0);
+				st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
+				st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
 			} else { /* default to A0 */
-				st->PCB->MaxWidth = PCB_MM_TO_COORD(1189.0);
-				st->PCB->MaxHeight = PCB_MM_TO_COORD(841.0);
+				st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
+				st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
 				pcb_message(PCB_MSG_ERROR, "\tUnable to determine layout size. Defaulting to A0 layout size.\n");
 			}
 			return 0;
@@ -348,8 +348,8 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 #warning TODO: this will never be NULL; what are we trying to check here?
-		if (&st->PCB->fontkit.dflt == NULL) {
-			pcb_font_create_default(st->PCB);
+		if (&st->pcb->fontkit.dflt == NULL) {
+			pcb_font_create_default(st->pcb);
 		}
 
 		if (mirrored != 0) {
@@ -386,7 +386,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
-		pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, text, Flags);
+		pcb_text_new( &st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, direction, scaling, text, Flags);
 		return 0; /* create new font */
 	}
 	return kicad_error(subtree, "failed to create gr_text element");
@@ -511,7 +511,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_line_new( &st->pcb->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew gr_line on layer created\n");
 		return 0;
 	} else {
@@ -692,7 +692,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			}
 			pcb_printf("\tadjusted start angle: '%f'\n", startAngle);
 		}
-		pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
+		pcb_arc_new( &st->pcb->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
 		return 0;
 	}
 	return kicad_error(subtree, "unexpected empty/NULL node in gr_arc.");
@@ -805,7 +805,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1);
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
+		pcb_via_new( st->pcb->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
 		return 0;
 	}
 	return -1;
@@ -927,7 +927,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		pcb_line_new( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_line_new( &st->pcb->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew segment on layer created\n");
 		return 0;
 	}
@@ -942,26 +942,26 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	switch(lnum) {
 		case 0:
 /*pcb_hid_actionl("dumpcsect", NULL);*/
-			pcb_layergrp_list(st->PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
-			id = pcb_layer_create(st->PCB, gid, lname);
+			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
+			id = pcb_layer_create(st->pcb, gid, lname);
 /*printf("------------------------------\n");
 pcb_hid_actionl("dumpcsect", NULL);*/
 			break;
 		case 15:
-			pcb_layergrp_list(st->PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
-			id = pcb_layer_create(st->PCB, gid, lname);
+			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
+			id = pcb_layer_create(st->pcb, gid, lname);
 			break;
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {
 				/* Edge must be the outline */
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 				pcb_layergrp_fix_turn_to_outline(g);
-				id = pcb_layer_create(st->PCB, g - st->PCB->LayerGroups.grp, lname);
+				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
 			}
 			else if ((strcmp(ltype, "signal") == 0) || (strcmp(ltype, "power") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
 				/* Create a new inner layer for signals and for emulating misc layers */
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
-				id = pcb_layer_create(st->PCB, g - st->PCB->LayerGroups.grp, lname);
+				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
 			}
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
 				/* F. or B. layers */
@@ -1000,7 +1000,7 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 	if (pcb_layer_list(mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(PCB, mask, &gid, 1);
-		id = pcb_layer_create(st->PCB, gid, kicad_name);
+		id = pcb_layer_create(st->pcb, gid, kicad_name);
 	}
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
 	return 0;
@@ -1036,7 +1036,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	int i;
 	unsigned int res;
 
-#warning TODO: don't use PCB, use st->PCB
+#warning TODO: don't use PCB, use st->pcb
 
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
 			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
@@ -1238,8 +1238,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (moduleName != NULL && moduleDefined == 0) {
 					moduleDefined = 1; /* but might be empty, wait and see */
 					printf("Have new module name and location, defining module/element %s\n", moduleName);
-						newModule = pcb_element_new(st->PCB->Data, NULL,
-										 pcb_font(st->PCB, 0, 1), Flags,
+						newModule = pcb_element_new(st->pcb->Data, NULL,
+										 pcb_font(st->pcb, 0, 1), Flags,
 										 moduleName, moduleRefdes, moduleValue,
 										 moduleX, moduleY, direction,
 										 refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
@@ -1416,8 +1416,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 #warning TODO: this will never be NULL; what are we trying to check here?
-		if (&st->PCB->fontkit.dflt == NULL) {
-			pcb_font_create_default(st->PCB);
+		if (&st->pcb->fontkit.dflt == NULL) {
+			pcb_font_create_default(st->pcb);
 		}
 
 		X = refdesX;
@@ -2144,7 +2144,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					if (PCBLayer < 0) {
 						return kicad_warning(subtree, "parse error: zone layer <0.");
 					}
-					polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], 0, flags);
+					polygon = pcb_poly_new(&st->pcb->Data->Layer[PCBLayer], 0, flags);
 				} else {
 					return kicad_error(subtree, "unexpected zone layer null node.");
 				}
@@ -2236,8 +2236,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	required = BV(10);
 	if ((tally & required) == required) {  /* has location, layer, size and stroke thickness at a minimum */
 		if (polygon != NULL) {
-			pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCBLayer], polygon);
-			pcb_poly_init_clip(st->PCB->Data, &st->PCB->Data->Layer[PCBLayer], polygon);
+			pcb_add_polygon_on_layer(&st->pcb->Data->Layer[PCBLayer], polygon);
+			pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCBLayer], polygon);
 		}
 		return 0;
 	}
@@ -2245,7 +2245,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 }
 
 
-/* Parse a board from &st->dom into st->PCB */
+/* Parse a board from &st->dom into st->pcb */
 static int kicad_parse_pcb(read_state_t *st)
 {
 	/* gsxl_node_t *n;  not used */
@@ -2292,7 +2292,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	/* set up the parse context */
 	memset(&st, 0, sizeof(st));
-	st.PCB = Ptr;
+	st.pcb = Ptr;
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
