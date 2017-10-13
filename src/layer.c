@@ -304,7 +304,7 @@ pcb_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name)
 	return -1;
 }
 
-void pcb_layers_reset()
+void pcb_layers_reset(pcb_board_t *pcb)
 {
 	pcb_layer_id_t n;
 
@@ -312,20 +312,20 @@ void pcb_layers_reset()
 	   for the rest of the code: the (embedded) default design will overwrite this. */
 	/* reset layers */
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
-		if (PCB->Data->Layer[n].name != NULL)
-			free((char *)PCB->Data->Layer[n].name);
-		PCB->Data->Layer[n].name = pcb_strdup("<pcb_layers_reset>");
-		PCB->Data->Layer[n].meta.real.grp = -1;
+		if (pcb->Data->Layer[n].name != NULL)
+			free((char *)pcb->Data->Layer[n].name);
+		pcb->Data->Layer[n].name = pcb_strdup("<pcb_layers_reset>");
+		pcb->Data->Layer[n].meta.real.grp = -1;
 	}
 
 	/* reset layer groups */
 	for(n = 0; n < PCB_MAX_LAYERGRP; n++) {
-		PCB->LayerGroups.grp[n].len = 0;
-		PCB->LayerGroups.grp[n].type = 0;
-		PCB->LayerGroups.grp[n].valid = 0;
+		pcb->LayerGroups.grp[n].len = 0;
+		pcb->LayerGroups.grp[n].type = 0;
+		pcb->LayerGroups.grp[n].valid = 0;
 	}
-	PCB->LayerGroups.len = 0;
-	PCB->Data->LayerN = 0;
+	pcb->LayerGroups.len = 0;
+	pcb->Data->LayerN = 0;
 }
 
 /* empty and detach a layer - must be initialized or another layer moved over it later */

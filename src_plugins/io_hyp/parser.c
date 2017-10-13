@@ -851,7 +851,7 @@ void hyp_reset_layers()
 
 	pcb_layergrp_inhibit_inc();
 
-	pcb_layers_reset();
+	pcb_layers_reset(PCB);
 
 	pcb_layer_group_setup_default(&PCB->LayerGroups);
 
