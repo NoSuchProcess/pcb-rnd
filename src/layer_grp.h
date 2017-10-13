@@ -78,7 +78,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t layer
 pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t lgrp);
 
 /* call the gui to set a layer group */
-int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty);
+int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty);
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
 unsigned int pcb_layergrp_flags(pcb_board_t *pcb, pcb_layergrp_id_t group_idx);

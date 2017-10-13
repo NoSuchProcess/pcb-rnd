@@ -251,7 +251,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	for (i = ngroups - 1; i >= 0; i--) {
 		pcb_layergrp_id_t group = drawn_groups[i];
 
-		if (pcb_layer_gui_set_glayer(group, 0)) {
+		if (pcb_layer_gui_set_glayer(PCB, group, 0)) {
 			DrawLayerGroup(group, drawn_area);
 			pcb_gui->end_layer();
 		}
@@ -271,13 +271,13 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	/* Draw the solder mask if turned on */
 	gid = pcb_layergrp_get_top_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, 0))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0))) {
 		pcb_draw_mask(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	gid = pcb_layergrp_get_bottom_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, 0))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0))) {
 		pcb_draw_mask(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
@@ -285,7 +285,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	/* Draw silks */
 	slk_len = pcb_layergrp_list(PCB, PCB_LYT_SILK, slk, sizeof(slk) / sizeof(slk[0]));
 	for(i = 0; i < slk_len; i++) {
-		if (pcb_layer_gui_set_glayer(slk[i], 0)) {
+		if (pcb_layer_gui_set_glayer(PCB, slk[i], 0)) {
 			unsigned int loc = pcb_layergrp_flags(PCB, slk[i]);
 			pcb_draw_silk(loc & PCB_LYT_ANYWHERE, drawn_area);
 			pcb_gui->end_layer();
@@ -331,14 +331,14 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	paste_empty = pcb_layer_is_paste_empty(PCB, PCB_COMPONENT_SIDE);
 	gid = pcb_layergrp_get_top_paste();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, paste_empty))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty))) {
 		pcb_draw_paste(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	paste_empty = pcb_layer_is_paste_empty(PCB, PCB_SOLDER_SIDE);
 	gid = pcb_layergrp_get_bottom_paste();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, paste_empty))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty))) {
 		pcb_draw_paste(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}

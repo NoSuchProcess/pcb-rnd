@@ -562,14 +562,14 @@ error:
 	return 1;
 }
 
-int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
+int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty)
 {
 	/* if there's no GUI, that means no draw should be done */
 	if (pcb_gui == NULL)
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(grp, PCB->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(PCB, grp), is_empty);
+		return pcb_gui->set_layer_group(grp, pcb->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(PCB, grp), is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
@@ -686,7 +686,7 @@ pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name)
 {
 	pcb_layergrp_id_t n;
 	for (n = 0; n < pcb->LayerGroups.len; n++)
-		if ((PCB->LayerGroups.grp[n].name != NULL) && (strcmp(PCB->LayerGroups.grp[n].name, name) == 0))
+		if ((pcb->LayerGroups.grp[n].name != NULL) && (strcmp(pcb->LayerGroups.grp[n].name, name) == 0))
 			return n;
 	return -1;
 }
