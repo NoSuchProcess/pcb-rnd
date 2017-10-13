@@ -118,11 +118,7 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	pcb_layer_type_t flags;
 
-#warning layer TODO#5: temporary is-bound hack until we get an explicit flag */
-	if (layer->parent == pcb->Data)
-		flags = pcb_layer_flags_(pcb, layer);
-	else
-		flags = layer->meta.bound.type;
+	flags = pcb_layer_flags_(pcb, layer);
 
 	if (flags == 0)
 		return 1;
