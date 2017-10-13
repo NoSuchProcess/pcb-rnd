@@ -942,26 +942,26 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	switch(lnum) {
 		case 0:
 /*pcb_hid_actionl("dumpcsect", NULL);*/
-			pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
-			id = pcb_layer_create(gid, lname);
+			pcb_layergrp_list(st->PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
+			id = pcb_layer_create(st->PCB, gid, lname);
 /*printf("------------------------------\n");
 pcb_hid_actionl("dumpcsect", NULL);*/
 			break;
 		case 15:
-			pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
-			id = pcb_layer_create(gid, lname);
+			pcb_layergrp_list(st->PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
+			id = pcb_layer_create(st->PCB, gid, lname);
 			break;
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {
 				/* Edge must be the outline */
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 				pcb_layergrp_fix_turn_to_outline(g);
-				id = pcb_layer_create(g - st->PCB->LayerGroups.grp, lname);
+				id = pcb_layer_create(st->PCB, g - st->PCB->LayerGroups.grp, lname);
 			}
 			else if ((strcmp(ltype, "signal") == 0) || (strcmp(ltype, "power") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
 				/* Create a new inner layer for signals and for emulating misc layers */
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
-				id = pcb_layer_create(g - st->PCB->LayerGroups.grp, lname);
+				id = pcb_layer_create(st->PCB, g - st->PCB->LayerGroups.grp, lname);
 			}
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
 				/* F. or B. layers */
@@ -1000,7 +1000,7 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 	if (pcb_layer_list(mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(PCB, mask, &gid, 1);
-		id = pcb_layer_create(gid, kicad_name);
+		id = pcb_layer_create(st->PCB, gid, kicad_name);
 	}
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
 	return 0;

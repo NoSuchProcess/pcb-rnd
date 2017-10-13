@@ -661,14 +661,11 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 
 void pcb_layer_group_setup_silks(pcb_layer_stack_t *newg)
 {
-#warning layer TODO: this still depends on PCB in pcb_layer_create
 	pcb_layergrp_id_t gid;
 	for(gid = 0; gid < newg->len; gid++)
 		if ((newg->grp[gid].type & PCB_LYT_SILK) && (newg->grp[gid].len == 0))
-			pcb_layer_create(gid, "silk");
+			pcb_layer_create(PCB, gid, "silk");
 }
-
-
 
 int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name)
 {
@@ -777,7 +774,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
 			grp->type = PCB_LYT_OUTLINE | PCB_LYT_INTERN;
 			grp->name = pcb_strdup("outline");
-			pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->name);
+			pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
 			continue;
 		}
 
@@ -785,14 +782,14 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		if (ly->meta.bound.type & PCB_LYT_COPPER) { /* top or bottom copper */
 			grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, PCB_LYT_COPPER);
 			if (grp != NULL) {
-				pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->name);
+				pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
 				continue;
 			}
 		}
 
 		grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, ly->meta.bound.type & PCB_LYT_ANYTHING);
 		if (grp != NULL) {
-			pcb_layer_id_t lid = pcb_layer_create(pcb_layergrp_id(pcb, grp), ly->name);
+			pcb_layer_id_t lid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
 			pcb_layer_t *nly = pcb_get_layer(lid);
 			nly->comb = ly->comb;
 			continue;
@@ -824,7 +821,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 							offs = existing_intern + offs + 1;
 						if ((offs == int_ofs) && (ly->name != NULL)) {
 							pcb->LayerGroups.grp[n].name = pcb_strdup("internal");
-							pcb_layer_create(n, ly->name);
+							pcb_layer_create(pcb, n, ly->name);
 							goto found;
 						}
 					}

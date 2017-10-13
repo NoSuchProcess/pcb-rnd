@@ -229,7 +229,10 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
 void pcb_layers_reset(pcb_board_t *pcb);
 
 /* Create a new layer and put it in an existing group (if grp is not -1). */
-pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname);
+pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname);
+
+/* Return the name of a layer (resolving the true name of virtual layers too) */
+const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
 
 /* Rename an existing layer by idx */
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname);

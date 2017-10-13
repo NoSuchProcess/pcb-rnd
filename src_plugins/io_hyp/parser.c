@@ -859,25 +859,25 @@ void hyp_reset_layers()
 
 	id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1) == 1)
-		id = pcb_layer_create(gid, "top silk");
+		id = pcb_layer_create(PCB, gid, "top silk");
 	if (id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create top silk\n");
 
 	id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_BOTTOM, &gid, 1) == 1)
-		id = pcb_layer_create(gid, "bottom silk");
+		id = pcb_layer_create(PCB, gid, "bottom silk");
 	if (id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create bottom silk\n");
 
 	top_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
-		top_layer_id = pcb_layer_create(gid, "");
+		top_layer_id = pcb_layer_create(PCB, gid, "");
 	if (top_layer_id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create top copper\n");
 
 	bottom_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
-		bottom_layer_id = pcb_layer_create(gid, "");
+		bottom_layer_id = pcb_layer_create(PCB, gid, "");
 	if (bottom_layer_id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create bottom copper\n");
 
@@ -886,7 +886,7 @@ void hyp_reset_layers()
 	id = -1;
 	grp = pcb_get_grp_new_intern(PCB, -1);
 	if (grp != NULL) {
-		id = pcb_layer_create(grp - PCB->LayerGroups.grp, "outline");
+		id = pcb_layer_create(PCB, grp - PCB->LayerGroups.grp, "outline");
 		pcb_layergrp_fix_turn_to_outline(grp);
 	}
 	if (id < 0)
@@ -951,7 +951,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 
 		/* create new bottom layer */
 		pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
-		layer_id = pcb_layer_create(gid, lname);
+		layer_id = pcb_layer_create(PCB, gid, lname);
 
 		/* check if new bottom layer valid */
 		if (layer_id < 0) {
@@ -1282,7 +1282,7 @@ void hyp_draw_polygons()
 	for (l = 0; l < layer_count; l++) {
 		pcb_layer_id_t layer_id = layer_array[l];
 		if (hyp_debug)
-			pcb_message(PCB_MSG_DEBUG, "draw polygons: layer %lx \"%s\"\n", layer_id, pcb_layer_name(layer_id));
+			pcb_message(PCB_MSG_DEBUG, "draw polygons: layer %lx \"%s\"\n", layer_id, pcb_layer_name(PCB->Data, layer_id));
 
 		/* loop over all polygons of the layer and draw them */
 		for (i = polygon_head; i != NULL; i = i->next) {
@@ -1602,7 +1602,7 @@ pcb_bool exec_signal(parse_param * h)
 		layer_clearance[signal_layer_id] = xy2coord(h->plane_separation);
 
 	if (hyp_debug)
-		pcb_message(PCB_MSG_DEBUG, "signal layer: \"%s\"", pcb_layer_name(signal_layer_id));
+		pcb_message(PCB_MSG_DEBUG, "signal layer: \"%s\"", pcb_layer_name(PCB->Data, signal_layer_id));
 	hyp_debug_layer(h);
 
 	return 0;
@@ -1643,7 +1643,7 @@ pcb_bool exec_plane(parse_param * h)
 	/* XXX need to flood layer with copper */
 
 	if (hyp_debug)
-		pcb_message(PCB_MSG_DEBUG, "plane layer: \"%s\"", pcb_layer_name(plane_layer_id));
+		pcb_message(PCB_MSG_DEBUG, "plane layer: \"%s\"", pcb_layer_name(PCB->Data, plane_layer_id));
 	hyp_debug_layer(h);
 
 	return 0;
@@ -1896,7 +1896,7 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 	for (i = padstk->padstack; i != NULL; i = i->next) {
 		if (i->layer_name == NULL)
 			continue;
-		if ((strcmp(i->layer_name, pcb_layer_name(top_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
+		if ((strcmp(i->layer_name, pcb_layer_name(PCB->Data, top_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
 			break;
 	}
 	/* if top layer not found, search for bottom layer */
@@ -1904,7 +1904,7 @@ void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *
 		for (i = padstk->padstack; i != NULL; i = i->next) {
 			if (i->layer_name == NULL)
 				continue;
-			if ((strcmp(i->layer_name, pcb_layer_name(bottom_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
+			if ((strcmp(i->layer_name, pcb_layer_name(PCB->Data, bottom_layer_id)) == 0) && (i->pad_type != PAD_TYPE_METAL))
 				break;
 		}
 	/* if bottom layer not found, search for default MDEF layer */

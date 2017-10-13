@@ -74,7 +74,7 @@ static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 	pcb_layer_id_t lid;
 
 	assert(grp >= 0);
-	lid = pcb_layer_create(grp, lname);
+	lid = pcb_layer_create(PCB, grp, lname);
 	assert(lid >= 0);
 	return &PCB->Data->Layer[lid];
 }

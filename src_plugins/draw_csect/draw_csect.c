@@ -686,7 +686,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			}
 			else if (drag_addlayer) {
 				if (gactive >= 0) {
-					pcb_layer_create(gactive, "New Layer");
+					pcb_layer_create(PCB, gactive, "New Layer");
 					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				drag_addlayer = 0;

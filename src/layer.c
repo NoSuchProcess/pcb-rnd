@@ -335,31 +335,31 @@ static void layer_clear(pcb_layer_t *dst)
 	dst->meta.real.grp = -1;
 }
 
-pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
+pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname)
 {
 	pcb_layer_id_t id;
 
-	layer_if_too_many(PCB, return -1);
+	layer_if_too_many(pcb, return -1);
 
-	id = PCB->Data->LayerN++;
+	id = pcb->Data->LayerN++;
 
 	if (lname != NULL) {
-		if (PCB->Data->Layer[id].name != NULL)
-			free((char *)PCB->Data->Layer[id].name);
+		if (pcb->Data->Layer[id].name != NULL)
+			free((char *)pcb->Data->Layer[id].name);
 	}
 
-	layer_clear(&PCB->Data->Layer[id]);
-	PCB->Data->Layer[id].name = pcb_strdup(lname);
+	layer_clear(&pcb->Data->Layer[id]);
+	pcb->Data->Layer[id].name = pcb_strdup(lname);
 
 	/* add layer to group */
 	if (grp >= 0) {
-		PCB->LayerGroups.grp[grp].lid[PCB->LayerGroups.grp[grp].len] = id;
-		PCB->LayerGroups.grp[grp].len++;
-		PCB->Data->Layer[id].meta.real.vis = PCB->Data->Layer[PCB->LayerGroups.grp[grp].lid[0]].meta.real.vis;
+		pcb->LayerGroups.grp[grp].lid[pcb->LayerGroups.grp[grp].len] = id;
+		pcb->LayerGroups.grp[grp].len++;
+		pcb->Data->Layer[id].meta.real.vis = pcb->Data->Layer[pcb->LayerGroups.grp[grp].lid[0]].meta.real.vis;
 	}
-	PCB->Data->Layer[id].meta.real.grp = grp;
+	pcb->Data->Layer[id].meta.real.grp = grp;
 
-	PCB->Data->Layer[id].parent = PCB->Data;
+	pcb->Data->Layer[id].parent = pcb->Data;
 	return id;
 }
 
@@ -613,12 +613,12 @@ int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2)
 
 
 
-const char *pcb_layer_name(pcb_layer_id_t id)
+const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id)
 {
 	if (id < 0)
 		return NULL;
-	if (id < PCB->Data->LayerN)
-		return PCB->Data->Layer[id].name;
+	if (id < data->LayerN)
+		return data->Layer[id].name;
 	if ((id >= PCB_LAYER_VIRT_MIN) && (id <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[id-PCB_LAYER_VIRT_MIN].name;
 	return NULL;

@@ -695,7 +695,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		return 0;
 
 #if 0
-	printf(" Layer %s group %lx drill %d mask %d flags=%lx\n", pcb_layer_name(layer), group, is_drill, is_mask, flags);
+	printf(" Layer %s group %lx drill %d mask %d flags=%lx\n", pcb_layer_name(PCB, layer), group, is_drill, is_mask, flags);
 #endif
 
 
