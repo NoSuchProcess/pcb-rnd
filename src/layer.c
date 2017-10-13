@@ -843,7 +843,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(-1, pcb_layer_id(PCB->Data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
+		return pcb_gui->set_layer_group(-1, pcb_layer_id(first->parent, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
@@ -856,21 +856,21 @@ void pcb_layer_edit_attrib(pcb_layer_t *layer)
 	free(buf);
 }
 
-static pcb_layer_id_t pcb_layer_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
+static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
 	pcb_layergrp_t *g;
 
-	if (*cache < PCB->Data->LayerN) { /* check if the cache is still pointing to the right layer */
-		pcb_layergrp_id_t gid = PCB->Data->Layer[*cache].meta.real.grp;
-		if ((gid >= 0) && (gid < PCB->LayerGroups.len)) {
-			g = &(PCB->LayerGroups.grp[gid]);
+	if (*cache < pcb->Data->LayerN) { /* check if the cache is still pointing to the right layer */
+		pcb_layergrp_id_t gid = pcb->Data->Layer[*cache].meta.real.grp;
+		if ((gid >= 0) && (gid < pcb->LayerGroups.len)) {
+			g = &(pcb->LayerGroups.grp[gid]);
 			if ((g->type & loc) && (g->type & typ) && (g->lid[0] == *cache))
 				return *cache;
 		}
 	}
 
 	/* nope: need to resolve it again */
-	g = pcb_get_grp(&PCB->LayerGroups, loc, typ);
+	g = pcb_get_grp(&pcb->LayerGroups, loc, typ);
 	if ((g == NULL) || (g->len == 0)) {
 		*cache = -1;
 		return -1;
@@ -882,7 +882,7 @@ static pcb_layer_id_t pcb_layer_get_cached(pcb_layer_id_t *cache, unsigned int l
 pcb_layer_id_t pcb_layer_get_bottom_silk()
 {
 	static pcb_layer_id_t cache = -1;
-	pcb_layer_id_t id = pcb_layer_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	pcb_layer_id_t id = pcb_layer_get_cached(PCB, &cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 	assert(id >= 0);
 	return id;
 }
@@ -890,7 +890,7 @@ pcb_layer_id_t pcb_layer_get_bottom_silk()
 pcb_layer_id_t pcb_layer_get_top_silk()
 {
 	static pcb_layer_id_t cache = -1;
-	pcb_layer_id_t id =  pcb_layer_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_SILK);
+	pcb_layer_id_t id =  pcb_layer_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
 	assert(id >= 0);
 	return id;
 }
