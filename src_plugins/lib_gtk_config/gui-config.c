@@ -108,15 +108,18 @@ void ghid_wgeo_save(int save_to_file, int skip_user)
 
 	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project) {
 		GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_PROJECT);
-		if (save_to_file)
-			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL);
+		if (save_to_file) {
+			if (conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL) != 0)
+				pcb_message(PCB_MSG_ERROR, "... while trying to save window geometry in project file, as you requested ('save on exit')\n");
+		}
 	}
 
 	if (!skip_user) {
 		if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user) {
 			GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
 			if (save_to_file)
-				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
+				if (conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL) != 0)
+					pcb_message(PCB_MSG_ERROR, "... while trying to save window geometry in user config file, as you requested ('save on exit')\n");
 		}
 	}
 }
