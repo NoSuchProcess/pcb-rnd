@@ -1478,7 +1478,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	for(n = 0; n < argc; n++) {
 		if (!explicit && (*argv[n] == '@')) {
-			pcb_layer_id_t lid = pcb_layer_by_name(argv[n]+1);
+			pcb_layer_id_t lid = pcb_layer_by_name(PCB->Data, argv[n]+1);
 			if (lid < 0) {
 				pcb_message(PCB_MSG_ERROR, "Can't find layer named %s\n", argv[n]+1);
 				return 1;

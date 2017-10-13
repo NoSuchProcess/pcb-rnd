@@ -298,7 +298,7 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
    data set to the flag. Look up layer info and fill in thermal flags. This
    needs to be done in a separate pass at the end of parsing because
    vias may precede layers in the lihata input file. */
-static int post_thermal_assign(vtp0_t *pt)
+static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *pt)
 {
 	int i;
 
@@ -313,7 +313,7 @@ static int post_thermal_assign(vtp0_t *pt)
 		fh.Flags = *f;
 		for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
 			if (n->type == LHT_TEXT) {
-				int layer = pcb_layer_by_name(n->name);
+				int layer = pcb_layer_by_name(pcb->Data, n->name);
 				if (layer < 0) {
 					pcb_message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
 					return -1;
@@ -1341,7 +1341,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		return -1;
 
 	post_ids_assign(&post_ids);
-	if (post_thermal_assign(&post_thermal) != 0)
+	if (post_thermal_assign(pcb, &post_thermal) != 0)
 		return -1;
 
 	/* Run poly clipping at the end so we have all IDs and we can

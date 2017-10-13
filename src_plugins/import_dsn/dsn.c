@@ -65,7 +65,7 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 		return;
 	}
 
-	lid = pcb_layer_by_name(slayer);
+	lid = pcb_layer_by_name(PCB->Data, slayer);
 	if (lid < 0) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because layer name is invalid: %s\n", slayer);
 		return;

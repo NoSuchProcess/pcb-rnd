@@ -179,8 +179,10 @@ int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2);
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
 pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
 
-/* Return the name of a layer (real or virtual) or NULL on error */
-const char *pcb_layer_name(pcb_layer_id_t id);
+/* Return the name of a layer (real or virtual) or NULL on error
+   NOTE: layer names may not be unique; returns the first case sensitive hit;
+   slow linear search */
+pcb_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name);
 
 /* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
 pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *ly);
@@ -220,9 +222,6 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb);
 */
 int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
 int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
-
-/* Slow linear search for a layer by name */
-pcb_layer_id_t pcb_layer_by_name(const char *name);
 
 /**** layer creation (for load/import code) ****/
 

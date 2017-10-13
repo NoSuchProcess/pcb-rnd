@@ -486,7 +486,7 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 	pcb_layer_t *outline_layer;
 
 	/* get outline layer */
-	outline_id = pcb_layer_by_name("outline");
+	outline_id = pcb_layer_by_name(PCB->Data, "outline");
 	if (outline_id < 0) {
 		pcb_message(PCB_MSG_ERROR, "no outline layer.\n");
 		return;
@@ -914,7 +914,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	layer_id = -1;
 	if (lname != NULL) {
 		/* we have a layer name. check whether layer already exists */
-		layer_id = pcb_layer_by_name(lname);
+		layer_id = pcb_layer_by_name(PCB->Data, lname);
 		if (layer_id >= 0)
 			return layer_id;					/* found. return existing layer. */
 	}
@@ -922,7 +922,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 		/* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
 		for (n = 1; n < PCB_MAX_LAYER; n++) {
 			pcb_sprintf(new_layer_name, "%i", n);
-			if (pcb_layer_by_name(new_layer_name) < 0) {
+			if (pcb_layer_by_name(PCB->Data, new_layer_name) < 0) {
 				lname = new_layer_name;
 				break;
 			}
@@ -988,7 +988,7 @@ pcb_layer_t *hyp_get_layer(parse_param * h)
 
 pcb_bool_t hyp_is_bottom_layer(char *layer_name)
 {
-	return ((layer_name != NULL) && (pcb_layer_flags(PCB, pcb_layer_by_name(layer_name)) & PCB_LYT_BOTTOM));
+	return ((layer_name != NULL) && (pcb_layer_flags(PCB, pcb_layer_by_name(PCB->Data, layer_name)) & PCB_LYT_BOTTOM));
 }
 
 /*
@@ -1592,7 +1592,7 @@ pcb_bool exec_signal(parse_param * h)
 {
 	pcb_layer_id_t signal_layer_id;
 
-	if ((h->layer_name != NULL) && (pcb_layer_by_name(h->layer_name) >= 0))
+	if ((h->layer_name != NULL) && (pcb_layer_by_name(PCB->Data, h->layer_name) >= 0))
 		pcb_message(PCB_MSG_WARNING, "duplicate SIGNAL layer name \"%s\"\n", h->layer_name);
 
 	signal_layer_id = hyp_create_layer(h->layer_name);
@@ -1631,7 +1631,7 @@ pcb_bool exec_plane(parse_param * h)
 {
 	pcb_layer_id_t plane_layer_id;
 
-	if ((h->layer_name != NULL) && (pcb_layer_by_name(h->layer_name) >= 0))
+	if ((h->layer_name != NULL) && (pcb_layer_by_name(PCB->Data, h->layer_name) >= 0))
 		pcb_message(PCB_MSG_WARNING, "duplicate PLANE layer name \"%s\"\n", h->layer_name);
 
 	plane_layer_id = hyp_create_layer(h->layer_name);

@@ -295,11 +295,11 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 	return used;
 }
 
-pcb_layer_id_t pcb_layer_by_name(const char *name)
+pcb_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name)
 {
 	pcb_layer_id_t n;
-	for (n = 0; n < PCB->Data->LayerN; n++)
-		if (strcmp(PCB->Data->Layer[n].name, name) == 0)
+	for (n = 0; n < data->LayerN; n++)
+		if (strcmp(data->Layer[n].name, name) == 0)
 			return n;
 	return -1;
 }
