@@ -31,15 +31,26 @@ typedef struct pcb_padstack_poly_s {
 	pcb_polyarea_t *pa;           /* cache for the poly code */
 } pcb_padstack_poly_t;
 
+
+typedef struct pcb_padstack_line_s {
+	pcb_coord_t length, thickness;
+	unsigned square:1;
+} pcb_padstack_line_t;
+
 typedef struct pcb_padstack_shape_s {
 	pcb_layer_type_t layer_mask;
 	pcb_layer_combining_t comb;
 	union {
 		pcb_padstack_poly_t poly;
+		pcb_padstack_line_t line;
 		pcb_coord_t dia;             /* diameter of the filled circle */
 	} data;
+	enum {
+		PCB_PSSH_POLY,
+		PCB_PSSH_LINE,
+		PCB_PSSH_FILLCIRCLE
+	} shape;
 	pcb_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
-	unsigned is_poly:1;            /* either poly or filled circle */
 } pcb_padstack_shape_t;
 
 typedef struct pcb_padstack_proto_s {
