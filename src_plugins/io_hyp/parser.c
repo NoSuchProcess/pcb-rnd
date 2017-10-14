@@ -491,7 +491,7 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 		pcb_message(PCB_MSG_ERROR, "no outline layer.\n");
 		return;
 	}
-	outline_layer = pcb_get_layer(outline_id);
+	outline_layer = pcb_get_layer(PCB->Data, outline_id);
 	if (outline_layer == NULL) {
 		pcb_message(PCB_MSG_ERROR, "get outline layer failed.\n");
 		return;
@@ -979,7 +979,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 
 pcb_layer_t *hyp_get_layer(parse_param * h)
 {
-	return pcb_get_layer(hyp_create_layer(h->layer_name));
+	return pcb_get_layer(PCB->Data, hyp_create_layer(h->layer_name));
 }
 
 /*
@@ -1148,7 +1148,7 @@ void hyp_draw_polyline(hyp_polygon_t * polyline)
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "draw polyline:  drawing poly id=%i.\n", polyline->hyp_poly_id);
 
-	layer = pcb_get_layer(hyp_create_layer(polyline->layer_name));
+	layer = pcb_get_layer(PCB->Data, hyp_create_layer(polyline->layer_name));
 
 	xpos = polyline->vertex->x1;
 	ypos = polyline->vertex->y1;
@@ -1204,7 +1204,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "draw polygon:   drawing poly id=%i.\n", polygon->hyp_poly_id);
 
-	layer = pcb_get_layer(hyp_create_layer(polygon->layer_name));
+	layer = pcb_get_layer(PCB->Data, hyp_create_layer(polygon->layer_name));
 
 	outer_contour = pcb_true;
 

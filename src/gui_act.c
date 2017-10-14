@@ -1483,7 +1483,7 @@ static int pcb_act_EditLayer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_message(PCB_MSG_ERROR, "Can't find layer named %s\n", argv[n]+1);
 				return 1;
 			}
-			ly = pcb_get_layer(lid);
+			ly = pcb_get_layer(PCB->Data, lid);
 			explicit = 1;
 		}
 		else if (strncmp(argv[n], "name=", 5) == 0) {

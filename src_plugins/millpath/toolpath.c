@@ -89,7 +89,7 @@ static void sub_group_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 {
 	int n;
 	for(n = 0; n < grp->len; n++) {
-		pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
+		pcb_layer_t *l = pcb_get_layer(PCB->Data, grp->lid[n]);
 		if (l != NULL)
 			sub_layer_all(pcb, result, l, centerline);
 	}
@@ -171,7 +171,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		otlbb.X2 = otlbb.Y2 = -PCB_MAX_COORD;
 
 		for(n = 0; n < og->len; n++) {
-			pcb_layer_t *l = pcb_get_layer(og->lid[n]);
+			pcb_layer_t *l = pcb_get_layer(PCB->Data, og->lid[n]);
 			if (l == NULL)
 				continue;
 

@@ -544,7 +544,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 				pcb_message(PCB_MSG_WARNING, "Ignoring circle on layer %s\n", ly->name);
 				return 0;
 			}
-			circ = pcb_arc_alloc(pcb_get_layer(ly->ly));
+			circ = pcb_arc_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
 			break;
 	}
 	circ->X = eagle_get_attrc(st, subtree, "x", -1);
@@ -563,7 +563,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 		case IN_ELEM: break;
 		case ON_BOARD:
 			size_bump(st, circ->X + circ->Width + circ->Thickness, circ->Y + circ->Width + circ->Thickness);
-			pcb_add_arc_on_layer(pcb_get_layer(ly->ly), circ);
+			pcb_add_arc_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), circ);
 			break;
 	}
 
@@ -601,10 +601,10 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 				pcb_message(PCB_MSG_WARNING, "Ignoring rectangle on layer %s\n", ly->name);
 				return 0;
 			}
-			lin1 = pcb_line_alloc(pcb_get_layer(ly->ly));
-			lin2 = pcb_line_alloc(pcb_get_layer(ly->ly));
-			lin3 = pcb_line_alloc(pcb_get_layer(ly->ly));
-			lin4 = pcb_line_alloc(pcb_get_layer(ly->ly));
+			lin1 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+			lin2 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+			lin3 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
+			lin4 = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
 			break;
 	}
 
@@ -642,10 +642,10 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 		case ON_BOARD:
 			size_bump(st, lin1->Point1.X + lin1->Thickness, lin1->Point1.Y + lin1->Thickness);
 			size_bump(st, lin3->Point1.X + lin3->Thickness, lin3->Point1.Y + lin3->Thickness);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin1);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin2);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin3);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin4);
+			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin1);
+			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin2);
+			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin3);
+			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin4);
 
 			break;
 	}
@@ -705,7 +705,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 				pcb_message(PCB_MSG_WARNING, "Ignoring wire on layer %s\n", ly->name);
 				return 0;
 			}
-			lin = pcb_line_alloc(pcb_get_layer(ly->ly));
+			lin = pcb_line_alloc(pcb_get_layer(st->pcb->Data, ly->ly));
 	}
 	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
 	lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
@@ -725,7 +725,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		case ON_BOARD:
 			size_bump(st, lin->Point1.X + lin->Thickness, lin->Point1.Y + lin->Thickness);
 			size_bump(st, lin->Point2.X + lin->Thickness, lin->Point2.Y + lin->Thickness);
-			pcb_add_line_on_layer(pcb_get_layer(ly->ly), lin);
+			pcb_add_line_on_layer(pcb_get_layer(st->pcb->Data, ly->ly), lin);
 			break;
 	}
 

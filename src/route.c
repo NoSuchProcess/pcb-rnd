@@ -444,7 +444,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 
 	for( i=0;i<p_route->size;i++)	{
 		pcb_route_object_t const * p_obj = &p_route->objects[i];
-		pcb_layer_t * layer = pcb_get_layer(p_obj->layer);
+		pcb_layer_t * layer = pcb_get_layer(PCB->Data, p_obj->layer);
 
 		switch(p_obj->type)
 		{
@@ -597,7 +597,7 @@ pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC )
 	for(i=0;i<p_route->size;++i) {
 		const pcb_route_object_t * p_obj = &p_route->objects[i];
 
-		pcb_layer_t * layer = pcb_get_layer(p_obj->layer);
+		pcb_layer_t * layer = pcb_get_layer(PCB->Data, p_obj->layer);
 		if(layer)
 			pcb_gui->set_color(GC,layer->meta.real.color);
 

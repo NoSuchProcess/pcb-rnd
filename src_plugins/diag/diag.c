@@ -164,7 +164,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t layer_id = arr[n];
 		pcb_layergrp_id_t grp = pcb_layer_get_group(PCB, layer_id);
-		printf(" [%lx] %04x group=%ld %s\n", layer_id, pcb_layer_flags(PCB, layer_id), grp, pcb_layer_name(PCB, layer_id));
+		printf(" [%lx] %04x group=%ld %s\n", layer_id, pcb_layer_flags(PCB, layer_id), grp, pcb_layer_name(PCB->Data, layer_id));
 	}
 
 	/* query by logical layer: any bottom copper */

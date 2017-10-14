@@ -89,7 +89,7 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 	if (obj == NULL)
 		return -1;
 
-	ly = pcb_get_layer(obj->layer);
+	ly = pcb_get_layer(PCB->Data, obj->layer);
 	if (ly == NULL)
 		return -1;
 
@@ -140,7 +140,7 @@ int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta)
 {
 	pcb_layer_t *ly;
 
-	ly = pcb_get_layer(obj->layer);
+	ly = pcb_get_layer(PCB->Data, obj->layer);
 	if (ly == NULL)
 		return -1;
 

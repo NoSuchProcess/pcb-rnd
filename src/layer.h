@@ -177,7 +177,7 @@ int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2);
 /************ NEW API - new code should use these **************/
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
-pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
+pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id);
 
 /* Return the name of a layer (real or virtual) or NULL on error
    NOTE: layer names may not be unique; returns the first case sensitive hit;

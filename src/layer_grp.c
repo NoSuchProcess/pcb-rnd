@@ -407,7 +407,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 		return -1;
 
 	for(n = 0; n < stk->grp[gid].len; n++) {
-		pcb_layer_t *l = pcb_get_layer(stk->grp[gid].lid[n]);
+		pcb_layer_t *l = pcb_get_layer(pcb->Data, stk->grp[gid].lid[n]);
 		if (l != NULL) {
 			if (del_layers) {
 				pcb_layer_move(pcb, stk->grp[gid].lid[n], -1, -1);
@@ -455,8 +455,8 @@ int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t from, pcb_layergrp_id_
 
 	/* fix up the group id for the layers of the group moved */
 	for(n = 0; n < stk->grp[to_before].len; n++) {
-#warning TODO: use pcb_get_layer when it becomes pcb-safe
-/*		pcb_layer_t *l = pcb_get_layer(stk->grp[to_before].lid[n]);*/
+#warning layer TODO: use pcb_get_layer when it becomes pcb-safe - it is, DO IT NOW
+/*		pcb_layer_t *l = pcb_get_layer(pcb->data, stk->grp[to_before].lid[n]);*/
 		pcb_layer_t *l = &pcb->Data->Layer[stk->grp[to_before].lid[n]];
 		if ((l != NULL) && (l->meta.real.grp > 0))
 			l->meta.real.grp = to_before;
@@ -790,7 +790,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, ly->meta.bound.type & PCB_LYT_ANYTHING);
 		if (grp != NULL) {
 			pcb_layer_id_t lid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
-			pcb_layer_t *nly = pcb_get_layer(lid);
+			pcb_layer_t *nly = pcb_get_layer(pcb->Data, lid);
 			nly->comb = ly->comb;
 			continue;
 		}

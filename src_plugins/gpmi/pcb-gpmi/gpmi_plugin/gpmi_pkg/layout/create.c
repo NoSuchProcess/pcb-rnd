@@ -81,7 +81,7 @@ static void *layout_create_line_(pcb_layer_t *layer, int x1, int y1, int x2, int
 
 layout_object_t *layout_create_line(const char *search_id, layer_id_t layer_id, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
 {
-	pcb_layer_t *layer = pcb_get_layer(layer_id);
+	pcb_layer_t *layer = pcb_get_layer(PCB->Data, layer_id);
 	void *res;
 	if (layer == NULL)
 		return 0;
@@ -123,7 +123,7 @@ layout_object_t *layout_create_arc(const char *search_id, layer_id_t layer_id, i
 {
 	layout_search_t *s;
 	void *res;
-	pcb_layer_t *layer = pcb_get_layer(layer_id);
+	pcb_layer_t *layer = pcb_get_layer(PCB->Data, layer_id);
 
 	if (layer == NULL)
 		return NULL;
@@ -136,7 +136,7 @@ layout_object_t *layout_create_text(const char *search_id, layer_id_t layer_id, 
 {
 	layout_search_t *s;
 	void *res;
-	pcb_layer_t *layer = pcb_get_layer(layer_id);
+	pcb_layer_t *layer = pcb_get_layer(PCB->Data, layer_id);
 
 	if (layer == NULL)
 		return NULL;

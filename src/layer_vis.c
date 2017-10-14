@@ -250,7 +250,7 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 			/* the group is visible exactly if if any layer is visible */
 			g->vis = 0;
 			for(n = 0; n < g->len; n++) {
-				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+				pcb_layer_t *l = pcb_get_layer(pcb->Data, g->lid[n]);
 				if ((l != NULL) && (l->meta.real.vis)) {
 					g->vis = 1;
 					break;
@@ -260,7 +260,7 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 		else {
 			pcb_bool_op(g->vis, vis);
 			for(n = 0; n < g->len; n++) {
-				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+				pcb_layer_t *l = pcb_get_layer(pcb->Data, g->lid[n]);
 				pcb_bool_op(l->meta.real.vis, vis);
 			}
 		}
@@ -281,7 +281,7 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 			int n;
 			g->vis = pcb_false;
 			for(n = 0; n < g->len; n++) {
-				pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+				pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
 				l->meta.real.vis = 0;
 			}
 		}
@@ -293,11 +293,12 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 
 static void pcb_layer_confchg_color(conf_native_t *cfg, int arr_idx)
 {
-	pcb_layer_t *lp = pcb_get_layer(arr_idx);
-
-	if (lp != NULL) {
-		lp->meta.real.color = conf_core.appearance.color.layer[arr_idx];
-		lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[arr_idx];
+	if (PCB != NULL) {
+		pcb_layer_t *lp = pcb_get_layer(PCB->Data, arr_idx);
+		if (lp != NULL) {
+			lp->meta.real.color = conf_core.appearance.color.layer[arr_idx];
+			lp->meta.real.selected_color = conf_core.appearance.color.layer_selected[arr_idx];
+		}
 	}
 }
 

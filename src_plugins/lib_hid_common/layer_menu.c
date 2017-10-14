@@ -55,7 +55,7 @@ void pcb_layer_menu_create(const char *path_prefix, const char *cookie)
 		pcb_gui->create_menu(path, "TODO: action", "", "accel", "Layer group", cookie);
 
 		for(n = 0; n < g->len; n++) {
-			pcb_layer_t *l = pcb_get_layer(g->lid[n]);
+			pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
 
 			pcb_snprintf(bn, len_avail, "  %s", l->name);
 			pcb_gui->create_menu(path, "TODO: action", "", "accel", "Layer", cookie);

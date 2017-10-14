@@ -115,12 +115,12 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, void *data), void *auto_data)
 { /* generic multi-layer rendering */
 	int n, adding = -1;
-	pcb_layer_t *l = pcb_get_layer(ctx->grp->lid[0]);
+	pcb_layer_t *l = pcb_get_layer(PCB->Data, ctx->grp->lid[0]);
 	comp_init(ctx, (l->comb & PCB_LYC_SUB));
 
 	for(n = 0; n < ctx->grp->len; n++) {
 		int want_add;
-		l = pcb_get_layer(ctx->grp->lid[n]);
+		l = pcb_get_layer(PCB->Data, ctx->grp->lid[n]);
 
 		want_add = ctx->thin || !(l->comb & PCB_LYC_SUB);
 		if (want_add != adding) {

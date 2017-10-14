@@ -106,7 +106,7 @@ static void layersel_lyr_vis_sync(pcb_gtk_ls_lyr_t *lsl)
 	int is_on = 0;
 
 	if (lsl->ev_vis == NULL) {
-		pcb_layer_t *l = pcb_get_layer(lsl->lid);
+		pcb_layer_t *l = pcb_get_layer(PCB->Data, lsl->lid);
 		if (l != NULL)
 			is_on = l->meta.real.vis;
 	}
@@ -299,7 +299,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 				}
 			}
 			else {
-				pcb_layer_t *l = pcb_get_layer(lsl->lid);
+				pcb_layer_t *l = pcb_get_layer(PCB->Data, lsl->lid);
 				if (l != NULL)
 					is_on = !l->meta.real.vis;
 				else
@@ -430,7 +430,7 @@ static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, cons
 	else
 		color = *force_color;
 
-	ly = pcb_get_layer(lid);
+	ly = pcb_get_layer(PCB->Data, lid);
 
 	/* sensitive layer visibility widgets */
 	vis_box = build_visbox(color, &lsl->vis_on, &lsl->vis_off, (((ly != NULL) && (ly->comb & PCB_LYC_SUB)) ? 2 : 1), (((ly != NULL) && (ly->comb & PCB_LYC_AUTO)) ? 1 : 0));
@@ -535,7 +535,7 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 	}
 	else {
 		for(n = 0; n < grp->len; n++) {
-			pcb_layer_t *l = pcb_get_layer(grp->lid[n]);
+			pcb_layer_t *l = pcb_get_layer(PCB->Data, grp->lid[n]);
 			if (l != NULL) {
 				GtkWidget *wl = build_layer(lsg, &lsg->layer[n], l->name, grp->lid[n], NULL);
 				gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);

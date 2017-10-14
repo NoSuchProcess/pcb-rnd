@@ -287,7 +287,7 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 	if (pcb_layer_list(pcb, PCB_LYT_OUTLINE, &lid, 1) != 1)
 		return NULL;
 
-	layer = pcb_get_layer(lid);
+	layer = pcb_get_layer(PCB->Data, lid);
 	PCB_LINE_LOOP(layer) {
 		check(line->Point1.X, line->Point1.Y, line);
 		check(line->Point2.X, line->Point2.Y, line);

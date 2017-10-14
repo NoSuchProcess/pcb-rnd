@@ -644,7 +644,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	lid = -1;
 	pcb_layer_list(PCB, PCB_LYT_OUTLINE, &lid, 1);
 	if (lid >= 0)
-		global.outline_layer = pcb_get_layer(lid);
+		global.outline_layer = pcb_get_layer(PCB->Data, lid);
 	else
 		global.outline_layer = NULL;
 
@@ -957,7 +957,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 	   print the outline layer on this layer also.  */
 	if (global.outline &&
 			global.outline_layer != NULL &&
-			global.outline_layer != pcb_get_layer(layer) &&
+			global.outline_layer != pcb_get_layer(PCB->Data, layer) &&
 			!(flags & PCB_LYT_OUTLINE)) {
 		int save_drill = global.is_drill;
 		global.is_drill = 0;

@@ -234,7 +234,7 @@ static int write_board(hyp_wr_t * wr)
 	}
 	else {
 		/* explicit outline */
-		pcb_layer_t *l = pcb_get_layer(lid);
+		pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
 		gdl_iterator_t it;
 		pcb_line_t *line;
 		pcb_arc_t *arc;
