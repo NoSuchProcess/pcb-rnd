@@ -513,9 +513,6 @@ void pcb_notify_block(void)
 
 void pcb_notify_mode(void)
 {
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-
 	if (conf_core.temp.rat_warn)
 		pcb_clear_warnings();
 	switch (conf_core.editor.mode) {
