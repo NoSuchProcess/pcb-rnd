@@ -2071,3 +2071,16 @@ void pcb_elem_pp_invalidate_draw(pcb_element_t *Element)
 	PCB_END_LOOP;
 }
 
+pcb_bool pcb_layer_is_paste_auto_empty(pcb_board_t *pcb, pcb_side_t side)
+{
+	pcb_bool paste_empty = pcb_true;
+	PCB_PAD_ALL_LOOP(pcb->Data);
+	{
+		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
+			paste_empty = pcb_false;
+			break;
+		}
+	}
+	PCB_ENDALL_LOOP;
+	return paste_empty;
+}
