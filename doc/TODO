@@ -1,12 +1,6 @@
 1. For the upcoming release ===============================================================================
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 - BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
-- BUG: poly-poly term clearance in the same group, but different layer fails:
-	- check bug_files/subc_b_crash.lht:
-		- drag&drop move the subc
-		- send it to back side, drag&drop move again
-		- -> assert
-		- may be related to bottom side implicit layers: binding fails there
 - BUG: csect can't make a layer outline
 - BUGS:
 	- parametric footprint dialog cancel reopens the dialog? [report: Alain]
