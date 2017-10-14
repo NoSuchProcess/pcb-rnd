@@ -28,4 +28,71 @@
 
 #include "config.h"
 
+#include "action_helper.h"
+#include "board.h"
+#include "compat_nls.h"
+#include "crosshair.h"
+#include "insert.h"
+#include "polygon.h"
+#include "search.h"
 
+
+static struct {
+	pcb_polygon_t *poly;
+	pcb_line_t line;
+} fake;
+
+extern pcb_point_t InsertedPoint;
+static pcb_cardinal_t polyIndex = 0;
+
+
+void pcb_tool_insert_notify_mode(void)
+{
+	switch (pcb_crosshair.AttachedObject.State) {
+		/* first notify, lookup object */
+	case PCB_CH_STATE_FIRST:
+		pcb_crosshair.AttachedObject.Type =
+			pcb_search_screen(Note.X, Note.Y, PCB_INSERT_TYPES,
+									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
+
+		if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
+										pcb_crosshair.AttachedObject.Ptr2)) {
+				pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+				pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+				break;
+			}
+			else {
+				/* get starting point of nearest segment */
+				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
+					fake.poly = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
+					polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, Note.X, Note.Y);
+					fake.line.Point1 = fake.poly->Points[polyIndex];
+					fake.line.Point2 = fake.poly->Points[pcb_poly_contour_prev_point(fake.poly, polyIndex)];
+					pcb_crosshair.AttachedObject.Ptr2 = &fake.line;
+
+				}
+				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
+				InsertedPoint = *pcb_adjust_insert_point();
+			}
+		}
+		break;
+
+		/* second notify, insert new point into object */
+	case PCB_CH_STATE_SECOND:
+		if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON)
+			pcb_insert_point_in_object(PCB_TYPE_POLYGON,
+														pcb_crosshair.AttachedObject.Ptr1, fake.poly,
+														&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
+		else
+			pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
+														pcb_crosshair.AttachedObject.Ptr1,
+														pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
+		pcb_board_set_changed_flag(pcb_true);
+
+		/* reset identifiers */
+		pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+		break;
+	}
+}

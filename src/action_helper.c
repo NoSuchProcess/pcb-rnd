@@ -65,6 +65,7 @@
 #include "tool_arrow.h"
 #include "tool_buffer.h"
 #include "tool_copy.h"
+#include "tool_insert.h"
 #include "tool_line.h"
 #include "tool_move.h"
 #include "tool_poly.h"
@@ -232,19 +233,14 @@ either round or, if the octagon flag is set, octagonal.
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static pcb_point_t InsertedPoint;
+pcb_point_t InsertedPoint;
 pcb_layer_t *lastLayer;
-static struct {
-	pcb_polygon_t *poly;
-	pcb_line_t line;
-} fake;
 
 pcb_action_note_t Note;
 int defer_updates = 0;
 int defer_needs_update = 0;
 
 
-static pcb_cardinal_t polyIndex = 0;
 pcb_bool saved_mode = pcb_false;
 
 static void AdjustAttachedBox(void);
@@ -642,53 +638,7 @@ void pcb_notify_mode(void)
 
 		/* insert a point into a polygon/line/... */
 	case PCB_MODE_INSERT_POINT:
-		switch (pcb_crosshair.AttachedObject.State) {
-			/* first notify, lookup object */
-		case PCB_CH_STATE_FIRST:
-			pcb_crosshair.AttachedObject.Type =
-				pcb_search_screen(Note.X, Note.Y, PCB_INSERT_TYPES,
-										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
-
-			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
-											pcb_crosshair.AttachedObject.Ptr2)) {
-					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
-					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-					break;
-				}
-				else {
-					/* get starting point of nearest segment */
-					if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
-						fake.poly = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
-						polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, Note.X, Note.Y);
-						fake.line.Point1 = fake.poly->Points[polyIndex];
-						fake.line.Point2 = fake.poly->Points[pcb_poly_contour_prev_point(fake.poly, polyIndex)];
-						pcb_crosshair.AttachedObject.Ptr2 = &fake.line;
-
-					}
-					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
-					InsertedPoint = *pcb_adjust_insert_point();
-				}
-			}
-			break;
-
-			/* second notify, insert new point into object */
-		case PCB_CH_STATE_SECOND:
-			if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON)
-				pcb_insert_point_in_object(PCB_TYPE_POLYGON,
-															pcb_crosshair.AttachedObject.Ptr1, fake.poly,
-															&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
-			else
-				pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
-															pcb_crosshair.AttachedObject.Ptr1,
-															pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
-			pcb_board_set_changed_flag(pcb_true);
-
-			/* reset identifiers */
-			pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-			pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-			break;
-		}
+		pcb_tool_insert_notify_mode();
 		break;
 	}
 }
