@@ -376,14 +376,18 @@ double pcb_poly_area(const pcb_polygon_t *poly)
 
 #define ppclear(poly) \
 do { \
-	if (PCB_POLY_HAS_CLEARANCE(poly) && (poly->parent.layer != NULL)) \
-		pcb_poly_clear_from_poly(poly->parent.layer->parent, PCB_TYPE_POLYGON, poly->parent.layer, poly); \
+	pcb_layer_t *layer = poly->parent.layer; \
+	if (layer->is_bound) layer = layer->meta.bound.real; \
+	if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
+		pcb_poly_clear_from_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
 } while(0)
 
 #define pprestore(poly) \
 do { \
-	if (PCB_POLY_HAS_CLEARANCE(poly) && (poly->parent.layer != NULL)) \
-		pcb_poly_restore_to_poly(poly->parent.layer->parent, PCB_TYPE_POLYGON, poly->parent.layer, poly); \
+	pcb_layer_t *layer = poly->parent.layer; \
+	if (layer->is_bound) layer = layer->meta.bound.real; \
+	if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
+		pcb_poly_restore_to_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
 } while(0)
 
 /* copies a polygon to buffer */
