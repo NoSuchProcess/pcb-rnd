@@ -883,7 +883,7 @@ pcb_layer_id_t pcb_layer_get_bottom_silk()
 pcb_layer_id_t pcb_layer_get_top_silk()
 {
 	static pcb_layer_id_t cache = -1;
-	pcb_layer_id_t id =  pcb_layer_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
+	pcb_layer_id_t id = pcb_layer_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
 	assert(id >= 0);
 	return id;
 }
