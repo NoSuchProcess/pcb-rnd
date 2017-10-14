@@ -943,7 +943,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 				if (sl->arc_tree == NULL) sl->arc_tree = pcb_r_create_tree(NULL, 0, 0);
 				if (sl->text_tree == NULL) sl->text_tree = pcb_r_create_tree(NULL, 0, 0);
 				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
-				pcb_message(PCB_MSG_ERROR, "Couldn't bind subc layer TODO on buffer move\n");
+				pcb_message(PCB_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
 			}
 		}
 		else
