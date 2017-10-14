@@ -455,9 +455,7 @@ int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t from, pcb_layergrp_id_
 
 	/* fix up the group id for the layers of the group moved */
 	for(n = 0; n < stk->grp[to_before].len; n++) {
-#warning layer TODO: use pcb_get_layer when it becomes pcb-safe - it is, DO IT NOW
-/*		pcb_layer_t *l = pcb_get_layer(pcb->data, stk->grp[to_before].lid[n]);*/
-		pcb_layer_t *l = &pcb->Data->Layer[stk->grp[to_before].lid[n]];
+		pcb_layer_t *l = pcb_get_layer(pcb->Data, stk->grp[to_before].lid[n]);
 		if ((l != NULL) && (l->meta.real.grp > 0))
 			l->meta.real.grp = to_before;
 	}
