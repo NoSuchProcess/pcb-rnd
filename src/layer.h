@@ -28,6 +28,9 @@
 #ifndef PCB_LAYER_H
 #define PCB_LAYER_H
 
+/* How deep subcs can be nested */
+#define PCB_MAX_BOUND_LAYER_RECURSION 128
+
 typedef long int pcb_layer_id_t;
 typedef long int pcb_layergrp_id_t;
 

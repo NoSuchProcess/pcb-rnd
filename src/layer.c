@@ -207,8 +207,14 @@ unsigned int pcb_layer_flags_(pcb_layer_t *layer)
 
 	/* bound layer: if it is already bound to a real layer, use that, whatever it is (manual binding may override our local type match pattern) */
 	if (layer->meta.bound.real != NULL) {
-		layer = layer->meta.bound.real;
-		assert(!layer->is_bound);
+		int rec = 0;
+		while(layer->is_bound) {
+			layer = layer->meta.bound.real;
+			rec++;
+			if ((rec > PCB_MAX_BOUND_LAYER_RECURSION) || (layer == 0))
+				return 0;
+		}
+
 		return pcb_layer_flags_(layer); /* tail recursion */
 	}
 
