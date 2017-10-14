@@ -84,7 +84,7 @@ int layer_flag_is_set(unsigned int flags, multiple layer_type_t flg)
 layer_id_t layer_list(multiple layer_type_t flags, int idx)
 {
 	pcb_layer_id_t ids[LAYER_SEARCH_MAX];
-	int len = pcb_layer_list(flags, ids, LAYER_SEARCH_MAX);
+	int len = pcb_layer_list(PCB, flags, ids, LAYER_SEARCH_MAX);
 	if (idx < 0)
 		return len;
 	if (idx >= len)
@@ -95,7 +95,7 @@ layer_id_t layer_list(multiple layer_type_t flags, int idx)
 layer_id_t layer_list_any(multiple layer_type_t flags, int idx)
 {
 	pcb_layer_id_t ids[LAYER_SEARCH_MAX];
-	int len = pcb_layer_list_any(flags, ids, LAYER_SEARCH_MAX);
+	int len = pcb_layer_list_any(PCB, flags, ids, LAYER_SEARCH_MAX);
 	if (idx < 0)
 		return len;
 	if (idx >= len)

@@ -284,7 +284,7 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 	pcb_coord_t x, y;
 	double bestd = (double)pcb->MaxHeight*(double)pcb->MaxHeight + (double)pcb->MaxWidth*(double)pcb->MaxWidth;
 
-	if (pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1) != 1)
+	if (pcb_layer_list(pcb, PCB_LYT_OUTLINE, &lid, 1) != 1)
 		return NULL;
 
 	layer = pcb_get_layer(lid);

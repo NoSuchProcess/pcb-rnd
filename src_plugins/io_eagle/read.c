@@ -342,7 +342,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			}
 			if (typ != 0) {
 				if (reuse)
-					pcb_layer_list(typ, &ly->ly, 1);
+					pcb_layer_list(st->pcb, typ, &ly->ly, 1);
 				if ((ly->ly < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
 					ly->ly = pcb_layer_create(st->pcb, gid, ly->name);
 			}

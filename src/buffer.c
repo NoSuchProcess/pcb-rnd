@@ -497,8 +497,8 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	PCB_ENDALL_LOOP;
 
 	/* swap silkscreen layers */
-	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &SLayer, 1);
-	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, &CLayer, 1);
+	pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, &SLayer, 1);
+	pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, &CLayer, 1);
 	assert(SLayer != -1);
 	assert(CLayer != -1);
 	swap = Buffer->Data->Layer[SLayer];

@@ -285,7 +285,7 @@ void lesstif_show_layergrp_edit(void)
 	pcb_layer_id_t lid;
 	if (layergrp_edit != NULL)
 		return;
-	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
+	if (pcb_layer_list(PCB, PCB_LYT_CSECT, &lid, 1) > 0) {
 		layergrp_edit = lesstif_show_layer(lid, "Layer groups", 0);
 		layergrp_edit->mouse_ev = pcb_stub_draw_csect_mouse_ev;
 		layergrp_edit->pre_close = layergrp_pre_close;
@@ -309,7 +309,7 @@ static void lesstif_show_fontsel_global()
 	pcb_layer_id_t lid;
 	if (fontsel_glob != NULL)
 		return;
-	if (pcb_layer_list(PCB_LYT_DIALOG, &lid, 1) > 0) {
+	if (pcb_layer_list(PCB, PCB_LYT_DIALOG, &lid, 1) > 0) {
 		fontsel_glob = lesstif_show_layer(lid, "Pen font selection", 0);
 		fontsel_glob->ctx.dialog_draw = pcb_stub_draw_fontsel;
 		fontsel_glob->mouse_ev = pcb_stub_draw_fontsel_mouse_ev;
@@ -335,7 +335,7 @@ static void lesstif_show_fontsel_local(pcb_layer_t *txtly, pcb_text_t *txt, int 
 	pcb_layer_t *old_layer;
 	int old_type;
 
-	if (pcb_layer_list(PCB_LYT_DIALOG, &lid, 1) <= 0)
+	if (pcb_layer_list(PCB, PCB_LYT_DIALOG, &lid, 1) <= 0)
 		return;
 
 	old_txt = *pcb_stub_draw_fontsel_text_obj;

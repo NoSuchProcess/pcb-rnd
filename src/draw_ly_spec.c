@@ -127,7 +127,7 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	pcb_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
 
-	if (pcb_layer_list(PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
+	if (pcb_layer_list(PCB, PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
 		return;
 
 	pcb_layergrp_list(PCB, PCB_LYT_SILK | lyt_side, &gid, 1);

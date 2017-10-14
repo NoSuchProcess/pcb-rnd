@@ -150,7 +150,7 @@ void pcb_layervis_reset_stack(void)
 	PCB->RatOn = pcb_true;
 
 	/* Bring the top copper group to the front and make it active.  */
-	if (pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
+	if (pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
 		pcb_layervis_change_group_vis(comp, 1, 1);
 }
 

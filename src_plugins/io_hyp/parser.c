@@ -1270,13 +1270,13 @@ void hyp_draw_polygons()
 #endif
 
 	/* get list of copper layer id's */
-	layer_count = pcb_layer_list(PCB_LYT_COPPER, NULL, 0);
+	layer_count = pcb_layer_list(PCB, PCB_LYT_COPPER, NULL, 0);
 	if (layer_count <= 0)
 		return;
 	layer_array = malloc(sizeof(pcb_layer_id_t) * layer_count);
 	if (layer_array == NULL)
 		return;
-	layer_count = pcb_layer_list(PCB_LYT_COPPER, layer_array, layer_count);
+	layer_count = pcb_layer_list(PCB, PCB_LYT_COPPER, layer_array, layer_count);
 
 	/* loop over all layers */
 	for (l = 0; l < layer_count; l++) {

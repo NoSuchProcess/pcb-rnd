@@ -214,55 +214,55 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
 	currentGroup = 0;
 
 	/* figure out which pcb layers are bottom copper and make a list */
-	bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
+	bottomCount = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
 	if (bottomCount > 0 ) {
 		bottomLayers = malloc(sizeof(pcb_layer_id_t) * bottomCount);
-		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottomCount);
+		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottomCount);
 	} else {
 		bottomLayers = NULL;
 	}
 
 	/* figure out which pcb layers are internal copper layers and make a list */
-	innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
+	innerCount = pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
 	if (innerCount > 0 ) {
 		innerLayers = malloc(sizeof(pcb_layer_id_t) * innerCount);
-		pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, innerCount);
+		pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, innerCount);
 	} else {
 		innerLayers = NULL;
 	}
 
 	/* figure out which pcb layers are top copper and make a list */
-	topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
+	topCount = pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	if (topCount > 0 ) {
 		topLayers = malloc(sizeof(pcb_layer_id_t) * topCount);
-		pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, topCount);
+		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, topCount);
 	} else {
 		topLayers = NULL;
 	}
 
 	/* figure out which pcb layers are bottom silk and make a list */
-	bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
+	bottomSilkCount = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	if (bottomSilkCount > 0 ) {
 		bottomSilk = malloc(sizeof(pcb_layer_id_t) * bottomSilkCount);
-		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottomSilkCount);
+		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottomSilkCount);
 	} else {
 		bottomSilk = NULL;
 	}
 
 	/* figure out which pcb layers are top silk and make a list */
-	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
+	topSilkCount = pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	if (topSilkCount > 0) {
 		topSilk = malloc(sizeof(pcb_layer_id_t) * topSilkCount);
-		pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, topSilkCount);
+		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, topSilk, topSilkCount);
 	} else {
 		topSilk = NULL;
 	}
 
 	/* figure out which pcb layers are outlines and make a list */
- 	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
+ 	outlineCount = pcb_layer_list(PCB, PCB_LYT_OUTLINE, NULL, 0);
 	if (outlineCount > 0) {
 		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
-		pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+		pcb_layer_list(PCB, PCB_LYT_OUTLINE, outlineLayers, outlineCount);
 	} else {
 		outlineLayers = NULL;
 	}

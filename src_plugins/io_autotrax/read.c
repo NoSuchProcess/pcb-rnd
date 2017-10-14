@@ -718,7 +718,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 static pcb_layer_id_t autotrax_reg_layer(read_state_t *st, const char *autotrax_layer, unsigned int mask)
 {
 	pcb_layer_id_t id;
-	if (pcb_layer_list(mask, &id, 1) != 1) {
+	if (pcb_layer_list(st->pcb, mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, mask, &gid, 1);
 		id = pcb_layer_create(st->pcb, gid, autotrax_layer);
@@ -741,7 +741,7 @@ static int autotrax_create_layers(read_state_t *st)
 	st->protel_to_stackup[1] = autotrax_reg_layer(st, "top copper", PCB_LYT_COPPER | PCB_LYT_TOP);
 	st->protel_to_stackup[6] = autotrax_reg_layer(st, "bottom copper", PCB_LYT_COPPER | PCB_LYT_BOTTOM);
 
-	if (pcb_layer_list(PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
+	if (pcb_layer_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
 		st->protel_to_stackup[11] = pcb_layer_create(st->pcb, gid, "Board"); /* != outline, cutouts */

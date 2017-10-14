@@ -588,7 +588,7 @@ void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coor
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw)
 {
 	pcb_layer_id_t lid;
-	if (pcb_layer_list(PCB_LYT_DIALOG, &lid, 1) > 0)
+	if (pcb_layer_list(PCB, PCB_LYT_DIALOG, &lid, 1) > 0)
 		return pcb_gtk_preview_generic_new(com, init_widget, expose, lid, dialog_draw);
 	else
 		return NULL;

@@ -997,7 +997,7 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask)
 {
 	pcb_layer_id_t id;
-	if (pcb_layer_list(mask, &id, 1) != 1) {
+	if (pcb_layer_list(st->pcb, mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(PCB, mask, &gid, 1);
 		id = pcb_layer_create(st->pcb, gid, kicad_name);

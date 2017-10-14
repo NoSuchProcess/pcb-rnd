@@ -642,7 +642,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	}
 
 	lid = -1;
-	pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1);
+	pcb_layer_list(PCB, PCB_LYT_OUTLINE, &lid, 1);
 	if (lid >= 0)
 		global.outline_layer = pcb_get_layer(lid);
 	else

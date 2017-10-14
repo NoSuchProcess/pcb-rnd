@@ -1702,7 +1702,7 @@ static int pcb_act_SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	if (pcb_strcasecmp(argv[0], "silk") == 0) {
 		PCB->RatDraw = 0;
-		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
+		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
 			pcb_layervis_change_group_vis(lid, 1, 1);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
@@ -1762,7 +1762,7 @@ static int pcb_act_ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_co
 		return 0;
 	}
 	else if (pcb_strcasecmp(argv[0], "silk") == 0) {
-		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
+		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
 			pcb_layervis_change_group_vis(lid, -1, 0);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");

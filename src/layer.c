@@ -255,7 +255,7 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask)
 }
 
 
-int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
+int pcb_layer_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -265,7 +265,7 @@ int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 			APPEND_VIRT(v);
 
 	for (n = 0; n < PCB_MAX_LAYER; n++)
-		if ((pcb_layer_flags(PCB, n) & mask) == mask)
+		if ((pcb_layer_flags(pcb, n) & mask) == mask)
 			APPEND(n);
 
 	if (mask == PCB_LYT_UI)
@@ -275,7 +275,7 @@ int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 	return used;
 }
 
-int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
+int pcb_layer_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -285,7 +285,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 			APPEND_VIRT(v);
 
 	for (n = 0; n < PCB_MAX_LAYER; n++)
-		if ((pcb_layer_flags(PCB, n) & mask))
+		if ((pcb_layer_flags(pcb, n) & mask))
 			APPEND(n);
 
 	if (mask & PCB_LYT_UI)

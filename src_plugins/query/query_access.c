@@ -265,7 +265,7 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 	pcb_layer_id_t id;
 	const char *s1;
 
-	if (pcb_layer_list(mask, &id, 1) != 1)
+	if (pcb_layer_list(PCB, mask, &id, 1) != 1)
 		PCB_QRY_RET_INV(res);
 
 	fld2str_req(s1, fld, 0);

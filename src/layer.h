@@ -220,8 +220,8 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb);
    The plain version require exact match (look for a specific layer),
    the  _any version allows partial match so work with PCB_LYT_ANY*.
 */
-int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
-int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
+int pcb_layer_list(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
+int pcb_layer_list_any(pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
 
 /**** layer creation (for load/import code) ****/
 
