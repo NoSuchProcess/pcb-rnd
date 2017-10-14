@@ -139,6 +139,7 @@ put /local/pcb/OBJS [@
 	stub_mincut.o
 	stub_stroke.o
 	stub_vendor.o
+	tool_line.o
 	undo.o
 	undo_act.o
 	undo_old.o

@@ -61,6 +61,7 @@
 #include "obj_rat_draw.h"
 #include "obj_poly_draw.h"
 
+#include "tool_line.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
