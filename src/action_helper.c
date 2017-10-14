@@ -66,6 +66,7 @@
 #include "tool_copy.h"
 #include "tool_line.h"
 #include "tool_move.h"
+#include "tool_poly.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -730,41 +731,7 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_POLYGON:
 		{
-			pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
-			pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
-
-			/* do update of position; use the 'PCB_MODE_LINE' mechanism */
-			pcb_notify_line();
-
-			/* check if this is the last point of a polygon */
-			if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-				pcb_hid_actionl("Polygon", "Close", NULL);
-				break;
-			}
-
-			/* Someone clicking twice on the same point ('doubleclick'): close polygon */
-			if (n >= 3 && points[n - 1].X == pcb_crosshair.AttachedLine.Point2.X && points[n - 1].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-				pcb_hid_actionl("Polygon", "Close", NULL);
-				break;
-			}
-
-			/* create new point if it's the first one or if it's
-			 * different to the last one
-			 */
-			if (!n || points[n - 1].X != pcb_crosshair.AttachedLine.Point2.X || points[n - 1].Y != pcb_crosshair.AttachedLine.Point2.Y) {
-				pcb_poly_point_new(&pcb_crosshair.AttachedPolygon, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
-
-				/* copy the coordinates */
-				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
-				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
-			}
-
-			if (conf_core.editor.orthogonal_moves) {
-				/* set the mark to the new starting point so ortho works */
-				pcb_marked.X = Note.X;
-				pcb_marked.Y = Note.Y;
-			}
-
+			pcb_tool_poly_notify_mode();
 			break;
 		}
 
