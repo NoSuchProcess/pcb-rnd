@@ -27,5 +27,36 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
+
+#include "action_helper.h"
+#include "board.h"
+#include "change.h"
+#include "compat_nls.h"
+#include "data.h"
+#include "draw.h"
+#include "undo.h"
+
+#include "obj_pinvia_draw.h"
 
 
+void pcb_tool_via_notify_mode(void)
+{
+	pcb_pin_t *via;
+
+	if (!PCB->ViaOn) {
+		pcb_message(PCB_MSG_WARNING, _("You must turn via visibility on before\n" "you can place vias\n"));
+		return;
+	}
+	if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
+													conf_core.design.via_thickness, 2 * conf_core.design.clearance,
+													0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
+		pcb_obj_add_attribs(via, PCB->pen_attr);
+		pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
+		if (pcb_gui->shift_is_pressed())
+			pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
+		pcb_undo_inc_serial();
+		pcb_via_invalidate_draw(via);
+		pcb_draw();
+	}
+}

@@ -73,6 +73,7 @@
 #include "tool_rotate.h"
 #include "tool_text.h"
 #include "tool_thermal.h"
+#include "tool_via.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -528,23 +529,7 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_VIA:
 		{
-			pcb_pin_t *via;
-
-			if (!PCB->ViaOn) {
-				pcb_message(PCB_MSG_WARNING, _("You must turn via visibility on before\n" "you can place vias\n"));
-				break;
-			}
-			if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
-															conf_core.design.via_thickness, 2 * conf_core.design.clearance,
-															0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
-				pcb_obj_add_attribs(via, PCB->pen_attr);
-				pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-				if (pcb_gui->shift_is_pressed())
-					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
-				pcb_undo_inc_serial();
-				pcb_via_invalidate_draw(via);
-				pcb_draw();
-			}
+			pcb_tool_via_notify_mode();
 			break;
 		}
 
