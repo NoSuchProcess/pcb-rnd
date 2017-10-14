@@ -70,6 +70,7 @@
 #include "tool_polyhole.h"
 #include "tool_rectangle.h"
 #include "tool_remove.h"
+#include "tool_rotate.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -721,8 +722,7 @@ void pcb_notify_mode(void)
 		break;
 
 	case PCB_MODE_ROTATE:
-		pcb_screen_obj_rotate90(Note.X, Note.Y, pcb_gui->shift_is_pressed()? (PCB_SWAP_IDENT ? 1 : 3)
-											 : (PCB_SWAP_IDENT ? 3 : 1));
+		pcb_tool_rotate_notify_mode();
 		break;
 
 	case PCB_MODE_COPY:

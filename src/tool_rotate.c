@@ -27,5 +27,15 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
+
+#include "action_helper.h"
+#include "hid_actions.h"
+#include "rotate.h"
 
 
+void pcb_tool_rotate_notify_mode(void)
+{
+	pcb_screen_obj_rotate90(Note.X, Note.Y, pcb_gui->shift_is_pressed()? (PCB_SWAP_IDENT ? 1 : 3)
+									 : (PCB_SWAP_IDENT ? 3 : 1));
+}
