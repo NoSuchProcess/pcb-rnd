@@ -68,6 +68,7 @@
 #include "tool_move.h"
 #include "tool_poly.h"
 #include "tool_polyhole.h"
+#include "tool_rectangle.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -671,39 +672,7 @@ void pcb_notify_mode(void)
 		break;
 
 	case PCB_MODE_RECTANGLE:
-		/* do update of position */
-		pcb_notify_block();
-
-		/* create rectangle if both corners are determined
-		 * and width, height are != 0
-		 */
-		if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD &&
-				pcb_crosshair.AttachedBox.Point1.X != pcb_crosshair.AttachedBox.Point2.X &&
-				pcb_crosshair.AttachedBox.Point1.Y != pcb_crosshair.AttachedBox.Point2.Y) {
-			pcb_polygon_t *polygon;
-
-			int flags = PCB_FLAG_CLEARPOLY;
-			if (conf_core.editor.full_poly)
-				flags |= PCB_FLAG_FULLPOLY;
-			if (conf_core.editor.clear_polypoly)
-				flags |= PCB_FLAG_CLEARPOLYPOLY;
-			if ((polygon = pcb_poly_new_from_rectangle(CURRENT,
-																									 pcb_crosshair.AttachedBox.Point1.X,
-																									 pcb_crosshair.AttachedBox.Point1.Y,
-																									 pcb_crosshair.AttachedBox.Point2.X,
-																									 pcb_crosshair.AttachedBox.Point2.Y,
-																									 2 * conf_core.design.clearance,
-																									 pcb_flag_make(flags))) != NULL) {
-				pcb_obj_add_attribs(polygon, PCB->pen_attr);
-				pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
-				pcb_undo_inc_serial();
-				pcb_poly_invalidate_draw(CURRENT, polygon);
-				pcb_draw();
-			}
-
-			/* reset state to 'first corner' */
-			pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-		}
+		pcb_tool_rectangle_notify_mode();
 		break;
 
 	case PCB_MODE_TEXT:
