@@ -803,8 +803,8 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb)
 	pcb_layer_id_t n;
 
 	/* old silk layers are always auto */
-	for(n = 0; n < pcb_max_layer; n++)
-		if (pcb_layer_flags(PCB, n) & PCB_LYT_SILK)
+	for(n = 0; n < pcb->Data->LayerN; n++)
+		if (pcb_layer_flags(pcb, n) & PCB_LYT_SILK)
 			pcb->Data->Layer[n].comb |= PCB_LYC_AUTO;
 }
 
