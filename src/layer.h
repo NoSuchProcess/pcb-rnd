@@ -152,6 +152,8 @@ pcb_bool pcb_layer_is_paste_empty(pcb_board_t *pcb, pcb_side_t side);
 pcb_layer_id_t pcb_layer_get_bottom_silk();
 pcb_layer_id_t pcb_layer_get_top_silk();
 
+/* Return the board the layer is under */
+#define pcb_layer_get_top(layer) pcb_data_get_top((layer)->parent)
 
 /************ OLD API - new code should not use these **************/
 

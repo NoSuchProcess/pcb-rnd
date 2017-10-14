@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996,2004,2006 Thomas Nau
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas (pcb-rnd extensions)
+ *  Copyright (C) 2016, 2017 Tibor 'Igor2' Palinkas (pcb-rnd extensions)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -649,10 +649,12 @@ void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 
 void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 {
-	dst->comb = src->comb;
+	pcb_board_t *pcb;
 
 	assert(!src->is_bound);
 
+	pcb = pcb_layer_get_top(src);
+	dst->comb = src->comb;
 	dst->is_bound = 1;
 
 	if (!src->is_bound) {
@@ -663,7 +665,7 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	else
 		dst->meta.bound.real = NULL;
 
-	dst->meta.bound.type = pcb_layergrp_flags(PCB, src->meta.real.grp);
+	dst->meta.bound.type = pcb_layergrp_flags(pcb, src->meta.real.grp);
 	if (src->name != NULL)
 		dst->name = pcb_strdup(src->name);
 	else
@@ -672,8 +674,8 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	if ((dst->meta.bound.type & PCB_LYT_INTERN) && (dst->meta.bound.type & PCB_LYT_COPPER)) {
 		int from_top, from_bottom, res;
 		
-		res = pcb_layergrp_dist(PCB, src->meta.real.grp, pcb_layergrp_get_top_copper(), PCB_LYT_COPPER, &from_top);
-		res |= pcb_layergrp_dist(PCB, src->meta.real.grp, pcb_layergrp_get_bottom_copper(), PCB_LYT_COPPER, &from_bottom);
+		res = pcb_layergrp_dist(pcb, src->meta.real.grp, pcb_layergrp_get_top_copper(), PCB_LYT_COPPER, &from_top);
+		res |= pcb_layergrp_dist(pcb, src->meta.real.grp, pcb_layergrp_get_bottom_copper(), PCB_LYT_COPPER, &from_bottom);
 		if (res == 0) {
 			if (from_top <= from_bottom)
 				dst->meta.bound.stack_offs = from_top;
