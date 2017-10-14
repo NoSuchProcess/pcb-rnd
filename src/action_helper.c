@@ -67,6 +67,7 @@
 #include "tool_copy.h"
 #include "tool_insert.h"
 #include "tool_line.h"
+#include "tool_lock.h"
 #include "tool_move.h"
 #include "tool_poly.h"
 #include "tool_polyhole.h"
@@ -537,51 +538,7 @@ void pcb_notify_mode(void)
 		}
 	case PCB_MODE_LOCK:
 		{
-			type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
-			if (type == PCB_TYPE_ELEMENT) {
-				pcb_element_t *element = (pcb_element_t *) ptr2;
-
-				PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, element);
-				PCB_PIN_LOOP(element);
-				{
-					PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, pin);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pin);
-				}
-				PCB_END_LOOP;
-				PCB_PAD_LOOP(element);
-				{
-					PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, pad);
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pad);
-				}
-				PCB_END_LOOP;
-				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, element);
-				/* always re-draw it since I'm too lazy
-				 * to tell if a selected flag changed
-				 */
-				pcb_elem_invalidate_draw(element);
-				pcb_draw();
-				pcb_hid_actionl("Report", "Object", NULL);
-			}
-			else if (type == PCB_TYPE_SUBC) {
-				pcb_subc_t *subc = (pcb_subc_t *)ptr2;
-				pcb_flag_change(PCB, PCB_CHGFLG_TOGGLE, PCB_FLAG_LOCK, PCB_TYPE_SUBC, ptr1, ptr2, ptr3);
-
-				DrawSubc(subc);
-				pcb_draw();
-				pcb_hid_actionl("Report", "Subc", NULL);
-			}
-			else if (type != PCB_TYPE_NONE) {
-				pcb_text_t *thing = (pcb_text_t *) ptr3;
-				PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, thing);
-				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, thing)
-						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, thing)) {
-					/* this is not un-doable since LOCK isn't */
-					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, thing);
-					pcb_draw_obj((pcb_any_obj_t *)ptr2);
-					pcb_draw();
-				}
-				pcb_hid_actionl("Report", "Object", NULL);
-			}
+			pcb_tool_lock_notify_mode();
 			break;
 		}
 	case PCB_MODE_THERMAL:
