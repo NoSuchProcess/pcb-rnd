@@ -864,6 +864,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	}
 
 	polylist_foreach(&sl->Polygon, &it, poly) {
+		pcb_poly_pprestore(poly);
 		if (src_has_real_layer) {
 			pcb_r_delete_entry(sl->polygon_tree, (pcb_box_t *)poly);
 			chg++;
@@ -873,6 +874,8 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_r_insert_entry(dl->polygon_tree, (pcb_box_t *)poly, 0);
 			chg++;
 		}
+		if (dst_is_pcb)
+			pcb_poly_ppclear(poly);
 	}
 
 	if (!dst_is_pcb) {
@@ -886,24 +889,6 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 		chg++;
 	}
 	return chg;
-}
-
-static void subc_relocate_poly_clips(pcb_data_t *dst, pcb_subc_t *sc)
-{
-	int n;
-
-	for(n = 0; n < sc->data->LayerN; n++) {
-		pcb_polygon_t *poly;
-		gdl_iterator_t it;
-		pcb_layer_t *sl = sc->data->Layer + n;
-
-		if (sl->meta.bound.real == NULL)
-			continue;
-
-		polylist_foreach(&sl->Polygon, &it, poly) {
-			pcb_poly_init_clip(dst, sl->meta.bound.real, poly);
-		}
-	}
 }
 
 void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
@@ -976,10 +961,6 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	else
 		sc->data->via_tree = NULL;
 
-	/* init poly clips */
-	if (dst_is_pcb)
-		subc_relocate_poly_clips(ctx->buffer.dst, sc);
-
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
 	return sc;
@@ -1048,11 +1029,8 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 			pcb_layer_link_trees(sl, dl);
 	}
 
-	if (chgly > 0)
-		subc_relocate_poly_clips(pcb->Data, sc);
 	return chgly;
 }
-
 
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
