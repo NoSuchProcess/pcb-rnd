@@ -71,8 +71,7 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		*y = ((pcb_pin_t *) ptr2)->Y;
 		break;
 	case PCB_TYPE_LINE:
-		*x = ((pcb_line_t *) ptr2)->Point1.X;
-		*y = ((pcb_line_t *) ptr2)->Point1.Y;
+		pcb_tool_line_get_grid_lock_coords(type, ptr1, ptr2, ptr3, x, y);
 		break;
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_ELEMENT_NAME:

@@ -25,3 +25,14 @@
  *  haceaton@aplcomm.jhuapl.edu
  *
  */
+
+#include "config.h"
+
+#include "obj_line.h"
+
+void pcb_tool_line_get_grid_lock_coords(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
+{
+	*x = ((pcb_line_t *) ptr2)->Point1.X;
+	*y = ((pcb_line_t *) ptr2)->Point1.Y;
+}
+
