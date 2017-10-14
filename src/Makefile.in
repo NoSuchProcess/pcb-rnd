@@ -96,6 +96,7 @@ put /local/pcb/OBJS [@
 	obj_line_drcenf.o
 	obj_line_list.o
 	obj_pad.o
+	obj_padstack.o
 	obj_pad_list.o
 	obj_pinvia.o
 	obj_pinvia_therm.o
