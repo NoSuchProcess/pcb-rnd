@@ -1374,7 +1374,6 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	int res;
 	char *errmsg, *realfn;
 	lht_doc_t *doc = NULL;
-	pcb_board_t *old_pcb;
 
 	realfn = pcb_fopen_check(Filename, "r");
 	if (realfn != NULL)
@@ -1385,10 +1384,6 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
 		return -1;
 	}
-
-#warning TODO#5: not faking PCB would trigger layer binding bugs because the "is bound" flag is not explicit in pcb_layer_t
-	old_pcb = PCB;
-	PCB = Ptr;
 
 	if ((doc->root->type == LHT_HASH) && (strncmp(doc->root->name, "pcb-rnd-board-v", 15) == 0)) {
 		res = parse_board(Ptr, doc->root);
@@ -1409,8 +1404,6 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		pcb_message(PCB_MSG_ERROR, "Error loading '%s': neither a board nor a subcircuit\n", Filename);
 		res = -1;
 	}
-
-	PCB = old_pcb;
 
 	lht_dom_uninit(doc);
 	return res;
