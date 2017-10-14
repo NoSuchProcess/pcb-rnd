@@ -21,3 +21,5 @@
  */
 
 #include "config.h"
+
+#include "obj_padstack.h"

@@ -42,6 +42,7 @@ typedef struct pcb_rat_line_s pcb_rat_t;
 
 typedef struct pcb_polygon_s pcb_polygon_t;
 typedef struct pcb_pad_s pcb_pad_t;
+typedef struct pcb_padstack_s pcb_padstack_t;
 typedef struct pcb_pin_s pcb_pin_t;
 typedef struct pcb_rtree_s pcb_rtree_t;
 typedef struct pcb_rtree_it_s pcb_rtree_it_t;
