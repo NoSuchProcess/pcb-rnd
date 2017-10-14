@@ -42,8 +42,8 @@
 
 
 /* Called some time after the click if there was a release but no second click
-   a.k.a. finalize single click (some things are already done in pcb_notify_mode
-   at the initial click event) */
+	 a.k.a. finalize single click (some things are already done in pcb_notify_mode
+	 at the initial click event) */
 static void click_timer_cb(pcb_hidval_t hv)
 {
 	if (Note.Click) {
@@ -108,30 +108,30 @@ static void click_timer_cb(pcb_hidval_t hv)
 
 void pcb_tool_arrow_notify_mode(void)
 {
-  void *ptr1, *ptr2, *ptr3;
+	void *ptr1, *ptr2, *ptr3;
 	int type;
-  int test;
-  pcb_hidval_t hv;
+	int test;
+	pcb_hidval_t hv;
 
-  Note.Click = pcb_true;
-  /* do something after click time */
-  pcb_gui->add_timer(click_timer_cb, conf_core.editor.click_time, hv);
+	Note.Click = pcb_true;
+	/* do something after click time */
+	pcb_gui->add_timer(click_timer_cb, conf_core.editor.click_time, hv);
 
-  /* see if we clicked on something already selected
-   * (Note.Moving) or clicked on a MOVE_TYPE
-   * (Note.Hit)
-   */
-  for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
-    type = pcb_search_screen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
-    if (!Note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2)) {
-      Note.Hit = type;
-      Note.ptr1 = ptr1;
-      Note.ptr2 = ptr2;
-      Note.ptr3 = ptr3;
-    }
-    if (!Note.Moving && (type & PCB_SELECT_TYPES) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2))
-      Note.Moving = pcb_true;
-    if ((Note.Hit && Note.Moving) || type == PCB_TYPE_NONE)
-      return;
-  }
+	/* see if we clicked on something already selected
+	 * (Note.Moving) or clicked on a MOVE_TYPE
+	 * (Note.Hit)
+	 */
+	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
+		type = pcb_search_screen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
+		if (!Note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2)) {
+			Note.Hit = type;
+			Note.ptr1 = ptr1;
+			Note.ptr2 = ptr2;
+			Note.ptr3 = ptr3;
+		}
+		if (!Note.Moving && (type & PCB_SELECT_TYPES) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2))
+			Note.Moving = pcb_true;
+		if ((Note.Hit && Note.Moving) || type == PCB_TYPE_NONE)
+			return;
+	}
 }
