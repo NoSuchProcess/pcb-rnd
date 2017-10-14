@@ -407,7 +407,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	pcb_layergrp_inhibit_inc();
 	pcb_layers_reset(pcb);
 	pcb_layer_group_setup_default(&pcb->LayerGroups);
-	pcb_layer_group_setup_silks(&pcb->LayerGroups);
+	pcb_layer_group_setup_silks(pcb);
 	pcb_layer_auto_fixup(pcb);
 	pcb_layergrp_inhibit_dec();
 

@@ -668,7 +668,7 @@ void PostLoadElementPCB()
 	pcb_board_new_postproc(yyPCB, 0);
 	pcb_layer_group_setup_default(&yyPCB->LayerGroups);
 	PCB = yyPCB;
-	pcb_layer_group_setup_silks(&yyPCB->LayerGroups);
+	pcb_layer_group_setup_silks(yyPCB);
 	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
 	pcb_element_move(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
 	PCB = pcb_save;
