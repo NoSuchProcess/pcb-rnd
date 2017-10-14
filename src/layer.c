@@ -363,11 +363,17 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	return id;
 }
 
+int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
+{
+	free((char*)Layer->name);
+	Layer->name = Name;
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	return 0;
+}
+
 int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname)
 {
-	free((char *)data->Layer[layer].name);
-	data->Layer[layer].name = pcb_strdup(lname);
-	return 0;
+	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname));
 }
 
 #undef APPEND
@@ -397,15 +403,6 @@ static int is_last_bottom_copper_layer(int layer)
 	int lgroup = pcb_layer_get_group(PCB, layer);
 	if (sgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
 		return 1;
-	return 0;
-}
-
-int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
-{
-#warning cleanup TODO: duplicate of pcb_layer_rename()?
-	free((char*)Layer->name);
-	Layer->name = Name;
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
 
