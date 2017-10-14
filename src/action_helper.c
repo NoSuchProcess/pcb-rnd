@@ -103,7 +103,7 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 	}
 }
 
-static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
+void pcb_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 {
 	pcb_box_t box;
 	pcb_coord_t mx = 0, my = 0;
@@ -349,7 +349,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			box.Y2 = Note.Y - PCB_SLOP * pcb_pixel_slop;
 			pcb_crosshair.drags = pcb_list_block(PCB, &box, &pcb_crosshair.drags_len);
 			pcb_crosshair.drags_current = 0;
-			AttachForCopy(Note.X, Note.Y);
+			pcb_attach_for_copy(Note.X, Note.Y);
 		}
 		else {
 			pcb_box_t box;
@@ -1005,7 +1005,7 @@ void pcb_notify_mode(void)
 						pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					}
 					else
-						AttachForCopy(Note.X, Note.Y);
+						pcb_attach_for_copy(Note.X, Note.Y);
 				}
 				break;
 			}
