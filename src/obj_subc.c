@@ -99,6 +99,7 @@ static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 	dst->is_bound = 1;
 	dst->comb = src->comb;
 	dst->parent = sc->data;
+	dst->name = pcb_strdup(src->name);
 	return dst;
 }
 
