@@ -36,6 +36,7 @@
 #include "buffer.h"
 #include "data_parent.h"
 #include "obj_subc_list.h"
+#include "vtpadstack.h"
 
 #include "obj_all_list.h"
 
@@ -43,6 +44,9 @@
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */
 struct pcb_data_s {
 	int LayerN;                        /* number of layers in this board */
+
+	pcb_vtpadstack_proto_t ps_protos;
+
 	pinlist_t Via;
 	pcb_subclist_t subc;
 	elementlist_t Element;

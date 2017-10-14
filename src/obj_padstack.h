@@ -23,7 +23,6 @@
 #ifndef PCB_OBJ_PADSTACK_H
 #define PCB_OBJ_PADSTACK_H
 
-#include "obj_common.h"
 #include "layer.h"
 
 typedef struct pcb_padstack_poly_s {
@@ -43,13 +42,15 @@ typedef struct pcb_padstack_shape_s {
 	unsigned is_poly:1;            /* either poly or filled circle */
 } pcb_padstack_shape_t;
 
-struct pcb_padstack_proto_s {
+typedef struct pcb_padstack_proto_s {
 	pcb_coord_t hdia;              /* if > 0, diameter of the hole (else there's no hole) */
 	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layers from the top or bottom copper layer */
 
 	unsigned char len;             /* number of shapes */
 	pcb_padstack_shape_t *shapes;  /* list of layer-shape pairs */
 } pcb_padstack_proto_t;
+
+#include "obj_common.h"
 
 struct pcb_padstack_s {
 	PCB_ANYOBJECTFIELDS;
