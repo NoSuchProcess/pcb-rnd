@@ -66,6 +66,8 @@ typedef struct pcb_padstack_proto_s {
 
 	unsigned char len;             /* number of shapes (PCB_PADSTACK_MAX_SHAPES) */
 	pcb_padstack_shape_t *shape;   /* list of layer-shape pairs */
+
+	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
 } pcb_padstack_proto_t;
 
 #include "obj_common.h"
