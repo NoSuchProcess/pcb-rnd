@@ -27,5 +27,69 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
+
+#include "action_helper.h"
+#include "board.h"
+#include "crosshair.h"
+#include "data.h"
+#include "draw.h"
+#include "undo.h"
+
+#include "obj_arc_draw.h"
 
 
+void pcb_tool_arc_notify_mode(void)
+{
+	switch (pcb_crosshair.AttachedBox.State) {
+	case PCB_CH_STATE_FIRST:
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = Note.X;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = Note.Y;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+		break;
+
+	case PCB_CH_STATE_SECOND:
+	case PCB_CH_STATE_THIRD:
+		{
+			pcb_arc_t *arc;
+			pcb_coord_t wx, wy;
+			pcb_angle_t sa, dir;
+
+			wx = Note.X - pcb_crosshair.AttachedBox.Point1.X;
+			wy = Note.Y - pcb_crosshair.AttachedBox.Point1.Y;
+			if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
+				pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
+				sa = (wx >= 0) ? 0 : 180;
+				dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
+			}
+			else {
+				pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
+				sa = (wy >= 0) ? -90 : 90;
+				dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
+				wy = wx;
+			}
+			if (coord_abs(wy) > 0 && (arc = pcb_arc_new(CURRENT,
+																										pcb_crosshair.AttachedBox.Point2.X,
+																										pcb_crosshair.AttachedBox.Point2.Y,
+																										coord_abs(wy),
+																										coord_abs(wy),
+																										sa,
+																										dir,
+																										conf_core.design.line_thickness,
+																										2 * conf_core.design.clearance,
+																										pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
+				pcb_obj_add_attribs(arc, PCB->pen_attr);
+				pcb_arc_get_end(arc, 1, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
+				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
+				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
+				pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
+				pcb_undo_inc_serial();
+				pcb_added_lines++;
+				pcb_arc_invalidate_draw(CURRENT, arc);
+				pcb_draw();
+				pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
+			}
+			break;
+		}
+	}
+}
