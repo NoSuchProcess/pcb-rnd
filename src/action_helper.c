@@ -67,6 +67,7 @@
 #include "tool_line.h"
 #include "tool_move.h"
 #include "tool_poly.h"
+#include "tool_polyhole.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -737,69 +738,7 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_POLYGON_HOLE:
 		{
-			switch (pcb_crosshair.AttachedObject.State) {
-				/* first notify, lookup object */
-			case PCB_CH_STATE_FIRST:
-				pcb_crosshair.AttachedObject.Type =
-					pcb_search_screen(Note.X, Note.Y, PCB_TYPE_POLYGON,
-											 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
-
-				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
-					pcb_message(PCB_MSG_WARNING, "The first point of a polygon hole must be on a polygon.\n");
-					break; /* don't start doing anything if clicket out of polys */
-				}
-
-				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
-											pcb_crosshair.AttachedObject.Ptr2)) {
-					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
-					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-					break;
-				}
-				else
-					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
-			/* fall thru: first click is also the first point of the poly hole */
-
-				/* second notify, insert new point into object */
-			case PCB_CH_STATE_SECOND:
-				{
-					pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
-					pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
-
-					/* do update of position; use the 'PCB_MODE_LINE' mechanism */
-					pcb_notify_line();
-
-					if (conf_core.editor.orthogonal_moves) {
-						/* set the mark to the new starting point so ortho works */
-						pcb_marked.X = Note.X;
-						pcb_marked.Y = Note.Y;
-					}
-
-					/* check if this is the last point of a polygon */
-					if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-						pcb_hid_actionl("Polygon", "CloseHole", NULL);
-						break;
-					}
-					
-					/* Someone clicking twice on the same point ('doubleclick'): close polygon hole */
-					if (n >= 3 && points[n - 1].X == pcb_crosshair.AttachedLine.Point2.X && points[n - 1].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-						pcb_hid_actionl("Polygon", "CloseHole", NULL);
-						break;
-					}
-
-					/* create new point if it's the first one or if it's
-					 * different to the last one
-					 */
-					if (!n || points[n - 1].X != pcb_crosshair.AttachedLine.Point2.X || points[n - 1].Y != pcb_crosshair.AttachedLine.Point2.Y) {
-						pcb_poly_point_new(&pcb_crosshair.AttachedPolygon,
-																		pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
-
-						/* copy the coordinates */
-						pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
-						pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
-					}
-					break;
-				}
-			}
+			pcb_tool_polyhole_notify_mode();
 			break;
 		}
 
