@@ -69,6 +69,7 @@
 #include "tool_poly.h"
 #include "tool_polyhole.h"
 #include "tool_rectangle.h"
+#include "tool_remove.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -716,17 +717,7 @@ void pcb_notify_mode(void)
 		break;
 
 	case PCB_MODE_REMOVE:
-		if ((type = pcb_search_screen(Note.X, Note.Y, PCB_REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_line_t *) ptr2)) {
-				pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
-				break;
-			}
-			if (type == PCB_TYPE_ELEMENT)
-				pcb_event(PCB_EVENT_RUBBER_REMOVE_ELEMENT, "ppp", ptr1, ptr2, ptr3);
-			pcb_remove_object(type, ptr1, ptr2, ptr3);
-			pcb_undo_inc_serial();
-			pcb_board_set_changed_flag(pcb_true);
-		}
+		pcb_tool_remove_notify_mode();
 		break;
 
 	case PCB_MODE_ROTATE:
