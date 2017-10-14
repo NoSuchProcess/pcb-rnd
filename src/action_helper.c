@@ -72,6 +72,7 @@
 #include "tool_remove.h"
 #include "tool_rotate.h"
 #include "tool_text.h"
+#include "tool_thermal.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -653,20 +654,7 @@ void pcb_notify_mode(void)
 		}
 	case PCB_MODE_THERMAL:
 		{
-			if (((type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
-				if (pcb_gui->shift_is_pressed()) {
-					int tstyle = PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3);
-					tstyle++;
-					if (tstyle > 5)
-						tstyle = 1;
-					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, tstyle);
-				}
-				else if (PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3))
-					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, 0);
-				else
-					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
-			}
+			pcb_tool_thermal_notify_mode();
 			break;
 		}
 
