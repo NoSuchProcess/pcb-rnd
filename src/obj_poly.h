@@ -170,6 +170,25 @@ static inline PCB_FUNC_UNUSED int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coor
 	return 1;
 }
 
+/* Let the poly clear sorrunding polys in its layer */
+#define pcb_poly_ppclear(poly) \
+do { \
+	pcb_layer_t *layer = poly->parent.layer; \
+	if (layer->is_bound) layer = layer->meta.bound.real; \
+	if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
+		pcb_poly_clear_from_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
+} while(0)
+
+/* Let the poly restore sorrunding polys in its layer */
+#define pcb_poly_pprestore(poly) \
+do { \
+	pcb_layer_t *layer = poly->parent.layer; \
+	if (layer->is_bound) layer = layer->meta.bound.real; \
+	if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
+		pcb_poly_restore_to_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
+} while(0)
+
+
 
 /*** loops ***/
 
