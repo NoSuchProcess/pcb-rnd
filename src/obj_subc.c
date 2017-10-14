@@ -672,6 +672,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (npoly != NULL) {
 				PCB_SET_PARENT(npoly, layer, dl);
 				pcb_box_bump_box(&sc->BoundingBox, &npoly->BoundingBox);
+				pcb_poly_ppclear(npoly);
 			}
 		}
 	}
