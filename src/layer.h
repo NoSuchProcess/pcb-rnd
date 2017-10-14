@@ -145,8 +145,9 @@ typedef enum {
 	PCB_COMPONENT_SIDE = 1
 } pcb_side_t;
 
-pcb_bool pcb_layer_is_paste_empty(pcb_board_t *pcb, pcb_side_t side);
-
+/* Returns whether an auto paste layer is empty - it may be nonempty
+   only because of element-side-effects */
+pcb_bool pcb_layer_is_paste_auto_empty(pcb_board_t *pcb, pcb_side_t side);
 
 /* Cached lookup of the first silk layer in the bottom or top group */
 pcb_layer_id_t pcb_layer_get_bottom_silk();

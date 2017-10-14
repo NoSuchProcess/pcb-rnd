@@ -329,15 +329,21 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		}
 	}
 
-	paste_empty = pcb_layer_is_paste_empty(PCB, PCB_COMPONENT_SIDE);
 	gid = pcb_layergrp_get_top_paste();
+	if (gid < 0)
+		paste_empty = pcb_layer_is_paste_auto_empty(PCB, PCB_COMPONENT_SIDE);
+	else
+		paste_empty = pcb_layergrp_is_empty(PCB, gid);
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty))) {
 		pcb_draw_paste(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	paste_empty = pcb_layer_is_paste_empty(PCB, PCB_SOLDER_SIDE);
 	gid = pcb_layergrp_get_bottom_paste();
+	if (gid < 0)
+		paste_empty = pcb_layer_is_paste_auto_empty(PCB, PCB_SOLDER_SIDE);
+	else
+		paste_empty = pcb_layergrp_is_empty(PCB, gid);
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty))) {
 		pcb_draw_paste(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
