@@ -71,6 +71,7 @@
 #include "tool_rectangle.h"
 #include "tool_remove.h"
 #include "tool_rotate.h"
+#include "tool_text.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -679,25 +680,7 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_TEXT:
 		{
-			char *string;
-
-			if ((string = pcb_gui->prompt_for(_("Enter text:"), "")) != NULL) {
-				if (strlen(string) > 0) {
-					pcb_text_t *text;
-					int flag = PCB_FLAG_CLEARLINE;
-
-					if (pcb_layer_flags(PCB, INDEXOFCURRENT) & PCB_LYT_BOTTOM)
-						flag |= PCB_FLAG_ONSOLDER;
-					if ((text = pcb_text_new(CURRENT, pcb_font(PCB, conf_core.design.text_font_id, 1), Note.X,
-																		Note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {
-						pcb_undo_add_obj_to_create(PCB_TYPE_TEXT, CURRENT, text, text);
-						pcb_undo_inc_serial();
-						pcb_text_invalidate_draw(CURRENT, text);
-						pcb_draw();
-					}
-				}
-				free(string);
-			}
+			pcb_tool_text_notify_mode();
 			break;
 		}
 
