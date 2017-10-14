@@ -569,7 +569,7 @@ int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_emp
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(grp, pcb->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(PCB, grp), is_empty);
+		return pcb_gui->set_layer_group(grp, pcb->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(pcb, grp), is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
@@ -659,12 +659,12 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
 }
 
-void pcb_layer_group_setup_silks(pcb_layer_stack_t *newg)
+void pcb_layer_group_setup_silks(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
-	for(gid = 0; gid < newg->len; gid++)
-		if ((newg->grp[gid].type & PCB_LYT_SILK) && (newg->grp[gid].len == 0))
-			pcb_layer_create(PCB, gid, "silk");
+	for(gid = 0; gid < pcb->LayerGroups.len; gid++)
+		if ((pcb->LayerGroups.grp[gid].type & PCB_LYT_SILK) && (pcb->LayerGroups.grp[gid].len == 0))
+			pcb_layer_create(pcb, gid, "silk");
 }
 
 int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name)

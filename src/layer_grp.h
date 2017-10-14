@@ -171,7 +171,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, in
 
 /* for parsing old files with old layer descriptions, with no layer groups */
 void pcb_layer_group_setup_default(pcb_layer_stack_t *newg); /* default layer groups, no layers */
-void pcb_layer_group_setup_silks(pcb_layer_stack_t *newg); /* make sure we have two silk layers, add them if needed */
+void pcb_layer_group_setup_silks(pcb_board_t *pcb); /* make sure we have two silk layers, add them if needed */
 pcb_layergrp_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
 pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id);
 pcb_layergrp_t *pcb_get_grp_new_misc(pcb_board_t *pcb);
