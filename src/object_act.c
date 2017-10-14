@@ -1122,10 +1122,10 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			new_index = 0;
 	}
 	else if (strcmp(argv[1], "gi") == 0) {
-		return pcb_layer_move(-1, 0, pcb_actd_EditGroup_gid);
+		return pcb_layer_move(PCB, -1, 0, pcb_actd_EditGroup_gid);
 	}
 	else if (strcmp(argv[1], "ga") == 0) {
-		return pcb_layer_move(-1, 1, pcb_actd_EditGroup_gid);
+		return pcb_layer_move(PCB, -1, 1, pcb_actd_EditGroup_gid);
 	}
 	else if (strcmp(argv[1], "up") == 0) {
 		new_index = INDEXOFCURRENT - 1;
@@ -1166,7 +1166,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 
-	if (pcb_layer_move(old_index, new_index, -1))
+	if (pcb_layer_move(PCB, old_index, new_index, -1))
 		return 1;
 
 	return 0;

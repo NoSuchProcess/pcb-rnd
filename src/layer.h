@@ -170,9 +170,9 @@ pcb_layer_id_t pcb_layer_get_top_silk();
 	{ \
 	   pcb_layer_t *layer = (&data->Layer[(n)]);
 
-/* Swap two layers in PCB->Data; useful only in writing the old .pcb format,
+/* Swap two layers in pcb; useful only in writing the old .pcb format,
    because silk layers must be the last 2 layers there */
-int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2);
+int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2);
 
 /************ NEW API - new code should use these **************/
 
@@ -244,7 +244,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is
    deleted.  Returns non-zero on error, zero if OK.  */
-int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp);
+int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp);
 
 
 /* Set up dst so that it's a non-real layer bound to src */

@@ -388,20 +388,20 @@ static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
 }
 
 
-static int is_last_top_copper_layer(int layer)
+static int is_last_top_copper_layer(pcb_board_t *pcb, int layer)
 {
-	pcb_layergrp_id_t cgroup = pcb_layer_get_group(PCB, PCB->LayerGroups.len + PCB_COMPONENT_SIDE);
-	pcb_layergrp_id_t lgroup = pcb_layer_get_group(PCB, layer);
-	if (cgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
+	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb, pcb->LayerGroups.len + PCB_COMPONENT_SIDE);
+	pcb_layergrp_id_t lgroup = pcb_layer_get_group(pcb, layer);
+	if (cgroup == lgroup && pcb->LayerGroups.grp[lgroup].len == 1)
 		return 1;
 	return 0;
 }
 
-static int is_last_bottom_copper_layer(int layer)
+static int is_last_bottom_copper_layer(pcb_board_t *pcb, int layer)
 {
-	int sgroup = pcb_layer_get_group(PCB, PCB->LayerGroups.len + PCB_SOLDER_SIDE);
-	int lgroup = pcb_layer_get_group(PCB, layer);
-	if (sgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
+	int sgroup = pcb_layer_get_group(pcb, pcb->LayerGroups.len + PCB_SOLDER_SIDE);
+	int lgroup = pcb_layer_get_group(pcb, layer);
+	if (sgroup == lgroup && pcb->LayerGroups.grp[lgroup].len == 1)
 		return 1;
 	return 0;
 }
@@ -447,27 +447,27 @@ static void layer_init(pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gi
 	lp->parent = parent;
 }
 
-int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
+int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
 {
 	pcb_layer_id_t l;
 
 	/* sanity checks */
-	if (old_index < -1 || old_index >= PCB->Data->LayerN) {
-		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, PCB->Data->LayerN - 1);
+	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
+		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
 		return 1;
 	}
 
-	if (new_index < -1 || new_index > PCB->Data->LayerN || new_index >= PCB_MAX_LAYER) {
-		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, PCB->Data->LayerN);
+	if (new_index < -1 || new_index > pcb->Data->LayerN || new_index >= PCB_MAX_LAYER) {
+		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
 		return 1;
 	}
 
-	if (new_index == -1 && is_last_top_copper_layer(old_index)) {
+	if (new_index == -1 && is_last_top_copper_layer(pcb, old_index)) {
 		pcb_gui->confirm_dialog("You can't delete the last top-side layer\n", "Ok", NULL);
 		return 1;
 	}
 
-	if (new_index == -1 && is_last_bottom_copper_layer(old_index)) {
+	if (new_index == -1 && is_last_bottom_copper_layer(pcb, old_index)) {
 		pcb_gui->confirm_dialog("You can't delete the last bottom-side layer\n", "Ok", NULL);
 		return 1;
 	}
@@ -478,16 +478,16 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 	if (old_index == -1) { /* append new layer at the end of the logical layer list, put it in the current group */
 		pcb_layergrp_t *g;
 		pcb_layer_t *lp;
-		pcb_layer_id_t new_lid = PCB->Data->LayerN++;
+		pcb_layer_id_t new_lid = pcb->Data->LayerN++;
 		int grp_idx;
 
-		lp = &PCB->Data->Layer[new_lid];
+		lp = &pcb->Data->Layer[new_lid];
 		if (new_in_grp >= 0)
-			layer_init(lp, new_lid, new_in_grp, PCB->Data);
+			layer_init(lp, new_lid, new_in_grp, pcb->Data);
 		else
-			layer_init(lp, new_lid, PCB->Data->Layer[new_index].meta.real.grp, PCB->Data);
+			layer_init(lp, new_lid, pcb->Data->Layer[new_index].meta.real.grp, pcb->Data);
 
-		g = pcb_get_layergrp(PCB, lp->meta.real.grp);
+		g = pcb_get_layergrp(pcb, lp->meta.real.grp);
 
 		if (new_in_grp >= 0) {
 			if (new_index == 0)
@@ -514,10 +514,10 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		pcb_layergrp_t *g;
 		int grp_idx, remaining;
 
-#warning layer TODO remove objects, free fields layer_free(&PCB->Data->Layer[old_index]);
+#warning layer TODO remove objects, free fields layer_free(&pcb->Data->Layer[old_index]);
 
 		/* remove the current lid from its group */
-		g = pcb_get_layergrp(PCB, PCB->Data->Layer[old_index].meta.real.grp);
+		g = pcb_get_layergrp(pcb, pcb->Data->Layer[old_index].meta.real.grp);
 		grp_idx = pcb_layergrp_index_in_grp(g, old_index);
 		if (grp_idx < 0) {
 			pcb_message(PCB_MSG_ERROR, "Internal error; layer not in group\n");
@@ -530,27 +530,27 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 		g->len--;
 
 		/* update lids in all groups (shifting down idx) */
-		for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+		for(gid = 0; gid < pcb_max_group(pcb); gid++) {
 			int n;
-			g = &PCB->LayerGroups.grp[gid];
+			g = &pcb->LayerGroups.grp[gid];
 			for(n = 0; n < g->len; n++)
 				if (g->lid[n] > old_index)
 					g->lid[n]--;
 		}
 
 		/* update visibility */
-		for(l = old_index; l < PCB->Data->LayerN-1; l++) {
-			layer_move(&PCB->Data->Layer[l], &PCB->Data->Layer[l+1]);
-			layer_clear(&PCB->Data->Layer[l+1]);
+		for(l = old_index; l < pcb->Data->LayerN-1; l++) {
+			layer_move(&pcb->Data->Layer[l], &pcb->Data->Layer[l+1]);
+			layer_clear(&pcb->Data->Layer[l+1]);
 		}
 
-		for (l = 0; l < PCB->Data->LayerN; l++)
+		for (l = 0; l < pcb->Data->LayerN; l++)
 			if (pcb_layer_stack[l] == old_index)
-				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (PCB->Data->LayerN - l - 1) * sizeof(pcb_layer_stack[0]));
+				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb->Data->LayerN - l - 1) * sizeof(pcb_layer_stack[0]));
 
 		/* remove layer from the logical layer array */
 		pcb_max_layer--;
-		for (l = 0; l < PCB->Data->LayerN; l++)
+		for (l = 0; l < pcb->Data->LayerN; l++)
 			if (pcb_layer_stack[l] > old_index)
 				pcb_layer_stack[l]--;
 
@@ -567,7 +567,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layer
 	return 0;
 }
 
-int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2)
+int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2)
 {
 	pcb_layer_t l1tmp, l2tmp;
 	pcb_layergrp_id_t gid;
@@ -575,26 +575,26 @@ int pcb_layer_swap(pcb_layer_id_t lid1, pcb_layer_id_t lid2)
 	if (lid1 == lid2)
 		return 0;
 
-	layer_move(&l1tmp, &PCB->Data->Layer[lid1]);
-	layer_move(&l2tmp, &PCB->Data->Layer[lid2]);
+	layer_move(&l1tmp, &pcb->Data->Layer[lid1]);
+	layer_move(&l2tmp, &pcb->Data->Layer[lid2]);
 
-	layer_move(&PCB->Data->Layer[lid1], &l2tmp);
-	layer_move(&PCB->Data->Layer[lid2], &l1tmp);
+	layer_move(&pcb->Data->Layer[lid1], &l2tmp);
+	layer_move(&pcb->Data->Layer[lid2], &l1tmp);
 
-	PCB_VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(pcb->Data);
 	{
 		swap_one_thermal(lid1, lid2, via);
 	}
 	PCB_END_LOOP;
 
-	PCB_PIN_ALL_LOOP(PCB->Data);
+	PCB_PIN_ALL_LOOP(pcb->Data);
 	{
 		swap_one_thermal(lid1, lid2, pin);
 	}
 	PCB_ENDALL_LOOP;
 
-	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
-		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
+	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
+		pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
 		int n;
 
 		for(n = 0; n < g->len; n++) {

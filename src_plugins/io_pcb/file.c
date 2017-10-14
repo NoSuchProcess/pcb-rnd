@@ -567,13 +567,13 @@ static void LayersFixup(void)
 	bs = pcb_layer_get_bottom_silk();
 	ts = pcb_layer_get_top_silk();
 	if (bs != pcb_max_layer - 2)
-		pcb_layer_swap(bs, pcb_max_layer - 2);
+		pcb_layer_swap(PCB, bs, pcb_max_layer - 2);
 
 	bs = pcb_layer_get_bottom_silk();
 	ts = pcb_layer_get_top_silk();
 
 	if (ts != pcb_max_layer - 1)
-		pcb_layer_swap(ts, pcb_max_layer - 1);
+		pcb_layer_swap(PCB, ts, pcb_max_layer - 1);
 }
 
 static void WriteLayers(FILE *FP, pcb_data_t *data)
