@@ -28,4 +28,49 @@
 
 #include "config.h"
 
+#include "action_helper.h"
+#include "board.h"
+#include "compat_nls.h"
+#include "copy.h"
+#include "crosshair.h"
+#include "search.h"
 
+
+void pcb_tool_move_notify_mode(void)
+{
+	switch (pcb_crosshair.AttachedObject.State) {
+		/* first notify, lookup object */
+	case PCB_CH_STATE_FIRST:
+		{
+			int types = PCB_MOVE_TYPES;
+
+			pcb_crosshair.AttachedObject.Type =
+				pcb_search_screen(Note.X, Note.Y, types,
+										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
+			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) pcb_crosshair.AttachedObject.Ptr2)) {
+					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+				}
+				else
+					pcb_attach_for_copy(Note.X, Note.Y);
+			}
+			break;
+		}
+
+		/* second notify, move object */
+	case PCB_CH_STATE_SECOND:
+		pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type,
+														pcb_crosshair.AttachedObject.Ptr1,
+														pcb_crosshair.AttachedObject.Ptr2,
+														pcb_crosshair.AttachedObject.Ptr3,
+														Note.X - pcb_crosshair.AttachedObject.X, Note.Y - pcb_crosshair.AttachedObject.Y);
+		pcb_crosshair_set_local_ref(0, 0, pcb_false);
+		pcb_board_set_changed_flag(pcb_true);
+
+		/* reset identifiers */
+		pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+		break;
+	}
+}

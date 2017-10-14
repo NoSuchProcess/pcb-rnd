@@ -65,6 +65,7 @@
 #include "tool_buffer.h"
 #include "tool_copy.h"
 #include "tool_line.h"
+#include "tool_move.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -863,49 +864,7 @@ void pcb_notify_mode(void)
 		break;
 
 	case PCB_MODE_MOVE:
-		switch (pcb_crosshair.AttachedObject.State) {
-			/* first notify, lookup object */
-		case PCB_CH_STATE_FIRST:
-			{
-				int types = (conf_core.editor.mode == PCB_MODE_COPY) ? PCB_COPY_TYPES : PCB_MOVE_TYPES;
-
-				pcb_crosshair.AttachedObject.Type =
-					pcb_search_screen(Note.X, Note.Y, types,
-											 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
-				if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-					if (conf_core.editor.mode == PCB_MODE_MOVE && PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *)
-																											pcb_crosshair.AttachedObject.Ptr2)) {
-						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
-						pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-					}
-					else
-						pcb_attach_for_copy(Note.X, Note.Y);
-				}
-				break;
-			}
-
-			/* second notify, move or copy object */
-		case PCB_CH_STATE_SECOND:
-			if (conf_core.editor.mode == PCB_MODE_COPY)
-				pcb_copy_obj(pcb_crosshair.AttachedObject.Type,
-									 pcb_crosshair.AttachedObject.Ptr1,
-									 pcb_crosshair.AttachedObject.Ptr2,
-									 pcb_crosshair.AttachedObject.Ptr3, Note.X - pcb_crosshair.AttachedObject.X, Note.Y - pcb_crosshair.AttachedObject.Y);
-			else {
-				pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type,
-																pcb_crosshair.AttachedObject.Ptr1,
-																pcb_crosshair.AttachedObject.Ptr2,
-																pcb_crosshair.AttachedObject.Ptr3,
-																Note.X - pcb_crosshair.AttachedObject.X, Note.Y - pcb_crosshair.AttachedObject.Y);
-				pcb_crosshair_set_local_ref(0, 0, pcb_false);
-			}
-			pcb_board_set_changed_flag(pcb_true);
-
-			/* reset identifiers */
-			pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-			pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-			break;
-		}
+		pcb_tool_move_notify_mode();
 		break;
 
 		/* insert a point into a polygon/line/... */
