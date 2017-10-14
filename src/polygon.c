@@ -1165,7 +1165,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	unsigned int gflg;
 	pcb_layer_type_t lf;
 
-	lf = pcb_layer_flags_(PCB, Layer);
+	lf = pcb_layer_flags_(Layer);
 	if (!(lf & PCB_LYT_COPPER)) { /* also handles lf == 0 */
 		polygon->NoHolesValid = 0;
 		return 0;
@@ -1761,7 +1761,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (type == PCB_TYPE_PIN || ptr1 == ptr2 || ptr1 == NULL) {
 			LAYER_LOOP(Data, pcb_max_layer);
 			{
-				if (!(pcb_layer_flags_(PCB, layer) & PCB_LYT_COPPER))
+				if (!(pcb_layer_flags_(layer) & PCB_LYT_COPPER))
 					continue;
 				info.layer = layer;
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);

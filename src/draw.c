@@ -486,7 +486,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	info.drawn_area = screen;
 	info.layer = Layer;
 
-	lflg = pcb_layer_flags_(PCB, Layer);
+	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
 		Output.active_padGC = Output.padGC;
 	else

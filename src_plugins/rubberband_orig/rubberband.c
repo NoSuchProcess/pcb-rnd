@@ -730,7 +730,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
-			if (pcb_layer_flags_(PCB, layer) & PCB_LYT_COPPER) {
+			if (pcb_layer_flags_(layer) & PCB_LYT_COPPER) {
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1,0 );
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2,1 );
 			}
@@ -738,7 +738,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		}
 
 	case PCB_TYPE_LINE_POINT:
-		if (pcb_layer_flags_(PCB, (pcb_layer_t *) Ptr1) & PCB_LYT_COPPER)	{
+		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)	{
 			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3,0);
 
 			if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
@@ -747,12 +747,12 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		break;
 
 	case PCB_TYPE_ARC_POINT:
-		if (pcb_layer_flags_(PCB, (pcb_layer_t *) Ptr1) & PCB_LYT_COPPER)
+		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)
 			CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_ARC:
-		if (pcb_layer_flags_(PCB, (pcb_layer_t *) Ptr1) & PCB_LYT_COPPER)
+		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)
 			CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
 		break;
 
@@ -761,7 +761,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		break;
 
 	case PCB_TYPE_POLYGON:
-		if (pcb_layer_flags_(PCB, (pcb_layer_t *) Ptr1) & PCB_LYT_COPPER)
+		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)
 			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_polygon_t *) Ptr2);
 		break;
 	}

@@ -222,7 +222,7 @@ static void print_structure(FILE * fp)
 		pcb_layer_t *layer = iter->data;
 		char *layeropts = pcb_strdup("(type signal)");
 		
-		if (!(pcb_layer_flags_(PCB, layer) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags_(layer) & PCB_LYT_COPPER))
 			continue;
 		
 		/* see if layer has same name as a net and make it a power layer */

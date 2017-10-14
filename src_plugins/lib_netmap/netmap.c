@@ -68,7 +68,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if (htpp_get(&map->o2n, obj) != NULL)
 		return;
 
-	if ((layer != NULL) && (pcb_layer_flags_(map->pcb, layer) & PCB_LYT_COPPER) == 0)
+	if ((layer != NULL) && (pcb_layer_flags_(layer) & PCB_LYT_COPPER) == 0)
 		return;
 
 	pcb_lookup_conn_by_obj(map, obj, 0, found);

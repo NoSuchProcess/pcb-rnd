@@ -322,7 +322,7 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 	/* search for layer objects */
 	layer = subc->data->Layer;
 	for (l = 0; l < subc->data->LayerN; l++, layer++) {
-		if ((pcb_layer_flags_(pcb, layer) & lyt) == 0)
+		if ((pcb_layer_flags_(layer) & lyt) == 0)
 			continue;
 		PCB_LINE_LOOP(layer) {
 			CHECK_TERM_LY(line);

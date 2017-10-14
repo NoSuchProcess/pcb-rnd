@@ -118,7 +118,7 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	pcb_layer_type_t flags;
 
-	flags = pcb_layer_flags_(pcb, layer);
+	flags = pcb_layer_flags_(layer);
 
 	if (flags == 0)
 		return 1;
@@ -205,22 +205,26 @@ unsigned int pcb_layer_flags(pcb_board_t *pcb, pcb_layer_id_t layer_idx)
 	return pcb_layergrp_flags(pcb, l->meta.real.grp);
 }
 
-unsigned int pcb_layer_flags_(pcb_board_t *pcb, pcb_layer_t *layer)
+unsigned int pcb_layer_flags_(pcb_layer_t *layer)
 {
+
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
 	if (!layer->is_bound) {
-		pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
+		pcb_data_t *data = layer->parent;
+		pcb_layer_id_t lid = pcb_layer_id(data, layer);
 
 		if (lid < 0)
 			return 0;
 
-		return pcb_layer_flags(pcb, lid);
+		assert(data->parent_type == PCB_PARENT_BOARD);
+		return pcb_layer_flags(data->parent.board, lid);
 	}
 
 	/* bound layer: if it is already bound to a real layer, use that, whatever it is (manual binding may override our local type match pattern) */
 	if (layer->meta.bound.real != NULL) {
-		pcb_layer_id_t lid = pcb_layer_id(pcb->Data, layer);
-		return pcb_layer_flags(pcb, lid);
+		layer = layer->meta.bound.real;
+		assert(!layer->is_bound);
+		return pcb_layer_flags_(layer); /* tail recursion */
 	}
 
 	/* bound layer without a real layer binding: use the type match */

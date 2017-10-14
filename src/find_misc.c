@@ -231,7 +231,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 			return;
 		if (type & PCB_SILK_TYPE) {
 			/* don't mess with non-conducting objects! */
-			if (!(pcb_layer_flags_(PCB, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER) || ((pcb_layer_t *) ptr1)->meta.real.no_drc)
+			if (!(pcb_layer_flags_((pcb_layer_t *)ptr1) & PCB_LYT_COPPER) || ((pcb_layer_t *) ptr1)->meta.real.no_drc)
 				return;
 		}
 	}
