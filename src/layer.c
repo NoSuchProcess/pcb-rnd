@@ -363,10 +363,10 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	return id;
 }
 
-int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
+int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname)
 {
-	free((char *)PCB->Data->Layer[layer].name);
-	PCB->Data->Layer[layer].name = pcb_strdup(lname);
+	free((char *)data->Layer[layer].name);
+	data->Layer[layer].name = pcb_strdup(lname);
 	return 0;
 }
 

@@ -235,7 +235,7 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
 
 /* Rename an existing layer by idx */
-int pcb_layer_rename(pcb_layer_id_t layer, const char *lname);
+int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname);
 
 /* changes the name of a layer; memory has to be already allocated */
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
