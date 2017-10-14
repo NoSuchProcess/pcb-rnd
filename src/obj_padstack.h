@@ -23,6 +23,8 @@
 #ifndef PCB_OBJ_PADSTACK_H
 #define PCB_OBJ_PADSTACK_H
 
+#define PCB_PADSTACK_MAX_SHAPES 31
+
 #include "layer.h"
 
 typedef struct pcb_padstack_poly_s {
@@ -33,9 +35,14 @@ typedef struct pcb_padstack_poly_s {
 
 
 typedef struct pcb_padstack_line_s {
-	pcb_coord_t length, thickness;
+	pcb_coord_t x1, y1, x2, y2, thickness;
 	unsigned square:1;
 } pcb_padstack_line_t;
+
+typedef struct pcb_padstack_circ_s {
+	pcb_coord_t dia;             /* diameter of the filled circle */
+	pcb_coord_t x, y;            /* assymetric pads */
+} pcb_padstack_circ_t;
 
 typedef struct pcb_padstack_shape_s {
 	pcb_layer_type_t layer_mask;
@@ -43,12 +50,12 @@ typedef struct pcb_padstack_shape_s {
 	union {
 		pcb_padstack_poly_t poly;
 		pcb_padstack_line_t line;
-		pcb_coord_t dia;             /* diameter of the filled circle */
+		pcb_padstack_circ_t circ;
 	} data;
 	enum {
 		PCB_PSSH_POLY,
 		PCB_PSSH_LINE,
-		PCB_PSSH_FILLCIRCLE
+		PCB_PSSH_CIRC                /* filled circle */
 	} shape;
 	pcb_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
 } pcb_padstack_shape_t;
@@ -57,8 +64,8 @@ typedef struct pcb_padstack_proto_s {
 	pcb_coord_t hdia;              /* if > 0, diameter of the hole (else there's no hole) */
 	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layers from the top or bottom copper layer */
 
-	unsigned char len;             /* number of shapes */
-	pcb_padstack_shape_t *shapes;  /* list of layer-shape pairs */
+	unsigned char len;             /* number of shapes (PCB_PADSTACK_MAX_SHAPES) */
+	pcb_padstack_shape_t *shape;   /* list of layer-shape pairs */
 } pcb_padstack_proto_t;
 
 #include "obj_common.h"
@@ -72,5 +79,9 @@ struct pcb_padstack_s {
 		char *shape;                 /* indexed by layer ID */
 	} thermal;
 };
+
+/*** hash ***/
+unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
+int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *p2);
 
 #endif
