@@ -48,13 +48,13 @@ int pcb_added_lines;
 
 
 /* callback based loops */
-void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
+void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
 {
 	if ((lacb != NULL) || (lcb != NULL) || (acb != NULL) || (tcb != NULL) || (pocb != NULL)) {
 		pcb_layer_it_t it;
 		pcb_layer_id_t lid;
-		for(lid = pcb_layer_first_all(&PCB->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
-			pcb_layer_t *layer = PCB->Data->Layer + lid;
+		for(lid = pcb_layer_first_all(&pcb->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
+			pcb_layer_t *layer = pcb->Data->Layer + lid;
 			if (lacb != NULL)
 				if (lacb(ctx, PCB, layer, 1))
 					continue;
@@ -95,10 +95,10 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 	}
 }
 
-void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb)
+void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb)
 {
 	if ((ecb != NULL) || (elcb != NULL) || (eacb != NULL)  || (etcb != NULL) || (epicb != NULL) || (epacb != NULL)) {
-		PCB_ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(pcb->Data);
 		{
 			if (ecb != NULL)
 				if (ecb(ctx, PCB, element, 1))
@@ -152,10 +152,10 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 	}
 }
 
-void pcb_loop_vias(void *ctx, pcb_via_cb_t vcb)
+void pcb_loop_vias(pcb_board_t *pcb, void *ctx, pcb_via_cb_t vcb)
 {
 	if (vcb != NULL) {
-		PCB_VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(pcb->Data);
 		{
 			vcb(ctx, PCB, via);
 		}
@@ -163,15 +163,15 @@ void pcb_loop_vias(void *ctx, pcb_via_cb_t vcb)
 	}
 }
 
-void pcb_loop_all(void *ctx,
+void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb,
 	pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb,
 	pcb_via_cb_t vcb
 	)
 {
-	pcb_loop_layers(ctx, lacb, lcb, acb, tcb, pocb);
-	pcb_loop_elements(ctx, ecb, elcb, eacb, etcb, epicb, epacb);
-	pcb_loop_vias(ctx, vcb);
+	pcb_loop_layers(pcb, ctx, lacb, lcb, acb, tcb, pocb);
+	pcb_loop_elements(pcb, ctx, ecb, elcb, eacb, etcb, epicb, epacb);
+	pcb_loop_vias(pcb, ctx, vcb);
 }
 
 /* ---------------------------------------------------------------------------

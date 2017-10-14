@@ -180,7 +180,7 @@ void pcb_propsel_map_core(htsp_t *props)
 
 	ctx.props = props;
 	
-	pcb_loop_all(&ctx,
+	pcb_loop_all(PCB, &ctx,
 		NULL, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
 		NULL, map_eline_cb, map_earc_cb, map_etext_cb, map_epin_cb, map_epad_cb,
 		map_via_cb
@@ -456,7 +456,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 
 	pcb_undo_save_serial();
 
-	pcb_loop_all(&ctx,
+	pcb_loop_all(PCB, &ctx,
 		NULL,
 		MAYBE_PROP(ctx.is_trace, "p/line/", set_line_cb),
 		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
@@ -561,7 +561,7 @@ int pcb_propsel_del(const char *key)
 	st.key = key;
 	st.del_cnt = 0;
 
-	pcb_loop_all(&st,
+	pcb_loop_all(PCB, &st,
 		NULL, del_line_cb, del_arc_cb, del_text_cb, del_poly_cb,
 		NULL, del_eline_cb, del_earc_cb, del_etext_cb, del_epin_cb, del_epad_cb,
 		del_via_cb

@@ -101,16 +101,16 @@ typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *elemen
 typedef void (*pcb_via_cb_t)(void *ctx, pcb_board_t *pcb, pcb_pin_t *via);
 
 /* Loop over all layer objects on each layer. Layer is the outer loop. */
-void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb);
+void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb);
 
 /* Loop over all elements and element primitives. Element is the outer loop. */
-void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb);
+void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb);
 
 /* Loop over all vias. */
-void pcb_loop_vias(void *ctx, pcb_via_cb_t vcb);
+void pcb_loop_vias(pcb_board_t *pcb, void *ctx, pcb_via_cb_t vcb);
 
 /* Loop over all design objects. (So all the above three in one call.) */
-void pcb_loop_all(void *ctx,
+void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 	pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb,
 	pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb,
 	pcb_via_cb_t vcb

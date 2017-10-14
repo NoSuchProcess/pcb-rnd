@@ -222,7 +222,7 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	ctx->ox = ctx->oy = 0;
 	ctx->origin_tmp = tmp;
 
-	pcb_loop_layers(ctx, NULL, find_origin_bump, NULL, NULL, NULL);
+	pcb_loop_layers(PCB, ctx, NULL, find_origin_bump, NULL, NULL, NULL);
 }
 
 static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)

@@ -133,7 +133,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 	map->pcb = pcb;
 
 /* step 1: find known nets (from pins and pads) */
-	pcb_loop_all(map,
+	pcb_loop_all(PCB, map,
 		NULL, /* layer */
 		NULL, /* line */
 		NULL, /* arc */
@@ -149,7 +149,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 	);
 
 	/* step 2: find unknown nets and uniquely name them */
-	pcb_loop_all(map,
+	pcb_loop_all(PCB, map,
 		NULL, /* layer */
 		list_line_cb,
 		list_arc_cb,
