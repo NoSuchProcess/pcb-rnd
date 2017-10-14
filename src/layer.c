@@ -164,7 +164,7 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 		/* the only case this makes sense is when we are resolving a bound layer */
 		if ((Layer->is_bound) && (Layer->meta.bound.real != NULL))
 			return pcb_layer_id(Data, Layer->meta.bound.real);
-		assert(!"pcb_layer_id: invalid layer id for bound layer - pelase report this bug");
+		/* failed binding, ignore the layer */
 		return -1;
 	}
 	if ((Layer >= Data->Layer) && (Layer < (Data->Layer + PCB_MAX_LAYER)))
