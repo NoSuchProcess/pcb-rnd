@@ -28,4 +28,41 @@
 
 #include "config.h"
 
+#include "action_helper.h"
+#include "board.h"
+#include "copy.h"
+#include "crosshair.h"
+#include "search.h"
 
+
+void pcb_tool_copy_notify_mode(void)
+{
+	switch (pcb_crosshair.AttachedObject.State) {
+		/* first notify, lookup object */
+	case PCB_CH_STATE_FIRST:
+		{
+			int types = PCB_COPY_TYPES;
+
+			pcb_crosshair.AttachedObject.Type =
+				pcb_search_screen(Note.X, Note.Y, types,
+										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
+			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+				pcb_attach_for_copy(Note.X, Note.Y);
+			}
+			break;
+		}
+
+		/* second notify, move or copy object */
+	case PCB_CH_STATE_SECOND:
+		pcb_copy_obj(pcb_crosshair.AttachedObject.Type,
+							 pcb_crosshair.AttachedObject.Ptr1,
+							 pcb_crosshair.AttachedObject.Ptr2,
+							 pcb_crosshair.AttachedObject.Ptr3, Note.X - pcb_crosshair.AttachedObject.X, Note.Y - pcb_crosshair.AttachedObject.Y);
+		pcb_board_set_changed_flag(pcb_true);
+
+		/* reset identifiers */
+		pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+		break;
+	}
+}

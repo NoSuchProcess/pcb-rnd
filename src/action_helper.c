@@ -63,6 +63,7 @@
 
 #include "tool_arrow.h"
 #include "tool_buffer.h"
+#include "tool_copy.h"
 #include "tool_line.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
@@ -857,8 +858,10 @@ void pcb_notify_mode(void)
 											 : (PCB_SWAP_IDENT ? 3 : 1));
 		break;
 
-		/* both are almost the same */
 	case PCB_MODE_COPY:
+		pcb_tool_copy_notify_mode();
+		break;
+
 	case PCB_MODE_MOVE:
 		switch (pcb_crosshair.AttachedObject.State) {
 			/* first notify, lookup object */
