@@ -345,10 +345,11 @@ void pcb_data_set_layer_parents(pcb_data_t *data)
 void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rtrees)
 {
 	pcb_layer_id_t n;
-	for(n = 0; n < PCB_MAX_LAYER; n++) {
+	for(n = 0; n < pcb->Data->LayerN; n++) {
 		pcb_layer_real2bound(&data->Layer[n], &pcb->Data->Layer[n], share_rtrees);
 		data->Layer[n].parent = data;
 	}
+	data->LayerN = pcb->Data->LayerN;
 }
 
 void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data)
