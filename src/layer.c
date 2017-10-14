@@ -808,7 +808,7 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb)
 			pcb->Data->Layer[n].comb |= PCB_LYC_AUTO;
 }
 
-int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
+int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty)
 {
 	pcb_virt_layer_t *v = &pcb_virt_layers[vid];
 	assert((vid >= 0) && (vid < PCB_VLY_end));
@@ -817,11 +817,11 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 	if (pcb_gui == NULL)
 		return 0;
 
-#warning TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
+#warning layer TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
 	if (pcb_gui->set_layer_group != NULL) {
 		pcb_layergrp_id_t grp;
 		pcb_layer_id_t lid = v->new_id;
-		grp = pcb_layer_get_group(PCB, lid);
+		grp = pcb_layer_get_group(pcb, lid);
 		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
 	}
 

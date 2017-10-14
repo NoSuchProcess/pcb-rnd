@@ -184,12 +184,12 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
 	int plated, unplated;
 	pcb_board_count_holes(&plated, &unplated, drawn_area);
 
-	if (plated && pcb_layer_gui_set_vlayer(PCB_VLY_PLATED_DRILL, 0)) {
+	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0)) {
 		DrawHoles(pcb_true, pcb_false, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (unplated && pcb_layer_gui_set_vlayer(PCB_VLY_UNPLATED_DRILL, 0)) {
+	if (unplated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_UNPLATED_DRILL, 0)) {
 		DrawHoles(pcb_false, pcb_true, drawn_area);
 		pcb_gui->end_layer();
 	}
@@ -240,7 +240,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	/*
 	 * first draw all 'invisible' stuff
 	 */
-	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB_VLY_INVISIBLE, 0)) {
+	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0)) {
 		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
 		pcb_draw_silk(PCB_LYT_INVISIBLE_SIDE(), drawn_area);
 		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
@@ -320,7 +320,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 
 		/* Draw rat lines on top */
-		if (pcb_layer_gui_set_vlayer(PCB_VLY_RATS, 0)) {
+		if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
 			pcb_draw_rats(drawn_area);
@@ -343,22 +343,22 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_TOP_ASSY, 0)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_TOP_ASSY, 0)) {
 		pcb_draw_assembly(PCB_LYT_TOP, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_BOTTOM_ASSY, 0)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_BOTTOM_ASSY, 0)) {
 		pcb_draw_assembly(PCB_LYT_BOTTOM, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_FAB, 0)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_FAB, 0)) {
 		pcb_stub_draw_fab(Output.fgGC, &hid_exp);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0)) {
 		pcb_stub_draw_csect(Output.fgGC, &hid_exp);
 		pcb_gui->end_layer();
 	}
@@ -760,7 +760,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	}
 
 	if (lflg & PCB_LYT_CSECT) {
-		if ((pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) || (e->force)) {
+		if ((pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0)) || (e->force)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
 			pcb_stub_draw_csect(Output.fgGC, e);
@@ -769,7 +769,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 		}
 	}
 	else if (lflg & PCB_LYT_DIALOG) {
-		if ((pcb_layer_gui_set_vlayer(PCB_VLY_DIALOG, 0)) || (e->force)) {
+		if ((pcb_layer_gui_set_vlayer(PCB, PCB_VLY_DIALOG, 0)) || (e->force)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
 			e->dialog_draw(Output.fgGC, e);

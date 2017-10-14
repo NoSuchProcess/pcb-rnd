@@ -195,7 +195,7 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer);
 
 
 /* call the gui to set a virtual layer or the UI layer group */
-int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty);
+int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty);
 int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty);
 
 
