@@ -172,7 +172,8 @@ static void ensure_visible_current(pcb_gtk_layersel_t *ls)
 	if (CURRENT->meta.real.vis)
 		return;
 
-#warning layer TODO#5: do something with bound layers here
+	/* At the moment the layer selector displays only board layers which are always real */
+	assert(!CURRENT->is_bound);
 
 	/* look for the next one to enable, group-vise */
 	for(gid = CURRENT->meta.real.grp + 1; gid != CURRENT->meta.real.grp; gid++) {
