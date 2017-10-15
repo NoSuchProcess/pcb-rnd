@@ -22,7 +22,11 @@
 
 #include "config.h"
 
+#include <assert.h>
+
+#include "board.h"
 #include "data.h"
+#include "data_list.h"
 #include "obj_padstack.h"
 
 unsigned long pcb_padstack_alloc_group(pcb_data_t *data)
@@ -41,6 +45,93 @@ unsigned long pcb_padstack_alloc_group(pcb_data_t *data)
 
 	return data->ps_next_grp++;
 }
+
+int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *dst, int quiet)
+{
+	int ret = -1, n, m;
+	vtp0_t objs;
+	pcb_any_obj_t *o;
+
+	dst->shape = NULL;
+
+	vtp0_init(&objs);
+	pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAG_SELECTED);
+
+	if (vtp0_len(&objs) > pcb->Data->LayerN) {
+		if (!quiet)
+			pcb_message(PCB_MSG_ERROR, "Padstack conversion: too many objects selected\n");
+		goto quit;
+	}
+
+	for(n = 0, o = (pcb_any_obj_t *)objs.array; n < vtp0_len(&objs); n++,o++) {
+		if ((o->type != PCB_OBJ_LINE) && (o->type != PCB_OBJ_POLYGON) && (o->type != PCB_OBJ_VIA)) {
+			if (!quiet)
+				pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type selected; must be via, line or polygon\n");
+			goto quit;
+		}
+	}
+
+	/* allocate shapes */
+	dst->len = vtp0_len(&objs);
+	dst->shape = malloc(dst->len * sizeof(pcb_padstack_shape_t));
+
+	/* convert local (line/poly) objects */
+	for(n = 0, o = (pcb_any_obj_t *)objs.array; n < vtp0_len(&objs); n++,o++) {
+		pcb_layer_t *ly;
+		switch(o->type) {
+			case PCB_OBJ_LINE:
+				dst->shape[n].shape = PCB_PSSH_LINE;
+				dst->shape[n].data.line.x1 = ((pcb_line_t *)o)->Point1.X;
+				dst->shape[n].data.line.y1 = ((pcb_line_t *)o)->Point1.Y;
+				dst->shape[n].data.line.x2 = ((pcb_line_t *)o)->Point2.X;
+				dst->shape[n].data.line.y2 = ((pcb_line_t *)o)->Point2.Y;
+				dst->shape[n].data.line.square = 0;
+				break;
+			case PCB_OBJ_POLYGON:
+				{
+					pcb_poly_it_t it;
+					pcb_polyarea_t *pa = pcb_poly_island_first(((pcb_polygon_t *)o), &it);
+					unsigned long int len;
+					int p;
+					pcb_coord_t x, y;
+					pcb_pline_t *pl;
+					int go;
+
+					pl = pcb_poly_contour(&it);
+					for(go = pcb_poly_vect_first(&it, &x, &y), len = 0; go; go = pcb_poly_vect_next(&it, &x, &y))
+						len++;
+					if (len >= (1L << (sizeof(int)-1))) {
+						if (!quiet)
+							pcb_message(PCB_MSG_ERROR, "Padstack conversion: polygon has too many points\n");
+						goto quit;
+					}
+					dst->shape[n].data.poly.pt = malloc(sizeof(dst->shape[n].data.poly.pt[0]) * len);
+					for(go = pcb_poly_vect_first(&it, &x, &y), p = 0; go; go = pcb_poly_vect_next(&it, &x, &y)) {
+						dst->shape[n].data.poly.pt[p].X = x;
+						dst->shape[n].data.poly.pt[p].Y = y;
+					}
+					dst->shape[n].shape = PCB_PSSH_POLY;
+				}
+				break;
+			default: continue;
+		}
+		assert(o->parent_type == PCB_PARENT_LAYER);
+		ly = o->parent.layer;
+		dst->shape[n].layer_mask;
+		
+	}
+
+	quit:;
+	free(dst->shape);
+	vtp0_uninit(&objs);
+	return ret;
+}
+
+pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet)
+{
+
+}
+
 
 /*** hash ***/
 static unsigned int pcb_padstack_shape_hash(const pcb_padstack_shape_t *sh)

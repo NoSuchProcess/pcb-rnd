@@ -27,6 +27,8 @@
 
 #include "obj_common.h"
 
+#define PCB_PADSTACK_INVALID ((pcb_cardinal_t)(-1))
+
 /* The actual padstack is just a reference to a padstack proto within the same data */
 struct pcb_padstack_s {
 	PCB_ANYOBJECTFIELDS;

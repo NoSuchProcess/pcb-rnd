@@ -79,6 +79,10 @@ typedef struct pcb_padstack_proto_s {
 /* allocate and return the next available group ID */
 unsigned long pcb_padstack_alloc_group(pcb_data_t *data);
 
+/* Convert selection to padstack; returns PCB_PADSTACK_INVALID on error */
+pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet);
+
+
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
 int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *p2);
