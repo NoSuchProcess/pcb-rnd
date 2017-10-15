@@ -104,7 +104,13 @@ void pcb_tool_polyhole_notify_mode(void)
 	}
 }
 
+void pcb_tool_polyhole_adjust_attached_objects(void)
+{
+	pcb_line_adjust_attached();
+}
+
 pcb_tool_t pcb_tool_polyhole = {
 	"polyhole", NULL, 100,
-	pcb_tool_polyhole_notify_mode
+	pcb_tool_polyhole_notify_mode,
+	pcb_tool_polyhole_adjust_attached_objects
 };

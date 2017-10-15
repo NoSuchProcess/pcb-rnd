@@ -73,7 +73,13 @@ void pcb_tool_poly_notify_mode(void)
 	}
 }
 
+void pcb_tool_poly_adjust_attached_objects(void)
+{
+	pcb_line_adjust_attached();
+}
+
 pcb_tool_t pcb_tool_poly = {
 	"poly", NULL, 100,
-	pcb_tool_poly_notify_mode
+	pcb_tool_poly_notify_mode,
+	pcb_tool_poly_adjust_attached_objects
 };

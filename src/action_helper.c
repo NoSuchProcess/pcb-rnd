@@ -400,12 +400,14 @@ void pcb_adjust_attached_objects(void)
 
 		/* polygon creation mode */
 	case PCB_MODE_POLYGON:
+		pcb_tool_poly_adjust_attached_objects();
+		break;
 	case PCB_MODE_POLYGON_HOLE:
-		pcb_line_adjust_attached();
+		pcb_tool_polyhole_adjust_attached_objects();
 		break;
 		/* line creation mode */
 	case PCB_MODE_LINE:
-		pcb_line_adjust_attached();
+		pcb_tool_line_adjust_attached_objects();
 		break;
 		/* point insertion mode */
 	case PCB_MODE_INSERT_POINT:
