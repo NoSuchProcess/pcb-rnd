@@ -23,10 +23,24 @@
 #ifndef PCB_OBJ_PADSTACK_LIST_H
 #define PCB_OBJ_PADSTACK_LIST_H
 
-#include "obj_common.h"
-#include "obj_padstack.h"
+#define PCB_PADSTACK_MAX_SHAPES 31
 
-/* List of Arcs */
+#include "obj_common.h"
+
+/* The actual padstack is just a reference to a padstack proto within the same data */
+struct pcb_padstack_s {
+	PCB_ANYOBJECTFIELDS;
+	pcb_cardinal_t proto;          /* reference to a pcb_padstack_proto_t within pcb_data_t */
+	pcb_coord_t x, y;
+	struct {
+		int used;
+		char *shape;                 /* indexed by layer ID */
+	} thermal;
+	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
+};
+
+
+/* List of padstatcks */
 #define TDL(x)      padstacklist_ ## x
 #define TDL_LIST_T  padstacklist_t
 #define TDL_ITEM_T  pcb_padstack_t

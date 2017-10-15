@@ -23,8 +23,7 @@
 #ifndef PCB_OBJ_PADSTACK_H
 #define PCB_OBJ_PADSTACK_H
 
-#define PCB_PADSTACK_MAX_SHAPES 31
-
+#include "obj_padstack_list.h"
 #include "layer.h"
 
 typedef struct pcb_padstack_poly_s {
@@ -69,19 +68,6 @@ typedef struct pcb_padstack_proto_s {
 
 	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
 } pcb_padstack_proto_t;
-
-#include "obj_common.h"
-
-struct pcb_padstack_s {
-	PCB_ANYOBJECTFIELDS;
-	pcb_cardinal_t proto;          /* reference to a pcb_padstack_proto_t within pcb_data_t */
-	pcb_coord_t x, y;
-	struct {
-		int used;
-		char *shape;                 /* indexed by layer ID */
-	} thermal;
-	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
-};
 
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
