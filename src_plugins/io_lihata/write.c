@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016, 2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -508,6 +508,16 @@ static lht_node_t *build_subc(pcb_subc_t *sc)
 	return obj;
 }
 
+static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
+{
+	return NULL;
+}
+
+static lht_node_t *build_padstack(pcb_padstack_t *ps)
+{
+	return NULL;
+}
+
 
 static void build_layer_stack_flag(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name)
 {
@@ -690,6 +700,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 static lht_node_t *build_data(pcb_data_t *data)
 {
 	lht_node_t *grp, *ndt;
+	pcb_padstack_t *ps;
 	pcb_pin_t *pi;
 	pcb_element_t *el;
 	pcb_subc_t *sc;
@@ -704,6 +715,12 @@ static lht_node_t *build_data(pcb_data_t *data)
 	/* build a list of all global objects */
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(ndt, grp);
+
+	if (wrver >= 4) {
+		lht_dom_hash_put(ndt, build_padstack_protos(&data->ps_protos));
+		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps))
+			lht_dom_list_append(grp, build_padstack(ps));
+	}
 
 	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))
 		lht_dom_list_append(grp, build_pin(pi, 1, 0, 0));
