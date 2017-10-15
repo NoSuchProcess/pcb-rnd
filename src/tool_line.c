@@ -236,7 +236,14 @@ void pcb_tool_line_notify_mode(void)
 
 void pcb_tool_line_adjust_attached_objects(void)
 {
-	pcb_line_adjust_attached();
+	/* don't draw outline when ctrl key is pressed */
+	if (pcb_gui->control_is_pressed()) {
+		pcb_crosshair.AttachedLine.draw = pcb_false;
+	}
+	else {
+		pcb_crosshair.AttachedLine.draw = pcb_true;
+		pcb_line_adjust_attached();
+	}
 }
 
 pcb_tool_t pcb_tool_line = {

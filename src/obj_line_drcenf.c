@@ -54,14 +54,6 @@ void pcb_line_adjust_attached(void)
 	if (line->State == PCB_CH_STATE_FIRST)
 		return;
 
-	/* don't draw outline when ctrl key is pressed */
-	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_gui->control_is_pressed()) {
-		line->draw = pcb_false;
-		return;
-	}
-	else
-		line->draw = pcb_true;
-
 	line->Point2.X = pcb_crosshair.X;
 	line->Point2.Y = pcb_crosshair.Y;
 
