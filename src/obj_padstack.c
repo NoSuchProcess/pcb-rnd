@@ -46,24 +46,21 @@ unsigned long pcb_padstack_alloc_group(pcb_data_t *data)
 	return data->ps_next_grp++;
 }
 
-int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *dst, int quiet)
+
+static int pcb_padstack_proto_conv(pcb_board_t *pcb, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs)
 {
 	int ret = -1, n, m;
-	vtp0_t objs;
 	pcb_any_obj_t *o;
 
 	dst->shape = NULL;
 
-	vtp0_init(&objs);
-	pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAG_SELECTED);
-
-	if (vtp0_len(&objs) > pcb->Data->LayerN) {
+	if (vtp0_len(objs) > pcb->Data->LayerN) {
 		if (!quiet)
 			pcb_message(PCB_MSG_ERROR, "Padstack conversion: too many objects selected\n");
 		goto quit;
 	}
 
-	for(n = 0, o = (pcb_any_obj_t *)objs.array; n < vtp0_len(&objs); n++,o++) {
+	for(n = 0, o = (pcb_any_obj_t *)objs->array; n < vtp0_len(objs); n++,o++) {
 		if ((o->type != PCB_OBJ_LINE) && (o->type != PCB_OBJ_POLYGON) && (o->type != PCB_OBJ_VIA)) {
 			if (!quiet)
 				pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type selected; must be via, line or polygon\n");
@@ -72,11 +69,11 @@ int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *ds
 	}
 
 	/* allocate shapes */
-	dst->len = vtp0_len(&objs);
+	dst->len = vtp0_len(objs);
 	dst->shape = malloc(dst->len * sizeof(pcb_padstack_shape_t));
 
 	/* convert local (line/poly) objects */
-	for(n = 0, o = (pcb_any_obj_t *)objs.array; n < vtp0_len(&objs); n++,o++) {
+	for(n = 0, o = (pcb_any_obj_t *)objs->array; n < vtp0_len(objs); n++,o++) {
 		pcb_layer_t *ly;
 		switch(o->type) {
 			case PCB_OBJ_LINE:
@@ -94,8 +91,8 @@ int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *ds
 					unsigned long int len;
 					int p;
 					pcb_coord_t x, y;
-					pcb_pline_t *pl;
 					int go;
+					pcb_pline_t *pl;
 
 					pl = pcb_poly_contour(&it);
 					for(go = pcb_poly_vect_first(&it, &x, &y), len = 0; go; go = pcb_poly_vect_next(&it, &x, &y))
@@ -131,7 +128,19 @@ int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *ds
 	quit:;
 #warning TODO: do a full field free here
 	free(dst->shape);
+	return ret;
+}
+
+int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *dst, int quiet)
+{
+	int ret;
+	vtp0_t objs;
+
+	vtp0_init(&objs);
+	pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAG_SELECTED);
+	ret = pcb_padstack_proto_conv(pcb, dst, quiet, &objs);
 	vtp0_uninit(&objs);
+
 	return ret;
 }
 
