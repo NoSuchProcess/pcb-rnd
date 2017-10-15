@@ -25,6 +25,8 @@
 #include <assert.h>
 
 #include "board.h"
+#include "buffer.h"
+#include "conf_core.h"
 #include "data.h"
 #include "data_list.h"
 #include "obj_padstack.h"
@@ -138,7 +140,21 @@ int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *ds
 
 	vtp0_init(&objs);
 	pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAG_SELECTED);
-	ret = pcb_padstack_proto_conv(pcb, dst, quiet, &objs);
+	ret = pcb_padstack_proto_conv(pcb->Data, dst, quiet, &objs);
+	vtp0_uninit(&objs);
+
+	return ret;
+}
+
+
+int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
+{
+	int ret;
+	vtp0_t objs;
+
+	vtp0_init(&objs);
+	pcb_data_list_by_flag(PCB_PASTEBUFFER->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAGS);
+	ret = pcb_padstack_proto_conv(PCB_PASTEBUFFER->Data, dst, quiet, &objs);
 	vtp0_uninit(&objs);
 
 	return ret;
