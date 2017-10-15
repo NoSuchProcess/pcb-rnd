@@ -67,6 +67,13 @@ typedef struct pcb_padstack_proto_s {
 	pcb_padstack_shape_t *shape;   /* list of layer-shape pairs */
 
 	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
+
+	/* a proto can be derived from another proto via rotation/mirroring;
+	   the above fields store the current state, after the transformations,
+	   but we need to link the original we forked from; this is done by unique
+	   group IDs. A brand new proto will get a new group ID, larger than any
+	   existing group ID, a forked one will copy its parents group ID. */
+	unsigned long group;
 } pcb_padstack_proto_t;
 
 /*** hash ***/
