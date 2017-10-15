@@ -136,6 +136,11 @@ void pcb_tool_notify_mode(void)
 	wrap_void(notify_mode, ());
 }
 
+void pcb_tool_adjust_attached_objects(void)
+{
+	wrap_void(adjust_attached_objects, ());
+}
+
 #warning tool TODO: move this out to a tool plugin
 
 #include "tool_arc.h"

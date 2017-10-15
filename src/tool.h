@@ -35,6 +35,7 @@ typedef struct pcb_tool_s {
 
 	/* tool implementation */
 	void (*notify_mode)(void);
+	void (*adjust_attached_objects)(void);
 } pcb_tool_t;
 
 vtp0_t pcb_tools;
