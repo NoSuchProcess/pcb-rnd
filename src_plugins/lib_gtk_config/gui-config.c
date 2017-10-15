@@ -2075,7 +2075,7 @@ static void config_auto_src_show(pcb_gtk_common_t *com, lht_node_t *nd)
 		break;
 	case CFN_COLOR:
 		com->map_color_string(nd->data.text.value, &auto_tab_widgets.color);
-		gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
+		gtkc_color_button_set_color(auto_tab_widgets.edit_color, &auto_tab_widgets.color);
 		gtk_widget_show(auto_tab_widgets.edit_color);
 		break;
 	case CFN_UNIT:
