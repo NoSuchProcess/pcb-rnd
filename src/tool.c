@@ -25,6 +25,7 @@
 #include "tool.h"
 
 #include "error.h"
+#include "conf_core.h"
 
 #warning tool TODO: remove this when pcb_crosshair_set_mode() got moved here
 #include "crosshair.h"
@@ -114,6 +115,25 @@ int pcb_tool_select_highest(void)
 	return 0;
 }
 
+/**** current tool function wrappers ****/
+#define wrap(func, err_ret, prefix, args) \
+	do { \
+		const pcb_tool_t *tool; \
+		if ((conf_core.editor.mode < 0) || (conf_core.editor.mode >= vtp0_len(&pcb_tools))) \
+			{ err_ret; } \
+		tool = (const pcb_tool_t *)pcb_tools.array[conf_core.editor.mode]; \
+		if (tool->func == NULL) \
+			{ err_ret; } \
+		prefix tool->func args; \
+	} while(0)
+
+#define wrap_void(func, args)           wrap(func, return,  ;,      args)
+#define wrap_retv(func, err_ret, args)  wrap(func, err_ret, return, args)
+
+void pcb_tool_notify_mode(void)
+{
+	wrap_void(notify_mode, ());
+}
 
 #warning tool TODO: move this out to a tool plugin
 
