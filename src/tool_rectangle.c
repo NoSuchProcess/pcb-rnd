@@ -77,7 +77,21 @@ void pcb_tool_rectangle_notify_mode(void)
 	}
 }
 
+void pcb_tool_rectangle_adjust_attached_objects(void)
+{
+	switch (pcb_crosshair.AttachedBox.State) {
+	case PCB_CH_STATE_SECOND:						/* one corner is selected */
+		{
+			/* update coordinates */
+			pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
+			pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
+			break;
+		}
+	}
+}
+
 pcb_tool_t pcb_tool_rectangle = {
 	"rectangle", NULL, 100,
-	pcb_tool_rectangle_notify_mode
+	pcb_tool_rectangle_notify_mode,
+	pcb_tool_rectangle_adjust_attached_objects
 };

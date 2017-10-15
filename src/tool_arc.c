@@ -95,7 +95,13 @@ void pcb_tool_arc_notify_mode(void)
 	}
 }
 
+void pcb_tool_arc_adjust_attached_objects(void)
+{
+	pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed();
+}
+
 pcb_tool_t pcb_tool_arc = {
 	"arc", NULL, 100,
-	pcb_tool_arc_notify_mode
+	pcb_tool_arc_notify_mode,
+	pcb_tool_arc_adjust_attached_objects
 };

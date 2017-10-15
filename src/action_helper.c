@@ -415,8 +415,10 @@ void pcb_adjust_attached_objects(void)
 
 		/* rectangle creation mode */
 	case PCB_MODE_RECTANGLE:
+		pcb_tool_rectangle_adjust_attached_objects();
+		break;
 	case PCB_MODE_ARC:
-		AdjustAttachedBox();
+		pcb_tool_arc_adjust_attached_objects();
 		break;
 
 		/* polygon creation mode */
