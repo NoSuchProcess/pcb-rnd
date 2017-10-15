@@ -80,6 +80,7 @@ struct pcb_padstack_s {
 		int used;
 		char *shape;                 /* indexed by layer ID */
 	} thermal;
+	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
 };
 
 /*** hash ***/

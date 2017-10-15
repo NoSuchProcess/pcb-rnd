@@ -47,6 +47,7 @@ struct pcb_data_s {
 
 	pcb_vtpadstack_proto_t ps_protos;
 
+	padstacklist_t padstack;
 	pinlist_t Via;
 	pcb_subclist_t subc;
 	elementlist_t Element;
