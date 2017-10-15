@@ -27,7 +27,7 @@
 #include "write.h"
 #include "io_lihata.h"
 
-pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3;
+pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3, plug_io_lihata_v4;
 conf_io_lihata_t conf_io_lihata;
 
 int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
@@ -61,6 +61,25 @@ int pplg_init_io_lihata(void)
 {
 
 	/* register the IO hook */
+	plug_io_lihata_v4.plugin_data = NULL;
+	plug_io_lihata_v4.fmt_support_prio = io_lihata_fmt;
+	plug_io_lihata_v4.test_parse_pcb = io_lihata_test_parse_pcb;
+	plug_io_lihata_v4.parse_pcb = io_lihata_parse_pcb;
+	plug_io_lihata_v4.parse_element = io_lihata_parse_element;
+	plug_io_lihata_v4.parse_font = io_lihata_parse_font;
+	plug_io_lihata_v4.write_font = io_lihata_write_font;
+	plug_io_lihata_v4.write_buffer = io_lihata_write_buffer;
+	plug_io_lihata_v4.write_element = io_lihata_write_element;
+	plug_io_lihata_v4.write_pcb = io_lihata_write_pcb_v4;
+	plug_io_lihata_v4.default_fmt = "lihata";
+	plug_io_lihata_v4.description = "lihata board v4";
+	plug_io_lihata_v4.save_preference_prio = 95;
+	plug_io_lihata_v4.default_extension = ".lht";
+	plug_io_lihata_v4.fp_extension = ".lht";
+	plug_io_lihata_v4.mime_type = "application/x-pcbrnd-board";
+
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
+
 	plug_io_lihata_v3.plugin_data = NULL;
 	plug_io_lihata_v3.fmt_support_prio = io_lihata_fmt;
 	plug_io_lihata_v3.test_parse_pcb = io_lihata_test_parse_pcb;
