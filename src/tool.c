@@ -26,6 +26,8 @@
 
 #include "error.h"
 
+#warning tool TODO: remove this when pcb_crosshair_set_mode() got moved here
+#include "crosshair.h"
 
 static void default_tool_reg(void);
 static void default_tool_unreg(void);
@@ -78,6 +80,39 @@ pcb_toolid_t pcb_tool_lookup(const char *name)
 	return PCB_TOOLID_INVALID;
 }
 
+int pcb_tool_select_by_name(const char *name)
+{
+	pcb_toolid_t id = pcb_tool_lookup(name);
+	if (id == PCB_TOOLID_INVALID)
+		return -1;
+	pcb_crosshair_set_mode(id);
+	return 0;
+}
+
+int pcb_tool_select_by_id(pcb_toolid_t id)
+{
+	if ((id < 0) || (id > vtp0_len(&pcb_tools)))
+		return -1;
+	pcb_crosshair_set_mode(id);
+	return 0;
+}
+
+int pcb_tool_select_highest(void)
+{
+	pcb_toolid_t n, bestn = PCB_TOOLID_INVALID;
+	unsigned int bestp = -1;
+	for(n = 0; n < vtp0_len(&pcb_tools) && (bestp > 0); n++) {
+		const pcb_tool_t *tool = (const pcb_tool_t *)pcb_tools.array[n];
+		if (tool->priority < bestp) {
+			bestp = tool->priority;
+			bestn = n;
+		}
+	}
+	if (bestn == PCB_TOOLID_INVALID)
+		return -1;
+	pcb_crosshair_set_mode(bestn);
+	return 0;
+}
 
 
 #warning tool TODO: move this out to a tool plugin

@@ -31,7 +31,7 @@ typedef int pcb_toolid_t;
 typedef struct pcb_tool_s {
 	const char *name;             /* textual name of the tool */
 	const char *cookie;           /* plugin cookie _pointer_ of the registrar (comparision is pointer based, not strcmp) */
-	int priority;                 /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
+	unsigned int priority;        /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
 
 	/* tool implementation */
 	void (*notify_mode)(void);
