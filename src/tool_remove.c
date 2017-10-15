@@ -36,6 +36,7 @@
 #include "undo.h"
 #include "remove.h"
 #include "search.h"
+#include "tool.h"
 
 
 void pcb_tool_remove_notify_mode(void)

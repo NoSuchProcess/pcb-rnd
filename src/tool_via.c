@@ -35,6 +35,7 @@
 #include "compat_nls.h"
 #include "data.h"
 #include "draw.h"
+#include "tool.h"
 #include "undo.h"
 
 #include "obj_pinvia_draw.h"

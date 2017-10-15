@@ -37,6 +37,7 @@
 #include "hid_actions.h"
 #include "rtree.h"
 #include "search.h"
+#include "tool.h"
 
 #include "obj_elem_draw.h"
 

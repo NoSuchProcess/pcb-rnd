@@ -37,6 +37,7 @@
 #include "obj_line.h"
 #include "rats.h"
 #include "search.h"
+#include "tool.h"
 #include "undo.h"
 
 #include "obj_line_draw.h"

@@ -35,6 +35,7 @@
 #include "data.h"
 #include "draw.h"
 #include "hid_actions.h"
+#include "tool.h"
 #include "undo.h"
 
 #include "obj_text_draw.h"

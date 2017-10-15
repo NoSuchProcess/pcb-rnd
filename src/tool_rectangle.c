@@ -34,6 +34,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
+#include "tool.h"
 #include "undo.h"
 
 #include "obj_poly_draw.h"

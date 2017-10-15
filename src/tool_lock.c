@@ -35,6 +35,7 @@
 #include "draw.h"
 #include "hid_actions.h"
 #include "search.h"
+#include "tool.h"
 #include "tool_lock.h"
 
 #include "obj_elem_draw.h"

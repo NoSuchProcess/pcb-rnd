@@ -38,6 +38,7 @@
 #include "remove.h"
 #include "search.h"
 #include "select.h"
+#include "tool.h"
 #include "undo.h"
 
 

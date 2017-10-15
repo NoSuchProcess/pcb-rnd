@@ -33,6 +33,7 @@
 #include "copy.h"
 #include "crosshair.h"
 #include "search.h"
+#include "tool.h"
 
 
 void pcb_tool_copy_notify_mode(void)

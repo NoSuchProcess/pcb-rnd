@@ -5853,8 +5853,8 @@ main.o: main.c ../config.h ../src_3rd/libminuid/libminuid.h board.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h build_run.h flag_str.h plugins.h \
  ../src_3rd/puplug/error.h plug_footprint.h vtlibrary.h event.h \
- funchash.h conf_core.h layer_vis.h pcb_minuid.h hid_actions.h hid_init.h \
- compat_misc.h compat_nls.h dolists.h generated_lists.h
+ funchash.h conf_core.h layer_vis.h pcb_minuid.h tool.h hid_actions.h \
+ hid_init.h compat_misc.h compat_nls.h dolists.h generated_lists.h
 main_act.o: main_act.c ../config.h hid_actions.h hid.h error.h drc.h \
  unit.h global_typedefs.h pcb_bool.h attrib.h layer.h globalconst.h \
  obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genht/hash.h \
@@ -6799,6 +6799,27 @@ stub_mincut.o: stub_mincut.c ../config.h stub_mincut.h global_typedefs.h \
 stub_stroke.o: stub_stroke.c error.h ../config.h pcb_bool.h
 stub_vendor.o: stub_vendor.c ../config.h stub_vendor.h global_typedefs.h \
  pcb_bool.h unit.h
+tool.o: tool.c ../config.h tool.h ../src_3rd/genvector/vtp0.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h error.h conf_core.h conf.h \
+ global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ globalconst.h crosshair.h vtonpoint.h hid.h drc.h attrib.h layer.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genht/hash.h \
+ ../src_3rd/genlist/gendlist.h flag.h data_parent.h obj_arc.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h obj_poly.h polyarea.h obj_poly_list.h box.h \
+ math_helper.h macro.h move.h misc_util.h ht_element.h \
+ ../src_3rd/genht/ht.h obj_padstack_list.h obj_text_list.h obj_rat_list.h \
+ obj_rat.h layer_grp.h route.h const.h tool_arc.h tool_arrow.h \
+ tool_buffer.h tool_copy.h tool_insert.h tool_line.h tool_lock.h \
+ tool_move.h tool_poly.h tool_polyhole.h tool_rectangle.h tool_remove.h \
+ tool_rotate.h tool_text.h tool_thermal.h tool_via.h
 tool_arc.o: tool_arc.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6819,8 +6840,8 @@ tool_arc.o: tool_arc.c ../config.h conf_core.h conf.h global_typedefs.h \
  library.h rats_patch.h crosshair.h vtonpoint.h hid.h error.h drc.h \
  route.h data.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
- obj_padstack.h draw.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_arc_draw.h
+ obj_padstack.h draw.h tool.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h obj_arc_draw.h
 tool_arrow.o: tool_arrow.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -6842,8 +6863,8 @@ tool_arrow.o: tool_arrow.c ../config.h conf_core.h conf.h \
  drc.h route.h data.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
  obj_padstack.h hid_actions.h remove.h search.h rats.h netlist.h \
- route_style.h select.h operation.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h
+ route_style.h select.h operation.h tool.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h
 tool_buffer.o: tool_buffer.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -6865,7 +6886,7 @@ tool_buffer.o: tool_buffer.c ../config.h conf_core.h conf.h \
  vtonpoint.h hid.h error.h drc.h route.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
  obj_padstack.h hid_actions.h search.h rats.h netlist.h route_style.h \
- obj_elem_draw.h
+ tool.h obj_elem_draw.h
 tool_copy.o: tool_copy.c ../config.h action_helper.h global_typedefs.h \
  pcb_bool.h unit.h board.h const.h macro.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6880,7 +6901,8 @@ tool_copy.o: tool_copy.c ../config.h action_helper.h global_typedefs.h \
  math_helper.h move.h misc_util.h ht_element.h ../src_3rd/genht/ht.h \
  obj_padstack_list.h obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h \
  library.h rats_patch.h copy.h crosshair.h vtonpoint.h hid.h error.h \
- drc.h route.h search.h rats.h netlist.h route_style.h
+ drc.h route.h search.h rats.h netlist.h route_style.h tool.h \
+ ../src_3rd/genvector/vtp0.h
 tool_insert.o: tool_insert.c ../config.h action_helper.h \
  global_typedefs.h pcb_bool.h unit.h board.h const.h macro.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
@@ -6896,7 +6918,7 @@ tool_insert.o: tool_insert.c ../config.h action_helper.h \
  obj_padstack_list.h obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h \
  library.h rats_patch.h compat_nls.h crosshair.h vtonpoint.h hid.h \
  error.h drc.h route.h insert.h polygon.h rtree.h search.h rats.h \
- netlist.h route_style.h
+ netlist.h route_style.h tool.h ../src_3rd/genvector/vtp0.h
 tool_line.o: tool_line.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6917,9 +6939,9 @@ tool_line.o: tool_line.c ../config.h conf_core.h conf.h global_typedefs.h \
  library.h rats_patch.h crosshair.h vtonpoint.h hid.h error.h drc.h \
  route.h data.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
- obj_padstack.h draw.h rats.h netlist.h route_style.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h obj_line_draw.h obj_pinvia_draw.h \
- obj_rat_draw.h
+ obj_padstack.h draw.h rats.h netlist.h route_style.h search.h tool.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h obj_line_draw.h \
+ obj_pinvia_draw.h obj_rat_draw.h
 tool_lock.o: tool_lock.c ../config.h action_helper.h global_typedefs.h \
  pcb_bool.h unit.h board.h const.h macro.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6937,7 +6959,8 @@ tool_lock.o: tool_lock.c ../config.h action_helper.h global_typedefs.h \
  error.h drc.h route.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
  ht_subc.h vtpadstack.h obj_padstack.h draw.h hid_actions.h search.h \
- rats.h netlist.h route_style.h tool_lock.h obj_elem_draw.h
+ rats.h netlist.h route_style.h tool.h ../src_3rd/genvector/vtp0.h \
+ tool_lock.h obj_elem_draw.h
 tool_move.o: tool_move.c ../config.h action_helper.h global_typedefs.h \
  pcb_bool.h unit.h board.h const.h macro.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6952,7 +6975,8 @@ tool_move.o: tool_move.c ../config.h action_helper.h global_typedefs.h \
  math_helper.h move.h misc_util.h ht_element.h ../src_3rd/genht/ht.h \
  obj_padstack_list.h obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h \
  library.h rats_patch.h compat_nls.h copy.h crosshair.h vtonpoint.h hid.h \
- error.h drc.h route.h search.h rats.h netlist.h route_style.h
+ error.h drc.h route.h search.h rats.h netlist.h route_style.h tool.h \
+ ../src_3rd/genvector/vtp0.h
 tool_poly.o: tool_poly.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6970,7 +6994,7 @@ tool_poly.o: tool_poly.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/htip.h obj_poly.h polyarea.h obj_poly_list.h box.h \
  math_helper.h macro.h move.h misc_util.h ht_element.h \
  ../src_3rd/genht/ht.h obj_padstack_list.h obj_text_list.h obj_rat_list.h \
- obj_rat.h layer_grp.h route.h const.h hid_actions.h
+ obj_rat.h layer_grp.h route.h const.h hid_actions.h tool.h
 tool_polyhole.o: tool_polyhole.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -6989,7 +7013,7 @@ tool_polyhole.o: tool_polyhole.c ../config.h conf_core.h conf.h \
  math_helper.h macro.h move.h misc_util.h ht_element.h \
  ../src_3rd/genht/ht.h obj_padstack_list.h obj_text_list.h obj_rat_list.h \
  obj_rat.h layer_grp.h route.h const.h hid_actions.h search.h rats.h \
- netlist.h library.h route_style.h vtroutestyle.h
+ netlist.h library.h route_style.h vtroutestyle.h tool.h
 tool_rectangle.o: tool_rectangle.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -7010,8 +7034,8 @@ tool_rectangle.o: tool_rectangle.c ../config.h conf_core.h conf.h \
  library.h rats_patch.h crosshair.h vtonpoint.h hid.h error.h drc.h \
  route.h data.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
- obj_padstack.h draw.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_poly_draw.h
+ obj_padstack.h draw.h tool.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h obj_poly_draw.h
 tool_remove.o: tool_remove.c ../config.h action_helper.h \
  global_typedefs.h pcb_bool.h unit.h board.h const.h macro.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
@@ -7027,7 +7051,7 @@ tool_remove.o: tool_remove.c ../config.h action_helper.h \
  obj_padstack_list.h obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h \
  library.h rats_patch.h compat_nls.h event.h hid_actions.h hid.h error.h \
  drc.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h remove.h search.h \
- rats.h netlist.h route_style.h
+ rats.h netlist.h route_style.h tool.h ../src_3rd/genvector/vtp0.h
 tool_rotate.o: tool_rotate.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -7045,7 +7069,7 @@ tool_rotate.o: tool_rotate.c ../config.h conf_core.h conf.h \
  ../src_3rd/genht/htip.h obj_poly.h polyarea.h obj_poly_list.h box.h \
  math_helper.h macro.h move.h misc_util.h ht_element.h \
  ../src_3rd/genht/ht.h obj_padstack_list.h obj_text_list.h obj_rat_list.h \
- obj_rat.h layer_grp.h rotate.h
+ obj_rat.h layer_grp.h rotate.h tool.h
 tool_text.o: tool_text.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -7066,8 +7090,8 @@ tool_text.o: tool_text.c ../config.h conf_core.h conf.h global_typedefs.h \
  library.h rats_patch.h compat_nls.h data.h crosshair.h vtonpoint.h hid.h \
  error.h drc.h route.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
- obj_padstack.h draw.h hid_actions.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h obj_text_draw.h
+ obj_padstack.h draw.h hid_actions.h tool.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_text_draw.h
 tool_thermal.o: tool_thermal.c ../config.h action_helper.h \
  global_typedefs.h pcb_bool.h unit.h board.h const.h macro.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \
@@ -7085,7 +7109,7 @@ tool_thermal.o: tool_thermal.c ../config.h action_helper.h \
  error.h drc.h route.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
  ht_subc.h vtpadstack.h obj_padstack.h hid_actions.h search.h rats.h \
- netlist.h route_style.h
+ netlist.h route_style.h tool.h ../src_3rd/genvector/vtp0.h
 tool_via.o: tool_via.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -7106,8 +7130,8 @@ tool_via.o: tool_via.c ../config.h conf_core.h conf.h global_typedefs.h \
  library.h rats_patch.h change.h compat_nls.h data.h crosshair.h \
  vtonpoint.h hid.h error.h drc.h route.h buffer.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h \
- vtpadstack.h obj_padstack.h draw.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h obj_pinvia_draw.h
+ vtpadstack.h obj_padstack.h draw.h tool.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_pinvia_draw.h
 undo.o: undo.c ../config.h ../src_3rd/libuundo/uundo_debug.h \
  ../src_3rd/libuundo/uundo.h board.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \

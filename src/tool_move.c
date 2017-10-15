@@ -34,6 +34,7 @@
 #include "copy.h"
 #include "crosshair.h"
 #include "search.h"
+#include "tool.h"
 
 
 void pcb_tool_move_notify_mode(void)

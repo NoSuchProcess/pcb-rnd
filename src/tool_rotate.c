@@ -32,6 +32,7 @@
 #include "action_helper.h"
 #include "hid_actions.h"
 #include "rotate.h"
+#include "tool.h"
 
 
 void pcb_tool_rotate_notify_mode(void)

@@ -34,6 +34,7 @@
 #include "data.h"
 #include "hid_actions.h"
 #include "search.h"
+#include "tool.h"
 
 
 void pcb_tool_thermal_notify_mode(void)

@@ -32,6 +32,7 @@
 #include "action_helper.h"
 #include "crosshair.h"
 #include "hid_actions.h"
+#include "tool.h"
 
 
 void pcb_tool_poly_notify_mode(void)
