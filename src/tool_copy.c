@@ -67,3 +67,8 @@ void pcb_tool_copy_notify_mode(void)
 		break;
 	}
 }
+
+pcb_tool_t pcb_tool_copy = {
+	"copy", NULL, 100,
+	pcb_tool_copy_notify_mode
+};

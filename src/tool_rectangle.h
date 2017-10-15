@@ -1,2 +1,3 @@
+extern pcb_tool_t pcb_tool_rectangle;
 
 void pcb_tool_rectangle_notify_mode(void);

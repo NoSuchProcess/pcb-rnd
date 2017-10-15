@@ -57,3 +57,8 @@ void pcb_tool_thermal_notify_mode(void)
 			pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
 	}
 }
+
+pcb_tool_t pcb_tool_thermal = {
+	"thermal", NULL, 100,
+	pcb_tool_thermal_notify_mode
+};

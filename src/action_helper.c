@@ -61,6 +61,7 @@
 #include "obj_rat_draw.h"
 #include "obj_poly_draw.h"
 
+#include "tool.h"
 #include "tool_arc.h"
 #include "tool_arrow.h"
 #include "tool_buffer.h"

@@ -155,11 +155,26 @@ void pcb_tool_notify_mode(void)
 #include "tool_thermal.h"
 #include "tool_via.h"
 
-const char *pcb_tool_cookie = "default tools";
+static const char *pcb_tool_cookie = "default tools";
 
 static void default_tool_reg(void)
 {
-	
+	pcb_tool_reg(&pcb_tool_arc, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_arrow, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_buffer, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_copy, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_insert, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_line, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_lock, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_move, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_poly, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_polyhole, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_rectangle, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_remove, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_rotate, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_text, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_thermal, pcb_tool_cookie);
+	pcb_tool_reg(&pcb_tool_via, pcb_tool_cookie);
 }
 
 static void default_tool_unreg(void)

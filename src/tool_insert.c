@@ -97,3 +97,8 @@ void pcb_tool_insert_notify_mode(void)
 		break;
 	}
 }
+
+pcb_tool_t pcb_tool_insert = {
+	"insert", NULL, 100,
+	pcb_tool_insert_notify_mode
+};

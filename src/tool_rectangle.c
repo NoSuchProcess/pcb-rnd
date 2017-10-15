@@ -76,3 +76,8 @@ void pcb_tool_rectangle_notify_mode(void)
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 	}
 }
+
+pcb_tool_t pcb_tool_rectangle = {
+	"rectangle", NULL, 100,
+	pcb_tool_rectangle_notify_mode
+};

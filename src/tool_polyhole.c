@@ -103,3 +103,8 @@ void pcb_tool_polyhole_notify_mode(void)
 		}
 	}
 }
+
+pcb_tool_t pcb_tool_polyhole = {
+	"polyhole", NULL, 100,
+	pcb_tool_polyhole_notify_mode
+};

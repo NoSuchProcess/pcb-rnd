@@ -70,8 +70,4 @@ void pcb_tool_notify_mode(void);
 /* Get the tool pointer of a tool by id */
 #define pcb_tool_get(id) ((const pcb_tool_t *)vtp0_get(&pcb_tools, id, 0))
 
-/**** temporary - will be moved out to a plugin ****/
-extern const char *pcb_tool_cookie;
-
-
 #endif

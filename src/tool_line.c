@@ -233,3 +233,8 @@ void pcb_tool_line_notify_mode(void)
 		pcb_draw();
 	}
 }
+
+pcb_tool_t pcb_tool_line = {
+	"line", NULL, 100,
+	pcb_tool_line_notify_mode
+};

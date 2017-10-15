@@ -72,3 +72,8 @@ void pcb_tool_poly_notify_mode(void)
 		pcb_marked.Y = Note.Y;
 	}
 }
+
+pcb_tool_t pcb_tool_poly = {
+	"poly", NULL, 100,
+	pcb_tool_poly_notify_mode
+};
