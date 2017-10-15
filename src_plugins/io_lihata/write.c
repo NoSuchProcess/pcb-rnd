@@ -508,21 +508,85 @@ static lht_node_t *build_subc(pcb_subc_t *sc)
 	return obj;
 }
 
+static void build_layer_stack_flag(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name)
+{
+	lht_node_t *dst = ctx;
+	lht_dom_hash_put(dst, build_text(name, "1"));
+}
+
+static void build_data_layer_comb(void *ctx, pcb_layer_combining_t bit, const char *name)
+{
+	lht_node_t *comb = ctx;
+	lht_dom_hash_put(comb, build_text(name, "1"));
+}
+
+
 static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 {
-	return NULL;
+	lht_node_t *lst, *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
+	pcb_cardinal_t n, sn, pn;
+
+	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
+	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
+		pcb_padstack_proto_t *proto = pp->array+n;
+		lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_HASH, "ps_proto_v4"));
+
+		lht_dom_hash_put(nproto, build_textf("hdia", CFMT, proto->hdia));
+		lht_dom_hash_put(nproto, build_textf("htop", "%d", proto->htop));
+		lht_dom_hash_put(nproto, build_textf("hbottom", "%d", proto->hbottom));
+
+		/* save each shape */
+		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
+		for(sn = 0; sn < proto->len; sn++) {
+			pcb_padstack_shape_t *shape = proto->shape + n;
+
+			lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
+
+			lht_dom_hash_put(nshape, nmask = lht_dom_node_alloc(LHT_HASH, "layer_mask"));
+			pcb_layer_type_map(shape->layer_mask, nmask, build_layer_stack_flag);
+
+			lht_dom_hash_put(nshape, ncomb = lht_dom_node_alloc(LHT_HASH, "combining"));
+			pcb_layer_comb_map(shape->comb, ncomb, build_data_layer_comb);
+
+			lht_dom_hash_put(nshape, build_textf("clearance", CFMT, shape->clearance));
+
+			switch(shape->shape) {
+				case PCB_PSSH_POLY:
+					nshapeo = lht_dom_node_alloc(LHT_LIST, "ps_poly");
+					for(pn = 0; pn < shape->data.poly.len; pn++) {
+						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.pt[pn].X));
+						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.pt[pn].Y));
+					}
+					break;
+				case PCB_PSSH_LINE:
+					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_line");
+					lht_dom_hash_put(nproto, build_textf("x1", CFMT, shape->data.line.x1));
+					lht_dom_hash_put(nproto, build_textf("y1", CFMT, shape->data.line.y1));
+					lht_dom_hash_put(nproto, build_textf("x2", CFMT, shape->data.line.x2));
+					lht_dom_hash_put(nproto, build_textf("y2", CFMT, shape->data.line.y2));
+					lht_dom_hash_put(nproto, build_textf("thickness", CFMT, shape->data.line.thickness));
+					lht_dom_hash_put(nproto, build_textf("square", "%d", shape->data.line.square));
+					break;
+				case PCB_PSSH_CIRC:
+					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
+					lht_dom_hash_put(nproto, build_textf("x", CFMT, shape->data.circ.x));
+					lht_dom_hash_put(nproto, build_textf("y", CFMT, shape->data.circ.y));
+					lht_dom_hash_put(nproto, build_textf("dia", CFMT, shape->data.circ.dia));
+					break;
+				default:
+					pcb_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
+					abort();
+			}
+			lht_dom_list_append(nshape, nshapeo);
+		}
+	}
+
+	return lst;
 }
 
 static lht_node_t *build_padstack(pcb_padstack_t *ps)
 {
 	return NULL;
-}
-
-
-static void build_layer_stack_flag(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name)
-{
-	lht_node_t *dst = ctx;
-	lht_dom_hash_put(dst, build_text(name, "1"));
 }
 
 static lht_node_t *build_layer_stack(pcb_board_t *pcb)
@@ -551,11 +615,6 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 	return lstk;
 }
 
-static void build_data_layer_comb(void *ctx, pcb_layer_combining_t bit, const char *name)
-{
-	lht_node_t *comb = ctx;
-	lht_dom_hash_put(comb, build_text(name, "1"));
-}
 
 static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_layergrp_id_t layer_group, pcb_layer_id_t lid)
 {
