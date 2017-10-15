@@ -235,7 +235,6 @@ either round or, if the octagon flag is set, octagonal.
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-pcb_point_t InsertedPoint;
 pcb_layer_t *lastLayer;
 
 pcb_action_note_t Note;
@@ -411,9 +410,7 @@ void pcb_adjust_attached_objects(void)
 		break;
 		/* point insertion mode */
 	case PCB_MODE_INSERT_POINT:
-		pnt = pcb_adjust_insert_point();
-		if (pnt)
-			InsertedPoint = *pnt;
+		pcb_tool_insert_adjust_attached_objects();
 		break;
 	case PCB_MODE_ROTATE:
 		break;
