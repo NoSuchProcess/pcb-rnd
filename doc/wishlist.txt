@@ -1,13 +1,13 @@
 Active user wishes:
-	W2: (BLOCKED: lihata testing) proper primitives [Chris]
+	W2: proper primitives [Chris]
 	W4: user doc [Miloh]
-	W5: (BLOCKED: lihata testing) 3d modeller export [Miloh, Evan]
-	W7: (BLOCKED: lihata testing) programmable drc (star grounding) [James]
+	W7: programmable drc (star grounding) [James]
 	W9: push & shove [Erich, Evan]
 
 Being done:
 	W1: cschem [Chris]
 	W3: more generic footprints [Chris, Evan] -> subcircuits
+	W5: 3d modeller export [Miloh, Evan] (bdale's sponsoration)
 
 User wishes fulfilled:
 	W6:  GUI access to object attributes: gtk editor, find/select by attrib [James]
