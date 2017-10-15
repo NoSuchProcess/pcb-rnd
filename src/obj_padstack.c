@@ -117,11 +117,19 @@ int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *ds
 		}
 		assert(o->parent_type == PCB_PARENT_LAYER);
 		ly = o->parent.layer;
-		dst->shape[n].layer_mask;
-		
+		dst->shape[n].layer_mask = pcb_layer_flags_(ly);
+		dst->shape[n].comb = ly->comb;
+		for(m = 0; m < n; m++) {
+			if ((dst->shape[n].layer_mask == dst->shape[m].layer_mask) && (dst->shape[n].comb == dst->shape[m].comb)) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple objects on the same layer\n");
+				goto quit;
+			}
+		}
 	}
 
 	quit:;
+#warning TODO: do a full field free here
 	free(dst->shape);
 	vtp0_uninit(&objs);
 	return ret;
