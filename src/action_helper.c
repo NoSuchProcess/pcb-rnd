@@ -245,8 +245,6 @@ int defer_needs_update = 0;
 
 pcb_bool saved_mode = pcb_false;
 
-static void AdjustAttachedBox(void);
-
 
 void pcb_clear_warnings()
 {
@@ -380,27 +378,6 @@ void pcb_release_mode(void)
 	if (saved_mode)
 		pcb_crosshair_restore_mode();
 	saved_mode = pcb_false;
-}
-
-/* ---------------------------------------------------------------------------
- * set new coordinates if in 'RECTANGLE' mode
- * the cursor shape is also adjusted
- */
-static void AdjustAttachedBox(void)
-{
-	if (conf_core.editor.mode == PCB_MODE_ARC) {
-		pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed();
-		return;
-	}
-	switch (pcb_crosshair.AttachedBox.State) {
-	case PCB_CH_STATE_SECOND:						/* one corner is selected */
-		{
-			/* update coordinates */
-			pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
-			pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
-			break;
-		}
-	}
 }
 
 void pcb_adjust_attached_objects(void)
