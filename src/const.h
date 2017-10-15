@@ -80,6 +80,7 @@ typedef enum {
 	PCB_TYPE_NET           = 0x40000, /* used to select whole net. */
 
 	PCB_TYPE_ARC_POINT     = 0x80000,
+	PCB_TYPE_PADSTACK      = 0x100000,
 
 	/* groups/properties */
 	PCB_TYPEMASK_PIN       = (PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_SUBC_PART),

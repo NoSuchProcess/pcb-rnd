@@ -33,7 +33,7 @@ struct pcb_padstack_s {
 	pcb_cardinal_t proto;          /* reference to a pcb_padstack_proto_t within pcb_data_t */
 	pcb_coord_t x, y;
 	struct {
-		int used;
+		unsigned long used;
 		char *shape;                 /* indexed by layer ID */
 	} thermal;
 	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */

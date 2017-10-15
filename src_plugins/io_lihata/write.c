@@ -586,7 +586,24 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 
 static lht_node_t *build_padstack(pcb_padstack_t *ps)
 {
-	return NULL;
+	char buff[128];
+	lht_node_t *obj, *thr;
+	unsigned long n;
+
+	sprintf(buff, "padstack_ref.%ld", ps->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_attributes(&ps->Attributes));
+	lht_dom_hash_put(obj, build_flags(&ps->Flags, PCB_TYPE_PADSTACK, ps->intconn));
+
+	lht_dom_hash_put(obj, build_textf("proto", "%ld", (long int)ps->proto));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, ps->x));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, ps->y));
+	lht_dom_hash_put(obj, thr = lht_dom_node_alloc(LHT_LIST, "thermal"));
+	for(n = 0; n < ps->thermal.used; n++)
+		lht_dom_list_append(thr, build_textf("t", "%d", ps->thermal.shape[n]));
+
+	return obj;
 }
 
 static lht_node_t *build_layer_stack(pcb_board_t *pcb)
