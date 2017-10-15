@@ -410,10 +410,7 @@ void pcb_adjust_attached_objects(void)
 		/* update at least an attached block (selection) */
 	case PCB_MODE_NO:
 	case PCB_MODE_ARROW:
-		if (pcb_crosshair.AttachedBox.State) {
-			pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
-			pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
-		}
+		pcb_tool_arrow_adjust_attached_objects();
 		break;
 
 		/* rectangle creation mode */

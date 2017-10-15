@@ -137,7 +137,16 @@ void pcb_tool_arrow_notify_mode(void)
 	}
 }
 
+void pcb_tool_arrow_adjust_attached_objects(void)
+{
+	if (pcb_crosshair.AttachedBox.State) {
+		pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
+		pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
+	}
+}
+
 pcb_tool_t pcb_tool_arrow = {
 	"arrow", NULL, 10,
-	pcb_tool_arrow_notify_mode
+	pcb_tool_arrow_notify_mode,
+	pcb_tool_arrow_adjust_attached_objects
 };
