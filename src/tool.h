@@ -19,3 +19,55 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
+
+#ifndef PCB_TOOL_H
+#define PCB_TOOL_H
+
+#include <genvector/vtp0.h>
+
+typedef int pcb_toolid_t;
+#define PCB_TOOLID_INVALID (-1)
+
+typedef struct pcb_tool_s {
+	const char *name;             /* textual name of the tool */
+	const char *cookie;           /* plugin cookie _pointer_ of the registrar (comparision is pointer based, not strcmp) */
+	int priority;                 /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
+
+	/* tool implementation */
+	void (*notify_mode)(void);
+} pcb_tool_t;
+
+vtp0_t pcb_tools;
+
+/* (un)initialize the tool subsystem */
+void pcb_tool_init(void);
+void pcb_tool_uninit(void);
+
+/* Insert a new tool in pcb_tools; returns 0 on success */
+int pcb_tool_reg(const pcb_tool_t *tool);
+
+/* Unregister all tools that has matching cookie */
+void pcb_tool_unreg_by_cookie(const char *cookie);
+
+/* Return the ID of a tool by name; returns -1 on error */
+pcb_toolid_t pcb_tool_lookup(const char *name);
+
+
+/* Select a tool by name, id or pick the highest prio tool; return 0 on success */
+int pcb_tool_select_by_name(const char *name);
+int pcb_tool_select_by_id(pcb_toolid_t id);
+int pcb_tool_select_highest(void);
+
+/**** Tool function wrappers; calling these will operate on the current tool 
+      as defined in conf_core.editor.mode ****/
+
+void pcb_tool_notify_mode(void);
+
+
+
+/**** Low level, for internal use ****/
+
+/* Get the tool pointer of a tool by id */
+#define pcb_tool_get(id) ((const pcb_tool_t *)vtp0_get(&pcb_tools, id, 0))
+
+#endif

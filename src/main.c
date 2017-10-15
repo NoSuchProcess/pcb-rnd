@@ -61,6 +61,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "layer_vis.h"
 #include "obj_text.h"
 #include "pcb_minuid.h"
+#include "tool.h"
 
 #include "hid_actions.h"
 #include "hid_init.h"
@@ -254,6 +255,7 @@ void pcb_main_uninit(void)
 	free(PCB);
 	PCB = NULL;
 
+	pcb_tool_uninit();
 	pcb_hid_uninit();
 	pcb_text_uninit();
 	layer_vis_uninit();
@@ -435,6 +437,7 @@ int main(int argc, char *argv[])
 
 	pcb_events_init();
 	pcb_text_init();
+	pcb_tool_init();
 
 	pup_init(&pcb_pup);
 	pcb_pup.error_stack_enable = 1;
