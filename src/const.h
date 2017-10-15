@@ -33,7 +33,7 @@
  * modes
  */
 typedef enum {
-	PCB_MODE_NO              = 0,   /* no mode selected - panning */
+	PCB_MODE_NO              = 0,   /* no mode selected - panning - TODO: remove this in favor of the default mode (it's the same as the arrow mode) */
 	PCB_MODE_VIA             = 1,   /* draw vias */
 	PCB_MODE_LINE            = 2,   /* draw lines */
 	PCB_MODE_RECTANGLE       = 3,   /* create rectangles */
