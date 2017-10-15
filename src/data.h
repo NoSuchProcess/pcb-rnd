@@ -46,6 +46,7 @@ struct pcb_data_s {
 	int LayerN;                        /* number of layers in this board */
 
 	pcb_vtpadstack_proto_t ps_protos;
+	unsigned long ps_next_grp;         /* next group number to allocate; if 0, have to figure */
 
 	padstacklist_t padstack;
 	pinlist_t Via;

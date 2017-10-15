@@ -76,6 +76,9 @@ typedef struct pcb_padstack_proto_s {
 	unsigned long group;
 } pcb_padstack_proto_t;
 
+/* allocate and return the next available group ID */
+unsigned long pcb_padstack_alloc_group(pcb_data_t *data);
+
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
 int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *p2);

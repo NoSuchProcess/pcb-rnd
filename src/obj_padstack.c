@@ -22,8 +22,25 @@
 
 #include "config.h"
 
+#include "data.h"
 #include "obj_padstack.h"
 
+unsigned long pcb_padstack_alloc_group(pcb_data_t *data)
+{
+	pcb_cardinal_t n;
+	unsigned long mg;
+
+	if (data->ps_next_grp > 0)     /* cheap way: answer in cache */
+		return data->ps_next_grp++;
+
+	for(n = 0, mg = 0; n < pcb_vtpadstack_proto_len(&data->ps_protos); n++)
+		if (data->ps_protos.array[n].group > mg)
+			mg = data->ps_protos.array[n].group;
+
+	data->ps_next_grp = mg+1;
+
+	return data->ps_next_grp++;
+}
 
 /*** hash ***/
 static unsigned int pcb_padstack_shape_hash(const pcb_padstack_shape_t *sh)
