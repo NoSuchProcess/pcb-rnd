@@ -381,7 +381,6 @@ void pcb_release_mode(void)
 
 void pcb_adjust_attached_objects(void)
 {
-	pcb_point_t *pnt;
 	switch (conf_core.editor.mode) {
 		/* update at least an attached block (selection) */
 	case PCB_MODE_NO:
