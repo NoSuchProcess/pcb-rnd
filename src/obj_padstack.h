@@ -26,9 +26,10 @@
 #include "obj_padstack_list.h"
 #include "layer.h"
 
+
 typedef struct pcb_padstack_poly_s {
 	unsigned int len;             /* number of points in polygon */
-	pcb_point_t *pt;              /* ordered list of points */
+	pcb_cheap_point_t *pt;        /* ordered list of points */
 	pcb_polyarea_t *pa;           /* cache for the poly code */
 } pcb_padstack_poly_t;
 
