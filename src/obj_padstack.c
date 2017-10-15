@@ -47,14 +47,14 @@ unsigned long pcb_padstack_alloc_group(pcb_data_t *data)
 }
 
 
-static int pcb_padstack_proto_conv(pcb_board_t *pcb, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs)
+static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs)
 {
 	int ret = -1, n, m;
 	pcb_any_obj_t *o;
 
 	dst->shape = NULL;
 
-	if (vtp0_len(objs) > pcb->Data->LayerN) {
+	if (vtp0_len(objs) > data->LayerN) {
 		if (!quiet)
 			pcb_message(PCB_MSG_ERROR, "Padstack conversion: too many objects selected\n");
 		goto quit;
