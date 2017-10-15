@@ -61,7 +61,7 @@ typedef struct pcb_padstack_shape_s {
 
 typedef struct pcb_padstack_proto_s {
 	pcb_coord_t hdia;              /* if > 0, diameter of the hole (else there's no hole) */
-	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layers from the top or bottom copper layer */
+	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layer groups from the top or bottom copper layer group */
 
 	unsigned char len;             /* number of shapes (PCB_PADSTACK_MAX_SHAPES) */
 	pcb_padstack_shape_t *shape;   /* list of layer-shape pairs */
