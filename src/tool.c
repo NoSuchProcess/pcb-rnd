@@ -50,10 +50,11 @@ void pcb_tool_uninit(void)
 	vtp0_uninit(&pcb_tools);
 }
 
-int pcb_tool_reg(const pcb_tool_t *tool)
+int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 {
 	if (pcb_tool_lookup(tool->name) != PCB_TOOLID_INVALID) /* don't register two tools with the same name */
 		return -1;
+	tool->cookie = cookie;
 	vtp0_append(&pcb_tools, (void *)tool);
 	return 0;
 }
@@ -154,7 +155,7 @@ void pcb_tool_notify_mode(void)
 #include "tool_thermal.h"
 #include "tool_via.h"
 
-const char *cookie = "default tools";
+const char *pcb_tool_cookie = "default tools";
 
 static void default_tool_reg(void)
 {
@@ -163,6 +164,6 @@ static void default_tool_reg(void)
 
 static void default_tool_unreg(void)
 {
-	pcb_tool_unreg_by_cookie(cookie);
+	pcb_tool_unreg_by_cookie(pcb_tool_cookie);
 }
 

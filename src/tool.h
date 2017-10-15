@@ -44,7 +44,7 @@ void pcb_tool_init(void);
 void pcb_tool_uninit(void);
 
 /* Insert a new tool in pcb_tools; returns 0 on success */
-int pcb_tool_reg(const pcb_tool_t *tool);
+int pcb_tool_reg(pcb_tool_t *tool, const char *cookie);
 
 /* Unregister all tools that has matching cookie */
 void pcb_tool_unreg_by_cookie(const char *cookie);
@@ -69,5 +69,9 @@ void pcb_tool_notify_mode(void);
 
 /* Get the tool pointer of a tool by id */
 #define pcb_tool_get(id) ((const pcb_tool_t *)vtp0_get(&pcb_tools, id, 0))
+
+/**** temporary - will be moved out to a plugin ****/
+extern const char *pcb_tool_cookie;
+
 
 #endif
