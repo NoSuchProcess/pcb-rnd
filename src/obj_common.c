@@ -58,8 +58,6 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_ELINE:
 		case PCB_OBJ_EARC:
 		case PCB_OBJ_ETEXT:
-		case PCB_OBJ_CLASS_MASK:
-		case PCB_OBJ_ANY:
 			break;
 	}
 	return "<unknown/composite>";

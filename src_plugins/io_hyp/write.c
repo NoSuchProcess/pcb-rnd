@@ -417,9 +417,7 @@ static int write_nets(hyp_wr_t * wr)
 			case PCB_OBJ_ELINE:
 			case PCB_OBJ_EARC:
 			case PCB_OBJ_ETEXT:
-			case PCB_OBJ_CLASS_MASK:
-			case PCB_OBJ_CLASS_OBJ:
-			case PCB_OBJ_ANY:
+			case PCB_OBJ_VOID:
 				break;									/* silently ignore these */
 			}
 		}

@@ -58,14 +58,17 @@ typedef enum pcb_objtype_e {
 	/* temporary, for backward compatibility */
 	PCB_OBJ_ELINE     = 0x200001,
 	PCB_OBJ_EARC      = 0x200002,
-	PCB_OBJ_ETEXT     = 0x200004,
+	PCB_OBJ_ETEXT     = 0x200004
+} pcb_objtype_t;
 
-	/* combinations, groups, masks */
+/* combinations, groups, masks of pcb_objtype_t */
+typedef enum pcb_objmask_e {
 	PCB_OBJ_CLASS_MASK= 0xF00000,
 	PCB_OBJ_CLASS_OBJ = 0x000000, /* anything with common object fields (pcb_any_obj_t) */
 	PCB_OBJ_CLASS_REAL= 0x000FFF, /* global and on-layer objects (but not abstract things like layers) */
 	PCB_OBJ_ANY       = 0xFFFFFF
-} pcb_objtype_t;
+}  pcb_objmask_t;
+
 
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
