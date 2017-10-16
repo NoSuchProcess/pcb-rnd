@@ -67,7 +67,10 @@ typedef struct pcb_padstack_proto_s {
 	unsigned char len;             /* number of shapes (PCB_PADSTACK_MAX_SHAPES) */
 	pcb_padstack_shape_t *shape;   /* list of layer-shape pairs */
 
+	/* local cache - not saved */
 	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
+
+	pcb_data_t *parent;
 
 	/* a proto can be derived from another proto via rotation/mirroring;
 	   the above fields store the current state, after the transformations,
