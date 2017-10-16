@@ -49,6 +49,12 @@ unsigned long pcb_padstack_alloc_group(pcb_data_t *data)
 }
 
 
+void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst)
+{
+#warning TODO: do a full field free here
+	free(dst->shape);
+}
+
 static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs)
 {
 	int ret = -1, n, m;
@@ -125,9 +131,13 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 		}
 	}
 
+	/* all fine went */
+	dst->hash = pcb_padstack_hash(dst);
+	ret = 0;
+
 	quit:;
-#warning TODO: do a full field free here
-	free(dst->shape);
+	if (ret != 0)
+		pcb_padstack_proto_free_fields(dst);
 	return ret;
 }
 
@@ -158,9 +168,30 @@ int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
 	return ret;
 }
 
+pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_proto_t *proto, int quiet)
+{
+#warning TODO
+	return PCB_PADSTACK_INVALID;
+}
+
 pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet)
 {
+	pcb_padstack_proto_t proto;
 
+	if (pcb_padstack_proto_conv_selection(pcb, &proto, quiet) != 0)
+		return -1;
+
+	return pcb_padstack_proto_insert_or_free(pcb->Data, &proto, quiet);
+}
+
+pcb_cardinal_t pcb_padstack_conv_buffer(int quiet)
+{
+	pcb_padstack_proto_t proto;
+
+	if (pcb_padstack_proto_conv_buffer(&proto, quiet) != 0)
+		return -1;
+
+	return pcb_padstack_proto_insert_or_free(PCB_PASTEBUFFER->Data, &proto, quiet);
 }
 
 

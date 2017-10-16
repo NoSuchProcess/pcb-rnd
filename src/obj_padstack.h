@@ -80,9 +80,14 @@ typedef struct pcb_padstack_proto_s {
 /* allocate and return the next available group ID */
 unsigned long pcb_padstack_alloc_group(pcb_data_t *data);
 
-/* Convert selection to padstack; returns PCB_PADSTACK_INVALID on error */
+/* Convert selection or current buffer to padstack; returns PCB_PADSTACK_INVALID
+   on error; looks for existing matching protos to avoid adding redundant
+   entries */
 pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet);
+pcb_cardinal_t pcb_padstack_conv_buffer(int quiet);
 
+/* free fields of a proto (not freeing the proto itself, not removing it from lists */
+void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst);
 
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
