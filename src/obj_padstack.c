@@ -170,8 +170,23 @@ int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
 
 pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_proto_t *proto, int quiet)
 {
-#warning TODO
-	return PCB_PADSTACK_INVALID;
+	pcb_cardinal_t n;
+
+	/* look for the first existing padstack that matches */
+	for(n = 0; n < pcb_vtpadstack_proto_len(&data->ps_protos); n++) {
+		if (data->ps_protos.array[n].hash == proto->hash) {
+			if (pcb_padstack_eq(&data->ps_protos.array[n], proto)) {
+				pcb_padstack_proto_free_fields(proto);
+				return n;
+			}
+		}
+	}
+
+	/* no match, have to register a new one */
+	n = pcb_vtpadstack_proto_len(&data->ps_protos);
+	pcb_vtpadstack_proto_append(&data->ps_protos, *proto);
+	memset(proto, 0, sizeof(pcb_padstack_proto_t)); /* make sure a subsequent free() won't do any harm */
+	return n;
 }
 
 pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet)
