@@ -210,22 +210,8 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 	return (changed);
 }
 
-/* ----------------------------------------------------------------------
- * selects/unselects or lists visible objects within the passed box
- * If len is NULL:
- *  Flag determines if the block is to be selected or unselected
- *  returns non-NULL if the state of any object has changed
- * if len is non-NULL:
- *  returns a list of object IDs matched the search and loads len with the
- *  length of the list. Returns NULL on no match.
- */
-#warning cleanup TODO: should be rewritten with generic ops and rtree
-static long int *ListBlock_(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool Flag, int *len)
+static void fix_box_dir(pcb_box_t *Box, int force_pos)
 {
-	int changed = 0;
-	int used = 0, alloced = 0;
-	long int *list = NULL;
-
 #define swap(a,b) \
 do { \
 	pcb_coord_t tmp; \
@@ -241,7 +227,7 @@ do { \
 	if (conf_core.editor.view.flip_y)
 		swap(Box->Y1, Box->Y2);
 
-	if (conf_core.editor.selection.disable_negative) {
+	if ((force_pos) || (conf_core.editor.selection.disable_negative)) {
 		if (Box->X1 > Box->X2)
 			swap(Box->X1, Box->X2);
 		if (Box->Y1 > Box->Y2)
@@ -264,6 +250,25 @@ do { \
 	}
 #undef swap
 
+}
+
+/* ----------------------------------------------------------------------
+ * selects/unselects or lists visible objects within the passed box
+ * If len is NULL:
+ *  Flag determines if the block is to be selected or unselected
+ *  returns non-NULL if the state of any object has changed
+ * if len is non-NULL:
+ *  returns a list of object IDs matched the search and loads len with the
+ *  length of the list. Returns NULL on no match.
+ */
+#warning cleanup TODO: should be rewritten with generic ops and rtree
+static long int *ListBlock_(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool Flag, int *len)
+{
+	int changed = 0;
+	int used = 0, alloced = 0;
+	long int *list = NULL;
+
+	fix_box_dir(Box, 0);
 /*pcb_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, PCB_IS_BOX_NEGATIVE(Box), conf_core.editor.view.flip_x, conf_core.editor.view.flip_y);*/
 
 /* append an object to the return list OR set the flag if there's no list */
@@ -494,15 +499,59 @@ do { \
 
 #undef append
 
+static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
+{
+	switch(obj->type) {
+		case PCB_OBJ_RAT:
+		case PCB_OBJ_LINE: return PCB_LINE_NEAR_BOX((pcb_line_t *)obj, box);
+		case PCB_OBJ_TEXT: return PCB_TEXT_NEAR_BOX((pcb_text_t *)obj, box);
+		case PCB_OBJ_POLYGON: return PCB_POLYGON_NEAR_BOX((pcb_polygon_t *)obj, box);
+		case PCB_OBJ_ARC:  return PCB_ARC_NEAR_BOX((pcb_arc_t *)obj, box);
+		case PCB_OBJ_PAD:  return PCB_PAD_NEAR_BOX((pcb_pad_t *)obj, box);
+		case PCB_OBJ_PIN:
+		case PCB_OBJ_VIA:  return PCB_VIA_OR_PIN_NEAR_BOX((pcb_pin_t *)obj, box);
+		case PCB_OBJ_ELEMENT: return PCB_ELEMENT_NEAR_BOX((pcb_element_t *)obj, box);
+		case PCB_OBJ_SUBC: return PCB_SUBC_NEAR_BOX((pcb_subc_t *)obj, box);
+		default: return 0;
+	}
+}
+
+typedef struct {
+	pcb_box_t box;
+	pcb_bool flag;
+} select_ctx_t;
+
+static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
+{
+	select_ctx_t *ctx = cl;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj) == ctx->flag) /* cheap check on the flag: don't do anything if the flag is already right */
+		return PCB_R_DIR_NOT_FOUND;
+
+	if (!pcb_obj_near_box(obj, &ctx->box)) /* detailed box matching */
+		return PCB_R_DIR_NOT_FOUND;
+
+	pcb_undo_add_obj_to_flag((void *)obj);
+	PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, ctx->flag, obj);
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
 /* ----------------------------------------------------------------------
  * selects/unselects all visible objects within the passed box
  * Flag determines if the block is to be selected or unselected
  * returns pcb_true if the state of any object has changed
  */
-pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool Flag)
+pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag)
 {
-	/* do not list, set flag */
-	return (ListBlock_(pcb, Box, Flag, NULL) == NULL) ? pcb_false : pcb_true;
+	select_ctx_t ctx;
+
+	ctx.box = *Box;
+	ctx.flag = flag;
+
+	fix_box_dir(Box, 1);
+
+	return pcb_data_r_search(pcb->Data, PCB_OBJ_ANY, Box, NULL, pcb_select_block_cb, &ctx, NULL) == PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* ----------------------------------------------------------------------
