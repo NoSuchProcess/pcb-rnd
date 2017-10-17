@@ -1088,7 +1088,7 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
  * Note that if Type includes PCB_TYPE_SUBC_PART, then the search includes
  * objects that are part of subcircuits, else they are ignored.
  */
-int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
+static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, unsigned long req_flag)
 {
 	void *r1, *r2, *r3;
 	void **pr1 = &r1, **pr2 = &r2, **pr3 = &r3;
@@ -1273,6 +1273,34 @@ int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result
 
 	return (PCB_TYPE_NONE);
 }
+
+int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
+{
+	int res = pcb_search_obj_by_location_(Type, Result1, Result2, Result3, X, Y, Radius, 0);
+	if ((res != PCB_TYPE_NONE) && (res != PCB_TYPE_SUBC))
+		return res;
+
+	/* found a subc because it was still the best option over all the plain
+	   objects; if floaters can be found, repeat the search on them, they
+	   have higher prio than subc, but lower prio than plain objects */
+	if (0) /* disable until req_flag is respected */
+	if ((!conf_core.editor.lock_names) && (!conf_core.editor.hide_names)) {
+		int fres;
+		void *fr1, *fr2, *fr3;
+		Type &= ~PCB_TYPE_SUBC;
+		Type |= PCB_TYPE_SUBC_PART;
+		fres = pcb_search_obj_by_location_(Type, &fr1, &fr2, &fr3, X, Y, Radius, PCB_FLAG_FLOATER);
+		if (fres != PCB_TYPE_NONE) {
+			*Result1 = fr1;
+			*Result2 = fr2;
+			*Result3 = fr3;
+			return fres;
+		}
+	}
+	
+	return res;
+}
+
 
 /* ---------------------------------------------------------------------------
  * searches for a object by it's unique ID. It doesn't matter if
