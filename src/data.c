@@ -517,4 +517,48 @@ void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, un
 	} PCB_ENDALL_LOOP;
 }
 
+#define rsearch(tree) \
+	do { \
+		pcb_r_dir_t tmp = pcb_r_search(tree, starting_region, region_in_search, rectangle_in_region, closure, num_found); \
+		if (tmp == PCB_R_DIR_CANCEL) return tmp; \
+		res |= tmp; \
+	} while(0);
+
+pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
+						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
+						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
+						 void *closure, int *num_found)
+{
+	pcb_layer_id_t lid;
+	pcb_r_dir_t res = 0;
+
+	if (types & PCB_OBJ_VIA)  rsearch(data->via_tree);
+	if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
+	if (types & PCB_OBJ_PIN)  rsearch(data->pin_tree);
+	if (types & PCB_OBJ_PAD)  rsearch(data->pad_tree);
+	if (types & PCB_OBJ_SUBC) rsearch(data->pad_tree);
+
+
+	for(lid = 0; lid < data->LayerN; lid++) {
+		pcb_layer_t *ly = data->Layer + lid;
+		if (types & PCB_OBJ_LINE)    rsearch(ly->line_tree);
+		if (types & PCB_OBJ_TEXT)    rsearch(ly->text_tree);
+		if (types & PCB_OBJ_POLYGON) rsearch(ly->polygon_tree);
+		if (types & PCB_OBJ_ARC)     rsearch(ly->arc_tree);
+	}
+
+	/* safe to remove this block with elements */
+	{
+		int n;
+
+		if (types & PCB_OBJ_ELEMENT) rsearch(data->element_tree);
+		if (types & PCB_OBJ_ETEXT)
+			for(n = 0; n < 3; n++)
+				rsearch(data->name_tree[n]);
+	}
+
+	return res;
+}
+
+
 

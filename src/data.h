@@ -154,4 +154,10 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs);
 
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
 
+/* rsearch on all trees matching types of data */
+pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
+						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
+						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
+						 void *closure, int *num_found);
+
 #endif
