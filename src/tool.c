@@ -63,7 +63,7 @@ void pcb_tool_unreg_by_cookie(const char *cookie)
 {
 	pcb_toolid_t n;
 	for(n = 0; n < vtp0_len(&pcb_tools); n++) {
-		const pcb_tool_t *tool = pcb_tool_get(0);
+		const pcb_tool_t *tool = (const pcb_tool_t *)pcb_tools.array[n];
 		if (tool->cookie == cookie) {
 			vtp0_remove(&pcb_tools, n, 1);
 			n--;
