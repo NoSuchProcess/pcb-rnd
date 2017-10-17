@@ -50,7 +50,10 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 	((x) >= (b)->X1 && (x) <= (b)->X2 && (y) >= (b)->Y1 && (y) <= (b)->Y2))
 
 #define	PCB_VIA_OR_PIN_IN_BOX(v,b) \
-	PCB_POINT_IN_BOX((v)->X,(v)->Y,(b))
+	( \
+	PCB_POINT_IN_BOX((v)->X-(v)->Thickness/2,(v)->Y-(v)->Thickness/2,(b)) && \
+	PCB_POINT_IN_BOX((v)->X+(v)->Thickness/2,(v)->Y+(v)->Thickness/2,(b)) \
+	)
 
 #define	PCB_LINE_IN_BOX(l,b)	\
 	(PCB_POINT_IN_BOX((l)->Point1.X,(l)->Point1.Y,(b)) &&	\
