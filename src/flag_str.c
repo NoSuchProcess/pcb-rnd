@@ -79,7 +79,8 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_NONETLIST),     N("nonetlist"),     PCB_TYPEMASK_ALL, "element is not on the netlist and should not interfere with the netlist "},
 	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_SUBC, "when set the names of pins are shown."},
 	{FN(PCB_FLAG_CLEARPOLYPOLY), N("clearpolypoly"), PCB_TYPE_POLYGON, "For polygons, apply clearance to nearby polygons" },
-	{FN(PCB_FLAG_DYNTEXT),       N("dyntext"),       PCB_TYPE_TEXT, "For text: dynamic string (substitute %patterns%)"}
+	{FN(PCB_FLAG_DYNTEXT),       N("dyntext"),       PCB_TYPE_TEXT, "For text: dynamic string (substitute %patterns%)"},
+	{FN(PCB_FLAG_FLOATER),       N("floater"),       PCB_TYPEMASK_ALL, "subc part can be moved after subc placing"}
 };
 #undef N
 #undef FN

@@ -96,7 +96,8 @@ typedef enum {
 	PCB_FLAG_TERMNAME     = 0x80000, 
 	PCB_FLAG_DRC_INTCONN  = 0x100000,/*!< Set for objects are put on the DRC mark because of an intconn */
 	PCB_FLAG_CLEARPOLYPOLY= 0x200000,
-	PCB_FLAG_DYNTEXT      = 0x400000
+	PCB_FLAG_DYNTEXT      = 0x400000,
+	PCB_FLAG_FLOATER      = 0x800000
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
 } pcb_flag_values_t;
 

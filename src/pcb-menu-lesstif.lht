@@ -92,9 +92,9 @@ ha:{
 				ha:Description = { checked=ChkElementName(1); action=Display(Description) }
 				ha:Reference Designator = { checked=ChkElementName(2); action=Display(NameOnPCB) }
 				ha:Value = { checked=ChkElementName(3); action=Display(Value) }
-				ha:Lock Names = { checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
-				ha:Only Names = { checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
-				ha:Hide Names = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
+				ha:Lock floaters = { checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
+				ha:Only floaters = { checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
+				ha:Hide floaters = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
 				ha:Mincut on shorts = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
 				-
 				ha:Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }

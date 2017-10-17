@@ -268,9 +268,9 @@ ha:{
 				ha:Crosshair snaps to off-grid points on lines = { checked=editor/snap_offgrid_line; action=conf(toggle, editor/snap_offgrid_line, design) }
 				ha:Crosshair shows DRC clearance    = { checked=editor/show_drc; action=conf(toggle, editor/show_drc, design) }
 				ha:Auto enforce DRC clearance       = { checked=editor/auto_drc; action=conf(toggle, editor/auto_drc, design) }
-				ha:Lock Names                       = { checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
-				ha:Only Names                       = { checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
-				ha:Hide Names                       = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
+				ha:Lock floaters                    = { checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
+				ha:Only floaters                    = { checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
+				ha:Hide floaters                    = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
 				ha:Mincut on shorts                 = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
 				ha:Libstroke gestures on middle button = { checked=editor/enable_stroke; action=conf(toggle, editor/enable_stroke, design) }
 				-
