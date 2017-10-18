@@ -31,33 +31,8 @@
 #include "conf_core.h"
 #include "gui.h"
 
-#warning TODO: cleanup: make a generic status line update callback instead of this code dup
-
-void ghid_confchg_line_refraction(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
-		return;
-	ghidgui->common.set_status_line_label();
-}
-
-void ghid_confchg_all_direction_lines(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
-		return;
-	ghidgui->common.set_status_line_label();
-}
-
-void ghid_confchg_flip(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
-		return;
-	ghidgui->common.set_status_line_label();
-}
-
-void ghid_confchg_grid(conf_native_t *cfg, int arr_idx)
+/* Update the status line - should be bound to any config value displayed there */
+void ghid_confchg_status_line(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
@@ -96,9 +71,10 @@ void ghid_conf_regs(const char *cookie)
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
-	init_conf_watch(&cbs_direction, "editor/all_direction_lines", ghid_confchg_all_direction_lines);
-	init_conf_watch(&cbs_refraction, "editor/line_refraction", ghid_confchg_line_refraction);
+	init_conf_watch(&cbs_direction, "editor/all_direction_lines", ghid_confchg_status_line);
+	init_conf_watch(&cbs_refraction, "editor/line_refraction", ghid_confchg_status_line);
+	init_conf_watch(&cbs_show_sside, "editor/show_solder_side", ghid_confchg_status_line);
+	init_conf_watch(&cbs_grid, "editor/grid", ghid_confchg_status_line);
+
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
-	init_conf_watch(&cbs_show_sside, "editor/show_solder_side", ghid_confchg_flip);
-	init_conf_watch(&cbs_grid, "editor/grid", ghid_confchg_grid);
 }
