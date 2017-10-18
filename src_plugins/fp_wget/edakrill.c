@@ -51,7 +51,7 @@ static void tag_add(const char *key, const char *val)
 			next++;
 		}
 		while(*val == ' ') val++;
-		if (val == '\0')
+		if (*val == '\0')
 			break;
 		tmp = pcb_strdup_printf("%s:%s", key, val);
 		tag_add_(tmp);
