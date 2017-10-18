@@ -527,6 +527,20 @@ static int parse_layout_attribute_units(const char *name, int def)
 	return pcb_get_value(as, NULL, NULL, NULL);
 }
 
+static int subc_differs(pcb_subc_t *sc, const char *expect_name)
+{
+	const char *got_name = pcb_attribute_get(&sc->Attributes, "name");
+	if ((expect_name != NULL) && (*expect_name == '\0'))
+		expect_name = NULL;
+	if ((got_name != NULL) && (*got_name == '\0'))
+		got_name = NULL;
+	if ((got_name == NULL) && (expect_name == NULL))
+		return 0;
+	if ((got_name == NULL) || (expect_name == NULL))
+		return 1;
+	return strcmp(got_name, expect_name);
+}
+
 static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_element_t *e = NULL;
@@ -592,8 +606,9 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #endif
 
 	e = find_element_by_refdes(refdes);
+	sc = pcb_subc_by_refdes(PCB->Data, refdes);
 
-	if (!e) {
+	if (!e && !sc) {
 		pcb_coord_t nx, ny, d;
 
 #ifdef DEBUG
@@ -632,7 +647,11 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_board_set_changed_flag(pcb_true);
 	}
 
-	else if (e && PCB_ELEM_NAME_DESCRIPTION(e) && strcmp(PCB_ELEM_NAME_DESCRIPTION(e), footprint) != 0) {
+	else if (
+			(e && PCB_ELEM_NAME_DESCRIPTION(e) && strcmp(PCB_ELEM_NAME_DESCRIPTION(e), footprint) != 0) 
+			|| (sc && subc_differs(sc, footprint))
+		)
+	{
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
