@@ -716,6 +716,7 @@ not specified, the given attribute is removed if present.
 static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_element_t *e = NULL;
+	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
 	pcb_attribute_t *attr;
 
@@ -726,6 +727,22 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 	refdes = argv[0];
 	name = argv[1];
 	value = PCB_ACTION_ARG(2);
+
+
+	sc = pcb_subc_by_refdes(PCB->Data, refdes);
+	if (sc != NULL) {
+		attr = lookup_attr(&sc->Attributes, name);
+
+		if (attr && value) {
+			free(attr->value);
+			attr->value = pcb_strdup(value);
+		}
+		if (attr && !value)
+			delete_attr(&sc->Attributes, attr);
+		if (!attr && value)
+			pcb_attribute_put(&sc->Attributes, name, value);
+		return 0;
+	}
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
