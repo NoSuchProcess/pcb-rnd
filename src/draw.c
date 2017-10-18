@@ -300,35 +300,6 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 	}
 
-	if (pcb_gui->gui) {
-		/* Draw pins' and pads' names */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
-		pcb_draw_ppv_names(PCB_SWAP_IDENT ? solder : component, drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
-		
-		/* Draw element Marks */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
-	
-		if (PCB->PinOn)
-			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, pcb_elem_mark_draw_callback, NULL, NULL);
-
-		if (PCB->SubcOn)
-			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
-		
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
-
-		/* Draw rat lines on top */
-		if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
-			pcb_draw_rats(drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
-			pcb_gui->end_layer();
-		}
-	}
-
 	gid = pcb_layergrp_get_top_paste();
 	if (gid < 0)
 		paste_empty = pcb_layer_is_paste_auto_empty(PCB, PCB_COMPONENT_SIDE);
@@ -367,6 +338,35 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0)) {
 		pcb_stub_draw_csect(Output.fgGC, &hid_exp);
 		pcb_gui->end_layer();
+	}
+
+	if (pcb_gui->gui) {
+		/* Draw element Marks */
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
+	
+		if (PCB->PinOn)
+			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, pcb_elem_mark_draw_callback, NULL, NULL);
+
+		if (PCB->SubcOn)
+			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
+		
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
+
+		/* Draw rat lines on top */
+		if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0)) {
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
+			pcb_draw_rats(drawn_area);
+			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
+			pcb_gui->end_layer();
+		}
+
+		/* Draw pins' and pads' names */
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
+		pcb_draw_ppv_names(PCB_SWAP_IDENT ? solder : component, drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 	}
 
 	/* find the first ui layer in use */
