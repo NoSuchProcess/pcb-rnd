@@ -284,7 +284,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	return (hasNoObjects);
 }
 
-pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
+pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters)
 {
 	/* preset identifiers with highest and lowest possible values */
 	out->X1 = out->Y1 = PCB_MAX_COORD;
@@ -294,43 +294,50 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
 	PCB_VIA_LOOP(Data);
 	{
 		pcb_pin_bbox(via);
-		pcb_box_bump_box(out, &via->BoundingBox);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, via))
+			pcb_box_bump_box(out, &via->BoundingBox);
 	}
 	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(Data);
 	{
 		pcb_element_bbox(Data, element, pcb_font(PCB, 0, 0));
-		pcb_box_bump_box(out, &element->BoundingBox);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, element))
+			pcb_box_bump_box(out, &element->BoundingBox);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(Data);
 	{
 		pcb_subc_bbox(subc);
-		pcb_box_bump_box(out, &subc->BoundingBox);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, subc))
+			pcb_box_bump_box(out, &subc->BoundingBox);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Data);
 	{
 		pcb_line_bbox(line);
-		pcb_box_bump_box(out, &line->BoundingBox);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, line))
+			pcb_box_bump_box(out, &line->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Data);
 	{
 		pcb_arc_bbox(arc);
-		pcb_box_bump_box(out, &arc->BoundingBox);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, arc))
+			pcb_box_bump_box(out, &arc->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Data);
 	{
 		pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
-		pcb_box_bump_box(out, &text->BoundingBox);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
+			pcb_box_bump_box(out, &text->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Data);
 	{
 		pcb_poly_bbox(polygon);
-		pcb_box_bump_box(out, &polygon->BoundingBox);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, polygon))
+			pcb_box_bump_box(out, &polygon->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	return (pcb_data_is_empty(Data) ? NULL : out);
@@ -423,7 +430,7 @@ int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox)
 
 	if (data_bbox == NULL) {
 		data_bbox = &tmp;
-		if (pcb_data_bbox(data_bbox, data) == NULL)
+		if (pcb_data_bbox(data_bbox, data, pcb_false) == NULL)
 			return -1;
 	}
 

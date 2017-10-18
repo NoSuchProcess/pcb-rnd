@@ -323,7 +323,7 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	pcb_box_t b;
 	int chg = 0;
 	
-	if (pcb_data_bbox(&b, pcb->Data) == NULL)
+	if (pcb_data_bbox(&b, pcb->Data, pcb_false) == NULL)
 		return -1;
 
 	if ((b.X2 - b.X1) > pcb->MaxWidth) {

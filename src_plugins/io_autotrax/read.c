@@ -1081,7 +1081,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		pcb_hid_actionl("ElementList", "Done", NULL);
 	}
 	fclose(FP);
-	box = pcb_data_bbox(&board_size, Ptr->Data);
+	box = pcb_data_bbox(&board_size, Ptr->Data, pcb_false);
 	if (st.ignored_keepout_element) {
 		pcb_message(PCB_MSG_ERROR, "Ignored %d keepout track(s) on auto/easytrax layer 12\n", st.ignored_keepout_element);
 	}
