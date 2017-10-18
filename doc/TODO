@@ -5,7 +5,7 @@
 	- draw a line back to the subc while moving
 	- edit subc floater flag -> assert [report: miloh]
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
-- BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
++ BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
 - BUG: csect can't make a layer outline
 - BUGS:
 	- parametric footprint dialog cancel reopens the dialog? [report: Alain]
