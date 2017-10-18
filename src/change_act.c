@@ -1350,7 +1350,7 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		case F_Text:
 		case F_TextScale:
-			value /= (double)PCB_FONT_CAPHEIGHT / 100.0;
+			value = pcb_round(value / (double)PCB_FONT_CAPHEIGHT * 100.0);
 			pcb_board_set_text_scale(absolute ? value : (value + conf_core.design.text_scale));
 			break;
 		default:
