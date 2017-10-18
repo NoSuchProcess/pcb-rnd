@@ -485,7 +485,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		*input += 4;
 		if (strncmp(*input, "netname%", 8) == 0) {
 			*input += 8;
-			if (ctx->pad_netname != '\0')
+			if (*ctx->pad_netname != '\0')
 				pcb_append_printf(s, "%s", ctx->pad_netname);
 			else
 				pcb_append_printf(s, "NC");
