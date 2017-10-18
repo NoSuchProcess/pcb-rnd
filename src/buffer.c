@@ -184,6 +184,8 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	const char *refdes = PCB_ACTION_ARG(1);
 	const char *value = PCB_ACTION_ARG(2);
 	pcb_element_t *e;
+	pcb_subc_t *s;
+	pcb_cardinal_t len;
 
 	if (!name)
 		PCB_ACT_FAIL(LoadFootprint);
@@ -191,17 +193,19 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (pcb_element_load_footprint_by_name(PCB_PASTEBUFFER, name))
 		return 1;
 
-	if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) == 0) {
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no elements", name);
+	len = elementlist_length(&PCB_PASTEBUFFER->Data->Element) + pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
+
+	if (len == 0) {
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no elements or subcircuits", name);
 		return 1;
 	}
-	if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) > 1) {
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple elements", name);
+	if (len > 1) {
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple elements and/or subcircuits", name);
 		return 1;
 	}
 
 	e = elementlist_first(&PCB_PASTEBUFFER->Data->Element);
-
+	if (e != NULL) {
 	if (e->Name[0].TextString)
 		free(e->Name[0].TextString);
 	e->Name[0].TextString = pcb_strdup(name);
@@ -213,6 +217,15 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (e->Name[2].TextString)
 		free(e->Name[2].TextString);
 	e->Name[2].TextString = value ? pcb_strdup(value) : 0;
+	}
+
+	s = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
+#warning element TODO: remove this check when elements are removed: we know len == 1
+	if (s != NULL) {
+		pcb_attribute_put(&s->Attributes, "refdes", refdes);
+		pcb_attribute_put(&s->Attributes, "name", name);
+		pcb_attribute_put(&s->Attributes, "value", value);
+	}
 
 	return 0;
 }
