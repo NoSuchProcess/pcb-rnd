@@ -67,7 +67,8 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 void ghid_conf_regs(const char *cookie)
 {
 	static conf_hid_callbacks_t 
-		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid;
+		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid,
+		cbs_text_scale;
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
@@ -75,6 +76,7 @@ void ghid_conf_regs(const char *cookie)
 	init_conf_watch(&cbs_refraction, "editor/line_refraction", ghid_confchg_status_line);
 	init_conf_watch(&cbs_show_sside, "editor/show_solder_side", ghid_confchg_status_line);
 	init_conf_watch(&cbs_grid, "editor/grid", ghid_confchg_status_line);
+	init_conf_watch(&cbs_text_scale, "design/text_scale", ghid_confchg_status_line);
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
 }
