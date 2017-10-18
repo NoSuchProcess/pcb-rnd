@@ -496,7 +496,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		break;
 	}
 
-	if ((report == NULL) || (report == '\0')) {
+	if ((report == NULL) || (*report == '\0')) {
 		pcb_message(PCB_MSG_INFO, _("Nothing found to report on\n"));
 		return 1;
 	}
