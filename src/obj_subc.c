@@ -48,6 +48,13 @@
 
 #define SUBC_AUX_NAME "subc-aux"
 
+/* Modify dst to include src, if src is not a floater */
+static void pcb_box_bump_box_noflt(pcb_box_t *dst, pcb_box_t *src)
+{
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, ((pcb_any_obj_t *)(src))))
+		pcb_box_bump_box(dst, src);
+}
+
 static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_subc_t *sc = (pcb_subc_t *)(((char *)list) - offsetof(pcb_subc_t, Attributes));
@@ -615,7 +622,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			MAYBE_KEEP_ID(nline, line);
 			if (nline != NULL) {
 				PCB_SET_PARENT(nline, layer, dl);
-				pcb_box_bump_box(&sc->BoundingBox, &nline->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->BoundingBox, &nline->BoundingBox);
 			}
 		}
 
@@ -624,7 +631,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			MAYBE_KEEP_ID(narc, arc);
 			if (narc != NULL) {
 				PCB_SET_PARENT(narc, layer, dl);
-				pcb_box_bump_box(&sc->BoundingBox, &narc->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->BoundingBox, &narc->BoundingBox);
 			}
 		}
 
@@ -633,7 +640,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			MAYBE_KEEP_ID(ntext, text);
 			if (ntext != NULL) {
 				PCB_SET_PARENT(ntext, layer, dl);
-				pcb_box_bump_box(&sc->BoundingBox, &ntext->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->BoundingBox, &ntext->BoundingBox);
 			}
 		}
 
@@ -655,7 +662,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			nvia = pcb_via_dup_at(sc->data, via, dx, dy);
 			MAYBE_KEEP_ID(nvia, via);
 			if (nvia != NULL)
-				pcb_box_bump_box(&sc->BoundingBox, &nvia->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->BoundingBox, &nvia->BoundingBox);
 		}
 	}
 
@@ -671,7 +678,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			MAYBE_KEEP_ID(npoly, poly);
 			if (npoly != NULL) {
 				PCB_SET_PARENT(npoly, layer, dl);
-				pcb_box_bump_box(&sc->BoundingBox, &npoly->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->BoundingBox, &npoly->BoundingBox);
 				pcb_poly_ppclear(npoly);
 			}
 		}
@@ -743,22 +750,22 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 		linelist_foreach(&sl->Line, &it, line) {
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_LINE, sl, line, line);
-			pcb_box_bump_box(&sc->BoundingBox, &line->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->BoundingBox, &line->BoundingBox);
 		}
 
 		arclist_foreach(&sl->Arc, &it, arc) {
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_ARC, sl, arc, arc);
-			pcb_box_bump_box(&sc->BoundingBox, &arc->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->BoundingBox, &arc->BoundingBox);
 		}
 
 		textlist_foreach(&sl->Text, &it, text) {
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_TEXT, sl, text, text);
-			pcb_box_bump_box(&sc->BoundingBox, &text->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->BoundingBox, &text->BoundingBox);
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_POLYGON, sl, poly, poly);
-			pcb_box_bump_box(&sc->BoundingBox, &poly->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->BoundingBox, &poly->BoundingBox);
 		}
 
 	}
@@ -771,7 +778,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 		pinlist_foreach(&sc->data->Via, &it, via) {
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_VIA, via, via, via);
-			pcb_box_bump_box(&sc->BoundingBox, &via->BoundingBox);
+			pcb_box_bump_box_noflt(&sc->BoundingBox, &via->BoundingBox);
 		}
 	}
 
