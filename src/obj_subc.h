@@ -82,7 +82,7 @@ int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot);
 
 /* Search for the named subc; name is relative path in hierarchy. Returns
    NULL if not found */
-pcb_subc_t *pcb_subc_by_name(pcb_data_t *base, const char *name);
+pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name);
 
 /*** loops ***/
 
