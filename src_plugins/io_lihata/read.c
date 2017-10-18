@@ -49,6 +49,7 @@
 #include "pcb_minuid.h"
 #include "io_lihata.h"
 #include "safe_fs.h"
+#include "plug_footprint.h"
 
 #warning cleanup TODO: put these in a gloal load-context-struct
 vtp0_t post_ids, post_thermal;
@@ -1493,13 +1494,16 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
 	int res;
-	char *errmsg, *realfn;
+	char *errmsg;
 	lht_doc_t *doc = NULL;
+	pcb_fp_fopen_ctx_t st;
+	FILE *f;
 
-	realfn = pcb_fopen_check(name, "r");
-	if (realfn != NULL)
-		doc = lht_dom_load(name, &errmsg);
-	free(realfn);
+	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
+
+	if (f != NULL)
+		doc = lht_dom_load_stream(f, name, &errmsg);
+	pcb_fp_fclose(f, &st);
 
 	if (doc == NULL) {
 		if (!pcb_io_err_inhibit)
