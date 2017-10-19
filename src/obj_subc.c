@@ -792,7 +792,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 }
 
 
-/* copies a subcircuit onto the PCB.  Then does a draw. */
+/* copies a subcircuit onto the PCB (a.k.a "paste"). Then does a draw. */
 void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 {
 	pcb_subc_t *sc;
@@ -803,6 +803,8 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	if (conf_core.editor.show_solder_side)
 		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+
+	pcb_text_dyn_bbox_update(sc->data);
 
 	return (sc);
 }
