@@ -809,14 +809,27 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 	return (sc);
 }
 
-extern pcb_opfunc_t MoveFunctions, Rotate90Functions, ChgFlagFunctions, ChangeSizeFunctions, ChangeClearSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;
+extern pcb_opfunc_t ClipFunctions, MoveFunctions, MoveFunctions_noclip, Rotate90Functions, ChgFlagFunctions, ChangeSizeFunctions, ChangeClearSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;
 extern pcb_opfunc_t ChangeOctagonFunctions, SetOctagonFunctions, ClrOctagonFunctions;
 extern pcb_opfunc_t ChangeSquareFunctions, SetSquareFunctions, ClrSquareFunctions;
 
 void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_board_t *pcb = pcb_data_get_top(sc->data);
-	return pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &MoveFunctions, ctx);
+	pcb_data_t *data = (pcb != NULL ? pcb->Data : NULL);
+	pcb_opctx_t clip;
+
+	/* restore all pins/pads at once, at the old location */
+	clip.clip.restore = 1; clip.clip.clear = 0;
+	pcb_subc_op(data, sc, &ClipFunctions, &clip);
+
+	/* do the move without messing with the clipping */
+	pcb_subc_op(data, sc, &MoveFunctions_noclip, ctx);
+
+	/* clear all pins/pads at once, at the new location */
+	clip.clip.restore = 0; clip.clip.clear = 1;
+	pcb_subc_op(data, sc, &ClipFunctions, &clip);
+	return sc;
 }
 
 void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
