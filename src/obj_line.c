@@ -488,20 +488,26 @@ void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* moves a line */
-void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_lineop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (Layer->meta.real.vis)
 		pcb_line_invalidate_erase(Line);
-	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	pcb_line_move(Line, ctx->move.dx, ctx->move.dy);
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
-	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	if (Layer->meta.real.vis) {
 		pcb_line_invalidate_draw(Layer, Line);
 		pcb_draw();
 	}
-	return (Line);
+	return Line;
+}
+
+void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+{
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+	pcb_lineop_move_noclip(ctx, Layer, Line);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+	return Line;
 }
 
 /* moves one end of a line */

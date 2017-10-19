@@ -531,9 +531,8 @@ void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 }
 
 /* moves a polygon */
-void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
-	pcb_poly_pprestore(Polygon);
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_erase(Polygon);
 	}
@@ -545,8 +544,15 @@ void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 		pcb_poly_invalidate_draw(Layer, Polygon);
 		pcb_draw();
 	}
+	return Polygon;
+}
+
+void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+{
+	pcb_poly_pprestore(Polygon);
+	pcb_polyop_move_noclip(ctx, Layer, Polygon);
 	pcb_poly_ppclear(Polygon);
-	return (Polygon);
+	return Polygon;
 }
 
 /* moves a polygon-point */

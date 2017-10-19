@@ -836,20 +836,26 @@ void *pcb_viaop_copy(pcb_opctx_t *ctx, pcb_pin_t *Via)
 }
 
 /* moves a via */
-void *pcb_viaop_move(pcb_opctx_t *ctx, pcb_pin_t *Via)
+void *pcb_viaop_move_noclip(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
-	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_via_move(Via, ctx->move.dx, ctx->move.dy);
 	if (PCB->ViaOn)
 		pcb_via_invalidate_erase(Via);
 	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
-	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	if (PCB->ViaOn) {
 		pcb_via_invalidate_draw(Via);
 		pcb_draw();
 	}
-	return (Via);
+	return Via;
+}
+
+void *pcb_viaop_move(pcb_opctx_t *ctx, pcb_pin_t *Via)
+{
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
+	pcb_viaop_move_noclip(ctx, Via);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
+	return Via;
 }
 
 /* destroys a via */

@@ -65,6 +65,23 @@ pcb_opfunc_t MoveFunctions = {
 	pcb_subcop_move
 };
 
+pcb_opfunc_t MoveFunctions_noclip = {
+	pcb_lineop_move_noclip,
+	pcb_textop_move_noclip,
+	pcb_polyop_move_noclip,
+	pcb_viaop_move_noclip,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	pcb_arcop_move_noclip,
+	NULL,
+	NULL,
+	NULL
+};
+
 static pcb_opfunc_t MoveToLayerFunctions = {
 	pcb_lineop_move_to_layer,
 	pcb_textop_move_to_layer,
