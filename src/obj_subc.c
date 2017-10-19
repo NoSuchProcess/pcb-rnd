@@ -65,6 +65,7 @@ static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *
 		if (inv != NULL)
 			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
 	}
+	pcb_text_dyn_bbox_update(sc->data);
 }
 
 pcb_subc_t *pcb_subc_alloc(void)
