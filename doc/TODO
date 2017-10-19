@@ -2,7 +2,6 @@
 - subc edit: when open directly, allow parts to be selected/moved/etc.
 - feature: property editor should deal with flags
 - floaters:
-	- draw a line back to the subc while moving
 	- edit subc floater flag -> assert [report: miloh]
 - BUG: subc: alt+n (nonetlist) on subc aborts [report: miloh]
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
