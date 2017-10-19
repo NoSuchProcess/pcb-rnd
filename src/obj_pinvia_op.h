@@ -57,6 +57,7 @@ void *pcb_viaop_change_mask_size(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_copy(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_move(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_move_noclip(pcb_opctx_t *ctx, pcb_pin_t *Via);
+void *pcb_viaop_clip(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_destroy(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_remove(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *pcb_viaop_change_flag(pcb_opctx_t *ctx, pcb_pin_t *pin);

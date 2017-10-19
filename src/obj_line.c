@@ -510,6 +510,15 @@ void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	return Line;
 }
 
+void *pcb_lineop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
+{
+	if (ctx->clip.restore)
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+	if (ctx->clip.clear)
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+	return Line;
+}
+
 /* moves one end of a line */
 void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {

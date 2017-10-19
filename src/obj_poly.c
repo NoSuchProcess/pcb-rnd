@@ -555,6 +555,14 @@ void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 	return Polygon;
 }
 
+void *pcb_polyop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+{
+	if (ctx->clip.restore)
+		pcb_poly_pprestore(Polygon);
+	if (ctx->clip.clear)
+		pcb_poly_ppclear(Polygon);
+	return Polygon;
+}
 /* moves a polygon-point */
 void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
 {

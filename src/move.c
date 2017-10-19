@@ -82,6 +82,23 @@ pcb_opfunc_t MoveFunctions_noclip = {
 	NULL
 };
 
+pcb_opfunc_t ClipFunctions = {
+	pcb_lineop_clip,
+	pcb_textop_clip,
+	pcb_polyop_clip,
+	pcb_viaop_clip,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	pcb_arcop_clip,
+	NULL,
+	NULL,
+	NULL
+};
+
 static pcb_opfunc_t MoveToLayerFunctions = {
 	pcb_lineop_move_to_layer,
 	pcb_textop_move_to_layer,

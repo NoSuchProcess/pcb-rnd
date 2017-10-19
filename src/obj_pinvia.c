@@ -858,6 +858,16 @@ void *pcb_viaop_move(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	return Via;
 }
 
+void *pcb_viaop_clip(pcb_opctx_t *ctx, pcb_pin_t *Via)
+{
+	if (ctx->clip.restore)
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
+	if (ctx->clip.clear)
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
+	return Via;
+}
+
+
 /* destroys a via */
 void *pcb_viaop_destroy(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {

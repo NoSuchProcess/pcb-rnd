@@ -106,6 +106,11 @@ typedef struct {
 	pcb_board_t *pcb;
 } pcb_opctx_noarg_t;
 
+typedef struct {
+	int restore;
+	int clear;
+} pcb_opctx_clip_t;
+
 typedef union {
 	pcb_opctx_buffer_t buffer;
 	pcb_opctx_chgname_t chgname;
@@ -119,6 +124,7 @@ typedef union {
 	pcb_opctx_rotate_t rotate;
 	pcb_opctx_chgflag_t chgflag;
 	pcb_opctx_noarg_t noarg;
+	pcb_opctx_clip_t clip;
 } pcb_opctx_t;
 
 /* pointer to low-level operation (copy, move and rotate) functions */
