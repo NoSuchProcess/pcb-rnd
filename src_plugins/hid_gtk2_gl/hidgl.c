@@ -283,8 +283,8 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 		if (length == 0) {
 			/* Assume the orientation of the line is horizontal */
 			angle = 0;
-			wdx = -width / 2.;
-			wdy = 0;
+			wdx = 0;
+			wdy = width / 2.;
 			length = 1.;
 			deltax = 1.;
 			deltay = 0.;
