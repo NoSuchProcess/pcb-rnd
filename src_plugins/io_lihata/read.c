@@ -999,14 +999,90 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
+static int parse_data_padstack_shape_poly(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+{
+	lht_node_t *n;
+	pcb_cardinal_t i;
+
+	dst->shape = PCB_PSSH_POLY;
+	dst->data.poly.pt = NULL; /* if we return before the allocation... */
+	dst->data.poly.len = 0;
+	for(n = nshape->data.list.first; n != NULL; n = n->next)
+		dst->data.poly.len++;
+
+	if ((dst->data.poly.len % 2) != 0) {
+		pcb_message(PCB_MSG_ERROR, "odd number of padstack shape polygon points\n");
+		return -1;
+	}
+	dst->data.poly.len /= 2;
+
+	dst->data.poly.pt = malloc(sizeof(dst->data.poly.pt[0]) * dst->data.poly.len);
+	for(n = nshape->data.list.first, i = 0; n != NULL; i++) {
+		if (parse_coord(&dst->data.poly.pt[i].X, n) != 0) return -1;
+		n = n->next;
+		if (parse_coord(&dst->data.poly.pt[i].Y, n) != 0) return -1;
+		n = n->next;
+	}
+	return 0;
+}
+
+static int parse_data_padstack_shape_line(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+{
+	int sq;
+
+	dst->shape = PCB_PSSH_LINE;
+
+	if (parse_coord(&dst->data.line.x1, lht_dom_hash_get(nshape, "x1")) != 0) return -1;
+	if (parse_coord(&dst->data.line.y1, lht_dom_hash_get(nshape, "y1")) != 0) return -1;
+	if (parse_coord(&dst->data.line.x2, lht_dom_hash_get(nshape, "x2")) != 0) return -1;
+	if (parse_coord(&dst->data.line.y2, lht_dom_hash_get(nshape, "y2")) != 0) return -1;
+	if (parse_coord(&dst->data.line.thickness, lht_dom_hash_get(nshape, "thickness")) != 0) return -1;
+	if (parse_int(&sq, lht_dom_hash_get(nshape, "square")) != 0) return -1;
+	dst->data.line.square = sq;
+	return 0;
+}
+
+static int parse_data_padstack_shape_circ(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+{
+	dst->shape = PCB_PSSH_CIRC;
+
+	if (parse_coord(&dst->data.circ.x, lht_dom_hash_get(nshape, "x")) != 0) return -1;
+	if (parse_coord(&dst->data.circ.y, lht_dom_hash_get(nshape, "y")) != 0) return -1;
+	if (parse_coord(&dst->data.circ.dia, lht_dom_hash_get(nshape, "dia")) != 0) return -1;
+	return 0;
+}
+
 static int parse_data_padstack_shape_v4(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
-	lht_node_t *ncmb;
+	lht_node_t *ncmb, *nlyt, *ns;
+	int res = -1;
+
+	nlyt = lht_dom_hash_get(nshape, "layer_mask");
+	if ((nlyt != NULL) && (nlyt->type == LHT_HASH))
+		res = parse_layer_type(&dst->layer_mask, nlyt, "padstack shape");
+
+	if (res != 0) {
+		pcb_message(PCB_MSG_ERROR, "Failed to parse pad stack shape (layer mask)\n");
+		return -1;
+	}
 
 	ncmb = lht_dom_hash_get(nshape, "combining");
 	if ((ncmb != NULL) && (ncmb->type == LHT_HASH))
 		dst->comb = parse_comb(pcb, ncmb);
-	return 0;
+
+	if (parse_coord(&dst->clearance, lht_dom_hash_get(nshape, "clearance")) != 0) return -1;
+
+	ns = lht_dom_hash_get(nshape, "ps_poly");
+	if ((ns != NULL) && (ns->type == LHT_LIST)) return parse_data_padstack_shape_poly(pcb, dst, ns, subc_parent);
+
+	ns = lht_dom_hash_get(nshape, "ps_line");
+	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_padstack_shape_line(pcb, dst, ns, subc_parent);
+
+	ns = lht_dom_hash_get(nshape, "ps_circ");
+	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_padstack_shape_circ(pcb, dst, ns, subc_parent);
+
+	pcb_message(PCB_MSG_ERROR, "Failed to parse pad stack: missing shape\n");
+	return -1;
 }
 
 
