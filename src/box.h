@@ -234,6 +234,15 @@ static inline PCB_FUNC_UNUSED void pcb_box_bump_box(pcb_box_t *dst, pcb_box_t *s
 	if (src->Y2 > dst->Y2) dst->Y2 = src->Y2;
 }
 
+/* Modify dst to include src */
+static inline PCB_FUNC_UNUSED void pcb_box_bump_point(pcb_box_t *dst, pcb_coord_t x, pcb_coord_t y)
+{
+	if (x < dst->X1) dst->X1 = x;
+	if (y < dst->Y1) dst->Y1 = y;
+	if (x > dst->X2) dst->X2 = x;
+	if (y > dst->Y2) dst->Y2 = y;
+}
+
 pcb_box_t *pcb_box_new(pcb_box_list_t *);
 void pcb_box_free(pcb_box_list_t *);
 void pcb_set_point_bounding_box(pcb_point_t *Pnt);
