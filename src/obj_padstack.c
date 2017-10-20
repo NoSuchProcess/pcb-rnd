@@ -135,8 +135,8 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 					}
 					dst->shape[n].data.poly.len = len;
 					dst->shape[n].shape = PCB_PSSH_POLY;
+					dst->shape[n].clearance = (*(pcb_polygon_t **)o)->Clearance;
 				}
-				dst->shape[n].clearance = (*(pcb_polygon_t **)o)->Clearance;
 				break;
 			default: continue;
 		}
@@ -153,7 +153,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 		}
 	}
 
-	/* all fine went */
+	/* all went fine */
 	dst->hash = pcb_padstack_hash(dst);
 	ret = 0;
 
