@@ -61,6 +61,8 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 	pcb_any_obj_t **o;
 
 	dst->shape = NULL;
+	dst->hdia = 0;
+	dst->htop = dst->hbottom = 0;
 
 	if (vtp0_len(objs) > data->LayerN) {
 		if (!quiet)
@@ -72,8 +74,18 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 	dst->len = 0;
 	for(n = 0, o = (pcb_any_obj_t **)objs->array; n < vtp0_len(objs); n++,o++) {
 		switch((*o)->type) {
-			case PCB_OBJ_LINE: case PCB_OBJ_POLYGON: dst->len++;
-			case PCB_OBJ_VIA: break;
+			case PCB_OBJ_LINE:
+			case PCB_OBJ_POLYGON:
+				dst->len++;
+				break;
+			case PCB_OBJ_VIA:
+				if (dst->hdia != 0) {
+					if (!quiet)
+						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias\n");
+					goto quit;
+				}
+				dst->hdia = (*(pcb_pin_t **)o)->DrillingHole;
+				break;
 			default:;
 				if (!quiet)
 					pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, line or polygon\n", (*o)->type);
