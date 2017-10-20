@@ -23,9 +23,26 @@
 #ifndef PCB_OBJ_PADSTACK_H
 #define PCB_OBJ_PADSTACK_H
 
+#define PCB_PADSTACK_MAX_SHAPES 31
+
+#define PCB_PADSTACK_INVALID ((pcb_cardinal_t)(-1))
+
+#include "obj_common.h"
+/* The actual padstack is just a reference to a padstack proto within the same data */
+struct pcb_padstack_s {
+	PCB_ANYOBJECTFIELDS;
+	pcb_cardinal_t proto;          /* reference to a pcb_padstack_proto_t within pcb_data_t */
+	pcb_coord_t x, y;
+	struct {
+		unsigned long used;
+		char *shape;                 /* indexed by layer ID */
+	} thermal;
+	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
+};
+
+
 #include "obj_padstack_list.h"
 #include "layer.h"
-
 
 typedef struct pcb_padstack_poly_s {
 	unsigned int len;             /* number of points in polygon */
