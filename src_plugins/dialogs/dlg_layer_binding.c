@@ -236,6 +236,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 				num_copper++;
 
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
+			PCB_DAD_COMPFLAG(dlg, PCB_HATF_SCROLL);
 		for(n = 0; n < ctx.data->LayerN; n++) {
 			lb_widx_t *w = ctx.widx+n;
 			/* left side */
