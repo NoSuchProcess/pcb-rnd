@@ -296,7 +296,7 @@ int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *
 	if (p1->len != p2->len) return 0;
 
 	for(n1 = 0; n1 < p1->len; n1++) {
-		for(n2 = 0; n1 < p2->len; n2++)
+		for(n2 = 0; n2 < p2->len; n2++)
 			if (pcb_padstack_shape_eq(p1->shape + n1, p2->shape + n2))
 				goto found;
 		return 0;
