@@ -93,6 +93,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 				dst->shape[n].data.line.y1 = (*(pcb_line_t **)o)->Point1.Y;
 				dst->shape[n].data.line.x2 = (*(pcb_line_t **)o)->Point2.X;
 				dst->shape[n].data.line.y2 = (*(pcb_line_t **)o)->Point2.Y;
+				dst->shape[n].data.line.thickness = (*(pcb_line_t **)o)->Thickness;
 				dst->shape[n].data.line.square = 0;
 				dst->shape[n].clearance = (*(pcb_line_t **)o)->Clearance;
 				break;
