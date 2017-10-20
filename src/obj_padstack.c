@@ -57,7 +57,7 @@ void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst)
 
 static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs)
 {
-	int ret = -1, n, m;
+	int ret = -1, n, m, i;
 	pcb_any_obj_t **o;
 
 	dst->shape = NULL;
@@ -68,29 +68,33 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 		goto quit;
 	}
 
+	/* allocate shapes */
+	dst->len = 0;
 	for(n = 0, o = (pcb_any_obj_t **)objs->array; n < vtp0_len(objs); n++,o++) {
-		if (((*o)->type != PCB_OBJ_LINE) && ((*o)->type != PCB_OBJ_POLYGON) && ((*o)->type != PCB_OBJ_VIA)) {
-			if (!quiet)
-				pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, line or polygon\n", (*o)->type);
-			goto quit;
+		switch((*o)->type) {
+			case PCB_OBJ_LINE: case PCB_OBJ_POLYGON: dst->len++;
+			case PCB_OBJ_VIA: break;
+			default:;
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, line or polygon\n", (*o)->type);
+				goto quit;
 		}
 	}
-
-	/* allocate shapes */
-	dst->len = vtp0_len(objs);
 	dst->shape = malloc(dst->len * sizeof(pcb_padstack_shape_t));
 
 	/* convert local (line/poly) objects */
-	for(n = 0, o = (pcb_any_obj_t **)objs->array; n < vtp0_len(objs); n++,o++) {
+	for(i = 0, n = -1, o = (pcb_any_obj_t **)objs->array; i < vtp0_len(objs); o++,i++) {
 		pcb_layer_t *ly;
 		switch((*o)->type) {
 			case PCB_OBJ_LINE:
+				n++;
 				dst->shape[n].shape = PCB_PSSH_LINE;
 				dst->shape[n].data.line.x1 = (*(pcb_line_t **)o)->Point1.X;
 				dst->shape[n].data.line.y1 = (*(pcb_line_t **)o)->Point1.Y;
 				dst->shape[n].data.line.x2 = (*(pcb_line_t **)o)->Point2.X;
 				dst->shape[n].data.line.y2 = (*(pcb_line_t **)o)->Point2.Y;
 				dst->shape[n].data.line.square = 0;
+				dst->shape[n].clearance = (*(pcb_line_t **)o)->Clearance;
 				break;
 			case PCB_OBJ_POLYGON:
 				{
@@ -100,6 +104,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 					pcb_coord_t x, y;
 					int go;
 
+					n++;
 					pcb_poly_island_first((*(pcb_polygon_t **)o), &it);
 					for(go = pcb_poly_vect_first(&it, &x, &y), len = 0; go; go = pcb_poly_vect_next(&it, &x, &y))
 						len++;
@@ -115,6 +120,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 					}
 					dst->shape[n].shape = PCB_PSSH_POLY;
 				}
+				dst->shape[n].clearance = (*(pcb_polygon_t **)o)->Clearance;
 				break;
 			default: continue;
 		}
@@ -230,6 +236,7 @@ static unsigned int pcb_padstack_shape_hash(const pcb_padstack_shape_t *sh)
 			ret ^= pcb_hash_coord(sh->data.circ.dia);
 			break;
 	}
+
 	return ret;
 }
 
