@@ -17,7 +17,8 @@ struct pcb_hid_attr_val_s {
 
 typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_FRAME   = 1,  /* box/table has a visible frame around it */
-	PCB_HATF_LABEL   = 2   /* direct children print label */
+	PCB_HATF_LABEL   = 2,  /* direct children print label */
+	PCB_HATF_SCROLL  = 4   /* box/table is scrollable */
 } pcb_hatt_compflags_t;
 
 typedef enum pcb_hids_e {

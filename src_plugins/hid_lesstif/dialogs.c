@@ -583,7 +583,7 @@ static Widget create_form_ok_dialog(const char *name, int ok)
 	return topform;
 }
 
-static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame)
+static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
 {
 	Widget cnt;
 
@@ -591,6 +591,20 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 		/* create and insert frame around the content table */
 		stdarg(XmNalignment, XmALIGNMENT_END);
 		parent = XmCreateFrame(parent, XmStrCast("box-frame"), stdarg_args, stdarg_n);
+		XtManageChild(parent);
+		stdarg_n = 0;
+	}
+
+	if (want_scroll) {
+		stdarg(XmNscrollingPolicy, XmAUTOMATIC);
+		stdarg(XmNvisualPolicy, XmVARIABLE);
+
+		stdarg(XmNleftAttachment, XmATTACH_FORM);
+		stdarg(XmNtopAttachment, XmATTACH_FORM);
+		stdarg(XmNrightAttachment, XmATTACH_FORM);
+		stdarg(XmNbottomAttachment, XmATTACH_FORM);
+
+		parent = XmCreateScrolledWindow(parent, "scrolled_box", stdarg_args, stdarg_n);
 		XtManageChild(parent);
 		stdarg_n = 0;
 	}
@@ -746,13 +760,13 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 		switch(ctx->attrs[i].type) {
 		case PCB_HATT_BEGIN_HBOX:
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
 			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_VBOX:
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
 			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
@@ -762,7 +776,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			numcol = ctx->attrs[i].pcb_hatt_table_cols;
 			len = pcb_hid_atrdlg_num_children(ctx->attrs, i+1, ctx->n_attrs);
 			numch = len  / numcol + !!(len % numcol);
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME));
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 
 			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			while((len % numcol) != 0) {
@@ -966,7 +980,7 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 
 	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
 		stdarg_n = 0;
-		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_atrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0);
+		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_atrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
 		XtManageChild(main_tbl);
 		attribute_dialog_add(ctx, main_tbl, 0, 1);
 	}
