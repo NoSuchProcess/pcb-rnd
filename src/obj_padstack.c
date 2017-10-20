@@ -107,6 +107,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 
 					n++;
 					pcb_poly_island_first((*(pcb_polygon_t **)o), &it);
+					pcb_poly_contour(&it);
 					for(go = pcb_poly_vect_first(&it, &x, &y), len = 0; go; go = pcb_poly_vect_next(&it, &x, &y))
 						len++;
 					if (len >= (1L << (sizeof(int)-1))) {
