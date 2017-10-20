@@ -99,6 +99,7 @@ put /local/pcb/OBJS [@
 	obj_padstack.o
 	obj_padstack_act.o
 	obj_padstack_list.o
+	obj_padstack_proto.o
 	obj_pad_list.o
 	obj_pinvia.o
 	obj_pinvia_therm.o
