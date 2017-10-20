@@ -545,7 +545,7 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 		/* save each shape */
 		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
 		for(sn = 0; sn < proto->len; sn++) {
-			pcb_padstack_shape_t *shape = proto->shape + n;
+			pcb_padstack_shape_t *shape = proto->shape + sn;
 
 			lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
 
@@ -567,12 +567,12 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 					break;
 				case PCB_PSSH_LINE:
 					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_line");
-					lht_dom_hash_put(nproto, build_textf("x1", CFMT, shape->data.line.x1));
-					lht_dom_hash_put(nproto, build_textf("y1", CFMT, shape->data.line.y1));
-					lht_dom_hash_put(nproto, build_textf("x2", CFMT, shape->data.line.x2));
-					lht_dom_hash_put(nproto, build_textf("y2", CFMT, shape->data.line.y2));
-					lht_dom_hash_put(nproto, build_textf("thickness", CFMT, shape->data.line.thickness));
-					lht_dom_hash_put(nproto, build_textf("square", "%d", shape->data.line.square));
+					lht_dom_hash_put(nshapeo, build_textf("x1", CFMT, shape->data.line.x1));
+					lht_dom_hash_put(nshapeo, build_textf("y1", CFMT, shape->data.line.y1));
+					lht_dom_hash_put(nshapeo, build_textf("x2", CFMT, shape->data.line.x2));
+					lht_dom_hash_put(nshapeo, build_textf("y2", CFMT, shape->data.line.y2));
+					lht_dom_hash_put(nshapeo, build_textf("thickness", CFMT, shape->data.line.thickness));
+					lht_dom_hash_put(nshapeo, build_textf("square", "%d", shape->data.line.square));
 					break;
 				case PCB_PSSH_CIRC:
 					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
@@ -584,7 +584,7 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 					pcb_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
 					abort();
 			}
-			lht_dom_list_append(nshapelst, nshapeo);
+			lht_dom_hash_put(nshape, nshapeo);
 		}
 	}
 
