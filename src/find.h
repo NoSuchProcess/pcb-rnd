@@ -66,7 +66,7 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *, pcb_arc_t *);
 pcb_bool pcb_intersect_line_pin(pcb_pin_t *, pcb_line_t *);
 pcb_bool pcb_intersect_line_pad(pcb_line_t *, pcb_pad_t *);
 pcb_bool pcb_intersect_arc_pad(pcb_arc_t *, pcb_pad_t *);
-pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *, pcb_polygon_t *);
+pcb_bool pcb_is_poly_in_poly(pcb_poly_t *, pcb_poly_t *);
 void pcb_lookup_element_conns(pcb_element_t *, FILE *);
 void pcb_lookup_conns_to_all_elements(FILE *);
 void pcb_lookup_conn(pcb_coord_t, pcb_coord_t, pcb_bool, pcb_coord_t, int);
@@ -85,9 +85,9 @@ void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats);
 void pcb_save_find_flag(int);
 void pcb_restore_find_flag(void);
 int pcb_drc_all(void);
-pcb_bool pcb_is_line_in_poly(pcb_line_t *, pcb_polygon_t *);
-pcb_bool pcb_is_arc_in_poly(pcb_arc_t *, pcb_polygon_t *);
-pcb_bool pcb_is_pad_in_poly(pcb_pad_t *, pcb_polygon_t *);
+pcb_bool pcb_is_line_in_poly(pcb_line_t *, pcb_poly_t *);
+pcb_bool pcb_is_arc_in_poly(pcb_arc_t *, pcb_poly_t *);
+pcb_bool pcb_is_pad_in_poly(pcb_pad_t *, pcb_poly_t *);
 
 pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool AndDraw, pcb_cardinal_t (*cb)(void *ctx, pcb_any_obj_t *obj));
 

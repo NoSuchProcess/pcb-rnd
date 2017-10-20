@@ -120,7 +120,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 					int go;
 
 					n++;
-					pcb_poly_island_first((*(pcb_polygon_t **)o), &it);
+					pcb_poly_island_first((*(pcb_poly_t **)o), &it);
 					pcb_poly_contour(&it);
 					for(go = pcb_poly_vect_first(&it, &x, &y), len = 0; go; go = pcb_poly_vect_next(&it, &x, &y))
 						len++;
@@ -136,7 +136,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 					}
 					dst->shape[n].data.poly.len = len;
 					dst->shape[n].shape = PCB_PSSH_POLY;
-					dst->shape[n].clearance = (*(pcb_polygon_t **)o)->Clearance;
+					dst->shape[n].clearance = (*(pcb_poly_t **)o)->Clearance;
 				}
 				break;
 			default: continue;

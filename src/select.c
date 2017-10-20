@@ -171,7 +171,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 
 	case PCB_TYPE_POLYGON:
 		{
-			pcb_polygon_t *poly = (pcb_polygon_t *) ptr2;
+			pcb_poly_t *poly = (pcb_poly_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
 			pcb_undo_add_obj_to_flag(ptr2);
@@ -505,7 +505,7 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 		case PCB_OBJ_RAT:
 		case PCB_OBJ_LINE: return PCB_LINE_NEAR_BOX((pcb_line_t *)obj, box);
 		case PCB_OBJ_TEXT: return PCB_TEXT_NEAR_BOX((pcb_text_t *)obj, box);
-		case PCB_OBJ_POLYGON: return PCB_POLYGON_NEAR_BOX((pcb_polygon_t *)obj, box);
+		case PCB_OBJ_POLYGON: return PCB_POLYGON_NEAR_BOX((pcb_poly_t *)obj, box);
 		case PCB_OBJ_ARC:  return PCB_ARC_NEAR_BOX((pcb_arc_t *)obj, box);
 		case PCB_OBJ_PAD:  return PCB_PAD_NEAR_BOX((pcb_pad_t *)obj, box);
 		case PCB_OBJ_PIN:

@@ -182,9 +182,9 @@ static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 	sc->aux_cache[0] = NULL;
 }
 
-static pcb_polygon_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
+static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 {
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	pcb_coord_t x[4], y[4];
 	int n;
 
@@ -211,7 +211,7 @@ static void move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t
 	pcb_layer_t *target = (source->meta.bound.type & PCB_LYT_TOP) ? top : bottom;
 	switch(o->type) {
 		case PCB_OBJ_POLYGON:
-			pcb_polyop_move_to_layer_low(NULL, source, (pcb_polygon_t *)o, target);
+			pcb_polyop_move_to_layer_low(NULL, source, (pcb_poly_t *)o, target);
 			break;
 		case PCB_OBJ_LINE:
 			pcb_lineop_move_to_layer_low(NULL, source, (pcb_line_t *)o, target);
@@ -254,7 +254,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		pcb_layer_t *dst, *src;
 		pcb_line_t *line;
 		pcb_text_t *text;
-		pcb_polygon_t *poly;
+		pcb_poly_t *poly;
 		pcb_arc_t *arc;
 		pcb_layer_type_t ltype;
 
@@ -412,7 +412,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 				if (mask > 0) {
 					if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via)) {
 						pcb_line_t line;
-						pcb_polygon_t *poly;
+						pcb_poly_t *poly;
 						memset(&line, 0, sizeof(line));
 						line.Point1.X = line.Point2.X = via->X;
 						line.Point1.Y = line.Point2.Y = via->Y;
@@ -499,7 +499,7 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 		pcb_layer_t *ly = sc->data->Layer + n;
 		pcb_line_t *line;
 		pcb_text_t *text;
-		pcb_polygon_t *poly;
+		pcb_poly_t *poly;
 		pcb_arc_t *arc;
 		gdl_iterator_t it;
 
@@ -671,7 +671,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	for(n = 0; n < src->data->LayerN; n++) {
 		pcb_layer_t *sl = src->data->Layer + n;
 		pcb_layer_t *dl = sc->data->Layer + n;
-		pcb_polygon_t *poly, *npoly;
+		pcb_poly_t *poly, *npoly;
 		gdl_iterator_t it;
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
@@ -744,7 +744,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		pcb_layer_t *sl = sc->data->Layer + n;
 		pcb_line_t *line;
 		pcb_text_t *text;
-		pcb_polygon_t *poly;
+		pcb_poly_t *poly;
 		pcb_arc_t *arc;
 		gdl_iterator_t it;
 
@@ -842,7 +842,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 {
 	pcb_line_t *line;
 	pcb_text_t *text;
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	pcb_arc_t *arc;
 	gdl_iterator_t it;
 	int chg = 0;

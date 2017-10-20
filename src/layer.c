@@ -406,7 +406,7 @@ static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	pcb_line_t *li;
 	pcb_text_t *te;
-	pcb_polygon_t *po;
+	pcb_poly_t *po;
 	pcb_arc_t *ar;
 
 	memcpy(dst, src, sizeof(pcb_layer_t));

@@ -67,12 +67,12 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 
 	case PCB_TYPE_POLYGON:
 		if (F->Polygon)
-			return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (pcb_polygon_t *) Ptr2));
+			return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_POLYGON_POINT:
 		if (F->Point)
-			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_polygon_t *) Ptr2, (pcb_point_t *) Ptr3));
+			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2, (pcb_point_t *) Ptr3));
 		break;
 
 	case PCB_TYPE_VIA:

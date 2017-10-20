@@ -142,7 +142,7 @@ static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, p
 	return pcb_false;
 }
 
-static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_polygon_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_poly_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (PolygonList[L].Data == NULL)
 		return pcb_false;
@@ -265,7 +265,7 @@ void pcb_layout_lookup_init(void)
 		}
 		if ((layer->polygon_tree != NULL) && (layer->polygon_tree->size > 0)) {
 			PolygonList[i].Size = layer->polygon_tree->size;
-			PolygonList[i].Data = (void **) calloc(PolygonList[i].Size, sizeof(pcb_polygon_t *));
+			PolygonList[i].Data = (void **) calloc(PolygonList[i].Size, sizeof(pcb_poly_t *));
 		}
 
 		}
@@ -358,7 +358,7 @@ static pcb_r_dir_t LOCtoPVrat_callback(const pcb_box_t * b, void *cl)
 
 static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 {
-	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	/* if the pin doesn't have a therm and polygon is clearing
@@ -622,7 +622,7 @@ struct lo_info {
 	pcb_line_t line;
 	pcb_pad_t pad;
 	pcb_arc_t arc;
-	pcb_polygon_t polygon;
+	pcb_poly_t polygon;
 	pcb_rat_t rat;
 	jmp_buf env;
 };
@@ -789,7 +789,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 		/* now all polygons */
 		info.layer = layer;
 		while (PolygonList[layer].Location < PolygonList[layer].Number) {
-			pcb_polygon_t *orig_poly = (POLYGONLIST_ENTRY(layer, PolygonList[layer].Location));
+			pcb_poly_t *orig_poly = (POLYGONLIST_ENTRY(layer, PolygonList[layer].Location));
 			info.polygon = *orig_poly;
 			EXPAND_BOUNDS(&info.polygon);
 
@@ -970,7 +970,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 			pcb_rtree_it_t it;
 			pcb_box_t *b;
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
-				pcb_polygon_t *polygon = (pcb_polygon_t *)b;
+				pcb_poly_t *polygon = (pcb_poly_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_ARC, Arc, PCB_FCT_COPPER))
 					return pcb_true;
@@ -1094,7 +1094,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 			pcb_rtree_it_t it;
 			pcb_box_t *b;
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
-				pcb_polygon_t *polygon = (pcb_polygon_t *)b;
+				pcb_poly_t *polygon = (pcb_poly_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_line_in_poly(Line, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_LINE, Line, PCB_FCT_COPPER))
 					return pcb_true;
@@ -1150,7 +1150,7 @@ static pcb_r_dir_t LOCtoRatArc_callback(const pcb_box_t * b, void *cl)
 
 static pcb_r_dir_t LOCtoRatPoly_callback(const pcb_box_t * b, void *cl)
 {
-	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, polygon) && polygon->Clipped && IsRatPointOnPoly(i->Point, polygon)) {
@@ -1250,7 +1250,7 @@ static pcb_r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
 
 static pcb_r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 {
-	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 
@@ -1427,7 +1427,7 @@ static pcb_r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
  * looks up LOs that are connected to the given polygon
  * on the given layergroup. All found connections are added to the list
  */
-static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardinal_t LayerGroup)
+static pcb_bool LookupLOConnectionsToPolygon(pcb_poly_t *Polygon, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
@@ -1455,7 +1455,7 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 			pcb_rtree_it_t it;
 			pcb_box_t *b;
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
-				pcb_polygon_t *polygon = (pcb_polygon_t *)b;
+				pcb_poly_t *polygon = (pcb_poly_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon)
 						&& pcb_is_poly_in_poly(polygon, Polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_POLYGON, Polygon, PCB_FCT_COPPER))

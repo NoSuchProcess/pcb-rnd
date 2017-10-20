@@ -97,7 +97,7 @@ pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src)
 }
 
 
-pcb_bool pcb_cpoly_is_simple_rect(const pcb_polygon_t *p)
+pcb_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p)
 {
 	if (p->Clipped->f != p->Clipped)
 		return pcb_false; /* more than one islands */
@@ -106,7 +106,7 @@ pcb_bool pcb_cpoly_is_simple_rect(const pcb_polygon_t *p)
 	return pcb_pline_is_rectangle(p->Clipped->contours);
 }
 
-pcb_cardinal_t pcb_cpoly_num_corners(const pcb_polygon_t *src)
+pcb_cardinal_t pcb_cpoly_num_corners(const pcb_poly_t *src)
 {
 	pcb_cardinal_t res = 0;
 	pcb_poly_it_t it;
@@ -179,7 +179,7 @@ static void add_track(pcb_cpoly_edgetree_t *dst, pcb_pline_t *track)
 
 
 /* collect all edge lines (contour and holes) in an rtree, calculate the bbox */
-pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_polygon_t *src, pcb_coord_t offs)
+pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, pcb_coord_t offs)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -273,7 +273,7 @@ static int coord_cmp(const void *p1, const void *p2)
 }
 
 
-void pcb_cpoly_hatch(const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t offs, pcb_coord_t period, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2))
+void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t offs, pcb_coord_t period, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2))
 {
 	pcb_cpoly_edgetree_t *etr;
 	pcb_box_t scan;
@@ -340,7 +340,7 @@ static void hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2,
 	pcb_line_new(ctx->dst, x1, y1, x2, y2, ctx->thickness, ctx->clearance, ctx->flags);
 }
 
-void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
 {
 	hatch_ctx_t ctx;
 
@@ -451,7 +451,7 @@ static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			}
 		}
 		if (want_poly) {
-			pcb_polygon_t *p = pcb_poly_new_from_poly(CURRENT, polygon, period, polygon->Clearance, polygon->Flags);
+			pcb_poly_t *p = pcb_poly_new_from_poly(CURRENT, polygon, period, polygon->Clearance, polygon->Flags);
 			PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
 		}
 		pcb_cpoly_hatch_lines(CURRENT, polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
@@ -478,7 +478,7 @@ static int pcb_act_PolyOffs(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	}
 
 	PCB_POLY_ALL_LOOP(PCB->Data); {
-		pcb_polygon_t *p;
+		pcb_poly_t *p;
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 			continue;
 

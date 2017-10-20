@@ -56,11 +56,11 @@
 /*** allocation ***/
 
 /* get next slot for a polygon object, allocates memory if necessary */
-pcb_polygon_t *pcb_poly_alloc(pcb_layer_t * layer)
+pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
 {
-	pcb_polygon_t *new_obj;
+	pcb_poly_t *new_obj;
 
-	new_obj = calloc(sizeof(pcb_polygon_t), 1);
+	new_obj = calloc(sizeof(pcb_poly_t), 1);
 	new_obj->type = PCB_OBJ_POLYGON;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(new_obj, layer, layer);
@@ -70,14 +70,14 @@ pcb_polygon_t *pcb_poly_alloc(pcb_layer_t * layer)
 	return new_obj;
 }
 
-void pcb_poly_free(pcb_polygon_t * data)
+void pcb_poly_free(pcb_poly_t * data)
 {
 	polylist_remove(data);
 	free(data);
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
-pcb_point_t *pcb_poly_point_alloc(pcb_polygon_t *Polygon)
+pcb_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon)
 {
 	pcb_point_t *points = Polygon->Points;
 
@@ -92,7 +92,7 @@ pcb_point_t *pcb_poly_point_alloc(pcb_polygon_t *Polygon)
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
-pcb_cardinal_t *pcb_poly_holeidx_new(pcb_polygon_t *Polygon)
+pcb_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon)
 {
 	pcb_cardinal_t *holeindex = Polygon->HoleIndex;
 
@@ -107,7 +107,7 @@ pcb_cardinal_t *pcb_poly_holeidx_new(pcb_polygon_t *Polygon)
 }
 
 /* frees memory used by a polygon */
-void pcb_poly_free_fields(pcb_polygon_t * polygon)
+void pcb_poly_free_fields(pcb_poly_t * polygon)
 {
 	if (polygon == NULL)
 		return;
@@ -119,13 +119,13 @@ void pcb_poly_free_fields(pcb_polygon_t * polygon)
 		pcb_polyarea_free(&polygon->Clipped);
 	pcb_poly_contours_free(&polygon->NoHoles);
 
-	reset_obj_mem(pcb_polygon_t, polygon);
+	reset_obj_mem(pcb_poly_t, polygon);
 }
 
 /*** utility ***/
 
 /* rotates a polygon in 90 degree steps */
-void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_poly_rotate90(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
@@ -135,7 +135,7 @@ void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, uns
 	pcb_box_rotate90(&Polygon->BoundingBox, X, Y, Number);
 }
 
-void pcb_poly_rotate(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
+void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
 {
 	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 	PCB_POLY_POINT_LOOP(polygon);
@@ -147,7 +147,7 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t X, 
 	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 }
 
-void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t y_offs)
+void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs)
 {
 	if (layer->polygon_tree != NULL)
 		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *)polygon);
@@ -162,7 +162,7 @@ void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t y_o
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *)polygon, 0);
 }
 
-void pcb_poly_flip_side(pcb_layer_t *layer, pcb_polygon_t *polygon)
+void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)
 {
 	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 	PCB_POLY_POINT_LOOP(polygon);
@@ -178,7 +178,7 @@ void pcb_poly_flip_side(pcb_layer_t *layer, pcb_polygon_t *polygon)
 
 
 /* sets the bounding box of a polygons */
-void pcb_poly_bbox(pcb_polygon_t *Polygon)
+void pcb_poly_bbox(pcb_poly_t *Polygon)
 {
 	Polygon->BoundingBox.X1 = Polygon->BoundingBox.Y1 = PCB_MAX_COORD;
 	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = 0;
@@ -195,9 +195,9 @@ void pcb_poly_bbox(pcb_polygon_t *Polygon)
 }
 
 /* creates a new polygon from the old formats rectangle data */
-pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_poly_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
-	pcb_polygon_t *polygon = pcb_poly_new(Layer, Clearance, Flags);
+	pcb_poly_t *polygon = pcb_poly_new(Layer, Clearance, Flags);
 	if (!polygon)
 		return (polygon);
 
@@ -210,13 +210,13 @@ pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, p
 	return (polygon);
 }
 
-pcb_polygon_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_polygon_t *src, pcb_coord_t offs, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, pcb_coord_t offs, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	pcb_coord_t x, y;
 	pcb_poly_it_t it;
 	pcb_pline_t *pl;
 	int go;
-	pcb_polygon_t *polygon = pcb_poly_new(Layer, Clearance, Flags);
+	pcb_poly_t *polygon = pcb_poly_new(Layer, Clearance, Flags);
 
 	if (!polygon)
 		return (polygon);
@@ -236,7 +236,7 @@ pcb_polygon_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_polygon_t *src, pc
 
 
 
-void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
+void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
 {
 	pcb_poly_bbox(polygon);
 	if (!Layer->polygon_tree)
@@ -247,9 +247,9 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 }
 
 /* creates a new polygon on a layer */
-pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_poly_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
-	pcb_polygon_t *polygon = pcb_poly_alloc(Layer);
+	pcb_poly_t *polygon = pcb_poly_alloc(Layer);
 
 	/* copy values */
 	polygon->Flags = Flags;
@@ -261,7 +261,7 @@ pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_
 	return (polygon);
 }
 
-static pcb_polygon_t *pcb_poly_copy_meta(pcb_polygon_t *dst, pcb_polygon_t *src)
+static pcb_poly_t *pcb_poly_copy_meta(pcb_poly_t *dst, pcb_poly_t *src)
 {
 	if (dst == NULL)
 		return NULL;
@@ -269,10 +269,10 @@ static pcb_polygon_t *pcb_poly_copy_meta(pcb_polygon_t *dst, pcb_polygon_t *src)
 	return dst;
 }
 
-pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
+pcb_poly_t *pcb_poly_dup(pcb_layer_t *dst, pcb_poly_t *src)
 {
 	pcb_board_t *pcb;
-	pcb_polygon_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
+	pcb_poly_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
 	pcb_poly_copy(p, src, 0, 0);
 	pcb_add_polygon_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
@@ -283,10 +283,10 @@ pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src)
 	return p;
 }
 
-pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t dx, pcb_coord_t dy)
+pcb_poly_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_poly_t *src, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_board_t *pcb;
-	pcb_polygon_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
+	pcb_poly_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
 	pcb_poly_copy(p, src, dx, dy);
 	pcb_add_polygon_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
@@ -298,7 +298,7 @@ pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t
 }
 
 /* creates a new point in a polygon */
-pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
+pcb_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_point_t *point = pcb_poly_point_alloc(Polygon);
 
@@ -310,7 +310,7 @@ pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord
 }
 
 /* creates a new hole in a polygon */
-pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon)
+pcb_poly_t *pcb_poly_hole_new(pcb_poly_t * Polygon)
 {
 	pcb_cardinal_t *holeindex = pcb_poly_holeidx_new(Polygon);
 	*holeindex = Polygon->PointN;
@@ -318,7 +318,7 @@ pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon)
 }
 
 /* copies data from one polygon to another; 'Dest' has to exist */
-pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src, pcb_coord_t dx, pcb_coord_t dy)
+pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_cardinal_t hole = 0;
 	pcb_cardinal_t n;
@@ -353,7 +353,7 @@ static double poly_area(pcb_point_t *points, pcb_cardinal_t n_points)
 	return area;
 }
 
-double pcb_poly_area(const pcb_polygon_t *poly)
+double pcb_poly_area(const pcb_poly_t *poly)
 {
 	double area;
 
@@ -375,10 +375,10 @@ double pcb_poly_area(const pcb_polygon_t *poly)
 /*** ops ***/
 
 /* copies a polygon to buffer */
-void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 
 	polygon = pcb_poly_new(layer, Polygon->Clearance, Polygon->Flags);
 	pcb_poly_copy(polygon, Polygon, 0, 0);
@@ -398,7 +398,7 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 
 
 /* moves a polygon to buffer. Doesn't allocate memory for the points */
-void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t * polygon)
+void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_t * polygon)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 
@@ -422,7 +422,7 @@ void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polyg
 }
 
 /* Handle attempts to change the clearance of a polygon. */
-void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly)
+void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly)
 {
 	static int shown_this_message = 0;
 	if (!shown_this_message) {
@@ -437,7 +437,7 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 }
 
 /* changes the CLEARPOLY flag of a polygon */
-void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
@@ -450,7 +450,7 @@ void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 }
 
 /* inserts a point into a polygon */
-void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_point_t save;
 	pcb_cardinal_t n;
@@ -500,7 +500,7 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 }
 
 /* changes the clearance flag of a polygon */
-void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *poly)
+void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, poly))
 		return (NULL);
@@ -520,7 +520,7 @@ void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 }
 
 /* low level routine to move a polygon */
-void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
+void pcb_poly_move(pcb_poly_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 {
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
@@ -531,7 +531,7 @@ void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 }
 
 /* moves a polygon */
-void *pcb_polyop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_erase(Polygon);
@@ -547,7 +547,7 @@ void *pcb_polyop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	return Polygon;
 }
 
-void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_poly_pprestore(Polygon);
 	pcb_polyop_move_noclip(ctx, Layer, Polygon);
@@ -555,7 +555,7 @@ void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 	return Polygon;
 }
 
-void *pcb_polyop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	if (ctx->clip.restore)
 		pcb_poly_pprestore(Polygon);
@@ -564,7 +564,7 @@ void *pcb_polyop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 	return Polygon;
 }
 /* moves a polygon-point */
-void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
+void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, pcb_point_t *Point)
 {
 	pcb_poly_pprestore(Polygon);
 	if (Layer->meta.real.vis) {
@@ -585,7 +585,7 @@ void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t 
 }
 
 /* moves a polygon between layers; lowlevel routines */
-void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_polygon_t * polygon, pcb_layer_t * Destination)
+void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_poly_t * polygon, pcb_layer_t * Destination)
 {
 	pcb_r_delete_entry(Source->polygon_tree, (pcb_box_t *) polygon);
 
@@ -605,7 +605,7 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 struct mptlc {
 	pcb_layer_id_t snum, dnum;
 	int type;
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 } mptlc;
 
 pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
@@ -624,9 +624,9 @@ pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 }
 
 /* moves a polygon between layers */
-void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
+void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t * Polygon)
 {
-	pcb_polygon_t *newone;
+	pcb_poly_t *newone;
 	struct mptlc d;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon)) {
@@ -657,7 +657,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygo
 
 
 /* destroys a polygon from a layer */
-void *pcb_polyop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_free_fields(Polygon);
@@ -668,7 +668,7 @@ void *pcb_polyop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 }
 
 /* removes a polygon-point from a polygon and destroys the data */
-void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
+void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, pcb_point_t *Point)
 {
 	pcb_cardinal_t point_idx;
 	pcb_cardinal_t i;
@@ -705,7 +705,7 @@ void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon
 }
 
 /* removes a polygon from a layer */
-void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	/* erase from screen */
 	pcb_poly_pprestore(Polygon);
@@ -719,7 +719,7 @@ void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Pol
 	return NULL;
 }
 
-void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_poly_remove(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_opctx_t ctx;
 
@@ -732,7 +732,7 @@ void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 
 /* Removes a contour from a polygon.
    If removing the outer contour, it removes the whole polygon. */
-void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_cardinal_t contour)
+void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, pcb_cardinal_t contour)
 {
 	pcb_cardinal_t contour_start, contour_end, contour_points;
 	pcb_cardinal_t i;
@@ -779,7 +779,7 @@ void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygo
 }
 
 /* removes a polygon-point from a polygon */
-void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon, pcb_point_t *Point)
+void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, pcb_point_t *Point)
 {
 	pcb_cardinal_t point_idx;
 	pcb_cardinal_t i;
@@ -831,9 +831,9 @@ void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_
 }
 
 /* copies a polygon */
-void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 
 	polygon = pcb_poly_new(Layer, Polygon->Clearance, pcb_no_flags());
 	pcb_poly_copy(polygon, Polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
@@ -848,7 +848,7 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 	return (polygon);
 }
 
-void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_poly_pprestore(Polygon);
 	if (Layer->meta.real.vis)
@@ -865,7 +865,7 @@ void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 	return Polygon;
 }
 
-void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	static pcb_flag_values_t pcb_poly_flags = 0;
 	if (pcb_poly_flags == 0)
@@ -894,7 +894,7 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 
 
 /*** iteration helpers ***/
-void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb)
+void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb)
 {
 	pcb_polyarea_t *pa;
 	pcb_pline_t *pl;
@@ -916,7 +916,7 @@ void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb)
 	} while(pa != p->Clipped);
 }
 
-void *pcb_polyop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_polygon_t *poly)
+void *pcb_polyop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_poly_t *poly)
 {
 	pcb_poly_name_invalidate_draw(poly);
 	return poly;
@@ -924,7 +924,7 @@ void *pcb_polyop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_poly
 
 /*** draw ***/
 
-static pcb_bool is_poly_term_vert(const pcb_polygon_t *poly)
+static pcb_bool is_poly_term_vert(const pcb_poly_t *poly)
 {
 	pcb_coord_t dx, dy;
 
@@ -940,7 +940,7 @@ static pcb_bool is_poly_term_vert(const pcb_polygon_t *poly)
 }
 
 
-void pcb_poly_name_invalidate_draw(pcb_polygon_t *poly)
+void pcb_poly_name_invalidate_draw(pcb_poly_t *poly)
 {
 	if (poly->term != NULL) {
 		pcb_text_t text;
@@ -950,14 +950,14 @@ void pcb_poly_name_invalidate_draw(pcb_polygon_t *poly)
 	}
 }
 
-void pcb_poly_draw_label(pcb_polygon_t *poly)
+void pcb_poly_draw_label(pcb_poly_t *poly)
 {
 	if (poly->term != NULL)
 		pcb_term_label_draw((poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
 			100.0, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
 }
 
-void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
+void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
 	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
 	{
@@ -989,7 +989,7 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
 	if (pcb_gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
-		pcb_polygon_t poly = *polygon;
+		pcb_poly_t poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
 			pcb_gui->thindraw_pcb_polygon(Output.fgGC, &poly, drawn_area);
@@ -1001,7 +1001,7 @@ void pcb_poly_draw_(pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int all
 	}
 }
 
-static void pcb_poly_draw(pcb_layer_t *layer, pcb_polygon_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
+static void pcb_poly_draw(pcb_layer_t *layer, pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_term_gfx)
 {
 	static const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -1027,7 +1027,7 @@ static void pcb_poly_draw(pcb_layer_t *layer, pcb_polygon_t *polygon, const pcb_
 pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_draw_info_t *i = cl;
-	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *) b;
 
 	if (!polygon->Clipped)
 		return PCB_R_DIR_NOT_FOUND;
@@ -1043,7 +1043,7 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_draw_info_t *i = cl;
-	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *) b;
 
 	if (!polygon->Clipped)
 		return PCB_R_DIR_NOT_FOUND;
@@ -1057,13 +1057,13 @@ pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 }
 
 /* erases a polygon on a layer */
-void pcb_poly_invalidate_erase(pcb_polygon_t *Polygon)
+void pcb_poly_invalidate_erase(pcb_poly_t *Polygon)
 {
 	pcb_draw_invalidate(Polygon);
 	pcb_flag_erase(&Polygon->Flags);
 }
 
-void pcb_poly_invalidate_draw(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void pcb_poly_invalidate_draw(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_draw_invalidate(Polygon);
 }

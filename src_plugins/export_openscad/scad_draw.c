@@ -76,7 +76,7 @@ static void scad_draw_primitives(void)
 static int scad_draw_outline(void)
 {
 	pcb_any_obj_t *start = pcb_topoly_find_1st_outline(PCB);
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	int n;
 
 	if (start == NULL) {

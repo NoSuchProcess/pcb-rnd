@@ -576,7 +576,7 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
 static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 {
 	pcb_layer_t *layer;
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 	void *ptr3;
 	int type;
 
@@ -615,7 +615,7 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 {
 	pcb_layer_t *layer;
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 	pcb_point_t *pnt;
 	int type;
 	pcb_cardinal_t point_idx;
@@ -692,7 +692,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 
 	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB, PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLYGON)
-		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_polygon_t *) obj);
+		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_poly_t *) obj);
 	return (pcb_true);
 }
 
@@ -972,7 +972,7 @@ void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t index)
 {
 	UndoListTypePtr undo;
-	pcb_polygon_t *polygon = (pcb_polygon_t *) Ptr2;
+	pcb_poly_t *polygon = (pcb_poly_t *) Ptr2;
 	pcb_cardinal_t hole;
 	pcb_bool last_in_contour = pcb_false;
 
@@ -1034,7 +1034,7 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
  * adds an object to the list of removed contours
  * (Actually just takes a copy of the whole polygon to restore)
  */
-void pcb_undo_add_obj_to_remove_contour(int Type, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
+void pcb_undo_add_obj_to_remove_contour(int Type, pcb_layer_t * Layer, pcb_poly_t * Polygon)
 {
 	CopyObjectToUndoList(PCB_UNDO_REMOVE_CONTOUR, Type, Layer, Polygon, NULL);
 }
@@ -1043,7 +1043,7 @@ void pcb_undo_add_obj_to_remove_contour(int Type, pcb_layer_t * Layer, pcb_polyg
  * adds an object to the list of insert contours
  * (Actually just takes a copy of the whole polygon to restore)
  */
-void pcb_undo_add_obj_to_insert_contour(int Type, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
+void pcb_undo_add_obj_to_insert_contour(int Type, pcb_layer_t * Layer, pcb_poly_t * Polygon)
 {
 	CopyObjectToUndoList(PCB_UNDO_INSERT_CONTOUR, Type, Layer, Polygon, NULL);
 }

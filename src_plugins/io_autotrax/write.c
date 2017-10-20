@@ -97,7 +97,7 @@ static void autotrax_hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 /* ---------------------------------------------------------------------------
  * generates autotrax tracks to cross hatch a complex polygon being exported 
  */
-void autotrax_cpoly_hatch_lines(FILE * FP, const pcb_polygon_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer)
+void autotrax_cpoly_hatch_lines(FILE * FP, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_cardinal_t layer)
 {
 	autotrax_hatch_ctx_t ctx;
 
@@ -680,7 +680,7 @@ int write_autotrax_layout_polygons(FILE * FP, pcb_cardinal_t number, pcb_layer_t
 {
 	int i;
 	gdl_iterator_t it;
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 	pcb_cardinal_t current_layer = number;
 
 	pcb_poly_it_t poly_it;

@@ -51,7 +51,7 @@ void pcb_tool_rectangle_notify_mode(void)
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD &&
 			pcb_crosshair.AttachedBox.Point1.X != pcb_crosshair.AttachedBox.Point2.X &&
 			pcb_crosshair.AttachedBox.Point1.Y != pcb_crosshair.AttachedBox.Point2.Y) {
-		pcb_polygon_t *polygon;
+		pcb_poly_t *polygon;
 
 		int flags = PCB_FLAG_CLEARPOLY;
 		if (conf_core.editor.full_poly)

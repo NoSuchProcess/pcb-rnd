@@ -1060,7 +1060,7 @@ int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number,
 {
 	int i, j;
 	gdl_iterator_t it;
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */

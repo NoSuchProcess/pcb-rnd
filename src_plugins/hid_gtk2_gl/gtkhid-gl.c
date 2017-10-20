@@ -556,14 +556,14 @@ void ghid_gl_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_co
 	hidgl_fill_polygon(n_coords, x, y);
 }
 
-void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
 {
 	USE_GC(gc);
 
 	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px);
 }
 
-void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
 {
 	pcb_dhlp_thindraw_pcb_polygon(gc, poly, clip_box);
 	/* Disable thindraw poly filling until it is fixed. The poly fill overwrites lines and

@@ -295,7 +295,7 @@ static pcb_board_t preview_pcb;
 
 static void prop_preview_init(void)
 {
-	pcb_polygon_t *v;
+	pcb_poly_t *v;
 	pcb_layer_id_t n;
 	pcb_board_t *old_pcb;
 	old_pcb = PCB;

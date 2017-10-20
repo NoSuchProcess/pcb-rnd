@@ -100,8 +100,8 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		*y = ((pcb_element_t *) ptr2)->MarkY;
 		break;
 	case PCB_TYPE_POLYGON:
-		*x = ((pcb_polygon_t *) ptr2)->Points[0].X;
-		*y = ((pcb_polygon_t *) ptr2)->Points[0].Y;
+		*x = ((pcb_poly_t *) ptr2)->Points[0].X;
+		*y = ((pcb_poly_t *) ptr2)->Points[0].Y;
 		break;
 
 	case PCB_TYPE_LINE_POINT:
@@ -298,7 +298,7 @@ void pcb_clear_warnings()
 		for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
-				pcb_poly_invalidate_draw(l, (pcb_polygon_t *)n);
+				pcb_poly_invalidate_draw(l, (pcb_poly_t *)n);
 			}
 		}
 		pcb_r_end(&it);

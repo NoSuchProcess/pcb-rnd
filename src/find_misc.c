@@ -189,7 +189,7 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 	case PCB_OBJ_POLYGON:
 		{
 			pcb_layer_id_t layer = pcb_layer_id(PCB->Data, obj->parent.layer);
-			if (ADD_POLYGON_TO_LIST(layer, (pcb_polygon_t *)obj, 0, NULL, PCB_FCT_START))
+			if (ADD_POLYGON_TO_LIST(layer, (pcb_poly_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}

@@ -75,7 +75,7 @@ void pcb_font_set_info(pcb_font_t *Ptr);
 
 pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_angle_t start, pcb_angle_t delta, pcb_coord_t thickness);
-pcb_polygon_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points);
+pcb_poly_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points);
 
 void pcb_font_free(pcb_font_t *f);
 

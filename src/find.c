@@ -108,7 +108,7 @@
 	(((pcb_rat_t **)RatList.Data)[(I)])
 
 #define	POLYGONLIST_ENTRY(L,I)	\
-	(((pcb_polygon_t **)PolygonList[(L)].Data)[(I)])
+	(((pcb_poly_t **)PolygonList[(L)].Data)[(I)])
 
 #define	PVLIST_ENTRY(I)	\
 	(((pcb_pin_t **)PVList.Data)[(I)])
@@ -158,11 +158,11 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToPVList(void);
 static pcb_bool LookupLOConnectionsToLine(pcb_line_t *, pcb_cardinal_t, pcb_bool);
 static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *, pcb_cardinal_t);
-static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *, pcb_cardinal_t);
+static pcb_bool LookupLOConnectionsToPolygon(pcb_poly_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *, pcb_cardinal_t);
 static pcb_bool IsRatPointOnLineSpec(pcb_point_t *, pcb_line_t *);
-static pcb_bool IsRatPointOnPoly(pcb_point_t *Point, pcb_polygon_t *polygon);
+static pcb_bool IsRatPointOnPoly(pcb_point_t *Point, pcb_poly_t *polygon);
 static pcb_bool IsRatPointOnArcSpec(pcb_point_t *Point, pcb_arc_t *arc);
 static pcb_bool ArcArcIntersect(pcb_arc_t *, pcb_arc_t *);
 static pcb_bool PrintElementConnections(pcb_element_t *, FILE *, pcb_bool);

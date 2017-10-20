@@ -170,13 +170,13 @@ static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 	delegatee_->fill_polygon(gc, n_coords, x, y);
 }
 
-static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_box_t *clip_box)
+static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
 {
 	pcb_fprintf(out_, "fill_pcb_polygon(gc, poly->PointN=%d, ...)\n", poly->PointN);
 	delegatee_->fill_pcb_polygon(gc, poly, clip_box);
 }
 
-static void log_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_box_t *clip_box)
+static void log_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
 {
 	pcb_fprintf(out_, "thindraw_pcb_polygon(gc, poly->PointN=%d, ...)\n", poly->PointN);
 	delegatee_->thindraw_pcb_polygon(gc, poly, clip_box);

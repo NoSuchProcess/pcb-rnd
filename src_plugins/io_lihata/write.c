@@ -275,7 +275,7 @@ static lht_node_t *build_simplearc(pcb_arc_t *arc, int local_id)
 }
 
 
-static lht_node_t *build_simplepoly(pcb_polygon_t *poly, int local_id)
+static lht_node_t *build_simplepoly(pcb_poly_t *poly, int local_id)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -377,7 +377,7 @@ static lht_node_t *build_pad(pcb_pad_t *pad, pcb_coord_t dx, pcb_coord_t dy)
 	return obj;
 }
 
-static lht_node_t *build_polygon(pcb_polygon_t *poly)
+static lht_node_t *build_polygon(pcb_poly_t *poly)
 {
 	char buff[128];
 	lht_node_t *obj, *tbl, *geo;
@@ -647,7 +647,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 	lht_node_t *obj, *grp, *comb;
 	pcb_line_t *li;
 	pcb_arc_t *ar;
-	pcb_polygon_t *po;
+	pcb_poly_t *po;
 	pcb_text_t *tx;
 	int added = 0;
 
@@ -826,7 +826,7 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 {
 	lht_node_t *lst, *ndt;
 	pcb_line_t *li;
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	pcb_arc_t *arc;
 	int n;
 

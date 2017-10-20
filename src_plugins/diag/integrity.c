@@ -158,7 +158,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 		pcb_line_t *lin;
 		pcb_arc_t *arc;
 		pcb_text_t *txt;
-		pcb_polygon_t *pol;
+		pcb_poly_t *pol;
 
 		if (!ly->is_bound)
 			pcb_message(PCB_MSG_ERROR, CHK "%ld subc layer %ld is not a bound layer\n", subc->ID, n);
@@ -193,7 +193,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		pcb_line_t *lin;
 		pcb_text_t *txt;
 		pcb_arc_t *arc;
-		pcb_polygon_t *poly;
+		pcb_poly_t *poly;
 	
 		/* check layers */
 		if (data->Layer[n].parent != data)

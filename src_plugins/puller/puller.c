@@ -1546,7 +1546,7 @@ static pcb_r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
 static pcb_r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 {
 	int i;
-	const pcb_polygon_t *p = (pcb_polygon_t *) b;
+	const pcb_poly_t *p = (pcb_poly_t *) b;
 	for (i = 0; i < p->PointN; i++)
 		gp_point(p->Points[i].X, p->Points[i].Y, 0, 0);
 	return PCB_R_DIR_NOT_FOUND;

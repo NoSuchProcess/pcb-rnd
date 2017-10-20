@@ -110,7 +110,7 @@ typedef struct layout_object_s {
 	union {
 		pcb_line_t    *l;
 		pcb_text_t    *t;
-		pcb_polygon_t *p;
+		pcb_poly_t *p;
 		pcb_arc_t     *a;
 		pcb_pin_t     *v;
 		pcb_pin_t     *pin;
@@ -293,8 +293,8 @@ void pcb_arc_draw(dctx_t *ctx, int cx_, int cy_, int xradius_, int yradius_, dou
 void draw_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 void fill_circle(dctx_t *ctx, int cx_, int cy_, int radius_);
 void fill_polygon(dctx_t *ctx, int n_ints_, int *x_, int *y_);
-void fill_pcb_polygon(dctx_t *ctx, pcb_polygon_t *poly, const pcb_box_t *clip_box);
-void thindraw_pcb_polygon(dctx_t *ctx, pcb_polygon_t *poly, const pcb_box_t *clip_box);
+void fill_pcb_polygon(dctx_t *ctx, pcb_poly_t *poly, const pcb_box_t *clip_box);
+void thindraw_pcb_polygon(dctx_t *ctx, pcb_poly_t *poly, const pcb_box_t *clip_box);
 void fill_pcb_pad(dctx_t *ctx, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask);
 void thindraw_pcb_pad(dctx_t *ctx, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask);
 void fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);

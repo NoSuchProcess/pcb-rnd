@@ -58,7 +58,7 @@ struct pcb_tlp_session_s {
 	/* temp data */
 	pcb_layer_t *res_ply;    /* resulting "remove" polygon */
 	pcb_layer_t *res_path;   /* resulting toolpath */
-	pcb_polygon_t *fill;     /* base fill */
+	pcb_poly_t *fill;     /* base fill */
 
 	pcb_layergrp_t *grp;
 	

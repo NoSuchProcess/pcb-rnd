@@ -33,7 +33,7 @@ typedef enum pcb_topoly_e {
 
 /* Convert a loop of connected objects into a polygon (with no holes); the first
    object is named in start. */
-pcb_polygon_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how);
+pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how);
 
 /* Find the first line/arc on the outline layer from top-left */
 pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb);

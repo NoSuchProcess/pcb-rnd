@@ -505,7 +505,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_text_t *text;
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {

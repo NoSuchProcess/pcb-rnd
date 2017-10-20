@@ -35,7 +35,7 @@ typedef enum pcb_cap_style_t_e {
  Beveled_Cap   /* octagon pins or bevel-cornered pads */
 } pcb_cap_style_t;
 
-typedef void *pcb_polygon_t;
+typedef void *pcb_poly_t;
 typedef void *pcb_box_t;
 #endif
 

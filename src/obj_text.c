@@ -200,7 +200,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_coord_t min_final_radius;
 	pcb_coord_t min_unscaled_radius;
 	pcb_bool first_time = pcb_true;
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 
 	s = rendered;
 
@@ -674,7 +674,7 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
-static void draw_text_poly(pcb_text_t *Text, pcb_polygon_t *poly, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
+static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
 {
 	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
 	int max, n;
@@ -727,7 +727,7 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 		if (*string <= PCB_MAX_FONTPOSITION && font->Symbol[*string].Valid) {
 			pcb_line_t *line = font->Symbol[*string].Line;
 			pcb_line_t newline;
-			pcb_polygon_t *p;
+			pcb_poly_t *p;
 			pcb_arc_t *a, newarc;
 
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {

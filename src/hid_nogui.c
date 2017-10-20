@@ -125,7 +125,7 @@ static void nogui_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, p
 	CRASH("fill_polygon");
 }
 
-static void nogui_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+static void nogui_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
 {
 	CRASH("fill_pcb_polygon");
 }

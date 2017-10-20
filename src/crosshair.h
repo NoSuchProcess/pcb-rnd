@@ -75,7 +75,7 @@ typedef struct {								/* holds cursor information */
 	  MaxX, MaxY;
 	pcb_attached_line_t AttachedLine;	/* data of new lines... */
 	pcb_attached_box_t AttachedBox;
-	pcb_polygon_t AttachedPolygon;
+	pcb_poly_t AttachedPolygon;
 	pcb_attached_object_t AttachedObject;	/* data of attached objects */
 	pcb_route_t Route;										/* Calculated line route in LINE or MOVE(LINE) mode */ 
 	enum pcb_crosshair_shape_e shape;			/* shape of crosshair */
@@ -127,7 +127,7 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 
 /*** utility for plugins ***/
 void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
-void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);
+void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);
 
 
 

@@ -32,8 +32,8 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl);
 pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void pcb_poly_invalidate_erase(pcb_polygon_t *Polygon);
-void pcb_poly_invalidate_draw(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
-void pcb_poly_name_invalidate_draw(pcb_polygon_t *poly);
-void pcb_poly_draw_label(pcb_polygon_t *poly);
+void pcb_poly_invalidate_erase(pcb_poly_t *Polygon);
+void pcb_poly_invalidate_draw(pcb_layer_t *Layer, pcb_poly_t *Polygon);
+void pcb_poly_name_invalidate_draw(pcb_poly_t *poly);
+void pcb_poly_draw_label(pcb_poly_t *poly);
 

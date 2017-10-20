@@ -69,7 +69,7 @@ static int pcb_act_MorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_POLYGON, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-					pcb_poly_morph((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr3);
+					pcb_poly_morph((pcb_layer_t *) ptr1, (pcb_poly_t *) ptr3);
 					pcb_draw();
 					pcb_undo_inc_serial();
 				}

@@ -34,7 +34,7 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t vx, pcb_coord_t vy, pcb_coord
 void hidgl_draw_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale);
 void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y);
-void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale);
+void hidgl_fill_pcb_polygon(pcb_poly_t * poly, const pcb_box_t * clip_box, double scale);
 void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 void hidgl_init(void);
 void hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t * screen);

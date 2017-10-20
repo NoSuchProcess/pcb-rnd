@@ -39,7 +39,7 @@
 
 
 static struct {
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	pcb_line_t line;
 } fake;
 
@@ -57,7 +57,7 @@ void pcb_tool_insert_notify_mode(void)
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
 		if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
+			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)
 										pcb_crosshair.AttachedObject.Ptr2)) {
 				pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
@@ -66,7 +66,7 @@ void pcb_tool_insert_notify_mode(void)
 			else {
 				/* get starting point of nearest segment */
 				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
-					fake.poly = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
+					fake.poly = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 					polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, Note.X, Note.Y);
 					fake.line.Point1 = fake.poly->Points[polyIndex];
 					fake.line.Point2 = fake.poly->Points[pcb_poly_contour_prev_point(fake.poly, polyIndex)];

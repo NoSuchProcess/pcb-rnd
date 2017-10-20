@@ -1053,7 +1053,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	eagle_loc_t loc = type;
 	eagle_layer_t *ly;
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	trnode_t *n;
 
 	ly = eagle_layer_get(st, ln);

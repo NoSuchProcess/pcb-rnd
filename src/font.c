@@ -111,7 +111,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	pcb_symbol_t *symbol;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	pcb_coord_t totalminy = PCB_MAX_COORD;
 
 	/* calculate cell with and height (is at least PCB_DEFAULT_CELLSIZE)
@@ -221,9 +221,9 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 	return (line);
 }
 
-pcb_polygon_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points)
+pcb_poly_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points)
 {
-	pcb_polygon_t *p = calloc(sizeof(pcb_polygon_t), 1);
+	pcb_poly_t *p = calloc(sizeof(pcb_poly_t), 1);
 	if (num_points > 0) {
 		p->PointN = p->PointMax = num_points;
 		p->Points = malloc(sizeof(pcb_point_t) * num_points);
@@ -319,7 +319,7 @@ void pcb_font_free(pcb_font_t *f)
 {
 	int i;
 	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
-		pcb_polygon_t *p;
+		pcb_poly_t *p;
 		pcb_arc_t *a;
 
 		free(f->Symbol[i].Line);
@@ -397,7 +397,7 @@ static void copy_font(pcb_font_t *dst, pcb_font_t *src)
 	
 	memcpy(dst, src, sizeof(pcb_font_t));
 	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
-		pcb_polygon_t *p_src;
+		pcb_poly_t *p_src;
 		pcb_arc_t *a_src;
 		
 		if (src->Symbol[i].Line) {
@@ -407,7 +407,7 @@ static void copy_font(pcb_font_t *dst, pcb_font_t *src)
 
 		memset(&dst->Symbol[i].polys, 0, sizeof(polylist_t));
 		for(p_src = polylist_first(&src->Symbol[i].polys); p_src != NULL; p_src = polylist_next(p_src)) {
-			pcb_polygon_t *p_dst = pcb_font_new_poly_in_sym(&dst->Symbol[i], p_src->PointN);
+			pcb_poly_t *p_dst = pcb_font_new_poly_in_sym(&dst->Symbol[i], p_src->PointN);
 			memcpy(p_dst->Points, p_src->Points, p_src->PointN * sizeof(pcb_point_t));
 		}
 

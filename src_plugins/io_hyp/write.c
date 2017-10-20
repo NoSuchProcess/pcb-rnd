@@ -136,7 +136,7 @@ static void write_pad(hyp_wr_t * wr, pcb_pad_t * pad)
 							safe_element_name(wr, (pcb_element_t *) pad->Element), pad->Number, pcb_pshash_pad(&wr->psh, pad, NULL));
 }
 
-static void write_poly(hyp_wr_t * wr, pcb_polygon_t * poly)
+static void write_poly(hyp_wr_t * wr, pcb_poly_t * poly)
 {
 	pcb_pline_t *pl;
 	pcb_vnode_t *v;
@@ -402,7 +402,7 @@ static int write_nets(hyp_wr_t * wr)
 				write_pad(wr, (pcb_pad_t *) o->obj);
 				break;
 			case PCB_OBJ_POLYGON:
-				write_poly(wr, (pcb_polygon_t *) o->obj);
+				write_poly(wr, (pcb_poly_t *) o->obj);
 				break;
 
 			case PCB_OBJ_RAT:

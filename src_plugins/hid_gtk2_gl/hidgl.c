@@ -625,7 +625,7 @@ static pcb_r_dir_t do_hole(const pcb_box_t * b, void *cl)
 }
 
 
-void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale)
+void hidgl_fill_pcb_polygon(pcb_poly_t * poly, const pcb_box_t * clip_box, double scale)
 {
 	int vertex_count = 0;
 	pcb_pline_t *contour;

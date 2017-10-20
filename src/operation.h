@@ -131,14 +131,14 @@ typedef union {
 typedef struct {
 	void *(*Line)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_line_t *);
 	void *(*Text)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_text_t *);
-	void *(*Polygon)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_polygon_t *);
+	void *(*Polygon)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_poly_t *);
 	void *(*Via)(pcb_opctx_t *ctx, pcb_pin_t *);
 	void *(*Element)(pcb_opctx_t *ctx, pcb_element_t *);
 	void *(*ElementName)(pcb_opctx_t *ctx, pcb_element_t *);
 	void *(*Pin)(pcb_opctx_t *ctx, pcb_element_t *, pcb_pin_t *);
 	void *(*Pad)(pcb_opctx_t *ctx, pcb_element_t *, pcb_pad_t *);
 	void *(*LinePoint)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_line_t *, pcb_point_t *);
-	void *(*Point)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_polygon_t *, pcb_point_t *);
+	void *(*Point)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_poly_t *, pcb_point_t *);
 	void *(*Arc)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_arc_t *);
 	void *(*Rat)(pcb_opctx_t *ctx, pcb_rat_t *);
 	void *(*ArcPoint)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_arc_t *, int *end_id);

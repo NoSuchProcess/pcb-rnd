@@ -84,7 +84,7 @@ static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc
 	list_obj(ctx, pcb, layer, (pcb_any_obj_t *)arc);
 }
 
-static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly)
+static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly)
 {
 	list_obj(ctx, pcb, layer, (pcb_any_obj_t *)poly);
 }

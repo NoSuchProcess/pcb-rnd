@@ -93,7 +93,7 @@ typedef int (*pcb_layer_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, i
 typedef void (*pcb_line_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line);
 typedef void (*pcb_arc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc);
 typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text);
-typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly);
+typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly);
 
 /* element callbacks */
 typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, int enter);

@@ -1746,3 +1746,4 @@ DrawElementPinsAndPads -> pcb_elem_pp_invalidate_draw
 DrawElementPackage -> pcb_elem_package_invalidate_draw
 DrawElementName -> pcb_elem_name_invalidate_draw
 DrawElement -> pcb_elem_invalidate_draw
+pcb_polygon_t -> pcb_poly_t

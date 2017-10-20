@@ -38,7 +38,7 @@
 #include "obj_poly.h"
 #include "obj_poly_draw.h"
 
-static pcb_polygon_t *inner_poly, *outer_poly;
+static pcb_poly_t *inner_poly, *outer_poly;
 static pcb_layer_t *poly_layer;
 
 static double ATAN2(pcb_point_t a, pcb_point_t b)
@@ -48,7 +48,7 @@ static double ATAN2(pcb_point_t a, pcb_point_t b)
 	return atan2((double) b.Y - a.Y, (double) b.X - a.X);
 }
 
-static double poly_winding(pcb_polygon_t * poly)
+static double poly_winding(pcb_poly_t * poly)
 {
 	double winding, turn;
 	double prev_angle, this_angle;
@@ -150,7 +150,7 @@ static void check_windings()
  * \brief Rotate the polygon point list around so that point N is the
  * first one in the list.
  */
-static void rotate_points(pcb_polygon_t * poly, int n)
+static void rotate_points(pcb_poly_t * poly, int n)
 {
 	pcb_point_t *np;
 	int n2 = poly->PointN - n;
@@ -166,7 +166,7 @@ static void rotate_points(pcb_polygon_t * poly, int n)
  * \brief Make sure the first and last point of the polygon are the same
  * point, so we can stitch them properly.
  */
-static void dup_endpoints(pcb_polygon_t * poly)
+static void dup_endpoints(pcb_poly_t * poly)
 {
 	int n = poly->PointN;
 	if (poly->Points[0].X == poly->Points[n - 1].X && poly->Points[0].Y == poly->Points[n - 1].Y)

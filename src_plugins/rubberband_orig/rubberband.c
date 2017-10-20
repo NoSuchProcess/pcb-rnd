@@ -110,7 +110,7 @@ static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *);
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *,int delta_index);
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, int *, pcb_bool);
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, pcb_bool);
-static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_polygon_t *);
+static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_poly_t *);
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_point_t *);
 
 static void	calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t * arcptr,pcb_coord_t group_dx,pcb_coord_t group_dy,pcb_route_t * route);
@@ -659,7 +659,7 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
  * If one of the endpoints of the line lays inside the passed polygon,
  * the scanned line is added to the 'rubberband' list
  */
-static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_layergrp_id_t group;
 
@@ -762,7 +762,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 
 	case PCB_TYPE_POLYGON:
 		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)
-			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_polygon_t *) Ptr2);
+			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
 		break;
 	}
 }

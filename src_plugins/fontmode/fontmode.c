@@ -79,9 +79,9 @@ static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 	return &PCB->Data->Layer[lid];
 }
 
-static void add_poly(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t ox, pcb_coord_t oy)
+static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy)
 {
-	pcb_polygon_t *np;
+	pcb_poly_t *np;
 	
 	/* alloc */
 	np = pcb_poly_new(layer, 0, pcb_no_flags());
@@ -99,7 +99,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_symbol_t *symbol;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
 	pcb_layergrp_id_t grp[4];
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 	pcb_arc_t *arc, *newarc;
 	int s, l;
 
@@ -239,7 +239,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	int i;
 	pcb_line_t *l;
 	pcb_arc_t *a;
-	pcb_polygon_t *p, *np;
+	pcb_poly_t *p, *np;
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 

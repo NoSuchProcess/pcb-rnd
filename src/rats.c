@@ -247,7 +247,7 @@ static void clear_drc_flag(int clear_ratconn)
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_polygon_t *)n);
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_poly_t *)n);
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
@@ -626,7 +626,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 	pcb_rat_t *line;
 	register float distance, temp;
 	register pcb_connection_t *conn1, *conn2, *firstpoint, *secondpoint;
-	pcb_polygon_t *polygon;
+	pcb_poly_t *polygon;
 	pcb_bool changed = pcb_false;
 	pcb_bool havepoints;
 	pcb_cardinal_t n, m, j;
@@ -698,7 +698,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					 * via in the Net to make that connection.
 					 */
 					if (conn1->obj->type == PCB_OBJ_POLYGON &&
-							(polygon = (pcb_polygon_t *) conn1->obj) &&
+							(polygon = (pcb_poly_t *) conn1->obj) &&
 							!(distance == 0 &&
 								firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn2->X, conn2->Y, polygon)) {
 						distance = 0;
@@ -708,7 +708,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 						havepoints = pcb_true;
 					}
 					else if (conn2->obj->type == PCB_OBJ_POLYGON &&
-									 (polygon = (pcb_polygon_t *) conn2->obj) &&
+									 (polygon = (pcb_poly_t *) conn2->obj) &&
 									 !(distance == 0 &&
 										 firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn1->X, conn1->Y, polygon)) {
 						distance = 0;

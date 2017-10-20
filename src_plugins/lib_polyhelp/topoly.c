@@ -190,13 +190,13 @@ pcb_trace("    (next): %d\n", n->ID);
 	return 0;
 }
 
-pcb_polygon_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topoly_t how)
+pcb_poly_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topoly_t how)
 {
 	int n;
 	pcb_any_obj_t **obj = (pcb_any_obj_t **)(&objs->array[0]);
 	int *end = (int *)(&ends->array[0]);
 	pcb_layer_t *layer = (*obj)->parent.layer;
-	pcb_polygon_t *poly = pcb_poly_alloc(layer);
+	pcb_poly_t *poly = pcb_poly_alloc(layer);
 	pcb_coord_t x, y;
 
 	obj++;
@@ -238,12 +238,12 @@ pcb_polygon_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_to
 	return poly;
 }
 
-pcb_polygon_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how)
+pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how)
 {
 	vtp0_t objs;
 	vti0_t ends;
 	int res;
-	pcb_polygon_t *poly;
+	pcb_poly_t *poly;
 
 	if (!VALID_TYPE(start)) {
 		pcb_message(PCB_MSG_ERROR, "pcb_topoly_conn(): starting object is not a line or arc\n");

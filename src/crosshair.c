@@ -91,7 +91,7 @@ static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
-void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
+void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
@@ -393,7 +393,7 @@ static void XORDrawMoveOrCopy(void)
 
 	case PCB_TYPE_POLYGON:
 		{
-			pcb_polygon_t *polygon = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
+			pcb_poly_t *polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 
 			/* the tmp polygon has n+1 points because the first
 			 * and the last one are set to the same coordinates
@@ -492,11 +492,11 @@ static void XORDrawMoveOrCopy(void)
 
 	case PCB_TYPE_POLYGON_POINT:
 		{
-			pcb_polygon_t *polygon;
+			pcb_poly_t *polygon;
 			pcb_point_t *point;
 			pcb_cardinal_t point_idx, prev, next;
 
-			polygon = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
+			polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 			point_idx = pcb_poly_point_idx(polygon, point);
 

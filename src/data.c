@@ -234,7 +234,7 @@ void pcb_data_free(pcb_data_t * data)
 			pcb_poly_free_fields(polygon);
 		}
 		PCB_END_LOOP;
-		list_map0(&layer->Polygon, pcb_polygon_t, pcb_poly_free);
+		list_map0(&layer->Polygon, pcb_poly_t, pcb_poly_free);
 		if (!layer->is_bound) {
 			if (layer->line_tree)
 				pcb_r_destroy_tree(&layer->line_tree);

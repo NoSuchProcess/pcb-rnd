@@ -276,7 +276,7 @@ static pcb_bool IsRatPointOnArcSpec(pcb_point_t *Point, pcb_arc_t *arc)
 /* ---------------------------------------------------------------------------
  * Tests if rat line point is connected to a polygon
  */
-static pcb_bool IsRatPointOnPoly(pcb_point_t *Point, pcb_polygon_t *polygon)
+static pcb_bool IsRatPointOnPoly(pcb_point_t *Point, pcb_poly_t *polygon)
 {
 	pcb_coord_t cx, cy;
 
@@ -529,7 +529,7 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
  * - check the two end points of the arc. If none of them matches
  * - check all segments of the polygon against the arc.
  */
-pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
+pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
@@ -558,7 +558,7 @@ pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_polygon_t *Polygon)
+pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Line;
 	pcb_polyarea_t *lp;
@@ -593,7 +593,7 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_polygon_t *Polygon)
  *
  * The polygon is assumed to already have been proven non-clearing
  */
-pcb_bool pcb_is_pad_in_poly(pcb_pad_t *pad, pcb_polygon_t *polygon)
+pcb_bool pcb_is_pad_in_poly(pcb_pad_t *pad, pcb_poly_t *polygon)
 {
 	return pcb_is_line_in_poly((pcb_line_t *) pad, polygon);
 }
@@ -604,7 +604,7 @@ pcb_bool pcb_is_pad_in_poly(pcb_pad_t *pad, pcb_polygon_t *polygon)
  * First check all points out of P1 against P2 and vice versa.
  * If both fail check all lines of P1 against the ones of P2
  */
-pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *P1, pcb_polygon_t *P2)
+pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 {
 	if (!P1->Clipped || !P2->Clipped)
 		return pcb_false;

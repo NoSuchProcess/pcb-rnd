@@ -726,7 +726,7 @@ static routebox_t *AddIrregularObstacle(vtp0_t layergroupboxes[],
 	return *rbpp;
 }
 
-static routebox_t *AddPolygon(vtp0_t layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, pcb_route_style_t * style)
+static routebox_t *AddPolygon(vtp0_t layergroupboxes[], pcb_cardinal_t layer, pcb_poly_t *polygon, pcb_route_style_t * style)
 {
 	int is_not_rectangle = 1;
 	pcb_layergrp_id_t layergroup = pcb_layer_get_group(PCB, layer);

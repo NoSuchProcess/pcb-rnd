@@ -49,34 +49,34 @@ struct pcb_polygon_s  {           /* holds information about a polygon */
 
 
 
-pcb_polygon_t *pcb_poly_alloc(pcb_layer_t * layer);
-void pcb_poly_free(pcb_polygon_t * data);
-pcb_point_t *pcb_poly_point_alloc(pcb_polygon_t *Polygon);
-pcb_cardinal_t *pcb_poly_holeidx_new(pcb_polygon_t *Polygon);
-void pcb_poly_free_fields(pcb_polygon_t * polygon);
+pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer);
+void pcb_poly_free(pcb_poly_t * data);
+pcb_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon);
+pcb_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon);
+void pcb_poly_free_fields(pcb_poly_t * polygon);
 
-void pcb_poly_bbox(pcb_polygon_t *Polygon);
-pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_flag_t Flags);
-pcb_polygon_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_polygon_t *src, pcb_coord_t offs, pcb_coord_t Clearance, pcb_flag_t Flags);
-pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_t Flags);
-pcb_polygon_t *pcb_poly_dup(pcb_layer_t *dst, pcb_polygon_t *src);
-pcb_polygon_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_polygon_t *src, pcb_coord_t dx, pcb_coord_t dy);
-pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y);
-pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon);
-void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void pcb_poly_bbox(pcb_poly_t *Polygon);
+pcb_poly_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, pcb_coord_t offs, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_poly_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_poly_t *pcb_poly_dup(pcb_layer_t *dst, pcb_poly_t *src);
+pcb_poly_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_poly_t *src, pcb_coord_t dx, pcb_coord_t dy);
+pcb_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y);
+pcb_poly_t *pcb_poly_hole_new(pcb_poly_t * Polygon);
+void *pcb_poly_remove(pcb_layer_t *Layer, pcb_poly_t *Polygon);
 
-void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
-void pcb_poly_rotate(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
-void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t y_offs);
-void pcb_poly_flip_side(pcb_layer_t *layer, pcb_polygon_t *polygon);
+void pcb_poly_rotate90(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
+void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
+void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs);
+void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon);
 
-void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
-pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src, pcb_coord_t dx, pcb_coord_t dy);
+void pcb_poly_move(pcb_poly_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
+pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, pcb_coord_t dx, pcb_coord_t dy);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);
+void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon);
 
-double pcb_poly_area(const pcb_polygon_t *poly);
+double pcb_poly_area(const pcb_poly_t *poly);
 
 /*** helpers for iterating over countours */
 
@@ -91,20 +91,20 @@ typedef enum {
 } pcb_poly_event_t;
 
 /* return non-zero to quit mapping immediatley */
-typedef int pcb_poly_map_cb_t(pcb_polygon_t *p, void *ctx, pcb_poly_event_t ev, pcb_coord_t x, pcb_coord_t y);
+typedef int pcb_poly_map_cb_t(pcb_poly_t *p, void *ctx, pcb_poly_event_t ev, pcb_coord_t x, pcb_coord_t y);
 
 /* call cb for each point of each island and cutout */
-void pcb_poly_map_contours(pcb_polygon_t *p, void *ctx, pcb_poly_map_cb_t *cb);
+void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb);
 
 typedef struct pcb_poly_it_s {
-	const pcb_polygon_t *p;
+	const pcb_poly_t *p;
 	pcb_polyarea_t *pa;
 	pcb_pline_t *cntr;
 	pcb_vnode_t *v;
 } pcb_poly_it_t;
 
 /* Set the iterator to the first island of the polygon; returns NULL if no contour available */
-static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_first(const pcb_polygon_t *p, pcb_poly_it_t *it)
+static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_first(const pcb_poly_t *p, pcb_poly_it_t *it)
 {
 	it->p = p;
 	it->pa = p->Clipped;
@@ -197,7 +197,7 @@ do { \
 /*** loops ***/
 
 #define PCB_POLY_LOOP(layer) do {                                    \
-  pcb_polygon_t *polygon;                                             \
+  pcb_poly_t *polygon;                                             \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
 

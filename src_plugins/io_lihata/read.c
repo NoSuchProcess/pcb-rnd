@@ -507,7 +507,7 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 
 static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 {
-	pcb_polygon_t *poly = pcb_poly_alloc(ly);
+	pcb_poly_t *poly = pcb_poly_alloc(ly);
 	lht_node_t *geo;
 	pcb_cardinal_t n = 0, c;
 	unsigned char intconn = 0;
@@ -1238,7 +1238,7 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 		}
 		else if (strncmp(obj->name, "simplepoly.", 11) == 0) {
 			int len;
-			pcb_polygon_t *sp;
+			pcb_poly_t *sp;
 			if (obj->type != LHT_LIST) {
 				pcb_message(PCB_MSG_ERROR, "Symbol error: simplepoly is not a list!\n");
 				continue;
@@ -1540,7 +1540,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		for(l = 0; l < pcb->Data->LayerN; l++) {
 			pcb_layer_t *layer = pcb->Data->Layer + l;
 			for(b = pcb_r_first(layer->polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
-				pcb_polygon_t *p = (pcb_polygon_t *)b;
+				pcb_poly_t *p = (pcb_poly_t *)b;
 				pcb_poly_init_clip(pcb->Data, layer, p);
 			}
 			pcb_r_end(&it);

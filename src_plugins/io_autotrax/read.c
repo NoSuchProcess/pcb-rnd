@@ -644,7 +644,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 	int valid = 1;
 	int autotrax_layer = 0;
 	char line[MAXREAD];
-	pcb_polygon_t *polygon = NULL;
+	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	pcb_coord_t X1, Y1, X2, Y2, Clearance;
 	pcb_layer_id_t PCB_layer;
