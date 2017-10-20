@@ -60,6 +60,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 	int ret = -1, n, m, i;
 	pcb_any_obj_t **o;
 
+	dst->in_use = 1;
 	dst->shape = NULL;
 	dst->hdia = 0;
 	dst->htop = dst->hbottom = 0;
@@ -192,11 +193,15 @@ int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
 
 pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_proto_t *proto, int quiet)
 {
-	pcb_cardinal_t n;
+	pcb_cardinal_t n, first_free = PCB_PADSTACK_INVALID;
 
 	/* look for the first existing padstack that matches */
 	for(n = 0; n < pcb_vtpadstack_proto_len(&data->ps_protos); n++) {
-		if (data->ps_protos.array[n].hash == proto->hash) {
+		if (!(data->ps_protos.array[n].in_use)) {
+			if (first_free = PCB_PADSTACK_INVALID)
+				first_free = n;
+		}
+		else if (data->ps_protos.array[n].hash == proto->hash) {
 			if (pcb_padstack_eq(&data->ps_protos.array[n], proto)) {
 				pcb_padstack_proto_free_fields(proto);
 				return n;
@@ -205,8 +210,14 @@ pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_
 	}
 
 	/* no match, have to register a new one */
-	n = pcb_vtpadstack_proto_len(&data->ps_protos);
-	pcb_vtpadstack_proto_append(&data->ps_protos, *proto);
+	if (first_free == PCB_PADSTACK_INVALID) {
+		n = pcb_vtpadstack_proto_len(&data->ps_protos);
+		pcb_vtpadstack_proto_append(&data->ps_protos, *proto);
+	}
+	else {
+		memcpy(data->ps_protos.array+first_free, proto, sizeof(pcb_padstack_proto_t));
+		data->ps_protos.array[first_free].in_use = 1;
+	}
 	memset(proto, 0, sizeof(pcb_padstack_proto_t)); /* make sure a subsequent free() won't do any harm */
 	return n;
 }

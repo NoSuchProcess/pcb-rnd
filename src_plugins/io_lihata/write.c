@@ -529,6 +529,12 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
 	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
 		pcb_padstack_proto_t *proto = pp->array+n;
+
+		if (!proto->in_use) {
+			lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_TEXT, "unused"));
+			continue;
+		}
+
 		lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_HASH, "ps_proto_v4"));
 
 		lht_dom_hash_put(nproto, build_textf("hdia", CFMT, proto->hdia));
