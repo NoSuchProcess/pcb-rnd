@@ -1299,12 +1299,11 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		case 1: loader = &plug_io_lihata_v1; break;
 		case 2: loader = &plug_io_lihata_v2; break;
 		case 3: loader = &plug_io_lihata_v3; break;
+		case 4: loader = &plug_io_lihata_v4; break;
 		default:
 			pcb_message(PCB_MSG_ERROR, "Lihata board version %d not supported; must be 1 or 2.\n", rdver);
 			return -1;
 	}
-
-
 
 	vtp0_init(&post_ids);
 	vtp0_init(&post_thermal);
