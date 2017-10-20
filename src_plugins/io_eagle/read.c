@@ -1096,7 +1096,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 		}
 	}
 
-	pcb_add_polygon_on_layer(&st->pcb->Data->Layer[ly->ly], poly);
+	pcb_add_poly_on_layer(&st->pcb->Data->Layer[ly->ly], poly);
 	pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[ly->ly], poly);
 
 	return 0;

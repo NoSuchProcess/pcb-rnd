@@ -40,7 +40,7 @@ typedef struct pcb_arc_s pcb_arc_t;
 typedef struct pcb_point_s pcb_point_t;
 typedef struct pcb_rat_line_s pcb_rat_t;
 
-typedef struct pcb_polygon_s pcb_poly_t;
+typedef struct pcb_poly_s pcb_poly_t;
 typedef struct pcb_pad_s pcb_pad_t;
 typedef struct pcb_padstack_s pcb_padstack_t;
 typedef struct pcb_pin_s pcb_pin_t;

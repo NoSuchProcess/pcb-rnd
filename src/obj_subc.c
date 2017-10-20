@@ -197,7 +197,7 @@ static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 	pcb_attribute_copy_all(&poly->Attributes, &line->Attributes);
 
 	pcb_poly_init_clip(dst->parent, dst, poly);
-	pcb_add_polygon_on_layer(dst, poly);
+	pcb_add_poly_on_layer(dst, poly);
 
 	return poly;
 }

@@ -1747,3 +1747,5 @@ DrawElementPackage -> pcb_elem_package_invalidate_draw
 DrawElementName -> pcb_elem_name_invalidate_draw
 DrawElement -> pcb_elem_invalidate_draw
 pcb_polygon_t -> pcb_poly_t
+pcb_polygon_s -> pcb_poly_s
+pcb_add_polygon_on_layer -> pcb_add_poly_on_layer

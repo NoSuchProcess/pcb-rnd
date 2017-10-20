@@ -700,7 +700,7 @@ static int autotrax_parse_fill(read_state_t *st, FILE *FP, pcb_element_t *el)
 		pcb_poly_point_new(polygon, X2, Y1);
 		pcb_poly_point_new(polygon, X2, Y2);
 		pcb_poly_point_new(polygon, X1, Y2);
-		pcb_add_polygon_on_layer(&st->pcb->Data->Layer[PCB_layer], polygon);
+		pcb_add_poly_on_layer(&st->pcb->Data->Layer[PCB_layer], polygon);
 		pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCB_layer], polygon);
 		return 1;
 	} else if (polygon == NULL && el != NULL && st != NULL && PCB_layer == 1 ) { /* in an element, top layer copper */

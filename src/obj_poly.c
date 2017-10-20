@@ -206,7 +206,7 @@ pcb_poly_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_
 	pcb_poly_point_new(polygon, X2, Y2);
 	pcb_poly_point_new(polygon, X1, Y2);
 
-	pcb_add_polygon_on_layer(Layer, polygon);
+	pcb_add_poly_on_layer(Layer, polygon);
 	return (polygon);
 }
 
@@ -230,13 +230,13 @@ pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, pcb_coor
 
 	pcb_poly_contours_free(&it.cntr);
 
-	pcb_add_polygon_on_layer(Layer, polygon);
+	pcb_add_poly_on_layer(Layer, polygon);
 	return (polygon);
 }
 
 
 
-void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
+void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
 {
 	pcb_poly_bbox(polygon);
 	if (!Layer->polygon_tree)
@@ -274,7 +274,7 @@ pcb_poly_t *pcb_poly_dup(pcb_layer_t *dst, pcb_poly_t *src)
 	pcb_board_t *pcb;
 	pcb_poly_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
 	pcb_poly_copy(p, src, 0, 0);
-	pcb_add_polygon_on_layer(dst, p);
+	pcb_add_poly_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
 
 	pcb = pcb_data_get_top(dst->parent);
@@ -288,7 +288,7 @@ pcb_poly_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_poly_t *src, pcb_coord_t dx, p
 	pcb_board_t *pcb;
 	pcb_poly_t *p = pcb_poly_new(dst, src->Clearance, src->Flags);
 	pcb_poly_copy(p, src, dx, dy);
-	pcb_add_polygon_on_layer(dst, p);
+	pcb_add_poly_on_layer(dst, p);
 	pcb_poly_copy_meta(p, src);
 
 	pcb = pcb_data_get_top(dst->parent);
@@ -646,7 +646,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 	pcb_r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	d.type = PCB_TYPE_VIA;
 	pcb_r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
-	newone = (struct pcb_polygon_s *) pcb_polyop_move_to_layer_low(ctx, Layer, Polygon, ctx->move.dst_layer);
+	newone = (struct pcb_poly_s *) pcb_polyop_move_to_layer_low(ctx, Layer, Polygon, ctx->move.dst_layer);
 	pcb_poly_init_clip(PCB->Data, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->meta.real.vis) {
 		pcb_poly_invalidate_draw(ctx->move.dst_layer, newone);

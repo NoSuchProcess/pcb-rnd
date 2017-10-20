@@ -32,7 +32,7 @@
 #include "obj_common.h"
 #include "polyarea.h"
 
-struct pcb_polygon_s  {           /* holds information about a polygon */
+struct pcb_poly_s  {           /* holds information about a polygon */
 	PCB_ANYOBJECTFIELDS;
 	pcb_coord_t Clearance;
 	pcb_cardinal_t PointN;       /* number of points in polygon */
@@ -74,7 +74,7 @@ void pcb_poly_move(pcb_poly_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
 pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, pcb_coord_t dx, pcb_coord_t dy);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon);
+void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon);
 
 double pcb_poly_area(const pcb_poly_t *poly);
 

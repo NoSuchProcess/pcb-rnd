@@ -2234,7 +2234,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	required = BV(10);
 	if ((tally & required) == required) {  /* has location, layer, size and stroke thickness at a minimum */
 		if (polygon != NULL) {
-			pcb_add_polygon_on_layer(&st->pcb->Data->Layer[PCBLayer], polygon);
+			pcb_add_poly_on_layer(&st->pcb->Data->Layer[PCBLayer], polygon);
 			pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCBLayer], polygon);
 		}
 		return 0;

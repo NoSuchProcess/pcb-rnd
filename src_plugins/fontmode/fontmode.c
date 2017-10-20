@@ -88,7 +88,7 @@ static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t ox, pcb_c
 	pcb_poly_copy(np, poly, ox, oy);
 
 	/* add */
-	pcb_add_polygon_on_layer(layer, np);
+	pcb_add_poly_on_layer(layer, np);
 	pcb_poly_init_clip(PCB->Data, layer, np);
 	pcb_poly_invalidate_draw(layer, np);
 }

@@ -1539,7 +1539,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 
 	memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_poly_t));
 
-	pcb_add_polygon_on_layer(CURRENT, polygon);
+	pcb_add_poly_on_layer(CURRENT, polygon);
 
 	pcb_poly_init_clip(PCB->Data, CURRENT, polygon);
 	pcb_poly_invalidate_draw(CURRENT, polygon);
