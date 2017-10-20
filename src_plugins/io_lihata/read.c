@@ -50,6 +50,7 @@
 #include "io_lihata.h"
 #include "safe_fs.h"
 #include "plug_footprint.h"
+#include "vtpadstack.h"
 
 #warning cleanup TODO: put these in a gloal load-context-struct
 vtp0_t post_ids, post_thermal;
@@ -987,6 +988,26 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
+static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
+{
+	return 0;
+}
+
+static int parse_data_padstack_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
+{
+	pcb_cardinal_t pid, len;
+	lht_node_t *pr;
+	int res = 0;
+
+	for(len = 0, pr = pp->data.list.first; pr != NULL; pr = pr->next) len++;
+
+	pcb_vtpadstack_proto_enlarge(&dst->ps_protos, len);
+	for(pid = 0, pr = pp->data.list.first; ((pr != NULL) && (res == 0)); pr = pr->next, pid++)
+		res = parse_data_padstack_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
+
+	return res;
+}
+
 static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent)
 {
 	pcb_data_t *dt;
@@ -1010,6 +1031,12 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 
 	if (rdver == 1)
 		layer_fixup(pcb);
+
+	if (rdver >= 4) {
+		grp = lht_dom_hash_get(nd, "padstack_prototypes");
+		if ((grp != NULL) && (grp->type == LHT_LIST))
+			parse_data_padstack_protos(pcb, dt, grp, subc_parent);
+	}
 
 	grp = lht_dom_hash_get(nd, "objects");
 	if (grp != NULL)
