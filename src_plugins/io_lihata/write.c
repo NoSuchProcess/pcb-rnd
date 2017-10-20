@@ -542,6 +542,8 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 		lht_dom_hash_put(nproto, build_textf("hbottom", "%d", proto->hbottom));
 		lht_dom_hash_put(nproto, build_textf("hplated", "%d", proto->hplated));
 
+		lht_dom_hash_put(nproto, build_textf("group", "%lu", proto->group));
+
 		/* save each shape */
 		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
 		for(sn = 0; sn < proto->len; sn++) {

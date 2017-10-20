@@ -144,7 +144,7 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 	return 0;
 }
 
-/* Load the pcb_coord_t value of a text node into res. Return 0 on success */
+/* Load the integer value of a text node into res. Return 0 on success */
 static int parse_int(int *res, lht_node_t *nd)
 {
 	long int tmp;
@@ -164,6 +164,34 @@ static int parse_int(int *res, lht_node_t *nd)
 	tmp = strtol(nd->data.text.value, &end, base);
 	if (*end != '\0') {
 		pcb_message(PCB_MSG_ERROR, "#LHT5 Invalid int value: '%s'\n", nd->data.text.value);
+		return -1;
+	}
+
+	*res = tmp;
+	return 0;
+}
+
+
+/* Load the unsigned long value of a text node into res. Return 0 on success */
+static int parse_ulong(unsigned long *res, lht_node_t *nd)
+{
+	unsigned long int tmp;
+	int base = 10;
+	char *end;
+
+	if (nd == NULL)
+		return -1;
+
+	if (nd->type != LHT_TEXT) {
+		pcb_message(PCB_MSG_ERROR, "#LHT4u Invalid int type: '%d'\n", nd->type);
+		return -1;
+	}
+
+	if ((nd->data.text.value[0] == '0') && (nd->data.text.value[1] == 'x'))
+		base = 16;
+	tmp = strtoul(nd->data.text.value, &end, base);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "#LHT5u Invalid int value: '%s'\n", nd->data.text.value);
 		return -1;
 	}
 
@@ -1096,6 +1124,7 @@ static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst
 	if (parse_coord(&dst->hdia, lht_dom_hash_get(nproto, "hdia")) != 0) return -1;
 	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "htop")) != 0) return -1;
 	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "hbottom")) != 0) return -1;
+	if (parse_ulong(&dst->group, lht_dom_hash_get(nproto, "group")) != 0) return -1;
 	if (parse_int(&itmp, lht_dom_hash_get(nproto, "hplated")) != 0) return -1;
 	dst->hplated = itmp;
 	dst->in_use = 1;
