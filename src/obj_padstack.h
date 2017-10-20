@@ -105,6 +105,9 @@ typedef struct pcb_padstack_proto_s {
 	pcb_data_t *parent;
 } pcb_padstack_proto_t;
 
+
+/*** proto ***/
+
 /* allocate and return the next available group ID */
 unsigned long pcb_padstack_alloc_group(pcb_data_t *data);
 
