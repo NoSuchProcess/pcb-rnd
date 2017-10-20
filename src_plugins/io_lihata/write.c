@@ -584,7 +584,7 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 					pcb_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
 					abort();
 			}
-			lht_dom_list_append(nshape, nshapeo);
+			lht_dom_list_append(nshapelst, nshapeo);
 		}
 	}
 
