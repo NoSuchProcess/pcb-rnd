@@ -988,8 +988,39 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
+static int parse_data_padstack_shape_v4(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
+	return 0;
+}
+
+
+
+static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent)
+{
+	int itmp, i;
+	lht_node_t *nshape, *n;
+
+	/* read the hole */
+	if (parse_coord(&dst->hdia, lht_dom_hash_get(nproto, "hdia")) != 0) return -1;
+	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "htop")) != 0) return -1;
+	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "hbottom")) != 0) return -1;
+	if (parse_int(&itmp, lht_dom_hash_get(nproto, "hplated")) != 0) return -1;
+	dst->hplated = itmp;
+	dst->in_use = 1;
+
+	/* read shapes */
+	nshape = lht_dom_hash_get(nproto, "shape");
+	if ((nshape == NULL) || (nshape->type != LHT_LIST))
+		return -1;
+
+	for(n = nshape->data.list.first, dst->len = 0; n != NULL; n = n->next) dst->len++;
+	dst->shape = calloc(sizeof(pcb_padstack_shape_t), dst->len);
+
+	for(n = nshape->data.list.first, i = 0; n != NULL; n = n->next, i++)
+		if ((n->type == LHT_HASH) && (strcmp(n->name, "ps_shape_v4") == 0))
+			if (parse_data_padstack_shape_v4(pcb, dst->shape+i, n, subc_parent) != 0)
+				return -1;
+
 	return 0;
 }
 
@@ -1002,8 +1033,16 @@ static int parse_data_padstack_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_nod
 	for(len = 0, pr = pp->data.list.first; pr != NULL; pr = pr->next) len++;
 
 	pcb_vtpadstack_proto_enlarge(&dst->ps_protos, len);
-	for(pid = 0, pr = pp->data.list.first; ((pr != NULL) && (res == 0)); pr = pr->next, pid++)
-		res = parse_data_padstack_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
+	for(pid = 0, pr = pp->data.list.first; ((pr != NULL) && (res == 0)); pr = pr->next, pid++) {
+		if ((pr->type == LHT_TEXT) && (strcmp(pr->name, "unused") == 0))
+			continue;
+		else if ((pr->type == LHT_HASH) && (strcmp(pr->name, "ps_proto_v4") == 0))
+			res = parse_data_padstack_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
+		else {
+			pcb_message(PCB_MSG_ERROR, "Invalid padstack proto definition\n", pp->name);
+			return -1;
+		}
+	}
 
 	return res;
 }
