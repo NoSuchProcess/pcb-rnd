@@ -20,14 +20,11 @@
  *
  */
 
-#ifndef PCB_OBJ_PADSTACK_H
-#define PCB_OBJ_PADSTACK_H
-
-#define PCB_PADSTACK_MAX_SHAPES 31
-
-#define PCB_PADSTACK_INVALID ((pcb_cardinal_t)(-1))
+#ifndef PCB_OBJ_PADSTACK_STRUCT_DECLARED
+#define PCB_OBJ_PADSTACK_STRUCT_DECLARED
 
 #include "obj_common.h"
+
 /* The actual padstack is just a reference to a padstack proto within the same data */
 struct pcb_padstack_s {
 	PCB_ANYOBJECTFIELDS;
@@ -39,9 +36,18 @@ struct pcb_padstack_s {
 	} thermal;
 	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
 };
+#endif
 
+#ifndef PCB_PADSTACK_STRUCT_ONLY
+#ifndef PCB_OBJ_PADSTACK_H
+#define PCB_OBJ_PADSTACK_H
 
-#include "obj_padstack_list.h"
+#define PCB_PADSTACK_MAX_SHAPES 31
+
+#define PCB_PADSTACK_INVALID ((pcb_cardinal_t)(-1))
+
+#include "obj_common.h"
+
 #include "layer.h"
 
 typedef struct pcb_padstack_poly_s {
@@ -115,4 +121,5 @@ void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst);
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
 int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *p2);
 
+#endif
 #endif

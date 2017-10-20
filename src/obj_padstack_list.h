@@ -23,6 +23,7 @@
 #ifndef PCB_OBJ_PADSTACK_LIST_H
 #define PCB_OBJ_PADSTACK_LIST_H
 
+#define PCB_PADSTACK_STRUCT_ONLY
 #include "obj_padstack.h"
 
 
@@ -40,5 +41,7 @@
 
 #include <genlist/gentdlist_impl.h>
 #include <genlist/gentdlist_undef.h>
+
+#undef PCB_PADSTACK_STRUCT_ONLY
 
 #endif
