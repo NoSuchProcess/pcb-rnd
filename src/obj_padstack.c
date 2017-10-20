@@ -85,6 +85,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 					goto quit;
 				}
 				dst->hdia = (*(pcb_pin_t **)o)->DrillingHole;
+				dst->hplated = !PCB_FLAG_TEST(PCB_FLAG_HOLE, *o);
 				break;
 			default:;
 				if (!quiet)
