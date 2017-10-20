@@ -599,6 +599,27 @@ static int parse_layer_type(pcb_layer_type_t *dst, lht_node_t *nd, const char *l
 	return 0;
 }
 
+static pcb_layer_combining_t parse_comb(pcb_board_t *pcb, lht_node_t *ncmb)
+{
+	lht_node_t *n;
+	pcb_layer_combining_t comb = 0;
+	lht_dom_iterator_t it;
+
+	for(n = lht_dom_first(&it, ncmb); n != NULL; n = lht_dom_next(&it)) {
+		pcb_layer_combining_t cval;
+		if (n->type != LHT_TEXT) {
+			pcb_message(PCB_MSG_WARNING, "Ignoring non-text combining flag\n");
+			continue;
+		}
+		cval = pcb_layer_comb_str2bit(n->name);
+		if (cval == 0)
+			pcb_message(PCB_MSG_WARNING, "Ignoring unknown combining flag: '%s'\n", n->name);
+		comb |= cval;
+	}
+
+	return comb;
+}
+
 static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, pcb_data_t *subc_parent)
 {
 	lht_node_t *n, *lst, *ncmb;
@@ -617,17 +638,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	if (ncmb != NULL) {
 		if (rdver < 2)
 			pcb_message(PCB_MSG_WARNING, "Version 1 lihata board should not have combining subtree for layers\n");
-		for(n = lht_dom_first(&it, ncmb); n != NULL; n = lht_dom_next(&it)) {
-			pcb_layer_combining_t cval;
-			if (n->type != LHT_TEXT) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring non-text combining flag\n");
-				continue;
-			}
-			cval = pcb_layer_comb_str2bit(n->name);
-			if (cval == 0)
-				pcb_message(PCB_MSG_WARNING, "Ignoring unknown combining flag: '%s'\n", n->name);
-			ly->comb |= cval;
-		}
+		ly->comb = parse_comb(pcb, ncmb);
 	}
 
 	if (bound) {
@@ -990,6 +1001,11 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 
 static int parse_data_padstack_shape_v4(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
+	lht_node_t *ncmb;
+
+	ncmb = lht_dom_hash_get(nshape, "combining");
+	if ((ncmb != NULL) && (ncmb->type == LHT_HASH))
+		dst->comb = parse_comb(pcb, ncmb);
 	return 0;
 }
 
