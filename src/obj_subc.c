@@ -1156,6 +1156,12 @@ void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	if (pcb_subc_flags == 0)
 		pcb_subc_flags = pcb_obj_valid_flags(PCB_TYPE_SUBC);
 
+	if (ctx->chgflag.flag == PCB_FLAG_FLOATER) {
+#warning subc TODO: subc-in-subc: can a whole subc be a floater?
+		PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, sc);
+		return sc;
+	}
+
 	pcb_subc_op(ctx->chgflag.pcb->Data, sc, &ChgFlagFunctions, ctx);
 	if ((ctx->chgflag.flag & pcb_subc_flags) == ctx->chgflag.flag)
 		PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, sc);
