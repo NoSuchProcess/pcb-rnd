@@ -531,7 +531,7 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 		pcb_padstack_proto_t *proto = pp->array+n;
 
 		if (!proto->in_use) {
-			lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_TEXT, "unused"));
+			lht_dom_list_append(lst, build_text("unused", "1"));
 			continue;
 		}
 
