@@ -160,7 +160,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 
 	quit:;
 	if (ret == 0)
-		dst->group = data->ps_next_grp++;
+		dst->group = pcb_padstack_alloc_group(data);
 	else
 		pcb_padstack_proto_free_fields(dst);
 	return ret;
