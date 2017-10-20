@@ -129,7 +129,7 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 						goto quit;
 					}
 					dst->shape[n].data.poly.pt = malloc(sizeof(dst->shape[n].data.poly.pt[0]) * len);
-					for(go = pcb_poly_vect_first(&it, &x, &y), p = 0; go; go = pcb_poly_vect_next(&it, &x, &y)) {
+					for(go = pcb_poly_vect_first(&it, &x, &y), p = 0; go; go = pcb_poly_vect_next(&it, &x, &y), p++) {
 						dst->shape[n].data.poly.pt[p].X = x;
 						dst->shape[n].data.poly.pt[p].Y = y;
 					}
