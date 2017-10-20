@@ -258,7 +258,7 @@ static unsigned int pcb_padstack_shape_hash(const pcb_padstack_shape_t *sh)
 
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p)
 {
-	unsigned int n, ret = pcb_hash_coord(p->hdia) ^ pcb_hash_coord(p->htop) ^ pcb_hash_coord(p->hbottom) ^ pcb_hash_coord(p->len);
+	unsigned int n, ret = pcb_hash_coord(p->hdia) ^ pcb_hash_coord(p->htop) ^ pcb_hash_coord(p->hbottom) ^ pcb_hash_coord(p->hplated) ^ pcb_hash_coord(p->len);
 	for(n = 0; n < p->len; n++)
 		ret ^= pcb_padstack_shape_hash(p->shape + n);
 	return ret;
@@ -306,6 +306,7 @@ int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *
 	if (p1->hdia != p2->hdia) return 0;
 	if (p1->htop != p2->htop) return 0;
 	if (p1->hbottom != p2->hbottom) return 0;
+	if (p1->hplated != p2->hplated) return 0;
 	if (p1->len != p2->len) return 0;
 
 	for(n1 = 0; n1 < p1->len; n1++) {
