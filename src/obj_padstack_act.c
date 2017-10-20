@@ -43,6 +43,9 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		pid = pcb_padstack_conv_buffer(0);
 	else
 		PCB_ACT_FAIL(padstackconvert);
+
+	pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
+	
 	return 0;
 }
 
