@@ -1124,7 +1124,7 @@ static int parse_data_padstack_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_nod
 
 	for(len = 0, pr = pp->data.list.first; pr != NULL; pr = pr->next) len++;
 
-	pcb_vtpadstack_proto_enlarge(&dst->ps_protos, len);
+	pcb_vtpadstack_proto_enlarge(&dst->ps_protos, len-1);
 	for(pid = 0, pr = pp->data.list.first; ((pr != NULL) && (res == 0)); pr = pr->next, pid++) {
 		if ((pr->type == LHT_TEXT) && (strcmp(pr->name, "unused") == 0))
 			continue;
