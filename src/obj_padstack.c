@@ -138,8 +138,8 @@ printf("DRAW %ld!\n", (long int)ctx->gid);
 	pcb_gui->set_line_width(Output.fgGC, 0);
 
 	pcb_gui->set_draw_xor(Output.fgGC, 1);
-	pcb_gui->draw_line(Output.fgGC, ps->x-PS_CROSS_SIZE, ps->y, ps->x+PS_CROSS_SIZE, ps->y);
-	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-PS_CROSS_SIZE, ps->x, ps->y+PS_CROSS_SIZE);
+	pcb_gui->draw_line(Output.fgGC, ps->x-PS_CROSS_SIZE/2, ps->y, ps->x+PS_CROSS_SIZE/2, ps->y);
+	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-PS_CROSS_SIZE/2, ps->x, ps->y+PS_CROSS_SIZE/2);
 	pcb_gui->set_draw_xor(Output.fgGC, 0);
 
 }
