@@ -77,7 +77,7 @@ pcb_bool delayed_labels_enabled = pcb_false;
  * some local prototypes
  */
 static void DrawEverything(const pcb_box_t *);
-static void DrawLayerGroup(int, const pcb_box_t *);
+static void DrawLayerGroup(int, const pcb_box_t *, int);
 static void pcb_draw_obj_label(pcb_any_obj_t *obj);
 
 /* In draw_ly_spec.c: */
@@ -202,7 +202,7 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
 static void DrawEverything(const pcb_box_t * drawn_area)
 {
 	int i, ngroups, side, slk_len;
-	pcb_layergrp_id_t component, solder, slk[16], gid;
+	pcb_layergrp_id_t component, solder, slk[16], gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
 	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
@@ -237,6 +237,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	solder = component = -1;
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &component, 1);
+	side_copper_grp = PCB_SWAP_IDENT ? solder : component;
+
 
 	/*
 	 * first draw all 'invisible' stuff
@@ -253,7 +255,21 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_layergrp_id_t group = drawn_groups[i];
 
 		if (pcb_layer_gui_set_glayer(PCB, group, 0)) {
-			DrawLayerGroup(group, drawn_area);
+			int is_current = 0;
+			pcb_layergrp_id_t cgrp = CURRENT->meta.real.grp;
+
+			if ((cgrp == solder) || (cgrp == component)) {
+				/* current group is top or bottom: visibility depends on side we are looking at */
+				if (group == side_copper_grp)
+					is_current = 1;
+			}
+			else {
+				/* internal layer displayed on top: current group is solid, others are "invisible" */
+				if (group == cgrp)
+					is_current = 1;
+			}
+
+			DrawLayerGroup(group, drawn_area, is_current);
 			pcb_gui->end_layer();
 		}
 	}
@@ -401,11 +417,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
 }
 
-static void pcb_draw_padstacks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
+static void pcb_draw_padstacks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, int is_current)
 {
 	pcb_padstack_draw_t ctx;
 	ctx.pcb = PCB;
 	ctx.gid = group;
+	ctx.is_current = is_current;
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_padstack_draw_callback, &ctx, NULL);
 }
 
@@ -571,7 +588,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
  * draws one layer group.  If the exporter is not a GUI,
  * also draws the pins / pads / vias in this layer group.
  */
-static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
+static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_current)
 {
 	int i, rv = 1;
 	pcb_layer_id_t layernum;
@@ -599,7 +616,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 		pcb_draw_ppv(group, drawn_area);
 
 	if (gflg & PCB_LYT_COPPER)
-		pcb_draw_padstacks(group, drawn_area);
+		pcb_draw_padstacks(group, drawn_area, is_current);
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 }

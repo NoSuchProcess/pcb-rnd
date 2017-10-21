@@ -175,7 +175,7 @@ static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area
 
 	pcb_draw_doing_assy = pcb_true;
 	pcb_gui->set_draw_faded(Output.fgGC, 1);
-	DrawLayerGroup(side_group, drawn_area);
+	DrawLayerGroup(side_group, drawn_area, 0);
 	pcb_gui->set_draw_faded(Output.fgGC, 0);
 
 	/* draw package */

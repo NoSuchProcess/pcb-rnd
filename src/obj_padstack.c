@@ -126,7 +126,7 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 
 /*** draw ***/
 
-static void set_ps_color(pcb_padstack_t *ps)
+static void set_ps_color(pcb_padstack_t *ps, int is_current)
 {
 	char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -147,8 +147,12 @@ static void set_ps_color(pcb_padstack_t *ps)
 				color = buf;
 			}
 		}
-		else
-			color = conf_core.appearance.color.via;
+		else {
+			if (is_current)
+				color = conf_core.appearance.color.via;
+			else
+				color = conf_core.appearance.color.invisible_objects;
+		}
 	}
 	else {
 		/* terminal */
@@ -167,7 +171,11 @@ static void set_ps_color(pcb_padstack_t *ps)
 			}
 		}
 		else
-			color = conf_core.appearance.color.pin;
+			if (is_current)
+				color = conf_core.appearance.color.pin;
+			else
+				color = conf_core.appearance.color.invisible_objects;
+
 	}
 
 	pcb_gui->set_color(Output.fgGC, color);
@@ -191,13 +199,13 @@ pcb_trace("DRAW %ld!\n", (long int)ctx->gid);
 			case PCB_PSSH_POLY:
 				break;
 			case PCB_PSSH_LINE:
-				set_ps_color(ps);
+				set_ps_color(ps, ctx->is_current);
 				pcb_gui->set_line_cap(Output.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
 				pcb_gui->set_line_width(Output.fgGC, shape->data.line.thickness);
 				pcb_gui->draw_line(Output.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 				break;
 			case PCB_PSSH_CIRC:
-				set_ps_color(ps);
+				set_ps_color(ps, ctx->is_current);
 				pcb_gui->fill_circle(Output.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
 				break;
 		}

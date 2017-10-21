@@ -34,6 +34,7 @@
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_layergrp_id_t gid;
+	int is_current;
 } pcb_padstack_draw_t;
 
 pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl);
