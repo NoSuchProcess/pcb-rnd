@@ -563,8 +563,8 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 				case PCB_PSSH_POLY:
 					nshapeo = lht_dom_node_alloc(LHT_LIST, "ps_poly");
 					for(pn = 0; pn < shape->data.poly.len; pn++) {
-						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.pt[pn].X));
-						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.pt[pn].Y));
+						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.x[pn]));
+						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.y[pn]));
 					}
 					break;
 				case PCB_PSSH_LINE:

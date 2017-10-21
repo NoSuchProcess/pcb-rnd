@@ -52,7 +52,8 @@ struct pcb_padstack_s {
 
 typedef struct pcb_padstack_poly_s {
 	unsigned int len;             /* number of points in polygon */
-	pcb_cheap_point_t *pt;        /* ordered list of points */
+	pcb_coord_t *x;               /* ordered list of points, X coord */
+	pcb_coord_t *y;               /* ordered list of points, X coord */
 	pcb_polyarea_t *pa;           /* cache for the poly code */
 } pcb_padstack_poly_t;
 
@@ -125,6 +126,9 @@ pcb_cardinal_t pcb_padstack_conv_buffer(int quiet);
 
 /* free fields of a proto (not freeing the proto itself, not removing it from lists */
 void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst);
+
+/* allocate the point array of a poly shape (single allocation for x and y) */
+void pcb_padstack_shape_alloc_poly(pcb_padstack_poly_t *poly, int len);
 
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);

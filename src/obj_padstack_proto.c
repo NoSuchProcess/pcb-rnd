@@ -55,6 +55,13 @@ void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst)
 	free(dst->shape);
 }
 
+void pcb_padstack_shape_alloc_poly(pcb_padstack_poly_t *poly, int len)
+{
+	poly->x = malloc(sizeof(poly->x[0]) * len * 2);
+	poly->y = poly->x + len;
+	poly->len = len;
+}
+
 static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
 	int ret = -1, n, m, i;
@@ -134,12 +141,12 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 							pcb_message(PCB_MSG_ERROR, "Padstack conversion: polygon has too many points\n");
 						goto quit;
 					}
-					dst->shape[n].data.poly.pt = malloc(sizeof(dst->shape[n].data.poly.pt[0]) * len);
+					pcb_padstack_shape_alloc_poly(&dst->shape[n].data.poly, len);
 					for(go = pcb_poly_vect_first(&it, &x, &y), p = 0; go; go = pcb_poly_vect_next(&it, &x, &y), p++) {
-						dst->shape[n].data.poly.pt[p].X = x - ox;
-						dst->shape[n].data.poly.pt[p].Y = y - oy;
+						dst->shape[n].data.poly.x[p] = x - ox;
+						dst->shape[n].data.poly.y[p] = y - oy;
 					}
-					dst->shape[n].data.poly.len = len;
+
 					dst->shape[n].shape = PCB_PSSH_POLY;
 					dst->shape[n].clearance = (*(pcb_poly_t **)o)->Clearance;
 				}
@@ -265,7 +272,7 @@ static unsigned int pcb_padstack_shape_hash(const pcb_padstack_shape_t *sh)
 	switch(sh->shape) {
 		case PCB_PSSH_POLY:
 			for(n = 0; n < sh->data.poly.len; n++)
-				ret ^= pcb_hash_coord(sh->data.poly.pt[n].X) ^ pcb_hash_coord(sh->data.poly.pt[n].Y);
+				ret ^= pcb_hash_coord(sh->data.poly.x[n]) ^ pcb_hash_coord(sh->data.poly.y[n]);
 			break;
 		case PCB_PSSH_LINE:
 			ret ^= pcb_hash_coord(sh->data.line.x1) ^ pcb_hash_coord(sh->data.line.x2) ^ pcb_hash_coord(sh->data.line.y1) ^ pcb_hash_coord(sh->data.line.y2);
@@ -302,8 +309,8 @@ static int pcb_padstack_shape_eq(const pcb_padstack_shape_t *sh1, const pcb_pads
 		case PCB_PSSH_POLY:
 			if (sh1->data.poly.len != sh2->data.poly.len) return 0;
 			for(n = 0; n < sh1->data.poly.len; n++) {
-				if (sh1->data.poly.pt[n].X != sh2->data.poly.pt[n].X) return 0;
-				if (sh1->data.poly.pt[n].Y != sh2->data.poly.pt[n].Y) return 0;
+				if (sh1->data.poly.x[n] != sh2->data.poly.x[n]) return 0;
+				if (sh1->data.poly.y[n] != sh2->data.poly.y[n]) return 0;
 			}
 			break;
 		case PCB_PSSH_LINE:

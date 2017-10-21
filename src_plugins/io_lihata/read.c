@@ -1074,7 +1074,7 @@ static int parse_data_padstack_shape_poly(pcb_board_t *pcb, pcb_padstack_shape_t
 	pcb_cardinal_t i;
 
 	dst->shape = PCB_PSSH_POLY;
-	dst->data.poly.pt = NULL; /* if we return before the allocation... */
+	dst->data.poly.x = NULL; /* if we return before the allocation... */
 	dst->data.poly.len = 0;
 	for(n = nshape->data.list.first; n != NULL; n = n->next)
 		dst->data.poly.len++;
@@ -1085,11 +1085,11 @@ static int parse_data_padstack_shape_poly(pcb_board_t *pcb, pcb_padstack_shape_t
 	}
 	dst->data.poly.len /= 2;
 
-	dst->data.poly.pt = malloc(sizeof(dst->data.poly.pt[0]) * dst->data.poly.len);
+	pcb_padstack_shape_alloc_poly(&dst->data.poly, dst->data.poly.len);
 	for(n = nshape->data.list.first, i = 0; n != NULL; i++) {
-		if (parse_coord(&dst->data.poly.pt[i].X, n) != 0) return -1;
+		if (parse_coord(&dst->data.poly.x[i], n) != 0) return -1;
 		n = n->next;
-		if (parse_coord(&dst->data.poly.pt[i].Y, n) != 0) return -1;
+		if (parse_coord(&dst->data.poly.y[i], n) != 0) return -1;
 		n = n->next;
 	}
 	return 0;
