@@ -30,6 +30,7 @@ typedef enum {
 	PCB_BB_INVALID
 } pcb_bb_type_t;
 
+/* return the padstack prototype for a padstack reference - returns NULL if not found */
 static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto(pcb_padstack_t *ps)
 {
 	if (ps->proto >= ps->parent.data->ps_protos.used)
@@ -37,6 +38,7 @@ static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto(pcb_p
 	return ps->parent.data->ps_protos.array + ps->proto;
 }
 
+/* return the type of drill and optionally fill in group IDs of drill ends */
 static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom)
 {
 	pcb_bb_type_t res;
@@ -86,6 +88,8 @@ static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb
 	return res;
 }
 
+/* return whether a given padstack drills a given group
+  (does not consider plating, only drill!) */
 static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t grp)
 {
 	pcb_layergrp_id_t top, bot;
@@ -98,6 +102,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb
 	return 0;
 }
 
+/* returns the shape the padstack has on the given layer group */
 static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape(pcb_padstack_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
