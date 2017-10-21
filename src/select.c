@@ -488,6 +488,19 @@ do { \
 			}
 		}
 		PCB_END_LOOP;
+
+		PCB_PADSTACK_LOOP(pcb->Data);
+		{
+			if (pcb_padstack_near_box(padstack, Box)
+					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)
+					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
+				append(PCB_TYPE_PADSTACK, padstack, padstack);
+				if (pcb->ViaOn)
+					pcb_via_invalidate_draw(padstack);
+			}
+		}
+		PCB_END_LOOP;
+
 	}
 
 	if (changed) {
