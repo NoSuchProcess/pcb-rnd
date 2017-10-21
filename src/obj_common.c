@@ -51,6 +51,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_PAD:     return "pad";
 		case PCB_OBJ_PIN:     return "pin";
 		case PCB_OBJ_VIA:     return "via";
+		case PCB_OBJ_PADSTACK:return "padstack";
 		case PCB_OBJ_ELEMENT: return "element";
 		case PCB_OBJ_SUBC:    return "subcircuit";
 		case PCB_OBJ_NET:     return "net";
