@@ -126,6 +126,55 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 
 /*** draw ***/
 
+static void set_ps_color(pcb_padstack_t *ps)
+{
+	char *color;
+	char buf[sizeof("#XXXXXX")];
+
+	if (ps->term == NULL) {
+		/* normal via, not a terminal */
+		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
+				color = conf_core.appearance.color.warn;
+			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
+				color = conf_core.appearance.color.via_selected;
+			else
+				color = conf_core.appearance.color.connected;
+
+			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, ps)) {
+				assert(color != NULL);
+				pcb_lighten_color(color, buf, 1.75);
+				color = buf;
+			}
+		}
+		else
+			color = conf_core.appearance.color.via;
+	}
+	else {
+		/* terminal */
+		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
+				color = conf_core.appearance.color.warn;
+			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
+				color = conf_core.appearance.color.pin_selected;
+			else
+				color = conf_core.appearance.color.connected;
+
+			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, ps)) {
+				assert(color != NULL);
+				pcb_lighten_color(color, buf, 1.75);
+				color = buf;
+			}
+		}
+		else
+			color = conf_core.appearance.color.pin;
+	}
+
+	pcb_gui->set_color(Output.fgGC, color);
+}
+
+
+
 pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_padstack_draw_t *ctx = cl;
@@ -134,7 +183,7 @@ pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 
 pcb_trace("DRAW %ld!\n", (long int)ctx->gid);
 
-#warning padstack TODO: comb shouldn't be 0 - draw both add and sub!
+#warning padstack TODO: comb should not be 0 - draw both add and sub!
 	shape = pcb_padstack_shape(ps, pcb_layergrp_flags(ctx->pcb, ctx->gid), 0);
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
@@ -142,11 +191,13 @@ pcb_trace("DRAW %ld!\n", (long int)ctx->gid);
 			case PCB_PSSH_POLY:
 				break;
 			case PCB_PSSH_LINE:
+				set_ps_color(ps);
 				pcb_gui->set_line_cap(Output.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
 				pcb_gui->set_line_width(Output.fgGC, shape->data.line.thickness);
 				pcb_gui->draw_line(Output.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 				break;
 			case PCB_PSSH_CIRC:
+				set_ps_color(ps);
 				pcb_gui->fill_circle(Output.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
 				break;
 		}
