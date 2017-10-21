@@ -20,12 +20,14 @@
  *
  */
 
+#include "obj_padstack.h"
+
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t pcb_pin_draw_callback(const pcb_box_t *b, void *cl);
-pcb_r_dir_t pcb_pin_clear_callback(const pcb_box_t *b, void *cl);
+pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl);
+pcb_r_dir_t pcb_padstack_clear_callback(const pcb_box_t *b, void *cl);
 #endif
 
-void pcb_pin_draw(pcb_pin_t *pin, pcb_bool draw_hole);
-void pcb_pin_invalidate_erase(pcb_pin_t *Pin);
-void pcb_pin_invalidate_draw(pcb_pin_t *Pin);
+void pcb_padstack_draw(pcb_pin_t *pin, pcb_bool draw_hole);
+void pcb_padstack_invalidate_erase(pcb_padstack_t *ps);
+void pcb_padstack_invalidate_draw(pcb_padstack_t *ps);
