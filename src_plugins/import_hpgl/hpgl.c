@@ -97,7 +97,7 @@ static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 
 static int load_poly(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly)
 {
-	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
+/*	pcb_data_t *data = (pcb_data_t *)ctx->user_data;*/
 	pcb_message(PCB_MSG_ERROR, "HPGL: polygons are not yet supported\n");
 	return 0;
 }
