@@ -59,6 +59,7 @@ struct pcb_layer_stack_s {
 	struct { /* cache copper groups from top to bottom for fast padstack ("bbvia") lookup */
 		int copper_len, copper_alloced;
 		pcb_layergrp_id_t *copper;
+		unsigned copper_valid:1; /* whether the cache is valid */
 	} cache;
 };
 

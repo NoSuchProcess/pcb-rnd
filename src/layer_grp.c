@@ -35,8 +35,9 @@
 /* notify the rest of the code after layer group changes so that the GUI
    and other parts sync up */
 static int inhibit_notify = 0;
-#define NOTIFY() \
+#define NOTIFY(pcb) \
 do { \
+	pcb->LayerGroups.cache.copper_valid = 0; \
 	if (!inhibit_notify) { \
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
 		if (pcb_gui != NULL) \
@@ -115,7 +116,7 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 				memmove(&grp->lid[n], &grp->lid[n+1], remain * sizeof(pcb_layer_id_t));
 			grp->len--;
 			layer->meta.real.grp = -1;
-			NOTIFY();
+			NOTIFY(pcb);
 			return 0;
 		}
 	}
@@ -130,7 +131,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, 
 	if (pcb_layergrp_del_layer(pcb, -1, lid) != 0)
 		return -1;
 	pcb_layer_add_in_group(pcb, lid, gid);
-	NOTIFY();
+	NOTIFY(pcb);
 	return gid;
 }
 
@@ -227,7 +228,7 @@ int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layergrp_id_t dst, pcb_layergrp
 	}
 
 	memset(s, 0, sizeof(pcb_layergrp_t));
-	NOTIFY();
+	NOTIFY(pcb);
 	return 0;
 }
 
@@ -270,7 +271,7 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 		pcb_layergrp_move_onto(pcb, n+1, n);
 
 	stack->len++;
-	NOTIFY();
+	NOTIFY(pcb);
 	return stack->grp+where+1;
 }
 
@@ -324,7 +325,7 @@ pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id)
 	inhibit_notify--;
 	if (g != NULL) {
 		g->intern_id = intern_id;
-		NOTIFY();
+		NOTIFY(pcb);
 	}
 	return g;
 }
@@ -335,7 +336,7 @@ pcb_layergrp_t *pcb_get_grp_new_misc(pcb_board_t *pcb)
 	inhibit_notify++;
 	g = pcb_get_grp_new_intern_(pcb, 1);
 	inhibit_notify--;
-	NOTIFY();
+	NOTIFY(pcb);
 	return g;
 }
 
@@ -399,7 +400,7 @@ int pcb_layergrp_step_layer(pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta)
 	tmp = grp->lid[idx];
 	grp->lid[idx] =grp->lid[idx2];
 	grp->lid[idx2] = tmp;
-	NOTIFY();
+	NOTIFY(PCB);
 	return 0;
 }
 
@@ -428,7 +429,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 	pcb_layergrp_free(pcb, gid);
 	move_grps(pcb, stk, gid+1, stk->len-1, -1);
 	stk->len--;
-	NOTIFY();
+	NOTIFY(pcb);
 	return 0;
 }
 
@@ -465,7 +466,7 @@ int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t from, pcb_layergrp_id_
 			l->meta.real.grp = to_before;
 	}
 
-	NOTIFY();
+	NOTIFY(pcb);
 	return 0;
 }
 
