@@ -451,11 +451,9 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_hole_draw_callback, NULL, NULL);
 
 
-	/* draw padstacks */
-	if (PCB->ViaOn || !pcb_gui->gui) {
-		pcb_draw_padstacks(group, drawn_area);
+	/* draw padstack holes - copper is drawn with each group */
+	if (PCB->ViaOn || !pcb_gui->gui)
 		pcb_draw_padstack_holes(group, drawn_area);
-	}
 }
 
 /* ---------------------------------------------------------------------------
@@ -599,6 +597,9 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 
 	if (rv && !pcb_gui->gui)
 		pcb_draw_ppv(group, drawn_area);
+
+	if (gflg & PCB_LYT_COPPER)
+		pcb_draw_padstacks(group, drawn_area);
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 }
