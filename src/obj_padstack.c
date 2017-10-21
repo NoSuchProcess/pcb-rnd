@@ -121,6 +121,12 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 		}
 	}
 
+	if (proto->hdia != 0) {
+		/* corner case: no copper around the hole all 360 deg - let the hole stick out */
+		pcb_box_bump_point(&ps->BoundingBox, ps->x - proto->hdia/2, ps->y - proto->hdia/2);
+		pcb_box_bump_point(&ps->BoundingBox, ps->x + proto->hdia/2, ps->y + proto->hdia/2);
+	}
+
 	pcb_close_box(&ps->BoundingBox);
 }
 
