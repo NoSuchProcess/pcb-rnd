@@ -130,9 +130,19 @@ void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst);
 /* allocate the point array of a poly shape (single allocation for x and y) */
 void pcb_padstack_shape_alloc_poly(pcb_padstack_poly_t *poly, int len);
 
+/* geometry for selection */
+int pcb_padstack_near_box(pcb_padstack_t *ps, pcb_box_t *box);
+
+
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
 int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *p2);
+
+/*** loops ***/
+#define PCB_PADSTACK_LOOP(top) do {                                \
+  pcb_padstack_t *padstack;                                        \
+  gdl_iterator_t __it__;                                           \
+  padstacklist_foreach(&(top)->padstack, &__it__, padstack) {
 
 #endif
 #endif
