@@ -120,7 +120,7 @@ unsigned long pcb_padstack_alloc_group(pcb_data_t *data);
 /* Convert selection or current buffer to padstack; returns PCB_PADSTACK_INVALID
    on error; looks for existing matching protos to avoid adding redundant
    entries */
-pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet);
+pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet, pcb_coord_t ox, pcb_coord_t oy);
 pcb_cardinal_t pcb_padstack_conv_buffer(int quiet);
 
 /* free fields of a proto (not freeing the proto itself, not removing it from lists */

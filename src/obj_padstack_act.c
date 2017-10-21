@@ -38,8 +38,10 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	if (argv[0] == NULL)
 		PCB_ACT_FAIL(padstackconvert);
-	if (strcmp(argv[0], "selected") == 0)
-		pid = pcb_padstack_conv_selection(PCB, 0);
+	if (strcmp(argv[0], "selected") == 0) {
+		pcb_gui->get_coords("Click at padstack origin", &x, &y);
+		pid = pcb_padstack_conv_selection(PCB, 0, x, y);
+	}
 	else if (strcmp(argv[0], "buffer") == 0)
 		pid = pcb_padstack_conv_buffer(0);
 	else

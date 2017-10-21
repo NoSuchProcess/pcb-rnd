@@ -55,7 +55,7 @@ void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst)
 	free(dst->shape);
 }
 
-static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs)
+static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
 	int ret = -1, n, m, i;
 	pcb_any_obj_t **o;
@@ -103,10 +103,10 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 			case PCB_OBJ_LINE:
 				n++;
 				dst->shape[n].shape = PCB_PSSH_LINE;
-				dst->shape[n].data.line.x1 = (*(pcb_line_t **)o)->Point1.X;
-				dst->shape[n].data.line.y1 = (*(pcb_line_t **)o)->Point1.Y;
-				dst->shape[n].data.line.x2 = (*(pcb_line_t **)o)->Point2.X;
-				dst->shape[n].data.line.y2 = (*(pcb_line_t **)o)->Point2.Y;
+				dst->shape[n].data.line.x1 = (*(pcb_line_t **)o)->Point1.X - ox;
+				dst->shape[n].data.line.y1 = (*(pcb_line_t **)o)->Point1.Y - oy;
+				dst->shape[n].data.line.x2 = (*(pcb_line_t **)o)->Point2.X - ox;
+				dst->shape[n].data.line.y2 = (*(pcb_line_t **)o)->Point2.Y - oy;
 				dst->shape[n].data.line.thickness = (*(pcb_line_t **)o)->Thickness;
 				dst->shape[n].data.line.square = 0;
 				dst->shape[n].clearance = (*(pcb_line_t **)o)->Clearance;
@@ -131,8 +131,8 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 					}
 					dst->shape[n].data.poly.pt = malloc(sizeof(dst->shape[n].data.poly.pt[0]) * len);
 					for(go = pcb_poly_vect_first(&it, &x, &y), p = 0; go; go = pcb_poly_vect_next(&it, &x, &y), p++) {
-						dst->shape[n].data.poly.pt[p].X = x;
-						dst->shape[n].data.poly.pt[p].Y = y;
+						dst->shape[n].data.poly.pt[p].X = x - ox;
+						dst->shape[n].data.poly.pt[p].Y = y - oy;
 					}
 					dst->shape[n].data.poly.len = len;
 					dst->shape[n].shape = PCB_PSSH_POLY;
@@ -166,14 +166,14 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 	return ret;
 }
 
-int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *dst, int quiet)
+int pcb_padstack_proto_conv_selection(pcb_board_t *pcb, pcb_padstack_proto_t *dst, int quiet, pcb_coord_t ox, pcb_coord_t oy)
 {
 	int ret;
 	vtp0_t objs;
 
 	vtp0_init(&objs);
 	pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAG_SELECTED);
-	ret = pcb_padstack_proto_conv(pcb->Data, dst, quiet, &objs);
+	ret = pcb_padstack_proto_conv(pcb->Data, dst, quiet, &objs, ox, oy);
 	vtp0_uninit(&objs);
 
 	return ret;
@@ -184,10 +184,17 @@ int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
 {
 	int ret;
 	vtp0_t objs;
+	pcb_coord_t ox, oy;
+	pcb_box_t bb;
+
+	pcb_data_bbox(&bb, PCB_PASTEBUFFER->Data, 0);
+
+	ox = (bb.X1 + bb.X2) / 2;
+	oy = (bb.Y1 + bb.Y2) / 2;
 
 	vtp0_init(&objs);
 	pcb_data_list_by_flag(PCB_PASTEBUFFER->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAGS);
-	ret = pcb_padstack_proto_conv(PCB_PASTEBUFFER->Data, dst, quiet, &objs);
+	ret = pcb_padstack_proto_conv(PCB_PASTEBUFFER->Data, dst, quiet, &objs, ox, oy);
 	vtp0_uninit(&objs);
 
 	return ret;
@@ -200,7 +207,7 @@ pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_
 	/* look for the first existing padstack that matches */
 	for(n = 0; n < pcb_vtpadstack_proto_len(&data->ps_protos); n++) {
 		if (!(data->ps_protos.array[n].in_use)) {
-			if (first_free = PCB_PADSTACK_INVALID)
+			if (first_free == PCB_PADSTACK_INVALID)
 				first_free = n;
 		}
 		else if (data->ps_protos.array[n].hash == proto->hash) {
@@ -224,11 +231,11 @@ pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_
 	return n;
 }
 
-pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet)
+pcb_cardinal_t pcb_padstack_conv_selection(pcb_board_t *pcb, int quiet, pcb_coord_t ox, pcb_coord_t oy)
 {
 	pcb_padstack_proto_t proto;
 
-	if (pcb_padstack_proto_conv_selection(pcb, &proto, quiet) != 0)
+	if (pcb_padstack_proto_conv_selection(pcb, &proto, quiet, ox, oy) != 0)
 		return -1;
 
 	return pcb_padstack_proto_insert_or_free(pcb->Data, &proto, quiet);
