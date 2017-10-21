@@ -34,6 +34,7 @@
 #include "obj_padstack_draw.h"
 #include "obj_padstack_list.h"
 #include "obj_padstack_inlines.h"
+#include "search.h"
 #include "vtpadstack.h"
 
 #define PS_CROSS_SIZE PCB_MM_TO_COORD(1)
@@ -263,4 +264,11 @@ void pcb_padstack_invalidate_erase(pcb_padstack_t *ps)
 void pcb_padstack_invalidate_draw(pcb_padstack_t *ps)
 {
 
+}
+
+
+int pcb_padstack_near_box(pcb_padstack_t *ps, pcb_box_t *box)
+{
+#warning padstack TODO: refine this: consider the shapes on the layers that are visible
+	return (PCB_IS_BOX_NEGATIVE(box) ? PCB_BOX_TOUCHES_BOX(&ps->BoundingBox,box) : PCB_BOX_IN_BOX(&ps->BoundingBox,box));
 }
