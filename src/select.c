@@ -474,19 +474,21 @@ do { \
 		}
 	}
 	PCB_END_LOOP;
+
 	/* end with vias */
-	if (pcb->ViaOn || !Flag)
+	if (pcb->ViaOn || !Flag) {
 		PCB_VIA_LOOP(pcb->Data);
-	{
-		if (PCB_VIA_OR_PIN_NEAR_BOX(via, Box)
-				&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)
-				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, via) != Flag) {
-			append(PCB_TYPE_VIA, via, via);
-			if (pcb->ViaOn)
-				pcb_via_invalidate_draw(via);
+		{
+			if (PCB_VIA_OR_PIN_NEAR_BOX(via, Box)
+					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)
+					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, via) != Flag) {
+				append(PCB_TYPE_VIA, via, via);
+				if (pcb->ViaOn)
+					pcb_via_invalidate_draw(via);
+			}
 		}
+		PCB_END_LOOP;
 	}
-	PCB_END_LOOP;
 
 	if (changed) {
 		pcb_draw();
