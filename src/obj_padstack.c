@@ -197,6 +197,8 @@ pcb_trace("DRAW %ld!\n", (long int)ctx->gid);
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
+				set_ps_color(ps, ctx->is_current);
+				pcb_gui->fill_polygon(Output.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y);
 				break;
 			case PCB_PSSH_LINE:
 				set_ps_color(ps, ctx->is_current);
