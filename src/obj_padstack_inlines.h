@@ -35,6 +35,8 @@ static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto(pcb_p
 {
 	if (ps->proto >= ps->parent.data->ps_protos.used)
 		return NULL;
+	if (ps->parent.data->ps_protos.array[ps->proto].in_use == 0)
+		return NULL;
 	return ps->parent.data->ps_protos.array + ps->proto;
 }
 

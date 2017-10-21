@@ -33,14 +33,6 @@
 #include "vtpadstack.h"
 #include "flag.h"
 
-static inline pcb_padstack_proto_t *pcb_padstack_proto_get(pcb_data_t *data, pcb_cardinal_t pid)
-{
-	pcb_padstack_proto_t *proto = pcb_vtpadstack_proto_get(&data->ps_protos, pid, 0);
-	if ((proto == NULL) || (!proto->in_use))
-		return NULL;
-	return proto;
-}
-
 pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data)
 {
 	pcb_padstack_t *ps;
@@ -84,7 +76,7 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 {
 	int n, sn;
 	pcb_line_t line;
-	pcb_padstack_proto_t *proto = pcb_padstack_proto_get(ps->parent.data, ps->proto);
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps->proto);
 	assert(proto != NULL);
 
 	ps->BoundingBox.X1 = ps->BoundingBox.X2 = ps->x;
