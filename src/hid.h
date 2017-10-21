@@ -286,6 +286,7 @@ struct hid_s {
 	void (*draw_rect) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
 	void (*fill_circle) (pcb_hid_gc_t gc_, pcb_coord_t cx_, pcb_coord_t cy_, pcb_coord_t radius_);
 	void (*fill_polygon) (pcb_hid_gc_t gc_, int n_coords_, pcb_coord_t * x_, pcb_coord_t * y_);
+	void (*fill_polygon_offs) (pcb_hid_gc_t gc_, int n_coords_, pcb_coord_t * x_, pcb_coord_t * y_, pcb_coord_t dx, pcb_coord_t dy);
 	void (*fill_pcb_polygon) (pcb_hid_gc_t gc_, pcb_poly_t * poly, const pcb_box_t * clip_box);
 	void (*thindraw_pcb_polygon) (pcb_hid_gc_t gc_, pcb_poly_t * poly, const pcb_box_t * clip_box);
 	void (*fill_pcb_pad) (pcb_hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
