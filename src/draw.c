@@ -668,7 +668,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 		break;
 	case PCB_OBJ_PADSTACK:
 		if (PCB->ViaOn)
-			pcb_padstack_invalidate_draw((pcb_pin_t *)obj);
+			pcb_padstack_invalidate_draw((pcb_padstack_t *)obj);
 		break;
 	case PCB_OBJ_LINE:
 		if (obj->parent.layer->meta.real.vis)
