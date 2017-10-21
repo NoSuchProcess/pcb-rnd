@@ -95,11 +95,11 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb
 	pcb_layergrp_id_t top, bot;
 	pcb_bb_type_t res = pcb_padstack_bbspan(pcb, ps, &top, &bot);
 	switch(res) {
-		case PCB_BB_THRU: return 1;
+		case PCB_BB_THRU: return pcb_true;
 		case PCB_BB_NONE: case PCB_BB_INVALID: return 0;
 		case PCB_BB_BB: return (grp >= bot) && (grp <= top);
 	}
-	return 0;
+	return pcb_false;
 }
 
 /* returns the shape the padstack has on the given layer group */
