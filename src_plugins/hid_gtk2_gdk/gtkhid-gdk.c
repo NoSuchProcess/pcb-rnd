@@ -811,6 +811,7 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 		gdk_draw_arc(priv->out_clip, priv->clip_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
+/* Intentional code duplication for performance */
 static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	static GdkPoint *points = 0;
@@ -828,6 +829,30 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x
 	for (i = 0; i < n_coords; i++) {
 		points[i].x = Vx(x[i]);
 		points[i].y = Vy(y[i]);
+	}
+	gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
+	if (priv->out_clip != NULL)
+		gdk_draw_polygon(priv->out_clip, priv->clip_gc, 1, points, n_coords);
+}
+
+/* Intentional code duplication for performance */
+static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	static GdkPoint *points = 0;
+	static int npoints = 0;
+	int i;
+	render_priv_t *priv = gport->render_priv;
+	USE_GC(gc);
+
+	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+
+	if (npoints < n_coords) {
+		npoints = n_coords + 1;
+		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
+	}
+	for (i = 0; i < n_coords; i++) {
+		points[i].x = Vx(x[i]+dx);
+		points[i].y = Vy(y[i]+dy);
 	}
 	gdk_draw_polygon(priv->out_pixel, priv->pixel_gc, 1, points, n_coords);
 	if (priv->out_clip != NULL)
@@ -1437,6 +1462,7 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 		hid->draw_rect = ghid_gdk_draw_rect;
 		hid->fill_circle = ghid_gdk_fill_circle;
 		hid->fill_polygon = ghid_gdk_fill_polygon;
+		hid->fill_polygon_offs = ghid_gdk_fill_polygon_offs;
 		hid->fill_rect = ghid_gdk_fill_rect;
 
 		hid->request_debug_draw = ghid_gdk_request_debug_draw;

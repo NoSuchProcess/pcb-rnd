@@ -291,7 +291,14 @@ static void remote_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
-		proto_send_draw_poly(idx, n_coords, x, y);
+		proto_send_draw_poly(idx, n_coords, x, y, 0, 0);
+}
+
+static void remote_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_draw_poly(idx, n_coords, x, y, dx, dy);
 }
 
 static void remote_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -459,6 +466,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.draw_rect = remote_draw_rect;
 	remote_hid.fill_circle = remote_fill_circle;
 	remote_hid.fill_polygon = remote_fill_polygon;
+	remote_hid.fill_polygon_offs = remote_fill_polygon_offs;
 	remote_hid.fill_rect = remote_fill_rect;
 	remote_hid.calibrate = remote_calibrate;
 	remote_hid.shift_is_pressed = remote_shift_is_pressed;

@@ -206,6 +206,10 @@ static void batch_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, p
 {
 }
 
+static void batch_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+}
+
 static void batch_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 }
@@ -355,6 +359,7 @@ int pplg_init_hid_batch(void)
 	batch_hid.draw_rect = batch_draw_rect;
 	batch_hid.fill_circle = batch_fill_circle;
 	batch_hid.fill_polygon = batch_fill_polygon;
+	batch_hid.fill_polygon_offs = batch_fill_polygon_offs;
 	batch_hid.fill_rect = batch_fill_rect;
 	batch_hid.calibrate = batch_calibrate;
 	batch_hid.shift_is_pressed = batch_shift_is_pressed;

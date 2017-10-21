@@ -538,7 +538,7 @@ static void myVertex(GLdouble * vertex_data)
 		printf("Vertex received with unknown type\n");
 }
 
-
+/* Intentaional code duplication for performance */
 void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
@@ -561,6 +561,41 @@ void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 	for (i = 0; i < n_coords; i++) {
 		vertices[0 + i * 3] = x[i];
 		vertices[1 + i * 3] = y[i];
+		vertices[2 + i * 3] = 0.;
+		gluTessVertex(tobj, &vertices[i * 3], &vertices[i * 3]);
+	}
+
+	gluTessEndContour(tobj);
+	gluTessEndPolygon(tobj);
+	gluDeleteTess(tobj);
+
+	myFreeCombined();
+	free(vertices);
+}
+
+/* Intentaional code duplication for performance */
+void hidgl_fill_polygon_offs(int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	int i;
+	GLUtesselator *tobj;
+	GLdouble *vertices;
+
+	assert(n_coords > 0);
+
+	vertices = malloc(sizeof(GLdouble) * n_coords * 3);
+
+	tobj = gluNewTess();
+	gluTessCallback(tobj, GLU_TESS_BEGIN, (_GLUfuncptr) myBegin);
+	gluTessCallback(tobj, GLU_TESS_VERTEX, (_GLUfuncptr) myVertex);
+	gluTessCallback(tobj, GLU_TESS_COMBINE, (_GLUfuncptr) myCombine);
+	gluTessCallback(tobj, GLU_TESS_ERROR, (_GLUfuncptr) myError);
+
+	gluTessBeginPolygon(tobj, NULL);
+	gluTessBeginContour(tobj);
+
+	for (i = 0; i < n_coords; i++) {
+		vertices[0 + i * 3] = x[i] + dx;
+		vertices[1 + i * 3] = y[i] + dy;
 		vertices[2 + i * 3] = 0.;
 		gluTessVertex(tobj, &vertices[i * 3], &vertices[i * 3]);
 	}

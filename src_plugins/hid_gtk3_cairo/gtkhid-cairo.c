@@ -996,6 +996,7 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 	//gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
+/* Intentaional code duplication for performance */
 static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
@@ -1015,6 +1016,30 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 			cairo_move_to(cr, _x, _y);
 		else
 			cairo_line_to(cr, _x, _y);
+	}
+	cairo_fill(cr);
+}
+
+/* Intentaional code duplication for performance */
+static void ghid_cairo_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	int i;
+	render_priv_t *priv = gport->render_priv;
+	cairo_t *cr = priv->cr;
+	int _x, _y;
+
+	if (priv->cr == NULL)
+		return;
+
+	USE_GC(gc);
+
+	for (i = 0; i < n_coords; i++) {
+		_x = Vx(x[i]);
+		_y = Vy(y[i]);
+		if (i == 0)
+			cairo_move_to(cr, _x + dx, _y + dy);
+		else
+			cairo_line_to(cr, _x + dx, _y + dy);
 	}
 	cairo_fill(cr);
 }
@@ -1628,6 +1653,7 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		hid->draw_rect = ghid_cairo_draw_rect;
 		hid->fill_circle = ghid_cairo_fill_circle;
 		hid->fill_polygon = ghid_cairo_fill_polygon;
+		hid->fill_polygon_offs = ghid_cairo_fill_polygon_offs;
 		hid->fill_rect = ghid_cairo_fill_rect;
 
 		hid->request_debug_draw = ghid_cairo_request_debug_draw;

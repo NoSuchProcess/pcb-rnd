@@ -3120,6 +3120,7 @@ static void lesstif_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 		XFillArc(display, mask_bitmap, mask_gc, cx, cy, radius * 2, radius * 2, 0, 360 * 64);
 }
 
+/* Intentaional code duplication for performance */
 static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	static XPoint *p = 0;
@@ -3141,6 +3142,32 @@ static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x,
 #if 0
 	printf("fill_polygon %d pts\n", n_coords);
 #endif
+	set_gc(gc);
+	XFillPolygon(display, pixmap, my_gc, p, n_coords, Complex, CoordModeOrigin);
+	if (use_mask())
+		XFillPolygon(display, mask_bitmap, mask_gc, p, n_coords, Complex, CoordModeOrigin);
+}
+
+/* Intentaional code duplication for performance */
+static void lesstif_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	static XPoint *p = 0;
+	static int maxp = 0;
+	int i;
+
+	if (maxp < n_coords) {
+		maxp = n_coords + 10;
+		if (p)
+			p = (XPoint *) realloc(p, maxp * sizeof(XPoint));
+		else
+			p = (XPoint *) malloc(maxp * sizeof(XPoint));
+	}
+
+	for (i = 0; i < n_coords; i++) {
+		p[i].x = Vx(x[i] + dx);
+		p[i].y = Vy(y[i] + dy);
+	}
+
 	set_gc(gc);
 	XFillPolygon(display, pixmap, my_gc, p, n_coords, Complex, CoordModeOrigin);
 	if (use_mask())
@@ -3750,6 +3777,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.draw_rect = lesstif_draw_rect;
 	lesstif_hid.fill_circle = lesstif_fill_circle;
 	lesstif_hid.fill_polygon = lesstif_fill_polygon;
+	lesstif_hid.fill_polygon_offs = lesstif_fill_polygon_offs;
 	lesstif_hid.fill_rect = lesstif_fill_rect;
 
 	lesstif_hid.calibrate = lesstif_calibrate;

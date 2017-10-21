@@ -279,7 +279,7 @@ void proto_send_fill_circle(int gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t 
 	send_end(&pctx);
 }
 
-void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int n;
 	send_begin(&pctx, "poly");
@@ -289,8 +289,8 @@ void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y
 	send_open(&pctx, 0, 1);
 	for(n = 0; n < n_coords; n++) {
 		send_open(&pctx, 0, 1);
-		sendf(&pctx, cfmt, x[n]);
-		sendf(&pctx, cfmt, y[n]);
+		sendf(&pctx, cfmt, x[n] + dx);
+		sendf(&pctx, cfmt, y[n] + dy);
 		send_close(&pctx);
 	}
 	send_close(&pctx);

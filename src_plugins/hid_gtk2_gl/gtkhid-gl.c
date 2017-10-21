@@ -556,6 +556,13 @@ void ghid_gl_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_co
 	hidgl_fill_polygon(n_coords, x, y);
 }
 
+void ghid_gl_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	USE_GC(gc);
+
+	hidgl_fill_polygon_offs(n_coords, x, y, dx, dy);
+}
+
 void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
 {
 	USE_GC(gc);
@@ -1181,6 +1188,7 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 	hid->draw_rect = ghid_gl_draw_rect;
 	hid->fill_circle = ghid_gl_fill_circle;
 	hid->fill_polygon = ghid_gl_fill_polygon;
+	hid->fill_polygon_offs = ghid_gl_fill_polygon_offs;
 	hid->fill_rect = ghid_gl_fill_rect;
 
 	hid->set_drawing_mode = hidgl_set_drawing_mode;
