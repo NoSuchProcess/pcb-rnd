@@ -160,4 +160,21 @@ pcb_trace("DRAW %ld!\n", (long int)ctx->gid);
 	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-PS_CROSS_SIZE/2, ps->x, ps->y+PS_CROSS_SIZE/2);
 	pcb_gui->set_draw_xor(Output.fgGC, 0);
 
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
+
+pcb_r_dir_t pcb_padstack_draw_hole_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_padstack_draw_t *ctx = cl;
+	pcb_padstack_t *ps = (pcb_padstack_t *)b;
+	pcb_padstack_proto_t *proto;
+
+	if (!pcb_padstack_bb_drills(ctx->pcb, ps, ctx->gid, &proto))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
+	pcb_gui->fill_circle(Output.drillGC, ps->x, ps->y, proto->hdia / 2);
+
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+

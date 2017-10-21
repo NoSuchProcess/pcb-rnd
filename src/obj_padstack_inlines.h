@@ -40,12 +40,17 @@ static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto(pcb_p
 	return ps->parent.data->ps_protos.array + ps->proto;
 }
 
-/* return the type of drill and optionally fill in group IDs of drill ends */
-static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom)
+/* return the type of drill and optionally fill in group IDs of drill ends ;
+   if proto_out is not NULL, also load it with the proto */
+static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_padstack_proto_t **proto_out)
 {
 	pcb_bb_type_t res;
 	int topi, boti;
 	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+
+	if (proto_out != NULL)
+		*proto_out = proto;
+
 	if (proto == NULL)
 		return PCB_BB_INVALID;
 
@@ -92,10 +97,10 @@ static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb
 
 /* return whether a given padstack drills a given group
   (does not consider plating, only drill!) */
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t grp)
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t grp, pcb_padstack_proto_t **proto_out)
 {
 	pcb_layergrp_id_t top, bot;
-	pcb_bb_type_t res = pcb_padstack_bbspan(pcb, ps, &top, &bot);
+	pcb_bb_type_t res = pcb_padstack_bbspan(pcb, ps, &top, &bot, proto_out);
 	switch(res) {
 		case PCB_BB_THRU: return pcb_true;
 		case PCB_BB_NONE: case PCB_BB_INVALID: return 0;
