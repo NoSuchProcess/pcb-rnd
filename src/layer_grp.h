@@ -207,4 +207,8 @@ pcb_layergrp_id_t pcb_layergrp_get_top_copper();
 int pcb_silk_on(pcb_board_t *pcb);
 int pcb_mask_on(pcb_board_t *pcb);
 int pcb_paste_on(pcb_board_t *pcb);
+
+/* recalculate the copper cache */
+void pcb_layergrp_copper_cache_update(pcb_layer_stack_t *st);
+
 #endif

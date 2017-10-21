@@ -956,3 +956,20 @@ int pcb_paste_on(pcb_board_t *pcb)
 	return 0;
 }
 
+
+void pcb_layergrp_copper_cache_update(pcb_layer_stack_t *st)
+{
+	pcb_layergrp_id_t n;
+	if (st->len > st->cache.copper_alloced) {
+		st->cache.copper_alloced = st->len + 64;
+		st->cache.copper = realloc(st->cache.copper, sizeof(st->cache.copper[0]) * st->cache.copper_alloced);
+	}
+
+	st->cache.copper_len = 0;
+	for(n = 0; n < st->len; n++)
+		if (st->grp[n].type & PCB_LYT_COPPER)
+			st->cache.copper[st->cache.copper_len++] = n;
+
+	st->cache.copper_valid = 1;
+}
+
