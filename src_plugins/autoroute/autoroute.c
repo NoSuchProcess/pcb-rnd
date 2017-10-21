@@ -998,6 +998,10 @@ static routedata_t *CreateRouteData()
 					}
 					else
 						switch (connection->obj->type) {
+						case PCB_OBJ_VOID: break;
+						case PCB_OBJ_PADSTACK:
+#warning padstack TODO
+							break;
 						case PCB_OBJ_PAD:
 							rb = AddPad(layergroupboxes, (pcb_element_t *) connection->ptr1, (pcb_pad_t *) connection->obj, rd->styles[j]);
 							break;
