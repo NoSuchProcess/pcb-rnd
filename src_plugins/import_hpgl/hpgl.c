@@ -48,10 +48,31 @@ static const char *hpgl_cookie = "hpgl importer";
 
 #define HPGL2CRD(crd)   (PCB_MM_TO_COORD((double)crd*0.025))
 
+static pcb_layer_t *get_pen_layer(pcb_data_t *data, int pen)
+{
+	int n, old_len;
+	pen = pen % PCB_MAX_LAYER;
+
+	if (pen >= data->LayerN) {
+		old_len = data->LayerN;
+		data->LayerN = pen+1;
+/*		data->Layer = realloc(data->Layer, sizeof(pcb_layer_t) * data->LayerN);*/
+		for(n = old_len; n < data->LayerN; n++) {
+			memset(&data->Layer[n], 0, sizeof(pcb_layer_t));
+			pcb_layer_real2bound(&data->Layer[n], &PCB->Data->Layer[n], 0);
+			free(data->Layer[n].name);
+			data->Layer[n].name = pcb_strdup_printf("hpgl_pen_%d", n);
+			data->Layer[n].parent = data;
+		}
+	}
+
+	return &data->Layer[pen];
+}
+
 static int load_line(uhpgl_ctx_t *ctx, uhpgl_line_t *line)
 {
 	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
-	pcb_layer_t *layer = &data->Layer[line->pen % data->LayerN];
+	pcb_layer_t *layer = get_pen_layer(data, line->pen);
 	pcb_line_new(layer,
 		HPGL2CRD(line->p1.x), HPGL2CRD(line->p1.y), HPGL2CRD(line->p2.x), HPGL2CRD(line->p2.y), 
 		conf_core.design.line_thickness, 2 * conf_core.design.clearance,
@@ -62,7 +83,7 @@ static int load_line(uhpgl_ctx_t *ctx, uhpgl_line_t *line)
 static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 {
 	pcb_data_t *data = (pcb_data_t *)ctx->user_data;
-	pcb_layer_t *layer = &data->Layer[arc->pen % data->LayerN];
+	pcb_layer_t *layer = get_pen_layer(data, arc->pen);
 
 	pcb_arc_new(layer,
 		HPGL2CRD(arc->center.x), HPGL2CRD(arc->center.y),
@@ -80,7 +101,6 @@ static int load_poly(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly)
 	pcb_message(PCB_MSG_ERROR, "HPGL: polygons are not yet supported\n");
 	return 0;
 }
-
 
 static int hpgl_load(const char *fname)
 {
@@ -101,11 +121,14 @@ static int hpgl_load(const char *fname)
 
 	pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 	ctx.user_data = PCB_PASTEBUFFER->Data;
-	PCB_PASTEBUFFER->Data->LayerN = PCB->Data->LayerN;
-	pcb_data_bind_board_layers(PCB, PCB_PASTEBUFFER->Data, 0);
+	PCB_PASTEBUFFER->Data->LayerN = 0;
 
 	if ((uhpgl_parse_open(&ctx) == 0) && (uhpgl_parse_file(&ctx, f) == 0) && (uhpgl_parse_close(&ctx) == 0)) {
 		fclose(f);
+		if (PCB_PASTEBUFFER->Data->LayerN == 0) {
+			pcb_message(PCB_MSG_ERROR, "Error loading HP-GL: could not load any object from %s\n", fname);
+			return 0;
+		}
 		pcb_hid_actionl("mode", "pastebuffer", NULL);
 		return 0;
 	}
