@@ -197,7 +197,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			void *ptr1, *ptr2, *ptr3;
 			pcb_coord_t x, y;
 
-			pcb_gui->get_coords("Click on object to chnage", &x, &y);
+			pcb_gui->get_coords("Click on object to change", &x, &y);
 
 			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
