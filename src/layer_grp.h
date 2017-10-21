@@ -120,7 +120,7 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 /* Move lid 1 step towards the front (delta=-1) or end (delta=+1) of the
    layer list of the group. Return 0 on success (even when already reached
    the end of the list) or -1 on error */
-int pcb_layergrp_step_layer(pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta);
+int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta);
 
 /* Return the array index of lid within the grp's lid list or -1 if not on the list */
 int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, pcb_layer_id_t lid);

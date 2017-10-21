@@ -371,7 +371,7 @@ int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, pcb_layer_id_t lid)
 	return -1;
 }
 
-int pcb_layergrp_step_layer(pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta)
+int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta)
 {
 	int idx, idx2;
 	pcb_layer_id_t tmp;
@@ -400,7 +400,7 @@ int pcb_layergrp_step_layer(pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta)
 	tmp = grp->lid[idx];
 	grp->lid[idx] =grp->lid[idx2];
 	grp->lid[idx2] = tmp;
-	NOTIFY(PCB);
+	NOTIFY(pcb);
 	return 0;
 }
 

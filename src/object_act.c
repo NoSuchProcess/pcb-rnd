@@ -1190,8 +1190,8 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			return 1;
 		}
 		switch(argv[1][4]) {
-			case '+': return pcb_layergrp_step_layer(g, pcb_layer_id(PCB->Data, l), +1); break;
-			case '-': return pcb_layergrp_step_layer(g, pcb_layer_id(PCB->Data, l), -1); break;
+			case '+': return pcb_layergrp_step_layer(PCB, g, pcb_layer_id(PCB->Data, l), +1); break;
+			case '-': return pcb_layergrp_step_layer(PCB, g, pcb_layer_id(PCB->Data, l), -1); break;
 		}
 		pcb_message(PCB_MSG_ERROR, "Invalid step direction\n");
 		return 1;
