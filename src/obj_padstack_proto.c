@@ -87,6 +87,11 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 				}
 				dst->hdia = (*(pcb_pin_t **)o)->DrillingHole;
 				dst->hplated = !PCB_FLAG_TEST(PCB_FLAG_HOLE, *o);
+				if ((ox != (*(pcb_pin_t **)o)->X) || (oy != (*(pcb_pin_t **)o)->Y)) {
+					pcb_message(PCB_MSG_INFO, "Padstack conversion: adjusting origin to via hole\n");
+					ox = (*(pcb_pin_t **)o)->X;
+					oy = (*(pcb_pin_t **)o)->Y;
+				}
 				break;
 			default:;
 				if (!quiet)
