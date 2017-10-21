@@ -184,7 +184,7 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
-static int pcb_layergrp_free_fields(pcb_layergrp_t *g)
+static void pcb_layergrp_free_fields(pcb_layergrp_t *g)
 {
 	free(g->name);
 }
