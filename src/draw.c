@@ -401,6 +401,14 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
 }
 
+static void pcb_draw_padstacks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
+{
+	pcb_padstack_draw_t ctx;
+	ctx.pcb = PCB;
+	ctx.gid = group;
+	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_padstack_draw_callback, &ctx, NULL);
+}
+
 /* ---------------------------------------------------------------------------
  * Draws pins pads and vias - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
@@ -436,12 +444,8 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 
 	/* draw padstacks */
-	if (PCB->ViaOn || !pcb_gui->gui) {
-		pcb_padstack_draw_t ctx;
-		ctx.pcb = PCB;
-		ctx.gid = group;
-		pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_padstack_draw_callback, &ctx, NULL);
-	}
+	if (PCB->ViaOn || !pcb_gui->gui)
+		pcb_draw_padstacks(group, drawn_area);
 }
 
 /* ---------------------------------------------------------------------------
