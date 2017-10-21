@@ -165,6 +165,7 @@ done| awk -v import=$import '
 			GTK[12125]++
 			GTK[12126]++
 			GTK[12228]++
+			GTK[12273]++
 		}
 
 		{
