@@ -728,6 +728,45 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, 
 	return 0;
 }
 
+static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
+{
+	pcb_padstack_t *ps;
+	lht_node_t *thl, *t;
+	unsigned char intconn = 0;
+	unsigned long int ul;
+
+	ps = pcb_padstack_alloc(dt);
+
+	parse_id(&ps->ID, obj, 13);
+	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA, &intconn);
+	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
+	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+	parse_coord(&ps->x, lht_dom_hash_get(obj, "x"));
+	parse_coord(&ps->y, lht_dom_hash_get(obj, "y"));
+	parse_ulong(&ul, lht_dom_hash_get(obj, "proto"));
+	ps->proto = ul;
+
+
+	thl = lht_dom_hash_get(obj, "thermal");
+	if ((thl != NULL) && (thl->type == LHT_LIST)) {
+		int n;
+		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next) n++;
+		ps->thermal.used = n;
+		ps->thermal.shape = malloc(sizeof(ps->thermal.shape[0]) * n);
+		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next, n++) {
+			int i;
+			parse_int(&i, t);
+			ps->thermal.shape[n] = i;
+		}
+	}
+
+	pcb_padstack_add(dt, ps);
+
+	return 0;
+}
+
+
 /* If el == NULL and dt != NULL it is a via (for now). */
 static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
@@ -892,6 +931,8 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 		return -1;
 
 	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
+		if (strncmp(n->name, "padstack_ref.", 13) == 0)
+			parse_padstack(dt, n);
 		if (strncmp(n->name, "via.", 4) == 0)
 			parse_pin(dt, NULL, n, 0, 0);
 		if (strncmp(n->name, "rat.", 4) == 0)
