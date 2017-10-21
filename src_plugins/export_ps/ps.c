@@ -1179,17 +1179,23 @@ static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_
 	}
 }
 
-static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void ps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	const char *op = "moveto";
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
-		pcb_fprintf(global.f, "%mi %mi %s\n", x[i], y[i], op);
+		pcb_fprintf(global.f, "%mi %mi %s\n", x[i]+dx, y[i]+dy, op);
 		op = "lineto";
 	}
 	fprintf(global.f, "fill\n");
 }
+
+static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	ps_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+}
+
 
 typedef struct {
 	pcb_coord_t x1, y1, x2, y2;
@@ -1604,6 +1610,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->draw_arc = ps_draw_arc;
 	hid->draw_rect = ps_draw_rect;
 	hid->fill_circle = ps_fill_circle;
+	hid->fill_polygon_offs = ps_fill_polygon_offs;
 	hid->fill_polygon = ps_fill_polygon;
 	hid->fill_pcb_polygon = ps_fill_pcb_polygon;
 	hid->fill_rect = ps_fill_rect;

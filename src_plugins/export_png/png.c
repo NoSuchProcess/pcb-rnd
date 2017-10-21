@@ -1627,7 +1627,7 @@ static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), gc->color->c);
 }
 
-static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	gdPoint *points;
@@ -1642,14 +1642,20 @@ static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb
 	for (i = 0; i < n_coords; i++) {
 		if (NOT_EDGE(x[i], y[i]))
 			have_outline |= doing_outline;
-		points[i].x = SCALE_X(x[i]);
-		points[i].y = SCALE_Y(y[i]);
+		points[i].x = SCALE_X(x[i]+dx);
+		points[i].y = SCALE_Y(y[i]+dy);
 	}
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 	gdImageFilledPolygon(im, points, n_coords, gc->color->c);
 	free(points);
 }
+
+static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	png_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+}
+
 
 static void png_calibrate(double xval, double yval)
 {
@@ -1705,6 +1711,7 @@ int pplg_init_export_png(void)
 	png_hid.draw_rect = png_draw_rect;
 	png_hid.fill_circle = png_fill_circle;
 	png_hid.fill_polygon = png_fill_polygon;
+	png_hid.fill_polygon_offs = png_fill_polygon_offs;
 	png_hid.fill_rect = png_fill_rect;
 	png_hid.calibrate = png_calibrate;
 	png_hid.set_crosshair = png_set_crosshair;

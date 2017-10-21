@@ -147,6 +147,13 @@ void gpmi_hid_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_co
 	gpmi_event(h->module, HIDE_fill_polygon, h, gc, x, y);
 }
 
+void gpmi_hid_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	gpmi_hid_t *h = hid_gpmi_data_get(pcb_exporter);
+	/* TODO: need accessor for these */
+	gpmi_event(h->module, HIDE_fill_polygon_offs, h, gc, x, y, dx, dy);
+}
+
 void gpmi_hid_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
 {
 	/* TODO */

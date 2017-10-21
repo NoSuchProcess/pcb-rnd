@@ -917,7 +917,7 @@ static void nelma_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 
 }
 
-static void nelma_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void nelma_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	gdPoint *points;
@@ -929,14 +929,20 @@ static void nelma_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, p
 	}
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
-		points[i].x = pcb_to_nelma(x[i]);
-		points[i].y = pcb_to_nelma(y[i]);
+		points[i].x = pcb_to_nelma(x[i]+dx);
+		points[i].y = pcb_to_nelma(y[i]+dy);
 	}
 	gdImageSetThickness(nelma_im, 0);
 	linewidth = 0;
 	gdImageFilledPolygon(nelma_im, points, n_coords, gc->color->c);
 	free(points);
 }
+
+static void nelma_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	nelma_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+}
+
 
 static void nelma_calibrate(double xval, double yval)
 {
@@ -995,6 +1001,7 @@ int pplg_init_export_nelma(void)
 	nelma_hid.draw_rect = nelma_draw_rect;
 	nelma_hid.fill_circle = nelma_fill_circle;
 	nelma_hid.fill_polygon = nelma_fill_polygon;
+	nelma_hid.fill_polygon_offs = nelma_fill_polygon_offs;
 	nelma_hid.fill_rect = nelma_fill_rect;
 	nelma_hid.calibrate = nelma_calibrate;
 	nelma_hid.set_crosshair = nelma_set_crosshair;

@@ -44,6 +44,9 @@ gpmi_define_event(HIDE_fill_circle)(void *hid, void *gc, int cx, int cy, int rad
 /* PCB callback events for drawing: draw a filled ploygon */
 gpmi_define_event(HIDE_fill_polygon)(void *hid, void *gc, int n_coords, int *x, int *y);
 
+/* PCB callback events for drawing: draw a filled polygon with offs*/
+gpmi_define_event(HIDE_fill_polygon_offs)(void *hid, void *gc, int n_coords, int *x, int *y, int dx, int dy);
+
 /* PCB callback events for drawing: draw a filled rectangle */
 gpmi_define_event(HIDE_fill_rect)(void *hid, void *gc, int x1, int y1, int x2, int y2);
 

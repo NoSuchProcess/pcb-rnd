@@ -45,6 +45,7 @@ static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
+static void eps_fill_polygon_ffs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
 static void eps_calibrate(double xval, double yval);
 static void eps_set_crosshair(int x, int y, int action);
 /*----------------------------------------------------------------------------*/
@@ -582,18 +583,24 @@ static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	pcb_fprintf(f, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
-static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	const char *op = "moveto";
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
-		pcb_fprintf(f, "%mi %mi %s\n", x[i], y[i], op);
+		pcb_fprintf(f, "%mi %mi %s\n", x[i] + dx, y[i] + dy, op);
 		op = "lineto";
 	}
 
 	fprintf(f, "fill\n");
 }
+
+static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	eps_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+}
+
 
 static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
@@ -646,6 +653,7 @@ void hid_eps_init()
 	eps_hid.draw_rect = eps_draw_rect;
 	eps_hid.fill_circle = eps_fill_circle;
 	eps_hid.fill_polygon = eps_fill_polygon;
+	eps_hid.fill_polygon_offs = eps_fill_polygon_offs;
 	eps_hid.fill_rect = eps_fill_rect;
 	eps_hid.calibrate = eps_calibrate;
 	eps_hid.set_crosshair = eps_set_crosshair;

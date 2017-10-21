@@ -555,13 +555,18 @@ static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, effective_layer_thickness);
 }
 
-static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void openscad_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int n;
 	fprintf(f, "			pcb_fill_poly([");
 	for(n = 0; n < n_coords-1; n++)
-		pcb_fprintf(f, "[%mm,%mm],", TRX_(x[n]), TRY_(y[n]));
-	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]), TRY_(y[n]), effective_layer_thickness);
+		pcb_fprintf(f, "[%mm,%mm],", TRX_(x[n]+dx), TRY_(y[n]+dy));
+	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]+dx), TRY_(y[n]+dy), effective_layer_thickness);
+}
+
+static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	openscad_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 static void openscad_calibrate(double xval, double yval)
@@ -678,6 +683,7 @@ int pplg_init_export_openscad(void)
 	openscad_hid.draw_rect = openscad_draw_rect;
 	openscad_hid.fill_circle = openscad_fill_circle;
 	openscad_hid.fill_polygon = openscad_fill_polygon;
+	openscad_hid.fill_polygon_offs = openscad_fill_polygon_offs;
 	openscad_hid.fill_rect = openscad_fill_rect;
 	openscad_hid.calibrate = openscad_calibrate;
 	openscad_hid.set_crosshair = openscad_set_crosshair;

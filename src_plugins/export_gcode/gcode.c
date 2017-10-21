@@ -830,7 +830,7 @@ static void gcode_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 	}
 }
 
-static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void gcode_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	gdPoint *points;
@@ -842,8 +842,8 @@ static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, p
 	}
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
-		points[i].x = pcb_to_gcode(x[i]);
-		points[i].y = pcb_to_gcode(y[i]);
+		points[i].x = pcb_to_gcode(x[i] + dx);
+		points[i].y = pcb_to_gcode(y[i] + dy);
 	}
 	gdImageSetThickness(gcode_im, 0);
 	linewidth = 0;
@@ -851,6 +851,12 @@ static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, p
 	free(points);
 /*      printf("FillPoly\n"); */
 }
+
+static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	gcode_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+}
+
 
 static void gcode_calibrate(double xval, double yval)
 {
@@ -909,6 +915,7 @@ int pplg_init_export_gcode(void)
 	gcode_hid.draw_rect = gcode_draw_rect;
 	gcode_hid.fill_circle = gcode_fill_circle;
 	gcode_hid.fill_polygon = gcode_fill_polygon;
+	gcode_hid.fill_polygon_offs = gcode_fill_polygon_offs;
 	gcode_hid.fill_rect = gcode_fill_rect;
 	gcode_hid.calibrate = gcode_calibrate;
 	gcode_hid.set_crosshair = gcode_set_crosshair;

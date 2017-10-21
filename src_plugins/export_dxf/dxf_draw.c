@@ -146,20 +146,20 @@ static void dxf_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	fprintf(ctx->f, "51\n%f\n", end_angle);
 }
 
-static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void dxf_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	dxf_ctx_t *ctx = &dxf_ctx;
 	int n, to;
 
 #if HATCH_NEEDS_BBOX
 	pcb_coord_t x_min, x_max, y_min, y_max;
-	x_max = x_min = *x;
-	y_max = y_min = *y;
+	x_max = x_min = *x + dx;
+	y_max = y_min = *y + dy;
 	for(n = 1; n < n_coords; n++) {
-		if (x[n] < x_min) x_min = x[n];
-		if (x[n] > x_max) x_max = x[n];
-		if (y[n] < y_min) y_min = y[n];
-		if (y[n] > y_max) y_max = y[n];
+		if (x[n] < x_min) x_min = x[n] + dx;
+		if (x[n] > x_max) x_max = x[n] + dx;
+		if (y[n] < y_min) y_min = y[n] + dy;
+		if (y[n] > y_max) y_max = y[n] + dy;
 	}
 #endif
 
@@ -170,8 +170,8 @@ static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 			if (to == n_coords)
 				to = 0;
 			fprintf(ctx->f, "72\n1\n"); /* edge=line */
-			pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]), TRY(y[n]));
-			pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]), TRY(y[to]));
+			pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]+dx), TRY(y[n]+dy));
+			pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]+dx), TRY(y[to]+dy));
 		}
 		dxf_hatch_post(ctx);
 	}
@@ -181,9 +181,15 @@ static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 			to = n+1;
 			if (to == n_coords)
 				to = 0;
-			dxf_draw_line(&thin, x[n], y[n], x[to], y[to]);
+			dxf_draw_line(&thin, x[n]+dx, y[n]+dy, x[to]+dx, y[to]+dy);
 		}
 	}
+}
+
+
+static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	dxf_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 static void dxf_gen_layer(dxf_ctx_t *ctx, const char *name)

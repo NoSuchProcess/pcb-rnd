@@ -58,6 +58,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 static void gerber_calibrate(double xval, double yval);
 static void gerber_set_crosshair(int x, int y, int action);
+static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
 static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 
 /*----------------------------------------------------------------------------*/
@@ -1202,7 +1203,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	fprintf(f, "D03*\r\n");
 }
 
-static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_bool m = pcb_false;
 	int i;
@@ -1217,20 +1218,20 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 		return;
 	fprintf(f, "G36*\r\n");
 	for (i = 0; i < n_coords; i++) {
-		if (x[i] != lastX) {
+		if (x[i]+dx != lastX) {
 			m = pcb_true;
-			lastX = x[i];
+			lastX = x[i]+dx;
 			pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
 		}
-		if (y[i] != lastY) {
+		if (y[i]+dy != lastY) {
 			m = pcb_true;
-			lastY = y[i];
+			lastY = y[i]+dy;
 			pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
 		}
 		if (firstTime) {
 			firstTime = 0;
-			startX = x[i];
-			startY = y[i];
+			startX = x[i]+dx;
+			startY = y[i]+dy;
 			if (m)
 				fprintf(f, "D02*");
 		}
@@ -1252,6 +1253,12 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 		fprintf(f, "D01*\r\n");
 	fprintf(f, "G37*\r\n");
 }
+
+static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	gerber_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+}
+
 
 static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
@@ -1322,6 +1329,7 @@ int pplg_init_export_gerber(void)
 	gerber_hid.draw_rect = gerber_draw_rect;
 	gerber_hid.fill_circle = gerber_fill_circle;
 	gerber_hid.fill_polygon = gerber_fill_polygon;
+	gerber_hid.fill_polygon_offs = gerber_fill_polygon_offs;
 	gerber_hid.fill_rect = gerber_fill_rect;
 	gerber_hid.calibrate = gerber_calibrate;
 	gerber_hid.set_crosshair = gerber_set_crosshair;

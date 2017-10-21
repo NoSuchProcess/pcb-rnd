@@ -503,6 +503,7 @@ int pplg_init_export_dxf(void)
 	dxf_hid.draw_rect = dxf_draw_rect;
 	dxf_hid.fill_circle = dxf_fill_circle;
 	dxf_hid.fill_polygon = dxf_fill_polygon;
+	dxf_hid.fill_polygon_offs = dxf_fill_polygon_offs;
 	dxf_hid.fill_rect = dxf_fill_rect;
 	dxf_hid.calibrate = dxf_calibrate;
 	dxf_hid.set_crosshair = dxf_set_crosshair;
