@@ -272,3 +272,9 @@ int pcb_padstack_near_box(pcb_padstack_t *ps, pcb_box_t *box)
 #warning padstack TODO: refine this: consider the shapes on the layers that are visible
 	return (PCB_IS_BOX_NEGATIVE(box) ? PCB_BOX_TOUCHES_BOX(&ps->BoundingBox,box) : PCB_BOX_IN_BOX(&ps->BoundingBox,box));
 }
+
+int pcb_is_point_in_padstack(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_padstack_t *ps)
+{
+#warning padstack TODO: refine this: consider the shapes on the layers that are visible
+	return (x >= ps->BoundingBox.X1) && (y >= ps->BoundingBox.Y1) && (x <= ps->BoundingBox.X2) && (y <= ps->BoundingBox.Y2);
+}

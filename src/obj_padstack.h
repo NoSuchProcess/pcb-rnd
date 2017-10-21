@@ -130,8 +130,9 @@ void pcb_padstack_proto_free_fields(pcb_padstack_proto_t *dst);
 /* allocate the point array of a poly shape (single allocation for x and y) */
 void pcb_padstack_shape_alloc_poly(pcb_padstack_poly_t *poly, int len);
 
-/* geometry for selection */
+/* geometry for select.c and search.c */
 int pcb_padstack_near_box(pcb_padstack_t *ps, pcb_box_t *box);
+int pcb_is_point_in_padstack(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_padstack_t *ps);
 
 
 /*** hash ***/
