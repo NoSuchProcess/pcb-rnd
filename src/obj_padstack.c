@@ -173,7 +173,15 @@ pcb_r_dir_t pcb_padstack_draw_hole_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	pcb_gui->fill_circle(Output.drillGC, ps->x, ps->y, proto->hdia / 2);
-
+	if (!proto->hplated) {
+		pcb_coord_t r = proto->hdia / 2;
+		r += r/8; /* +12.5% */
+		pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+		pcb_gui->set_line_width(Output.fgGC, 0);
+		pcb_gui->set_draw_xor(Output.fgGC, 1);
+		pcb_gui->draw_arc(Output.fgGC, ps->x, ps->y, r, r, 20, 290);
+		pcb_gui->set_draw_xor(Output.fgGC, 0);
+	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
