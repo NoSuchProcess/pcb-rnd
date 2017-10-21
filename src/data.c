@@ -543,6 +543,7 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 	if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
 	if (types & PCB_OBJ_PIN)  rsearch(data->pin_tree);
 	if (types & PCB_OBJ_PAD)  rsearch(data->pad_tree);
+	if (types & PCB_OBJ_PADSTACK)  rsearch(data->padstack_tree);
 	if (types & PCB_OBJ_SUBC) rsearch(data->subc_tree);
 
 
