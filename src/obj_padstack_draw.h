@@ -22,8 +22,20 @@
 
 #include "obj_padstack.h"
 
+#ifndef PCB_OBJ_PADSTACK_DRAW_H
+#define PCB_OBJ_PADSTACK_DRAW_H
+
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
+
+#include "board.h"
+#include "layer_grp.h"
+
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_layergrp_id_t gid;
+} pcb_padstack_draw_t;
+
 pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl);
 pcb_r_dir_t pcb_padstack_clear_callback(const pcb_box_t *b, void *cl);
 #endif
@@ -31,3 +43,5 @@ pcb_r_dir_t pcb_padstack_clear_callback(const pcb_box_t *b, void *cl);
 void pcb_padstack_draw(pcb_pin_t *pin, pcb_bool draw_hole);
 void pcb_padstack_invalidate_erase(pcb_padstack_t *ps);
 void pcb_padstack_invalidate_draw(pcb_padstack_t *ps);
+
+#endif

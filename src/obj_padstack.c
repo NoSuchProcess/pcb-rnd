@@ -25,13 +25,18 @@
 #include <assert.h>
 
 #include "board.h"
+#include "conf_core.h"
 #include "data.h"
 #include "data_list.h"
+#include "draw.h"
+#include "flag.h"
 #include "obj_padstack.h"
+#include "obj_padstack_draw.h"
 #include "obj_padstack_list.h"
 #include "obj_padstack_inlines.h"
 #include "vtpadstack.h"
-#include "flag.h"
+
+#define PS_CROSS_SIZE PCB_MM_TO_COORD(1)
 
 pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data)
 {
@@ -68,15 +73,24 @@ pcb_padstack_t *pcb_padstack_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coo
 	ps->y = y;
 	ps->Flags = Flags;
 	ps->ID = pcb_create_ID_get();
-	PCB_SET_PARENT(ps, data, data);
+	pcb_padstack_add(data, ps);
 	return ps;
+}
+
+void pcb_padstack_add(pcb_data_t *data, pcb_padstack_t *ps)
+{
+	pcb_padstack_bbox(ps);
+	if (!data->padstack_tree)
+		data->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps, 0);
+	PCB_SET_PARENT(ps, data, data);
 }
 
 void pcb_padstack_bbox(pcb_padstack_t *ps)
 {
 	int n, sn;
 	pcb_line_t line;
-	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps->proto);
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
 	assert(proto != NULL);
 
 	ps->BoundingBox.X1 = ps->BoundingBox.X2 = ps->x;
@@ -108,4 +122,24 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 	}
 
 	pcb_close_box(&ps->BoundingBox);
+}
+
+/*** draw ***/
+
+pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_padstack_draw_t *ctx = cl;
+	pcb_padstack_t *ps = (pcb_padstack_t *)b;
+
+printf("DRAW %ld!\n", (long int)ctx->gid);
+
+#warning padstack TODO: have an own color instead of subc_*
+	pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+	pcb_gui->set_line_width(Output.fgGC, 0);
+
+	pcb_gui->set_draw_xor(Output.fgGC, 1);
+	pcb_gui->draw_line(Output.fgGC, ps->x-PS_CROSS_SIZE, ps->y, ps->x+PS_CROSS_SIZE, ps->y);
+	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-PS_CROSS_SIZE, ps->x, ps->y+PS_CROSS_SIZE);
+	pcb_gui->set_draw_xor(Output.fgGC, 0);
+
 }

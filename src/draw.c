@@ -43,6 +43,7 @@
 
 #include "obj_pad_draw.h"
 #include "obj_pinvia_draw.h"
+#include "obj_padstack_draw.h"
 #include "obj_elem_draw.h"
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
@@ -432,6 +433,15 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 	}
 	if (PCB->PinOn || pcb_draw_doing_assy)
 		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, pcb_hole_draw_callback, NULL, NULL);
+
+
+	/* draw padstacks */
+	if (PCB->ViaOn || !pcb_gui->gui) {
+		pcb_padstack_draw_t ctx;
+		ctx.pcb = PCB;
+		ctx.gid = group;
+		pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_padstack_draw_callback, &ctx, NULL);
+	}
 }
 
 /* ---------------------------------------------------------------------------

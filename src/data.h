@@ -53,7 +53,7 @@ struct pcb_data_s {
 	pcb_subclist_t subc;
 	elementlist_t Element;
 /**/
-	pcb_rtree_t *via_tree, *subc_tree, *rat_tree;
+	pcb_rtree_t *via_tree, *padstack_tree, *subc_tree, *rat_tree;
 	pcb_rtree_t *element_tree, *pin_tree, *pad_tree, *name_tree[3]; /* old element support */
 	pcb_layer_t Layer[PCB_MAX_LAYER]; /* layer TODO: make this dynamic */
 	pcb_plug_io_t *loader;
