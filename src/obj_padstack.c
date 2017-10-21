@@ -29,6 +29,7 @@
 #include "data_list.h"
 #include "obj_padstack.h"
 #include "obj_padstack_list.h"
+#include "obj_padstack_inlines.h"
 #include "vtpadstack.h"
 #include "flag.h"
 
