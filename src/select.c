@@ -126,6 +126,12 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 		pcb_via_invalidate_draw((pcb_pin_t *) ptr1);
 		break;
 
+	case PCB_TYPE_PADSTACK:
+		pcb_undo_add_obj_to_flag(ptr1);
+		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_padstack_t *) ptr1);
+		pcb_padstack_invalidate_draw((pcb_padstack_t *) ptr1);
+		break;
+
 	case PCB_TYPE_LINE:
 		{
 			pcb_line_t *line = (pcb_line_t *) ptr2;
