@@ -26,6 +26,7 @@
 
 #include "action_helper.h"
 #include "board.h"
+#include "data.h"
 #include "hid_actions.h"
 
 static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected)";
@@ -49,11 +50,58 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	return 0;
 }
 
+static const char pcb_acts_padstackplace[] = "PadstackConvert([proto_id|default], [x, y])";
+static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id, or if not specified, the default for style)";
+
+int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_cardinal_t pid;
+	pcb_padstack_t *ps;
+
+	if (argc > 1) {
+		pcb_bool s1, s2;
+		x = pcb_get_value(argv[1], "mil", NULL, &s1);
+		y = pcb_get_value(argv[2], "mil", NULL, &s2);
+		if (!s1 || !s2) {
+			pcb_message(PCB_MSG_ERROR, "Error in coordinate format\n");
+			return -1;
+		}
+	}
+
+	if ((argc <= 0) || (strcmp(argv[0], "default") == 0)) {
+#warning padstack TODO: style default proto
+		pid = 0;
+	}
+	else {
+		char *end;
+		pid = strtol(argv[0], &end, 10);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "Error in proto ID format: need an integer\n");
+			return -1;
+		}
+	}
+
+	if ((pid >= PCB->Data->ps_protos.used) || (PCB->Data->ps_protos.array[pid].in_use == 0)) {
+		pcb_message(PCB_MSG_ERROR, "Invalid padstack proto %ld\n", (long)pid);
+		return -1;
+	}
+
+	ps = pcb_padstack_new(PCB->Data, pid, x, y, pcb_no_flags());
+	if (ps == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to place padstack\n");
+		return -1;
+	}
+
+	return 0;
+}
+
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t padstack_action_list[] = {
 	{"PadstackConvert", 0, pcb_act_padstackconvert,
-	 pcb_acth_padstackconvert, pcb_acts_padstackconvert}
+	 pcb_acth_padstackconvert, pcb_acts_padstackconvert},
+	{"PadstackPlace", 0, pcb_act_padstackplace,
+	 pcb_acth_padstackplace, pcb_acts_padstackplace}
 };
 
 PCB_REGISTER_ACTIONS(padstack_action_list, NULL)
