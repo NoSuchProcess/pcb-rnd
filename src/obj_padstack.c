@@ -245,3 +245,14 @@ pcb_r_dir_t pcb_padstack_draw_hole_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+
+#warning padstack TODO: implement these
+void pcb_padstack_invalidate_erase(pcb_padstack_t *ps)
+{
+
+}
+
+void pcb_padstack_invalidate_draw(pcb_padstack_t *ps)
+{
+
+}
