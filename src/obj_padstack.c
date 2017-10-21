@@ -101,13 +101,13 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
 				for(n = 0; n < shape->data.poly.len; n++)
-					pcb_box_bump_point(&ps->BoundingBox, shape->data.poly.x[n], shape->data.poly.y[n]);
+					pcb_box_bump_point(&ps->BoundingBox, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
 				break;
 			case PCB_PSSH_LINE:
-				line.Point1.X = shape->data.line.x1;
-				line.Point1.Y = shape->data.line.y1;
-				line.Point2.X = shape->data.line.x2;
-				line.Point2.Y = shape->data.line.y2;
+				line.Point1.X = shape->data.line.x1 + ps->x;
+				line.Point1.Y = shape->data.line.y1 + ps->y;
+				line.Point2.X = shape->data.line.x2 + ps->x;
+				line.Point2.Y = shape->data.line.y2 + ps->y;
 				line.Thickness = shape->data.line.thickness;
 				line.Clearance = 0;
 				line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
