@@ -183,18 +183,23 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
+static int pcb_layergrp_free_fields(pcb_layergrp_t *g)
+{
+	free(g->name);
+}
+
+
 int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id)
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 	if ((id >= 0) && (id < stack->len)) {
 		int n;
 		pcb_layergrp_t *g = stack->grp + id;
-		if (g->name != NULL)
-			free(g->name);
 		for(n = 0; n < g->len; n++) {
 			pcb_layer_t *layer = pcb->Data->Layer + g->lid[n];
 			layer->meta.real.grp = -1;
 		}
+		pcb_layergrp_free_fields(g);
 		memset(g, 0, sizeof(pcb_layergrp_t));
 		return 0;
 	}
@@ -832,6 +837,17 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 	return 0;
 }
 
+void pcb_layergroup_free_stack(pcb_layer_stack_t *st)
+{
+	int n;
+
+	for(n = 0; n < st->len; n++)
+		pcb_layergrp_free_fields(st->grp + n);
+
+	free(st->cache.copper);
+	st->cache.copper = NULL;
+	st->cache.copper_len = st->cache.copper_alloced = 0;
+}
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {

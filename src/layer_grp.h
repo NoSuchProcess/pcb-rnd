@@ -56,7 +56,14 @@ struct pcb_layergrp_s {
 struct pcb_layer_stack_s {
 	pcb_cardinal_t len;
 	pcb_layergrp_t grp[PCB_MAX_LAYERGRP];
+	struct { /* cache copper groups from top to bottom for fast padstack ("bbvia") lookup */
+		int copper_len, copper_alloced;
+		pcb_layergrp_id_t *copper;
+	} cache;
 };
+
+/* Free all fields of a layer stack */
+void pcb_layergroup_free_stack(pcb_layer_stack_t *st);
 
 /* Return the layer group for an id, or NULL on error (range check) */
 pcb_layergrp_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
