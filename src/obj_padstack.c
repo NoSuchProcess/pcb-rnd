@@ -130,13 +130,31 @@ pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_padstack_draw_t *ctx = cl;
 	pcb_padstack_t *ps = (pcb_padstack_t *)b;
+	pcb_padstack_shape_t *shape;
 
-printf("DRAW %ld!\n", (long int)ctx->gid);
+pcb_trace("DRAW %ld!\n", (long int)ctx->gid);
+
+#warning padstack TODO: comb shouldn't be 0 - draw both add and sub!
+	shape = pcb_padstack_shape(ps, pcb_layergrp_flags(ctx->pcb, ctx->gid), 0);
+	if (shape != NULL) {
+		pcb_gui->set_draw_xor(Output.fgGC, 0);
+		switch(shape->shape) {
+			case PCB_PSSH_POLY:
+				break;
+			case PCB_PSSH_LINE:
+				pcb_gui->set_line_cap(Output.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
+				pcb_gui->set_line_width(Output.fgGC, shape->data.line.thickness);
+				pcb_gui->draw_line(Output.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
+				break;
+			case PCB_PSSH_CIRC:
+				pcb_gui->fill_circle(Output.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
+				break;
+		}
+	}
 
 #warning padstack TODO: have an own color instead of subc_*
 	pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
 	pcb_gui->set_line_width(Output.fgGC, 0);
-
 	pcb_gui->set_draw_xor(Output.fgGC, 1);
 	pcb_gui->draw_line(Output.fgGC, ps->x-PS_CROSS_SIZE/2, ps->y, ps->x+PS_CROSS_SIZE/2, ps->y);
 	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-PS_CROSS_SIZE/2, ps->x, ps->y+PS_CROSS_SIZE/2);
