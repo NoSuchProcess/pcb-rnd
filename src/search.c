@@ -1439,12 +1439,24 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 		}
 		PCB_ENDALL_LOOP;
 	}
+
 	if (type == PCB_TYPE_VIA) {
 		PCB_VIA_LOOP(Base);
 		{
 			if (via->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) via;
 				return (PCB_TYPE_VIA);
+			}
+		}
+		PCB_END_LOOP;
+	}
+
+	if (type == PCB_TYPE_PADSTACK) {
+		PCB_PADSTACK_LOOP(Base);
+		{
+			if (padstack->ID == ID) {
+				*Result1 = *Result2 = *Result3 = (void *)padstack;
+				return PCB_TYPE_PADSTACK;
 			}
 		}
 		PCB_END_LOOP;
