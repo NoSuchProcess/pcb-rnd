@@ -29,7 +29,7 @@
 #include "data.h"
 #include "hid_actions.h"
 
-static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected)";
+static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected, [originx, originy])";
 static const char pcb_acth_padstackconvert[] = "Convert selection or current buffer to padstack";
 
 int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -39,7 +39,17 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (argv[0] == NULL)
 		PCB_ACT_FAIL(padstackconvert);
 	if (strcmp(argv[0], "selected") == 0) {
-		pcb_gui->get_coords("Click at padstack origin", &x, &y);
+		if (argc > 2) {
+			pcb_bool s1, s2;
+			x = pcb_get_value(argv[1], "mil", NULL, &s1);
+			y = pcb_get_value(argv[2], "mil", NULL, &s2);
+			if (!s1 || !s2) {
+				pcb_message(PCB_MSG_ERROR, "Error in coordinate format\n");
+				return -1;
+			}
+		}
+		else
+			pcb_gui->get_coords("Click at padstack origin", &x, &y);
 		pid = pcb_padstack_conv_selection(PCB, 0, x, y);
 	}
 	else if (strcmp(argv[0], "buffer") == 0)
@@ -60,7 +70,7 @@ int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	pcb_cardinal_t pid;
 	pcb_padstack_t *ps;
 
-	if (argc > 1) {
+	if (argc > 2) {
 		pcb_bool s1, s2;
 		x = pcb_get_value(argv[1], "mil", NULL, &s1);
 		y = pcb_get_value(argv[2], "mil", NULL, &s2);
