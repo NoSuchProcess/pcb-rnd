@@ -405,6 +405,8 @@ static int write_nets(hyp_wr_t * wr)
 				write_poly(wr, (pcb_poly_t *) o->obj);
 				break;
 
+			case PCB_OBJ_PADSTACK:
+#warning padstack TODO
 			case PCB_OBJ_RAT:
 				break;									/* not yet done */
 
