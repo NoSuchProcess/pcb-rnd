@@ -30,11 +30,18 @@ typedef enum {
 	PCB_BB_INVALID
 } pcb_bb_type_t;
 
+static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto(pcb_padstack_t *ps)
+{
+	if (ps->proto >= ps->parent.data->ps_protos.used)
+		return NULL;
+	return ps->parent.data->ps_protos.array + ps->proto;
+}
+
 static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom)
 {
 	pcb_bb_type_t res;
 	int topi, boti;
-	pcb_padstack_proto_t *proto = pcb_vtpadstack_proto_get(&ps->parent.data->ps_protos, ps->proto, 0);
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
 	if (proto == NULL)
 		return PCB_BB_INVALID;
 
@@ -94,7 +101,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb
 static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape(pcb_padstack_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
-	pcb_padstack_proto_t *proto = pcb_vtpadstack_proto_get(&ps->parent.data->ps_protos, ps->proto, 0);
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
 	if (proto == NULL)
 		return NULL;
 
