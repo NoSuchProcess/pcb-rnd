@@ -244,7 +244,7 @@ from.
 
 #define GAP PCB_MIL_TO_COORD(100)
 
-static void disperse_obj(pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
+static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
 {
 	/* If we want to disperse selected objects, maybe we need smarter
 	   code here to avoid putting components on top of others which
@@ -256,13 +256,13 @@ static void disperse_obj(pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb
 	*dx = *minx - obj->BoundingBox.X1;
 
 	/* snap to the grid */
-	*dx -= (ox + *dx) % PCB->Grid;
+	*dx -= (ox + *dx) % pcb->Grid;
 
 	/* and add one grid size so we make sure we always space by GAP or more */
-	*dx += PCB->Grid;
+	*dx += pcb->Grid;
 
 	/* Figure out if this row has room.  If not, start a new row */
-	if (GAP + obj->BoundingBox.X2 + *dx > PCB->MaxWidth) {
+	if (GAP + obj->BoundingBox.X2 + *dx > pcb->MaxWidth) {
 		*miny = *maxy + GAP;
 		*minx = GAP;
 	}
@@ -272,10 +272,10 @@ static void disperse_obj(pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb
 	*dy = *miny - obj->BoundingBox.Y1;
 
 	/* snap to the grid */
-	*dx -= (ox + *dx) % PCB->Grid;
-	*dx += PCB->Grid;
-	*dy -= (oy + *dy) % PCB->Grid;
-	*dy += PCB->Grid;
+	*dx -= (ox + *dx) % pcb->Grid;
+	*dx += pcb->Grid;
+	*dy -= (oy + *dy) % pcb->Grid;
+	*dy += pcb->Grid;
 
 	/* keep track of how tall this row is */
 	*minx += obj->BoundingBox.X2 - obj->BoundingBox.X1 + GAP;
@@ -315,7 +315,7 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
-			disperse_obj(element, element->MarkX, element->MarkY, &dx, &dy, &minx, &miny, &maxy);
+			disperse_obj(PCB, element, element->MarkX, element->MarkY, &dx, &dy, &minx, &miny, &maxy);
 			
 			/* move the element */
 			pcb_element_move(PCB->Data, element, dx, dy);
