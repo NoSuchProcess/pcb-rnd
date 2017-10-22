@@ -293,7 +293,7 @@ ha:{
 				ha:Vias = { active=rc/have_regex; action=Select(ViaByName) }
 				-
 				ha:Auto-place selected elements = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
-				ha:Disperse all elements = { action=DisperseElements(All) }
+				ha:Disperse all elements/subcircuits = { action=DisperseElements(All) }
 				ha:Move selected elements to other side = { a=Shift<Key>b; action=Flip(SelectedElements) }
 				ha:Move selected to current layer = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
 				ha:Delete selected objects = { a=<Key>Delete; action=Delete(Selected) }
