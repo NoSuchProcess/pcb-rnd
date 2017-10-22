@@ -311,11 +311,11 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 		PCB_ACT_FAIL(DisperseElements);
 	}
 
-
+	pcb_draw_inhibit_inc();
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
-			disperse_obj(PCB, element, element->MarkX, element->MarkY, &dx, &dy, &minx, &miny, &maxy);
+			disperse_obj(PCB, (pcb_any_obj_t *)element, element->MarkX, element->MarkY, &dx, &dy, &minx, &miny, &maxy);
 			
 			/* move the element */
 			pcb_element_move(PCB->Data, element, dx, dy);
@@ -325,6 +325,21 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 		}
 	}
 	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, subc) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))) {
+			pcb_coord_t ox, oy;
+			if (pcb_subc_get_origin(subc, &x, &y) != 0) {
+				ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2)/2;
+				oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2)/2;
+			}
+			disperse_obj(PCB, (pcb_any_obj_t *)subc, ox, oy, &dx, &dy, &minx, &miny, &maxy);
+			pcb_move_obj(PCB_TYPE_SUBC, subc, subc, subc, dx, dy);
+		}
+	}
+	PCB_END_LOOP;
+	pcb_draw_inhibit_dec();
 
 	/* done with our action so increment the undo # */
 	pcb_undo_inc_serial();
