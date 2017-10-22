@@ -762,6 +762,14 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstac
 	if (shape == NULL) return pcb_false;
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
+		{
+/*			pcb_line_t tmp;
+			tmp = *line;
+			PCB_FLAG_CLEAR(PCB_CLEARLINE, &tmp);
+			return pcb_is_line_in_poly(&tmp, pcb_poly_t *Polygon)*/
+			/* we need a more efficient way, directly using pa */
+			return pcb_false;
+		}
 		case PCB_PSSH_LINE:
 		{
 			pcb_line_t tmp;
@@ -774,7 +782,15 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstac
 			return pcb_intersect_line_line(line, &tmp);
 		}
 		case PCB_PSSH_CIRC:
-			break;
+		{
+			pcb_pad_t tmp;
+			tmp.Point1.X = line->Point1.X;
+			tmp.Point1.Y = line->Point1.Y;
+			tmp.Point2.X = line->Point2.X;
+			tmp.Point2.Y = line->Point2.Y;
+			tmp.Flags = pcb_no_flags();
+			return pcb_is_point_in_pad(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, &tmp);
+		}
 	}
 	return pcb_false;
 }
