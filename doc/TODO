@@ -6,8 +6,9 @@
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 + BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
 - BUG: csect can't make a layer outline
-- BUGS:
-	- parametric footprint dialog cancel reopens the dialog? [report: Alain]
+- BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
+	- [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
+	- [gtk3] cancel do not close the dialog(s). In fact 2 dialog windows are created, and message : GLib-CRITICAL **: g_source_remove: assertion 'tag > 0' failed : pops up.
 - BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
 - BUG: subc/term:
 	- term netlist connectivity r10843:
