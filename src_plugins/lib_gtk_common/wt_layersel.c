@@ -639,7 +639,7 @@ GtkWidget *pcb_gtk_layersel_build(pcb_gtk_common_t *com, pcb_gtk_layersel_t *ls)
 	/* get the whole box vertically scrolled, if needed */
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), ls->grp_box_outer);
+	gtkc_scrolled_window_add_with_viewport(scrolled, ls->grp_box_outer);
 
 	return scrolled;
 }

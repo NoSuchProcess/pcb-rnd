@@ -100,6 +100,11 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 typedef cairo_t pcb_gtk_expose_t;
 #define PCB_GTK_DRAW_SIGNAL_NAME "draw"
 
+static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
+{
+	gtk_container_add(GTK_CONTAINER(scrolled), child);
+}
+
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 {
 	GtkStyleContext *sc = gtk_widget_get_style_context(widget);
@@ -208,6 +213,11 @@ static inline GtkWidget *gtkc_combo_box_new_with_entry(void)
 #define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
 typedef GdkEventExpose pcb_gtk_expose_t;
 #define PCB_GTK_DRAW_SIGNAL_NAME "expose_event"
+
+static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
+{
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), child);
+}
 
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 {
