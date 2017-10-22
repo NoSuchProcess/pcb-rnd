@@ -42,6 +42,21 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 		}
 	}
 	PCB_END_LOOP;
+
+	PCB_PADSTACK_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(flag, padstack)) {
+			if (AndDraw)
+				pcb_undo_add_obj_to_flag(padstack);
+			PCB_FLAG_CLEAR(flag, padstack);
+			if (AndDraw)
+				pcb_padstack_invalidate_draw(padstack);
+			change = pcb_true;
+		}
+	}
+	PCB_END_LOOP;
+
+
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);

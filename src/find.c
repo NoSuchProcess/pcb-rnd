@@ -79,6 +79,7 @@
 #include "layer_vis.h"
 
 #include "obj_all.h"
+#include "obj_padstack.h"
 
 #undef DEBUG
 

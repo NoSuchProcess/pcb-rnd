@@ -35,6 +35,7 @@
 #include "obj_elem_draw.h"
 #include "obj_poly_draw.h"
 #include "obj_pinvia_draw.h"
+#include "obj_padstack_draw.h"
 
 /* DRC related functions */
 
@@ -107,6 +108,7 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 	case PCB_TYPE_POLYGON:
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
+	case PCB_TYPE_PADSTACK:
 	case PCB_TYPE_PAD:
 	case PCB_TYPE_ELEMENT:
 	case PCB_TYPE_RATLINE:
@@ -157,6 +159,13 @@ static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 			pcb_pin_t *pin = (pcb_pin_t *) thing_ptr3;
 			*x = pin->X;
 			*y = pin->Y;
+			break;
+		}
+	case PCB_TYPE_PADSTACK:
+		{
+			pcb_padstack_t *ps = (pcb_padstack_t *) thing_ptr3;
+			*x = ps->x;
+			*y = ps->y;
 			break;
 		}
 	case PCB_TYPE_PAD:
@@ -236,6 +245,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	pcb_arc_t *arc = (pcb_arc_t *) ptr2;
 	pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 	pcb_pad_t *pad = (pcb_pad_t *) ptr2;
+	pcb_padstack_t *ps = (pcb_padstack_t *) ptr2;
 
 	thing_type = type;
 	thing_ptr1 = ptr1;
@@ -280,6 +290,14 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, pin);
 			message = _("Via with insufficient clearance inside polygon\n");
+			goto doIsBad;
+		}
+		break;
+	case PCB_TYPE_PADSTACK:
+		if (pcb_padstack_drc_check_clearance(ps, polygon, 2 * PCB->Bloat) != 0) {
+			pcb_undo_add_obj_to_flag(ptr2);
+			PCB_FLAG_SET(TheFlag, pin);
+			message = _("Padstack with insufficient clearance inside polygon\n");
 			goto doIsBad;
 		}
 		break;
@@ -378,11 +396,23 @@ int pcb_drc_all(void)
 			break;
 	}
 	PCB_END_LOOP;
+
 	if (!IsBad)
-		PCB_VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, via)
 				&& DRCFind(PCB_TYPE_VIA, (void *) via, (void *) via, (void *) via)) {
+			IsBad = pcb_true;
+			break;
+		}
+	}
+	PCB_END_LOOP;
+
+	if (!IsBad)
+	PCB_PADSTACK_LOOP(PCB->Data);
+	{
+		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)
+				&& DRCFind(PCB_TYPE_PADSTACK, (void *) padstack, (void *) padstack, (void *) padstack)) {
 			IsBad = pcb_true;
 			break;
 		}

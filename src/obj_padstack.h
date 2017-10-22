@@ -134,6 +134,7 @@ void pcb_padstack_shape_alloc_poly(pcb_padstack_poly_t *poly, int len);
 int pcb_padstack_near_box(pcb_padstack_t *ps, pcb_box_t *box);
 int pcb_is_point_in_padstack(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_padstack_t *ps);
 
+int pcb_padstack_drc_check_clearance(pcb_padstack_t *ps, pcb_poly_t *polygon, pcb_coord_t min_clr);
 
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
