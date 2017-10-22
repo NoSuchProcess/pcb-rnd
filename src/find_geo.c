@@ -765,10 +765,10 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstac
 		case PCB_PSSH_LINE:
 		{
 			pcb_line_t tmp;
-			tmp.Point1.X = shape->data.line.x1;
-			tmp.Point1.Y = shape->data.line.y1;
-			tmp.Point2.X = shape->data.line.x2;
-			tmp.Point2.Y = shape->data.line.y2;
+			tmp.Point1.X = shape->data.line.x1 + ps->x;
+			tmp.Point1.Y = shape->data.line.y1 + ps->y;
+			tmp.Point2.X = shape->data.line.x2 + ps->x;
+			tmp.Point2.Y = shape->data.line.y2 + ps->y;
 			tmp.Thickness = shape->data.line.thickness;
 			tmp.Flags = shape->data.line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags();
 			return pcb_intersect_line_line(line, &tmp);
