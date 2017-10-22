@@ -160,7 +160,7 @@ static ListType LineList[PCB_MAX_LAYER+2],	/* list of objects to */
 static pcb_bool LookupLOConnectionsToPVList(pcb_bool);
 static pcb_bool LookupLOConnectionsToPSList(pcb_bool);
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool);
-static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
+static pcb_bool LookupPVPSConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToPVList(void);
 static pcb_bool LookupLOConnectionsToLine(pcb_line_t *, pcb_cardinal_t, pcb_bool);
 static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *, pcb_cardinal_t);

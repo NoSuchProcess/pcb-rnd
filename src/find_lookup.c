@@ -65,6 +65,25 @@ static pcb_bool ADD_PV_TO_LIST(pcb_pin_t *Pin, int from_type, void *from_ptr, pc
 	return pcb_false;
 }
 
+static pcb_bool ADD_PS_TO_LIST(pcb_padstack_t *ps, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+{
+	if (User)
+		pcb_undo_add_obj_to_flag(ps);
+	PCB_FLAG_SET(TheFlag, ps);
+	make_callback(PCB_TYPE_PADSTACK, ps, from_type, from_ptr, type);
+	PADSTACKLIST_ENTRY(PadstackList.Number) = ps;
+	PadstackList.Number++;
+#ifdef DEBUG
+	if (PadstackList.Number > PadstackList.Size)
+		printf("ADD_PS_TO_LIST overflow! num=%d size=%d\n", PadstackList.Number, PadstackList.Size);
+#endif
+	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps)) {
+#warning padstack TODO: this NULL should have been ps->Element
+		return (SetThing(PCB_TYPE_PIN, NULL, ps, ps));
+	}
+	return pcb_false;
+}
+
 static pcb_bool ADD_PADSTACK_TO_LIST(pcb_padstack_t *ps, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (User)
@@ -606,7 +625,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 		lineposition[PCB_MAX_LAYER], polyposition[PCB_MAX_LAYER], arcposition[PCB_MAX_LAYER], padposition[2];
 
 	/* copy the current LO list positions; the original data is changed
-	 * by 'LookupPVConnectionsToLOList()' which has to check the same
+	 * by 'LookupPVPSConnectionsToLOList()' which has to check the same
 	 * list entries plus the new ones
 	 */
 	for (i = 0; i < pcb_max_layer; i++) {
@@ -783,6 +802,18 @@ static pcb_r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+static pcb_r_dir_t ps_line_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_padstack_t *ps = (pcb_padstack_t *) b;
+	struct lo_info *i = (struct lo_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_padstack_intersect_line(ps, &i->line)) {
+		if (ADD_PS_TO_LIST(ps, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER))
+			longjmp(i->env, 1);
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
 static pcb_r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
@@ -812,6 +843,18 @@ static pcb_r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 			pcb_message(PCB_MSG_WARNING, _("Hole touches arc.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PCB_TYPE_ARC, &i->arc, PCB_FCT_COPPER))
+			longjmp(i->env, 1);
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+static pcb_r_dir_t ps_arc_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_padstack_t *ps = (pcb_padstack_t *) b;
+	struct lo_info *i = (struct lo_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_padstack_intersect_arc(ps, &i->arc)) {
+		if (ADD_PS_TO_LIST(ps, PCB_TYPE_ARC, &i->arc, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -849,6 +892,19 @@ static pcb_r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+static pcb_r_dir_t ps_poly_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_padstack_t *ps = (pcb_padstack_t *) b;
+	struct lo_info *i = (struct lo_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_padstack_intersect_poly(ps, &i->polygon)) {
+		if (ADD_PS_TO_LIST(ps, PCB_TYPE_POLYGON, &i->polygon, PCB_FCT_COPPER))
+			longjmp(i->env, 1);
+	}
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
 static pcb_r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
@@ -860,11 +916,22 @@ static pcb_r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+static pcb_r_dir_t ps_rat_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_padstack_t *ps = (pcb_padstack_t *) b;
+	struct lo_info *i = (struct lo_info *) cl;
+
+	/* rats can't cause DRC so there is no early exit */
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_padstack_intersect_rat(ps, &i->rat))
+		ADD_PS_TO_LIST(ps, PCB_TYPE_RATLINE, &i->rat, PCB_FCT_RAT);
+	return PCB_R_DIR_NOT_FOUND;
+}
+
 /* ---------------------------------------------------------------------------
- * searches for new PVs that are connected to NEW LOs on the list
+ * searches for new PVs and padstacks that are connected to NEW LOs on the list
  * This routine updates the position counter of the lists too.
  */
-static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
+static pcb_bool LookupPVPSConnectionsToLOList(pcb_bool AndRats)
 {
 	pcb_layer_id_t layer;
 	struct lo_info info;
@@ -876,7 +943,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 		if (LAYER_PTR(layer)->meta.real.no_drc)
 			continue;
 		/* do nothing if there are no PV's */
-		if (TotalP + TotalV == 0) {
+		if (TotalP + TotalV + TotalPs == 0) {
 			LineList[layer].Location = LineList[layer].Number;
 			ArcList[layer].Location = ArcList[layer].Number;
 			PolygonList[layer].Location = PolygonList[layer].Number;
@@ -901,6 +968,10 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 				pcb_r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.line, NULL, pv_line_callback, &info, NULL);
 			else
 				return pcb_true;
+			if (setjmp(info.env) == 0)
+				pcb_r_search(PCB->Data->padstack_tree, (pcb_box_t *) & info.line, NULL, ps_line_callback, &info, NULL);
+			else
+				return pcb_true;
 			LineList[layer].Location++;
 		}
 
@@ -920,6 +991,10 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 				return pcb_true;
 			if (setjmp(info.env) == 0)
 				pcb_r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.arc, NULL, pv_arc_callback, &info, NULL);
+			else
+				return pcb_true;
+			if (setjmp(info.env) == 0)
+				pcb_r_search(PCB->Data->padstack_tree, (pcb_box_t *) & info.arc, NULL, ps_arc_callback, &info, NULL);
 			else
 				return pcb_true;
 			ArcList[layer].Location++;
@@ -942,6 +1017,10 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 				return pcb_true;
 			if (setjmp(info.env) == 0)
 				pcb_r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
+			else
+				return pcb_true;
+			if (setjmp(info.env) == 0)
+				pcb_r_search(PCB->Data->padstack_tree, (pcb_box_t *) & info.polygon, NULL, ps_poly_callback, &info, NULL);
 			else
 				return pcb_true;
 			PolygonList[layer].Location++;
@@ -986,6 +1065,8 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 			r_search_pt(PCB->Data->via_tree, &info.rat.Point2, 1, NULL, pv_rat_callback, &info, NULL);
 			r_search_pt(PCB->Data->pin_tree, &info.rat.Point1, 1, NULL, pv_rat_callback, &info, NULL);
 			r_search_pt(PCB->Data->pin_tree, &info.rat.Point2, 1, NULL, pv_rat_callback, &info, NULL);
+			r_search_pt(PCB->Data->padstack_tree, &info.rat.Point1, 1, NULL, ps_rat_callback, &info, NULL);
+			r_search_pt(PCB->Data->padstack_tree, &info.rat.Point2, 1, NULL, ps_rat_callback, &info, NULL);
 
 			RatList.Location++;
 		}
