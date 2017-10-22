@@ -246,13 +246,13 @@ from.
 
 static void disperse_obj(pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
 {
-	/* If we want to disperse selected elements, maybe we need smarter
+	/* If we want to disperse selected objects, maybe we need smarter
 	   code here to avoid putting components on top of others which
 	   are not selected.  For now, I'm assuming that this is typically
 	   going to be used either with a brand new design or a scratch
 	   design holding some new components */
 
-	/* figure out how much to move the element */
+	/* figure out how much to move the object */
 	*dx = *minx - obj->BoundingBox.X1;
 
 	/* snap to the grid */
@@ -267,7 +267,7 @@ static void disperse_obj(pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb
 		*minx = GAP;
 	}
 
-	/* figure out how much to move the element */
+	/* figure out how much to move the object */
 	*dx = *minx - obj->BoundingBox.X1;
 	*dy = *miny - obj->BoundingBox.Y1;
 
