@@ -284,3 +284,10 @@ int pcb_padstack_drc_check_clearance(pcb_padstack_t *ps, pcb_poly_t *polygon, pc
 #warning padstack TODO
 	return 0;
 }
+
+
+int pcb_padstack_drc_check_and_warn(pcb_padstack_t *ps)
+{
+#warning padstack TODO
+	return 0;
+}

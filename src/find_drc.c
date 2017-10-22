@@ -626,6 +626,20 @@ int pcb_drc_all(void)
 		PCB_END_LOOP;
 	}
 
+	if (!IsBad) {
+		PCB_PADSTACK_LOOP(PCB->Data);
+		{
+			if (pcb_padstack_drc_check_and_warn(padstack)) {
+				if (!throw_drc_dialog()) {
+					IsBad = pcb_true;
+					break;
+				}
+			}
+		}
+		PCB_END_LOOP;
+	}
+
+
 	pcb_conn_lookup_uninit();
 	TheFlag = PCB_FLAG_FOUND;
 	Bloat = 0;
