@@ -174,7 +174,7 @@ static inline PCB_FUNC_UNUSED int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coor
 #define pcb_poly_ppclear(poly) \
 do { \
 	pcb_layer_t *layer = poly->parent.layer; \
-	if (layer != NULL) { \
+	if ((layer != NULL) && (layer->parent->parent_type == PCB_PARENT_BOARD)) { \
 		if (layer->is_bound) layer = layer->meta.bound.real; \
 		if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
 			pcb_poly_clear_from_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
@@ -185,7 +185,7 @@ do { \
 #define pcb_poly_pprestore(poly) \
 do { \
 	pcb_layer_t *layer = poly->parent.layer; \
-	if (layer != NULL) { \
+	if ((layer != NULL) && (layer->parent->parent_type == PCB_PARENT_BOARD)) { \
 		if (layer->is_bound) layer = layer->meta.bound.real; \
 		if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
 			pcb_poly_restore_to_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
