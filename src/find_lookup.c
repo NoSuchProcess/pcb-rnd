@@ -65,6 +65,23 @@ static pcb_bool ADD_PV_TO_LIST(pcb_pin_t *Pin, int from_type, void *from_ptr, pc
 	return pcb_false;
 }
 
+static pcb_bool ADD_PADSTACK_TO_LIST(pcb_padstack_t *ps, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+{
+	if (User)
+		pcb_undo_add_obj_to_flag(ps);
+	PCB_FLAG_SET(TheFlag, ps);
+	make_callback(PCB_TYPE_PADSTACK, ps, from_type, from_ptr, type);
+	PADSTACKLIST_ENTRY(PVList.Number) = ps;
+	PadstackList.Number++;
+#ifdef DEBUG
+	if (PVList.Number > PVList.Size)
+		printf("ADD_PADSTACK_TO_LIST overflow! num=%d size=%d\n", PVList.Number, PVList.Size);
+#endif
+	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) && (ps->parent.data->parent_type == PCB_PARENT_SUBC))
+		return (SetThing(PCB_TYPE_PADSTACK, ps->parent.data->parent.subc, ps, ps));
+	return pcb_false;
+}
+
 static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (PadList[L].Data == NULL)
@@ -194,6 +211,8 @@ void pcb_layout_lookup_uninit(void)
 	}
 	free(PVList.Data);
 	PVList.Data = NULL;
+	free(PadstackList.Data);
+	PadstackList.Data = NULL;
 	free(RatList.Data);
 	RatList.Data = NULL;
 }
@@ -290,12 +309,22 @@ void pcb_layout_lookup_init(void)
 		TotalV = PCB->Data->via_tree->size;
 	else
 		TotalV = 0;
+	if (PCB->Data->padstack_tree)
+		TotalPs = PCB->Data->padstack_tree->size;
+	else
+		TotalPs = 0;
 	/* allocate memory for 'new PV to check' list and clear struct */
 	PVList.Data = (void **) calloc(TotalP + TotalV, sizeof(pcb_pin_t *));
 	PVList.Size = TotalP + TotalV;
 	PVList.Location = 0;
 	PVList.DrawLocation = 0;
 	PVList.Number = 0;
+	/* allocate memory for 'new padstack to check' list and clear struct */
+	PadstackList.Data = (void **) calloc(TotalPs, sizeof(pcb_padstack_t *));
+	PadstackList.Size = TotalPs;
+	PadstackList.Location = 0;
+	PadstackList.DrawLocation = 0;
+	PadstackList.Number = 0;
 	/* Initialize ratline data */
 	RatList.Size = ratlist_length(&PCB->Data->Rat);
 	RatList.Data = (void **) calloc(RatList.Size, sizeof(pcb_rat_t *));

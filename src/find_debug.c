@@ -114,8 +114,9 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 {
 	pcb_cardinal_t i;
 	pcb_pin_t *pv;
+	pcb_padstack_t *ps;
 
-	if (!PVList.Number)
+	if ((!PVList.Number) && (!PadstackList.Number))
 		return;
 
 	if (IsFirst) {
@@ -131,5 +132,17 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 		/* get the elements name or assume that its a via */
 		pv = PVLIST_ENTRY(i);
 		PrintConnectionListEntry((char *) PCB_EMPTY(pv->Name), (pcb_element_t *) pv->Element, pcb_false, FP);
+	}
+
+	for (i = IsFirst ? 1 : 0; i < PadstackList.Number; i++) {
+		pcb_subc_t *sc;
+		/* get the elements name or assume that its a via */
+		ps = PADSTACKLIST_ENTRY(i);
+		if (ps->parent.data->parent_type == PCB_PARENT_SUBC)
+			sc = ps->parent.data->parent.subc;
+		else
+			sc = NULL;
+#warning padstack TODO: get terminal name?
+		PrintConnectionListEntry("TODO#termname", sc, pcb_false, FP);
 	}
 }

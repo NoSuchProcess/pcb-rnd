@@ -114,6 +114,9 @@
 #define	PVLIST_ENTRY(I)	\
 	(((pcb_pin_t **)PVList.Data)[(I)])
 
+#define	PADSTACKLIST_ENTRY(I)	\
+	(((pcb_padstack_t **)PadstackList.Data)[(I)])
+
 /* ---------------------------------------------------------------------------
  * some local types
  *
@@ -146,9 +149,10 @@ static pcb_bool User = pcb_false;				/* user action causing this */
 static pcb_bool drc = pcb_false;				/* whether to stop if finding something not found */
 static pcb_bool IsBad = pcb_false;
 static pcb_cardinal_t drcerr_count;		/* count of drc errors */
-static pcb_cardinal_t TotalP, TotalV, NumberOfPads[2];
+static pcb_cardinal_t TotalP, TotalV, NumberOfPads[2], TotalPs;
 static ListType LineList[PCB_MAX_LAYER+2],	/* list of objects to */
-  PolygonList[PCB_MAX_LAYER+2], ArcList[PCB_MAX_LAYER+2], PadList[2], RatList, PVList;
+  PolygonList[PCB_MAX_LAYER+2], ArcList[PCB_MAX_LAYER+2], PadList[2],
+  RatList, PVList, PadstackList;
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

@@ -37,7 +37,7 @@ static pcb_bool ListsEmpty(pcb_bool AndRats)
 	pcb_bool empty;
 	int i;
 
-	empty = (PVList.Location >= PVList.Number);
+	empty = (PVList.Location >= PVList.Number) && (PadstackList.Location >= PadstackList.Number);
 	if (AndRats)
 		empty = empty && (RatList.Location >= RatList.Number);
 	for (i = 0; i < pcb_max_layer && empty; i++)
@@ -139,6 +139,22 @@ static void DrawNewConnections(void)
 			pcb_via_invalidate_draw(pv);
 		PVList.DrawLocation++;
 	}
+
+	/* draw all new Padstacks; 'PadstackList' holds a list of pointers to the
+	 * sorted array pointers to padstack data
+	 */
+	while (PadstackList.DrawLocation < PadstackList.Number) {
+		pcb_padstack_t *ps = PADSTACKLIST_ENTRY(PadstackList.DrawLocation);
+
+		if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps)) {
+			if (PCB->PinOn)
+				pcb_padstack_invalidate_draw(ps);
+		}
+		else if (PCB->ViaOn)
+			pcb_padstack_invalidate_draw(ps);
+		PadstackList.DrawLocation++;
+	}
+
 	/* draw the new rat-lines */
 	if (PCB->RatOn) {
 		position = RatList.DrawLocation;
@@ -323,6 +339,8 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 
 	for(n = 0; n < PVList.Number; n++)
 		cnt += cb(ctx, (pcb_any_obj_t *)PVList.Data[n]);
+	for(n = 0; n < PadstackList.Number; n++)
+		cnt += cb(ctx, (pcb_any_obj_t *)PadstackList.Data[n]);
 	for(n = 0; n < RatList.Number; n++)
 		cnt += cb(ctx, (pcb_any_obj_t *)RatList.Data[n]);
 
@@ -499,6 +517,9 @@ static void DumpList(void)
 
 	PVList.Number = 0;
 	PVList.Location = 0;
+
+	PadstackList.Number = 0;
+	PadstackList.Location = 0;
 
 	for (i = 0; i < pcb_max_layer; i++) {
 		LineList[i].Location = 0;

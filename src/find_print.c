@@ -39,6 +39,8 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 	/* check all pins in element */
 
+#warning padstack TODO: term TODO: this doesn't handle padstacks or terminals
+
 	PCB_PIN_LOOP(Element);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
@@ -148,6 +150,9 @@ static pcb_bool PrepareNextLoop(FILE * FP)
 	/* reset PVs */
 	PVList.Number = PVList.Location = 0;
 	RatList.Number = RatList.Location = 0;
+
+	/* reset Padstacks */
+	PadstackList.Number = PadstackList.Location = 0;
 
 	return (pcb_false);
 }

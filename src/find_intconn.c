@@ -82,6 +82,15 @@ static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_p
 	}
 	PCB_END_LOOP;
 
+	PCB_PADSTACK_LOOP(s->data);
+	{
+		if ((padstack != from_ptr) && (padstack->term != NULL) && (padstack->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, padstack))) {
+			PCB_FLAG_SET(PCB_FLAG_DRC_INTCONN, padstack);
+			ADD_PADSTACK_TO_LIST(padstack, from_type, from_ptr, PCB_FCT_INTERNAL);
+		}
+	}
+	PCB_END_LOOP;
+
 	PCB_LINE_COPPER_LOOP(s->data);
 	{
 		if ((line != from_ptr) && (line->term != NULL) && (line->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, line))) {
