@@ -42,6 +42,7 @@
 
 #include "macro.h"
 #include "obj_arc_ui.h"
+#include "obj_padstack_inlines.h"
 
 #define EXPAND_BOUNDS(p) if (Bloat > 0) {\
        (p)->BoundingBox.X1 -= Bloat; \
@@ -750,7 +751,54 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 
 	}
 
-
 	/* the original round pin version */
 	return pcb_is_point_in_pad(PV->X, PV->Y, MAX(PIN_SIZE(PV) / 2.0 + Bloat, 0.0), (pcb_pad_t *) Line);
+}
+
+
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstack_t *ps, pcb_line_t *line)
+{
+	pcb_padstack_shape_t *shape = pcb_padstack_shape_at(PCB, ps, line->parent.layer);
+	if (shape == NULL) return pcb_false;
+	switch(shape->shape) {
+		case PCB_PSSH_POLY:
+		case PCB_PSSH_LINE:
+		{
+			pcb_line_t tmp;
+			tmp.Point1.X = shape->data.line.x1;
+			tmp.Point1.Y = shape->data.line.y1;
+			tmp.Point2.X = shape->data.line.x2;
+			tmp.Point2.Y = shape->data.line.y2;
+			tmp.Thickness = shape->data.line.thickness;
+			tmp.Flags = shape->data.line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags();
+			return pcb_intersect_line_line(line, &tmp);
+		}
+		case PCB_PSSH_CIRC:
+			break;
+	}
+	return pcb_false;
+}
+
+
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack_t *ps, pcb_arc_t *arc)
+{
+	pcb_padstack_shape_t *shape = pcb_padstack_shape_at(PCB, ps, arc->parent.layer);
+	if (shape == NULL) return pcb_false;
+	switch(shape->shape) {
+		case PCB_PSSH_POLY:
+		case PCB_PSSH_LINE:
+		case PCB_PSSH_CIRC:
+			break;
+	}
+	return pcb_false;
+}
+
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_poly(pcb_padstack_t *ps, pcb_poly_t *poly)
+{
+	return pcb_false;
+}
+
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_rat(pcb_padstack_t *ps, pcb_rat_t *rat)
+{
+	return ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) || ((rat->Point2.X == ps->x) && (rat->Point2.Y == ps->y));
 }

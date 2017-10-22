@@ -422,6 +422,60 @@ static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
+struct ps_info {
+	pcb_layer_id_t layer;
+	pcb_padstack_t ps;
+	jmp_buf env;
+};
+
+static pcb_r_dir_t LOCtoPSline_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_line_t *line = (pcb_line_t *) b;
+	struct ps_info *i = (struct ps_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_padstack_intersect_line(&i->ps, line)) {
+		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_PADSTACK, &i->ps, PCB_FCT_COPPER))
+			longjmp(i->env, 1);
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+static pcb_r_dir_t LOCtoPSarc_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_arc_t *arc = (pcb_arc_t *) b;
+	struct ps_info *i = (struct ps_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_padstack_intersect_arc(&i->ps, arc)) {
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_PADSTACK, &i->ps, PCB_FCT_COPPER))
+			longjmp(i->env, 1);
+	}
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+static pcb_r_dir_t LOCtoPSrat_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_rat_t *rat = (pcb_rat_t *) b;
+	struct ps_info *i = (struct ps_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, rat) && pcb_padstack_intersect_rat(&i->ps, rat) && ADD_RAT_TO_LIST(rat, PCB_TYPE_PIN, &i->ps, PCB_FCT_RAT))
+		longjmp(i->env, 1);
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+static pcb_r_dir_t LOCtoPSpoly_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_poly_t *polygon = (pcb_poly_t *) b;
+	struct ps_info *i = (struct ps_info *) cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_padstack_intersect_poly(&i->ps, polygon)) {
+		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PADSTACK, &i->ps, PCB_FCT_COPPER))
+			longjmp(i->env, 1);
+	}
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+
 /* ---------------------------------------------------------------------------
  * checks if a PV is connected to LOs, if it is, the LO is added to
  * the appropriate list and the 'used' flag is set
@@ -480,6 +534,62 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 				return pcb_true;
 		}
 		PVList.Location++;
+	}
+	return pcb_false;
+}
+
+/* ---------------------------------------------------------------------------
+ * checks if a padstack is connected to LOs, if it is, the LO is added to
+ * the appropriate list and the 'used' flag is set
+ */
+static pcb_bool LookupLOConnectionsToPSList(pcb_bool AndRats)
+{
+	pcb_cardinal_t layer;
+	struct ps_info info;
+	pcb_padstack_t *orig_ps;
+
+	/* loop over all PVs currently on list */
+	while (PadstackList.Location < PadstackList.Number) {
+		/* get pointer to data */
+		orig_ps = (PADSTACKLIST_ENTRY(PadstackList.Location));
+		info.ps = *orig_ps;
+		EXPAND_BOUNDS(&info.ps);
+
+		/* subc intconn jumps */
+		if ((orig_ps->term != NULL) && (orig_ps->intconn > 0))
+			LOC_int_conn_subc(pcb_gobj_parent_subc(orig_ps->parent_type, &orig_ps->parent), orig_ps->intconn, PCB_TYPE_PADSTACK, orig_ps);
+
+		/* now all lines, arcs and polygons of the several layers */
+		for(layer = 0; layer < pcb_max_layer; layer++) {
+			if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
+				continue;
+			if (LAYER_PTR(layer)->meta.real.no_drc)
+				continue;
+			info.layer = layer;
+			/* add touching lines */
+			if (setjmp(info.env) == 0)
+				pcb_r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.ps, NULL, LOCtoPSline_callback, &info, NULL);
+			else
+				return pcb_true;
+			/* add touching arcs */
+			if (setjmp(info.env) == 0)
+				pcb_r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.ps, NULL, LOCtoPSarc_callback, &info, NULL);
+			else
+				return pcb_true;
+			/* check all polygons */
+			if (setjmp(info.env) == 0)
+				pcb_r_search(LAYER_PTR(layer)->polygon_tree, (pcb_box_t *) & info.ps, NULL, LOCtoPSpoly_callback, &info, NULL);
+			else
+				return pcb_true;
+		}
+		/* Check for rat-lines that may intersect the PV */
+		if (AndRats) {
+			if (setjmp(info.env) == 0)
+				pcb_r_search(PCB->Data->rat_tree, (pcb_box_t *) & info.ps, NULL, LOCtoPSrat_callback, &info, NULL);
+			else
+				return pcb_true;
+		}
+		PadstackList.Location++;
 	}
 	return pcb_false;
 }

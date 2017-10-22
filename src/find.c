@@ -158,6 +158,7 @@ static ListType LineList[PCB_MAX_LAYER+2],	/* list of objects to */
  * some local prototypes
  */
 static pcb_bool LookupLOConnectionsToPVList(pcb_bool);
+static pcb_bool LookupLOConnectionsToPSList(pcb_bool);
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToPVList(void);

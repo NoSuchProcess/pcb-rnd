@@ -20,8 +20,13 @@
  *
  */
 
+#ifndef PCB_OBJ_PADSTACK_INLINES_H
+#define PCB_OBJ_PADSTACK_INLINES_H
+
+#include "board.h"
 #include "obj_padstack.h"
 #include "vtpadstack.h"
+#include "layer.h"
 
 typedef enum {
 	PCB_BB_NONE, /* no drill */
@@ -124,3 +129,25 @@ static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape(pcb_padst
 
 	return 0;
 }
+
+static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_at(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_t *layer)
+{
+	unsigned int lyt = pcb_layer_flags_(layer);
+	pcb_layer_combining_t comb = 0;
+
+	if ((lyt & PCB_LYT_COPPER) && (lyt & PCB_LYT_INTERN)) {
+		/* apply internal only if that layer has drill */
+		if (!pcb_padstack_bb_drills(pcb, ps, pcb_layer_get_group_(layer), NULL))
+			return NULL;
+	}
+
+	/* combining is always 0 for copper */
+	if (lyt & PCB_LYT_COPPER)
+		comb = 0;
+	else
+		comb = layer->comb;
+
+	return pcb_padstack_shape(ps, lyt, comb);
+}
+
+#endif

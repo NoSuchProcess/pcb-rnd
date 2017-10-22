@@ -70,6 +70,7 @@ static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 		newone =
 			LookupPVConnectionsToPVList() ||
 			LookupLOConnectionsToPVList(AndRats) ||
+			LookupLOConnectionsToPSList(AndRats) ||
 			LookupLOConnectionsToLOList(AndRats) ||
 			LookupPVConnectionsToLOList(AndRats);
 		if (AndDraw)
