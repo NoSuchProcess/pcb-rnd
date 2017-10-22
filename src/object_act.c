@@ -244,6 +244,50 @@ from.
 
 #define GAP PCB_MIL_TO_COORD(100)
 
+static void disperse_obj(pcb_element_t *element, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
+{
+		/*
+		 * If we want to disperse selected elements, maybe we need smarter
+		 * code here to avoid putting components on top of others which
+		 * are not selected.  For now, I'm assuming that this is typically
+		 * going to be used either with a brand new design or a scratch
+		 * design holding some new components
+		 */
+
+			/* figure out how much to move the element */
+			*dx = *minx - element->BoundingBox.X1;
+
+			/* snap to the grid */
+			*dx -= (element->MarkX + *dx) % PCB->Grid;
+
+			/*
+			 * and add one grid size so we make sure we always space by GAP or
+			 * more
+			 */
+			*dx += PCB->Grid;
+
+			/* Figure out if this row has room.  If not, start a new row */
+			if (GAP + element->BoundingBox.X2 + *dx > PCB->MaxWidth) {
+				*miny = *maxy + GAP;
+				*minx = GAP;
+			}
+
+			/* figure out how much to move the element */
+			*dx = *minx - element->BoundingBox.X1;
+			*dy = *miny - element->BoundingBox.Y1;
+
+			/* snap to the grid */
+			*dx -= (element->MarkX + *dx) % PCB->Grid;
+			*dx += PCB->Grid;
+			*dy -= (element->MarkY + *dy) % PCB->Grid;
+			*dy += PCB->Grid;
+
+			/* keep track of how tall this row is */
+			*minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
+			if (*maxy < element->BoundingBox.Y2)
+				*maxy = element->BoundingBox.Y2;
+}
+
 static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
@@ -275,56 +319,15 @@ static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, 
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		/*
-		 * If we want to disperse selected elements, maybe we need smarter
-		 * code here to avoid putting components on top of others which
-		 * are not selected.  For now, I'm assuming that this is typically
-		 * going to be used either with a brand new design or a scratch
-		 * design holding some new components
-		 */
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
-
-			/* figure out how much to move the element */
-			dx = minx - element->BoundingBox.X1;
-
-			/* snap to the grid */
-			dx -= (element->MarkX + dx) % PCB->Grid;
-
-			/*
-			 * and add one grid size so we make sure we always space by GAP or
-			 * more
-			 */
-			dx += PCB->Grid;
-
-			/* Figure out if this row has room.  If not, start a new row */
-			if (GAP + element->BoundingBox.X2 + dx > PCB->MaxWidth) {
-				miny = maxy + GAP;
-				minx = GAP;
-			}
-
-			/* figure out how much to move the element */
-			dx = minx - element->BoundingBox.X1;
-			dy = miny - element->BoundingBox.Y1;
-
-			/* snap to the grid */
-			dx -= (element->MarkX + dx) % PCB->Grid;
-			dx += PCB->Grid;
-			dy -= (element->MarkY + dy) % PCB->Grid;
-			dy += PCB->Grid;
-
+			disperse_obj(element, &dx, &dy, &minx, &miny, &maxy);
+			
 			/* move the element */
 			pcb_element_move(PCB->Data, element, dx, dy);
 
 			/* and add to the undo list so we can undo this operation */
 			pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
-
-			/* keep track of how tall this row is */
-			minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
-			if (maxy < element->BoundingBox.Y2) {
-				maxy = element->BoundingBox.Y2;
-			}
 		}
-
 	}
 	PCB_END_LOOP;
 
