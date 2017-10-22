@@ -196,8 +196,6 @@ pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 	pcb_padstack_t *ps = (pcb_padstack_t *)b;
 	pcb_padstack_shape_t *shape;
 
-pcb_trace("DRAW %ld!\n", (long int)ctx->gid);
-
 #warning padstack TODO: comb should not be 0 - draw both add and sub!
 	shape = pcb_padstack_shape(ps, pcb_layergrp_flags(ctx->pcb, ctx->gid), 0);
 	if (shape != NULL) {
