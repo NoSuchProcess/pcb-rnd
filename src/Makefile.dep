@@ -5421,8 +5421,8 @@ find.o: find.c ../config.h const.h math_helper.h conf_core.h conf.h \
  obj_arc_ui.h find_lookup.c compat_nls.h board.h rats_patch.h \
  obj_subc_parent.h find_intconn.c find_drc.c obj_arc_draw.h \
  obj_pad_draw.h obj_rat_draw.h obj_line_draw.h obj_elem_draw.h \
- obj_poly_draw.h obj_pinvia_draw.h find_misc.c change.h find_clear.c \
- find_debug.c find_print.c
+ obj_poly_draw.h obj_pinvia_draw.h obj_padstack_draw.h find_misc.c \
+ change.h find_clear.c find_debug.c find_print.c
 find_act.o: find_act.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6154,7 +6154,7 @@ obj_padstack.o: obj_padstack.c ../config.h board.h const.h macro.h \
  crosshair.h vtonpoint.h hid.h error.h drc.h route.h buffer.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ht_subc.h vtpadstack.h data_list.h draw.h obj_padstack_draw.h \
- obj_padstack_inlines.h
+ obj_padstack_inlines.h search.h rats.h netlist.h route_style.h
 obj_padstack_act.o: obj_padstack_act.c ../config.h obj_padstack.h \
  obj_common.h ../src_3rd/genht/hash.h ../src_3rd/genlist/gendlist.h \
  flag.h globalconst.h attrib.h global_typedefs.h pcb_bool.h unit.h \
