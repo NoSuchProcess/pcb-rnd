@@ -1772,7 +1772,7 @@ static GtkWidget *bu_scrolled_window_packed(GtkWidget * child, GtkOrientation or
 
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), b1);
+	gtkc_scrolled_window_add_with_viewport(scrolled, b1);
 	viewport = gtk_bin_get_child(GTK_BIN(scrolled));
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 	gtk_widget_set_size_request(viewport, 100, 200);

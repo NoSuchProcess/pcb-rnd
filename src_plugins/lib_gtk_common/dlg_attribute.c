@@ -173,7 +173,7 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(fr), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_box_pack_start(GTK_BOX(parent), fr, TRUE, TRUE, 0);
 		parent = gtkc_hbox_new(FALSE, 0);
-		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(fr), parent);
+		gtkc_scrolled_window_add_with_viewport(fr, parent);
 	}
 	return parent;
 }

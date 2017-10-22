@@ -527,7 +527,7 @@ void ghid_drc_window_show(pcb_gtk_drcwin_t *drcwin, gboolean raise)
 	drcwin->drc_vbox = gtkc_vbox_new(FALSE, 0);
 
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), drcwin->drc_vbox);
+	gtkc_scrolled_window_add_with_viewport(scrolled_window, drcwin->drc_vbox);
 
 	/* Dialog buttons */
 	hbox = gtk_hbutton_box_new();
