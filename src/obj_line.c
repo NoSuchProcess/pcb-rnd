@@ -492,9 +492,7 @@ void *pcb_lineop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 {
 	if (Layer->meta.real.vis)
 		pcb_line_invalidate_erase(Line);
-	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	pcb_line_move(Line, ctx->move.dx, ctx->move.dy);
-	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	if (Layer->meta.real.vis) {
 		pcb_line_invalidate_draw(Layer, Line);
 		pcb_draw();
@@ -504,18 +502,24 @@ void *pcb_lineop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 
 void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
+	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	pcb_lineop_move_noclip(ctx, Layer, Line);
+	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	return Line;
 }
 
 void *pcb_lineop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	if (ctx->clip.restore)
+	if (ctx->clip.restore) {
+		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	if (ctx->clip.clear)
+	}
+	if (ctx->clip.clear) {
+		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+	}
 	return Line;
 }
 

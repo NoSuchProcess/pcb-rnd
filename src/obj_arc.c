@@ -532,7 +532,6 @@ void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 /* moves an arc */
 void *pcb_arcop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	if (Layer->meta.real.vis) {
 		pcb_arc_invalidate_erase(Arc);
 		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
@@ -542,24 +541,29 @@ void *pcb_arcop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 	else {
 		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
 	}
-	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	return Arc;
 }
 
 void *pcb_arcop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
+	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_arcop_move_noclip(ctx, Layer, Arc);
+	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	return Arc;
 }
 
 void *pcb_arcop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	if (ctx->clip.restore)
+	if (ctx->clip.restore) {
+		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-	if (ctx->clip.clear)
+	}
+	if (ctx->clip.clear) {
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+	}
 	return Arc;
 }
 

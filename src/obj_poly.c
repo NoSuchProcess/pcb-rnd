@@ -536,9 +536,7 @@ void *pcb_polyop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *P
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_erase(Polygon);
 	}
-	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_move(Polygon, ctx->move.dx, ctx->move.dy);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (Layer->meta.real.vis) {
 		pcb_poly_invalidate_draw(Layer, Polygon);
@@ -549,18 +547,24 @@ void *pcb_polyop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *P
 
 void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_pprestore(Polygon);
 	pcb_polyop_move_noclip(ctx, Layer, Polygon);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_ppclear(Polygon);
 	return Polygon;
 }
 
 void *pcb_polyop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
-	if (ctx->clip.restore)
+	if (ctx->clip.restore) {
+		pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 		pcb_poly_pprestore(Polygon);
-	if (ctx->clip.clear)
+	}
+	if (ctx->clip.clear) {
+		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 		pcb_poly_ppclear(Polygon);
+	}
 	return Polygon;
 }
 /* moves a polygon-point */
