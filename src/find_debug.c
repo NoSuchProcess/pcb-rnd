@@ -142,7 +142,8 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 			sc = ps->parent.data->parent.subc;
 		else
 			sc = NULL;
-#warning padstack TODO: get terminal name?
-		PrintConnectionListEntry("TODO#termname", sc, pcb_false, FP);
+#warning padstack TODO: get terminal name? PrintConnectionListEntry does not handle element!
+		sc = NULL;
+		PrintConnectionListEntry("TODO#termname", (pcb_element_t *)sc, pcb_false, FP);
 	}
 }

@@ -179,6 +179,13 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 			break;
 		}
 
+	case PCB_OBJ_PADSTACK:
+		{
+			if (ADD_PADSTACK_TO_LIST((pcb_padstack_t *)obj, 0, NULL, PCB_FCT_START))
+				return pcb_true;
+			break;
+		}
+
 	case PCB_OBJ_RAT:
 		{
 			if (ADD_RAT_TO_LIST((pcb_rat_t *)obj, 0, NULL, PCB_FCT_START))
@@ -300,6 +307,7 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 		case PCB_OBJ_PAD:     return PCB_TYPE_PAD;
 		case PCB_OBJ_PIN:     return PCB_TYPE_PIN;
 		case PCB_OBJ_VIA:     return PCB_TYPE_VIA;
+		case PCB_OBJ_PADSTACK:return PCB_TYPE_PADSTACK;
 		case PCB_OBJ_ELEMENT: return PCB_TYPE_ELEMENT;
 		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
 
@@ -377,6 +385,18 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 			PCB_FLAG_CLEAR(TheFlag, via);
 			if (AndDraw)
 				pcb_via_invalidate_draw(via);
+			change = pcb_true;
+		}
+	}
+	PCB_END_LOOP;
+	PCB_PADSTACK_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(TheFlag, padstack)) {
+			if (AndDraw)
+				pcb_undo_add_obj_to_flag(padstack);
+			PCB_FLAG_CLEAR(TheFlag, padstack);
+			if (AndDraw)
+				pcb_padstack_invalidate_draw(padstack);
 			change = pcb_true;
 		}
 	}
