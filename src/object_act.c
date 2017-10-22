@@ -246,46 +246,41 @@ from.
 
 static void disperse_obj(pcb_element_t *element, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
 {
-		/*
-		 * If we want to disperse selected elements, maybe we need smarter
-		 * code here to avoid putting components on top of others which
-		 * are not selected.  For now, I'm assuming that this is typically
-		 * going to be used either with a brand new design or a scratch
-		 * design holding some new components
-		 */
+	/* If we want to disperse selected elements, maybe we need smarter
+	   code here to avoid putting components on top of others which
+	   are not selected.  For now, I'm assuming that this is typically
+	   going to be used either with a brand new design or a scratch
+	   design holding some new components */
 
-			/* figure out how much to move the element */
-			*dx = *minx - element->BoundingBox.X1;
+	/* figure out how much to move the element */
+	*dx = *minx - element->BoundingBox.X1;
 
-			/* snap to the grid */
-			*dx -= (element->MarkX + *dx) % PCB->Grid;
+	/* snap to the grid */
+	*dx -= (element->MarkX + *dx) % PCB->Grid;
 
-			/*
-			 * and add one grid size so we make sure we always space by GAP or
-			 * more
-			 */
-			*dx += PCB->Grid;
+	/* and add one grid size so we make sure we always space by GAP or more */
+	*dx += PCB->Grid;
 
-			/* Figure out if this row has room.  If not, start a new row */
-			if (GAP + element->BoundingBox.X2 + *dx > PCB->MaxWidth) {
-				*miny = *maxy + GAP;
-				*minx = GAP;
-			}
+	/* Figure out if this row has room.  If not, start a new row */
+	if (GAP + element->BoundingBox.X2 + *dx > PCB->MaxWidth) {
+		*miny = *maxy + GAP;
+		*minx = GAP;
+	}
 
-			/* figure out how much to move the element */
-			*dx = *minx - element->BoundingBox.X1;
-			*dy = *miny - element->BoundingBox.Y1;
+	/* figure out how much to move the element */
+	*dx = *minx - element->BoundingBox.X1;
+	*dy = *miny - element->BoundingBox.Y1;
 
-			/* snap to the grid */
-			*dx -= (element->MarkX + *dx) % PCB->Grid;
-			*dx += PCB->Grid;
-			*dy -= (element->MarkY + *dy) % PCB->Grid;
-			*dy += PCB->Grid;
+	/* snap to the grid */
+	*dx -= (element->MarkX + *dx) % PCB->Grid;
+	*dx += PCB->Grid;
+	*dy -= (element->MarkY + *dy) % PCB->Grid;
+	*dy += PCB->Grid;
 
-			/* keep track of how tall this row is */
-			*minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
-			if (*maxy < element->BoundingBox.Y2)
-				*maxy = element->BoundingBox.Y2;
+	/* keep track of how tall this row is */
+	*minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
+	if (*maxy < element->BoundingBox.Y2)
+		*maxy = element->BoundingBox.Y2;
 }
 
 static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
