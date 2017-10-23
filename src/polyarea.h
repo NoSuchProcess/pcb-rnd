@@ -123,7 +123,7 @@ pcb_bool pcb_polyarea_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src);
 pcb_bool pcb_polyarea_copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src);
 
 pcb_bool pcb_polyarea_contour_include(pcb_polyarea_t * p, pcb_pline_t * c);
-pcb_bool pcb_polyarea_contour_exclide(pcb_polyarea_t * p, pcb_pline_t * c);
+pcb_bool pcb_polyarea_contour_exclude(pcb_polyarea_t * p, pcb_pline_t * c);
 
 
 pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a);
