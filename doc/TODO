@@ -1,4 +1,5 @@
 1. For the upcoming release ===============================================================================
+- BUG: shift+b doesn't work on subc [report: Ade]
 - subc edit: when open directly, allow parts to be selected/moved/etc.
 - feature: property editor should deal with flags
 + BUG: edit subc floater flag -> assert [report: miloh]
