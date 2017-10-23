@@ -54,7 +54,7 @@ such flexibility: pcb-rnd computes its content from explicit layers and there's
 no way for the user to change the result directly.
 <p>
 Pcb-rnd currently maintains some layers types as virtual layers for
-compatability with the PCB package. In a pcb-rnd board design started from
+compatibility with the PCB package. In a pcb-rnd board design started from
 default configuration options, the mask, silk, and paste layers currently start
 out as virtual layers. The content for these layers is computed by pcb-rnd as
 for a virtual or explicit layer, until the user decides to use features that
@@ -204,7 +204,7 @@ with the "clearline" flag set will clear all "clearpolys" it is over -
 if there are multiple such polygons overlapping under the objects (on
 the same layer group), all such polygons get the clearance cutout.
 <p>
-If a polygon is cut into multiple islands, the behaviour depends on the
+If a polygon is cut into multiple islands, the behavior depends on the
 "fullpoly" flag of the polygon. If it is not set (default), only the largest
 island is kept, else all islands are kept. In the "fullpoly" mode islands
 will have no galvanic connection (unless the user adds vias and connect them
@@ -241,15 +241,15 @@ checker code skips texts.
 <h4> 2.4.5. Via Objects </h4>
 <p>
 A via is an electrically connected hole that connects copper rings to multiple
-layers. Thermal relief styles are availabe to both pads and pins, and the shape
+layers. Thermal relief styles are available to both pads and pins, and the shape
 styles of a via are available to pins. Since a via hole always punches all layer
 groups and applies the same ring style on any outside layer groups, blind or
-bured vias and individually defined layer padstacks (e.g. with changing ring
-shape per layer) are not explictly designable in pcb-rnd. 
+buried vias and individually defined layer pad stacks (e.g. with changing ring
+shape per layer) are not explicitly designable in pcb-rnd. 
 <p>
 A thermal relief property is added to the copper rings of a via when it is
 connected to the surrounding polygon of any individual layer. Physical designs
-may use thermal reliefs to enable easy hand soldering, or reduce occurance of
+may use thermal reliefs to enable easy hand soldering, or reduce occurrence of
 tombstoning in automated production.
 <p>
 The following thermal relief options are available:
@@ -269,11 +269,11 @@ annulus (ring) on the outside layer groups is selectable from a predefined set
 of shapes that provide solderability or can be used to indicate a special pin.
 Flags in the via object define the shape used. 
 <table border=1>
-	<caption><b>Via Annulus Shape Syles</b>
+	<caption><b>Via Annulus Shape Styles</b>
 	<tr><th>Shape          <th> Appearance
 	<tr><td>ring (default) <td> <img src="via_ring_shape.png" alt="Ring via style">
 	<tr><td>square         <td> <img src="via_square_shape.png" alt="Square via style">
-	<tr><td>octagon        <td> <img src="via_octagon_shape.png" alt="Octogonal via style">
+	<tr><td>octagon        <td> <img src="via_octagon_shape.png" alt="Octagonal via style">
 	<tr><td>asymmetric   <td> <img src="via_asym_shape.png" alt="Asymmetric via style">
 </table>
 
@@ -413,7 +413,7 @@ Pad stacks are flexible enough to cover the majority of the simple pin/pad/via
 cases. In a subcircuit, marked as a terminal, a pad stack is called a
 <i>light terminal</i>. This concept exist in parallel to the <i>heavy terminal</i>
 concept: a heavy terminal consists of multiple objects (e.g. polygons, lines,
-arcs, pad stacks), all tagged to the same terminal. When the padstack model
+arcs, pad stacks), all tagged to the same terminal. When the pad stack model
 is not capable to describe a complicated pin or pad, the user should chose the
 heavy terminal model. A typical example is the center pad of a QFN footprint
 with vias for heat transfer and a specific pattern of paste. The strength
@@ -421,9 +421,9 @@ of a pad stack is it's relative simplicity and that all objects on the vertical
 stack are bundled together; the strength of the heavy model is its flexibility:
 anything that can be drawn on board can be turned into a heavy terminal.
 <p>
-The optional hole of the padstack is useful if the padstack is to be used
+The optional hole of the pad stack is useful if the pad stack is to be used
 as a mounting hole, via or pin. The span of the hole is described by two
-itnegers: how far the hole starts and ends from the top or bottom copper
+integers: how far the hole starts and ends from the top or bottom copper
 layer group, counted in copper layer groups. A simple all-way-thru hole's span
 is 0;0, which means it starts at the top copper group and ends on the bottom
 copper group. The plating of the hole is a boolean and is independent of any
@@ -455,22 +455,22 @@ For each layer group type, the user may specify zero or one pad shape.
 The pad stack has an origin, a 0;0 point where it is grabbed. If the pad stack
 features a hole, the origin is the center point of the hole. Pad shapes are
 all defined in a way that they do not have to be concentric with the hole or
-the origin. This allows assymetric pads.
+the origin. This allows asymmetric pads.
 <p>
 In case of blind/buried vias, the internal copper layer pads are applied
 only on layers with hole span. However, this does <b>not</b> apply to top/bottom
 shapes, those are always explicit. This means it is possible to use a pad stack
 as a pad-pair of an board edge connector, having a copper pad on the top
 layer and one on the bottom layer, even without having a (plated) hole in between.
-The code will assume connection between the pads only if the padstack has a
+The code will assume connection between the pads only if the pad stack has a
 plated hole.
 <p>
 <table border=1>
 	<caption><b>Typical pad stack examples</b>
 	<tr><th>name                    <th> description
-	<tr><td>rectangular smd pad     <td> no hole; square cap line or poly on top copper, top mask and top paste
+	<tr><td>rectangular smd pad     <td> no hole; square cap line or polygon on top copper, top mask and top paste
 	<tr><td>simple pin or via       <td> plated hole and the same filled circle on all copper layers; if pin, a slightly bigger circle on the mask layers
-	<tr><td>octagon pin or via      <td> plated hole and the same simple polygon (octagon shaped) on all copper layers; if pin, a slightly bigger poly on the mask layers
+	<tr><td>octagon pin or via      <td> plated hole and the same simple polygon (octagon shaped) on all copper layers; if pin, a slightly bigger polygon on the mask layers
 	<tr><td>'oblong' pin            <td> plated hole, a short round cap line segment on the bottom copper and mask layers, filled circle on all other copper layers and on the top mask layer
 	<tr><td>blind via               <td> plated hole and the same filled circle on internal and top copper layers - nothing on the bottom copper layer
 	<tr><td>power jack with slot    <td> n/a - can not be done with pad stack as the plated slots for the pins can not be represented as plated round holes - use heavy terminals instead
@@ -494,7 +494,7 @@ are modified as well.
 <p>
 A rat line represents a logical connection that is not yet realized in copper.
 It requires a loaded netlist for generation, and relies on calculations for any
-existing coppre layers that connect terminals on the pcb-rnd board.  Rat
+existing copper layers that connect terminals on the pcb-rnd board.  Rat
 connections are straight line connections between the terminals of any two
 drawing primitives that aren't yet connected  
 
