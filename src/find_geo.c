@@ -885,6 +885,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack
 			return pcb_intersect_line_arc(&tmp, arc);
 		}
 		case PCB_PSSH_CIRC:
+			pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->x, shape->data.circ.dia/2, arc);
 			break;
 	}
 	return pcb_false;
