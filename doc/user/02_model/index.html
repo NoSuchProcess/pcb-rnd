@@ -125,6 +125,7 @@ combination is supported or not.
 Pcb-rnd supports a small number of basic drawing objects, from which complex
 objects can be build. The following figure demonstrates all basic objects:
 <p>
+<!-- TODO: update with padstack -->
 <img src="objects_basic.png" alt="[Arc, Line, Polygon, Pin, Via]">
 <p>
 Objects have flags that control their behavior. The following flags are common
@@ -396,7 +397,100 @@ Extra object flags:
 	<tr><td>EDGE2       <td> indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)
 </table>
 
-<h4> 2.4.9. Rat line Objects </h4>
+<h4> 2.4.9. Subcircuits </h4> <a id="subcircuit">
+
+<h4> 2.4.10. Pad stacks </h4> <a id="padstack">
+<p>
+A pad stack is a generic pin/pad/via object that may contain any combination
+of:
+<ul>
+	<li> a hole (plated or unplated, thru-hole or blind/buried)
+	<li> a pad shape that can be different on each layer group type
+	<li> thermal relief info on a per layer basis
+</ul>
+<p>
+Pad stacks are flexible enough to cover the majority of the simple pin/pad/via
+cases. In a subcircuit, marked as a terminal, a pad stack is called a
+<i>light terminal</i>. This concept exist in parallel to the <i>heavy terminal</i>
+concept: a heavy terminal consists of multiple objects (e.g. polygons, lines,
+arcs, pad stacks), all tagged to the same terminal. When the padstack model
+is not capable to describe a complicated pin or pad, the user should chose the
+heavy terminal model. A typical example is the center pad of a QFN footprint
+with vias for heat transfer and a specific pattern of paste. The strength
+of a pad stack is it's relative simplicity and that all objects on the vertical
+stack are bundled together; the strength of the heavy model is its flexibility:
+anything that can be drawn on board can be turned into a heavy terminal.
+<p>
+The optional hole of the padstack is useful if the padstack is to be used
+as a mounting hole, via or pin. The span of the hole is described by two
+itnegers: how far the hole starts and ends from the top or bottom copper
+layer group, counted in copper layer groups. A simple all-way-thru hole's span
+is 0;0, which means it starts at the top copper group and ends on the bottom
+copper group. The plating of the hole is a boolean and is independent of any
+other parameter.
+<p>
+For each layer group type, the user may specify zero or one pad shape.
+<table border=1>
+	<caption><b>Pad stack layer group types</b>
+	<tr><th>name           <th> remarks
+	<tr><td>top silk       <td> &nbsp;
+	<tr><td>top paste      <td> &nbsp;
+	<tr><td>top mask       <td> the first negative layer is used
+	<tr><td>top copper     <td> &nbsp;
+	<tr><td>intern copper  <td> the same pad will be used on all internal copper groups
+	<tr><td>bottom copper  <td> &nbsp;
+	<tr><td>bottom mask    <td> the first negative layer is used
+	<tr><td>bottom paste   <td> &nbsp;
+	<tr><td>bottom silk    <td> &nbsp;
+</table>
+<p>
+<table border=1>
+	<caption><b>Pad shapes</b>
+	<tr><th>name           <th> description
+	<tr><td>fillcircle     <td> x;y offset of the center, diameter
+	<tr><td>line           <td> round or square cap, from x1;y1 to x2;y2 with the specified thickness
+	<tr><td>simple-polygon <td> a simple polygon has a single outer contour and no holes
+</table>
+<p>
+The pad stack has an origin, a 0;0 point where it is grabbed. If the pad stack
+features a hole, the origin is the center point of the hole. Pad shapes are
+all defined in a way that they do not have to be concentric with the hole or
+the origin. This allows assymetric pads.
+<p>
+In case of blind/buried vias, the internal copper layer pads are applied
+only on layers with hole span. However, this does <b>not</b> apply to top/bottom
+shapes, those are always explicit. This means it is possible to use a pad stack
+as a pad-pair of an board edge connector, having a copper pad on the top
+layer and one on the bottom layer, even without having a (plated) hole in between.
+The code will assume connection between the pads only if the padstack has a
+plated hole.
+<p>
+<table border=1>
+	<caption><b>Typical pad stack examples</b>
+	<tr><th>name                    <th> description
+	<tr><td>rectangular smd pad     <td> no hole; square cap line or poly on top copper, top mask and top paste
+	<tr><td>simple pin or via       <td> plated hole and the same filled circle on all copper layers; if pin, a slightly bigger circle on the mask layers
+	<tr><td>octagon pin or via      <td> plated hole and the same simple polygon (octagon shaped) on all copper layers; if pin, a slightly bigger poly on the mask layers
+	<tr><td>'oblong' pin            <td> plated hole, a short round cap line segment on the bottom copper and mask layers, filled circle on all other copper layers and on the top mask layer
+	<tr><td>blind via               <td> plated hole and the same filled circle on internal and top copper layers - nothing on the bottom copper layer
+	<tr><td>power jack with slot    <td> n/a - can not be done with pad stack as the plated slots for the pins can not be represented as plated round holes - use heavy terminals instead
+</table>
+<p>
+Pad stacks prototypes are stored only once per pcb_data_t (only once per
+board for vias or per each subcircuit for terminals). The actual pad stacks
+placed on the board (or in subcircuit) are called <i>pad stack references</i>.
+A pad stack reference has its own x;y coordinate (within the board or subcircuit)
+and a reference to the prototype. However, the pad stack reference does not
+encode transformations such as rotation or mirror. This means if a TQFP chip
+has 48 pads along 4 sides, in the simplest setup there will be 2 pad stack
+prototypes (a vertical and a horizontal) and 24+24 pad stack references using
+them. Pcb-rnd keeps track of pad stacks prototypes which are created from
+an existing prototype by rotation or mirroring; this lets the user modify
+the pad stack prototype in a way that all other rotated/mirrored prototypes
+are modified as well.
+
+
+<h4> 2.4.11. Rat line Objects </h4>
 <p>
 A rat line represents a logical connection that is not yet realized in copper.
 It requires a loaded netlist for generation, and relies on calculations for any
@@ -404,7 +498,7 @@ existing coppre layers that connect terminals on the pcb-rnd board.  Rat
 connections are straight line connections between the terminals of any two
 drawing primitives that aren't yet connected  
 
-<h4> 2.4.10. Netlists </h4>
+<h4> 2.4.12. Netlists </h4>
 <p>
 A netlist is a list of named logical networks. Each network is a list of
 netlist terminals that should be connected. A netlist terminal is a pair
