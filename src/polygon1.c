@@ -3360,6 +3360,16 @@ pcb_bool pcb_pline_overlaps_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy
 }
 
 
+/*
+ * pcb_is_point_in_convex_quad()
+ * (C) 2017 Tibor 'Igor2' Palinkas
+*/
+pcb_bool_t pcb_is_point_in_convex_quad(pcb_vector_t p, pcb_vector_t *q)
+{
+	return point_in_triangle(q[0], q[1], q[2], p) || point_in_triangle(q[0], q[3], q[2], p);
+}
+
+
 
 /* how about expanding polygons so that edges can be arcs rather than
  * lines. Consider using the third coordinate to store the radius of the
