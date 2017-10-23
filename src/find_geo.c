@@ -899,7 +899,26 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_poly(pcb_padstac
 
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
-			break;
+		{
+			/* convert the shape poly to a new poly so that it can be intersected */
+			pcb_polyarea_t *shp = pcb_polyarea_create();
+			pcb_pline_t *pl;
+			pcb_vector_t v;
+			pcb_bool res;
+			int n;
+
+			v[0] = shape->data.poly.x[0] + ps->x; v[1] = shape->data.poly.y[0] + ps->y;
+			pl = pcb_poly_contour_new(v);
+			for(n = 1; n < shape->data.poly.len; n++) {
+				v[0] = shape->data.poly.x[n] + ps->x; v[1] = shape->data.poly.y[n] + ps->y;
+				pcb_poly_vertex_include(pl->head.prev, pcb_poly_node_create(v));
+			}
+			pcb_poly_contour_pre(pl, 1);
+			pcb_polyarea_contour_include(shp, pl);
+			res = pcb_polyarea_touching(shp, poly->Clipped);
+			pcb_polyarea_free(&shp);
+			return res;
+		}
 		case PCB_PSSH_LINE:
 		{
 			pcb_line_t tmp;
