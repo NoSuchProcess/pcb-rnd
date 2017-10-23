@@ -88,6 +88,7 @@ pcb_bool pcb_poly_is_point_in_p(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_poly_
 pcb_bool pcb_poly_is_point_in_p_ignore_holes(pcb_coord_t, pcb_coord_t, pcb_poly_t *);
 pcb_bool pcb_poly_is_rect_in_p(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_poly_t *);
 pcb_bool pcb_poly_isects_poly(pcb_polyarea_t *, pcb_poly_t *, pcb_bool);
+pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1, pcb_coord_t lx2, pcb_coord_t ly2);
 pcb_bool pcb_poly_morph(pcb_layer_t *, pcb_poly_t *);
 void pcb_poly_no_holes_dicer(pcb_poly_t * p, const pcb_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data);
 void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, pcb_polyarea_t *, pcb_flag_t);

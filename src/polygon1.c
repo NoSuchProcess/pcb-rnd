@@ -3196,6 +3196,39 @@ int pcb_vect_inters2(pcb_vector_t p1, pcb_vector_t p2, pcb_vector_t q1, pcb_vect
 	}
 }																/* vect_inters2 */
 
+typedef struct {
+	pcb_vector_t l1, l2;
+} pline_isect_line_t;
+
+static pcb_r_dir_t pline_isect_line_cb(const pcb_box_t * b, void *cl)
+{
+	pline_isect_line_t *ctx = (pline_isect_line_t *)cl;
+	struct seg *s = (struct seg *)b;
+	pcb_vector_t S1, S2;
+
+	if (pcb_vect_inters2(s->v->point, s->v->next->point, ctx->l1, ctx->l2, S1, S2))
+		return PCB_R_DIR_CANCEL; /* found */
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1, pcb_coord_t lx2, pcb_coord_t ly2)
+{
+	pline_isect_line_t ctx;
+	pcb_box_t lbx;
+	ctx.l1[0] = lx1; ctx.l1[1] = ly1;
+	ctx.l2[0] = lx2; ctx.l2[1] = ly2;
+	lbx.X1 = MIN(lx1, lx2);
+	lbx.Y1 = MIN(ly1, ly2);
+	lbx.X2 = MAX(lx1, lx2);
+	lbx.Y2 = MAX(ly1, ly2);
+
+	if (pl->tree == NULL)
+		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+
+	return pcb_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == PCB_R_DIR_CANCEL;
+}
+
 /* how about expanding polygons so that edges can be arcs rather than
  * lines. Consider using the third coordinate to store the radius of the
  * arc. The arc would pass through the vertex points. Positive radius
