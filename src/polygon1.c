@@ -3242,6 +3242,7 @@ pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1,
 
 typedef struct {
 	pcb_coord_t cx, cy, r;
+	double r2;
 } pline_isect_circ_t;
 
 static pcb_r_dir_t pline_isect_circ_cb(const pcb_box_t * b, void *cl)
@@ -3251,6 +3252,12 @@ static pcb_r_dir_t pline_isect_circ_cb(const pcb_box_t * b, void *cl)
 	pcb_vector_t S1, S2;
 	pcb_vector_t ray1, ray2;
 	double ox, oy, dx, dy, l;
+
+	/* Cheap: if either line endpoint is within the circle, we sure have an intersection */
+	if ((PCB_SQUARE(s->v->point[0] - ctx->cx) + PCB_SQUARE(s->v->point[1] - ctx->cy)) <= ctx->r2)
+		return PCB_R_DIR_CANCEL; /* found */
+	if ((PCB_SQUARE(s->v->next->point[0] - ctx->cx) + PCB_SQUARE(s->v->next->point[1] - ctx->cy)) <= ctx->r2)
+		return PCB_R_DIR_CANCEL; /* found */
 
 	dx = s->v->point[0] - s->v->next->point[0];
 	dy = s->v->point[1] - s->v->next->point[1];
@@ -3271,7 +3278,8 @@ pcb_bool pcb_pline_isect_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy, p
 {
 	pline_isect_circ_t ctx;
 	pcb_box_t cbx;
-	ctx.cx = cx; ctx.cy = cy; ctx.r = r;
+	ctx.cx = cx; ctx.cy = cy;
+	ctx.r = r; ctx.r2 = (double)r * (double)r;
 	cbx.X1 = cx - r; cbx.Y1 = cy - r;
 	cbx.X2 = cx + r; cbx.Y2 = cy + r;
 
