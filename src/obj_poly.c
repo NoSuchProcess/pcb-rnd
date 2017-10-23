@@ -181,7 +181,7 @@ void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)
 void pcb_poly_bbox(pcb_poly_t *Polygon)
 {
 	Polygon->BoundingBox.X1 = Polygon->BoundingBox.Y1 = PCB_MAX_COORD;
-	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = 0;
+	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = -PCB_MAX_COORD;
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
 		PCB_MAKE_MIN(Polygon->BoundingBox.X1, point->X);
