@@ -153,7 +153,7 @@ int pcb_act_LoadHpglFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 																"Picks a HP-GL plot file to load.\n",
 																default_file, ".hpgl", "hpgl", HID_FILESELECT_READ);
 		if (fname == NULL)
-			PCB_ACT_FAIL(LoadHpglFrom);
+			return 0; /* cancel */
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
