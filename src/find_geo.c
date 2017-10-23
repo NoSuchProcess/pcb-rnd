@@ -755,6 +755,38 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 	return pcb_is_point_in_pad(PV->X, PV->Y, MAX(PIN_SIZE(PV) / 2.0 + Bloat, 0.0), (pcb_pad_t *) Line);
 }
 
+/* returns whether a round-cap pcb line touches a polygon; assumes bounding
+   boxes do touch */
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_intersect_line_polyline(pcb_line_t *line, pcb_pline_t *pl)
+{
+	pcb_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y, thick = line->Thickness;
+	pcb_coord_t ox, oy;
+	double dx, dy, h;
+
+	/* single-point line - check only one circle*/
+	if ((x1 == x2) && (y1 == y2))
+		return pcb_pline_overlaps_circ(pl, x1, y1, thick/2);
+
+	/* long line - check ends */
+	if (pcb_pline_overlaps_circ(pl, x1, y1, thick/2)) return pcb_true;
+	if (pcb_pline_overlaps_circ(pl, x2, y2, thick/2)) return pcb_true;
+
+	dx = x2 - x1;
+	dy = y2 - y1;
+	h = 0.5 * thick / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+	ox = dy * h + 0.5 * SGN(dy);
+	oy = -(dx * h + 0.5 * SGN(dx));
+
+	/* long line - consider edge intersection */
+	if (pcb_pline_isect_line(pl, x1 + ox, y1 + oy, x2 + ox, y2 + oy)) return pcb_true;
+	if (pcb_pline_isect_line(pl, x1 - ox, y1 - oy, x2 - ox, y2 - oy)) return pcb_true;
+
+	/* A corner case is when the polyline is fully within the line. By now we
+	   are sure there's no contour intersection, so if any of the polyline points
+	   is in, the whole polyline is in. */
+#warning padstack TODO: consider corner case: poly is fully within the line
+	return pcb_false;
+}
 
 static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstack_t *ps, pcb_line_t *line)
 {
