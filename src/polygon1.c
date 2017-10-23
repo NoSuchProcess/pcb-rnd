@@ -2252,8 +2252,8 @@ void pcb_poly_contour_init(pcb_pline_t * c)
 		return;
 	/* bzero (c, sizeof(pcb_pline_t)); */
 	c->head.next = c->head.prev = &c->head;
-	c->xmin = c->ymin = 0x7fffffff;
-	c->xmax = c->ymax = 0x80000000;
+	c->xmin = c->ymin = COORD_MAX;
+	c->xmax = c->ymax = -COORD_MAX-1;
 	c->is_round = pcb_false;
 	c->cx = 0;
 	c->cy = 0;
@@ -2588,7 +2588,7 @@ int pcb_poly_contour_inside(pcb_pline_t * c, pcb_vector_t p)
 	info.f = 0;
 	info.p[0] = ray.X1 = p[0];
 	info.p[1] = ray.Y1 = p[1];
-	ray.X2 = 0x7fffffff;
+	ray.X2 = COORD_MAX;
 	ray.Y2 = p[1] + 1;
 	if (setjmp(info.env) == 0)
 		pcb_r_search(c->tree, &ray, NULL, crossing, &info, NULL);
