@@ -278,6 +278,30 @@ static void print_placement(FILE * fp)
 	}
 	PCB_END_LOOP;
 
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		char *ename;
+		pcb_coord_t ox, oy;
+		char *side;
+		pcb_layer_type_t lyt = PCB_LYT_TOP;
+
+		if (subc->aux_layer != NULL)
+			lyt = pcb_layer_flags_(subc->aux_layer);
+		side = (lyt & PCB_LYT_BOTTOM) ? "back" : "front";
+
+		assert(pcb_subc_get_origin(subc, &ox, &oy) == 0);
+		ename = subc->refdes;
+		if (ename != NULL)
+			ename = pcb_strdup(ename);
+		else
+			ename = pcb_strdup("null");
+		pcb_fprintf(fp, "    (component %d\n", subc->ID);
+		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ox, oy, side);
+		pcb_fprintf(fp, "    )\n");
+		g_free(ename);
+	}
+	PCB_END_LOOP;
+
 	PCB_VIA_LOOP(PCB->Data);
 	{ /* add mounting holes */
 		pcb_fprintf(fp, "    (component %d\n", via->ID);
