@@ -820,6 +820,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t
 		pcb_line.Point1.Y = shape_line.y1 + ps->y; \
 		pcb_line.Point2.X = shape_line.x2 + ps->x; \
 		pcb_line.Point2.Y = shape_line.y2 + ps->y; \
+		pcb_line.Clearance = 0; \
 		pcb_line.Thickness = shape_line.thickness; \
 		pcb_line.Flags = shape_line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags(); \
 	} while(0)
@@ -893,7 +894,33 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack
 
 static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_poly(pcb_padstack_t *ps, pcb_poly_t *poly)
 {
+	pcb_padstack_shape_t *shape = pcb_padstack_shape_at(PCB, ps, poly->parent.layer);
+	if (shape == NULL) return pcb_false;
+
+	switch(shape->shape) {
+		case PCB_PSSH_POLY:
+			break;
+		case PCB_PSSH_LINE:
+		{
+			pcb_line_t tmp;
+			shape_line_to_pcb_line(shape->data.line, tmp);
+			pcb_line_bbox(&tmp);
+			return pcb_is_line_in_poly(&tmp, poly);
+		}
+		case PCB_PSSH_CIRC:
+		{
+			pcb_line_t tmp;
+			tmp.Point1.X = tmp.Point2.X = shape->data.circ.x + ps->x;
+			tmp.Point1.Y = tmp.Point2.Y = shape->data.circ.y + ps->y;
+			tmp.Clearance = 0;
+			tmp.Thickness = shape->data.circ.dia;
+			tmp.Flags = pcb_no_flags();
+			pcb_line_bbox(&tmp);
+			return pcb_is_line_in_poly(&tmp, poly);
+		}
+	}
 	return pcb_false;
+
 }
 
 static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_rat(pcb_padstack_t *ps, pcb_rat_t *rat)
