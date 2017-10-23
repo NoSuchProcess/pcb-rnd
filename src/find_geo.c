@@ -551,6 +551,25 @@ pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 	return pcb_false;
 }
 
+pcb_bool pcb_is_arc_in_polyarea(pcb_arc_t *Arc, pcb_polyarea_t *pa)
+{
+	pcb_box_t *Box = (pcb_box_t *) Arc;
+	pcb_bool res = pcb_false;
+
+	/* arcs with clearance never touch polys */
+	if ((Box->X1 <= pa->contours->xmax + Bloat) && (Box->X2 >= pa->contours->xmin - Bloat)
+			&& (Box->Y1 <= pa->contours->ymax + Bloat) && (Box->Y2 >= pa->contours->ymin - Bloat)) {
+		pcb_polyarea_t *arcp;
+
+		if (!(arcp = pcb_poly_from_arc(Arc, Arc->Thickness + Bloat)))
+			return pcb_false; /* error */
+		res = pcb_polyarea_touching(arcp, pa);
+		pcb_polyarea_free(&arcp);
+	}
+	return res;
+}
+
+
 /* ---------------------------------------------------------------------------
  * checks if a line has a connection to a polygon
  *
@@ -795,24 +814,29 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t
 	}
 }
 
+#define shape_line_to_pcb_line(shape_line, pcb_line) \
+	do { \
+		pcb_line.Point1.X = shape_line.x1 + ps->x; \
+		pcb_line.Point1.Y = shape_line.y1 + ps->y; \
+		pcb_line.Point2.X = shape_line.x2 + ps->x; \
+		pcb_line.Point2.Y = shape_line.y2 + ps->y; \
+		pcb_line.Thickness = shape_line.thickness; \
+		pcb_line.Flags = shape_line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags(); \
+	} while(0)
+
 static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstack_t *ps, pcb_line_t *line)
 {
 	pcb_padstack_shape_t *shape = pcb_padstack_shape_at(PCB, ps, line->parent.layer);
 	if (shape == NULL) return pcb_false;
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
-			if (shape->data.poly.pl == NULL)
+			if (shape->data.poly.pa == NULL)
 				pcb_padstack_shape_update_pline(&shape->data.poly);
-			return pcb_intersect_line_polyline(shape->data.poly.pl, line->Point1.X - ps->x, line->Point1.Y - ps->y, line->Point2.X - ps->x, line->Point2.Y - ps->y, line->Thickness);
+			return pcb_intersect_line_polyline(shape->data.poly.pa->contours, line->Point1.X - ps->x, line->Point1.Y - ps->y, line->Point2.X - ps->x, line->Point2.Y - ps->y, line->Thickness);
 		case PCB_PSSH_LINE:
 		{
 			pcb_line_t tmp;
-			tmp.Point1.X = shape->data.line.x1 + ps->x;
-			tmp.Point1.Y = shape->data.line.y1 + ps->y;
-			tmp.Point2.X = shape->data.line.x2 + ps->x;
-			tmp.Point2.Y = shape->data.line.y2 + ps->y;
-			tmp.Thickness = shape->data.line.thickness;
-			tmp.Flags = shape->data.line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags();
+			shape_line_to_pcb_line(shape->data.line, tmp);
 			return pcb_intersect_line_line(line, &tmp);
 		}
 		case PCB_PSSH_CIRC:
@@ -836,7 +860,30 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack
 	if (shape == NULL) return pcb_false;
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
+			{
+				pcb_arc_t tmp;
+
+				/* transform the arc back to 0;0 of the padstack */
+				tmp = *arc;
+				tmp.X -= ps->x;
+				tmp.Y -= ps->y;
+				tmp.BoundingBox.X1 -= ps->x;
+				tmp.BoundingBox.Y1 -= ps->y;
+				tmp.BoundingBox.X2 -= ps->x;
+				tmp.BoundingBox.Y2 -= ps->y;
+
+				if (shape->data.poly.pa == NULL)
+					pcb_padstack_shape_update_pline(&shape->data.poly);
+
+				return pcb_is_arc_in_polyarea(&tmp, shape->data.poly.pa);
+			}
+
 		case PCB_PSSH_LINE:
+		{
+			pcb_line_t tmp;
+			shape_line_to_pcb_line(shape->data.line, tmp);
+			return pcb_intersect_line_arc(&tmp, arc);
+		}
 		case PCB_PSSH_CIRC:
 			break;
 	}

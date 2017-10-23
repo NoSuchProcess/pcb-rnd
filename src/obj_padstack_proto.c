@@ -264,6 +264,24 @@ pcb_cardinal_t pcb_padstack_conv_buffer(int quiet)
 }
 
 
+void pcb_padstack_shape_update_pline(pcb_padstack_poly_t *poly)
+{
+	int n;
+	pcb_vector_t v;
+	pcb_pline_t *pl;
+
+	v[0] = poly->x[0]; v[1] = poly->y[0];
+	pl = pcb_poly_contour_new(v);
+	for(n = 1; n < poly->len; n++) {
+		v[0] = poly->x[n]; v[1] = poly->y[n];
+		pcb_poly_vertex_include(pl->head.prev, pcb_poly_node_create(v));
+	}
+	pcb_poly_contour_pre(pl, 1);
+
+	poly->pa = pcb_polyarea_create();
+	pcb_polyarea_contour_include(poly->pa, pl);
+}
+
 /*** hash ***/
 static unsigned int pcb_padstack_shape_hash(const pcb_padstack_shape_t *sh)
 {
