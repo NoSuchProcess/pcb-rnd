@@ -54,6 +54,7 @@
 #include "polyarea.h"
 #include "obj_common.h"
 #include "macro.h"
+#include "box.h"
 
 
 #define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))
@@ -3233,6 +3234,124 @@ pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1,
 
 	return pcb_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == PCB_R_DIR_CANCEL;
 }
+
+/*
+ * pcb_pline_isect_circle()
+ * (C) 2017 Tibor 'Igor2' Palinkas
+*/
+
+typedef struct {
+	pcb_coord_t cx, cy, r;
+} pline_isect_circ_t;
+
+static pcb_r_dir_t pline_isect_circ_cb(const pcb_box_t * b, void *cl)
+{
+	pline_isect_circ_t *ctx = (pline_isect_circ_t *)cl;
+	struct seg *s = (struct seg *)b;
+	pcb_vector_t S1, S2;
+	pcb_vector_t ray1, ray2;
+	double ox, oy, dx, dy, l;
+
+	dx = s->v->point[0] - s->v->next->point[0];
+	dy = s->v->point[1] - s->v->next->point[1];
+	l = sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+	ox = -dy / l * (double)ctx->r;
+	oy = dx / l * (double)ctx->r;
+
+	ray1[0] = ctx->cx - ox; ray1[1] = ctx->cy - oy;
+	ray2[0] = ctx->cx + ox; ray2[1] = ctx->cy + oy;
+
+	if (pcb_vect_inters2(s->v->point, s->v->next->point, ray1, ray2, S1, S2))
+		return PCB_R_DIR_CANCEL; /* found */
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+pcb_bool pcb_pline_isect_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r)
+{
+	pline_isect_circ_t ctx;
+	pcb_box_t cbx;
+	ctx.cx = cx; ctx.cy = cy; ctx.r = r;
+	cbx.X1 = cx - r; cbx.Y1 = cy - r;
+	cbx.X2 = cx + r; cbx.Y2 = cy + r;
+
+	if (pl->tree == NULL)
+		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+
+	return pcb_r_search(pl->tree, &cbx, NULL, pline_isect_circ_cb, &ctx, NULL) == PCB_R_DIR_CANCEL;
+}
+
+
+/*
+ * pcb_pline_embraces_circle()
+ * If the circle does not intersect the polygon (the caller needs to check this)
+ * return whether the circle is fully within the polygon or not.
+ * Shoots a ray to the right from center+radius, then one to the left from
+ * center-radius; if both ray cross odd number of pline segments, we are in
+ * (or intersecting).
+ * (C) 2017 Tibor 'Igor2' Palinkas
+*/
+static pcb_r_dir_t pline_embraces_circ_cb(const pcb_box_t * b, void *cl)
+{
+	int *cnt = (int *)cl;
+	(*cnt)++;
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+pcb_bool pcb_pline_embraces_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r)
+{
+	pcb_box_t bx;
+	int cnt;
+
+	bx.Y1 = cy; bx.Y2 = cy+1;
+	if (pl->tree == NULL)
+		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+
+	/* ray to the right */
+	bx.X1 = cx + r;
+	bx.X2 = COORD_MAX;
+	cnt = 0;
+	pcb_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
+	if ((cnt % 2) == 0)
+		return pcb_false;
+
+	/* ray to the right */
+	bx.X1 = cx - r;
+	bx.X2 = -COORD_MAX;
+	cnt = 0;
+	pcb_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
+	if ((cnt % 2) == 0)
+		return pcb_false;
+
+	return pcb_true;
+}
+
+/*
+ * pcb_pline_isect_circle()
+ * (C) 2017 Tibor 'Igor2' Palinkas
+*/
+pcb_bool pcb_pline_overlaps_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r)
+{
+	pcb_box_t cbx, pbx;
+	cbx.X1 = cx - r; cbx.Y1 = cy - r;
+	cbx.X2 = cx + r; cbx.Y2 = cy + r;
+	pbx.X1 = pl->xmin; pbx.Y1 = pl->ymin;
+	pbx.X2 = pl->xmax; pbx.Y2 = pl->ymax;
+
+	/* if there's no overlap in bounding boxes, don't do any expensive calc */
+	if (!(pcb_box_intersect(&cbx, &pbx)))
+		return pcb_false;
+
+	if (pl->tree == NULL)
+		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+
+	if (pcb_pline_isect_circ(pl, cx, cy, r))
+		return pcb_true;
+
+	return pcb_pline_embraces_circ(pl, cx, cy, r);
+}
+
+
 
 /* how about expanding polygons so that edges can be arcs rather than
  * lines. Consider using the third coordinate to store the radius of the
