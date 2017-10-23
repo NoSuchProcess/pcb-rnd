@@ -132,7 +132,9 @@ void pcb_poly_rotate90(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsign
 		PCB_COORD_ROTATE90(point->X, point->Y, X, Y, Number);
 	}
 	PCB_END_LOOP;
-	pcb_box_rotate90(&Polygon->BoundingBox, X, Y, Number);
+
+	/* simply rotating the bounding box here won't work, because the box is 'closed' (increased by 1) */
+	pcb_poly_bbox(Polygon);
 }
 
 void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
