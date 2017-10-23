@@ -3196,6 +3196,11 @@ int pcb_vect_inters2(pcb_vector_t p1, pcb_vector_t p2, pcb_vector_t q1, pcb_vect
 	}
 }																/* vect_inters2 */
 
+/*
+ * pcb_pline_isect_line()
+ * (C) 2017 Tibor 'Igor2' Palinkas
+*/
+
 typedef struct {
 	pcb_vector_t l1, l2;
 } pline_isect_line_t;
