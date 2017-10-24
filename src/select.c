@@ -51,6 +51,7 @@
 #include "obj_poly_draw.h"
 #include "obj_text_draw.h"
 #include "obj_rat_draw.h"
+#include "obj_padstack_draw.h"
 
 #include <genregex/regex_sei.h>
 
@@ -496,7 +497,7 @@ do { \
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
 				append(PCB_TYPE_PADSTACK, padstack, padstack);
 				if (pcb->ViaOn)
-					pcb_via_invalidate_draw(padstack);
+					pcb_padstack_invalidate_draw(padstack);
 			}
 		}
 		PCB_END_LOOP;
