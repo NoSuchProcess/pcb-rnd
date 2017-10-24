@@ -142,6 +142,8 @@ int pcb_padstack_drc_check_clearance(pcb_padstack_t *ps, pcb_poly_t *polygon, pc
    was fine */
 int pcb_padstack_drc_check_and_warn(pcb_padstack_t *ps);
 
+/* Generate poly->pa (which should be NULL at the time of call) */
+void pcb_padstack_shape_update_pline(pcb_padstack_poly_t *poly);
 
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
