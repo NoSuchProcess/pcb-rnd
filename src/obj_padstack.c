@@ -276,7 +276,7 @@ pcb_r_dir_t pcb_padstack_draw_hole_callback(const pcb_box_t *b, void *cl)
 }
 
 
-
+#warning padstack TODO: do real thin draw here
 void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 {
 	pcb_padstack_shape_t *shape;
