@@ -290,9 +290,8 @@ static void print_placement(FILE * fp)
 		side = (lyt & PCB_LYT_BOTTOM) ? "back" : "front";
 
 		assert(pcb_subc_get_origin(subc, &ox, &oy) == 0);
-		ename = subc->refdes;
-		if (ename != NULL)
-			ename = pcb_strdup(ename);
+		if (subc->refdes != NULL)
+			ename = pcb_strdup(subc->refdes);
 		else
 			ename = pcb_strdup("null");
 		pcb_fprintf(fp, "    (component %d\n", subc->ID);
