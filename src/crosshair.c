@@ -49,6 +49,7 @@
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
 #include "obj_text_draw.h"
+#include "obj_padstack_draw.h"
 #include "obj_arc_ui.h"
 #include "obj_all_op.h"
 
@@ -86,6 +87,16 @@ static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 		XORDrawPinViaDRCOutline(&moved_pv,PCB->Bloat);
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	}
+}
+
+static void thindraw_moved_ps(pcb_padstack_t *ps, pcb_coord_t x, pcb_coord_t y)
+{
+	/* Make a copy of the pin structure, moved to the correct position */
+	pcb_padstack_t moved_ps = *ps;
+	moved_ps.x += x;
+	moved_ps.y += y;
+
+	pcb_padstack_thindraw(pcb_crosshair.GC, &moved_ps);
 }
 
 /* ---------------------------------------------------------------------------
@@ -326,6 +337,13 @@ static void XORDrawMoveOrCopy(void)
 		{
 			pcb_pin_t *via = (pcb_pin_t *) pcb_crosshair.AttachedObject.Ptr1;
 			thindraw_moved_pv(via, dx, dy);
+			break;
+		}
+
+	case PCB_TYPE_PADSTACK:
+		{
+			pcb_padstack_t *ps = (pcb_padstack_t *) pcb_crosshair.AttachedObject.Ptr1;
+			thindraw_moved_ps(ps, dx, dy);
 			break;
 		}
 

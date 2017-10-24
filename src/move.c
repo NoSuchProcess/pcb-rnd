@@ -44,6 +44,7 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "obj_all_op.h"
+#include "obj_padstack_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -63,7 +64,7 @@ pcb_opfunc_t MoveFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_move,
-	NULL  /* padstack */
+	pcb_padstackop_move
 };
 
 pcb_opfunc_t MoveFunctions_noclip = {
@@ -81,7 +82,7 @@ pcb_opfunc_t MoveFunctions_noclip = {
 	NULL,
 	NULL,
 	NULL, /* subc */
-	NULL  /* padstack */
+	pcb_padstackop_move_noclip
 };
 
 pcb_opfunc_t ClipFunctions = {
@@ -99,7 +100,7 @@ pcb_opfunc_t ClipFunctions = {
 	NULL,
 	NULL,
 	NULL, /* subc */
-	NULL  /* padstack */
+	pcb_padstackop_clip
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {

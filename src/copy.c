@@ -38,6 +38,7 @@
 #include "select.h"
 #include "undo.h"
 #include "obj_all_op.h"
+#include "obj_padstack_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -57,7 +58,7 @@ static pcb_opfunc_t CopyFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_copy,
-	NULL  /* padstack */
+	pcb_padstackop_copy
 };
 
 /* ---------------------------------------------------------------------------

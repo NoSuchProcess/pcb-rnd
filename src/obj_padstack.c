@@ -34,7 +34,9 @@
 #include "obj_padstack_draw.h"
 #include "obj_padstack_list.h"
 #include "obj_padstack_inlines.h"
+#include "operation.h"
 #include "search.h"
+#include "undo.h"
 #include "vtpadstack.h"
 
 #define PS_CROSS_SIZE PCB_MM_TO_COORD(1)
@@ -129,6 +131,27 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 	}
 
 	pcb_close_box(&ps->BoundingBox);
+}
+
+/*** utils ***/
+
+static pcb_padstack_t *pcb_padstack_copy_meta(pcb_padstack_t *dst, pcb_padstack_t *src)
+{
+	if (dst == NULL)
+		return NULL;
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	return dst;
+}
+
+
+void pcb_padstack_move(pcb_padstack_t *ps, pcb_coord_t dx, pcb_coord_t dy)
+{
+	ps->x += dx;
+	ps->y += dy;
+	ps->BoundingBox.X1 += dx;
+	ps->BoundingBox.Y1 += dy;
+	ps->BoundingBox.X2 += dx;
+	ps->BoundingBox.Y2 += dy;
 }
 
 /*** draw ***/
@@ -253,6 +276,35 @@ pcb_r_dir_t pcb_padstack_draw_hole_callback(const pcb_box_t *b, void *cl)
 }
 
 
+
+void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
+{
+	pcb_padstack_shape_t *shape;
+	pcb_board_t *pcb;
+	pcb_layergrp_id_t gid = CURRENT->meta.real.grp;
+
+	pcb = pcb_data_get_top(ps->parent.data);
+
+	shape = pcb_padstack_shape(ps, pcb_layergrp_flags(pcb, gid), 0);
+	if (shape != NULL) {
+		pcb_gui->set_draw_xor(gc, 0);
+		switch(shape->shape) {
+			case PCB_PSSH_POLY:
+				pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+				break;
+			case PCB_PSSH_LINE:
+				pcb_gui->set_line_cap(gc, shape->data.line.square ? Square_Cap : Round_Cap);
+				pcb_gui->set_line_width(gc, shape->data.line.thickness);
+				pcb_gui->draw_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
+				pcb_gui->set_line_width(gc, 0);
+				break;
+			case PCB_PSSH_CIRC:
+				pcb_gui->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
+				break;
+		}
+	}
+}
+
 #warning padstack TODO: implement these
 void pcb_padstack_invalidate_erase(pcb_padstack_t *ps)
 {
@@ -289,3 +341,5 @@ int pcb_padstack_drc_check_and_warn(pcb_padstack_t *ps)
 #warning padstack TODO
 	return 0;
 }
+
+#include "obj_padstack_op.c"

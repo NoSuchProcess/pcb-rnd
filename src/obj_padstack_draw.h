@@ -45,4 +45,7 @@ void pcb_padstack_draw(pcb_pin_t *pin, pcb_bool draw_hole);
 void pcb_padstack_invalidate_erase(pcb_padstack_t *ps);
 void pcb_padstack_invalidate_draw(pcb_padstack_t *ps);
 
+void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps);
+
+
 #endif
