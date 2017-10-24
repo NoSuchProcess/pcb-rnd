@@ -143,6 +143,7 @@ typedef struct {
 	void *(*Rat)(pcb_opctx_t *ctx, pcb_rat_t *);
 	void *(*ArcPoint)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_arc_t *, int *end_id);
 	void *(*subc)(pcb_opctx_t *ctx, pcb_subc_t *);
+	void *(*padstack)(pcb_opctx_t *ctx, pcb_padstack_t *);
 } pcb_opfunc_t;
 
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);

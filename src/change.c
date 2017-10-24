@@ -60,7 +60,8 @@ pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_arcop_change_size,
 	NULL,
 	NULL,
-	pcb_subcop_change_size
+	pcb_subcop_change_size,
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t Change1stSizeFunctions = {
@@ -77,7 +78,8 @@ pcb_opfunc_t Change1stSizeFunctions = {
 	pcb_arcop_change_size,
 	NULL,
 	NULL,
-	pcb_subcop_change_1st_size
+	pcb_subcop_change_1st_size,
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t Change2ndSizeFunctions = {
@@ -94,7 +96,8 @@ pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_subcop_change_2nd_size
+	pcb_subcop_change_2nd_size,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangeThermalFunctions = {
@@ -111,7 +114,8 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t ChangeClearSizeFunctions = {
@@ -128,7 +132,8 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 	pcb_arcop_change_clear_size,
 	NULL,
 	NULL,
-	pcb_subcop_change_clear_size
+	pcb_subcop_change_clear_size,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangeNameFunctions = {
@@ -145,7 +150,8 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_subcop_change_name
+	pcb_subcop_change_name,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangePinnumFunctions = {
@@ -162,7 +168,8 @@ static pcb_opfunc_t ChangePinnumFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL,
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t ChangeSquareFunctions = {
@@ -179,7 +186,8 @@ pcb_opfunc_t ChangeSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_subcop_change_square
+	pcb_subcop_change_square,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangeNonetlistFunctions = {
@@ -197,6 +205,7 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_change_nonetlist,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangeJoinFunctions = {
@@ -213,7 +222,8 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 	pcb_arcop_change_join,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t ChangeOctagonFunctions = {
@@ -231,6 +241,7 @@ pcb_opfunc_t ChangeOctagonFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_change_octagon,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangeMaskSizeFunctions = {
@@ -251,7 +262,8 @@ static pcb_opfunc_t ChangeMaskSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t SetSquareFunctions = {
@@ -268,7 +280,8 @@ pcb_opfunc_t SetSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_subcop_set_square
+	pcb_subcop_set_square,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t SetJoinFunctions = {
@@ -285,7 +298,8 @@ static pcb_opfunc_t SetJoinFunctions = {
 	pcb_arcop_set_join,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t SetOctagonFunctions = {
@@ -302,7 +316,8 @@ pcb_opfunc_t SetOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_subcop_set_octagon
+	pcb_subcop_set_octagon,
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t ClrSquareFunctions = {
@@ -320,6 +335,7 @@ pcb_opfunc_t ClrSquareFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_clear_square,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ClrJoinFunctions = {
@@ -336,7 +352,8 @@ static pcb_opfunc_t ClrJoinFunctions = {
 	pcb_arcop_clear_join,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t ClrOctagonFunctions = {
@@ -353,7 +370,8 @@ pcb_opfunc_t ClrOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	pcb_subcop_clear_octagon
+	pcb_subcop_clear_octagon, /* subc */
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangeRadiusFunctions = {
@@ -370,7 +388,8 @@ static pcb_opfunc_t ChangeRadiusFunctions = {
 	pcb_arcop_change_radius,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t ChangeAngleFunctions = {
@@ -387,7 +406,8 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 	pcb_arcop_change_angle,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t ChgFlagFunctions = {
@@ -404,7 +424,8 @@ pcb_opfunc_t ChgFlagFunctions = {
 	pcb_arcop_change_flag,
 	NULL,
 	NULL,
-	pcb_subcop_change_flag
+	pcb_subcop_change_flag,
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t InvalLabelFunctions = {
@@ -421,7 +442,8 @@ static pcb_opfunc_t InvalLabelFunctions = {
 	pcb_arcop_invalidate_label,
 	NULL,
 	NULL,
-	/*pcb_subcop_invalidate_flag*/ NULL
+	/*pcb_subcop_invalidate_flag*/ NULL,
+	NULL  /* padstack */
 };
 
 

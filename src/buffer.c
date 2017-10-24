@@ -67,7 +67,8 @@ static pcb_opfunc_t AddBufferFunctions = {
 	pcb_arcop_add_to_buffer,
 	pcb_ratop_add_to_buffer,
 	NULL,
-	pcb_subcop_add_to_buffer
+	pcb_subcop_add_to_buffer,
+	NULL  /* padstack */
 };
 
 #warning TODO: rename this; move_to_buffer is also used to move from buffer to pcb
@@ -85,7 +86,8 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_arcop_move_to_buffer,
 	pcb_ratop_move_to_buffer,
 	NULL,
-	pcb_subcop_move_to_buffer
+	pcb_subcop_move_to_buffer,
+	NULL  /* padstack */
 };
 
 /* ---------------------------------------------------------------------------

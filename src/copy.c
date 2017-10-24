@@ -56,7 +56,8 @@ static pcb_opfunc_t CopyFunctions = {
 	pcb_arcop_copy,
 	NULL,
 	NULL,
-	pcb_subcop_copy
+	pcb_subcop_copy,
+	NULL  /* padstack */
 };
 
 /* ---------------------------------------------------------------------------

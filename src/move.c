@@ -62,7 +62,8 @@ pcb_opfunc_t MoveFunctions = {
 	pcb_arcop_move,
 	NULL,
 	NULL,
-	pcb_subcop_move
+	pcb_subcop_move,
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t MoveFunctions_noclip = {
@@ -79,7 +80,8 @@ pcb_opfunc_t MoveFunctions_noclip = {
 	pcb_arcop_move_noclip,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 pcb_opfunc_t ClipFunctions = {
@@ -96,7 +98,8 @@ pcb_opfunc_t ClipFunctions = {
 	pcb_arcop_clip,
 	NULL,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {
@@ -113,7 +116,8 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 	pcb_arcop_move_to_layer,
 	pcb_ratop_move_to_layer,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 /* ---------------------------------------------------------------------------

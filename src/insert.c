@@ -58,7 +58,8 @@ static pcb_opfunc_t InsertFunctions = {
 	pcb_arc_insert_point,
 	pcb_ratop_insert_point,
 	NULL,
-	NULL
+	NULL, /* subc */
+	NULL  /* padstack */
 };
 
 /* ---------------------------------------------------------------------------

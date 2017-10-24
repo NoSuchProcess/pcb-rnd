@@ -53,7 +53,8 @@ static pcb_opfunc_t RemoveFunctions = {
 	pcb_arcop_remve,
 	pcb_ratop_remove,
 	pcb_arcop_remove_point,
-	pcb_subcop_remove
+	pcb_subcop_remove, /* subc */
+	NULL  /* padstack */
 };
 
 static pcb_opfunc_t DestroyFunctions = {
@@ -70,7 +71,8 @@ static pcb_opfunc_t DestroyFunctions = {
 	pcb_arcop_destroy,
 	pcb_ratop_destroy,
 	NULL,
-	pcb_subcop_destroy
+	pcb_subcop_destroy, /* subc */
+	NULL  /* padstack */
 };
 
 /* ----------------------------------------------------------------------
