@@ -137,7 +137,7 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;
 	cctx.grp = pcb_get_layergrp(PCB, gid);
-	cctx.color = /*PCB->Data->Layer[lid].Color*/ conf_core.appearance.color.element;
+	cctx.color = PCB->Data->Layer[lid].meta.real.color;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
