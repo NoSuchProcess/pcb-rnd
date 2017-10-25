@@ -374,14 +374,14 @@ static void XORDrawMoveOrCopy(void)
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
 															line.Point1.X, line.Point1.Y,
 															line.Point2.X, line.Point2.Y, 
-															line.Thickness);
+															line.Thickness, 0);
 			
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
 				pcb_draw_wireframe_line(pcb_crosshair.GC,line.Point1.X, line.Point1.Y,
 																line.Point2.X, line.Point2.Y,
-																line.Thickness + 2 * (PCB->Bloat + 1) );
+																line.Thickness + 2 * (PCB->Bloat + 1), 0);
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
@@ -433,13 +433,13 @@ static void XORDrawMoveOrCopy(void)
 			point2.Y += dy;				
 
 			if(conf_core.editor.move_linepoint_uses_route == 0) {/* config setting for selecting new 45/90 method */ 
-				pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y, line->Thickness);
+				pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y, line->Thickness, 0);
 
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
 					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
 					pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, 
-																	point2.Y,line->Thickness + 2 * (PCB->Bloat + 1) );
+																	point2.Y,line->Thickness + 2 * (PCB->Bloat + 1), 0);
 					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 				}
 			}
@@ -873,7 +873,7 @@ void pcb_draw_attached(void)
 																pcb_crosshair.AttachedLine.Point1.X,
 																pcb_crosshair.AttachedLine.Point1.Y,
 																pcb_crosshair.AttachedLine.Point2.X,
-																pcb_crosshair.AttachedLine.Point2.Y, 10 );
+																pcb_crosshair.AttachedLine.Point2.Y, 10, 0);
 		}
 		else if(pcb_crosshair.Route.size > 0)	{	
 			pcb_route_draw(&pcb_crosshair.Route,pcb_crosshair.GC);

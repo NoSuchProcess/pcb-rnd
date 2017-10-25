@@ -603,7 +603,7 @@ pcb_route_draw( pcb_route_t * p_route,pcb_hid_gc_t GC )
 
 		switch(p_obj->type) {
 			case PCB_TYPE_LINE :	
-				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,p_route->thickness);
+				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,p_route->thickness, 0);
 				break;
 
 			case PCB_TYPE_ARC :		
@@ -632,7 +632,7 @@ pcb_route_draw_drc( pcb_route_t * p_route,pcb_hid_gc_t GC )
 
 		switch(p_obj->type) {
 			case PCB_TYPE_LINE :	
-				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,thickness);	
+				pcb_draw_wireframe_line(GC,p_obj->point1.X,p_obj->point1.Y,p_obj->point2.X,p_obj->point2.Y,thickness, 0);
 				break;
 
 			case PCB_TYPE_ARC :		

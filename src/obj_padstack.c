@@ -297,8 +297,7 @@ void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
 				break;
 			case PCB_PSSH_LINE:
-				pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness);
-/*				pcb_gui->set_line_cap(gc, shape->data.line.square ? Square_Cap : Round_Cap);*/
+				pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness, shape->data.line.square);
 				break;
 			case PCB_PSSH_CIRC:
 				pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, shape->data.circ.dia/2, 0, 360); 
