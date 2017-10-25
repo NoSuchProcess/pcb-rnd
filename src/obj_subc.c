@@ -1082,8 +1082,11 @@ void *pcb_subcop_change_2nd_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_change_nonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO
-	abort();
+#warning subc TODO: add undo
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, sc))
+		return (NULL);
+	PCB_FLAG_TOGGLE(PCB_FLAG_NONETLIST, sc);
+	return sc;
 }
 
 void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc)
@@ -1158,7 +1161,7 @@ void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		pcb_subc_flags = pcb_obj_valid_flags(PCB_TYPE_SUBC);
 
 	if (ctx->chgflag.flag == PCB_FLAG_FLOATER) {
-#warning subc TODO: subc-in-subc: can a whole subc be a floater?
+#warning subc TODO: subc-in-subc: can a whole subc be a floater? - add undo!
 		PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, sc);
 		return sc;
 	}
