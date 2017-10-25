@@ -63,6 +63,7 @@ int pcb_tool_select_highest(void);
       as defined in conf_core.editor.mode ****/
 
 void pcb_tool_notify_mode(void);
+void pcb_tool_adjust_attached_objects(void);
 
 
 
