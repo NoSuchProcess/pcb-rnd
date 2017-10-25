@@ -29,6 +29,7 @@
 #include "data.h"
 #include "data_list.h"
 #include "draw.h"
+#include "draw_wireframe.h"
 #include "flag.h"
 #include "obj_padstack.h"
 #include "obj_padstack_draw.h"
@@ -282,6 +283,7 @@ void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 	pcb_padstack_shape_t *shape;
 	pcb_board_t *pcb;
 	pcb_layergrp_id_t gid = CURRENT->meta.real.grp;
+	int n;
 
 	pcb = pcb_data_get_top(ps->parent.data);
 
@@ -290,16 +292,16 @@ void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 		pcb_gui->set_draw_xor(gc, 0);
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
-				pcb_gui->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+				for(n = 1; n < shape->data.poly.len; n++)
+					pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
+				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
 				break;
 			case PCB_PSSH_LINE:
-				pcb_gui->set_line_cap(gc, shape->data.line.square ? Square_Cap : Round_Cap);
-				pcb_gui->set_line_width(gc, shape->data.line.thickness);
-				pcb_gui->draw_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
-				pcb_gui->set_line_width(gc, 0);
+				pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness);
+/*				pcb_gui->set_line_cap(gc, shape->data.line.square ? Square_Cap : Round_Cap);*/
 				break;
 			case PCB_PSSH_CIRC:
-				pcb_gui->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
+				pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, shape->data.circ.dia/2, 0, 360); 
 				break;
 		}
 	}
