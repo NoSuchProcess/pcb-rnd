@@ -766,9 +766,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"partnumber",  T_INT, 4, 2},
-			{"element",  T_INT, 4, 2}, /*still need to translate element ID number i.e. "5647907" to an instance number, i.e. "Can't find 6 pin 2 called for in netlist."  */
 			{"pin",  T_INT, 6, 2},
-			{"pad",  T_INT, 6, 2}, /*read.c signal dispatch table needs this to behave */
+			/*{"pad",  T_INT, 6, 2}, /*read.c signal dispatch table needs this to behave */
 			TERM
 		},
 	},
@@ -1486,6 +1485,25 @@ static egb_node_t *elem_ref_by_idx(egb_node_t *elements, long idx)
 	return n;
 }
 
+/* Return the pin name of the j-th pin of a given element in the elements subtree/NULL if not found */
+static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, long pin_idx)
+{
+	int pin_num = pin_idx;
+        egb_node_t *p, *e = elem_ref_by_idx(elements, elem_idx);
+        if (e == NULL)
+                return NULL;
+	printf("found element, now looking for pin number %ld.\n", pin_idx);
+#warning TODO broken, still need to look up lib and package based on element contents to find pin# 
+	for (p = e->first_child; (p != NULL) && (pin_num == 0) && (pin_num > 1) ; p = p->next) {
+		if (p->id == 0x2a00) { /* we found a pin */
+			pin_num--;
+		}
+	}
+	printf("pin index now %ld.\n", pin_num);
+        return egb_node_prop_get(p, "name");
+}
+
+
 /* Return the refdes of the idxth element instance from the elements subtree, or NULL if not found */
 static const char *elem_refdes_by_idx(egb_node_t *elements, long idx)
 {
@@ -1636,6 +1654,58 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 	return 0;
 }
 
+/* look for contactrefs, and append "name"="refdes" fields to contactref nodes as "element" "refdes"*/
+static int postproc_contactrefs(void *ctx, egb_node_t *root)
+{
+        htss_entry_t *e;
+        egb_node_t *board, *els, *sig, *cr, *n, *q, *next, *next2;
+        egb_node_t *drawing = root->first_child;
+
+        for(n = drawing->first_child, board = NULL; board == NULL && n != NULL; n = next) {
+                next = n->next;
+                if (board == NULL && n->id == PCB_EGKW_SECT_BOARD) {
+                        pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
+                        board = n;
+                }
+        }
+
+        for(n = board->first_child, els = NULL; els == NULL && n != NULL; n = n->next) {
+                pcb_trace("found board subnode ID: %d\n", n->id);
+                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
+                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
+                        els = n;
+                }
+        }
+
+        for(n = board->first_child, sig = NULL; sig == NULL && n != NULL; n = n->next) {
+                pcb_trace("found board subnode ID: %d\n", n->id);
+                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
+                        pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
+                        sig = n->first_child;
+                }
+        }
+
+        for(n = sig; n != NULL; n = next) {
+                next = n->next;
+		if (n->first_child->id != NULL && n->first_child->id == PCB_EGKW_SECT_CONTACTREF) {
+			pcb_trace("Found PCB_EKGW_SECT_CONTACTREF\n");
+			for (cr = n->first_child; cr != NULL; cr = next2) {
+				next2 = cr->next;
+                		for (e = htss_first(&cr->props); e; e = htss_next(&cr->props, e)) {
+                        	        if (strcmp(e->key, "partnumber") == 0) {
+						int element_num = atoi(e->value);
+                                                egb_node_prop_set(cr, "element", elem_refdes_by_idx(els, (long) element_num));
+                        	        	pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
+						printf("Found element pin %s\n", egb_node_prop_get(cr, "pin"));
+						egb_node_prop_set(cr, "pad", elem_pin_name_by_idx(els, (long) element_num, (long)atoi(egb_node_prop_get(cr, "pin"))));
+                        		}
+				}
+                        }
+		}
+        }
+        return 0;
+}
+
 
 /* look for elements, and subsequent element2 blocks, and copy name/value fields to element */
 static int postproc_elements(void *ctx, egb_node_t *root)
@@ -1697,6 +1767,50 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 	return 0;
 }
 
+/* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
+static int postproc_signal(void *ctx, egb_node_t *root)
+{
+        egb_node_t *n, *p, *prev, *prev2, *next, *next2, *signal, *board;
+        egb_node_t *drawing = root->first_child;
+
+        for(n = drawing->first_child, board = NULL; board == NULL && n != NULL; n = next) {
+                next = n->next;
+                if (board == NULL && n->id == PCB_EGKW_SECT_BOARD) {
+                        pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
+                        board = n;
+                }
+        }
+
+        for(n = board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
+                pcb_trace("found board subnode ID: %d\n", n->id);
+                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
+                        pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
+                        signal = n->first_child;
+                }
+        }
+
+	egb_node_t *signals = signal->parent;
+
+        for(n = signal; n != NULL; n = next) {
+                next = n->next;
+                if (n->id == PCB_EGKW_SECT_SIGNAL) {
+			for(p = n->first_child, prev2 = NULL; p != NULL; p = next2) {
+				next2 = p->next;
+				if (p->id == PCB_EGKW_SECT_SIGNAL) {
+					pcb_trace("about to unlink PCB_EGKW_SECT_SIGNAL/PCB_EGKW_SECT_SIGNAL...\n");
+		                        egb_node_unlink(n, prev2, p);
+		                        egb_node_append(signals, p);
+				}
+				else
+					prev2 = p;
+			}
+                }
+                else
+                        prev = n;
+        }
+        return 0;
+}
+
 /* take each /drawing/layer and move them into a newly created /drawing/layers/ */
 static int postproc_layers(void *ctx, egb_node_t *root)
 {
@@ -1752,7 +1866,9 @@ static int postproc_libs(void *ctx, egb_node_t *root)
 static int postproc(void *ctx, egb_node_t *root)
 {
 	return postproc_layers(ctx, root) || postproc_libs(ctx, root)
-		|| postproc_elements(ctx, root) || postprocess_wires(ctx, root) || postprocess_arcs(ctx, root);
+		|| postproc_elements(ctx, root)
+		|| postproc_signal(ctx, root) || postproc_contactrefs(ctx, root)
+		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root);
 }
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)

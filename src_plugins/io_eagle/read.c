@@ -465,18 +465,21 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	pcb_coord_t X, Y, height;
 	const char *rot, *text_val;
 	unsigned int text_direction = 0, text_scaling = 100;
+	pcb_flag_t text_flags = pcb_flag_make(0);
 
-	if (CHILDREN(subtree) == NULL) {
+	if (CHILDREN(subtree) == NULL && !(text_val = eagle_get_attrs(st, subtree, "textfield", NULL))) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;
 	}
-	if (!IS_TEXT(CHILDREN(subtree))) {
+	if (text_val == NULL && !IS_TEXT(CHILDREN(subtree))) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring text field (invalid child node)\n");
 		return 0;
 	}
 
 #warning TODO: need to convert
-	text_val = (const char *)GET_TEXT(CHILDREN(subtree));
+	if (text_val == NULL) {
+		text_val = (const char *)GET_TEXT(CHILDREN(subtree));
+	}
 	X = eagle_get_attrc(st, subtree, "x", -1);
 	Y = eagle_get_attrc(st, subtree, "y", -1);
 	height = eagle_get_attrc(st, subtree, "size", -1);
@@ -501,8 +504,14 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 			text_direction = 3;
 		}
 	}
-
+#warning TODO need to place text on layout if layer number is sensible
 	pcb_trace("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, text_scaling, text_val, ln, text_direction);
+
+	/* pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont) */
+
+	pcb_text_new( &st->pcb->Data->Layer[ln], pcb_font(st->pcb, 0, 1), X, Y, text_direction
+, text_scaling, text_val, text_flags); /*Flags);*/
+		return 0;
 
 	return 0;
 }
