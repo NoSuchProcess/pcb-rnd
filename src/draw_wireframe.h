@@ -59,13 +59,27 @@ static inline PCB_FUNC_UNUSED void pcb_draw_wireframe_line(pcb_hid_gc_t gc, pcb_
 		double h = 0.5 * thick / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
 		pcb_coord_t ox = dy * h + 0.5 * SGN(dy);
 		pcb_coord_t oy = -(dx * h + 0.5 * SGN(dx));
-
-		if (coord_abs(ox) >= pcb_pixel_slop || coord_abs(oy) >= pcb_pixel_slop) {
-			pcb_angle_t angle = atan2(dx, dy) * 57.295779;
+		if (square) {
+			/* make the line longer by cap */
+			x1 -= dx * h;
+			x2 += dx * h;
+			y1 -= dy * h;
+			y2 += dy * h;
+		}
+		if ((coord_abs(ox) >= pcb_pixel_slop) || (coord_abs(oy) >= pcb_pixel_slop)) {
 			pcb_gui->draw_line(gc, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
 			pcb_gui->draw_line(gc, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
-			pcb_gui->draw_arc(gc, x1, y1, thick / 2, thick / 2, angle - 180, 180);
-			pcb_gui->draw_arc(gc, x2, y2, thick / 2, thick / 2, angle, 180);
+
+			/* draw caps */
+			if (!square) {
+				pcb_angle_t angle = atan2(dx, dy) * 57.295779;
+				pcb_gui->draw_arc(gc, x1, y1, thick / 2, thick / 2, angle - 180, 180);
+				pcb_gui->draw_arc(gc, x2, y2, thick / 2, thick / 2, angle, 180);
+			}
+			else {
+				pcb_gui->draw_line(gc, x1 + ox, y1 + oy, x1 - ox, y1 - oy);
+				pcb_gui->draw_line(gc, x2 + ox, y2 + oy, x2 - ox, y2 - oy);
+			}
 		}
 		else
 			pcb_gui->draw_line(gc, x1, y1, x2, y2);
