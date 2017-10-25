@@ -813,6 +813,7 @@ extern pcb_opfunc_t ClipFunctions, MoveFunctions, MoveFunctions_noclip, Rotate90
 extern pcb_opfunc_t ChangeOctagonFunctions, SetOctagonFunctions, ClrOctagonFunctions;
 extern pcb_opfunc_t ChangeSquareFunctions, SetSquareFunctions, ClrSquareFunctions;
 
+/* drag&drop move when not selected */
 void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_board_t *pcb = pcb_data_get_top(sc->data);
