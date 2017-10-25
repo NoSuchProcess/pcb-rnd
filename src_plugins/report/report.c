@@ -900,7 +900,7 @@ static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		AUSAGE(report);
 	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
 		pcb_gui->get_coords("Click on an object", &x, &y);
-		return ReportDialog(argc - 1, argv + 1, x, y);
+		return ReportDialog(argc, argv, x, y);
 	}
 	else if (pcb_strncasecmp(argv[0], "Subc", 4) == 0) {
 		pcb_gui->get_coords("Click on a subcircuit", &x, &y);
