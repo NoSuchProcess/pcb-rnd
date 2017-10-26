@@ -132,7 +132,7 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 
 	ctx.move.pcb = PCB;
 	ctx.move.dx = DX;
-	ctx.move.dy = DY;
+3	ctx.move.dy = DY;
 	pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	result = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (result);
@@ -156,7 +156,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	pcb_draw_inhibit_inc();
 
 	switch(Type) {
-		case PCB_TYPE_ARC_POINT :
+		case PCB_TYPE_ARC_POINT:
 			{
 				/* Get the initial arc point positions */
 				pcb_arc_t * p_arc = ((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
@@ -184,7 +184,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			}
 			break;
 
-		case PCB_TYPE_ARC :
+		case PCB_TYPE_ARC:
 			pcb_event(PCB_EVENT_RUBBER_MOVE, "icccc", 0, DX, DY, DX, DY);
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 			ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
@@ -195,7 +195,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			ptr2 = pcb_lineop_move_point_with_route(&ctx, Ptr1, Ptr2, Ptr3);
 			break;
 
-		case PCB_TYPE_LINE :
+		case PCB_TYPE_LINE:
 			{
 				pcb_coord_t dx1 = DX;
 				pcb_coord_t dy1 = DY;
@@ -232,10 +232,10 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 					pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, dx1, dy1);
 					ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 				}
-			}	
+			}
 			break;
 
-		default :	
+		default:
 			pcb_event(PCB_EVENT_RUBBER_MOVE, "icc", 0, DX, DY);
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 			ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
