@@ -78,8 +78,18 @@ void pcb_tool_poly_adjust_attached_objects(void)
 	pcb_line_adjust_attached();
 }
 
+pcb_bool pcb_tool_poly_undo_act(void)
+{
+	if (pcb_crosshair.AttachedPolygon.PointN) {
+		pcb_polygon_go_to_prev_point();
+		return pcb_false;
+	}
+	return pcb_true;
+}
+
 pcb_tool_t pcb_tool_poly = {
 	"poly", NULL, 100,
 	pcb_tool_poly_notify_mode,
-	pcb_tool_poly_adjust_attached_objects
+	pcb_tool_poly_adjust_attached_objects,
+	pcb_tool_poly_undo_act
 };

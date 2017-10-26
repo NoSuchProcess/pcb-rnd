@@ -25,6 +25,8 @@
 
 #include <genvector/vtp0.h>
 
+#include "pcb_bool.h"
+
 typedef int pcb_toolid_t;
 #define PCB_TOOLID_INVALID (-1)
 
@@ -36,6 +38,7 @@ typedef struct pcb_tool_s {
 	/* tool implementation */
 	void (*notify_mode)(void);
 	void (*adjust_attached_objects)(void);
+	int  (*undo_act)(void);
 } pcb_tool_t;
 
 vtp0_t pcb_tools;
@@ -64,6 +67,7 @@ int pcb_tool_select_highest(void);
 
 void pcb_tool_notify_mode(void);
 void pcb_tool_adjust_attached_objects(void);
+pcb_bool pcb_tool_undo_act(void);
 
 
 

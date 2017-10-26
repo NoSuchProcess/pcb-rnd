@@ -141,6 +141,11 @@ void pcb_tool_adjust_attached_objects(void)
 	wrap_void(adjust_attached_objects, ());
 }
 
+pcb_bool pcb_tool_undo_act(void)
+{
+	wrap_retv(undo_act, return pcb_true, ());
+}
+
 #warning tool TODO: move this out to a tool plugin
 
 #include "tool_arc.h"

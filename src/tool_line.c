@@ -246,8 +246,75 @@ void pcb_tool_line_adjust_attached_objects(void)
 	}
 }
 
+pcb_bool pcb_tool_line_undo_act(void)
+{
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
+		if (conf_core.editor.auto_drc)
+			pcb_undo(pcb_true);						/* undo the connection find */
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		pcb_route_reset(&pcb_crosshair.Route);
+		pcb_crosshair_set_local_ref(0, 0, pcb_false);
+		return pcb_false;
+	}
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_THIRD) {
+		int type;
+		void *ptr1, *ptr3, *ptrtmp;
+		pcb_line_t *ptr2;
+		/* this search is guaranteed to succeed */
+		pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+													 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
+		ptr2 = (pcb_line_t *) ptrtmp;
+
+		/* save both ends of line */
+		pcb_crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
+		pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point1.Y;
+		if ((type = pcb_undo(pcb_true)))
+			pcb_board_set_changed_flag(pcb_true);
+		/* check that the undo was of the right type */
+		if ((type & PCB_UNDO_CREATE) == 0) {
+			/* wrong undo type, restore anchor points */
+			pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
+			pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
+			return pcb_false;
+		}
+		/* move to new anchor */
+		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
+		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
+		/* check if an intermediate point was removed */
+		if (type & PCB_UNDO_REMOVE) {
+			/* this search should find the restored line */
+			pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+														 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 0);
+			ptr2 = (pcb_line_t *) ptrtmp;
+			if (conf_core.editor.auto_drc) {
+				/* undo loses PCB_FLAG_FOUND */
+				PCB_FLAG_SET(PCB_FLAG_FOUND, ptr2);
+				pcb_line_invalidate_draw(CURRENT, ptr2);
+			}
+			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ptr2->Point2.X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
+		}
+		pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
+		pcb_adjust_attached_objects();
+		if (--pcb_added_lines == 0) {
+			pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
+			lastLayer = CURRENT;
+		}
+		else {
+			/* this search is guaranteed to succeed too */
+			pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+														 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
+			ptr2 = (pcb_line_t *) ptrtmp;
+			lastLayer = (pcb_layer_t *) ptr1;
+		}
+		return pcb_false;
+	}
+	return pcb_true;
+}
+
 pcb_tool_t pcb_tool_line = {
 	"line", NULL, 100,
 	pcb_tool_line_notify_mode,
-	pcb_tool_line_adjust_attached_objects
+	pcb_tool_line_adjust_attached_objects,
+	pcb_tool_line_undo_act
 };

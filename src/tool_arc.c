@@ -34,6 +34,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
+#include "search.h"
 #include "tool.h"
 #include "undo.h"
 
@@ -100,8 +101,31 @@ void pcb_tool_arc_adjust_attached_objects(void)
 	pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed();
 }
 
+pcb_bool pcb_tool_arc_undo_act(void)
+{
+	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_notify_crosshair_change(pcb_true);
+		return pcb_false;
+	}
+	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
+		void *ptr1, *ptr2, *ptr3;
+		/* guaranteed to succeed */
+		pcb_search_obj_by_location(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
+													 pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point1.Y, 0);
+		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
+		pcb_adjust_attached_objects();
+		if (--pcb_added_lines == 0)
+			pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+	}
+	return pcb_true;
+}
+
 pcb_tool_t pcb_tool_arc = {
 	"arc", NULL, 100,
 	pcb_tool_arc_notify_mode,
-	pcb_tool_arc_adjust_attached_objects
+	pcb_tool_arc_adjust_attached_objects,
+	pcb_tool_arc_undo_act
 };

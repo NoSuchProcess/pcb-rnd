@@ -65,5 +65,6 @@ void pcb_tool_via_notify_mode(void)
 pcb_tool_t pcb_tool_via = {
 	"via", NULL, 100,
 	pcb_tool_via_notify_mode,
+	NULL,
 	NULL
 };

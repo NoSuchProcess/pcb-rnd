@@ -68,8 +68,17 @@ void pcb_tool_copy_notify_mode(void)
 	}
 }
 
+pcb_bool pcb_tool_copy_undo_act(void)
+{
+	/* don't allow undo in the middle of an operation */
+	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)
+		return pcb_false;
+	return pcb_true;
+}
+
 pcb_tool_t pcb_tool_copy = {
 	"copy", NULL, 100,
 	pcb_tool_copy_notify_mode,
-	NULL
+	NULL,
+	pcb_tool_copy_undo_act
 };

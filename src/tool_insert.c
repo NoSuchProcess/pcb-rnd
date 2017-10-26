@@ -106,8 +106,17 @@ void pcb_tool_insert_adjust_attached_objects(void)
 		InsertedPoint = *pnt;
 }
 
+pcb_bool pcb_tool_insert_undo_act(void)
+{
+	/* don't allow undo in the middle of an operation */
+	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)
+		return pcb_false;
+	return pcb_true;
+}
+
 pcb_tool_t pcb_tool_insert = {
 	"insert", NULL, 100,
 	pcb_tool_insert_notify_mode,
-	pcb_tool_insert_adjust_attached_objects
+	pcb_tool_insert_adjust_attached_objects,
+	pcb_tool_insert_undo_act
 };

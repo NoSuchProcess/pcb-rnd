@@ -40,6 +40,16 @@
 
 #include "obj_line_draw.h"
 
+#include "tool.h"
+#include "tool_arc.h"
+#include "tool_copy.h"
+#include "tool_insert.h"
+#include "tool_line.h"
+#include "tool_move.h"
+#include "tool_poly.h"
+#include "tool_polyhole.h"
+#include "tool_rectangle.h"
+
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_Atomic[] = "Atomic(Save|Restore|Close|Block)";
@@ -128,108 +138,35 @@ int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
-		/* don't allow undo in the middle of an operation */
-		if (conf_core.editor.mode != PCB_MODE_POLYGON_HOLE && pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)
-			return 1;
-		if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST && conf_core.editor.mode != PCB_MODE_ARC)
-			return 1;
+		pcb_bool undo = pcb_true;
 		/* undo the last operation */
 
 		pcb_notify_crosshair_change(pcb_false);
-		if ((conf_core.editor.mode == PCB_MODE_POLYGON || conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && pcb_crosshair.AttachedPolygon.PointN) {
-			pcb_polygon_go_to_prev_point();
-			pcb_notify_crosshair_change(pcb_true);
-			return 0;
+		if (conf_core.editor.mode == PCB_MODE_POLYGON) {
+			undo = pcb_tool_poly_undo_act();
+		}
+		if (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) {
+			undo = pcb_tool_polyhole_undo_act();
 		}
 		/* move anchor point if undoing during line creation */
 		if (conf_core.editor.mode == PCB_MODE_LINE) {
-			if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
-				if (conf_core.editor.auto_drc)
-					pcb_undo(pcb_true);						/* undo the connection find */
-				pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-				pcb_route_reset(&pcb_crosshair.Route);
-				pcb_crosshair_set_local_ref(0, 0, pcb_false);
-				pcb_notify_crosshair_change(pcb_true);
-				return 0;
-			}
-			if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_THIRD) {
-				int type;
-				void *ptr1, *ptr3, *ptrtmp;
-				pcb_line_t *ptr2;
-				/* this search is guaranteed to succeed */
-				pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
-															 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
-				ptr2 = (pcb_line_t *) ptrtmp;
-
-				/* save both ends of line */
-				pcb_crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
-				pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point1.Y;
-				if ((type = pcb_undo(pcb_true)))
-					pcb_board_set_changed_flag(pcb_true);
-				/* check that the undo was of the right type */
-				if ((type & PCB_UNDO_CREATE) == 0) {
-					/* wrong undo type, restore anchor points */
-					pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
-					pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
-					pcb_notify_crosshair_change(pcb_true);
-					return 0;
-				}
-				/* move to new anchor */
-				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
-				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
-				/* check if an intermediate point was removed */
-				if (type & PCB_UNDO_REMOVE) {
-					/* this search should find the restored line */
-					pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
-																 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 0);
-					ptr2 = (pcb_line_t *) ptrtmp;
-					if (conf_core.editor.auto_drc) {
-						/* undo loses PCB_FLAG_FOUND */
-						PCB_FLAG_SET(PCB_FLAG_FOUND, ptr2);
-						pcb_line_invalidate_draw(CURRENT, ptr2);
-					}
-					pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ptr2->Point2.X;
-					pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
-				}
-				pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
-				pcb_adjust_attached_objects();
-				if (--pcb_added_lines == 0) {
-					pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
-					lastLayer = CURRENT;
-				}
-				else {
-					/* this search is guaranteed to succeed too */
-					pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
-																 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
-					ptr2 = (pcb_line_t *) ptrtmp;
-					lastLayer = (pcb_layer_t *) ptr1;
-				}
-				pcb_notify_crosshair_change(pcb_true);
-				return 0;
-			}
+			undo = pcb_tool_line_undo_act();
 		}
 		if (conf_core.editor.mode == PCB_MODE_ARC) {
-			if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
-				pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-				pcb_notify_crosshair_change(pcb_true);
-				return 0;
-			}
-			if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
-				void *ptr1, *ptr2, *ptr3;
-				/* guaranteed to succeed */
-				pcb_search_obj_by_location(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
-															 pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point1.Y, 0);
-				pcb_arc_get_end((pcb_arc_t *) ptr2, 0, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
-				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
-				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
-				pcb_adjust_attached_objects();
-				if (--pcb_added_lines == 0)
-					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
-			}
+			undo = pcb_tool_arc_undo_act();
 		}
+		if (conf_core.editor.mode == PCB_MODE_COPY)
+			undo = pcb_tool_copy_undo_act();
+		if (conf_core.editor.mode == PCB_MODE_MOVE)
+			undo = pcb_tool_move_undo_act();
+		if (conf_core.editor.mode == PCB_MODE_RECTANGLE)
+			undo = pcb_tool_rectangle_undo_act();
+		if (conf_core.editor.mode == PCB_MODE_INSERT_POINT)
+			undo = pcb_tool_insert_undo_act();
 		/* undo the last destructive operation */
-		if (pcb_undo(pcb_true))
-			pcb_board_set_changed_flag(pcb_true);
+		if (undo)
+			if (pcb_undo(pcb_true))
+				pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
