@@ -181,7 +181,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 	}
 
 	/* normal layers */
-	if (idx >= 0 && idx < pcb_max_layer) {
+	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK)) {
 		priv->trans_lines = pcb_true;
 		return PCB->Data->Layer[idx].meta.real.vis;
 	}
@@ -191,6 +191,10 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsig
 		switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_INVIS:
 			return PCB->InvisibleObjectsOn;
+		case PCB_LYT_SILK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
+				return pcb_silk_on(PCB);
+			return 0;
 		case PCB_LYT_ASSY:
 			return 0;
 		case PCB_LYT_PDRILL:
