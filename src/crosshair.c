@@ -307,6 +307,15 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 		thindraw_moved_pv(via, x, y);
 	}
 	PCB_END_LOOP;
+
+	/* and the padstacks */
+	if (PCB->ViaOn)
+		PCB_PADSTACK_LOOP(Buffer->Data);
+	{
+		thindraw_moved_ps(padstack, x, y);
+	}
+	PCB_END_LOOP;
+
 }
 
 /* ---------------------------------------------------------------------------

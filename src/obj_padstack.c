@@ -280,14 +280,21 @@ pcb_r_dir_t pcb_padstack_draw_hole_callback(const pcb_box_t *b, void *cl)
 #warning padstack TODO: do real thin draw here
 void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 {
-	pcb_padstack_shape_t *shape;
+	pcb_padstack_shape_t *shape = NULL;
 	pcb_board_t *pcb;
 	pcb_layergrp_id_t gid = CURRENT->meta.real.grp;
 	int n;
 
 	pcb = pcb_data_get_top(ps->parent.data);
+	if (pcb != NULL) {
+		shape = pcb_padstack_shape(ps, pcb_layergrp_flags(pcb, gid), 0);
+	}
+	else { /* no pcb means buffer - take the first shape */
+		pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+		if (proto != NULL)
+			shape = proto->shape;
+	}
 
-	shape = pcb_padstack_shape(ps, pcb_layergrp_flags(pcb, gid), 0);
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(gc, 0);
 		switch(shape->shape) {
