@@ -22,16 +22,32 @@
 
 void *pcb_padstackop_add_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
-	pcb_padstack_t *p = pcb_padstack_new(ctx->buffer.dst, ps->proto, ps->x, ps->y, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
+	pcb_padstack_t *p;
+	pcb_cardinal_t npid;
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+	if (proto == NULL)
+		return NULL;
+
+	npid = pcb_padstack_proto_insert_dup(ctx->buffer.dst, proto, 1);
+	p = pcb_padstack_new(ctx->buffer.dst, npid, ps->x, ps->y, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
 	return pcb_padstack_copy_meta(p, ps);
 }
 
 void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
+	pcb_padstack_t *p;
+	pcb_cardinal_t npid;
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+	if (proto == NULL)
+		return NULL;
+
+	npid = pcb_padstack_proto_insert_dup(ctx->buffer.dst, proto, 1);
+
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PADSTACK, ps, ps);
 	pcb_r_delete_entry(ctx->buffer.src->padstack_tree, (pcb_box_t *)ps);
 
 	padstacklist_remove(ps);
+	ps->proto = npid;
 	padstacklist_append(&ctx->buffer.dst->padstack, ps);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, ps);
