@@ -260,6 +260,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		int type;
 		void *ptr1, *ptr3, *ptrtmp;
 		pcb_line_t *ptr2;
+		ptrtmp = &pcb_crosshair.AttachedLine; /* a workaround for the line undo bug */
 		/* this search is guaranteed to succeed */
 		pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 													 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
