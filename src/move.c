@@ -132,7 +132,7 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 
 	ctx.move.pcb = PCB;
 	ctx.move.dx = DX;
-3	ctx.move.dy = DY;
+	ctx.move.dy = DY;
 	pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	result = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (result);
