@@ -212,7 +212,9 @@ int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
 	return ret;
 }
 
-pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_proto_t *proto, int quiet)
+/* Matches proto against all protos in data's cache; returns
+   PCB_PADSTACK_INVALID (and loads first_free_out) if not found */
+static pcb_cardinal_t pcb_padstack_proto_insert_try(pcb_data_t *data, pcb_padstack_proto_t *proto, pcb_cardinal_t *first_free_out)
 {
 	pcb_cardinal_t n, first_free = PCB_PADSTACK_INVALID;
 
@@ -229,6 +231,17 @@ pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_
 			}
 		}
 	}
+	*first_free_out = first_free;
+	return PCB_PADSTACK_INVALID;
+}
+
+pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_proto_t *proto, int quiet)
+{
+	pcb_cardinal_t n, first_free;
+
+	n = pcb_padstack_proto_insert_try(data, proto, &first_free);
+	if (n != PCB_PADSTACK_INVALID)
+		return n; /* already in cache */
 
 	/* no match, have to register a new one */
 	if (first_free == PCB_PADSTACK_INVALID) {
