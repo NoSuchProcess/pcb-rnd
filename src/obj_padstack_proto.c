@@ -252,10 +252,8 @@ static pcb_cardinal_t pcb_padstack_proto_insert_try(pcb_data_t *data, pcb_padsta
 				first_free = n;
 		}
 		else if (data->ps_protos.array[n].hash == proto->hash) {
-			if (pcb_padstack_eq(&data->ps_protos.array[n], proto)) {
-				pcb_padstack_proto_free_fields(proto);
+			if (pcb_padstack_eq(&data->ps_protos.array[n], proto))
 				return n;
-			}
 		}
 	}
 	*first_free_out = first_free;
@@ -267,8 +265,10 @@ pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_
 	pcb_cardinal_t n, first_free;
 
 	n = pcb_padstack_proto_insert_try(data, proto, &first_free);
-	if (n != PCB_PADSTACK_INVALID)
+	if (n != PCB_PADSTACK_INVALID) {
+		pcb_padstack_proto_free_fields(proto);
 		return n; /* already in cache */
+	}
 
 	/* no match, have to register a new one */
 	if (first_free == PCB_PADSTACK_INVALID) {
