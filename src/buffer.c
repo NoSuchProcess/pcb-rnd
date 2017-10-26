@@ -692,12 +692,21 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	}
 	PCB_END_LOOP;
 
-	/* finally the vias */
+	/* finally the vias and padstacks */
 	if (pcb->ViaOn) {
 		changed |= (pinlist_length(&(PCB_PASTEBUFFER->Data->Via)) != 0);
 		PCB_VIA_LOOP(PCB_PASTEBUFFER->Data);
 		{
 			pcb_viaop_copy(&ctx, via);
+		}
+		PCB_END_LOOP;
+	}
+
+	if (pcb->ViaOn) {
+		changed |= (padstacklist_length(&(PCB_PASTEBUFFER->Data->padstack)) != 0);
+		PCB_PADSTACK_LOOP(PCB_PASTEBUFFER->Data);
+		{
+			pcb_padstackop_copy(&ctx, padstack);
 		}
 		PCB_END_LOOP;
 	}

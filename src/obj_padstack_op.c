@@ -65,9 +65,15 @@ void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 void *pcb_padstackop_copy(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
 	pcb_padstack_t *nps;
-	pcb_data_t *data = ps->parent.data;
-	assert(ps->parent_type = PCB_PARENT_DATA);
-	nps = pcb_padstack_new(data, ps->proto, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND));
+	pcb_data_t *data = ctx->copy.pcb->Data;
+	pcb_cardinal_t npid;
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+
+	if (proto == NULL)
+		return NULL;
+	npid = pcb_padstack_proto_insert_dup(data, proto, 1);
+
+	nps = pcb_padstack_new(data, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND));
 	if (nps == NULL)
 		return NULL;
 
