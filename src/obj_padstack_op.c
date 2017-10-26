@@ -42,9 +42,9 @@ void *pcb_padstackop_copy(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 
 void *pcb_padstackop_move_noclip(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
-	pcb_line_invalidate_erase(ps);
+	pcb_padstack_invalidate_erase(ps);
 	pcb_padstack_move(ps, ctx->move.dx, ctx->move.dy);
-	pcb_line_invalidate_draw(ps);
+	pcb_padstack_invalidate_draw(ps);
 	pcb_draw();
 	return ps;
 }
