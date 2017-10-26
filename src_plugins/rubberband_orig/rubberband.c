@@ -357,6 +357,7 @@ static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	info.radius = 0;
 	info.line = NULL;
 	info.rbnd = rbnd;
+	info.delta_index = 0;
 	flg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 	if (pcb_layergrp_list(PCB, flg | PCB_LYT_COPPER, &group, 1) < 1)
 		return;
@@ -487,6 +488,7 @@ static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
 	info.box.Y2 = Pin->Y + t;
 	info.line = NULL;
 	info.rbnd = rbnd;
+	info.delta_index = 0;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))
 		info.radius = 0;
