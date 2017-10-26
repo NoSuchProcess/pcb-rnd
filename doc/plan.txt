@@ -47,9 +47,9 @@ user manual
 		(lesstif: low prio)
 		(remote: not finished yet)
 		(sdl: not even started yet)
-	6. feature plugins							 	First Draft Complete?
- 		net auto-completion             no              [acompnet]
- 		crop board to fit objects       yes, buildin    [autocrop]
+	6. feature plugins							 included,buildin   name	     DocDraftComplete?
+ 		net auto-completion             no              [acompnet] 
+ 		crop board to fit objects       yes, buildin    [autocrop]			y
  		auto place components           yes, buildin    [autoplace]
  		the original autorouter         yes, buildin    [autoroute]
  		flip board objects              yes, buildin    [boardflip]
