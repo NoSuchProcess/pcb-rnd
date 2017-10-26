@@ -36,7 +36,10 @@ void *pcb_padstackop_change_mask_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_change_flag(pcb_opctx_t *ctx, pcb_element_t *elem, pcb_padstack_t *ps);
 */
 
-void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line);
+
+void *pcb_padstackop_add_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+
 void *pcb_padstackop_copy(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_move(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_move_noclip(pcb_opctx_t *ctx, pcb_padstack_t *ps);

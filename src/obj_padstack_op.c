@@ -20,9 +20,30 @@
  *
  */
 
-void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
+void *pcb_padstackop_add_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
+	pcb_padstack_t *p = pcb_padstack_new(ctx->buffer.dst, ps->proto, ps->x, ps->y, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
+	return pcb_padstack_copy_meta(p, ps);
+}
 
+void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
+{
+	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PADSTACK, ps, ps);
+	pcb_r_delete_entry(ctx->buffer.src->padstack_tree, (pcb_box_t *)ps);
+
+	padstacklist_remove(ps);
+	padstacklist_append(&ctx->buffer.dst->padstack, ps);
+
+	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, ps);
+
+	if (!ctx->buffer.dst->padstack_tree)
+		ctx->buffer.dst->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+
+	pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps, 0);
+	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PADSTACK, ps, ps);
+
+	PCB_SET_PARENT(ps, data, ctx->buffer.dst);
+	return ps;
 }
 
 void *pcb_padstackop_copy(pcb_opctx_t *ctx, pcb_padstack_t *ps)

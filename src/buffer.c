@@ -46,6 +46,7 @@
 #include "compat_nls.h"
 #include "obj_all_op.h"
 #include "obj_subc_op.h"
+#include "obj_padstack_op.h"
 #include "layer_grp.h"
 #include "event.h"
 #include "safe_fs.h"
@@ -68,7 +69,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	pcb_ratop_add_to_buffer,
 	NULL,
 	pcb_subcop_add_to_buffer,
-	NULL  /* padstack */
+	pcb_padstackop_add_to_buffer,
 };
 
 #warning TODO: rename this; move_to_buffer is also used to move from buffer to pcb
@@ -87,7 +88,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_ratop_move_to_buffer,
 	NULL,
 	pcb_subcop_move_to_buffer,
-	NULL  /* padstack */
+	pcb_padstackop_move_to_buffer,
 };
 
 /* ---------------------------------------------------------------------------
