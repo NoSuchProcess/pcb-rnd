@@ -48,7 +48,7 @@ user manual
 		(remote: not finished yet)
 		(sdl: not even started yet)
 	6. feature plugins							 included,buildin   name	     DocDraftComplete?
- 		net auto-completion             no              [acompnet] 
+ 		net auto-completion             no              [acompnet]			y
  		crop board to fit objects       yes, buildin    [autocrop]			y
  		auto place components           yes, buildin    [autoplace]
  		the original autorouter         yes, buildin    [autoroute]
