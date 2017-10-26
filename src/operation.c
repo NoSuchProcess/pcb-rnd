@@ -100,6 +100,11 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return (F->Pad(ctx, (pcb_element_t *) Ptr1, (pcb_pad_t *) Ptr2));
 		break;
 
+	case PCB_TYPE_PADSTACK:
+		if (F->padstack)
+			return (F->padstack(ctx, (pcb_padstack_t *)Ptr2));
+		break;
+
 	case PCB_TYPE_ELEMENT_NAME:
 		if (F->ElementName)
 			return (F->ElementName(ctx, (pcb_element_t *) Ptr1));
@@ -272,7 +277,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		PCB_END_LOOP;
 	}
 
-	/* process vias */
+	/* process vias and padstacks */
 	if (type & PCB_TYPE_VIA && pcb->ViaOn && F->Via) {
 		PCB_VIA_LOOP(pcb->Data);
 		{
@@ -282,6 +287,21 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, via);
 				}
 				F->Via(ctx, via);
+				changed = pcb_true;
+			}
+		}
+		PCB_END_LOOP;
+	}
+
+	if (type & PCB_TYPE_PADSTACK && pcb->ViaOn && F->padstack) {
+		PCB_PADSTACK_LOOP(pcb->Data);
+		{
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack)) {
+				if (Reset) {
+					pcb_undo_add_obj_to_flag(padstack);
+					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, padstack);
+				}
+				F->padstack(ctx, padstack);
 				changed = pcb_true;
 			}
 		}
