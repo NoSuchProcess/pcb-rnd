@@ -89,6 +89,11 @@ typedef struct {
 	attrs_t attrs[32];/* how to extract node attributes */
 } pcb_eagle_script_t;
 
+typedef struct
+{
+        egb_node_t *root, *layers, *drawing, *libraries, *firstel, *signals, *board;
+} egb_ctx_t;
+
 #define TERM {0}
 
 static const pcb_eagle_script_t pcb_eagle_script[] = {
@@ -1655,37 +1660,14 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 }
 
 /* look for contactrefs, and append "name"="refdes" fields to contactref nodes as "element" "refdes"*/
-static int postproc_contactrefs(void *ctx, egb_node_t *root)
+static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 {
         htss_entry_t *e;
-        egb_node_t *board, *els, *sig, *cr, *n, *q, *next, *next2;
-        egb_node_t *drawing = root->first_child;
+        egb_node_t *els, *cr, *n, *q, *next, *next2;
 
-        for(n = drawing->first_child, board = NULL; board == NULL && n != NULL; n = next) {
-                next = n->next;
-                if (board == NULL && n->id == PCB_EGKW_SECT_BOARD) {
-                        pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
-                        board = n;
-                }
-        }
+	els = egb_ctx->firstel->parent;
 
-        for(n = board->first_child, els = NULL; els == NULL && n != NULL; n = n->next) {
-                pcb_trace("found board subnode ID: %d\n", n->id);
-                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
-                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
-                        els = n;
-                }
-        }
-
-        for(n = board->first_child, sig = NULL; sig == NULL && n != NULL; n = n->next) {
-                pcb_trace("found board subnode ID: %d\n", n->id);
-                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
-                        pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
-                        sig = n->first_child;
-                }
-        }
-
-        for(n = sig; n != NULL; n = next) {
+        for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
                 next = n->next;
 		if (n->first_child->id != NULL && n->first_child->id == PCB_EGKW_SECT_CONTACTREF) {
 			pcb_trace("Found PCB_EKGW_SECT_CONTACTREF\n");
@@ -1708,29 +1690,12 @@ static int postproc_contactrefs(void *ctx, egb_node_t *root)
 
 
 /* look for elements, and subsequent element2 blocks, and copy name/value fields to element */
-static int postproc_elements(void *ctx, egb_node_t *root)
+static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 {
 	htss_entry_t *e;
-	egb_node_t *board, *el1, *el2, *n, *q, *next, *next2;
-	egb_node_t *drawing = root->first_child;
+	egb_node_t *el2, *n, *q, *next, *next2;
 
-	for(n = drawing->first_child, board = NULL; board == NULL && n != NULL; n = next) {
-		next = n->next;
-		if (board == NULL && n->id == PCB_EGKW_SECT_BOARD) {
-			pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
-			board = n;
-		}
-	}
-
-	for(n = board->first_child, el1 = NULL; el1 == NULL && n != NULL; n = n->next) {
-		pcb_trace("found board subnode ID: %d\n", n->id);
-		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
-			pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
-			el1 = n->first_child;
-		}
-	}
-
-	for(n = el1; n != NULL; n = next) {
+	for(n = egb_ctx->firstel; n != NULL; n = next) {
 		next = n->next;
 		pcb_trace("inspecting el1 subnode: %d\n", n->id);
 		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT2) {
@@ -1768,28 +1733,11 @@ static int postproc_elements(void *ctx, egb_node_t *root)
 }
 
 /* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
-static int postproc_signal(void *ctx, egb_node_t *root)
+static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
-        egb_node_t *n, *p, *prev, *prev2, *next, *next2, *signal, *board;
-        egb_node_t *drawing = root->first_child;
+        egb_node_t *n, *p, *prev, *prev2, *next, *next2;
 
-        for(n = drawing->first_child, board = NULL; board == NULL && n != NULL; n = next) {
-                next = n->next;
-                if (board == NULL && n->id == PCB_EGKW_SECT_BOARD) {
-                        pcb_trace("Found PCB_EKGW_SECT_BOARD\n");
-                        board = n;
-                }
-        }
-
-        for(n = board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
-                pcb_trace("found board subnode ID: %d\n", n->id);
-                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
-                        pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
-                        signal = n->first_child;
-                }
-        }
-
-	egb_node_t *signals = signal->parent;
+	egb_node_t *signal = egb_ctx->signals->first_child;
 
         for(n = signal; n != NULL; n = next) {
                 next = n->next;
@@ -1799,7 +1747,7 @@ static int postproc_signal(void *ctx, egb_node_t *root)
 				if (p->id == PCB_EGKW_SECT_SIGNAL) {
 					pcb_trace("about to unlink PCB_EGKW_SECT_SIGNAL/PCB_EGKW_SECT_SIGNAL...\n");
 		                        egb_node_unlink(n, prev2, p);
-		                        egb_node_append(signals, p);
+		                        egb_node_append(egb_ctx->signals, p);
 				}
 				else
 					prev2 = p;
@@ -1812,17 +1760,15 @@ static int postproc_signal(void *ctx, egb_node_t *root)
 }
 
 /* take each /drawing/layer and move them into a newly created /drawing/layers/ */
-static int postproc_layers(void *ctx, egb_node_t *root)
+static int postproc_layers(void *ctx, egb_ctx_t *egb_ctx)
 {
 	egb_node_t *n, *prev, *next;
-	egb_node_t *layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
-	egb_node_t *drawing = root->first_child;
 
-	for(n = drawing->first_child, prev = NULL; n != NULL; n = next) {
+	for(n = egb_ctx->drawing->first_child, prev = NULL; n != NULL; n = next) {
 		next = n->next; /* need to save this because unlink() will ruin it */
 		if (n->id == PCB_EGKW_SECT_LAYER) {
-			egb_node_unlink(drawing, prev, n);
-			egb_node_append(layers, n);
+			egb_node_unlink(egb_ctx->drawing, prev, n);
+			egb_node_append(egb_ctx->layers, n);
 		}
 		else
 			prev = n;
@@ -1832,21 +1778,11 @@ static int postproc_layers(void *ctx, egb_node_t *root)
 }
 
 /* insert a library node above each packages node to match the xml */
-static int postproc_libs(void *ctx, egb_node_t *root)
+static int postproc_libs(void *ctx, egb_ctx_t *egb_ctx)
 {
 	egb_node_t *n, *lib;
-	egb_node_t *drawing = root->first_child;
-	egb_node_t *board, *libraries;
 
-	board = find_node(drawing->first_child, PCB_EGKW_SECT_BOARD);
-	if (board == NULL)
-		return -1;
-
-	libraries = find_node_name(board->first_child, "libraries");
-	if (libraries == NULL)
-		return -1;
-
-	for(n = libraries->first_child; n != NULL; n = libraries->first_child) {
+	for(n = egb_ctx->libraries->first_child; n != NULL; n = egb_ctx->libraries->first_child) {
 		if (n->id == PCB_EGKW_SECT_LIBRARY)
 			break;
 
@@ -1855,8 +1791,8 @@ static int postproc_libs(void *ctx, egb_node_t *root)
 			return -1;
 		}
 
-		egb_node_unlink(libraries, NULL, n);
-		lib = egb_node_append(libraries, egb_node_alloc(PCB_EGKW_SECT_LIBRARY, "library"));
+		egb_node_unlink(egb_ctx->libraries, NULL, n);
+		lib = egb_node_append(egb_ctx->libraries, egb_node_alloc(PCB_EGKW_SECT_LIBRARY, "library"));
 		egb_node_append(lib, n);
 	}
 
@@ -1865,9 +1801,48 @@ static int postproc_libs(void *ctx, egb_node_t *root)
 
 static int postproc(void *ctx, egb_node_t *root)
 {
-	return postproc_layers(ctx, root) || postproc_libs(ctx, root)
-		|| postproc_elements(ctx, root)
-		|| postproc_signal(ctx, root) || postproc_contactrefs(ctx, root)
+
+	egb_node_t *n, *signal, *el1;
+
+	egb_ctx_t eagle_bin_ctx;
+
+	egb_ctx_t *egb_ctx_p;
+
+	egb_ctx_p = &eagle_bin_ctx;
+
+	eagle_bin_ctx.root = root;
+        eagle_bin_ctx.drawing = root->first_child;
+	eagle_bin_ctx.board = find_node(eagle_bin_ctx.drawing->first_child, PCB_EGKW_SECT_BOARD);
+        if (eagle_bin_ctx.board == NULL)
+                return -1;
+        eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
+        if (eagle_bin_ctx.libraries == NULL)
+                return -1;
+	eagle_bin_ctx.layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
+
+        for(n = eagle_bin_ctx.board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
+                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
+                        pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
+                        signal = n->first_child;
+                }
+        }
+
+        for(n = eagle_bin_ctx.board->first_child, eagle_bin_ctx.firstel = NULL;
+			eagle_bin_ctx.firstel == NULL && n != NULL; n = n->next) {
+                pcb_trace("found board subnode ID: %d\n", n->id);
+                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
+                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
+                        eagle_bin_ctx.firstel = n->first_child;
+                }
+        }
+
+        eagle_bin_ctx.signals = signal->parent;
+        if (eagle_bin_ctx.signals == NULL)
+                return -1;
+
+	return postproc_layers(ctx, egb_ctx_p) || postproc_libs(ctx, egb_ctx_p)
+		|| postproc_elements(ctx, egb_ctx_p)
+		|| postproc_signal(ctx, egb_ctx_p) || postproc_contactrefs(ctx, egb_ctx_p)
 		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root);
 }
 
