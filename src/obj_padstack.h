@@ -145,6 +145,10 @@ int pcb_padstack_drc_check_and_warn(pcb_padstack_t *ps);
 /* Generate poly->pa (which should be NULL at the time of call) */
 void pcb_padstack_shape_update_pline(pcb_padstack_poly_t *poly);
 
+/* Insert proto into the cache of data; if it's already in, return the existing
+   ID, else dup it and insert it. */
+pcb_cardinal_t pcb_padstack_proto_insert_dup(pcb_data_t *data, const pcb_padstack_proto_t *proto, int quiet);
+
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
 int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *p2);

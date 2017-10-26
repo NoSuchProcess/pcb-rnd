@@ -62,6 +62,12 @@ void pcb_padstack_shape_alloc_poly(pcb_padstack_poly_t *poly, int len)
 	poly->len = len;
 }
 
+void pcb_padstack_shape_copy_poly(pcb_padstack_poly_t *dst, const pcb_padstack_poly_t *src)
+{
+	memcpy(dst->x, src->x, sizeof(src->x[0]) * src->len * 2);
+}
+
+
 static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
 	int ret = -1, n, m, i;
@@ -212,6 +218,27 @@ int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
 	return ret;
 }
 
+void pcb_padstack_proto_copy(pcb_padstack_proto_t *dst, const pcb_padstack_proto_t *src)
+{
+	int n;
+	memcpy(dst, src, sizeof(pcb_padstack_proto_t));
+	dst->shape = malloc(sizeof(pcb_padstack_shape_t) * src->len);
+	memcpy(dst->shape, src->shape, sizeof(pcb_padstack_shape_t) * src->len);
+	for(n = 0; n < src->len; n++) {
+		switch(src->shape[n].shape) {
+			case PCB_PSSH_LINE:
+			case PCB_PSSH_CIRC:
+				break; /* do nothing, all fields are copied already by the memcpy */
+			case PCB_PSSH_POLY:
+				pcb_padstack_shape_alloc_poly(&dst->shape[n].data.poly, src->shape[n].data.poly.len);
+				pcb_padstack_shape_copy_poly(&dst->shape[n].data.poly, &src->shape[n].data.poly);
+				break;
+		}
+	}
+	dst->in_use = 1;
+}
+
+
 /* Matches proto against all protos in data's cache; returns
    PCB_PADSTACK_INVALID (and loads first_free_out) if not found */
 static pcb_cardinal_t pcb_padstack_proto_insert_try(pcb_data_t *data, pcb_padstack_proto_t *proto, pcb_cardinal_t *first_free_out)
@@ -253,6 +280,30 @@ pcb_cardinal_t pcb_padstack_proto_insert_or_free(pcb_data_t *data, pcb_padstack_
 		data->ps_protos.array[first_free].in_use = 1;
 	}
 	memset(proto, 0, sizeof(pcb_padstack_proto_t)); /* make sure a subsequent free() won't do any harm */
+	return n;
+}
+
+pcb_cardinal_t pcb_padstack_proto_insert_dup(pcb_data_t *data, const pcb_padstack_proto_t *proto, int quiet)
+{
+	pcb_cardinal_t n, first_free;
+
+	n = pcb_padstack_proto_insert_try(data, proto, &first_free);
+	if (n != PCB_PADSTACK_INVALID)
+		return n; /* already in cache */
+
+	/* no match, have to register a new one, which is a dup of the original */
+	if (first_free == PCB_PADSTACK_INVALID) {
+		pcb_padstack_proto_t *nproto;
+		n = pcb_vtpadstack_proto_len(&data->ps_protos);
+		nproto = pcb_vtpadstack_proto_alloc_append(&data->ps_protos, 1);
+		pcb_padstack_proto_copy(nproto, proto);
+		nproto->parent = data;
+	}
+	else {
+		pcb_padstack_proto_copy(data->ps_protos.array+first_free, proto);
+		data->ps_protos.array[first_free].in_use = 1;
+		data->ps_protos.array[first_free].parent = data;
+	}
 	return n;
 }
 
