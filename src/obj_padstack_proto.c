@@ -241,7 +241,7 @@ void pcb_padstack_proto_copy(pcb_padstack_proto_t *dst, const pcb_padstack_proto
 
 /* Matches proto against all protos in data's cache; returns
    PCB_PADSTACK_INVALID (and loads first_free_out) if not found */
-static pcb_cardinal_t pcb_padstack_proto_insert_try(pcb_data_t *data, pcb_padstack_proto_t *proto, pcb_cardinal_t *first_free_out)
+static pcb_cardinal_t pcb_padstack_proto_insert_try(pcb_data_t *data, const pcb_padstack_proto_t *proto, pcb_cardinal_t *first_free_out)
 {
 	pcb_cardinal_t n, first_free = PCB_PADSTACK_INVALID;
 
