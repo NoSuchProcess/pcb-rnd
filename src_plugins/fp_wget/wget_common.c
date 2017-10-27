@@ -69,7 +69,11 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 
 		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
 			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
-			pcb_system(cmd);
+			if (pcb_system(cmd) != 0) {
+				/* when wget fails, a 0-long file might be left there - remove it so it won't block new downloads */
+				sprintf(cmd, "%s/%s", cache_path, cdir);
+				pcb_remove(cmd);
+			}
 		}
 		if (f != NULL) {
 			sprintf(cmd, "%s/%s", cache_path, cdir);
