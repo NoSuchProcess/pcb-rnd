@@ -1,4 +1,6 @@
 1. For the upcoming release ===============================================================================
+- BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
+- BUG: empty board, put text on top silk, ctrl+c, shift+f7 twice -> rtree assert [report: keantoken]
 - BUG: shift+b doesn't work on subc [report: Ade]
 - subc edit: when open directly, allow parts to be selected/moved/etc.
 - feature: property editor should deal with flags
