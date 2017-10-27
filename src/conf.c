@@ -1569,7 +1569,19 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 		f = pcb_fopen_fn(fn, "w", &efn);
 		if ((f == NULL) && (role == CFR_USER)) {
 			/* create the directory and try again */
-			char *path = pcb_strdup(efn), *end;
+			char *path = NULL, *end;
+			
+			if (efn != NULL)
+				path = pcb_strdup(efn);
+			else
+				path = pcb_strdup(fn);
+
+			if (path == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Error: failed to calculate the project file name (board file name or allocation error)\n");
+				fclose(f);
+				return -1;
+			}
+
 			end = strrchr(path, '/');
 			if (end != NULL) {
 				*end = '\0';
