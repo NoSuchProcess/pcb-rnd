@@ -1574,7 +1574,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			if (efn != NULL)
 				path = pcb_strdup(efn);
 			else
-				path = pcb_strdup(fn);
+				path = pcb_build_fn(fn);
 
 			if (path == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Error: failed to calculate the project file name (board file name or allocation error)\n");
@@ -1587,7 +1587,8 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 				*end = '\0';
 				if (pcb_mkdir(path, 0755) == 0) {
 					pcb_message(PCB_MSG_INFO, "Created directory %s for saving %s\n", path, fn);
-					f = pcb_fopen(efn, "w");
+					*end = '/';
+					f = pcb_fopen(path, "w");
 				}
 				else
 					pcb_message(PCB_MSG_ERROR, "Error: failed to create directory %s for saving %s\n", path, efn);
