@@ -1728,9 +1728,10 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 
 	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
 
-	if (f != NULL)
+	if (f != NULL) {
 		doc = lht_dom_load_stream(f, name, &errmsg);
-	pcb_fp_fclose(f, &st);
+		pcb_fp_fclose(f, &st);
+	}
 
 	if (doc == NULL) {
 		if (!pcb_io_err_inhibit)
