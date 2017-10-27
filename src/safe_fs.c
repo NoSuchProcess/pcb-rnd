@@ -60,7 +60,16 @@ do { \
 FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out)
 {
 	FILE *f;
-	char *path_exp = pcb_build_fn(path);
+	char *path_exp;
+
+	/* skip expensive path building for empty paths that are going to fail anyway */
+	if ((path == NULL) || (*path == '\0')) {
+		if (fn_out != NULL)
+			*fn_out = NULL;
+		return NULL;
+	}
+
+	path_exp = pcb_build_fn(path);
 
 	CHECK("fopen", "access", path_exp, mode, goto err);
 	CHECK("fopen", "fopen", path_exp, mode, goto err);
