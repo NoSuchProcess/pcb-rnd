@@ -30,6 +30,11 @@ pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer
 	ThermPoly(pcb, pin, lid);
 }
 
+pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
+{
+
+}
+
 pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
 {
 	switch(obj->type) {
@@ -38,6 +43,8 @@ pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer
 			return pcb_thermal_area_pin(pcb, (pcb_pin_t *)obj, lid);
 
 		case PCB_OBJ_LINE:
+			return pcb_thermal_area_line(pcb, (pcb_line_t *)obj, lid);
+
 		case PCB_OBJ_POLYGON:
 		case PCB_OBJ_ARC:
 

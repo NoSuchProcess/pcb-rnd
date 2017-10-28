@@ -39,6 +39,7 @@ typedef enum pcb_thermal_e {
 
 pcb_polyarea_t *pcb_thermal_area(pcb_board_t *p, pcb_any_obj_t *obj, pcb_layer_id_t lid);
 pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer_id_t lid);
+pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid);
 
 
 #endif
