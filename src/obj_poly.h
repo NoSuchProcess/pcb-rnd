@@ -170,6 +170,13 @@ static inline PCB_FUNC_UNUSED int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coor
 	return 1;
 }
 
+/* read the previous contour/hole coords into x,y, without bumping the iterator */
+static inline PCB_FUNC_UNUSED void pcb_poly_vect_peek_prev(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+{
+	*x = it->v->prev->point[0];
+	*y = it->v->prev->point[1];
+}
+
 /* Let the poly clear sorrunding polys in its layer */
 #define pcb_poly_ppclear(poly) \
 do { \
