@@ -59,6 +59,7 @@ pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data)
 void pcb_padstack_free(pcb_padstack_t *ps)
 {
 	padstacklist_remove(ps);
+	free(ps->thermal.shape);
 	free(ps);
 }
 
