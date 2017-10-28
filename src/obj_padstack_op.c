@@ -129,3 +129,12 @@ void *pcb_padstackop_remove(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 	PCB_CLEAR_PARENT(ps);
 	return NULL;
 }
+
+void *pcb_padstackop_destroy(pcb_opctx_t *ctx, pcb_padstack_t *ps)
+{
+	pcb_r_delete_entry(ctx->remove.destroy_target->padstack_tree, (pcb_box_t *)ps);
+	free(ps->thermal.shape);
+	pcb_via_free(ps);
+	return NULL;
+}
+

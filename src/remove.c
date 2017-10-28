@@ -72,8 +72,8 @@ static pcb_opfunc_t DestroyFunctions = {
 	pcb_arcop_destroy,
 	pcb_ratop_destroy,
 	NULL,
-	pcb_subcop_destroy, /* subc */
-	NULL  /* padstack */
+	pcb_subcop_destroy,
+	pcb_padstackop_destroy,
 };
 
 /* ----------------------------------------------------------------------

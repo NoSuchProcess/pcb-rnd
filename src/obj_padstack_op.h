@@ -32,11 +32,10 @@ void *pcb_padstackop_move(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_move_noclip(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_clip(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_remove(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+void *pcb_padstackop_destroy(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 
 
 /*** TODO: unimplemented ones ***/
-
-void *pcb_padstackop_destroy(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 
 void *pcb_padstackop_change_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_change_2nd_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
