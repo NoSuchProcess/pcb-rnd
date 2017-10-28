@@ -994,7 +994,6 @@ static pcb_polyarea_t *poly_sub_callback_line(pcb_coord_t x1, pcb_coord_t y1, pc
 		ret = tmp; \
 	} while(0)
 
-
 /* Construct a poly area that represents the enlarged subpoly - so it can be
    subtracted from the parent poly to form the clearance for subpoly */
 static pcb_polyarea_t *SubtractPolyPoly_construct(pcb_poly_t *subpoly)
@@ -1041,6 +1040,15 @@ static pcb_polyarea_t *SubtractPolyPoly_construct(pcb_poly_t *subpoly)
 	return ret;
 }
 
+/* return the clearance polygon for a line */
+static pcb_polyarea_t *poly_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_poly_t *subpoly)
+{
+	if (subpoly->thermal & PCB_THERMAL_ON)
+		return pcb_thermal_area_poly(pcb, subpoly, layernum);
+	return SubtractPolyPoly_construct(subpoly);
+}
+
+
 static int SubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 {
 	pcb_polyarea_t *pa;
@@ -1048,7 +1056,7 @@ static int SubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
 		return -1;
 
-	pa = SubtractPolyPoly_construct(subpoly);
+	pa = poly_clearance_poly(-1, NULL, subpoly);
 	if (pa == NULL)
 		return -1;
 
@@ -1065,7 +1073,7 @@ static int UnsubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
 		return -1;
 
-	pa = SubtractPolyPoly_construct(subpoly);
+	pa = poly_clearance_poly(-1, NULL, subpoly);
 	if (pa == NULL)
 		return -1;
 
