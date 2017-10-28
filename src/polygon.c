@@ -800,7 +800,7 @@ static pcb_polyarea_t *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *
 {
 	pcb_polyarea_t *np;
 	if (PCB_FLAG_THERM_TEST(layernum, pin))
-		np = pcb_thermal_area(pcb, pin, layernum);
+		np = pcb_thermal_area_pin(pcb, pin, layernum);
 	else
 		np = pcb_poly_from_pin(pin, PIN_SIZE(pin), pin->Clearance);
 	return np;
@@ -918,7 +918,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	i = pcb_layer_id(info->data, info->layer);
 	if (PCB_FLAG_THERM_TEST(i, pin)) {
-		np = pcb_thermal_area(pcb_data_get_top(info->data), pin, i);
+		np = pcb_thermal_area_pin(pcb_data_get_top(info->data), pin, i);
 		if (!np)
 			return PCB_R_DIR_FOUND_CONTINUE;
 	}
