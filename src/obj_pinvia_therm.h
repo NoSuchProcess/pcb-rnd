@@ -33,8 +33,8 @@
  * operations, and the functions in thermal.h help implement that.
  */
 
-#ifndef	PCB_THERMAL_H
-#define	PCB_THERMAL_H
+#ifndef	PCB_PINVIA_THERMAL_H
+#define	PCB_PINVIA_THERMAL_H
 
 #include <stdlib.h>
 #include "config.h"
