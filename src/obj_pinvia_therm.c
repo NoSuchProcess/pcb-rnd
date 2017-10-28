@@ -48,41 +48,6 @@ struct cent {
 	pcb_polyarea_t *p;
 };
 
-static pcb_polyarea_t *pcb_pa_diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pcb_coord_t w, pcb_bool rt)
-{
-	pcb_pline_t *c;
-	pcb_vector_t v;
-	pcb_coord_t x1, x2, y1, y2;
-
-	if (rt) {
-		x1 = (l - w) * M_SQRT1_2;
-		x2 = (l + w) * M_SQRT1_2;
-		y1 = x1;
-		y2 = x2;
-	}
-	else {
-		x2 = -(l - w) * M_SQRT1_2;
-		x1 = -(l + w) * M_SQRT1_2;
-		y1 = -x1;
-		y2 = -x2;
-	}
-
-	v[0] = X + x1;
-	v[1] = Y + y2;
-	if ((c = pcb_poly_contour_new(v)) == NULL)
-		return NULL;
-	v[0] = X - x2;
-	v[1] = Y - y1;
-	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-	v[0] = X - x1;
-	v[1] = Y - y2;
-	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-	v[0] = X + x2;
-	v[1] = Y + y1;
-	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-	return pcb_poly_from_contour(c);
-}
-
 static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 {
 	pcb_polyarea_t *p, *p2;
