@@ -113,21 +113,29 @@ static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
 {
 	pcb_polyarea_t *pa, *pb, *pc;
-	double dx, dy, len, vx, vy, nx, ny, clr, clrth;
+	double dx, dy, len, vx, vy, nx, ny, clr, clrth, x1, y1, x2, y2, mx, my;
 
-	if ((line->Point1.X == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
+	if ((x1 == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
 		/* conrer case zero-long line is a circle: do the same as for vias */
 #warning thermal TODO
 		abort();
 	}
 
-	dx = line->Point1.X - line->Point2.X;
-	dy = line->Point1.Y - line->Point2.Y;
+	x1 = line->Point1.X;
+	y1 = line->Point1.Y;
+	x2 = line->Point2.X;
+	y2 = line->Point2.Y;
+	mx = (x1+x2)/2.0;
+	my = (y1+y2)/2.0;
+	dx = x1 - x2;
+	dy = y1 - y2;
+
 	len = sqrt(dx*dx + dy*dy);
 	vx = dx / len;
 	vy = dy / len;
 	nx = -vy;
 	ny = vx;
+
 	clr = line->Clearance / 2;
 	clrth = (line->Clearance/2 + line->Thickness) / 2;
 
@@ -139,21 +147,21 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 		case PCB_THERMAL_ROUND:
 			if (line->thermal & PCB_THERMAL_DIAGONAL) {
 				pa = pa_line_at(
-					line->Point1.X - clrth * nx - clr * vx * 0.75, line->Point1.Y - clrth * ny - clr * vy * 0.75,
-					line->Point2.X - clrth * nx + clr * vx * 0.75, line->Point2.Y - clrth * ny + clr * vy * 0.75,
+					x1 - clrth * nx - clr * vx * 0.75, y1 - clrth * ny - clr * vy * 0.75,
+					x2 - clrth * nx + clr * vx * 0.75, y2 - clrth * ny + clr * vy * 0.75,
 					clr);
 
 				pb = pa_line_at(
-					line->Point1.X + clrth * nx - clr * vx * 0.75, line->Point1.Y + clrth * ny - clr * vy * 0.75,
-					line->Point2.X + clrth * nx + clr * vx * 0.75, line->Point2.Y + clrth * ny + clr * vy * 0.75,
+					x1 + clrth * nx - clr * vx * 0.75, y1 + clrth * ny - clr * vy * 0.75,
+					x2 + clrth * nx + clr * vx * 0.75, y2 + clrth * ny + clr * vy * 0.75,
 					clr);
 
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
 				pa = pc; pc = NULL;
-				pb = pa_arc_at(line->Point1.X, line->Point1.Y, clrth,
-					line->Point1.X - clrth * nx + clr * vx * 2.0, line->Point1.Y - clrth * ny + clr * vy * 2.0,
-					line->Point1.X + clrth * nx + clr * vx * 2.0, line->Point1.Y + clrth * ny + clr * vy * 2.0,
+				pb = pa_arc_at(x1, y1, clrth,
+					x1 - clrth * nx + clr * vx * 2.0, y1 - clrth * ny + clr * vy * 2.0,
+					x1 + clrth * nx + clr * vx * 2.0, y1 + clrth * ny + clr * vy * 2.0,
 					clr, 180.0);
 
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
