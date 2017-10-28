@@ -116,6 +116,7 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 {
 	pcb_polyarea_t *pa, *pb, *pc;
 	double dx, dy, len, vx, vy, nx, ny, clr, clrth, x1, y1, x2, y2, mx, my;
+	pcb_coord_t th;
 
 	if ((x1 == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
 		/* conrer case zero-long line is a circle: do the same as for vias */
@@ -233,7 +234,38 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 			}
 			return pc;
 		case PCB_THERMAL_SHARP:
-			break;
+			pa = pcb_poly_from_line(line, line->Thickness + line->Clearance);
+			th = line->Thickness/2 < clr ? line->Thickness/2 : clr;
+			clrth *= 2;
+			if (line->thermal & PCB_THERMAL_DIAGONAL) {
+				/* x1;y1 V-shape */
+				pb = pa_line_at(x1, y1, x1-nx*clrth+vx*clrth, y1-ny*clrth+vy*clrth, th);
+				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
+
+				pa = pc; pc = NULL;
+				pb = pa_line_at(x1, y1, x1+nx*clrth+vx*clrth, y1+ny*clrth+vy*clrth, th);
+				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
+
+				/* x2;y2 V-shape */
+				pa = pc; pc = NULL;
+				pb = pa_line_at(x2, y2, x2-nx*clrth-vx*clrth, y2-ny*clrth-vy*clrth, th);
+				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
+
+				pa = pc; pc = NULL;
+				pb = pa_line_at(x2, y2, x2+nx*clrth-vx*clrth, y2+ny*clrth-vy*clrth, th);
+				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
+			}
+			else {
+				/* perpendicular */
+				pb = pa_line_at(mx-nx*clrth, my-ny*clrth, mx+nx*clrth, my+ny*clrth, th);
+				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
+
+				/* straight */
+				pa = pc; pc = NULL;
+				pb = pa_line_at(x1+vx*clrth, y1+vy*clrth, x2-vx*clrth, y2-vy*clrth, th);
+				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
+			}
+			return pc;
 	}
 	return NULL;
 }
