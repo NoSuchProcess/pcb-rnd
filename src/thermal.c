@@ -273,8 +273,11 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
 {
 	pcb_polyarea_t *ptmp, *pres = NULL, *p;
-	pcb_coord_t clr = poly->Clearance / 2;
+	pcb_coord_t clr = poly->Clearance / 2 - 2;
 	double fact = 0.5;
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+
 
 	assert(poly->thermal & PCB_THERMAL_ON); /* caller should have checked this */
 	switch(poly->thermal & 3) {
@@ -283,8 +286,18 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 
 		case PCB_THERMAL_ROUND:
 			if (poly->thermal & PCB_THERMAL_DIAGONAL) {
-				pcb_poly_it_t it;
-				pcb_polyarea_t *pa;
+
+				/* cut out the poly so terminals will be displayed proerply */
+
+				for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+					if (pres != NULL) {
+						pcb_polyarea_boolean(pa, pres, &p, PCB_PBO_UNITE);
+						pcb_polyarea_free(&pres);
+						pres = p;
+					}
+					else
+						pcb_polyarea_copy0(&pres, pa);
+				}
 
 				/* first, iterate over all islands of a polygon */
 				for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
@@ -315,20 +328,16 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 							nx = -vy;
 							ny = vx;
 
-							ptmp = pa_line_at(x - vx * clr * fact - nx * clr/2, y - vy * clr * fact - ny * clr/2, px + vx * clr *fact - nx * clr/2, py + vy * clr * fact - ny * clr/2, clr);
+							/* cheat: clr-2+4 to guarantee some overlap with the poly cutout */
+							ptmp = pa_line_at(x - vx * clr * fact - nx * clr/2, y - vy * clr * fact - ny * clr/2, px + vx * clr *fact - nx * clr/2, py + vy * clr * fact - ny * clr/2, clr+4);
 
-							if (pres != NULL) {
-								pcb_polyarea_boolean(ptmp, pres, &p, PCB_PBO_UNITE);
-								pcb_polyarea_free(&pres);
-								pcb_polyarea_free(&ptmp);
-								pres = p;
-							}
-							else
-								pres = ptmp;
+							pcb_polyarea_boolean(ptmp, pres, &p, PCB_PBO_UNITE);
+							pcb_polyarea_free(&pres);
+							pcb_polyarea_free(&ptmp);
+							pres = p;
 
 							px = x;
 							py = y;
-
 						}
 					}
 				}
