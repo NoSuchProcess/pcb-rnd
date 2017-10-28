@@ -27,13 +27,15 @@
 
 /* The actual padstack is just a reference to a padstack proto within the same data */
 struct pcb_padstack_s {
+#define thermal thermal_dont_use
 	PCB_ANYOBJECTFIELDS;
+#undef thermal
 	pcb_cardinal_t proto;          /* reference to a pcb_padstack_proto_t within pcb_data_t */
 	pcb_coord_t x, y;
 	struct {
 		unsigned long used;
 		unsigned char *shape;        /* indexed by layer ID */
-	} thermal;
+	} thermals;
 	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
 };
 #endif

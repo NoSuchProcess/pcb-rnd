@@ -34,12 +34,14 @@ typedef enum pcb_thermal_e {
 	PCB_THERMAL_SOLID = 3,
 
 	/* bit 2: orientation */
-	PCB_THERMAL_DIAGONAL = 4
+	PCB_THERMAL_DIAGONAL = 4,
+
+	/* bit 3: do we have a thermal at all? */
+	PCB_THERMAL_ON = 8
 } pcb_thermal_t;
 
 pcb_polyarea_t *pcb_thermal_area(pcb_board_t *p, pcb_any_obj_t *obj, pcb_layer_id_t lid);
 pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer_id_t lid);
 pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid);
-
 
 #endif

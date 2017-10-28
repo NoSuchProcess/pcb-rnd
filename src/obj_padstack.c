@@ -59,7 +59,7 @@ pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data)
 void pcb_padstack_free(pcb_padstack_t *ps)
 {
 	padstacklist_remove(ps);
-	free(ps->thermal.shape);
+	free(ps->thermals.shape);
 	free(ps);
 }
 
@@ -353,13 +353,13 @@ int pcb_padstack_drc_check_and_warn(pcb_padstack_t *ps)
 
 void pcb_padstack_set_thermal(pcb_padstack_t *ps, unsigned long lid, unsigned char shape)
 {
-	if (ps->thermal.used <= lid) {
-		unsigned long oldu = ps->thermal.used;
-		ps->thermal.used = lid+1;
-		ps->thermal.shape = realloc(ps->thermal.shape, ps->thermal.used);
-		memset(ps->thermal.shape + oldu, 0, ps->thermal.used - oldu - 1);
+	if (ps->thermals.used <= lid) {
+		unsigned long oldu = ps->thermals.used;
+		ps->thermals.used = lid+1;
+		ps->thermals.shape = realloc(ps->thermals.shape, ps->thermals.used);
+		memset(ps->thermals.shape + oldu, 0, ps->thermals.used - oldu - 1);
 	}
-	ps->thermal.shape[lid] = shape;
+	ps->thermals.shape[lid] = shape;
 }
 
 #include "obj_padstack_op.c"

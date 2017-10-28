@@ -130,8 +130,10 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	pcb_parent_t         parent; \
 	const char           *term; \
 	void                 *ratconn; \
+	unsigned char        thermal; \
 	unsigned char        intconn; \
 	pcb_attribute_list_t Attributes
+
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define PCB_ANYLINEFIELDS \

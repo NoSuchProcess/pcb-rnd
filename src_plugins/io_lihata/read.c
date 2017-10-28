@@ -752,12 +752,12 @@ static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
 	if ((thl != NULL) && (thl->type == LHT_LIST)) {
 		int n;
 		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next) n++;
-		ps->thermal.used = n;
-		ps->thermal.shape = malloc(sizeof(ps->thermal.shape[0]) * n);
+		ps->thermals.used = n;
+		ps->thermals.shape = malloc(sizeof(ps->thermals.shape[0]) * n);
 		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next, n++) {
 			int i;
 			parse_int(&i, t);
-			ps->thermal.shape[n] = i;
+			ps->thermals.shape[n] = i;
 		}
 	}
 
