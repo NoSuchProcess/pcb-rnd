@@ -73,6 +73,7 @@ pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer
 	return ThermPoly(pcb, pin, lid);
 }
 
+/* generate a round-cap line polygon */
 static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pcb_coord_t clr)
 {
 	pcb_line_t ltmp;
@@ -83,6 +84,7 @@ static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pc
 	return pcb_poly_from_line(&ltmp, clr);
 }
 
+/* generate a round-cap arc polygon knowing the center and endpoints */
 static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, double e1y, double e2x, double e2y, pcb_coord_t clr, double max_span_angle)
 {
 	double sa, ea, da;
