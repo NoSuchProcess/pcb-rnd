@@ -122,3 +122,10 @@ void *pcb_padstackop_clip(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 	return ps;
 }
 
+void *pcb_padstackop_remove(pcb_opctx_t *ctx, pcb_padstack_t *ps)
+{
+	pcb_padstack_invalidate_erase(ps);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_PADSTACK, ps, ps, ps);
+	PCB_CLEAR_PARENT(ps);
+	return NULL;
+}
