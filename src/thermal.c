@@ -274,7 +274,7 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 {
 	pcb_polyarea_t *ptmp, *pres = NULL, *p;
 	pcb_coord_t clr = poly->Clearance / 2 - 2;
-	double fact = 0.5;
+	double fact = 0.5, fact_ortho=0.75;
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
 
@@ -285,60 +285,78 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 		case PCB_THERMAL_SOLID: return NULL;
 
 		case PCB_THERMAL_ROUND:
-			if (poly->thermal & PCB_THERMAL_DIAGONAL) {
-
-				/* cut out the poly so terminals will be displayed proerply */
-
-				for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-					if (pres != NULL) {
-						pcb_polyarea_boolean(pa, pres, &p, PCB_PBO_UNITE);
-						pcb_polyarea_free(&pres);
-						pres = p;
-					}
-					else
-						pcb_polyarea_copy0(&pres, pa);
+			/* cut out the poly so terminals will be displayed proerply */
+			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+				if (pres != NULL) {
+					pcb_polyarea_boolean(pa, pres, &p, PCB_PBO_UNITE);
+					pcb_polyarea_free(&pres);
+					pres = p;
 				}
+				else
+					pcb_polyarea_copy0(&pres, pa);
+			}
 
-				/* first, iterate over all islands of a polygon */
-				for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-					pcb_coord_t cx, cy;
-					double px, py, x, y, dx, dy, vx, vy, nx, ny, len;
-					pcb_pline_t *pl;
-					int go, first = 1;
+			/* iterate over all islands of a polygon */
+			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+				pcb_coord_t cx, cy;
+				double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len;
+				pcb_pline_t *pl;
+				int go, first = 1;
 
-					/* check if we have a contour for the given island */
-					pl = pcb_poly_contour(&it);
-					if (pl != NULL) {
-						/* iterate over the vectors of the contour */
-						for(go = pcb_poly_vect_first(&it, &cx, &cy); go; go = pcb_poly_vect_next(&it, &cx, &cy)) {
-							x = cx; y = cy;
-							if (first) {
-								pcb_poly_vect_peek_prev(&it, &cx, &cy);
-								px = cx; py = cy;
-								first = 0;
-							}
+				/* check if we have a contour for the given island */
+				pl = pcb_poly_contour(&it);
+				if (pl != NULL) {
+					/* iterate over the vectors of the contour */
+					for(go = pcb_poly_vect_first(&it, &cx, &cy); go; go = pcb_poly_vect_next(&it, &cx, &cy)) {
+						x = cx; y = cy;
+						if (first) {
+							pcb_poly_vect_peek_prev(&it, &cx, &cy);
+							px = cx; py = cy;
+							first = 0;
+						}
 
-							dx = x - px;
-							dy = y - py;
+						dx = x - px;
+						dy = y - py;
+						mx = (x+px)/2.0;
+						my = (y+py)/2.0;
 
-							len = sqrt(dx*dx + dy*dy);
-							vx = dx / len;
-							vy = dy / len;
+						len = sqrt(dx*dx + dy*dy);
+						vx = dx / len;
+						vy = dy / len;
 
-							nx = -vy;
-							ny = vx;
+						nx = -vy;
+						ny = vx;
 
-							/* cheat: clr-2+4 to guarantee some overlap with the poly cutout */
+						/* cheat: clr-2+4 to guarantee some overlap with the poly cutout */
+						if (poly->thermal & PCB_THERMAL_DIAGONAL) {
 							ptmp = pa_line_at(x - vx * clr * fact - nx * clr/2, y - vy * clr * fact - ny * clr/2, px + vx * clr *fact - nx * clr/2, py + vy * clr * fact - ny * clr/2, clr+4);
 
 							pcb_polyarea_boolean(ptmp, pres, &p, PCB_PBO_UNITE);
 							pcb_polyarea_free(&pres);
 							pcb_polyarea_free(&ptmp);
 							pres = p;
-
-							px = x;
-							py = y;
 						}
+						else {
+							ptmp = pa_line_at(x - nx * clr/2 , y - ny * clr/2, mx + vx * clr * fact_ortho - nx * clr/2, my + vy * clr * fact_ortho - ny * clr/2, clr+4);
+							pcb_polyarea_boolean(ptmp, pres, &p, PCB_PBO_UNITE);
+							pcb_polyarea_free(&pres);
+							pcb_polyarea_free(&ptmp);
+							pres = p;
+
+							ptmp = pa_line_at(px - nx * clr/2, py - ny * clr/2, mx - vx * clr * fact_ortho - nx * clr/2, my - vy * clr * fact_ortho - ny * clr/2, clr+4);
+							pcb_polyarea_boolean(ptmp, pres, &p, PCB_PBO_UNITE);
+							pcb_polyarea_free(&pres);
+							pcb_polyarea_free(&ptmp);
+							pres = p;
+
+							ptmp = pcb_poly_from_circle(x, y, clr);
+							pcb_polyarea_boolean(ptmp, pres, &p, PCB_PBO_UNITE);
+							pcb_polyarea_free(&pres);
+							pcb_polyarea_free(&ptmp);
+							pres = p;
+						}
+						px = x;
+						py = y;
 					}
 				}
 			}
