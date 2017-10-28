@@ -24,19 +24,6 @@
 
 #include "operation.h"
 
-/* TODO
-void *pcb_padstackop_change_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_change_clear_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_change_name(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_change_num(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_change_square(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_set_square(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_clear_square(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_change_mask_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
-void *pcb_padstackop_change_flag(pcb_opctx_t *ctx, pcb_element_t *elem, pcb_padstack_t *ps);
-*/
-
-
 void *pcb_padstackop_add_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 
@@ -47,5 +34,17 @@ void *pcb_padstackop_clip(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 void *pcb_padstackop_remove(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 
 
+/*** TODO: unimplemented ones ***/
 
+void *pcb_padstackop_destroy(pcb_opctx_t *ctx, pcb_padstack_t *ps);
 
+void *pcb_padstackop_change_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+void *pcb_padstackop_change_2nd_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+void *pcb_padstackop_change_clear_size(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+
+void *pcb_padstackop_change_thermal(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+void *pcb_padstackop_change_name(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+
+void *pcb_padstackop_change_flag(pcb_opctx_t *ctx, pcb_padstack_t *ps);
+
+void *pcb_padstackop_rotate90(pcb_opctx_t *ctx, pcb_padstack_t *ps);
