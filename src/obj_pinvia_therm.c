@@ -48,7 +48,7 @@ struct cent {
 	pcb_polyarea_t *p;
 };
 
-static pcb_polyarea_t *diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pcb_coord_t w, pcb_bool rt)
+static pcb_polyarea_t *pcb_pa_diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pcb_coord_t w, pcb_bool rt)
 {
 	pcb_pline_t *c;
 	pcb_vector_t v;
@@ -328,9 +328,9 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	switch (style) {
 	default:
 	case 1:
-		p = diag_line(pin->X, pin->Y, w, t, pcb_true);
+		p = pcb_pa_diag_line(pin->X, pin->Y, w, t, pcb_true);
 		pcb_polyarea_boolean_free(m, p, &p2, PCB_PBO_SUB);
-		p = diag_line(pin->X, pin->Y, w, t, pcb_false);
+		p = pcb_pa_diag_line(pin->X, pin->Y, w, t, pcb_false);
 		pcb_polyarea_boolean_free(p2, p, &m, PCB_PBO_SUB);
 		return m;
 	case 2:
@@ -397,9 +397,9 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid discretisation errors in our circle approximation.
 				 */
-				pa = diag_line(pin->X, pin->Y, t * 2, w, pcb_true);
+				pa = pcb_pa_diag_line(pin->X, pin->Y, t * 2, w, pcb_true);
 				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);
-				pa = diag_line(pin->X, pin->Y, t * 2, w, pcb_false);
+				pa = pcb_pa_diag_line(pin->X, pin->Y, t * 2, w, pcb_false);
 			}
 			pcb_polyarea_boolean_free(arc, pa, &m, PCB_PBO_SUB);
 			return m;
