@@ -78,6 +78,8 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_line_t * l, pcb_coord_t thick);
 pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * l, pcb_coord_t thick);
 pcb_polyarea_t *pcb_poly_from_pin(pcb_pin_t * l, pcb_coord_t thick, pcb_coord_t clear);
 pcb_polyarea_t *pcb_poly_from_box_bloated(pcb_box_t * box, pcb_coord_t radius);
+pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly); /* clearance shape for when clearpolypoly is set */
+
 
 void pcb_poly_frac_circle(pcb_pline_t *, pcb_coord_t, pcb_coord_t, pcb_vector_t, int);
 int pcb_poly_init_clip(pcb_data_t * d, pcb_layer_t * l, pcb_poly_t * p);

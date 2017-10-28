@@ -996,7 +996,7 @@ static pcb_polyarea_t *poly_sub_callback_line(pcb_coord_t x1, pcb_coord_t y1, pc
 
 /* Construct a poly area that represents the enlarged subpoly - so it can be
    subtracted from the parent poly to form the clearance for subpoly */
-static pcb_polyarea_t *SubtractPolyPoly_construct(pcb_poly_t *subpoly)
+pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *ret = NULL, *pa, *lin, *tmp;
@@ -1045,7 +1045,7 @@ static pcb_polyarea_t *poly_clearance_poly(pcb_cardinal_t layernum, pcb_board_t 
 {
 	if (subpoly->thermal & PCB_THERMAL_ON)
 		return pcb_thermal_area_poly(pcb, subpoly, layernum);
-	return SubtractPolyPoly_construct(subpoly);
+	return pcb_poly_clearance_construct(subpoly);
 }
 
 
