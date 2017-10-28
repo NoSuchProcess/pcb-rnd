@@ -47,6 +47,7 @@
 #include "obj_all.h"
 #include "obj_subc.h"
 #include "pcb_minuid.h"
+#include "thermal.h"
 #include "io_lihata.h"
 #include "safe_fs.h"
 #include "plug_footprint.h"
@@ -395,6 +396,22 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 	return 0;
 }
 
+static int parse_thermal(unsigned char *dst, lht_node_t *src)
+{
+	if (src == NULL)
+		return 0;
+
+	if (src->type != LHT_LIST)
+		return -1;
+
+	*dst = 0;
+	for(src = src->data.list.first; src != NULL; src = src->next)
+		if (src->type == LHT_TEXT)
+			*dst |= pcb_thermal_str2bits(src->data.text.value);
+
+	return 0;
+}
+
 
 static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int no_id, pcb_coord_t dx, pcb_coord_t dy)
 {
@@ -415,6 +432,9 @@ static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int n
 	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE, &intconn);
 	pcb_attrib_compat_set_intconn(&line->Attributes, intconn);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+	if (rdver >= 4)
+		parse_thermal(&line->thermal, lht_dom_hash_get(obj, "thermal"));
 
 	parse_coord(&line->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&line->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -486,6 +506,9 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 	pcb_attrib_compat_set_intconn(&arc->Attributes, intconn);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 
+	if (rdver >= 4)
+		parse_thermal(&arc->thermal, lht_dom_hash_get(obj, "thermal"));
+
 	parse_coord(&arc->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&arc->Clearance, lht_dom_hash_get(obj, "clearance"));
 	parse_coord(&arc->X, lht_dom_hash_get(obj, "x"));
@@ -519,6 +542,9 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 
 	if (rdver >= 3)
 		parse_coord(&poly->Clearance, lht_dom_hash_get(obj, "clearance"));
+
+	if (rdver >= 4)
+		parse_thermal(&poly->thermal, lht_dom_hash_get(obj, "thermal"));
 
 	geo = lht_dom_hash_get(obj, "geometry");
 	if ((geo != NULL) && (geo->type == LHT_LIST)) {
