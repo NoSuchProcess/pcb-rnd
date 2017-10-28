@@ -350,4 +350,15 @@ int pcb_padstack_drc_check_and_warn(pcb_padstack_t *ps)
 	return 0;
 }
 
+void pcb_padstack_set_thermal(pcb_padstack_t *ps, unsigned long lid, unsigned char shape)
+{
+	if (ps->thermal.used <= lid) {
+		unsigned long oldu = ps->thermal.used;
+		ps->thermal.used = lid+1;
+		ps->thermal.shape = realloc(ps->thermal.shape, ps->thermal.used);
+		memset(ps->thermal.shape + oldu, 0, ps->thermal.used - oldu - 1);
+	}
+	ps->thermal.shape[lid] = shape;
+}
+
 #include "obj_padstack_op.c"

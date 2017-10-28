@@ -32,7 +32,7 @@ struct pcb_padstack_s {
 	pcb_coord_t x, y;
 	struct {
 		unsigned long used;
-		char *shape;                 /* indexed by layer ID */
+		unsigned char *shape;        /* indexed by layer ID */
 	} thermal;
 	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
 };
@@ -112,6 +112,7 @@ pcb_padstack_t *pcb_padstack_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coo
 void pcb_padstack_add(pcb_data_t *data, pcb_padstack_t *ps);
 void pcb_padstack_bbox(pcb_padstack_t *ps);
 
+void pcb_padstack_set_thermal(pcb_padstack_t *ps, unsigned long lid, unsigned char shape);
 
 /*** proto ***/
 
