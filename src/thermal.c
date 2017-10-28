@@ -270,6 +270,79 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 	return NULL;
 }
 
+pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
+{
+	pcb_polyarea_t *ptmp, *pres = NULL, *p;
+	pcb_coord_t clr = poly->Clearance / 2;
+	double fact = 0.5;
+
+	assert(poly->thermal & PCB_THERMAL_ON); /* caller should have checked this */
+	switch(poly->thermal & 3) {
+		case PCB_THERMAL_NOSHAPE:
+		case PCB_THERMAL_SOLID: return NULL;
+
+		case PCB_THERMAL_ROUND:
+			if (poly->thermal & PCB_THERMAL_DIAGONAL) {
+				pcb_poly_it_t it;
+				pcb_polyarea_t *pa;
+
+				/* first, iterate over all islands of a polygon */
+				for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+					pcb_coord_t cx, cy;
+					double px, py, x, y, dx, dy, vx, vy, nx, ny, len;
+					pcb_pline_t *pl;
+					int go, first = 1;
+
+					/* check if we have a contour for the given island */
+					pl = pcb_poly_contour(&it);
+					if (pl != NULL) {
+						/* iterate over the vectors of the contour */
+						for(go = pcb_poly_vect_first(&it, &cx, &cy); go; go = pcb_poly_vect_next(&it, &cx, &cy)) {
+							x = cx; y = cy;
+							if (first) {
+								pcb_poly_vect_peek_prev(&it, &cx, &cy);
+								px = cx; py = cy;
+								first = 0;
+							}
+
+							dx = x - px;
+							dy = y - py;
+
+							len = sqrt(dx*dx + dy*dy);
+							vx = dx / len;
+							vy = dy / len;
+
+							nx = -vy;
+							ny = vx;
+
+							ptmp = pa_line_at(x - vx * clr * fact - nx * clr/2, y - vy * clr * fact - ny * clr/2, px + vx * clr *fact - nx * clr/2, py + vy * clr * fact - ny * clr/2, clr);
+
+							if (pres != NULL) {
+								pcb_polyarea_boolean(ptmp, pres, &p, PCB_PBO_UNITE);
+								pcb_polyarea_free(&pres);
+								pcb_polyarea_free(&ptmp);
+								pres = p;
+							}
+							else
+								pres = ptmp;
+
+							px = x;
+							py = y;
+
+						}
+					}
+				}
+			}
+			return pres;
+
+		case PCB_THERMAL_SHARP:
+			break;
+	}
+
+	return NULL;
+}
+
+
 pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
 {
 	switch(obj->type) {
@@ -281,6 +354,8 @@ pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer
 			return pcb_thermal_area_line(pcb, (pcb_line_t *)obj, lid);
 
 		case PCB_OBJ_POLYGON:
+			return pcb_thermal_area_poly(pcb, (pcb_poly_t *)obj, lid);
+
 		case PCB_OBJ_ARC:
 
 		case PCB_OBJ_PADSTACK:
