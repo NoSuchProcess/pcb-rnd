@@ -829,13 +829,21 @@ static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_pol
 	return Subtract(np, p, pcb_true);
 }
 
+/* return the clearance polygon for a line */
+static pcb_polyarea_t *line_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_line_t *line)
+{
+	if (line->thermal & PCB_THERMAL_ON)
+		return pcb_thermal_area_line(pcb, line, layernum);
+	return pcb_poly_from_line(line, line->Thickness + line->Clearance);
+}
+
 static int SubtractLine(pcb_line_t * line, pcb_poly_t * p)
 {
 	pcb_polyarea_t *np;
 
 	if (!PCB_NONPOLY_HAS_CLEARANCE(line))
 		return 0;
-	if (!(np = pcb_poly_from_line(line, line->Thickness + line->Clearance)))
+	if (!(np = line_clearance_poly(-1, NULL, line)))
 		return -1;
 	return Subtract(np, p, pcb_true);
 }
@@ -1126,7 +1134,8 @@ static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
-	if (!(np = pcb_poly_from_line(line, line->Thickness + line->Clearance)))
+	np = line_clearance_poly(-1, NULL, line);
+	if (!np)
 		longjmp(info->env, 1);
 
 	pcb_polyarea_boolean_free(info->accumulate, np, &merged, PCB_PBO_UNITE);

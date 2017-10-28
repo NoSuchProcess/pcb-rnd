@@ -145,7 +145,7 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 				}
 				else {
 					atmp.StartAngle = ea;
-					atmp.Delta = 100;
+					atmp.Delta = 360-ea+sa;
 				}
 				atmp.Width = atmp.Height = clrth;
 				pb = pcb_poly_from_arc(&atmp, clr);
