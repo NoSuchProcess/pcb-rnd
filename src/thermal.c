@@ -83,11 +83,37 @@ static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pc
 	return pcb_poly_from_line(&ltmp, clr);
 }
 
+static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, double e1y, double e2x, double e2y, pcb_coord_t clr, double max_span_angle)
+{
+	double sa, ea, da;
+	pcb_arc_t atmp;
+
+	sa = atan2(-(e1y - cy), e1x - cx) * PCB_RAD_TO_DEG + 180.0;
+	ea = atan2(-(e2y - cy), e2x - cx) * PCB_RAD_TO_DEG + 180.0;
+
+/*	pcb_trace("sa=%f ea=%f diff=%f\n", sa, ea, ea-sa);*/
+
+	atmp.Flags = pcb_no_flags();
+	atmp.X = pcb_round(cx);
+	atmp.Y = pcb_round(cy);
+
+	da = ea-sa;
+	if ((da < max_span_angle) && (da > -max_span_angle)) {
+		atmp.StartAngle = sa;
+		atmp.Delta = ea-sa;
+	}
+	else {
+		atmp.StartAngle = ea;
+		atmp.Delta = 360-ea+sa;
+	}
+	atmp.Width = atmp.Height = r;
+	return pcb_poly_from_arc(&atmp, clr);
+}
+
 pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
 {
 	pcb_polyarea_t *pa, *pb, *pc;
-	double dx, dy, len, vx, vy, nx, ny, clr, clrth, sa, ea, e1x, e1y, e2x, e2y;
-	pcb_arc_t atmp;
+	double dx, dy, len, vx, vy, nx, ny, clr, clrth;
 
 	if ((line->Point1.X == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
 		/* conrer case zero-long line is a circle: do the same as for vias */
@@ -125,30 +151,10 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
 				pa = pc; pc = NULL;
-
-				e1x = line->Point1.X - clrth * nx + clr * vx * 2.0;
-				e1y = line->Point1.Y - clrth * ny + clr * vy * 2.0;
-				e2x = line->Point1.X + clrth * nx + clr * vx * 2.0;
-				e2y = line->Point1.Y + clrth * ny + clr * vy * 2.0;
-				sa = atan2(-(e1y - line->Point1.Y), e1x - line->Point1.X) * PCB_RAD_TO_DEG + 180.0;
-				ea = atan2(-(e2y - line->Point1.Y), e2x - line->Point1.X) * PCB_RAD_TO_DEG + 180.0;
-
-				printf("sa=%f ea=%f diff=%f\n", sa, ea, ea-sa);
-
-				atmp.Flags = pcb_no_flags();
-				atmp.X = line->Point1.X;
-				atmp.Y = line->Point1.Y;
-
-				if (ea-sa < 180) {
-					atmp.StartAngle = sa;
-					atmp.Delta = ea-sa;
-				}
-				else {
-					atmp.StartAngle = ea;
-					atmp.Delta = 360-ea+sa;
-				}
-				atmp.Width = atmp.Height = clrth;
-				pb = pcb_poly_from_arc(&atmp, clr);
+				pb = pa_arc_at(line->Point1.X, line->Point1.Y, clrth,
+					line->Point1.X - clrth * nx + clr * vx * 2.0, line->Point1.Y - clrth * ny + clr * vy * 2.0,
+					line->Point1.X + clrth * nx + clr * vx * 2.0, line->Point1.Y + clrth * ny + clr * vy * 2.0,
+					clr, 180.0);
 
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
