@@ -23,6 +23,8 @@
 #include "config.h"
 
 #include "thermal.h"
+
+#include "compat_misc.h"
 #include "obj_pinvia_therm.h"
 #include "polygon.h"
 
@@ -71,11 +73,20 @@ pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer
 	return ThermPoly(pcb, pin, lid);
 }
 
+static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pcb_coord_t clr)
+{
+	pcb_line_t ltmp;
+
+	ltmp.Flags = pcb_no_flags();
+	ltmp.Point1.X = pcb_round(x1); ltmp.Point1.Y = pcb_round(y1);
+	ltmp.Point2.X = pcb_round(x2); ltmp.Point2.Y = pcb_round(y2);
+	return pcb_poly_from_line(&ltmp, clr);
+}
+
 pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
 {
 	pcb_polyarea_t *pa, *pb, *pc;
 	double dx, dy, len, vx, vy, nx, ny, clr, clrth, sa, ea, e1x, e1y, e2x, e2y;
-	pcb_line_t ltmp;
 	pcb_arc_t atmp;
 
 	if ((line->Point1.X == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
@@ -101,18 +112,15 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 
 		case PCB_THERMAL_ROUND:
 			if (line->thermal & PCB_THERMAL_DIAGONAL) {
-				ltmp.Flags = pcb_no_flags();
-				ltmp.Point1.X = line->Point1.X - clrth * nx - clr * vx * 0.75;
-				ltmp.Point1.Y = line->Point1.Y - clrth * ny - clr * vy * 0.75;
-				ltmp.Point2.X = line->Point2.X - clrth * nx + clr * vx * 0.75;
-				ltmp.Point2.Y = line->Point2.Y - clrth * ny + clr * vy * 0.75;
-				pa = pcb_poly_from_line(&ltmp, clr);
+				pa = pa_line_at(
+					line->Point1.X - clrth * nx - clr * vx * 0.75, line->Point1.Y - clrth * ny - clr * vy * 0.75,
+					line->Point2.X - clrth * nx + clr * vx * 0.75, line->Point2.Y - clrth * ny + clr * vy * 0.75,
+					clr);
 
-				ltmp.Point1.X = line->Point1.X + clrth * nx - clr * vx * 0.75;
-				ltmp.Point1.Y = line->Point1.Y + clrth * ny - clr * vy * 0.75;
-				ltmp.Point2.X = line->Point2.X + clrth * nx + clr * vx * 0.75;
-				ltmp.Point2.Y = line->Point2.Y + clrth * ny + clr * vy * 0.75;
-				pb = pcb_poly_from_line(&ltmp, clr);
+				pb = pa_line_at(
+					line->Point1.X + clrth * nx - clr * vx * 0.75, line->Point1.Y + clrth * ny - clr * vy * 0.75,
+					line->Point2.X + clrth * nx + clr * vx * 0.75, line->Point2.Y + clrth * ny + clr * vy * 0.75,
+					clr);
 
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
