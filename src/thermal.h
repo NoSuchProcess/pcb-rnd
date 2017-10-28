@@ -40,6 +40,15 @@ typedef enum pcb_thermal_e {
 	PCB_THERMAL_ON = 8
 } pcb_thermal_t;
 
+/* convert the textual version of thermal to a bitmask */
+pcb_thermal_t pcb_thermal_str2bits(const char *str);
+
+/* convert a bitmask to a single word of thermal description and remove the
+   affected bits from bits. Call this repeatedly until bits == 0 to get
+   all words. */
+const char *pcb_thermal_bits2str(pcb_thermal_t *bits);
+
+
 pcb_polyarea_t *pcb_thermal_area(pcb_board_t *p, pcb_any_obj_t *obj, pcb_layer_id_t lid);
 pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer_id_t lid);
 pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid);

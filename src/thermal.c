@@ -25,6 +25,46 @@
 #include "thermal.h"
 #include "obj_pinvia_therm.h"
 
+pcb_thermal_t pcb_thermal_str2bits(const char *str)
+{
+	/* shape */
+	if (strcmp(str, "noshape") == 0) return PCB_THERMAL_NOSHAPE;
+	if (strcmp(str, "round") == 0)   return PCB_THERMAL_ROUND;
+	if (strcmp(str, "sharp") == 0)   return PCB_THERMAL_SHARP;
+	if (strcmp(str, "solid") == 0)   return PCB_THERMAL_SOLID;
+
+	/* orientation */
+	if (strcmp(str, "diag") == 0)   return PCB_THERMAL_DIAGONAL;
+
+	if (strcmp(str, "on") == 0)     return PCB_THERMAL_ON;
+
+	return 0;
+}
+
+const char *pcb_thermal_bits2str(pcb_thermal_t *bit)
+{
+	if ((*bit) & PCB_THERMAL_ON) {
+		*bit &= ~PCB_THERMAL_ON;
+		return "on";
+	}
+	if ((*bit) & PCB_THERMAL_DIAGONAL) {
+		*bit &= ~PCB_THERMAL_ON;
+		return "diag";
+	}
+	if ((*bit) & 3) {
+		switch((*bit) & 3) {
+			*bit &= ~3;
+			case PCB_THERMAL_NOSHAPE: return "noshape";
+			case PCB_THERMAL_ROUND: return "round";
+			case PCB_THERMAL_SHARP: return "sharp";
+			case PCB_THERMAL_SOLID: return "solid";
+			default: return NULL;
+		}
+	}
+	return NULL;
+}
+
+
 pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer_id_t lid)
 {
 	ThermPoly(pcb, pin, lid);
