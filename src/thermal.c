@@ -23,3 +23,25 @@
 #include "config.h"
 
 #include "thermal.h"
+#include "obj_pinvia_therm.h"
+
+pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
+{
+	switch(obj->type) {
+		case PCB_OBJ_PIN:
+		case PCB_OBJ_VIA:
+			return ThermPoly(pcb, (pcb_pin_t *)obj, lid);
+
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_POLYGON:
+		case PCB_OBJ_ARC:
+
+		case PCB_OBJ_PADSTACK:
+			break;
+
+		default: break;
+	}
+
+	return NULL;
+}
+

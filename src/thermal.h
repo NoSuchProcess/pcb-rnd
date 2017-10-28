@@ -20,9 +20,15 @@
  *
  */
 
+#ifndef PCB_THERMAL_H
+#define PCB_THERMAL_H
+
+#include "obj_common.h"
+#include "layer.h"
+
 typedef enum pcb_thermal_e {
 	/* bit 0 and 1: shape */
-	PCB_THERMAL_NOSHAPE = 0,  /* no shape shall be drawn, omit copper, no connection */
+	PCB_THERMAL_NOSHAPE = 0,  /* padstack: no shape shall be drawn, omit copper, no connection */
 	PCB_THERMAL_ROUND = 1,
 	PCB_THERMAL_SHARP = 2,
 	PCB_THERMAL_SOLID = 3,
@@ -31,3 +37,6 @@ typedef enum pcb_thermal_e {
 	PCB_THERMAL_DIAGONAL = 4
 } pcb_thermal_t;
 
+pcb_polyarea_t *pcb_thermal_area(pcb_board_t *p, pcb_any_obj_t *obj, pcb_layer_id_t lid);
+
+#endif
