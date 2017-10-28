@@ -143,6 +143,7 @@ put /local/pcb/OBJS [@
 	stub_mincut.o
 	stub_stroke.o
 	stub_vendor.o
+	thermal.o
 	tool.o
 	tool_arc.o
 	tool_arrow.o

@@ -25,17 +25,6 @@
 
 #include "obj_common.h"
 
-typedef enum pcb_thermal_e {
-	/* bit 0 and 1: shape */
-	PCB_THERMAL_NOSHAPE = 0,  /* no shape shall be drawn, omit copper, no connection */
-	PCB_THERMAL_ROUND = 1,
-	PCB_THERMAL_SHARP = 2,
-	PCB_THERMAL_SOLID = 3,
-
-	/* bit 2: orientation */
-	PCB_THERMAL_DIAGONAL = 4
-} pcb_thermal_t;
-
 /* The actual padstack is just a reference to a padstack proto within the same data */
 struct pcb_padstack_s {
 	PCB_ANYOBJECTFIELDS;
