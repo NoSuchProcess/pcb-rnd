@@ -3370,6 +3370,54 @@ pcb_bool_t pcb_is_point_in_convex_quad(pcb_vector_t p, pcb_vector_t *q)
 }
 
 
+/*
+ * pcb_polyarea_move()
+ * (C) 2017 Tibor 'Igor2' Palinkas
+*/
+void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
+{
+	int cnt;
+	pcb_polyarea_t *pa;
+
+	for (pa = pa1, cnt = 0; pa != NULL; pa = pa->f) {
+		pcb_pline_t *pl;
+		if (pa == pa1) {
+			cnt++;
+			if (cnt > 1)
+				break;
+		}
+		if (pa->contour_tree != NULL)
+			pcb_r_destroy_tree(&pa->contour_tree);
+		pa->contour_tree = pcb_r_create_tree(NULL, 0, 0);
+		for(pl = pa->contours; pl != NULL; pl = pl->next) {
+			pcb_vnode_t *v;
+			int cnt2 = 0;
+			for(v = &pl->head; v != NULL; v = v->next) {
+				if (v == &pl->head) {
+					cnt2++;
+					if (cnt2 > 1)
+						break;
+				}
+				v->point[0] += dx;
+				v->point[1] += dy;
+			}
+			pl->xmin += dx;
+			pl->ymin += dy;
+			pl->xmax += dx;
+			pl->ymax += dy;
+			if (pl->tree != NULL)
+				pcb_r_destroy_tree(&pl->tree);
+			pl->tree = (pcb_rtree_t *)make_edge_tree(pl);
+
+			pcb_r_insert_entry(pa->contour_tree, (pcb_box_t *)pl, 0);
+		}
+	}
+
+	return pcb_true;
+
+
+}
+
 
 /* how about expanding polygons so that edges can be arcs rather than
  * lines. Consider using the third coordinate to store the radius of the
