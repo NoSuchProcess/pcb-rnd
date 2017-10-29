@@ -770,6 +770,7 @@ static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
 
 	parse_coord(&ps->x, lht_dom_hash_get(obj, "x"));
 	parse_coord(&ps->y, lht_dom_hash_get(obj, "y"));
+	parse_coord(&ps->Clearance, lht_dom_hash_get(obj, "clearance"));
 	parse_ulong(&ul, lht_dom_hash_get(obj, "proto"));
 	ps->proto = ul;
 
