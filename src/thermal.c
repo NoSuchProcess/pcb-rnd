@@ -25,6 +25,9 @@
 #include "thermal.h"
 
 #include "compat_misc.h"
+#include "data.h"
+#include "obj_padstack.h"
+#include "obj_padstack_inlines.h"
 #include "obj_pinvia_therm.h"
 #include "polygon.h"
 
@@ -478,7 +481,10 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 
 pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_id_t lid)
 {
-	unsigned char shp;
+	unsigned char thr;
+	pcb_padstack_shape_t *shp;
+	pcb_layer_type_t lyt;
+	pcb_polyarea_t *pres = NULL;
 
 	/* if we have no clearance, there's no reason to do anything */
 	if (!PCB_NONPOLY_HAS_CLEARANCE(ps)) /* no clearance -> solid connection */
@@ -486,11 +492,14 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 
 	/* retrieve shape; assume 0 (no shape) for layers not named */
 	if (lid < ps->thermals.used)
-		shp = ps->thermals.shape[lid];
+		thr = ps->thermals.shape[lid];
 	else
-		shp = 0;
+		thr = 0;
 
-	switch(ps->thermals.shape[lid] & 3) {
+	lyt = pcb_layer_flags(pcb, lid);
+	shp = pcb_padstack_shape(ps, lyt, 0);
+
+	switch(thr & 3) {
 		case PCB_THERMAL_NOSHAPE:
 #warning padstack TODO: leave clearance around the hole
 			return NULL;
@@ -498,7 +507,21 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 
 		case PCB_THERMAL_ROUND:
 		case PCB_THERMAL_SHARP:
-			return NULL;
+			switch(shp->shape) {
+				case PCB_PSSH_LINE:
+				{
+					pcb_line_t ltmp;
+					ltmp.Point1.X = ps->x + shp->data.line.x1;
+					ltmp.Point1.Y = ps->y + shp->data.line.y1;
+					ltmp.Point2.X = ps->x + shp->data.line.x2;
+					ltmp.Point2.Y = ps->y + shp->data.line.y2;
+					ltmp.Thickness = shp->data.line.thickness;
+					ltmp.Clearance = ps->Clearance;
+					ltmp.thermal = thr;
+					pres = pcb_thermal_area_line(pcb, &ltmp, lid);
+				}
+			}
+			return pres;
 	}
 
 	return NULL;
