@@ -421,13 +421,41 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 	}
 }
 
+/* generate round thermal around a polyarea specified by the iterator */
+static void pcb_thermal_area_pa_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_t clr, pcb_bool_t is_diag)
+{
+	pcb_pline_t *pl;
+
+/* cut out the poly so terminals will be displayed proerply */
+	polytherm_base(pres, it->pa);
+
+	/* generate the clear-lines */
+	pl = pcb_poly_contour(it);
+	if (pl != NULL)
+		polytherm_round(pres, it, clr, is_diag);
+}
+
+/* generate sharp thermal around a polyarea specified by the iterator */
+static void pcb_thermal_area_pa_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_t clr, pcb_bool_t is_diag)
+{
+	pcb_pline_t *pl;
+
+	/* add the usual clearance glory around the polygon */
+	pcb_poly_pa_clearance_construct(pres, it, clr);
+
+	pl = pcb_poly_contour(it);
+	if (pl != NULL)
+		polytherm_sharp(pres, it, clr, is_diag);
+
+	/* trim internal stubs */
+	polytherm_base(pres, it->pa);
+}
 
 pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
 {
 	pcb_polyarea_t *pa, *pres = NULL;
 	pcb_coord_t clr = poly->Clearance / 2;
 	pcb_poly_it_t it;
-	pcb_pline_t *pl;
 
 	assert(poly->thermal & PCB_THERMAL_ON); /* caller should have checked this */
 	switch(poly->thermal & 3) {
@@ -435,29 +463,13 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 		case PCB_THERMAL_SOLID: return NULL;
 
 		case PCB_THERMAL_ROUND:
-			/* iterate over all islands of a polygon */
-			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-			/* cut out the poly so terminals will be displayed proerply */
-				polytherm_base(&pres, pa);
-
-				/* generate the clear-lines */
-				pl = pcb_poly_contour(&it);
-				if (pl != NULL)
-					polytherm_round(&pres, &it, clr, (poly->thermal & PCB_THERMAL_DIAGONAL));
-			}
+			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
+				pcb_thermal_area_pa_round(&pres, &it, clr, (poly->thermal & PCB_THERMAL_DIAGONAL));
 			return pres;
 
 		case PCB_THERMAL_SHARP:
-			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-				pcb_poly_pa_clearance_construct(&pres, &it, clr);
-				pl = pcb_poly_contour(&it);
-				if (pl != NULL)
-					polytherm_sharp(&pres, &it, clr, (poly->thermal & PCB_THERMAL_DIAGONAL));
-
-				/* trim internal stubs */
-				polytherm_base(&pres, pa);
-			}
-
+			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
+				pcb_thermal_area_pa_sharp(&pres, &it, clr, (poly->thermal & PCB_THERMAL_DIAGONAL));
 			return pres;
 	}
 
