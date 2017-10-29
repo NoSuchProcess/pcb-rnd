@@ -31,6 +31,32 @@
 #include "obj_pinvia_therm.h"
 #include "polygon.h"
 
+pcb_cardinal_t pcb_themal_style_new2old(unsigned char t)
+{
+	switch(t) {
+		case 0: return 0;
+		case PCB_THERMAL_ON | PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL: return 1;
+		case PCB_THERMAL_ON | PCB_THERMAL_SHARP: return 2;
+		case PCB_THERMAL_ON | PCB_THERMAL_SOLID: return 3;
+		case PCB_THERMAL_ON | PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL: return 4;
+		case PCB_THERMAL_ON | PCB_THERMAL_ROUND: return 5;
+	}
+	return 0;
+}
+
+unsigned char pcb_themal_style_old2new(pcb_cardinal_t t)
+{
+	switch(t) {
+		case 0: return 0;
+		case 1: return PCB_THERMAL_ON | PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL;
+		case 2: return PCB_THERMAL_ON | PCB_THERMAL_SHARP;
+		case 3: return PCB_THERMAL_ON | PCB_THERMAL_SOLID;
+		case 4: return PCB_THERMAL_ON | PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL;
+		case 5: return PCB_THERMAL_ON | PCB_THERMAL_ROUND;
+	}
+	return 0;
+}
+
 pcb_thermal_t pcb_thermal_str2bits(const char *str)
 {
 	/* shape */
@@ -511,7 +537,7 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 		case PCB_THERMAL_SHARP:
 			switch(shp->shape) {
 				case PCB_PSSH_CIRC:
-					return pcb_poly_from_circle(ps->x, ps->y, shp->data.circ.dia/2 + ps->Clearance);
+					return ThermPoly_(pcb, ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia, ps->Clearance, pcb_themal_style_new2old(thr));
 				case PCB_PSSH_LINE:
 				{
 					pcb_line_t ltmp;
