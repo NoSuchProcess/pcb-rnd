@@ -520,8 +520,27 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 					ltmp.thermal = thr;
 					pres = pcb_thermal_area_line(pcb, &ltmp, lid);
 				}
+				return pres;
+
+				case PCB_PSSH_POLY:
+				{
+					pcb_poly_it_t it;
+					if (shp->data.poly.pa == NULL)
+						pcb_padstack_shape_update_pline(&shp->data.poly);
+					if (shp->data.poly.pa == NULL)
+						return NULL;
+					pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
+					if (thr & PCB_THERMAL_ROUND)
+						pcb_thermal_area_pa_round(&pres, &it, ps->Clearance, (thr & PCB_THERMAL_DIAGONAL));
+					else
+						pcb_thermal_area_pa_sharp(&pres, &it, ps->Clearance, (thr & PCB_THERMAL_DIAGONAL));
+
+					if (pres != NULL)
+						pcb_polyarea_move(pres, ps->x, ps->y);
+				}
+				return pres;
 			}
-			return pres;
+
 	}
 
 	return NULL;
