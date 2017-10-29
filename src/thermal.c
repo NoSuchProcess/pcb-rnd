@@ -435,12 +435,12 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 		case PCB_THERMAL_SOLID: return NULL;
 
 		case PCB_THERMAL_ROUND:
+			/* iterate over all islands of a polygon */
+			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 			/* cut out the poly so terminals will be displayed proerply */
-			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
 				polytherm_base(&pres, pa);
 
-			/* iterate over all islands of a polygon to generate the clear-lines */
-			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+				/* generate the clear-lines */
 				pl = pcb_poly_contour(&it);
 				if (pl != NULL)
 					polytherm_round(&pres, &it, clr, (poly->thermal & PCB_THERMAL_DIAGONAL));
@@ -453,11 +453,10 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 				pl = pcb_poly_contour(&it);
 				if (pl != NULL)
 					polytherm_sharp(&pres, &it, clr, (poly->thermal & PCB_THERMAL_DIAGONAL));
-			}
 
-			/* trim internal stubs */
-			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
+				/* trim internal stubs */
 				polytherm_base(&pres, pa);
+			}
 
 			return pres;
 	}
@@ -480,7 +479,9 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 		shp = 0;
 
 	switch(ps->thermals.shape[lid] & 3) {
-		case PCB_THERMAL_NOSHAPE: return NULL;
+		case PCB_THERMAL_NOSHAPE:
+#warning padstack TODO: leave clearance around the hole
+			return NULL;
 		case PCB_THERMAL_SOLID: return NULL;
 
 		case PCB_THERMAL_ROUND:
