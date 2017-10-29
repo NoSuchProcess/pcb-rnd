@@ -319,6 +319,7 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 
 		/* cheat: clr-2+4 to guarantee some overlap with the poly cutout */
 		if (is_diag) {
+			/* one line per edge, slightly shorter than the edge */
 			ptmp = pa_line_at(x - vx * clr * fact - nx * clr/2, y - vy * clr * fact - ny * clr/2, px + vx * clr *fact - nx * clr/2, py + vy * clr * fact - ny * clr/2, clr+4);
 
 			pcb_polyarea_boolean(ptmp, *pres, &p, PCB_PBO_UNITE);
@@ -327,6 +328,7 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 			*pres = p;
 		}
 		else {
+			/* two half lines per edge */
 			ptmp = pa_line_at(x - nx * clr/2 , y - ny * clr/2, mx + vx * clr * fact_ortho - nx * clr/2, my + vy * clr * fact_ortho - ny * clr/2, clr+4);
 			pcb_polyarea_boolean(ptmp, *pres, &p, PCB_PBO_UNITE);
 			pcb_polyarea_free(pres);
@@ -339,6 +341,8 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 			pcb_polyarea_free(&ptmp);
 			*pres = p;
 
+			/* optical tuning: make sure the clearance is large enough around corners
+			   even if lines didn't meet - just throw in a big circle */
 			ptmp = pcb_poly_from_circle(x, y, clr);
 			pcb_polyarea_boolean(ptmp, *pres, &p, PCB_PBO_UNITE);
 			pcb_polyarea_free(pres);
