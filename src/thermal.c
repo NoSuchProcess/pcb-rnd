@@ -501,13 +501,17 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 
 	switch(thr & 3) {
 		case PCB_THERMAL_NOSHAPE:
-#warning padstack TODO: leave clearance around the hole
-			return NULL;
+			{
+				pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+				return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + ps->Clearance);
+			}
 		case PCB_THERMAL_SOLID: return NULL;
 
 		case PCB_THERMAL_ROUND:
 		case PCB_THERMAL_SHARP:
 			switch(shp->shape) {
+				case PCB_PSSH_CIRC:
+					return pcb_poly_from_circle(ps->x, ps->y, shp->data.circ.dia/2 + ps->Clearance);
 				case PCB_PSSH_LINE:
 				{
 					pcb_line_t ltmp;
