@@ -989,54 +989,61 @@ static pcb_polyarea_t *poly_sub_callback_line(pcb_coord_t x1, pcb_coord_t y1, pc
 
 #define pa_append(src) \
 	do { \
-		pcb_polyarea_boolean(ret, src, &tmp, PCB_PBO_UNITE); \
-		pcb_polyarea_free(&ret); \
-		ret = tmp; \
+		pcb_polyarea_boolean(*dst, src, &tmp, PCB_PBO_UNITE); \
+		pcb_polyarea_free(dst); \
+		*dst = tmp; \
 	} while(0)
+
+void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, pcb_coord_t clearance)
+{
+	pcb_polyarea_t *tmp, *lin;
+	pcb_coord_t x, y, px, py, x0, y0;
+	pcb_pline_t *pl;
+	int go;
+	pcb_cardinal_t cnt;
+
+	if (*dst != NULL)
+		pa_append(it->pa);
+	else
+		pcb_polyarea_copy0(dst, it->pa);
+
+	/* care about the outer contours only */
+	pl = pcb_poly_contour(it);
+	if (pl != NULL) {
+		/* iterate over the vectors of the contour */
+		for(go = pcb_poly_vect_first(it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(it, &x, &y), cnt++) {
+			if (cnt > 0) {
+				lin = poly_sub_callback_line(px, py, x, y, clearance);
+				pa_append(lin);
+				pcb_polyarea_free(&lin);
+			}
+			else {
+				x0 = x;
+				y0 = y;
+			}
+			px = x;
+			py = y;
+		}
+		if (cnt > 0) {
+			lin = poly_sub_callback_line(px, py, x0, y0, clearance);
+			pa_append(lin);
+			pcb_polyarea_free(&lin);
+		}
+	}
+}
+#undef pa_append
 
 /* Construct a poly area that represents the enlarged subpoly - so it can be
    subtracted from the parent poly to form the clearance for subpoly */
 pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly)
 {
+	pcb_polyarea_t *ret = NULL, *pa;
 	pcb_poly_it_t it;
-	pcb_polyarea_t *ret = NULL, *pa, *lin, *tmp;
-	
+
 	/* iterate over all islands of a polygon */
-	for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_coord_t x, y, px, py, x0, y0;
-		pcb_pline_t *pl;
-		int go;
-		pcb_cardinal_t cnt;
+	for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
+		pcb_poly_pa_clearance_construct(&ret, &it, subpoly->Clearance);
 
-		if (ret != NULL)
-			pa_append(tmp);
-		else
-			pcb_polyarea_copy0(&ret, pa);
-
-		/* care about the outer contours only */
-		pl = pcb_poly_contour(&it);
-		if (pl != NULL) {
-			/* iterate over the vectors of the contour */
-			for(go = pcb_poly_vect_first(&it, &x, &y), cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++) {
-				if (cnt > 0) {
-					lin = poly_sub_callback_line(px, py, x, y, subpoly->Clearance);
-					pa_append(lin);
-					pcb_polyarea_free(&lin);
-				}
-				else {
-					x0 = x;
-					y0 = y;
-				}
-				px = x;
-				py = y;
-			}
-			if (cnt > 0) {
-				lin = poly_sub_callback_line(px, py, x0, y0, subpoly->Clearance);
-				pa_append(lin);
-				pcb_polyarea_free(&lin);
-			}
-		}
-	}
 	return ret;
 }
 
