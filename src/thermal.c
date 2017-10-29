@@ -384,7 +384,6 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 		vx = dx / len;
 		vy = dy / len;
 
-/*static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pcb_coord_t clr, pcb_bool square)*/
 		if (is_diag) {
 			pcb_poly_vect_peek_next(it, &x2c, &y2c);
 			x2 = x2c; y2 = y2c;
@@ -396,7 +395,8 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 
 			nx = -(vy2 - vy);
 			ny = vx2 - vx;
-pcb_printf("nx;ny  v %f;%f  v2 %f;%f  n %f;%f  clr %f\n", dx, dy, vx2, vy2, nx, ny, clr);
+
+			/* line from each corner at the average angle of the two edges from the corner */
 			ptmp = pa_line_at(x-nx*clr*0.2, y-ny*clr*0.2, x + nx*clr*4, y + ny*clr*4, clr/2, pcb_false);
 			pcb_polyarea_boolean(*pres, ptmp, &p, PCB_PBO_SUB);
 			pcb_polyarea_free(pres);
@@ -406,9 +406,10 @@ pcb_printf("nx;ny  v %f;%f  v2 %f;%f  n %f;%f  clr %f\n", dx, dy, vx2, vy2, nx, 
 		else {
 			nx = -vy;
 			ny = vx;
-		mx = (x+px)/2.0;
-		my = (y+py)/2.0;
+			mx = (x+px)/2.0;
+			my = (y+py)/2.0;
 
+			/* perpendicular line from the middle of each edge */
 			ptmp = pa_line_at(mx, my, mx - nx*clr, my - ny*clr, clr/2, pcb_true);
 			pcb_polyarea_boolean(*pres, ptmp, &p, PCB_PBO_SUB);
 			pcb_polyarea_free(pres);
