@@ -177,6 +177,13 @@ static inline PCB_FUNC_UNUSED void pcb_poly_vect_peek_prev(pcb_poly_it_t *it, pc
 	*y = it->v->prev->point[1];
 }
 
+/* read the next contour/hole coords into x,y, without bumping the iterator */
+static inline PCB_FUNC_UNUSED void pcb_poly_vect_peek_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+{
+	*x = it->v->next->point[0];
+	*y = it->v->next->point[1];
+}
+
 /* construct the full poly clearance cutout for the pa in the iterator and add
    it to dst - implemented in polygon.c */
 void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, pcb_coord_t clearance);
