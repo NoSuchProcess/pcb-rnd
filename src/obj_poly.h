@@ -185,7 +185,7 @@ static inline PCB_FUNC_UNUSED void pcb_poly_vect_peek_next(pcb_poly_it_t *it, pc
 }
 
 /* Set the iterator to a polyarea*/
-static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_iterate_polyarea(const pcb_polyarea_t *pa, pcb_poly_it_t *it)
+static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_iterate_polyarea(pcb_polyarea_t *pa, pcb_poly_it_t *it)
 {
 	it->p = NULL;
 	it->pa = pa;
