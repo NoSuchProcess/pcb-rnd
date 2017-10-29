@@ -32,6 +32,7 @@ struct pcb_padstack_s {
 #undef thermal
 	pcb_cardinal_t proto;          /* reference to a pcb_padstack_proto_t within pcb_data_t */
 	pcb_coord_t x, y;
+	pcb_coord_t Clearance;
 	struct {
 		unsigned long used;
 		unsigned char *shape;        /* indexed by layer ID */
