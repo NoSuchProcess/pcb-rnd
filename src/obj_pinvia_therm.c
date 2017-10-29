@@ -359,29 +359,21 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
  * Usually this is 4 disjoint regions.
  *
  */
-pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
+pcb_polyarea_t *ThermPoly_(pcb_board_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t thickness, pcb_coord_t clearance, pcb_cardinal_t style)
 {
 	pcb_arc_t a;
 	pcb_polyarea_t *pa, *arc;
-	pcb_cardinal_t style = PCB_FLAG_THERM_GET(laynum, pin);
 
-	if (style == 3)
-		return NULL;								/* solid connection no clearance */
-	pcb = p;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
-		return square_therm(pin, style);
-	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
-		return oct_therm(pin, style);
 	/* must be circular */
 	switch (style) {
 	case 1:
 	case 2:
 		{
 			pcb_polyarea_t *m;
-			pcb_coord_t t = (pin->Thickness + pin->Clearance) / 2;
-			pcb_coord_t w = 0.5 * pcb->ThermScale * pin->Clearance;
-			pa = pcb_poly_from_circle(pin->X, pin->Y, t);
-			arc = pcb_poly_from_circle(pin->X, pin->Y, pin->Thickness / 2);
+			pcb_coord_t t = (thickness + clearance) / 2;
+			pcb_coord_t w = 0.5 * pcb->ThermScale * clearance;
+			pa = pcb_poly_from_circle(cx, cy, t);
+			arc = pcb_poly_from_circle(cx, cy, thickness / 2);
 			/* create a thin ring */
 			pcb_polyarea_boolean_free(pa, arc, &m, PCB_PBO_SUB);
 			/* fix me needs error checking */
@@ -389,29 +381,28 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid discretisation errors in our circle approximation.
 				 */
-				pa = pcb_poly_from_rect(pin->X - t * 2, pin->X + t * 2, pin->Y - w, pin->Y + w);
+				pa = pcb_poly_from_rect(cx - t * 2, cx + t * 2, cy - w, cy + w);
 				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);
-				pa = pcb_poly_from_rect(pin->X - w, pin->X + w, pin->Y - t * 2, pin->Y + t * 2);
+				pa = pcb_poly_from_rect(cx - w, cx + w, cy - t * 2, cy + t * 2);
 			}
 			else {
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid discretisation errors in our circle approximation.
 				 */
-				pa = pcb_pa_diag_line(pin->X, pin->Y, t * 2, w, pcb_true);
+				pa = pcb_pa_diag_line(cx, cy, t * 2, w, pcb_true);
 				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);
-				pa = pcb_pa_diag_line(pin->X, pin->Y, t * 2, w, pcb_false);
+				pa = pcb_pa_diag_line(cx, cy, t * 2, w, pcb_false);
 			}
 			pcb_polyarea_boolean_free(arc, pa, &m, PCB_PBO_SUB);
 			return m;
 		}
 
-
 	default:
-		a.X = pin->X;
-		a.Y = pin->Y;
-		a.Height = a.Width = pin->Thickness / 2 + pin->Clearance / 4;
+		a.X = cx;
+		a.Y = cy;
+		a.Height = a.Width = thickness / 2 + clearance / 4;
 		a.Thickness = 1;
-		a.Clearance = pin->Clearance / 2;
+		a.Clearance = clearance / 2;
 		a.Flags = pcb_no_flags();
 		a.Delta = 90 - (a.Clearance * (1. + 2. * pcb->ThermScale) * 180) / (M_PI * a.Width);
 		a.StartAngle = 90 - a.Delta / 2 + (style == 4 ? 0 : 45);
@@ -441,4 +432,18 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 		pa->b = arc;
 		return pa;
 	}
+}
+
+pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
+{
+	pcb_cardinal_t style = PCB_FLAG_THERM_GET(laynum, pin);
+	if (style == 3)
+		return NULL;								/* solid connection no clearance */
+	pcb = p;
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
+		return square_therm(pin, style);
+	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
+		return oct_therm(pin, style);
+
+	return ThermPoly_(p, pin->X, pin->Y, pin->Thickness, pin->Clearance, style);
 }
