@@ -74,11 +74,14 @@ pcb_polyarea_t *pcb_thermal_area_pin(pcb_board_t *pcb, pcb_pin_t *pin, pcb_layer
 }
 
 /* generate a round-cap line polygon */
-static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pcb_coord_t clr)
+static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pcb_coord_t clr, pcb_bool square)
 {
 	pcb_line_t ltmp;
 
-	ltmp.Flags = pcb_no_flags();
+	if (square)
+		ltmp.Flags = pcb_flag_make(PCB_FLAG_SQUARE);
+	else
+		ltmp.Flags = pcb_no_flags();
 	ltmp.Point1.X = pcb_round(x1); ltmp.Point1.Y = pcb_round(y1);
 	ltmp.Point2.X = pcb_round(x2); ltmp.Point2.Y = pcb_round(y2);
 	return pcb_poly_from_line(&ltmp, clr);
@@ -153,11 +156,11 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 				pa = pa_line_at(
 					x1 - clrth * nx - clr * vx * 0.75, y1 - clrth * ny - clr * vy * 0.75,
 					x2 - clrth * nx + clr * vx * 0.75, y2 - clrth * ny + clr * vy * 0.75,
-					clr);
+					clr, pcb_false);
 				pb = pa_line_at(
 					x1 + clrth * nx - clr * vx * 0.75, y1 + clrth * ny - clr * vy * 0.75,
 					x2 + clrth * nx + clr * vx * 0.75, y2 + clrth * ny + clr * vy * 0.75,
-					clr);
+					clr, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
 				/* x1;y1 cap arc */
@@ -181,25 +184,25 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 				pa = pa_line_at(
 					x1 - clrth * nx - clr * vx * 0.00, y1 - clrth * ny - clr * vy * 0.00,
 					mx - clrth * nx + clr * vx * 1.00, my - clrth * ny + clr * vy * 1.00,
-					clr);
+					clr, pcb_false);
 				pb = pa_line_at(
 					x1 + clrth * nx - clr * vx * 0.00, y1 + clrth * ny - clr * vy * 0.00,
 					mx + clrth * nx + clr * vx * 1.00, my + clrth * ny + clr * vy * 1.00,
-					clr);
+					clr, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
 				pa = pc; pc = NULL;
 				pb = pa_line_at(
 					mx - clrth * nx - clr * vx * 1.00, my - clrth * ny - clr * vy * 1.00,
 					x2 - clrth * nx + clr * vx * 0.00, y2 - clrth * ny + clr * vy * 0.00,
-					clr);
+					clr, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
 				pa = pc; pc = NULL;
 				pb = pa_line_at(
 					mx + clrth * nx - clr * vx * 1.00, my + clrth * ny - clr * vy * 1.00,
 					x2 + clrth * nx + clr * vx * 0.00, y2 + clrth * ny + clr * vy * 0.00,
-					clr);
+					clr, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 
 				/* split round cap, x1;y1 */
@@ -239,30 +242,30 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 			clrth *= 2;
 			if (line->thermal & PCB_THERMAL_DIAGONAL) {
 				/* x1;y1 V-shape */
-				pb = pa_line_at(x1, y1, x1-nx*clrth+vx*clrth, y1-ny*clrth+vy*clrth, th);
+				pb = pa_line_at(x1, y1, x1-nx*clrth+vx*clrth, y1-ny*clrth+vy*clrth, th, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
 
 				pa = pc; pc = NULL;
-				pb = pa_line_at(x1, y1, x1+nx*clrth+vx*clrth, y1+ny*clrth+vy*clrth, th);
+				pb = pa_line_at(x1, y1, x1+nx*clrth+vx*clrth, y1+ny*clrth+vy*clrth, th, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
 
 				/* x2;y2 V-shape */
 				pa = pc; pc = NULL;
-				pb = pa_line_at(x2, y2, x2-nx*clrth-vx*clrth, y2-ny*clrth-vy*clrth, th);
+				pb = pa_line_at(x2, y2, x2-nx*clrth-vx*clrth, y2-ny*clrth-vy*clrth, th, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
 
 				pa = pc; pc = NULL;
-				pb = pa_line_at(x2, y2, x2+nx*clrth-vx*clrth, y2+ny*clrth-vy*clrth, th);
+				pb = pa_line_at(x2, y2, x2+nx*clrth-vx*clrth, y2+ny*clrth-vy*clrth, th, pcb_false);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
 			}
 			else {
 				/* perpendicular */
-				pb = pa_line_at(mx-nx*clrth, my-ny*clrth, mx+nx*clrth, my+ny*clrth, th);
+				pb = pa_line_at(mx-nx*clrth, my-ny*clrth, mx+nx*clrth, my+ny*clrth, th, pcb_true);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
 
 				/* straight */
 				pa = pc; pc = NULL;
-				pb = pa_line_at(x1+vx*clrth, y1+vy*clrth, x2-vx*clrth, y2-vy*clrth, th);
+				pb = pa_line_at(x1+vx*clrth, y1+vy*clrth, x2-vx*clrth, y2-vy*clrth, th, pcb_true);
 				pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_SUB);
 			}
 			return pc;
@@ -320,7 +323,7 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 		/* cheat: clr-2+4 to guarantee some overlap with the poly cutout */
 		if (is_diag) {
 			/* one line per edge, slightly shorter than the edge */
-			ptmp = pa_line_at(x - vx * clr * fact - nx * clr/2, y - vy * clr * fact - ny * clr/2, px + vx * clr *fact - nx * clr/2, py + vy * clr * fact - ny * clr/2, clr+4);
+			ptmp = pa_line_at(x - vx * clr * fact - nx * clr/2, y - vy * clr * fact - ny * clr/2, px + vx * clr *fact - nx * clr/2, py + vy * clr * fact - ny * clr/2, clr+4, pcb_false);
 
 			pcb_polyarea_boolean(ptmp, *pres, &p, PCB_PBO_UNITE);
 			pcb_polyarea_free(pres);
@@ -329,13 +332,13 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 		}
 		else {
 			/* two half lines per edge */
-			ptmp = pa_line_at(x - nx * clr/2 , y - ny * clr/2, mx + vx * clr * fact_ortho - nx * clr/2, my + vy * clr * fact_ortho - ny * clr/2, clr+4);
+			ptmp = pa_line_at(x - nx * clr/2 , y - ny * clr/2, mx + vx * clr * fact_ortho - nx * clr/2, my + vy * clr * fact_ortho - ny * clr/2, clr+4, pcb_false);
 			pcb_polyarea_boolean(ptmp, *pres, &p, PCB_PBO_UNITE);
 			pcb_polyarea_free(pres);
 			pcb_polyarea_free(&ptmp);
 			*pres = p;
 
-			ptmp = pa_line_at(px - nx * clr/2, py - ny * clr/2, mx - vx * clr * fact_ortho - nx * clr/2, my - vy * clr * fact_ortho - ny * clr/2, clr+4);
+			ptmp = pa_line_at(px - nx * clr/2, py - ny * clr/2, mx - vx * clr * fact_ortho - nx * clr/2, my - vy * clr * fact_ortho - ny * clr/2, clr+4, pcb_false);
 			pcb_polyarea_boolean(ptmp, *pres, &p, PCB_PBO_UNITE);
 			pcb_polyarea_free(pres);
 			pcb_polyarea_free(&ptmp);
@@ -353,6 +356,70 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 		py = y;
 	}
 }
+
+static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_t clr, pcb_bool is_diag)
+{
+	pcb_polyarea_t *ptmp, *p;
+	double fact = 0.5, fact_ortho=0.75;
+	pcb_coord_t cx, cy, x2c, y2c;
+	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2;
+	int go, first = 1;
+
+	/* iterate over the vectors of the contour */
+	for(go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy)) {
+		x = cx; y = cy;
+		if (first) {
+			pcb_poly_vect_peek_prev(it, &cx, &cy);
+			px = cx; py = cy;
+			first = 0;
+		}
+
+		if ((x == px) && (y == py))
+			continue;
+
+		dx = x - px;
+		dy = y - py;
+
+		len = sqrt(dx*dx + dy*dy);
+		vx = dx / len;
+		vy = dy / len;
+
+/*static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pcb_coord_t clr, pcb_bool square)*/
+		if (is_diag) {
+			pcb_poly_vect_peek_next(it, &x2c, &y2c);
+			x2 = x2c; y2 = y2c;
+			dx2 = x - x2;
+			dy2 = y - y2;
+			len2 = sqrt(dx2*dx2 + dy2*dy2);
+			vx2 = dx2 / len2;
+			vy2 = dy2 / len2;
+
+			nx = -(vy2 - vy);
+			ny = vx2 - vx;
+pcb_printf("nx;ny  v %f;%f  v2 %f;%f  n %f;%f  clr %f\n", dx, dy, vx2, vy2, nx, ny, clr);
+			ptmp = pa_line_at(x-nx*clr*0.2, y-ny*clr*0.2, x + nx*clr*4, y + ny*clr*4, clr/2, pcb_false);
+			pcb_polyarea_boolean(*pres, ptmp, &p, PCB_PBO_SUB);
+			pcb_polyarea_free(pres);
+			pcb_polyarea_free(&ptmp);
+			*pres = p;
+		}
+		else {
+			nx = -vy;
+			ny = vx;
+		mx = (x+px)/2.0;
+		my = (y+py)/2.0;
+
+			ptmp = pa_line_at(mx, my, mx - nx*clr, my - ny*clr, clr/2, pcb_true);
+			pcb_polyarea_boolean(*pres, ptmp, &p, PCB_PBO_SUB);
+			pcb_polyarea_free(pres);
+			pcb_polyarea_free(&ptmp);
+			*pres = p;
+		}
+		px = x;
+		py = y;
+	}
+}
+
 
 pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
 {
@@ -380,7 +447,18 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 			return pres;
 
 		case PCB_THERMAL_SHARP:
-			break;
+			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+				pcb_poly_pa_clearance_construct(&pres, &it, clr);
+				pl = pcb_poly_contour(&it);
+				if (pl != NULL)
+					polytherm_sharp(&pres, &it, clr, (poly->thermal & PCB_THERMAL_DIAGONAL));
+			}
+
+			/* trim internal stubs */
+			for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
+				polytherm_base(&pres, pa);
+
+			return pres;
 	}
 
 	return NULL;
