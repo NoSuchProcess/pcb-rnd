@@ -55,4 +55,8 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid);
 pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_id_t lid);
 
+unsigned char pcb_themal_style_old2new(pcb_cardinal_t t);
+pcb_cardinal_t pcb_themal_style_new2old(unsigned char t);
+
+
 #endif
