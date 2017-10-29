@@ -54,6 +54,7 @@
 
 #define UNSUBTRACT_BLOAT 10
 #define SUBTRACT_PIN_VIA_BATCH_SIZE 100
+#define SUBTRACT_PADSTACK_BATCH_SIZE 50
 #define SUBTRACT_LINE_BATCH_SIZE 20
 
 #define sqr(x) ((x)*(x))
@@ -829,6 +830,22 @@ static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_pol
 	return Subtract(np, p, pcb_true);
 }
 
+/* remove the padstack clearance from the polygon */
+static int SubtractPadstack(pcb_data_t *d, pcb_padstack_t *ps, pcb_layer_t *l, pcb_poly_t *p)
+{
+	pcb_polyarea_t *np;
+	pcb_layer_id_t i;
+
+	if (!PCB_NONPOLY_HAS_CLEARANCE(ps))
+		return 0;
+	i = pcb_layer_id(d, l);
+	np = pcb_thermal_area_padstack(pcb_data_get_top(d), ps, i);
+	if (np == 0)
+		return 0;
+
+	return Subtract(np, p, pcb_true);
+}
+
 /* return the clearance polygon for a line */
 static pcb_polyarea_t *line_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_line_t *line)
 {
@@ -942,6 +959,39 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 	info->batch_size++;
 
 	if (info->batch_size == SUBTRACT_PIN_VIA_BATCH_SIZE)
+		subtract_accumulated(info, polygon);
+
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_padstack_t *ps = (pcb_padstack_t *)b;
+	struct cpInfo *info = (struct cpInfo *)cl;
+	pcb_poly_t *polygon;
+	pcb_polyarea_t *np;
+	pcb_polyarea_t *merged;
+	pcb_layer_id_t i;
+
+	/* don't subtract the object that was put back! */
+	if (b == info->other)
+		return PCB_R_DIR_NOT_FOUND;
+	polygon = info->polygon;
+
+	if (!PCB_NONPOLY_HAS_CLEARANCE(ps))
+		return PCB_R_DIR_NOT_FOUND;
+	i = pcb_layer_id(info->data, info->layer);
+
+	np = pcb_thermal_area_padstack(pcb_data_get_top(info->data), ps, i);
+	if (np == 0)
+			return PCB_R_DIR_FOUND_CONTINUE;
+
+	pcb_polyarea_boolean_free(info->accumulate, np, &merged, PCB_PBO_UNITE);
+	info->accumulate = merged;
+
+	info->batch_size++;
+
+	if (info->batch_size == SUBTRACT_PADSTACK_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -1236,6 +1286,8 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t * polygon,
 		pcb_r_search(Data->via_tree, &region, NULL, pin_sub_callback, &info, &seen);
 		r += seen;
 		pcb_r_search(Data->pin_tree, &region, NULL, pin_sub_callback, &info, &seen);
+		r += seen;
+		pcb_r_search(Data->padstack_tree, &region, NULL, padstack_sub_callback, &info, &seen);
 		r += seen;
 		subtract_accumulated(&info, polygon);
 	}
@@ -1681,6 +1733,10 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
 		SubtractPin(Data, (pcb_pin_t *) ptr2, Layer, Polygon);
+		Polygon->NoHolesValid = 0;
+		return PCB_R_DIR_FOUND_CONTINUE;
+	case PCB_TYPE_PADSTACK:
+		SubtractPadstack(Data, (pcb_padstack_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:

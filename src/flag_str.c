@@ -62,7 +62,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_CLEARPOLY),     N("clearpoly"),     PCB_TYPE_POLYGON, "For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. " },
 	{FN(PCB_FLAG_HIDENAME),      N("hidename"),      PCB_TYPE_ELEMENT, "For elements, when set the name of the element is hidden." },
 	{FN(PCB_FLAG_DISPLAYNAME),   N("showname"),      PCB_TYPE_ELEMENT, "OBSOLETE: For elements, when set the names of pins are shown." },
-	{FN(PCB_FLAG_CLEARLINE),     N("clearline"),     PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_TEXT, "For lines and arcs, the line/arc will clear polygons instead of connecting to them." },
+	{FN(PCB_FLAG_CLEARLINE),     N("clearline"),     PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_TEXT | PCB_TYPE_PADSTACK, "For lines and arcs, the line/arc will clear polygons instead of connecting to them." },
 	{FN(PCB_FLAG_SELECTED),      N("selected"),      PCB_TYPEMASK_ALL, "Set when the object is selected."},
 	{FN(PCB_FLAG_ONSOLDER),      N("onsolder"),      PCB_TYPE_ELEMENT | PCB_TYPE_PAD | PCB_TYPE_TEXT, "For elements and pads, indicates that they are on the solder side."},
 	{FN(PCB_FLAG_AUTO),          N("auto"),          PCB_TYPEMASK_ALL, "For lines and vias, indicates that these were created by the autorouter."},

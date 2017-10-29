@@ -465,6 +465,31 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 	return NULL;
 }
 
+pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_id_t lid)
+{
+	unsigned char shp;
+
+	/* if we have no clearance, there's no reason to do anything */
+	if (!PCB_NONPOLY_HAS_CLEARANCE(ps)) /* no clearance -> solid connection */
+		return NULL;
+
+	/* retrieve shape; assume 0 (no shape) for layers not named */
+	if (lid < ps->thermals.used)
+		shp = ps->thermals.shape[lid];
+	else
+		shp = 0;
+
+	switch(ps->thermals.shape[lid] & 3) {
+		case PCB_THERMAL_NOSHAPE: return NULL;
+		case PCB_THERMAL_SOLID: return NULL;
+
+		case PCB_THERMAL_ROUND:
+		case PCB_THERMAL_SHARP:
+			return NULL;
+	}
+
+	return NULL;
+}
 
 pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
 {
@@ -479,9 +504,10 @@ pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer
 		case PCB_OBJ_POLYGON:
 			return pcb_thermal_area_poly(pcb, (pcb_poly_t *)obj, lid);
 
-		case PCB_OBJ_ARC:
-
 		case PCB_OBJ_PADSTACK:
+			return pcb_thermal_area_padstack(pcb, (pcb_padstack_t *)obj, lid);
+
+		case PCB_OBJ_ARC:
 			break;
 
 		default: break;
