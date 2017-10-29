@@ -184,6 +184,16 @@ static inline PCB_FUNC_UNUSED void pcb_poly_vect_peek_next(pcb_poly_it_t *it, pc
 	*y = it->v->next->point[1];
 }
 
+/* Set the iterator to a polyarea*/
+static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_iterate_polyarea(const pcb_polyarea_t *pa, pcb_poly_it_t *it)
+{
+	it->p = NULL;
+	it->pa = pa;
+	it->cntr = NULL;
+	it->v = NULL;
+	return it->pa;
+}
+
 /* construct the full poly clearance cutout for the pa in the iterator and add
    it to dst - implemented in polygon.c */
 void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, pcb_coord_t clearance);
