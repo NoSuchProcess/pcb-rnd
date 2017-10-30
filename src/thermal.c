@@ -517,6 +517,10 @@ static pcb_polyarea_t *pcb_thermal_area_padstack_nothermal(pcb_board_t *pcb, pcb
 		case PCB_PSSH_LINE:
 			return pa_line_at(ps->x + shp->data.line.x1, ps->y + shp->data.line.y1, ps->x + shp->data.line.x2, ps->y + shp->data.line.y2, shp->data.line.thickness + ps->Clearance*2, shp->data.line.square);
 		case PCB_PSSH_POLY:
+			if (shp->data.poly.pa == NULL)
+				pcb_padstack_shape_update_pline(&shp->data.poly);
+			if (shp->data.poly.pa == NULL)
+				return NULL;
 			pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
 			pcb_poly_pa_clearance_construct(&pres, &it, ps->Clearance);
 			return pres;
