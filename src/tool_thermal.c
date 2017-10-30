@@ -55,7 +55,7 @@ static void tool_thermal_on_pinvia(int type, void *ptr1, void *ptr2, void *ptr3)
 
 static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)
 {
-	unsigned char *th;
+	unsigned char *th, newth = 0;
 	unsigned char cycle[] = {
 		PCB_THERMAL_ON | PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL,
 		PCB_THERMAL_ON | PCB_THERMAL_ROUND,
@@ -86,13 +86,12 @@ static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)
 		else
 			curr = 0;
 
-#warning thermal TODO: add undo
-		*th = cycle[curr];
+		newth = cycle[curr];
 	}
-	else {
-#warning thermal TODO: add undo
-		*th ^= PCB_THERMAL_ON;
-	}
+	else
+		newth = *th ^ PCB_THERMAL_ON;
+
+	pcb_chg_obj_thermal(PCB_TYPE_PADSTACK, ps, ps, ps, newth, lid);
 }
 
 
