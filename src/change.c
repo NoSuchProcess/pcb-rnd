@@ -452,13 +452,14 @@ static pcb_opfunc_t InvalLabelFunctions = {
  * changes the thermals on all selected and visible pins
  * and/or vias. Returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_thermals(int types, int therm_style)
+pcb_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgtherm.pcb = PCB;
 	ctx.chgtherm.style = therm_style;
+	ctx.chgtherm.lid = lid;
 
 	change = pcb_selected_operation(PCB, &ChangeThermalFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -975,13 +976,14 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
  * Returns pcb_true if anything is changed
  *
  */
-pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type)
+pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgtherm.pcb = PCB;
 	ctx.chgtherm.style = therm_type;
+	ctx.chgtherm.lid = lid;
 
 	change = (pcb_object_operation(&ChangeThermalFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {

@@ -61,7 +61,8 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	int style;
+	int style;             /* the new bits */
+	unsigned long lid;     /* the layer to operate on */
 } pcb_opctx_chgtherm_t;
 
 typedef struct {

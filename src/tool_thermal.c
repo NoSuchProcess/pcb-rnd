@@ -45,12 +45,12 @@ static void tool_thermal_on_pinvia(int type, void *ptr1, void *ptr2, void *ptr3)
 		tstyle++;
 		if (tstyle > 5)
 			tstyle = 1;
-		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, tstyle);
+		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, tstyle, INDEXOFCURRENT);
 	}
 	else if (PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3))
-		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, 0);
+		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, 0, INDEXOFCURRENT);
 	else
-		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
+		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle, INDEXOFCURRENT);
 }
 
 static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)

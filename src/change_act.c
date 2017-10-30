@@ -1185,20 +1185,20 @@ static int pcb_act_SetThermal(int argc, const char **argv, pcb_coord_t x, pcb_co
 			case F_Object:
 				pcb_gui->get_coords("Click on object for SetThermal", &gx, &gy);
 				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
+					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind, INDEXOFCURRENT);
 					pcb_undo_inc_serial();
 					pcb_draw();
 				}
 				break;
 			case F_SelectedPins:
-				pcb_chg_selected_thermals(PCB_TYPE_PIN, kind);
+				pcb_chg_selected_thermals(PCB_TYPE_PIN, kind, INDEXOFCURRENT);
 				break;
 			case F_SelectedVias:
-				pcb_chg_selected_thermals(PCB_TYPE_VIA, kind);
+				pcb_chg_selected_thermals(PCB_TYPE_VIA, kind, INDEXOFCURRENT);
 				break;
 			case F_Selected:
 			case F_SelectedElements:
-				pcb_chg_selected_thermals(PCB_CHANGETHERMAL_TYPES, kind);
+				pcb_chg_selected_thermals(PCB_CHANGETHERMAL_TYPES, kind, INDEXOFCURRENT);
 				break;
 			default:
 				err = 1;
