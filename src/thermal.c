@@ -389,7 +389,6 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_t clr, pcb_bool is_diag)
 {
 	pcb_polyarea_t *ptmp, *p;
-	double fact = 0.5, fact_ortho=0.75;
 	pcb_coord_t cx, cy, x2c, y2c;
 	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2;
 	int go, first = 1;
