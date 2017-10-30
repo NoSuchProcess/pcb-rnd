@@ -1346,6 +1346,24 @@ static int UnsubtractPin(pcb_pin_t * pin, pcb_layer_t * l, pcb_poly_t * p)
 	return 1;
 }
 
+static int UnsubtractPadstack(pcb_data_t *data, pcb_padstack_t *ps, pcb_layer_t *l, pcb_poly_t *p)
+{
+	pcb_polyarea_t *np;
+
+	/* overlap a bit to prevent gaps from rounding errors */
+	np = pcb_poly_from_box_bloated(&ps->BoundingBox, UNSUBTRACT_BLOAT * 400000);
+
+	if (!np)
+		return 0;
+	if (!Unsubtract(np, p))
+		return 0;
+
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *)ps, 2 * UNSUBTRACT_BLOAT * 400000);
+	return 1;
+}
+
+
+
 static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_poly_t * p)
 {
 	pcb_polyarea_t *np;
@@ -1772,6 +1790,9 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Po
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
 		UnsubtractPin((pcb_pin_t *) ptr2, Layer, Polygon);
+		return PCB_R_DIR_FOUND_CONTINUE;
+	case PCB_TYPE_PADSTACK:
+		UnsubtractPadstack(Data, (pcb_padstack_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
 		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
