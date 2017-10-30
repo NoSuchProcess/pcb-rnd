@@ -1111,7 +1111,7 @@ static int SubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	pcb_polyarea_t *pa;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
-		return -1;
+		return 0; /* but it's not an error, that'd kill other clearances in the same poly */
 
 	pa = poly_clearance_poly(-1, NULL, subpoly);
 	if (pa == NULL)
@@ -1128,7 +1128,7 @@ static int UnsubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	pcb_polyarea_t *pa;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
-		return -1;
+		return 0; /* but it's not an error, that'd kill other clearances in the same poly */
 
 	pa = poly_clearance_poly(-1, NULL, subpoly);
 	if (pa == NULL)
