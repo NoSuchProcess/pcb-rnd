@@ -27,6 +27,7 @@
 #include "obj_padstack.h"
 #include "vtpadstack.h"
 #include "layer.h"
+#include "thermal.h"
 
 typedef enum {
 	PCB_BB_NONE, /* no drill */
@@ -135,10 +136,23 @@ static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_at(pcb_bo
 	unsigned int lyt = pcb_layer_flags_(layer);
 	pcb_layer_combining_t comb = 0;
 
-	if ((lyt & PCB_LYT_COPPER) && (lyt & PCB_LYT_INTERN)) {
-		/* apply internal only if that layer has drill */
-		if (!pcb_padstack_bb_drills(pcb, ps, pcb_layer_get_group_(layer), NULL))
-			return NULL;
+	if (lyt & PCB_LYT_COPPER) {
+		pcb_layer_id_t lid;
+		if (lyt & PCB_LYT_INTERN) {
+			/* apply internal only if that layer has drill */
+			if (!pcb_padstack_bb_drills(pcb, ps, pcb_layer_get_group_(layer), NULL))
+				return NULL;
+		}
+
+		/* special case: if thermal says 'no shape' on this layer, omit the shape */
+		layer = pcb_layer_get_real(layer);
+		if ((layer != NULL) && (layer->parent != NULL)) {
+			lid = pcb_layer_id(layer->parent, layer);
+			if (lid < ps->thermals.used) {
+				if ((ps->thermals.shape[lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[lid] & 3) == PCB_THERMAL_NOSHAPE))
+					return NULL;
+			}
+		}
 	}
 
 	/* combining is always 0 for copper */
