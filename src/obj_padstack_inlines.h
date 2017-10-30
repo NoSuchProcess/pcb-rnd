@@ -136,7 +136,7 @@ static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape(pcb_padst
 static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_at(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_t *layer)
 {
 	unsigned int lyt = pcb_layer_flags_(layer);
-	pcb_layer_combining_t comb = 0;
+	pcb_layer_combining_t comb = layer->comb;
 
 	if (lyt & PCB_LYT_COPPER) {
 		pcb_layer_id_t lid;
@@ -166,7 +166,7 @@ static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_at(pcb_bo
 	return pcb_padstack_shape(ps, lyt, comb);
 }
 
-static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_gid(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t gid)
+static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_gid(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 
@@ -186,7 +186,7 @@ static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_gid(pcb_b
 	}
 
 	/* normal procedure: go by group flags */
-	return pcb_padstack_shape(ps, grp->type, 0);
+	return pcb_padstack_shape(ps, grp->type, comb);
 }
 
 

@@ -422,12 +422,13 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
 }
 
-static void pcb_draw_padstacks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, int is_current)
+static void pcb_draw_padstacks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, int is_current, pcb_layer_combining_t comb)
 {
 	pcb_padstack_draw_t ctx;
 	ctx.pcb = PCB;
 	ctx.gid = group;
 	ctx.is_current = is_current;
+	ctx.comb = comb;
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_padstack_draw_callback, &ctx, NULL);
 }
 
@@ -621,7 +622,7 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 		pcb_draw_ppv(group, drawn_area);
 
 	if (gflg & PCB_LYT_COPPER)
-		pcb_draw_padstacks(group, drawn_area, is_current);
+		pcb_draw_padstacks(group, drawn_area, is_current, PCB_LYC_AUTO);
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 }

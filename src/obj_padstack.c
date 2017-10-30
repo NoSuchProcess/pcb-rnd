@@ -236,8 +236,7 @@ pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 	pcb_padstack_t *ps = (pcb_padstack_t *)b;
 	pcb_padstack_shape_t *shape;
 
-#warning padstack TODO: comb should not be 0 - draw both add and sub!
-	shape = pcb_padstack_shape_gid(ctx->pcb, ps, ctx->gid);
+	shape = pcb_padstack_shape_gid(ctx->pcb, ps, ctx->gid, (ctx->comb & ~PCB_LYC_AUTO));
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
 		switch(shape->shape) {
@@ -303,7 +302,9 @@ void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 
 	pcb = pcb_data_get_top(ps->parent.data);
 	if (pcb != NULL) {
-		shape = pcb_padstack_shape_gid(pcb, ps, gid);
+		shape = pcb_padstack_shape_gid(pcb, ps, gid, 0);
+		if (shape == NULL)
+			shape = pcb_padstack_shape_gid(pcb, ps, gid, PCB_LYC_SUB);
 	}
 	else { /* no pcb means buffer - take the first shape */
 		pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
