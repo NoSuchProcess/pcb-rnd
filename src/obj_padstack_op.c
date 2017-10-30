@@ -140,14 +140,15 @@ void *pcb_padstackop_destroy(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 void *pcb_padstackop_change_thermal(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
 	pcb_board_t *pcb = ctx->chgtherm.pcb;
+	pcb_layer_t *layer = pcb_get_layer(pcb, ctx->chgtherm.lid);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PADSTACK, ps, ps, ps, pcb_false);
-	pcb_poly_restore_to_poly(pcb->Data, PCB_TYPE_PADSTACK, CURRENT, ps);
+	pcb_poly_restore_to_poly(pcb->Data, PCB_TYPE_PADSTACK, layer, ps);
 
 #warning TODO: undo
 	pcb_padstack_set_thermal(ps, ctx->chgtherm.lid, ctx->chgtherm.style);
 
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PADSTACK, ps, ps, ps, pcb_true);
-	pcb_poly_clear_from_poly(pcb->Data, PCB_TYPE_PADSTACK, CURRENT, ps);
+	pcb_poly_clear_from_poly(pcb->Data, PCB_TYPE_PADSTACK, layer, ps);
 	pcb_via_invalidate_draw(ps);
 	return ps;
 }
