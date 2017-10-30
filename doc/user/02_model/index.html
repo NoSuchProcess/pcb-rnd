@@ -424,9 +424,20 @@ anything that can be drawn on board can be turned into a heavy terminal.
 The optional hole of the pad stack is useful if the pad stack is to be used
 as a mounting hole, via or pin. The span of the hole is described by two
 integers: how far the hole starts and ends from the top or bottom copper
-layer group, counted in copper layer groups. A simple all-way-thru hole's span
-is 0;0, which means it starts at the top copper group and ends on the bottom
-copper group. The plating of the hole is a boolean and is independent of any
+layer group, counted in copper layer groups.
+<p>
+A simple all-way-thru hole's span is 0;0, which means it starts at the
+top copper group and ends on the bottom copper group. Or precisely,
+"starts 0 groups down from top copper group and spans until 0 groups up
+from the bottom group". That is, when hol span values are positive,
+the top of the hole is counted from the top copper group down and the
+bottom of the hole is counted from the bottom group up. If a span value
+is negative, it is counted from the other side, e.g. a 0;-3 means:
+"hole top is 0 groups down from top copper group, hole bottom is <i>3 groups
+down from the top copper group</i>". Or in other words, the topmost four copper
+layer groups are connected by the via.
+<p>
+The plating of the hole is a boolean and is independent of any
 other parameter.
 <p>
 For each layer group type, the user may specify zero or one pad shape.
