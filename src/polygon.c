@@ -1903,9 +1903,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (lid == -1)
 			return 0;
 		th = pcb_padstack_get_thermal((pcb_padstack_t *)ptr2, lid, pcb_false);
-		if (th == NULL)
-			return 0;
-		if ((!(*th & PCB_THERMAL_ON)) /*|| ((*th & 3) == PCB_THERMAL_SOLID)*/)
+		if ((th != NULL) && (!(*th & PCB_THERMAL_ON)))
 			return 0;
 		goto doit;
 	case PCB_TYPE_POLYGON:
