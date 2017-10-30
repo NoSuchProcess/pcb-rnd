@@ -1848,8 +1848,6 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	pcb_box_t sb = ((pcb_pin_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
-	pcb_layer_id_t lid;
-	unsigned char *th;
 
 	info.type = type;
 	info.ptr1 = ptr1;
