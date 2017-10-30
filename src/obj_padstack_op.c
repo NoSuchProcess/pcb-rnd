@@ -43,7 +43,7 @@ void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 
 	npid = pcb_padstack_proto_insert_dup(ctx->buffer.dst, proto, 1);
 
-	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PADSTACK, ps, ps);
+	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PADSTACK, NULL, ps);
 	pcb_r_delete_entry(ctx->buffer.src->padstack_tree, (pcb_box_t *)ps);
 
 	padstacklist_remove(ps);
@@ -56,7 +56,7 @@ void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 		ctx->buffer.dst->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
 
 	pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps, 0);
-	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PADSTACK, ps, ps);
+	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PADSTACK, NULL, ps);
 
 	PCB_SET_PARENT(ps, data, ctx->buffer.dst);
 	return ps;
@@ -98,10 +98,10 @@ void *pcb_padstackop_move(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 	assert(ps->parent_type = PCB_PARENT_DATA);
 
 	pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)ps);
-	pcb_poly_restore_to_poly(data, PCB_TYPE_PADSTACK, ps, ps);
+	pcb_poly_restore_to_poly(data, PCB_TYPE_PADSTACK, NULL, ps);
 	pcb_padstackop_move_noclip(ctx, ps);
 	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps, 0);
-	pcb_poly_clear_from_poly(data, PCB_TYPE_PADSTACK, ps, ps);
+	pcb_poly_clear_from_poly(data, PCB_TYPE_PADSTACK, NULL, ps);
 	return ps;
 }
 
@@ -112,11 +112,11 @@ void *pcb_padstackop_clip(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 
 	if (ctx->clip.restore) {
 		pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)ps);
-		pcb_poly_restore_to_poly(data, PCB_TYPE_PADSTACK, ps, ps);
+		pcb_poly_restore_to_poly(data, PCB_TYPE_PADSTACK, NULL, ps);
 	}
 	if (ctx->clip.clear) {
 		pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps, 0);
-		pcb_poly_clear_from_poly(data, PCB_TYPE_PADSTACK, ps, ps);
+		pcb_poly_clear_from_poly(data, PCB_TYPE_PADSTACK, NULL, ps);
 	}
 
 	return ps;
@@ -141,6 +141,7 @@ void *pcb_padstackop_change_thermal(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
 	pcb_board_t *pcb = ctx->chgtherm.pcb;
 	pcb_layer_t *layer = pcb_get_layer(pcb->Data, ctx->chgtherm.lid);
+
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PADSTACK, ps, ps, ps, pcb_false);
 	pcb_poly_restore_to_poly(pcb->Data, PCB_TYPE_PADSTACK, layer, ps);
 
