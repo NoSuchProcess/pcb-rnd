@@ -116,6 +116,7 @@ void pcb_padstack_add(pcb_data_t *data, pcb_padstack_t *ps);
 void pcb_padstack_bbox(pcb_padstack_t *ps);
 
 void pcb_padstack_set_thermal(pcb_padstack_t *ps, unsigned long lid, unsigned char shape);
+unsigned char *pcb_padstack_get_thermal(pcb_padstack_t *ps, unsigned long lid, pcb_bool_t alloc);
 
 /*** proto ***/
 
