@@ -505,6 +505,25 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 	return NULL;
 }
 
+/* Generate a clearance around a padstack shape, with no thermal */
+static pcb_polyarea_t *pcb_thermal_area_padstack_nothermal(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_id_t lid, pcb_padstack_shape_t *shp)
+{
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pres = NULL;
+
+	switch(shp->shape) {
+		case PCB_PSSH_CIRC:
+			return pcb_poly_from_circle(ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia/2 + ps->Clearance);
+		case PCB_PSSH_LINE:
+			return pa_line_at(ps->x + shp->data.line.x1, ps->y + shp->data.line.y1, ps->x + shp->data.line.x2, ps->y + shp->data.line.y2, shp->data.line.thickness + ps->Clearance*2, shp->data.line.square);
+		case PCB_PSSH_POLY:
+			pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
+			pcb_poly_pa_clearance_construct(&pres, &it, ps->Clearance);
+			return pres;
+	}
+	return NULL;
+}
+
 pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_id_t lid)
 {
 	unsigned char thr;
@@ -525,6 +544,9 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 	lyt = pcb_layer_flags(pcb, lid);
 	shp = pcb_padstack_shape(ps, lyt, 0);
 
+	if (!(thr & PCB_THERMAL_ON))
+		return pcb_thermal_area_padstack_nothermal(pcb, ps, lid, shp);
+
 	switch(thr & 3) {
 		case PCB_THERMAL_NOSHAPE:
 			{
@@ -541,6 +563,10 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 				case PCB_PSSH_LINE:
 				{
 					pcb_line_t ltmp;
+					if (shp->data.line.square)
+						ltmp.Flags = pcb_flag_make(PCB_FLAG_SQUARE);
+					else
+						ltmp.Flags = pcb_no_flags();
 					ltmp.Point1.X = ps->x + shp->data.line.x1;
 					ltmp.Point1.Y = ps->y + shp->data.line.y1;
 					ltmp.Point2.X = ps->x + shp->data.line.x2;
