@@ -55,9 +55,9 @@ typedef enum {
 } pcb_eagle_type_t;
 
 typedef enum {
-	SS_DIRECT,            /* it specifies the number of direct children */
-	SS_RECURSIVE,         /* it specifies the number of all children, recursively */
-	SS_RECURSIVE_MINUS_1  /* same as SS_RECURSIVE, but decrease the children count first */
+	SS_DIRECT,	    	/* it specifies the number of direct children */
+	SS_RECURSIVE,	 	/* it specifies the number of all children, recursively */
+	SS_RECURSIVE_MINUS_1	/* same as SS_RECURSIVE, but decrease the children count first */
 } pcb_eagle_ss_type_t;
 
 
@@ -91,7 +91,7 @@ typedef struct {
 
 typedef struct
 {
-        egb_node_t *root, *layers, *drawing, *libraries, *firstel, *signals, *board;
+	egb_node_t *root, *layers, *drawing, *libraries, *firstel, *signals, *board;
 } egb_ctx_t;
 
 #define TERM {0}
@@ -395,8 +395,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
-			{"width",  T_INT, 20, 2},
-			{"width_doubling_bin",  T_INT, 20, 2}, /* for additional thickness */
+			{"half_width",  T_INT, 20, 2},
 			{"stflags",  T_BMB, 22, 0x20},
 			{"linetype",  T_INT, 23, 1},
 			{"linetype_0_x1",  T_INT, 4, 4},
@@ -423,8 +422,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
-			{"width",  T_INT, 20, 2},
-			{"width_doubling_bin",  T_INT, 20, 2}, /* for additional thickness */
+			{"half_width",  T_INT, 20, 2},
 			{"clockwise",  T_BMB, 22, 0x20},
 			{"arctype",  T_INT, 23, 1},
 			{"arc_negflags", T_INT, 19, 1},
@@ -454,7 +452,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"radius",  T_INT, 12, 4},
-			{"width", T_INT, 20, 4},
+			{"half_width", T_INT, 20, 4},
 			TERM
 		},
 	},
@@ -1494,9 +1492,9 @@ static egb_node_t *elem_ref_by_idx(egb_node_t *elements, long idx)
 static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, long pin_idx)
 {
 	int pin_num = pin_idx;
-        egb_node_t *p, *e = elem_ref_by_idx(elements, elem_idx);
-        if (e == NULL)
-                return NULL;
+	egb_node_t *p, *e = elem_ref_by_idx(elements, elem_idx);
+	if (e == NULL)
+		return NULL;
 	printf("found element, now looking for pin number %ld.\n", pin_idx);
 #warning TODO broken, still need to look up lib and package based on element contents to find pin# 
 	for (p = e->first_child; (p != NULL) && (pin_num == 0) && (pin_num > 1) ; p = p->next) {
@@ -1505,7 +1503,7 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 		}
 	}
 	printf("pin index now %ld.\n", pin_num);
-        return egb_node_prop_get(p, "name");
+	return egb_node_prop_get(p, "name");
 }
 
 
@@ -1550,6 +1548,8 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 	htss_entry_t *e;
 	egb_node_t *n;
 	int line_type = -1;
+	long half_width = 0; 
+	char tmp[32];
 
 	if (root->id == PCB_EGKW_SECT_LINE) {
 		pcb_trace("######## found a line ######\n");
@@ -1578,7 +1578,11 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 					} else if (strcmp(e->key, "linetype_0_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
 						/*pcb_trace("Created y2: %s\n", e->value);*/
-					} /* add width doubling routine here */
+					} else if (strcmp(e->key, "half_width") == 0) {
+						half_width = atoi(e->value);
+						sprintf(tmp, "%ld", half_width*2);
+						egb_node_prop_set(root, "width", tmp);
+					} /* <- added width doubling routine here */
 				}
 				break;
 		case 129:	pcb_trace("Process linetype 129\n");
@@ -1600,6 +1604,8 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 	htss_entry_t *e;
 	egb_node_t *n;
 	int arc_type = -1;
+	long half_width= 0;
+	char tmp[32];
 
 	if (root->id == PCB_EGKW_SECT_ARC) {
 		pcb_trace("######## found an arc ######\n");
@@ -1628,7 +1634,11 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 					} else if (strcmp(e->key, "arctype_0_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
 						pcb_trace("Created arc y2: %s\n", e->value);
-					} /* could add width doubling routine here */
+					} else if (strcmp(e->key, "half_width") == 0) {
+						half_width = atoi(e->value);
+						sprintf(tmp, "%ld", half_width*2);
+						egb_node_prop_set(root, "width", tmp);
+					} /* <- added width doubling routine here */
 				}
 				break;
 /*		case -1:	break;*/
@@ -1646,7 +1656,11 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 					} else if (strcmp(e->key, "arctype_other_y2") == 0) {
 						egb_node_prop_set(root, "y2", e->value);
 						pcb_trace("Created arc y2: %s\n", e->value);
-					} /* could add width doubling routine here */
+					} else if (strcmp(e->key, "half_width") == 0) {
+						half_width = atoi(e->value);
+						sprintf(tmp, "%ld", half_width*2);
+						egb_node_prop_set(root, "width", tmp);
+					} /* <- added width doubling routine here */
 				}
 	}
 	if (arc_type >= 0) {
@@ -1659,33 +1673,57 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 	return 0;
 }
 
+/* post process circles to double their width */ 
+static int postprocess_circles(void *ctx, egb_node_t *root)
+{
+	htss_entry_t *e;
+	egb_node_t *n;
+	long half_width= 0;
+	char tmp[32];
+
+	if (root->id == PCB_EGKW_SECT_CIRCLE) {
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+			if (strcmp(e->key, "half_width") == 0) {
+				half_width = atoi(e->value);
+				sprintf(tmp, "%ld", half_width*2);
+				egb_node_prop_set(root, "width", tmp);
+			} /* <- added width doubling routine here */
+		}
+	}
+
+	for(n = root->first_child; n != NULL; n = n->next)
+		postprocess_circles(ctx, n);
+	return 0;
+}
+
+
 /* look for contactrefs, and append "name"="refdes" fields to contactref nodes as "element" "refdes"*/
 static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 {
-        htss_entry_t *e;
-        egb_node_t *els, *cr, *n, *q, *next, *next2;
+	htss_entry_t *e;
+	egb_node_t *els, *cr, *n, *q, *next, *next2;
 
 	els = egb_ctx->firstel->parent;
 
-        for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
-                next = n->next;
+	for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
+		next = n->next;
 		if (n->first_child->id != NULL && n->first_child->id == PCB_EGKW_SECT_CONTACTREF) {
 			pcb_trace("Found PCB_EKGW_SECT_CONTACTREF\n");
 			for (cr = n->first_child; cr != NULL; cr = next2) {
 				next2 = cr->next;
-                		for (e = htss_first(&cr->props); e; e = htss_next(&cr->props, e)) {
-                        	        if (strcmp(e->key, "partnumber") == 0) {
+				for (e = htss_first(&cr->props); e; e = htss_next(&cr->props, e)) {
+					if (strcmp(e->key, "partnumber") == 0) {
 						int element_num = atoi(e->value);
-                                                egb_node_prop_set(cr, "element", elem_refdes_by_idx(els, (long) element_num));
-                        	        	pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
+						egb_node_prop_set(cr, "element", elem_refdes_by_idx(els, (long) element_num));
+						pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
 						printf("Found element pin %s\n", egb_node_prop_get(cr, "pin"));
 						egb_node_prop_set(cr, "pad", elem_pin_name_by_idx(els, (long) element_num, (long)atoi(egb_node_prop_get(cr, "pin"))));
-                        		}
+					}
 				}
-                        }
+			}
 		}
-        }
-        return 0;
+	}
+	return 0;
 }
 
 
@@ -1735,28 +1773,28 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 /* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
 static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
-        egb_node_t *n, *p, *prev, *prev2, *next, *next2;
+	egb_node_t *n, *p, *prev, *prev2, *next, *next2;
 
 	egb_node_t *signal = egb_ctx->signals->first_child;
 
-        for(n = signal; n != NULL; n = next) {
-                next = n->next;
-                if (n->id == PCB_EGKW_SECT_SIGNAL) {
+	for(n = signal; n != NULL; n = next) {
+		next = n->next;
+		if (n->id == PCB_EGKW_SECT_SIGNAL) {
 			for(p = n->first_child, prev2 = NULL; p != NULL; p = next2) {
 				next2 = p->next;
 				if (p->id == PCB_EGKW_SECT_SIGNAL) {
 					pcb_trace("about to unlink PCB_EGKW_SECT_SIGNAL/PCB_EGKW_SECT_SIGNAL...\n");
-		                        egb_node_unlink(n, prev2, p);
-		                        egb_node_append(egb_ctx->signals, p);
+					egb_node_unlink(n, prev2, p);
+					egb_node_append(egb_ctx->signals, p);
 				}
 				else
 					prev2 = p;
 			}
-                }
-                else
-                        prev = n;
-        }
-        return 0;
+		}
+		else
+			prev = n;
+	}
+	return 0;
 }
 
 /* take each /drawing/layer and move them into a newly created /drawing/layers/ */
@@ -1811,39 +1849,40 @@ static int postproc(void *ctx, egb_node_t *root)
 	egb_ctx_p = &eagle_bin_ctx;
 
 	eagle_bin_ctx.root = root;
-        eagle_bin_ctx.drawing = root->first_child;
+	eagle_bin_ctx.drawing = root->first_child;
 	eagle_bin_ctx.board = find_node(eagle_bin_ctx.drawing->first_child, PCB_EGKW_SECT_BOARD);
-        if (eagle_bin_ctx.board == NULL)
-                return -1;
-        eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
-        if (eagle_bin_ctx.libraries == NULL)
-                return -1;
+	if (eagle_bin_ctx.board == NULL)
+		return -1;
+	eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
+	if (eagle_bin_ctx.libraries == NULL)
+		return -1;
 	eagle_bin_ctx.layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
 
-        for(n = eagle_bin_ctx.board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
-                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
-                        pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
-                        signal = n->first_child;
-                }
-        }
+	for(n = eagle_bin_ctx.board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
+		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
+			pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
+			signal = n->first_child;
+		}
+	}
 
-        for(n = eagle_bin_ctx.board->first_child, eagle_bin_ctx.firstel = NULL;
+	for(n = eagle_bin_ctx.board->first_child, eagle_bin_ctx.firstel = NULL;
 			eagle_bin_ctx.firstel == NULL && n != NULL; n = n->next) {
-                pcb_trace("found board subnode ID: %d\n", n->id);
-                if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
-                        pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
-                        eagle_bin_ctx.firstel = n->first_child;
-                }
-        }
+		pcb_trace("found board subnode ID: %d\n", n->id);
+		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
+			pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
+			eagle_bin_ctx.firstel = n->first_child;
+		}
+	}
 
-        eagle_bin_ctx.signals = signal->parent;
-        if (eagle_bin_ctx.signals == NULL)
-                return -1;
+	eagle_bin_ctx.signals = signal->parent;
+	if (eagle_bin_ctx.signals == NULL)
+		return -1;
 
 	return postproc_layers(ctx, egb_ctx_p) || postproc_libs(ctx, egb_ctx_p)
 		|| postproc_elements(ctx, egb_ctx_p)
 		|| postproc_signal(ctx, egb_ctx_p) || postproc_contactrefs(ctx, egb_ctx_p)
-		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root);
+		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root)
+		|| postprocess_circles(ctx, root);
 }
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)

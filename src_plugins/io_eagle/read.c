@@ -563,7 +563,6 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 	circ->StartAngle = eagle_degrees_to_pcb_degrees(eagle_get_attrl(st, subtree, "StartAngle", 0));
 	circ->Delta = -eagle_get_attrl(st, subtree, "Delta", -360);
 	circ->Thickness = eagle_get_attrc(st, subtree, "width", -1);
-        circ->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);
 	circ->Clearance = st->md_wire_wire*2;
 	circ->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
@@ -720,9 +719,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	lin->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
 	lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
 	lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
-#warning TODO can remove if width dealt with in binary tree post processor code, but this is v. simple:
-	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1); /* bin format is half the width*/
-	lin->Thickness += eagle_get_attrc(st, subtree, "width_doubling_bin", 0);
+	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1); 
 	pcb_trace("new line thickness: %ml\n", lin->Thickness);
 	lin->Clearance = st->md_wire_wire*2;
 	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
