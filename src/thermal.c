@@ -528,8 +528,8 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 {
 	unsigned char thr;
 	pcb_padstack_shape_t *shp;
-	pcb_layer_type_t lyt;
 	pcb_polyarea_t *pres = NULL;
+	pcb_layer_t *layer = pcb_get_layer(pcb->Data, lid);
 
 	/* if we have no clearance, there's no reason to do anything */
 	if (!PCB_NONPOLY_HAS_CLEARANCE(ps)) /* no clearance -> solid connection */
@@ -541,8 +541,7 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 	else
 		thr = 0;
 
-	lyt = pcb_layer_flags(pcb, lid);
-	shp = pcb_padstack_shape(ps, lyt, 0);
+	shp = pcb_padstack_shape_at(pcb, ps, layer);
 
 	if (!(thr & PCB_THERMAL_ON))
 		return pcb_thermal_area_padstack_nothermal(pcb, ps, lid, shp);
