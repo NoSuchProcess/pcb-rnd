@@ -61,8 +61,7 @@ static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)
 		PCB_THERMAL_ON | PCB_THERMAL_ROUND,
 		PCB_THERMAL_ON | PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL,
 		PCB_THERMAL_ON | PCB_THERMAL_SHARP,
-		PCB_THERMAL_ON | PCB_THERMAL_SOLID,
-		PCB_THERMAL_ON | PCB_THERMAL_NOSHAPE
+		PCB_THERMAL_ON | PCB_THERMAL_SOLID
 	};
 	int cycles = sizeof(cycle) / sizeof(cycle[0]);
 
