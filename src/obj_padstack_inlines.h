@@ -79,15 +79,33 @@ static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb
 	if (!pcb->LayerGroups.cache.copper_valid)
 		pcb_layergrp_copper_cache_update(&pcb->LayerGroups);
 
-	if (proto->htop < pcb->LayerGroups.cache.copper_len)
-		topi = proto->htop;
-	else
-		topi = pcb->LayerGroups.cache.copper_len - 1;
+	if (proto->htop >= 0) {
+		/* positive: count from top copper down, bump at bottom */
+		if (proto->htop < pcb->LayerGroups.cache.copper_len)
+			topi = proto->htop;
+		else
+			topi = pcb->LayerGroups.cache.copper_len - 1;
+	}
+	else {
+		/* negative: count from bottom copper up, bump at top */
+		topi = pcb->LayerGroups.cache.copper_len - 1 - proto->htop;
+		if (topi < 0)
+			topi = 0;
+	}
 
-	if (proto->hbottom < pcb->LayerGroups.cache.copper_len-1)
-		boti = pcb->LayerGroups.cache.copper_len-1-proto->hbottom;
-	else
-		boti = 0;
+	if (proto->hbottom >= 0) {
+		/* positive: count from bottom copper up, bump at top */
+		if (proto->hbottom < pcb->LayerGroups.cache.copper_len-1)
+			boti = pcb->LayerGroups.cache.copper_len-1-proto->hbottom;
+		else
+			boti = 0;
+	}
+	else {
+		/* positive: count from top copper down, bump at bottom */
+		boti = -proto->hbottom;
+		if (boti > pcb->LayerGroups.cache.copper_len - 1)
+			boti = pcb->LayerGroups.cache.copper_len - 1;
+	}
 
 	if (boti <= topi) {
 		if (top != NULL) *top = -1;
