@@ -35,7 +35,6 @@ void *pcb_padstackop_add_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 
 void *pcb_padstackop_move_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
-	pcb_padstack_t *p;
 	pcb_cardinal_t npid;
 	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
 	if (proto == NULL)
