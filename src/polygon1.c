@@ -3412,10 +3412,6 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 			pcb_r_insert_entry(pa->contour_tree, (pcb_box_t *)pl, 0);
 		}
 	}
-
-	return pcb_true;
-
-
 }
 
 
