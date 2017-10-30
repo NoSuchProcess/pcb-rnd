@@ -115,7 +115,9 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb
 	return pcb_false;
 }
 
-/* returns the shape the padstack has on the given layer group */
+/* returns the shape the padstack has on the given layer group;
+   WARNING: does not respect the NOSHAPE thermal, should NOT be
+   called directly; use pcb_padstack_shape_*() instead. */
 static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape(pcb_padstack_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
@@ -163,5 +165,29 @@ static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_at(pcb_bo
 
 	return pcb_padstack_shape(ps, lyt, comb);
 }
+
+static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_gid(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t gid)
+{
+	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
+
+	if ((grp == NULL) || (grp->len < 1))
+		return NULL;
+
+	if (grp->type & PCB_LYT_COPPER) {
+		int n, nosh;
+			/* if all layers of the group says no-shape, don't have a shape */
+		for(n = 0, nosh = 0; n < grp->len; n++) {
+			pcb_layer_id_t lid = grp->lid[n];
+			if ((lid < ps->thermals.used) && (ps->thermals.shape[lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[lid] & 3) == PCB_THERMAL_NOSHAPE))
+				nosh++;
+		}
+		if (nosh == grp->len)
+			return NULL;
+	}
+
+	/* normal procedure: go by group flags */
+	return pcb_padstack_shape(ps, grp->type, 0);
+}
+
 
 #endif
