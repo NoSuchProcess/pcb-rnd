@@ -143,6 +143,13 @@ static pcb_padstack_t *pcb_padstack_copy_meta(pcb_padstack_t *dst, pcb_padstack_
 	if (dst == NULL)
 		return NULL;
 	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	dst->thermals.used = src->thermals.used;
+	if (dst->thermals.used > 0) {
+		dst->thermals.shape = malloc(dst->thermals.used * sizeof(dst->thermals.shape[0]));
+		memcpy(dst->thermals.shape, src->thermals.shape, src->thermals.used * sizeof(src->thermals.shape[0]));
+	}
+	else
+		dst->thermals.shape = 0;
 	return dst;
 }
 
