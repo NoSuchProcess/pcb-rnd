@@ -127,6 +127,13 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 		}
 	}
 
+	if (PCB_NONPOLY_HAS_CLEARANCE(ps)) {
+		ps->BoundingBox.X1 -= ps->Clearance;
+		ps->BoundingBox.Y1 -= ps->Clearance;
+		ps->BoundingBox.X2 += ps->Clearance;
+		ps->BoundingBox.Y2 += ps->Clearance;
+	}
+
 	if (proto->hdia != 0) {
 		/* corner case: no copper around the hole all 360 deg - let the hole stick out */
 		pcb_box_bump_point(&ps->BoundingBox, ps->x - proto->hdia/2, ps->y - proto->hdia/2);
