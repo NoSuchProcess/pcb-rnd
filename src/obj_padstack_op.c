@@ -29,7 +29,7 @@ void *pcb_padstackop_add_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 		return NULL;
 
 	npid = pcb_padstack_proto_insert_dup(ctx->buffer.dst, proto, 1);
-	p = pcb_padstack_new(ctx->buffer.dst, npid, ps->x, ps->y, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
+	p = pcb_padstack_new(ctx->buffer.dst, npid, ps->x, ps->y, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
 	return pcb_padstack_copy_meta(p, ps);
 }
 
@@ -73,7 +73,7 @@ void *pcb_padstackop_copy(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 		return NULL;
 	npid = pcb_padstack_proto_insert_dup(data, proto, 1);
 
-	nps = pcb_padstack_new(data, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND));
+	nps = pcb_padstack_new(data, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND));
 	if (nps == NULL)
 		return NULL;
 

@@ -26,6 +26,7 @@
 
 #include "action_helper.h"
 #include "board.h"
+#include "conf_core.h"
 #include "data.h"
 #include "hid_actions.h"
 
@@ -98,7 +99,7 @@ int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return -1;
 	}
 
-	ps = pcb_padstack_new(PCB->Data, pid, x, y, pcb_no_flags());
+	ps = pcb_padstack_new(PCB->Data, pid, x, y, conf_core.design.clearance, pcb_no_flags());
 	if (ps == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to place padstack\n");
 		return -1;

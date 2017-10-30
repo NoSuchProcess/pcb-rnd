@@ -63,7 +63,7 @@ void pcb_padstack_free(pcb_padstack_t *ps)
 	free(ps);
 }
 
-pcb_padstack_t *pcb_padstack_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_flag_t Flags)
+pcb_padstack_t *pcb_padstack_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags)
 {
 	pcb_padstack_t *ps;
 
@@ -76,6 +76,7 @@ pcb_padstack_t *pcb_padstack_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coo
 	ps->proto = proto;
 	ps->x = x;
 	ps->y = y;
+	ps->Clearance = clearance;
 	ps->Flags = Flags;
 	ps->ID = pcb_create_ID_get();
 	pcb_padstack_add(data, ps);

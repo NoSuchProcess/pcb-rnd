@@ -111,7 +111,7 @@ typedef struct pcb_padstack_proto_s {
 
 pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data);
 void pcb_padstack_free(pcb_padstack_t *ps);
-pcb_padstack_t *pcb_padstack_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_flag_t Flags);
+pcb_padstack_t *pcb_padstack_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags);
 void pcb_padstack_add(pcb_data_t *data, pcb_padstack_t *ps);
 void pcb_padstack_bbox(pcb_padstack_t *ps);
 
