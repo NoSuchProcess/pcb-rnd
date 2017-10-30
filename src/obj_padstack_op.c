@@ -20,6 +20,8 @@
  *
  */
 
+#include "polygon.h"
+
 void *pcb_padstackop_add_to_buffer(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 {
 	pcb_padstack_t *p;
