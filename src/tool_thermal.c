@@ -57,7 +57,7 @@ static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)
 {
 	unsigned char *th, newth = 0;
 	unsigned char cycle[] = {
-		PCB_THERMAL_ON | PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL,
+		PCB_THERMAL_ON | PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL, /* default start shape */
 		PCB_THERMAL_ON | PCB_THERMAL_ROUND,
 		PCB_THERMAL_ON | PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL,
 		PCB_THERMAL_ON | PCB_THERMAL_SHARP,
@@ -87,8 +87,12 @@ static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)
 
 		newth = cycle[curr];
 	}
-	else
-		newth = *th ^ PCB_THERMAL_ON;
+	else {
+		if ((th != NULL) && (*th != 0))
+			newth = *th ^ PCB_THERMAL_ON; /* existing thermal, toggle */
+		else
+			newth = cycle[0]; /* new thermal, use default */
+	}
 
 	pcb_chg_obj_thermal(PCB_TYPE_PADSTACK, ps, ps, ps, newth, lid);
 }
