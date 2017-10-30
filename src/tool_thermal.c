@@ -36,6 +36,20 @@
 #include "search.h"
 #include "tool.h"
 
+static void tool_thermal_on_pinvia(int type, void *ptr1, void *ptr2, void *ptr3)
+{
+	if (pcb_gui->shift_is_pressed()) {
+		int tstyle = PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3);
+		tstyle++;
+		if (tstyle > 5)
+			tstyle = 1;
+		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, tstyle);
+	}
+	else if (PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3))
+		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, 0);
+	else
+		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
+}
 
 void pcb_tool_thermal_notify_mode(void)
 {
@@ -44,17 +58,7 @@ void pcb_tool_thermal_notify_mode(void)
 
 	if (((type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
-		if (pcb_gui->shift_is_pressed()) {
-			int tstyle = PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3);
-			tstyle++;
-			if (tstyle > 5)
-				tstyle = 1;
-			pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, tstyle);
-		}
-		else if (PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3))
-			pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, 0);
-		else
-			pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
+		tool_thermal_on_pinvia(type, ptr1, ptr2, ptr3);
 	}
 }
 
