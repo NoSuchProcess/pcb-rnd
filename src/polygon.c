@@ -1827,6 +1827,8 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	pcb_box_t sb = ((pcb_pin_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
+	pcb_layer_id_t lid;
+	unsigned char *th;
 
 	info.type = type;
 	info.ptr1 = ptr1;
@@ -1859,6 +1861,32 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			PCB_END_LOOP;
 		}
 		break;
+	case PCB_TYPE_PADSTACK:
+		if (Data->parent_type != PCB_PARENT_BOARD)
+			return 0;
+		if (ptr1 == NULL) { /* no layer specified: run on all layers */
+			LAYER_LOOP(Data, pcb_max_layer);
+			{
+				if (!(pcb_layer_flags_(layer) & PCB_LYT_COPPER))
+					continue;
+				r += pcb_poly_plows(Data, type, layer, ptr2, call_back);
+			}
+			PCB_END_LOOP;
+			return r;
+		}
+
+		/* run on the specified layer (ptr1) */
+		if (((pcb_padstack_t *)ptr2)->Clearance == 0)
+			return 0;
+		lid = pcb_layer_id(Data, (pcb_layer_t *)ptr1);
+		if (lid == -1)
+			return 0;
+		th = pcb_padstack_get_thermal((pcb_padstack_t *)ptr2, lid, pcb_false);
+		if (th == NULL)
+			return 0;
+		if ((!(*th & PCB_THERMAL_ON)) /*|| ((*th & 3) == PCB_THERMAL_SOLID)*/)
+			return 0;
+		goto doit;
 	case PCB_TYPE_POLYGON:
 		if (!PCB_POLY_HAS_CLEARANCE((pcb_poly_t *) ptr2))
 			return 0;
