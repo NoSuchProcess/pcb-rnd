@@ -246,7 +246,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0)) {
 		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
 		pcb_draw_silk(PCB_LYT_INVISIBLE_SIDE(), drawn_area);
+
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
 		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, pcb_pad_draw_callback, &side, NULL);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
+
 		pcb_gui->end_layer();
 	}
 
