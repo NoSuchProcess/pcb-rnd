@@ -832,7 +832,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstac
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
 			if (shape->data.poly.pa == NULL)
-				pcb_padstack_shape_update_pline(&shape->data.poly);
+				pcb_padstack_shape_update_pa(&shape->data.poly);
 			return pcb_intersect_line_polyline(shape->data.poly.pa->contours, line->Point1.X - ps->x, line->Point1.Y - ps->y, line->Point2.X - ps->x, line->Point2.Y - ps->y, line->Thickness);
 		case PCB_PSSH_LINE:
 		{
@@ -874,7 +874,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack
 				tmp.BoundingBox.Y2 -= ps->y;
 
 				if (shape->data.poly.pa == NULL)
-					pcb_padstack_shape_update_pline(&shape->data.poly);
+					pcb_padstack_shape_update_pa(&shape->data.poly);
 
 				return pcb_is_arc_in_polyarea(&tmp, shape->data.poly.pa);
 			}

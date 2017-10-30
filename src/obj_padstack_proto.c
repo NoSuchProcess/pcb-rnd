@@ -328,7 +328,7 @@ pcb_cardinal_t pcb_padstack_conv_buffer(int quiet)
 }
 
 
-void pcb_padstack_shape_update_pline(pcb_padstack_poly_t *poly)
+void pcb_padstack_shape_update_pa(pcb_padstack_poly_t *poly)
 {
 	int n;
 	pcb_vector_t v;
