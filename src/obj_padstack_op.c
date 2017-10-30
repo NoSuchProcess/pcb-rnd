@@ -151,7 +151,7 @@ void *pcb_padstackop_change_thermal(pcb_opctx_t *ctx, pcb_padstack_t *ps)
 
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PADSTACK, ps, ps, ps, pcb_true);
 	pcb_poly_clear_from_poly(pcb->Data, PCB_TYPE_PADSTACK, layer, ps);
-	pcb_via_invalidate_draw(ps);
+	pcb_padstack_invalidate_draw(ps);
 	return ps;
 }
 
