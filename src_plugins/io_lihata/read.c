@@ -1196,6 +1196,10 @@ static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst
 	if (parse_int(&itmp, lht_dom_hash_get(nproto, "hplated")) != 0) return -1;
 	dst->hplated = itmp;
 	dst->in_use = 1;
+	if (subc_parent != NULL)
+		dst->parent = subc_parent;
+	else
+		dst->parent = pcb->Data;
 
 	/* read shapes */
 	nshape = lht_dom_hash_get(nproto, "shape");
