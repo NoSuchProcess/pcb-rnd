@@ -9,6 +9,7 @@ void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hi
 int ghid_attribute_dialog(GtkWidget *top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data);
 
 int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
+int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide);
 
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 

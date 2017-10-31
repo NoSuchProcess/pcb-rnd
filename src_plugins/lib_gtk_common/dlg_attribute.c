@@ -603,6 +603,20 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 	return 0;
 }
 
+int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
+		return -1;
+
+	if (hide)
+		gtk_widget_hide(ctx->wl[idx]);
+	else
+		gtk_widget_show(ctx->wl[idx]);
+
+	return 0;
+}
+
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
