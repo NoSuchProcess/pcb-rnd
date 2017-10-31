@@ -1281,3 +1281,19 @@ pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name)
 	PCB_END_LOOP;
 	return NULL;
 }
+
+pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID)
+{
+	pcb_box_t *sc;
+	pcb_rtree_it_t it;
+
+	for(sc = pcb_r_first(base->subc_tree, &it); sc != NULL; sc = pcb_r_next(&it)) {
+		if (((pcb_subc_t *)sc)->ID == ID) {
+			pcb_r_end(&it);
+			return (pcb_subc_t *)sc;
+		}
+	}
+
+	pcb_r_end(&it);
+	return NULL;
+}

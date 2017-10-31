@@ -84,6 +84,9 @@ int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot);
    NULL if not found */
 pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name);
 
+/* Search subc, "recursively", by ID */
+pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID);
+
 /*** loops ***/
 
 #define PCB_SUBC_LOOP(top) do {                                     \
