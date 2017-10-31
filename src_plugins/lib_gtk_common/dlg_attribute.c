@@ -491,7 +491,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 
 		case PCB_HATT_BUTTON:
-			abort();
+			gtk_button_set_label(GTK_BUTTON(ctx->wl[idx]), val->str_value);
 			break;
 	}
 
