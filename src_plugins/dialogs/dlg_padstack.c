@@ -20,6 +20,9 @@
  *
  */
 
+#include "obj_padstack.h"
+#include "obj_padstack_inlines.h"
+
 typedef struct pse_proto_layer_s {
 	const char *name;
 	pcb_layer_type_t mask;
@@ -38,11 +41,15 @@ static const pse_proto_layer_t pse_layer[] = {
 #define pse_num_layers (sizeof(pse_layer) / sizeof(pse_layer[0]))
 
 typedef struct pse_s {
+	pcb_padstack_t *ps;
+	int tab;
+
+	/* widget IDs */
 	int tab_instance, tab_prototype;
 	int but_instance, but_prototype;
+	int proto_id, clearance;
 	int proto_shape[pse_num_layers];
 	int proto_info[pse_num_layers];
-	int tab;
 } pse_t;
 
 static void pse_tab_update(void *hid_ctx, pse_t *pse)
@@ -66,7 +73,46 @@ static void pse_tab_update(void *hid_ctx, pse_t *pse)
 /* Convert from padstack to dialog */
 static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 {
+	char tmp[128];
+	int n;
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(pse->ps);
 
+	/* instance */
+	sprintf(tmp, "#%ld", (long int)pse->ps->proto);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str_value, tmp);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
+
+	/* proto */
+	for(n = 0; n < pse_num_layers; n++) {
+		pcb_padstack_shape_t *shape = pcb_padstack_shape(pse->ps, pse_layer[n].mask, pse_layer[n].comb);
+		if (shape != NULL) {
+			switch(shape->shape) {
+				case PCB_PSSH_CIRC:
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "circle");
+					pcb_snprintf(tmp, sizeof(tmp), "dia=$%mm at $%mm;$%mm", shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
+					break;
+				case PCB_PSSH_LINE:
+					if (shape->data.line.square)
+						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "square line");
+					else
+						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "round line");
+					pcb_snprintf(tmp, sizeof(tmp), "thickness=%mm", shape->data.line.thickness);
+					break;
+				case PCB_PSSH_POLY:
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "polygon");
+					pcb_snprintf(tmp, sizeof(tmp), "coners=%d", shape->data.poly.len);
+					break;
+				default:
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "<unknown>");
+					strcpy(tmp, "<unknown>");
+			}
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str_value, tmp);
+		}
+		else {
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "");
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str_value, "");
+		}
+	}
 }
 
 static void pse_tab_ps(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -84,15 +130,30 @@ static void pse_tab_proto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 }
 
 
-static const char pcb_acts_PadstackEdit[] = "PadstackEdit()\n";
+static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
 static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	int n;
 	pse_t pse;
 	PCB_DAD_DECL(dlg);
-	int n;
 
 	memset(&pse, 0, sizeof(pse));
+
+	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
+		void *ptr1, *ptr2 = NULL, *ptr3;
+		long type;
+		pcb_gui->get_coords("Click on a padstack to edit", &x, &y);
+		type = pcb_search_screen(x, y, PCB_TYPE_PADSTACK, &ptr1, &ptr2, &ptr3);
+		if (type != PCB_TYPE_PADSTACK) {
+			pcb_message(PCB_MSG_ERROR, "Need a padstack.\n");
+			return 1;
+		}
+		pse.ps = ptr2;
+	}
+	else
+		PCB_ACT_FAIL(PadstackEdit);
+
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_BEGIN_HBOX(dlg);
@@ -112,10 +173,12 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 				PCB_DAD_BEGIN_HBOX(dlg);
 					PCB_DAD_LABEL(dlg, "prototype");
 					PCB_DAD_BUTTON(dlg, "#5");
+						pse.proto_id = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_HBOX(dlg);
 					PCB_DAD_LABEL(dlg, "Clearance");
 					PCB_DAD_COORD(dlg, "");
+						pse.clearance = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, 1);
 						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 						PCB_DAD_DEFAULT(dlg, 3);
