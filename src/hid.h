@@ -450,6 +450,9 @@ struct hid_s {
 	/* Disable or enable a widget of an active attribute dialog */
 	int (*attr_dlg_widget_state)(void *hid_ctx, int idx, pcb_bool enabled);
 
+	/* hide or show a widget of an active attribute dialog */
+	int (*attr_dlg_widget_hide)(void *hid_ctx, int idx, pcb_bool hide);
+
 	/* Change the current value of a widget; same as if the user chaged it,
 	   except the value-changed callback is inhibited */
 	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
