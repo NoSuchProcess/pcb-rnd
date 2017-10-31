@@ -232,7 +232,7 @@ static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 {
 #warning padstack TODO: have an own color instead of subc_*
 	pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
-		conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+		conf_core.appearance.color.subc_selected : conf_core.appearance.color.padstackmark);
 }
 
 pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
