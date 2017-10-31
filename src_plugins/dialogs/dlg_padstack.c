@@ -41,6 +41,7 @@ static const pse_proto_layer_t pse_layer[] = {
 #define pse_num_layers (sizeof(pse_layer) / sizeof(pse_layer[0]))
 
 typedef struct pse_s {
+	pcb_hid_attribute_t *attrs;
 	pcb_board_t *pcb;
 	pcb_padstack_t *ps;
 	int tab;
@@ -187,6 +188,28 @@ static void pse_tab_proto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pse_tab_update(hid_ctx, pse);
 }
 
+static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	int hplated = 0;
+	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(pse->ps);
+	static int lock = 0;
+
+	if (lock != 0)
+		return;
+
+	if (proto != NULL) {
+		pcb_padstack_proto_change_hole(proto,
+			&hplated, &pse->attrs[pse->hdia].default_val.coord_value,
+			&pse->attrs[pse->htop_val].default_val.int_value,
+			&pse->attrs[pse->hbot_val].default_val.int_value);
+	}
+
+	lock++;
+	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
+	lock--;
+}
+
 
 static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
@@ -272,6 +295,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						pse.hdia = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, 1);
 						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 
@@ -280,6 +304,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						pse.htop_val = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
 						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 					PCB_DAD_LABEL(dlg, "<text>");
 						pse.htop_text = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "<layer>");
@@ -290,6 +315,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						pse.hbot_val = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
 						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 					PCB_DAD_LABEL(dlg, "<text>");
 						pse.hbot_text = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "<layer>");
@@ -299,8 +325,8 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
 
-
 	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", &pse);
+	pse.attrs = dlg;
 	pse_tab_update(dlg_hid_ctx, &pse);
 	pse_ps2dlg(dlg_hid_ctx, &pse);
 	PCB_DAD_RUN(dlg);
