@@ -37,13 +37,19 @@ typedef enum {
 } pcb_bb_type_t;
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
+static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto_(const pcb_data_t *data, pcb_cardinal_t proto)
+{
+	if (proto >= data->ps_protos.used)
+		return NULL;
+	if (data->ps_protos.array[proto].in_use == 0)
+		return NULL;
+	return data->ps_protos.array + proto;
+}
+
+/* return the padstack prototype for a padstack reference - returns NULL if not found */
 static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto(pcb_padstack_t *ps)
 {
-	if (ps->proto >= ps->parent.data->ps_protos.used)
-		return NULL;
-	if (ps->parent.data->ps_protos.array[ps->proto].in_use == 0)
-		return NULL;
-	return ps->parent.data->ps_protos.array + ps->proto;
+	return pcb_padstack_get_proto_(ps->parent.data, ps->proto);
 }
 
 /* return the type of drill and optionally fill in group IDs of drill ends ;
