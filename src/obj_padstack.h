@@ -154,6 +154,11 @@ void pcb_padstack_shape_update_pa(pcb_padstack_poly_t *poly);
    ID, else dup it and insert it. */
 pcb_cardinal_t pcb_padstack_proto_insert_dup(pcb_data_t *data, const pcb_padstack_proto_t *proto, int quiet);
 
+/* Change the non-NULL hole properties of a padstack proto; undoable.
+   Returns 0 on success. */
+int pcb_padstack_proto_change_hole(pcb_padstack_proto_t *proto, const int *hplated, const pcb_coord_t *hdia, const int *htop, const int *hbottom);
+
+
 /*** hash ***/
 unsigned int pcb_padstack_hash(const pcb_padstack_proto_t *p);
 int pcb_padstack_eq(const pcb_padstack_proto_t *p1, const pcb_padstack_proto_t *p2);

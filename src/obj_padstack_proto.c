@@ -30,6 +30,10 @@
 #include "data.h"
 #include "data_list.h"
 #include "obj_padstack.h"
+#include "obj_padstack_inlines.h"
+#include "undo.h"
+
+static const char core_proto_cookie[] = "padstack prototypes";
 
 unsigned long pcb_padstack_alloc_group(pcb_data_t *data)
 {
@@ -344,6 +348,92 @@ void pcb_padstack_shape_update_pa(pcb_padstack_poly_t *poly)
 
 	poly->pa = pcb_polyarea_create();
 	pcb_polyarea_contour_include(poly->pa, pl);
+}
+
+/*** Undoable hole change ***/
+
+typedef struct {
+	long int parent_ID; /* -1 for pcb, positive for a subc */
+	pcb_cardinal_t proto;
+
+	int hplated;
+	pcb_coord_t hdia;
+	int htop, hbottom;
+} padstack_proto_change_hole_t;
+
+#define swap(a,b,type) \
+	do { \
+		type tmp = a; \
+		a = b; \
+		b = tmp; \
+	} while(0)
+
+static int undo_change_hole_swap(void *udata)
+{
+	padstack_proto_change_hole_t *u = udata;
+	pcb_data_t *data;
+	pcb_padstack_proto_t *proto;
+
+	if (u->parent_ID != -1) {
+		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
+		if (subc == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: parent subc #%ld is not found\n", u->parent_ID);
+			return -1;
+		}
+		data = subc->data;
+	}
+	else
+		data = PCB->Data;
+
+	proto = pcb_padstack_get_proto_(data, u->proto);
+	if (proto == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: proto ID #%ld is not available\n", u->parent_ID);
+		return -1;
+	}
+
+	swap(proto->hplated, u->hplated, int);
+	swap(proto->hdia,    u->hdia,    pcb_coord_t);
+	swap(proto->htop,    u->htop,    int);
+	swap(proto->hbottom, u->hbottom, int);
+	return 0;
+}
+
+static void undo_change_hole_print(void *udata, char *dst, size_t dst_len)
+{
+	padstack_proto_change_hole_t *u = udata;
+	pcb_snprintf(dst, dst_len, "padstack proto hole change: plated=%d dia=$%mm top=%d bottom=%d\n", u->hplated, u->hdia, u->htop, u->hbottom);
+}
+
+static const uundo_oper_t undo_padstack_proto_change_hole = {
+	core_proto_cookie,
+	NULL, /* free */
+	undo_change_hole_swap,
+	undo_change_hole_swap,
+	undo_change_hole_print
+};
+
+int pcb_padstack_proto_change_hole(pcb_padstack_proto_t *proto, const int *hplated, const pcb_coord_t *hdia, const int *htop, const int *hbottom)
+{
+	padstack_proto_change_hole_t *u;
+	long int parent_ID;
+
+	switch(proto->parent->parent_type) {
+		case PCB_PARENT_BOARD: parent_ID = -1;
+		case PCB_PARENT_SUBC: parent_ID = proto->parent->parent.subc->ID;
+		default: return -1;
+	}
+
+	u = pcb_undo_alloc(PCB, &undo_padstack_proto_change_hole, sizeof(padstack_proto_change_hole_t));
+	u->parent_ID = parent_ID;
+	u->proto = pcb_padstack_get_proto_id(proto);
+	u->hplated = hplated ? *hplated : proto->hplated;
+	u->hdia = hdia ? *hdia : proto->hdia;
+	u->htop = htop ? *htop : proto->htop;
+	u->hbottom = hbottom ? *hbottom : proto->hbottom;
+	undo_change_hole_swap(u);
+
+	pcb_undo_inc_serial();
+	return 0;
 }
 
 /*** hash ***/
