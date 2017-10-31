@@ -34,6 +34,7 @@
 #include "dlg_test.c"
 #include "dlg_layer_binding.c"
 #include "dlg_flag_edit.c"
+#include "dlg_padstack.c"
 
 pcb_hid_action_t dialogs_action_list[] = {
 	{"dlg_test", 0, pcb_act_dlg_test,
@@ -41,7 +42,9 @@ pcb_hid_action_t dialogs_action_list[] = {
 	{"LayerBinding", 0, pcb_act_LayerBinding,
 	 pcb_acth_LayerBinding, pcb_acts_LayerBinding},
 	{"FlagEdit", 0, pcb_act_FlagEdit,
-	 pcb_acth_FlagEdit, pcb_acts_FlagEdit}
+	 pcb_acth_FlagEdit, pcb_acts_FlagEdit},
+	{"PadstackEdit", 0, pcb_act_PadstackEdit,
+	 pcb_acth_PadstackEdit, pcb_acts_PadstackEdit}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
