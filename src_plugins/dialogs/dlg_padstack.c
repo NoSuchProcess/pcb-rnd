@@ -31,14 +31,14 @@ static void pse_tab_update(void *hid_ctx, pse_t *pse)
 {
 	switch(pse->tab) {
 		case 0:
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_instance, pcb_true);
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_prototype, pcb_false);
+			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_instance, pcb_false);
+			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_prototype, pcb_true);
 			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_instance, pcb_false);
 			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_prototype, pcb_true);
 			break;
 		case 1:
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_instance, pcb_false);
-			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_prototype, pcb_true);
+			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_instance, pcb_true);
+			pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->tab_prototype, pcb_false);
 			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_instance, pcb_true);
 			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_prototype, pcb_false);
 			break;
@@ -81,25 +81,29 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 
 		/* this instance */
 		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-			pse.tab_instance = PCB_DAD_CURRENT(dlg);
-			PCB_DAD_BEGIN_HBOX(dlg);
-				PCB_DAD_LABEL(dlg, "prototype");
-				PCB_DAD_BUTTON(dlg, "#5");
-			PCB_DAD_END(dlg);
-			PCB_DAD_BEGIN_HBOX(dlg);
-				PCB_DAD_LABEL(dlg, "Clearance");
-				PCB_DAD_COORD(dlg, "");
-					PCB_DAD_MINVAL(dlg, 1);
-					PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-					PCB_DAD_DEFAULT(dlg, 3);
+		pse.tab_instance = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_BEGIN_VBOX(dlg);
+				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_LABEL(dlg, "prototype");
+					PCB_DAD_BUTTON(dlg, "#5");
+				PCB_DAD_END(dlg);
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_LABEL(dlg, "Clearance");
+					PCB_DAD_COORD(dlg, "");
+						PCB_DAD_MINVAL(dlg, 1);
+						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+						PCB_DAD_DEFAULT(dlg, 3);
+				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
 
 		/* prototype */
 		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 			pse.tab_prototype = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_BEGIN_VBOX(dlg);
+				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
 
