@@ -579,7 +579,6 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	pcb_uint8_t number;
 
 	number = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
-	pcb_box_rotate90(&Text->BoundingBox, X, Y, Number);
 	PCB_COORD_ROTATE90(Text->X, Text->Y, X, Y, Number);
 
 	/* set new direction, 0..3,
@@ -587,6 +586,9 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	 * 2-> to the left, 3-> straight down
 	 */
 	Text->Direction = ((Text->Direction + number) & 0x03);
+
+	/* can't optimize with box rotation because of closed boxes */
+	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 }
 
 /* rotates a text object and redraws it */

@@ -668,7 +668,9 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 		Arc->Width = Arc->Height;
 		Arc->Height = save;
 	}
-	pcb_box_rotate90(&Arc->BoundingBox, X, Y, Number);
+
+	/* can't optimize with box rotation due to closed boxes */
+	pcb_arc_bbox(Arc);
 }
 
 void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
