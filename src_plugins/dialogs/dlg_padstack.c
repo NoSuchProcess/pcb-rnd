@@ -41,6 +41,7 @@ static const pse_proto_layer_t pse_layer[] = {
 #define pse_num_layers (sizeof(pse_layer) / sizeof(pse_layer[0]))
 
 typedef struct pse_s {
+	pcb_board_t *pcb;
 	pcb_padstack_t *ps;
 	int tab;
 
@@ -50,6 +51,7 @@ typedef struct pse_s {
 	int proto_id, clearance;
 	int proto_shape[pse_num_layers];
 	int proto_info[pse_num_layers];
+	int hole_header;
 	int hdia;
 	int htop_val, htop_text, htop_layer;
 	int hbot_val, hbot_text, hbot_layer;
@@ -73,12 +75,36 @@ static void pse_tab_update(void *hid_ctx, pse_t *pse)
 	}
 }
 
+/* build a group/layer name string in tmp */
+char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int size)
+{
+	const char *lname = "", *gname = grp->name;
+	if (grp->len > 0) {
+		pcb_layer_t *l = pcb_get_layer(pcb->Data, grp->lid[0]);
+		if (l != NULL)
+			lname = l->name;
+	}
+
+	if (gname == NULL)
+		gname = "";
+
+	pcb_snprintf(out, size, "%s\n[%s]", gname, lname);
+	return out;
+}
+
 /* Convert from padstack to dialog */
 static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 {
-	char tmp[128];
+	char tmp[256], *s;
 	int n;
-	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(pse->ps);
+	pcb_padstack_proto_t *proto;
+	pcb_layergrp_id_t top_gid, bottom_gid;
+	pcb_layergrp_t *top_grp, *bottom_grp;
+	pcb_bb_type_t htype;
+
+	htype = pcb_padstack_bbspan(pse->pcb, pse->ps, &top_gid, &bottom_gid, &proto);
+	top_grp = pcb_get_layergrp(pse->pcb, top_gid);
+	bottom_grp = pcb_get_layergrp(pse->pcb, bottom_gid);
 
 	/* instance */
 	sprintf(tmp, "#%ld", (long int)pse->ps->proto);
@@ -117,7 +143,16 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 		}
 	}
 
-	/* proto - holes */
+	/* proto - hole */
+	s = "Hole geometry (<unknown>):";
+	switch(htype) {
+		case PCB_BB_NONE: s = "Hole geometry (there is no hole in this padstack):"; break;
+		case PCB_BB_THRU: s = "Hole geometry (all-way-through hole):"; break;
+		case PCB_BB_BB: s = "Hole geometry (blind and/or buried hole):"; break;
+		case PCB_BB_INVALID: s = "Hole geometry (INVALID HOLE):"; break;
+	}
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str_value, s);
+
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, coord_value, proto->hdia);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, int_value, proto->htop);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_val, int_value, proto->hbottom);
@@ -127,12 +162,14 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	else
 		sprintf(tmp, "%d groups from\nthe %s copper group", proto->htop, proto->htop > 0 ? "top" : "bottom");
 	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_text, str_value, tmp);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_layer, str_value, pse_group_string(pse->pcb, top_grp, tmp, sizeof(tmp)));
 
 	if (proto->hbottom == 0)
 		strcpy(tmp, "bottom copper group");
 	else
 		sprintf(tmp, "%d groups from\nthe %s copper group", proto->hbottom, proto->hbottom > 0 ? "bottom" : "top");
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_text, str_value, tmp);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_layer, str_value, pse_group_string(pse->pcb, bottom_grp, tmp, sizeof(tmp)));
 
 }
 
@@ -157,7 +194,6 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 {
 	int n;
 	pse_t pse;
-	pcb_board_t *pcb;
 	PCB_DAD_DECL(dlg);
 
 	memset(&pse, 0, sizeof(pse));
@@ -176,9 +212,9 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 	else
 		PCB_ACT_FAIL(PadstackEdit);
 
-	pcb = pcb_data_get_top(pse.ps->parent.data);
-	if (pcb == NULL)
-		pcb = PCB;
+	pse.pcb = pcb_data_get_top(pse.ps->parent.data);
+	if (pse.pcb == NULL)
+		pse.pcb = PCB;
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_BEGIN_HBOX(dlg);
@@ -228,9 +264,9 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 				PCB_DAD_END(dlg);
 			
 				PCB_DAD_LABEL(dlg, "Hole geometry:");
+					pse.hole_header = PCB_DAD_CURRENT(dlg);
 
 				PCB_DAD_BEGIN_TABLE(dlg, 4);
-
 				PCB_DAD_LABEL(dlg, "diameter:");
 				PCB_DAD_COORD(dlg, "");
 					pse.hdia = PCB_DAD_CURRENT(dlg);
@@ -242,8 +278,8 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 				PCB_DAD_LABEL(dlg, "Hole top:");
 				PCB_DAD_INTEGER(dlg, "");
 					pse.htop_val = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_MINVAL(dlg, -(pcb->LayerGroups.cache.copper_len-1));
-					PCB_DAD_MAXVAL(dlg, pcb->LayerGroups.cache.copper_len-1);
+					PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
+					PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
 				PCB_DAD_LABEL(dlg, "<text>");
 					pse.htop_text = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_LABEL(dlg, "<layer>");
@@ -252,8 +288,8 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 				PCB_DAD_LABEL(dlg, "Hole bottom:");
 				PCB_DAD_INTEGER(dlg, "");
 					pse.hbot_val = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_MINVAL(dlg, -(pcb->LayerGroups.cache.copper_len-1));
-					PCB_DAD_MAXVAL(dlg, pcb->LayerGroups.cache.copper_len-1);
+					PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
+					PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
 				PCB_DAD_LABEL(dlg, "<text>");
 					pse.hbot_text = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_LABEL(dlg, "<layer>");
