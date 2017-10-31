@@ -267,34 +267,34 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 					pse.hole_header = PCB_DAD_CURRENT(dlg);
 
 				PCB_DAD_BEGIN_TABLE(dlg, 4);
-				PCB_DAD_LABEL(dlg, "diameter:");
-				PCB_DAD_COORD(dlg, "");
-					pse.hdia = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_MINVAL(dlg, 1);
-					PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-				PCB_DAD_LABEL(dlg, ""); /* dummy */
-				PCB_DAD_LABEL(dlg, ""); /* dummy */
+					PCB_DAD_LABEL(dlg, "diameter:");
+					PCB_DAD_COORD(dlg, "");
+						pse.hdia = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_MINVAL(dlg, 1);
+						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+					PCB_DAD_LABEL(dlg, ""); /* dummy */
+					PCB_DAD_LABEL(dlg, ""); /* dummy */
 
-				PCB_DAD_LABEL(dlg, "Hole top:");
-				PCB_DAD_INTEGER(dlg, "");
-					pse.htop_val = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
-					PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
-				PCB_DAD_LABEL(dlg, "<text>");
-					pse.htop_text = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_LABEL(dlg, "<layer>");
-					pse.htop_layer = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_LABEL(dlg, "Hole top:");
+					PCB_DAD_INTEGER(dlg, "");
+						pse.htop_val = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
+						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
+					PCB_DAD_LABEL(dlg, "<text>");
+						pse.htop_text = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_LABEL(dlg, "<layer>");
+						pse.htop_layer = PCB_DAD_CURRENT(dlg);
 
-				PCB_DAD_LABEL(dlg, "Hole bottom:");
-				PCB_DAD_INTEGER(dlg, "");
-					pse.hbot_val = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
-					PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
-				PCB_DAD_LABEL(dlg, "<text>");
-					pse.hbot_text = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_LABEL(dlg, "<layer>");
-					pse.hbot_layer = PCB_DAD_CURRENT(dlg);
-
+					PCB_DAD_LABEL(dlg, "Hole bottom:");
+					PCB_DAD_INTEGER(dlg, "");
+						pse.hbot_val = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
+						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
+					PCB_DAD_LABEL(dlg, "<text>");
+						pse.hbot_text = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_LABEL(dlg, "<layer>");
+						pse.hbot_layer = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
