@@ -228,7 +228,12 @@ static void set_ps_color(pcb_padstack_t *ps, int is_current)
 	pcb_gui->set_color(Output.fgGC, color);
 }
 
-
+static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_padstack_t *ps)
+{
+#warning padstack TODO: have an own color instead of subc_*
+	pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
+		conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+}
 
 pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 {
@@ -257,8 +262,7 @@ pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 		}
 	}
 
-#warning padstack TODO: have an own color instead of subc_*
-	pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+	set_ps_annot_color(Output.fgGC, ps);
 	pcb_gui->set_line_width(Output.fgGC, 0);
 	pcb_gui->set_draw_xor(Output.fgGC, 1);
 	pcb_gui->draw_line(Output.fgGC, ps->x-PS_CROSS_SIZE/2, ps->y, ps->x+PS_CROSS_SIZE/2, ps->y);
