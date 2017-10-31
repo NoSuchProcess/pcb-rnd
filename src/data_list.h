@@ -26,8 +26,12 @@
 #include <genvector/vtp0.h>
 #include "data.h"
 
-/* append objects or type, with flags matching mask to dst; pointer are
+/* append objects of type, with flags matching mask to dst; pointer are
    valid only until the first change to data */
 void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, unsigned long mask);
+
+/* append objects of type that are terminals; pointer are
+   valid only until the first change to data */
+void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type);
 
 #endif

@@ -524,6 +524,28 @@ void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, un
 	} PCB_ENDALL_LOOP;
 }
 
+void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type)
+{
+	if (type & PCB_OBJ_VIA) PCB_VIA_LOOP(data); {
+		if (via->term != NULL) vtp0_append(dst, via);
+	} PCB_END_LOOP;
+/*	if (type & PCB_OBJ_SUBC) PCB_SUBC_LOOP(data); {
+		if (subc->term != NULL) vtp0_append(dst, subc);
+	} PCB_END_LOOP;*/
+	if (type & PCB_OBJ_LINE) PCB_LINE_ALL_LOOP(data); {
+		if ((line->term != NULL)) vtp0_append(dst, line);
+	} PCB_ENDALL_LOOP;
+	if (type & PCB_OBJ_ARC) PCB_ARC_ALL_LOOP(data); {
+		if (arc->term != NULL) vtp0_append(dst, arc);
+	} PCB_ENDALL_LOOP;
+	if (type & PCB_OBJ_TEXT) PCB_TEXT_ALL_LOOP(data); {
+		if (text->term != NULL) vtp0_append(dst, text);
+	} PCB_ENDALL_LOOP;
+	if (type & PCB_OBJ_POLYGON) PCB_POLY_ALL_LOOP(data); {
+		if (polygon->term != NULL) vtp0_append(dst, polygon);
+	} PCB_ENDALL_LOOP;
+}
+
 #define rsearch(tree) \
 	do { \
 		pcb_r_dir_t tmp = pcb_r_search(tree, starting_region, region_in_search, rectangle_in_region, closure, num_found); \
