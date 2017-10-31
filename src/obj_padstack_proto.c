@@ -401,7 +401,7 @@ static int undo_change_hole_swap(void *udata)
 static void undo_change_hole_print(void *udata, char *dst, size_t dst_len)
 {
 	padstack_proto_change_hole_t *u = udata;
-	pcb_snprintf(dst, dst_len, "padstack proto hole change: plated=%d dia=$%mm top=%d bottom=%d\n", u->hplated, u->hdia, u->htop, u->hbottom);
+	pcb_snprintf(dst, dst_len, "padstack proto hole change: plated=%d dia=%$mm top=%d bottom=%d\n", u->hplated, u->hdia, u->htop, u->hbottom);
 }
 
 static const uundo_oper_t undo_padstack_proto_change_hole = {
