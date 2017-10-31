@@ -330,15 +330,14 @@ void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 	}
 }
 
-#warning padstack TODO: implement these
 void pcb_padstack_invalidate_erase(pcb_padstack_t *ps)
 {
-
+	pcb_draw_invalidate(ps);
 }
 
 void pcb_padstack_invalidate_draw(pcb_padstack_t *ps)
 {
-
+	pcb_draw_invalidate(ps);
 }
 
 
