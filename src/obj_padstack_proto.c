@@ -418,8 +418,8 @@ int pcb_padstack_proto_change_hole(pcb_padstack_proto_t *proto, const int *hplat
 	long int parent_ID;
 
 	switch(proto->parent->parent_type) {
-		case PCB_PARENT_BOARD: parent_ID = -1;
-		case PCB_PARENT_SUBC: parent_ID = proto->parent->parent.subc->ID;
+		case PCB_PARENT_BOARD: parent_ID = -1; break;
+		case PCB_PARENT_SUBC: parent_ID = proto->parent->parent.subc->ID; break;
 		default: return -1;
 	}
 
