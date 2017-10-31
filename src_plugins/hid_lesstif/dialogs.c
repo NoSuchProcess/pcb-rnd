@@ -908,7 +908,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str_value), NULL);
 			break;
 		case PCB_HATT_LABEL:
-			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStrCast(val->str_value), NULL);
+			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str_value), NULL);
 			break;
 		case PCB_HATT_BOOL:
 			XtVaSetValues(ctx->wl[idx], XmNset, val->int_value, NULL);
