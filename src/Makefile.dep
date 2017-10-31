@@ -247,7 +247,8 @@
  ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h obj_subc.h \
  search.h rats.h netlist.h route_style.h \
  ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h change.h \
- ../src_plugins/dialogs/dlg_padstack.c dolists.h
+ ../src_plugins/dialogs/dlg_padstack.c obj_padstack.h \
+ obj_padstack_inlines.h thermal.h dolists.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
