@@ -20,14 +20,43 @@
  *
  */
 
+typedef struct pse_s {
+	int tab_instance, tab_prototype;
+	int but_instance, but_prototype;
+
+	int tab;
+} pse_t;
+
+static void pse_tab_update(void *hid_ctx, pse_t *pse)
+{
+	switch(pse->tab) {
+		case 0:
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_instance, pcb_true);
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_prototype, pcb_false);
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_instance, pcb_false);
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_prototype, pcb_true);
+			break;
+		case 1:
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_instance, pcb_false);
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->tab_prototype, pcb_true);
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_instance, pcb_true);
+			pcb_gui->attr_dlg_widget_state(hid_ctx, pse->but_prototype, pcb_false);
+			break;
+	}
+}
+
 static void pse_tab_ps(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-
+	pse_t *pse = caller_data;
+	pse->tab = 0;
+	pse_tab_update(hid_ctx, pse);
 }
 
 static void pse_tab_proto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-
+	pse_t *pse = caller_data;
+	pse->tab = 1;
+	pse_tab_update(hid_ctx, pse);
 }
 
 
@@ -35,18 +64,25 @@ static const char pcb_acts_PadstackEdit[] = "PadstackEdit()\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
 static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	pse_t pse;
 	PCB_DAD_DECL(dlg);
+
+	memset(&pse, 0, sizeof(pse));
+
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "this instance");
+				pse.but_instance = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_CHANGE_CB(dlg, pse_tab_ps);
 			PCB_DAD_BUTTON(dlg, "prototype");
+				pse.but_prototype = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_CHANGE_CB(dlg, pse_tab_proto);
 		PCB_DAD_END(dlg);
 
 		/* this instance */
 		PCB_DAD_BEGIN_VBOX(dlg);
 			PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+			pse.tab_instance = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_BEGIN_HBOX(dlg);
 				PCB_DAD_LABEL(dlg, "prototype");
 				PCB_DAD_BUTTON(dlg, "#5");
@@ -60,9 +96,17 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
 
+		/* prototype */
+		PCB_DAD_BEGIN_VBOX(dlg);
+			PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+			pse.tab_prototype = PCB_DAD_CURRENT(dlg);
+		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
 
-	PCB_DAD_AUTORUN(dlg, "dlg_padstack_edit", "Edit padstack", NULL);
+
+	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", &pse);
+	pse_tab_update(dlg_hid_ctx, &pse);
+	PCB_DAD_RUN(dlg);
 
 	PCB_DAD_FREE(dlg);
 	return 0;
