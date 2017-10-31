@@ -762,12 +762,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		case PCB_HATT_BEGIN_HBOX:
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
+			ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_VBOX:
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
+			ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
@@ -777,6 +779,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			len = pcb_hid_atrdlg_num_children(ctx->attrs, i+1, ctx->n_attrs);
 			numch = len  / numcol + !!(len % numcol);
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
+
+			ctx->wl[i] = w;
 
 			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			while((len % numcol) != 0) {
@@ -1037,6 +1041,21 @@ int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 		return -1;
 
 	XtSetSensitive(ctx->wl[idx], enabled);
+	return 0;
+}
+
+int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
+		return -1;
+
+	if (hide)
+		XtUnmanageChild(ctx->wl[idx]);
+	else
+		XtManageChild(ctx->wl[idx]);
+
 	return 0;
 }
 
