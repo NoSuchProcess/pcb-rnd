@@ -526,6 +526,7 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 	switch(obj->type) {
 		case PCB_OBJ_RAT:
 		case PCB_OBJ_LINE: return PCB_LINE_NEAR_BOX((pcb_line_t *)obj, box);
+		case PCB_OBJ_ETEXT:
 		case PCB_OBJ_TEXT: return PCB_TEXT_NEAR_BOX((pcb_text_t *)obj, box);
 		case PCB_OBJ_POLYGON: return PCB_POLYGON_NEAR_BOX((pcb_poly_t *)obj, box);
 		case PCB_OBJ_ARC:  return PCB_ARC_NEAR_BOX((pcb_arc_t *)obj, box);
