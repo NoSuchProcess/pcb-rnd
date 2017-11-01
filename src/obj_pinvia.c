@@ -970,6 +970,9 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 				color = buf;
 			}
 		}
+		else if (Pin->override_color[0] == '#') {
+			color = (Pin->override_color);
+		}
 		else
 			color = conf_core.appearance.color.via;
 	}
@@ -988,6 +991,9 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 				pcb_lighten_color(color, buf, 1.75);
 				color = buf;
 			}
+		}
+		else if (Pin->override_color[0] == '#') {
+			color = (Pin->override_color);
 		}
 		else
 			color = conf_core.appearance.color.pin;
