@@ -1275,7 +1275,7 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), white->c);
 
 			gdImagePaletteCopy(erase_im, im);
-			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), white->c);
+			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(erase_im), gdImageSY(erase_im), white->c);
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
@@ -1294,7 +1294,7 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 				for (y = 0; y < gdImageSY(im); y++) {
 					e = gdImageGetPixel(erase_im, x, y);
 					c = gdImageGetPixel(comp_im, x, y);
-					if ((!e) && (c))
+					if ((e == white->c) && (c))
 						gdImageSetPixel(im, x, y, c);
 				}
 			}
@@ -1364,9 +1364,22 @@ static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 	;
 }
 
-static void use_gc(pcb_hid_gc_t gc)
+static int unerase_override = 0;
+static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 {
 	int need_brush = 0;
+	unsigned int gc_r = gc->color->r, gc_g = gc->color->g, gc_b = gc->color->b;
+
+	if (unerase_override) {
+		gc_r = -1;
+		gc_g = -1;
+		gc_b = -1;
+	}
+	else {
+		gc_r = gc->color->r;
+		gc_g = gc->color->g;
+		gc_b = gc->color->b;
+	}
 
 	if (gc->me_pointer != &png_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to png HID\n");
@@ -1383,7 +1396,7 @@ static void use_gc(pcb_hid_gc_t gc)
 		need_brush = 1;
 	}
 
-	need_brush |= (gc->color->r != last_color_r) || (gc->color->g != last_color_g) || (gc->color->b != last_color_b) || (gc->cap != last_cap);
+	need_brush |= (gc_r != last_color_r) || (gc_g != last_color_g) || (gc_b != last_color_b) || (gc->cap != last_cap);
 
 	if (lastbrush != gc->brush || need_brush) {
 		pcb_hidval_t bval;
@@ -1411,11 +1424,11 @@ static void use_gc(pcb_hid_gc_t gc)
 			r = 1;
 		}
 
-		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g, gc->color->b, type, r);
+		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc_r, gc_g, gc_b, type, r);
 
-		last_color_r = gc->color->r;
-		last_color_g = gc->color->g;
-		last_color_b = gc->color->b;
+		last_color_r = gc_r;
+		last_color_g = gc_g;
+		last_color_b = gc_b;
 		last_cap = gc->cap;
 
 		if (pcb_hid_cache_color(0, name, &bval, &brush_cache)) {
@@ -1434,7 +1447,10 @@ static void use_gc(pcb_hid_gc_t gc)
 				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
-			fg = gdImageColorAllocateAlpha(gc->brush, gc->color->r, gc->color->g, gc->color->b, 0);
+			if (unerase_override)
+				fg = gdImageColorAllocateAlpha(gc->brush, 255, 255, 255, 0);
+			else
+				fg = gdImageColorAllocateAlpha(gc->brush, gc_r, gc_g, gc_b, 0);
 			if (fg == BADC) {
 				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
@@ -1469,15 +1485,25 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void png_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_draw_rect_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	use_gc(gc);
-	gdImageRectangle(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gc->color->c);
+	use_gc(im, gc);
+	gdImageRectangle(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), unerase_override ? white->c : gc->color->c);
 }
 
-static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	use_gc(gc);
+	png_draw_rect_(im, gc, x1, y1, x2, y2);
+	if ((im != erase_im) && (erase_im != NULL)) {
+		unerase_override = 1;
+		png_draw_rect_(erase_im, gc, x1, y1, x2, y2);
+		unerase_override = 0;
+	}
+}
+
+static void png_fill_rect_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	use_gc(im, gc);
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 
@@ -1495,11 +1521,22 @@ static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	y2 += bloat;
 	SWAP_IF_SOLDER(y1, y2);
 
-	gdImageFilledRectangle(im, SCALE_X(x1 - bloat), SCALE_Y(y1), SCALE_X(x2 + bloat) - 1, SCALE_Y(y2) - 1, gc->color->c);
+	gdImageFilledRectangle(im, SCALE_X(x1 - bloat), SCALE_Y(y1), SCALE_X(x2 + bloat) - 1, SCALE_Y(y2) - 1, unerase_override ? white->c : gc->color->c);
 	have_outline |= doing_outline;
 }
 
-static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	png_fill_rect_(im, gc, x1, y1, x2, y2);
+	if ((im != erase_im) && (erase_im != NULL)) {
+		unerase_override = 1;
+		png_fill_rect_(erase_im, gc, x1, y1, x2, y2);
+		unerase_override = 0;
+	}
+}
+
+
+static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	if (x1 == x2 && y1 == y2) {
 		pcb_coord_t w = gc->width / 2;
@@ -1509,7 +1546,7 @@ static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 			png_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		return;
 	}
-	use_gc(gc);
+	use_gc(im, gc);
 
 	if (NOT_EDGE(x1, y1) || NOT_EDGE(x2, y2))
 		have_outline |= doing_outline;
@@ -1538,10 +1575,14 @@ static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 		 * not purely horizontal or vertical, then we need to draw
 		 * it as a filled polygon.
 		 */
-		int fg = gdImageColorResolve(im, gc->color->r, gc->color->g,
-																 gc->color->b), w = gc->width, dx = x2 - x1, dy = y2 - y1, dwx, dwy;
+		int fg, w = gc->width, dx = x2 - x1, dy = y2 - y1, dwx, dwy;
 		gdPoint p[4];
 		double l = sqrt((double)dx * (double)dx + (double)dy * (double)dy) * 2.0;
+
+		if (unerase_override)
+			fg = gdImageColorResolve(im, 255, 255, 255);
+		else
+			fg = gdImageColorResolve(im, gc->color->r, gc->color->g, gc->color->b);
 
 		w += 2 * bloat;
 		dwx = -w / l * dy;
@@ -1558,11 +1599,22 @@ static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	}
 }
 
-static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	png_draw_line_(im, gc, x1, y1, x2, y2);
+	if ((im != erase_im) && (erase_im != NULL)) {
+		unerase_override = 1;
+		png_draw_line_(erase_im, gc, x1, y1, x2, y2);
+		unerase_override = 0;
+	}
+}
+
+
+static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 
-	use_gc(gc);
+	use_gc(im, gc);
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 
@@ -1622,11 +1674,22 @@ static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
+static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+{
+	png_draw_arc_(im, gc, cx, cy, width, height, start_angle, delta_angle);
+	if ((im != erase_im) && (erase_im != NULL)) {
+		unerase_override = 1;
+		png_draw_arc_(erase_im, gc, cx, cy, width, height, start_angle, delta_angle);
+		unerase_override = 0;
+	}
+}
+
+
 static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	pcb_coord_t my_bloat;
 
-	use_gc(gc);
+	use_gc(im, gc);
 
 	if (gc->is_erase)
 		my_bloat = -2 * bloat;
@@ -1637,10 +1700,10 @@ static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
-	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), gc->color->c);
+	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? white->c : gc->color->c);
 }
 
-static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void png_fill_polygon_offs_(gdImagePtr im, pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	gdPoint *points;
@@ -1651,7 +1714,7 @@ static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 		exit(1);
 	}
 
-	use_gc(gc);
+	use_gc(im, gc);
 	for (i = 0; i < n_coords; i++) {
 		if (NOT_EDGE(x[i], y[i]))
 			have_outline |= doing_outline;
@@ -1660,9 +1723,20 @@ static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 	}
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
-	gdImageFilledPolygon(im, points, n_coords, gc->color->c);
+	gdImageFilledPolygon(im, points, n_coords, unerase_override ? white->c : gc->color->c);
 	free(points);
 }
+
+static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+{
+	png_fill_polygon_offs_(im, gc, n_coords, x, y, dx, dy);
+	if ((im != erase_im) && (erase_im != NULL)) {
+		unerase_override = 1;
+		png_fill_polygon_offs_(erase_im, gc, n_coords, x, y, dx, dy);
+		unerase_override = 0;
+	}
+}
+
 
 static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
 {
