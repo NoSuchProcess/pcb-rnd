@@ -251,6 +251,11 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
 int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp);
 
 
+/* set up dst to be a bound layer with the right offset in the stack; src_pcb
+   is used for the layer stack of src. Assumes other fields of dst, e.g. name,
+   are all set up. */
+void pcb_layer_real2bound_offs(pcb_layer_t *dst, pcb_board_t *src_pcb, pcb_layer_t *src);
+
 /* Set up dst so that it's a non-real layer bound to src */
 void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees);
 

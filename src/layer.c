@@ -637,35 +637,20 @@ void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 	dst->polygon_tree = src->polygon_tree;
 }
 
-void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
+
+void pcb_layer_real2bound_offs(pcb_layer_t *dst, pcb_board_t *src_pcb, pcb_layer_t *src)
 {
-	pcb_board_t *pcb;
-
-	assert(!src->is_bound);
-
-	pcb = pcb_layer_get_top(src);
-	dst->comb = src->comb;
+	dst->meta.bound.real = NULL;
 	dst->is_bound = 1;
-
-	if (!src->is_bound) {
-		dst->meta.bound.real = src;
-		if (share_rtrees)
-			pcb_layer_link_trees(dst, src);
-	}
-	else
-		dst->meta.bound.real = NULL;
-
-	dst->meta.bound.type = pcb_layergrp_flags(pcb, src->meta.real.grp);
-	if (src->name != NULL)
-		dst->name = pcb_strdup(src->name);
-	else
-		dst->name = NULL;
-
 	if ((dst->meta.bound.type & PCB_LYT_INTERN) && (dst->meta.bound.type & PCB_LYT_COPPER)) {
 		int from_top, from_bottom, res;
-		
-		res = pcb_layergrp_dist(pcb, src->meta.real.grp, pcb_layergrp_get_top_copper(), PCB_LYT_COPPER, &from_top);
-		res |= pcb_layergrp_dist(pcb, src->meta.real.grp, pcb_layergrp_get_bottom_copper(), PCB_LYT_COPPER, &from_bottom);
+		pcb_layergrp_t *tcop = pcb_get_grp(&src_pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
+		pcb_layergrp_t *bcop = pcb_get_grp(&src_pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
+		pcb_layergrp_id_t tcop_id = pcb_layergrp_id(src_pcb, tcop);
+		pcb_layergrp_id_t bcop_id = pcb_layergrp_id(src_pcb, bcop);
+
+		res = pcb_layergrp_dist(src_pcb, src->meta.real.grp, tcop_id, PCB_LYT_COPPER, &from_top);
+		res |= pcb_layergrp_dist(src_pcb, src->meta.real.grp, bcop_id, PCB_LYT_COPPER, &from_bottom);
 		if (res == 0) {
 			if (from_top <= from_bottom)
 				dst->meta.bound.stack_offs = from_top;
@@ -677,6 +662,30 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 	}
 	else
 		dst->meta.bound.stack_offs = 0;
+}
+
+void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
+{
+	pcb_board_t *pcb;
+
+	assert(!src->is_bound);
+
+	pcb = pcb_layer_get_top(src);
+	dst->comb = src->comb;
+
+	dst->meta.bound.type = pcb_layergrp_flags(pcb, src->meta.real.grp);
+	if (src->name != NULL)
+		dst->name = pcb_strdup(src->name);
+	else
+		dst->name = NULL;
+
+	pcb_layer_real2bound_offs(dst, pcb, src);
+
+	if (!src->is_bound) {
+		dst->meta.bound.real = src;
+		if (share_rtrees)
+			pcb_layer_link_trees(dst, src);
+	}
 }
 
 pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
