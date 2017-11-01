@@ -1029,6 +1029,9 @@ static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_g
 		else
 			color = conf_core.appearance.color.connected;
 	}
+	else if (PCB_HAS_COLOROVERRIDE(line)) {
+		color = (line->override_color);
+	}
 	else
 		color = layer->meta.real.color;
 
