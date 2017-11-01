@@ -1256,6 +1256,8 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 		return;
 	switch(op) {
 		case PCB_HID_COMP_RESET:
+
+			/* the main pixel buffer; drawn with color */
 			if (comp_im == NULL) {
 				comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 				if (!comp_im) {
@@ -1263,6 +1265,10 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 					return;
 				}
 			}
+
+			/* erase mask: for composite layers, tells whether the color pixel
+			   should be combined back to the master image; white means combine back,
+			   anything else means cut-out/forget/ignore that pixel */
 			if (erase_im == NULL) {
 				erase_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 				if (!erase_im) {
