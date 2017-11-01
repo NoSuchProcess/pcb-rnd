@@ -1281,7 +1281,7 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), white->c);
 
 			gdImagePaletteCopy(erase_im, im);
-			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(erase_im), gdImageSY(erase_im), white->c);
+			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(erase_im), gdImageSY(erase_im), black->c);
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
