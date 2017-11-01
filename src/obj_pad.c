@@ -497,6 +497,9 @@ void pcb_pad_draw(pcb_pad_t * pad)
 		else
 			color = conf_core.appearance.color.connected;
 	}
+	else if (PCB_HAS_COLOROVERRIDE(pad)) {
+		color = pad->override_color;
+	}
 	else if (PCB_FRONT(pad))
 		color = conf_core.appearance.color.pin;
 	else
