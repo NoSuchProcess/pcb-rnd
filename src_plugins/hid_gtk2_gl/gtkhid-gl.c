@@ -479,7 +479,7 @@ void ghid_gl_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 void ghid_gl_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	gc->width = width;
+	gc->width = width < 0 ? (-width) * gport->view.coord_per_px : width;
 }
 
 
