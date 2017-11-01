@@ -317,8 +317,9 @@ static int pcb_act_forcecolor(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 	pcb_gui->get_coords("Click on object to change", &x, &y);
 
-	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, strlen("#RRGGBB"));
+	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE){
+		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);
+	}
 	return 0;
 }
 
