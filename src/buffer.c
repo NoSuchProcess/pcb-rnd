@@ -251,9 +251,10 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		newPCB->Data = NULL;
 		Buffer->X = newPCB->CursorX;
 		Buffer->Y = newPCB->CursorY;
-		pcb_board_remove(newPCB);
 		PCB_CLEAR_PARENT(Buffer->Data);
-		pcb_data_bind_board_layers(pcb, Buffer->Data, 0);
+		pcb_data_make_layers_bound(newPCB, Buffer->Data);
+		pcb_data_binding_update(pcb, Buffer->Data);
+		pcb_board_remove(newPCB);
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 		return (pcb_true);
 	}
