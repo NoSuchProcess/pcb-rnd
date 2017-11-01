@@ -269,7 +269,7 @@ pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl)
 		mark += proto->hdia/2;
 
 	set_ps_annot_color(Output.fgGC, ps);
-	pcb_gui->set_line_width(Output.fgGC, 0);
+	pcb_gui->set_line_width(Output.fgGC, -3);
 	pcb_gui->set_draw_xor(Output.fgGC, 1);
 	pcb_gui->draw_line(Output.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
 	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
