@@ -110,7 +110,7 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static color_struct *black = NULL, *white = NULL;
-static gdImagePtr im = NULL, master_im, comp_im = NULL;
+static gdImagePtr im = NULL, master_im, comp_im = NULL, erase_im = NULL;
 static FILE *f = 0;
 static int linewidth = -1;
 static int lastgroup = -1;
@@ -1259,29 +1259,42 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			if (comp_im == NULL) {
 				comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 				if (!comp_im) {
-					pcb_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					pcb_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on comp_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					return;
+				}
+			}
+			if (erase_im == NULL) {
+				erase_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+				if (!erase_im) {
+					pcb_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on erase_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 					return;
 				}
 			}
 			gdImagePaletteCopy(comp_im, im);
 			dst_im = im;
-			im = comp_im;
 			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), white->c);
+
+			gdImagePaletteCopy(erase_im, im);
+			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), white->c);
 			break;
 
 		case PCB_HID_COMP_POSITIVE:
+			im = comp_im;
+			break;
 		case PCB_HID_COMP_NEGATIVE:
+			im = erase_im;
 			break;
 
 		case PCB_HID_COMP_FLUSH:
 		{
-			int x, y, c;
+			int x, y, c, e;
 			im = dst_im;
 			gdImagePaletteCopy(im, comp_im);
 			for (x = 0; x < gdImageSX(im); x++) {
 				for (y = 0; y < gdImageSY(im); y++) {
+					e = gdImageGetPixel(erase_im, x, y);
 					c = gdImageGetPixel(comp_im, x, y);
-					if (c)
+					if ((!e) && (c))
 						gdImageSetPixel(im, x, y, c);
 				}
 			}
@@ -1300,7 +1313,7 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 	if (name == NULL)
 		name = "#ff0000";
 
-	if ((strcmp(name, "drill") == 0) || (drawing_mode == PCB_HID_COMP_NEGATIVE)) {
+	if (strcmp(name, "drill") == 0) {
 		gc->color = white;
 		gc->is_erase = 1;
 		return;
