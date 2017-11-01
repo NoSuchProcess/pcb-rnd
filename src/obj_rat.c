@@ -237,6 +237,9 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 		else
 			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.connected);
 	}
+	else if (PCB_HAS_COLOROVERRIDE(rat)) {
+		pcb_gui->set_color(Output.fgGC, rat->override_color);
+	}
 	else
 		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.rat);
 
