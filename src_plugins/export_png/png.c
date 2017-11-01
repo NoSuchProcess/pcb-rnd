@@ -446,16 +446,16 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 
 PCB_REGISTER_ATTRIBUTES(png_attribute_list, png_cookie)
 
-		 static pcb_hid_attr_val_t png_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t png_values[NUM_OPTIONS];
 
-		 static const char *get_file_suffix(void)
+static const char *get_file_suffix(void)
 {
 	const char *result = NULL;
 	const char *fmt;
 
 	fmt = filetypes[png_attribute_list[HA_filetype].default_val.int_value];
 
-	if (fmt == NULL);							/* Do nothing */
+	if (fmt == NULL) { /* Do nothing */ }
 	else if (strcmp(fmt, FMT_gif) == 0)
 		result = ".gif";
 	else if (strcmp(fmt, FMT_jpg) == 0)
