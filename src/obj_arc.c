@@ -875,6 +875,9 @@ static void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc, int allow_term_gf
 		else
 			color = conf_core.appearance.color.connected;
 	}
+	else if (PCB_HAS_COLOROVERRIDE(arc)) {
+		color = (arc->override_color);
+	}
 	else
 		color = layer->meta.real.color;
 
