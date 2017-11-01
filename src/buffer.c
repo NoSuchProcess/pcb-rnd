@@ -240,7 +240,7 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
  */
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
-	pcb_board_t *newPCB = pcb_board_new(1);
+	pcb_board_t *newPCB = pcb_board_new_(pcb_false);
 
 	/* new data isn't added to the undo list */
 	if (!pcb_parse_pcb(newPCB, Filename, fmt, CFR_invalid, 0)) {
