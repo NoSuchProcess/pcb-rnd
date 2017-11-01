@@ -269,10 +269,12 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 	float wdx, wdy;
 	int circular_caps = 0;
 
-	if (width == 0.0)
+	if (width == 0)
 		drawgl_add_line(x1,y1,x2,y2);
 	else {
-		if (width < scale)
+		if (width < 0) 
+			width = (-width) * scale;
+		else if (width < scale)
 			width = scale;
 
 		deltax = x2 - x1;
