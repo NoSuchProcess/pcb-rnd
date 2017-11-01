@@ -601,11 +601,20 @@ static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 static void ghid_gdk_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	gc->width = width;
+	/* If width is negative then treat it as pixel width, otherwise it is world coordinates. */			
+	if(width < 0)	{
+		gc->width = -width;
+		width = -width;
+	}
+	else {			
+		gc->width = width;
+		width = Vz(width);
+	}
+
 	if (gc->pixel_gc)
-		gdk_gc_set_line_attributes(gc->pixel_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+		gdk_gc_set_line_attributes(gc->pixel_gc, width, GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 	if (gc->clip_gc)
-		gdk_gc_set_line_attributes(gc->clip_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+		gdk_gc_set_line_attributes(gc->clip_gc, width, GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
 static void ghid_gdk_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
