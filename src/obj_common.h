@@ -204,4 +204,9 @@ const char *pcb_obj_id_invalid(const char *id);
 		PCB_POLY_HAS_CLEARANCE(obj) : PCB_NONPOLY_HAS_CLEARANCE(obj) \
 	)
 
+#define PCB_HAS_COLOROVERRIDE(obj)		\
+	( \
+		(obj->override_color[0] == '#')	\
+	)
+
 #endif
