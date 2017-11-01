@@ -360,6 +360,17 @@ void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rt
 	data->LayerN = pcb->Data->LayerN;
 }
 
+void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data)
+{
+	pcb_layer_id_t n;
+	for(n = 0; n < data->LayerN; n++) {
+		pcb_layer_type_t lyt = pcb_layergrp_flags(pcb4layer_groups, data->Layer[n].meta.real.grp);
+		pcb_layer_real2bound_offs(&data->Layer[n], pcb4layer_groups, &data->Layer[n]);
+		data->Layer[n].parent = data;
+		data->Layer[n].meta.bound.type = lyt;
+	}
+}
+
 void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data)
 {
 	int i;

@@ -136,6 +136,10 @@ void pcb_data_set_layer_parents(pcb_data_t *data);
 /* Set up all data layers as bound layers to pcb's Data */
 void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rtrees);
 
+/* redo all layers of data to be bound layers (layer recipes) using the stackup
+   from pcb4layer_groups. The new bound layers are not bound to any real layer. */
+void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data);
+
 /* Recalculate the layer bindings updating meta.bound.real to new board layers */
 void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data);
 
