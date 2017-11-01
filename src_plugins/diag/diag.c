@@ -303,6 +303,24 @@ static int pcb_act_d1(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
+#define	PCB_FORCECOLOR_TYPES        \
+	(PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | PCB_TYPE_SUBC | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_SUBC_PART | PCB_TYPE_SUBC)
+
+static const char forcecolor_syntax[] = "forcecolor(#RRGGBB)\n";
+static const char forcecolor_help[] = "change selected element's color to #RRGGBB, reset if does not start with '#'";
+static int pcb_act_forcecolor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int type;
+	void *ptr1, *ptr2, *ptr3;
+
+	const char *new_color = PCB_ACTION_ARG(0);
+
+	pcb_gui->get_coords("Click on object to change", &x, &y);
+
+	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+		strcpy(((pcb_any_obj_t *)ptr2)->override_color, new_color);
+	return 0;
+}
 
 pcb_hid_action_t diag_action_list[] = {
 	{"dumpconf", 0, pcb_act_DumpConf,
@@ -322,7 +340,9 @@ pcb_hid_action_t diag_action_list[] = {
 	{"integrity", 0, pcb_act_integrity,
 	 integrity_help, integrity_syntax},
 	{"dumpflags", 0, pcb_act_dumpflags,
-	 dumpflags_help, dumpflags_syntax}
+	 dumpflags_help, dumpflags_syntax},
+	{"forcecolor", 0, pcb_act_forcecolor,
+	 forcecolor_help, forcecolor_syntax}
 };
 
 static const char *diag_cookie = "diag plugin";
