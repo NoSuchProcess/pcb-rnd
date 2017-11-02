@@ -36,9 +36,9 @@ typedef struct pcb_tool_s {
 	unsigned int priority;        /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
 
 	/* tool implementation */
-	void (*notify_mode)(void);
-	void (*adjust_attached_objects)(void);
-	int  (*undo_act)(void);
+	void     (*notify_mode)(void);
+	void     (*adjust_attached_objects)(void);
+	pcb_bool (*undo_act)(void);
 	pcb_bool (*redo_act)(void);
 } pcb_tool_t;
 
