@@ -264,6 +264,11 @@ static inline int Vz(pcb_coord_t z)
 	return z / view_zoom + 0.5;
 }
 
+static inline int Vw(pcb_coord_t w)
+{
+	return w < 0 ? -w : w / view_zoom + 0.5;
+}
+
 static inline pcb_coord_t Px(int x)
 {
 	if (conf_core.editor.view.flip_x)
@@ -2945,12 +2950,12 @@ static void set_gc(pcb_hid_gc_t gc)
 		XSetFunction(display, my_gc, GXcopy);
 		XSetForeground(display, my_gc, gc->color);
 	}
-	width = Vz(gc->width);
+	width = Vw(gc->width);
 	if (width < 0)
 		width = 0;
 	XSetLineAttributes(display, my_gc, width, LineSolid, cap, join);
 	if (use_mask()) {
-		XSetLineAttributes(display, mask_gc, Vz(gc->width), LineSolid, cap, join);
+		XSetLineAttributes(display, mask_gc, width, LineSolid, cap, join);
 	}
 }
 
@@ -2974,7 +2979,7 @@ static void lesstif_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
 static void lesstif_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
-	int vw = Vz(gc->width);
+	int vw = Vw(gc->width);
 	if ((pinout || conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
 #if 0
@@ -3064,7 +3069,7 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 
 static void lesstif_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	int vw = Vz(gc->width);
+	int vw = Vw(gc->width);
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;
 	x1 = Vx(x1);
@@ -3176,7 +3181,7 @@ static void lesstif_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t
 
 static void lesstif_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	int vw = Vz(gc->width);
+	int vw = Vw(gc->width);
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;
 	x1 = Vx(x1);
