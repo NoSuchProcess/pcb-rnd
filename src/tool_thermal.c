@@ -116,5 +116,6 @@ pcb_tool_t pcb_tool_thermal = {
 	"thermal", NULL, 100,
 	pcb_tool_thermal_notify_mode,
 	NULL,
+	NULL,
 	NULL
 };

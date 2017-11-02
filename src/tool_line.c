@@ -313,9 +313,26 @@ pcb_bool pcb_tool_line_undo_act(void)
 	return pcb_true;
 }
 
+pcb_bool pcb_tool_line_redo_act(void)
+{
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
+		return pcb_false;
+	if (pcb_redo(pcb_true)) {
+		pcb_board_set_changed_flag(pcb_true);
+		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+			pcb_line_t *line = linelist_last(&CURRENT->Line);
+			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = line->Point2.X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = line->Point2.Y;
+			pcb_added_lines++;
+		}
+	}
+	return pcb_false;
+}
+
 pcb_tool_t pcb_tool_line = {
 	"line", NULL, 100,
 	pcb_tool_line_notify_mode,
 	pcb_tool_line_adjust_attached_objects,
-	pcb_tool_line_undo_act
+	pcb_tool_line_undo_act,
+	pcb_tool_line_redo_act
 };

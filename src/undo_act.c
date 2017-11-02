@@ -203,19 +203,19 @@ three "undone" lines.
 
 int pcb_act_Redo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	if (((conf_core.editor.mode == PCB_MODE_POLYGON ||
-				conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && pcb_crosshair.AttachedPolygon.PointN) || pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
-		return 1;
+	pcb_bool redo = pcb_true;
+
 	pcb_notify_crosshair_change(pcb_false);
-	if (pcb_redo(pcb_true)) {
-		pcb_board_set_changed_flag(pcb_true);
-		if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
-			pcb_line_t *line = linelist_last(&CURRENT->Line);
-			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = line->Point2.X;
-			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = line->Point2.Y;
-			pcb_added_lines++;
-		}
-	}
+	if (conf_core.editor.mode == PCB_MODE_POLYGON)
+		redo = pcb_tool_poly_redo_act();
+	if (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE)
+		redo = pcb_tool_polyhole_redo_act();
+	if (conf_core.editor.mode == PCB_MODE_LINE)
+		redo = pcb_tool_line_redo_act();
+
+	if (redo)
+		if (pcb_redo(pcb_true))
+			pcb_board_set_changed_flag(pcb_true);
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }

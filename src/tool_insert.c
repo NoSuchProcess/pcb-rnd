@@ -118,5 +118,6 @@ pcb_tool_t pcb_tool_insert = {
 	"insert", NULL, 100,
 	pcb_tool_insert_notify_mode,
 	pcb_tool_insert_adjust_attached_objects,
-	pcb_tool_insert_undo_act
+	pcb_tool_insert_undo_act,
+	NULL
 };

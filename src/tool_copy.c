@@ -80,5 +80,6 @@ pcb_tool_t pcb_tool_copy = {
 	"copy", NULL, 100,
 	pcb_tool_copy_notify_mode,
 	NULL,
-	pcb_tool_copy_undo_act
+	pcb_tool_copy_undo_act,
+	NULL
 };

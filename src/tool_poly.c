@@ -88,9 +88,19 @@ pcb_bool pcb_tool_poly_undo_act(void)
 	return pcb_true;
 }
 
+pcb_bool pcb_tool_poly_redo_act(void)
+{
+	if (pcb_crosshair.AttachedPolygon.PointN)
+		return pcb_false;
+	else
+		return pcb_true;
+}
+
 pcb_tool_t pcb_tool_poly = {
 	"poly", NULL, 100,
 	pcb_tool_poly_notify_mode,
 	pcb_tool_poly_adjust_attached_objects,
-	pcb_tool_poly_undo_act
+	pcb_tool_poly_undo_act,
+	pcb_tool_poly_redo_act,
+	NULL
 };

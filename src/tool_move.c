@@ -88,5 +88,6 @@ pcb_tool_t pcb_tool_move = {
 	"move", NULL, 100,
 	pcb_tool_move_notify_mode,
 	NULL,
-	pcb_tool_move_undo_act
+	pcb_tool_move_undo_act,
+	NULL
 };
