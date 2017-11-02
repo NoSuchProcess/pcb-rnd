@@ -45,6 +45,7 @@
 - BUG: 'Realign grid' sets the grid relative to the mouse cursor, not the snapped crosshair [report:wojciechk8]
 
 2. For later releases ===============================================================================
+- BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
 - feautres/cleanup: hid:
 	- "erase" color:
