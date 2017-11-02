@@ -469,7 +469,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y1",  T_INT, 8, 4},
 			{"x2",  T_INT, 12, 4},
 			{"y2",  T_INT, 16, 4},
-			{"rot",  T_INT, 20, 2},
+			{"bin_rot",  T_INT, 20, 2}, /* ? should it be T_UBF, 16, BITFIELD(2, 0, 11)},*/
 			TERM
 		},
 	},
@@ -534,7 +534,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"drill",  T_INT, 12, 2},
 			{"diameter",  T_INT, 14, 2},
-			{"rot",  T_INT, 16, 2},
+			{"bin_rot" , T_INT, 16, 2}, /* ? maybe T_UBF, 16, BITFIELD(2, 0, 11)}, */
 			{"stop",  T_BMB, 18, 0x01},
 			{"thermals",  T_BMB, 18, 0x04},
 			{"first",  T_BMB, 18, 0x08},
@@ -554,11 +554,9 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"layer", T_INT, 3, 1},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
-			{"dx",  T_UBF, 12, BITFIELD(2, 0, 15)},
-			{"dx_bin_doubling",  T_UBF, 12, BITFIELD(2, 0, 15)},
-			{"dy",  T_UBF, 14, BITFIELD(2, 0 , 15)},
-			{"dy_bin_doubling",  T_UBF, 14, BITFIELD(2, 0, 15)},
-			{"rot",  T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"half_dx",  T_UBF, 12, BITFIELD(2, 0, 15)},
+			{"half_dy",  T_UBF, 14, BITFIELD(2, 0, 15)},
+			{"bin_rot",  T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"stop",  T_BMB, 18, 0x01},
 			{"cream",  T_BMB, 18, 0x02},
 			{"thermals",  T_BMB, 18, 0x04},
@@ -581,7 +579,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"direction",  T_UBF, 12, BITFIELD(1, 0, 3)},
 			{"length",  T_UBF, 12, BITFIELD(1, 4, 5)},
-			{"rot",  T_UBF, 12, BITFIELD(1, 6, 7)},
+			{"bin_rot",  T_UBF, 12, BITFIELD(1, 6, 7)},
 			{"direction",  T_UBF, 12, BITFIELD(1, 0, 3)},
 			{"swaplevel",  T_INT, 13, 1},
 			{"name",  T_STR, 14, 10},
@@ -618,7 +616,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"library",  T_INT, 12, 2},
 			{"package",  T_INT, 14, 2},
-			{"rot",  T_UBF, 16, BITFIELD(2, 0, 11)},
+			{"bin_rot",  T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"mirrored", T_BMB, 17, 0x10},
 			{"spin", T_BMB, 17, 0x40},
 			TERM
@@ -650,6 +648,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"placed", T_INT, 12, 2}, /* == True for v4 */
 			{"gateno", T_INT, 14, 2},
+			{"bin_rot",  T_UBF, 16, BITFIELD(2, 10, 11)},
 			{"rot",  T_UBF, 16, BITFIELD(2, 10, 11)},
 			/* _get_uint16_mask(16, 0x0c00) */
 			{"mirrored",  T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -672,6 +671,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -696,6 +696,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -720,6 +721,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -744,6 +746,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -788,6 +791,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -812,6 +816,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -836,6 +841,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -893,6 +899,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"size",  T_INT, 12, 2},
 			{"ratio", T_UBF, 14, BITFIELD(2, 2, 6)},
 			/*self._get_uint8_mask(14, 0x7c) >> 2 },*/
+			{"bin_rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			{"rot" , T_UBF, 16, BITFIELD(2, 0, 11)},
 			/*self._get_uint16_mask(16, 0x0fff)*/
 			{"mirrored" , T_UBF, 16, BITFIELD(2, 12, 12)},
@@ -969,6 +976,42 @@ static double load_double(unsigned char *src, int offs, unsigned long len)
 	assert(len == sizeof(double));
 	memcpy(&d, src+offs, sizeof(double));
 	return d;
+}
+
+/* a function to convert binary format rotations into XML compatible RXXX format */
+int bin_rot2degrees(const char *rot, char *tmp)
+{
+	long deg;
+	char *end;
+	if (rot == NULL) {
+		return -1;
+	} else {
+		tmp[0] = 'R';
+		tmp[1] = '0';
+		tmp[2] = '\0'; /* default "R0" for v3,4,5 where bin_rot == 0*/
+		deg = strtol(rot, &end, 10);
+		/*printf("Calculated deg == %ld pre bin_rot2degree conversion\n", deg);*/
+		if (*end != '\0') {
+			printf("unexpected binary field 'rot' value suffix\n");
+			return -1;
+		}
+		if (deg >= 1024) {
+			deg = (360*deg)/4096; /* v4, v5 do n*1024 */
+			sprintf(&tmp[1], "%ld", deg);
+			/*printf("Did deg == %ld bin_rot2degree conversion\n", deg);*/
+			return 0;
+		} else if (deg > 0) { /* v3 */
+			deg = deg && 0x00f0; /* only need bottom 4 bits for v3, it seems*/
+			deg = deg*90;
+			/*printf("About to do deg < 1024 bin_rot2degree conversion\n");*/
+			sprintf(&tmp[1], "%ld", deg);
+			return 0;
+		} else {
+			/*printf("Default deg == 0 bin_rot2degree conversion\n");*/
+			return 0;
+		}
+	}
+	return -1; /* should not get here */
 }
 
 int read_notes(void *ctx, FILE *f, const char *fn)
@@ -1687,6 +1730,7 @@ static int postprocess_circles(void *ctx, egb_node_t *root)
 				half_width = atoi(e->value);
 				sprintf(tmp, "%ld", half_width*2);
 				egb_node_prop_set(root, "width", tmp);
+				break;
 			} /* <- added width doubling routine here */
 		}
 	}
@@ -1696,6 +1740,55 @@ static int postprocess_circles(void *ctx, egb_node_t *root)
 	return 0;
 }
 
+/* post process rotation to make the rotation values xml format 'RXXX' compliant */
+static int postprocess_rotation(void *ctx, egb_node_t *root, int node_type)
+{
+	htss_entry_t *e;
+	egb_node_t *n;
+	char tmp[32];
+
+	if (root->id != NULL && root->id == node_type) {
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+			if (e->key != NULL &&  strcmp(e->key, "bin_rot") == 0) {
+				bin_rot2degrees(e->value, tmp);
+				egb_node_prop_set(root, "rot", tmp);
+				break; /* NB if no break here, htss_next(&root->props, e) fails */
+			}
+		}
+	}
+	for(n = root->first_child; n != NULL; n = n->next)
+		postprocess_rotation(ctx, n, node_type);
+	return 0;
+}
+
+/* we post process the PCB_EGKW_SECT_SMD nodes to double the dx and dy dimensions pre XML parsing */
+static int postprocess_smd(void *ctx, egb_node_t *root)
+{
+	htss_entry_t *e;
+	egb_node_t *n;
+	long half_dx = 0;
+	long half_dy = 0;
+	long bin_rot = 0;
+	char tmp[32];
+
+	if (root-> id != NULL && root->id == PCB_EGKW_SECT_SMD) {
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+			if (strcmp(e->key, "half_dx") == 0) {
+				half_dx = atoi(e->value);
+				sprintf(tmp, "%ld", half_dx*2);
+				egb_node_prop_set(root, "dx", tmp);
+			} else if (strcmp(e->key, "half_dy") == 0) {
+				half_dy = atoi(e->value);
+				sprintf(tmp, "%ld", half_dy*2);
+				egb_node_prop_set(root, "dy", tmp);
+			}
+		}
+	}
+
+	for(n = root->first_child; n != NULL; n = n->next)
+		postprocess_smd(ctx, n);
+	return 0;
+}
 
 /* look for contactrefs, and append "name"="refdes" fields to contactref nodes as "element" "refdes"*/
 static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
@@ -1882,7 +1975,12 @@ static int postproc(void *ctx, egb_node_t *root)
 		|| postproc_elements(ctx, egb_ctx_p)
 		|| postproc_signal(ctx, egb_ctx_p) || postproc_contactrefs(ctx, egb_ctx_p)
 		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root)
-		|| postprocess_circles(ctx, root);
+		|| postprocess_circles(ctx, root) || postprocess_smd(ctx, root)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMD)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PIN)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_RECTANGLE)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PAD)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_ELEMENT);
 }
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
