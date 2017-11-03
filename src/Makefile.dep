@@ -6314,8 +6314,8 @@ obj_padstack_proto.o: obj_padstack_proto.c ../config.h board.h const.h \
  crosshair.h vtonpoint.h hid.h error.h drc.h route.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h \
  vtpadstack.h obj_padstack_shape.h polygon.h vtpadstack_t.h data_list.h \
- obj_padstack_inlines.h thermal.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h
+ obj_padstack_inlines.h thermal.h rotate.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h
 obj_pinvia.o: obj_pinvia.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
