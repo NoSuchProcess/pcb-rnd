@@ -456,6 +456,9 @@ static int undo_change_instance_swap(void *udata)
 		return -1;
 	}
 
+	pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PADSTACK, NULL, ps);
+	pcb_padstack_invalidate_erase(ps);
+
 	swap(ps->proto,      u->proto,     pcb_cardinal_t);
 	swap(ps->Clearance,  u->clearance, pcb_coord_t);
 	swap(ps->rot,        u->rot,       double);
@@ -464,6 +467,9 @@ static int undo_change_instance_swap(void *udata)
 	/* force re-render the prototype */
 	ps->protoi = -1;
 	pcb_padstack_get_tshape(ps);
+
+	pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PADSTACK, NULL, ps);
+	pcb_padstack_invalidate_draw(ps);
 
 	return 0;
 }
