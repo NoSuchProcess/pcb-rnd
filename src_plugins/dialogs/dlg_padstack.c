@@ -193,20 +193,16 @@ static void pse_tab_proto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
-	int hplated = 0;
 	static int lock = 0;
 
 	if (lock != 0)
 		return;
 
-
-	pse->ps->Clearance = pse->attrs[pse->clearance].default_val.coord_value;
-	pse->ps->rot = pse->attrs[pse->rot].default_val.real_value;
-	pse->ps->xmirror = pse->attrs[pse->xmirror].default_val.int_value;
-
-	/* force re-render the prototype */
-	pse->ps->protoi = -1;
-	pcb_padstack_get_tshape(pse->ps);
+	pcb_padstack_change_instance(pse->ps,
+		NULL,
+		&pse->attrs[pse->clearance].default_val.coord_value,
+		&pse->attrs[pse->rot].default_val.real_value,
+		&pse->attrs[pse->xmirror].default_val.int_value);
 
 	lock++;
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */

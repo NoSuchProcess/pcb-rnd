@@ -42,6 +42,8 @@
 
 #define PS_CROSS_SIZE PCB_MM_TO_COORD(1)
 
+static const char core_padstack_cookie[] = "padstack";
+
 pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data)
 {
 	pcb_padstack_t *ps;
@@ -171,6 +173,22 @@ void pcb_padstack_move(pcb_padstack_t *ps, pcb_coord_t dx, pcb_coord_t dy)
 	ps->BoundingBox.Y1 += dy;
 	ps->BoundingBox.X2 += dx;
 	ps->BoundingBox.Y2 += dy;
+}
+
+pcb_padstack_t *pcb_padstack_by_id(pcb_data_t *base, long int ID)
+{
+	pcb_box_t *ps;
+	pcb_rtree_it_t it;
+
+	for(ps = pcb_r_first(base->padstack_tree, &it); ps != NULL; ps = pcb_r_next(&it)) {
+		if (((pcb_padstack_t *)ps)->ID == ID) {
+			pcb_r_end(&it);
+			return (pcb_padstack_t *)ps;
+		}
+	}
+
+	pcb_r_end(&it);
+	return NULL;
 }
 
 /*** draw ***/
@@ -394,6 +412,99 @@ void pcb_padstack_set_thermal(pcb_padstack_t *ps, unsigned long lid, unsigned ch
 	unsigned char *th = pcb_padstack_get_thermal(ps, lid, 1);
 	if (th != NULL)
 		*th = shape;
+}
+
+/*** Undoable instance parameter change ***/
+
+typedef struct {
+	long int parent_ID; /* -1 for pcb, positive for a subc */
+	long int ID;        /* ID of the padstack */
+
+	pcb_cardinal_t proto;
+	pcb_coord_t clearance;
+	double rot;
+	int xmirror;
+} padstack_change_instance_t;
+
+#define swap(a,b,type) \
+	do { \
+		type tmp = a; \
+		a = b; \
+		b = tmp; \
+	} while(0)
+
+static int undo_change_instance_swap(void *udata)
+{
+	padstack_change_instance_t *u = udata;
+	pcb_data_t *data;
+	pcb_padstack_t *ps;
+
+	if (u->parent_ID != -1) {
+		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
+		if (subc == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Can't undo padstack change: parent subc #%ld is not found\n", u->parent_ID);
+			return -1;
+		}
+		data = subc->data;
+	}
+	else
+		data = PCB->Data;
+
+	ps = pcb_padstack_by_id(data, u->ID);
+	if (ps == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't undo padstack change: padstack ID #%ld is not available\n", u->ID);
+		return -1;
+	}
+
+	swap(ps->proto,      u->proto,     pcb_cardinal_t);
+	swap(ps->Clearance,  u->clearance, pcb_coord_t);
+	swap(ps->rot,        u->rot,       double);
+	swap(ps->xmirror,    u->xmirror,   int);
+
+	/* force re-render the prototype */
+	ps->protoi = -1;
+	pcb_padstack_get_tshape(ps);
+
+	return 0;
+}
+
+static void undo_change_instance_print(void *udata, char *dst, size_t dst_len)
+{
+	padstack_change_instance_t *u = udata;
+	pcb_snprintf(dst, dst_len, "padstack change: clearance=%$mm rot=%.2f xmirror=%d\n", u->clearance, u->rot, u->xmirror);
+}
+
+static const uundo_oper_t undo_padstack_change_instance = {
+	core_padstack_cookie,
+	NULL, /* free */
+	undo_change_instance_swap,
+	undo_change_instance_swap,
+	undo_change_instance_print
+};
+
+int pcb_padstack_change_instance(pcb_padstack_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror)
+{
+	padstack_change_instance_t *u;
+	long int parent_ID;
+
+	switch(ps->parent.data->parent_type) {
+		case PCB_PARENT_BOARD: parent_ID = -1; break;
+		case PCB_PARENT_SUBC: parent_ID = ps->parent.data->parent.subc->ID; break;
+		default: return -1;
+	}
+
+	u = pcb_undo_alloc(PCB, &undo_padstack_change_instance, sizeof(padstack_change_instance_t));
+	u->parent_ID = parent_ID;
+	u->ID = ps->ID;
+	u->proto = proto ? *proto : ps->proto;
+	u->clearance = clearance ? *clearance : ps->Clearance;
+	u->rot = rot ? *rot : ps->rot;
+	u->xmirror = xmirror ? *xmirror : ps->xmirror;
+
+	undo_change_instance_swap(u);
+
+	pcb_undo_inc_serial();
+	return 0;
 }
 
 #include "obj_padstack_op.c"

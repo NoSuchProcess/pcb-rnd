@@ -81,6 +81,11 @@ void pcb_padstack_bbox(pcb_padstack_t *ps);
 void pcb_padstack_set_thermal(pcb_padstack_t *ps, unsigned long lid, unsigned char shape);
 unsigned char *pcb_padstack_get_thermal(pcb_padstack_t *ps, unsigned long lid, pcb_bool_t alloc);
 
+pcb_padstack_t *pcb_padstack_by_id(pcb_data_t *base, long int ID);
+
+/* Undoably change the instance parameters of a padstack ref */
+int pcb_padstack_change_instance(pcb_padstack_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror);
+
 /*** proto ***/
 
 /* allocate and return the next available group ID */
