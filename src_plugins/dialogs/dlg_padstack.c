@@ -53,7 +53,7 @@ typedef struct pse_s {
 	int proto_shape[pse_num_layers];
 	int proto_info[pse_num_layers];
 	int hole_header;
-	int hdia;
+	int hdia, hplated;
 	int htop_val, htop_text, htop_layer;
 	int hbot_val, hbot_text, hbot_layer;
 } pse_t;
@@ -157,6 +157,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str_value, s);
 
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, coord_value, proto->hdia);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hplated, int_value, proto->hplated);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, int_value, proto->htop);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_val, int_value, proto->hbottom);
 
@@ -214,7 +215,6 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
-	int hplated = 0;
 	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(pse->ps);
 	static int lock = 0;
 
@@ -223,7 +223,8 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 	if (proto != NULL) {
 		pcb_padstack_proto_change_hole(proto,
-			&hplated, &pse->attrs[pse->hdia].default_val.coord_value,
+			&pse->attrs[pse->hplated].default_val.int_value,
+			&pse->attrs[pse->hdia].default_val.coord_value,
 			&pse->attrs[pse->htop_val].default_val.int_value,
 			&pse->attrs[pse->hbot_val].default_val.int_value);
 	}
@@ -322,15 +323,23 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 					}
 				PCB_DAD_END(dlg);
 			
-				PCB_DAD_LABEL(dlg, "Hole geometry:");
+				PCB_DAD_LABEL(dlg, "Hole properties:");
 					pse.hole_header = PCB_DAD_CURRENT(dlg);
 
 				PCB_DAD_BEGIN_TABLE(dlg, 4);
-					PCB_DAD_LABEL(dlg, "diameter:");
+
+					PCB_DAD_LABEL(dlg, "Diameter:");
 					PCB_DAD_COORD(dlg, "");
 						pse.hdia = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, 1);
 						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+					PCB_DAD_LABEL(dlg, ""); /* dummy */
+					PCB_DAD_LABEL(dlg, ""); /* dummy */
+
+					PCB_DAD_LABEL(dlg, "Plating:");
+					PCB_DAD_BOOL(dlg, "");
+						pse.hplated = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
