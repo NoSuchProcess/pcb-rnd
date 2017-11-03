@@ -24,6 +24,7 @@
 #define PCB_OBJ_PADSTACK_INLINES_H
 
 #include "board.h"
+#include "data.h"
 #include "obj_padstack.h"
 #include "vtpadstack.h"
 #include "layer.h"
