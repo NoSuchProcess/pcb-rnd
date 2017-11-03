@@ -411,7 +411,7 @@ static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 		st->pcb->MaxHeight = y;
 }
 
-/* Convert eagle Rxxx or binary n*1024 string to degrees */
+/* Convert eagle Rxxx to degrees. Binary n*1024 string converted to Rxxx in eagle_bin.c */
 static int eagle_rot2degrees(const char *rot)
 {
 	long deg;
@@ -419,18 +419,6 @@ static int eagle_rot2degrees(const char *rot)
 
 	if (rot == NULL) {
 		return -1;
-	} else if (rot[0] != 'R') {
-		deg = strtol(rot, &end, 10);
-		if (*end != '\0')
-			return -1;
-		if (deg == 0) {
-			/* v3,4,5 the same */
-		} else if (deg >= 1024) {
-			deg = (360*deg)/4096; /* v4, v5 do n*1024 */
-		} else {
-			deg = deg && 0x00f0; /* only need bottom 4 bits for v3, it seems*/
-			deg = deg*90;
-		}
 	} else {
 		deg = strtol(rot+1, &end, 10);
 		if (*end != '\0')
@@ -453,6 +441,7 @@ static int eagle_rot2steps(const char *rot)
 		case 180: return 2;
 		case 270: return 1;
 	}
+	pcb_message(PCB_MSG_WARNING, "Unexpected non n*90 degree rotation value ignored\n");
 	return -1;
 }
 
