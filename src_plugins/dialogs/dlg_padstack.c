@@ -190,6 +190,31 @@ static void pse_tab_proto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pse_tab_update(hid_ctx, pse);
 }
 
+static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	int hplated = 0;
+	static int lock = 0;
+
+	if (lock != 0)
+		return;
+
+
+	pse->ps->Clearance = pse->attrs[pse->clearance].default_val.coord_value;
+	pse->ps->rot = pse->attrs[pse->rot].default_val.real_value;
+	pse->ps->xmirror = pse->attrs[pse->xmirror].default_val.int_value;
+
+	/* force re-render the prototype */
+	pse->ps->protoi = -1;
+	pcb_padstack_get_tshape(pse->ps);
+
+	lock++;
+	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
+	lock--;
+
+	pcb_gui->invalidate_all();
+}
+
 static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
@@ -269,14 +294,17 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						pse.clearance = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, 1);
 						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
 					PCB_DAD_LABEL(dlg, "Rotation");
 					PCB_DAD_REAL(dlg, "");
 						pse.rot = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, 0);
 						PCB_DAD_MAXVAL(dlg, 360);
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
 					PCB_DAD_LABEL(dlg, "X-mirror");
 					PCB_DAD_BOOL(dlg, "");
 						pse.xmirror = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
