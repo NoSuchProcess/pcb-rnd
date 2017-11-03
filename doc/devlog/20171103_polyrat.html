@@ -1,0 +1,34 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> unfixable polygon rat bug </h2>
+<p><font size=-2>by Igor2</font></p>
+<p>
+The following tricky polygon vs. rat bug was reported by Evan Foss,
+among with the <a href="20171103.lht"> minimal test file</a> that
+reporuces it. The bug is that instead of the circular rat mark that
+indicates the pin is within the poly it tries to connect to, a rat line
+is drawn to a corner of the poly.
+<p>
+After some debugging I figured this is "by design" in the polygon code
+and can not be fixed. IRC log:
+<p>
+<br> when trying to check whether the point is within the polygon, it ignores holes
+<br> else it would never say it's within the poly, because it's always sitting in a clearance cutout hole, that's why it's not connected in the first place
+<br> makes sense
+<br> but look at your example
+<br> is it in a hole?
+<br> turn off silk
+<br> turn off pins/pads
+<br> zoom in, zoom in a lot
+<br> and you will find: it's not a hole, because the clearances all merged and they reached the outer contour of the poly
+<br> to keep the poylgon well behaved (and thus easy to process for all parts of the code!), the poly code has guarantees for a few things
+<br> one of the guarantees is that a hole is always fully within the polygon
+<br> a hole can't touch the contour
+<br> if the hole touches the contour, it's not a hole any more
+<br> instead the contour of the poly got more complex, and there are no holes
+<br> exactly what you see here, and your pin is sitting in the middle of an U
+<br> so unfortunately this is something I can not fix
+<br> because it's impossible to distinguish the case when we are sitting in the U because of clearance cutouts from the case when it's the polygon's shape as desribeed by the user, or by other object's clearances
+
