@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include "obj_padstack.h"
+#include "obj_padstack_inlines.h"
 
 #include "action_helper.h"
 #include "board.h"
@@ -36,6 +37,7 @@ static const char pcb_acth_padstackconvert[] = "Convert selection or current buf
 int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_cardinal_t pid;
+	pcb_padstack_proto_t tmp, *p;
 
 	if (argv[0] == NULL)
 		PCB_ACT_FAIL(padstackconvert);
@@ -52,9 +54,14 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		else
 			pcb_gui->get_coords("Click at padstack origin", &x, &y);
 		pid = pcb_padstack_conv_selection(PCB, 0, x, y);
+
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+		p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
+		pcb_padstack_proto_copy(p, &PCB->Data->ps_protos.array[pid]);
+		p->parent = PCB_PASTEBUFFER->Data;
+		pid = pcb_padstack_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
 	}
 	else if (strcmp(argv[0], "buffer") == 0) {
-		pcb_padstack_proto_t tmp, *p;
 
 		pid = pcb_padstack_conv_buffer(0);
 
@@ -64,16 +71,17 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
 		*p = tmp;
+		p->parent = PCB_PASTEBUFFER->Data;
 		pid = pcb_padstack_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
 
-		pcb_padstack_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_no_flags());
-		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
-		PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
 	}
 	else
 		PCB_ACT_FAIL(padstackconvert);
 
 	pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
+	pcb_padstack_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_no_flags());
+	pcb_set_buffer_bbox(PCB_PASTEBUFFER);
+	PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
 
 	return 0;
 }
