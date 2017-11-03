@@ -207,23 +207,15 @@ int pcb_padstack_proto_conv_buffer(pcb_padstack_proto_t *dst, int quiet)
 	return ret;
 }
 
-void pcb_padstack_proto_copy(pcb_padstack_proto_t *dst, const pcb_padstack_proto_t *src)
+void pcb_padstack_tshape_copy(pcb_padstack_tshape_t *ts_dst, pcb_padstack_tshape_t *ts_src)
 {
 	int n;
-	pcb_padstack_tshape_t *ts_dst, *ts_src;
 
-	memcpy(dst, src, sizeof(pcb_padstack_proto_t));
-	pcb_vtpadstack_tshape_init(&dst->tr);
-
-	ts_src = &src->tr.array[0];
-
-	/* allocate shapes on the canonical tshape (tr[0]) */
-	ts_dst = pcb_vtpadstack_tshape_alloc_append(&dst->tr, 1);
-	ts_dst->rot = 0.0;
-	ts_dst->xmirror = 0;
-
+	ts_dst->rot = ts_src->rot;
+	ts_dst->xmirror = ts_src->xmirror;
 	ts_dst->shape = malloc(sizeof(pcb_padstack_shape_t) * ts_src->len);
-	memcpy(ts_dst->shape, ts_dst->shape, sizeof(pcb_padstack_shape_t) * ts_src->len);
+	ts_dst->len = ts_src->len;
+	memcpy(ts_dst->shape, ts_src->shape, sizeof(pcb_padstack_shape_t) * ts_src->len);
 	for(n = 0; n < ts_src->len; n++) {
 		switch(ts_src->shape[n].shape) {
 			case PCB_PSSH_LINE:
@@ -235,6 +227,25 @@ void pcb_padstack_proto_copy(pcb_padstack_proto_t *dst, const pcb_padstack_proto
 				break;
 		}
 	}
+}
+
+void pcb_padstack_proto_copy(pcb_padstack_proto_t *dst, const pcb_padstack_proto_t *src)
+{
+	pcb_padstack_tshape_t *ts_dst, *ts_src;
+
+	memcpy(dst, src, sizeof(pcb_padstack_proto_t));
+	pcb_vtpadstack_tshape_init(&dst->tr);
+
+	ts_src = &src->tr.array[0];
+
+	/* allocate shapes on the canonical tshape (tr[0]) */
+	ts_dst = pcb_vtpadstack_tshape_alloc_append(&dst->tr, 1);
+	pcb_padstack_tshape_copy(ts_dst, ts_src);
+
+	/* make sure it's the canonical form */
+	ts_dst->rot = 0.0;
+	ts_dst->xmirror = 0;
+
 	dst->in_use = 1;
 }
 
@@ -438,6 +449,7 @@ int pcb_padstack_proto_change_hole(pcb_padstack_proto_t *proto, const int *hplat
 pcb_padstack_tshape_t *pcb_padstack_make_tshape(pcb_data_t *data, pcb_padstack_proto_t *proto, double rot, int xmirror, int *out_protoi)
 {
 	size_t n;
+	pcb_padstack_tshape_t *ts;
 
 	xmirror = !!xmirror;
 
@@ -457,8 +469,15 @@ pcb_padstack_tshape_t *pcb_padstack_make_tshape(pcb_data_t *data, pcb_padstack_p
 	}
 
 #warning padstack TODO: allocate and render the transformed version for the cache
-	if (out_protoi != NULL) *out_protoi = -1;
-	return NULL;
+	if (out_protoi != NULL) *out_protoi = proto->tr.used;
+	ts = pcb_vtpadstack_tshape_alloc_append(&proto->tr, 1);
+
+	/* first make a vanilla copy */
+	pcb_padstack_tshape_copy(ts, &proto->tr.array[0]);
+
+	ts->rot = rot;
+	ts->xmirror = xmirror;
+	return ts;
 }
 
 /*** hash ***/
