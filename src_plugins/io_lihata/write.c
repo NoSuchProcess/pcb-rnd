@@ -609,6 +609,9 @@ static lht_node_t *build_padstack(pcb_padstack_t *ps)
 	lht_dom_hash_put(obj, build_textf("x", CFMT, ps->x));
 	lht_dom_hash_put(obj, build_textf("y", CFMT, ps->y));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, ps->Clearance));
+	lht_dom_hash_put(obj, build_textf("rot", "%f", ps->rot));
+	lht_dom_hash_put(obj, build_textf("xmirror", "%d", ps->xmirror));
+
 	lht_dom_hash_put(obj, thr = lht_dom_node_alloc(LHT_LIST, "thermal"));
 	for(n = 0; n < ps->thermals.used; n++)
 		lht_dom_list_append(thr, build_textf(NULL, "%d", ps->thermals.shape[n]));

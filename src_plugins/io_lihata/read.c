@@ -762,6 +762,7 @@ static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
 	lht_node_t *thl, *t;
 	unsigned char intconn = 0;
 	unsigned long int ul;
+	int tmp;
 
 	ps = pcb_padstack_alloc(dt);
 
@@ -772,6 +773,9 @@ static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
 
 	parse_coord(&ps->x, lht_dom_hash_get(obj, "x"));
 	parse_coord(&ps->y, lht_dom_hash_get(obj, "y"));
+	parse_double(&ps->rot, lht_dom_hash_get(obj, "rtot"));
+	parse_int(&tmp, lht_dom_hash_get(obj, "xmirror"));
+	ps->xmirror = tmp;
 	parse_coord(&ps->Clearance, lht_dom_hash_get(obj, "clearance"));
 	parse_ulong(&ul, lht_dom_hash_get(obj, "proto"));
 	ps->proto = ul;
