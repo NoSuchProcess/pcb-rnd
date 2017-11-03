@@ -31,8 +31,11 @@ struct pcb_padstack_s {
 	PCB_ANYOBJECTFIELDS;
 #undef thermal
 	pcb_cardinal_t proto;          /* reference to a pcb_padstack_proto_t within pcb_data_t */
+	int protoi;                    /* index of the transformed proto; -1 means invalid; local cache, not saved */
 	pcb_coord_t x, y;
 	pcb_coord_t Clearance;
+	double rot;                    /* rotation angle */
+	int xmirror;
 	struct {
 		unsigned long used;
 		unsigned char *shape;        /* indexed by layer ID */
@@ -50,42 +53,8 @@ struct pcb_padstack_s {
 #define PCB_PADSTACK_INVALID ((pcb_cardinal_t)(-1))
 
 #include "obj_common.h"
-
-#include "layer.h"
-
-typedef struct pcb_padstack_poly_s {
-	unsigned int len;             /* number of points in polygon */
-	pcb_coord_t *x;               /* ordered list of points, X coord */
-	pcb_coord_t *y;               /* ordered list of points, X coord */
-	pcb_polyarea_t *pa;           /* cache for the poly code */
-} pcb_padstack_poly_t;
-
-
-typedef struct pcb_padstack_line_s {
-	pcb_coord_t x1, y1, x2, y2, thickness;
-	unsigned square:1;
-} pcb_padstack_line_t;
-
-typedef struct pcb_padstack_circ_s {
-	pcb_coord_t dia;             /* diameter of the filled circle */
-	pcb_coord_t x, y;            /* assymetric pads */
-} pcb_padstack_circ_t;
-
-typedef struct pcb_padstack_shape_s {
-	pcb_layer_type_t layer_mask;
-	pcb_layer_combining_t comb;
-	union {
-		pcb_padstack_poly_t poly;
-		pcb_padstack_line_t line;
-		pcb_padstack_circ_t circ;
-	} data;
-	enum {
-		PCB_PSSH_POLY,
-		PCB_PSSH_LINE,
-		PCB_PSSH_CIRC                /* filled circle */
-	} shape;
-	pcb_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
-} pcb_padstack_shape_t;
+#include "obj_padstack_shape.h"
+#include "vtpadstack_t.h"
 
 typedef struct pcb_padstack_proto_s {
 	unsigned in_use:1;             /* 1 if the slot is in use */
@@ -94,20 +63,14 @@ typedef struct pcb_padstack_proto_s {
 	pcb_coord_t hdia;              /* if > 0, diameter of the hole (else there's no hole) */
 	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layer groups from the top or bottom copper layer group */
 
-	unsigned char len;             /* number of shapes (PCB_PADSTACK_MAX_SHAPES) */
-	pcb_padstack_shape_t *shape;   /* list of layer-shape pairs */
-
-	/* a proto can be derived from another proto via rotation/mirroring;
-	   the above fields store the current state, after the transformations,
-	   but we need to link the original we forked from; this is done by unique
-	   group IDs. A brand new proto will get a new group ID, larger than any
-	   existing group ID, a forked one will copy its parents group ID. */
-	unsigned long group;
+	pcb_vtpadstack_tshape_t tr;    /* [0] is the canonical prototype with rot=0 and xmirror=0; the rest is an unordered list of transformed entries */
 
 	/* local cache - not saved */
 	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
 	pcb_data_t *parent;
 } pcb_padstack_proto_t;
+
+
 
 pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data);
 void pcb_padstack_free(pcb_padstack_t *ps);
@@ -157,6 +120,9 @@ pcb_cardinal_t pcb_padstack_proto_insert_dup(pcb_data_t *data, const pcb_padstac
 /* Change the non-NULL hole properties of a padstack proto; undoable.
    Returns 0 on success. */
 int pcb_padstack_proto_change_hole(pcb_padstack_proto_t *proto, const int *hplated, const pcb_coord_t *hdia, const int *htop, const int *hbottom);
+
+/* Find or create a new transformed version of an existing proto */
+pcb_padstack_tshape_t *pcb_padstack_make_tshape(pcb_data_t *data, pcb_padstack_proto_t *proto, double rot, int xmirror, int *out_protoi);
 
 
 /*** hash ***/

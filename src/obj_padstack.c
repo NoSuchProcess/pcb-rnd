@@ -47,6 +47,7 @@ pcb_padstack_t *pcb_padstack_alloc(pcb_data_t *data)
 	pcb_padstack_t *ps;
 
 	ps = calloc(sizeof(pcb_padstack_t), 1);
+	ps->protoi = -1;
 	ps->type = PCB_OBJ_PADSTACK;
 	ps->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(ps, data, data);
@@ -97,13 +98,14 @@ void pcb_padstack_bbox(pcb_padstack_t *ps)
 	int n, sn;
 	pcb_line_t line;
 	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+	pcb_padstack_tshape_t *ts = pcb_padstack_get_tshape(ps);
 	assert(proto != NULL);
 
 	ps->BoundingBox.X1 = ps->BoundingBox.X2 = ps->x;
 	ps->BoundingBox.Y1 = ps->BoundingBox.Y2 = ps->y;
 
-	for(sn = 0; sn < proto->len; sn++) {
-		pcb_padstack_shape_t *shape = proto->shape + sn;
+	for(sn = 0; sn < ts->len; sn++) {
+		pcb_padstack_shape_t *shape = ts->shape + sn;
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
 				for(n = 0; n < shape->data.poly.len; n++)
@@ -314,10 +316,10 @@ void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps)
 		if (shape == NULL)
 			shape = pcb_padstack_shape_gid(pcb, ps, gid, PCB_LYC_SUB);
 	}
-	else { /* no pcb means buffer - take the first shape */
-		pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
-		if (proto != NULL)
-			shape = proto->shape;
+	else { /* no pcb means buffer - take the first shape, whichever layer it is for */
+		pcb_padstack_tshape_t *ts = pcb_padstack_get_tshape(ps);
+		if (ts != NULL)
+			shape = ts->shape;
 	}
 
 	if (shape != NULL) {

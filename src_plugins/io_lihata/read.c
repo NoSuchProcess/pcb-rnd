@@ -1189,12 +1189,12 @@ static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst
 {
 	int itmp, i;
 	lht_node_t *nshape, *n;
+	pcb_padstack_tshape_t *ts;
 
 	/* read the hole */
 	if (parse_coord(&dst->hdia, lht_dom_hash_get(nproto, "hdia")) != 0) return -1;
 	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "htop")) != 0) return -1;
 	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "hbottom")) != 0) return -1;
-	if (parse_ulong(&dst->group, lht_dom_hash_get(nproto, "group")) != 0) return -1;
 	if (parse_int(&itmp, lht_dom_hash_get(nproto, "hplated")) != 0) return -1;
 	dst->hplated = itmp;
 	dst->in_use = 1;
@@ -1208,12 +1208,14 @@ static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst
 	if ((nshape == NULL) || (nshape->type != LHT_LIST))
 		return -1;
 
-	for(n = nshape->data.list.first, dst->len = 0; n != NULL; n = n->next) dst->len++;
-	dst->shape = calloc(sizeof(pcb_padstack_shape_t), dst->len);
+	ts = pcb_vtpadstack_tshape_get(&dst->tr, 0, 1);
+
+	for(n = nshape->data.list.first, ts->len = 0; n != NULL; n = n->next) ts->len++;
+	ts->shape = calloc(sizeof(pcb_padstack_shape_t), ts->len);
 
 	for(n = nshape->data.list.first, i = 0; n != NULL; n = n->next, i++)
 		if ((n->type == LHT_HASH) && (strcmp(n->name, "ps_shape_v4") == 0))
-			if (parse_data_padstack_shape_v4(pcb, dst->shape+i, n, subc_parent) != 0)
+			if (parse_data_padstack_shape_v4(pcb, ts->shape+i, n, subc_parent) != 0)
 				return -1;
 
 	return 0;

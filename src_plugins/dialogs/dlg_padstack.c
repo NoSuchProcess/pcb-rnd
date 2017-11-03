@@ -208,6 +208,8 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	lock++;
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
+
+	pcb_gui->invalidate_all();
 }
 
 

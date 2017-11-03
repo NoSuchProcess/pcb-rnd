@@ -62,6 +62,32 @@ static inline PCB_FUNC_UNUSED pcb_padstack_proto_t *pcb_padstack_get_proto(pcb_p
 	return pcb_padstack_get_proto_(ps->parent.data, ps->proto);
 }
 
+/* return the padstack transformed shape. Returns NULL if the proto or the
+   tshape is not. */
+static inline PCB_FUNC_UNUSED pcb_padstack_tshape_t *pcb_padstack_get_tshape_(const pcb_data_t *data, pcb_cardinal_t proto, int protoi)
+{
+	pcb_padstack_proto_t *pr = pcb_padstack_get_proto_(data, proto);
+	if (protoi < 0)
+		return NULL;
+	if (pr == NULL)
+		return NULL;
+	if (protoi >= pr->tr.used)
+		return NULL;
+	return &pr->tr.array[protoi];
+}
+
+/* return the padstack prototype for a padstack reference - returns NULL if not found */
+static inline PCB_FUNC_UNUSED pcb_padstack_tshape_t *pcb_padstack_get_tshape(pcb_padstack_t *ps)
+{
+	if (ps->protoi < 0) { /* need to update this */
+		pcb_padstack_proto_t *pr = pcb_padstack_get_proto_(ps->parent.data, ps->proto);
+		if (pr == NULL)
+			return NULL;
+		return pcb_padstack_make_tshape(ps->parent.data, pr, ps->rot, ps->xmirror, &ps->protoi);
+	}
+	return pcb_padstack_get_tshape_(ps->parent.data, ps->proto, ps->protoi);
+}
+
 /* return the type of drill and optionally fill in group IDs of drill ends ;
    if proto_out is not NULL, also load it with the proto */
 static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_padstack_bbspan(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_padstack_proto_t **proto_out)
@@ -155,14 +181,14 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb
 static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape(pcb_padstack_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
-	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
-	if (proto == NULL)
+	pcb_padstack_tshape_t *ts = pcb_padstack_get_tshape(ps);
+	if (ts == NULL)
 		return NULL;
 
 	lyt &= (PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE);
-	for(n = 0; n < proto->len; n++)
-		if ((lyt == proto->shape[n].layer_mask) && (comb == proto->shape[n].comb))
-			return proto->shape+n;
+	for(n = 0; n < ts->len; n++)
+		if ((lyt == ts->shape[n].layer_mask) && (comb == ts->shape[n].comb))
+			return ts->shape+n;
 
 	return 0;
 }

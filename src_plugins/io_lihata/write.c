@@ -525,6 +525,7 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 {
 	lht_node_t *lst, *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
 	pcb_cardinal_t n, sn, pn;
+	pcb_padstack_tshape_t *ts;
 
 	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
 	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
@@ -542,12 +543,11 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 		lht_dom_hash_put(nproto, build_textf("hbottom", "%d", proto->hbottom));
 		lht_dom_hash_put(nproto, build_textf("hplated", "%d", proto->hplated));
 
-		lht_dom_hash_put(nproto, build_textf("group", "%lu", proto->group));
-
 		/* save each shape */
 		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
-		for(sn = 0; sn < proto->len; sn++) {
-			pcb_padstack_shape_t *shape = proto->shape + sn;
+		ts = &proto->tr.array[0]; /* save the canonical shape only, the transformation cache is generated runtime */
+		for(sn = 0; sn < ts->len; sn++) {
+			pcb_padstack_shape_t *shape = ts->shape + sn;
 
 			lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
 
