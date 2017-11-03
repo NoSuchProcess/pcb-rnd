@@ -31,6 +31,7 @@
 #include "data_list.h"
 #include "obj_padstack.h"
 #include "obj_padstack_inlines.h"
+#include "rotate.h"
 #include "undo.h"
 #include "vtpadstack_t.h"
 
@@ -228,6 +229,33 @@ void pcb_padstack_tshape_copy(pcb_padstack_tshape_t *ts_dst, pcb_padstack_tshape
 		}
 	}
 }
+
+void pcb_padstack_tshape_rot(pcb_padstack_tshape_t *ts, double angle)
+{
+	int n, i;
+	double cosa = cos(angle / PCB_RAD_TO_DEG), sina = sin(angle / PCB_RAD_TO_DEG);
+
+	for(n = 0; n < ts->len; n++) {
+		pcb_padstack_shape_t *sh = &ts->shape[n];
+		switch(sh->shape) {
+			case PCB_PSSH_LINE:
+				pcb_rotate(&sh->data.line.x1, &sh->data.line.y1, 0, 0, cosa, sina);
+				pcb_rotate(&sh->data.line.x2, &sh->data.line.y2, 0, 0, cosa, sina);
+				break;
+			case PCB_PSSH_CIRC:
+				pcb_rotate(&sh->data.circ.x, &sh->data.circ.y, 0, 0, cosa, sina);
+				break;
+			case PCB_PSSH_POLY:
+				if (sh->data.poly.pa != NULL)
+					pcb_polyarea_free(&sh->data.poly.pa);
+				for(i = 0; i < sh->data.poly.len; i++)
+					pcb_rotate(&sh->data.poly.x[i], &sh->data.poly.y[i], 0, 0, cosa, sina);
+				pcb_padstack_shape_update_pa(&sh->data.poly);
+				break;
+		}
+	}
+}
+
 
 void pcb_padstack_proto_copy(pcb_padstack_proto_t *dst, const pcb_padstack_proto_t *src)
 {
@@ -474,6 +502,9 @@ pcb_padstack_tshape_t *pcb_padstack_make_tshape(pcb_data_t *data, pcb_padstack_p
 
 	/* first make a vanilla copy */
 	pcb_padstack_tshape_copy(ts, &proto->tr.array[0]);
+
+	if (!tshape_angle_eq(rot, 0.0))
+		pcb_padstack_tshape_rot(ts, rot);
 
 	ts->rot = rot;
 	ts->xmirror = xmirror;
