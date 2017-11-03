@@ -487,19 +487,14 @@ plated hole.
 	<tr><td>power jack with slot    <td> n/a - can not be done with pad stack as the plated slots for the pins can not be represented as plated round holes - use heavy terminals instead
 </table>
 <p>
-Pad stacks prototypes are stored only once per pcb_data_t (only once per
+Pad stack prototypes are stored only once per pcb_data_t (only once per
 board for vias or per each subcircuit for terminals). The actual pad stacks
 placed on the board (or in subcircuit) are called <i>pad stack references</i>.
-A pad stack reference has its own x;y coordinate (within the board or subcircuit)
-and a reference to the prototype. However, the pad stack reference does not
-encode transformations such as rotation or mirror. This means if a TQFP chip
-has 48 pads along 4 sides, in the simplest setup there will be 2 pad stack
-prototypes (a vertical and a horizontal) and 24+24 pad stack references using
-them. Pcb-rnd keeps track of pad stacks prototypes which are created from
-an existing prototype by rotation or mirroring; this lets the user modify
-the pad stack prototype in a way that all other rotated/mirrored prototypes
-are modified as well.
-
+A pad stack reference has its own x;y coordinate (within the board or
+subcircuit), a rotation angle and a mirror flag. This means if a TQFP chip
+has 48 pads along 4 sides, in the simplest setup there will be onlt one pad
+stack prototype and 48 pad stack references using the same prototype with
+different coordinates and rotations.
 
 <h4> 2.4.11. Rat line Objects </h4>
 <p>
