@@ -123,26 +123,25 @@ static int pcb_padstack_proto_conv(pcb_data_t *data, pcb_padstack_proto_t *dst, 
 				break;
 			case PCB_OBJ_POLYGON:
 				{
-					pcb_poly_it_t it;
-					unsigned long int len;
-					int p;
-					pcb_coord_t x, y;
-					int go;
+					pcb_cardinal_t p, len;
+					pcb_poly_t *poly = *(pcb_poly_t **)o;
 
+					len = poly->PointN;
 					n++;
-					pcb_poly_island_first((*(pcb_poly_t **)o), &it);
-					pcb_poly_contour(&it);
-					for(go = pcb_poly_vect_first(&it, &x, &y), len = 0; go; go = pcb_poly_vect_next(&it, &x, &y))
-						len++;
+					if (poly->HoleIndexN != 0) {
+						if (!quiet)
+							pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not convert polygon with holes\n");
+						goto quit;
+					}
 					if (len >= (1L << (sizeof(int)-1))) {
 						if (!quiet)
 							pcb_message(PCB_MSG_ERROR, "Padstack conversion: polygon has too many points\n");
 						goto quit;
 					}
 					pcb_padstack_shape_alloc_poly(&ts->shape[n].data.poly, len);
-					for(go = pcb_poly_vect_first(&it, &x, &y), p = 0; go; go = pcb_poly_vect_next(&it, &x, &y), p++) {
-						ts->shape[n].data.poly.x[p] = x - ox;
-						ts->shape[n].data.poly.y[p] = y - oy;
+					for(p = 0; p < len; p++) {
+						ts->shape[n].data.poly.x[p] = poly->Points[p].X - ox;
+						ts->shape[n].data.poly.y[p] = poly->Points[p].Y - oy;
 					}
 
 					ts->shape[n].shape = PCB_PSSH_POLY;
