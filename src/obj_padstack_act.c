@@ -53,13 +53,28 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			pcb_gui->get_coords("Click at padstack origin", &x, &y);
 		pid = pcb_padstack_conv_selection(PCB, 0, x, y);
 	}
-	else if (strcmp(argv[0], "buffer") == 0)
+	else if (strcmp(argv[0], "buffer") == 0) {
+		pcb_padstack_proto_t tmp, *p;
+
 		pid = pcb_padstack_conv_buffer(0);
+
+		/* have to save and restore the prototype around the buffer clear */
+		tmp = PCB_PASTEBUFFER->Data->ps_protos.array[pid];
+		memset(&PCB_PASTEBUFFER->Data->ps_protos.array[pid], 0, sizeof(PCB_PASTEBUFFER->Data->ps_protos.array[0]));
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+		p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
+		*p = tmp;
+		pid = pcb_padstack_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
+
+		pcb_padstack_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_no_flags());
+		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
+		PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
+	}
 	else
 		PCB_ACT_FAIL(padstackconvert);
 
 	pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
-	
+
 	return 0;
 }
 
