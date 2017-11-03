@@ -49,7 +49,7 @@ typedef struct pse_s {
 	/* widget IDs */
 	int tab_instance, tab_prototype;
 	int but_instance, but_prototype;
-	int proto_id, clearance;
+	int proto_id, clearance, rot, xmirror;
 	int proto_shape[pse_num_layers];
 	int proto_info[pse_num_layers];
 	int hole_header;
@@ -108,9 +108,11 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	bottom_grp = pcb_get_layergrp(pse->pcb, bottom_gid);
 
 	/* instance */
-	sprintf(tmp, "#%ld", (long int)pse->ps->proto);
+	sprintf(tmp, "#%ld, %d", (long int)pse->ps->proto, pse->ps->protoi);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str_value, tmp);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, real_value, pse->ps->rot);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->xmirror, int_value, pse->ps->xmirror);
 
 	/* proto - layers */
 	for(n = 0; n < pse_num_layers; n++) {
@@ -261,12 +263,20 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 					PCB_DAD_BUTTON(dlg, "#5");
 						pse.proto_id = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
-				PCB_DAD_BEGIN_HBOX(dlg);
+				PCB_DAD_BEGIN_TABLE(dlg, 2);
 					PCB_DAD_LABEL(dlg, "Clearance");
 					PCB_DAD_COORD(dlg, "");
 						pse.clearance = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_MINVAL(dlg, 1);
 						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+					PCB_DAD_LABEL(dlg, "Rotation");
+					PCB_DAD_REAL(dlg, "");
+						pse.rot = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_MINVAL(dlg, 0);
+						PCB_DAD_MAXVAL(dlg, 360);
+					PCB_DAD_LABEL(dlg, "X-mirror");
+					PCB_DAD_BOOL(dlg, "");
+						pse.xmirror = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
@@ -276,7 +286,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 			pse.tab_prototype = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-				PCB_DAD_LABEL(dlg, "Pad geometry:");
+				PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
 				PCB_DAD_BEGIN_TABLE(dlg, 3);
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 					for(n = 0; n < pse_num_layers; n++) {
