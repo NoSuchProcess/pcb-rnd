@@ -773,7 +773,7 @@ static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
 
 	parse_coord(&ps->x, lht_dom_hash_get(obj, "x"));
 	parse_coord(&ps->y, lht_dom_hash_get(obj, "y"));
-	parse_double(&ps->rot, lht_dom_hash_get(obj, "rtot"));
+	parse_double(&ps->rot, lht_dom_hash_get(obj, "rot"));
 	tmp = 0;
 	parse_int(&tmp, lht_dom_hash_get(obj, "xmirror"));
 	ps->xmirror = tmp;
