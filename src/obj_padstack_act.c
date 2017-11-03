@@ -63,7 +63,7 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	return 0;
 }
 
-static const char pcb_acts_padstackplace[] = "PadstackConvert([proto_id|default], [x, y])";
+static const char pcb_acts_padstackplace[] = "PadstackPlace([proto_id|default], [x, y])";
 static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id, or if not specified, the default for style)";
 
 int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
