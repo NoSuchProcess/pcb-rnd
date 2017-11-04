@@ -180,7 +180,7 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 			break;
 		}
 
-	case PCB_OBJ_PADSTACK:
+	case PCB_OBJ_PSTK:
 		{
 			if (ADD_PADSTACK_TO_LIST((pcb_pstk_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
@@ -308,7 +308,7 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 		case PCB_OBJ_PAD:     return PCB_TYPE_PAD;
 		case PCB_OBJ_PIN:     return PCB_TYPE_PIN;
 		case PCB_OBJ_VIA:     return PCB_TYPE_VIA;
-		case PCB_OBJ_PADSTACK:return PCB_TYPE_PADSTACK;
+		case PCB_OBJ_PSTK:return PCB_TYPE_PSTK;
 		case PCB_OBJ_ELEMENT: return PCB_TYPE_ELEMENT;
 		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
 

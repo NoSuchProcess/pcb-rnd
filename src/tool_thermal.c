@@ -94,7 +94,7 @@ static void tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 			newth = cycle[0]; /* new thermal, use default */
 	}
 
-	pcb_chg_obj_thermal(PCB_TYPE_PADSTACK, ps, ps, ps, newth, lid);
+	pcb_chg_obj_thermal(PCB_TYPE_PSTK, ps, ps, ps, newth, lid);
 }
 
 
@@ -105,7 +105,7 @@ void pcb_tool_thermal_notify_mode(void)
 
 	if (((type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
-		if (type == PCB_TYPE_PADSTACK)
+		if (type == PCB_TYPE_PSTK)
 			tool_thermal_on_pstk((pcb_pstk_t *)ptr2, INDEXOFCURRENT);
 		else
 			tool_thermal_on_pinvia(type, ptr1, ptr2, ptr3);

@@ -999,7 +999,7 @@ static routedata_t *CreateRouteData()
 					else
 						switch (connection->obj->type) {
 						case PCB_OBJ_VOID: break;
-						case PCB_OBJ_PADSTACK:
+						case PCB_OBJ_PSTK:
 #warning padstack TODO
 							break;
 						case PCB_OBJ_PAD:

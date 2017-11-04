@@ -70,7 +70,7 @@ static pcb_bool ADD_PS_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pc
 	if (User)
 		pcb_undo_add_obj_to_flag(ps);
 	PCB_FLAG_SET(TheFlag, ps);
-	make_callback(PCB_TYPE_PADSTACK, ps, from_type, from_ptr, type);
+	make_callback(PCB_TYPE_PSTK, ps, from_type, from_ptr, type);
 	PADSTACKLIST_ENTRY(PadstackList.Number) = ps;
 	PadstackList.Number++;
 #ifdef DEBUG
@@ -89,7 +89,7 @@ static pcb_bool ADD_PADSTACK_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_p
 	if (User)
 		pcb_undo_add_obj_to_flag(ps);
 	PCB_FLAG_SET(TheFlag, ps);
-	make_callback(PCB_TYPE_PADSTACK, ps, from_type, from_ptr, type);
+	make_callback(PCB_TYPE_PSTK, ps, from_type, from_ptr, type);
 	PADSTACKLIST_ENTRY(PVList.Number) = ps;
 	PadstackList.Number++;
 #ifdef DEBUG
@@ -97,7 +97,7 @@ static pcb_bool ADD_PADSTACK_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_p
 		printf("ADD_PADSTACK_TO_LIST overflow! num=%d size=%d\n", PVList.Number, PVList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) && (ps->parent.data->parent_type == PCB_PARENT_SUBC))
-		return (SetThing(PCB_TYPE_PADSTACK, ps->parent.data->parent.subc, ps, ps));
+		return (SetThing(PCB_TYPE_PSTK, ps->parent.data->parent.subc, ps, ps));
 	return pcb_false;
 }
 
@@ -453,7 +453,7 @@ static pcb_r_dir_t LOCtoPSline_callback(const pcb_box_t * b, void *cl)
 	struct ps_info *i = (struct ps_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_pstk_intersect_line(&i->ps, line)) {
-		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_PADSTACK, &i->ps, PCB_FCT_COPPER))
+		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -465,7 +465,7 @@ static pcb_r_dir_t LOCtoPSarc_callback(const pcb_box_t * b, void *cl)
 	struct ps_info *i = (struct ps_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_pstk_intersect_arc(&i->ps, arc)) {
-		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_PADSTACK, &i->ps, PCB_FCT_COPPER))
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -487,7 +487,7 @@ static pcb_r_dir_t LOCtoPSpoly_callback(const pcb_box_t * b, void *cl)
 	struct ps_info *i = (struct ps_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_pstk_intersect_poly(&i->ps, polygon)) {
-		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PADSTACK, &i->ps, PCB_FCT_COPPER))
+		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
 	}
 
@@ -576,7 +576,7 @@ static pcb_bool LookupLOConnectionsToPSList(pcb_bool AndRats)
 
 		/* subc intconn jumps */
 		if ((orig_ps->term != NULL) && (orig_ps->intconn > 0))
-			LOC_int_conn_subc(pcb_gobj_parent_subc(orig_ps->parent_type, &orig_ps->parent), orig_ps->intconn, PCB_TYPE_PADSTACK, orig_ps);
+			LOC_int_conn_subc(pcb_gobj_parent_subc(orig_ps->parent_type, &orig_ps->parent), orig_ps->intconn, PCB_TYPE_PSTK, orig_ps);
 
 		/* now all lines, arcs and polygons of the several layers */
 		for(layer = 0; layer < pcb_max_layer; layer++) {

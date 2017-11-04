@@ -108,7 +108,7 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 	case PCB_TYPE_POLYGON:
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 	case PCB_TYPE_PAD:
 	case PCB_TYPE_ELEMENT:
 	case PCB_TYPE_RATLINE:
@@ -161,7 +161,7 @@ static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 			*y = pin->Y;
 			break;
 		}
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		{
 			pcb_pstk_t *ps = (pcb_pstk_t *) thing_ptr3;
 			*x = ps->x;
@@ -293,7 +293,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 			goto doIsBad;
 		}
 		break;
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		if (pcb_pstk_drc_check_clearance(ps, polygon, 2 * PCB->Bloat) != 0) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, pin);
@@ -412,7 +412,7 @@ int pcb_drc_all(void)
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)
-				&& DRCFind(PCB_TYPE_PADSTACK, (void *) padstack, (void *) padstack, (void *) padstack)) {
+				&& DRCFind(PCB_TYPE_PSTK, (void *) padstack, (void *) padstack, (void *) padstack)) {
 			IsBad = pcb_true;
 			break;
 		}

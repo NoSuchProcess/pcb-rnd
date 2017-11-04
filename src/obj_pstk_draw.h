@@ -22,8 +22,8 @@
 
 #include "obj_pstk.h"
 
-#ifndef PCB_OBJ_PADSTACK_DRAW_H
-#define PCB_OBJ_PADSTACK_DRAW_H
+#ifndef PCB_OBJ_PSTK_DRAW_H
+#define PCB_OBJ_PSTK_DRAW_H
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H

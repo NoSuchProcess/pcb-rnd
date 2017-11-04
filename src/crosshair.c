@@ -349,7 +349,7 @@ static void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		{
 			pcb_pstk_t *ps = (pcb_pstk_t *) pcb_crosshair.AttachedObject.Ptr1;
 			thindraw_moved_ps(ps, dx, dy);

@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef PCB_OBJ_PADSTACK_INLINES_H
-#define PCB_OBJ_PADSTACK_INLINES_H
+#ifndef PCB_OBJ_PSTK_INLINES_H
+#define PCB_OBJ_PSTK_INLINES_H
 
 #include "board.h"
 #include "data.h"

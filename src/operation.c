@@ -100,7 +100,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return (F->Pad(ctx, (pcb_element_t *) Ptr1, (pcb_pad_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		if (F->padstack)
 			return (F->padstack(ctx, (pcb_pstk_t *)Ptr2));
 		break;
@@ -293,7 +293,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 		PCB_END_LOOP;
 	}
 
-	if (type & PCB_TYPE_PADSTACK && pcb->ViaOn && F->padstack) {
+	if (type & PCB_TYPE_PSTK && pcb->ViaOn && F->padstack) {
 		PCB_PADSTACK_LOOP(pcb->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack)) {

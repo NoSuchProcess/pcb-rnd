@@ -672,7 +672,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 		if (PCB->ViaOn)
 			pcb_via_invalidate_draw((pcb_pin_t *)obj);
 		break;
-	case PCB_OBJ_PADSTACK:
+	case PCB_OBJ_PSTK:
 		if (PCB->ViaOn)
 			pcb_pstk_invalidate_draw((pcb_pstk_t *)obj);
 		break;

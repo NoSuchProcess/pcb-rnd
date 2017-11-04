@@ -1753,7 +1753,7 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 		SubtractPin(Data, (pcb_pin_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		SubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -1791,7 +1791,7 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Po
 	case PCB_TYPE_VIA:
 		UnsubtractPin((pcb_pin_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		UnsubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
@@ -1880,7 +1880,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			PCB_END_LOOP;
 		}
 		break;
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		if (Data->parent_type != PCB_PARENT_BOARD)
 			return 0;
 		if (ptr1 == NULL) { /* no layer specified: run on all layers */

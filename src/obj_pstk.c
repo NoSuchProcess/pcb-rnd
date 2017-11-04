@@ -50,7 +50,7 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 
 	ps = calloc(sizeof(pcb_pstk_t), 1);
 	ps->protoi = -1;
-	ps->type = PCB_OBJ_PADSTACK;
+	ps->type = PCB_OBJ_PSTK;
 	ps->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(ps, data, data);
 
@@ -456,7 +456,7 @@ static int undo_change_instance_swap(void *udata)
 		return -1;
 	}
 
-	pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PADSTACK, NULL, ps);
+	pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 	pcb_pstk_invalidate_erase(ps);
 
 	swap(ps->proto,      u->proto,     pcb_cardinal_t);
@@ -468,7 +468,7 @@ static int undo_change_instance_swap(void *udata)
 	ps->protoi = -1;
 	pcb_pstk_get_tshape(ps);
 
-	pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PADSTACK, NULL, ps);
+	pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 	pcb_pstk_invalidate_draw(ps);
 
 	return 0;

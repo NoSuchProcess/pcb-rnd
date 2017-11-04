@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef PCB_OBJ_PADSTACK_STRUCT_DECLARED
-#define PCB_OBJ_PADSTACK_STRUCT_DECLARED
+#ifndef PCB_OBJ_PSTK_STRUCT_DECLARED
+#define PCB_OBJ_PSTK_STRUCT_DECLARED
 
 #include "obj_common.h"
 
@@ -45,8 +45,8 @@ struct pcb_pstk_s {
 #endif
 
 #ifndef PCB_PADSTACK_STRUCT_ONLY
-#ifndef PCB_OBJ_PADSTACK_H
-#define PCB_OBJ_PADSTACK_H
+#ifndef PCB_OBJ_PSTK_H
+#define PCB_OBJ_PSTK_H
 
 #define PCB_PADSTACK_MAX_SHAPES 31
 

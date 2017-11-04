@@ -127,7 +127,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 		pcb_via_invalidate_draw((pcb_pin_t *) ptr1);
 		break;
 
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 		pcb_undo_add_obj_to_flag(ptr1);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pstk_t *) ptr1);
 		pcb_pstk_invalidate_draw((pcb_pstk_t *) ptr1);
@@ -495,7 +495,7 @@ do { \
 			if (pcb_pstk_near_box(padstack, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
-				append(PCB_TYPE_PADSTACK, padstack, padstack);
+				append(PCB_TYPE_PSTK, padstack, padstack);
 				if (pcb->ViaOn)
 					pcb_pstk_invalidate_draw(padstack);
 			}
@@ -531,7 +531,7 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 		case PCB_OBJ_POLYGON: return PCB_POLYGON_NEAR_BOX((pcb_poly_t *)obj, box);
 		case PCB_OBJ_ARC:  return PCB_ARC_NEAR_BOX((pcb_arc_t *)obj, box);
 		case PCB_OBJ_PAD:  return PCB_PAD_NEAR_BOX((pcb_pad_t *)obj, box);
-		case PCB_OBJ_PADSTACK: return pcb_pstk_near_box((pcb_pstk_t *)obj, box);
+		case PCB_OBJ_PSTK: return pcb_pstk_near_box((pcb_pstk_t *)obj, box);
 		case PCB_OBJ_PIN:
 		case PCB_OBJ_VIA:  return PCB_VIA_OR_PIN_NEAR_BOX((pcb_pin_t *)obj, box);
 		case PCB_OBJ_ELEMENT: return PCB_ELEMENT_NEAR_BOX((pcb_element_t *)obj, box);

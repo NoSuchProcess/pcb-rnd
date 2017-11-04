@@ -51,7 +51,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_PAD:     return "pad";
 		case PCB_OBJ_PIN:     return "pin";
 		case PCB_OBJ_VIA:     return "via";
-		case PCB_OBJ_PADSTACK:return "padstack";
+		case PCB_OBJ_PSTK:return "padstack";
 		case PCB_OBJ_ELEMENT: return "element";
 		case PCB_OBJ_SUBC:    return "subcircuit";
 		case PCB_OBJ_NET:     return "net";
@@ -76,7 +76,7 @@ int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t
 	case PCB_TYPE_POLYGON:
 	case PCB_TYPE_PAD:
 	case PCB_TYPE_PIN:
-	case PCB_TYPE_PADSTACK:
+	case PCB_TYPE_PSTK:
 	case PCB_TYPE_ELEMENT_NAME:
 		*res = *(pcb_box_t *)Ptr2;
 		return 0;

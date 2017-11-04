@@ -1187,8 +1187,8 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	if (Type & PCB_TYPE_VIA && SearchViaByLocation(objst, req_flag, (pcb_pin_t **) Result1, (pcb_pin_t **) Result2, (pcb_pin_t **) Result3))
 		return (PCB_TYPE_VIA);
 
-	if (Type & PCB_TYPE_PADSTACK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3))
-		return (PCB_TYPE_PADSTACK);
+	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3))
+		return (PCB_TYPE_PSTK);
 
 	if (Type & PCB_TYPE_PIN && SearchPinByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_pin_t **) pr2, (pcb_pin_t **) pr3))
 		HigherAvail = PCB_TYPE_PIN;
@@ -1451,12 +1451,12 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 		PCB_END_LOOP;
 	}
 
-	if (type == PCB_TYPE_PADSTACK) {
+	if (type == PCB_TYPE_PSTK) {
 		PCB_PADSTACK_LOOP(Base);
 		{
 			if (padstack->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *)padstack;
-				return PCB_TYPE_PADSTACK;
+				return PCB_TYPE_PSTK;
 			}
 		}
 		PCB_END_LOOP;

@@ -767,7 +767,7 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	ps = pcb_pstk_alloc(dt);
 
 	parse_id(&ps->ID, obj, 13);
-	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PADSTACK, &intconn);
+	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PSTK, &intconn);
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 

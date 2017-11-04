@@ -603,7 +603,7 @@ static lht_node_t *build_pstk(pcb_pstk_t *ps)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&ps->Attributes));
-	lht_dom_hash_put(obj, build_flags(&ps->Flags, PCB_TYPE_PADSTACK, ps->intconn));
+	lht_dom_hash_put(obj, build_flags(&ps->Flags, PCB_TYPE_PSTK, ps->intconn));
 
 	lht_dom_hash_put(obj, build_textf("proto", "%ld", (long int)ps->proto));
 	lht_dom_hash_put(obj, build_textf("x", CFMT, ps->x));

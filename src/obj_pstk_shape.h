@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef PCB_OBJ_PADSTACK_SHAPE_H
-#define PCB_OBJ_PADSTACK_SHAPE_H
+#ifndef PCB_OBJ_PSTK_SHAPE_H
+#define PCB_OBJ_PSTK_SHAPE_H
 
 #include "unit.h"
 #include "polygon.h"

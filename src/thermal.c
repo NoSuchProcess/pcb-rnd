@@ -617,7 +617,7 @@ pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer
 		case PCB_OBJ_POLYGON:
 			return pcb_thermal_area_poly(pcb, (pcb_poly_t *)obj, lid);
 
-		case PCB_OBJ_PADSTACK:
+		case PCB_OBJ_PSTK:
 			return pcb_thermal_area_pstk(pcb, (pcb_pstk_t *)obj, lid);
 
 		case PCB_OBJ_ARC:

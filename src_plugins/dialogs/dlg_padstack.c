@@ -251,8 +251,8 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 		void *ptr1, *ptr2 = NULL, *ptr3;
 		long type;
 		pcb_gui->get_coords("Click on a padstack to edit", &x, &y);
-		type = pcb_search_screen(x, y, PCB_TYPE_PADSTACK, &ptr1, &ptr2, &ptr3);
-		if (type != PCB_TYPE_PADSTACK) {
+		type = pcb_search_screen(x, y, PCB_TYPE_PSTK, &ptr1, &ptr2, &ptr3);
+		if (type != PCB_TYPE_PSTK) {
 			pcb_message(PCB_MSG_ERROR, "Need a padstack.\n");
 			return 1;
 		}
