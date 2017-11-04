@@ -522,6 +522,7 @@ static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 				return NULL;
 			pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
 			pcb_poly_pa_clearance_construct(&pres, &it, ps->Clearance);
+			pcb_polyarea_move(pres, ps->x, ps->y);
 			return pres;
 	}
 	return NULL;
