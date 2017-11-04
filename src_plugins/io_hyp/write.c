@@ -311,7 +311,7 @@ static int write_devices(hyp_wr_t * wr)
 	return 0;
 }
 
-static void write_padstack_pv(hyp_wr_t * wr, const pcb_pin_t * pin)
+static void write_pstk_pv(hyp_wr_t * wr, const pcb_pin_t * pin)
 {
 	int new_item;
 	int pin_shape;
@@ -332,7 +332,7 @@ static void write_padstack_pv(hyp_wr_t * wr, const pcb_pin_t * pin)
 	fprintf(wr->f, "}\n");
 }
 
-static void write_padstack_pad(hyp_wr_t * wr, const pcb_pad_t * pad)
+static void write_pstk_pad(hyp_wr_t * wr, const pcb_pad_t * pad)
 {
 	int new_item;
 	int pad_shape;
@@ -355,7 +355,7 @@ static void write_padstack_pad(hyp_wr_t * wr, const pcb_pad_t * pad)
 	fprintf(wr->f, "}\n");
 }
 
-static int write_padstack(hyp_wr_t * wr)
+static int write_pstk(hyp_wr_t * wr)
 {
 	gdl_iterator_t it, it2;
 	pcb_element_t *elem;
@@ -364,14 +364,14 @@ static int write_padstack(hyp_wr_t * wr)
 
 	elementlist_foreach(&wr->pcb->Data->Element, &it, elem) {
 		pinlist_foreach(&elem->Pin, &it2, pin) {
-			write_padstack_pv(wr, pin);
+			write_pstk_pv(wr, pin);
 		}
 		padlist_foreach(&elem->Pad, &it2, pad) {
-			write_padstack_pad(wr, pad);
+			write_pstk_pad(wr, pad);
 		}
 	}
 	pinlist_foreach(&wr->pcb->Data->Via, &it, pin) {
-		write_padstack_pv(wr, pin);
+		write_pstk_pv(wr, pin);
 	}
 	return 0;
 }
@@ -455,7 +455,7 @@ int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, co
 	if (write_devices(&wr) != 0)
 		goto err;
 
-	if (write_padstack(&wr) != 0)
+	if (write_pstk(&wr) != 0)
 		goto err;
 
 	if (write_nets(&wr) != 0)

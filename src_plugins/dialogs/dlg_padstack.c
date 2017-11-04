@@ -20,8 +20,8 @@
  *
  */
 
-#include "obj_padstack.h"
-#include "obj_padstack_inlines.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 
 typedef struct pse_proto_layer_s {
 	const char *name;
@@ -43,7 +43,7 @@ static const pse_proto_layer_t pse_layer[] = {
 typedef struct pse_s {
 	pcb_hid_attribute_t *attrs;
 	pcb_board_t *pcb;
-	pcb_padstack_t *ps;
+	pcb_pstk_t *ps;
 	int tab;
 
 	/* widget IDs */
@@ -98,12 +98,12 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 {
 	char tmp[256], *s;
 	int n;
-	pcb_padstack_proto_t *proto;
+	pcb_pstk_proto_t *proto;
 	pcb_layergrp_id_t top_gid, bottom_gid;
 	pcb_layergrp_t *top_grp, *bottom_grp;
 	pcb_bb_type_t htype;
 
-	htype = pcb_padstack_bbspan(pse->pcb, pse->ps, &top_gid, &bottom_gid, &proto);
+	htype = pcb_pstk_bbspan(pse->pcb, pse->ps, &top_gid, &bottom_gid, &proto);
 	top_grp = pcb_get_layergrp(pse->pcb, top_gid);
 	bottom_grp = pcb_get_layergrp(pse->pcb, bottom_gid);
 
@@ -116,7 +116,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 
 	/* proto - layers */
 	for(n = 0; n < pse_num_layers; n++) {
-		pcb_padstack_shape_t *shape = pcb_padstack_shape(pse->ps, pse_layer[n].mask, pse_layer[n].comb);
+		pcb_pstk_shape_t *shape = pcb_pstk_shape(pse->ps, pse_layer[n].mask, pse_layer[n].comb);
 		if (shape != NULL) {
 			switch(shape->shape) {
 				case PCB_PSSH_CIRC:
@@ -199,7 +199,7 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	if (lock != 0)
 		return;
 
-	pcb_padstack_change_instance(pse->ps,
+	pcb_pstk_change_instance(pse->ps,
 		NULL,
 		&pse->attrs[pse->clearance].default_val.coord_value,
 		&pse->attrs[pse->rot].default_val.real_value,
@@ -215,14 +215,14 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
-	pcb_padstack_proto_t *proto = pcb_padstack_get_proto(pse->ps);
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	static int lock = 0;
 
 	if (lock != 0)
 		return;
 
 	if (proto != NULL) {
-		pcb_padstack_proto_change_hole(proto,
+		pcb_pstk_proto_change_hole(proto,
 			&pse->attrs[pse->hplated].default_val.int_value,
 			&pse->attrs[pse->hdia].default_val.coord_value,
 			&pse->attrs[pse->htop_val].default_val.int_value,

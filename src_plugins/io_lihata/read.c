@@ -756,15 +756,15 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, 
 	return 0;
 }
 
-static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
+static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 {
-	pcb_padstack_t *ps;
+	pcb_pstk_t *ps;
 	lht_node_t *thl, *t;
 	unsigned char intconn = 0;
 	unsigned long int ul;
 	int tmp;
 
-	ps = pcb_padstack_alloc(dt);
+	ps = pcb_pstk_alloc(dt);
 
 	parse_id(&ps->ID, obj, 13);
 	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PADSTACK, &intconn);
@@ -795,7 +795,7 @@ static int parse_padstack(pcb_data_t *dt, lht_node_t *obj)
 		}
 	}
 
-	pcb_padstack_add(dt, ps);
+	pcb_pstk_add(dt, ps);
 
 	return 0;
 }
@@ -966,7 +966,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 
 	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "padstack_ref.", 13) == 0)
-			parse_padstack(dt, n);
+			parse_pstk(dt, n);
 		if (strncmp(n->name, "via.", 4) == 0)
 			parse_pin(dt, NULL, n, 0, 0);
 		if (strncmp(n->name, "rat.", 4) == 0)
@@ -1102,7 +1102,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_data_padstack_shape_poly(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	lht_node_t *n;
 	pcb_cardinal_t i;
@@ -1119,7 +1119,7 @@ static int parse_data_padstack_shape_poly(pcb_board_t *pcb, pcb_padstack_shape_t
 	}
 	dst->data.poly.len /= 2;
 
-	pcb_padstack_shape_alloc_poly(&dst->data.poly, dst->data.poly.len);
+	pcb_pstk_shape_alloc_poly(&dst->data.poly, dst->data.poly.len);
 	for(n = nshape->data.list.first, i = 0; n != NULL; i++) {
 		if (parse_coord(&dst->data.poly.x[i], n) != 0) return -1;
 		n = n->next;
@@ -1129,7 +1129,7 @@ static int parse_data_padstack_shape_poly(pcb_board_t *pcb, pcb_padstack_shape_t
 	return 0;
 }
 
-static int parse_data_padstack_shape_line(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_line(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	int sq;
 
@@ -1145,7 +1145,7 @@ static int parse_data_padstack_shape_line(pcb_board_t *pcb, pcb_padstack_shape_t
 	return 0;
 }
 
-static int parse_data_padstack_shape_circ(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	dst->shape = PCB_PSSH_CIRC;
 
@@ -1155,7 +1155,7 @@ static int parse_data_padstack_shape_circ(pcb_board_t *pcb, pcb_padstack_shape_t
 	return 0;
 }
 
-static int parse_data_padstack_shape_v4(pcb_board_t *pcb, pcb_padstack_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	lht_node_t *ncmb, *nlyt, *ns;
 	int res = -1;
@@ -1176,13 +1176,13 @@ static int parse_data_padstack_shape_v4(pcb_board_t *pcb, pcb_padstack_shape_t *
 	if (parse_coord(&dst->clearance, lht_dom_hash_get(nshape, "clearance")) != 0) return -1;
 
 	ns = lht_dom_hash_get(nshape, "ps_poly");
-	if ((ns != NULL) && (ns->type == LHT_LIST)) return parse_data_padstack_shape_poly(pcb, dst, ns, subc_parent);
+	if ((ns != NULL) && (ns->type == LHT_LIST)) return parse_data_pstk_shape_poly(pcb, dst, ns, subc_parent);
 
 	ns = lht_dom_hash_get(nshape, "ps_line");
-	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_padstack_shape_line(pcb, dst, ns, subc_parent);
+	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_line(pcb, dst, ns, subc_parent);
 
 	ns = lht_dom_hash_get(nshape, "ps_circ");
-	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_padstack_shape_circ(pcb, dst, ns, subc_parent);
+	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_circ(pcb, dst, ns, subc_parent);
 
 	pcb_message(PCB_MSG_ERROR, "Failed to parse pad stack: missing shape\n");
 	return -1;
@@ -1190,11 +1190,11 @@ static int parse_data_padstack_shape_v4(pcb_board_t *pcb, pcb_padstack_shape_t *
 
 
 
-static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent)
+static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent)
 {
 	int itmp, i;
 	lht_node_t *nshape, *n;
-	pcb_padstack_tshape_t *ts;
+	pcb_pstk_tshape_t *ts;
 
 	/* read the hole */
 	if (parse_coord(&dst->hdia, lht_dom_hash_get(nproto, "hdia")) != 0) return -1;
@@ -1216,17 +1216,17 @@ static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst
 	ts = pcb_vtpadstack_tshape_get(&dst->tr, 0, 1);
 
 	for(n = nshape->data.list.first, ts->len = 0; n != NULL; n = n->next) ts->len++;
-	ts->shape = calloc(sizeof(pcb_padstack_shape_t), ts->len);
+	ts->shape = calloc(sizeof(pcb_pstk_shape_t), ts->len);
 
 	for(n = nshape->data.list.first, i = 0; n != NULL; n = n->next, i++)
 		if ((n->type == LHT_HASH) && (strcmp(n->name, "ps_shape_v4") == 0))
-			if (parse_data_padstack_shape_v4(pcb, ts->shape+i, n, subc_parent) != 0)
+			if (parse_data_pstk_shape_v4(pcb, ts->shape+i, n, subc_parent) != 0)
 				return -1;
 
 	return 0;
 }
 
-static int parse_data_padstack_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
+static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
 {
 	pcb_cardinal_t pid, len;
 	lht_node_t *pr;
@@ -1239,7 +1239,7 @@ static int parse_data_padstack_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_nod
 		if ((pr->type == LHT_TEXT) && (strcmp(pr->name, "unused") == 0))
 			continue;
 		else if ((pr->type == LHT_HASH) && (strcmp(pr->name, "ps_proto_v4") == 0))
-			res = parse_data_padstack_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
+			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid padstack proto definition\n", pp->name);
 			return -1;
@@ -1276,7 +1276,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 	if (rdver >= 4) {
 		grp = lht_dom_hash_get(nd, "padstack_prototypes");
 		if ((grp != NULL) && (grp->type == LHT_LIST))
-			parse_data_padstack_protos(pcb, dt, grp, subc_parent);
+			parse_data_pstk_protos(pcb, dt, grp, subc_parent);
 	}
 
 	grp = lht_dom_hash_get(nd, "objects");

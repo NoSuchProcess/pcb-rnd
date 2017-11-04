@@ -43,7 +43,7 @@
 
 #include "obj_pad_draw.h"
 #include "obj_pinvia_draw.h"
-#include "obj_padstack_draw.h"
+#include "obj_pstk_draw.h"
 #include "obj_elem_draw.h"
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
@@ -422,22 +422,22 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	pcb_gui->render_burst(PCB_HID_BURST_END, drawn_area);
 }
 
-static void pcb_draw_padstacks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, int is_current, pcb_layer_combining_t comb)
+static void pcb_draw_pstks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, int is_current, pcb_layer_combining_t comb)
 {
-	pcb_padstack_draw_t ctx;
+	pcb_pstk_draw_t ctx;
 	ctx.pcb = PCB;
 	ctx.gid = group;
 	ctx.is_current = is_current;
 	ctx.comb = comb;
-	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_padstack_draw_callback, &ctx, NULL);
+	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_callback, &ctx, NULL);
 }
 
-static void pcb_draw_padstack_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
+static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
 {
-	pcb_padstack_draw_t ctx;
+	pcb_pstk_draw_t ctx;
 	ctx.pcb = PCB;
 	ctx.gid = group;
-	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_padstack_draw_hole_callback, &ctx, NULL);
+	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_hole_callback, &ctx, NULL);
 }
 
 /* ---------------------------------------------------------------------------
@@ -476,7 +476,7 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 	/* draw padstack holes - copper is drawn with each group */
 	if (PCB->ViaOn || !pcb_gui->gui)
-		pcb_draw_padstack_holes(group, drawn_area);
+		pcb_draw_pstk_holes(group, drawn_area);
 }
 
 /* ---------------------------------------------------------------------------
@@ -622,7 +622,7 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 		pcb_draw_ppv(group, drawn_area);
 
 	if (gflg & PCB_LYT_COPPER)
-		pcb_draw_padstacks(group, drawn_area, is_current, PCB_LYC_AUTO);
+		pcb_draw_pstks(group, drawn_area, is_current, PCB_LYC_AUTO);
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 }
@@ -674,7 +674,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 		break;
 	case PCB_OBJ_PADSTACK:
 		if (PCB->ViaOn)
-			pcb_padstack_invalidate_draw((pcb_padstack_t *)obj);
+			pcb_pstk_invalidate_draw((pcb_pstk_t *)obj);
 		break;
 	case PCB_OBJ_LINE:
 		if (obj->parent.layer->meta.real.vis)

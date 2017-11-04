@@ -2192,7 +2192,7 @@ yyreduce:
 
   case 140:
 #line 394 "hyp_y.y" /* yacc.c:1646  */
-    { if (exec_padstack_end(&h)) YYERROR; }
+    { if (exec_pstk_end(&h)) YYERROR; }
 #line 2197 "hyp_y.c" /* yacc.c:1646  */
     break;
 
@@ -2210,7 +2210,7 @@ yyreduce:
 
   case 148:
 #line 406 "hyp_y.y" /* yacc.c:1646  */
-    { if (exec_padstack_element(&h)) YYERROR; new_record(); }
+    { if (exec_pstk_element(&h)) YYERROR; new_record(); }
 #line 2215 "hyp_y.c" /* yacc.c:1646  */
     break;
 

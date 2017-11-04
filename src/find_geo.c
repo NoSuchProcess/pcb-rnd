@@ -42,7 +42,7 @@
 
 #include "macro.h"
 #include "obj_arc_ui.h"
-#include "obj_padstack_inlines.h"
+#include "obj_pstk_inlines.h"
 
 #define EXPAND_BOUNDS(p) if (Bloat > 0) {\
        (p)->BoundingBox.X1 -= Bloat; \
@@ -825,14 +825,14 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t
 		pcb_line.Flags = shape_line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags(); \
 	} while(0)
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstack_t *ps, pcb_line_t *line)
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 {
-	pcb_padstack_shape_t *shape = pcb_padstack_shape_at(PCB, ps, line->parent.layer);
+	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
 	if (shape == NULL) return pcb_false;
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
 			if (shape->data.poly.pa == NULL)
-				pcb_padstack_shape_update_pa(&shape->data.poly);
+				pcb_pstk_shape_update_pa(&shape->data.poly);
 			return pcb_intersect_line_polyline(shape->data.poly.pa->contours, line->Point1.X - ps->x, line->Point1.Y - ps->y, line->Point2.X - ps->x, line->Point2.Y - ps->y, line->Thickness);
 		case PCB_PSSH_LINE:
 		{
@@ -855,9 +855,9 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_line(pcb_padstac
 }
 
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack_t *ps, pcb_arc_t *arc)
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
 {
-	pcb_padstack_shape_t *shape = pcb_padstack_shape_at(PCB, ps, arc->parent.layer);
+	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, arc->parent.layer);
 	if (shape == NULL) return pcb_false;
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
@@ -874,7 +874,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack
 				tmp.BoundingBox.Y2 -= ps->y;
 
 				if (shape->data.poly.pa == NULL)
-					pcb_padstack_shape_update_pa(&shape->data.poly);
+					pcb_pstk_shape_update_pa(&shape->data.poly);
 
 				return pcb_is_arc_in_polyarea(&tmp, shape->data.poly.pa);
 			}
@@ -892,9 +892,9 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_arc(pcb_padstack
 	return pcb_false;
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_poly(pcb_padstack_t *ps, pcb_poly_t *poly)
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 {
-	pcb_padstack_shape_t *shape = pcb_padstack_shape_at(PCB, ps, poly->parent.layer);
+	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, poly->parent.layer);
 	if (shape == NULL) return pcb_false;
 
 	switch(shape->shape) {
@@ -942,7 +942,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_poly(pcb_padstac
 
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_intersect_rat(pcb_padstack_t *ps, pcb_rat_t *rat)
+static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_rat(pcb_pstk_t *ps, pcb_rat_t *rat)
 {
 	return ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) || ((rat->Point2.X == ps->x) && (rat->Point2.Y == ps->y));
 }

@@ -27,30 +27,30 @@
 #include "polygon.h"
 #include "layer.h"
 
-typedef struct pcb_padstack_poly_s {
+typedef struct pcb_pstk_poly_s {
 	unsigned int len;             /* number of points in polygon */
 	pcb_coord_t *x;               /* ordered list of points, X coord */
 	pcb_coord_t *y;               /* ordered list of points, X coord */
 	pcb_polyarea_t *pa;           /* cache for the poly code */
-} pcb_padstack_poly_t;
+} pcb_pstk_poly_t;
 
-typedef struct pcb_padstack_line_s {
+typedef struct pcb_pstk_line_s {
 	pcb_coord_t x1, y1, x2, y2, thickness;
 	unsigned square:1;
-} pcb_padstack_line_t;
+} pcb_pstk_line_t;
 
-typedef struct pcb_padstack_circ_s {
+typedef struct pcb_pstk_circ_s {
 	pcb_coord_t dia;             /* diameter of the filled circle */
 	pcb_coord_t x, y;            /* assymetric pads */
-} pcb_padstack_circ_t;
+} pcb_pstk_circ_t;
 
-typedef struct pcb_padstack_shape_s {
+typedef struct pcb_pstk_shape_s {
 	pcb_layer_type_t layer_mask;
 	pcb_layer_combining_t comb;
 	union {
-		pcb_padstack_poly_t poly;
-		pcb_padstack_line_t line;
-		pcb_padstack_circ_t circ;
+		pcb_pstk_poly_t poly;
+		pcb_pstk_line_t line;
+		pcb_pstk_circ_t circ;
 	} data;
 	enum {
 		PCB_PSSH_POLY,
@@ -58,15 +58,15 @@ typedef struct pcb_padstack_shape_s {
 		PCB_PSSH_CIRC                /* filled circle */
 	} shape;
 	pcb_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
-} pcb_padstack_shape_t;
+} pcb_pstk_shape_t;
 
 /* transformed prototype */
-typedef struct pcb_padstack_tshape_s {
+typedef struct pcb_pstk_tshape_s {
 	double rot;
 	unsigned xmirror:1;
 
 	unsigned char len;             /* number of shapes (PCB_PADSTACK_MAX_SHAPES) */
-	pcb_padstack_shape_t *shape;   /* list of layer-shape pairs */
-} pcb_padstack_tshape_t;
+	pcb_pstk_shape_t *shape;   /* list of layer-shape pairs */
+} pcb_pstk_tshape_t;
 
 #endif

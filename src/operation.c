@@ -102,7 +102,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 
 	case PCB_TYPE_PADSTACK:
 		if (F->padstack)
-			return (F->padstack(ctx, (pcb_padstack_t *)Ptr2));
+			return (F->padstack(ctx, (pcb_pstk_t *)Ptr2));
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:

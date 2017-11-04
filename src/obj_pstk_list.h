@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
- *
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -20,33 +20,28 @@
  *
  */
 
-#include "obj_padstack.h"
+#ifndef PCB_OBJ_PADSTACK_LIST_H
+#define PCB_OBJ_PADSTACK_LIST_H
 
-#ifndef PCB_OBJ_PADSTACK_DRAW_H
-#define PCB_OBJ_PADSTACK_DRAW_H
+#define PCB_PADSTACK_STRUCT_ONLY
+#include "obj_pstk.h"
 
-/* Include rtree.h for these */
-#ifdef PCB_RTREE_H
 
-#include "board.h"
-#include "layer_grp.h"
+/* List of padstatcks */
+#define TDL(x)      padstacklist_ ## x
+#define TDL_LIST_T  padstacklist_t
+#define TDL_ITEM_T  pcb_pstk_t
+#define TDL_FIELD   link
+#define TDL_SIZE_T  size_t
+#define TDL_FUNC
 
-typedef struct {
-	pcb_board_t *pcb;
-	pcb_layergrp_id_t gid;
-	int is_current;
-	pcb_layer_combining_t comb;
-} pcb_padstack_draw_t;
+#define padstacklist_foreach(list, iterator, loop_elem) \
+	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
-pcb_r_dir_t pcb_padstack_draw_callback(const pcb_box_t *b, void *cl);
-pcb_r_dir_t pcb_padstack_clear_callback(const pcb_box_t *b, void *cl);
-#endif
 
-void pcb_padstack_draw(pcb_pin_t *pin, pcb_bool draw_hole);
-void pcb_padstack_invalidate_erase(pcb_padstack_t *ps);
-void pcb_padstack_invalidate_draw(pcb_padstack_t *ps);
+#include <genlist/gentdlist_impl.h>
+#include <genlist/gentdlist_undef.h>
 
-void pcb_padstack_thindraw(pcb_hid_gc_t gc, pcb_padstack_t *ps);
-
+#undef PCB_PADSTACK_STRUCT_ONLY
 
 #endif

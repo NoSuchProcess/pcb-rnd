@@ -147,7 +147,7 @@ typedef struct padstack_element_s {
 	struct padstack_element_s *next;
 } padstack_element_t;
 
-padstack_element_t *current_padstack_element;
+padstack_element_t *current_pstk_element;
 
 typedef struct padstack_s {
 	char *name;
@@ -157,7 +157,7 @@ typedef struct padstack_s {
 } padstack_t;
 
 padstack_t *padstack_head;
-padstack_t *current_padstack;
+padstack_t *current_pstk;
 
 	/* pads */
 pcb_element_t *component_side_pads;
@@ -286,8 +286,8 @@ void hyp_init(void)
 
 	/* clear padstack */
 	padstack_head = NULL;
-	current_padstack = NULL;
-	current_padstack_element = NULL;
+	current_pstk = NULL;
+	current_pstk_element = NULL;
 
 	/* clear devices */
 	device_head = NULL;
@@ -375,7 +375,7 @@ void hyp_error(const char *msg)
  * find padstack by name 
  */
 
-padstack_t *hyp_padstack_by_name(char *padstack_name)
+padstack_t *hyp_pstk_by_name(char *padstack_name)
 {
 	padstack_t *i;
 	for (i = padstack_head; i != NULL; i = i->next)
@@ -1720,7 +1720,7 @@ pcb_bool exec_supplies(parse_param * h)
  * PADSTACK record
  */
 
-pcb_bool exec_padstack_element(parse_param * h)
+pcb_bool exec_pstk_element(parse_param * h)
 {
 	/*
 	 * Layer names with special meaning, used in padstack definition:
@@ -1782,55 +1782,55 @@ pcb_bool exec_padstack_element(parse_param * h)
 
 	if (h->padstack_name_set) {
 		/* add new padstack */
-		current_padstack = malloc(sizeof(padstack_t));
-		if (current_padstack == NULL)
+		current_pstk = malloc(sizeof(padstack_t));
+		if (current_pstk == NULL)
 			return 1;									/*malloc failed */
-		current_padstack->name = pcb_strdup(h->padstack_name);
-		current_padstack->drill_size = xy2coord(h->drill_size);
-		current_padstack_element = malloc(sizeof(padstack_element_t));
-		current_padstack->padstack = current_padstack_element;
+		current_pstk->name = pcb_strdup(h->padstack_name);
+		current_pstk->drill_size = xy2coord(h->drill_size);
+		current_pstk_element = malloc(sizeof(padstack_element_t));
+		current_pstk->padstack = current_pstk_element;
 	}
 	else {
 		/* add new padstack element */
-		current_padstack_element->next = malloc(sizeof(padstack_element_t));
-		current_padstack_element = current_padstack_element->next;
-		if (current_padstack_element == NULL)
+		current_pstk_element->next = malloc(sizeof(padstack_element_t));
+		current_pstk_element = current_pstk_element->next;
+		if (current_pstk_element == NULL)
 			return 1;									/*malloc failed */
 	}
 
 	/* fill in values */
 
-	current_padstack_element->layer_name = pcb_strdup(h->layer_name);
-	current_padstack_element->pad_shape = h->pad_shape;
-	current_padstack_element->pad_sx = xy2coord(h->pad_sx);
-	current_padstack_element->pad_sy = xy2coord(h->pad_sy);
-	current_padstack_element->pad_angle = h->pad_angle;
-	current_padstack_element->thermal_clear_sx = xy2coord(h->thermal_clear_sx);
-	current_padstack_element->thermal_clear_sy = xy2coord(h->thermal_clear_sy);
-	current_padstack_element->thermal_clear_angle = h->thermal_clear_angle;
+	current_pstk_element->layer_name = pcb_strdup(h->layer_name);
+	current_pstk_element->pad_shape = h->pad_shape;
+	current_pstk_element->pad_sx = xy2coord(h->pad_sx);
+	current_pstk_element->pad_sy = xy2coord(h->pad_sy);
+	current_pstk_element->pad_angle = h->pad_angle;
+	current_pstk_element->thermal_clear_sx = xy2coord(h->thermal_clear_sx);
+	current_pstk_element->thermal_clear_sy = xy2coord(h->thermal_clear_sy);
+	current_pstk_element->thermal_clear_angle = h->thermal_clear_angle;
 	if (h->pad_type_set)
-		current_padstack_element->pad_type = h->pad_type;
+		current_pstk_element->pad_type = h->pad_type;
 	else
-		current_padstack_element->pad_type = PAD_TYPE_METAL;
-	current_padstack_element->next = NULL;
+		current_pstk_element->pad_type = PAD_TYPE_METAL;
+	current_pstk_element->next = NULL;
 
 	return 0;
 }
 
 
-pcb_bool exec_padstack_end(parse_param * h)
+pcb_bool exec_pstk_end(parse_param * h)
 {
 	if (hyp_debug)
 		pcb_message(PCB_MSG_DEBUG, "padstack_end\n");
 
 	/* add current padstack to list of padstacks */
-	if (current_padstack != NULL) {
-		current_padstack->next = padstack_head;
-		padstack_head = current_padstack;
-		current_padstack = NULL;
+	if (current_pstk != NULL) {
+		current_pstk->next = padstack_head;
+		padstack_head = current_pstk;
+		current_pstk = NULL;
 	}
 
-	current_padstack_element = NULL;
+	current_pstk_element = NULL;
 
 	return 0;
 }
@@ -1840,7 +1840,7 @@ pcb_bool exec_padstack_end(parse_param * h)
  * ref is an optional string which gives pin reference as device.pin, eg. U1.VCC
  */
 
-void hyp_draw_padstack(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
+void hyp_draw_pstk(padstack_t * padstk, pcb_coord_t x, pcb_coord_t y, char *ref)
 {
 
 /* 
@@ -2237,7 +2237,7 @@ pcb_bool exec_via(parse_param * h)
 		return 0;
 	}
 
-	hyp_draw_padstack(hyp_padstack_by_name(h->padstack_name), x2coord(h->x), y2coord(h->y), NULL);
+	hyp_draw_pstk(hyp_pstk_by_name(h->padstack_name), x2coord(h->x), y2coord(h->y), NULL);
 
 	return 0;
 }
@@ -2331,7 +2331,7 @@ pcb_bool exec_via_v1(parse_param * h)
 		pad1->next = NULL;
 
 	/* draw padstack */
-	hyp_draw_padstack(padstk, x2coord(h->x), y2coord(h->y), NULL);
+	hyp_draw_pstk(padstk, x2coord(h->x), y2coord(h->y), NULL);
 
 	/* free padstack for this via */
 	free(pad2);
@@ -2364,7 +2364,7 @@ pcb_bool exec_pin(parse_param * h)
 		return 0;
 	}
 
-	hyp_draw_padstack(hyp_padstack_by_name(h->padstack_name), x2coord(h->x), y2coord(h->y), h->pin_reference);
+	hyp_draw_pstk(hyp_pstk_by_name(h->padstack_name), x2coord(h->x), y2coord(h->y), h->pin_reference);
 
 	return 0;
 }
@@ -2425,7 +2425,7 @@ pcb_bool exec_pad(parse_param * h)
 	pad->next = NULL;
 
 	/* draw padstack */
-	hyp_draw_padstack(padstk, x2coord(h->x), y2coord(h->y), NULL);
+	hyp_draw_pstk(padstk, x2coord(h->x), y2coord(h->y), NULL);
 
 	/* free padstack for this pad */
 	free(pad);

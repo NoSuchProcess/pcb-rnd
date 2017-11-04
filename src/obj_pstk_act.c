@@ -22,8 +22,8 @@
 
 #include "config.h"
 
-#include "obj_padstack.h"
-#include "obj_padstack_inlines.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 
 #include "action_helper.h"
 #include "board.h"
@@ -37,7 +37,7 @@ static const char pcb_acth_padstackconvert[] = "Convert selection or current buf
 int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_cardinal_t pid;
-	pcb_padstack_proto_t tmp, *p;
+	pcb_pstk_proto_t tmp, *p;
 
 	if (argv[0] == NULL)
 		PCB_ACT_FAIL(padstackconvert);
@@ -53,17 +53,17 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		}
 		else
 			pcb_gui->get_coords("Click at padstack origin", &x, &y);
-		pid = pcb_padstack_conv_selection(PCB, 0, x, y);
+		pid = pcb_pstk_conv_selection(PCB, 0, x, y);
 
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
-		pcb_padstack_proto_copy(p, &PCB->Data->ps_protos.array[pid]);
+		pcb_pstk_proto_copy(p, &PCB->Data->ps_protos.array[pid]);
 		p->parent = PCB_PASTEBUFFER->Data;
-		pid = pcb_padstack_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
+		pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
 	}
 	else if (strcmp(argv[0], "buffer") == 0) {
 
-		pid = pcb_padstack_conv_buffer(0);
+		pid = pcb_pstk_conv_buffer(0);
 
 		/* have to save and restore the prototype around the buffer clear */
 		tmp = PCB_PASTEBUFFER->Data->ps_protos.array[pid];
@@ -72,14 +72,14 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
 		*p = tmp;
 		p->parent = PCB_PASTEBUFFER->Data;
-		pid = pcb_padstack_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
+		pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
 
 	}
 	else
 		PCB_ACT_FAIL(padstackconvert);
 
 	pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
-	pcb_padstack_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_no_flags());
+	pcb_pstk_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_no_flags());
 	pcb_set_buffer_bbox(PCB_PASTEBUFFER);
 	PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
 
@@ -92,7 +92,7 @@ static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id
 int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_cardinal_t pid;
-	pcb_padstack_t *ps;
+	pcb_pstk_t *ps;
 
 	if (argc > 2) {
 		pcb_bool s1, s2;
@@ -122,7 +122,7 @@ int pcb_act_padstackplace(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return -1;
 	}
 
-	ps = pcb_padstack_new(PCB->Data, pid, x, y, conf_core.design.clearance, pcb_no_flags());
+	ps = pcb_pstk_new(PCB->Data, pid, x, y, conf_core.design.clearance, pcb_no_flags());
 	if (ps == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to place padstack\n");
 		return -1;

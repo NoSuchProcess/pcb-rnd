@@ -521,15 +521,15 @@ static void build_data_layer_comb(void *ctx, pcb_layer_combining_t bit, const ch
 }
 
 
-static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
+static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 {
 	lht_node_t *lst, *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
 	pcb_cardinal_t n, sn, pn;
-	pcb_padstack_tshape_t *ts;
+	pcb_pstk_tshape_t *ts;
 
 	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
 	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
-		pcb_padstack_proto_t *proto = pp->array+n;
+		pcb_pstk_proto_t *proto = pp->array+n;
 
 		if (!proto->in_use) {
 			lht_dom_list_append(lst, build_text("unused", "1"));
@@ -547,7 +547,7 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
 		ts = &proto->tr.array[0]; /* save the canonical shape only, the transformation cache is generated runtime */
 		for(sn = 0; sn < ts->len; sn++) {
-			pcb_padstack_shape_t *shape = ts->shape + sn;
+			pcb_pstk_shape_t *shape = ts->shape + sn;
 
 			lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
 
@@ -593,7 +593,7 @@ static lht_node_t *build_padstack_protos(pcb_vtpadstack_proto_t *pp)
 	return lst;
 }
 
-static lht_node_t *build_padstack(pcb_padstack_t *ps)
+static lht_node_t *build_pstk(pcb_pstk_t *ps)
 {
 	char buff[128];
 	lht_node_t *obj, *thr;
@@ -789,7 +789,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 static lht_node_t *build_data(pcb_data_t *data)
 {
 	lht_node_t *grp, *ndt;
-	pcb_padstack_t *ps;
+	pcb_pstk_t *ps;
 	pcb_pin_t *pi;
 	pcb_element_t *el;
 	pcb_subc_t *sc;
@@ -806,9 +806,9 @@ static lht_node_t *build_data(pcb_data_t *data)
 	lht_dom_hash_put(ndt, grp);
 
 	if (wrver >= 4) {
-		lht_dom_hash_put(ndt, build_padstack_protos(&data->ps_protos));
+		lht_dom_hash_put(ndt, build_pstk_protos(&data->ps_protos));
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps))
-			lht_dom_list_append(grp, build_padstack(ps));
+			lht_dom_list_append(grp, build_pstk(ps));
 	}
 
 	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))

@@ -33,7 +33,7 @@
 #include "change.h"
 #include "data.h"
 #include "hid_actions.h"
-#include "obj_padstack.h"
+#include "obj_pstk.h"
 #include "search.h"
 #include "thermal.h"
 #include "tool.h"
@@ -53,7 +53,7 @@ static void tool_thermal_on_pinvia(int type, void *ptr1, void *ptr2, void *ptr3)
 		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle, INDEXOFCURRENT);
 }
 
-static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)
+static void tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 {
 	unsigned char *th, newth = 0;
 	unsigned char cycle[] = {
@@ -65,7 +65,7 @@ static void tool_thermal_on_padstack(pcb_padstack_t *ps, unsigned long lid)
 	};
 	int cycles = sizeof(cycle) / sizeof(cycle[0]);
 
-	th = pcb_padstack_get_thermal(ps, lid, 1);
+	th = pcb_pstk_get_thermal(ps, lid, 1);
 	if (pcb_gui->shift_is_pressed()) {
 		int n, curr = -1;
 		/* cycle through the variants to find the current one */
@@ -106,7 +106,7 @@ void pcb_tool_thermal_notify_mode(void)
 	if (((type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
 		if (type == PCB_TYPE_PADSTACK)
-			tool_thermal_on_padstack((pcb_padstack_t *)ptr2, INDEXOFCURRENT);
+			tool_thermal_on_pstk((pcb_pstk_t *)ptr2, INDEXOFCURRENT);
 		else
 			tool_thermal_on_pinvia(type, ptr1, ptr2, ptr3);
 	}

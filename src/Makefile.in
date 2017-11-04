@@ -96,10 +96,10 @@ put /local/pcb/OBJS [@
 	obj_line_drcenf.o
 	obj_line_list.o
 	obj_pad.o
-	obj_padstack.o
-	obj_padstack_act.o
-	obj_padstack_list.o
-	obj_padstack_proto.o
+	obj_pstk.o
+	obj_pstk_act.o
+	obj_pstk_list.o
+	obj_pstk_proto.o
 	obj_pad_list.o
 	obj_pinvia.o
 	obj_pinvia_therm.o
@@ -219,7 +219,7 @@ put /local/pcb/OBJS_UTIL [@
 put /local/pcb/ACTION_REG_SRC  {
 	action_act.c buffer.c change_act.c conf_act.c file_act.c find_act.c
 	gui_act.c main_act.c netlist_act.c font_act.c object_act.c
-	obj_padstack_act.c plugins.c polygon_act.c plug_footprint_act.c rats_act.c
+	obj_pstk_act.c plugins.c polygon_act.c plug_footprint_act.c rats_act.c
 	rats_patch.c remove_act.c select_act.c undo_act.c
 }
 

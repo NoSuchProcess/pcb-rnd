@@ -35,7 +35,7 @@
 #include "select.h"
 #include "undo.h"
 #include "obj_all_op.h"
-#include "obj_padstack_op.h"
+#include "obj_pstk_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local types
@@ -55,7 +55,7 @@ static pcb_opfunc_t RemoveFunctions = {
 	pcb_ratop_remove,
 	pcb_arcop_remove_point,
 	pcb_subcop_remove,
-	pcb_padstackop_remove
+	pcb_pstkop_remove
 };
 
 static pcb_opfunc_t DestroyFunctions = {
@@ -73,7 +73,7 @@ static pcb_opfunc_t DestroyFunctions = {
 	pcb_ratop_destroy,
 	NULL,
 	pcb_subcop_destroy,
-	pcb_padstackop_destroy,
+	pcb_pstkop_destroy,
 };
 
 /* ----------------------------------------------------------------------

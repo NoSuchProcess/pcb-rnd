@@ -145,14 +145,14 @@ static void DrawNewConnections(void)
 	 * sorted array pointers to padstack data
 	 */
 	while (PadstackList.DrawLocation < PadstackList.Number) {
-		pcb_padstack_t *ps = PADSTACKLIST_ENTRY(PadstackList.DrawLocation);
+		pcb_pstk_t *ps = PADSTACKLIST_ENTRY(PadstackList.DrawLocation);
 
 		if (PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps)) {
 			if (PCB->PinOn)
-				pcb_padstack_invalidate_draw(ps);
+				pcb_pstk_invalidate_draw(ps);
 		}
 		else if (PCB->ViaOn)
-			pcb_padstack_invalidate_draw(ps);
+			pcb_pstk_invalidate_draw(ps);
 		PadstackList.DrawLocation++;
 	}
 
@@ -182,7 +182,7 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 
 	case PCB_OBJ_PADSTACK:
 		{
-			if (ADD_PADSTACK_TO_LIST((pcb_padstack_t *)obj, 0, NULL, PCB_FCT_START))
+			if (ADD_PADSTACK_TO_LIST((pcb_pstk_t *)obj, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
@@ -397,7 +397,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 				pcb_undo_add_obj_to_flag(padstack);
 			PCB_FLAG_CLEAR(TheFlag, padstack);
 			if (AndDraw)
-				pcb_padstack_invalidate_draw(padstack);
+				pcb_pstk_invalidate_draw(padstack);
 			change = pcb_true;
 		}
 	}

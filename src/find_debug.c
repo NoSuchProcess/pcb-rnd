@@ -114,7 +114,7 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 {
 	pcb_cardinal_t i;
 	pcb_pin_t *pv;
-	pcb_padstack_t *ps;
+	pcb_pstk_t *ps;
 
 	if ((!PVList.Number) && (!PadstackList.Number))
 		return;

@@ -391,7 +391,7 @@ conversion
   /* padstack */
 
 padstack
-  : '{' H_PADSTACK { new_record(); } '=' H_STRING { h.padstack_name = yylval.strval; h.padstack_name_set = pcb_true; } drill_size '}' { if (exec_padstack_end(&h)) YYERROR; } ;
+  : '{' H_PADSTACK { new_record(); } '=' H_STRING { h.padstack_name = yylval.strval; h.padstack_name_set = pcb_true; } drill_size '}' { if (exec_pstk_end(&h)) YYERROR; } ;
 
 drill_size 
   : ',' H_FLOAT { h.drill_size = yylval.floatval; h.drill_size_set = pcb_true; } padstack_list
@@ -403,7 +403,7 @@ padstack_list
   | padstack_def ;
 
 padstack_def
-  : '(' H_STRING { h.layer_name = yylval.strval; h.layer_name_set = pcb_true; } ',' pad_shape pad_coord pad_type { if (exec_padstack_element(&h)) YYERROR; new_record(); }
+  : '(' H_STRING { h.layer_name = yylval.strval; h.layer_name_set = pcb_true; } ',' pad_shape pad_coord pad_type { if (exec_pstk_element(&h)) YYERROR; new_record(); }
   | '(' error ')' ;
 
 pad_shape

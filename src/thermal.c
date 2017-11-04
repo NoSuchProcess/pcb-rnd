@@ -26,8 +26,8 @@
 
 #include "compat_misc.h"
 #include "data.h"
-#include "obj_padstack.h"
-#include "obj_padstack_inlines.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 #include "obj_pinvia_therm.h"
 #include "polygon.h"
 
@@ -505,7 +505,7 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 }
 
 /* Generate a clearance around a padstack shape, with no thermal */
-static pcb_polyarea_t *pcb_thermal_area_padstack_nothermal(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_id_t lid, pcb_padstack_shape_t *shp)
+static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid, pcb_pstk_shape_t *shp)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pres = NULL;
@@ -517,7 +517,7 @@ static pcb_polyarea_t *pcb_thermal_area_padstack_nothermal(pcb_board_t *pcb, pcb
 			return pa_line_at(ps->x + shp->data.line.x1, ps->y + shp->data.line.y1, ps->x + shp->data.line.x2, ps->y + shp->data.line.y2, shp->data.line.thickness + ps->Clearance*2, shp->data.line.square);
 		case PCB_PSSH_POLY:
 			if (shp->data.poly.pa == NULL)
-				pcb_padstack_shape_update_pa(&shp->data.poly);
+				pcb_pstk_shape_update_pa(&shp->data.poly);
 			if (shp->data.poly.pa == NULL)
 				return NULL;
 			pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
@@ -527,10 +527,10 @@ static pcb_polyarea_t *pcb_thermal_area_padstack_nothermal(pcb_board_t *pcb, pcb
 	return NULL;
 }
 
-pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, pcb_layer_id_t lid)
+pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid)
 {
 	unsigned char thr;
-	pcb_padstack_shape_t *shp;
+	pcb_pstk_shape_t *shp;
 	pcb_polyarea_t *pres = NULL;
 	pcb_layer_t *layer = pcb_get_layer(pcb->Data, lid);
 
@@ -544,15 +544,15 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 	else
 		thr = 0;
 
-	shp = pcb_padstack_shape_at(pcb, ps, layer);
+	shp = pcb_pstk_shape_at(pcb, ps, layer);
 
 	if (!(thr & PCB_THERMAL_ON))
-		return pcb_thermal_area_padstack_nothermal(pcb, ps, lid, shp);
+		return pcb_thermal_area_pstk_nothermal(pcb, ps, lid, shp);
 
 	switch(thr & 3) {
 		case PCB_THERMAL_NOSHAPE:
 			{
-				pcb_padstack_proto_t *proto = pcb_padstack_get_proto(ps);
+				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 				return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + ps->Clearance);
 			}
 		case PCB_THERMAL_SOLID: return NULL;
@@ -584,7 +584,7 @@ pcb_polyarea_t *pcb_thermal_area_padstack(pcb_board_t *pcb, pcb_padstack_t *ps, 
 				{
 					pcb_poly_it_t it;
 					if (shp->data.poly.pa == NULL)
-						pcb_padstack_shape_update_pa(&shp->data.poly);
+						pcb_pstk_shape_update_pa(&shp->data.poly);
 					if (shp->data.poly.pa == NULL)
 						return NULL;
 					pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
@@ -618,7 +618,7 @@ pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer
 			return pcb_thermal_area_poly(pcb, (pcb_poly_t *)obj, lid);
 
 		case PCB_OBJ_PADSTACK:
-			return pcb_thermal_area_padstack(pcb, (pcb_padstack_t *)obj, lid);
+			return pcb_thermal_area_pstk(pcb, (pcb_pstk_t *)obj, lid);
 
 		case PCB_OBJ_ARC:
 			break;

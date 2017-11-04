@@ -207,8 +207,8 @@ pcb_bool exec_devices(parse_param * h);
 
 pcb_bool exec_supplies(parse_param * h);
 
-pcb_bool exec_padstack_element(parse_param * h);
-pcb_bool exec_padstack_end(parse_param * h);
+pcb_bool exec_pstk_element(parse_param * h);
+pcb_bool exec_pstk_end(parse_param * h);
 
 pcb_bool exec_net(parse_param * h);
 pcb_bool exec_net_plane_separation(parse_param * h);

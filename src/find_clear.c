@@ -50,7 +50,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 				pcb_undo_add_obj_to_flag(padstack);
 			PCB_FLAG_CLEAR(flag, padstack);
 			if (AndDraw)
-				pcb_padstack_invalidate_draw(padstack);
+				pcb_pstk_invalidate_draw(padstack);
 			change = pcb_true;
 		}
 	}

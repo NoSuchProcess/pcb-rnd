@@ -1,15 +1,15 @@
 #ifndef PCB_VTPADSTACK_T_H
 #define PCB_VTPADSTACK_T_H
 
-/* Elem=pcb_padstack_proto_t; init=none */
+/* Elem=pcb_pstk_proto_t; init=none */
 
-#include "obj_padstack_shape.h"
+#include "obj_pstk_shape.h"
 
 /* all public symbols are wrapped in GVT() - see vt_t(7) */
 #define GVT(x) pcb_vtpadstack_tshape_ ## x
 
 /* Array elem type - see vt_t(7) */
-#define GVT_ELEM_TYPE pcb_padstack_tshape_t
+#define GVT_ELEM_TYPE pcb_pstk_tshape_t
 
 /* Type that represents array lengths - see vt_t(7) */
 #define GVT_SIZE_TYPE size_t

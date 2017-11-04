@@ -40,7 +40,7 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
-#include "obj_padstack_op.h"
+#include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
 #include "obj_term.h"
 
@@ -116,7 +116,7 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL,
 	NULL,
 	NULL, /* subc */
-	pcb_padstackop_change_thermal
+	pcb_pstkop_change_thermal
 };
 
 pcb_opfunc_t ChangeClearSizeFunctions = {

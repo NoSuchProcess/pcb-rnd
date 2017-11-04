@@ -831,7 +831,7 @@ static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_pol
 }
 
 /* remove the padstack clearance from the polygon */
-static int SubtractPadstack(pcb_data_t *d, pcb_padstack_t *ps, pcb_layer_t *l, pcb_poly_t *p)
+static int SubtractPadstack(pcb_data_t *d, pcb_pstk_t *ps, pcb_layer_t *l, pcb_poly_t *p)
 {
 	pcb_polyarea_t *np;
 	pcb_layer_id_t i;
@@ -839,7 +839,7 @@ static int SubtractPadstack(pcb_data_t *d, pcb_padstack_t *ps, pcb_layer_t *l, p
 	if (!PCB_NONPOLY_HAS_CLEARANCE(ps))
 		return 0;
 	i = pcb_layer_id(d, l);
-	np = pcb_thermal_area_padstack(pcb_data_get_top(d), ps, i);
+	np = pcb_thermal_area_pstk(pcb_data_get_top(d), ps, i);
 	if (np == 0)
 		return 0;
 
@@ -966,7 +966,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 
 static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
 {
-	pcb_padstack_t *ps = (pcb_padstack_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct cpInfo *info = (struct cpInfo *)cl;
 	pcb_poly_t *polygon;
 	pcb_polyarea_t *np;
@@ -982,7 +982,7 @@ static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	i = pcb_layer_id(info->data, info->layer);
 
-	np = pcb_thermal_area_padstack(pcb_data_get_top(info->data), ps, i);
+	np = pcb_thermal_area_pstk(pcb_data_get_top(info->data), ps, i);
 	if (np == 0)
 			return PCB_R_DIR_FOUND_CONTINUE;
 
@@ -1346,7 +1346,7 @@ static int UnsubtractPin(pcb_pin_t * pin, pcb_layer_t * l, pcb_poly_t * p)
 	return 1;
 }
 
-static int UnsubtractPadstack(pcb_data_t *data, pcb_padstack_t *ps, pcb_layer_t *l, pcb_poly_t *p)
+static int UnsubtractPadstack(pcb_data_t *data, pcb_pstk_t *ps, pcb_layer_t *l, pcb_poly_t *p)
 {
 	pcb_polyarea_t *np;
 
@@ -1754,7 +1754,7 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PADSTACK:
-		SubtractPadstack(Data, (pcb_padstack_t *) ptr2, Layer, Polygon);
+		SubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
 		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
@@ -1792,7 +1792,7 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Po
 		UnsubtractPin((pcb_pin_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PADSTACK:
-		UnsubtractPadstack(Data, (pcb_padstack_t *) ptr2, Layer, Polygon);
+		UnsubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
 		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
@@ -1895,7 +1895,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		}
 
 		/* run on the specified layer (ptr1), if there's any need for clearing */
-		if (!PCB_NONPOLY_HAS_CLEARANCE((pcb_padstack_t *)ptr2))
+		if (!PCB_NONPOLY_HAS_CLEARANCE((pcb_pstk_t *)ptr2))
 			return 0;
 		goto doit;
 	case PCB_TYPE_POLYGON:

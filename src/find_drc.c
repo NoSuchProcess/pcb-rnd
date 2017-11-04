@@ -35,7 +35,7 @@
 #include "obj_elem_draw.h"
 #include "obj_poly_draw.h"
 #include "obj_pinvia_draw.h"
-#include "obj_padstack_draw.h"
+#include "obj_pstk_draw.h"
 
 /* DRC related functions */
 
@@ -163,7 +163,7 @@ static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 		}
 	case PCB_TYPE_PADSTACK:
 		{
-			pcb_padstack_t *ps = (pcb_padstack_t *) thing_ptr3;
+			pcb_pstk_t *ps = (pcb_pstk_t *) thing_ptr3;
 			*x = ps->x;
 			*y = ps->y;
 			break;
@@ -245,7 +245,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	pcb_arc_t *arc = (pcb_arc_t *) ptr2;
 	pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 	pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-	pcb_padstack_t *ps = (pcb_padstack_t *) ptr2;
+	pcb_pstk_t *ps = (pcb_pstk_t *) ptr2;
 
 	thing_type = type;
 	thing_ptr1 = ptr1;
@@ -294,7 +294,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 		}
 		break;
 	case PCB_TYPE_PADSTACK:
-		if (pcb_padstack_drc_check_clearance(ps, polygon, 2 * PCB->Bloat) != 0) {
+		if (pcb_pstk_drc_check_clearance(ps, polygon, 2 * PCB->Bloat) != 0) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, pin);
 			message = _("Padstack with insufficient clearance inside polygon\n");
@@ -629,7 +629,7 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_PADSTACK_LOOP(PCB->Data);
 		{
-			if (pcb_padstack_drc_check_and_warn(padstack)) {
+			if (pcb_pstk_drc_check_and_warn(padstack)) {
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
 					break;

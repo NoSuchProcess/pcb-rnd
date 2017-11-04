@@ -79,7 +79,7 @@
 #include "layer_vis.h"
 
 #include "obj_all.h"
-#include "obj_padstack.h"
+#include "obj_pstk.h"
 
 #undef DEBUG
 
@@ -115,7 +115,7 @@
 	(((pcb_pin_t **)PVList.Data)[(I)])
 
 #define	PADSTACKLIST_ENTRY(I)	\
-	(((pcb_padstack_t **)PadstackList.Data)[(I)])
+	(((pcb_pstk_t **)PadstackList.Data)[(I)])
 
 /* ---------------------------------------------------------------------------
  * some local types

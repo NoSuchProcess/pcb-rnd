@@ -20,28 +20,6 @@
  *
  */
 
-#ifndef PCB_OBJ_PADSTACK_LIST_H
-#define PCB_OBJ_PADSTACK_LIST_H
-
-#define PCB_PADSTACK_STRUCT_ONLY
-#include "obj_padstack.h"
-
-
-/* List of padstatcks */
-#define TDL(x)      padstacklist_ ## x
-#define TDL_LIST_T  padstacklist_t
-#define TDL_ITEM_T  pcb_padstack_t
-#define TDL_FIELD   link
-#define TDL_SIZE_T  size_t
-#define TDL_FUNC
-
-#define padstacklist_foreach(list, iterator, loop_elem) \
-	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
-
-
-#include <genlist/gentdlist_impl.h>
-#include <genlist/gentdlist_undef.h>
-
-#undef PCB_PADSTACK_STRUCT_ONLY
-
-#endif
+#define TDL_DONT_UNDEF
+#include "obj_pstk_list.h"
+#include <genlist/gentdlist_impl.c>

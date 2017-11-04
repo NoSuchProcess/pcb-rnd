@@ -88,7 +88,7 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	return !(suc1 && suc2);
 }
 
-static void parse_padstack(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
+static void parse_pstk(hkp_ctx_t *ctx, pcb_element_t *elem, const char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
 {
 	pcb_flag_t flags = pcb_no_flags();
 	pcb_coord_t thickness, hole, ms, cl;
@@ -179,7 +179,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
 	if (tmp != NULL)
-		parse_padstack(ctx, elem, tmp->argv[1], px, py, nd->argv[1]);
+		parse_pstk(ctx, elem, tmp->argv[1], px, py, nd->argv[1]);
 }
 
 static void parse_silk(hkp_ctx_t *ctx, pcb_element_t *elem, node_t *nd)
