@@ -210,7 +210,59 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 				}
 				else {
-					pc = NULL;
+					/* side clear lines */
+					pa = pa_line_at(
+						x1 - clrth * nx + clrth * vx, y1 - clrth * ny + clrth * vy,
+						mx - clrth * nx + clr * vx, my - clrth * ny + clr * vy,
+						clr, pcb_false);
+					pb = pa_line_at(
+						x1 + clrth * nx + clrth * vx, y1 + clrth * ny + clrth * vy,
+						mx + clrth * nx + clr * vx, my + clrth * ny + clr * vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x2 - clrth * nx - clrth * vx, y2 - clrth * ny - clrth * vy,
+						mx - clrth * nx - clr * vx, my - clrth * ny - clr * vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x2 + clrth * nx - clrth * vx, y2 + clrth * ny - clrth * vy,
+						mx + clrth * nx - clr * vx, my + clrth * ny - clr * vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					/* cross clear lines */
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x1 - clrth * nx + clrth * vx, y1 - clrth * ny + clrth * vy,
+						x1 - clr * nx + clrth * vx, y1 - clr * ny + clrth * vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x1 + clrth * nx + clrth * vx, y1 + clrth * ny + clrth * vy,
+						x1 + clr * nx + clrth * vx, y1 + clr * ny + clrth * vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x2 - clrth * nx - clrth * vx, y2 - clrth * ny - clrth * vy,
+						x2 - clr * nx - clrth * vx, y2 - clr * ny - clrth * vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x2 + clrth * nx - clrth * vx, y2 + clrth * ny - clrth * vy,
+						x2 + clr * nx - clrth * vx, y2 + clr * ny - clrth * vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
 				}
 			}
 			else {
