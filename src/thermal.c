@@ -469,7 +469,7 @@ static void pcb_thermal_area_pa_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, 
 	pcb_pline_t *pl;
 
 	/* add the usual clearance glory around the polygon */
-	pcb_poly_pa_clearance_construct(pres, it, clr*2);
+	pcb_poly_pa_clearance_construct(pres, it, clr);
 
 	pl = pcb_poly_contour(it);
 	if (pl != NULL)
