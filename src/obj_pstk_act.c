@@ -79,7 +79,7 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_ACT_FAIL(padstackconvert);
 
 	pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
-	pcb_pstk_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_no_flags());
+	pcb_pstk_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	pcb_set_buffer_bbox(PCB_PASTEBUFFER);
 	PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
 
