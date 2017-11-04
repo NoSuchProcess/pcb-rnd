@@ -66,7 +66,7 @@ void pcb_tool_rectangle_notify_mode(void)
 																								 2 * conf_core.design.clearance,
 																								 pcb_flag_make(flags))) != NULL) {
 			pcb_obj_add_attribs(polygon, PCB->pen_attr);
-			pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
+			pcb_undo_add_obj_to_create(PCB_TYPE_POLY, CURRENT, polygon, polygon);
 			pcb_undo_inc_serial();
 			pcb_poly_invalidate_draw(CURRENT, polygon);
 			pcb_draw();

@@ -45,7 +45,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_POINT:   return "point";
 		case PCB_OBJ_LINE:    return "line";
 		case PCB_OBJ_TEXT:    return "text";
-		case PCB_OBJ_POLYGON: return "polygon";
+		case PCB_OBJ_POLY: return "polygon";
 		case PCB_OBJ_ARC:     return "arc";
 		case PCB_OBJ_RAT:     return "ratline";
 		case PCB_OBJ_PAD:     return "pad";
@@ -73,7 +73,7 @@ int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_TEXT:
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 	case PCB_TYPE_PAD:
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_PSTK:
@@ -85,7 +85,7 @@ int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t
 	case PCB_TYPE_SUBC:
 		*res = *(pcb_box_t *)Ptr1;
 		return 0;
-	case PCB_TYPE_POLYGON_POINT:
+	case PCB_TYPE_POLY_POINT:
 	case PCB_TYPE_LINE_POINT:
 		*res = *(pcb_box_t *)Ptr3;
 		return 0;

@@ -105,7 +105,7 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 	switch (thing_type) {
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
 	case PCB_TYPE_PSTK:
@@ -146,7 +146,7 @@ static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 			*y = arc->Y;
 			break;
 		}
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		{
 			pcb_poly_t *polygon = (pcb_poly_t *) thing_ptr3;
 			*x = (polygon->Clipped->contours->xmin + polygon->Clipped->contours->xmax) / 2;
@@ -879,7 +879,7 @@ static void GotoError(void)
 	switch (thing_type) {
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
 	}
 	pcb_center_display(X, Y);

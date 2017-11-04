@@ -61,7 +61,7 @@ pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer)
 	pcb_poly_t *new_obj;
 
 	new_obj = calloc(sizeof(pcb_poly_t), 1);
-	new_obj->type = PCB_OBJ_POLYGON;
+	new_obj->type = PCB_OBJ_POLY;
 	new_obj->Attributes.post_change = pcb_obj_attrib_post_change;
 	PCB_SET_PARENT(new_obj, layer, layer);
 
@@ -245,7 +245,7 @@ void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
 		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	PCB_SET_PARENT(polygon, layer, Layer);
-	pcb_poly_clear_from_poly(Layer->parent, PCB_TYPE_POLYGON, Layer, polygon);
+	pcb_poly_clear_from_poly(Layer->parent, PCB_TYPE_POLY, Layer, polygon);
 }
 
 /* creates a new polygon on a layer */
@@ -443,7 +443,7 @@ void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
-	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLY, Layer, Polygon, Polygon, pcb_true);
 	pcb_undo_add_obj_to_flag(Polygon);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLY, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
@@ -486,7 +486,7 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 
 	Polygon->Points[ctx->insert.idx] = save;
 	pcb_board_set_changed_flag(pcb_true);
-	pcb_undo_add_obj_to_insert_point(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
+	pcb_undo_add_obj_to_insert_point(PCB_TYPE_POLY_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
 	pcb_poly_bbox(Polygon);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
@@ -508,14 +508,14 @@ void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *p
 		return (NULL);
 	pcb_poly_invalidate_erase(poly);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLYGON, Layer, poly, poly, pcb_false);
-		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_POLYGON, Layer, poly);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLY, Layer, poly, poly, pcb_false);
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_POLY, Layer, poly);
 	}
 	pcb_undo_add_obj_to_flag(poly);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLYPOLY, poly);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLYGON, Layer, poly, poly, pcb_true);
-		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_POLYGON, Layer, poly);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLY, Layer, poly, poly, pcb_true);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_POLY, Layer, poly);
 	}
 	pcb_poly_invalidate_draw(Layer, poly);
 	return poly;
@@ -641,7 +641,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 	}
 	if (Layer == ctx->move.dst_layer)
 		return (Polygon);
-	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_POLY, Layer, Polygon, Polygon);
 	if (Layer->meta.real.vis)
 		pcb_poly_invalidate_erase(Polygon);
 	/* Move all of the thermals with the polygon */
@@ -720,7 +720,7 @@ void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygo
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	pcb_undo_move_obj_to_remove(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_POLY, Layer, Polygon, Polygon);
 	PCB_CLEAR_PARENT(Polygon);
 	return NULL;
 }
@@ -755,7 +755,7 @@ void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t
 	}
 
 	/* Copy the polygon to the undo list */
-	pcb_undo_add_obj_to_remove_contour(PCB_TYPE_POLYGON, Layer, Polygon);
+	pcb_undo_add_obj_to_remove_contour(PCB_TYPE_POLY, Layer, Polygon);
 
 	contour_start = (contour == 0) ? 0 : Polygon->HoleIndex[contour - 1];
 	contour_end = (contour == Polygon->HoleIndexN) ? Polygon->PointN : Polygon->HoleIndex[contour];
@@ -807,7 +807,7 @@ void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 		pcb_poly_invalidate_erase(Polygon);
 
 	/* insert the polygon-point into the undo list */
-	pcb_undo_add_obj_to_remove_point(PCB_TYPE_POLYGON_POINT, Layer, Polygon, point_idx);
+	pcb_undo_add_obj_to_remove_point(PCB_TYPE_POLY_POINT, Layer, Polygon, point_idx);
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 
 	/* remove point from list, keep point order */
@@ -849,7 +849,7 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, polygon);
 	pcb_poly_invalidate_draw(Layer, polygon);
-	pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, Layer, polygon, polygon);
+	pcb_undo_add_obj_to_create(PCB_TYPE_POLY, Layer, polygon, polygon);
 	pcb_poly_ppclear(polygon);
 	return (polygon);
 }
@@ -875,7 +875,7 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *P
 {
 	static pcb_flag_values_t pcb_poly_flags = 0;
 	if (pcb_poly_flags == 0)
-		pcb_poly_flags = pcb_obj_valid_flags(PCB_TYPE_POLYGON);
+		pcb_poly_flags = pcb_obj_valid_flags(PCB_TYPE_POLY);
 
 	if ((ctx->chgflag.flag & pcb_poly_flags) != ctx->chgflag.flag)
 		return NULL;
@@ -885,7 +885,7 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *P
 
 
 	if (ctx->chgflag.flag & (PCB_FLAG_CLEARPOLY | PCB_FLAG_CLEARPOLYPOLY))
-		pcb_poly_restore_to_poly(ctx->chgflag.pcb->Data, PCB_TYPE_POLYGON, Polygon->parent.layer, Polygon);
+		pcb_poly_restore_to_poly(ctx->chgflag.pcb->Data, PCB_TYPE_POLY, Polygon->parent.layer, Polygon);
 
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Polygon);
 
@@ -893,7 +893,7 @@ void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *P
 		pcb_poly_init_clip(ctx->chgflag.pcb->Data, Polygon->parent.layer, Polygon);
 
 	if (ctx->chgflag.flag & (PCB_FLAG_CLEARPOLY | PCB_FLAG_CLEARPOLYPOLY))
-		pcb_poly_clear_from_poly(ctx->chgflag.pcb->Data, PCB_TYPE_POLYGON, Polygon->parent.layer, Polygon);
+		pcb_poly_clear_from_poly(ctx->chgflag.pcb->Data, PCB_TYPE_POLY, Polygon->parent.layer, Polygon);
 
 	return Polygon;
 }

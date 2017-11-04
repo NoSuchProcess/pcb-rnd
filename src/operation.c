@@ -65,12 +65,12 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return (F->Text(ctx, (pcb_layer_t *) Ptr1, (pcb_text_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		if (F->Polygon)
 			return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2));
 		break;
 
-	case PCB_TYPE_POLYGON_POINT:
+	case PCB_TYPE_POLY_POINT:
 		if (F->Point)
 			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2, (pcb_point_t *) Ptr3));
 		break;
@@ -177,7 +177,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 	}
 
 	/* check polygons */
-	if (type & PCB_TYPE_POLYGON && F->Polygon) {
+	if (type & PCB_TYPE_POLY && F->Polygon) {
 		PCB_POLY_VISIBLE_LOOP(pcb->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {

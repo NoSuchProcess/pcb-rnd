@@ -536,7 +536,7 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	unsigned char intconn = 0;
 
 	parse_id(&poly->ID, obj, 8);
-	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_POLYGON, &intconn);
+	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_POLY, &intconn);
 	pcb_attrib_compat_set_intconn(&poly->Attributes, intconn);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 

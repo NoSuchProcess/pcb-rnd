@@ -638,7 +638,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 	case PCB_TYPE_ELEMENT_NAME:
 		pcb_text_invalidate_erase((pcb_layer_t *) lptr, (pcb_text_t *) ptr);
 		break;
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		pcb_poly_invalidate_erase((pcb_poly_t *) ptr);
 		break;
 	case PCB_TYPE_ELEMENT:
@@ -688,7 +688,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 		if (obj->parent.layer->meta.real.vis)
 			pcb_text_invalidate_draw(obj->parent.layer, (pcb_text_t *)obj);
 		break;
-	case PCB_OBJ_POLYGON:
+	case PCB_OBJ_POLY:
 		if (obj->parent.layer->meta.real.vis)
 			pcb_poly_invalidate_draw(obj->parent.layer, (pcb_poly_t *)obj);
 		break;
@@ -728,7 +728,7 @@ static void pcb_draw_obj_label(pcb_any_obj_t *obj)
 	switch(obj->type) {
 		case PCB_OBJ_LINE:    pcb_line_draw_label((pcb_line_t *)obj); return;
 		case PCB_OBJ_ARC:     pcb_arc_draw_label((pcb_arc_t *)obj); return;
-		case PCB_OBJ_POLYGON: pcb_poly_draw_label((pcb_poly_t *)obj); return;
+		case PCB_OBJ_POLY: pcb_poly_draw_label((pcb_poly_t *)obj); return;
 		case PCB_OBJ_TEXT:    pcb_text_draw_label((pcb_text_t *)obj); return;
 		default: break;
 	}

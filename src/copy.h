@@ -36,7 +36,7 @@
  */
 #define	PCB_COPY_TYPES              \
 	(PCB_TYPE_VIA | PCB_TYPE_PSTK | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | \
-	PCB_TYPE_SUBC | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_POLYGON | PCB_TYPE_ARC)
+	PCB_TYPE_SUBC | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_POLY | PCB_TYPE_ARC)
 
 void *pcb_copy_obj(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
 

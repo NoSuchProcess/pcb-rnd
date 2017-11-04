@@ -762,7 +762,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		CheckPinForRubberbandConnection(rbnd, (pcb_pin_t *) Ptr1);
 		break;
 
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)
 			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
 		break;

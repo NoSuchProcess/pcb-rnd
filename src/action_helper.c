@@ -99,13 +99,13 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		*x = ((pcb_element_t *) ptr2)->MarkX;
 		*y = ((pcb_element_t *) ptr2)->MarkY;
 		break;
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		*x = ((pcb_poly_t *) ptr2)->Points[0].X;
 		*y = ((pcb_poly_t *) ptr2)->Points[0].Y;
 		break;
 
 	case PCB_TYPE_LINE_POINT:
-	case PCB_TYPE_POLYGON_POINT:
+	case PCB_TYPE_POLY_POINT:
 		*x = ((pcb_point_t *) ptr3)->X;
 		*y = ((pcb_point_t *) ptr3)->Y;
 		break;

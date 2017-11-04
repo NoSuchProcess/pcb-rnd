@@ -57,9 +57,9 @@ extern pcb_find_callback_t pcb_find_callback;
 #define PCB_LOOKUP_FIRST	\
 	(PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_PSTK)
 #define PCB_LOOKUP_MORE	\
-	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_RATLINE | PCB_TYPE_POLYGON | PCB_TYPE_ARC | PCB_TYPE_SUBC_PART)
+	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_RATLINE | PCB_TYPE_POLY | PCB_TYPE_ARC | PCB_TYPE_SUBC_PART)
 #define PCB_SILK_TYPE	\
-	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON)
+	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY)
 
 pcb_bool pcb_intersect_line_line(pcb_line_t *, pcb_line_t *);
 pcb_bool pcb_intersect_line_arc(pcb_line_t *, pcb_arc_t *);

@@ -210,7 +210,7 @@ static void move_pad_side_effect(pcb_any_obj_t *o, pcb_layer_t *top, pcb_layer_t
 	pcb_layer_t *source = o->parent.layer;
 	pcb_layer_t *target = (source->meta.bound.type & PCB_LYT_TOP) ? top : bottom;
 	switch(o->type) {
-		case PCB_OBJ_POLYGON:
+		case PCB_OBJ_POLY:
 			pcb_polyop_move_to_layer_low(NULL, source, (pcb_poly_t *)o, target);
 			break;
 		case PCB_OBJ_LINE:
@@ -765,7 +765,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		}
 
 		polylist_foreach(&sl->Polygon, &it, poly) {
-			pcb_object_operation(opfunc, ctx, PCB_TYPE_POLYGON, sl, poly, poly);
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_POLY, sl, poly, poly);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &poly->BoundingBox);
 		}
 

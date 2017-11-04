@@ -59,7 +59,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_HOLE),          N("hole"),          PCB_TYPEMASK_PIN, "For pins and vias, this flag means that the pin or via is a hole without a copper annulus." },
 	{FN(PCB_FLAG_RAT),           N("rat"),           PCB_TYPE_RATLINE, "If set for a line, indicates that this line is a rat line instead of a copper trace." },
 	{FN(PCB_FLAG_PININPOLY),     N("pininpoly"),     PCB_TYPEMASK_PIN | PCB_TYPE_PAD, "For pins and pads, this flag is used internally to indicate that the pin or pad overlaps a polygon on some layer." },
-	{FN(PCB_FLAG_CLEARPOLY),     N("clearpoly"),     PCB_TYPE_POLYGON, "For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. " },
+	{FN(PCB_FLAG_CLEARPOLY),     N("clearpoly"),     PCB_TYPE_POLY, "For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. " },
 	{FN(PCB_FLAG_HIDENAME),      N("hidename"),      PCB_TYPE_ELEMENT, "For elements, when set the name of the element is hidden." },
 	{FN(PCB_FLAG_DISPLAYNAME),   N("showname"),      PCB_TYPE_ELEMENT, "OBSOLETE: For elements, when set the names of pins are shown." },
 	{FN(PCB_FLAG_CLEARLINE),     N("clearline"),     PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_TEXT | PCB_TYPE_PSTK, "For lines and arcs, the line/arc will clear polygons instead of connecting to them." },
@@ -74,11 +74,11 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_DRC),           N("drc"),           PCB_TYPEMASK_ALL, "Set for objects that fail DRC: flag like FOUND flag for DRC checking."},
 	{FN(PCB_FLAG_LOCK),          N("lock"),          PCB_TYPEMASK_ALL, "Set for locked objects."},
 	{FN(PCB_FLAG_EDGE2),         N("edge2"),         PCB_TYPEMASK_ALL, "For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)" },
-	{FN(PCB_FLAG_FULLPOLY),      N("fullpoly"),      PCB_TYPE_POLYGON, "For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one)." },
+	{FN(PCB_FLAG_FULLPOLY),      N("fullpoly"),      PCB_TYPE_POLY, "For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one)." },
 	{FN(PCB_FLAG_NOPASTE),       N("nopaste"),       PCB_TYPE_PAD, "Pad should not receive solderpaste.  This is to support fiducials" },
 	{FN(PCB_FLAG_NONETLIST),     N("nonetlist"),     PCB_TYPEMASK_ALL, "element is not on the netlist and should not interfere with the netlist "},
-	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_SUBC, "when set the names of pins are shown."},
-	{FN(PCB_FLAG_CLEARPOLYPOLY), N("clearpolypoly"), PCB_TYPE_POLYGON, "For polygons, apply clearance to nearby polygons" },
+	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_SUBC, "when set the names of pins are shown."},
+	{FN(PCB_FLAG_CLEARPOLYPOLY), N("clearpolypoly"), PCB_TYPE_POLY, "For polygons, apply clearance to nearby polygons" },
 	{FN(PCB_FLAG_DYNTEXT),       N("dyntext"),       PCB_TYPE_TEXT, "For text: dynamic string (substitute %patterns%)"},
 	{FN(PCB_FLAG_FLOATER),       N("floater"),       PCB_TYPEMASK_ALL, "subc part can be moved after subc placing"}
 };

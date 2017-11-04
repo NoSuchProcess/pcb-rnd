@@ -970,7 +970,7 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 55 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_POLYGON); return T_CONST; }
+{ qry_lval.n = make_constant(qry_text, PCB_OBJ_POLY); return T_CONST; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP

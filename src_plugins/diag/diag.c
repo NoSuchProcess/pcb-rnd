@@ -304,7 +304,7 @@ static int pcb_act_d1(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 #define	PCB_FORCECOLOR_TYPES        \
-	(PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | PCB_TYPE_SUBC | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_SUBC_PART | PCB_TYPE_SUBC | PCB_TYPE_RATLINE)
+	(PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | PCB_TYPE_SUBC | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_SUBC_PART | PCB_TYPE_SUBC | PCB_TYPE_RATLINE)
 
 static const char forcecolor_syntax[] = "forcecolor(#RRGGBB)\n";
 static const char forcecolor_help[] = "change selected element's color to #RRGGBB, reset if does not start with '#'";

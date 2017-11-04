@@ -210,7 +210,7 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 			break;
 		}
 
-	case PCB_OBJ_POLYGON:
+	case PCB_OBJ_POLY:
 		{
 			pcb_layer_id_t layer = pcb_layer_id(PCB->Data, obj->parent.layer);
 			if (ADD_POLYGON_TO_LIST(layer, (pcb_poly_t *)obj, 0, NULL, PCB_FCT_START))
@@ -302,7 +302,7 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 	switch(type) {
 		case PCB_OBJ_LINE:    return PCB_TYPE_LINE;
 		case PCB_OBJ_TEXT:    return PCB_TYPE_TEXT;
-		case PCB_OBJ_POLYGON: return PCB_TYPE_POLYGON;
+		case PCB_OBJ_POLY: return PCB_TYPE_POLY;
 		case PCB_OBJ_ARC:     return PCB_TYPE_ARC;
 		case PCB_OBJ_RAT:     return PCB_TYPE_RATLINE;
 		case PCB_OBJ_PAD:     return PCB_TYPE_PAD;

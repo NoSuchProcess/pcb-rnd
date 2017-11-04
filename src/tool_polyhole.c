@@ -43,7 +43,7 @@ void pcb_tool_polyhole_notify_mode(void)
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
 		pcb_crosshair.AttachedObject.Type =
-			pcb_search_screen(Note.X, Note.Y, PCB_TYPE_POLYGON,
+			pcb_search_screen(Note.X, Note.Y, PCB_TYPE_POLY,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
 		if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_NONE) {

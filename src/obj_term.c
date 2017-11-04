@@ -217,7 +217,7 @@ static int undo_term_rename_swap(void *udata)
 	else
 		pcb_attribute_remove(&r->obj->Attributes, "term");
 
-	if (r->obj->type == PCB_OBJ_POLYGON)
+	if (r->obj->type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(r->obj->parent.layer->parent, r->obj->parent.layer, (pcb_poly_t *)r->obj);
 
 	return res;
@@ -269,7 +269,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 	PCB_FLAG_CLEAR(PCB_FLAG_CLEARPOLY, r);
 	undo_term_rename_swap(r);
 
-	if (obj->type == PCB_OBJ_POLYGON)
+	if (obj->type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(obj->parent.layer->parent, obj->parent.layer, (pcb_poly_t *)obj);
 
 	pcb_undo_inc_serial();

@@ -81,7 +81,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 	for(n = 0, o = (pcb_any_obj_t **)objs->array; n < vtp0_len(objs); n++,o++) {
 		switch((*o)->type) {
 			case PCB_OBJ_LINE:
-			case PCB_OBJ_POLYGON:
+			case PCB_OBJ_POLY:
 				ts->len++;
 				break;
 			case PCB_OBJ_VIA:
@@ -121,7 +121,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 				ts->shape[n].data.line.square = 0;
 				ts->shape[n].clearance = (*(pcb_line_t **)o)->Clearance;
 				break;
-			case PCB_OBJ_POLYGON:
+			case PCB_OBJ_POLY:
 				{
 					pcb_cardinal_t p, len;
 					pcb_poly_t *poly = *(pcb_poly_t **)o;

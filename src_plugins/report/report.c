@@ -309,7 +309,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc), gen_term(Arc));
 			break;
 		}
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		{
 			pcb_poly_t *Polygon;
 #ifndef NDEBUG
@@ -328,7 +328,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"It has %d holes and resides on layer %d.\n"
 									"%s"
 									"%s%s%s", USER_UNITMASK, Polygon->ID,
-									pcb_strflg_f2s(Polygon->Flags, PCB_TYPE_POLYGON, NULL),
+									pcb_strflg_f2s(Polygon->Flags, PCB_TYPE_POLY, NULL),
 									Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
@@ -477,7 +477,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			break;
 		}
 	case PCB_TYPE_LINE_POINT:
-	case PCB_TYPE_POLYGON_POINT:
+	case PCB_TYPE_POLY_POINT:
 		{
 			pcb_point_t *point = (pcb_point_t *) ptr2;
 			report = pcb_strdup_printf("%m+POINT ID# %ld.\n"

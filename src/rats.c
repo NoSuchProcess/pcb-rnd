@@ -697,7 +697,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					 * not a daisy chain).  Further prefer to pick an existing
 					 * via in the Net to make that connection.
 					 */
-					if (conn1->obj->type == PCB_OBJ_POLYGON &&
+					if (conn1->obj->type == PCB_OBJ_POLY &&
 							(polygon = (pcb_poly_t *) conn1->obj) &&
 							!(distance == 0 &&
 								firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn2->X, conn2->Y, polygon)) {
@@ -707,7 +707,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 						theSubnet = next;
 						havepoints = pcb_true;
 					}
-					else if (conn2->obj->type == PCB_OBJ_POLYGON &&
+					else if (conn2->obj->type == PCB_OBJ_POLY &&
 									 (polygon = (pcb_poly_t *) conn2->obj) &&
 									 !(distance == 0 &&
 										 firstpoint && firstpoint->obj->type == PCB_OBJ_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn1->X, conn1->Y, polygon)) {

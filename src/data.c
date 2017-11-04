@@ -505,7 +505,7 @@ void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(data);
 	{
-		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_POLYGON, layer, polygon, polygon);
+		pcb_object_operation(&MoveFunctions, &ctx, PCB_TYPE_POLY, layer, polygon, polygon);
 	}
 	PCB_ENDALL_LOOP;
 }
@@ -530,7 +530,7 @@ void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, un
 	if (type & PCB_OBJ_TEXT) PCB_TEXT_ALL_LOOP(data); {
 		if (PCB_FLAG_TEST(mask, text)) vtp0_append(dst, text);
 	} PCB_ENDALL_LOOP;
-	if (type & PCB_OBJ_POLYGON) PCB_POLY_ALL_LOOP(data); {
+	if (type & PCB_OBJ_POLY) PCB_POLY_ALL_LOOP(data); {
 		if (PCB_FLAG_TEST(mask, polygon)) vtp0_append(dst, polygon);
 	} PCB_ENDALL_LOOP;
 }
@@ -552,7 +552,7 @@ void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type)
 	if (type & PCB_OBJ_TEXT) PCB_TEXT_ALL_LOOP(data); {
 		if (text->term != NULL) vtp0_append(dst, text);
 	} PCB_ENDALL_LOOP;
-	if (type & PCB_OBJ_POLYGON) PCB_POLY_ALL_LOOP(data); {
+	if (type & PCB_OBJ_POLY) PCB_POLY_ALL_LOOP(data); {
 		if (polygon->term != NULL) vtp0_append(dst, polygon);
 	} PCB_ENDALL_LOOP;
 }
@@ -584,7 +584,7 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 		pcb_layer_t *ly = data->Layer + lid;
 		if (types & PCB_OBJ_LINE)    rsearch(ly->line_tree);
 		if (types & PCB_OBJ_TEXT)    rsearch(ly->text_tree);
-		if (types & PCB_OBJ_POLYGON) rsearch(ly->polygon_tree);
+		if (types & PCB_OBJ_POLY) rsearch(ly->polygon_tree);
 		if (types & PCB_OBJ_ARC)     rsearch(ly->arc_tree);
 	}
 

@@ -42,7 +42,7 @@ typedef enum pcb_objtype_e {
 	PCB_OBJ_POINT     = 0x000001,
 	PCB_OBJ_LINE      = 0x000002,
 	PCB_OBJ_TEXT      = 0x000004,
-	PCB_OBJ_POLYGON   = 0x000008,
+	PCB_OBJ_POLY      = 0x000008,
 	PCB_OBJ_ARC       = 0x000010,
 	PCB_OBJ_RAT       = 0x000020,
 	PCB_OBJ_PAD       = 0x000040,
@@ -200,7 +200,7 @@ const char *pcb_obj_id_invalid(const char *id);
 
 #define PCB_OBJ_HAS_CLEARANCE(obj) \
 	( \
-		((obj)->type == PCB_OBJ_POLYGON) ? \
+		((obj)->type == PCB_OBJ_POLY) ? \
 		PCB_POLY_HAS_CLEARANCE(obj) : PCB_NONPOLY_HAS_CLEARANCE(obj) \
 	)
 

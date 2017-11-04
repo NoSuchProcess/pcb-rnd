@@ -86,7 +86,7 @@ static int pcb_act_ChangeClearSize(int argc, const char **argv, pcb_coord_t x, p
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
-			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLYGON))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
+			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLY))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
 				type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (pcb_get_style_size(funcid, &value, type, 2) != 0)
 				return 1;

@@ -401,7 +401,7 @@ static int write_nets(hyp_wr_t * wr)
 			case PCB_OBJ_PAD:
 				write_pad(wr, (pcb_pad_t *) o->obj);
 				break;
-			case PCB_OBJ_POLYGON:
+			case PCB_OBJ_POLY:
 				write_poly(wr, (pcb_poly_t *) o->obj);
 				break;
 

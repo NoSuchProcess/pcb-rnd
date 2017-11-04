@@ -227,7 +227,7 @@ void row_clicked_cb(GtkWidget * widget, GdkEvent * event, GhidDrcViolation * vio
 			switch (violation->object_type_list[i]) {
 			case PCB_TYPE_LINE:
 			case PCB_TYPE_ARC:
-			case PCB_TYPE_POLYGON:
+			case PCB_TYPE_POLY:
 				pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
 			}
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);

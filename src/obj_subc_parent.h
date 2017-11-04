@@ -67,7 +67,7 @@ static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_obj_parent_subc(pcb_any_obj_t *obj
 			return pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
 
 		case PCB_OBJ_LINE:
-		case PCB_OBJ_POLYGON:
+		case PCB_OBJ_POLY:
 		case PCB_OBJ_TEXT:
 		case PCB_OBJ_ARC:
 			return pcb_lobj_parent_subc(obj->parent_type, &obj->parent);

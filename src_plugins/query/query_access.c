@@ -66,7 +66,7 @@ static void list_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_te
 
 static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly)
 {
-	APPEND(ctx, PCB_OBJ_POLYGON, poly, PCB_PARENT_LAYER, layer);
+	APPEND(ctx, PCB_OBJ_POLY, poly, PCB_PARENT_LAYER, layer);
 }
 
 static int list_element_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, int enter)
@@ -114,7 +114,7 @@ void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 		(mask & PCB_OBJ_LINE) ? list_line_cb : NULL,
 		(mask & PCB_OBJ_ARC) ? list_arc_cb : NULL,
 		(mask & PCB_OBJ_TEXT) ? list_text_cb : NULL,
-		(mask & PCB_OBJ_POLYGON) ? list_poly_cb : NULL,
+		(mask & PCB_OBJ_POLY) ? list_poly_cb : NULL,
 		(mask & PCB_OBJ_ELEMENT) ? list_element_cb : NULL,
 		(mask & PCB_OBJ_ELINE) ? list_eline_cb : NULL,
 		(mask & PCB_OBJ_EARC) ? list_earc_cb : NULL,
@@ -716,7 +716,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 /*		case PCB_OBJ_POINT:    return field_point(obj, fld, res);*/
 		case PCB_OBJ_LINE:     return field_line(obj, fld, res);
 		case PCB_OBJ_TEXT:     return field_text(obj, fld, res);
-		case PCB_OBJ_POLYGON:  return field_polygon(obj, fld, res);
+		case PCB_OBJ_POLY:  return field_polygon(obj, fld, res);
 		case PCB_OBJ_ARC:      return field_arc(obj, fld, res);
 		case PCB_OBJ_RAT:      return field_rat(obj, fld, res);
 		case PCB_OBJ_PAD:      return field_pad(obj, fld, res);

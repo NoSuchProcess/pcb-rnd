@@ -387,7 +387,7 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&poly->Attributes));
-	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_TYPE_POLYGON, poly->intconn));
+	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_TYPE_POLY, poly->intconn));
 
 	if ((wrver >= 3) && (poly->Clearance > 0))
 		lht_dom_hash_put(obj, build_textf("clearance", CFMT, poly->Clearance));

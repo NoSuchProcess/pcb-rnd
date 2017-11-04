@@ -181,7 +181,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		 * XXX tree activity.
 		 */
 		Mypcb_poly_move(PCB->Data, layer, polygon, dx, dy);
-		pcb_undo_add_obj_to_move(PCB_TYPE_POLYGON, NULL, NULL, polygon, dx, dy);
+		pcb_undo_add_obj_to_move(PCB_TYPE_POLY, NULL, NULL, polygon, dx, dy);
 	}
 	PCB_ENDALL_LOOP;
 }

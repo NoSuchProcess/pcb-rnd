@@ -65,7 +65,7 @@ void pcb_tool_insert_notify_mode(void)
 			}
 			else {
 				/* get starting point of nearest segment */
-				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
+				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLY) {
 					fake.poly = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 					polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, Note.X, Note.Y);
 					fake.line.Point1 = fake.poly->Points[polyIndex];
@@ -81,8 +81,8 @@ void pcb_tool_insert_notify_mode(void)
 
 		/* second notify, insert new point into object */
 	case PCB_CH_STATE_SECOND:
-		if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON)
-			pcb_insert_point_in_object(PCB_TYPE_POLYGON,
+		if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLY)
+			pcb_insert_point_in_object(PCB_TYPE_POLY,
 														pcb_crosshair.AttachedObject.Ptr1, fake.poly,
 														&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
 		else

@@ -206,7 +206,7 @@ do { \
 		if ((layer != NULL) && (layer->parent->parent_type == PCB_PARENT_BOARD)) { \
 			if (layer->is_bound) layer = layer->meta.bound.real; \
 			if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
-				pcb_poly_clear_from_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
+				pcb_poly_clear_from_poly(layer->parent, PCB_TYPE_POLY, layer, poly); \
 		} \
 	} \
 } while(0)
@@ -219,7 +219,7 @@ do { \
 		if ((layer != NULL) && (layer->parent->parent_type == PCB_PARENT_BOARD)) { \
 			if (layer->is_bound) layer = layer->meta.bound.real; \
 			if (PCB_POLY_HAS_CLEARANCE(poly) && (layer != NULL)) \
-				pcb_poly_restore_to_poly(layer->parent, PCB_TYPE_POLYGON, layer, poly); \
+				pcb_poly_restore_to_poly(layer->parent, PCB_TYPE_POLY, layer, poly); \
 		} \
 	} \
 } while(0)

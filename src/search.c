@@ -1177,7 +1177,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		Type &= (PCB_TYPE_ELEMENT_NAME | PCB_TYPE_TEXT);
 	}
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) {
-		Type &= ~PCB_TYPE_POLYGON;
+		Type &= ~PCB_TYPE_POLY;
 	}
 
 	if (Type & PCB_TYPE_RATLINE && PCB->RatOn &&
@@ -1233,9 +1233,9 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		}
 		if (SearchLayer->meta.real.vis) {
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
-					Type & PCB_TYPE_POLYGON_POINT &&
+					Type & PCB_TYPE_POLY_POINT &&
 					SearchPointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
-				return (PCB_TYPE_POLYGON_POINT);
+				return (PCB_TYPE_POLY_POINT);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_LINE_POINT &&
@@ -1259,7 +1259,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 					&& SearchTextByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3))
 				return (PCB_TYPE_TEXT);
 
-			if (Type & PCB_TYPE_POLYGON &&
+			if (Type & PCB_TYPE_POLY &&
 					SearchPolygonByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_poly_t **) Result3)) {
 				if (HigherAvail) {
 					pcb_box_t *box = &(*(pcb_poly_t **) Result2)->BoundingBox;
@@ -1267,10 +1267,10 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 					if (HigherBound < area)
 						break;
 					else
-						return (PCB_TYPE_POLYGON);
+						return (PCB_TYPE_POLY);
 				}
 				else
-					return (PCB_TYPE_POLYGON);
+					return (PCB_TYPE_POLY);
 			}
 		}
 	}
@@ -1417,22 +1417,22 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type == PCB_TYPE_POLYGON || type == PCB_TYPE_POLYGON_POINT) {
+	if (type == PCB_TYPE_POLY || type == PCB_TYPE_POLY_POINT) {
 		PCB_POLY_ALL_LOOP(Base);
 		{
 			if (polygon->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) polygon;
-				return (PCB_TYPE_POLYGON);
+				return (PCB_TYPE_POLY);
 			}
-			if (type == PCB_TYPE_POLYGON_POINT)
+			if (type == PCB_TYPE_POLY_POINT)
 				PCB_POLY_POINT_LOOP(polygon);
 			{
 				if (point->ID == ID) {
 					*Result1 = (void *) layer;
 					*Result2 = (void *) polygon;
 					*Result3 = (void *) point;
-					return (PCB_TYPE_POLYGON_POINT);
+					return (PCB_TYPE_POLY_POINT);
 				}
 			}
 			PCB_END_LOOP;

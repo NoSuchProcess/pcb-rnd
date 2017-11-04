@@ -581,15 +581,15 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 	int type;
 
 	/* lookup entry (polygon not point was saved) by it's ID */
-	assert(Entry->Kind == PCB_TYPE_POLYGON);
+	assert(Entry->Kind == PCB_TYPE_POLY);
 	type = pcb_search_obj_by_id(PCB->Data, (void **) &layer, (void **) &polygon, &ptr3, Entry->ID, Entry->Kind);
 	switch (type) {
-	case PCB_TYPE_POLYGON:						/* restore the removed point */
+	case PCB_TYPE_POLY:						/* restore the removed point */
 		{
 			/* recover the point */
 			if (pcb_undo_and_draw && layer->meta.real.vis)
 				pcb_poly_invalidate_erase(polygon);
-			pcb_insert_point_in_object(PCB_TYPE_POLYGON, layer, polygon,
+			pcb_insert_point_in_object(PCB_TYPE_POLY, layer, polygon,
 														&Entry->Data.RemovedPoint.Index,
 														Entry->Data.RemovedPoint.X,
 														Entry->Data.RemovedPoint.Y, pcb_true, Entry->Data.RemovedPoint.last_in_contour);
@@ -599,7 +599,7 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 				pcb_poly_invalidate_draw(layer, polygon);
 			Entry->Type = PCB_UNDO_INSERT_POINT;
 			Entry->ID = Entry->Data.RemovedPoint.ID;
-			Entry->Kind = PCB_TYPE_POLYGON_POINT;
+			Entry->Kind = PCB_TYPE_POLY_POINT;
 			return (pcb_true);
 		}
 
@@ -622,11 +622,11 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 	pcb_cardinal_t hole;
 	pcb_bool last_in_contour = pcb_false;
 
-	assert(Entry->Kind == PCB_TYPE_POLYGON_POINT);
+	assert(Entry->Kind == PCB_TYPE_POLY_POINT);
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, (void **) &layer, (void **) &polygon, (void **) &pnt, Entry->ID, Entry->Kind);
 	switch (type) {
-	case PCB_TYPE_POLYGON_POINT:			/* removes an inserted polygon point */
+	case PCB_TYPE_POLY_POINT:			/* removes an inserted polygon point */
 		{
 			if (pcb_undo_and_draw && layer->meta.real.vis)
 				pcb_poly_invalidate_erase(polygon);
@@ -647,10 +647,10 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 			Entry->Data.RemovedPoint.Y = pnt->Y;
 			Entry->Data.RemovedPoint.ID = pnt->ID;
 			Entry->ID = polygon->ID;
-			Entry->Kind = PCB_TYPE_POLYGON;
+			Entry->Kind = PCB_TYPE_POLY;
 			Entry->Type = PCB_UNDO_REMOVE_POINT;
 			Entry->Data.RemovedPoint.Index = point_idx;
-			pcb_destroy_object(PCB->Data, PCB_TYPE_POLYGON_POINT, layer, polygon, pnt);
+			pcb_destroy_object(PCB->Data, PCB_TYPE_POLY_POINT, layer, polygon, pnt);
 			if (pcb_undo_and_draw && layer->meta.real.vis)
 				pcb_poly_invalidate_draw(layer, polygon);
 			return (pcb_true);
@@ -691,7 +691,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 		DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 
 	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB, PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
-	if (Entry->Kind == PCB_TYPE_POLYGON)
+	if (Entry->Kind == PCB_TYPE_POLY)
 		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_poly_t *) obj);
 	return (pcb_true);
 }
@@ -702,7 +702,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
  */
 static pcb_bool UndoRemoveContour(UndoListTypePtr Entry)
 {
-	assert(Entry->Kind == PCB_TYPE_POLYGON);
+	assert(Entry->Kind == PCB_TYPE_POLY);
 	return UndoSwapCopiedObject(Entry);
 }
 
@@ -712,7 +712,7 @@ static pcb_bool UndoRemoveContour(UndoListTypePtr Entry)
  */
 static pcb_bool UndoInsertContour(UndoListTypePtr Entry)
 {
-	assert(Entry->Kind == PCB_TYPE_POLYGON);
+	assert(Entry->Kind == PCB_TYPE_POLY);
 	return UndoSwapCopiedObject(Entry);
 }
 
@@ -978,12 +978,12 @@ void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, pcb_card
 
 	if (!Locked) {
 		switch (Type) {
-		case PCB_TYPE_POLYGON_POINT:
+		case PCB_TYPE_POLY_POINT:
 			{
 				/* save the ID of the parent object; else it will be
 				 * impossible to recover the point
 				 */
-				undo = GetUndoSlot(PCB_UNDO_REMOVE_POINT, PCB_OBJECT_ID(polygon), PCB_TYPE_POLYGON);
+				undo = GetUndoSlot(PCB_UNDO_REMOVE_POINT, PCB_OBJECT_ID(polygon), PCB_TYPE_POLY);
 				undo->Data.RemovedPoint.X = polygon->Points[index].X;
 				undo->Data.RemovedPoint.Y = polygon->Points[index].Y;
 				undo->Data.RemovedPoint.ID = polygon->Points[index].ID;

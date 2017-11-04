@@ -418,7 +418,7 @@ static void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		{
 			pcb_poly_t *polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 
@@ -517,7 +517,7 @@ static void XORDrawMoveOrCopy(void)
 			break;
 		}
 
-	case PCB_TYPE_POLYGON_POINT:
+	case PCB_TYPE_POLY_POINT:
 		{
 			pcb_poly_t *polygon;
 			pcb_point_t *point;
@@ -1437,7 +1437,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_POLYGON_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_POLY_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_TYPE_NONE) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;

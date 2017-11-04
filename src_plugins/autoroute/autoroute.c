@@ -1011,7 +1011,7 @@ static routedata_t *CreateRouteData()
 						case PCB_OBJ_VIA:
 							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->obj, pcb_true, rd->styles[j]);
 							break;
-						case PCB_OBJ_POLYGON:
+						case PCB_OBJ_POLY:
 							rb =
 								AddPolygon(layergroupboxes,
 													 pcb_layer_id(PCB->Data, (pcb_layer_t *) connection->ptr1),

@@ -56,7 +56,7 @@
 #include "obj_pinvia_draw.h"
 #include "obj_pad_draw.h"
 
-#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLYGON
+#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLY
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
@@ -526,7 +526,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				}
 
 				/* toggle terminal ID print for subcircuit parts */
-				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
 				if (type) {
 					pcb_any_obj_t *obj = ptr2;
 					pcb_opctx_t opctx;
@@ -543,7 +543,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 						case PCB_TYPE_VIA:
 						case PCB_TYPE_LINE:
 						case PCB_TYPE_ARC:
-						case PCB_TYPE_POLYGON:
+						case PCB_TYPE_POLY:
 						case PCB_TYPE_TEXT:
 							pcb_obj_invalidate_label(type, ptr1, ptr2, ptr3);
 							break;
@@ -1229,7 +1229,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
-	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_POLY:
 		layer = (pcb_layer_t *) ptr1;
 		break;
 
