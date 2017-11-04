@@ -1199,7 +1199,7 @@ static int parse_data_padstack_proto(pcb_board_t *pcb, pcb_padstack_proto_t *dst
 	/* read the hole */
 	if (parse_coord(&dst->hdia, lht_dom_hash_get(nproto, "hdia")) != 0) return -1;
 	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "htop")) != 0) return -1;
-	if (parse_int(&dst->htop, lht_dom_hash_get(nproto, "hbottom")) != 0) return -1;
+	if (parse_int(&dst->hbottom, lht_dom_hash_get(nproto, "hbottom")) != 0) return -1;
 	if (parse_int(&itmp, lht_dom_hash_get(nproto, "hplated")) != 0) return -1;
 	dst->hplated = itmp;
 	dst->in_use = 1;
