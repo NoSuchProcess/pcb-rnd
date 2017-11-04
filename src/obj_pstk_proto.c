@@ -48,11 +48,13 @@ void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len)
 	poly->x = malloc(sizeof(poly->x[0]) * len * 2);
 	poly->y = poly->x + len;
 	poly->len = len;
+	poly->pa = NULL;
 }
 
 void pcb_pstk_shape_copy_poly(pcb_pstk_poly_t *dst, const pcb_pstk_poly_t *src)
 {
 	memcpy(dst->x, src->x, sizeof(src->x[0]) * src->len * 2);
+	pcb_pstk_shape_update_pa(dst);
 }
 
 
@@ -143,7 +145,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 						ts->shape[n].data.poly.x[p] = poly->Points[p].X - ox;
 						ts->shape[n].data.poly.y[p] = poly->Points[p].Y - oy;
 					}
-
+					pcb_pstk_shape_update_pa(&ts->shape[n].data.poly);
 					ts->shape[n].shape = PCB_PSSH_POLY;
 					ts->shape[n].clearance = (*(pcb_poly_t **)o)->Clearance;
 				}
