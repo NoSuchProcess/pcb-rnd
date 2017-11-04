@@ -161,6 +161,7 @@ static pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src)
 	}
 	else
 		dst->thermals.shape = 0;
+	memcpy(&dst->Flags, &src->Flags, sizeof(dst->Flags));
 	return dst;
 }
 
