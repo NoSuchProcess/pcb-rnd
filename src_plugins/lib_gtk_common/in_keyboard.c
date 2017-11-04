@@ -100,8 +100,11 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		if (state & GDK_MOD1_MASK)    mods |= PCB_M_Alt;
 		if (state & GDK_CONTROL_MASK) mods |= PCB_M_Ctrl;
 		if (state & GDK_SHIFT_MASK) {
-			mods |= PCB_M_Shift;
 			kv = tolower(gdk_keyval_to_unicode(kev->keyval));
+			/* Declare SHIFT only for letters */
+			if ((kv >= 96) && (kv <= 122)) {
+				mods |= PCB_M_Shift;
+			}
 		}
 
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
