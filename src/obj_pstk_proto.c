@@ -408,6 +408,15 @@ void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly)
 
 	poly->pa = pcb_polyarea_create();
 	pcb_polyarea_contour_include(poly->pa, pl);
+
+	if (!pcb_poly_valid(poly->pa)) {
+		pcb_polyarea_free(&poly->pa);
+		
+		poly->pa = pcb_polyarea_create();
+		pcb_poly_contour_inv(pl);
+		pcb_polyarea_contour_include(poly->pa, pl);
+	}
+
 }
 
 /*** Undoable hole change ***/
