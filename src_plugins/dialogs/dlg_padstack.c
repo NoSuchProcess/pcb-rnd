@@ -79,15 +79,16 @@ static void pse_tab_update(void *hid_ctx, pse_t *pse)
 /* build a group/layer name string in tmp */
 char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int size)
 {
-	const char *lname = "", *gname = grp->name;
-	if (grp->len > 0) {
-		pcb_layer_t *l = pcb_get_layer(pcb->Data, grp->lid[0]);
-		if (l != NULL)
-			lname = l->name;
-	}
+	const char *lname = "", *gname = "";
 
-	if (gname == NULL)
-		gname = "";
+	if (grp != NULL) {
+		gname = grp->name;
+		if (grp->len > 0) {
+			pcb_layer_t *l = pcb_get_layer(pcb->Data, grp->lid[0]);
+			if (l != NULL)
+				lname = l->name;
+		}
+	}
 
 	pcb_snprintf(out, size, "%s\n[%s]", gname, lname);
 	return out;
