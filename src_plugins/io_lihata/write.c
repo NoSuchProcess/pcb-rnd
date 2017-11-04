@@ -578,9 +578,9 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 					break;
 				case PCB_PSSH_CIRC:
 					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
-					lht_dom_hash_put(nproto, build_textf("x", CFMT, shape->data.circ.x));
-					lht_dom_hash_put(nproto, build_textf("y", CFMT, shape->data.circ.y));
-					lht_dom_hash_put(nproto, build_textf("dia", CFMT, shape->data.circ.dia));
+					lht_dom_hash_put(nshapeo, build_textf("x", CFMT, shape->data.circ.x));
+					lht_dom_hash_put(nshapeo, build_textf("y", CFMT, shape->data.circ.y));
+					lht_dom_hash_put(nshapeo, build_textf("dia", CFMT, shape->data.circ.dia));
 					break;
 				default:
 					pcb_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
