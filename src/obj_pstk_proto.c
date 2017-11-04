@@ -113,15 +113,27 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 		pcb_layer_t *ly;
 		switch((*o)->type) {
 			case PCB_OBJ_LINE:
-				n++;
-				ts->shape[n].shape = PCB_PSSH_LINE;
-				ts->shape[n].data.line.x1 = (*(pcb_line_t **)o)->Point1.X - ox;
-				ts->shape[n].data.line.y1 = (*(pcb_line_t **)o)->Point1.Y - oy;
-				ts->shape[n].data.line.x2 = (*(pcb_line_t **)o)->Point2.X - ox;
-				ts->shape[n].data.line.y2 = (*(pcb_line_t **)o)->Point2.Y - oy;
-				ts->shape[n].data.line.thickness = (*(pcb_line_t **)o)->Thickness;
-				ts->shape[n].data.line.square = 0;
-				ts->shape[n].clearance = (*(pcb_line_t **)o)->Clearance;
+				{
+					pcb_line_t *line = (*(pcb_line_t **)o);
+
+					n++;
+					if ((line->Point1.X != line->Point2.X) || (line->Point1.Y != line->Point2.Y)) {
+						ts->shape[n].shape = PCB_PSSH_LINE;
+						ts->shape[n].data.line.x1 = line->Point1.X - ox;
+						ts->shape[n].data.line.y1 = line->Point1.Y - oy;
+						ts->shape[n].data.line.x2 = line->Point2.X - ox;
+						ts->shape[n].data.line.y2 = line->Point2.Y - oy;
+						ts->shape[n].data.line.thickness = line->Thickness;
+						ts->shape[n].data.line.square = 0;
+					}
+					else { /* a zero-long line is really a circle - padstacks have a specific shape for that */
+						ts->shape[n].shape = PCB_PSSH_CIRC;
+						ts->shape[n].data.circ.x = line->Point1.X - ox;
+						ts->shape[n].data.circ.y = line->Point1.Y - oy;
+						ts->shape[n].data.circ.dia = line->Thickness;
+					}
+					ts->shape[n].clearance = line->Clearance;
+				}
 				break;
 			case PCB_OBJ_POLY:
 				{
