@@ -171,7 +171,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_padstack_bb_drills(pcb_board_t *pcb
 	switch(res) {
 		case PCB_BB_THRU: return pcb_true;
 		case PCB_BB_NONE: case PCB_BB_INVALID: return 0;
-		case PCB_BB_BB: return (grp >= bot) && (grp <= top);
+		case PCB_BB_BB: return (grp <= bot) && (grp >= top);
 	}
 	return pcb_false;
 }
@@ -236,6 +236,14 @@ static inline PCB_FUNC_UNUSED pcb_padstack_shape_t *pcb_padstack_shape_gid(pcb_b
 
 	if (grp->type & PCB_LYT_COPPER) {
 		int n, nosh;
+
+		/* blind/buried: intern layer has no shape if no hole */
+		if (grp->type & PCB_LYT_INTERN) {
+			/* apply internal only if that layer has drill */
+			if (!pcb_padstack_bb_drills(pcb, ps, gid, NULL))
+				return NULL;
+		}
+
 			/* if all layers of the group says no-shape, don't have a shape */
 		for(n = 0, nosh = 0; n < grp->len; n++) {
 			pcb_layer_id_t lid = grp->lid[n];
