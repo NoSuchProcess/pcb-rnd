@@ -181,7 +181,37 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 
 		case PCB_THERMAL_ROUND:
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, line)) {
-				pc = NULL;
+
+				if (line->thermal & PCB_THERMAL_DIAGONAL) {
+					/* side clear lines */
+					pa = pa_line_at(
+						x1 - clrth * nx + clrth * vx - clr*vx, y1 - clrth * ny + clrth * vy - clr*vy,
+						x2 - clrth * nx - clrth * vx + clr*vx, y2 - clrth * ny - clrth * vy + clr*vy,
+						clr, pcb_false);
+					pb = pa_line_at(
+						x1 + clrth * nx + clrth * vx - clr*vx, y1 + clrth * ny + clrth * vy - clr*vy,
+						x2 + clrth * nx - clrth * vx + clr*vx, y2 + clrth * ny - clrth * vy + clr*vy,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					/* cross clear lines */
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x1 - clrth * nx + clrth * vx + clr*nx, y1 - clrth * ny + clrth * vy + clr*ny,
+						x1 + clrth * nx + clrth * vx - clr*nx, y1 + clrth * ny + clrth * vy - clr*ny,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+
+					pa = pc; pc = NULL;
+					pb = pa_line_at(
+						x2 - clrth * nx - clrth * vx + clr*nx, y2 - clrth * ny - clrth * vy + clr*ny,
+						x2 + clrth * nx - clrth * vx - clr*nx, y2 + clrth * ny - clrth * vy - clr*ny,
+						clr, pcb_false);
+					pcb_polyarea_boolean_free(pa, pb, &pc, PCB_PBO_UNITE);
+				}
+				else {
+					pc = NULL;
+				}
 			}
 			else {
 				/* round cap line: arcs! */
