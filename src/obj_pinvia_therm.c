@@ -359,7 +359,7 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
  * Usually this is 4 disjoint regions.
  *
  */
-pcb_polyarea_t *ThermPoly_(pcb_board_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t thickness, pcb_coord_t clearance, pcb_cardinal_t style)
+pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t thickness, pcb_coord_t clearance, pcb_cardinal_t style)
 {
 	pcb_arc_t a;
 	pcb_polyarea_t *pa, *arc;
