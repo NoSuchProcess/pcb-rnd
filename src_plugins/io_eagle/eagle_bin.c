@@ -1528,6 +1528,8 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 {
 	int pin_num = pin_idx;
 	egb_node_t *p, *e = elem_ref_by_idx(elements, elem_idx);
+	char tmp[32];
+
 	if (e == NULL)
 		return NULL;
 	printf("found element, now looking for pin number %ld.\n", pin_idx);
@@ -1537,8 +1539,9 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 			pin_num--;
 		}
 	}
-	printf("pin index now %ld.\n", pin_num);
-	return egb_node_prop_get(p, "name");
+	/* printf("pin index now %ld.\n", pin_num); */
+	sprintf(tmp, "%ld", pin_num);
+	return tmp; /* this now seems to generate 'R7-1' etc..  properly*/
 }
 
 
