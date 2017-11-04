@@ -100,13 +100,8 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		if (state & GDK_MOD1_MASK)    mods |= PCB_M_Alt;
 		if (state & GDK_CONTROL_MASK) mods |= PCB_M_Ctrl;
 		if (state & GDK_SHIFT_MASK) {
-/* TODO#3: this works only on US keyboard */
-			static const char *ignore_shift = "~!@#$%^&*()_+{}|:\"<>?";
-			if ((kv < 32) || (kv > 126) || (strchr(ignore_shift, kv) == NULL)) {
-				mods |= PCB_M_Shift;
-				if ((kv >= 'A') && (kv <= 'Z'))
-					kv = tolower(kv);
-			}
+			mods |= PCB_M_Shift;
+			kv = tolower(gdk_keyval_to_unicode(kev->keyval));
 		}
 
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
