@@ -397,9 +397,17 @@ static void gen_accel(gds_t *s, pcb_hid_cfg_keys_t *km, const char *keydesc, int
 		if (n > 0)
 			gds_append(s, ' ');
 
-#warning TODO#3: pass on key_trs[n]
-		if (km->key_name(key_raws[n], buff, sizeof(buff)) != 0)
-			strcpy(buff, "<unknown>");
+		
+		if (key_raws[n]) {
+			if (km->key_name(key_raws[n], buff, sizeof(buff)) != 0)
+				strcpy(buff, "<unknown>");
+		}
+		else if (key_trs[n] != 0) {
+			buff[0] = key_trs[n];
+			buff[1] ='\0';
+		}
+		else
+			strcpy(buff, "<empty?>");
 
 		if (mods[n] & PCB_M_Alt)   gds_append_str(s, "Alt-");
 		if (mods[n] & PCB_M_Ctrl)  gds_append_str(s, "Ctrl-");
