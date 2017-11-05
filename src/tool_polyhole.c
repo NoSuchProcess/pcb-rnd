@@ -33,6 +33,7 @@
 #include "compat_nls.h"
 #include "crosshair.h"
 #include "hid_actions.h"
+#include "polygon.h"
 #include "search.h"
 #include "tool.h"
 
@@ -146,6 +147,5 @@ pcb_tool_t pcb_tool_polyhole = {
 	pcb_tool_polyhole_adjust_attached_objects,
 	pcb_tool_polyhole_draw_attached,
 	pcb_tool_polyhole_undo_act,
-	pcb_tool_polyhole_redo_act,
-	NULL
+	pcb_tool_polyhole_redo_act
 };
