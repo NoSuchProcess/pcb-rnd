@@ -91,7 +91,11 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		int slen, mods = 0;
 		static pcb_hid_cfg_keyseq_t *seq[32];
 		static int seq_len = 0;
+		unsigned short int key_raw = 0;
 		unsigned short int kv = kev->keyval;
+		guint *keyvals;
+		GdkKeymapKey *keys;
+		gint n_entries;
 
 		view->com->note_event_location(NULL);
 
@@ -107,9 +111,16 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 			}
 		}
 
+		/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
+		if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
+			key_raw = keyvals[0];
+			g_free(keys);
+			g_free(keyvals);
+		}
+
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
 #warning TODO#3: pass on raw and translated keys
-		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, kv, kv, seq, &seq_len);
+		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv, seq, &seq_len);
 		if (slen > 0) {
 			view->has_entered  = 1;
 			pcb_hid_cfg_keys_action(seq, slen);
