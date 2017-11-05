@@ -278,12 +278,12 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 		len -= k-last;
 		desc1 = k;
 		k++; len--;
-		if ((strncmp(k, "key>", 4) == 0) || (strncmp(k, "Key>", 4) == 0)) {
+		if (pcb_strncasecmp(k, "key>", 4) == 0) {
 			k+=4; len-=4;
 			key_raws[slen] = translate_key(km, k, len);
 			key_trs[slen] = 0;
 		}
-		else if ((strncmp(k, "char>", 5) == 0) || (strncmp(k, "Char>", 5) == 0)) {
+		else if (pcb_strncasecmp(k, "char>", 5) == 0) {
 			k+=5; len-=5;
 			key_raws[slen] = 0;
 			if (!isalnum(*k))
