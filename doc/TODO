@@ -3,6 +3,8 @@
 	- label draw/invalidate - do we need this, ot subc term solves it?
 	- save/load thermal
 	- convert: circle around normal via!
+- subc:
+	- FreeRotateBuffer() [report: celem]
 - BUG: draw a rectangle, delete, undo -> crash [report: keantoken]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
 - BUG: empty board, put text on top silk, ctrl+c, shift+f7 twice -> rtree assert [report: keantoken]
