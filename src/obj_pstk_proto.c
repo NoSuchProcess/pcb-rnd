@@ -57,6 +57,28 @@ void pcb_pstk_shape_copy_poly(pcb_pstk_poly_t *dst, const pcb_pstk_poly_t *src)
 	pcb_pstk_shape_update_pa(dst);
 }
 
+static int get_shape_idx(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
+{
+	int n;
+	for(n = 0; n < ts->len; n++)
+		if ((lyt == ts->shape[n].layer_mask) && (comb == ts->shape[n].comb))
+			return n;
+	return -1;
+}
+
+static void append_circle(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_coord_t dia)
+{
+	int idx = ts->len;
+
+	ts->len++;
+	ts->shape = realloc(ts->shape, ts->len * sizeof(pcb_pstk_shape_t));
+
+	ts->shape[idx].shape = PCB_PSSH_CIRC;
+	ts->shape[idx].data.circ.x = ts->shape[idx].data.circ.y =0;
+	ts->shape[idx].data.circ.dia = dia;
+	ts->shape[idx].layer_mask = lyt;
+	ts->shape[idx].comb = comb;
+}
 
 static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
@@ -108,6 +130,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 				goto quit;
 		}
 	}
+
 	ts->shape = malloc(ts->len * sizeof(pcb_pstk_shape_t));
 
 	/* convert local (line/poly) objects */
@@ -177,6 +200,16 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 				goto quit;
 			}
 		}
+	}
+
+	/* if there was a via, use the via's shape on layers that are not specified */
+	if (via != NULL) {
+		if (get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_TOP, 0) == -1)
+			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_TOP, 0, via->Thickness);
+		if (get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_INTERN, 0) == -1)
+			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_INTERN, 0, via->Thickness);
+		if (get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) == -1)
+			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0, via->Thickness);
 	}
 
 	/* all went fine */
