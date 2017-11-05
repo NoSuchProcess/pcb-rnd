@@ -181,7 +181,7 @@ int pcb_hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km)
 	return 0;
 }
 
-pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_char, int terminal)
+pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, int terminal)
 {
 	pcb_hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
@@ -194,7 +194,8 @@ pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid
 
 	addr.hash = 0;
 	addr.details.mods = mods;
-	addr.details.key_char = key_char;
+	addr.details.key_raw = key_raw;
+	addr.details.key_tr = key_tr;
 
 	/* already in the tree */
 	ns = htip_get(phash, addr.hash);
@@ -246,9 +247,9 @@ static unsigned short int translate_key(pcb_hid_cfg_keys_t *km, const char *desc
 	return km->translate_key(tmp, len);
 }
 
-static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cfg_mod_t *mods, unsigned short int *key_chars, int arr_len)
+static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cfg_mod_t *mods, unsigned short int *key_raws, unsigned short int *key_trs, int arr_len)
 {
-	const char *curr, *next, *last, *k;
+	const char *curr, *next, *last, *k, *desc1;
 	int slen, len;
 
 	slen = 0;
@@ -275,18 +276,31 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 			return -1;
 		}
 		len -= k-last;
+		desc1 = k;
 		k++; len--;
-		if ((strncmp(k, "key>", 4) != 0) && (strncmp(k, "Key>", 4) != 0)) {
-			pcb_message(PCB_MSG_ERROR, "Missing <key> in the key description\n");
+		if ((strncmp(k, "key>", 4) == 0) || (strncmp(k, "Key>", 4) == 0)) {
+			k+=4; len-=4;
+			key_raws[slen] = translate_key(km, k, len);
+			key_trs[slen] = 0;
+		}
+		else if ((strncmp(k, "char>", 5) == 0) || (strncmp(k, "Char>", 5) == 0)) {
+			k+=5; len-=5;
+			key_raws[slen] = 0;
+			if (!isalnum(*k))
+				key_trs[slen] = *k;
+			else
+				key_trs[slen] = 0;
+			k++; len--;
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Missing <key> or <char> in the key description starting at %s\n", k-1);
 			return -1;
 		}
-		k+=4; len-=4;
-		key_chars[slen] = translate_key(km, k, len);
 
-		if (key_chars[slen] == 0) {
+		if ((key_raws[slen] == 0) && (key_trs[slen] == 0)) {
 			char *s;
 			s = malloc(len+1);
-			memcpy(s, k, len);
+			memcpy(s, desc1, k-desc1);
 			s[len] = '\0';
 			pcb_message(PCB_MSG_ERROR, "Unrecognised key symbol in key description: %s\n", s);
 			free(s);
@@ -302,11 +316,12 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len)
 {
 	pcb_hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
-	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_raws[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_trs[HIDCFG_MAX_KEYSEQ_LEN];
 	pcb_hid_cfg_keyseq_t *lasts;
 	int slen, n;
 
-	slen = parse_keydesc(km, keydesc, mods, key_chars, HIDCFG_MAX_KEYSEQ_LEN);
+	slen = parse_keydesc(km, keydesc, mods, key_raws, key_trs, HIDCFG_MAX_KEYSEQ_LEN);
 	if (slen <= 0)
 		return slen;
 
@@ -322,7 +337,7 @@ int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc,
 
 /*		printf(" mods=%x sym=%x\n", mods[n], key_chars[n]);*/
 
-		s = pcb_hid_cfg_keys_add_under(km, lasts, mods[n], key_chars[n], terminal);
+		s = pcb_hid_cfg_keys_add_under(km, lasts, mods[n], key_raws[n], key_trs[n], terminal);
 		if (s == NULL) {
 		printf("  ERROR\n");
 #warning TODO: free stuff?
@@ -365,10 +380,11 @@ int pcb_hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keyde
 static void gen_accel(gds_t *s, pcb_hid_cfg_keys_t *km, const char *keydesc, int *cnt, const char *sep)
 {
 	pcb_hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
-	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_raws[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_trs[HIDCFG_MAX_KEYSEQ_LEN];
 	int slen, n;
 
-	slen = parse_keydesc(km, keydesc, mods, key_chars, HIDCFG_MAX_KEYSEQ_LEN);
+	slen = parse_keydesc(km, keydesc, mods, key_raws, key_trs, HIDCFG_MAX_KEYSEQ_LEN);
 	if (slen <= 0)
 		return;
 
@@ -381,7 +397,8 @@ static void gen_accel(gds_t *s, pcb_hid_cfg_keys_t *km, const char *keydesc, int
 		if (n > 0)
 			gds_append(s, ' ');
 
-		if (km->key_name(key_chars[n], buff, sizeof(buff)) != 0)
+#warning TODO#3: pass on key_trs[n]
+		if (km->key_name(key_raws[n], buff, sizeof(buff)) != 0)
 			strcpy(buff, "<unknown>");
 
 		if (mods[n] & PCB_M_Alt)   gds_append_str(s, "Alt-");
@@ -429,7 +446,8 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
 
 	addr.hash = 0;
 	addr.details.mods = mods;
-	addr.details.key_char = key_raw;
+	addr.details.key_raw = key_raw;
+	addr.details.key_tr = key_tr;
 
 	/* already in the tree */
 	ns = htip_get(phash, addr.hash);
