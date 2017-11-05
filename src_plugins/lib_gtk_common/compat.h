@@ -24,6 +24,7 @@
 #define PCB_GTK_COMPAT_H
 
 #ifdef PCB_GTK3
+/* Need GTK3 >= 3.20 due to GdkSeat. */
 
 typedef GdkRGBA pcb_gtk_color_t;
 
