@@ -524,7 +524,7 @@ static void print_library(FILE * fp)
 	pcb_fprintf(fp, "      (attach off)\n    )\n");
 
 	/* add padstack for terminals */
-	pcb_fprintf(fp, "%s\n", term_shapes.array);
+	pcb_fprintf(fp, "%s", term_shapes.array);
 
 	pcb_fprintf(fp, "  )\n");
 	g_list_foreach(pads, (GFunc)free, NULL);
