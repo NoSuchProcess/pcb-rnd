@@ -694,8 +694,8 @@ int lesstif_key_event(XKeyEvent * e)
 	}
 
 /*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
-
-	slen = pcb_hid_cfg_keys_input(&lesstif_keymap, mods, sym, seq, &seq_len);
+#warning TODO#3: pass on raw and translated keys
+	slen = pcb_hid_cfg_keys_input(&lesstif_keymap, mods, sym, sym, seq, &seq_len);
 	if (slen <= 0)
 		return 1;
 

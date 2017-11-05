@@ -128,13 +128,16 @@ char *pcb_hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keyde
    Seq and seq_len must not be NULL as they are the internal state of multi-key
    processing. Load seq array with pointers pointing to each key in the
    sequence, up to seq_len.
+   Key_raw is the raw key code for base keys, without any translation, key_tr
+   is the translated character; e.g. shift+1 is always reported as key_raw=1
+   and on US keyboard reported as key_tr=!
    Returns:
     -1 if the key stroke or sequence is invalid
      0 if more characters needed to complete the sequence
      + a positive integer means the lookup succeeded and the return value
        is the length of the resulting sequence.
 */
-int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_char, pcb_hid_cfg_keyseq_t **seq, int *seq_len);
+int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, pcb_hid_cfg_keyseq_t **seq, int *seq_len);
 
 /* Run the action for a key sequence looked up by pcb_hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */

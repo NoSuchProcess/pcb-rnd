@@ -421,7 +421,7 @@ char *pcb_hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keyde
 }
 
 
-int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_char, pcb_hid_cfg_keyseq_t **seq, int *seq_len)
+int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, pcb_hid_cfg_keyseq_t **seq, int *seq_len)
 {
 	pcb_hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
@@ -429,7 +429,7 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
 
 	addr.hash = 0;
 	addr.details.mods = mods;
-	addr.details.key_char = key_char;
+	addr.details.key_char = key_raw;
 
 	/* already in the tree */
 	ns = htip_get(phash, addr.hash);
