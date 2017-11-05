@@ -582,7 +582,7 @@ ha:{
 				ha:Message Log    = { action=DoWindows(Log) }
 				ha:DRC Check      = { action=DoWindows(DRC) }
 				ha:Netlist        = { action=DoWindows(Netlist) }
-				ha:Command Entry  = { a={<Key>:}; action=Command() }
+				ha:Command Entry  = { a={<char>:}; action=Command() }
 				ha:Pinout         = { a=Shift<Key>d; action=Display(Pinout) }
 				ha:Font selector  = { a=Ctrl Shift<Key>f; action=FontSel() }
 				-
