@@ -408,7 +408,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 
 			pl = pcb_poly_contour(&it);
 			if (pl != NULL) {
-				pcb_snprintf(tmp, sizeof(tmp), "      (polygon %s 0", lay->name);
+				pcb_snprintf(tmp, sizeof(tmp), "      (polygon \"%s\" 0", lay->name);
 				gds_append_str(term_shapes, tmp);
 
 				fld = 0;
