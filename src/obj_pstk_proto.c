@@ -63,6 +63,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 	int ret = -1, n, m, i;
 	pcb_any_obj_t **o;
 	pcb_pstk_tshape_t *ts;
+	pcb_pin_t *via = NULL;
 
 	dst->in_use = 1;
 	pcb_vtpadstack_tshape_init(&dst->tr);
@@ -87,17 +88,18 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 				ts->len++;
 				break;
 			case PCB_OBJ_VIA:
-				if (dst->hdia != 0) {
+				if (via != NULL) {
 					if (!quiet)
 						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias\n");
 					goto quit;
 				}
-				dst->hdia = (*(pcb_pin_t **)o)->DrillingHole;
+				via = *(pcb_pin_t **)o;
+				dst->hdia = via->DrillingHole;
 				dst->hplated = !PCB_FLAG_TEST(PCB_FLAG_HOLE, *o);
-				if ((ox != (*(pcb_pin_t **)o)->X) || (oy != (*(pcb_pin_t **)o)->Y)) {
+				if ((ox != via->X) || (oy != via->Y)) {
 					pcb_message(PCB_MSG_INFO, "Padstack conversion: adjusting origin to via hole\n");
-					ox = (*(pcb_pin_t **)o)->X;
-					oy = (*(pcb_pin_t **)o)->Y;
+					ox = via->X;
+					oy = via->Y;
 				}
 				break;
 			default:;
