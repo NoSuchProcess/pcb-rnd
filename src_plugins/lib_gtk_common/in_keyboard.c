@@ -113,7 +113,6 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		}
 
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
-#warning TODO#3: pass on raw and translated keys
 		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv, seq, &seq_len);
 		if (slen > 0) {
 			view->has_entered  = 1;
