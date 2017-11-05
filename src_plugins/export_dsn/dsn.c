@@ -35,6 +35,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <genvector/gds_char.h>
 
 #include <glib.h>
 
@@ -384,10 +385,57 @@ static void print_pad(FILE *fp, GList **pads, pcb_pad_t *pad, pcb_point_t centro
 	add_padstack(pads, padstack);
 }
 
+static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy, int term_side)
+{
+	if (poly->term != NULL) {
+		pcb_layer_t *lay = g_list_nth_data(layerlist, term_side);
+		char *padstack = pcb_strdup_printf("Term_poly_%ld", poly->ID);
+		char tmp[512];
+		pcb_poly_it_t it;
+		pcb_polyarea_t *pa;
+		int fld;
+
+		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, poly->term, ox, oy);
+
+		gds_append_str(term_shapes, "    (padstack ");
+		gds_append_str(term_shapes, padstack);
+		gds_append_str(term_shapes, "\n");
+
+		for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+			pcb_coord_t x, y;
+			pcb_pline_t *pl;
+			int go;
+
+			pl = pcb_poly_contour(&it);
+			if (pl != NULL) {
+				pcb_snprintf(tmp, sizeof(tmp), "      (polygon %s 0", lay->name);
+				gds_append_str(term_shapes, tmp);
+
+				fld = 0;
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y)) {
+					if ((fld % 3) == 0)
+						gds_append_str(term_shapes, "\n       ");
+					pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", x - ox, y - oy);
+					gds_append_str(term_shapes, tmp);
+					fld++;
+				}
+
+				gds_append_str(term_shapes, "\n      )\n");
+			}
+		}
+		gds_append_str(term_shapes, "    )\n");
+	}
+}
+
+
 static void print_library(FILE * fp)
 {
 	GList *pads = NULL, *iter; /* contain unique pad names */
 	gchar *padstack;
+	gds_t term_shapes;
+
+	gds_init(&term_shapes);
+
 	fprintf(fp, "  (library\n");
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
@@ -407,6 +455,25 @@ static void print_library(FILE * fp)
 			print_pad(fp, &pads, pad, centroid, partsidesign, partside);
 		}
 		PCB_END_LOOP;
+		fprintf(fp, "    )\n");
+	}
+	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		pcb_coord_t ox, oy;
+		pcb_subc_get_origin(subc, &ox, &oy);
+
+		fprintf(fp, "    (image %ld\n", subc->ID); /* map every subc by ID */
+		PCB_POLY_COPPER_LOOP(subc->data);
+		{
+			pcb_layer_type_t lyt = pcb_layer_flags_(layer);
+			if ((lyt & PCB_LYT_COPPER) && ((lyt & PCB_LYT_TOP) || (lyt & PCB_LYT_BOTTOM))) {
+				int termside = (lyt & PCB_LYT_BOTTOM) ? g_list_length(layerlist) - 1 : 0;
+				print_term_poly(fp, &term_shapes, polygon, ox, oy, termside);
+			}
+		}
+		PCB_ENDALL_LOOP;
 		fprintf(fp, "    )\n");
 	}
 	PCB_END_LOOP;
@@ -455,9 +522,14 @@ static void print_library(FILE * fp)
 	pcb_fprintf(fp, "    (padstack via_%ld_%ld\n", viawidth, viadrill);
 	pcb_fprintf(fp, "      (shape (circle signal %.6mm))\n", viawidth);
 	pcb_fprintf(fp, "      (attach off)\n    )\n");
+
+	/* add padstack for terminals */
+	pcb_fprintf(fp, "%s\n", term_shapes.array);
+
 	pcb_fprintf(fp, "  )\n");
 	g_list_foreach(pads, (GFunc)free, NULL);
 	g_list_free(pads);
+	gds_uninit(&term_shapes);
 }
 
 static void print_quoted_pin(FILE * fp, const char *s)
