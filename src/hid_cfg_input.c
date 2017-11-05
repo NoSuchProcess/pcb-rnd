@@ -452,13 +452,21 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
 	hid_cfg_keyhash_t addr;
 	htip_t *phash = (*seq_len == 0) ? &km->keys : &((seq[(*seq_len)-1])->seq_next);
 
+	/* first check for base key + mods */
 	addr.hash = 0;
 	addr.details.mods = mods;
 	addr.details.key_raw = key_raw;
-	addr.details.key_tr = key_tr;
+	ns = htip_get(phash, addr.hash);
+
+	/* if not found, try with translated key + limited mods */
+	if (ns == NULL) {
+		addr.hash = 0;
+		addr.details.mods = mods & PCB_M_Ctrl;
+		addr.details.key_tr = key_tr;
+		ns = htip_get(phash, addr.hash);
+	}
 
 	/* already in the tree */
-	ns = htip_get(phash, addr.hash);
 	if (ns == NULL) {
 		(*seq_len) = 0;
 		return -1;
