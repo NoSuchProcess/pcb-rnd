@@ -330,7 +330,7 @@ static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev
 
 static void get_ptr(pcb_gtk_preview_t * preview, pcb_coord_t * cx, pcb_coord_t * cy, gint * xp, gint * yp)
 {
-	gdk_window_get_pointer(gtk_widget_get_window(GTK_WIDGET(preview)), xp, yp, NULL);
+	gdkc_window_get_pointer(GTK_WIDGET(preview), xp, yp, NULL);
 #undef SIDE_X
 #undef SIDE_Y
 #define SIDE_X(x) x

@@ -51,7 +51,7 @@ ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierT
 	gboolean shift, control, mod1;
 
 	if (!state)
-		gdk_window_get_pointer(gtk_widget_get_window(drawing_area), NULL, NULL, &mask);
+		gdkc_window_get_pointer(drawing_area, NULL, NULL, &mask);
 	else
 		mask = *state;
 

@@ -33,7 +33,7 @@ void ghid_note_event_location(GdkEventButton *ev)
 	gint event_x, event_y;
 
 	if (!ev) {
-		gdk_window_get_pointer(gtk_widget_get_window(ghid_port.drawing_area), &event_x, &event_y, NULL);
+		gdkc_window_get_pointer(ghid_port.drawing_area, &event_x, &event_y, NULL);
 	}
 	else {
 		event_x = ev->x;
@@ -88,7 +88,7 @@ int ghid_shift_is_pressed()
 	if (!ghidgui->gui_is_up)
 		return 0;
 
-	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
 
 #ifdef PCB_WORKAROUND_GTK_SHIFT
 	/* On some systems the above query fails and we need to return the last known state instead */
@@ -106,7 +106,7 @@ int ghid_control_is_pressed()
 	if (!ghidgui->gui_is_up)
 		return 0;
 
-	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
 
 #ifdef PCB_WORKAROUND_GTK_CTRL
 	/* On some systems the above query fails and we need to return the last known state instead */
@@ -124,7 +124,7 @@ int ghid_mod1_is_pressed()
 	if (!ghidgui->gui_is_up)
 		return 0;
 
-	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
 #ifdef __APPLE__
 	return (mask & (1 << 13)) ? TRUE : FALSE;	/* The option key is not MOD1, although it should be... */
 #else

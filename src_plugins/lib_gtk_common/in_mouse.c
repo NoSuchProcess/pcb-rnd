@@ -387,7 +387,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	pcb_gtk_glob_mask = state;
 
-	gdk_window_get_pointer(gtk_widget_get_window(drawing_area), NULL, NULL, &mask);
+	gdkc_window_get_pointer(drawing_area, NULL, NULL, &mask);
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk);
 
