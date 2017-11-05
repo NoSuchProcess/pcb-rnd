@@ -98,5 +98,6 @@ pcb_tool_t pcb_tool_lock = {
 	pcb_tool_lock_notify_mode,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };

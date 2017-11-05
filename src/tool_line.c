@@ -34,6 +34,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
+#include "draw_wireframe.h"
 #include "obj_line.h"
 #include "rats.h"
 #include "search.h"
@@ -246,6 +247,25 @@ void pcb_tool_line_adjust_attached_objects(void)
 	}
 }
 
+void pcb_tool_line_draw_attached(void)
+{
+	if(PCB->RatDraw) {
+		/* draw only if starting point exists and the line has length */
+		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) 
+			pcb_draw_wireframe_line(pcb_crosshair.GC,
+															pcb_crosshair.AttachedLine.Point1.X,
+															pcb_crosshair.AttachedLine.Point1.Y,
+															pcb_crosshair.AttachedLine.Point2.X,
+															pcb_crosshair.AttachedLine.Point2.Y, 10, 0);
+	}
+	else if(pcb_crosshair.Route.size > 0)	{	
+		pcb_route_draw(&pcb_crosshair.Route,pcb_crosshair.GC);
+		if(conf_core.editor.show_drc)
+			pcb_route_draw_drc(&pcb_crosshair.Route,pcb_crosshair.GC);
+		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+	}
+}
+
 pcb_bool pcb_tool_line_undo_act(void)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
@@ -333,6 +353,7 @@ pcb_tool_t pcb_tool_line = {
 	"line", NULL, 100,
 	pcb_tool_line_notify_mode,
 	pcb_tool_line_adjust_attached_objects,
+	pcb_tool_line_draw_attached,
 	pcb_tool_line_undo_act,
 	pcb_tool_line_redo_act
 };

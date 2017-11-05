@@ -53,6 +53,14 @@
 #include "obj_arc_ui.h"
 #include "obj_all_op.h"
 
+#include "tool.h"
+#include "tool_arc.h"
+#include "tool_buffer.h"
+#include "tool_line.h"
+#include "tool_poly.h"
+#include "tool_polyhole.h"
+#include "tool_via.h"
+
 typedef struct {
 	int x, y;
 } point;
@@ -65,10 +73,6 @@ pcb_mark_t pcb_marked;          /* a cross-hair mark */
  * some local prototypes
  */
 static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
-static void XORDrawBuffer(pcb_buffer_t *);
-static void XORDrawInsertPointObject(void);
-static void XORDrawAttachedArc(pcb_coord_t);
-static void XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance);
 static void XORDrawPadDRCOutline(pcb_pad_t * pv,pcb_coord_t clearance);
 
 static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
@@ -130,7 +134,7 @@ void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_la
 /*-----------------------------------------------------------
  * Draws the outline of an attached arc
  */
-static void XORDrawAttachedArc(pcb_coord_t thick)
+void XORDrawAttachedArc(pcb_coord_t thick)
 {
 	pcb_arc_t arc;
 	pcb_coord_t wx, wy;
@@ -239,7 +243,7 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 /* ---------------------------------------------------------------------------
  * draws all visible and attached objects of the pastebuffer
  */
-static void XORDrawBuffer(pcb_buffer_t *Buffer)
+void XORDrawBuffer(pcb_buffer_t *Buffer)
 {
 	pcb_cardinal_t i;
 	pcb_coord_t x, y;
@@ -321,7 +325,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 /* ---------------------------------------------------------------------------
  * draws the rubberband to insert points into polygons/lines/...
  */
-static void XORDrawInsertPointObject(void)
+void XORDrawInsertPointObject(void)
 {
 	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 	pcb_point_t *point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
@@ -335,7 +339,7 @@ static void XORDrawInsertPointObject(void)
 /* ---------------------------------------------------------------------------
  * draws the attached object while in PCB_MODE_MOVE or PCB_MODE_COPY
  */
-static void XORDrawMoveOrCopy(void)
+void XORDrawMoveOrCopy(void)
 {
 	pcb_coord_t dx = pcb_crosshair.X - pcb_crosshair.AttachedObject.X;
 	pcb_coord_t dy = pcb_crosshair.Y - pcb_crosshair.AttachedObject.Y;
@@ -692,7 +696,7 @@ draw_pinvia_shape_drc_outline( pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, pc
 /* ---------------------------------------------------------------------------
  * draws the DRC Outline of a pin/via with the given clearance
  */
-static void 
+void 
 XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance)
 {
 	int style = PCB_FLAG_SQUARE_GET(pv);
@@ -827,82 +831,39 @@ void pcb_draw_attached(void)
 	switch (conf_core.editor.mode) {
 	case PCB_MODE_VIA:
 		{
-			/* Make a dummy via structure to draw from */
-			pcb_pin_t via;
-			via.X = pcb_crosshair.X;
-			via.Y = pcb_crosshair.Y;
-			via.Thickness = conf_core.design.via_thickness;
-			via.Clearance = 2 * conf_core.design.clearance;
-			via.DrillingHole = conf_core.design.via_drilling_hole;
-			via.Mask = 0;
-			via.Flags = pcb_no_flags();
-
-			pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &via, pcb_true, pcb_false);
-
-			if (conf_core.editor.show_drc) {
-				/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawPinViaDRCOutline(&via,PCB->Bloat);
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
-			}
+			pcb_tool_via_draw_attached();
 		}
 		break;
 
 		/* the attached line is used by both LINEMODE, PCB_MODE_POLYGON and PCB_MODE_POLYGON_HOLE */
 	case PCB_MODE_POLYGON:
+		pcb_tool_poly_draw_attached();
+		break;
 	case PCB_MODE_POLYGON_HOLE:
-		/* draw only if starting point is set */
-		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-			pcb_gui->draw_line(pcb_crosshair.GC,
-										 pcb_crosshair.AttachedLine.Point1.X,
-										 pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
-
-		/* draw attached polygon only if in PCB_MODE_POLYGON or PCB_MODE_POLYGON_HOLE */
-		if (pcb_crosshair.AttachedPolygon.PointN > 1) {
-			XORPolygon(&pcb_crosshair.AttachedPolygon, 0, 0, 1);
-		}
+		pcb_tool_polyhole_draw_attached();
 		break;
 
 	case PCB_MODE_ARC:
-		if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
-			XORDrawAttachedArc(conf_core.design.line_thickness);
-			if (conf_core.editor.show_drc) {
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawAttachedArc(conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
-				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
-			}
-		}
+		pcb_tool_arc_draw_attached();
 		break;
 
 	case PCB_MODE_LINE:
-		if(PCB->RatDraw) {
-			/* draw only if starting point exists and the line has length */
-			if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) 
-				pcb_draw_wireframe_line(pcb_crosshair.GC,
-																pcb_crosshair.AttachedLine.Point1.X,
-																pcb_crosshair.AttachedLine.Point1.Y,
-																pcb_crosshair.AttachedLine.Point2.X,
-																pcb_crosshair.AttachedLine.Point2.Y, 10, 0);
-		}
-		else if(pcb_crosshair.Route.size > 0)	{	
-			pcb_route_draw(&pcb_crosshair.Route,pcb_crosshair.GC);
-			if(conf_core.editor.show_drc)
-				pcb_route_draw_drc(&pcb_crosshair.Route,pcb_crosshair.GC);
-			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
-		}
+		pcb_tool_line_draw_attached();
 		break;
 
 	case PCB_MODE_PASTE_BUFFER:
-		XORDrawBuffer(PCB_PASTEBUFFER);
+		pcb_tool_buffer_draw_attached();
 		break;
 
 	case PCB_MODE_COPY:
+		pcb_tool_copy_draw_attached();
+		break;
 	case PCB_MODE_MOVE:
-		XORDrawMoveOrCopy();
+		pcb_tool_move_draw_attached();
 		break;
 
 	case PCB_MODE_INSERT_POINT:
-		XORDrawInsertPointObject();
+		pcb_tool_insert_draw_attached();
 		break;
 	}
 

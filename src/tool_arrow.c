@@ -150,5 +150,6 @@ pcb_tool_t pcb_tool_arrow = {
 	pcb_tool_arrow_notify_mode,
 	pcb_tool_arrow_adjust_attached_objects,
 	NULL,
+	NULL,
 	NULL
 };

@@ -69,5 +69,6 @@ pcb_tool_t pcb_tool_text = {
 	pcb_tool_text_notify_mode,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };

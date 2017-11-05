@@ -101,6 +101,18 @@ void pcb_tool_arc_adjust_attached_objects(void)
 	pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed();
 }
 
+void pcb_tool_arc_draw_attached(void)
+{
+	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
+		XORDrawAttachedArc(conf_core.design.line_thickness);
+		if (conf_core.editor.show_drc) {
+			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+			XORDrawAttachedArc(conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
+			pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+		}
+	}
+}
+
 pcb_bool pcb_tool_arc_undo_act(void)
 {
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
@@ -127,6 +139,7 @@ pcb_tool_t pcb_tool_arc = {
 	"arc", NULL, 100,
 	pcb_tool_arc_notify_mode,
 	pcb_tool_arc_adjust_attached_objects,
+	pcb_tool_arc_draw_attached,
 	pcb_tool_arc_undo_act,
 	NULL
 };

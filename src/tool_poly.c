@@ -79,6 +79,20 @@ void pcb_tool_poly_adjust_attached_objects(void)
 	pcb_line_adjust_attached();
 }
 
+void pcb_tool_poly_draw_attached(void)
+{
+	/* draw only if starting point is set */
+	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+		pcb_gui->draw_line(pcb_crosshair.GC,
+									 pcb_crosshair.AttachedLine.Point1.X,
+									 pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
+
+	/* draw attached polygon only if in PCB_MODE_POLYGON or PCB_MODE_POLYGON_HOLE */
+	if (pcb_crosshair.AttachedPolygon.PointN > 1) {
+		XORPolygon(&pcb_crosshair.AttachedPolygon, 0, 0, 1);
+	}
+}
+
 pcb_bool pcb_tool_poly_undo_act(void)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
@@ -100,7 +114,7 @@ pcb_tool_t pcb_tool_poly = {
 	"poly", NULL, 100,
 	pcb_tool_poly_notify_mode,
 	pcb_tool_poly_adjust_attached_objects,
+	pcb_tool_poly_draw_attached,
 	pcb_tool_poly_undo_act,
 	pcb_tool_poly_redo_act,
-	NULL
 };

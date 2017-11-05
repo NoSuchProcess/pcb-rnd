@@ -89,10 +89,16 @@ void pcb_tool_buffer_notify_mode(void)
 	}
 }
 
+void pcb_tool_buffer_draw_attached(void)
+{
+	XORDrawBuffer(PCB_PASTEBUFFER);
+}
+
 pcb_tool_t pcb_tool_buffer = {
 	"buffer", NULL, 100,
 	pcb_tool_buffer_notify_mode,
 	NULL,
+	pcb_tool_buffer_draw_attached,
 	NULL,
 	NULL
 };

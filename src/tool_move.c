@@ -76,6 +76,11 @@ void pcb_tool_move_notify_mode(void)
 	}
 }
 
+void pcb_tool_move_draw_attached(void)
+{
+	XORDrawMoveOrCopy();
+}
+
 pcb_bool pcb_tool_move_undo_act(void)
 {
 	/* don't allow undo in the middle of an operation */
@@ -88,6 +93,7 @@ pcb_tool_t pcb_tool_move = {
 	"move", NULL, 100,
 	pcb_tool_move_notify_mode,
 	NULL,
+	pcb_tool_move_draw_attached,
 	pcb_tool_move_undo_act,
 	NULL
 };

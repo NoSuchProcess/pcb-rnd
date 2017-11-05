@@ -38,6 +38,7 @@ typedef struct pcb_tool_s {
 	/* tool implementation */
 	void     (*notify_mode)(void);
 	void     (*adjust_attached_objects)(void);
+	void     (*draw_attached)(void);
 	pcb_bool (*undo_act)(void);
 	pcb_bool (*redo_act)(void);
 } pcb_tool_t;
@@ -68,6 +69,7 @@ int pcb_tool_select_highest(void);
 
 void pcb_tool_notify_mode(void);
 void pcb_tool_adjust_attached_objects(void);
+void pcb_tool_draw_attached(void);
 pcb_bool pcb_tool_undo_act(void);
 pcb_bool pcb_tool_redo_act(void);
 
