@@ -13,11 +13,11 @@ foreach /local/o in /local/comp/OBJS
 put /local/c /local/o
 sub /local/c {.o$} {.c}
 switch /local/c
-	case {.*_y.c}
+	case {.*_y[.]c}
 		put /local/extinc [@ -I@/local/c@@]
 		sub /local/extinc {/[^/]*$} {}
 		end
-	case {.*_l.c}
+	case {.*_l[.]c}
 		put /local/extinc [@ -I@/local/c@@]
 		sub /local/extinc {/[^/]*$} {}
 		end
@@ -36,11 +36,11 @@ foreach /local/o in /local/comp/OBJS_C99
 put /local/c /local/o
 sub /local/c {.o$} {.c}
 switch /local/c
-	case {.*_y.c}
+	case {.*_y[.]c}
 		put /local/extinc [@ -I@/local/c@@]
 		sub /local/extinc {/[^/]*$} {}
 		end
-	case {.*_l.c}
+	case {.*_l[.]c}
 		put /local/extinc [@ -I@/local/c@@]
 		sub /local/extinc {/[^/]*$} {}
 		end
