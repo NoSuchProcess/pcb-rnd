@@ -311,6 +311,79 @@ static void print_placement(FILE * fp)
 	fprintf(fp, "  )\n");
 }
 
+static void add_padstack(GList **pads, char *padstack)
+{
+	if (!g_list_find_custom(*pads, padstack, (GCompareFunc) strcmp))
+		*pads = g_list_append(*pads, padstack);
+	else
+		g_free(padstack);
+}
+
+static void print_pin(FILE *fp, GList **pads, pcb_pin_t *pin, pcb_point_t centroid, int partsidesign, int partside)
+{
+	char *padstack;
+	pcb_coord_t ty;
+	pcb_coord_t pinthickness;
+	pcb_coord_t lx, ly;  /* hold local pin coordinates */
+	ty = PCB->MaxHeight - pin->Y;
+	pinthickness = pin->Thickness;
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
+		padstack = pcb_strdup_printf("Th_square_%mI", pinthickness);
+	else
+		padstack = pcb_strdup_printf("Th_round_%mI", pinthickness);
+	lx = (pin->X - centroid.X) * partsidesign;
+	ly = (centroid.Y - ty) * -1;
+
+	if (!pin->Number) { /* if pin is null just make it a keepout */
+		for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
+			pcb_layer_t *lay = iter->data;
+			pcb_fprintf(fp, "      (keepout \"\" (circle \"%s\" %.6mm %.6mm %.6mm))\n", lay->name, pinthickness, lx, ly);
+		}
+	}
+	else {
+		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, pin->Number, lx, ly);
+	}
+
+	add_padstack(pads, padstack);
+}
+
+static void print_pad(FILE *fp, GList **pads, pcb_pad_t *pad, pcb_point_t centroid, int partsidesign, int partside)
+{
+	gchar *padstack;
+	pcb_coord_t xlen, ylen, xc, yc, p1y, p2y;
+	pcb_coord_t lx, ly;  /* store local coordinates for pins */
+	p1y = PCB->MaxHeight - pad->Point1.Y;
+	p2y = PCB->MaxHeight - pad->Point2.Y;
+	/* pad dimensions are unusual-
+	   the width is thickness and length is point difference plus thickness */
+	xlen = ABS(pad->Point1.X - pad->Point2.X);
+	if (xlen == 0) {
+		xlen = pad->Thickness;
+		ylen = ABS(p1y - p2y) + pad->Thickness;
+	}
+	else {
+		ylen = pad->Thickness;
+		xlen += pad->Thickness;
+	}
+	xc = (pad->Point1.X + pad->Point2.X) / 2;
+	yc = (p1y + p2y) / 2;
+	lx = (xc - centroid.X) * partsidesign;
+	ly = (centroid.Y - yc) * -1;
+	padstack = pcb_strdup_printf("Smd_rect_%mIx%mI", xlen, ylen);
+
+	if (!pad->Number) {				/* if pad is null just make it a keepout */
+		pcb_layer_t *lay;
+		lay = g_list_nth_data(layerlist, partside);
+		pcb_fprintf(fp, "      (keepout \"\" (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
+								lay->name, lx - xlen / 2, ly - ylen / 2, lx + xlen / 2, ly + ylen / 2);
+	}
+	else {
+		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, pad->Number, lx, ly);
+	}
+
+	add_padstack(pads, padstack);
+}
+
 static void print_library(FILE * fp)
 {
 	GList *pads = NULL, *iter; /* contain unique pad names */
@@ -325,71 +398,13 @@ static void print_library(FILE * fp)
 		/* loop thru pins and pads to add to image */
 		PCB_PIN_LOOP(element);
 		{
-			pcb_coord_t ty;
-			pcb_coord_t pinthickness;
-			pcb_coord_t lx, ly;  /* hold local pin coordinates */
-			ty = PCB->MaxHeight - pin->Y;
-			pinthickness = pin->Thickness;
-			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
-				padstack = pcb_strdup_printf("Th_square_%mI", pinthickness);
-			else
-				padstack = pcb_strdup_printf("Th_round_%mI", pinthickness);
-			lx = (pin->X - centroid.X) * partsidesign;
-			ly = (centroid.Y - ty) * -1;
-
-			if (!pin->Number) { /* if pin is null just make it a keepout */
-				for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
-					pcb_layer_t *lay = iter->data;
-					pcb_fprintf(fp, "      (keepout \"\" (circle \"%s\" %.6mm %.6mm %.6mm))\n", lay->name, pinthickness, lx, ly);
-				}
-			}
-			else {
-				pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, pin->Number, lx, ly);
-			}
-
-			if (!g_list_find_custom(pads, padstack, (GCompareFunc) strcmp))
-				pads = g_list_append(pads, padstack);
-			else
-				g_free(padstack);
+			print_pin(fp, &pads, pin, centroid, partsidesign, partside);
 		}
 		PCB_END_LOOP;
 
 		PCB_PAD_LOOP(element);
 		{
-			pcb_coord_t xlen, ylen, xc, yc, p1y, p2y;
-			pcb_coord_t lx, ly;  /* store local coordinates for pins */
-			p1y = PCB->MaxHeight - pad->Point1.Y;
-			p2y = PCB->MaxHeight - pad->Point2.Y;
-			/* pad dimensions are unusual-
-			   the width is thickness and length is point difference plus thickness */
-			xlen = ABS(pad->Point1.X - pad->Point2.X);
-			if (xlen == 0) {
-				xlen = pad->Thickness;
-				ylen = ABS(p1y - p2y) + pad->Thickness;
-			}
-			else {
-				ylen = pad->Thickness;
-				xlen += pad->Thickness;
-			}
-			xc = (pad->Point1.X + pad->Point2.X) / 2;
-			yc = (p1y + p2y) / 2;
-			lx = (xc - centroid.X) * partsidesign;
-			ly = (centroid.Y - yc) * -1;
-			padstack = pcb_strdup_printf("Smd_rect_%mIx%mI", xlen, ylen);
-
-			if (!pad->Number) {				/* if pad is null just make it a keepout */
-				pcb_layer_t *lay;
-				lay = g_list_nth_data(layerlist, partside);
-				pcb_fprintf(fp, "      (keepout \"\" (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
-										lay->name, lx - xlen / 2, ly - ylen / 2, lx + xlen / 2, ly + ylen / 2);
-			}
-			else {
-				pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, pad->Number, lx, ly);
-			}
-			if (!g_list_find_custom(pads, padstack, (GCompareFunc) strcmp))
-				pads = g_list_append(pads, padstack);
-			else
-				g_free(padstack);
+			print_pad(fp, &pads, pad, centroid, partsidesign, partside);
 		}
 		PCB_END_LOOP;
 		fprintf(fp, "    )\n");
@@ -403,10 +418,8 @@ static void print_library(FILE * fp)
 		padstack = pcb_strdup_printf("Th_round_%mI", via->Thickness + via->Clearance);
 		fprintf(fp, "      (pin %s 1 0 0)\n", padstack);	/* only 1 pin, 0,0 puts it right on component placement spot */
 		fprintf(fp, "    )\n");
-		if (!g_list_find_custom(pads, padstack, (GCompareFunc) strcmp))
-			pads = g_list_append(pads, padstack);
-		else
-			g_free(padstack);
+
+		add_padstack(&pads, padstack);
 	}
 	PCB_END_LOOP;
 
