@@ -105,6 +105,15 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 	gtk_container_add(GTK_CONTAINER(scrolled), child);
 }
 
+static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
+{
+	GdkWindow *window = gtk_widget_get_window(w);
+	GdkSeat *seat = gdk_display_get_default_seat(gdk_window_get_display(window));
+	GdkDevice *device = gdk_seat_get_pointer(seat);
+
+	return gdk_window_get_device_position(window, device, x, y, mask);
+}
+
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 {
 	GtkStyleContext *sc = gtk_widget_get_style_context(widget);
@@ -217,6 +226,11 @@ typedef GdkEventExpose pcb_gtk_expose_t;
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
 {
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), child);
+}
+
+static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
+{
+	return gdk_window_get_pointer(gtk_widget_get_window(w), x, y, mask);
 }
 
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
