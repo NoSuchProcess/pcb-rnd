@@ -316,7 +316,7 @@ static void add_padstack(GList **pads, char *padstack)
 	if (!g_list_find_custom(*pads, padstack, (GCompareFunc) strcmp))
 		*pads = g_list_append(*pads, padstack);
 	else
-		g_free(padstack);
+		free(padstack);
 }
 
 static void print_pin(FILE *fp, GList **pads, pcb_pin_t *pin, pcb_point_t centroid, int partsidesign, int partside)
@@ -456,7 +456,7 @@ static void print_library(FILE * fp)
 	pcb_fprintf(fp, "      (shape (circle signal %.6mm))\n", viawidth);
 	pcb_fprintf(fp, "      (attach off)\n    )\n");
 	pcb_fprintf(fp, "  )\n");
-	g_list_foreach(pads, (GFunc) g_free, NULL);
+	g_list_foreach(pads, (GFunc)free, NULL);
 	g_list_free(pads);
 }
 
