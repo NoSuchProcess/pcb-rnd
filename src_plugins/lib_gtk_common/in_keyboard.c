@@ -103,13 +103,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 
 		if (state & GDK_MOD1_MASK)    mods |= PCB_M_Alt;
 		if (state & GDK_CONTROL_MASK) mods |= PCB_M_Ctrl;
-		if (state & GDK_SHIFT_MASK) {
-			kv = tolower(gdk_keyval_to_unicode(kev->keyval));
-			/* Declare SHIFT only for letters */
-			if ((kv >= 96) && (kv <= 122)) {
-				mods |= PCB_M_Shift;
-			}
-		}
+		if (state & GDK_SHIFT_MASK)   mods |= PCB_M_Shift;
 
 		/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
 		if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
