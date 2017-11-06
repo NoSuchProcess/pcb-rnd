@@ -9,6 +9,7 @@
 	- convert helpers:
 		- old pad
 		- old pin, old via
+	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
 - subc:
 	- FreeRotateBuffer() [report: celem]
 - BUG: draw a rectangle, delete, undo -> crash [report: keantoken]
