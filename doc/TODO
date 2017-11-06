@@ -51,6 +51,7 @@
 	- when drawing outline segments of a polygon, undo removes previous segment, but redo does nothing
 - BUG: subc: shift-tab, red refdes printout is out of the box
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
+- BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
 
 2. For later releases ===============================================================================
 - BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
