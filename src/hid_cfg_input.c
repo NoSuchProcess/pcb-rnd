@@ -97,6 +97,22 @@ static pcb_hid_cfg_mod_t button_name2mask(const char *name)
 
 static unsigned int keyhash_int(htip_key_t a)      { return murmurhash32(a & 0xFFFF); }
 
+static unsigned int keyb_hash(const void *key_)
+{
+	const hid_cfg_keyhash_t *key = key_;
+	unsigned int i = 0;
+	i += key->key_raw; i <<= 8;
+	i += ((unsigned int)key->key_tr) << 4;
+	i += key->mods;
+	return murmurhash32(i);
+}
+
+static int keyb_eq(const void *keya_, const void *keyb_)
+{
+	const hid_cfg_keyhash_t *keya = keya_, *keyb = keyb_;
+	return (keya->key_raw == keyb->key_raw) && (keya->key_tr == keyb->key_tr) && (keya->mods == keyb->mods);
+}
+
 /************************** MOUSE ***************************/
 
 int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
@@ -170,14 +186,14 @@ void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_a
 /************************** KEYBOARD ***************************/
 int pcb_hid_cfg_keys_init(pcb_hid_cfg_keys_t *km)
 {
-	htip_init(&km->keys, keyhash_int, htip_keyeq);
+	htpp_init(&km->keys, keyb_hash, keyb_eq);
 	return 0;
 }
 
 int pcb_hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km)
 {
 #warning TODO: recursive free of nodes
-	htip_uninit(&km->keys);
+	htpp_uninit(&km->keys);
 	return 0;
 }
 
@@ -185,20 +201,18 @@ pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid
 {
 	pcb_hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
-	htip_t *phash = (parent == NULL) ? &km->keys : &parent->seq_next;
+	htpp_t *phash = (parent == NULL) ? &km->keys : &parent->seq_next;
 
 	/* do not grow the tree under actions */
 	if ((parent != NULL) && (parent->action_node != NULL))
 		return NULL;
 
-
-	addr.hash = 0;
-	addr.details.mods = mods;
-	addr.details.key_raw = key_raw;
-	addr.details.key_tr = key_tr;
+	addr.mods = mods;
+	addr.key_raw = key_raw;
+	addr.key_tr = key_tr;
 
 	/* already in the tree */
-	ns = htip_get(phash, addr.hash);
+	ns = htpp_get(phash, &addr);
 	if (ns != NULL) {
 		if (terminal)
 			return NULL; /* full-path-match is collision */
@@ -208,8 +222,13 @@ pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid
 	/* new node on this level */
 	ns = calloc(sizeof(pcb_hid_cfg_keyseq_t), 1);
 	if (!terminal)
-		htip_init(&ns->seq_next, keyhash_int, htip_keyeq);
-	htip_set(phash, addr.hash, ns);
+		htpp_init(&ns->seq_next, keyb_hash, keyb_eq);
+
+	ns->addr.mods = mods;
+	ns->addr.key_raw = key_raw;
+	ns->addr.key_tr = key_tr;
+
+	htpp_set(phash, &ns->addr, ns);
 	return ns;
 }
 
@@ -450,20 +469,21 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
 {
 	pcb_hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
-	htip_t *phash = (*seq_len == 0) ? &km->keys : &((seq[(*seq_len)-1])->seq_next);
+	htpp_t *phash = (*seq_len == 0) ? &km->keys : &((seq[(*seq_len)-1])->seq_next);
 
 	/* first check for base key + mods */
-	addr.hash = 0;
-	addr.details.mods = mods;
-	addr.details.key_raw = key_raw;
-	ns = htip_get(phash, addr.hash);
+	addr.mods = mods;
+	addr.key_raw = key_raw;
+	addr.key_tr = 0;
+	
+	ns = htpp_get(phash, &addr);
 
 	/* if not found, try with translated key + limited mods */
 	if (ns == NULL) {
-		addr.hash = 0;
-		addr.details.mods = mods & PCB_M_Ctrl;
-		addr.details.key_tr = key_tr;
-		ns = htip_get(phash, addr.hash);
+		addr.mods = mods & PCB_M_Ctrl;
+		addr.key_raw = 0;
+		addr.key_tr = key_tr;
+		ns = htpp_get(phash, &addr);
 	}
 
 	/* already in the tree */

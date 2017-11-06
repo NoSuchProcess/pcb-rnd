@@ -3,6 +3,7 @@
 
 #include <liblihata/dom.h>
 #include <genht/htip.h>
+#include <genht/htpp.h>
 #include "hid_cfg.h"
 
 #define PCB_M_Mod0(n)  (1u<<(n))
@@ -43,23 +44,22 @@ void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_a
 
 /************************** KEYBOARD ***************************/
 #define HIDCFG_MAX_KEYSEQ_LEN 32
-typedef union hid_cfg_keyhash_u { /* integer hash key */
-	unsigned long hash;
-	struct {
-		unsigned short int mods;          /* of pcb_hid_cfg_mod_t */
-		unsigned short int key_raw;
-		unsigned short int key_tr;
-	} details;
+typedef struct hid_cfg_keyhash_s {
+	unsigned short int mods;          /* of pcb_hid_cfg_mod_t */
+	unsigned short int key_raw;
+	unsigned short int key_tr;
 } hid_cfg_keyhash_t;
 
 
 typedef struct pcb_hid_cfg_keyseq_s  pcb_hid_cfg_keyseq_t;
 struct pcb_hid_cfg_keyseq_s {
+	hid_cfg_keyhash_t addr;
+
 	unsigned long int keysym;  /* optional 32 bit long storage the GUI hid should cast to whatever the GUI backend supports */
 
 	const lht_node_t *action_node; /* terminal node: end of sequence, run actions */
 
-	htip_t seq_next; /* ... or if node is NULL, a hash for each key that may follow the current one */
+	htpp_t seq_next; /* ... or if node is NULL, a hash for each key that may follow the current one */
 	pcb_hid_cfg_keyseq_t *parent;
 };
 
@@ -75,7 +75,7 @@ extern const pcb_hid_cfg_keytrans_t hid_cfg_key_default_trans[];
 
 /* A complete tree of keyboard shortcuts/hotkeys */
 typedef struct pcb_hid_cfg_keys_s {
-	htip_t keys;
+	htpp_t keys;
 
 	/* translate key sym description (the portion after <Key>) to key_char;
 	   desc is a \0 terminated string, len is only a hint. Should return 0
