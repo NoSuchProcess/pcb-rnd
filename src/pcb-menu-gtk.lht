@@ -420,13 +420,13 @@ ha:{
 				-
 				ha:Optimize routed tracks {
 					li:submenu {
-						ha:Auto-Optimize        = { a={Shift<Key>=}; action=djopt(auto) }
+						ha:Auto-Optimize        = { a={Ctrl<char>=}; action=djopt(auto) }
 						ha:Debumpify            = { action=djopt(debumpify) }
 						ha:Unjaggy              = { action=djopt(unjaggy) }
 						ha:Vianudge             = { action=djopt(vianudge) }
 						ha:Viatrim              = { action=djopt(viatrim) }
 						ha:Ortho pull           = { action=djopt(orthopull) }
-						ha:Simple optimization  = { a={<Key>=}; action=djopt(simple) }
+						ha:Simple optimization  = { a={<char>=}; action=djopt(simple) }
 						ha:Miter                = { action=djopt(miter) }
 						ha:Puller               = { a=<Key>y; action=Puller() }
 						ha:Global Puller {
