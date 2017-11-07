@@ -74,7 +74,10 @@ extract_from_lht()
 			v = split(tolower(seq), S, "[;]")
 			ktmp = ""
 			for(n = 1; n <= v; n++) {
-				split(S[n], K, "<key>")
+				if (S[n] ~ "<key>")
+					split(S[n], K, "<key>")
+				else
+					split(S[n], K, "<char>")
 				if (K[1] != "") {
 					mods = ""
 					if (K[1] ~ "alt")   mods = mods "-alt"
