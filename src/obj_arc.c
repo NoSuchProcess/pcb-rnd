@@ -838,7 +838,7 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(arc)) {
 			pcb_gui->set_line_width(Output.active_padGC, arc->Thickness);
 			pcb_gui->draw_arc(Output.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
-			pcb_gui->set_line_width(Output.fgGC, pcb_draw_term_gfx_thick(arc->Thickness));
+			pcb_gui->set_line_width(Output.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
 		pcb_gui->set_line_width(Output.fgGC, arc->Thickness);

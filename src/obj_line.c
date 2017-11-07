@@ -991,7 +991,7 @@ void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(line)) {
 			pcb_gui->set_line_width(Output.active_padGC, line->Thickness);
 			pcb_gui->draw_line(Output.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
-			pcb_gui->set_line_width(Output.fgGC, pcb_draw_term_gfx_thick(line->Thickness));
+			pcb_gui->set_line_width(Output.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
 			pcb_gui->set_line_width(Output.fgGC, line->Thickness);

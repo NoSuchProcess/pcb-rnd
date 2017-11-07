@@ -127,10 +127,6 @@ void pcb_draw_delay_label_add(pcb_any_obj_t *obj);
 #define pcb_draw_term_need_gfx(obj) \
 	(((obj)->term != NULL) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, (obj)) && !PCB_FLAG_TEST(PCB_FLAG_WARN, (obj)) && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (obj)))
 
-#define PCB_DRAW_TERM_GFX_MIN_WIDTH  PCB_MM_TO_COORD(0.025)
-#define PCB_DRAW_TERM_GFX_MAX_WIDTH  PCB_MM_TO_COORD(0.4)
-
-#define pcb_draw_term_gfx_thick(obj_thick) \
-	PCB_CLAMP(((obj_thick) / 6), PCB_DRAW_TERM_GFX_MIN_WIDTH, PCB_DRAW_TERM_GFX_MAX_WIDTH)
+#define PCB_DRAW_TERM_GFX_WIDTH (-3)
 
 #endif
