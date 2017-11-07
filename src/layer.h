@@ -174,10 +174,6 @@ pcb_layer_id_t pcb_layer_get_top_silk();
 	{ \
 	   pcb_layer_t *layer = (&data->Layer[(n)]);
 
-/* Swap two layers in pcb; useful only in writing the old .pcb format,
-   because silk layers must be the last 2 layers there */
-int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2);
-
 /************ NEW API - new code should use these **************/
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
@@ -313,5 +309,8 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask);
 
 #define PCB_LYT_INVISIBLE_SIDE() \
 	((conf_core.editor.show_solder_side ? PCB_LYT_TOP : PCB_LYT_BOTTOM))
+
+/*** For internal use ***/
+void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src);
 
 #endif

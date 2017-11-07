@@ -368,16 +368,6 @@ int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname)
 
 #undef APPEND
 
-static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
-{
-	int was_on_l1 = !!PCB_FLAG_THERM_GET(lid1, pin);
-	int was_on_l2 = !!PCB_FLAG_THERM_GET(lid2, pin);
-
-	PCB_FLAG_THERM_ASSIGN(lid2, was_on_l1, pin);
-	PCB_FLAG_THERM_ASSIGN(lid1, was_on_l2, pin);
-}
-
-
 static int is_last_top_copper_layer(pcb_board_t *pcb, int layer)
 {
 	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb, pcb->LayerGroups.len + PCB_COMPONENT_SIDE);
@@ -397,7 +387,7 @@ static int is_last_bottom_copper_layer(pcb_board_t *pcb, int layer)
 }
 
 /* Safe move of a layer within a layer array, updaging all fields (list->parents) */
-static void layer_move(pcb_layer_t *dst, pcb_layer_t *src)
+void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	pcb_line_t *li;
 	pcb_text_t *te;
@@ -530,7 +520,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 
 		/* update visibility */
 		for(l = old_index; l < pcb->Data->LayerN-1; l++) {
-			layer_move(&pcb->Data->Layer[l], &pcb->Data->Layer[l+1]);
+			pcb_layer_move_(&pcb->Data->Layer[l], &pcb->Data->Layer[l+1]);
 			layer_clear(&pcb->Data->Layer[l+1]);
 		}
 
@@ -556,49 +546,6 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 
 	return 0;
 }
-
-int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2)
-{
-	pcb_layer_t l1tmp, l2tmp;
-	pcb_layergrp_id_t gid;
-
-	if (lid1 == lid2)
-		return 0;
-
-	layer_move(&l1tmp, &pcb->Data->Layer[lid1]);
-	layer_move(&l2tmp, &pcb->Data->Layer[lid2]);
-
-	layer_move(&pcb->Data->Layer[lid1], &l2tmp);
-	layer_move(&pcb->Data->Layer[lid2], &l1tmp);
-
-	PCB_VIA_LOOP(pcb->Data);
-	{
-		swap_one_thermal(lid1, lid2, via);
-	}
-	PCB_END_LOOP;
-
-	PCB_PIN_ALL_LOOP(pcb->Data);
-	{
-		swap_one_thermal(lid1, lid2, pin);
-	}
-	PCB_ENDALL_LOOP;
-
-	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
-		pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
-		int n;
-
-		for(n = 0; n < g->len; n++) {
-			if (g->lid[n] == lid1)
-				g->lid[n] = lid2;
-			else if (g->lid[n] == lid2)
-				g->lid[n] = lid1;
-		}
-	}
-
-	return 0;
-}
-
-
 
 const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id)
 {

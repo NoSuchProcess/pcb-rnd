@@ -63,6 +63,8 @@
 #include "route_style.h"
 #include "obj_poly.h"
 
+#include "src_plugins/lib_compat_help/layer_compat.h"
+
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
