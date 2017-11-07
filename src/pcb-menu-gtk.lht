@@ -254,7 +254,7 @@ ha:{
 						ha:Move current layer down= { action=MoveLayer(c,step+) }
 					}
 				}
-				ha:Full screen                = { checked=editor/fullscreen; a=<Key>\\;  action=fullscreen(toggle) }
+				ha:Full screen                = { checked=editor/fullscreen; a=<char>\\;  action=fullscreen(toggle) }
 			}
 		} # View
 
@@ -284,7 +284,7 @@ ha:{
 				ha:Show autorouter trials           = { checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
 				ha:Highlighting on line, arc points = { checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
 				ha:Wireframe draw                   = { checked=editor/wireframe_draw; a=Ctrl<Key>w;  action=conf(toggle, editor/wireframe_draw, design) }
-				ha:Thin draw                        = { checked=editor/thin_draw; a=<Key>|;  action=conf(toggle, editor/thin_draw, design) }
+				ha:Thin draw                        = { checked=editor/thin_draw; a=<char>|;  action=conf(toggle, editor/thin_draw, design) }
 				ha:Thin draw poly                   = { checked=editor/thin_draw_poly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
 				ha:Check polygons                   = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
 				-
@@ -510,10 +510,10 @@ ha:{
 						ha:Route radius -0.5            = { a=Alt Shift<Key>c; action=conf(delta, editor/route_radius, -0.5, design); }
 						ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
 						ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
-						ha:Cycle Clip                   = { a=<Key>/; action=Display(CycleClip) }
+						ha:Cycle Clip                   = { a=<char>/; action=Display(CycleClip) }
 						ha:Arrow Mode                   = { a=<Key>space; checked=ChkMode(arrow); action=Mode(Arrow); update_on={editor/mode} }
-						ha:Temp Arrow ON                = { a=<Key>[; li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
-						ha:Temp Arrow OFF               = { a=<Key>]; li:action={Mode(Release); Mode(Restore)} }
+						ha:Temp Arrow ON                = { a=<char>[; li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
+						ha:Temp Arrow OFF               = { a=<char>]; li:action={Mode(Release); Mode(Restore)} }
 						-
 						ha:Step Up                      = { a=<Key>Up; action=Cursor(Warp,0,1,grid) }
 						ha:Step Down                    = { a=<Key>Down; action=Cursor(Warp,0,-1,grid) }
