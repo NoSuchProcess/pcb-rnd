@@ -379,7 +379,7 @@ ha:{
 				ha:Auto-route all rats = { action=AutoRoute(AllRats) }
 				ha:Rip up all auto-routed tracks = { action=RipUp(All) }
 				-
-				ha:Auto-Optimize = { a={Shift<Key>=}; action=djopt(auto) }
+				ha:Auto-Optimize = { a={Ctrl<Key>=}; action=djopt(auto) }
 				ha:Debumpify = { action=djopt(debumpify) }
 				ha:Unjaggy = { action=djopt(unjaggy) }
 				ha:Vianudge = { action=djopt(vianudge) }
