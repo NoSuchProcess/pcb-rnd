@@ -6,7 +6,6 @@
 - padstack:
 	- label draw/invalidate - do we need this, ot subc term solves it?
 	- save/load thermal
-	- convert: circle around normal via on mask
 	- convert helpers:
 		- old pad
 		- old pin, old via
