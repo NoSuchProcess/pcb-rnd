@@ -218,7 +218,7 @@ gen_html()
 			}
 			
 
-			print "	<th align=left>" keystr
+			print "	<th align=left>" cleanup(keystr)
 			for(h in HIDS) {
 				mn = cleanup(MENUNAME[h, key])
 				act = cleanup(ACTION[h, key])
