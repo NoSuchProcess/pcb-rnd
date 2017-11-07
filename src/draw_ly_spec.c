@@ -68,6 +68,7 @@ static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 	pcb_r_search(PCB->Data->pin_tree, ctx->screen, NULL, pcb_pin_clear_callback, NULL, NULL);
 	pcb_r_search(PCB->Data->via_tree, ctx->screen, NULL, pcb_pin_clear_callback, NULL, NULL);
 	pcb_r_search(PCB->Data->pad_tree, ctx->screen, NULL, pcb_pad_clear_callback, side, NULL);
+	pcb_draw_pstks(pcb_layergrp_id(ctx->pcb, ctx->grp), ctx->screen, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
 }
 
 static void pcb_draw_mask(int side, const pcb_box_t *screen)
