@@ -1541,7 +1541,7 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 	}
 	/* printf("pin index now %ld.\n", pin_num); */
 	sprintf(tmp, "%ld", pin_num);
-	return tmp; /* this now seems to generate 'R7-1' etc..  properly*/
+	return "fixme";
 }
 
 
