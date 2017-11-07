@@ -5,6 +5,7 @@
 ******************************************************************************/
 
 plugin_header("\nLibrary plugins:\n")
+plugin_def("lib_compat_help",  "#compatibility helper functions", sdisable, 0)
 plugin_def("lib_gensexpr",     "#s-expression library",           sdisable, 0)
 plugin_def("lib_gtk_common",   "all-hid_gtk common code",         sdisable, 0)
 plugin_def("lib_gtk_config",   "hid_gtk preferences dialog",      sdisable, 0)
@@ -109,6 +110,7 @@ plugin_def("hid_srv_ws",       "websocket server HID",            sdisable, 0)
 plugin_dep("draw_fab", "report")
 plugin_dep("import_mentor_sch", "lib_gensexpr")
 plugin_dep("export_lpr", "export_ps")
+plugin_dep("io_pcb", "lib_compat_help")
 plugin_dep("io_hyp", "lib_netmap")
 plugin_dep("io_hyp", "lib_padstack_hash")
 plugin_dep("hid_gtk2_gl", "lib_gtk_common")

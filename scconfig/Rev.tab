@@ -1,3 +1,4 @@
+12673	configure new lib plugin: compat helper (because of the data model rewrite)
 12595	configure	new source files for padstacks
 12401	configure	new source files for more generic thermal support
 12108	configure	tool code splitup

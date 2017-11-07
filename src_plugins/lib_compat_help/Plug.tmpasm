@@ -1,0 +1,10 @@
+put /local/pcb/mod {lib_compat_help}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/lib_compat_help/lib_compat_help.o
+@]
+
+switch /local/pcb/lib_compat_help/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
