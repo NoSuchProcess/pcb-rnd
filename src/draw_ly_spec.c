@@ -46,6 +46,7 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;
 	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.gid = gid;
 	cctx.color = conf_core.appearance.color.paste;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
@@ -68,7 +69,7 @@ static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 	pcb_r_search(PCB->Data->pin_tree, ctx->screen, NULL, pcb_pin_clear_callback, NULL, NULL);
 	pcb_r_search(PCB->Data->via_tree, ctx->screen, NULL, pcb_pin_clear_callback, NULL, NULL);
 	pcb_r_search(PCB->Data->pad_tree, ctx->screen, NULL, pcb_pad_clear_callback, side, NULL);
-	pcb_draw_pstks(pcb_layergrp_id(ctx->pcb, ctx->grp), ctx->screen, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
+	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_SUB | PCB_LYC_AUTO);
 }
 
 static void pcb_draw_mask(int side, const pcb_box_t *screen)
@@ -82,6 +83,7 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 	cctx.pcb = PCB;
 	cctx.screen = screen;
 	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.gid = gid;
 	cctx.color = conf_core.appearance.color.mask;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = pcb_gui->mask_invert;
@@ -138,6 +140,7 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 	cctx.pcb = PCB;
 	cctx.screen = drawn_area;
 	cctx.grp = pcb_get_layergrp(PCB, gid);
+	cctx.gid = gid;
 	cctx.color = PCB->Data->Layer[lid].meta.real.color;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;

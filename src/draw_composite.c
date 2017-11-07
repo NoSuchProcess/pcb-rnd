@@ -31,6 +31,7 @@ typedef struct comp_ctx_s {
 	pcb_board_t *pcb;
 	const pcb_box_t *screen;
 	pcb_layergrp_t *grp;
+	pcb_layergrp_id_t gid;
 	const char *color;
 
 	unsigned thin:1;
