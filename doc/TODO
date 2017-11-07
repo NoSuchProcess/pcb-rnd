@@ -210,7 +210,6 @@ SUBC: element removal:
 	- remove Line->Number and *->Number: we use ->term
 
 GTK2:
-	- TODO#3: works only on US keyboard
 	- next_gui: keep them open, hide
 
 GTK3:
