@@ -41,14 +41,6 @@
 #include "obj_line_draw.h"
 
 #include "tool.h"
-#include "tool_arc.h"
-#include "tool_copy.h"
-#include "tool_insert.h"
-#include "tool_line.h"
-#include "tool_move.h"
-#include "tool_poly.h"
-#include "tool_polyhole.h"
-#include "tool_rectangle.h"
 
 /* --------------------------------------------------------------------------- */
 
@@ -138,33 +130,8 @@ int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
-		pcb_bool undo = pcb_true;
-		/* undo the last operation */
-
 		pcb_notify_crosshair_change(pcb_false);
-		if (conf_core.editor.mode == PCB_MODE_POLYGON) {
-			undo = pcb_tool_poly_undo_act();
-		}
-		if (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) {
-			undo = pcb_tool_polyhole_undo_act();
-		}
-		/* move anchor point if undoing during line creation */
-		if (conf_core.editor.mode == PCB_MODE_LINE) {
-			undo = pcb_tool_line_undo_act();
-		}
-		if (conf_core.editor.mode == PCB_MODE_ARC) {
-			undo = pcb_tool_arc_undo_act();
-		}
-		if (conf_core.editor.mode == PCB_MODE_COPY)
-			undo = pcb_tool_copy_undo_act();
-		if (conf_core.editor.mode == PCB_MODE_MOVE)
-			undo = pcb_tool_move_undo_act();
-		if (conf_core.editor.mode == PCB_MODE_RECTANGLE)
-			undo = pcb_tool_rectangle_undo_act();
-		if (conf_core.editor.mode == PCB_MODE_INSERT_POINT)
-			undo = pcb_tool_insert_undo_act();
-		/* undo the last destructive operation */
-		if (undo)
+		if (pcb_tool_undo_act())
 			if (pcb_undo(pcb_true))
 				pcb_board_set_changed_flag(pcb_true);
 	}
@@ -203,17 +170,8 @@ three "undone" lines.
 
 int pcb_act_Redo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_bool redo = pcb_true;
-
 	pcb_notify_crosshair_change(pcb_false);
-	if (conf_core.editor.mode == PCB_MODE_POLYGON)
-		redo = pcb_tool_poly_redo_act();
-	if (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE)
-		redo = pcb_tool_polyhole_redo_act();
-	if (conf_core.editor.mode == PCB_MODE_LINE)
-		redo = pcb_tool_line_redo_act();
-
-	if (redo)
+	if (pcb_tool_redo_act())
 		if (pcb_redo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 	pcb_notify_crosshair_change(pcb_true);

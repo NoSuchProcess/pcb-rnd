@@ -54,12 +54,6 @@
 #include "obj_all_op.h"
 
 #include "tool.h"
-#include "tool_arc.h"
-#include "tool_buffer.h"
-#include "tool_line.h"
-#include "tool_poly.h"
-#include "tool_polyhole.h"
-#include "tool_via.h"
 
 typedef struct {
 	int x, y;
@@ -828,44 +822,7 @@ void pcb_draw_attached(void)
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, NULL);
 
-	switch (conf_core.editor.mode) {
-	case PCB_MODE_VIA:
-		{
-			pcb_tool_via_draw_attached();
-		}
-		break;
-
-		/* the attached line is used by both LINEMODE, PCB_MODE_POLYGON and PCB_MODE_POLYGON_HOLE */
-	case PCB_MODE_POLYGON:
-		pcb_tool_poly_draw_attached();
-		break;
-	case PCB_MODE_POLYGON_HOLE:
-		pcb_tool_polyhole_draw_attached();
-		break;
-
-	case PCB_MODE_ARC:
-		pcb_tool_arc_draw_attached();
-		break;
-
-	case PCB_MODE_LINE:
-		pcb_tool_line_draw_attached();
-		break;
-
-	case PCB_MODE_PASTE_BUFFER:
-		pcb_tool_buffer_draw_attached();
-		break;
-
-	case PCB_MODE_COPY:
-		pcb_tool_copy_draw_attached();
-		break;
-	case PCB_MODE_MOVE:
-		pcb_tool_move_draw_attached();
-		break;
-
-	case PCB_MODE_INSERT_POINT:
-		pcb_tool_insert_draw_attached();
-		break;
-	}
+	pcb_tool_draw_attached();
 
 	/* an attached box does not depend on a special mode */
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND || pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {

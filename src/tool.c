@@ -143,7 +143,7 @@ void pcb_tool_adjust_attached_objects(void)
 
 void pcb_tool_draw_attached(void)
 {
-	wrap_void(adjust_attached_objects, ());
+	wrap_void(draw_attached, ());
 }
 
 pcb_bool pcb_tool_undo_act(void)

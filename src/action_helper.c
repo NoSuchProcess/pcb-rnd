@@ -62,22 +62,7 @@
 #include "obj_poly_draw.h"
 
 #include "tool.h"
-#include "tool_arc.h"
-#include "tool_arrow.h"
-#include "tool_buffer.h"
-#include "tool_copy.h"
-#include "tool_insert.h"
-#include "tool_line.h"
-#include "tool_lock.h"
-#include "tool_move.h"
-#include "tool_poly.h"
-#include "tool_polyhole.h"
-#include "tool_rectangle.h"
-#include "tool_remove.h"
-#include "tool_rotate.h"
-#include "tool_text.h"
-#include "tool_thermal.h"
-#include "tool_via.h"
+
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -381,39 +366,7 @@ void pcb_release_mode(void)
 
 void pcb_adjust_attached_objects(void)
 {
-	switch (conf_core.editor.mode) {
-		/* update at least an attached block (selection) */
-	case PCB_MODE_NO:
-	case PCB_MODE_ARROW:
-		pcb_tool_arrow_adjust_attached_objects();
-		break;
-
-		/* rectangle creation mode */
-	case PCB_MODE_RECTANGLE:
-		pcb_tool_rectangle_adjust_attached_objects();
-		break;
-	case PCB_MODE_ARC:
-		pcb_tool_arc_adjust_attached_objects();
-		break;
-
-		/* polygon creation mode */
-	case PCB_MODE_POLYGON:
-		pcb_tool_poly_adjust_attached_objects();
-		break;
-	case PCB_MODE_POLYGON_HOLE:
-		pcb_tool_polyhole_adjust_attached_objects();
-		break;
-		/* line creation mode */
-	case PCB_MODE_LINE:
-		pcb_tool_line_adjust_attached_objects();
-		break;
-		/* point insertion mode */
-	case PCB_MODE_INSERT_POINT:
-		pcb_tool_insert_adjust_attached_objects();
-		break;
-	case PCB_MODE_ROTATE:
-		break;
-	}
+	pcb_tool_adjust_attached_objects();
 }
 
 void pcb_notify_line(void)
@@ -490,86 +443,7 @@ void pcb_notify_mode(void)
 {
 	if (conf_core.temp.rat_warn)
 		pcb_clear_warnings();
-	switch (conf_core.editor.mode) {
-	case PCB_MODE_ARROW:
-		{
-			pcb_tool_arrow_notify_mode();
-			break;
-		}
-
-	case PCB_MODE_VIA:
-		{
-			pcb_tool_via_notify_mode();
-			break;
-		}
-
-	case PCB_MODE_ARC:
-		{
-			pcb_tool_arc_notify_mode();
-			break;
-		}
-	case PCB_MODE_LOCK:
-		{
-			pcb_tool_lock_notify_mode();
-			break;
-		}
-	case PCB_MODE_THERMAL:
-		{
-			pcb_tool_thermal_notify_mode();
-			break;
-		}
-
-	case PCB_MODE_LINE:
-		pcb_tool_line_notify_mode();
-		break;
-
-	case PCB_MODE_RECTANGLE:
-		pcb_tool_rectangle_notify_mode();
-		break;
-
-	case PCB_MODE_TEXT:
-		{
-			pcb_tool_text_notify_mode();
-			break;
-		}
-
-	case PCB_MODE_POLYGON:
-		{
-			pcb_tool_poly_notify_mode();
-			break;
-		}
-
-	case PCB_MODE_POLYGON_HOLE:
-		{
-			pcb_tool_polyhole_notify_mode();
-			break;
-		}
-
-	case PCB_MODE_PASTE_BUFFER:
-		pcb_tool_buffer_notify_mode();
-		break;
-
-	case PCB_MODE_REMOVE:
-		pcb_tool_remove_notify_mode();
-		break;
-
-	case PCB_MODE_ROTATE:
-		pcb_tool_rotate_notify_mode();
-		break;
-
-	case PCB_MODE_COPY:
-		pcb_tool_copy_notify_mode();
-		break;
-
-	case PCB_MODE_MOVE:
-		pcb_tool_move_notify_mode();
-		break;
-
-		/* insert a point into a polygon/line/... */
-	case PCB_MODE_INSERT_POINT:
-		pcb_tool_insert_notify_mode();
-		break;
-	}
+	pcb_tool_notify_mode();
 }
 
 void pcb_event_move_crosshair(int ev_x, int ev_y)
