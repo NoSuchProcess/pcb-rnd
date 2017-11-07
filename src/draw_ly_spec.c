@@ -33,6 +33,7 @@
 static void pcb_draw_paste_auto_(comp_ctx_t *ctx, void *side)
 {
 	pcb_pad_paste_draw(*(int *)side, ctx->screen);
+	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
 }
 
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
@@ -111,6 +112,8 @@ static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 	/* draw package */
 	pcb_r_search(PCB->Data->element_tree, ctx->screen, NULL, pcb_elem_draw_callback, &side, NULL);
 	pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], ctx->screen, NULL, pcb_elem_name_draw_callback, &side, NULL);
+
+	pcb_draw_pstks(ctx->gid, ctx->screen, 0, PCB_LYC_AUTO);
 }
 
 static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
