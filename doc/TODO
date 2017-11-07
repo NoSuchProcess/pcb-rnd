@@ -1,7 +1,8 @@
 1. For the upcoming release ===============================================================================
 - key rewrite:
 	- base key swap bug (q<->a, y<->z)
-	- menu file fixup on punctuation
+	- lesstif code upgrade for the new API
+	- menu file fixup on punctuation in lesstif
 - padstack:
 	- label draw/invalidate - do we need this, ot subc term solves it?
 	- save/load thermal
