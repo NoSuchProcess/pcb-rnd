@@ -33,24 +33,24 @@
  * modes
  */
 typedef enum {
-	PCB_MODE_NO              = 0,   /* no mode selected - panning - TODO: remove this in favor of the default mode (it's the same as the arrow mode) */
-	PCB_MODE_VIA             = 1,   /* draw vias */
-	PCB_MODE_LINE            = 2,   /* draw lines */
-	PCB_MODE_RECTANGLE       = 3,   /* create rectangles */
-	PCB_MODE_POLYGON         = 4,   /* draw filled polygons */
-	PCB_MODE_PASTE_BUFFER    = 5,   /* paste objects from buffer */
-	PCB_MODE_TEXT            = 6,   /* create text objects */
-	PCB_MODE_ROTATE          = 102, /* rotate objects */
-	PCB_MODE_REMOVE          = 103, /* remove objects */
-	PCB_MODE_MOVE            = 104, /* move objects */
-	PCB_MODE_COPY            = 105, /* copy objects */
-	PCB_MODE_INSERT_POINT    = 106, /* insert point into line/polygon */
-	PCB_MODE_RUBBERBAND_MOVE = 107, /* move objects and attached lines */
-	PCB_MODE_THERMAL         = 108, /* toggle thermal layer flag */
-	PCB_MODE_ARC             = 109, /* draw arcs */
-	PCB_MODE_ARROW           = 110, /* selection with arrow mode */
-	PCB_MODE_LOCK            = 111, /* lock/unlock objects */
-	PCB_MODE_POLYGON_HOLE    = 112  /* cut holes in filled polygons */
+	PCB_MODE_NO              = -1,  /* no mode selected - panning - TODO: remove this in favor of the default mode (it's the same as the arrow mode) */
+	PCB_MODE_VIA             = 15,  /* draw vias */
+	PCB_MODE_LINE            = 5,   /* draw lines */
+	PCB_MODE_RECTANGLE       = 10,  /* create rectangles */
+	PCB_MODE_POLYGON         = 8,   /* draw filled polygons */
+	PCB_MODE_PASTE_BUFFER    = 2,   /* paste objects from buffer */
+	PCB_MODE_TEXT            = 13,  /* create text objects */
+	PCB_MODE_ROTATE          = 12,  /* rotate objects */
+	PCB_MODE_REMOVE          = 11,  /* remove objects */
+	PCB_MODE_MOVE            = 7,   /* move objects */
+	PCB_MODE_COPY            = 3,   /* copy objects */
+	PCB_MODE_INSERT_POINT    = 4,   /* insert point into line/polygon */
+	PCB_MODE_RUBBERBAND_MOVE = 16,  /* move objects and attached lines */
+	PCB_MODE_THERMAL         = 14,  /* toggle thermal layer flag */
+	PCB_MODE_ARC             = 0,   /* draw arcs */
+	PCB_MODE_ARROW           = 1,   /* selection with arrow mode */
+	PCB_MODE_LOCK            = 6,   /* lock/unlock objects */
+	PCB_MODE_POLYGON_HOLE    = 9    /* cut holes in filled polygons */
 } pcb_mode_t;
 
 /* ---------------------------------------------------------------------------
