@@ -1609,9 +1609,10 @@ static unsigned short int lesstif_translate_key(const char *desc, int len)
 	return key;
 }
 
-int lesstif_key_name(unsigned short int key_char, char *out, int out_len)
+int lesstif_key_name(unsigned short int key_raw, unsigned short int key_tr, char *out, int out_len)
 {
-	char *name = XKeysymToString(key_char);
+#warning TODO#3: don't ingore key_tr (either of them is 0)
+	char *name = XKeysymToString(key_raw);
 	if (name == NULL)
 		return -1;
 	strncpy(out, name, out_len);
