@@ -74,7 +74,7 @@ static void append_circle(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer
 	ts->shape = realloc(ts->shape, ts->len * sizeof(pcb_pstk_shape_t));
 
 	ts->shape[idx].shape = PCB_PSSH_CIRC;
-	ts->shape[idx].data.circ.x = ts->shape[idx].data.circ.y =0;
+	ts->shape[idx].data.circ.x = ts->shape[idx].data.circ.y = 0;
 	ts->shape[idx].data.circ.dia = dia;
 	ts->shape[idx].layer_mask = lyt;
 	ts->shape[idx].comb = comb;
