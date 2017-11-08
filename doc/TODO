@@ -12,6 +12,7 @@
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
 - subc:
 	- FreeRotateBuffer() [report: celem]
+- BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: draw a rectangle, delete, undo -> crash [report: keantoken]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
 - BUG: empty board, put text on top silk, ctrl+c, shift+f7 twice -> rtree assert [report: keantoken]
