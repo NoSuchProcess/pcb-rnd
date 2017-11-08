@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "pstk_compat.h"
 #include "compat_misc.h"
 
@@ -109,6 +111,10 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	pcb_pstk_shape_t master;
 	pcb_pstk_tshape_t tshp;
 	int n;
+
+	memset(&proto, 0, sizeof(proto));
+	memset(&tshp, 0, sizeof(tshp));
+	memset(&master, 0, sizeof(master));
 
 	tshp.len = 3 + (mask > 0 ? 2 : 0);
 	tshp.shape = shape;
