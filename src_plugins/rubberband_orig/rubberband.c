@@ -679,15 +679,38 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 			 */
 			PCB_LINE_LOOP(layer);
 			{
+				pcb_rubberband_t *have_line = NULL;
+				int touches1 = 0, touches2 = 0;
+				int l;
+
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 					continue;
 				if (clearpoly && PCB_OBJ_HAS_CLEARANCE(line))
 					continue;
+
+				/* Check whether the line is already in the rubberband list. */
+				for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
+					if (rbnd->Rubberband[l].Line == line) 
+						have_line = &rbnd->Rubberband[l];
+
+				/* Check whether any of the line points touch the polygon */
 				thick = (line->Thickness + 1) / 2;
-				if (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon))
-					pcb_rubber_band_create(rbnd, layer, line, 0,0);
-				if (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon))
-					pcb_rubber_band_create(rbnd, layer, line, 1,0);
+				touches1 = (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon));
+				touches2 = (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon));
+
+				if(touches1) {
+					if(have_line)
+						have_line->delta_index[0] = 0;
+					else 
+						have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+				}
+
+				if(touches2) {
+					if(have_line)
+						have_line->delta_index[1] = 0;
+					else 
+						have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+				}
 			}
 			PCB_END_LOOP;
 		}
