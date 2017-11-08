@@ -283,6 +283,7 @@ pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y
 }
 
 /* set up x and y multiplier for an octa poly, depending on square pin style */
+#warning padstack TODO: move this out to lib_compat_helper when removing pinvias
 void pcb_poly_square_pin_factors(int style, double *xm, double *ym)
 {
 	int i;

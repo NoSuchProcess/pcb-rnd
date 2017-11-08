@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include "layer_compat.h"
+#include "pstk_compat.h"
 
 #include "board.h"
 #include "data.h"
