@@ -92,6 +92,7 @@ static int compat_via_shape_gen(pcb_pstk_shape_t *dst, pcb_pstk_compshape_t csha
 		default:
 			return -1;
 	}
+	return 0;
 }
 
 static void compat_shape_free(pcb_pstk_shape_t *shp)
@@ -117,7 +118,7 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 /* we need to generate the shape only once as it's the same on all */
 	if (compat_via_shape_gen(&master, cshape, pad_dia) != 0)
 		return NULL;
-	for(n = 0; n < proto.tr.used; n++)
+	for(n = 0; n < tshp.len; n++)
 		memcpy(&shape[n], &master, sizeof(master));
 
 	shape[0].layer_mask = PCB_LYT_COPPER | PCB_LYT_TOP;    shape[0].comb = 0;
@@ -131,10 +132,9 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 		compat_shape_free(&master);
 		return NULL;
 	}
-
-
 	compat_shape_free(&master);
-	return NULL;
+
+	return pcb_pstk_new(data, pid, x, y, clearance, pcb_flag_make(0));
 }
 
 
