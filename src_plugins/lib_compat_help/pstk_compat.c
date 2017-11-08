@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "pstk_compat.h"
+#include "obj_pstk_inlines.h"
 #include "compat_misc.h"
 
 /* emulate old pcb-rnd "pin shape" feature */
@@ -146,9 +147,69 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	return pcb_pstk_new(data, pid, x, y, clearance, pcb_flag_make(0));
 }
 
+static pcb_pstk_compshape_t get_old_shape(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
+{
+	switch(shp->shape) {
+		case PCB_PSSH_LINE:
+			return PCB_PSTK_COMPAT_INVALID;
+		case PCB_PSSH_CIRC:
+			if ((shp->data.circ.x != 0) || (shp->data.circ.x != 0))
+				return PCB_PSTK_COMPAT_INVALID;
+			*dia = shp->data.circ.dia;
+			return PCB_PSTK_COMPAT_ROUND;
+		case PCB_PSSH_POLY:
+			break;
+	}
+	return PCB_PSTK_COMPAT_INVALID;
+}
 
 pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t *drill_dia, pcb_coord_t *pad_dia, pcb_coord_t *clearance, pcb_coord_t *mask, pcb_pstk_compshape_t *cshape, pcb_bool *plated)
 {
-	return pcb_false;
+	pcb_pstk_proto_t *proto;
+	pcb_pstk_tshape_t *tshp;
+	int n, coppern, maskn;
+	pcb_pstk_compshape_t old_shape[5];
+	pcb_coord_t old_dia[5];
+
+	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
+	if ((proto == NULL) || (proto->tr.used < 1))
+		return pcb_false;
+
+	tshp = &proto->tr.array[0];
+
+	if ((tshp->len != 3) && (tshp->len != 5))
+		return pcb_false; /* allow only 3 coppers + optionally 2 masks */
+
+	for(n = 0; n < tshp->len; n++) {
+		if (tshp->shape[n].shape != tshp->shape[0].shape)
+			return pcb_false; /* all shapes must be the same */
+		if ((tshp->shape[n].layer_mask & PCB_LYT_ANYWHERE) == 0)
+			return pcb_false;
+		if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
+			coppern = n;
+			continue;
+		}
+		if (tshp->shape[n].layer_mask & PCB_LYT_INTERN)
+			return pcb_false; /* accept only copper as intern */
+		if (tshp->shape[n].layer_mask & PCB_LYT_MASK) {
+			maskn = n;
+			continue;
+		}
+		return pcb_false; /* refuse anything else */
+	}
+
+
+	if (tshp->shape[0].shape == PCB_PSSH_POLY)
+		for(n = 1; n < tshp->len; n++)
+			if (tshp->shape[n].data.poly.len != tshp->shape[0].data.poly.len)
+				return pcb_false; /* all polygons must have the same number of corners */
+
+	for(n = 0; n < tshp->len; n++) {
+		old_shape[n] = get_old_shape(&old_dia[n], &tshp->shape[n]);
+		if (old_shape[n] == PCB_PSTK_COMPAT_INVALID)
+			return pcb_false;
+	}
+
+	return pcb_true;
 }
 

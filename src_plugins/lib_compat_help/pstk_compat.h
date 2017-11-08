@@ -8,7 +8,8 @@ typedef enum {
 	PCB_PSTK_COMPAT_SQUARE = 1,
 	PCB_PSTK_COMPAT_SHAPED = 2, /* old pcb-rnd pin shapes */
 	PCB_PSTK_COMPAT_SHAPED_END = 16, /* old pcb-rnd pin shapes */
-	PCB_PSTK_COMPAT_OCTAGON
+	PCB_PSTK_COMPAT_OCTAGON,
+	PCB_PSTK_COMPAT_INVALID
 } pcb_pstk_compshape_t;
 
 /* Create a padstack that emulates an old-style via - register proto as needed */
