@@ -240,6 +240,23 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 }
 
+void pcb_tool_notify_block(void)
+{
+	pcb_notify_crosshair_change(pcb_false);
+	switch (pcb_crosshair.AttachedBox.State) {
+	case PCB_CH_STATE_FIRST:						/* setup first point */
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+		break;
+
+	case PCB_CH_STATE_SECOND:						/* setup second point */
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
+		break;
+	}
+	pcb_notify_crosshair_change(pcb_true);
+}
+
 
 #warning tool TODO: move this out to a tool plugin
 

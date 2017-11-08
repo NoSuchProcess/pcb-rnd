@@ -43,7 +43,7 @@
 void pcb_tool_rectangle_notify_mode(void)
 {
 	/* do update of position */
-	pcb_notify_block();
+	pcb_tool_notify_block();
 
 	/* create rectangle if both corners are determined
 	 * and width, height are != 0

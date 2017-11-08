@@ -287,23 +287,6 @@ void pcb_adjust_attached_objects(void)
 	pcb_tool_adjust_attached_objects();
 }
 
-void pcb_notify_block(void)
-{
-	pcb_notify_crosshair_change(pcb_false);
-	switch (pcb_crosshair.AttachedBox.State) {
-	case PCB_CH_STATE_FIRST:						/* setup first point */
-		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
-		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
-		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
-		break;
-
-	case PCB_CH_STATE_SECOND:						/* setup second point */
-		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
-		break;
-	}
-	pcb_notify_crosshair_change(pcb_true);
-}
-
 void pcb_notify_mode(void)
 {
 	if (conf_core.temp.rat_warn)

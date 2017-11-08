@@ -99,7 +99,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			/* unselect first if shift key not down */
 			if (!pcb_gui->shift_is_pressed() && pcb_select_block(PCB, &box, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
-			pcb_notify_block();
+			pcb_tool_notify_block();
 			pcb_crosshair.AttachedBox.Point1.X = Note.X;
 			pcb_crosshair.AttachedBox.Point1.Y = Note.Y;
 		}

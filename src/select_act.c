@@ -34,6 +34,7 @@
 #include "undo.h"
 #include "funchash_core.h"
 
+#include "tool.h"
 #include "select.h"
 #include "draw.h"
 #include "remove.h"
@@ -183,7 +184,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
-				pcb_notify_block();
+				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
@@ -354,7 +355,7 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
-				pcb_notify_block();
+				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;

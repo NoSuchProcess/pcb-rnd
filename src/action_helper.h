@@ -46,7 +46,6 @@ extern int defer_updates;
 extern int defer_needs_update;
 
 
-void pcb_notify_block(void);           /* create first or second corner of a marked block (when clicked) */
 
 /* does what's appropriate for the current mode setting (when clicked). This
    normally means creation of an object at the current crosshair location.
