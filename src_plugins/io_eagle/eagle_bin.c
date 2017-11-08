@@ -1528,7 +1528,6 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 {
 	int pin_num = pin_idx;
 	egb_node_t *p, *e = elem_ref_by_idx(elements, elem_idx);
-	char tmp[32];
 
 	if (e == NULL)
 		return NULL;
@@ -1539,9 +1538,8 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 			pin_num--;
 		}
 	}
-	/* printf("pin index now %ld.\n", pin_num); */
-	sprintf(tmp, "%ld", pin_num);
-	return "fixme";
+	printf("pin index now %ld.\n", pin_num);
+	return egb_node_prop_get(p, "name");
 }
 
 
@@ -1814,7 +1812,7 @@ static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 						egb_node_prop_set(cr, "element", elem_refdes_by_idx(els, (long) element_num));
 						pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
 						printf("Found element pin %s\n", egb_node_prop_get(cr, "pin"));
-						egb_node_prop_set(cr, "pad", elem_pin_name_by_idx(els, (long) element_num, (long)atoi(egb_node_prop_get(cr, "pin"))));
+						egb_node_prop_set(cr, "pad", egb_node_prop_get(cr, "pin"));
 					}
 				}
 			}
