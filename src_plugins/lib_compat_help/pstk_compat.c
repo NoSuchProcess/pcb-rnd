@@ -49,7 +49,7 @@ static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb
 	dst->x[2] = x0 - pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * xm[2];
 	dst->y[2] = y0 - pcb_round(radius * 0.5) * ym[2];
 	dst->x[1] = x0 + pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * xm[1];
-	dst->x[1] = y0 - pcb_round(radius * 0.5) * ym[1];
+	dst->y[1] = y0 - pcb_round(radius * 0.5) * ym[1];
 	dst->x[0] = x0 + pcb_round(radius * 0.5) * xm[0];
 	dst->y[0] = y0 - pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * ym[0];
 }
