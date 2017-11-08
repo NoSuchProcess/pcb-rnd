@@ -147,6 +147,17 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	return pcb_pstk_new(data, pid, x, y, clearance, pcb_flag_make(0));
 }
 
+static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
+{
+	return PCB_PSTK_COMPAT_INVALID;
+}
+
+
+static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
+{
+	return PCB_PSTK_COMPAT_INVALID;
+}
+
 static pcb_pstk_compshape_t get_old_shape(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
 	switch(shp->shape) {
@@ -158,6 +169,10 @@ static pcb_pstk_compshape_t get_old_shape(pcb_coord_t *dia, const pcb_pstk_shape
 			*dia = shp->data.circ.dia;
 			return PCB_PSTK_COMPAT_ROUND;
 		case PCB_PSSH_POLY:
+			if (shp->data.poly.len == 4)
+				return get_old_shape_square(dia, shp);
+			if (shp->data.poly.len == 8)
+				return get_old_shape_octa(dia, shp);
 			break;
 	}
 	return PCB_PSTK_COMPAT_INVALID;
