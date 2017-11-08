@@ -133,6 +133,9 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB;
 	shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB;
 
+	proto.hdia = drill_dia;
+	proto.hplated = plated;
+
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 	if (pid == PCB_PADSTACK_INVALID) {
 		compat_shape_free(&master);
