@@ -36,6 +36,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "data_list.h"
 #include "error.h"
 #include "event.h"
 #include "undo.h"
@@ -664,6 +665,7 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_layergrp_id_t group;
+	const pcb_bool clearpoly = PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY,Polygon);
 
 	/* lookup layergroup and check all visible lines in this group */
 	group = pcb_layer_get_group_(Layer);
@@ -679,7 +681,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 					continue;
-				if (PCB_OBJ_HAS_CLEARANCE(line))
+				if (clearpoly && PCB_OBJ_HAS_CLEARANCE(line))
 					continue;
 				thick = (line->Thickness + 1) / 2;
 				if (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon))
@@ -707,6 +709,37 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 	 * is connected
 	 */
 	switch (Type) {
+	case PCB_TYPE_SUBC:
+		{
+			vtp0_t objs;
+			pcb_subc_t * subc = (pcb_subc_t *)Ptr1;
+			pcb_any_obj_t ** o;
+			int n;
+
+			vtp0_init(&objs);
+			pcb_data_list_by_flag(subc->data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAGS);
+
+			for(n = 0, o = (pcb_any_obj_t **)objs.array; n < vtp0_len(&objs); n++,o++) {
+				pcb_layer_t *ly = (*o)->parent.layer;
+
+				assert((*o)->parent_type == PCB_PARENT_LAYER);
+
+				if(((*o)->term == NULL) || !(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
+					continue;
+
+				switch((*o)->type)
+				{
+					case PCB_OBJ_LINE :			/* TODO: CheckEntireLineForRubberbandConnection */ break;
+					case PCB_OBJ_POLY :			CheckPolygonForRubberbandConnection(rbnd, ly, (pcb_poly_t *) (*o)); break;
+					case PCB_OBJ_ARC :			/* TODO: CheckEntireArcForRubberbandConnection */ break;
+					default :								/* TODO: Check other object types */ break;
+				}
+			}
+			
+			vtp0_uninit(&objs);
+			break;
+		}
+
 	case PCB_TYPE_ELEMENT:
 		{
 			pcb_element_t *element = (pcb_element_t *) Ptr1;
