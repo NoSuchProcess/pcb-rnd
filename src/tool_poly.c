@@ -41,8 +41,12 @@ void pcb_tool_poly_notify_mode(void)
 	pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
 	pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
-	/* do update of position; use the 'PCB_MODE_LINE' mechanism */
-	pcb_notify_line();
+	/* do update of position */
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST) {
+		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
+		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_THIRD;
+	}
 
 	/* check if this is the last point of a polygon */
 	if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {

@@ -44,10 +44,8 @@ void pcb_adjust_attached_objects(void);
 
 extern int defer_updates;
 extern int defer_needs_update;
-extern pcb_layer_t *lastLayer;
 
 
-void pcb_notify_line(void);       /* creates points of a line (when clicked) */
 void pcb_notify_block(void);           /* create first or second corner of a marked block (when clicked) */
 
 /* does what's appropriate for the current mode setting (when clicked). This

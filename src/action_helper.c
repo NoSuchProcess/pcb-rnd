@@ -140,8 +140,6 @@ either round or, if the octagon flag is set, octagonal.
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-pcb_layer_t *lastLayer;
-
 pcb_action_note_t Note;
 int defer_updates = 0;
 int defer_needs_update = 0;
@@ -287,59 +285,6 @@ void pcb_release_mode(void)
 void pcb_adjust_attached_objects(void)
 {
 	pcb_tool_adjust_attached_objects();
-}
-
-void pcb_notify_line(void)
-{
-	int type = PCB_TYPE_NONE;
-	void *ptr1, *ptr2, *ptr3;
-
-	if (!pcb_marked.status || conf_core.editor.local_ref)
-		pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
-	switch (pcb_crosshair.AttachedLine.State) {
-	case PCB_CH_STATE_FIRST:						/* first point */
-		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
-			pcb_gui->beep();
-			break;
-		}
-		if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
-			pcb_lookup_conn(pcb_crosshair.X, pcb_crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
-		}
-		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
-			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;
-			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ((pcb_pin_t *) ptr2)->Y;
-		}
-		else if (type == PCB_TYPE_PAD) {
-			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-			double d1 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point1.X, pad->Point1.Y);
-			double d2 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point2.X, pad->Point2.Y);
-			double dm = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y)/2);
-			if ((dm <= d1) && (dm <= d2)) { /* prefer to snap to the middle of a pin if that's the closest */
-				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
-				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
-			}
-			else if (d2 < d1) { /* else select the closest endpoint */
-				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point2;
-			}
-			else {
-				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point1;
-			}
-		}
-		else {
-			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
-			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
-		}
-		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
-		break;
-
-	case PCB_CH_STATE_SECOND:
-		/* fall through to third state too */
-		lastLayer = CURRENT;
-	default:											/* all following points */
-		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_THIRD;
-		break;
-	}
 }
 
 void pcb_notify_block(void)

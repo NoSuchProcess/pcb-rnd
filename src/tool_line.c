@@ -35,6 +35,7 @@
 #include "data.h"
 #include "draw.h"
 #include "draw_wireframe.h"
+#include "find.h"
 #include "obj_line.h"
 #include "rats.h"
 #include "search.h"
@@ -46,12 +47,69 @@
 #include "obj_rat_draw.h"
 
 
+static pcb_layer_t *last_layer;
+
+
+/* creates points of a line (when clicked) */
+static void notify_line(void)
+{
+	int type = PCB_TYPE_NONE;
+	void *ptr1, *ptr2, *ptr3;
+
+	if (!pcb_marked.status || conf_core.editor.local_ref)
+		pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
+	switch (pcb_crosshair.AttachedLine.State) {
+	case PCB_CH_STATE_FIRST:						/* first point */
+		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
+			pcb_gui->beep();
+			break;
+		}
+		if (conf_core.editor.auto_drc) {
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
+			pcb_lookup_conn(pcb_crosshair.X, pcb_crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
+		}
+		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
+			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ((pcb_pin_t *) ptr2)->Y;
+		}
+		else if (type == PCB_TYPE_PAD) {
+			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
+			double d1 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point1.X, pad->Point1.Y);
+			double d2 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point2.X, pad->Point2.Y);
+			double dm = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y)/2);
+			if ((dm <= d1) && (dm <= d2)) { /* prefer to snap to the middle of a pin if that's the closest */
+				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
+				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
+			}
+			else if (d2 < d1) { /* else select the closest endpoint */
+				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point2;
+			}
+			else {
+				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point1;
+			}
+		}
+		else {
+			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
+		}
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
+		break;
+
+	case PCB_CH_STATE_SECOND:
+		/* fall through to third state too */
+		last_layer = CURRENT;
+	default:											/* all following points */
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_THIRD;
+		break;
+	}
+}
+
 void pcb_tool_line_notify_mode(void)
 {
 	void *ptr1, *ptr2, *ptr3;
 	
 	/* do update of position */
-	pcb_notify_line();
+	notify_line();
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)
 		return;
 	/* Remove anchor if clicking on start point;
@@ -86,14 +144,14 @@ void pcb_tool_line_notify_mode(void)
 			 in a new group since the last line and there
 			 isn't a pin already here */
 		if (PCB->ViaOn 
-				&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(lastLayer)
+				&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer)
 				&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
 																			pcb_crosshair.AttachedLine.Point1.X,
 																			pcb_crosshair.AttachedLine.Point1.Y,
 																			conf_core.design.via_thickness / 2) ==
 																				PCB_TYPE_NONE
 				&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
-				&& (pcb_layer_flags_(lastLayer) & PCB_LYT_COPPER)
+				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 				&& (via =	pcb_via_new(PCB->Data,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
@@ -128,7 +186,7 @@ void pcb_tool_line_notify_mode(void)
 
 		pcb_draw();
 		pcb_undo_inc_serial();
-		lastLayer = CURRENT;
+		last_layer = CURRENT;
 	}
 	else
 		/* create line if both ends are determined && length != 0 */
@@ -177,9 +235,9 @@ void pcb_tool_line_notify_mode(void)
 				 in a new group since the last line and there
 				 isn't a pin already here */
 			if (PCB->ViaOn 
-					&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(lastLayer) 
+					&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer) 
 					&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
-					&& (pcb_layer_flags_(lastLayer) & PCB_LYT_COPPER)
+					&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 					&& pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
@@ -198,7 +256,7 @@ void pcb_tool_line_notify_mode(void)
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 			pcb_undo_inc_serial();
-			lastLayer = CURRENT;
+			last_layer = CURRENT;
 		}
 		if (conf_core.editor.line_refraction && (Note.X != pcb_crosshair.AttachedLine.Point2.X || Note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
@@ -319,14 +377,14 @@ pcb_bool pcb_tool_line_undo_act(void)
 		pcb_adjust_attached_objects();
 		if (--pcb_added_lines == 0) {
 			pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
-			lastLayer = CURRENT;
+			last_layer = CURRENT;
 		}
 		else {
 			/* this search is guaranteed to succeed too */
 			pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 														 &ptrtmp, &ptr3, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 0);
 			ptr2 = (pcb_line_t *) ptrtmp;
-			lastLayer = (pcb_layer_t *) ptr1;
+			last_layer = (pcb_layer_t *) ptr1;
 		}
 		return pcb_false;
 	}
