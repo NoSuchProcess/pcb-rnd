@@ -48,7 +48,7 @@ void pcb_tool_copy_notify_mode(void)
 				pcb_search_screen(Note.X, Note.Y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-				pcb_attach_for_copy(Note.X, Note.Y);
+				pcb_tool_attach_for_copy(Note.X, Note.Y);
 			}
 			break;
 		}

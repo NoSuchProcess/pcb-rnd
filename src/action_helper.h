@@ -31,7 +31,6 @@
 
 #include "global_typedefs.h"
 
-void pcb_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY);
 
 /* Event handler to set the cursor according to the X pointer position
    called from inside main.c */

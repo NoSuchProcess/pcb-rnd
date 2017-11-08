@@ -54,7 +54,7 @@ void pcb_tool_move_notify_mode(void)
 					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 				}
 				else
-					pcb_attach_for_copy(Note.X, Note.Y);
+					pcb_tool_attach_for_copy(Note.X, Note.Y);
 			}
 			break;
 		}

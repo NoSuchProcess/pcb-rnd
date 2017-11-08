@@ -74,6 +74,10 @@ pcb_bool pcb_tool_undo_act(void);
 pcb_bool pcb_tool_redo_act(void);
 
 
+/**** tool helper functions ****/
+
+void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY);
+
 
 /**** Low level, for internal use ****/
 
