@@ -28,6 +28,8 @@
 #include "obj_pstk_inlines.h"
 #include "compat_misc.h"
 
+#define sqr(o) ((o)*(o))
+
 /* emulate old pcb-rnd "pin shape" feature */
 static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb_coord_t radius, int style)
 {
@@ -149,7 +151,29 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 
 static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
-	return PCB_PSTK_COMPAT_INVALID;
+	double len2, l, a;
+	int n;
+
+	/* cross-bars must be of equal length */
+	if (sqr(shp->data.poly.x[0] - shp->data.poly.x[2]) + sqr(shp->data.poly.y[0] - shp->data.poly.y[2]) != sqr(shp->data.poly.x[1] - shp->data.poly.x[3]) + sqr(shp->data.poly.y[1] - shp->data.poly.y[3]))
+		return PCB_PSTK_COMPAT_INVALID;
+
+	/* all sides must be of equal length */
+	len2 = fabs(sqr(shp->data.poly.x[3] - shp->data.poly.x[0]) + sqr(shp->data.poly.y[3] - shp->data.poly.y[0]));
+	for(n = 0; n < 3; n++) {
+		l = fabs(sqr(shp->data.poly.x[n+1] - shp->data.poly.x[n]) + sqr(shp->data.poly.y[n+1] - shp->data.poly.y[n]));
+		if (fabs(l - len2) > 10)
+			return PCB_PSTK_COMPAT_INVALID;
+	}
+
+	/* must be axis aligned */
+	a = atan2(shp->data.poly.y[3] - shp->data.poly.y[0], shp->data.poly.x[3] - shp->data.poly.x[0]) * PCB_RAD_TO_DEG;
+	if (fmod(a, 90.0) > 0.1)
+		return PCB_PSTK_COMPAT_INVALID;
+
+	/* found a valid square */
+	*dia = sqrt(len2);
+	return PCB_PSTK_COMPAT_SQUARE;
 }
 
 
