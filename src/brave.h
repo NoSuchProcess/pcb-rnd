@@ -6,6 +6,6 @@ typedef enum {
 	PCB_BRACE_max
 } pcb_brave_t;
 
-extern pcb_brave_t pcb_brave;
+extern pcb_brave_t pcb_brave; /* cache generated from the config */
 
 #endif
