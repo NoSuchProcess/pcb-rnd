@@ -280,7 +280,7 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 {
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_tshape_t *tshp;
-	int n, coppern, maskn;
+	int n, coppern = -1, maskn = -1;
 	pcb_pstk_compshape_t old_shape[5];
 	pcb_coord_t old_dia[5];
 
@@ -311,6 +311,9 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 		return pcb_false; /* refuse anything else */
 	}
 
+	/* we must have copper shapes */
+	if (coppern < 0)
+		return pcb_false;
 
 	if (tshp->shape[0].shape == PCB_PSSH_POLY)
 		for(n = 1; n < tshp->len; n++)
@@ -321,8 +324,20 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 		old_shape[n] = get_old_shape(&old_dia[n], &tshp->shape[n]);
 		if (old_shape[n] == PCB_PSTK_COMPAT_INVALID)
 			return pcb_false;
+		if (old_shape[n] != old_shape[0])
+			return pcb_false;
 	}
 
+	/* all copper sizes must be the same, all mask sizes must be the same */
+	for(n = 0; n < tshp->len; n++) {
+		if ((tshp->shape[n].layer_mask & PCB_LYT_COPPER) && (fabs(old_dia[n] - old_dia[coppern]) > 10))
+			return pcb_false;
+		if (maskn >= 0)
+			if ((tshp->shape[n].layer_mask & PCB_LYT_MASK) && (fabs(old_dia[n] - old_dia[maskn]) > 10))
+				return pcb_false;
+	}
+
+	/* all went fine, collect and return data */
 	*pad_dia = old_dia[0];
 	*cshape = old_shape[0];
 
