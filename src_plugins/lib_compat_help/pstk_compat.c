@@ -179,6 +179,80 @@ static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pst
 
 static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
+	double x[8], y[8], xm[8], ym[8], minx = 0.0, miny = 0.0, tmp;
+	int shi, n, shift, found;
+
+	/* collect offsets */
+	for(n = 0; n < 8; n++) {
+		x[n] = shp->data.poly.x[n];
+		y[n] = shp->data.poly.y[n];
+	}
+
+	/* compensate for the octagon shape */
+	x[7] /= 0.5;
+	y[7] /= PCB_TAN_22_5_DEGREE_2;
+	x[6] /= PCB_TAN_22_5_DEGREE_2;
+	y[6] /= 0.5;
+	x[5] /= PCB_TAN_22_5_DEGREE_2;
+	y[5] /= 0.5;
+	x[4] /= 0.5;
+	y[4] /= PCB_TAN_22_5_DEGREE_2;
+	x[3] /= 0.5;
+	y[3] /= PCB_TAN_22_5_DEGREE_2;
+	x[2] /= PCB_TAN_22_5_DEGREE_2;
+	y[2] /= 0.5;
+	x[1] /= PCB_TAN_22_5_DEGREE_2;
+	y[1] /= 0.5;
+	x[0] /= 0.5;
+	y[0] /= PCB_TAN_22_5_DEGREE_2;
+
+	/* check min distances */
+	for(n = 0; n < 8; n++) {
+		tmp = fabs(x[n]);
+		if ((minx == 0.0) || (tmp < minx))
+			minx = tmp;
+		tmp = fabs(y[n]);
+		if ((miny == 0.0) || (tmp < miny))
+			miny = tmp;
+	}
+
+	if ((minx == 0.0) || (miny == 0.0))
+		return PCB_PSTK_COMPAT_INVALID;
+
+	/* normalize the factors */
+	for(n = 0; n < 8; n++) {
+		x[n] = fabs(x[n] / minx);
+		y[n] = fabs(y[n] / miny);
+		if (fabs(x[n] - 1.0) < 0.01)
+			x[n] = 1.0;
+		else if (fabs(x[n] - 2.0) < 0.01)
+			x[n] = 2.0;
+		else
+			return PCB_PSTK_COMPAT_INVALID;
+		if (fabs(y[n] - 1.0) < 0.01)
+			y[n] = 1.0;
+		else if (fabs(y[n] - 2.0) < 0.01)
+			y[n] = 2.0;
+		else
+			return PCB_PSTK_COMPAT_INVALID;
+	}
+
+	/* compare to all known shape factors */
+	for(shi = PCB_PSTK_COMPAT_SHAPED; shi <= PCB_PSTK_COMPAT_SHAPED_END; shi++) {
+		pcb_poly_square_pin_factors(shi, xm, ym);
+		found = 1;
+		for(n = 0; n < 8; n++) {
+			if ((xm[n] != x[n]) || (ym[n] != y[n])) {
+				found = 0;
+				break;
+			}
+		}
+		if (found) {
+			*dia = sqrt(sqr(minx) + sqr(miny)) / sqrt(2);
+			return shi;
+		}
+	}
+
 	return PCB_PSTK_COMPAT_INVALID;
 }
 
@@ -248,6 +322,9 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 		if (old_shape[n] == PCB_PSTK_COMPAT_INVALID)
 			return pcb_false;
 	}
+
+	*pad_dia = old_dia[0];
+	*cshape = old_shape[0];
 
 	return pcb_true;
 }
