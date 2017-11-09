@@ -52,6 +52,7 @@
 #include "conf_core.h"
 #include "layer_grp.h"
 #include "fgeometry.h"
+#include "search.h"
 
 #include "polygon.h"
 
@@ -659,6 +660,62 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 }
 
 /* ---------------------------------------------------------------------------
+ * checks all visible lines which belong to the same group as the passed Arc.
+ * If either of the endpoints of the line lays anywhere inside the passed Arc,
+ * the scanned line is added to the 'rubberband' list
+ */
+static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * Layer, pcb_arc_t * Arc)
+{
+	/* lookup layergroup and check all visible lines in this group */
+	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+
+	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
+	{
+		if (layer->meta.real.vis) {
+			pcb_coord_t thick;
+
+			/* the following code just stupidly compares the endpoints of the lines */
+			PCB_LINE_LOOP(layer);
+			{
+				pcb_rubberband_t *have_line = NULL;
+				pcb_bool touches1 = pcb_false;
+				pcb_bool touches2 = pcb_false;
+				int l;
+
+				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+					continue;
+
+				/* Check whether the line is already in the rubberband list. */
+				for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
+					if (rbnd->Rubberband[l].Line == line) 
+						have_line = &rbnd->Rubberband[l];
+
+				/* Check whether any of the scanned line points touch the passed line */
+				thick = (line->Thickness + 1) / 2;
+				touches1 = pcb_is_point_on_arc(line->Point1.X, line->Point1.Y, thick, Arc);
+				touches2 = pcb_is_point_on_arc(line->Point2.X, line->Point2.Y, thick, Arc);
+
+				if(touches1) {
+					if(have_line)
+						have_line->delta_index[0] = 0;
+					else 
+						have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+				}
+
+				if(touches2) {
+					if(have_line)
+						have_line->delta_index[1] = 0;
+					else 
+						have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+				}
+			}
+			PCB_END_LOOP;
+		}
+	}
+	PCB_END_LOOP;
+}
+
+/* ---------------------------------------------------------------------------
  * checks all visible lines which belong to the same group as the passed polygon.
  * If one of the endpoints of the line lays inside the passed polygon,
  * the scanned line is added to the 'rubberband' list
@@ -811,7 +868,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 				{
 					case PCB_OBJ_LINE :			CheckLineForRubberbandConnection(rbnd, ly, (pcb_line_t *) (*o)); break;
 					case PCB_OBJ_POLY :			CheckPolygonForRubberbandConnection(rbnd, ly, (pcb_poly_t *) (*o)); break;
-					case PCB_OBJ_ARC :			/* TODO: CheckEntireArcForRubberbandConnection */ break;
+					case PCB_OBJ_ARC :			CheckEntireArcForRubberbandConnection(rbnd, ly, (pcb_arc_t *) (*o)); break;
 					default :								/* TODO: Check other object types */ break;
 				}
 			}
