@@ -111,13 +111,14 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[5]; /* max number of shapes: 3 coppers, 2 masks */
 	pcb_cardinal_t pid;
-	pcb_pstk_shape_t master;
+	pcb_pstk_shape_t copper_master, mask_master;
 	pcb_pstk_tshape_t tshp;
 	int n;
 
 	memset(&proto, 0, sizeof(proto));
 	memset(&tshp, 0, sizeof(tshp));
-	memset(&master, 0, sizeof(master));
+	memset(&copper_master, 0, sizeof(copper_master));
+	memset(&mask_master, 0, sizeof(mask_master));
 
 	tshp.len = 3 + (mask > 0 ? 2 : 0);
 	tshp.shape = shape;
@@ -125,26 +126,38 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	proto.tr.array = &tshp;
 
 /* we need to generate the shape only once as it's the same on all */
-	if (compat_via_shape_gen(&master, cshape, pad_dia) != 0)
+	if (compat_via_shape_gen(&copper_master, cshape, pad_dia) != 0)
 		return NULL;
-	for(n = 0; n < tshp.len; n++)
-		memcpy(&shape[n], &master, sizeof(master));
 
+	for(n = 0; n < 3; n++)
+		memcpy(&shape[n], &copper_master, sizeof(copper_master));
 	shape[0].layer_mask = PCB_LYT_COPPER | PCB_LYT_TOP;    shape[0].comb = 0;
 	shape[1].layer_mask = PCB_LYT_COPPER | PCB_LYT_BOTTOM; shape[1].comb = 0;
 	shape[2].layer_mask = PCB_LYT_COPPER | PCB_LYT_INTERN; shape[2].comb = 0;
-	shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB;
-	shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB;
+
+	if (mask > 0) {
+		if (compat_via_shape_gen(&mask_master, cshape, mask) != 0)
+			return NULL;
+		
+		memcpy(&shape[3], &mask_master, sizeof(mask_master));
+		memcpy(&shape[4], &mask_master, sizeof(mask_master));
+		shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB;
+		shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB;
+	}
 
 	proto.hdia = drill_dia;
 	proto.hplated = plated;
 
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 	if (pid == PCB_PADSTACK_INVALID) {
-		compat_shape_free(&master);
+		compat_shape_free(&copper_master);
 		return NULL;
 	}
-	compat_shape_free(&master);
+
+	compat_shape_free(&copper_master);
+
+	if (mask > 0)
+		compat_shape_free(&mask_master);
 
 	return pcb_pstk_new(data, pid, x, y, clearance, pcb_flag_make(0));
 }
