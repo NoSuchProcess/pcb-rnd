@@ -1538,7 +1538,7 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 			pin_num--;
 		}
 	}
-	printf("pin index now %ld.\n", pin_num);
+	pcb_trace("pin index now %d.\n", pin_num);
 	return egb_node_prop_get(p, "name");
 }
 
@@ -1741,7 +1741,7 @@ static int postprocess_rotation(void *ctx, egb_node_t *root, int node_type)
 	char tmp[32];
 	int mirrored = 0; /* default not mirrored */
 
-	if (root->id != NULL && root->id == node_type) {
+	if (root != NULL && root->id == node_type) {
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 			if (e->key != NULL &&  strcmp(e->key, "mirrored") == 0) {
 				printf("Testing mirrored key, %s, value %s.\n", e->key, e->value);
@@ -1773,7 +1773,7 @@ static int postprocess_smd(void *ctx, egb_node_t *root)
 	long bin_rot = 0;
 	char tmp[32];
 
-	if (root-> id != NULL && root->id == PCB_EGKW_SECT_SMD) {
+	if (root != NULL && root->id == PCB_EGKW_SECT_SMD) {
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 			if (strcmp(e->key, "half_dx") == 0) {
 				half_dx = atoi(e->value);
@@ -1802,7 +1802,7 @@ static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 
 	for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
 		next = n->next;
-		if (n->first_child->id != NULL && n->first_child->id == PCB_EGKW_SECT_CONTACTREF) {
+		if (n->first_child != NULL && n->first_child->id == PCB_EGKW_SECT_CONTACTREF) {
 			pcb_trace("Found PCB_EKGW_SECT_CONTACTREF\n");
 			for (cr = n->first_child; cr != NULL; cr = next2) {
 				next2 = cr->next;
@@ -1865,6 +1865,8 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 	return 0;
 }
 
+#warning TODO netlist - this code flattens the signals so the XML parser finds everything, but connectivity info for nested nets is not preserved in the process #
+#warning TODO netlist labels - eagle bin often has invalid net labels, i.e.'-', '+' so may need to filter#
 /* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
 static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
