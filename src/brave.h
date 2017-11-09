@@ -8,4 +8,6 @@ typedef enum {
 
 extern pcb_brave_t pcb_brave; /* cache generated from the config */
 
+void pcb_brave_init(void);
+
 #endif

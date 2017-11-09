@@ -40,6 +40,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <libminuid/libminuid.h>
 
 #include "board.h"
+#include "brave.h"
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
@@ -335,6 +336,7 @@ int main(int argc, char *argv[])
 	conf_core_init();
 	conf_core_postproc(); /* to get all the paths initialized */
 	layer_vis_init();
+	pcb_brave_init();
 
 	vtp0_init(&plugin_cli_conf);
 

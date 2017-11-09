@@ -29,11 +29,14 @@
 
 #include "brave.h"
 #include "conf_core.h"
+#include "conf_hid.h"
 #include "compat_misc.h"
 #include "error.h"
 #include "hid_dad.h"
 
 pcb_brave_t pcb_brave = 0;
+static const char brave_cookie[] = "brave";
+static conf_hid_id_t brave_conf_id;
 
 typedef struct {
 	pcb_brave_t bit;
@@ -73,9 +76,33 @@ static void set_conf(pcb_brave_t br)
 	/* truncate last comma */
 	gds_truncate(&tmp, gds_len(&tmp)-1);
 
-	conf_set(CFR_USER, "rc/brave", 0, tmp.array, POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "rc/brave", 0, tmp.array, POL_OVERWRITE);
 
 	gds_uninit(&tmp);
+}
+
+static void brave_conf_chg(conf_native_t *cfg, int arr_idx)
+{
+	char *curr, *next, old;
+	desc_t *d;
+
+	pcb_brave = 0;
+	if ((conf_core.rc.brave == NULL) || (*conf_core.rc.brave == '\0'))
+		return;
+	for(curr = (char *)conf_core.rc.brave; *curr != '\0'; curr = next) {
+		next = strpbrk(curr, ", ");
+		if (next == NULL)
+			next = curr + strlen(curr);
+		old = *next;
+		*next = '\0';
+		d = find_by_name(curr);
+
+		if (d != NULL)
+			pcb_brave |= d->bit;
+		*next = old;
+		next++;
+		while((*next == ',') || (*next == ' ')) next++;
+	}
 }
 
 static void brave_set(pcb_brave_t bit, int on)
@@ -130,3 +157,16 @@ pcb_hid_action_t brave_action_list[] = {
 
 PCB_REGISTER_ACTIONS(brave_action_list, NULL)
 
+
+void pcb_brave_init(void)
+{
+	conf_native_t *n = conf_get_field("rc/brave");
+	brave_conf_id = conf_hid_reg(brave_cookie, NULL);
+
+	if (n != NULL) {
+		static conf_hid_callbacks_t cbs;
+		memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
+		cbs.val_change_post = brave_conf_chg;
+		conf_hid_set_cb(n, brave_conf_id, &cbs);
+	}
+}
