@@ -338,8 +338,14 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 	}
 
 	/* all went fine, collect and return data */
-	*pad_dia = old_dia[0];
+	*x = ps->x;
+	*y = ps->y;
+	*drill_dia = proto->hdia;
+	*pad_dia = old_dia[coppern];
+	*clearance = ps->Clearance;
+	*mask = old_dia[maskn];
 	*cshape = old_shape[0];
+	*plated = proto->hplated;
 
 	return pcb_true;
 }
