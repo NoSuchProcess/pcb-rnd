@@ -28,6 +28,7 @@
 #include <genvector/gds_char.h>
 
 #include "brave.h"
+#include "conf_core.h"
 #include "compat_misc.h"
 #include "error.h"
 #include "hid_dad.h"
@@ -72,7 +73,7 @@ static void set_conf(pcb_brave_t br)
 	/* truncate last comma */
 	gds_truncate(&tmp, gds_len(&tmp)-1);
 
-#warning TODO: set the conf
+	conf_set(CFR_USER, "rc/brave", 0, tmp.array, POL_OVERWRITE);
 
 	gds_uninit(&tmp);
 }

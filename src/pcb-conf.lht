@@ -88,6 +88,7 @@ li:pcb-rnd-conf-v1 {
 			verbose = 0
 			quiet = 0
 			backup_interval = 60
+			brave = {}
 #			font_command = {}
 #			file_command = {}
 #			file_path = {}
