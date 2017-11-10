@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include "solve.h"
 #include "compat_misc.h"
 
@@ -204,11 +205,12 @@ int solve_(gr_t *g_, int *cuts)
 }
 
 #define strempty(s) ((s) == NULL ? "" : (s))
-int *solve(gr_t *g)
+int *solve(gr_t *g, int (*progress)(int so_far, int total, const char *msg))
 {
-	int n, best, res, till, cuts_size;
+	int n, best, res, till, cuts_size, have_progress = 0;
 	double nd;
 	int *cuts, *best_cuts;
+	time_t currt, nextt;
 
 	/* count how many nodes we really have - the ones not cut down from the graph by the preprocessor */
 	nd = 0;
@@ -226,7 +228,17 @@ int *solve(gr_t *g)
 	best_cuts = malloc(cuts_size);
 
 	best = BAD;
+	nextt = time(NULL)+2;
 	for(n = 0; n < till; n++) {
+		if ((progress != NULL) && ((n % 128) == 0)) {
+			currt = time(NULL);
+			if (currt >= nextt) {
+				have_progress = 1;
+				if (progress(n, till, "Optimizing shortcircuit indication\nusing mincut... Press cancel\nto get a dumb indication"))
+					break;
+				nextt = currt+1;
+			}
+		}
 		res = solve_(g, cuts);
 #ifdef DEBUG_SOLVE
 		printf("solution %d=%d\n", n, res);
@@ -238,6 +250,9 @@ int *solve(gr_t *g)
 		if (best == 1) /* we won't find a better solution ever */
 			break;
 	}
+
+	if (have_progress)
+		progress(0, 0, NULL);
 
 #ifdef DEBUG_SOLVE
 	printf("Best solution cuts %d edge%s:", best, best == 1 ? "" : "s");

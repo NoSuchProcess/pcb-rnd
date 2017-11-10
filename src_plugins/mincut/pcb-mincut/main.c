@@ -23,7 +23,7 @@ int main()
 		fprintf(stderr, "Failed to load input, exiting\n");
 		exit(1);
 	}
-	best = solve(g);
+	best = solve(g, NULL);
 	for(n = 0; best[n*2] != -1; n++)
 		printf("%s-%s\n", strempty(g->node2name[best[n*2+0]]), strempty(g->node2name[best[n*2+1]]));
 
