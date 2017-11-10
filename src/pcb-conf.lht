@@ -32,7 +32,7 @@ li:pcb-rnd-conf-v1 {
 				clear_max = 10 mil
 			}
 			zoom = 1
-			mode = 110
+			mode = 1
 			buffer_number = 0
 			clear_line = 1
 			clear_polypoly = 0
