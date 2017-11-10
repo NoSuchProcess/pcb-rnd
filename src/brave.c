@@ -59,6 +59,7 @@ static desc_t *find_by_name(const char *name)
 	return NULL;
 }
 
+/* convert the brave bits into a config string, save in CLI */
 static void set_conf(pcb_brave_t br)
 {
 	gds_t tmp;
@@ -81,6 +82,7 @@ static void set_conf(pcb_brave_t br)
 	gds_uninit(&tmp);
 }
 
+/* Upon a change in the config, parse the new config string and set the brave bits */
 static void brave_conf_chg(conf_native_t *cfg, int arr_idx)
 {
 	char *curr, *next, old;
@@ -105,6 +107,7 @@ static void brave_conf_chg(conf_native_t *cfg, int arr_idx)
 	}
 }
 
+/* Set one bit; if changed, update the config */
 static void brave_set(pcb_brave_t bit, int on)
 {
 	int state = pcb_brave & bit;
@@ -121,6 +124,9 @@ static void brave_set(pcb_brave_t bit, int on)
 	set_conf(nb);
 }
 
+/*** interactive mode (DAD dialog) ***/
+
+/* Convert the current brave bits into dialog box widget states, update the dialog */
 static void brave2dlg(void *hid_ctx)
 {
 	desc_t *d;
@@ -134,6 +140,7 @@ static void brave2dlg(void *hid_ctx)
 	}
 }
 
+/* Convert the current state of dialog box widget into brave bits, update the conf */
 static void dlg2brave(pcb_hid_attribute_t *attrs)
 {
 	desc_t *d;
@@ -141,12 +148,14 @@ static void dlg2brave(pcb_hid_attribute_t *attrs)
 		brave_set(d->bit, attrs[d->widget].default_val.int_value);
 }
 
+/* If a checkbox changes, do the conversion forth and back to ensure sync */
 static void brave_dialog_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	dlg2brave(caller_data);
 	brave2dlg(hid_ctx);
 }
 
+/* Tick in all - button callback */
 static void brave_dialog_allon(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	desc_t *d;
@@ -155,6 +164,7 @@ static void brave_dialog_allon(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	brave2dlg(hid_ctx);
 }
 
+/* Tick off all - button callback  */
 static void brave_dialog_alloff(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	desc_t *d;
@@ -163,6 +173,7 @@ static void brave_dialog_alloff(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	brave2dlg(hid_ctx);
 }
 
+/* Copy the config from CLI to USER and flush the file */
 static void brave_dialog_save(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	conf_set(CFR_USER, "rc/brave", 0, conf_core.rc.brave, POL_OVERWRITE);
@@ -216,6 +227,8 @@ static int brave_interact(void)
 	PCB_DAD_FREE(dlg);
 	return 0;
 }
+
+/*** action ***/
 
 static const char pcb_acts_Brave[] =
 	"Brave()\n"
