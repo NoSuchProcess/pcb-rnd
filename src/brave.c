@@ -76,7 +76,7 @@ static void set_conf(pcb_brave_t br)
 	/* truncate last comma */
 	gds_truncate(&tmp, gds_len(&tmp)-1);
 
-	conf_set(CFR_DESIGN, "rc/brave", 0, tmp.array, POL_OVERWRITE);
+	conf_set(CFR_CLI, "rc/brave", 0, tmp.array, POL_OVERWRITE);
 
 	gds_uninit(&tmp);
 }
@@ -165,7 +165,9 @@ static void brave_dialog_alloff(void *hid_ctx, void *caller_data, pcb_hid_attrib
 
 static void brave_dialog_save(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	
+	conf_set(CFR_USER, "rc/brave", 0, conf_core.rc.brave, POL_OVERWRITE);
+	if (conf_isdirty(CFR_USER))
+		conf_save_file(NULL, NULL, CFR_USER, NULL);
 }
 
 static int brave_interact(void)
@@ -197,6 +199,7 @@ static int brave_interact(void)
 				PCB_DAD_HELP(dlg, "Tick off all boxes\ndisabling all experimental features\n(Safe Mode)");
 				PCB_DAD_CHANGE_CB(dlg, brave_dialog_alloff);
 			PCB_DAD_BUTTON(dlg, "save in user cfg");
+				PCB_DAD_HELP(dlg, "Save current brave state in the \nuser configuration file");
 				PCB_DAD_CHANGE_CB(dlg, brave_dialog_save);
 		}
 	PCB_DAD_END(dlg);
