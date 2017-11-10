@@ -147,6 +147,27 @@ static void brave_dialog_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	brave2dlg(hid_ctx);
 }
 
+static void brave_dialog_allon(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	desc_t *d;
+	for(d = desc; d->name != NULL; d++)
+		brave_set(d->bit, 1);
+	brave2dlg(hid_ctx);
+}
+
+static void brave_dialog_alloff(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	desc_t *d;
+	for(d = desc; d->name != NULL; d++)
+		brave_set(d->bit, 0);
+	brave2dlg(hid_ctx);
+}
+
+static void brave_dialog_save(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	
+}
+
 static int brave_interact(void)
 {
 	desc_t *d;
@@ -171,9 +192,12 @@ static int brave_interact(void)
 		if (len != 0) {
 			PCB_DAD_BUTTON(dlg, "all ON");
 				PCB_DAD_HELP(dlg, "Tick in all boxes\nenabling all experimental features\n(Super Brave Mode)");
+				PCB_DAD_CHANGE_CB(dlg, brave_dialog_allon);
 			PCB_DAD_BUTTON(dlg, "all OFF");
 				PCB_DAD_HELP(dlg, "Tick off all boxes\ndisabling all experimental features\n(Safe Mode)");
+				PCB_DAD_CHANGE_CB(dlg, brave_dialog_alloff);
 			PCB_DAD_BUTTON(dlg, "save in user cfg");
+				PCB_DAD_CHANGE_CB(dlg, brave_dialog_save);
 		}
 	PCB_DAD_END(dlg);
 
