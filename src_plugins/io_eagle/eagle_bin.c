@@ -91,7 +91,9 @@ typedef struct {
 
 typedef struct
 {
-	egb_node_t *root, *layers, *drawing, *libraries, *firstel, *signals, *board;
+	egb_node_t *root, *layers, *drawing, *libraries, *firstel, *signals, *board, *drc;
+	long mdWireWire, msWidth; /* DRC values for spacing and width */ 
+	double rvPadTop, rvPadInner, rvPadBottom; /* DRC values for via sizes */
 } egb_ctx_t;
 
 #define TERM {0}
@@ -1046,13 +1048,23 @@ int read_notes(void *ctx, FILE *f, const char *fn)
 	return 0;
 }
 
-int read_drc(void *ctx, FILE *f, const char *fn)
+int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 {
 	unsigned char block[4];
 	int DRC_length_used = 244;
 	unsigned char DRC_block[244];
 	unsigned char c;
 	int DRC_preamble_end_found = 0;
+
+	long mdWireWire, msWidth;
+	double rvPadTop, rvPadInner, rvPadBottom;
+
+	/* these are sane, default values for DRC in case not present, i.e. in v3 no DRC section */
+	drc_ctx->mdWireWire = 12;
+	drc_ctx->msWidth = 10;
+	drc_ctx->rvPadTop = 0.25;
+	drc_ctx->rvPadInner = 0.25;
+	drc_ctx->rvPadBottom = 0.25;
 
 	if (fread(block, 1, 4, f) != 4) {
 		printf("E: short attempted DRC preamble read; preamble not found. Truncated file?\n");
@@ -1109,7 +1121,10 @@ int read_drc(void *ctx, FILE *f, const char *fn)
 	# restring order: padtop padinner padbottom viaouter viainner
 	(microviaouter microviainner)
 	restring_percentages = 7 doubles, 56 bytes total */
-	printf("wire2wire: %f mil\n", load_long(DRC_block, 0, 4)/2.54/100);
+
+	mdWireWire = (long)(load_long(DRC_block, 0, 4)/2.54/100);
+	printf("wire2wire: %ld mil\n", mdWireWire);
+
 	printf("wire2pad: %f mil\n", load_long(DRC_block, 4, 4)/2.54/100);
 	printf("wire2via: %f mil\n", load_long(DRC_block, 8, 4)/2.54/100);
 	printf("pad2pad: %f mil\n", load_long(DRC_block, 12, 4)/2.54/100);
@@ -1121,13 +1136,20 @@ int read_drc(void *ctx, FILE *f, const char *fn)
 	printf("copper2dimension: %f mil\n", load_long(DRC_block, 44, 4)/2.54/100);
 	printf("drill2hole: %f mil\n", load_long(DRC_block, 52, 4)/2.54/100);
 
-	printf("min_width: %f mil\n", load_long(DRC_block, 64, 4)/2.54/100);
+	msWidth = (long)(load_long(DRC_block, 64, 4)/2.54/100);
+	printf("min_width: %ld mil\n", msWidth);
+
 	printf("min_drill: %f mil\n", load_long(DRC_block, 68, 4)/2.54/100);
 	/*in version 5, this is wedged inbetween drill and pad ratios:
 	  min_micro_via, blind_via_ratio, int, float, 12 bytes*/
-	printf("padtop ratio: %f\n", load_double(DRC_block, 84, 8));
-	printf("padinner ratio: %f\n", load_double(DRC_block, 92, 8));
-	printf("padbottom ratio: %f\n", load_double(DRC_block, 100, 8));
+
+	rvPadTop = load_double(DRC_block, 84, 8);
+	printf("padtop ratio: %f\n", rvPadTop);
+	rvPadInner = load_double(DRC_block, 92, 8);
+	printf("padinner ratio: %f\n", rvPadInner);
+	rvPadBottom = load_double(DRC_block, 100, 8);
+	printf("padbottom ratio: %f\n", rvPadBottom);
+
 	printf("viaouter ratio: %f\n", load_double(DRC_block, 108, 8));
 	printf("viainner ratio: %f\n", load_double(DRC_block, 116, 8));
 	printf("microviaouter ratio: %f\n", load_double(DRC_block, 124, 8));
@@ -1158,6 +1180,13 @@ int read_drc(void *ctx, FILE *f, const char *fn)
 	printf("mask limit2 (mil): %f\n", load_long(DRC_block, 228, 4)/2.54/100);
 	printf("mask limit3 (mil): %f\n", load_long(DRC_block, 232, 4)/2.54/100);
 	printf("mask limit4 (mil): %f\n", load_long(DRC_block, 236, 4)/2.54/100);
+
+	/* populate the drc_ctx struct to return the result of the DRC block read attempt */
+	drc_ctx->msWidth = msWidth;
+	drc_ctx->mdWireWire = mdWireWire;
+	drc_ctx->rvPadTop = rvPadTop;
+	drc_ctx->rvPadInner = rvPadInner;
+	drc_ctx->rvPadBottom = rvPadBottom;
 
 	return 0;
 }
@@ -1894,6 +1923,45 @@ static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 	return 0;
 }
 
+/* populate the newly created drc node in the binary tree before XML parsing */
+static int postproc_drc(void *ctx, egb_ctx_t *egb_ctx)
+{
+	char tmp[32];
+	egb_node_t *current;
+
+	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
+	sprintf(tmp, "%ldmil", egb_ctx->mdWireWire);
+	egb_node_prop_set(current, "name", "mdWireWire");
+	egb_node_prop_set(current, "value", tmp);
+	pcb_trace("Added mdWireWire to DRC node\n");
+
+	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
+	sprintf(tmp, "%ldmil", egb_ctx->msWidth);
+	egb_node_prop_set(current, "name", "msWidth");
+	egb_node_prop_set(current, "value", tmp);
+	pcb_trace("Added msWidth to DRC node\n");
+
+	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
+	sprintf(tmp, "%fmil", egb_ctx->rvPadTop);
+	egb_node_prop_set(current, "name", "rvPadTop");
+	egb_node_prop_set(current, "value", tmp);
+	pcb_trace("Added rvPadTop to DRC node\n");
+
+	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
+	sprintf(tmp, "%fmil", egb_ctx->rvPadInner);
+	egb_node_prop_set(current, "name", "rvPadInner");
+	egb_node_prop_set(current, "value", tmp);
+	pcb_trace("Added rvPadInner to DRC node\n");
+
+	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
+	sprintf(tmp, "%fmil", egb_ctx->rvPadBottom);
+	egb_node_prop_set(current, "name", "rvPadBottom");
+	egb_node_prop_set(current, "value", tmp);
+	pcb_trace("Added rvPadBottom to DRC node\n");
+
+	return 0;
+}
+
 /* take each /drawing/layer and move them into a newly created /drawing/layers/ */
 static int postproc_layers(void *ctx, egb_ctx_t *egb_ctx)
 {
@@ -1934,7 +2002,7 @@ static int postproc_libs(void *ctx, egb_ctx_t *egb_ctx)
 	return 0;
 }
 
-static int postproc(void *ctx, egb_node_t *root)
+static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 {
 
 	egb_node_t *n, *signal, *el1;
@@ -1954,6 +2022,8 @@ static int postproc(void *ctx, egb_node_t *root)
 	if (eagle_bin_ctx.libraries == NULL)
 		return -1;
 	eagle_bin_ctx.layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
+	/* create a drc node, since any DRC block present in eagle binary file comes after the tree */
+	eagle_bin_ctx.drc = egb_node_append(eagle_bin_ctx.board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
 
 	for(n = eagle_bin_ctx.board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
 		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
@@ -1975,8 +2045,17 @@ static int postproc(void *ctx, egb_node_t *root)
 	if (eagle_bin_ctx.signals == NULL)
 		return -1;
 
-	return postproc_layers(ctx, egb_ctx_p) || postproc_libs(ctx, egb_ctx_p)
-		|| postproc_elements(ctx, egb_ctx_p)
+	/* populate context with default DRC settings, since DRC is not present in v3 eagle bin */
+	eagle_bin_ctx.mdWireWire = drc_ctx->mdWireWire;
+	eagle_bin_ctx.msWidth = drc_ctx->msWidth;
+	eagle_bin_ctx.rvPadTop = drc_ctx->rvPadTop;
+	eagle_bin_ctx.rvPadInner = drc_ctx->rvPadInner;
+	eagle_bin_ctx.rvPadBottom = drc_ctx->rvPadBottom;
+
+	/* after post processing layers, we populate the DRC node first... */
+
+	return postproc_layers(ctx, egb_ctx_p) || postproc_drc(ctx, egb_ctx_p)
+		|| postproc_libs(ctx, egb_ctx_p) || postproc_elements(ctx, egb_ctx_p)
 		|| postproc_signal(ctx, egb_ctx_p) || postproc_contactrefs(ctx, egb_ctx_p)
 		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root)
 		|| postprocess_circles(ctx, root) || postprocess_smd(ctx, root)
@@ -2002,6 +2081,8 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 	long *numblocks = &test;
 	int res = 0;
 
+	egb_ctx_t eagle_drc_ctx;
+
 	printf("blocks remaining prior to function call = %ld\n", *numblocks);
 
 	*root = egb_node_alloc(0, "eagle");
@@ -2014,10 +2095,11 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 
 	printf("Section blocks have been parsed. Next job is finding DRC.\n\n");
 
-	/* need to test if < v4 as v3.xx seems to have no DRC or Netclass or Free Text sections at the end */
+	/* could test if < v4 as v3.xx seems to have no DRC or Netclass or Free Text end blocks */
 	read_notes(ctx, f, fn);
-	read_drc(ctx, f, fn);
+	/* read_drc will determine sane defaults if no DRC block found */
+	read_drc(ctx, f, fn, &eagle_drc_ctx); /* we now use the drc_ctx results for post_proc */
 
-	return postproc(ctx, *root);
+	return postproc(ctx, *root, &eagle_drc_ctx);
 }
 

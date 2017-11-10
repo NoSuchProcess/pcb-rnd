@@ -82,7 +82,8 @@ typedef enum pcb_eagle_binkw_s {
 	PCB_EGKW_SECT_FREETEXT = 0x1312,
 
 	/* virtual nodes added in postprocessing */
-	PCB_EGKW_SECT_LAYERS = 0x11300
+	PCB_EGKW_SECT_LAYERS = 0x11300,
+	PCB_EGKW_SECT_DRC = 0x11100
 } pcb_eagle_binkw_t;
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root);

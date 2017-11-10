@@ -1497,6 +1497,7 @@ err:;
 int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	int res, old_leni;
+	trnode_t *dr;
 	read_state_t st;
 
 	static const dispatch_t disp_1[] = { /* possible children of root */
@@ -1527,7 +1528,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	st_init(&st);
 
 #warning TODO: find and read the DRC block
-#if 0
+#if 1
 	dr = eagle_trpath(&st, st.parser.root, "drawing", "board", "designrules", NULL);
 	if (dr != NULL)
 		eagle_read_design_rules(&st, dr);
