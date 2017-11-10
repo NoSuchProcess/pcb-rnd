@@ -121,6 +121,74 @@ static void brave_set(pcb_brave_t bit, int on)
 	set_conf(nb);
 }
 
+static void brave2dlg(void *hid_ctx)
+{
+	desc_t *d;
+	int len;
+
+	for(d = desc, len=0; d->name != NULL; d++,len++) {
+		if (pcb_brave & d->bit)
+			PCB_DAD_SET_VALUE(hid_ctx, d->widget, int_value, 1);
+		else
+			PCB_DAD_SET_VALUE(hid_ctx, d->widget, int_value, 0);
+	}
+}
+
+static void dlg2brave(pcb_hid_attribute_t *attrs)
+{
+	desc_t *d;
+	for(d = desc; d->name != NULL; d++)
+		brave_set(d->bit, attrs[d->widget].default_val.int_value);
+}
+
+static void brave_dialog_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	dlg2brave(attr);
+	brave2dlg(hid_ctx);
+}
+
+static int brave_interact(void)
+{
+	desc_t *d;
+	int len;
+
+	PCB_DAD_DECL(dlg);
+
+	PCB_DAD_BEGIN_VBOX(dlg);
+	PCB_DAD_LABEL(dlg, "Experimental features for the brave");
+
+	PCB_DAD_BEGIN_TABLE(dlg, 3);
+		for(d = desc, len=0; d->name != NULL; d++,len++) {
+			PCB_DAD_LABEL(dlg, d->name);
+				PCB_DAD_HELP(dlg, d->lng);
+			PCB_DAD_BOOL(dlg, "");
+				d->widget = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_CHANGE_CB(dlg, brave_dialog_chg);
+				PCB_DAD_HELP(dlg, d->lng);
+			PCB_DAD_LABEL(dlg, d->shrt);
+				PCB_DAD_HELP(dlg, d->lng);
+		}
+		if (len != 0) {
+			PCB_DAD_BUTTON(dlg, "all ON");
+				PCB_DAD_HELP(dlg, "Tick in all boxes\nenabling all experimental features\n(Super Brave Mode)");
+			PCB_DAD_BUTTON(dlg, "all OFF");
+				PCB_DAD_HELP(dlg, "Tick off all boxes\ndisabling all experimental features\n(Safe Mode)");
+			PCB_DAD_BUTTON(dlg, "save in user cfg");
+		}
+	PCB_DAD_END(dlg);
+
+	if (len == 0)
+		PCB_DAD_LABEL(dlg, "(There are no brave features at the moment)");
+	PCB_DAD_END(dlg);
+
+
+	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", NULL);
+	brave2dlg(dlg_hid_ctx);
+	PCB_DAD_RUN(dlg);
+
+	PCB_DAD_FREE(dlg);
+	return 0;
+}
 
 static const char pcb_acts_Brave[] =
 	"Brave()\n"
@@ -129,9 +197,8 @@ static const char pcb_acth_Brave[] = "Changes brave settings.";
 static int pcb_act_Brave(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	desc_t *d;
-	if (argc == 0) {
-		
-	}
+	if (argc == 0)
+		return brave_interact();
 
 	/* look up */
 	if (argc > 0) {
