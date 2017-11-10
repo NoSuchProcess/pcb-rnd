@@ -1067,7 +1067,7 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	drc_ctx->rvPadBottom = 0.25;
 
 	if (fread(block, 1, 4, f) != 4) {
-		printf("E: short attempted DRC preamble read; preamble not found. Truncated file?\n");
+		pcb_trace("E: short attempted DRC preamble read; preamble not found. Truncated file?\n");
 		return -1;
 	}
 
@@ -1076,24 +1076,24 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 		&& load_long(block, 1, 1) == 0x04
 		&& load_long(block, 2, 1) == 0x00
 		&& load_long(block, 3, 1) == 0x20)) {
-		printf("E: start of DRC preamble not found where it was expected.\n");
-		printf("E: drc byte 0 : %d\n", (int)load_long(block, 0, 1) );
-		printf("E: drc byte 1 : %d\n", (int)load_long(block, 1, 1) );
-		printf("E: drc byte 2 : %d\n", (int)load_long(block, 2, 1) );
-		printf("E: drc byte 3 : %d\n", (int)load_long(block, 3, 1) );
+		pcb_trace("E: start of DRC preamble not found where it was expected.\n");
+		pcb_trace("E: drc byte 0 : %d\n", (int)load_long(block, 0, 1) );
+		pcb_trace("E: drc byte 1 : %d\n", (int)load_long(block, 1, 1) );
+		pcb_trace("E: drc byte 2 : %d\n", (int)load_long(block, 2, 1) );
+		pcb_trace("E: drc byte 3 : %d\n", (int)load_long(block, 3, 1) );
 		return -1;
 	} else {
-		printf("start of DRC preamble section 0x10 0x04 0x00 0x20 found.\n");
+		pcb_trace("start of DRC preamble section 0x10 0x04 0x00 0x20 found.\n");
 	}
 
 	while (!DRC_preamble_end_found) {
 		if (fread(&c, 1, 1, f) != 1) { /* the text preamble is not necessarily n * 4 bytes */
-			printf("E: short attempted DRC preamble read. Truncated file?\n");
+			pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
 			return -1;
 		} else {
 			if (c == '\0') { /* so we step through, looking for each 0x00 */
 				if (fread(block, 1, 4, f) != 4) { /* the text preamble seems to n * 24 bytes */
-					printf("E: short attempted DRC preamble read. Truncated file?\n");
+					pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
 					return -1;
 				}
 				if (load_long(block, 0, 1) == 0x78
@@ -1109,11 +1109,9 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	printf("found end of DRC preamble text x78x56x34x12. About to load DRC rules.\n");
 
 	if (fread(DRC_block, 1, DRC_length_used, f) != DRC_length_used) {
-		printf("E: short DRC value block read. DRC section incomplete. Truncated file?\n");
+		pcb_trace("E: short DRC value block read. DRC section incomplete. Truncated file?\n");
 		return -1;
 	}
-
-#warning TODO: put this in the tree instead of printing
 
 	/* first ~134 bytes contain the most useful DRC stuff, such as
 	# wire2wire wire2pad wire2via pad2pad pad2via via2via pad2smd via2smd smd2smd
@@ -1123,63 +1121,63 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	restring_percentages = 7 doubles, 56 bytes total */
 
 	mdWireWire = (long)(load_long(DRC_block, 0, 4)/2.54/100);
-	printf("wire2wire: %ld mil\n", mdWireWire);
+	pcb_trace("wire2wire: %ld mil\n", mdWireWire);
 
-	printf("wire2pad: %f mil\n", load_long(DRC_block, 4, 4)/2.54/100);
-	printf("wire2via: %f mil\n", load_long(DRC_block, 8, 4)/2.54/100);
-	printf("pad2pad: %f mil\n", load_long(DRC_block, 12, 4)/2.54/100);
-	printf("pad2via: %f mil\n", load_long(DRC_block, 16, 4)/2.54/100);
-	printf("via2via: %f mil\n", load_long(DRC_block, 20, 4)/2.54/100);
-	printf("pad2smd: %f mil\n", load_long(DRC_block, 24, 4)/2.54/100);
-	printf("via2smd: %f mil\n", load_long(DRC_block, 28, 4)/2.54/100);
-	printf("smd2smd: %f mil\n", load_long(DRC_block, 32, 4)/2.54/100);
-	printf("copper2dimension: %f mil\n", load_long(DRC_block, 44, 4)/2.54/100);
-	printf("drill2hole: %f mil\n", load_long(DRC_block, 52, 4)/2.54/100);
+	pcb_trace("wire2pad: %f mil\n", load_long(DRC_block, 4, 4)/2.54/100);
+	pcb_trace("wire2via: %f mil\n", load_long(DRC_block, 8, 4)/2.54/100);
+	pcb_trace("pad2pad: %f mil\n", load_long(DRC_block, 12, 4)/2.54/100);
+	pcb_trace("pad2via: %f mil\n", load_long(DRC_block, 16, 4)/2.54/100);
+	pcb_trace("via2via: %f mil\n", load_long(DRC_block, 20, 4)/2.54/100);
+	pcb_trace("pad2smd: %f mil\n", load_long(DRC_block, 24, 4)/2.54/100);
+	pcb_trace("via2smd: %f mil\n", load_long(DRC_block, 28, 4)/2.54/100);
+	pcb_trace("smd2smd: %f mil\n", load_long(DRC_block, 32, 4)/2.54/100);
+	pcb_trace("copper2dimension: %f mil\n", load_long(DRC_block, 44, 4)/2.54/100);
+	pcb_trace("drill2hole: %f mil\n", load_long(DRC_block, 52, 4)/2.54/100);
 
 	msWidth = (long)(load_long(DRC_block, 64, 4)/2.54/100);
-	printf("min_width: %ld mil\n", msWidth);
+	pcb_trace("min_width: %ld mil\n", msWidth);
 
-	printf("min_drill: %f mil\n", load_long(DRC_block, 68, 4)/2.54/100);
+	pcb_trace("min_drill: %f mil\n", load_long(DRC_block, 68, 4)/2.54/100);
 	/*in version 5, this is wedged inbetween drill and pad ratios:
 	  min_micro_via, blind_via_ratio, int, float, 12 bytes*/
 
 	rvPadTop = load_double(DRC_block, 84, 8);
-	printf("padtop ratio: %f\n", rvPadTop);
+	pcb_trace("padtop ratio: %f\n", rvPadTop);
 	rvPadInner = load_double(DRC_block, 92, 8);
-	printf("padinner ratio: %f\n", rvPadInner);
+	pcb_trace("padinner ratio: %f\n", rvPadInner);
 	rvPadBottom = load_double(DRC_block, 100, 8);
-	printf("padbottom ratio: %f\n", rvPadBottom);
+	pcb_trace("padbottom ratio: %f\n", rvPadBottom);
 
-	printf("viaouter ratio: %f\n", load_double(DRC_block, 108, 8));
-	printf("viainner ratio: %f\n", load_double(DRC_block, 116, 8));
-	printf("microviaouter ratio: %f\n", load_double(DRC_block, 124, 8));
-	printf("microviainner ratio: %f\n", load_double(DRC_block, 132, 8));
+	pcb_trace("viaouter ratio: %f\n", load_double(DRC_block, 108, 8));
+	pcb_trace("viainner ratio: %f\n", load_double(DRC_block, 116, 8));
+	pcb_trace("microviaouter ratio: %f\n", load_double(DRC_block, 124, 8));
+	pcb_trace("microviainner ratio: %f\n", load_double(DRC_block, 132, 8));
 
-	printf("restring limit1 (mil): %f\n", load_long(DRC_block, 140, 4)/2.54/100);
-	printf("restring limit2 (mil): %f\n", load_long(DRC_block, 144, 4)/2.54/100);
-	printf("restring limit3 (mil): %f\n", load_long(DRC_block, 148, 4)/2.54/100);
-	printf("restring limit4 (mil): %f\n", load_long(DRC_block, 152, 4)/2.54/100);
-	printf("restring limit5 (mil): %f\n", load_long(DRC_block, 156, 4)/2.54/100);
-	printf("restring limit6 (mil): %f\n", load_long(DRC_block, 160, 4)/2.54/100);
-	printf("restring limit7 (mil): %f\n", load_long(DRC_block, 164, 4)/2.54/100);
-	printf("restring limit8 (mil): %f\n", load_long(DRC_block, 168, 4)/2.54/100);
-	printf("restring limit9 (mil): %f\n", load_long(DRC_block, 172, 4)/2.54/100);
-	printf("restring limit10 (mil): %f\n", load_long(DRC_block, 176, 4)/2.54/100);
-	printf("restring limit11 (mil): %f\n", load_long(DRC_block, 180, 4)/2.54/100);
-	printf("restring limit12 (mil): %f\n", load_long(DRC_block, 184, 4)/2.54/100);
-	printf("restring limit13 (mil): %f\n", load_long(DRC_block, 188, 4)/2.54/100);
-	printf("restring limit14 (mil): %f\n", load_long(DRC_block, 192, 4)/2.54/100);
+	pcb_trace("restring limit1 (mil): %f\n", load_long(DRC_block, 140, 4)/2.54/100);
+	pcb_trace("restring limit2 (mil): %f\n", load_long(DRC_block, 144, 4)/2.54/100);
+	pcb_trace("restring limit3 (mil): %f\n", load_long(DRC_block, 148, 4)/2.54/100);
+	pcb_trace("restring limit4 (mil): %f\n", load_long(DRC_block, 152, 4)/2.54/100);
+	pcb_trace("restring limit5 (mil): %f\n", load_long(DRC_block, 156, 4)/2.54/100);
+	pcb_trace("restring limit6 (mil): %f\n", load_long(DRC_block, 160, 4)/2.54/100);
+	pcb_trace("restring limit7 (mil): %f\n", load_long(DRC_block, 164, 4)/2.54/100);
+	pcb_trace("restring limit8 (mil): %f\n", load_long(DRC_block, 168, 4)/2.54/100);
+	pcb_trace("restring limit9 (mil): %f\n", load_long(DRC_block, 172, 4)/2.54/100);
+	pcb_trace("restring limit10 (mil): %f\n", load_long(DRC_block, 176, 4)/2.54/100);
+	pcb_trace("restring limit11 (mil): %f\n", load_long(DRC_block, 180, 4)/2.54/100);
+	pcb_trace("restring limit12 (mil): %f\n", load_long(DRC_block, 184, 4)/2.54/100);
+	pcb_trace("restring limit13 (mil): %f\n", load_long(DRC_block, 188, 4)/2.54/100);
+	pcb_trace("restring limit14 (mil): %f\n", load_long(DRC_block, 192, 4)/2.54/100);
 
-	printf("pad_shapes1 (equiv -1): %ld\n", load_long(DRC_block, 196, 4));
-	printf("pad_shapes2 (equiv -1): %ld\n", load_long(DRC_block, 200, 4));
-	printf("pad_shapes3 (equiv -1): %ld\n", load_long(DRC_block, 204, 4));
-	printf("mask_percentages1 ratio: %f\n", load_double(DRC_block, 208, 8));
-	printf("mask_percentages2 ratio: %f\n", load_double(DRC_block, 216, 8));
+	pcb_trace("pad_shapes1 (equiv -1): %ld\n", load_long(DRC_block, 196, 4));
+	pcb_trace("pad_shapes2 (equiv -1): %ld\n", load_long(DRC_block, 200, 4));
+	pcb_trace("pad_shapes3 (equiv -1): %ld\n", load_long(DRC_block, 204, 4));
+	pcb_trace("mask_percentages1 ratio: %f\n", load_double(DRC_block, 208, 8));
+	pcb_trace("mask_percentages2 ratio: %f\n", load_double(DRC_block, 216, 8));
 
-	printf("mask limit1 (mil): %f\n", load_long(DRC_block, 224, 4)/2.54/100);
-	printf("mask limit2 (mil): %f\n", load_long(DRC_block, 228, 4)/2.54/100);
-	printf("mask limit3 (mil): %f\n", load_long(DRC_block, 232, 4)/2.54/100);
-	printf("mask limit4 (mil): %f\n", load_long(DRC_block, 236, 4)/2.54/100);
+	pcb_trace("mask limit1 (mil): %f\n", load_long(DRC_block, 224, 4)/2.54/100);
+	pcb_trace("mask limit2 (mil): %f\n", load_long(DRC_block, 228, 4)/2.54/100);
+	pcb_trace("mask limit3 (mil): %f\n", load_long(DRC_block, 232, 4)/2.54/100);
+	pcb_trace("mask limit4 (mil): %f\n", load_long(DRC_block, 236, 4)/2.54/100);
 
 	/* populate the drc_ctx struct to return the result of the DRC block read attempt */
 	drc_ctx->msWidth = msWidth;
@@ -1208,14 +1206,14 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 
 	/* load the current block */
 	if (fread(block, 1, 24, f) != 24) {
-		printf("E: short read\n");
+		pcb_trace("E: short read\n");
 		return -1;
 	}
 	processed++;
 
 	if (*numblocks < 0 && load_long(block, 0, 1) == 0x10) {
 		*numblocks = load_long(block, 4, 4);
-		printf("numblocks found in start block: %ld\n", *numblocks);
+		pcb_trace("numblocks found in start block: %ld\n", *numblocks);
 	}
 
 	for(sc = pcb_eagle_script; sc->cmd != 0; sc++) {
@@ -1239,17 +1237,17 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 			goto found;
 	}
 
-	printf("E: unknown block ID 0x%02x%02x at offset %ld\n", block[0], block[1], ftell(f));
+	pcb_trace("E: unknown block ID 0x%02x%02x at offset %ld\n", block[0], block[1], ftell(f));
 	return -1;
 
 	found:;
 
 	if (sc->name != NULL) {
-		printf("%s[%s (%x)]\n", ind, sc->name, sc->cmd);
+		pcb_trace("%s[%s (%x)]\n", ind, sc->name, sc->cmd);
 		parent = egb_node_append(parent, egb_node_alloc(sc->cmd, sc->name));
 	}
 	else {
-		printf("%s[UNKNOWN (%x)]\n", ind, sc->cmd);
+		pcb_trace("%s[UNKNOWN (%x)]\n", ind, sc->cmd);
 		parent = egb_node_append(parent, egb_node_alloc(sc->cmd, "UNKNOWN"));
 	}
 
