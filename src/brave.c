@@ -143,7 +143,7 @@ static void dlg2brave(pcb_hid_attribute_t *attrs)
 
 static void brave_dialog_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	dlg2brave(attr);
+	dlg2brave(caller_data);
 	brave2dlg(hid_ctx);
 }
 
@@ -182,7 +182,7 @@ static int brave_interact(void)
 	PCB_DAD_END(dlg);
 
 
-	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", NULL);
+	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", &dlg);
 	brave2dlg(dlg_hid_ctx);
 	PCB_DAD_RUN(dlg);
 
