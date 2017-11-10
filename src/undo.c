@@ -87,13 +87,13 @@ int pcb_undo(pcb_bool draw)
 
 	pcb_undo_and_draw = draw;
 
-	if (pcb_uundo.serial == 0) {
-		pcb_message(PCB_MSG_ERROR, _("ERROR: Attempt to pcb_undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
+	if (pcb_uundo.num_undo == 0) {
+		pcb_message(PCB_MSG_INFO, _("Nothing to undo - buffer is empty\n"));
 		return 0;
 	}
 
-	if (pcb_uundo.num_undo == 0) {
-		pcb_message(PCB_MSG_INFO, _("Nothing to undo - buffer is empty\n"));
+	if (pcb_uundo.serial == 0) {
+		pcb_message(PCB_MSG_ERROR, _("ERROR: Attempt to pcb_undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
 		return 0;
 	}
 
