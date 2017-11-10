@@ -1942,19 +1942,19 @@ static int postproc_drc(void *ctx, egb_ctx_t *egb_ctx)
 	pcb_trace("Added msWidth to DRC node\n");
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
-	sprintf(tmp, "%fmil", egb_ctx->rvPadTop);
+	sprintf(tmp, "%f", egb_ctx->rvPadTop);
 	egb_node_prop_set(current, "name", "rvPadTop");
 	egb_node_prop_set(current, "value", tmp);
 	pcb_trace("Added rvPadTop to DRC node\n");
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
-	sprintf(tmp, "%fmil", egb_ctx->rvPadInner);
+	sprintf(tmp, "%f", egb_ctx->rvPadInner);
 	egb_node_prop_set(current, "name", "rvPadInner");
 	egb_node_prop_set(current, "value", tmp);
 	pcb_trace("Added rvPadInner to DRC node\n");
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
-	sprintf(tmp, "%fmil", egb_ctx->rvPadBottom);
+	sprintf(tmp, "%f", egb_ctx->rvPadBottom);
 	egb_node_prop_set(current, "name", "rvPadBottom");
 	egb_node_prop_set(current, "value", tmp);
 	pcb_trace("Added rvPadBottom to DRC node\n");

@@ -625,9 +625,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	lin4->Point2.X = lin1->Point1.X;
 	lin4->Point2.Y = lin1->Point1.Y;
 
-#warning hard coded rectangle line thicknesses need to be changed to design rules value
-
-	lin1->Thickness = PCB_MIL_TO_COORD(10);
+	lin1->Thickness = st->ms_width;
 	lin2->Thickness = lin1->Thickness;
 	lin3->Thickness = lin1->Thickness;
 	lin4->Thickness = lin1->Thickness;
@@ -1342,23 +1340,34 @@ static int eagle_read_drawing(read_state_t *st, trnode_t *subtree, void *obj, in
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, 0);
 }
 
-static int eagle_read_design_rules(read_state_t *st, trnode_t *subtree)
+static int eagle_read_design_rules(read_state_t *st)
 {
-	trnode_t *n;
+	trnode_t *dr, *n;
 	const char *name;
 
-	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
-		if (STRCMP(NODENAME(n), "param") != 0)
-			continue;
-		name = eagle_get_attrs(st, n, "name", NULL);
-		if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(st, n, "value", 0);
-		else if (strcmp(name, "msWidth") == 0) st->ms_width = eagle_get_attrcu(st, n, "value", 0);
-		else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrd(st, n, "value", 0);
-		else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrd(st, n, "value", 0);
-		else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(st, n, "value", 0);
+	/* st->ms_width the default minimum feature width, already defined  */
+	st->rv_pad_top = 0.25;
+	st->rv_pad_inner = 0.25;
+	st->rv_pad_bottom = 0.25;
+	st->md_wire_wire = PCB_MIL_TO_COORD(10); /* default minimum wire to wire spacing */
+
+	dr = eagle_trpath(st, st->parser.root, "drawing", "board", "designrules", NULL);
+	if (dr == NULL) {
+		pcb_message(PCB_MSG_WARNING, "can't find design rules, using sane defaults\n");
+	} else {
+		for(n = CHILDREN(dr); n != NULL; n = NEXT(n)) {
+			if (STRCMP(NODENAME(n), "param") != 0)
+				continue;
+			name = eagle_get_attrs(st, n, "name", NULL);
+			if (strcmp(name, "mdWireWire") == 0) st->md_wire_wire = eagle_get_attrcu(st, n, "value", 0);
+			else if (strcmp(name, "msWidth") == 0) st->ms_width = eagle_get_attrcu(st, n, "value", 0);
+			else if (strcmp(name, "rvPadTop") == 0) st->rv_pad_top = eagle_get_attrd(st, n, "value", 0);
+			else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrd(st, n, "value", 0);
+			else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(st, n, "value", 0);
+		}
+		if ((st->rv_pad_top != st->rv_pad_inner) || (st->rv_pad_top != st->rv_pad_inner))
+			pcb_message(PCB_MSG_WARNING, "top/inner/bottom default pad sizes differ - using top size only\n");
 	}
-	if ((st->rv_pad_top != st->rv_pad_inner) || (st->rv_pad_top != st->rv_pad_inner))
-		pcb_message(PCB_MSG_WARNING, "top/inner/bottom default pad sizes differ - using top size only\n");
 	return 0;
 }
 
@@ -1445,6 +1454,9 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		{NULL, NULL}
 	};
 
+	/* have not read design rules section yet but need this for rectangle parsing */
+	st.ms_width = PCB_MIL_TO_COORD(10); /* default minimum feature width */
+
 	static const dispatch_t disp_2[] = { /* possible children of root */
 		{"layers",         eagle_read_nop},
 		{"drawing",        eagle_read_drawing},
@@ -1467,11 +1479,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st_init(&st);
 
-	dr = eagle_trpath(&st, st.parser.root, "drawing", "board", "designrules", NULL);
-	if (dr != NULL)
-		eagle_read_design_rules(&st, dr);
-	else
-		pcb_message(PCB_MSG_WARNING, "can't find design rules\n");
+	eagle_read_design_rules(&st);
 
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
@@ -1521,20 +1529,9 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	st.pcb = pcb;
 	st.elem_by_name = 0;
 	st.default_unit = "du"; /* du = decimicron = 0.1 micron unit for eagle bin format */
-#warning TODO have defaults for v3 binary + design rule override for v4, v5 binary:
-	st.ms_width = PCB_MIL_TO_COORD(15);
-	st.rv_pad_top = PCB_MIL_TO_COORD(10); /*wild guess*/
-	st.md_wire_wire = PCB_MIL_TO_COORD(10);
 	st_init(&st);
 
-#warning TODO: find and read the DRC block
-#if 1
-	dr = eagle_trpath(&st, st.parser.root, "drawing", "board", "designrules", NULL);
-	if (dr != NULL)
-		eagle_read_design_rules(&st, dr);
-	else
-		pcb_message(PCB_MSG_WARNING, "can't find design rules\n");
-#endif
+	eagle_read_design_rules(&st);
 
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
