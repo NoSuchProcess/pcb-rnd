@@ -31,6 +31,7 @@
 
 #include "action_helper.h"
 #include "board.h"
+#include "brave.h"
 #include "change.h"
 #include "compat_nls.h"
 #include "data.h"
@@ -39,17 +40,40 @@
 #include "undo.h"
 
 #include "obj_pinvia_draw.h"
+#include "obj_pstk_draw.h"
 
+#warning padstack TODO: remove this when via is removed and the padstack is created from style directly
+#include "src_plugins/lib_compat_help/pstk_compat.h"
 
 void pcb_tool_via_notify_mode(void)
 {
-	pcb_pin_t *via;
 
 	if (!PCB->ViaOn) {
 		pcb_message(PCB_MSG_WARNING, _("You must turn via visibility on before\n" "you can place vias\n"));
 		return;
 	}
-	if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
+
+	if (pcb_brave & PCB_BRAVE_PSTK_VIA) {
+		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, Note.X, Note.Y,
+			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, 2 * conf_core.design.clearance,
+			0, PCB_PSTK_COMPAT_ROUND, pcb_true);
+		if (ps == NULL)
+			return;
+
+		pcb_obj_add_attribs(ps, PCB->pen_attr);
+		pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
+
+#warning padstack TODO
+/*		if (pcb_gui->shift_is_pressed())
+			pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle, INDEXOFCURRENT);*/
+
+		pcb_undo_inc_serial();
+		pcb_pstk_invalidate_draw(ps);
+		pcb_draw();
+	}
+	else {
+		pcb_pin_t *via;
+		if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
 													conf_core.design.via_thickness, 2 * conf_core.design.clearance,
 													0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 		pcb_obj_add_attribs(via, PCB->pen_attr);
@@ -59,6 +83,7 @@ void pcb_tool_via_notify_mode(void)
 		pcb_undo_inc_serial();
 		pcb_via_invalidate_draw(via);
 		pcb_draw();
+	}
 	}
 }
 
