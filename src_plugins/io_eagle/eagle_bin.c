@@ -1771,7 +1771,6 @@ static int postprocess_rotation(void *ctx, egb_node_t *root, int node_type)
 	if (root != NULL && root->id == node_type) {
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 			if (e->key != NULL &&  strcmp(e->key, "mirrored") == 0) {
-				printf("Testing mirrored key, %s, value %s.\n", e->key, e->value);
 				if (e->value != NULL)
 					mirrored = (*e->value != '0');
 				break; 
@@ -1838,7 +1837,6 @@ static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 						int element_num = atoi(e->value);
 						egb_node_prop_set(cr, "element", elem_refdes_by_idx(els, (long) element_num));
 						pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
-						printf("Found element pin %s\n", egb_node_prop_get(cr, "pin"));
 						egb_node_prop_set(cr, "pad", egb_node_prop_get(cr, "pin"));
 					}
 				}
