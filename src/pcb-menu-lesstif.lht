@@ -259,6 +259,7 @@ ha:{
 				ha:Thin draw = { checked=editor/thin_draw; a=<Key>|; action=conf(toggle, editor/thin_draw, design) }
 				ha:Thin draw poly = { checked=editor/thin_drawpoly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
 				ha:Check polygons = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
+				ha:Brave mode = { action=brave() }
 				-
 				ha:Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
 				ha:Pins/Via show Name/Number = { a=<Key>d; action=Display(PinOrPadName) }

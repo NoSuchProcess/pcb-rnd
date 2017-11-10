@@ -287,6 +287,7 @@ ha:{
 				ha:Thin draw                        = { checked=editor/thin_draw; a=<char>|;  action=conf(toggle, editor/thin_draw, design) }
 				ha:Thin draw poly                   = { checked=editor/thin_draw_poly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
 				ha:Check polygons                   = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
+				ha:Brave mode                       = { action=brave() }
 				-
 				ha:Vendor drill mapping             = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
 				ha:Import New Elements at = {
