@@ -199,12 +199,18 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 		ly = (*o)->parent.layer;
 		ts->shape[n].layer_mask = pcb_layer_flags_(ly);
 		ts->shape[n].comb = ly->comb;
+
 		for(m = 0; m < n; m++) {
 			if ((ts->shape[n].layer_mask == ts->shape[m].layer_mask) && (ts->shape[n].comb == ts->shape[m].comb)) {
 				if (!quiet)
 					pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple objects on the same layer\n");
 				goto quit;
 			}
+		}
+		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (via == NULL)) {
+			if (!quiet)
+				pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
+			goto quit;
 		}
 	}
 
