@@ -83,6 +83,7 @@ pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, 
 	ps->Flags = Flags;
 	ps->ID = pcb_create_ID_get();
 	pcb_pstk_add(data, ps);
+	pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
 	return ps;
 }
 
