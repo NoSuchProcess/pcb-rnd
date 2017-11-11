@@ -55,11 +55,13 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			pcb_gui->get_coords("Click at padstack origin", &x, &y);
 		pid = pcb_pstk_conv_selection(PCB, 0, x, y);
 
-		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-		p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
-		pcb_pstk_proto_copy(p, &PCB->Data->ps_protos.array[pid]);
-		p->parent = PCB_PASTEBUFFER->Data;
-		pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
+		if (pid != PCB_PADSTACK_INVALID) {
+			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+			p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
+			pcb_pstk_proto_copy(p, &PCB->Data->ps_protos.array[pid]);
+			p->parent = PCB_PASTEBUFFER->Data;
+			pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
+		}
 	}
 	else if (strcmp(argv[0], "buffer") == 0) {
 
