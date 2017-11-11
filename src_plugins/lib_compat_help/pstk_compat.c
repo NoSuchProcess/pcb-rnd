@@ -159,7 +159,7 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	if (mask > 0)
 		compat_shape_free(&mask_master);
 
-	return pcb_pstk_new(data, pid, x, y, clearance, pcb_flag_make(0));
+	return pcb_pstk_new(data, pid, x, y, clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
 static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
