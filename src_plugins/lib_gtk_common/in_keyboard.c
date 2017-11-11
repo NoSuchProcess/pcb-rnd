@@ -107,7 +107,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 
 		/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
 		if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
-			key_raw = keyvals[2 * kev->group];
+			key_raw = keyvals[0];
 			g_free(keys);
 			g_free(keyvals);
 		}
