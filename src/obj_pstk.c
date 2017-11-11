@@ -302,7 +302,12 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
 		set_ps_color(ps, ctx->is_current);
-		pcb_pstk_draw_shape_solid(Output.fgGC, ps, shape);
+		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
+			pcb_gui->set_line_width(Output.fgGC, 0);
+			pcb_pstk_draw_shape_thin(Output.fgGC, ps, shape);
+		}
+		else
+			pcb_pstk_draw_shape_solid(Output.fgGC, ps, shape);
 	}
 
 	mark = PS_CROSS_SIZE/2;
