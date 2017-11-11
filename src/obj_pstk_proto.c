@@ -131,6 +131,12 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 		}
 	}
 
+	if ((ts->len == 0) && (via == NULL)) {
+		if (!quiet)
+			pcb_message(PCB_MSG_ERROR, "Padstack conversion: there are no shapes and there is no via participating in the conversion; can not create empty padstack\n");
+		goto quit;
+	}
+
 	ts->shape = malloc(ts->len * sizeof(pcb_pstk_shape_t));
 
 	/* convert local (line/poly) objects */
