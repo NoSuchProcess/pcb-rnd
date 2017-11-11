@@ -634,6 +634,8 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 		thr = 0;
 
 	shp = pcb_pstk_shape_at(pcb, ps, layer);
+	if (shp == NULL)
+		return NULL;
 
 	if (!(thr & PCB_THERMAL_ON))
 		return pcb_thermal_area_pstk_nothermal(pcb, ps, lid, shp);
