@@ -42,6 +42,8 @@
 
 #define PS_CROSS_SIZE PCB_MM_TO_COORD(1)
 
+#define SQR(o) ((o)*(o))
+
 static const char core_pstk_cookie[] = "padstack";
 
 pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
@@ -384,16 +386,91 @@ void pcb_pstk_invalidate_draw(pcb_pstk_t *ps)
 }
 
 
+static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *shape)
+{
+	return (PCB_IS_BOX_NEGATIVE(box) ? PCB_BOX_TOUCHES_BOX(&ps->BoundingBox,box) : PCB_BOX_IN_BOX(&ps->BoundingBox,box));
+}
+
 int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 {
-#warning padstack TODO: refine this: consider the shapes on the layers that are visible
-	return (PCB_IS_BOX_NEGATIVE(box) ? PCB_BOX_TOUCHES_BOX(&ps->BoundingBox,box) : PCB_BOX_IN_BOX(&ps->BoundingBox,box));
+	pcb_pstk_shape_t *shp;
+
+	if (layer == NULL) {
+		int n;
+		pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
+
+		if (tshp == NULL)
+			return 0;
+
+		for(n = 0; n < tshp->len; n++)
+			if (pcb_pstk_near_box_(ps, box, &tshp->shape[n]) != 0)
+				return 1;
+		return 0;
+	}
+
+	shp = pcb_pstk_shape(ps, pcb_layer_flags_(layer), layer->comb);
+	if (shp == NULL)
+		return 0;
+	return pcb_pstk_near_box_(ps, box, shp);
+}
+
+static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_shape_t *shape)
+{
+	pcb_pad_t pad;
+	pcb_vector_t v;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+	/* cheap check: hole clicked (also necessary for a mounting hole too) */
+	if (proto->hdia > 0) {
+		double dist2 = SQR((double)x - (double)ps->x) + SQR((double)y - (double)ps->y);
+		if (dist2 <= SQR((double)radius + (double)proto->hdia/2.0))
+			return 1;
+	}
+
+	switch(shape->shape) {
+		case PCB_PSSH_CIRC:
+			return PCB_POINT_IN_CIRCLE(x, y, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2 + radius);
+		case PCB_PSSH_LINE:
+			pad.Point1.X = shape->data.line.x1 + ps->x;
+			pad.Point1.Y = shape->data.line.y1 + ps->y;
+			pad.Point2.X = shape->data.line.x2 + ps->x;
+			pad.Point2.Y = shape->data.line.y2 + ps->y;
+			pad.Thickness = shape->data.line.thickness;
+			pad.Clearance = 0;
+			pad.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
+			return pcb_is_point_in_pad(x, y, radius, &pad);
+		case PCB_PSSH_POLY:
+			if (shape->data.poly.pa == NULL)
+				pcb_pstk_shape_update_pa(&shape->data.poly);
+			v[0] = x - ps->x;
+			v[1] = y - ps->y;
+			return pcb_polyarea_contour_inside(shape->data.poly.pa, v);
+	}
+
+	return 0;
 }
 
 int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
-#warning padstack TODO: refine this: consider the shapes on the layers that are visible
-	return (x >= ps->BoundingBox.X1) && (y >= ps->BoundingBox.Y1) && (x <= ps->BoundingBox.X2) && (y <= ps->BoundingBox.Y2);
+	pcb_pstk_shape_t *shp;
+
+	if (layer == NULL) {
+		int n;
+		pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
+
+		if (tshp == NULL)
+			return 0;
+
+		for(n = 0; n < tshp->len; n++)
+			if (pcb_is_point_in_pstk_(ps, x, y, radius, &tshp->shape[n]) != 0)
+				return 1;
+		return 0;
+	}
+
+	shp = pcb_pstk_shape(ps, pcb_layer_flags_(layer), layer->comb);
+	if (shp == NULL)
+		return 0;
+	return pcb_is_point_in_pstk_(ps, x, y, radius, shp);
 }
 
 int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_t min_clr)
