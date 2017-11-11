@@ -100,6 +100,13 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 	  || pcb_lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X2, (b)->Y1) \
 	  || PCB_LINE_IN_BOX((l), (b)))
 
+#define	PCB_XYLINE_ISECTS_BOX(x1,y1,x2,y2,b)	\
+	(    pcb_lines_intersect(x1,y1,x2,y2, (b)->X1, (b)->Y1, (b)->X2, (b)->Y1) \
+	  || pcb_lines_intersect(x1,y1,x2,y2, (b)->X1, (b)->Y1, (b)->X1, (b)->Y2) \
+	  || pcb_lines_intersect(x1,y1,x2,y2, (b)->X2, (b)->Y2, (b)->X1, (b)->Y2) \
+	  || pcb_lines_intersect(x1,y1,x2,y2, (b)->X2, (b)->Y2, (b)->X2, (b)->Y1) \
+	)
+
 #define	PCB_PAD_TOUCHES_BOX(p,b)	PCB_LINE_TOUCHES_BOX((pcb_line_t *)(p),(b))
 
 /* a corner of either box is within the other, or edges cross */

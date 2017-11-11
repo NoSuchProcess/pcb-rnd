@@ -388,7 +388,89 @@ void pcb_pstk_invalidate_draw(pcb_pstk_t *ps)
 
 static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *shape)
 {
-	return (PCB_IS_BOX_NEGATIVE(box) ? PCB_BOX_TOUCHES_BOX(&ps->BoundingBox,box) : PCB_BOX_IN_BOX(&ps->BoundingBox,box));
+	pcb_pad_t pad;
+	pcb_vector_t v;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	int isneg = PCB_IS_BOX_NEGATIVE(box), is_in, n;
+
+	/* cheap check: hole */
+	if (proto->hdia > 0) {
+		/* in negative case, touching the hole means hit */
+		if (isneg)
+			if (PCB_CIRCLE_TOUCHES_BOX(ps->x, ps->y, proto->hdia/2, box))
+				return 1;
+		
+		/* in positive case, not including the hole means bad */
+		if (!isneg)
+			if (!PCB_POINT_IN_BOX(ps->x-proto->hdia/2,ps->y-proto->hdia/2, box) ||
+				!PCB_POINT_IN_BOX(ps->x+proto->hdia/2,ps->y+proto->hdia/2, box))
+					return 0;
+	}
+
+	switch(shape->shape) {
+		case PCB_PSSH_CIRC:
+		if (isneg)
+			return PCB_CIRCLE_TOUCHES_BOX(ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, box);
+		return
+			PCB_POINT_IN_BOX(ps->x+shape->data.circ.x-proto->hdia/2,ps->y+shape->data.circ.y-shape->data.circ.dia/2, box) &&
+			PCB_POINT_IN_BOX(ps->x+shape->data.circ.x+proto->hdia/2,ps->y+shape->data.circ.y+shape->data.circ.dia/2, box);
+		case PCB_PSSH_LINE:
+			pad.Point1.X = shape->data.line.x1 + ps->x;
+			pad.Point1.Y = shape->data.line.y1 + ps->y;
+			pad.Point2.X = shape->data.line.x2 + ps->x;
+			pad.Point2.Y = shape->data.line.y2 + ps->y;
+			pad.Thickness = shape->data.line.thickness;
+			pad.Clearance = 0;
+			pad.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
+			return isneg ? PCB_PAD_TOUCHES_BOX(&pad, box) : PCB_PAD_IN_BOX(&pad, box);
+		case PCB_PSSH_POLY:
+			if (shape->data.poly.pa == NULL)
+				pcb_pstk_shape_update_pa(&shape->data.poly);
+
+			if (isneg) {
+				/* shortcut: if any point is in our box in negative, we are done */
+				for(n = 0; n < shape->data.poly.len; n++) {
+					int pib = PCB_POINT_IN_BOX(ps->x + shape->data.poly.x[n], ps->x + shape->data.poly.y[n], box);
+					if (pib)
+						return 1;
+				}
+			}
+
+			/* fully within */
+			is_in = 1;
+			for(n = 0; n < shape->data.poly.len; n++) {
+				int pib = PCB_POINT_IN_BOX(ps->x + shape->data.poly.x[n], ps->x + shape->data.poly.y[n], box);
+				if (!pib) {
+					is_in = 0;
+					break;
+				}
+			}
+
+			if (!isneg) /* normal box - accept only if we are in */
+				return is_in;
+
+			/* negative box, not fully within, no poly point in the box, check whether
+			   the box is fully within the poly - if any of it's corners is in */
+			v[0] = box->X1 - ps->x;
+			v[1] = box->Y1 - ps->y;
+			return pcb_polyarea_contour_inside(shape->data.poly.pa, v);
+
+
+			/* negative box, not fully within, no poly point in the box, check whether
+			   box lines intersect poly lines
+			   We expect shapes to be simple so linear search is faster than
+			   being clever */
+			for(n = 1; n < shape->data.poly.len; n++) {
+				if (PCB_XYLINE_ISECTS_BOX(ps->x+shape->data.poly.x[n-1],ps->y+shape->data.poly.y[n-1],ps->x+shape->data.poly.x[n],ps->y+shape->data.poly.y[n],  box))
+					return 1;
+			}
+
+			n = shape->data.poly.len-1;
+			if (PCB_XYLINE_ISECTS_BOX(ps->x+shape->data.poly.x[n-1],ps->y+shape->data.poly.y[n-1],ps->x+shape->data.poly.x[0],ps->y+shape->data.poly.y[0],  box))
+				return 1;
+	}
+
+	return 0;
 }
 
 int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
