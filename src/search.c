@@ -137,7 +137,7 @@ static pcb_r_dir_t padstack_callback(const pcb_box_t *box, void *cl)
 
 	TEST_OBJST(i->objst, i->req_flag, g, ps, ps);
 
-	if (!pcb_is_point_in_pstk(PosX, PosY, SearchRadius, ps))
+	if (!pcb_is_point_in_pstk(PosX, PosY, SearchRadius, ps, NULL))
 		return PCB_R_DIR_NOT_FOUND;
 	*i->ptr1 = *i->ptr2 = *i->ptr3 = ps;
 	return PCB_R_DIR_CANCEL; /* found, stop searching */

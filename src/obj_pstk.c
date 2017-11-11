@@ -384,13 +384,13 @@ void pcb_pstk_invalidate_draw(pcb_pstk_t *ps)
 }
 
 
-int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box)
+int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 {
 #warning padstack TODO: refine this: consider the shapes on the layers that are visible
 	return (PCB_IS_BOX_NEGATIVE(box) ? PCB_BOX_TOUCHES_BOX(&ps->BoundingBox,box) : PCB_BOX_IN_BOX(&ps->BoundingBox,box));
 }
 
-int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_t *ps)
+int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 #warning padstack TODO: refine this: consider the shapes on the layers that are visible
 	return (x >= ps->BoundingBox.X1) && (y >= ps->BoundingBox.Y1) && (x <= ps->BoundingBox.X2) && (y <= ps->BoundingBox.Y2);

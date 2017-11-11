@@ -52,6 +52,7 @@ struct pcb_pstk_s {
 
 #define PCB_PADSTACK_INVALID ((pcb_cardinal_t)(-1))
 
+#include "layer.h"
 #include "obj_common.h"
 #include "obj_pstk_shape.h"
 #include "vtpadstack_t.h"
@@ -103,9 +104,9 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst);
 /* allocate the point array of a poly shape (single allocation for x and y) */
 void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len);
 
-/* geometry for select.c and search.c */
-int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box);
-int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_t *ps);
+/* geometry for select.c and search.c; if layer is NULL, consider all shapes */
+int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer);
+int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer);
 
 /* Check if padstack has the proper clearance against polygon; returns 0 if everything's fine */
 int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_t min_clr);

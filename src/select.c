@@ -492,7 +492,7 @@ do { \
 
 		PCB_PADSTACK_LOOP(pcb->Data);
 		{
-			if (pcb_pstk_near_box(padstack, Box)
+			if (pcb_pstk_near_box(padstack, Box, NULL)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
 				append(PCB_TYPE_PSTK, padstack, padstack);
@@ -531,7 +531,7 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 		case PCB_OBJ_POLY: return PCB_POLYGON_NEAR_BOX((pcb_poly_t *)obj, box);
 		case PCB_OBJ_ARC:  return PCB_ARC_NEAR_BOX((pcb_arc_t *)obj, box);
 		case PCB_OBJ_PAD:  return PCB_PAD_NEAR_BOX((pcb_pad_t *)obj, box);
-		case PCB_OBJ_PSTK: return pcb_pstk_near_box((pcb_pstk_t *)obj, box);
+		case PCB_OBJ_PSTK: return pcb_pstk_near_box((pcb_pstk_t *)obj, box, NULL);
 		case PCB_OBJ_PIN:
 		case PCB_OBJ_VIA:  return PCB_VIA_OR_PIN_NEAR_BOX((pcb_pin_t *)obj, box);
 		case PCB_OBJ_ELEMENT: return PCB_ELEMENT_NEAR_BOX((pcb_element_t *)obj, box);
