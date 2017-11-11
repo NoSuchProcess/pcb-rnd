@@ -255,6 +255,23 @@ static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 		conf_core.appearance.color.subc_selected : conf_core.appearance.color.padstackmark);
 }
 
+static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+{
+	switch(shape->shape) {
+		case PCB_PSSH_POLY:
+			pcb_gui->fill_polygon_offs(Output.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+			break;
+		case PCB_PSSH_LINE:
+			pcb_gui->set_line_cap(Output.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
+			pcb_gui->set_line_width(Output.fgGC, shape->data.line.thickness);
+			pcb_gui->draw_line(Output.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
+			break;
+		case PCB_PSSH_CIRC:
+			pcb_gui->fill_circle(Output.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
+			break;
+	}
+}
+
 pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_pstk_draw_t *ctx = cl;
@@ -266,22 +283,8 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, (ctx->comb & ~PCB_LYC_AUTO));
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
-		switch(shape->shape) {
-			case PCB_PSSH_POLY:
-				set_ps_color(ps, ctx->is_current);
-				pcb_gui->fill_polygon_offs(Output.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
-				break;
-			case PCB_PSSH_LINE:
-				set_ps_color(ps, ctx->is_current);
-				pcb_gui->set_line_cap(Output.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
-				pcb_gui->set_line_width(Output.fgGC, shape->data.line.thickness);
-				pcb_gui->draw_line(Output.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
-				break;
-			case PCB_PSSH_CIRC:
-				set_ps_color(ps, ctx->is_current);
-				pcb_gui->fill_circle(Output.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
-				break;
-		}
+		set_ps_color(ps, ctx->is_current);
+		pcb_pstk_draw_shape_solid(Output.fgGC, ps, shape);
 	}
 
 	mark = PS_CROSS_SIZE/2;
