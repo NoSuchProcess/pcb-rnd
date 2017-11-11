@@ -272,6 +272,24 @@ static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_
 	}
 }
 
+static void pcb_pstk_draw_shape_thin(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+{
+	int n;
+	switch(shape->shape) {
+		case PCB_PSSH_POLY:
+			for(n = 1; n < shape->data.poly.len; n++)
+				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
+			pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
+			break;
+		case PCB_PSSH_LINE:
+			pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness, shape->data.line.square);
+			break;
+		case PCB_PSSH_CIRC:
+			pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, shape->data.circ.dia/2, 0, 360); 
+			break;
+	}
+}
+
 pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_pstk_draw_t *ctx = cl;
@@ -330,7 +348,6 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 	pcb_pstk_shape_t *shape = NULL;
 	pcb_board_t *pcb;
 	pcb_layergrp_id_t gid = CURRENT->meta.real.grp;
-	int n;
 
 	pcb = pcb_data_get_top(ps->parent.data);
 	if (pcb != NULL) {
@@ -346,19 +363,7 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(gc, 0);
-		switch(shape->shape) {
-			case PCB_PSSH_POLY:
-				for(n = 1; n < shape->data.poly.len; n++)
-					pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
-				pcb_gui->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
-				break;
-			case PCB_PSSH_LINE:
-				pcb_draw_wireframe_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness, shape->data.line.square);
-				break;
-			case PCB_PSSH_CIRC:
-				pcb_gui->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, shape->data.circ.dia/2, 0, 360); 
-				break;
-		}
+		pcb_pstk_draw_shape_thin(gc, ps, shape);
 	}
 }
 
