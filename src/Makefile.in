@@ -319,6 +319,8 @@ CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
 PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
+LIBMINUID_CFLAGS=@cc/cflags@
+LIBMINUID_LDFLAGS=@cc/ldflags@
 
 all:
 	$(MAKE) revcheck
@@ -348,7 +350,7 @@ $(PUPLUG):
 	cd ../src_3rd/puplug && make
 
 ../src_3rd/libminuid/libminuid.a: ../src_3rd/libminuid/libminuid.c ../src_3rd/libminuid/libminuid.h
-	cd  ../src_3rd/libminuid && make libminuid.a
+	cd  ../src_3rd/libminuid && make libminuid.a LIBMINUID_CFLAGS=$(LIBMINUID_CFLAGS) LIBMINUID_LDFLAGS=$(LIBMINUID_LDFLAGS)
 
 @]
 
