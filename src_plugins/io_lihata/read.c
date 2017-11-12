@@ -936,6 +936,10 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 		dt->via_tree = pcb_r_create_tree(NULL, 0, 0);
 	sc->data->via_tree = dt->via_tree;
 
+	if (!dt->padstack_tree)
+		dt->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+	sc->data->padstack_tree = dt->padstack_tree;
+
 	pcb_add_subc_to_data(dt, sc);
 
 	parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt);
