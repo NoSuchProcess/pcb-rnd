@@ -45,6 +45,7 @@
 #include "conf_core.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
+#include "obj_pstk_op.h"
 
 #include "obj_line_draw.h"
 #include "obj_rat_draw.h"
@@ -67,7 +68,7 @@ pcb_opfunc_t Rotate90Functions = {
 	NULL,
 	NULL,
 	pcb_subcop_rotate90,
-	NULL  /* padstack */
+	pcb_pstkop_rotate90
 };
 
 /* ---------------------------------------------------------------------------
@@ -96,7 +97,8 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 
 	pcb_event(PCB_EVENT_RUBBER_ROTATE90, "ipppccip", Type, Ptr1, Ptr2, Ptr2, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number, &changed);
 
-	pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
+	if (Type != PCB_TYPE_PSTK) /* padstack has its own way doing the rotation-undo */
+		pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
 	ptr2 = pcb_object_operation(&Rotate90Functions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {

@@ -169,3 +169,21 @@ void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, ps);
 	return ps;
 }
+
+void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+{
+	double rot = ps->rot;
+
+	rot += (double)ctx->rotate.number * 90.0;
+
+	if ((rot > 360.0) || (rot < -360.0))
+		rot = fmod(rot, 360.0);
+
+	if ((rot == 360.0) || (rot == -360.0))
+		rot = 0;
+
+	if (pcb_pstk_change_instance(ps, NULL, NULL, &rot, NULL) == 0)
+		return ps;
+	return NULL;
+}
+
