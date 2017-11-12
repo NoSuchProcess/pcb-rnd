@@ -664,18 +664,14 @@ static void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb
 					double dist = sqrt(dx*dx + dy*dy);
 					double vx = dx / dist, vy = dy / dist;
 					dist += val;
-					if (dist <= 1) {
-						shp->data.poly.x[n] = vx;
-						shp->data.poly.y[n] = vy;
-					}
-					else {
-						shp->data.poly.x[n] = cx + vx * dist;
-						shp->data.poly.y[n] = cy + vy * dist;
-					}
-					pcb_pstk_shape_update_pa(&shp->data.poly);
+					if (dist <= PCB_MM_TO_COORD(0.01))
+						dist = PCB_MM_TO_COORD(0.01);
+					shp->data.poly.x[n] = cx + vx * dist;
+					shp->data.poly.y[n] = cy + vy * dist;
 				}
+			}
+			pcb_pstk_shape_update_pa(&shp->data.poly);
 			break;
-		}
 	}
 }
 
