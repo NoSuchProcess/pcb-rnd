@@ -55,7 +55,7 @@ void pcb_tool_via_notify_mode(void)
 	}
 
 	if (pcb_brave & PCB_BRAVE_PSTK_VIA) {
-		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, Note.X, Note.Y,
+		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, pcb_tool_note.X, pcb_tool_note.Y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, pcb_true);
 		if (ps == NULL)
@@ -73,7 +73,7 @@ void pcb_tool_via_notify_mode(void)
 	}
 	else {
 		pcb_pin_t *via;
-		if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
+		if ((via = pcb_via_new(PCB->Data, pcb_tool_note.X, pcb_tool_note.Y,
 													conf_core.design.via_thickness, 2 * conf_core.design.clearance,
 													0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 			pcb_obj_add_attribs(via, PCB->pen_attr);

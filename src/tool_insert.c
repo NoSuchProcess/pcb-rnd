@@ -53,7 +53,7 @@ void pcb_tool_insert_notify_mode(void)
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
 		pcb_crosshair.AttachedObject.Type =
-			pcb_search_screen(Note.X, Note.Y, PCB_INSERT_TYPES,
+			pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_INSERT_TYPES,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
 		if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
@@ -67,7 +67,7 @@ void pcb_tool_insert_notify_mode(void)
 				/* get starting point of nearest segment */
 				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLY) {
 					fake.poly = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
-					polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, Note.X, Note.Y);
+					polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, pcb_tool_note.X, pcb_tool_note.Y);
 					fake.line.Point1 = fake.poly->Points[polyIndex];
 					fake.line.Point2 = fake.poly->Points[pcb_poly_contour_prev_point(fake.poly, polyIndex)];
 					pcb_crosshair.AttachedObject.Ptr2 = &fake.line;

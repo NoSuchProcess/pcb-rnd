@@ -37,7 +37,7 @@
 
 void pcb_tool_rotate_notify_mode(void)
 {
-	pcb_screen_obj_rotate90(Note.X, Note.Y, pcb_gui->shift_is_pressed()? (PCB_SWAP_IDENT ? 1 : 3)
+	pcb_screen_obj_rotate90(pcb_tool_note.X, pcb_tool_note.Y, pcb_gui->shift_is_pressed()? (PCB_SWAP_IDENT ? 1 : 3)
 									 : (PCB_SWAP_IDENT ? 3 : 1));
 }
 

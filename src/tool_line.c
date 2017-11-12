@@ -199,12 +199,12 @@ void pcb_tool_line_notify_mode(void)
 				pcb_crosshair.AttachedLine.Point2.X
 				&& pcb_crosshair.AttachedLine.Point1.Y ==
 				pcb_crosshair.AttachedLine.Point2.Y
-				&& (pcb_crosshair.AttachedLine.Point2.X != Note.X || pcb_crosshair.AttachedLine.Point2.Y != Note.Y)) {
+				&& (pcb_crosshair.AttachedLine.Point2.X != pcb_tool_note.X || pcb_crosshair.AttachedLine.Point2.Y != pcb_tool_note.Y)) {
 			/* We will only need to paint the second line segment.
 				 Since we only check for vias on the first segment,
 				 swap them so the non-empty segment is the first segment. */
-			pcb_crosshair.AttachedLine.Point2.X = Note.X;
-			pcb_crosshair.AttachedLine.Point2.Y = Note.Y;
+			pcb_crosshair.AttachedLine.Point2.X = pcb_tool_note.X;
+			pcb_crosshair.AttachedLine.Point2.Y = pcb_tool_note.Y;
 		}
 
 		if (conf_core.editor.auto_drc
@@ -258,12 +258,12 @@ void pcb_tool_line_notify_mode(void)
 			pcb_undo_inc_serial();
 			last_layer = CURRENT;
 		}
-		if (conf_core.editor.line_refraction && (Note.X != pcb_crosshair.AttachedLine.Point2.X || Note.Y != pcb_crosshair.AttachedLine.Point2.Y)
+		if (conf_core.editor.line_refraction && (pcb_tool_note.X != pcb_crosshair.AttachedLine.Point2.X || pcb_tool_note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
 						pcb_line_new_merge(CURRENT,
 																	 pcb_crosshair.AttachedLine.Point2.X,
 																	 pcb_crosshair.AttachedLine.Point2.Y,
-																	 Note.X, Note.Y,
+																	 pcb_tool_note.X, pcb_tool_note.Y,
 																	 conf_core.design.line_thickness,
 																	 2 * conf_core.design.clearance,
 																	 pcb_flag_make((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
@@ -274,10 +274,10 @@ void pcb_tool_line_notify_mode(void)
 			pcb_undo_inc_serial();
 			pcb_line_invalidate_draw(CURRENT, line);
 			/* move to new start point */
-			pcb_crosshair.AttachedLine.Point1.X = Note.X;
-			pcb_crosshair.AttachedLine.Point1.Y = Note.Y;
-			pcb_crosshair.AttachedLine.Point2.X = Note.X;
-			pcb_crosshair.AttachedLine.Point2.Y = Note.Y;
+			pcb_crosshair.AttachedLine.Point1.X = pcb_tool_note.X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_tool_note.Y;
+			pcb_crosshair.AttachedLine.Point2.X = pcb_tool_note.X;
+			pcb_crosshair.AttachedLine.Point2.Y = pcb_tool_note.Y;
 
 
 			if (conf_core.editor.swap_start_direction) {
@@ -286,8 +286,8 @@ void pcb_tool_line_notify_mode(void)
 		}
 		if (conf_core.editor.orthogonal_moves) {
 			/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
-			pcb_marked.X = Note.X;
-			pcb_marked.Y = Note.Y;
+			pcb_marked.X = pcb_tool_note.X;
+			pcb_marked.Y = pcb_tool_note.Y;
 		}
 		pcb_draw();
 	}

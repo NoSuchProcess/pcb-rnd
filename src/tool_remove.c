@@ -44,7 +44,7 @@ void pcb_tool_remove_notify_mode(void)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	
-	if ((type = pcb_search_screen(Note.X, Note.Y, PCB_REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+	if ((type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_line_t *) ptr2)) {
 			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 			return;

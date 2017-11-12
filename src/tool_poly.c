@@ -73,8 +73,8 @@ void pcb_tool_poly_notify_mode(void)
 
 	if (conf_core.editor.orthogonal_moves) {
 		/* set the mark to the new starting point so ortho works */
-		pcb_marked.X = Note.X;
-		pcb_marked.Y = Note.Y;
+		pcb_marked.X = pcb_tool_note.X;
+		pcb_marked.Y = pcb_tool_note.Y;
 	}
 }
 

@@ -219,7 +219,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		case F_Convert:
 			{
 				pcb_coord_t x, y;
-				Note.Buffer = conf_core.editor.buffer_number;
+				pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 				pcb_gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
@@ -231,14 +231,14 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
 				pcb_buffer_copy_to_layout(PCB, x, y);
-				pcb_buffer_set_number(Note.Buffer);
+				pcb_buffer_set_number(pcb_tool_note.Buffer);
 			}
 			break;
 
 		case F_ConvertSubc:
 			{
 				pcb_coord_t x, y;
-				Note.Buffer = conf_core.editor.buffer_number;
+				pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 				pcb_gui->get_coords(_("Select the Subcircuit's Origin (mark) Location"), &x, &y);
@@ -250,7 +250,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
 				pcb_buffer_copy_to_layout(PCB, x, y);
-				pcb_buffer_set_number(Note.Buffer);
+				pcb_buffer_set_number(pcb_tool_note.Buffer);
 			}
 			break;
 

@@ -55,18 +55,6 @@ void pcb_notify_mode(void);
 /* Clear warning color from pins/pads */
 void pcb_clear_warnings(void);
 
-typedef struct {
-	pcb_coord_t X, Y;
-	pcb_cardinal_t Buffer;
-	pcb_bool Click;
-	pcb_bool Moving;									/* selected type clicked on */
-	int Hit;											/* move type clicked on */
-	void *ptr1;
-	void *ptr2;
-	void *ptr3;
-} pcb_action_note_t;
-
-extern pcb_action_note_t Note;
 extern pcb_bool saved_mode;
 
 void pcb_release_mode(void);

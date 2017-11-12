@@ -46,7 +46,7 @@ void pcb_tool_move_notify_mode(void)
 			int types = PCB_MOVE_TYPES;
 
 			pcb_crosshair.AttachedObject.Type =
-				pcb_search_screen(Note.X, Note.Y, types,
+				pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) pcb_crosshair.AttachedObject.Ptr2)) {
@@ -54,7 +54,7 @@ void pcb_tool_move_notify_mode(void)
 					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 				}
 				else
-					pcb_tool_attach_for_copy(Note.X, Note.Y, pcb_true);
+					pcb_tool_attach_for_copy(pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
 			}
 			break;
 		}
@@ -65,7 +65,7 @@ void pcb_tool_move_notify_mode(void)
 														pcb_crosshair.AttachedObject.Ptr1,
 														pcb_crosshair.AttachedObject.Ptr2,
 														pcb_crosshair.AttachedObject.Ptr3,
-														Note.X - pcb_crosshair.AttachedObject.X, Note.Y - pcb_crosshair.AttachedObject.Y);
+														pcb_tool_note.X - pcb_crosshair.AttachedObject.X, pcb_tool_note.Y - pcb_crosshair.AttachedObject.Y);
 		pcb_crosshair_set_local_ref(0, 0, pcb_false);
 		pcb_board_set_changed_flag(pcb_true);
 
@@ -78,9 +78,9 @@ void pcb_tool_move_notify_mode(void)
 
 void pcb_tool_move_release_mode (void)
 {
-	if (Note.Hit) {
+	if (pcb_tool_note.Hit) {
 		pcb_tool_move_notify_mode();
-		Note.Hit = 0;
+		pcb_tool_note.Hit = 0;
 	}
 }
 

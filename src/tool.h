@@ -25,6 +25,7 @@
 
 #include <genvector/vtp0.h>
 
+#include "global_typedefs.h"
 #include "pcb_bool.h"
 
 typedef int pcb_toolid_t;
@@ -77,6 +78,19 @@ pcb_bool pcb_tool_redo_act(void);
 
 
 /**** tool helper functions ****/
+
+typedef struct {
+	pcb_coord_t X, Y;
+	pcb_cardinal_t Buffer;	/* buffer number */
+	pcb_bool Click;		/* true if clicked somewhere with the arrow tool */
+	pcb_bool Moving;	/* true if clicked on an object of PCB_SELECT_TYPES */
+	int Hit;					/* type of a hit object of PCB_MOVE_TYPES; 0 if there was no PCB_MOVE_TYPES object under the crosshair */
+	void *ptr1;
+	void *ptr2;
+	void *ptr3;
+} pcb_tool_note_t;
+
+extern pcb_tool_note_t pcb_tool_note;
 
 void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband);
 void pcb_tool_notify_block(void);	/* create first or second corner of a marked block (when clicked) */

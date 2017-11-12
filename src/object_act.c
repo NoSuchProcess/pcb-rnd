@@ -30,6 +30,7 @@
 #include "data.h"
 #include "board.h"
 #include "action_helper.h"
+#include "tool.h"
 #include "change.h"
 #include "error.h"
 #include "undo.h"
@@ -900,7 +901,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				pcb_coord_t gx, gy;
 				pcb_gui->get_coords("Click on an element", &gx, &gy);
 				if (pcb_search_screen(gx, gy, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
-					Note.Buffer = conf_core.editor.buffer_number;
+					pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 					pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 					pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 					pcb_copy_obj_to_buffer(PCB, PCB_PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
@@ -912,7 +913,7 @@ static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 					pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					pcb_undo_restore_serial();
 					pcb_buffer_copy_to_layout(PCB, 0, 0);
-					pcb_buffer_set_number(Note.Buffer);
+					pcb_buffer_set_number(pcb_tool_note.Buffer);
 					pcb_board_set_changed_flag(pcb_true);
 				}
 			}

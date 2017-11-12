@@ -140,7 +140,6 @@ either round or, if the octagon flag is set, octagonal.
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-pcb_action_note_t Note;
 int defer_updates = 0;
 int defer_needs_update = 0;
 

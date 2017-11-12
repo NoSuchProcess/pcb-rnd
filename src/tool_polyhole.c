@@ -44,7 +44,7 @@ void pcb_tool_polyhole_notify_mode(void)
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
 		pcb_crosshair.AttachedObject.Type =
-			pcb_search_screen(Note.X, Note.Y, PCB_TYPE_POLY,
+			pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_POLY,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
 		if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
@@ -77,8 +77,8 @@ void pcb_tool_polyhole_notify_mode(void)
 
 			if (conf_core.editor.orthogonal_moves) {
 				/* set the mark to the new starting point so ortho works */
-				pcb_marked.X = Note.X;
-				pcb_marked.Y = Note.Y;
+				pcb_marked.X = pcb_tool_note.X;
+				pcb_marked.Y = pcb_tool_note.Y;
 			}
 
 			/* check if this is the last point of a polygon */

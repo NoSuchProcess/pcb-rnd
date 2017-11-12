@@ -30,6 +30,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include "action_helper.h"
+#include "tool.h"
 #include "error.h"
 #include "undo.h"
 #include "funchash_core.h"
@@ -651,8 +652,8 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if (function) {
 		/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
-		Note.X = pcb_crosshair.X;
-		Note.Y = pcb_crosshair.Y;
+		pcb_tool_note.X = pcb_crosshair.X;
+		pcb_tool_note.Y = pcb_crosshair.Y;
 		pcb_notify_crosshair_change(pcb_false);
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Arc:
@@ -702,7 +703,7 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				case PCB_MODE_LOCK:
 					pcb_crosshair_set_mode(PCB_MODE_NO);
 					pcb_crosshair_set_mode(PCB_MODE_ARROW);
-					Note.Hit = Note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
+					pcb_tool_note.Hit = pcb_tool_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
 					break;
 
 				case PCB_MODE_LINE:
@@ -859,14 +860,14 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
 			/* line has two endpoints, check which one is close to the original x;y */
 			pcb_line_t *l = ptr2;
-			if (close_enough(Note.X, l->Point1.X) && close_enough(Note.Y, l->Point1.Y)) {
+			if (close_enough(pcb_tool_note.X, l->Point1.X) && close_enough(pcb_tool_note.Y, l->Point1.Y)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = &l->Point1;
 				goto switched;
 			}
-			if (close_enough(Note.X, l->Point2.X) && close_enough(Note.Y, l->Point2.Y)) {
+			if (close_enough(pcb_tool_note.X, l->Point2.X) && close_enough(pcb_tool_note.Y, l->Point2.Y)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -877,7 +878,7 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC_POINT) != PCB_TYPE_NONE) {
 			pcb_coord_t ex, ey;
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 0, &ex, &ey);
-			if (close_enough(Note.X, ex) && close_enough(Note.Y, ey)) {
+			if (close_enough(pcb_tool_note.X, ex) && close_enough(pcb_tool_note.Y, ey)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -885,7 +886,7 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				goto switched;
 			}
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 1, &ex, &ey);
-			if (close_enough(Note.X, ex) && close_enough(Note.Y, ey)) {
+			if (close_enough(pcb_tool_note.X, ex) && close_enough(pcb_tool_note.Y, ey)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
