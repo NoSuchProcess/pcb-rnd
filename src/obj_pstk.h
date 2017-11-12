@@ -134,7 +134,7 @@ int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, cons
 /* Find or create a new transformed version of an existing proto */
 pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *proto, double rot, int xmirror, int *out_protoi);
 
-/* Dee p copy a prototype */
+/* Deep copy a prototype */
 void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src);
 
 
