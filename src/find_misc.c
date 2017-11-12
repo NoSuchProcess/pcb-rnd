@@ -302,13 +302,13 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 	switch(type) {
 		case PCB_OBJ_LINE:    return PCB_TYPE_LINE;
 		case PCB_OBJ_TEXT:    return PCB_TYPE_TEXT;
-		case PCB_OBJ_POLY: return PCB_TYPE_POLY;
+		case PCB_OBJ_POLY:    return PCB_TYPE_POLY;
 		case PCB_OBJ_ARC:     return PCB_TYPE_ARC;
 		case PCB_OBJ_RAT:     return PCB_TYPE_RATLINE;
 		case PCB_OBJ_PAD:     return PCB_TYPE_PAD;
 		case PCB_OBJ_PIN:     return PCB_TYPE_PIN;
 		case PCB_OBJ_VIA:     return PCB_TYPE_VIA;
-		case PCB_OBJ_PSTK:return PCB_TYPE_PSTK;
+		case PCB_OBJ_PSTK:    return PCB_TYPE_PSTK;
 		case PCB_OBJ_ELEMENT: return PCB_TYPE_ELEMENT;
 		case PCB_OBJ_SUBC:    return PCB_TYPE_SUBC;
 
