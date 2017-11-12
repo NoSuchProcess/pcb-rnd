@@ -70,5 +70,6 @@ pcb_tool_t pcb_tool_text = {
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };

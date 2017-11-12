@@ -38,6 +38,7 @@
 #include "rtree.h"
 #include "search.h"
 #include "tool.h"
+#include "undo.h"
 
 #include "obj_elem_draw.h"
 
@@ -89,6 +90,18 @@ void pcb_tool_buffer_notify_mode(void)
 	}
 }
 
+void pcb_tool_buffer_release_mode(void)
+{
+	if (Note.Moving) {
+		pcb_undo_restore_serial();
+		pcb_tool_buffer_notify_mode();
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+		pcb_buffer_set_number(Note.Buffer);
+		Note.Moving = pcb_false;
+		Note.Hit = 0;
+	}
+}
+
 void pcb_tool_buffer_draw_attached(void)
 {
 	XORDrawBuffer(PCB_PASTEBUFFER);
@@ -97,6 +110,7 @@ void pcb_tool_buffer_draw_attached(void)
 pcb_tool_t pcb_tool_buffer = {
 	"buffer", NULL, 100,
 	pcb_tool_buffer_notify_mode,
+	pcb_tool_buffer_release_mode,
 	NULL,
 	pcb_tool_buffer_draw_attached,
 	NULL,

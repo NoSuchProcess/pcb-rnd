@@ -76,6 +76,14 @@ void pcb_tool_move_notify_mode(void)
 	}
 }
 
+void pcb_tool_move_release_mode (void)
+{
+	if (Note.Hit) {
+		pcb_tool_move_notify_mode();
+		Note.Hit = 0;
+	}
+}
+
 void pcb_tool_move_draw_attached(void)
 {
 	XORDrawMoveOrCopy();
@@ -92,6 +100,7 @@ pcb_bool pcb_tool_move_undo_act(void)
 pcb_tool_t pcb_tool_move = {
 	"move", NULL, 100,
 	pcb_tool_move_notify_mode,
+	pcb_tool_move_release_mode,
 	NULL,
 	pcb_tool_move_draw_attached,
 	pcb_tool_move_undo_act,

@@ -138,6 +138,11 @@ void pcb_tool_notify_mode(void)
 	wrap_void(notify_mode, ());
 }
 
+void pcb_tool_release_mode(void)
+{
+	wrap_void(release_mode, ());
+}
+
 void pcb_tool_adjust_attached_objects(void)
 {
 	wrap_void(adjust_attached_objects, ());

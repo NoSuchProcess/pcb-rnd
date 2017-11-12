@@ -137,6 +137,55 @@ void pcb_tool_arrow_notify_mode(void)
 	}
 }
 
+void pcb_tool_arrow_release_mode(void)
+{
+	pcb_box_t box;
+
+	if (Note.Click) {
+		pcb_box_t box;
+
+		box.X1 = -PCB_MAX_COORD;
+		box.Y1 = -PCB_MAX_COORD;
+		box.X2 = PCB_MAX_COORD;
+		box.Y2 = PCB_MAX_COORD;
+
+		Note.Click = pcb_false;					/* inhibit timer action */
+		pcb_undo_save_serial();
+		/* unselect first if shift key not down */
+		if (!pcb_gui->shift_is_pressed()) {
+			if (pcb_select_block(PCB, &box, pcb_false))
+				pcb_board_set_changed_flag(pcb_true);
+			if (Note.Moving) {
+				Note.Moving = 0;
+				Note.Hit = 0;
+				return;
+			}
+		}
+		/* Restore the SN so that if we select something the deselect/select combo
+		   gets the same SN. */
+		pcb_undo_restore_serial();
+		if (pcb_select_object(PCB))
+			pcb_board_set_changed_flag(pcb_true);
+		else
+			pcb_undo_inc_serial(); /* We didn't select anything new, so, the deselection should get its  own SN. */
+		Note.Hit = 0;
+		Note.Moving = 0;
+	}
+	else {
+		box.X1 = pcb_crosshair.AttachedBox.Point1.X;
+		box.Y1 = pcb_crosshair.AttachedBox.Point1.Y;
+		box.X2 = pcb_crosshair.AttachedBox.Point2.X;
+		box.Y2 = pcb_crosshair.AttachedBox.Point2.Y;
+
+		pcb_undo_restore_serial();
+		if (pcb_select_block(PCB, &box, pcb_true))
+			pcb_board_set_changed_flag(pcb_true);
+		else if (pcb_bumped)
+			pcb_undo_inc_serial();
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+	}
+}
+
 void pcb_tool_arrow_adjust_attached_objects(void)
 {
 	if (pcb_crosshair.AttachedBox.State) {
@@ -148,6 +197,7 @@ void pcb_tool_arrow_adjust_attached_objects(void)
 pcb_tool_t pcb_tool_arrow = {
 	"arrow", NULL, 10,
 	pcb_tool_arrow_notify_mode,
+	pcb_tool_arrow_release_mode,
 	pcb_tool_arrow_adjust_attached_objects,
 	NULL,
 	NULL,

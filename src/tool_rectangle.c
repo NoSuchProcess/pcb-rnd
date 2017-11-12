@@ -101,6 +101,7 @@ pcb_bool pcb_tool_rectangle_undo_act(void)
 pcb_tool_t pcb_tool_rectangle = {
 	"rectangle", NULL, 100,
 	pcb_tool_rectangle_notify_mode,
+	NULL,
 	pcb_tool_rectangle_adjust_attached_objects,
 	NULL,
 	pcb_tool_rectangle_undo_act,
