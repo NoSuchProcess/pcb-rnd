@@ -687,4 +687,19 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 	return 0;
 }
 
+pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid)
+{
+	pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
+
+	PCB_PADSTACK_LOOP(pcb->Data); {
+		pcb_cardinal_t n;
+		for(n = 0; n < g->len; n++)
+			if (pcb_pstk_shape_at(pcb, padstack, &pcb->Data->Layer[g->lid[n]]))
+				return pcb_false;
+	}
+	PCB_END_LOOP;
+	return pcb_true;
+}
+
+
 #include "obj_pstk_op.c"

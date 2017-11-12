@@ -87,6 +87,10 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID);
 /* Undoably change the instance parameters of a padstack ref */
 int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror);
 
+/* Return whether a group is empty (free of padstack shapes) */
+pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid);
+
+
 /*** proto ***/
 
 /* allocate and return the next available group ID */
