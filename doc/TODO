@@ -4,11 +4,11 @@
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
 - padstack:
-	- label draw/invalidate - do we need this, ot subc term solves it?
+	- select subc; its padstack parts are not selected
+	- label draw/invalidate - do we need this, or subc term solves it?
 	- save/load thermal
 	- convert helpers:
 		- old pad
-		- old pin, old via
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
 - subc:
 	- FreeRotateBuffer() [report: celem]
