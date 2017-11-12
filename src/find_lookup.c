@@ -79,7 +79,7 @@ static pcb_bool ADD_PS_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pc
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps)) {
 #warning padstack TODO: this NULL should have been ps->Element
-		return (SetThing(PCB_TYPE_PIN, NULL, ps, ps));
+		return (SetThing(PCB_TYPE_PSTK, NULL, ps, ps));
 	}
 	return pcb_false;
 }
