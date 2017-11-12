@@ -595,7 +595,7 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 		}
 	}
 
-#warning padstack TODO: allocate and render the transformed version for the cache
+	/* allocate and render the transformed version for the cache */
 	if (out_protoi != NULL) *out_protoi = proto->tr.used;
 	ts = pcb_vtpadstack_tshape_alloc_append(&proto->tr, 1);
 
