@@ -55,8 +55,6 @@ void pcb_notify_mode(void);
 /* Clear warning color from pins/pads */
 void pcb_clear_warnings(void);
 
-extern pcb_bool saved_mode;
-
 void pcb_release_mode(void);
 
 /* ---------------------------------------------------------------------------

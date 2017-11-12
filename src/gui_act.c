@@ -806,7 +806,7 @@ static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				pcb_crosshair_set_mode(PCB_MODE_POLYGON);
 			else {
 				pcb_crosshair_save_mode();
-				saved_mode = pcb_true;
+				pcb_tool_is_saved = pcb_true;
 				pcb_crosshair_set_mode(PCB_MODE_ARROW);
 				pcb_notify_mode();
 			}

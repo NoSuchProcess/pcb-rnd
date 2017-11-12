@@ -144,9 +144,6 @@ int defer_updates = 0;
 int defer_needs_update = 0;
 
 
-pcb_bool saved_mode = pcb_false;
-
-
 void pcb_clear_warnings()
 {
 	pcb_rtree_it_t it;
@@ -221,9 +218,9 @@ void pcb_release_mode(void)
 {
 	pcb_tool_release_mode();
 
-	if (saved_mode)
+	if (pcb_tool_is_saved)
 		pcb_crosshair_restore_mode();
-	saved_mode = pcb_false;
+	pcb_tool_is_saved = pcb_false;
 }
 
 void pcb_adjust_attached_objects(void)
