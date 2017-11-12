@@ -206,7 +206,7 @@ static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *pt
 	}
 }
 
-void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
+void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband)
 {
 	pcb_box_t box;
 	pcb_coord_t mx = 0, my = 0;
@@ -236,9 +236,9 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 										PCB->MaxHeight - (box.Y2 - pcb_crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
-	if ((conf_core.editor.mode != PCB_MODE_COPY) && conf_core.editor.rubber_band_mode)
+	if (do_rubberband && conf_core.editor.rubber_band_mode)
 		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
-	if (conf_core.editor.mode != PCB_MODE_COPY &&
+	if (do_rubberband &&
 			(pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
 			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
 			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE || pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
