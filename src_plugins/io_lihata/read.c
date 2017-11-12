@@ -1234,6 +1234,9 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 
 	for(len = 0, pr = pp->data.list.first; pr != NULL; pr = pr->next) len++;
 
+	if (len == 0)
+		return 0; /* there are no prototypes to load */
+
 	pcb_vtpadstack_proto_enlarge(&dst->ps_protos, len-1);
 	for(pid = 0, pr = pp->data.list.first; ((pr != NULL) && (res == 0)); pr = pr->next, pid++) {
 		if ((pr->type == LHT_TEXT) && (strcmp(pr->name, "unused") == 0))
