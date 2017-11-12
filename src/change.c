@@ -62,7 +62,7 @@ pcb_opfunc_t ChangeSizeFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_change_size,
-	NULL  /* padstack */
+	pcb_pstkop_change_size
 };
 
 pcb_opfunc_t Change1stSizeFunctions = {

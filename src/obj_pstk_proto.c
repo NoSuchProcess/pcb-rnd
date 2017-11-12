@@ -613,6 +613,12 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 	return ts;
 }
 
+void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t offs)
+{
+
+}
+
+
 /*** hash ***/
 static unsigned int pcb_pstk_shape_hash(const pcb_pstk_shape_t *sh)
 {
