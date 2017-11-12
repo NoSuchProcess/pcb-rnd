@@ -93,9 +93,6 @@ pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 
 /*** proto ***/
 
-/* allocate and return the next available group ID */
-unsigned long pcb_pstk_alloc_group(pcb_data_t *data);
-
 /* Convert selection or current buffer to padstack; returns PCB_PADSTACK_INVALID
    on error; looks for existing matching protos to avoid adding redundant
    entries */
