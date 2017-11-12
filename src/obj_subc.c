@@ -678,11 +678,14 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		if (pcb->Data->via_tree == NULL)
 			pcb->Data->via_tree = pcb_r_create_tree(NULL, 0, 0);
 		sc->data->via_tree = pcb->Data->via_tree;
-#warning padstack TODO
+		if (pcb->Data->padstack_tree == NULL)
+			pcb->Data->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+		sc->data->padstack_tree = pcb->Data->padstack_tree;
 	}
 
 	{ /* make a copy of global data */
 		pcb_pin_t *via, *nvia;
+		pcb_pstk_t *ps, *nps;
 		gdl_iterator_t it;
 
 		pinlist_foreach(&src->data->Via, &it, via) {
@@ -691,7 +694,14 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (nvia != NULL)
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &nvia->BoundingBox);
 		}
-#warning padstack TODO
+
+		padstacklist_foreach(&src->data->padstack, &it, ps) {
+			pcb_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1);
+			nps = pcb_pstk_new(sc->data, pid, ps->x+dx, ps->y+dy, ps->Clearance, ps->Flags);
+			MAYBE_KEEP_ID(nps, ps);
+			if (nps != NULL)
+				pcb_box_bump_box_noflt(&sc->BoundingBox, &nps->BoundingBox);
+		}
 	}
 
 	/* make a copy of polygons at the end so clipping caused by other objects are calculated only once */
