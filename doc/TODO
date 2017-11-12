@@ -62,7 +62,6 @@
 - BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
 - BUG: open pcb from cli with filename as argument, gui hangs.  (ex. fromsrcdir `./pcb-rnd ./`) https://pastebin.com/raw/hgzy5rHP [report:miloh]
 - BUG: pcb_pline_is_rectangle() should do x^2+y^2, not x^2*y^2
-- BUG: segfault on opening pcb-rnd lihata v4 https://pastebin.com/raw/rncvdraF [report:miloh]
 
 2. For later releases ===============================================================================
 - BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
