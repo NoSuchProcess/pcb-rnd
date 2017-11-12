@@ -207,3 +207,30 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	return NULL;
 }
 
+
+void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+{
+	pcb_pstk_proto_t proto;
+	pcb_cardinal_t nproto;
+
+	/* create the new prototype and insert it */
+	pcb_pstk_proto_copy(&proto, pcb_pstk_get_proto(ps));
+	if (!ctx->chgsize.is_absolute) {
+		proto.hdia += ctx->chgsize.value;
+		if (proto.hdia < ctx->chgsize.pcb->minDrill)
+			proto.hdia = ctx->chgsize.pcb->minDrill;
+	}
+	else
+		proto.hdia = ctx->chgsize.value;
+	nproto = pcb_pstk_proto_insert_dup(ps->parent.data, &proto, 1);
+	pcb_pstk_proto_free_fields(&proto);
+
+	if (nproto == PCB_PADSTACK_INVALID)
+		return NULL;
+
+	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL) == 0)
+		return ps;
+
+	return NULL;
+}
+

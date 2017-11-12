@@ -98,7 +98,7 @@ pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_change_2nd_size,
-	NULL  /* padstack */
+	pcb_pstkop_change_2nd_size
 };
 
 static pcb_opfunc_t ChangeThermalFunctions = {
