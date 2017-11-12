@@ -134,8 +134,8 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 /* Deep copy a prototype */
 void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src);
 
-/* grow (or shrink) a prototype to or by offs - change the proto in place */
-void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t offs);
+/* grow (or shrink) a prototype to or by val - change the proto in place */
+void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val);
 
 
 /*** hash ***/

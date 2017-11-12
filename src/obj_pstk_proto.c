@@ -613,9 +613,39 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 	return ts;
 }
 
-void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t offs)
+static void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
 {
+	switch(shp->shape) {
+		case PCB_PSSH_LINE:
+			if (is_absolute)
+				shp->data.line.thickness = val;
+			else
+				shp->data.line.thickness += val;
+			if (shp->data.line.thickness < 1)
+				shp->data.line.thickness = 1;
+			break;
+		case PCB_PSSH_CIRC:
+			if (is_absolute)
+				shp->data.circ.dia = val;
+			else
+				shp->data.circ.dia += val;
+			if (shp->data.circ.dia < 1)
+				shp->data.circ.dia = 1;
+			break;
+		case PCB_PSSH_POLY:
+#warning padstack TODO
+			break;
+	}
+}
 
+void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val)
+{
+	int n, i;
+
+	/* do the same growth on all shapes of all transformed variants */
+	for(n = 0; n < proto->tr.used; n++)
+		for(i = 0; i < proto->tr.array[n].len; i++)
+			pcb_pstk_shape_grow(&proto->tr.array[n].shape[i], is_absolute, val);
 }
 
 
