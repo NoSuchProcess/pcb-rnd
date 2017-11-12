@@ -155,3 +155,17 @@ void *pcb_pstkop_change_thermal(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	return ps;
 }
 
+void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+{
+	static pcb_flag_values_t pcb_pstk_flags = 0;
+	if (pcb_pstk_flags == 0)
+		pcb_pstk_flags = pcb_obj_valid_flags(PCB_TYPE_PSTK);
+
+	if ((ctx->chgflag.flag & pcb_pstk_flags) != ctx->chgflag.flag)
+		return NULL;
+	if ((ctx->chgflag.flag & PCB_FLAG_TERMNAME) && (ps->term == NULL))
+		return NULL;
+	pcb_undo_add_obj_to_flag(ps);
+	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, ps);
+	return ps;
+}

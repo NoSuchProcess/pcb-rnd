@@ -426,7 +426,7 @@ pcb_opfunc_t ChgFlagFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_change_flag,
-	NULL  /* padstack */
+	pcb_pstkop_change_flag
 };
 
 static pcb_opfunc_t InvalLabelFunctions = {
