@@ -812,13 +812,18 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	/* execute on globals */
 	{
 		pcb_pin_t *via;
+		pcb_pstk_t *ps;
 		gdl_iterator_t it;
 
 		pinlist_foreach(&sc->data->Via, &it, via) {
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_VIA, via, via, via);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &via->BoundingBox);
 		}
-#warning padstack TODO
+
+		padstacklist_foreach(&sc->data->padstack, &it, ps) {
+			pcb_object_operation(opfunc, ctx, PCB_TYPE_PSTK, ps, ps, ps);
+			pcb_box_bump_box_noflt(&sc->BoundingBox, &ps->BoundingBox);
+		}
 	}
 
 	pcb_close_box(&sc->BoundingBox);
