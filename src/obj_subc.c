@@ -678,6 +678,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		if (pcb->Data->via_tree == NULL)
 			pcb->Data->via_tree = pcb_r_create_tree(NULL, 0, 0);
 		sc->data->via_tree = pcb->Data->via_tree;
+#warning padstack TODO
 	}
 
 	{ /* make a copy of global data */
@@ -690,6 +691,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			if (nvia != NULL)
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &nvia->BoundingBox);
 		}
+#warning padstack TODO
 	}
 
 	/* make a copy of polygons at the end so clipping caused by other objects are calculated only once */
@@ -806,6 +808,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 			pcb_object_operation(opfunc, ctx, PCB_TYPE_VIA, via, via, via);
 			pcb_box_bump_box_noflt(&sc->BoundingBox, &via->BoundingBox);
 		}
+#warning padstack TODO
 	}
 
 	pcb_close_box(&sc->BoundingBox);
@@ -999,6 +1002,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			if (ctx->buffer.dst->via_tree != NULL)
 				pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *)via, 0);
 		}
+#warning padstack TODO
 	}
 
 	/* bind globals */
@@ -1006,9 +1010,12 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		if (ctx->buffer.dst->via_tree == NULL)
 			ctx->buffer.dst->via_tree = pcb_r_create_tree(NULL, 0, 0);
 		sc->data->via_tree = ctx->buffer.dst->via_tree;
+#warning padstack TODO
 	}
-	else
+	else {
 		sc->data->via_tree = NULL;
+#warning padstack TODO
+	}
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	PCB_SET_PARENT(sc, data, ctx->buffer.dst);
