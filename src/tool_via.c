@@ -37,6 +37,7 @@
 #include "data.h"
 #include "draw.h"
 #include "tool.h"
+#include "tool_thermal.h"
 #include "undo.h"
 
 #include "obj_pinvia_draw.h"
@@ -63,9 +64,8 @@ void pcb_tool_via_notify_mode(void)
 		pcb_obj_add_attribs(ps, PCB->pen_attr);
 		pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, ps, ps, ps);
 
-#warning padstack TODO
-/*		if (pcb_gui->shift_is_pressed())
-			pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle, INDEXOFCURRENT);*/
+		if (pcb_gui->shift_is_pressed())
+			pcb_tool_thermal_on_pstk(ps, INDEXOFCURRENT);
 
 		pcb_undo_inc_serial();
 		pcb_pstk_invalidate_draw(ps);

@@ -53,7 +53,7 @@ static void tool_thermal_on_pinvia(int type, void *ptr1, void *ptr2, void *ptr3)
 		pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle, INDEXOFCURRENT);
 }
 
-static void tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
+void pcb_tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 {
 	unsigned char *th, newth = 0;
 	unsigned char cycle[] = {
@@ -106,7 +106,7 @@ void pcb_tool_thermal_notify_mode(void)
 	if (((type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
 		if (type == PCB_TYPE_PSTK)
-			tool_thermal_on_pstk((pcb_pstk_t *)ptr2, INDEXOFCURRENT);
+			pcb_tool_thermal_on_pstk((pcb_pstk_t *)ptr2, INDEXOFCURRENT);
 		else
 			tool_thermal_on_pinvia(type, ptr1, ptr2, ptr3);
 	}
