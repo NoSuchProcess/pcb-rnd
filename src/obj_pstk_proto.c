@@ -26,6 +26,7 @@
 
 #include "board.h"
 #include "buffer.h"
+#include "compat_misc.h"
 #include "conf_core.h"
 #include "data.h"
 #include "data_list.h"
@@ -613,8 +614,26 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 	return ts;
 }
 
+static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, pcb_coord_t *cx, pcb_coord_t *cy)
+{
+	double x = 0.0, y = 0.0;
+	int n;
+
+	for(n = 0; n < poly->len; n++) {
+		x += (double)poly->x[n];
+		y += (double)poly->y[n];
+	}
+	x /= (double)poly->len;
+	y /= (double)poly->len;
+	*cx = pcb_round(x);
+	*cy = pcb_round(y);
+}
+
 static void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
 {
+	pcb_coord_t cx, cy;
+	int n;
+
 	switch(shp->shape) {
 		case PCB_PSSH_LINE:
 			if (is_absolute)
@@ -633,8 +652,30 @@ static void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb
 				shp->data.circ.dia = 1;
 			break;
 		case PCB_PSSH_POLY:
-#warning padstack TODO
+			pcb_pstk_poly_center(&shp->data.poly, &cx, &cy);
+			pcb_polyarea_free(&shp->data.poly.pa);
+			if (is_absolute) {
+#warning TODO
+			}
+			else {
+				/* relative: move each point radially */
+				for(n = 0; n < shp->data.poly.len; n++) {
+					double dx = shp->data.poly.x[n] - cx, dy = shp->data.poly.y[n] - cy;
+					double dist = sqrt(dx*dx + dy*dy);
+					double vx = dx / dist, vy = dy / dist;
+					dist += val;
+					if (dist <= 1) {
+						shp->data.poly.x[n] = vx;
+						shp->data.poly.y[n] = vy;
+					}
+					else {
+						shp->data.poly.x[n] = cx + vx * dist;
+						shp->data.poly.y[n] = cy + vy * dist;
+					}
+					pcb_pstk_shape_update_pa(&shp->data.poly);
+				}
 			break;
+		}
 	}
 }
 
