@@ -43,8 +43,6 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 
-void *pcb_pstkop_change_name(pcb_opctx_t *ctx, pcb_pstk_t *ps);
-
 void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 
 void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps);

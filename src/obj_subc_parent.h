@@ -63,6 +63,7 @@ static inline PCB_FUNC_UNUSED pcb_subc_t *pcb_obj_parent_subc(pcb_any_obj_t *obj
 {
 	switch(obj->type) {
 		case PCB_OBJ_VIA:
+		case PCB_OBJ_PSTK:
 		case PCB_OBJ_SUBC:
 			return pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
 
