@@ -32,6 +32,9 @@
 #include "obj_subc.h"
 #include "obj_subc_op.h"
 #include "obj_poly_op.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
+#include "obj_pstk_draw.h"
 #include "obj_line_op.h"
 #include "obj_term.h"
 #include "obj_text_draw.h"
@@ -395,6 +398,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 	{ /* convert globals */
 		pcb_pin_t *via;
+		pcb_pstk_t *ps;
 
 		while((via = pinlist_first(&buffer->Data->Via)) != NULL) {
 			const char *term;
@@ -435,6 +439,16 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 					}
 				}
 			}
+		}
+
+		while((ps = padstacklist_first(&buffer->Data->padstack)) != NULL) {
+			const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			padstacklist_remove(ps);
+			padstacklist_append(&sc->data->padstack, ps);
+			PCB_SET_PARENT(ps, data, sc->data);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
+			ps->proto = pcb_pstk_proto_insert_dup(sc->data, proto, 1);
+			ps->protoi = -1;
 		}
 	}
 
@@ -519,6 +533,7 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 	/* draw global objects */
 	{
 		pcb_pin_t *via;
+		pcb_pstk_t *ps;
 		gdl_iterator_t it;
 
 		pinlist_foreach(&sc->data->Via, &it, via) {
@@ -530,6 +545,16 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 			pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, via, pcb_true, pcb_false);
 			via->X = ox;
 			via->Y = oy;
+		}
+		padstacklist_foreach(&sc->data->padstack, &it, ps) {
+			pcb_coord_t ox, oy;
+			ox = ps->x;
+			oy = ps->y;
+			ps->x += DX;
+			ps->y += DY;
+			pcb_pstk_thindraw(pcb_crosshair.GC, ps);
+			ps->x = ox;
+			ps->y = oy;
 		}
 	}
 
