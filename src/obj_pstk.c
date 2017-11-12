@@ -35,6 +35,7 @@
 #include "obj_pstk_draw.h"
 #include "obj_pstk_list.h"
 #include "obj_pstk_inlines.h"
+#include "obj_pstk_op.h"
 #include "operation.h"
 #include "search.h"
 #include "undo.h"
@@ -666,12 +667,17 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 {
 	padstack_change_instance_t *u;
 	long int parent_ID;
+	pcb_opctx_t ctx;
 
 	switch(ps->parent.data->parent_type) {
 		case PCB_PARENT_BOARD: parent_ID = -1; break;
 		case PCB_PARENT_SUBC: parent_ID = ps->parent.data->parent.subc->ID; break;
 		default: return -1;
 	}
+
+	ctx.clip.clear = 0;
+	ctx.clip.restore = 1;
+	pcb_pstkop_clip(&ctx, ps);
 
 	u = pcb_undo_alloc(PCB, &undo_pstk_change_instance, sizeof(padstack_change_instance_t));
 	u->parent_ID = parent_ID;
@@ -680,6 +686,12 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 	u->clearance = clearance ? *clearance : ps->Clearance;
 	u->rot = rot ? *rot : ps->rot;
 	u->xmirror = xmirror ? *xmirror : ps->xmirror;
+
+	pcb_pstk_bbox(ps);
+	ctx.clip.clear = 1;
+	ctx.clip.restore = 0;
+	pcb_pstkop_clip(&ctx, ps);
+
 
 	undo_change_instance_swap(u);
 
