@@ -1517,7 +1517,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			cy = (y1 + y2)/2;
 			egb_node_prop_set(elem, "StartAngle", "180");
 			egb_node_prop_set(elem, "Delta", "180");
-		} else if (linetype == 0x7e || arctype == 0x07) {
+		} else if (linetype == 0x7f || arctype == 0x07) {
 			cx = (x1 + x2)/2;
 			cy = (y1 + y2)/2;
 			egb_node_prop_set(elem, "StartAngle", "0");
