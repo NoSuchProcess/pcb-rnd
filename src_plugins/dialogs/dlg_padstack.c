@@ -52,10 +52,14 @@ typedef struct pse_s {
 	int proto_id, clearance, rot, xmirror;
 	int proto_shape[pse_num_layers];
 	int proto_info[pse_num_layers];
+	int proto_change[pse_num_layers];
 	int hole_header;
 	int hdia, hplated;
 	int htop_val, htop_text, htop_layer;
 	int hbot_val, hbot_text, hbot_layer;
+
+	/* sub-dialog: shape change */
+	pcb_hid_attribute_t *shape_chg;
 } pse_t;
 
 static void pse_tab_update(void *hid_ctx, pse_t *pse)
@@ -237,6 +241,50 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_gui->invalidate_all();
 }
 
+static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	int n;
+	char tmp[256];
+	char *butname[pse_num_layers];
+	PCB_DAD_DECL(dlg);
+
+	PCB_DAD_BEGIN_VBOX(dlg);
+		sprintf(tmp, "Automatically generate shape for ...");
+		PCB_DAD_LABEL(dlg, tmp);
+		PCB_DAD_LABEL(dlg, "<dummy>");
+		PCB_DAD_BUTTON(dlg, "Delete (no shape)");
+		PCB_DAD_BUTTON(dlg, "Derive automatically");
+
+		PCB_DAD_BEGIN_HBOX(dlg);
+			PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+			PCB_DAD_LABEL(dlg, "Copy shape from");
+			PCB_DAD_BEGIN_VBOX(dlg);
+				for(n = 0; n < pse_num_layers; n++) {
+					butname[n] = pcb_strdup(pse_layer[n].name);
+					PCB_DAD_BUTTON(dlg, butname[n]);
+				}
+			PCB_DAD_END(dlg);
+		PCB_DAD_END(dlg);
+
+		PCB_DAD_BEGIN_HBOX(dlg);
+			PCB_DAD_BUTTON(dlg, "Shrink");
+			PCB_DAD_COORD(dlg, "");
+			PCB_DAD_BUTTON(dlg, "Grow");
+		PCB_DAD_END(dlg);
+	PCB_DAD_END(dlg);
+
+	PCB_DAD_NEW(dlg, "dlg_padstack_edit_shape", "Edit padstack shape", pse);
+	pse->shape_chg = dlg;
+
+/*	pse_ps2dlg(dlg_hid_ctx, pse);*/
+	PCB_DAD_RUN(dlg);
+
+	pse->shape_chg = NULL;
+	PCB_DAD_FREE(dlg);
+	for(n = 0; n < pse_num_layers; n++)
+		free(butname[n]);
+}
 
 static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
 static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
@@ -313,7 +361,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 				PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
-				PCB_DAD_BEGIN_TABLE(dlg, 3);
+				PCB_DAD_BEGIN_TABLE(dlg, 4);
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 					for(n = 0; n < pse_num_layers; n++) {
 						PCB_DAD_LABEL(dlg, pse_layer[n].name);
@@ -321,6 +369,9 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 							pse.proto_shape[n] = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_LABEL(dlg, "-");
 							pse.proto_info[n] = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_BUTTON(dlg, "change...");
+							pse.proto_change[n] = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
 					}
 				PCB_DAD_END(dlg);
 			
