@@ -291,7 +291,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"maxy",  T_INT, 10, 2},
 			{"airwires",  T_BMB, 12, 0x02},
 			{"netclass",  T_UBF, 13, BITFIELD(1, 0, 3)},
-			{"name",  T_INT, 16, 8},
+			{"name",  T_STR, 16, 8},
 			TERM
 		},
 	},
@@ -308,7 +308,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"miny",  T_INT, 6, 2},
 			{"maxx",  T_INT, 8, 2},
 			{"maxy",  T_INT, 10, 2},
-			{"name",  T_INT, 16, 8},
+			{"name",  T_STR, 16, 8},
 			TERM
 		},
 	},
@@ -326,7 +326,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"maxx",  T_INT, 8, 2},
 			{"maxy",  T_INT, 10, 2},
 			{"desc",  T_INT, 13, 5},
-			{"name",  T_INT, 18, 6},
+			{"name",  T_STR, 18, 6},
 			TERM
 		},
 	},
@@ -344,7 +344,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"maxx",  T_INT, 8, 2},
 			{"maxy",  T_INT, 10, 2},
 			{"netclass",  T_UBF, 13, BITFIELD(1, 0, 3)},
-			{"name",  T_INT, 18, 6},
+			{"name",  T_STR, 18, 6},
 			TERM
 		},
 	},
