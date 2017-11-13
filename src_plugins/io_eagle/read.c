@@ -527,10 +527,6 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 		case IN_ELEM:
 			if ((ln != 21) && (ln != 22) && (ln != 51) && (ln != 52)) /* consider silk circles only */
 				return 0; /* 121, 122 are negative silk, top, bottom, ignore for now */
-		if (((ln == 51) || (ln == 52))
-				&& ((eagle_get_attrl(st, subtree, "arctype", -1) != -1)
-				|| (eagle_get_attrl(st, subtree, "linetype", -1) != -1)))
-				return 0; /* we don't draw tDocu for arcs, only for actual circles */
 
 			circ = pcb_element_arc_alloc((pcb_element_t *)obj);
 			if ((ln == 22) || (ln == 52))
