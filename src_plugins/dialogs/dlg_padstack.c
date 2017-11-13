@@ -60,6 +60,9 @@ typedef struct pse_s {
 
 	/* sub-dialog: shape change */
 	pcb_hid_attribute_t *shape_chg;
+	int text_shape, del, derive;
+	int copy_shape[pse_num_layers];
+	int shrink, amount, grow;
 } pse_t;
 
 static void pse_tab_update(void *hid_ctx, pse_t *pse)
@@ -252,9 +255,12 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		sprintf(tmp, "Automatically generate shape for ...");
 		PCB_DAD_LABEL(dlg, tmp);
-		PCB_DAD_LABEL(dlg, "<dummy>");
+		PCB_DAD_LABEL(dlg, "");
+			pse->text_shape = PCB_DAD_CURRENT(dlg);
 		PCB_DAD_BUTTON(dlg, "Delete (no shape)");
+			pse->del = PCB_DAD_CURRENT(dlg);
 		PCB_DAD_BUTTON(dlg, "Derive automatically");
+			pse->derive = PCB_DAD_CURRENT(dlg);
 
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
@@ -263,14 +269,18 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 				for(n = 0; n < pse_num_layers; n++) {
 					butname[n] = pcb_strdup(pse_layer[n].name);
 					PCB_DAD_BUTTON(dlg, butname[n]);
+						pse->copy_shape[n] = PCB_DAD_CURRENT(dlg);
 				}
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
 
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "Shrink");
+				pse->shrink = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_COORD(dlg, "");
+				pse->amount = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_BUTTON(dlg, "Grow");
+				pse->grow = PCB_DAD_CURRENT(dlg);
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
 
