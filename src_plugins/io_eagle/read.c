@@ -527,7 +527,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 		case IN_ELEM:
 			if ((ln != 21) && (ln != 22) && (ln != 51) && (ln != 52)) /* consider silk circles only */
 				return 0; /* 121, 122 are negative silk, top, bottom, ignore for now */
-			if (((ln == 51) || (ln == 52))
+		if (((ln == 51) || (ln == 52))
 				&& ((eagle_get_attrl(st, subtree, "arctype", -1) != -1)
 				|| (eagle_get_attrl(st, subtree, "linetype", -1) != -1)))
 				return 0; /* we don't draw tDocu for arcs, only for actual circles */
@@ -680,17 +680,20 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 		pcb_trace("Allocated layer 'ly' via eagle_layer_get(st, ln)\n");
 	}
 	else {
-		pcb_trace("Failed to allocate layer 'ly' via eagle_layer_get(st, ln)\n");
+		pcb_trace("Failed to allocate wire layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
 
 	switch (loc) {
 		case IN_ELEM:
-			if (ly->ly < 0)
+			if ((ly->ly) < 0 && (ln != 51) && (ln != 52)) {
+				pcb_trace("IN_ELEM and bailing due to ly->ly < 0, ln != 51, ln != 52\n");
 				return 0;
+			}
+#warning TODO need to sort out mapping of layers 51, 52 tDocu, to PCB_LYT_SILK and ly->ly > 0  
 			flags = pcb_layer_flags(st->pcb, ly->ly);
-			if (!(flags & PCB_LYT_SILK)) /* consider silk lines only */
-				return 0;
+			/*if (!(flags & PCB_LYT_SILK)) consider silk lines only */
+			/*	return 0;*/
 			lin = pcb_element_line_alloc((pcb_element_t *) obj);
 			if (flags & PCB_LYT_BOTTOM)
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin);
