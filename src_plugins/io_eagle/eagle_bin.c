@@ -1559,9 +1559,10 @@ static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, lon
 	if (e == NULL)
 		return NULL;
 	printf("found element, now looking for pin number %ld.\n", pin_idx);
-#warning TODO broken, still need to look up lib and package based on element contents to find pin# 
+#warning TODO broken, still need to look up lib and package based on element contents to find pin's name 
 	for (p = e->first_child; (p != NULL) && (pin_num == 0) && (pin_num > 1) ; p = p->next) {
-		if (p->id == 0x2a00) { /* we found a pin */
+		printf("Now testing (p->id == 0x2a00 || p->id == 0x2b00) for pin_num %d\n", pin_num);
+		if (p->id == 0x2a00 || p->id == 0x2b00) { /* we found a pad _or_ pin */
 			pin_num--;
 		}
 	}
@@ -1837,7 +1838,8 @@ static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 						int element_num = atoi(e->value);
 						egb_node_prop_set(cr, "element", elem_refdes_by_idx(els, (long) element_num));
 						pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
-						egb_node_prop_set(cr, "pad", egb_node_prop_get(cr, "pin"));
+						/* egb_node_prop_set(cr, "pad", egb_node_prop_get(cr, "pin")); */
+						egb_node_prop_set(cr, "pad", elem_pin_name_by_idx(els, (long) element_num, (long)atoi(egb_node_prop_get(cr, "pin"))));
 					}
 				}
 			}
