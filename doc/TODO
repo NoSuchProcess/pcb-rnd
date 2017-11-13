@@ -231,7 +231,7 @@ Eagle binary:
 		- NB signal nodes can have signal subnodes, which we may need to flatten
 	- need to look up pin "name" by index given lib/pkg defined in element node, to set up nets properly
 	- if (ly->ly < 0) { return 0; } in read.c line 690 fails to process tDocu 51, 52 layers which  seem to get used in elements for wires and arc/circle descriptions in addition to tPlace, bPlace layers  21,21; maybe mapto additional silk layers in the silk top and bottom groups
-	- tDocu layer arcs in resistor packs in Motor Shield need to be debugged
+	- tDocu layer arcs in resistor packs in Motor Shield need to be debugged, bug relates to linetypes 126, 127, lib 4, package 1
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
