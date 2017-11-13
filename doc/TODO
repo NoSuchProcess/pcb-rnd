@@ -228,7 +228,8 @@ GTK3:
 Eagle binary:
 	- netlist nodes are defined in
 			board/1b00->signals/0000->signal/1c00->contactref/3e00
-		- NB signal nodes can have signal subnodes, which we need to flatten
+		- NB signal nodes can have signal subnodes, which we may need to flatten
+	- need to look up pin "name" by index given lib/pkg defined in element node, to set up nets properly
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
