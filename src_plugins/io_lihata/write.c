@@ -46,6 +46,7 @@
 #include "obj_subc_list.h"
 #include "pcb_minuid.h"
 #include "safe_fs.h"
+#include "thermal.h"
 
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"
@@ -598,7 +599,7 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 static lht_node_t *build_pstk(pcb_pstk_t *ps)
 {
 	char buff[128];
-	lht_node_t *obj, *thr;
+	lht_node_t *obj, *thr, *thr_lst;
 	unsigned long n;
 
 	sprintf(buff, "padstack_ref.%ld", ps->ID);
@@ -615,8 +616,19 @@ static lht_node_t *build_pstk(pcb_pstk_t *ps)
 	lht_dom_hash_put(obj, build_textf("xmirror", "%d", ps->xmirror));
 
 	lht_dom_hash_put(obj, thr = lht_dom_node_alloc(LHT_LIST, "thermal"));
-	for(n = 0; n < ps->thermals.used; n++)
-		lht_dom_list_append(thr, build_textf(NULL, "%d", ps->thermals.shape[n]));
+	for(n = 0; n < ps->thermals.used; n++) {
+		pcb_thermal_t ts = ps->thermals.shape[n];
+		if (ts != 0) {
+			char tmp[64];
+			const char *b;
+			sprintf(tmp, "%ld", n);
+			thr_lst = lht_dom_node_alloc(LHT_LIST, tmp);
+			while((b = pcb_thermal_bits2str(&ts)) != NULL)
+				lht_dom_list_append(thr_lst, build_text(NULL, b));
+			lht_dom_list_append(thr, thr_lst);
+		}
+
+	}
 
 	return obj;
 }

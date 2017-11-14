@@ -791,10 +791,19 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 		ps->thermals.shape = malloc(sizeof(ps->thermals.shape[0]) * n);
 		for(t = thl->data.list.first, n = 0; t != NULL; t = t->next, n++) {
 			int i;
-			parse_int(&i, t);
-			ps->thermals.shape[n] = i;
+			if (t->type == LHT_TEXT) {
+				parse_int(&i, t);
+				ps->thermals.shape[n] = i;
+			}
+			else if (t->type == LHT_LIST) {
+				unsigned char dst;
+				parse_thermal(&dst, t);
+				ps->thermals.shape[n] = dst;
+			}
 		}
 	}
+
+
 
 	pcb_pstk_add(dt, ps);
 
