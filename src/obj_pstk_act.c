@@ -67,23 +67,28 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		pid = pcb_pstk_conv_buffer(0);
 
-		/* have to save and restore the prototype around the buffer clear */
-		tmp = PCB_PASTEBUFFER->Data->ps_protos.array[pid];
-		memset(&PCB_PASTEBUFFER->Data->ps_protos.array[pid], 0, sizeof(PCB_PASTEBUFFER->Data->ps_protos.array[0]));
-		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-		p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
-		*p = tmp;
-		p->parent = PCB_PASTEBUFFER->Data;
-		pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
-
+		if (pid != PCB_PADSTACK_INVALID) {
+			/* have to save and restore the prototype around the buffer clear */
+			tmp = PCB_PASTEBUFFER->Data->ps_protos.array[pid];
+			memset(&PCB_PASTEBUFFER->Data->ps_protos.array[pid], 0, sizeof(PCB_PASTEBUFFER->Data->ps_protos.array[0]));
+			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+			p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
+			*p = tmp;
+			p->parent = PCB_PASTEBUFFER->Data;
+			pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
+		}
 	}
 	else
 		PCB_ACT_FAIL(padstackconvert);
 
-	pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
-	pcb_pstk_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
-	pcb_set_buffer_bbox(PCB_PASTEBUFFER);
-	PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
+	if (pid != PCB_PADSTACK_INVALID) {
+		pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
+		pcb_pstk_new(PCB_PASTEBUFFER->Data, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
+		PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "(failed to convert to padstack)\n", pid);
 
 	return 0;
 }
