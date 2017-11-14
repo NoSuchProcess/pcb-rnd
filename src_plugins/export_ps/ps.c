@@ -732,7 +732,7 @@ static void ps_parse_arguments(int *argc, char ***argv)
 	pcb_hid_parse_command_line(argc, argv);
 }
 
-static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, pcb_coord_t dx, pcb_coord_t dy)
+static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, int dx, int dy)
 {
 	pcb_coord_t len = PCB_MIL_TO_COORD(2000);
 	pcb_coord_t len2 = PCB_MIL_TO_COORD(200);
@@ -746,7 +746,7 @@ static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, pcb_coord_t dx, pcb_
 	 * of the thick line.
 	 */
 
-	pcb_fprintf(fh, "gsave %mi setlinewidth %mi %mi translate %mi %mi scale\n", thick * 2, x, y, dx, dy);
+	pcb_fprintf(fh, "gsave %mi setlinewidth %mi %mi translate %d %d scale\n", thick * 2, x, y, dx, dy);
 	pcb_fprintf(fh, "%mi %mi moveto %mi %mi %mi 0 90 arc %mi %mi lineto\n", len, thick, thick, thick, len2 + thick, thick, len);
 	if (dx < 0 && dy < 0)
 		pcb_fprintf(fh, "%mi %mi moveto 0 %mi rlineto\n", len2 * 2 + thick, thick, -len2);
