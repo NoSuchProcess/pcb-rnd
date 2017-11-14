@@ -728,7 +728,7 @@ static void pcb_draw_obj_label(pcb_any_obj_t *obj)
 	switch(obj->type) {
 		case PCB_OBJ_LINE:    pcb_line_draw_label((pcb_line_t *)obj); return;
 		case PCB_OBJ_ARC:     pcb_arc_draw_label((pcb_arc_t *)obj); return;
-		case PCB_OBJ_POLY: pcb_poly_draw_label((pcb_poly_t *)obj); return;
+		case PCB_OBJ_POLY:    pcb_poly_draw_label((pcb_poly_t *)obj); return;
 		case PCB_OBJ_TEXT:    pcb_text_draw_label((pcb_text_t *)obj); return;
 		default: break;
 	}
