@@ -1246,8 +1246,28 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 	for(pid = 0, pr = pp->data.list.first; ((pr != NULL) && (res == 0)); pr = pr->next, pid++) {
 		if ((pr->type == LHT_TEXT) && (strcmp(pr->name, "unused") == 0))
 			continue;
-		else if ((pr->type == LHT_HASH) && (strcmp(pr->name, "ps_proto_v4") == 0))
+		else if ((pr->type == LHT_HASH) && (strncmp(pr->name, "ps_proto_v4", 11) == 0)) {
+			char *sid = pr->name+11, *end;
+			long int pid_in_file;
+			if (*sid == '.') {
+				sid++;
+				pid_in_file = strtol(sid, &end, 0);
+				if (*end != '\0') {
+					pcb_message(PCB_MSG_ERROR, "Invalid padstack proto ID '%s' (not an integer)\n", sid);
+					return -1;
+				}
+				else if (pid_in_file < pid) {
+					pcb_message(PCB_MSG_ERROR, "Invalid padstack proto ID '%s' (can't rewind)\n", sid);
+					return -1;
+				}
+				pid = pid_in_file;
+			}
+			else if (*sid != '\0') {
+				pcb_message(PCB_MSG_ERROR, "Invalid padstack proto ID '%s' (syntax)\n", sid);
+				return -1;
+			}
 			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent);
+		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid padstack proto definition\n", pp->name);
 			return -1;

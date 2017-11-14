@@ -526,6 +526,7 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 	lht_node_t *lst, *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
 	pcb_cardinal_t n, sn, pn;
 	pcb_pstk_tshape_t *ts;
+	char tmp[64];
 
 	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
 	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
@@ -536,7 +537,8 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 			continue;
 		}
 
-		lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_HASH, "ps_proto_v4"));
+		sprintf(tmp, "ps_proto_v4.%ld", (long)n);
+		lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_HASH, tmp));
 
 		lht_dom_hash_put(nproto, build_textf("hdia", CFMT, proto->hdia));
 		lht_dom_hash_put(nproto, build_textf("htop", "%d", proto->htop));
