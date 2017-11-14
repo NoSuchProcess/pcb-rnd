@@ -50,7 +50,6 @@
 - BUG: selection doesn't work properly (introduced in r12152) [report:wojciechk8]
 - BUG: export to ps generates wrong page dimensions with a certain media size settings [report:wojciechk8]
 - BUG: no mask cutouts in photo-mode png export [report:wojciechk8]
-- BUG: no align marks in ps output [report:wojciechk8]
 - BUG: pinout (D) of subcircuit terminals is shown on both sides of the board (should be shown only on the view side) [report:wojciechk8]
 - BUG: 'Realign grid' sets the grid relative to the mouse cursor, not the snapped crosshair [report:wojciechk8]
 - BUG: png export: photo_groups[] breaks shadow rendering of internal layers and other-sides in photo mode; rewrite the code to omit this array and do direct layergrp queries [report: keantoken]
