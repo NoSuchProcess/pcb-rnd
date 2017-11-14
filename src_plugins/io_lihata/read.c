@@ -709,6 +709,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			else if (!(dt->Layer[layer_id].meta.bound.type & PCB_LYT_VIRTUAL))
 				pcb_message(PCB_MSG_WARNING, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
 			dt->via_tree = subc_parent->via_tree;
+			dt->padstack_tree = subc_parent->padstack_tree;
 		}
 	}
 	else {
