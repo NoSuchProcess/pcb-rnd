@@ -10,6 +10,8 @@
 	- convert helpers:
 		- old pad
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
+	- property editor doesn't deal with padstacks (and subc)
+	- test if advanced search does anything with padstacks (and subc)
 - subc:
 	- FreeRotateBuffer() [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
