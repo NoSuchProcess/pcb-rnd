@@ -1283,6 +1283,7 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 {
 	int res;
 	lht_doc_t *doc;
+	pcb_subc_t *sc;
 
 	if ((enforce1) && (pcb_subclist_length(&data->subc)) > 1) {
 		pcb_message(PCB_MSG_ERROR, "Can't save more than one subcircuit from a buffer\n");
@@ -1296,9 +1297,33 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 	/* create the doc */
 	io_lihata_full_tree = 1;
 	doc = lht_dom_init();
-	wrver = 3;
-	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v3");
-	lht_dom_list_append(doc->root, build_subc(pcb_subclist_first(&data->subc)));
+
+	/* determine version */
+	if (ctx == &plug_io_lihata_v3)
+		wrver = 3;
+	else
+		wrver = 4;
+
+	/* bump version if features require */
+	sc = pcb_subclist_first(&data->subc);
+#warning subc TODO: for subc-in-subc this should be recursive
+	if (padstacklist_first(&sc->data->padstack) != NULL) {
+		if (wrver < 4) {
+			pcb_message(PCB_MSG_WARNING, "Had to bump lihata subc version to 4 because the subcircuit contains padstacks.\n");
+			wrver = 4;
+		}
+	}
+
+	if (wrver == 3)
+		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v3");
+	else if (wrver == 4)
+		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v4");
+	else {
+		pcb_message(PCB_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
+		return -1;
+	}
+
+	lht_dom_list_append(doc->root, build_subc(sc));
 
 	res = lht_dom_export(doc->root, f, "");
 
