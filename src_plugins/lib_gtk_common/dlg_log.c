@@ -28,8 +28,10 @@
 */
 
 #include "config.h"
+
 #include <ctype.h>
 #include <stdarg.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "dlg_log.h"
 
@@ -85,6 +87,12 @@ static void log_destroy_cb(GtkWidget * widget, gpointer data)
 	log_window = NULL;
 }
 
+static gboolean log_key_release_cb(GtkWidget *preview, GdkEventKey *kev, gpointer data)
+{
+	if (kev->keyval == GDK_KEY_Escape)
+		log_close_cb(data);
+}
+
 static void ghid_log_window_create()
 {
 	GtkWidget *vbox, *hbox, *button;
@@ -111,6 +119,8 @@ static void ghid_log_window_create()
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(log_close_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
+
+	g_signal_connect(G_OBJECT(log_window), "key_release_event", G_CALLBACK(log_key_release_cb), NULL);
 
 	wplc_place(WPLC_LOG, log_window);
 
