@@ -57,6 +57,8 @@
 #include "compat_nls.h"
 #include "layer.h"
 #include "obj_all.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 
 #include <genregex/regex_sei.h>
 
@@ -143,6 +145,35 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_TYPE_LOCKED, &ptr1, &ptr2, &ptr3);
 
 	switch (type) {
+	case PCB_TYPE_PSTK:
+		{
+			pcb_pstk_t *ps;
+			pcb_pstk_proto_t *proto;
+			gds_t tmp;
+
+#ifndef NDEBUG
+			if (pcb_gui->shift_is_pressed()) {
+				pcb_r_dump_tree(PCB->Data->padstack_tree->root, 0);
+				return 0;
+			}
+#endif
+			ps = (pcb_pstk_t *)ptr2;
+			proto = pcb_pstk_get_proto(ps);
+			gds_init(&tmp);
+
+			pcb_append_printf(&tmp, "%m+PADSTACK ID# %ld; Flags:%s\n"
+				"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_TYPE_PSTK, NULL),
+				ps->x, ps->y);
+
+			if ((proto != NULL) && (proto->hdia > 0))
+				pcb_append_printf(&tmp, "%m+Hole diameter: %$mS", USER_UNITMASK, proto->hdia);
+
+			pcb_append_printf(&tmp, "\n%s%s%s", gen_locked(ps), gen_term(ps));
+
+			report = tmp.array;
+			break;
+		}
+
 	case PCB_TYPE_VIA:
 		{
 			pcb_pin_t *via;
