@@ -77,7 +77,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_FULLPOLY),      N("fullpoly"),      PCB_TYPE_POLY, "For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one)." },
 	{FN(PCB_FLAG_NOPASTE),       N("nopaste"),       PCB_TYPE_PAD, "Pad should not receive solderpaste.  This is to support fiducials" },
 	{FN(PCB_FLAG_NONETLIST),     N("nonetlist"),     PCB_TYPEMASK_ALL, "element is not on the netlist and should not interfere with the netlist "},
-	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_SUBC, "when set the names of pins are shown."},
+	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_PSTK | PCB_TYPE_SUBC, "when set the names of pins are shown."},
 	{FN(PCB_FLAG_CLEARPOLYPOLY), N("clearpolypoly"), PCB_TYPE_POLY, "For polygons, apply clearance to nearby polygons" },
 	{FN(PCB_FLAG_DYNTEXT),       N("dyntext"),       PCB_TYPE_TEXT, "For text: dynamic string (substitute %patterns%)"},
 	{FN(PCB_FLAG_FLOATER),       N("floater"),       PCB_TYPEMASK_ALL, "subc part can be moved after subc placing"}
