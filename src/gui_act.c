@@ -527,7 +527,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 				}
 
 				/* toggle terminal ID print for subcircuit parts */
-				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+				type = pcb_search_screen(x, y, PCB_TYPE_SUBC | PCB_TYPE_SUBC_PART | PCB_TYPE_VIA | PCB_TYPE_PSTK | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLY | PCB_TYPE_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
 				if (type) {
 					pcb_any_obj_t *obj = ptr2;
 					pcb_opctx_t opctx;
@@ -546,6 +546,7 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 						case PCB_TYPE_ARC:
 						case PCB_TYPE_POLY:
 						case PCB_TYPE_TEXT:
+						case PCB_TYPE_PSTK:
 							pcb_obj_invalidate_label(type, ptr1, ptr2, ptr3);
 							break;
 						default:
