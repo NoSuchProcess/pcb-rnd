@@ -36,6 +36,7 @@
 #include "obj_pstk_list.h"
 #include "obj_pstk_inlines.h"
 #include "obj_pstk_op.h"
+#include "obj_subc_parent.h"
 #include "operation.h"
 #include "search.h"
 #include "undo.h"
@@ -302,6 +303,9 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	pcb_coord_t mark;
 	pcb_pstk_proto_t *proto;
 
+	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
+		return PCB_R_DIR_NOT_FOUND;
+
 	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, (ctx->comb & ~PCB_LYC_AUTO));
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
@@ -334,6 +338,9 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_draw_t *ctx = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
+
+	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (!pcb_pstk_bb_drills(ctx->pcb, ps, ctx->gid, &proto))
 		return PCB_R_DIR_FOUND_CONTINUE;
