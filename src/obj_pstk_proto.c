@@ -169,7 +169,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 				break;
 			case PCB_OBJ_POLY:
 				{
-					pcb_cardinal_t p, len, maxlen = (1L << (sizeof(int)-1));
+					pcb_cardinal_t p, len, maxlen = (1L << ((sizeof(int)*8)-1));
 					pcb_poly_t *poly = *(pcb_poly_t **)o;
 
 					len = poly->PointN;
