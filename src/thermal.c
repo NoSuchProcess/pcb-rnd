@@ -80,12 +80,13 @@ const char *pcb_thermal_bits2str(pcb_thermal_t *bit)
 		return "on";
 	}
 	if ((*bit) & PCB_THERMAL_DIAGONAL) {
-		*bit &= ~PCB_THERMAL_ON;
+		*bit &= ~PCB_THERMAL_DIAGONAL;
 		return "diag";
 	}
 	if ((*bit) & 3) {
-		switch((*bit) & 3) {
-			*bit &= ~3;
+		int shape = (*bit) & 3;
+		*bit &= ~3;
+		switch(shape) {
 			case PCB_THERMAL_NOSHAPE: return "noshape";
 			case PCB_THERMAL_ROUND: return "round";
 			case PCB_THERMAL_SHARP: return "sharp";
