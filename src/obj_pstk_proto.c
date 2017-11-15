@@ -169,7 +169,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 				break;
 			case PCB_OBJ_POLY:
 				{
-					pcb_cardinal_t p, len;
+					pcb_cardinal_t p, len, maxlen = (1L << (sizeof(int)-1));
 					pcb_poly_t *poly = *(pcb_poly_t **)o;
 
 					len = poly->PointN;
@@ -179,9 +179,9 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 							pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not convert polygon with holes\n");
 						goto quit;
 					}
-					if (len >= (1L << (sizeof(int)-1))) {
+					if (len >= maxlen) {
 						if (!quiet)
-							pcb_message(PCB_MSG_ERROR, "Padstack conversion: polygon has too many points\n");
+							pcb_message(PCB_MSG_ERROR, "Padstack conversion: polygon has too many points (%ld >= %ld)\n", (long)len, (long)maxlen);
 						goto quit;
 					}
 					pcb_pstk_shape_alloc_poly(&ts->shape[n].data.poly, len);
