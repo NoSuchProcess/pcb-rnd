@@ -1816,9 +1816,16 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 		return -1;
 	}
 
-	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-subcircuit-v3"))) {
+	if ((doc->root->type != LHT_LIST) || (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20))) {
 		if (!pcb_io_err_inhibit)
 			pcb_message(PCB_MSG_ERROR, "Not a subcircuit lihata.\n");
+		return -1;
+	}
+
+	rdver = atoi(doc->root->name+20);
+	if (rdver < 3) {
+		if (!pcb_io_err_inhibit)
+			pcb_message(PCB_MSG_ERROR, "io_lihata: invalid subc file version: %s (expected 3 or higher)\n", doc->root->name+20);
 		return -1;
 	}
 
