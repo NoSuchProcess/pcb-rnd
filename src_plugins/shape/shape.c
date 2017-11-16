@@ -32,8 +32,73 @@
 #include "data.h"
 #include "error.h"
 #include "layer.h"
+#include "math_helper.h"
+#include "obj_poly.h"
+#include "obj_poly_draw.h"
+#include "rotate.h"
 
 const char *pcb_shape_cookie = "shape plugin";
+
+static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
+{
+	int n, flags = PCB_FLAG_CLEARPOLY;
+	double cosra, sinra, a, da = 2*M_PI / (double)corners;
+	pcb_poly_t *p;
+
+	if (corners < 3)
+		return NULL;
+
+	if ((rot_deg >= 360.0) || (rot_deg <= -360.0))
+		rot_deg = fmod(rot_deg, 360.0);
+
+	if (conf_core.editor.full_poly)
+		flags |= PCB_FLAG_FULLPOLY;
+	if (conf_core.editor.clear_polypoly)
+		flags |= PCB_FLAG_CLEARPOLYPOLY;
+
+	p = pcb_poly_new(layer, 2 * conf_core.design.clearance, pcb_flag_make(flags));
+	if (p == NULL)
+		return NULL;
+
+	if (rot_deg != 0.0) {
+		cosra = cos(rot_deg / PCB_RAD_TO_DEG);
+		sinra = sin(rot_deg / PCB_RAD_TO_DEG);
+	}
+
+	for(n = 0,a = 0; n < corners; n++,a+=da) {
+		pcb_coord_t x,  y;
+		x = pcb_round(cos(a) * (double)rx + (double)cx);
+		y = pcb_round(sin(a) * (double)ry + (double)cy);
+		if (rot_deg != 0.0)
+			pcb_rotate(&x, &y, cx, cy, cosra, sinra);
+		pcb_poly_point_new(p, x, y);
+	}
+
+	pcb_add_poly_on_layer(layer, p);
+
+	return p;
+}
+
+static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
+{
+	pcb_poly_t *p = regpoly(CURRENT, corners, rx, ry, rot_deg, cx, cy);
+
+	if (p == NULL)
+		return NULL;
+
+	pcb_poly_init_clip(PCB->Data, CURRENT, p);
+	pcb_poly_invalidate_draw(CURRENT, p);
+
+	if (data != PCB->Data) {
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+		pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_TYPE_POLY, CURRENT, p, p);
+		pcb_r_delete_entry(CURRENT->polygon_tree, (pcb_box_t *)p);
+		pcb_poly_free_fields(p);
+		pcb_poly_free(p);
+		pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
+	}
+	return p;
+}
 
 static const char pcb_acts_regpoly[] = "regpoly([where,] corners, radius [,rotation])";
 static const char pcb_acth_regpoly[] = "Generate regular polygon.";
@@ -42,7 +107,7 @@ int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	double rot = 0;
 	pcb_coord_t rx, ry = 0;
 	pcb_bool succ, have_coords = pcb_false;
-	int corners = 0, a, offs;
+	int corners = 0, a;
 	pcb_data_t *data = PCB->Data;
 	const char *dst;
 	char *end;
@@ -126,7 +191,8 @@ int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_gui->get_coords("Click on the center of the polygon", &x, &y);
 
-pcb_trace("regpoly: %d c=%d rad=%$mm;%$mm rot=%f center=%$mm;%$mm\n", data == PCB->Data, corners, rx, ry, rot, x, y);
+	if (regpoly_place(data, CURRENT, corners, rx, ry, rot, x, y) == NULL)
+		pcb_message(PCB_MSG_ERROR, "regpoly(): failed to create the polygon\n");
 
 	return 0;
 }
