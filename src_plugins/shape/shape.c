@@ -64,9 +64,10 @@ int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		a = 1;
 	}
 	
-	offs = strchr(dst, ';') - dst;
-	if (offs > 0) {
+	end = strchr(dst, ';');
+	if (end != NULL) {
 		char *sx, *sy, *tmp;
+		int offs = end - dst;
 		have_coords = 1;
 		a = 1;
 		
