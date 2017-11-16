@@ -40,7 +40,7 @@ static const char pcb_acth_regpoly[] = "Generate regular polygon.";
 int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	double rot = 0;
-	pcb_coord_t radius = 0;
+	pcb_coord_t rx, ry = 0;
 	pcb_bool succ, have_coords = pcb_false;
 	int corners = 0, a, offs;
 	pcb_data_t *data = PCB->Data;
@@ -92,7 +92,23 @@ int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	a++;
 
-	radius = pcb_get_value(argv[a], NULL, NULL, &succ);
+	/* convert radii */
+	dst = argv[a];
+	end = strchr(dst, ';');
+	if (end != NULL) {
+		char *sx, *sy, *tmp = pcb_strdup(dst);
+		int offs = end - dst;
+		tmp[offs] = '\0';
+		sx = tmp;
+		sy = tmp + offs + 1;
+		rx = pcb_get_value(sx, NULL, NULL, &succ);
+		if (succ)
+			ry = pcb_get_value(sy, NULL, NULL, &succ);
+		free(tmp);
+	}
+	else
+		rx = ry = pcb_get_value(dst, NULL, NULL, &succ);
+
 	if (!succ) {
 		pcb_message(PCB_MSG_ERROR, "regpoly(): invalid radius '%s'\n", argv[a]);
 		return -1;
@@ -110,7 +126,7 @@ int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_gui->get_coords("Click on the center of the polygon", &x, &y);
 
-pcb_trace("regpoly: %d c=%d rad=%$mm rot=%f center=%$mm;%$mm\n", data == PCB->Data, corners, radius, rot, x, y);
+pcb_trace("regpoly: %d c=%d rad=%$mm;%$mm rot=%f center=%$mm;%$mm\n", data == PCB->Data, corners, rx, ry, rot, x, y);
 
 	return 0;
 }
