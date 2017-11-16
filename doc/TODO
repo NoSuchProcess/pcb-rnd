@@ -1,4 +1,5 @@
 1. For the upcoming release ===============================================================================
+- BUG: ps RTT test broke
 - key rewrite:
 	- base key swap bug (q<->a, y<->z)
 	- lesstif code upgrade for the new API
