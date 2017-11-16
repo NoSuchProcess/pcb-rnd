@@ -79,10 +79,13 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_
 	return p;
 }
 
-static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
+static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
 {
-	pcb_poly_t *p = regpoly(CURRENT, corners, rx, ry, rot_deg, cx, cy);
+	return NULL;
+}
 
+static pcb_poly_t *any_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *p)
+{
 	if (p == NULL)
 		return NULL;
 
@@ -99,6 +102,19 @@ static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corne
 	}
 	return p;
 }
+
+static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
+{
+	pcb_poly_t *p = regpoly(CURRENT, corners, rx, ry, rot_deg, cx, cy);
+	return any_place(data, layer, p);
+}
+
+static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
+{
+	pcb_poly_t *p = roundrect(CURRENT, w, h, rx, ry, rot_deg, cx, cy);
+	return any_place(data, layer, p);
+}
+
 
 static int get_where(const char *arg, pcb_data_t **data, pcb_coord_t *x, pcb_coord_t *y, pcb_bool *have_coords)
 {
@@ -273,10 +289,8 @@ int pcb_act_roundrect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_gui->get_coords("Click on the center of the polygon", &x, &y);
 
-/*
 	if (roundrect_place(data, CURRENT, w, h, rx, ry, rot, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "roundrect(): failed to create the polygon\n");
-*/
 
 	return 0;
 }
