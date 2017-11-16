@@ -306,7 +306,7 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, (ctx->comb & ~PCB_LYC_AUTO));
+	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, ctx->comb);
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
 		set_ps_color(ps, ctx->is_current);

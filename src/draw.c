@@ -622,7 +622,7 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 		pcb_draw_ppv(group, drawn_area);
 
 	if (gflg & PCB_LYT_COPPER)
-		pcb_draw_pstks(group, drawn_area, (CURRENT->meta.real.grp == group), PCB_LYC_AUTO);
+		pcb_draw_pstks(group, drawn_area, (CURRENT->meta.real.grp == group), 0);
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 }
