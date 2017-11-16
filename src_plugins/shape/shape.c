@@ -101,7 +101,7 @@ static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corne
 }
 
 static const char pcb_acts_regpoly[] = "regpoly([where,] corners, radius [,rotation])";
-static const char pcb_acth_regpoly[] = "Generate regular polygon.";
+static const char pcb_acth_regpoly[] = "Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.";
 int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	double rot = 0;
