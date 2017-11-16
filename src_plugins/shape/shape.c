@@ -26,19 +26,103 @@
 #include "hid_actions.h"
 
 #include "board.h"
+#include "buffer.h"
+#include "compat_misc.h"
+#include "conf_core.h"
 #include "data.h"
+#include "error.h"
 #include "layer.h"
 
 const char *pcb_shape_cookie = "shape plugin";
 
-static const char pcb_acts_shape[] = "shape(where, type, [type-specific-params...])";
-static const char pcb_acth_shape[] = "";
+static const char pcb_acts_regpoly[] = "regpoly([where,] corners, radius [,rotation])";
+static const char pcb_acth_regpoly[] = "Generate regular polygon.";
+int pcb_act_regpoly(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	double rot = 0;
+	pcb_coord_t radius = 0;
+	pcb_bool succ, have_coords = pcb_false;
+	int corners = 0, a, offs;
+	pcb_data_t *data = PCB->Data;
+	const char *dst;
+	char *end;
+
+	if (argc < 2) {
+		pcb_message(PCB_MSG_ERROR, "regpoly() needs at least two parameters\n");
+		return -1;
+	}
+	if (argc > 4) {
+		pcb_message(PCB_MSG_ERROR, "regpoly(): too many arguments\n");
+		return -1;
+	}
+
+	a = 0;
+	dst = argv[0];
+	if (pcb_strncasecmp(dst, "buffer", 6) == 0) {
+		data = PCB_PASTEBUFFER->Data;
+		dst += 6;
+		a = 1;
+	}
+	
+	offs = strchr(dst, ';') - dst;
+	if (offs > 0) {
+		char *sx, *sy, *tmp;
+		have_coords = 1;
+		a = 1;
+		
+		tmp = pcb_strdup(dst);
+		tmp[offs] = '\0';
+		sx = tmp;
+		sy = tmp + offs + 1;
+		x = pcb_get_value(sx, NULL, NULL, &succ);
+		if (succ)
+			y = pcb_get_value(sy, NULL, NULL, &succ);
+		free(tmp);
+		if (!succ) {
+			pcb_message(PCB_MSG_ERROR, "regpoly(): invalid center coords '%s'\n", dst);
+			return -1;
+		}
+	}
+
+	corners = strtol(argv[a], &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "regpoly(): invalid number of corners '%s'\n", argv[a]);
+		return -1;
+	}
+	a++;
+
+	radius = pcb_get_value(argv[a], NULL, NULL, &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "regpoly(): invalid radius '%s'\n", argv[a]);
+		return -1;
+	}
+	a++;
+
+	if (a < argc) {
+		rot = strtod(argv[a], &end);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "regpoly(): invalid rotation '%s'\n", argv[a]);
+			return -1;
+		}
+	}
+
+	if ((data == PCB->Data) && (!have_coords))
+		pcb_gui->get_coords("Click on the center of the polygon", &x, &y);
+
+pcb_trace("regpoly: %d c=%d rad=%$mm rot=%f center=%$mm;%$mm\n", data == PCB->Data, corners, radius, rot, x, y);
+
+	return 0;
+}
+
+static const char pcb_acts_shape[] = "shape()";
+static const char pcb_acth_shape[] = "Interactive shape generator.";
 int pcb_act_shape(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return 0;
 }
 
 pcb_hid_action_t shape_action_list[] = {
+	{"regpoly", 0, pcb_act_regpoly, pcb_acth_regpoly, pcb_acts_regpoly},
 	{"shape", 0, pcb_act_shape, pcb_acth_shape, pcb_acts_shape}
 };
 
