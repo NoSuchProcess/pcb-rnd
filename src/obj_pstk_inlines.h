@@ -227,9 +227,12 @@ static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *p
 	return pcb_pstk_shape(ps, lyt, comb);
 }
 
-static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb)
+static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
+
+	if (grp_out != NULL)
+		*grp_out = grp;
 
 	if ((grp == NULL) || (grp->len < 1))
 		return NULL;

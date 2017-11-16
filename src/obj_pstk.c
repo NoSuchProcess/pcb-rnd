@@ -199,10 +199,13 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 /*** draw ***/
 
-static void set_ps_color(pcb_pstk_t *ps, int is_current)
+static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt)
 {
-	char *color;
+	char *color, *layer_color = NULL;
 	char buf[sizeof("#XXXXXX")];
+
+	if (lyt & PCB_LYT_PASTE)
+		layer_color = conf_core.appearance.color.paste;
 
 	if (ps->term == NULL) {
 		/* normal via, not a terminal */
@@ -221,7 +224,9 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current)
 			}
 		}
 		else {
-			if (is_current)
+			if (layer_color != NULL)
+				color = layer_color;
+			else if (is_current)
 				color = conf_core.appearance.color.via;
 			else
 				color = conf_core.appearance.color.invisible_objects;
@@ -244,7 +249,9 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current)
 			}
 		}
 		else
-			if (is_current)
+			if (layer_color != NULL)
+				color = layer_color;
+			else if (is_current)
 				color = conf_core.appearance.color.pin;
 			else
 				color = conf_core.appearance.color.invisible_objects;
@@ -302,14 +309,15 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_shape_t *shape;
 	pcb_coord_t mark;
 	pcb_pstk_proto_t *proto;
+	pcb_layergrp_t *grp;
 
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, ctx->comb);
+	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, ctx->comb, &grp);
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(Output.fgGC, 0);
-		set_ps_color(ps, ctx->is_current);
+		set_ps_color(ps, ctx->is_current, grp->type);
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 			pcb_gui->set_line_width(Output.fgGC, 0);
 			pcb_pstk_draw_shape_thin(Output.fgGC, ps, shape);
@@ -372,9 +380,9 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 
 	pcb = pcb_data_get_top(ps->parent.data);
 	if (pcb != NULL) {
-		shape = pcb_pstk_shape_gid(pcb, ps, gid, 0);
+		shape = pcb_pstk_shape_gid(pcb, ps, gid, 0, NULL);
 		if (shape == NULL)
-			shape = pcb_pstk_shape_gid(pcb, ps, gid, PCB_LYC_SUB);
+			shape = pcb_pstk_shape_gid(pcb, ps, gid, PCB_LYC_SUB, NULL);
 	}
 	else { /* no pcb means buffer - take the first shape, whichever layer it is for */
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
