@@ -4,14 +4,15 @@
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
 - padstack:
-	- select subc; its padstack parts are not selected
-	- label draw/invalidate - do we need this, or subc term solves it?
-	- save/load thermal
+	- 'send to other side' with padstacks in subc
+	- v4 lihata formatting
 	- convert helpers:
 		- old pad
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
+	- BUG: save subc with padstack in v4 lihata then open the file for subc editing: padstack doesn't show
 	- property editor doesn't deal with padstacks (and subc)
 	- test if advanced search does anything with padstacks (and subc)
+	- change layer stackup and padstack thermals will break
 - subc:
 	- FreeRotateBuffer() [report: celem]
 - BUG: subc terminals should be drawn at the end [report: Ade]
