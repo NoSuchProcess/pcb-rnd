@@ -1,3 +1,4 @@
+12835	configure	new plugin: shape
 12748	configure	libminuid cflags fix
 12708	configure	new source file for the 'brave' feature
 12673	configure new lib plugin: compat helper (because of the data model rewrite)

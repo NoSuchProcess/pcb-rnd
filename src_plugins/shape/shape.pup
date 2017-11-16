@@ -1,0 +1,6 @@
+$class feature
+$short generate regular shapes
+$long Generate objects of regular shape (regular polygons, circle)
+$state work-in-progress
+default disable
+autoload 1
