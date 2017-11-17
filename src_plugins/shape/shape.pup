@@ -2,5 +2,5 @@ $class feature
 $short generate regular shapes
 $long Generate objects of regular shape (regular polygons, circle, round rect)
 $state work-in-progress
-default builtin
+default buildin
 autoload 1
