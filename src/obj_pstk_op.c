@@ -49,6 +49,7 @@ void *pcb_pstkop_move_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 	padstacklist_remove(ps);
 	ps->proto = npid;
+	ps->protoi = -1; /* only the canonical trshape got copied, not the transofrmed ones */
 	padstacklist_append(&ctx->buffer.dst->padstack, ps);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, ps);
@@ -127,7 +128,6 @@ void *pcb_pstkop_remove(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_invalidate_erase(ps);
 	pcb_undo_move_obj_to_remove(PCB_TYPE_PSTK, ps, ps, ps);
-	PCB_CLEAR_PARENT(ps);
 	return NULL;
 }
 
