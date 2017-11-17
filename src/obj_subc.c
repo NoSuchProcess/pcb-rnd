@@ -1173,7 +1173,6 @@ void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	if (!ctx->remove.bulk)
 		pcb_draw();
 	pcb_undo_move_obj_to_remove(PCB_TYPE_SUBC, sc, sc, sc);
-	PCB_CLEAR_PARENT(sc);
 	return NULL;
 }
 

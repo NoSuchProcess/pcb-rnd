@@ -721,7 +721,6 @@ void *pcb_polyop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygo
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_POLY, Layer, Polygon, Polygon);
-	PCB_CLEAR_PARENT(Polygon);
 	return NULL;
 }
 

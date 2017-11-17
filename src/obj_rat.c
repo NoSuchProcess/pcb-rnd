@@ -222,7 +222,6 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
-	PCB_CLEAR_PARENT(Rat);
 	return NULL;
 }
 

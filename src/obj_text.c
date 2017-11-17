@@ -557,7 +557,6 @@ void *pcb_textop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_TEXT, Layer, Text, Text);
-	PCB_CLEAR_PARENT(Text);
 	return NULL;
 }
 
