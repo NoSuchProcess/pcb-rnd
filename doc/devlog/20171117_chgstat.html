@@ -1,0 +1,120 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<h2> Code change statistics </h2>
+<p><font size=-2>by Igor2</font></p>
+
+<h3> 1. About </h3>
+<p>
+The code change statistics is an attempt to measure how much of the
+code base has been changed since the fork. It is calculated by a script,
+using svn metadata.
+<p>
+Code change has many aspects. The other day an user asked me to list
+what's new/different/more in pcb-rnd compared to pcb mainline and I realized
+we have so many new things that a complete list would be so long nobody
+bothered to read.
+<p>
+It is possible to have a few features highlighted, but the selection is
+subjective. For example what took much time is the data model rewrite, which
+led to removing all layer and footprint limitations and an unified padstack model.
+This costed many many hundred hours of developer time. On the other hand, many
+of users love fp_wget, which transparently integrates edakrill and gedasymbols
+in the library window - that feature literally costed 2 weekends, total.
+<p>
+The code change statistics is just one aspect, an objective one. But
+interpretation of the method and the result is obviously subjective. My
+interpretaton is that <b>it shows how many lines of pcb-rnd code does not
+look similar to its corresponding mainline code line</b>. This means code
+lines that got major change or code lines that are new in pcb-rnd and
+never existed in mainline.
+
+<h3> 2. Technical details: how it is calculated </h3>
+<p>
+The chgstat script runs svn blame on all source files to get each source
+line prefixed by the svn revision number when it last changed. The main
+idea is that if a line changed after the fork, it's new, if it's part of
+the original import, it's old. At the end the percentage is derived from
+<i>new/(old+new)</i>.
+<p>
+The fine print: we mask out a lot of changes. For example if a file gets
+split into two files or a file gets renamed, code gets moved within a
+file, or code gets reindented, we tell chgstat to take that revision as
+<i>old</i>.
+<p>
+This method is not perfect. The most trivial shortcomings are:
+<ul>
+	<li> If there is a real change in r100 then an indentation change in r200,
+	     we have to tell chgstat to account r200 changes to the old code; this
+	     masks the new lines of r100, counting them as old too.
+	<li> The script works on physical source lines - including empty lines and
+	     even the license banners. These lines rarely change, so even if
+	     we changed all actual code of the original source, we still wouldn't
+	     see 100% in the statistics because of the unchanged empty lines and
+	     license banners
+	<li> On the other hand, when a new source file is added, it contains the
+	     license banner and empty lines, and these are counted as new code
+	     lines too (this probably justifies the previous loss)
+	<li> Some changes, like namespace cleanup (massive renames), are hard to categorize; when done
+	     right, they don't change how pcb-rnd works but they make the code look
+	     different. Because of how the change statistics is defined, and how
+	     much actual work a good quality rename requires and how it improves the
+	     code base, we count these as change.
+</ul>
+We follow a rather conservative policy: when we are in doubt, we rather
+classify the revision as 'old'. This, combined with the masking effect suggests
+that errors of the method favor 'old'. In other words, the result is a
+lower estimate of the actual change.
+<p>
+So what does 1% mean? Our current codebase (as of November 2017) is about
+230k lines, so <b>1% means about 2300 lines of code</b>.
+
+<h3> 3. Why do we have this stats? </h3>
+<p>
+The only reason is to have anything that's remotely objective. I started
+to do this stat at around 25%. Back then the code modularization and namespace
+cleanup contributed the most. It was fun to see how the number rised by adding
+new I/O plugins and rewriting the data model.
+<p>
+It also somewhat shows the sheer amount of low level codecraft that takes
+place under each high level feature addition or infrastructure refactoring.
+It shows that doing the hge changes in pcb-rnd are not only theoretical; it's
+not only about thinking things over, designing mechanism, but it's also about
+a lot of typing.
+<p>
+But it's important to handle this statistics at its right place, and don't
+overestimate it's importance. What makes pcb-rnd so good is not how many lines
+of code we put in, but what the code does and how much effort we invest.
+
+<h3> 4. Fork vs. rewrite </h3>
+<p>
+At any time you are reading this article, we have a rather high code change
+percentage. At the moment of writing the article, it's over 65%. Users
+somtime ask: "so if we/you changed more than half/two-third/three-quarter of
+the code, wouldn't it have been easier to just rewrite it from sratch?". The
+short answer is clearly <b>no</b>, fork was the better way. The longer answer
+is:
+<p>
+<ul>
+	<li> Even tho a lot of code has changed, some essential code remained. Some
+	     infrastructure or low level code was just right, and I am glad I
+	     did not have to rewrite those parts.
+	<li> In a sense, pcb already did mostly what we needed, so taking it and
+	     making the modifications was cheaper than starting from scratch. Remember:
+	     code change stat includes everything from small changes to new code.
+	<li> Unlike git people, we have a different development model. Instead of
+	     working for 2 years in isoaltion and then presenting the results, we
+	     are working in public. <b>Additions of the code, redesign of critical
+	     infrastrucutre, changing the data model all goes on the live version -
+	     there are no branches</b>. (This forces developers to be a bit more
+	     careful about how specific changes are carried out, but this pays
+	     back many times ni early user testing.) This method requires a
+	     software that is already there, already works. That's not cheap
+	     to get if we write it from scratch.
+</ul>
+<p>
+With <a href="http://repo.hu/projects/cschem"> cschem we take a different
+approach and write it from scratch. The reason is that gschem/gnetlist/lepton
+is not very close to what we want to get at the end. The differences are
+large, both on design level and on actual code level.
