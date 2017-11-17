@@ -41,6 +41,8 @@ function q(s) { return "\"" s "\"," }
 }
 
 {
+	if ($4 == "")
+		print "Error: invalid default in plugin: " $3 > "/dev/stderr"
 	printf("plugin_def(%-20s%-35s%-10s%s)\n", q($3), q($6), $4 "," , $5)
 }
 
