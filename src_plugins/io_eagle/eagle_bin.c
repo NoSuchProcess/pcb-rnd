@@ -91,7 +91,7 @@ typedef struct {
 
 typedef struct
 {
-	egb_node_t *root, *layers, *drawing, *libraries, *firstel, *signals, *board, *drc;
+	egb_node_t *root, *layers, *drawing, *libraries, *elements, *firstel, *signals, *board, *drc;
 	long mdWireWire, msWidth; /* DRC values for spacing and width */ 
 	double rvPadTop, rvPadInner, rvPadBottom; /* DRC values for via sizes */
 } egb_ctx_t;
@@ -1538,6 +1538,34 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 	return 0;
 }
 
+/* Return the idxth library from the libraries subtree, or NULL if not found */
+static egb_node_t *library_ref_by_idx(egb_node_t *libraries, long idx)
+{
+	egb_node_t *n;
+
+	/* count children of libraries */
+	for(n = libraries->first_child; (n != NULL) && (idx > 1); n = n->next, idx--) ;
+	if (n == NULL)
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_library_ref_by_idx() can't find library index %ld\n", idx);
+	return n;
+}
+
+/* Return the idxth package from the library subtree, or NULL if not found */
+static egb_node_t *package_ref_by_idx(egb_node_t *library, long idx)
+{
+	egb_node_t *n, *pkgs;
+
+	/* find library/0x1500->packages/0x1900 node */
+	for(pkgs = library->first_child; (pkgs != NULL) && ((pkgs->id & 0xFF00) != 0x1900); pkgs = pkgs->next);
+	if (pkgs == NULL)
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find packages node in library tree\n", idx);
+	/* count children of library */
+	for(n = pkgs->first_child; (n != NULL) && (idx > 1); n = n->next, idx--);
+	if (n == NULL)
+		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find package index %ld\n", idx);
+	return n;
+}
+
 /* Return the idxth element instance from the elements subtree, or NULL if not found */
 static egb_node_t *elem_ref_by_idx(egb_node_t *elements, long idx)
 {
@@ -1550,24 +1578,55 @@ static egb_node_t *elem_ref_by_idx(egb_node_t *elements, long idx)
 	return n;
 }
 
-/* Return the pin name of the j-th pin of a given element in the elements subtree/NULL if not found */
-static const char *elem_pin_name_by_idx(egb_node_t *elements, long elem_idx, long pin_idx)
+/* allocate the pin name of the j-th pin of a given element in the elements subtree to contactref node cr; allocate default of pin_number if name text not found for pin */
+static int cr_pin_name_by_elem_idx(egb_node_t *cr, egb_ctx_t *egb_ctx, long elem_idx)
 {
-	int pin_num = pin_idx;
-	egb_node_t *p, *e = elem_ref_by_idx(elements, elem_idx);
+	int pin_idx = (int)(atoi(egb_node_prop_get(cr, "pin")));
+	int pin_num;
+	egb_node_t *p, *lib, *pkg;
+	egb_node_t *elements = egb_ctx->elements;
+	egb_node_t *libraries = egb_ctx->libraries;
+	egb_node_t *e = elem_ref_by_idx(elements, elem_idx);
 
+	pin_num = pin_idx;
 	if (e == NULL)
-		return NULL;
-	printf("found element, now looking for pin number %ld.\n", pin_idx);
-#warning TODO broken, still need to look up lib and package based on element contents to find pin's name 
-	for (p = e->first_child; (p != NULL) && (pin_num == 0) && (pin_num > 1) ; p = p->next) {
-		printf("Now testing (p->id == 0x2a00 || p->id == 0x2b00) for pin_num %d\n", pin_num);
-		if (p->id == 0x2a00 || p->id == 0x2b00) { /* we found a pad _or_ pin */
+		return 1;
+	pcb_trace("found element, now looking for pin number %d.\n", pin_idx);
+
+	pcb_trace("  looking for lib: %d\n", atoi(egb_node_prop_get(e, "library")));
+	lib = library_ref_by_idx(libraries, atoi(egb_node_prop_get(e, "library")));
+	if (lib == NULL)
+		return 1;
+
+	pcb_trace("  looking for pkg: %d\n", atoi(egb_node_prop_get(e, "package")));
+	pkg = package_ref_by_idx(lib, atoi(egb_node_prop_get(e, "package")));
+	if (pkg == NULL)
+		return 1;
+
+	pcb_trace("About to find pin %d in pkg with pkg->id: %d\n", pin_num, pkg->id);  
+	for (p = pkg->first_child; (p != NULL) && (pin_num > 1) ; p = p->next) {
+		pcb_trace("Now testing (p->id == 0x2a00 || p->id == 0x2b00) for pin_num %d\n", pin_num);
+		if ((p->id & 0xFF00) == 0x2a00 || (p->id & 0xFF00) == 0x2b00 || (p->id & 0xFF00) == 0x2c00 ) { /* we found a pad _or_ pin _or_ SMD */
 			pin_num--;
+			pcb_trace("Found a pad/pin/smd during netlist pin name lookup.\n");
 		}
 	}
 	pcb_trace("pin index now %d.\n", pin_num);
-	return egb_node_prop_get(p, "name");
+	if (p == NULL || pin_num > 1) {
+		pcb_trace("-> node pin not found, allocating pin name \"PIN_NOT_FOUND\"\n");
+		egb_node_prop_set(cr, "pad", "PIN_NOT_FOUND");
+		return 0;
+	}
+	
+	if (egb_node_prop_get(p, "name")) {
+		pcb_trace("-> about to allocate node pin name: %s\n", egb_node_prop_get(p, "name"));
+		egb_node_prop_set(cr, "pad", egb_node_prop_get(p, "name"));
+		return 0;
+	} else {
+		pcb_trace("-> about to allocate default node pin name ( = pin number): %d\n", pin_idx);
+		egb_node_prop_set(cr, "pad", egb_node_prop_get(cr, "pin"));
+		return 0;
+	}
 }
 
 
@@ -1848,13 +1907,11 @@ static int postprocess_pad(void *ctx, egb_node_t *root)
 	return 0;
 }
 
-/* look for contactrefs, and append "name"="refdes" fields to contactref nodes as "element" "refdes"*/
+/* look for contactrefs, and  1) append "name"="refdes" fields to contactref nodes as "element" "refdes" and 2) append "pad" = (pin_name(if present) or default pin_num) for netlist loading */
 static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 {
 	htss_entry_t *e;
-	egb_node_t *els, *cr, *n, *q, *next, *next2;
-
-	els = egb_ctx->firstel->parent;
+	egb_node_t *cr, *n, *q, *next, *next2;
 
 	for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
 		next = n->next;
@@ -1865,10 +1922,11 @@ static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 				for (e = htss_first(&cr->props); e; e = htss_next(&cr->props, e)) {
 					if (strcmp(e->key, "partnumber") == 0) {
 						int element_num = atoi(e->value);
-						egb_node_prop_set(cr, "element", elem_refdes_by_idx(els, (long) element_num));
+						egb_node_prop_set(cr, "element", elem_refdes_by_idx(egb_ctx->elements, (long) element_num));
 						pcb_trace("Copied refdes %s to PCB_EKGW_SECT_SIGNAL\n", e->value);
-						/* egb_node_prop_set(cr, "pad", egb_node_prop_get(cr, "pin")); */
-						egb_node_prop_set(cr, "pad", elem_pin_name_by_idx(els, (long) element_num, (long)atoi(egb_node_prop_get(cr, "pin"))));
+						pcb_trace("About to call cr_pin_name_by_elem_idx...\n");
+						cr_pin_name_by_elem_idx(cr, egb_ctx, (long) element_num);
+						pcb_trace("Allocated pin name by index: %s\n", egb_node_prop_get(cr, "pad")); 
 					}
 				}
 			}
@@ -2065,6 +2123,7 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
 			pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
 			eagle_bin_ctx.firstel = n->first_child;
+			eagle_bin_ctx.elements = eagle_bin_ctx.firstel->parent;
 		}
 	}
 
