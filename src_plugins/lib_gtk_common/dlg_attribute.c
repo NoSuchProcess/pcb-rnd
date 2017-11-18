@@ -165,8 +165,20 @@ typedef struct {
 static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint arg1, gpointer user_data)
 {
 	resp_ctx_t *ctx = (resp_ctx_t *)user_data;
-	if ((ctx != NULL) && (ctx->cb != NULL))
-		ctx->cb(ctx->ctx, 0);
+	if ((ctx != NULL) && (ctx->cb != NULL)) {
+		switch (arg1) {
+		case GTK_RESPONSE_OK:
+			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
+			break;
+		case GTK_RESPONSE_CANCEL:
+			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_CANCEL);
+			break;
+		case GTK_RESPONSE_CLOSE:
+		case GTK_RESPONSE_DELETE_EVENT:
+			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_WINCLOSE);
+			break;
+		}
+	}
 	free(ctx);
 }
 
