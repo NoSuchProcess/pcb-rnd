@@ -54,7 +54,7 @@ do
 	cat `find $d -name '*.blm'` 
 done| awk -v import=$import '
 		BEGIN {
-			GTK[6735]++
+			MASK[6735]++
 			MASK[6720]++
 			MASK[6719]++
 			MASK[6718]++
