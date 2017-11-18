@@ -426,12 +426,7 @@ int pcb_act_circle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char pcb_acts_shape[] = "shape()";
-static const char pcb_acth_shape[] = "Interactive shape generator.";
-int pcb_act_shape(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	return 0;
-}
+#include "shape_dialog.c"
 
 pcb_hid_action_t shape_action_list[] = {
 	{"regpoly", 0, pcb_act_regpoly, pcb_acth_regpoly, pcb_acts_regpoly},
