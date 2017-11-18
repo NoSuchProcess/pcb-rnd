@@ -992,6 +992,10 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	}
 	else
 		attribute_dialog_add(ctx, topform, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+
+	if (!modal)
+		XtManageChild(ctx->dialog);
+
 	return ctx;
 }
 
