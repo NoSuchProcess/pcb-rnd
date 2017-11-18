@@ -503,7 +503,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return -1;
 }
 
-void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal)
+void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox, *vbox;
@@ -584,7 +584,7 @@ int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, i
 	void *hid_ctx;
 	int rc;
 
-	hid_ctx = ghid_attr_dlg_new(top_window, attrs, n_attrs, results, title, descr, caller_data, pcb_true);
+	hid_ctx = ghid_attr_dlg_new(top_window, attrs, n_attrs, results, title, descr, caller_data, pcb_true, NULL);
 	rc = ghid_attr_dlg_run(hid_ctx);
 	ghid_attr_dlg_free(hid_ctx);
 

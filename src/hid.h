@@ -147,6 +147,11 @@ typedef enum pcb_burst_op_s {
 	PCB_HID_BURST_END
 } pcb_burst_op_t;
 
+typedef enum pcb_hid_attr_ev_e {
+	PCB_HID_ATTR_EV_CANCEL = 0,
+	PCB_HID_ATTR_EV_OK = 1
+} pcb_hid_attr_ev_t;
+
 typedef struct hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
@@ -438,7 +443,7 @@ struct hid_s {
 	int (*attribute_dialog)(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data);
 
 	/* The same API in 3 stages: */
-	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data, pcb_bool modal); /* returns hid_ctx */
+	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev)); /* returns hid_ctx */
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */
 

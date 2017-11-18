@@ -57,11 +57,11 @@ do { \
 	free(table ## _result); \
 } while(0)
 
-#define PCB_DAD_NEW(table, title, descr, caller_data, modal) \
+#define PCB_DAD_NEW(table, title, descr, caller_data, modal, ev_cb) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
-	table ## _hid_ctx = pcb_gui->attr_dlg_new(table, table ## _len, table ## _result, title, descr, caller_data, modal); \
+	table ## _hid_ctx = pcb_gui->attr_dlg_new(table, table ## _len, table ## _result, title, descr, caller_data, modal, ev_cb); \
 } while(0)
 
 #define PCB_DAD_RUN(table) pcb_gui->attr_dlg_run(table ## _hid_ctx)

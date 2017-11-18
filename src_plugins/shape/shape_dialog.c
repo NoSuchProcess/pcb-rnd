@@ -97,7 +97,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_bool modal)
 			shp->but_gen = PCB_DAD_CURRENT(shp->dlg);
 	PCB_DAD_END(shp->dlg);
 
-	PCB_DAD_NEW(shp->dlg, "dlg_shape", "Generate shapes", shp, modal);
+	PCB_DAD_NEW(shp->dlg, "dlg_shape", "Generate shapes", shp, modal, NULL);
 /*	shp_tab_update(shp->dlg_hid_ctx, &shp);*/
 /*	PCB_DAD_RUN(shp->dlg);
 	PCB_DAD_FREE(shp->dlg);*/

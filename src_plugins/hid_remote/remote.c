@@ -370,7 +370,7 @@ static void remote_stop_block_hook(pcb_hidval_t mlpoll)
 {
 }
 
-static void *remote_attr_dlg_new(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
+static void *remote_attr_dlg_new(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	return NULL;
 }

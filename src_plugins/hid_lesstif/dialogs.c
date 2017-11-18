@@ -50,7 +50,7 @@ static void dialog_callback_cancel(Widget w, void *v, void *cbs)
 {
 	dialog_cb_ctx_t *ctx = (dialog_cb_ctx_t *)v;
 	if (ctx != NULL) {
-		ctx->cb(ctx->ctx, 0);
+		ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_CANCEL);
 		free(ctx);
 	}
 	ok = 0;
@@ -60,7 +60,7 @@ static void dialog_callback_ok(Widget w, void *v, void *cbs)
 {
 	dialog_cb_ctx_t *ctx = (dialog_cb_ctx_t *)v;
 	if (ctx != NULL) {
-		ctx->cb(ctx->ctx, 1);
+		ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
 		free(ctx);
 	}
 	ok = 1;
@@ -984,7 +984,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 	return -1;
 }
 
-void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal)
+void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	Widget topform, main_tbl;
 	int i;
@@ -1064,7 +1064,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 	int rv;
 	void *hid_ctx;
 	
-	hid_ctx = lesstif_attr_dlg_new(attrs, n_attrs, results, title, descr, caller_data, pcb_true);
+	hid_ctx = lesstif_attr_dlg_new(attrs, n_attrs, results, title, descr, caller_data, pcb_true, NULL);
 	rv = lesstif_attr_dlg_run(hid_ctx);
 	lesstif_attr_dlg_free(hid_ctx);
 
