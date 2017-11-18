@@ -42,7 +42,7 @@ static void dialog_callback_ok_value(Widget w, void *v, void *cbs)
 }
 
 typedef struct {
-	void (*cb)(void *ctx, int ok);
+	void (*cb)(void *ctx, pcb_hid_attr_ev_t ev);
 	void *ctx;
 } dialog_cb_ctx_t;
 
@@ -587,7 +587,7 @@ static int PromptFor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ------------------------------------------------------------ */
 
-static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(void *ctx, int ok), void *ctx)
+static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(void *ctx, pcb_hid_attr_ev_t ev), void *ctx)
 {
 	Widget dialog, topform;
 	dialog_cb_ctx_t *cb_ctx = NULL;
