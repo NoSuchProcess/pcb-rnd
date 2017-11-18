@@ -590,12 +590,13 @@ static int PromptFor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(void *ctx, int ok), void *ctx)
 {
 	Widget dialog, topform;
-	stdarg_n = 0;
 	dialog_cb_ctx_t *cb_ctx = NULL;
+
+	stdarg_n = 0;
 	dialog = XmCreateQuestionDialog(mainwind, XmStrCast(name), stdarg_args, stdarg_n);
 
 	if (button_cb != NULL) {
-		cb_ctx = malloc(sizeof(dialog_cb_ctx_t *));
+		cb_ctx = malloc(sizeof(dialog_cb_ctx_t));
 		cb_ctx->cb = button_cb;
 		cb_ctx->ctx = ctx;
 	}
@@ -1009,7 +1010,7 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
 
-	topform = create_form_ok_dialog(title, 1, NULL, NULL);
+	topform = create_form_ok_dialog(title, 1, button_cb, caller_data);
 	ctx->dialog = XtParent(topform);
 
 	stdarg_n = 0;
