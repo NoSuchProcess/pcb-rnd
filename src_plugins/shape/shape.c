@@ -48,6 +48,9 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_
 	if (corners < 3)
 		return NULL;
 
+	if ((rx < 10) || (ry < 10))
+		return NULL;
+
 	if ((rot_deg >= 360.0) || (rot_deg <= -360.0))
 		rot_deg = fmod(rot_deg, 360.0);
 
