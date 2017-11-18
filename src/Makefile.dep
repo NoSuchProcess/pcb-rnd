@@ -4941,7 +4941,7 @@
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h error.h layer.h math_helper.h \
  obj_poly.h obj_poly_draw.h rotate.h ../src_plugins/shape/shape_dialog.c \
- dolists.h
+ hid_dad.h compat_misc.h hid_attrib.h dolists.h
 ../src_plugins/smartdisperse/smartdisperse.o: \
  ../src_plugins/smartdisperse/smartdisperse.c ../src_3rd/genht/htpi.h \
  ../src_3rd/genht/ht.h ../config.h board.h const.h macro.h \
