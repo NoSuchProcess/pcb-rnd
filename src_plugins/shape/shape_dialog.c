@@ -118,7 +118,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		PCB_DAD_SET_VALUE(hid_ctx, shp->h, coord_value, shp->dlg[shp->w].default_val.coord_value);
 	}
 	else
-		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->w, pcb_true);
+		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
 
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)roundrect_place(
