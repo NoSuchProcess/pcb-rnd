@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 #include "hid.h"
 
-void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data);
+void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal);
 int ghid_attr_dlg_run(void *hid_ctx);
 void ghid_attr_dlg_free(void *hid_ctx);
 void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);

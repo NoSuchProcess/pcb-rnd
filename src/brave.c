@@ -220,7 +220,7 @@ static int brave_interact(void)
 	PCB_DAD_END(dlg);
 
 
-	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", dlg);
+	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", dlg, pcb_true);
 	brave2dlg(dlg_hid_ctx);
 	PCB_DAD_RUN(dlg);
 

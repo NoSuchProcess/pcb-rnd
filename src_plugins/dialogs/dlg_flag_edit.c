@@ -119,7 +119,7 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		ctx.attrs = dlg;
 
-		PCB_DAD_NEW(dlg, "flag_edit", "Edit flags", &ctx);
+		PCB_DAD_NEW(dlg, "flag_edit", "Edit flags", &ctx, pcb_true);
 
 		val.func = fe_attr_chg;
 		pcb_gui->attr_dlg_property(dlg_hid_ctx, PCB_HATP_GLOBAL_CALLBACK, &val);

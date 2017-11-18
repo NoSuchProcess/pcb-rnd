@@ -438,7 +438,7 @@ struct hid_s {
 	int (*attribute_dialog)(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data);
 
 	/* The same API in 3 stages: */
-	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data); /* returns hid_ctx */
+	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data, pcb_bool modal); /* returns hid_ctx */
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */
 

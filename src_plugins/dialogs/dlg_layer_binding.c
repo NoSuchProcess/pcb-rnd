@@ -287,7 +287,7 @@ static int pcb_act_LayerBinding(int argc, const char **argv, pcb_coord_t x, pcb_
 
 		ctx.attrs = dlg;
 
-		PCB_DAD_NEW(dlg, "layer_binding", "Layer bindings", &ctx);
+		PCB_DAD_NEW(dlg, "layer_binding", "Layer bindings", &ctx, pcb_true);
 		val.func = lb_attr_chg;
 		pcb_gui->attr_dlg_property(dlg_hid_ctx, PCB_HATP_GLOBAL_CALLBACK, &val);
 		lb_data2dialog(dlg_hid_ctx, &ctx);
