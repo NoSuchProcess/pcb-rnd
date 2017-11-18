@@ -149,7 +149,8 @@ typedef enum pcb_burst_op_s {
 
 typedef enum pcb_hid_attr_ev_e {
 	PCB_HID_ATTR_EV_CANCEL = 0,
-	PCB_HID_ATTR_EV_OK = 1
+	PCB_HID_ATTR_EV_OK = 1,
+	PCB_HID_ATTR_EV_WINCLOSE
 } pcb_hid_attr_ev_t;
 
 typedef struct hid_s pcb_hid_t;
