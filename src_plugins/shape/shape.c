@@ -199,6 +199,21 @@ static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coo
 	return any_place(data, layer, p);
 }
 
+static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_t dia, pcb_coord_t cx, pcb_coord_t cy)
+{
+	int flags = 0;
+	pcb_line_t *l;
+
+	if (conf_core.editor.clear_line)
+		flags |= PCB_FLAG_CLEARLINE;
+
+	l = pcb_line_new(layer, cx, cy, cx, cy, dia, conf_core.design.clearance*2, pcb_flag_make(flags));
+	if (l != NULL) {
+		if ((conf_core.editor.clear_line) && (data == PCB->Data))
+			pcb_poly_clear_from_poly(data, PCB_TYPE_LINE, layer, l);
+	}
+	return l;
+}
 
 static int get_where(const char *arg, pcb_data_t **data, pcb_coord_t *x, pcb_coord_t *y, pcb_bool *have_coords)
 {
@@ -385,11 +400,10 @@ static const char pcb_acts_circle[] = "circle([where,] diameter)";
 static const char pcb_acth_circle[] = "Generate a filled circle (zero length round cap line)";
 int pcb_act_circle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int a, flags = 0;
+	int a;
 	pcb_data_t *data;
 	pcb_bool succ, have_coords = pcb_false;
 	pcb_coord_t dia;
-	pcb_line_t *l;
 
 	if (argc < 1) {
 		pcb_message(PCB_MSG_ERROR, "circle() needs at least one parameters (diameter)\n");
@@ -411,17 +425,8 @@ int pcb_act_circle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_gui->get_coords("Click on the center of the circle", &x, &y);
 
-	if (conf_core.editor.clear_line)
-		flags |= PCB_FLAG_CLEARLINE;
-
-	l = pcb_line_new(CURRENT, x, y, x, y, dia, conf_core.design.clearance*2, pcb_flag_make(flags));
-	if (l != NULL) {
-		if (conf_core.editor.clear_line)
-			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, CURRENT, l);
-	}
-	else
+	if (circle_place(PCB->Data, CURRENT, dia, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");
-
 
 	return 0;
 }
