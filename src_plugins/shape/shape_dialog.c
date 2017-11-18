@@ -66,6 +66,8 @@ static void shp_button_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_bool modal)
 {
 	ctx_t *shp = calloc(sizeof(ctx_t), 1);
+	pcb_coord_t mm2 = PCB_MM_TO_COORD(2);
+	pcb_coord_t maxr = PCB_MM_TO_COORD(1000);
 	shp->pcb = pcb;
 	shp->data = data;
 
@@ -87,18 +89,118 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_bool modal)
 		PCB_DAD_BEGIN_VBOX(shp->dlg);
 			shp->tab_regpoly = PCB_DAD_CURRENT(shp->dlg);
 			PCB_DAD_LABEL(shp->dlg, "Generate regular polygon");
+			PCB_DAD_BEGIN_TABLE(shp->dlg, 2);
+				PCB_DAD_LABEL(shp->dlg, "Number of corners");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_INTEGER(shp->dlg, "");
+						PCB_DAD_MINVAL(shp->dlg, 3);
+						PCB_DAD_MAXVAL(shp->dlg, 64);
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "Shape radius");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_COORD(shp->dlg, "");
+						PCB_DAD_MINMAX(shp->dlg, 0, maxr);
+						PCB_DAD_DEFAULT(shp->dlg, mm2);
+					PCB_DAD_LABEL(shp->dlg, "x (horizontal)");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_COORD(shp->dlg, "");
+						PCB_DAD_MINMAX(shp->dlg, 0, maxr);
+						PCB_DAD_DEFAULT(shp->dlg, mm2);
+					PCB_DAD_LABEL(shp->dlg, "y (vertical)");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_BOOL(shp->dlg, "");
+					PCB_DAD_LABEL(shp->dlg, "elliptical");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "Rotation angle:");
+					PCB_DAD_BEGIN_HBOX(shp->dlg);
+						PCB_DAD_REAL(shp->dlg, "");
+							PCB_DAD_MINVAL(shp->dlg, -360);
+							PCB_DAD_MAXVAL(shp->dlg, 360);
+						PCB_DAD_LABEL(shp->dlg, "deg");
+					PCB_DAD_END(shp->dlg);
+				PCB_DAD_END(shp->dlg);
+			PCB_DAD_END(shp->dlg);
 		PCB_DAD_END(shp->dlg);
 
 		/* roundrect tab */
 		PCB_DAD_BEGIN_VBOX(shp->dlg);
 			shp->tab_roundrect = PCB_DAD_CURRENT(shp->dlg);
 			PCB_DAD_LABEL(shp->dlg, "Generate rectange with rounded corners");
-		PCB_DAD_END(shp->dlg);
+			PCB_DAD_BEGIN_TABLE(shp->dlg, 2);
+
+				PCB_DAD_LABEL(shp->dlg, "Rectangle size");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_COORD(shp->dlg, "");
+						PCB_DAD_MINMAX(shp->dlg, 0, maxr);
+						PCB_DAD_DEFAULT(shp->dlg, mm2);
+					PCB_DAD_LABEL(shp->dlg, "width (horizontal)");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_COORD(shp->dlg, "");
+						PCB_DAD_MINMAX(shp->dlg, 0, maxr);
+						PCB_DAD_DEFAULT(shp->dlg, mm2);
+					PCB_DAD_LABEL(shp->dlg, "height (vertical)");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_BOOL(shp->dlg, "");
+						PCB_DAD_DEFAULT(shp->dlg, 1);
+					PCB_DAD_LABEL(shp->dlg, "rectangular");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "Rounding radius");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_COORD(shp->dlg, "");
+						PCB_DAD_MINMAX(shp->dlg, 0, maxr);
+						PCB_DAD_DEFAULT(shp->dlg, mm2);
+					PCB_DAD_LABEL(shp->dlg, "x (horizontal)");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_COORD(shp->dlg, "");
+						PCB_DAD_MINMAX(shp->dlg, 0, maxr);
+						PCB_DAD_DEFAULT(shp->dlg, mm2);
+					PCB_DAD_LABEL(shp->dlg, "y (vertical)");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_BOOL(shp->dlg, "");
+					PCB_DAD_LABEL(shp->dlg, "elliptical");
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "Rotation angle:");
+					PCB_DAD_BEGIN_HBOX(shp->dlg);
+						PCB_DAD_REAL(shp->dlg, "");
+							PCB_DAD_MINVAL(shp->dlg, -360);
+							PCB_DAD_MAXVAL(shp->dlg, 360);
+						PCB_DAD_LABEL(shp->dlg, "deg");
+					PCB_DAD_END(shp->dlg);
+				PCB_DAD_END(shp->dlg);
+			PCB_DAD_END(shp->dlg);
 
 		/* circle tab */
 		PCB_DAD_BEGIN_VBOX(shp->dlg);
 			shp->tab_circle = PCB_DAD_CURRENT(shp->dlg);
 			PCB_DAD_LABEL(shp->dlg, "Generate filled circle");
+			PCB_DAD_BEGIN_HBOX(shp->dlg);
+				PCB_DAD_LABEL(shp->dlg, "Diameter:");
+				PCB_DAD_COORD(shp->dlg, "");
+					PCB_DAD_MINMAX(shp->dlg, 0, maxr);
+					PCB_DAD_DEFAULT(shp->dlg, mm2);
+			PCB_DAD_END(shp->dlg);
 		PCB_DAD_END(shp->dlg);
 
 		PCB_DAD_BUTTON(shp->dlg, "Generate!");
@@ -106,7 +208,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_bool modal)
 	PCB_DAD_END(shp->dlg);
 
 	PCB_DAD_NEW(shp->dlg, "dlg_shape", "Generate shapes", shp, modal, shp_button_cb);
-/*	shp_tab_update(shp->dlg_hid_ctx, &shp);*/
+	shp_tab_update(shp->dlg_hid_ctx, shp);
 
 	if (modal) {
 		PCB_DAD_RUN(shp->dlg);
