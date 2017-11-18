@@ -37,6 +37,13 @@
 	int table ## _alloced = 0; \
 	void *table ## _hid_ctx = NULL; \
 
+#define PCB_DAD_DECL_NOINIT(table) \
+	pcb_hid_attribute_t *table; \
+	pcb_hid_attr_val_t *table ## _result; \
+	int table ## _len; \
+	int table ## _alloced; \
+	void *table ## _hid_ctx; \
+
 /* Free all resources allocated by DAD macros for table */
 #define PCB_DAD_FREE(table) \
 do { \
