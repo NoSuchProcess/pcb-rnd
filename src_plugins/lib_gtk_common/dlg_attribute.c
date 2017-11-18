@@ -157,6 +157,20 @@ static void button_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
+typedef struct {
+	void (*cb)(void *ctx, pcb_hid_attr_ev_t ev);
+	void *ctx;
+} resp_ctx_t;
+
+static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint arg1, gpointer user_data)
+{
+	resp_ctx_t *ctx = (resp_ctx_t *)user_data;
+	if ((ctx != NULL) && (ctx->cb != NULL))
+		ctx->cb(ctx->ctx, 0);
+	free(ctx);
+}
+
+
 static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 {
 	GtkWidget *fr;
@@ -508,6 +522,13 @@ void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n
 	GtkWidget *content_area;
 	GtkWidget *main_vbox, *vbox;
 	attr_dlg_t *ctx;
+	resp_ctx_t *resp_ctx = NULL;
+
+	if (button_cb != NULL) {
+		resp_ctx = malloc(sizeof(resp_ctx_t));
+		resp_ctx->cb = button_cb;
+		resp_ctx->ctx = caller_data;
+	}
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 	ctx->attrs = attrs;
@@ -524,6 +545,7 @@ void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), "PCB_attribute_editor");
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
+	g_signal_connect(ctx->dialog, "response", G_CALLBACK(ghid_attr_dlg_response_cb), resp_ctx);
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
