@@ -36,9 +36,34 @@ static int ok;
 
 /* ------------------------------------------------------------ */
 
-static void dialog_callback(Widget w, void *v, void *cbs)
+static void dialog_callback_ok_value(Widget w, void *v, void *cbs)
 {
 	ok = (int) (size_t) v;
+}
+
+typedef struct {
+	void (*cb)(void *ctx, int ok);
+	void *ctx;
+} dialog_cb_ctx_t;
+
+static void dialog_callback_cancel(Widget w, void *v, void *cbs)
+{
+	dialog_cb_ctx_t *ctx = (dialog_cb_ctx_t *)v;
+	if (ctx != NULL) {
+		ctx->cb(ctx->ctx, 0);
+		free(ctx);
+	}
+	ok = 0;
+}
+
+static void dialog_callback_ok(Widget w, void *v, void *cbs)
+{
+	dialog_cb_ctx_t *ctx = (dialog_cb_ctx_t *)v;
+	if (ctx != NULL) {
+		ctx->cb(ctx->ctx, 1);
+		free(ctx);
+	}
+	ok = 1;
 }
 
 static int wait_for_dialog(Widget w)
@@ -76,8 +101,8 @@ static void setup_fsb_dialog()
 	stdarg_n = 0;
 	fsb = XmCreateFileSelectionDialog(mainwind, XmStrCast("file"), stdarg_args, stdarg_n);
 
-	XtAddCallback(fsb, XmNokCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
-	XtAddCallback(fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback, (XtPointer) 0);
+	XtAddCallback(fsb, XmNokCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
+	XtAddCallback(fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
 }
 
 static const char load_syntax[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";
@@ -384,8 +409,8 @@ int lesstif_confirm_dialog(const char *msg, ...)
 		stdarg(XmNdefaultButtonType, XmDIALOG_OK_BUTTON);
 		stdarg(XmNtitle, "Confirm");
 		confirm_dialog = XmCreateQuestionDialog(mainwind, XmStrCast("confirm"), stdarg_args, stdarg_n);
-		XtAddCallback(confirm_dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback, (XtPointer) 0);
-		XtAddCallback(confirm_dialog, XmNokCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
+		XtAddCallback(confirm_dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
+		XtAddCallback(confirm_dialog, XmNokCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
 
 		confirm_cancel = XmMessageBoxGetChild(confirm_dialog, XmDIALOG_CANCEL_BUTTON);
 		confirm_ok = XmMessageBoxGetChild(confirm_dialog, XmDIALOG_OK_BUTTON);
@@ -522,7 +547,7 @@ char *lesstif_prompt_for(const char *msg, const char *default_string)
 		stdarg(XmNeditable, True);
 		prompt_text = XmCreateText(prompt_dialog, XmStrCast("text"), stdarg_args, stdarg_n);
 		XtManageChild(prompt_text);
-		XtAddCallback(prompt_text, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
+		XtAddCallback(prompt_text, XmNactivateCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
 	}
 	if (!default_string)
 		default_string = "";
@@ -562,18 +587,25 @@ static int PromptFor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ------------------------------------------------------------ */
 
-static Widget create_form_ok_dialog(const char *name, int ok)
+static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(void *ctx, int ok), void *ctx)
 {
 	Widget dialog, topform;
 	stdarg_n = 0;
+	dialog_cb_ctx_t *cb_ctx = NULL;
 	dialog = XmCreateQuestionDialog(mainwind, XmStrCast(name), stdarg_args, stdarg_n);
+
+	if (button_cb != NULL) {
+		cb_ctx = malloc(sizeof(dialog_cb_ctx_t *));
+		cb_ctx->cb = button_cb;
+		cb_ctx->ctx = ctx;
+	}
 
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_SYMBOL_LABEL));
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_MESSAGE_LABEL));
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_HELP_BUTTON));
-	XtAddCallback(dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback, (XtPointer) 0);
+	XtAddCallback(dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback_cancel, cb_ctx);
 	if (ok)
-		XtAddCallback(dialog, XmNokCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
+		XtAddCallback(dialog, XmNokCallback, (XtCallbackProc) dialog_callback_ok, cb_ctx);
 	else
 		XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_OK_BUTTON));
 
@@ -977,7 +1009,7 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
 
-	topform = create_form_ok_dialog(title, 1);
+	topform = create_form_ok_dialog(title, 1, NULL, NULL);
 	ctx->dialog = XtParent(topform);
 
 	stdarg_n = 0;
@@ -1261,7 +1293,7 @@ static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (!selector) {
 		stdarg_n = 0;
 		stdarg(XmNtitle, "Export HIDs");
-		selector = create_form_ok_dialog("export", 0);
+		selector = create_form_ok_dialog("export", 0, NULL, NULL);
 		count = 0;
 		for (i = 0; hids[i]; i++) {
 			if (hids[i]->exporter) {
@@ -1277,7 +1309,7 @@ static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				stdarg(XmNleftAttachment, XmATTACH_FORM);
 				w = XmCreatePushButton(selector, (char *) hids[i]->name, stdarg_args, stdarg_n);
 				XtManageChild(w);
-				XtAddCallback(w, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) ((size_t) i + 1));
+				XtAddCallback(w, XmNactivateCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) ((size_t) i + 1));
 				prev = w;
 				count++;
 			}
@@ -1787,7 +1819,7 @@ void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_l
 		stdarg_n = 0;
 		b_ok = XmCreatePushButton(bform, XmStrCast("OK"), stdarg_args, stdarg_n);
 		XtManageChild(b_ok);
-		XtAddCallback(b_ok, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) 0);
+		XtAddCallback(b_ok, XmNactivateCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
 
 		stdarg_n = 0;
 		b_new = XmCreatePushButton(bform, XmStrCast("New"), stdarg_args, stdarg_n);
@@ -1802,7 +1834,7 @@ void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_l
 		stdarg_n = 0;
 		b_cancel = XmCreatePushButton(bform, XmStrCast("Cancel"), stdarg_args, stdarg_n);
 		XtManageChild(b_cancel);
-		XtAddCallback(b_cancel, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
+		XtAddCallback(b_cancel, XmNactivateCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
 
 		stdarg_n = 0;
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
