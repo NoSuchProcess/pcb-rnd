@@ -171,7 +171,7 @@ static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, p
 }
 #undef CORNER
 
-static pcb_poly_t *any_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *p)
+static pcb_poly_t *any_poly_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *p)
 {
 	if (p == NULL)
 		return NULL;
@@ -193,13 +193,13 @@ static pcb_poly_t *any_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *p
 static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
 {
 	pcb_poly_t *p = regpoly(CURRENT, corners, rx, ry, rot_deg, cx, cy);
-	return any_place(data, layer, p);
+	return any_poly_place(data, layer, p);
 }
 
 static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
 {
 	pcb_poly_t *p = roundrect(CURRENT, w, h, rx, ry, rot_deg, cx, cy);
-	return any_place(data, layer, p);
+	return any_poly_place(data, layer, p);
 }
 
 static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_t dia, pcb_coord_t cx, pcb_coord_t cy)
@@ -214,6 +214,14 @@ static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_
 	if (l != NULL) {
 		if ((conf_core.editor.clear_line) && (data == PCB->Data))
 			pcb_poly_clear_from_poly(data, PCB_TYPE_LINE, layer, l);
+
+		if (data != PCB->Data) {
+			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+			pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_TYPE_LINE, CURRENT, l, l);
+			pcb_r_delete_entry(CURRENT->line_tree, (pcb_box_t *)l);
+			pcb_line_free(l);
+			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
+		}
 	}
 	return l;
 }
