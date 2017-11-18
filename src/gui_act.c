@@ -178,9 +178,9 @@ When set, the full-poly flag causes new polygons to have their
 instead of only the biggest one.
 
 @item ToggleGrid
-Resets the origin of the current grid to be wherever the mouse pointer
-is (not where the crosshair currently is).  If you provide two numbers
-after this, the origin is set to that coordinate.
+Resets the origin of the current grid to be wherever the crosshair is.
+If you provide two numbers after this, the origin is set to that
+coordinate.
 
 @item Grid
 Toggles whether the grid is displayed or not.
@@ -420,12 +420,10 @@ static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_
 			/* shift grid alignment */
 		case F_ToggleGrid:
 			{
-				pcb_coord_t oldGrid = PCB->Grid, x, y;
-
-				pcb_gui->get_coords(_("Click on new grid origin"), &x, &y);
+				pcb_coord_t oldGrid = PCB->Grid;
 
 				PCB->Grid = 1;
-				if (pcb_crosshair_move_absolute(x, y))
+				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
 					pcb_notify_crosshair_change(pcb_true);	/* first notify was in MoveCrosshairAbs */
 				pcb_board_set_grid(oldGrid, pcb_true);
 			}
