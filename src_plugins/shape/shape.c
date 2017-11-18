@@ -381,6 +381,50 @@ int pcb_act_roundrect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
+static const char pcb_acts_circle[] = "circle([where,] diameter)";
+static const char pcb_acth_circle[] = "Generate a filled circle (zero length round cap line)";
+int pcb_act_circle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int a, flags = 0;
+	pcb_data_t *data;
+	pcb_bool succ, have_coords = pcb_false;
+	pcb_coord_t dia;
+	pcb_line_t *l;
+
+	if (argc < 1) {
+		pcb_message(PCB_MSG_ERROR, "circle() needs at least one parameters (diameter)\n");
+		return -1;
+	}
+	if (argc > 2) {
+		pcb_message(PCB_MSG_ERROR, "circle(): too many arguments\n");
+		return -1;
+	}
+
+	a = get_where(argv[0], &data, &x, &y, &have_coords);
+	if (a < 0)
+		return -1;
+
+	dia = pcb_get_value(argv[a], NULL, NULL, &succ);
+	if (!succ)
+		pcb_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");
+
+	if ((data == PCB->Data) && (!have_coords))
+		pcb_gui->get_coords("Click on the center of the circle", &x, &y);
+
+	if (conf_core.editor.clear_line)
+		flags |= PCB_FLAG_CLEARLINE;
+
+	l = pcb_line_new(CURRENT, x, y, x, y, dia, conf_core.design.clearance*2, pcb_flag_make(flags));
+	if (l != NULL) {
+		if (conf_core.editor.clear_line)
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, CURRENT, l);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");
+
+
+	return 0;
+}
 
 static const char pcb_acts_shape[] = "shape()";
 static const char pcb_acth_shape[] = "Interactive shape generator.";
@@ -392,6 +436,7 @@ int pcb_act_shape(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 pcb_hid_action_t shape_action_list[] = {
 	{"regpoly", 0, pcb_act_regpoly, pcb_acth_regpoly, pcb_acts_regpoly},
 	{"roundrect", 0, pcb_act_roundrect, pcb_acth_roundrect, pcb_acts_roundrect},
+	{"circle", 0, pcb_act_circle, pcb_acth_circle, pcb_acts_circle},
 	{"shape", 0, pcb_act_shape, pcb_acth_shape, pcb_acts_shape}
 };
 
