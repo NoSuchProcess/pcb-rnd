@@ -563,6 +563,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 				return 0; /* 121, 122 are negative silk, top, bottom, ignore for now */
 
 			circ = pcb_element_arc_alloc((pcb_element_t *)obj);
+#warning TODO subc will need to implement layer 51, 52 when subc replaces elements
 			if ((ln == 22) || (ln == 52))
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, circ);
 			break;
@@ -611,6 +612,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 			if (ly->ly < 0)
 				return 0;
 			flags = pcb_layer_flags(st->pcb, ly->ly);
+#warning TODO subc will need to implement layer 51, 52 when subc replaces elements
 			if (!(flags & PCB_LYT_SILK)) /* consider silk lines only */
 				return 0;
 			lin1 = pcb_element_line_alloc((pcb_element_t *)obj);
@@ -720,7 +722,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 				pcb_trace("IN_ELEM and bailing due to ly->ly < 0, ln != 51, ln != 52\n");
 				return 0;
 			}
-#warning TODO need to sort out mapping of layers 51, 52 tDocu, to PCB_LYT_SILK and ly->ly > 0  
+#warning TODO subc will need to implement layer 51, 52 when subc replaces elements
 			flags = pcb_layer_flags(st->pcb, ly->ly);
 			/*if (!(flags & PCB_LYT_SILK)) consider silk lines only */
 			/*	return 0;*/
