@@ -845,7 +845,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 	pcb_undo_add_obj_to_create(PCB_TYPE_SUBC, sc, sc, sc);
 
 	if (conf_core.editor.show_solder_side)
-		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+		pcb_subc_change_side(&sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 
 	pcb_text_dyn_bbox_update(sc->data);
 
@@ -1262,22 +1262,22 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs)
 		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc, 0);
 }
 
-pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
+pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 {
 	pcb_opctx_t ctx;
 	pcb_subc_t *newsc, *newsc2;
 	int n;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, *subc))
 		return (pcb_false);
 
 
 	/* move subc into a local "buffer" */
 	memset(&ctx, 0, sizeof(ctx));
-	ctx.buffer.pcb = pcb_data_get_top(subc->data);
+	ctx.buffer.pcb = pcb_data_get_top((*subc)->data);
 	ctx.buffer.dst = pcb_data_new(NULL);
 	ctx.buffer.src = PCB->Data;
-	newsc = pcb_subcop_move_to_buffer(&ctx, subc);
+	newsc = pcb_subcop_move_to_buffer(&ctx, *subc);
 
 
 	/* mirror object geometry and stackup */
@@ -1293,8 +1293,11 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 	/* place the new subc */
 	newsc2 = pcb_subc_dup_at(PCB, PCB->Data, newsc, 0, 0, pcb_true);
 	newsc2->ID = newsc->ID;
+	PCB_SET_PARENT(newsc2, data, PCB->Data);
 	pcb_undo_add_subc_to_otherside(PCB_TYPE_SUBC, newsc2, newsc2, newsc2, yoff);
 
+	*subc = newsc2;
+	pcb_subc_free(newsc);
 	pcb_data_free(ctx.buffer.dst);
 	return pcb_true;
 }

@@ -389,7 +389,7 @@ static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			if ((pcb_search_screen(x, y, PCB_TYPE_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_save_serial();
-				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+				pcb_subc_change_side(&subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 				pcb_undo_inc_serial();
 				pcb_draw();
 			}
