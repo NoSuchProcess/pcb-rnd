@@ -386,6 +386,12 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
 {
 	const char *s;
 
+	if ((qstr == NULL) || (*qstr == '\0')) {
+		gds_append(dest, q);
+		gds_append(dest, q);
+		return 0;
+	}
+
 	/* check if quoting is needed */
 	if (strpbrk(qstr, needq) == NULL) {
 		gds_append_str(dest, qstr);
