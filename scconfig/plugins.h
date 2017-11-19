@@ -90,7 +90,7 @@ plugin_def("export_xy",        "xy (centroid) pcb_exporter",      sbuildin, 1)
 
 plugin_header("\nIO plugins (file formats):\n")
 plugin_def("io_autotrax",      "autotrax (freeware PCB CAD)",     sbuildin, 1)
-plugin_def("io_eagle",         "Eagle's xml format",              sdisable, 0)
+plugin_def("io_eagle",         "Eagle's xml format",              sbuildin, 1)
 plugin_def("io_hyp",           "hyperlynx .hyp loader",           sbuildin, 1)
 plugin_def("io_kicad_legacy",  "Kicad's legacy format",           sbuildin, 1)
 plugin_def("io_kicad",         "Kicad's s-expr format",           sbuildin, 1)
