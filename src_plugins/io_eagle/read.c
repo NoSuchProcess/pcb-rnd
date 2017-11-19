@@ -950,6 +950,7 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	return 0;
 }
 
+#warning TODO subc need to implement polygon-within-package support when subc replaces element
 static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *elem)
 {
 	static const dispatch_t disp[] = { /* possible children of package */
@@ -961,6 +962,7 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *el
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
 		{"text",        eagle_read_pkg_txt},
+		/*{"polygon",	eagle_read_poly}, */
 		{"rectangle",   eagle_read_rect},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
