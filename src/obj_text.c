@@ -148,6 +148,7 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 		return -1;
 
 	strncpy(key, *input, len);
+	key[len] = '\0';
 	*input += len+1;
 
 	if ((key[0] == 'a') && (key[1] == '.')) {
