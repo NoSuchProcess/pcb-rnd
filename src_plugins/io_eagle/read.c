@@ -305,7 +305,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->ly      = -1;
 			id = eagle_get_attrl(st, n, "number", -1);
 			if (id >= 0)
-				htip_set(&st->layers, id, ly);
+				htip_set(&st->layers, id, ly); /* all listed layers get a hash */
 
 			typ = 0;
 			switch(id) {
@@ -313,6 +313,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 				case 16: typ = PCB_LYT_COPPER | PCB_LYT_BOTTOM; break;
 				case 121:
 				case 21: /* tplace element silk */
+				/*case 51: tDocu, second layer in top silk group */ 
 				case 25: /* names */
 				case 27: /* values */
 				case 39: /* keepout */
@@ -321,6 +322,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					break;
 				case 122:
 				case 22: /* bplace element silk */
+				/* case 52: bDocu, second layer in bottom silk group */
 				case 26: /* names */
 				case 28: /* values */
 				case 40: /* keepout */
@@ -355,6 +357,38 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 
 static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 {
+	/* tDocu & bDocu are used for info used when designing, but not necessarily for
+	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
+	   These layers within the silk groups will be needed when subc replaces elements
+	   since most Eagle packages use tDocu, bDocu for some of their artwork */
+
+	eagle_layer_t *ly = htip_get(&st->layers, id);
+	pcb_trace("retrieving eagle layer: %d pcb-rnd equivalent with htip_get(&st->layers,id)\n", id);
+	/* if more than 51 or 52 are considered useful, we could relax the test here: */
+	if ((id == 51 || id == 52) && ly->ly < 0) {
+		pcb_trace("now processing previously unmapped eagle layer: %d\n", id);
+		unsigned long typ;
+		pcb_layergrp_id_t gid;
+		pcb_layergrp_t *grp;
+		switch (id) {
+			case 51: /* = tDocu */
+				typ		= PCB_LYT_SILK | PCB_LYT_TOP;
+				ly->name	= "tDocu";
+				ly->color	= 14;
+				break;
+			default: /* i.e. 52 = bDocu: */
+				typ             = PCB_LYT_SILK | PCB_LYT_BOTTOM;
+				ly->name        = "bDocu";
+				ly->color       = 7;
+				break;
+		}
+
+		ly->fill    = 1;
+		ly->visible = 0;
+		ly->active  = 1;
+		pcb_layergrp_list(st->pcb, typ, &gid, 1);
+		ly->ly = pcb_layer_create(st->pcb, gid, ly->name);	
+	}
 	return htip_get(&st->layers, id);
 }
 
