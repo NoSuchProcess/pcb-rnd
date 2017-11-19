@@ -18,12 +18,15 @@
 #
 #   http://repo.hu/projects/pcb-rnd
 
-trunk=../..
+if test -z $trunk
+then
+	trunk=../..
+fi
 dirs="$trunk/src $trunk/src_plugins"
 import=2
 exclude=""
 
-echo "Updating blame files..."
+echo "Updating blame files..." >&2
 for d in $dirs
 do
 	for f in `find $d -name '*.[chly]'`
@@ -40,7 +43,7 @@ do
 				fi
 				if test $src_date -gt $blm_date
 				then
-					echo "blame: $f"
+					echo "blame: $f" >&2
 					svn blame $f > $f.blm
 				fi
 				;;
@@ -48,11 +51,14 @@ do
 	done
 done
 
-echo "Calculating stats..."
+echo "Calculating stats..." >&2
 for d in $dirs
 do
-	cat `find $d -name '*.blm'` 
-done| awk -v import=$import '
+	if test -d $d
+	then
+		cat `find $d -name '*.blm'`
+	fi
+done | awk -v import=$import '
 		BEGIN {
 			MASK[6735]++
 			MASK[6720]++
