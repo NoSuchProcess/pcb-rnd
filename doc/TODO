@@ -233,7 +233,7 @@ Eagle binary:
 			board/1b00->signals/0000->signal/1c00->contactref/3e00
 		- NB signal nodes can have signal subnodes, which we may need to flatten for connected nets
 	- need to decide what to do with Eagles incompatible netnames '-' and '+'
-	- if (ly->ly < 0) { return 0; } in read.c line 690 fails to process tDocu 51, 52 layers which  seem to get used in elements for wires and arc/circle descriptions in addition to tPlace, bPlace layers  21,21; maybe mapto additional silk layers in the silk top and bottom groups - need to add code for this initiliasation of the additional silk groups layers
+	- need to enable io_eagle by default
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
