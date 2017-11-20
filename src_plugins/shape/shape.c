@@ -41,6 +41,8 @@
 #include "rotate.h"
 
 const char *pcb_shape_cookie = "shape plugin";
+static pcb_layer_t pcb_shape_current_layer_;
+pcb_layer_t *pcb_shape_current_layer = &pcb_shape_current_layer_;
 
 static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
 {
@@ -195,13 +197,23 @@ static pcb_poly_t *any_poly_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly
 
 static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
 {
-	pcb_poly_t *p = regpoly(CURRENT, corners, rx, ry, rot_deg, cx, cy);
+	pcb_poly_t *p;
+
+	if (layer == pcb_shape_current_layer)	
+		layer = CURRENT;
+
+	p = regpoly(layer, corners, rx, ry, rot_deg, cx, cy);
 	return any_poly_place(data, layer, p);
 }
 
 static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy)
 {
-	pcb_poly_t *p = roundrect(CURRENT, w, h, rx, ry, rot_deg, cx, cy);
+	pcb_poly_t *p;
+
+	if (layer == pcb_shape_current_layer)
+		layer = CURRENT;
+
+	p = roundrect(layer, w, h, rx, ry, rot_deg, cx, cy);
 	return any_poly_place(data, layer, p);
 }
 
@@ -209,6 +221,9 @@ static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_
 {
 	int flags = 0;
 	pcb_line_t *l;
+
+	if (layer == pcb_shape_current_layer)
+		layer = CURRENT;
 
 	if (conf_core.editor.clear_line)
 		flags |= PCB_FLAG_CLEARLINE;

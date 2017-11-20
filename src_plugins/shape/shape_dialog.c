@@ -377,7 +377,7 @@ static const char pcb_acts_shape[] = "shape()";
 static const char pcb_acth_shape[] = "Interactive shape generator.";
 int pcb_act_shape(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_shape_dialog(PCB, PCB_PASTEBUFFER->Data, CURRENT, pcb_false);
+	pcb_shape_dialog(PCB, PCB_PASTEBUFFER->Data, pcb_shape_current_layer, pcb_false);
 	return 0;
 }
 
