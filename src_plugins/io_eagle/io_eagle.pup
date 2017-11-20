@@ -1,6 +1,6 @@
 $class io
-$short Eagle's xml format
-$long Load the design from eagle's xml format.
+$short Eagle's xml and binary formats
+$long Load the design from eagle's xml and binary formats.
 $state WIP
 default buildin
 dep boardflip
