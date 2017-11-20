@@ -844,6 +844,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	pcb_undo_add_obj_to_create(PCB_TYPE_SUBC, sc, sc, sc);
 
+#warning subc TODO: BUG: "move selected" is really a copy&paste and this will send the subc to the top side
 	if (conf_core.editor.show_solder_side)
 		pcb_subc_change_side(&sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 
