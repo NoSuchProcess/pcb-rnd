@@ -363,10 +363,8 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 	   since most Eagle packages use tDocu, bDocu for some of their artwork */
 
 	eagle_layer_t *ly = htip_get(&st->layers, id);
-	pcb_trace("retrieving eagle layer: %d pcb-rnd equivalent with htip_get(&st->layers,id)\n", id);
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
 	if ((id == 51 || id == 52) && ly->ly < 0) {
-		pcb_trace("now processing previously unmapped eagle layer: %d\n", id);
 		unsigned long typ;
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_t *grp;
@@ -528,8 +526,6 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		}
 	}
 #warning TODO need to place text on layout if layer number is sensible
-	pcb_trace("\ttext found on Eagle layout at with rot: %s at %mm;%mm %mm: '%s' ln=%d dir=%d\n", rot, X, Y, text_scaling, text_val, ln, text_direction);
-
 	/* pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont) */
 
 	pcb_text_new( &st->pcb->Data->Layer[ln], pcb_font(st->pcb, 0, 1), X, Y, text_direction
@@ -708,18 +704,15 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	}
 
 	ly = eagle_layer_get(st, ln);
-	if (ly != NULL) {
-		pcb_trace("Allocated layer 'ly' via eagle_layer_get(st, ln)\n");
-	}
-	else {
-		pcb_trace("Failed to allocate wire layer 'ly' via eagle_layer_get(st, ln)\n");
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
 
 	switch (loc) {
 		case IN_ELEM:
 			if ((ly->ly) < 0 && (ln != 51) && (ln != 52)) {
-				pcb_trace("IN_ELEM and bailing due to ly->ly < 0, ln != 51, ln != 52\n");
+				pcb_message(PCB_MSG_WARNING, "Ignoring element wire on layer %s\n", ly->name);
 				return 0;
 			}
 #warning TODO subc will need to implement layer 51, 52 when subc replaces elements
@@ -742,7 +735,6 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	lin->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
 	lin->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
 	lin->Thickness = eagle_get_attrc(st, subtree, "width", -1); 
-	pcb_trace("new line thickness: %ml\n", lin->Thickness);
 	lin->Clearance = st->md_wire_wire*2;
 	lin->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 	lin->ID = pcb_create_ID_get();
@@ -837,8 +829,6 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 		default:
 			pcb_message(PCB_MSG_WARNING, "Ignored non-90 deg rotation of smd pad: %s\n", rot);
 	}
-
-	pcb_trace("%mm %mm -> %mm %mm\n", x, y, dx, dy);
 
 #warning TODO padstacks - consider roundrect, oval etc shapes when padstacks available
 	if (roundness >= 65) /* round smd pads found in fiducials, some discretes, it seems */
@@ -1196,8 +1186,7 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
 */
 	TextScale = 100; /* hardwired for now */
-/*	pcb_trace("About to use text scale %d for element.\n", TextScale);
-
+/*
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
 */
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, st->refdes_scale, TextFlags);
@@ -1290,9 +1279,6 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_REFDES(new_elem), &PCB_ELEM_TEXT_REFDES(elem), x, y, "NAME", name);
 			eagle_read_elem_text(st, n, new_elem, &PCB_ELEM_TEXT_VALUE(new_elem), &PCB_ELEM_TEXT_VALUE(elem), x, y, "VALUE", val);
 
-			pcb_trace("used refdes x: %ml\n", st->refdes_x);
-			pcb_trace("used refdes y: %ml\n", st->refdes_y);
-			pcb_trace("used refdes scale: %d\n", st->refdes_scale);
 			if (rot != NULL) {
 				steps = eagle_rot2steps(rot);
 				if (back) {
@@ -1310,7 +1296,6 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			if (back)
 				pcb_element_change_side(new_elem, 2 * y - st->pcb->MaxHeight);
 
-			pcb_trace("placing %s: %s/%s -> %p\n", name, lib, pkg, (void *)elem);
 			if (st->refdes_x != st->value_x || st->refdes_y != st->value_y || st->refdes_scale != st->value_scale) {
 				pcb_message(PCB_MSG_WARNING, "element \"value\" text x ,y, scaling != those of refdes text; set to refdes x, y, scaling.\n");
 			}
@@ -1529,13 +1514,11 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st_uninit(&st);
 
-	pcb_trace("Houston, the Eagle-xml has landed. %d\n", res);
-
 	return 0;
 
 err:;
 	st_uninit(&st);
-	pcb_trace("Eagle XML parsing error. Bailing out now.\n");
+	pcb_message(PCB_MSG_WARNING, "Eagle XML parsing error.\n");
 	return -1;
 }
 
@@ -1572,17 +1555,13 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
-	pcb_trace("About to dispatch to layer handler.\n");
 	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_1, NULL, 0);
-	pcb_trace("About to dispatch to board handler.\n");
 	res |= eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_2, NULL, 0);
 	if (res == 0)
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
 	pcb_board_normalize(pcb);
 	st_uninit(&st);
-
-	pcb_trace("Houston, the Eagle-bin has landed. %d\n", res);
 
 	return 0;
 }
