@@ -685,22 +685,9 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	long ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
 
-	if (lt != -1) {
-		pcb_trace("Found wire type %ld\n", lt);
-	} else {
-		pcb_trace("Found null wire type 'lt'\n");
-	}
-
 	if (lt > 0 || lt == -127) {
-		pcb_trace("Using circle routine to process wire type 'lt'\n");
+		/* using circle routine to process wire type */
 		return eagle_read_circle(st, subtree, obj, type);
-	}
-
-	if (ln != -1) {
-		pcb_trace("Found wire layer %ld\n", ln);
-	}
-	else {
-		pcb_trace("Found null wire layer number 'ln'");
 	}
 
 	ly = eagle_layer_get(st, ln);
@@ -1287,7 +1274,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				if (steps > 0)
 					pcb_element_rotate90(st->pcb->Data, new_elem, x, y, steps);
 				else
-					pcb_trace("0 degree element rotation/steps used for '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
+					pcb_message(PCB_MSG_WARNING, "0 degree element rotation/steps used for '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
 			}
 
 			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
