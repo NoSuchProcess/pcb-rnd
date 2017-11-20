@@ -4915,33 +4915,33 @@
  ../src_3rd/puplug/error.h hid_actions.h compat_misc.h misc_util.h \
  dolists.h
 ../src_plugins/shape/shape.o: ../src_plugins/shape/shape.c ../config.h \
- action_helper.h global_typedefs.h pcb_bool.h unit.h plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_actions.h hid.h \
- error.h drc.h attrib.h layer.h globalconst.h obj_all_list.h \
- obj_arc_list.h obj_common.h ../src_3rd/genht/hash.h \
+ ../src_plugins/shape/shape.h board.h const.h macro.h global_typedefs.h \
+ pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genht/hash.h \
  ../src_3rd/genlist/gendlist.h flag.h data_parent.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_elem_list.h obj_elem.h \
  obj_line_list.h obj_line.h obj_pad_list.h obj_pad.h obj_pinvia_list.h \
  obj_pinvia.h obj_text.h font.h ../src_3rd/genht/htip.h \
  ../src_3rd/genht/ht.h obj_poly.h polyarea.h obj_poly_list.h box.h \
- math_helper.h macro.h move.h misc_util.h ht_element.h \
- ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h obj_text_list.h \
- obj_rat_list.h obj_rat.h layer_grp.h board.h const.h vtroutestyle.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h library.h rats_patch.h board.h \
- buffer.h compat_misc.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genvector/vtp0.h list_conf.h data.h crosshair.h vtonpoint.h \
- route.h buffer.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h error.h layer.h math_helper.h \
- obj_poly.h obj_poly_draw.h rotate.h ../src_plugins/shape/shape_dialog.c \
- hid_dad.h compat_misc.h hid_attrib.h dolists.h
+ math_helper.h move.h misc_util.h ht_element.h ../src_3rd/genht/ht.h \
+ obj_pstk_list.h obj_pstk.h obj_text_list.h obj_rat_list.h obj_rat.h \
+ layer_grp.h library.h rats_patch.h board.h data.h crosshair.h \
+ vtonpoint.h hid.h error.h drc.h route.h buffer.h obj_subc_list.h \
+ obj_subc.h ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h \
+ rtree.h ht_subc.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
+ layer.h pcb_bool.h action_helper.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h hid_actions.h buffer.h compat_misc.h \
+ conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h error.h math_helper.h obj_poly.h \
+ obj_poly_draw.h rotate.h ../src_plugins/shape/shape_dialog.c hid_dad.h \
+ compat_misc.h hid_attrib.h dolists.h
 ../src_plugins/smartdisperse/smartdisperse.o: \
  ../src_plugins/smartdisperse/smartdisperse.c ../src_3rd/genht/htpi.h \
  ../src_3rd/genht/ht.h ../config.h board.h const.h macro.h \
