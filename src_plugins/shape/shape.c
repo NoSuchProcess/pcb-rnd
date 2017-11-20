@@ -21,6 +21,9 @@
  */
 
 #include "config.h"
+
+#include "shape.h"
+
 #include "action_helper.h"
 #include "plugins.h"
 #include "hid_actions.h"
