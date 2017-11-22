@@ -685,6 +685,38 @@ void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coor
 			pcb_pstk_shape_grow(&proto->tr.array[n].shape[i], is_absolute, val);
 }
 
+static void pcb_pstk_tshape_del_idx(pcb_pstk_tshape_t *shp, int idx)
+{
+	int n;
+	for(n = idx; n < shp->len-1; n++)
+		shp->shape[n] = shp->shape[n+1];
+	shp->len--;
+}
+
+void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx)
+{
+	int n;
+
+	if ((proto->tr.used == 0) || (idx < 0) || (idx >= proto->tr.array[0].len))
+		return;
+
+	/* delete the shape from all transformed variants */
+	for(n = 0; n < proto->tr.used; n++)
+		pcb_pstk_tshape_del_idx(&proto->tr.array[n], idx);
+}
+
+void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
+{
+	int idx;
+
+	if (proto->tr.used == 0)
+		return;
+
+	/* search the 0th transformed, all other tshapes are the same */
+	idx = get_shape_idx(&proto->tr.array[0], lyt, comb);
+	pcb_pstk_proto_del_shape_idx(proto, idx);
+}
+
 
 /*** hash ***/
 static unsigned int pcb_pstk_shape_hash(const pcb_pstk_shape_t *sh)

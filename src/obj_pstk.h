@@ -137,6 +137,10 @@ void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src);
 /* grow (or shrink) a prototype to or by val - change the proto in place */
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val);
 
+/* Remove a shape from the proto (either by layer or by idx) */
+void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb_layer_combining_t comb);
+void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx);
+
 
 /*** hash ***/
 unsigned int pcb_pstk_hash(const pcb_pstk_proto_t *p);
