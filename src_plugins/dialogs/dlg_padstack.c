@@ -247,6 +247,9 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	pcb_pstk_proto_del_shape(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
 }
 
 static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -261,8 +264,9 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		copy_from_names[n] = pse_layer[n].name;
 	copy_from_names[n] = NULL;
 
+	pse->editing_shape = -1;
 	for(n = 0; n < pse_num_layers; n++) {
-		if (pse->proto_change[n] == attr) {
+		if (pse->proto_change[n] == (attr - pse->attrs)) {
 			pse->editing_shape = n;
 			break;
 		}
