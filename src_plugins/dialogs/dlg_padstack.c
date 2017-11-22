@@ -59,6 +59,7 @@ typedef struct pse_s {
 	int hbot_val, hbot_text, hbot_layer;
 
 	/* sub-dialog: shape change */
+	void *parent_hid_ctx;
 	int editing_shape; /* index of the shape being edited */
 	pcb_hid_attribute_t *shape_chg;
 	int text_shape, del, derive;
@@ -251,7 +252,7 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_proto_del_shape(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
 
-	pse_ps2dlg(hid_ctx, pse);
+	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
 }
 
@@ -262,6 +263,8 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	char tmp[256];
 	const char *copy_from_names[pse_num_layers+1];
 	PCB_DAD_DECL(dlg);
+
+	pse->parent_hid_ctx = hid_ctx;
 
 	for(n = 0; n < pse_num_layers; n++)
 		copy_from_names[n] = pse_layer[n].name;
