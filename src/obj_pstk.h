@@ -102,8 +102,9 @@ pcb_cardinal_t pcb_pstk_conv_buffer(int quiet);
 /* free fields of a proto (not freeing the proto itself, not removing it from lists */
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst);
 
-/* allocate the point array of a poly shape (single allocation for x and y) */
+/* allocate/free the point array of a poly shape (single allocation for x and y) */
 void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len);
+void pcb_pstk_shape_free_poly(pcb_pstk_poly_t *poly);
 
 /* geometry for select.c and search.c; if layer is NULL, consider all shapes */
 int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer);
@@ -134,6 +135,9 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 /* Deep copy a prototype or shape */
 void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src);
 void pcb_pstk_shape_copy(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *src);
+
+/* free all fields of a shape */
+void pcb_pstk_shape_free(pcb_pstk_shape_t *s);
 
 /* grow (or shrink) a prototype to or by val - change the proto in place */
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val);

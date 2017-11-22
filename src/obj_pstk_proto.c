@@ -52,6 +52,14 @@ void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len)
 	poly->pa = NULL;
 }
 
+void pcb_pstk_shape_free_poly(pcb_pstk_poly_t *poly)
+{
+	if (poly->pa != NULL)
+		pcb_polyarea_free(&poly->pa);
+	free(poly->x);
+	poly->len = 0;
+}
+
 void pcb_pstk_shape_copy_poly(pcb_pstk_poly_t *dst, const pcb_pstk_poly_t *src)
 {
 	memcpy(dst->x, src->x, sizeof(src->x[0]) * src->len * 2);
@@ -289,6 +297,17 @@ void pcb_pstk_shape_copy(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *src)
 	}
 }
 
+void pcb_pstk_shape_free(pcb_pstk_shape_t *s)
+{
+	switch(s->shape) {
+		case PCB_PSSH_LINE:
+		case PCB_PSSH_CIRC:
+			break; /* no allocation */
+		case PCB_PSSH_POLY:
+			pcb_pstk_shape_free_poly(&s->data.poly);
+			break;
+	}
+}
 
 void pcb_pstk_tshape_copy(pcb_pstk_tshape_t *ts_dst, pcb_pstk_tshape_t *ts_src)
 {
