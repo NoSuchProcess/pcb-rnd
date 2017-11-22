@@ -275,6 +275,21 @@ int pcb_pstk_proto_conv_buffer(pcb_pstk_proto_t *dst, int quiet)
 	return ret;
 }
 
+void pcb_pstk_shape_copy(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *src)
+{
+	memcpy(dst, src, sizeof(pcb_pstk_shape_t));
+	switch(src->shape) {
+		case PCB_PSSH_LINE:
+		case PCB_PSSH_CIRC:
+			break; /* do nothing, all fields are copied already by the memcpy */
+		case PCB_PSSH_POLY:
+			pcb_pstk_shape_alloc_poly(&dst->data.poly, src->data.poly.len);
+			pcb_pstk_shape_copy_poly(&dst->data.poly, &src->data.poly);
+			break;
+	}
+}
+
+
 void pcb_pstk_tshape_copy(pcb_pstk_tshape_t *ts_dst, pcb_pstk_tshape_t *ts_src)
 {
 	int n;
