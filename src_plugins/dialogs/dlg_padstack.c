@@ -250,6 +250,9 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_proto_del_shape(proto, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+
+	pse_ps2dlg(hid_ctx, pse);
+	pcb_gui->invalidate_all();
 }
 
 static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
