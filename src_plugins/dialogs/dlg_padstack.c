@@ -279,6 +279,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 				pse->shrink = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_COORD(dlg, "");
 				pse->amount = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
 			PCB_DAD_BUTTON(dlg, "Grow");
 				pse->grow = PCB_DAD_CURRENT(dlg);
 		PCB_DAD_END(dlg);
