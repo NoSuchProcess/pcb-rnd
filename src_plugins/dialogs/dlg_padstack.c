@@ -254,7 +254,6 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pse_t *pse = caller_data;
 	int n;
 	char tmp[256];
-	char *butname[pse_num_layers];
 	const char *copy_from_names[pse_num_layers+1];
 	PCB_DAD_DECL(dlg);
 
@@ -306,8 +305,6 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 	pse->shape_chg = NULL;
 	PCB_DAD_FREE(dlg);
-	for(n = 0; n < pse_num_layers; n++)
-		free(butname[n]);
 }
 
 static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object)\n";
