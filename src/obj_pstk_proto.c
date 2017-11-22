@@ -58,7 +58,7 @@ void pcb_pstk_shape_copy_poly(pcb_pstk_poly_t *dst, const pcb_pstk_poly_t *src)
 	pcb_pstk_shape_update_pa(dst);
 }
 
-static int get_shape_idx(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
+int pcb_pstk_get_shape_idx(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
 	for(n = 0; n < ts->len; n++)
@@ -217,16 +217,16 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 
 	/* if there was a via, use the via's shape on layers that are not specified */
 	if (via != NULL) {
-		if (get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_TOP, 0) == -1)
+		if (pcb_pstk_get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_TOP, 0) == -1)
 			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_TOP, 0, via->Thickness);
-		if (get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_INTERN, 0) == -1)
+		if (pcb_pstk_get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_INTERN, 0) == -1)
 			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_INTERN, 0, via->Thickness);
-		if (get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) == -1)
+		if (pcb_pstk_get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) == -1)
 			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0, via->Thickness);
 		if (via->Mask > 0) {
-			if (get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB) == -1)
+			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB) == -1)
 				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB, via->Mask);
-			if (get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB) == -1)
+			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB) == -1)
 				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB, via->Mask);
 		}
 	}
@@ -713,7 +713,7 @@ void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb
 		return;
 
 	/* search the 0th transformed, all other tshapes are the same */
-	idx = get_shape_idx(&proto->tr.array[0], lyt, comb);
+	idx = pcb_pstk_get_shape_idx(&proto->tr.array[0], lyt, comb);
 	pcb_pstk_proto_del_shape_idx(proto, idx);
 }
 
