@@ -59,6 +59,7 @@ typedef struct pse_s {
 	int hbot_val, hbot_text, hbot_layer;
 
 	/* sub-dialog: shape change */
+	int editing_shape; /* index of the shape being edited */
 	pcb_hid_attribute_t *shape_chg;
 	int text_shape, del, derive;
 	int copy_do, copy_from;
@@ -244,6 +245,10 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_gui->invalidate_all();
 }
 
+static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+}
+
 static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
@@ -257,6 +262,13 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		copy_from_names[n] = pse_layer[n].name;
 	copy_from_names[n] = NULL;
 
+	for(n = 0; n < pse_num_layers; n++) {
+		if (pse->proto_change[n] == attr) {
+			pse->editing_shape = n;
+			break;
+		}
+	}
+
 	PCB_DAD_BEGIN_VBOX(dlg);
 		sprintf(tmp, "Automatically generate shape for ...");
 		PCB_DAD_LABEL(dlg, tmp);
@@ -264,6 +276,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 			pse->text_shape = PCB_DAD_CURRENT(dlg);
 		PCB_DAD_BUTTON(dlg, "Delete (no shape)");
 			pse->del = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_CHANGE_CB(dlg, pse_shape_del);
 		PCB_DAD_BUTTON(dlg, "Derive automatically");
 			pse->derive = PCB_DAD_CURRENT(dlg);
 
