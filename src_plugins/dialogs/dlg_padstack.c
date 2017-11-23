@@ -27,16 +27,19 @@ typedef struct pse_proto_layer_s {
 	const char *name;
 	pcb_layer_type_t mask;
 	pcb_layer_combining_t comb;
+
+	int auto_from[2];
+	pcb_coord_t auto_bloat;
 } pse_proto_layer_t;
 
 static const pse_proto_layer_t pse_layer[] = {
-	{"top paste",            PCB_LYT_TOP | PCB_LYT_PASTE, 0},
-	{"top mask",             PCB_LYT_TOP | PCB_LYT_MASK, PCB_LYC_SUB},
-	{"top copper",           PCB_LYT_TOP | PCB_LYT_COPPER, 0},
-	{"any internal copper",  PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
-	{"bottom copper",        PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0},
-	{"bottom mask",          PCB_LYT_BOTTOM | PCB_LYT_MASK, PCB_LYC_SUB},
-	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE, 0}
+	{"top paste",            PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO,             {2,-1}, 0},
+	{"top mask",             PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB|PCB_LYC_AUTO, {2,-1}, PCB_MIL_TO_COORD(4)},
+	{"top copper",           PCB_LYT_TOP | PCB_LYT_COPPER,    0,                        {4,3},  0},
+	{"any internal copper",  PCB_LYT_INTERN | PCB_LYT_COPPER, 0,                        {2,4},  0},
+	{"bottom copper",        PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0,                        {2,3},  0},
+	{"bottom mask",          PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB|PCB_LYC_AUTO, {4,-1}, PCB_MIL_TO_COORD(4)},
+	{"bottom paste",         PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO,             {4,-1},  0}
 };
 #define pse_num_layers (sizeof(pse_layer) / sizeof(pse_layer[0]))
 
@@ -256,6 +259,47 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_gui->invalidate_all();
 }
 
+static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int n, src_idx = -1;
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
+	int dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+
+	for(n = 0; n < 2; n++) {
+		int from = pse_layer[pse->editing_shape].auto_from[n];
+		src_idx = pcb_pstk_get_shape_idx(ts, pse_layer[from].mask, pse_layer[from].comb);
+		if (src_idx >= 0)
+			break;
+	}
+
+	if (src_idx < 0) {
+		pcb_message(PCB_MSG_ERROR, "Can't derive shape: source shapes are empty\n");
+		return;
+	}
+
+	/* do the same copy on all shapes of all transformed variants */
+	for(n = 0; n < proto->tr.used; n++) {
+		int d = dst_idx;
+		if (d < 0) {
+			d = proto->tr.array[n].len;
+			proto->tr.array[n].len++;
+			proto->tr.array[n].shape = realloc(proto->tr.array[n].shape, proto->tr.array[n].len * sizeof(proto->tr.array[n].shape[0]));
+			
+		}
+		else
+			pcb_pstk_shape_free(&proto->tr.array[n].shape[d]);
+		pcb_pstk_shape_copy(&proto->tr.array[n].shape[d], &proto->tr.array[n].shape[src_idx]);
+		proto->tr.array[n].shape[d].layer_mask = pse_layer[pse->editing_shape].mask;
+		proto->tr.array[n].shape[d].comb = pse_layer[pse->editing_shape].comb;
+	}
+
+	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pcb_gui->invalidate_all();
+}
+
+
 static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
@@ -288,7 +332,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 			PCB_DAD_CHANGE_CB(dlg, pse_shape_del);
 		PCB_DAD_BUTTON(dlg, "Derive automatically");
 			pse->derive = PCB_DAD_CURRENT(dlg);
-
+			PCB_DAD_CHANGE_CB(dlg, pse_shape_auto);
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "Copy shape from");
 				pse->copy_do = PCB_DAD_CURRENT(dlg);
