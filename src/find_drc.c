@@ -725,7 +725,58 @@ int pcb_drc_all(void)
 			}
 		}
 		PCB_END_LOOP;
-#warning subc TODO term TODO: implement this for subcircuits
+
+		PCB_SUBC_LOOP(PCB->Data);
+		{
+			int n;
+
+			tmpcnt = 0;
+			for(n = 0; n < subc->data->LayerN; n++) {
+				pcb_layer_type_t lyt = pcb_layer_flags_(&subc->data->Layer[n]);
+				if ((lyt & PCB_LYT_SILK) == 0)
+					continue;
+				PCB_LINE_LOOP(&subc->data->Layer[n]);
+				{
+					if (line->Thickness < PCB->minSlk)
+						tmpcnt++;
+				}
+				PCB_END_LOOP;
+			}
+
+			if (tmpcnt > 0) {
+				const char *title;
+				const char *name;
+				char *buffer;
+				int buflen;
+
+				PCB_FLAG_SET(TheFlag, subc);
+				DrawSubc(subc);
+				drcerr_count++;
+				SetThing(PCB_TYPE_SUBC, subc, subc, subc);
+				LocateError(&x, &y);
+				BuildObjectList(&object_count, &object_id_list, &object_type_list);
+
+				title = _("Subcircuit %s has %i silk lines which are too thin");
+				name = PCB_UNKNOWN(subc->refdes);
+				buffer = pcb_strdup_printf(title, name, tmpcnt);
+
+				violation = pcb_drc_violation_new(buffer, _("Process specifications dictate a minimum silkscreen\n" "feature-width that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
+																					0,	/* MINIMUM OFFENDING WIDTH UNKNOWN */
+																					PCB->minSlk, object_count, object_id_list, object_type_list);
+				free(buffer);
+				append_drc_violation(violation);
+				pcb_drc_violation_free(violation);
+				free(object_id_list);
+				free(object_type_list);
+				if (!throw_drc_dialog()) {
+					IsBad = pcb_true;
+					break;
+				}
+			}
+		}
+		PCB_END_LOOP;
+
 	}
 
 
