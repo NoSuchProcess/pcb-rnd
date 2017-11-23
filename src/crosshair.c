@@ -261,7 +261,10 @@ void XORDrawBuffer(pcb_buffer_t *Buffer)
 			PCB_END_LOOP;
 			PCB_ARC_LOOP(layer);
 			{
-				pcb_gui->draw_arc(pcb_crosshair.GC, x + arc->X, y + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+				pcb_arc_t translated_arc = *arc;
+				translated_arc.X += x;
+				translated_arc.Y += y;
+				pcb_draw_wireframe_arc(pcb_crosshair.GC, &translated_arc);
 			}
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(layer);
