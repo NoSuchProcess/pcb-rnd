@@ -302,7 +302,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
-	int from = pse->attrs[pse->copy_from].default_val.int_value;
+	int from = pse->shape_chg[pse->copy_from].default_val.int_value;
 	int dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
 	int src_idx = pcb_pstk_get_shape_idx(ts, pse_layer[from].mask, pse_layer[from].comb);
 
