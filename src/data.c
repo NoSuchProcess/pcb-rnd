@@ -57,12 +57,12 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 		for(lid = pcb_layer_first_all(&pcb->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
 			pcb_layer_t *layer = pcb->Data->Layer + lid;
 			if (lacb != NULL)
-				if (lacb(ctx, PCB, layer, 1))
+				if (lacb(ctx, pcb, layer, 1))
 					continue;
 			if (lcb != NULL) {
 				PCB_LINE_LOOP(layer);
 				{
-					lcb(ctx, PCB, layer, line);
+					lcb(ctx, pcb, layer, line);
 				}
 				PCB_END_LOOP;
 			}
@@ -70,7 +70,7 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 			if (acb != NULL) {
 				PCB_ARC_LOOP(layer);
 				{
-					acb(ctx, PCB, layer, arc);
+					acb(ctx, pcb, layer, arc);
 				}
 				PCB_END_LOOP;
 			}
@@ -78,7 +78,7 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 			if (tcb != NULL) {
 				PCB_TEXT_LOOP(layer);
 				{
-					tcb(ctx, PCB, layer, text);
+					tcb(ctx, pcb, layer, text);
 				}
 				PCB_END_LOOP;
 			}
@@ -86,12 +86,12 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 			if (pocb != NULL) {
 				PCB_POLY_LOOP(layer);
 				{
-					pocb(ctx, PCB, layer, polygon);
+					pocb(ctx, pcb, layer, polygon);
 				}
 				PCB_END_LOOP;
 			}
 			if (lacb != NULL)
-				lacb(ctx, PCB, layer, 0);
+				lacb(ctx, pcb, layer, 0);
 		}
 	}
 }
@@ -102,13 +102,13 @@ void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_el
 		PCB_ELEMENT_LOOP(pcb->Data);
 		{
 			if (ecb != NULL)
-				if (ecb(ctx, PCB, element, 1))
+				if (ecb(ctx, pcb, element, 1))
 					continue;
 
 			if (elcb != NULL) {
 				PCB_ELEMENT_PCB_LINE_LOOP(element);
 				{
-					elcb(ctx, PCB, element, line);
+					elcb(ctx, pcb, element, line);
 				}
 				PCB_END_LOOP;
 			}
@@ -116,7 +116,7 @@ void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_el
 			if (eacb != NULL) {
 				PCB_ELEMENT_ARC_LOOP(element);
 				{
-					eacb(ctx, PCB, element, arc);
+					eacb(ctx, pcb, element, arc);
 				}
 				PCB_END_LOOP;
 			}
@@ -124,7 +124,7 @@ void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_el
 			if (etcb != NULL) {
 				PCB_ELEMENT_PCB_TEXT_LOOP(element);
 				{
-					etcb(ctx, PCB, element, text);
+					etcb(ctx, pcb, element, text);
 				}
 				PCB_END_LOOP;
 			}
@@ -132,7 +132,7 @@ void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_el
 			if (epicb != NULL) {
 				PCB_PIN_LOOP(element);
 				{
-					epicb(ctx, PCB, element, pin);
+					epicb(ctx, pcb, element, pin);
 				}
 				PCB_END_LOOP;
 			}
@@ -141,13 +141,13 @@ void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_el
 			if (epacb != NULL) {
 				PCB_PAD_LOOP(element);
 				{
-					epacb(ctx, PCB, element, pad);
+					epacb(ctx, pcb, element, pad);
 				}
 				PCB_END_LOOP;
 			}
 
 			if (ecb != NULL)
-				ecb(ctx, PCB, element, 0);
+				ecb(ctx, pcb, element, 0);
 		}
 		PCB_END_LOOP;
 	}
@@ -158,7 +158,7 @@ void pcb_loop_vias(pcb_board_t *pcb, void *ctx, pcb_via_cb_t vcb)
 	if (vcb != NULL) {
 		PCB_VIA_LOOP(pcb->Data);
 		{
-			vcb(ctx, PCB, via);
+			vcb(ctx, pcb, via);
 		}
 		PCB_END_LOOP;
 	}
