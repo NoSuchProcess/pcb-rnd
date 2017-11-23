@@ -343,24 +343,30 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		PCB_DAD_BUTTON(dlg, "Delete (no shape)");
 			pse->del = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_CHANGE_CB(dlg, pse_shape_del);
+			PCB_DAD_HELP(dlg, "Remove the shape from this layer type");
 		PCB_DAD_BUTTON(dlg, "Derive automatically");
 			pse->derive = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_CHANGE_CB(dlg, pse_shape_auto);
+			PCB_DAD_HELP(dlg, "Derive the shape for this layer type\nfrom other, existing shapes of this padstack\n(automatic)");
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "Copy shape from");
 				pse->copy_do = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_HELP(dlg, "Copy the shape for this layer type\nfrom other, existing shapes of this padstack\nfrom the layer type selected");
 			PCB_DAD_ENUM(dlg, copy_from_names); /* coposite */
 				pse->copy_from = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_HELP(dlg, "Select the source layer type for manual shape copy");
 		PCB_DAD_END(dlg);
 
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "Shrink");
 				pse->shrink = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_HELP(dlg, "Make the shape smaller by the selected amount");
 			PCB_DAD_COORD(dlg, "");
 				pse->amount = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
 			PCB_DAD_BUTTON(dlg, "Grow");
 				pse->grow = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_HELP(dlg, "Make the shape larger by the selected amount");
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
 
@@ -407,9 +413,11 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 			PCB_DAD_BUTTON(dlg, "this instance");
 				pse.but_instance = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_CHANGE_CB(dlg, pse_tab_ps);
+				PCB_DAD_HELP(dlg, "Change the properties of\nthis one padstack instance");
 			PCB_DAD_BUTTON(dlg, "prototype");
 				pse.but_prototype = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_CHANGE_CB(dlg, pse_tab_proto);
+				PCB_DAD_HELP(dlg, "Change the properties of\nthe padstack prototype used by\nthis padstack\n(affects all padstacks using the same prototype)");
 		PCB_DAD_END(dlg);
 
 		/* this instance */
@@ -421,6 +429,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 					PCB_DAD_LABEL(dlg, "prototype");
 					PCB_DAD_BUTTON(dlg, "#5");
 						pse.proto_id = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_HELP(dlg, "Padstack prototype ID\n(click to use a different prototype)");
 				PCB_DAD_END(dlg);
 				PCB_DAD_BEGIN_TABLE(dlg, 2);
 					PCB_DAD_LABEL(dlg, "Clearance");
@@ -429,6 +438,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						PCB_DAD_MINVAL(dlg, 1);
 						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+						PCB_DAD_HELP(dlg, "global clearance (affects all layers)");
 					PCB_DAD_LABEL(dlg, "Rotation");
 					PCB_DAD_REAL(dlg, "");
 						pse.rot = PCB_DAD_CURRENT(dlg);
@@ -460,6 +470,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						PCB_DAD_BUTTON(dlg, "change...");
 							pse.proto_change[n] = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
+							PCB_DAD_HELP(dlg, "Change the shape on this layer type");
 					}
 				PCB_DAD_END(dlg);
 			
@@ -481,6 +492,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 					PCB_DAD_BOOL(dlg, "");
 						pse.hplated = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+						PCB_DAD_HELP(dlg, "A plated hole galvanically connects layers");
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 					PCB_DAD_LABEL(dlg, ""); /* dummy */
 
@@ -490,6 +502,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
 						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+						PCB_DAD_HELP(dlg, "Blind/buried via: top end of the hole");
 					PCB_DAD_LABEL(dlg, "<text>");
 						pse.htop_text = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "<layer>");
@@ -501,6 +514,7 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 						PCB_DAD_MINVAL(dlg, -(pse.pcb->LayerGroups.cache.copper_len-1));
 						PCB_DAD_MAXVAL(dlg, pse.pcb->LayerGroups.cache.copper_len-1);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+						PCB_DAD_HELP(dlg, "Blind/buried via: bottom end of the hole");
 					PCB_DAD_LABEL(dlg, "<text>");
 						pse.hbot_text = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "<layer>");
