@@ -322,6 +322,41 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_gui->invalidate_all();
 }
 
+
+static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
+{
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
+	int n, dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_coord_t bloat = pse->shape_chg[pse->amount].default_val.coord_value;
+
+	if (bloat <= 0)
+		return;
+
+	if (dst_idx < 0) {
+		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pse_layer[pse->editing_shape].name);
+		return;
+	}
+
+	bloat *= sign;
+	for(n = 0; n < proto->tr.used; n++)
+		pcb_pstk_shape_grow(&proto->tr.array[n].shape[dst_idx], pcb_false, bloat);
+
+	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pcb_gui->invalidate_all();
+}
+
+static void pse_shape_shrink(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_shape_bloat(hid_ctx, caller_data, -1);
+}
+
+static void pse_shape_grow(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_shape_bloat(hid_ctx, caller_data, +1);
+}
+
 static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
@@ -370,12 +405,14 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "Shrink");
 				pse->shrink = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_CHANGE_CB(dlg, pse_shape_shrink);
 				PCB_DAD_HELP(dlg, "Make the shape smaller by the selected amount");
 			PCB_DAD_COORD(dlg, "");
 				pse->amount = PCB_DAD_CURRENT(dlg);
 				PCB_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
 			PCB_DAD_BUTTON(dlg, "Grow");
 				pse->grow = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_CHANGE_CB(dlg, pse_shape_grow);
 				PCB_DAD_HELP(dlg, "Make the shape larger by the selected amount");
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
