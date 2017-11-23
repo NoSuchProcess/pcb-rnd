@@ -259,29 +259,6 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_gui->invalidate_all();
 }
 
-static void pse_change_shape(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pcb_coord_t bloat, pcb_layer_type_t mask, pcb_layer_combining_t comb)
-{
-	int n;
-
-	/* do the same copy on all shapes of all transformed variants */
-	for(n = 0; n < proto->tr.used; n++) {
-		int d = dst_idx;
-		if (d < 0) {
-			d = proto->tr.array[n].len;
-			proto->tr.array[n].len++;
-			proto->tr.array[n].shape = realloc(proto->tr.array[n].shape, proto->tr.array[n].len * sizeof(proto->tr.array[n].shape[0]));
-			
-		}
-		else
-			pcb_pstk_shape_free(&proto->tr.array[n].shape[d]);
-		pcb_pstk_shape_copy(&proto->tr.array[n].shape[d], &proto->tr.array[n].shape[src_idx]);
-		proto->tr.array[n].shape[d].layer_mask = mask;
-		proto->tr.array[n].shape[d].comb = comb;
-		if (bloat != 0)
-			pcb_pstk_shape_grow(&proto->tr.array[n].shape[d], pcb_false, bloat);
-	}
-}
-
 static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	int n, src_idx = -1;
@@ -313,7 +290,7 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 	}
 
-	pse_change_shape(proto, dst_idx, src_idx, pse_layer[pse->editing_shape].auto_bloat, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	pcb_pstk_shape_derive(proto, dst_idx, src_idx, pse_layer[pse->editing_shape].auto_bloat, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pcb_gui->invalidate_all();
