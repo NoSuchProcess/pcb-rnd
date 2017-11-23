@@ -293,6 +293,8 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		pcb_pstk_shape_copy(&proto->tr.array[n].shape[d], &proto->tr.array[n].shape[src_idx]);
 		proto->tr.array[n].shape[d].layer_mask = pse_layer[pse->editing_shape].mask;
 		proto->tr.array[n].shape[d].comb = pse_layer[pse->editing_shape].comb;
+		if (pse_layer[pse->editing_shape].auto_bloat != 0)
+			pcb_pstk_shape_grow(&proto->tr.array[n].shape[d], pcb_false, pse_layer[pse->editing_shape].auto_bloat);
 	}
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
