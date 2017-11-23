@@ -296,6 +296,26 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_gui->invalidate_all();
 }
 
+static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int n;
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
+	int from = pse->attrs[pse->copy_from].default_val.int_value;
+	int dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	int src_idx = pcb_pstk_get_shape_idx(ts, pse_layer[from].mask, pse_layer[from].comb);
+
+	if (src_idx < 0) {
+		pcb_message(PCB_MSG_ERROR, "Can't derive shape: source shape (%s) is empty from=%d\n", pse_layer[from].name, from);
+		return;
+	}
+
+	pcb_pstk_shape_derive(proto, dst_idx, src_idx, pse_layer[pse->editing_shape].auto_bloat, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+
+	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pcb_gui->invalidate_all();
+}
 
 static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -335,6 +355,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BUTTON(dlg, "Copy shape from");
 				pse->copy_do = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_CHANGE_CB(dlg, pse_shape_copy);
 				PCB_DAD_HELP(dlg, "Copy the shape for this layer type\nfrom other, existing shapes of this padstack\nfrom the layer type selected");
 			PCB_DAD_ENUM(dlg, copy_from_names); /* coposite */
 				pse->copy_from = PCB_DAD_CURRENT(dlg);
