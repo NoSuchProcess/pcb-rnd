@@ -266,16 +266,27 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
 	int dst_idx = pcb_pstk_get_shape_idx(ts, pse_layer[pse->editing_shape].mask, pse_layer[pse->editing_shape].comb);
+	char src_shape_names[128];
+	char *end = src_shape_names;
 
 	for(n = 0; n < 2; n++) {
 		int from = pse_layer[pse->editing_shape].auto_from[n];
+		if (from < 0)
+			continue;
 		src_idx = pcb_pstk_get_shape_idx(ts, pse_layer[from].mask, pse_layer[from].comb);
 		if (src_idx >= 0)
 			break;
+		strcpy(end, pse_layer[from].name);
+		end += strlen(pse_layer[from].name);
+		*end = ',';
+		end++;
 	}
 
 	if (src_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't derive shape: source shapes are empty\n");
+		if (end > src_shape_names)
+			end--;
+		*end = 0;
+		pcb_message(PCB_MSG_ERROR, "Can't derive shape: source shapes (%s) are empty\n", src_shape_names);
 		return;
 	}
 
