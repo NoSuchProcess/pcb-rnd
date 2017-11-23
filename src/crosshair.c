@@ -253,12 +253,10 @@ void XORDrawBuffer(pcb_buffer_t *Buffer)
 
 			PCB_LINE_LOOP(layer);
 			{
-/*
-				XORDrawAttachedLine(x +line->Point1.X,
-					y +line->Point1.Y, x +line->Point2.X,
-					y +line->Point2.Y, line->Thickness);
-*/
-				pcb_gui->draw_line(pcb_crosshair.GC, x + line->Point1.X, y + line->Point1.Y, x + line->Point2.X, y + line->Point2.Y);
+				pcb_draw_wireframe_line(	pcb_crosshair.GC,
+																	x + line->Point1.X, y + line->Point1.Y, 
+																	x + line->Point2.X, y + line->Point2.Y,
+																	line->Thickness,0 );
 			}
 			PCB_END_LOOP;
 			PCB_ARC_LOOP(layer);
