@@ -307,7 +307,12 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	int src_idx = pcb_pstk_get_shape_idx(ts, pse_layer[from].mask, pse_layer[from].comb);
 
 	if (src_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't derive shape: source shape (%s) is empty\n", pse_layer[from].name);
+		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pse_layer[from].name);
+		return;
+	}
+
+	if (src_idx == dst_idx) {
+		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape and destination shape are the same layer type\n");
 		return;
 	}
 
