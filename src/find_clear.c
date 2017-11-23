@@ -85,7 +85,86 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
-#warning subc TODO term TODO: implement this for subc
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		PCB_VIA_LOOP(subc->data);
+		{
+			if (via->term == NULL)
+				continue;
+			if (PCB_FLAG_TEST(flag, via)) {
+				if (AndDraw)
+					pcb_undo_add_obj_to_flag(via);
+				PCB_FLAG_CLEAR(flag, via);
+				if (AndDraw)
+					pcb_via_invalidate_draw(via);
+				change = pcb_true;
+			}
+		}
+		PCB_END_LOOP;
+
+		PCB_LINE_ALL_LOOP(subc->data);
+		{
+			if (line->term == NULL)
+				continue;
+			if (PCB_FLAG_TEST(flag, line)) {
+				if (AndDraw)
+					pcb_undo_add_obj_to_flag(line);
+				PCB_FLAG_CLEAR(flag, line);
+				if (AndDraw)
+					pcb_line_invalidate_draw(layer, line);
+				change = pcb_true;
+			}
+		}
+		PCB_ENDALL_LOOP;
+
+		PCB_ARC_ALL_LOOP(subc->data);
+		{
+			if (arc->term == NULL)
+				continue;
+			if (PCB_FLAG_TEST(flag, arc)) {
+				if (AndDraw)
+					pcb_undo_add_obj_to_flag(arc);
+				PCB_FLAG_CLEAR(flag, arc);
+				if (AndDraw)
+					pcb_arc_invalidate_draw(layer, arc);
+				change = pcb_true;
+			}
+		}
+		PCB_ENDALL_LOOP;
+
+		PCB_POLY_ALL_LOOP(subc->data);
+		{
+			if (polygon->term == NULL)
+				continue;
+			if (PCB_FLAG_TEST(flag, polygon)) {
+				if (AndDraw)
+					pcb_undo_add_obj_to_flag(polygon);
+				PCB_FLAG_CLEAR(flag, polygon);
+				if (AndDraw)
+					pcb_poly_invalidate_draw(layer, polygon);
+				change = pcb_true;
+			}
+		}
+		PCB_ENDALL_LOOP;
+
+		PCB_TEXT_ALL_LOOP(subc->data);
+		{
+			if (text->term == NULL)
+				continue;
+			if (PCB_FLAG_TEST(flag, text)) {
+				if (AndDraw)
+					pcb_undo_add_obj_to_flag(text);
+				PCB_FLAG_CLEAR(flag, text);
+				if (AndDraw)
+					pcb_text_invalidate_draw(layer, text);
+				change = pcb_true;
+			}
+		}
+		PCB_ENDALL_LOOP;
+	}
+	PCB_END_LOOP;
+
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
 	return change;
