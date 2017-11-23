@@ -743,6 +743,14 @@ int pcb_drc_all(void)
 					}
 				}
 				PCB_END_LOOP;
+				PCB_ARC_LOOP(&subc->data->Layer[n]);
+				{
+					if (arc->Thickness < PCB->minSlk) {
+						PCB_FLAG_SET(TheFlag, arc);
+						tmpcnt++;
+					}
+				}
+				PCB_END_LOOP;
 			}
 
 			if (tmpcnt > 0) {
