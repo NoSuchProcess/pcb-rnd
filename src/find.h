@@ -94,6 +94,5 @@ pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool An
 /* find_clear.c */
 pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag);
 pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag);
-pcb_bool pcb_clear_flag_on_all_objs(pcb_bool AndDraw, int flag);
 
 #endif

@@ -26,6 +26,8 @@
  * \brief Resets all used flags of pins and vias.
  */
 
+#warning TODO: this file could be removed if ipcd356 used the operation API
+
 pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
@@ -227,18 +229,5 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 	PCB_ENDALL_LOOP;
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
-	return change;
-}
-
-/*!
- * \brief Resets all found connections.
- */
-pcb_bool pcb_clear_flag_on_all_objs(pcb_bool AndDraw, int flag)
-{
-	pcb_bool change = pcb_false;
-
-	change = pcb_clear_flag_on_pins_vias_pads(AndDraw, flag) || change;
-	change = pcb_clear_flag_on_lines_polys(AndDraw, flag) || change;
-
 	return change;
 }
