@@ -737,8 +737,10 @@ int pcb_drc_all(void)
 					continue;
 				PCB_LINE_LOOP(&subc->data->Layer[n]);
 				{
-					if (line->Thickness < PCB->minSlk)
+					if (line->Thickness < PCB->minSlk) {
+						PCB_FLAG_SET(TheFlag, line);
 						tmpcnt++;
+					}
 				}
 				PCB_END_LOOP;
 			}
