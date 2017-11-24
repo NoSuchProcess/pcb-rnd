@@ -520,9 +520,10 @@ void ps_start_file(FILE * f)
 	 *
 	 * Media sizes are in PCB units
 	 */
-	pcb_fprintf(f, "%%%%DocumentMedia: %s %mi %mi 0 \"\" \"\"\n",
+	pcb_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
 							media_data[global.media_idx].name,
-							72 * media_data[global.media_idx].Width, 72 * media_data[global.media_idx].Height);
+							72 * PCB_COORD_TO_INCH(media_data[global.media_idx].Width),
+							72 * PCB_COORD_TO_INCH(media_data[global.media_idx].Height));
 	pcb_fprintf(f, "%%%%DocumentPaperSizes: %s\n", media_data[global.media_idx].name);
 
 	/* End General Header Comments. */
