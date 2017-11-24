@@ -363,3 +363,97 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 	return pcb_true;
 }
 
+/* emulate the old 'square flag' pad */
+static void pad_shape(pcb_pstk_poly_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness)
+{
+	double d, dx, dy;
+	pcb_coord_t nx, ny;
+	pcb_coord_t halfthick = (thickness + 1) / 2;
+
+	dx = x2 - x1;
+	dy = y2 - y1;
+
+	d = sqrt((double)sqr(dx) + (double)sqr(dy));
+	if (d != 0) {
+		double v = (double)halfthick / d;
+		nx = (double)(y1 - y2) * v;
+		ny = (double)(x2 - x1) * v;
+
+		x1 -= ny;
+		y1 += nx;
+		x2 += ny;
+		y2 -= nx;
+	}
+	else {
+		nx = halfthick;
+		ny = 0;
+
+		y1 += nx;
+		y2 -= nx;
+	}
+
+	pcb_pstk_shape_alloc_poly(dst, 4);
+	dst->x[0] = x1 - nx; dst->y[0] = y1 - ny;
+	dst->x[1] = x1 + nx; dst->y[1] = y1 + ny;
+	dst->x[2] = x2 + nx; dst->y[2] = y2 + ny;
+	dst->x[3] = x2 - nx; dst->y[3] = y2 - ny;
+}
+
+/* Generate a square or round pad of a given thickness - typically mask or copper */
+static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_bool square)
+{
+	if (square) {
+		dst->shape = PCB_PSSH_POLY;
+		pad_shape(&dst->data.poly, x1, y1, x2, y2, thickness);
+	}
+	else {
+		dst->shape = PCB_PSSH_LINE;
+		dst->data.line.x1 = x1;
+		dst->data.line.y1 = y1;
+		dst->data.line.x2 = x2;
+		dst->data.line.y2 = y2;
+		dst->data.line.thickness = thickness;
+		dst->data.line.square = 0;
+	}
+}
+
+pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square)
+{
+	pcb_pstk_proto_t proto;
+	pcb_pstk_shape_t shape[3]; /* max number of shapes: 1 copper, 1 mask, 1 paste */
+	pcb_cardinal_t pid;
+	pcb_pstk_tshape_t tshp;
+	int n;
+	pcb_coord_t cx, cy;
+
+	cx = (x1 + x2) / 2;
+	cy = (y1 + y2) / 2;
+
+	memset(&proto, 0, sizeof(proto));
+	memset(&tshp, 0, sizeof(tshp));
+	memset(&shape, 0, sizeof(shape));
+
+	tshp.len = 3;
+	tshp.shape = shape;
+	proto.tr.alloced = proto.tr.used = 1; /* has the canonical form only */
+	proto.tr.array = &tshp;
+
+	gen_pad(&shape[0], x1 - cx, y1 - cy, x2 - cx, y2 - cy, thickness, square); /* copper */
+	gen_pad(&shape[1], x1 - cx, y1 - cy, x2 - cx, y2 - cy, mask, square);      /* mask */
+	pcb_pstk_shape_copy(&shape[2], &shape[0]);                                 /* paste is the same */
+
+	shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; shape[0].comb = 0;
+	shape[1].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;   shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+	shape[2].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;  shape[2].comb = PCB_LYC_AUTO;
+
+	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
+
+	for(n = 0; n < 3; n++)
+		compat_shape_free(&shape[n]);
+
+	if (pid == PCB_PADSTACK_INVALID)
+		return NULL;
+
+	return pcb_pstk_new(data, pid, cx, cy, clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+}
+
