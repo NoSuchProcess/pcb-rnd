@@ -617,6 +617,7 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		Text->Direction = ((Text->Direction + steps) & 0x03);
 
 	pcb_rotate(&Text->X, &Text->Y, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
+	pcb_text_bbox(NULL, Text);
 
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -649,14 +650,13 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 	pcb_data_t *data = layer->parent;
 	pcb_board_t *pcb = pcb_data_get_top(data);
 
-	if (pcb == NULL)
-		return;
-
-	pcb_poly_restore_to_poly(data, PCB_TYPE_TEXT, layer, text);
+	if (pcb != NULL)
+		pcb_poly_restore_to_poly(data, PCB_TYPE_TEXT, layer, text);
 	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 	pcb_text_bbox(pcb_font(pcb, text->fid, 1), text);
 	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
-	pcb_poly_clear_from_poly(data, PCB_TYPE_TEXT, layer, text);
+	if (pcb != NULL)
+		pcb_poly_clear_from_poly(data, PCB_TYPE_TEXT, layer, text);
 }
 
 void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
