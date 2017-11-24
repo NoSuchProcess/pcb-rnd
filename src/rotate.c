@@ -71,6 +71,24 @@ pcb_opfunc_t Rotate90Functions = {
 	pcb_pstkop_rotate90
 };
 
+pcb_opfunc_t RotateFunctions = {
+	pcb_lineop_rotate,
+	pcb_textop_rotate,
+	pcb_polyop_rotate,
+	pcb_viaop_rotate,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	pcb_arcop_rotate,
+	NULL,
+	NULL,
+	pcb_subcop_rotate,
+	pcb_pstkop_rotate
+};
+
 /* ---------------------------------------------------------------------------
  * rotates a point in 90 degree steps
  */
