@@ -922,7 +922,7 @@ void *pcb_viaop_rotate(pcb_opctx_t *ctx, pcb_pin_t *via)
 
 	pcb_via_invalidate_erase(via);
 	if (data->via_tree != NULL) {
-		pcb_poly_restore_to_poly(ctx->rotate.pcb->Data, PCB_TYPE_VIA, via, via);
+		pcb_poly_restore_to_poly(data, PCB_TYPE_VIA, via, via);
 		pcb_r_delete_entry(data->via_tree, (pcb_box_t *)via);
 	}
 
@@ -931,7 +931,7 @@ void *pcb_viaop_rotate(pcb_opctx_t *ctx, pcb_pin_t *via)
 	pcb_pin_bbox(via);
 	if (data->via_tree != NULL) {
 		pcb_r_insert_entry(data->via_tree, (pcb_box_t *)via, 0);
-		pcb_poly_clear_from_poly(ctx->rotate.pcb->Data, PCB_TYPE_VIA, via, via);
+		pcb_poly_clear_from_poly(data, PCB_TYPE_VIA, via, via);
 	}
 	pcb_via_invalidate_draw(via);
 	return via;
