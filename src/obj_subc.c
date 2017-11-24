@@ -854,7 +854,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 	return (sc);
 }
 
-extern pcb_opfunc_t ClipFunctions, MoveFunctions, MoveFunctions_noclip, Rotate90Functions, ChgFlagFunctions, ChangeSizeFunctions, ChangeClearSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;
+extern pcb_opfunc_t ClipFunctions, MoveFunctions, MoveFunctions_noclip, Rotate90Functions, RotateFunctions, ChgFlagFunctions, ChangeSizeFunctions, ChangeClearSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;
 extern pcb_opfunc_t ChangeOctagonFunctions, SetOctagonFunctions, ClrOctagonFunctions;
 extern pcb_opfunc_t ChangeSquareFunctions, SetSquareFunctions, ClrSquareFunctions;
 
@@ -882,6 +882,12 @@ void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_board_t *pcb = pcb_data_get_top(sc->data);
 	return pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &Rotate90Functions, ctx);
+}
+
+void *pcb_subcop_rotate(pcb_opctx_t *ctx, pcb_subc_t *sc)
+{
+	pcb_board_t *pcb = pcb_data_get_top(sc->data);
+	return pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &RotateFunctions, ctx);
 }
 
 static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_layer_t *sl, int src_has_real_layer, int dst_is_pcb)
