@@ -349,6 +349,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
 	}
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 
