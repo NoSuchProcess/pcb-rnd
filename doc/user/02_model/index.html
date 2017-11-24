@@ -398,6 +398,40 @@ Extra object flags:
 </table>
 
 <h4> 2.4.9. Subcircuits </h4> <a id="subcircuit">
+<p>
+A subc (subcircuit) is a group of objects with its own, local layer
+information. All layers of a subc are <i>bound</i> layers, that is, the user
+is free to choose on which actual board layer it is placed on.
+There is no limitation on what layers or objects a subc can contain.
+<p>
+The main uses of subc are:
+<ul>
+	<li> footprint
+	<li> copy&amp;paste anonymous repetitive section of a circuit
+</ul>
+
+<h5> 2.4.9.1 Subcircuits as footprints </h5> <a id="footprints">
+<p>
+When a subcircuit is a footprint, it normally has the <i>refdes</i> attribute set.
+Refdes is the name that identifies the part on the netlist. Some objects
+of a footprint will have the <i>term</i> attribute to turn those object into
+terminals (representing pins or pads). If multiple objects have the same
+<i>term</i> attribute value, they are all contributing to the same terminal.
+<p>
+When the terminal object is a single <a
+href="#padstack"><i>padstack</i></a>, it is called a <a href="#lightterm">
+<i>light terminal<i></a>. When the terminal is built using multiple objects,
+it is called a <i>heavy terminal</i>.
+<p>
+A connection on the netlist is identified as <i>refdes</i>-<i>term</i>, e.g.
+U5-3 means "the object(s) whose term attribute is 3 within the subcircuit
+whose refdes attribute is 'U5'".
+
+<h5> 2.4.9.2 Subcircuits as repetitive modules </h5>
+<p>
+Compared to subcircuits as footprint, a repetitive module will not have
+a refdes attribute and will not have terminals.
+
 
 <h4> 2.4.10. Pad stacks </h4> <a id="padstack">
 <p>
@@ -408,7 +442,7 @@ of:
 	<li> a pad shape that can be different on each layer group type
 	<li> thermal relief info on a per layer basis
 </ul>
-<p>
+<p><a id="lightterm">
 Pad stacks are flexible enough to cover the majority of the simple pin/pad/via
 cases. In a subcircuit, marked as a terminal, a pad stack is called a
 <i>light terminal</i>. This concept exist in parallel to the <i>heavy terminal</i>
