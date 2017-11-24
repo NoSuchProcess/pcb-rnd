@@ -92,8 +92,20 @@ typedef struct {
 typedef struct
 {
 	egb_node_t *root, *layers, *drawing, *libraries, *elements, *firstel, *signals, *board, *drc;
-	long mdWireWire, msWidth; /* DRC values for spacing and width */ 
+	long mdWireWire, wire2pad, wire2via, pad2pad, pad2via, via2via, pad2smd, via2smd,
+	smd2smd, copper2dimension, drill2hole, msWidth, minDrill, psTop, psBottom, psFirst;
+	/* DRC values for spacing and width */ 
 	double rvPadTop, rvPadInner, rvPadBottom; /* DRC values for via sizes */
+	double rvViaOuter, rvViaInner, rvMicroViaOuter, rvMicroViaInner;
+	/* the following design rule values don't map obviously to XML parameters */
+	long restring_limit1_mil, restring_limit2_mil, restring_limit3_mil,
+	restring_limit4_mil, restring_limit5_mil, restring_limit6_mil,
+	restring_limit7_mil, restring_limit8_mil, restring_limit9_mil,
+	restring_limit10_mil, restring_limit11_mil, restring_limit12_mil,
+	restring_limit13_mil, restring_limit14_mil, mask_limit1_mil,
+	mask_limit2_mil, mask_limit3_mil, mask_limit4_mil;
+	double mask_percentages1_ratio, mask_percentages2_ratio;
+
 } egb_ctx_t;
 
 #define TERM {0}
@@ -175,15 +187,19 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_LIBRARY, 0xFFFF, "library",
+	{ PCB_EGKW_SECT_LIBRARY, 0xFF7F, "library",
 		{ /* field match */
 			TERM
 		},
 		{ /* subsection sizes */
-			{4, 4, SS_DIRECT, NULL},
+			{4, 4, SS_RECURSIVE, "devices"},
+			{8, 4, SS_RECURSIVE, "symbols"},
+			{12, 4, SS_RECURSIVE, "packages"},
+			/*{4, 4, SS_DIRECT, NULL},*/
 			TERM
 		},
 		{ /* attributes */
+			{"devsubsecs", T_INT, 4, 4},
 			{"symsubsecs", T_INT, 8, 4},
 			{"pacsubsecs", T_INT, 12, 4},
 			{"children", T_INT, 8, 4},
@@ -191,7 +207,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_DEVICES, 0xFFFF, "devices",
+	{ PCB_EGKW_SECT_DEVICES, 0xFF7F, "devices",
 		{ /* field match */
 			TERM
 		},
@@ -205,7 +221,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_SYMBOL, 0xFFFF, "symbols",
+	{ PCB_EGKW_SECT_SYMBOLS, 0xFF7F, "symbols",
 		{ /* field match */
 			TERM
 		},
@@ -567,7 +583,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_PIN, 0xFFFF, "pin",
+	{ PCB_EGKW_SECT_PIN, 0xFF7F, "pin",
 		{ /* field match */
 			TERM
 		},
@@ -588,7 +604,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_GATE, 0xFFFF, "gate",
+	{ PCB_EGKW_SECT_GATE, 0xFF7F, "gate",
 		{ /* field match */
 			TERM
 		},
@@ -754,11 +770,71 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 	},
-	{ PCB_EGKW_SECT_PACKAGEVARIANT, 0xFFFF },
-	{ PCB_EGKW_SECT_DEVICE, 0xFFFF },
-	{ PCB_EGKW_SECT_PART, 0xFFFF },
+	{ PCB_EGKW_SECT_PACKAGEVARIANT, 0xFF7F, "packagevariant",
+		{ /* field match */
+			TERM
+		},
+		{ /* subsection sizes */
+			{2, 2, SS_DIRECT, NULL},
+			TERM
+		},
+		{ /* attributes */
+			{"package", T_INT, 4, 2},
+			{"table",  T_STR, 6, 13},
+			{"name",  T_STR, 19, 5},
+			TERM
+		},
+	},
+	{ PCB_EGKW_SECT_DEVICE, 0xFF7F, "device",
+		{ /* field match */
+			TERM
+		},
+		{ /* subsection sizes */
+			{2, 2, SS_DIRECT, "gates"}, /* gates */
+			{4, 2, SS_DIRECT, "variants"}, /* variants */
+			/* ? {2, 2, SS_DIRECT, NULL},*/
+			TERM			
+		},
+		{ /* attributes */
+			{"gates", T_INT, 2, 2},
+			{"variants", T_INT, 4, 2},
+			{"prefix",  T_STR, 8, 5},
+			{"desc",  T_STR, 13, 5},
+			{"name",  T_STR, 18, 5},
+			TERM
+		},
+	},
+	{ PCB_EGKW_SECT_PART, 0xFFFF, "part",
+		{ /* field match */
+			TERM
+		},
+		{ /* subsection sizes */
+			{2, 2, SS_DIRECT, NULL},
+			TERM
+		},
+		{ /* attributes */
+			{"lib",  T_INT, 4, 2},
+			{"device",  T_INT, 6, 2},
+			{"variant",  T_INT, 8, 1},
+			{"technology",  T_INT, 9, 2},
+			{"name",  T_STR, 11, 5},
+			{"value",  T_STR, 16, 8},
+			TERM
+		},
+	},
 	{ PCB_EGKW_SECT_SCHEMABUS, 0xFFFF },
-	{ PCB_EGKW_SECT_VARIANTCONNECTIONS, 0xFFFF },
+	{ PCB_EGKW_SECT_VARIANTCONNECTIONS, 0xFF7F, "variantconnections",
+		{ /* field match */
+			TERM
+		},
+		{ /* subsection sizes */
+			TERM
+		},
+		{ /* attributes */
+			/* a sequence of 22 bytes or 11 H?, in format (x1,y1), (x2,y2), ... */
+			TERM
+		},
+	},
 	{ PCB_EGKW_SECT_SCHEMACONNECTION, 0xFFFF },
 	{ PCB_EGKW_SECT_CONTACTREF, 0xFFF57, "contactref",
 		{ /* field match */
@@ -1114,77 +1190,67 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	}
 
 	/* first ~134 bytes contain the most useful DRC stuff, such as
-	# wire2wire wire2pad wire2via pad2pad pad2via via2via pad2smd via2smd smd2smd
-	self.clearances, data = _cut('<9I', data, 36)i.e. 9 integers, 4 bytes each
-	# restring order: padtop padinner padbottom viaouter viainner
-	(microviaouter microviainner)
-	restring_percentages = 7 doubles, 56 bytes total */
+	wire2wire wire2pad wire2via pad2pad pad2via via2via pad2smd via2smd smd2smd
+	also, restring order: padtop padinner padbottom viaouter viainner
+	(microviaouter microviainner) */
 
-	mdWireWire = (long)(load_long(DRC_block, 0, 4)/2.54/100);
-	pcb_trace("wire2wire: %ld mil\n", mdWireWire);
+	drc_ctx->mdWireWire = (long)(load_long(DRC_block, 0, 4)/2.54/100);
+	drc_ctx->wire2pad = (long)(load_long(DRC_block, 4, 4)/2.54/100);
+	drc_ctx->wire2via = (long)(load_long(DRC_block, 8, 4)/2.54/100);
+	drc_ctx->pad2pad = (long)(load_long(DRC_block, 12, 4)/2.54/100);
+	drc_ctx->pad2via = (long)(load_long(DRC_block, 16, 4)/2.54/100);
+	drc_ctx->via2via = (long)(load_long(DRC_block, 20, 4)/2.54/100);
+	drc_ctx->pad2smd = (long)(load_long(DRC_block, 24, 4)/2.54/100);
+	drc_ctx->via2smd = (long)(load_long(DRC_block, 28, 4)/2.54/100);
+	drc_ctx->smd2smd = (long)(load_long(DRC_block, 32, 4)/2.54/100);
+	drc_ctx->copper2dimension = (long)(load_long(DRC_block, 44, 4)/2.54/100);
+	drc_ctx->drill2hole = (long)(load_long(DRC_block, 52, 4)/2.54/100);
 
-	pcb_trace("wire2pad: %f mil\n", load_long(DRC_block, 4, 4)/2.54/100);
-	pcb_trace("wire2via: %f mil\n", load_long(DRC_block, 8, 4)/2.54/100);
-	pcb_trace("pad2pad: %f mil\n", load_long(DRC_block, 12, 4)/2.54/100);
-	pcb_trace("pad2via: %f mil\n", load_long(DRC_block, 16, 4)/2.54/100);
-	pcb_trace("via2via: %f mil\n", load_long(DRC_block, 20, 4)/2.54/100);
-	pcb_trace("pad2smd: %f mil\n", load_long(DRC_block, 24, 4)/2.54/100);
-	pcb_trace("via2smd: %f mil\n", load_long(DRC_block, 28, 4)/2.54/100);
-	pcb_trace("smd2smd: %f mil\n", load_long(DRC_block, 32, 4)/2.54/100);
-	pcb_trace("copper2dimension: %f mil\n", load_long(DRC_block, 44, 4)/2.54/100);
-	pcb_trace("drill2hole: %f mil\n", load_long(DRC_block, 52, 4)/2.54/100);
+	drc_ctx->msWidth = (long)(load_long(DRC_block, 64, 4)/2.54/100);
+	drc_ctx->minDrill = (long)(load_long(DRC_block, 68, 4)/2.54/100);
 
-	msWidth = (long)(load_long(DRC_block, 64, 4)/2.54/100);
-	pcb_trace("min_width: %ld mil\n", msWidth);
-
-	pcb_trace("min_drill: %f mil\n", load_long(DRC_block, 68, 4)/2.54/100);
 	/*in version 5, this is wedged inbetween drill and pad ratios:
 	  min_micro_via, blind_via_ratio, int, float, 12 bytes*/
 
-	rvPadTop = load_double(DRC_block, 84, 8);
-	pcb_trace("padtop ratio: %f\n", rvPadTop);
-	rvPadInner = load_double(DRC_block, 92, 8);
-	pcb_trace("padinner ratio: %f\n", rvPadInner);
-	rvPadBottom = load_double(DRC_block, 100, 8);
-	pcb_trace("padbottom ratio: %f\n", rvPadBottom);
+	drc_ctx->rvPadTop = load_double(DRC_block, 84, 8);
+	drc_ctx->rvPadInner = load_double(DRC_block, 92, 8);
+	drc_ctx->rvPadBottom = load_double(DRC_block, 100, 8);
 
-	pcb_trace("viaouter ratio: %f\n", load_double(DRC_block, 108, 8));
-	pcb_trace("viainner ratio: %f\n", load_double(DRC_block, 116, 8));
-	pcb_trace("microviaouter ratio: %f\n", load_double(DRC_block, 124, 8));
-	pcb_trace("microviainner ratio: %f\n", load_double(DRC_block, 132, 8));
+	drc_ctx->rvViaOuter = load_double(DRC_block, 108, 8);
+	drc_ctx->rvViaInner = load_double(DRC_block, 116, 8);
+	drc_ctx->rvMicroViaOuter = load_double(DRC_block, 124, 8);
+	drc_ctx->rvMicroViaInner = load_double(DRC_block, 132, 8);
 
-	pcb_trace("restring limit1 (mil): %f\n", load_long(DRC_block, 140, 4)/2.54/100);
-	pcb_trace("restring limit2 (mil): %f\n", load_long(DRC_block, 144, 4)/2.54/100);
-	pcb_trace("restring limit3 (mil): %f\n", load_long(DRC_block, 148, 4)/2.54/100);
-	pcb_trace("restring limit4 (mil): %f\n", load_long(DRC_block, 152, 4)/2.54/100);
-	pcb_trace("restring limit5 (mil): %f\n", load_long(DRC_block, 156, 4)/2.54/100);
-	pcb_trace("restring limit6 (mil): %f\n", load_long(DRC_block, 160, 4)/2.54/100);
-	pcb_trace("restring limit7 (mil): %f\n", load_long(DRC_block, 164, 4)/2.54/100);
-	pcb_trace("restring limit8 (mil): %f\n", load_long(DRC_block, 168, 4)/2.54/100);
-	pcb_trace("restring limit9 (mil): %f\n", load_long(DRC_block, 172, 4)/2.54/100);
-	pcb_trace("restring limit10 (mil): %f\n", load_long(DRC_block, 176, 4)/2.54/100);
-	pcb_trace("restring limit11 (mil): %f\n", load_long(DRC_block, 180, 4)/2.54/100);
-	pcb_trace("restring limit12 (mil): %f\n", load_long(DRC_block, 184, 4)/2.54/100);
-	pcb_trace("restring limit13 (mil): %f\n", load_long(DRC_block, 188, 4)/2.54/100);
-	pcb_trace("restring limit14 (mil): %f\n", load_long(DRC_block, 192, 4)/2.54/100);
+	/* not entirely sure what these do as they don't map obviously to XML */
+	drc_ctx->restring_limit1_mil = (long)load_long(DRC_block, 140, 4)/2.54/100;
+	drc_ctx->restring_limit2_mil = (long)load_long(DRC_block, 144, 4)/2.54/100;
+	drc_ctx->restring_limit3_mil = (long)load_long(DRC_block, 148, 4)/2.54/100;
+	drc_ctx->restring_limit4_mil = (long)load_long(DRC_block, 152, 4)/2.54/100;
+	drc_ctx->restring_limit5_mil = (long)load_long(DRC_block, 156, 4)/2.54/100;
+	drc_ctx->restring_limit6_mil = (long)load_long(DRC_block, 160, 4)/2.54/100;
+	drc_ctx->restring_limit7_mil = (long)load_long(DRC_block, 164, 4)/2.54/100;
+	drc_ctx->restring_limit8_mil = (long)load_long(DRC_block, 168, 4)/2.54/100;
+	drc_ctx->restring_limit9_mil = (long)load_long(DRC_block, 172, 4)/2.54/100;
+	drc_ctx->restring_limit10_mil = (long)load_long(DRC_block, 176, 4)/2.54/100;
+	drc_ctx->restring_limit11_mil = (long)load_long(DRC_block, 180, 4)/2.54/100;
+	drc_ctx->restring_limit12_mil = (long)load_long(DRC_block, 184, 4)/2.54/100;
+	drc_ctx->restring_limit13_mil = (long)load_long(DRC_block, 188, 4)/2.54/100;
+	drc_ctx->restring_limit14_mil = (long)load_long(DRC_block, 192, 4)/2.54/100;
 
-	pcb_trace("pad_shapes1 (equiv -1): %ld\n", load_long(DRC_block, 196, 4));
-	pcb_trace("pad_shapes2 (equiv -1): %ld\n", load_long(DRC_block, 200, 4));
-	pcb_trace("pad_shapes3 (equiv -1): %ld\n", load_long(DRC_block, 204, 4));
-	pcb_trace("mask_percentages1 ratio: %f\n", load_double(DRC_block, 208, 8));
-	pcb_trace("mask_percentages2 ratio: %f\n", load_double(DRC_block, 216, 8));
+	/* pad shapes */
+	drc_ctx->psTop = load_long(DRC_block, 196, 4);
+	drc_ctx->psBottom = load_long(DRC_block, 200, 4);
+	drc_ctx->psFirst = load_long(DRC_block, 204, 4);
 
-	pcb_trace("mask limit1 (mil): %f\n", load_long(DRC_block, 224, 4)/2.54/100);
-	pcb_trace("mask limit2 (mil): %f\n", load_long(DRC_block, 228, 4)/2.54/100);
-	pcb_trace("mask limit3 (mil): %f\n", load_long(DRC_block, 232, 4)/2.54/100);
-	pcb_trace("mask limit4 (mil): %f\n", load_long(DRC_block, 236, 4)/2.54/100);
+	/* not sure how these map to XML design rules parameters*/
+	drc_ctx->mask_percentages1_ratio = load_double(DRC_block, 208, 8);
+	drc_ctx->mask_percentages2_ratio = load_double(DRC_block, 216, 8);
+	drc_ctx->mask_limit1_mil = (long)load_long(DRC_block, 224, 4)/2.54/100;
+	drc_ctx->mask_limit2_mil = (long)load_long(DRC_block, 228, 4)/2.54/100;
+	drc_ctx->mask_limit3_mil = (long)load_long(DRC_block, 232, 4)/2.54/100;
+	drc_ctx->mask_limit4_mil = (long)load_long(DRC_block, 236, 4)/2.54/100;
 
 	/* populate the drc_ctx struct to return the result of the DRC block read attempt */
-	drc_ctx->msWidth = msWidth;
-	drc_ctx->mdWireWire = mdWireWire;
-	drc_ctx->rvPadTop = rvPadTop;
-	drc_ctx->rvPadInner = rvPadInner;
-	drc_ctx->rvPadBottom = rvPadBottom;
 
 	return 0;
 }
@@ -2087,28 +2153,79 @@ static int postproc_libs(void *ctx, egb_ctx_t *egb_ctx)
 	return 0;
 }
 
+/* post process an eagle binary library file */
+static int postproc_library_file(void *ctx, egb_ctx_t *egb_ctx)
+{
+	egb_node_t *root;
+	root = egb_ctx->root;
+
+	pcb_trace("Appending board node to likely library file.\n");
+	egb_ctx->board = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_BOARD, "board"));
+
+	/* create a drc node, since a library does not have one by default */
+	pcb_trace("Appending board node to likely library file.\n");
+	egb_ctx->drc = egb_node_append(egb_ctx->board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
+
+	/* around here we need to create some element nodes to place the library devices/packages */
+	/* .... will need to iterate over the library packages to do this, allowing
+	   binary ((.lbr as 'board') as pcb-rnd footprint library) functionality */
+
+	/* once the following code works with postproc_libs, there is scope to reduce code dup */
+	return postproc_layers(ctx, egb_ctx) || postproc_drc(ctx, egb_ctx)
+		/*|| postproc_libs(ctx, egb_ctx)*/ /* segfaults for now */
+		|| postproc_elements(ctx, egb_ctx)
+		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root)
+		|| postprocess_circles(ctx, root) || postprocess_smd(ctx, root)
+		|| postprocess_pad(ctx, root) 
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMD)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PIN)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_RECTANGLE)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PAD)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_TEXT)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDVALUE)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDNAME)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_NETBUSLABEL)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDXREF)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_ATTRIBUTE)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDGATE)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDPART)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_INSTANCE)
+		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_ELEMENT);
+}
+
 static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 {
 
 	egb_node_t *n, *signal, *el1;
-
 	egb_ctx_t eagle_bin_ctx;
-
 	egb_ctx_t *egb_ctx_p;
-
 	egb_ctx_p = &eagle_bin_ctx;
 
+	/* this preliminary code does not assume a board node is present, i.e. could be library .lbr */
 	eagle_bin_ctx.root = root;
 	eagle_bin_ctx.drawing = root->first_child;
+	eagle_bin_ctx.layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
+
+	/* populate context with default DRC settings, since DRC is not present in binary v3 or .lbr */
+	eagle_bin_ctx.mdWireWire = drc_ctx->mdWireWire;
+	eagle_bin_ctx.msWidth = drc_ctx->msWidth;
+	eagle_bin_ctx.rvPadTop = drc_ctx->rvPadTop;
+	eagle_bin_ctx.rvPadInner = drc_ctx->rvPadInner;
+	eagle_bin_ctx.rvPadBottom = drc_ctx->rvPadBottom;
+
 	eagle_bin_ctx.board = find_node(eagle_bin_ctx.drawing->first_child, PCB_EGKW_SECT_BOARD);
-	if (eagle_bin_ctx.board == NULL)
-		return -1;
+	if (eagle_bin_ctx.board == NULL) {
+		pcb_trace("No board node found, this may be a library file.");
+		return postproc_library_file(ctx, egb_ctx_p);
+	}
+
+	/* the following code relies on the board node being present, i.e. a layout */
+	/* create a drc node, since any DRC block present in eagle binary file comes after the tree */
+	eagle_bin_ctx.drc = egb_node_append(eagle_bin_ctx.board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
+
 	eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
 	if (eagle_bin_ctx.libraries == NULL)
 		return -1;
-	eagle_bin_ctx.layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
-	/* create a drc node, since any DRC block present in eagle binary file comes after the tree */
-	eagle_bin_ctx.drc = egb_node_append(eagle_bin_ctx.board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
 
 	for(n = eagle_bin_ctx.board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
 		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
@@ -2128,17 +2245,12 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 	}
 
 	eagle_bin_ctx.signals = signal->parent;
-	if (eagle_bin_ctx.signals == NULL)
+	if (eagle_bin_ctx.signals == NULL) /* is probably a library */ {
+		pcb_trace("Found no board/signals node in eagle binary file... strange...\n");
 		return -1;
+	}
 
-	/* populate context with default DRC settings, since DRC is not present in v3 eagle bin */
-	eagle_bin_ctx.mdWireWire = drc_ctx->mdWireWire;
-	eagle_bin_ctx.msWidth = drc_ctx->msWidth;
-	eagle_bin_ctx.rvPadTop = drc_ctx->rvPadTop;
-	eagle_bin_ctx.rvPadInner = drc_ctx->rvPadInner;
-	eagle_bin_ctx.rvPadBottom = drc_ctx->rvPadBottom;
-
-	/* after post processing layers, we populate the DRC node first... */
+	/* after post processing layers, we need to populate the DRC node first... */
 
 	return postproc_layers(ctx, egb_ctx_p) || postproc_drc(ctx, egb_ctx_p)
 		|| postproc_libs(ctx, egb_ctx_p) || postproc_elements(ctx, egb_ctx_p)
@@ -2170,22 +2282,25 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 
 	egb_ctx_t eagle_drc_ctx;
 
-	printf("blocks remaining prior to function call = %ld\n", *numblocks);
+	pcb_trace("blocks remaining prior to function call = %ld\n", *numblocks);
 
 	*root = egb_node_alloc(0, "eagle");
 
 	res = read_block(numblocks, 1, ctx, f, fn, *root);
 	if (res < 0) {
+		pcb_trace("Problem with remaining blocks... is this a library file?\n");
 		return res;
 	}
-	printf("blocks remaining after outer function call = %ld (after reading %d blocks)\n\n", *numblocks, res);
+	pcb_trace("blocks remaining after outer function call = %ld (after reading %d blocks)\n\n", *numblocks, res);
 
-	printf("Section blocks have been parsed. Next job is finding DRC.\n\n");
+	pcb_trace("Section blocks have been parsed. Next job is finding DRC.\n\n");
 
 	/* could test if < v4 as v3.xx seems to have no DRC or Netclass or Free Text end blocks */
 	read_notes(ctx, f, fn);
 	/* read_drc will determine sane defaults if no DRC block found */
-	read_drc(ctx, f, fn, &eagle_drc_ctx); /* we now use the drc_ctx results for post_proc */
+	if (read_drc(ctx, f, fn, &eagle_drc_ctx) != 0) {
+		pcb_trace("No DRC section found, either a v3 binary file or a binary library file.\n");
+	} /* we now use the drc_ctx results for post_proc */
 
 	return postproc(ctx, *root, &eagle_drc_ctx);
 }
