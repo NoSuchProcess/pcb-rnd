@@ -79,6 +79,7 @@ pcb_bool delayed_labels_enabled = pcb_false;
 static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *, int);
 static void pcb_draw_obj_label(pcb_any_obj_t *obj);
+static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area);
 
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area);
@@ -372,7 +373,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
-		
+
+		pcb_draw_pstk_marks(drawn_area);
+
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 
 		/* Draw rat lines on top */
@@ -430,6 +433,13 @@ static void pcb_draw_pstks(pcb_layergrp_id_t group, const pcb_box_t *drawn_area,
 	ctx.is_current = is_current;
 	ctx.comb = comb;
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_callback, &ctx, NULL);
+}
+
+static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area)
+{
+	pcb_pstk_draw_t ctx;
+	ctx.pcb = PCB;
+	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_mark_callback, &ctx, NULL);
 }
 
 static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)

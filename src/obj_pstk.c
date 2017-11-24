@@ -307,8 +307,6 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_draw_t *ctx = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_shape_t *shape;
-	pcb_coord_t mark;
-	pcb_pstk_proto_t *proto;
 	pcb_layergrp_t *grp;
 
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
@@ -326,6 +324,15 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 			pcb_pstk_draw_shape_solid(Output.fgGC, ps, shape);
 	}
 
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_proto_t *proto;
+	pcb_coord_t mark;
+
 	mark = PS_CROSS_SIZE/2;
 	proto = pcb_pstk_get_proto(ps);
 	if (proto != NULL)
@@ -342,9 +349,8 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
 	}
-
-	return PCB_R_DIR_FOUND_CONTINUE;
 }
+
 
 pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 {
