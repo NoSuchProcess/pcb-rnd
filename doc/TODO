@@ -236,7 +236,7 @@ Eagle binary:
 			board/1b00->signals/0000->signal/1c00->contactref/3e00
 		- NB signal nodes can have signal subnodes, which we may need to flatten for connected nets
 	- need to decide what to do with Eagles incompatible netnames '-' and '+'
-	- need to enable io_eagle by default
+	- need to add code to place packages in .lbr on synthetic "layout", to allow ".lbr as footprint library" use
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
