@@ -870,6 +870,21 @@ void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Poly
 	return Polygon;
 }
 
+void *pcb_polyop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
+{
+	pcb_poly_pprestore(Polygon);
+	if (Layer->meta.real.vis)
+		pcb_poly_invalidate_erase(Polygon);
+	pcb_poly_rotate(Layer, Polygon, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
+	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
+	if (Layer->meta.real.vis) {
+		pcb_poly_invalidate_draw(Layer, Polygon);
+		pcb_draw();
+	}
+	pcb_poly_ppclear(Polygon);
+	return Polygon;
+}
+
 void *pcb_polyop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	static pcb_flag_values_t pcb_poly_flags = 0;
