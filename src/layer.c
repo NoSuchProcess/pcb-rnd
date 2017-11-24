@@ -36,6 +36,7 @@
 #include "layer_ui.h"
 #include "layer_vis.h"
 #include "rtree.h"
+#include "obj_pstk_inlines.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1, PCB_LYT_VIRTUAL | PCB_LYT_INVIS },
@@ -123,6 +124,10 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 	if (flags == 0)
 		return 1;
 
+	/* fast check: direct object */
+	if (!pcb_layer_is_pure_empty(layer))
+		return 0;
+
 	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_TOP)) { /* if our layer is the top copper layer and we have an element pad on it, it's non-empty */
 		PCB_PAD_ALL_LOOP(pcb->Data);
 		{
@@ -131,7 +136,6 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 		}
 		PCB_ENDALL_LOOP;
 	}
-
 
 	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_BOTTOM)) { /* if our layer is the bottom copper layer and we have an element pad on it, it's non-empty */
 		PCB_PAD_ALL_LOOP(pcb->Data);
@@ -142,10 +146,18 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 		PCB_ENDALL_LOOP;
 	}
 
+	/* if any padstack has a shape on this layer, it is not empty */
+	PCB_PADSTACK_LOOP(pcb->Data);
+	{
+		if (pcb_pstk_shape_at(pcb, padstack, layer) != NULL)
+			return 0;
+	}
+	PCB_END_LOOP;
+
 #warning TODO: check top silk and bottom silk for elements
 
-	/* normal case: a layer is empty if all lists are empty */
-	return pcb_layer_is_pure_empty(layer);
+	/* found nothing: layer is empty */
+	return 1;
 }
 
 pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
