@@ -170,14 +170,17 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	}
 	else {
 		/* test-parse with all plugins to see who can handle the syntax */
-		for(n = 0; n < len; n++) {
-			if ((available[n].plug->test_parse_pcb == NULL) || (available[n].plug->test_parse_pcb(available[n].plug, Ptr, Filename, ft))) {
-				accepts[n] = 1;
-				accept_total++;
-			}
-			else
-				accepts[n] = 0;
+		if((fgetc(ft) != EOF)) {
 			rewind(ft);
+			for(n = 0; n < len; n++) {
+				if ((available[n].plug->test_parse_pcb == NULL) || (available[n].plug->test_parse_pcb(available[n].plug, Ptr, Filename, ft))) {
+					accepts[n] = 1;
+					accept_total++;
+				}
+				else
+					accepts[n] = 0;
+				rewind(ft);
+			}
 		}
 	}
 	fclose(ft);
