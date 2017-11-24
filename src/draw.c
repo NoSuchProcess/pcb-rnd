@@ -374,7 +374,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		if (PCB->SubcOn)
 			pcb_r_search(PCB->Data->subc_tree, drawn_area, NULL, draw_subc_mark_callback, NULL, NULL);
 
-		pcb_draw_pstk_marks(drawn_area);
+		if (PCB->padstack_mark_on)
+			pcb_draw_pstk_marks(drawn_area);
 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 
