@@ -21,6 +21,7 @@
 	+ BUG: Cutting a subc with padstack to the buffer loses the padstack 'term' attribute. [report: Ade]
 + subc: FreeRotateBuffer() [report: celem]
 + BUG: when buffer contains a zero-length line, it doesn't show (xor-draw)
+- BUG: {import::src0} doesn't substitute ~ [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
 - BUG: shift+b doesn't work on subc [report: Ade]
