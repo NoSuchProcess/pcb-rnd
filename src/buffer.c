@@ -351,7 +351,11 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	}
 	PCB_END_LOOP;
 
-#warning subc TODO
+	PCB_SUBC_LOOP(Buffer->Data);
+	{
+		pcb_subc_rotate(subc, Buffer->X, Buffer->Y, cosa, sina, angle);
+	}
+	PCB_END_LOOP;
 
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);

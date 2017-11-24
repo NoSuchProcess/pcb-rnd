@@ -886,9 +886,25 @@ void *pcb_subcop_rotate90(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_rotate(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-	pcb_board_t *pcb = pcb_data_get_top(sc->data);
-	return pcb_subc_op((pcb != NULL ? pcb->Data : NULL), sc, &RotateFunctions, ctx);
+	pcb_data_t *data;
+
+	ctx->rotate.pcb = pcb_data_get_top(sc->data);
+	data = (ctx->rotate.pcb != NULL ? ctx->rotate.pcb->Data : NULL);
+	return pcb_subc_op(data, sc, &RotateFunctions, ctx);
 }
+
+void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle)
+{
+	pcb_opctx_t ctx;
+
+	ctx.rotate.center_x = cx;
+	ctx.rotate.center_y = cy;
+	ctx.rotate.angle = angle;
+	ctx.rotate.cosa = cosa;
+	ctx.rotate.sina = sina;
+	pcb_subcop_rotate(&ctx, subc);
+}
+
 
 static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_layer_t *sl, int src_has_real_layer, int dst_is_pcb)
 {

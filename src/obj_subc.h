@@ -65,6 +65,7 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs);
 /* changes the side of the board an element is on; returns pcb_true if done */
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff);
 
+void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle);
 
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY);
 
