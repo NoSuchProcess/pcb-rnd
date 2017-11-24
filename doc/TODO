@@ -16,8 +16,7 @@
 	- change layer stackup and padstack thermals will break
 	+ BUG: Padstack origin markers are included in exports on the silk layer. Tested so far with ps, png and gerber. [report: Ade]
 	+ BUG: Cutting a subc with padstack to the buffer loses the padstack 'term' attribute. [report: Ade]
-- subc:
-	- FreeRotateBuffer() [report: celem]
++ subc: FreeRotateBuffer() [report: celem]
 + BUG: when buffer contains a zero-length line, it doesn't show (xor-draw)
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
