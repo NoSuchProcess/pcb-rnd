@@ -5,6 +5,7 @@
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
 - padstack:
+	- BUG: png export doesn't show padstack holes [report: Ade]
 	- 'send to other side' with padstacks in subc
 	- v4 lihata formatting
 	- convert helpers:
