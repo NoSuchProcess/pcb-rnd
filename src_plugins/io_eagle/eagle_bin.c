@@ -846,7 +846,6 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"partnumber",  T_INT, 4, 2},
 			{"pin",  T_INT, 6, 2},
-			/*{"pad",  T_INT, 6, 2}, /*read.c signal dispatch table needs this to behave */
 			TERM
 		},
 	},
@@ -1131,9 +1130,6 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	unsigned char DRC_block[244];
 	unsigned char c;
 	int DRC_preamble_end_found = 0;
-
-	long mdWireWire, msWidth;
-	double rvPadTop, rvPadInner, rvPadBottom;
 
 	/* these are sane, default values for DRC in case not present, i.e. in v3 no DRC section */
 	drc_ctx->mdWireWire = 12;
@@ -1922,7 +1918,6 @@ static int postprocess_smd(void *ctx, egb_node_t *root)
 	egb_node_t *n;
 	long half_dx = 0;
 	long half_dy = 0;
-	long bin_rot = 0;
 	char tmp[32];
 
 	if (root != NULL && root->id == PCB_EGKW_SECT_SMD) {
@@ -1951,7 +1946,6 @@ static int postprocess_pad(void *ctx, egb_node_t *root)
 	egb_node_t *n;
 	long half_drill = 0;
 	long half_diameter = 0;
-	long bin_rot = 0;
 	char tmp[32];
 #warning TODO padstacks - need to convert obround pins to appropriate padstack types
 	if (root != NULL && root->id == PCB_EGKW_SECT_PAD) {
@@ -1977,7 +1971,7 @@ static int postprocess_pad(void *ctx, egb_node_t *root)
 static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 {
 	htss_entry_t *e;
-	egb_node_t *cr, *n, *q, *next, *next2;
+	egb_node_t *cr, *n, *next, *next2;
 
 	for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
 		next = n->next;
@@ -2050,7 +2044,7 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 /* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
 static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
-	egb_node_t *n, *p, *prev, *prev2, *next, *next2;
+	egb_node_t *n, *p, *prev2, *next, *next2;
 
 	egb_node_t *signal = egb_ctx->signals->first_child;
 
@@ -2068,8 +2062,6 @@ static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 					prev2 = p;
 			}
 		}
-		else
-			prev = n;
 	}
 	return 0;
 }
@@ -2196,7 +2188,7 @@ static int postproc_library_file(void *ctx, egb_ctx_t *egb_ctx)
 static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 {
 
-	egb_node_t *n, *signal, *el1;
+	egb_node_t *n, *signal;
 	egb_ctx_t eagle_bin_ctx;
 	egb_ctx_t *egb_ctx_p;
 	egb_ctx_p = &eagle_bin_ctx;
