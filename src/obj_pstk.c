@@ -154,7 +154,7 @@ void pcb_pstk_bbox(pcb_pstk_t *ps)
 
 /*** utils ***/
 
-static pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src)
+pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src)
 {
 	if (dst == NULL)
 		return NULL;

@@ -90,6 +90,9 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 /* Return whether a group is empty (free of padstack shapes) */
 pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 
+/* Copy all metadata (attributes, thermals, etc.) */
+pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src);
+
 
 /*** proto ***/
 
