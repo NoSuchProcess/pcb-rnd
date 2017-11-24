@@ -195,8 +195,8 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h event.h \
  ../src_plugins/diag/integrity.h hid.h hid_attrib.h hid_dad.h \
- compat_misc.h hid_attrib.h dolists.h \
- ../src_plugins/diag/diag_conf_fields.h
+ compat_misc.h hid_attrib.h ../src_plugins/lib_compat_help/pstk_compat.h \
+ obj_pstk.h dolists.h ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
  ../config.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -6400,7 +6400,7 @@ obj_pstk.o: obj_pstk.c ../config.h board.h const.h macro.h \
  draw_wireframe.h obj_pstk_draw.h obj_pstk_inlines.h thermal.h \
  obj_pstk_op.h operation.h obj_subc_parent.h search.h rats.h netlist.h \
  route_style.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_pstk_op.c
+ obj_pstk_op.c rotate.h
 obj_pstk_act.o: obj_pstk_act.c ../config.h obj_pstk.h obj_common.h \
  ../src_3rd/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  globalconst.h attrib.h global_typedefs.h pcb_bool.h unit.h data_parent.h \
