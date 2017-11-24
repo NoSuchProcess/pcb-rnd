@@ -206,6 +206,7 @@ run_test()
 	rm $res2
 
 	base=${fn%%.pcb}
+	base=${base%%.lht}
 	ref_fn=ref/$base$ext
 	fmt_fn=$base$ext
 	out_fn=out/$base$ext
