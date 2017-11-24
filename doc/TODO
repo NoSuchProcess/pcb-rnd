@@ -17,7 +17,6 @@
 	- property editor doesn't deal with padstacks (and subc)
 	- test if advanced search does anything with padstacks (and subc)
 	- change layer stackup and padstack thermals will break
-	+ BUG: Cutting a subc with padstack to the buffer loses the padstack 'term' attribute. [report: Ade]
 + subc: FreeRotateBuffer() [report: celem]
 + BUG: when buffer contains a zero-length line, it doesn't show (xor-draw)
 - BUG: {import::src0} doesn't substitute ~ [report: Ade]
