@@ -718,6 +718,16 @@ void *pcb_arcop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	return (Arc);
 }
 
+void *pcb_arcop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+{
+	pcb_arc_invalidate_erase(Arc);
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+	pcb_arc_rotate(Layer, Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina, ctx->rotate.angle);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+	pcb_arc_invalidate_draw(Layer, Arc);
+	return Arc;
+}
+
 void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 {
 	pcb_angle_t end_ang = arc->StartAngle + arc->Delta;
