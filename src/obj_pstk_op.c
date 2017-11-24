@@ -21,6 +21,7 @@
  */
 
 #include "polygon.h"
+#include "rotate.h"
 
 void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
@@ -170,11 +171,12 @@ void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	return ps;
 }
 
-void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+
+void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	double rot = ps->rot;
 
-	rot += (double)ctx->rotate.number * 90.0;
+	rot += (double)ctx->rotate.angle;
 
 	if ((rot > 360.0) || (rot < -360.0))
 		rot = fmod(rot, 360.0);
@@ -182,9 +184,39 @@ void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if ((rot == 360.0) || (rot == -360.0))
 		rot = 0;
 
-	if (pcb_pstk_change_instance(ps, NULL, NULL, &rot, NULL) == 0)
+	if (pcb_pstk_change_instance(ps, NULL, NULL, &rot, NULL) == 0) {
+		pcb_coord_t nx = ps->x, ny = ps->y;
+		pcb_rotate(&nx, &ny, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
+		if ((nx != ps->x) || (ny != ps->y))
+			pcb_pstk_move(ps, nx - ps->x, ny - ps->y);
 		return ps;
+	}
 	return NULL;
+}
+
+void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+{
+	ctx->rotate.angle = (double)ctx->rotate.number * 90.0;
+
+	switch(ctx->rotate.number) {
+		case 0:
+			ctx->rotate.sina = 0;
+			ctx->rotate.cosa = 1;
+			break;
+		case 1:
+			ctx->rotate.sina = 1;
+			ctx->rotate.cosa = 0;
+			break;
+		case 2:
+			ctx->rotate.sina = 0;
+			ctx->rotate.cosa = -1;
+			break;
+		case 3:
+			ctx->rotate.sina = -1;
+			ctx->rotate.cosa = 0;
+			break;
+	}
+	return pcb_pstkop_rotate(ctx, ps);
 }
 
 void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
