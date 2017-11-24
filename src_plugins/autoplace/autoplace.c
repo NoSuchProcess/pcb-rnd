@@ -135,6 +135,34 @@ typedef struct {
  * some local identifiers
  */
 
+#warning cleanup TODO: remove this and use genvect
+#define STEP_POINT 100
+
+/* get next slot for a box, allocates memory if necessary */
+static pcb_box_t *pcb_box_new(pcb_box_list_t *Boxes)
+{
+	pcb_box_t *box = Boxes->Box;
+
+	/* realloc new memory if necessary and clear it */
+	if (Boxes->BoxN >= Boxes->BoxMax) {
+		Boxes->BoxMax = STEP_POINT + (2 * Boxes->BoxMax);
+		box = (pcb_box_t *) realloc(box, Boxes->BoxMax * sizeof(pcb_box_t));
+		Boxes->Box = box;
+		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(pcb_box_t));
+	}
+	return (box + Boxes->BoxN++);
+}
+
+/* frees memory used by a box list */
+static void pcb_box_free(pcb_box_list_t *Boxlist)
+{
+	if (Boxlist) {
+		free(Boxlist->Box);
+		memset(Boxlist, 0, sizeof(pcb_box_list_t));
+	}
+}
+
+
 /* ---------------------------------------------------------------------------
  * Update the X, Y and group position information stored in the NetList after
  * elements have possibly been moved, rotated, flipped, etc.
