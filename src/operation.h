@@ -93,8 +93,9 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	pcb_coord_t center_x, center_y;    /* center of rotation */
-	unsigned number;             /* number of rotations */
+	pcb_coord_t center_x, center_y; /* center of rotation */
+	unsigned number;                /* number of rotations, for 90 deg rotation */
+	double cosa, sina;              /* for arbitrary angle rotation */
 } pcb_opctx_rotate_t;
 
 typedef struct {
