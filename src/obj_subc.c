@@ -594,6 +594,8 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 	src_pcb = pcb_data_get_top(src->data);
 
+	pcb_subc_copy_meta(sc, src);
+
 	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
 	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
 
@@ -733,7 +735,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)sc, 0);
 	}
 
-	return pcb_subc_copy_meta(sc, src);
+	return sc;
 }
 
 pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
