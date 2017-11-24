@@ -24,8 +24,9 @@
  *
  */
 
-#include <string.h>
 #include "config.h"
+
+#include <string.h>
 #include "rotate.h"
 #include "box.h"
 
