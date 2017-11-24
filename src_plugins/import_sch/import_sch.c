@@ -34,6 +34,7 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
+#include "paths.h"
 
 #include "compat_fs.h"
 #include "pcb-printf.h"
@@ -331,7 +332,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		cmd[6] = tmpfile;
 		cmd[7] = "--";
 		for (i = 0; i < nsources; i++)
-			cmd[8 + i] = sources[i];
+			cmd[8 + i] = pcb_build_fn(sources[i]);
 		cmd[8 + nsources] = NULL;
 
 #ifdef DEBUG
@@ -340,6 +341,8 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 #endif
 
 		if (pcb_spawnvp(cmd)) {
+			for(i = 0; i < nsources; i++)
+				free((char *) cmd[8 + i]);
 			unlink(tmpfile);
 			return 1;
 		}
@@ -352,6 +355,8 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		cmd[1] = NULL;
 		pcb_act_ExecuteFile(1, cmd, 0, 0);
 
+		for(i = 0; i < nsources; i++)
+			free((char *) cmd[8 + i]);
 		free(cmd);
 		pcb_tempfile_unlink(tmpfile);
 	}
