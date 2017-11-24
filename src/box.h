@@ -8,6 +8,8 @@
  *  this file, box.h, was written and is
  *  Copyright (c) 2001 C. Scott Ananian.
  *
+ *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -243,7 +245,10 @@ static inline PCB_FUNC_UNUSED void pcb_box_bump_point(pcb_box_t *dst, pcb_coord_
 	if (y > dst->Y2) dst->Y2 = y;
 }
 
+/* sets the bounding box of a point */
 void pcb_set_point_bounding_box(pcb_point_t *Pnt);
+
+/* rotates a box in 90 degree steps */
 void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 #endif /* __BOX_H_INCLUDED__ */

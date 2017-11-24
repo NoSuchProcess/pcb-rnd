@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,18 +31,12 @@
 #include "rotate.h"
 #include "box.h"
 
-/* ---------------------------------------------------------------------------
- * sets the bounding box of a point (which is silly)
- */
 void pcb_set_point_bounding_box(pcb_point_t *Pnt)
 {
 	Pnt->X2 = Pnt->X + 1;
 	Pnt->Y2 = Pnt->Y + 1;
 }
 
-/* ---------------------------------------------------------------------------
- * rotates a box in 90 degree steps
- */
 void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	pcb_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
