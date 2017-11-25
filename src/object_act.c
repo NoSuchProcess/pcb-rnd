@@ -692,10 +692,12 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			orig_rot = 0.0;
 			orig_cx = 0;
 			orig_cy = 0;
+			orig_front = 0;
 			pcb_subc_get_rotation(sc, &orig_rot);
 			orig_rotstep = pcb_round(orig_rot / 90.0);
 			pcb_subc_get_origin(sc, &orig_cx, &orig_cy);
-			orig_front = 0 /*PCB_FRONT(e)*/;
+			pcb_subc_get_side(sc, &orig_front);
+			orig_front = !orig_front;
 		}
 
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
