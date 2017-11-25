@@ -208,8 +208,12 @@ unsigned int pcb_layer_flags_(pcb_layer_t *layer)
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
 	if (!layer->is_bound) {
 		pcb_data_t *data = layer->parent;
-		pcb_layer_id_t lid = pcb_layer_id(data, layer);
+		pcb_layer_id_t lid;
 
+		if (data == NULL)
+			return 0;
+
+		lid = pcb_layer_id(data, layer);;
 		if (lid < 0)
 			return 0;
 
