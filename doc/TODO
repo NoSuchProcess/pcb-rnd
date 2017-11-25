@@ -5,6 +5,7 @@
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
 - padstack:
+	- BUG: rotation broke
 	- BUG: exports:
 		- png export doesn't show padstack holes [report: Ade]
 		- gerber export (plated, unplated drill cnc) doesn't have padstacks [report: Ade]
