@@ -732,6 +732,14 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 				pcb_subc_get_origin(psc, &pcx, &pcy);
 				if (!orig_on_top)
 					pcb_subc_change_side(&psc, pcy * 2 - PCB->MaxHeight);
+pcb_trace("orig_rot=%f (%d)\n", orig_rot, orig_rotstep);
+				if (orig_rot != 0) {
+					double cosa, sina;
+					cosa = cos(orig_rot / PCB_RAD_TO_DEG);
+					sina = sin(orig_rot / PCB_RAD_TO_DEG);
+					pcb_subc_rotate(psc, pcx, pcy, cosa, sina, orig_rot);
+				}
+
 /* Not needed anymore: pcb_buffer_copy_to_layout solves this
 				pcb_opctx_t op;
 				op.move.pcb = PCB;
