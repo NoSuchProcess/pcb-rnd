@@ -487,7 +487,18 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	const char *rot, *text_val;
 	unsigned int text_direction = 0, text_scaling = 100;
 	pcb_flag_t text_flags = pcb_flag_make(0);
+	eagle_layer_t *ly;
+	ly = eagle_layer_get(st, ln);
 
+#warning TODO text - need better filtering/exclusion of unsupported text layers +/- correct flags
+	if (ly->ly < 0) {
+		pcb_message(PCB_MSG_WARNING, "Ignoring text on Eagle layer: %ld\n", ln);
+		return 0;
+	}
+	if (!(ln == 21 || ln== 51 || ln == 16))
+		pcb_message(PCB_MSG_WARNING, "Ignoring text on non top copper/silk Eagle layer: %ld\n", ln);
+		return 0;
+		
 	if (CHILDREN(subtree) == NULL && !(text_val = eagle_get_attrs(st, subtree, "textfield", NULL))) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;
@@ -525,13 +536,10 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 			text_direction = 3;
 		}
 	}
-#warning TODO need to place text on layout if layer number is sensible
 	/* pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont) */
 
 	pcb_text_new( &st->pcb->Data->Layer[ln], pcb_font(st->pcb, 0, 1), X, Y, text_direction
 , text_scaling, text_val, text_flags); /*Flags);*/
-		return 0;
-
 	return 0;
 }
 
@@ -1309,7 +1317,6 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 	};
 
 #warning TODO: test (should process these probably no-net-no-signal objects)
-
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, ON_BOARD);
 }
 
@@ -1336,17 +1343,30 @@ static int eagle_read_board(read_state_t *st, trnode_t *subtree, void *obj, int 
 
 static int eagle_read_drawing(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	static const dispatch_t disp[] = { /* possible children of <drawing> */
+	int res;
+
+	static const dispatch_t disp_1[] = { /* possible children of <drawing> */
 		{"settings",  eagle_read_nop},
 		{"layers",    eagle_read_layers},
 		{"grid",      eagle_read_nop},
-		{"board",     eagle_read_board},
+		{"board",     eagle_read_nop}, 
 		{"unknown11", eagle_read_nop}, /* TODO: temporary; from the binary tree */
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
 
-	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, 0);
+        static const dispatch_t disp_2[] = { /* possible children of <drawing> */
+                {"settings",  eagle_read_nop},
+                {"layers",    eagle_read_nop},
+                {"grid",      eagle_read_nop},
+                {"board",     eagle_read_board},
+                {"unknown11", eagle_read_nop}, /* TODO: temporary; from the binary tree */
+                {"@text",     eagle_read_nop},
+                {NULL, NULL}
+        };
+	res = eagle_foreach_dispatch(st, CHILDREN(subtree), disp_1, NULL, 0);
+	res |= eagle_foreach_dispatch(st, CHILDREN(subtree), disp_2, NULL, 0);
+	return res;
 }
 
 static int eagle_read_design_rules(read_state_t *st)
@@ -1389,7 +1409,6 @@ static int eagle_read_ver(const char *ver)
 		pcb_message(PCB_MSG_ERROR, "no version attribute in <eagle>\n");
 		return -1;
 	}
-
 	v1 = strtol(ver, &end, 10);
 	if (*end != '.') {
 		pcb_message(PCB_MSG_ERROR, "malformed version string [1] in <eagle>\n");
@@ -1455,19 +1474,10 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	int res, old_leni;
 	read_state_t st;
 
-	static const dispatch_t disp_1[] = { /* possible children of root */
-		{"layers",         eagle_read_layers}, /* this is hanging off root */
-		{"drawing",        eagle_read_nop},
-		{"compatibility",  eagle_read_nop},
-		{"@text",          eagle_read_nop},
-		{NULL, NULL}
-	};
-
 	/* have not read design rules section yet but need this for rectangle parsing */
 	st.ms_width = PCB_MIL_TO_COORD(10); /* default minimum feature width */
 
-	static const dispatch_t disp_2[] = { /* possible children of root */
-		{"layers",         eagle_read_nop},
+	static const dispatch_t disp[] = { /* possible children of root */
 		{"drawing",        eagle_read_drawing},
 		{"compatibility",  eagle_read_nop},
 		{"@text",          eagle_read_nop},
@@ -1489,11 +1499,9 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	st_init(&st);
 
 	eagle_read_design_rules(&st);
-
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
-	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_1, NULL, 0);
-	res |= eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_2, NULL, 0);
+	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
 	if (res == 0)
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
