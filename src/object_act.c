@@ -44,6 +44,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "layer_vis.h"
+#include "operation.h"
 
 /* --------------------------------------------------------------------------- */
 
@@ -700,13 +701,34 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 				pe->Name[i].Scale = e->Name[i].Scale;
 			}
 
-			pcb_element_remove(e);
 			paste_ok = 1;
 		}
+		else {
+			pcb_coord_t pcx = 0, pcy = 0;
+			pcb_subc_t *psc;
+			pcb_opctx_t op;
 
-		if (paste_ok)
+			psc = pcb_subclist_first(&(PCB_PASTEBUFFER->Data->subc));
+			pcb_subc_get_origin(psc, &pcx, &pcy);
+
+			if (psc != NULL) {
+				if (!PCB_FRONT(e))
+					pcb_subc_change_side(&psc, pcy * 2 - PCB->MaxHeight);
+				paste_ok = 1;
+			}
+			op.move.pcb = PCB;
+			op.move.dx = e->MarkX;
+			op.move.dy = e->MarkY;
+			op.move.dst_layer = NULL;
+			op.move.more_to_come = pcb_true;
+			pcb_subcop_move(&op, psc);
+		}
+
+		if (paste_ok) {
+			pcb_element_remove(e);
 			if (pcb_buffer_copy_to_layout(PCB, mx, my))
 				pcb_board_set_changed_flag(pcb_true);
+		}
 	}
 
 	/* Now reload footprint */
