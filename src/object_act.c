@@ -669,8 +669,8 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
-		int orig_rotstep, pr, i, paste_ok = 0;
-		pcb_coord_t mx, my;
+		int orig_rotstep, paste_ok = 0;
+		pcb_coord_t orig_cx, orig_cy;
 		pcb_element_t *pe;
 		double orig_rot;
 
@@ -684,28 +684,34 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		if (e != NULL) {
 			orig_rotstep = pcb_element_get_orientation(e);
 			orig_rot = orig_rotstep * 90.0;
+			orig_cx = e->MarkX;
+			orig_cy = e->MarkY;
 		}
 		else {
 			orig_rot = 0.0;
+			orig_cx = 0;
+			orig_cy = 0;
 			pcb_subc_get_rotation(sc, &orig_rot);
 			orig_rotstep = pcb_round(orig_rot / 90.0);
+			pcb_subc_get_origin(sc, &orig_cx, &orig_cy);
 		}
 
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
 		if (pe != NULL) {
+			/* replace with element */
+			int pr, i;
+
 			if (!PCB_FRONT(e))
 				pcb_element_mirror(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
-			pr = pcb_element_get_orientation(pe);
 
-			mx = e->MarkX;
-			my = e->MarkY;
+			pr = pcb_element_get_orientation(pe);
 
 			if (orig_rotstep != pr)
 				pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (orig_rotstep - pr + 4) % 4);
 
 			for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
-				pe->Name[i].X = e->Name[i].X - mx + pe->MarkX;
-				pe->Name[i].Y = e->Name[i].Y - my + pe->MarkY;
+				pe->Name[i].X = e->Name[i].X - orig_cx + pe->MarkX;
+				pe->Name[i].Y = e->Name[i].Y - orig_cy + pe->MarkY;
 				pe->Name[i].Direction = e->Name[i].Direction;
 				pe->Name[i].Scale = e->Name[i].Scale;
 			}
@@ -713,6 +719,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			paste_ok = 1;
 		}
 		else {
+			/* replace with subc */
 			pcb_coord_t pcx = 0, pcy = 0;
 			pcb_subc_t *psc;
 			pcb_opctx_t op;
@@ -725,17 +732,19 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 					pcb_subc_change_side(&psc, pcy * 2 - PCB->MaxHeight);
 				paste_ok = 1;
 			}
+/* Not needed anymore: pcb_buffer_copy_to_layout solves this
 			op.move.pcb = PCB;
-			op.move.dx = e->MarkX;
-			op.move.dy = e->MarkY;
+			op.move.dx = orig_cx;
+			op.move.dy = orig_cy;
 			op.move.dst_layer = NULL;
 			op.move.more_to_come = pcb_true;
 			pcb_subcop_move(&op, psc);
+*/
 		}
 
 		if (paste_ok) {
 			pcb_element_remove(e);
-			if (pcb_buffer_copy_to_layout(PCB, mx, my))
+			if (pcb_buffer_copy_to_layout(PCB, orig_cx, orig_cy))
 				pcb_board_set_changed_flag(pcb_true);
 		}
 	}
