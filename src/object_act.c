@@ -732,15 +732,15 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	/* Now reload footprint */
 	element_cache = NULL;
-	e = find_element_by_refdes(refdes);
-	if (e != NULL) {
-	old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_REFDES, pcb_strdup(refdes));
-	if (old)
-		free(old);
-	old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_VALUE, pcb_strdup(value));
-	if (old)
-		free(old);
-	PCB_FLAG_SET(PCB_FLAG_FOUND, e);
+		e = find_element_by_refdes(refdes);
+		if (e != NULL) {
+		old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_REFDES, pcb_strdup(refdes));
+		if (old)
+			free(old);
+		old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_VALUE, pcb_strdup(value));
+		if (old)
+			free(old);
+		PCB_FLAG_SET(PCB_FLAG_FOUND, e);
 	}
 
 	sc = pcb_subc_by_refdes(PCB->Data, refdes);
