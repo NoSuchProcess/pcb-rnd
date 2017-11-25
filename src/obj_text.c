@@ -904,6 +904,8 @@ static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_g
 	else if (PCB_HAS_COLOROVERRIDE(text)) {
 		pcb_gui->set_color(Output.fgGC, text->override_color);
 	}
+	else if (layer->is_bound)
+		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.invisible_objects);
 	else
 		pcb_gui->set_color(Output.fgGC, layer->meta.real.color);
 

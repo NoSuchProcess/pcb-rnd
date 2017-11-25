@@ -1037,6 +1037,8 @@ static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_g
 	else if (PCB_HAS_COLOROVERRIDE(line)) {
 		color = (line->override_color);
 	}
+	else if (layer->is_bound)
+		color = conf_core.appearance.color.invisible_objects;
 	else
 		color = layer->meta.real.color;
 
