@@ -746,7 +746,10 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 
 		if (paste_ok) {
-			pcb_element_remove(e);
+			if (e != NULL)
+				pcb_element_remove(e);
+			if (sc != NULL)
+				pcb_subc_remove(sc);
 			if (pcb_buffer_copy_to_layout(PCB, orig_cx, orig_cy))
 				pcb_board_set_changed_flag(pcb_true);
 		}
