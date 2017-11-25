@@ -1322,16 +1322,21 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	pcb_opctx_t ctx;
 	pcb_subc_t *newsc, *newsc2;
 	int n;
+	pcb_board_t *pcb;
+	pcb_data_t *data;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, *subc))
 		return (pcb_false);
 
+	assert((*subc)->parent_type = PCB_PARENT_DATA);
+	data = (*subc)->parent.data;
+	pcb = pcb_data_get_top(data);
 
 	/* move subc into a local "buffer" */
 	memset(&ctx, 0, sizeof(ctx));
 	ctx.buffer.pcb = pcb_data_get_top((*subc)->data);
 	ctx.buffer.dst = pcb_data_new(NULL);
-	ctx.buffer.src = PCB->Data;
+	ctx.buffer.src = data;
 	newsc = pcb_subcop_move_to_buffer(&ctx, *subc);
 
 
@@ -1346,9 +1351,9 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	}
 
 	/* place the new subc */
-	newsc2 = pcb_subc_dup_at(PCB, PCB->Data, newsc, 0, 0, pcb_true);
+	newsc2 = pcb_subc_dup_at(pcb, data, newsc, 0, 0, pcb_true);
 	newsc2->ID = newsc->ID;
-	PCB_SET_PARENT(newsc2, data, PCB->Data);
+	PCB_SET_PARENT(newsc2, data, data);
 	pcb_undo_add_subc_to_otherside(PCB_TYPE_SUBC, newsc2, newsc2, newsc2, yoff);
 
 	*subc = newsc2;
