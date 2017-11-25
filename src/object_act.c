@@ -669,7 +669,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
-		int orig_front, orig_rotstep, paste_ok = 0;
+		int orig_on_top, orig_rotstep, paste_ok = 0;
 		pcb_coord_t orig_cx, orig_cy;
 		pcb_element_t *pe;
 		double orig_rot;
@@ -686,18 +686,18 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			orig_rot = orig_rotstep * 90.0;
 			orig_cx = e->MarkX;
 			orig_cy = e->MarkY;
-			orig_front = PCB_FRONT(e);
+			orig_on_top = PCB_FRONT(e);
 		}
 		else {
 			orig_rot = 0.0;
 			orig_cx = 0;
 			orig_cy = 0;
-			orig_front = 0;
+			orig_on_top = 0;
 			pcb_subc_get_rotation(sc, &orig_rot);
 			orig_rotstep = pcb_round(orig_rot / 90.0);
 			pcb_subc_get_origin(sc, &orig_cx, &orig_cy);
-			pcb_subc_get_side(sc, &orig_front);
-			orig_front = !orig_front;
+			pcb_subc_get_side(sc, &orig_on_top);
+			orig_on_top = !orig_on_top;
 		}
 
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
@@ -705,7 +705,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			/* replace with element */
 			int pr, i;
 
-			if (!orig_front)
+			if (!orig_on_top)
 				pcb_element_mirror(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
 
 			pr = pcb_element_get_orientation(pe);
@@ -730,7 +730,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			if (psc != NULL) {
 				pcb_coord_t pcx = 0, pcy = 0;
 				pcb_subc_get_origin(psc, &pcx, &pcy);
-				if (!orig_front)
+				if (!orig_on_top)
 					pcb_subc_change_side(&psc, pcy * 2 - PCB->MaxHeight);
 /* Not needed anymore: pcb_buffer_copy_to_layout solves this
 				pcb_opctx_t op;
