@@ -1009,7 +1009,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	EraseSubc(sc);
 
 	/* move the subc */
-	if (ctx->buffer.pcb->Data->subc_tree != NULL)
+	if ((ctx->buffer.pcb != NULL) && (ctx->buffer.pcb->Data->subc_tree != NULL))
 		pcb_r_delete_entry(ctx->buffer.pcb->Data->subc_tree, (pcb_box_t *)sc);
 
 	pcb_subclist_remove(sc);
