@@ -52,19 +52,18 @@
     \brief  Implementation of \ref pcb_gtk_preview_t widget.
  */
 
-/** Just define a sensible scale, lets say (for example), 100 pixel per 150 mil */
-#define SENSIBLE_VIEW_SCALE  (100. / PCB_MIL_TO_COORD (150.))
-
 static void preview_set_view(pcb_gtk_preview_t * preview)
 {
-	float scale = SENSIBLE_VIEW_SCALE;
+	float scale = 0.95; /* leave 5% border */
 
 #warning switch for .kind here and do a zoom-to-extend on layer
 
+	preview->x_min = preview->obj->BoundingBox.X1;
+	preview->y_min = preview->obj->BoundingBox.Y1;
 	preview->x_max = preview->obj->BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
 	preview->y_max = preview->obj->BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
-	preview->w_pixels = scale * (preview->obj->BoundingBox.X2 - preview->obj->BoundingBox.X1);
-	preview->h_pixels = scale * (preview->obj->BoundingBox.Y2 - preview->obj->BoundingBox.Y1);
+	preview->w_pixels = scale * (double)(preview->x_max - preview->x_min);
+	preview->h_pixels = scale * (double)(preview->y_max - preview->y_min);
 }
 
 static void preview_set_data(pcb_gtk_preview_t *preview, pcb_any_obj_t *obj)
@@ -200,8 +199,8 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 
 	switch (preview->kind) {
 	case PCB_GTK_PREVIEW_PINOUT:
-		preview->expose_data.view.X1 = 0;
-		preview->expose_data.view.Y1 = 0;
+		preview->expose_data.view.X1 = preview->x_min;
+		preview->expose_data.view.Y1 = preview->y_min;
 		preview->expose_data.view.X2 = preview->x_max;
 		preview->expose_data.view.Y2 = preview->y_max;
 		return preview->expose(widget, ev, pcb_hid_expose_pinout, &preview->expose_data);

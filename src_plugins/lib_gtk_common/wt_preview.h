@@ -78,9 +78,9 @@ struct pcb_gtk_preview_s {
 	pcb_hid_expose_ctx_t expose_data;
 	pcb_gtk_view_t view;
 
-	pcb_coord_t x_max, y_max;			/* for the element preview only       */
+	pcb_coord_t x_min, y_min, x_max, y_max;   /* for the obj preview: bounding box */
+	gint w_pixels, h_pixels;                  /* natural size of object preview */
 	gint win_w, win_h;
-	gint w_pixels, h_pixels;			/* natural size of element preview    */
 
 	void *gport;
 	pcb_gtk_init_drawing_widget_t init_drawing_widget;
