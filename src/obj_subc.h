@@ -89,6 +89,10 @@ pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name);
 /* Search subc, "recursively", by ID */
 pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID);
 
+/* undoable remove */
+void *pcb_subc_remove(pcb_subc_t *sc);
+
+
 /*** loops ***/
 
 #define PCB_SUBC_LOOP(top) do {                                     \

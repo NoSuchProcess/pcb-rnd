@@ -1218,6 +1218,19 @@ void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	return NULL;
 }
 
+void *pcb_subc_remove(pcb_subc_t *sc)
+{
+	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+/*	PCB_CLEAR_PARENT(subc);*/
+
+	return pcb_subcop_remove(&ctx, sc);
+}
+
+
 void *pcb_subcop_clear_octagon(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ClrOctagonFunctions, ctx);
