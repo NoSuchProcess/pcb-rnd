@@ -101,23 +101,6 @@ static void preview_set_data(pcb_gtk_preview_t * preview, pcb_element_t * elemen
 									 conf_core.appearance.pinout.offset_y - preview->element.BoundingBox.Y1);
 
 	preview_set_view(preview);
-
-	PCB_ELEMENT_PCB_LINE_LOOP(&preview->element);
-	{
-		line->Thickness = 0;
-	}
-	PCB_END_LOOP;
-
-	PCB_ARC_LOOP(&preview->element);
-	{
-		/*
-		 * for whatever reason setting a thickness of 0 causes the arcs to
-		 * not display so pick 1 which does display but is still quite
-		 * thin.
-		 */
-		arc->Thickness = 1;
-	}
-	PCB_END_LOOP;
 }
 
 enum {
