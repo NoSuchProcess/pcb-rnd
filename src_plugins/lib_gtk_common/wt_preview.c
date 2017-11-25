@@ -77,25 +77,8 @@ static void preview_set_data(pcb_gtk_preview_t * preview, pcb_element_t * elemen
 		return;
 	}
 
-	/*
-	 * copy element data
-	 * enable output of pin and padnames
-	 * move element to a 5% offset from zero position
-	 * set all package lines/arcs to zero width
-	 */
+	/* copy element data and move element to a 5% offset from zero position */
 	pcb_element_copy(NULL, &preview->element, element, FALSE, 0, 0);
-	PCB_PIN_LOOP(&preview->element);
-	{
-		PCB_FLAG_SET(PCB_FLAG_TERMNAME, pin);
-	}
-	PCB_END_LOOP;
-
-	PCB_PAD_LOOP(&preview->element);
-	{
-		PCB_FLAG_SET(PCB_FLAG_TERMNAME, pad);
-	}
-	PCB_END_LOOP;
-
 	pcb_element_move(NULL, &preview->element,
 									 conf_core.appearance.pinout.offset_x - preview->element.BoundingBox.X1,
 									 conf_core.appearance.pinout.offset_y - preview->element.BoundingBox.Y1);
