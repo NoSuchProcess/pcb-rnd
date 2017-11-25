@@ -1704,6 +1704,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		pcb_layer_group_setup_silks(Ptr);
 		pcb_layer_create_all_for_recipe(Ptr, sc->data->Layer, sc->data->LayerN);
 		pcb_subc_rebind(Ptr, sc);
+		pcb_data_clip_polys(sc->data);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Error loading '%s': neither a board nor a subcircuit\n", Filename);
