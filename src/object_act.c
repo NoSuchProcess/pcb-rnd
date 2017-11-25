@@ -669,9 +669,10 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
-		int er, pr, i, paste_ok = 0;
+		int orig_rotstep, pr, i, paste_ok = 0;
 		pcb_coord_t mx, my;
 		pcb_element_t *pe;
+		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
 		if (pcb_act_LoadFootprint(argc, args, x, y) != 0) {
@@ -679,7 +680,16 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			return 1;
 		}
 
-		er = pcb_element_get_orientation(e);
+		/* save the rotation value of the original element/subc */
+		if (e != NULL) {
+			orig_rotstep = pcb_element_get_orientation(e);
+			orig_rot = orig_rotstep * 90.0;
+		}
+		else {
+			orig_rot = 0.0;
+			pcb_subc_get_rotation(sc, &orig_rot);
+			orig_rotstep = pcb_round(orig_rot / 90.0);
+		}
 
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
 		if (pe != NULL) {
@@ -690,8 +700,8 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			mx = e->MarkX;
 			my = e->MarkY;
 
-			if (er != pr)
-				pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
+			if (orig_rotstep != pr)
+				pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (orig_rotstep - pr + 4) % 4);
 
 			for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
 				pe->Name[i].X = e->Name[i].X - mx + pe->MarkX;
