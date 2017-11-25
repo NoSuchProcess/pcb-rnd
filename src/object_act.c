@@ -757,8 +757,8 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	/* Now reload footprint */
 	element_cache = NULL;
-		e = find_element_by_refdes(refdes);
-		if (e != NULL) {
+	e = find_element_by_refdes(refdes);
+	if (e != NULL) {
 		old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_REFDES, pcb_strdup(refdes));
 		if (old)
 			free(old);
