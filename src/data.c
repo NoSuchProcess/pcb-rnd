@@ -557,6 +557,15 @@ void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type)
 	} PCB_ENDALL_LOOP;
 }
 
+void pcb_data_clip_polys(pcb_data_t *data)
+{
+	PCB_POLY_ALL_LOOP(data);
+	{
+		pcb_poly_init_clip(data, layer, polygon);
+	}
+	PCB_ENDALL_LOOP;
+}
+
 #define rsearch(tree) \
 	do { \
 		pcb_r_dir_t tmp = pcb_r_search(tree, starting_region, region_in_search, rectangle_in_region, closure, num_found); \

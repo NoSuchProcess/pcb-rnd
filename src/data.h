@@ -157,6 +157,10 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs);
 
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
 
+/* run pcb_poly_init_clip() on all polygons in data */
+void pcb_data_clip_polys(pcb_data_t *data);
+
+
 /* rsearch on all trees matching types of data */
 pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
 						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
