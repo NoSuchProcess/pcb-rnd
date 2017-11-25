@@ -669,7 +669,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
-		int orig_rotstep, paste_ok = 0;
+		int orig_front, orig_rotstep, paste_ok = 0;
 		pcb_coord_t orig_cx, orig_cy;
 		pcb_element_t *pe;
 		double orig_rot;
@@ -686,6 +686,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			orig_rot = orig_rotstep * 90.0;
 			orig_cx = e->MarkX;
 			orig_cy = e->MarkY;
+			orig_front = PCB_FRONT(e);
 		}
 		else {
 			orig_rot = 0.0;
@@ -694,6 +695,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_subc_get_rotation(sc, &orig_rot);
 			orig_rotstep = pcb_round(orig_rot / 90.0);
 			pcb_subc_get_origin(sc, &orig_cx, &orig_cy);
+			orig_front = 0 /*PCB_FRONT(e)*/;
 		}
 
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
@@ -701,7 +703,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			/* replace with element */
 			int pr, i;
 
-			if (!PCB_FRONT(e))
+			if (!orig_front)
 				pcb_element_mirror(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
 
 			pr = pcb_element_get_orientation(pe);
@@ -720,26 +722,25 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 		else {
 			/* replace with subc */
-			pcb_coord_t pcx = 0, pcy = 0;
 			pcb_subc_t *psc;
-			pcb_opctx_t op;
 
 			psc = pcb_subclist_first(&(PCB_PASTEBUFFER->Data->subc));
-			pcb_subc_get_origin(psc, &pcx, &pcy);
-
 			if (psc != NULL) {
-				if (!PCB_FRONT(e))
+				pcb_coord_t pcx = 0, pcy = 0;
+				pcb_subc_get_origin(psc, &pcx, &pcy);
+				if (!orig_front)
 					pcb_subc_change_side(&psc, pcy * 2 - PCB->MaxHeight);
+/* Not needed anymore: pcb_buffer_copy_to_layout solves this
+				pcb_opctx_t op;
+				op.move.pcb = PCB;
+				op.move.dx = orig_cx;
+				op.move.dy = orig_cy;
+				op.move.dst_layer = NULL;
+				op.move.more_to_come = pcb_true;
+				pcb_subcop_move(&op, psc);
+*/
 				paste_ok = 1;
 			}
-/* Not needed anymore: pcb_buffer_copy_to_layout solves this
-			op.move.pcb = PCB;
-			op.move.dx = orig_cx;
-			op.move.dy = orig_cy;
-			op.move.dst_layer = NULL;
-			op.move.more_to_come = pcb_true;
-			pcb_subcop_move(&op, psc);
-*/
 		}
 
 		if (paste_ok) {
