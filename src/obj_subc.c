@@ -1393,6 +1393,25 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+void pcb_subc_draw_preview(const pcb_subc_t *sc, pcb_box_t *drawn_area)
+{
+	int n;
+	pcb_pstk_draw_t ctx;
+
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *layer = &sc->data->Layer[n];
+		if (layer->meta.bound.type & (PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_OUTLINE))
+			pcb_draw_layer(layer, drawn_area);
+	}
+
+	ctx.pcb = NULL;
+	ctx.gid = -1;
+	ctx.is_current = 1;
+	ctx.comb = 0;
+	pcb_r_search(sc->data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_callback, &ctx, NULL);
+}
+
+
 pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name)
 {
 #warning subc TODO: hierarchy
