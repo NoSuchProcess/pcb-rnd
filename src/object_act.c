@@ -623,7 +623,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 	e = find_element_by_refdes(refdes);
 	sc = pcb_subc_by_refdes(PCB->Data, refdes);
 
-	if (!e && !sc) {
+	if ((e == NULL) && (sc == NULL)) {
 		pcb_coord_t nx, ny, d;
 
 #ifdef DEBUG
@@ -661,7 +661,6 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		if (pcb_buffer_copy_to_layout(PCB, nx, ny))
 			pcb_board_set_changed_flag(pcb_true);
 	}
-
 	else if (
 			(e && PCB_ELEM_NAME_DESCRIPTION(e) && strcmp(PCB_ELEM_NAME_DESCRIPTION(e), footprint) != 0) 
 			|| (sc && subc_differs(sc, footprint))
@@ -675,7 +674,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		pcb_element_t *pe;
 
 		/* Different footprint, we need to swap them out.  */
-		if (pcb_act_LoadFootprint(argc, args, x, y)) {
+		if (pcb_act_LoadFootprint(argc, args, x, y) != 0) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
