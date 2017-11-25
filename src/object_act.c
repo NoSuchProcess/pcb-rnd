@@ -669,7 +669,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
-		int er, pr, i;
+		int er, pr, i, paste_ok = 0;
 		pcb_coord_t mx, my;
 		pcb_element_t *pe;
 
@@ -680,28 +680,33 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 
 		er = pcb_element_get_orientation(e);
+
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
-		if (!PCB_FRONT(e))
-			pcb_element_mirror(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
-		pr = pcb_element_get_orientation(pe);
+		if (pe != NULL) {
+			if (!PCB_FRONT(e))
+				pcb_element_mirror(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
+			pr = pcb_element_get_orientation(pe);
 
-		mx = e->MarkX;
-		my = e->MarkY;
+			mx = e->MarkX;
+			my = e->MarkY;
 
-		if (er != pr)
-			pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
+			if (er != pr)
+				pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
 
-		for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
-			pe->Name[i].X = e->Name[i].X - mx + pe->MarkX;
-			pe->Name[i].Y = e->Name[i].Y - my + pe->MarkY;
-			pe->Name[i].Direction = e->Name[i].Direction;
-			pe->Name[i].Scale = e->Name[i].Scale;
+			for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
+				pe->Name[i].X = e->Name[i].X - mx + pe->MarkX;
+				pe->Name[i].Y = e->Name[i].Y - my + pe->MarkY;
+				pe->Name[i].Direction = e->Name[i].Direction;
+				pe->Name[i].Scale = e->Name[i].Scale;
+			}
+
+			pcb_element_remove(e);
+			paste_ok = 1;
 		}
 
-		pcb_element_remove(e);
-
-		if (pcb_buffer_copy_to_layout(PCB, mx, my))
-			pcb_board_set_changed_flag(pcb_true);
+		if (paste_ok)
+			if (pcb_buffer_copy_to_layout(PCB, mx, my))
+				pcb_board_set_changed_flag(pcb_true);
 	}
 
 	/* Now reload footprint */
