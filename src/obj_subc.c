@@ -179,6 +179,22 @@ int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot)
 	return 0;
 }
 
+int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom)
+{
+	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_layer == NULL))
+		return -1;
+	if (!sc->aux_layer->is_bound)
+		return -1;
+
+	if (sc->aux_layer->meta.bound.type & PCB_LYT_TOP)
+		*on_bottom = 0;
+	else if (sc->aux_layer->meta.bound.type & PCB_LYT_BOTTOM)
+		*on_bottom = 1;
+	else
+		return -1;
+
+	return 0;
+}
 
 static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 {

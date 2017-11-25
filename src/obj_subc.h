@@ -80,6 +80,7 @@ void EraseSubc(pcb_subc_t *sc);
 /* calculate geometrical properties using the aux layer; return 0 on success */
 int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y);
 int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot);
+int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom);
 
 /* Search for the named subc; name is relative path in hierarchy. Returns
    NULL if not found */
