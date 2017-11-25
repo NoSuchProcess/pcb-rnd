@@ -3522,14 +3522,14 @@ static void lesstif_show_item(void *item)
 	PreviewData *pd;
 
 	for (pd = pinouts; pd; pd = pd->next)
-		if (pd->ctx.content.elem == item)
+		if (pd->ctx.content.obj == item)
 			return;
 	if (!mainwind)
 		return;
 
 	pd = (PreviewData *) calloc(1, sizeof(PreviewData));
 
-	pd->ctx.content.elem = item;
+	pd->ctx.content.obj = item;
 
 	extents = pcb_hid_get_extents_pinout(&pd->ctx);
 	pd->left = extents->X1;

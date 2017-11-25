@@ -596,7 +596,7 @@ struct pcb_hid_expose_ctx_s {
 	unsigned force:1; /* draw even if layer set fails */
 	union {
 		pcb_layer_id_t layer_id;
-		pcb_element_t *elem;
+		pcb_any_obj_t *obj;
 	} content;
 
 	/* for PCB_LYT_DIALOG */

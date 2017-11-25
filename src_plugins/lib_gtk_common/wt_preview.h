@@ -92,7 +92,7 @@ struct pcb_gtk_preview_s {
 	time_t grabt;
 	long grabmot;
 
-	pcb_element_t element;
+	pcb_any_obj_t *obj; /* object being displayed in the preview */
 
 	pcb_gtk_common_t *com;
 };
@@ -118,11 +118,11 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com,
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget for pinout.
     \param  init_widget       virtual function called at initialization
     \param  expose            drawing event call-back function
-    \param  element           widget associated data
+    \param  obj               object to draw
  */
 GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com,
 																			pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_element_t * element);
+																			pcb_gtk_preview_expose_t expose, pcb_any_obj_t *obj);
 
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_preview_t widget,
     using \p layer... for What ?

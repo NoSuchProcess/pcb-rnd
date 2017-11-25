@@ -58,31 +58,24 @@
 static void preview_set_view(pcb_gtk_preview_t * preview)
 {
 	float scale = SENSIBLE_VIEW_SCALE;
-	pcb_element_t *elem = &preview->element;
 
 #warning switch for .kind here and do a zoom-to-extend on layer
 
-	preview->x_max = elem->BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
-	preview->y_max = elem->BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
-	preview->w_pixels = scale * (elem->BoundingBox.X2 - elem->BoundingBox.X1);
-	preview->h_pixels = scale * (elem->BoundingBox.Y2 - elem->BoundingBox.Y1);
+	preview->x_max = preview->obj->BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
+	preview->y_max = preview->obj->BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
+	preview->w_pixels = scale * (preview->obj->BoundingBox.X2 - preview->obj->BoundingBox.X1);
+	preview->h_pixels = scale * (preview->obj->BoundingBox.Y2 - preview->obj->BoundingBox.Y1);
 }
 
-static void preview_set_data(pcb_gtk_preview_t * preview, pcb_element_t * element)
+static void preview_set_data(pcb_gtk_preview_t *preview, pcb_any_obj_t *obj)
 {
-	if (element == NULL) {
-		pcb_element_destroy(&preview->element);
+	if (obj == NULL) {
 		preview->w_pixels = 0;
 		preview->h_pixels = 0;
 		return;
 	}
 
-	/* copy element data and move element to a 5% offset from zero position */
-	pcb_element_copy(NULL, &preview->element, element, FALSE, 0, 0);
-	pcb_element_move(NULL, &preview->element,
-									 conf_core.appearance.pinout.offset_x - preview->element.BoundingBox.X1,
-									 conf_core.appearance.pinout.offset_y - preview->element.BoundingBox.Y1);
-
+	preview->obj = obj;
 	preview_set_view(preview);
 }
 
@@ -122,7 +115,7 @@ static void ghid_preview_finalize(GObject * object)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
 
-	/* Passing NULL for element data will free the old memory */
+	/* Passing NULL for element data will clear the preview */
 	preview_set_data(preview, NULL);
 
 	G_OBJECT_CLASS(ghid_preview_parent_class)->finalize(object);
@@ -147,8 +140,8 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	switch (property_id) {
 	case PROP_ELEMENT_DATA:
 		preview->kind = PCB_GTK_PREVIEW_PINOUT;
-		preview_set_data(preview, (pcb_element_t *) g_value_get_pointer(value));
-		preview->expose_data.content.elem = &preview->element;
+		preview_set_data(preview, (pcb_any_obj_t *)g_value_get_pointer(value));
+		preview->expose_data.content.obj = preview->obj;
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
@@ -474,12 +467,12 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widg
 }
 
 GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_element_t * element)
+																			pcb_gtk_preview_expose_t expose, pcb_any_obj_t *obj)
 {
 	pcb_gtk_preview_t *preview;
 
 	preview = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, NULL);
-	g_object_set(G_OBJECT(preview), "element-data", element, NULL);
+	g_object_set(G_OBJECT(preview), "element-data", obj, NULL);
 
 	return GTK_WIDGET(preview);
 }

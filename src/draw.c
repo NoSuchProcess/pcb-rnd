@@ -805,10 +805,15 @@ void pcb_hid_expose_pinout(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &ctx->view);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &ctx->view);
 
-	pcb_draw_doing_pinout = pcb_true;
-	pcb_elem_draw(ctx->content.elem);
-	pcb_draw_doing_pinout = pcb_false;
-			
+	if (ctx->content.obj != NULL) {
+		pcb_draw_doing_pinout = pcb_true;
+		switch(ctx->content.obj->type) {
+			case PCB_OBJ_ELEMENT: pcb_elem_draw((pcb_element_t *)ctx->content.obj); break;
+			case PCB_OBJ_SUBC:    pcb_subc_draw_preview((pcb_subc_t *)ctx->content.obj, &ctx->view); break;
+			default:              pcb_message(PCB_MSG_ERROR, "pcb_hid_expose_pinout: unknown object type %x\n", ctx->content.obj->type);
+		}
+		pcb_draw_doing_pinout = pcb_false;
+	}
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &ctx->view);
 
 	expose_end(old_gui);
