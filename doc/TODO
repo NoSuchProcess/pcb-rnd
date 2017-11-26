@@ -18,6 +18,7 @@
 	- property editor doesn't deal with padstacks (and subc)
 	- test if advanced search does anything with padstacks (and subc)
 	- change layer stackup and padstack thermals will break
+- BUG: subc doesn't draw polygons in the library view: polys are not clipped whencalled from io_lihata_parse_element() because layers are bound
 + BUG: when buffer contains a zero-length line, it doesn't show (xor-draw)
 + BUG: {import::src0} doesn't substitute ~ [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
