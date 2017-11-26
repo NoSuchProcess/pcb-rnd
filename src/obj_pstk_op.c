@@ -114,11 +114,13 @@ void *pcb_pstkop_clip(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	assert(ps->parent_type = PCB_PARENT_DATA);
 
 	if (ctx->clip.restore) {
-		pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)ps);
+		if (data->padstack_tree != NULL)
+			pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)ps);
 		pcb_poly_restore_to_poly(data, PCB_TYPE_PSTK, NULL, ps);
 	}
 	if (ctx->clip.clear) {
-		pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps, 0);
+		if (data->padstack_tree != NULL)
+			pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps, 0);
 		pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
 	}
 
