@@ -177,6 +177,30 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 /* Returns the first invalid character of an ID (terminal, refdes) or NULL */
 const char *pcb_obj_id_invalid(const char *id);
 
+/* set const char *dst to a color, depending on the bound layer type:
+   top silk and copper get the color of the first crresponding layer
+   from current PCB, the rest get the far-side color */
+#define PCB_OBJ_COLOR_ON_BOUND_LAYER(dst, layer) \
+do { \
+	if (layer->meta.bound.type & PCB_LYT_TOP) { \
+		pcb_layer_t *ly = NULL; \
+		pcb_layergrp_t *g; \
+		pcb_layergrp_id_t grp = -1; \
+		if (layer->meta.bound.type & PCB_LYT_SILK) \
+			grp = pcb_layergrp_get_top_silk(); \
+		else if (layer->meta.bound.type & PCB_LYT_COPPER) \
+			grp = pcb_layergrp_get_top_copper(); \
+		g = pcb_get_layergrp(PCB, grp); \
+		if ((g != NULL) && (g->len > 0)) \
+			ly = pcb_get_layer(PCB->Data, g->lid[0]); \
+		if (ly != NULL) { \
+			dst = ly->meta.real.color; \
+			break; \
+		} \
+	} \
+	dst = conf_core.appearance.color.invisible_objects; \
+} while(0)
+
 /* compare two fields and return 0 if they are equal */
 #define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 

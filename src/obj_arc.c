@@ -888,7 +888,7 @@ static void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc, int allow_term_gf
 		color = (arc->override_color);
 	}
 	else if (layer->is_bound)
-		color = conf_core.appearance.color.invisible_objects;
+		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
 	else
 		color = layer->meta.real.color;
 

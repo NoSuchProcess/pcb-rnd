@@ -1041,7 +1041,7 @@ static void pcb_poly_draw(pcb_layer_t *layer, pcb_poly_t *polygon, const pcb_box
 		color = (polygon->override_color);
 	}
 	else if (layer->is_bound)
-		color = conf_core.appearance.color.invisible_objects;
+		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
 	else
 		color = layer->meta.real.color;
 	pcb_gui->set_color(Output.fgGC, color);
