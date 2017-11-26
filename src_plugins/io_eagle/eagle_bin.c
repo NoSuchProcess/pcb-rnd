@@ -1973,6 +1973,9 @@ static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 	htss_entry_t *e;
 	egb_node_t *cr, *n, *next, *next2;
 
+	if (egb_ctx->signals == NULL)
+		return 0; /* probably a library file */
+
 	for(n = egb_ctx->signals->first_child; n != NULL; n = next) {
 		next = n->next;
 		if (n->first_child != NULL && n->first_child->id == PCB_EGKW_SECT_CONTACTREF) {
@@ -2001,6 +2004,9 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 {
 	htss_entry_t *e;
 	egb_node_t *el2, *n, *q, *next, *next2;
+
+	if (egb_ctx->elements == NULL) 
+		return 0; /* probably a library file */
 
 	for(n = egb_ctx->firstel; n != NULL; n = next) {
 		next = n->next;
@@ -2046,7 +2052,12 @@ static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
 	egb_node_t *n, *p, *prev2, *next, *next2;
 
-	egb_node_t *signal = egb_ctx->signals->first_child;
+	egb_node_t *signal;
+
+	if (egb_ctx->signals == NULL)
+		return  0; /* probably a library */
+
+	signal = egb_ctx->signals->first_child;
 
 	for(n = signal; n != NULL; n = next) {
 		next = n->next;
@@ -2066,11 +2077,14 @@ static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 	return 0;
 }
 
-/* populate the newly created drc node in the binary tree before XML parsing */
+/* populate the newly created drc node in the binary tree before XML parsing, if board present */
 static int postproc_drc(void *ctx, egb_ctx_t *egb_ctx)
 {
 	char tmp[32];
 	egb_node_t *current;
+
+	if (egb_ctx->drc == NULL)
+		return 0; /* probably a library with no board node */
 
 	current = egb_node_append(egb_ctx->drc, egb_node_alloc(PCB_EGKW_SECT_DRC, "param"));
 	sprintf(tmp, "%ldmil", egb_ctx->mdWireWire);
@@ -2128,6 +2142,9 @@ static int postproc_libs(void *ctx, egb_ctx_t *egb_ctx)
 {
 	egb_node_t *n, *lib;
 
+	if (egb_ctx->libraries == NULL) /* a library .lbr has a sole library in it, unlike a board */
+		return 0;
+
 	for(n = egb_ctx->libraries->first_child; n != NULL; n = egb_ctx->libraries->first_child) {
 		if (n->id == PCB_EGKW_SECT_LIBRARY)
 			break;
@@ -2145,46 +2162,6 @@ static int postproc_libs(void *ctx, egb_ctx_t *egb_ctx)
 	return 0;
 }
 
-/* post process an eagle binary library file */
-static int postproc_library_file(void *ctx, egb_ctx_t *egb_ctx)
-{
-	egb_node_t *root;
-	root = egb_ctx->root;
-
-	pcb_trace("Appending board node to likely library file.\n");
-	egb_ctx->board = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_BOARD, "board"));
-
-	/* create a drc node, since a library does not have one by default */
-	pcb_trace("Appending board node to likely library file.\n");
-	egb_ctx->drc = egb_node_append(egb_ctx->board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
-
-	/* around here we need to create some element nodes to place the library devices/packages */
-	/* .... will need to iterate over the library packages to do this, allowing
-	   binary ((.lbr as 'board') as pcb-rnd footprint library) functionality */
-
-	/* once the following code works with postproc_libs, there is scope to reduce code dup */
-	return postproc_layers(ctx, egb_ctx) || postproc_drc(ctx, egb_ctx)
-		/*|| postproc_libs(ctx, egb_ctx)*/ /* segfaults for now */
-		|| postproc_elements(ctx, egb_ctx)
-		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root)
-		|| postprocess_circles(ctx, root) || postprocess_smd(ctx, root)
-		|| postprocess_pad(ctx, root) 
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMD)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PIN)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_RECTANGLE)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PAD)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_TEXT)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDVALUE)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDNAME)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_NETBUSLABEL)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDXREF)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_ATTRIBUTE)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDGATE)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDPART)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_INSTANCE)
-		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_ELEMENT);
-}
-
 static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 {
 
@@ -2197,8 +2174,12 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 	eagle_bin_ctx.root = root;
 	eagle_bin_ctx.drawing = root->first_child;
 	eagle_bin_ctx.layers = egb_node_append(root, egb_node_alloc(PCB_EGKW_SECT_LAYERS, "layers"));
+	eagle_bin_ctx.drc = NULL;      /* this will be looked for if board node present */
+	eagle_bin_ctx.signals = NULL;  /* this will be looked for if board node present */
+	eagle_bin_ctx.elements = NULL; /* this will be looked for if board node present */
+	eagle_bin_ctx.libraries = NULL;/* this will be looked for if board node present */
 
-	/* populate context with default DRC settings, since DRC is not present in binary v3 or .lbr */
+	/* populate context with default DRC settings, since DRC is not present in binary v3 */
 	eagle_bin_ctx.mdWireWire = drc_ctx->mdWireWire;
 	eagle_bin_ctx.msWidth = drc_ctx->msWidth;
 	eagle_bin_ctx.rvPadTop = drc_ctx->rvPadTop;
@@ -2207,42 +2188,34 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 
 	eagle_bin_ctx.board = find_node(eagle_bin_ctx.drawing->first_child, PCB_EGKW_SECT_BOARD);
 	if (eagle_bin_ctx.board == NULL) {
-		pcb_trace("No board node found, this may be a library file.");
-		return postproc_library_file(ctx, egb_ctx_p);
-	}
+		pcb_trace("No board node found, this may be a library file.\n");
+	} else {
+		/* the following code relies on the board node being present, i.e. a layout */
+		/* create a drc node, since DRC block if present in binary file comes after the tree */
+		eagle_bin_ctx.drc = egb_node_append(eagle_bin_ctx.board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
+		eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
+		if (eagle_bin_ctx.libraries == NULL) { /* layouts have a libraries node it seems */
+			pcb_trace("Eagle binary layout is missing a board/libraries node.\n");
+			return -1;
+		}
 
-	/* the following code relies on the board node being present, i.e. a layout */
-	/* create a drc node, since any DRC block present in eagle binary file comes after the tree */
-	eagle_bin_ctx.drc = egb_node_append(eagle_bin_ctx.board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
+		for(n = eagle_bin_ctx.board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
+			if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
+				signal = n->first_child;
+				eagle_bin_ctx.signals = signal->parent;
+			}
+		}
 
-	eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
-	if (eagle_bin_ctx.libraries == NULL)
-		return -1;
-
-	for(n = eagle_bin_ctx.board->first_child, signal = NULL; signal == NULL && n != NULL; n = n->next) {
-		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_SIGNAL) {
-			pcb_trace("Found PCB_EKGW_SECT_SIGNAL\n");
-			signal = n->first_child;
+		for(n = eagle_bin_ctx.board->first_child, eagle_bin_ctx.firstel = NULL;
+				eagle_bin_ctx.firstel == NULL && n != NULL; n = n->next) {
+			if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
+				eagle_bin_ctx.firstel = n->first_child;
+				eagle_bin_ctx.elements = eagle_bin_ctx.firstel->parent;
+			}
 		}
 	}
 
-	for(n = eagle_bin_ctx.board->first_child, eagle_bin_ctx.firstel = NULL;
-			eagle_bin_ctx.firstel == NULL && n != NULL; n = n->next) {
-		pcb_trace("found board subnode ID: %d\n", n->id);
-		if (n->first_child && n->first_child->id == PCB_EGKW_SECT_ELEMENT) {
-			pcb_trace("Found PCB_EKGW_SECT_ELEMENT\n");
-			eagle_bin_ctx.firstel = n->first_child;
-			eagle_bin_ctx.elements = eagle_bin_ctx.firstel->parent;
-		}
-	}
-
-	eagle_bin_ctx.signals = signal->parent;
-	if (eagle_bin_ctx.signals == NULL) /* is probably a library */ {
-		pcb_trace("Found no board/signals node in eagle binary file... strange...\n");
-		return -1;
-	}
-
-	/* after post processing layers, we need to populate the DRC node first... */
+	/* after post processing layers, we populate the DRC node first, if present... */
 
 	return postproc_layers(ctx, egb_ctx_p) || postproc_drc(ctx, egb_ctx_p)
 		|| postproc_libs(ctx, egb_ctx_p) || postproc_elements(ctx, egb_ctx_p)
