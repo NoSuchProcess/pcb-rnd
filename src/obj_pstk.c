@@ -611,6 +611,23 @@ int pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps)
 	return 0;
 }
 
+void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs)
+{
+	int xmirror = ps->xmirror;
+	pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror);
+	if (y_offs != 0) {
+		pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_pstk_invalidate_erase(ps);
+		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+
+		pcb_pstk_move(ps, ps->x, ps->y + y_offs);
+
+		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);
+		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
+		pcb_pstk_invalidate_draw(ps);
+	}
+}
+
 unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_t alloc)
 {
 	if (ps->thermals.used <= lid) {

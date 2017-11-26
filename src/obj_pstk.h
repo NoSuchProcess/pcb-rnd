@@ -157,6 +157,8 @@ int pcb_pstk_get_shape_idx(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_laye
 void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb_layer_combining_t comb);
 void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx);
 
+/* Mirror a padstack (useful for sending to the other side) */
+void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs);
 
 /*** hash ***/
 unsigned int pcb_pstk_hash(const pcb_pstk_proto_t *p);
