@@ -1066,7 +1066,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			if (sc->data->padstack_tree != NULL)
 				pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
-			if (ctx->buffer.dst->via_tree != NULL)
+			if (ctx->buffer.dst->padstack_tree != NULL)
 				pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps, 0);
 			ps->proto = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
 			ps->protoi = -1;
