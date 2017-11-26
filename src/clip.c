@@ -28,6 +28,8 @@
 #include "config.h"
 #include "clip.h"
 
+#warning TODO: move this to lib_hid_common
+
 /* Clip the line to the clipBox
  * return pcb_true if something to be drawn
  * pcb_false if the whole thing is clipped
