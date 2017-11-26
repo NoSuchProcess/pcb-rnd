@@ -261,6 +261,8 @@ void pcb_data_free(pcb_data_t * data)
 			pcb_r_destroy_tree(&data->pin_tree);
 		if (data->pad_tree)
 			pcb_r_destroy_tree(&data->pad_tree);
+		if (data->padstack_tree)
+			pcb_r_destroy_tree(&data->padstack_tree);
 		if (data->rat_tree)
 			pcb_r_destroy_tree(&data->rat_tree);
 	}
