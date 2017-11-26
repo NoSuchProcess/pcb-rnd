@@ -675,6 +675,7 @@ static int undo_change_instance_swap(void *udata)
 
 	pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 	pcb_pstk_invalidate_erase(ps);
+	pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
 	swap(ps->proto,      u->proto,     pcb_cardinal_t);
 	swap(ps->Clearance,  u->clearance, pcb_coord_t);
@@ -685,6 +686,8 @@ static int undo_change_instance_swap(void *udata)
 	ps->protoi = -1;
 	pcb_pstk_get_tshape(ps);
 
+	pcb_pstk_bbox(ps);
+	pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);
 	pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 	pcb_pstk_invalidate_draw(ps);
 
