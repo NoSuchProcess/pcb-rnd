@@ -207,6 +207,7 @@ pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 	return p;
 }
 
+/* Convert a polygon to an unclipped polyarea */
 static pcb_polyarea_t *original_poly(pcb_poly_t * p)
 {
 	pcb_pline_t *contour = NULL;
