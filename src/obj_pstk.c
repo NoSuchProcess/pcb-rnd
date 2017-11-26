@@ -621,7 +621,8 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs)
 		if (ps->parent.data->padstack_tree != NULL)
 			pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
-		pcb_pstk_move(ps, ps->x, ps->y + y_offs);
+		ps->y = PCB_SWAP_Y(ps->y) + y_offs;
+		pcb_pstk_bbox(ps);
 
 		if (ps->parent.data->padstack_tree != NULL)
 			pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);
