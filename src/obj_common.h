@@ -183,18 +183,20 @@ const char *pcb_obj_id_invalid(const char *id);
 #define PCB_OBJ_COLOR_ON_BOUND_LAYER(dst, layer) \
 do { \
 	if (layer->meta.bound.type & PCB_LYT_TOP) { \
-		pcb_layer_t *ly = NULL; \
+		pcb_layer_id_t lid = -1; \
 		pcb_layergrp_t *g; \
 		pcb_layergrp_id_t grp = -1; \
-		if (layer->meta.bound.type & PCB_LYT_SILK) \
-			grp = pcb_layergrp_get_top_silk(); \
+		if (layer->meta.bound.type & PCB_LYT_SILK) { \
+			dst = conf_core.appearance.color.element; \
+			break; \
+		} \
 		else if (layer->meta.bound.type & PCB_LYT_COPPER) \
 			grp = pcb_layergrp_get_top_copper(); \
 		g = pcb_get_layergrp(PCB, grp); \
 		if ((g != NULL) && (g->len > 0)) \
-			ly = pcb_get_layer(PCB->Data, g->lid[0]); \
-		if (ly != NULL) { \
-			dst = ly->meta.real.color; \
+			lid = g->lid[0]; \
+		if ((lid >= 0) && (lid <= PCB_MAX_LAYER)) { \
+			dst = conf_core.appearance.color.layer[lid]; \
 			break; \
 		} \
 	} \
