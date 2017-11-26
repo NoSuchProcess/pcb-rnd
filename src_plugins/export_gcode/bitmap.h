@@ -46,7 +46,7 @@
 #define BM_PUT(bm, x, y, b) (bm_safe(bm, x, y) ? BM_UPUT(bm, x, y, b) : 0)
 
 /* free the given bitmap. Leaves errno untouched. */
-static inline PCB_FUNC_UNUSED void bm_free(potrace_bitmap_t * bm)
+PCB_INLINE void bm_free(potrace_bitmap_t * bm)
 {
 	if (bm) {
 		free(bm->map);
@@ -55,7 +55,7 @@ static inline PCB_FUNC_UNUSED void bm_free(potrace_bitmap_t * bm)
 }
 
 /* return new un-initialized bitmap. NULL with errno on error */
-static inline PCB_FUNC_UNUSED potrace_bitmap_t *bm_new(int w, int h)
+PCB_INLINE potrace_bitmap_t *bm_new(int w, int h)
 {
 	potrace_bitmap_t *bm;
 	int dy = (w + BM_WORDBITS - 1) / BM_WORDBITS;
@@ -76,13 +76,13 @@ static inline PCB_FUNC_UNUSED potrace_bitmap_t *bm_new(int w, int h)
 }
 
 /* clear the given bitmap. Set all bits to c. */
-static inline PCB_FUNC_UNUSED void bm_clear(potrace_bitmap_t * bm, int c)
+PCB_INLINE void bm_clear(potrace_bitmap_t * bm, int c)
 {
 	memset(bm->map, c ? -1 : 0, bm->dy * bm->h * BM_WORDSIZE);
 }
 
 /* duplicate the given bitmap. Return NULL on error with errno set. */
-static inline PCB_FUNC_UNUSED potrace_bitmap_t *bm_dup(const potrace_bitmap_t * bm)
+PCB_INLINE potrace_bitmap_t *bm_dup(const potrace_bitmap_t * bm)
 {
 	potrace_bitmap_t *bm1 = bm_new(bm->w, bm->h);
 	if (!bm1) {
@@ -93,7 +93,7 @@ static inline PCB_FUNC_UNUSED potrace_bitmap_t *bm_dup(const potrace_bitmap_t * 
 }
 
 /* invert the given bitmap. */
-static inline PCB_FUNC_UNUSED void bm_invert(potrace_bitmap_t * bm)
+PCB_INLINE void bm_invert(potrace_bitmap_t * bm)
 {
 	int i;
 	for (i = 0; i < bm->dy * bm->h; i++) {

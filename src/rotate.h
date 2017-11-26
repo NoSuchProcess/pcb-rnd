@@ -58,7 +58,7 @@ void *pcb_obj_rotate90(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, un
 void pcb_screen_obj_rotate90(pcb_coord_t, pcb_coord_t, unsigned);
 void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
-static inline PCB_FUNC_UNUSED void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)
+PCB_INLINE void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)
 {
 	double nx, ny;
 	pcb_coord_t px = *x - cx;

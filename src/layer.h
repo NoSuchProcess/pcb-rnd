@@ -273,7 +273,7 @@ void pcb_layer_edit_attrib(pcb_layer_t *layer);
 
 /* Return the real layer, resolving layer bindings. Returns NULL on
    error (e.g. binding loop) */
-static inline PCB_FUNC_UNUSED pcb_layer_t *pcb_layer_get_real(pcb_layer_t *layer)
+PCB_INLINE pcb_layer_t *pcb_layer_get_real(pcb_layer_t *layer)
 {
 	int rec = 0;
 

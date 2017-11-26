@@ -155,14 +155,14 @@ struct pcb_any_line_s {
 /*** Functions and macros used for hashing ***/
 
 /* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
-static inline PCB_FUNC_UNUSED int pcb_neqs(const char *s1, const char *s2)
+PCB_INLINE int pcb_neqs(const char *s1, const char *s2)
 {
 	if ((s1 == NULL) && (s2 == NULL)) return 0;
 	if ((s1 == NULL) || (s2 == NULL)) return 1;
 	return strcmp(s1, s2) != 0;
 }
 
-static inline PCB_FUNC_UNUSED unsigned pcb_hash_coord(pcb_coord_t c)
+PCB_INLINE unsigned pcb_hash_coord(pcb_coord_t c)
 {
 	return murmurhash(&(c), sizeof(pcb_coord_t));
 }

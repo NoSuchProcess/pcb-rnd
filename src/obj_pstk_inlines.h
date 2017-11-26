@@ -38,7 +38,7 @@ typedef enum {
 } pcb_bb_type_t;
 
 /* Returns the ID of a proto within its parent's cache */
-static inline PCB_FUNC_UNUSED pcb_cardinal_t pcb_pstk_get_proto_id(pcb_pstk_proto_t *proto)
+PCB_INLINE pcb_cardinal_t pcb_pstk_get_proto_id(pcb_pstk_proto_t *proto)
 {
 	pcb_data_t *data = proto->parent;
 	if ((proto >= data->ps_protos.array) && (proto < data->ps_protos.array + data->ps_protos.used))
@@ -48,7 +48,7 @@ static inline PCB_FUNC_UNUSED pcb_cardinal_t pcb_pstk_get_proto_id(pcb_pstk_prot
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-static inline PCB_FUNC_UNUSED pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, pcb_cardinal_t proto)
+PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, pcb_cardinal_t proto)
 {
 	if (proto >= data->ps_protos.used)
 		return NULL;
@@ -58,14 +58,14 @@ static inline PCB_FUNC_UNUSED pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_da
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-static inline PCB_FUNC_UNUSED pcb_pstk_proto_t *pcb_pstk_get_proto(pcb_pstk_t *ps)
+PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto(pcb_pstk_t *ps)
 {
 	return pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 }
 
 /* return the padstack transformed shape. Returns NULL if the proto or the
    tshape is not. */
-static inline PCB_FUNC_UNUSED pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, pcb_cardinal_t proto, int protoi)
+PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, pcb_cardinal_t proto, int protoi)
 {
 	pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(data, proto);
 	if (protoi < 0)
@@ -78,7 +78,7 @@ static inline PCB_FUNC_UNUSED pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-static inline PCB_FUNC_UNUSED pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
+PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
 {
 	if (ps->protoi < 0) { /* need to update this */
 		pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
@@ -91,7 +91,7 @@ static inline PCB_FUNC_UNUSED pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t 
 
 /* return the type of drill and optionally fill in group IDs of drill ends ;
    if proto_out is not NULL, also load it with the proto */
-static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
+PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
 {
 	pcb_bb_type_t res;
 	int topi, boti;
@@ -164,7 +164,7 @@ static inline PCB_FUNC_UNUSED pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, pc
 
 /* return whether a given padstack drills a given group
   (does not consider plating, only drill!) */
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
+PCB_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
 {
 	pcb_layergrp_id_t top, bot;
 	pcb_bb_type_t res = pcb_pstk_bbspan(pcb, ps, &top, &bot, proto_out);
@@ -179,7 +179,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, pc
 /* returns the shape the padstack has on the given layer group;
    WARNING: does not respect the NOSHAPE thermal, should NOT be
    called directly; use pcb_pstk_shape_*() instead. */
-static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
@@ -194,7 +194,7 @@ static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, p
 	return 0;
 }
 
-static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 	unsigned int lyt = pcb_layer_flags_(layer);
 	pcb_layer_combining_t comb = layer->comb;
@@ -227,7 +227,7 @@ static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *p
 	return pcb_pstk_shape(ps, lyt, comb);
 }
 
-static inline PCB_FUNC_UNUSED pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 

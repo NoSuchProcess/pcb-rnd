@@ -104,7 +104,7 @@ typedef struct pcb_poly_it_s {
 } pcb_poly_it_t;
 
 /* Set the iterator to the first island of the polygon; returns NULL if no contour available */
-static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_first(const pcb_poly_t *p, pcb_poly_it_t *it)
+PCB_INLINE pcb_polyarea_t *pcb_poly_island_first(const pcb_poly_t *p, pcb_poly_it_t *it)
 {
 	it->p = p;
 	it->pa = p->Clipped;
@@ -114,7 +114,7 @@ static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_first(const pcb_po
 }
 
 /* Set the iterator to the next island of the polygon; returns NULL if no more */
-static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_next(pcb_poly_it_t *it)
+PCB_INLINE pcb_polyarea_t *pcb_poly_island_next(pcb_poly_it_t *it)
 {
 	if (it->pa->f == it->p->Clipped)
 		return NULL;
@@ -125,21 +125,21 @@ static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_island_next(pcb_poly_it_t
 }
 
 /* Set the iterator to trace the outer contour of the current island */
-static inline PCB_FUNC_UNUSED pcb_pline_t *pcb_poly_contour(pcb_poly_it_t *it)
+PCB_INLINE pcb_pline_t *pcb_poly_contour(pcb_poly_it_t *it)
 {
 	it->v = NULL;
 	return it->cntr = it->pa->contours;
 }
 
 /* Set the iterator to trace the first hole of the current island; returns NULL if there are no holes */
-static inline PCB_FUNC_UNUSED pcb_pline_t *pcb_poly_hole_first(pcb_poly_it_t *it)
+PCB_INLINE pcb_pline_t *pcb_poly_hole_first(pcb_poly_it_t *it)
 {
 	it->v = NULL;
 	return it->cntr = it->pa->contours->next;
 }
 
 /* Set the iterator to trace the next hole of the current island; returns NULL if there are were more holes */
-static inline PCB_FUNC_UNUSED pcb_pline_t *pcb_poly_hole_next(pcb_poly_it_t *it)
+PCB_INLINE pcb_pline_t *pcb_poly_hole_next(pcb_poly_it_t *it)
 {
 	it->v = NULL;
 	return it->cntr = it->cntr->next;
@@ -147,7 +147,7 @@ static inline PCB_FUNC_UNUSED pcb_pline_t *pcb_poly_hole_next(pcb_poly_it_t *it)
 
 /* Set the iterator to the first point of the last selected contour or hole;
    read the coords into x,y; returns 1 on success, 0 if there are no points */
-static inline PCB_FUNC_UNUSED int pcb_poly_vect_first(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE int pcb_poly_vect_first(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
 {
 	it->v = it->cntr->head.next;
 	if (it->v == NULL)
@@ -160,7 +160,7 @@ static inline PCB_FUNC_UNUSED int pcb_poly_vect_first(pcb_poly_it_t *it, pcb_coo
 
 /* Set the iterator to the next point of the last selected contour or hole;
    read the coords into x,y; returns 1 on success, 0 if there are were more points */
-static inline PCB_FUNC_UNUSED int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
 {
 	it->v = it->v->next;
 	if (it->v == it->cntr->head.next)
@@ -171,21 +171,21 @@ static inline PCB_FUNC_UNUSED int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coor
 }
 
 /* read the previous contour/hole coords into x,y, without bumping the iterator */
-static inline PCB_FUNC_UNUSED void pcb_poly_vect_peek_prev(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE void pcb_poly_vect_peek_prev(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
 {
 	*x = it->v->prev->point[0];
 	*y = it->v->prev->point[1];
 }
 
 /* read the next contour/hole coords into x,y, without bumping the iterator */
-static inline PCB_FUNC_UNUSED void pcb_poly_vect_peek_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE void pcb_poly_vect_peek_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
 {
 	*x = it->v->next->point[0];
 	*y = it->v->next->point[1];
 }
 
 /* Set the iterator to a polyarea*/
-static inline PCB_FUNC_UNUSED pcb_polyarea_t *pcb_poly_iterate_polyarea(pcb_polyarea_t *pa, pcb_poly_it_t *it)
+PCB_INLINE pcb_polyarea_t *pcb_poly_iterate_polyarea(pcb_polyarea_t *pa, pcb_poly_it_t *it)
 {
 	it->p = NULL;
 	it->pa = pa;

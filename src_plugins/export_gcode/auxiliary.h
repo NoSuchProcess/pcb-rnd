@@ -24,7 +24,7 @@ typedef struct point_s point_t;
 typedef potrace_dpoint_t dpoint_t;
 
 /* convert point_t to dpoint_t */
-static inline PCB_FUNC_UNUSED dpoint_t dpoint(point_t p)
+PCB_INLINE dpoint_t dpoint(point_t p)
 {
 	dpoint_t res;
 	res.x = p.x;
@@ -33,7 +33,7 @@ static inline PCB_FUNC_UNUSED dpoint_t dpoint(point_t p)
 }
 
 /* range over the straight line segment [a,b] when lambda ranges over [0,1] */
-static inline PCB_FUNC_UNUSED dpoint_t interval(double lambda, dpoint_t a, dpoint_t b)
+PCB_INLINE dpoint_t interval(double lambda, dpoint_t a, dpoint_t b)
 {
 	dpoint_t res;
 
@@ -53,12 +53,12 @@ static inline PCB_FUNC_UNUSED dpoint_t interval(double lambda, dpoint_t a, dpoin
 
 /* integer arithmetic */
 
-static inline PCB_FUNC_UNUSED int mod(int a, int n)
+PCB_INLINE int mod(int a, int n)
 {
 	return a >= n ? a % n : a >= 0 ? a : n - 1 - (-1 - a) % n;
 }
 
-static inline PCB_FUNC_UNUSED int floordiv(int a, int n)
+PCB_INLINE int floordiv(int a, int n)
 {
 	return a >= 0 ? a / n : -1 - (-1 - a) / n;
 }

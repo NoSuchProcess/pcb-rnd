@@ -32,7 +32,7 @@
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  */
-static inline PCB_FUNC_UNUSED void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc)
+PCB_INLINE void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc)
 {
 	pcb_coord_t wid = arc->Thickness / 2;
 	pcb_coord_t x1, y1, x2, y2;
@@ -51,7 +51,7 @@ static inline PCB_FUNC_UNUSED void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_a
 /*-----------------------------------------------------------
  * Draws the outline of a line
  */
-static inline PCB_FUNC_UNUSED void pcb_draw_wireframe_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick, int square)
+PCB_INLINE void pcb_draw_wireframe_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick, int square)
 {
 	if((x1 != x2) || (y1 != y2)) {
 		double dx = x2 - x1;

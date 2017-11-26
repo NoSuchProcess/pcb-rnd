@@ -776,7 +776,7 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 
 /* returns whether a round-cap pcb line touches a polygon; assumes bounding
    boxes do touch */
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t *pl, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
+PCB_INLINE pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t *pl, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
 {
 	pcb_coord_t ox, oy;
 	double dx, dy, h;
@@ -825,7 +825,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_intersect_line_polyline(pcb_pline_t
 		pcb_line.Flags = shape_line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags(); \
 	} while(0)
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
+PCB_INLINE pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 {
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
 	if (shape == NULL) return pcb_false;
@@ -855,7 +855,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps,
 }
 
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
+PCB_INLINE pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
 {
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, arc->parent.layer);
 	if (shape == NULL) return pcb_false;
@@ -892,7 +892,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, 
 	return pcb_false;
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
+PCB_INLINE pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 {
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, poly->parent.layer);
 	if (shape == NULL) return pcb_false;
@@ -942,7 +942,7 @@ static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps,
 
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool_t pcb_pstk_intersect_rat(pcb_pstk_t *ps, pcb_rat_t *rat)
+PCB_INLINE pcb_bool_t pcb_pstk_intersect_rat(pcb_pstk_t *ps, pcb_rat_t *rat)
 {
 	return ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) || ((rat->Point2.X == ps->x) && (rat->Point2.Y == ps->y));
 }

@@ -1803,6 +1803,7 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 	lht_doc_t *doc = NULL;
 	pcb_fp_fopen_ctx_t st;
 	FILE *f;
+	pcb_subc_t *sc;
 
 	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
 
@@ -1830,7 +1831,9 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 		return -1;
 	}
 
-	res = parse_subc(NULL, Ptr, doc->root->data.list.first, NULL);
+	res = parse_subc(NULL, Ptr, doc->root->data.list.first, &sc);
+	if (res == 0)
+		pcb_data_clip_polys(sc->data);
 
 	lht_dom_uninit(doc);
 	return res;
