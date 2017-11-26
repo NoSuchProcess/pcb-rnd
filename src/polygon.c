@@ -1448,13 +1448,15 @@ int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t * p)
 
 	if (layer->is_bound)
 		layer = layer->meta.bound.real;
-	if (layer == NULL)
-		return 0;
 
 	if (p->Clipped)
 		pcb_polyarea_free(&p->Clipped);
 	p->Clipped = original_poly(p);
 	pcb_poly_contours_free(&p->NoHoles);
+
+	if (layer == NULL)
+		return 0;
+
 	if (!p->Clipped)
 		return 0;
 	assert(pcb_poly_valid(p->Clipped));
