@@ -912,7 +912,7 @@ static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_g
 	else
 		pcb_gui->set_color(Output.fgGC, layer->meta.real.color);
 
-	if (layer->meta.real.grp >= 0)
+	if ((!layer->is_bound) && (layer->meta.real.grp >= 0))
 		flg = pcb_layergrp_flags(PCB, layer->meta.real.grp);
 
 	if (flg & PCB_LYT_SILK)
