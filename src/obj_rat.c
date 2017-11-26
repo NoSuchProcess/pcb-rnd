@@ -176,17 +176,10 @@ void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 	return (newone);
 }
 
-/* moves a line between layers */
+/* move a rat to a layer: convert it into a layer line */
 void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 {
 	pcb_line_t *newone;
-	/*pcb_coord_t X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-	   pcb_coord_t X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-	   if PCB_FLAG_VIA
-	   if we're on a pin, add a thermal
-	   else make a via and a wire, but 0-length wire not good
-	   else as before */
-
 	newone = pcb_line_new(ctx->move.dst_layer, Rat->Point1.X, Rat->Point1.Y,
 																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (conf_core.editor.clear_line)
