@@ -192,9 +192,9 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* subsection sizes */
-			{4, 4, SS_RECURSIVE, "devices"},
-			{8, 4, SS_RECURSIVE, "symbols"},
-			{12, 4, SS_RECURSIVE, "packages"},
+			{4, 4, SS_RECURSIVE, NULL},
+			{8, 4, SS_RECURSIVE, NULL},
+			{12, 4, SS_RECURSIVE, NULL},
 			/*{4, 4, SS_DIRECT, NULL},*/
 			TERM
 		},
@@ -226,7 +226,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* subsection sizes */
-			{4, 4, SS_DIRECT, NULL},
+			{4, 4, SS_RECURSIVE, NULL},
 			TERM
 		},
 		{ /* attributes */
@@ -790,8 +790,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* subsection sizes */
-			{2, 2, SS_DIRECT, "gates"}, /* gates */
-			{4, 2, SS_DIRECT, "variants"}, /* variants */
+			{2, 2, SS_RECURSIVE, "gates"}, /* gates */
+			{4, 2, SS_RECURSIVE, "variants"}, /* variants */
 			/* ? {2, 2, SS_DIRECT, NULL},*/
 			TERM			
 		},

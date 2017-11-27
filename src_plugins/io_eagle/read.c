@@ -963,6 +963,53 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_element_t *el
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, elem, IN_ELEM);
 }
 
+static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, void *obj, int type)
+{
+	trnode_t *n;
+	pcb_text_t *t;
+
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
+		printf("looking at child %s of packages node\n", NODENAME(n)); 
+		if (STRCMP(NODENAME(n), "package") == 0) {
+			printf("found a package in children of packages node\n");
+			pcb_element_t *elem, *new_elem;
+			pcb_coord_t x, y;
+
+			elem = calloc(sizeof(pcb_element_t), 1);
+			eagle_read_pkg(st, n, elem);
+			if (pcb_element_is_empty(elem)) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring empty package in library\n");
+				free(elem);
+				continue;
+			}
+#warning subc TODO subcircuits can have distinct refdes, value, description text attributes
+			t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
+			t->X = 0;
+			t->Y = 0;
+			t->Scale = 100;
+			t = &elem->Name[PCB_ELEMNAME_IDX_REFDES];
+			t->X = 0;
+			t->Y = 0;
+			t->Scale = 100;
+			t = &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION];
+			t->X = 0;
+			t->Y = 0;
+			t->Scale = 100;
+
+			x = 0;
+			y = 0;
+#warning TODO: use pcb_elem_new() instead of this?
+			new_elem = pcb_element_alloc(st->pcb->Data);
+			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
+			new_elem->Flags = pcb_no_flags();
+			new_elem->ID = pcb_create_ID_get();
+			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
+			size_bump(st, new_elem->BoundingBox.X2, new_elem->BoundingBox.Y2);
+		}
+	}
+	return 0;
+}
+
 static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	trnode_t *n;
@@ -1005,6 +1052,21 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 		}
 	}
 	return 0;
+}
+
+static int eagle_read_library(read_state_t *st, trnode_t *subtree, void *obj, int type)
+{
+	trnode_t *n;
+	static const dispatch_t disp[] = { /* possible children of <library> */
+		{"description", eagle_read_nop},
+		{"devices",     eagle_read_nop},
+		{"symbols",     eagle_read_nop},
+		{"devicesets",  eagle_read_nop},
+		{"packages",    eagle_read_library_file_pkgs},/* read & place element(s) in library */
+		{"@text",       eagle_read_nop},
+		{NULL, NULL}
+	};
+	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, subtree, 0);
 }
 
 static int eagle_read_libs(read_state_t *st, trnode_t *subtree, void *obj, int type)
@@ -1349,21 +1411,24 @@ static int eagle_read_drawing(read_state_t *st, trnode_t *subtree, void *obj, in
 		{"settings",  eagle_read_nop},
 		{"layers",    eagle_read_layers},
 		{"grid",      eagle_read_nop},
-		{"board",     eagle_read_nop}, 
+		{"board",     eagle_read_nop},
+		{"library",   eagle_read_nop}, 
 		{"unknown11", eagle_read_nop}, /* TODO: temporary; from the binary tree */
 		{"@text",     eagle_read_nop},
 		{NULL, NULL}
 	};
 
-        static const dispatch_t disp_2[] = { /* possible children of <drawing> */
-                {"settings",  eagle_read_nop},
-                {"layers",    eagle_read_nop},
-                {"grid",      eagle_read_nop},
-                {"board",     eagle_read_board},
-                {"unknown11", eagle_read_nop}, /* TODO: temporary; from the binary tree */
-                {"@text",     eagle_read_nop},
-                {NULL, NULL}
-        };
+	static const dispatch_t disp_2[] = { /* possible children of <drawing> */
+		{"settings",  eagle_read_nop},
+		{"layers",    eagle_read_nop},
+		{"grid",      eagle_read_nop},
+		{"board",     eagle_read_board},
+		{"library",   eagle_read_library},
+		{"unknown11", eagle_read_nop}, /* TODO: temporary; from the binary tree */
+		{"@text",     eagle_read_nop},
+		{NULL, NULL}
+	};
+
 	res = eagle_foreach_dispatch(st, CHILDREN(subtree), disp_1, NULL, 0);
 	res |= eagle_foreach_dispatch(st, CHILDREN(subtree), disp_2, NULL, 0);
 	return res;
