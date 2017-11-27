@@ -170,6 +170,14 @@ pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src)
 	return dst;
 }
 
+pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src)
+{
+	if (dst == NULL)
+		return NULL;
+	dst->rot = src->rot;
+	dst->xmirror = src->xmirror;
+	return dst;
+}
 
 void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
 {

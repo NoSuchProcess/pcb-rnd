@@ -93,6 +93,9 @@ pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 /* Copy all metadata (attributes, thermals, etc.) */
 pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src);
 
+/* Copy orientation information (rotatioin and mirror) of an instance */
+pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src);
+
 
 /*** proto ***/
 
