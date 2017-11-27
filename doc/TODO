@@ -235,7 +235,7 @@ Eagle binary:
 			board/1b00->signals/0000->signal/1c00->contactref/3e00
 		- NB signal nodes can have signal subnodes, which we may need to flatten for connected nets
 	- need to decide what to do with Eagles incompatible netnames '-' and '+'
-	- need to add code to place packages in .lbr on synthetic "layout", to allow ".lbr as footprint library" use
+	- need to refine naming of library (.lbr) elements in loaded .lbr files
 	- need to iron out CW vs CCW arc rendering issue seen on 80m SSB Tx transistors on tDocu layer 
 	- need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 
