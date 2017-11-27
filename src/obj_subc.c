@@ -1426,16 +1426,19 @@ pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name)
 
 pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID)
 {
-	pcb_box_t *sc;
-	pcb_rtree_it_t it;
-
-	for(sc = pcb_r_first(base->subc_tree, &it); sc != NULL; sc = pcb_r_next(&it)) {
-		if (((pcb_subc_t *)sc)->ID == ID) {
-			pcb_r_end(&it);
-			return (pcb_subc_t *)sc;
-		}
+	/* We can not have an rtree based search here: we are often called
+	   in the middle of an operation, after the subc got already removed
+	   from the rtree. It happens in e.g. undoable padstack operations
+	   where the padstack tries to look up its parent subc by ID, while
+	   the subc is being rotated.
+	
+	   The solution will be the ID hash. */
+#warning subc TODO: hierarchy
+	PCB_SUBC_LOOP(base);
+	{
+		if (subc->ID == ID)
+			return subc;
 	}
-
-	pcb_r_end(&it);
+	PCB_END_LOOP;
 	return NULL;
 }
