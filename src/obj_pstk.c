@@ -176,6 +176,7 @@ pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src)
 		return NULL;
 	dst->rot = src->rot;
 	dst->xmirror = src->xmirror;
+	dst->protoi = -1; /* invalidate the transformed index to get it recalculated */
 	return dst;
 }
 
