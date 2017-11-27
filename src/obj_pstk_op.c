@@ -32,8 +32,7 @@ void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		return NULL;
 
 	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
-	p = pcb_pstk_new(ctx->buffer.dst, npid, ps->x, ps->y, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
-	pcb_pstk_copy_orient(p, ps);
+	p = pcb_pstk_new_tr(ctx->buffer.dst, npid, ps->x, ps->y, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), ps->rot, ps->xmirror);
 	return pcb_pstk_copy_meta(p, ps);
 }
 
@@ -77,12 +76,11 @@ void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		return NULL;
 	npid = pcb_pstk_proto_insert_dup(data, proto, 1);
 
-	nps = pcb_pstk_new(data, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND));
+	nps = pcb_pstk_new_tr(data, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND), ps->rot, ps->xmirror);
 	if (nps == NULL)
 		return NULL;
 
 	pcb_pstk_copy_meta(nps, ps);
-	pcb_pstk_copy_orient(nps, ps);
 	pcb_pstk_invalidate_draw(nps);
 	pcb_undo_add_obj_to_create(PCB_TYPE_PSTK, data, nps, nps);
 	return nps;

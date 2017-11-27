@@ -70,7 +70,7 @@ void pcb_pstk_free(pcb_pstk_t *ps)
 	free(ps);
 }
 
-pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags)
+pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror)
 {
 	pcb_pstk_t *ps;
 
@@ -86,10 +86,18 @@ pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, 
 	ps->Clearance = clearance;
 	ps->Flags = Flags;
 	ps->ID = pcb_create_ID_get();
+	ps->rot = rot;
+	ps->xmirror = xmirror;
 	pcb_pstk_add(data, ps);
 	pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
 	return ps;
 }
+
+pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags)
+{
+	return pcb_pstk_new_tr(data, proto, x, y, clearance, Flags, 0, 0);
+}
+
 
 void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 {
