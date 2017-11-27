@@ -678,6 +678,9 @@ static int undo_change_instance_swap(void *udata)
 
 	if (u->parent_ID != -1) {
 		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
+		int n;
+		for(n = 0; (subc == NULL) && (n < PCB_MAX_BUFFER); n++)
+			subc = pcb_subc_by_id(pcb_buffers[n].Data, u->parent_ID);
 		if (subc == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Can't undo padstack change: parent subc #%ld is not found\n", u->parent_ID);
 			return -1;
