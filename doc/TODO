@@ -8,7 +8,7 @@
 	- BUG: exports:
 		- png export doesn't show padstack holes [report: Ade]
 		- gerber export (plated, unplated drill cnc) doesn't have padstacks [report: Ade]
-	- 'send to other side' with padstacks in subc
+	- BUG: 'send to other side' with padstacks in subc: should mirror layer stack positions in the proto
 	- v4 lihata formatting
 	- convert helpers:
 		- old pad
@@ -18,7 +18,7 @@
 	- test if advanced search does anything with padstacks (and subc)
 	- change layer stackup and padstack thermals will break
 - BUG: padstack selection bug on test4.lht pads, positive selection
-- BUG: subc netlisting broke [report: Ade]
++ BUG: subc netlisting broke (no rats are drawn to padstacks in subc) [report: Ade]
 + BUG: when buffer contains a zero-length line, it doesn't show (xor-draw)
 + BUG: {import::src0} doesn't substitute ~ [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
