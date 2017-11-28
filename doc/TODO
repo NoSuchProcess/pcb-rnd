@@ -17,6 +17,7 @@
 	- property editor doesn't deal with padstacks (and subc)
 	- test if advanced search does anything with padstacks (and subc)
 	- change layer stackup and padstack thermals will break
+	- BUG: 'padstackedit' action doesn't find padstacks in a subc. [report: Ade]
 - BUG: padstack selection bug on test4.lht pads, positive selection
 + BUG: subc netlisting broke (no rats are drawn to padstacks in subc) [report: Ade]
 + BUG: {import::src0} doesn't substitute ~ [report: Ade]
