@@ -312,10 +312,13 @@ pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_
 	if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc))
 		return NULL;
 
-	/* search for global objects: via */
+	/* search for global objects: via and padstack */
 	if (lyt & (PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_OUTLINE)) {
 		PCB_VIA_LOOP(subc->data) {
 			CHECK_TERM_GL(via);
+		} PCB_END_LOOP;
+		PCB_PADSTACK_LOOP(subc->data) {
+			CHECK_TERM_GL(padstack);
 		} PCB_END_LOOP;
 	}
 
