@@ -628,7 +628,7 @@ int pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps)
 	return 0;
 }
 
-void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs)
+void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
 {
 	int xmirror = ps->xmirror;
 	pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror);
@@ -639,6 +639,8 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs)
 			pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
 		ps->y = PCB_SWAP_Y(ps->y) + y_offs;
+		if ((swap_side) && (ps->rot != 0))
+			ps->rot = -ps->rot;
 		pcb_pstk_bbox(ps);
 
 		if (ps->parent.data->padstack_tree != NULL)

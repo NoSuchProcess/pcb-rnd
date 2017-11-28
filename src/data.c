@@ -416,7 +416,7 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs)
 	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(data);
 	{
-		pcb_pstk_mirror(padstack, y_offs);
+		pcb_pstk_mirror(padstack, y_offs, 1);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);
