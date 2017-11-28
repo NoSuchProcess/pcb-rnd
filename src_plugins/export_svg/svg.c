@@ -737,7 +737,7 @@ static void svg_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	draw_fill_circle(gc, cx, cy, radius, gc->width);
 }
 
-static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t offs, const char *clr)
+static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t dx, pcb_coord_t dy, const char *clr)
 {
 	int i;
 	float poly_bloat = 0.075;
@@ -747,28 +747,34 @@ static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 	for (i = 0; i < n_coords; i++) {
 		pcb_coord_t px = x[i], py = y[i];
 		TRX(px); TRY(py);
-		pcb_append_printf(s, "%mm,%mm ", px+offs, py+offs);
+		pcb_append_printf(s, "%mm,%mm ", px+dx, py+dy);
 	}
 	pcb_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
 }
 
-static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void svg_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if ((photo_mode) && (clip_color == NULL)) {
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			draw_poly(&sbright, gc, n_coords, x, y, -photo_offs, photo_palette[photo_color].bright);
-			draw_poly(&sdark, gc, n_coords, x, y, +photo_offs, photo_palette[photo_color].dark);
+			draw_poly(&sbright, gc, n_coords, x, y, dx-photo_offs, dy-photo_offs, photo_palette[photo_color].bright);
+			draw_poly(&sdark, gc, n_coords, x, y, dx+photo_offs, dy+photo_offs, photo_palette[photo_color].dark);
 		}
-		draw_poly(&snormal, gc, n_coords, x, y, 0, photo_palette[photo_color].normal);
+		draw_poly(&snormal, gc, n_coords, x, y, dx, dy, photo_palette[photo_color].normal);
 	}
 	else {
-		draw_poly(&snormal, gc, n_coords, x, y, 0, svg_color(gc));
+		draw_poly(&snormal, gc, n_coords, x, y, dx, dy, svg_color(gc));
 		if (clip_color != NULL)
-			draw_poly(&sclip, gc, n_coords, x, y, 0, clip_color);
+			draw_poly(&sclip, gc, n_coords, x, y, dx, dy, clip_color);
 	}
 }
+
+static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	svg_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+}
+
 
 static void svg_calibrate(double xval, double yval)
 {
@@ -826,6 +832,7 @@ int pplg_init_export_svg(void)
 	svg_hid.draw_rect = svg_draw_rect;
 	svg_hid.fill_circle = svg_fill_circle;
 	svg_hid.fill_polygon = svg_fill_polygon;
+	svg_hid.fill_polygon_offs = svg_fill_polygon_offs;
 	svg_hid.fill_rect = svg_fill_rect;
 	svg_hid.calibrate = svg_calibrate;
 	svg_hid.set_crosshair = svg_set_crosshair;
