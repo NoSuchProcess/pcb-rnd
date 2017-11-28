@@ -230,6 +230,10 @@ static void clear_drc_flag(int clear_ratconn)
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pin_t *)n);
 	pcb_r_end(&it);
 
+	for(n = pcb_r_first(PCB->Data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, (pcb_pstk_t *)n);
+	pcb_r_end(&it);
+
 	for(n = pcb_r_first(PCB->Data->pad_tree, &it); n != NULL; n = pcb_r_next(&it)) {
 		if (clear_ratconn)
 			((pcb_pad_t *)n)->ratconn = NULL;
@@ -405,6 +409,17 @@ static void **find_shorts_in_subc(pcb_subc_t *subc_in, vtp0_t *generic, pcb_lib_
 	}
 	PCB_END_LOOP;
 
+	PCB_PADSTACK_LOOP(subc_in->data);
+	{
+		if (padstack->term == NULL)
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)) {
+			*warn = pcb_true;
+			menu = found_short((pcb_any_obj_t *)subc_in, (pcb_any_obj_t *)padstack, generic, theNet, menu);
+		}
+	}
+	PCB_END_LOOP;
+
 	PCB_LINE_ALL_LOOP(subc_in->data);
 	{
 		if (line->term == NULL)
@@ -559,6 +574,20 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 			conn->group = Sgrp;
 			if PCB_FLAG_TEST(PCB_FLAG_DRC_INTCONN, via)
 				PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, via);
+		}
+	}
+	PCB_END_LOOP;
+	PCB_PADSTACK_LOOP(data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)) {
+			conn = pcb_rat_connection_alloc(a);
+			conn->X = padstack->x;
+			conn->Y = padstack->y;
+			conn->ptr1 = padstack;
+			conn->obj = (pcb_any_obj_t *)padstack;
+			conn->group = Sgrp;
+			if PCB_FLAG_TEST(PCB_FLAG_DRC_INTCONN, padstack)
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC | PCB_FLAG_DRC_INTCONN, padstack);
 		}
 	}
 	PCB_END_LOOP;
@@ -949,7 +978,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 			&& pcb_crosshair.AttachedLine.Point1.Y == pcb_crosshair.AttachedLine.Point2.Y)
 		return (NULL);
 
-	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
+	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN | PCB_TYPE_PSTK, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 5);
 	if (found == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_ERROR, _("No pad/pin under rat line\n"));
