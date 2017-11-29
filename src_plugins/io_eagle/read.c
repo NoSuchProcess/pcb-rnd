@@ -967,11 +967,13 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 {
 	trnode_t *n;
 	pcb_text_t *t;
+	int direction = 0;
+	pcb_flag_t TextFlags = pcb_no_flags();
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
-		printf("looking at child %s of packages node\n", NODENAME(n)); 
+		pcb_trace("looking at child %s of packages node\n", NODENAME(n)); 
 		if (STRCMP(NODENAME(n), "package") == 0) {
-			printf("found a package in children of packages node\n");
+			pcb_trace("found a package in children of packages node\n");
 			pcb_element_t *elem, *new_elem;
 			pcb_coord_t x, y;
 
@@ -982,6 +984,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 				free(elem);
 				continue;
 			}
+
 #warning subc TODO subcircuits can have distinct refdes, value, description text attributes
 			t = &elem->Name[PCB_ELEMNAME_IDX_VALUE];
 			t->X = 0;
@@ -1003,6 +1006,27 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 			pcb_element_copy(st->pcb->Data, new_elem, elem, pcb_false, x, y);
 			new_elem->Flags = pcb_no_flags();
 			new_elem->ID = pcb_create_ID_get();
+
+			PCB_ELEMENT_PCB_TEXT_LOOP(new_elem);
+			{
+				if (st->pcb->Data && st->pcb->Data->name_tree[n])
+					pcb_r_delete_entry(st->pcb->Data->name_tree[n], (pcb_box_t *) text);
+			}
+			PCB_END_LOOP;
+
+#warning subc TODO this code ensures mainline element refdes, value, descr texts all get refdes x,y,scale
+			st->refdes_x = st->refdes_y = 0;
+			st->value_x = st->value_y = 0;
+			st->refdes_scale = st->value_scale = 100; /* default values */
+
+#warning TODO need to sanitise the package name from binary libraries, can contain non ASCII chars
+			pcb_element_text_set(&PCB_ELEM_TEXT_DESCRIPTION(new_elem), pcb_font(st->pcb, 0, 1), x, y, direction, eagle_get_attrs(st, n, "name", NULL), st->refdes_scale, TextFlags);
+			pcb_element_text_set(&PCB_ELEM_TEXT_REFDES(new_elem), pcb_font(st->pcb, 0, 1), x, y, direction, "NAME", st->refdes_scale, TextFlags);
+			pcb_element_text_set(&PCB_ELEM_TEXT_VALUE(new_elem), pcb_font(st->pcb, 0, 1), x, y, direction, "VALUE", st->refdes_scale, TextFlags);
+			(&new_elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION])->Element = new_elem;
+			(&new_elem->Name[PCB_ELEMNAME_IDX_REFDES])->Element = new_elem;
+			(&new_elem->Name[PCB_ELEMNAME_IDX_VALUE])->Element = new_elem;
+
 			pcb_element_bbox(st->pcb->Data, new_elem, pcb_font(st->pcb, 0, 1));
 			size_bump(st, new_elem->BoundingBox.X2, new_elem->BoundingBox.Y2);
 		}

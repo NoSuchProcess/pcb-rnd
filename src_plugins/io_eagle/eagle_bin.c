@@ -341,7 +341,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"miny",  T_INT, 6, 2},
 			{"maxx",  T_INT, 8, 2},
 			{"maxy",  T_INT, 10, 2},
-			{"desc",  T_INT, 13, 5},
+			{"desc",  T_STR, 13, 5},
 			{"name",  T_STR, 18, 6},
 			TERM
 		},
