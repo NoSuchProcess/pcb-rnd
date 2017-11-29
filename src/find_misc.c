@@ -374,11 +374,11 @@ void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats)
 /* ---------------------------------------------------------------------------
  * resets all used flags of pins and vias
  */
-pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
+static pcb_bool pcb_reset_found_pins_vias_pads_(pcb_data_t *data, pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
 
-	PCB_VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, via)) {
 			if (AndDraw)
@@ -390,7 +390,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		}
 	}
 	PCB_END_LOOP;
-	PCB_PADSTACK_LOOP(PCB->Data);
+	PCB_PADSTACK_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, padstack)) {
 			if (AndDraw)
@@ -402,7 +402,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		}
 	}
 	PCB_END_LOOP;
-	PCB_ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(data);
 	{
 		PCB_PIN_LOOP(element);
 		{
@@ -429,27 +429,37 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		}
 		PCB_END_LOOP;
 	}
+	PCB_END_LOOP;
 
-	PCB_SUBC_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(data);
 	{
 		pcb_flag_change(PCB, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND, PCB_TYPE_SUBC, subc, subc, subc);
+		if (pcb_reset_found_pins_vias_pads_(subc->data, AndDraw))
+			change = pcb_true;
 	}
 	PCB_END_LOOP;
 
-	PCB_END_LOOP;
+	return change;
+}
+
+pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
+{
+	pcb_bool change = pcb_reset_found_pins_vias_pads_(PCB->Data, AndDraw);
+
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
+
 	return change;
 }
 
 /* ---------------------------------------------------------------------------
  * resets all used flags of LOs
  */
-pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
+static pcb_bool pcb_reset_found_lines_polys_(pcb_data_t *data, pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
 
-	PCB_RAT_LOOP(PCB->Data);
+	PCB_RAT_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
@@ -461,7 +471,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 		}
 	}
 	PCB_END_LOOP;
-	PCB_LINE_COPPER_LOOP(PCB->Data);
+	PCB_LINE_COPPER_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
@@ -473,7 +483,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 		}
 	}
 	PCB_ENDALL_LOOP;
-	PCB_ARC_COPPER_LOOP(PCB->Data);
+	PCB_ARC_COPPER_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, arc)) {
 			if (AndDraw)
@@ -485,7 +495,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 		}
 	}
 	PCB_ENDALL_LOOP;
-	PCB_POLY_COPPER_LOOP(PCB->Data);
+	PCB_POLY_COPPER_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, polygon)) {
 			if (AndDraw)
@@ -499,16 +509,26 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	PCB_ENDALL_LOOP;
 
 
-	PCB_SUBC_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(data);
 	{
 		pcb_flag_change(PCB, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND, PCB_TYPE_SUBC, subc, subc, subc);
+		if (pcb_reset_found_lines_polys_(subc->data, AndDraw))
+			change = pcb_true;
 	}
 	PCB_END_LOOP;
 
+	return change;
+}
+
+pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
+{
+	pcb_bool change = pcb_reset_found_lines_polys_(PCB->Data, AndDraw);
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
 	return change;
+
 }
+
 
 /* ---------------------------------------------------------------------------
  * resets all found connections
