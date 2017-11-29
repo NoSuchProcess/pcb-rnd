@@ -849,7 +849,6 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	if (pcb_data_get_top(Data) != NULL)
 		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
 	DrawSubc(sc);
-	pcb_draw();
 	return sc;
 }
 
