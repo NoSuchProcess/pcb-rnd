@@ -177,6 +177,14 @@ void pcb_clear_warnings()
 	}
 	pcb_r_end(&it);
 
+	for(n = pcb_r_first(PCB->Data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
+			pcb_pstk_invalidate_draw((pcb_pad_t *)n);
+		}
+	}
+	pcb_r_end(&it);
+
 	for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
 		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
