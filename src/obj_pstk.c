@@ -490,7 +490,7 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *
 			if (isneg) {
 				/* shortcut: if any point is in our box in negative, we are done */
 				for(n = 0; n < shape->data.poly.len; n++) {
-					int pib = PCB_POINT_IN_BOX(ps->x + shape->data.poly.x[n], ps->x + shape->data.poly.y[n], box);
+					int pib = PCB_POINT_IN_BOX(ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n], box);
 					if (pib)
 						return 1;
 				}
@@ -499,7 +499,7 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *
 			/* fully within */
 			is_in = 1;
 			for(n = 0; n < shape->data.poly.len; n++) {
-				int pib = PCB_POINT_IN_BOX(ps->x + shape->data.poly.x[n], ps->x + shape->data.poly.y[n], box);
+				int pib = PCB_POINT_IN_BOX(ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n], box);
 				if (!pib) {
 					is_in = 0;
 					break;
