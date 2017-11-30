@@ -300,6 +300,13 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_float
 			pcb_box_bump_box(out, &via->BoundingBox);
 	}
 	PCB_END_LOOP;
+	PCB_PADSTACK_LOOP(Data);
+	{
+		pcb_pstk_bbox(padstack);
+		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, padstack))
+			pcb_box_bump_box(out, &padstack->BoundingBox);
+	}
+	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(Data);
 	{
 		pcb_element_bbox(Data, element, pcb_font(PCB, 0, 0));
