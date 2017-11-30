@@ -847,6 +847,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 			tmp.Point1.Y = line->Point1.Y;
 			tmp.Point2.X = line->Point2.X;
 			tmp.Point2.Y = line->Point2.Y;
+			tmp.Thickness = line->Thickness;
 			tmp.Flags = pcb_no_flags();
 			return pcb_is_point_in_pad(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, &tmp);
 		}
