@@ -513,7 +513,8 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *
 			   the box is fully within the poly - if any of it's corners is in */
 			v[0] = box->X1 - ps->x;
 			v[1] = box->Y1 - ps->y;
-			return pcb_polyarea_contour_inside(shape->data.poly.pa, v);
+			if (pcb_polyarea_contour_inside(shape->data.poly.pa, v))
+				return 1;
 
 
 			/* negative box, not fully within, no poly point in the box, check whether
