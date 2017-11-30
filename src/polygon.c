@@ -2300,7 +2300,7 @@ pcb_bool pcb_pline_is_rectangle(pcb_pline_t *pl)
 	if (n != 4)
 		return pcb_false;
 
-	if (sqr(x[0] - x[2]) * sqr(y[0] - y[2]) == sqr(x[1] - x[3]) * sqr(y[1] - y[3]))
+	if (sqr(x[0] - x[2]) + sqr(y[0] - y[2]) == sqr(x[1] - x[3]) + sqr(y[1] - y[3]))
 		return pcb_true;
 
 	return pcb_false;
