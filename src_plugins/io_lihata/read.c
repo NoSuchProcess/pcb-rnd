@@ -1700,11 +1700,12 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		Ptr->is_footprint = 1;
 		res = parse_subc(NULL, Ptr->Data, doc->root->data.list.first, &sc);
 
-		pcb_layer_group_setup_default(&Ptr->LayerGroups);
-		pcb_layer_group_setup_silks(Ptr);
-		pcb_layer_create_all_for_recipe(Ptr, sc->data->Layer, sc->data->LayerN);
-		pcb_subc_rebind(Ptr, sc);
-		pcb_data_clip_polys(sc->data);
+		if (res == 0) {
+			pcb_layergrp_upgrade_to_pstk(Ptr);
+			pcb_layer_create_all_for_recipe(Ptr, sc->data->Layer, sc->data->LayerN);
+			pcb_subc_rebind(Ptr, sc);
+			pcb_data_clip_polys(sc->data);
+		}
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Error loading '%s': neither a board nor a subcircuit\n", Filename);
@@ -1795,6 +1796,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 	lht_dom_uninit(doc);
 	return res;
 }
+
 
 int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
