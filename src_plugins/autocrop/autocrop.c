@@ -11,6 +11,7 @@
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Copyright (C) 2016..2017 Tibor 'Igor2' Palinkas
  *
  * From: Ben Jackson <bjj@saturn.home.ben.com>
  * To: geda-user@moria.seul.org
@@ -153,6 +154,12 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 	{
 		MyMoveViaLowLevel(PCB->Data, via, dx, dy);
 		pcb_undo_add_obj_to_move(PCB_TYPE_VIA, NULL, NULL, via, dx, dy);
+	}
+	PCB_END_LOOP;
+	PCB_PADSTACK_LOOP(PCB->Data);
+	{
+		pcb_pstk_move(padstack, dx, dy, pcb_true);
+		pcb_undo_add_obj_to_move(PCB_TYPE_PSTK, NULL, NULL, padstack, dx, dy);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(PCB->Data);
