@@ -188,7 +188,7 @@ pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src)
 	return dst;
 }
 
-void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_pstk_move_(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
 {
 	ps->x += dx;
 	ps->y += dy;
@@ -196,6 +196,16 @@ void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
 	ps->BoundingBox.Y1 += dy;
 	ps->BoundingBox.X2 += dx;
 	ps->BoundingBox.Y2 += dy;
+}
+
+void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come)
+{
+	pcb_opctx_t ctx;
+	ctx.move.pcb = NULL;
+	ctx.move.dx = dx;
+	ctx.move.dy = dy;
+	ctx.move.more_to_come = more_to_come;
+	pcb_pstkop_move(&ctx, ps);
 }
 
 pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)

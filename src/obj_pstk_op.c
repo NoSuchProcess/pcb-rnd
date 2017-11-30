@@ -89,7 +89,7 @@ void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 void *pcb_pstkop_move_noclip(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_invalidate_erase(ps);
-	pcb_pstk_move(ps, ctx->move.dx, ctx->move.dy);
+	pcb_pstk_move_(ps, ctx->move.dx, ctx->move.dy);
 	pcb_pstk_invalidate_draw(ps);
 	pcb_draw();
 	return ps;
@@ -196,7 +196,7 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 		pcb_rotate(&nx, &ny, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
 		if ((nx != ps->x) || (ny != ps->y))
-			pcb_pstk_move(ps, nx - ps->x, ny - ps->y);
+			pcb_pstk_move_(ps, nx - ps->x, ny - ps->y);
 
 		pcb_pstk_bbox(ps);
 		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);

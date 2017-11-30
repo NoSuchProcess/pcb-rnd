@@ -164,6 +164,14 @@ void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx);
 /* Mirror a padstack (useful for sending to the other side - set swap_side to 1 in that case) */
 void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side);
 
+/* Undoable move (op wrapper) */
+void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come);
+
+/* Low level move - updates only the coordinates and the bbox */
+void pcb_pstk_move_(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy);
+
+
+
 /*** hash ***/
 unsigned int pcb_pstk_hash(const pcb_pstk_proto_t *p);
 int pcb_pstk_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2);
