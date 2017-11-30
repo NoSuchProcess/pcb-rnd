@@ -153,6 +153,11 @@ pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);
 /* Create a layer for each unbindable layers from the layer array */
 int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int num_layer);
 
+/* Upgrade the current layer stack to incldue all layers for
+   fully representaing standard padstacks. This includes reusing or
+   creating layer groups and layers, altering layer group names (but
+   not removing layers or groups) */
+void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb);
 
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of

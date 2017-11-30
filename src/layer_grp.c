@@ -852,6 +852,45 @@ void pcb_layergroup_free_stack(pcb_layer_stack_t *st)
 	st->cache.copper_len = st->cache.copper_alloced = 0;
 }
 
+void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
+{
+	typedef struct lmap_s {
+		const char *name;
+		pcb_layer_type_t lyt;
+	} lmap_t;
+	const lmap_t *m, lmap[] = {
+		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE},
+		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK},
+		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK},
+		{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER},
+		{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER},
+		{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER},
+		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK},
+		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK},
+		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE},
+		{NULL, 0}
+	};
+	pcb_layergrp_t *grp;
+	pcb_layergrp_id_t gid;
+
+	for(m = lmap; m->name != NULL; m++) {
+		if (pcb_layergrp_list(pcb, m->lyt, &gid, 1) == 1) {
+			grp = &pcb->LayerGroups.grp[gid];
+			free(grp->name);
+		}
+		else {
+			grp = pcb_get_grp_new_misc(pcb);
+			gid = grp - pcb->LayerGroups.grp;
+			grp->type = m->lyt;
+		}
+
+		grp->name = pcb_strdup(m->name);
+		if (grp->len == 0)
+			pcb_layer_create(pcb, gid, m->name);
+	}
+}
+
+
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
 	pcb_layergrp_t *g;
