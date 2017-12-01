@@ -17,12 +17,11 @@
 	- test if advanced search does anything with padstacks (and subc)
 	- change layer stackup and padstack thermals will break
 	- BUG: 'padstackedit' action doesn't find padstacks in a subc. [report: Ade]
-- BUG: padstack selection bug on test4.lht pads, positive selection
 + BUG: subc netlisting broke (no rats are drawn to padstacks in subc) [report: Ade]
 + BUG: {import::src0} doesn't substitute ~ [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
-- BUG: shift+b doesn't work on subc [report: Ade]
++ BUG: shift+b doesn't work on subc [report: Ade]
 - subc edit: when open directly, allow parts to be selected/moved/etc.
 - feature: property editor should deal with flags
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
