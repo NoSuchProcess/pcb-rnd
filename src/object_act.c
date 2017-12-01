@@ -398,7 +398,7 @@ static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		case F_Selected:
 		case F_SelectedElements:
 			pcb_undo_save_serial();
-#warning subc TODO
+			pcb_selected_subc_change_side();
 			pcb_selected_element_change_side();
 			pcb_undo_inc_serial();
 			pcb_draw();
