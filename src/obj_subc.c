@@ -922,6 +922,16 @@ void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double co
 	pcb_subcop_rotate(&ctx, subc);
 }
 
+void pcb_subc_move(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come)
+{
+	pcb_opctx_t ctx;
+	ctx.move.pcb = NULL;
+	ctx.move.dx = dx;
+	ctx.move.dy = dy;
+	ctx.move.more_to_come = more_to_come;
+	pcb_subcop_move(&ctx, sc);
+}
+
 
 static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_layer_t *sl, int src_has_real_layer, int dst_is_pcb)
 {
