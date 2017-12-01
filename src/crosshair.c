@@ -1239,12 +1239,22 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	snap_data.y = nearest_grid_y;
 
 	ans = PCB_TYPE_NONE;
-	if (!PCB->RatDraw)
+	if (!PCB->RatDraw) {
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
+		if (ans == NULL)
+			ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
+	}
 
 	if (ans & PCB_TYPE_ELEMENT) {
 		pcb_element_t *el = (pcb_element_t *) ptr1;
 		check_snap_object(&snap_data, el->MarkX, el->MarkY, pcb_false);
+	}
+
+	if (ans & PCB_TYPE_SUBC) {
+		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
+		pcb_coord_t ox, oy;
+		if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
+			check_snap_object(&snap_data, ox, oy, pcb_false);
 	}
 
 	ans = PCB_TYPE_NONE;
