@@ -44,7 +44,7 @@
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - BUG: missing subc snap:
 	- polygon pad center snap [report: jg]
-	- subc centroid/origin snap [report: jg]
+	+ subc centroid/origin snap [report: jg]
 - BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 - BUG: selection doesn't work properly (introduced in r12152) [report:wojciechk8]
