@@ -940,7 +940,7 @@ pcb_bool pcb_selected_subc_change_side(void)
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
-				change |= pcb_subc_change_side(&subc, 0);
+				change |= pcb_subc_change_side(&subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 			}
 		}
 		PCB_END_LOOP;
