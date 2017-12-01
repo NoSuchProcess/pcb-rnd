@@ -1,9 +1,4 @@
 1. For the upcoming release ===============================================================================
-- BUG: ps RTT test broke
-- key rewrite:
-	- base key swap bug (q<->a, y<->z)
-	- lesstif code upgrade for the new API
-	- menu file fixup on punctuation in lesstif
 - padstack:
 	- BUG: exports:
 		- png export doesn't show padstack holes [report: Ade]
@@ -67,6 +62,10 @@
 - autocrop asserts on boards with subc with padstack (rtree)
 
 2. For later releases ===============================================================================
+- key rewrite: (base key swap bug (q<->a, y<->z))
+	- for <char> (punctuation): learn key for non-US users
+	- lesstif code upgrade for the new API
+	- menu file fixup on punctuation in lesstif
 - BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
 - feautres/cleanup: hid:
