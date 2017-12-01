@@ -700,6 +700,8 @@ typedef struct {
 		b = tmp; \
 	} while(0)
 
+pcb_data_t *pcb_pstk_data_hack = NULL;
+
 static int undo_change_instance_swap(void *udata)
 {
 	padstack_change_instance_t *u = udata;
@@ -709,6 +711,8 @@ static int undo_change_instance_swap(void *udata)
 	if (u->parent_ID != -1) {
 		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
 		int n;
+		if ((subc == NULL) && (pcb_pstk_data_hack != NULL))
+			subc = pcb_subc_by_id(pcb_pstk_data_hack, u->parent_ID);
 		for(n = 0; (subc == NULL) && (n < PCB_MAX_BUFFER); n++)
 			subc = pcb_subc_by_id(pcb_buffers[n].Data, u->parent_ID);
 		if (subc == NULL) {

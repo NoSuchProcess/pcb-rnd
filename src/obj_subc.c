@@ -1348,7 +1348,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	pcb_subc_t *newsc, *newsc2;
 	int n;
 	pcb_board_t *pcb;
-	pcb_data_t *data;
+	pcb_data_t *data, *oldhack;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, *subc))
 		return (pcb_false);
@@ -1362,6 +1362,9 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	ctx.buffer.pcb = pcb_data_get_top((*subc)->data);
 	ctx.buffer.dst = pcb_data_new(NULL);
 	ctx.buffer.src = data;
+
+	oldhack = pcb_pstk_data_hack;
+	pcb_pstk_data_hack = ctx.buffer.dst;
 	newsc = pcb_subcop_move_to_buffer(&ctx, *subc);
 
 
@@ -1384,6 +1387,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	*subc = newsc2;
 	pcb_subc_free(newsc);
 	pcb_data_free(ctx.buffer.dst);
+	pcb_pstk_data_hack = oldhack;
 	return pcb_true;
 }
 

@@ -170,6 +170,8 @@ void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more
 /* Low level move - updates only the coordinates and the bbox */
 void pcb_pstk_move_(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy);
 
+/* Temporary hack until we have a refcounted objects and ID->pcb_any_obj_t hash */
+extern pcb_data_t *pcb_pstk_data_hack;
 
 
 /*** hash ***/
