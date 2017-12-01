@@ -210,17 +210,20 @@ void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more
 
 pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 {
-	pcb_box_t *ps;
-	pcb_rtree_it_t it;
-
-	for(ps = pcb_r_first(base->padstack_tree, &it); ps != NULL; ps = pcb_r_next(&it)) {
-		if (((pcb_pstk_t *)ps)->ID == ID) {
-			pcb_r_end(&it);
-			return (pcb_pstk_t *)ps;
-		}
+	/* We can not have an rtree based search here: we are often called
+	   in the middle of an operation, after the pstk got already removed
+	   from the rtree. It happens in e.g. undoable padstack operations
+	   where the padstack tries to look up its parent subc by ID, while
+	   the subc is being sent to the other side.
+	
+	   The solution will be the ID hash. */
+	PCB_PADSTACK_LOOP(base);
+	{
+		if (padstack->ID == ID)
+			return padstack;
 	}
+	PCB_END_LOOP;
 
-	pcb_r_end(&it);
 	return NULL;
 }
 
@@ -732,7 +735,8 @@ static int undo_change_instance_swap(void *udata)
 
 	pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 	pcb_pstk_invalidate_erase(ps);
-	pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+	if (ps->parent.data->padstack_tree != NULL)
+		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
 	swap(ps->proto,      u->proto,     pcb_cardinal_t);
 	swap(ps->Clearance,  u->clearance, pcb_coord_t);
@@ -744,7 +748,8 @@ static int undo_change_instance_swap(void *udata)
 	pcb_pstk_get_tshape(ps);
 
 	pcb_pstk_bbox(ps);
-	pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);
+	if (ps->parent.data->padstack_tree != NULL)
+		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);
 	pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 	pcb_pstk_invalidate_draw(ps);
 
