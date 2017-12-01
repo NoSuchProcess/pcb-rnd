@@ -1425,7 +1425,7 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 	
-	/* Allow leaving snapped pin/pad */
+	/* Allow leaving snapped pin/pad/padstack */
 	if (pcb_crosshair.snapped_pad) {
 		pcb_pad_t *pad = pcb_crosshair.snapped_pad;
 		pcb_coord_t width = pad->Thickness;
@@ -1448,6 +1448,19 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	} else if (pcb_crosshair.snapped_pin) {
 		pcb_pin_t *pin = pcb_crosshair.snapped_pin;
 		pcb_coord_t radius = pin->Thickness/2;
+		if (dx < 0) {
+			dx -= radius;
+		} else if (dx > 0) {
+			dx += radius;
+		}
+		if (dy < 0) {
+			dy -= radius;
+		} else if (dy > 0) {
+			dy += radius;
+		}
+	} else if (pcb_crosshair.snapped_pstk) {
+		pcb_pstk_t *ps = pcb_crosshair.snapped_pstk;
+		pcb_coord_t radius = ((ps->BoundingBox.X2 - ps->BoundingBox.X1) + (ps->BoundingBox.Y2 - ps->BoundingBox.Y1))/2;
 		if (dx < 0) {
 			dx -= radius;
 		} else if (dx > 0) {
