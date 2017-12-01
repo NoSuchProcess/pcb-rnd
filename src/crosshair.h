@@ -83,6 +83,7 @@ typedef struct {								/* holds cursor information */
 	vtop_t old_onpoint_objs;
 	pcb_pad_t *snapped_pad;
 	pcb_pin_t *snapped_pin;
+	pcb_pstk_t *snapped_pstk;
 
 	/* list of object IDs that could have been dragged so that they can be cycled */
 	long int *drags;

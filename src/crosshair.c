@@ -1344,6 +1344,22 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		pcb_crosshair.snapped_pin = pin;
 	}
 
+	/*** padstack center ***/
+	ans = PCB_TYPE_NONE;
+	if (conf_core.editor.snap_pin)
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PSTK | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
+
+	/* Avoid snapping padstack to any other vias */
+	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
+		ans = PCB_TYPE_NONE;
+
+	if (ans != PCB_TYPE_NONE) {
+		pcb_pstk_t *ps = (pcb_pstk_t *) ptr2;
+		check_snap_object(&snap_data, ps->x, ps->y, pcb_true);
+		pcb_crosshair.snapped_pstk = ps;
+	}
+
+	/*** arc ***/
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT | PCB_TYPE_ARC_POINT | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
