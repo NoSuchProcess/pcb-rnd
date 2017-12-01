@@ -932,6 +932,22 @@ void pcb_subc_move(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more
 	pcb_subcop_move(&ctx, sc);
 }
 
+pcb_bool pcb_selected_subc_change_side(void)
+{
+	pcb_bool change = pcb_false;
+
+	if (PCB->PinOn && pcb_silk_on(PCB)) {
+		PCB_SUBC_LOOP(PCB->Data);
+		{
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
+				change |= pcb_subc_change_side(&subc, 0);
+			}
+		}
+		PCB_END_LOOP;
+	}
+	return change;
+}
+
 
 static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_layer_t *sl, int src_has_real_layer, int dst_is_pcb)
 {

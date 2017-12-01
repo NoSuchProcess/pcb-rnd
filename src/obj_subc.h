@@ -70,6 +70,8 @@ void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double co
 /* High level move (op wrapper; no undo) */
 void pcb_subc_move(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come);
 
+/* changes the side of all selected and visible subcs; returns pcb_true if anything has changed */
+pcb_bool pcb_selected_subc_change_side(void);
 
 /* Draw a subcircuit for a preview (silk, copper and outline only) */
 void pcb_subc_draw_preview(const pcb_subc_t *sc, pcb_box_t *drawn_area);
