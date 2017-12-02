@@ -1501,14 +1501,18 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			delta_theta = (theta_2 - theta_1);
 
 			if (!clockwise) {
-				delta_theta = 360 + delta_theta;
+				delta_theta = -delta_theta; 
 			}
-/* pathological cases still seen with transistors, for example, where delta should be 360-delta */
 
 			while (theta_1 > 360) {
 				theta_1 -= 360;
 			}
-
+			while (delta_theta < -180) { /* this seems to fix pathological cases */
+				delta_theta += 360;
+			}
+			while (delta_theta > 180) {
+				delta_theta -= 360;
+			}
 			sprintf(itoa_buffer, "%ld", (long)(theta_1));
 			egb_node_prop_set(elem, "StartAngle", itoa_buffer);
 
