@@ -458,6 +458,9 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 			PCB->fontkit.valid = pcb_true;
 		}
 
+		/* footprint edition: let the user directly manipulate subc parts */
+		PCB->loose_subc = PCB->is_footprint;
+
 		/* clear 'changed flag' */
 		pcb_board_set_changed_flag(pcb_false);
 		PCB->Filename = new_filename;
