@@ -629,7 +629,40 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_PADSTACK_LOOP(PCB->Data);
 		{
-			if (pcb_pstk_drc_check_and_warn(padstack)) {
+			pcb_coord_t ring = 0, hole = 0;
+			pcb_poly_plows(PCB->Data, PCB_TYPE_PSTK, padstack, padstack, drc_callback);
+			if (IsBad)
+				break;
+			pcb_pstk_drc_check_and_warn(padstack, &ring, &hole);
+			if ((ring > 0) || (hole > 0)) {
+				pcb_undo_add_obj_to_flag(padstack);
+				PCB_FLAG_SET(TheFlag, padstack);
+				pcb_pstk_invalidate_draw(padstack);
+				if (ring) {
+					drcerr_count++;
+					SetThing(PCB_TYPE_VIA, padstack, padstack, padstack);
+					LocateError(&x, &y);
+					BuildObjectList(&object_count, &object_id_list, &object_type_list);
+					violation = pcb_drc_violation_new(_("padstack annular ring too small"), _("Annular rings that are too small may erode during etching,\n" "resulting in a broken connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
+																						pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
+																						ring,
+																						PCB->minRing, object_count, object_id_list, object_type_list);
+					append_drc_violation(violation);
+					pcb_drc_violation_free(violation);
+				}
+				if (hole > 0) {
+					drcerr_count++;
+					SetThing(PCB_TYPE_VIA, padstack, padstack, padstack);
+					LocateError(&x, &y);
+					BuildObjectList(&object_count, &object_id_list, &object_type_list);
+					violation = pcb_drc_violation_new(_("Padstack drill size is too small"), _("Process rules dictate the minimum drill size which can be used"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
+																						pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
+																						hole, PCB->minDrill, object_count, object_id_list, object_type_list);
+					append_drc_violation(violation);
+					pcb_drc_violation_free(violation);
+				}
+				free(object_id_list);
+				free(object_type_list);
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
 					break;
@@ -638,7 +671,6 @@ int pcb_drc_all(void)
 		}
 		PCB_END_LOOP;
 	}
-
 
 	pcb_conn_lookup_uninit();
 	TheFlag = PCB_FLAG_FOUND;

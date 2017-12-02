@@ -679,10 +679,29 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_
 }
 
 
-int pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps)
+static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_tshape_t *ts, pcb_coord_t min, pcb_coord_t *out)
 {
 #warning padstack TODO
 	return 0;
+}
+
+void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+	if (proto->hdia >= 0) {
+		int n;
+		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
+
+		for(n = 0; n < ts->len; n++) {
+			if (pcb_pstk_shape_hole_break(ts, 2 * PCB->minRing, &err_minring)) {
+				break;
+			}
+		}
+	}
+
+	if ((proto->hdia > 0) && (proto->hdia < PCB->minDrill))
+		*err_minhole = proto->hdia;
 }
 
 void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)

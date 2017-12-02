@@ -121,9 +121,10 @@ int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_p
 int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_t min_clr);
 
 /* Check all possible local drc errors regarding to pad stacks - errors that
-   depend only on the padstack, not on other objects. Return 0 if everything
-   was fine */
-int pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps);
+   depend only on the padstack, not on other objects. load err_minring and
+   err_minhole with the relevant data for the report when ring or hole rules
+   are violated */
+void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole);
 
 /* Generate poly->pa (which should be NULL at the time of call) */
 void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly);
