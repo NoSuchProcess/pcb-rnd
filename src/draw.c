@@ -80,6 +80,7 @@ static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *, int);
 static void pcb_draw_obj_label(pcb_any_obj_t *obj);
 static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area);
+static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, pcb_pstk_draw_hole_t holetype);
 
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(int side, const pcb_box_t *drawn_area);
@@ -181,18 +182,20 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_bo
 	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, pcb_hole_draw_callback, &plated, NULL);
 }
 
-static void DrawEverything_holes(const pcb_box_t * drawn_area)
+static void DrawEverything_holes(pcb_layergrp_id_t gid, const pcb_box_t *drawn_area)
 {
 	int plated, unplated;
 	pcb_board_count_holes(&plated, &unplated, drawn_area);
 
 	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0)) {
 		DrawHoles(pcb_true, pcb_false, drawn_area);
+		pcb_draw_pstk_holes(gid, drawn_area, PCB_PHOLE_PLATED);
 		pcb_gui->end_layer();
 	}
 
 	if (unplated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_UNPLATED_DRILL, 0)) {
 		DrawHoles(pcb_false, pcb_true, drawn_area);
+		pcb_draw_pstk_holes(gid, drawn_area, PCB_PHOLE_UNPLATED);
 		pcb_gui->end_layer();
 	}
 }
@@ -289,7 +292,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	if (pcb_gui->gui)
 		pcb_draw_ppv(PCB_SWAP_IDENT ? solder : component, drawn_area);
 	else if (!pcb_gui->holes_after)
-		DrawEverything_holes(drawn_area);
+		DrawEverything_holes(side_copper_grp, drawn_area);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 
 	/* Draw the solder mask if turned on */
@@ -319,7 +322,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	{
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area); 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
-		DrawEverything_holes(drawn_area);
+		DrawEverything_holes(side_copper_grp, drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
 	}
 
@@ -443,11 +446,12 @@ static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area)
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_mark_callback, &ctx, NULL);
 }
 
-static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
+static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, pcb_pstk_draw_hole_t holetype)
 {
 	pcb_pstk_draw_t ctx;
 	ctx.pcb = PCB;
 	ctx.gid = group;
+	ctx.holetype = holetype;
 	pcb_r_search(PCB->Data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_hole_callback, &ctx, NULL);
 }
 
@@ -487,7 +491,7 @@ void pcb_draw_ppv(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 
 	/* draw padstack holes - copper is drawn with each group */
 	if (PCB->ViaOn || !pcb_gui->gui)
-		pcb_draw_pstk_holes(group, drawn_area);
+		pcb_draw_pstk_holes(group, drawn_area, PCB_PHOLE_PLATED | PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
 }
 
 /* ---------------------------------------------------------------------------

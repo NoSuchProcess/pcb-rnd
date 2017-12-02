@@ -395,6 +395,22 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	if (!pcb_pstk_bb_drills(ctx->pcb, ps, ctx->gid, &proto))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
+	/* No hole at all */
+	if (proto->hdia <= 0)
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* hole is plated, but the caller doesn't want plated holes */
+	if (proto->hplated && (!(ctx->holetype & PCB_PHOLE_PLATED)))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* hole is unplated, but the caller doesn't want unplated holes */
+	if (!proto->hplated && (!(ctx->holetype & PCB_PHOLE_UNPLATED)))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* BBvia, but the caller doesn't want BBvias */
+	if (((proto->htop != 0) || (proto->hbottom != 0)) && (!(ctx->holetype & PCB_PHOLE_BB)))
+		return PCB_R_DIR_NOT_FOUND;
+
 	pcb_gui->fill_circle(Output.drillGC, ps->x, ps->y, proto->hdia / 2);
 	if (!proto->hplated) {
 		pcb_coord_t r = proto->hdia / 2;

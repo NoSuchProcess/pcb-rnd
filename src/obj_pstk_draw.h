@@ -31,10 +31,17 @@
 #include "board.h"
 #include "layer_grp.h"
 
+typedef enum {
+	PCB_PHOLE_PLATED = 1,
+	PCB_PHOLE_UNPLATED = 2,
+	PCB_PHOLE_BB = 4
+} pcb_pstk_draw_hole_t;
+
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_layergrp_id_t gid;
 	int is_current;
+	pcb_pstk_draw_hole_t holetype;
 	pcb_layer_combining_t comb;
 } pcb_pstk_draw_t;
 
