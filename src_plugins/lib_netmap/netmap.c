@@ -94,6 +94,11 @@ static void list_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)via);
 }
 
+static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
+{
+	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)ps);
+}
+
 static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin)
 {
 	pcb_netmap_t *map = ctx;
@@ -145,7 +150,8 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* etext */
 		list_epin_cb,
 		list_epad_cb,
-		NULL /* via */
+		NULL, /* via */
+		NULL /* pstk */
 	);
 
 	/* step 2: find unknown nets and uniquely name them */
@@ -161,7 +167,8 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* etext */
 		NULL, /* pin */
 		NULL, /* pad */
-		list_via_cb
+		list_via_cb,
+		list_pstk_cb
 	);
 	return 0;
 }
