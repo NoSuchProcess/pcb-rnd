@@ -444,15 +444,6 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 	/* the text subroutine decides by itself if the direction
 	 * is to be corrected
 	 */
-#if 0
-	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
-	{
-		if (Data && Data->name_tree[n])
-			pcb_r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
-		pcb_text_rotate90(text, X, Y, Number);
-	}
-	PCB_END_LOOP;
-#endif
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		pcb_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
