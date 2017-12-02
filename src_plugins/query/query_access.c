@@ -106,6 +106,11 @@ static void list_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	APPEND(ctx, PCB_OBJ_VIA, via, PCB_PARENT_DATA, pcb->Data);
 }
 
+static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
+{
+	APPEND(ctx, PCB_OBJ_PSTK, ps, PCB_PARENT_DATA, pcb->Data);
+}
+
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 {
 	assert(lst->type == PCBQ_VT_LST);
@@ -121,7 +126,8 @@ void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 		(mask & PCB_OBJ_ETEXT) ? list_etext_cb : NULL,
 		(mask & PCB_OBJ_PIN) ? list_epin_cb : NULL,
 		(mask & PCB_OBJ_PAD) ? list_epad_cb : NULL,
-		(mask & PCB_OBJ_VIA) ? list_via_cb : NULL
+		(mask & PCB_OBJ_VIA) ? list_via_cb : NULL,
+		(mask & PCB_OBJ_PSTK) ? list_pstk_cb : NULL
 	);
 }
 
