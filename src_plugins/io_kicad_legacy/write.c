@@ -879,10 +879,10 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 
 				   the origin for rotation is the positive x direction, and going CW
 
-				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
+				   whereas in pcb-rnd, the pcb-rnd origin for rotation is the negative x axis,
 				   with rotation CCW, so we need to reverse delta angle
 
-				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
+				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in pcb-rnd
 				   NB it is in degrees in the newer s-file kicad module/footprint format
 				*/
 				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %mA %.3mm ",
