@@ -1098,7 +1098,7 @@ pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly)
 
 	/* iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
-		pcb_poly_pa_clearance_construct(&ret, &it, subpoly->Clearance);
+		pcb_poly_pa_clearance_construct(&ret, &it, subpoly->Clearance/2);
 
 	return ret;
 }
