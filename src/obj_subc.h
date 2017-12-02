@@ -101,6 +101,9 @@ pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID);
 /* undoable remove */
 void *pcb_subc_remove(pcb_subc_t *sc);
 
+/* In board mode return brd_layer; in footprint edit mode, return the subcircuit
+   layer that matches brd_layer or brd_layer if not found. */
+pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer);
 
 /*** loops ***/
 

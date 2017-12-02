@@ -37,6 +37,7 @@
 #include "draw_wireframe.h"
 #include "find.h"
 #include "obj_line.h"
+#include "obj_subc.h"
 #include "rats.h"
 #include "search.h"
 #include "tool.h"
@@ -217,7 +218,7 @@ void pcb_tool_line_notify_mode(void)
 		if ((pcb_crosshair.AttachedLine.Point1.X !=
 				 pcb_crosshair.AttachedLine.Point2.X || pcb_crosshair.AttachedLine.Point1.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(CURRENT,
+						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT),
 																	 pcb_crosshair.AttachedLine.Point1.X,
 																	 pcb_crosshair.AttachedLine.Point1.Y,
 																	 pcb_crosshair.AttachedLine.Point2.X,
@@ -262,7 +263,7 @@ void pcb_tool_line_notify_mode(void)
 		}
 		if (conf_core.editor.line_refraction && (pcb_tool_note.X != pcb_crosshair.AttachedLine.Point2.X || pcb_tool_note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(CURRENT,
+						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT),
 																	 pcb_crosshair.AttachedLine.Point2.X,
 																	 pcb_crosshair.AttachedLine.Point2.Y,
 																	 pcb_tool_note.X, pcb_tool_note.Y,

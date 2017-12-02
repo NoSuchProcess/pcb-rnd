@@ -221,6 +221,28 @@ static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 	return poly;
 }
 
+pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer)
+{
+	pcb_subc_t *sc;
+	int n;
+
+	if (!pcb->is_footprint)
+		return layer;
+
+	sc = pcb_subclist_first(&pcb->Data->subc);
+	if (sc == NULL)
+		return layer;
+
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *l = &sc->data->Layer[n];
+		if (!l->is_bound)
+			continue;
+		if (l->meta.bound.real == layer)
+			return l;
+	}
+	return layer;
+}
+
 extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 
 /* Move the pad-side-effect objects to the appropriate layer */
