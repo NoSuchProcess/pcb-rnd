@@ -343,6 +343,8 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	case PCB_TYPE_POLY:
 		{
 			pcb_poly_t *Polygon;
+			double area;
+
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
@@ -352,11 +354,16 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 #endif
 			Polygon = (pcb_poly_t *) ptr2;
 
+			area = pcb_poly_area(Polygon);
+			area = area / PCB_MM_TO_COORD(1);
+			area = area / PCB_MM_TO_COORD(1);
+
 			report = pcb_strdup_printf("%m+POLYGON ID# %ld;  Flags:%s\n"
 									"Its bounding box is %$mD %$mD.\n"
 									"It has %d points and could store %d more\n"
 									"  without using more memory.\n"
 									"It has %d holes and resides on layer %d.\n"
+									"Its unclipped area is %f square mm.\n"
 									"%s"
 									"%s%s%s", USER_UNITMASK, Polygon->ID,
 									pcb_strflg_f2s(Polygon->Flags, PCB_TYPE_POLY, NULL),
@@ -364,7 +371,9 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
 									Polygon->HoleIndexN,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Polygon), gen_term(Polygon));
+									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
+									area,
+									gen_locked(Polygon), gen_term(Polygon));
 			break;
 		}
 	case PCB_TYPE_PAD:
