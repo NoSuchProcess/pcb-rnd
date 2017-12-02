@@ -94,10 +94,7 @@ static int gerber_debug;
 enum ApertureShape {
 	ROUND,												/* Shaped like a circle */
 	OCTAGON,											/* octagonal shape */
-	SQUARE,												/* Shaped like a square */
-	ROUNDCLEAR,										/* clearance in negatives */
-	SQUARECLEAR,
-	THERMAL												/* negative thermal relief */
+	SQUARE												/* Shaped like a square */
 };
 typedef enum ApertureShape ApertureShape;
 
@@ -223,22 +220,6 @@ static void fprintAperture(FILE * f, Aperture * aptr)
 		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%.4mi,22.5*%%\r\n"
 								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (pcb_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
 		break;
-#if 0
-	case THERMAL:
-		fprintf(f, "%%AMTHERM%d*7,0,0,%.4f,%.4f,%.4f,45*%%\r\n"
-						"%%ADD%dTHERM%d*%%\r\n", dCode, gap / 100000.0, width / 100000.0, finger / 100000.0, dCode, dCode);
-		break;
-	case ROUNDCLEAR:
-		fprintf(f, "%%ADD%dC,%.4fX%.4f*%%\r\n", dCode, gap / 100000.0, width / 100000.0);
-		break;
-	case SQUARECLEAR:
-		fprintf(f, "%%ADD%dR,%.4fX%.4fX%.4fX%.4f*%%\r\n",
-						dCode, gap / 100000.0, gap / 100000.0, width / 100000.0, width / 100000.0);
-		break;
-#else
-	default:
-		break;
-#endif
 	}
 }
 
