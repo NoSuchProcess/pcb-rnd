@@ -363,11 +363,14 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_proto_t *proto;
 	pcb_coord_t mark;
 
+	/* mark is a cross in the middle, right on the hole;
+	   cross size should extend beyond the hole */
 	mark = PS_CROSS_SIZE/2;
 	proto = pcb_pstk_get_proto(ps);
 	if (proto != NULL)
 		mark += proto->hdia/2;
 
+	/* draw the cross using xor */
 	set_ps_annot_color(Output.fgGC, ps);
 	pcb_gui->set_line_width(Output.fgGC, -3);
 	pcb_gui->set_draw_xor(Output.fgGC, 1);
@@ -375,6 +378,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
 	pcb_gui->set_draw_xor(Output.fgGC, 0);
 
+	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
 			pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
@@ -389,9 +393,11 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
 
+	/* hide subc parts if requested */
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
+	/* no hole in this layer group */
 	if (!pcb_pstk_bb_drills(ctx->pcb, ps, ctx->gid, &proto))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
@@ -411,7 +417,11 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	if (((proto->htop != 0) || (proto->hbottom != 0)) && (!(ctx->holetype & PCB_PHOLE_BB)))
 		return PCB_R_DIR_NOT_FOUND;
 
+	/* actual hole */
 	pcb_gui->fill_circle(Output.drillGC, ps->x, ps->y, proto->hdia / 2);
+
+	/* indicate unplated holes with an arc; unplated holes are more rare
+	   than plated holes, thus unplated holes are indicated */
 	if (!proto->hplated) {
 		pcb_coord_t r = proto->hdia / 2;
 		r += r/8; /* +12.5% */
@@ -567,6 +577,7 @@ int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 {
 	pcb_pstk_shape_t *shp;
 
+	/* no layer means: "is any shape near?" */
 	if (layer == NULL) {
 		int n;
 		pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
@@ -580,6 +591,7 @@ int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 		return 0;
 	}
 
+	/* else check only on the specific layer */
 	shp = pcb_pstk_shape(ps, pcb_layer_flags_(layer), layer->comb);
 	if (shp == NULL)
 		return 0;
@@ -626,6 +638,7 @@ int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_p
 {
 	pcb_pstk_shape_t *shp;
 
+	/* no layer means: "is point in any shape?" */
 	if (layer == NULL) {
 		int n;
 		pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
@@ -639,6 +652,7 @@ int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_p
 		return 0;
 	}
 
+	/* else check only on the specific layer */
 	shp = pcb_pstk_shape(ps, pcb_layer_flags_(layer), layer->comb);
 	if (shp == NULL)
 		return 0;
@@ -661,7 +675,13 @@ int pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps)
 void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
 {
 	int xmirror = ps->xmirror;
+
+	/* change the mirror flag - this will automatically cause mirroring in
+	   every aspect */
 	pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror);
+
+	/* if mirror center is not 0, also move, to emulate that the mirror took
+	   place around that point */
 	if (y_offs != 0) {
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
@@ -727,9 +747,13 @@ static int undo_change_instance_swap(void *udata)
 	pcb_data_t *data;
 	pcb_pstk_t *ps;
 
+	/* data is either parent subc's data or board's data */
 	if (u->parent_ID != -1) {
-		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
+		pcb_subc_t *subc;
 		int n;
+
+		/* Look up the parent subc by ID; on the board, in the hack-data and in all buffers */
+		subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
 		if ((subc == NULL) && (pcb_pstk_data_hack != NULL))
 			subc = pcb_subc_by_id(pcb_pstk_data_hack, u->parent_ID);
 		for(n = 0; (subc == NULL) && (n < PCB_MAX_BUFFER); n++)
