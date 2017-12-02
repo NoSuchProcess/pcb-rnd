@@ -31,6 +31,7 @@
 #include "compat_misc.h"
 #include "undo.h"
 #include "rotate.h"
+#include "obj_pstk_inlines.h"
 
 /*********** map ***********/
 typedef struct {
@@ -174,6 +175,23 @@ static void map_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	map_attr(ctx, &via->Attributes);
 }
 
+static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
+{
+	pcb_pstk_proto_t *proto;
+	map_chk_skip(ctx, ps);
+
+	map_add_prop(ctx, "p/padstack/xmirror", pcb_coord_t, ps->xmirror);
+	map_add_prop(ctx, "p/padstack/rotation", pcb_coord_t, ps->rot);
+	map_add_prop(ctx, "p/padstack/proto", pcb_coord_t, ps->proto);
+
+	proto = pcb_pstk_get_proto(ps);
+	map_add_prop(ctx, "p/padstack/global_clearance", pcb_coord_t, ps->Clearance/2);
+	if (proto->hdia > 0)
+		map_add_prop(ctx, "p/padstack/hole", pcb_coord_t, proto->hdia);
+
+	map_attr(ctx, &ps->Attributes);
+}
+
 void pcb_propsel_map_core(htsp_t *props)
 {
 	map_ctx_t ctx;
@@ -183,7 +201,7 @@ void pcb_propsel_map_core(htsp_t *props)
 	pcb_loop_all(PCB, &ctx,
 		NULL, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
 		NULL, map_eline_cb, map_earc_cb, map_etext_cb, map_epin_cb, map_epad_cb,
-		map_via_cb
+		map_via_cb, map_pstk_cb
 	);
 }
 
@@ -418,6 +436,22 @@ static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	    pcb_chg_obj_2nd_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute, pcb_false)) DONE;
 }
 
+static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
+{
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 7;
+
+	set_chk_skip(st, ps);
+
+	if (st->is_attr) {
+		set_attr(st, &ps->Attributes);
+		return;
+	}
+
+	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
+	    pcb_chg_obj_clear_size(PCB_TYPE_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
+}
+
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
 #define MAYBE_PROP(trc, prefix, cb) \
 	(((ctx.is_attr) || (trc) || (strncmp(prop, (prefix), sizeof(prefix)-1) == 0) || (prop[0] == 'a')) ? (cb) : NULL)
@@ -468,7 +502,8 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(0, "p/text/", set_etext_cb),
 		MAYBE_PROP(0, "p/pin/", set_epin_cb),
 		MAYBE_PROP(0, "p/pad/", set_epad_cb),
-		MAYBE_PROP(0, "p/via/", set_via_cb)
+		MAYBE_PROP(0, "p/via/", set_via_cb),
+		MAYBE_PROP(0, "p/pstk/", set_pstk_cb)
 	);
 	pcb_undo_inc_serial();
 	return ctx.set_cnt;
@@ -551,6 +586,12 @@ static void del_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	del_attr(ctx, &via->Attributes);
 }
 
+static void del_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
+{
+	map_chk_skip(ctx, ps);
+	del_attr(ctx, &ps->Attributes);
+}
+
 int pcb_propsel_del(const char *key)
 {
 	del_ctx_t st;
@@ -564,7 +605,7 @@ int pcb_propsel_del(const char *key)
 	pcb_loop_all(PCB, &st,
 		NULL, del_line_cb, del_arc_cb, del_text_cb, del_poly_cb,
 		NULL, del_eline_cb, del_earc_cb, del_etext_cb, del_epin_cb, del_epad_cb,
-		del_via_cb
+		del_via_cb, del_pstk_cb
 	);
 	return st.del_cnt;
 }
