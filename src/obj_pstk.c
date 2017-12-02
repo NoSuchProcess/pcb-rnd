@@ -678,7 +678,8 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_
 	return 0;
 }
 
-
+/* Check the minimum distance between a hole's edge and a shape's edge and
+   indicate error if it's smaller than min */
 static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_tshape_t *ts, pcb_coord_t min, pcb_coord_t *out)
 {
 #warning padstack TODO
