@@ -102,4 +102,7 @@ void pcb_tool_notify_block(void);	/* create first or second corner of a marked b
 /* Get the tool pointer of a tool by id */
 #define pcb_tool_get(id) ((const pcb_tool_t *)vtp0_get(&pcb_tools, id, 0))
 
+/* Conditionally allow subc parts to be reached directly in search masks */
+#define PCB_LOOSE_SUBC (PCB->loose_subc ? PCB_TYPE_SUBC_PART : 0)
+
 #endif
