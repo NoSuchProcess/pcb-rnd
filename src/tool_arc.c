@@ -70,7 +70,7 @@ void pcb_tool_arc_notify_mode(void)
 				dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
 				wy = wx;
 			}
-			if (coord_abs(wy) > 0 && (arc = pcb_arc_new(CURRENT,
+			if (coord_abs(wy) > 0 && (arc = pcb_arc_new(pcb_loose_subc_layer(PCB, CURRENT),
 																										pcb_crosshair.AttachedBox.Point2.X,
 																										pcb_crosshair.AttachedBox.Point2.Y,
 																										coord_abs(wy),
