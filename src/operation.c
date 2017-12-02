@@ -203,7 +203,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				F->subc(ctx, subc);
 				changed = pcb_true;
 			}
-			if (pcb->loose_subc) {
+			else if (pcb->loose_subc) {
 				if (pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type))
 					changed = pcb_true;
 			}
