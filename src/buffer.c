@@ -643,6 +643,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			continue;
 		}
 
+		destlayer = pcb_loose_subc_layer(PCB, destlayer);
+
 		if (destlayer->meta.real.vis) {
 			PCB_LINE_LOOP(sourcelayer);
 			{
