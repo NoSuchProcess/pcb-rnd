@@ -661,7 +661,20 @@ int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_p
 
 int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_t min_clr)
 {
-#warning padstack TODO
+	int n;
+	pcb_pstk_tshape_t *ts;
+
+	/* global clearance */
+	if (ps->Clearance > 0)
+		return ps->Clearance < 2 * PCB->Bloat;
+
+	/* else check each shape; it's safest to run this check on the canonical
+	   transformed shape, that's always available */
+	ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
+	for(n = 0; n < ts->len; n++)
+		if ((ts->shape[n].clearance > 0) && (ts->shape[n].clearance < 2 * PCB->Bloat))
+			return 1;
+
 	return 0;
 }
 
