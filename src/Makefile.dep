@@ -4575,7 +4575,8 @@
  ../src_plugins/propedit/props.h global_typedefs.h \
  ../src_plugins/propedit/propsel.h change.h board.h vtroutestyle.h \
  library.h rats_patch.h misc_util.h compat_misc.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h rotate.h
+ ../src_3rd/libuundo/uundo.h undo_old.h rotate.h obj_pstk_inlines.h \
+ data.h thermal.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
