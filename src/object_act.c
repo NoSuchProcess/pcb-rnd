@@ -486,7 +486,7 @@ static int pcb_act_MoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
