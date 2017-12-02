@@ -510,6 +510,8 @@ layer and one on the bottom layer, even without having a (plated) hole in betwee
 The code will assume connection between the pads only if the pad stack has a
 plated hole.
 <p>
+If the <i>global clearance
+<p>
 <table border=1>
 	<caption><b>Typical pad stack examples</b>
 	<tr><th>name                    <th> description
@@ -529,6 +531,14 @@ subcircuit), a rotation angle and a mirror flag. This means if a TQFP chip
 has 48 pads along 4 sides, in the simplest setup there will be onlt one pad
 stack prototype and 48 pad stack references using the same prototype with
 different coordinates and rotations.
+<p>
+Each padstack reference has an optional <i>global clearance</i>; if it is
+non-zero, this value is used as clearance on all layers for this instance.
+When it is zero, the prototype's per shape clearance applies, which makes it
+possible to have different clearance for internal layers, for example.
+<p>
+Each padstack reference has a per board layer list of thermal relief types.
+
 
 <h4> 2.4.11. Rat line Objects </h4>
 <p>
