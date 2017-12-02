@@ -141,7 +141,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	pcb_notify_crosshair_change(pcb_false);
 	ctx.buffer.src = pcb->Data;
 	ctx.buffer.dst = Buffer->Data;
-	pcb_selected_operation(pcb, fnc, &ctx, pcb_false, PCB_TYPEMASK_ALL);
+	pcb_selected_operation(pcb, pcb->Data, fnc, &ctx, pcb_false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
 	if (X || Y) {

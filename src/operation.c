@@ -124,13 +124,13 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
  * resets the selected flag if requested
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type)
+pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type)
 {
 	pcb_bool changed = pcb_false;
 
 	/* check lines */
 	if (type & PCB_TYPE_LINE && F->Line) {
-		PCB_LINE_VISIBLE_LOOP(pcb->Data);
+		PCB_LINE_VISIBLE_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 				if (Reset) {
@@ -146,7 +146,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 
 	/* check arcs */
 	if (type & PCB_TYPE_ARC && F->Arc) {
-		PCB_ARC_VISIBLE_LOOP(pcb->Data);
+		PCB_ARC_VISIBLE_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
 				if (Reset) {
@@ -162,7 +162,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 
 	/* check text */
 	if (type & PCB_TYPE_TEXT && F->Text) {
-		PCB_TEXT_ALL_LOOP(pcb->Data);
+		PCB_TEXT_ALL_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && pcb_text_is_visible(PCB, layer, text)) {
 				if (Reset) {
@@ -178,7 +178,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 
 	/* check polygons */
 	if (type & PCB_TYPE_POLY && F->Polygon) {
-		PCB_POLY_VISIBLE_LOOP(pcb->Data);
+		PCB_POLY_VISIBLE_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
 				if (Reset) {
@@ -193,7 +193,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 	}
 
 	if (type & PCB_TYPE_SUBC && F->subc) {
-		PCB_SUBC_LOOP(pcb->Data);
+		PCB_SUBC_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
 				if (Reset) {
@@ -210,7 +210,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 
 	/* elements silkscreen */
 	if (type & PCB_TYPE_ELEMENT && pcb_silk_on(pcb) && F->Element) {
-		PCB_ELEMENT_LOOP(pcb->Data);
+		PCB_ELEMENT_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 				if (Reset) {
@@ -225,7 +225,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 	}
 
 	if (type & PCB_TYPE_ELEMENT_NAME && pcb_silk_on(pcb) && F->ElementName) {
-		PCB_ELEMENT_LOOP(pcb->Data);
+		PCB_ELEMENT_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element))) {
 				if (Reset) {
@@ -240,7 +240,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 	}
 
 	if (type & PCB_TYPE_PIN && pcb->PinOn && F->Pin) {
-		PCB_ELEMENT_LOOP(pcb->Data);
+		PCB_ELEMENT_LOOP(data);
 		{
 			PCB_PIN_LOOP(element);
 			{
@@ -259,7 +259,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 	}
 
 	if (type & PCB_TYPE_PAD && pcb->PinOn && F->Pad) {
-		PCB_ELEMENT_LOOP(pcb->Data);
+		PCB_ELEMENT_LOOP(data);
 		{
 			PCB_PAD_LOOP(element);
 			{
@@ -279,7 +279,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 
 	/* process vias and padstacks */
 	if (type & PCB_TYPE_VIA && pcb->ViaOn && F->Via) {
-		PCB_VIA_LOOP(pcb->Data);
+		PCB_VIA_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, via)) {
 				if (Reset) {
@@ -294,7 +294,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 	}
 
 	if (type & PCB_TYPE_PSTK && pcb->ViaOn && F->padstack) {
-		PCB_PADSTACK_LOOP(pcb->Data);
+		PCB_PADSTACK_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack)) {
 				if (Reset) {
@@ -310,7 +310,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_opfunc_t *F, pcb_opctx_t *
 
 	/* and rat-lines */
 	if (type & PCB_TYPE_RATLINE && pcb->RatOn && F->Rat) {
-		PCB_RAT_LOOP(pcb->Data);
+		PCB_RAT_LOOP(data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 				if (Reset) {

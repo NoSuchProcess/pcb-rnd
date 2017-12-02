@@ -88,7 +88,7 @@ pcb_bool pcb_remove_selected(void)
 	ctx.remove.bulk = pcb_true;
 	ctx.remove.destroy_target = NULL;
 
-	if (pcb_selected_operation(PCB, &RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
+	if (pcb_selected_operation(PCB, PCB->Data, &RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
 		pcb_undo_inc_serial();
 		pcb_draw();
 		return (pcb_true);
