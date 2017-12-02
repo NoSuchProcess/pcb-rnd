@@ -707,7 +707,21 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	}
 
 	if (pcb->ViaOn) {
+		pcb_board_t dummy;
 		changed |= (padstacklist_length(&(PCB_PASTEBUFFER->Data->padstack)) != 0);
+
+		/* set up a dummy board to work around that pcb_pstkop_copy() requires a
+		   pcb_board_t instead of a pcb_data_t */
+#warning subc TODO: fix this after the element removal
+		if (pcb->is_footprint) {
+			pcb_subc_t *sc = pcb_subclist_first(&pcb->Data->subc);
+			if (sc != NULL) {
+				ctx.copy.pcb = &dummy;
+				memset(&dummy, 0, sizeof(dummy));
+				dummy.Data = sc->data;
+			}
+		}
+
 		PCB_PADSTACK_LOOP(PCB_PASTEBUFFER->Data);
 		{
 			pcb_pstkop_copy(&ctx, padstack);
