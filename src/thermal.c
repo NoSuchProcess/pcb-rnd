@@ -594,23 +594,23 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 }
 
 /* Generate a clearance around a padstack shape, with no thermal */
-static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid, pcb_pstk_shape_t *shp)
+static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid, pcb_pstk_shape_t *shp, pcb_coord_t clearance)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pres = NULL;
 
 	switch(shp->shape) {
 		case PCB_PSSH_CIRC:
-			return pcb_poly_from_circle(ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia/2 + ps->Clearance);
+			return pcb_poly_from_circle(ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia/2 + clearance);
 		case PCB_PSSH_LINE:
-			return pa_line_at(ps->x + shp->data.line.x1, ps->y + shp->data.line.y1, ps->x + shp->data.line.x2, ps->y + shp->data.line.y2, shp->data.line.thickness + ps->Clearance*2, shp->data.line.square);
+			return pa_line_at(ps->x + shp->data.line.x1, ps->y + shp->data.line.y1, ps->x + shp->data.line.x2, ps->y + shp->data.line.y2, shp->data.line.thickness + clearance*2, shp->data.line.square);
 		case PCB_PSSH_POLY:
 			if (shp->data.poly.pa == NULL)
 				pcb_pstk_shape_update_pa(&shp->data.poly);
 			if (shp->data.poly.pa == NULL)
 				return NULL;
 			pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
-			pcb_poly_pa_clearance_construct(&pres, &it, ps->Clearance);
+			pcb_poly_pa_clearance_construct(&pres, &it, clearance);
 			pcb_polyarea_move(pres, ps->x, ps->y);
 			return pres;
 	}
@@ -623,9 +623,11 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 	pcb_pstk_shape_t *shp;
 	pcb_polyarea_t *pres = NULL;
 	pcb_layer_t *layer = pcb_get_layer(pcb->Data, lid);
+	pcb_coord_t clearance = ps->Clearance;
 
-	/* if we have no clearance, there's no reason to do anything */
-	if (!PCB_NONPOLY_HAS_CLEARANCE(ps)) /* no clearance -> solid connection */
+	/* if we have no clearance, there's no reason to do anything;
+	   ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
+	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
 		return NULL;
 
 	/* retrieve shape; assume 0 (no shape) for layers not named */
@@ -638,14 +640,20 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 	if (shp == NULL)
 		return NULL;
 
+	if (clearance <= 0)
+		clearance = shp->clearance/2;
+
+	if (clearance <= 0)
+		return NULL;
+
 	if (!(thr & PCB_THERMAL_ON))
-		return pcb_thermal_area_pstk_nothermal(pcb, ps, lid, shp);
+		return pcb_thermal_area_pstk_nothermal(pcb, ps, lid, shp, clearance);
 
 	switch(thr & 3) {
 		case PCB_THERMAL_NOSHAPE:
 			{
 				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-				return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + ps->Clearance);
+				return pcb_poly_from_circle(ps->x, ps->y, proto->hdia/2 + clearance);
 			}
 		case PCB_THERMAL_SOLID: return NULL;
 
@@ -653,7 +661,7 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 		case PCB_THERMAL_SHARP:
 			switch(shp->shape) {
 				case PCB_PSSH_CIRC:
-					return ThermPoly_(pcb, ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia, ps->Clearance*2, pcb_themal_style_new2old(thr));
+					return ThermPoly_(pcb, ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia, clearance*2, pcb_themal_style_new2old(thr));
 				case PCB_PSSH_LINE:
 				{
 					pcb_line_t ltmp;
@@ -666,7 +674,7 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 					ltmp.Point2.X = ps->x + shp->data.line.x2;
 					ltmp.Point2.Y = ps->y + shp->data.line.y2;
 					ltmp.Thickness = shp->data.line.thickness;
-					ltmp.Clearance = ps->Clearance;
+					ltmp.Clearance = clearance;
 					ltmp.thermal = thr;
 					pres = pcb_thermal_area_line(pcb, &ltmp, lid);
 				}
@@ -681,9 +689,9 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 						return NULL;
 					pcb_poly_iterate_polyarea(shp->data.poly.pa, &it);
 					if (thr & PCB_THERMAL_ROUND)
-						pcb_thermal_area_pa_round(&pres, &it, ps->Clearance, (thr & PCB_THERMAL_DIAGONAL));
+						pcb_thermal_area_pa_round(&pres, &it, clearance, (thr & PCB_THERMAL_DIAGONAL));
 					else
-						pcb_thermal_area_pa_sharp(&pres, &it, ps->Clearance, (thr & PCB_THERMAL_DIAGONAL));
+						pcb_thermal_area_pa_sharp(&pres, &it, clearance, (thr & PCB_THERMAL_DIAGONAL));
 
 					if (pres != NULL)
 						pcb_polyarea_move(pres, ps->x, ps->y);

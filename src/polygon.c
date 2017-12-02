@@ -838,7 +838,8 @@ static int SubtractPadstack(pcb_data_t *d, pcb_pstk_t *ps, pcb_layer_t *l, pcb_p
 	pcb_polyarea_t *np;
 	pcb_layer_id_t i;
 
-	if (!PCB_NONPOLY_HAS_CLEARANCE(ps))
+	/* ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
+	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
 		return 0;
 	i = pcb_layer_id(d, l);
 	np = pcb_thermal_area_pstk(pcb_data_get_top(d), ps, i);
@@ -980,7 +981,8 @@ static pcb_r_dir_t padstack_sub_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
-	if (!PCB_NONPOLY_HAS_CLEARANCE(ps))
+	/* ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
+	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
 		return PCB_R_DIR_NOT_FOUND;
 	i = pcb_layer_id(info->data, info->layer);
 
@@ -1902,7 +1904,8 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		}
 
 		/* run on the specified layer (ptr1), if there's any need for clearing */
-		if (!PCB_NONPOLY_HAS_CLEARANCE((pcb_pstk_t *)ptr2))
+	/* ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
+		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_pstk_t *)ptr2))
 			return 0;
 		goto doit;
 	case PCB_TYPE_POLY:
