@@ -1622,11 +1622,12 @@ static void poly_copy_data(pcb_poly_t *dst, pcb_poly_t *src)
  */
 void pcb_polygon_copy_attached_to_layer(void)
 {
+	pcb_layer_t *layer = pcb_loose_subc_layer(PCB, CURRENT);
 	pcb_poly_t *polygon;
 	int saveID;
 
 	/* move data to layer and clear attached struct */
-	polygon = pcb_poly_new(CURRENT, 0, pcb_no_flags());
+	polygon = pcb_poly_new(layer, 0, pcb_no_flags());
 	saveID = polygon->ID;
 	poly_copy_data(polygon, &pcb_crosshair.AttachedPolygon);
 	polygon->Clearance = 2 * conf_core.design.clearance;
@@ -1639,10 +1640,10 @@ void pcb_polygon_copy_attached_to_layer(void)
 
 	memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_poly_t));
 
-	pcb_add_poly_on_layer(CURRENT, polygon);
+	pcb_add_poly_on_layer(layer, polygon);
 
-	pcb_poly_init_clip(PCB->Data, CURRENT, polygon);
-	pcb_poly_invalidate_draw(CURRENT, polygon);
+	pcb_poly_init_clip(PCB->Data, layer, polygon);
+	pcb_poly_invalidate_draw(layer, polygon);
 	pcb_board_set_changed_flag(pcb_true);
 
 	/* reset state of attached line */
@@ -1650,7 +1651,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	pcb_added_lines = 0;
 
 	/* add to undo list */
-	pcb_undo_add_obj_to_create(PCB_TYPE_POLY, CURRENT, polygon, polygon);
+	pcb_undo_add_obj_to_create(PCB_TYPE_POLY, layer, polygon, polygon);
 	pcb_undo_inc_serial();
 }
 
