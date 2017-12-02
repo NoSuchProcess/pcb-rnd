@@ -37,6 +37,7 @@
 #include "event.h"
 #include "safe_fs.h"
 
+
 pcb_board_t *PCB;
 
 void pcb_board_free(pcb_board_t * pcb)
@@ -184,7 +185,7 @@ typedef struct {
 	int nunplated;
 } HoleCountStruct;
 
-static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t hole_counting_old_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	HoleCountStruct *hcs = (HoleCountStruct *) cl;
@@ -195,12 +196,30 @@ static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
+#warning padstack TODO: move this to obj_pstk.c after pinvia removal
+#include "obj_pstk_inlines.h"
+static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	HoleCountStruct *hcs = (HoleCountStruct *)cl;
+
+	if ((proto != NULL) && (proto->hdia > 0)) {
+		if (proto->hplated)
+			hcs->nplated++;
+		else
+			hcs->nunplated++;
+	}
+	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
 void pcb_board_count_holes(int *plated, int *unplated, const pcb_box_t * within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 
-	pcb_r_search(PCB->Data->pin_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
-	pcb_r_search(PCB->Data->via_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
+	pcb_r_search(PCB->Data->pin_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
+	pcb_r_search(PCB->Data->via_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
+	pcb_r_search(PCB->Data->padstack_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
 
 	if (plated != NULL)
 		*plated = hcs.nplated;
