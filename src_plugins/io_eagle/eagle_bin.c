@@ -414,13 +414,17 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		{ /* attributes */
 			{"layer",  T_INT, 3, 1},
 			{"half_width",  T_INT, 20, 2},
-			{"stflags",  T_BMB, 22, 0x20},
+			{"stflags",  T_BMB, 22, 0x33},
+			/*{"bin_style",  T_BMB, 22, 0x03},*/
+			/*{"bin_cap",  T_BMB, 22, 0x10},*/
+			/*{"bin_clockwise_wire",  T_BMB, 22, 0x20},*/
 			{"linetype",  T_INT, 23, 1},
 			{"linetype_0_x1",  T_INT, 4, 4},
 			{"linetype_0_y1",  T_INT, 8, 4},
 			{"linetype_0_x2",  T_INT, 12, 4},
 			{"linetype_0_y2",  T_INT, 16, 4},
-			{"arc_negflags", T_INT, 19, 1},
+			{"arc_negflags", T_BMB, 19, 0x1f},
+			/*{"c_negflag", T_BMB, 19, 0x01},*/
 			{"arc_c1",  T_INT, 7, 1},
 			{"arc_c2",  T_INT, 11, 1},
 			{"arc_c3",  T_INT, 15, 1},
@@ -443,7 +447,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"half_width",  T_INT, 20, 2},
 			{"clockwise",  T_BMB, 22, 0x20},
 			{"arctype",  T_INT, 23, 1},
-			{"arc_negflags", T_INT, 19, 1},
+			{"arc_negflags", T_BMB, 19, 0x1f},
+			/*{"c_negflag", T_BMB, 19, 0x01},*/
 			{"arc_c1",  T_INT, 7, 1},
 			{"arc_c2",  T_INT, 11, 1},
 			{"arc_c3",  T_INT, 15, 1},

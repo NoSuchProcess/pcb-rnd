@@ -613,6 +613,10 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	ly = eagle_layer_get(st, ln);
 	switch(loc) {
 		case IN_ELEM:
+			if (ly == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring element rectangle on NULL layer\n");
+				return 0;
+			}
 			if (ly->ly < 0)
 				return 0;
 			flags = pcb_layer_flags(st->pcb, ly->ly);
@@ -630,6 +634,10 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 				PCB_FLAG_SET(PCB_FLAG_ONSOLDER, lin4);
 			break;
 		case ON_BOARD:
+			if (ly == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Ignoring rectangle on NULL layer\n");
+				return 0;
+			}
 			if (ly->ly < 0) {
 				pcb_message(PCB_MSG_WARNING, "Ignoring rectangle on layer %s\n", ly->name);
 				return 0;
