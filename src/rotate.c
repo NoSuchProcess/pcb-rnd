@@ -130,7 +130,7 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
-	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
 			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 			return;
