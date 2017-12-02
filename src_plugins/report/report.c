@@ -343,7 +343,8 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	case PCB_TYPE_POLY:
 		{
 			pcb_poly_t *Polygon;
-			double area;
+			const char *aunit;
+			double area, u;
 
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
@@ -354,16 +355,22 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 #endif
 			Polygon = (pcb_poly_t *) ptr2;
 
+			aunit = conf_core.editor.grid_unit->in_suffix;
+			if (aunit[1] == 'm')
+				u = PCB_MM_TO_COORD(1);
+			else
+				u = PCB_MIL_TO_COORD(1);
+
 			area = pcb_poly_area(Polygon);
-			area = area / PCB_MM_TO_COORD(1);
-			area = area / PCB_MM_TO_COORD(1);
+			area = area / u;
+			area = area / u;
 
 			report = pcb_strdup_printf("%m+POLYGON ID# %ld;  Flags:%s\n"
 									"Its bounding box is %$mD %$mD.\n"
 									"It has %d points and could store %d more\n"
 									"  without using more memory.\n"
 									"It has %d holes and resides on layer %d.\n"
-									"Its unclipped area is %f square mm.\n"
+									"Its unclipped area is %f square %s.\n"
 									"%s"
 									"%s%s%s", USER_UNITMASK, Polygon->ID,
 									pcb_strflg_f2s(Polygon->Flags, PCB_TYPE_POLY, NULL),
@@ -372,7 +379,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
 									Polygon->HoleIndexN,
 									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-									area,
+									area, aunit,
 									gen_locked(Polygon), gen_term(Polygon));
 			break;
 		}
