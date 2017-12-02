@@ -2,7 +2,7 @@
   (parser
     (string_quote ")
     (space_in_quoted_tokens on)
-    (host_cad "gEDA pcb-rnd")
+    (host_cad "pcb-rnd")
     (host_version "<version>")
   )
   (resolution mm 1000000)
