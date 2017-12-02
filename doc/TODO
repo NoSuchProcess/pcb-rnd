@@ -1,8 +1,8 @@
 1. For the upcoming release ===============================================================================
 - padstack:
 	- BUG: exports:
-		- png export doesn't show padstack holes [report: Ade]
-		- gerber export (plated, unplated drill cnc) doesn't have padstacks [report: Ade]
+		+ png export doesn't show padstack holes [report: Ade]
+		+ gerber export (plated, unplated drill cnc) doesn't have padstacks [report: Ade]
 	- BUG: 'send to other side' with padstacks in subc: should mirror layer stack positions in the proto
 	- v4 lihata formatting
 	- convert helpers:
