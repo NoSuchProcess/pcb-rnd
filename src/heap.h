@@ -28,8 +28,7 @@
  *
  */
 
-/* prototypes for heap routines.
- */
+/* Heap used by the polygon code and autoroute */
 
 #ifndef PCB_HEAP_H
 #define PCB_HEAP_H
