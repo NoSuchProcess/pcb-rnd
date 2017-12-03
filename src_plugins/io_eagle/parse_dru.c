@@ -31,6 +31,8 @@
 #include <ctype.h>
 #include <genvector/gds_char.h>
 
+#include "parse_dru.h"
+
 int pcb_eagle_dru_test_parse(FILE *f)
 {
 	char buff[256], *s;
