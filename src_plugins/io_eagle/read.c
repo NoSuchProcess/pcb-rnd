@@ -370,7 +370,6 @@ static eagle_layer_t *eagle_layer_get(read_state_t *st, int id)
 	if ((id == 51 || id == 52) && ly->ly < 0) {
 		unsigned long typ;
 		pcb_layergrp_id_t gid;
-		pcb_layergrp_t *grp;
 		switch (id) {
 			case 51: /* = tDocu */
 				typ		= PCB_LYT_SILK | PCB_LYT_TOP;
@@ -984,7 +983,6 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		pcb_trace("looking at child %s of packages node\n", NODENAME(n)); 
 		if (STRCMP(NODENAME(n), "package") == 0) {
-			pcb_trace("found a package in children of packages node\n");
 			pcb_element_t *elem, *new_elem;
 			pcb_coord_t x, y;
 
@@ -1091,7 +1089,6 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 
 static int eagle_read_library(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	trnode_t *n;
 	static const dispatch_t disp[] = { /* possible children of <library> */
 		{"description", eagle_read_nop},
 		{"devices",     eagle_read_nop},
@@ -1252,8 +1249,8 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 {
 	int direction = 0;
 	pcb_flag_t TextFlags = pcb_no_flags();
-	pcb_coord_t size;
-	int TextScale;
+	/*pcb_coord_t size;
+	int TextScale; */ /* <- both can be used for distinct subc text fields */
 
 	x += def_text->X;
 	y += def_text->Y + EAGLE_TEXT_SIZE_100;
@@ -1266,19 +1263,16 @@ static void eagle_read_elem_text(read_state_t *st, trnode_t *nd, pcb_element_t *
 			direction = eagle_rot2steps(eagle_get_attrs(st, nd, "rot", NULL));
 			if (direction < 0)
 				direction = 0;
-			size = eagle_get_attrc(st, nd, "size", EAGLE_TEXT_SIZE_100);
+			/* size = eagle_get_attrc(st, nd, "size", EAGLE_TEXT_SIZE_100);*/
 			break;
 		}
 	}
 #warning subc TODO can have unique text scaling in subcircuits
 
-	TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);
+/*	TextScale = (def_text->Scale == 0 ? 100 : def_text->Scale);*/
 #warning TODO scaling not behaving due to size read issue so hard wired for now
 /*	if (size >= 0)
 		TextScale = (int)(((double)size/ (double)EAGLE_TEXT_SIZE_100) * 100.0);
-*/
-	TextScale = 100; /* hardwired for now */
-/*
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, TextScale, TextFlags);
 */
 	pcb_element_text_set(text, pcb_font(st->pcb, 0, 1), x, y, direction, str, st->refdes_scale, TextFlags);
@@ -1570,12 +1564,8 @@ static void st_uninit(read_state_t *st)
 
 int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
-	trnode_t *dr;
 	int res, old_leni;
 	read_state_t st;
-
-	/* have not read design rules section yet but need this for rectangle parsing */
-	st.ms_width = PCB_MIL_TO_COORD(10); /* default minimum feature width */
 
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"drawing",        eagle_read_drawing},
@@ -1583,6 +1573,9 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		{"@text",          eagle_read_nop},
 		{NULL, NULL}
 	};
+
+	/* have not read design rules section yet but need this for rectangle parsing */
+	st.ms_width = PCB_MIL_TO_COORD(10); /* default minimum feature width */
 
 	st.parser.calls = &trparse_xml_calls;
 
@@ -1620,7 +1613,6 @@ err:;
 int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	int res, old_leni;
-	trnode_t *dr;
 	read_state_t st;
 
 	static const dispatch_t disp_1[] = { /* possible children of root */

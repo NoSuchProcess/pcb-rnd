@@ -105,7 +105,7 @@ static const char *eagle_bin_prop(trparse_t *pst, trnode_t *node, const char *ke
 
 static const char *eagle_bin_text(trparse_t *pst, trnode_t *node)
 {
-	egb_node_t *nd = (egb_node_t *)node;
+	/*egb_node_t *nd = (egb_node_t *)node;*/
 #warning TODO
 	return NULL;
 }
