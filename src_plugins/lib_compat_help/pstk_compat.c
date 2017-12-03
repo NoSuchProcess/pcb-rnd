@@ -193,7 +193,7 @@ static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pst
 static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
 	double x[8], y[8], xm[8], ym[8], minx = 0.0, miny = 0.0, tmp;
-	int shi, n, shift, found;
+	int shi, n, found;
 
 	/* collect offsets */
 	for(n = 0; n < 8; n++) {
