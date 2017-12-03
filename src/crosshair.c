@@ -438,7 +438,7 @@ void XORDrawMoveOrCopy(void)
 			point1 = (point == &line->Point1 ? &line->Point2 : &line->Point1);
 			point2 = *point;
 			point2.X += dx;
-			point2.Y += dy;				
+			point2.Y += dy;
 
 			if(conf_core.editor.move_linepoint_uses_route == 0) {/* config setting for selecting new 45/90 method */ 
 				pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y, line->Thickness, 0);
