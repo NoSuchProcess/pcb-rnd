@@ -400,7 +400,7 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer data)
 {
 	pcb_gtk_common_t *com = data;
-/*	gboolean active =*/ gtk_toggle_button_get_active(button);
+	gboolean active = gtk_toggle_button_get_active(button);
 	static gboolean holdoff;
 
 	if (holdoff)
@@ -415,7 +415,7 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 		holdoff = FALSE;
 		return;
 	}
-	conf_set(CFR_DESIGN, "plugins/hid_gtk/use_command_window", -1, "1", POL_OVERWRITE);
+	conf_setf(CFR_DESIGN, "plugins/hid_gtk/use_command_window", -1, "%d", active);
 	com->command_use_command_window_sync();
 }
 
