@@ -495,10 +495,10 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		pcb_message(PCB_MSG_WARNING, "Ignoring text on Eagle layer: %ld\n", ln);
 		return 0;
 	}
-	if (!(ln == 21 || ln== 51 || ln == 16))
+	if (!(ln == 21 || ln== 51 || ln == 16)) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring text on non top copper/silk Eagle layer: %ld\n", ln);
 		return 0;
-		
+	}
 	if (CHILDREN(subtree) == NULL && !(text_val = eagle_get_attrs(st, subtree, "textfield", NULL))) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;

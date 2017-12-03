@@ -130,6 +130,8 @@ void pcb_eagle_dru_parse_line(FILE *f, gds_t *buff, char **key, char **value)
 #ifndef PCB_EAGLE_DRU_PARSER_TEST
 
 #include "safe_fs.h"
+#include "board.h"
+#include "layer_grp.h"
 
 int io_eagle_test_parse_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
 {
@@ -141,17 +143,44 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	FILE *f;
 	char *efn;
 	gds_t buff;
+	pcb_layergrp_id_t gid;
+	int n, num_layers = 0;
 
 	f = pcb_fopen_fn(Filename, "r", &efn);
 	if (f == NULL)
 		return -1;
 
+
 	gds_init(&buff);
 	while(!(feof(f))) {
 		char *k, *v;
 		pcb_eagle_dru_parse_line(f, &buff, &k, &v);
+		if (k == NULL)
+			continue;
+		if (strcmp(k, "layerSetup") == 0) {
+			v = strchr(v, '*');
+			if (v != NULL) {
+				v++;
+				num_layers = atoi(v);
+			}
+		}
 		pcb_trace("DRU '%s'='%s'\n", k, v);
 	}
+
+	/* set up layers */
+	pcb_layer_group_setup_default(&pcb->LayerGroups);
+	if (pcb_layergrp_list(pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1))
+		pcb_layer_create(pcb, gid, "top_copper");
+	if (pcb_layergrp_list(pcb, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1))
+		pcb_layer_create(pcb, gid, "bottom_copper");
+	num_layers--;
+	for(n = 0; n < num_layers; n++) {
+		char buff[32];
+		pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
+		sprintf(buff, "signal_%d", n);
+		pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, buff);
+	}
+	pcb_layer_group_setup_silks(pcb);
 
 	fclose(f);
 }
