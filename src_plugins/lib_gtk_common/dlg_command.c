@@ -263,6 +263,10 @@ static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk
 	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
 		g_main_loop_quit(ghid_entry_loop);
 	command_entered = NULL;				/* We are aborting */
+	/* Hidding the widgets */
+	if (conf_core.editor.fullscreen) {
+		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
+	}
 
 	return TRUE;
 }
@@ -355,6 +359,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 
 	gtk_entry_set_text(ctx->command_entry, command ? command : "");
 	gtk_widget_show_all(ctx->command_combo_box);
+	gtk_widget_show(gtk_widget_get_parent(ctx->command_combo_box));
 
 	/* Remove the top window accel group so keys intended for the entry
 	   |  don't get intercepted by the menu system.  Set the interface
