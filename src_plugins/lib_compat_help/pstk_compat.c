@@ -477,7 +477,7 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 		return pcb_false; /* allow at most a copper, a mask and a paste */
 
 	/* determine whether we are on top or bottom */
-	side = tshp->shape[n].layer_mask & (PCB_LYT_TOP | PCB_LYT_BOTTOM);
+	side = tshp->shape[0].layer_mask & (PCB_LYT_TOP | PCB_LYT_BOTTOM);
 	if ((side == 0) || (side == (PCB_LYT_TOP | PCB_LYT_BOTTOM)))
 		return pcb_false;
 
