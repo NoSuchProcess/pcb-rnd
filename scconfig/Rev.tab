@@ -1,3 +1,4 @@
+13171	configure	io_eagle: new source file for parsing dru files
 13037	configure	code simplification: PCB_INLINE
 12835	configure	new plugin: shape
 12748	configure	libminuid cflags fix

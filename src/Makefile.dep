@@ -2036,8 +2036,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/io_eagle/read.h \
- board.h const.h vtroutestyle.h rats_patch.h board.h conf.h hid_actions.h \
- hid.h dolists.h
+ board.h const.h vtroutestyle.h rats_patch.h board.h conf.h \
+ ../src_plugins/io_eagle/read_dru.h hid_actions.h hid.h dolists.h
 ../src_plugins/io_eagle/read.o: ../src_plugins/io_eagle/read.c \
  ../config.h ../src_plugins/boardflip/boardflip.h data.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h layer.h attrib.h obj_all_list.h \
@@ -2064,6 +2064,11 @@
  conf.h conf_core.h error.h polygon.h rtree.h hid_actions.h compat_misc.h \
  ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h \
  ../src_plugins/io_eagle/trparse_bin.h
+../src_plugins/io_eagle/read_dru.o: ../src_plugins/io_eagle/read_dru.c \
+ ../config.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_plugins/io_eagle/read_dru.h
 ../src_plugins/io_eagle/trparse_bin.o: \
  ../src_plugins/io_eagle/trparse_bin.c ../config.h error.h safe_fs.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
