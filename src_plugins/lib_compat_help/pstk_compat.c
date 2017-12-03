@@ -399,6 +399,7 @@ static void pad_shape(pcb_pstk_poly_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_
 	dst->x[3] = x2 - nx; dst->y[3] = y2 - ny;
 }
 
+#warning padstack TODO: consider nopaste
 /* Generate a square or round pad of a given thickness - typically mask or copper */
 static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_bool square)
 {
@@ -457,3 +458,81 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_
 	return pcb_pstk_new(data, pid, cx, cy, clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
+
+pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t *y1, pcb_coord_t *x2, pcb_coord_t *y2, pcb_coord_t *thickness, pcb_coord_t *clearance, pcb_coord_t *mask, pcb_bool *square, pcb_bool *nopaste)
+{
+	pcb_pstk_proto_t *proto;
+	pcb_pstk_tshape_t *tshp;
+	int n, coppern = -1, maskn = -1, pasten = -1;
+	pcb_layer_type_t side;
+
+	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
+	if ((proto == NULL) || (proto->tr.used < 1))
+		return pcb_false;
+
+	tshp = &proto->tr.array[0];
+
+	if ((tshp->len < 2) || (tshp->len > 3))
+		return pcb_false; /* allow at most a copper, a mask and a paste */
+
+	/* determine whether we are on top or bottom */
+	side = tshp->shape[n].layer_mask & (PCB_LYT_TOP | PCB_LYT_BOTTOM);
+	if ((side == 0) || (side == (PCB_LYT_TOP | PCB_LYT_BOTTOM)))
+		return pcb_false;
+
+	for(n = 0; n < tshp->len; n++) {
+		if (tshp->shape[n].shape != tshp->shape[0].shape)
+			return pcb_false; /* all shapes must be the same */
+		if ((tshp->shape[n].layer_mask & PCB_LYT_ANYWHERE) != side)
+			return pcb_false; /* all shapes must be the same side */
+		if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
+			coppern = n;
+			continue;
+		}
+		if (tshp->shape[n].layer_mask & PCB_LYT_INTERN)
+			return pcb_false; /* accept only copper as intern */
+		if (tshp->shape[n].layer_mask & PCB_LYT_MASK) {
+			maskn = n;
+			continue;
+		}
+		if (tshp->shape[n].layer_mask & PCB_LYT_PASTE) {
+			pasten = n;
+			continue;
+		}
+		return pcb_false; /* refuse anything else */
+	}
+
+	/* require copper and mask shapes */
+	if ((coppern < 0) || (maskn < 0))
+		return pcb_false;
+
+#warning padstack TODO: check that all shapes are concentric
+
+	/* generate the return pad (line-like) */
+	switch(tshp->shape[0].shape) {
+		case PCB_PSSH_LINE:
+			*x1 = tshp->shape[coppern].data.line.x1 + ps->x;
+			*y1 = tshp->shape[coppern].data.line.y1 + ps->y;
+			*x2 = tshp->shape[coppern].data.line.x2 + ps->x;
+			*y2 = tshp->shape[coppern].data.line.y2 + ps->y;
+			*thickness = tshp->shape[coppern].data.line.thickness;
+			*mask = tshp->shape[maskn].data.line.thickness;
+			*square = tshp->shape[coppern].data.line.square;
+			break;
+		case PCB_PSSH_CIRC:
+			*x1 = *x2 = tshp->shape[coppern].data.circ.x + ps->x;
+			*y1 = *y2 = tshp->shape[coppern].data.circ.y + ps->y;
+			*thickness = tshp->shape[coppern].data.circ.dia;
+			*mask = tshp->shape[maskn].data.circ.dia;
+			*square = 0;
+			break;
+		case PCB_PSSH_POLY:
+			*square = 1;
+			break;
+	}
+
+	*clearance = ps->Clearance > 0 ? ps->Clearance : tshp->shape[0].clearance;
+	*nopaste = pasten < 0;
+
+	return pcb_true;
+}
