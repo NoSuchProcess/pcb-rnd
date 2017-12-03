@@ -150,6 +150,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	if ((DX == 0) && (DY == 0) && (conf_core.editor.move_linepoint_uses_route == 0))
 		return NULL;
 
+	ctx.move.pcb = PCB;
 	ctx.move.dx = DX;
 	ctx.move.dy = DY;
 

@@ -384,11 +384,11 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_undo_add_obj_to_size(PCB_TYPE_LINE, Layer, Line, Line);
 		pcb_line_invalidate_erase(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
-		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		Line->Thickness = value;
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
-		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_line_invalidate_draw(Layer, Line);
 		return (Line);
 	}
@@ -405,19 +405,19 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 	if (value < 0)
 		value = 0;
 	value = MIN(PCB_MAX_LINESIZE, value);
-	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < PCB->Bloat * 2)
+	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < ctx->chgsize.pcb->Bloat * 2)
 		value = 0;
-	if (ctx->chgsize.value > 0 && value < PCB->Bloat * 2)
-		value = PCB->Bloat * 2 + 2;
+	if (ctx->chgsize.value > 0 && value < ctx->chgsize.pcb->Bloat * 2)
+		value = ctx->chgsize.pcb->Bloat * 2 + 2;
 	if (value != Line->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_TYPE_LINE, Layer, Line, Line);
-		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_line_invalidate_erase(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		Line->Clearance = value;
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
-		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_line_invalidate_draw(Layer, Line);
 		return (Line);
 	}
@@ -442,13 +442,13 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 	pcb_line_invalidate_erase(Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
-		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	pcb_undo_add_obj_to_flag(Line);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_true);
-		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	pcb_line_invalidate_draw(Layer, Line);
 	return (Line);
@@ -503,10 +503,10 @@ void *pcb_lineop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 void *pcb_lineop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
-	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+	pcb_poly_restore_to_poly(ctx->move.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 	pcb_lineop_move_noclip(ctx, Layer, Line);
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
-	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+	pcb_poly_clear_from_poly(ctx->move.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 	return Line;
 }
 
@@ -529,12 +529,12 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 	if (Layer) {
 		if (Layer->meta.real.vis)
 			pcb_line_invalidate_erase(Line);
-		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_restore_to_poly(ctx->move.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_r_delete_entry(Layer->line_tree, &Line->BoundingBox);
 		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
-		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_poly_clear_from_poly(ctx->move.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		if (Layer->meta.real.vis) {
 			pcb_line_invalidate_draw(Layer, Line);
 			pcb_draw();
@@ -543,13 +543,13 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 	}
 	else {												/* must be a rat */
 
-		if (PCB->RatOn)
+		if (ctx->move.pcb->RatOn)
 			pcb_rat_invalidate_erase((pcb_rat_t *) Line);
-		pcb_r_delete_entry(PCB->Data->rat_tree, &Line->BoundingBox);
+		pcb_r_delete_entry(ctx->move.pcb->Data->rat_tree, &Line->BoundingBox);
 		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		pcb_line_bbox(Line);
-		pcb_r_insert_entry(PCB->Data->rat_tree, &Line->BoundingBox, 0);
-		if (PCB->RatOn) {
+		pcb_r_insert_entry(ctx->move.pcb->Data->rat_tree, &Line->BoundingBox, 0);
+		if (ctx->move.pcb->RatOn) {
 			pcb_rat_invalidate_draw((pcb_rat_t *) Line);
 			pcb_draw();
 		}
@@ -579,7 +579,7 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 												&route,
 												&point1,
 												&point2,
-												pcb_layer_id(PCB->Data,Layer),
+												pcb_layer_id(ctx->move.pcb->Data,Layer),
 												Line->Thickness,
 												Line->Clearance,
 												Line->Flags,

@@ -1117,6 +1117,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 			if(dindex1 >= 0) {
 				const int argi = (dindex1*2)+2;
 				pcb_opctx_t ctx;
+				ctx.move.pcb = PCB;
 				ctx.move.dx = argv[argi].d.i;
 				ctx.move.dy = argv[argi+1].d.i;
 	
@@ -1131,6 +1132,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 			if(dindex2 >= 0) {
 				const int argi = (dindex2*2)+2;
 				pcb_opctx_t ctx;
+				ctx.move.pcb = PCB;
 				ctx.move.dx = argv[argi].d.i;
 				ctx.move.dy = argv[argi+1].d.i;
 	
