@@ -41,18 +41,6 @@
 
 #define utf8_dup_string(a,b) *(a) = pcb_strdup(b)
 
-/* ----------------------------------------------------------------------
- * some external identifiers
- */
-
-/* the list is already defined for some OS */
-#if !defined(__NetBSD__) && !defined(__FreeBSD__) && !defined(__linux__) && !defined(__DragonFly__)
-#ifdef USE_SYS_ERRLIST
-extern char *sys_errlist[];			/* array of error messages */
-#endif
-#endif
-
-
 /* ---------------------------------------------------------------------------
  * output of message in a dialog window or log window
  */
