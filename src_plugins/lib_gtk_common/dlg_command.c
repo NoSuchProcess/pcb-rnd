@@ -61,8 +61,8 @@ GMainLoop *ghid_entry_loop;
 |  type in.  It also requires a coordinating flag so the drawing area
 |  won't grab focus while the command entry is up.
 |
-|  I thought the interface should be cleaner, so so I made an alternate
-|  command window interface which works better I think as a gui interface.
+|  I thought the interface should be cleaner, so I made an alternate
+|  command window interface which works better I think as a GUI interface.
 |  The user must focus onto the command window, but since it's a separate
 |  window, there's no confusion.  It has the restriction that objects to
 |  be operated on must be selected, but that actually seems a better user
@@ -138,7 +138,7 @@ static const gchar *command_ref_text[] = {
 
 	/* Put an allocated string on the history list and combo text list
 	   |  if it is not a duplicate.  The history_list is just a shadow of the
-	   |  combo list, but I think is needed because I don't see an api for reading
+	   |  combo list, but I think is needed because I don't see an API for reading
 	   |  the combo strings.  The combo box strings take "const gchar *", so the
 	   |  same allocated string can go in both the history list and the combo list.
 	   |  If removed from both lists, a string can be freed.
@@ -277,7 +277,7 @@ static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointe
 
 
 	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
-	   |  ActionCommand() to show the command window.
+	   |  Action Command() to show the command window.
 	 */
 void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 {
@@ -335,7 +335,7 @@ void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 
 
 
-	/* This is the command entry function called from ActionCommand() when
+	/* This is the command entry function called from Action Command() when
 	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE.  The command_combo_box is already
 	   |  packed into the status line label hbox in this case.
 	 */
@@ -411,7 +411,7 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 		command =
 			ghid_command_entry_get(ctx, _("Enter command:"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");
 		if (command != NULL) {
-			/* copy new comand line to save buffer */
+			/* copy new command line to save buffer */
 			g_free(previous);
 			previous = g_strdup(command);
 			pcb_hid_parse_command(command);
