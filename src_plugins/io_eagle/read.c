@@ -303,10 +303,13 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->visible = eagle_get_attrl(st, n, "visible", -1);
 			ly->active  = eagle_get_attrl(st, n, "active", -1);
 			ly->ly      = -1;
+#warning TODO we are reading uint as signed int when getting layer, and ignoring half of them
 			id = eagle_get_attrl(st, n, "number", -1);
-			if (id >= 0)
+			if (id >= 0) {
 				htip_set(&st->layers, id, ly); /* all listed layers get a hash */
-
+			} else if (id < -1) {
+				htip_set(&st->layers, id, ly);
+			}
 			typ = 0;
 			switch(id) {
 				case 1: typ = PCB_LYT_COPPER | PCB_LYT_TOP; break;
