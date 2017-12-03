@@ -906,6 +906,7 @@ void *pcb_subcop_move(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 	/* restore all pins/pads at once, at the old location */
 	clip.clip.restore = 1; clip.clip.clear = 0;
+	clip.clip.pcb = ctx->move.pcb;
 	pcb_subc_op(data, sc, &ClipFunctions, &clip);
 
 	/* do the move without messing with the clipping */

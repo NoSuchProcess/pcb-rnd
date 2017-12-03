@@ -109,6 +109,7 @@ typedef struct {
 } pcb_opctx_noarg_t;
 
 typedef struct {
+	pcb_board_t *pcb;
 	int restore;
 	int clear;
 } pcb_opctx_clip_t;
