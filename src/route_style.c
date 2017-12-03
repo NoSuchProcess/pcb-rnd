@@ -39,6 +39,18 @@
 
 pcb_route_style_t pcb_custom_route_style;
 
+
+static pcb_coord_t pcb_get_num(char **s, const char *default_unit)
+{
+	/* Read value */
+	pcb_coord_t ret_val = pcb_get_value_ex(*s, NULL, NULL, NULL, default_unit, NULL);
+	/* Advance pointer */
+	while (isalnum(**s) || **s == '.')
+		(*s)++;
+	return ret_val;
+}
+
+
 /*! \brief Serializes the route style list 
  *  \par Function Description
  *  Right now n_styles should always be set to NUM_STYLES,
