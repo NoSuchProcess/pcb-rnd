@@ -36,6 +36,7 @@ typedef enum pcb_message_level {
 	PCB_MSG_ERROR        /* Couldn't finish an action, needs user attention. */
 } pcb_message_level_t;
 
+/* printf-like logger to the log dialog and stderr */
 void pcb_message(enum pcb_message_level level, const char *Format, ...);
 void pcb_open_error_message(const char *);
 void pcb_popen_error_message(const char *);

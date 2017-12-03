@@ -39,15 +39,10 @@
 #include "compat_nls.h"
 #include "conf_core.h"
 
-/* ---------------------------------------------------------------------------
- * output of message in a dialog window or log window
- */
 void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
 	pcb_message_level_t min_level = PCB_MSG_INFO;
-
-	/* TODO(hzeller): do something useful with the level, e.g. color coding. */
 
 	if (pcb_gui != NULL) {
 		va_start(args, Format);
@@ -76,33 +71,21 @@ void pcb_trace(const char *Format, ...)
 }
 
 
-/* ---------------------------------------------------------------------------
- * print standard 'open error'
- */
 void pcb_open_error_message(const char *Filename)
 {
 	pcb_message(PCB_MSG_ERROR, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), Filename, strerror(errno));
 }
 
-/* ---------------------------------------------------------------------------
- * print standard 'popen error'
- */
 void pcb_popen_error_message(const char *Filename)
 {
 	pcb_message(PCB_MSG_ERROR, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), Filename, strerror(errno));
 }
 
-/* ---------------------------------------------------------------------------
- * print standard 'opendir'
- */
 void pcb_opendir_error_message(const char *DirName)
 {
 	pcb_message(PCB_MSG_ERROR, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), DirName, strerror(errno));
 }
 
-/* ---------------------------------------------------------------------------
- * print standard 'chdir error'
- */
 void pcb_chdir_error_message(const char *DirName)
 {
 	pcb_message(PCB_MSG_ERROR, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), DirName, strerror(errno));
