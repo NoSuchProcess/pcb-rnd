@@ -206,7 +206,7 @@ int pcb_act_PrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				 "    GNU General Public License for more details.\n\n");
 	printf("    You should have received a copy of the GNU General Public License\n"
 				 "    along with this program; if not, write to the Free Software\n"
-				 "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n");
+				 "    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.\n\n");
 	return 0;
 }
 
