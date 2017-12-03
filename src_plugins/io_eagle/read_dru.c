@@ -126,3 +126,35 @@ void pcb_eagle_dru_parse_line(FILE *f, gds_t *buff, char **key, char **value)
 		*value = buff->array + valo;
 }
 
+
+#ifndef PCB_EAGLE_DRU_PARSER_TEST
+
+#include "safe_fs.h"
+
+int io_eagle_test_parse_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+{
+	return pcb_eagle_dru_test_parse(f);
+}
+
+int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
+{
+	FILE *f;
+	char *efn;
+	gds_t buff;
+
+	f = pcb_fopen_fn(Filename, "r", &efn);
+	if (f == NULL)
+		return -1;
+
+	gds_init(&buff);
+	while(!(feof(f))) {
+		char *k, *v;
+		pcb_eagle_dru_parse_line(f, &buff, &k, &v);
+		pcb_trace("DRU '%s'='%s'\n", k, v);
+	}
+
+	fclose(f);
+}
+
+
+#endif

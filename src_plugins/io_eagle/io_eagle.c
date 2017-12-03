@@ -31,7 +31,7 @@
 #include "read_dru.h"
 #include "hid_actions.h"
 
-static pcb_plug_io_t io_eagle_xml, io_eagle_bin;
+static pcb_plug_io_t io_eagle_xml, io_eagle_bin, io_eagle_dru;
 static const char *eagle_cookie = "eagle plugin";
 
 int io_eagle_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
@@ -96,6 +96,25 @@ int pplg_init_io_eagle(void)
 	io_eagle_bin.mime_type = "application/x-eagle-pcb";
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
+
+	/* register the IO hook */
+	io_eagle_dru.plugin_data = NULL;
+	io_eagle_dru.fmt_support_prio = io_eagle_fmt;
+	io_eagle_dru.test_parse_pcb = io_eagle_test_parse_pcb_dru;
+	io_eagle_dru.parse_pcb = io_eagle_read_pcb_dru;
+	io_eagle_dru.parse_element = NULL;
+	io_eagle_dru.parse_font = NULL;
+	io_eagle_dru.write_buffer = NULL;
+	io_eagle_dru.write_element = NULL;
+	io_eagle_dru.write_pcb = /*io_eagle_write_pcb_dru*/ NULL;
+	io_eagle_dru.default_fmt = "eagle";
+	io_eagle_dru.description = "eagle dru";
+	io_eagle_dru.save_preference_prio = 0;
+	io_eagle_dru.default_extension = ".dru";
+	io_eagle_dru.fp_extension = ".dru";
+	io_eagle_dru.mime_type = "application/x-eagle-dru";
+
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_dru);
 
 	return 0;
 }
