@@ -411,5 +411,6 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 
 void command_window_close_cb(pcb_gtk_command_t *ctx)
 {
-	gtk_widget_destroy(command_window);
+	if (command_window)
+		gtk_widget_destroy(command_window);
 }
