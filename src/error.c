@@ -71,22 +71,22 @@ void pcb_trace(const char *Format, ...)
 }
 
 
-void pcb_open_error_message(const char *Filename)
+void pcb_open_error_message(const char *filename)
 {
-	pcb_message(PCB_MSG_ERROR, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), Filename, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), filename, strerror(errno));
 }
 
-void pcb_popen_error_message(const char *Filename)
+void pcb_popen_error_message(const char *filename)
 {
-	pcb_message(PCB_MSG_ERROR, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), Filename, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), filename, strerror(errno));
 }
 
-void pcb_opendir_error_message(const char *DirName)
+void pcb_opendir_error_message(const char *dirname)
 {
-	pcb_message(PCB_MSG_ERROR, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), DirName, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), dirname, strerror(errno));
 }
 
-void pcb_chdir_error_message(const char *DirName)
+void pcb_chdir_error_message(const char *dirname)
 {
-	pcb_message(PCB_MSG_ERROR, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), DirName, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), dirname, strerror(errno));
 }
