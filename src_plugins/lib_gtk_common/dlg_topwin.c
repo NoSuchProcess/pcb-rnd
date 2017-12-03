@@ -358,7 +358,7 @@ static const char * FullScreen_xpm[] = {
  *            as well, using :
  *            g_object_unref(gtk_button_get_image(GTK_BUTTON(button)); g_object_unref(button);
  */
-static GtkWidget *create_fullscreen_button()
+static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 {
 	GtkWidget *button;
 	GdkPixbuf *pixbuf;
@@ -367,7 +367,7 @@ static GtkWidget *create_fullscreen_button()
 	char *css_descr;
 
 	button = gtk_button_new();
-	pixbuf = gdk_pixbuf_new_from_xpm_data(FullScreen_xpm);
+	pixbuf = gdk_pixbuf_new_from_xpm_data(xpm_data);
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	g_object_unref(pixbuf);
 
@@ -496,7 +496,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	hbox_scroll = gtkc_hbox_new(FALSE, 0);
 	tw->h_range = gtk_hscrollbar_new(GTK_ADJUSTMENT(tw->h_adjustment));
-	fullscreen_btn = create_fullscreen_button();
+	fullscreen_btn = create_image_button_from_xpm_data(FullScreen_xpm);
 	g_signal_connect(G_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), tw->h_range, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), fullscreen_btn, FALSE, FALSE, 0);
