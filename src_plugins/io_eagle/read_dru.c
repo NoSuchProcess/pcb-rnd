@@ -160,6 +160,8 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	gds_t buff;
 	pcb_layergrp_id_t gid;
 	int n, num_layers = 0;
+	static const char prefix[] = "io_eagle::dru::";
+	char tmp[256];
 
 	f = pcb_fopen_fn(Filename, "r", &efn);
 	if (f == NULL)
@@ -168,6 +170,8 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb->Bloat = 0;
 	pcb->minWid = 0;
 	pcb->minDrill = 0;
+
+	memcpy(tmp, prefix, sizeof(prefix));
 
 	gds_init(&buff);
 	while(!(feof(f))) {
@@ -196,6 +200,13 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 			bump_up_str(k, v, &pcb->minWid);
 		else if (strcmp(k, "msDrill") == 0)
 			bump_up_str(k, v, &pcb->minDrill);
+		else {
+			int len = strlen(k);
+			if (len < sizeof(tmp) - sizeof(prefix)) {
+				memcpy(tmp + sizeof(prefix) - 1, k, len+1);
+				pcb_attribute_put(&pcb->Attributes, tmp, v);
+			}
+		}
 	}
 
 	/* set up layers */
@@ -206,10 +217,9 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		pcb_layer_create(pcb, gid, "bottom_copper");
 	num_layers--;
 	for(n = 0; n < num_layers; n++) {
-		char buff[32];
 		pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
-		sprintf(buff, "signal_%d", n);
-		pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, buff);
+		sprintf(tmp, "signal_%d", n);
+		pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, tmp);
 	}
 	pcb_layer_group_setup_silks(pcb);
 
