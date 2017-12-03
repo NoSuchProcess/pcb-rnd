@@ -578,6 +578,12 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 		case PCB_PSSH_POLY:
 #warning TODO: load retvals
 			*square = 1;
+			*x1 = lx1[0] + ps->x;
+			*y1 = ly1[0] + ps->y;
+			*x2 = lx2[0] + ps->x;
+			*y2 = ly2[0] + ps->y;
+			*thickness = lt[coppern];
+			*mask = lt[maskn];
 			break;
 	}
 
