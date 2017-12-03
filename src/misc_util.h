@@ -43,12 +43,12 @@ typedef struct {
 	enum pcb_unit_flags_e flags;
 } pcb_unit_list_t[];
 
-double pcb_get_value(const char *, const char *, pcb_bool *, pcb_bool *success);
-double pcb_get_value_ex(const char *, const char *, pcb_bool *, pcb_unit_list_t, const char *, pcb_bool *success);
+double pcb_get_value(const char *val, const char *units, pcb_bool * absolute, pcb_bool *success);
+double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, pcb_bool *success);
 pcb_coord_t pcb_get_num(char **s, const char *default_unit);
 
 
-char *pcb_concat(const char *, ...);	/* end with NULL */
+char *pcb_concat(const char *first, ...); /* end with NULL */
 int pcb_mem_any_set(unsigned char *ptr, int bytes);
 
 char *pcb_strdup_strip_wspace(const char *S);
