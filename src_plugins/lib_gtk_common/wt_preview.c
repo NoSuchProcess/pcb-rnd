@@ -54,7 +54,7 @@
 
 static void preview_set_view(pcb_gtk_preview_t * preview)
 {
-	float scale = 0.95; /* leave 5% border */
+	float scale = 100.0 / PCB_MIL_TO_COORD (150.); /* arbitrary zoom factor: 100 pixel per 150 mil */
 
 #warning switch for .kind here and do a zoom-to-extend on layer
 
