@@ -3,10 +3,9 @@
 	- BUG: exports:
 		+ png export doesn't show padstack holes [report: Ade]
 		+ gerber export (plated, unplated drill cnc) doesn't have padstacks [report: Ade]
+		- ps hole generation is broken
 	- BUG: 'send to other side' with padstacks in subc: should mirror layer stack positions in the proto
 	- v4 lihata formatting
-	- convert helpers:
-		- old pad
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
 	- property editor doesn't deal with padstacks (and subc)
 	- test if advanced search does anything with padstacks (and subc)
