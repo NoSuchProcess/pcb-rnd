@@ -185,7 +185,7 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_bo
 static void DrawEverything_holes(pcb_layergrp_id_t gid, const pcb_box_t *drawn_area)
 {
 	int plated, unplated;
-	pcb_board_count_holes(&plated, &unplated, drawn_area);
+	pcb_board_count_holes(PCB, &plated, &unplated, drawn_area);
 
 	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0)) {
 		DrawHoles(pcb_true, pcb_false, drawn_area);

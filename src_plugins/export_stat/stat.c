@@ -150,7 +150,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
-	pcb_board_count_holes(&hp, &hup, NULL);
+	pcb_board_count_holes(PCB, &hp, &hup, NULL);
 	pcb_print_utc(buff, sizeof(buff), 0);
 
 	fprintf(f, "ha:pcb-rnd-board-stats-v1 {\n");

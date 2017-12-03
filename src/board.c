@@ -213,13 +213,13 @@ static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void pcb_board_count_holes(int *plated, int *unplated, const pcb_box_t * within_area)
+void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const pcb_box_t *within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 
-	pcb_r_search(PCB->Data->pin_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
-	pcb_r_search(PCB->Data->via_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
-	pcb_r_search(PCB->Data->padstack_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
+	pcb_r_search(pcb->Data->pin_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
+	pcb_r_search(pcb->Data->via_tree, within_area, NULL, hole_counting_old_callback, &hcs, NULL);
+	pcb_r_search(pcb->Data->padstack_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
 
 	if (plated != NULL)
 		*plated = hcs.nplated;
