@@ -353,15 +353,25 @@ static const char * FullScreen_xpm[] = {
 " .      ",
 "        "};
 
-/* Embed an XPM image in a button, and make it display as small as possible */
+/* Embed an XPM image in a button, and make it display as small as possible 
+ *   Returns: a new image button. When freeing the object, the image needs to be freed 
+ *            as well, using :
+ *            g_object_unref(gtk_button_get_image(GTK_BUTTON(button)); g_object_unref(button);
+ */
 static GtkWidget *create_fullscreen_button()
 {
 	GtkWidget *button;
+	GdkPixbuf *pixbuf;
+	GtkWidget *image;
 	const char *css_class = "minimum_size_button";
 	char *css_descr;
 
 	button = gtk_button_new();
-	gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_pixbuf(gdk_pixbuf_new_from_xpm_data(FullScreen_xpm)));
+	pixbuf = gdk_pixbuf_new_from_xpm_data(FullScreen_xpm);
+	image = gtk_image_new_from_pixbuf(pixbuf);
+	g_object_unref(pixbuf);
+
+	gtk_button_set_image(GTK_BUTTON(button), image);
 
 	css_descr = pcb_strdup_printf(".%s {min-width:0; min-height:0;}\n", css_class);
 	gtkc_widget_add_class_style(button, css_class, css_descr);
