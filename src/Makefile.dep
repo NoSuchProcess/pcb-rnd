@@ -5533,8 +5533,7 @@ error.o: error.c ../config.h data.h globalconst.h global_typedefs.h \
  plug_io.h library.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h compat_nls.h \
- conf_core.h
+ ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h conf_core.h
 event.o: event.c ../config.h event.h unit.h error.h fptr_cast.h
 file_act.o: file_act.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
