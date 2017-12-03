@@ -339,6 +339,37 @@ static void fullscreen_cb(GtkButton * btn, void *data)
 	conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
 }
 
+/* XPM */
+static const char * FullScreen_xpm[] = {
+"8 8 2 1",
+" 	c None",
+".	c #729FCF",
+"        ",
+" ...... ",
+" .      ",
+" . ...  ",
+" . .    ",
+" . .    ",
+" .      ",
+"        "};
+
+/* Embed an XPM image in a button, and make it display as small as possible */
+static GtkWidget *create_fullscreen_button()
+{
+	GtkWidget *button;
+	const char *css_class = "minimum_size_button";
+	char *css_descr;
+
+	button = gtk_button_new();
+	gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_pixbuf(gdk_pixbuf_new_from_xpm_data(FullScreen_xpm)));
+
+	css_descr = pcb_strdup_printf(".%s {min-width:0; min-height:0;}\n", css_class);
+	gtkc_widget_add_class_style(button, css_class, css_descr);
+	free(css_descr);
+
+	return button;
+}
+
 /*
  * Create the top_window contents.  The config settings should be loaded
  * before this is called.
@@ -455,7 +486,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	hbox_scroll = gtkc_hbox_new(FALSE, 0);
 	tw->h_range = gtk_hscrollbar_new(GTK_ADJUSTMENT(tw->h_adjustment));
-	fullscreen_btn = gtk_button_new_with_label("FS");
+	fullscreen_btn = create_fullscreen_button();
 	g_signal_connect(G_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), tw->h_range, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), fullscreen_btn, FALSE, FALSE, 0);
