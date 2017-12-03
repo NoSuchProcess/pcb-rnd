@@ -576,7 +576,6 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 			*square = 0;
 			break;
 		case PCB_PSSH_POLY:
-#warning TODO: load retvals
 			*square = 1;
 			*x1 = lx1[0] + ps->x;
 			*y1 = ly1[0] + ps->y;
