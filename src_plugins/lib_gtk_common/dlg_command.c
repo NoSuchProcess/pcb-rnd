@@ -248,11 +248,6 @@ static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
 	command_window = NULL;
 }
 
-void command_window_close_cb(pcb_gtk_command_t *ctx)
-{
-	gtk_widget_destroy(command_window);
-}
-
 static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
@@ -417,4 +412,9 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 	}
 	ctx->com->window_set_name_label(PCB->Name);
 	ctx->com->set_status_line_label();
+}
+
+void command_window_close_cb(pcb_gtk_command_t *ctx)
+{
+	gtk_widget_destroy(command_window);
 }
