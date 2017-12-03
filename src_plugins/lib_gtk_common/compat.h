@@ -115,6 +115,20 @@ static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y
 	return gdk_window_get_device_position(window, device, x, y, mask);
 }
 
+/** Adds a CSS class to the widget, applying CSS properties from \p css_descr */
+static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
+{
+	GtkStyleContext *style_ctxt;
+	GtkCssProvider *provider;
+
+	style_ctxt = gtk_widget_get_style_context(w);
+	gtk_style_context_add_class(style_ctxt, css_class);
+	provider = gtk_css_provider_new();
+	gtk_css_provider_load_from_data(GTK_CSS_PROVIDER(provider), css_descr, -1, NULL);
+	gtk_style_context_add_provider(style_ctxt, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	g_object_unref(provider);
+}
+
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 {
 	GtkStyleContext *sc = gtk_widget_get_style_context(widget);
@@ -232,6 +246,10 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
 	return gdk_window_get_pointer(gtk_widget_get_window(w), x, y, mask);
+}
+
+static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
+{
 }
 
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
