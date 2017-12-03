@@ -235,20 +235,22 @@ static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
 }
 
-void command_window_close_cb(pcb_gtk_command_t *ctx)
+/* CB function related to Command Window destruction */
+static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
 {
 	if (command_window) {
 		gtk_container_remove(GTK_CONTAINER(combo_vbox), /* Float it */
 			ctx->command_combo_box);
-		gtk_widget_destroy(command_window);
+		gtk_widget_hide(command_window);
 	}
 	combo_vbox = NULL;
+	/* Command Window is hidden/destroyed, so expected future value for command_window is NULL. */
 	command_window = NULL;
 }
 
-static void command_destroy_cb(GtkWidget *dlg, pcb_gtk_command_t *ctx)
+void command_window_close_cb(pcb_gtk_command_t *ctx)
 {
-	command_window_close_cb(ctx);
+	gtk_widget_destroy(command_window);
 }
 
 static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
