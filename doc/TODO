@@ -1,5 +1,4 @@
 1. For the upcoming release ===============================================================================
-- BUG: gtk2: shift+D on an element crashes [report: sam]
 - padstack:
 	- BUG: exports:
 		+ png export doesn't show padstack holes [report: Ade]
