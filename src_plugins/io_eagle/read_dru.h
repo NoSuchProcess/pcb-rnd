@@ -1,5 +1,5 @@
-#ifndef PCB_IO_EAGLE_PARSE_DRU_H
-#define PCB_IO_EAGLE_PARSE_DRU_H
+#ifndef PCB_IO_EAGLE_READ_DRU_H
+#define PCB_IO_EAGLE_READ_DRU_H
 
 #include <genvector/gds_char.h>
 #include <stdio.h>
