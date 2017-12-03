@@ -399,7 +399,6 @@ static void pad_shape(pcb_pstk_poly_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_
 	dst->x[3] = x2 - nx; dst->y[3] = y2 - ny;
 }
 
-#warning padstack TODO: consider nopaste
 /* Generate a square or round pad of a given thickness - typically mask or copper */
 static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_bool square)
 {
@@ -418,7 +417,7 @@ static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	}
 }
 
-pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square)
+pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square, pcb_bool nopaste)
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[3]; /* max number of shapes: 1 copper, 1 mask, 1 paste */
@@ -434,22 +433,26 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_
 	memset(&tshp, 0, sizeof(tshp));
 	memset(&shape, 0, sizeof(shape));
 
-	tshp.len = 3;
+	tshp.len = nopaste ? 2 : 3;
 	tshp.shape = shape;
 	proto.tr.alloced = proto.tr.used = 1; /* has the canonical form only */
 	proto.tr.array = &tshp;
 
 	gen_pad(&shape[0], x1 - cx, y1 - cy, x2 - cx, y2 - cy, thickness, square); /* copper */
 	gen_pad(&shape[1], x1 - cx, y1 - cy, x2 - cx, y2 - cy, mask, square);      /* mask */
-	pcb_pstk_shape_copy(&shape[2], &shape[0]);                                 /* paste is the same */
+	if (!nopaste)
+		pcb_pstk_shape_copy(&shape[2], &shape[0]); /* paste is the same */
 
 	shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; shape[0].comb = 0;
 	shape[1].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;   shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-	shape[2].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;  shape[2].comb = PCB_LYC_AUTO;
+	if (!nopaste) {
+		shape[2].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+		shape[2].comb = PCB_LYC_AUTO;
+	}
 
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
 
-	for(n = 0; n < 3; n++)
+	for(n = 0; n < tshp.len; n++)
 		compat_shape_free(&shape[n]);
 
 	if (pid == PCB_PADSTACK_INVALID)
