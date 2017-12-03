@@ -465,6 +465,7 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 	pcb_pstk_tshape_t *tshp;
 	int n, coppern = -1, maskn = -1, pasten = -1;
 	pcb_layer_type_t side;
+	pcb_coord_t lx1[3], ly1[3], lx2[3], ly2[3], lt[3]; /* poly->line conversion cache */
 
 	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 	if ((proto == NULL) || (proto->tr.used < 1))
@@ -506,7 +507,55 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 	if ((coppern < 0) || (maskn < 0))
 		return pcb_false;
 
-#warning padstack TODO: check that all shapes are concentric
+	/* if the shape is poly, convert to line to make the rest of the code simpler */
+	if (tshp->shape[0].shape == PCB_PSSH_POLY) {
+		for(n = 0; n < tshp->len; n++) {
+			pcb_coord_t w, h;
+
+			if (tshp->shape[0].data.poly.len != 4)
+				return pcb_false;
+
+			w = tshp->shape[0].data.poly.x[0] - tshp->shape[0].data.poly.x[2];
+			h = tshp->shape[0].data.poly.y[0] - tshp->shape[0].data.poly.y[2];
+			lt[n] = (w < h) ? w : h;
+			lx1[n] = tshp->shape[0].data.poly.x[2] + lt[n] / 2;
+			ly1[n] = tshp->shape[0].data.poly.y[2] + lt[n] / 2;
+			lx2[n] = lx1[n] + (w - lt[n]);
+			ly2[n] = ly1[n] + (h - lt[n]);
+		}
+	}
+
+	/* require all shapes to be concentric */
+	for(n = 1; n < tshp->len; n++) {
+		switch(tshp->shape[0].shape) {
+			case PCB_PSSH_LINE:
+				if (tshp->shape[0].data.line.x1 != tshp->shape[n].data.line.x1)
+					return pcb_false;
+				if (tshp->shape[0].data.line.y1 != tshp->shape[n].data.line.y1)
+					return pcb_false;
+				if (tshp->shape[0].data.line.x2 != tshp->shape[n].data.line.x2)
+					return pcb_false;
+				if (tshp->shape[0].data.line.y2 != tshp->shape[n].data.line.y2)
+					return pcb_false;
+				break;
+			case PCB_PSSH_CIRC:
+				if (tshp->shape[0].data.circ.x != tshp->shape[n].data.circ.x)
+					return pcb_false;
+				if (tshp->shape[0].data.circ.y != tshp->shape[n].data.circ.y)
+					return pcb_false;
+				break;
+			case PCB_PSSH_POLY:
+				if (lx1[0] != lx1[n])
+					return pcb_false;
+				if (ly1[0] != ly1[n])
+					return pcb_false;
+				if (lx2[0] != lx2[n])
+					return pcb_false;
+				if (ly2[0] != ly2[n])
+					return pcb_false;
+				break;
+		}
+	}
 
 	/* generate the return pad (line-like) */
 	switch(tshp->shape[0].shape) {
@@ -527,6 +576,7 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 			*square = 0;
 			break;
 		case PCB_PSSH_POLY:
+#warning TODO: load retvals
 			*square = 1;
 			break;
 	}
