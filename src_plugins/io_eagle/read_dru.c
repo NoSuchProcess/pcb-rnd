@@ -132,10 +132,25 @@ void pcb_eagle_dru_parse_line(FILE *f, gds_t *buff, char **key, char **value)
 #include "safe_fs.h"
 #include "board.h"
 #include "layer_grp.h"
+#include "error.h"
 
 int io_eagle_test_parse_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
 {
 	return pcb_eagle_dru_test_parse(f);
+}
+
+static void bump_up_str(const char *key, const char *val, pcb_coord_t *dst)
+{
+	pcb_bool succ;
+	double d;
+
+	d = pcb_get_value(val, NULL, NULL, &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "Invalid coord value for key %s: '%s'\n", key, val);
+		return;
+	}
+	if (d > *dst)
+		*dst = d;
 }
 
 int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
@@ -150,6 +165,9 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (f == NULL)
 		return -1;
 
+	pcb->Bloat = 0;
+	pcb->minWid = 0;
+	pcb->minDrill = 0;
 
 	gds_init(&buff);
 	while(!(feof(f))) {
@@ -164,7 +182,20 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 				num_layers = atoi(v);
 			}
 		}
-		pcb_trace("DRU '%s'='%s'\n", k, v);
+		else if (strcmp(k, "mdWireWire") == 0)
+			bump_up_str(k, v, &pcb->Bloat);
+		else if (strcmp(k, "mdWirePad") == 0)
+			bump_up_str(k, v, &pcb->Bloat);
+		else if (strcmp(k, "mdWireVia") == 0)
+			bump_up_str(k, v, &pcb->Bloat);
+		else if (strcmp(k, "mdPadPad") == 0)
+			bump_up_str(k, v, &pcb->Bloat);
+		else if (strcmp(k, "mdPadVia") == 0)
+			bump_up_str(k, v, &pcb->Bloat);
+		else if (strcmp(k, "msWidth") == 0)
+			bump_up_str(k, v, &pcb->minWid);
+		else if (strcmp(k, "msDrill") == 0)
+			bump_up_str(k, v, &pcb->minDrill);
 	}
 
 	/* set up layers */
@@ -183,6 +214,7 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb_layer_group_setup_silks(pcb);
 
 	fclose(f);
+	return 0;
 }
 
 
