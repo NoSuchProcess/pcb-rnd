@@ -58,9 +58,6 @@ double pcb_distance2(double x1, double y1, double x2, double y2)
 	return delta_x * delta_x + delta_y * delta_y;
 }
 
-/* Get Value returns a numeric value passed from the string and sets the
- * pcb_bool variable absolute to false if it leads with a +/- character
- */
 double pcb_get_value(const char *val, const char *units, pcb_bool * absolute, pcb_bool *success)
 {
 	return pcb_get_value_ex(val, units, absolute, NULL, "cmil", success);
