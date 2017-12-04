@@ -695,7 +695,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
 
 		for(n = 0; n < ts->len; n++) {
-			if (pcb_pstk_shape_hole_break(ts, 2 * PCB->minRing, &err_minring)) {
+			if (pcb_pstk_shape_hole_break(ts, 2 * PCB->minRing, err_minring)) {
 				break;
 			}
 		}
