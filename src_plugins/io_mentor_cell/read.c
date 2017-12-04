@@ -241,7 +241,7 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 		}
 	}
 
-	elem = pcb_element_new(ctx->pcb, NULL, pcb_font(ctx->pcb->Data, 0, 1),
+	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb, 0, 1),
 		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);
 
 	/* extract pins and silk lines */
