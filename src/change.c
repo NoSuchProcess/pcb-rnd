@@ -134,7 +134,7 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_change_clear_size,
-	NULL  /* padstack */
+	pcb_pstkop_change_clear_size
 };
 
 static pcb_opfunc_t ChangeNameFunctions = {

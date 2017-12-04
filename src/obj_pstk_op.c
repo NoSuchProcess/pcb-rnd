@@ -253,6 +253,28 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	return NULL;
 }
 
+void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+{
+	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : ps->Clearance + ctx->chgsize.value;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
+		return NULL;
+	if (value < 0)
+		value = 0;
+	value = MIN(PCB_MAX_LINESIZE, value);
+	if (!ctx->chgsize.is_absolute && (ctx->chgsize.value < 0) && (value < PCB->Bloat * 2))
+		value = 0;
+	if ((ctx->chgsize.value > 0) && (value < PCB->Bloat * 2))
+		value = PCB->Bloat * 2 + 2;
+	if (ps->Clearance == value)
+		return NULL;
+
+	if (pcb_pstk_change_instance(ps, NULL, &value, NULL, NULL) == 0)
+		return ps;
+
+	return NULL;
+}
+
 
 void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
