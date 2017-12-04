@@ -112,7 +112,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 	pcb_event(PCB_EVENT_RUBBER_ROTATE90, "ipppccip", Type, Ptr1, Ptr2, Ptr2, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number, &changed);
 
 	if (Type != PCB_TYPE_PSTK) /* padstack has its own way doing the rotation-undo */
-		pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
+		pcb_undo_add_obj_to_rotate90(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
 	ptr2 = pcb_object_operation(&Rotate90Functions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {
@@ -138,7 +138,7 @@ void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X
 
 #warning TODO: this should be a different rotation call for non90deg!
 	if (Type != PCB_TYPE_PSTK) /* padstack has its own way doing the rotation-undo */
-		pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle);
+		pcb_undo_add_obj_to_rotate90(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle);
 	ptr2 = pcb_object_operation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {

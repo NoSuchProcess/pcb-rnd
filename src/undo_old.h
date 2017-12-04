@@ -44,7 +44,7 @@ void pcb_undo_add_obj_to_insert_contour(int, pcb_layer_t *, pcb_poly_t *);
 void pcb_undo_add_obj_to_move(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
 void pcb_undo_add_obj_to_change_name(int, void *, void *, void *, char *);
 void pcb_undo_add_obj_to_change_pinnum(int, void *, void *, void *, char *);
-void pcb_undo_add_obj_to_rotate(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, pcb_uint8_t);
+void pcb_undo_add_obj_to_rotate90(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, pcb_uint8_t);
 void pcb_undo_add_obj_to_create(int, void *, void *, void *);
 void pcb_undo_add_obj_to_mirror(int, void *, void *, void *, pcb_coord_t);
 void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff);

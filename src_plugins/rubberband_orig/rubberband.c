@@ -1273,9 +1273,9 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 		*changed = 1;
 		
 		if(dindex1 >= 0) 
-			pcb_undo_add_obj_to_rotate(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, cx, cy, steps);
+			pcb_undo_add_obj_to_rotate90(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, cx, cy, steps);
 		if(dindex2 >= 0) 
-			pcb_undo_add_obj_to_rotate(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, cx, cy, steps);
+			pcb_undo_add_obj_to_rotate90(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, cx, cy, steps);
 
 		pcb_line_invalidate_erase(ptr->Line);
 		if (ptr->Layer) {
