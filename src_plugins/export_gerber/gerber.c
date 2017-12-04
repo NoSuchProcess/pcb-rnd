@@ -724,7 +724,6 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	is_mask = !!(flags & PCB_LYT_MASK);
 	if (group < 0 || group != lastgroup) {
-		time_t currenttime;
 		char utcTime[64];
 		ApertureList *aptr_list;
 		Aperture *search;

@@ -789,7 +789,6 @@ int pcb_drc_all(void)
 				const char *title;
 				const char *name;
 				char *buffer;
-				int buflen;
 
 				PCB_FLAG_SET(TheFlag, subc);
 				DrawSubc(subc);

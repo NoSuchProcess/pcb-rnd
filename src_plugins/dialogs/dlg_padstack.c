@@ -298,7 +298,6 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	int n;
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];

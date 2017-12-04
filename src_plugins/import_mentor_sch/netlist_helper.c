@@ -205,8 +205,7 @@ void nethlp_elem_attr(nethlp_elem_ctx_t *ectx, const char *key, const char *val)
 static void elem_map_apply(nethlp_elem_ctx_t *ectx, nethlp_rule_t *r)
 {
 	char *dst;
-	int len;
-	len = re_se_backref(r->val, &dst, r->new_val);
+	re_se_backref(r->val, &dst, r->new_val);
 /*	printf("Map add: '%s' -> '%s'\n", r->new_key, dst);*/
 	htsp_set(&ectx->attr, pcb_strdup(r->new_key), pcb_strdup(dst));
 }
