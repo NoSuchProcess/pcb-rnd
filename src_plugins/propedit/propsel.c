@@ -181,7 +181,7 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	map_chk_skip(ctx, ps);
 
 	map_add_prop(ctx, "p/padstack/xmirror", pcb_coord_t, ps->xmirror);
-	map_add_prop(ctx, "p/padstack/rotation", pcb_coord_t, ps->rot);
+	map_add_prop(ctx, "p/padstack/rotation", pcb_angle_t, ps->rot);
 	map_add_prop(ctx, "p/padstack/proto", pcb_coord_t, ps->proto);
 
 	proto = pcb_pstk_get_proto(ps);
@@ -450,6 +450,8 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
 	    pcb_chg_obj_clear_size(PCB_TYPE_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
+	if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
+	    pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
 }
 
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
