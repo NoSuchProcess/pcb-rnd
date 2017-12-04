@@ -185,7 +185,7 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	map_add_prop(ctx, "p/padstack/proto", pcb_coord_t, ps->proto);
 
 	proto = pcb_pstk_get_proto(ps);
-	map_add_prop(ctx, "p/padstack/global_clearance", pcb_coord_t, ps->Clearance/2);
+	map_add_prop(ctx, "p/padstack/clearance", pcb_coord_t, ps->Clearance/2);
 	if (proto->hdia > 0)
 		map_add_prop(ctx, "p/padstack/hole", pcb_coord_t, proto->hdia);
 
@@ -439,7 +439,7 @@ static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
-	const char *pn = st->name + 7;
+	const char *pn = st->name + 11;
 
 	set_chk_skip(st, ps);
 
@@ -503,7 +503,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(0, "p/pin/", set_epin_cb),
 		MAYBE_PROP(0, "p/pad/", set_epad_cb),
 		MAYBE_PROP(0, "p/via/", set_via_cb),
-		MAYBE_PROP(0, "p/pstk/", set_pstk_cb)
+		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
 	pcb_undo_inc_serial();
 	return ctx.set_cnt;
