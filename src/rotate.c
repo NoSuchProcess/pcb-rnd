@@ -97,10 +97,6 @@ void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsign
 	PCB_COORD_ROTATE90(Point->X, Point->Y, X, Y, Number);
 }
 
-/* ----------------------------------------------------------------------
- * rotates an objects at the cursor position as identified by its ID
- * the center of rotation is determined by the current cursor location
- */
 void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
 	void *ptr2;
@@ -118,6 +114,32 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 	if (Type != PCB_TYPE_PSTK) /* padstack has its own way doing the rotation-undo */
 		pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
 	ptr2 = pcb_object_operation(&Rotate90Functions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	changed |= (ptr2 != NULL);
+	if (changed) {
+		pcb_draw();
+		pcb_undo_inc_serial();
+	}
+	return (ptr2);
+}
+
+void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, double angle)
+{
+	void *ptr2;
+	int changed = 0;
+	pcb_opctx_t ctx;
+
+	/* setup default  global identifiers */
+	ctx.rotate.pcb = PCB;
+	ctx.rotate.angle = angle;
+	ctx.rotate.center_x = X;
+	ctx.rotate.center_y = Y;
+
+	pcb_event(PCB_EVENT_RUBBER_ROTATE, "ipppccip", Type, Ptr1, Ptr2, Ptr2, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle, &changed);
+
+#warning TODO: this should be a different rotation call for non90deg!
+	if (Type != PCB_TYPE_PSTK) /* padstack has its own way doing the rotation-undo */
+		pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle);
+	ptr2 = pcb_object_operation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {
 		pcb_draw();
