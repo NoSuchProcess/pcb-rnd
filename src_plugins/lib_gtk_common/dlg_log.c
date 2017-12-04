@@ -91,6 +91,7 @@ static gboolean log_key_release_cb(GtkWidget *preview, GdkEventKey *kev, gpointe
 {
 	if (kev->keyval == GDK_KEY_Escape)
 		log_close_cb(data);
+	return FALSE;
 }
 
 static void ghid_log_window_create()
