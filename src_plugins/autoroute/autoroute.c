@@ -1017,6 +1017,19 @@ static routedata_t *CreateRouteData()
 													 pcb_layer_id(PCB->Data, (pcb_layer_t *) connection->ptr1),
 													 (struct pcb_poly_s *) connection->obj, rd->styles[j]);
 							break;
+						case PCB_OBJ_POINT:
+						case PCB_OBJ_LINE:
+						case PCB_OBJ_TEXT:
+						case PCB_OBJ_ARC:
+						case PCB_OBJ_RAT:
+						case PCB_OBJ_ELEMENT:
+						case PCB_OBJ_SUBC:
+						case PCB_OBJ_NET:
+						case PCB_OBJ_LAYER:
+						case PCB_OBJ_ELINE:
+						case PCB_OBJ_EARC:
+						case PCB_OBJ_ETEXT:
+							break; /* don't care about these */
 						}
 					assert(rb);
 					/* update circular connectivity lists */
