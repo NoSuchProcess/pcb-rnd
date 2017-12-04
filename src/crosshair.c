@@ -1241,7 +1241,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	ans = PCB_TYPE_NONE;
 	if (!PCB->RatDraw) {
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
-		if (ans == NULL)
+		if (ans == 0)
 			ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_SUBC, &ptr1, &ptr2, &ptr3);
 	}
 
