@@ -39,6 +39,7 @@
 #include "hid.h"
 #include "hid_attrib.h"
 #include "hid_dad.h"
+#include "search.h"
 
 conf_diag_t conf_diag;
 
