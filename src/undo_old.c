@@ -75,6 +75,7 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
+static pcb_bool UndoRotate90(UndoListTypePtr);
 static pcb_bool UndoRotate(UndoListTypePtr);
 static pcb_bool UndoChangeName(UndoListTypePtr);
 static pcb_bool UndoCopyOrCreate(UndoListTypePtr);
@@ -141,10 +142,10 @@ static void DrawRecoveredObject(pcb_any_obj_t *obj)
 }
 
 /* ---------------------------------------------------------------------------
- * recovers an object from a 'rotate' operation
+ * recovers an object from a 90 deg 'rotate' operation
  * returns pcb_true if anything has been recovered
  */
-static pcb_bool UndoRotate(UndoListTypePtr Entry)
+static pcb_bool UndoRotate90(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -158,6 +159,25 @@ static pcb_bool UndoRotate(UndoListTypePtr Entry)
 		return (pcb_true);
 	}
 	return (pcb_false);
+}
+
+/* ---------------------------------------------------------------------------
+ * recovers an object from an arbitrary angle 'rotate' operation
+ * returns pcb_true if anything has been recovered
+ */
+static pcb_bool UndoRotate(UndoListTypePtr Entry)
+{
+	void *ptr1, *ptr2, *ptr3;
+	int type;
+
+	/* lookup entry by it's ID */
+	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+	if (type != PCB_TYPE_NONE) {
+		pcb_obj_rotate(type, ptr1, ptr2, ptr3, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, -(Entry->Data.Angle));
+		Entry->Data.Angle = -(Entry->Data.Angle);
+		return pcb_true;
+	}
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -827,6 +847,11 @@ static int pcb_undo_old_undo(void *ptr_)
 			return 0;
 		break;
 
+	case PCB_UNDO_ROTATE90:
+		if (UndoRotate90(ptr))
+			return 0;
+		break;
+
 	case PCB_UNDO_CLEAR:
 		if (UndoClearPoly(ptr))
 			return 0;
@@ -936,9 +961,24 @@ void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 }
 
 /* ---------------------------------------------------------------------------
- * adds an object to the list of rotated objects
+ * adds an object to the list of 90-deg rotated objects
  */
 void pcb_undo_add_obj_to_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_uint8_t Steps)
+{
+	UndoListTypePtr undo;
+
+	if (!Locked) {
+		undo = GetUndoSlot(PCB_UNDO_ROTATE90, PCB_OBJECT_ID(Ptr3), Type);
+		undo->Data.Rotate.CenterX = CenterX;
+		undo->Data.Rotate.CenterY = CenterY;
+		undo->Data.Rotate.Steps = Steps;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * adds an object to the list of rotated objects
+ */
+void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_angle_t angle)
 {
 	UndoListTypePtr undo;
 
@@ -946,7 +986,7 @@ void pcb_undo_add_obj_to_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 		undo = GetUndoSlot(PCB_UNDO_ROTATE, PCB_OBJECT_ID(Ptr3), Type);
 		undo->Data.Rotate.CenterX = CenterX;
 		undo->Data.Rotate.CenterY = CenterY;
-		undo->Data.Rotate.Steps = Steps;
+		undo->Data.Angle = angle;
 	}
 }
 
@@ -1342,6 +1382,7 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_INSERT_POINT: return "insert_point";
 		case PCB_UNDO_REMOVE_CONTOUR: return "remove_contour";
 		case PCB_UNDO_INSERT_CONTOUR: return "insert_contour";
+		case PCB_UNDO_ROTATE90: return "rotate90";
 		case PCB_UNDO_ROTATE: return "rotate";
 		case PCB_UNDO_CREATE: return "create";
 		case PCB_UNDO_MOVETOLAYER: return "movetolayer";

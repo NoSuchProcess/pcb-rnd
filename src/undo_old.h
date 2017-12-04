@@ -72,7 +72,7 @@ typedef enum {
 	PCB_UNDO_INSERT_POINT      = 0x000010, /* inserting polygon/... points */
 	PCB_UNDO_REMOVE_CONTOUR    = 0x000020, /* removing a contour from a polygon */
 	PCB_UNDO_INSERT_CONTOUR    = 0x000040, /* inserting a contour from a polygon */
-	PCB_UNDO_ROTATE            = 0x000080, /* rotations */
+	PCB_UNDO_ROTATE90          = 0x000080, /* rotations by 90 deg steps */
 	PCB_UNDO_CREATE            = 0x000100, /* creation of objects */
 	PCB_UNDO_MOVETOLAYER       = 0x000200, /* moving objects to */
 	PCB_UNDO_FLAG              = 0x000400, /* toggling SELECTED flag */
@@ -87,7 +87,8 @@ typedef enum {
 	PCB_UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
 	PCB_UNDO_CHANGEPINNUM      = 0x100000, /* change of pin number */
 	PCB_UNDO_CHANGERADII       = 0x200000, /* change arc radii */
-	PCB_UNDO_OTHERSIDE         = 0x400000  /* change side of board (subcircuit) */
+	PCB_UNDO_OTHERSIDE         = 0x400000, /* change side of board (subcircuit) */
+	PCB_UNDO_ROTATE            = 0x800000  /* rotations at arbitrary angle */
 } pcb_undo_op_t;
 
 const char *undo_type2str(int type);

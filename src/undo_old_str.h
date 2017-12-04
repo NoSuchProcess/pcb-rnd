@@ -61,5 +61,6 @@ typedef struct {								/* holds information about an operation */
 		NetlistChangeType NetlistChange;
 		long int CopyID;
 		AngleChangeType AngleChange;
+		pcb_angle_t Angle;
 	} Data;
 } UndoListType, *UndoListTypePtr;
