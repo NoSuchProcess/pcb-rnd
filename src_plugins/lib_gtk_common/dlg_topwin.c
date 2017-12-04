@@ -388,6 +388,7 @@ static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *alloc
 
 	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->v_range), &min, NULL);
 	gtkc_widget_get_preferred_height(GTK_WIDGET(gtk_widget_get_parent(tw->h_range)), &min, NULL);
+	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->status_line_hbox), &min, NULL);
 }
 
 /*
@@ -513,7 +514,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 
 	g_signal_connect(G_OBJECT(tw->h_adjustment), "value_changed", G_CALLBACK(h_adjustment_changed_cb), tw);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 
 	/* -- The bottom status line label */
 	tw->status_line_hbox = gtkc_hbox_new(FALSE, 0);
@@ -529,6 +529,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	   |  the user does a command entry.
 	 */
 
+	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 	g_signal_connect(G_OBJECT(tw->drawing_area), PCB_GTK_DRAW_SIGNAL_NAME, G_CALLBACK(tw->com->drawing_area_expose), tw->com->gport);
 	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw->com->gport);
 	g_signal_connect(tw->com->top_window, "enter-notify-event", G_CALLBACK(top_window_enter_cb), tw);
