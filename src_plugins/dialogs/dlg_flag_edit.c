@@ -36,7 +36,7 @@ typedef struct{
 } fe_ctx_t;
 
 #define PCB_FLAGEDIT_TYPES \
-	(PCB_TYPE_VIA | PCB_TYPE_ELEMENT | PCB_TYPE_LINE | PCB_TYPE_POLY | \
+	(PCB_TYPE_PSTK | PCB_TYPE_VIA | PCB_TYPE_ELEMENT | PCB_TYPE_LINE | PCB_TYPE_POLY | \
 	PCB_TYPE_TEXT | PCB_TYPE_SUBC | PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_ARC)
 
 static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -85,7 +85,7 @@ static int pcb_act_FlagEdit(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		type = pcb_search_screen(x, y, PCB_FLAGEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 		ctx.ptr1 = ptr1;
 		ctx.obj = (pcb_any_obj_t *)ptr2;
-		ctx.obj_type = type & 0xFFFF;
+		ctx.obj_type = (type & 0xFFFF) | (type & PCB_TYPE_PSTK);
 	}
 	else
 		PCB_ACT_FAIL(FlagEdit);
