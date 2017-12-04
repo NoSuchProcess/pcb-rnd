@@ -60,6 +60,7 @@
 #include "obj_text_draw.h"
 #include "obj_rat_draw.h"
 #include "obj_poly_draw.h"
+#include "obj_pstk_draw.h"
 
 #include "tool.h"
 
@@ -180,7 +181,7 @@ void pcb_clear_warnings()
 	for(n = pcb_r_first(PCB->Data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
-			pcb_pstk_invalidate_draw((pcb_pad_t *)n);
+			pcb_pstk_invalidate_draw((pcb_pstk_t *)n);
 		}
 	}
 	pcb_r_end(&it);
