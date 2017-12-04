@@ -590,8 +590,6 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
  */
 int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
-	pcb_cardinal_t i;
-
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
 	if (elem_only) {
