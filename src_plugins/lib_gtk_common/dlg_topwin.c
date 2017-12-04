@@ -380,6 +380,16 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	return button;
 }
 
+/* Just calls the scroll bars preferred size, when drawing area is resized */
+static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation, gpointer user_data)
+{
+	gint min;
+	pcb_gtk_topwin_t *tw = user_data;
+
+	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->v_range), &min, NULL);
+	gtkc_widget_get_preferred_height(GTK_WIDGET(gtk_widget_get_parent(tw->h_range)), &min, NULL);
+}
+
 /*
  * Create the top_window contents.  The config settings should be loaded
  * before this is called.
@@ -489,7 +499,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(hbox), tw->v_range, FALSE, FALSE, 0);
 
 
-
 	g_signal_connect(G_OBJECT(tw->v_adjustment), "value_changed", G_CALLBACK(v_adjustment_changed_cb), tw);
 
 	tw->h_adjustment = G_OBJECT(gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0));
@@ -504,6 +513,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 
 	g_signal_connect(G_OBJECT(tw->h_adjustment), "value_changed", G_CALLBACK(h_adjustment_changed_cb), tw);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 
 	/* -- The bottom status line label */
 	tw->status_line_hbox = gtkc_hbox_new(FALSE, 0);
