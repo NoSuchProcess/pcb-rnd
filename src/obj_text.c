@@ -651,7 +651,7 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 	pcb_board_t *pcb = pcb_data_get_top(data);
 
 	if (pcb == NULL)
-		return
+		return;
 
 	pcb_poly_restore_to_poly(data, PCB_TYPE_TEXT, layer, text);
 	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
