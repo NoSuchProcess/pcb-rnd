@@ -115,6 +115,12 @@ static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y
 	return gdk_window_get_device_position(window, device, x, y, mask);
 }
 
+/** Retrieves a widget’s initial minimum and natural height. */
+static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)
+{
+	gtk_widget_get_preferred_height(w, min_size, natural_size);
+}
+
 /** Adds a CSS class to the widget, applying CSS properties from \p css_descr */
 static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
 {
@@ -246,6 +252,10 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
 	return gdk_window_get_pointer(gtk_widget_get_window(w), x, y, mask);
+}
+
+static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)
+{
 }
 
 static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
