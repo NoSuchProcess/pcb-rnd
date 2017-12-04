@@ -64,6 +64,7 @@ void *pcb_obj_rotate90(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, un
 void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
 
 void pcb_screen_obj_rotate90(pcb_coord_t, pcb_coord_t, unsigned);
+void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
 void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 PCB_INLINE void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)

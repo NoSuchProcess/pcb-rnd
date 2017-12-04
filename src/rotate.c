@@ -165,3 +165,22 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 		pcb_board_set_changed_flag(pcb_true);
 	}
 }
+
+void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
+{
+	int type;
+	void *ptr1, *ptr2, *ptr3;
+	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
+			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+			return;
+		}
+		pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
+		if (conf_core.editor.rubber_band_mode)
+			pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+		if (type == PCB_TYPE_ELEMENT)
+			pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+		pcb_obj_rotate(type, ptr1, ptr2, ptr3, X, Y, angle);
+		pcb_board_set_changed_flag(pcb_true);
+	}
+}
