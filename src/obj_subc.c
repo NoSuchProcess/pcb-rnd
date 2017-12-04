@@ -1445,7 +1445,7 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void pcb_subc_draw_preview(const pcb_subc_t *sc, pcb_box_t *drawn_area)
+void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 {
 	int n;
 	pcb_pstk_draw_t ctx;
