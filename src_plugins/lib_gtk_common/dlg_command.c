@@ -358,8 +358,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	ctx->command_entry_status_line_active = TRUE;
 
 	gtk_entry_set_text(ctx->command_entry, command ? command : "");
-	gtk_widget_show_all(ctx->command_combo_box);
-	gtk_widget_show(gtk_widget_get_parent(ctx->command_combo_box));
+	gtk_widget_show_all(gtk_widget_get_parent(ctx->command_combo_box));
 
 	/* Remove the top window accel group so keys intended for the entry
 	   |  don't get intercepted by the menu system.  Set the interface
@@ -382,6 +381,11 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	/* Restore the damage we did before entering the loop.
 	 */
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig_id);
+
+	/* Hide the widgets */
+	if (conf_core.editor.fullscreen) {
+		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
+	}
 
 	/* Restore the status line label and give focus back to the drawing area
 	 */
