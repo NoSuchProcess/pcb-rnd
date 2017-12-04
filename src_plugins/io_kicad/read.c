@@ -4,6 +4,7 @@
  *	pcb-rnd, interactive printed circuit board design
  *	Copyright (C) 2016, 2017 Tibor 'Igor2' Palinkas
  *	Copyright (C) 2016, 2017 Erich S. Heinzle
+ *	Copyright (C) 2017 Miloh
  *
  *	This program is free software; you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -46,6 +47,7 @@
 #include "obj_all.h"
 #include "rotate.h"
 #include "safe_fs.h"
+#include "attrib.h"
 
 typedef struct {
 	pcb_board_t *pcb;
@@ -207,6 +209,36 @@ static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_error(subtree, "error parsing KiCad layout size.");
 }
 
+/* kicad_pcb/parse_title_block */
+static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
+{
+ 
+	gsxl_node_t *n;
+	const char *prefix = "kicad_titleblock_";
+	char *name;
+	if (subtree->str != NULL) {
+		printf("titleblock being parsed: \n");
+		printf("\t%s: %s\n", subtree->str, subtree->children->str );
+		name = pcb_concat(prefix, subtree->str, NULL);
+		pcb_attrib_put( st->pcb, name , subtree->children->str);
+		free(name);
+		for(n = subtree->next; n != NULL; n = n->next) {
+			if (n->str != NULL && strcmp("comment", n->str) != 0) {
+				printf("\t%s:'%s' \n", n->str, n->children->str);
+				name = pcb_concat( prefix , n->str, NULL);
+				pcb_attrib_put( st->pcb, name , n->children->str);
+				free(name);
+			} else {  /* if comment field has extra children args */
+				printf("\t%s %s:  '%s'\n", n->str, n->children->str, n->children->next->str);
+				name = pcb_concat( prefix, n->str, "_", n->children->str, NULL);
+				pcb_attrib_put( st->pcb, name , n->children->next->str);
+				free(name);
+			}
+		}
+		return 0;
+	}
+	return kicad_error(subtree, "error parsing KiCad titleblock.");
+}
 
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
@@ -1155,9 +1187,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);
 		moduleName = subtree->str;
-
+		p = subtree->next;
+		if ((p != NULL) && (p->str != NULL) && (strcmp("locked", p->str) == 0)) {
+			p = p->next;
+			printf("The module is locked, which is being ignored.\n");
+		}
 		SEEN_NO_DUP(tally, 0);
-		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
+		for(n = p, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
 				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -1493,6 +1529,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			/* pads next  - have thru_hole, circle, rect, roundrect, to think about*/ 
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
+				printf("Found a pad def.\n");
 				featureTally = 0;
 				padLayerDefCount = 0;
 				padRotation = 0;
@@ -1783,7 +1820,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						if (PCBLayer < 0) {
 							pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, using module layer.\n");
 							PCBLayer = moduleLayer;
-							return 0;
+							/*return 0; this terminates module parsing prematurely */
 						}
 					} else {
 						pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_line element\n");
@@ -2252,6 +2289,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"host",       kicad_parse_nop},
 		{"general",    kicad_parse_nop},
 		{"page",       kicad_parse_page_size},
+		{"title_block",kicad_parse_title_block},
 		{"layers",     kicad_parse_layer_definitions}, /* board layer defs */
 		{"setup",      kicad_parse_nop},
 		{"net",	kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
