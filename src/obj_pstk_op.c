@@ -143,8 +143,14 @@ void *pcb_pstkop_destroy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 void *pcb_pstkop_change_thermal(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
-	pcb_board_t *pcb = ctx->chgtherm.pcb;
-	pcb_layer_t *layer = pcb_get_layer(pcb->Data, ctx->chgtherm.lid);
+	pcb_board_t *pcb;
+	pcb_layer_t *layer;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
+		return NULL;
+
+	pcb = ctx->chgtherm.pcb;
+	layer = pcb_get_layer(pcb->Data, ctx->chgtherm.lid);
 
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PSTK, ps, ps, ps, pcb_false);
 	pcb_poly_restore_to_poly(pcb->Data, PCB_TYPE_PSTK, layer, ps);
@@ -161,6 +167,10 @@ void *pcb_pstkop_change_thermal(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	static pcb_flag_values_t pcb_pstk_flags = 0;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
+		return NULL;
+
 	if (pcb_pstk_flags == 0)
 		pcb_pstk_flags = pcb_obj_valid_flags(PCB_TYPE_PSTK);
 
@@ -177,6 +187,9 @@ void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	double rot = ps->rot;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
+		return NULL;
 
 	rot += (double)ctx->rotate.angle;
 
@@ -212,6 +225,9 @@ void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	ctx->rotate.angle = (double)ctx->rotate.number * 90.0;
 
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
+		return NULL;
+
 	switch(ctx->rotate.number) {
 		case 0:
 			ctx->rotate.sina = 0;
@@ -237,6 +253,9 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t proto;
 	pcb_cardinal_t nproto;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
+		return NULL;
 
 	/* create the new prototype and insert it */
 	pcb_pstk_proto_copy(&proto, pcb_pstk_get_proto(ps));
@@ -280,6 +299,9 @@ void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t proto;
 	pcb_cardinal_t nproto;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
+		return NULL;
 
 	/* create the new prototype and insert it */
 	pcb_pstk_proto_copy(&proto, pcb_pstk_get_proto(ps));
