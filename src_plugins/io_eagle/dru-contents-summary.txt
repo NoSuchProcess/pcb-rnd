@@ -1,4 +1,4 @@
-layerSetup = (1*16)   -> defines a layer stackup composed of layer 1 and layer 16, and the '*' denotes a core between them, whereas '+' would denote "prepreg" , i.e. "1+(2*15)+16" is a four layer board
+layerSetup = (1*16)   -> defines a layer stackup composed of layer 1 and layer 16, and the '*' denotes a core between them, whereas '+' would denote "prepreg" , i.e.  a commercial 4 layer given by: layerSetup = (1+2*15+16), and a commercial 6 layer given by layerSetup = (1+2*3+14*15+16)"
 mtCopper = 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm  ->minimum thickness of each copper layer, quoted in order of layers
 mtIsolate = 1.6mm 1.2mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm  -> minimum thickness of dielectric between copper layers, quoted in order of layers
 mdWireWire = 6mil -> minimum distance between signal layer wires
