@@ -211,6 +211,7 @@ static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 	sc->aux_cache[0] = NULL;
 }
 
+/* Convert a square line into a polygon and add it to dst */
 static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 {
 	pcb_poly_t *poly;
