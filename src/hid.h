@@ -153,10 +153,10 @@ typedef enum pcb_hid_attr_ev_e {
 	PCB_HID_ATTR_EV_WINCLOSE
 } pcb_hid_attr_ev_t;
 
-typedef struct hid_s pcb_hid_t;
+typedef struct pcb_hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
-struct hid_s {
+struct pcb_hid_s {
 	/* The size of this structure.  We use this as a compatibility
 	   check; a HID built with a different hid.h than we're expecting
 	   should have a different size here.  */
