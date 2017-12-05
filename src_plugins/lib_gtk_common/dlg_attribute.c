@@ -529,9 +529,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return -1;
 }
 
-void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results,
-												const char *title, const char *descr, void *caller_data, pcb_bool modal,
-												void (*button_cb) (void *caller_data, pcb_hid_attr_ev_t ev))
+void *ghid_attr_dlg_new(GtkWidget *top_window, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox, *vbox;
