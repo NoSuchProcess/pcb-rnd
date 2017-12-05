@@ -566,6 +566,7 @@ void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type)
 	if (type & PCB_OBJ_VIA) PCB_VIA_LOOP(data); {
 		if (via->term != NULL) vtp0_append(dst, via);
 	} PCB_END_LOOP;
+#warning TODO: subc TODO
 /*	if (type & PCB_OBJ_SUBC) PCB_SUBC_LOOP(data); {
 		if (subc->term != NULL) vtp0_append(dst, subc);
 	} PCB_END_LOOP;*/
