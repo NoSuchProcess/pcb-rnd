@@ -455,6 +455,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 		if (name == NULL) {
 			gtk_entry_set_text(library_window->entry_filter, orig);
 			g_source_remove(library_window->filter_timeout); /* block the above edit from collapsing the tree */
+			library_window->filter_timeout = 0;
 			gtk_tree_model_filter_refilter((GtkTreeModelFilter *) model);
 
 			/* cancel means we should skip refreshing the preview with the invalid
