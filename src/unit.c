@@ -43,7 +43,7 @@
 /* These should be kept in order of smallest scale_factor
  * to largest -- the code uses this ordering when finding
  * the best scale to use for a group of measures */
-pcb_unit_t Units[] = {
+pcb_unit_t pcb_units[] = {
 	{0, "km", NULL, 'k', 0.000001, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_KM, 5,
 	 0.00005, 0.0005, 0.0025, 0.05, 0.25,
 	 {""}},
@@ -80,7 +80,7 @@ pcb_unit_t Units[] = {
 	 {"pcb"}}
 };
 
-#define N_UNITS ((int) (sizeof Units / sizeof Units[0]))
+#define N_UNITS ((int) (sizeof pcb_units / sizeof pcb_units[0]))
 /* \brief Initialize non-static data for pcb-printf
  * \par Function Description
  * Assigns each unit its index for quick access through the
@@ -91,15 +91,15 @@ void pcb_units_init(void)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i) {
-		Units[i].index = i;
-		Units[i].in_suffix = _(Units[i].suffix);
+		pcb_units[i].index = i;
+		pcb_units[i].in_suffix = _(pcb_units[i].suffix);
 	}
 }
 
 /* This list -must- contain all printable units from the above list */
 /* For now I have just copy/pasted the same values for all metric
  * units and the same values for all imperial ones */
-pcb_increments_t increments[] = {
+pcb_increments_t pcb_increments[] = {
 	/* TABLE FORMAT   |  default  |  min  |  max
 	 *          grid  |           |       |
 	 *          size  |           |       |
@@ -153,7 +153,7 @@ pcb_increments_t increments[] = {
 	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
 };
 
-#define N_INCREMENTS (sizeof increments / sizeof increments[0])
+#define N_INCREMENTS (sizeof pcb_increments / sizeof pcb_increments[0])
 
 /* \brief Obtain a unit object from its suffix
  * \par Function Description
@@ -187,8 +187,8 @@ const pcb_unit_t *get_unit_struct(const char *suffix)
 	/* Do lookup */
 	if (s_len > 0)
 		for (i = 0; i < N_UNITS; ++i)
-			if (strncmp(suffix, Units[i].suffix, s_len) == 0 || strncmp(suffix, Units[i].alias[0], s_len) == 0)
-				return &Units[i];
+			if (strncmp(suffix, pcb_units[i].suffix, s_len) == 0 || strncmp(suffix, pcb_units[i].alias[0], s_len) == 0)
+				return &pcb_units[i];
 
 	return NULL;
 }
@@ -197,8 +197,8 @@ const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)
-		if (Units[i].allow == allow)
-			return &Units[i];
+		if (pcb_units[i].allow == allow)
+			return &pcb_units[i];
 
 	return NULL;
 }
@@ -207,7 +207,7 @@ const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow)
 /* \brief Returns the master unit list. This may not be modified. */
 const pcb_unit_t *get_unit_list(void)
 {
-	return Units;
+	return pcb_units;
 }
 
 /* \brief Returns the unit by its index */
@@ -215,7 +215,7 @@ const pcb_unit_t *get_unit_by_idx(int idx)
 {
 	if ((idx < 0) || (idx >= N_UNITS))
 		return NULL;
-	return Units + idx;
+	return pcb_units + idx;
 }
 
 /* \brief Returns the length of the master unit list. */
@@ -292,8 +292,8 @@ pcb_increments_t *pcb_get_increments_struct(const char *suffix)
 	int i;
 	/* Do lookup */
 	for (i = 0; i < N_INCREMENTS; ++i)
-		if (strcmp(suffix, increments[i].suffix) == 0)
-			return &increments[i];
+		if (strcmp(suffix, pcb_increments[i].suffix) == 0)
+			return &pcb_increments[i];
 	return NULL;
 }
 

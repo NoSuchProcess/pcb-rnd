@@ -111,8 +111,8 @@ struct pcb_increments_s {
 
 typedef struct pcb_unit_s pcb_unit_t;
 typedef struct pcb_increments_s pcb_increments_t;
-extern pcb_unit_t Units[];
-extern pcb_increments_t increments[];
+extern pcb_unit_t pcb_units[];
+extern pcb_increments_t pcb_increments[];
 
 const pcb_unit_t *get_unit_struct(const char *suffix);
 const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);

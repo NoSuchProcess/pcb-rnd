@@ -207,11 +207,11 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 	/* Determine scale factor -- find smallest unit that brings
 	 * the whole group above unity */
 	for (n = 0; n < pcb_get_n_units(); ++n) {
-		if ((Units[n].allow & allow) != 0 && (Units[n].family == family)) {
+		if ((pcb_units[n].allow & allow) != 0 && (pcb_units[n].family == family)) {
 			int n_above_one = 0;
 
 			for (i = 0; i < n_coords; ++i)
-				if (abs(value[i] * Units[n].scale_factor) > 1)
+				if (abs(value[i] * pcb_units[n].scale_factor) > 1)
 					++n_above_one;
 			if (n_above_one == n_coords)
 				break;
@@ -221,15 +221,15 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 	if (n == pcb_get_n_units()) {
 		do {
 			--n;
-		} while ((Units[n].allow & allow) == 0 || Units[n].family != family);
+		} while ((pcb_units[n].allow & allow) == 0 || pcb_units[n].family != family);
 	}
 
 	/* Apply scale factor */
-	suffix = Units[n].suffix;
+	suffix = pcb_units[n].suffix;
 	for (i = 0; i < n_coords; ++i)
-		value[i] = value[i] * Units[n].scale_factor;
+		value[i] = value[i] * pcb_units[n].scale_factor;
 
-	make_printf_spec(printf_spec_new, printf_spec, Units[n].default_prec, &trunc0);
+	make_printf_spec(printf_spec_new, printf_spec, pcb_units[n].default_prec, &trunc0);
 
 	/* Actually sprintf the values in place
 	 *  (+ 2 skips the ", " for first value) */
@@ -652,8 +652,8 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					{
 						int found = 0;
 						for (i = 0; i < pcb_get_n_units(); ++i) {
-							if (strcmp(ext_unit, Units[i].suffix) == 0) {
-								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
+							if (strcmp(ext_unit, pcb_units[i].suffix) == 0) {
+								if (CoordsToString(string, value, 1, &spec, pcb_units[i].allow, suffix) != 0) goto err;
 								found = 1;
 								break;
 							}
@@ -691,8 +691,8 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					{
 						int found = 0;
 						for (i = 0; i < pcb_get_n_units(); ++i) {
-							if (*fmt == Units[i].printf_code) {
-								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
+							if (*fmt == pcb_units[i].printf_code) {
+								if (CoordsToString(string, value, 1, &spec, pcb_units[i].allow, suffix) != 0) goto err;
 								found = 1;
 								break;
 							}
