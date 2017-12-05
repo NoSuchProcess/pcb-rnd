@@ -115,7 +115,7 @@ static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y
 	return gdk_window_get_device_position(window, device, x, y, mask);
 }
 
-/** Retrieves a widget’s initial minimum and natural height. */
+/** Retrieves a widget's initial minimum and natural height. */
 static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)
 {
 	gtk_widget_get_preferred_height(w, min_size, natural_size);
