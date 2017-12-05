@@ -680,10 +680,31 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_
 
 /* Check the minimum distance between a hole's edge and a shape's edge and
    indicate error if it's smaller than min */
-static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_tshape_t *ts, pcb_coord_t min, pcb_coord_t *out)
+static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdia, pcb_coord_t min, pcb_coord_t *out)
 {
+	double dist, neck;
+	pcb_line_t line;
+
+	switch(shp->shape) {
+		case PCB_PSSH_CIRC:
+			dist = sqrt(shp->data.circ.x*shp->data.circ.x + shp->data.circ.y*shp->data.circ.y);
+			neck = (double)(shp->data.circ.dia - hdia) / 2.0 - dist;
+			break;
+		case PCB_PSSH_LINE:
+			line.Point1.X = shp->data.line.x1;
+			line.Point1.Y = shp->data.line.y1;
+			line.Point2.X = shp->data.line.x2;
+			line.Point2.Y = shp->data.line.y2;
+			line.Thickness = shp->data.line.thickness;
+			dist = sqrt(pcb_point_line_dist2(0, 0, &line));
+			neck = (double)(shp->data.line.thickness - hdia) / 2.0 - dist;
+			break;
+		case PCB_PSSH_POLY:
 #warning padstack TODO
-	return 0;
+			return 0;
+	}
+
+	return neck < min;
 }
 
 void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole)
@@ -695,7 +716,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
 
 		for(n = 0; n < ts->len; n++) {
-			if (pcb_pstk_shape_hole_break(ts, 2 * PCB->minRing, err_minring)) {
+			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, 2 * PCB->minRing, err_minring)) {
 				break;
 			}
 		}
