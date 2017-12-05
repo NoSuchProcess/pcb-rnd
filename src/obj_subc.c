@@ -1450,8 +1450,20 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2);
 	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
-	if (subc->refdes != NULL)
-		pcb_term_label_draw(bb->X1, bb->Y1, 50.0, 0, 0, subc->refdes, subc->intconn);
+	if (subc->refdes != NULL) {
+		pcb_coord_t x0, y0;
+
+		if (conf_core.editor.view.flip_x)
+			x0 = bb->X2;
+		else
+			x0 = bb->X1;
+		if (conf_core.editor.view.flip_y)
+			y0 = bb->Y2;
+		else
+			y0 = bb->Y1;
+
+		pcb_term_label_draw(x0, y0, 50.0, 0, 0, subc->refdes, subc->intconn);
+	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
