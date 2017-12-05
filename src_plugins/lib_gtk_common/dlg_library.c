@@ -948,6 +948,7 @@ void pcb_gtk_library_create(pcb_gtk_common_t *com)
 
 	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
 	gtk_window_set_role(GTK_WINDOW(library_window), "PCB_Library");
+	gtk_window_set_transient_for(GTK_WINDOW(library_window), GTK_WINDOW(com->top_window));
 
 	wplc_place(WPLC_LIBRARY, library_window);
 
