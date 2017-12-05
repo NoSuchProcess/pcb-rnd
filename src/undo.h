@@ -54,7 +54,7 @@ void undo_dump(void);
 
 /* temporary */
 #include "pcb_bool.h"
-extern pcb_data_t *RemoveList;
+extern pcb_data_t *pcb_removelist;
 extern pcb_bool pcb_undo_and_draw;
 
 #endif

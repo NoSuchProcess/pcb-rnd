@@ -515,12 +515,12 @@ static pcb_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		if (!RemoveList)
-			RemoveList = pcb_buffer_new(NULL);
+		if (!pcb_removelist)
+			pcb_removelist = pcb_buffer_new(NULL);
 		if (pcb_undo_and_draw)
 			pcb_erase_obj(type, ptr1, ptr2);
-		/* in order to make this re-doable we move it to the RemoveList */
-		pcb_move_obj_to_buffer(PCB, RemoveList, PCB->Data, type, ptr1, ptr2, ptr3);
+		/* in order to make this re-doable we move it to the pcb_removelist */
+		pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, type, ptr1, ptr2, ptr3);
 		Entry->Type = PCB_UNDO_REMOVE;
 		return (pcb_true);
 	}
@@ -557,9 +557,9 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 	int type;
 
 	/* lookup entry by it's ID */
-	type = pcb_search_obj_by_id(RemoveList, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+	type = pcb_search_obj_by_id(pcb_removelist, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		pcb_move_obj_to_buffer(PCB, PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
+		pcb_move_obj_to_buffer(PCB, PCB->Data, pcb_removelist, type, ptr1, ptr2, ptr3);
 		if (pcb_undo_and_draw)
 			DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 		Entry->Type = PCB_UNDO_CREATE;
@@ -690,7 +690,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	long int swap_id;
 
 	/* lookup entry by it's ID */
-	type = pcb_search_obj_by_id(RemoveList, &ptr1, &ptr2, &ptr3, Entry->Data.CopyID, Entry->Kind);
+	type = pcb_search_obj_by_id(pcb_removelist, &ptr1, &ptr2, &ptr3, Entry->Data.CopyID, Entry->Kind);
 	if (type == PCB_TYPE_NONE)
 		return pcb_false;
 
@@ -705,12 +705,12 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	obj->ID = obj2->ID;
 	obj2->ID = swap_id;
 
-	pcb_move_obj_to_buffer(PCB, RemoveList, PCB->Data, type, ptr1b, ptr2b, ptr3b);
+	pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, type, ptr1b, ptr2b, ptr3b);
 
 	if (pcb_undo_and_draw)
 		DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 
-	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB, PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
+	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB, PCB->Data, pcb_removelist, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLY)
 		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_poly_t *) obj);
 	return (pcb_true);
@@ -999,11 +999,11 @@ void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (Locked)
 		return;
 
-	if (!RemoveList)
-		RemoveList = pcb_buffer_new(NULL);
+	if (!pcb_removelist)
+		pcb_removelist = pcb_buffer_new(NULL);
 
 	GetUndoSlot(PCB_UNDO_REMOVE, PCB_OBJECT_ID(Ptr3), Type);
-	pcb_move_obj_to_buffer(PCB, RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
+	pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1062,11 +1062,11 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
 	if (Locked)
 		return;
 
-	if (!RemoveList)
-		RemoveList = pcb_buffer_new(NULL);
+	if (!pcb_removelist)
+		pcb_removelist = pcb_buffer_new(NULL);
 
 	undo = GetUndoSlot(undo_type, PCB_OBJECT_ID(Ptr2), Type);
-	copy = (pcb_any_obj_t *) pcb_copy_obj_to_buffer(PCB, RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
+	copy = (pcb_any_obj_t *) pcb_copy_obj_to_buffer(PCB, pcb_removelist, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 	undo->Data.CopyID = copy->ID;
 }
 
@@ -1418,9 +1418,9 @@ static void pcb_undo_old_free(void *ptr_)
 			free(ptr->Data.ChangeName.Name);
 			break;
 		case PCB_UNDO_REMOVE:
-			type = pcb_search_obj_by_id(RemoveList, &ptr1, &ptr2, &ptr3, ptr->ID, ptr->Kind);
+			type = pcb_search_obj_by_id(pcb_removelist, &ptr1, &ptr2, &ptr3, ptr->ID, ptr->Kind);
 			if (type != PCB_TYPE_NONE)
-				pcb_destroy_object(RemoveList, type, ptr1, ptr2, ptr3);
+				pcb_destroy_object(pcb_removelist, type, ptr1, ptr2, ptr3);
 			break;
 		default:
 			break;

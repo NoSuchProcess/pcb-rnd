@@ -68,7 +68,7 @@
 static pcb_bool between_increment_and_restore = pcb_false;
 static pcb_bool added_undo_between_increment_and_restore = pcb_false;
 
-pcb_data_t *RemoveList = NULL; /* lists of removed objects */
+pcb_data_t *pcb_removelist = NULL; /* lists of removed objects */
 static pcb_bool Locked = pcb_false; /* do not add entries if */
 pcb_bool pcb_undo_and_draw = pcb_true; /* flag is set; prevents from infinite loops */
 static uundo_list_t pcb_uundo;
