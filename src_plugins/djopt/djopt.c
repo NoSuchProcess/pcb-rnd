@@ -367,19 +367,6 @@ static int line_orient(line_s * l, corner_s * c)
 	return DIAGONAL;
 }
 
-#if 0
-/* Not used */
-static corner_s *common_corner(line_s * l1, line_s * l2)
-{
-	if (l1->s == l2->s || l1->s == l2->e)
-		return l1->s;
-	if (l1->e == l2->s || l1->e == l2->e)
-		return l1->e;
-	dj_abort("common_corner: no common corner found\n");
-	return NULL;
-}
-#endif
-
 static corner_s *other_corner(line_s * l, corner_s * c)
 {
 	if (l->s == c)
@@ -509,24 +496,6 @@ static void new_line(corner_s * s, corner_s * e, int layer, pcb_line_t * example
 	check(e, ls);
 }
 
-#if 0
-/* Not used */
-static int c_orth_to(corner_s * c, line_s * l, int o)
-{
-	int i, o2;
-	int rv = 0;
-	for (i = 0; i < c->n_lines; i++) {
-		if (c->lines[i] == l)
-			continue;
-		o2 = line_orient(c->lines[i], c);
-		if (ORIENT(o) == ORIENT(o2) || o2 == DIAGONAL)
-			return 0;
-		rv++;
-	}
-	return rv;
-}
-#endif
-
 static line_s *other_line(corner_s * c, line_s * l)
 {
 	int i;
@@ -615,18 +584,6 @@ static int corner_radius(corner_s * c)
 	diam = (diam + 1) / 2;
 	return diam;
 }
-
-#if 0
-/* Not used */
-static int corner_layer(corner_s * c)
-{
-	if (c->pin || c->via)
-		return -1;
-	if (c->n_lines < 1)
-		return -1;
-	return c->lines[0]->layer;
-}
-#endif
 
 static void add_corner_to_rect_if(rect_s * rect, corner_s * c, rect_s * e)
 {
@@ -2122,25 +2079,6 @@ static void classify_nets()
 		this_net++;
 	}
 }
-
-#if 0
-/* Not used */
-static void dump_all()
-{
-	corner_s *c;
-	line_s *l;
-	for (c = corners; c; c = c->next) {
-		if (DELETED(c))
-			continue;
-		printf("%p corner %d,%d layer %d net %d\n", (void *) c, c->x, c->y, c->layer, c->net);
-	}
-	for (l = lines; l; l = l->next) {
-		if (DELETED(l))
-			continue;
-		printf("%p line %p to %p layer %d\n", (void *) l, (void *) (l->s), (void *) (l->e), l->layer);
-	}
-}
-#endif
 
 #if 0
 static void nudge_corner(corner_s * c, int dx, int dy, corner_s * prev_corner)
