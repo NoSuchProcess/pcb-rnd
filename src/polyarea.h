@@ -29,15 +29,6 @@
 #define PCB_PLF_INV 0
 #define PCB_PLF_MARK 1
 
-#ifndef min
-#define min(x, y) ((x) < (y) ? (x) : (y))
-#endif
-
-#ifndef max
-#define max(x, y) ((x) > (y) ? (x) : (y))
-#endif
-
-
 typedef pcb_coord_t pcb_vertex_t[2];				/* longing point representation of
 																   coordinates */
 typedef pcb_vertex_t pcb_vector_t;

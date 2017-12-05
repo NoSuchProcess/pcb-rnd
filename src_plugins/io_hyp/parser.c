@@ -46,6 +46,11 @@
 #include "safe_fs.h"
 #include <string.h>
 
+#undef min
+#undef max
+#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 /*
  * the board is shared between all routines.
  */

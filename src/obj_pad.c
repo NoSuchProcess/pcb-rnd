@@ -45,6 +45,9 @@
 #include "obj_text_draw.h"
 #include "obj_pad_draw.h"
 
+#undef max
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 /*** allocation ***/
 /* get next slot for a pad, allocates memory if necessary */
 pcb_pad_t *pcb_pad_alloc(pcb_element_t * element)

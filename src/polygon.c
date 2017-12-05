@@ -59,6 +59,11 @@
 
 #define sqr(x) ((x)*(x))
 
+#undef min
+#undef max
+#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 static double rotate_circle_seg[4];
 
 static int Unsubtract(pcb_polyarea_t * np1, pcb_poly_t * p);

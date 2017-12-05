@@ -62,6 +62,11 @@
 #define EPSILON (1E-8)
 #define IsZero(a, b) (fabs((a) - (b)) < EPSILON)
 
+#undef min
+#undef max
+#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 /*********************************************************************/
 /*              L o n g   V e c t o r   S t u f f                    */
 /*********************************************************************/
