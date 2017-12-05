@@ -58,6 +58,9 @@ static void pcb_box_bump_box_noflt(pcb_box_t *dst, pcb_box_t *src)
 		pcb_box_bump_box(dst, src);
 }
 
+/* update cached values: e.g. looking up refdes in attributes each time the
+   netlist code needs it would be too expensive. Instead, we maintain a
+   read-only ->refdes field and update it any time attributes change. */
 static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_subc_t *sc = (pcb_subc_t *)(((char *)list) - offsetof(pcb_subc_t, Attributes));
@@ -101,7 +104,7 @@ void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc)
 	pcb_subclist_append(&dt->subc, sc);
 }
 
-
+/* Create (and append) a new bound layer to a subc */
 static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 {
 	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
@@ -133,6 +136,10 @@ static pcb_line_t *find_aux_line(pcb_layer_t *aux, const char *key)
 	return NULL;
 }
 
+/* Looking up aux objects for determining orientation/origin of a subc
+   is somewhat expensive. Instead of doing that every time, we just save
+   the pointer of those objects/layers. They don't change once the
+   subc is loaded into memory */
 static int pcb_subc_cache_update(pcb_subc_t *sc)
 {
 	if (sc->aux_layer == NULL) {
@@ -179,6 +186,9 @@ int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot)
 	return 0;
 }
 
+/* The subc is originally drawn on the top side, and teh aux layer gets
+   the PCB_LYT_TOP flag. If the subc is ever sent to the other side, the
+   aux layer changed side too. This is to be detected here. */
 int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom)
 {
 	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_layer == NULL))
