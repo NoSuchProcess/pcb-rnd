@@ -43,7 +43,7 @@ typedef struct {								/* holds information about output window */
 	unsigned direct:1; /* starts as 1 and becomes 0 before the first compositing layer group is reset */
 } pcb_output_t;
 
-extern pcb_output_t Output;
+extern pcb_output_t pcb_draw_out;
 
 /* Temporarily inhibid drawing if this is non-zero. A function that calls a
    lot of other functions that would call pcb_draw() a lot in turn may increase
@@ -92,8 +92,8 @@ void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
 #ifdef PCB_BBOX_DEBUG
 #define PCB_DRAW_BBOX(obj) \
 	do { \
-		pcb_gui->set_line_width(Output.fgGC, 0); \
-		pcb_gui->draw_rect(Output.fgGC, obj->BoundingBox.X1, obj->BoundingBox.Y1, obj->BoundingBox.X2, obj->BoundingBox.Y2); \
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0); \
+		pcb_gui->draw_rect(pcb_draw_out.fgGC, obj->BoundingBox.X1, obj->BoundingBox.Y1, obj->BoundingBox.X2, obj->BoundingBox.Y2); \
 	} while(0)
 #else
 #define PCB_DRAW_BBOX(obj)

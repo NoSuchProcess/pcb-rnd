@@ -845,25 +845,25 @@ void pcb_arc_draw_(pcb_arc_t * arc, int allow_term_gfx)
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw)
 	{
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(arc)) {
-			pcb_gui->set_line_width(Output.active_padGC, arc->Thickness);
-			pcb_gui->draw_arc(Output.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
-			pcb_gui->set_line_width(Output.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
+			pcb_gui->set_line_width(pcb_draw_out.active_padGC, arc->Thickness);
+			pcb_gui->draw_arc(pcb_draw_out.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
-		pcb_gui->set_line_width(Output.fgGC, arc->Thickness);
-		pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
-		pcb_gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, arc->Thickness);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
+		pcb_gui->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 	}
 	else
 	{
-		pcb_gui->set_line_width(Output.fgGC, 0);
-		pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
 
 		if(conf_core.editor.thin_draw)
-			pcb_gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+			pcb_gui->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 
 		if(conf_core.editor.wireframe_draw)
-			pcb_draw_wireframe_arc(Output.fgGC,arc);
+			pcb_draw_wireframe_arc(pcb_draw_out.fgGC,arc);
 	}
 	if (arc->term != NULL) {
 		if ((pcb_draw_doing_pinout) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, arc))
@@ -897,7 +897,7 @@ static void pcb_arc_draw(pcb_layer_t * layer, pcb_arc_t * arc, int allow_term_gf
 		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
 	}
-	pcb_gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 	pcb_arc_draw_(arc, allow_term_gfx);
 }
 

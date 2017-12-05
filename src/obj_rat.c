@@ -225,15 +225,15 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, rat))
-			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.rat_selected);
+			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.rat_selected);
 		else
-			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.connected);
+			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.connected);
 	}
 	else if (PCB_HAS_COLOROVERRIDE(rat)) {
-		pcb_gui->set_color(Output.fgGC, rat->override_color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, rat->override_color);
 	}
 	else
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.rat);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.rat);
 
 	if (conf_core.appearance.rat_thickness < 20)
 		rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;
@@ -242,10 +242,10 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 		int w = rat->Thickness;
 
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)
-			pcb_gui->set_line_width(Output.fgGC, 0);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 		else
-			pcb_gui->set_line_width(Output.fgGC, w);
-		pcb_gui->draw_arc(Output.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, w);
+		pcb_gui->draw_arc(pcb_draw_out.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else
 		pcb_line_draw_((pcb_line_t *) rat, 0);

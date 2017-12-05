@@ -1019,7 +1019,7 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 			color = conf_core.appearance.color.pin;
 	}
 
-	pcb_gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 }
 
 static void _draw_pv_name(pcb_pin_t * pv)
@@ -1069,9 +1069,9 @@ static void _draw_pv_name(pcb_pin_t * pv)
 static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)
 {
 	if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)
-		pcb_gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
+		pcb_gui->thindraw_pcb_pv(pcb_draw_out.fgGC, pcb_draw_out.fgGC, pv, draw_hole, pcb_false);
 	else
-		pcb_gui->fill_pcb_pv(Output.fgGC, Output.drillGC, pv, draw_hole, pcb_false);
+		pcb_gui->fill_pcb_pv(pcb_draw_out.fgGC, pcb_draw_out.drillGC, pv, draw_hole, pcb_false);
 	
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) && pcb_draw_doing_pinout)
 		_draw_pv_name(pv);
@@ -1105,9 +1105,9 @@ pcb_r_dir_t pcb_pin_clear_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw)
-		pcb_gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
+		pcb_gui->thindraw_pcb_pv(pcb_draw_out.pmGC, pcb_draw_out.pmGC, pin, pcb_false, pcb_true);
 	else
-		pcb_gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
+		pcb_gui->fill_pcb_pv(pcb_draw_out.pmGC, pcb_draw_out.pmGC, pin, pcb_false, pcb_true);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -1142,13 +1142,13 @@ pcb_r_dir_t pcb_hole_draw_callback(const pcb_box_t * b, void *cl)
 
 	if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
-			pcb_gui->set_line_cap(Output.fgGC, Round_Cap);
-			pcb_gui->set_line_width(Output.fgGC, 0);
-			pcb_gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
+			pcb_gui->set_line_cap(pcb_draw_out.fgGC, Round_Cap);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+			pcb_gui->draw_arc(pcb_draw_out.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
 		}
 	}
 	else
-		pcb_gui->fill_circle(Output.drillGC, pv->X, pv->Y, pv->DrillingHole / 2);
+		pcb_gui->fill_circle(pcb_draw_out.drillGC, pv->X, pv->Y, pv->DrillingHole / 2);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pv))
@@ -1163,11 +1163,11 @@ pcb_r_dir_t pcb_hole_draw_callback(const pcb_box_t * b, void *cl)
 			pcb_lighten_color(color, buf, 1.75);
 			color = buf;
 		}
-		pcb_gui->set_color(Output.fgGC, color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, color);
 
-		pcb_gui->set_line_cap(Output.fgGC, Round_Cap);
-		pcb_gui->set_line_width(Output.fgGC, 0);
-		pcb_gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
+		pcb_gui->set_line_cap(pcb_draw_out.fgGC, Round_Cap);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		pcb_gui->draw_arc(pcb_draw_out.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
 }

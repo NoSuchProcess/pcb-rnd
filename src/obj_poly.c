@@ -981,17 +981,17 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 {
 	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
 	{
-		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, drawn_area);
+		pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, drawn_area);
 	}
 	else {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon)) {
 			pcb_vnode_t *n, *head;
 			int i;
 
-			pcb_gui->fill_pcb_polygon(Output.active_padGC, polygon, drawn_area);
+			pcb_gui->fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, drawn_area);
 			head = &polygon->Clipped->contours->head;
 
-			pcb_gui->set_line_cap(Output.fgGC, Square_Cap);
+			pcb_gui->set_line_cap(pcb_draw_out.fgGC, Square_Cap);
 			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
 				pcb_coord_t x, y, r;
 				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
@@ -999,12 +999,12 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 
 #warning subc TODO: check if x;y is within the poly, but use a cheaper method than the official
 				r = PCB_DRAW_TERM_GFX_WIDTH;
-				pcb_gui->set_line_width(Output.fgGC, r);
-				pcb_gui->draw_line(Output.fgGC, x, y, x, y);
+				pcb_gui->set_line_width(pcb_draw_out.fgGC, r);
+				pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x, y);
 			}
 		}
 		else
-			pcb_gui->fill_pcb_polygon(Output.fgGC, polygon, drawn_area);
+			pcb_gui->fill_pcb_polygon(pcb_draw_out.fgGC, polygon, drawn_area);
 	}
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
@@ -1012,7 +1012,7 @@ void pcb_poly_draw_(pcb_poly_t *polygon, const pcb_box_t *drawn_area, int allow_
 		pcb_poly_t poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
-			pcb_gui->thindraw_pcb_polygon(Output.fgGC, &poly, drawn_area);
+			pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, &poly, drawn_area);
 	}
 
 	if (polygon->term != NULL) {
@@ -1044,7 +1044,7 @@ static void pcb_poly_draw(pcb_layer_t *layer, pcb_poly_t *polygon, const pcb_box
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
 	else
 		color = layer->meta.real.color;
-	pcb_gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 
 	pcb_poly_draw_(polygon, drawn_area, allow_term_gfx);
 }

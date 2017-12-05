@@ -53,10 +53,10 @@ static void pcb_draw_paste(int side, const pcb_box_t *drawn_area)
 	cctx.invert = 0;
 
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-add */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, cctx.screen);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
 		pcb_pad_paste_draw(side, drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 	}
 	else {
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
@@ -90,7 +90,7 @@ static void pcb_draw_mask(int side, const pcb_box_t *screen)
 	cctx.invert = pcb_gui->mask_invert;
 
 	if (!cctx.invert)
-		Output.direct = 0;
+		pcb_draw_out.direct = 0;
 
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-sub */
 		comp_init(&cctx, 1);
@@ -150,11 +150,11 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 
 	if (pcb_is_silk_old_style(&cctx, lid)) {
 		/* fallback: implicit layer -> original code: draw auto+manual */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, cctx.screen);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, cctx.screen);
 		pcb_draw_layer(LAYER_PTR(lid), cctx.screen);
 		pcb_draw_silk_auto(&cctx, &lyt_side);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, cctx.screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, cctx.screen);
 	}
 	else {
 		comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
@@ -167,10 +167,10 @@ static void pcb_draw_silk(unsigned long lyt_side, const pcb_box_t *drawn_area)
 
 static void pcb_draw_rats(const pcb_box_t *drawn_area)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, drawn_area);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, pcb_rat_draw_callback, NULL, NULL);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, drawn_area);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
 
 static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area)
@@ -181,9 +181,9 @@ static void pcb_draw_assembly(unsigned int lyt_side, const pcb_box_t *drawn_area
 		return;
 
 	pcb_draw_doing_assy = pcb_true;
-	pcb_gui->set_draw_faded(Output.fgGC, 1);
+	pcb_gui->set_draw_faded(pcb_draw_out.fgGC, 1);
 	DrawLayerGroup(side_group, drawn_area, 0);
-	pcb_gui->set_draw_faded(Output.fgGC, 0);
+	pcb_gui->set_draw_faded(pcb_draw_out.fgGC, 0);
 
 	/* draw package */
 	pcb_draw_silk(lyt_side, drawn_area);

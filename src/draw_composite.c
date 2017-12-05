@@ -40,28 +40,28 @@ typedef struct comp_ctx_s {
 
 static void comp_fill_board(comp_ctx_t *ctx)
 {
-	pcb_gui->set_color(Output.fgGC, ctx->color);
+	pcb_gui->set_color(pcb_draw_out.fgGC, ctx->color);
 	if (ctx->screen == NULL)
-		pcb_gui->fill_rect(Output.fgGC, 0, 0, ctx->pcb->MaxWidth, ctx->pcb->MaxHeight);
+		pcb_gui->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->pcb->MaxWidth, ctx->pcb->MaxHeight);
 	else
-		pcb_gui->fill_rect(Output.fgGC, ctx->screen->X1, ctx->screen->Y1, ctx->screen->X2, ctx->screen->Y2);
+		pcb_gui->fill_rect(pcb_draw_out.fgGC, ctx->screen->X1, ctx->screen->Y1, ctx->screen->X2, ctx->screen->Y2);
 }
 
 static void comp_start_sub_(comp_ctx_t *ctx)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, Output.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_NEGATIVE, pcb_draw_out.direct, ctx->screen);
 }
 
 static void comp_start_add_(comp_ctx_t *ctx)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
 }
 
 static void comp_start_sub(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
-		pcb_gui->set_color(Output.pmGC, ctx->color);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
+		pcb_gui->set_color(pcb_draw_out.pmGC, ctx->color);
 		return;
 	}
 
@@ -74,7 +74,7 @@ static void comp_start_sub(comp_ctx_t *ctx)
 static void comp_start_add(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
 		return;
 	}
 
@@ -87,16 +87,16 @@ static void comp_start_add(comp_ctx_t *ctx)
 static void comp_finish(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->screen);
 		return;
 	}
 
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, Output.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->screen);
 }
 
 static void comp_init(comp_ctx_t *ctx, int negative)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, Output.direct, ctx->screen);
+	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, ctx->screen);
 
 	if (ctx->thin)
 		return;
@@ -106,7 +106,7 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 
 	if ((!ctx->thin) && (negative)) {
 		/* drawing the big poly for the negative */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, Output.direct, ctx->screen);
+		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->screen);
 		comp_fill_board(ctx);
 	}
 }
@@ -134,8 +134,8 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 
 		{
 			const char *old_color = l->meta.real.color;
-			pcb_hid_gc_t old_fg = Output.fgGC;
-			Output.fgGC = Output.pmGC;
+			pcb_hid_gc_t old_fg = pcb_draw_out.fgGC;
+			pcb_draw_out.fgGC = pcb_draw_out.pmGC;
 			l->meta.real.color = ctx->color;
 			if (!want_add)
 				l->meta.real.color = "erase";
@@ -143,7 +143,7 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 				draw_auto(ctx, auto_data);
 			pcb_draw_layer(l, ctx->screen);
 			l->meta.real.color = old_color;
-			Output.fgGC = old_fg;
+			pcb_draw_out.fgGC = old_fg;
 		}
 	}
 	if (!adding)
@@ -175,7 +175,7 @@ static void comp_draw_layer(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *ctx, 
 	int is_comp = pcb_draw_layergrp_is_comp(ctx->grp);
 
 	if (is_comp)
-		Output.direct = 0;
+		pcb_draw_out.direct = 0;
 
 	comp_draw_layer_real(ctx, draw_auto, auto_data);
 }

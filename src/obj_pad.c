@@ -456,7 +456,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 		box.Y1 = pad->Point1.Y + (flip_y ? -y_off : y_off);
 	}
 
-	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin_name);
+	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.pin_name);
 
 	text.Flags = (flip_x ^ flip_y) ? pcb_flag_make (PCB_FLAG_ONSOLDER) : pcb_no_flags();
 	/* Set font height to approx 90% of pin thickness */
@@ -488,7 +488,7 @@ void pcb_pad_draw(pcb_pad_t * pad)
 	char buf[sizeof("#XXXXXX")];
 
 	if (pcb_draw_doing_pinout)
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.pin);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.pin);
 	else if (PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad))
 			color = conf_core.appearance.color.warn;
@@ -512,9 +512,9 @@ void pcb_pad_draw(pcb_pad_t * pad)
 	}
 
 	if (color != NULL)
-		pcb_gui->set_color(Output.fgGC, color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, color);
 
-	_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
+	_draw_pad(pcb_draw_out.fgGC, pad, pcb_false, pcb_false);
 
 	if (pcb_draw_doing_pinout)
 		draw_pad_name(pad);
@@ -547,14 +547,14 @@ pcb_r_dir_t pcb_pad_clear_callback(const pcb_box_t * b, void *cl)
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
 	if (PCB_ON_SIDE(pad, *side) && pad->Mask)
-		_draw_pad(Output.pmGC, pad, pcb_true, pcb_true);
+		_draw_pad(pcb_draw_out.pmGC, pad, pcb_true, pcb_true);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* draws solder paste layer for a given side of the board - only pads get paste */
 void pcb_pad_paste_draw(int side, const pcb_box_t * drawn_area)
 {
-	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.paste);
+	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.paste);
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
@@ -562,9 +562,9 @@ void pcb_pad_paste_draw(int side, const pcb_box_t * drawn_area)
 			if (conf_core.design.paste_adjust)
 				pad->Thickness = max(0, pad->Thickness + conf_core.design.paste_adjust);
 			if (pad->Mask < pad->Thickness)
-				_draw_pad(Output.fgGC, pad, pcb_true, pcb_true);
+				_draw_pad(pcb_draw_out.fgGC, pad, pcb_true, pcb_true);
 			else
-				_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
+				_draw_pad(pcb_draw_out.fgGC, pad, pcb_false, pcb_false);
 			pad->Thickness = save_thickness;
 		}
 	}

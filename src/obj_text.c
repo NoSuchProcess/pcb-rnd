@@ -732,7 +732,7 @@ static void draw_text_poly(pcb_text_t *Text, pcb_poly_t *poly, pcb_coord_t x0, i
 	}
 
 	if (!xordraw)
-		pcb_gui->fill_polygon(Output.fgGC, poly->PointN, x, y);
+		pcb_gui->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
 }
 
 
@@ -840,7 +840,7 @@ static void DrawTextLowLevel_(pcb_text_t *Text, pcb_coord_t min_line_width, int 
 			defaultsymbol.Y1 += Text->Y;
 			defaultsymbol.X2 += Text->X;
 			defaultsymbol.Y2 += Text->Y;
-			pcb_gui->fill_rect(Output.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
+			pcb_gui->fill_rect(pcb_draw_out.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
 
 			/* move on to next cursor position */
 			x += size;
@@ -900,17 +900,17 @@ static void pcb_text_draw(pcb_layer_t *layer, pcb_text_t *text, int allow_term_g
 	unsigned int flg = 0;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
-		pcb_gui->set_color(Output.fgGC, layer->meta.real.selected_color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, layer->meta.real.selected_color);
 	else if (PCB_HAS_COLOROVERRIDE(text)) {
-		pcb_gui->set_color(Output.fgGC, text->override_color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, text->override_color);
 	}
 	else if (layer->is_bound) {
 		const char *color;
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer);
-		pcb_gui->set_color(Output.fgGC, color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, color);
 	}
 	else
-		pcb_gui->set_color(Output.fgGC, layer->meta.real.color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, layer->meta.real.color);
 
 	if ((!layer->is_bound) && (layer->meta.real.grp >= 0))
 		flg = pcb_layergrp_flags(PCB, layer->meta.real.grp);

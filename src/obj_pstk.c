@@ -288,12 +288,12 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt)
 
 	}
 
-	pcb_gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 }
 
 static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 {
-	pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
+	pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
 		conf_core.appearance.color.subc_selected : conf_core.appearance.color.padstackmark);
 }
 
@@ -301,15 +301,15 @@ static void pcb_pstk_draw_shape_solid(pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_
 {
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
-			pcb_gui->fill_polygon_offs(Output.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+			pcb_gui->fill_polygon_offs(pcb_draw_out.fgGC, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 			break;
 		case PCB_PSSH_LINE:
-			pcb_gui->set_line_cap(Output.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
-			pcb_gui->set_line_width(Output.fgGC, shape->data.line.thickness);
-			pcb_gui->draw_line(Output.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
+			pcb_gui->set_line_cap(pcb_draw_out.fgGC, shape->data.line.square ? Square_Cap : Round_Cap);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, shape->data.line.thickness);
+			pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 			break;
 		case PCB_PSSH_CIRC:
-			pcb_gui->fill_circle(Output.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
+			pcb_gui->fill_circle(pcb_draw_out.fgGC, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2);
 			break;
 	}
 }
@@ -344,14 +344,14 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 
 	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, ctx->comb, &grp);
 	if (shape != NULL) {
-		pcb_gui->set_draw_xor(Output.fgGC, 0);
+		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 		set_ps_color(ps, ctx->is_current, grp->type);
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
-			pcb_gui->set_line_width(Output.fgGC, 0);
-			pcb_pstk_draw_shape_thin(Output.fgGC, ps, shape);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+			pcb_pstk_draw_shape_thin(pcb_draw_out.fgGC, ps, shape);
 		}
 		else
-			pcb_pstk_draw_shape_solid(Output.fgGC, ps, shape);
+			pcb_pstk_draw_shape_solid(pcb_draw_out.fgGC, ps, shape);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -371,12 +371,12 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 		mark += proto->hdia/2;
 
 	/* draw the cross using xor */
-	set_ps_annot_color(Output.fgGC, ps);
-	pcb_gui->set_line_width(Output.fgGC, -3);
-	pcb_gui->set_draw_xor(Output.fgGC, 1);
-	pcb_gui->draw_line(Output.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
-	pcb_gui->draw_line(Output.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
-	pcb_gui->set_draw_xor(Output.fgGC, 0);
+	set_ps_annot_color(pcb_draw_out.fgGC, ps);
+	pcb_gui->set_line_width(pcb_draw_out.fgGC, -3);
+	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
+	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
@@ -418,18 +418,18 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* actual hole */
-	pcb_gui->fill_circle(Output.drillGC, ps->x, ps->y, proto->hdia / 2);
+	pcb_gui->fill_circle(pcb_draw_out.drillGC, ps->x, ps->y, proto->hdia / 2);
 
 	/* indicate unplated holes with an arc; unplated holes are more rare
 	   than plated holes, thus unplated holes are indicated */
 	if (!proto->hplated) {
 		pcb_coord_t r = proto->hdia / 2;
 		r += r/8; /* +12.5% */
-		pcb_gui->set_color(Output.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
-		pcb_gui->set_line_width(Output.fgGC, 0);
-		pcb_gui->set_draw_xor(Output.fgGC, 1);
-		pcb_gui->draw_arc(Output.fgGC, ps->x, ps->y, r, r, 20, 290);
-		pcb_gui->set_draw_xor(Output.fgGC, 0);
+		pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+		pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
+		pcb_gui->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
+		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;

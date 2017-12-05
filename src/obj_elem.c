@@ -1844,18 +1844,18 @@ void pcb_elem_name_draw(pcb_element_t * element)
 	if ((conf_core.editor.hide_names && pcb_gui->gui) || PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
 		return;
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element)))
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element_selected);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element_selected);
 	else if (PCB_FRONT(element)) {
 #warning TODO: why do we test for Names flag here instead of elements flag?
 		if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, element))
-			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element_nonetlist);
+			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element_nonetlist);
 		else
-			pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
+			pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
 	}
 	else
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.invisible_objects);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.invisible_objects);
 
 	pcb_text_draw_(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk, 0);
 
@@ -1895,13 +1895,13 @@ void pcb_elem_package_draw(pcb_element_t * element)
 {
 	/* set color and draw lines, arcs, text and pins */
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element_selected);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element_selected);
 	else if (PCB_FRONT(element))
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
 	else
-		pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.invisible_objects);
+		pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.invisible_objects);
 
 	/* draw lines, arcs, text and pins */
 	PCB_ELEMENT_PCB_LINE_LOOP(element);
@@ -1952,13 +1952,13 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 		mark_size = MIN(mark_size, pad0->Thickness / 2);
 	}
 
-	pcb_gui->set_color(Output.fgGC, invisible ? conf_core.appearance.color.invisible_mark : conf_core.appearance.color.element);
-	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
-	pcb_gui->set_line_width(Output.fgGC, 0);
-	pcb_gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y - mark_size);
-	pcb_gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y - mark_size);
-	pcb_gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y + mark_size);
-	pcb_gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y + mark_size);
+	pcb_gui->set_color(pcb_draw_out.fgGC, invisible ? conf_core.appearance.color.invisible_mark : conf_core.appearance.color.element);
+	pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
+	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, X - mark_size, Y, X, Y - mark_size);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, X + mark_size, Y, X, Y - mark_size);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, X - mark_size, Y, X, Y + mark_size);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, X + mark_size, Y, X, Y + mark_size);
 
 	/*
 	 * If an element is locked, place a "L" on top of the "diamond".
@@ -1966,8 +1966,8 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 	 * works even for color blind users.
 	 */
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, e)) {
-		pcb_gui->draw_line(Output.fgGC, X, Y, X + 2 * mark_size, Y);
-		pcb_gui->draw_line(Output.fgGC, X, Y, X, Y - 4 * mark_size);
+		pcb_gui->draw_line(pcb_draw_out.fgGC, X, Y, X + 2 * mark_size, Y);
+		pcb_gui->draw_line(pcb_draw_out.fgGC, X, Y, X, Y - 4 * mark_size);
 	}
 }
 

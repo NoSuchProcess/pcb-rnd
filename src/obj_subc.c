@@ -1423,21 +1423,21 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_box_t *bb = &subc->BoundingBox;
 	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
 
-	pcb_gui->set_color(Output.fgGC, conf_core.appearance.color.element);
-	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
-	pcb_gui->set_line_width(Output.fgGC, 0);
-	pcb_gui->set_draw_xor(Output.fgGC, 1);
+	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.element);
+	pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
+	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
 	pcb_subc_draw_origin(subc, 0, 0);
-	pcb_gui->set_draw_xor(Output.fgGC, 0);
+	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
-	pcb_gui->set_color(Output.fgGC, selected ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
-	pcb_gui->set_line_width(Output.fgGC, 0);
-	pcb_gui->set_draw_xor(Output.fgGC, 1);
-	pcb_draw_dashed_line(Output.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1);
-	pcb_draw_dashed_line(Output.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2);
-	pcb_draw_dashed_line(Output.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1);
-	pcb_draw_dashed_line(Output.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2);
-	pcb_gui->set_draw_xor(Output.fgGC, 0);
+	pcb_gui->set_color(pcb_draw_out.fgGC, selected ? conf_core.appearance.color.subc_selected : conf_core.appearance.color.subc);
+	pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 1);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1);
+	pcb_draw_dashed_line(pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2);
+	pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
 
 	if (subc->refdes != NULL)
 		pcb_term_label_draw(bb->X1, bb->Y1, 50.0, 0, 0, subc->refdes, subc->intconn);

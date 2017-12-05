@@ -991,27 +991,27 @@ void pcb_line_draw_label(pcb_line_t *line)
 void pcb_line_draw_(pcb_line_t *line, int allow_term_gfx)
 {
 	PCB_DRAW_BBOX(line);
-	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
+	pcb_gui->set_line_cap(pcb_draw_out.fgGC, Trace_Cap);
 	if (!conf_core.editor.thin_draw && !conf_core.editor.wireframe_draw) {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(line)) {
-			pcb_gui->set_line_width(Output.active_padGC, line->Thickness);
-			pcb_gui->draw_line(Output.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
-			pcb_gui->set_line_width(Output.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
+			pcb_gui->set_line_width(pcb_draw_out.active_padGC, line->Thickness);
+			pcb_gui->draw_line(pcb_draw_out.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
-			pcb_gui->set_line_width(Output.fgGC, line->Thickness);
-		pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, line->Thickness);
+		pcb_gui->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 	}
 	else
 	{
 		if(conf_core.editor.thin_draw) {
-			pcb_gui->set_line_width(Output.fgGC, 0);
-			pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+			pcb_gui->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
 
 		if(conf_core.editor.wireframe_draw) { 
-			pcb_gui->set_line_width(Output.fgGC, 0);
-			pcb_draw_wireframe_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0);
+			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
+			pcb_draw_wireframe_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0);
 		}
 	}
 
@@ -1048,7 +1048,7 @@ static void pcb_line_draw(pcb_layer_t *layer, pcb_line_t *line, int allow_term_g
 		color = buf;
 	}
 
-	pcb_gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 	pcb_line_draw_(line, allow_term_gfx);
 }
 
