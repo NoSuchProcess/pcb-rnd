@@ -7,6 +7,7 @@
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
 	- property editor doesn't deal with padstacks (and subc)
 	- test if advanced search does anything with padstacks (and subc)
+	- BUG: Padstack holes are missing from the FAB gerber export file [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
 - feature: property editor should deal with flags
