@@ -1383,14 +1383,14 @@ static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 {
 	pcb_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
-		{"view", 0, UNIT_PERCENT},
-		{"board", 0, UNIT_PERCENT},
+		{"view", 0, PCB_UNIT_PERCENT},
+		{"board", 0, PCB_UNIT_PERCENT},
 		{"", 0, 0}
 	};
 	pcb_unit_list_t extra_units_y = {
 		{"grid", 0, 0},
-		{"view", 0, UNIT_PERCENT},
-		{"board", 0, UNIT_PERCENT},
+		{"view", 0, PCB_UNIT_PERCENT},
+		{"board", 0, PCB_UNIT_PERCENT},
 		{"", 0, 0}
 	};
 	int pan_warp = HID_SC_DO_NOTHING;

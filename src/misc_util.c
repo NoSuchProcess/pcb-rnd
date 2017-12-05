@@ -110,7 +110,7 @@ double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute,
 			for (i = 0; *extra_units[i].suffix; ++i) {
 				if (strncmp(units, extra_units[i].suffix, strlen(extra_units[i].suffix)) == 0) {
 					value *= extra_units[i].scale;
-					if (extra_units[i].flags & UNIT_PERCENT)
+					if (extra_units[i].flags & PCB_UNIT_PERCENT)
 						value /= 100.0;
 					scaled = 1;
 					unit_ok = 1;
@@ -129,7 +129,7 @@ double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute,
 			for (i = 0; *extra_units[i].suffix; ++i)
 				if (strcmp(extra_units[i].suffix, default_unit) == 0) {
 					value *= extra_units[i].scale;
-					if (extra_units[i].flags & UNIT_PERCENT)
+					if (extra_units[i].flags & PCB_UNIT_PERCENT)
 						value /= 100.0;
 					scaled = 1;
 				}

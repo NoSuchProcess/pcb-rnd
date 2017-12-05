@@ -35,7 +35,7 @@
 double pcb_distance(double x1, double y1, double x2, double y2);
 double pcb_distance2(double x1, double y1, double x2, double y2);	/* distance square */
 
-enum pcb_unit_flags_e { UNIT_PERCENT = 1 };
+enum pcb_unit_flags_e { PCB_UNIT_PERCENT = 1 };
 
 typedef struct {
 	const char *suffix;
