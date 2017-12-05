@@ -46,8 +46,8 @@ void pcb_layervis_save_stack(void);
 void pcb_layervis_restore_stack(void);
 
 /* (un)init config watches and events to keep layers in sync */
-void layer_vis_init(void);
-void layer_vis_uninit(void);
+void pcb_layer_vis_init(void);
+void pcb_layer_vis_uninit(void);
 
 /* Open/close, on/off all layers and groups; does NOT generate an event */
 void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_t vis);

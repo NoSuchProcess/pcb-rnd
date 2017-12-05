@@ -305,7 +305,7 @@ static void pcb_layer_confchg_color(conf_native_t *cfg, int arr_idx)
 
 static const char *layer_vis_cookie = "core_layer_vis";
 
-void layer_vis_init(void)
+void pcb_layer_vis_init(void)
 {
 	conf_native_t *n_mask = conf_get_field("editor/show_mask");
 	conf_native_t *n_c1 = conf_get_field("appearance/color/layer");
@@ -331,7 +331,7 @@ void layer_vis_init(void)
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 }
 
-void layer_vis_uninit(void)
+void pcb_layer_vis_uninit(void)
 {
 	pcb_event_unbind_allcookie(layer_vis_cookie);
 }

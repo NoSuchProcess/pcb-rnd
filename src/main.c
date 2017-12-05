@@ -259,7 +259,7 @@ void pcb_main_uninit(void)
 	pcb_tool_uninit();
 	pcb_hid_uninit();
 	pcb_text_uninit();
-	layer_vis_uninit();
+	pcb_layer_vis_uninit();
 	pcb_events_uninit();
 
 	pcb_strflg_uninit_buf();
@@ -335,7 +335,7 @@ int main(int argc, char *argv[])
 	conf_init();
 	conf_core_init();
 	conf_core_postproc(); /* to get all the paths initialized */
-	layer_vis_init();
+	pcb_layer_vis_init();
 	pcb_brave_init();
 
 	vtp0_init(&plugin_cli_conf);
