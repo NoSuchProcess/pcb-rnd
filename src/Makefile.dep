@@ -5671,7 +5671,6 @@ font_act.o: font_act.c ../config.h board.h const.h macro.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genvector/vtp0.h list_conf.h \
  plug_io.h event.h
 fptr_cast.o: fptr_cast.c ../config.h fptr_cast.h
-free_atexit.o: free_atexit.c ../config.h
 funchash.o: funchash.c ../src_3rd/genht/htpi.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h funchash_core.h funchash.h funchash_core_list.h \
  ../config.h macro.h compat_misc.h
@@ -6046,7 +6045,7 @@ main.o: main.c ../config.h ../src_3rd/libminuid/libminuid.h board.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h list_conf.h \
- compat_lrealpath.h free_atexit.h buildin.h ../src_3rd/puplug/libs.h \
+ compat_lrealpath.h buildin.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h build_run.h \
  flag_str.h plugins.h ../src_3rd/puplug/error.h plug_footprint.h \

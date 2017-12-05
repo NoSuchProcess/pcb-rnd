@@ -47,7 +47,6 @@ static const char *EXPERIMENTAL = NULL;
 #include "buffer.h"
 #include "crosshair.h"
 #include "compat_lrealpath.h"
-#include "free_atexit.h"
 #include "polygon.h"
 #include "buildin.h"
 #include "build_run.h"
@@ -421,13 +420,6 @@ int main(int argc, char *argv[])
 	pcb_funchash_init();
 	pcb_units_init();
 	pcb_polygon_init();
-
-	/* This must be called before any other atexit functions
-	 * are registered, as it configures an atexit function to
-	 * clean up and free various items of allocated memory,
-	 * and must be the last last atexit function to run.
-	 */
-	pcb_leaky_init();
 
 	/* Register a function to be called when the program terminates.
 	 * This makes sure that data is saved even if LEX/YACC routines
