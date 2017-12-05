@@ -31,7 +31,6 @@
 ? BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
-+ BUG: cycledrag doesn't work on arc endpoint + line endpoint when rubber band is enabled [report/fixing:Ade]
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - BUG: missing subc snap:
 	- polygon pad center snap [report: jg]
