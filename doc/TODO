@@ -9,7 +9,6 @@
 	- test if advanced search does anything with padstacks (and subc)
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
-+ BUG: shift+b doesn't work on subc [report: Ade]
 - feature: property editor should deal with flags
 - BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 + BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
