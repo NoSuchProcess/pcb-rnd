@@ -9,8 +9,7 @@
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
 	- property editor doesn't deal with padstacks (and subc)
 	- test if advanced search does anything with padstacks (and subc)
-	- implement propedit set on padstacks
-	- BUG: 'padstackedit' action doesn't find padstacks in a subc. [report: Ade]
+	+ BUG: 'padstackedit' action doesn't find padstacks in a subc. [report: Ade]
 + BUG: subc netlisting broke (no rats are drawn to padstacks in subc) [report: Ade]
 + BUG: {import::src0} doesn't substitute ~ [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
@@ -52,12 +51,10 @@
 - BUG: inconsistency between undo/redo (related with pcb_tool_redo_act, not the undo code itself), ie.: [report:wojciechk8]
 	- when drawing a ractangle undo action is not allowed, but redo is
 	- when drawing outline segments of a polygon, undo removes previous segment, but redo does nothing
-- BUG: subc: shift-tab, red refdes printout is out of the box
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
 - BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
 + BUG: open pcb from cli with filename as argument, gui hangs.  (ex. fromsrcdir `./pcb-rnd ./`) https://pastebin.com/raw/hgzy5rHP [report:miloh]
 - BUG: round rect thermal: when poly points are too close together, it goes wrong
-- autocrop asserts on boards with subc with padstack (rtree)
 
 2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
