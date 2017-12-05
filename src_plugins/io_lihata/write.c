@@ -1039,7 +1039,7 @@ static lht_node_t *build_net_patch(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, 
 	pn = lht_dom_node_alloc(LHT_LIST, "netlist_patch");
 
 	ctx.patch = pn;
-	rats_patch_export(pcb, pat, pcb_false, build_net_patch_cb, &ctx);
+	pcb_rats_patch_export(pcb, pat, pcb_false, build_net_patch_cb, &ctx);
 
 	if (pn->data.list.first == NULL) {
 		lht_dom_node_free(pn);

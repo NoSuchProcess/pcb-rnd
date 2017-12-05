@@ -276,7 +276,7 @@ static pcb_lib_menu_t *rats_patch_find_net(pcb_board_t *pcb, const char *netname
 	return NULL;
 }
 
-int rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
+int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
 {
 	pcb_ratspatch_line_t *n;
 
@@ -370,7 +370,7 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 		ctx.line_prefix = "";
 	}
 	ctx.f = f;
-	return rats_patch_export(pcb, pcb->NetlistPatches, !fmt_pcb, fexport_cb, &ctx);
+	return pcb_rats_patch_export(pcb, pcb->NetlistPatches, !fmt_pcb, fexport_cb, &ctx);
 }
 
 
