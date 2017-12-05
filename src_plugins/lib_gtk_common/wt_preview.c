@@ -456,7 +456,7 @@ GType pcb_gtk_preview_get_type()
 }
 
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-															 pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw)
+															 pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
 {
 	pcb_gtk_preview_t *preview;
 
@@ -486,7 +486,7 @@ GtkWidget *pcb_gtk_preview_pinout_new(pcb_gtk_common_t * com, pcb_gtk_init_drawi
 }
 
 static GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer, hid_dialog_draw_t dialog_draw)
+																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer, pcb_hid_dialog_draw_t dialog_draw)
 {
 	pcb_gtk_preview_t *prv;
 
@@ -552,7 +552,7 @@ void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coor
 }
 
 
-GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, hid_dialog_draw_t dialog_draw)
+GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
 {
 	pcb_layer_id_t lid;
 	if (pcb_layer_list(PCB, PCB_LYT_DIALOG, &lid, 1) > 0)

@@ -589,7 +589,7 @@ struct pcb_hid_s {
 
 typedef struct pcb_hid_expose_ctx_s pcb_hid_expose_ctx_t;
 
-typedef void (*hid_dialog_draw_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
+typedef void (*pcb_hid_dialog_draw_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 
 struct pcb_hid_expose_ctx_s {
 	pcb_box_t view;
@@ -600,7 +600,7 @@ struct pcb_hid_expose_ctx_s {
 	} content;
 
 	/* for PCB_LYT_DIALOG */
-	hid_dialog_draw_t dialog_draw;
+	pcb_hid_dialog_draw_t dialog_draw;
 };
 
 typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
