@@ -682,8 +682,9 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_
    indicate error if it's smaller than min */
 static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdia, pcb_coord_t min, pcb_coord_t *out)
 {
-	double dist, neck;
+	double dist, neck, mindist2, dist2;
 	pcb_line_t line;
+	int n;
 
 	switch(shp->shape) {
 		case PCB_PSSH_CIRC:
@@ -700,8 +701,35 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 			neck = (double)(shp->data.line.thickness - hdia) / 2.0 - dist;
 			break;
 		case PCB_PSSH_POLY:
-#warning padstack TODO
-			return 0;
+			/* square of the minimal distance required for a neck */
+			mindist2 = hdia/2 + min;
+			mindist2 *= mindist2;
+
+			/* cheapest test: if any corner is closer to the hole than min, we are doomed */
+			for(n = 0; n < shp->data.poly.len; n++) {
+				dist2 = shp->data.poly.x[n] * shp->data.poly.x[n] + shp->data.poly.y[n] * shp->data.poly.y[n];
+				if (dist2 < mindist2)
+					return 0;
+			}
+			
+			/* more expensive: check each edge */
+			line.Point1.X = shp->data.poly.x[shp->data.poly.len - 1];
+			line.Point1.Y = shp->data.poly.y[shp->data.poly.len - 1];
+			line.Thickness = 1;
+
+			for(n = 0; n < shp->data.poly.len; n++) {
+				line.Point2.X = shp->data.poly.x[n];
+				line.Point2.Y = shp->data.poly.y[n];
+
+				dist2 = sqrt(pcb_point_line_dist2(0, 0, &line));
+				if (dist2 < mindist2)
+					return 0;
+
+				/* shift coords for the next iteration */
+				line.Point1.X = line.Point2.X;
+				line.Point1.Y = line.Point2.Y;
+			}
+			return 1; /* survived all tests: we are fine! */
 	}
 
 	return neck < min;
