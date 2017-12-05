@@ -20,6 +20,9 @@
  *
  */
 
+#ifndef PCB_FUNCHASH_H
+#define PCB_FUNCHASH_H
+
 /* Table entry format for pcb_funchash_set_table() */
 typedef struct {
 	const char *key;
@@ -45,3 +48,5 @@ void pcb_funchash_remove_cookie(const char *cookie);
 /* Init-uninit the hash */
 void pcb_funchash_init(void);
 void pcb_funchash_uninit(void);
+
+#endif
