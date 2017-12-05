@@ -709,7 +709,7 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 			for(n = 0; n < shp->data.poly.len; n++) {
 				dist2 = shp->data.poly.x[n] * shp->data.poly.x[n] + shp->data.poly.y[n] * shp->data.poly.y[n];
 				if (dist2 < mindist2)
-					return 0;
+					return 1;
 			}
 			
 			/* more expensive: check each edge */
@@ -723,13 +723,13 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 
 				dist2 = sqrt(pcb_point_line_dist2(0, 0, &line));
 				if (dist2 < mindist2)
-					return 0;
+					return 1;
 
 				/* shift coords for the next iteration */
 				line.Point1.X = line.Point2.X;
 				line.Point1.Y = line.Point2.Y;
 			}
-			return 1; /* survived all tests: we are fine! */
+			return 0; /* survived all tests: we are fine! */
 	}
 
 	return neck < min;
