@@ -737,14 +737,15 @@ pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
  * Finally, D1 and D2 are orthogonal, so we can sum them easily
  * by Pythagorean theorem.
  */
-pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line)
+
+double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line)
 {
 	double D1, D2, L;
 
 	/* Get length of segment */
-	L = pcb_distance(Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y);
-	if (L < 0.1)
-		return pcb_distance(X, Y, Line->Point1.X, Line->Point1.Y) < Radius + Line->Thickness / 2;
+	L = pcb_distance2(Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y);
+	if (L < 0.01)
+		return pcb_distance2(X, Y, Line->Point1.X, Line->Point1.Y);
 
 	/* Get distance from (X1, Y1) to Q (on the line) */
 	D1 = ((double) (Y - Line->Point1.Y) * (Line->Point2.Y - Line->Point1.Y)
@@ -759,8 +760,16 @@ pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, 
 	/* Get distance from (X, Y) to Q */
 	D2 = ((double) (X - Line->Point1.X) * (Line->Point2.Y - Line->Point1.Y)
 				- (double) (Y - Line->Point1.Y) * (Line->Point2.X - Line->Point1.X)) / L;
+
 	/* Total distance is then the Pythagorean sum of these */
-	return sqrt(D1 * D1 + D2 * D2) <= Radius + Line->Thickness / 2;
+	return D1 * D1 + D2 * D2;
+}
+
+pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line)
+{
+	double max = Radius + Line->Thickness / 2;
+
+	return pcb_point_line_dist2(X, Y, Line) < (max * max);
 }
 
 static int is_point_on_line(pcb_coord_t px, pcb_coord_t py, pcb_coord_t lx1, pcb_coord_t ly1, pcb_coord_t lx2, pcb_coord_t ly2)

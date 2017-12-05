@@ -177,6 +177,10 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coor
 pcb_bool pcb_is_point_in_pad(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pad_t *);
 pcb_bool pcb_is_point_in_box(pcb_coord_t, pcb_coord_t, pcb_box_t *, pcb_coord_t);
 
+/* Return the distance^2 between a line-center and a point */
+double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line);
+
+
 int pcb_search_obj_by_location(unsigned long, void **, void **, void **, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 int pcb_search_screen(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
 int pcb_search_grid_slop(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
