@@ -816,7 +816,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 							 "title", _("Select Footprint..."),
 							 "default-height", 300, "default-width", 400, "modal", FALSE, "window-position", GTK_WIN_POS_NONE,
 							 /* GtkDialog */
-							 "has-separator", TRUE, NULL);
+							 NULL);
 	g_object_set(gtk_dialog_get_content_area(GTK_DIALOG(lib_window)), "homogeneous", FALSE, NULL);
 
 	/* horizontal pane containing selection and preview */
