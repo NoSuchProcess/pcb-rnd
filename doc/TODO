@@ -5,7 +5,6 @@
 	- BUG: 'send to other side' with padstacks in subc: should mirror layer stack positions in the proto
 	- v4 lihata formatting
 	- BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
-	- property editor doesn't deal with subc
 	- test if advanced search does anything with padstacks (and subc)
 	- BUG: Padstack holes are missing from the FAB gerber export file [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
@@ -56,6 +55,7 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
+- property editor doesn't deal with subc
 - BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
 - feautres/cleanup: hid:
