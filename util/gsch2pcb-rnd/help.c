@@ -35,7 +35,7 @@ extern char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name,
 static char *usage_string0a =
 	"usage: gsch2pcb [options] {project | foo.sch [foo1.sch ...]}\n"
 	"\n"
-	"Generate a PCB layout file from a set of gschem schematics.\n"
+	"Generate a PCB annotation file from a set of gschem schematics.\n"
 	"   gnetlist -g PCB is run to generate foo.net from the schematics.\n" "\n";
 /* TODO */
 /*  "   gnetlist -g gsch2pcb is run to get PCB elements which\n"
@@ -43,11 +43,13 @@ static char *usage_string0a =
   "   any PCB layout elements, search a set of file element directories in\n"
   "   an attempt to find matching PCB file elements.\n"*/
 static char *usage_string0b =
-	"   Output to foo.pcb if it doesn't exist.  If there is a current foo.pcb,\n"
-	"   output only new elements to foo.new.pcb.\n"
-	"   If any elements with a non-empty element name in the current foo.pcb\n"
+	"   Output to foo.cmd if it doesn't exist.\n"
+	"   The annotation command file (to be run by the user from pcb-rnd) contains:.\n"
+	"   If any elements with a non-empty element name on the board\n"
 	"   have no matching schematic component, then remove those elements from\n"
-	"   foo.pcb and rename foo.pcb to a foo.pcb.bak sequence.\n"
+	"   the board unless it's marked nonetlist. Load and palce the footprints\n"
+	"   for new elements; replace elements in-place if their footprint changed;"
+	"   update attributes, value and other metadata in-place."
 	"\n";
 static char *usage_string0c =
 	"   gnetlist -g pcbpins is run to get a PCB actions file which will rename all\n"
