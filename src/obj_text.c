@@ -627,12 +627,14 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 
 void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text)
 {
-	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+	if (layer->text_tree != NULL)
+		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 	text->X = PCB_SWAP_X(text->X);
 	text->Y = PCB_SWAP_Y(text->Y);
 	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
-	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
+	if (layer->text_tree != NULL)
+		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 }
 
 void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid)
