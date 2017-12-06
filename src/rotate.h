@@ -30,9 +30,7 @@
 #include "config.h"
 #include "global_typedefs.h"
 
-/* ---------------------------------------------------------------------------
- * some useful transformation macros and constants
- */
+/*** Transformation macros ***/
 #define	PCB_COORD_ROTATE90(x,y,x0,y0,n)							\
 	do {												\
 		pcb_coord_t	dx = (x)-(x0),					\

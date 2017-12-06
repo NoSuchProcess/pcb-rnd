@@ -30,9 +30,6 @@
 #include "config.h"
 #include "hid.h"
 
-/* ---------------------------------------------------------------------------
- * some useful values of our widgets
- */
 typedef struct {								/* holds information about output window */
 	pcb_hid_gc_t drillGC,										/* drill and foreground; */
 	  fgGC,												/* changed from some routines */

@@ -43,11 +43,11 @@ PCB_INLINE dpoint_t interval(double lambda, dpoint_t a, dpoint_t b)
 }
 
 /* ---------------------------------------------------------------------- */
-/* some useful macros. Note: the "mod" macro works correctly for
+/* Note: the "mod" function works correctly for
    negative a. Also note that the test for a>=n, while redundant,
    speeds up the mod function by 70% in the average case (significant
    since the program spends about 16% of its time here - or 40%
-   without the test). The "floordiv" macro returns the largest integer
+   without the test). The "floordiv" function returns the largest integer
    <= a/n, and again this works correctly for negative a, as long as
    a,n are integers and n>0. */
 

@@ -29,9 +29,7 @@
 
 #include "config.h"
 
-/* ---------------------------------------------------------------------------
- * some useful transformation macros and constants
- */
+/*** Transformation macros and constants ***/
 #define	PCB_MOVE(xs,ys,deltax,deltay)							\
 	{														\
 		((xs) += (deltax));									\
