@@ -69,10 +69,7 @@ static void place_elem(pcb_element_t * element)
 	dy -= (element->MarkY + dy) % (long) (PCB->Grid);
 	dy += (long) (PCB->Grid);
 
-	/*
-	 * and add one grid size so we make sure we always space by GAP or
-	 * more
-	 */
+	/* and add one grid size so we make sure we always space by GAP or more */
 	dx += (long) (PCB->Grid);
 
 	/* Figure out if this row has room.  If not, start a new row */
@@ -83,10 +80,7 @@ static void place_elem(pcb_element_t * element)
 		return;
 	}
 
-	/* move the element */
 	pcb_element_move(PCB->Data, element, dx, dy);
-
-	/* and add to the undo list so we can undo this operation */
 	pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 
 	/* keep track of how tall this row is */
@@ -113,10 +107,7 @@ static void place_subc(pcb_subc_t *sc)
 	dy -= (oy + dy) % PCB->Grid;
 	dy += PCB->Grid;
 
-	/*
-	 * and add one grid size so we make sure we always space by GAP or
-	 * more
-	 */
+	/* and add one grid size so we make sure we always space by GAP or more */
 	dx += PCB->Grid;
 
 	/* Figure out if this row has room.  If not, start a new row */
