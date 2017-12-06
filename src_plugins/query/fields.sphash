@@ -36,3 +36,5 @@ type
 area
 refdes
 length
+xmirror
+plated
