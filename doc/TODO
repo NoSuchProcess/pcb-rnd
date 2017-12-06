@@ -22,7 +22,6 @@
 		- autoplace.c:167
 		- autoroute.c:961
 		- autoroute.c:1000
-		- smartdisperse.c:128 -> needs a generic subc revamp (grep for element)
 	- subc text is not mirrored when sent to the back of the board [report: Ade]
 - BUG: gtk2 opengl ignores local grid
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
