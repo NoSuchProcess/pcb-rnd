@@ -51,9 +51,6 @@
 #include "event.h"
 #include "safe_fs.h"
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 static pcb_opfunc_t AddBufferFunctions = {
 	pcb_lineop_add_to_buffer,
 	pcb_textop_add_to_buffer,

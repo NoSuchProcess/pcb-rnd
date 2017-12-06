@@ -37,9 +37,6 @@
 #include "obj_all_op.h"
 #include "obj_pstk_op.h"
 
-/* ---------------------------------------------------------------------------
- * some local types
- */
 static pcb_opfunc_t RemoveFunctions = {
 	pcb_lineop_remove,
 	pcb_textop_remove,

@@ -66,9 +66,6 @@ static pcb_bool GatherSubnets(pcb_netlist_t *, pcb_bool, pcb_bool);
 static pcb_bool CheckShorts(pcb_lib_menu_t *);
 static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 static pcb_bool badnet = pcb_false;
 static pcb_layergrp_id_t Sgrp = -1, Cgrp = -1; /* layer group holding solder/component side */
 

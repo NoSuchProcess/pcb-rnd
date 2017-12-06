@@ -50,9 +50,6 @@
 #include "obj_line_draw.h"
 #include "obj_rat_draw.h"
 
-/* ----------------------------------------------------------------------
- * some local identifiers
- */
 pcb_opfunc_t Rotate90Functions = {
 	pcb_lineop_rotate90,
 	pcb_textop_rotate90,

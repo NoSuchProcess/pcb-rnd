@@ -44,9 +44,6 @@
 #include "obj_subc_parent.h"
 #include "obj_term.h"
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 pcb_opfunc_t ChangeSizeFunctions = {
 	pcb_lineop_change_size,
 	pcb_textop_change_size,

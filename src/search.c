@@ -42,16 +42,13 @@
 #include "search.h"
 #include "obj_subc_parent.h"
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 static double PosX, PosY;				/* search position for subroutines */
 static pcb_coord_t SearchRadius;
 static pcb_box_t SearchBox;
 static pcb_layer_t *SearchLayer;
 
 /* ---------------------------------------------------------------------------
- * some local prototypes.  The first parameter includes PCB_TYPE_LOCKED if we
+ * The first parameter includes PCB_TYPE_LOCKED if we
  * want to include locked object in the search and PCB_TYPE_SUBC_PART if
  * objects that are part of a subcircuit should be found.
  */

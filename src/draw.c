@@ -62,10 +62,6 @@
 
 pcb_output_t pcb_draw_out; /* global context used for drawing */
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
-
 pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX };
 
 int pcb_draw_doing_pinout = 0;
@@ -73,9 +69,6 @@ pcb_bool pcb_draw_doing_assy = pcb_false;
 static vtp0_t delayed_labels;
 pcb_bool delayed_labels_enabled = pcb_false;
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *, int);
 static void pcb_draw_obj_label(pcb_any_obj_t *obj);

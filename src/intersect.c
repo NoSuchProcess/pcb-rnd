@@ -37,17 +37,11 @@
 #include "intersect.h"
 #include "box.h"
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static int compareleft(const void *ptr1, const void *ptr2);
 static int compareright(const void *ptr1, const void *ptr2);
 static int comparepos(const void *ptr1, const void *ptr2);
 static int nextpwrof2(int i);
 
-/* ---------------------------------------------------------------------------
- * some local types
- */
 typedef struct {
 	pcb_coord_t left, right;
 	int covered;

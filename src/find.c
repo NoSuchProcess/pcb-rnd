@@ -83,10 +83,6 @@
 
 #undef DEBUG
 
-/* ---------------------------------------------------------------------------
- * some local macros
- */
-
 #define	SEPARATE(FP)							\
 	{											\
 		int	i;									\
@@ -118,8 +114,6 @@
 	(((pcb_pstk_t **)PadstackList.Data)[(I)])
 
 /* ---------------------------------------------------------------------------
- * some local types
- *
  * the two 'dummy' structs for PVs and Pads are necessary for creating
  * connection lists which include the element's name
  */
@@ -130,9 +124,6 @@ typedef struct {
 	  Size;
 } ListType, *ListTypePtr;
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 static pcb_coord_t Bloat = 0;
 static int TheFlag = PCB_FLAG_FOUND;
 static int OldFlag = PCB_FLAG_FOUND;
@@ -154,9 +145,6 @@ static ListType LineList[PCB_MAX_LAYER+2],	/* list of objects to */
   PolygonList[PCB_MAX_LAYER+2], ArcList[PCB_MAX_LAYER+2], PadList[2],
   RatList, PVList, PadstackList;
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static pcb_bool LookupLOConnectionsToPVList(pcb_bool);
 static pcb_bool LookupLOConnectionsToPSList(pcb_bool);
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool);

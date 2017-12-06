@@ -72,9 +72,6 @@
 
 #include "undo_old_str.h"
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static pcb_bool UndoRotate90(UndoListTypePtr);
 static pcb_bool UndoRotate(UndoListTypePtr);
 static pcb_bool UndoChangeName(UndoListTypePtr);

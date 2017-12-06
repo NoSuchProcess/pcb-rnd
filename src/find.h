@@ -51,9 +51,6 @@ typedef void (*pcb_find_callback_t)(int current_type, void *current_ptr, int fro
    */
 extern pcb_find_callback_t pcb_find_callback;
 
-/* ---------------------------------------------------------------------------
- * some local defines
- */
 #define PCB_LOOKUP_FIRST	\
 	(PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_PSTK)
 #define PCB_LOOKUP_MORE	\

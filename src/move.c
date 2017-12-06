@@ -46,9 +46,6 @@
 #include "obj_all_op.h"
 #include "obj_pstk_op.h"
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 pcb_opfunc_t MoveFunctions = {
 	pcb_lineop_move,
 	pcb_textop_move,

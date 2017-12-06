@@ -138,9 +138,6 @@ either round or, if the octagon flag is set, octagonal.
 
 %end-doc */
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 int defer_updates = 0;
 int defer_needs_update = 0;
 

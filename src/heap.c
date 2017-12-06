@@ -39,13 +39,6 @@
 /* define this for more thorough self-checking of data structures */
 #undef SLOW_ASSERTIONS
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
-
-/* ---------------------------------------------------------------------------
- * some local types
- */
 struct heap_element {
 	pcb_cost_t cost;
 	void *data;
@@ -55,9 +48,6 @@ struct pcb_heap_s {
 	int size, max;
 };
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 static pcb_cost_t MIN_COST = 0;
 
 /* ---------------------------------------------------------------------------

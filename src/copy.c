@@ -40,9 +40,6 @@
 #include "obj_all_op.h"
 #include "obj_pstk_op.h"
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 static pcb_opfunc_t CopyFunctions = {
 	pcb_lineop_copy,
 	pcb_textop_copy,

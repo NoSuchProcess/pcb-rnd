@@ -63,9 +63,6 @@ pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
 pcb_mark_t pcb_marked;          /* a cross-hair mark */
 
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
 static void XORDrawPadDRCOutline(pcb_pad_t * pv,pcb_coord_t clearance);
 

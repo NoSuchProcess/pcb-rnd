@@ -41,9 +41,6 @@
 #include "obj_rat_op.h"
 #include "obj_poly_op.h"
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 static pcb_opfunc_t InsertFunctions = {
 	pcb_lineop_insert_point,
 	NULL,
