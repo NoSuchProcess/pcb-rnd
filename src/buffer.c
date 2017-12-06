@@ -510,7 +510,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
-		pcb_text_flip_side(layer, text);
+		pcb_text_flip_side(layer, text, 0);
 	}
 	PCB_ENDALL_LOOP;
 

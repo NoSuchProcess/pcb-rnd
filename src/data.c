@@ -462,7 +462,7 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too)
 	if (text_too) {
 		PCB_TEXT_ALL_LOOP(data);
 		{
-			pcb_text_flip_side(layer, text);
+			pcb_text_flip_side(layer, text, y_offs);
 		}
 		PCB_ENDALL_LOOP;
 	}
