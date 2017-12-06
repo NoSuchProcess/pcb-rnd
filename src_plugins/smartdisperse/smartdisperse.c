@@ -1,13 +1,11 @@
 /*!
- * \file smartdisperse.c
+ * Smartdisperse plug-in for PCB.
  *
- * \brief Smartdisperse plug-in for PCB.
- *
- * \author Copyright (C) 2007 Ben Jackson <ben@ben.com> based on
+ * Copyright (C) 2007 Ben Jackson <ben@ben.com> based on
  * teardrops.c by Copyright (C) 2006 DJ Delorie <dj@delorie.com> as well
  * as the original action.c, and autoplace.c.
  *
- * \copyright Licensed under the terms of the GNU General Public
+ * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
@@ -48,13 +46,9 @@ static pcb_coord_t miny;
 static pcb_coord_t maxx;
 static pcb_coord_t maxy;
 
-/*!
- * \brief Place one element.
- *
- * Must initialize statics above before calling for the first time.
- *
- * This is taken almost entirely from pcb_act_DisperseElements, with cleanup
- */
+/* Place one element or subcircuit.
+   Must initialize statics above before calling for the first time.
+   This was taken almost entirely from pcb_act_DisperseElements, with cleanup */
 static void place_elem(pcb_element_t * element)
 {
 	pcb_coord_t dx, dy;
@@ -138,10 +132,7 @@ static void place(pcb_any_obj_t *obj)
 }
 
 
-/*!
- * \brief Return the X location of a connection's pad or pin within its
- * element.
- */
+/* Return the X location of a connection's pad or pin within its element. */
 static pcb_coord_t padDX(pcb_connection_t * conn)
 {
 	pcb_element_t *element = (pcb_element_t *) conn->ptr1;
@@ -150,10 +141,7 @@ static pcb_coord_t padDX(pcb_connection_t * conn)
 	return line->BoundingBox.X1 - (element->BoundingBox.X1 + element->BoundingBox.X2) / 2;
 }
 
-/*!
- * \brief Return true if ea,eb would be the best order, else eb,ea,
- * based on pad loc.
- */
+/* Return true if ea,eb would be the best order, else eb,ea, based on pad loc. */
 static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 {
 	pcb_coord_t dxa, dxb;
