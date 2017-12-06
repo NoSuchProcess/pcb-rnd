@@ -45,6 +45,7 @@ struct pcb_obj_s {
 		pcb_pad_t      *pad;
 		pcb_pin_t      *pin;
 		pcb_pin_t      *via;
+		pcb_pstk_t     *pstk;
 		pcb_element_t  *element;
 		pcb_net_t      *net;
 		pcb_layer_t    *layer;
