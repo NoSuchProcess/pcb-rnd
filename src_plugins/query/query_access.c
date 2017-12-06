@@ -492,6 +492,32 @@ static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
+static int field_pstk(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_pstk_t *p = obj->data.pstk;
+	query_fields_keys_t fh1;
+
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_x:         PCB_QRY_RET_INT(res, p->x);
+		case query_fields_y:         PCB_QRY_RET_INT(res, p->y);
+		case query_fields_clearance: PCB_QRY_RET_INT(res, p->Clearance);
+		default:;
+	}
+
+	PCB_QRY_RET_INV(res);
+}
+
 static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_element_t *p = obj->data.element;
@@ -728,6 +754,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 		case PCB_OBJ_PAD:      return field_pad(obj, fld, res);
 		case PCB_OBJ_PIN:      return field_pin(obj, fld, res);
 		case PCB_OBJ_VIA:      return field_via(obj, fld, res);
+		case PCB_OBJ_PSTK:     return field_pstk(obj, fld, res);
 		case PCB_OBJ_ELEMENT:  return field_element(obj, fld, res);
 
 		case PCB_OBJ_NET:      return field_net(obj, fld, res);
