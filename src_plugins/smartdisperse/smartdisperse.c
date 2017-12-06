@@ -152,9 +152,6 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 	return 0;
 }
 
-/* ewww, these are actually arrays */
-#define ELEMENT_N(DATA,ELT)	((ELT) - (DATA)->Element)
-#define VISITED(ELT)		(visited[ELEMENT_N(PCB->Data, (ELT))])
 #define IS_ELEMENT(CONN)	((CONN)->obj->type == PCB_OBJ_PAD || (CONN)->obj->type == PCB_OBJ_PIN)
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
