@@ -30,6 +30,7 @@
 #include "query_exec.h"
 #include "layer.h"
 #include "fields_sphash.h"
+#include "obj_pstk_inlines.h"
 
 #define APPEND(_ctx_, _type_, _obj_, _parenttype_, _parent_) \
 do { \
@@ -495,6 +496,7 @@ static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_pstk(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_pstk_t *p = obj->data.pstk;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(p);
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -512,6 +514,8 @@ static int field_pstk(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 		case query_fields_x:         PCB_QRY_RET_INT(res, p->x);
 		case query_fields_y:         PCB_QRY_RET_INT(res, p->y);
 		case query_fields_clearance: PCB_QRY_RET_INT(res, p->Clearance);
+		case query_fields_hole:      PCB_QRY_RET_INT(res, proto->hdia);
+
 		default:;
 	}
 
