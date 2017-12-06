@@ -2263,7 +2263,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad/read.h layer.h const.h netlist.h route_style.h \
  polygon.h misc_util.h conf_core.h move.h macro.h obj_all.h rotate.h \
- safe_fs.h
+ safe_fs.h attrib.h
 ../src_plugins/io_kicad/read_net.o: ../src_plugins/io_kicad/read_net.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
@@ -2483,7 +2483,15 @@
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/io_mentor_cell/read.h \
- dolists.h
+ hid_actions.h hid.h error.h drc.h attrib.h layer.h globalconst.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genht/hash.h \
+ ../src_3rd/genlist/gendlist.h flag.h data_parent.h obj_arc.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h obj_poly.h polyarea.h obj_poly_list.h box.h \
+ math_helper.h macro.h move.h misc_util.h ht_element.h \
+ ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h obj_text_list.h \
+ obj_rat_list.h obj_rat.h layer_grp.h dolists.h
 ../src_plugins/io_mentor_cell/read.o: \
  ../src_plugins/io_mentor_cell/read.c ../config.h \
  ../src_3rd/qparse/qparse.h ../src_3rd/genvector/gds_char.h \
@@ -4699,7 +4707,7 @@
  obj_any.h ../src_3rd/genht/htsi.h ../src_3rd/genregex/regex_se.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
  ../src_plugins/query/fields_sphash.h ../src_plugins/query/query_exec.h \
- layer.h
+ layer.h obj_pstk_inlines.h data.h thermal.h
 ../src_plugins/query/query_act.o: ../src_plugins/query/query_act.c \
  ../config.h ../src_plugins/query/query.h obj_any.h obj_common.h \
  ../src_3rd/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
@@ -4987,7 +4995,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h action_helper.h hid_actions.h compat_nls.h \
- dolists.h
+ obj_subc.h dolists.h
 ../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
  ../config.h math_helper.h board.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
