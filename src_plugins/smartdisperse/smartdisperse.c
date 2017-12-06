@@ -196,12 +196,18 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	/* remember which elements we finish with */
 	htpi_init(&visited, ptrhash, ptrkeyeq);
 
-	/* if we're not doing all, mark the unselected elements as "visited" */
+	/* if we're not doing all, mark the unselected elements and subcs as "visited" */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
 			set_visited(element);
 		}
+	}
+	PCB_END_LOOP;
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)))
+			set_visited(subc);
 	}
 	PCB_END_LOOP;
 
