@@ -187,6 +187,9 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 	map_add_prop(ctx, "p/padstack/clearance", pcb_coord_t, ps->Clearance/2);
 	map_add_prop(ctx, "p/padstack/hole", pcb_coord_t, proto->hdia);
+	map_add_prop(ctx, "p/padstack/plated", pcb_coord_t, proto->hplated);
+	map_add_prop(ctx, "p/padstack/htop", pcb_coord_t, proto->htop);
+	map_add_prop(ctx, "p/padstack/hbottom", pcb_coord_t, proto->hbottom);
 
 	map_attr(ctx, &ps->Attributes);
 }
@@ -439,6 +442,8 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 11;
+	int i;
+	pcb_pstk_proto_t *proto;
 
 	set_chk_skip(st, ps);
 
@@ -447,10 +452,25 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 		return;
 	}
 
+	i = (st->c != 0);
+	proto = pcb_pstk_get_proto(ps);
+
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
 	    pcb_chg_obj_clear_size(PCB_TYPE_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
 	if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
 	    pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
+	if (st->c_valid && (strcmp(pn, "xmirror") == 0) &&
+	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, &i) == 0)) DONE;
+	if (st->c_valid && (strcmp(pn, "proto") == 0) &&
+	    (pcb_pstk_change_instance(ps, &i, NULL, NULL, NULL) == 0)) DONE;
+	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
+	    (pcb_pstk_proto_change_hole(proto, NULL, &st->c, NULL, NULL) == 0)) DONE;
+	if (st->c_valid && (strcmp(pn, "plated") == 0) &&
+	    (pcb_pstk_proto_change_hole(proto, &i, NULL, NULL, NULL) == 0)) DONE;
+	if (st->c_valid && (strcmp(pn, "htop") == 0) &&
+	    (pcb_pstk_proto_change_hole(proto, NULL, NULL, &i, NULL) == 0)) DONE;
+	if (st->c_valid && (strcmp(pn, "hbottom") == 0) &&
+	    (pcb_pstk_proto_change_hole(proto, NULL, NULL, NULL, &i) == 0)) DONE;
 }
 
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
