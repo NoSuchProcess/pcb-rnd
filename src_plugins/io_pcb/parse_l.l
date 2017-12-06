@@ -89,9 +89,6 @@ static void add_tag(char *line);
  */
 int	yyparse(void);
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename);
 
 %}

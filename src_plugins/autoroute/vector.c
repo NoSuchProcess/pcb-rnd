@@ -40,25 +40,10 @@
 #include "vector.h"
 #include "macro.h"
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
-
-/* ---------------------------------------------------------------------------
- * some local types
- */
 struct vector_struct {
 	vector_element_t *element;
 	int size, max;
 };
-
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
-
-/* ---------------------------------------------------------------------------
- * functions.
- */
 
 /* helper function for assertions */
 #ifndef NDEBUG

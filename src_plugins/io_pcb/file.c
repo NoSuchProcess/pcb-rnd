@@ -65,9 +65,6 @@
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static void WritePCBInfoHeader(FILE *);
 static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);

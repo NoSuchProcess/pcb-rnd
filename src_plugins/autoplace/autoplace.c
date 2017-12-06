@@ -68,14 +68,8 @@
 }
 #define EXPANDRECT(r1, r2) EXPANDRECTXY(r1, r2->X1, r2->Y1, r2->X2, r2->Y2)
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static double ComputeCost(pcb_netlist_t *Nets, double T0, double T);
 
-/* ---------------------------------------------------------------------------
- * some local types
- */
 const struct {
 	double via_cost;
 	double congestion_penalty;		/* penalty length / unit area */
@@ -130,10 +124,6 @@ typedef struct {
 	unsigned rotate;							/* for rotate/flip */
 	pcb_element_t *other;					/* for exchange */
 } PerturbationType;
-
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 
 #warning cleanup TODO: remove this and use genvect
 #define STEP_POINT 100

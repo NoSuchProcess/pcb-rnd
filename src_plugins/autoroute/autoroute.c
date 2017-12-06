@@ -205,9 +205,6 @@ static pcb_hid_gc_t ar_gc = 0;
  * their particular required clearance. This simplifies the tree searching.
  * the "sbox" contains the unbloated box.
  */
-/* ---------------------------------------------------------------------------
- * some local types
- */
 
 /* enumerated type for conflict levels */
 typedef enum { NO_CONFLICT = 0, LO_CONFLICT = 1, HI_CONFLICT = 2 } conflict_t;
@@ -374,9 +371,6 @@ struct routeone_state {
 };
 
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
 static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t group,
 																			 routebox_t * parent, pcb_bool relax_edge_requirements, edge_t * edge);
 
@@ -396,9 +390,6 @@ static int aabort = 0;
 static void showroutebox(routebox_t * rb);
 #endif
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
- */
 /* group number of groups that hold surface mount pads */
 static pcb_layergrp_id_t front, back;
 static pcb_bool usedGroup[PCB_MAX_LAYERGRP];

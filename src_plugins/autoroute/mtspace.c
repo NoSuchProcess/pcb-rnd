@@ -47,10 +47,6 @@
 
 /* mtspace data structures are built on r-trees. */
 
-/* ---------------------------------------------------------------------------
- * some local types
- */
-
 typedef struct mtspacebox {
 	const pcb_box_t box;
 	pcb_coord_t clearance;								/* the smallest clearance around this box */

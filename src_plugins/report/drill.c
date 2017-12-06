@@ -36,9 +36,6 @@
 #define STEP_DRILL   30
 #define STEP_POINT   100
 
-/*
- * some local prototypes
- */
 static void FillDrill(DrillTypePtr, pcb_element_t *, pcb_pin_t *);
 static void InitializeDrill(DrillTypePtr, pcb_pin_t *, pcb_element_t *);
 
