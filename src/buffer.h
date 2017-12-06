@@ -38,25 +38,42 @@ struct pcb_buffer_s {								/* information about the paste buffer */
 	/* are used */
 };
 
-/* ---------------------------------------------------------------------------
- * prototypes
- */
-void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer);
-
-/* returns 0 on success */
+/* Recalculates the bounding box of the buffer; returns 0 on success */
 int pcb_set_buffer_bbox(pcb_buffer_t *);
 
-void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *);
+/* clears the contents of the paste buffer: free's data, but preserves parent */
+void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer);
+
+/* adds (copies) all selected and visible objects to the paste buffer */
 void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *, pcb_coord_t, pcb_coord_t, pcb_bool);
+
+/* moves all selected and visible objects to the paste buffer */
+void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected);
+
+/* load a board into buffer parse the file with enabled 'PCB mode' */
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
-void pcb_buffer_rotate(pcb_buffer_t *, pcb_uint8_t);
-void pcb_buffer_select_paste(int);
+
+/* rotates the contents of the pastebuffer by Number * 90 degrees or free angle*/
+void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number);
+void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle);
+
 void pcb_buffers_flip_side(pcb_board_t *pcb);
-void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *);
+void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer);
+
 void pcb_init_buffers(pcb_board_t *pcb);
 void pcb_uninit_buffers(pcb_board_t *pcb);
-void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
-void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
+
+/* Creates a new empty paste buffer */
+pcb_data_t *pcb_buffer_new(pcb_board_t *pcb);
+
+/* Moves the passed object to the passed buffer's data and removes it from its
+   original data; returns the new object pointer on success or NULL on fail */
+void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+
+/* Adds/copies the passed object to the passed buffer's data;
+   returns the new object pointer on success or NULL on fail */
+void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+
 
 /* This action is called from ActionElementAddIf() */
 int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
@@ -66,15 +83,10 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y);
 
 
-pcb_data_t *pcb_buffer_new(pcb_board_t *pcb);
-
 /* sets currently active buffer */
 void pcb_buffer_set_number(int Number);
 
-
-/* ---------------------------------------------------------------------------
- * access macro for current buffer
- */
-#define	PCB_PASTEBUFFER (&pcb_buffers[conf_core.editor.buffer_number])
+/* Address of the currently active paste buffer */
+#define PCB_PASTEBUFFER (&pcb_buffers[conf_core.editor.buffer_number])
 
 #endif

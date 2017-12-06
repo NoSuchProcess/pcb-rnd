@@ -88,9 +88,6 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_pstkop_move_to_buffer,
 };
 
-/* ---------------------------------------------------------------------------
- * calculates the bounding box of the buffer
- */
 int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 {
 	pcb_box_t tmp, *box = pcb_data_bbox(&tmp, Buffer->Data, pcb_false);
@@ -102,9 +99,6 @@ int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 	return -1;
 }
 
-/* ---------------------------------------------------------------------------
- * clears the contents of the paste buffer (preserves parent)
- */
 void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	if (Buffer && Buffer->Data) {
@@ -152,13 +146,11 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-/* adds all selected and visible objects to the paste buffer returns true if any objects have been removed */
 void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
 {
 	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected);
 }
 
-/* moves all selected and visible objects to the paste buffer returns true if any objects have been removed */
 void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
 {
 	pcb_buffer_toss_selected(&MoveBufferFunctions, pcb, Buffer, X, Y, LeaveSelected);
@@ -230,11 +222,6 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * load PCB into buffer
- * parse the file with enabled 'PCB mode' (see parser)
- * if successful, update some other stuff
- */
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
 	pcb_board_t *newPCB = pcb_board_new_(pcb_false);
@@ -264,9 +251,6 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	return (pcb_false);
 }
 
-/* ---------------------------------------------------------------------------
- * rotates the contents of the pastebuffer
- */
 void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 {
 	/* rotate vias */
@@ -375,9 +359,6 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	pcb_set_buffer_bbox(Buffer);
 }
 
-/* ---------------------------------------------------------------------------
- * creates a new paste buffer
- */
 pcb_data_t *pcb_buffer_new(pcb_board_t *pcb)
 {
 	return pcb_data_new(pcb);
@@ -575,10 +556,6 @@ void pcb_buffers_flip_side(pcb_board_t *pcb)
 	pcb_crosshair_range_to_buffer();
 }
 
-/* ----------------------------------------------------------------------
- * moves the passed object to the passed buffer and removes it
- * from its original place
- */
 void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
@@ -590,9 +567,6 @@ void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 	return (pcb_object_operation(&MoveBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
-/* ----------------------------------------------------------------------
- * Adds the passed object to the passed buffer
- */
 void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
@@ -603,10 +577,6 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 	return (pcb_object_operation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
-/* ---------------------------------------------------------------------------
- * pastes the contents of the buffer to the layout. Only visible objects
- * are handled by the routine.
- */
 pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_cardinal_t i;
