@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for misc routines - independent of PCB data types */
+/* misc - independent of PCB data types */
 
 #ifndef	PCB_MISC_UTIL_H
 #define	PCB_MISC_UTIL_H

@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for thermal routines
+/* thermal on pins/vias
  *
  * Thermals are normal lines on the layout. The only thing unique
  * about them is that they have the PCB_FLAG_USETHERMAL set so that they

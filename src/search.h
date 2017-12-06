@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for search routines */
+/* Search object by location routines */
 
 #ifndef	PCB_SEARCH_H
 #define	PCB_SEARCH_H
@@ -37,9 +37,7 @@ int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_c
 pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 
 #define PCB_SLOP 5
-/* ---------------------------------------------------------------------------
- * some useful macros
- */
+
 /* ---------------------------------------------------------------------------
  * some define to check for 'type' in box
  */
@@ -162,11 +160,6 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 #define PCB_ARC_NEAR_BOX(a,b) \
 	(PCB_IS_BOX_NEGATIVE(b) ? PCB_ARC_TOUCHES_BOX(a,b) : PCB_ARC_IN_BOX(a,b))
 
-
-
-/* ---------------------------------------------------------------------------
- * prototypes
- */
 pcb_bool pcb_is_point_on_line(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_line_t *);
 pcb_bool pcb_is_point_in_pin(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pin_t *);
 pcb_bool pcb_is_point_on_arc(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_arc_t *);

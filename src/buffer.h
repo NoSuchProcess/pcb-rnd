@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for buffer handling routines */
+/* Board independent paste buffers */
 
 #ifndef PCB_BUFFER_H
 #define PCB_BUFFER_H

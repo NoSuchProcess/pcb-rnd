@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for action routines */
-
 #ifndef	PCB_ACTION_HELPER_H
 #define	PCB_ACTION_HELPER_H
 

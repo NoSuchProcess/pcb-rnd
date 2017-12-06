@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for remove routines */
+/* Remove objects from the board */
 
 #ifndef	PCB_REMOVE_H
 #define	PCB_REMOVE_H

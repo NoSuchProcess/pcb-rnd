@@ -26,8 +26,6 @@
  *
  */
 
-/* prototypes for rats routines */
-
 #ifndef PCB_RATS_H
 #define PCB_RATS_H
 
@@ -35,11 +33,6 @@
 #include "netlist.h"
 #include "layer.h"
 #include "layer_grp.h"
-
-/* ---------------------------------------------------------------------------
- * structure used by device drivers
- */
-
 
 struct pcb_connection_s {  /* holds a connection (rat) */
 	pcb_coord_t X, Y;        /* coordinate of connection */

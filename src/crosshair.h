@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for crosshair routines */
-
 #ifndef	PCB_CROSSHAIR_H
 #define	PCB_CROSSHAIR_H
 

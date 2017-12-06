@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for copy routines */
-
 #ifndef	PCB_COPY_H
 #define	PCB_COPY_H
 

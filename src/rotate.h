@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for transform routines */
-
 #ifndef	PCB_ROTATE_H
 #define	PCB_ROTATE_H
 

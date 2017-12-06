@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for move routines */
-
 #ifndef	PCB_MOVE_H
 #define	PCB_MOVE_H
 
@@ -47,9 +45,6 @@
 	(PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLY | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
 
-/* ---------------------------------------------------------------------------
- * prototypes
- */
 void *pcb_move_obj(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
 void *pcb_move_obj_to_layer(int, void *, void *, void *, pcb_layer_t *, pcb_bool);
 void *pcb_move_obj_and_rubberband(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);

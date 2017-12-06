@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes connection search routines */
+/* Find galvanic/geometrical connections */
 
 #ifndef	PCB_FIND_H
 #define	PCB_FIND_H

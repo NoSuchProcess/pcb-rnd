@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes to change object properties */
+/* Generic, object-type independent change calls */
 
 #ifndef	PCB_CHANGE_H
 #define	PCB_CHANGE_H

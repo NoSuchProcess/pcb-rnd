@@ -29,8 +29,7 @@
  */
 
 
-/* prototypes for rectangle intersection/union routines.
- */
+/* Box (rectangle) intersection/union routines. */
 
 #ifndef PCB_INTERSECT_H
 #define PCB_INTERSECT_H

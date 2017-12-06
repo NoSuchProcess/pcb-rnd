@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for drawing routines */
-
 #ifndef	PCB_DRAW_H
 #define	PCB_DRAW_H
 

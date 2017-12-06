@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for inserting points into objects */
+/* Inserting points into objects */
 
 #ifndef	PCB_INSERT_H
 #define	PCB_INSERT_H
@@ -33,9 +33,6 @@
 
 #define	PCB_INSERT_TYPES	(PCB_TYPE_POLY | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_RATLINE)
 
-/* ---------------------------------------------------------------------------
- * prototypes
- */
 void *pcb_insert_point_in_object(int, void *, void *, pcb_cardinal_t *, pcb_coord_t, pcb_coord_t, pcb_bool, pcb_bool);
 pcb_point_t *pcb_adjust_insert_point(void);
 

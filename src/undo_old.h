@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for undo routines */
+/* old undo infra: should be replaced by per operation local undo */
 
 #ifndef	PCB_UNDO_OLD_H
 #define	PCB_UNDO_OLD_H

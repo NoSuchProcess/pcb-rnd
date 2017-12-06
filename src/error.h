@@ -24,7 +24,7 @@
  *
  */
 
-/* prototypes for error and debug functions */
+/* Messages, error reporting and debug functions */
 
 #ifndef	PCB_ERROR_H
 #define	PCB_ERROR_H

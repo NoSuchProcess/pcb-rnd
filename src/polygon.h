@@ -24,7 +24,8 @@
  *
  */
 
-/* prototypes for polygon editing routines */
+/* High level polygon support: pcb-specific polygon operations on complex
+   polygon objects with islands and holes */
 
 #ifndef	PCB_POLYGON_H
 #define	PCB_POLYGON_H

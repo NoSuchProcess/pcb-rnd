@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for select routines */
-
 #ifndef	PCB_SELECT_H
 #define	PCB_SELECT_H
 

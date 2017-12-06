@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for undo routines */
-
 #ifndef	PCB_UNDO_H
 #define	PCB_UNDO_H
 
