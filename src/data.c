@@ -458,6 +458,14 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too)
 		pcb_poly_mirror(layer, polygon, y_offs);
 	}
 	PCB_ENDALL_LOOP;
+
+	if (text_too) {
+		PCB_TEXT_ALL_LOOP(data);
+		{
+			pcb_text_flip_side(layer, text);
+		}
+		PCB_ENDALL_LOOP;
+	}
 }
 
 int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox)
