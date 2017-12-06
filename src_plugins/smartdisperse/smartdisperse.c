@@ -79,9 +79,8 @@ static void place_elem(pcb_element_t * element)
 
 	/* keep track of how tall this row is */
 	minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
-	if (maxy < element->BoundingBox.Y2) {
+	if (maxy < element->BoundingBox.Y2)
 		maxy = element->BoundingBox.Y2;
-	}
 }
 
 /* the same for subcircuits */
@@ -117,9 +116,8 @@ static void place_subc(pcb_subc_t *sc)
 
 	/* keep track of how tall this row is */
 	minx += sc->BoundingBox.X2 - sc->BoundingBox.X1 + GAP;
-	if (maxy < sc->BoundingBox.Y2) {
+	if (maxy < sc->BoundingBox.Y2)
 		maxy = sc->BoundingBox.Y2;
-	}
 }
 
 static void place(pcb_any_obj_t *obj)
@@ -166,7 +164,6 @@ static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 #define set_visited(obj) htpi_set(&visited, ((void *)(obj)), 1)
 #define is_visited(obj)  htpi_has(&visited, ((void *)(obj)))
 
-
 static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ARG(0);
@@ -199,9 +196,8 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	/* if we're not doing all, mark the unselected elements and subcs as "visited" */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
+		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)))
 			set_visited(element);
-		}
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(PCB->Data);
