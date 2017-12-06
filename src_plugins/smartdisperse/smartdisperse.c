@@ -11,6 +11,7 @@
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Upgraded to subc by Tibor 'Igor2' Palinkas in 2017.
  *
  * Improve the initial dispersion of elements by choosing an order based
  * on the netlist, rather than the arbitrary element order.  This isn't
@@ -39,6 +40,7 @@
 #include "action_helper.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
+#include "obj_subc.h"
 
 #define GAP 10000
 static pcb_coord_t minx;
@@ -53,7 +55,7 @@ static pcb_coord_t maxy;
  *
  * This is taken almost entirely from pcb_act_DisperseElements, with cleanup
  */
-static void place(pcb_element_t * element)
+static void place_elem(pcb_element_t * element)
 {
 	pcb_coord_t dx, dy;
 
@@ -77,7 +79,7 @@ static void place(pcb_element_t * element)
 	if (minx != GAP && GAP + element->BoundingBox.X2 + dx > PCB->MaxWidth) {
 		miny = maxy + GAP;
 		minx = GAP;
-		place(element);							/* recurse can't loop, now minx==GAP */
+		place_elem(element); /* recurse can't loop, now minx==GAP */
 		return;
 	}
 
@@ -93,6 +95,57 @@ static void place(pcb_element_t * element)
 		maxy = element->BoundingBox.Y2;
 	}
 }
+
+/* the same for subcircuits */
+static void place_subc(pcb_subc_t *sc)
+{
+	pcb_coord_t dx, dy, ox = 0, oy = 0;
+
+	pcb_subc_get_origin(sc, &ox, &oy);
+
+	/* figure out how much to move the element */
+	dx = minx - sc->BoundingBox.X1;
+	dy = miny - sc->BoundingBox.Y1;
+
+	/* snap to the grid */
+	dx -= (ox + dx) % PCB->Grid;
+	dx += PCB->Grid;
+	dy -= (oy + dy) % PCB->Grid;
+	dy += PCB->Grid;
+
+	/*
+	 * and add one grid size so we make sure we always space by GAP or
+	 * more
+	 */
+	dx += PCB->Grid;
+
+	/* Figure out if this row has room.  If not, start a new row */
+	if (minx != GAP && GAP + sc->BoundingBox.X2 + dx > PCB->MaxWidth) {
+		miny = maxy + GAP;
+		minx = GAP;
+		place_subc(sc); /* recurse can't loop, now minx==GAP */
+		return;
+	}
+
+	pcb_subc_move(sc, dx, dy, 1);
+	pcb_undo_add_obj_to_move(PCB_TYPE_SUBC, NULL, NULL, sc, dx, dy);
+
+	/* keep track of how tall this row is */
+	minx += sc->BoundingBox.X2 - sc->BoundingBox.X1 + GAP;
+	if (maxy < sc->BoundingBox.Y2) {
+		maxy = sc->BoundingBox.Y2;
+	}
+}
+
+static void place(pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_ELEMENT: place_elem((pcb_element_t *)obj); break;
+		case PCB_OBJ_SUBC:    place_subc((pcb_subc_t *)obj); break;
+		default: break;
+	}
+}
+
 
 /*!
  * \brief Return the X location of a connection's pad or pin within its
@@ -131,8 +184,8 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 
 static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 
-#define set_visited(element) htpi_set(&visited, ((void *)(element)), 1)
-#define is_visited(element)  htpi_has(&visited, ((void *)(element)))
+#define set_visited(obj) htpi_set(&visited, ((void *)(obj)), 1)
+#define is_visited(obj)  htpi_has(&visited, ((void *)(obj)))
 
 
 static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -190,7 +243,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	PCB_NET_LOOP(Nets);
 	{
 		pcb_connection_t *conna, *connb;
-		pcb_element_t *ea, *eb;
+		pcb_any_obj_t *ea, *eb;
 /*    pcb_element_t *epp;*/
 
 		if (net->ConnectionN != 2)
@@ -201,8 +254,8 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		if (!IS_ELEMENT(conna) || !IS_ELEMENT(conna))
 			continue;
 
-		ea = (pcb_element_t *) conna->ptr1;
-		eb = (pcb_element_t *) connb->ptr1;
+		ea = (pcb_any_obj_t *) conna->ptr1;
+		eb = (pcb_any_obj_t *) connb->ptr1;
 
 		/* place this pair if possible */
 		if (is_visited(ea) || is_visited(eb))
@@ -227,18 +280,18 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	{
 		PCB_CONNECTION_LOOP(net);
 		{
-			pcb_element_t *element;
+			pcb_any_obj_t *parent;
 
 			if (!IS_ELEMENT(connection))
 				continue;
 
-			element = (pcb_element_t *) connection->ptr1;
+			parent = connection->ptr1;
 
 			/* place this one if needed */
-			if (is_visited(element))
+			if (is_visited(parent))
 				continue;
-			set_visited(element);
-			place(element);
+			set_visited(parent);
+			place(parent);
 		}
 		PCB_END_LOOP;
 	}
@@ -247,9 +300,14 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	/* Place up anything else */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		if (!is_visited(element)) {
-			place(element);
-		}
+		if (!is_visited(element))
+			place_elem(element);
+	}
+	PCB_END_LOOP;
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		if (!is_visited(subc))
+			place_subc(subc);
 	}
 	PCB_END_LOOP;
 
