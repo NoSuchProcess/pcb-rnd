@@ -123,9 +123,10 @@ static char *usage_string1c =
 static char *usage_string_foot =
 	"Additional Resources:\n"
 	"\n"
+	"  pcb-rnd homepage:     http://repo.hu/projects/pcb-rnd\n"
 	"  gnetlist user guide:  http://wiki.geda-project.org/geda:gnetlist_ug\n"
 	"  gEDA homepage:        http://www.geda-project.org\n"
-	"  PCB homepage:         http://pcb.geda-project.org\n" "  pcb-rnd homepage:     http://repo.hu/projects/pcb-rnd\n" "\n";
+	"\n";
 
 
 void usage(void)
