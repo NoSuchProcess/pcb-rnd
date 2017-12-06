@@ -154,7 +154,7 @@ int pcb_data_normalize(pcb_data_t *data);
 pcb_board_t *pcb_data_get_top(pcb_data_t *data);
 
 
-void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs);
+void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too);
 
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
 
