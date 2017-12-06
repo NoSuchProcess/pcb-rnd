@@ -172,10 +172,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	const char *function = ARG(0);
 	pcb_netlist_t *Nets;
 	htpi_t visited;
-/*  PointerListType stack = { 0, 0, NULL };*/
 	int all;
-/*  int changed = 0;
-  int i;*/
 
 	if (!function) {
 		all = 1;
@@ -214,16 +211,13 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	maxx = GAP;
 	maxy = GAP;
 
-	/*
-	 * Pick nets with two connections.  This is the start of a more
+	/* Pick nets with two connections.  This is the start of a more
 	 * elaborate algorithm to walk serial nets, but the datastructures
-	 * are too gross so I'm going with the 80% solution.
-	 */
+	 * are too gross so I'm going with the 80% solution. */
 	PCB_NET_LOOP(Nets);
 	{
 		pcb_connection_t *conna, *connb;
 		pcb_any_obj_t *ea, *eb;
-/*    pcb_element_t *epp;*/
 
 		if (net->ConnectionN != 2)
 			continue;
