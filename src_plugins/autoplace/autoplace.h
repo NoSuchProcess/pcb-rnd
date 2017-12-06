@@ -28,8 +28,6 @@
  *
  */
 
-/* prototypes for autoplace routines */
-
 #ifndef PCB_AUTOPLACE_H
 #define PCB_AUTOPLACE_H
 

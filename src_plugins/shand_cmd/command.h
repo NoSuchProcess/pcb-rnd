@@ -24,8 +24,6 @@
  *
  */
 
-/* prototypes for command execution */
-
 #ifndef	PCB_COMMAND_H
 #define	PCB_COMMAND_H
 

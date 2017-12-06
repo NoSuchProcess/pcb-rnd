@@ -24,9 +24,6 @@
  *
  */
 
-/* prototypes for file routines
- */
-
 #ifndef	PCB_FILE_H
 #define	PCB_FILE_H
 

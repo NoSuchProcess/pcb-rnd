@@ -28,10 +28,6 @@
  *
  */
 
-
-/* prototypes for autoroute routines
- */
-
 #ifndef PCB_AUTOROUTE_H
 #define PCB_AUTOROUTE_H
 

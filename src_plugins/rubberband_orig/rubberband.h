@@ -24,8 +24,8 @@
  *
  */
 
-/* prototypes for rubberband routines
- */
+/* Rubberband: when moving objects, try to keep connections to other objects -
+   sort of scretching nets as rubber bands */
 
 #ifndef	PCB_RUBBERBAND_H
 #define	PCB_RUBBERBAND_H

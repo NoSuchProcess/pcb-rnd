@@ -28,10 +28,6 @@
  *
  */
 
-
-/* prototypes for vector routines.
- */
-
 #ifndef PCB_VECTOR_H
 #define PCB_VECTOR_H
 

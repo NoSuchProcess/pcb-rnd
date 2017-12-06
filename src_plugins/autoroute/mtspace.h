@@ -28,10 +28,7 @@
  *
  */
 
-
-/* prototypes for "empty space" routines (needed for via-space tracking
- * in the auto-router.
- */
+/* "empty space" routines (needed for via-space tracking in the auto-router. */
 
 #ifndef PCB_MTSPACE_H
 #define PCB_MTSPACE_H
