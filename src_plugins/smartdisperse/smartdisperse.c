@@ -58,13 +58,13 @@ static void place_elem(pcb_element_t * element)
 	dy = miny - element->BoundingBox.Y1;
 
 	/* snap to the grid */
-	dx -= (element->MarkX + dx) % (long) (PCB->Grid);
-	dx += (long) (PCB->Grid);
-	dy -= (element->MarkY + dy) % (long) (PCB->Grid);
-	dy += (long) (PCB->Grid);
+	dx -= (element->MarkX + dx) % PCB->Grid;
+	dx += PCB->Grid;
+	dy -= (element->MarkY + dy) % PCB->Grid;
+	dy += PCB->Grid;
 
 	/* and add one grid size so we make sure we always space by GAP or more */
-	dx += (long) (PCB->Grid);
+	dx += PCB->Grid;
 
 	/* Figure out if this row has room.  If not, start a new row */
 	if (minx != GAP && GAP + element->BoundingBox.X2 + dx > PCB->MaxWidth) {
