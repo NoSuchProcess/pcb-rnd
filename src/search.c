@@ -557,7 +557,6 @@ static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 
 /* ---------------------------------------------------------------------------
  * searches the name of an element
- * the search starts with the last element and goes back to the beginning
  */
 static pcb_bool
 SearchElementNameByLocation(unsigned long objst, unsigned long req_flag, pcb_element_t ** Element, pcb_text_t ** Text, pcb_text_t ** Dummy, pcb_bool BackToo)
@@ -602,7 +601,6 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 
 /* ---------------------------------------------------------------------------
  * searches an element
- * the search starts with the last element and goes back to the beginning
  * if more than one element matches, the smallest one is taken
  */
 static pcb_bool
@@ -649,7 +647,6 @@ static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 
 /* ---------------------------------------------------------------------------
  * searches a subcircuit
- * the search starts with the last subcircuit and goes back to the beginning
  * if more than one subc matches, the smallest one is taken
  */
 static pcb_bool
