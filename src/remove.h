@@ -31,9 +31,6 @@
 
 #include "config.h"
 
-/* ---------------------------------------------------------------------------
- * some constants
- */
 #define PCB_REMOVE_TYPES \
 	(PCB_TYPE_VIA | PCB_TYPE_PSTK | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | PCB_TYPE_SUBC | \
 	PCB_TYPE_POLY_POINT | PCB_TYPE_POLY | PCB_TYPE_RATLINE | PCB_TYPE_ARC | PCB_TYPE_ARC_POINT)
