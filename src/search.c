@@ -668,9 +668,6 @@ SearchSubcByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **s
 	return pcb_false;
 }
 
-/* ---------------------------------------------------------------------------
- * checks if a point is on a pin
- */
 pcb_bool pcb_is_point_in_pin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin)
 {
 	pcb_coord_t t = PIN_SIZE(pin) / 2;
@@ -689,9 +686,7 @@ pcb_bool pcb_is_point_in_pin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 	return pcb_false;
 }
 
-/* ---------------------------------------------------------------------------
- * checks if a rat-line end is on a PV
- */
+/* for checking if a rat-line end is on a PV */
 pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
 {
 	if (((X == Line->Point1.X) && (Y == Line->Point1.Y)) || ((X == Line->Point2.X) && (Y == Line->Point2.Y)))
@@ -778,9 +773,7 @@ static int is_point_on_line(pcb_coord_t px, pcb_coord_t py, pcb_coord_t lx1, pcb
 	return pcb_is_point_on_line(px, py, 1, &l);
 }
 
-/* ---------------------------------------------------------------------------
- * checks if a line crosses a rectangle
- */
+/* checks if a line crosses a rectangle or is within the rectangle */
 pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_line_t *Line)
 {
 	pcb_line_t line;
@@ -824,7 +817,8 @@ pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2
 	return (pcb_false);
 }
 
-static int /*checks if a point (of null radius) is in a slanted rectangle */ IsPointInQuadrangle(pcb_point_t p[4], pcb_point_t *l)
+/*checks if a point (of null radius) is in a slanted rectangle */
+static int IsPointInQuadrangle(pcb_point_t p[4], pcb_point_t *l)
 {
 	pcb_coord_t dx, dy, x, y;
 	double prod0, prod1;
@@ -851,7 +845,8 @@ static int /*checks if a point (of null radius) is in a slanted rectangle */ IsP
 }
 
 /* ---------------------------------------------------------------------------
- * checks if a line crosses a quadrangle: almost copied from pcb_is_line_in_rectangle()
+ * checks if a line crosses a quadrangle or is within the quadrangle: almost
+ * copied from pcb_is_line_in_rectangle()
  * Note: actually this quadrangle is a slanted rectangle
  */
 pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line)
@@ -898,7 +893,7 @@ pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line)
 }
 
 /* ---------------------------------------------------------------------------
- * checks if an arc crosses a square
+ * checks if an arc crosses a rectangle (or arc is within the rectangle)
  */
 pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_arc_t *Arc)
 {
@@ -1580,8 +1575,8 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 
 
 /* ---------------------------------------------------------------------------
- * searches for an element by its board name.
- * The function returns a pointer to the element, NULL if not found
+ * searches for an element by its refdes.
+ * Return the element or NULL if not found
  */
 pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name)
 {
