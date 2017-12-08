@@ -43,9 +43,15 @@
 	(PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLY | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
 
+/* undoably moves an object by relative DX and DY. Doesn't bump
+   the undo serial. Operation wrapper. The rubberband version also moves
+   or modifies connected objects. */
 void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY);
-void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse);
 void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY);
+
+/* undoably moves objects to a different layer. Doesn't bump
+   the undo serial. Operation wrapper. */
+void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse);
 pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target);
 
 #endif

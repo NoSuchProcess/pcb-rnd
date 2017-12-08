@@ -118,10 +118,6 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 	NULL  /* padstack */
 };
 
-/* ---------------------------------------------------------------------------
- * moves the object identified by its data pointers and the type
- * not we don't bump the undo serial number
- */
 void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	void *result;
@@ -135,10 +131,6 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 	return (result);
 }
 
-/* ---------------------------------------------------------------------------
- * moves the object identified by its data pointers and the type
- * as well as all attached rubberband lines
- */
 void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	pcb_opctx_t ctx;
@@ -248,10 +240,6 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	return (ptr2);
 }
 
-/* ---------------------------------------------------------------------------
- * moves the object identified by its data pointers and the type
- * to a new layer without changing it's position
- */
 void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse)
 {
 	void *result;
@@ -266,10 +254,6 @@ void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_la
 	return (result);
 }
 
-/* ---------------------------------------------------------------------------
- * moves the selected objects to a new layer without changing their
- * positions
- */
 pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 {
 	pcb_bool changed;
