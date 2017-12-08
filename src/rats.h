@@ -42,14 +42,22 @@ struct pcb_connection_s {  /* holds a connection (rat) */
 	pcb_lib_menu_t *menu;    /* the netmenu this *SHOULD* belong too */
 };
 
-pcb_rat_t *pcb_rat_add_net(void);
-char *pcb_connection_name(pcb_any_obj_t *obj);
 
+pcb_rat_t *pcb_rat_add_net(void);
+
+/* Put the rats nest into the layout from the loaded netlist; if SelectedOnly
+   is pcb_true, it will only draw rats to selected pins and pads */
 pcb_bool pcb_rat_add_all(pcb_bool SelectedOnly, void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
 
+char *pcb_connection_name(pcb_any_obj_t *obj);
+
+
+/* Search a netlist menu entry and locate the corresponding pad returns
+   pcb_true if found, and fills in Connection information */
 pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same);
 
 
+/* Read the library-netlist and build a pcb_true Netlist structure */
 pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu);
 
 pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly);

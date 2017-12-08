@@ -154,10 +154,6 @@ static pcb_bool pcb_term_find_name_ppt(const char *ElementName, const char *PinN
 	return pcb_false;
 }
 
-/*--------------------------------------------------------------------------
- * parse a netlist menu entry and locate the corresponding pad
- * returns pcb_true if found, and fills in Connection information
- */
 pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same)
 {
 	int j;
@@ -257,9 +253,6 @@ static void clear_drc_flag(int clear_ratconn)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * Read the library-netlist build a pcb_true Netlist structure
- */
 pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 {
 	pcb_connection_t *connection;
@@ -793,11 +786,6 @@ DrawShortestRats(pcb_netlist_t *Netl,
 	return (changed);
 }
 
-
-/* ---------------------------------------------------------------------------
- *  AddAllRats puts the rats nest into the layout from the loaded netlist
- *  if SelectedOnly is pcb_true, it will only draw rats to selected pins and pads
- */
 pcb_bool
 pcb_rat_add_all(pcb_bool SelectedOnly,
 					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
