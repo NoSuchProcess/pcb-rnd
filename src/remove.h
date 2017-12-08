@@ -36,7 +36,7 @@
 	PCB_TYPE_POLY_POINT | PCB_TYPE_POLY | PCB_TYPE_RATLINE | PCB_TYPE_ARC | PCB_TYPE_ARC_POINT)
 
 pcb_bool pcb_remove_selected(void);
-void *pcb_remove_object(int, void *, void *, void *);
-void *pcb_destroy_object(pcb_data_t *, int, void *, void *, void *);
+void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+void *pcb_destroy_object(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 #endif
