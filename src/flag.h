@@ -141,11 +141,18 @@ typedef enum {
 
 
 
-/* For passing modified flags to other functions. */
-pcb_flag_t pcb_flag_make(unsigned int);
-pcb_flag_t pcb_flag_add(pcb_flag_t, unsigned int);
-pcb_flag_t pcb_flag_mask(pcb_flag_t, unsigned int);
+/* Convert flags to flags, set everything else to 0 */
+pcb_flag_t pcb_flag_make(unsigned int src);
+
+/* set bits of src in dst */
+pcb_flag_t pcb_flag_add(pcb_flag_t dst, unsigned int src);
+
+/* clear (unset) bits of src in dst */
+pcb_flag_t pcb_flag_mask(pcb_flag_t dst, unsigned int src);
+
+/* destroy flags: clear all bits and free fields */
 void pcb_flag_erase(pcb_flag_t *f);
+
 #define		pcb_no_flags() pcb_flag_make(0)
 
 /* ---------------------------------------------------------------------------
@@ -188,7 +195,8 @@ int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2);
 #define PCB_FLAG_SQUARE_CLEAR(P)		(P)->Flags.q = 0
 #define PCB_FLAG_SQUARE_ASSIGN(V,P)	(P)->Flags.q = V
 
-extern int pcb_mem_any_set(unsigned char *, int);
+/* Returns 1 if any of the bytes in arr is non-zero */
+int pcb_mem_any_set(unsigned char *arr, int arr_len);
 #define PCB_FLAG_THERM_TEST_ANY(P)	pcb_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
 
 #endif
