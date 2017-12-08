@@ -8,7 +8,6 @@
 	- BUG: Padstack holes are missing from the FAB gerber export file [report: Ade]
 - BUG: shape editor dialog: 
 		+ catch layer change and regen the shape [report: SQ6POG]
-		+ Crash - Select mm dimensions, open shape dialog, select solid round shape, select the first 0 and '.' of the diameter and enter a number (which basically just selects a very large diameter) and a SegFault will occur. [report: Ade]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
 - feature: property editor should deal with flags
