@@ -34,6 +34,8 @@
 #define	PCB_INSERT_TYPES	(PCB_TYPE_POLY | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_RATLINE)
 
 void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last);
+
+/* adjusts the insert point to make 45 degree lines as necessary */
 pcb_point_t *pcb_adjust_insert_point(void);
 
 #endif
