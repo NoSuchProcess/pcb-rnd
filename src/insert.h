@@ -33,7 +33,7 @@
 
 #define	PCB_INSERT_TYPES	(PCB_TYPE_POLY | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_RATLINE)
 
-void *pcb_insert_point_in_object(int, void *, void *, pcb_cardinal_t *, pcb_coord_t, pcb_coord_t, pcb_bool, pcb_bool);
+void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last);
 pcb_point_t *pcb_adjust_insert_point(void);
 
 #endif
