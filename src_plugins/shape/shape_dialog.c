@@ -23,6 +23,9 @@ typedef struct {
 
 } ctx_t;
 
+/* Last open non-modal shape dialog */
+static ctx_t *shape_active = NULL;
+
 static void shp_tab_update(void *hid_ctx, ctx_t *shp)
 {
 	int but, tab;
@@ -67,6 +70,9 @@ static void shp_tab2(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 static void shp_button_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	ctx_t *shp = caller_data;
+
+	if (shp == shape_active)
+		shape_active = NULL;
 
 	PCB_DAD_FREE(shp->dlg);
 	free(shp);
@@ -144,6 +150,23 @@ static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		dia,
 		shp->dlg[shp->ccx].default_val.coord_value, shp->dlg[shp->ccy].default_val.coord_value);
 }
+
+
+static void shape_layer_chg(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	void *hid_ctx;
+
+	if (shape_active == NULL)
+		return;
+
+	hid_ctx = shape_active->dlg_hid_ctx;
+	switch(shape_active->tab) {
+		case 0: shp_chg_regpoly(hid_ctx, shape_active, NULL); break;
+		case 1: shp_chg_roundrect(hid_ctx, shape_active, NULL); break;
+		case 2: shp_chg_circle(hid_ctx, shape_active, NULL); break;
+	}
+}
+
 
 void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pcb_bool modal)
 {
@@ -376,6 +399,8 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 		PCB_DAD_RUN(shp->dlg);
 		PCB_DAD_FREE(shp->dlg);
 	}
+	else
+		shape_active = shp;
 }
 
 

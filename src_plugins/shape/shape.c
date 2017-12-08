@@ -34,6 +34,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include "error.h"
+#include "event.h"
 #include "layer.h"
 #include "math_helper.h"
 #include "obj_poly.h"
@@ -482,6 +483,7 @@ int pplg_check_ver_shape(int ver_needed) { return 0; }
 
 void pplg_uninit_shape(void)
 {
+	pcb_event_unbind_allcookie(pcb_shape_cookie);
 	pcb_hid_remove_actions_by_cookie(pcb_shape_cookie);
 }
 
@@ -490,5 +492,8 @@ void pplg_uninit_shape(void)
 int pplg_init_shape(void)
 {
 	PCB_REGISTER_ACTIONS(shape_action_list, pcb_shape_cookie)
+
+	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, shape_layer_chg, NULL, pcb_shape_cookie);
+
 	return 0;
 }
