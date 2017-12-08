@@ -67,7 +67,7 @@ static void shp_tab2(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 	shp_tab_update(hid_ctx, shp);
 }
 
-static void shp_button_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void shp_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	ctx_t *shp = caller_data;
 
@@ -390,7 +390,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 		PCB_DAD_END(shp->dlg);
 	PCB_DAD_END(shp->dlg);
 
-	PCB_DAD_NEW(shp->dlg, "dlg_shape", "Generate shapes", shp, modal, shp_button_cb);
+	PCB_DAD_NEW(shp->dlg, "dlg_shape", "Generate shapes", shp, modal, shp_close_cb);
 	shp_tab_update(shp->dlg_hid_ctx, shp);
 	shp_chg_circle(shp->dlg_hid_ctx, shp, NULL);
 	shp_chg_roundrect(shp->dlg_hid_ctx, shp, NULL);
