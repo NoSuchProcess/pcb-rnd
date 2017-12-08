@@ -45,12 +45,16 @@ struct pcb_connection_s {  /* holds a connection (rat) */
 pcb_rat_t *pcb_rat_add_net(void);
 char *pcb_connection_name(pcb_any_obj_t *obj);
 
-pcb_bool pcb_rat_add_all(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
-pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t *, pcb_connection_t *, pcb_bool);
+pcb_bool pcb_rat_add_all(pcb_bool SelectedOnly, void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
 
-pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *);
-pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool);
-pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *);
+pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same);
+
+
+pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu);
+
+pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly);
+
+pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *Net);
 
 #define PCB_CONNECTION_LOOP(net) do {                         \
         pcb_cardinal_t        n;                                      \
