@@ -459,8 +459,6 @@ void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Ar
 
 	value = (ctx->chgangle.is_absolute) ? ctx->chgangle.value : (*dst) + ctx->chgangle.value;
 	value = fmod(value, 360.0);
-	if (value < 0)
-		value += 360;
 
 	if (value != *dst) {
 		pcb_undo_add_obj_to_change_angles(PCB_TYPE_ARC, Layer, Arc, Arc);
