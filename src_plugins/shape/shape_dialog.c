@@ -132,10 +132,16 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
+	pcb_coord_t dia = shp->dlg[shp->dia].default_val.coord_value;
+
+	if ((dia < 1) || (dia > (PCB->MaxWidth + PCB->MaxHeight)/4)) {
+		pcb_message(PCB_MSG_ERROR, "Invalid diameter.\n");
+		return;
+	}
 
 	shp->obj = (pcb_any_obj_t *)circle_place(
 		shp->data, shp->layer,
-		shp->dlg[shp->dia].default_val.coord_value,
+		dia,
 		shp->dlg[shp->ccx].default_val.coord_value, shp->dlg[shp->ccy].default_val.coord_value);
 }
 

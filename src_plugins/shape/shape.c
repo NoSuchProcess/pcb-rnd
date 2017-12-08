@@ -448,8 +448,15 @@ int pcb_act_circle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return -1;
 
 	dia = pcb_get_value(argv[a], NULL, NULL, &succ);
-	if (!succ)
-		pcb_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "circle(): failed to convert dia: invalid coord (%s)\n", argv[a]);
+		return 1;
+	}
+
+	if ((dia < 1) || (dia > (PCB->MaxWidth + PCB->MaxHeight)/4)) {
+		pcb_message(PCB_MSG_ERROR, "circle(): invalid diameter\n");
+		return 1;
+	}
 
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_gui->get_coords("Click on the center of the circle", &x, &y);
