@@ -84,7 +84,7 @@ static extedit_method_t *extedit_interactive(void)
 	ee_t ee;
 	char tmp[256];
 	const char *names[NUM_METHODS+1];
-	int n;
+	int n, res;
 
 	for(n = 0; n < NUM_METHODS; n++)
 		names[n] = methods[n].name;
@@ -120,8 +120,10 @@ static extedit_method_t *extedit_interactive(void)
 	PCB_DAD_NEW(ee.dlg, "External editor", "External editor", &ee, pcb_true, NULL);
 
 	ee_data2dialog(&ee);
-	PCB_DAD_RUN(ee.dlg);
+	res = PCB_DAD_RUN(ee.dlg);
 
 	PCB_DAD_FREE(ee.dlg);
-	return NULL;
+	if (res != 0)
+		return NULL;
+	return &methods[ee.mthi];
 }
