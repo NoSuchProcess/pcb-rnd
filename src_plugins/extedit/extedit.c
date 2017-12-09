@@ -33,10 +33,12 @@
 
 #include "board.h"
 #include "compat_fs.h"
+#include "compat_misc.h"
 #include "const.h"
 #include "conf_core.h"
 #include "data.h"
 #include "buffer.h"
+#include "paths.h"
 #include "safe_fs.h"
 #include "search.h"
 #include "../src_plugins/io_lihata/io_lihata.h"
@@ -55,10 +57,12 @@ typedef struct extedit_method_s {
 } extedit_method_t;
 
 static extedit_method_t methods[] = {
-	{"pcb-rnd",         PCB_TYPE_SUBC | PCB_TYPE_ELEMENT, EEF_LIHATA, "pcb-rnd %f"},
-	{"text editor",     PCB_TYPE_SUBC | PCB_TYPE_ELEMENT, EEF_LIHATA, "editor %f"},
+	{"pcb-rnd",         PCB_TYPE_SUBC | PCB_TYPE_ELEMENT, EEF_LIHATA, "pcb-rnd \"%f\""},
+	{"text editor",     PCB_TYPE_SUBC | PCB_TYPE_ELEMENT, EEF_LIHATA, "editor \"%f\""},
 	{NULL, 0, 0, NULL}
 };
+
+#define EXTEDIT_TYPES (PCB_TYPE_SUBC | PCB_TYPE_ELEMENT)
 
 /* DAD-based interactive method editor */
 static extedit_method_t *extedit_interactive(void)
@@ -66,6 +70,86 @@ static extedit_method_t *extedit_interactive(void)
 #warning TODO
 	return NULL;
 }
+
+typedef struct {
+	FILE *fc;
+	int stay;
+	pcb_hidval_t wid;
+} extedit_wait_t;
+
+void extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data)
+{
+	char tmp[128];
+	int res;
+	extedit_wait_t *ctx = user_data.ptr;
+
+	/* excess callbacks */
+	if (!ctx->stay)
+		return;
+
+	res = fread(tmp, 1, sizeof(tmp), ctx->fc);
+	if (res <= 0) {
+		pcb_gui->unwatch_file(ctx->wid);
+		ctx->stay = 0;
+	}
+}
+
+static void invoke(extedit_method_t *mth, const char *fn)
+{
+	pcb_build_argfn_t subs;
+	char *cmd;
+	FILE *fc;
+
+	memset(&subs, 0, sizeof(subs));
+	subs.params['f' - 'a'] = fn;
+	cmd = pcb_build_argfn(mth->command, &subs);
+
+	/* Don't use pcb_system() because that blocks the current process and the
+	   GUI toolkit won't have a chance to handle expose events */
+	fc = pcb_popen(cmd, "r");
+
+	if (pcb_gui != NULL) {
+		int fd = pcb_fileno(fc);
+		if (fd > 0) {
+			int n = 0;
+			pcb_hidval_t hd;
+			extedit_wait_t ctx;
+
+			ctx.stay = 1;
+			ctx.fc = fc;
+			hd.ptr = &ctx;
+			ctx.wid = pcb_gui->watch_file(fd, PCB_WATCH_READABLE | PCB_WATCH_HANGUP, extedit_fd_watch, hd);
+			while(ctx.stay) {
+				if (pcb_gui != NULL) {
+					n++;
+					pcb_gui->progress(50+sin((double)n/10.0)*40, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
+				}
+				pcb_ms_sleep(50);
+			}
+		}
+		else
+			goto old_wait;
+	}
+	else {
+		old_wait:;
+
+		if (pcb_gui != NULL) {
+			pcb_gui->progress(50, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
+			sleep(1); /* ugly hack: give the GUI some time to flush */
+		}
+		while(!(feof(fc))) {
+			char tmp[128];
+			fread(tmp, 1, sizeof(tmp), fc);
+		}
+	}
+	fclose(fc);
+
+	if (pcb_gui != NULL)
+		pcb_gui->progress(0, 0, NULL);
+	free(cmd);
+}
+
+
 
 static const char pcb_acts_extedit[] = "extedit(object|selected, [interactive|method])\n";
 static const char pcb_acth_extedit[] = "Invoke an external program to edit a specific part of the current board.";
@@ -81,7 +165,7 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	/* pick up the object to edit */
 	if ((argc == 0) || (pcb_strcasecmp(argv[0], "object") == 0)) {
 		pcb_gui->get_coords("Click on object to edit", &x, &y);
-		type = pcb_search_screen(x, y, 0xFFFFFFFF, &ptr1, &ptr2, &ptr3);
+		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 	}
 	else if ((argc > 0) && (pcb_strcasecmp(argv[0], "selected") == 0)) {
 #warning TODO
@@ -150,10 +234,12 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	}
 
 	/* invoke external program */
-#warning TODO
+	invoke(mth, tmp_fn);
 
 	/* load the result */
 #warning TODO
+	if (pcb_gui != NULL)
+		pcb_gui->invalidate_all();
 
 	quit1:;
 /*	pcb_tempfile_unlink(tmp_fn);*/
