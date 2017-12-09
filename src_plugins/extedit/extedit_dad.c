@@ -39,7 +39,44 @@ static void ee_data2dialog(ee_t *ee)
 	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wmethod, int_value, ee->mthi);
 	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wfmt, int_value, methods[ee->mthi].fmt);
 	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str_value, methods[ee->mthi].command);
+
+	/* we have only one format, so disable the combo box for selecting it */
+	pcb_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, pcb_false);
+
+	/* default value string crashes for some reason, disable it for now */
+	pcb_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wcmd, pcb_false);
 }
+
+static void ee_chg_method(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	static int lock = 0;
+	ee_t *ee = caller_data;
+
+	if (lock)
+		return;
+
+	ee->mthi = ee->dlg[ee->wmethod].default_val.int_value;
+
+	lock = 1;
+	ee_data2dialog(ee);
+	lock = 0;
+}
+
+static void ee_chg_cmd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	static int lock = 0;
+	ee_t *ee = caller_data;
+
+	if (lock)
+		return;
+
+	methods[ee->mthi].command = pcb_strdup(ee->dlg[ee->wcmd].default_val.str_value);
+
+	lock = 1;
+	ee_data2dialog(ee);
+	lock = 0;
+}
+
 
 /* DAD-based interactive method editor */
 static extedit_method_t *extedit_interactive(void)
@@ -63,6 +100,7 @@ static extedit_method_t *extedit_interactive(void)
 			PCB_DAD_LABEL(ee.dlg, "Method name:");
 			PCB_DAD_ENUM(ee.dlg, names);
 			ee.wmethod = PCB_DAD_CURRENT(ee.dlg);
+			PCB_DAD_CHANGE_CB(ee.dlg, ee_chg_method);
 		PCB_DAD_END(ee.dlg);
 
 		PCB_DAD_BEGIN_HBOX(ee.dlg);
@@ -75,6 +113,7 @@ static extedit_method_t *extedit_interactive(void)
 			PCB_DAD_LABEL(ee.dlg, "Command template:");
 			PCB_DAD_STRING(ee.dlg);
 			ee.wcmd = PCB_DAD_CURRENT(ee.dlg);
+			PCB_DAD_CHANGE_CB(ee.dlg, ee_chg_cmd);
 		PCB_DAD_END(ee.dlg);
 	PCB_DAD_END(ee.dlg);
 
