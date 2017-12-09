@@ -183,10 +183,13 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			if (pcb_strcasecmp(mth->name, argv[1]) == 0)
 				break;
 		}
-		if (mth == NULL) {
+		if (mth->name == NULL) {
 			pcb_message(PCB_MSG_ERROR, "unknown method '%s'; available methods:\n", argv[1]);
-			for(mth = methods; mth->name != NULL; mth++)
-				pcb_message(PCB_MSG_ERROR, "%s ", mth->name);
+			for(mth = methods; mth->name != NULL; mth++) {
+				if (mth != methods)
+					pcb_message(PCB_MSG_ERROR, ", ", mth->name);
+				pcb_message(PCB_MSG_ERROR, "%s", mth->name);
+			}
 			pcb_message(PCB_MSG_ERROR, "\n");
 			return 1;
 		}
