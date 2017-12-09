@@ -155,16 +155,6 @@ pcb_increments_t pcb_increments[] = {
 
 #define N_INCREMENTS (sizeof pcb_increments / sizeof pcb_increments[0])
 
-/* \brief Obtain a unit object from its suffix
- * \par Function Description
- * Looks up a given suffix in the main units array. Internationalized
- * unit suffixes are not supported, though pluralized units are, for
- * backward-compatibility.
- *
- * \param [in] const_suffix   The suffix to look up
- *
- * \return A const pointer to the pcb_unit_t struct, or NULL if none was found
- */
 const pcb_unit_t *get_unit_struct(const char *suffix)
 {
 	int i;
@@ -203,14 +193,11 @@ const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow)
 	return NULL;
 }
 
-/* ACCESSORS */
-/* \brief Returns the master unit list. This may not be modified. */
 const pcb_unit_t *get_unit_list(void)
 {
 	return pcb_units;
 }
 
-/* \brief Returns the unit by its index */
 const pcb_unit_t *get_unit_by_idx(int idx)
 {
 	if ((idx < 0) || (idx >= N_UNITS))
@@ -218,19 +205,11 @@ const pcb_unit_t *get_unit_by_idx(int idx)
 	return pcb_units + idx;
 }
 
-/* \brief Returns the length of the master unit list. */
 int pcb_get_n_units(void)
 {
 	return N_UNITS;
 }
 
-/* \brief Convert a pcb coord to the given unit
- *
- * \param [in] unit  The unit to convert to
- * \param [in] x     The quantity to convert
- *
- * \return The converted measure
- */
 double pcb_coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
 {
 	double base;
@@ -241,13 +220,6 @@ double pcb_coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
 	return x * unit->scale_factor * base;
 }
 
-/* \brief Convert a given unit to pcb coords; clamp at the end of the ranges
- *
- * \param [in] unit  The unit to convert from
- * \param [in] x     The quantity to convert
- *
- * \return The converted measure
- */
 pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x)
 {
 	double base, res;
@@ -267,26 +239,11 @@ pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x)
 	return res;
 }
 
-/* \brief Return how many PCB-internal-Coord-unit a unit translates to
- *
- * \param [in] unit  The unit to convert
- *
- * \return The converted measure
- */
 double pcb_unit_to_factor(const pcb_unit_t * unit)
 {
 	return 1.0 / pcb_coord_to_unit(unit, 1);
 }
 
-/* \brief Obtain an increment object from its suffix
- * \par Function Description
- * Looks up a given suffix in the main increments array. Internationalized
- * unit suffixes are not supported, nor are pluralized units.
- *
- * \param [in] suffix   The suffix to look up
- *
- * \return A const pointer to the pcb_increments_t struct, or NULL if none was found
- */
 pcb_increments_t *pcb_get_increments_struct(const char *suffix)
 {
 	int i;
@@ -297,7 +254,6 @@ pcb_increments_t *pcb_get_increments_struct(const char *suffix)
 	return NULL;
 }
 
-/* Bring an angle into [0, 360) range */
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a)
 {
 	while (a < 0)

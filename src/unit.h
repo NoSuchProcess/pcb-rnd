@@ -114,15 +114,33 @@ typedef struct pcb_increments_s pcb_increments_t;
 extern pcb_unit_t pcb_units[];
 extern pcb_increments_t pcb_increments[];
 
+/* Look up a given suffix in the units array. Pluralized units are supported. */
 const pcb_unit_t *get_unit_struct(const char *suffix);
+
+/* Return the furst unit that matches allow */
 const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
+
+/* Return the list of units and number of units (obsolete, do not use) */
 const pcb_unit_t *get_unit_list(void);
-const pcb_unit_t *get_unit_by_idx(int idx);
 int pcb_get_n_units(void);
+
+/* Return the idxth unit or NULL (bounds check) */
+const pcb_unit_t *get_unit_by_idx(int idx);
+
+/* Convert x to the given unit */
 double pcb_coord_to_unit(const pcb_unit_t *unit, pcb_coord_t x);
+
+/* Return how many PCB-internal-Coord-unit a unit translates to */
 double pcb_unit_to_factor(const pcb_unit_t * unit);
+
+/* Convert a given unit to pcb coords; clamp at the end of the ranges */
 pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x);
+
+/* Looks up a given suffix in the increments array. Pluralized units
+   are not supported. Returns NULL on error. */
 pcb_increments_t *pcb_get_increments_struct(const char *suffix);
+
+/* Bring an angle into [0, 360) range */
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
 
 void pcb_units_init(void);
