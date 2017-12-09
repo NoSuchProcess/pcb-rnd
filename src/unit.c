@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 2011 Andrew Poelstra
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,12 +81,7 @@ pcb_unit_t pcb_units[] = {
 };
 
 #define N_UNITS ((int) (sizeof pcb_units / sizeof pcb_units[0]))
-/* \brief Initialize non-static data for pcb-printf
- * \par Function Description
- * Assigns each unit its index for quick access through the
- * main units array, and internationalize the units for GUI
- * display.
- */
+
 void pcb_units_init(void)
 {
 	int i;

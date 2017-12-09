@@ -143,6 +143,10 @@ pcb_increments_t *pcb_get_increments_struct(const char *suffix);
 /* Bring an angle into [0, 360) range */
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
 
+
+/* Initialize non-static unit data: assigns each unit its index for
+   quick access through the main units array, and internationalize
+   the units for GUI display. */
 void pcb_units_init(void);
 
 /* PCB/physical unit conversions */
