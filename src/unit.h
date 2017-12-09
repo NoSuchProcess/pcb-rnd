@@ -119,9 +119,9 @@ const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
 const pcb_unit_t *get_unit_list(void);
 const pcb_unit_t *get_unit_by_idx(int idx);
 int pcb_get_n_units(void);
-double pcb_coord_to_unit(const pcb_unit_t *, pcb_coord_t);
+double pcb_coord_to_unit(const pcb_unit_t *unit, pcb_coord_t x);
 double pcb_unit_to_factor(const pcb_unit_t * unit);
-pcb_coord_t pcb_unit_to_coord(const pcb_unit_t *, double);
+pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x);
 pcb_increments_t *pcb_get_increments_struct(const char *suffix);
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
 
