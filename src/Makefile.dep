@@ -942,17 +942,18 @@
  hid_actions.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h action_helper.h board.h const.h \
- vtroutestyle.h library.h rats_patch.h board.h compat_fs.h const.h \
- conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
+ vtroutestyle.h library.h rats_patch.h board.h compat_fs.h compat_misc.h \
+ const.h conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h data.h crosshair.h vtonpoint.h \
  route.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h ht_subc.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h buffer.h safe_fs.h search.h \
- rats.h netlist.h route_style.h ../src_plugins/io_lihata/io_lihata.h \
- conf.h ../src_plugins/io_lihata/lht_conf.h \
- ../src_plugins/io_lihata/write.h ../src_plugins/io_lihata/read.h \
+ obj_pstk_shape.h polygon.h vtpadstack_t.h buffer.h paths.h safe_fs.h \
+ search.h rats.h netlist.h route_style.h \
+ ../src_plugins/io_lihata/io_lihata.h conf.h \
+ ../src_plugins/io_lihata/lht_conf.h ../src_plugins/io_lihata/write.h \
+ ../src_plugins/io_lihata/read.h ../src_plugins/extedit/extedit_dad.c \
  dolists.h
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \

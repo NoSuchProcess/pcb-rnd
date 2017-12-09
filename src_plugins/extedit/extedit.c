@@ -66,12 +66,7 @@ static extedit_method_t methods[] = {
 /* accept these objects for external editing */
 #define EXTEDIT_TYPES (PCB_TYPE_SUBC | PCB_TYPE_ELEMENT)
 
-/* DAD-based interactive method editor */
-static extedit_method_t *extedit_interactive(void)
-{
-#warning TODO
-	return NULL;
-}
+#include "extedit_dad.c"
 
 /* HID-dependent, portable watch of child process */
 typedef struct {
