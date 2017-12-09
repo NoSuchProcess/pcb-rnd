@@ -39,6 +39,7 @@
 #include "data.h"
 #include "buffer.h"
 #include "paths.h"
+#include "remove.h"
 #include "safe_fs.h"
 #include "search.h"
 #include "../src_plugins/io_lihata/io_lihata.h"
