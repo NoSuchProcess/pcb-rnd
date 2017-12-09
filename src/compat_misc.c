@@ -192,3 +192,8 @@ void pcb_ms_sleep(long ms)
 #warning TODO: scconfig detection, port to windows
 	usleep(ms*1000);
 }
+
+int pcb_fileno(FILE *f)
+{
+	return fileno(f);
+}

@@ -26,6 +26,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include <time.h>
 
@@ -54,5 +55,7 @@ size_t pcb_print_utc(char *out, size_t out_len, time_t when);
 
 /* Sleep for the specified number if miliseconds */
 void pcb_ms_sleep(long ms);
+
+int pcb_fileno(FILE *f);
 
 #endif /* PCB_COMPAT_MISC_H */
