@@ -186,3 +186,9 @@ size_t pcb_print_utc(char *out, size_t out_len, time_t when)
 
 	return strftime(out, out_len, fmt, gmtime(&when));
 }
+
+void pcb_ms_sleep(long ms)
+{
+#warning TODO: scconfig detection, port to windows
+	usleep(ms*1000);
+}

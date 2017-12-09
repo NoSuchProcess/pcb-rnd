@@ -52,4 +52,7 @@ int pcb_setenv(const char *name, const char *val, int overwrite);
 /* Print a date in UTC; if when is 0, print current date */
 size_t pcb_print_utc(char *out, size_t out_len, time_t when);
 
+/* Sleep for the specified number if miliseconds */
+void pcb_ms_sleep(long ms);
+
 #endif /* PCB_COMPAT_MISC_H */
