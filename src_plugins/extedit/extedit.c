@@ -58,7 +58,7 @@ typedef struct extedit_method_s {
 
 static extedit_method_t methods[] = {
 	{"pcb-rnd",         PCB_TYPE_SUBC | PCB_TYPE_ELEMENT, EEF_LIHATA, "pcb-rnd \"%f\""},
-	{"text editor",     PCB_TYPE_SUBC | PCB_TYPE_ELEMENT, EEF_LIHATA, "editor \"%f\""},
+	{"editor",          PCB_TYPE_SUBC | PCB_TYPE_ELEMENT, EEF_LIHATA, "xterm -e editor \"%f\""},
 	{NULL, 0, 0, NULL}
 };
 
@@ -237,12 +237,30 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	invoke(mth, tmp_fn);
 
 	/* load the result */
-#warning TODO
+	switch(mth->fmt) {
+		case EEF_LIHATA:
+			{
+				int bn =PCB_MAX_BUFFER - 1;
+
+				pcb_buffer_set_number(bn);
+				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+
+				if (io_lihata_parse_element(&plug_io_lihata_v4, pcb_buffers[bn].Data, tmp_fn) != 0) {
+					pcb_message(PCB_MSG_ERROR, "Failed to load the edited footprint. File left at '%s'.\n", tmp_fn);
+					goto quit0;
+				}
+
+				pcb_buffer_copy_to_layout(PCB, 0, 0);
+				pcb_remove_object(type, ptr1, ptr2, ptr3);
+				ret = 0;
+			}
+	}
 	if (pcb_gui != NULL)
 		pcb_gui->invalidate_all();
 
 	quit1:;
-/*	pcb_tempfile_unlink(tmp_fn);*/
+	pcb_tempfile_unlink(tmp_fn);
+	quit0:;
 	return ret;
 }
 
