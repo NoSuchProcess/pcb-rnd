@@ -57,9 +57,14 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number);
 void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle);
 
+/* flip elements/subcircuits/tracks from one side to the other; also swap
+   the layer stackup of padstacks */
 void pcb_buffers_flip_side(pcb_board_t *pcb);
+
+/* graphically mirror the buffer on the current side */
 void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer);
 
+/* Init/uninit all buffers (stored in board-independent global variables) */
 void pcb_init_buffers(pcb_board_t *pcb);
 void pcb_uninit_buffers(pcb_board_t *pcb);
 

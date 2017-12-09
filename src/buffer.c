@@ -398,9 +398,6 @@ int pcb_act_FreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * initializes the buffers by allocating memory
- */
 void pcb_init_buffers(pcb_board_t *pcb)
 {
 	int i;
@@ -446,10 +443,6 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	pcb_set_buffer_bbox(Buffer);
 }
 
-
-/* ---------------------------------------------------------------------------
- * flip components/tracks from one side to the other
- */
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	int j, k;
