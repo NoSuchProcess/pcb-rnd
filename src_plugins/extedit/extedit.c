@@ -231,7 +231,6 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 					goto quit1;
 				}
 				fclose(f);
-				printf("tmp=%s\n", tmp_fn);
 			}
 			break;
 	}
