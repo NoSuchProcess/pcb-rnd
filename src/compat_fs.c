@@ -52,11 +52,6 @@
 
 #include "error.h"
 
-/* ----------------------------------------------------------------------
- * returns pointer to current working directory.  If 'path' is not
- * NULL, then the current working directory is copied to the array
- * pointed to by 'path'
- */
 char *pcb_get_wd(char *path)
 {
 #if defined(HAVE_GETCWD)
@@ -132,8 +127,7 @@ int pcb_spawnvp(const char **argv)
 }
 
 
-/*
- * Creates a new temporary file name.  Hopefully the operating system
+/* Hopefully the operating system
  * provides a mkdtemp() function to securely create a temporary
  * directory with mode 0700.  If so then that directory is created and
  * the returned string is made up of the directory plus the name
@@ -229,11 +223,8 @@ char *pcb_tempfile_name_new(const char *name)
 	return tmpfile;
 }
 
-/*
- * Unlink a temporary file.  If we have mkdtemp() then our temp file
- * lives in a temporary directory and we need to remove that directory
- * too.
- */
+/* If we have mkdtemp() then our temp file lives in a temporary directory and
+ * we need to remove that directory too. */
 int pcb_tempfile_unlink(char *name)
 {
 #ifdef DEBUG
