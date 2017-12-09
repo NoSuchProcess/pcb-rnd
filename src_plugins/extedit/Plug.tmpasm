@@ -1,0 +1,10 @@
+put /local/pcb/mod {extedit}
+put /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/extedit/extedit.o
+@]
+
+switch /local/pcb/extedit/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

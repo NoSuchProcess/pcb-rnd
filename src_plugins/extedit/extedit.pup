@@ -1,0 +1,7 @@
+$class feature
+$short edit with external program
+$long invoke external program to edit parts of the current board
+$state works
+dep io_lihata
+default buildin
+autoload 1
