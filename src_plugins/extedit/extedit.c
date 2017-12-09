@@ -45,6 +45,7 @@
 #include "../src_plugins/io_lihata/write.h"
 #include "../src_plugins/io_lihata/read.h"
 
+/* List of all available external edit methods */
 typedef enum {
 	EEF_LIHATA
 } extedit_fmt_t;
@@ -62,6 +63,7 @@ static extedit_method_t methods[] = {
 	{NULL, 0, 0, NULL}
 };
 
+/* accept these objects for external editing */
 #define EXTEDIT_TYPES (PCB_TYPE_SUBC | PCB_TYPE_ELEMENT)
 
 /* DAD-based interactive method editor */
@@ -71,6 +73,7 @@ static extedit_method_t *extedit_interactive(void)
 	return NULL;
 }
 
+/* HID-dependent, portable watch of child process */
 typedef struct {
 	FILE *fc;
 	int stay;
@@ -94,6 +97,9 @@ void extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hi
 	}
 }
 
+/* Invoke the child process, display a "progress bar" or some other indication
+   while it's running and wait for it to exit (preferrably keeping the gui
+   refreshed, even if the process is blocking) */
 static void invoke(extedit_method_t *mth, const char *fn)
 {
 	pcb_build_argfn_t subs;
