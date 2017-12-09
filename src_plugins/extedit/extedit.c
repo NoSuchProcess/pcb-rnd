@@ -48,8 +48,14 @@
 
 /* List of all available external edit methods */
 typedef enum {
-	EEF_LIHATA
+	EEF_LIHATA,
+	EEF_max
 } extedit_fmt_t;
+
+const char *extedit_fmt_names[EEF_max+1] = {
+	"lihata",
+	NULL
+};
 
 typedef struct extedit_method_s {
 	char *name;

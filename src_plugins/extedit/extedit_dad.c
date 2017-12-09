@@ -23,9 +23,66 @@
  *
  */
 
+#include "hid_dad.h"
+
+typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
+	int mthi;
+
+	int wmethod, wfmt, wcmd;
+} ee_t;
+
+#define NUM_METHODS (sizeof(methods) / sizeof(methods[0]))
+
+static void ee_data2dialog(ee_t *ee)
+{
+	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wmethod, int_value, ee->mthi);
+	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wfmt, int_value, methods[ee->mthi].fmt);
+	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str_value, methods[ee->mthi].command);
+}
+
 /* DAD-based interactive method editor */
 static extedit_method_t *extedit_interactive(void)
 {
-	
+	ee_t ee;
+	char tmp[256];
+	const char *names[NUM_METHODS+1];
+	int n;
+
+	for(n = 0; n < NUM_METHODS; n++)
+		names[n] = methods[n].name;
+	names[n] = NULL;
+
+	memset(&ee, 0, sizeof(ee));
+
+	PCB_DAD_BEGIN_VBOX(ee.dlg);
+		sprintf(tmp, "Select external editor...");
+		PCB_DAD_LABEL(ee.dlg, tmp);
+
+		PCB_DAD_BEGIN_HBOX(ee.dlg);
+			PCB_DAD_LABEL(ee.dlg, "Method name:");
+			PCB_DAD_ENUM(ee.dlg, names);
+			ee.wmethod = PCB_DAD_CURRENT(ee.dlg);
+		PCB_DAD_END(ee.dlg);
+
+		PCB_DAD_BEGIN_HBOX(ee.dlg);
+			PCB_DAD_LABEL(ee.dlg, "File format:");
+			PCB_DAD_ENUM(ee.dlg, extedit_fmt_names);
+			ee.wfmt = PCB_DAD_CURRENT(ee.dlg);
+		PCB_DAD_END(ee.dlg);
+
+		PCB_DAD_BEGIN_HBOX(ee.dlg);
+			PCB_DAD_LABEL(ee.dlg, "Command template:");
+			PCB_DAD_STRING(ee.dlg);
+			ee.wcmd = PCB_DAD_CURRENT(ee.dlg);
+		PCB_DAD_END(ee.dlg);
+	PCB_DAD_END(ee.dlg);
+
+	PCB_DAD_NEW(ee.dlg, "External editor", "External editor", &ee, pcb_true, NULL);
+
+	ee_data2dialog(&ee);
+	PCB_DAD_RUN(ee.dlg);
+
+	PCB_DAD_FREE(ee.dlg);
 	return NULL;
 }
