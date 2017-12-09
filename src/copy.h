@@ -33,6 +33,8 @@
 	(PCB_TYPE_VIA | PCB_TYPE_PSTK | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | \
 	PCB_TYPE_SUBC | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_POLY | PCB_TYPE_ARC)
 
-void *pcb_copy_obj(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
+/* Undoably copies (duplicates) an object; the new objects is moved by DX,DY
+   (operation wrapper) */
+void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY);
 
 #endif

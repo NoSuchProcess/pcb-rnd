@@ -58,11 +58,6 @@ static pcb_opfunc_t CopyFunctions = {
 	pcb_pstkop_copy
 };
 
-/* ---------------------------------------------------------------------------
- * copies the object identified by its data pointers and the type
- * the new objects is moved by DX,DY
- * I assume that the appropriate layer ... is switched on
- */
 void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	void *ptr;
