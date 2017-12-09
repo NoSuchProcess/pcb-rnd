@@ -134,8 +134,6 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const p
 /* Conditionally allow subc parts to be reached directly in search masks */
 #define PCB_LOOSE_SUBC (PCB->loose_subc ? PCB_TYPE_SUBC_PART : 0)
 
-const char *pcb_board_get_filename(void);
-const char *pcb_board_get_name(void);
 
 /* changes the name of a layout; Name is allocated by the caller (no strdup() is made) */
 pcb_bool pcb_board_change_name(char *Name);
@@ -173,7 +171,12 @@ int pcb_board_normalize(pcb_board_t *pcb);
 /* sets or resets changed flag and redraws status */
 void pcb_board_set_changed_flag(pcb_bool New);
 
+/* Shorthand for emitting a board changed event (PCB_EVENT_BOARD_CHANGED) */
 void pcb_board_changed(int reverted);
 
+
+/* Obsolete pcb_board_t field accessors - do not use */
+const char *pcb_board_get_filename(void);
+const char *pcb_board_get_name(void);
 
 #endif
