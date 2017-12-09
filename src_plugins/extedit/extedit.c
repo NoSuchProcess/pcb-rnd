@@ -137,7 +137,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 		if (pcb_gui != NULL) {
 			pcb_gui->progress(50, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
-			sleep(1); /* ugly hack: give the GUI some time to flush */
+			pcb_ms_sleep(1000); /* ugly hack: give the GUI some time to flush */
 		}
 		while(!(feof(fc))) {
 			char tmp[128];
