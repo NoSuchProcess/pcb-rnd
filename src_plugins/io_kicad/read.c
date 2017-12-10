@@ -1638,7 +1638,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 						}
 						moduleEmpty = 0;
-						if (padRotation != 0) {
+						/* the rotation value describes rotation to the pad
+						   versus the original pad orientation, _NOT_ rotation
+						   that now needs to be applied, it seems */ 
+						if (padRotation != 0 && padRotation != moduleRotation) {
 							padRotation = padRotation/90;/*ignore rotation != n*90*/
 							PCB_COORD_ROTATE90(X1, Y1, X, Y, padRotation);
 							PCB_COORD_ROTATE90(X2, Y2, X, Y, padRotation);
