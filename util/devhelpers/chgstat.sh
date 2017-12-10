@@ -189,6 +189,8 @@ done | awk -v import=$import '
 			MASK[12757]++
 			MASK[12788]++
 			MASK[12824]++
+			MASK[12954]++
+			MASK[13008]++
 		}
 
 		{
