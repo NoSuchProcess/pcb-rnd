@@ -3673,7 +3673,7 @@
  ../src_3rd/genht/ht.h obj_poly.h polyarea.h obj_poly_list.h box.h \
  math_helper.h macro.h move.h misc_util.h ht_element.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h obj_text_list.h \
- obj_rat_list.h obj_rat.h layer_grp.h hid_actions.h hid.h misc_util.h
+ obj_rat_list.h obj_rat.h layer_grp.h hid_actions.h hid.h compat_misc.h
 ../src_plugins/lib_gtk_common/util_str.o: \
  ../src_plugins/lib_gtk_common/util_str.c ../config.h \
  ../src_plugins/lib_gtk_common/util_str.h
