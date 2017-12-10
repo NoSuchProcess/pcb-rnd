@@ -20,9 +20,8 @@
  *
  */
 
+#include "compat_inc.h"
 #include "config.h"
-
-
 
 #include <stdio.h>
 #include <string.h>
@@ -30,10 +29,6 @@
 #include <sys/types.h>
 #include <math.h>
 #include "compat_misc.h"
-#include "compat_inc.h"
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 /* On some old systems random() works better than rand(). Unfortunately
 random() is less portable than rand(), which is C89. By default, just
