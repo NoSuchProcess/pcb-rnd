@@ -443,6 +443,7 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 11;
 	int i;
+	pcb_cardinal_t ca;
 	pcb_pstk_proto_t *proto;
 
 	set_chk_skip(st, ps);
@@ -452,7 +453,7 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 		return;
 	}
 
-	i = (st->c != 0);
+	ca = i = (st->c != 0);
 	proto = pcb_pstk_get_proto(ps);
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
@@ -462,7 +463,7 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	if (st->c_valid && (strcmp(pn, "xmirror") == 0) &&
 	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, &i) == 0)) DONE;
 	if (st->c_valid && (strcmp(pn, "proto") == 0) &&
-	    (pcb_pstk_change_instance(ps, &i, NULL, NULL, NULL) == 0)) DONE;
+	    (pcb_pstk_change_instance(ps, &ca, NULL, NULL, NULL) == 0)) DONE;
 	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
 	    (pcb_pstk_proto_change_hole(proto, NULL, &st->c, NULL, NULL) == 0)) DONE;
 	if (st->c_valid && (strcmp(pn, "plated") == 0) &&
