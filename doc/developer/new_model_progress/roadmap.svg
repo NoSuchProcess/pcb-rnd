@@ -163,7 +163,7 @@
 </g>
 <!-- fp_nolimit -->
 <g id="node18" class="node"><title>fp_nolimit</title>
-<polygon fill="none" stroke="red" points="473.5,-581.236 297.5,-581.236 297.5,-543.236 473.5,-543.236 473.5,-581.236"/>
+<polygon fill="none" stroke="green" points="473.5,-581.236 297.5,-581.236 297.5,-543.236 473.5,-543.236 473.5,-581.236"/>
 <text text-anchor="middle" x="385.5" y="-566.036" font-family="Times,serif" font-size="14.00">goal:</text>
 <text text-anchor="middle" x="385.5" y="-551.036" font-family="Times,serif" font-size="14.00">footprints without limitations</text>
 </g>
@@ -223,7 +223,7 @@
 </g>
 <!-- padstacks -->
 <g id="node16" class="node"><title>padstacks</title>
-<ellipse fill="none" stroke="red" cx="1025.5" cy="-562.236" rx="107.46" ry="58.8803"/>
+<ellipse fill="none" stroke="green" cx="1025.5" cy="-562.236" rx="107.46" ry="58.8803"/>
 <text text-anchor="middle" x="1025.5" y="-588.536" font-family="Times,serif" font-size="14.00">pad stacks:</text>
 <text text-anchor="middle" x="1025.5" y="-573.536" font-family="Times,serif" font-size="14.00">a via (or pin or pad)</text>
 <text text-anchor="middle" x="1025.5" y="-558.536" font-family="Times,serif" font-size="14.00">that can have different,</text>
@@ -237,7 +237,7 @@
 </g>
 <!-- bbvia -->
 <g id="node17" class="node"><title>bbvia</title>
-<ellipse fill="none" stroke="red" cx="1066.5" cy="-408.856" rx="162.769" ry="48.1667"/>
+<ellipse fill="none" stroke="green" cx="1066.5" cy="-408.856" rx="162.769" ry="48.1667"/>
 <text text-anchor="middle" x="1066.5" y="-427.656" font-family="Times,serif" font-size="14.00">blind/buried via:</text>
 <text text-anchor="middle" x="1066.5" y="-412.656" font-family="Times,serif" font-size="14.00">a pad stack has per layer info on</text>
 <text text-anchor="middle" x="1066.5" y="-397.656" font-family="Times,serif" font-size="14.00">copper shape, it can</text>
