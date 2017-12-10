@@ -87,6 +87,9 @@ int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_
    are handled by the routine. */
 pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y);
 
+/* change the side of all objects in the buffer */
+void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer);
+
 
 /* sets currently active buffer */
 void pcb_buffer_set_number(int Number);
