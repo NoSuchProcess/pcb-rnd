@@ -15,10 +15,6 @@
 #include <signal.h>
 #include <sys/time.h>
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 #include "data.h"
 #include "action_helper.h"
 #include "crosshair.h"
@@ -2088,7 +2084,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 
 	/* listen on standard input for actions */
 	if (stdin_listen) {
-		XtAppAddInput(app_context, fileno(stdin), (XtPointer) XtInputReadMask, lesstif_listener_cb, NULL);
+		XtAppAddInput(app_context, pcb_fileno(stdin), (XtPointer) XtInputReadMask, lesstif_listener_cb, NULL);
 	}
 }
 
