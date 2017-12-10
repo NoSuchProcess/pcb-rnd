@@ -89,7 +89,7 @@ static void dump_lib_fp(int level, pcb_fplibrary_t *l)
 	ind(level);
 	printf("%s", l->name);
 	switch(l->data.fp.type) {
-		case PCB_FP_INVALID:      printf(" type(??)"); break;
+		case PCB_FP_INVALID:      printf(" type(INVALID)"); break;
 		case PCB_FP_DIR:          printf(" type(DIR)"); break;
 		case PCB_FP_FILE:         printf(" type(file)"); break;
 		case PCB_FP_PARAMETRIC:   printf(" type(parametric)"); break;
