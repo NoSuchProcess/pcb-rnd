@@ -195,5 +195,5 @@ void pcb_ms_sleep(long ms)
 
 int pcb_fileno(FILE *f)
 {
-	return fileno(f);
+	return PCB_HOST_FILENO(f);
 }

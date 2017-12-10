@@ -16,6 +16,7 @@ put /local/pcb/compat_inc [@
 @?/target/libs/math/round/includes@
 @?/target/libs/env/setenv/includes@
 @?/target/libs/fs/readdir/includes@
+@?/target/libs/io/fileno/includes@
 @]
 
 put /tmpasm/IFS {\n}
@@ -34,5 +35,9 @@ print [@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+
+/* Name of fileno() differs on windows */
+#define PCB_HOST_FILENO(f) @/target/libs/io/fileno/call@(f)
 @]
+
 

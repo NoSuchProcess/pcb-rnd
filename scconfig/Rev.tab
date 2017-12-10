@@ -1,3 +1,4 @@
+13383	configure	proper detection of includes for fileno()
 13364	configure	new plugin: extedit
 13269	configure	remove free_atexit
 13171	configure	io_eagle: new source file for parsing dru files
