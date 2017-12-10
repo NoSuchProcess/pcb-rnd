@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <time.h>
+#include <unistd.h>
 #include <string.h>
 #include <math.h>
 #include <signal.h>
