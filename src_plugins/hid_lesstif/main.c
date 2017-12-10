@@ -1607,7 +1607,7 @@ static unsigned short int lesstif_translate_key(const char *desc, int len)
 
 int lesstif_key_name(unsigned short int key_raw, char *out, int out_len)
 {
-#warning TODO#3: don't ingore key_tr (either of them is 0)
+#warning TODO#3: do not ingore key_tr (either of them is 0)
 	char *name = XKeysymToString(key_raw);
 	if (name == NULL)
 		return -1;

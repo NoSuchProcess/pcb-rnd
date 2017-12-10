@@ -70,7 +70,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 	pcb_any_obj_t *curr = current_obj, *from = from_obj;
 	short_conn_t *s;
 
-#warning find.c TODO: won't be needed after the big rewrite
+#warning find.c TODO: will not be needed after the big rewrite
 	if (from_type == 32) /* rat line is often rat point and has no ID */
 		from = NULL;
 

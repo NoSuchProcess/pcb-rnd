@@ -121,7 +121,7 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 		for(pad = (pcb_pad_t *)pcb_r_first(pcb->Data->pad_tree, &it); pad != NULL; pad = (pcb_pad_t *)pcb_r_next(&it)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == is_solder) {
 				memcpy(&pad_tmp, pad, sizeof(pad_tmp));
-#warning TODO: figure why this can't be 1
+#warning TODO: figure why this can not be 1
 				pad_tmp.Clearance = PCB_MM_TO_COORD(0.01);
 				pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_TYPE_PAD, &pad_tmp);
 			}

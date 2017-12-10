@@ -781,7 +781,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 #warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
 
-#warning TODO binary dx, dy are unsigned, so the following may not be needed if XML doesn't need it
+#warning TODO binary dx, dy are unsigned, so the following may not be needed if XML does not need it
 	if (dx < 0) {
 		x -= dx;
 		dx = -dx;

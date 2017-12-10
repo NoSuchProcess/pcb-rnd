@@ -39,7 +39,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 	/* check all pins in element */
 
-#warning padstack TODO: term TODO: this doesn't handle padstacks or terminals
+#warning padstack TODO: term TODO: this does not handle padstacks or terminals
 
 	PCB_PIN_LOOP(Element);
 	{
