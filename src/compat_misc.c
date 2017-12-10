@@ -184,8 +184,15 @@ size_t pcb_print_utc(char *out, size_t out_len, time_t when)
 
 void pcb_ms_sleep(long ms)
 {
-#warning TODO: scconfig detection, port to windows
+#ifdef PCB_HAVE_USLEEP
 	usleep(ms*1000);
+#else
+#	ifdef PCB_HAVE_WSLEEP
+		Sleep(ms);
+#	else
+#		error pcb_ms_sleep(): no milisecond sleep on this host.
+#	endif
+#endif
 }
 
 int pcb_fileno(FILE *f)

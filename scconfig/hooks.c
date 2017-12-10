@@ -370,6 +370,11 @@ int hook_detect_target()
 	require("libs/math/round/*",  0, 0);
 	require("libs/userpass/getpwuid/*",  0, 0);
 
+	if (require("libs/time/usleep/*",  0, 0) && require("libs/time/Sleep/*",  0, 0)) {
+		report_repeat("\nERROR: can not find usleep() or Sleep() - no idea how to sleep ms.\n\n");
+		return 1;
+	}
+
 	if (require("libs/ldl",  0, 0) != 0) {
 		if (require("libs/LoadLibrary",  0, 0) != 0) {
 			report_repeat("\nERROR: no dynamic linking found on your system. Can not compile pcb-rnd.\n\n");

@@ -48,6 +48,12 @@ print {\n#define PCB_INLINE static inline PCB_FUNC_UNUSED\n\n}
 print {\n\n/* Wether setenv() works */\n}
 print_ternary ?libs/env/setenv/presents {#define PCB_HAVE_SETENV 1} {/* #undef PCB_HAVE_SETENV */}
 
+print {\n\n/* Wether usleep() works */\n}
+print_ternary ?libs/time/usleep/presents {#define PCB_HAVE_USLEEP 1} {/* #undef PCB_HAVE_USLEEP */}
+
+print {\n\n/* Wether win32 Sleep() works */\n}
+print_ternary ?libs/time/Sleep/presents {#define PCB_HAVE_WSLEEP 1} {/* #undef PCB_HAVE_WSLEEP */}
+
 print {\n\n/* Define to 1 if you have the `snprintf' function. */\n}
 print_ternary ?libs/snprintf {#define HAVE_SNPRINTF 1} {/* #undef HAVE_SNPRINTF */}
 
