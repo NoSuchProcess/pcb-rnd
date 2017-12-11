@@ -388,11 +388,20 @@ static int pcb_act_Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	return 0;
 }
 
-
+static const char pcb_acts_Backup[] = "Backup()";
+static const char pcb_acth_Backup[] = "Backup the current layout - save using the same method that the timed backup function uses";
+static int pcb_act_Backup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_backup();
+	return 0;
+}
 
 pcb_hid_action_t file_action_list[] = {
 	{"ExecCommand", 0, pcb_act_ExecCommand,
 	 pcb_acth_ExecCommand, pcb_acts_ExecCommand}
+	,
+	{"Backup", 0, pcb_act_Backup,
+	 pcb_acth_Backup, pcb_acts_Backup}
 	,
 	{"Export", 0, pcb_act_Export,
 	 pcb_acth_Export, pcb_acts_Export}
