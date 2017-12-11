@@ -758,7 +758,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 
 void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
 {
-	int xmirror = ps->xmirror, smirror = ps->smirror;
+	int xmirror = !ps->xmirror, smirror = (swap_side ? (!ps->smirror) : ps->smirror);
 
 	/* change the mirror flag - this will automatically cause mirroring in
 	   every aspect */
