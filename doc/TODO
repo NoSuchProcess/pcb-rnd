@@ -16,7 +16,7 @@
 - BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
 	- [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
 	- [gtk3] cancel do not close the dialog(s). In fact 2 dialog windows are created, and message : GLib-CRITICAL **: g_source_remove: assertion 'tag > 0' failed : pops up.
-- BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
++ BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
 - BUG: subc/term:
 	- term netlist connectivity r10843:
 		- autoplace.c:167
