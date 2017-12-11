@@ -902,6 +902,14 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 	pcb_opctx_t ctx;
 
 	switch(ps->parent.data->parent_type) {
+		case PCB_PARENT_INVALID:
+			/* happens if parent is a buffer: do not undo operations done on the buffer */
+			ps->proto = proto ? *proto : ps->proto;
+			ps->Clearance = clearance ? *clearance : ps->Clearance;
+			ps->rot = rot ? *rot : ps->rot;
+			ps->xmirror = xmirror ? *xmirror : ps->xmirror;
+			ps->smirror = smirror ? *smirror : ps->smirror;
+			return 0;
 		case PCB_PARENT_BOARD: parent_ID = -1; break;
 		case PCB_PARENT_SUBC: parent_ID = ps->parent.data->parent.subc->ID; break;
 		default: return -1;
