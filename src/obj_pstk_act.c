@@ -51,8 +51,12 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				return -1;
 			}
 		}
-		else
+		else {
 			pcb_gui->get_coords("Click at padstack origin", &x, &y);
+			/* rather use the snapped corsshair coords */
+			x = pcb_crosshair.X;
+			y = pcb_crosshair.Y;
+		}
 		pid = pcb_pstk_conv_selection(PCB, 0, x, y);
 
 		if (pid != PCB_PADSTACK_INVALID) {
