@@ -1364,12 +1364,12 @@ void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 }
 
 /* mirrors the coordinates of a subcircuit; an additional offset is passed */
-void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs)
+void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror)
 {
 	if ((data != NULL) && (data->subc_tree != NULL))
 		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
 
-	pcb_data_mirror(subc->data, y_offs, pcb_true);
+	pcb_data_mirror(subc->data, y_offs, smirror, smirror);
 	pcb_subc_bbox(subc);
 
 	if ((data != NULL) && (data->subc_tree != NULL))
@@ -1403,7 +1403,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 
 
 	/* mirror object geometry and stackup */
-	pcb_subc_mirror(NULL, newsc, yoff);
+	pcb_subc_mirror(NULL, newsc, yoff, pcb_true);
 	for(n = 0; n < newsc->data->LayerN; n++) {
 		pcb_layer_t *ly = newsc->data->Layer + n;
 		if (ly->meta.bound.type & PCB_LYT_TOP)

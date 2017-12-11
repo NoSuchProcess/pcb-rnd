@@ -60,7 +60,7 @@ void pcb_subc_bbox(pcb_subc_t *sc);
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
 pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff);
 
-void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs);
+void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror);
 
 /* changes the side of the board an element is on; returns pcb_true if done */
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff);

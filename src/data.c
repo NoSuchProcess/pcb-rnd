@@ -426,7 +426,7 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 	return NULL;
 }
 
-void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too)
+void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too, pcb_bool pstk_smirror)
 {
 	PCB_VIA_LOOP(data);
 	{
@@ -435,12 +435,12 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_bool text_too)
 	PCB_END_LOOP;
 	PCB_PADSTACK_LOOP(data);
 	{
-		pcb_pstk_mirror(padstack, y_offs, 1);
+		pcb_pstk_mirror(padstack, y_offs, pstk_smirror);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);
 	{
-		pcb_subc_mirror(data, subc, y_offs);
+		pcb_subc_mirror(data, subc, y_offs, pstk_smirror);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(data);
