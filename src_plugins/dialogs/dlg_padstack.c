@@ -52,7 +52,7 @@ typedef struct pse_s {
 	/* widget IDs */
 	int tab_instance, tab_prototype;
 	int but_instance, but_prototype;
-	int proto_id, clearance, rot, xmirror;
+	int proto_id, clearance, rot, xmirror, smirror;
 	int proto_shape[pse_num_layers];
 	int proto_info[pse_num_layers];
 	int proto_change[pse_num_layers];
@@ -126,6 +126,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, real_value, pse->ps->rot);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->xmirror, int_value, pse->ps->xmirror);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->smirror, int_value, pse->ps->smirror);
 
 	/* proto - layers */
 	for(n = 0; n < pse_num_layers; n++) {
@@ -216,7 +217,8 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		NULL,
 		&pse->attrs[pse->clearance].default_val.coord_value,
 		&pse->attrs[pse->rot].default_val.real_value,
-		&pse->attrs[pse->xmirror].default_val.int_value);
+		&pse->attrs[pse->xmirror].default_val.int_value,
+		&pse->attrs[pse->smirror].default_val.int_value);
 
 	lock++;
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
@@ -494,6 +496,10 @@ static int pcb_act_PadstackEdit(int argc, const char **argv, pcb_coord_t x, pcb_
 					PCB_DAD_LABEL(dlg, "X-mirror");
 					PCB_DAD_BOOL(dlg, "");
 						pse.xmirror = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+					PCB_DAD_LABEL(dlg, "S-mirror");
+					PCB_DAD_BOOL(dlg, "");
+						pse.smirror = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);

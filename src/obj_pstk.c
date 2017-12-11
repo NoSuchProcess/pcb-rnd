@@ -70,7 +70,7 @@ void pcb_pstk_free(pcb_pstk_t *ps)
 	free(ps);
 }
 
-pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror)
+pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror)
 {
 	pcb_pstk_t *ps;
 
@@ -88,6 +88,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t 
 	ps->ID = pcb_create_ID_get();
 	ps->rot = rot;
 	ps->xmirror = xmirror;
+	ps->smirror = smirror;
 	pcb_pstk_add(data, ps);
 	pcb_poly_clear_from_poly(data, PCB_TYPE_PSTK, NULL, ps);
 	return ps;
@@ -95,7 +96,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t 
 
 pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags)
 {
-	return pcb_pstk_new_tr(data, proto, x, y, clearance, Flags, 0, 0);
+	return pcb_pstk_new_tr(data, proto, x, y, clearance, Flags, 0, 0, 0);
 }
 
 
@@ -184,6 +185,7 @@ pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src)
 		return NULL;
 	dst->rot = src->rot;
 	dst->xmirror = src->xmirror;
+	dst->smirror = src->smirror;
 	dst->protoi = -1; /* invalidate the transformed index to get it recalculated */
 	return dst;
 }
@@ -756,11 +758,11 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 
 void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
 {
-	int xmirror = ps->xmirror;
+	int xmirror = ps->xmirror, smirror = ps->smirror;
 
 	/* change the mirror flag - this will automatically cause mirroring in
 	   every aspect */
-	pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror);
+	pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror, &smirror);
 
 	/* if mirror center is not 0, also move, to emulate that the mirror took
 	   place around that point */
@@ -811,7 +813,7 @@ typedef struct {
 	pcb_cardinal_t proto;
 	pcb_coord_t clearance;
 	double rot;
-	int xmirror;
+	int xmirror, smirror;
 } padstack_change_instance_t;
 
 #define swap(a,b,type) \
@@ -864,6 +866,7 @@ static int undo_change_instance_swap(void *udata)
 	swap(ps->Clearance,  u->clearance, pcb_coord_t);
 	swap(ps->rot,        u->rot,       double);
 	swap(ps->xmirror,    u->xmirror,   int);
+	swap(ps->smirror,    u->smirror,   int);
 
 	/* force re-render the prototype */
 	ps->protoi = -1;
@@ -881,7 +884,7 @@ static int undo_change_instance_swap(void *udata)
 static void undo_change_instance_print(void *udata, char *dst, size_t dst_len)
 {
 	padstack_change_instance_t *u = udata;
-	pcb_snprintf(dst, dst_len, "padstack change: clearance=%$mm rot=%.2f xmirror=%d\n", u->clearance, u->rot, u->xmirror);
+	pcb_snprintf(dst, dst_len, "padstack change: clearance=%$mm rot=%.2f xmirror=%d smirror=%d\n", u->clearance, u->rot, u->xmirror, u->smirror);
 }
 
 static const uundo_oper_t undo_pstk_change_instance = {
@@ -892,7 +895,7 @@ static const uundo_oper_t undo_pstk_change_instance = {
 	undo_change_instance_print
 };
 
-int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror)
+int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror, int *smirror)
 {
 	padstack_change_instance_t *u;
 	long int parent_ID;
@@ -915,6 +918,7 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 	u->clearance = clearance ? *clearance : ps->Clearance;
 	u->rot = rot ? *rot : ps->rot;
 	u->xmirror = xmirror ? *xmirror : ps->xmirror;
+	u->smirror = smirror ? *smirror : ps->smirror;
 
 	pcb_pstk_bbox(ps);
 	ctx.clip.clear = 1;

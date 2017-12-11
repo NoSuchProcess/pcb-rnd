@@ -111,6 +111,7 @@ static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quie
 	ts = pcb_vtpadstack_tshape_alloc_append(&dst->tr, 1);
 	ts->rot = 0.0;
 	ts->xmirror = 0;
+	ts->smirror = 0;
 	ts->len = 0;
 	for(n = 0, o = (pcb_any_obj_t **)objs->array; n < vtp0_len(objs); n++,o++) {
 		switch((*o)->type) {
@@ -315,6 +316,7 @@ void pcb_pstk_tshape_copy(pcb_pstk_tshape_t *ts_dst, pcb_pstk_tshape_t *ts_src)
 
 	ts_dst->rot = ts_src->rot;
 	ts_dst->xmirror = ts_src->xmirror;
+	ts_dst->smirror = ts_src->smirror;
 	ts_dst->shape = malloc(sizeof(pcb_pstk_shape_t) * ts_src->len);
 	ts_dst->len = ts_src->len;
 	memcpy(ts_dst->shape, ts_src->shape, sizeof(pcb_pstk_shape_t) * ts_src->len);
@@ -382,6 +384,11 @@ void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
 	}
 }
 
+void pcb_pstk_tshape_smirror(pcb_pstk_tshape_t *ts)
+{
+#warning padstack TODO
+}
+
 void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
 {
 	pcb_pstk_tshape_t *ts_dst, *ts_src;
@@ -398,6 +405,7 @@ void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
 	/* make sure it's the canonical form */
 	ts_dst->rot = 0.0;
 	ts_dst->xmirror = 0;
+	ts_dst->smirror = 0;
 
 	dst->in_use = 1;
 }
@@ -608,15 +616,16 @@ int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, cons
 #define TSHAPE_ANGLE_TOL 0.01
 #define tshape_angle_eq(a1, a2) (((a1 - a2) >= -TSHAPE_ANGLE_TOL) && ((a1 - a2) <= TSHAPE_ANGLE_TOL))
 
-pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *proto, double rot, int xmirror, int *out_protoi)
+pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *proto, double rot, int xmirror, int smirror, int *out_protoi)
 {
 	size_t n;
 	pcb_pstk_tshape_t *ts;
 
 	xmirror = !!xmirror;
+	smirror = !!smirror;
 
 	/* cheap case: canonical */
-	if (tshape_angle_eq(rot, 0.0) && (xmirror == 0)) {
+	if (tshape_angle_eq(rot, 0.0) && (xmirror == 0) && (smirror == 0)) {
 		if (out_protoi != NULL) *out_protoi = 0;
 		return &proto->tr.array[0];
 	}
@@ -624,7 +633,7 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 	/* search for an existing version in the cache - we expect only a few
 	   transformations per padstack, the result is cached -> linear search. */
 	for(n = 0; n < proto->tr.used; n++) {
-		if (tshape_angle_eq(proto->tr.array[n].rot, rot) && (proto->tr.array[n].xmirror == xmirror)) {
+		if (tshape_angle_eq(proto->tr.array[n].rot, rot) && (proto->tr.array[n].xmirror == xmirror) && (proto->tr.array[n].smirror == smirror)) {
 			if (out_protoi != NULL) *out_protoi = n;
 			return &proto->tr.array[n];
 		}
@@ -643,8 +652,12 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 	if (xmirror)
 		pcb_pstk_tshape_xmirror(ts);
 
+	if (smirror)
+		pcb_pstk_tshape_smirror(ts);
+
 	ts->rot = rot;
 	ts->xmirror = xmirror;
+	ts->smirror = smirror;
 	return ts;
 }
 

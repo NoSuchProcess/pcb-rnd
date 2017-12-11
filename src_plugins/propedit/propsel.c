@@ -181,6 +181,7 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	map_chk_skip(ctx, ps);
 
 	map_add_prop(ctx, "p/padstack/xmirror", pcb_coord_t, ps->xmirror);
+	map_add_prop(ctx, "p/padstack/smirror", pcb_coord_t, ps->smirror);
 	map_add_prop(ctx, "p/padstack/rotation", pcb_angle_t, ps->rot);
 	map_add_prop(ctx, "p/padstack/proto", pcb_coord_t, ps->proto);
 
@@ -461,9 +462,11 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
 	    pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
 	if (st->c_valid && (strcmp(pn, "xmirror") == 0) &&
-	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, &i) == 0)) DONE;
+	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, &i, NULL) == 0)) DONE;
+	if (st->c_valid && (strcmp(pn, "smirror") == 0) &&
+	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, NULL, &i) == 0)) DONE;
 	if (st->c_valid && (strcmp(pn, "proto") == 0) &&
-	    (pcb_pstk_change_instance(ps, &ca, NULL, NULL, NULL) == 0)) DONE;
+	    (pcb_pstk_change_instance(ps, &ca, NULL, NULL, NULL, NULL) == 0)) DONE;
 	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
 	    (pcb_pstk_proto_change_hole(proto, NULL, &st->c, NULL, NULL) == 0)) DONE;
 	if (st->c_valid && (strcmp(pn, "plated") == 0) &&

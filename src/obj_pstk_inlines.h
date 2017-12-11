@@ -84,7 +84,7 @@ PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
 		pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 		if (pr == NULL)
 			return NULL;
-		return pcb_pstk_make_tshape(ps->parent.data, pr, ps->rot, ps->xmirror, &ps->protoi);
+		return pcb_pstk_make_tshape(ps->parent.data, pr, ps->rot, ps->xmirror, ps->smirror, &ps->protoi);
 	}
 	return pcb_pstk_get_tshape_(ps->parent.data, ps->proto, ps->protoi);
 }

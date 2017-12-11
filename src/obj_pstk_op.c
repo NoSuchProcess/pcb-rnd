@@ -32,7 +32,7 @@ void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		return NULL;
 
 	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
-	p = pcb_pstk_new_tr(ctx->buffer.dst, npid, ps->x, ps->y, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), ps->rot, ps->xmirror);
+	p = pcb_pstk_new_tr(ctx->buffer.dst, npid, ps->x, ps->y, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), ps->rot, ps->xmirror, ps->smirror);
 	return pcb_pstk_copy_meta(p, ps);
 }
 
@@ -76,7 +76,7 @@ void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		return NULL;
 	npid = pcb_pstk_proto_insert_dup(data, proto, 1);
 
-	nps = pcb_pstk_new_tr(data, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND), ps->rot, ps->xmirror);
+	nps = pcb_pstk_new_tr(data, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND), ps->rot, ps->xmirror, ps->smirror);
 	if (nps == NULL)
 		return NULL;
 
@@ -199,7 +199,7 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if ((rot == 360.0) || (rot == -360.0))
 		rot = 0;
 
-	if (pcb_pstk_change_instance(ps, NULL, NULL, &rot, NULL) == 0) {
+	if (pcb_pstk_change_instance(ps, NULL, NULL, &rot, NULL, NULL) == 0) {
 		pcb_coord_t nx = ps->x, ny = ps->y;
 
 
@@ -266,7 +266,7 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (nproto == PCB_PADSTACK_INVALID)
 		return NULL;
 
-	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL) == 0)
+	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL, NULL) == 0)
 		return ps;
 
 	return NULL;
@@ -288,7 +288,7 @@ void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (ps->Clearance == value)
 		return NULL;
 
-	if (pcb_pstk_change_instance(ps, NULL, &value, NULL, NULL) == 0)
+	if (pcb_pstk_change_instance(ps, NULL, &value, NULL, NULL, NULL) == 0)
 		return ps;
 
 	return NULL;
@@ -318,7 +318,7 @@ void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (nproto == PCB_PADSTACK_INVALID)
 		return NULL;
 
-	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL) == 0)
+	if (pcb_pstk_change_instance(ps, &nproto, NULL, NULL, NULL, NULL) == 0)
 		return ps;
 
 	return NULL;

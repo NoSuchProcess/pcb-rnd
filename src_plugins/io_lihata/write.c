@@ -614,6 +614,7 @@ static lht_node_t *build_pstk(pcb_pstk_t *ps)
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, ps->Clearance));
 	lht_dom_hash_put(obj, build_textf("rot", "%f", ps->rot));
 	lht_dom_hash_put(obj, build_textf("xmirror", "%d", ps->xmirror));
+	lht_dom_hash_put(obj, build_textf("smirror", "%d", ps->smirror));
 
 	lht_dom_hash_put(obj, thr = lht_dom_node_alloc(LHT_LIST, "thermal"));
 	for(n = 0; n < ps->thermals.used; n++) {

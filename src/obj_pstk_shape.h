@@ -64,6 +64,7 @@ typedef struct pcb_pstk_shape_s {
 typedef struct pcb_pstk_tshape_s {
 	double rot;
 	unsigned xmirror:1;
+	unsigned smirror:1;
 
 	unsigned char len;             /* number of shapes (PCB_PADSTACK_MAX_SHAPES) */
 	pcb_pstk_shape_t *shape;   /* list of layer-shape pairs */

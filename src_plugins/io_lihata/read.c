@@ -778,6 +778,9 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	tmp = 0;
 	parse_int(&tmp, lht_dom_hash_get(obj, "xmirror"));
 	ps->xmirror = tmp;
+	tmp = 0;
+	parse_int(&tmp, lht_dom_hash_get(obj, "smirror"));
+	ps->smirror = tmp;
 	parse_coord(&ps->Clearance, lht_dom_hash_get(obj, "clearance"));
 	parse_ulong(&ul, lht_dom_hash_get(obj, "proto"));
 	ps->proto = ul;

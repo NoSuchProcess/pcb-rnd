@@ -35,7 +35,7 @@ struct pcb_pstk_s {
 	pcb_coord_t x, y;
 	pcb_coord_t Clearance;
 	double rot;                    /* rotation angle */
-	int xmirror;
+	char xmirror, smirror;
 	struct {
 		unsigned long used;
 		unsigned char *shape;        /* indexed by layer ID */
@@ -64,7 +64,7 @@ typedef struct pcb_pstk_proto_s {
 	pcb_coord_t hdia;              /* if > 0, diameter of the hole (else there's no hole) */
 	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layer groups from the top or bottom copper layer group */
 
-	pcb_vtpadstack_tshape_t tr;    /* [0] is the canonical prototype with rot=0 and xmirror=0; the rest is an unordered list of transformed entries */
+	pcb_vtpadstack_tshape_t tr;    /* [0] is the canonical prototype with rot=0, xmirror=0 and smirror=0; the rest is an unordered list of transformed entries */
 
 	/* local cache - not saved */
 	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
@@ -76,7 +76,7 @@ typedef struct pcb_pstk_proto_s {
 pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data);
 void pcb_pstk_free(pcb_pstk_t *ps);
 pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags);
-pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror);
+pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror);
 void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps);
 void pcb_pstk_bbox(pcb_pstk_t *ps);
 
@@ -86,7 +86,7 @@ unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_
 pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID);
 
 /* Undoably change the instance parameters of a padstack ref */
-int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror);
+int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror, int *smirror);
 
 /* Return whether a group is empty (free of padstack shapes) */
 pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid);
@@ -138,7 +138,7 @@ pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_
 int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, const pcb_coord_t *hdia, const int *htop, const int *hbottom);
 
 /* Find or create a new transformed version of an existing proto */
-pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *proto, double rot, int xmirror, int *out_protoi);
+pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *proto, double rot, int xmirror, int smirror, int *out_protoi);
 
 /* Deep copy a prototype or shape */
 void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src);
