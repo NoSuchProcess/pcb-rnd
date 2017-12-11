@@ -386,7 +386,19 @@ void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
 
 void pcb_pstk_tshape_smirror(pcb_pstk_tshape_t *ts)
 {
-#warning padstack TODO
+	int n;
+
+	for(n = 0; n < ts->len; n++) {
+		pcb_pstk_shape_t *sh = &ts->shape[n];
+		if (sh->layer_mask & PCB_LYT_TOP) {
+			sh->layer_mask &= ~PCB_LYT_TOP;
+			sh->layer_mask |= ~PCB_LYT_BOTTOM;
+		}
+		else if (sh->layer_mask & PCB_LYT_BOTTOM) {
+			sh->layer_mask &= ~PCB_LYT_BOTTOM;
+			sh->layer_mask |= ~PCB_LYT_TOP;
+		}
+	}
 }
 
 void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
