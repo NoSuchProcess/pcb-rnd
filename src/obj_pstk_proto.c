@@ -392,11 +392,11 @@ void pcb_pstk_tshape_smirror(pcb_pstk_tshape_t *ts)
 		pcb_pstk_shape_t *sh = &ts->shape[n];
 		if (sh->layer_mask & PCB_LYT_TOP) {
 			sh->layer_mask &= ~PCB_LYT_TOP;
-			sh->layer_mask |= ~PCB_LYT_BOTTOM;
+			sh->layer_mask |= PCB_LYT_BOTTOM;
 		}
 		else if (sh->layer_mask & PCB_LYT_BOTTOM) {
 			sh->layer_mask &= ~PCB_LYT_BOTTOM;
-			sh->layer_mask |= ~PCB_LYT_TOP;
+			sh->layer_mask |= PCB_LYT_TOP;
 		}
 	}
 }
