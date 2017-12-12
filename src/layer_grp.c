@@ -857,17 +857,18 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 	typedef struct lmap_s {
 		const char *name;
 		pcb_layer_type_t lyt;
+		pcb_layer_combining_t comb;
 	} lmap_t;
 	const lmap_t *m, lmap[] = {
-		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE},
-		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK},
-		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK},
-		{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER},
-		{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER},
-		{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER},
-		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK},
-		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK},
-		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE},
+		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     0},
+		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB},
+		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      0},
+		{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0},
+		{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
+		{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0},
+		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   0},
+		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB},
+		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  0},
 		{NULL, 0}
 	};
 	pcb_layergrp_t *grp;
@@ -885,8 +886,12 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 		}
 
 		grp->name = pcb_strdup(m->name);
-		if (grp->len == 0)
-			pcb_layer_create(pcb, gid, m->name);
+		if (grp->len == 0) {
+			pcb_layer_id_t lid = pcb_layer_create(pcb, gid, m->name);
+			if (lid >= 0) {
+				pcb->Data->Layer[lid].comb = m->comb;
+			}
+		}
 	}
 }
 
