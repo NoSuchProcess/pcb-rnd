@@ -315,7 +315,7 @@ static void prop_preview_init(void)
 		
 	}
 
-	memcpy(&preview_pcb.LayerGroups, &PCB->LayerGroups, sizeof(PCB->LayerGroups));
+	memcpy(&preview_pcb.LayerGroups, &old_pcb->LayerGroups, sizeof(old_pcb->LayerGroups));
 	preview_pcb.Data->LayerN = 1;
 	preview_pcb.Data->Layer[0].meta.real.grp = 0;
 	preview_pcb.LayerGroups.grp[0].type = PCB_LYT_COPPER | PCB_LYT_TOP;
