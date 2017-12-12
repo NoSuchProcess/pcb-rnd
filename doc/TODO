@@ -3,7 +3,6 @@
 	- BUG: exports:
 		- ps hole generation is broken
 	- v4 lihata formatting
-	+ BUG: Converting selection to padstack uses mouse pointer instead of crosshair for origin [report: Ade]
 	- BUG: Padstack holes are missing from the FAB gerber export file [report: Ade]
 - BUG: shape editor dialog: 
 		+ catch layer change and regen the shape [report: SQ6POG]
