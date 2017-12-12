@@ -860,15 +860,15 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 		pcb_layer_combining_t comb;
 	} lmap_t;
 	const lmap_t *m, lmap[] = {
-		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     0},
-		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB},
-		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      0},
+		{"top paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO},
+		{"top mask",            PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_SUB | PCB_LYC_AUTO},
+		{"top silk",            PCB_LYT_TOP | PCB_LYT_SILK,      PCB_LYC_AUTO},
 		{"top copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    0},
 		{"any internal copper", PCB_LYT_INTERN | PCB_LYT_COPPER, 0},
 		{"bottom copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0},
-		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   0},
-		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB},
-		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  0},
+		{"bottom silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   PCB_LYC_AUTO},
+		{"bottom mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_SUB | PCB_LYC_AUTO},
+		{"bottom paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO},
 		{NULL, 0}
 	};
 	pcb_layergrp_t *grp;
