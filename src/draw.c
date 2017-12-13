@@ -71,7 +71,7 @@ pcb_bool delayed_labels_enabled = pcb_false;
 
 static void DrawEverything(const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *, int);
-static void pcb_draw_obj_label(pcb_any_obj_t *obj);
+static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj);
 static void pcb_draw_pstk_marks(const pcb_box_t *drawn_area);
 static void pcb_draw_pstk_holes(pcb_layergrp_id_t group, const pcb_box_t *drawn_area, pcb_pstk_draw_hole_t holetype);
 
@@ -520,7 +520,7 @@ void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 	if (PCB->PinOn || !pcb_gui->gui) {
 		size_t n;
 		for(n = 0; n < delayed_labels.used; n++)
-			pcb_draw_obj_label(delayed_labels.array[n]);
+			pcb_draw_obj_label(group, delayed_labels.array[n]);
 	}
 }
 
@@ -731,8 +731,15 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 	}
 }
 
-static void pcb_draw_obj_label(pcb_any_obj_t *obj)
+static void pcb_draw_obj_label(pcb_layergrp_id_t gid, pcb_any_obj_t *obj)
 {
+	/* do not show layer-object labels of the other side on non-pinout views */
+	if ((!pcb_draw_doing_pinout) && (obj->parent_type == PCB_PARENT_LAYER)) {
+		pcb_layer_t *ly = pcb_layer_get_real(obj->parent.layer);
+		if ((ly != NULL) && (ly->meta.real.grp != gid))
+			return;
+	}
+
 	switch(obj->type) {
 		case PCB_OBJ_LINE:    pcb_line_draw_label((pcb_line_t *)obj); return;
 		case PCB_OBJ_ARC:     pcb_arc_draw_label((pcb_arc_t *)obj); return;
