@@ -522,6 +522,7 @@ void pcb_draw_ppv_names(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 		for(n = 0; n < delayed_labels.used; n++)
 			pcb_draw_obj_label(group, delayed_labels.array[n]);
 	}
+	delayed_labels.used = 0;
 }
 
 #include "draw_composite.c"
