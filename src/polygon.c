@@ -1621,7 +1621,13 @@ void pcb_polygon_close_poly(void)
 static void poly_copy_data(pcb_poly_t *dst, pcb_poly_t *src)
 {
 	pcb_poly_t p;
+	void *old_parent = dst->parent.any;
+	pcb_parenttype_t old_pt = dst->parent_type;
+
 	memcpy(dst, src, ((char *)&p.link - (char *)&p));
+	dst->type = PCB_OBJ_POLY;
+	dst->parent.any = old_parent;
+	dst->parent_type = old_pt;
 }
 
 /* ---------------------------------------------------------------------------
