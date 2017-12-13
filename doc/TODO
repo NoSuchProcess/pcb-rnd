@@ -41,7 +41,7 @@
 - BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 + BUG: selection doesn't work properly (introduced in r12152) [report:wojciechk8]
-- BUG: no mask cutouts in photo-mode png export [report:wojciechk8]
++ BUG: no mask cutouts in photo-mode png export [report:wojciechk8]
 + BUG: pinout (D) of subcircuit terminals is shown on both sides of the board (should be shown only on the view side) [report:wojciechk8]
 - BUG: png export: photo_groups[] breaks shadow rendering of internal layers and other-sides in photo mode; rewrite the code to omit this array and do direct layergrp queries [report: keantoken]
 - BUG: inconsistency between undo/redo (related with pcb_tool_redo_act, not the undo code itself), ie.: [report:wojciechk8]
