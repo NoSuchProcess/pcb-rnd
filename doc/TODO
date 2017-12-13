@@ -4,7 +4,6 @@
 		- ps hole generation is broken
 	- v4 lihata formatting
 	- BUG: Padstack holes are missing from the FAB gerber export file [report: Ade]
-	+ BUG: Can not convert poly (drawn with poly tool) from selection to padstack. From buffer to padtsack is OK. [report: Ade]
 - BUG: shape editor dialog: 
 		+ catch layer change and regen the shape [report: SQ6POG]
 - BUG: subc terminals should be drawn at the end [report: Ade]
