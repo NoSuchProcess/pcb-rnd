@@ -463,7 +463,16 @@ static void print_library(FILE * fp)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_coord_t ox, oy;
+		pcb_point_t centroid;
+		int partside, partsidesign, subc_on_solder = 0;
+
+		pcb_subc_get_side(subc, &subc_on_solder);
+		partside = subc_on_solder ? g_list_length(layerlist) - 1 : 0;
+		partsidesign = subc_on_solder ? -1 : 1;
+
 		pcb_subc_get_origin(subc, &ox, &oy);
+		centroid.X = ox;
+		centroid.Y = oy;
 
 		fprintf(fp, "    (image %ld\n", subc->ID); /* map every subc by ID */
 		PCB_POLY_COPPER_LOOP(subc->data);
@@ -475,6 +484,13 @@ static void print_library(FILE * fp)
 			}
 		}
 		PCB_ENDALL_LOOP;
+
+		PCB_VIA_LOOP(subc->data);
+		{
+			print_pin(fp, &pads, via, centroid, partsidesign, partside);
+		}
+		PCB_END_LOOP;
+
 		fprintf(fp, "    )\n");
 	}
 	PCB_END_LOOP;
