@@ -1,9 +1,9 @@
 1. For the upcoming release ===============================================================================
 - padstack:
 	- BUG: exports:
-		- ps hole generation is broken
+		+ ps hole generation is broken
+		+ BUG: Padstack holes are missing from the FAB gerber export file [report: Ade]
 	- v4 lihata formatting
-	- BUG: Padstack holes are missing from the FAB gerber export file [report: Ade]
 - BUG: shape editor dialog: 
 		+ catch layer change and regen the shape [report: SQ6POG]
 - BUG: subc terminals should be drawn at the end [report: Ade]
