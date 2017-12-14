@@ -573,6 +573,8 @@ pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag)
 {
 	select_ctx_t ctx;
 
+	fix_box_dir(Box, 0);
+
 	ctx.box = *Box;
 	ctx.flag = flag;
 
