@@ -1559,7 +1559,7 @@ pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, pcb_coord
 }
 
 /* ---------------------------------------------------------------------------
- * go back to the  previous point of the polygon
+ * go back to the previous point of the polygon (undo)
  */
 void pcb_polygon_go_to_prev_point(void)
 {
@@ -1586,6 +1586,21 @@ void pcb_polygon_go_to_prev_point(void)
 			pcb_crosshair.AttachedLine.Point1.Y = points[n].Y;
 			break;
 		}
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * go forward to the next point of the polygon (redo)
+ */
+void pcb_polygon_go_to_next_point(void)
+{
+	if ((pcb_crosshair.AttachedPolygon.PointN > 0) && (pcb_crosshair.AttachedPolygon.PointN < pcb_crosshair.AttachedPolygon_pts)) {
+		pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
+		pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
+
+		pcb_crosshair.AttachedPolygon.PointN++;
+		pcb_crosshair.AttachedLine.Point1.X = points[n].X;
+		pcb_crosshair.AttachedLine.Point1.Y = points[n].Y;
 	}
 }
 

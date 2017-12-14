@@ -46,6 +46,7 @@ void pcb_tool_poly_notify_mode(void)
 		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
 		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_THIRD;
+		pcb_crosshair.AttachedPolygon_pts = 0;
 	}
 
 	/* check if this is the last point of a polygon */
@@ -65,6 +66,7 @@ void pcb_tool_poly_notify_mode(void)
 	 */
 	if (!n || points[n - 1].X != pcb_crosshair.AttachedLine.Point2.X || points[n - 1].Y != pcb_crosshair.AttachedLine.Point2.Y) {
 		pcb_poly_point_new(&pcb_crosshair.AttachedPolygon, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
+		pcb_crosshair.AttachedPolygon_pts = pcb_crosshair.AttachedPolygon.PointN;
 
 		/* copy the coordinates */
 		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
@@ -108,8 +110,10 @@ pcb_bool pcb_tool_poly_undo_act(void)
 
 pcb_bool pcb_tool_poly_redo_act(void)
 {
-	if (pcb_crosshair.AttachedPolygon.PointN)
+	if (pcb_crosshair.AttachedPolygon.PointN) {
+		pcb_polygon_go_to_next_point();
 		return pcb_false;
+	}
 	else
 		return pcb_true;
 }

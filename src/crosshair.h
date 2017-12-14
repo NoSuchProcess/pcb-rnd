@@ -74,6 +74,7 @@ typedef struct {								/* holds cursor information */
 	pcb_attached_line_t AttachedLine;	/* data of new lines... */
 	pcb_attached_box_t AttachedBox;
 	pcb_poly_t AttachedPolygon;
+	int AttachedPolygon_pts;              /* number of valid points ever seen for this poly */
 	pcb_attached_object_t AttachedObject;	/* data of attached objects */
 	pcb_route_t Route;										/* Calculated line route in LINE or MOVE(LINE) mode */ 
 	enum pcb_crosshair_shape_e shape;			/* shape of crosshair */
@@ -82,6 +83,7 @@ typedef struct {								/* holds cursor information */
 	pcb_pad_t *snapped_pad;
 	pcb_pin_t *snapped_pin;
 	pcb_pstk_t *snapped_pstk;
+
 
 	/* list of object IDs that could have been dragged so that they can be cycled */
 	long int *drags;

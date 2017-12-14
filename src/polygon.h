@@ -59,7 +59,8 @@ pcb_cardinal_t pcb_poly_contour_prev_point(pcb_poly_t *polygon, pcb_cardinal_t p
 pcb_cardinal_t pcb_poly_contour_next_point(pcb_poly_t *polygon, pcb_cardinal_t point);
 pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *, pcb_coord_t, pcb_coord_t);
 pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *, pcb_poly_t *);
-void pcb_polygon_go_to_prev_point(void);
+void pcb_polygon_go_to_prev_point(void); /* undo */
+void pcb_polygon_go_to_next_point(void); /* redo */
 void pcb_polygon_close_poly(void);
 void pcb_polygon_copy_attached_to_layer(void);
 void pcb_polygon_close_hole(void);
