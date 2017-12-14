@@ -1372,6 +1372,22 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
 
+	/*** polygon terminal: center ***/
+	ans = PCB_TYPE_NONE;
+	if (conf_core.editor.snap_pin)
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_POLY | PCB_TYPE_SUBC_PART, &ptr1, &ptr2, &ptr3);
+
+	if (ans == PCB_TYPE_POLY) {
+		pcb_poly_t *p = ptr2;
+		if (p->term != NULL) {
+			pcb_coord_t cx, cy;
+			cx = (p->BoundingBox.X1 + p->BoundingBox.X2)/2;
+			cy = (p->BoundingBox.Y1 + p->BoundingBox.Y2)/2;
+			if (pcb_poly_is_point_in_p(cx, cy, 1, p))
+				check_snap_object(&snap_data, cx, cy, pcb_true);
+		}
+	}
+
 	/*
 	 * Snap to offgrid points on lines.
 	 */
