@@ -144,7 +144,7 @@
 </g>
 <!-- elem_replace -->
 <g id="node14" class="node"><title>elem_replace</title>
-<ellipse fill="none" stroke="#000000" cx="757.5" cy="-408.856" rx="128.887" ry="58.8803"/>
+<ellipse fill="none" stroke="green" cx="757.5" cy="-408.856" rx="128.887" ry="58.8803"/>
 <text text-anchor="middle" x="757.5" y="-435.156" font-family="Times,serif" font-size="14.00">element replacement:</text>
 <text text-anchor="middle" x="757.5" y="-420.156" font-family="Times,serif" font-size="14.00">replace the old element model</text>
 <text text-anchor="middle" x="757.5" y="-405.156" font-family="Times,serif" font-size="14.00">with subcircuits</text>
