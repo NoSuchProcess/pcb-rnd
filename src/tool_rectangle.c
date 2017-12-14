@@ -91,7 +91,7 @@ void pcb_tool_rectangle_adjust_attached_objects(void)
 	}
 }
 
-pcb_bool pcb_tool_rectangle_undo_act(void)
+pcb_bool pcb_tool_rectangle_anydo_act(void)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
@@ -105,6 +105,6 @@ pcb_tool_t pcb_tool_rectangle = {
 	NULL,
 	pcb_tool_rectangle_adjust_attached_objects,
 	NULL,
-	pcb_tool_rectangle_undo_act,
-	NULL
+	pcb_tool_rectangle_anydo_act,
+	pcb_tool_rectangle_anydo_act
 };
