@@ -43,6 +43,7 @@ void pcb_tool_polyhole_notify_mode(void)
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
+		pcb_crosshair.AttachedPolygon_pts = 0;
 		pcb_crosshair.AttachedObject.Type =
 			pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_TYPE_POLY,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
@@ -99,6 +100,7 @@ void pcb_tool_polyhole_notify_mode(void)
 			if (!n || points[n - 1].X != pcb_crosshair.AttachedLine.Point2.X || points[n - 1].Y != pcb_crosshair.AttachedLine.Point2.Y) {
 				pcb_poly_point_new(&pcb_crosshair.AttachedPolygon,
 																pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
+				pcb_crosshair.AttachedPolygon_pts = pcb_crosshair.AttachedPolygon.PointN;
 
 				/* copy the coordinates */
 				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
@@ -139,8 +141,10 @@ pcb_bool pcb_tool_polyhole_undo_act(void)
 
 pcb_bool pcb_tool_polyhole_redo_act(void)
 {
-	if (pcb_crosshair.AttachedPolygon.PointN)
+	if (pcb_crosshair.AttachedPolygon.PointN) {
+		pcb_polygon_go_to_next_point();
 		return pcb_false;
+	}
 	else
 		return pcb_true;
 }
