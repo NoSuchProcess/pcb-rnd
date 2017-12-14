@@ -627,11 +627,12 @@ static void DrawLayerGroup(int group, const pcb_box_t *drawn_area, int is_curren
 	if (n_entries > 1)
 		rv = 1;
 
-	if (rv && !pcb_gui->gui)
-		pcb_draw_ppv(group, drawn_area);
-
 	if (gflg & PCB_LYT_COPPER)
 		pcb_draw_pstks(group, drawn_area, (CURRENT->meta.real.grp == group), 0);
+
+	/* this draws the holes - must be the last, so holes are drawn over everything else */
+	if (rv && !pcb_gui->gui)
+		pcb_draw_ppv(group, drawn_area);
 
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
