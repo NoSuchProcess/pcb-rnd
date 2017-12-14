@@ -20,7 +20,7 @@ digraph roadmap {
 	binding [color=green label="layer binding:\nabstract layer recipes\nthat are board-independent\nand can be applied on a\ngiven board's stackup"]
 	compositing [color=green label="layer compositing:\npositive/nagative drawn layers within a group\nallows drawing paste, mask, inverse silk, etc."]
 	term [color=green label="subcircuit terminals:\ngeneralized pin/pad idea\nthat allows any drawing primitive\nto be a pin or pad"]
-	elem_replace [color=red label="element replacement:\nreplace the old element model\nwith subcircuits\nmake sure subcircuits can do\nanything an element could do"]
+	elem_replace [color=greem label="element replacement:\nreplace the old element model\nwith subcircuits\nmake sure subcircuits can do\nanything an element could do"]
 	elem_remove [color=red label="element removal:\nremove elements, element-lines, element-arcs\npins, pads and the old circular-only vias\nin favor of subcircuits and pad stacks"]
 	padstacks [color=green label="pad stacks:\na via (or pin or pad)\nthat can have different,\narbitrary copper shape\non different layer groups"]
 	bbvia [color=green label="blind/buried via:\na pad stack has per layer info on\ncopper shape, it can\nalso have such info about the drill ends"]
