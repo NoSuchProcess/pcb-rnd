@@ -31,6 +31,7 @@
 #include "drill.h"
 #include "macro.h"
 #include "obj_pinvia.h"
+#include "obj_pstk_inlines.h"
 
 #define STEP_ELEMENT 50
 #define STEP_DRILL   30
@@ -105,6 +106,8 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 	DrillType savedrill, swapdrill;
 	pcb_bool DrillFound = pcb_false;
 	pcb_bool NewDrill;
+	pcb_rtree_it_t it;
+	pcb_box_t *pb;
 
 	AllDrills = (DrillInfoTypePtr) calloc(1, sizeof(DrillInfoType));
 	PCB_PIN_ALL_LOOP(top);
@@ -178,6 +181,41 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 		}
 	}
 	PCB_END_LOOP;
+
+	for(pb = pcb_r_first(top->padstack_tree, &it); pb != NULL; pb = pcb_r_next(&it)) {
+		pcb_pstk_t *ps = (pcb_pstk_t *)pb;
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		if (proto->hdia <= 0)
+			continue;
+		if (!DrillFound) {
+			DrillFound = pcb_true;
+			Drill = GetDrillInfoDrillMemory(AllDrills);
+			Drill->DrillSize = proto->hdia;
+			FillDrill(Drill, NULL, ps);
+		}
+		else {
+			if (Drill->DrillSize != proto->hdia) {
+				DRILL_LOOP(AllDrills);
+				{
+					if (drill->DrillSize == proto->hdia) {
+						Drill = drill;
+						FillDrill(Drill, NULL, ps);
+						break;
+					}
+				}
+				PCB_END_LOOP;
+				if (Drill->DrillSize != proto->hdia) {
+					Drill = GetDrillInfoDrillMemory(AllDrills);
+					Drill->DrillSize = proto->hdia;
+					FillDrill(Drill, NULL, ps);
+				}
+			}
+			else
+				FillDrill(Drill, NULL, ps);
+		}
+	}
+	pcb_r_end(&it);
+
 	qsort(AllDrills->Drill, AllDrills->DrillN, sizeof(DrillType), DrillQSort);
 	return (AllDrills);
 }
