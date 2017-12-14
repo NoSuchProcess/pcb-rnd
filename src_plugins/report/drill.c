@@ -3,8 +3,10 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
  *
  *  This module, drill.c, was written and is Copyright (C) 1997 harry eaton
+ *  and upgraded by Tibor 'Igor2' Palinkas for padstacks in 2017
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,31 +39,29 @@
 #define STEP_DRILL   30
 #define STEP_POINT   100
 
-static void FillDrill(DrillTypePtr, pcb_element_t *, pcb_pin_t *);
 static void InitializeDrill(DrillTypePtr, pcb_pin_t *, pcb_element_t *);
 
-
-static void FillDrill(DrillTypePtr Drill, pcb_element_t *Element, pcb_pin_t *Pin)
+static void FillDrill(DrillTypePtr Drill, pcb_any_obj_t *hole, int unplated)
 {
 	pcb_cardinal_t n;
-	pcb_element_t **ptr;
-	pcb_pin_t ** pin;
+	pcb_any_obj_t **pnew;
+	pcb_any_obj_t **hnew;
 
-	pin = GetDrillPinMemory(Drill);
-	*pin = Pin;
-	if (Element) {
+	hnew = GetDrillPinMemory(Drill);
+	*hnew = hole;
+	if ((hole->parent_type == PCB_PARENT_ELEMENT) || (hole->parent_type == PCB_PARENT_SUBC)) {
 		Drill->PinCount++;
 		for (n = Drill->ElementN - 1; n != -1; n--)
-			if (Drill->Element[n] == Element)
+			if (Drill->parent[n] == hole->parent.any)
 				break;
 		if (n == -1) {
-			ptr = GetDrillElementMemory(Drill);
-			*ptr = Element;
+			pnew = GetDrillElementMemory(Drill);
+			*pnew = hole->parent.any;
 		}
 	}
 	else
 		Drill->ViaCount++;
-	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin))
+	if (unplated)
 		Drill->UnplatedCount++;
 }
 
@@ -75,9 +75,9 @@ static void InitializeDrill(DrillTypePtr drill, pcb_pin_t *pin, pcb_element_t *e
 	drill->PinCount = 0;
 	drill->UnplatedCount = 0;
 	drill->ElementMax = 0;
-	drill->Element = NULL;
+	drill->parent = NULL;
 	drill->PinN = 0;
-	drill->Pin = NULL;
+	drill->hole = NULL;
 	drill->PinMax = 0;
 	ptr = (void *) GetDrillPinMemory(drill);
 	*((pcb_pin_t **) ptr) = pin;
@@ -119,14 +119,14 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 		}
 		else {
 			if (Drill->DrillSize == pin->DrillingHole)
-				FillDrill(Drill, element, pin);
+				FillDrill(Drill, (pcb_any_obj_t *)pin, PCB_FLAG_TEST(PCB_FLAG_HOLE, pin));
 			else {
 				NewDrill = pcb_false;
 				DRILL_LOOP(AllDrills);
 				{
 					if (drill->DrillSize == pin->DrillingHole) {
 						Drill = drill;
-						FillDrill(Drill, element, pin);
+						FillDrill(Drill, (pcb_any_obj_t *)pin, PCB_FLAG_TEST(PCB_FLAG_HOLE, pin));
 						break;
 					}
 					else if (drill->DrillSize > pin->DrillingHole) {
@@ -151,13 +151,15 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 		}
 	}
 	PCB_ENDALL_LOOP;
+
+#warning subc TODO: do this using rtree because of subc recursion
 	PCB_VIA_LOOP(top);
 	{
 		if (!DrillFound) {
 			DrillFound = pcb_true;
 			Drill = GetDrillInfoDrillMemory(AllDrills);
 			Drill->DrillSize = via->DrillingHole;
-			FillDrill(Drill, NULL, via);
+			FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
 		}
 		else {
 			if (Drill->DrillSize != via->DrillingHole) {
@@ -165,7 +167,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 				{
 					if (drill->DrillSize == via->DrillingHole) {
 						Drill = drill;
-						FillDrill(Drill, NULL, via);
+						FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
 						break;
 					}
 				}
@@ -173,11 +175,11 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 				if (Drill->DrillSize != via->DrillingHole) {
 					Drill = GetDrillInfoDrillMemory(AllDrills);
 					Drill->DrillSize = via->DrillingHole;
-					FillDrill(Drill, NULL, via);
+					FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
 				}
 			}
 			else
-				FillDrill(Drill, NULL, via);
+				FillDrill(Drill, (pcb_any_obj_t *)via, PCB_FLAG_TEST(PCB_FLAG_HOLE, via));
 		}
 	}
 	PCB_END_LOOP;
@@ -191,7 +193,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 			DrillFound = pcb_true;
 			Drill = GetDrillInfoDrillMemory(AllDrills);
 			Drill->DrillSize = proto->hdia;
-			FillDrill(Drill, NULL, ps);
+			FillDrill(Drill, (pcb_any_obj_t *)ps, !proto->hplated);
 		}
 		else {
 			if (Drill->DrillSize != proto->hdia) {
@@ -199,7 +201,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 				{
 					if (drill->DrillSize == proto->hdia) {
 						Drill = drill;
-						FillDrill(Drill, NULL, ps);
+						FillDrill(Drill, (pcb_any_obj_t *)ps, !proto->hplated);
 						break;
 					}
 				}
@@ -207,11 +209,11 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 				if (Drill->DrillSize != proto->hdia) {
 					Drill = GetDrillInfoDrillMemory(AllDrills);
 					Drill->DrillSize = proto->hdia;
-					FillDrill(Drill, NULL, ps);
+					FillDrill(Drill, (pcb_any_obj_t *)ps, !proto->hplated);
 				}
 			}
 			else
-				FillDrill(Drill, NULL, ps);
+				FillDrill(Drill, (pcb_any_obj_t *)ps, !proto->hplated);
 		}
 	}
 	pcb_r_end(&it);
@@ -235,26 +237,26 @@ void RoundDrillInfo(DrillInfoTypePtr d, int roundto)
 
 			d->Drill[i].ElementMax = d->Drill[i].ElementN + d->Drill[i + 1].ElementN;
 			if (d->Drill[i].ElementMax) {
-				d->Drill[i].Element = (pcb_element_t **) realloc(d->Drill[i].Element, d->Drill[i].ElementMax * sizeof(pcb_element_t *));
+				d->Drill[i].parent = realloc(d->Drill[i].parent, d->Drill[i].ElementMax * sizeof(pcb_any_obj_t *));
 
 				for (ei = 0; ei < d->Drill[i + 1].ElementN; ei++) {
 					for (ej = 0; ej < d->Drill[i].ElementN; ej++)
-						if (d->Drill[i].Element[ej] == d->Drill[i + 1].Element[ei])
+						if (d->Drill[i].parent[ej] == d->Drill[i + 1].parent[ei])
 							break;
 					if (ej == d->Drill[i].ElementN)
-						d->Drill[i].Element[d->Drill[i].ElementN++]
-							= d->Drill[i + 1].Element[ei];
+						d->Drill[i].parent[d->Drill[i].ElementN++]
+							= d->Drill[i + 1].parent[ei];
 				}
 			}
-			free(d->Drill[i + 1].Element);
-			d->Drill[i + 1].Element = NULL;
+			free(d->Drill[i + 1].parent);
+			d->Drill[i + 1].parent = NULL;
 
 			d->Drill[i].PinMax = d->Drill[i].PinN + d->Drill[i + 1].PinN;
-			d->Drill[i].Pin = (pcb_pin_t **) realloc(d->Drill[i].Pin, d->Drill[i].PinMax * sizeof(pcb_pin_t *));
-			memcpy(d->Drill[i].Pin + d->Drill[i].PinN, d->Drill[i + 1].Pin, d->Drill[i + 1].PinN * sizeof(pcb_pin_t *));
+			d->Drill[i].hole = realloc(d->Drill[i].hole, d->Drill[i].PinMax * sizeof(pcb_any_obj_t *));
+			memcpy(d->Drill[i].hole + d->Drill[i].PinN, d->Drill[i + 1].hole, d->Drill[i + 1].PinN * sizeof(pcb_any_obj_t *));
 			d->Drill[i].PinN += d->Drill[i + 1].PinN;
-			free(d->Drill[i + 1].Pin);
-			d->Drill[i + 1].Pin = NULL;
+			free(d->Drill[i + 1].hole);
+			d->Drill[i + 1].hole = NULL;
 
 			d->Drill[i].PinCount += d->Drill[i + 1].PinCount;
 			d->Drill[i].ViaCount += d->Drill[i + 1].ViaCount;
@@ -276,8 +278,8 @@ void FreeDrillInfo(DrillInfoTypePtr Drills)
 {
 	DRILL_LOOP(Drills);
 	{
-		free(drill->Element);
-		free(drill->Pin);
+		free(drill->parent);
+		free(drill->hole);
 	}
 	PCB_END_LOOP;
 	free(Drills->Drill);
@@ -304,18 +306,18 @@ DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr DrillInfo)
 /* ---------------------------------------------------------------------------
  * get next slot for a DrillPoint, allocates memory if necessary
  */
-pcb_pin_t ** GetDrillPinMemory(DrillTypePtr Drill)
+pcb_any_obj_t **GetDrillPinMemory(DrillTypePtr Drill)
 {
-	pcb_pin_t **pin;
+	pcb_any_obj_t **pin;
 
-	pin = Drill->Pin;
+	pin = Drill->hole;
 
 	/* realloc new memory if necessary and clear it */
 	if (Drill->PinN >= Drill->PinMax) {
 		Drill->PinMax += STEP_POINT;
-		pin = (pcb_pin_t **) realloc(pin, Drill->PinMax * sizeof(pcb_pin_t **));
-		Drill->Pin = pin;
-		memset(pin + Drill->PinN, 0, STEP_POINT * sizeof(pcb_pin_t **));
+		pin = realloc(pin, Drill->PinMax * sizeof(pcb_any_obj_t **));
+		Drill->hole = pin;
+		memset(pin + Drill->PinN, 0, STEP_POINT * sizeof(pcb_any_obj_t **));
 	}
 	return (pin + Drill->PinN++);
 }
@@ -323,17 +325,17 @@ pcb_pin_t ** GetDrillPinMemory(DrillTypePtr Drill)
 /* ---------------------------------------------------------------------------
  * get next slot for a DrillElement, allocates memory if necessary
  */
-pcb_element_t **GetDrillElementMemory(DrillTypePtr Drill)
+pcb_any_obj_t **GetDrillElementMemory(DrillTypePtr Drill)
 {
-	pcb_element_t **element;
+	pcb_any_obj_t **element;
 
-	element = Drill->Element;
+	element = Drill->parent;
 
 	/* realloc new memory if necessary and clear it */
 	if (Drill->ElementN >= Drill->ElementMax) {
 		Drill->ElementMax += STEP_ELEMENT;
-		element = (pcb_element_t **) realloc(element, Drill->ElementMax * sizeof(pcb_element_t **));
-		Drill->Element = element;
+		element = realloc(element, Drill->ElementMax * sizeof(pcb_any_obj_t **));
+		Drill->parent = element;
 		memset(element + Drill->ElementN, 0, STEP_ELEMENT * sizeof(pcb_element_t **));
 	}
 	return (element + Drill->ElementN++);

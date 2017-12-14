@@ -40,6 +40,7 @@
 #include "stub_draw.h"
 #include "draw_fab_conf.h"
 #include "conf_core.h"
+#include "obj_pstk_inlines.h"
 
 #include "obj_text_draw.h"
 
@@ -205,8 +206,24 @@ static void DrawFab(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 		if (drill->UnplatedCount)
 			unplated_sym = --ds;
 		pcb_gui->set_color(gc, conf_core.appearance.color.pin);
-		for (i = 0; i < drill->PinN; i++)
-			drill_sym(gc, PCB_FLAG_TEST(PCB_FLAG_HOLE, drill->Pin[i]) ? unplated_sym : plated_sym, drill->Pin[i]->X, drill->Pin[i]->Y);
+		for (i = 0; i < drill->PinN; i++) {
+			int unplated = 1;
+			pcb_coord_t x, y;
+			if ((drill->hole[i]->type == PCB_OBJ_PIN) || (drill->hole[i]->type == PCB_OBJ_VIA)) {
+				pcb_pin_t *pin = (pcb_pin_t *)drill->hole[i];
+				unplated = PCB_FLAG_TEST(PCB_FLAG_HOLE, pin);
+				x = pin->X;
+				y = pin->Y;
+			}
+			else if (drill->hole[i]->type == PCB_OBJ_PSTK) {
+				pcb_pstk_t *ps = (pcb_pstk_t *)drill->hole[i];
+				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+				unplated = !proto->hplated;
+				x = ps->x;
+				y = ps->y;
+			}
+			drill_sym(gc, unplated ? unplated_sym : plated_sym, x, y);
+		}
 		if (plated_sym != -1) {
 			drill_sym(gc, plated_sym, TEXT_SIZE, yoff + TEXT_SIZE / 4);
 			text_at(gc, PCB_MIL_TO_COORD(1350), yoff, PCB_MIL_TO_COORD(2), "YES");

@@ -37,8 +37,8 @@ typedef struct {								/* holds drill information */
 	  UnplatedCount,							/* number of these holes that are unplated */
 	  PinN,												/* number of drill coordinates in the list */
 	  PinMax;											/* max number of coordinates from malloc() */
-	pcb_pin_t **Pin;							/* coordinates to drill */
-	pcb_element_t **Element;			/* a pointer to an array of element pointers */
+	pcb_any_obj_t **hole;					/* the objects that had the drill */
+	pcb_any_obj_t **parent;				/* all parents referenced by any hole above */
 } DrillType, *DrillTypePtr;
 
 typedef struct {								/* holds a range of Drill Infos */
@@ -51,8 +51,8 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *);
 void FreeDrillInfo(DrillInfoTypePtr);
 void RoundDrillInfo(DrillInfoTypePtr, int);
 DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr);
-pcb_pin_t **GetDrillPinMemory(DrillTypePtr);
-pcb_element_t **GetDrillElementMemory(DrillTypePtr);
+pcb_any_obj_t **GetDrillPinMemory(DrillTypePtr);
+pcb_any_obj_t **GetDrillElementMemory(DrillTypePtr);
 
 #define DRILL_LOOP(top) do             {                           \
         pcb_cardinal_t        n;                                   \
