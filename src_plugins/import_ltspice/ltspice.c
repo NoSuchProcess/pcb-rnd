@@ -276,7 +276,7 @@ int pcb_act_LoadLtspiceFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 																"Picks a ltspice mentor net or asc file to load.\n",
 																default_file, ".asc", "ltspice", HID_FILESELECT_READ);
 		if (fname == NULL)
-			PCB_ACT_FAIL(LoadLtspiceFrom);
+			return 1;
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
