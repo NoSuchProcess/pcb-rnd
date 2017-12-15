@@ -1119,6 +1119,28 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		gdImageDestroy(erase_im);
 		erase_im = NULL;
 	}
+	if (photo_silk != NULL) {
+		gdImageDestroy(photo_silk);
+		photo_silk = NULL;
+	}
+	if (photo_mask != NULL) {
+		gdImageDestroy(photo_mask);
+		photo_mask = NULL;
+	}
+	if (photo_drill != NULL) {
+		gdImageDestroy(photo_drill);
+		photo_drill = NULL;
+	}
+	if (photo_outline != NULL) {
+		gdImageDestroy(photo_outline);
+		photo_outline = NULL;
+	}
+	for(i = 0; i < PCB_MAX_LAYER + 2; i++) {
+		if (photo_copper[i] != NULL) {
+			gdImageDestroy(photo_copper[i]);
+			photo_copper[i] = NULL;
+		}
+	}
 }
 
 static void png_parse_arguments(int *argc, char ***argv)
