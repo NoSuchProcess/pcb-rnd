@@ -902,6 +902,8 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
+	png_hid.force_compositing = !!photo_mode;
+
 	if (!options[HA_as_shown].int_value)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
