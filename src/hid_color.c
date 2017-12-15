@@ -39,3 +39,18 @@ int pcb_hid_cache_color(int set, const char *name, pcb_hidval_t * val, void **vc
 
 	return 1;
 }
+
+void pcb_hid_cache_color_destroy(void **vcache, void (*user_free)(void **vcache, const char *name, pcb_hidval_t *val))
+{
+	htsh_t *cache = (htsh_t *) * vcache;
+	htsh_entry_t *e;
+
+	if (cache == 0)
+		return;
+
+	for (e = htsh_first(cache); e; e = htsh_next(cache, e))
+		user_free(vcache, e->key, &e->value);
+	htsh_free(cache);
+	*vcache = NULL;
+}
+

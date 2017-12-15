@@ -12,4 +12,7 @@
    cache.  */
 int pcb_hid_cache_color(int set, const char *name, pcb_hidval_t * val, void **cache);
 
+/* Call user_free() on each cache entry and then destroy the cache */
+void pcb_hid_cache_color_destroy(void **vcache, void (*user_free)(void **vcache, const char *name, pcb_hidval_t *val));
+
 #endif
