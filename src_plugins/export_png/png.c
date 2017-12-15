@@ -1268,7 +1268,7 @@ static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 
 static pcb_hid_gc_t png_make_gc(void)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
+	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
 	rv->me_pointer = &png_hid;
 	rv->cap = Trace_Cap;
 	rv->width = 1;
