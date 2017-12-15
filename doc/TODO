@@ -2,7 +2,7 @@
 + BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
 - padstack:
 	- v4 lihata formatting
-- BUG: shape editor dialog: 
+- BUG: shape editor dialog:
 		+ catch layer change and regen the shape [report: SQ6POG]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 + BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
@@ -59,7 +59,7 @@
 		- pcb_pad_clear_callback() -> hopefully drawn on negative mask only (check this)
 		- holes_after should be set to 1 everywhere, then removed -> breaks gerber
 		- holes should be drawn below silk and mask (maybe this could be a config setting)
-- feature: fp_wget cache dir confiurable [report: agaran]
+- feature: fp_wget cache dir configurable [report: agaran]
 - feature in subc/term:
 	- new terminal attribute: "do not connect to the same subc copper" (agaran's coil example)
 + feature req: show grid in both mm and mil in the status bar [report:smilie]
