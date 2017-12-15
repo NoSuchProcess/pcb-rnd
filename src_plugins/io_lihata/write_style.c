@@ -263,6 +263,26 @@ static lhtpers_rule_t r_pinvia[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_xmirror[] = {"te:xmirror", "*", NULL};
+static const char *pat_smirror[] = {"te:smirror", "*", NULL};
+static const char *pat_rot[]     = {"te:rot", "*", NULL};
+static const char *pat_proto[]   = {"te:proto", "*", NULL};
+static lhtpers_rule_t r_psref[] = {
+	{pat_proto,      &style_inline, NULL},
+	{pat_x,          &style_inline, NULL},
+	{pat_y,          &style_inline, NULL},
+	{pat_rot,        &style_inline, NULL},
+	{pat_xmirror,    &style_inline, NULL},
+	{pat_smirror,    &style_inline, NULL},
+	{pat_clearance,  &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
+	{pat_flags,      &style_nlstruct, r_thermal},
+	{pat_thermal,    &style_nlstruct, r_thermal},
+	{pat_attributes, &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+
 static lhtpers_rule_t r_pad[] = {
 	{pat_name,       &style_inline, NULL},
 	{pat_numb,       &style_inline, NULL},
@@ -464,6 +484,7 @@ static const char *pat_spoly[]= {"li:simplepoly.*", "*", NULL};
 static const char *pat_rat[]  = {"ha:rat.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
 static const char *pat_via[]  = {"ha:via.*", "*", NULL};
+static const char *pat_psref[]= {"ha:padstack_ref.*", "*", NULL};
 static const char *pat_pin[]  = {"ha:pin.*", "*", NULL};
 static const char *pat_pad[]  = {"ha:pad.*", "*", NULL};
 static const char *pat_poly[] = {"ha:polygon.*", "*", NULL};
@@ -498,6 +519,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_rat,     &style_structi,  r_rat},
 	{pat_arc,     &style_structi,  r_arc},
 	{pat_via,     &style_structi,  r_pinvia},
+	{pat_psref,   &style_structi,  r_psref},
 	{pat_pin,     &style_structi,  r_pinvia},
 	{pat_pad,     &style_structi,  r_pad},
 	{pat_poly,    &style_structs,  r_polygon},
