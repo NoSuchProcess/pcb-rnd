@@ -733,16 +733,21 @@ static void ts_bs_sm(gdImagePtr im)
 		}
 }
 
+static void png_brush_free(void **vcache, const char *name, pcb_hidval_t *val)
+{
+	gdImage *brush = (gdImage *)val->ptr;
+	if (brush != NULL)
+		gdImageDestroy(brush);
+}
+
 static void png_free_cache(void)
 {
 	if (color_cache) {
 		free(color_cache);
 		color_cache = NULL;
 	}
-	if (brush_cache) {
-		free(brush_cache);
-		brush_cache = NULL;
-	}
+	if (brush_cache != NULL)
+		pcb_hid_cache_color_destroy(&brush_cache, png_brush_free);
 }
 
 static void png_do_export(pcb_hid_attr_val_t * options)
