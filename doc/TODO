@@ -1,7 +1,5 @@
 1. For the upcoming release ===============================================================================
 - padstack:
-	- BUG: exports:
-		+ ps hole generation is broken
 	- v4 lihata formatting
 - BUG: shape editor dialog: 
 		+ catch layer change and regen the shape [report: SQ6POG]
