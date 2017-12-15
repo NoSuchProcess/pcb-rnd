@@ -180,7 +180,7 @@ int pcb_act_LoadtinycadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 																"Picks a tinycad netlist file to load.\n",
 																default_file, ".net", "tinycad", HID_FILESELECT_READ);
 		if (fname == NULL)
-			PCB_ACT_FAIL(LoadtinycadFrom);
+			return 1;
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
