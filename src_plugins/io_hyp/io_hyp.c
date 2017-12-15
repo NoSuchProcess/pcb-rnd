@@ -80,7 +80,7 @@ int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	if (fname == NULL)
-		PCB_AFAIL(load_hyp);
+		return 1;
 
 
 	/* 
