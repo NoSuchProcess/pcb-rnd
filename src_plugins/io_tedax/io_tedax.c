@@ -67,7 +67,7 @@ do { \
 																"Picks a tedax " #type " file to load.\n", \
 																default_file, ".tdx", "tedax-" #type, HID_FILESELECT_READ); \
 		if (fname == NULL) \
-			PCB_ACT_FAIL(LoadtedaxFrom); \
+			return 1; \
 		if (default_file != NULL) { \
 			free(default_file); \
 			default_file = NULL; \
