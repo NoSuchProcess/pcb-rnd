@@ -1111,7 +1111,14 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 
 	fclose(f);
 
-	gdImageDestroy(im);
+	if (comp_im != NULL) {
+		gdImageDestroy(comp_im);
+		comp_im = NULL;
+	}
+	if (erase_im != NULL) {
+		gdImageDestroy(erase_im);
+		erase_im = NULL;
+	}
 }
 
 static void png_parse_arguments(int *argc, char ***argv)
