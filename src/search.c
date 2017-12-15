@@ -536,7 +536,7 @@ static pcb_r_dir_t polypoint_callback(const pcb_box_t *box, void *cl)
 
 	PCB_POLY_POINT_LOOP(polygon);
 	{
-		d = pcb_distance(point->X, point->Y, PosX, PosY);
+		d = pcb_distance2(point->X, point->Y, PosX, PosY);
 		if (d < ctx->least) {
 			ctx->least = d;
 			*ctx->Polygon = polygon;
@@ -559,6 +559,7 @@ static pcb_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	ctx.Point = Point;
 	ctx.found = pcb_false;;
 	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
+	ctx.least = ctx.least * ctx.least;
 	pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
 
 	if (ctx.found)
