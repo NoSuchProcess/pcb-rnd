@@ -1120,6 +1120,10 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 
 	fclose(f);
 
+	if (master_im != NULL) {
+		gdImageDestroy(master_im);
+		master_im = NULL;
+	}
 	if (comp_im != NULL) {
 		gdImageDestroy(comp_im);
 		comp_im = NULL;
