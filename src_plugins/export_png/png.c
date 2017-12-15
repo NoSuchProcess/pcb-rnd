@@ -972,8 +972,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 				else
 					rgb(&cop, 100, 100, 110);
 
-				if (photo_ngroups == 2)
-					blend(&cop, 0.3, &cop, &fr4);
+				blend(&cop, 0.3, &cop, &fr4);
 
 				cc = gdImageGetPixel(photo_copper[photo_groups[0]], x, y);
 				if (cc) {
