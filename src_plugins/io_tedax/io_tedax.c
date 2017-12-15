@@ -91,7 +91,7 @@ static int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb
 		return tedax_net_load(fname);
 	}
 	if (pcb_strcasecmp(type, "footprint") == 0) {
-		gen_load(netlist, fname);
+		gen_load(footprint, fname);
 		return tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0);
 	}
 	PCB_ACT_FAIL(Savetedax);
