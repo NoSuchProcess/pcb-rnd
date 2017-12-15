@@ -45,6 +45,10 @@ void pcb_undo_lock(void);
 void pcb_undo_unlock(void);
 pcb_bool pcb_undoing(void);
 
+uundo_serial_t pcb_undo_serial(void);
+void pcb_undo_truncate_from(uundo_serial_t sfirst);
+
+
 /* Returns 0 if undo integrity is not broken */
 int undo_check(void);
 

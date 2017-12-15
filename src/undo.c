@@ -241,6 +241,17 @@ pcb_bool pcb_undoing(void)
 	return (Locked);
 }
 
+uundo_serial_t pcb_undo_serial(void)
+{
+	return pcb_uundo.serial;
+}
+
+
+void pcb_undo_truncate_from(uundo_serial_t sfirst)
+{
+	uundo_list_truncate_from(&pcb_uundo, sfirst);
+}
+
 int undo_check(void)
 {
 	const char *res = uundo_check(&pcb_uundo, NULL);
