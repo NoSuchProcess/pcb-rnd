@@ -19,7 +19,7 @@
 	+ subc text is not mirrored when sent to the back of the board [report: Ade]
 	- When a subc is placed on the back of the board it is upside-down [report: Ade]
 		- Reproduce: import subc to buffer while on component side; flip; xor-draw shows the original (incorrectly), but the mirrored one would be placed (correctly)
-	- Place a subc on the back of the board and undo, the subc is moved to the front side instead of being removed. [report: Ade]
+	+ BUG: Place a subc on the back of the board and undo, the subc is moved to the front side instead of being removed. [report: Ade]
 - BUG: gtk2 opengl ignores local grid
 - BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
