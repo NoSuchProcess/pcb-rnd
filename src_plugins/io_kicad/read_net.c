@@ -227,7 +227,7 @@ int pcb_act_LoadeeschemaFrom(int argc, const char **argv, pcb_coord_t x, pcb_coo
 					"Picks a eeschema netlist file to load.\n",
 					default_file, ".net", "eeschema", HID_FILESELECT_READ);
 		if (fname == NULL)
-			PCB_ACT_FAIL(LoadeeschemaFrom);
+			return 1;
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
