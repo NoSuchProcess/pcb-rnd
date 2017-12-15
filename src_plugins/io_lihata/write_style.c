@@ -52,6 +52,15 @@ static lht_perstyle_t style_inline = {
 	/* name_braced */ 0
 };
 
+static lht_perstyle_t style_inlinesp = {
+	/* buff */        {PB_BEGINSP, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_SEMICOLON},
+	/* has_eq */      1,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
 /* tightly packed key=val; pairs */
 static lht_perstyle_t style_inline_tight = {
 	/* buff */        {PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_SEMICOLON},
@@ -185,6 +194,7 @@ static const char *pat_thickness[]  = {"te:thickness", "*", NULL};
 static const char *pat_clearance[]  = {"te:clearance", "*", NULL};
 static const char *pat_flags[]      = {"ha:flags", "*", NULL};
 static const char *pat_attributes[] = {"ha:attributes", "*", NULL};
+static const char *pat_square[]     = {"te:square", "*", NULL};
 static lhtpers_rule_t r_line[] = {
 	{pat_x1_line,    &style_inline, NULL},
 	{pat_y1_line,    &style_inline, NULL},
@@ -330,7 +340,58 @@ static lhtpers_rule_t r_layer[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_ps_line[] = {"ha:ps_line", "*", NULL};
+static lhtpers_rule_t r_ps_line[] = {
+	{pat_x1_line,    &style_inline, NULL},
+	{pat_y1_line,    &style_inline, NULL},
+	{pat_x2_line,    &style_inline, NULL},
+	{pat_y2_line,    &style_inline, NULL},
+	{pat_thickness,  &style_inline, NULL},
+	{pat_square,     &style_inline, NULL},
+	{NULL, NULL, NULL}
+};
+
+static const char *pat_ps_shape_v4[] = {"ha:ps_shape_v4", "*", NULL};
+static const char *pat_layer_mask[]  = {"ha:layer_mask", "*", NULL};
+static lhtpers_rule_t r_ps_shape_v4[] = {
+	{pat_ps_line,          &style_struct_thermal,  r_ps_line},
+	{pat_combin,           &style_structs, NULL},
+	{pat_layer_mask,       &style_struct, NULL},
+	{pat_clearance,        &style_newline,  NULL},
+	{NULL, NULL, NULL}
+};
+
+static const char *pat_li_shape[] = {"li:shape", "*", NULL};
+static lhtpers_rule_t r_li_shape[] = {
+	{pat_ps_shape_v4, &style_structi,  r_ps_shape_v4},
+	{NULL, NULL, NULL}
+};
+
+
+static const char *pat_ps_htop[] = {"te:htop", "*", NULL};
+static const char *pat_ps_hdia[] = {"te:hdia", "*", NULL};
+static const char *pat_ps_hbottom[] = {"te:hbottom", "*", NULL};
+static const char *pat_ps_hplated[] = {"te:hplated", "*", NULL};
+
+static const char *pat_ps_proto[] = {"ha:ps_proto_v*", "*", NULL};
+static lhtpers_rule_t r_ps_proto[] = {
+	{pat_ps_hdia,     &style_inlinesp, NULL},
+	{pat_ps_hplated,  &style_inline, NULL},
+	{pat_ps_htop,     &style_inline, NULL},
+	{pat_ps_hbottom,  &style_inline, NULL},
+	{pat_li_shape,    &style_nlstruct, r_li_shape},
+	{NULL, NULL, NULL}
+};
+
+static const char *pat_ps_protos[] = {"li:padstack_prototypes", "*", NULL};
+static lhtpers_rule_t r_ps_protos[] = {
+	{pat_ps_proto,  &style_struct, r_ps_proto},
+	{NULL, NULL, NULL}
+};
+
+
 static lhtpers_rule_t r_data[] = {
+	{pat_ps_protos,        &style_struct,   r_ps_protos},
 	{pat_objects,          &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
 };
@@ -381,7 +442,6 @@ static lhtpers_rule_t r_netlists[] = {
 	{pat_net_patch,         &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
 };
-
 
 
 static const char *pat_ls_type1[] = {"te:*", "ha:type", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
@@ -446,6 +506,9 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_data,    &style_structi,  r_data},
 	{pat_font1,   &style_structi,  r_font1},
 	{pat_netlists,&style_struct,   r_netlists},
+	{pat_ps_protos,&style_struct,  r_ps_protos},
+	{pat_ps_proto,&style_nlstruct, r_ps_proto},
+	{pat_ps_shape_v4,&style_nlstruct,r_ps_shape_v4},
 	{pat_objects, &style_nlstruct, NULL},
 	{pat_flag,    &style_newline,  NULL},
 
