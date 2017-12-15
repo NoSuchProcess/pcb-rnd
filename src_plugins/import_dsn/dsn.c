@@ -186,7 +186,7 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			NULL, /* default file name */
 			".dsn", "dsn", HID_FILESELECT_READ);
 		if (fname == NULL)
-			PCB_AFAIL(load_dsn);
+			return 1;
 	}
 
 	/* load and parse the file into a dom tree */
