@@ -204,6 +204,9 @@ struct pcb_hid_s {
 	   using the mask is to get rat transparency */
 	unsigned can_mask_clear_rats:1;
 
+	/* Always draw layers in compositing mode - no base layer */
+	unsigned force_compositing:1;
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are

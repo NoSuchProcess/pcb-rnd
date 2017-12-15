@@ -770,7 +770,10 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	pcb_draw_out.padselGC = pcb_gui->make_gc();
 	pcb_draw_out.drillGC = pcb_gui->make_gc();
 	pcb_draw_out.pmGC = pcb_gui->make_gc();
-	pcb_draw_out.direct = 1;
+	if (hid->force_compositing)
+		pcb_draw_out.direct = 0;
+	else
+		pcb_draw_out.direct = 1;
 
 	hid->set_color(pcb_draw_out.pmGC, "erase");
 	hid->set_color(pcb_draw_out.drillGC, "drill");
