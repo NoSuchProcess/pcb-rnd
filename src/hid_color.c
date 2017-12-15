@@ -48,8 +48,10 @@ void pcb_hid_cache_color_destroy(void **vcache, void (*user_free)(void **vcache,
 	if (cache == 0)
 		return;
 
-	for (e = htsh_first(cache); e; e = htsh_next(cache, e))
+	for (e = htsh_first(cache); e; e = htsh_next(cache, e)) {
 		user_free(vcache, e->key, &e->value);
+		free(e->key); /* name allocated with pcb_strdup() */
+	}
 	htsh_free(cache);
 	*vcache = NULL;
 }
