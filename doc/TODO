@@ -1,4 +1,5 @@
 1. For the upcoming release ===============================================================================
++ BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
 - padstack:
 	- v4 lihata formatting
 - BUG: shape editor dialog: 
@@ -52,7 +53,6 @@
 	- menu file fixup on punctuation in lesstif
 - property editor doesn't deal with subc
 - advanced search doesn't deal with subc
-- BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
 - feautres/cleanup: hid:
 	- "erase" color:
