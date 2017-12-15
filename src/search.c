@@ -63,7 +63,7 @@ static pcb_bool SearchViaByLocation(unsigned long, unsigned long, pcb_pin_t **, 
 static pcb_bool SearchElementNameByLocation(unsigned long, unsigned long, pcb_element_t **, pcb_text_t **, pcb_text_t **, pcb_bool);
 static pcb_bool SearchLinePointByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
 static pcb_bool SearchArcPointByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_arc_t **, int **);
-static pcb_bool SearchPointByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_poly_t **, pcb_point_t **);
+static pcb_bool SearchPointByLocation(unsigned long, unsigned long, unsigned long, pcb_layer_t **, pcb_poly_t **, pcb_point_t **);
 static pcb_bool SearchElementByLocation(unsigned long, unsigned long, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
 static pcb_bool SearchSubcByLocation(unsigned long, unsigned long, pcb_subc_t **, pcb_subc_t **, pcb_subc_t **, pcb_bool);
 
@@ -506,29 +506,62 @@ static pcb_bool SearchArcPointByLocation(unsigned long objst, unsigned long req_
  * searches a polygon-point on all layers that are switched on
  * in layerstack order
  */
-static pcb_bool SearchPointByLocation(unsigned long objst, unsigned long req_flag, pcb_layer_t ** Layer, pcb_poly_t ** Polygon, pcb_point_t ** Point)
-{
-	double d, least;
-	pcb_bool found = pcb_false;
+typedef struct {
+	double least;
+	pcb_bool found;
+	unsigned long Type;
 
-	least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
-	*Layer = SearchLayer;
-	PCB_POLY_LOOP(*Layer);
+	/* result */
+	pcb_poly_t **Polygon;
+	pcb_point_t **Point;
+} ptcb_t;
+
+static pcb_r_dir_t polypoint_callback(const pcb_box_t *box, void *cl)
+{
+	pcb_poly_t *polygon = (pcb_poly_t *)box;
+	ptcb_t *ctx = (ptcb_t *)cl;
+	double d;
+	pcb_data_t *dt;
+
+	dt = polygon->parent.layer->parent; /* polygon -> layer -> data */
+	if ((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC)) {
+		/* do not find subc part poly points if not explicitly requested */
+		if (!(ctx->Type & PCB_TYPE_SUBC_PART))
+			return PCB_R_DIR_NOT_FOUND;
+
+		/* don't find subc poly points even as subc part unless we are editing a subc */
+		if (!PCB->loose_subc)
+			return PCB_R_DIR_NOT_FOUND;
+	}
+
+	PCB_POLY_POINT_LOOP(polygon);
 	{
-		PCB_POLY_POINT_LOOP(polygon);
-		{
-			d = pcb_distance(point->X, point->Y, PosX, PosY);
-			if (d < least) {
-				least = d;
-				*Polygon = polygon;
-				*Point = point;
-				found = pcb_true;
-			}
+		d = pcb_distance(point->X, point->Y, PosX, PosY);
+		if (d < ctx->least) {
+			ctx->least = d;
+			*ctx->Polygon = polygon;
+			*ctx->Point = point;
+			ctx->found = pcb_true;
 		}
-		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
-	if (found)
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
+static pcb_bool SearchPointByLocation(unsigned long Type, unsigned long objst, unsigned long req_flag, pcb_layer_t ** Layer, pcb_poly_t ** Polygon, pcb_point_t ** Point)
+{
+	ptcb_t ctx;
+
+	*Layer = SearchLayer;
+	ctx.Type = Type;
+	ctx.Polygon = Polygon;
+	ctx.Point = Point;
+	ctx.found = pcb_false;;
+	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
+	pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
+
+	if (ctx.found)
 		return (pcb_true);
 	return (pcb_false);
 }
@@ -1232,7 +1265,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		if (SearchLayer->meta.real.vis) {
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_POLY_POINT &&
-					SearchPointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
+					SearchPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
 				return (PCB_TYPE_POLY_POINT);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
