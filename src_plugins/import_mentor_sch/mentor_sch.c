@@ -265,7 +265,7 @@ int pcb_act_LoadMentorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 																"Picks a mentor edf file to load.\n",
 																default_file, ".edf", "mentor_sch", HID_FILESELECT_READ);
 		if (fname == NULL)
-			PCB_ACT_FAIL(Loadmentor_schFrom);
+			return 1;
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
