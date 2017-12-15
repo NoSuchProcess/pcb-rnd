@@ -1690,8 +1690,7 @@ static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	}
 }
 
-
-static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void png_fill_circle_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	pcb_coord_t my_bloat;
 
@@ -1708,6 +1707,17 @@ static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	linewidth = 0;
 	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? white->c : gc->color->c);
 }
+
+static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+{
+	png_fill_circle_(im, gc, cx, cy, radius);
+	if ((im != erase_im) && (erase_im != NULL)) {
+		unerase_override = 1;
+		png_fill_circle_(erase_im, gc, cx, cy, radius);
+		unerase_override = 0;
+	}
+}
+
 
 static void png_fill_polygon_offs_(gdImagePtr im, pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
