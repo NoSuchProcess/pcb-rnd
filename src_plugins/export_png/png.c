@@ -733,6 +733,18 @@ static void ts_bs_sm(gdImagePtr im)
 		}
 }
 
+static void png_free_cache(void)
+{
+	if (color_cache) {
+		free(color_cache);
+		color_cache = NULL;
+	}
+	if (brush_cache) {
+		free(brush_cache);
+		brush_cache = NULL;
+	}
+}
+
 static void png_do_export(pcb_hid_attr_val_t * options)
 {
 	int save_ons[PCB_MAX_LAYER + 2];
@@ -743,15 +755,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 	const char *fmt;
 	pcb_bool format_error = pcb_false;
 
-	if (color_cache) {
-		free(color_cache);
-		color_cache = NULL;
-	}
-
-	if (brush_cache) {
-		free(brush_cache);
-		brush_cache = NULL;
-	}
+	png_free_cache();
 
 	if (!options) {
 		png_get_export_options(0);
@@ -1141,6 +1145,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 			photo_copper[i] = NULL;
 		}
 	}
+	png_free_cache();
 }
 
 static void png_parse_arguments(int *argc, char ***argv)
