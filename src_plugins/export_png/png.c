@@ -913,7 +913,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		pcb_hid_restore_layer_ons(save_ons);
 
 	if (photo_mode) {
-		int x, y;
+		int x, y, darken, lg;
 		color_struct white, black, fr4;
 
 		rgb(&white, 255, 255, 255);
@@ -959,8 +959,15 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 				mask = photo_mask ? gdImageGetPixel(photo_mask, x, y) : 0;
 				silk = photo_silk ? gdImageGetPixel(photo_silk, x, y) : 0;
 
-				if (photo_copper[photo_groups[1]]
-						&& gdImageGetPixel(photo_copper[photo_groups[1]], x, y))
+				darken = 0;
+				for(lg = 1; lg < photo_ngroups; lg++) {
+					if (photo_copper[photo_groups[lg]] && gdImageGetPixel(photo_copper[photo_groups[lg]], x, y)) {
+						darken = 1;
+						break;
+					}
+				}
+
+				if (darken)
 					rgb(&cop, 40, 40, 40);
 				else
 					rgb(&cop, 100, 100, 110);
