@@ -1,7 +1,5 @@
 1. For the upcoming release ===============================================================================
 + BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
-- padstack:
-	- v4 lihata formatting
 - BUG: shape editor dialog:
 		+ catch layer change and regen the shape [report: SQ6POG]
 - BUG: subc terminals should be drawn at the end [report: Ade]
