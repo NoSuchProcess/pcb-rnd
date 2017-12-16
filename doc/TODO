@@ -38,7 +38,6 @@
 - BUG: property editor doesn't deal with subc
 - BUG: advanced search doesn't deal with subc
 - BUG: main.c: SIGPIPE - detect it (needed for popen)
-- extedit menu binding
 
 2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
