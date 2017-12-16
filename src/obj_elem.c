@@ -146,6 +146,7 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 
 		Buffer->X = 0;
 		Buffer->Y = 0;
+		Buffer->from_outside = 1;
 
 		if (elementlist_length(&Buffer->Data->Element)) {
 			pcb_element_t *element = elementlist_first(&Buffer->Data->Element);

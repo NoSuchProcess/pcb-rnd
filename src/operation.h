@@ -68,6 +68,7 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_coord_t DeltaX, DeltaY; /* movement vector */
+	int from_outside;
 } pcb_opctx_copy_t;
 
 typedef struct {

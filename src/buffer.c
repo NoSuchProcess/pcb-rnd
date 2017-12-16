@@ -112,6 +112,7 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 		if (pcb != NULL)
 			pcb_data_bind_board_layers(pcb, Buffer->Data, 0);
 	}
+	Buffer->from_outside = 0;
 }
 
 /* add or move selected */
@@ -143,6 +144,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 		Buffer->X = pcb_crosshair.X;
 		Buffer->Y = pcb_crosshair.Y;
 	}
+	Buffer->from_outside = 0;
 	pcb_notify_crosshair_change(pcb_true);
 }
 
@@ -239,6 +241,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_data_make_layers_bound(newPCB, Buffer->Data);
 		pcb_data_binding_update(pcb, Buffer->Data);
 		pcb_board_remove(newPCB);
+		Buffer->from_outside = 1;
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 		return (pcb_true);
 	}
@@ -248,6 +251,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	if (Buffer->Data != NULL)
 		PCB_CLEAR_PARENT(Buffer->Data);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
+	Buffer->from_outside = 0;
 	return (pcb_false);
 }
 
@@ -585,6 +589,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	ctx.copy.pcb = pcb;
 	ctx.copy.DeltaX = X - PCB_PASTEBUFFER->X;
 	ctx.copy.DeltaY = Y - PCB_PASTEBUFFER->Y;
+	ctx.copy.from_outside = PCB_PASTEBUFFER->from_outside;
 
 	/* paste all layers */
 	num_layers = PCB_PASTEBUFFER->Data->LayerN;

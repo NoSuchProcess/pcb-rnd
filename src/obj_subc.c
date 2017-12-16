@@ -895,8 +895,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	pcb_undo_add_obj_to_create(PCB_TYPE_SUBC, sc, sc, sc);
 
-#warning subc TODO: BUG: "move selected" is really a copy&paste and this will send the subc to the top side
-	if (conf_core.editor.show_solder_side) {
+	if (ctx->copy.from_outside && conf_core.editor.show_solder_side) {
 		uundo_serial_t last;
 
 		/* move-to-the-other-side is not undoable: it's part of the placement */

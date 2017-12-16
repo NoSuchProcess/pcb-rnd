@@ -35,6 +35,7 @@ struct pcb_buffer_s {								/* information about the paste buffer */
 	pcb_coord_t X, Y;										/* offset */
 	pcb_box_t BoundingBox;
 	pcb_data_t *Data;							/* data; not all members of pcb_board_t */
+	int from_outside; /* data is coming from outside of the current board (lib, loaded board) */
 	/* are used */
 };
 
