@@ -49,6 +49,7 @@ struct pcb_obj_s {
 		pcb_element_t  *element;
 		pcb_net_t      *net;
 		pcb_layer_t    *layer;
+		pcb_subc_t     *subc;
 	} data;
 
 	pcb_parenttype_t parent_type;
