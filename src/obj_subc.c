@@ -555,8 +555,14 @@ static void pcb_subc_draw_origin(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
 {
-	int n;
-printf("mirr: %d\n", use_curr_side);
+	int n, mirr;
+	pcb_coord_t w, h;
+
+	mirr = use_curr_side && conf_core.editor.show_solder_side;
+
+	w = (sc->BoundingBox.X2 - sc->BoundingBox.X1)/2;
+	h = (sc->BoundingBox.Y2 - sc->BoundingBox.Y1)/2;
+
 	/* draw per layer objects */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *ly = sc->data->Layer + n;
@@ -567,16 +573,29 @@ printf("mirr: %d\n", use_curr_side);
 		gdl_iterator_t it;
 
 		linelist_foreach(&ly->Line, &it, line)
-			pcb_gui->draw_line(pcb_crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
+			pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_CSWAP_X(line->Point1.X, w, mirr), DY + PCB_CSWAP_Y(line->Point1.Y, h, mirr), DX + PCB_CSWAP_X(line->Point2.X, w, mirr), DY + PCB_CSWAP_Y(line->Point2.Y, h, mirr));
 
-		arclist_foreach(&ly->Arc, &it, arc)
-			pcb_gui->draw_arc(pcb_crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+		arclist_foreach(&ly->Arc, &it, arc) {
+			double sa = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
+			double da = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
+			pcb_gui->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
+		}
 
 		polylist_foreach(&ly->Polygon, &it, poly)
-			XORPolygon(poly, DX, DY, 0);
+			XORPolygon_subc(poly, DX, DY, w, h, mirr);
 
-		textlist_foreach(&ly->Text, &it, text)
-			pcb_text_draw_xor(text, DX, DY);
+		textlist_foreach(&ly->Text, &it, text) {
+			if (mirr) {
+				pcb_text_t t;
+				t = *text;
+				t.X = PCB_CSWAP_X(text->X, w, mirr);
+				t.Y = PCB_CSWAP_Y(text->Y, h, mirr);
+				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, &t);
+				pcb_text_draw_xor(&t, DX, DY);
+			}
+			else
+				pcb_text_draw_xor(text, DX, DY);
+		}
 	}
 
 	/* draw global objects */
@@ -589,6 +608,8 @@ printf("mirr: %d\n", use_curr_side);
 			pcb_coord_t ox, oy;
 			ox = via->X;
 			oy = via->Y;
+			via->X = PCB_CSWAP_X(via->X, w, mirr);
+			via->Y = PCB_CSWAP_Y(via->Y, h, mirr);
 			via->X += DX;
 			via->Y += DY;
 			pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, via, pcb_true, pcb_false);
@@ -599,6 +620,8 @@ printf("mirr: %d\n", use_curr_side);
 			pcb_coord_t ox, oy;
 			ox = ps->x;
 			oy = ps->y;
+			ps->x = PCB_CSWAP_X(ps->x, w, mirr);
+			ps->y = PCB_CSWAP_Y(ps->y, h, mirr);
 			ps->x += DX;
 			ps->y += DY;
 			pcb_pstk_thindraw(pcb_crosshair.GC, ps);

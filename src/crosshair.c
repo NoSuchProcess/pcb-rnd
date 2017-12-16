@@ -122,6 +122,30 @@ void XORPolygon(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_la
 	}
 }
 
+/* ---------------------------------------------------------------------------
+ * creates a tmp polygon with coordinates converted to screen system, designed
+ * for subc paste xor-draw
+ */
+void XORPolygon_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr)
+{
+	pcb_cardinal_t i;
+	for (i = 0; i < polygon->PointN; i++) {
+		pcb_cardinal_t next = pcb_poly_contour_next_point(polygon, i);
+
+		if (next == 0) { /* last line: sometimes the implicit closing line */
+			if (i == 1) /* corner case: don't draw two lines on top of each other - with XOR it looks bad */
+				continue;
+		}
+
+		/* normal contour line */
+		pcb_gui->draw_line(pcb_crosshair.GC,
+			PCB_CSWAP_X(polygon->Points[i].X, w, mirr) + dx,
+			PCB_CSWAP_Y(polygon->Points[i].Y, h, mirr) + dy,
+			PCB_CSWAP_X(polygon->Points[next].X, w, mirr) + dx,
+			PCB_CSWAP_Y(polygon->Points[next].Y, h, mirr) + dy);
+	}
+}
+
 /*-----------------------------------------------------------
  * Draws the outline of an attached arc
  */

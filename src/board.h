@@ -131,6 +131,9 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const p
 #define	PCB_SWAP_X(x)		(PCB_SWAP_SIGN_X(x))
 #define	PCB_SWAP_Y(y)		(PCB->MaxHeight +PCB_SWAP_SIGN_Y(y))
 
+#define	PCB_CSWAP_X(x, w, cond)		((cond) ? (PCB_SWAP_SIGN_X(x)) : (x))
+#define	PCB_CSWAP_Y(y, h, cond)		((cond) ? (h+PCB_SWAP_SIGN_Y(y)) : (y))
+
 /* Conditionally allow subc parts to be reached directly in search masks */
 #define PCB_LOOSE_SUBC (PCB->loose_subc ? PCB_TYPE_SUBC_PART : 0)
 
