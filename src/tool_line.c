@@ -350,7 +350,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 		/* save both ends of line */
 		pcb_crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
 		pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point1.Y;
-		if ((type = pcb_undo(pcb_true)))
+		if ((type = pcb_undo(pcb_true)) == 0)
 			pcb_board_set_changed_flag(pcb_true);
 		/* check that the undo was of the right type */
 		if ((type & PCB_UNDO_CREATE) == 0) {

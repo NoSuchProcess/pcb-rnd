@@ -89,12 +89,12 @@ int pcb_undo(pcb_bool draw)
 
 	if (pcb_uundo.num_undo == 0) {
 		pcb_message(PCB_MSG_INFO, _("Nothing to undo - buffer is empty\n"));
-		return 0;
+		return -1;
 	}
 
 	if (pcb_uundo.serial == 0) {
 		pcb_message(PCB_MSG_ERROR, _("ERROR: Attempt to pcb_undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
-		return 0;
+		return -1;
 	}
 
 	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial > pcb_uundo.serial)) {
@@ -109,7 +109,7 @@ int pcb_undo(pcb_bool draw)
 		 * the problem and  allow the user to hit Undo again.
 		 */
 		pcb_uundo.serial = pcb_uundo.tail->serial + 1;
-		return 0;
+		return -1;
 	}
 
 	pcb_undo_lock(); /* lock undo module to prevent from loops */
