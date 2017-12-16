@@ -203,6 +203,7 @@ ha:{
 				ha:Subcircuit {
 					li:submenu {
 						ha:Layer bindings...          = { action=LayerBinding() }
+						ha:External editor...         = { li:action={ GetXY(Click on the subcircuit to edit); extedit(object) } }
 					}
 				}
 				ha:Object flags...                = { action=FlagEdit() }
