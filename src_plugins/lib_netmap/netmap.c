@@ -150,6 +150,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* etext */
 		list_epin_cb,
 		list_epad_cb,
+		NULL, /* subc */
 		NULL, /* via */
 		NULL /* pstk */
 	);
@@ -167,6 +168,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* etext */
 		NULL, /* pin */
 		NULL, /* pad */
+		NULL, /* subc */
 		list_via_cb,
 		list_pstk_cb
 	);

@@ -204,6 +204,7 @@ void pcb_propsel_map_core(htsp_t *props)
 	pcb_loop_all(PCB, &ctx,
 		NULL, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
 		NULL, map_eline_cb, map_earc_cb, map_etext_cb, map_epin_cb, map_epad_cb,
+		NULL,
 		map_via_cb, map_pstk_cb
 	);
 }
@@ -527,6 +528,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(0, "p/text/", set_etext_cb),
 		MAYBE_PROP(0, "p/pin/", set_epin_cb),
 		MAYBE_PROP(0, "p/pad/", set_epad_cb),
+		NULL, /* subc */
 		MAYBE_PROP(0, "p/via/", set_via_cb),
 		MAYBE_PROP(0, "p/padstack/", set_pstk_cb)
 	);
@@ -630,6 +632,7 @@ int pcb_propsel_del(const char *key)
 	pcb_loop_all(PCB, &st,
 		NULL, del_line_cb, del_arc_cb, del_text_cb, del_poly_cb,
 		NULL, del_eline_cb, del_earc_cb, del_etext_cb, del_epin_cb, del_epad_cb,
+		NULL, /* subc */
 		del_via_cb, del_pstk_cb
 	);
 	return st.del_cnt;
