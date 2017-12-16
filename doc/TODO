@@ -25,7 +25,6 @@
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
 - BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
-- BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 + BUG: selection doesn't work properly (introduced in r12152) [report:wojciechk8]
 + BUG: png export: photo_groups[] breaks shadow rendering of internal layers and other-sides in photo mode; rewrite the code to omit this array and do direct layergrp queries [report: keantoken]
 + BUG: inconsistency between undo/redo (related with pcb_tool_redo_act, not the undo code itself), ie.: [report:wojciechk8]
@@ -40,6 +39,8 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
+- BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
+	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
 	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
