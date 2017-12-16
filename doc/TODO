@@ -37,7 +37,6 @@
 - BUG: round rect thermal: when poly points are too close together, it goes wrong
 - BUG: property editor doesn't deal with subc
 - BUG: advanced search doesn't deal with subc
-- BUG: main.c: SIGPIPE - detect it (needed for popen)
 
 2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
@@ -224,7 +223,7 @@ FEATURES
 - menu item for export of multiple selected layout elements to discrete .fp files
 
 4. Low prio ===============================================================================
-
+- BUG: main.c: SIGPIPE - detect it (needed for popen)
 - advanced grid settings:
 	- keep two lists of preferred grid sizes, one in mil, one in mm
 	- generate the grid selection menu from those lists
