@@ -553,10 +553,10 @@ static void pcb_subc_draw_origin(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 	pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
 
-void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
+void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
 {
 	int n;
-
+printf("mirr: %d\n", use_curr_side);
 	/* draw per layer objects */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *ly = sc->data->Layer + n;
