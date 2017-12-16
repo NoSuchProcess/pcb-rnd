@@ -7,3 +7,4 @@
 	- autoroute (compare to 1.2.4; term changes)
 	- pcb_pstk_shape_hole_break(): min ring DRC rules on padstack, especially with asymmetric (non-centered) shapes
 	- test advanced search with padstacks
+	- query on subc

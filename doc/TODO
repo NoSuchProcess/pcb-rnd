@@ -35,13 +35,13 @@
 - BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
 - BUG: round rect thermal: when poly points are too close together, it goes wrong
 - BUG: property editor doesn't deal with subc
-- BUG: advanced search doesn't deal with subc
 
 2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
+- BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
 - BUGS: parametric footprint dialog [report: Alain] ; Select a parametric footprint :
 	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
 		- Igor2 can't reproduce this
