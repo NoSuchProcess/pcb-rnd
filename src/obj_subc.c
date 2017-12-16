@@ -618,15 +618,24 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_si
 		}
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
 			pcb_coord_t ox, oy;
+			int oxm, pri;
 			ox = ps->x;
 			oy = ps->y;
+			oxm = ps->xmirror;
+			pri = ps->protoi;
 			ps->x = PCB_CSWAP_X(ps->x, w, mirr);
 			ps->y = PCB_CSWAP_Y(ps->y, h, mirr);
 			ps->x += DX;
 			ps->y += DY;
+			if (mirr) {
+				ps->xmirror = !ps->xmirror;
+				ps->protoi = -1;
+			}
 			pcb_pstk_thindraw(pcb_crosshair.GC, ps);
 			ps->x = ox;
 			ps->y = oy;
+			ps->xmirror = oxm;
+			ps->protoi = pri;
 		}
 	}
 
