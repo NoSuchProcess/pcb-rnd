@@ -15,8 +15,8 @@
 		- autoroute.c:961
 		- autoroute.c:1000
 	+ subc text is not mirrored when sent to the back of the board [report: Ade]
-	- When a subc is placed on the back of the board it is upside-down [report: Ade]
-		- Reproduce: import subc to buffer while on component side; flip; xor-draw shows the original (incorrectly), but the mirrored one would be placed (correctly)
+	+ When a subc is placed on the back of the board it is upside-down [report: Ade]
+		+ Reproduce: import subc to buffer while on component side; flip; xor-draw shows the original (incorrectly), but the mirrored one would be placed (correctly)
 - BUG: gtk2 opengl ignores local grid
 ? BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
