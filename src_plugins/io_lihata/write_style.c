@@ -371,10 +371,20 @@ static lhtpers_rule_t r_ps_line[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_ps_circ[] = {"ha:ps_circ", "*", NULL};
+static const char *pat_dia[]     = {"te:dia", "*", NULL};
+static lhtpers_rule_t r_ps_circ[] = {
+	{pat_x,    &style_inline, NULL},
+	{pat_y,    &style_inline, NULL},
+	{pat_dia,  &style_inline, NULL},
+	{NULL, NULL, NULL}
+};
+
 static const char *pat_ps_shape_v4[] = {"ha:ps_shape_v4", "*", NULL};
 static const char *pat_layer_mask[]  = {"ha:layer_mask", "*", NULL};
 static lhtpers_rule_t r_ps_shape_v4[] = {
 	{pat_ps_line,          &style_struct_thermal,  r_ps_line},
+	{pat_ps_circ,          &style_struct_thermal,  r_ps_circ},
 	{pat_combin,           &style_structs, NULL},
 	{pat_layer_mask,       &style_struct, NULL},
 	{pat_clearance,        &style_newline,  NULL},
