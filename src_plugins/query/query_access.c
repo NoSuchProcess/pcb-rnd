@@ -77,6 +77,13 @@ static int list_element_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, 
 	return 0;
 }
 
+static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	if (enter)
+		APPEND(ctx, PCB_OBJ_SUBC, subc, PCB_PARENT_DATA, pcb->Data);
+	return 0;
+}
+
 static void list_eline_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_line_t *line)
 {
 	APPEND(ctx, PCB_OBJ_ELINE, line, PCB_PARENT_ELEMENT, element);
@@ -127,6 +134,7 @@ void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 		(mask & PCB_OBJ_ETEXT) ? list_etext_cb : NULL,
 		(mask & PCB_OBJ_PIN) ? list_epin_cb : NULL,
 		(mask & PCB_OBJ_PAD) ? list_epad_cb : NULL,
+		(mask & PCB_OBJ_SUBC) ? list_subc_cb : NULL,
 		(mask & PCB_OBJ_VIA) ? list_via_cb : NULL,
 		(mask & PCB_OBJ_PSTK) ? list_pstk_cb : NULL
 	);
@@ -648,6 +656,74 @@ static int field_etext(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	return field_text(obj, fld, res);
 }
 
+static int field_subc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_subc_t *p = obj->data.subc;
+	query_fields_keys_t fh1;
+	pcb_coord_t x, y;
+
+	fld2hash_req(fh1, fld, 0);
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
+	}
+
+	if (fh1 == query_fields_layer)
+		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+
+
+	switch(fh1) {
+		case query_fields_x:            pcb_subc_get_origin(p, &x, &y); PCB_QRY_RET_INT(res, x);
+		case query_fields_y:            pcb_subc_get_origin(p, &x, &y); PCB_QRY_RET_INT(res, y);
+		case query_fields_refdes:       /* alias of: */
+		case query_fields_name:         PCB_QRY_RET_STR(res, p->refdes);
+#warning subc TODO:
+/*
+		case query_fields_description:  PCB_QRY_RET_STR(res, p->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString);
+		case query_fields_value:        PCB_QRY_RET_STR(res, p->Name[PCB_ELEMNAME_IDX_VALUE].TextString);
+*/
+		default:;
+	}
+	PCB_QRY_RET_INV(res);
+}
+
+static int field_subc_from_ptr(pcb_subc_t *s, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_obj_t tmp;
+	tmp.type = PCB_OBJ_SUBC;
+	tmp.data.subc = s;
+	tmp.parent_type = PCB_PARENT_DATA;
+	tmp.parent.data = PCB->Data;
+	return field_subc(&tmp, fld, res);
+}
+
+static int field_subc_obj(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	const char *s1;
+
+	/* if parent is not a subc (or not available) evaluate to invalid */
+	if (obj->parent_type != PCB_PARENT_SUBC)
+		PCB_QRY_RET_INV(res);
+
+	/* check subfield, if there's none, return the element object */
+	fld2str_opt(s1, fld, 0);
+	if (s1 == NULL) {
+		res->type = PCBQ_VT_OBJ;
+		res->data.obj.data.subc = obj->parent.subc;
+		res->data.obj.parent_type = PCB_PARENT_DATA;
+		res->data.obj.parent.data = PCB->Data;
+		return 0;
+	}
+
+	/* return subfields of the element */
+	return field_subc_from_ptr(obj->parent.subc, fld, res);
+}
+
 static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	query_fields_keys_t fh1;
@@ -764,6 +840,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 		case PCB_OBJ_VIA:      return field_via(obj, fld, res);
 		case PCB_OBJ_PSTK:     return field_pstk(obj, fld, res);
 		case PCB_OBJ_ELEMENT:  return field_element(obj, fld, res);
+		case PCB_OBJ_SUBC:     return field_subc(obj, fld, res);
 
 		case PCB_OBJ_NET:      return field_net(obj, fld, res);
 		case PCB_OBJ_LAYER:    return field_layer(obj, fld, res);
