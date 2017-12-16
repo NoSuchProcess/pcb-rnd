@@ -6,7 +6,6 @@
 		+ catch layer change and regen the shape [report: SQ6POG]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 + BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
-- feature: property editor should deal with flags
 + BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 + BUG: label drawing (delayed_draw) happens too soon: it must not happen before we finish drawing all layers [report: jg, Ade]
 - BUG: csect can't make a layer outline
@@ -21,14 +20,9 @@
 		- Reproduce: import subc to buffer while on component side; flip; xor-draw shows the original (incorrectly), but the mirrored one would be placed (correctly)
 	+ BUG: Place a subc on the back of the board and undo, the subc is moved to the front side instead of being removed. [report: Ade]
 - BUG: gtk2 opengl ignores local grid
-- BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
-	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
-	- Lesstif HID does not have this dialog => implement it, using DAD
-	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 ? BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
-- vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
@@ -52,6 +46,12 @@
 	? [gtk2] it launches a new dialog. Cancel this dialog and try to open it again : no new dialog window. You have to select another line in the tree menu, then come back to the wanted line, to open the dialog again.
 		- Igor2 can't reproduce this
 	- [gtk3] cancel do not close the dialog(s). In fact 2 dialog windows are created, and message : GLib-CRITICAL **: g_source_remove: assertion 'tag > 0' failed : pops up.
+- BUG: GTK: "Edit->Edit attributes of->layout" dialog does not close with WM decoration [report:celem]
+	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
+	- Lesstif HID does not have this dialog => implement it, using DAD
+	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
+- vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
+- feature: property editor should deal with flags
 - property editor doesn't deal with subc
 - advanced search doesn't deal with subc
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
