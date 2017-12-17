@@ -205,9 +205,7 @@ GTK3:
 	- missing grid points: http://igor2.repo.hu/tmp/gtk3_bug2.png
 
 Eagle binary:
-	- netlist nodes are defined in
-			board/1b00->signals/0000->signal/1c00->contactref/3e00
-		- NB signal nodes can have signal subnodes, which we may need to flatten for connected nets
+	- padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
 	- need to refine naming of library (.lbr) elements in loaded .lbr files
 	- need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 
