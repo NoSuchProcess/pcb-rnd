@@ -2027,7 +2027,12 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 				next2 = q->next;
 				for (e = htss_first(&q->props); e; e = htss_next(&q->props, e)) {
 					if (strcmp(e->key, "name") == 0) {
-						egb_node_prop_set(n, "name", e->value);
+						if (e->value != NULL && e->value[0] == '-' && e->value[1] == '\0') {
+							egb_node_prop_set(n, "name", "HYPHEN");
+							pcb_message(PCB_MSG_WARNING, "Substituted invalid name %s in PCB_EKGW_SECT_ELEMENT with 'HYPHEN'\n", e->value);
+						} else {
+							egb_node_prop_set(n, "name", e->value);
+						}
 						pcb_trace("Copied name %s to PCB_EKGW_SECT_ELEMENT\n", e->value);
 					}
 					else if (strcmp(e->key, "value") == 0) {

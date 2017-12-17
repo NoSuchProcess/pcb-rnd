@@ -497,7 +497,10 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		pcb_message(PCB_MSG_WARNING, "Ignoring text on Eagle layer: %ld\n", ln);
 		return 0;
 	}
-	if (!(ln == 21 || ln== 51 || ln == 16)) {
+	if (ln == 51) {
+		ln = 21; /* we seem to trigger a segfault if we create text with ln = 51 */
+		pcb_message(PCB_MSG_WARNING, "Moved text on tDocu layer: 51 to top silk\n", ln);
+	} else if (!(ln == 21 || ln == 16 )) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring text on non top copper/silk Eagle layer: %ld\n", ln);
 		return 0;
 	}
@@ -1150,8 +1153,12 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 	net = eagle_get_attrs(st, PARENT(subtree), "name", NULL);
 
 	pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
-
-	pcb_hid_actionl("Netlist", "Add",  net, conn, NULL);
+	if (net != NULL && net[0] == '-' && net[1] == '\0') { /* pcb-rnd doesn't like it when Eagle uses '-' for GND*/
+		pcb_hid_actionl("Netlist", "Add", "GND", conn, NULL);
+		pcb_message(PCB_MSG_WARNING, "Substituted contactref net \"GND\" instead of original invalid '-'\n");
+	} else {
+		pcb_hid_actionl("Netlist", "Add",  net, conn, NULL);
+	}
 	return 0;
 }
 
