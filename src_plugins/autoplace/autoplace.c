@@ -397,12 +397,10 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		pcb_box_list_t *thisside;
-		pcb_box_list_t *otherside;
+		pcb_box_list_t *thisside, *otherside;
 		pcb_box_t *box;
 		pcb_box_t *lastbox = NULL;
-		pcb_coord_t thickness;
-		pcb_coord_t clearance;
+		pcb_coord_t thickness, clearance;
 		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element)) {
 			thisside = &solderside;
 			otherside = &componentside;
