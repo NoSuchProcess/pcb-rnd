@@ -120,11 +120,11 @@ typedef struct {
 enum ewhich { SHIFT, ROTATE, EXCHANGE };
 
 typedef struct {
-	pcb_element_t *element;
+	pcb_any_obj_t *comp;
 	enum ewhich which;
 	pcb_coord_t DX, DY;									/* for shift */
 	unsigned rotate;							/* for rotate/flip */
-	pcb_element_t *other;					/* for exchange */
+	pcb_any_obj_t *other;					/* for exchange */
 } PerturbationType;
 
 #warning cleanup TODO: remove this and use genvect
@@ -701,6 +701,24 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	return W + (delta1 + delta2 + delta3 - delta4 + delta5);
 }
 
+static pcb_bool is_smd(const pcb_any_obj_t *obj)
+{
+	if (obj->type == PCB_OBJ_ELEMENT)
+		return padlist_length(&(((pcb_element_t *)obj)->Pad)) != 0;
+	return padstacklist_length(&(((pcb_subc_t *)obj)->data->padstack)) != 0;
+}
+
+static pcb_bool on_bottom(const pcb_any_obj_t *obj)
+{
+	int onbtm = 0;
+
+	if (obj->type == PCB_OBJ_ELEMENT)
+		return PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, obj);
+
+	pcb_subc_get_side((pcb_subc_t *)obj, &onbtm);
+	return onbtm;
+}
+
 /* ---------------------------------------------------------------------------
  * Perturb:
  *  1) flip SMD from solder side to component side or vice-versa.
@@ -713,7 +731,7 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 {
 	PerturbationType pt = { 0 };
 	/* pick element to perturb */
-	pt.element = (pcb_element_t *) selected->array[pcb_rand() % vtp0_len(selected)];
+	pt.comp = (pcb_any_obj_t *) selected->array[pcb_rand() % vtp0_len(selected)];
 	/* exchange, flip/rotate or shift? */
 	switch (pcb_rand() % ((vtp0_len(selected) > 1) ? 3 : 2)) {
 	case 0:
@@ -730,17 +748,28 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 			pt.DX = ((pt.DX / grid) + SGN(pt.DX)) * grid;
 			pt.DY = ((pt.DY / grid) + SGN(pt.DY)) * grid;
 			/* limit DX/DY so we don't fall off board */
-			pt.DX = MAX(pt.DX, -pt.element->VBox.X1);
-			pt.DX = MIN(pt.DX, PCB->MaxWidth - pt.element->VBox.X2);
-			pt.DY = MAX(pt.DY, -pt.element->VBox.Y1);
-			pt.DY = MIN(pt.DY, PCB->MaxHeight - pt.element->VBox.Y2);
+			if (pt.comp->type == PCB_OBJ_ELEMENT) {
+				pcb_element_t *e = (pcb_element_t *)pt.comp;
+				pt.DX = MAX(pt.DX, -e->VBox.X1);
+				pt.DX = MIN(pt.DX, PCB->MaxWidth - e->VBox.X2);
+				pt.DY = MAX(pt.DY, -e->VBox.Y1);
+				pt.DY = MIN(pt.DY, PCB->MaxHeight - e->VBox.Y2);
+			}
+			else {
+				pcb_subc_t *s = (pcb_subc_t *)pt.comp;
+				pt.DX = MAX(pt.DX, -s->BoundingBox.X1);
+				pt.DX = MIN(pt.DX, PCB->MaxWidth - s->BoundingBox.X2);
+				pt.DY = MAX(pt.DY, -s->BoundingBox.Y1);
+				pt.DY = MIN(pt.DY, PCB->MaxHeight - s->BoundingBox.Y2);
+			}
 			/* all done but the movin' */
 			break;
 		}
 	case 1:
 		{														/* flip/rotate! */
 			/* only flip if it's an SMD component */
-			pcb_bool isSMD = padlist_length(&(pt.element->Pad)) != 0;
+			pcb_bool isSMD = is_smd(pt.comp);
+
 			pt.which = ROTATE;
 			pt.rotate = isSMD ? (pcb_rand() & 3) : (1 + (pcb_rand() % 3));
 			/* 0 - flip; 1-3, rotate. */
@@ -749,15 +778,13 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 	case 2:
 		{														/* exchange! */
 			pt.which = EXCHANGE;
-			pt.other = (pcb_element_t *)
-				selected->array[pcb_rand() % (vtp0_len(selected) - 1)];
-			if (pt.other == pt.element)
-				pt.other = (pcb_element_t *) selected->array[vtp0_len(selected) - 1];
+			pt.other = (pcb_any_obj_t *)selected->array[pcb_rand() % (vtp0_len(selected) - 1)];
+			if (pt.other == pt.comp)
+				pt.other = (pcb_any_obj_t *)selected->array[vtp0_len(selected) - 1];
 			/* don't allow exchanging a solderside-side SMD component
 			 * with a non-SMD component. */
-			if ((pinlist_length(&(pt.element->Pin)) != 0 /* non-SMD */  &&
-					 PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt.other)) || (pinlist_length(&pt.other->Pin) != 0 /* non-SMD */  &&
-																									PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt.element)))
+			if ((!is_smd(pt.comp) && on_bottom(pt.other)) ||
+			    (!is_smd(pt.other) && on_bottom(pt.comp)))
 				return createPerturbation(selected, T);
 			break;
 		}
@@ -769,10 +796,19 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 
 void doPerturb(PerturbationType * pt, pcb_bool undo)
 {
+	pcb_box_t *bb;
 	pcb_coord_t bbcx, bbcy;
+	pcb_element_t *elem = (pcb_element_t *)pt->comp;
+	pcb_subc_t *subc = (pcb_subc_t *)pt->comp;
 	/* compute center of element bounding box */
-	bbcx = (pt->element->VBox.X1 + pt->element->VBox.X2) / 2;
-	bbcy = (pt->element->VBox.Y1 + pt->element->VBox.Y2) / 2;
+
+	if (pt->comp->type == PCB_OBJ_ELEMENT)
+		bb = &elem->VBox;
+	else
+		bb = &subc->BoundingBox;
+
+	bbcx = (bb->X1 + bb->X2) / 2;
+	bbcy = (bb->Y1 + bb->Y2) / 2;
 	/* do exchange, shift or flip/rotate */
 	switch (pt->which) {
 	case SHIFT:
@@ -782,7 +818,11 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 				DX = -DX;
 				DY = -DY;
 			}
-			pcb_element_move(PCB->Data, pt->element, DX, DY);
+			
+			if (pt->comp->type == PCB_OBJ_ELEMENT)
+				pcb_element_move(PCB->Data, elem, DX, DY);
+			else
+				pcb_subc_move(subc, DX, DY, 1);
 			return;
 		}
 	case ROTATE:
@@ -791,33 +831,53 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 			if (undo)
 				b = (4 - b) & 3;
 			/* 0 - flip; 1-3, rotate. */
-			if (b)
-				pcb_element_rotate90(PCB->Data, pt->element, bbcx, bbcy, b);
+			if (b) {
+				if (pt->comp->type == PCB_OBJ_ELEMENT)
+					pcb_element_rotate90(PCB->Data, elem, bbcx, bbcy, b);
+				else
+					pcb_subc_rotate90(subc, bbcx, bbcy, b);
+			}
 			else {
-				pcb_coord_t y = pt->element->VBox.Y1;
-				pcb_element_mirror(PCB->Data, pt->element, 0);
-				/* mirroring moves the element.  move it back. */
-				pcb_element_move(PCB->Data, pt->element, 0, y - pt->element->VBox.Y1);
+				pcb_coord_t y = bb->Y1;
+
+				if (pt->comp->type == PCB_OBJ_ELEMENT) {
+					pcb_element_mirror(PCB->Data, elem, 0);
+					/* mirroring moves the element.  move it back. */
+					pcb_element_move(PCB->Data, elem, 0, y - elem->VBox.Y1);
+				}
+				else {
+					pcb_subc_change_side(&subc, 0);
+					pt->comp = (pcb_any_obj_t *)subc;
+				}
 			}
 			return;
 		}
 	case EXCHANGE:
 		{
 			/* first exchange positions */
-			pcb_coord_t x1 = pt->element->VBox.X1;
-			pcb_coord_t y1 = pt->element->VBox.Y1;
+			pcb_coord_t x1 = bb->X1;
+			pcb_coord_t y1 = bb->Y1;
 			pcb_coord_t x2 = pt->other->BoundingBox.X1;
 			pcb_coord_t y2 = pt->other->BoundingBox.Y1;
-			pcb_element_move(PCB->Data, pt->element, x2 - x1, y2 - y1);
-			pcb_element_move(PCB->Data, pt->other, x1 - x2, y1 - y2);
+
+			if (pt->comp->type == PCB_OBJ_ELEMENT)
+				pcb_element_move(PCB->Data, elem, x2 - x1, y2 - y1);
+			else
+				pcb_subc_move(subc, x2 - x1, y2 - y1, 1);
+
+			if (pt->other->type == PCB_OBJ_ELEMENT)
+				pcb_element_move(PCB->Data, (pcb_element_t *)pt->other, x1 - x2, y1 - y2);
+			else
+				pcb_subc_move((pcb_subc_t *)pt->other, x1 - x2, y1 - y2, 1);
+
 			/* then flip both elements if they are on opposite sides */
-			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt->element) != PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt->other)) {
+			if (on_bottom(pt->comp) != on_bottom(pt->other)) {
 				PerturbationType mypt;
-				mypt.element = pt->element;
+				mypt.comp = pt->comp;
 				mypt.which = ROTATE;
 				mypt.rotate = 0;				/* flip */
 				doPerturb(&mypt, undo);
-				mypt.element = pt->other;
+				mypt.comp = pt->other;
 				doPerturb(&mypt, undo);
 			}
 			/* done */
