@@ -1150,9 +1150,15 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 		return -1;
 	}
 
+	if (elem != NULL && elem[0] == '-' && elem[1] == '\0') {
+		pcb_snprintf(conn, sizeof(conn), "%s-%s", "HYPHEN", pad);
+		pcb_message(PCB_MSG_WARNING, "Substituted invalid element name '-' with 'HYPHEN'\n");
+	} else {
+		pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
+	}
+
 	net = eagle_get_attrs(st, PARENT(subtree), "name", NULL);
 
-	pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
 	if (net != NULL && net[0] == '-' && net[1] == '\0') { /* pcb-rnd doesn't like it when Eagle uses '-' for GND*/
 		pcb_hid_actionl("Netlist", "Add", "GND", conn, NULL);
 		pcb_message(PCB_MSG_WARNING, "Substituted contactref net \"GND\" instead of original invalid '-'\n");
