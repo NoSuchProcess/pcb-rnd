@@ -2,4 +2,5 @@ $class lib
 $short #compatibility helper functions
 $long a library of functions providing a simplified API compatibility layer, mainly for I/O plugins
 $state works
-default disable-all
+#default disable-all
+default buildin
