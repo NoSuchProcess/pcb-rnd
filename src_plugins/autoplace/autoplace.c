@@ -549,7 +549,11 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		vtp0_t seboxes, ceboxes;
 		struct ebox {
 			pcb_box_t box;
-			pcb_element_t *element;
+#warning subc TODO: when elements are removed, turn this into pcb_subc_t * and remove the fields below
+			pcb_any_obj_t *comp;
+			const char *refdes;
+			int rot90;
+			pcb_box_t *vbox;
 		};
 		pcb_direction_t dir[4] = { PCB_NORTH, PCB_EAST, PCB_SOUTH, PCB_WEST };
 		struct ebox **boxpp, *boxp;
@@ -569,9 +573,34 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			}
 
 			(*boxpp)->box = element->VBox;
-			(*boxpp)->element = element;
+			(*boxpp)->comp = (pcb_any_obj_t *)element;
+			(*boxpp)->refdes = element->Name[0].TextString;
+			(*boxpp)->rot90 = element->Name[0].Direction;
+			(*boxpp)->vbox = &element->VBox;
 		}
 		PCB_END_LOOP;
+		PCB_SUBC_LOOP(PCB->Data);
+		{
+			int onbtm = 0;
+			double rot = 0;
+
+			pcb_subc_get_side(subc, &onbtm);
+			boxpp = (struct ebox **) vtp0_alloc_append(onbtm ? &seboxes : &ceboxes, 1);
+			*boxpp = (struct ebox *) malloc(sizeof(**boxpp));
+			if (*boxpp == NULL) {
+				fprintf(stderr, "malloc() failed in ComputeCost\n");
+				exit(1);
+			}
+
+			pcb_subc_get_rotation(subc, &rot);
+			(*boxpp)->box = subc->BoundingBox;
+			(*boxpp)->comp = (pcb_any_obj_t *)subc;
+			(*boxpp)->refdes = subc->refdes;
+			(*boxpp)->rot90 = pcb_round(rot / 90.0);
+			(*boxpp)->vbox = &subc->BoundingBox;
+		}
+		PCB_END_LOOP;
+
 		rt_s = pcb_r_create_tree((const pcb_box_t **) seboxes.array, vtp0_len(&seboxes), 1);
 		rt_c = pcb_r_create_tree((const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes), 1);
 		vtp0_uninit(&seboxes);
@@ -586,20 +615,52 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 				if (!boxp)
 					continue;
 				factor = 1;
-				if (element->Name[0].TextString && boxp->element->Name[0].TextString && 0 == PCB_NSTRCMP(element->Name[0].TextString, boxp->element->Name[0].TextString)) {
+				if (element->Name[0].TextString && boxp->refdes && 0 == PCB_NSTRCMP(element->Name[0].TextString, boxp->refdes)) {
 					delta4 += CostParameter.matching_neighbor_bonus;
 					factor++;
 				}
-				if (element->Name[0].Direction == boxp->element->Name[0].Direction)
+				if (element->Name[0].Direction == boxp->rot90)
 					delta4 += factor * CostParameter.oriented_neighbor_bonus;
-				if (element->VBox.X1 == boxp->element->VBox.X1 ||
-						element->VBox.X1 == boxp->element->VBox.X2 ||
-						element->VBox.X2 == boxp->element->VBox.X1 ||
-						element->VBox.X2 == boxp->element->VBox.X2 ||
-						element->VBox.Y1 == boxp->element->VBox.Y1 ||
-						element->VBox.Y1 == boxp->element->VBox.Y2 ||
-						element->VBox.Y2 == boxp->element->VBox.Y1 ||
-						element->VBox.Y2 == boxp->element->VBox.Y2)
+				if (element->VBox.X1 == boxp->vbox->X1 ||
+						element->VBox.X1 == boxp->vbox->X2 ||
+						element->VBox.X2 == boxp->vbox->X1 ||
+						element->VBox.X2 == boxp->vbox->X2 ||
+						element->VBox.Y1 == boxp->vbox->Y1 ||
+						element->VBox.Y1 == boxp->vbox->Y2 ||
+						element->VBox.Y2 == boxp->vbox->Y1 ||
+						element->VBox.Y2 == boxp->vbox->Y2)
+					delta4 += factor * CostParameter.aligned_neighbor_bonus;
+			}
+			PCB_END_LOOP;
+
+			PCB_SUBC_LOOP(PCB->Data);
+			{
+				int onbtm = 0, rot90;
+				double rot = 0;
+
+				pcb_subc_get_side(subc, &onbtm);
+				pcb_subc_get_rotation(subc, &rot);
+				rot90 = pcb_round(rot / 90.0);
+
+				boxp = (struct ebox *)r_find_neighbor(onbtm ? rt_s : rt_c, &subc->BoundingBox, dir[i]);
+				/* score bounding box alignments */
+				if (!boxp)
+					continue;
+				factor = 1;
+				if (subc->refdes && boxp->refdes && 0 == PCB_NSTRCMP(subc->refdes, boxp->refdes)) {
+					delta4 += CostParameter.matching_neighbor_bonus;
+					factor++;
+				}
+				if (rot90 == boxp->rot90)
+					delta4 += factor * CostParameter.oriented_neighbor_bonus;
+				if (subc->BoundingBox.X1 == boxp->vbox->X1 ||
+						subc->BoundingBox.X1 == boxp->vbox->X2 ||
+						subc->BoundingBox.X2 == boxp->vbox->X1 ||
+						subc->BoundingBox.X2 == boxp->vbox->X2 ||
+						subc->BoundingBox.Y1 == boxp->vbox->Y1 ||
+						subc->BoundingBox.Y1 == boxp->vbox->Y2 ||
+						subc->BoundingBox.Y2 == boxp->vbox->Y1 ||
+						subc->BoundingBox.Y2 == boxp->vbox->Y2)
 					delta4 += factor * CostParameter.aligned_neighbor_bonus;
 			}
 			PCB_END_LOOP;
@@ -618,6 +679,14 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			PCB_MAKE_MIN(minY, element->VBox.Y1);
 			PCB_MAKE_MAX(maxX, element->VBox.X2);
 			PCB_MAKE_MAX(maxY, element->VBox.Y2);
+		}
+		PCB_END_LOOP;
+		PCB_SUBC_LOOP(PCB->Data);
+		{
+			PCB_MAKE_MIN(minX, subc->BoundingBox.X1);
+			PCB_MAKE_MIN(minY, subc->BoundingBox.Y1);
+			PCB_MAKE_MAX(maxX, subc->BoundingBox.X2);
+			PCB_MAKE_MAX(maxY, subc->BoundingBox.Y2);
 		}
 		PCB_END_LOOP;
 		if (minX < maxX && minY < maxY)
