@@ -46,6 +46,10 @@ typedef enum pcb_term_err_e {
 	PCB_TERM_ERR_INVALID_NAME
 } pcb_term_err_t;
 
+/* any type that can be a temrinal */
+#define PCB_TERM_OBJ_TYPES \
+	(PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_POLY | PCB_OBJ_ARC | PCB_OBJ_PSTK | PCB_OBJ_SUBC)
+
 /* Initialize a clean hash of terminals for a subcircuit */
 pcb_term_err_t pcb_term_init(htsp_t *terminals);
 
