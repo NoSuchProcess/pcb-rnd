@@ -983,6 +983,16 @@ void *pcb_subcop_rotate(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	return pcb_subc_op(data, sc, &RotateFunctions, ctx);
 }
 
+void pcb_subc_rotate90(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, int steps)
+{
+	pcb_opctx_t ctx;
+
+	ctx.rotate.center_x = cx;
+	ctx.rotate.center_y = cy;
+	ctx.rotate.number = steps;
+	pcb_subcop_rotate(&ctx, subc);
+}
+
 void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle)
 {
 	pcb_opctx_t ctx;

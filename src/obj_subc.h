@@ -66,6 +66,7 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff);
 
 void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle);
+void pcb_subc_rotate90(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, int steps);
 
 /* High level move (op wrapper; no undo) */
 void pcb_subc_move(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come);
