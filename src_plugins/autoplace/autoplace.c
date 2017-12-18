@@ -180,6 +180,26 @@ static void UpdateXY(pcb_netlist_t *Nets)
 				c->group = SLayer;			/* any layer will do */
 				pcb_obj_center(c->obj, &c->X, &c->Y);
 				break;
+			case PCB_OBJ_PSTK:
+				c->group = SLayer;  /* any layer will do */
+				c->X = ((pcb_pstk_t *) c->obj)->x;
+				c->Y = ((pcb_pstk_t *) c->obj)->y;
+				break;
+			/* terminals on layer */
+			case PCB_OBJ_LINE:
+			case PCB_OBJ_ARC:
+			case PCB_OBJ_TEXT:
+			case PCB_OBJ_POLY:
+				{
+					pcb_layer_t *layer = pcb_layer_get_real(c->obj->parent.layer);
+					if (layer != NULL)
+						c->group = layer->meta.real.grp;
+					else
+						c->group = SLayer;  /* any layer will do */
+					c->X = (c->obj->BoundingBox.X1 + c->obj->BoundingBox.X2) / 2;
+					c->Y = (c->obj->BoundingBox.Y1 + c->obj->BoundingBox.Y2) / 2;
+				}
+				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Odd connection type encountered in " "UpdateXY");
 				break;
