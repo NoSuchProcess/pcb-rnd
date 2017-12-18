@@ -1575,7 +1575,7 @@ static void st_uninit(read_state_t *st)
 	st->parser.calls->unload(&st->parser);
 }
 
-int post_process_thermals(read_state_t *st)
+static int post_process_thermals(read_state_t *st)
 {
 	/*do something in here */
 	return 0;
