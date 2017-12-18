@@ -1,4 +1,4 @@
-13508	configure	opengl -lGLU bugfix
+13523	configure	opengl -lGLU bugfix
 13386	configure	proper detection of includes for fileno() and usleep()
 13364	configure	new plugin: extedit
 13269	configure	remove free_atexit

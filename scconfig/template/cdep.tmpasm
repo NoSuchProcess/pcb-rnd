@@ -19,6 +19,7 @@ dep: FORCE $(DEPDEPS)
 	make -f Makefile.depgen PLUGDIR=$(PLUGDIR) SRC_3RD_DIR=$(SRC_3RD_DIR)
 @]
 
+append /local/dep/CFLAGS {-D_PCB_DEP_}
 gsub /local/dep/CFLAGS {-I} {-isystem }
 gsub /local/dep/CFLAGS {-isystem [.][.]} {-I ..}
 gsub /local/dep/CFLAGS {-isystem [.]} {-I .}
