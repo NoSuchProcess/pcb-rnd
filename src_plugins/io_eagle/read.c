@@ -1575,6 +1575,12 @@ static void st_uninit(read_state_t *st)
 	st->parser.calls->unload(&st->parser);
 }
 
+int post_process_thermals(pcb_plug_io_t *ctx, pcb_board_t *pcb, conf_role_t settings_dest)
+{
+	/*do something in here */
+	return 0;
+}
+
 int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	int res, old_leni;
@@ -1615,7 +1621,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	st_uninit(&st);
 
-	return 0;
+	return post_process_thermals(ctx, pcb, settings_dest);
 
 err:;
 	st_uninit(&st);
@@ -1663,6 +1669,6 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb_board_normalize(pcb);
 	st_uninit(&st);
 
-	return 0;
+	return post_process_thermals(ctx, pcb, settings_dest);
 }
 
