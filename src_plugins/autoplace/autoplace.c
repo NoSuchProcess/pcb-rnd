@@ -58,7 +58,9 @@
 #include "rotate.h"
 #include "obj_pinvia.h"
 #include "obj_rat.h"
+#include "obj_term.h"
 #include "board.h"
+#include "data_it.h"
 #include <genvector/vtp0.h>
 
 
@@ -472,6 +474,36 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			delta3 += CostParameter.out_of_bounds_penalty;
 	}
 	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		pcb_box_list_t *thisside, *otherside;
+		pcb_box_t *box, *lastbox = NULL;
+		pcb_coord_t thickness, clearance;
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+		int onbtm = 0;
+
+		pcb_subc_get_side(subc, &onbtm);
+		if (onbtm) {
+			thisside = &solderside;
+			otherside = &componentside;
+		}
+		else {
+			thisside = &componentside;
+			otherside = &solderside;
+		}
+		box = pcb_box_new(thisside);
+		/* initialize box so that it will take the dimensions of the first pin/pad */
+		box->X1 = box->Y1 = PCB_MAX_COORD;
+		box->X2 = box->Y2 = -PCB_MAX_COORD;
+		for(o = pcb_data_first(&it, subc->data, PCB_TERM_OBJ_TYPES); o != NULL; o = pcb_data_next(&it)) {
+			if (o->term == NULL)
+				continue; /* we are interested in terminals only */
+		}
+	}
+	PCB_END_LOOP;
+
 	/* compute intersection area of module areas box list */
 	delta2 = sqrt(fabs(pcb_intersect_box_box(&solderside) + pcb_intersect_box_box(&componentside))) * (CostParameter.overlap_penalty_min + (1 - (T / T0)) * CostParameter.overlap_penalty_max);
 #if 0
