@@ -23,11 +23,7 @@
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
 - BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
-+ BUG: selection doesn't work properly (introduced in r12152) [report:wojciechk8]
 + BUG: png export: photo_groups[] breaks shadow rendering of internal layers and other-sides in photo mode; rewrite the code to omit this array and do direct layergrp queries [report: keantoken]
-+ BUG: inconsistency between undo/redo (related with pcb_tool_redo_act, not the undo code itself), ie.: [report:wojciechk8]
-	+ when drawing a ractangle undo action is not allowed, but redo is
-	+ when drawing outline segments of a polygon, undo removes previous segment, but redo does nothing
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
 - BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
 - BUG: round rect thermal: when poly points are too close together, it goes wrong
