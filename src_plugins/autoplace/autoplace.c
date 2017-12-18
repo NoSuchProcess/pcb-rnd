@@ -479,12 +479,13 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	{
 		pcb_box_list_t *thisside, *otherside;
 		pcb_box_t *box, *lastbox = NULL;
-		pcb_coord_t thickness, clearance;
+		pcb_coord_t clearance;
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 		int onbtm = 0;
 
 		pcb_subc_get_side(subc, &onbtm);
+#warning subc TODO: this ignores the possibility of other-side pads; need to do this on a per object basis
 		if (onbtm) {
 			thisside = &solderside;
 			otherside = &componentside;
@@ -500,6 +501,33 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		for(o = pcb_data_first(&it, subc->data, PCB_TERM_OBJ_TYPES); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term == NULL)
 				continue; /* we are interested in terminals only */
+
+#warning subc TODO: look up clearance
+			clearance = 0;
+			EXPANDRECTXY(box,
+				o->BoundingBox.X1 - clearance, o->BoundingBox.Y1 - clearance,
+				o->BoundingBox.X2 + clearance, o->BoundingBox.Y2 + clearance);
+
+			/* add a box for each thru-hole pin to the "opposite side":
+			 * surface mount components can't sit on top of pins */
+			if ((!CostParameter.fast) && (o->type == PCB_OBJ_PSTK)) {
+				pcb_box_t box2;
+				box2.X1 = o->BoundingBox.X1 - clearance;
+				box2.Y1 = o->BoundingBox.Y1 - clearance;
+				box2.X2 = o->BoundingBox.X2 + clearance;
+				box2.Y2 = o->BoundingBox.Y2 + clearance;
+				/* speed hack! coalesce with last box if we can */
+				if (lastbox != NULL &&
+						((lastbox->X1 == box2.X1 &&
+							lastbox->X2 == box2.X2 &&
+							MIN(labs(lastbox->Y1 - box2.Y2), labs(box2.Y1 - lastbox->Y2)) < clearance) ||
+							(lastbox->Y1 == box2.Y1 && lastbox->Y2 == box2.Y2 && MIN(labs(lastbox->X1 - box2.X2), labs(box2.X1 - lastbox->X2)) < clearance))) {
+					EXPANDRECT(lastbox, box);
+					otherside->BoxN--;
+				}
+				else
+					lastbox = box;
+			}
 		}
 	}
 	PCB_END_LOOP;
