@@ -88,8 +88,8 @@
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
  ht_subc.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  error.h layer.h intersect.h rtree.h macro.h move.h rats.h netlist.h \
- route_style.h remove.h rotate.h obj_pinvia.h obj_rat.h \
- ../src_3rd/genvector/vtp0.h
+ route_style.h remove.h rotate.h obj_pinvia.h obj_rat.h obj_term.h \
+ ../src_3rd/genvector/vtp0.h data_it.h data.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h ../src_plugins/autoroute/autoroute.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -381,7 +381,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h conf_core.h obj_text_draw.h \
+ conf.h conf_core.h obj_pstk_inlines.h data.h thermal.h obj_text_draw.h \
  ../src_plugins/draw_fab/draw_fab_conf_fields.h
 ../src_plugins/draw_fontsel/draw_fontsel.o: \
  ../src_plugins/draw_fontsel/draw_fontsel.c ../config.h board.h const.h \
@@ -4870,7 +4870,8 @@
  route.h const.h buffer.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h rtree.h \
  ht_subc.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/report/drill.h macro.h obj_pinvia.h
+ ../src_plugins/report/drill.h macro.h obj_pinvia.h obj_pstk_inlines.h \
+ board.h vtroutestyle.h library.h rats_patch.h data.h thermal.h
 ../src_plugins/report/report.o: ../src_plugins/report/report.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
