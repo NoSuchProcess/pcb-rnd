@@ -425,63 +425,57 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		{
 			thickness = pin->Thickness / 2;
 			clearance = pin->Clearance * 2;
-		EXPANDRECTXY(box,
-									 pin->X - (thickness + clearance),
-									 pin->Y - (thickness + clearance), pin->X + (thickness + clearance), pin->Y + (thickness + clearance))}
+			EXPANDRECTXY(box,
+				pin->X - (thickness + clearance),
+				pin->Y - (thickness + clearance), pin->X + (thickness + clearance), pin->Y + (thickness + clearance));
+		}
 		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			thickness = pad->Thickness / 2;
 			clearance = pad->Clearance * 2;
-		EXPANDRECTXY(box,
-									 MIN(pad->Point1.X,
-												 pad->Point2.X) - (thickness +
-																						 clearance),
-									 MIN(pad->Point1.Y,
-												 pad->Point2.Y) - (thickness +
-																						 clearance),
-									 MAX(pad->Point1.X,
-												 pad->Point2.X) + (thickness + clearance), MAX(pad->Point1.Y, pad->Point2.Y) + (thickness + clearance))}
+			EXPANDRECTXY(box,
+				MIN(pad->Point1.X, pad->Point2.X) - (thickness + clearance),
+				MIN(pad->Point1.Y, pad->Point2.Y) - (thickness + clearance),
+				MAX(pad->Point1.X, pad->Point2.X) + (thickness + clearance),
+				MAX(pad->Point1.Y, pad->Point2.Y) + (thickness + clearance));
+		}
 		PCB_END_LOOP;
 		/* add a box for each pin to the "opposite side":
 		 * surface mount components can't sit on top of pins */
-		if (!CostParameter.fast)
+		if (!CostParameter.fast) {
 			PCB_PIN_LOOP(element);
-		{
-			box = pcb_box_new(otherside);
-			thickness = pin->Thickness / 2;
-			clearance = pin->Clearance * 2;
-			/* we ignore clearance here */
-			/* (otherwise pins don't fit next to each other) */
-			box->X1 = pin->X - thickness;
-			box->Y1 = pin->Y - thickness;
-			box->X2 = pin->X + thickness;
-			box->Y2 = pin->Y + thickness;
-			/* speed hack! coalesce with last box if we can */
-			if (lastbox != NULL &&
-					((lastbox->X1 == box->X1 &&
-						lastbox->X2 == box->X2 &&
-						MIN(labs(lastbox->Y1 - box->Y2),
-								labs(box->Y1 - lastbox->Y2)) <
-						clearance) || (lastbox->Y1 == box->Y1
-													 && lastbox->Y2 == box->Y2
-													 && MIN(labs(lastbox->X1 - box->X2), labs(box->X1 - lastbox->X2)) < clearance))) {
-				EXPANDRECT(lastbox, box);
-				otherside->BoxN--;
+			{
+				box = pcb_box_new(otherside);
+				thickness = pin->Thickness / 2;
+				clearance = pin->Clearance * 2;
+				/* we ignore clearance here */
+				/* (otherwise pins don't fit next to each other) */
+				box->X1 = pin->X - thickness;
+				box->Y1 = pin->Y - thickness;
+				box->X2 = pin->X + thickness;
+				box->Y2 = pin->Y + thickness;
+				/* speed hack! coalesce with last box if we can */
+				if (lastbox != NULL &&
+						((lastbox->X1 == box->X1 &&
+							lastbox->X2 == box->X2 &&
+							MIN(labs(lastbox->Y1 - box->Y2), labs(box->Y1 - lastbox->Y2)) < clearance) ||
+							(lastbox->Y1 == box->Y1 && lastbox->Y2 == box->Y2 && MIN(labs(lastbox->X1 - box->X2), labs(box->X1 - lastbox->X2)) < clearance))) {
+					EXPANDRECT(lastbox, box);
+					otherside->BoxN--;
+				}
+				else
+					lastbox = box;
 			}
-			else
-				lastbox = box;
+			PCB_END_LOOP;
 		}
-		PCB_END_LOOP;
 		/* assess out of bounds penalty */
 		if (element->VBox.X1 < 0 || element->VBox.Y1 < 0 || element->VBox.X2 > PCB->MaxWidth || element->VBox.Y2 > PCB->MaxHeight)
 			delta3 += CostParameter.out_of_bounds_penalty;
 	}
 	PCB_END_LOOP;
 	/* compute intersection area of module areas box list */
-	delta2 = sqrt(fabs(pcb_intersect_box_box(&solderside) +
-										 pcb_intersect_box_box(&componentside))) *
-		(CostParameter.overlap_penalty_min + (1 - (T / T0)) * CostParameter.overlap_penalty_max);
+	delta2 = sqrt(fabs(pcb_intersect_box_box(&solderside) + pcb_intersect_box_box(&componentside))) * (CostParameter.overlap_penalty_min + (1 - (T / T0)) * CostParameter.overlap_penalty_max);
 #if 0
 	printf("Module Overlap Area (solder): %f\n", pcb_intersect_box_box(&solderside));
 	printf("Module Overlap Area (component): %f\n", pcb_intersect_box_box(&componentside));
@@ -526,32 +520,32 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		vtp0_uninit(&ceboxes);
 		/* now, for each element, find its neighbor on all four sides */
 		delta4 = 0;
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < 4; i++) {
 			PCB_ELEMENT_LOOP(PCB->Data);
-		{
-			boxp = (struct ebox *)
-				r_find_neighbor(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? rt_s : rt_c, &element->VBox, dir[i]);
-			/* score bounding box alignments */
-			if (!boxp)
-				continue;
-			factor = 1;
-			if (element->Name[0].TextString &&
-					boxp->element->Name[0].TextString && 0 == PCB_NSTRCMP(element->Name[0].TextString, boxp->element->Name[0].TextString)) {
-				delta4 += CostParameter.matching_neighbor_bonus;
-				factor++;
+			{
+				boxp = (struct ebox *)r_find_neighbor(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? rt_s : rt_c, &element->VBox, dir[i]);
+				/* score bounding box alignments */
+				if (!boxp)
+					continue;
+				factor = 1;
+				if (element->Name[0].TextString && boxp->element->Name[0].TextString && 0 == PCB_NSTRCMP(element->Name[0].TextString, boxp->element->Name[0].TextString)) {
+					delta4 += CostParameter.matching_neighbor_bonus;
+					factor++;
+				}
+				if (element->Name[0].Direction == boxp->element->Name[0].Direction)
+					delta4 += factor * CostParameter.oriented_neighbor_bonus;
+				if (element->VBox.X1 == boxp->element->VBox.X1 ||
+						element->VBox.X1 == boxp->element->VBox.X2 ||
+						element->VBox.X2 == boxp->element->VBox.X1 ||
+						element->VBox.X2 == boxp->element->VBox.X2 ||
+						element->VBox.Y1 == boxp->element->VBox.Y1 ||
+						element->VBox.Y1 == boxp->element->VBox.Y2 ||
+						element->VBox.Y2 == boxp->element->VBox.Y1 ||
+						element->VBox.Y2 == boxp->element->VBox.Y2)
+					delta4 += factor * CostParameter.aligned_neighbor_bonus;
 			}
-			if (element->Name[0].Direction == boxp->element->Name[0].Direction)
-				delta4 += factor * CostParameter.oriented_neighbor_bonus;
-			if (element->VBox.X1 == boxp->element->VBox.X1 ||
-					element->VBox.X1 == boxp->element->VBox.X2 ||
-					element->VBox.X2 == boxp->element->VBox.X1 ||
-					element->VBox.X2 == boxp->element->VBox.X2 ||
-					element->VBox.Y1 == boxp->element->VBox.Y1 ||
-					element->VBox.Y1 == boxp->element->VBox.Y2 ||
-					element->VBox.Y2 == boxp->element->VBox.Y1 || element->VBox.Y2 == boxp->element->VBox.Y2)
-				delta4 += factor * CostParameter.aligned_neighbor_bonus;
+			PCB_END_LOOP;
 		}
-		PCB_END_LOOP;
 		/* free k-d tree memory */
 		pcb_r_destroy_tree(&rt_s);
 		pcb_r_destroy_tree(&rt_c);
@@ -574,7 +568,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	if (T == 5) {
 		T = W + delta1 + delta2 + delta3 - delta4 + delta5;
 		printf("cost components are %.3f %.3f %.3f %.3f %.3f %.3f\n",
-					 W / T, delta1 / T, delta2 / T, delta3 / T, -delta4 / T, delta5 / T);
+			W / T, delta1 / T, delta2 / T, delta3 / T, -delta4 / T, delta5 / T);
 	}
 	/* done! */
 	return W + (delta1 + delta2 + delta3 - delta4 + delta5);
