@@ -10,8 +10,8 @@
 - BUG: csect can't make a layer outline
 + BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
 - BUG: subc/term:
-	- term netlist connectivity r10843:
-		- autoplace.c:167
+	- term netlist connectivity (r10843):
+		+ autoplace.c - needs intensive testing (including per perturbation operation tests)
 		- autoroute.c:961
 		- autoroute.c:1000
 	+ When a subc is placed on the back of the board it is upside-down [report: Ade]
