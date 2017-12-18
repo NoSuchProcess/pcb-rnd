@@ -226,8 +226,10 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 static pcb_box_t btn_addgrp, btn_delgrp, btn_addlayer, btn_dellayer;
 static pcb_box_t layer_crd[PCB_MAX_LAYER];
 static pcb_box_t group_crd[PCB_MAX_LAYERGRP];
+static pcb_box_t outline_crd;
 static char layer_valid[PCB_MAX_LAYER];
 static char group_valid[PCB_MAX_LAYERGRP];
+static char outline_valid;
 
 static void reg_layer_coords(pcb_layer_id_t lid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
@@ -249,10 +251,20 @@ static void reg_group_coords(pcb_layergrp_id_t gid, pcb_coord_t y1, pcb_coord_t 
 	group_valid[gid] = 1;
 }
 
+static void reg_outline_coords(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	outline_crd.X1 = x1;
+	outline_crd.Y1 = y1;
+	outline_crd.X2 = x2;
+	outline_crd.Y2 = y2;
+	outline_valid = 1;
+}
+
 static void reset_layer_coords(void)
 {
 	memset(layer_valid, 0, sizeof(layer_valid));
 	memset(group_valid, 0, sizeof(group_valid));
+	outline_valid = 0;
 }
 
 static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
@@ -306,6 +318,7 @@ static pcb_hid_gc_t csect_gc;
 static pcb_coord_t ox, oy, cx, cy;
 static int drag_addgrp, drag_delgrp, drag_addlayer, drag_dellayer;
 static pcb_layergrp_id_t gactive = -1;
+static pcb_layergrp_id_t outline_gactive = -1;
 static pcb_layer_id_t lactive = -1;
 int lactive_idx = -1;
 
@@ -339,6 +352,17 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 	}
 	else
 		gactive = -1;
+}
+
+static void mark_outline_grp(pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid)
+{
+	if (outline_valid &&
+			(outline_crd.X1 <= x) && (outline_crd.Y1 <= y) &&
+			(outline_crd.X2 >= x) && (outline_crd.Y2 >= y)) {
+		outline_gactive = gid;
+	}
+	else
+		outline_gactive = -1;
 }
 
 static void mark_layer(pcb_coord_t x, pcb_coord_t y)
@@ -389,8 +413,8 @@ static void draw_hover_label(const char *str)
 /* Draw the cross-section layer */
 static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_layergrp_id_t gid;
-	int ystart = 10, x, y, last_copper_step = 5, has_outline = 0;
+	pcb_layergrp_id_t gid, outline_gid = -1;
+	int ystart = 10, x, y, last_copper_step = 5;
 
 	reset_layer_coords();
 	csect_gc = gc;
@@ -442,7 +466,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			stepf = 3;
 		}
 		else if (g->type & PCB_LYT_OUTLINE) {
-			has_outline = 1;
+			outline_gid = gid;
 			continue;
 		}
 		else
@@ -490,13 +514,30 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	}
 
 	/* draw global/special layers */
-	if (has_outline) {
-		pcb_gui->set_color(gc, COLOR_OUTLINE);
-		dline(0, ystart, 0, y+10, 1);
-		dtext_bg(gc, 1, y+7, 200, 0, "outline", COLOR_BG, COLOR_ANNOT);
+	y+=7;
+	if (outline_gid >= 0) {
+		pcb_layergrp_t *g = PCB->LayerGroups.grp + outline_gid;
+		pcb_text_t *t;
+		if (g->len > 0) {
+			pcb_layer_t *l = &PCB->Data->Layer[g->lid[0]];
+			pcb_gui->set_color(gc, l->meta.real.color);
+			t = dtext_bg(gc, 1, y, 200, 0, l->name, COLOR_BG, l->meta.real.color);
+			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
+			dtext_bg(gc, 1, y, 200, 0, l->name, COLOR_BG, l->meta.real.color);
+			reg_layer_coords(g->lid[0], t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));
+		}
+		else {
+			pcb_gui->set_color(gc, COLOR_OUTLINE);
+			t = dtext_bg(gc, 1, y, 200, 0, "<outline>", COLOR_BG, COLOR_OUTLINE);
+			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
+			dtext_bg(gc, 1, y, 200, 0, "<outline>", COLOR_BG, COLOR_OUTLINE);
+		}
+		dline(0, ystart, 0, y+4, 1);
+		reg_outline_coords(t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2, PCB_MM_TO_COORD(y+4));
 	}
 
-	y+=7;
 	x=20;
 	x = 2 + create_button(gc, x, y, "Add copper group", &btn_addgrp);
 	x = 2 + create_button(gc, x, y, "Del copper group", &btn_delgrp);
@@ -520,6 +561,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 		}
 		if (drag_addlayer) {
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK, MARK_GRP_FRAME);
+			mark_outline_grp(cx, cy, outline_gid);
 			draw_hover_label("ADD LAYER");
 		}
 		if (drag_dellayer) {
@@ -530,6 +572,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 			draw_hover_label(l->name);
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK, MARK_GRP_FRAME);
+			mark_outline_grp(cx, cy, outline_gid);
 			mark_layer_order(cx);
 		}
 		else if (drag_gid >= 0) {
@@ -689,6 +732,10 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					pcb_layer_create(PCB, gactive, "New Layer");
 					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
+				else if (outline_gactive >= 0 && PCB->LayerGroups.grp[outline_gactive].len == 0) {
+					pcb_layer_create(PCB, outline_gactive, "outline");
+					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+				}
 				drag_addlayer = 0;
 				gactive = -1;
 				res = 1;
@@ -736,6 +783,11 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 						}
 						pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 					}
+				}
+				else if (outline_gactive >= 0 && PCB->LayerGroups.grp[outline_gactive].len == 0) {
+					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
+					pcb_layer_move_to_group(PCB, drag_lid, outline_gactive);
+					pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->name, outline_gactive);
 				}
 				else
 					pcb_message(PCB_MSG_ERROR, "Can not move layer into that layer group\n");
