@@ -1575,7 +1575,7 @@ static void st_uninit(read_state_t *st)
 	st->parser.calls->unload(&st->parser);
 }
 
-int post_process_thermals(pcb_plug_io_t *ctx, pcb_board_t *pcb, conf_role_t settings_dest)
+int post_process_thermals(read_state_t *st)
 {
 	/*do something in here */
 	return 0;
@@ -1583,7 +1583,7 @@ int post_process_thermals(pcb_plug_io_t *ctx, pcb_board_t *pcb, conf_role_t sett
 
 int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
-	int res, old_leni;
+	int pp_res, res, old_leni;
 	read_state_t st;
 
 	static const dispatch_t disp[] = { /* possible children of root */
@@ -1619,9 +1619,9 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb_create_being_lenient = old_leni;
 	pcb_board_normalize(pcb);
 
+	pp_res = post_process_thermals(&st);
 	st_uninit(&st);
-
-	return post_process_thermals(ctx, pcb, settings_dest);
+	return pp_res;
 
 err:;
 	st_uninit(&st);
@@ -1631,7 +1631,7 @@ err:;
 
 int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
-	int res, old_leni;
+	int pp_res, res, old_leni;
 	read_state_t st;
 
 	static const dispatch_t disp_1[] = { /* possible children of root */
@@ -1667,8 +1667,9 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
 	pcb_create_being_lenient = old_leni;
 	pcb_board_normalize(pcb);
-	st_uninit(&st);
 
-	return post_process_thermals(ctx, pcb, settings_dest);
+	pp_res = post_process_thermals(&st);
+	st_uninit(&st);
+	return pp_res;
 }
 
