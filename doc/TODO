@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 - BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
-+ BUG: gtk2 opengl ignores local grid
 + parametric footprint gtk attribute box for editing: also mention the default value in the tooltip [report: agaran]
 + BUG: inconsistencies in UI/terminology: report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
