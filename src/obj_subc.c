@@ -556,12 +556,16 @@ static void pcb_subc_draw_origin(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
 void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
 {
 	int n, mirr;
-	pcb_coord_t w, h;
+	pcb_coord_t w = 0, h = 0;
 
 	mirr = use_curr_side && conf_core.editor.show_solder_side;
 
-	w = (sc->BoundingBox.X2 - sc->BoundingBox.X1)/2;
-	h = (sc->BoundingBox.Y2 - sc->BoundingBox.Y1)/2;
+	/* mirror center */
+	if (mirr) {
+		pcb_subc_get_origin(sc, &w, &h);
+		w *= 2;
+		h *= 2;
+	}
 
 	/* draw per layer objects */
 	for(n = 0; n < sc->data->LayerN; n++) {
