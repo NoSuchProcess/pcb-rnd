@@ -181,4 +181,6 @@ typedef struct {
 } pcb_find_io_t;
 int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int is_wr, const char *fmt);
 
+void pcb_io_uninit(void);
+
 #endif

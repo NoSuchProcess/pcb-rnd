@@ -1005,3 +1005,9 @@ void pcb_io_list_free(pcb_io_formats_t *out)
 		}
 	}
 }
+
+void pcb_io_uninit(void)
+{
+	if (conf_core.rc.path.design != NULL)
+		free((char *)(*((CFT_STRING *)(&conf_core.rc.path.design))));
+}
