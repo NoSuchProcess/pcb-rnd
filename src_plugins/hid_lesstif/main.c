@@ -3354,7 +3354,7 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId * id)
 
 pcb_hidval_t
 lesstif_watch_file(int fd, unsigned int condition,
-									 void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+									 pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
 	WatchStruct *watch = (WatchStruct *) malloc(sizeof(WatchStruct));
 	pcb_hidval_t ret;
