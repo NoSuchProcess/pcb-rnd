@@ -293,7 +293,7 @@ void pcb_data_free(pcb_data_t * data)
 	}
 
 	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER; layer++, i++)
-		free(layer->name);
+		free((char *)layer->name);
 
 	/* clear struct */
 	memset(data, 0, sizeof(pcb_data_t));
