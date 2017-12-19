@@ -412,10 +412,11 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 	pcb_polyarea_t *ptmp, *p;
 	double fact = 0.5, fact_ortho=0.75;
 	pcb_coord_t cx, cy;
-	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len;
+	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, cl2;
 	int go, first = 1;
 
 	clr -= 2;
+	cl2 = (double)clr * (double)clr;
 
 	/* iterate over the vectors of the contour */
 	for(go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy)) {
@@ -425,6 +426,10 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 			px = cx; py = cy;
 			first = 0;
 		}
+
+		/* skip points too dense */
+		if (pcb_distance2(x, y, px, py) < cl2)
+			continue;
 
 		dx = x - px;
 		dy = y - py;
@@ -479,8 +484,10 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 {
 	pcb_polyarea_t *ptmp, *p;
 	pcb_coord_t cx, cy, x2c, y2c;
-	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2;
+	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2, cl2;
 	int go, first = 1;
+
+	cl2 = (double)clr * (double)clr;
 
 	/* iterate over the vectors of the contour */
 	for(go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy)) {
@@ -492,6 +499,10 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 		}
 
 		if ((x == px) && (y == py))
+			continue;
+
+		/* skip points too dense */
+		if (pcb_distance2(x, y, px, py) < cl2)
 			continue;
 
 		dx = x - px;
