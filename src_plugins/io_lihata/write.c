@@ -411,6 +411,9 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 
 		row = tbl->data.table.rows;
 		lht_tree_table_ins_row(tbl, row);
+
+		lht_dom_node_free(tbl->data.table.r[row][0]);
+		lht_dom_node_free(tbl->data.table.r[row][1]);
 		tbl->data.table.r[row][0] = build_textf(NULL, CFMT, poly->Points[n].X);
 		tbl->data.table.r[row][1] = build_textf(NULL, CFMT, poly->Points[n].Y);
 	}
