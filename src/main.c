@@ -270,6 +270,7 @@ void pcb_main_uninit(void)
 	free(hid_argv_orig);
 	conf_uninit();
 	pcb_io_uninit();
+	pcb_plugin_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)

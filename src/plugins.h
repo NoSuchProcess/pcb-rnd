@@ -30,6 +30,7 @@ extern pup_context_t pcb_pup;
 extern char **pcb_pup_paths;
 
 void pcb_plugin_add_dir(const char *dir);
+void pcb_plugin_uninit(void);
 
 /* Hook based plugin generics; plugins that implement a common API should use
    HOOK_REGISTER with an api struct. The core should run the plugins using

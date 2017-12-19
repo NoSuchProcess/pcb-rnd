@@ -45,6 +45,16 @@ void pcb_plugin_add_dir(const char *dir)
 	pcb_pup_paths[paths_used] = NULL;
 }
 
+void pcb_plugin_uninit(void)
+{
+	int n;
+	for(n = 0; n < paths_used; n++)
+		free(pcb_pup_paths[n]);
+	free(pcb_pup_paths);
+	pcb_pup_paths = NULL;
+}
+
+
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 
