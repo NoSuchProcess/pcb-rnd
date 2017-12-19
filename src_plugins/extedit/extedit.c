@@ -243,6 +243,8 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				fclose(f);
 			}
 			break;
+		case EEF_max:
+			break;
 	}
 
 	/* invoke external program */
@@ -266,6 +268,8 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				pcb_remove_object(type, ptr1, ptr2, ptr3);
 				ret = 0;
 			}
+		case EEF_max:
+			break;
 	}
 	if (pcb_gui != NULL)
 		pcb_gui->invalidate_all();
