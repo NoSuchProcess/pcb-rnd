@@ -244,6 +244,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	    yyin = pcb_fopen(tmps, "r");
 	    if (!yyin)
 	      {
+		free (tmps);
 		return(1);
 	      }
             free (tmps);

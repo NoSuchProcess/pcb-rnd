@@ -2385,6 +2385,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	    pcb_in = pcb_fopen(tmps, "r");
 	    if (!pcb_in)
 	      {
+		free (tmps);
 		return(1);
 	      }
             free (tmps);
