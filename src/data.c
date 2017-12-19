@@ -244,7 +244,6 @@ void pcb_data_free(pcb_data_t * data)
 			free(text->TextString);
 		}
 		PCB_END_LOOP;
-		free((char*)layer->name);
 		PCB_LINE_LOOP(layer);
 		{
 			if (line->Number)
@@ -292,6 +291,9 @@ void pcb_data_free(pcb_data_t * data)
 		if (data->rat_tree)
 			pcb_r_destroy_tree(&data->rat_tree);
 	}
+
+	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER; layer++, i++)
+		free(layer->name);
 
 	/* clear struct */
 	memset(data, 0, sizeof(pcb_data_t));
