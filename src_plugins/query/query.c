@@ -226,6 +226,14 @@ void pcb_qry_iter_init(pcb_query_iter_t *it)
 /******** functions ********/
 static htsp_t *qfnc = NULL;
 
+static void pcb_qry_fnc_destroy(void)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(qfnc); e != NULL; e = htsp_next(qfnc, e))
+		free(e->key);
+	htsp_free(qfnc);
+	qfnc = NULL;
+}
 
 int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc)
 {
@@ -283,6 +291,7 @@ int pplg_check_ver_query(int ver_needed) { return 0; }
 void pplg_uninit_query(void)
 {
 	pcb_hid_remove_actions_by_cookie(query_cookie);
+	pcb_qry_fnc_destroy();
 }
 
 void pcb_qry_basic_fnc_init(void);
