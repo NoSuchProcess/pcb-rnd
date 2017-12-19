@@ -59,8 +59,9 @@ static lht_node_t *build_data(pcb_data_t *data);
 
 #define lht_dom_list_append_safe(lst, item) \
 do { \
-	if (item != NULL) \
-		lht_dom_list_append(lst, item); \
+	lht_node_t *__append_safe__ = item; \
+	if (__append_safe__ != NULL) \
+		lht_dom_list_append(lst, __append_safe__); \
 } while(0)
 
 /* An invalid node will kill any existing node on an overwrite-save-merge */
