@@ -11,8 +11,6 @@
 		+ autoplace.c - needs intensive testing (including per perturbation operation tests)
 		- autoroute.c:961
 		- autoroute.c:1000
-	+ When a subc is placed on the back of the board it is upside-down [report: Ade]
-		+ Reproduce: import subc to buffer while on component side; flip; xor-draw shows the original (incorrectly), but the mirrored one would be placed (correctly)
 - BUG: gtk2 opengl ignores local grid
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
