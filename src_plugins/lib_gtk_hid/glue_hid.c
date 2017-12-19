@@ -315,7 +315,7 @@ pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long
 }
 
 static pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
-								void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {
 	return pcb_gtk_watch_file(&ghidgui->common, fd, condition, func, user_data);
