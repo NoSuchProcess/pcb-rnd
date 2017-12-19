@@ -184,7 +184,7 @@ static const char *mask_colour_names[] = {
  */
 static const color_struct mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
-	{0x3CA03CFF, 60, 160, 60, 255},
+	{0x3CA03CFF, 45, 130, 45, 255},
 #define MASK_COLOUR_RED 1
 	{0x8C1919FF, 140, 25, 25, 255},
 #define MASK_COLOUR_BLUE 2
@@ -678,17 +678,17 @@ static void rgb(color_struct * dest, int r, int g, int b)
 }
 
 static int smshadows[3][3] = {
-	{1, 20, 1},
-	{10, 0, -10},
-	{-1, -20, -1},
+	{1, 0, -1},
+	{0, 0, -1},
+	{-1, -1, -1},
 };
 
 static int shadows[5][5] = {
-	{1, 1, 1, 1, -1},
-	{1, 1, 1, -1, -1},
-	{1, 1, 0, -1, -1},
-	{1, -1, -1, -1, -1},
-	{-1, -1, -1, -1, -1},
+	{1, 1, 0, 0, -1},
+	{1, 1, 1, -1, 0},
+	{0, 1, 0, -1, 0},
+	{0, -1, -1, -1, 0},
+	{-1, 0, 0, 0, -1},
 };
 
 /* black and white are 0 and 1 */
