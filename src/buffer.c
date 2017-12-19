@@ -99,7 +99,7 @@ int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 	return -1;
 }
 
-void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
+static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_bool bind)
 {
 	if (Buffer && Buffer->Data) {
 		void *old_parent = Buffer->Data->parent.any;
@@ -109,10 +109,15 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 
 		Buffer->Data->parent.any = old_parent;
 		Buffer->Data->parent_type = old_pt;
-		if (pcb != NULL)
+		if ((pcb != NULL) && (bind))
 			pcb_data_bind_board_layers(pcb, Buffer->Data, 0);
 	}
 	Buffer->from_outside = 0;
+}
+
+void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
+{
+	pcb_buffer_clear_(pcb, Buffer, pcb_true);
 }
 
 /* add or move selected */
@@ -415,7 +420,7 @@ void pcb_uninit_buffers(pcb_board_t *pcb)
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++) {
-		pcb_buffer_clear(pcb, pcb_buffers+i);
+		pcb_buffer_clear_(pcb, pcb_buffers+i, pcb_false);
 		free(pcb_buffers[i].Data);
 	}
 }
