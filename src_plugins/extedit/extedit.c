@@ -82,7 +82,7 @@ typedef struct {
 	pcb_hidval_t wid;
 } extedit_wait_t;
 
-void extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data)
+pcb_bool extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data)
 {
 	char tmp[128];
 	int res;
@@ -90,13 +90,15 @@ void extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hi
 
 	/* excess callbacks */
 	if (!ctx->stay)
-		return;
+		return pcb_true;
 
 	res = fread(tmp, 1, sizeof(tmp), ctx->fc);
 	if (res <= 0) {
 		pcb_gui->unwatch_file(ctx->wid);
 		ctx->stay = 0;
+		return pcb_false;
 	}
+	return pcb_true;
 }
 
 /* Invoke the child process, display a "progress bar" or some other indication

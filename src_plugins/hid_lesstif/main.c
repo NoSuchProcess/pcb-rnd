@@ -3308,7 +3308,7 @@ static void lesstif_stop_timer(pcb_hidval_t hv)
 
 
 typedef struct {
-	void (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
+	pcb_bool (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
 	pcb_hidval_t user_data;
 	int fd;
 	XtInputId id;
@@ -3340,8 +3340,8 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId * id)
 		pcb_condition |= PCB_WATCH_HANGUP;
 
 	x.ptr = (void *) watch;
-	watch->func(x, watch->fd, pcb_condition, watch->user_data);
-
+	if (!watch->func(x, watch->fd, pcb_condition, watch->user_data))
+		lesstif_unwatch_file(x);
 	return;
 }
 

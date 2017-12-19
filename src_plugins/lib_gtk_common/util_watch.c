@@ -27,7 +27,7 @@
 #include "conf_core.h"
 
 typedef struct {
-	void (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
+	pcb_bool (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
 	pcb_hidval_t user_data;
 	int fd;
 	GIOChannel *channel;
@@ -42,6 +42,7 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 	unsigned int pcb_condition = 0;
 	pcb_hidval_t x;
 	GuiWatch *watch = (GuiWatch *) data;
+	pcb_bool res;
 
 	if (condition & G_IO_IN)
 		pcb_condition |= PCB_WATCH_READABLE;
@@ -53,11 +54,11 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 		pcb_condition |= PCB_WATCH_HANGUP;
 
 	x.ptr = (void *) watch;
-	watch->func(x, watch->fd, pcb_condition, watch->user_data);
+	res = watch->func(x, watch->fd, pcb_condition, watch->user_data);
 
 	watch->com->mode_cursor_main(-1);
 
-	return TRUE;									/* Leave watch on */
+	return res;
 }
 
 pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_common_t *com, int fd, unsigned int condition,

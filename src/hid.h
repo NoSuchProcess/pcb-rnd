@@ -355,11 +355,13 @@ struct pcb_hid_s {
 	/* Causes func_ to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
 	   hangup, and errors. user_data_ can be anything, it's just passed
-	   to func. */
+	   to func. If the watch function returns pcb_true, the watch is kept, else
+	   it is removed. */
 	  pcb_hidval_t(*watch_file) (int fd_, unsigned int condition_,
-												 void (*func_) (pcb_hidval_t watch_, int fd_, unsigned int condition_, pcb_hidval_t user_data_),
+												 pcb_bool (*func_) (pcb_hidval_t watch_, int fd_, unsigned int condition_, pcb_hidval_t user_data_),
 												 pcb_hidval_t user_data);
-	/* Use this to stop a file watch. */
+
+	/* Use this to stop a file watch; must not be called from within a GUI callback! */
 	void (*unwatch_file) (pcb_hidval_t watch_);
 
 	/* Causes func_ to be called in the mainloop prior to blocking */
