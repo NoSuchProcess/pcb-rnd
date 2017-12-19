@@ -102,27 +102,29 @@ static void plug_io_err(int res, const char *what, const char *filename)
 	}
 }
 
+static char *last_design_dir = NULL;
 void pcb_set_design_dir(const char *fn)
 {
-	char *end, *rlp = NULL;
+	char *end;
+
+	free(last_design_dir);
+	last_design_dir = NULL;
 
 	if (fn != NULL)
-		rlp = pcb_lrealpath(fn);
+		last_design_dir = pcb_lrealpath(fn);
 
-	if (conf_core.rc.path.design != NULL)
-		free((char *)(*((CFT_STRING *)(&conf_core.rc.path.design))));
-
-	if (rlp == NULL) {
-		conf_force_set_str(conf_core.rc.path.design, pcb_strdup("<invalid>"));
+	if (last_design_dir == NULL) {
+		last_design_dir = pcb_strdup("<invalid>");
+		conf_force_set_str(conf_core.rc.path.design, last_design_dir);
 		pcb_conf_ro("rc/path/design");
 		return;
 	}
 
-	end = strrchr(rlp, PCB_DIR_SEPARATOR_C);
+	end = strrchr(last_design_dir, PCB_DIR_SEPARATOR_C);
 	if (end != NULL)
 		*end = '\0';
 
-	conf_force_set_str(conf_core.rc.path.design, rlp);
+	conf_force_set_str(conf_core.rc.path.design, last_design_dir);
 	pcb_conf_ro("rc/path/design");
 }
 
@@ -1009,6 +1011,6 @@ void pcb_io_list_free(pcb_io_formats_t *out)
 
 void pcb_io_uninit(void)
 {
-	if (conf_core.rc.path.design != NULL)
-		free((char *)(*((CFT_STRING *)(&conf_core.rc.path.design))));
+	free(last_design_dir);
+	last_design_dir = NULL;
 }
