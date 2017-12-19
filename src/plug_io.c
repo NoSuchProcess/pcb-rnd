@@ -495,6 +495,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		return (0);
 	}
 
+	free(new_filename);
 	PCB = oldPCB;
 	if (PCB == NULL) {
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
