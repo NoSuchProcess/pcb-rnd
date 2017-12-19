@@ -1680,7 +1680,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int res;
-	char *errmsg, *realfn;
+	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
 	realfn = pcb_fopen_check(Filename, "r");
@@ -1690,6 +1690,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 
 	if (doc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
+		free(errmsg);
 		return -1;
 	}
 
@@ -1716,6 +1717,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	}
 
 	lht_dom_uninit(doc);
+	free(errmsg);
 	return res;
 }
 
@@ -1807,7 +1809,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
 	int res;
-	char *errmsg;
+	char *errmsg = NULL;
 	lht_doc_t *doc = NULL;
 	pcb_fp_fopen_ctx_t st;
 	FILE *f;
@@ -1823,12 +1825,15 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 	if (doc == NULL) {
 		if (!pcb_io_err_inhibit)
 			pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", name, errmsg);
+		free(errmsg);
 		return -1;
 	}
 
 	if ((doc->root->type != LHT_LIST) || (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20))) {
 		if (!pcb_io_err_inhibit)
 			pcb_message(PCB_MSG_ERROR, "Not a subcircuit lihata.\n");
+		free(errmsg);
+		lht_dom_uninit(doc);
 		return -1;
 	}
 
@@ -1836,6 +1841,8 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 	if (rdver < 3) {
 		if (!pcb_io_err_inhibit)
 			pcb_message(PCB_MSG_ERROR, "io_lihata: invalid subc file version: %s (expected 3 or higher)\n", doc->root->name+20);
+		free(errmsg);
+		lht_dom_uninit(doc);
 		return -1;
 	}
 
@@ -1844,6 +1851,7 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 		pcb_data_clip_polys(sc->data);
 
 	lht_dom_uninit(doc);
+	free(errmsg);
 	return res;
 }
 
