@@ -96,6 +96,8 @@ void pcb_fp_uninit()
 		htsp_free(fp_tags);
 		fp_tags = NULL;
 	}
+	free(pcb_library.name);
+	pcb_library.name = NULL;
 }
 
 const char *pcb_fp_tagname(const void *tagid)
