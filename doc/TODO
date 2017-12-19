@@ -5,7 +5,6 @@
 + BUG: inconsistencies in UI/terminology: report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
 + BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
-+ BUG: csect can't make a layer outline
 + BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
 - BUG: subc/term:
 	- term netlist connectivity (r10843):
