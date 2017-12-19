@@ -48,11 +48,20 @@ void pcb_hid_init()
 
 	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
 	if (conf_core.rc.path.home != NULL) {
-		pcb_plugin_add_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-		pcb_plugin_add_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL));
+		tmp = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+		pcb_plugin_add_dir(tmp);
+		free(tmp);
+
+		tmp = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL);
+		pcb_plugin_add_dir(tmp);
+		free(tmp);
 	}
-	pcb_plugin_add_dir(pcb_concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-	pcb_plugin_add_dir(pcb_concat("plugins", NULL));
+
+	tmp = pcb_concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	pcb_plugin_add_dir(tmp);
+	free(tmp);
+
+	pcb_plugin_add_dir("plugins");
 }
 
 void pcb_hid_uninit(void)
