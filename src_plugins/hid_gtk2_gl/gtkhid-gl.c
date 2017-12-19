@@ -35,6 +35,8 @@ static pcb_hid_gc_t current_gc = NULL;
 */
 #define USE_GC(gc) if (!use_gc(gc)) return
 
+static pcb_coord_t grid_local_x = 0, grid_local_y = 0, grid_local_radius = 0;
+
 /*static int cur_mask = -1;*/
 
 typedef struct render_priv_s {
@@ -237,17 +239,19 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 	return rv;
 }
 
-
 void ghid_gl_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 {
-#warning draw_grid_local stubbed out for now
+	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
+	grid_local_x = (cx / PCB->Grid) * PCB->Grid + PCB->GridOffsetX;
+	grid_local_y = (cy / PCB->Grid) * PCB->Grid + PCB->GridOffsetY;
+	grid_local_radius = conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
 static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
+	if((Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
 		return;
 
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -255,8 +259,10 @@ static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 
 	glColor3f(priv->grid_color.red / 65535., priv->grid_color.green / 65535., priv->grid_color.blue / 65535.);
 
-#warning this does not draw the local grid and ignores other new grid options
-	hidgl_draw_grid(drawn_area);
+	if(conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
+		hidgl_draw_local_grid(grid_local_x,grid_local_y,grid_local_radius);
+	else
+		hidgl_draw_grid(drawn_area);
 
 	glDisable(GL_COLOR_LOGIC_OP);
 }

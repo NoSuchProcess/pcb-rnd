@@ -64,6 +64,10 @@ static pcb_composite_op_t composite_op = PCB_HID_COMP_RESET;
 static pcb_bool						direct_mode = pcb_true;
 static int								comp_stencil_bit = 0;
 
+static GLfloat * grid_points = NULL;
+static int grid_point_capacity = 0;
+
+
 static inline void
 mode_reset(pcb_bool direct,const pcb_box_t * screen)
 {
@@ -170,16 +174,48 @@ void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t
 	drawgl_add_triangle(x2, y1, x2, y2, x1, y1);
 }
 
+	
+static inline void reserve_grid_points(int n)
+{
+	if (n > grid_point_capacity) {
+		grid_point_capacity = n + 10;
+		grid_points = realloc(grid_points, grid_point_capacity * 2 * sizeof(GLfloat));
+	}
+}
+
+void hidgl_draw_local_grid(pcb_coord_t cx,pcb_coord_t cy,int radius)
+{
+	int npoints = 0;
+	pcb_coord_t x,y;
+
+	/* PI is approximated with 3.25 here - allows a minimal overallocation, speeds up calculations */
+	const int r2 = radius * radius;
+	const int n = r2 * 3 + r2 / 4 + 1;
+
+	reserve_grid_points(n);
+
+	for(y = -radius; y <= radius; y++) {
+		int y2 = y*y;
+		for(x = -radius; x <= radius; x++) {
+			if (x*x + y2 < r2) {
+				grid_points[npoints*2] = x*PCB->Grid + cx;
+				grid_points[npoints*2+1] = y*PCB->Grid + cy;
+				npoints++;
+			}
+		}
+	}
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, grid_points);
+	glDrawArrays(GL_POINTS, 0, npoints);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+}
 
 void hidgl_draw_grid(pcb_box_t * drawn_area)
 {
-	static GLfloat *points = 0;
-	static int npoints = 0;
 	pcb_coord_t x1, y1, x2, y2, n, i;
 	double x, y;
-
-	if (!conf_core.editor.draw_grid)
-		return;
 
 	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), PCB->Grid, PCB->GridOffsetX);
 	y1 = pcb_grid_fit(MAX(0, drawn_area->Y1), PCB->Grid, PCB->GridOffsetY);
@@ -199,21 +235,18 @@ void hidgl_draw_grid(pcb_box_t * drawn_area)
 	}
 
 	n = (int) ((x2 - x1) / PCB->Grid + 0.5) + 1;
-	if (n > npoints) {
-		npoints = n + 10;
-		points = realloc(points, npoints * 2 * sizeof(GLfloat));
-	}
+	reserve_grid_points(n);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, points);
+	glVertexPointer(2, GL_FLOAT, 0, grid_points);
 
 	n = 0;
 	for (x = x1; x <= x2; x += PCB->Grid, ++n) 
-		points[2 * n + 0] = x;
+		grid_points[2 * n + 0] = x;
 
 	for (y = y1; y <= y2; y += PCB->Grid) {
 		for (i = 0; i < n; i++)
-			points[2 * i + 1] = y;
+			grid_points[2 * i + 1] = y;
 		glDrawArrays(GL_POINTS, 0, n);
 	}
 
