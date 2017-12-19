@@ -1,8 +1,9 @@
 1. For the upcoming release ===============================================================================
+- BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
+- BUG: gtk2 opengl ignores local grid
 + parametric footprint gtk attribute box for editing: also mention the default value in the tooltip [report: agaran]
 + BUG: inconsistencies in UI/terminology: report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
-- BUG: subc terminals should be drawn at the end [report: Ade]
 + BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 + BUG: csect can't make a layer outline
 + BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
@@ -11,13 +12,9 @@
 		+ autoplace.c - needs intensive testing (including per perturbation operation tests)
 		- autoroute.c:961
 		- autoroute.c:1000
-- BUG: gtk2 opengl ignores local grid
-- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
-	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
-- BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
 - BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
 - BUG: round rect thermal: when poly points are too close together, it goes wrong
@@ -27,6 +24,9 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
+- BUG: subc terminals should be drawn at the end [report: Ade]
+- BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
+	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: advanced search doesn't deal with subc parts; do this after element removal using the new rtree loops?
