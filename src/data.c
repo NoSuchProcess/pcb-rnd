@@ -99,9 +99,9 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 void pcb_loop_subc(pcb_board_t *pcb, void *ctx, pcb_subc_cb_t scb)
 {
 	if (scb != NULL) {
-		PCB_ELEMENT_LOOP(pcb->Data);
+		PCB_SUBC_LOOP(pcb->Data);
 		{
-			scb(ctx, pcb, element, 1);
+			scb(ctx, pcb, subc, 1);
 		}
 		PCB_END_LOOP;
 	}
