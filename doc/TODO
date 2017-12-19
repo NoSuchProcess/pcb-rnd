@@ -1,10 +1,8 @@
 1. For the upcoming release ===============================================================================
 + parametric footprint gtk attribute box for editing: also mention the default value in the tooltip [report: agaran]
 + BUG: inconsistencies in UI/terminology: report dialog should use the same terminology for clearances as elements and route style dialog [report: miloh]
-+ BUG: import (any format) and click cancel in the file selector: shouldn't get a syntax error [report:keantoken]
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
 - BUG: subc terminals should be drawn at the end [report: Ade]
-+ BUG: png export: photo mode or as-shown: implicit mask layer, mask cutout over pins don't render properly [report: keantoken]
 + BUG: property editor arc delta value: #-75 shouldn't be switched to positive [report: Erich]
 + BUG: csect can't make a layer outline
 + BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
@@ -16,14 +14,12 @@
 	+ When a subc is placed on the back of the board it is upside-down [report: Ade]
 		+ Reproduce: import subc to buffer while on component side; flip; xor-draw shows the original (incorrectly), but the mirrored one would be placed (correctly)
 - BUG: gtk2 opengl ignores local grid
-? BUG: attribute dialog (on via): I opened the attribute editor again to delete any attributes I added. It showed p=new as an attribute. Deleting that attribute caused pcb-rnd to crash. Looks like deleting the last attribute in the attribute editor and then opening it again caused it to take whatever is behind it in the heap as an attribute. [report: keantoken]
 - BUG: when DRC sizes are saved in user conf, they are overridden from the default.pcb -> should be fixed by removing these from pcb_board_t [report: Alain]
 	Reason: pcb_board_t Bloat, Shrink, minWid, minSlk, minDrill, minRing -> remove them, use values from the config system instead
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
 - BUG: opengl bug: load a layout with subc, copy/paste the subc a few times. select one, move the mouse across the bounding box boundry of unselected copies, the silk refdes floater of the unselected copies blinks out.[report:miloh]
-+ BUG: png export: photo_groups[] breaks shadow rendering of internal layers and other-sides in photo mode; rewrite the code to omit this array and do direct layergrp queries [report: keantoken]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
 - BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
 - BUG: round rect thermal: when poly points are too close together, it goes wrong
