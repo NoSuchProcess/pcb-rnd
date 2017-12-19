@@ -253,7 +253,7 @@ static void batch_stop_timer(pcb_hidval_t timer)
 }
 
 pcb_hidval_t
-batch_watch_file(int fd, unsigned int condition, void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+batch_watch_file(int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								 pcb_hidval_t user_data)
 {
 	pcb_hidval_t ret;
