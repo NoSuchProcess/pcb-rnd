@@ -3314,6 +3314,13 @@ typedef struct {
 	XtInputId id;
 } WatchStruct;
 
+void lesstif_unwatch_file(pcb_hidval_t data)
+{
+	WatchStruct *watch = (WatchStruct *) data.ptr;
+	XtRemoveInput(watch->id);
+	free(watch);
+}
+
 	/* We need a wrapper around the hid file watch because to pass the correct flags
 	 */
 static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId * id)
@@ -3371,12 +3378,6 @@ lesstif_watch_file(int fd, unsigned int condition,
 	return ret;
 }
 
-void lesstif_unwatch_file(pcb_hidval_t data)
-{
-	WatchStruct *watch = (WatchStruct *) data.ptr;
-	XtRemoveInput(watch->id);
-	free(watch);
-}
 
 typedef struct {
 	XtBlockHookId id;
