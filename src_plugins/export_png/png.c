@@ -184,7 +184,7 @@ static const char *mask_colour_names[] = {
  */
 static const color_struct mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
-	{0x3CA03CFF, 45, 130, 45, 255},
+	{0x3CA03CFF, 60, 160, 60, 255},
 #define MASK_COLOUR_RED 1
 	{0x8C1919FF, 140, 25, 25, 255},
 #define MASK_COLOUR_BLUE 2
