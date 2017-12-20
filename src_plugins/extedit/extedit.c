@@ -42,6 +42,7 @@
 #include "remove.h"
 #include "safe_fs.h"
 #include "search.h"
+#include "undo.h"
 #include "../src_plugins/io_lihata/io_lihata.h"
 #include "../src_plugins/io_lihata/write.h"
 #include "../src_plugins/io_lihata/read.h"
@@ -264,8 +265,11 @@ static int pcb_act_extedit(int argc, const char **argv, pcb_coord_t x, pcb_coord
 					goto quit0;
 				}
 
+				pcb_undo_save_serial();
 				pcb_buffer_copy_to_layout(PCB, 0, 0);
+				pcb_undo_restore_serial();
 				pcb_remove_object(type, ptr1, ptr2, ptr3);
+				pcb_undo_inc_serial();
 				ret = 0;
 			}
 		case EEF_max:
