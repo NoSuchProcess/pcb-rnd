@@ -35,6 +35,7 @@
 	- This dialog needs a scrolled window. => extend the attribute dialog both in gtk and lesstif to make scrollable window and rewrite this dialog using DAD, in the dialogs plugin
 	- Lesstif HID does not have this dialog => implement it, using DAD
 	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
+- feature: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - feature: property editor should deal with flags
 - subc feature: figure how to do in-place edition of subc, e.g. moving refdes text
