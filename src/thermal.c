@@ -405,6 +405,34 @@ static void polytherm_base(pcb_polyarea_t **pres, const pcb_polyarea_t *src)
 		pcb_polyarea_copy0(pres, src);
 }
 
+#define CONG_MAX 256
+
+static int cong_map(char *cong, pcb_poly_it_t *it, pcb_coord_t clr)
+{
+	int n, go, first = 1;
+	pcb_coord_t cx, cy;
+	double cl2 = (double)clr * (double)clr * 1.5;
+	double px, py, x, y;
+
+	for(n = 0, go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy), n++) {
+		x = cx; y = cy;
+		if (first) {
+/*pcb_trace("prev %mm;%mm\n", cx, cy);*/
+			pcb_poly_vect_peek_prev(it, &cx, &cy);
+/*pcb_trace("     %mm;%mm\n", cx, cy);*/
+			px = cx; py = cy;
+			first = 0;
+		}
+		if (n >= CONG_MAX-1) {
+			n++;
+			break;
+		}
+		cong[n] = (pcb_distance2(x, y, px, py) < cl2);
+		px = x; py = y;
+	}
+	return n;
+}
+
 /* combine a round clearance line set into pres; "it" is an iterator
    already initialized to a polyarea contour */
 static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_t clr, pcb_bool is_diag)
@@ -412,24 +440,26 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 	pcb_polyarea_t *ptmp, *p;
 	double fact = 0.5, fact_ortho=0.75;
 	pcb_coord_t cx, cy;
-	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, cl2;
-	int go, first = 1;
+	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len;
+	int n, go, first = 1;
+	char cong[CONG_MAX];
 
 	clr -= 2;
-	cl2 = (double)clr * (double)clr;
+
+	cong_map(cong, it, clr);
 
 	/* iterate over the vectors of the contour */
-	for(go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy)) {
+	for(n = 0, go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy), n++) {
 		x = cx; y = cy;
 		if (first) {
 			pcb_poly_vect_peek_prev(it, &cx, &cy);
 			px = cx; py = cy;
+
 			first = 0;
 		}
 
-		/* skip points too dense */
-		if (pcb_distance2(x, y, px, py) < cl2)
-			continue;
+/*pcb_trace("[%d] %d %mm;%mm\n", n, cong[n], (pcb_coord_t)x, (pcb_coord_t)y);*/
+
 
 		dx = x - px;
 		dy = y - py;
@@ -442,6 +472,21 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 
 		nx = -vy;
 		ny = vx;
+
+		/* skip points too dense */
+		if ((n >= CONG_MAX) || (cong[n])) {
+			if (!is_diag) {
+				/* have to draw a short clearance for the small segments */
+				ptmp = pa_line_at(x - nx * clr/2, y - ny * clr/2, px - nx * clr/2, py - ny * clr/2, clr+4, pcb_false);
+
+				pcb_polyarea_boolean(ptmp, *pres, &p, PCB_PBO_UNITE);
+				pcb_polyarea_free(pres);
+				pcb_polyarea_free(&ptmp);
+				*pres = p;
+			}
+			px = x; py = y;
+			continue;
+		}
 
 		/* cheat: clr-2+4 to guarantee some overlap with the poly cutout */
 		if (is_diag) {
@@ -484,13 +529,31 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 {
 	pcb_polyarea_t *ptmp, *p;
 	pcb_coord_t cx, cy, x2c, y2c;
-	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2, cl2;
-	int go, first = 1;
+	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2;
+	int n, go, first = 1;
+	char cong[CONG_MAX], cong2[CONG_MAX];
 
-	cl2 = (double)clr * (double)clr;
+	if (is_diag) {
+		int start = -1, v = cong_map(cong2, it, clr);
+		memset(cong, 1, sizeof(cong));
+
+		/* in case of sharp-diag, draw the bridge in the middle of each congestion;
+		   run *2 and do module v so congestions spanning over the end are no special */
+		for(n = 0; n < v*2; n++) {
+			if (cong2[n % v] == 0) {
+				if (start >= 0)
+					cong[((start+n)/2) % v] = 0;
+				start = n;
+			}
+		}
+	}
+	else {
+		/* normal congestion logic: use long edges only */
+		cong_map(cong, it, clr);
+	}
 
 	/* iterate over the vectors of the contour */
-	for(go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy)) {
+	for(n = 0, go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy), n++) {
 		x = cx; y = cy;
 		if (first) {
 			pcb_poly_vect_peek_prev(it, &cx, &cy);
@@ -498,12 +561,14 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, pcb_coord_
 			first = 0;
 		}
 
-		if ((x == px) && (y == py))
-			continue;
+/*pcb_trace("[%d] %d %mm;%mm\n", n, cong[n], (pcb_coord_t)x, (pcb_coord_t)y);*/
 
 		/* skip points too dense */
-		if (pcb_distance2(x, y, px, py) < cl2)
+		if ((n >= CONG_MAX) || (cong[n])) {
+			px = x; py = y;
 			continue;
+		}
+
 
 		dx = x - px;
 		dy = y - py;
