@@ -1,3 +1,352 @@
+pcb-rnd 1.2.7 (r13577)
+~~~~~~~~~~~~~~~~~~~~~~
+	[padstack]
+		-Add: pad stacks: generic object for pins, pads , vias and holes
+
+	[core]
+		-Fix: conf: mkdir ~/.pcb-rnd if does not exist so user config can be saved on request
+		-Fix: Display(ToggleGrid) action now sets the grid relative to the crosshair, not the mouse cursor position
+		-Fix: Draw buffer lines/arcs as outline instead of thin-draw. Solves problem with zero length lines
+		-Fix: Draw pin/pad labels on top of other layers
+		-Fix: ElementList(): get original-element rotation, offset and side uniformly, both for elem and subc
+		-Fix: Far-side composite silk was being drawn in front-side colour
+		-Fix: SetValue() text scale change with the wrong increment
+		-Fix: buffer is not bound to a board, not even after a board is loaded into the buffer; buffers should be board-neutral
+		-Fix: buffer paste layer binding bug: if the buffer has no layers only globals, don't bother copying layer objects
+		-Fix: check if layer is not null (fixes polygon undo bug)
+		-Fix: data model bug: when deleting an object, it is copied to the list of removed objects; do not clear the parent field after the deletion, but leave it to point to the data of that list
+		-Fix: don't clamp arc angles between 0 and +360 but -360 and +360 - this lets the user explicitly set start angle or delta angle to -90
+		-Fix: don't select locked objects
+		-Fix: draw padstack holes after padstack shapes (some exporters, like ps, depends on overwriting pixels with holes so holes need to be drawn last)
+		-Fix: import board to buffer layer mixup: the code shall convert all imported layers to dangling bound layers first, then do the binding to the current board
+		-Fix: memory leak: buffer uninit: don't do layer binding right before all data is free'd
+		-Fix: memory leak: default layer names in pcb_data_t destroy
+		-Fix: memory leak: design path and real file name of the board to be loaded in case the load fails
+		-Fix: memory leak: hid color cache destroy should free the names allocated by the lib
+		-Fix: memory leak: on footprint plugin root path
+		-Fix: memory leak: on plugin dir builds
+		-Fix: pcb_loop_layers() doesn't depend on global PCB
+		-Fix: pin/via in box macro: true only if the whole pin/via is in, ring incldued, not if the center is in
+		-Fix: quoted-string printf handles empty string properly
+		-Fix: remove buggy optimization: do not rotate the bounding box on 90 deg rotation, but recalculate - because of our open/closed boxes, rotation breaks the optimization
+		-Fix: remove dangerous pcb_get_num() from the API
+		-Fix: rounding error: repeated 't' and 'T' text value changes won't get the text scale drifting by a few percent
+		-Fix: selection box bug: semi-negative selection failed on lines and arcs
+		-Fix: text draw doesn't blindly trust that the layer is a real layer
+		-Fix: when drawing an object preview, temporary switch off flips
+		-Fix: when drawing objects on bound layers (e.g. a subcircuit for a preview window), use a more advanced color logics: objects on top copper and silk layer should have board colors, the rest should have far-side color
+		-Fix: when importing a board into the paste buffer, do not add the current board's layer stack on the buffer before the load - let the loaded board decide about its layers
+		-Fix: when picking the color for drawing an object on a bound layer, pick the real color right from the config, not the layer's color - layer's color is 'infected' by side flips
+		-Change: rewrite pcb_select_block() with rtrees so it can consider floaters
+		-Cleanup: API in headers shall contain parameter names; remove useless doxygen comments and add shorter, but more useful plain C comments
+		-Cleanup: disperse objects call doesn't rely on PCB
+		-Cleanup: remove PCB-> references from data.[ch]] and from layer rename
+		-Cleanup: remove code duplication in layer rename low and hight level
+		-Del: get rid of vtptr in favor of stock genvector vtp0
+		-Del: retire free_atexit() - rather depend on uninit functions
+		-Update: Enable cycledrag in rubberband mode
+		-Add: API for properly destroying a HID color cache (to let exporters plug memory leaks)
+		-Add: Backup() action to force a backup - useful for testing dangerous actions
+		-Add: HID config option for enforcing composite draw - requred by png photo mode
+		-Add: Reset the rubberband before looking-up new rubber lines when cycle-dragging
+		-Add: Support for rubberband when moving arc points
+		-Add: crosshair snap: polygon center if the polygon is a terminal and the center point is within the polygon (center as in: bounding box center)
+		-Add: data helper function that lists terminals within data
+		-Add: data mirror optionally mirrors text (by sending text on the other side)
+		-Add: disperse elements now works on subcircuits as well
+		-Add: extend the menu key handling API to receive both the raw base key and the translated key character from the HID
+		-Add: extend the wireframe line draw API so that it has an argument for square cap lines
+		-Add: free-rotate-at-cursor call
+		-Add: function to list objects by type and mask into a pointer vector
+		-Add: generic, flat data iterator on the children of pcb_data_t
+		-Add: import subc, not only element, when replacing existing elements
+		-Add: loop_all and obj_any should include subc
+		-Add: noclip version of the move operation on the basic object types
+		-Add: operation for pure clipping (clearing or restoring poly) of the basic objects
+		-Add: pass a flag to search-by-location to handle floaters; search code can pick floaters over subc
+		-Add: pcb_data_bbox() can ignore floaters
+		-Add: portable fileno() wrapper
+		-Add: portable milisecond sleep API
+		-Add: standard operation: free rotate (on all existing object types of the new model)
+		-Add: text "flip side" is really a latent mirror - give it the usual y_offs so it works properly in subc mirroring
+		-Add: when moving floaters, draw a xor-line back to the origin of the parent subc (emulates moving name of an element)
+		-Add: optional per object color override
+
+	[layer]
+		-Fix: wrong pcb printf args on layer edit attributes window title build
+		-Fix: when setting up all-layer bindings to a board, do only as many layers as the board really has and remember this number in new data
+		-Fix: layer type lookup shouldn't crash on UI layers
+		-Cleanup: remove global var PCB dependency
+		-Cleanup: remove redundant bound/real .name fields, use a common .name field - both have names and the two fields used to be one the same address anyway
+		-Cleanup: move grp to under meta.real - bound layers are not in groups
+		-Del: old macro to determine if a layer is bound, using indirect data - depend on direct data
+		-Add: copper layer group list cache for fast bbvia lookup
+		-Add: central layer stack free function
+		-Add: function to convert all layers of a pcb_data_t * to dangling bound layers using a reference layer stack
+
+	[subc]
+		-Fix: LoadFootprint() accepts subc as a footprint
+		-Fix: always display the refdes in the top-left corner of the dashed subc outline, even if the view is flipped
+		-Fix: crosshair object snap: subc origin should be snapped to
+		-Fix: don't draw at every subc op, that slows down rat find
+		-Fix: dup(): copy subc metadata (e.g. attributes) before copying layer data; some layer data, like text bounding box, does depend on this metadata
+		-Fix: include the name of the layer in the error message when a subc layer can not be bound
+		-Fix: instead of direct move, use 3 stage move: restore polys, move, clear polys (fixes Ade's and JG's bugreport about small smd resistor clipping bug)
+		-Fix: keep track of whether a buffer is loaded from the outside or is from the board; when loaded from the outside, subc pasting is affected by current side, else side is kept (this fixes a decade old bg about element having to be put on solder or component side on the moment of load, not on the moment of paste)
+		-Fix: poerply dup the name of layers on creating new subc layers when converting from buffer
+		-Fix: subc load to buffer: list type correctness (subc list instead of element list)
+		-Fix: swap side needs to modify the subc pointer (creating a new subc)
+		-Fix: terminal rendering: use pixel based terminal layer mark size
+		-Fix: update dyntext texts when parent subc attribute changes so that the new bbox is calculated
+		-Fix: when a subc/term poly is copied, it should create its clearance
+		-Fix: when find.c removes flags, it should recurse to subcircuits as subcircuits parts may be found too
+		-Fix: when placing a subc on the solder side, the other-side part of the operation shall not be undoable, it's just part of the placement
+		-Add: DRC silk min width considers arc
+		-Add: Flip() on selected objects includes subcircuits
+		-Add: action ElementList() can replace element to subc
+		-Add: call to determine if a subc is on top or on bottom, using the aux layer
+		-Add: call to send all selected subcircuits to the back side
+		-Add: free rotate operation
+		-Add: free rotate subc when rotating a buffer
+		-Add: helper function for 90 deg subc rotation
+		-Add: high level move() call
+		-Add: implement DRC minimal silk width check for subcircuits
+		-Add: implement nonetlist flag set (alt+n)
+		-Add: implement undoable subc removal
+		-Add: minimal silk width DRC violation: also select the offending lines
+		-Add: prepare ElementList(), ElementSetAttr(), ElementList() for subcs
+		-Add: preview draw function
+		-Add: properly draw the xor-outline of the subc while visualising the buffer, even on the bottom side
+		-Add: search subc by ID
+		-Add: support for loose subc (in-place editing, ignoring the 'subc lock' for subc parts)
+		-Add: the floater flag (and concept); buffer->subc conversion creates refdes text as a floater
+		-Add: when loading a footprint as board (footprint editing), enable loose subc
+
+	[term]
+		-Fix: poly-poly clearance: consider all layers in the same (real) layer group
+		-Fix: delayed label draw: do not draw layer object terminal ID on board if it's on the other side (mimicks the old pad behavior)
+		-Fix: reset delayed label draw array after each succesful batch draw
+
+	[thermal]
+		-Add: poly thermal calculations
+		-Add: line thermal calculations
+		-Add: arc thermal calculations
+		-Add: padstack thermal calculations
+
+	[tool]
+		-Split: tool implementtion from random parts of the code regrouped into per tool files
+		-Add: function callback API for tools
+
+	[doc]
+		-Change: cut ties with gEDA
+		-Add: minimal description of subcircuits in data model
+		-Add: document padstacks and bbvia in data model
+		-Update: current list of keys
+		-Add: a note about explicit refresh in fp_wget
+		-Add: document what's new in lihata v4
+		-Add: explicit history section for 2016 and 2017
+
+	[autocrop]
+		-Add: move padstacks too
+		-Add: move subcircuits
+
+	[autoplace]
+		-Add: handle subc and padstack and layer object terminals on connection mapping
+
+	[brave]
+		-Add: brave mode for testing new feautres (with dialog box)
+		-Add: brave mode for "use padstack instead of via"
+
+	[draw_csect]
+		-Add: editable outline layer group
+
+	[dsn]
+		-Add: export subcircuits as parts (without terminals)
+
+	[export_dsn]
+		-Fix: missing layer name quoting
+		-Fix: don't use g_free() on normal strdup()'d padstack strings
+		-Add: export polygon based heavy terminals of subcs
+		-Add: export subc pins
+
+	[export_png]
+		-Fix: photo mode mask broke because of lack of proper compositing; add basic compositing draw
+		-Fix: force compositing draw in photo mode, as photo mode will try to combine the output layergroup by layergroup and non-compositing may merge multiple groups in a single session
+		-Fix: properly draw darkish shadow for all internal/other-side copper layers in photo mode
+		-Fix: always do the fr4 color bending, not only on 2 layer boards
+		-Fix: free erase and im after finishing the export so that a new export won't inherit a potentially smaller image buffer; this fixes 'mask drawn too small'
+		-Fix: memory leak - free all the large image buffers after finishing the export
+		-Fix: memory leak on colors and brushes
+		-Tune: photo mode mask shadow color
+
+	[export_ps]
+		-Fix: --ps-color got in a never-running part of the code after the composite layer rewrite
+		-Fix: drawing drill holes
+		-Fix: overflow in media size
+
+	[export_svg]
+		-Fix: implement missing fill_poly_offs - required for exporting padstacks
+
+	[extedit]
+		-Add: new plugin for external edit of subcircuits
+
+	[fp_fs]
+		-Fix: silently ignore .lht and .subc.lht suffix when matching unsuffixed footprint names so subcircuits are found
+
+	[fp_wget]
+		-Fix: broken string end comparison
+		-Fix: if wget fails, remove the partial/empty download so thet cache doesn't get fooled by the file date
+
+	[gtk]
+		-Fix: use the proper function to destroy the command dialog.
+		-Fix: proper toggling of plugins/hid_gtk/use_command_window conf. setting
+		-Fix: display/hide the embedded command combo box, in fullscreen too.
+		-Fix: proper management of timer avoids a GLib-CRITICAL
+		-Fix: property editor preview: memcpy from the wrong layer stack
+		-Fix: text scale change should get the status line redrawn
+		-Fix: partial fix for non-US keyboard issue; introduce <char> in the menu files
+		-Cleanup: use a generic status line update instead of many copies of the same function
+		-Change: do not thin silk lines and arcs for element preview: this feature won't be available for subcircuits
+		-Change: don't set termname on pins and pads when making the preview dialog so that later the copy can be avoided
+		-Change: "element" preview upgraded to generic object preview so that it can display subcircuits too
+		-Change: Full Screen button is now a smaller icon button.
+		-Add: implement the attribute dialog widget hide/unhide API
+		-Add: DAD set() can set the label on a button
+		-Add: attempt to explain window geometry save error (after failing on a missing project or read-only user config)
+
+	[hid]
+		-Fix: in gtk, the only safe way to unwatch a file from a watch callback is using the return value; upgrade the HID API to support this usage of the callback return value; fixes subsequent calls of extedit
+		-Cleanup: remove PCB_HATT_MIXED: we have PCB_HATT_COORD for the common case instead, and the uncommon case should be solved using a HBOX
+		-Add: When drawing lines, treat negative width as pixels instead of world coordinates (marks/labels can be drawn in pixel widths)
+		-Add: DAD boxed and tables are scrolled when the scroll flag is set
+		-Add: new API for drawing a filled polygon with offset
+		-Add: DAD interface for coord edit
+		-Add: api for hiding/unhiding widgets on an attribute dialog
+		-Add: DAD support for REAL fields
+		-Add: DAD support for uninitialized dlg (to be used in structs, for non-modal support)
+		-Add: attr dialog API adds a new argument for dialogs being modal (so that non-modal DAD dialogs are possible)
+		-Add: event callback in the 3-stage DAD API; attribute dialog button event for window close
+
+	[hid_gtk2_gl]
+		-Fix: Zero length square capped lines were not drawn
+		-Fix: GL HID was drawing far-side silk on top
+		-Add: Draw local grid in GL hid
+
+	[import_*]
+		-Fix: cancel on import doesn't mean syntax error
+
+	[import_hpgl]
+		-Fix: use only as many layers as many pens are in use in the file; name the layers by pen number
+
+	[import_sch]
+		-Fix: proper subst in schematics path
+
+	[io_eagle]
+		-Fix: correctly parsing larger SMD pad dimensions.
+		-Fix: Rectangle parsing now uses design rule ms_width, reduced code duplication
+		-Fix: parse signal, element, symbol etc name fields as string, not Int
+		-Fix: arc parsing for linetype 127
+		-Fix: drill and diameter doubled as required for through hole pads/pins
+		-Fix: netlist node names default to pin number if no name string found.
+		-Fix: pathological arcs in binary format with start + delta
+		-Fix: text on layer 51 now created on 21, and invalid element names '-' changed to 'HYPHEN' to fix netlist parsing
+		-Fix: element name substitution if element name is '-' change to 'HYPHEN'
+		-Add: post-processing to fix nested 'signal' nodes; smilie's missing wires are now being parsed.
+		-Add: eagle binary netlist parsing/loading of 'element_name-pin_number' for given net
+		-Add: using binary design rules values for mdWireWire, msWidth, rvPadTop, rvPadInner, rvPadBottom
+		-Add: further clarification of requirements for lib/pkg pin/pad "name" retrieval for nets
+		-Add: reinstate rendering of arcs on tDocu layers within elements, tested in v3 binary
+		-Add: layers 51 (tDocu) and 52 (bDocu) supported as layers in top and bottom silk groups
+		-Add: support for Eagle binary and XML library files (.lbr)
+		-Add: read.c adds description, element given in library file, and NAME, VALUE to footprint generated
+		-Add: support for loading dru parsing
+
+	[io_kicad]
+		-Fix: correct handling of (at X Y rot) rotation value for footprint padsw! in layouts
+		-Add: support for title_block, and fixed premature module parse termination with unsupported fp_line layers
+
+	[io_lihata]
+		-Fix: when loading a subc, ignore floaters in bbox calculation
+		-Fix: parse element does the same footprint search procedure as io_pcb does
+		-Fix: don't attempt to close the footprint file when open failed
+		-Fix: when loading polygon points, set X2 and Y2 to 0 to keep compatibility with the poly code assumptions - fixes random-jumping poly corners
+		-Fix: respect the version the user request for saving a subc in, but bump it (and warn) if there are padstacks in the subc
+		-Fix: when loading subc from file, parse the version separately and accept anything from v3 up
+		-Fix: when loading subc as a board, make sure all polygons are clipped
+		-Fix: memory leak: free error message string after load
+		-Fix: memory leak: free() polygon point table cells before overwriting them
+		-Fix: memory leak: macro parameter evaluation side effect caused multiple copies of whole subc subtrees never getting in the final document tree
+		-Del: remove the hackish PCB swap - now that the layer code is PCB-safe
+		-Add: lihata format v4, support for padstacks
+
+	[lesstif]
+		-Fix: Tool ghost is shown, now.
+		-Add: DAD: implement the attribute dialog widget hide/unhide API, make sure hbox/vbox/table widgets are stored
+		-Add: DAD: set() can set the label on a button
+		-Add: DAD: support for non-modal attribute dialogs
+		-Add: DAD: ok/cancel button callbacks on attribute dialogs
+
+	[mincut]
+		-Workaround: broken find.c returns rat point as rat line
+		-Add: show a progress bar after 1+ second of mincut hunting; cancel should revert to dumb indication
+
+	[polygon]
+		-Fix: poly-poly clear and restore shall not run on polygons that are not part of a board (e.g. buffer polys)
+		-Fix: bounding box calculation allows negative coordinates
+		-Fix: recalculate bounding box after 90 deg rotation - simply rotating the box won't work because the box is 'closed' (increased by 1 on the bottom and right)
+		-Fix: coord size assumptions
+		-Fix: poly-poly clear: always execute ppclear and pprestore on a board layer
+		-Fix: poly-clear-poly: if two clearing polys collide, the code shouldn't return error, that'd cause other, legit clearances to be omitted (there's no real poly z order)
+		-Fix: undo/redo clearance asserts: high level poly code should not attempt to clear/restore polygons on pcb_data_t that is not the data of a board
+		-Add: low level function to calculate whether a line interstects with a pline
+		-Add: low level functions to efficiently determine whether a circle is within a polyline or corssing a polyline (or out of the polyline)
+		-Add: helper functions to peek into the vectors for previous/next contour point without bumping the iterator
+		-Add: inline helper function for setting up a polygon iterator on a polyarea
+		-Add: low level polyarea move function
+
+	[report]
+		-Add: report unclipped poly area (using currently active unit)
+		-Add: search padstacks for holes
+
+	[rubberband_orig]
+		-Fix: Rubberband lines with pins/pads didn't always work or could crash due to uninitialised variable
+		-Fix: Don't create more than one rubberband object per line when checking polygon connections.
+		-Add: Rubberband support for subc polygons
+		-Add: Rubberband support for subc line terminals
+		-Add: Rubberband support for subc arc terminals
+
+	[scconfig]
+		-Fix: unportected "." in regex made tool_lock.c look like a _l.c generating broken C compilation rules
+		-Fix: libminuid should be compiled with the CFLAGS and LDFLAGS detected
+		-Fix: map_plugins.sh warns for invalid default
+		-Fix: map_plugins should sort deps for reproducible output
+		-Fix: instead of guessing where to include opengl from, rely on the include prefix detected by scconfig
+		-Add: define PCB_INLINE to simplify the code for static inline functions
+		-Add: proper detection of fileno() - it's _fileno() on windows
+		-Add: detect GLU if hid_gtk2_gl is to be compiled
+		-Add: detect GLU and generate opengl.h accordingly
+
+	[select]
+		-Fix: missing case for box-near-check for element-text (made unselecting refdes hard)
+
+	[shape]
+		-Add: shape generator, with dialog box support
+
+	[smartdisperse]
+		-Fix: don't cast coord to long - coord may be wider
+		-Add: handle subcircuits
+		-Add: mark non-selected-visited should work on subc as well
+
+	[undo]
+		-Fix: a totally empty undo buffer is not an error, not even if serial==0 in this case
+		-Fix: pcb_undo return value was not consistent, now it returns -1 on error and 0 on success
+
+	[util]
+		-Fix: keylist cleans up strings in the key column so "/" is properly displayed
+		-Update: teach keylist to recognize <char> in key bindings
+		-Update: gsch2pcb-rnd help text to reflect the new way the import works
+		-Add: install fp2subc
+
 pcb-rnd 1.2.6 (r11992)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[core]
