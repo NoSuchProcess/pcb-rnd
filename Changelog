@@ -1,9 +1,10 @@
-pcb-rnd 1.2.7 (r13577)
+pcb-rnd 1.2.7 (r13582)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[padstack]
 		-Add: pad stacks: generic object for pins, pads , vias and holes
 
 	[core]
+		-Fix: when a new file is created by a save and there's no format preference of the board, the "by file name extension" heuristics should pick the matching plugin with the highest save_preference_prio value instead of picking the first available (fixes the bug that new boards were saved as lihata v1 instead of lihata v4)
 		-Fix: conf: mkdir ~/.pcb-rnd if does not exist so user config can be saved on request
 		-Fix: Display(ToggleGrid) action now sets the grid relative to the crosshair, not the mouse cursor position
 		-Fix: Draw buffer lines/arcs as outline instead of thin-draw. Solves problem with zero length lines
