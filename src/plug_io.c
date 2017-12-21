@@ -281,15 +281,25 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 		if (PCB->Filename != NULL) { /* have a file name, guess from extension */
 			int fn_len = strlen(PCB->Filename);
 			const char *end = PCB->Filename + fn_len;
-			pcb_plug_io_t *n;
+			pcb_plug_io_t *n, *best = NULL;
+			int best_score = 0;
+
+			/* the the plugin that has a matching extension and has the highest save_preference_prio value */
 			for(n = pcb_plug_io_chain; n != NULL; n = n->next) {
 				if (n->default_extension != NULL) {
 					int elen = strlen(n->default_extension);
-					if ((elen < fn_len) && (strcmp(end-elen, n->default_extension) == 0))
-						return n;
+					if ((elen < fn_len) && (strcmp(end-elen, n->default_extension) == 0)) {
+						if (n->save_preference_prio > best_score) {
+							best_score = n->save_preference_prio;
+							best = n;
+						}
+					}
 				}
 			}
+			if (best != NULL)
+				return best;
 		}
+
 		/* no file name or format hint, or file name not recognized: choose the ultimate default */
 		fmt = conf_core.rc.save_final_fallback_fmt;
 		if (fmt == NULL) {
