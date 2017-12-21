@@ -1,6 +1,6 @@
 # pcb-rnd official 2-layer default board
 
-ha:pcb-rnd-board-v3 {
+ha:pcb-rnd-board-v4 {
  ha:attributes {
    {PCB::grid::unit}=mil
  }
