@@ -949,6 +949,9 @@ void pcb_term_label_draw(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool ve
 	pcb_text_t text;
 	const char *label;
 	char buff[128];
+
+#warning TODO: split up the label draw functions so we do not need an expensive text object but can just draw low level
+	memset(&text, 0, sizeof(text));
 	label = lab_with_intconn(intconn, lab, buff, sizeof(buff));
 
 	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.pin_name);
