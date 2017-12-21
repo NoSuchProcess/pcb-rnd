@@ -442,8 +442,6 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		pcb_board_remove(oldPCB);
 
 		pcb_board_new_postproc(PCB, 0);
-		pcb_layervis_reset_stack();
-
 		if (how == 0) {
 			/* update cursor location */
 			pcb_crosshair.X = PCB_CLAMP(PCB->CursorX, 0, PCB->MaxWidth);
@@ -452,6 +450,9 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 			/* update cursor confinement and output area (scrollbars) */
 			pcb_board_resize(PCB->MaxWidth, PCB->MaxHeight);
 		}
+
+		/* have to be called after pcb_board_resize() so vis update is after a board changed update */
+		pcb_layervis_reset_stack(); 
 
 		/* enable default font if necessary */
 		if (!PCB->fontkit.valid) {
