@@ -1,14 +1,14 @@
-h1 {
+H1 {
 	border-bottom-style: solid;
 	border-bottom-width: 3px;
 }
 
-h2 {
+H2 {
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 }
 
-p {
+P {
 	text-align: justify;
 	margin-left: 20px;
 }
