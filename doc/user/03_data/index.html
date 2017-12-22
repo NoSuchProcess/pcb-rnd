@@ -49,11 +49,69 @@ The following operations can be done with buffers:
 </ul>
 
 <h3> 3.3. Footprint Libraries</h3>
+<h4> 3.3.1. Library handling </h4>
+<p>
+A footprint library is a collection of subcircuit files, optionally
+equipped with metadata. A footprint library is stored and accessed by
+footprint plugins (whose names are conventionally prefixed with fp_).
+Where the actual data is stored, how and when it is retrieved depends
+on the fp_ plugin.
+<p>
+There is a configuration node called <i>rc/library_search_paths</i> which
+is a list of footprint library search paths. How each path is interpreted
+also depends on the fp_ plugins.
+<p>
+Currently pcb-rnd offers the following fp_ plugins:
+<table border=1>
+	<tr><th>plugin <th> description <th> library_search_paths example
+	<tr><td>fp_fs
+		<td> list and load files from directories on the host file system
+		<td> ~/my_lib <br> /usr/lib/company_lib <br> $(rc.path.share)/pcblib
+	<tr><td>fp_board
+		<td> extract all footprints from an existing board file (given in
+		     any board format pcb-rnd can load) and use these footprints as
+		     a library
+		<td> board@/home/joe/ee/control/cpu.lht
+	<tr><td>fp_wget
+		<td> download a digested map of a footprint library from a web server,
+		     using wget; make all footprints and metadata available in the
+		     library but do not immediately download footprint files; keep
+		     a local (host file system) cache of footprints accessed. Currently
+		     supports <a href="http://repo.hu/projects/edakrill">edakrill</a>
+		     and <a href="http://www.gedasymbols.org">gedasymbols</a>.
+		<td> wget@edakrill <br> wget@gedasymbols
+</table>
+
+<h4> 3.3.2. footprint types </h4>
+<p>
+There are two types of footprints:
 <ul>
-	<li>3.3.1 pcblib
-	<li>3.3.2 static footprints
-	<li>3.3.3 generated footprints
+	<li> static (file) footprints; and
+	<li> parametric (generated) footprints.
 </ul>
+<p>
+A static footprint is a data file that is loaded and parsed by one of
+the io_ plugins. pcb-rnd supports multiple file formats: the native lihata
+subcircuit format, kicad, eagle, gEDA footprints.
+<p>
+A parametric footprint is an external program or script that is executed
+by pcb-rnd. The exteran program shall write a valid footprint file to its
+standard output, which is then parsed and used the same way as in case of
+static footprints. The external program gets a list of parameters
+extracted from the footprint name by pcb-rnd.
+<p>
+The basic syntax for a parametric footprint is <i>name(arg1, arg2, ...
+argN)<i>. Any footprint name that contains a '(' is treated as parametric.
+The list of arguments is separated by commas. How arguments are interpreted,
+e.g. whether the are positional or named or both, is up to the external
+parametric footprint program.
+<p>
+The footprint programs are stored in the library tree, and are accessed
+using the fp_ plugins. There is no limitation on how the program is implemented
+other than the host operating system on which pcb-rnd runs has to be able to
+execute it.
+
+
 <h3> 3.4. file formats</h3>
 <h3> 3.4.1 board formats</h3>
 <ul> 
