@@ -4,7 +4,9 @@ $long Load the design from eagle's xml and binary formats.
 $state works
 $fmt-native no
 $fmt-feature-r eagle xml board version 6, 7 and 8
+$fmt-feature-r eagle xml library
 $fmt-feature-r eagle binary board version 3, 4 and 5
+$fmt-feature-r eagle binary library
 $fmt-feature-r eagle DRU (design rules)
 default buildin
 dep boardflip
