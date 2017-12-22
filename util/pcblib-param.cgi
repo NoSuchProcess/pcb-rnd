@@ -326,7 +326,8 @@ else
 	}
 	'`
 	
-	if test -z `grep "@@purpose" $gendir/$gen`
+	ptmp=`grep "@@purpose" $gendir/$gen`
+	if test -z "$ptmp"
 	then
 		error "Invalid generator \"$gen\" (file)"
 	fi
