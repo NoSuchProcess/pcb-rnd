@@ -114,18 +114,26 @@ execute it.
 
 <h3> 3.4. file formats</h3>
 <p>
+pcb-rnd operates on an in-memory data tree of the board while it is being edited.
+The in-memory data tree can not be dumped in a file without conversion: loading
+any file means converting the given file format to the in-memory representation
+and saving from memory to any file format is just another conversion.
+
+<p>
+Lossless save/load round trips for all pcb-rnd features are guaranteed
+only when using the latest version of the native formats. The reason is
+that the native formats are always upgraded to support all features of
+the in-memory data model. It is possible (but not recommended) to use
+older versions of the native formats to retrain compatibility with older
+versions of pcb-rnd.
+
+<p>
 The <i>native</i> file formats of pcb-rnd are:
 <ul>
 	<li> lihata board for PCBs
 	<li> lihata subcircuit for footprints
 	<li> lihata based pcb-rnf-conf for configuration data
 </ul>
-
-<p>
-Lossless save/load round trips for all pcb-rnd features are guaranteed
-only when using the latest version of the native formats. It is possible
-(but not recommended) to use older versions of the native formats to
-retrain compatibility with older versions of pcb-rnd.
 
 <p>
 Non-native file formats are called <i>alien</i> formats. pcb-rnd supports
