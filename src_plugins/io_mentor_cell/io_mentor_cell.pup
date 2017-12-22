@@ -2,6 +2,8 @@ $class io
 $short Mentor Graphics cell footprints
 $long Load Mentor Graphics cell footprint library and make footprints available (e.g. for fp_board)
 $state WIP
+$fmt-native no
+$fmt-feature-r Mentor Graphics cell footprints
 default disable
 
 autoload 1
