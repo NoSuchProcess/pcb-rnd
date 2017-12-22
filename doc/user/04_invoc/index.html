@@ -8,21 +8,63 @@
 <body>
 <h1> pcb-rnd - user manual </h1>
 
-<h2> 4 User Invocation (aka running pcb-rnd)</h2>
+<h2> 4. User Invocation (running pcb-rnd)</h2>
 <p>
 pcb-rnd is typically run by invoking it from the shell after installation 
 <p>
 <code>
-pcb-rnd [main options]
+pcb-rnd [options]
 </code>
+or
+<code>
+pcb-rnd [options] path
+</code>
+<p>
+When a path is provided, it is either a board file or a subcircuit which 
+will be automatically opened for editing. When invoked with a path referring
+to a non-existing file, pcb-rnd assumes a new board is to be created and
+saved using the file name provided as path. This makes it very easy to
+make new boards from the command line.
 
-<p> 
-At invocation, the user can learn about pcb-rnd 
+<p>
+The list of available options can be acquired by running
 <p>
 <code>
 pcb-rnd --help
 </code>
 <p>
-And at this time, choose alternative guis (Gtk, lesstif, remote)
+The most commonly used option is to export a file:
+<code>
+pcb-rnd -x format [format_options] path
+</code>
+<p>
+For example a photo-realistic png export pwr.png from the board saved
+in pwr.lht can be exported as:
+<code>
+pcb-rnd --export png --dpi 600 --photo-mode pwr.lht
+</code>
+<p>
+Listing exporter-specific options is possible running pcb-rnd --help
+<i>exporter</i>, e.g.:
+<code>
+pcb-rnd --help png
+</code>
+<p>
+Another typical application of options is to select the user interface to
+start pcb-rnd with (as pcb-rnd normally comes with multiple UIs compiled in):
+<pre>
+<code>
+pcb-rnd --gui=batch
+pcb-rnd --gui=gtk2_gdk
+pcb-rnd --gui=gtk2_gl
+pcb-rnd --gui=lesstif
+</code>
+</pre>
+<p>
+The most notable UI is the batch UI: it reads the standard input for
+action commands, executes them and quits on EOF. This allows pcb-rnd to be
+run as a UNIX filter (just like a sed, awk or perl), loading, manipulating
+and saving boards, without starting a GUI.
+
 </body>
 </html>
