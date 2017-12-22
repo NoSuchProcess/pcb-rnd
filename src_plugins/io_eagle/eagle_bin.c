@@ -1526,75 +1526,100 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		}
 #warning TODO still need to fine tune non-trivial non 90 degree arcs start and delta for 0x81, 0x00
 	} else if ((linetype > 0 && linetype != 0x81) || arctype > 0) {
+		int x1_ok, x2_ok, y1_ok, y2_ok, cxy_ok;
+		x1_ok = x2_ok = y1_ok = y2_ok = cxy_ok = 0;
 		for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
 			if (strcmp(e->key, "arctype_other_x1") == 0) {
 				x1 = atoi(e->value);
+				x1_ok = 1;
 				pcb_trace("arc x1: %s, %ld\n", e->value, x1);
 			} else if (strcmp(e->key, "arctype_other_y1") == 0) {
 				y1 = atoi(e->value);
+				y1_ok = 1;
 				pcb_trace("arc y1: %s, %ld\n", e->value, y1);
 			} else if (strcmp(e->key, "arctype_other_x2") == 0) {
 				x2 = atoi(e->value);
+				x2_ok = 1;
 				pcb_trace("arc x2: %s, %ld\n", e->value, x2);
 			} else if (strcmp(e->key, "arctype_other_y2") == 0) {
 				y2 = atoi(e->value);
+				y2_ok = 1;
 				pcb_trace("arc y2: %s, %ld\n", e->value, y2);
 			} else if (strcmp(e->key, "linetype_0_x1") == 0) {
 				x1 = atoi(e->value);
+				x1_ok = 1;
 				pcb_trace("arc x1: %s, %ld\n", e->value, x1);
 			} else if (strcmp(e->key, "linetype_0_y1") == 0) {
 				y1 = atoi(e->value);
+				y1_ok = 1;
 				pcb_trace("arc y1: %s, %ld\n", e->value, y1);
 			} else if (strcmp(e->key, "linetype_0_x2") == 0) {
 				x2 = atoi(e->value);
+				x2_ok = 1;
 				pcb_trace("arc x2: %s, %ld\n", e->value, x2);
 			} else if (strcmp(e->key, "linetype_0_y2") == 0) {
 				y2 = atoi(e->value);
+				y2_ok = 1;
 				pcb_trace("arc y2: %s, %ld\n", e->value, y2);
 			}
+			
 		}
 		if (linetype == 0x78 || arctype == 0x01) {
 			cx = MIN(x1, x2);
 			cy = MIN(y1, y2);
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "180");
 			egb_node_prop_set(elem, "Delta", "90");
 		} else if (linetype == 0x79 || arctype == 0x02) {
 			cx = MAX(x1, x2);
 			cy = MIN(y1, y2);
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "270");
 			egb_node_prop_set(elem, "Delta", "90");
 		} else if (linetype == 0x7a || arctype == 0x03) {
 			cx = MAX(x1, x2);
 			cy = MAX(y1, y2);
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "0");
 			egb_node_prop_set(elem, "Delta", "90");
 		} else if (linetype == 0x7b || arctype == 0x04) {
 			cx = MIN(x1, x2);
 			cy = MAX(y1, y2);
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "90");
 			egb_node_prop_set(elem, "Delta", "90");
 		} else if (linetype == 0x7c || arctype == 0x05) { /* 124 */
 			cx = (x1 + x2)/2;
 			cy = (y1 + y2)/2;
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "90");
 			egb_node_prop_set(elem, "Delta", "180");
 		} else if (linetype == 0x7d || arctype == 0x06) { /* 125 */
 			cx = (x1 + x2)/2;
 			cy = (y1 + y2)/2;
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "270");
 			egb_node_prop_set(elem, "Delta", "180");
 		} else if (linetype == 0x7e || arctype == 0x07) {
 			cx = (x1 + x2)/2;
 			cy = (y1 + y2)/2;
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "180");
 			egb_node_prop_set(elem, "Delta", "180");
-		} else if (linetype == 0x7f || arctype == 0x07) {
+		} else if (linetype == 0x7f || arctype == 0x08) {
 			cx = (x1 + x2)/2;
 			cy = (y1 + y2)/2;
+			cxy_ok = 1;
 			egb_node_prop_set(elem, "StartAngle", "0");
 			egb_node_prop_set(elem, "Delta", "180");
 		}
 
+		if (!cxy_ok) {
+			pcb_message(PCB_MSG_ERROR, "cx and cy not set in arc/linetype: %d/%d\n", linetype, arctype);
+			cx = cy = 0;
+		} else if (!(x1_ok && x2_ok && y1_ok && y2_ok)) {
+			pcb_message(PCB_MSG_ERROR, "x1/2 or y1/2 not set in binary arc\n");
+		}
 		radius = (long)(pcb_distance((double)cx, (double)cy, (double)x2, (double)y2));
 		pcb_trace("Using radius for post-processed arc: %ld\n", radius);
 		sprintf(itoa_buffer, "%ld", radius);
