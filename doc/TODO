@@ -12,6 +12,7 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
+- buffer: break up padstack, just like breaking up subcircuits
 - BUG: subc/term:
 	- term netlist connectivity (r10843):
 		+ autoplace.c - needs intensive testing (including per perturbation operation tests)
