@@ -1,4 +1,6 @@
-CLEANFILES=../action_reference.html ../dialogtable.html
+# NOTE: aagraph is at svn://repo.hu/projects/aagraph/trunk
+
+CLEANFILES=../action_reference.html ../dialogtable.html ../bridges.svg
 
 all:  ../action_reference.html ../dialogtable.html
 
@@ -7,6 +9,9 @@ all:  ../action_reference.html ../dialogtable.html
 
 ../dialogtable.html: pcb-rnd-dialogs ./process_dialogtable.sh ../../../../src/pcb-rnd
 	./process_dialogtable.sh > ../dialogtable.html
+
+../bridges.svg: bridges.txt
+	aagraph -Tsvg bridges.txt > ../bridges.svg
 
 clean:  
 	rm $(CLEANFILES)

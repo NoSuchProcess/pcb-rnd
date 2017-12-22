@@ -10,7 +10,7 @@
 <h2> Pcb-rnd Action Reference</h2>
 <table border=1>
 <caption><b>
-pcb-rnd version 1.2.4, Revision: 11962
+pcb-rnd version 1.2.6, Revision: 13593
 </b>
 <th>Action<th> Description <th> Syntax
 <tr><td> ElementSetAttr </td>
@@ -53,6 +53,15 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> netlist </td>
 <td>Perform various actions on netlists.</td>
 <td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td>
+<tr><td> DebugXY </td>
+<td>Debug action, with coordinates</td>
+<td>DebugXY(...)</td>
+<tr><td> PadstackEdit </td>
+<td>interactive pad stack editor</td>
+<td>PadstackEdit(object)</td>
+<tr><td> forcecolor </td>
+<td>change selected element's color to #RRGGBB, reset if does not start with '#'</td>
+<td>forcecolor(#RRGGBB)</td>
 <tr><td> LoadFontFrom </td>
 <td>Load PCB font from a file</td>
 <td>LoadFontFrom([file, id])</td>
@@ -65,6 +74,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> ToggleView </td>
 <td>Toggle the visibility of the specified layer or layer group.</td>
 <td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|Mask|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td>
+<tr><td> DumpLibrary </td>
+<td>Display the entire contents of the libraries.</td>
+<td>DumpLibrary()</td>
 <tr><td> CreateText </td>
 <td>Create a new text object</td>
 <td>CreateText(layer, fontID, X, Y, direction, scale, text)</td>
@@ -83,6 +95,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> propedit </td>
 <td>Run the property editor</td>
 <td>propedit()</td>
+<tr><td> PadstackConvert </td>
+<td>Convert selection or current buffer to padstack</td>
+<td>PadstackConvert(buffer|selected, [originx, originy])</td>
 <tr><td> pscalib </td>
 <tr><td> EditLayer </td>
 <td>Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.</td>
@@ -105,6 +120,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> conf </td>
 <td>Perform various operations on the configuration tree.</td>
 <td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td>
+<tr><td> Brave </td>
+<td>Changes brave settings.</td>
+<td>Brave()<br>Brave(setting, on|off)</td>
 <tr><td> distributetext </td>
 <td>Distribute Text Elements</td>
 <td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td>
@@ -134,6 +152,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> LoadFootprint </td>
 <td>Loads a single footprint by name.</td>
 <td>pcb_load_footprint(filename[,refdes,value])</td>
+<tr><td> OptAutoOnly </td>
+<td>Toggles the optimize-only-autorouted flag.</td>
+<td>OptAutoOnly()</td>
 <tr><td> New </td>
 <td>Starts a new layout.</td>
 <td>New([name])</td>
@@ -174,6 +195,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> ChkGridUnits </td>
 <td>Return 1 if currently selected grid unit matches the expected (normally mm or mil)</td>
 <td>ChkGridUnits(expected)</td>
+<tr><td> mill </td>
+<td>Calculate toolpath for milling away copper</td>
+<td>mill()</td>
 <tr><td> ChangeSquare </td>
 <td>Changes the square flag of pins and pads.</td>
 <td>ChangeSquare(ToggleObject)<br>ChangeSquare(SelectedElements|SelectedPins)<br>ChangeSquare(Selected|SelectedObjects)</td>
@@ -186,6 +210,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> LoadLtspiceFrom </td>
 <td>Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.</td>
 <td>LoadLtspiceFrom(filename)</td>
+<tr><td> extedit </td>
+<td>extedit(object|selected, [interactive|method])</td>
+<td>Invoke an external program to edit a specific part of the current board.</td>
 <tr><td> DumpPlugins </td>
 <td>Print plugins loaded in a format digestable by scripts.</td>
 <td>DumpPlugins()</td>
@@ -247,6 +274,12 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> Report </td>
 <td>Produce various report.</td>
 <td>Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name])</td>
+<tr><td> shape </td>
+<td>Interactive shape generator.</td>
+<td>shape()</td>
+<tr><td> Bell </td>
+<td>Attempt to produce audible notification (e.g. beep the speaker).</td>
+<td>Bell()</td>
 <tr><td> Undo </td>
 <td>Undo recent changes.</td>
 <td>undo()<br>undo(ClearList)</td>
@@ -263,6 +296,12 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> FontEdit </td>
 <td>Convert the current font to a PCB for editing.</td>
 <td>FontEdit()</td>
+<tr><td> regpoly </td>
+<td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td>
+<td>regpoly([where,] corners, radius [,rotation])</td>
+<tr><td> Debug </td>
+<td>Debug action.</td>
+<td>Debug(...)</td>
 <tr><td> dumpconf </td>
 <td>Perform various operations on the configuration tree.</td>
 <td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td>
@@ -317,12 +356,22 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> Atomic </td>
 <td>Save or restore the undo serial number.</td>
 <td>Atomic(Save|Restore|Close|Block)</td>
+<tr><td> Info </td>
+<tr><td> PadstackPlace </td>
+<td>Place a pad stack (either proto_id, or if not specified, the default for style)</td>
+<td>PadstackPlace([proto_id|default], [x, y])</td>
 <tr><td> dumplayers </td>
 <td>Print info about each layer</td>
 <td>dumplayers()</td>
+<tr><td> Backup </td>
+<td>Backup the current layout - save using the same method that the timed backup function uses</td>
+<td>Backup()</td>
 <tr><td> dumpfonts </td>
 <td>Print info about fonts</td>
 <td>dumpfonts()</td>
+<tr><td> circle </td>
+<td>Generate a filled circle (zero length round cap line)</td>
+<td>circle([where,] diameter)</td>
 <tr><td> d1 </td>
 <td>debug action for development</td>
 <td>d1()</td>
@@ -380,21 +429,27 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> Unselect </td>
 <td>Unselects the object at the pointer location or the specified objects.</td>
 <td>Unselect(All|Block|Connection)<br>Unselect(ElementByName|ObjectByName|PadByName|PinByName)<br>Unselect(ElementByName|ObjectByName|PadByName|PinByName, Name)<br>Unselect(TextByName|ViaByName)<br>Unselect(TextByName|ViaByName, Name)</td>
-<tr><td> NetlistChanged </td>
-<td>Tells the GUI that the netlist has changed.</td>
-<td>NetlistChanged()</td>
+<tr><td> Return </td>
+<td>Simulate a passing or failing action.</td>
+<td>Return(0|1)</td>
 <tr><td> ChangeSize </td>
 <td>Changes the size of objects.</td>
 <td>ChangeSize(Object, delta|style)<br>ChangeSize(SelectedObjects|Selected, delta|style)<br>ChangeSize(SelectedLines|SelectedPins|SelectedVias, delta|style)<br>ChangeSize(SelectedPads|SelectedTexts|SelectedNames, delta|style)<br>ChangeSize(SelectedElements, delta|style)</td>
 <tr><td> PrintActions </td>
 <td>Print all actions available.</td>
 <td>PrintActions()</td>
+<tr><td> NetlistChanged </td>
+<td>Tells the GUI that the netlist has changed.</td>
+<td>NetlistChanged()</td>
 <tr><td> jostle </td>
 <td>Move lines out of the way</td>
 <td>Jostle(diameter)</td>
 <tr><td> ChangeOctagon </td>
 <td>Changes the octagon-flag of pins and vias.</td>
 <td>ChangeOctagon(Object|ToggleObject|SelectedObjects|Selected)<br>ChangeOctagon(SelectedElements|SelectedPins|SelectedVias)</td>
+<tr><td> ToggleVendor </td>
+<td>Toggles the state of automatic drill size mapping.</td>
+<td>ToggleVendor()</td>
 <tr><td> RemoveMenu </td>
 <td>Recursively removes a new menu, popup (only path specified) or submenu. </td>
 <td>RemoveMenu(path|cookie)</td>
@@ -431,6 +486,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> AddRats </td>
 <td>Add one or more rat lines to the board.</td>
 <td>AddRats(AllRats|SelectedRats|Close)</td>
+<tr><td> roundrect </td>
+<td>Generate a rectangle with round corners</td>
+<td>roundrect([where,] width[;height] [,rx[;ry] [,rotation]])</td>
 <tr><td> LoadEeschemaFrom </td>
 <td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td>
 <td>LoadEeschemaFrom(filename)</td>
@@ -461,6 +519,9 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> fp_rehash </td>
 <td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td>
 <td>fp_rehash()</td>
+<tr><td> EnableVendor </td>
+<td>Enables automatic drill size mapping.</td>
+<td>EnableVendor()</td>
 <tr><td> Quit </td>
 <td>Quits the application after confirming.</td>
 <td>Quit()</td>
@@ -485,7 +546,12 @@ pcb-rnd version 1.2.4, Revision: 11962
 <tr><td> ChangePaste </td>
 <td>Changes the no paste flag of objects.</td>
 <td>ChangePaste(ToggleObject|Object|SelectedPads|Selected)</td>
+<tr><td> Help </td>
 <tr><td> PolyCombine </td>
+<tr><td> DisableVendor </td>
+<td>Disables automatic drill size mapping.</td>
+<td>DisableVendor()</td>
+<tr><td> PolyStitch </td>
 <tr><td> Select </td>
 <td>Toggles or sets the selection.</td>
 <td>Select(Object|ToggleObject)<br>Select(All|Block|Connection)<br>Select(ElementByName|ObjectByName|PadByName|PinByName)<br>Select(ElementByName|ObjectByName|PadByName|PinByName, Name)<br>Select(TextByName|ViaByName|NetByName)<br>Select(TextByName|ViaByName|NetByName, Name)<br>Select(Convert)</td>
