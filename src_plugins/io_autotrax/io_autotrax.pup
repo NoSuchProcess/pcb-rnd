@@ -1,7 +1,7 @@
 $class io
 $short autotrax (freeware PCB CAD)
 $long Import and export autotrax layouts and footprints.
-$state work-in-progress
+$state works
 $fmt-native no
 $fmt-feature-r autotrax PCB, version 4
 $fmt-feature-r autotrax PCB, version 5
