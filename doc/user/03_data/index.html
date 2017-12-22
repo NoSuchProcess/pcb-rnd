@@ -95,7 +95,7 @@ the io_ plugins. pcb-rnd supports multiple file formats: the native lihata
 subcircuit format, kicad, eagle, gEDA footprints.
 <p>
 A parametric footprint is an external program or script that is executed
-by pcb-rnd. The exteran program shall write a valid footprint file to its
+by pcb-rnd. The external program shall write a valid footprint file to its
 standard output, which is then parsed and used the same way as in case of
 static footprints. The external program gets a list of parameters
 extracted from the footprint name by pcb-rnd.
@@ -132,7 +132,7 @@ The <i>native</i> file formats of pcb-rnd are:
 <ul>
 	<li> lihata board for PCBs
 	<li> lihata subcircuit for footprints
-	<li> lihata based pcb-rnf-conf for configuration data
+	<li> lihata based pcb-rnd-conf for configuration data
 </ul>
 
 <p>
@@ -163,7 +163,7 @@ board can never be loaded as a board from png, ps or gerber.
 
 <p>
 Typical import example is netlist (or schematics): it deals with one aspect
-of the project, connection info, and lacks any phyiscal information such
+of the project, connection info, and lacks any physical information such
 as geometry or layers. It is possible to import one aspect of the design from
 a netlist (or schematics), but it is not possible to reconstruct a full board
 using only the netlist information.
