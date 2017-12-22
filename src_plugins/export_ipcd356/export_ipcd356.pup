@@ -2,5 +2,7 @@ $class export
 $short IPC-D-356 Netlist pcb_exporter
 $long IPC-D-356 Netlist export.
 $state Work-in-progress
+$fmt-native no
+$fmt-feature-w export IPC-D-356 Netlist (for automated testing)
 default disable-all
 autoload 1

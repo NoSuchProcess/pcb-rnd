@@ -2,5 +2,7 @@ $class export
 $short gcode pcb_exporter
 $long Export to gcode
 $state works
+$fmt-native no
+$fmt-feature-w export gcode (for milling)
 default buildin
 autoload 1

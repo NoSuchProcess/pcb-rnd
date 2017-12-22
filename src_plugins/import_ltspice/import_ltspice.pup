@@ -2,5 +2,7 @@ $class import
 $short import ltspice .net+.asc
 $long Import the netlist and footprints from an ltspice .asc and .net pair of files
 $state works
+$fmt-native no
+$fmt-feature-r import netlist and footprint names from ltspice .net and .asc file pairs
 default buildin
 autoload 1

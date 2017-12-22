@@ -2,6 +2,10 @@ $class io
 $short Kicad's s-expr format
 $long Load and save the design and elements in Kicad's s-expression format - this is the new, currently preferred format in Kicad.
 $state works
+$fmt-native no
+$fmt-feature-r kicad board, version 3, 4 and 20170123 (s-expr)
+$fmt-feature-w kicad board, version 3 (s-expr)
+$fmt-feature-w kicad element (s-expr, according to version 3)
 default buildin
 
 # for the uniq name lib:

@@ -2,5 +2,9 @@ $class export
 $short png/gif/jpg pcb_exporter
 $long Export to png, gif and jpeg
 $state works
+$fmt-native no
+$fmt-feature-w render the on-screen version or emulated photo mode version in .png
+$fmt-feature-w render the on-screen version or emulated photo mode version in .gif
+$fmt-feature-w render the on-screen version or emulated photo mode version in .jpeg
 default buildin
 autoload 1

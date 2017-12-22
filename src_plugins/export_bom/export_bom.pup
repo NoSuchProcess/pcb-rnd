@@ -2,5 +2,7 @@ $class export
 $short bom pcb_exporter
 $long Export bom (Bill of Materials)
 $state works
+$fmt-native no
+$fmt-feature-w export bom (Bill of Materials) in plain text
 default buildin
 autoload 1

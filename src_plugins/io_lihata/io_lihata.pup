@@ -2,5 +2,13 @@ $class io
 $short lihata board format
 $long Load and save the design and elements in the lihata board format.
 $state works
+$fmt-native yes
+$fmt-feature-r lihata pcb-rnd board (any version)
+$fmt-feature-w lihata pcb-rnd board (any version)
+$fmt-feature-r lihata pcb-rnd subcircuit (any version)
+$fmt-feature-w lihata pcb-rnd subcircuit (any version)
+$fmt-feature-r lihata pcb-rnd font (any version)
+$fmt-feature-w lihata pcb-rnd font (any version)
+
 default buildin
 autoload 1

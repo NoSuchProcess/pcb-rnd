@@ -2,5 +2,7 @@ $class export
 $short DXF pcb_exporter
 $long Export dxf
 $state works
+$fmt-native no
+$fmt-feature-w export to 2D .dxf (for mech CADs)
 default buildin
 autoload 1

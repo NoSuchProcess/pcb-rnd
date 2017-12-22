@@ -2,5 +2,9 @@ $class import
 $short tEDAx (Trivial EDA eXchange)
 $long Import and export tEDAx netlists and footprints.
 $state works
+$fmt-native no
+$fmt-feature-r tEDAx netlist (any version)
+$fmt-feature-r tEDAx footprint (any version)
+$fmt-feature-w tEDAx footprint (any version)
 default buildin
 autoload 1

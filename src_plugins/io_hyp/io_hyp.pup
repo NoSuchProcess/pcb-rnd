@@ -2,6 +2,9 @@ $class io
 $short hyperlynx .hyp loader
 $long Import plugin for hyperlynx geometry (no polygons yet).
 $state works
+$fmt-native no
+$fmt-feature-r hyperlynx board, version 2 and above
+$fmt-feature-w hyperlynx board, version 2.0
 default buildin
 autoload 1
 dep lib_netmap

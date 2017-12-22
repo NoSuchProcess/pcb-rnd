@@ -1,7 +1,13 @@
 $class export
 $short xy (centroid) pcb_exporter
-$long Export XY centroid element data for pick & place.
+$long Template based export of XY centroid element data e.g. for pick & place.
 $state works
+$fmt-native no
+$fmt-feature-w geda/PCB x;y
+$fmt-feature-w gxyrs
+$fmt-feature-w Macrofab's pick&place
+$fmt-feature-w pick&place file for the TM220/TM240 device
+$fmt-feature-w KiCad .pos file
 default buildin
 dep export_bom
 autoload 1

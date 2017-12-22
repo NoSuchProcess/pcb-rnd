@@ -2,5 +2,7 @@ $class import
 $short import edif
 $long Import plugin for netlists in the EDIF format.
 $state works
+$fmt-native no
+$fmt-feature-r flat netlist from EDIF
 default buildin
 autoload 1

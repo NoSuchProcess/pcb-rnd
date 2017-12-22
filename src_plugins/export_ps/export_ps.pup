@@ -2,5 +2,8 @@ $class export
 $short postscript pcb_exporter
 $long Export postscript or embedded postscript.
 $state works
+$fmt-native no
+$fmt-feature-w render black&white postscript (single or multiple files)
+$fmt-feature-w render black&white or color embedded postscript (single file)
 default buildin
 autoload 1
