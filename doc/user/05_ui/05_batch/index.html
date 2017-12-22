@@ -17,14 +17,16 @@ code below). Batch mode will compile and run as the default user interface when 
 compiled on systems without any GUI libs installed.
 
 <p>
-The batch UI is useful for automation, test, and debugging.
+The batch UI is useful for automation, test, and debugging: it is reading
+action commands on the standard input and prints results on the standard
+output. It does not run a GUI and does not require X. Typical invocation:
 <p>
 <code>
-./pcb-rnd --gui batch
+./pcb-rnd --gui batch [path]
 </code>
 
 <p>
-Uses and examples for Batch mode 
+Uses and examples for Batch mode (TODO):
 <ul>
 <li>automation
 <li>export footprint  (with additional plugins)
