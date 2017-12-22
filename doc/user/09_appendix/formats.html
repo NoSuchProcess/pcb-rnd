@@ -1,0 +1,314 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd - list of file formats </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+<!--AUTO head begin-->
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<!--AUTO navbar end-->
+
+<h1> pcb-rnd - User Manual: Appendix </h1>
+<p>
+<h2> File format support </h2>
+
+<table border=1>
+	<tr>
+	<th> plugin <th> native <th> state <th> reads formats <th> writes formats
+
+<tr><th>io_lihata
+<td>yes
+<td>works
+ <td>
+  lihata pcb-rnd board (any version)
+  <br>
+  lihata pcb-rnd subcircuit (any version)
+  <br>
+  lihata pcb-rnd font (any version)
+ <td>
+  lihata pcb-rnd board (any version)
+  <br>
+  lihata pcb-rnd subcircuit (any version)
+  <br>
+  lihata pcb-rnd font (any version)
+<tr><th>io_autotrax
+<td>no
+<td>work-in-progress
+ <td>
+  autotrax PCB, version 4
+  <br>
+  autotrax PCB, version 5
+ <td>
+  autotrax PCB, version 4
+<tr><th>io_eagle
+<td>no
+<td>works
+ <td>
+  eagle xml board version 6, 7 and 8
+  <br>
+  eagle binary board version 3, 4 and 5
+  <br>
+  eagle DRU (design rules)
+ <td>
+n/a
+<tr><th>io_hyp
+<td>no
+<td>works
+ <td>
+  hyperlynx board, version 2 and above
+ <td>
+  hyperlynx board, version 2.0
+<tr><th>io_kicad
+<td>no
+<td>works
+ <td>
+  kicad board, version 3, 4 and 20170123 (s-expr)
+ <td>
+  kicad board, version 3 (s-expr)
+  <br>
+  kicad element (s-expr, according to version 3)
+<tr><th>io_kicad_legacy
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  kicad pcbnew-board, version 1 (legacy plain text format)
+  <br>
+  kicad pcbnew-module (legacy plain text format)
+<tr><th>io_mentor_cell
+<td>no
+<td>WIP
+ <td>
+  Mentor Graphics cell footprints
+ <td>
+n/a
+<tr><th>io_pcb
+<td>no
+<td>works
+ <td>
+  gEDA/PCB .pcb board (any version up to 2017)
+  <br>
+  gEDA/PCB .fp footprints
+  <br>
+  gEDA/PCB font
+ <td>
+  gEDA/PCB .pcb board (various version up to 2017 )
+  <br>
+  gEDA/PCB .fp footprints
+<tr><th>io_tedax
+<td>no
+<td>works
+ <td>
+  tEDAx netlist (any version)
+  <br>
+  tEDAx footprint (any version)
+ <td>
+  tEDAx footprint (any version)
+<tr><th>import_dsn
+<td>no
+<td>works
+ <td>
+  import wires and vias from specctra .dsn
+ <td>
+n/a
+<tr><th>import_edif
+<td>no
+<td>works
+ <td>
+  flat netlist from EDIF
+ <td>
+n/a
+<tr><th>import_hpgl
+<td>no
+<td>works
+ <td>
+  import lines, arcs and polygons from HPGL plot files
+ <td>
+n/a
+<tr><th>import_ltspice
+<td>no
+<td>works
+ <td>
+  import netlist and footprint names from ltspice .net and .asc file pairs
+ <td>
+n/a
+<tr><th>import_mentor_sch
+<td>no
+<td>works
+ <td>
+  import netlist and footprint names from a flat .edf produced by Mentor Graphics Design Capture
+ <td>
+n/a
+<tr><th>import_mucs
+<td>no
+<td>works
+ <td>
+  import lines and vias from MUCS unixplot .pl files
+ <td>
+n/a
+<tr><th>import_netlist
+<td>no
+<td>works
+ <td>
+  import plain text gEDA netlist files
+ <td>
+n/a
+<tr><th>import_sch
+<td>no
+<td>works
+ <td>
+  import netlist and footprint info from gEDA schematics using gnetlist
+  <br>
+  import netlist and footprint produced by an external command
+ <td>
+n/a
+<tr><th>import_tinycad
+<td>no
+<td>works
+ <td>
+  import netlist and footprint info from tinycad .net netlists
+ <td>
+n/a
+<tr><th>export_bboard
+<td>no
+<td>WIP
+ <td>
+n/a
+ <td>
+  export breadboard assembly drawing in png
+<tr><th>export_bom
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  export bom (Bill of Materials) in plain text
+<tr><th>export_dsn
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  export specctra .dsn files with padstacks and elements (usable for freerouting)
+<tr><th>export_dxf
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  export to 2D .dxf (for mech CADs)
+<tr><th>export_fidocadj
+<td>no
+<td>WIP
+ <td>
+n/a
+ <td>
+  partial export in fidocad .fcd format
+<tr><th>export_gcode
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  export gcode (for milling)
+<tr><th>export_gerber
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  export gerber for PCB fabbing, multiple files (configurable)
+<tr><th>export_ipcd356
+<td>no
+<td>Work-in-progress
+ <td>
+n/a
+ <td>
+  export IPC-D-356 Netlist (for automated testing)
+<tr><th>export_lpr
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  use export_ps and lpr to print a board directly
+<tr><th>export_nelma
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  export a board in the nelma format for Numerical capacitance calculation
+<tr><th>export_openscad
+<td>no
+<td>WIP
+ <td>
+n/a
+ <td>
+  export a colored 3D model as an openscad script
+<tr><th>export_png
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  render the on-screen version or emulated photo mode version in .png
+  <br>
+  render the on-screen version or emulated photo mode version in .gif
+  <br>
+  render the on-screen version or emulated photo mode version in .jpeg
+<tr><th>export_ps
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  render black&white postscript (single or multiple files)
+  <br>
+  render black&white or color embedded postscript (single file)
+<tr><th>export_stat
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  export a lihata file with anonimized statistics of the board
+<tr><th>export_svg
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  write an svg (Scalable Vector Graphics)
+<tr><th>export_test
+<td>
+<td>WIP
+ <td>
+n/a
+ <td>
+n/a
+<tr><th>export_xy
+<td>no
+<td>works
+ <td>
+n/a
+ <td>
+  geda/PCB x;y
+  <br>
+  gxyrs
+  <br>
+  Macrofab's pick&place
+  <br>
+  pick&place file for the TM220/TM240 device
+  <br>
+  KiCad .pos file
+
+</table>
+</body>
+</html>
+
