@@ -1,7 +1,7 @@
 $class io
 $short Eagle's xml and binary formats
 $long Load the design from eagle's xml and binary formats.
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-r eagle xml board version 6, 7 and 8
 $fmt-feature-r eagle binary board version 3, 4 and 5
