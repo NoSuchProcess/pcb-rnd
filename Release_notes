@@ -1,29 +1,31 @@
-pcb-rnd 1.2.6
+pcb-rnd 1.2.7
 ~~~~~~~~~~~~~
 
-The focus of the release is upgrading subcircuit support with terminals
-so that subcircuits can participate in circuits the same way as elements
-can. This made subcircuits suitable for use as footprints - without any of
-the inherited limitations of elements.
+The focus of the release is pad stacks: a new, generic object type that
+can serve as:
+ - via
+ - pin
+ - pad
+ - mounting hole
 
-Subcircuit terminals like SMD pads are often polygons and they need to
-clear copper polygons. This is done by introducing a new flag,
-CLEARPOLYPOLY that allows a polygon to have a clearance value and clear
-into other polygons just like lines and arcs. This can be used outside of
-subcircuits as well.
+The second most important effort was fixing most of the remaining
+subcircuit-related issues. By now subcircuits with padstacks or
+with heavy terminals are production-quality alternatives to
+elements/pins/pads.
 
-On the way of completing the new layer code, the HID API for rendering
-layers and layer groups had to be rewritten to fully support multi-color,
-composite layer group rendering. This allows the user to have
-selection-color displayed on a composite layer group. It makes the
-rendering API much simpler and orthogonal - makes developer's life
-easier. All HIDs and export plugins are updated for the new API.
+The arbitrary shaped pad support and polygon-clear-in-polygon
+features are upgraded with thermals. It is now possible to generate
+a thermal relief for any SMD or through-hole pad:
+ - round cap lines
+ - square cap lines
+ - circle
+ - arc
+ - arbitrary shaped convex polygon
 
-To follow the best pcb-rnd traditions, a few new I/O plugins have been
-added for this release, helping better communication with 2d and 3d
-mechanical CAD applications:
+The attribute dialog API got extended by a Dynamic Attribute Dialog (DAD) API;
+all new dialog boxes are implemented using the DAD, which makes the same code
+work with all existing HIDs. Already existing, per-HID dialog implementions
+will be revised and converted to DAD wherever possible.
 
-  - openscad exporter rewritten from scratch
-  - a new dxf exporter, written from scratch
-  - a minimalistic importer for HPGL
-
+Plugin io_eagle is now mature enough to load complex boards drawn in
+Eagle, using both the new xml format and the older binary format.
