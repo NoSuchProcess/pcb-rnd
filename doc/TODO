@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
-+ BUG: autosave leaks memory (when pcb-rnd is left there for long) [report: jg]
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
