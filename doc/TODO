@@ -190,6 +190,7 @@ Eagle binary:
 	- padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
 	- need to refine naming of library (.lbr) elements in loaded .lbr files
 	- need to add support for non top silk (tPlace), tDocu and top copper text in read.c
+	- layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
