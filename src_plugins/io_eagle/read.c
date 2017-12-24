@@ -1578,6 +1578,30 @@ static void st_uninit(read_state_t *st)
 static int post_process_thermals(read_state_t *st)
 {
 	/*do something in here */
+	pcb_trace("Entering pin loop...\n");
+	PCB_PIN_ALL_LOOP(st->pcb->Data);
+	{
+		pcb_trace("Pin ID: %d \n", pin->ID);
+	}
+	PCB_ENDALL_LOOP;
+	pcb_trace("Entering pad loop...\n");
+	PCB_PAD_ALL_LOOP(st->pcb->Data);
+	{
+		pcb_trace("Pad ID: %d \n", pad->ID);
+	}
+	PCB_ENDALL_LOOP;
+	pcb_trace("Entering via loop...\n");
+	PCB_VIA_LOOP(st->pcb->Data);
+	{
+		pcb_trace("Via ID: %d \n", via->ID);
+	}
+	PCB_END_LOOP;
+	pcb_trace("Entering padstack loop...\n");
+	PCB_PADSTACK_LOOP(st->pcb->Data);
+	{
+		pcb_trace("Padstack ID: %d \n", padstack->ID);
+	}
+	PCB_END_LOOP;
 	return 0;
 }
 
