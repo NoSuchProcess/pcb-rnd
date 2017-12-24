@@ -15,6 +15,8 @@
 		+ autoplace.c - needs intensive testing (including per perturbation operation tests)
 		- autoroute.c:961
 		- autoroute.c:1000
+- BUG: can't rotate polygon [report: sam]
+- BUG: parametric footprint dialog: do not regen the footprint while the user is editing - revise the timer code [report: sam]
 - BUG: subc terminals should be drawn at the end [report: Ade]
 - BUG: DRC hilight (select+find) broke: only find shows, clicking the next bug doesn't clear the flags of the previous
 - BUG: DRC preview windows don't show anything if generated after shift-tab flip (maybe with tab too?)
