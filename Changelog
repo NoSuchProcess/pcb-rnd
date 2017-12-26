@@ -1,4 +1,4 @@
-pcb-rnd 1.2.7 (r13582)
+pcb-rnd 1.2.7 (r13656)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[padstack]
 		-Add: pad stacks: generic object for pins, pads , vias and holes
