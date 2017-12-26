@@ -9,6 +9,8 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
+- BUG: lesstif layer selector doesn't work on silk and mask and paste (composite layers) [report: karl]
+- doc: explain the library path in 03_data [report: karl]
 - buffer: break up padstack, just like breaking up subcircuits
 - BUG: subc/term:
 	- term netlist connectivity (r10843):
