@@ -25,35 +25,40 @@ develop some extras. This document describes some of those extras.
 </ul>
 
 <H3> How my favorite service would look like </H3>
+<p>(Meanwhile I've designed, implemented and started a service called
+<a href="http://repo.hu/projects/edakrill">edakrill</a>, using these
+ideas. In the below list I'm marking points that are already done by
+edakrill.)
+<p>
 <ul>
 	<li> project-neutral - not a gEDA or KiCad or eagle or qucs or ltspice
 	     library, but a generic user library. If done with converters and/or
 	     interchange formats, neither the originator nor the consumer project
-	     would matter.
+	     would matter. <b>(done)</b>
 	<li> optimized for multiple UIs:
 		<ul>
-			<li> CLI access (e.g. through a VCS client)
-			<li> web access, maybe even web2.0
-			<li> remote repo integration (e.g. pcb-rnd has strong support for this)
+			<li> CLI access (e.g. through a VCS client) <b>(done: svn)</b>
+			<li> web access <b>(done)</b>, maybe even web2.0
+			<li> remote repo integration (e.g. pcb-rnd has strong support for this) <b>(done)</b>
 		</ul>
-	<li> backed up by a version control system in the background
+	<li> backed up by a version control system in the background  <b>(done: svn)</b>
 	<li> instead of complex meta-data systems, offer free form tagging, like
 	     openstreetmap does:
 		<ul>
-			<li> tags are free form key=value pairs, both key and value are simple strings
-			<li> let tagging conventions emerge
-			<li> let the these conventions be specified and maintained by the user community
-			<li> do not split the repository on a per uploader basis - that's the least useful information for an end user
+			<li> tags are free form key=value pairs, both key and value are simple strings  <b>(done)</b>
+			<li> let tagging conventions emerge  <b>(done)</b>
+			<li> let these conventions be specified and maintained by the user community
+			<li> do not split the repository on a per uploader basis - that's the least useful information for an end user <b>(done)</b>
 			<li> maybe implement a separate namespace for "signed" tags; e.g. some registered user would validate a few footprints and would tag them "went on copper and looked good"; if it's a signed tag, end users have the chance to validate the source of the tag and other contributors can not change or overwrite this tag
 		</ul>
 	<li> content licensing:
 		<ul>
-			<li> the ToS would say users must not upload footprints not drawn by themselves
-			<li> chose 2..3 reasonable licenses and require the user to specify which one the footprint uses upon upload
-			<li> <b>optionally</b> have a separate distribution and use license
+			<li> the ToS would say users must not upload footprints not drawn by themselves  <b>(done)</b>
+			<li> chose 2..3 reasonable licenses and require the user to specify which one the footprint uses upon upload  <b>(partly done: licenses not restricted but strictly tracked, only open source contribution accepted)</b>
+			<li> <b>optionally</b> have a separate distribution and use license  <b>(done)</b>
 		</ul>
 	<li> first support footprints and symbols because we have converters for
-	     those; gradually extend to 3d models, FEM, spice, schematics, PCBs
+	     those <b>(done)</b>; gradually extend to 3d models, FEM, spice, schematics, PCBs
 	     as common formats and/or converters emerge.
 </ul>
 
