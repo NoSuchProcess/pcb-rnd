@@ -24,20 +24,20 @@ a different name for it.
 Before we start, we must accept that we have alternative implementations,
 different projects going in different directions. Although this means
 code and effort duplication, <i>this is not a bad thing, this is a good
-thing</i>. Most of us doesn't want to live in a world where there's only
+thing</i>. Most of us don't want to live in a world where there's only
 one EDA software available, even if every development effort is concentrated
 there. (If you think you do, then rethink it with substituting your favorite
 package with one you really dislike and imagine that's the only one available.)
 <p>
 Respecting the choices of another project seems to be simple in theory, but
 it is important to see a few examples of what we need to accept in practice.
-Else we make decisions tat are unacceptable for one project or another
+Else we make decisions that are unacceptable for one project or another
 too easily. An incomplete list of examples of what differs in another EDA project:
 <ul>
 	<li> It has different goals. Aspects that are extremely important core
 	     concepts here are something to be avoided there.
 	<li> Different data model. Different way the tool models the world. Even,
-	     different subset of the world is modelled by to tool.
+	     different subset of the world is modelled by the tool.
 	<li> Obviously, different code. This doesn't seem to be a big issue
 	     until a common effort accidentally starts to depend on it, e.g. because
 	     of the lib API.
@@ -70,10 +70,10 @@ must obey while designing the common:
 	     we implement a common library of footprints - it may be a good idea
 	     to also implement a way to index them and store the result in some
 	     complex data format. But what if the other program already has a
-	     complex data format for this? What if our hash is an incompatible
+	     complex data format for this? What if our hash table is an incompatible
 	     idea with their lists? It's better to step back and rethink:
 	     do we really <b>have to</b> do the indexing in order to achieve
-	     our goals? If the answer is not "absolutely yes!", we just need
+	     our goals? If the answer is not "absolutely yes!", we just need to
 	     skip it. Less is more.
 	<li> This obviously includes dependencies. If our shared solution depends
 	     on qt, programs using gtk will hate it. If it depends on glib,
@@ -105,15 +105,15 @@ etc. What's common in them:
 	<li> They specify a protocol and not the actual implementation.
 	<li> They are freely accessible as RFCs - no registration, no shopping
 	     carts, no much restrictions; if I wanted to copy the RFC next to my
-	     implementation as a documentation and distribute the pack, I am free
+	     implementation as part of the documentation and distribute the pack, I am free
 	     to do so.
 	<li> They try to concentrate on one thing, specify all relevant details
 	     and leave everything up to the user.
 </ul>
 <p>
 This is a pretty important difference compared to the original edacore
-idea (of the 2015 FOSDEM talk). We should try to write a lib and sell
-that as the common. Instead, we should:
+idea (of the 2015 FOSDEM talk: ee should try to write a lib and give
+that to the common). Instead, we should:
 <ul>
 	<li> Define free, open file formats and mechanisms;
 	<li> Design for the common minimum, not for the fancy extras and completeness.
@@ -134,7 +134,7 @@ that as the common. Instead, we should:
 	     that parses it, makes checks on it ("lint"), tools that visualize
 	     the footprint (e.g. generate a png). This can be anything from a
 	     web service to command line tools. Best if there are even multiple
-	     interfaces and APIs. This helps projects to adapt the file formats
+	     interfaces and APIs. This helps projects to adopt the file formats
 	     as they can try it in advance and they see they have debug tools
 	     readily available, still these tools won't interfere with their projects.
 </ul>
@@ -149,7 +149,7 @@ useful, we are not required to do them. It's an important consideration:
 we don't have much resources, we should spend it where it's spent the best.
 I believe we don't need to do the below in order to get an "edacore" idea work:
 <ul>
-	<li> Common code lib implementations; it's a nice extra, but it's the file 
+	<li> Common code lib implementations; it's a nice extra, but it's the file
 	     format specs that would make it work
 	<li> Some centralized repository, web service, etc. for sharing user content:
 	     once a few tools already have support for "edacore", this will
@@ -158,8 +158,8 @@ I believe we don't need to do the below in order to get an "edacore" idea work:
 	     or whatever techniques. Of course we can also run
 	     <a href="20170213_edacore2.html"> our own repository service </a> but
 	     that should not be tied together with the "edacore" idea, it should just
-	     be one instance that happens to be maintained by the same people who
-	     made up the specs.
+	     be one user of the formast (that happens to be maintained by the same people who
+	     made up the specs).
 	<li> "Fancy features". Provide the bare minimum. It's a tradeoff between
 	     the "works everywhere" vs. "looks perfect in all little details". If
 	     the user wants the former, an interchange format is for that; for the
@@ -186,12 +186,12 @@ we optionally provided some libs and tools.
 <H3> What we should NOT expect from such a project? </H3>
 <p>
 <ul>
-	<li> A common interchange format replacing local native formats
+	<li> A common interchange format replacing local native formats.
 	<li> A common interchange format capturing all tiny details that a native
-	     format can
+	     format can.
 	<li> Proprietary EDA tools cooperating on this on the export-side - they
 	     don't want their users to be able to get the design out of their
-	     program, especially not if it's clearly for importing in another
+	     program, especially not if it's clearly for importing in another.
 	<li> Everyone's support - even with the most careful design and the lowest
 	     barriers there will be project that won't like it and won't join. Some
 	     projects will hate it exactly because it's not restrictive enough, e.g.
