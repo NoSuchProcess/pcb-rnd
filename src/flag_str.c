@@ -349,6 +349,9 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 	while (*ep && *ep != '"') {
 		int found = 0;
 
+		while (*fp == ',')
+			fp++;
+
 		for (ep = fp; *ep && *ep != ',' && *ep != '"' && *ep != '('; ep++);
 		flen = ep - fp;
 		if (*ep == '(')
