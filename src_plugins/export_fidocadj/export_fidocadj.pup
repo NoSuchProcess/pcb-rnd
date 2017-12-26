@@ -4,5 +4,5 @@ $long Export to FidoCadJ format (.fcd)
 $state WIP
 $fmt-native no
 $fmt-feature-w partial export in fidocad .fcd format
-default disable-all
+default buildin
 autoload 1
