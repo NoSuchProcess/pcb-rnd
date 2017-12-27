@@ -178,7 +178,7 @@ void pcb_board_set_changed_flag(pcb_bool New);
 void pcb_board_changed(int reverted);
 
 
-/* Obsolete pcb_board_t field accessors - do not use */
+/* pcb_board_t field accessors - do not use; required for path.[ch] to not depend on board.h */
 const char *pcb_board_get_filename(void);
 const char *pcb_board_get_name(void);
 
