@@ -92,7 +92,8 @@ void copy_chrarr(const char *inds, const char *varname)
 				if ((c < 32) || (c>126))
 					col+=printf("%d,", c);
 				else
-					col+=printf("'%c',", c); break;
+					col+=printf("'%c',", c);
+				break;
 		}
 	}
 	printf("\n%s0};\n", inds);
