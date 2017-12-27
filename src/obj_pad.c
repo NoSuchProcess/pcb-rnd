@@ -99,7 +99,7 @@ pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN, pad);
 	pad->ID = pcb_create_ID_get();
 	pad->Element = Element;
-	return (pad);
+	return pad;
 }
 
 pcb_pad_t *pcb_element_pad_new_rect(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
@@ -281,7 +281,7 @@ void *pcb_padop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		pcb_pad_invalidate_draw(Pad);
-		return (Pad);
+		return Pad;
 	}
 	return NULL;
 }
@@ -328,7 +328,7 @@ void *pcb_padop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 	}
 	else
 		Pad->Name = ctx->chgname.new_name;
-	return (old);
+	return old;
 }
 
 /* changes the number of a pad */
@@ -344,7 +344,7 @@ void *pcb_padop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *
 	}
 	else
 		Pad->Number = ctx->chgname.new_name;
-	return (old);
+	return old;
 }
 
 /* changes the square flag of a pad */
@@ -360,7 +360,7 @@ void *pcb_padop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	pcb_pad_invalidate_draw(Pad);
-	return (Pad);
+	return Pad;
 }
 
 /* sets the square flag of a pad */
@@ -399,7 +399,7 @@ void *pcb_padop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 		Pad->Mask = value;
 		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_pad_invalidate_draw(Pad);
-		return (Pad);
+		return Pad;
 	}
 	return NULL;
 }

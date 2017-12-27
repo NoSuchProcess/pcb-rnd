@@ -214,7 +214,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 	}
 	pcb_draw();
 	pcb_undo_inc_serial();
-	return (changed);
+	return changed;
 }
 
 static void fix_box_dir(pcb_box_t *Box, int force_pos)
@@ -679,7 +679,7 @@ pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
 		}
 	}
 	PCB_END_LOOP;
-	return (changed);
+	return changed;
 }
 
 /* ---------------------------------------------------------------------------
@@ -883,5 +883,5 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 		free(pat);
 	if (pattern_copy != NULL)
 		free(pattern_copy);
-	return (changed);
+	return changed;
 }

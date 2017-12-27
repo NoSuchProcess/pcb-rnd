@@ -439,7 +439,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filenam
 
 	fputs("ENDPCB\r\n",FP); /*autotrax footer*/
 
-	return (0);
+	return 0;
 }
 
 int write_autotrax_layout_tracks(FILE * FP, pcb_cardinal_t number, pcb_layer_t *layer)

@@ -5650,7 +5650,7 @@ static Token *FindToken(register int cod)
       }
       break;
     }
-  return (wlk);
+  return wlk;
 }
 /*
  *	Context hash table.
@@ -5683,7 +5683,7 @@ static Context *FindContext(register int cod)
       }
       break;
     }
-  return (wlk);
+  return wlk;
 }
 /*
  *	Token stacking variables.
@@ -5987,7 +5987,7 @@ static int MatchToken(register const char * str)
       }
       return (wlk->Token->Code);
     }
-  return (0);
+  return 0;
 }
 /*
  *	Match context:
@@ -6039,7 +6039,7 @@ static int MatchContext(register const char * str)
       owk->u.Used = NULL;
       return (wlk->Context->Code);
     }
-  return (0);
+  return 0;
 }
 /*
  *	PopC:
@@ -6126,7 +6126,7 @@ static int yylex()
         else {
           yytext[1] = '\0';
           Stack(yytext,c);
-          return (c);
+          return c;
         }
         break;
       /*
@@ -6139,7 +6139,7 @@ static int yylex()
         yytext[--l] = '\0';
         yylval.s = strcpy((char *)Malloc(l + 1),yytext);
         Stack(yytext,EDIF_TOK_INT);
-        return (EDIF_TOK_INT);
+        return EDIF_TOK_INT;
       /*
        *	Grab an identifier, see if the current context enables
        *	it with a specific token value.
@@ -6151,11 +6151,11 @@ static int yylex()
         yytext[--l] = '\0';
         if (CSP->Context->Token && (c = MatchToken(yytext))){
           Stack(yytext,c);
-          return (c);
+          return c;
         }
         yylval.s = strcpy((char *)Malloc(l + 1),yytext);
         Stack(yytext, EDIF_TOK_IDENT);
-        return (EDIF_TOK_IDENT);
+        return EDIF_TOK_IDENT;
       /*
        *	Scan until you find the start of an identifier, discard
        *	any whitespace found. On no identifier, return a '('.
@@ -6183,11 +6183,11 @@ static int yylex()
         yytext[--l] = '\0';
         if ( (c = MatchContext(yytext)) ){
           Stack(yytext,c);
-          return (c);
+          return c;
         }
         yylval.s = strcpy((char *)Malloc(l + 1),yytext);
         Stack(yytext, EDIF_TOK_KEYWORD);
-        return (EDIF_TOK_KEYWORD);
+        return EDIF_TOK_KEYWORD;
       /*
        *	Suck up string characters but once resolved they should
        *	be deposited in the string bucket because they can be
@@ -6201,7 +6201,7 @@ static int yylex()
         else if (c == '"' || c == EOF){
           yylval.s = FormString();
           Stack(yylval.s, EDIF_TOK_STR);
-          return (EDIF_TOK_STR);
+          return EDIF_TOK_STR;
         } else if (c == '%')
           s = L_ASCIICHAR;
         else

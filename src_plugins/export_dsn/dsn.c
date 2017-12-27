@@ -674,7 +674,7 @@ static int PrintSPECCTRA(void)
 
 	fclose(fp);
 
-	return (0);
+	return 0;
 }
 
 

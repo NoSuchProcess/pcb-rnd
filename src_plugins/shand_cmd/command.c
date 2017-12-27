@@ -88,7 +88,7 @@ static int CommandHelp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					"  q!          quits without save warning\n"
 					"  rn [file]   read in a net-list file\n"
 					"  s  [file]   save layout\n" "  w  [file]   save layout\n" "  wq [file]   save layout and quit\n");
-	return (0);
+	return 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -122,12 +122,12 @@ static int CommandLoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	default: /* usage */
 		pcb_message(PCB_MSG_ERROR, "Usage: l [name]\n  loads layout data\n");
-		return (1);
+		return 1;
 	}
 
 	if (!PCB->Changed || pcb_gui->confirm_dialog("OK to override layout data?", 0))
 		pcb_load_pcb(filename, format, pcb_true, 0);
-	return (0);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -158,9 +158,9 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x
 
 	default:											/* usage */
 		pcb_message(PCB_MSG_ERROR, pcb_false, "Usage: le [name]\n  loads element data to buffer\n");
-		return (1);
+		return 1;
 	}
-	return (0);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -194,9 +194,9 @@ static int CommandLoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x,
 
 	default:  /* usage */
 		pcb_message(PCB_MSG_ERROR, "Usage: m [name]\n  loads layout data to buffer\n");
-		return (1);
+		return 1;
 	}
-	return (0);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -271,13 +271,13 @@ static int CommandLoadNetlist(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 	default:											/* usage */
 		pcb_message(PCB_MSG_ERROR, "Usage: rn [name]\n  reads in a netlist file\n");
-		return (1);
+		return 1;
 	}
 	if (PCB->Netlistname)
 		free(PCB->Netlistname);
 	PCB->Netlistname = pcb_strdup_strip_wspace(filename);
 
-	return (0);
+	return 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -334,9 +334,9 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	default:
 		pcb_message(PCB_MSG_ERROR, "Usage: s [name] | w [name]\n  saves layout data\n");
-		return (1);
+		return 1;
 	}
-	return (0);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -358,7 +358,7 @@ static int CommandSaveLayoutAndQuit(int argc, const char **argv, pcb_coord_t x, 
 {
 	if (!CommandSaveLayout(argc, argv, x, y))
 		return CommandQuit(0, 0, 0, 0);
-	return (1);
+	return 1;
 }
 
 /* --------------------------------------------------------------------------- */

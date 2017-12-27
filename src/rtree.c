@@ -697,7 +697,7 @@ struct rtree_node *find_clusters(struct rtree_node *node)
 	sort_node(node);
 	adjust_bounds(new_node);
 	sort_node(new_node);
-	return (new_node);
+	return new_node;
 }
 
 /* split a node according to clusters

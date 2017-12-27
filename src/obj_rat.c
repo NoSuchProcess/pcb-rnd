@@ -77,7 +77,7 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 	pcb_rat_t *Line = pcb_rat_alloc(Data);
 
 	if (!Line)
-		return (Line);
+		return Line;
 
 	Line->ID = pcb_create_ID_get();
 	Line->Flags = Flags;
@@ -95,7 +95,7 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 	if (!Data->rat_tree)
 		Data->rat_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);
-	return (Line);
+	return Line;
 }
 
 /* DeleteRats - deletes rat lines only
@@ -121,7 +121,7 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (changed);
+	return changed;
 }
 
 
@@ -173,7 +173,7 @@ void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	pcb_draw();
-	return (newone);
+	return newone;
 }
 
 /* move a rat to a layer: convert it into a layer line */
@@ -192,7 +192,7 @@ void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	pcb_line_invalidate_draw(ctx->move.dst_layer, newone);
 	pcb_draw();
-	return (newone);
+	return newone;
 }
 
 /* destroys a rat */

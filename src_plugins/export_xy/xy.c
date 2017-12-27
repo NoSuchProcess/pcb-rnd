@@ -736,7 +736,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 	fclose(fp);
 
-	return (0);
+	return 0;
 }
 
 #include "default_templ.h"

@@ -984,5 +984,5 @@ done:
 		pcb_redraw();
 	}
 	vtp0_uninit(&Selected);
-	return (changed);
+	return changed;
 }

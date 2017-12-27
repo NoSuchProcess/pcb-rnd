@@ -109,7 +109,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 
 	pcb_font_create_default(ptr);
 
-	return (ptr);
+	return ptr;
 }
 
 #include "defpcb_internal.c"

@@ -605,7 +605,7 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bo
 	if (!elem_only)
 		WriteLayers(FP, buff->Data);
 
-	return (0);
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -629,7 +629,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WritePCBNetlistData(FP);
 	WritePCBNetlistPatchData(FP);
 
-	return (0);
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------

@@ -4747,5 +4747,5 @@ donerouting:
 #if defined (ROUTE_DEBUG)
 	aabort = 0;
 #endif
-	return (changed);
+	return changed;
 }

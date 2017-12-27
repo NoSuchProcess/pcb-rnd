@@ -116,7 +116,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (ptr2);
+	return ptr2;
 }
 
 void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
@@ -141,7 +141,7 @@ void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (ptr2);
+	return ptr2;
 }
 
 void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)

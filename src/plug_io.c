@@ -505,7 +505,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		pcb_gui->log("Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
 #endif
 
-		return (0);
+		return 0;
 	}
 
 	free(new_filename);
@@ -525,7 +525,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	/* release unused memory */
 	pcb_board_remove(newPCB);
 
-	return (1);
+	return 1;
 }
 
 
@@ -643,7 +643,7 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 		if ((fp = pcb_fopen(Filename, "w")) == NULL)
 			pcb_open_error_message(Filename);
 	}
-	return (fp);
+	return fp;
 }
 
 /* ---------------------------------------------------------------------------

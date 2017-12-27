@@ -123,7 +123,7 @@ static StringList *string_insert(char *str, StringList * list)
 	newlist->str = pcb_strdup(str);
 
 	if (list == NULL)
-		return (newlist);
+		return newlist;
 
 	cur = list;
 	while (cur->next != NULL)
@@ -131,7 +131,7 @@ static StringList *string_insert(char *str, StringList * list)
 
 	cur->next = newlist;
 
-	return (list);
+	return list;
 }
 
 static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom)
@@ -150,7 +150,7 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 		newlist->value = pcb_strdup(value);
 		newlist->num = 1;
 		newlist->refdes = string_insert(refdes, NULL);
-		return (newlist);
+		return newlist;
 	}
 
 	/* search and see if we already have used one of these
@@ -181,7 +181,7 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 		newlist->refdes = string_insert(refdes, NULL);
 	}
 
-	return (bom);
+	return bom;
 
 }
 
@@ -258,7 +258,7 @@ static int PrintBOM(void)
 
 	fclose(fp);
 
-	return (0);
+	return 0;
 }
 
 static void bom_do_export(pcb_hid_attr_val_t * options)

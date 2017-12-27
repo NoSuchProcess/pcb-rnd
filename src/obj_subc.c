@@ -944,7 +944,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	pcb_text_dyn_bbox_update(sc->data);
 
-	return (sc);
+	return sc;
 }
 
 extern pcb_opfunc_t ClipFunctions, MoveFunctions, MoveFunctions_noclip, Rotate90Functions, RotateFunctions, ChgFlagFunctions, ChangeSizeFunctions, ChangeClearSizeFunctions, Change1stSizeFunctions, Change2ndSizeFunctions;

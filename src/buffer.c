@@ -708,7 +708,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	printf("  .... Leaving CopyPastebufferToLayout.\n");
 #endif
 
-	return (changed);
+	return changed;
 }
 
 void pcb_buffer_set_number(int Number)

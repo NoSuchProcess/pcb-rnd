@@ -127,7 +127,7 @@ pcb_lib_menu_t *pcb_lib_net_new(pcb_lib_t *lib, char *name, const char *style)
 		menu->Style = NULL;
 	else
 		menu->Style = pcb_strdup(style);
-	return (menu);
+	return menu;
 }
 
 /* ---------------------------------------------------------------------------
@@ -140,5 +140,5 @@ pcb_lib_entry_t *pcb_lib_conn_new(pcb_lib_menu_t *net, char *conn)
 	entry->ListEntry = pcb_strdup_null(conn);
 	entry->ListEntry_dontfree = 0;
 
-	return (entry);
+	return entry;
 }

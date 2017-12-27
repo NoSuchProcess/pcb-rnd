@@ -206,7 +206,7 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 
 	Line = pcb_line_alloc(Layer);
 	if (!Line)
-		return (Line);
+		return Line;
 	Line->ID = pcb_create_ID_get();
 	Line->Flags = Flags;
 	PCB_FLAG_CLEAR(PCB_FLAG_RAT, Line);
@@ -219,7 +219,7 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 	Line->Point2.Y = Y2;
 	Line->Point2.ID = pcb_create_ID_get();
 	pcb_add_line_on_layer(Layer, Line);
-	return (Line);
+	return Line;
 }
 
 static pcb_line_t *pcb_line_copy_meta(pcb_line_t *dst, pcb_line_t *src)
@@ -370,7 +370,7 @@ void *pcb_lineop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_
 
 	PCB_SET_PARENT(line, layer, lay);
 
-	return (line);
+	return line;
 }
 
 /* changes the size of a line */
@@ -390,7 +390,7 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_line_invalidate_draw(Layer, Line);
-		return (Line);
+		return Line;
 	}
 	return NULL;
 }
@@ -419,7 +419,7 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 		pcb_line_invalidate_draw(Layer, Line);
-		return (Line);
+		return Line;
 	}
 	return NULL;
 }
@@ -431,7 +431,7 @@ void *pcb_lineop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 
 	Layer = Layer;
 	Line->Number = ctx->chgname.new_name;
-	return (old);
+	return old;
 }
 
 /* changes the clearance flag of a line */
@@ -451,7 +451,7 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	pcb_line_invalidate_draw(Layer, Line);
-	return (Line);
+	return Line;
 }
 
 /* sets the clearance flag of a line */
@@ -480,11 +480,11 @@ void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 																Line->Point2.X + ctx->copy.DeltaX,
 																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND));
 	if (!line)
-		return (line);
+		return line;
 	pcb_line_copy_meta(line, Line);
 	pcb_line_invalidate_draw(Layer, line);
 	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, Layer, line, line);
-	return (line);
+	return line;
 }
 
 /* moves a line */
@@ -541,7 +541,7 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 			pcb_line_invalidate_draw(Layer, Line);
 			pcb_draw();
 		}
-		return (Line);
+		return Line;
 	}
 	else {												/* must be a rat */
 
@@ -555,7 +555,7 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 			pcb_rat_invalidate_draw((pcb_rat_t *) Line);
 			pcb_draw();
 		}
-		return (Line);
+		return Line;
 	}
 }
 
@@ -650,7 +650,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		pcb_draw();
 	}
 	if (ctx->move.dst_layer == Layer)
-		return (Line);
+		return Line;
 
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_LINE, Layer, Line, Line);
 	if (Layer->meta.real.vis)
@@ -665,7 +665,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	if (!PCB->ViaOn || ctx->move.more_to_come ||
 			pcb_layer_get_group_(Layer) ==
 			pcb_layer_get_group_(ctx->move.dst_layer) || !(pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, Layer)) & PCB_LYT_COPPER) || !(pcb_layer_flags_(ctx->move.dst_layer) & PCB_LYT_COPPER))
-		return (newone);
+		return newone;
 	/* consider via at Point1 */
 	sb.X1 = newone->Point1.X - newone->Thickness / 2;
 	sb.X2 = newone->Point1.X + newone->Thickness / 2;
@@ -691,7 +691,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 			pcb_r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
 	}
 	pcb_draw();
-	return (newone);
+	return newone;
 }
 
 /* destroys a line from a layer */
@@ -922,7 +922,7 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 		/* creation call adds it to the rtree */
 	}
 	pcb_draw();
-	return (line);
+	return line;
 }
 
 void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)

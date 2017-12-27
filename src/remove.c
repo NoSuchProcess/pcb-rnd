@@ -107,7 +107,7 @@ void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.remove.destroy_target = NULL;
 
 	ptr = pcb_object_operation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	return (ptr);
+	return ptr;
 }
 
 void *pcb_destroy_object(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)

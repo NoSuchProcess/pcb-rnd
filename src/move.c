@@ -237,7 +237,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	pcb_draw_inhibit_dec();
 	pcb_draw();
 
-	return (ptr2);
+	return ptr2;
 }
 
 void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse)
@@ -265,5 +265,5 @@ pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 
 	changed = pcb_selected_operation(PCB, PCB->Data, &MoveToLayerFunctions, &ctx, pcb_true, PCB_TYPEMASK_ALL);
 	/* passing pcb_true to above operation causes Undoserial to auto-increment */
-	return (changed);
+	return changed;
 }

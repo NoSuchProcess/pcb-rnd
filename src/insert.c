@@ -75,7 +75,7 @@ void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_
 	ptr = pcb_object_operation(&InsertFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	if (ptr != NULL)
 		pcb_undo_inc_serial();
-	return (ptr);
+	return ptr;
 }
 
 pcb_point_t *pcb_adjust_insert_point(void)

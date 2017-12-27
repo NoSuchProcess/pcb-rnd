@@ -58,7 +58,7 @@ static int ReadNetlist(const char *filename)
 	const char *ratcmd;
 
 	if (!filename)
-		return (1);									/* nothing to do */
+		return 1;									/* nothing to do */
 
 	pcb_message(PCB_MSG_INFO, _("Importing PCB netlist %s\n"), filename);
 
@@ -83,7 +83,7 @@ static int ReadNetlist(const char *filename)
 		if (*command == '\0' || (fp = pcb_popen(command, "r")) == NULL) {
 			pcb_popen_error_message(command);
 			free(command);
-			return (1);
+			return 1;
 		}
 		free(command);
 	}
@@ -147,7 +147,7 @@ static int ReadNetlist(const char *filename)
 	if (!lines) {
 		pcb_message(PCB_MSG_ERROR, _("Empty netlist file!\n"));
 		pcb_pclose(fp);
-		return (1);
+		return 1;
 	}
 	if (used_popen)
 		pcb_pclose(fp);
@@ -155,7 +155,7 @@ static int ReadNetlist(const char *filename)
 		fclose(fp);
 	pcb_sort_netlist();
 	pcb_ratspatch_make_edited(PCB);
-	return (0);
+	return 0;
 }
 
 int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)

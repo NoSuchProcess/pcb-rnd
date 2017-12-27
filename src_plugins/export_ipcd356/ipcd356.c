@@ -391,7 +391,7 @@ int IPCD356_Netlist(void)
 
 	if (IPCD356_SanityCheck()) {	/* Check for invalid names + numbers. */
 		pcb_message(PCB_MSG_ERROR, "IPCD356: aborting on the sanity check.\n");
-		return (1);
+		return 1;
 	}
 
 	sprintf(net, "%s.ipc", PCB->Name);
@@ -565,10 +565,10 @@ int IPCD356_SanityCheck()
 	PCB_ELEMENT_LOOP(PCB->Data);
 	if (element->Name[1].TextString == '\0') {
 		pcb_message(PCB_MSG_ERROR, "Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
-		return (1);
+		return 1;
 	}
 	PCB_END_LOOP;											/* Element. */
-	return (0);
+	return 0;
 }
 
 static void IPCD356_do_export(pcb_hid_attr_val_t * options)

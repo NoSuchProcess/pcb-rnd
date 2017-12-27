@@ -1024,7 +1024,7 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 	ptr->delta_index[point_number] = delta_index;
 	ptr->delta_index[point_number^1] = -1;
 
-	return (ptr);
+	return ptr;
 }
 
 static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int end)
@@ -1045,7 +1045,7 @@ static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_
 	
 	ptr->Ends |= end;
 	
-	return (ptr);
+	return ptr;
 }
 
 /*** event handlers ***/

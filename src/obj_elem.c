@@ -511,7 +511,7 @@ pcb_bool pcb_selected_element_change_side(void)
 		}
 	}
 	PCB_END_LOOP;
-	return (change);
+	return change;
 }
 
 /* changes the layout-name of an element */
@@ -587,7 +587,7 @@ pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_eleme
 
 	/* abort on error */
 	if (!Dest)
-		return (Dest);
+		return Dest;
 
 	PCB_ELEMENT_PCB_LINE_LOOP(Src);
 	{
@@ -621,7 +621,7 @@ pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_eleme
 	Dest->MarkY = Src->MarkY + dy;
 
 	pcb_element_bbox(Data, Dest, pcb_font(PCB, 0, 1));
-	return (Dest);
+	return Dest;
 }
 
 /* creates an new element; memory is allocated if needed */
@@ -654,7 +654,7 @@ pcb_element_t *pcb_element_new(pcb_data_t *Data, pcb_element_t *Element,
 	printf("  .... Leaving CreateNewElement.\n");
 #endif
 
-	return (Element);
+	return Element;
 }
 
 /* creates a new arc in an element */
@@ -952,7 +952,7 @@ static char *BumpName(char *Name)
 	/* if this is not our string, put back the blown character */
 	if (start != temp)
 		*Name = c;
-	return (temp);
+	return temp;
 }
 
 
@@ -963,7 +963,7 @@ char *pcb_element_uniq_name(pcb_data_t *Data, char *Name)
 	pcb_bool unique = pcb_true;
 	/* null strings are ok */
 	if (!Name || !*Name)
-		return (Name);
+		return Name;
 
 	for (;;) {
 		PCB_ELEMENT_LOOP(Data);
@@ -976,7 +976,7 @@ char *pcb_element_uniq_name(pcb_data_t *Data, char *Name)
 		}
 		PCB_END_LOOP;
 		if (unique)
-			return (Name);
+			return Name;
 		unique = pcb_true;
 	}
 }
@@ -1314,7 +1314,7 @@ void *pcb_elemop_add_to_buffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 		PCB_END_LOOP;
 	}
-	return (element);
+	return element;
 }
 
 /* moves a element to buffer without allocating memory for pins/names */
@@ -1391,7 +1391,7 @@ void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	PCB_END_LOOP;
 	if (changed)
-		return (Element);
+		return Element;
 	else
 		return NULL;
 }
@@ -1423,7 +1423,7 @@ void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	PCB_END_LOOP;
 	if (changed)
-		return (Element);
+		return Element;
 	else
 		return NULL;
 }
@@ -1481,7 +1481,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	PCB_END_LOOP;
 
 	if (changed)
-		return (Element);
+		return Element;
 	else
 		return NULL;
 }
@@ -1520,7 +1520,7 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_elem_invalidate_draw(Element);
 	}
 	if (changed)
-		return (Element);
+		return Element;
 	return NULL;
 }
 
@@ -1544,7 +1544,7 @@ void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 		PCB_END_LOOP;
 		pcb_elem_name_invalidate_draw(Element);
-		return (Element);
+		return Element;
 	}
 	return NULL;
 }
@@ -1590,7 +1590,7 @@ void *pcb_elemop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 		ans = pcb_padop_change_square(ctx, Element, pad);
 	}
 	PCB_END_LOOP;
-	return (ans);
+	return ans;
 }
 
 /* sets the square flag of all pins on an element */
@@ -1610,7 +1610,7 @@ void *pcb_elemop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 		ans = pcb_padop_set_square(ctx, Element, pad);
 	}
 	PCB_END_LOOP;
-	return (ans);
+	return ans;
 }
 
 /* clears the square flag of all pins on an element */
@@ -1630,7 +1630,7 @@ void *pcb_elemop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 		ans = pcb_padop_clear_square(ctx, Element, pad);
 	}
 	PCB_END_LOOP;
-	return (ans);
+	return ans;
 }
 
 /* changes the octagon flags of all pins of an element */
@@ -1706,7 +1706,7 @@ void *pcb_elemop_copy(pcb_opctx_t *ctx, pcb_element_t *Element)
 #ifdef DEBUG
 	printf(" ... Leaving pcb_elemop_copy.\n");
 #endif
-	return (element);
+	return element;
 }
 
 /* moves all names of an element to a new position */
@@ -1737,7 +1737,7 @@ void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 		PCB_END_LOOP;
 	}
-	return (Element);
+	return Element;
 }
 
 /* moves an element */
@@ -1763,7 +1763,7 @@ void *pcb_elemop_move(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	if (didDraw)
 		pcb_draw();
-	return (Element);
+	return Element;
 }
 
 /* destroys a element */
@@ -1818,7 +1818,7 @@ void *pcb_elemop_rotate90(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_element_rotate90(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	pcb_elem_invalidate_draw(Element);
 	pcb_draw();
-	return (Element);
+	return Element;
 }
 
 /* ----------------------------------------------------------------------
@@ -1836,7 +1836,7 @@ void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 	PCB_END_LOOP;
 	pcb_elem_name_invalidate_draw(Element);
 	pcb_draw();
-	return (Element);
+	return Element;
 }
 
 /*** draw ***/

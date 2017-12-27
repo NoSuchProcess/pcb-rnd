@@ -326,7 +326,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	/* clear all visit marks */
 	clear_drc_flag(0);
 
-	return (Wantlist);
+	return Wantlist;
 }
 
 /*
@@ -501,7 +501,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	}
 	PCB_END_LOOP;
 	vtp0_uninit(&generic);
-	return (warn);
+	return warn;
 }
 
 static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t *a)
@@ -625,7 +625,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 			Warned |= CheckShorts(a->Connection[0].menu);
 	}
 	pcb_reset_conns(pcb_false);
-	return (Warned);
+	return Warned;
 }
 
 /* ---------------------------------------------------------------------------
@@ -783,7 +783,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 		pcb_conn_lookup_uninit();
 		pcb_conn_lookup_init();
 	}
-	return (changed);
+	return changed;
 }
 
 pcb_bool
@@ -1075,7 +1075,7 @@ char *pcb_connection_name(pcb_any_obj_t *obj)
 	strcpy(name, PCB_UNKNOWN(parent));
 	strcat(name, "-");
 	strcat(name, PCB_UNKNOWN(num));
-	return (name);
+	return name;
 }
 
 /* ---------------------------------------------------------------------------

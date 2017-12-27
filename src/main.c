@@ -602,5 +602,5 @@ int main(int argc, char *argv[])
 
 	pcb_main_uninit();
 
-	return (0);
+	return 0;
 }

@@ -238,7 +238,7 @@ void pcb_undo_unlock(void)
  */
 pcb_bool pcb_undoing(void)
 {
-	return (Locked);
+	return Locked;
 }
 
 uundo_serial_t pcb_undo_serial(void)

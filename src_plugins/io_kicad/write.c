@@ -467,7 +467,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	if (outlineCount > 0) {
 		free(outlineLayers);
 	}
-	return (0);
+	return 0;
 }
 
 

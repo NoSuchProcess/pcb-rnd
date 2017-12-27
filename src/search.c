@@ -1214,13 +1214,13 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 
 	if (Type & PCB_TYPE_RATLINE && PCB->RatOn &&
 			SearchRatLineByLocation(objst, req_flag, (pcb_rat_t **) Result1, (pcb_rat_t **) Result2, (pcb_rat_t **) Result3))
-		return (PCB_TYPE_RATLINE);
+		return PCB_TYPE_RATLINE;
 
 	if (Type & PCB_TYPE_VIA && SearchViaByLocation(objst, req_flag, (pcb_pin_t **) Result1, (pcb_pin_t **) Result2, (pcb_pin_t **) Result3))
-		return (PCB_TYPE_VIA);
+		return PCB_TYPE_VIA;
 
 	if (Type & PCB_TYPE_PSTK && SearchPadstackByLocation(objst, req_flag, (pcb_pstk_t **) Result1, (pcb_pstk_t **) Result2, (pcb_pstk_t **) Result3))
-		return (PCB_TYPE_PSTK);
+		return PCB_TYPE_PSTK;
 
 	if (Type & PCB_TYPE_PIN && SearchPinByLocation(objst, req_flag, (pcb_element_t **) pr1, (pcb_pin_t **) pr2, (pcb_pin_t **) pr3))
 		HigherAvail = PCB_TYPE_PIN;
@@ -1267,29 +1267,29 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_POLY_POINT &&
 					SearchPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_point_t **) Result3))
-				return (PCB_TYPE_POLY_POINT);
+				return PCB_TYPE_POLY_POINT;
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_LINE_POINT &&
 					SearchLinePointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_point_t **) Result3))
-				return (PCB_TYPE_LINE_POINT);
+				return PCB_TYPE_LINE_POINT;
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_ARC_POINT &&
 					SearchArcPointByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int **) Result3))
-				return (PCB_TYPE_ARC_POINT);
+				return PCB_TYPE_ARC_POINT;
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_LINE
 					&& SearchLineByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_line_t **) Result3))
-				return (PCB_TYPE_LINE);
+				return PCB_TYPE_LINE;
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_ARC &&
 					SearchArcByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (pcb_arc_t **) Result3))
-				return (PCB_TYPE_ARC);
+				return PCB_TYPE_ARC;
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_TEXT
 					&& SearchTextByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3))
-				return (PCB_TYPE_TEXT);
+				return PCB_TYPE_TEXT;
 
 			if (Type & PCB_TYPE_POLY &&
 					SearchPolygonByLocation(objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (pcb_poly_t **) Result3)) {
@@ -1299,10 +1299,10 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 					if (HigherBound < area)
 						break;
 					else
-						return (PCB_TYPE_POLY);
+						return PCB_TYPE_POLY;
 				}
 				else
-					return (PCB_TYPE_POLY);
+					return PCB_TYPE_POLY;
 			}
 		}
 	}
@@ -1311,58 +1311,58 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (PCB_TYPE_PIN);
+		return PCB_TYPE_PIN;
 	}
 
 	if (HigherAvail & PCB_TYPE_PAD) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (PCB_TYPE_PAD);
+		return PCB_TYPE_PAD;
 	}
 
 	if (HigherAvail & PCB_TYPE_ELEMENT_NAME) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (PCB_TYPE_ELEMENT_NAME);
+		return PCB_TYPE_ELEMENT_NAME;
 	}
 
 	if (HigherAvail & PCB_TYPE_ELEMENT) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (PCB_TYPE_ELEMENT);
+		return PCB_TYPE_ELEMENT;
 	}
 
 	if (HigherAvail & PCB_TYPE_SUBC) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (PCB_TYPE_SUBC);
+		return PCB_TYPE_SUBC;
 	}
 
 	/* search the 'invisible objects' last */
 	if (!PCB->InvisibleObjectsOn)
-		return (PCB_TYPE_NONE);
+		return PCB_TYPE_NONE;
 
 	if (Type & PCB_TYPE_PAD &&
 			SearchPadByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_pad_t **) Result2, (pcb_pad_t **) Result3, pcb_true))
-		return (PCB_TYPE_PAD);
+		return PCB_TYPE_PAD;
 
 	if (Type & PCB_TYPE_ELEMENT_NAME &&
 			SearchElementNameByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3, pcb_true))
-		return (PCB_TYPE_ELEMENT_NAME);
+		return PCB_TYPE_ELEMENT_NAME;
 
 	if (Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(objst, req_flag, (pcb_element_t **) Result1, (pcb_element_t **) Result2, (pcb_element_t **) Result3, pcb_true))
-		return (PCB_TYPE_ELEMENT);
+		return PCB_TYPE_ELEMENT;
 
 	if (Type & PCB_TYPE_SUBC && PCB->SubcOn &&
 			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, pcb_true))
-		return (PCB_TYPE_SUBC);
+		return PCB_TYPE_SUBC;
 
-	return (PCB_TYPE_NONE);
+	return PCB_TYPE_NONE;
 }
 
 int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
@@ -1408,19 +1408,19 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (line->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) line;
-				return (PCB_TYPE_LINE);
+				return PCB_TYPE_LINE;
 			}
 			if (line->Point1.ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point1;
-				return (PCB_TYPE_LINE_POINT);
+				return PCB_TYPE_LINE_POINT;
 			}
 			if (line->Point2.ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point2;
-				return (PCB_TYPE_LINE_POINT);
+				return PCB_TYPE_LINE_POINT;
 			}
 		}
 		PCB_ENDALL_LOOP;
@@ -1431,7 +1431,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (arc->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) arc;
-				return (PCB_TYPE_ARC);
+				return PCB_TYPE_ARC;
 			}
 		}
 		PCB_ENDALL_LOOP;
@@ -1443,7 +1443,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (text->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) text;
-				return (PCB_TYPE_TEXT);
+				return PCB_TYPE_TEXT;
 			}
 		}
 		PCB_ENDALL_LOOP;
@@ -1455,7 +1455,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (polygon->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) polygon;
-				return (PCB_TYPE_POLY);
+				return PCB_TYPE_POLY;
 			}
 			if (type == PCB_TYPE_POLY_POINT)
 				PCB_POLY_POINT_LOOP(polygon);
@@ -1464,7 +1464,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 					*Result1 = (void *) layer;
 					*Result2 = (void *) polygon;
 					*Result3 = (void *) point;
-					return (PCB_TYPE_POLY_POINT);
+					return PCB_TYPE_POLY_POINT;
 				}
 			}
 			PCB_END_LOOP;
@@ -1477,7 +1477,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 		{
 			if (via->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) via;
-				return (PCB_TYPE_VIA);
+				return PCB_TYPE_VIA;
 			}
 		}
 		PCB_END_LOOP;
@@ -1499,19 +1499,19 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 		{
 			if (line->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) line;
-				return (PCB_TYPE_RATLINE);
+				return PCB_TYPE_RATLINE;
 			}
 			if (line->Point1.ID == ID) {
 				*Result1 = (void *) NULL;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point1;
-				return (PCB_TYPE_LINE_POINT);
+				return PCB_TYPE_LINE_POINT;
 			}
 			if (line->Point2.ID == ID) {
 				*Result1 = (void *) NULL;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point2;
-				return (PCB_TYPE_LINE_POINT);
+				return PCB_TYPE_LINE_POINT;
 			}
 		}
 		PCB_END_LOOP;
@@ -1541,7 +1541,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 	{
 		if (element->ID == ID) {
 			*Result1 = *Result2 = *Result3 = (void *) element;
-			return (PCB_TYPE_ELEMENT);
+			return PCB_TYPE_ELEMENT;
 		}
 		if (type == PCB_TYPE_ELEMENT_LINE)
 			PCB_ELEMENT_PCB_LINE_LOOP(element);
@@ -1549,7 +1549,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (line->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) line;
-				return (PCB_TYPE_ELEMENT_LINE);
+				return PCB_TYPE_ELEMENT_LINE;
 			}
 		}
 		PCB_END_LOOP;
@@ -1559,7 +1559,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (arc->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) arc;
-				return (PCB_TYPE_ELEMENT_ARC);
+				return PCB_TYPE_ELEMENT_ARC;
 			}
 		}
 		PCB_END_LOOP;
@@ -1569,7 +1569,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (text->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) text;
-				return (PCB_TYPE_ELEMENT_NAME);
+				return PCB_TYPE_ELEMENT_NAME;
 			}
 		}
 		PCB_END_LOOP;
@@ -1579,7 +1579,7 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (pin->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) pin;
-				return (PCB_TYPE_PIN);
+				return PCB_TYPE_PIN;
 			}
 		}
 		PCB_END_LOOP;
@@ -1589,14 +1589,14 @@ static int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result
 			if (pad->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) pad;
-				return (PCB_TYPE_PAD);
+				return PCB_TYPE_PAD;
 			}
 		}
 		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
 
-	return (PCB_TYPE_NONE);
+	return PCB_TYPE_NONE;
 }
 
 int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
@@ -1643,7 +1643,7 @@ int pcb_search_grid_slop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1,
 	int ans;
 
 	ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB->Grid / 2);
-	return (ans);
+	return ans;
 }
 
 int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2)

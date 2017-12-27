@@ -331,5 +331,5 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (Reset && changed)
 		pcb_undo_inc_serial();
 
-	return (changed);
+	return changed;
 }

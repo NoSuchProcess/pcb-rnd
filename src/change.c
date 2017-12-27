@@ -463,7 +463,7 @@ pcb_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -485,7 +485,7 @@ pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -510,7 +510,7 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* --------------------------------------------------------------------------
@@ -532,7 +532,7 @@ pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool f
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -551,7 +551,7 @@ pcb_bool pcb_chg_selected_join(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -570,7 +570,7 @@ pcb_bool pcb_set_selected_join(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -589,7 +589,7 @@ pcb_bool pcb_clr_selected_join(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -608,7 +608,7 @@ pcb_bool pcb_chg_selected_nonetlist(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 #if 0
@@ -628,7 +628,7 @@ pcb_bool SetSelectedNonetlist(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -647,7 +647,7 @@ pcb_bool ClrSelectedNonetlist(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 #endif
 
@@ -667,7 +667,7 @@ pcb_bool pcb_chg_selected_square(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -689,7 +689,7 @@ pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference,
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -711,7 +711,7 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 
@@ -731,7 +731,7 @@ pcb_bool pcb_set_selected_square(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -750,7 +750,7 @@ pcb_bool pcb_clr_selected_square(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -769,7 +769,7 @@ pcb_bool pcb_chg_selected_octagon(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -788,7 +788,7 @@ pcb_bool pcb_set_selected_octagon(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -807,7 +807,7 @@ pcb_bool pcb_clr_selected_octagon(int types)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -829,7 +829,7 @@ pcb_bool pcb_chg_selected_hole(void)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ----------------------------------------------------------------------
@@ -850,7 +850,7 @@ pcb_bool pcb_chg_selected_paste(void)
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 
@@ -873,7 +873,7 @@ pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coor
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ---------------------------------------------------------------------------
@@ -895,7 +895,7 @@ pcb_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ---------------------------------------------------------------------------
@@ -917,7 +917,7 @@ pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ---------------------------------------------------------------------------
@@ -939,7 +939,7 @@ pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 
@@ -965,7 +965,7 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ---------------------------------------------------------------------------
@@ -987,7 +987,7 @@ pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1010,7 +1010,7 @@ pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 		if (incundo)
 			pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1032,7 +1032,7 @@ pcb_bool pcb_chg_obj_mask_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	return (change);
+	return change;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1339,7 +1339,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 			pcb_undo_inc_serial();
 		}
 		pcb_draw();
-		return (Ptr3);
+		return Ptr3;
 	}
 	return NULL;
 }

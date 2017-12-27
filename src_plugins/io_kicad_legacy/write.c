@@ -74,7 +74,7 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *bu
 		for (i = 0; i < pcb_max_layer; i++)
 		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
 	*/
-	return (0);
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -486,7 +486,7 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
 	if (outlineCount > 0) {
 		free(outlineLayers);
 	}
-	return (0);
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------

@@ -419,7 +419,7 @@ int pcb_fp_read_lib_all(void)
 		return 0;
 	}
 
-	return (1);
+	return 1;
 }
 
 int pcb_fp_rehash(pcb_fplibrary_t *l)

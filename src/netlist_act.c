@@ -310,7 +310,7 @@ static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			if (re_sei_errno(regex) != 0) {
 				pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 				re_sei_free(regex);
-				return (1);
+				return 1;
 			}
 		}
 	}

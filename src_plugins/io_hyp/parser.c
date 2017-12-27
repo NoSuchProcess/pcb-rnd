@@ -342,7 +342,7 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	/* parse hyperlynx file */
 	hyyin = pcb_fopen(fname, "r");
 	if (hyyin == NULL)
-		return (1);
+		return 1;
 	retval = hyyparse();
 	fclose(hyyin);
 
@@ -360,7 +360,7 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 
 	hyp_netlist_end();
 
-	return (retval);
+	return retval;
 }
 
 /* print error message */

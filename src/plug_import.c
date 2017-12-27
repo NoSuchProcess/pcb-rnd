@@ -91,7 +91,7 @@ int pcb_import(char *filename, unsigned int aspect)
 
 	if (!filename) {
 		pcb_message(PCB_MSG_ERROR, "Error: need a file name for pcb_import_netlist()\n");
-		return (1); /* nothing to do */
+		return 1; /* nothing to do */
 	}
 	fp = pcb_fopen(filename, "r");
 

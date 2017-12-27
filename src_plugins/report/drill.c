@@ -219,7 +219,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 	pcb_r_end(&it);
 
 	qsort(AllDrills->Drill, AllDrills->DrillN, sizeof(DrillType), DrillQSort);
-	return (AllDrills);
+	return AllDrills;
 }
 
 #define ROUND(x,n) ((int)(((x)+(n)/2)/(n))*(n))

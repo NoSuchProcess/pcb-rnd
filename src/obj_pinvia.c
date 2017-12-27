@@ -114,7 +114,7 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	Via = pcb_via_alloc(Data);
 
 	if (!Via)
-		return (Via);
+		return Via;
 	/* copy values */
 	Via->X = X;
 	Via->Y = Y;
@@ -144,7 +144,7 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	}
 
 	pcb_add_via(Data, Via);
-	return (Via);
+	return Via;
 }
 
 static pcb_pin_t *pcb_via_copy_meta(pcb_pin_t *dst, pcb_pin_t *src)
@@ -224,7 +224,7 @@ pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 						conf_core.editor.grid_unit->allow, pin->DrillingHole, DrillingHole);
 	}
 
-	return (pin);
+	return pin;
 }
 
 
@@ -432,7 +432,7 @@ void *pcb_viaop_change_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		pcb_via_invalidate_draw(Via);
-		return (Via);
+		return Via;
 	}
 	return NULL;
 }
@@ -457,7 +457,7 @@ void *pcb_viaop_change_2nd_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		}
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		pcb_via_invalidate_draw(Via);
-		return (Via);
+		return Via;
 	}
 	return NULL;
 }
@@ -482,7 +482,7 @@ void *pcb_pinop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pi
 		}
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		pcb_pin_invalidate_draw(Pin);
-		return (Pin);
+		return Pin;
 	}
 	return NULL;
 }
@@ -514,7 +514,7 @@ void *pcb_viaop_change_clear_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_via_invalidate_draw(Via);
 	Via->Element = NULL;
-	return (Via);
+	return Via;
 }
 
 
@@ -538,7 +538,7 @@ void *pcb_pinop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		pcb_pin_invalidate_draw(Pin);
-		return (Pin);
+		return Pin;
 	}
 	return NULL;
 }
@@ -568,7 +568,7 @@ void *pcb_pinop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_
 	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	pcb_pin_invalidate_draw(Pin);
-	return (Pin);
+	return Pin;
 }
 
 /* changes the name of a via */
@@ -583,7 +583,7 @@ void *pcb_viaop_change_name(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	}
 	else
 		Via->Name = ctx->chgname.new_name;
-	return (old);
+	return old;
 }
 
 /* changes the name of a pin */
@@ -599,7 +599,7 @@ void *pcb_pinop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 	}
 	else
 		Pin->Name = ctx->chgname.new_name;
-	return (old);
+	return old;
 }
 
 /* changes the number of a pin */
@@ -615,7 +615,7 @@ void *pcb_pinop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *
 	}
 	else
 		Pin->Number = ctx->chgname.new_name;
-	return (old);
+	return old;
 }
 
 
@@ -637,7 +637,7 @@ void *pcb_viaop_change_square(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, NULL, Via, Via, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, NULL, Via);
 	pcb_via_invalidate_draw(Via);
-	return (Via);
+	return Via;
 }
 
 /* changes the square flag of a pin */
@@ -658,7 +658,7 @@ void *pcb_pinop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	pcb_pin_invalidate_draw(Pin);
-	return (Pin);
+	return Pin;
 }
 
 /* sets the square flag of a pin */
@@ -692,7 +692,7 @@ void *pcb_viaop_change_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_via_invalidate_draw(Via);
-	return (Via);
+	return Via;
 }
 
 /* sets the octagon flag of a via */
@@ -726,7 +726,7 @@ void *pcb_pinop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	pcb_pin_invalidate_draw(Pin);
-	return (Pin);
+	return Pin;
 }
 
 /* sets the octagon flag of a pin */
@@ -796,7 +796,7 @@ void *pcb_pinop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 		Pin->Mask = value;
 		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_pin_invalidate_draw(Pin);
-		return (Pin);
+		return Pin;
 	}
 	return NULL;
 }
@@ -816,7 +816,7 @@ void *pcb_viaop_change_mask_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_pin_bbox(Via);
 		pcb_r_insert_entry(PCB->Data->via_tree, &Via->BoundingBox, 0);
 		pcb_via_invalidate_draw(Via);
-		return (Via);
+		return Via;
 	}
 	return NULL;
 }
@@ -829,10 +829,10 @@ void *pcb_viaop_copy(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	via = pcb_via_new(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
 										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND));
 	if (!via)
-		return (via);
+		return via;
 	pcb_via_invalidate_draw(via);
 	pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-	return (via);
+	return via;
 }
 
 /* moves a via */
