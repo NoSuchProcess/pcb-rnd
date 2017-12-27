@@ -89,7 +89,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type);
 pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype);
 
 
-int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
+int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
 
 /* memset object to 0, but keep the link field */
 #define reset_obj_mem(type, obj) \

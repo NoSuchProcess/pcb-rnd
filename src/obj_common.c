@@ -67,7 +67,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 /* returns a pointer to an objects bounding box;
  * data is valid until the routine is called again
  */
-int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res)
+int pcb_obj_get_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res)
 {
 	switch (Type) {
 	case PCB_TYPE_LINE:
