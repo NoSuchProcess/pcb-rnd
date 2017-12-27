@@ -649,10 +649,10 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 			for (; *position < RatList.Number; (*position)++) {
 				group = RATLIST_ENTRY(*position)->group1;
 				if (LookupLOConnectionsToRatEnd(&(RATLIST_ENTRY(*position)->Point1), group))
-					return (pcb_true);
+					return pcb_true;
 				group = RATLIST_ENTRY(*position)->group2;
 				if (LookupLOConnectionsToRatEnd(&(RATLIST_ENTRY(*position)->Point2), group))
-					return (pcb_true);
+					return pcb_true;
 			}
 		}
 		/* loop over all layergroups */
@@ -669,19 +669,19 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 				position = &lineposition[layer];
 				for (; *position < LineList[layer].Number; (*position)++)
 					if (LookupLOConnectionsToLine(LINELIST_ENTRY(layer, *position), group, pcb_true))
-						return (pcb_true);
+						return pcb_true;
 
 				/* try all new arcs */
 				position = &arcposition[layer];
 				for (; *position < ArcList[layer].Number; (*position)++)
 					if (LookupLOConnectionsToArc(ARCLIST_ENTRY(layer, *position), group))
-						return (pcb_true);
+						return pcb_true;
 
 				/* try all new polygons */
 				position = &polyposition[layer];
 				for (; *position < PolygonList[layer].Number; (*position)++)
 					if (LookupLOConnectionsToPolygon(POLYGONLIST_ENTRY(layer, *position), group))
-						return (pcb_true);
+						return pcb_true;
 			}
 
 			/* try all new pads */
@@ -694,7 +694,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 			position = &padposition[layer];
 			for (; *position < PadList[layer].Number; (*position)++)
 				if (LookupLOConnectionsToPad(PADLIST_ENTRY(layer, *position), group))
-					return (pcb_true);
+					return pcb_true;
 		}
 
 		/* check if all lists are done; Later for-loops
@@ -711,7 +711,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 		for (layer = 0; layer < 2; layer++)
 			done = done && padposition[layer] >= PadList[layer].Number;
 	} while (!done);
-	return (pcb_false);
+	return pcb_false;
 }
 
 static pcb_r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
@@ -772,7 +772,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 		PVList.Location++;
 	}
 	PVList.Location = save_place;
-	return (pcb_false);
+	return pcb_false;
 }
 
 struct lo_info {
@@ -1071,7 +1071,7 @@ static pcb_bool LookupPVPSConnectionsToLOList(pcb_bool AndRats)
 			RatList.Location++;
 		}
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 pcb_r_dir_t pv_touch_callback(const pcb_box_t * b, void *cl)

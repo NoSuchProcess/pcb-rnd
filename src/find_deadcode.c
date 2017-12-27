@@ -77,7 +77,7 @@ static pcb_bool PVTouchesLine(pcb_line_t *line)
 	else
 		return pcb_true;
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
@@ -105,17 +105,17 @@ static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 			if (setjmp(info.env) == 0)
 				pcb_r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.line, NULL, LOT_Linecallback, &info, NULL);
 			else
-				return (pcb_true);
+				return pcb_true;
 			if (setjmp(info.env) == 0)
 				pcb_r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.line, NULL, LOT_Arccallback, &info, NULL);
 			else
-				return (pcb_true);
+				return pcb_true;
 
 			/* now check all polygons */
 			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 				if (!PCB_FLAG_TEST(TheFlag, polygon)
 						&& pcb_is_line_in_poly(Line, polygon))
-					return (pcb_true);
+					return pcb_true;
 			}
 		}
 		else {
@@ -127,7 +127,7 @@ static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 				return pcb_true;
 		}
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* returns pcb_true if nothing un-found touches the passed line
@@ -138,8 +138,8 @@ static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 pcb_bool lineClear(pcb_line_t *line, pcb_cardinal_t group)
 {
 	if (LOTouchesLine(line, group))
-		return (pcb_false);
+		return pcb_false;
 	if (PVTouchesLine(line))
-		return (pcb_false);
-	return (pcb_true);
+		return pcb_false;
+	return pcb_true;
 }

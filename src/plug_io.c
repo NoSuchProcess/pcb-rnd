@@ -688,7 +688,7 @@ int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 	result = pcb_write_pipe(Filename, pcb_false, fmt, pcb_true);
 	if (PCB_SWAP_IDENT)
 		pcb_buffers_flip_side(PCB);
-	return (result);
+	return result;
 }
 
 /* ---------------------------------------------------------------------------
@@ -932,7 +932,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 			unlink(fn_tmp);
 		free(fn_tmp);
 	}
-	return (result);
+	return result;
 }
 
 

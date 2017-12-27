@@ -1220,7 +1220,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	pcb_subc_t *subc;
 
 	if (pcb_subclist_length(&buff->Data->subc) != 1)
-		return (pcb_false);
+		return pcb_false;
 
 	subc = pcb_subclist_first(&buff->Data->subc);
 	pcb_subclist_remove(subc);
@@ -1230,7 +1230,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	buff->Data->parent_type = PCB_PARENT_INVALID;
 	buff->Data->parent.data = NULL;
 
-	return (pcb_true);
+	return pcb_true;
 }
 
 int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
@@ -1299,7 +1299,7 @@ void *pcb_subcop_change_nonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 #warning subc TODO: add undo
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, sc))
-		return (NULL);
+		return NULL;
 	PCB_FLAG_TOGGLE(PCB_FLAG_NONETLIST, sc);
 	return sc;
 }
@@ -1438,7 +1438,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
 	pcb_data_t *data, *oldhack;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, *subc))
-		return (pcb_false);
+		return pcb_false;
 
 	assert((*subc)->parent_type = PCB_PARENT_DATA);
 	data = (*subc)->parent.data;

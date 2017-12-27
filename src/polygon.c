@@ -1493,7 +1493,7 @@ pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	pcb_bool changed = pcb_false;
 
 	if (pcb_undoing())
-		return (pcb_false);
+		return pcb_false;
 
 	for (n = 0; n < Polygon->PointN; n++) {
 		prev = pcb_poly_contour_prev_point(Polygon, n);
@@ -1508,7 +1508,7 @@ pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 			changed = pcb_true;
 		}
 	}
-	return (changed);
+	return changed;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1555,7 +1555,7 @@ pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, pcb_coord
 			}
 		}
 	}
-	return (result);
+	return result;
 }
 
 /* ---------------------------------------------------------------------------

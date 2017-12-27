@@ -128,7 +128,7 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 	ctx.move.dy = DY;
 	pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	result = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	return (result);
+	return result;
 }
 
 void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
@@ -251,7 +251,7 @@ void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_la
 
 	result = pcb_object_operation(&MoveToLayerFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	pcb_undo_inc_serial();
-	return (result);
+	return result;
 }
 
 pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)

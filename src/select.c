@@ -119,7 +119,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-		return (pcb_false);
+		return pcb_false;
 	switch (type) {
 	case PCB_TYPE_VIA:
 		pcb_undo_add_obj_to_flag(ptr1);
@@ -718,7 +718,7 @@ pcb_bool pcb_select_object_by_name(pcb_board_t *pcb, int Type, const char *name_
 		if (re_sei_errno(regex) != 0) {
 			pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
-			return (pcb_false);
+			return pcb_false;
 		}
 	}
 	else {

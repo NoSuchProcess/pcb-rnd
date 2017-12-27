@@ -5617,7 +5617,7 @@ static const char *FindKeyword(const char * str)
       }
       return (wlk->String);
     }
-  return (NULL);
+  return NULL;
 }
 /*
  *	Token hash table.

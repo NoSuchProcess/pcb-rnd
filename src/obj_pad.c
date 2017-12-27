@@ -211,13 +211,13 @@ void pcb_pad_copper_bbox(pcb_box_t *out, pcb_pad_t *Pad)
 pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
-		return (pcb_false);
+		return pcb_false;
 	pcb_pad_invalidate_erase(Pad);
 	pcb_undo_add_obj_to_flag(Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
 	pcb_pad_invalidate_draw(Pad);
 	pcb_draw();
-	return (pcb_true);
+	return pcb_true;
 }
 
 int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t *e2, const pcb_pad_t *p2)
@@ -268,7 +268,7 @@ void *pcb_padop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pad->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
-		return (NULL);
+		return NULL;
 	if (value <= PCB_MAX_PADSIZE && value >= PCB_MIN_PADSIZE && value != Pad->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_PAD, Element, Pad, Pad);
 		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
@@ -283,7 +283,7 @@ void *pcb_padop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t 
 		pcb_pad_invalidate_draw(Pad);
 		return (Pad);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the clearance size of a pad */
@@ -292,7 +292,7 @@ void *pcb_padop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pad->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
-		return (NULL);
+		return NULL;
 	if (value < 0)
 		value = 0;
 	else
@@ -351,7 +351,7 @@ void *pcb_padop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *
 void *pcb_padop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
-		return (NULL);
+		return NULL;
 	pcb_pad_invalidate_erase(Pad);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
@@ -368,7 +368,7 @@ void *pcb_padop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *
 {
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad) || PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad))
-		return (NULL);
+		return NULL;
 
 	return (pcb_padop_change_square(ctx, Element, Pad));
 }
@@ -379,7 +379,7 @@ void *pcb_padop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t
 {
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad) || !PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad))
-		return (NULL);
+		return NULL;
 
 	return (pcb_padop_change_square(ctx, Element, Pad));
 }
@@ -401,7 +401,7 @@ void *pcb_padop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 		pcb_pad_invalidate_draw(Pad);
 		return (Pad);
 	}
-	return (NULL);
+	return NULL;
 }
 
 void *pcb_padop_change_flag(pcb_opctx_t *ctx, pcb_element_t *elem, pcb_pad_t *pad)

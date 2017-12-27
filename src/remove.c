@@ -88,9 +88,9 @@ pcb_bool pcb_remove_selected(void)
 	if (pcb_selected_operation(PCB, PCB->Data, &RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
 		pcb_undo_inc_serial();
 		pcb_draw();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------

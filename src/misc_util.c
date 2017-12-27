@@ -173,7 +173,7 @@ char *pcb_strdup_strip_wspace(const char *S)
 	size_t length;
 
 	if (!S || !*S)
-		return (NULL);
+		return NULL;
 
 	/* strip leading blanks */
 	for (p1 = S; *p1 && isspace((int) *p1); p1++);
@@ -187,8 +187,8 @@ char *pcb_strdup_strip_wspace(const char *S)
 		copy = (char *) realloc(NULL, length + 1);
 		strncpy(copy, p1, length);
 		copy[length] = '\0';
-		return (copy);
+		return copy;
 	}
 	else
-		return (NULL);
+		return NULL;
 }

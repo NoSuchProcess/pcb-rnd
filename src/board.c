@@ -242,7 +242,7 @@ pcb_bool pcb_board_change_name(char *Name)
 	free(PCB->Name);
 	PCB->Name = Name;
 	pcb_board_changed(0);
-	return (pcb_true);
+	return pcb_true;
 }
 
 void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)

@@ -435,14 +435,14 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 		shown_this_message = 1;
 	}
 
-	return (NULL);
+	return NULL;
 }
 
 /* changes the CLEARPOLY flag of a polygon */
 void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
-		return (NULL);
+		return NULL;
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLY, Layer, Polygon, Polygon, pcb_true);
 	pcb_undo_add_obj_to_flag(Polygon);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLY, Polygon);
@@ -468,7 +468,7 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 		line.Point1 = Polygon->Points[pcb_poly_contour_prev_point(Polygon, ctx->insert.idx)];
 		line.Point2 = Polygon->Points[ctx->insert.idx];
 		if (pcb_is_point_on_line((float) ctx->insert.x, (float) ctx->insert.y, 0.0, &line))
-			return (NULL);
+			return NULL;
 	}
 	/*
 	 * second, shift the points up to make room for the new point
@@ -505,7 +505,7 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, poly))
-		return (NULL);
+		return NULL;
 	pcb_poly_invalidate_erase(poly);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLY, Layer, poly, poly, pcb_false);

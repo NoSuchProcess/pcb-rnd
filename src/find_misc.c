@@ -43,7 +43,7 @@ static pcb_bool ListsEmpty(pcb_bool AndRats)
 	for (i = 0; i < pcb_max_layer && empty; i++)
 		empty = empty && LineList[i].Location >= LineList[i].Number
 			&& ArcList[i].Location >= ArcList[i].Number && PolygonList[i].Location >= PolygonList[i].Number;
-	return (empty);
+	return empty;
 }
 
 static void reassign_no_drc_flags(void)
@@ -79,7 +79,7 @@ static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 	while (!newone && !ListsEmpty(AndRats));
 	if (AndDraw)
 		pcb_draw();
-	return (newone);
+	return newone;
 }
 
 /* ---------------------------------------------------------------------------
@@ -228,7 +228,7 @@ static pcb_bool ListStart(pcb_any_obj_t *obj)
 	default:
 		assert(!"unhandled object type: can't start a find list from this\n");
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 

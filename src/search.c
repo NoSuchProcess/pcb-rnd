@@ -209,7 +209,7 @@ static pcb_bool SearchPadByLocation(unsigned long objst, unsigned long req_flag,
 
 	/* search only if pin-layer is visible */
 	if (!PCB->PinOn)
-		return (pcb_false);
+		return pcb_false;
 	info.ptr1 = (void **) Element;
 	info.ptr2 = (void **) Pad;
 	info.ptr3 = (void **) Dummy;
@@ -563,8 +563,8 @@ static pcb_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
 
 	if (ctx.found)
-		return (pcb_true);
-	return (pcb_false);
+		return pcb_true;
+	return pcb_false;
 }
 
 static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
@@ -610,7 +610,7 @@ SearchElementNameByLocation(unsigned long objst, unsigned long req_flag, pcb_ele
 		if (pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], &SearchBox, NULL, name_callback, &info, NULL))
 			return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
@@ -724,8 +724,8 @@ pcb_bool pcb_is_point_in_pin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
 {
 	if (((X == Line->Point1.X) && (Y == Line->Point1.Y)) || ((X == Line->Point2.X) && (Y == Line->Point2.Y)))
-		return (pcb_true);
-	return (pcb_false);
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -815,7 +815,7 @@ pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2
 	/* first, see if point 1 is inside the rectangle */
 	/* in case the whole line is inside the rectangle */
 	if (X1 < Line->Point1.X && X2 > Line->Point1.X && Y1 < Line->Point1.Y && Y2 > Line->Point1.Y)
-		return (pcb_true);
+		return pcb_true;
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
 	line.Flags = pcb_no_flags();
@@ -825,30 +825,30 @@ pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
 	/* lower-left to upper-left corner */
 	line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 /*checks if a point (of null radius) is in a slanted rectangle */
@@ -903,27 +903,27 @@ pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line)
 	line.Point2.X = p[1].X;
 	line.Point2.Y = p[1].Y;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = p[2].X;
 	line.Point1.Y = p[2].Y;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
 	/* lower-right to lower-left corner */
 	line.Point2.X = p[3].X;
 	line.Point2.Y = p[3].Y;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = p[0].X;
 	line.Point1.Y = p[0].Y;
 	if (pcb_intersect_line_line(&line, Line))
-		return (pcb_true);
+		return pcb_true;
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -940,10 +940,10 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,
 	box.X2 = X2; box.Y2 = Y2;
 	pcb_arc_get_end (Arc, 0, &x, &y);
 	if (PCB_POINT_IN_BOX(x, y, &box))
-		return (pcb_true);
+		return pcb_true;
 	pcb_arc_get_end (Arc, 1, &x, &y);
 	if (PCB_POINT_IN_BOX(x, y, &box))
-		return (pcb_true);
+		return pcb_true;
 
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
@@ -954,30 +954,30 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_intersect_line_arc(&line, Arc))
-		return (pcb_true);
+		return pcb_true;
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = line.Point2.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_intersect_line_arc(&line, Arc))
-		return (pcb_true);
+		return pcb_true;
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = line.Point2.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_intersect_line_arc(&line, Arc))
-		return (pcb_true);
+		return pcb_true;
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_intersect_line_arc(&line, Arc))
-		return (pcb_true);
+		return pcb_true;
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1620,7 +1620,7 @@ pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name)
 	{
 		if (element->Name[1].TextString && PCB_NSTRCMP(element->Name[1].TextString, Name) == 0) {
 			result = element;
-			return (result);
+			return result;
 		}
 	}
 	PCB_END_LOOP;

@@ -311,7 +311,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
 	for (i = 0; i < Data->LayerN; i++)
 		hasNoObjects = hasNoObjects && pcb_layer_is_empty_(PCB, &(Data->Layer[i]));
-	return (hasNoObjects);
+	return hasNoObjects;
 }
 
 pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters)

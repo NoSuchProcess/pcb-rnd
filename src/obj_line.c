@@ -379,7 +379,7 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
-		return (NULL);
+		return NULL;
 	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Line->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_LINE, Layer, Line, Line);
 		pcb_line_invalidate_erase(Line);
@@ -392,7 +392,7 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		pcb_line_invalidate_draw(Layer, Line);
 		return (Line);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /*changes the clearance size of a line */
@@ -401,7 +401,7 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
-		return (NULL);
+		return NULL;
 	if (value < 0)
 		value = 0;
 	value = MIN(PCB_MAX_LINESIZE, value);
@@ -421,7 +421,7 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 		pcb_line_invalidate_draw(Layer, Line);
 		return (Line);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the name of a line */
@@ -438,7 +438,7 @@ void *pcb_lineop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
-		return (NULL);
+		return NULL;
 	pcb_line_invalidate_erase(Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
@@ -458,7 +458,7 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 void *pcb_lineop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
-		return (NULL);
+		return NULL;
 	return pcb_lineop_change_join(ctx, Layer, Line);
 }
 
@@ -466,7 +466,7 @@ void *pcb_lineop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 void *pcb_lineop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
-		return (NULL);
+		return NULL;
 	return pcb_lineop_change_join(ctx, Layer, Line);
 }
 
@@ -898,7 +898,7 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 
 	if (((Line->Point1.X == ctx->insert.x) && (Line->Point1.Y == ctx->insert.y)) ||
 			((Line->Point2.X == ctx->insert.x) && (Line->Point2.Y == ctx->insert.y)))
-		return (NULL);
+		return NULL;
 	X = Line->Point2.X;
 	Y = Line->Point2.Y;
 	pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, ctx->insert.x - X, ctx->insert.y - Y);

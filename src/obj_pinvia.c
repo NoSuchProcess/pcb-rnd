@@ -105,7 +105,7 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 			if (pcb_distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
 				pcb_message(PCB_MSG_WARNING, _("%m+Dropping via at %$mD because it's hole would overlap with the via "
 									"at %$mD\n"), conf_core.editor.grid_unit->allow, X, Y, via->X, via->Y);
-				return (NULL);					/* don't allow via stacking */
+				return NULL;					/* don't allow via stacking */
 			}
 		}
 		PCB_END_LOOP;
@@ -416,7 +416,7 @@ void *pcb_viaop_change_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_coord_t value = ctx->chgsize.is_absolute ? ctx->chgsize.value : Via->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
-		return (NULL);
+		return NULL;
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && value <= PCB_MAX_PINORVIASIZE &&
 			value >= PCB_MIN_PINORVIASIZE && value >= Via->DrillingHole + PCB_MIN_PINORVIACOPPER && value != Via->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_VIA, Via, Via, Via);
@@ -434,7 +434,7 @@ void *pcb_viaop_change_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_via_invalidate_draw(Via);
 		return (Via);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the drilling hole of a via */
@@ -443,7 +443,7 @@ void *pcb_viaop_change_2nd_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Via->DrillingHole + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
-		return (NULL);
+		return NULL;
 	if (value <= PCB_MAX_PINORVIASIZE &&
 			value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - PCB_MIN_PINORVIACOPPER)
 			&& value != Via->DrillingHole) {
@@ -459,7 +459,7 @@ void *pcb_viaop_change_2nd_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_via_invalidate_draw(Via);
 		return (Via);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the drilling hole of a pin */
@@ -468,7 +468,7 @@ void *pcb_pinop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pi
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pin->DrillingHole + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
-		return (NULL);
+		return NULL;
 	if (value <= PCB_MAX_PINORVIASIZE &&
 			value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - PCB_MIN_PINORVIACOPPER)
 			&& value != Pin->DrillingHole) {
@@ -484,7 +484,7 @@ void *pcb_pinop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pi
 		pcb_pin_invalidate_draw(Pin);
 		return (Pin);
 	}
-	return (NULL);
+	return NULL;
 }
 
 
@@ -494,7 +494,7 @@ void *pcb_viaop_change_clear_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Via->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
-		return (NULL);
+		return NULL;
 	if (value < 0)
 		value = 0;
 	value = MIN(PCB_MAX_LINESIZE, value);
@@ -524,7 +524,7 @@ void *pcb_pinop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pin->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
-		return (NULL);
+		return NULL;
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && value <= PCB_MAX_PINORVIASIZE &&
 			value >= PCB_MIN_PINORVIASIZE && value >= Pin->DrillingHole + PCB_MIN_PINORVIACOPPER && value != Pin->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, Pin, Pin);
@@ -540,7 +540,7 @@ void *pcb_pinop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 		pcb_pin_invalidate_draw(Pin);
 		return (Pin);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the clearance size of a pin */
@@ -549,7 +549,7 @@ void *pcb_pinop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Pin->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
-		return (NULL);
+		return NULL;
 	if (value < 0)
 		value = 0;
 	value = MIN(PCB_MAX_LINESIZE, value);
@@ -623,7 +623,7 @@ void *pcb_pinop_change_num(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *
 void *pcb_viaop_change_square(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
-		return (NULL);
+		return NULL;
 	pcb_via_invalidate_erase(Via);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, NULL, Via);
@@ -644,7 +644,7 @@ void *pcb_viaop_change_square(pcb_opctx_t *ctx, pcb_pin_t *Via)
 void *pcb_pinop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
-		return (NULL);
+		return NULL;
 	pcb_pin_invalidate_erase(Pin);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -665,7 +665,7 @@ void *pcb_pinop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_
 void *pcb_pinop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))
-		return (NULL);
+		return NULL;
 
 	return (pcb_pinop_change_square(ctx, Element, Pin));
 }
@@ -674,7 +674,7 @@ void *pcb_pinop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *
 void *pcb_pinop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || !PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))
-		return (NULL);
+		return NULL;
 
 	return (pcb_pinop_change_square(ctx, Element, Pin));
 }
@@ -683,7 +683,7 @@ void *pcb_pinop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t
 void *pcb_viaop_change_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
-		return (NULL);
+		return NULL;
 	pcb_via_invalidate_erase(Via);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
@@ -699,7 +699,7 @@ void *pcb_viaop_change_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 void *pcb_viaop_set_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Via))
-		return (NULL);
+		return NULL;
 
 	return (pcb_viaop_change_octagon(ctx, Via));
 }
@@ -708,7 +708,7 @@ void *pcb_viaop_set_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 void *pcb_viaop_clear_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via) || !PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Via))
-		return (NULL);
+		return NULL;
 
 	return (pcb_viaop_change_octagon(ctx, Via));
 }
@@ -717,7 +717,7 @@ void *pcb_viaop_clear_octagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 void *pcb_pinop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
-		return (NULL);
+		return NULL;
 	pcb_pin_invalidate_erase(Pin);
 	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -733,7 +733,7 @@ void *pcb_pinop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin
 void *pcb_pinop_set_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Pin))
-		return (NULL);
+		return NULL;
 
 	return (pcb_pinop_change_octagon(ctx, Element, Pin));
 }
@@ -742,7 +742,7 @@ void *pcb_pinop_set_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t 
 void *pcb_pinop_clear_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || !PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Pin))
-		return (NULL);
+		return NULL;
 
 	return (pcb_pinop_change_octagon(ctx, Element, Pin));
 }
@@ -751,7 +751,7 @@ void *pcb_pinop_clear_octagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_
 pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
-		return (pcb_false);
+		return pcb_false;
 	pcb_via_invalidate_erase(Via);
 	pcb_undo_add_obj_to_flag(Via);
 	pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
@@ -778,7 +778,7 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_via_invalidate_draw(Via);
 	pcb_draw();
-	return (pcb_true);
+	return pcb_true;
 }
 
 /* changes the mask size of a pin */
@@ -798,7 +798,7 @@ void *pcb_pinop_change_mask_size(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_p
 		pcb_pin_invalidate_draw(Pin);
 		return (Pin);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the mask size of a via */
@@ -818,7 +818,7 @@ void *pcb_viaop_change_mask_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_via_invalidate_draw(Via);
 		return (Via);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* copies a via */

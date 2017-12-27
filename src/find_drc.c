@@ -894,7 +894,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 			free(object_type_list);
 
 			if (!throw_drc_dialog())
-				return (pcb_true);
+				return pcb_true;
 			pcb_undo_inc_serial();
 			pcb_undo(pcb_true);
 		}
@@ -939,7 +939,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		User = pcb_false;
 		drc = pcb_false;
 		if (!throw_drc_dialog())
-			return (pcb_true);
+			return pcb_true;
 		pcb_undo_inc_serial();
 		pcb_undo(pcb_true);
 		/* highlight the rest of the encroaching net so it's not reported again */
@@ -956,7 +956,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	DumpList();
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
 	pcb_reset_conns(pcb_false);
-	return (pcb_false);
+	return pcb_false;
 }
 
 /*----------------------------------------------------------------------------

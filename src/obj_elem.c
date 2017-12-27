@@ -157,12 +157,12 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 			pcb_subc_t *subc = pcb_subclist_first(&Buffer->Data->subc);
 			pcb_subc_get_origin(subc, &Buffer->X, &Buffer->Y);
 		}
-		return (pcb_true);
+		return pcb_true;
 	}
 
 	/* release memory which might have been acquired */
 	pcb_buffer_clear(PCB, Buffer);
-	return (pcb_false);
+	return pcb_false;
 }
 
 
@@ -183,7 +183,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	char tmp[128];
 
 	if (elementlist_length(&Buffer->Data->Element) != 1)
-		return (pcb_false);
+		return pcb_false;
 
 	/*
 	 * At this point the buffer should contain just a single element.
@@ -273,7 +273,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	PCB_END_LOOP;
 	pcb_element_destroy(element);
 	pcb_element_free(element);
-	return (pcb_true);
+	return pcb_true;
 }
 
 /* see if a polygon is a rectangle.  If so, canonicalize it. */
@@ -323,7 +323,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 														 NULL, NULL, NULL, PCB_PASTEBUFFER->X,
 														 PCB_PASTEBUFFER->Y, 0, 100, pcb_flag_make(PCB_SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
 	if (!Element)
-		return (pcb_false);
+		return pcb_false;
 	PCB_VIA_LOOP(Buffer->Data);
 	{
 		char num[8];
@@ -423,7 +423,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	if (!hasParts) {
 		pcb_destroy_object(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 		pcb_message(PCB_MSG_ERROR, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
-		return (pcb_false);
+		return pcb_false;
 	}
 	if (crooked)
 		pcb_message(PCB_MSG_ERROR, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
@@ -435,7 +435,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	pcb_buffer_clear(PCB, Buffer);
 	pcb_move_obj_to_buffer(PCB, Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	pcb_set_buffer_bbox(Buffer);
-	return (pcb_true);
+	return pcb_true;
 }
 
 void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
@@ -489,12 +489,12 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 pcb_bool pcb_element_change_side(pcb_element_t *Element, pcb_coord_t yoff)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (pcb_false);
+		return pcb_false;
 	pcb_elem_invalidate_erase(Element);
 	pcb_undo_add_obj_to_mirror(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
 	pcb_element_mirror(PCB->Data, Element, yoff);
 	pcb_elem_invalidate_draw(Element);
-	return (pcb_true);
+	return pcb_true;
 }
 
 /* changes the side of all selected and visible elements;
@@ -1369,7 +1369,7 @@ void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_coord_t value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : pin->DrillingHole + ctx->chgsize.value;
@@ -1393,7 +1393,7 @@ void *pcb_elemop_change_2nd_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	if (changed)
 		return (Element);
 	else
-		return (NULL);
+		return NULL;
 }
 
 /* changes ring dia of all pins of an element; returns pcb_true if changed */
@@ -1403,7 +1403,7 @@ void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_coord_t value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : pin->DrillingHole + ctx->chgsize.value;
@@ -1425,7 +1425,7 @@ void *pcb_elemop_change_1st_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	if (changed)
 		return (Element);
 	else
-		return (NULL);
+		return NULL;
 }
 
 /* changes the clearance of all pins of an element; returns pcb_true if changed */
@@ -1435,7 +1435,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_coord_t value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : pin->Clearance + ctx->chgsize.value;
@@ -1483,7 +1483,7 @@ void *pcb_elemop_change_clear_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	if (changed)
 		return (Element);
 	else
-		return (NULL);
+		return NULL;
 }
 
 /* changes the scaling factor of an element's outline; returns pcb_true if changed */
@@ -1493,7 +1493,7 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_bool changed = pcb_false;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	if (pcb_silk_on(PCB))
 		pcb_elem_invalidate_erase(Element);
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
@@ -1521,7 +1521,7 @@ void *pcb_elemop_change_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	if (changed)
 		return (Element);
-	return (NULL);
+	return NULL;
 }
 
 /* changes the scaling factor of a elementname object; returns pcb_true if changed */
@@ -1531,7 +1531,7 @@ void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		: PCB_ELEM_TEXT_DESCRIPTION(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.value);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
-		return (NULL);
+		return NULL;
 	if (value <= PCB_MAX_TEXTSCALE && value >= PCB_MIN_TEXTSCALE) {
 		pcb_elem_name_invalidate_erase(Element);
 		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
@@ -1546,14 +1546,14 @@ void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_elem_name_invalidate_draw(Element);
 		return (Element);
 	}
-	return (NULL);
+	return NULL;
 }
 
 
 void *pcb_elemop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
-		return (NULL);
+		return NULL;
 	if (PCB_ELEMNAME_IDX_VISIBLE() == PCB_ELEMNAME_IDX_REFDES) {
 		if (conf_core.editor.unique_names && pcb_element_uniq_name(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
 			pcb_message(PCB_MSG_ERROR, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
@@ -1567,7 +1567,7 @@ void *pcb_elemop_change_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *pcb_elemop_change_nonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_FLAG_TOGGLE(PCB_FLAG_NONETLIST, Element);
 	return Element;
 }
@@ -1579,7 +1579,7 @@ void *pcb_elemop_change_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 	void *ans = NULL;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		ans = pcb_pinop_change_square(ctx, Element, pin);
@@ -1599,7 +1599,7 @@ void *pcb_elemop_set_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 	void *ans = NULL;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		ans = pcb_pinop_set_square(ctx, Element, pin);
@@ -1619,7 +1619,7 @@ void *pcb_elemop_clear_square(pcb_opctx_t *ctx, pcb_element_t *Element)
 	void *ans = NULL;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		ans = pcb_pinop_clear_square(ctx, Element, pin);
@@ -1639,14 +1639,14 @@ void *pcb_elemop_change_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 	void *result = NULL;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		pcb_pinop_change_octagon(ctx, Element, pin);
 		result = Element;
 	}
 	PCB_END_LOOP;
-	return (result);
+	return result;
 }
 
 /* sets the octagon flags of all pins of an element */
@@ -1655,14 +1655,14 @@ void *pcb_elemop_set_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 	void *result = NULL;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		pcb_pinop_set_octagon(ctx, Element, pin);
 		result = Element;
 	}
 	PCB_END_LOOP;
-	return (result);
+	return result;
 }
 
 /* clears the octagon flags of all pins of an element */
@@ -1671,14 +1671,14 @@ void *pcb_elemop_clear_octagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 	void *result = NULL;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
-		return (NULL);
+		return NULL;
 	PCB_PIN_LOOP(Element);
 	{
 		pcb_pinop_clear_octagon(ctx, Element, pin);
 		result = Element;
 	}
 	PCB_END_LOOP;
-	return (result);
+	return result;
 }
 
 /* copies an element onto the PCB.  Then does a draw. */

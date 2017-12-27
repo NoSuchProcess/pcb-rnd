@@ -1052,7 +1052,7 @@ void *pcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 
 	result = pcb_object_operation(&ChangeNameFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	pcb_draw();
-	return (result);
+	return result;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1072,7 +1072,7 @@ void *pcb_chg_obj_pinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Nam
 
 	result = pcb_object_operation(&ChangePinnumFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	pcb_draw();
-	return (result);
+	return result;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1088,9 +1088,9 @@ pcb_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ChangeJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1106,9 +1106,9 @@ pcb_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&SetJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1124,9 +1124,9 @@ pcb_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ClrJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1142,9 +1142,9 @@ pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ChangeNonetlistFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1161,9 +1161,9 @@ pcb_bool pcb_chg_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
 	if (pcb_object_operation(&ChangeSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1179,9 +1179,9 @@ pcb_bool pcb_set_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&SetSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1197,9 +1197,9 @@ pcb_bool pcb_clr_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ClrSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1215,9 +1215,9 @@ pcb_bool pcb_chg_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ChangeOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1233,9 +1233,9 @@ pcb_bool pcb_set_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&SetOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1251,9 +1251,9 @@ pcb_bool pcb_clr_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ClrOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1341,7 +1341,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 		pcb_draw();
 		return (Ptr3);
 	}
-	return (NULL);
+	return NULL;
 }
 
 void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t flag, int Type, void *Ptr1, void *Ptr2, void *Ptr3)

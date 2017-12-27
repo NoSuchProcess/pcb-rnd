@@ -1483,9 +1483,9 @@ pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 		/* now move forward again */
 		pcb_crosshair.X = x;
 		pcb_crosshair.Y = z;
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------

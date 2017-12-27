@@ -153,9 +153,9 @@ static pcb_bool UndoRotate90(UndoListTypePtr Entry)
 		pcb_obj_rotate90(type, ptr1, ptr2, ptr3,
 								 Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, (4 - Entry->Data.Rotate.Steps) & 0x03);
 		Entry->Data.Rotate.Steps = (4 - Entry->Data.Rotate.Steps) & 0x03;
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -211,9 +211,9 @@ static pcb_bool UndoChangeName(UndoListTypePtr Entry)
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
 		Entry->Data.ChangeName.Name = (char *) (pcb_chg_obj_name(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -229,9 +229,9 @@ static pcb_bool UndoChangePinnum(UndoListTypePtr Entry)
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
 		Entry->Data.ChangeName.Name = (char *) (pcb_chg_obj_pinnum(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -252,9 +252,9 @@ static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
 		((pcb_pin_t *) ptr2)->DrillingHole = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -283,9 +283,9 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
 		pcb_draw_obj((pcb_any_obj_t *)a);
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -314,9 +314,9 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 		Entry->Data.Move.DX = old_w;
 		Entry->Data.Move.DY = old_h;
 		pcb_draw_obj((pcb_any_obj_t *)a);
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -340,9 +340,9 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 		Entry->Data.Size = swap;
 		if (pcb_undo_and_draw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -367,9 +367,9 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
 		Entry->Data.Size = swap;
 		if (pcb_undo_and_draw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 
@@ -401,9 +401,9 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		if (pcb_undo_and_draw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -445,11 +445,11 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 
 		if (pcb_undo_and_draw && must_redraw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return (pcb_true);
+		return pcb_true;
 	}
 	pcb_message(PCB_MSG_ERROR, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
 	pcb_message(PCB_MSG_ERROR, "for UndoFlag Operation. Previous flags: %s\n", pcb_strflg_f2s(Entry->Data.Flags, 0, NULL));
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -470,10 +470,10 @@ static pcb_bool UndoMirror(UndoListTypePtr Entry)
 		pcb_element_mirror(PCB->Data, element, Entry->Data.Move.DY);
 		if (pcb_undo_and_draw)
 			pcb_elem_invalidate_draw(element);
-		return (pcb_true);
+		return pcb_true;
 	}
 	pcb_message(PCB_MSG_ERROR, "hace Internal error: UndoMirror on object type %d\n", type);
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -494,10 +494,10 @@ static pcb_bool UndoOtherSide(UndoListTypePtr Entry)
 		pcb_subc_change_side(&subc, Entry->Data.Move.DY);
 		if (pcb_undo_and_draw)
 			DrawSubc(subc);
-		return (pcb_true);
+		return pcb_true;
 	}
 	pcb_message(PCB_MSG_ERROR, "hace Internal error: UndoOtherside on object type %x\n", type);
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -519,9 +519,9 @@ static pcb_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 		/* in order to make this re-doable we move it to the pcb_removelist */
 		pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, type, ptr1, ptr2, ptr3);
 		Entry->Type = PCB_UNDO_REMOVE;
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -539,9 +539,9 @@ static pcb_bool UndoMove(UndoListTypePtr Entry)
 		pcb_move_obj(type, ptr1, ptr2, ptr3, -Entry->Data.Move.DX, -Entry->Data.Move.DY);
 		Entry->Data.Move.DX *= -1;
 		Entry->Data.Move.DY *= -1;
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ----------------------------------------------------------------------
@@ -560,9 +560,9 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 		if (pcb_undo_and_draw)
 			DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 		Entry->Type = PCB_UNDO_CREATE;
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ----------------------------------------------------------------------
@@ -581,9 +581,9 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
 		swap = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
 		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, LAYER_PTR(Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
 		Entry->Data.MoveToLayer.OriginalLayer = swap;
-		return (pcb_true);
+		return pcb_true;
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -617,11 +617,11 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 			Entry->Type = PCB_UNDO_INSERT_POINT;
 			Entry->ID = Entry->Data.RemovedPoint.ID;
 			Entry->Kind = PCB_TYPE_POLY_POINT;
-			return (pcb_true);
+			return pcb_true;
 		}
 
 	default:
-		return (pcb_false);
+		return pcb_false;
 	}
 }
 
@@ -670,11 +670,11 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 			pcb_destroy_object(PCB->Data, PCB_TYPE_POLY_POINT, layer, polygon, pnt);
 			if (pcb_undo_and_draw && layer->meta.real.vis)
 				pcb_poly_invalidate_draw(layer, polygon);
-			return (pcb_true);
+			return pcb_true;
 		}
 
 	default:
-		return (pcb_false);
+		return pcb_false;
 	}
 }
 
@@ -710,7 +710,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB, PCB->Data, pcb_removelist, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLY)
 		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_poly_t *) obj);
-	return (pcb_true);
+	return pcb_true;
 }
 
 /* ---------------------------------------------------------------------------

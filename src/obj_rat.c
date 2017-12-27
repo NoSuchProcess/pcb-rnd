@@ -185,7 +185,7 @@ void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 	if (conf_core.editor.clear_line)
 		conf_set_editor(clear_line, 1);
 	if (!newone)
-		return (NULL);
+		return NULL;
 	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, ctx->move.dst_layer, newone, newone);
 	if (PCB->RatOn)
 		pcb_rat_invalidate_erase(Rat);

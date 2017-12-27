@@ -102,7 +102,7 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X,
 
 	pcb_add_text_on_layer(Layer, text, PCBFont);
 
-	return (text);
+	return text;
 }
 
 static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
@@ -356,7 +356,7 @@ void *pcb_textop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_
 
 	PCB_SET_PARENT(text, layer, lay);
 
-	return (text);
+	return text;
 }
 
 /* changes the scaling factor of a text object */
@@ -366,7 +366,7 @@ void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.value);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
-		return (NULL);
+		return NULL;
 	if (value <= PCB_MAX_TEXTSCALE && value >= PCB_MIN_TEXTSCALE && value != Text->Scale) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_TEXT, Layer, Text, Text);
 		pcb_text_invalidate_erase(Layer, Text);
@@ -377,9 +377,9 @@ void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		pcb_text_invalidate_draw(Layer, Text);
-		return (Text);
+		return Text;
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* sets data of a text object and calculates bounding box; memory must have
@@ -389,7 +389,7 @@ void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	char *old = Text->TextString;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
-		return (NULL);
+		return NULL;
 	pcb_text_invalidate_erase(Layer, Text);
 	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -400,14 +400,14 @@ void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
-	return (old);
+	return old;
 }
 
 /* changes the clearance flag of a text */
 void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
-		return (NULL);
+		return NULL;
 	pcb_text_invalidate_erase(Layer, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
 		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
@@ -420,14 +420,14 @@ void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
 	pcb_text_invalidate_draw(Layer, Text);
-	return (Text);
+	return Text;
 }
 
 /* sets the clearance flag of a text */
 void *pcb_textop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text))
-		return (NULL);
+		return NULL;
 	return pcb_textop_change_join(ctx, Layer, Text);
 }
 
@@ -435,7 +435,7 @@ void *pcb_textop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text
 void *pcb_textop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text))
-		return (NULL);
+		return NULL;
 	return pcb_textop_change_join(ctx, Layer, Text);
 }
 
@@ -449,7 +449,7 @@ void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_text_copy_meta(text, Text);
 	pcb_text_invalidate_draw(Layer, text);
 	pcb_undo_add_obj_to_create(PCB_TYPE_TEXT, Layer, text, text);
-	return (text);
+	return text;
 }
 
 /* moves a text object */
@@ -602,7 +602,7 @@ void *pcb_textop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
 	pcb_draw();
-	return (Text);
+	return Text;
 }
 
 void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
@@ -622,7 +622,7 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
-	return (Text);
+	return Text;
 }
 
 void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs)

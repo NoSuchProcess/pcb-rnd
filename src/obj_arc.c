@@ -206,7 +206,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 	{
 		if (arc->X == X1 && arc->Y == Y1 && arc->Width == width &&
 				pcb_normalize_angle(arc->StartAngle) == pcb_normalize_angle(sa) && arc->Delta == dir)
-			return (NULL);						/* prevent stacked arcs */
+			return NULL;						/* prevent stacked arcs */
 	}
 	PCB_END_LOOP;
 	Arc = pcb_arc_alloc(Layer);
@@ -355,7 +355,7 @@ void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
-		return (NULL);
+		return NULL;
 	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Arc->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_ARC, Layer, Arc, Arc);
 		pcb_arc_invalidate_erase(Arc);
@@ -368,7 +368,7 @@ void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the clearance size of an arc */
@@ -377,7 +377,7 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
-		return (NULL);
+		return NULL;
 	if (value < 0)
 		value = 0;
 	value = MIN(PCB_MAX_LINESIZE, value);
@@ -397,7 +397,7 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the radius of an arc (is_primary 0=width or 1=height or 2=both) */
@@ -407,7 +407,7 @@ void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 	void *a0, *a1;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
-		return (NULL);
+		return NULL;
 
 	switch(ctx->chgsize.is_primary) {
 		case 0: dst = &Arc->Width; break;
@@ -434,7 +434,7 @@ void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the angle of an arc (is_primary 0=start or 1=end) */
@@ -444,7 +444,7 @@ void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Ar
 	void *a0, *a1;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
-		return (NULL);
+		return NULL;
 
 	switch(ctx->chgangle.is_primary) {
 		case 0: dst = &Arc->StartAngle; break;
@@ -472,14 +472,14 @@ void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Ar
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return (Arc);
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* changes the clearance flag of an arc */
 void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
-		return (NULL);
+		return NULL;
 	pcb_arc_invalidate_erase(Arc);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -499,7 +499,7 @@ void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 void *pcb_arcop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
-		return (NULL);
+		return NULL;
 	return pcb_arcop_change_join(ctx, Layer, Arc);
 }
 
@@ -507,7 +507,7 @@ void *pcb_arcop_set_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 void *pcb_arcop_clear_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
-		return (NULL);
+		return NULL;
 	return pcb_arcop_change_join(ctx, Layer, Arc);
 }
 

@@ -115,7 +115,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return (F->Rat(ctx, (pcb_rat_t *) Ptr1));
 		break;
 	}
-	return (NULL);
+	return NULL;
 }
 
 /* ----------------------------------------------------------------------

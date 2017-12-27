@@ -240,14 +240,14 @@ static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
 	/* either end */
 	if ((Point->X == Line->Point1.X && Point->Y == Line->Point1.Y)
 			|| (Point->X == Line->Point2.X && Point->Y == Line->Point2.Y))
-		return (pcb_true);
+		return pcb_true;
 
 	/* middle point */
 	pcb_obj_center((pcb_any_obj_t *)Line, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
 		return pcb_true;
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -271,7 +271,7 @@ static pcb_bool IsRatPointOnArcSpec(pcb_point_t *Point, pcb_arc_t *arc)
 	if ((Point->X == cx) && (Point->Y == cy))
 		return pcb_true;
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -491,25 +491,25 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 	r2 = Radius * l - d;
 	/* projection doesn't even intersect circle when r2 < 0 */
 	if (r2 < 0)
-		return (pcb_false);
+		return pcb_false;
 	/* check the ends of the line in case the projected point */
 	/* of intersection is beyond the line end */
 	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return (pcb_true);
+		return pcb_true;
 	if (pcb_is_point_on_arc(Line->Point2.X, Line->Point2.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return (pcb_true);
+		return pcb_true;
 	if (l == 0.0)
-		return (pcb_false);
+		return pcb_false;
 	r2 = sqrt(r2);
 	Radius = -(dx * dx1 + dy * dy1);
 	r = (Radius + r2) / l;
 	if (r >= 0 && r <= 1
 			&& pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0) + 1, Arc))
-		return (pcb_true);
+		return pcb_true;
 	r = (Radius - r2) / l;
 	if (r >= 0 && r <= 1
 			&& pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0) + 1, Arc))
-		return (pcb_true);
+		return pcb_true;
 
 	/* check arc end points */
 	pcb_arc_get_end(Arc, 0, &ex, &ey);
@@ -662,7 +662,7 @@ pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 					line.Point2.Y = v->point[1];
 					pcb_line_bbox(&line);
 					if (pcb_is_line_in_poly(&line, P2))
-						return (pcb_true);
+						return pcb_true;
 					line.Point1.X = line.Point2.X;
 					line.Point1.Y = line.Point2.Y;
 				}
@@ -670,7 +670,7 @@ pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 		}
 	}
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------

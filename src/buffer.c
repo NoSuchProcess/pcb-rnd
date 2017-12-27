@@ -248,7 +248,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_board_remove(newPCB);
 		Buffer->from_outside = 1;
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
-		return (pcb_true);
+		return pcb_true;
 	}
 
 	/* release unused memory */
@@ -257,7 +257,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		PCB_CLEAR_PARENT(Buffer->Data);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 	Buffer->from_outside = 0;
-	return (pcb_false);
+	return pcb_false;
 }
 
 void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)

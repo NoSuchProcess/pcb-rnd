@@ -4580,16 +4580,16 @@ pcb_bool AutoRoute(pcb_bool selected)
 		if (PCB->RouteStyle.array[i].Thick == 0 ||
 				PCB->RouteStyle.array[i].Diameter == 0 || PCB->RouteStyle.array[i].Hole == 0 || PCB->RouteStyle.array[i].Clearance == 0) {
 			pcb_message(PCB_MSG_ERROR, "You must define proper routing styles\n" "before auto-routing.\n");
-			return (pcb_false);
+			return pcb_false;
 		}
 	}
 	if (ratlist_length(&PCB->Data->Rat) == 0)
-		return (pcb_false);
+		return pcb_false;
 	pcb_save_find_flag(PCB_FLAG_DRC);
 	rd = CreateRouteData();
 	if (rd == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to initialize data; might be missing\n" "top or bottom copper layer.\n");
-		return (pcb_false);
+		return pcb_false;
 	}
 
 	if (1) {

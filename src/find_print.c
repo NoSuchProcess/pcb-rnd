@@ -74,7 +74,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 				/* reset found objects for the next pin */
 				if (PrepareNextLoop(FP))
-					return (pcb_true);
+					return pcb_true;
 			}
 		}
 	}
@@ -116,7 +116,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 			/* reset found objects for the next pin */
 			if (PrepareNextLoop(FP))
-				return (pcb_true);
+				return pcb_true;
 		}
 	}
 	PCB_END_LOOP;
@@ -126,7 +126,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 		fputs("}\n\n", FP);
 		SEPARATE(FP);
 	}
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -154,7 +154,7 @@ static pcb_bool PrepareNextLoop(FILE * FP)
 	/* reset Padstacks */
 	PadstackList.Number = PadstackList.Location = 0;
 
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -184,7 +184,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		PrintPadConnections(PCB_SOLDER_SIDE, FP, pcb_false);
 		fputs("\t}\n", FP);
 		if (PrepareNextLoop(FP))
-			return (pcb_true);
+			return pcb_true;
 	}
 	PCB_END_LOOP;
 
@@ -208,11 +208,11 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		PrintPinConnections(FP, pcb_false);
 		fputs("\t}\n", FP);
 		if (PrepareNextLoop(FP))
-			return (pcb_true);
+			return pcb_true;
 	}
 	PCB_END_LOOP;
 	fputs("}\n\n", FP);
-	return (pcb_false);
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
