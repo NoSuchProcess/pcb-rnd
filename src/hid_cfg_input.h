@@ -105,8 +105,8 @@ int pcb_hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km);
    parent set to the previously returned keyseq value. Terminal is non-zero if
    this is the last key of the sequence.
    Raw vs. translated keys are desribed at pcb_hid_cfg_keys_input().
-   Returns NULL on error */
-pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, int terminal);
+   Returns NULL on error and loads errmsg if not NULL */
+pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, int terminal, const char **errmsg);
 
 /* Add a new key using a description (read from a lihata file usually)
    If out_seq is not NULL, load the array with pointers pointing to each

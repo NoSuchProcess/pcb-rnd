@@ -197,15 +197,18 @@ int pcb_hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km)
 	return 0;
 }
 
-pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, int terminal)
+pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, int terminal, const char **errmsg)
 {
 	pcb_hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
 	htpp_t *phash = (parent == NULL) ? &km->keys : &parent->seq_next;
 
 	/* do not grow the tree under actions */
-	if ((parent != NULL) && (parent->action_node != NULL))
+	if ((parent != NULL) && (parent->action_node != NULL)) {
+		if (*errmsg != NULL)
+			*errmsg = "unreachable multikey combo: prefix of the multikey stroke already has an action";
 		return NULL;
+	}
 
 	addr.mods = mods;
 	addr.key_raw = key_raw;
@@ -214,8 +217,11 @@ pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid
 	/* already in the tree */
 	ns = htpp_get(phash, &addr);
 	if (ns != NULL) {
-		if (terminal)
+		if (terminal) {
+			if (*errmsg != NULL)
+				*errmsg = "duplicate: already registered";
 			return NULL; /* full-path-match is collision */
+		}
 		return ns;
 	}
 
@@ -339,6 +345,7 @@ int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc,
 	unsigned short int key_trs[HIDCFG_MAX_KEYSEQ_LEN];
 	pcb_hid_cfg_keyseq_t *lasts;
 	int slen, n;
+	const char *errmsg;
 
 	slen = parse_keydesc(km, keydesc, mods, key_raws, key_trs, HIDCFG_MAX_KEYSEQ_LEN);
 	if (slen <= 0)
@@ -356,9 +363,9 @@ int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc,
 
 /*		printf(" mods=%x sym=%x\n", mods[n], key_chars[n]);*/
 
-		s = pcb_hid_cfg_keys_add_under(km, lasts, mods[n], key_raws[n], key_trs[n], terminal);
+		s = pcb_hid_cfg_keys_add_under(km, lasts, mods[n], key_raws[n], key_trs[n], terminal, &errmsg);
 		if (s == NULL) {
-		printf("  ERROR\n");
+			pcb_message(PCB_MSG_ERROR, "Failed to add hotkey binding: %s: %s\n", keydesc, errmsg);
 #warning TODO: free stuff?
 			return -1;
 		}
