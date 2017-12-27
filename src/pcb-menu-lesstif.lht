@@ -98,7 +98,7 @@ ha:{
 				ha:Mincut on shorts = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
 				-
 				ha:Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
-				ha:Open pinout menu = { a=Shift<Key>d; action=Display(Pinout) }
+				ha:Open pinout menu = { action=Display(Pinout) }
 				ha:Zoom {
 					li:submenu {
 						ha:Zoom In 2X = { action=Zoom(-2) }
