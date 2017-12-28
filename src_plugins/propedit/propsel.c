@@ -460,8 +460,15 @@ static void set_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
 	    pcb_chg_obj_clear_size(PCB_TYPE_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
-	if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
-	    pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
+	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
+		if (st->d_absolute) {
+			if (pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d - ps->rot)) DONE;
+		}
+		else {
+			if (pcb_obj_rotate(PCB_TYPE_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
+		}
+		return;
+	}
 	if (st->c_valid && (strcmp(pn, "xmirror") == 0) &&
 	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, &i, NULL) == 0)) DONE;
 	if (st->c_valid && (strcmp(pn, "smirror") == 0) &&
