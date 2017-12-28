@@ -451,7 +451,7 @@ void pcb_pstk_thindraw(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 	}
 	else { /* no pcb means buffer - take the first shape, whichever layer it is for */
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
-		if (ts != NULL)
+		if ((ts != NULL)  && (ts->len > 0))
 			shape = ts->shape;
 	}
 
