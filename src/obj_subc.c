@@ -763,10 +763,10 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	/* bind the via rtree so that vias added in this subc show up on the board */
 	if (pcb != NULL) {
 		if (pcb->Data->via_tree == NULL)
-			pcb->Data->via_tree = pcb_r_create_tree(NULL, 0, 0);
+			pcb->Data->via_tree = pcb_r_create_tree();
 		sc->data->via_tree = pcb->Data->via_tree;
 		if (pcb->Data->padstack_tree == NULL)
-			pcb->Data->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+			pcb->Data->padstack_tree = pcb_r_create_tree();
 		sc->data->padstack_tree = pcb->Data->padstack_tree;
 	}
 
@@ -816,7 +816,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 	if (pcb != NULL) {
 		if (!dst->subc_tree)
-			dst->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+			dst->subc_tree = pcb_r_create_tree();
 		pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)sc, 0);
 	}
 
@@ -861,7 +861,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		if (Data->subc_tree != NULL)
 			pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
 		else
-			Data->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+			Data->subc_tree = pcb_r_create_tree();
 	}
 
 	/* execute on layer locals */
@@ -1129,7 +1129,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 	if (dst_is_pcb) {
 		if (ctx->buffer.dst->subc_tree == NULL)
-			ctx->buffer.dst->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+			ctx->buffer.dst->subc_tree = pcb_r_create_tree();
 		pcb_r_insert_entry(ctx->buffer.dst->subc_tree, (pcb_box_t *)sc, 0);
 	}
 
@@ -1146,10 +1146,10 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			}
 			else {
 				/* need to create the trees so that move and other ops work */
-				if (sl->line_tree == NULL) sl->line_tree = pcb_r_create_tree(NULL, 0, 0);
-				if (sl->arc_tree == NULL) sl->arc_tree = pcb_r_create_tree(NULL, 0, 0);
-				if (sl->text_tree == NULL) sl->text_tree = pcb_r_create_tree(NULL, 0, 0);
-				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+				if (sl->line_tree == NULL) sl->line_tree = pcb_r_create_tree();
+				if (sl->arc_tree == NULL) sl->arc_tree = pcb_r_create_tree();
+				if (sl->text_tree == NULL) sl->text_tree = pcb_r_create_tree();
+				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree();
 				pcb_message(PCB_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
 			}
 		}
@@ -1188,11 +1188,11 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	/* bind globals */
 	if (dst_is_pcb) {
 		if (ctx->buffer.dst->via_tree == NULL)
-			ctx->buffer.dst->via_tree = pcb_r_create_tree(NULL, 0, 0);
+			ctx->buffer.dst->via_tree = pcb_r_create_tree();
 		sc->data->via_tree = ctx->buffer.dst->via_tree;
 
 		if (ctx->buffer.dst->padstack_tree == NULL)
-			ctx->buffer.dst->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+			ctx->buffer.dst->padstack_tree = pcb_r_create_tree();
 		sc->data->padstack_tree = ctx->buffer.dst->padstack_tree;
 	}
 	else {
@@ -1255,10 +1255,10 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 				continue;
 
 			/* make sure all trees exist on the dest layer - if these are the first objects there we may need to create them */
-			if (dl->line_tree == NULL) dl->line_tree = pcb_r_create_tree(NULL, 0, 0);
-			if (dl->arc_tree == NULL) dl->arc_tree = pcb_r_create_tree(NULL, 0, 0);
-			if (dl->text_tree == NULL) dl->text_tree = pcb_r_create_tree(NULL, 0, 0);
-			if (dl->polygon_tree == NULL) dl->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+			if (dl->line_tree == NULL) dl->line_tree = pcb_r_create_tree();
+			if (dl->arc_tree == NULL) dl->arc_tree = pcb_r_create_tree();
+			if (dl->text_tree == NULL) dl->text_tree = pcb_r_create_tree();
+			if (dl->polygon_tree == NULL) dl->polygon_tree = pcb_r_create_tree();
 		}
 
 		if (subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1) > 0)

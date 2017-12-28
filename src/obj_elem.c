@@ -808,7 +808,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 			pcb_r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_bbox(Font, text);
 		if (Data && !Data->name_tree[n])
-			Data->name_tree[n] = pcb_r_create_tree(NULL, 0, 0);
+			Data->name_tree[n] = pcb_r_create_tree();
 		if (Data)
 			pcb_r_insert_entry(Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
@@ -851,7 +851,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		pcb_pin_bbox(pin);
 		if (Data) {
 			if (!Data->pin_tree)
-				Data->pin_tree = pcb_r_create_tree(NULL, 0, 0);
+				Data->pin_tree = pcb_r_create_tree();
 			pcb_r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
 		}
 		PCB_MAKE_MIN(box->X1, pin->BoundingBox.X1);
@@ -871,7 +871,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		pcb_pad_bbox(pad);
 		if (Data) {
 			if (!Data->pad_tree)
-				Data->pad_tree = pcb_r_create_tree(NULL, 0, 0);
+				Data->pad_tree = pcb_r_create_tree();
 			pcb_r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
 		}
 		PCB_MAKE_MIN(box->X1, pad->BoundingBox.X1);
@@ -924,7 +924,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 	pcb_close_box(box);
 	pcb_close_box(vbox);
 	if (Data && !Data->element_tree)
-		Data->element_tree = pcb_r_create_tree(NULL, 0, 0);
+		Data->element_tree = pcb_r_create_tree();
 	if (Data)
 		pcb_r_insert_entry(Data->element_tree, box, 0);
 }

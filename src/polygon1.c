@@ -634,7 +634,7 @@ static void *make_edge_tree(pcb_pline_t * pb)
 {
 	struct seg *s;
 	pcb_vnode_t *bv;
-	pcb_rtree_t *ans = pcb_r_create_tree(NULL, 0, 0);
+	pcb_rtree_t *ans = pcb_r_create_tree();
 	bv = &pb->head;
 	do {
 		s = (seg *) malloc(sizeof(struct seg));
@@ -1090,7 +1090,7 @@ static void InsCntr(jmp_buf * e, pcb_pline_t * c, pcb_polyarea_t ** dst)
 		newp->f->b = newp->b->f = newp;
 	}
 	newp->contours = c;
-	newp->contour_tree = pcb_r_create_tree(NULL, 0, 0);
+	newp->contour_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(newp->contour_tree, (pcb_box_t *) c, 0);
 	c->next = NULL;
 }																/* InsCntr */
@@ -1209,7 +1209,7 @@ void pcb_poly_insert_holes(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** sr
 	/* make a polyarea info table */
 	/* make an rtree of polyarea info table */
 	all_pa_info = (struct polyarea_info *) malloc(sizeof(struct polyarea_info) * num_polyareas);
-	tree = pcb_r_create_tree(NULL, 0, 0);
+	tree = pcb_r_create_tree();
 	i = 0;
 	curc = dest;
 	do {
@@ -2467,7 +2467,7 @@ pcb_bool pcb_polyarea_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src)
 		*dst = (pcb_polyarea_t *) calloc(1, sizeof(pcb_polyarea_t));
 	if (*dst == NULL)
 		return pcb_false;
-	(*dst)->contour_tree = pcb_r_create_tree(NULL, 0, 0);
+	(*dst)->contour_tree = pcb_r_create_tree();
 
 	return pcb_polyarea_copy1(*dst, src);
 }
@@ -2788,7 +2788,7 @@ void pcb_polyarea_init(pcb_polyarea_t * p)
 {
 	p->f = p->b = p;
 	p->contours = NULL;
-	p->contour_tree = pcb_r_create_tree(NULL, 0, 0);
+	p->contour_tree = pcb_r_create_tree();
 }
 
 pcb_polyarea_t *pcb_polyarea_create(void)
@@ -3393,7 +3393,7 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 		}
 		if (pa->contour_tree != NULL)
 			pcb_r_destroy_tree(&pa->contour_tree);
-		pa->contour_tree = pcb_r_create_tree(NULL, 0, 0);
+		pa->contour_tree = pcb_r_create_tree();
 		for(pl = pa->contours; pl != NULL; pl = pl->next) {
 			pcb_vnode_t *v;
 			int cnt2 = 0;

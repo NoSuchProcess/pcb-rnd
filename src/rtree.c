@@ -338,7 +338,7 @@ static void adjust_bounds(struct rtree_node *node)
  * it, so don't free the box list until you've called r_destroy_tree.
  * if you set 'manage' to pcb_true, r_destroy_tree will free your boxlist.
  */
-pcb_rtree_t *pcb_r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
+pcb_rtree_t *pcb_r_create_tree_old(const pcb_box_t * boxlist[], int N, int manage)
 {
 	pcb_rtree_t *rtree;
 	struct rtree_node *node;
@@ -360,6 +360,11 @@ pcb_rtree_t *pcb_r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
 	assert(__r_tree_is_good(rtree->root));
 #endif
 	return rtree;
+}
+
+pcb_rtree_t *pcb_r_create_tree(void)
+{
+	return pcb_r_create_tree_old(NULL, 0, 0);
 }
 
 static void __r_destroy_tree(struct rtree_node *node)

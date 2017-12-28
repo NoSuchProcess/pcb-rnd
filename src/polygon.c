@@ -2300,7 +2300,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 		pcb_poly_init_clip(Destination, Layer, Polygon);
 		pcb_poly_bbox(Polygon);
 		if (!Layer->polygon_tree)
-			Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+			Layer->polygon_tree = pcb_r_create_tree();
 		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 
 		pcb_poly_invalidate_draw(Layer, Polygon);

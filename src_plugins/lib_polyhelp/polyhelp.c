@@ -190,7 +190,7 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, pcb_coord
 
 	res->alloced = alloced;
 	res->used = 0;
-	res->edge_tree = pcb_r_create_tree(NULL, 0, 0);
+	res->edge_tree = pcb_r_create_tree();
 	res->bbox.X1 = res->bbox.Y1 = PCB_MAX_COORD;
 	res->bbox.X2 = res->bbox.Y2 = -PCB_MAX_COORD;
 

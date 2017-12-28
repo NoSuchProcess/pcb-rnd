@@ -104,7 +104,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 {
 	pcb_pstk_bbox(ps);
 	if (!data->padstack_tree)
-		data->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+		data->padstack_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps, 0);
 	PCB_SET_PARENT(ps, data, data);
 }

@@ -96,9 +96,9 @@ mtspace_t *mtspace_create(void)
 
 	/* create mtspace data structure */
 	mtspace = (mtspace_t *) malloc(sizeof(*mtspace));
-	mtspace->ftree = pcb_r_create_tree(NULL, 0, 0);
-	mtspace->etree = pcb_r_create_tree(NULL, 0, 0);
-	mtspace->otree = pcb_r_create_tree(NULL, 0, 0);
+	mtspace->ftree = pcb_r_create_tree();
+	mtspace->etree = pcb_r_create_tree();
+	mtspace->otree = pcb_r_create_tree();
 	/* done! */
 	return mtspace;
 }

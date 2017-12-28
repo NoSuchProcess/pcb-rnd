@@ -248,7 +248,7 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_bbox(Line);
 	if (!Layer->line_tree)
-		Layer->line_tree = pcb_r_create_tree(NULL, 0, 0);
+		Layer->line_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 }
 
@@ -364,7 +364,7 @@ void *pcb_lineop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, line);
 
 	if (!lay->line_tree)
-		lay->line_tree = pcb_r_create_tree(NULL, 0, 0);
+		lay->line_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(lay->line_tree, (pcb_box_t *) line, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_LINE, lay, line);
 
@@ -604,7 +604,7 @@ void *pcb_lineop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_l
 	linelist_append(&(Destination->Line), line);
 
 	if (!Destination->line_tree)
-		Destination->line_tree = pcb_r_create_tree(NULL, 0, 0);
+		Destination->line_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Destination->line_tree, (pcb_box_t *) line, 0);
 
 	PCB_SET_PARENT(line, layer, Destination);

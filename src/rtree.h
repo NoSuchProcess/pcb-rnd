@@ -63,7 +63,9 @@ typedef enum pcb_r_dir_e {
 /* create an rtree from the list of boxes.  if 'manage' is pcb_true, then
  * the tree will take ownership of 'boxlist' and free it when the tree
  * is destroyed. */
-pcb_rtree_t *pcb_r_create_tree(const pcb_box_t * boxlist[], int N, int manage);
+pcb_rtree_t *pcb_r_create_tree_old(const pcb_box_t * boxlist[], int N, int manage);
+pcb_rtree_t *pcb_r_create_tree();
+
 /* destroy an rtree */
 void pcb_r_destroy_tree(pcb_rtree_t ** rtree);
 

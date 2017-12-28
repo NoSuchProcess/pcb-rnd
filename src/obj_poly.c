@@ -242,7 +242,7 @@ void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
 {
 	pcb_poly_bbox(polygon);
 	if (!Layer->polygon_tree)
-		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+		Layer->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	PCB_SET_PARENT(polygon, layer, Layer);
 	pcb_poly_clear_from_poly(Layer->parent, PCB_TYPE_POLY, Layer, polygon);
@@ -391,7 +391,7 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t 
 	 * skeleton polygon object, which won't have correct bounds.
 	 */
 	if (!layer->polygon_tree)
-		layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+		layer->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, polygon);
@@ -414,7 +414,7 @@ void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, polygon);
 
 	if (!lay->polygon_tree)
-		lay->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+		lay->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(lay->polygon_tree, (pcb_box_t *) polygon, 0);
 
 	PCB_SET_PARENT(polygon, layer, lay);
@@ -600,7 +600,7 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 	polylist_append(&Destination->Polygon, polygon);
 
 	if (!Destination->polygon_tree)
-		Destination->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+		Destination->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon, 0);
 
 	PCB_SET_PARENT(polygon, layer, Destination);
@@ -844,7 +844,7 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	pcb_poly_copy(polygon, Polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	pcb_poly_copy_meta(polygon, Polygon);
 	if (!Layer->polygon_tree)
-		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+		Layer->polygon_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, polygon);
 	pcb_poly_invalidate_draw(Layer, polygon);

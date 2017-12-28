@@ -93,7 +93,7 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 	Line->group2 = group2;
 	pcb_line_bbox((pcb_line_t *) Line);
 	if (!Data->rat_tree)
-		Data->rat_tree = pcb_r_create_tree(NULL, 0, 0);
+		Data->rat_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);
 	return Line;
 }
@@ -145,7 +145,7 @@ void *pcb_ratop_move_to_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, rat);
 
 	if (!ctx->buffer.dst->rat_tree)
-		ctx->buffer.dst->rat_tree = pcb_r_create_tree(NULL, 0, 0);
+		ctx->buffer.dst->rat_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(ctx->buffer.dst->rat_tree, (pcb_box_t *) rat, 0);
 
 	PCB_SET_PARENT(rat, data, ctx->buffer.dst);

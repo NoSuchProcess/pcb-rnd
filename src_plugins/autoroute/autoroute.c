@@ -1146,7 +1146,7 @@ static routedata_t *CreateRouteData()
 	/* create r-trees from pointer lists */
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		/* create the r-tree */
-		rd->layergrouptree[i] = pcb_r_create_tree((const pcb_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]), 1);
+		rd->layergrouptree[i] = pcb_r_create_tree_old((const pcb_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]), 1);
 	}
 
 	if (AutoRouteParameters.use_vias) {
@@ -3660,7 +3660,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 #endif
 	}
 	PCB_END_LOOP;
-	targets = pcb_r_create_tree((const pcb_box_t **) target_list, i, 0);
+	targets = pcb_r_create_tree_old((const pcb_box_t **) target_list, i, 0);
 	assert(i <= num_targets);
 	free(target_list);
 

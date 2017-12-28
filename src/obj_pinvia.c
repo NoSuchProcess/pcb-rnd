@@ -233,7 +233,7 @@ void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
 {
 	pcb_pin_bbox(Via);
 	if (!Data->via_tree)
-		Data->via_tree = pcb_r_create_tree(NULL, 0, 0);
+		Data->via_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 	PCB_SET_PARENT(Via, data, Data);
 }
@@ -371,7 +371,7 @@ void *pcb_viaop_move_to_buffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, via);
 
 	if (!ctx->buffer.dst->via_tree)
-		ctx->buffer.dst->via_tree = pcb_r_create_tree(NULL, 0, 0);
+		ctx->buffer.dst->via_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *) via, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_VIA, via, via);
 	PCB_SET_PARENT(via, data, ctx->buffer.dst);

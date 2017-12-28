@@ -946,11 +946,11 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
 
 	if (!dt->via_tree)
-		dt->via_tree = pcb_r_create_tree(NULL, 0, 0);
+		dt->via_tree = pcb_r_create_tree();
 	sc->data->via_tree = dt->via_tree;
 
 	if (!dt->padstack_tree)
-		dt->padstack_tree = pcb_r_create_tree(NULL, 0, 0);
+		dt->padstack_tree = pcb_r_create_tree();
 	sc->data->padstack_tree = dt->padstack_tree;
 
 	pcb_add_subc_to_data(dt, sc);
@@ -963,7 +963,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	pcb_data_bbox(&sc->BoundingBox, sc->data, pcb_true);
 
 	if (!dt->subc_tree)
-		dt->subc_tree = pcb_r_create_tree(NULL, 0, 0);
+		dt->subc_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)sc, 0);
 
 	if (subc_out != NULL)
