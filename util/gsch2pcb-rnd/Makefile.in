@@ -74,8 +74,8 @@ gsch2pcb.o: gsch2pcb.c ../../config.h
 # run the Makefile in src for the common objects:
 $(HASHOBJ) $(QPARSE) $(LHTOBJ) \
 ../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o \
-../../src_3rd/genvector/vts0.o ../../src_3rd/genadlist/genadlist.o \
-../../src_3rd/genadlist/genlistalloc.o:
+../../src_3rd/genvector/vts0.o ../../src_3rd/genadlist/genlist.o \
+../../src_3rd/genlist/genlistalloc.o:
 	cd ../../src && $(MAKE) util_deps
 
 $(LHTOBJ): $(HASHOBJ)

@@ -320,6 +320,8 @@ SPHASH=$(SPHASH_PATH)/sphash
 PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
 LIBMINUID_CFLAGS=@cc/cflags@
 LIBMINUID_LDFLAGS=@cc/ldflags@
+GENLIST_CFLAGS=@cc/cflags@
+GENLIST_LDFLAGS=@cc/ldflags@
 
 all:
 	$(MAKE) revcheck
@@ -338,6 +340,10 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
 	$(CC) -o pcb-rnd$(EXE) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
+
+# needed by gsch2pcb-rnd
+../src_3rd/genlist/genadlist.o ../src_3rd/genlist/genlistalloc.o:
+	cd ../src_3rd/genlist && $(MAKE) GENLIST_CFLAGS="$(GENLIST_CFLAGS)" GENLIST_LDFLAGS="$(GENLIST_LDFLAGS)"
 
 buildin.c: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 	cd $(PLUGDIR) && $(PUPLUG) buildin.c "-" < $(PLUGDIR)/.builtin.pups > $(ROOT)/src/buildin.c
@@ -393,7 +399,7 @@ defpcb_internal.c: default4.lht
 gen_font:
 	$(ROOT)/util/devhelpers/font2c.sh < default_font > font_internal.c
 
-util_deps: $(OBJS) $(OBJS_UTIL)
+util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o
 
 FORCE:
 
