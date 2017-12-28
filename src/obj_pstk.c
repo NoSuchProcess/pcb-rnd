@@ -621,14 +621,6 @@ static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, p
 {
 	pcb_pad_t pad;
 	pcb_vector_t v;
-	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-
-	/* cheap check: hole clicked (also necessary for a mounting hole too) */
-	if (proto->hdia > 0) {
-		double dist2 = SQR((double)x - (double)ps->x) + SQR((double)y - (double)ps->y);
-		if (dist2 <= SQR((double)radius + (double)proto->hdia/2.0))
-			return 1;
-	}
 
 	switch(shape->shape) {
 		case PCB_PSSH_CIRC:
@@ -656,6 +648,14 @@ static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, p
 int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 	pcb_pstk_shape_t *shp;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+	/* cheap check: hole clicked (also necessary for a mounting hole too) */
+	if (proto->hdia > 0) {
+		double dist2 = SQR((double)x - (double)ps->x) + SQR((double)y - (double)ps->y);
+		if (dist2 <= SQR((double)radius + (double)proto->hdia/2.0))
+			return 1;
+	}
 
 	/* no layer means: "is point in any shape?" */
 	if (layer == NULL) {
