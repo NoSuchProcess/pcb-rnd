@@ -575,14 +575,31 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *
 	return 0;
 }
 
+#define	HOLE_IN_BOX(ps, dia, b) \
+	( \
+	PCB_POINT_IN_BOX((ps)->x - dia/2, (ps)->y - dia/2, (b)) && \
+	PCB_POINT_IN_BOX((ps)->x + dia/2, (ps)->y + dia/2, (b)) \
+	)
+
+#define	HOLE_TOUCHES_BOX(ps, dia, b) \
+	PCB_CIRCLE_TOUCHES_BOX((ps)->x, (ps)->y, dia/2, (b))
+
 int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 {
 	pcb_pstk_shape_t *shp;
+	pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
+
+	/* special case: no-shape padstack is used for hole */
+	if (tshp->len == 0) {
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		if (proto->hdia <= 0)
+			return 0;
+		return (PCB_IS_BOX_NEGATIVE(box) ? HOLE_TOUCHES_BOX(ps, proto->hdia, box) : HOLE_IN_BOX(ps, proto->hdia, box));
+	}
 
 	/* no layer means: "is any shape near?" */
 	if (layer == NULL) {
 		int n;
-		pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
 
 		if (tshp == NULL)
 			return 0;
