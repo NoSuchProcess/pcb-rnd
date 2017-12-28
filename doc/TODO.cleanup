@@ -1,12 +1,7 @@
 - rename:
-	- Note
-	- GetObjectBoundingBox
 	- XORDraw*
 	- conf_*
 - centralize pcb_gui->attribute_dialog()
-- replace return (*) with return *
 - remove pcb board Zoom/x/y, move the drc stuff to config
 - remove obsolete APIs:
-   pcb_board_get_filename(void);
-   pcb_board_get_name(void);
    get_unit_list()
