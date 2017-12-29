@@ -1,5 +1,4 @@
 - TEST:
-	- route style vs. autorouter
 	- smartdisperse 
 		- compare to 1.2.4; term changes
 		- test subcircuits
