@@ -507,6 +507,7 @@ int hook_detect_target()
 		require("libs/sul/libxml2/presents", 0, 0);
 		if (!istrue(get("libs/sul/libxml2/presents"))) {
 			report("libxml2 is not available, disabling io_eagle...\n");
+			report_repeat("WARNING: Since there's no libxml2 found, disabling the Eagle IO plugin...\n");
 			hook_custom_arg("Disable-io_eagle", NULL);
 		}
 		put("/local/pcb/want_libxml2", strue);
