@@ -5,7 +5,6 @@
 	+ subc centroid/origin snap [report: jg]
 
 2. For later releases ===============================================================================
-- BUG: scconfig hooks.c if(want_xml2) is missing report_repeat for  configure WARNING: string [report: miloh]
 - key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
