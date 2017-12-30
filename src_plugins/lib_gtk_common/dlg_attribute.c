@@ -275,9 +275,12 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_BEGIN_TABBED:
 				ctx->wl[j] = widget = gtk_notebook_new();
+				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
 				vbox1 = gtkc_vbox_new(FALSE, 0);
 				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));;
+				gtk_widget_show_all(vbox1);
 				gtk_notebook_append_page(GTK_NOTEBOOK(widget), vbox1, NULL);
+				gtk_widget_show_all(widget);
 				;
 				break;
 
