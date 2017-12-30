@@ -27,9 +27,10 @@ static int attr_idx, attr_idx2;
 static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
+	const char *tabs[] = { "original test", "new test", NULL };
 
 	PCB_DAD_DECL(foo);
-
+	PCB_DAD_BEGIN_TABBED(foo, tabs);
 		PCB_DAD_BEGIN_VBOX(foo);
 			PCB_DAD_LABEL(foo, "text1");
 			PCB_DAD_BEGIN_TABLE(foo, 3);
@@ -52,6 +53,11 @@ static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			PCB_DAD_BUTTON(foo, "update!");
 				PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
 		PCB_DAD_END(foo);
+
+		PCB_DAD_BEGIN_VBOX(foo);
+			PCB_DAD_LABEL(foo, "new test.");
+		PCB_DAD_END(foo);
+	PCB_DAD_END(foo);
 
 	PCB_DAD_AUTORUN(foo, "dlg_test", "attribute dialog test", NULL);
 
