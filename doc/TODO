@@ -170,6 +170,7 @@
 	- distalign doesn't work with subc ( align() and distribute()) [report:Miloh]
 	- distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
+- BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 
 3. Long term ===============================================================================
 
