@@ -251,9 +251,15 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					}
 					break;
 				case TB_TABBED:
+					/* Add a new notebook page with an empty vbox, using tab label present in enumerations. */
 					parent = gtkc_vbox_new(FALSE, 4);
-					i = gtk_notebook_get_n_pages(GTK_NOTEBOOK(real_parent));
-					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, gtk_label_new(tb_st->tabbed.tablab[i]));
+					if (*tb_st->tabbed.tablab) {
+						widget = gtk_label_new(*tb_st->tabbed.tablab);
+						tb_st->tabbed.tablab++;
+					}
+					else 
+						widget = NULL;
+					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, widget);
 					break;
 			}
 		}
