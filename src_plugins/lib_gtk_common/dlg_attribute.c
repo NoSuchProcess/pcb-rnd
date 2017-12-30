@@ -205,11 +205,19 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 }
 
 typedef struct {
-	int cols, rows;
-	int col, row;
-} ghid_attr_tbl_t;
+	enum {
+		TB_TABLE,
+		TB_TABBED
+	} type;
+	union {
+		struct {
+			int cols, rows;
+			int col, row;
+		} table;
+	};
+} ghid_attr_tb_t;
 
-static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tbl_t *tbl_st, int start_from, int add_labels)
+static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels)
 {
 	int j, i, n;
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
@@ -228,13 +236,19 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			break;
 
 		/* if we are willing a table, allocate parent boxes in row-major */
-		if (tbl_st != NULL) {
-			parent = gtkc_vbox_new(FALSE, 4);
-			gtkc_table_attach1(real_parent, parent, tbl_st->row, tbl_st->col);
-			tbl_st->col++;
-			if (tbl_st->col >= tbl_st->cols) {
-				tbl_st->col = 0;
-				tbl_st->row++;
+		if (tb_st != NULL) {
+			switch(tb_st->type) {
+				case TB_TABLE:
+					parent = gtkc_vbox_new(FALSE, 4);
+					gtkc_table_attach1(real_parent, parent, tb_st->table.row, tb_st->table.col);
+					tb_st->table.col++;
+					if (tb_st->table.col >= tb_st->table.cols) {
+						tb_st->table.col = 0;
+						tb_st->table.row++;
+					}
+					break;
+				case TB_TABBED:
+					break;
 			}
 		}
 		else
@@ -260,13 +274,14 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_BEGIN_TABLE:
 				{
-					ghid_attr_tbl_t ts;
+					ghid_attr_tb_t ts;
 					bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
-					ts.cols = ctx->attrs[j].pcb_hatt_table_cols;
-					ts.rows = pcb_hid_atrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.cols;
-					ts.col = 0;
-					ts.row = 0;
-					tbl = gtkc_table_static(ts.rows, ts.cols, 1);
+					ts.type = TB_TABLE;
+					ts.table.cols = ctx->attrs[j].pcb_hatt_table_cols;
+					ts.table.rows = pcb_hid_atrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.table.cols;
+					ts.table.col = 0;
+					ts.table.row = 0;
+					tbl = gtkc_table_static(ts.table.rows, ts.table.cols, 1);
 					gtk_box_pack_start(GTK_BOX(bparent), tbl, FALSE, FALSE, 0);
 					ctx->wl[j] = tbl;
 					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
