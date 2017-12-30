@@ -301,8 +301,8 @@ pcb_trace("Add tab\n");
 					ts.type = TB_TABBED;
 					ts.tabbed.tablab = ctx->attrs[j].enumerations;
 					ctx->wl[j] = widget = gtk_notebook_new();
+					gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
 					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1, 0);
-					gtk_widget_show_all(widget);
 				}
 				break;
 
