@@ -376,7 +376,7 @@ pcb_data_t *pcb_buffer_new(pcb_board_t *pcb)
 
 /* -------------------------------------------------------------------------- */
 
-static const char pcb_acts_FreeRotateBuffer[] = "pcb_buffer_free_rotate([Angle])";
+static const char pcb_acts_FreeRotateBuffer[] = "FreeRotateBuffer([Angle])";
 
 static const char pcb_acth_FreeRotateBuffer[] =
 	"Rotates the current paste buffer contents by the specified angle.  The\n"
@@ -729,6 +729,7 @@ static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(Rotate, 1..3)\n"
 	"PasteBuffer(Convert|Restore|Mirror)\n"
 	"PasteBuffer(ToLayout, X, Y, units)\n"
+	"PasteBuffer(ToLayout, crosshair)\n"
 	"PasteBuffer(Save, Filename, [format], [force])";
 
 static const char pcb_acth_PasteBuffer[] = "Various operations on the paste buffer.";
@@ -776,7 +777,8 @@ coordinates in the layout.  The @code{X} and @code{Y} are treated like
 @code{+} or @code{-}, then that amount is relative to the last
 location.  Otherwise, it's absolute.  Units can be
 @code{mil} or @code{mm}; if unspecified, units are PCB's internal
-units, currently 1/100 mil.
+units, currently 1/100 mil. If "crosshair" is used instead of coordinates,
+the paste happens at the current crosshair coords.
 
 
 @item 1..PCB_MAX_BUFFER
@@ -883,9 +885,12 @@ static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_c
 				static pcb_coord_t oldx = 0, oldy = 0;
 				pcb_coord_t x, y;
 				pcb_bool absolute;
-
 				if (argc == 1) {
 					x = y = 0;
+				}
+				else if (strcmp(argv[1], "crosshair") == 0) {
+					x = pcb_crosshair.X;
+					y = pcb_crosshair.Y;
 				}
 				else if (argc == 3 || argc == 4) {
 					x = pcb_get_value(PCB_ACTION_ARG(1), PCB_ACTION_ARG(3), &absolute, NULL);
