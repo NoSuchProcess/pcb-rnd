@@ -192,6 +192,7 @@ do { \
 		case PCB_HATT_ENUM: \
 		case PCB_HATT_COORD: \
 		case PCB_HATT_UNIT: \
+		case PCB_HATT_BEGIN_TABBED: \
 			table[table ## _len - 1].field.int_value = (int)val; \
 			break; \
 		case PCB_HATT_REAL: \
@@ -229,6 +230,7 @@ do { \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
+		case PCB_HATT_BEGIN_TABBED: \
 		case PCB_HATT_END: \
 			break; \
 	} \
