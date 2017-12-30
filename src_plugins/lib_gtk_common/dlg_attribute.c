@@ -242,7 +242,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		if (tb_st != NULL) {
 			switch(tb_st->type) {
 				case TB_TABLE:
-					parent = gtkc_vbox_new(FALSE, 4);
+					parent = gtkc_vbox_new(FALSE, 0);
 					gtkc_table_attach1(real_parent, parent, tb_st->table.row, tb_st->table.col);
 					tb_st->table.col++;
 					if (tb_st->table.col >= tb_st->table.cols) {
