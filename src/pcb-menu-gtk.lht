@@ -607,6 +607,7 @@ ha:{
 						ha:Auto place selected elements       = { action=AutoPlaceSelected() }
 						ha:Autoroute selected elements        = { action=AutoRoute(SelectedRats) }
 						ha:Rip up selected auto-routed tracks = { action=RipUp(Selected) }
+						ha:Rotate selected                    = { action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer) FreeRotateBuffer(); Mode(PasteBuffer); PasteBuffer(Tolayout, crosshair); } }
 					}
 				}
 				ha:Operations on this location {
