@@ -214,6 +214,9 @@ typedef struct {
 			int cols, rows;
 			int col, row;
 		} table;
+		struct {
+			const char **tablab;
+		} tabbed;
 	};
 } ghid_attr_tb_t;
 
@@ -248,6 +251,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					}
 					break;
 				case TB_TABBED:
+					parent = gtkc_vbox_new(FALSE, 4);
+pcb_trace("Add tab\n");
+					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, gtk_label_new("foo"));
+					gtk_notebook_set_tab_label_text(GTK_NOTEBOOK(real_parent), parent, "bar");
 					break;
 			}
 		}
@@ -289,14 +296,14 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_BEGIN_TABBED:
-				ctx->wl[j] = widget = gtk_notebook_new();
-				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
-				vbox1 = gtkc_vbox_new(FALSE, 0);
-				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));;
-				gtk_widget_show_all(vbox1);
-				gtk_notebook_append_page(GTK_NOTEBOOK(widget), vbox1, NULL);
-				gtk_widget_show_all(widget);
-				;
+				{
+					ghid_attr_tb_t ts;
+					ts.type = TB_TABBED;
+					ts.tabbed.tablab = ctx->attrs[j].enumerations;
+					ctx->wl[j] = widget = gtk_notebook_new();
+					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1, 0);
+					gtk_widget_show_all(widget);
+				}
 				break;
 
 			case PCB_HATT_LABEL:
