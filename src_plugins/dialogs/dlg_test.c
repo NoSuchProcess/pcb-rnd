@@ -29,28 +29,29 @@ static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	const char *vals[] = { "foo", "bar", "baz", NULL };
 
 	PCB_DAD_DECL(foo);
-	PCB_DAD_BEGIN_VBOX(foo);
-		PCB_DAD_LABEL(foo, "text1");
-		PCB_DAD_BEGIN_TABLE(foo, 3);
-			PCB_DAD_LABEL(foo, "text2a");
-			PCB_DAD_LABEL(foo, "text2b");
-			PCB_DAD_LABEL(foo, "text2c");
-			PCB_DAD_LABEL(foo, "text2d");
-		PCB_DAD_END(foo);
-		PCB_DAD_LABEL(foo, "text3");
 
-		PCB_DAD_ENUM(foo, vals);
-			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-			attr_idx = PCB_DAD_CURRENT(foo);
-		PCB_DAD_INTEGER(foo, "text2e");
-			PCB_DAD_MINVAL(foo, 1);
-			PCB_DAD_MAXVAL(foo, 10);
-			PCB_DAD_DEFAULT(foo, 3);
-			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-			attr_idx2 = PCB_DAD_CURRENT(foo);
-		PCB_DAD_BUTTON(foo, "update!");
-			PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-	PCB_DAD_END(foo);
+		PCB_DAD_BEGIN_VBOX(foo);
+			PCB_DAD_LABEL(foo, "text1");
+			PCB_DAD_BEGIN_TABLE(foo, 3);
+				PCB_DAD_LABEL(foo, "text2a");
+				PCB_DAD_LABEL(foo, "text2b");
+				PCB_DAD_LABEL(foo, "text2c");
+				PCB_DAD_LABEL(foo, "text2d");
+			PCB_DAD_END(foo);
+			PCB_DAD_LABEL(foo, "text3");
+
+			PCB_DAD_ENUM(foo, vals);
+				PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
+				attr_idx = PCB_DAD_CURRENT(foo);
+			PCB_DAD_INTEGER(foo, "text2e");
+				PCB_DAD_MINVAL(foo, 1);
+				PCB_DAD_MAXVAL(foo, 10);
+				PCB_DAD_DEFAULT(foo, 3);
+				PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
+				attr_idx2 = PCB_DAD_CURRENT(foo);
+			PCB_DAD_BUTTON(foo, "update!");
+				PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
+		PCB_DAD_END(foo);
 
 	PCB_DAD_AUTORUN(foo, "dlg_test", "attribute dialog test", NULL);
 
