@@ -324,13 +324,13 @@ int hook_detect_target()
 	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped;
 
-	want_gl     = plug_is_enabled("hid_gtk2_gl");
+	want_gl     = plug_is_enabled("hid_gtk2_gl") || plug_is_enabled("hid_gtk3_gl");
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
-	want_gtk3   = plug_is_enabled("hid_gtk3_cairo");
+	want_gtk3   = plug_is_enabled("hid_gtk3_cairo") || plug_is_enabled("hid_gtk3_gl");
 	want_gtk    = want_gtk2 | want_gtk3;
 	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
-	want_cairo  = plug_is_enabled("export_bboard") | want_gtk3;
+	want_cairo  = plug_is_enabled("export_bboard") | plug_is_enabled("hid_gtk3_cairo");
 	want_xml2   = plug_is_enabled("io_eagle");
 
 	require("cc/fpic",  0, 0);
