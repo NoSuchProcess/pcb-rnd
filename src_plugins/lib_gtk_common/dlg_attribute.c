@@ -252,9 +252,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					break;
 				case TB_TABBED:
 					parent = gtkc_vbox_new(FALSE, 4);
-pcb_trace("Add tab\n");
-					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, gtk_label_new("foo"));
-					gtk_notebook_set_tab_label_text(GTK_NOTEBOOK(real_parent), parent, "bar");
+					i = gtk_notebook_get_n_pages(GTK_NOTEBOOK(real_parent));
+					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, gtk_label_new(tb_st->tabbed.tablab[i]));
 					break;
 			}
 		}
