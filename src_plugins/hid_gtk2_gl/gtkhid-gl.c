@@ -18,12 +18,12 @@
 #include "../src_plugins/lib_gtk_hid/coord_conv.h"
 #include "../src_plugins/lib_gtk_hid/render.h"
 
-#include "opengl.h"
+#include "../src_plugins/lib_hid_gl/opengl.h"
 #include <gtk/gtkgl.h>
-#include "draw_gl.h"
-#include "hidgl.h"
+#include "../src_plugins/lib_hid_gl/draw_gl.h"
+#include "../src_plugins/lib_hid_gl/hidgl.h"
 #include "hid_draw_helpers.h"
-#include "stencil_gl.h"
+#include "../src_plugins/lib_hid_gl/stencil_gl.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 

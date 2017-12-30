@@ -835,7 +835,7 @@ int hook_generate()
 
 	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm("../src", "compat_inc.h.in", "compat_inc.h"));
 
-	printf("Generating opengl.h (%d)\n", generr |= tmpasm("../src_plugins/hid_gtk2_gl", "opengl.h.in", "opengl.h"));
+	printf("Generating opengl.h (%d)\n", generr |= tmpasm("../src_plugins/lib_hid_gl", "opengl.h.in", "opengl.h"));
 	if (plug_is_enabled("gpmi"))
 		gpmi_config();
 

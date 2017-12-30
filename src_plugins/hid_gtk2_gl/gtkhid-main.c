@@ -8,7 +8,8 @@
 #include "plugins.h"
 #include "hid_init.h"
 #include "conf_core.h"
-#include "draw_gl.h"
+
+#include "../src_plugins/lib_hid_gl/draw_gl.h"
 
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
