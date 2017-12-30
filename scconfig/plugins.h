@@ -5,7 +5,7 @@
 ******************************************************************************/
 
 plugin_header("\nLibrary plugins:\n")
-plugin_def("lib_compat_help",  "#compatibility helper functions", sdisable, 0)
+plugin_def("lib_compat_help",  "#compatibility helper functions", sbuildin, 1)
 plugin_def("lib_gensexpr",     "#s-expression library",           sdisable, 0)
 plugin_def("lib_gtk_common",   "all-hid_gtk common code",         sdisable, 0)
 plugin_def("lib_gtk_config",   "hid_gtk preferences dialog",      sdisable, 0)
@@ -75,7 +75,7 @@ plugin_def("export_bboard",    "breadboard pcb_exporter",         sdisable, 0)
 plugin_def("export_bom",       "bom pcb_exporter",                sbuildin, 1)
 plugin_def("export_dsn",       "specctra .dsn pcb_exporter",      sbuildin, 1)
 plugin_def("export_dxf",       "DXF pcb_exporter",                sbuildin, 1)
-plugin_def("export_fidocadj",  "FidoCadJ .fcd pcb_exporter",      sdisable, 0)
+plugin_def("export_fidocadj",  "FidoCadJ .fcd pcb_exporter",      sbuildin, 1)
 plugin_def("export_gcode",     "gcode pcb_exporter",              sbuildin, 1)
 plugin_def("export_gerber",    "Gerber pcb_exporter",             sbuildin, 1)
 plugin_def("export_ipcd356",   "IPC-D-356 Netlist pcb_exporter",  sdisable, 0)
