@@ -1,3 +1,4 @@
+13726	configure	opnegl code moved to a separate plugin for reuse
 13584	configure	opengl -lGLU bugfix
 13386	configure	proper detection of includes for fileno() and usleep()
 13364	configure	new plugin: extedit
@@ -7,7 +8,7 @@
 12835	configure	new plugin: shape
 12748	configure	libminuid cflags fix
 12708	configure	new source file for the 'brave' feature
-12673	configure new lib plugin: compat helper (because of the data model rewrite)
+12673	configure	new lib plugin: compat helper (because of the data model rewrite)
 12595	configure	new source files for padstacks
 12401	configure	new source files for more generic thermal support
 12108	configure	tool code splitup
