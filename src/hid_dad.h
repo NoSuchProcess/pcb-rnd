@@ -86,6 +86,12 @@ do { \
 	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_table_cols, cols); \
 } while(0)
 
+#define PCB_DAD_BEGIN_TABBED(table, tabs) \
+do { \
+	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_TABBED); \
+	PCB_DAD_SET_ATTR_FIELD(table, enumerations, tabs); \
+} while(0)
+
 #define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HBOX)
 #define PCB_DAD_BEGIN_VBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VBOX)
 #define PCB_DAD_END(table)             PCB_DAD_BEGIN(table, PCB_HATT_END)

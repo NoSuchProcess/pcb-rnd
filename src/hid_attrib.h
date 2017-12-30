@@ -38,6 +38,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
 	PCB_HATT_BEGIN_VBOX,
 	PCB_HATT_BEGIN_TABLE,         /* min_val is the number of columns */
+	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->enumerations stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	PCB_HATT_END          /* close one level of PCB_HATT_* */
 } pcb_hids_t;
 
