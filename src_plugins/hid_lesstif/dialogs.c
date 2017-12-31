@@ -794,7 +794,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			parent = XmCreateRowColumn(tb->notebook, "page", NULL, 0);
 
 			stdarg_n = 0;
-			stdarg(XmNnotebookChildType, XmMINOR_TAB);
+			stdarg(XmNnotebookChildType, XmMAJOR_TAB);
 			if (*tb->tablab != NULL) {
 				lab = *tb->tablab;
 				tb->tablab++;
@@ -870,6 +870,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			stdarg(XmNbackPageNumber, 1);
 			stdarg(XmNbackPageSize, 1);
 			stdarg(XmNbindingType, XmNONE);
+			stdarg(XmNorientation, XmVERTICAL);
 
 			stdarg(XmNleftAttachment, XmATTACH_FORM);
 			stdarg(XmNtopAttachment, XmATTACH_FORM);
