@@ -31,6 +31,7 @@ typedef struct {
 
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static int attr_idx, attr_idx2;
 static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -72,6 +73,8 @@ static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		/* tab 1: "new test" */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
 			PCB_DAD_LABEL(ctx.dlg, "new test.");
+			PCB_DAD_BUTTON(ctx.dlg, "jump to the first tab");
+				PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
@@ -98,4 +101,14 @@ static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 {
 	test_t *ctx = caller_data;
 	printf("Tab switch to %d!\n", ctx->dlg_result[ctx->wtab].int_value);
+}
+
+static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_attr_val_t val;
+	test_t *ctx = caller_data;
+
+	printf("Jumping tabs\n");
+	val.int_value = 0;
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wtab, &val);
 }
