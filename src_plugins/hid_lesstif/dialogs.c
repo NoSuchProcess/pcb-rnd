@@ -676,6 +676,7 @@ typedef struct {
 	Widget dialog;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	unsigned inhibit_valchg:1;
+	Dimension minw, minh;
 } lesstif_attr_dlg_t;
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
@@ -764,6 +765,8 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 typedef struct {
 	Widget notebook;
 	const char **tablab;
+	Dimension minw;
+	int tabs;
 } attr_dlg_tb_t;
 
 /* returns the index of HATT_END where the loop had to stop */
@@ -790,6 +793,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 		if (tb != NULL) {
 			const char *lab;
 			Widget tab;
+			Dimension wi;
 
 			parent = XmCreateRowColumn(tb->notebook, "page", NULL, 0);
 
@@ -804,6 +808,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 
 			tab = XmCreatePushButton(tb->notebook, (char *)lab, stdarg_args, stdarg_n);
 			XtManageChild(tab);
+
+			/* update minimum width for tabs */
+			stdarg_n = 0;
+			stdarg(XmNwidth, &wi);
+			XtGetValues(tab, stdarg_args, stdarg_n);
+			if (wi > tb->minw)
+				tb->minw = wi;
+			tb->tabs++;
 
 			XtManageChild(parent);
 		}
@@ -884,6 +896,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 
 			tb.notebook = w;
 			tb.tablab = ctx->attrs[i].enumerations;
+			tb.minw = 0;
+			tb.tabs = 0;
 
 			i = attribute_dialog_add(ctx, w, &tb, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 
@@ -983,6 +997,11 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 		}
 		if (ctx->wl[i] != NULL)
 			XtManageChild(ctx->wl[i]);
+		if (tb != NULL) {
+			tb->minw = tb->tabs * (tb->minw+10) + 10;
+			if (tb->minw > ctx->minw)
+				ctx->minw = tb->minw;
+		}
 	}
 	return i;
 }
@@ -1060,6 +1079,7 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	ctx->results = results;
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
+	ctx->minw = ctx->minh = 32;
 
 	for (i = 0; i < n_attrs; i++) {
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
@@ -1081,6 +1101,7 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	stdarg(XmNfractionBase, ctx->n_attrs);
 	XtSetValues(topform, stdarg_args, stdarg_n);
 
+
 	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
 		stdarg_n = 0;
 		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_atrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
@@ -1089,6 +1110,18 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	}
 	else
 		attribute_dialog_add(ctx, topform, NULL, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+
+	/* don't expect screens larger than 800x600 */
+	if (ctx->minw > 750)
+		ctx->minw = 750;
+	if (ctx->minw > 550)
+		ctx->minw = 550;
+
+	/* set top form's minimum width/height to content request */
+	stdarg_n = 0;
+	stdarg(XmNminWidth, ctx->minw);
+	stdarg(XmNminHeight, ctx->minh);
+	XtSetValues(XtParent(ctx->dialog), stdarg_args, stdarg_n);
 
 	if (!modal)
 		XtManageChild(ctx->dialog);
