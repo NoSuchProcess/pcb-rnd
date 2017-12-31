@@ -1048,6 +1048,9 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 		case PCB_HATT_BEGIN_TABLE:
 		case PCB_HATT_END:
 			goto err;
+		case PCB_HATT_BEGIN_TABBED:
+			XtVaSetValues(ctx->wl[idx], XmNcurrentPageNumber, val->int_value+1, NULL);
+			break;
 		case PCB_HATT_BUTTON:
 			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str_value), NULL);
 			break;
