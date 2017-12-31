@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <Xm/Notebook.h>
 
 #include "compat_misc.h"
 #include "data.h"
@@ -759,10 +760,17 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 		ctx->attrs[widx].change_cb(ctx, ctx->caller_data, &ctx->attrs[widx]);
 }
 
+/* parent info for tabbed */
+typedef struct {
+	Widget notebook;
+	const char **tablab;
+} attr_dlg_tb_t;
+
 /* returns the index of HATT_END where the loop had to stop */
-static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from, int add_labels)
+static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, attr_dlg_tb_t *tb, int start_from, int add_labels)
 {
 	int len, i, numch, numcol;
+	Widget parent;
 	static XmString empty = 0;
 
 	if (!empty)
@@ -777,6 +785,30 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 		if (ctx->attrs[i].help_text == ATTR_UNDOCUMENTED)
 			continue;
+
+		/* if we are in a notebook, a page needs to be created first */
+		if (tb != NULL) {
+			const char *lab;
+			Widget tab;
+
+			parent = XmCreateRowColumn(tb->notebook, "page", NULL, 0);
+
+			stdarg_n = 0;
+			stdarg(XmNnotebookChildType, XmMINOR_TAB);
+			if (*tb->tablab != NULL) {
+				lab = *tb->tablab;
+				tb->tablab++;
+			}
+			else
+				lab = "<anon>";
+
+			tab = XmCreatePushButton(tb->notebook, (char *)lab, stdarg_args, stdarg_n);
+			XtManageChild(tab);
+
+			XtManageChild(parent);
+		}
+		else
+			parent = real_parent;
 
 		/* Add label */
 		if ((add_labels) && (ctx->attrs[i].type != PCB_HATT_LABEL)) {
@@ -796,14 +828,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wl[i] = w;
-			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_VBOX:
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wl[i] = w;
-			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			break;
 
 		case PCB_HATT_BEGIN_TABLE:
@@ -815,7 +847,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 			ctx->wl[i] = w;
 
-			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 			while((len % numcol) != 0) {
 				Widget pad;
 
@@ -827,6 +859,37 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			}
 			XtManageChild(w);
 			break;
+
+		case PCB_HATT_BEGIN_TABBED:
+		{
+			Widget scroller;
+			attr_dlg_tb_t tb;
+
+			stdarg_n = 0;
+			stdarg(XmNbackPagePlacement, XmTOP_RIGHT);
+			stdarg(XmNbackPageNumber, 1);
+			stdarg(XmNbackPageSize, 1);
+			stdarg(XmNbindingType, XmNONE);
+
+			stdarg(XmNleftAttachment, XmATTACH_FORM);
+			stdarg(XmNtopAttachment, XmATTACH_FORM);
+			stdarg(XmNrightAttachment, XmATTACH_FORM);
+			stdarg(XmNbottomAttachment, XmATTACH_FORM);
+			ctx->wl[i] = w = XmCreateNotebook(parent, "notebook", stdarg_args, stdarg_n);
+
+			/* remove the page scroller widget that got automatically created by XmCreateNotebook() */
+			scroller = XtNameToWidget(w, "PageScroller");
+			XtUnmanageChild (scroller);
+
+			tb.notebook = w;
+			tb.tablab = ctx->attrs[i].enumerations;
+
+			i = attribute_dialog_add(ctx, w, &tb, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+
+			XtManageChild(w);
+			break;
+		}
+
 		case PCB_HATT_LABEL:
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
@@ -1021,10 +1084,10 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 		stdarg_n = 0;
 		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_atrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
 		XtManageChild(main_tbl);
-		attribute_dialog_add(ctx, main_tbl, 0, 1);
+		attribute_dialog_add(ctx, main_tbl, NULL, 0, 1);
 	}
 	else
-		attribute_dialog_add(ctx, topform, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+		attribute_dialog_add(ctx, topform, NULL, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
 	if (!modal)
 		XtManageChild(ctx->dialog);
