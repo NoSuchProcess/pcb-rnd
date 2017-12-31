@@ -22,7 +22,10 @@
 
 static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";
+
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+
 static int attr_idx, attr_idx2;
 static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -31,6 +34,7 @@ static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	PCB_DAD_DECL(foo);
 	PCB_DAD_BEGIN_TABBED(foo, tabs);
+		PCB_DAD_CHANGE_CB(foo, cb_tab_chg);
 
 		/* tab 0: "original test" */
 		PCB_DAD_BEGIN_VBOX(foo);
@@ -79,4 +83,9 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 /*	pcb_gui->attr_dlg_widget_state(hid_ctx, attr_idx, st);*/
 
 	pcb_gui->attr_dlg_set_value(hid_ctx, attr_idx, &val);
+}
+
+static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	printf("Tab switch to %d!\n", 1);
 }
