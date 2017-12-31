@@ -67,5 +67,6 @@ text_scale.png good r6731
 text_sides.png good r6731
 thermal_last.png good r6731
 thermal_layer.png good r6731
+arc_angles.eps bad r13746 geometry is okay, outline layer missing
 
 
