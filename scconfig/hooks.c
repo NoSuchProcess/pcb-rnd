@@ -324,7 +324,6 @@ int hook_detect_target()
 	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped;
 
-	want_gl     = plug_is_enabled("hid_gtk2_gl") || plug_is_enabled("hid_gtk3_gl");
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk3   = plug_is_enabled("hid_gtk3_cairo") || plug_is_enabled("hid_gtk3_gl");
 	want_gtk    = want_gtk2 | want_gtk3;
@@ -438,7 +437,6 @@ int hook_detect_target()
 			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
 				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
 				hook_custom_arg("Disable-hid_gtk2_gl", NULL);
-				want_gl = 0;
 			}
 			need_gtklibs = 1;
 			has_gtk2 = 1;
@@ -448,16 +446,6 @@ int hook_detect_target()
 			hook_custom_arg("Disable-hid_gtk2_gdk", NULL);
 			hook_custom_arg("Disable-hid_gtk2_gl", NULL);
 		}
-	}
-
-	if (want_gl) {
-		require("libs/gui/glu/presents", 0, 0);
-		if (!istrue(get("libs/gui/glu/presents"))) {
-			report_repeat("WARNING: Since there's no GLU found, disabling the hid_gtk2_gl plugin...\n");
-			hook_custom_arg("Disable-hid_gtk2_gl", NULL);
-		}
-		else
-			put("/local/pcb/has_glu", strue);
 	}
 
 	if (want_gtk3) {
@@ -476,6 +464,23 @@ int hook_detect_target()
 			report_repeat("WARNING: not going to try gtk3 because cairo is not found\n");
 			hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
 		}
+	}
+
+	want_gl = plug_is_enabled("hid_gtk2_gl") || plug_is_enabled("hid_gtk3_gl");
+	if (want_gl) {
+		require("libs/gui/glu/presents", 0, 0);
+		if (!istrue(get("libs/gui/glu/presents"))) {
+			report_repeat("WARNING: Since there's no GLU found, disabling the hid_gtk2_gl plugin...\n");
+			goto disable_gl;
+		}
+		else
+			put("/local/pcb/has_glu", strue);
+	}
+	else {
+		disable_gl:;
+		hook_custom_arg("Disable-lib_hid_gl", NULL);
+		hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+		hook_custom_arg("Disable-hid_gtk3_gl", NULL);
 	}
 
 	/* gtk2 vs. gtk3 xor logic */
