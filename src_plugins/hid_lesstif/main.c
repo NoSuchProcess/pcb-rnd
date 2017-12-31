@@ -1535,8 +1535,15 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 
 #ifdef HAVE_XRENDER
 	if (use_xrender) {
+		double l_alpha = conf_core.appearance.layer_alpha;
 		XRenderPictureAttributes pa;
-		XRenderColor a = { 0, 0, 0, 0x8000 };
+		XRenderColor a = { 0, 0, 0,  0x8000};
+		
+		if (l_alpha < 0)
+			l_alpha = 0;
+		else if (l_alpha > 1)
+			l_alpha = 1;
+		a.alpha = (int)(l_alpha * (double)0xFFFF);
 
 		pale_pixmap = XCreatePixmap(display, window, 1, 1, 8);
 		pa.repeat = True;
