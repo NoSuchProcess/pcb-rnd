@@ -23,6 +23,12 @@
 static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";
 
+typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg);
+	int wtab;
+} test_t;
+
+
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
@@ -32,43 +38,46 @@ static int pcb_act_dlg_test(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	const char *vals[] = { "foo", "bar", "baz", NULL };
 	const char *tabs[] = { "original test", "new test", NULL };
 
-	PCB_DAD_DECL(foo);
-	PCB_DAD_BEGIN_TABBED(foo, tabs);
-		PCB_DAD_CHANGE_CB(foo, cb_tab_chg);
+	test_t ctx;
+	memset(&ctx, 0, sizeof(ctx));
+
+	PCB_DAD_BEGIN_TABBED(ctx.dlg, tabs);
+		PCB_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
+		ctx.wtab = PCB_DAD_CURRENT(ctx.dlg);
 
 		/* tab 0: "original test" */
-		PCB_DAD_BEGIN_VBOX(foo);
-			PCB_DAD_LABEL(foo, "text1");
-			PCB_DAD_BEGIN_TABLE(foo, 3);
-				PCB_DAD_LABEL(foo, "text2a");
-				PCB_DAD_LABEL(foo, "text2b");
-				PCB_DAD_LABEL(foo, "text2c");
-				PCB_DAD_LABEL(foo, "text2d");
-			PCB_DAD_END(foo);
-			PCB_DAD_LABEL(foo, "text3");
+		PCB_DAD_BEGIN_VBOX(ctx.dlg);
+			PCB_DAD_LABEL(ctx.dlg, "text1");
+			PCB_DAD_BEGIN_TABLE(ctx.dlg, 3);
+				PCB_DAD_LABEL(ctx.dlg, "text2a");
+				PCB_DAD_LABEL(ctx.dlg, "text2b");
+				PCB_DAD_LABEL(ctx.dlg, "text2c");
+				PCB_DAD_LABEL(ctx.dlg, "text2d");
+			PCB_DAD_END(ctx.dlg);
+			PCB_DAD_LABEL(ctx.dlg, "text3");
 
-			PCB_DAD_ENUM(foo, vals);
-				PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-				attr_idx = PCB_DAD_CURRENT(foo);
-			PCB_DAD_INTEGER(foo, "text2e");
-				PCB_DAD_MINVAL(foo, 1);
-				PCB_DAD_MAXVAL(foo, 10);
-				PCB_DAD_DEFAULT(foo, 3);
-				PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-				attr_idx2 = PCB_DAD_CURRENT(foo);
-			PCB_DAD_BUTTON(foo, "update!");
-				PCB_DAD_CHANGE_CB(foo, pcb_act_attr_chg);
-		PCB_DAD_END(foo);
+			PCB_DAD_ENUM(ctx.dlg, vals);
+				PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+				attr_idx = PCB_DAD_CURRENT(ctx.dlg);
+			PCB_DAD_INTEGER(ctx.dlg, "text2e");
+				PCB_DAD_MINVAL(ctx.dlg, 1);
+				PCB_DAD_MAXVAL(ctx.dlg, 10);
+				PCB_DAD_DEFAULT(ctx.dlg, 3);
+				PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+				attr_idx2 = PCB_DAD_CURRENT(ctx.dlg);
+			PCB_DAD_BUTTON(ctx.dlg, "update!");
+				PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+		PCB_DAD_END(ctx.dlg);
 
 		/* tab 1: "new test" */
-		PCB_DAD_BEGIN_VBOX(foo);
-			PCB_DAD_LABEL(foo, "new test.");
-		PCB_DAD_END(foo);
-	PCB_DAD_END(foo);
+		PCB_DAD_BEGIN_VBOX(ctx.dlg);
+			PCB_DAD_LABEL(ctx.dlg, "new test.");
+		PCB_DAD_END(ctx.dlg);
+	PCB_DAD_END(ctx.dlg);
 
-	PCB_DAD_AUTORUN(foo, "dlg_test", "attribute dialog test", NULL);
+	PCB_DAD_AUTORUN(ctx.dlg, "dlg_test", "attribute dialog test", &ctx);
 
-	PCB_DAD_FREE(foo);
+	PCB_DAD_FREE(ctx.dlg);
 	return 0;
 }
 
@@ -87,5 +96,6 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	printf("Tab switch to %d!\n", 1);
+	test_t *ctx = caller_data;
+	printf("Tab switch to %d!\n", ctx->dlg_result[ctx->wtab].int_value);
 }
