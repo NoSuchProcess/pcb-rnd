@@ -146,6 +146,20 @@ static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
+static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num, pcb_hid_attribute_t *dst)
+{
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(nb), PCB_OBJ_PROP);
+
+	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
+	/* Gets the index (starting from 0) of the current page in the notebook. If
+	   the notebook has no pages, then -1 will be returned.   */
+	dst->default_val.int_value = gtk_notebook_get_current_page(nb);
+	change_cb(ctx, dst);
+}
+
 static void button_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
@@ -307,6 +321,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					ts.tabbed.tablab = ctx->attrs[j].enumerations;
 					ctx->wl[j] = widget = gtk_notebook_new();
 					gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
+					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
+					g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1, 0);
 				}
 				break;
