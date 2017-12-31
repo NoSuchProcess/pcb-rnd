@@ -24,7 +24,7 @@ static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg);
+	PCB_DAD_DECL_NOINIT(dlg)
 	int wtab;
 } test_t;
 
