@@ -776,18 +776,11 @@ static void pagechg(Widget w, XtPointer client_data, XtPointer call_data)
 	if (ctx->inhibit_valchg)
 		return;
 
-/*	for(widx = 0; widx < ctx->n_attrs; widx++)
-		if (ctx->wl[widx] == w)
-			break;*/
-
 	widx = attr - ctx->attrs;
-printf("widx=%d\n", widx);
 	if ((widx < 0) || (widx >= ctx->n_attrs))
 		return;
 
 	ctx->results[widx].int_value = nptr->page_number - 1;
-	printf("d2: %d\n", ctx->results[widx].int_value);
-
 
 	if (attr->change_cb != NULL)
 		attr->change_cb(ctx, ctx->caller_data, attr);
