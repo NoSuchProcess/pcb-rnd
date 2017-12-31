@@ -226,6 +226,7 @@ do { \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
+		case PCB_HATT_TREE: \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
