@@ -761,6 +761,38 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 		ctx->attrs[widx].change_cb(ctx, ctx->caller_data, &ctx->attrs[widx]);
 }
 
+static void pagechg(Widget w, XtPointer client_data, XtPointer call_data)
+{
+	lesstif_attr_dlg_t *ctx;
+	pcb_hid_attribute_t *attr = (pcb_hid_attribute_t *)client_data;
+	XmNotebookCallbackStruct *nptr = (XmNotebookCallbackStruct *)call_data;
+	int widx;
+
+	XtVaGetValues(w, XmNuserData, &ctx, NULL);
+
+	if (ctx == NULL)
+		return;
+
+	if (ctx->inhibit_valchg)
+		return;
+
+/*	for(widx = 0; widx < ctx->n_attrs; widx++)
+		if (ctx->wl[widx] == w)
+			break;*/
+
+	widx = attr - ctx->attrs;
+printf("widx=%d\n", widx);
+	if ((widx < 0) || (widx >= ctx->n_attrs))
+		return;
+
+	ctx->results[widx].int_value = nptr->page_number - 1;
+	printf("d2: %d\n", ctx->results[widx].int_value);
+
+
+	if (attr->change_cb != NULL)
+		attr->change_cb(ctx, ctx->caller_data, attr);
+}
+
 /* parent info for tabbed */
 typedef struct {
 	Widget notebook;
@@ -888,11 +920,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			stdarg(XmNtopAttachment, XmATTACH_FORM);
 			stdarg(XmNrightAttachment, XmATTACH_FORM);
 			stdarg(XmNbottomAttachment, XmATTACH_FORM);
+			stdarg(XmNuserData, ctx);
 			ctx->wl[i] = w = XmCreateNotebook(parent, "notebook", stdarg_args, stdarg_n);
 
 			/* remove the page scroller widget that got automatically created by XmCreateNotebook() */
 			scroller = XtNameToWidget(w, "PageScroller");
 			XtUnmanageChild (scroller);
+
+			XtAddCallback(w, XmNpageChangedCallback, (XtCallbackProc)pagechg, (XtPointer)&ctx->attrs[i]);
 
 			tb.notebook = w;
 			tb.tablab = ctx->attrs[i].enumerations;
