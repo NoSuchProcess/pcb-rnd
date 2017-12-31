@@ -155,9 +155,11 @@ static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num
 		return;
 
 	/* Gets the index (starting from 0) of the current page in the notebook. If
-	   the notebook has no pages, then -1 will be returned.   */
-	dst->default_val.int_value = gtk_notebook_get_current_page(nb);
-	change_cb(ctx, dst);
+	   the notebook has no pages, then -1 will be returned and no call-back occur. */
+	if (gtk_notebook_get_current_page(nb) >= 0) {
+		dst->default_val.int_value = page_num;
+		change_cb(ctx, dst);
+	}
 }
 
 static void button_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
