@@ -162,9 +162,9 @@ static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num
 	}
 }
 
-static void button_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
+static void button_changed_cb(GtkButton *button, pcb_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -508,7 +508,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], FALSE, FALSE, 0);
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
-				g_signal_connect(G_OBJECT(ctx->wl[j]), "pressed", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
+				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 
 				if (add_labels) {
