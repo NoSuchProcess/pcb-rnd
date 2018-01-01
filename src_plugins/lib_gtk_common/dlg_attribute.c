@@ -573,6 +573,10 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_BUTTON:
 			gtk_button_set_label(GTK_BUTTON(ctx->wl[idx]), val->str_value);
 			break;
+
+		case PCB_HATT_BEGIN_TABBED:
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(ctx->wl[idx]), val->int_value);
+			break;
 	}
 
 	ctx->inhibit_valchg = save;
