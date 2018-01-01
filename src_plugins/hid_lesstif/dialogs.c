@@ -782,6 +782,7 @@ static void pagechg(Widget w, XtPointer client_data, XtPointer call_data)
 
 	ctx->results[widx].int_value = nptr->page_number - 1;
 
+	attribute_dialog_readres(ctx, widx);
 	if (attr->change_cb != NULL)
 		attr->change_cb(ctx, ctx->caller_data, attr);
 }
