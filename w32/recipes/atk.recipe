@@ -1,6 +1,0 @@
-name=atk
-major=1.33
-minor=6
-release=1
-version=$major.$minor
-download=http://ftp.gnome.org/pub/gnome/sources/$name/$major
