@@ -30,29 +30,11 @@
 #include <assert.h>
 
 #include "crosshair.h"
-#include "clip.h"
 #include "data.h"
-#include "layer.h"
 #include "board.h"
-#include "hid_draw_helpers.h"
-#include "hid_attrib.h"
-#include "hid_helper.h"
-#include "hid_color.h"
-
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
-#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
-
-#include "opengl.h"
-
-#include "action_helper.h"
-#include "crosshair.h"
-#include "data.h"
-#include "error.h"
-#include "clip.h"
-
 #include "hid.h"
 #include "hidgl.h"
-#include "rtree.h"
+
 #include "stencil_gl.h"
 
 void hidgl_init(void)
