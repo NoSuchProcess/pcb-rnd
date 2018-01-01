@@ -100,7 +100,7 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
-	printf("Tab switch to %d!\n", ctx->dlg_result[ctx->wtab].int_value);
+	printf("Tab switch to %d!\n", ctx->dlg[ctx->wtab].default_val.int_value);
 }
 
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
