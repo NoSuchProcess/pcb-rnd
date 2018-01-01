@@ -373,7 +373,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				if (ctx->attrs[j].default_val.str_value != NULL)
 					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].default_val.str_value);
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
-				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(ctx->attrs[j]));
+				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(coordentry_changed_cb), &(ctx->attrs[j]));
 
 				if (add_labels) {
 					widget = gtk_label_new(ctx->attrs[j].name);
