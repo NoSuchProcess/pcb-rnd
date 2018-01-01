@@ -91,7 +91,7 @@ static void intspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
 		return;
-	dst->default_val.int_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
+	dst->default_val.int_value = gtk_spin_button_get_value(spin_button);
 	change_cb(ctx, dst);
 }
 
