@@ -134,7 +134,7 @@ static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
+static void enum_changed_cb(GtkComboBox *combo_box, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(combo_box), PCB_OBJ_PROP);
 
@@ -142,7 +142,7 @@ static void enum_changed_cb(GtkWidget *combo_box, pcb_hid_attribute_t *dst)
 	if (ctx->inhibit_valchg)
 		return;
 
-	dst->default_val.int_value = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
+	dst->default_val.int_value = gtk_combo_box_get_active(combo_box);
 	change_cb(ctx, dst);
 }
 
