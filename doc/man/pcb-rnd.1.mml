@@ -1,6 +1,6 @@
 <title>pcb-rnd</title>
 <sect>1</sect>
-<date>2016-10-29</date>
+<date>2018-01-01</date>
 
 <name> pcb-rnd - Printed Circuit Board editor </name>
 <syn> <call>pcb-rnd</call> [<arg>options</arg>] [<arg>inputfile</arg>] </syn>
@@ -14,6 +14,11 @@ is also possible with <arg>-x</arg> or <arg>--gui batch</arg>.
 
 <options>
 <kvlist>
+	<item>
+		<key> --help <arg>topic</arg> </key>
+		<value> Print help about <arg>topic</arg> and exit; if no topic is
+		        specified, print available topics.
+	</item>
 	<item>
 		<key> -x <arg>exporter</arg> [<arg>exportflags] <arg>inputfile</arg> </key>
 		<value> Instead of interactive editing, export the design (loaded from
