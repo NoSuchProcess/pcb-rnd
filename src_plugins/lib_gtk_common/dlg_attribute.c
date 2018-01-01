@@ -117,7 +117,7 @@ static void dblspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_
 	if (ctx->inhibit_valchg)
 		return;
 
-	dst->default_val.real_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON((GtkWidget *)spin_button));
+	dst->default_val.real_value = gtk_spin_button_get_value(spin_button);
 	change_cb(ctx, dst);
 }
 
