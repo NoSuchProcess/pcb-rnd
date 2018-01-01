@@ -115,6 +115,7 @@ static int pcb_act_Conf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				return 1;
 			}
 			res = conf_set_native(n, 0, val);
+			conf_update(argv[1], 0);
 		}
 		else
 			res = conf_set(role, path, -1, val, pol);
