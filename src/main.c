@@ -518,7 +518,7 @@ int main(int argc, char *argv[])
 		int res = pcb_hid_parse_command(main_action);
 		if ((res != 0) && (main_action_hint != NULL))
 			fprintf(stderr, "\nHint: %s\n", main_action_hint);
-		exit(0);
+		exit(res);
 	}
 
 	pcb_gui->parse_arguments(&hid_argc, &hid_argv);
