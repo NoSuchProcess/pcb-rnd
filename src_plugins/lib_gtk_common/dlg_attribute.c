@@ -40,14 +40,9 @@
 
 #include "compat.h"
 #include "bu_box.h"
+#include "bu_check_button.h"
 #include "bu_spin_button.h"
 #include "wt_coord_entry.h"
-
-void pcb_gtk_check_button_connected(GtkWidget * box, GtkWidget ** button, gboolean active,
-																		gboolean pack_start, gboolean expand,
-																		gboolean fill, gint pad,
-																		void (*cb_func) (GtkToggleButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
-																		const gchar * string);
 
 #define PCB_OBJ_PROP "pcb-rnd_context"
 
@@ -71,12 +66,15 @@ typedef struct {
 			dst->change_cb(ctx, ctx->caller_data, dst); \
 	} while(0) \
 
-static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
+static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
+	pcb_hid_attribute_t *dst = user_data;
+
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
 		return;
+
 	dst->default_val.int_value = gtk_toggle_button_get_active(button);
 	change_cb(ctx, dst);
 }
