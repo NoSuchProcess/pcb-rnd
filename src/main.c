@@ -278,6 +278,9 @@ static int arg_match(const char *in, const char *shrt, const char *lng)
 	return ((shrt != NULL) && (strcmp(in, shrt) == 0)) || ((lng != NULL) && (strcmp(in, lng) == 0));
 }
 
+/* action table number of columns for a single action */
+#define PCB_ACTION_ARGS_WIDTH 4
+
 const char *pcb_action_args[] = {
 /*short, -long, action, help */
 	NULL, "-show-actions", "PrintActions()",     "Print all available actions (human readable) and exit",
@@ -374,7 +377,7 @@ int main(int argc, char *argv[])
 				goto next_arg;
 			}
 
-			for(cs = pcb_action_args; cs[2] != NULL; cs += 4) {
+			for(cs = pcb_action_args; cs[2] != NULL; cs += PCB_ACTION_ARGS_WIDTH) {
 				if (arg_match(cmd, cs[0], cs[1])) {
 					if (main_action == NULL)
 						main_action = cs[2];
