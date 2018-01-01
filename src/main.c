@@ -279,19 +279,19 @@ static int arg_match(const char *in, const char *shrt, const char *lng)
 }
 
 /* action table number of columns for a single action */
-#define PCB_ACTION_ARGS_WIDTH 4
+#define PCB_ACTION_ARGS_WIDTH 5
 
 const char *pcb_action_args[] = {
-/*short, -long, action, help */
-	NULL, "-show-actions",    "PrintActions()",     "Print all available actions (human readable) and exit",
-	NULL, "-dump-actions",    "DumpActions()",      "Print all available actions (script readable) and exit",
-	NULL, "-dump-plugins",    "DumpPlugins()",      "Print all available plugins (script readable) and exit",
-	NULL, "-dump-plugindirs", "DumpPluginDirs()","Print directories plugins might be loaded from and exit",
-	NULL, "-show-paths",      "PrintPaths()",       "Print all configured paths and exit",
-	NULL, "-dump-config",     "dumpconf(native,1)", "Print the config tree and exit",
-	"V",  "-version",         "PrintVersion()",     "Print version info and exit",
-	NULL, "-copyright",       "PrintCopyright()",   "Print copyright and exit",
-	NULL, NULL, NULL /* terminator */
+/*short, -long, action, help, hint-on-error */
+	NULL, "-show-actions",    "PrintActions()",     "Print all available actions (human readable) and exit",   NULL,
+	NULL, "-dump-actions",    "DumpActions()",      "Print all available actions (script readable) and exit",  NULL,
+	NULL, "-dump-plugins",    "DumpPlugins()",      "Print all available plugins (script readable) and exit",  NULL,
+	NULL, "-dump-plugindirs", "DumpPluginDirs()",   "Print directories plugins might be loaded from and exit", NULL,
+	NULL, "-show-paths",      "PrintPaths()",       "Print all configured paths and exit",                     NULL,
+	NULL, "-dump-config",     "dumpconf(native,1)", "Print the config tree and exit",                          "Config dump not available - make sure you have configured pcb-rnd with --buildin-diag",
+	"V",  "-version",         "PrintVersion()",     "Print version info and exit",                             NULL,
+	NULL, "-copyright",       "PrintCopyright()",   "Print copyright and exit",                                NULL,
+	NULL, NULL, NULL, NULL, NULL /* terminator */
 };
 
 void print_pup_err(pup_err_stack_t *entry, char *string)
@@ -311,7 +311,7 @@ int main(int argc, char *argv[])
 	int n, hid_argc = 0;
 	char *cmd, *arg, **hid_argv, **sp;
 	const char **cs;
-	const char *main_action = NULL;
+	const char *main_action = NULL, *main_action_hint = NULL;
 	char *command_line_pcb = NULL;
 	vtp0_t plugin_cli_conf;
 
@@ -379,8 +379,10 @@ int main(int argc, char *argv[])
 
 			for(cs = pcb_action_args; cs[2] != NULL; cs += PCB_ACTION_ARGS_WIDTH) {
 				if (arg_match(cmd, cs[0], cs[1])) {
-					if (main_action == NULL)
+					if (main_action == NULL) {
 						main_action = cs[2];
+						main_action_hint = cs[4];
+					}
 					else
 						fprintf(stderr, "Warning: can't execute multiple command line actions, ignoring %s\n", argv[n]);
 					goto next_arg;
@@ -513,7 +515,9 @@ int main(int argc, char *argv[])
 	conf_update(NULL, -1);
 
 	if (main_action != NULL) {
-		pcb_hid_parse_command(main_action);
+		int res = pcb_hid_parse_command(main_action);
+		if ((res != 0) && (main_action_hint != NULL))
+			fprintf(stderr, "\nHint: %s\n", main_action_hint);
 		exit(0);
 	}
 
