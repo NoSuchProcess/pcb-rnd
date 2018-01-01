@@ -40,11 +40,9 @@
 
 #include "compat.h"
 #include "bu_box.h"
+#include "bu_spin_button.h"
 #include "wt_coord_entry.h"
 
-void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value, gfloat low, gfloat high, gfloat step0,
-											gfloat step1, gint digits, gint width, void (*cb_func) (GtkSpinButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
-											gboolean right_align, const gchar * string);
 void pcb_gtk_check_button_connected(GtkWidget * box, GtkWidget ** button, gboolean active,
 																		gboolean pack_start, gboolean expand,
 																		gboolean fill, gint pad,
@@ -83,9 +81,10 @@ static void set_flag_cb(GtkToggleButton *button, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static void intspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
+static void intspinner_changed_cb(GtkSpinButton *spin_button, gpointer user_data)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(spin_button), PCB_OBJ_PROP);
+	pcb_hid_attribute_t *dst = user_data;
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -108,9 +107,10 @@ static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static void dblspinner_changed_cb(GtkSpinButton *spin_button, pcb_hid_attribute_t *dst)
+static void dblspinner_changed_cb(GtkSpinButton *spin_button, gpointer user_data)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(spin_button), PCB_OBJ_PROP);
+	pcb_hid_attribute_t *dst = user_data;
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
