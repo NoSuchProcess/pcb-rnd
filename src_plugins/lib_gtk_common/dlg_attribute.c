@@ -39,10 +39,9 @@
 #include "compat_nls.h"
 
 #include "compat.h"
+#include "bu_box.h"
 #include "wt_coord_entry.h"
 
-GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gint header_pad, gint box_pad,
-															gboolean pack_start, gboolean bottom_pad);
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value, gfloat low, gfloat high, gfloat step0,
 											gfloat step1, gint digits, gint width, void (*cb_func) (GtkSpinButton *, pcb_hid_attribute_t *), pcb_hid_attribute_t *data,
 											gboolean right_align, const gchar * string);
