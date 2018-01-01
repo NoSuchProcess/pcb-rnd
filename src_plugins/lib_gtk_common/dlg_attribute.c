@@ -178,11 +178,12 @@ typedef struct {
 	void *ctx;
 } resp_ctx_t;
 
-static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint arg1, gpointer user_data)
+static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
 {
 	resp_ctx_t *ctx = (resp_ctx_t *)user_data;
+
 	if ((ctx != NULL) && (ctx->cb != NULL)) {
-		switch (arg1) {
+		switch (response_id) {
 		case GTK_RESPONSE_OK:
 			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
 			break;
