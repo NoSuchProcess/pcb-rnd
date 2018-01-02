@@ -279,8 +279,7 @@ static int arg_match(const char *in, const char *shrt, const char *lng)
 }
 
 /* action table number of columns for a single action */
-#define PCB_ACTION_ARGS_WIDTH 5
-
+const int PCB_ACTION_ARGS_WIDTH = 5;
 const char *pcb_action_args[] = {
 /*short, -long, action, help, hint-on-error */
 	NULL, "-show-actions",    "PrintActions()",     "Print all available actions (human readable) and exit",   NULL,
