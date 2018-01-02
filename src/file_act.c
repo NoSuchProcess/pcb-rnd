@@ -221,8 +221,8 @@ static int pcb_act_normalize(int argc, const char **argv, pcb_coord_t x, pcb_coo
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_SaveTo[] =
-	"SaveTo(Layout|LayoutAs,filename)\n"
-	"SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)\n" "SaveTo(PasteBuffer,filename)";
+	"SaveTo(Layout|LayoutAs,filename,[fmt])\n"
+	"SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)\n" "SaveTo(PasteBuffer,filename,[fmt])";
 
 static const char pcb_acth_SaveTo[] = "Saves data to a file.";
 
