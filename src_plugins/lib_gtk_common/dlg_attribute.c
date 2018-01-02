@@ -563,7 +563,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 
 		case PCB_HATT_ENUM:
-			gtkc_combo_box_set_active(ctx->wl[idx], val->int_value);
+			gtk_combo_box_set_active(GTK_COMBO_BOX(ctx->wl[idx]), val->int_value);
 			break;
 
 		case PCB_HATT_UNIT:
