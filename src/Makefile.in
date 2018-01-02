@@ -399,7 +399,7 @@ defpcb_internal.c: default4.lht
 gen_font:
 	$(ROOT)/util/devhelpers/font2c.sh < default_font > font_internal.c
 
-util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o
+util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o ../src_3rd/genlist/genlistalloc.o
 
 FORCE:
 
