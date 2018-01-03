@@ -221,6 +221,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 #ifdef FLEX_SCANNER
 	static	pcb_bool	firsttime = pcb_true;
 #endif
+	pcb_io_pcb_usty_seen = 0;
 	if (Pipe == NULL) {
 	if (PCB_EMPTY_STRING_P(Executable))
 	  {
@@ -443,8 +444,26 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 			}
 		}
 		else {
-			PCB->Data->loader = ctx;
-			fprintf(stderr, "DESC=%s\n", ctx->description);
+			/* Loaded a file that did not have any information about preferred format */
+printf("%x\n", pcb_io_pcb_usty_seen);
+			switch(pcb_io_pcb_usty_seen) {
+				case PCB_USTY_CMIL:
+					pcb_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (geussed from consistent unitles centimil input)\n", Filename, pcb_centimil_io_pcb->description);
+					PCB->Data->loader = pcb_centimil_io_pcb;
+					break;
+				case PCB_USTY_NANOMETER:
+					pcb_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (geussed from consistent nanometer input)\n", Filename, pcb_nanometer_io_pcb->description);
+					PCB->Data->loader = pcb_nanometer_io_pcb;
+					break;
+				case PCB_USTY_UNITS:
+				case PCB_USTY_UNITS | PCB_USTY_NANOMETER:
+					pcb_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (geussed from non-nanometer explicit unit usage)\n", Filename, pcb_preferred_io_pcb->description);
+					PCB->Data->loader = pcb_preferred_io_pcb;
+					break;
+				default:
+					pcb_message(PCB_MSG_WARNING, "No preferred unit format info available and guessing failed for '%s' - will use '%s' on save\n", Filename, pcb_preferred_io_pcb->description);
+					PCB->Data->loader = pcb_preferred_io_pcb;
+			}
 		}
 	}
 	pcb_layer_auto_fixup(PCB);

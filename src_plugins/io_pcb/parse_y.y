@@ -2024,15 +2024,15 @@ number
 measure
 		/* Default unit (no suffix) is cmil */
 		: number	{ do_measure(&$$, $1, PCB_MIL_TO_COORD ($1) / 100.0, 0); }
-		| number T_UMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100000.0); }
-		| number T_CMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100.0); }
-		| number T_MIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1)); }
-		| number T_IN	{ M ($$, $1, PCB_INCH_TO_COORD ($1)); }
-		| number T_NM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000000.0); }
-		| number T_UM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000.0); }
-		| number T_MM	{ M ($$, $1, PCB_MM_TO_COORD ($1)); }
-		| number T_M	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000.0); }
-		| number T_KM	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000000.0); }
+		| number T_UMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_CMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_MIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_IN	{ M ($$, $1, PCB_INCH_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_NM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
+		| number T_UM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_MM	{ M ($$, $1, PCB_MM_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_M	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_KM	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 		;
 
 %%
@@ -2092,6 +2092,8 @@ old_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
+  if (m.ival != 0)
+    pcb_io_pcb_usty_seen |= PCB_USTY_CMIL; /* ... because we can't save in mil */
   return pcb_round (PCB_MIL_TO_COORD (m.ival));
 }
 
@@ -2100,6 +2102,8 @@ new_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
+  if (m.dval != 0)
+    pcb_io_pcb_usty_seen |= PCB_USTY_CMIL;
   /* if there's no unit m.dval already contains the converted value */
   return pcb_round (m.dval);
 }

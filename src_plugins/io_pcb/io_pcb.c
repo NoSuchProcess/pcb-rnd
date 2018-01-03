@@ -31,7 +31,7 @@
 static pcb_plug_io_t io_pcb[3];
 static io_pcb_ctx_t ctx[3];
 
-pcb_plug_io_t *pcb_preferred_io_pcb;
+pcb_plug_io_t *pcb_preferred_io_pcb, *pcb_nanometer_io_pcb, *pcb_centimil_io_pcb;
 
 int io_pcb_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
@@ -79,6 +79,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[0].fp_extension = ".fp";
 	io_pcb[0].mime_type = "application/x-pcb-layout";
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[0]));
+	pcb_centimil_io_pcb = &io_pcb[0];
 
 	ctx[1].write_coord_fmt = pcb_printf_slot[9];
 	io_pcb[1].plugin_data = &ctx[1];
@@ -108,6 +109,8 @@ int pplg_init_io_pcb(void)
 	io_pcb[2].fp_extension = ".fp";
 	io_pcb[2].mime_type = "application/x-pcb-layout";
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[2]));
+	pcb_nanometer_io_pcb = &io_pcb[2];
+
 
 	return 0;
 }

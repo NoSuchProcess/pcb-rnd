@@ -65,6 +65,8 @@
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 
+pcb_unit_style_t pcb_io_pcb_usty_seen;
+
 static void WritePCBInfoHeader(FILE *);
 static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);

@@ -40,11 +40,19 @@ typedef struct {
 	char has_units;
 } PLMeasure;
 
+typedef enum {
+	PCB_USTY_CMIL = 1,       /* unitless centimil */
+	PCB_USTY_NANOMETER = 2,
+	PCB_USTY_UNITS = 4       /* using various units */
+} pcb_unit_style_t;
+
+extern pcb_unit_style_t pcb_io_pcb_usty_seen;
+
 typedef struct {
 	const char *write_coord_fmt;
 } io_pcb_ctx_t;
 
-extern pcb_plug_io_t *pcb_preferred_io_pcb;
+extern pcb_plug_io_t *pcb_preferred_io_pcb, *pcb_nanometer_io_pcb, *pcb_centimil_io_pcb;
 
 
 int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only);
