@@ -442,6 +442,10 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 				PCB->Data->loader = f.plug;
 			}
 		}
+		else {
+			PCB->Data->loader = ctx;
+			fprintf(stderr, "DESC=%s\n", ctx->description);
+		}
 	}
 	pcb_layer_auto_fixup(PCB);
 	return retval;

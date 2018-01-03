@@ -31,6 +31,8 @@
 static pcb_plug_io_t io_pcb[3];
 static io_pcb_ctx_t ctx[3];
 
+pcb_plug_io_t *pcb_preferred_io_pcb;
+
 int io_pcb_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
 	if (strcmp(ctx->description, fmt) == 0)
@@ -91,6 +93,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[1].fp_extension = ".fp";
 	io_pcb[1].mime_type = "application/x-pcb-layout";
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[1]));
+	pcb_preferred_io_pcb = &io_pcb[1];
 
 	ctx[2].write_coord_fmt = "%$$mn";
 	io_pcb[2].plugin_data = &ctx[2];

@@ -2583,6 +2583,12 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 				PCB->Data->loader = f.plug;
 			}
 		}
+		else {
+			/* Loaded a file that did not have any information about preferred format
+			   - use the best format we have and warn */
+			pcb_message(PCB_MSG_WARNING, "No preferred unit format info available and guessing failed for '%s' - will use '%s' on save\n", Filename, pcb_preferred_io_pcb->description);
+			PCB->Data->loader = pcb_preferred_io_pcb;
+		}
 	}
 	pcb_layer_auto_fixup(PCB);
 	return retval;
