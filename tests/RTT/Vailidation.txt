@@ -71,3 +71,5 @@ arc_angles.eps bad r13746 geometry is okay, outline layer missing
 arc_f_clear.eps bad r13746 geometry is okay, outline layer missing
 arc_normal.eps bad r13746 geometry is okay, outline layer missing
 arc_offpage.eps bad r13746 geometry is okay, outline layer missing
+arc_sizes.eps bad r13746 totally broken arc corner cases
+comp1.eps bad r13746 missing line, see bug_files/eps_comp1.png
