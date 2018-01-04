@@ -181,7 +181,7 @@
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 
 - BUG: padstack check box in gtk-hid does not hide the padstacks
-
+- BUG: hackvana gerber export exports .g5, .g7, rather than soldermask file-endings
 
 3. Long term ===============================================================================
 
