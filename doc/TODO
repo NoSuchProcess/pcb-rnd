@@ -180,6 +180,9 @@
 	- can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 - BUG: after the old model removal: undo bug, ML#1130 [report: miloh]
 
+- BUG: padstack check box in gtk-hid does not hide the padstacks
+
+
 3. Long term ===============================================================================
 
 SUBC: element removal:
