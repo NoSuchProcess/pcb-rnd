@@ -227,6 +227,7 @@ void pcb_release_mode(void)
 	if (pcb_tool_is_saved)
 		pcb_crosshair_restore_mode();
 	pcb_tool_is_saved = pcb_false;
+	pcb_draw();
 }
 
 void pcb_adjust_attached_objects(void)
@@ -239,6 +240,7 @@ void pcb_notify_mode(void)
 	if (conf_core.temp.rat_warn)
 		pcb_clear_warnings();
 	pcb_tool_notify_mode();
+	pcb_draw();
 }
 
 void pcb_event_move_crosshair(int ev_x, int ev_y)
