@@ -973,6 +973,7 @@ pcb_bool AutoPlaceSelected(void)
 			/* are we at the end of a stage? */
 			if (good_moves >= good_move_cutoff || moves >= move_cutoff) {
 				printf("END OF STAGE: COST %.0f\t" "GOOD_MOVES %d\tMOVES %d\t" "T: %.1f\n", C0, good_moves, moves, T);
+				pcb_draw();
 				/* is this the end? */
 				if (T < 5 || good_moves < moves / CostParameter.good_ratio)
 					break;
