@@ -4,6 +4,7 @@
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
 - Replacing an existing element with a subc in the buffer using shift-click doesn't pick-up the refdes from the existing element. [report: Ade]
+- BUG: Far-side silk text can be selected and moved when the mouse is over front-side objects. [report: Ade]
 
 2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
