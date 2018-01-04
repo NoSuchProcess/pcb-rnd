@@ -226,6 +226,14 @@ static vtp0_t collectSelectedElements()
 		}
 	}
 	PCB_END_LOOP;
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
+			pcb_subc_t **epp = (pcb_subc_t **)vtp0_alloc_append(&list, 1);
+			*epp = subc;
+		}
+	}
+	PCB_END_LOOP;
 	return list;
 }
 
