@@ -841,10 +841,8 @@ void *pcb_viaop_move_noclip(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (PCB->ViaOn)
 		pcb_via_invalidate_erase(Via);
 	pcb_via_move(Via, ctx->move.dx, ctx->move.dy);
-	if (PCB->ViaOn) {
+	if (PCB->ViaOn)
 		pcb_via_invalidate_draw(Via);
-		pcb_draw();
-	}
 	return Via;
 }
 
@@ -886,11 +884,8 @@ void *pcb_viaop_destroy(pcb_opctx_t *ctx, pcb_pin_t *Via)
 void *pcb_viaop_remove(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	/* erase from screen and memory */
-	if (PCB->ViaOn) {
+	if (PCB->ViaOn)
 		pcb_via_invalidate_erase(Via);
-		if (!ctx->remove.bulk)
-			pcb_draw();
-	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_VIA, Via, Via, Via);
 	return NULL;
 }

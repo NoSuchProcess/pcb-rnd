@@ -1324,22 +1324,22 @@ void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	EraseSubc(sc);
-	if (!ctx->remove.bulk)
-		pcb_draw();
 	pcb_undo_move_obj_to_remove(PCB_TYPE_SUBC, sc, sc, sc);
 	return NULL;
 }
 
 void *pcb_subc_remove(pcb_subc_t *sc)
 {
+	void *res;
 	pcb_opctx_t ctx;
 
 	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 /*	PCB_CLEAR_PARENT(subc);*/
 
-	return pcb_subcop_remove(&ctx, sc);
+	res = pcb_subcop_remove(&ctx, sc);
+	pcb_draw();
+	return res;
 }
 
 

@@ -216,7 +216,6 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 	pcb_undo_add_obj_to_flag(Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
 	pcb_pad_invalidate_draw(Pad);
-	pcb_draw();
 	return pcb_true;
 }
 

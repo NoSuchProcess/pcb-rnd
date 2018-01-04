@@ -535,7 +535,6 @@ void *pcb_arcop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 		pcb_arc_invalidate_erase(Arc);
 		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
 		pcb_arc_invalidate_draw(Layer, Arc);
-		pcb_draw();
 	}
 	else {
 		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
@@ -593,10 +592,8 @@ void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t *
 		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
-	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis) {
+	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)
 		pcb_arc_invalidate_draw(Layer, Arc);
-		pcb_draw();
-	}
 	if (ctx->move.dst_layer == Layer)
 		return Arc;
 	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_ARC, Layer, Arc, Arc);
@@ -607,7 +604,6 @@ void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t *
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, ctx->move.dst_layer, Arc);
 	if (ctx->move.dst_layer->meta.real.vis)
 		pcb_arc_invalidate_draw(ctx->move.dst_layer, newone);
-	pcb_draw();
 	return newone;
 }
 
@@ -626,11 +622,8 @@ void *pcb_arcop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 void *pcb_arcop_remve(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	/* erase from screen */
-	if (Layer->meta.real.vis) {
+	if (Layer->meta.real.vis)
 		pcb_arc_invalidate_erase(Arc);
-		if (!ctx->remove.bulk)
-			pcb_draw();
-	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_ARC, Layer, Arc, Arc);
 	return NULL;
 }
@@ -642,13 +635,15 @@ void *pcb_arcop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *l, pcb_arc_t *a, int
 
 void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
+	void *res;
 	pcb_opctx_t ctx;
 
 	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	return pcb_arcop_remve(&ctx, Layer, Arc);
+	res = pcb_arcop_remve(&ctx, Layer, Arc);
+	pcb_draw();
+	return res;
 }
 
 /* rotates an arc */
@@ -713,7 +708,6 @@ void *pcb_arcop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_arc_invalidate_draw(Layer, Arc);
-	pcb_draw();
 	return Arc;
 }
 

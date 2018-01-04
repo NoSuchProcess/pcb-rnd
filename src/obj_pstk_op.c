@@ -91,7 +91,6 @@ void *pcb_pstkop_move_noclip(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb_pstk_invalidate_erase(ps);
 	pcb_pstk_move_(ps, ctx->move.dx, ctx->move.dy);
 	pcb_pstk_invalidate_draw(ps);
-	pcb_draw();
 	return ps;
 }
 

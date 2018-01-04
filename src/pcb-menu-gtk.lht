@@ -44,6 +44,7 @@ ha:{
 		ha:File {
 			m=F
 			li:submenu {
+				ha:custom                            = { a={<Char>;}; action=autoplaceselected() }
 				ha:Start New Layout                  = { a=Ctrl<Key>n; action=New() }
 				ha:Revert                            = {                             action=Load(Revert,none); tip=Revert to the layout stored on disk }
 				-

@@ -1128,14 +1128,16 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 
 void *pcb_element_remove(pcb_element_t *Element)
 {
+	void *res;
 	pcb_opctx_t ctx;
 
 	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 	PCB_CLEAR_PARENT(Element);
 
-	return pcb_elemop_remove(&ctx, Element);
+	res = pcb_elemop_remove(&ctx, Element);
+	pcb_draw();
+	return res;
 }
 
 /* rotate an element in 90 degree steps */
@@ -1724,7 +1726,6 @@ void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 		PCB_END_LOOP;
 		pcb_elem_name_invalidate_draw(Element);
-		pcb_draw();
 	}
 	else {
 		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
@@ -1743,14 +1744,11 @@ void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* moves an element */
 void *pcb_elemop_move(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	pcb_bool didDraw = pcb_false;
-
 	if (pcb_silk_on(PCB) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		pcb_elem_invalidate_erase(Element);
 		pcb_element_move(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
 		pcb_elem_name_invalidate_draw(Element);
 		pcb_elem_package_invalidate_draw(Element);
-		didDraw = pcb_true;
 	}
 	else {
 		if (PCB->PinOn)
@@ -1759,10 +1757,7 @@ void *pcb_elemop_move(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	if (PCB->PinOn) {
 		pcb_elem_pp_invalidate_draw(Element);
-		didDraw = pcb_true;
 	}
-	if (didDraw)
-		pcb_draw();
 	return Element;
 }
 
@@ -1802,11 +1797,8 @@ void *pcb_elemop_destroy(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *pcb_elemop_remove(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	/* erase from screen */
-	if ((pcb_silk_on(PCB) || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
+	if ((pcb_silk_on(PCB) || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn))
 		pcb_elem_invalidate_erase(Element);
-		if (!ctx->remove.bulk)
-			pcb_draw();
-	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, Element, Element, Element);
 	return NULL;
 }
@@ -1817,7 +1809,6 @@ void *pcb_elemop_rotate90(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_elem_invalidate_erase(Element);
 	pcb_element_rotate90(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	pcb_elem_invalidate_draw(Element);
-	pcb_draw();
 	return Element;
 }
 
@@ -1835,7 +1826,6 @@ void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	PCB_END_LOOP;
 	pcb_elem_name_invalidate_draw(Element);
-	pcb_draw();
 	return Element;
 }
 

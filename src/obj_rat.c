@@ -106,7 +106,6 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 	pcb_bool changed = pcb_false;
 
 	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_true;
 	ctx.remove.destroy_target = NULL;
 
 	PCB_RAT_LOOP(PCB->Data);
@@ -117,10 +116,8 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 		}
 	}
 	PCB_END_LOOP;
-	if (changed) {
-		pcb_draw();
+	if (changed)
 		pcb_undo_inc_serial();
-	}
 	return changed;
 }
 
@@ -172,7 +169,6 @@ void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 		pcb_line_invalidate_draw(CURRENT, newone);
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
-	pcb_draw();
 	return newone;
 }
 
@@ -191,7 +187,6 @@ void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 		pcb_rat_invalidate_erase(Rat);
 	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	pcb_line_invalidate_draw(ctx->move.dst_layer, newone);
-	pcb_draw();
 	return newone;
 }
 
@@ -209,11 +204,8 @@ void *pcb_ratop_destroy(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	/* erase from screen and memory */
-	if (PCB->RatOn) {
+	if (PCB->RatOn)
 		pcb_rat_invalidate_erase(Rat);
-		if (!ctx->remove.bulk)
-			pcb_draw();
-	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;
 }

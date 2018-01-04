@@ -493,10 +493,8 @@ void *pcb_lineop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 	if (Layer->meta.real.vis)
 		pcb_line_invalidate_erase(Line);
 	pcb_line_move(Line, ctx->move.dx, ctx->move.dy);
-	if (Layer->meta.real.vis) {
+	if (Layer->meta.real.vis)
 		pcb_line_invalidate_draw(Layer, Line);
-		pcb_draw();
-	}
 	return Line;
 }
 
@@ -537,10 +535,8 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
 		pcb_poly_clear_from_poly(ctx->move.pcb->Data, PCB_TYPE_LINE, Layer, Line);
-		if (Layer->meta.real.vis) {
+		if (Layer->meta.real.vis)
 			pcb_line_invalidate_draw(Layer, Line);
-			pcb_draw();
-		}
 		return Line;
 	}
 	else {												/* must be a rat */
@@ -551,10 +547,8 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(ctx->move.pcb->Data->rat_tree, &Line->BoundingBox, 0);
-		if (ctx->move.pcb->RatOn) {
+		if (ctx->move.pcb->RatOn)
 			pcb_rat_invalidate_draw((pcb_rat_t *) Line);
-			pcb_draw();
-		}
 		return Line;
 	}
 }
@@ -589,8 +583,6 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 												pcb_gui->control_is_pressed() );
 		pcb_route_apply_to_line(&route,Layer,Line);
 		pcb_route_destroy(&route);
-
-		pcb_draw();
 	}
 	return NULL;
 }
@@ -645,10 +637,8 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
-	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis) {
+	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)
 		pcb_line_invalidate_draw(Layer, Line);
-		pcb_draw();
-	}
 	if (ctx->move.dst_layer == Layer)
 		return Line;
 
@@ -661,7 +651,6 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->meta.real.vis)
 		pcb_line_invalidate_draw(ctx->move.dst_layer, newone);
-	pcb_draw();
 	if (!PCB->ViaOn || ctx->move.more_to_come ||
 			pcb_layer_get_group_(Layer) ==
 			pcb_layer_get_group_(ctx->move.dst_layer) || !(pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, Layer)) & PCB_LYT_COPPER) || !(pcb_layer_flags_(ctx->move.dst_layer) & PCB_LYT_COPPER))
@@ -690,7 +679,6 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		if (setjmp(info.env) == 0)
 			pcb_r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
 	}
-	pcb_draw();
 	return newone;
 }
 
@@ -754,24 +742,23 @@ void *pcb_lineop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 void *pcb_lineop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	/* erase from screen */
-	if (Layer->meta.real.vis) {
+	if (Layer->meta.real.vis)
 		pcb_line_invalidate_erase(Line);
-		if (!ctx->remove.bulk)
-			pcb_draw();
-	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_LINE, Layer, Line, Line);
 	return NULL;
 }
 
 void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line)
 {
+	void *res;
 	pcb_opctx_t ctx;
 
 	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	return pcb_lineop_remove(&ctx, Layer, Line);
+	res = pcb_lineop_remove(&ctx, Layer, Line);
+	pcb_draw();
+	return res;
 }
 
 /* rotates a line in 90 degree steps */
@@ -860,7 +847,6 @@ static void rotate_line2(pcb_layer_t *Layer, pcb_line_t *Line)
 		pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) Line, 0);
 		pcb_rat_invalidate_draw((pcb_rat_t *) Line);
 	}
-	pcb_draw();
 }
 
 /* rotates a line's point */
@@ -921,7 +907,6 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, line);
 		/* creation call adds it to the rtree */
 	}
-	pcb_draw();
 	return line;
 }
 

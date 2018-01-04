@@ -89,7 +89,6 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_data_t *destroy_target;
-	pcb_bool bulk;                /* don't draw if part of a bulk operation */
 } pcb_opctx_remove_t;
 
 typedef struct {

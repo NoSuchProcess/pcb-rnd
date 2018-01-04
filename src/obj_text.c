@@ -459,7 +459,6 @@ void *pcb_textop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		pcb_text_invalidate_erase(Layer, Text);
 		pcb_text_move(Text, ctx->move.dx, ctx->move.dy);
 		pcb_text_invalidate_draw(Layer, Text);
-		pcb_draw();
 	}
 	else
 		pcb_text_move(Text, ctx->move.dx, ctx->move.dy);
@@ -530,8 +529,6 @@ void *pcb_textop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t
 		text = pcb_textop_move_to_layer_low(ctx, layer, text, ctx->move.dst_layer);
 		if (ctx->move.dst_layer->meta.real.vis)
 			pcb_text_invalidate_draw(ctx->move.dst_layer, text);
-		if (layer->meta.real.vis || ctx->move.dst_layer->meta.real.vis)
-			pcb_draw();
 	}
 	return text;
 }
@@ -554,8 +551,6 @@ void *pcb_textop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	if (Layer->meta.real.vis) {
 		pcb_text_invalidate_erase(Layer, Text);
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
-		if (!ctx->remove.bulk)
-			pcb_draw();
 	}
 	pcb_undo_move_obj_to_remove(PCB_TYPE_TEXT, Layer, Text, Text);
 	return NULL;
@@ -563,13 +558,15 @@ void *pcb_textop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 
 void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text)
 {
+	void *res;
 	pcb_opctx_t ctx;
 
 	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	return pcb_textop_remove(&ctx, Layer, Text);
+	res = pcb_textop_remove(&ctx, Layer, Text);
+	pcb_draw();
+	return res;
 }
 
 /* rotates a text in 90 degree steps; only the bounding box is rotated,
@@ -601,7 +598,6 @@ void *pcb_textop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
-	pcb_draw();
 	return Text;
 }
 
