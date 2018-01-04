@@ -3,6 +3,7 @@
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
 	+ subc centroid/origin snap [report: jg]
+- Replacing an existing element with a subc in the buffer using shift-click doesn't pick-up the refdes from the existing element. [report: Ade]
 
 2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
