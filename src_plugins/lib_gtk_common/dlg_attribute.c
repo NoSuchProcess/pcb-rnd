@@ -231,7 +231,7 @@ typedef struct {
 		struct {
 			const char **tablab;
 		} tabbed;
-	};
+	} val;
 } ghid_attr_tb_t;
 
 static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels)
@@ -257,19 +257,19 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			switch(tb_st->type) {
 				case TB_TABLE:
 					parent = gtkc_vbox_new(FALSE, 0);
-					gtkc_table_attach1(real_parent, parent, tb_st->table.row, tb_st->table.col);
-					tb_st->table.col++;
-					if (tb_st->table.col >= tb_st->table.cols) {
-						tb_st->table.col = 0;
-						tb_st->table.row++;
+					gtkc_table_attach1(real_parent, parent, tb_st->val.table.row, tb_st->val.table.col);
+					tb_st->val.table.col++;
+					if (tb_st->val.table.col >= tb_st->val.table.cols) {
+						tb_st->val.table.col = 0;
+						tb_st->val.table.row++;
 					}
 					break;
 				case TB_TABBED:
 					/* Add a new notebook page with an empty vbox, using tab label present in enumerations. */
 					parent = gtkc_vbox_new(FALSE, 4);
-					if (*tb_st->tabbed.tablab) {
-						widget = gtk_label_new(*tb_st->tabbed.tablab);
-						tb_st->tabbed.tablab++;
+					if (*tb_st->val.tabbed.tablab) {
+						widget = gtk_label_new(*tb_st->val.tabbed.tablab);
+						tb_st->val.tabbed.tablab++;
 					}
 					else 
 						widget = NULL;
@@ -303,11 +303,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					ghid_attr_tb_t ts;
 					bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 					ts.type = TB_TABLE;
-					ts.table.cols = ctx->attrs[j].pcb_hatt_table_cols;
-					ts.table.rows = pcb_hid_atrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.table.cols;
-					ts.table.col = 0;
-					ts.table.row = 0;
-					tbl = gtkc_table_static(ts.table.rows, ts.table.cols, 1);
+					ts.val.table.cols = ctx->attrs[j].pcb_hatt_table_cols;
+					ts.val.table.rows = pcb_hid_atrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.val.table.cols;
+					ts.val.table.col = 0;
+					ts.val.table.row = 0;
+					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
 					gtk_box_pack_start(GTK_BOX(bparent), tbl, FALSE, FALSE, 0);
 					ctx->wl[j] = tbl;
 					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
@@ -318,7 +318,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				{
 					ghid_attr_tb_t ts;
 					ts.type = TB_TABBED;
-					ts.tabbed.tablab = ctx->attrs[j].enumerations;
+					ts.val.tabbed.tablab = ctx->attrs[j].enumerations;
 					ctx->wl[j] = widget = gtk_notebook_new();
 					gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
 					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
