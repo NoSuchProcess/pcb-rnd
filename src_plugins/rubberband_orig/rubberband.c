@@ -48,6 +48,7 @@
 #include "obj_rat_draw.h"
 #include "obj_line_op.h"
 #include "obj_line_draw.h"
+#include "obj_pstk_inlines.h"
 #include "plugins.h"
 #include "conf_core.h"
 #include "layer_grp.h"
@@ -833,6 +834,71 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * L
 }
 
 /* ---------------------------------------------------------------------------
+ * checks all visible lines.  If either of the endpoints of the line lays 
+ * anywhere inside the passed padstack, the scanned line is added to the 
+ * 'rubberband' list.
+ */
+static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd,pcb_pstk_t * pstk)
+{
+	pcb_layergrp_id_t top;	
+	pcb_layergrp_id_t bottom;
+	pcb_bb_type_t bb_type;
+
+	bb_type = pcb_pstk_bbspan(PCB,pstk,&top,&bottom,NULL);
+
+	if(bb_type != PCB_BB_INVALID)
+	{
+		for(;top<=bottom;++top)
+		{
+			PCB_COPPER_GROUP_LOOP(PCB->Data, top);
+			{
+				if (layer->meta.real.vis) {
+					pcb_coord_t thick;
+
+					/* the following code just stupidly compares the endpoints of the lines */
+					PCB_LINE_LOOP(layer);
+					{
+						pcb_rubberband_t *have_line = NULL;
+						pcb_bool touches1 = pcb_false;
+						pcb_bool touches2 = pcb_false;
+						int l;
+
+						if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+							continue;
+
+						/* Check whether the line is already in the rubberband list. */
+						for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
+							if (rbnd->Rubberband[l].Line == line) 
+								have_line = &rbnd->Rubberband[l];
+
+						/* Check whether any of the scanned line points touch the passed padstack */
+						thick = (line->Thickness + 1) / 2;
+						touches1 = pcb_is_point_in_pstk(line->Point1.X, line->Point1.Y, thick, pstk, layer);
+						touches2 = pcb_is_point_in_pstk(line->Point2.X, line->Point2.Y, thick, pstk, layer);
+
+						if(touches1) {
+							if(have_line)
+								have_line->delta_index[0] = 0;
+							else 
+								have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+						}
+
+						if(touches2) {
+							if(have_line)
+								have_line->delta_index[1] = 0;
+							else 
+								have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+						}
+					}
+					PCB_END_LOOP;
+				}
+			}
+			PCB_END_LOOP;
+		}
+	}
+}
+
+/* ---------------------------------------------------------------------------
  * lookup all lines that are connected to an object and save the
  * data to 'pcb_crosshair.AttachedObject.Rubberband'
  * lookup is only done for visible layers
@@ -846,6 +912,10 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 	 * is connected
 	 */
 	switch (Type) {
+	case PCB_TYPE_PSTK:
+		CheckPadStackForRubberbandConnection(rbnd,(pcb_pstk_t *)Ptr1);
+		break;
+
 	case PCB_TYPE_SUBC:
 		{
 			vtp0_t objs;
