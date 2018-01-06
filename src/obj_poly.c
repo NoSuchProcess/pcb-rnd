@@ -426,8 +426,6 @@ void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_
 /* Handle attempts to change the clearance of a polygon. */
 void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly)
 {
-	static int shown_this_message = 0;
-
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
 		pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : poly->Clearance + ctx->chgsize.value;
 
@@ -456,14 +454,11 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 	}
 
 	/* poly does not clear other polys */
-	if (!shown_this_message) {
-		pcb_gui->confirm_dialog(
-			_("To change the clearance of objects in a polygon, change the objects, not the polygon.\n"
-			"Alternatively, set the clearpolypoly flag on the polygon to allow it to clear other polygons.\n"
-			"Hint: To set a minimum clearance for a group of objects, select them all then :MinClearGap(Selected,=10,mil)"),
-			"Ok", NULL);
-		shown_this_message = 1;
-	}
+	pcb_message(PCB_MSG_WARNING,
+		_("To change the clearance of objects in a polygon, change \nthe objects, not the polygon.\n"
+		"Alternatively, set the clearpolypoly flag on the polygon to \nallow it to clear other polygons.\n"
+		"Hint: To set a minimum clearance for a group of objects, \nselect them all then :MinClearGap(Selected,=10,mil)\n"),
+		"Ok", NULL);
 
 	return NULL;
 }
