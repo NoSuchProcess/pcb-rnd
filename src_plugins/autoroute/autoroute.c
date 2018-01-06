@@ -1109,12 +1109,17 @@ static routedata_t *CreateRouteData()
 				{
 					routebox_t *rb = NULL;
 					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) connection->obj);
-					if (connection->obj->type == PCB_OBJ_LINE) {
+
+					if ((connection->obj->type == PCB_OBJ_LINE) && (connection->obj->term != NULL)) {
+						rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
+					}
+					else if (connection->obj->type == PCB_OBJ_LINE) {
 						pcb_line_t *line = (pcb_line_t *) connection->obj;
 
 						/* lines are listed at each end, so skip one */
 						/* this should probably by a macro named "BUMP_LOOP" */
-						n--;
+						if (line->term == NULL)
+							n--;
 
 						/* dice up non-straight lines into many tiny obstacles */
 						if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
@@ -1172,10 +1177,14 @@ static routedata_t *CreateRouteData()
 									rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
 							}
 							break;
-						case PCB_OBJ_POINT:
 						case PCB_OBJ_LINE:
 						case PCB_OBJ_TEXT:
 						case PCB_OBJ_ARC:
+							if (connection->obj->term != NULL)
+								rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
+							break;
+
+						case PCB_OBJ_POINT:
 						case PCB_OBJ_RAT:
 						case PCB_OBJ_ELEMENT:
 						case PCB_OBJ_SUBC:
