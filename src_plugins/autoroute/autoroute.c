@@ -10,6 +10,9 @@
  *  Copyright (c) 2006 harry eaton
  *  Copyright (c) 2009 harry eaton
  *
+ *  Updated for pcb-rnd for subcircuits and padstacks
+ *  Copyright (c) 2018 Tibor 'Igor2' Palinkas
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -81,6 +84,7 @@
 
 #include "obj_line_draw.h"
 #include "obj_pinvia_draw.h"
+#include "obj_pstk_inlines.h"
 
 
 /* #defines to enable some debugging output */
@@ -653,21 +657,24 @@ static routebox_t *AddPad(vtp0_t layergroupboxes[], pcb_element_t *element, pcb_
 	return *rbpp;
 }
 
-static routebox_t *AddTerm(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_route_style_t *style)
+static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_route_style_t *style, pcb_layer_t *layer)
 {
 	routebox_t **rbpp;
 	pcb_layer_type_t lyt;
-	int layergroup;
+	int layergroup = -1;
 
-	assert(term->parent_type == PCB_PARENT_LAYER);
-	lyt = pcb_layer_flags_(term->parent.layer);
-	layergroup = -1;
+	lyt = pcb_layer_flags_(layer);
+	if (!(lyt & PCB_LYT_COPPER))
+		return NULL;
 	if (lyt & PCB_LYT_TOP)
 		layergroup = front;
 	else if (lyt & PCB_LYT_BOTTOM)
 		layergroup = back;
-	else
-		assert(!"won't route to pad on internal layer");
+	else {
+		if (term->type != PCB_OBJ_PSTK)
+			assert(!"won't route to pad on internal layer");
+		layergroup = pcb_layer_get_group_(layer);
+	}
 	assert(0 <= layergroup && layergroup < pcb_max_group(PCB));
 
 	assert(PCB->LayerGroups.grp[layergroup].len > 0);
@@ -699,6 +706,35 @@ static routebox_t *AddTerm(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_ro
 	InitLists(*rbpp);
 	return *rbpp;
 }
+
+static routebox_t *AddTerm(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_route_style_t *style)
+{
+	assert(term->parent_type == PCB_PARENT_LAYER);
+	return AddTerm_(layergroupboxes, term, style, term->parent.layer);
+}
+
+static routebox_t *AddPstk(vtp0_t layergroupboxes[], pcb_pstk_t *ps, pcb_route_style_t *style)
+{
+	int i;
+	routebox_t *r, *last = NULL;
+
+	for (i = 0; i < pcb_max_group(PCB); i++) {
+		if (pcb_pstk_shape_at(PCB, ps, &PCB->Data->Layer[i]) != NULL) {
+			r = AddTerm_(layergroupboxes, (pcb_any_obj_t *)ps, style, &PCB->Data->Layer[i]);
+			if (r != NULL) {
+				if (last != NULL) {
+					MergeNets(r, last, NET);
+					MergeNets(r, last, SUBNET);
+					MergeNets(r, last, ORIGINAL);
+				}
+				last = r;
+			}
+		}
+	}
+
+	return last;
+}
+
 
 static routebox_t *AddLine(vtp0_t layergroupboxes[], int layergroup, pcb_line_t *line,
 													 pcb_line_t *ptr, pcb_route_style_t * style)
@@ -1156,7 +1192,7 @@ static routedata_t *CreateRouteData()
 						switch (connection->obj->type) {
 						case PCB_OBJ_VOID: break;
 						case PCB_OBJ_PSTK:
-#warning padstack TODO
+							rb = AddPstk(layergroupboxes, (pcb_pstk_t *)connection->obj, rd->styles[j]);
 							break;
 						case PCB_OBJ_PAD:
 							rb = AddPad(layergroupboxes, (pcb_element_t *) connection->ptr1, (pcb_pad_t *) connection->obj, rd->styles[j]);
