@@ -121,19 +121,15 @@ enum {
 };
 
 
-/** Processes the response returned by the library dialog.
-
-    This function handles the response \p arg1 of the library \p dialog .
-
-    Parameter \p user_data is a pointer on the relevant toplevel structure.
+/** Processes the \p response_id returned by the library \p dialog.
 
     \param dialog        The library dialog.
-    \param arg1          The response ID.
-    \param user_data     pointer to ??FIXME??
+    \param response_id   The dialog response ID.
+    \param user_data     not used (NULL)
  */
-static void library_window_callback_response(GtkDialog * dialog, gint arg1, gpointer user_data)
+static void library_window_callback_response(GtkDialog * dialog, gint response_id, gpointer user_data)
 {
-	switch (arg1) {
+	switch (response_id) {
 	case GTK_RESPONSE_CLOSE:
 	case GTK_RESPONSE_DELETE_EVENT:
 		gtk_widget_destroy(GTK_WIDGET(library_window));
@@ -942,7 +938,7 @@ void pcb_gtk_library_create(pcb_gtk_common_t *com)
 	lwcom = com;
 	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
 
-	g_signal_connect(library_window, "response", G_CALLBACK(library_window_callback_response), NULL);
+	g_signal_connect(GTK_DIALOG(library_window), "response", G_CALLBACK(library_window_callback_response), NULL);
 	g_signal_connect(G_OBJECT(library_window), "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
 	gtk_window_set_default_size(GTK_WINDOW(library_window), hid_gtk_wgeo.library_width, hid_gtk_wgeo.library_height);
 
