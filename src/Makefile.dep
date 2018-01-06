@@ -135,7 +135,8 @@
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
  polygon.h rats.h netlist.h route_style.h remove.h obj_pinvia_therm.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h pcb-printf.h layer.h \
- compat_nls.h obj_all.h obj_line_draw.h obj_pinvia_draw.h
+ compat_nls.h obj_all.h obj_line_draw.h obj_pinvia_draw.h \
+ obj_pstk_inlines.h data.h thermal.h
 ../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
  ../config.h box.h math_helper.h global_typedefs.h pcb_bool.h unit.h \
  macro.h move.h obj_common.h ../src_3rd/genht/hash.h \
