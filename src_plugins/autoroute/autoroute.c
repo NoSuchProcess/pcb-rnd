@@ -676,6 +676,11 @@ static routebox_t *AddTerm(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_ro
 	*rbpp = (routebox_t *)calloc(sizeof(**rbpp), 1);
 	assert(*rbpp);
 	(*rbpp)->group = layergroup;
+pcb_printf("Add term: %mm;%mm %mm;%mm\n", 
+								 /*X1 */ term->BoundingBox.X1,
+								 /*Y1 */ term->BoundingBox.Y1,
+								 /*X2 */ term->BoundingBox.X2,
+								 /*Y2 */ term->BoundingBox.Y2);
 	init_const_box(*rbpp,
 								 /*X1 */ term->BoundingBox.X1,
 								 /*Y1 */ term->BoundingBox.Y1,
@@ -891,6 +896,104 @@ static void DumpRouteBox(routebox_t * rb)
 	printf("\n");
 }
 #endif
+
+/* Add obstacles extracting them from data (subc-recursive) */
+static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data_t *data)
+{
+	int i;
+
+	/* add pins and pads of elements */
+	PCB_PIN_ALL_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pin))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
+		else
+			AddPin(layergroupboxes, pin, pcb_false, rd->styles[rd->max_styles]);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_PAD_ALL_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pad))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
+		else
+			AddPad(layergroupboxes, element, pad, rd->styles[rd->max_styles]);
+	}
+	PCB_ENDALL_LOOP;
+	/* add all vias */
+	PCB_VIA_LOOP(PCB->Data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, via);
+		else
+			AddPin(layergroupboxes, via, pcb_true, rd->styles[rd->max_styles]);
+	}
+	PCB_END_LOOP;
+
+	for (i = 0; i < pcb_max_layer; i++) {
+		pcb_layergrp_id_t layergroup;
+
+		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
+			continue;
+
+		layergroup = pcb_layer_get_group(PCB, i);
+
+		/* add all (non-rat) lines */
+		PCB_LINE_LOOP(LAYER_PTR(i));
+		{
+			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
+				continue;
+			}
+			/* dice up non-straight lines into many tiny obstacles */
+			if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
+				pcb_line_t fake_line = *line;
+				pcb_coord_t dx = (line->Point2.X - line->Point1.X);
+				pcb_coord_t dy = (line->Point2.Y - line->Point1.Y);
+				int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * rd->max_bloat + 1);
+				int qq;
+				segs = PCB_CLAMP(segs, 1, 32);	/* don't go too crazy */
+				dx /= segs;
+				dy /= segs;
+				for (qq = 0; qq < segs - 1; qq++) {
+					fake_line.Point2.X = fake_line.Point1.X + dx;
+					fake_line.Point2.Y = fake_line.Point1.Y + dy;
+					if (fake_line.Point2.X == line->Point2.X && fake_line.Point2.Y == line->Point2.Y)
+						break;
+					AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[rd->max_styles]);
+					fake_line.Point1 = fake_line.Point2;
+				}
+				fake_line.Point2 = line->Point2;
+				AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[rd->max_styles]);
+			}
+			else {
+				AddLine(layergroupboxes, layergroup, line, line, rd->styles[rd->max_styles]);
+			}
+		}
+		PCB_END_LOOP;
+		/* add all polygons */
+		PCB_POLY_LOOP(LAYER_PTR(i));
+		{
+			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon))
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, polygon);
+			else
+				AddPolygon(layergroupboxes, i, polygon, rd->styles[rd->max_styles]);
+		}
+		PCB_END_LOOP;
+		/* add all copper text */
+		PCB_TEXT_LOOP(LAYER_PTR(i));
+		{
+			AddText(layergroupboxes, layergroup, text, rd->styles[rd->max_styles]);
+		}
+		PCB_END_LOOP;
+		/* add all arcs */
+		PCB_ARC_LOOP(LAYER_PTR(i));
+		{
+			AddArc(layergroupboxes, layergroup, arc, rd->styles[rd->max_styles]);
+		}
+		PCB_END_LOOP;
+	}
+}
+
 
 static routedata_t *CreateRouteData()
 {
@@ -1109,96 +1212,9 @@ static routedata_t *CreateRouteData()
 		PCB_END_LOOP;
 	}
 
-	/* add pins and pads of elements */
-	PCB_PIN_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pin))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
-		else
-			AddPin(layergroupboxes, pin, pcb_false, rd->styles[rd->max_styles]);
-	}
-	PCB_ENDALL_LOOP;
-	PCB_PAD_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pad))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
-		else
-			AddPad(layergroupboxes, element, pad, rd->styles[rd->max_styles]);
-	}
-	PCB_ENDALL_LOOP;
-	/* add all vias */
-	PCB_VIA_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via))
-			PCB_FLAG_CLEAR(PCB_FLAG_DRC, via);
-		else
-			AddPin(layergroupboxes, via, pcb_true, rd->styles[rd->max_styles]);
-	}
-	PCB_END_LOOP;
 
-	for (i = 0; i < pcb_max_layer; i++) {
-		pcb_layergrp_id_t layergroup;
-
-		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
-			continue;
-
-		layergroup = pcb_layer_get_group(PCB, i);
-
-		/* add all (non-rat) lines */
-		PCB_LINE_LOOP(LAYER_PTR(i));
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
-				continue;
-			}
-			/* dice up non-straight lines into many tiny obstacles */
-			if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
-				pcb_line_t fake_line = *line;
-				pcb_coord_t dx = (line->Point2.X - line->Point1.X);
-				pcb_coord_t dy = (line->Point2.Y - line->Point1.Y);
-				int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * rd->max_bloat + 1);
-				int qq;
-				segs = PCB_CLAMP(segs, 1, 32);	/* don't go too crazy */
-				dx /= segs;
-				dy /= segs;
-				for (qq = 0; qq < segs - 1; qq++) {
-					fake_line.Point2.X = fake_line.Point1.X + dx;
-					fake_line.Point2.Y = fake_line.Point1.Y + dy;
-					if (fake_line.Point2.X == line->Point2.X && fake_line.Point2.Y == line->Point2.Y)
-						break;
-					AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[rd->max_styles]);
-					fake_line.Point1 = fake_line.Point2;
-				}
-				fake_line.Point2 = line->Point2;
-				AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[rd->max_styles]);
-			}
-			else {
-				AddLine(layergroupboxes, layergroup, line, line, rd->styles[rd->max_styles]);
-			}
-		}
-		PCB_END_LOOP;
-		/* add all polygons */
-		PCB_POLY_LOOP(LAYER_PTR(i));
-		{
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon))
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, polygon);
-			else
-				AddPolygon(layergroupboxes, i, polygon, rd->styles[rd->max_styles]);
-		}
-		PCB_END_LOOP;
-		/* add all copper text */
-		PCB_TEXT_LOOP(LAYER_PTR(i));
-		{
-			AddText(layergroupboxes, layergroup, text, rd->styles[rd->max_styles]);
-		}
-		PCB_END_LOOP;
-		/* add all arcs */
-		PCB_ARC_LOOP(LAYER_PTR(i));
-		{
-			AddArc(layergroupboxes, layergroup, arc, rd->styles[rd->max_styles]);
-		}
-		PCB_END_LOOP;
-	}
+	/* subc-recursively add all obstacles */
+	CreateRouteData_(rd, layergroupboxes, PCB->Data);
 
 	/* create r-trees from pointer lists */
 	for (i = 0; i < pcb_max_group(PCB); i++) {
