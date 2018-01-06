@@ -105,8 +105,8 @@ static GtkWidget *library_window;
  */
 #define LIBRARY_FILTER_INTERVAL 200
 
-/** */
-static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
+/** GtkWidget "configure_event" signal emitted when the size, position or stacking of the widget's window has changed. */
+static gint library_window_configure_event_cb(GtkWidget * widget, GdkEvent * ev, gpointer data)
 {
 	wplc_config_event(widget, &hid_gtk_wgeo.library_x, &hid_gtk_wgeo.library_y, &hid_gtk_wgeo.library_width,
 										&hid_gtk_wgeo.library_height);
@@ -939,7 +939,7 @@ void pcb_gtk_library_create(pcb_gtk_common_t *com)
 	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
 
 	g_signal_connect(GTK_DIALOG(library_window), "response", G_CALLBACK(library_window_callback_response), NULL);
-	g_signal_connect(G_OBJECT(library_window), "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
+	g_signal_connect(library_window, "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
 	gtk_window_set_default_size(GTK_WINDOW(library_window), hid_gtk_wgeo.library_width, hid_gtk_wgeo.library_height);
 
 	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
