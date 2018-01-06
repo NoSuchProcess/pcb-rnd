@@ -810,9 +810,8 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	g_object_set(gtk_dialog_get_content_area(GTK_DIALOG(lib_window)), "homogeneous", FALSE, NULL);
 
 	/* horizontal pane containing selection and preview */
-	hpaned = GTK_WIDGET(g_object_new(GTK_TYPE_HPANED,
-																	 /* GtkContainer */
-																	 "border-width", 5, NULL));
+	hpaned = gtkc_hpaned_new();
+	gtk_container_set_border_width(GTK_CONTAINER(hpaned), 5);
 	lib_window->hpaned = hpaned;
 
 	/* notebook for library views */
