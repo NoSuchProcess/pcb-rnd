@@ -209,24 +209,26 @@ static pcb_hid_gc_t ar_gc = 0;
 /* enumerated type for conflict levels */
 typedef enum { NO_CONFLICT = 0, LO_CONFLICT = 1, HI_CONFLICT = 2 } conflict_t;
 
-typedef struct routebox_list {
-	struct routebox *next, *prev;
-} routebox_list;
+typedef struct routebox_s routebox_t;
+
+typedef struct routebox_list_s {
+	routebox_t *next, *prev;
+} routebox_list_t;
 
 typedef enum etype { TERM, PAD, PIN, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLANE, THERMAL } etype;
 
-typedef struct routebox {
+struct routebox_s {
 	pcb_box_t box, sbox;
 	union {
 		pcb_pad_t *pad;
 		pcb_pin_t *pin;
 		pcb_pin_t *via;
 		pcb_any_obj_t *term;
-		struct routebox *via_shadow;	/* points to the via in r-tree which
+		routebox_t *via_shadow;	/* points to the via in r-tree which
 																	 * points to the pcb_pin_t in the PCB. */
 		pcb_line_t *line;
 		void *generic;							/* 'other' is polygon, arc, text */
-		struct routebox *expansion_area;	/* previous expansion area in search */
+		routebox_t *expansion_area;	/* previous expansion area in search */
 	} parent;
 	unsigned short group;
 	unsigned short layer;
@@ -287,14 +289,14 @@ typedef struct routebox {
 	/* the direction this came from, if any */
 	pcb_direction_t came_from;
 	/* circular lists with connectivity information. */
-	routebox_list same_net, same_subnet, original_subnet, different_net;
+	routebox_list_t same_net, same_subnet, original_subnet, different_net;
 	union {
 		pcb_pin_t *via;
 		pcb_line_t *line;
 	} livedraw_obj;
-} routebox_t;
+};
 
-typedef struct routedata {
+typedef struct routedata_s {
 	int max_styles;
 	/* one rtree per layer *group */
 	pcb_rtree_t *layergrouptree[PCB_MAX_LAYERGRP];	/* no silkscreen layers here =) */
@@ -311,7 +313,7 @@ typedef struct routedata {
 	mtspace_t *mtspace;
 } routedata_t;
 
-typedef struct edge_struct {
+typedef struct edge_struct_s {
 	routebox_t *rb;								/* path expansion edges are real routeboxen. */
 	pcb_cheap_point_t cost_point;
 	pcb_cost_t pcb_cost_to_point;					/* from source */
@@ -334,7 +336,7 @@ typedef struct edge_struct {
 	} flags;
 } edge_t;
 
-static struct {
+static struct AutoRouteParameters_s {
 	/* net style parameters */
 	pcb_route_style_t *style;
 	/* the present bloat */
@@ -363,24 +365,24 @@ static struct {
 	unsigned char pass;
 } AutoRouteParameters;
 
-struct routeone_state {
+typedef struct routeone_state_s {
 	/* heap of all candidate expansion edges */
 	pcb_heap_t *workheap;
 	/* information about the best path found so far. */
 	routebox_t *best_path, *best_target;
 	pcb_cost_t best_cost;
-};
+} routeone_state_t;
 
 
 static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t group,
 																			 routebox_t * parent, pcb_bool relax_edge_requirements, edge_t * edge);
 
 static pcb_cost_t edge_cost(const edge_t * e, const pcb_cost_t too_big);
-static void best_path_candidate(struct routeone_state *s, edge_t * e, routebox_t * best_target);
+static void best_path_candidate(routeone_state_t *s, edge_t * e, routebox_t * best_target);
 
 static pcb_box_t edge_to_box(const routebox_t * rb, pcb_direction_t expand_dir);
 
-static void add_or_destroy_edge(struct routeone_state *s, edge_t * e);
+static void add_or_destroy_edge(routeone_state_t *s, edge_t * e);
 
 static void
 RD_DrawThermal(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_cardinal_t group, pcb_cardinal_t layer, routebox_t * subnet, pcb_bool is_bad);
@@ -461,7 +463,7 @@ int no_planes(const pcb_box_t * b, void *cl)
  */
 
 enum boxlist { NET, SUBNET, ORIGINAL, DIFFERENT_NET };
-static struct routebox_list *__select_list(routebox_t * r, enum boxlist which)
+static routebox_list_t *__select_list(routebox_t * r, enum boxlist which)
 {
 	assert(r);
 	switch (which) {
@@ -483,14 +485,14 @@ static void InitLists(routebox_t * r)
 	static enum boxlist all[] = { NET, SUBNET, ORIGINAL, DIFFERENT_NET }
 	, *p;
 	for (p = all; p < all + (sizeof(all) / sizeof(*p)); p++) {
-		struct routebox_list *rl = __select_list(r, *p);
+		routebox_list_t *rl = __select_list(r, *p);
 		rl->prev = rl->next = r;
 	}
 }
 
 static void MergeNets(routebox_t * a, routebox_t * b, enum boxlist which)
 {
-	struct routebox_list *al, *bl, *anl, *bnl;
+	routebox_list_t *al, *bl, *anl, *bnl;
 	routebox_t *an, *bn;
 	assert(a && b);
 	assert(a != b);
@@ -513,7 +515,7 @@ static void MergeNets(routebox_t * a, routebox_t * b, enum boxlist which)
 
 static void RemoveFromNet(routebox_t * a, enum boxlist which)
 {
-	struct routebox_list *al, *anl, *apl;
+	routebox_list_t *al, *anl, *apl;
 	routebox_t *an, *ap;
 	assert(a);
 	al = __select_list(a, which);
@@ -2277,7 +2279,7 @@ void
 moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 							routebox_t * rb,
 							routebox_t * blocker, edge_t * e, pcb_rtree_t * targets,
-							struct routeone_state *s, pcb_rtree_t * tree, vector_t * area_vec)
+							routeone_state_t *s, pcb_rtree_t * tree, vector_t * area_vec)
 {
 	pcb_box_t b;
 	assert(pcb_box_is_good(box));
@@ -2510,7 +2512,7 @@ static inline pcb_box_t previous_edge(pcb_coord_t last, pcb_direction_t i, const
  * targets as they are found, and putting any moveable edges
  * in the return vector.
  */
-vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_rtree_t * tree,
+vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_t * tree,
 												 vector_t * area_vec, struct E_result * ans, routebox_t * rb, edge_t * e)
 {
 	struct break_info bi;
@@ -3345,7 +3347,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 
 /* create a fake "edge" used to defer via site searching. */
 static void
-CreateSearchEdge(struct routeone_state *s, vetting_t * work, edge_t * parent,
+CreateSearchEdge(routeone_state_t *s, vetting_t * work, edge_t * parent,
 								 routebox_t * rb, conflict_t conflict, pcb_rtree_t * targets, pcb_bool in_plane)
 {
 	routebox_t *target;
@@ -3383,7 +3385,7 @@ CreateSearchEdge(struct routeone_state *s, vetting_t * work, edge_t * parent,
 	}
 }
 
-static void add_or_destroy_edge(struct routeone_state *s, edge_t * e)
+static void add_or_destroy_edge(routeone_state_t *s, edge_t * e)
 {
 	e->cost = edge_cost(e, s->best_cost);
 	assert(__edge_is_good(e));
@@ -3394,7 +3396,7 @@ static void add_or_destroy_edge(struct routeone_state *s, edge_t * e)
 		DestroyEdge(&e);
 }
 
-static void best_path_candidate(struct routeone_state *s, edge_t * e, routebox_t * best_target)
+static void best_path_candidate(routeone_state_t *s, edge_t * e, routebox_t * best_target)
 {
 	e->cost = edge_cost(e, EXPENSIVE);
 	if (s->best_path == NULL || e->cost < s->best_cost) {
@@ -3423,7 +3425,7 @@ struct routeone_via_site_state {
 };
 
 void
-add_via_sites(struct routeone_state *s,
+add_via_sites(routeone_state_t *s,
 							struct routeone_via_site_state *vss,
 							mtspace_t * mtspace, routebox_t * within,
 							conflict_t within_conflict_level, edge_t * parent_edge, pcb_rtree_t * targets, pcb_coord_t shrink, pcb_bool in_plane)
@@ -3451,7 +3453,7 @@ add_via_sites(struct routeone_state *s,
 }
 
 void
-do_via_search(edge_t * search, struct routeone_state *s,
+do_via_search(edge_t * search, routeone_state_t *s,
 							struct routeone_via_site_state *vss, mtspace_t * mtspace, pcb_rtree_t * targets)
 {
 	int i, j, count = 0;
@@ -3633,7 +3635,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	/* working vector */
 	vector_t *edge_vec;
 
-	struct routeone_state s;
+	routeone_state_t s;
 	struct routeone_via_site_state vss;
 
 	assert(rd && from);
