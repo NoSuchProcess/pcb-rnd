@@ -1512,6 +1512,8 @@ static int eagle_read_ver(const char *ver)
 	int v1, v2, v3;
 	char *end;
 
+	v3 = 0;
+
 	if (ver == NULL) {
 		pcb_message(PCB_MSG_ERROR, "no version attribute in <eagle>\n");
 		return -1;
@@ -1525,11 +1527,12 @@ static int eagle_read_ver(const char *ver)
 	if (*end != '.' && *end != '\0') {
 		pcb_message(PCB_MSG_ERROR, "malformed version string [2] in <eagle>\n");
 		return -1;
-	}
-	v3 = strtol(end+1, &end, 10);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "malformed version string [3] in <eagle>\n");
-		return -1;
+	} else if (*end == '.') {
+		v3 = strtol(end+1, &end, 10);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "malformed version string [3] in <eagle>\n");
+			return -1;
+		}
 	}
 
 	/* version check */
