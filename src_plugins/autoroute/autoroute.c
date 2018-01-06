@@ -676,11 +676,6 @@ static routebox_t *AddTerm(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_ro
 	*rbpp = (routebox_t *)calloc(sizeof(**rbpp), 1);
 	assert(*rbpp);
 	(*rbpp)->group = layergroup;
-pcb_printf("Add term: %mm;%mm %mm;%mm\n", 
-								 /*X1 */ term->BoundingBox.X1,
-								 /*Y1 */ term->BoundingBox.Y1,
-								 /*X2 */ term->BoundingBox.X2,
-								 /*Y2 */ term->BoundingBox.Y2);
 	init_const_box(*rbpp,
 								 /*X1 */ term->BoundingBox.X1,
 								 /*Y1 */ term->BoundingBox.Y1,
@@ -929,16 +924,17 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 	}
 	PCB_END_LOOP;
 
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < data->LayerN; i++) {
 		pcb_layergrp_id_t layergroup;
+		pcb_layer_t *ly = &data->Layer[i];
 
-		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
 			continue;
 
-		layergroup = pcb_layer_get_group(PCB, i);
+		layergroup = pcb_layer_get_group_(ly);
 
 		/* add all (non-rat) lines */
-		PCB_LINE_LOOP(LAYER_PTR(i));
+		PCB_LINE_LOOP(ly);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
@@ -971,7 +967,7 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 		}
 		PCB_END_LOOP;
 		/* add all polygons */
-		PCB_POLY_LOOP(LAYER_PTR(i));
+		PCB_POLY_LOOP(ly);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon))
 				PCB_FLAG_CLEAR(PCB_FLAG_DRC, polygon);
@@ -980,18 +976,26 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 		}
 		PCB_END_LOOP;
 		/* add all copper text */
-		PCB_TEXT_LOOP(LAYER_PTR(i));
+		PCB_TEXT_LOOP(ly);
 		{
 			AddText(layergroupboxes, layergroup, text, rd->styles[rd->max_styles]);
 		}
 		PCB_END_LOOP;
 		/* add all arcs */
-		PCB_ARC_LOOP(LAYER_PTR(i));
+		PCB_ARC_LOOP(ly);
 		{
 			AddArc(layergroupboxes, layergroup, arc, rd->styles[rd->max_styles]);
 		}
 		PCB_END_LOOP;
 	}
+
+	/* subc recursion - re-add terms */
+	PCB_SUBC_LOOP(data);
+	{
+		CreateRouteData_(rd, layergroupboxes, subc->data);
+	}
+	PCB_END_LOOP;
+
 }
 
 
