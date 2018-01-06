@@ -684,8 +684,11 @@ static routebox_t *AddTerm(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_ro
 								 style->Clearance);
 	/* kludge for non-manhattan pads (which are not allowed at present) */
 #warning term TODO:
-/*if (pad->Point1.X != pad->Point2.X && pad->Point1.Y != pad->Point2.Y)*/
+/*
+	if (pad->Point1.X != pad->Point2.X && pad->Point1.Y != pad->Point2.Y)
 		(*rbpp)->flags.nonstraight = 1;
+*/
+	(*rbpp)->flags.nonstraight = 0; /* otherwise the autorouter just ignores it */
 	/* set aux. properties */
 	(*rbpp)->type = TERM;
 	(*rbpp)->parent.term = term;
