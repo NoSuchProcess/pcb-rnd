@@ -1003,9 +1003,11 @@ static routedata_t *CreateRouteData()
 							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->obj, pcb_true, rd->styles[j]);
 							break;
 						case PCB_OBJ_POLY:
-							rb = AddPolygon(layergroupboxes,
-										pcb_layer_id(PCB->Data, (pcb_layer_t *) connection->ptr1),
-										(struct pcb_poly_s *) connection->obj, rd->styles[j]);
+							{
+								pcb_poly_t *poly = (pcb_poly_t *)connection->obj;
+								pcb_layer_t *layer = (pcb_layer_t *)connection->ptr1;
+								rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
+							}
 							break;
 						case PCB_OBJ_POINT:
 						case PCB_OBJ_LINE:
