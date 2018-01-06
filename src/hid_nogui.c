@@ -200,7 +200,7 @@ static void nogui_stop_timer(pcb_hidval_t timer)
 	CRASH("stop_timer");
 }
 
-static pcb_hidval_t nogui_watch_file(int fd, unsigned int condition, void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+static pcb_hidval_t nogui_watch_file(int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	CRASH("watch_file");
