@@ -213,7 +213,7 @@ typedef struct routebox_list {
 	struct routebox *next, *prev;
 } routebox_list;
 
-typedef enum etype { PAD, PIN, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLANE, THERMAL } etype;
+typedef enum etype { TERM, PAD, PIN, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLANE, THERMAL } etype;
 
 typedef struct routebox {
 	pcb_box_t box, sbox;
@@ -221,6 +221,7 @@ typedef struct routebox {
 		pcb_pad_t *pad;
 		pcb_pin_t *pin;
 		pcb_pin_t *via;
+		pcb_any_obj_t *term;
 		struct routebox *via_shadow;	/* points to the via in r-tree which
 																	 * points to the pcb_pin_t in the PCB. */
 		pcb_line_t *line;
@@ -650,6 +651,50 @@ static routebox_t *AddPad(vtp0_t layergroupboxes[], pcb_element_t *element, pcb_
 	return *rbpp;
 }
 
+static routebox_t *AddTerm(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_route_style_t *style)
+{
+	routebox_t **rbpp;
+	pcb_layer_type_t lyt;
+	int layergroup;
+
+	assert(term->parent_type == PCB_PARENT_LAYER);
+	lyt = pcb_layer_flags_(term->parent.layer);
+	layergroup = -1;
+	if (lyt & PCB_LYT_TOP)
+		layergroup = front;
+	else if (lyt & PCB_LYT_BOTTOM)
+		layergroup = back;
+	else
+		assert(!"won't route to pad on internal layer");
+	assert(0 <= layergroup && layergroup < pcb_max_group(PCB));
+
+	assert(PCB->LayerGroups.grp[layergroup].len > 0);
+	rbpp = (routebox_t **)vtp0_alloc_append(&layergroupboxes[layergroup], 1);
+	assert(rbpp);
+	*rbpp = (routebox_t *)calloc(sizeof(**rbpp), 1);
+	assert(*rbpp);
+	(*rbpp)->group = layergroup;
+	init_const_box(*rbpp,
+								 /*X1 */ term->BoundingBox.X1,
+								 /*Y1 */ term->BoundingBox.Y1,
+								 /*X2 */ term->BoundingBox.X2,
+								 /*Y2 */ term->BoundingBox.Y2,
+								 style->Clearance);
+	/* kludge for non-manhattan pads (which are not allowed at present) */
+#warning term TODO:
+/*if (pad->Point1.X != pad->Point2.X && pad->Point1.Y != pad->Point2.Y)*/
+		(*rbpp)->flags.nonstraight = 1;
+	/* set aux. properties */
+	(*rbpp)->type = TERM;
+	(*rbpp)->parent.term = term;
+	(*rbpp)->flags.fixed = 1;
+	(*rbpp)->came_from = PCB_ANY_DIR;
+	(*rbpp)->style = style;
+	/* circular lists */
+	InitLists(*rbpp);
+	return *rbpp;
+}
+
 static routebox_t *AddLine(vtp0_t layergroupboxes[], int layergroup, pcb_line_t *line,
 													 pcb_line_t *ptr, pcb_route_style_t * style)
 {
@@ -801,6 +846,9 @@ static void DumpRouteBox(routebox_t * rb)
 {
 	pcb_printf("RB: %#mD-%#mD l%d; ", rb->box.X1, rb->box.Y1, rb->box.X2, rb->box.Y2, (int) rb->group);
 	switch (rb->type) {
+	case TERM:
+		printf("TERM[%s] ", rb->parent.term->term);
+		break;
 	case PAD:
 		printf("PAD[%s %s] ", rb->parent.pad->Name, rb->parent.pad->Number);
 		break;
@@ -1006,7 +1054,10 @@ static routedata_t *CreateRouteData()
 							{
 								pcb_poly_t *poly = (pcb_poly_t *)connection->obj;
 								pcb_layer_t *layer = (pcb_layer_t *)connection->ptr1;
-								rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
+								if (poly->term != NULL)
+									rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
+								else
+									rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
 							}
 							break;
 						case PCB_OBJ_POINT:
@@ -1272,6 +1323,7 @@ pcb_bool TargetPoint(pcb_cheap_point_t * nextpoint, const routebox_t * target)
 		return pcb_true;
 	}
 	else if (target->type == PAD) {
+#warning term TODO: extend this for generic term
 		if (labs(target->parent.pad->Point1.X - nextpoint->X) < labs(target->parent.pad->Point2.X - nextpoint->X))
 			nextpoint->X = target->parent.pad->Point1.X;
 		else
@@ -4298,7 +4350,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 #if defined(ROUTE_RANDOMIZED)
 										(0.3 + pcb_rand() / (RAND_MAX + 1.0)) *
 #endif
-										(b.Y2 - b.Y1) * (p->type == PLANE ? -1 : (p->type == PAD ? 1 : 10)), p);
+										(b.Y2 - b.Y1) * (p->type == PLANE ? -1 : ((p->type == PAD || p->type == TERM) ? 1 : 10)), p);
 			}
 			PCB_END_LOOP;
 			ros.net_completely_routed = 0;
