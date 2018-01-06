@@ -427,6 +427,35 @@ void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_
 void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly)
 {
 	static int shown_this_message = 0;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
+		pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : poly->Clearance + ctx->chgsize.value;
+
+		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, poly))
+			return NULL;
+
+		value = MIN(PCB_MAX_LINESIZE, value);
+		if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < ctx->chgsize.pcb->Bloat * 2)
+			value = 0;
+		if (ctx->chgsize.value > 0 && value < ctx->chgsize.pcb->Bloat * 2)
+			value = ctx->chgsize.pcb->Bloat * 2 + 2;
+		if (value != poly->Clearance) {
+			pcb_undo_add_obj_to_clear_size(PCB_TYPE_POLY, Layer, poly, poly);
+			pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_TYPE_POLY, Layer, poly);
+			pcb_poly_invalidate_erase(poly);
+			pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *)poly);
+			poly->Clearance = value;
+			pcb_poly_bbox(poly);
+			pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *)poly, 0);
+			pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_POLY, Layer, poly);
+			pcb_poly_invalidate_draw(Layer, poly);
+			return poly;
+		}
+
+		return poly;
+	}
+
+	/* poly does not clear other polys */
 	if (!shown_this_message) {
 		pcb_gui->confirm_dialog(_("To change the clearance of objects in a polygon, "
 													"change the objects, not the polygon.\n"
