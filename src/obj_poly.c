@@ -457,11 +457,11 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 
 	/* poly does not clear other polys */
 	if (!shown_this_message) {
-		pcb_gui->confirm_dialog(_("To change the clearance of objects in a polygon, "
-													"change the objects, not the polygon.\n"
-													"Alternatively, set the clearpolypoly flag on the polygon to allow it to clear other polygons.\n"
-													"Hint: To set a minimum clearance for a group of objects, "
-													"select them all then :MinClearGap(Selected,=10,mil)"), "Ok", NULL);
+		pcb_gui->confirm_dialog(
+			_("To change the clearance of objects in a polygon, change the objects, not the polygon.\n"
+			"Alternatively, set the clearpolypoly flag on the polygon to allow it to clear other polygons.\n"
+			"Hint: To set a minimum clearance for a group of objects, select them all then :MinClearGap(Selected,=10,mil)"),
+			"Ok", NULL);
 		shown_this_message = 1;
 	}
 
