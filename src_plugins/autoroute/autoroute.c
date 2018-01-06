@@ -3646,17 +3646,17 @@ static void source_conflicts(pcb_rtree_t * tree, routebox_t * rb)
 	touch_conflicts(NULL, 1);
 }
 
-struct routeone_status {
+typedef struct routeone_status_s {
 	pcb_bool found_route;
 	int route_had_conflicts;
 	pcb_cost_t best_route_cost;
 	pcb_bool net_completely_routed;
-};
+} routeone_status_t;
 
 
-static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, routebox_t * to, int max_edges)
+static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_t * to, int max_edges)
 {
-	struct routeone_status result;
+	routeone_status_t result;
 	routebox_t *p;
 	int seen, i;
 	const pcb_box_t **target_list;
@@ -4237,7 +4237,7 @@ static double calculate_progress(double this_heap_item, double this_heap_size, s
 struct routeall_status RouteAll(routedata_t * rd)
 {
 	struct routeall_status ras;
-	struct routeone_status ros;
+	routeone_status_t ros;
 	pcb_bool rip;
 	int request_cancel;
 #ifdef NET_HEAP
