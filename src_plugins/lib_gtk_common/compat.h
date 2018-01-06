@@ -43,6 +43,17 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 	return box;
 }
 
+/** hpaned/vpaned creation */
+static inline GtkWidget *gtkc_hpaned_new()
+{
+	return gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+}
+
+static inline GtkWidget *gtkc_vpaned_new()
+{
+	return gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+}
+
 /* color button */
 
 static inline GtkWidget *gtkc_color_button_new_with_color(pcb_gtk_color_t *color)
@@ -174,6 +185,16 @@ static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 {
 	return gtk_vbox_new(homogenous, spacing);
+}
+
+static inline GtkWidget *gtkc_hpaned_new()
+{
+	return gtk_hpaned_new();
+}
+
+static inline GtkWidget *gtkc_vpaned_new()
+{
+	return gtk_vpaned_new();
 }
 
 /* color button */
