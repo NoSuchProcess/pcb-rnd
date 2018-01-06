@@ -660,12 +660,8 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	/* -- library selection view -- */
 
 	/* vertical box for footprint selection and search entry */
-	/* GTK3 issue there ? */
-	vbox = GTK_WIDGET(g_object_new(GTK_TYPE_VBOX,
-																 /* GtkContainer */
-																 "border-width", 5,
-																 /* GtkBox */
-																 "homogeneous", FALSE, "spacing", 5, NULL));
+	vbox = gtkc_vbox_new(FALSE, 5);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 
 	child_model = create_lib_tree_model(library_window);
 	model = (GtkTreeModel *) g_object_new(GTK_TYPE_TREE_MODEL_FILTER, "child-model", child_model, "virtual-root", NULL, NULL);
@@ -710,9 +706,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 
 
 	/* -- filter area -- */
-	hbox = GTK_WIDGET(g_object_new(GTK_TYPE_HBOX,
-																 /* GtkBox */
-																 "homogeneous", FALSE, "spacing", 3, NULL));
+	hbox = gtkc_hbox_new(FALSE, 3);
 
 	/* create the entry label */
 	label = GTK_WIDGET(g_object_new(GTK_TYPE_LABEL,
