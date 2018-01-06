@@ -1003,10 +1003,9 @@ static routedata_t *CreateRouteData()
 							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->obj, pcb_true, rd->styles[j]);
 							break;
 						case PCB_OBJ_POLY:
-							rb =
-								AddPolygon(layergroupboxes,
-													 pcb_layer_id(PCB->Data, (pcb_layer_t *) connection->ptr1),
-													 (struct pcb_poly_s *) connection->obj, rd->styles[j]);
+							rb = AddPolygon(layergroupboxes,
+										pcb_layer_id(PCB->Data, (pcb_layer_t *) connection->ptr1),
+										(struct pcb_poly_s *) connection->obj, rd->styles[j]);
 							break;
 						case PCB_OBJ_POINT:
 						case PCB_OBJ_LINE:
