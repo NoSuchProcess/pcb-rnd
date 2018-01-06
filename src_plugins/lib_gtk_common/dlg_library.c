@@ -739,7 +739,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																	 "sensitive", TRUE,
 																	 /* GtkButton */
 																	 "relief", GTK_RELIEF_NONE, NULL));
-	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_SMALL_TOOLBAR));
+	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_icon_name(GTK_STOCK_EDIT, GTK_ICON_SIZE_SMALL_TOOLBAR));
 	g_signal_connect(button, "clicked", G_CALLBACK(library_window_callback_edit_button_clicked), library_window);
 	/* add the clear button to the filter area */
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
@@ -753,7 +753,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																	 "sensitive", FALSE,
 																	 /* GtkButton */
 																	 "relief", GTK_RELIEF_NONE, NULL));
-	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_SMALL_TOOLBAR));
+	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_icon_name("edit-clear", GTK_ICON_SIZE_SMALL_TOOLBAR));
 	g_signal_connect(button, "clicked", G_CALLBACK(library_window_callback_filter_button_clicked), library_window);
 	/* add the clear button to the filter area */
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
@@ -767,7 +767,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																	 "sensitive", TRUE,
 																	 /* GtkButton */
 																	 "relief", GTK_RELIEF_NONE, NULL));
-	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_stock(GTK_STOCK_REFRESH, GTK_ICON_SIZE_SMALL_TOOLBAR));
+	gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_icon_name("view-refresh", GTK_ICON_SIZE_SMALL_TOOLBAR));
 	/* add the refresh button to the filter area */
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(button, "clicked", G_CALLBACK(library_window_callback_refresh_library), library_window);
