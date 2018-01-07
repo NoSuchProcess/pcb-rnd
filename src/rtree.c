@@ -73,7 +73,7 @@ struct rtree_node {
 	struct rtree_node *parent;		/* parent of this node, NULL = root */
 	struct {
 		unsigned is_leaf:1;					/* this is a leaf node */
-		unsigned manage:31;					/* pcb_true==should free 'rect.bptr' if node is destroyed */
+		unsigned unused:31;					/* pcb_true==should free 'rect.bptr' if node is destroyed */
 	} flags;
 	union {
 		struct rtree_node *kids[M_SIZE + 1];	/* when not leaf */
@@ -208,8 +208,7 @@ void pcb_r_dump_tree(struct rtree_node *node, int depth)
 		printf("p=0x%p node X(%d, %d) Y(%d, %d)\n", (void *) node, node->box.X1, node->box.X2, node->box.Y1, node->box.Y2);
 	}
 	else {
-		printf("p=0x%p leaf manage(%02x) X(%d, %d) Y(%d, %d)\n", (void *) node,
-					 node->flags.manage, node->box.X1, node->box.X2, node->box.Y1, node->box.Y2);
+		printf("p=0x%p leaf X(%d, %d) Y(%d, %d)\n", (void *) node, node->box.X1, node->box.X2, node->box.Y1, node->box.Y2);
 		for (j = 0; j < M_SIZE; j++) {
 			if (!node->u.rects[j].bptr)
 				break;
@@ -602,7 +601,6 @@ struct rtree_node *find_clusters(struct rtree_node *node)
 	pcb_bool belong[M_SIZE + 1];
 	struct centroid center[M_SIZE + 1];
 	int clust_a, clust_b, tries;
-	int a_manage = 0, b_manage = 0;
 	int i, old_ax, old_ay, old_bx, old_by;
 	struct rtree_node *new_node;
 	pcb_box_t *b;
@@ -686,14 +684,10 @@ struct rtree_node *find_clusters(struct rtree_node *node)
 		for (i = 0; i < M_SIZE + 1; i++) {
 			if (belong[i]) {
 				node->u.rects[clust_a++] = node->u.rects[i];
-				if (node->flags.manage & flag)
-					a_manage |= a_flag;
 				a_flag <<= 1;
 			}
 			else {
 				new_node->u.rects[clust_b++] = node->u.rects[i];
-				if (node->flags.manage & flag)
-					b_manage |= b_flag;
 				b_flag <<= 1;
 			}
 			flag <<= 1;
@@ -709,8 +703,6 @@ struct rtree_node *find_clusters(struct rtree_node *node)
 			}
 		}
 	}
-	node->flags.manage = a_manage;
-	new_node->flags.manage = b_manage;
 	assert(clust_a != 0);
 	assert(clust_b != 0);
 	if (node->flags.is_leaf)
@@ -746,7 +738,7 @@ static void split_node(struct rtree_node *node)
 				if (second->u.kids[i])
 					second->u.kids[i]->parent = second;
 		node->flags.is_leaf = 0;
-		node->flags.manage = 0;
+		node->flags.unused = 0;
 		second->parent = new_node->parent = node;
 		node->u.kids[0] = new_node;
 		node->u.kids[1] = second;
@@ -909,7 +901,7 @@ void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which)
 
 pcb_bool __r_delete_free_data(struct rtree_node *node, const pcb_box_t * query, void (*free_data)(void *data))
 {
-	int i, flag, mask, a;
+	int i, mask, a;
 
 	/* the tree might be inconsistent during delete */
 	if (query->X1 < node->box.X1 || query->Y1 < node->box.Y1 || query->X2 > node->box.X2 || query->Y2 > node->box.Y2)
@@ -974,10 +966,6 @@ pcb_bool __r_delete_free_data(struct rtree_node *node, const pcb_box_t * query, 
 		free_data((void *) node->u.rects[i].bptr);
 		node->u.rects[i].bptr = NULL;
 	}
-	/* squeeze the manage flags together */
-	flag = node->flags.manage & mask;
-	mask = (~mask) << 1;
-	node->flags.manage = flag | ((node->flags.manage & mask) >> 1);
 	/* remove the entry */
 	for (; i < M_SIZE; i++) {
 		node->u.rects[i] = node->u.rects[i + 1];
