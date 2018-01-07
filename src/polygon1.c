@@ -521,7 +521,7 @@ static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 1);
+	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 0);
 	q = (seg *) malloc(sizeof(struct seg));
 	if (!q)
 		return 1;
@@ -532,8 +532,9 @@ static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 1);
+	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 0);
 	pcb_r_delete_entry(tree, (const pcb_box_t *) s);
+	free(s);
 	return 0;
 }
 
@@ -657,7 +658,7 @@ static void *make_edge_tree(pcb_pline_t * pb)
 		}
 		s->v = bv;
 		s->p = pb;
-		pcb_r_insert_entry(ans, (const pcb_box_t *) s, 1);
+		pcb_r_insert_entry(ans, (const pcb_box_t *) s, 0);
 	}
 	while ((bv = bv->next) != &pb->head);
 	return (void *) ans;
@@ -2317,6 +2318,7 @@ void pcb_poly_contour_del(pcb_pline_t ** c)
 	/* FIXME -- strict aliasing violation.  */
 	if ((*c)->tree) {
 		pcb_rtree_t *r = (*c)->tree;
+		pcb_r_free_tree_data(r, free);
 		pcb_r_destroy_tree(&r);
 	}
 	free(*c), *c = NULL;
@@ -3410,8 +3412,10 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 			pl->ymin += dy;
 			pl->xmax += dx;
 			pl->ymax += dy;
-			if (pl->tree != NULL)
+			if (pl->tree != NULL) {
+				pcb_r_free_tree_data(pl->tree, free);
 				pcb_r_destroy_tree(&pl->tree);
+			}
 			pl->tree = (pcb_rtree_t *)make_edge_tree(pl);
 
 			pcb_r_insert_entry(pa->contour_tree, (pcb_box_t *)pl, 0);
