@@ -481,7 +481,7 @@ pcb_route_apply_to_line(const pcb_route_t * p_route,pcb_layer_t * apply_to_line_
 					apply_to_line->Point2.X = p_obj->point2.X;
 					apply_to_line->Point2.Y = p_obj->point2.Y;
 					pcb_line_bbox(apply_to_line);
-					pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) apply_to_line, 0);
+					pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) apply_to_line);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, apply_to_line);
 					pcb_line_invalidate_draw(layer, apply_to_line);
 					apply_to_line_layer = layer;

@@ -533,7 +533,7 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 	Element->Name[which].TextString = new_name;
 	pcb_text_bbox(pcb_font(PCB, 0, 1), &Element->Name[which]);
 
-	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
+	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
 		pcb_elem_name_invalidate_draw(Element);
@@ -548,7 +548,7 @@ void pcb_element_text_update(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *
 
 	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 	pcb_text_bbox(pcb_font(PCB, 0, 1), &Element->Name[which]);
-	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
+	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
 		pcb_elem_name_invalidate_draw(Element);
@@ -562,7 +562,7 @@ void pcb_element_text_set_font(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t
 	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 	Element->Name[which].fid = fid;
 	pcb_text_bbox(pcb_font(PCB, 0, 1), &Element->Name[which]);
-	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
+	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 
 	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
 		pcb_elem_name_invalidate_draw(Element);
@@ -810,7 +810,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		if (Data && !Data->name_tree[n])
 			Data->name_tree[n] = pcb_r_create_tree();
 		if (Data)
-			pcb_r_insert_entry(Data->name_tree[n], (pcb_box_t *) text, 0);
+			pcb_r_insert_entry(Data->name_tree[n], (pcb_box_t *) text);
 	}
 	PCB_END_LOOP;
 
@@ -852,7 +852,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		if (Data) {
 			if (!Data->pin_tree)
 				Data->pin_tree = pcb_r_create_tree();
-			pcb_r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
+			pcb_r_insert_entry(Data->pin_tree, (pcb_box_t *) pin);
 		}
 		PCB_MAKE_MIN(box->X1, pin->BoundingBox.X1);
 		PCB_MAKE_MIN(box->Y1, pin->BoundingBox.Y1);
@@ -872,7 +872,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		if (Data) {
 			if (!Data->pad_tree)
 				Data->pad_tree = pcb_r_create_tree();
-			pcb_r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
+			pcb_r_insert_entry(Data->pad_tree, (pcb_box_t *) pad);
 		}
 		PCB_MAKE_MIN(box->X1, pad->BoundingBox.X1);
 		PCB_MAKE_MIN(box->Y1, pad->BoundingBox.Y1);
@@ -926,7 +926,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 	if (Data && !Data->element_tree)
 		Data->element_tree = pcb_r_create_tree();
 	if (Data)
-		pcb_r_insert_entry(Data->element_tree, box, 0);
+		pcb_r_insert_entry(Data->element_tree, box);
 }
 
 static char *BumpName(char *Name)
@@ -1087,7 +1087,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 		}
 		pcb_pin_move(pin, DX, DY);
 		if (Data) {
-			pcb_r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
+			pcb_r_insert_entry(Data->pin_tree, (pcb_box_t *) pin);
 			pcb_poly_clear_from_poly(Data, PCB_TYPE_PIN, Element, pin);
 		}
 	}
@@ -1100,7 +1100,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 		}
 		pcb_pad_move(pad, DX, DY);
 		if (Data) {
-			pcb_r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
+			pcb_r_insert_entry(Data->pad_tree, (pcb_box_t *) pad);
 			pcb_poly_clear_from_poly(Data, PCB_TYPE_PAD, Element, pad);
 		}
 	}
@@ -1116,14 +1116,14 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 			pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_move(text, DX, DY);
 		if (Data && Data->name_tree[n])
-			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
+			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 	}
 	PCB_END_LOOP;
 	PCB_BOX_MOVE_LOWLEVEL(&Element->BoundingBox, DX, DY);
 	PCB_BOX_MOVE_LOWLEVEL(&Element->VBox, DX, DY);
 	PCB_MOVE(Element->MarkX, Element->MarkY, DX, DY);
 	if (Data)
-		pcb_r_insert_entry(Data->element_tree, (pcb_box_t *) Element, 0);
+		pcb_r_insert_entry(Data->element_tree, (pcb_box_t *) Element);
 }
 
 void *pcb_element_remove(pcb_element_t *Element)
@@ -1542,7 +1542,7 @@ void *pcb_elemop_change_name_size(pcb_opctx_t *ctx, pcb_element_t *Element)
 			pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			text->Scale = value;
 			pcb_text_bbox(pcb_font(PCB, 0, 1), text);
-			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
+			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		}
 		PCB_END_LOOP;
 		pcb_elem_name_invalidate_draw(Element);
@@ -1722,7 +1722,7 @@ void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			pcb_text_move(text, ctx->move.dx, ctx->move.dy);
 			if (PCB->Data->name_tree[n])
-				pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
+				pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		}
 		PCB_END_LOOP;
 		pcb_elem_name_invalidate_draw(Element);
@@ -1734,7 +1734,7 @@ void *pcb_elemop_move_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			pcb_text_move(text, ctx->move.dx, ctx->move.dy);
 			if (PCB->Data->name_tree[n])
-				pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
+				pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		}
 		PCB_END_LOOP;
 	}
@@ -1822,7 +1822,7 @@ void *pcb_elemop_rotate90_name(pcb_opctx_t *ctx, pcb_element_t *Element)
 	{
 		pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_rotate90(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-		pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
+		pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 	}
 	PCB_END_LOOP;
 	pcb_elem_name_invalidate_draw(Element);

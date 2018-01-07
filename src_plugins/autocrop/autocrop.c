@@ -75,7 +75,7 @@ static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, pcb_coord_t d
 	}
 	pcb_via_move(Via, dx, dy);
 	if (Data) {
-		pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
+		pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via);
 		pcb_poly_clear_from_poly(Data, PCB_TYPE_VIA, Via, Via);
 	}
 	return Via;
@@ -89,7 +89,7 @@ static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line
 	}
 	pcb_line_move(Line, dx, dy);
 	if (Data) {
-		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
+		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line);
 		pcb_poly_clear_from_poly(Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	return Line;
@@ -103,7 +103,7 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t
 	}
 	pcb_arc_move(Arc, dx, dy);
 	if (Data) {
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_clear_from_poly(Data, PCB_TYPE_ARC, Layer, Arc);
 	}
 	return Arc;
@@ -117,7 +117,7 @@ static void *Mypcb_poly_move(pcb_data_t * Data, pcb_layer_t * Layer, pcb_poly_t 
 	/* move.c actually only moves points, note no Data/Layer args */
 	pcb_poly_move(Polygon, dx, dy);
 	if (Data) {
-		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 		pcb_poly_init_clip(Data, Layer, Polygon);
 	}
 	return Polygon;
@@ -129,7 +129,7 @@ static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, pcb_coor
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	pcb_text_move(Text, dx, dy);
 	if (Layer)
-		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
+		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
 	return Text;
 }
 

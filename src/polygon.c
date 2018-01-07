@@ -2200,7 +2200,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 			newone->Clipped = p;
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
-			pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) newone, 0);
+			pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) newone);
 			pcb_poly_invalidate_draw(layer, newone);
 		}
 		else {
@@ -2301,7 +2301,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 		pcb_poly_bbox(Polygon);
 		if (!Layer->polygon_tree)
 			Layer->polygon_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 
 		pcb_poly_invalidate_draw(Layer, Polygon);
 		/* add to undo list */

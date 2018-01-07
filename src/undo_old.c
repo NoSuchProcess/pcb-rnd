@@ -279,7 +279,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		a->StartAngle = Entry->Data.AngleChange.angle[0];
 		a->Delta = Entry->Data.AngleChange.angle[1];
 		pcb_arc_bbox(a);
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a);
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
 		pcb_draw_obj((pcb_any_obj_t *)a);
@@ -310,7 +310,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 		a->Width = Entry->Data.Move.DX;
 		a->Height = Entry->Data.Move.DY;
 		pcb_arc_bbox(a);
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a);
 		Entry->Data.Move.DX = old_w;
 		Entry->Data.Move.DY = old_h;
 		pcb_draw_obj((pcb_any_obj_t *)a);

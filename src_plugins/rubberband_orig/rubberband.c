@@ -1363,12 +1363,12 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 	
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
-			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
+			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			pcb_line_invalidate_draw(ptr->Layer, ptr->Line);
 		}
 		else {
-			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
+			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
 			pcb_rat_invalidate_draw((pcb_rat_t *) ptr->Line);
 		}
 

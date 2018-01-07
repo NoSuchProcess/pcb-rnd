@@ -348,7 +348,7 @@ pcb_rtree_t *pcb_r_create_tree(void)
 	return rtree;
 }
 
-void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N, int manage)
+void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N)
 {
 	int i;
 
@@ -357,7 +357,7 @@ void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], i
 	/* simple, just insert all of the boxes! */
 	for (i = 0; i < N; i++) {
 		assert(boxlist[i]);
-		pcb_r_insert_entry(rtree, boxlist[i], manage);
+		pcb_r_insert_entry(rtree, boxlist[i]);
 	}
 #ifdef SLOW_ASSERTS
 	assert(__r_tree_is_good(rtree->root));
@@ -799,7 +799,7 @@ static inline double penalty(struct rtree_node *node, const pcb_box_t * query)
 	return score;
 }
 
-static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, int manage, pcb_bool force)
+static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, pcb_bool force)
 {
 
 #ifdef SLOW_ASSERTS
@@ -812,22 +812,10 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 
 	if (node->flags.is_leaf) {
 		register int i;
+		for (i = 0; i < M_SIZE; i++)
+			if (!node->u.rects[i].bptr)
+				break;
 
-		if (PCB_UNLIKELY(manage)) {
-			register int flag = 1;
-
-			for (i = 0; i < M_SIZE; i++) {
-				if (!node->u.rects[i].bptr)
-					break;
-				flag <<= 1;
-			}
-			node->flags.manage |= flag;
-		}
-		else {
-			for (i = 0; i < M_SIZE; i++)
-				if (!node->u.rects[i].bptr)
-					break;
-		}
 		/* the node always has an extra space available */
 		node->u.rects[i].bptr = query;
 		node->u.rects[i].bounds = *query;
@@ -868,7 +856,7 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 			if (!node->u.kids[i])
 				break;
 			if (contained(node->u.kids[i], query)) {
-				__r_insert_node(node->u.kids[i], query, manage, pcb_false);
+				__r_insert_node(node->u.kids[i], query, pcb_false);
 				sort_node(node);
 				return;
 			}
@@ -884,8 +872,6 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 			new_node->u.rects[0].bptr = query;
 			new_node->u.rects[0].bounds = *query;
 			new_node->box = *query;
-			if (PCB_UNLIKELY(manage))
-				new_node->flags.manage = 1;
 			sort_node(node);
 			return;
 		}
@@ -902,20 +888,20 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 				best_node = node->u.kids[i];
 			}
 		}
-		__r_insert_node(best_node, query, manage, pcb_true);
+		__r_insert_node(best_node, query, pcb_true);
 		sort_node(node);
 		return;
 	}
 }
 
-void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int man)
+void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which)
 {
 	assert(which);
 	assert(which->X1 <= which->X2);
 	assert(which->Y1 <= which->Y2);
 	/* recursively search the tree for the best leaf node */
 	assert(rtree->root);
-	__r_insert_node(rtree->root, which, man,
+	__r_insert_node(rtree->root, which,
 									rtree->root->box.X1 > which->X1
 									|| rtree->root->box.X2 < which->X2 || rtree->root->box.Y1 > which->Y1 || rtree->root->box.Y2 < which->Y2);
 	rtree->size++;

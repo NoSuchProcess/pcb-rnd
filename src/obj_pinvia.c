@@ -234,7 +234,7 @@ void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
 	pcb_pin_bbox(Via);
 	if (!Data->via_tree)
 		Data->via_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via);
 	PCB_SET_PARENT(Via, data, Data);
 }
 
@@ -295,7 +295,7 @@ void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t
 	pcb_r_delete_entry(Data->via_tree, (pcb_box_t *) Via);
 	pcb_rotate(&Via->X, &Via->Y, X, Y, cosa, sina);
 	pcb_pin_bbox(Via);
-	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via);
 }
 
 void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *via, pcb_coord_t y_offs)
@@ -306,7 +306,7 @@ void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *via, pcb_coord_t y_offs)
 	via->Y = PCB_SWAP_Y(via->Y) + y_offs;
 	pcb_pin_bbox(via);
 	if (Data->via_tree != NULL)
-		pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) via, 0);
+		pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) via);
 }
 
 void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via)
@@ -315,7 +315,7 @@ void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via)
 	via->X = PCB_SWAP_X(via->X);
 	via->Y = PCB_SWAP_Y(via->Y);
 	pcb_pin_bbox(via);
-	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) via, 0);
+	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) via);
 }
 
 int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t *e2, const pcb_pin_t *p2)
@@ -372,7 +372,7 @@ void *pcb_viaop_move_to_buffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 
 	if (!ctx->buffer.dst->via_tree)
 		ctx->buffer.dst->via_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *) via, 0);
+	pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *) via);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_VIA, via, via);
 	PCB_SET_PARENT(via, data, ctx->buffer.dst);
 	return via;
@@ -429,7 +429,7 @@ void *pcb_viaop_change_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		}
 		Via->Thickness = value;
 		pcb_pin_bbox(Via);
-		pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+		pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		pcb_via_invalidate_draw(Via);
 		return Via;
@@ -510,7 +510,7 @@ void *pcb_viaop_change_clear_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	Via->Clearance = value;
 	pcb_pin_bbox(Via);
-	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_via_invalidate_draw(Via);
 	Via->Element = NULL;
@@ -774,7 +774,7 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 	}
 
 	pcb_pin_bbox(Via);
-	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_via_invalidate_draw(Via);
 	pcb_draw();
@@ -814,7 +814,7 @@ void *pcb_viaop_change_mask_size(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
 		Via->Mask = value;
 		pcb_pin_bbox(Via);
-		pcb_r_insert_entry(PCB->Data->via_tree, &Via->BoundingBox, 0);
+		pcb_r_insert_entry(PCB->Data->via_tree, &Via->BoundingBox);
 		pcb_via_invalidate_draw(Via);
 		return Via;
 	}
@@ -851,7 +851,7 @@ void *pcb_viaop_move(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_viaop_move_noclip(ctx, Via);
-	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	return Via;
 }
@@ -863,7 +863,7 @@ void *pcb_viaop_clip(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	}
 	if (ctx->clip.clear) {
-		pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+		pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	}
 	return Via;
@@ -903,7 +903,7 @@ void *pcb_viaop_rotate90(pcb_opctx_t *ctx, pcb_pin_t *via)
 	PCB_VIA_ROTATE90(via, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	pcb_pin_bbox(via);
 	if (data->via_tree != NULL) {
-		pcb_r_insert_entry(data->via_tree, (pcb_box_t *)via, 0);
+		pcb_r_insert_entry(data->via_tree, (pcb_box_t *)via);
 		pcb_poly_clear_from_poly(ctx->rotate.pcb->Data, PCB_TYPE_VIA, via, via);
 	}
 	pcb_via_invalidate_draw(via);
@@ -925,7 +925,7 @@ void *pcb_viaop_rotate(pcb_opctx_t *ctx, pcb_pin_t *via)
 
 	pcb_pin_bbox(via);
 	if (data->via_tree != NULL) {
-		pcb_r_insert_entry(data->via_tree, (pcb_box_t *)via, 0);
+		pcb_r_insert_entry(data->via_tree, (pcb_box_t *)via);
 		pcb_poly_clear_from_poly(data, PCB_TYPE_VIA, via, via);
 	}
 	pcb_via_invalidate_draw(via);

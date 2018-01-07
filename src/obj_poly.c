@@ -146,7 +146,7 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb
 	}
 	PCB_END_LOOP;
 	pcb_poly_bbox(polygon);
-	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 }
 
 void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs)
@@ -161,7 +161,7 @@ void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs
 	PCB_END_LOOP;
 	pcb_poly_bbox(polygon);
 	if (layer->polygon_tree != NULL)
-		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *)polygon, 0);
+		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *)polygon);
 }
 
 void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)
@@ -174,7 +174,7 @@ void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)
 	}
 	PCB_END_LOOP;
 	pcb_poly_bbox(polygon);
-	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 	/* hmmm, how to handle clip */
 }
 
@@ -243,7 +243,7 @@ void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
 	pcb_poly_bbox(polygon);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon);
 	PCB_SET_PARENT(polygon, layer, Layer);
 	pcb_poly_clear_from_poly(Layer->parent, PCB_TYPE_POLY, Layer, polygon);
 }
@@ -392,7 +392,7 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t 
 	 */
 	if (!layer->polygon_tree)
 		layer->polygon_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, polygon);
 	return polygon;
@@ -415,7 +415,7 @@ void *pcb_polyop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_
 
 	if (!lay->polygon_tree)
 		lay->polygon_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(lay->polygon_tree, (pcb_box_t *) polygon, 0);
+	pcb_r_insert_entry(lay->polygon_tree, (pcb_box_t *) polygon);
 
 	PCB_SET_PARENT(polygon, layer, lay);
 
@@ -444,7 +444,7 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 			pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *)poly);
 			poly->Clearance = value;
 			pcb_poly_bbox(poly);
-			pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *)poly, 0);
+			pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *)poly);
 			pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_TYPE_POLY, Layer, poly);
 			pcb_poly_invalidate_draw(Layer, poly);
 			return poly;
@@ -514,7 +514,7 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 	pcb_undo_add_obj_to_insert_point(PCB_TYPE_POLY_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
 	pcb_poly_bbox(Polygon);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (ctx->insert.forcible || !pcb_poly_remove_excess_points(Layer, Polygon))
 		pcb_poly_invalidate_draw(Layer, Polygon);
@@ -573,7 +573,7 @@ void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_pprestore(Polygon);
 	pcb_polyop_move_noclip(ctx, Layer, Polygon);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_ppclear(Polygon);
 	return Polygon;
 }
@@ -585,7 +585,7 @@ void *pcb_polyop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 		pcb_poly_pprestore(Polygon);
 	}
 	if (ctx->clip.clear) {
-		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 		pcb_poly_ppclear(Polygon);
 	}
 	return Polygon;
@@ -600,7 +600,7 @@ void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Po
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 	pcb_poly_bbox(Polygon);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_remove_excess_points(Layer, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (Layer->meta.real.vis)
@@ -620,7 +620,7 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 
 	if (!Destination->polygon_tree)
 		Destination->polygon_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon, 0);
+	pcb_r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon);
 
 	PCB_SET_PARENT(polygon, layer, Destination);
 	pcb_poly_ppclear(polygon);
@@ -721,7 +721,7 @@ void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t 
 			Polygon->HoleIndex[i]--;
 
 	pcb_poly_bbox(Polygon);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	pcb_poly_ppclear(Polygon);
 	return Polygon;
@@ -830,7 +830,7 @@ void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 			Polygon->HoleIndex[i]--;
 
 	pcb_poly_bbox(Polygon);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_remove_excess_points(Layer, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 
@@ -852,7 +852,7 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	pcb_poly_copy_meta(polygon, Polygon);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, polygon);
 	pcb_poly_invalidate_draw(Layer, polygon);
 	pcb_undo_add_obj_to_create(PCB_TYPE_POLY, Layer, polygon, polygon);
@@ -867,7 +867,7 @@ void *pcb_polyop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Poly
 		pcb_poly_invalidate_erase(Polygon);
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_rotate90(Polygon, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (Layer->meta.real.vis)
 		pcb_poly_invalidate_draw(Layer, Polygon);

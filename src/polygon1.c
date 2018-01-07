@@ -521,7 +521,7 @@ static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 0);
+	pcb_r_insert_entry(tree, (const pcb_box_t *) q);
 	q = (seg *) malloc(sizeof(struct seg));
 	if (!q)
 		return 1;
@@ -532,7 +532,7 @@ static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 0);
+	pcb_r_insert_entry(tree, (const pcb_box_t *) q);
 	pcb_r_delete_entry(tree, (const pcb_box_t *) s);
 	free(s);
 	return 0;
@@ -658,7 +658,7 @@ static void *make_edge_tree(pcb_pline_t * pb)
 		}
 		s->v = bv;
 		s->p = pb;
-		pcb_r_insert_entry(ans, (const pcb_box_t *) s, 0);
+		pcb_r_insert_entry(ans, (const pcb_box_t *) s);
 	}
 	while ((bv = bv->next) != &pb->head);
 	return (void *) ans;
@@ -1092,7 +1092,7 @@ static void InsCntr(jmp_buf * e, pcb_pline_t * c, pcb_polyarea_t ** dst)
 	}
 	newp->contours = c;
 	newp->contour_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(newp->contour_tree, (pcb_box_t *) c, 0);
+	pcb_r_insert_entry(newp->contour_tree, (pcb_box_t *) c);
 	c->next = NULL;
 }																/* InsCntr */
 
@@ -1118,7 +1118,7 @@ PutContour(jmp_buf * e, pcb_pline_t * cntr, pcb_polyarea_t ** contours, pcb_plin
 			if (owner != parent) {
 				if (owner != NULL)
 					pcb_r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
-				pcb_r_insert_entry(parent->contour_tree, (pcb_box_t *) cntr, 0);
+				pcb_r_insert_entry(parent->contour_tree, (pcb_box_t *) cntr);
 			}
 		}
 		else {
@@ -1219,7 +1219,7 @@ void pcb_poly_insert_holes(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** sr
 		all_pa_info[i].BoundingBox.X2 = curc->contours->xmax;
 		all_pa_info[i].BoundingBox.Y2 = curc->contours->ymax;
 		all_pa_info[i].pa = curc;
-		pcb_r_insert_entry(tree, (const pcb_box_t *) &all_pa_info[i], 0);
+		pcb_r_insert_entry(tree, (const pcb_box_t *) &all_pa_info[i]);
 		i++;
 	}
 	while ((curc = curc->f) != dest);
@@ -1314,7 +1314,7 @@ void pcb_poly_insert_holes(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** sr
 			/* link at front of hole list */
 			curh->next = container->next;
 			container->next = curh;
-			pcb_r_insert_entry(pa_info->pa->contour_tree, (pcb_box_t *) curh, 0);
+			pcb_r_insert_entry(pa_info->pa->contour_tree, (pcb_box_t *) curh);
 
 		}
 	}
@@ -2484,7 +2484,7 @@ pcb_bool pcb_polyarea_copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src)
 	for (cur = src->contours; cur != NULL; cur = cur->next) {
 		if (!pcb_poly_contour_copy(last, cur))
 			return pcb_false;
-		pcb_r_insert_entry(dst->contour_tree, (pcb_box_t *) * last, 0);
+		pcb_r_insert_entry(dst->contour_tree, (pcb_box_t *) * last);
 		last = &(*last)->next;
 	}
 	return pcb_true;
@@ -2537,7 +2537,7 @@ pcb_bool pcb_polyarea_contour_include(pcb_polyarea_t * p, pcb_pline_t * c)
 		p->contours->next = c;
 		c->next = tmp;
 	}
-	pcb_r_insert_entry(p->contour_tree, (pcb_box_t *) c, 0);
+	pcb_r_insert_entry(p->contour_tree, (pcb_box_t *) c);
 	return pcb_true;
 }
 
@@ -3418,7 +3418,7 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 			}
 			pl->tree = (pcb_rtree_t *)make_edge_tree(pl);
 
-			pcb_r_insert_entry(pa->contour_tree, (pcb_box_t *)pl, 0);
+			pcb_r_insert_entry(pa->contour_tree, (pcb_box_t *)pl);
 		}
 	}
 }

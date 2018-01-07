@@ -105,7 +105,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	pcb_pstk_bbox(ps);
 	if (!data->padstack_tree)
 		data->padstack_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps, 0);
+	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps);
 	PCB_SET_PARENT(ps, data, data);
 }
 
@@ -795,7 +795,7 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side)
 		pcb_pstk_bbox(ps);
 
 		if (ps->parent.data->padstack_tree != NULL)
-			pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);
+			pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 	}
@@ -891,7 +891,7 @@ static int undo_change_instance_swap(void *udata)
 
 	pcb_pstk_bbox(ps);
 	if (ps->parent.data->padstack_tree != NULL)
-		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps, 0);
+		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 	pcb_poly_clear_from_poly(ps->parent.data, PCB_TYPE_PSTK, NULL, ps);
 	pcb_pstk_invalidate_draw(ps);
 

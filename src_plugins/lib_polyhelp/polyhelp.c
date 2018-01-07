@@ -155,7 +155,7 @@ static void add_track_seg(pcb_cpoly_edgetree_t *dst, pcb_coord_t x1, pcb_coord_t
 	e->y2 = y2;
 
 	pcb_box_bump_box(&dst->bbox, b);
-	pcb_r_insert_entry(dst->edge_tree, (pcb_box_t *)e, 0);
+	pcb_r_insert_entry(dst->edge_tree, (pcb_box_t *)e);
 }
 
 static void add_track(pcb_cpoly_edgetree_t *dst, pcb_pline_t *track)

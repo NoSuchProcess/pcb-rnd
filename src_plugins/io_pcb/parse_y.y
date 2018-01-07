@@ -1194,7 +1194,7 @@ polygon_format
 				    pcb_poly_bbox(Polygon);
 				    if (!Layer->polygon_tree)
 				      Layer->polygon_tree = pcb_r_create_tree();
-				    pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+				    pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 				  }
 			}
 		;

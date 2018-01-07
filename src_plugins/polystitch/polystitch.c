@@ -217,7 +217,7 @@ static void stitch_them()
 
 	outer_poly->NoHolesValid = 0;
 	pcb_poly_bbox(outer_poly);
-	pcb_r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly, 0);
+	pcb_r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly);
 	pcb_poly_remove_excess_points(poly_layer, outer_poly);
 	pcb_poly_init_clip(PCB->Data, poly_layer, outer_poly);
 	pcb_poly_invalidate_draw(poly_layer, outer_poly);

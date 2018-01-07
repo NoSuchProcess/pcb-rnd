@@ -965,7 +965,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 
 	if (!dt->subc_tree)
 		dt->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)sc, 0);
+	pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)sc);
 
 	if (subc_out != NULL)
 		*subc_out = sc;

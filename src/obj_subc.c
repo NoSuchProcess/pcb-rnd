@@ -817,7 +817,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	if (pcb != NULL) {
 		if (!dst->subc_tree)
 			dst->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)sc, 0);
+		pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)sc);
 	}
 
 	return sc;
@@ -916,7 +916,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	pcb_close_box(&sc->BoundingBox);
 	if (pcb_data_get_top(Data) != NULL)
-		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc, 0);
+		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc);
 	DrawSubc(sc);
 	return sc;
 }
@@ -1053,7 +1053,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
 		if ((dl != NULL) && (dl->line_tree != NULL)) {
-			pcb_r_insert_entry(dl->line_tree, (pcb_box_t *)line, 0);
+			pcb_r_insert_entry(dl->line_tree, (pcb_box_t *)line);
 			chg++;
 		}
 	}
@@ -1066,7 +1066,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, arc);
 		if ((dl != NULL) && (dl->arc_tree != NULL)) {
-			pcb_r_insert_entry(dl->arc_tree, (pcb_box_t *)arc, 0);
+			pcb_r_insert_entry(dl->arc_tree, (pcb_box_t *)arc);
 			chg++;
 		}
 	}
@@ -1079,7 +1079,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, text);
 		if ((dl != NULL) && (dl->text_tree != NULL)) {
-			pcb_r_insert_entry(dl->text_tree, (pcb_box_t *)text, 0);
+			pcb_r_insert_entry(dl->text_tree, (pcb_box_t *)text);
 			chg++;
 		}
 	}
@@ -1092,7 +1092,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
 		if ((dl != NULL) && (dl->polygon_tree != NULL)) {
-			pcb_r_insert_entry(dl->polygon_tree, (pcb_box_t *)poly, 0);
+			pcb_r_insert_entry(dl->polygon_tree, (pcb_box_t *)poly);
 			chg++;
 		}
 		if (dst_is_pcb)
@@ -1130,7 +1130,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	if (dst_is_pcb) {
 		if (ctx->buffer.dst->subc_tree == NULL)
 			ctx->buffer.dst->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(ctx->buffer.dst->subc_tree, (pcb_box_t *)sc, 0);
+		pcb_r_insert_entry(ctx->buffer.dst->subc_tree, (pcb_box_t *)sc);
 	}
 
 	/* move layer local */
@@ -1170,7 +1170,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 				pcb_r_delete_entry(sc->data->via_tree, (pcb_box_t *)via);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, via);
 			if (ctx->buffer.dst->via_tree != NULL)
-				pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *)via, 0);
+				pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *)via);
 		}
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
@@ -1179,7 +1179,7 @@ void *pcb_subcop_move_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 				pcb_r_delete_entry(sc->data->padstack_tree, (pcb_box_t *)ps);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
 			if (ctx->buffer.dst->padstack_tree != NULL)
-				pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps, 0);
+				pcb_r_insert_entry(ctx->buffer.dst->padstack_tree, (pcb_box_t *)ps);
 			ps->proto = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
 			ps->protoi = -1;
 		}
@@ -1426,7 +1426,7 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb
 	pcb_subc_bbox(subc);
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc, 0);
+		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
 }
 
 pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)

@@ -82,7 +82,7 @@ void pcb_tool_buffer_notify_mode(void)
 				memcpy(&(e->Name[i]), &(estr[i]), sizeof(pcb_text_t));
 				e->Name[i].Element = e;
 				pcb_text_bbox(pcb_font(PCB, 0, 1), &(e->Name[i]));
-				pcb_r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]), 0);
+				pcb_r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));
 				if (i == save_n)
 					pcb_elem_name_invalidate_draw(e);
 			}

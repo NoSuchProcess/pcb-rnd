@@ -179,7 +179,7 @@ void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pc
 	a->StartAngle = new_sa;
 	a->Delta = new_da;
 	pcb_arc_bbox(a);
-	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
+	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, a);
 }
 
@@ -192,7 +192,7 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 	a->Width = new_width;
 	a->Height = new_height;
 	pcb_arc_bbox(a);
-	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
+	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, a);
 }
 
@@ -256,7 +256,7 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 	pcb_arc_bbox(Arc);
 	if (!Layer->arc_tree)
 		Layer->arc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	Arc->type = PCB_OBJ_ARC;
 	PCB_SET_PARENT(Arc, layer, Layer);
 }
@@ -341,7 +341,7 @@ void *pcb_arcop_move_to_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t 
 
 	if (!lay->arc_tree)
 		lay->arc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(lay->arc_tree, (pcb_box_t *) arc, 0);
+	pcb_r_insert_entry(lay->arc_tree, (pcb_box_t *) arc);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_ARC, lay, arc);
 
 	PCB_SET_PARENT(arc, layer, lay);
@@ -363,7 +363,7 @@ void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Thickness = value;
 		pcb_arc_bbox(Arc);
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return Arc;
@@ -392,7 +392,7 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Clearance = value;
 		pcb_arc_bbox(Arc);
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return Arc;
@@ -429,7 +429,7 @@ void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		*dst = value;
 		pcb_arc_bbox(Arc);
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return Arc;
@@ -468,7 +468,7 @@ void *pcb_arcop_change_angle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Ar
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		*dst = value;
 		pcb_arc_bbox(Arc);
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		pcb_arc_invalidate_draw(Layer, Arc);
 		return Arc;
@@ -547,7 +547,7 @@ void *pcb_arcop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_arcop_move_noclip(ctx, Layer, Arc);
-	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	return Arc;
 }
@@ -559,7 +559,7 @@ void *pcb_arcop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	}
 	if (ctx->clip.clear) {
-		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	}
 	return Arc;
@@ -575,7 +575,7 @@ void *pcb_arcop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_ar
 
 	if (!Destination->arc_tree)
 		Destination->arc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Destination->arc_tree, (pcb_box_t *) arc, 0);
+	pcb_r_insert_entry(Destination->arc_tree, (pcb_box_t *) arc);
 
 	PCB_SET_PARENT(arc, layer, Destination);
 
@@ -671,7 +671,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord
 	pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 	pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
 	arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
-	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
 }
 
 void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t y_offs)
@@ -684,7 +684,7 @@ void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t y_offs)
 	arc->Delta = PCB_SWAP_DELTA(arc->Delta);
 	pcb_arc_bbox(arc);
 	if (layer->arc_tree != NULL)
-		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
 }
 
 void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
@@ -695,7 +695,7 @@ void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
 	arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
 	arc->Delta = PCB_SWAP_DELTA(arc->Delta);
 	pcb_arc_bbox(arc);
-	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
 }
 
 /* rotates an arc */
@@ -705,7 +705,7 @@ void *pcb_arcop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_arc_rotate90(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
+	pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	pcb_arc_invalidate_draw(Layer, Arc);
 	return Arc;
