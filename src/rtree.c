@@ -333,24 +333,27 @@ static void adjust_bounds(struct rtree_node *node)
 	}
 }
 
-/* create an r-tree from an unsorted list of boxes.
- * the r-tree will keep pointers into 
- * it, so don't free the box list until you've called r_destroy_tree.
- * if you set 'manage' to pcb_true, r_destroy_tree will free your boxlist.
- */
-pcb_rtree_t *pcb_r_create_tree_old(const pcb_box_t * boxlist[], int N, int manage)
+pcb_rtree_t *pcb_r_create_tree(void)
 {
 	pcb_rtree_t *rtree;
 	struct rtree_node *node;
-	int i;
 
-	assert(N >= 0);
-	rtree = (pcb_rtree_t *) calloc(1, sizeof(*rtree));
+	rtree = calloc(1, sizeof(*rtree));
+
 	/* start with a single empty leaf node */
-	node = (struct rtree_node *) calloc(1, sizeof(*node));
+	node = calloc(1, sizeof(*node));
 	node->flags.is_leaf = 1;
 	node->parent = NULL;
 	rtree->root = node;
+	return rtree;
+}
+
+void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N, int manage)
+{
+	int i;
+
+	assert(N >= 0);
+
 	/* simple, just insert all of the boxes! */
 	for (i = 0; i < N; i++) {
 		assert(boxlist[i]);
@@ -359,13 +362,8 @@ pcb_rtree_t *pcb_r_create_tree_old(const pcb_box_t * boxlist[], int N, int manag
 #ifdef SLOW_ASSERTS
 	assert(__r_tree_is_good(rtree->root));
 #endif
-	return rtree;
 }
 
-pcb_rtree_t *pcb_r_create_tree(void)
-{
-	return pcb_r_create_tree_old(NULL, 0, 0);
-}
 
 static void __r_destroy_tree(struct rtree_node *node)
 {

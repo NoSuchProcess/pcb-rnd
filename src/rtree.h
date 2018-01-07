@@ -60,14 +60,14 @@ typedef enum pcb_r_dir_e {
 	PCB_R_DIR_CANCEL                 /* cancel the search and return immediately */
 } pcb_r_dir_t;
 
-/* create an rtree from the list of boxes.  if 'manage' is pcb_true, then
- * the tree will take ownership of 'boxlist' and free it when the tree
- * is destroyed. */
-pcb_rtree_t *pcb_r_create_tree_old(const pcb_box_t * boxlist[], int N, int manage);
-pcb_rtree_t *pcb_r_create_tree();
+pcb_rtree_t *pcb_r_create_tree(void);
+void pcb_r_destroy_tree(pcb_rtree_t **rtree);
 
-/* destroy an rtree */
-void pcb_r_destroy_tree(pcb_rtree_t ** rtree);
+/* insert an unsorted list of boxes into an existing r-tree the r-tree will
+   keep pointers into it, so don't free the box list until you've called
+   r_destroy_tree. If you set 'manage' to pcb_true, r_destroy_tree will
+   free your boxlist. */
+void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N, int manage);
 
 pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * which);
 void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int manage);

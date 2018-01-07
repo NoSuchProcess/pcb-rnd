@@ -609,8 +609,10 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		}
 		PCB_END_LOOP;
 
-		rt_s = pcb_r_create_tree_old((const pcb_box_t **) seboxes.array, vtp0_len(&seboxes), 1);
-		rt_c = pcb_r_create_tree_old((const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes), 1);
+		rt_s = pcb_r_create_tree();
+		pcb_r_create_insert_array(rt_s, (const pcb_box_t **) seboxes.array, vtp0_len(&seboxes), 1);
+		rt_c = pcb_r_create_tree();
+		pcb_r_create_insert_array(rt_c, (const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes), 1);
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
 		/* now, for each element, find its neighbor on all four sides */
