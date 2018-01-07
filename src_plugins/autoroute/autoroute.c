@@ -1096,7 +1096,7 @@ static routedata_t *CreateRouteData()
 
 	rd->max_styles = vtroutestyle_len(&PCB->RouteStyle);
 /*	rd->layergrouptree = calloc(sizeof(rd->layergrouptree[0]), rd->max_layers);*/
-	rd->styles = calloc(sizeof(rd->styles[0]), rd->max_styles);
+	rd->styles = calloc(sizeof(rd->styles[0]), rd->max_styles+1);
 
 	/* create default style */
 	rd->defaultstyle.Thick = conf_core.design.line_thickness;
