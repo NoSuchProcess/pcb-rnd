@@ -373,8 +373,6 @@ static void __r_destroy_tree(struct rtree_node *node)
 		for (i = 0; i < M_SIZE; i++) {
 			if (!node->u.rects[i].bptr)
 				break;
-			if (node->flags.manage & flag)
-				free((void *) node->u.rects[i].bptr);
 			flag = flag << 1;
 		}
 	else
@@ -387,12 +385,37 @@ static void __r_destroy_tree(struct rtree_node *node)
 }
 
 /* free the memory associated with an rtree. */
-void pcb_r_destroy_tree(pcb_rtree_t ** rtree)
+void pcb_r_destroy_tree(pcb_rtree_t **rtree)
 {
-
 	__r_destroy_tree((*rtree)->root);
 	free(*rtree);
 	*rtree = NULL;
+}
+
+static void pcb_r_free_tree_data_(struct rtree_node *node, void (*free)(void *ptr))
+{
+	int i;
+
+	if (node->flags.is_leaf) {
+		for (i = 0; i < M_SIZE; i++) {
+			if (!node->u.rects[i].bptr)
+				break;
+			free((void *) node->u.rects[i].bptr);
+			node->u.rects[i].bptr = NULL;
+		}
+	}
+	else {
+		for (i = 0; i < M_SIZE; i++) {
+			if (!node->u.kids[i])
+				break;
+			pcb_r_free_tree_data_(node->u.kids[i], free);
+		}
+	}
+}
+
+void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr))
+{
+	pcb_r_free_tree_data_(rtree->root, free);
 }
 
 typedef struct {
@@ -898,7 +921,7 @@ void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int man)
 	rtree->size++;
 }
 
-pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
+pcb_bool __r_delete_free_data(struct rtree_node *node, const pcb_box_t * query, void (*free_data)(void *data))
 {
 	int i, flag, mask, a;
 
@@ -925,7 +948,7 @@ pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 							node->u.rects[i].bptr = NULL;
 						return pcb_true;
 					}
-					return (__r_delete(node->parent, &node->box));
+					return __r_delete_free_data(node->parent, &node->box, free_data);
 				}
 				else
 					/* propagate boundary adjust upward */
@@ -936,7 +959,7 @@ pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 				return pcb_true;
 			}
 			if (node->u.kids[i]) {
-				if (__r_delete(node->u.kids[i], query))
+				if (__r_delete_free_data(node->u.kids[i], query, free_data))
 					return pcb_true;
 			}
 			else
@@ -961,8 +984,8 @@ pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 	}
 	if (!node->u.rects[i].bptr)
 		return pcb_false;								/* not at this leaf */
-	if (node->flags.manage & a) {
-		free((void *) node->u.rects[i].bptr);
+	if (free_data != NULL) {
+		free_data((void *) node->u.rects[i].bptr);
 		node->u.rects[i].bptr = NULL;
 	}
 	/* squeeze the manage flags together */
@@ -977,7 +1000,7 @@ pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 	}
 	if (!node->u.rects[0].bptr) {
 		if (node->parent)
-			__r_delete(node->parent, &node->box);
+			__r_delete_free_data(node->parent, &node->box, free_data);
 		return pcb_true;
 	}
 	else
@@ -989,19 +1012,29 @@ pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 	return pcb_true;
 }
 
-pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * box)
+pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
+{
+	return __r_delete_free_data(node, query, NULL);
+}
+
+pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t * rtree, const pcb_box_t * box, void (*free_data)(void *d))
 {
 	pcb_bool r;
 
 	assert(box);
 	assert(rtree);
-	r = __r_delete(rtree->root, box);
+	r = __r_delete_free_data(rtree->root, box, free_data);
 	if (r)
 		rtree->size--;
 #ifdef SLOW_ASSERTS
 	assert(__r_tree_is_good(rtree->root));
 #endif
 	return r;
+}
+
+pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * box)
+{
+	return pcb_r_delete_entry_free_data(rtree, box, NULL);
 }
 
 

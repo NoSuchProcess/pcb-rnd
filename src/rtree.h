@@ -70,7 +70,14 @@ void pcb_r_destroy_tree(pcb_rtree_t **rtree);
 void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N, int manage);
 
 pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * which);
+
+/* also free leaf data using free_data() */
+pcb_bool __r_delete_free_data(struct rtree_node *node, const pcb_box_t * query, void (*free_data)(void *data));
+pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t * rtree, const pcb_box_t * box, void (*free_data)(void *d));
+
+
 void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int manage);
+
 
 /* generic search routine */
 /* region_in_search should return pcb_true if "what you're looking for" is
@@ -111,5 +118,7 @@ pcb_box_t *pcb_r_next(pcb_rtree_it_t *it);
 /* Free fields of the iterator */
 void pcb_r_end(pcb_rtree_it_t *it);
 
+/* Recursively call free() on all leaf data */
+void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr));
 
 #endif

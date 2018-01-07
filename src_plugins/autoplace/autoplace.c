@@ -610,9 +610,9 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		PCB_END_LOOP;
 
 		rt_s = pcb_r_create_tree();
-		pcb_r_create_insert_array(rt_s, (const pcb_box_t **) seboxes.array, vtp0_len(&seboxes), 1);
+		pcb_r_create_insert_array(rt_s, (const pcb_box_t **) seboxes.array, vtp0_len(&seboxes), 0);
 		rt_c = pcb_r_create_tree();
-		pcb_r_create_insert_array(rt_c, (const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes), 1);
+		pcb_r_create_insert_array(rt_c, (const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes), 0);
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
 		/* now, for each element, find its neighbor on all four sides */
@@ -676,6 +676,8 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			PCB_END_LOOP;
 		}
 		/* free k-d tree memory */
+		pcb_r_free_tree_data(rt_s, free);
+		pcb_r_free_tree_data(rt_c, free);
 		pcb_r_destroy_tree(&rt_s);
 		pcb_r_destroy_tree(&rt_c);
 	}

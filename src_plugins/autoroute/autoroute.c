@@ -1277,7 +1277,7 @@ static routedata_t *CreateRouteData()
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		/* create the r-tree */
 		rd->layergrouptree[i] = pcb_r_create_tree();
-		pcb_r_create_insert_array(rd->layergrouptree[i], (const pcb_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]), 1);
+		pcb_r_create_insert_array(rd->layergrouptree[i], (const pcb_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]), 0);
 	}
 
 	if (AutoRouteParameters.use_vias) {
@@ -1305,8 +1305,10 @@ static routedata_t *CreateRouteData()
 void DestroyRouteData(routedata_t ** rd)
 {
 	int i;
-	for (i = 0; i < pcb_max_group(PCB); i++)
+	for (i = 0; i < pcb_max_group(PCB); i++) {
+		pcb_r_free_tree_data((*rd)->layergrouptree[i], free);
 		pcb_r_destroy_tree(&(*rd)->layergrouptree[i]);
+	}
 	if (AutoRouteParameters.use_vias)
 		mtspace_destroy(&(*rd)->mtspace);
 /*	free((*rd)->layergrouptree);*/
@@ -3002,7 +3004,7 @@ static void RD_DrawThermal(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_c
 	MergeNets(rb, subnet, NET);
 	MergeNets(rb, subnet, SUBNET);
 	/* add it to the r-tree, this may be the whole route! */
-	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
+	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 0);
 	rb->flags.homeless = 0;
 }
 
@@ -3054,7 +3056,7 @@ static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 		MergeNets(rb, subnet, SUBNET);
 		assert(__routepcb_box_is_good(rb));
 		/* and add it to the r-tree! */
-		pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
+		pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 0);
 		rb->flags.homeless = 0;			/* not homeless anymore */
 		rb->livedraw_obj.via = live_via;
 	}
@@ -3138,7 +3140,7 @@ RD_DrawLine(routedata_t * rd,
 	MergeNets(rb, qsn, SUBNET);
 	assert(__routepcb_box_is_good(rb));
 	/* and add it to the r-tree! */
-	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
+	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 0);
 
 	if (conf_core.editor.live_routing) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.grp[rb->group].lid[0]);
@@ -3951,7 +3953,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 				/*assert (!pcb_r_search(rd->layergrouptree[e->rb->group],
 				   &e->rb->box, NULL, no_planes,0));
 				 */
-				pcb_r_insert_entry(rd->layergrouptree[e->rb->group], &e->rb->box, 1);
+				pcb_r_insert_entry(rd->layergrouptree[e->rb->group], &e->rb->box, 0);
 				e->rb->flags.homeless = 0;	/* not homeless any more */
 				/* add to vector of all expansion areas in r-tree */
 				vector_append(area_vec, e->rb);
@@ -4088,7 +4090,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 			if (!pcb_box_is_good(&ans->inflated))
 				goto dontexpand;
 			nrb = CreateExpansionArea(&ans->inflated, e->rb->group, e->rb, pcb_true, e);
-			pcb_r_insert_entry(rd->layergrouptree[nrb->group], &nrb->box, 1);
+			pcb_r_insert_entry(rd->layergrouptree[nrb->group], &nrb->box, 0);
 			vector_append(area_vec, nrb);
 			nrb->flags.homeless = 0;	/* not homeless any more */
 			broken = BreakManyEdges(&s, targets, rd->layergrouptree[nrb->group], area_vec, ans, nrb, e);
@@ -4161,7 +4163,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		assert(!rb->flags.homeless);
 		if (rb->conflicts_with && rb->parent.expansion_area->conflicts_with != rb->conflicts_with)
 			vector_destroy(&rb->conflicts_with);
-		pcb_r_delete_entry(rd->layergrouptree[rb->group], &rb->box);
+		pcb_r_delete_entry_free_data(rd->layergrouptree[rb->group], &rb->box, free);
 	}
 	vector_destroy(&area_vec);
 	/* clean up; remove all 'source', 'target', and 'nobloat' flags */
@@ -4377,7 +4379,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 #ifndef NDEBUG
 						del =
 #endif
-							pcb_r_delete_entry(rd->layergrouptree[p->group], &p->box);
+							pcb_r_delete_entry_free_data(rd->layergrouptree[p->group], &p->box, free);
 #ifndef NDEBUG
 						assert(del);
 #endif
