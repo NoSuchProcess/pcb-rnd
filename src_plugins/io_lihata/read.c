@@ -478,11 +478,12 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	parse_int(&tmp, lht_dom_hash_get(obj, "lgrp2"));
 	rat.group2 = tmp;
 
-	post_id_req(&rat.Point1);
-	post_id_req(&rat.Point2);
 
 	new_rat = pcb_rat_new(dt, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
 		conf_core.appearance.rat_thickness, rat.Flags);
+
+	post_id_req(&new_rat->Point1);
+	post_id_req(&new_rat->Point2);
 
 	new_rat->ID = rat.ID;
 
