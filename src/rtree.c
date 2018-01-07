@@ -348,7 +348,7 @@ pcb_rtree_t *pcb_r_create_tree(void)
 	return rtree;
 }
 
-void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N)
+void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N)
 {
 	int i;
 

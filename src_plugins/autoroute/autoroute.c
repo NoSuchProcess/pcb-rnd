@@ -1277,7 +1277,7 @@ static routedata_t *CreateRouteData()
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		/* create the r-tree */
 		rd->layergrouptree[i] = pcb_r_create_tree();
-		pcb_r_create_insert_array(rd->layergrouptree[i], (const pcb_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]));
+		pcb_r_insert_array(rd->layergrouptree[i], (const pcb_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]));
 	}
 
 	if (AutoRouteParameters.use_vias) {
@@ -3795,7 +3795,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	}
 	PCB_END_LOOP;
 	targets = pcb_r_create_tree();
-	pcb_r_create_insert_array(targets, (const pcb_box_t **)target_list, i);
+	pcb_r_insert_array(targets, (const pcb_box_t **)target_list, i);
 	assert(i <= num_targets);
 	free(target_list);
 

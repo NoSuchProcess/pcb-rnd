@@ -67,7 +67,7 @@ void pcb_r_destroy_tree(pcb_rtree_t **rtree);
    keep pointers into it, so don't free the box list until you've called
    r_destroy_tree. If you set 'manage' to pcb_true, r_destroy_tree will
    free your boxlist. */
-void pcb_r_create_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N);
+void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N);
 
 pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * which);
 
