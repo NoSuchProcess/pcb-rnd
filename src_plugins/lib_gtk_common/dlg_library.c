@@ -600,8 +600,10 @@ static void tree_row_activated(GtkTreeView * tree_view, GtkTreePath * path, GtkT
 	model = gtk_tree_view_get_model(tree_view);
 	gtk_tree_model_get_iter(model, &iter, path);
 
-	if (!gtk_tree_model_iter_has_child(model, &iter))
+	if (!gtk_tree_model_iter_has_child(model, &iter)) {
+		library_window_callback_tree_selection_changed(gtk_tree_view_get_selection(tree_view), user_data);
 		return;
+	}
 
 	if (gtk_tree_view_row_expanded(tree_view, path))
 		gtk_tree_view_collapse_row(tree_view, path);
@@ -676,14 +678,12 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																				/* GtkTreeView */
 																				"model", model, "rules-hint", TRUE, "headers-visible", FALSE, NULL));
 
-	g_signal_connect(libtreeview, "row-activated", G_CALLBACK(tree_row_activated), NULL);
+	g_signal_connect(libtreeview, "row-activated", G_CALLBACK(tree_row_activated), library_window);
 
 	g_signal_connect(libtreeview, "key-press-event", G_CALLBACK(tree_row_key_pressed), NULL);
 
-	/* connect callback to selection */
 	library_window->selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(libtreeview));
 	gtk_tree_selection_set_mode(library_window->selection, GTK_SELECTION_SINGLE);
-	g_signal_connect(library_window->selection, "changed", G_CALLBACK(library_window_callback_tree_selection_changed), library_window);
 
 	/* insert a column to treeview for library/symbol name */
 	renderer = GTK_CELL_RENDERER(g_object_new(GTK_TYPE_CELL_RENDERER_TEXT,
