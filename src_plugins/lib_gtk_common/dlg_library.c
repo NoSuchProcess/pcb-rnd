@@ -611,28 +611,31 @@ static void tree_row_activated(GtkTreeView * tree_view, GtkTreePath * path, GtkT
 		gtk_tree_view_expand_row(tree_view, path, FALSE);
 }
 
-/** Handles CTRL-C keypress in the TreeView.
+/** Handles key pressed in the TreeView. 
 
-    Keypress activation handler:
+    Key pressed activation handler:
     If CTRL-C is pressed, copy footprint name into the clipboard.
+    If Enter  is pressed, row-activate the treeview.
 
     \param tree_view     The component treeview.
     \param event         The GdkEventKey with keypress info.
     \param user_data     Not used.
-    \return              `TRUE` if CTRL-C event was handled, `FALSE` otherwise.
+    \return              `TRUE` if key event was handled, `FALSE` otherwise.
  */
-static gboolean tree_row_key_pressed(GtkTreeView * tree_view, GdkEventKey * event, gpointer user_data)
+static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * event, gpointer user_data)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
+	GtkTreePath *path;
 	GtkClipboard *clipboard;
 	const gchar *compname;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
-	/* Handle both lower- and uppercase `c' */
-	if (((event->state & default_mod_mask) != GDK_CONTROL_MASK)
-			|| ((event->keyval != GDK_KEY_c) && (event->keyval != GDK_KEY_C)))
+	/* Handle both lower and uppercase 'c' and Enter keys */
+	if ( (event->keyval != GDK_KEY_Return) &&
+			 ( ((event->state & default_mod_mask) != GDK_CONTROL_MASK)
+				 || ((event->keyval != GDK_KEY_c) && (event->keyval != GDK_KEY_C))) )
 		return FALSE;
 
 	selection = gtk_tree_view_get_selection(tree_view);
@@ -640,6 +643,16 @@ static gboolean tree_row_key_pressed(GtkTreeView * tree_view, GdkEventKey * even
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return TRUE;
+
+	/* Handle 'Enter' key as "activate" */
+	if (event->keyval == GDK_KEY_Return) {
+		path = gtk_tree_model_get_path(model, &iter);
+		if (path != NULL) {
+			tree_row_activated(tree_view, path, NULL, user_data);
+		}
+		gtk_tree_path_free(path);
+		return TRUE;
+	}
 
 	gtk_tree_model_get(model, &iter, MENU_NAME_COLUMN, &compname, -1);
 
@@ -698,7 +711,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 
 	g_signal_connect(libtreeview, "button-release-event", G_CALLBACK(treeview_button_release_cb), library_window);
 
-	g_signal_connect(libtreeview, "key-press-event", G_CALLBACK(tree_row_key_pressed), NULL);
+	g_signal_connect(libtreeview, "key-press-event", G_CALLBACK(treeview_key_press_cb), library_window);
 
 	library_window->selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(libtreeview));
 	gtk_tree_selection_set_mode(library_window->selection, GTK_SELECTION_SINGLE);
