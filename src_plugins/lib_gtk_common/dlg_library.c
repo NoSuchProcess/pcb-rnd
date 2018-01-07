@@ -792,7 +792,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	GtkWidget *hpaned, *notebook;
 	GtkWidget *libview;
 	GtkWidget *preview, *preview_text;
-	GtkWidget *alignment, *frame;
+	GtkWidget *frame;
 
 	/* chain up to constructor of parent class */
 	object = G_OBJECT_CLASS(library_window_parent_class)->constructor(type, n_construct_properties, construct_params);
@@ -829,12 +829,6 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	frame = GTK_WIDGET(g_object_new(GTK_TYPE_FRAME,
 																	/* GtkFrame */
 																	"label", _("Preview"), NULL));
-	alignment = GTK_WIDGET(g_object_new(GTK_TYPE_ALIGNMENT,
-																			/* GtkAlignment */
-																			"left-padding", 5,
-																			"right-padding", 5,
-																			"top-padding", 5,
-																			"bottom-padding", 5, "xscale", 1.0, "yscale", 1.0, "xalign", 0.5, "yalign", 0.5, NULL));
 
 	preview = pcb_gtk_preview_pinout_new(lwcom, lwcom->init_drawing_widget, lwcom->preview_expose, NULL);
 	gtk_widget_set_size_request(preview, 150, 150);
@@ -846,8 +840,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 		gtk_box_pack_start(GTK_BOX(vbox), preview, TRUE, TRUE, 0);
 		gtk_box_pack_end(GTK_BOX(vbox), preview_text, FALSE, FALSE, 0);
 
-		gtk_container_add(GTK_CONTAINER(alignment), vbox);
-		gtk_container_add(GTK_CONTAINER(frame), alignment);
+		gtk_container_add(GTK_CONTAINER(frame), vbox);
 	}
 
 	/* set preview of library window */
