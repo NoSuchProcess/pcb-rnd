@@ -2471,7 +2471,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		if (!pcb_box_is_good(&b))
 			return;										/* how did this happen ? */
 		nrb = CreateBridge(&b, rb, dir);
-		pcb_r_insert_entry(tree, &nrb->box, 1);
+		pcb_r_insert_entry(tree, &nrb->box, 0);
 		vector_append(area_vec, nrb);
 		nrb->flags.homeless = 0;		/* not homeless any more */
 		/* mark this one as conflicted */
@@ -2526,7 +2526,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		assert(pcb_box_intersect(&b, &blocker->sbox));
 		b = pcb_shrink_box(&b, 1);
 		nrb = CreateBridge(&b, rb, dir);
-		pcb_r_insert_entry(tree, &nrb->box, 1);
+		pcb_r_insert_entry(tree, &nrb->box, 0);
 		vector_append(area_vec, nrb);
 		nrb->flags.homeless = 0;		/* not homeless any more */
 		ne = CreateEdge(nrb, nrb->cost_point.X, nrb->cost_point.Y, nrb->cost, blocker, dir, NULL);

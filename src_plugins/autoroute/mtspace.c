@@ -107,6 +107,9 @@ mtspace_t *mtspace_create(void)
 void mtspace_destroy(mtspace_t ** mtspacep)
 {
 	assert(mtspacep);
+	pcb_r_free_tree_data((*mtspacep)->ftree, free);
+	pcb_r_free_tree_data((*mtspacep)->etree, free);
+	pcb_r_free_tree_data((*mtspacep)->otree, free);
 	pcb_r_destroy_tree(&(*mtspacep)->ftree);
 	pcb_r_destroy_tree(&(*mtspacep)->etree);
 	pcb_r_destroy_tree(&(*mtspacep)->otree);
@@ -130,7 +133,7 @@ static pcb_r_dir_t mts_remove_one(const pcb_box_t * b, void *cl)
 	/* the info box is pre-bloated, so just check equality */
 	if (b->X1 == info->box.X1 && b->X2 == info->box.X2 &&
 			b->Y1 == info->box.Y1 && b->Y2 == info->box.Y2 && box->clearance == info->clearance) {
-		pcb_r_delete_entry(info->tree, b);
+		pcb_r_delete_entry_free_data(info->tree, b, free);
 		longjmp(info->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -152,7 +155,7 @@ pcb_rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
 void mtspace_add(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, pcb_coord_t clearance)
 {
 	mtspacebox_t *filler = mtspace_create_box(box, clearance);
-	pcb_r_insert_entry(which_tree(mtspace, which), (const pcb_box_t *) filler, 1);
+	pcb_r_insert_entry(which_tree(mtspace, which), (const pcb_box_t *) filler, 0);
 }
 
 /* remove a space-filler from the empty space representation. */
