@@ -664,6 +664,26 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	return TRUE;
 }
 
+/** Just handle the double-click to be equivalent to "row-activated" signal */
+static gboolean treeview_button_press_cb(GtkWidget  * widget, GdkEvent * ev, gpointer user_data)
+{
+	GtkTreeView *tv = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+
+	if (ev->button.type == GDK_2BUTTON_PRESS) {
+		model = gtk_tree_view_get_model(tv);
+		gtk_tree_view_get_path_at_pos(tv, ev->button.x, ev->button.y, &path, NULL, NULL, NULL);
+		if (path != NULL) {
+			gtk_tree_model_get_iter(model, &iter, path);
+			tree_row_activated(tv, path, NULL, user_data);
+		}
+	}
+
+	return FALSE;
+}
+
 static gboolean treeview_button_release_cb(GtkWidget  * widget, GdkEvent * ev, gpointer user_data)
 {
 	GtkTreeView *tv = GTK_TREE_VIEW(widget);
@@ -711,6 +731,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																				/* GtkTreeView */
 																				"model", model, "rules-hint", TRUE, "headers-visible", FALSE, NULL));
 
+	g_signal_connect(libtreeview, "button-press-event", G_CALLBACK(treeview_button_press_cb), library_window);
 	g_signal_connect(libtreeview, "button-release-event", G_CALLBACK(treeview_button_release_cb), library_window);
 
 	g_signal_connect(libtreeview, "key-press-event", G_CALLBACK(treeview_key_press_cb), library_window);
