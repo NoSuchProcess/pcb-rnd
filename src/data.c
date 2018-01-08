@@ -92,11 +92,19 @@ static void pcb_loop_layer(pcb_board_t *pcb, pcb_layer_t *layer, void *ctx, pcb_
 void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
 {
 	if ((lacb != NULL) || (lcb != NULL) || (acb != NULL) || (tcb != NULL) || (pocb != NULL)) {
-		pcb_layer_it_t it;
-		pcb_layer_id_t lid;
-		for(lid = pcb_layer_first_all(&pcb->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
-			pcb_layer_t *layer = pcb->Data->Layer + lid;
-			pcb_loop_layer(pcb, layer, ctx, lacb, lcb, acb, tcb, pocb);
+		if (pcb->is_footprint) {
+			int n;
+			pcb_data_t *data = PCB_REAL_DATA(pcb);
+			for(n = 0; n < data->LayerN; n++)
+				pcb_loop_layer(pcb, &data->Layer[n], ctx, lacb, lcb, acb, tcb, pocb);
+		}
+		else {
+			pcb_layer_it_t it;
+			pcb_layer_id_t lid;
+			for(lid = pcb_layer_first_all(&pcb->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
+				pcb_layer_t *layer = pcb->Data->Layer + lid;
+				pcb_loop_layer(pcb, layer, ctx, lacb, lcb, acb, tcb, pocb);
+			}
 		}
 	}
 }
