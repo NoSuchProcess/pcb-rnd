@@ -78,7 +78,7 @@
 #include "dlg_library_param.h"
 
 /** how often should the parametric footprint redrawn while the parameters are
-    changing - in milisec */
+    changing - in millisec */
 #define PARAM_REFRESH_RATE_MS 100
 
 /** \todo Open an empty file. Launch the Netlist window ... then : \n <tt>
@@ -88,7 +88,7 @@ Error: can't update netlist window: there is no netlist loaded. \n
 (pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_window_present_with_time: assertion 'GTK_IS_WINDOW (window)' failed </tt>
 */
 
-/** \file   wt_library.c
+/** \file   dlg_library.c
     \brief  Implementation of \ref pcb_gtk_library_t widget.
  */
 
@@ -509,7 +509,7 @@ static void library_window_callback_filter_button_clicked(GtkButton * button, gp
 
 }
 
-/** Creates the tree model for the "Library" view.
+/** Creates the tree model for the "Library" treeview.
 
     Creates a tree where the branches are the available library
     sources and the leaves are the footprints.
@@ -704,7 +704,7 @@ static gboolean treeview_button_release_cb(GtkWidget  * widget, GdkEvent * ev, g
 }
 
 
-/** Creates the treeview for the "Library" view */
+/** Creates the treeview for the "Library" dialog */
 static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 {
 	GtkWidget *libtreeview, *vbox, *scrolled_win, *label, *hbox, *entry, *button;

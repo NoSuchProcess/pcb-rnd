@@ -65,10 +65,10 @@ GType pcb_gtk_library_get_type(void);
     It does not show the dialog ; use \ref pcb_gtk_library_show () for that. */
 void pcb_gtk_library_create(pcb_gtk_common_t *com);
 
-/** Shows the _library_ dialog, creating it if it is not already created, and
+/** Shows the _library_ dialog, creating it if not already created, and
     presents it to the user (brings it to the front with focus), depending on 
     \p raise.
-    \param gport    Temporary ?
+    \param com      The GTK common HID structure
     \param raise    if `TRUE`, presents the window.
  */
 void pcb_gtk_library_show(pcb_gtk_common_t *com, gboolean raise);
