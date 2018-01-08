@@ -47,18 +47,12 @@ pcb_bool pcb_bumped;                /* if the undo serial number has changed */
 
 int pcb_added_lines;
 
-
-/* callback based loops */
-void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
+static void pcb_loop_layer(pcb_board_t *pcb, pcb_layer_t *layer, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
 {
-	if ((lacb != NULL) || (lcb != NULL) || (acb != NULL) || (tcb != NULL) || (pocb != NULL)) {
-		pcb_layer_it_t it;
-		pcb_layer_id_t lid;
-		for(lid = pcb_layer_first_all(&pcb->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
-			pcb_layer_t *layer = pcb->Data->Layer + lid;
 			if (lacb != NULL)
 				if (lacb(ctx, pcb, layer, 1))
-					continue;
+					return;
+
 			if (lcb != NULL) {
 				PCB_LINE_LOOP(layer);
 				{
@@ -92,6 +86,17 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 			}
 			if (lacb != NULL)
 				lacb(ctx, pcb, layer, 0);
+}
+
+/* callback based loops */
+void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
+{
+	if ((lacb != NULL) || (lcb != NULL) || (acb != NULL) || (tcb != NULL) || (pocb != NULL)) {
+		pcb_layer_it_t it;
+		pcb_layer_id_t lid;
+		for(lid = pcb_layer_first_all(&pcb->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
+			pcb_layer_t *layer = pcb->Data->Layer + lid;
+			pcb_loop_layer(pcb, layer, ctx, lacb, lcb, acb, tcb, pocb);
 		}
 	}
 }
