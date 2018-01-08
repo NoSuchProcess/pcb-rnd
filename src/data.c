@@ -49,43 +49,43 @@ int pcb_added_lines;
 
 static void pcb_loop_layer(pcb_board_t *pcb, pcb_layer_t *layer, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
 {
-			if (lacb != NULL)
-				if (lacb(ctx, pcb, layer, 1))
-					return;
+	if (lacb != NULL)
+		if (lacb(ctx, pcb, layer, 1))
+			return;
 
-			if (lcb != NULL) {
-				PCB_LINE_LOOP(layer);
-				{
-					lcb(ctx, pcb, layer, line);
-				}
-				PCB_END_LOOP;
-			}
+	if (lcb != NULL) {
+		PCB_LINE_LOOP(layer);
+		{
+			lcb(ctx, pcb, layer, line);
+		}
+		PCB_END_LOOP;
+	}
 
-			if (acb != NULL) {
-				PCB_ARC_LOOP(layer);
-				{
-					acb(ctx, pcb, layer, arc);
-				}
-				PCB_END_LOOP;
-			}
+	if (acb != NULL) {
+		PCB_ARC_LOOP(layer);
+		{
+			acb(ctx, pcb, layer, arc);
+		}
+		PCB_END_LOOP;
+	}
 
-			if (tcb != NULL) {
-				PCB_TEXT_LOOP(layer);
-				{
-					tcb(ctx, pcb, layer, text);
-				}
-				PCB_END_LOOP;
-			}
+	if (tcb != NULL) {
+		PCB_TEXT_LOOP(layer);
+		{
+			tcb(ctx, pcb, layer, text);
+		}
+		PCB_END_LOOP;
+	}
 
-			if (pocb != NULL) {
-				PCB_POLY_LOOP(layer);
-				{
-					pocb(ctx, pcb, layer, polygon);
-				}
-				PCB_END_LOOP;
-			}
-			if (lacb != NULL)
-				lacb(ctx, pcb, layer, 0);
+	if (pocb != NULL) {
+		PCB_POLY_LOOP(layer);
+		{
+			pocb(ctx, pcb, layer, polygon);
+		}
+		PCB_END_LOOP;
+	}
+	if (lacb != NULL)
+		lacb(ctx, pcb, layer, 0);
 }
 
 /* callback based loops */
