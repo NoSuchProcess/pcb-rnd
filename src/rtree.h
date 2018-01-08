@@ -72,7 +72,6 @@ void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], int N);
 pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * which);
 
 /* also free leaf data using free_data() */
-pcb_bool __r_delete_free_data(struct rtree_node *node, const pcb_box_t * query, void (*free_data)(void *data));
 pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t * rtree, const pcb_box_t * box, void (*free_data)(void *d));
 
 
