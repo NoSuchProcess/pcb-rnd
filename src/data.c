@@ -99,7 +99,7 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 void pcb_loop_subc(pcb_board_t *pcb, void *ctx, pcb_subc_cb_t scb)
 {
 	if (scb != NULL) {
-		PCB_SUBC_LOOP(pcb->Data);
+		PCB_SUBC_LOOP(PCB_REAL_DATA(pcb));
 		{
 			scb(ctx, pcb, subc, 1);
 		}
@@ -111,7 +111,7 @@ void pcb_loop_subc(pcb_board_t *pcb, void *ctx, pcb_subc_cb_t scb)
 void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb)
 {
 	if ((ecb != NULL) || (elcb != NULL) || (eacb != NULL)  || (etcb != NULL) || (epicb != NULL) || (epacb != NULL)) {
-		PCB_ELEMENT_LOOP(pcb->Data);
+		PCB_ELEMENT_LOOP(PCB_REAL_DATA(pcb));
 		{
 			if (ecb != NULL)
 				if (ecb(ctx, pcb, element, 1))
@@ -168,7 +168,7 @@ void pcb_loop_elements(pcb_board_t *pcb, void *ctx, pcb_element_cb_t ecb, pcb_el
 void pcb_loop_vias(pcb_board_t *pcb, void *ctx, pcb_via_cb_t vcb)
 {
 	if (vcb != NULL) {
-		PCB_VIA_LOOP(pcb->Data);
+		PCB_VIA_LOOP(PCB_REAL_DATA(pcb));
 		{
 			vcb(ctx, pcb, via);
 		}
@@ -179,7 +179,7 @@ void pcb_loop_vias(pcb_board_t *pcb, void *ctx, pcb_via_cb_t vcb)
 void pcb_loop_pstk(pcb_board_t *pcb, void *ctx, pcb_pstk_cb_t pscb)
 {
 	if (pscb != NULL) {
-		PCB_PADSTACK_LOOP(pcb->Data);
+		PCB_PADSTACK_LOOP(PCB_REAL_DATA(pcb));
 		{
 			pscb(ctx, pcb, padstack);
 		}

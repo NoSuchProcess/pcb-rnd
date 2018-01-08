@@ -175,4 +175,8 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
 						 void *closure, int *num_found);
 
+/* Either pcb->data or the subcircuit's data if PCB is a subc (footprint edit mode) */
+#define PCB_REAL_DATA(pcb) \
+	((pcb)->is_footprint ? (pcb_subclist_first(&(pcb)->Data->subc)->data) : ((pcb)->Data))
+
 #endif
