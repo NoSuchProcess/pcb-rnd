@@ -63,6 +63,13 @@
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
+/** \todo Open an empty file. Launch the Netlist window ... then : \n <tt>
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_widget_show_all: assertion 'GTK_IS_WIDGET (widget)' failed \n
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_tree_view_set_model: assertion 'GTK_IS_TREE_VIEW (tree_view)' failed \n
+Error: can't update netlist window: there is no netlist loaded. \n
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_window_present_with_time: assertion 'GTK_IS_WINDOW (window)' failed </tt>
+*/
+
 /** \file   dlg_netlist.c
     \brief  Manages the _Netlist_ non-modal dialog/window.
  */

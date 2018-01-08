@@ -81,13 +81,6 @@
     changing - in millisec */
 #define PARAM_REFRESH_RATE_MS 100
 
-/** \todo Open an empty file. Launch the Netlist window ... then : \n <tt>
-(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_widget_show_all: assertion 'GTK_IS_WIDGET (widget)' failed \n
-(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_tree_view_set_model: assertion 'GTK_IS_TREE_VIEW (tree_view)' failed \n
-Error: can't update netlist window: there is no netlist loaded. \n
-(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_window_present_with_time: assertion 'GTK_IS_WINDOW (window)' failed </tt>
-*/
-
 /** \file   dlg_library.c
     \brief  Implementation of \ref pcb_gtk_library_t widget.
  */
