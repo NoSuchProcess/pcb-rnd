@@ -585,12 +585,12 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 }
 
 /** Handles activation (e.g. double-clicking) of a component row.
-    As a convenience to the user `,` expand `/` contract any node with children.
+    As a convenience to the user GTK provides Shift-Arrow Left, Right to expand or contract any node with children.
 
     \param tree_view     The component treeview.
     \param path          The GtkTreePath to the activated row.
     \param column        The GtkTreeViewColumn in which the activation occurred
-    \param user_data     The component selection dialog.
+    \param user_data     The library dialog.
  */
 static void tree_row_activated(GtkTreeView * tree_view, GtkTreePath * path, GtkTreeViewColumn * column, gpointer user_data)
 {
@@ -619,7 +619,7 @@ static void tree_row_activated(GtkTreeView * tree_view, GtkTreePath * path, GtkT
 
     \param tree_view     The component treeview.
     \param event         The GdkEventKey with keypress info.
-    \param user_data     Not used.
+    \param user_data     The library dialog.
     \return              `TRUE` if key event was handled, `FALSE` otherwise.
  */
 static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * event, gpointer user_data)
@@ -632,7 +632,7 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	const gchar *compname;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
-	/* Handle both lower and uppercase 'c' and Enter keys */
+	/* Handle both lower and uppercase 'c', and 'Enter' keys */
 	if ( (event->keyval != GDK_KEY_Return) &&
 			 ( ((event->state & default_mod_mask) != GDK_CONTROL_MASK)
 				 || ((event->keyval != GDK_KEY_c) && (event->keyval != GDK_KEY_C))) )
