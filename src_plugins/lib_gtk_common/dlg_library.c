@@ -675,7 +675,9 @@ static gboolean treeview_button_release_cb(GtkWidget  * widget, GdkEvent * ev, g
 	gtk_tree_view_get_path_at_pos(tv, ev->button.x, ev->button.y, &path, NULL, NULL, NULL);
 	if (path != NULL) {
 		gtk_tree_model_get_iter(model, &iter, path);
-		tree_row_activated(tv, path, NULL, user_data);
+		/* Do not activate the row if LEFT-click on a "parent category" row. */
+		if (ev->button.button != 1 || !gtk_tree_model_iter_has_child(model, &iter))
+			tree_row_activated(tv, path, NULL, user_data);
 	}
 
 	return FALSE;
