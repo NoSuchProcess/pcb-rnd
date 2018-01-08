@@ -39,3 +39,10 @@ typedef enum pcb_r_dir_e {
 } pcb_r_dir_t;
 
 pcb_rtree_t *pcb_r_create_tree(void);
+void pcb_r_destroy_tree(pcb_rtree_t **tree);
+
+void pcb_r_insert_entry(pcb_rtree_t *rtree, const pcb_box_t *which);
+void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_cardinal_t len);
+
+pcb_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which);
+pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, const pcb_box_t *box, void (*free_data)(void *d));

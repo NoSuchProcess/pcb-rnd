@@ -41,7 +41,51 @@
 /* Temporary compatibility layer for the transition */
 pcb_rtree_t *pcb_r_create_tree(void)
 {
-
+	pcb_rtree_t *root = malloc(sizeof(pcb_rtree_t));
+	pcb_rtree_init(root);
+	return root;
 }
 
+void pcb_r_destroy_tree(pcb_rtree_t **tree)
+{
+	pcb_rtree_uninit(*tree);
+	*tree = NULL;
+}
+
+void pcb_r_insert_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
+{
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)which; /* assumes first field is the bounding box */
+	assert(obj != NULL);
+	pcb_rtree_insert(rtree, obj, (pcb_rtree_box_t *)which);
+}
+
+void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_cardinal_t len)
+{
+	pcb_cardinal_t n;
+
+	if (len == 0)
+		return;
+
+	assert(boxlist != 0);
+
+	for(n = 0; n < len; n++)
+		pcb_r_insert_entry(rtree, boxlist[n]);
+}
+
+pcb_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
+{
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)which; /* assumes first field is the bounding box */
+	assert(obj != NULL);
+	return pcb_rtree_delete(rtree, obj, (pcb_rtree_box_t *)which) == 0;
+}
+
+pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, const pcb_box_t *box, void (*free_data)(void *d))
+{
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)box; /* assumes first field is the bounding box */
+	assert(obj != NULL);
+	if (pcb_rtree_delete(rtree, obj, (pcb_rtree_box_t *)box) != 0)
+		return pcb_false;
+	free_data(obj);
+	return pcb_true;
+}
 
