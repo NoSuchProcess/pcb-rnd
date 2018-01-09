@@ -68,3 +68,5 @@ pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
 int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region);
 
 void pcb_r_dump_tree(pcb_rtree_t *root, int unused);
+
+#define PCB_RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
