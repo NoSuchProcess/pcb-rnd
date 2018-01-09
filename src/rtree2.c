@@ -115,3 +115,8 @@ pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
 
 	return pcb_rtree_search_any(rtree, (const pcb_rtree_box_t *)query, r_cb_node, r_cb_obj, &ctx, &out_cnt);
 }
+
+int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region)
+{
+	return pcb_rtree_is_box_empty(rtree, (const pcb_rtree_box_t *)region);
+}

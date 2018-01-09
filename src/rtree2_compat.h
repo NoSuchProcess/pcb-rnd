@@ -63,3 +63,7 @@ pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
 	pcb_r_dir_t (*region_in_search)(const pcb_box_t *region, void *closure),
 	pcb_r_dir_t (*rectangle_in_region)(const pcb_box_t *box, void *closure),
 	void *closure, int *num_found);
+
+/* return 0 if there are any rectangles in the given region. */
+int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region);
+
