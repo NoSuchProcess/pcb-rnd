@@ -117,6 +117,19 @@ to ask for clarification.
 	<li> if the problem is reproducible, please include a description how to
 	trigger it, preferrably on an empty board on a fresh start, alternatively
 	with an example file included
+	</ul>
+	<font size=-2>
+	Altnerative method with core dumps:
+	<ul>
+		<li> <tt>./configure --debug</tt>
+		<li> <tt>ulimit -c unlimited</tt>
+		<li> on Linux, check your core pattern (<tt>man 5 core </tt>, search for pattern; changing the core pattern requires root)
+		<li> in src/ run ./pcb-rnd, trigger the bug
+		<li> in src <tt>gdb ./pcb-rnd core</tt> (<tt>core</tt> is the default core file name, you may have a different name depending on the core pattern, see above)
+	</ul>
+	If you are on MacOSX, you may need to use lldb instead of gdb: <tt>lldb --core /cores/core.52381</tt>
+	and the backtrace command is <tt>bt all</tt> instead od just <tt>bt</tt>.
+	</font>
 
 <tr><td>
 	8. pcb-rnd can't load my file
