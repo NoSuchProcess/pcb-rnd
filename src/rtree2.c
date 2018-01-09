@@ -28,12 +28,6 @@
 #include "unit.h"
 #include "rtree2.h"
 
-/* Instantiate an rtree */
-#define RTR(n)  pcb_rtree_ ## n
-#define RTRU(n) pcb_RTREE_ ## n
-#define pcb_rtree_privfunc static
-#define pcb_rtree_size 6
-
 #include <genrtree/genrtree_impl.h>
 #include <genrtree/genrtree_search.h>
 #include <genrtree/genrtree_delete.h>

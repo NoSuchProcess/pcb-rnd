@@ -28,6 +28,14 @@
 typedef long int pcb_rtree_cardinal_t;
 typedef pcb_coord_t pcb_rtree_coord_t;
 
+/* Instantiate an rtree */
+#define RTR(n)  pcb_rtree_ ## n
+#define RTRU(n) pcb_RTREE_ ## n
+#define pcb_rtree_privfunc static
+#define pcb_rtree_size 6
+
+#include <genrtree/genrtree_api.h>
+
 #include "rtree2_compat.h"
 
 #endif /* PCB_RTREE2_H */
