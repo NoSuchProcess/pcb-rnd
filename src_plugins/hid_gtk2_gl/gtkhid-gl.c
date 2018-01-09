@@ -374,8 +374,14 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	ColorCache *cc;
 	double r, g, b, a;
 
-	if (priv->current_colorname != NULL &&
-			strcmp(priv->current_colorname, gc->colorname) == 0 && priv->current_alpha_mult == gc->alpha_mult)
+	if(gc->colorname == NULL) {
+		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = NULL, setting to magenta\n");
+		gc->colorname = "magenta";
+	}
+	
+	if (	priv->current_colorname != NULL &&
+				strcmp(priv->current_colorname, gc->colorname) == 0 && 
+				priv->current_alpha_mult == gc->alpha_mult)
 		return;
 
 	free(priv->current_colorname);
@@ -468,6 +474,12 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 void ghid_gl_set_color(pcb_hid_gc_t gc, const char *name)
 {
+	
+	if(name == NULL) {
+		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
+		name = "magenta";
+	}
+
 	gc->colorname = name;
 	set_gl_color_for_gc(gc);
 }
