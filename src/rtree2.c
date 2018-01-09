@@ -83,3 +83,35 @@ pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, const pcb_box_t *box, 
 	return pcb_true;
 }
 
+typedef struct {
+	pcb_r_dir_t (*region_in_search)(const pcb_box_t *region, void *closure);
+	pcb_r_dir_t (*rectangle_in_region)(const pcb_box_t *box, void *closure);
+	void *clo;
+} r_cb_t;
+
+static pcb_rtree_dir_t r_cb_node(void *ctx_, void *obj, const pcb_rtree_box_t *box)
+{
+	r_cb_t *ctx = (r_cb_t *)ctx_;
+	return ctx->region_in_search((const pcb_box_t *)obj, ctx->clo);
+}
+
+static pcb_rtree_dir_t r_cb_obj(void *ctx_, void *obj, const pcb_rtree_box_t *box)
+{
+	r_cb_t *ctx = (r_cb_t *)ctx_;
+	return ctx->rectangle_in_region((const pcb_box_t *)obj, ctx->clo);
+}
+
+
+pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
+	pcb_r_dir_t (*region_in_search)(const pcb_box_t *region, void *closure),
+	pcb_r_dir_t (*rectangle_in_region)(const pcb_box_t *box, void *closure),
+	void *closure, int *num_found)
+{
+	pcb_rtree_cardinal_t out_cnt;
+	r_cb_t ctx;
+	ctx.region_in_search = region_in_search;
+	ctx.rectangle_in_region = rectangle_in_region;
+	ctx.clo = closure;
+
+	return pcb_rtree_search_any(rtree, (const pcb_rtree_box_t *)query, r_cb_node, r_cb_obj, &ctx, &out_cnt);
+}
