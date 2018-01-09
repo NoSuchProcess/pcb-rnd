@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <assert.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "unit.h"
@@ -31,6 +32,7 @@
 #include <genrtree/genrtree_impl.h>
 #include <genrtree/genrtree_search.h>
 #include <genrtree/genrtree_delete.h>
+#include <genrtree/genrtree_debug.h>
 
 /* Temporary compatibility layer for the transition */
 pcb_rtree_t *pcb_r_create_tree(void)
@@ -119,4 +121,14 @@ pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
 int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region)
 {
 	return pcb_rtree_is_box_empty(rtree, (const pcb_rtree_box_t *)region);
+}
+
+static void r_print_obj(FILE *f, void *obj)
+{
+	fprintf(f, "<obj %p>\n", obj);
+}
+
+void pcb_r_dump_tree(pcb_rtree_t *root, int unused)
+{
+	pcb_rtree_dump_text(stdout, root, r_print_obj);
 }
