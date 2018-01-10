@@ -132,3 +132,12 @@ void pcb_r_dump_tree(pcb_rtree_t *root, int unused)
 {
 	pcb_rtree_dump_text(stdout, root, r_print_obj);
 }
+
+void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr))
+{
+	pcb_rtree_it_t it;
+	void *o;
+
+	for(o = pcb_rtree_all_first(&it, rtree); o != NULL; o = pcb_rtree_all_next(&it))
+		free(o);
+}
