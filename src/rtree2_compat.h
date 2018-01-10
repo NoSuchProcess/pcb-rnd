@@ -71,3 +71,14 @@ int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region);
 void pcb_r_dump_tree(pcb_rtree_t *root, int unused);
 
 #define PCB_RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
+
+/* -- Iterate through an rtree; DO NOT modify the tree while iterating -- */
+
+/* Get the first item, get fields of iterator set up; return can be casted to an object; returns NULL if rtree is empty */
+pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it);
+
+/* Get the next item, return can be casted to an object; returns NULL if no more items */
+pcb_box_t *pcb_r_next(pcb_rtree_it_t *it);
+
+/* Free fields of the iterator - not needed anymore, will be removed */
+void pcb_r_end(pcb_rtree_it_t *it);

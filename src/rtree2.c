@@ -141,3 +141,17 @@ void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr))
 	for(o = pcb_rtree_all_first(&it, rtree); o != NULL; o = pcb_rtree_all_next(&it))
 		free(o);
 }
+
+pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it)
+{
+	return (pcb_box_t *)pcb_rtree_all_first(it, tree);
+}
+
+pcb_box_t *pcb_r_next(pcb_rtree_it_t *it)
+{
+	return (pcb_box_t *)pcb_rtree_all_next(it);
+}
+
+void pcb_r_end(pcb_rtree_it_t *it)
+{
+}
