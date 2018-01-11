@@ -729,63 +729,55 @@ pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
 }
 
 /* ---------------------------------------------------------------------------
- * checks if a line intersects with a PV
+ * Calculate the distance (squared) from a point to a line.
  *
  * let the point be (X,Y) and the line (X1,Y1)(X2,Y2)
- * the length of the line is
  *
- *   L = ((X2-X1)^2 + (Y2-Y1)^2)^0.5
+ * Calculate the position along the line that is closest to X,Y. The value 
+ * ranges from 0 to 1 when the point is within the line boundaries with a 
+ * value of 0 being at point X1,Y1 and a value of 1.0 being at point X2,Y2.
+  *
+ *   t = ((X-X1)*(X2-X1)) + ((Y-Y1)*(Y2-Y1))
+ *       -----------------------------------
+ *             (X2-X1)^2 + (Y2-Y1)^2
  *
  * let Q be the point of perpendicular projection of (X,Y) onto the line
  *
- *   QX = X1 + D1*(X2-X1) / L
- *   QY = Y1 + D1*(Y2-Y1) / L
+ *   QX = X1 + t * (X2-X1)
+ *   QY = Y1 + t * (Y2-Y1)
  *
- * with (from vector geometry)
+ * Calculate the distace (squared) using Pythagorean theorem.
  *
- *        (Y1-Y)(Y1-Y2)+(X1-X)(X1-X2)
- *   D1 = ---------------------------
- *                     L
- *
- *   D1 < 0   Q is on backward extension of the line
- *   D1 > L   Q is on forward extension of the line
- *   else     Q is on the line
- *
- * the signed distance from (X,Y) to Q is
- *
- *        (Y2-Y1)(X-X1)-(X2-X1)(Y-Y1)
- *   D2 = ----------------------------
- *                     L
- *
- * Finally, D1 and D2 are orthogonal, so we can sum them easily
- * by Pythagorean theorem.
+ *   distance^2 = (X-QX)^2 + (Y-QY)^2
  */
 
 double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line)
 {
-	double D1, D2, L;
+	const double abx = Line->Point2.X - Line->Point1.X;
+	const double aby = Line->Point2.Y - Line->Point1.Y;
+	const double apx = X - Line->Point1.X;
+	const double apy = Y - Line->Point1.Y;
+	double qx,qy,dx,dy;
 
-	/* Get length of segment */
-	L = pcb_distance2(Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y);
-	if (L < 0.01)
-		return pcb_distance2(X, Y, Line->Point1.X, Line->Point1.Y);
+	/* Calculate t, the normalised position along the line of the closest point 
+	 * to (X,Y). A value between 0 and 1 indicates that the closest point on the 
+	 * line is within the bounds of the end points. 
+	 */
+	double t = ( (apx * abx) + (apy * aby) ) / ( (abx * abx) + (aby * aby) );
 
-	/* Get distance from (X1, Y1) to Q (on the line) */
-	D1 = ((double) (Y - Line->Point1.Y) * (Line->Point2.Y - Line->Point1.Y)
-				+ (double) (X - Line->Point1.X) * (Line->Point2.X - Line->Point1.X)) / L;
-	/* Translate this into distance to Q from segment */
-	if (D1 < 0)
-		D1 = -D1;
-	else if (D1 > L)
-		D1 -= L;
-	else
-		D1 = 0;
-	/* Get distance from (X, Y) to Q */
-	D2 = ((double) (X - Line->Point1.X) * (Line->Point2.Y - Line->Point1.Y)
-				- (double) (Y - Line->Point1.Y) * (Line->Point2.X - Line->Point1.X)) / L;
+	/* Clamp 't' to the line bounds */
+	if(t < 0.0)		t = 0.0;
+	if(t > 1.0)		t = 1.0;
 
-	/* Total distance is then the Pythagorean sum of these */
-	return D1 * D1 + D2 * D2;
+	/* Calculate the point Q on the line that is closest to (X,Y) */
+	qx = Line->Point1.X + (t * abx);
+	qy = Line->Point1.Y + (t * aby);
+
+	/* Return the distance from Q to (X,Y), squared */
+	dx = X - qx;
+	dy = Y - qy;
+
+	return (dx * dx) + (dy * dy);
 }
 
 pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line)
