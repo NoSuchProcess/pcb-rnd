@@ -35,6 +35,11 @@
 
 #include "global_typedefs.h"
 
+#define PCB_USE_GENRTREE 1
+
+#if PCB_USE_GENRTREE
+#include "rtree2.h"
+#else
 struct pcb_rtree_s {
 	struct rtree_node *root;
 	int size;											/* number of entries in tree */
@@ -119,5 +124,6 @@ void pcb_r_end(pcb_rtree_it_t *it);
 
 /* Recursively call free() on all leaf data */
 void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr));
+#endif
 
 #endif

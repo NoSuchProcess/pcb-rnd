@@ -36,6 +36,12 @@
  */
 #include "config.h"
 
+#include "rtree.h"
+
+#if PCB_USE_GENRTREE
+#include "rtree2.c"
+#else
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -43,7 +49,6 @@
 
 #include "math_helper.h"
 #include "compat_cc.h"
-#include "rtree.h"
 #include "obj_common.h"
 #include "macro.h"
 
@@ -1089,3 +1094,4 @@ void pcb_r_end(pcb_rtree_it_t *it)
 	it->alloced = it->used = 0;
 }
 
+#endif

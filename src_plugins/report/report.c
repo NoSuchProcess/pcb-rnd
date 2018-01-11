@@ -153,7 +153,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->padstack_tree->root, 0);
+				pcb_r_dump_tree(PCB->Data->padstack_tree, 0);
 				return 0;
 			}
 #endif
@@ -179,7 +179,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_pin_t *via;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->via_tree->root, 0);
+				pcb_r_dump_tree(PCB->Data->via_tree, 0);
 				return 0;
 			}
 #endif
@@ -217,7 +217,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_element_t *element;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->pin_tree->root, 0);
+				pcb_r_dump_tree(PCB->Data->pin_tree, 0);
 				return 0;
 			}
 #endif
@@ -265,7 +265,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-				pcb_r_dump_tree(layer->line_tree->root, 0);
+				pcb_r_dump_tree(layer->line_tree, 0);
 				return 0;
 			}
 #endif
@@ -291,7 +291,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_rat_t *line;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->rat_tree->root, 0);
+				pcb_r_dump_tree(PCB->Data->rat_tree, 0);
 				return 0;
 			}
 #endif
@@ -313,7 +313,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-				pcb_r_dump_tree(layer->arc_tree->root, 0);
+				pcb_r_dump_tree(layer->arc_tree, 0);
 				return 0;
 			}
 #endif
@@ -349,7 +349,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-				pcb_r_dump_tree(layer->polygon_tree->root, 0);
+				pcb_r_dump_tree(layer->polygon_tree, 0);
 				return 0;
 			}
 #endif
@@ -390,7 +390,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_element_t *element;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->pad_tree->root, 0);
+				pcb_r_dump_tree(PCB->Data->pad_tree, 0);
 				return 0;
 			}
 #endif
@@ -436,7 +436,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_element_t *element;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->element_tree->root, 0);
+				pcb_r_dump_tree(PCB->Data->element_tree, 0);
 				return 0;
 			}
 #endif
@@ -469,7 +469,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_subc_t *subc;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->element_tree->root, 0);
+				pcb_r_dump_tree(PCB->Data->element_tree, 0);
 				return 0;
 			}
 #endif
@@ -489,7 +489,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 #ifndef NDEBUG
 		if (pcb_gui->shift_is_pressed()) {
 			pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-			pcb_r_dump_tree(layer->text_tree->root, 0);
+			pcb_r_dump_tree(layer->text_tree, 0);
 			return 0;
 		}
 #endif
@@ -499,7 +499,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_text_t *text;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()]->root, 0);
+				pcb_r_dump_tree(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], 0);
 				return 0;
 			}
 #endif

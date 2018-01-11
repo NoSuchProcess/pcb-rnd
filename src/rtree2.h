@@ -34,6 +34,8 @@ typedef pcb_coord_t pcb_rtree_coord_t;
 #define pcb_rtree_privfunc static
 #define pcb_rtree_size 6
 
+#define RTREE_NO_TREE_TYPEDEFS
+
 #include <genrtree/genrtree_api.h>
 
 #include "rtree2_compat.h"
