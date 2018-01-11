@@ -144,6 +144,8 @@ void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr))
 
 pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it)
 {
+	if (tree == NULL)
+		return NULL;
 	return (pcb_box_t *)pcb_rtree_all_first(it, tree);
 }
 
