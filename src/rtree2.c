@@ -115,7 +115,10 @@ pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
 	ctx.rectangle_in_region = rectangle_in_region;
 	ctx.clo = closure;
 
-	return pcb_rtree_search_any(rtree, (const pcb_rtree_box_t *)query, r_cb_node, r_cb_obj, &ctx, &out_cnt);
+	return pcb_rtree_search_any(rtree, (const pcb_rtree_box_t *)query,
+		(ctx.region_in_search != NULL) ? r_cb_node : NULL,
+		(ctx.rectangle_in_region != NULL) ? r_cb_obj : NULL,
+		&ctx, &out_cnt);
 }
 
 int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region)
