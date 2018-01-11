@@ -1,3 +1,4 @@
+13953	configure	rtree switchover
 13726	configure	opnegl code moved to a separate plugin for reuse
 13584	configure	opengl -lGLU bugfix
 13386	configure	proper detection of includes for fileno() and usleep()
