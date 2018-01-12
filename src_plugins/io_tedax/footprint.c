@@ -209,6 +209,46 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 					arc->Thickness, arc->Clearance);
 			}
 			PCB_END_LOOP;
+
+
+			PCB_POLY_LOOP(ly)
+			{
+				int go;
+				long numpt = 0;
+				pcb_coord_t x, y;
+				pcb_poly_it_t it;
+
+				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
+				if (pcb_poly_contour(&it) == NULL) {
+					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no clipped contour\n");
+					continue;
+				}
+
+				/* iterate over the vectors of the contour */
+
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+					numpt++;
+
+				if (pcb_poly_hole_first(&it) != NULL)
+					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon holes\n");
+
+				if (numpt == NULL) {
+					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no points\n");
+					continue;
+				}
+
+				pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(polygon->term),
+					(PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon) ? 0 : polygon->Clearance),
+					numpt);
+
+				/* rewind */
+				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
+				pcb_poly_contour(&it);
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+					pcb_fprintf(f, " %.06mm %.06mm", x, y);
+				pcb_fprintf(f, "\n");
+			}
+			PCB_END_LOOP;
 		}
 
 		fprintf(f, "end footprint\n");
