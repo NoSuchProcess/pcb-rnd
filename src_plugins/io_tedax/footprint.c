@@ -71,11 +71,19 @@ do { \
 	} \
 } while(0)
 
-#define print_term(num, obj) \
+#define print_term(pnum, obj) \
 do { \
 	if (htsp_get(&terms, pnum) == NULL) { \
 		htsp_set(&terms, pcb_strdup(pnum), obj); \
 		fprintf(f, "	term %s %s - %s\n", pnum, pnum, obj->Name); \
+	} \
+} while(0)
+
+#define print_terma(pnum, obj) \
+do { \
+	if (htsp_get(&terms, pnum) == NULL) { \
+		htsp_set(&terms, pcb_strdup(pnum), obj); \
+		fprintf(f, "	term %s %s - %s\n", pnum, pnum, pnum); \
 	} \
 } while(0)
 
@@ -196,6 +204,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 			PCB_LINE_LOOP(ly)
 			{
+				if (line->term != NULL) print_terma(line->term, line);
 				pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(line->term),
 					line->Point1.X - ox, line->Point1.Y - oy, line->Point2.X - ox, line->Point2.Y - oy,
 					line->Thickness, line->Clearance);
@@ -204,12 +213,12 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 			PCB_ARC_LOOP(ly)
 			{
+				if (arc->term != NULL) print_terma(arc->term, arc);
 				pcb_fprintf(f, "	arc %s %s %s %mm %mm %mm %f %f %mm %mm\n", lloc, ltyp, TERM_NAME(arc->term),
 					arc->X - ox, arc->Y - oy, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
 					arc->Thickness, arc->Clearance);
 			}
 			PCB_END_LOOP;
-
 
 			PCB_POLY_LOOP(ly)
 			{
@@ -225,7 +234,6 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 				}
 
 				/* iterate over the vectors of the contour */
-
 				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
 					numpt++;
 
@@ -237,6 +245,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 					continue;
 				}
 
+				if (polygon->term != NULL) print_terma(polygon->term, polygon);
 				pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(polygon->term),
 					(PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon) ? 0 : polygon->Clearance),
 					numpt);
