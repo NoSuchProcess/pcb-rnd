@@ -45,6 +45,8 @@
 #include "obj_arc.h"
 #include "obj_pad.h"
 #include "obj_pinvia.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 
 static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
@@ -221,6 +223,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			}
 			PCB_END_LOOP;
 
+
 			PCB_POLY_LOOP(ly)
 			{
 				int go;
@@ -267,6 +270,20 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->Thickness/2, via->Clearance);
 			pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->DrillingHole, PIN_PLATED(via));
+		}
+		PCB_END_LOOP;
+
+		PCB_PADSTACK_LOOP(subc->data)
+		{
+			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
+			if (proto == NULL) {
+				pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc padstack with invalid prototype\n");
+				continue;
+			}
+			if (padstack->term != NULL) print_terma(padstack->term, padstack);
+			if (proto->hdia > 0)
+				pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(padstack->term), padstack->x - ox, padstack->y - oy, proto->hdia, proto->hplated ? "-" : "unplated");
+			
 		}
 		PCB_END_LOOP;
 
