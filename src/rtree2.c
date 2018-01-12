@@ -94,7 +94,7 @@ typedef struct {
 static pcb_rtree_dir_t r_cb_node(void *ctx_, void *obj, const pcb_rtree_box_t *box)
 {
 	r_cb_t *ctx = (r_cb_t *)ctx_;
-	return ctx->region_in_search(box, ctx->clo);
+	return ctx->region_in_search((const pcb_box_t *)box, ctx->clo);
 }
 
 static pcb_rtree_dir_t r_cb_obj(void *ctx_, void *obj, const pcb_rtree_box_t *box)
