@@ -93,6 +93,20 @@ do { \
 
 #define PIN_PLATED(obj) (PCB_FLAG_TEST(PCB_FLAG_HOLE, (obj)) ? "unplated" : "-")
 
+#define get_layer_props(lyt, lloc, ltyp, invalid) \
+	ltyp = lloc = NULL; \
+	if (lyt & PCB_LYT_LOGICAL) { invalid; } \
+	else if (lyt & PCB_LYT_TOP) lloc = "primary"; \
+	else if (lyt & PCB_LYT_BOTTOM) lloc = "secondary"; \
+	else if (lyt & PCB_LYT_INTERN) lloc = "inner"; \
+	else if ((lyt & PCB_LYT_ANYWHERE) == 0) lloc = "all"; \
+	if (lyt & PCB_LYT_COPPER) ltyp = "copper"; \
+	else if (lyt & PCB_LYT_SILK) ltyp = "silk"; \
+	else if (lyt & PCB_LYT_MASK) ltyp = "mask"; \
+	else if (lyt & PCB_LYT_PASTE) ltyp = "paste"; \
+	else { invalid; }
+
+
 int tedax_fp_save(pcb_data_t *data, const char *fn)
 {
 	FILE *f;
@@ -193,17 +207,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			pcb_layer_type_t lyt = pcb_layer_flags_(ly);
 			const char *lloc, *ltyp;
 
-			if (lyt & PCB_LYT_LOGICAL) continue;
-			else if (lyt & PCB_LYT_TOP) lloc = "primary";
-			else if (lyt & PCB_LYT_BOTTOM) lloc = "secondary";
-			else if (lyt & PCB_LYT_INTERN) lloc = "inner";
-			else if ((lyt & PCB_LYT_ANYWHERE) == 0) lloc = "all";
-
-			if (lyt & PCB_LYT_COPPER) ltyp = "copper";
-			else if (lyt & PCB_LYT_SILK) ltyp = "silk";
-			else if (lyt & PCB_LYT_MASK) ltyp = "mask";
-			else if (lyt & PCB_LYT_PASTE) ltyp = "paste";
-			else continue;
+			get_layer_props(lyt, lloc, ltyp, continue);
 
 			PCB_LINE_LOOP(ly)
 			{
