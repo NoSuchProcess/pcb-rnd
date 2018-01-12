@@ -89,6 +89,8 @@ do { \
 
 #define TERM_NAME(term) ((term == NULL) ? "-" : term)
 
+#define PIN_PLATED(obj) (PCB_FLAG_TEST(PCB_FLAG_HOLE, (obj)) ? "unplated" : "-")
+
 int tedax_fp_save(pcb_data_t *data, const char *fn)
 {
 	FILE *f;
@@ -133,8 +135,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			safe_term_num(pnum, pin, buff);
 			print_term(pnum, pin);
 			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->Thickness/2, pin->Clearance);
-#warning TODO:  last dash should be unplated for mounting holes
-			pcb_fprintf(f, "	hole %s %mm %mm %mm -\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole);
+			pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", pnum, pin->X - element->MarkX, pin->Y - element->MarkY, pin->DrillingHole, PIN_PLATED(pin));
 		}
 		PCB_END_LOOP;
 
@@ -265,8 +266,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			if (via->term != NULL) print_terma(via->term, via);
 
 			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->Thickness/2, via->Clearance);
-#warning TODO:  last dash should be unplated for mounting holes
-			pcb_fprintf(f, "	hole %s %mm %mm %mm -\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->DrillingHole);
+			pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->DrillingHole, PIN_PLATED(via));
 		}
 		PCB_END_LOOP;
 
