@@ -260,6 +260,16 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 			PCB_END_LOOP;
 		}
 
+		PCB_VIA_LOOP(subc->data)
+		{
+			if (via->term != NULL) print_terma(via->term, via);
+
+			pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->Thickness/2, via->Clearance);
+#warning TODO:  last dash should be unplated for mounting holes
+			pcb_fprintf(f, "	hole %s %mm %mm %mm -\n", TERM_NAME(via->term), via->X - ox, via->Y - oy, via->DrillingHole);
+		}
+		PCB_END_LOOP;
+
 		fprintf(f, "end footprint\n");
 
 		for (e = htsp_first(&terms); e; e = htsp_next(&terms, e)) {
