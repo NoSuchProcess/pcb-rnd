@@ -250,7 +250,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 					(PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon) ? 0 : polygon->Clearance),
 					numpt);
 
-				/* rewind */
+				/* rewind the iterator*/
 				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
 				pcb_poly_contour(&it);
 				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
