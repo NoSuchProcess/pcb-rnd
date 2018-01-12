@@ -33,6 +33,7 @@ typedef pcb_coord_t pcb_rtree_coord_t;
 #define RTRU(n) pcb_RTREE_ ## n
 #define pcb_rtree_privfunc static
 #define pcb_rtree_size 6
+#define pcb_rtree_stack_max 1024
 
 #define RTREE_NO_TREE_TYPEDEFS
 
