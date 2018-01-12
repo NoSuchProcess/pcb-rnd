@@ -47,6 +47,7 @@
 #include "obj_pinvia.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
+#include "../src_plugins/lib_compat_help/subc_help.h"
 
 static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
@@ -454,60 +455,59 @@ static int load_poly(pcb_coord_t *px, pcb_coord_t *py, int maxpt, int argc, char
 	return max;
 }
 
-#define sqr(o) ((o)*(o))
-
-int is_poly_square(int numpt, pcb_coord_t *px, pcb_coord_t *py)
+/* Returns a NULL terminated list of layers to operate on or NULL on error;
+   not reentrant! */
+static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const char *ltyp)
 {
-	double l1, l2;
-	if (numpt != 4)
-		return 0;
+	pcb_layer_type_t lyt = 0;
+	static pcb_layer_t *layers[4];
+	char name[128];
 
-	l1 = sqrt(sqr((double)px[0] - (double)px[2]) + sqr((double)py[0] - (double)py[2]));
-	l2 = sqrt(sqr((double)px[1] - (double)px[3]) + sqr((double)py[1] - (double)py[3]));
+	memset(layers, 0, sizeof(layers));
 
-	return fabs(l1-l2) < PCB_MM_TO_COORD(0.02);
-}
+	if (strcmp(ltyp, "copper") == 0) lyt |= PCB_LYT_COPPER;
+	else if (strcmp(ltyp, "silk") == 0) lyt |= PCB_LYT_SILK;
+	else if (strcmp(ltyp, "mask") == 0) lyt |= PCB_LYT_MASK;
+	else if (strcmp(ltyp, "paste") == 0) lyt |= PCB_LYT_PASTE;
+	else {
+		pcb_message(PCB_MSG_ERROR, "tEDAx footprint load: invalid layer type %s\n", ltyp);
+		return NULL;
+	}
 
-static int add_pad_sq_poly(pcb_element_t *elem, pcb_coord_t *px, pcb_coord_t *py, const char *clear, const char *num, int backside)
-{
-	pcb_coord_t w, h, t, x1, y1, x2, y2, clr;
+	if (strcmp(lloc, "all") == 0) {
+		sprintf(name, "top_%s", ltyp);
+		layers[0] = pcb_subc_get_layer(subc, lyt | PCB_LYT_TOP, -1, pcb_true, name);
+		sprintf(name, "bottom_%s", ltyp);
+		layers[1] = pcb_subc_get_layer(subc, lyt | PCB_LYT_BOTTOM, -1, pcb_true, name);
+		if (lyt == PCB_LYT_COPPER) {
+			sprintf(name, "intern_%s", ltyp);
+			layers[2] = pcb_subc_get_layer(subc, lyt | PCB_LYT_INTERN, -1, pcb_true, name);
+		}
+		return layers;
+	}
 
-	if (px[2] != px[0])
-		w = px[2] - px[0];
-	else
-		w = px[1] - px[0];
+	if (strcmp(lloc, "primary") == 0) lyt |= PCB_LYT_TOP;
+	else if (strcmp(lloc, "secondary") == 0) lyt |= PCB_LYT_BOTTOM;
+	else if (strcmp(lloc, "inner") == 0) lyt |= PCB_LYT_INTERN;
+	else {
+		pcb_message(PCB_MSG_ERROR, "tEDAx footprint load: invalid layer location %s\n", lloc);
+		return NULL;
+	}
 
-	if (py[1] != py[0])
-		h = py[1] - py[0];
-	else
-		h = py[2] - py[0];
-
-	if (w < 0)
-		w = -w;
-	if (h < 0)
-		h = -h;
-	t = (w < h) ? w : h;
-	x1 = px[0] + t / 2;
-	y1 = py[0] - t / 2;
-	x2 = x1 + (w - t);
-	y2 = y1 - (h - t);
-
-	load_val(clr, clear, "invalid clearance '%s' in poly, skipping footprint\n");
-
-	pcb_element_pad_new(elem, x1, y1, x2, y2, t, clr, t + clr, NULL,
-		num, pcb_flag_make(PCB_FLAG_SQUARE | (backside ? PCB_FLAG_ONSOLDER : 0)));
-
-	return 0;
+	sprintf(name, "%s_%s", lloc, ltyp);
+	layers[0] = pcb_subc_get_layer(subc, lyt, -1, pcb_true, name);
+	return layers;
 }
 
 /* Parse one footprint block */
-static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
+static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	int argc, termid, numpt, res = -1;
 	htip_entry_t *ei;
 	htip_t terms;
 	term_t *term;
-	pcb_coord_t px[256], py[256];
+	pcb_coord_t px[256], py[256], clr;
+	pcb_layer_t **ly;
 
 	pcb_trace("FP start\n");
 	htip_init(&terms, longhash, longkeyeq);
@@ -518,28 +518,31 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 			htip_set(&terms, termid, term);
 		}
 		else if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
-			const char *lloc = argv[1], *ltype = argv[2];
-			int backside;
+			pcb_poly_t *p;
+			ly = subc_get_layer(subc, argv[1], argv[2]);
+			if (ly == NULL) return -1;
+
 			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
-			if (numpt < 0)
+			if (numpt < 0) {
+				pcb_message(PCB_MSG_ERROR, "tEDAx footprint load: failed to load polygon\n");
 				return -1;
-
+			}
 			load_term(term, argv[3], "invalid term ID for polygon: '%s', skipping footprint\n");
+			load_val(clr, argv[4], "invalid clearance");
 
-			if (strcmp(ltype, "copper") != 0) {
-				pcb_message(PCB_MSG_ERROR, "polygon on non-copper is not supported - skipping footprint\n");
-				return -1;
-			}
-
-			load_lloc(backside, lloc, "polygon on layer %s, which is not an outer layer - skipping footprint\n");
-			if (is_poly_square(numpt, px, py)) {
-				add_pad_sq_poly(elem, px, py, argv[4], term->name, backside);
-			}
-			else {
-				pcb_message(PCB_MSG_ERROR, "non-square pads are not yet supported - skipping footprint\n");
-				return -1;
+			for(; *ly != NULL; ly++) {
+				int n;
+				p = pcb_poly_new(*ly, clr, pcb_no_flags());
+				if (p == NULL) {
+					pcb_message(PCB_MSG_ERROR, "tEDAx footprint load: failed to create poly, skipping footprint\n");
+					return -1;
+				}
+				for(n = 0; n < numpt; n++)
+					pcb_poly_point_new(p, px[n], py[n]);
+				pcb_add_poly_on_layer(*ly, p);
 			}
 		}
+#if 0
 		else if ((argc == 10) && (strcmp(argv[0], "line") == 0)) {
 			const char *lloc = argv[1], *ltype = argv[2];
 			pcb_coord_t x1, y1, x2, y2, w, clr;
@@ -642,6 +645,7 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 				pcb_element_line_new(elem, cx, cy, cx, cy, d/2);
 			}
 		}
+#endif
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
 			res = 0;
 			break;
@@ -650,11 +654,13 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 
 	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei)) {
 		term = ei->value;
+#if 0
 		if ((term->pin != NULL) && (term->pin_ring_valid)) {
 			/* combine the ring with the pin */
 			term->pin->Thickness = term->pin_ring_d + term->pin->DrillingHole;
 			term->pin->Clearance = term->pin_ring_clr;
 		}
+#endif
 		term_destroy(term);
 	}
 	htip_uninit(&terms);
@@ -664,13 +670,14 @@ static int tedax_parse_1fp_(pcb_element_t *elem, FILE *fn, char *buff, int buff_
 
 static int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
-	pcb_element_t *elem;
+	pcb_subc_t *sc = pcb_subc_alloc();
+	pcb_add_subc_to_data(data, sc);
 
-	elem = pcb_element_new(data, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), "", "", "", 0, 0, 0, 100, pcb_no_flags(), 0);
-	if (tedax_parse_1fp_(elem, fn, buff, buff_size, argv, argv_size) != 0) {
-		pcb_element_free(elem);
+	if (tedax_parse_1fp_(sc, fn, buff, buff_size, argv, argv_size) != 0) {
+		pcb_subc_free(sc);
 		return -1;
 	}
+printf("JO\n");
 	return 0;
 }
 
