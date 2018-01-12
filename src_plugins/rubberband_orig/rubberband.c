@@ -36,6 +36,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "data_list.h"
 #include "error.h"
 #include "event.h"
@@ -918,32 +919,25 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 
 	case PCB_TYPE_SUBC:
 		{
-			vtp0_t objs;
 			pcb_subc_t * subc = (pcb_subc_t *)Ptr1;
-			pcb_any_obj_t ** o;
-			int n;
+			pcb_data_it_t	it;
+			pcb_any_obj_t * p_obj;
+		 
+			p_obj	= pcb_data_first(&it,subc->data,PCB_OBJ_CLASS_REAL);
 
-			vtp0_init(&objs);
-			pcb_data_list_by_flag(subc->data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAGS);
-
-			for(n = 0, o = (pcb_any_obj_t **)objs.array; n < vtp0_len(&objs); n++,o++) {
-				pcb_layer_t *ly = (*o)->parent.layer;
-
-				assert((*o)->parent_type == PCB_PARENT_LAYER);
-
-				if(((*o)->term == NULL) || !(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
-					continue;
-
-				switch((*o)->type)
+			while(p_obj)
+			{
+				pcb_layer_t * layer = p_obj->parent.layer;
+				switch(p_obj->type)
 				{
-					case PCB_OBJ_LINE :			CheckLineForRubberbandConnection(rbnd, ly, (pcb_line_t *) (*o)); break;
-					case PCB_OBJ_POLY :			CheckPolygonForRubberbandConnection(rbnd, ly, (pcb_poly_t *) (*o)); break;
-					case PCB_OBJ_ARC :			CheckEntireArcForRubberbandConnection(rbnd, ly, (pcb_arc_t *) (*o)); break;
-					default :								/* TODO: Check other object types */ break;
+					case PCB_OBJ_LINE :	if(p_obj->term) CheckLineForRubberbandConnection(rbnd, layer, (pcb_line_t *) p_obj); break;
+					case PCB_OBJ_POLY :	if(p_obj->term) CheckPolygonForRubberbandConnection(rbnd, layer, (pcb_poly_t *) p_obj); break;
+					case PCB_OBJ_ARC :	if(p_obj->term) CheckEntireArcForRubberbandConnection(rbnd, layer, (pcb_arc_t *) p_obj); break;
+					case PCB_OBJ_PSTK :	CheckPadStackForRubberbandConnection(rbnd, (pcb_pstk_t *) p_obj); break;
+					default : 					break;
 				}
+				p_obj = pcb_data_next(&it);
 			}
-			
-			vtp0_uninit(&objs);
 			break;
 		}
 
