@@ -2774,13 +2774,13 @@
  ../src_3rd/libminuid/libminuid.h rtree.h rtree2.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_tedax/parse.h unit.h error.h board.h vtroutestyle.h \
- library.h rats_patch.h board.h pcb-printf.h \
+ ../src_plugins/io_tedax/parse.h unit.h attrib.h error.h board.h \
+ vtroutestyle.h library.h rats_patch.h board.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h compat_misc.h safe_fs.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genvector/vtp0.h list_conf.h obj_elem.h obj_line.h obj_arc.h \
- obj_pad.h obj_pinvia.h
+ obj_pad.h obj_pinvia.h obj_pstk.h obj_pstk_inlines.h data.h thermal.h
 ../src_plugins/io_tedax/io_tedax.o: ../src_plugins/io_tedax/io_tedax.c \
  ../config.h ../src_plugins/io_tedax/footprint.h data.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h layer.h attrib.h obj_all_list.h \
