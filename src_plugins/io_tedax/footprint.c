@@ -241,7 +241,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 				if (pcb_poly_hole_first(&it) != NULL)
 					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon holes\n");
 
-				if (numpt == NULL) {
+				if (numpt == 0) {
 					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no points\n");
 					continue;
 				}
