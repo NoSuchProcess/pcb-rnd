@@ -33,6 +33,7 @@
 #include "parse.h"
 
 #include "unit.h"
+#include "attrib.h"
 #include "error.h"
 #include "data.h"
 #include "board.h"
@@ -78,6 +79,8 @@ do { \
 	} \
 } while(0)
 
+#define TERM_NAME(term) ((term == NULL) ? "-" : term)
+
 int tedax_fp_save(pcb_data_t *data, const char *fn)
 {
 	FILE *f;
@@ -95,6 +98,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 	fprintf(f, "tEDAx v1\n");
 
+	/* This block shall be removed with elements */
 	PCB_ELEMENT_LOOP(data)
 	{
 		fprintf(f, "\nbegin footprint v1 %s\n", element->Name->TextString);
@@ -142,6 +146,70 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 				arc->Thickness, arc->Clearance);
 		}
 		PCB_END_LOOP;
+
+		fprintf(f, "end footprint\n");
+
+		for (e = htsp_first(&terms); e; e = htsp_next(&terms, e)) {
+			free(e->key);
+			htsp_delentry(&terms, e);
+		}
+
+	}
+	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(data)
+	{
+		pcb_coord_t ox = 0, oy = 0;
+		const char *fpname = NULL;
+		int l;
+
+		fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
+		if (fpname == NULL)
+			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
+		if (fpname == NULL)
+			fpname = pcb_attribute_get(&subc->Attributes, "name");
+		if ((fpname == NULL) && (subc->refdes != NULL))
+			fpname = subc->refdes;
+		if (fpname == NULL)
+			fpname = "-";
+
+		pcb_subc_get_origin(subc, &ox, &oy);
+
+		fprintf(f, "\nbegin footprint v1 %s\n", fpname);
+
+		for(l = 0; l < subc->data->LayerN; l++) {
+			pcb_layer_t *ly = &subc->data->Layer[l];
+			pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+			const char *lloc, *ltyp;
+
+			if (lyt & PCB_LYT_LOGICAL) continue;
+			else if (lyt & PCB_LYT_TOP) lloc = "primary";
+			else if (lyt & PCB_LYT_BOTTOM) lloc = "secondary";
+			else if (lyt & PCB_LYT_INTERN) lloc = "inner";
+			else if ((lyt & PCB_LYT_ANYWHERE) == 0) lloc = "all";
+
+			if (lyt & PCB_LYT_COPPER) ltyp = "copper";
+			else if (lyt & PCB_LYT_SILK) ltyp = "silk";
+			else if (lyt & PCB_LYT_MASK) ltyp = "mask";
+			else if (lyt & PCB_LYT_PASTE) ltyp = "paste";
+			else continue;
+
+			PCB_LINE_LOOP(ly)
+			{
+				pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(line->term),
+					line->Point1.X - ox, line->Point1.Y - oy, line->Point2.X - ox, line->Point2.Y - oy,
+					line->Thickness, line->Clearance);
+			}
+			PCB_END_LOOP;
+
+			PCB_ARC_LOOP(ly)
+			{
+				pcb_fprintf(f, "	arc %s %s %s %mm %mm %mm %f %f %mm %mm\n", lloc, ltyp, TERM_NAME(arc->term),
+					arc->X - ox, arc->Y - oy, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
+					arc->Thickness, arc->Clearance);
+			}
+			PCB_END_LOOP;
+		}
 
 		fprintf(f, "end footprint\n");
 
