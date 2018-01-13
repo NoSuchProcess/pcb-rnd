@@ -77,36 +77,35 @@ Limitations:
 	<li> substrate is not represented at all in the layers stack.
 </ul>
 <p>
-The location of a <i>layer group</i> on of:
+The location of a <i>layer group</i> on of (flags are in layer.h):
 <ul>
-	<li> top (component) side
-	<li> bottom (solder) side
-	<li> inner (signal)
-	<li> global (affects all locations, e.g. the outline layer for routing)
+	<li> top (component) side - PCB_LYT_TOP
+	<li> bottom (solder) side - PCB_LYT_BOTTOM
+	<li> inner or internal (e.g. signal) - PCB_LYT_INTERN
+	<li> global (affects all locations, e.g. the outline layer for routing) - 0
 </ul>
 <p>
-In pcb-rnd only copper layers and the outline layer are fully explicit.
-There are two hardwired silk layers, one for the top and one for the bottom side.
-The silk layers are semi-explicit: they are existing layers in all structs
-but:
+In pcb-rnd most layer types are fully explicit:
 <ul>
-	<li> they are not part of the <i>layer group</i> system
-	<li> unlike explicit layers they have fixed index (+1 and +2 beyond the last explicit layer)
-	<li> created an moved by the core automatically
-	<li> can not be removed
+	<li> copper - PCB_LYT_COPPER (not composite)
+	<li> silk screen - PCB_LYT_SILK
+	<li> mask - PCB_LYT_MASK
+	<li> paste - PCB_LYT_PASTE
+	<li> outline - PCB_LYT_OUTLINE (not composite)
 </ul>
 <p>
-The <i>outline layer</i> is a hack: it's really an internal copper layer. If
-the code detects the name of the layer is "outline" anywhere, it branches.
+The layers of a composite layer group are combined + and -, depending
+on the PCB_LYC_SUB in their comb field.
 <p>
-There are a few virtual layers:
+Assumptions: there are two silk layers, one for the top and one for the bottom
+side and there are always a top and a bottom copper layer. (Long term
+assumptions will be removed.) The outline layer has to be global.
+<p>
+The rest of the layers are virtual layers, often just GUI hacks, e.g.:
 <ul>
-	<li> [top|bottom] mask - no layer struct, calculated on-the-fly from pad data
-	<li> [top|bottom] paste - no layer struct, calculated on-the-fly from pad data
 	<li> Subcircuits - no layer struct, calculated on-the-fly from pad data
 	<li> fab - no layer struct, calculated on-the-fly from drill/hole data
 </ul>
-
 
 <h3> pcb_data_t: global data </h3>
 <p>
