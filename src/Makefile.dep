@@ -2780,7 +2780,8 @@
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genvector/vtp0.h list_conf.h obj_elem.h obj_line.h obj_arc.h \
- obj_pad.h obj_pinvia.h obj_pstk.h obj_pstk_inlines.h data.h thermal.h
+ obj_pad.h obj_pinvia.h obj_pstk.h obj_pstk_inlines.h data.h thermal.h \
+ ../src_plugins/lib_compat_help/subc_help.h obj_subc.h layer.h
 ../src_plugins/io_tedax/io_tedax.o: ../src_plugins/io_tedax/io_tedax.c \
  ../config.h ../src_plugins/io_tedax/footprint.h data.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h layer.h attrib.h obj_all_list.h \
@@ -2890,7 +2891,8 @@
  obj_subc.h ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h \
  ht_subc.h vtpadstack.h obj_pinvia.h \
  ../src_plugins/lib_compat_help/pstk_compat.c obj_pstk_inlines.h data.h \
- thermal.h compat_misc.h
+ thermal.h compat_misc.h ../src_plugins/lib_compat_help/subc_help.c \
+ ../src_plugins/lib_compat_help/subc_help.h obj_subc.h
 ../src_plugins/lib_gensexpr/lib_gensexpr.o: \
  ../src_plugins/lib_gensexpr/lib_gensexpr.c plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
