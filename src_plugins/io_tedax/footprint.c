@@ -665,6 +665,9 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	}
 	htip_uninit(&terms);
 
+	pcb_subc_add_refdes_text(subc, 0, 0, 0, 100);
+	pcb_subc_create_aux(subc, 0, 0, 0.0);
+
 	return res;
 }
 
@@ -677,7 +680,7 @@ static int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size
 		pcb_subc_free(sc);
 		return -1;
 	}
-printf("JO\n");
+
 	return 0;
 }
 
