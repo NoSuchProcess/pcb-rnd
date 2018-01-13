@@ -576,28 +576,28 @@ void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, unsigned long mask)
 {
 	if (type & PCB_OBJ_VIA) PCB_VIA_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, via)) vtp0_append(dst, via);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, via))) vtp0_append(dst, via);
 	} PCB_END_LOOP;
 	if (type & PCB_OBJ_PSTK) PCB_PADSTACK_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, padstack)) vtp0_append(dst, padstack);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, padstack))) vtp0_append(dst, padstack);
 	} PCB_END_LOOP;
 	if (type & PCB_OBJ_ELEMENT) PCB_ELEMENT_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, element)) vtp0_append(dst, element);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, element))) vtp0_append(dst, element);
 	} PCB_END_LOOP;
 	if (type & PCB_OBJ_SUBC) PCB_SUBC_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, subc)) vtp0_append(dst, subc);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, subc))) vtp0_append(dst, subc);
 	} PCB_END_LOOP;
 	if (type & PCB_OBJ_LINE) PCB_LINE_ALL_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, line)) vtp0_append(dst, line);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, line))) vtp0_append(dst, line);
 	} PCB_ENDALL_LOOP;
 	if (type & PCB_OBJ_ARC) PCB_ARC_ALL_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, arc)) vtp0_append(dst, arc);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, arc))) vtp0_append(dst, arc);
 	} PCB_ENDALL_LOOP;
 	if (type & PCB_OBJ_TEXT) PCB_TEXT_ALL_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, text)) vtp0_append(dst, text);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, text))) vtp0_append(dst, text);
 	} PCB_ENDALL_LOOP;
 	if (type & PCB_OBJ_POLY) PCB_POLY_ALL_LOOP(data); {
-		if (PCB_FLAG_TEST(mask, polygon)) vtp0_append(dst, polygon);
+		if ((mask == 0) || (PCB_FLAG_TEST(mask, polygon))) vtp0_append(dst, polygon);
 	} PCB_ENDALL_LOOP;
 }
 
