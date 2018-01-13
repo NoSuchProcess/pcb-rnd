@@ -277,7 +277,7 @@ int pcb_pstk_proto_conv_buffer(pcb_pstk_proto_t *dst, int quiet)
 	oy = (bb.Y1 + bb.Y2) / 2;
 
 	vtp0_init(&objs);
-	pcb_data_list_by_flag(PCB_PASTEBUFFER->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAGS);
+	pcb_data_list_by_flag(PCB_PASTEBUFFER->Data, &objs, PCB_OBJ_CLASS_REAL, 0);
 	ret = pcb_pstk_proto_conv(PCB_PASTEBUFFER->Data, dst, quiet, &objs, ox, oy);
 	vtp0_uninit(&objs);
 
