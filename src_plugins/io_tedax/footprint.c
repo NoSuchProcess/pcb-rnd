@@ -263,7 +263,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
 				pcb_poly_contour(&it);
 				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
-					pcb_fprintf(f, " %.06mm %.06mm", x, y);
+					pcb_fprintf(f, " %.06mm %.06mm", x - ox, y - oy);
 				pcb_fprintf(f, "\n");
 			}
 			PCB_END_LOOP;
