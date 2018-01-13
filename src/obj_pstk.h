@@ -23,6 +23,7 @@
 #ifndef PCB_OBJ_PSTK_STRUCT_DECLARED
 #define PCB_OBJ_PSTK_STRUCT_DECLARED
 
+#include <genvector/vtp0.h>
 #include "obj_common.h"
 
 /* The actual padstack is just a reference to a padstack proto within the same data */
@@ -105,6 +106,11 @@ pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src);
    entries */
 pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, pcb_coord_t ox, pcb_coord_t oy);
 pcb_cardinal_t pcb_pstk_conv_buffer(int quiet);
+
+/* Low level converter: take an array of (pcb_any_obj_t *) objs and convert
+   them into shapes of the dst proto. Does not remove input objects. */
+int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy);
+
 
 /* free fields of a proto (not freeing the proto itself, not removing it from lists */
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst);

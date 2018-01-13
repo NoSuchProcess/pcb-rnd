@@ -89,7 +89,7 @@ static void append_circle(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer
 	ts->shape[idx].comb = comb;
 }
 
-static int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
+int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
 	int ret = -1, n, m, i;
 	pcb_any_obj_t **o;
