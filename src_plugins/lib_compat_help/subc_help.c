@@ -53,3 +53,11 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	sc->data->Layer[n].parent = sc->data;
 	return &sc->data->Layer[n];
 }
+
+pcb_text_t *pcb_subc_add_refdes_text(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, unsigned direction, int scale)
+{
+	pcb_layer_t *ly = pcb_subc_get_layer(sc, PCB_LYT_TOP | PCB_LYT_SILK, 0, pcb_true, "top-silk");
+	if (ly != NULL)
+		return pcb_text_new(ly, pcb_font(PCB, 0, 0), x, y, direction, scale, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
+	return 0;
+}
