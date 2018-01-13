@@ -418,6 +418,7 @@ do { \
 do { \
 	int termid; \
 	term_t *term; \
+	if ((src[0] == '-') && (src[1] == '\0')) break; \
 	load_int(termid, src, msg); \
 	term = htip_get(&terms, termid); \
 	if (term == NULL) { \
@@ -546,11 +547,11 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 				pcb_add_poly_on_layer(*ly, p);
 			}
 		}
-#if 0
 		else if ((argc == 10) && (strcmp(argv[0], "line") == 0)) {
-			const char *lloc = argv[1], *ltype = argv[2];
 			pcb_coord_t x1, y1, x2, y2, w, clr;
-			int backside;
+			pcb_line_t *l;
+
+			ly = subc_get_layer(subc, argv[1], argv[2]);
 
 			load_val(x1, argv[4], "ivalid line x1");
 			load_val(y1, argv[5], "ivalid line y1");
@@ -559,34 +560,15 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_val(w, argv[8], "ivalid line width");
 			load_val(clr, argv[9], "ivalid line clearance");
 
-			if (strcmp(ltype, "silk") == 0) {
-				if (strcmp(lloc, "primary") != 0) {
-					pcb_message(PCB_MSG_ERROR, "silk lines on secondary layer is not supported by pcb-rnd - skipping footprint\n");
-					return -1;
-				}
-				pcb_element_line_new(elem, x1, y1, x2, y2, w);
-			}
-			else if (strcmp(ltype, "copper") == 0) {
-				load_term(term, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
-				load_lloc(backside, lloc, "terminal line on layer %s, which is not an outer layer - skipping footprint\n");
-
-				pcb_element_pad_new(elem, x1, y1, x2, y2, w, clr, w + clr, NULL,
-					term->name, pcb_flag_make(backside ? PCB_FLAG_ONSOLDER : 0));
-			}
+			l = pcb_line_new(*ly, x1, y1, x2, y2, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			load_term(l, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
 		}
 		else if ((argc == 11) && (strcmp(argv[0], "arc") == 0)) {
-			const char *lloc = argv[1], *ltype = argv[2];
 			pcb_coord_t cx, cy, r, w;
 			double sa, da;
+			pcb_arc_t *a;
 
-			if (strcmp(ltype, "silk") != 0) {
-				pcb_message(PCB_MSG_ERROR, "arc is supported only on silk - skipping footprint\n", argv[3]);
-				return -1;
-			}
-			if (strcmp(lloc, "primary") != 0) {
-				pcb_message(PCB_MSG_ERROR, "silk arcs on secondary layer is not supported by pcb-rnd - skipping footprint\n");
-				return -1;
-			}
+			ly = subc_get_layer(subc, argv[1], argv[2]);
 
 			load_val(cx, argv[4], "ivalid arc cx");
 			load_val(cy, argv[5], "ivalid arc cy");
@@ -595,8 +577,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_dbl(da, argv[8], "ivalid arc delta angle");
 			load_val(w, argv[9], "ivalid arc width");
 
-			pcb_element_arc_new(elem, cx, cy, r, r, sa, da, w);
+			a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			load_term(a, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
 		}
+#if 0
 		else if ((argc == 6) && (strcmp(argv[0], "hole") == 0)) {
 			pcb_coord_t cx, cy, d;
 
