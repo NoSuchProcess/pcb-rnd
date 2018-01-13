@@ -365,9 +365,8 @@ typedef struct {
 	/* type can be ignored in pcb-rnd */
 	char *name;
 
-	pcb_pin_t *pin;
-	pcb_coord_t pin_ring_cx, pin_ring_cy, pin_ring_d, pin_ring_clr;
-	int pin_ring_valid;
+	/* put all objects on this per terminal list so the padstack converter can pick them up */
+	vtp0_t objs;
 } term_t;
 
 static term_t *term_new(const char *pinid, const char *name)
@@ -427,6 +426,7 @@ do { \
 		return -1; \
 	} \
 	pcb_attribute_put(&obj->Attributes, "term", term->name); \
+	vtp0_append(&term->objs, obj); \
 } while(0)
 
 #define load_lloc(dst, src, msg) \
