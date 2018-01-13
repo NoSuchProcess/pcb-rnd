@@ -89,12 +89,32 @@ static void append_circle(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer
 	ts->shape[idx].comb = comb;
 }
 
+static void append_tshape(pcb_pstk_tshape_t *ts, pcb_pstk_tshape_t *src, int srci)
+{
+	int idx = ts->len;
+
+	ts->len++;
+	ts->shape = realloc(ts->shape, ts->len * sizeof(pcb_pstk_shape_t));
+	memcpy(&ts->shape[idx], &src->shape[srci], sizeof(ts->shape[idx]));
+	switch(src->shape[srci].shape) {
+		case PCB_PSSH_LINE:
+		case PCB_PSSH_CIRC:
+			break; /* do nothing, all fields are copied already by the memcpy */
+		case PCB_PSSH_POLY:
+			pcb_pstk_shape_alloc_poly(&ts->shape[idx].data.poly, src->shape[srci].data.poly.len);
+			pcb_pstk_shape_copy_poly(&ts->shape[idx].data.poly, &src->shape[srci].data.poly);
+			break;
+	}
+}
+
 int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
 	int ret = -1, n, m, i;
 	pcb_any_obj_t **o;
-	pcb_pstk_tshape_t *ts;
+	pcb_pstk_tshape_t *ts, *ts_src;
 	pcb_pin_t *via = NULL;
+	pcb_pstk_t *pstk = NULL;
+	pcb_pstk_proto_t *prt;
 
 	dst->in_use = 1;
 	pcb_vtpadstack_tshape_init(&dst->tr);
@@ -120,9 +140,9 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				ts->len++;
 				break;
 			case PCB_OBJ_VIA:
-				if (via != NULL) {
+				if ((via != NULL) || (pstk != NULL)) {
 					if (!quiet)
-						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias\n");
+						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias/padstacks\n");
 					goto quit;
 				}
 				via = *(pcb_pin_t **)o;
@@ -134,16 +154,37 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 					oy = via->Y;
 				}
 				break;
+			case PCB_OBJ_PSTK:
+				if ((via != NULL) || (pstk != NULL)) {
+					if (!quiet)
+						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias/padstacks\n");
+					goto quit;
+				}
+				pstk = *(pcb_pstk_t **)o;
+				prt = pcb_pstk_get_proto(pstk);
+				if (prt == NULL) {
+					if (!quiet)
+						pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid input padstacks proto\n");
+					goto quit;
+				}
+				dst->hdia = prt->hdia;
+				dst->hplated = prt->hplated;
+				if ((ox != pstk->x) || (oy != pstk->y)) {
+					pcb_message(PCB_MSG_INFO, "Padstack conversion: adjusting origin to padstack hole\n");
+					ox = pstk->x;
+					oy = pstk->y;
+				}
+				break;
 			default:;
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, line or polygon\n", (*o)->type);
+					pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, padstack, line or polygon\n", (*o)->type);
 				goto quit;
 		}
 	}
 
-	if ((ts->len == 0) && (via == NULL)) {
+	if ((ts->len == 0) && (via == NULL) && (pstk == NULL)) {
 		if (!quiet)
-			pcb_message(PCB_MSG_ERROR, "Padstack conversion: there are no shapes and there is no via participating in the conversion; can not create empty padstack\n");
+			pcb_message(PCB_MSG_ERROR, "Padstack conversion: there are no shapes and there is no via/padstack participating in the conversion; can not create empty padstack\n");
 		goto quit;
 	}
 
@@ -217,7 +258,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				goto quit;
 			}
 		}
-		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (via == NULL)) {
+		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (via == NULL) && (pstk == NULL)) {
 			if (!quiet)
 				pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
 			goto quit;
@@ -237,6 +278,23 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB, via->Mask);
 			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB) == -1)
 				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB, via->Mask);
+		}
+	}
+
+	/* if there was a padstack, use the padstack's shape on layers that are not specified */
+	if (pstk != NULL) {
+		int srci;
+		ts_src = pcb_pstk_get_tshape(pstk);
+		if (ts_src != NULL) {
+#			define MAYBE_COPY(mask, comb) \
+				if ((pcb_pstk_get_shape_idx(ts, mask, comb) == -1) && ((srci = pcb_pstk_get_shape_idx(ts_src, mask, comb)) != -1)) \
+					append_tshape(ts, ts_src, srci);
+			MAYBE_COPY(PCB_LYT_COPPER | PCB_LYT_TOP, 0);
+			MAYBE_COPY(PCB_LYT_COPPER | PCB_LYT_INTERN, 0);
+			MAYBE_COPY(PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0);
+			MAYBE_COPY(PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB);
+			MAYBE_COPY(PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB);
+#			undef MAYBE_COPY
 		}
 	}
 
