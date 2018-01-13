@@ -63,6 +63,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs)
 	int l, n, plated, done = 0, ci;
 	pcb_coord_t cx, cy, d, r, valid;
 	pcb_any_obj_t *cand[NUM_LYTS];
+	char *term = NULL;
 	int num_cand[NUM_LYTS];
 	pcb_pstk_proto_t proto;
 	vtp0_t tmp;
@@ -143,16 +144,22 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs)
 
 		vtp0_init(&tmp);
 		vtp0_append(&tmp, h);
-		for(l = 0; l < objs->used; l++)
-			if (num_cand[l] == 1)
+		for(l = 0; l < objs->used; l++) {
+			if (num_cand[l] == 1) {
 				vtp0_append(&tmp, cand[l]);
+				if (term == NULL)
+					term = pcb_attribute_get(&cand[l]->Attributes, "term");
+			}
+		}
 
 		memset(&proto, 0, sizeof(proto));
 		if (pcb_pstk_proto_conv(data, &proto, quiet, &tmp, cx, cy) == 0) {
 			proto.hplated = plated;
 			pcb_cardinal_t pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet);
 			if (pid != PCB_PADSTACK_INVALID) {
-				pcb_pstk_new(data, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
+				pcb_pstk_t *ps = pcb_pstk_new(data, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
+				if (term != NULL)
+					pcb_attribute_put(&ps->Attributes, "term", term);
 				/* got our new proto - remove the objects we used */
 				for(ci = 0; ci < tmp.used; ci++) {
 					int i;
