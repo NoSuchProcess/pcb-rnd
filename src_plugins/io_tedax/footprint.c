@@ -48,6 +48,7 @@
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
+#include "../src_plugins/lib_compat_help/pstk_help.h"
 
 static void print_sqpad_coords(FILE *f, pcb_pad_t *Pad, pcb_coord_t cx, pcb_coord_t cy)
 {
@@ -580,22 +581,19 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			load_term(a, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
 		}
-#if 0
 		else if ((argc == 6) && (strcmp(argv[0], "hole") == 0)) {
 			pcb_coord_t cx, cy, d;
+			int plated;
+			pcb_pstk_t *ps;
 
-			if (term->pin != NULL) {
-				pcb_message(PCB_MSG_ERROR, "hole: only one pin per terminal is supported - skipping footprint\n");
-				return -1;
-			}
-
-			load_term(term, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
 			load_val(cx, argv[2], "ivalid arc cx");
 			load_val(cy, argv[3], "ivalid arc cy");
 			load_val(d, argv[4], "ivalid arc radius");
-#warning TODO: argv[5] is hints: plated vs. unplated
-			term->pin = pcb_element_pin_new(elem, cx, cy, 0, 0, 0, d, term->name, argv[1], pcb_no_flags());
+
+			plated = !(strcmp(argv[5], "unplated") == 0);
+			ps = pcb_pstk_new_hole(subc->data, cx, cy, d, plated);
 		}
+#if 0
 		else if ((argc == 8) && (strcmp(argv[0], "fillcircle") == 0)) {
 			const char *lloc = argv[1], *ltype = argv[2];
 			pcb_coord_t cx, cy, d, clr;
