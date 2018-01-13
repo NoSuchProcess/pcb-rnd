@@ -287,6 +287,29 @@ static pcb_coord_t read_mask(pcb_any_obj_t *obj)
 	return mask;
 }
 
+void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot)
+{
+	double unit = PCB_MM_TO_COORD(1);
+	pcb_layer_t *aux = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
+	double cs, sn;
+
+	if (rot == 0.0) {
+		cs = 1;
+		cs = 1;
+	}
+	else {
+		cs = cos(rot);
+		sn = sin(rot);
+	}
+
+	add_aux_line(aux, "subc-role", "origin", ox, oy, ox, oy);
+	add_aux_line(aux, "subc-role", "x", ox, oy, pcb_round((double)ox + cs*unit), pcb_round(oy + sn*unit));
+	add_aux_line(aux, "subc-role", "y", ox, oy, pcb_round((double)ox + sn*unit), pcb_round(oy + cs*unit));
+}
+
+
+
+
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
 	pcb_subc_t *sc;
@@ -509,15 +532,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	vtp0_uninit(&mask_pads);
 	vtp0_uninit(&paste_pads);
 
-	/* create aux layer */
-	{
-		pcb_coord_t unit = PCB_MM_TO_COORD(1);
-		pcb_layer_t *aux = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
-
-		add_aux_line(aux, "subc-role", "origin", buffer->X, buffer->Y, buffer->X, buffer->Y);
-		add_aux_line(aux, "subc-role", "x", buffer->X, buffer->Y, buffer->X+unit, buffer->Y);
-		add_aux_line(aux, "subc-role", "y", buffer->X, buffer->Y, buffer->X, buffer->Y+unit);
-	}
+	pcb_subc_create_aux(sc, buffer->X, buffer->Y, 0.0);
 
 	/* Add refdes */
 	pcb_attribute_put(&sc->Attributes, "refdes", "U0");

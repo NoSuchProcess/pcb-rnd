@@ -106,6 +106,11 @@ void *pcb_subc_remove(pcb_subc_t *sc);
    layer that matches brd_layer or brd_layer if not found. */
 pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer);
 
+/*** subc creation helpers ***/
+
+/* Create the aux layer for a subc, set origin to ox;oy and rotation to rot */
+void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot);
+
 /*** loops ***/
 
 #define PCB_SUBC_LOOP(top) do {                                     \
