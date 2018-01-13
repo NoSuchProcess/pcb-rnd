@@ -45,6 +45,14 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	if (name == NULL)
 		name = "";
 
+	if (comb == -1) {
+		/* "any" means default, for the given layer type */
+		if (lyt & PCB_LYT_MASK)
+			comb = PCB_LYC_SUB;
+		else
+			comb = 0; /* positive, manual */
+	}
+
 	memset(&sc->data->Layer[n], 0, sizeof(sc->data->Layer[n]));
 	sc->data->Layer[n].name = pcb_strdup(name);
 	sc->data->Layer[n].comb = comb;
