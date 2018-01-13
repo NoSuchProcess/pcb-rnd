@@ -1,4 +1,4 @@
-1. For the upcoming release ===============================================================================
+0. For the upcoming release ===============================================================================
 + BUG: shape editor dialog: catch layer change and regen the shape [report: SQ6POG]
 + BUG: missing subc snap:
 	+ polygon pad center snap [report: jg]
@@ -188,6 +188,8 @@
 - BUG: padstack check box in gtk-hid does not hide the padstacks; this may be due to my failure to specify soldermask openings for the padstacks  [report: erich]
 - BUG: hackvana gerber export exports .g5, .g7, rather than soldermask file-endings, .gts, .gbs, when there are no soldermask openings defined for padstacks in use. When padstackss have defined soldermask openings, the .gts and .gbs file are generated, but the .g5 and .g7 are still generated as well along with the .gts and .gbs files [report: erich]
 - BUG: hackvana gerber export with "copy silk outline", only exports to sides of the outline rectangle [report: erich]
+- BUG: hackvana gerber export uses .drl ending instead of .cnc for excellon drill file [report: erich]
+
 3. Long term ===============================================================================
 
 SUBC: element removal:
