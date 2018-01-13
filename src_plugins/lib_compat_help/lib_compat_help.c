@@ -3,6 +3,7 @@
 
 #include "layer_compat.c"
 #include "pstk_compat.c"
+#include "pstk_help.c"
 #include "subc_help.c"
 
 int pplg_check_ver_lib_compat_help(int ver_needed) { return 0; }
