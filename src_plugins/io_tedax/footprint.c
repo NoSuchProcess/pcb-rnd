@@ -592,46 +592,21 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			plated = !(strcmp(argv[5], "unplated") == 0);
 			ps = pcb_pstk_new_hole(subc->data, cx, cy, d, plated);
+			load_term(ps, argv[3], "invalid term ID for padstack: '%s', skipping footprint\n");
 		}
-#if 0
 		else if ((argc == 8) && (strcmp(argv[0], "fillcircle") == 0)) {
-			const char *lloc = argv[1], *ltype = argv[2];
 			pcb_coord_t cx, cy, d, clr;
+			pcb_line_t *l;
 
+			ly = subc_get_layer(subc, argv[1], argv[2]);
 			load_val(cx, argv[4], "ivalid fillcircle cx");
 			load_val(cy, argv[5], "ivalid fillcircle cy");
 			load_val(d, argv[6], "ivalid fillcircle radius");
 			load_val(clr, argv[7], "ivalid fillcircle clearance");
 
-			if (strcmp(ltype, "copper") == 0) {
-				if (strcmp(lloc, "all") == 0) {
-					if (term->pin_ring_valid) {
-						pcb_message(PCB_MSG_ERROR, "fillcircle: only one pin per terminal is supported - skipping footprint\n");
-						return -1;
-					}
-					term->pin_ring_cx = cx;
-					term->pin_ring_cy = cy;
-					term->pin_ring_d = d;
-					term->pin_ring_clr = clr;
-					term->pin_ring_valid = 1;
-				}
-				else {
-					int backside;
-					load_term(term, argv[3], "invalid term ID for copper fillcircle: '%s', skipping footprint\n");
-					load_lloc(backside, lloc, "terminal fillcircle on layer %s, which is not an outer layer - skipping footprint\n");
-					pcb_element_pad_new(elem, cx, cy, cx, cy, d/2, 2 * clr, d/2 + clr, NULL,
-						term->name, pcb_flag_make(backside ? PCB_FLAG_ONSOLDER : 0));
-				}
-			}
-			else if (strcmp(ltype, "silk") == 0) {
-				if (strcmp(lloc, "primary") != 0) {
-					pcb_message(PCB_MSG_ERROR, "silk fillcircle on secondary layer is not supported by pcb-rnd - skipping footprint\n");
-					return -1;
-				}
-				pcb_element_line_new(elem, cx, cy, cx, cy, d/2);
-			}
+			l = pcb_line_new(*ly, cx, cy, cx, cy, d, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			load_term(l, argv[3], "invalid term ID for fillcircle: '%s', skipping footprint\n");
 		}
-#endif
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
 			res = 0;
 			break;
