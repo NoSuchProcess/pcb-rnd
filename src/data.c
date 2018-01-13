@@ -578,6 +578,9 @@ void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, un
 	if (type & PCB_OBJ_VIA) PCB_VIA_LOOP(data); {
 		if (PCB_FLAG_TEST(mask, via)) vtp0_append(dst, via);
 	} PCB_END_LOOP;
+	if (type & PCB_OBJ_PSTK) PCB_PADSTACK_LOOP(data); {
+		if (PCB_FLAG_TEST(mask, padstack)) vtp0_append(dst, padstack);
+	} PCB_END_LOOP;
 	if (type & PCB_OBJ_ELEMENT) PCB_ELEMENT_LOOP(data); {
 		if (PCB_FLAG_TEST(mask, element)) vtp0_append(dst, element);
 	} PCB_END_LOOP;
