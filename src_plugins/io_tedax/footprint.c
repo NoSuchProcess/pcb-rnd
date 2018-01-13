@@ -381,6 +381,7 @@ static void term_destroy(term_t *t)
 {
 	free(t->pinid);
 	free(t->name);
+	vtp0_uninit(&t->objs);
 	free(t);
 }
 
@@ -579,7 +580,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_val(w, argv[9], "ivalid arc width");
 
 			a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
-			load_term(a, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
+			load_term(a, argv[3], "invalid term ID for arc: '%s', skipping footprint\n");
 		}
 		else if ((argc == 6) && (strcmp(argv[0], "hole") == 0)) {
 			pcb_coord_t cx, cy, d;
@@ -592,7 +593,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			plated = !(strcmp(argv[5], "unplated") == 0);
 			ps = pcb_pstk_new_hole(subc->data, cx, cy, d, plated);
-			load_term(ps, argv[3], "invalid term ID for padstack: '%s', skipping footprint\n");
+			load_term(ps, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
 		}
 		else if ((argc == 8) && (strcmp(argv[0], "fillcircle") == 0)) {
 			pcb_coord_t cx, cy, d, clr;
@@ -613,15 +614,12 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 		}
 	}
 
+	/* By now we have heavy terminals and a list of object for each terminal in
+	   the terms hash. Iterate over the terminals and try to convert the objects
+	   into one or more padstacks */
 	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei)) {
 		term = ei->value;
-#if 0
-		if ((term->pin != NULL) && (term->pin_ring_valid)) {
-			/* combine the ring with the pin */
-			term->pin->Thickness = term->pin_ring_d + term->pin->DrillingHole;
-			term->pin->Clearance = term->pin_ring_clr;
-		}
-#endif
+		pcb_pstk_vect2pstk(subc->data, &term->objs);
 		term_destroy(term);
 	}
 	htip_uninit(&terms);
