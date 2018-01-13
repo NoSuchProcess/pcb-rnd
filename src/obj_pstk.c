@@ -120,6 +120,7 @@ void pcb_pstk_bbox(pcb_pstk_t *ps)
 	ps->BoundingBox.X1 = ps->BoundingBox.X2 = ps->x;
 	ps->BoundingBox.Y1 = ps->BoundingBox.Y2 = ps->y;
 
+	if (ts != NULL)
 	for(sn = 0; sn < ts->len; sn++) {
 		pcb_pstk_shape_t *shape = ts->shape + sn;
 		switch(shape->shape) {

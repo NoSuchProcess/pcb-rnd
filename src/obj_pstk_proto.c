@@ -408,16 +408,18 @@ void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
 	memcpy(dst, src, sizeof(pcb_pstk_proto_t));
 	pcb_vtpadstack_tshape_init(&dst->tr);
 
-	ts_src = &src->tr.array[0];
+	if (src->tr.used > 0) {
+		ts_src = &src->tr.array[0];
 
-	/* allocate shapes on the canonical tshape (tr[0]) */
-	ts_dst = pcb_vtpadstack_tshape_alloc_append(&dst->tr, 1);
-	pcb_pstk_tshape_copy(ts_dst, ts_src);
+		/* allocate shapes on the canonical tshape (tr[0]) */
+		ts_dst = pcb_vtpadstack_tshape_alloc_append(&dst->tr, 1);
+		pcb_pstk_tshape_copy(ts_dst, ts_src);
 
-	/* make sure it's the canonical form */
-	ts_dst->rot = 0.0;
-	ts_dst->xmirror = 0;
-	ts_dst->smirror = 0;
+		/* make sure it's the canonical form */
+		ts_dst->rot = 0.0;
+		ts_dst->xmirror = 0;
+		ts_dst->smirror = 0;
+	}
 
 	dst->in_use = 1;
 }
