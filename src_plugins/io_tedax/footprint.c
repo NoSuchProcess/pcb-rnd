@@ -414,15 +414,17 @@ do { \
 	} \
 } while(0)
 
-#define load_term(dst, src, msg) \
+#define load_term(obj, src, msg) \
 do { \
 	int termid; \
+	term_t *term; \
 	load_int(termid, src, msg); \
-	dst = htip_get(&terms, termid); \
-	if (dst == NULL) { \
+	term = htip_get(&terms, termid); \
+	if (term == NULL) { \
 		pcb_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", src); \
 		return -1; \
 	} \
+	pcb_attribute_put(&obj->Attributes, "term", term->name); \
 } while(0)
 
 #define load_lloc(dst, src, msg) \
@@ -527,7 +529,6 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 				pcb_message(PCB_MSG_ERROR, "tEDAx footprint load: failed to load polygon\n");
 				return -1;
 			}
-			load_term(term, argv[3], "invalid term ID for polygon: '%s', skipping footprint\n");
 			load_val(clr, argv[4], "invalid clearance");
 
 			for(; *ly != NULL; ly++) {
@@ -539,6 +540,9 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 				}
 				for(n = 0; n < numpt; n++)
 					pcb_poly_point_new(p, px[n], py[n]);
+
+				load_term(p, argv[3], "invalid term ID for polygon: '%s', skipping footprint\n");
+
 				pcb_add_poly_on_layer(*ly, p);
 			}
 		}
