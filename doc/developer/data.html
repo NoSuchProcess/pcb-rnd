@@ -138,3 +138,73 @@ Relevant structs, variables and functions are in layer.[ch].
 
 
 <h2> tree </h2>
+<p>
+A tree can be built using subcircuits. The top level is always a board or
+a buffer, which are essentially just different wrappers around pcb_data_t.
+Then pcb_data_t can host subcircuits in it global data. A subcircuit
+is also just a 3rd kind of wrapper around a pcb_data_t, which means it
+opens a new level of the tree.
+<p>
+When we will start supporting subc-in-sunc this means the root is:
+<ul>
+	<li> a PCB board: pcb_board_t
+	<li> a paste buffer: pcb_buffer_t
+</ul>
+<p>
+(When the user opens a subcircuit for editing, the root is still a pcb_board_t,
+it just has a field that tells it is a fake board for a single subc. Still
+the real subc to edit is in the fake board's pcb_data_t. This is needed so
+we have all the global states stored in pcb_baord_t.)
+<p>
+Then the next levels are arbitrary encapsulation of subcircuits.
+
+
+<h2> list vs. rtree </h2>
+<p>
+Each level of pcb_data_t has its own lists storing the local objects.
+<p>
+The root of the tree also ha an rtrees for each object type. An rtree is
+a spatial data structure that provides efficient coordinate lookups. All objects,
+recursively, are added in these rtrees. That means, if there's a line on the
+board, that's really a line stored on a pcb_layer_t's list, and the
+full tree path is somehting like this:
+<pre>
+	pcb_board_t -> pcb_data_t -> pcb_layer_t -> linelist_t
+</pre>
+<p>
+The same line is also added in the same layer's rtree (called line_tree for lines):
+<pre>
+	pcb_board_t -> pcb_data_t -> pcb_layer_t -> pcb_rtree_t
+</pre>
+<p>
+On subsequent levels, the list is the same. If a line is part of
+a subcircuit, it's sitting on one of the linelists on one of the bound
+layers provided by the subc:
+<pre>
+	pcb_board_t -> pcb_data_t -> pcb_subclist_t -> pcb_data_t -> pcb_layer_t -> pcb_linelist_t
+</pre>
+<p>
+The subcircuit's pcb_layer_t would also have an rtree. But instead of having
+it's own rtree, it's rather linked to the root's rtree. Which means any access
+to any rtree under a subc is really access to the corresponding rtree of the root!
+In other words, <b>object lists are level-local, but rtrees are tree-global</b>.
+<p>
+This also means as a programmer, you can alsways do two kind of searches or
+iterations:
+<ul>
+	<li> level-local (only linear iteration is possible)
+	<li> global (both linear iteration and efficient, bounding box based, geometrical rtree lookups are possible)
+</ul>
+<p>
+Rationale: this way if we need to look up what's on a specific coord
+(e.g. the user clicks or find.c needs to check what is connected to a given
+point), we can use the global rtree's and we will get the answers without having
+to recurse into subcircuits.
+<p>
+Note: layer bindings complicate this a bit. A subc layer is bound to one of
+the root's real layers. When that binding is created, the rtrees are also
+linked together, and all subc layer objects on the given layer are added
+in the common rtree. When the layer binding needs to change, that means
+we first need to unbind the subcircuit's bound layer from the root's real
+layer: when we do that, we need to unlink the rtrees <b>and</b> remove all
+the objects we added to the global tree from our subcircuit layer.
