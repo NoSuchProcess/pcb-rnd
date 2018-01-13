@@ -109,10 +109,11 @@ The rest of the layers are virtual layers, often just GUI hacks, e.g.:
 
 <h3> pcb_data_t: global data </h3>
 <p>
-Global data affect all layers. The most trivial example is <i>via</i>:
-it has a hole and the same copper ring on all layers. Another global
-object pcb_data_t holds is an element. An element can have pads
-on two copper layers and pins that affect all layers the same way as vias.
+Global data affect all layers. The most trivial example is <i>via</i> and
+<i>padstack</i>: it has a hole and potentially a copper ring on all
+layers. Another global object pcb_data_t holds is an element. An element
+can have pads on two copper layers and pins that affect all layers the
+same way as vias.
 <p>
 The third global object is subcircuit; using its own layer list, it potentially
 can affect all layers of the board. The children objects of a subcircuit is
@@ -127,8 +128,13 @@ the per layer objects (drawing primitives).
 <p>
 Layer data is stored in struct <i>pcb_layer_t</i>. A layer has a list
 for each object type (drawing primitive type): arcs, lines, polygons, etc.
+These lists are local: in a tree of subcircuits, the layer list contains only
+what's strictly directly on the given layer, there's no recursion.
 <p>
 Relevant structs, variables and functions are in layer.[ch].
 
 <h2> map </h2>
 <img src="data1.png">
+
+
+<h2> tree </h2>
