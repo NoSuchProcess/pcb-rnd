@@ -180,6 +180,11 @@ void pcb_pstk_move_(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy);
 /* Temporary hack until we have a refcounted objects and ID->pcb_any_obj_t hash */
 extern pcb_data_t *pcb_pstk_data_hack;
 
+/* Insert a proto in data and return the proto-id. If the proto is already
+   in data, the fields of the caller's version are free'd, else they are
+   copied into data. In any case, the caller should not free proto. */
+pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet);
+
 
 /*** hash ***/
 unsigned int pcb_pstk_hash(const pcb_pstk_proto_t *p);
