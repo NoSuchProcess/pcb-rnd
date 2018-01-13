@@ -591,7 +591,7 @@ int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 	pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
 
 	/* special case: no-shape padstack is used for hole */
-	if (tshp->len == 0) {
+	if ((tshp == NULL) || (tshp->len == 0)) {
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 		if (proto->hdia <= 0)
 			return 0;
