@@ -624,7 +624,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	   into one or more padstacks */
 	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei)) {
 		term = ei->value;
-		pcb_pstk_vect2pstk(subc->data, &term->objs);
+		pcb_pstk_vect2pstk(subc->data, &term->objs, pcb_true);
 		term_destroy(term);
 	}
 	htip_uninit(&terms);

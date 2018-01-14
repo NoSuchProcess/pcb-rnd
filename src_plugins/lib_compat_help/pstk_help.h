@@ -11,10 +11,10 @@ pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pc
    objects that are converted  from both data and objs. Return the number
    of padstacks created. Return -1 on error.
    WARNING: O(n^2) loops, assuming there are only a dozen of objects passed. */
-int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs); /* thru-hole pins only */
-int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs); /* smd pads only */
+int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet); /* thru-hole pins only */
+int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet); /* smd pads only */
 
 /* Same as above, but convert both; returns -1 only if both failed */
-int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs);
+int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet);
 
 #endif

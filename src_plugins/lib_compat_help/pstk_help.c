@@ -64,7 +64,7 @@ pcb_layer_type_t lyts[] = {
 
 #define NUM_LYTS (sizeof(lyts) / sizeof(lyts[0]))
 
-int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs)
+int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
 	int l, n, plated, done = 0, ci;
 	pcb_coord_t cx, cy, d, r, valid;
@@ -73,7 +73,6 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs)
 	int num_cand[NUM_LYTS];
 	pcb_pstk_proto_t proto;
 	vtp0_t tmp;
-	int quiet = 1;
 
 	/* output padstacks are going to be marked with the FOUND flag */
 	for(n = 0; n < objs->used; n++) PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
@@ -195,15 +194,15 @@ pcb_trace("Converting %d objects into a pstk\n", tmp.used);
 	return done;
 }
 
-int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs)
+int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
 	return -1;
 }
 
-int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs)
+int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
-	int t = pcb_pstk_vect2pstk_thr(data, objs);
-	int s = pcb_pstk_vect2pstk_smd(data, objs);
+	int t = pcb_pstk_vect2pstk_thr(data, objs, quiet);
+	int s = pcb_pstk_vect2pstk_smd(data, objs, quiet);
 	if ((t < 0) && (s < 0))
 		return -1;
 	if (t < 0) t = 0;
