@@ -554,12 +554,12 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			ly = subc_get_layer(subc, argv[1], argv[2]);
 
-			load_val(x1, argv[4], "ivalid line x1");
-			load_val(y1, argv[5], "ivalid line y1");
-			load_val(x2, argv[6], "ivalid line x2");
-			load_val(y2, argv[7], "ivalid line y2");
-			load_val(w, argv[8], "ivalid line width");
-			load_val(clr, argv[9], "ivalid line clearance");
+			load_val(x1, argv[4], "invalid line x1");
+			load_val(y1, argv[5], "invalid line y1");
+			load_val(x2, argv[6], "invalid line x2");
+			load_val(y2, argv[7], "invalid line y2");
+			load_val(w, argv[8], "invalid line width");
+			load_val(clr, argv[9], "invalid line clearance");
 
 			for(; *ly != NULL; ly++) {
 				l = pcb_line_new(*ly, x1, y1, x2, y2, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
@@ -573,12 +573,12 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			ly = subc_get_layer(subc, argv[1], argv[2]);
 
-			load_val(cx, argv[4], "ivalid arc cx");
-			load_val(cy, argv[5], "ivalid arc cy");
-			load_val(r, argv[6], "ivalid arc radius");
-			load_dbl(sa, argv[7], "ivalid arc start angle");
-			load_dbl(da, argv[8], "ivalid arc delta angle");
-			load_val(w, argv[9], "ivalid arc width");
+			load_val(cx, argv[4], "invalid arc cx");
+			load_val(cy, argv[5], "invalid arc cy");
+			load_val(r, argv[6], "invalid arc radius");
+			load_dbl(sa, argv[7], "invalid arc start angle");
+			load_dbl(da, argv[8], "invalid arc delta angle");
+			load_val(w, argv[9], "invalid arc width");
 
 			for(; *ly != NULL; ly++) {
 				a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
@@ -590,9 +590,9 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			int plated;
 			pcb_pstk_t *ps;
 
-			load_val(cx, argv[2], "ivalid arc cx");
-			load_val(cy, argv[3], "ivalid arc cy");
-			load_val(d, argv[4], "ivalid arc radius");
+			load_val(cx, argv[2], "invalid arc cx");
+			load_val(cy, argv[3], "invalid arc cy");
+			load_val(d, argv[4], "invalid arc radius");
 			plated = !(strcmp(argv[5], "unplated") == 0);
 
 			ps = pcb_pstk_new_hole(subc->data, cx, cy, d, plated);
@@ -603,10 +603,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			pcb_line_t *l;
 
 			ly = subc_get_layer(subc, argv[1], argv[2]);
-			load_val(cx, argv[4], "ivalid fillcircle cx");
-			load_val(cy, argv[5], "ivalid fillcircle cy");
-			load_val(d, argv[6], "ivalid fillcircle radius");
-			load_val(clr, argv[7], "ivalid fillcircle clearance");
+			load_val(cx, argv[4], "invalid fillcircle cx");
+			load_val(cy, argv[5], "invalid fillcircle cy");
+			load_val(d, argv[6], "invalid fillcircle radius");
+			load_val(clr, argv[7], "invalid fillcircle clearance");
 
 			for(; *ly != NULL; ly++) {
 				l = pcb_line_new(*ly, cx, cy, cx, cy, d, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
