@@ -109,7 +109,7 @@ static void append_tshape(pcb_pstk_tshape_t *ts, pcb_pstk_tshape_t *src, int src
 
 int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
 {
-	int ret = -1, n, m, i;
+	int ret = -1, n, m, i, extra_obj = 0;
 	pcb_any_obj_t **o;
 	pcb_pstk_tshape_t *ts, *ts_src;
 	pcb_pin_t *via = NULL;
@@ -120,12 +120,6 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	pcb_vtpadstack_tshape_init(&dst->tr);
 	dst->hdia = 0;
 	dst->htop = dst->hbottom = 0;
-
-	if (vtp0_len(objs) > data->LayerN) {
-		if (!quiet)
-			pcb_message(PCB_MSG_ERROR, "Padstack conversion: too many objects selected\n");
-		goto quit;
-	}
 
 	/* allocate shapes on the canonical tshape (tr[0]) */
 	ts = pcb_vtpadstack_tshape_alloc_append(&dst->tr, 1);
@@ -153,6 +147,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 					ox = via->X;
 					oy = via->Y;
 				}
+				extra_obj++;
 				break;
 			case PCB_OBJ_PSTK:
 				if ((via != NULL) || (pstk != NULL)) {
@@ -174,12 +169,19 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 					ox = pstk->x;
 					oy = pstk->y;
 				}
+				extra_obj++;
 				break;
 			default:;
 				if (!quiet)
 					pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, padstack, line or polygon\n", (*o)->type);
 				goto quit;
 		}
+	}
+
+	if ((vtp0_len(objs) - extra_obj) > data->LayerN) {
+		if (!quiet)
+			pcb_message(PCB_MSG_ERROR, "Padstack conversion: too many objects selected\n");
+		goto quit;
 	}
 
 	if ((ts->len == 0) && (via == NULL) && (pstk == NULL)) {
