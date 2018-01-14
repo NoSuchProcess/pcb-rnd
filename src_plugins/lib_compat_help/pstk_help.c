@@ -87,9 +87,10 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet,
 
 	memset(&proto, 0, sizeof(proto));
 	if (pcb_pstk_proto_conv(data, &proto, quiet, &tmp, cx, cy) == 0) {
+		pcb_cardinal_t pid;
 		if (plated != -1)
 			proto.hplated = plated;
-		pcb_cardinal_t pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet);
+		pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet);
 		if (pid != PCB_PADSTACK_INVALID) {
 			pcb_pstk_t *ps = pcb_pstk_new(data, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
 			vtp0_append(objs, ps);
