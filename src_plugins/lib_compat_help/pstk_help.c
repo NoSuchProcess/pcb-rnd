@@ -255,13 +255,11 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 					}
 				}
 			}
-		}
 
-#warning TODO: validation
-
-		if (vect2pstk_conv_cand(data, objs, quiet, cand, num_cand, cx, cy, -1, NULL) == 0) {
-			/* we have deleted from objs, need to start over the main loop */
-			n = 0;
+			if (vect2pstk_conv_cand(data, objs, quiet, cand, num_cand, cx, cy, -1, NULL) == 0) {
+				/* we have deleted from objs, need to start over the main loop */
+				n = 0;
+			}
 		}
 	}
 
