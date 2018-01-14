@@ -590,9 +590,9 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			int plated;
 			pcb_pstk_t *ps;
 
-			load_val(cx, argv[2], "invalid arc cx");
-			load_val(cy, argv[3], "invalid arc cy");
-			load_val(d, argv[4], "invalid arc radius");
+			load_val(cx, argv[2], "invalid hole cx");
+			load_val(cy, argv[3], "invalid hole cy");
+			load_val(d, argv[4], "invalid hole radius");
 			plated = !(strcmp(argv[5], "unplated") == 0);
 
 			ps = pcb_pstk_new_hole(subc->data, cx, cy, d, plated);
