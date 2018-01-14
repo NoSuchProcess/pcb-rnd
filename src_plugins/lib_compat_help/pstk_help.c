@@ -64,22 +64,69 @@ pcb_layer_type_t lyts[] = {
 
 #define NUM_LYTS (sizeof(lyts) / sizeof(lyts[0]))
 
+
+static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet, pcb_any_obj_t **cand, int *num_cand, pcb_coord_t cx, pcb_coord_t cy, int plated, pcb_any_obj_t *extrao)
+{
+	pcb_pstk_proto_t proto;
+	int l, ci, res = -1;
+	vtp0_t tmp;
+	char *term = NULL;
+
+	vtp0_init(&tmp);
+	if (extrao != NULL)
+		vtp0_append(&tmp, extrao);
+	for(l = 0; l < objs->used; l++) {
+		if (num_cand[l] == 1) {
+			vtp0_append(&tmp, cand[l]);
+			if (term == NULL)
+				term = pcb_attribute_get(&cand[l]->Attributes, "term");
+		}
+	}
+
+	pcb_trace("Converting %d objects into a pstk\n", tmp.used);
+
+	memset(&proto, 0, sizeof(proto));
+	if (pcb_pstk_proto_conv(data, &proto, quiet, &tmp, cx, cy) == 0) {
+		if (plated != -1)
+			proto.hplated = plated;
+		pcb_cardinal_t pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet);
+		if (pid != PCB_PADSTACK_INVALID) {
+			pcb_pstk_t *ps = pcb_pstk_new(data, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
+			vtp0_append(objs, ps);
+			if (term != NULL)
+				pcb_attribute_put(&ps->Attributes, "term", term);
+			/* got our new proto - remove the objects we used */
+			for(ci = 0; ci < tmp.used; ci++) {
+				int i;
+				pcb_any_obj_t *o = tmp.array[ci];
+				for(i = 0; i < objs->used; i++) {
+					if (objs->array[i] == o) {
+						vtp0_remove(objs, i, 1);
+						pcb_destroy_object(data, pcb_obj_type2oldtype(o->type), o->parent.any, o, o);
+						break;
+					}
+				}
+			}
+		}
+		res = 0;
+	}
+	vtp0_uninit(&tmp);
+	return res;
+}
+
 int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
 	int l, n, plated, done = 0, ci;
+	pcb_pstk_proto_t *p;
 	pcb_coord_t cx, cy, d, r, valid;
 	pcb_any_obj_t *cand[NUM_LYTS];
-	char *term = NULL;
 	int num_cand[NUM_LYTS];
-	pcb_pstk_proto_t proto;
-	vtp0_t tmp;
 
 	/* output padstacks are going to be marked with the FOUND flag */
 	for(n = 0; n < objs->used; n++) PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
 
 	for(n = 0; n < objs->used; n++) {
 		pcb_any_obj_t *h = objs->array[n];
-		pcb_pstk_proto_t *p;
 
 		/* find holes */
 		switch(h->type) {
@@ -147,44 +194,10 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 
 		if (!valid) continue; /* this hole can not be converted */
 
-		vtp0_init(&tmp);
-		vtp0_append(&tmp, h);
-		for(l = 0; l < objs->used; l++) {
-			if (num_cand[l] == 1) {
-				vtp0_append(&tmp, cand[l]);
-				if (term == NULL)
-					term = pcb_attribute_get(&cand[l]->Attributes, "term");
-			}
-		}
-pcb_trace("Converting %d objects into a pstk\n", tmp.used);
-		memset(&proto, 0, sizeof(proto));
-		if (pcb_pstk_proto_conv(data, &proto, quiet, &tmp, cx, cy) == 0) {
-			proto.hplated = plated;
-			pcb_cardinal_t pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet);
-			if (pid != PCB_PADSTACK_INVALID) {
-				pcb_pstk_t *ps = pcb_pstk_new(data, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
-				vtp0_append(objs, ps);
-				if (term != NULL)
-					pcb_attribute_put(&ps->Attributes, "term", term);
-				/* got our new proto - remove the objects we used */
-				for(ci = 0; ci < tmp.used; ci++) {
-					int i;
-					pcb_any_obj_t *o = tmp.array[ci];
-					for(i = 0; i < objs->used; i++) {
-						if (objs->array[i] == o) {
-							vtp0_remove(objs, i, 1);
-							pcb_destroy_object(data, pcb_obj_type2oldtype(o->type), o->parent.any, o, o);
-							break;
-						}
-					}
-				}
-			}
-			
+		if (vect2pstk_conv_cand(data, objs, quiet, cand, num_cand, cx, cy, plated, h) == 0) {
 			/* we have deleted from objs, need to start over the main loop */
 			n = 0;
 		}
-
-		vtp0_uninit(&tmp);
 	}
 
 	/* output padstacks are going to be marked with the FOUND flag */
