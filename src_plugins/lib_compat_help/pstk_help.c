@@ -163,6 +163,7 @@ pcb_trace("Converting %d objects into a pstk\n", tmp.used);
 			pcb_cardinal_t pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet);
 			if (pid != PCB_PADSTACK_INVALID) {
 				pcb_pstk_t *ps = pcb_pstk_new(data, pid, 0, 0, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
+				vtp0_append(objs, ps);
 				if (term != NULL)
 					pcb_attribute_put(&ps->Attributes, "term", term);
 				/* got our new proto - remove the objects we used */

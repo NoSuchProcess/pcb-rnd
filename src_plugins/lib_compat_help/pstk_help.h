@@ -8,7 +8,8 @@
 pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated);
 
 /* Convert a vector of (pcb_any_obj_t *) into zero or more padstacks. Remove
-   objects that are converted  from both data and objs. Return the number
+   objects that are converted  from both data and objs. New padstacks are
+   placed back in objs. Quiet controls log messages. Return the number
    of padstacks created. Return -1 on error.
    WARNING: O(n^2) loops, assuming there are only a dozen of objects passed. */
 int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet); /* thru-hole pins only */
