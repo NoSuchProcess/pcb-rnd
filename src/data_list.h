@@ -27,7 +27,7 @@
 #include "data.h"
 
 /* append objects of type, with flags matching mask to dst; pointer are
-   valid only until the first change to data */
+   valid only until the first change to data; if flags is 0, everything matches. */
 void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, unsigned long mask);
 
 /* append objects of type that are terminals; pointer are
