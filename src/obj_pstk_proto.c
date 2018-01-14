@@ -938,7 +938,9 @@ int pcb_pstk_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2)
 	if (p1->htop != p2->htop) return 0;
 	if (p1->hbottom != p2->hbottom) return 0;
 	if (p1->hplated != p2->hplated) return 0;
-	if (ts1->len != ts2->len) return 0;
+	if ((ts1 == NULL) && (ts2 != NULL)) return 0;
+	if ((ts2 == NULL) && (ts1 != NULL)) return 0;
+	if ((ts1 != NULL) && (ts1->len != ts2->len)) return 0;
 
 	for(n1 = 0; n1 < ts1->len; n1++) {
 		for(n2 = 0; n2 < ts2->len; n2++)
