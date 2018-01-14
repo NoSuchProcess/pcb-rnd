@@ -209,7 +209,63 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 
 int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
-	return -1;
+	int l, n, done = 0, ci;
+	pcb_pstk_proto_t *p;
+	pcb_coord_t cx, cy;
+	pcb_any_obj_t *cand[NUM_LYTS];
+	int num_cand[NUM_LYTS];
+
+	/* output padstacks are going to be marked with the FOUND flag */
+	for(n = 0; n < objs->used; n++) PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
+
+	for(n = 0; n < objs->used; n++) {
+		pcb_any_obj_t *o = objs->array[n];
+
+		if ((o->type == PCB_OBJ_LINE) || (o->type == PCB_OBJ_ARC) || (o->type == PCB_OBJ_POLY)) {
+			pcb_layer_type_t olyt;
+
+			assert(o->parent_type == PCB_PARENT_LAYER);
+			olyt = pcb_layer_flags_(o->parent.layer);
+			if ((!(olyt | PCB_LYT_COPPER)) || (olyt | PCB_LYT_INTERN))
+				continue; /* deal with outer copper objects only */
+
+			/* assume padstack origin is middle of the object, which is approximated here */
+			cx = (o->BoundingBox.X1 + o->BoundingBox.X2) / 2;
+			cy = (o->BoundingBox.Y1 + o->BoundingBox.Y2) / 2;
+
+			memset(cand, 0, sizeof(cand));
+			memset(num_cand, 0, sizeof(num_cand));
+			for(ci = 0; ci < objs->used; ci++) {
+				pcb_layer_type_t lyt;
+				pcb_any_obj_t *c = objs->array[ci]; /* candidate */
+
+				if ((lyt & PCB_LYT_ANYWHERE) != (olyt & PCB_LYT_ANYWHERE))
+					continue; /* care for the same side only */
+				if (lyt & PCB_LYT_COPPER)
+					continue; /* care for non-copper only */
+
+#warning TODO: check if the objects overlap
+
+
+				for(l = 0; l < NUM_LYTS; l++) {
+					if (lyts[l] == lyt) {
+						cand[l] = c;
+						num_cand[l]++;
+						break;
+					}
+				}
+			}
+		}
+
+#warning TODO: validation
+
+		if (vect2pstk_conv_cand(data, objs, quiet, cand, num_cand, cx, cy, -1, NULL) == 0) {
+			/* we have deleted from objs, need to start over the main loop */
+			n = 0;
+		}
+	}
+
+	return done;
 }
 
 int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
