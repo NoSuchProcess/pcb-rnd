@@ -562,8 +562,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_val(w, argv[8], "ivalid line width");
 			load_val(clr, argv[9], "ivalid line clearance");
 
-			l = pcb_line_new(*ly, x1, y1, x2, y2, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
-			load_term(l, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
+			for(; *ly != NULL; ly++) {
+				l = pcb_line_new(*ly, x1, y1, x2, y2, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+				load_term(l, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
+			}
 		}
 		else if ((argc == 11) && (strcmp(argv[0], "arc") == 0)) {
 			pcb_coord_t cx, cy, r, w;
@@ -579,8 +581,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_dbl(da, argv[8], "ivalid arc delta angle");
 			load_val(w, argv[9], "ivalid arc width");
 
-			a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
-			load_term(a, argv[3], "invalid term ID for arc: '%s', skipping footprint\n");
+			for(; *ly != NULL; ly++) {
+				a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+				load_term(a, argv[3], "invalid term ID for arc: '%s', skipping footprint\n");
+			}
 		}
 		else if ((argc == 6) && (strcmp(argv[0], "hole") == 0)) {
 			pcb_coord_t cx, cy, d;
@@ -590,8 +594,8 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_val(cx, argv[2], "ivalid arc cx");
 			load_val(cy, argv[3], "ivalid arc cy");
 			load_val(d, argv[4], "ivalid arc radius");
-
 			plated = !(strcmp(argv[5], "unplated") == 0);
+
 			ps = pcb_pstk_new_hole(subc->data, cx, cy, d, plated);
 			load_term(ps, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
 		}
@@ -605,8 +609,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_val(d, argv[6], "ivalid fillcircle radius");
 			load_val(clr, argv[7], "ivalid fillcircle clearance");
 
-			l = pcb_line_new(*ly, cx, cy, cx, cy, d, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
-			load_term(l, argv[3], "invalid term ID for fillcircle: '%s', skipping footprint\n");
+			for(; *ly != NULL; ly++) {
+				l = pcb_line_new(*ly, cx, cy, cx, cy, d, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+				load_term(l, argv[3], "invalid term ID for fillcircle: '%s', skipping footprint\n");
+			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
 			res = 0;
