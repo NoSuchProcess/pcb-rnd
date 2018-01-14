@@ -940,14 +940,16 @@ int pcb_pstk_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2)
 	if (p1->hplated != p2->hplated) return 0;
 	if ((ts1 == NULL) && (ts2 != NULL)) return 0;
 	if ((ts2 == NULL) && (ts1 != NULL)) return 0;
-	if ((ts1 != NULL) && (ts1->len != ts2->len)) return 0;
 
-	for(n1 = 0; n1 < ts1->len; n1++) {
-		for(n2 = 0; n2 < ts2->len; n2++)
-			if (pcb_pstk_shape_eq(ts1->shape + n1, ts2->shape + n2))
-				goto found;
-		return 0;
-		found:;
+	if (ts1 != NULL) {
+		if (ts1->len != ts2->len) return 0;
+		for(n1 = 0; n1 < ts1->len; n1++) {
+			for(n2 = 0; n2 < ts2->len; n2++)
+				if (pcb_pstk_shape_eq(ts1->shape + n1, ts2->shape + n2))
+					goto found;
+			return 0;
+			found:;
+		}
 	}
 
 	return 1;
