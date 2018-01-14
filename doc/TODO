@@ -225,6 +225,14 @@ FEATURES
 - menu item for export of multiple selected layout elements to discrete .fp files
 
 4. Low prio ===============================================================================
+- CAM:
+	- split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
+	- export_gerber: add a true gerber drill output
+	- make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
+	- invent a generic API for both the drill attrib config table and gerber suffixes
+	- implement a CAM plugin that can drive multiple exporters with all options configured
+	- remove the gerber->drill dep and ask users to use the CAM instead
+	- move the hackish gerber layer suffix functions into CAM configs
 - BUG: main.c: SIGPIPE - detect it (needed for popen)
 - advanced grid settings:
 	- keep two lists of preferred grid sizes, one in mil, one in mm
