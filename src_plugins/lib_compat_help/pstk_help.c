@@ -26,6 +26,12 @@
 #include "obj_pstk_inlines.h"
 #include "compat_misc.h"
 #include "search.h"
+#include "remove.h"
+
+
+#warning TODO: remove this once the operations are free of ptrs
+extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
+
 
 pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated)
 {
@@ -151,7 +157,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs)
 					term = pcb_attribute_get(&cand[l]->Attributes, "term");
 			}
 		}
-
+pcb_trace("Converting %d objects into a pstk\n", tmp.used);
 		memset(&proto, 0, sizeof(proto));
 		if (pcb_pstk_proto_conv(data, &proto, quiet, &tmp, cx, cy) == 0) {
 			proto.hplated = plated;
@@ -163,9 +169,11 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs)
 				/* got our new proto - remove the objects we used */
 				for(ci = 0; ci < tmp.used; ci++) {
 					int i;
+					pcb_any_obj_t *o = tmp.array[ci];
 					for(i = 0; i < objs->used; i++) {
-						if (objs->array[i] == tmp.array[ci]) {
+						if (objs->array[i] == o) {
 							vtp0_remove(objs, i, 1);
+							pcb_destroy_object(data, pcb_obj_type2oldtype(o->type), o->parent.any, o, o);
 							break;
 						}
 					}
