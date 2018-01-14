@@ -202,9 +202,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 	}
 
 	/* output padstacks are going to be marked with the FOUND flag */
-	for(n = 0; n < objs->used; n++) {
-		PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
-	}
+	for(n = 0; n < objs->used; n++) PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
 
 	return done;
 }
