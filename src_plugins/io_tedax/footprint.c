@@ -514,7 +514,6 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	pcb_coord_t px[256], py[256], clr;
 	pcb_layer_t **ly;
 
-	pcb_trace("FP start\n");
 	htip_init(&terms, longhash, longkeyeq);
 	while((argc = tedax_getline(fn, buff, buff_size, argv, argv_size)) >= 0) {
 		if ((argc == 5) && (strcmp(argv[0], "term") == 0)) {
