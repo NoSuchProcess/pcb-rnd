@@ -5,7 +5,6 @@
 	+ subc centroid/origin snap [report: jg]
 - Replacing an existing element with a subc in the buffer using shift-click doesn't pick-up the refdes from the existing element. [report: Ade]
 - BUG: Far-side silk text can be selected and moved when the mouse is over front-side objects. [report: Ade]
-- BUG: rubber band mode doesn't honor rubber band mode  (follow routing options in pcb-rnd post, use outline layer to repro.) [report: Miloh] 
 
 2. For later releases ===============================================================================
 - key rewrite: (base key swap bug (q<->a, y<->z))
@@ -47,6 +46,7 @@
 - BUG: GTK-GL: adding new mask layer by right clicking on existing mask layer, add after existing layer, select "subtraction" drawing checkbox, and set name of new layer in dialog to test. Once done, new layer is called "New Layer", not the provided name. [report: erich]
 - BUG: polyhatch() - start pcb-rnd, draw a polygon on top copper signal, then invoking :polyhatch() fails to bring up window allowing user to specify crasshatch parameters [report: erich]
 - BUG: shift-m of alt-a selected polyhatch() lines to top mask layer can induce a crash.  Start pcb-rnd, create large polygon on top copper i.e. over half the area, invoke polyhatch(), click on crosshatched polygon and hit delete to delete the polygon. Then hit 'u' to undo associated line deletion, alt-a to select all lines (bug_files/polyhatch4a.lht and polyhatch2a.lht), switch to top mask, 'm' to move lines, and up with residual polygon copied to mask layer along with lines. rtree related segfault seems to have been fixed. [report: erich]
+- BUG: rubber band mode doesn't honor rubber band mode  (follow routing options in pcb-rnd post, use outline layer to repro.) [report: Miloh] 
 - feature: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 - vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - feature: property editor should deal with flags
