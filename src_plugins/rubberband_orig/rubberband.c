@@ -801,53 +801,63 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
  */
 static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t * Layer, pcb_line_t * Line)
 {
-	/* lookup layergroup and check all visible lines in this group */
 	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	pcb_board_t * board = pcb_data_get_top(PCB->Data);
 
-	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
-	{
-		if (layer->meta.real.vis) {
-			pcb_coord_t thick;
+	if(board == NULL)
+		board = PCB;
 
-			/* the following code just stupidly compares the endpoints of the lines */
-			PCB_LINE_LOOP(layer);
-			{
-				pcb_rubberband_t *have_line = NULL;
-				pcb_bool touches1 = pcb_false;
-				pcb_bool touches2 = pcb_false;
-				int l;
+	if(group >= 0) {
+		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
+		pcb_cardinal_t entry;
+		const int comb = Layer->comb & PCB_LYC_SUB;
 
-				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
-					continue;
+		for(entry = 0;entry < length;++entry) {
+			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
 
-				/* Check whether the line is already in the rubberband list. */
-				for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-					if (rbnd->Rubberband[l].Line == line) 
-						have_line = &rbnd->Rubberband[l];
+			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
+				pcb_coord_t thick;
 
-				/* Check whether any of the scanned line points touch the passed line */
-				thick = (line->Thickness + 1) / 2;
-				touches1 = pcb_is_point_on_line(line->Point1.X, line->Point1.Y, thick, Line);
-				touches2 = pcb_is_point_on_line(line->Point2.X, line->Point2.Y, thick, Line);
+				/* the following code just stupidly compares the endpoints of the lines */
+				PCB_LINE_LOOP(layer);
+				{
+					pcb_rubberband_t *have_line = NULL;
+					pcb_bool touches1 = pcb_false;
+					pcb_bool touches2 = pcb_false;
+					int l;
 
-				if(touches1) {
-					if(have_line)
-						have_line->delta_index[0] = 0;
-					else 
-						have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+						continue;
+
+					/* Check whether the line is already in the rubberband list. */
+					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
+						if (rbnd->Rubberband[l].Line == line) 
+							have_line = &rbnd->Rubberband[l];
+
+					/* Check whether any of the scanned line points touch the passed line */
+					thick = (line->Thickness + 1) / 2;
+					touches1 = pcb_is_point_on_line(line->Point1.X, line->Point1.Y, thick, Line);
+					touches2 = pcb_is_point_on_line(line->Point2.X, line->Point2.Y, thick, Line);
+
+					if(touches1) {
+						if(have_line)
+							have_line->delta_index[0] = 0;
+						else 
+							have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+					}
+
+					if(touches2) {
+						if(have_line)
+							have_line->delta_index[1] = 0;
+						else 
+							have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+					}
 				}
-
-				if(touches2) {
-					if(have_line)
-						have_line->delta_index[1] = 0;
-					else 
-						have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
-				}
+				PCB_END_LOOP;
 			}
-			PCB_END_LOOP;
 		}
 	}
-	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
@@ -982,10 +992,8 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
-			if (pcb_layer_flags_(layer) & PCB_LYT_COPPER) {
-				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1,0 );
-				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2,1 );
-			}
+			CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1,0 );
+			CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2,1 );
 			break;
 		}
 
