@@ -561,32 +561,40 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
  */
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, pcb_bool Exact)
 {
-	pcb_layergrp_id_t group;
-	struct rubber_info info;
-	pcb_coord_t t = Line->Thickness / 2;
+	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	pcb_board_t * board = pcb_data_get_top(PCB->Data);
 
-	/* lookup layergroup and check all visible arcs in this group */
-	info.radius = Exact ? -1 : MAX(Line->Thickness / 2, 1);
-	info.box.X1 = LinePoint->X - t;
-	info.box.X2 = LinePoint->X + t;
-	info.box.Y1 = LinePoint->Y - t;
-	info.box.Y2 = LinePoint->Y + t;
-	info.line = Line;
-	info.rbnd = rbnd;
-	info.X = LinePoint->X;
-	info.Y = LinePoint->Y;
-	info.delta_index = 0;
+	if(board == NULL)
+		board = PCB;
 
-	group = pcb_layer_get_group_(Layer);
-	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
-	{
-		/* check all visible lines of the group member */
-		if (layer->meta.real.vis) {
-			info.layer = layer;
-			pcb_r_search(layer->arc_tree, &info.box, NULL, rubber_callback_arc, &info, NULL);
+	if(group >= 0) {
+		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
+		pcb_cardinal_t entry;
+		const pcb_coord_t t = Line->Thickness / 2;
+		const int comb = Layer->comb & PCB_LYC_SUB;
+		struct rubber_info info;
+
+		info.radius = Exact ? -1 : MAX(Line->Thickness / 2, 1);
+		info.box.X1 = LinePoint->X - t;
+		info.box.X2 = LinePoint->X + t;
+		info.box.Y1 = LinePoint->Y - t;
+		info.box.Y2 = LinePoint->Y + t;
+		info.line = Line;
+		info.rbnd = rbnd;
+		info.X = LinePoint->X;
+		info.Y = LinePoint->Y;
+		info.delta_index = 0;
+
+		for(entry = 0;entry < length;++entry)	{
+			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+
+			if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb))	{
+				info.layer = layer;
+				pcb_r_search(layer->arc_tree, &info.box, NULL, rubber_callback_arc, &info, NULL);
+			}
 		}
 	}
-	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
