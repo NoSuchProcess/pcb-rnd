@@ -867,17 +867,17 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 {
 	int n;
 
-	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
-	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
-
 	EraseSubc(sc);
-
 	if (pcb_data_get_top(Data) != NULL) {
 		if (Data->subc_tree != NULL)
 			pcb_r_delete_entry(Data->subc_tree, (pcb_box_t *)sc);
 		else
 			Data->subc_tree = pcb_r_create_tree();
 	}
+
+	/* for calculating the new bounding box on the fly */
+	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
+	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
 
 	/* execute on layer locals */
 	for(n = 0; n < sc->data->LayerN; n++) {
