@@ -518,32 +518,40 @@ static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
  */
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint,int delta_index)
 {
-	pcb_layergrp_id_t group;
-	struct rubber_info info;
-	pcb_coord_t t = Line->Thickness / 2;
+	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	pcb_board_t * board = pcb_data_get_top(PCB->Data);
 
-	/* lookup layergroup and check all visible lines in this group */
-	info.radius = -1;
-	info.box.X1 = LinePoint->X - t;
-	info.box.X2 = LinePoint->X + t;
-	info.box.Y1 = LinePoint->Y - t;
-	info.box.Y2 = LinePoint->Y + t;
-	info.line = Line;
-	info.rbnd = rbnd;
-	info.X = LinePoint->X;
-	info.Y = LinePoint->Y;
-	info.delta_index = delta_index;
+	if(board == NULL)
+		board = PCB;
 
-	group = pcb_layer_get_group_(Layer);
-	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
-	{
-		/* check all visible lines of the group member */
-		if (layer->meta.real.vis) {
-			info.layer = layer;
-			pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+	if(group >= 0) {
+		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
+		pcb_cardinal_t entry;
+		const pcb_coord_t t = Line->Thickness / 2;
+		const int comb = Layer->comb & PCB_LYC_SUB;
+		struct rubber_info info;
+
+		info.radius = -1;
+		info.box.X1 = LinePoint->X - t;
+		info.box.X2 = LinePoint->X + t;
+		info.box.Y1 = LinePoint->Y - t;
+		info.box.Y2 = LinePoint->Y + t;
+		info.line = Line;
+		info.rbnd = rbnd;
+		info.X = LinePoint->X;
+		info.Y = LinePoint->Y;
+		info.delta_index = delta_index;
+
+		for(entry = 0;entry < length;++entry)	{
+			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+
+			if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb))	{
+				info.layer = layer;
+				pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+			}
 		}
 	}
-	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
@@ -974,12 +982,9 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		}
 
 	case PCB_TYPE_LINE_POINT:
-		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)	{
-			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3,0);
-
-			if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
-				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
-		}
+		CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3,0);
+		if(conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
+			CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_ARC_POINT:
