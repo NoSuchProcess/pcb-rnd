@@ -1,30 +1,34 @@
 /*
+ *                            COPYRIGHT
  *
- * IPC-D-356 Netlist export.
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *
- * Copyright (C) 2012 Jerome Marchand (Jerome.Marchand@gmail.com)
+ *  IPC-D-356 Netlist export.
  *
- * PCB, interactive printed circuit board design
+ *  Copyright (C) 2012 Jerome Marchand (Jerome.Marchand@gmail.com)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  PCB, interactive printed circuit board design
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * Contact addresses for paper mail and Email:
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Contact:
+ *    Project page: http://repo.hu/projects/pcb-rnd
+ *    lead developer: email to pcb-rnd (at) igor2.repo.hu
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
- * Thomas.Nau@rz.uni-ulm.de
  */
 
 #include "config.h"
