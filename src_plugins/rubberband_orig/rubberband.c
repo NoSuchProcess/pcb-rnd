@@ -765,58 +765,68 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
  */
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
-	pcb_layergrp_id_t group;
 	const pcb_bool clearpoly = PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY,Polygon);
+	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	pcb_board_t * board = pcb_data_get_top(PCB->Data);
 
-	/* lookup layergroup and check all visible lines in this group */
-	group = pcb_layer_get_group_(Layer);
-	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
+	if(board == NULL)
+		board = PCB;
+
+	if(group >= 0)
 	{
-		if (layer->meta.real.vis) {
-			pcb_coord_t thick;
+		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
+		pcb_cardinal_t entry;
+		const int comb = Layer->comb & PCB_LYC_SUB;
 
-			/* the following code just stupidly compares the endpoints
-			 * of the lines
-			 */
-			PCB_LINE_LOOP(layer);
-			{
-				pcb_rubberband_t *have_line = NULL;
-				int touches1 = 0, touches2 = 0;
-				int l;
+		for(entry = 0;entry < length;++entry) {
+			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
 
-				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
-					continue;
-				if (clearpoly && PCB_OBJ_HAS_CLEARANCE(line))
-					continue;
+			if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
+				pcb_coord_t thick;
 
-				/* Check whether the line is already in the rubberband list. */
-				for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-					if (rbnd->Rubberband[l].Line == line) 
-						have_line = &rbnd->Rubberband[l];
+				/* the following code just stupidly compares the endpoints
+				 * of the lines
+				 */
+				PCB_LINE_LOOP(layer);
+				{
+					pcb_rubberband_t *have_line = NULL;
+					int touches1 = 0, touches2 = 0;
+					int l;
 
-				/* Check whether any of the line points touch the polygon */
-				thick = (line->Thickness + 1) / 2;
-				touches1 = (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon));
-				touches2 = (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon));
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+						continue;
+					if ((pcb_layer_flags_(layer) & PCB_LYT_COPPER) && clearpoly && PCB_OBJ_HAS_CLEARANCE(line))
+						continue;
 
-				if(touches1) {
-					if(have_line)
-						have_line->delta_index[0] = 0;
-					else 
-						have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+					/* Check whether the line is already in the rubberband list. */
+					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
+						if (rbnd->Rubberband[l].Line == line) 
+							have_line = &rbnd->Rubberband[l];
+
+					/* Check whether any of the line points touch the polygon */
+					thick = (line->Thickness + 1) / 2;
+					touches1 = (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon));
+					touches2 = (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon));
+
+					if(touches1) {
+						if(have_line)
+							have_line->delta_index[0] = 0;
+						else 
+							have_line =	pcb_rubber_band_create(rbnd, layer, line, 0,0);
+					}
+
+					if(touches2) {
+						if(have_line)
+							have_line->delta_index[1] = 0;
+						else 
+							have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
+					}
 				}
-
-				if(touches2) {
-					if(have_line)
-						have_line->delta_index[1] = 0;
-					else 
-						have_line =	pcb_rubber_band_create(rbnd, layer, line, 1,0);
-				}
+				PCB_END_LOOP;
 			}
-			PCB_END_LOOP;
 		}
 	}
-	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1042,8 +1052,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		break;
 
 	case PCB_TYPE_POLY:
-		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)
-			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
+		CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2);
 		break;
 	}
 }
