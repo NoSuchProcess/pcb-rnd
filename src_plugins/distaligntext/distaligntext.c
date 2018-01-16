@@ -1,12 +1,12 @@
-/*!
- * \file distaligntext.c
+/*
+ * distaligntext.c
  *
- * \brief distaligntext plug-in for PCB.
+ * distaligntext plug-in for PCB.
  *
- * \author Copyright (C) 2012 Dan White <dan@whiteaudio.com>
+ * Copyright (C) 2012 Dan White <dan@whiteaudio.com>
  * Functions to distribute (evenly spread out) and align PCB text.
  *
- * \copyright Licensed under the terms of the GNU General Public
+ * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Substantially from distalign.c
