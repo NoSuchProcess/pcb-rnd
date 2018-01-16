@@ -647,36 +647,46 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
  */
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, pcb_bool Exact)
 {
-	pcb_layergrp_id_t group;
 	struct rubber_info info;
 	int which;
 	pcb_coord_t t = Arc->Thickness / 2, ex, ey;
+	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	pcb_board_t * board = pcb_data_get_top(PCB->Data);
 
-	for(which=0; which<=1; ++which) {
-		pcb_arc_get_end(Arc,which,&ex, &ey);
+	if(board == NULL)
+		board = PCB;
 
-		/* lookup layergroup and check all visible lines in this group */
-		info.radius = Exact ? -1 : MAX(Arc->Thickness / 2, 1);
-		info.box.X1 = ex - t;
-		info.box.X2 = ex + t;
-		info.box.Y1 = ey - t;
-		info.box.Y2 = ey + t;
-		info.line = NULL; /* used only to make sure the current object is not added - we are adding lines only and the current object is an arc */
-		info.rbnd = rbnd;
-		info.X = ex;
-		info.Y = ey;
-		info.delta_index = which;
+	if(group >= 0) {
+		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
+		pcb_cardinal_t entry;
+		const int comb = Layer->comb & PCB_LYC_SUB;
 
-		group = pcb_layer_get_group_(Layer);
-		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
-		{
-			/* check all visible lines of the group member */
-			if (layer->meta.real.vis) {
-				info.layer = layer;
-				pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+		for(which=0; which<=1; ++which) {
+			pcb_arc_get_end(Arc,which,&ex, &ey);
+
+			/* lookup layergroup and check all visible lines in this group */
+			info.radius = Exact ? -1 : MAX(Arc->Thickness / 2, 1);
+			info.box.X1 = ex - t;
+			info.box.X2 = ex + t;
+			info.box.Y1 = ey - t;
+			info.box.Y2 = ey + t;
+			info.line = NULL; /* used only to make sure the current object is not added - we are adding lines only and the current object is an arc */
+			info.rbnd = rbnd;
+			info.X = ex;
+			info.Y = ey;
+			info.delta_index = which;
+
+			for(entry = 0;entry < length;++entry) {
+				const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+				pcb_layer_t * layer = &PCB->Data->Layer[layer_id];
+
+				if(layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
+					/* check all visible lines of the group member */
+					info.layer = layer;
+					pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+				}
 			}
 		}
-		PCB_END_LOOP;
 	}
 }
 
@@ -1012,8 +1022,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		break;
 
 	case PCB_TYPE_ARC:
-		if (pcb_layer_flags_((pcb_layer_t *)Ptr1) & PCB_LYT_COPPER)
-			CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
+		CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
 		break;
 
 	case PCB_TYPE_VIA:
