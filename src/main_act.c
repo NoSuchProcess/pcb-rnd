@@ -1,7 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
  *
@@ -19,7 +20,13 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- *  Contact addresses for paper mail and Email:
+ *  Contact:
+ *    Project page: http://repo.hu/projects/pcb-rnd
+ *    lead developer: email to pcb-rnd (at) igor2.repo.hu
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *
+ *  Old contact info:
  *  Harry Eaton, 6697 Buttonhole Ct, Columbia, MD 21044, USA
  *  haceaton@aplcomm.jhuapl.edu
  *
@@ -191,7 +198,8 @@ int pcb_act_PrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord
 {
 	printf("\n"
 				 "                COPYRIGHT for the original pcb program:\n\n"
-				 "    PCB, interactive printed circuit board design\n"
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
 				 "    Copyright (C) 1994,1995,1996,1997 Thomas Nau\n"
 				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n");
 	printf("                COPYRIGHT for %s (pcb-rnd) version %s:\n"
