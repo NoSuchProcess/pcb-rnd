@@ -58,6 +58,7 @@ typedef struct {
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
 		CFT_BOOLEAN move_linepoint_uses_route;	/* Moving a line point calculates a new line route. This allows 45/90 line modes when editing lines. */
+		CFT_BOOLEAN auto_via;              /* when drawing traces and switching layers or when moving an object from one layer to another, try to keep connections by automatically inserting vias. */
 		CFT_REAL route_radius;             /* temporary: route draw helper's arc radius at corners (factor of the trace thickness) */
 
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */

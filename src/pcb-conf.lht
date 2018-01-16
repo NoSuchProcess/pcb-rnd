@@ -71,6 +71,7 @@ li:pcb-rnd-conf-v1 {
 			live_routing = 0
 			beep_when_finished = 0
 			click_time = 200
+			auto_via = 1
 			ha:view {
 				flip_x = 0
 				flip_y = 0

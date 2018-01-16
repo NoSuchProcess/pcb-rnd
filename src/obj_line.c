@@ -653,7 +653,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->meta.real.vis)
 		pcb_line_invalidate_draw(ctx->move.dst_layer, newone);
-	if (!PCB->ViaOn || ctx->move.more_to_come ||
+	if (!conf_core.editor.auto_via || !PCB->ViaOn || ctx->move.more_to_come ||
 			pcb_layer_get_group_(Layer) ==
 			pcb_layer_get_group_(ctx->move.dst_layer) || !(pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, Layer)) & PCB_LYT_COPPER) || !(pcb_layer_flags_(ctx->move.dst_layer) & PCB_LYT_COPPER))
 		return newone;
