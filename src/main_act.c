@@ -202,8 +202,8 @@ int pcb_act_PrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				 "    Copyright (C) 1994,1995,1996,1997 Thomas Nau\n"
 				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n");
 	printf("                COPYRIGHT for %s (pcb-rnd) version %s:\n"
-				 "    pcb-rnd, a fork of PCB with random improvements\n"
-				 "    Copyright (C) 2013, 2014, 2015, 2016, 2017 Tibor 'Igor2' Palinkas\n\n", Progname, PCB_VERSION);
+				 "    pcb-rnd, originally fork of PCB \n"
+				 "    Copyright (C) 2013,2014,2015,2016,2017,2018 Tibor 'Igor2' Palinkas\n\n", Progname, PCB_VERSION);
 	printf("    This program is free software; you can redistribute it and/or modify\n"
 				 "    it under the terms of the GNU General Public License as published by\n"
 				 "    the Free Software Foundation; either version 2 of the License, or\n"
