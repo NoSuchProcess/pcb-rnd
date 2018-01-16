@@ -35,6 +35,10 @@
       polygon1.c
       (C) 1997 Alexey Nikitin, Michael Leonov
       (C) 1993 Klamer Schutte
+ *  Contact:
+ *    Project page: http://repo.hu/projects/pcb-rnd
+ *    lead developer: email to pcb-rnd (at) igor2.repo.hu
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
 */
 
 

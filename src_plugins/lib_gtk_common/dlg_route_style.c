@@ -20,6 +20,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ *  Contact:
+ *    Project page: http://repo.hu/projects/pcb-rnd
+ *    lead developer: email to pcb-rnd (at) igor2.repo.hu
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
 /* route style edit dialog */

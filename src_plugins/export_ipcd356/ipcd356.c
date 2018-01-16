@@ -8,7 +8,8 @@
  *
  *  Copyright (C) 2012 Jerome Marchand (Jerome.Marchand@gmail.com)
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
