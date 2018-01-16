@@ -1,7 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2009-2011 PCB Contributers (See ChangeLog for details)
  *
  *  This program is free software; you can redistribute it and/or modify

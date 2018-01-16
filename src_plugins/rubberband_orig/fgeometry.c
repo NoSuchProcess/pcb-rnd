@@ -1,7 +1,9 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design - 2d geometry helpers
+ *  pcb-rnd, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2017 Luis de Arquer <ldearquer@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify

@@ -1,7 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *
  *  Specctra .dsn export HID
  *  Copyright (C) 2008, 2011 Josh Jordan, Dan McMahill, and Jared Casper

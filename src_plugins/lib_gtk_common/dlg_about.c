@@ -1,7 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  pcb-rnd Copyright (C) 2017 Alain Vigne
  *
@@ -18,9 +19,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *  Contact addresses for paper mail and Email:
- *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
- *  Thomas.Nau@rz.uni-ulm.de
+ *  Contact:
+ *    Project page: http://repo.hu/projects/pcb-rnd
+ *    lead developer: email to pcb-rnd (at) igor2.repo.hu
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
 

@@ -1,7 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *
  *  hyperlynx .hyp importer, plugin entry
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas

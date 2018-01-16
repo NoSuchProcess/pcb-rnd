@@ -1,7 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
+ *  (this file is based on PCB, interactive printed circuit board design)
  *
  *  Breadboard export HID
  *  This code is based on the GERBER and OpenSCAD export HID
