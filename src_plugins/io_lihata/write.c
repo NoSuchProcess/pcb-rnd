@@ -553,6 +553,7 @@ static lht_node_t *build_pstk_protos(pcb_vtpadstack_proto_t *pp)
 		/* save each shape */
 		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
 		ts = &proto->tr.array[0]; /* save the canonical shape only, the transformation cache is generated runtime */
+		if (ts != NULL)
 		for(sn = 0; sn < ts->len; sn++) {
 			pcb_pstk_shape_t *shape = ts->shape + sn;
 
