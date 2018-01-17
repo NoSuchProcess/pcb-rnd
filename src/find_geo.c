@@ -895,6 +895,24 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
 	return pcb_false;
 }
 
+PCB_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+{
+	int n;
+	pcb_pline_t *pl;
+	pcb_vector_t v;
+	pcb_polyarea_t *shp = pcb_polyarea_create();
+
+	v[0] = shape->data.poly.x[0] + ps->x; v[1] = shape->data.poly.y[0] + ps->y;
+	pl = pcb_poly_contour_new(v);
+	for(n = 1; n < shape->data.poly.len; n++) {
+		v[0] = shape->data.poly.x[n] + ps->x; v[1] = shape->data.poly.y[n] + ps->y;
+		pcb_poly_vertex_include(pl->head.prev, pcb_poly_node_create(v));
+	}
+	pcb_poly_contour_pre(pl, 1);
+	pcb_polyarea_contour_include(shp, pl);
+	return shp;
+}
+
 PCB_INLINE pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 {
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, poly->parent.layer);
@@ -904,20 +922,8 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 		case PCB_PSSH_POLY:
 		{
 			/* convert the shape poly to a new poly so that it can be intersected */
-			pcb_polyarea_t *shp = pcb_polyarea_create();
-			pcb_pline_t *pl;
-			pcb_vector_t v;
 			pcb_bool res;
-			int n;
-
-			v[0] = shape->data.poly.x[0] + ps->x; v[1] = shape->data.poly.y[0] + ps->y;
-			pl = pcb_poly_contour_new(v);
-			for(n = 1; n < shape->data.poly.len; n++) {
-				v[0] = shape->data.poly.x[n] + ps->x; v[1] = shape->data.poly.y[n] + ps->y;
-				pcb_poly_vertex_include(pl->head.prev, pcb_poly_node_create(v));
-			}
-			pcb_poly_contour_pre(pl, 1);
-			pcb_polyarea_contour_include(shp, pl);
+			pcb_polyarea_t *shp = pcb_pstk_shp_poly2area(ps, shape);
 			res = pcb_polyarea_touching(shp, poly->Clipped);
 			pcb_polyarea_free(&shp);
 			return res;
