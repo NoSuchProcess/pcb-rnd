@@ -964,12 +964,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 				case PCB_PSSH_POLY:
 					break;
 				case PCB_PSSH_LINE:
-					{
-						pcb_line_t tmp;
-						shape_line_to_pcb_line(ps2, shape2->data.line, tmp);
-						return pcb_intersect_line_polyline(shape1->data.poly.pa->contours, shape2->data.line.x1 - ps2->x, shape2->data.line.y1 - ps2->y, shape2->data.line.x2 - ps2->x, shape2->data.line.y2 - ps2->y, shape2->data.line.thickness);
-					}
-					break;
+					return pcb_intersect_line_polyline(shape1->data.poly.pa->contours, shape2->data.line.x1 + ps2->x - ps1->x, shape2->data.line.y1 + ps2->y - ps1->y, shape2->data.line.x2 + ps2->x - ps1->x, shape2->data.line.y2 + ps2->y - ps1->y, shape2->data.line.thickness);
 				case PCB_PSSH_CIRC:
 					return pstk_shape_int_circ_poly(ps1, shape1, ps2, shape2);
 			}
@@ -978,7 +973,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 		case PCB_PSSH_LINE:
 			switch(shape2->shape) {
 				case PCB_PSSH_POLY:
-					break;
+					return pcb_intersect_line_polyline(shape2->data.poly.pa->contours, shape1->data.line.x1 + ps1->x - ps2->x, shape1->data.line.y1 + ps1->y - ps2->y, shape1->data.line.x2 + ps1->x - ps2->x, shape1->data.line.y2 + ps1->y - ps2->y, shape1->data.line.thickness);
 				case PCB_PSSH_LINE:
 				{
 					pcb_line_t tmp1, tmp2;
