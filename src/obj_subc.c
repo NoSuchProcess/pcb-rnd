@@ -44,6 +44,7 @@
 #include "obj_text_draw.h"
 #include "rtree.h"
 #include "draw.h"
+#include "draw_wireframe.h"
 #include "flag.h"
 #include "polygon.h"
 #include "operation.h"
@@ -596,12 +597,32 @@ void XORDrawSubc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_si
 		gdl_iterator_t it;
 
 		linelist_foreach(&ly->Line, &it, line)
-			pcb_gui->draw_line(pcb_crosshair.GC, DX + PCB_CSWAP_X(line->Point1.X, w, mirr), DY + PCB_CSWAP_Y(line->Point1.Y, h, mirr), DX + PCB_CSWAP_X(line->Point2.X, w, mirr), DY + PCB_CSWAP_Y(line->Point2.Y, h, mirr));
+			pcb_draw_wireframe_line(pcb_crosshair.GC, 
+															DX + PCB_CSWAP_X(line->Point1.X, w, mirr), 
+															DY + PCB_CSWAP_Y(line->Point1.Y, h, mirr), 
+															DX + PCB_CSWAP_X(line->Point2.X, w, mirr), 
+															DY + PCB_CSWAP_Y(line->Point2.Y, h, mirr),
+															line->Thickness,
+															0 );
 
 		arclist_foreach(&ly->Arc, &it, arc) {
-			double sa = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
-			double da = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
-			pcb_gui->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
+			if(arc->Width != arc->Height) {
+#warning TODO: The wireframe arc drawing code cannot draw ellipses yet so draw the elliptical arc with a thin line 
+				double sa = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
+				double da = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
+				pcb_gui->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
+			}
+			else {
+				pcb_arc_t temp_arc;
+				temp_arc.StartAngle = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle; 
+				temp_arc.Delta = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
+				temp_arc.X = DX + PCB_CSWAP_X(arc->X, w, mirr);
+				temp_arc.Y = DY + PCB_CSWAP_Y(arc->Y, h, mirr);
+				temp_arc.Width = arc->Width;
+				temp_arc.Height = arc->Height;
+				temp_arc.Thickness = arc->Thickness;
+				pcb_draw_wireframe_arc(pcb_crosshair.GC, &temp_arc);
+			}
 		}
 
 		polylist_foreach(&ly->Polygon, &it, poly)
