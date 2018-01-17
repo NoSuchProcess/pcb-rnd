@@ -43,7 +43,7 @@ int pcb_act_padstackconvert(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	pcb_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
 
-	if (argv[0] == NULL)
+	if (argc < 1)
 		PCB_ACT_FAIL(padstackconvert);
 	if (strcmp(argv[0], "selected") == 0) {
 		if (argc > 2) {
