@@ -92,10 +92,10 @@ static pcb_bool ADD_PADSTACK_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_p
 		pcb_undo_add_obj_to_flag(ps);
 	PCB_FLAG_SET(TheFlag, ps);
 	make_callback(PCB_TYPE_PSTK, ps, from_type, from_ptr, type);
-	PADSTACKLIST_ENTRY(PVList.Number) = ps;
+	PADSTACKLIST_ENTRY(PadstackList.Number) = ps;
 	PadstackList.Number++;
 #ifdef DEBUG
-	if (PVList.Number > PVList.Size)
+	if (PadstackList.Number > PadstackList.Size)
 		printf("ADD_PADSTACK_TO_LIST overflow! num=%d size=%d\n", PVList.Number, PVList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) && (ps->parent.data->parent_type == PCB_PARENT_SUBC))
@@ -559,6 +559,19 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 	return pcb_false;
 }
 
+static pcb_r_dir_t PStoPS_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_pstk_t *ps2 = (pcb_pstk_t *)b;
+	struct ps_info *i = (struct ps_info *)cl;
+
+	if (!PCB_FLAG_TEST(TheFlag, ps2) && pcb_pstk_intersect_pstk(&i->ps, ps2)) {
+		if (ADD_PADSTACK_TO_LIST(ps2, PCB_TYPE_PSTK, &i->ps, PCB_FCT_COPPER))
+			longjmp(i->env, 1);
+	}
+
+	return PCB_R_DIR_NOT_FOUND;
+}
+
 /* ---------------------------------------------------------------------------
  * checks if a padstack is connected to LOs, if it is, the LO is added to
  * the appropriate list and the 'used' flag is set
@@ -603,6 +616,13 @@ static pcb_bool LookupLOConnectionsToPSList(pcb_bool AndRats)
 			else
 				return pcb_true;
 		}
+
+		/* Check for connections to other padstacks */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(PCB->Data->padstack_tree, (pcb_box_t *) & info.ps, NULL, PStoPS_callback, &info, NULL);
+		else
+			return pcb_true;
+
 		/* Check for rat-lines that may intersect the PV */
 		if (AndRats) {
 			if (setjmp(info.env) == 0)
