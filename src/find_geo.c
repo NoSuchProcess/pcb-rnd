@@ -944,6 +944,13 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 	return pcb_false;
 }
 
+PCB_INLINE pcb_bool_t pstk_shape_int_circ_poly(pcb_pstk_t *p, pcb_pstk_shape_t *sp, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
+{
+	pcb_coord_t px = sc->data.circ.x + c->x - p->x;
+	pcb_coord_t py = sc->data.circ.y + c->y - p->y;
+	return pcb_intersect_line_polyline(sp->data.poly.pa->contours,  px, py, px, py, sc->data.circ.dia);
+}
+
 PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
 {
 	if ((shape1->shape == PCB_PSSH_POLY) && (shape1->data.poly.pa == NULL))
@@ -964,7 +971,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 					}
 					break;
 				case PCB_PSSH_CIRC:
-					break;
+					return pstk_shape_int_circ_poly(ps1, shape1, ps2, shape2);
 			}
 			break;
 
@@ -987,7 +994,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 		case PCB_PSSH_CIRC:
 			switch(shape2->shape) {
 				case PCB_PSSH_POLY:
-					break;
+					return pstk_shape_int_circ_poly(ps2, shape2, ps1, shape1);
 				case PCB_PSSH_LINE:
 					{
 						pcb_pad_t tmp;
