@@ -1008,7 +1008,11 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 					}
 					break;
 				case PCB_PSSH_CIRC:
-					break;
+					{
+						double cdist2 = pcb_distance2(ps1->x + shape1->data.circ.x, ps1->y + shape1->data.circ.y, ps2->x + shape2->data.circ.x, ps2->y + shape2->data.circ.y);
+						double dia = ((double)shape1->data.circ.dia + (double)shape2->data.circ.dia)/2.0;
+						return cdist2 <= dia*dia;
+					}
 			}
 			break;
 	}
