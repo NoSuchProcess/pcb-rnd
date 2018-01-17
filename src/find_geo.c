@@ -951,6 +951,18 @@ PCB_INLINE pcb_bool_t pstk_shape_int_circ_poly(pcb_pstk_t *p, pcb_pstk_shape_t *
 	return pcb_intersect_line_polyline(sp->data.poly.pa->contours,  px, py, px, py, sc->data.circ.dia);
 }
 
+PCB_INLINE pcb_bool_t pstk_shape_int_circ_line(pcb_pstk_t *l, pcb_pstk_shape_t *sl, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
+{
+	pcb_pad_t tmp;
+	tmp.Point1.X = sl->data.line.x1 + l->x;
+	tmp.Point1.Y = sl->data.line.y1 + l->y;
+	tmp.Point2.X = sl->data.line.x2 + l->x;
+	tmp.Point2.Y = sl->data.line.y2 + l->y;
+	tmp.Thickness = sl->data.line.thickness;
+	tmp.Flags = pcb_no_flags();
+	return pcb_is_point_in_pad(sc->data.circ.x + c->x, sc->data.circ.y + c->y, sc->data.circ.dia/2, &tmp);
+}
+
 PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
 {
 	if ((shape1->shape == PCB_PSSH_POLY) && (shape1->data.poly.pa == NULL))
@@ -982,7 +994,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 					return pcb_intersect_line_line(&tmp1, &tmp2);
 				}
 				case PCB_PSSH_CIRC:
-					break;
+					return pstk_shape_int_circ_line(ps1, shape1, ps2, shape2);
 			}
 			break;
 
@@ -991,17 +1003,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 				case PCB_PSSH_POLY:
 					return pstk_shape_int_circ_poly(ps2, shape2, ps1, shape1);
 				case PCB_PSSH_LINE:
-					{
-						pcb_pad_t tmp;
-						tmp.Point1.X = shape2->data.line.x1 + ps1->x;
-						tmp.Point1.Y = shape2->data.line.y1 + ps1->y;
-						tmp.Point2.X = shape2->data.line.x2 + ps1->x;
-						tmp.Point2.Y = shape2->data.line.y2 + ps1->y;
-						tmp.Thickness = shape2->data.line.thickness;
-						tmp.Flags = pcb_no_flags();
-						return pcb_is_point_in_pad(shape1->data.circ.x + ps1->x, shape1->data.circ.y + ps1->y, shape1->data.circ.dia/2, &tmp);
-					}
-					break;
+					return pstk_shape_int_circ_line(ps2, shape2, ps1, shape1);
 				case PCB_PSSH_CIRC:
 					{
 						double cdist2 = pcb_distance2(ps1->x + shape1->data.circ.x, ps1->y + shape1->data.circ.y, ps2->x + shape2->data.circ.x, ps2->y + shape2->data.circ.y);
