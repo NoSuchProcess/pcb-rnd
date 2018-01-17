@@ -910,6 +910,13 @@ PCB_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape
 	}
 	pcb_poly_contour_pre(pl, 1);
 	pcb_polyarea_contour_include(shp, pl);
+
+	if (!pcb_poly_valid(shp)) {
+/*		pcb_polyarea_free(&shp); shp = pcb_polyarea_create();*/
+		pcb_poly_contour_inv(pl);
+		pcb_polyarea_contour_include(shp, pl);
+	}
+
 	return shp;
 }
 
@@ -980,7 +987,15 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 		case PCB_PSSH_POLY:
 			switch(shape2->shape) {
 				case PCB_PSSH_POLY:
-					break;
+				{
+					pcb_bool res;
+					pcb_polyarea_t *shp1 = pcb_pstk_shp_poly2area(ps1, shape1);
+					pcb_polyarea_t *shp2 = pcb_pstk_shp_poly2area(ps2, shape2);
+					res = pcb_polyarea_touching(shp1, shp2);
+					pcb_polyarea_free(&shp1);
+					pcb_polyarea_free(&shp2);
+					return res;
+				}
 				case PCB_PSSH_LINE:
 					return pcb_intersect_line_polyline(shape1->data.poly.pa->contours, shape2->data.line.x1 + ps2->x - ps1->x, shape2->data.line.y1 + ps2->y - ps1->y, shape2->data.line.x2 + ps2->x - ps1->x, shape2->data.line.y2 + ps2->y - ps1->y, shape2->data.line.thickness);
 				case PCB_PSSH_CIRC:
