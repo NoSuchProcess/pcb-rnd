@@ -331,6 +331,24 @@ void pcb_tool_line_draw_attached(void)
 			pcb_route_draw_drc(&pcb_crosshair.Route,pcb_crosshair.GC);
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	}
+	else {
+		/* Draw a circle (0 length line) to show where the line will be placed */
+    if(CURRENT)
+			pcb_gui->set_color(pcb_crosshair.GC,CURRENT->meta.real.color);
+
+		pcb_draw_wireframe_line(pcb_crosshair.GC,
+														pcb_crosshair.X, pcb_crosshair.Y,
+														pcb_crosshair.X, pcb_crosshair.Y, 
+														conf_core.design.line_thickness,0 );
+
+		if(conf_core.editor.show_drc) {
+			pcb_gui->set_color(pcb_crosshair.GC,conf_core.appearance.color.cross);
+			pcb_draw_wireframe_line(pcb_crosshair.GC,
+															pcb_crosshair.X, pcb_crosshair.Y,
+															pcb_crosshair.X, pcb_crosshair.Y, 
+															conf_core.design.line_thickness + (2 * PCB->Bloat),0 );
+		}
+	}
 }
 
 pcb_bool pcb_tool_line_undo_act(void)
