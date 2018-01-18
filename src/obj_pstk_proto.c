@@ -280,10 +280,10 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 		if (pcb_pstk_get_shape_idx(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) == -1)
 			append_circle(ts,  PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0, via->Thickness);
 		if (via->Mask > 0) {
-			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB) == -1)
-				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB, via->Mask);
-			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB) == -1)
-				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB, via->Mask);
+			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB | PCB_LYC_AUTO) == -1)
+				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB | PCB_LYC_AUTO, via->Mask);
+			if (pcb_pstk_get_shape_idx(ts, PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB | PCB_LYC_AUTO) == -1)
+				append_circle(ts,  PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB | PCB_LYC_AUTO, via->Mask);
 		}
 	}
 
@@ -298,8 +298,8 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			MAYBE_COPY(PCB_LYT_COPPER | PCB_LYT_TOP, 0);
 			MAYBE_COPY(PCB_LYT_COPPER | PCB_LYT_INTERN, 0);
 			MAYBE_COPY(PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0);
-			MAYBE_COPY(PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB);
-			MAYBE_COPY(PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB);
+			MAYBE_COPY(PCB_LYT_MASK | PCB_LYT_BOTTOM, PCB_LYC_SUB | PCB_LYC_AUTO);
+			MAYBE_COPY(PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_SUB | PCB_LYC_AUTO);
 #			undef MAYBE_COPY
 		}
 	}
