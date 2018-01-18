@@ -256,6 +256,8 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 		ly = (*o)->parent.layer;
 		ts->shape[n].layer_mask = pcb_layer_flags_(ly);
 		ts->shape[n].comb = ly->comb;
+		if (ts->shape[n].layer_mask & (PCB_LYT_PASTE | PCB_LYT_MASK))
+			ts->shape[n].comb |= PCB_LYC_AUTO;
 
 		for(m = 0; m < n; m++) {
 			if ((ts->shape[n].layer_mask == ts->shape[m].layer_mask) && (ts->shape[n].comb == ts->shape[m].comb)) {
