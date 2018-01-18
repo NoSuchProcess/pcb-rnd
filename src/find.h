@@ -87,6 +87,7 @@ int pcb_drc_all(void);
 pcb_bool pcb_is_line_in_poly(pcb_line_t *, pcb_poly_t *);
 pcb_bool pcb_is_arc_in_poly(pcb_arc_t *, pcb_poly_t *);
 pcb_bool pcb_is_pad_in_poly(pcb_pad_t *, pcb_poly_t *);
+pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b);
 
 pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool AndDraw, pcb_cardinal_t (*cb)(void *ctx, pcb_any_obj_t *obj));
 
