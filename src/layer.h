@@ -87,7 +87,7 @@ typedef enum {
 
 typedef enum { /* bitfield */
 	PCB_LYC_SUB = 1,        /* bit 0 is 0 for add or 1 for sub */
-	PCB_LYC_AUTO = 2        /* bit 1 is 0 for manual drawn layer or 1 for auto-generated (from pins, pads, elements) */
+	PCB_LYC_AUTO = 2        /* bit 1 is 0 for manual drawn layer or 1 for side-effect objects from padstacks; this is how the user controls on which composite mask/paste layer padstack side effects should appear */
 } pcb_layer_combining_t;
 
 
