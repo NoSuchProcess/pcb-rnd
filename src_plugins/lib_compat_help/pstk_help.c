@@ -79,7 +79,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet,
 	vtp0_init(&tmp);
 	if (extrao != NULL)
 		vtp0_append(&tmp, extrao);
-	for(l = 0; l < objs->used; l++) {
+	for(l = 0; l < NUM_LYTS; l++) {
 		if (num_cand[l] == 1) {
 			vtp0_append(&tmp, cand[l]);
 			if (term == NULL)
@@ -230,7 +230,7 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 
 			assert(o->parent_type == PCB_PARENT_LAYER);
 			olyt = pcb_layer_flags_(o->parent.layer);
-			if ((!(olyt | PCB_LYT_COPPER)) || (olyt | PCB_LYT_INTERN))
+			if ((!(olyt & PCB_LYT_COPPER)) || (olyt & PCB_LYT_INTERN))
 				continue; /* deal with outer copper objects only */
 
 			/* assume padstack origin is middle of the object, which is approximated here */
@@ -239,17 +239,28 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 
 			memset(cand, 0, sizeof(cand));
 			memset(num_cand, 0, sizeof(num_cand));
+			for(l = 0; l < NUM_LYTS; l++) {
+				if (lyts[l] == olyt) {
+					cand[l] = o;
+					num_cand[l]++;
+					break;
+				}
+			}
+
 			for(ci = 0; ci < objs->used; ci++) {
 				pcb_layer_type_t lyt;
 				pcb_any_obj_t *c = objs->array[ci]; /* candidate */
 
+				lyt = pcb_layer_flags_(c->parent.layer);
+
 				if ((lyt & PCB_LYT_ANYWHERE) != (olyt & PCB_LYT_ANYWHERE))
 					continue; /* care for the same side only */
-				if (lyt & PCB_LYT_COPPER)
-					continue; /* care for non-copper only */
 
-#warning TODO: check if the objects overlap
+				if (!((lyt & (PCB_LYT_MASK | PCB_LYT_PASTE))))
+					continue; /* care for mask and paste objects */
 
+				if (!pcb_intersect_obj_obj(o, c))
+					continue; /* only if intersects with the original copper pad */
 
 				for(l = 0; l < NUM_LYTS; l++) {
 					if (lyts[l] == lyt) {
@@ -259,7 +270,6 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 					}
 				}
 			}
-
 			if (vect2pstk_conv_cand(data, objs, quiet, cand, num_cand, cx, cy, -1, NULL) == 0) {
 				/* we have deleted from objs, need to start over the main loop */
 				n = 0;
