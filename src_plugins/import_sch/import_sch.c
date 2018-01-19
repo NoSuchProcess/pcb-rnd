@@ -184,9 +184,9 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	const char **sources = NULL;
 	int nsources = 0;
 
-#ifdef DEBUG
-	printf("pcb_act_Import:  ===========  Entering pcb_act_Import  ============\n");
-#endif
+	if (conf_import_sch.plugins.import_sch.verbose)
+		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Entering pcb_act_Import  ===\n");
+
 
 	mode = PCB_ACTION_ARG(0);
 
@@ -342,10 +342,12 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			cmd[8 + i] = pcb_build_fn(sources[i]);
 		cmd[8 + nsources] = NULL;
 
-#ifdef DEBUG
-		printf("pcb_act_Import:  ===========  About to run gnetlist  ============\n");
-		printf("%s %s %s %s %s %s %s %s %s ...\n", cmd[0], cmd[1], cmd[2], cmd[3], cmd[4], cmd[5], cmd[6], cmd[7], cmd[8]);
-#endif
+		if (conf_import_sch.plugins.import_sch.verbose) {
+			pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  running gnetlist:\n");
+			for (i = 0; i < 8+nsources; i++)
+				pcb_message(PCB_MSG_DEBUG, " %s", cmd[i]);
+			pcb_message(PCB_MSG_DEBUG, "\n");
+		}
 
 		if (pcb_spawnvp(cmd)) {
 			for(i = 0; i < nsources; i++)
@@ -354,9 +356,8 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			return 1;
 		}
 
-#ifdef DEBUG
-		printf("pcb_act_Import:  ===========  About to run pcb_act_ExecuteFile, file = %s  ============\n", tmpfile);
-#endif
+		if (conf_import_sch.plugins.import_sch.verbose)
+			pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
 
 		cmd[0] = tmpfile;
 		cmd[1] = NULL;
@@ -452,9 +453,8 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	pcb_rats_destroy(pcb_false);
 	pcb_rat_add_all(pcb_false, NULL);
 
-#ifdef DEBUG
-	printf("pcb_act_Import:  ===========  Leaving pcb_act_Import  ============\n");
-#endif
+	if (conf_import_sch.plugins.import_sch.verbose)
+		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Leaving pcb_act_Import  ===\n");
 
 	return 0;
 }
