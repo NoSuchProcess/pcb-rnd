@@ -15,6 +15,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2017, 2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,7 +72,8 @@ static	unsigned char yy_intconn;
 extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
 extern	pcb_data_t *	yyData;
-extern	pcb_element_t *yyElement;
+extern	pcb_subc_t *yysubc;
+extern	pcb_coord_t yysubc_ox, yysubc_oy;
 extern	pcb_font_t *	yyFont;
 extern	pcb_bool	yyFontReset;
 extern	int				pcb_lineno;		/* linenumber */
@@ -719,7 +721,7 @@ pcbdefinition
 					/* clear pointer to force memory allocation by
 					 * the appropriate subroutine
 					 */
-				yyElement = NULL;
+				yysubc = NULL;
 			}
 		  element
 		| error { YYABORT; }
@@ -1298,7 +1300,7 @@ element_oldformat
 			 */
 		: T_ELEMENT '(' STRING STRING measure measure INTEGER ')' '('
 			{
-				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_no_flags(),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_no_flags(),
 					$3, $4, NULL, OU ($5), OU ($6), $7, 100, pcb_no_flags(), pcb_false);
 				free ($3);
 				free ($4);
@@ -1306,7 +1308,7 @@ element_oldformat
 			}
 		  elementdefinitions ')'
 			{
-				pcb_element_bbox(yyData, yyElement, yyFont);
+				io_pcb_element_fin(yyData);
 			}
 		;
 
@@ -1316,7 +1318,7 @@ element_1.3.4_format
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old($3),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
 					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), pcb_flag_old($10), pcb_false);
 				free ($4);
 				free ($5);
@@ -1324,7 +1326,7 @@ element_1.3.4_format
 			}
 		  elementdefinitions ')'
 			{
-				pcb_element_bbox(yyData, yyElement, yyFont);
+				io_pcb_element_fin(yyData);
 			}
 		;
 
@@ -1334,7 +1336,7 @@ element_newformat
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old($3),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), pcb_flag_old($11), pcb_false);
 				free ($4);
 				free ($5);
@@ -1343,7 +1345,7 @@ element_newformat
 			}
 		  elementdefinitions ')'
 			{
-				pcb_element_bbox(yyData, yyElement, yyFont);
+				io_pcb_element_fin(yyData);
 			}
 		;
 
@@ -1354,18 +1356,18 @@ element_1.7_format
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure
 			measure measure number number INTEGER ')' '('
 			{
-				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old($3),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7) + OU ($9), OU ($8) + OU ($10),
 					$11, $12, pcb_flag_old($13), pcb_false);
-				yyElement->MarkX = OU ($7);
-				yyElement->MarkY = OU ($8);
+				yysubc_ox = OU ($7);
+				yysubc_oy = OU ($8);
 				free ($4);
 				free ($5);
 				free ($6);
 			}
 		  relementdefs ')'
 			{
-				pcb_element_bbox(yyData, yyElement, yyFont);
+				io_pcb_element_fin(yyData);
 			}
 		;
 
@@ -1376,23 +1378,24 @@ element_hi_format
 		: T_ELEMENT '[' flags STRING STRING STRING measure measure
 			measure measure number number flags ']' '('
 			{
-				yyElement = pcb_element_new(yyData, yyElement, yyFont, $3,
+				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, $3,
 					$4, $5, $6, NU ($7) + NU ($9), NU ($8) + NU ($10),
 					$11, $12, $13, pcb_false);
-				yyElement->MarkX = NU ($7);
-				yyElement->MarkY = NU ($8);
+				yysubc_ox = NU ($7);
+				yysubc_oy = NU ($8);
 				free ($4);
 				free ($5);
 				free ($6);
 			}
 		  relementdefs ')'
 			{
-				if (pcb_element_is_empty(yyElement)) {
-					pcb_element_free(yyElement);
-					yyElement = NULL;
+				if (pcb_subc_is_empty(yysubc)) {
+					pcb_subc_free(yysubc);
+					yysubc = NULL;
 				}
-				else
-					pcb_element_bbox(yyData, yyElement, yyFont);
+				else {
+					io_pcb_element_fin(yyData);
+				}
 			}
 		;
 
@@ -1472,35 +1475,35 @@ elementdefinition
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '[' measure measure measure measure measure ']'
 			{
-				pcb_element_line_new(yyElement, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
+				io_pcb_element_line_new(yysubc, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
 			}
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '(' measure measure measure measure measure ')'
 			{
-				pcb_element_line_new(yyElement, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
+				io_pcb_element_line_new(yysubc, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
 			}
 			/* x, y, width, height, startangle, anglediff, thickness */
 		| T_ELEMENTARC '[' measure measure measure measure number number measure ']'
 			{
-				pcb_element_arc_new(yyElement, NU ($3), NU ($4), NU ($5), NU ($6), $7, $8, NU ($9));
+				io_pcb_element_arc_new(yysubc, NU ($3), NU ($4), NU ($5), NU ($6), $7, $8, NU ($9));
 			}
 			/* x, y, width, height, startangle, anglediff, thickness */
 		| T_ELEMENTARC '(' measure measure measure measure number number measure ')'
 			{
-				pcb_element_arc_new(yyElement, OU ($3), OU ($4), OU ($5), OU ($6), $7, $8, OU ($9));
+				io_pcb_element_arc_new(yysubc, OU ($3), OU ($4), OU ($5), OU ($6), $7, $8, OU ($9));
 			}
 			/* x, y position */
 		| T_MARK '[' measure measure ']'
 			{
-				yyElement->MarkX = NU ($3);
-				yyElement->MarkY = NU ($4);
+				yysubc_ox = NU ($3);
+				yysubc_oy = NU ($4);
 			}
 		| T_MARK '(' measure measure ')'
 			{
-				yyElement->MarkX = OU ($3);
-				yyElement->MarkY = OU ($4);
+				yysubc_ox = OU ($3);
+				yysubc_oy = OU ($4);
 			}
-		| { attr_list = & yyElement->Attributes; } attribute
+		| { attr_list = & yysubc->Attributes; } attribute
 		;
 
 relementdefs
@@ -1516,28 +1519,28 @@ relementdef
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '[' measure measure measure measure measure ']'
 			{
-				pcb_element_line_new(yyElement, NU ($3) + yyElement->MarkX,
-					NU ($4) + yyElement->MarkY, NU ($5) + yyElement->MarkX,
-					NU ($6) + yyElement->MarkY, NU ($7));
+				io_pcb_element_line_new(yysubc, NU ($3) + yysubc_ox,
+					NU ($4) + yysubc_oy, NU ($5) + yysubc_ox,
+					NU ($6) + yysubc_oy, NU ($7));
 			}
 		| T_ELEMENTLINE '(' measure measure measure measure measure ')'
 			{
-				pcb_element_line_new(yyElement, OU ($3) + yyElement->MarkX,
-					OU ($4) + yyElement->MarkY, OU ($5) + yyElement->MarkX,
-					OU ($6) + yyElement->MarkY, OU ($7));
+				io_pcb_element_line_new(yysubc, OU ($3) + yysubc_ox,
+					OU ($4) + yysubc_oy, OU ($5) + yysubc_ox,
+					OU ($6) + yysubc_oy, OU ($7));
 			}
 			/* x, y, width, height, startangle, anglediff, thickness */
 		| T_ELEMENTARC '[' measure measure measure measure number number measure ']'
 			{
-				pcb_element_arc_new(yyElement, NU ($3) + yyElement->MarkX,
-					NU ($4) + yyElement->MarkY, NU ($5), NU ($6), $7, $8, NU ($9));
+				io_pcb_element_arc_new(yysubc, NU ($3) + yysubc_ox,
+					NU ($4) + yysubc_oy, NU ($5), NU ($6), $7, $8, NU ($9));
 			}
 		| T_ELEMENTARC '(' measure measure measure measure number number measure ')'
 			{
-				pcb_element_arc_new(yyElement, OU ($3) + yyElement->MarkX,
-					OU ($4) + yyElement->MarkY, OU ($5), OU ($6), $7, $8, OU ($9));
+				io_pcb_element_arc_new(yysubc, OU ($3) + yysubc_ox,
+					OU ($4) + yysubc_oy, OU ($5), OU ($6), $7, $8, OU ($9));
 			}
-		| { attr_list = & yyElement->Attributes; } attribute
+		| { attr_list = & yysubc->Attributes; } attribute
 		;
 
 /* %start-doc pcbfile Pin
@@ -1580,8 +1583,8 @@ pin_hi_format
 			   number, flags */
 		: T_PIN '[' measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				pcb_pin_t *pin = pcb_element_pin_new(yyElement, NU ($3) + yyElement->MarkX,
-					NU ($4) + yyElement->MarkY, NU ($5), NU ($6), NU ($7), NU ($8), $9,
+				pcb_pin_t *pin = io_pcb_element_pin_new(yysubc, NU ($3) + yysubc_ox,
+					NU ($4) + yysubc_oy, NU ($5), NU ($6), NU ($7), NU ($8), $9,
 					$10, $11);
 				pcb_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);
 				free ($9);
@@ -1593,8 +1596,8 @@ pin_1.7_format
 			   number, flags */
 		: T_PIN '(' measure measure measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_element_pin_new(yyElement, OU ($3) + yyElement->MarkX,
-					OU ($4) + yyElement->MarkY, OU ($5), OU ($6), OU ($7), OU ($8), $9,
+				io_pcb_element_pin_new(yysubc, OU ($3) + yysubc_ox,
+					OU ($4) + yysubc_oy, OU ($5), OU ($6), OU ($7), OU ($8), $9,
 					$10, pcb_flag_old($11));
 				free ($9);
 				free ($10);
@@ -1605,7 +1608,7 @@ pin_1.6.3_format
 			/* x, y, thickness, drilling hole, name, number, flags */
 		: T_PIN '(' measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+				io_pcb_element_pin_new(yysubc, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
 					OU ($5) + 2*PCB_MASKFRAME, OU ($6), $7, $8, pcb_flag_old($9));
 				free ($7);
 				free ($8);
@@ -1619,7 +1622,7 @@ pin_newformat
 				char	p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+				io_pcb_element_pin_new(yysubc, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
 					OU ($5) + 2*PCB_MASKFRAME, OU ($6), $7, p_number, pcb_flag_old($8));
 
 				free ($7);
@@ -1641,7 +1644,7 @@ pin_oldformat
 					hole = OU ($5) - PCB_MIN_PINORVIACOPPER;
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+				io_pcb_element_pin_new(yysubc, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
 					OU ($5) + 2*PCB_MASKFRAME, hole, $6, p_number, pcb_flag_old($7));
 				free ($6);
 			}
@@ -1686,10 +1689,10 @@ pad_hi_format
 			/* x1, y1, x2, y2, thickness, clearance, mask, name , pad number, flags */
 		: T_PAD '[' measure measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				pcb_pad_t *pad = pcb_element_pad_new(yyElement, NU ($3) + yyElement->MarkX,
-					NU ($4) + yyElement->MarkY,
-					NU ($5) + yyElement->MarkX,
-					NU ($6) + yyElement->MarkY, NU ($7), NU ($8), NU ($9),
+				pcb_pad_t *pad = io_pcb_element_pad_new(yysubc, NU ($3) + yysubc_ox,
+					NU ($4) + yysubc_oy,
+					NU ($5) + yysubc_ox,
+					NU ($6) + yysubc_oy, NU ($7), NU ($8), NU ($9),
 					$10, $11, $12);
 				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
 				free ($10);
@@ -1701,9 +1704,9 @@ pad_1.7_format
 			/* x1, y1, x2, y2, thickness, clearance, mask, name , pad number, flags */
 		: T_PAD '(' measure measure measure measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_element_pad_new(yyElement,OU ($3) + yyElement->MarkX,
-					OU ($4) + yyElement->MarkY, OU ($5) + yyElement->MarkX,
-					OU ($6) + yyElement->MarkY, OU ($7), OU ($8), OU ($9),
+				io_pcb_element_pad_new(yysubc,OU ($3) + yysubc_ox,
+					OU ($4) + yysubc_oy, OU ($5) + yysubc_ox,
+					OU ($6) + yysubc_oy, OU ($7), OU ($8), OU ($9),
 					$10, $11, pcb_flag_old($12));
 				free ($10);
 				free ($11);
@@ -1714,7 +1717,7 @@ pad_newformat
 			/* x1, y1, x2, y2, thickness, name , pad number, flags */
 		: T_PAD '(' measure measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*PCB_GROUNDPLANEFRAME,
+				io_pcb_element_pad_new(yysubc,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*PCB_GROUNDPLANEFRAME,
 					OU ($7) + 2*PCB_MASKFRAME, $8, $9, pcb_flag_old($10));
 				free ($8);
 				free ($9);
@@ -1728,7 +1731,7 @@ pad
 				char		p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*PCB_GROUNDPLANEFRAME,
+				io_pcb_element_pad_new(yysubc,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*PCB_GROUNDPLANEFRAME,
 					OU ($7) + 2*PCB_MASKFRAME, $8,p_number, pcb_flag_old($9));
 				free ($8);
 			}

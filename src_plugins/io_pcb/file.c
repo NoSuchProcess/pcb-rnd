@@ -68,6 +68,7 @@
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+#include "src_plugins/lib_compat_help/subc_help.h"
 
 #define VIA_COMPAT_FLAGS (PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_WARN | PCB_FLAG_USETHERMAL | PCB_FLAG_LOCK)
 
@@ -892,6 +893,8 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 	return 0;
 }
 
+/*** Compatibility wrappers: create padstack and subc as if they were vias and elements ***/
+
 pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
@@ -927,3 +930,102 @@ pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_c
 	return p;
 }
 
+static int yysubc_bottom;
+extern	pcb_subc_t *yysubc;
+extern	pcb_coord_t yysubc_ox, yysubc_oy;
+
+pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
+	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
+	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
+	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName)
+{
+	pcb_subc_t *sc = pcb_subc_alloc();
+	pcb_text_t *txt;
+	pcb_add_subc_to_data(Data, sc);
+
+	yysubc_bottom = Flags.f & PCB_FLAG_ONSOLDER;
+	Flags.f &= ~PCB_FLAG_ONSOLDER;
+
+	if (Description != NULL)
+		pcb_attribute_put(&sc->Attributes, "footprint", Description);
+	if (NameOnPCB != NULL)
+		pcb_attribute_put(&sc->Attributes, "refdes", NameOnPCB);
+	if (Value != NULL)
+		pcb_attribute_put(&sc->Attributes, "value", Value);
+
+#warning TODO: TextFlags
+	txt = pcb_subc_add_refdes_text(sc, TextX, TextY, Direction, TextScale);
+
+	return sc;
+}
+
+void io_pcb_element_fin(pcb_data_t *Data)
+{
+	double rot = 0;
+	pcb_subc_bbox(yysubc);
+
+#warning subc TODO: rotation
+	pcb_subc_create_aux(yysubc, yysubc_ox, yysubc_ox, rot);
+	pcb_add_subc_to_data(Data, yysubc);
+
+	if (Data->subc_tree == NULL)
+		Data->subc_tree = pcb_r_create_tree();
+	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)yysubc);
+}
+
+static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)
+{
+	pcb_layer_type_t side = yysubc_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+	const char *name = yysubc_bottom ? "bottom-silk" : "top-silk";
+	return pcb_subc_get_layer(subc, PCB_LYT_SILK | side, /*PCB_LYC_AUTO*/0, pcb_true, name);
+}
+
+static void subc_pad_layer(pcb_subc_t *subc, pcb_layer_t **copper, pcb_layer_t **paste, pcb_layer_t **mask)
+{
+	pcb_layer_type_t side = yysubc_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+
+	*copper = pcb_subc_get_layer(subc, PCB_LYT_COPPER | side, 0, pcb_true, yysubc_bottom ? "bottom-copper" : "top-copper");
+	*paste  = pcb_subc_get_layer(subc, PCB_LYT_PASTE | side, PCB_LYC_AUTO, pcb_true, yysubc_bottom ? "bottom-paste" : "top-paste");
+	*mask   = pcb_subc_get_layer(subc, PCB_LYT_MASK | side, PCB_LYC_AUTO | PCB_LYC_SUB, pcb_true, yysubc_bottom ? "bottom-mask" : "top-mask");
+}
+
+pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
+{
+	pcb_layer_t *ly = subc_silk_layer(subc);
+	return pcb_line_new_merge(ly, X1, Y1, X2, Y2, Thickness, 0, pcb_no_flags());
+}
+
+pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y,
+	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness)
+{
+	pcb_layer_t *ly = subc_silk_layer(subc);
+	return pcb_arc_new(ly, X, Y, Width, Height, angle, delta, Thickness, 0, pcb_no_flags());
+}
+
+pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
+{
+	pcb_pstk_t *p;
+	p = io_pcb_via_new(subc->data, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
+	if (Number != NULL)
+		pcb_attribute_put(&p->Attributes, "term", Number);
+	return p;
+}
+
+pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
+{
+	pcb_layer_t *copper, *paste, *mask;
+	subc_pad_layer(subc, &copper, &paste, &mask);
+
+	return NULL;
+}
+
+void io_pcb_postproc_board(pcb_board_t *pcb)
+{
+	gdl_iterator_t it;
+	pcb_subc_t *sc;
+
+	/* have to revind all subcircuits because the layer stack was not ready
+	   when they got loaded */
+	subclist_foreach(&pcb->Data->subc, &it, sc)
+		pcb_subc_rebind(pcb, sc);
+}

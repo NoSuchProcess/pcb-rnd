@@ -75,7 +75,8 @@
 const char			*yyfilename;	/* in this file */
 pcb_board_t *	yyPCB;			/* used by parser */
 pcb_data_t *	yyData;
-pcb_element_t *	yyElement;
+pcb_subc_t *yysubc;
+pcb_coord_t yysubc_ox, yysubc_oy;
 pcb_font_t *	yyFont;
 conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
@@ -335,7 +336,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yyFont = pcb_font(PCB, 0, 1);
 	yyFontReset = pcb_false;
 	yyFontkitValid = NULL;
-	yyElement = NULL;
+	yysubc = NULL;
 
 
 	if (f == NULL)
@@ -380,7 +381,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yyFont = NULL;
 	yyFontReset = pcb_true;
 	yyFontkitValid = NULL;
-	yyElement = NULL;
+	yysubc = NULL;
 	yy_settings_dest = settings_dest;
 
 	if (!pcb_conf_cmd_is_safe(rc.file_command, &fcmd, 1))
@@ -468,6 +469,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 		}
 	}
 	pcb_layer_auto_fixup(PCB);
+	io_pcb_postproc_board(PCB);
 	return retval;
 }
 
@@ -482,7 +484,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yyPCB = NULL;
 	yyFont = Ptr;
 	yyFontkitValid = &valid;
-	yyElement = NULL;
+	yysubc = NULL;
 	yyFontReset = pcb_false;
 
 	if (!pcb_conf_cmd_is_safe(rc.font_command, &fcmd, 1))
