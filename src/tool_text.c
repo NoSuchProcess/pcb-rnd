@@ -70,12 +70,34 @@ void pcb_tool_text_notify_mode(void)
 	}
 }
 
+void pcb_tool_text_draw_attached(void)
+{
+	pcb_text_t text;
+	int flag = PCB_FLAG_CLEARLINE;
+
+	if (pcb_layer_flags(PCB, INDEXOFCURRENT) & PCB_LYT_BOTTOM)
+		flag |= PCB_FLAG_ONSOLDER;
+
+	text.X = pcb_crosshair.X;
+	text.Y = pcb_crosshair.Y;
+	text.Direction = 0;
+	text.Flags = pcb_flag_make(flag);
+	text.Scale = conf_core.design.text_scale;
+	text.TextString = "A";
+	text.fid = conf_core.design.text_font_id;
+	text.ID = 0;
+
+	pcb_text_draw_xor(&text,0,0);
+
+}
+
 pcb_tool_t pcb_tool_text = {
 	"text", NULL, 100,
 	pcb_tool_text_notify_mode,
 	NULL,
 	NULL,
-	NULL,
+	pcb_tool_text_draw_attached,
 	NULL,
 	NULL
 };
+
