@@ -64,8 +64,10 @@
 #include "attribs.h"
 #include "route_style.h"
 #include "obj_poly.h"
+#include "thermal.h"
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
+#include "src_plugins/lib_compat_help/pstk_compat.h"
 
 pcb_unit_style_t pcb_io_pcb_usty_seen;
 
@@ -828,3 +830,36 @@ int pcb_layer_improvise(pcb_board_t *pcb)
 
 	return 0;
 }
+
+pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
+{
+	pcb_pstk_t *p;
+	pcb_pstk_compshape_t shp;
+	int n;
+
+	if (Flags.f & PCB_FLAG_SQUARE)
+		shp = Flags.q /*+ PCB_PSTK_COMPAT_SHAPED*/;
+	else if (Flags.f & PCB_FLAG_OCTAGON)
+		shp = PCB_PSTK_COMPAT_OCTAGON;
+	else
+		shp = PCB_PSTK_COMPAT_ROUND;
+
+	p = pcb_pstk_new_compat_via(data, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
+	p->Flags.f |= Flags.f & (PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_WARN | PCB_FLAG_USETHERMAL | PCB_FLAG_LOCK);
+	for(n = 0; n < sizeof(Flags.t[n]) / sizeof(Flags.t[0]); n++) {
+		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
+		if (t != 0) {
+			switch(t) {
+				case 1: nt |= PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL; break;
+				case 2: nt |= PCB_THERMAL_SHARP; break;
+				case 3: nt |= PCB_THERMAL_SOLID; break;
+				case 4: nt |= PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL; break;
+				case 5: nt |= PCB_THERMAL_ROUND; break;
+			}
+			pcb_pstk_set_thermal(p, n, nt);
+		}
+	}
+
+	return p;
+}
+

@@ -80,6 +80,9 @@ int PCBFileVersionNeeded(void);
 /* Improvise layers and groups for a partial input file that lacks layer groups (and maybe even some layers) */
 int pcb_layer_improvise(pcb_board_t *pcb);
 
+pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags);
+
+
 /* This is the version we support.  */
 #define PCB_FILE_VERSION 20110603
 

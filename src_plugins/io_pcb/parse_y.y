@@ -768,7 +768,7 @@ via_hi_format
 			/* x, y, thickness, clearance, mask, drilling-hole, name, flags */
 		: T_VIA '[' measure measure measure measure measure measure STRING flags ']'
 			{
-				pcb_via_new(yyData, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7),
+				io_pcb_via_new(yyData, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7),
 				                     NU ($8), $9, $10);
 				free ($9);
 			}
@@ -778,7 +778,7 @@ via_2.0_format
 			/* x, y, thickness, clearance, mask, drilling-hole, name, flags */
 		: T_VIA '(' measure measure measure measure measure measure STRING INTEGER ')'
 			{
-				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7), OU ($8), $9,
+				io_pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7), OU ($8), $9,
 					pcb_flag_old($10));
 				free ($9);
 			}
@@ -789,7 +789,7 @@ via_1.7_format
 			/* x, y, thickness, clearance, drilling-hole, name, flags */
 		: T_VIA '(' measure measure measure measure measure STRING INTEGER ')'
 			{
-				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), OU ($6),
+				io_pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), OU ($6),
 					     OU ($5) + OU($6), OU ($7), $8, pcb_flag_old($9));
 				free ($8);
 			}
@@ -799,7 +799,7 @@ via_newformat
 			/* x, y, thickness, drilling-hole, name, flags */
 		: T_VIA '(' measure measure measure measure STRING INTEGER ')'
 			{
-				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+				io_pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
 					OU($5) + 2*PCB_MASKFRAME,  OU ($6), $7, pcb_flag_old($8));
 				free ($7);
 			}
@@ -816,7 +816,7 @@ via_oldformat
 					OU($5) > PCB_MIN_PINORVIACOPPER)
 					hole = OU($5) - PCB_MIN_PINORVIACOPPER;
 
-				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+				io_pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
 					OU($5) + 2*PCB_MASKFRAME, hole, $6, pcb_flag_old($7));
 				free ($6);
 			}
