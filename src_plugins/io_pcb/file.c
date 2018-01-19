@@ -69,6 +69,8 @@
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
+#define VIA_COMPAT_FLAGS (PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_WARN | PCB_FLAG_USETHERMAL | PCB_FLAG_LOCK)
+
 pcb_unit_style_t pcb_io_pcb_usty_seen;
 
 static void WritePCBInfoHeader(FILE *);
@@ -344,6 +346,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
+	pcb_pstk_t *ps;
 
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
@@ -351,6 +354,55 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 								via->Thickness, via->Clearance, via->Mask, via->DrillingHole);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(via->Name));
 		fprintf(FP, " %s]\n", F2S(via, PCB_TYPE_VIA));
+	}
+	padstacklist_foreach(&Data->padstack, &it, ps) {
+		pcb_pin_t tmp;
+		int n;
+		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+		pcb_pstk_compshape_t cshape;
+		pcb_bool plated;
+		char *name = NULL;
+
+		memset(&tmp, 0, sizeof(tmp));
+		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, unform shape padstack");
+			continue;
+		}
+
+		tmp.Flags.f = ps->Flags.f & VIA_COMPAT_FLAGS;
+		switch(cshape) {
+			case PCB_PSTK_COMPAT_ROUND:
+				break;
+			case PCB_PSTK_COMPAT_OCTAGON:
+				tmp.Flags.f |= PCB_FLAG_OCTAGON;
+				break;
+			case PCB_FLAG_SQUARE:
+				tmp.Flags.f |= PCB_FLAG_SQUARE;
+				tmp.Flags.q = cshape;
+			default:
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style via", "Old via format is very much restricted; try to use a simpler shape (e.g. circle)");
+		}
+
+		for(n = 0; n < sizeof(tmp.Flags.t[n]) / sizeof(tmp.Flags.t[0]); n++) {
+			unsigned char *ot = pcb_pstk_get_thermal(ps, n, 0);
+			int nt;
+			if ((ot == NULL) || (*ot == 0) || !((*ot) & PCB_THERMAL_ON))
+				continue;
+			switch(((*ot) & ~PCB_THERMAL_ON)) {
+				case PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL: nt = 1; break;
+				case PCB_THERMAL_SHARP: nt = 2; break;
+				case PCB_THERMAL_SOLID: nt = 3; break;
+				case PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL: nt = 4; break;
+				case PCB_THERMAL_ROUND: nt = 5; break;
+				default: nt = 0; pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert thermal to old-style via", "Old via format is very much restricted; try to use a simpler thermal shape");
+			}
+			PCB_FLAG_THERM_ASSIGN(n, nt, &tmp);
+		}
+
+		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
+			pad_dia, clearance*2, mask, drill_dia);
+		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(name));
+		fprintf(FP, " %s]\n", F2S(&tmp, PCB_TYPE_VIA));
 	}
 }
 
@@ -845,7 +897,7 @@ pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_c
 		shp = PCB_PSTK_COMPAT_ROUND;
 
 	p = pcb_pstk_new_compat_via(data, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
-	p->Flags.f |= Flags.f & (PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_WARN | PCB_FLAG_USETHERMAL | PCB_FLAG_LOCK);
+	p->Flags.f |= Flags.f & VIA_COMPAT_FLAGS;
 	for(n = 0; n < sizeof(Flags.t[n]) / sizeof(Flags.t[0]); n++) {
 		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
 		if (t != 0) {
