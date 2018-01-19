@@ -602,17 +602,17 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_term(ps, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
 		}
 		else if ((argc == 8) && (strcmp(argv[0], "fillcircle") == 0)) {
-			pcb_coord_t cx, cy, d, clr;
+			pcb_coord_t cx, cy, r, clr;
 			pcb_line_t *l;
 
 			ly = subc_get_layer(subc, argv[1], argv[2]);
 			load_val(cx, argv[4], "invalid fillcircle cx");
 			load_val(cy, argv[5], "invalid fillcircle cy");
-			load_val(d, argv[6], "invalid fillcircle radius");
+			load_val(r, argv[6], "invalid fillcircle radius");
 			load_val(clr, argv[7], "invalid fillcircle clearance");
 
 			for(; *ly != NULL; ly++) {
-				l = pcb_line_new(*ly, cx, cy, cx, cy, d, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
+				l = pcb_line_new(*ly, cx, cy, cx, cy, r*2, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
 				load_term(l, argv[3], "invalid term ID for fillcircle: '%s', skipping footprint\n");
 			}
 		}
