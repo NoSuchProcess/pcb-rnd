@@ -55,7 +55,7 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 		return 200;
 
 	if ((pcb_strcasecmp(fmt, "tedax") != 0) ||
-		((typ & (~(PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER))) != 0))
+		((typ & (~(PCB_IOT_PCB | PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER))) != 0))
 		return 0;
 
 	return 100;
@@ -138,6 +138,45 @@ static int io_tedax_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff
 	return tedax_fp_fsave(buff->Data, f);
 }
 
+static int io_tedax_test_parse_pcb(pcb_plug_io_t *plug_ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+{
+	char line[515], *s;
+	int n;
+	for(n = 0; n < 32; n++) {
+		s = fgets(line, sizeof(line), f);
+		if (s == NULL)
+			return 0;
+		while(isspace(*s)) s++;
+		if (*s == '#')
+			continue;
+		if (strncmp(s, "tEDAx", 5) == 0) {
+			s += 5;
+			while(isspace(*s)) s++;
+			if ((s[0] == 'v') && (s[1] == '1'))
+				return 1; /* support version 1 only */
+		}
+	}
+	return 0;
+}
+
+int io_tedax_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+{
+	int res;
+
+	Ptr->is_footprint = 1;
+
+	res = tedax_fp_load(Ptr->Data, Filename, 0);
+	if (res == 0) {
+		pcb_subc_t *sc = Ptr->Data->subc.lst.first;
+
+		pcb_layergrp_upgrade_to_pstk(Ptr);
+		pcb_layer_create_all_for_recipe(Ptr, sc->data->Layer, sc->data->LayerN);
+		pcb_subc_rebind(Ptr, sc);
+		pcb_data_clip_polys(sc->data);
+	}
+	return res;
+}
+
 
 int pplg_check_ver_io_tedax(int ver_needed) { return 0; }
 
@@ -152,8 +191,8 @@ int pplg_init_io_tedax(void)
 	/* register the IO hook */
 	io_tedax.plugin_data = NULL;
 	io_tedax.fmt_support_prio = io_tedax_fmt;
-	io_tedax.test_parse_pcb = NULL;
-	io_tedax.parse_pcb = NULL;
+	io_tedax.test_parse_pcb = io_tedax_test_parse_pcb;
+	io_tedax.parse_pcb = io_tedax_parse_pcb;
 	io_tedax.parse_element = io_tedax_parse_element;
 	io_tedax.parse_font = NULL;
 	io_tedax.write_buffer = io_tedax_write_buffer;
