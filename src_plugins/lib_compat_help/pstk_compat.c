@@ -272,7 +272,7 @@ static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_
 			}
 		}
 		if (found) {
-			*dia = sqrt(sqr(minx) + sqr(miny)) / sqrt(2);
+			*dia = pcb_round(sqrt((sqr(minx) + sqr(miny)) / 2.0));
 			return shi;
 		}
 	}
