@@ -43,9 +43,24 @@
 #include "hid_actions.h"
 #include "action_helper.h"
 #include "compat_misc.h"
+#include "plug_io.h"
 
 
 static const char *tedax_cookie = "tEDAx IO";
+static pcb_plug_io_t io_tedax;
+
+int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
+{
+	if (strcmp(ctx->description, fmt) == 0)
+		return 200;
+
+	if ((pcb_strcasecmp(fmt, "tedax") != 0) ||
+		((typ & (~(PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER))) != 0))
+		return 0;
+
+	return 100;
+}
+
 
 static const char pcb_acts_Savetedax[] = "SaveTedax(type, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: board-footprints";
@@ -101,13 +116,28 @@ static int pcb_act_LoadtedaxFrom(int argc, const char **argv, pcb_coord_t x, pcb
 	PCB_ACT_FAIL(Savetedax);
 }
 
-
 pcb_hid_action_t tedax_action_list[] = {
 	{"LoadTedaxFrom", 0, pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
 	{"SaveTedax", 0, pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
 };
 
 PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
+
+static int io_tedax_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
+{
+	return tedax_fp_load(Ptr, name, 0);
+}
+
+static int io_tedax_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
+{
+	return tedax_fp_fsave(dt, f);
+}
+
+static int io_tedax_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only)
+{
+	return tedax_fp_fsave(buff->Data, f);
+}
+
 
 int pplg_check_ver_io_tedax(int ver_needed) { return 0; }
 
@@ -119,6 +149,25 @@ void pplg_uninit_io_tedax(void)
 #include "dolists.h"
 int pplg_init_io_tedax(void)
 {
+	/* register the IO hook */
+	io_tedax.plugin_data = NULL;
+	io_tedax.fmt_support_prio = io_tedax_fmt;
+	io_tedax.test_parse_pcb = NULL;
+	io_tedax.parse_pcb = NULL;
+	io_tedax.parse_element = io_tedax_parse_element;
+	io_tedax.parse_font = NULL;
+	io_tedax.write_buffer = io_tedax_write_buffer;
+	io_tedax.write_element = io_tedax_write_element;
+	io_tedax.write_pcb = NULL;
+	io_tedax.default_fmt = "tEDAx";
+	io_tedax.description = "Trivial EDA eXchange format";
+	io_tedax.save_preference_prio = 95;
+	io_tedax.default_extension = ".tdx";
+	io_tedax.fp_extension = ".tdx";
+	io_tedax.mime_type = "application/tEDAx";
+
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
+
 	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
 	return 0;
 }

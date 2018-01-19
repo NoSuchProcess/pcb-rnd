@@ -113,18 +113,11 @@ do { \
 	else { invalid; }
 
 
-int tedax_fp_save(pcb_data_t *data, const char *fn)
+int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 {
-	FILE *f;
 	char buff[64];
 	htsp_t terms;
 	htsp_entry_t *e;
-
-	f = pcb_fopen(fn, "w");
-	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open %s for writing\n", fn);
-		return -1;
-	}
 
 	htsp_init(&terms, strhash, strkeyeq);
 
@@ -356,10 +349,24 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 
 	htsp_uninit(&terms);
 
-	fclose(f);
-
 	return 0;
 }
+
+int tedax_fp_save(pcb_data_t *data, const char *fn)
+{
+	int res;
+	FILE *f;
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tedax_fp_save(): can't open %s for writing\n", fn);
+		return -1;
+	}
+	res = tedax_fp_fsave(data, f);
+	fclose(f);
+	return res;
+}
+
 
 /*******************************/
 
