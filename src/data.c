@@ -645,21 +645,32 @@ void pcb_data_clip_polys(pcb_data_t *data)
 pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
 						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
 						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
-						 void *closure, int *num_found)
+						 void *closure, int *num_found, pcb_bool vis_only)
 {
 	pcb_layer_id_t lid;
 	pcb_r_dir_t res = 0;
 
-	if (types & PCB_OBJ_VIA)  rsearch(data->via_tree);
-	if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
-	if (types & PCB_OBJ_PIN)  rsearch(data->pin_tree);
-	if (types & PCB_OBJ_PAD)  rsearch(data->pad_tree);
-	if (types & PCB_OBJ_PSTK) rsearch(data->padstack_tree);
-	if (types & PCB_OBJ_SUBC) rsearch(data->subc_tree);
+	if (!vis_only || PCB->ViaOn)
+		if (types & PCB_OBJ_VIA)  rsearch(data->via_tree);
 
+	if (!vis_only || PCB->RatOn)
+		if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
+
+	if (!vis_only || PCB->PinOn) {
+		if (types & PCB_OBJ_PIN)  rsearch(data->pin_tree);
+		if (types & PCB_OBJ_PAD)  rsearch(data->pad_tree);
+	}
+	if (types & PCB_OBJ_PSTK) rsearch(data->padstack_tree);
+
+	if (!vis_only || PCB->SubcOn)
+		if (types & PCB_OBJ_SUBC) rsearch(data->subc_tree);
 
 	for(lid = 0; lid < data->LayerN; lid++) {
 		pcb_layer_t *ly = data->Layer + lid;
+
+		if (vis_only && (!ly->meta.real.vis))
+			continue;
+
 		if (types & PCB_OBJ_LINE) rsearch(ly->line_tree);
 		if (types & PCB_OBJ_TEXT) rsearch(ly->text_tree);
 		if (types & PCB_OBJ_POLY) rsearch(ly->polygon_tree);

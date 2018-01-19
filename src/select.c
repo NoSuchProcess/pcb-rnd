@@ -571,7 +571,7 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
  * Flag determines if the block is to be selected or unselected
  * returns pcb_true if the state of any object has changed
  */
-pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag)
+pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_bool vis_only)
 {
 	select_ctx_t ctx;
 
@@ -582,7 +582,7 @@ pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag)
 
 	fix_box_dir(Box, 1);
 
-	return pcb_data_r_search(pcb->Data, PCB_OBJ_ANY, Box, NULL, pcb_select_block_cb, &ctx, NULL) == PCB_R_DIR_FOUND_CONTINUE;
+	return pcb_data_r_search(pcb->Data, PCB_OBJ_ANY, Box, NULL, pcb_select_block_cb, &ctx, NULL, vis_only) == PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* ----------------------------------------------------------------------

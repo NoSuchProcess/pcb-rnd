@@ -192,7 +192,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_tool_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true, pcb_true)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
@@ -200,7 +200,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				break;
 			}
 
-			/* select all visible objects */
+			/* select all visible(?) objects */
 		case F_All:
 			{
 				pcb_box_t box;
@@ -209,7 +209,7 @@ static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.Y1 = -PCB_MAX_COORD;
 				box.X2 = PCB_MAX_COORD;
 				box.Y2 = PCB_MAX_COORD;
-				if (pcb_select_block(PCB, &box, pcb_true))
+				if (pcb_select_block(PCB, &box, pcb_true, pcb_true))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
@@ -363,7 +363,7 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_tool_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false, pcb_true)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
@@ -380,7 +380,7 @@ static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				box.Y1 = -PCB_MAX_COORD;
 				box.X2 = PCB_MAX_COORD;
 				box.Y2 = PCB_MAX_COORD;
-				if (pcb_select_block(PCB, &box, pcb_false))
+				if (pcb_select_block(PCB, &box, pcb_false, pcb_false))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}

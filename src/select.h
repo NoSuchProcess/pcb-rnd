@@ -37,7 +37,7 @@
 	 PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_PSTK | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
 pcb_bool pcb_select_object(pcb_board_t *pcb);
-pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *, pcb_bool);
+pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_bool vis_only);
 long int *pcb_list_block(pcb_board_t *pcb, pcb_box_t *Box, int *len);
 
 pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool);
