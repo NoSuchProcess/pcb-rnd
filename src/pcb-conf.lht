@@ -256,6 +256,7 @@ li:pcb-rnd-conf-v1 {
 			ha:import_sch {
 				gnetlist_program = gnetlist
 				make_program = make
+				verbose = false
 			}
 			ha:import_mentor_sch {
 				li:map_search_paths = {
