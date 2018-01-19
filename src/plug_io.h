@@ -185,7 +185,8 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int
 
 /* Indicate an incompatibility on save; data and obj may be NULL (they are
    used for navigating the user to the problem). Desc should be a short
-   description, details should go in hint. Returns a report ID. */
+   description (must not be NULL), details should go in hint (can be NULL).
+   Returns a report ID. */
 pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *desc, const char *hint);
 
 void pcb_io_uninit(void);
