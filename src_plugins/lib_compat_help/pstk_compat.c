@@ -32,7 +32,7 @@
 #include "obj_pstk_inlines.h"
 #include "compat_misc.h"
 
-#define sqr(o) ((o)*(o))
+#define sqr(o) ((double)(o)*(double)(o))
 
 /* emulate old pcb-rnd "pin shape" feature */
 static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb_coord_t radius, int style)
@@ -168,11 +168,12 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 
 static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
-	double len2, l, a;
+	double sq, len2, l, a;
 	int n;
 
+	sq = sqr(shp->data.poly.x[0] - shp->data.poly.x[2]) + sqr(shp->data.poly.y[0] - shp->data.poly.y[2]);
 	/* cross-bars must be of equal length */
-	if (sqr(shp->data.poly.x[0] - shp->data.poly.x[2]) + sqr(shp->data.poly.y[0] - shp->data.poly.y[2]) != sqr(shp->data.poly.x[1] - shp->data.poly.x[3]) + sqr(shp->data.poly.y[1] - shp->data.poly.y[3]))
+	if (sq != sqr(shp->data.poly.x[1] - shp->data.poly.x[3]) + sqr(shp->data.poly.y[1] - shp->data.poly.y[3]))
 		return PCB_PSTK_COMPAT_INVALID;
 
 	/* all sides must be of equal length */
@@ -189,7 +190,8 @@ static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pst
 		return PCB_PSTK_COMPAT_INVALID;
 
 	/* found a valid square */
-	*dia = sqrt(len2);
+	*dia = pcb_round(sqrt(sq / 2.0));
+
 	return PCB_PSTK_COMPAT_SQUARE;
 }
 
