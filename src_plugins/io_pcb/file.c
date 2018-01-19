@@ -901,8 +901,11 @@ pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_c
 	pcb_pstk_compshape_t shp;
 	int n;
 
-	if (Flags.f & PCB_FLAG_SQUARE)
+	if (Flags.f & PCB_FLAG_SQUARE) {
 		shp = Flags.q /*+ PCB_PSTK_COMPAT_SHAPED*/;
+		if (shp == 0)
+			shp = PCB_PSTK_COMPAT_SQUARE;
+	}
 	else if (Flags.f & PCB_FLAG_OCTAGON)
 		shp = PCB_PSTK_COMPAT_OCTAGON;
 	else
