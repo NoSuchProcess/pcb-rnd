@@ -1022,6 +1022,13 @@ void pcb_io_list_free(pcb_io_formats_t *out)
 	}
 }
 
+pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *desc, const char *hint)
+{
+	pcb_message(PCB_MSG_ERROR, "save error: %s\n(%s)\n", desc, hint);
+	return 0;
+}
+
+
 void pcb_io_uninit(void)
 {
 	free(last_design_dir);
