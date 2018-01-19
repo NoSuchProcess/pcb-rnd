@@ -367,7 +367,7 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 	*drill_dia = proto->hdia;
 	*pad_dia = old_dia[coppern];
 	*clearance = ps->Clearance;
-	*mask = old_dia[maskn];
+	*mask = maskn >= 0 ? old_dia[maskn] : 0;
 	*cshape = old_shape[0];
 	*plated = proto->hplated;
 
