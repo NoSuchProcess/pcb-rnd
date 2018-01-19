@@ -376,11 +376,20 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 			case PCB_PSTK_COMPAT_OCTAGON:
 				tmp.Flags.f |= PCB_FLAG_OCTAGON;
 				break;
-			case PCB_FLAG_SQUARE:
+			case PCB_PSTK_COMPAT_SQUARE:
 				tmp.Flags.f |= PCB_FLAG_SQUARE;
-				tmp.Flags.q = cshape;
+				tmp.Flags.q = 1;
+				break;
 			default:
-				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style via", "Old via format is very much restricted; try to use a simpler shape (e.g. circle)");
+				if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
+					tmp.Flags.f |= PCB_FLAG_SQUARE;
+					cshape -= PCB_PSTK_COMPAT_SHAPED;
+					if (cshape == 1)
+						cshape = 17;
+					tmp.Flags.q = cshape;
+				}
+				else
+					pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style via", "Old via format is very much restricted; try to use a simpler shape (e.g. circle)");
 		}
 
 		for(n = 0; n < sizeof(tmp.Flags.t[n]) / sizeof(tmp.Flags.t[0]); n++) {
