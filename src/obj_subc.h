@@ -110,6 +110,9 @@ void *pcb_subc_remove(pcb_subc_t *sc);
    layer that matches brd_layer or brd_layer if not found. */
 pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer);
 
+/* Returns whether there's no object in the subc */
+pcb_bool pcb_subc_is_empty(pcb_subc_t *subc);
+
 /*** subc creation helpers ***/
 
 /* Create the aux layer for a subc, set origin to ox;oy and rotation to rot */

@@ -1611,3 +1611,8 @@ pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID)
 	PCB_END_LOOP;
 	return NULL;
 }
+
+pcb_bool pcb_subc_is_empty(pcb_subc_t *subc)
+{
+	return pcb_data_is_empty(subc->data);
+}
