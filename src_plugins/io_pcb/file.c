@@ -361,7 +361,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 		pcb_pstk_compshape_t cshape;
 		pcb_bool plated;
-		char *name = NULL;
+		char *name = pcb_attribute_get(&ps->Attributes, "name");
 
 		memset(&tmp, 0, sizeof(tmp));
 		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
@@ -911,6 +911,9 @@ pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_c
 			pcb_pstk_set_thermal(p, n, nt);
 		}
 	}
+
+	if (Name != NULL)
+		pcb_attribute_put(&p->Attributes, "name", Name);
 
 	return p;
 }
