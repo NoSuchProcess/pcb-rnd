@@ -307,8 +307,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 				clr = padstack->Clearance > 0 ? padstack->Clearance : shp->clearance;
 				switch(shp->shape) {
 					case PCB_PSSH_CIRC:
-						pcb_fprintf(f, "	fillcircle all copper %s %mm %mm %mm %mm\n",
-							TERM_NAME(padstack->term),
+						pcb_fprintf(f, "	fillcircle %s %s %s %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
 							padstack->x + shp->data.circ.x - ox, padstack->y + shp->data.circ.y - oy,
 							shp->data.circ.dia/2, clr);
 						break;
