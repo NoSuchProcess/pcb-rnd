@@ -2692,8 +2692,9 @@
  ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h rats.h \
  netlist.h route_style.h remove.h flag_str.h compat_fs.h compat_misc.h \
  paths.h rats_patch.h hid_actions.h hid_flags.h \
- ../src_plugins/io_pcb/attribs.h route_style.h obj_poly.h \
- ../src_plugins/lib_compat_help/layer_compat.h
+ ../src_plugins/io_pcb/attribs.h route_style.h obj_poly.h thermal.h \
+ ../src_plugins/lib_compat_help/layer_compat.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_pcb/io_pcb.o: ../src_plugins/io_pcb/io_pcb.c \
  ../config.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
@@ -2825,7 +2826,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid.h hid_actions.h \
- action_helper.h compat_misc.h dolists.h
+ action_helper.h compat_misc.h plug_io.h dolists.h
 ../src_plugins/io_tedax/netlist.o: ../src_plugins/io_tedax/netlist.c \
  ../config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h board.h const.h macro.h global_typedefs.h \
@@ -6828,11 +6829,12 @@ obj_subc.o: obj_subc.c ../config.h ../src_3rd/genvector/vtp0.h \
  rtree.h rtree2.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  ht_subc.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  obj_subc_op.h operation.h obj_poly_op.h obj_pstk_inlines.h thermal.h \
- obj_pstk_draw.h obj_line_op.h obj_term.h obj_text_draw.h draw.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h compat_misc.h pcb_minuid.h \
- conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h
+ obj_pstk_draw.h obj_line_op.h obj_term.h obj_text_draw.h draw.h \
+ draw_wireframe.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ compat_misc.h pcb_minuid.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h list_conf.h
 obj_subc_list.o: obj_subc_list.c ../config.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h obj_common.h ../src_3rd/genht/hash.h \
