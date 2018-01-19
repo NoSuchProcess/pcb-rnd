@@ -236,6 +236,11 @@ static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_
 	if ((minx == 0.0) || (miny == 0.0))
 		return PCB_PSTK_COMPAT_INVALID;
 
+	if (minx < miny)
+		miny = minx;
+	else
+		minx = miny;
+
 	/* normalize the factors */
 	for(n = 0; n < 8; n++) {
 		x[n] = fabs(x[n] / minx);
@@ -256,7 +261,7 @@ static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_
 
 	/* compare to all known shape factors */
 	for(shi = PCB_PSTK_COMPAT_SHAPED; shi <= PCB_PSTK_COMPAT_SHAPED_END; shi++) {
-		pcb_poly_square_pin_factors(shi, xm, ym);
+		pcb_poly_square_pin_factors(shi - PCB_PSTK_COMPAT_SHAPED, xm, ym);
 		found = 1;
 		for(n = 0; n < 8; n++) {
 			if ((xm[n] != x[n]) || (ym[n] != y[n])) {
