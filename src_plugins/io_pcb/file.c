@@ -82,7 +82,7 @@ static void WriteViaData(FILE *, pcb_data_t *);
 static void WritePCBRatData(FILE *);
 static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
 
-#define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE, &((OBJ)->intconn))
+#define F2S(OBJ, TYPE) ((OBJ) == NULL ? "" : pcb_strflg_f2s((OBJ)->Flags, TYPE, &((OBJ)->intconn)))
 
 /* The idea here is to avoid gratuitously breaking backwards
    compatibility due to a new but rarely used feature.  The first such
@@ -512,6 +512,47 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	return 0;
 }
 
+
+int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
+{
+	gdl_iterator_t sit;
+	pcb_subc_t *sc;
+
+	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
+
+	subclist_foreach(&Data->subc, &sit, sc) {
+		pcb_coord_t ox, oy, rx, ry;
+		int rdir = 0, rscale = 100;
+		pcb_text_t *trefdes;
+
+		pcb_subc_get_origin(sc, &ox, &oy);
+		trefdes = pcb_subc_get_refdes_text(sc);
+
+		if (trefdes != NULL) {
+			rx = trefdes->X - ox;
+			ry = trefdes->Y - oy;
+			rdir = trefdes->Direction;
+			rscale = trefdes->Scale;
+		}
+		else {
+			rx = ox;
+			ry = oy;
+		}
+
+		fprintf(FP, "\nElement[%s ", F2S(sc, PCB_TYPE_ELEMENT));
+		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "footprint")));
+		fputc(' ', FP);
+		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "refdes")));
+		fputc(' ', FP);
+		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "value")));
+		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, F2S(trefdes, PCB_TYPE_ELEMENT_NAME));
+		WriteAttributeList(FP, &sc->Attributes, "\t");
+
+
+		fputs("\n)\n", FP);
+	}
+}
+
 static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
 {
 	unsigned long lflg = pcb_layer_flags_(layer);
@@ -650,6 +691,7 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bo
 	}
 
 	io_pcb_WriteElementData(ctx, FP, buff->Data);
+	io_pcb_WriteSubcData(ctx, FP, buff->Data);
 
 	if (!elem_only)
 		WriteLayers(FP, buff->Data);
@@ -670,6 +712,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WriteAttributeList(FP, &PCB->Attributes, "");
 	WriteViaData(FP, PCB->Data);
 	io_pcb_WriteElementData(ctx, FP, PCB->Data);
+	io_pcb_WriteSubcData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
 	WriteLayers(FP, PCB->Data);
 	WritePCBNetlistData(FP);
