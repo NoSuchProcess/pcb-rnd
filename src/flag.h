@@ -191,6 +191,7 @@ int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2);
 #define PCB_FLAG_THERM_GET(L,P)		(((P)->Flags.t[(L)/2] >> (4 * ((L) % 2))) & 0xf)
 #define PCB_FLAG_THERM_CLEAR(L,P)	(P)->Flags.t[(L)/2] &= ~PCB_FLAG_THERM(L)
 #define PCB_FLAG_THERM_ASSIGN(L,V,P)	(P)->Flags.t[(L)/2] = ((P)->Flags.t[(L)/2] & ~PCB_FLAG_THERM(L)) | ((V)  << (4 * ((L) % 2)))
+#define PCB_FLAG_THERM_ASSIGN_(L,V,F)	(F).t[(L)/2] = (((F).t[(L)/2] & ~PCB_FLAG_THERM(L)) | ((V)  << (4 * ((L) % 2))))
 
 
 #define PCB_FLAG_SQUARE_GET(P)		((P)->Flags.q)
