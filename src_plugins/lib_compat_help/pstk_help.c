@@ -31,6 +31,7 @@
 #include "compat_misc.h"
 #include "search.h"
 #include "remove.h"
+#include "find.h"
 
 
 #warning TODO: remove this once the operations are free of ptrs
