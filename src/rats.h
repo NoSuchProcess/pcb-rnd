@@ -69,6 +69,7 @@ pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *Net);
 #define PCB_CONNECTION_LOOP(net) do {                         \
         long n;                                               \
         pcb_connection_t *connection;                         \
+        if ((net)->ConnectionN > 0)                           \
         for (n = (net)->ConnectionN-1; n >= 0; n--)           \
         {                                                     \
                 connection = & (net)->Connection[n]
