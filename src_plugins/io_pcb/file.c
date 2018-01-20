@@ -525,6 +525,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		pcb_coord_t ox, oy, rx, ry;
 		int rdir = 0, rscale = 100;
 		pcb_text_t *trefdes;
+		pcb_pstk_t *ps;
 
 		pcb_subc_get_origin(sc, &ox, &oy);
 		trefdes = pcb_subc_get_refdes_text(sc);
@@ -548,6 +549,26 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "value")));
 		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, F2S(trefdes, PCB_TYPE_ELEMENT_NAME));
 		WriteAttributeList(FP, &sc->Attributes, "\t");
+
+		padstacklist_foreach(&sc->data->padstack, &it, ps) {
+			pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
+			pcb_pstk_compshape_t cshape;
+			pcb_bool plated, square, nopaste;
+			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+			
+			}
+			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
+				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0);
+				pcb_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
+					x1 - ox, y1 - oy, x2 - ox, y2 - oy, thickness, clearance, mask);
+					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
+					fprintf(FP, " ");
+					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
+					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_TYPE_PAD, ps->intconn));
+			}
+			else
+				pcb_io_incompat_save(sc->data, ps, "Padstack can not be exported az pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
+		}
 
 		for(l = 0; l < sc->data->LayerN; l++) {
 			pcb_layer_t *ly = &sc->data->Layer[l];
@@ -581,7 +602,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 
 			if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
 				char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element\n", ly->name);
-				pcb_io_incompat_save(sc->data, NULL, desc, "only top silk lines and arcs are exported");
+				pcb_io_incompat_save(sc->data, NULL, desc, "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
 				free(desc);
 			}
 		}
