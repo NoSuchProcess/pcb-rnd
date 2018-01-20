@@ -329,6 +329,7 @@ static pcb_flag_t pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape)
 	pcb_flag_t flg;
 	int n;
 
+	memset(&flg, 0, sizeof(flg));
 	flg.f = ps->Flags.f & VIA_COMPAT_FLAGS;
 	switch(cshape) {
 		case PCB_PSTK_COMPAT_ROUND:
@@ -352,7 +353,7 @@ static pcb_flag_t pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape)
 				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style pin/via", "Old pin/via format is very much restricted; try to use a simpler shape (e.g. circle)");
 	}
 
-	for(n = 0; n < sizeof(flg.t[n]) / sizeof(flg.t[0]); n++) {
+	for(n = 0; n < sizeof(flg.t) / sizeof(flg.t[0]); n++) {
 		unsigned char *ot = pcb_pstk_get_thermal(ps, n, 0);
 		int nt;
 		if ((ot == NULL) || (*ot == 0) || !((*ot) & PCB_THERMAL_ON))
@@ -558,8 +559,13 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 			pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
 			pcb_pstk_compshape_t cshape;
 			pcb_bool plated, square, nopaste;
+			unsigned char ic = ps->intconn;
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-			
+				pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ", x - ox, y - oy, pad_dia, clearance*2, mask, drill_dia);
+				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
+				fprintf(FP, " ");
+				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
+				fprintf(FP, " %s]\n", pcb_strflg_f2s(pinvia_flag(ps, cshape), PCB_TYPE_PIN, &ic));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0);
@@ -568,10 +574,10 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 					fprintf(FP, " ");
 					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_TYPE_PAD, ps->intconn));
+					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_TYPE_PAD, &ic));
 			}
 			else
-				pcb_io_incompat_save(sc->data, ps, "Padstack can not be exported az pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
+				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported az pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
 		}
 
 		for(l = 0; l < sc->data->LayerN; l++) {
