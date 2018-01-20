@@ -1092,7 +1092,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 
 	yysubc_ox = 0;
 	yysubc_oy = 0;
-	yysubc_bottom = Flags.f & PCB_FLAG_ONSOLDER;
+	yysubc_bottom = !!(Flags.f & PCB_FLAG_ONSOLDER);
 	Flags.f &= ~PCB_FLAG_ONSOLDER;
 
 	if (Description != NULL)
@@ -1151,6 +1151,8 @@ pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t 
 	if (Name != NULL)
 		pcb_attribute_put(&p->Attributes, "name", Name);
 
+	if (yysubc_bottom)
+		pcb_pstk_mirror(p, 0, 1);
 	return p;
 }
 
@@ -1163,6 +1165,9 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t
 		pcb_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
 		pcb_attribute_put(&p->Attributes, "name", Name);
+
+	if (yysubc_bottom)
+		pcb_pstk_mirror(p, 0, 1);
 
 	return p;
 }
