@@ -833,6 +833,22 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 	return lid;
 }
 
+pcb_layer_id_t static existing_or_new_ly_end(pcb_board_t *pcb, const char *name)
+{
+	pcb_layer_id_t lid = pcb_layer_by_name(pcb->Data, name);
+	if (lid >= 0) {
+		if (pcb->Data->Layer[lid].meta.real.grp >= 0) {
+			pcb_layergrp_id_t gid = pcb->Data->Layer[lid].meta.real.grp;
+			pcb_layergrp_t *grp = &pcb->LayerGroups.grp[gid];
+			grp->len = 0;
+
+			pcb->Data->Layer[lid].meta.real.grp = -1;
+		}
+		return lid;
+	}
+	return new_ly_end(pcb, name);
+}
+
 pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 {
 	pcb_layer_id_t lid;
@@ -912,7 +928,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_MASK, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_end(pcb, "top_mask");
+		lid = existing_or_new_ly_end(pcb, "top-mask");
 		if (lid < 0)
 			return -1;
 		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
@@ -921,7 +937,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_MASK, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_end(pcb, "bottom_mask");
+		lid = existing_or_new_ly_end(pcb, "bottom-mask");
 		if (lid < 0)
 			return -1;
 		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
@@ -930,7 +946,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_PASTE, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_end(pcb, "top_paste");
+		lid = existing_or_new_ly_end(pcb, "top-paste");
 		if (lid < 0)
 			return -1;
 		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO;
@@ -939,7 +955,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_PASTE, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_end(pcb, "bottom_paste");
+		lid = existing_or_new_ly_end(pcb, "bottom-paste");
 		if (lid < 0)
 			return -1;
 		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO;
@@ -1081,6 +1097,15 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 {
 	gdl_iterator_t it;
 	pcb_subc_t *sc;
+	int n;
+
+	/* remove empty layer groups */
+	for(n = 0; n < pcb->LayerGroups.len; n++) {
+		if (pcb->LayerGroups.grp[n].len == 0) {
+			pcb_layergrp_del(pcb, n, 0);
+			n--;
+		}
+	}
 
 	/* have to revind all subcircuits because the layer stack was not ready
 	   when they got loaded */
