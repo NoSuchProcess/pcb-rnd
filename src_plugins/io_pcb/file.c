@@ -913,7 +913,7 @@ pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_c
 
 	p = pcb_pstk_new_compat_via(data, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
 	p->Flags.f |= Flags.f & VIA_COMPAT_FLAGS;
-	for(n = 0; n < sizeof(Flags.t[n]) / sizeof(Flags.t[0]); n++) {
+	for(n = 0; n < sizeof(Flags.t) / sizeof(Flags.t[0]); n++) {
 		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
 		if (t != 0) {
 			switch(t) {
