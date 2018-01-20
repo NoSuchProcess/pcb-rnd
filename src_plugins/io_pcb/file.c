@@ -1090,6 +1090,8 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 		Data->padstack_tree = pcb_r_create_tree();
 	sc->data->padstack_tree = Data->padstack_tree;
 
+	yysubc_ox = 0;
+	yysubc_oy = 0;
 	yysubc_bottom = Flags.f & PCB_FLAG_ONSOLDER;
 	Flags.f &= ~PCB_FLAG_ONSOLDER;
 
@@ -1112,7 +1114,7 @@ void io_pcb_element_fin(pcb_data_t *Data)
 	pcb_subc_bbox(yysubc);
 
 #warning subc TODO: rotation
-	pcb_subc_create_aux(yysubc, yysubc_ox, yysubc_ox, rot);
+	pcb_subc_create_aux(yysubc, yysubc_ox, yysubc_oy, rot);
 	pcb_add_subc_to_data(Data, yysubc);
 
 	if (Data->subc_tree == NULL)
