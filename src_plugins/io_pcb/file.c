@@ -82,13 +82,7 @@ static void WriteViaData(FILE *, pcb_data_t *);
 static void WritePCBRatData(FILE *);
 static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
 
-/* ---------------------------------------------------------------------------
- * Flag helper functions
- */
-
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE, &((OBJ)->intconn))
-
-/* --------------------------------------------------------------------------- */
 
 /* The idea here is to avoid gratuitously breaking backwards
    compatibility due to a new but rarely used feature.  The first such
@@ -197,9 +191,6 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 }
 
 
-/* ---------------------------------------------------------------------------
- * writes out an attribute list
- */
 static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char *prefix)
 {
 	int i;
@@ -208,9 +199,6 @@ static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char
 		fprintf(FP, "%sAttribute(\"%s\" \"%s\")\n", prefix, list->List[i].name, list->List[i].value);
 }
 
-/* ---------------------------------------------------------------------------
- * writes layout header information
- */
 static void WritePCBInfoHeader(FILE * FP)
 {
 	/* write some useful comments */
@@ -234,11 +222,8 @@ static void conf_update_pcb_flag(pcb_flag_t *dest, const char *hash_path, int bi
 		PCB_FLAG_SET(binflag, tmp);
 }
 
-/* ---------------------------------------------------------------------------
- * writes data header
- * the name of the PCB, cursor location, zoom and grid
- * layergroups and some flags
- */
+/* data header: the name of the PCB, cursor location, zoom and grid
+ * layergroups and some flags */
 static void WritePCBDataHeader(FILE * FP)
 {
 	int group;
@@ -315,9 +300,7 @@ static void WritePCBDataHeader(FILE * FP)
 		fprintf(FP, "\"]\n\n");
 }
 
-/* ---------------------------------------------------------------------------
- * writes font data of non empty symbols
- */
+/* writes font data of non empty symbols */
 static void WritePCBFontData(FILE * FP)
 {
 	pcb_cardinal_t i, j;
@@ -341,9 +324,6 @@ static void WritePCBFontData(FILE * FP)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes via data
- */
 static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
@@ -417,9 +397,6 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes rat-line data
- */
 static void WritePCBRatData(FILE * FP)
 {
 	gdl_iterator_t it;
@@ -433,9 +410,6 @@ static void WritePCBRatData(FILE * FP)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes netlist data
- */
 static void WritePCBNetlistData(FILE * FP)
 {
 	/* write out the netlist if it exists */
@@ -462,9 +436,6 @@ static void WritePCBNetlistData(FILE * FP)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes netlist patch data
- */
 static void WritePCBNetlistPatchData(FILE * FP)
 {
 	if (PCB->NetlistPatches != NULL) {
@@ -474,9 +445,6 @@ static void WritePCBNetlistPatchData(FILE * FP)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes element data
- */
 int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
@@ -544,9 +512,6 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes layer data
- */
 static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
 {
 	unsigned long lflg = pcb_layer_flags_(layer);
@@ -669,9 +634,6 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * writes the buffer to file
- */
 int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bool elem_only)
 {
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
@@ -695,9 +657,6 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bo
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * writes PCB to file
- */
 int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	pcb_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description);
@@ -719,10 +678,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * functions for loading elements-as-pcb
- */
-
+/*** functions for loading elements-as-pcb ***/
 extern pcb_board_t *yyPCB;
 extern pcb_data_t *yyData;
 extern pcb_font_t *yyFont;
