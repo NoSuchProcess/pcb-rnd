@@ -73,3 +73,30 @@ pcb_text_t *pcb_subc_add_refdes_text(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t 
 		return pcb_text_new(ly, pcb_font(PCB, 0, 0), x, y, direction, scale, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
 	return 0;
 }
+
+pcb_text_t *pcb_subc_get_refdes_text(pcb_subc_t *sc)
+{
+	int l, score, best_score = 0;
+	pcb_text_t *best = NULL;
+	for(l = 0; l < sc->data->LayerN; l++) {
+		pcb_layer_t *ly = &sc->data->Layer[l];
+		pcb_text_t *text;
+		gdl_iterator_t it;
+		textlist_foreach(&ly->Text, &it, text) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text))
+				continue;
+			if (!strstr(text->TextString, "%a.parent.refdes%"))
+				continue;
+			score = 1;
+			if (ly->meta.bound.type & PCB_LYT_SILK) score += 5;
+			if (ly->meta.bound.type & PCB_LYT_TOP)  score += 2;
+			if (score > best_score) {
+				best = text;
+				best_score = score;
+			}
+		}
+	}
+
+	return best;
+}
+
