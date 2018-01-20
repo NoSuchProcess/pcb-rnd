@@ -40,24 +40,11 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 }
 
-static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	pcb_print_actions();
-	return 0;
-}
 
-static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	return 0;
-}
-
-pcb_hid_action_t remote_action_list[] = {
-	{"Help", 0, help}
-	,
-	{"Info", 0, info}
+/*pcb_hid_action_t remote_action_list[] = {
 };
 
-PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)
+PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
 
 static void remote_send_all_layers()
@@ -431,7 +418,7 @@ int pplg_check_ver_hid_remote(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_remote(void)
 {
-	pcb_hid_remove_actions_by_cookie(remote_cookie);
+/*	pcb_hid_remove_actions_by_cookie(remote_cookie);*/
 	pcb_event_unbind_allcookie(remote_cookie);
 }
 
@@ -494,7 +481,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.propedit_add_value = remote_propedit_add_value;
 	remote_hid.propedit_add_stat = remote_propedit_add_stat;
 
-	PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)
+/*	PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
 	pcb_hid_register_hid(&remote_hid);
 
