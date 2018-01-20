@@ -986,15 +986,6 @@ static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)
 	return pcb_subc_get_layer(subc, PCB_LYT_SILK | side, /*PCB_LYC_AUTO*/0, pcb_true, name);
 }
 
-static void subc_pad_layer(pcb_subc_t *subc, pcb_layer_t **copper, pcb_layer_t **paste, pcb_layer_t **mask)
-{
-	pcb_layer_type_t side = yysubc_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-
-	*copper = pcb_subc_get_layer(subc, PCB_LYT_COPPER | side, 0, pcb_true, yysubc_bottom ? "bottom-copper" : "top-copper");
-	*paste  = pcb_subc_get_layer(subc, PCB_LYT_PASTE | side, PCB_LYC_AUTO, pcb_true, yysubc_bottom ? "bottom-paste" : "top-paste");
-	*mask   = pcb_subc_get_layer(subc, PCB_LYT_MASK | side, PCB_LYC_AUTO | PCB_LYC_SUB, pcb_true, yysubc_bottom ? "bottom-mask" : "top-mask");
-}
-
 pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
 {
 	pcb_layer_t *ly = subc_silk_layer(subc);
@@ -1020,8 +1011,6 @@ pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t 
 pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
-	pcb_layer_t *copper, *paste, *mask;
-	subc_pad_layer(subc, &copper, &paste, &mask);
 
 	p = pcb_pstk_new_compat_pad(subc->data, X1, Y1, X2, Y2, Thickness, Clearance, Mask, Flags.f & PCB_FLAG_SQUARE, Flags.f & PCB_FLAG_NOPASTE);
 	if (Number != NULL)
