@@ -1019,10 +1019,15 @@ pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t 
 
 pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
 {
+	pcb_pstk_t *p;
 	pcb_layer_t *copper, *paste, *mask;
 	subc_pad_layer(subc, &copper, &paste, &mask);
 
-	return NULL;
+	p = pcb_pstk_new_compat_pad(subc->data, X1, Y1, X2, Y2, Thickness, Clearance, Mask, Flags.f & PCB_FLAG_SQUARE, Flags.f & PCB_FLAG_NOPASTE);
+	if (Number != NULL)
+		pcb_attribute_put(&p->Attributes, "term", Number);
+
+	return p;
 }
 
 void io_pcb_postproc_board(pcb_board_t *pcb)
