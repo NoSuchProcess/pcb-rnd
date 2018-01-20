@@ -1103,7 +1103,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 		pcb_attribute_put(&sc->Attributes, "value", Value);
 
 #warning TODO: TextFlags
-	txt = pcb_subc_add_refdes_text(sc, TextX, TextY, Direction, TextScale);
+	txt = pcb_subc_add_refdes_text(sc, TextX, TextY, Direction, TextScale, yysubc_bottom);
 
 	return sc;
 }

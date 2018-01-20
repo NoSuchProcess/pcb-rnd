@@ -640,7 +640,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	htip_uninit(&terms);
 
 	pcb_attribute_put(&subc->Attributes, "refdes", "X1");
-	pcb_subc_add_refdes_text(subc, 0, 0, 0, 100);
+	pcb_subc_add_refdes_text(subc, 0, 0, 0, 100, pcb_false);
 	pcb_subc_create_aux(subc, 0, 0, 0.0);
 
 	return res;
