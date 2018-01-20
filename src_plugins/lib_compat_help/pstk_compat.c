@@ -428,8 +428,9 @@ static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	}
 }
 
-pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square, pcb_bool nopaste)
+pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square, pcb_bool nopaste, pcb_bool onotherside)
 {
+	pcb_layer_type_t side;
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[3]; /* max number of shapes: 1 copper, 1 mask, 1 paste */
 	pcb_cardinal_t pid;
@@ -454,10 +455,11 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, pcb_coord_t x1, pcb_coord_
 	if (!nopaste)
 		pcb_pstk_shape_copy(&shape[2], &shape[0]); /* paste is the same */
 
-	shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; shape[0].comb = 0;
-	shape[1].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;   shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+	side = onotherside ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+	shape[0].layer_mask = side | PCB_LYT_COPPER; shape[0].comb = 0;
+	shape[1].layer_mask = side | PCB_LYT_MASK;   shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 	if (!nopaste) {
-		shape[2].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+		shape[2].layer_mask = side | PCB_LYT_PASTE;
 		shape[2].comb = PCB_LYC_AUTO;
 	}
 
