@@ -1083,7 +1083,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
 	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName)
 {
-	pcb_subc_t *sc = pcb_subc_alloc();
+	pcb_subc_t *sc = pcb_subc_new();
 	pcb_text_t *txt;
 	pcb_add_subc_to_data(Data, sc);
 	if (Data->padstack_tree == NULL)
