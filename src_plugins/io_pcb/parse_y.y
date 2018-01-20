@@ -212,17 +212,25 @@ parsepcb
 					conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, POL_OVERWRITE);
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (layer_group_string == NULL) {
-			     if (pcb_layer_improvise(yyPCB) != 0) {
+			     if (pcb_layer_improvise(yyPCB, pcb_true) != 0) {
 			        pcb_message(PCB_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
 			        YYABORT;
 			     }
 			     pcb_message(PCB_MSG_ERROR, "missing layer-group string: invalid input file, had to improvise, the layer stack is most probably broken\n");
 			  }
-			  else if (pcb_layer_parse_group_string(yyPCB, layer_group_string, yyData->LayerN, old_fmt))
+			  else {
+			    if (pcb_layer_parse_group_string(yyPCB, layer_group_string, yyData->LayerN, old_fmt))
 			    {
 			      pcb_message(PCB_MSG_ERROR, "illegal layer-group string\n");
 			      YYABORT;
 			    }
+			    else {
+			     if (pcb_layer_improvise(yyPCB, pcb_false) != 0) {
+			        pcb_message(PCB_MSG_ERROR, "failed to extend-improvise the groups\n");
+			        YYABORT;
+			     }
+			    }
+			  }
 			/* initialize the polygon clipping now since
 			 * we didn't know the layer grouping before.
 			 */

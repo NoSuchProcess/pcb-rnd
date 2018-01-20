@@ -821,74 +821,113 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 		if (pcb->Data->Layer[lid].meta.real.grp == 0) {
 			free((char *)pcb->Data->Layer[lid].name);
 			pcb->Data->Layer[lid].name = pcb_strdup(name);
+			pcb->Data->Layer[lid].parent = pcb->Data;
 			return lid;
 		}
 	}
 	return -1;
 }
 
-int pcb_layer_improvise(pcb_board_t *pcb)
+int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layer_id_t lid, silk = -1;
 
-	pcb_layer_group_setup_default(&pcb->LayerGroups);
+	if (setup) {
+		pcb_layer_group_setup_default(&pcb->LayerGroups);
 
-	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
-		if (strcmp(pcb->Data->Layer[lid].name, "silk") == 0) {
-			if (silk < 0)
-				pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
-			else
-				pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
-			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
-			silk = lid;
-		}
-		else {
-			if (*pcb->Data->Layer[lid].name == '\0') {
-				free((char *)pcb->Data->Layer[lid].name);
-				pcb->Data->Layer[lid].name = pcb_strdup("anonymous");
+		for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+			if (strcmp(pcb->Data->Layer[lid].name, "silk") == 0) {
+				if (silk < 0)
+					pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
+				else
+					pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
+				pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+				silk = lid;
 			}
-			if (lid == 0)
-				pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
-			else
-				pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+			else {
+				if (*pcb->Data->Layer[lid].name == '\0') {
+					free((char *)pcb->Data->Layer[lid].name);
+					pcb->Data->Layer[lid].name = pcb_strdup("anonymous");
+				}
+				if (lid == 0)
+					pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
+				else
+					pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+				pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+			}
+		}
+
+		pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
+		if (pcb->LayerGroups.grp[gid].len < 1) {
+			lid = new_ly_end(pcb, "silk");
+			if (lid < 0)
+				return -1;
+			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		}
+
+		pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
+		if (pcb->LayerGroups.grp[gid].len < 1) {
+			lid = new_ly_end(pcb, "silk");
+			if (lid < 0)
+				return -1;
+			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		}
+
+		pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
+		if (pcb->LayerGroups.grp[gid].len < 1) {
+			lid = new_ly_old(pcb, "top_copper");
+			if (lid < 0)
+				return -1;
+			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
+		}
+
+		pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+		if (pcb->LayerGroups.grp[gid].len < 1) {
+			lid = new_ly_old(pcb, "bottom_copper");
+			if (lid < 0)
+				return -1;
 			pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 		}
 	}
 
-	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_MASK, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_end(pcb, "silk");
+		lid = new_ly_end(pcb, "top_mask");
 		if (lid < 0)
 			return -1;
+		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_MASK, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_end(pcb, "silk");
+		lid = new_ly_end(pcb, "bottom_mask");
 		if (lid < 0)
 			return -1;
+		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_PASTE, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_old(pcb, "top_copper");
+		lid = new_ly_end(pcb, "top_paste");
 		if (lid < 0)
 			return -1;
+		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO;
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_PASTE, &gid, 1);
 	if (pcb->LayerGroups.grp[gid].len < 1) {
-		lid = new_ly_old(pcb, "bottom_copper");
+		lid = new_ly_end(pcb, "bottom_paste");
 		if (lid < 0)
 			return -1;
+		pcb->Data->Layer[lid].comb = PCB_LYC_AUTO;
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-	pcb_hid_action("dumplayers");
+/*	pcb_hid_action("dumplayers");*/
 
 	return 0;
 }
