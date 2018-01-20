@@ -502,7 +502,7 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 									line->Point1.Y - element->MarkY,
 									line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, line->Thickness);
 		}
-		linelist_foreach(&element->Arc, &it, arc) {
+		arclist_foreach(&element->Arc, &it, arc) {
 			pcb_fprintf(FP, "\tElementArc [%[0] %[0] %[0] %[0] %ma %ma %[0]]\n",
 									arc->X - element->MarkX,
 									arc->Y - element->MarkY, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
@@ -515,8 +515,9 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 {
-	gdl_iterator_t sit;
+	gdl_iterator_t sit, it;
 	pcb_subc_t *sc;
+	int l;
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
@@ -548,7 +549,42 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, F2S(trefdes, PCB_TYPE_ELEMENT_NAME));
 		WriteAttributeList(FP, &sc->Attributes, "\t");
 
+		for(l = 0; l < sc->data->LayerN; l++) {
+			pcb_layer_t *ly = &sc->data->Layer[l];
+			pcb_line_t *line;
+			pcb_arc_t *arc;
 
+			if ((ly->meta.bound.type & PCB_LYT_SILK) && (ly->meta.bound.type & PCB_LYT_TOP)) {
+				linelist_foreach(&ly->Line, &it, line) {
+					pcb_fprintf(FP, "\tElementLine [%[0] %[0] %[0] %[0] %[0]]\n",
+						line->Point1.X - ox, line->Point1.Y - oy,
+						line->Point2.X - ox, line->Point2.Y - oy,
+						line->Thickness);
+				}
+				arclist_foreach(&ly->Arc, &it, arc) {
+					pcb_fprintf(FP, "\tElementArc [%[0] %[0] %[0] %[0] %ma %ma %[0]]\n",
+						arc->X - ox, arc->Y - oy, arc->Width, arc->Height,
+						arc->StartAngle, arc->Delta, arc->Thickness);
+				}
+				if (polylist_length(&ly->Polygon) > 0) {
+					char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element\n", ly->name);
+					pcb_io_incompat_save(sc->data, NULL, desc, "only lines and arcs are exported");
+					free(desc);
+				}
+				if (textlist_length(&ly->Text) > 1) {
+					char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element\n", ly->name);
+					pcb_io_incompat_save(sc->data, NULL, desc, "only lines and arcs are exported");
+					free(desc);
+				}
+				continue;
+			}
+
+			if (!pcb_layer_is_pure_empty(ly)) {
+				char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element\n", ly->name);
+				pcb_io_incompat_save(sc->data, NULL, desc, "only top silk lines and arcs are exported");
+				free(desc);
+			}
+		}
 		fputs("\n)\n", FP);
 	}
 }
