@@ -65,6 +65,7 @@
 #include "route_style.h"
 #include "obj_poly.h"
 #include "thermal.h"
+#include "event.h"
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
@@ -629,18 +630,26 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 static void LayersFixup(void)
 {
 	pcb_layer_id_t bs, ts;
+	int chg = 0;
 
 	/* the PCB format requires 2 silk layers to be the last; swap layers to make that so */
 	bs = pcb_layer_get_bottom_silk();
 	ts = pcb_layer_get_top_silk();
-	if (bs != pcb_max_layer - 2)
+	if (bs != pcb_max_layer - 2) {
 		pcb_layer_swap(PCB, bs, pcb_max_layer - 2);
+		chg = 1;
+	}
 
 	bs = pcb_layer_get_bottom_silk();
 	ts = pcb_layer_get_top_silk();
 
-	if (ts != pcb_max_layer - 1)
+	if (ts != pcb_max_layer - 1) {
 		pcb_layer_swap(PCB, ts, pcb_max_layer - 1);
+		chg = 1;
+	}
+
+	if (chg)
+		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
 static void WriteLayers(FILE *FP, pcb_data_t *data)
