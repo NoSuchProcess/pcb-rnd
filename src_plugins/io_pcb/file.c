@@ -587,6 +587,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		}
 		fputs("\n)\n", FP);
 	}
+	return 0;
 }
 
 static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
