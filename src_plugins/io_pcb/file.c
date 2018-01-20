@@ -646,8 +646,18 @@ static void LayersFixup(void)
 static void WriteLayers(FILE *FP, pcb_data_t *data)
 {
 	int i;
-	for (i = 0; i < pcb_max_layer; i++)
-		WriteLayerData(FP, i, &(data->Layer[i]));
+	for (i = 0; i < data->LayerN; i++) {
+		pcb_layer_t *ly = &(data->Layer[i]);
+		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+		if (!(lyt & (PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_OUTLINE))) {
+			if (!pcb_layer_is_pure_empty(ly)) {
+				char *desc = pcb_strdup_printf("Layer %s can be exported only as a copper layer\n", ly->name);
+				pcb_io_incompat_save(data, NULL, desc, NULL);
+				free(desc);
+			}
+		}
+		WriteLayerData(FP, i, ly);
+	}
 }
 
 /* ---------------------------------------------------------------------------
