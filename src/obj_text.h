@@ -88,7 +88,7 @@ void pcb_text_uninit(void);
 #define PCB_TEXT_LOOP(layer) do {                                       \
   pcb_text_t *text;                                                   \
   gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(layer)->Text, &__it__, text) {
+  textlist_foreach(&(layer)->Text, &__it__, text) {
 
 #define	PCB_TEXT_ALL_LOOP(top) do {                        \
 	pcb_cardinal_t l;                                   \
