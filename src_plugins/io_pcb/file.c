@@ -82,7 +82,7 @@ static void WriteViaData(FILE *, pcb_data_t *);
 static void WritePCBRatData(FILE *);
 static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
 
-#define F2S(OBJ, TYPE) ((OBJ) == NULL ? "" : pcb_strflg_f2s((OBJ)->Flags, TYPE, &((OBJ)->intconn)))
+#define F2S(OBJ, TYPE) (pcb_strflg_f2s((OBJ)->Flags, TYPE, &((OBJ)->intconn)))
 
 /* The idea here is to avoid gratuitously breaking backwards
    compatibility due to a new but rarely used feature.  The first such
@@ -324,6 +324,52 @@ static void WritePCBFontData(FILE * FP)
 	}
 }
 
+static pcb_flag_t pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape)
+{
+	pcb_flag_t flg;
+	int n;
+
+	flg.f = ps->Flags.f & VIA_COMPAT_FLAGS;
+	switch(cshape) {
+		case PCB_PSTK_COMPAT_ROUND:
+			break;
+		case PCB_PSTK_COMPAT_OCTAGON:
+			flg.f |= PCB_FLAG_OCTAGON;
+			break;
+		case PCB_PSTK_COMPAT_SQUARE:
+			flg.f |= PCB_FLAG_SQUARE;
+			flg.q = 1;
+			break;
+		default:
+			if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
+				flg.f |= PCB_FLAG_SQUARE;
+				cshape -= PCB_PSTK_COMPAT_SHAPED;
+				if (cshape == 1)
+					cshape = 17;
+				flg.q = cshape;
+			}
+			else
+				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style pin/via", "Old pin/via format is very much restricted; try to use a simpler shape (e.g. circle)");
+	}
+
+	for(n = 0; n < sizeof(flg.t[n]) / sizeof(flg.t[0]); n++) {
+		unsigned char *ot = pcb_pstk_get_thermal(ps, n, 0);
+		int nt;
+		if ((ot == NULL) || (*ot == 0) || !((*ot) & PCB_THERMAL_ON))
+			continue;
+		switch(((*ot) & ~PCB_THERMAL_ON)) {
+			case PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL: nt = 1; break;
+			case PCB_THERMAL_SHARP: nt = 2; break;
+			case PCB_THERMAL_SOLID: nt = 3; break;
+			case PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL: nt = 4; break;
+			case PCB_THERMAL_ROUND: nt = 5; break;
+			default: nt = 0; pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert thermal to old-style via", "Old via format is very much restricted; try to use a simpler thermal shape");
+		}
+		PCB_FLAG_THERM_ASSIGN_(n, nt, flg);
+	}
+	return flg;
+}
+
 static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
@@ -338,62 +384,20 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		fprintf(FP, " %s]\n", F2S(via, PCB_TYPE_VIA));
 	}
 	padstacklist_foreach(&Data->padstack, &it, ps) {
-		pcb_pin_t tmp;
-		int n;
 		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 		pcb_pstk_compshape_t cshape;
 		pcb_bool plated;
 		char *name = pcb_attribute_get(&ps->Attributes, "name");
 
-		memset(&tmp, 0, sizeof(tmp));
 		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, unform shape padstack");
 			continue;
 		}
 
-		tmp.Flags.f = ps->Flags.f & VIA_COMPAT_FLAGS;
-		switch(cshape) {
-			case PCB_PSTK_COMPAT_ROUND:
-				break;
-			case PCB_PSTK_COMPAT_OCTAGON:
-				tmp.Flags.f |= PCB_FLAG_OCTAGON;
-				break;
-			case PCB_PSTK_COMPAT_SQUARE:
-				tmp.Flags.f |= PCB_FLAG_SQUARE;
-				tmp.Flags.q = 1;
-				break;
-			default:
-				if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
-					tmp.Flags.f |= PCB_FLAG_SQUARE;
-					cshape -= PCB_PSTK_COMPAT_SHAPED;
-					if (cshape == 1)
-						cshape = 17;
-					tmp.Flags.q = cshape;
-				}
-				else
-					pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style via", "Old via format is very much restricted; try to use a simpler shape (e.g. circle)");
-		}
-
-		for(n = 0; n < sizeof(tmp.Flags.t[n]) / sizeof(tmp.Flags.t[0]); n++) {
-			unsigned char *ot = pcb_pstk_get_thermal(ps, n, 0);
-			int nt;
-			if ((ot == NULL) || (*ot == 0) || !((*ot) & PCB_THERMAL_ON))
-				continue;
-			switch(((*ot) & ~PCB_THERMAL_ON)) {
-				case PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL: nt = 1; break;
-				case PCB_THERMAL_SHARP: nt = 2; break;
-				case PCB_THERMAL_SOLID: nt = 3; break;
-				case PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL: nt = 4; break;
-				case PCB_THERMAL_ROUND: nt = 5; break;
-				default: nt = 0; pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert thermal to old-style via", "Old via format is very much restricted; try to use a simpler thermal shape");
-			}
-			PCB_FLAG_THERM_ASSIGN(n, nt, &tmp);
-		}
-
 		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
 			pad_dia, clearance*2, mask, drill_dia);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(name));
-		fprintf(FP, " %s]\n", F2S(&tmp, PCB_TYPE_VIA));
+		fprintf(FP, " %s]\n", pcb_strflg_f2s(pinvia_flag(ps, cshape), PCB_TYPE_VIA, NULL));
 	}
 }
 
