@@ -579,7 +579,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 				continue;
 			}
 
-			if (!pcb_layer_is_pure_empty(ly)) {
+			if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
 				char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element\n", ly->name);
 				pcb_io_incompat_save(sc->data, NULL, desc, "only top silk lines and arcs are exported");
 				free(desc);
