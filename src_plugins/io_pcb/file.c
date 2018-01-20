@@ -1136,6 +1136,9 @@ pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t 
 	p = io_pcb_via_new(subc->data, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
+	if (Name != NULL)
+		pcb_attribute_put(&p->Attributes, "name", Name);
+
 	return p;
 }
 
@@ -1146,6 +1149,8 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t
 	p = pcb_pstk_new_compat_pad(subc->data, X1, Y1, X2, Y2, Thickness, Clearance, Mask, Flags.f & PCB_FLAG_SQUARE, Flags.f & PCB_FLAG_NOPASTE);
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
+	if (Name != NULL)
+		pcb_attribute_put(&p->Attributes, "name", Name);
 
 	return p;
 }
