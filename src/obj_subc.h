@@ -52,6 +52,7 @@ struct pcb_subc_s {
 };
 
 pcb_subc_t *pcb_subc_alloc(void);
+pcb_subc_t *pcb_subc_new(void);
 void pcb_subc_free(pcb_subc_t *sc);
 
 void pcb_add_subc_to_data(pcb_data_t *dt, pcb_subc_t *sc);

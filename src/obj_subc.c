@@ -92,6 +92,13 @@ pcb_subc_t *pcb_subc_alloc(void)
 	return sc;
 }
 
+pcb_subc_t *pcb_subc_new(void)
+{
+	pcb_subc_t *sc = pcb_subc_alloc();
+	sc->ID = pcb_create_ID_get();
+	return sc;
+}
+
 void pcb_subc_free(pcb_subc_t *sc)
 {
 	pcb_term_uninit(&sc->terminals);
