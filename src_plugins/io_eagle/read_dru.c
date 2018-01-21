@@ -137,6 +137,8 @@ void pcb_eagle_dru_parse_line(FILE *f, gds_t *buff, char **key, char **value)
 
 int io_eagle_test_parse_dru(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
+	if (typ != PCB_IOT_PCB)
+		return 0; /* support only boards because DRU can be loaded onto a board only */
 	return pcb_eagle_dru_test_parse(f);
 }
 

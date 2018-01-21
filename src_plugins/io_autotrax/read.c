@@ -1108,6 +1108,9 @@ int io_autotrax_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *F
 {
 	char line[1024], *s;
 
+	if (typ != PCB_IOT_PCB)
+		return 0; /* support only boards for now */
+
 	while(!(feof(f))) {
 		if (fgets(line, sizeof(line), f) != NULL) {
 			s = line;

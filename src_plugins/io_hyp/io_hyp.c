@@ -127,6 +127,9 @@ int io_hyp_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filena
 	char line[1024];
 	int found = 0, lineno = 0;
 
+	if (typ != PCB_IOT_PCB)
+		return 0; /* support only boards for now */
+
 	/* look for {VERSION and {BOARD in the first 32 lines, not assuming indentation */
 	while (fgets(line, sizeof(line), f) != NULL) {
 		if ((found == 0) && (strstr(line, "{VERSION=")))
