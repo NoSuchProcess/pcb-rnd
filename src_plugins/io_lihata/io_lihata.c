@@ -44,9 +44,7 @@ int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fm
 	if ((lih) && (typ & PCB_IOT_BUFFER) && (ctx->write_buffer != NULL))
 		return 40;
 
-/*PCB_IOT_FOOTPRINT |*/
-
-	if (!lih || ((typ & (~(PCB_IOT_PCB | PCB_IOT_FONT))) != 0))
+	if (!lih || ((typ & (~(PCB_IOT_PCB | PCB_IOT_FONT | PCB_IOT_FOOTPRINT))) != 0))
 		return 0;
 
 	if (wr)
