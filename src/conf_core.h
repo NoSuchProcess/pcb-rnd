@@ -29,7 +29,7 @@ typedef struct {
 		CFT_BOOLEAN unique_names;          /* force unique names */
 		CFT_BOOLEAN snap_pin;              /* snap to pins and pads */
 		CFT_BOOLEAN snap_offgrid_line;     /* Snap to certain off-grid points along a line. */
-		CFT_BOOLEAN marker_snaps;          /* marker snaps to grid or snp points, as any other click */
+		CFT_BOOLEAN marker_snaps;          /* marker snaps to grid or snap points, as any other click */
 		CFT_BOOLEAN highlight_on_point;    /* Highlight if crosshair is on endpoints. */
 		CFT_BOOLEAN show_solder_side;      /* mirror output */
 		CFT_BOOLEAN save_last_command;     /* the command entry editline always starts with the last command entered by user in the current session */
