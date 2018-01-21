@@ -227,3 +227,147 @@ void pcb_elem_xy_rot(pcb_element_t *element, pcb_coord_t *cx, pcb_coord_t *cy, d
 		}
 	}
 }
+
+void pcb_subc_xy_rot(pcb_element_t *element, pcb_coord_t *cx, pcb_coord_t *cy, double *theta, double *xray_theta)
+{
+	double padcentrex, padcentrey;
+	double centroidx, centroidy;
+	int found_any_not_at_centroid, found_any, rpindex;
+	double sumx, sumy;
+	double pin1x = 0.0, pin1y = 0.0;
+	int pin_cnt;
+	int pinfound[MAXREFPINS];
+	double pinx[MAXREFPINS];
+	double piny[MAXREFPINS];
+	double pinangle[MAXREFPINS];
+	const char *fixed_rotation;
+
+	/* initialize our pin count and our totals for finding the
+	   centriod */
+	pin_cnt = 0;
+	sumx = 0.0;
+	sumy = 0.0;
+
+	/*
+	 * iterate over the pins and pads keeping a running count of how
+	 * many pins/pads total and the sum of x and y coordinates
+	 *
+	 * While we're at it, store the location of pin/pad #1 and #2 if
+	 * we can find them
+	 */
+	PCB_PIN_LOOP(element);
+	{
+		sumx += (double) pin->X;
+		sumy += (double) pin->Y;
+		pin_cnt++;
+
+		for (rpindex = 0; reference_pin_names[rpindex]; rpindex++) {
+			if (PCB_NSTRCMP(pin->Number, reference_pin_names[rpindex]) == 0) {
+				pinx[rpindex] = (double) pin->X;
+				piny[rpindex] = (double) pin->Y;
+				pinangle[rpindex] = 0.0;	/* pins have no notion of angle */
+				pinfound[rpindex] = 1;
+			}
+		}
+	}
+	PCB_END_LOOP;
+
+	PCB_PAD_LOOP(element);
+	{
+		sumx += (pad->Point1.X + pad->Point2.X) / 2.0;
+		sumy += (pad->Point1.Y + pad->Point2.Y) / 2.0;
+		pin_cnt++;
+
+		for (rpindex = 0; reference_pin_names[rpindex]; rpindex++) {
+			if (PCB_NSTRCMP(pad->Number, reference_pin_names[rpindex]) == 0) {
+				padcentrex = (double) (pad->Point1.X + pad->Point2.X) / 2.0;
+				padcentrey = (double) (pad->Point1.Y + pad->Point2.Y) / 2.0;
+				pinx[rpindex] = padcentrex;
+				piny[rpindex] = padcentrey;
+				/*
+				 * NOTE: We swap the Y points because in PCB, the Y-axis
+				 * is inverted.  Increasing Y moves down.  We want to deal
+				 * in the usual increasing Y moves up coordinates though.
+				 */
+				pinangle[rpindex] = (180.0 / M_PI) * atan2(pad->Point1.Y - pad->Point2.Y, pad->Point2.X - pad->Point1.X);
+				pinfound[rpindex] = 1;
+			}
+		}
+	}
+	PCB_END_LOOP;
+
+	if (pin_cnt > 0) {
+		centroidx = sumx / (double) pin_cnt;
+		centroidy = sumy / (double) pin_cnt;
+
+		if (PCB_NSTRCMP(pcb_attribute_get(&element->Attributes, "xy-centre"), "origin") == 0) {
+			*cx = element->MarkX;
+			*cy = element->MarkY;
+		}
+		else {
+			*cx = centroidx;
+			*cy = centroidy;
+		}
+
+		fixed_rotation = pcb_attribute_get(&element->Attributes, "xy-fixed-rotation");
+		if (fixed_rotation != NULL) {
+			/* The user specified a fixed rotation */
+			*theta = atof(fixed_rotation);
+			found_any_not_at_centroid = 1;
+			found_any = 1;
+		}
+		else {
+			/* Find first reference pin not at the  centroid  */
+			found_any_not_at_centroid = 0;
+			found_any = 0;
+			*theta = 0.0;
+			for (rpindex = 0; reference_pin_names[rpindex] && !found_any_not_at_centroid; rpindex++) {
+				if (pinfound[rpindex]) {
+					found_any = 1;
+
+					/* Recenter pin "#1" onto the axis which cross at the part
+					   centroid */
+					pin1x = pinx[rpindex] - *cx;
+					pin1y = piny[rpindex] - *cy;
+
+					if (verbose_rot)
+						pcb_trace("\npcb_elem_xy_rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), pin_cnt, pin1x, pin1y);
+
+					/* if only 1 pin, use pin 1's angle */
+					if (pin_cnt == 1) {
+						*theta = pinangle[rpindex];
+						found_any_not_at_centroid = 1;
+					}
+					else {
+						if ((pin1x != 0.0) || (pin1y != 0.0))
+							*xray_theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
+
+						/* flip x, to reverse rotation for elements on back */
+						if (PCB_FRONT(element) != 1)
+							pin1x = -pin1x;
+
+						if ((pin1x != 0.0) || (pin1y != 0.0)) {
+							*theta = xyToAngle(pin1x, pin1y, pin_cnt > 2);
+							found_any_not_at_centroid = 1;
+						}
+					}
+					if (verbose_rot)
+						pcb_trace(" ->theta=%f\n", *theta);
+				}
+			}
+
+			if (!found_any) {
+				pcb_message
+					(PCB_MSG_WARNING, "pcb_elem_xy_rot: unable to figure out angle because I could\n"
+					 "     not find a suitable reference pin of element %s\n"
+					 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), *theta);
+			}
+			else if (!found_any_not_at_centroid) {
+				pcb_message
+					(PCB_MSG_WARNING, "pcb_elem_xy_rot: unable to figure out angle of element\n"
+					 "     %s because the reference pin(s) are at the centroid of the part.\n"
+					 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), *theta);
+			}
+		}
+	}
+}
