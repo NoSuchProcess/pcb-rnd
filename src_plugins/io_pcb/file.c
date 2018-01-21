@@ -810,6 +810,7 @@ void PostLoadElementPCB()
 {
 	pcb_board_t *pcb_save = PCB;
 	pcb_box_t dbb;
+	pcb_subc_t *sc;
 
 	if (!yyPCB)
 		return;
@@ -838,6 +839,14 @@ void PostLoadElementPCB()
 		pcb_layer_create(PCB, gid, "bottom copper");
 	}
 
+	pcb_layergrp_upgrade_to_pstk(yyPCB);
+
+	sc = pcb_subclist_first(&yyPCB->Data->subc);
+	if (sc != NULL) {
+		pcb_layer_create_all_for_recipe(yyPCB, sc->data->Layer, sc->data->LayerN);
+		pcb_subc_rebind(yyPCB, sc);
+		pcb_data_clip_polys(sc->data);
+	}
 }
 
 
