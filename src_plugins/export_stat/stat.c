@@ -52,6 +52,7 @@
 #include "compat_misc.h"
 #include "plug_io.h"
 #include "safe_fs.h"
+#include "obj_pstk_inlines.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -295,6 +296,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 	PCB_SUBC_LOOP(PCB->Data) {
 		int bott;
+		pcb_cardinal_t hole = 0, all = 0;
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 		htsi_t t;
@@ -309,12 +311,27 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 		/* count each terminal ID only once, because of heavy terminals */
 		htsi_init(&t, strhash, strkeyeq);
-		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
-			if (o->term != NULL)
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+			if (o->term != NULL) {
 				htsi_set(&t, (char *)o->term, 1);
+				if (o->type == PCB_OBJ_PSTK) {
+					pcb_pstk_proto_t *proto = pcb_pstk_get_proto((pcb_pstk_t *)o);
+					if ((proto != NULL) && (proto->hdia > 0))
+						hole++;
+				}
+				else if (o->type == PCB_OBJ_VIA)
+					hole++;
+			}
+		}
 	
-		for (e = htsi_first(&t); e != NULL; e = htsi_next(&t, e))
+		for (e = htsi_first(&t); e != NULL; e = htsi_next(&t, e)) {
 			num_terms++;
+			all++;
+		}
+
+		/* a part is considered smd if it has at most half as many holes as terminals total */
+		if (hole*2 < all)
+			num_esmd++;
 
 		htsi_uninit(&t);
 	}
