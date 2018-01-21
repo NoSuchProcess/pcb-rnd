@@ -42,7 +42,7 @@ do { \
 	pcb->LayerGroups.cache.copper_valid = 0; \
 	if (!inhibit_notify) { \
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
-		if (pcb_gui != NULL) \
+		if ((pcb_gui != NULL) && (pcb_exporter == NULL)) \
 			pcb_gui->invalidate_all(); \
 	} \
 } while(0)
