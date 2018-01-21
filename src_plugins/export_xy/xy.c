@@ -11,11 +11,13 @@
 #include "build_run.h"
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "error.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"
 #include "obj_pinvia.h"
+#include "layer.h"
 #include "netlist.h"
 #include "safe_fs.h"
 
@@ -120,6 +122,7 @@ typedef struct {
 	pcb_coord_t x, y;
 	double theta, xray_theta;
 	pcb_element_t *element;
+	pcb_subc_t *subc;
 	pcb_coord_t pad_cx, pad_cy;
 	pcb_coord_t pad_w, pad_h;
 	pcb_coord_t prpad_w, prpad_h;
@@ -127,6 +130,7 @@ typedef struct {
 	pcb_coord_t ox, oy;
 	int origin_score;
 	char *origin_tmp;
+	pcb_bool front;
 } subst_ctx_t;
 
 /* Find the pick and place 0;0 mark, if there is any */
@@ -172,25 +176,46 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	pcb_loop_layers(PCB, ctx, NULL, find_origin_bump, NULL, NULL, NULL);
 }
 
-static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_element_t *element, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
+static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
 {
 	pcb_box_t box, tmp;
 	box.X1 = box.Y1 = PCB_MAX_COORD;
 	box.X2 = box.Y2 = -PCB_MAX_COORD;
 
-	PCB_PIN_LOOP(element);
-	{
-		pcb_pin_copper_bbox(&tmp, pin);
-		pcb_box_bump_box(&box, &tmp);
-	}
-	PCB_END_LOOP;
+	if (ctx->subc != NULL) {
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
 
-	PCB_PAD_LOOP(element);
-	{
-		pcb_pad_copper_bbox(&tmp, pad);
-		pcb_box_bump_box(&box, &tmp);
+		for(o = pcb_data_first(&it, ctx->subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+			if (o->term != NULL) {
+				if ((o->type != PCB_OBJ_PSTK) && (o->type != PCB_OBJ_VIA) && (o->type != PCB_OBJ_SUBC)) { /* layer objects */
+					pcb_layer_t *ly = o->parent.layer;
+					assert(o->parent_type == PCB_PARENT_LAYER);
+					if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
+						continue;
+				}
+#warning TODO: we should have the copper bbox only, but this bbox includes the clearance!
+				pcb_box_bump_box(&box, &o->BoundingBox);
+			}
+		}
 	}
-	PCB_END_LOOP;
+	else {
+		pcb_element_t *element = ctx->element;
+
+		PCB_PIN_LOOP(element);
+		{
+			pcb_pin_copper_bbox(&tmp, pin);
+			pcb_box_bump_box(&box, &tmp);
+		}
+		PCB_END_LOOP;
+
+		PCB_PAD_LOOP(element);
+		{
+			pcb_pad_copper_bbox(&tmp, pad);
+			pcb_box_bump_box(&box, &tmp);
+		}
+		PCB_END_LOOP;
+	}
 
 	*pw = box.X2 - box.X1;
 	*ph = box.Y2 - box.Y1;
@@ -220,17 +245,17 @@ static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coo
 	if (prerot) {
 		/* this is what we would do if we wanted to return the pre-rotation state */
 		if ((ctx->theta == 0) || (ctx->theta == 180)) {
-			calc_pad_bbox_(ctx, ctx->element, pw, ph, pcx, pcy);
+			calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
 			return;
 		}
 		if ((ctx->theta == 90) || (ctx->theta == 270)) {
-			calc_pad_bbox_(ctx, ctx->element, ph, pw, pcx, pcy);
+			calc_pad_bbox_(ctx, ph, pw, pcx, pcy);
 			return;
 		}
 		pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet\n");
 	}
 
-	calc_pad_bbox_(ctx, ctx->element, pw, ph, pcx, pcy);
+	calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
 }
 
 static void append_clean(gds_t *dst, const char *text)
@@ -370,7 +395,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "side%", 5) == 0) {
 			*input += 5;
-			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "top" : "bottom");
+			gds_append_str(s, ctx->front ? "top" : "bottom");
 			return 0;
 		}
 		if (strncmp(*input, "element_num%", 12) == 0) {
@@ -380,7 +405,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "num-side%", 9) == 0) {
 			*input += 9;
-			gds_append_str(s, PCB_FRONT(ctx->element) == 1 ? "1" : "2");
+			gds_append_str(s, ctx->front ? "1" : "2");
 			return 0;
 		}
 		if (strncmp(*input, "pad_width%", 10) == 0) {
@@ -497,6 +522,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 		ctx.pad_w = ctx.pad_h = 0;
 		ctx.theta = ctx.xray_theta = 0.0;
+		ctx.front = PCB_FRONT(element);
 
 		pcb_elem_xy_rot(element, &ctx.x, &ctx.y, &ctx.theta, &ctx.xray_theta);
 
@@ -506,6 +532,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 		xy_translate(&ctx, &ctx.x, &ctx.y);
 
+		ctx.subc = NULL;
 		ctx.element = element;
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.pad_cx, &ctx.pad_cy);
@@ -534,6 +561,56 @@ static int PrintXY(const template_t *templ, const char *format_name)
 			fprintf_templ(fp, &ctx, templ->pad);
 		}
 		PCB_END_LOOP;
+
+		ctx.pad_netname = NULL;
+
+		free(ctx.name);
+		free(ctx.descr);
+		free(ctx.value);
+	}
+	PCB_END_LOOP;
+
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+		int bott;
+		ctx.element_num++;
+
+		ctx.pad_w = ctx.pad_h = 0;
+		ctx.theta = ctx.xray_theta = 0.0;
+
+		ctx.name = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes")));
+		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "footprint")));
+		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")));
+
+		if (pcb_subc_get_origin(subc, &ctx.x, &ctx.y) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc origin for %s\n", ctx.name);
+		if (pcb_subc_get_rotation(subc, &ctx.theta) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc rotation for %s\n", ctx.name);
+		if (pcb_subc_get_side(subc, &bott) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc side for %s\n", ctx.name);
+
+		xy_translate(&ctx, &ctx.x, &ctx.y);
+
+		ctx.element = NULL;
+		ctx.subc = subc;
+		ctx.front = !bott;
+
+		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
+		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.pad_cx, &ctx.pad_cy);
+		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
+
+		fprintf_templ(fp, &ctx, templ->elem);
+
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+			if (o->term != NULL) {
+				pcb_lib_menu_t *m = pcb_netlist_find_net4term(PCB, o);
+				if (m != NULL)
+					ctx.pad_netname = m->Name;
+				else
+					ctx.pad_netname = NULL;
+				fprintf_templ(fp, &ctx, templ->pad);
+			}
+		}
 
 		ctx.pad_netname = NULL;
 
