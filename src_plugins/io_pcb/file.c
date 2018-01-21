@@ -809,7 +809,7 @@ void PreLoadElementPCB()
 void PostLoadElementPCB()
 {
 	pcb_board_t *pcb_save = PCB;
-	pcb_element_t *e;
+	pcb_box_t dbb;
 
 	if (!yyPCB)
 		return;
@@ -818,11 +818,11 @@ void PostLoadElementPCB()
 	pcb_layer_group_setup_default(&yyPCB->LayerGroups);
 	PCB = yyPCB;
 	pcb_layer_group_setup_silks(yyPCB);
-	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
-	pcb_element_move(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
+	pcb_data_bbox(&dbb, yyPCB->Data, pcb_false);
+	pcb_data_normalize_(yyPCB->Data, &dbb);
 	PCB = pcb_save;
-	yyPCB->MaxWidth = e->BoundingBox.X2;
-	yyPCB->MaxHeight = e->BoundingBox.Y2;
+	yyPCB->MaxWidth = dbb.X2*2;
+	yyPCB->MaxHeight = dbb.Y2*2;
 	yyPCB->is_footprint = 1;
 
 	/* opening a footprint: we don't have a layer stack; make sure top and bottom copper exist */
