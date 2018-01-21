@@ -119,6 +119,9 @@ pcb_bool pcb_subc_is_empty(pcb_subc_t *subc);
 /* Create the aux layer for a subc, set origin to ox;oy and rotation to rot */
 void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot);
 
+/* Create a new point on the aux layer using a given role string in attribute */
+void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, const char *role);
+
 /*** loops ***/
 
 #define PCB_SUBC_LOOP(top) do {                                     \

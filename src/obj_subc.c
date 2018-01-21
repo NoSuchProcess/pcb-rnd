@@ -299,11 +299,19 @@ static pcb_coord_t read_mask(pcb_any_obj_t *obj)
 	return mask;
 }
 
+static void get_aux_layer(pcb_subc_t *sc)
+{
+	pcb_subc_cache_update(sc);
+	if (sc->aux_layer == NULL)
+		sc->aux_layer = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
+}
+
 void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot)
 {
 	double unit = PCB_MM_TO_COORD(1);
-	pcb_layer_t *aux = pcb_layer_new_bound(sc->data, PCB_LYT_VIRTUAL | PCB_LYT_NOEXPORT | PCB_LYT_MISC | PCB_LYT_TOP, SUBC_AUX_NAME);
 	double cs, sn;
+
+	get_aux_layer(sc);
 
 	if (rot == 0.0) {
 		cs = 1;
@@ -314,13 +322,16 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 		sn = sin(rot/PCB_RAD_TO_DEG);
 	}
 
-	add_aux_line(aux, "subc-role", "origin", ox, oy, ox, oy);
-	add_aux_line(aux, "subc-role", "x", ox, oy, pcb_round((double)ox + cs*unit), pcb_round(oy + sn*unit));
-	add_aux_line(aux, "subc-role", "y", ox, oy, pcb_round((double)ox + sn*unit), pcb_round(oy + cs*unit));
+	add_aux_line(sc->aux_layer, "subc-role", "origin", ox, oy, ox, oy);
+	add_aux_line(sc->aux_layer, "subc-role", "x", ox, oy, pcb_round((double)ox + cs*unit), pcb_round(oy + sn*unit));
+	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, pcb_round((double)ox + sn*unit), pcb_round(oy + cs*unit));
 }
 
-
-
+void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, const char *role)
+{
+	get_aux_layer(sc);
+	add_aux_line(sc->aux_layer, "subc-role", role, x, y, x, y);
+}
 
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 {
