@@ -198,7 +198,7 @@ int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot)
 	return 0;
 }
 
-/* The subc is originally drawn on the top side, and teh aux layer gets
+/* The subc is originally drawn on the top side, and the aux layer gets
    the PCB_LYT_TOP flag. If the subc is ever sent to the other side, the
    aux layer changed side too. This is to be detected here. */
 int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom)
