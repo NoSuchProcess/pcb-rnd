@@ -310,8 +310,8 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 		cs = 1;
 	}
 	else {
-		cs = cos(rot);
-		sn = sin(rot);
+		cs = cos(rot/PCB_RAD_TO_DEG);
+		sn = sin(rot/PCB_RAD_TO_DEG);
 	}
 
 	add_aux_line(aux, "subc-role", "origin", ox, oy, ox, oy);
