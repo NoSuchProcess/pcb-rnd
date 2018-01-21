@@ -116,7 +116,7 @@ int pplg_init_io_autotrax(void)
 	/* register the IO hook */
 	io_autotrax.plugin_data = NULL;
 	io_autotrax.fmt_support_prio = io_autotrax_fmt;
-	io_autotrax.test_parse_pcb = io_autotrax_test_parse_pcb;
+	io_autotrax.test_parse = io_autotrax_test_parse;
 	io_autotrax.parse_pcb = io_autotrax_read_pcb;
 	io_autotrax.parse_element = NULL;
 	io_autotrax.parse_font = NULL;

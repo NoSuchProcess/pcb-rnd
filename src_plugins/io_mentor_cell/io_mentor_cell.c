@@ -63,7 +63,7 @@ int pplg_init_io_mentor_cell(void)
 	/* register the IO hook */
 	io_mentor_cell.plugin_data = NULL;
 	io_mentor_cell.fmt_support_prio = io_mentor_cell_fmt;
-	io_mentor_cell.test_parse_pcb = io_mentor_cell_test_parse_pcb;
+	io_mentor_cell.test_parse = io_mentor_cell_test_parse;
 	io_mentor_cell.parse_pcb = io_mentor_cell_read_pcb;
 	io_mentor_cell.parse_element = NULL;
 	io_mentor_cell.parse_font = NULL;

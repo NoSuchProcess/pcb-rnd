@@ -138,7 +138,7 @@ static int io_tedax_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff
 	return tedax_fp_fsave(buff->Data, f);
 }
 
-static int io_tedax_test_parse_pcb(pcb_plug_io_t *plug_ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+static int io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	char line[515], *s;
 	int n;
@@ -191,7 +191,7 @@ int pplg_init_io_tedax(void)
 	/* register the IO hook */
 	io_tedax.plugin_data = NULL;
 	io_tedax.fmt_support_prio = io_tedax_fmt;
-	io_tedax.test_parse_pcb = io_tedax_test_parse_pcb;
+	io_tedax.test_parse = io_tedax_test_parse;
 	io_tedax.parse_pcb = io_tedax_parse_pcb;
 	io_tedax.parse_element = io_tedax_parse_element;
 	io_tedax.parse_font = NULL;

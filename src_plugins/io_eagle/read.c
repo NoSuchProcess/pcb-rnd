@@ -181,7 +181,7 @@ static int eagle_read_nop(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 
 
-int io_eagle_test_parse_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+int io_eagle_test_parse_xml(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	char line[1024];
 	int found = 0, lineno = 0;
@@ -199,7 +199,7 @@ int io_eagle_test_parse_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char
 	return 0;
 }
 
-int io_eagle_test_parse_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+int io_eagle_test_parse_bin(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	unsigned char buff[2];
 	int read_length = fread(buff, 1, 2, f);

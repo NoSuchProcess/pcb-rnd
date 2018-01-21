@@ -69,7 +69,7 @@ int pplg_init_io_pcb(void)
 	ctx[0].write_coord_fmt = pcb_printf_slot[8];
 	io_pcb[0].plugin_data = &ctx[0];
 	io_pcb[0].fmt_support_prio = io_pcb_fmt;
-	io_pcb[0].test_parse_pcb = io_pcb_test_parse_pcb;
+	io_pcb[0].test_parse = io_pcb_test_parse;
 	io_pcb[0].parse_pcb = io_pcb_ParsePCB;
 	io_pcb[0].parse_element = io_pcb_ParseElement;
 	io_pcb[0].parse_font = io_pcb_ParseFont;

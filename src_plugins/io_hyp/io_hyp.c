@@ -122,7 +122,7 @@ pcb_hid_action_t hyp_action_list[] = {
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 
 /* cheap, partial read of the file to determine if it is worth running the real parser */
-		 int io_hyp_test_parse_pcb(pcb_plug_io_t * ctx, pcb_board_t * Ptr, const char *Filename, FILE * f)
+int io_hyp_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE * f)
 {
 	char line[1024];
 	int found = 0, lineno = 0;
@@ -163,7 +163,7 @@ int pplg_init_io_hyp(void)
 	/* register the IO hook */
 	io_hyp.plugin_data = NULL;
 	io_hyp.fmt_support_prio = io_hyp_fmt;
-	io_hyp.test_parse_pcb = io_hyp_test_parse_pcb;
+	io_hyp.test_parse = io_hyp_test_parse;
 	io_hyp.parse_pcb = io_hyp_read_pcb;
 /*	io_hyp.parse_element = NULL;
 	io_hyp.parse_font = NULL;

@@ -177,7 +177,7 @@ static int pcb_test_parse_all(const char *Filename, const char *fmt, pcb_plug_io
 		if((fgetc(ft) != EOF)) {
 			rewind(ft);
 			for(n = 0; n < len; n++) {
-				if ((available[n].plug->test_parse_pcb == NULL) || (available[n].plug->test_parse_pcb(available[n].plug, NULL, Filename, ft))) {
+				if ((available[n].plug->test_parse == NULL) || (available[n].plug->test_parse(available[n].plug, type, Filename, ft))) {
 					accepts[n] = 1;
 					(*accept_total)++;
 				}

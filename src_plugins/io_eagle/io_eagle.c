@@ -66,7 +66,7 @@ int pplg_init_io_eagle(void)
 	/* register the IO hook */
 	io_eagle_xml.plugin_data = NULL;
 	io_eagle_xml.fmt_support_prio = io_eagle_fmt;
-	io_eagle_xml.test_parse_pcb = io_eagle_test_parse_pcb_xml;
+	io_eagle_xml.test_parse = io_eagle_test_parse_xml;
 	io_eagle_xml.parse_pcb = io_eagle_read_pcb_xml;
 /*	io_eagle_xml.parse_element = NULL;
 	io_eagle_xml.parse_font = NULL;
@@ -85,7 +85,7 @@ int pplg_init_io_eagle(void)
 	/* register the IO hook */
 	io_eagle_bin.plugin_data = NULL;
 	io_eagle_bin.fmt_support_prio = io_eagle_fmt;
-	io_eagle_bin.test_parse_pcb = io_eagle_test_parse_pcb_bin;
+	io_eagle_bin.test_parse = io_eagle_test_parse_bin;
 	io_eagle_bin.parse_pcb = io_eagle_read_pcb_bin;
 /*	io_eagle_bin.parse_element = NULL;
 	io_eagle_bin.parse_font = NULL;
@@ -104,7 +104,7 @@ int pplg_init_io_eagle(void)
 	/* register the IO hook */
 	io_eagle_dru.plugin_data = NULL;
 	io_eagle_dru.fmt_support_prio = io_eagle_fmt;
-	io_eagle_dru.test_parse_pcb = io_eagle_test_parse_pcb_dru;
+	io_eagle_dru.test_parse = io_eagle_test_parse_dru;
 	io_eagle_dru.parse_pcb = io_eagle_read_pcb_dru;
 	io_eagle_dru.parse_element = NULL;
 	io_eagle_dru.parse_font = NULL;

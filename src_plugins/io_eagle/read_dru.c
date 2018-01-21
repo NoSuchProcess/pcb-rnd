@@ -135,7 +135,7 @@ void pcb_eagle_dru_parse_line(FILE *f, gds_t *buff, char **key, char **value)
 #include "layer_grp.h"
 #include "error.h"
 
-int io_eagle_test_parse_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+int io_eagle_test_parse_dru(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	return pcb_eagle_dru_test_parse(f);
 }

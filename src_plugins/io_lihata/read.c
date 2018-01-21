@@ -1755,7 +1755,7 @@ void test_parse_ev(lht_parse_t *ctx, lht_event_t ev, lht_node_type_t nt, const c
     - not a valid lihata doc (parser error)
     - lihata, but the wrong root
 */
-int io_lihata_test_parse_pcb(pcb_plug_io_t *plug_ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+int io_lihata_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	lht_parse_t ctx;
 	int count;
