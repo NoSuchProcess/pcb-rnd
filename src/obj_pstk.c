@@ -344,15 +344,26 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_draw_t *ctx = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_shape_t *shape;
-	pcb_layergrp_t *grp;
+	pcb_layergrp_t *grp = NULL;
 
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
 		return PCB_R_DIR_NOT_FOUND;
 
-	shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, ctx->comb, &grp);
+	if (ctx->gid < 0) {
+		if (ctx->shape_mask != 0)
+			shape = pcb_pstk_shape(ps, ctx->shape_mask, ctx->comb);
+		else
+			return PCB_R_DIR_NOT_FOUND;
+	}
+	else
+		shape = pcb_pstk_shape_gid(ctx->pcb, ps, ctx->gid, ctx->comb, &grp);
+
 	if (shape != NULL) {
 		pcb_gui->set_draw_xor(pcb_draw_out.fgGC, 0);
-		set_ps_color(ps, ctx->is_current, grp->type);
+		if (grp == NULL)
+			set_ps_color(ps, ctx->is_current, ctx->shape_mask);
+		else
+			set_ps_color(ps, ctx->is_current, grp->type);
 		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
 			pcb_gui->set_line_width(pcb_draw_out.fgGC, 0);
 			pcb_pstk_draw_shape_thin(pcb_draw_out.fgGC, ps, shape);

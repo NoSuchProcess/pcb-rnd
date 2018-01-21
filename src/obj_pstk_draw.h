@@ -47,6 +47,8 @@ typedef struct {
 	int is_current;
 	pcb_pstk_draw_hole_t holetype;
 	pcb_layer_combining_t comb;
+
+	pcb_layer_type_t shape_mask; /* when gid is invalid, use this for the shapes */
 } pcb_pstk_draw_t;
 
 pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl);

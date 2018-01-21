@@ -1584,6 +1584,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	ctx.gid = -1;
 	ctx.is_current = 1;
 	ctx.comb = 0;
+	ctx.shape_mask = PCB_LYT_COPPER | PCB_LYT_TOP;
 	pcb_r_search(sc->data->padstack_tree, drawn_area, NULL, pcb_pstk_draw_callback, &ctx, NULL);
 }
 
