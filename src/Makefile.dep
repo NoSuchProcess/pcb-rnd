@@ -2919,7 +2919,8 @@
  ../src_plugins/lib_compat_help/elem_rot.h obj_elem.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h \
+ data_it.h
 ../src_plugins/lib_gensexpr/lib_gensexpr.o: \
  ../src_plugins/lib_gensexpr/lib_gensexpr.c plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
