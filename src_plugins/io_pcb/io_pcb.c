@@ -74,7 +74,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[0].parse_element = io_pcb_ParseElement;
 	io_pcb[0].parse_font = io_pcb_ParseFont;
 	io_pcb[0].write_buffer = io_pcb_WriteBuffer;
-	io_pcb[0].write_element = io_pcb_WriteElementData;
+	io_pcb[0].write_element = io_pcb_WriteSubcData;
 	io_pcb[0].write_pcb = io_pcb_WritePCB;
 	io_pcb[0].default_fmt = "pcb";
 	io_pcb[0].description = "geda/pcb - mainline (centimils)";
@@ -89,7 +89,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[1].plugin_data = &ctx[1];
 	io_pcb[1].fmt_support_prio = io_pcb_fmt;
 	io_pcb[1].write_buffer = io_pcb_WriteBuffer;
-	io_pcb[1].write_element = io_pcb_WriteElementData;
+	io_pcb[1].write_element = io_pcb_WriteSubcData;
 	io_pcb[1].write_pcb = io_pcb_WritePCB;
 	io_pcb[1].default_fmt = "pcb";
 	io_pcb[1].description = "geda/pcb - readable units";
@@ -104,7 +104,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[2].plugin_data = &ctx[2];
 	io_pcb[2].fmt_support_prio = io_pcb_fmt;
 	io_pcb[2].write_buffer = io_pcb_WriteBuffer;
-	io_pcb[2].write_element = io_pcb_WriteElementData;
+	io_pcb[2].write_element = io_pcb_WriteSubcData;
 	io_pcb[2].write_pcb = io_pcb_WritePCB;
 	io_pcb[2].default_fmt = "pcb";
 	io_pcb[2].description = "geda/pcb - nanometer";
