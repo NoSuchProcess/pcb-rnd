@@ -1119,10 +1119,14 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 
 void io_pcb_element_fin(pcb_data_t *Data)
 {
-	double rot = 0;
+	pcb_coord_t cx, cy;
+	double rot = 0, tmp;
 	pcb_subc_bbox(yysubc);
 
-#warning subc TODO: rotation
+	pcb_subc_xy_rot(yysubc, &cx, &cy, &rot, &tmp, 1);
+
+/*	pcb_trace("io_pcb_element_fin(): subc rot=%f\n", rot);*/
+
 	pcb_subc_create_aux(yysubc, yysubc_ox, yysubc_oy, rot);
 	pcb_add_subc_to_data(Data, yysubc);
 
