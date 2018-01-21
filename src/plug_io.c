@@ -497,6 +497,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 
 		/* have to be called after pcb_board_resize() so vis update is after a board changed update */
+		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		pcb_layervis_reset_stack();
 
 		/* enable default font if necessary */
