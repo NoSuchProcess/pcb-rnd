@@ -145,8 +145,8 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 		
 		memcpy(&shape[3], &mask_master, sizeof(mask_master));
 		memcpy(&shape[4], &mask_master, sizeof(mask_master));
-		shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB;
-		shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB;
+		shape[3].layer_mask = PCB_LYT_MASK | PCB_LYT_TOP;      shape[3].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
+		shape[4].layer_mask = PCB_LYT_MASK | PCB_LYT_BOTTOM;   shape[4].comb = PCB_LYC_SUB + PCB_LYC_AUTO;
 	}
 
 	proto.hdia = drill_dia;
