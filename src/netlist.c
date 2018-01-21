@@ -43,6 +43,7 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "event.h"
+#include "data.h"
 
 #define STEP_POINT 100
 
@@ -234,6 +235,38 @@ pcb_lib_menu_t *pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad)
 
 	return pcb_netlist_find_net4pin_any(pcb, e->Name[PCB_ELEMNAME_IDX_REFDES].TextString, pad->Number);
 }
+
+pcb_lib_menu_t *pcb_netlist_find_net4term(pcb_board_t *pcb, const pcb_any_obj_t *term)
+{
+	pcb_data_t *data;
+	pcb_subc_t *sc;
+	char pinname[256];
+	int len;
+
+	if (term->term == NULL)
+		return NULL;
+
+	if (term->parent_type == PCB_PARENT_LAYER)
+		data = term->parent.layer->parent;
+	else if (term->parent_type == PCB_PARENT_DATA)
+		data = term->parent.data;
+	else
+		return NULL;
+
+	if (data->parent_type != PCB_PARENT_SUBC)
+		return NULL;
+
+	sc = data->parent.subc;
+	if (sc->refdes == NULL)
+		return NULL;
+
+	len = pcb_snprintf(pinname, sizeof(pinname), "%s-%s", sc->refdes, term->term);
+	if (len >= sizeof(pinname))
+		return NULL;
+
+	return pcb_netlist_find_net4pinname(pcb, pinname);
+}
+
 
 pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net)
 {

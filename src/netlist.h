@@ -73,6 +73,7 @@ pcb_lib_menu_t *pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pinna
 /* Same as pcb_netlist_find_net4pinname but with pin pointer */
 pcb_lib_menu_t *pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin);
 pcb_lib_menu_t *pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad);
+pcb_lib_menu_t *pcb_netlist_find_net4term(pcb_board_t *pcb, const pcb_any_obj_t *term);
 
 
 /* Evaluate to const char * name of the network; lmt is (pcb_lib_menu_t *) */
