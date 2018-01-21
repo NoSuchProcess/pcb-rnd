@@ -1138,7 +1138,7 @@ void io_pcb_element_fin(pcb_data_t *Data)
 	/* add the base vector at the origin imported, but with the rotation
 	   reverse engineered: the original element format does have an explicit
 	   origin but no rotation info */
-	pcb_subc_create_aux(yysubc, yysubc_ox, yysubc_oy, rot);
+	pcb_subc_create_aux(yysubc, yysubc_ox, yysubc_oy, rot, yysubc_bottom);
 
 	pcb_add_subc_to_data(Data, yysubc);
 	if (Data->subc_tree == NULL)
