@@ -416,8 +416,12 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* no hole in this layer group */
-	if (!pcb_pstk_bb_drills(ctx->pcb, ps, ctx->gid, &proto))
-		return PCB_R_DIR_FOUND_CONTINUE;
+	if (ctx->gid >= 0) {
+		if (!pcb_pstk_bb_drills(ctx->pcb, ps, ctx->gid, &proto))
+			return PCB_R_DIR_FOUND_CONTINUE;
+	}
+	else
+		proto = pcb_pstk_get_proto(ps);
 
 	/* No hole at all */
 	if (proto->hdia <= 0)
