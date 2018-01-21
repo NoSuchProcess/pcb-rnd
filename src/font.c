@@ -250,8 +250,17 @@ pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, pcb_coord_t cx, pcb_coo
 
 static pcb_font_t *pcb_font_(pcb_board_t *pcb, pcb_font_id_t id, int fallback, int unlink)
 {
-	if (id <= 0)
-		return &pcb->fontkit.dflt;
+	if (id <= 0) {
+		do_default:;
+		if (unlink) {
+			pcb_font_t *f = malloc(sizeof(pcb_font_t));
+			memcpy(f, &pcb->fontkit.dflt, sizeof(pcb_font_t));
+			memset(&pcb->fontkit.dflt, 0, sizeof(pcb_font_t));
+			return f;
+		}
+		else
+			return &pcb->fontkit.dflt;
+	}
 
 	if (pcb->fontkit.hash_inited) {
 		pcb_font_t *f = htip_get(&pcb->fontkit.fonts, id);
@@ -263,7 +272,7 @@ static pcb_font_t *pcb_font_(pcb_board_t *pcb, pcb_font_id_t id, int fallback, i
 	}
 
 	if (fallback)
-		return &pcb->fontkit.dflt;
+		goto do_default;
 
 	return NULL;
 }
