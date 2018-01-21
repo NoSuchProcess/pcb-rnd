@@ -83,6 +83,7 @@ static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 	assert(grp >= 0);
 	lid = pcb_layer_create(PCB, grp, lname);
 	assert(lid >= 0);
+	PCB->Data->Layer[lid].meta.real.vis = 1;
 	return &PCB->Data->Layer[lid];
 }
 
