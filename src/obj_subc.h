@@ -122,6 +122,11 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 /* Create a new point on the aux layer using a given role string in attribute */
 void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, const char *role);
 
+/* Look up an aux point and return pcb_true if found; when found, load x and y
+   with the coords of the point. */
+pcb_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, pcb_coord_t *x, pcb_coord_t *y);
+
+
 /*** loops ***/
 
 #define PCB_SUBC_LOOP(top) do {                                     \

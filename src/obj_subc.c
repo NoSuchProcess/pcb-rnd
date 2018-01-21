@@ -179,6 +179,25 @@ static int pcb_subc_cache_update(pcb_subc_t *sc)
 	return 0;
 }
 
+pcb_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, pcb_coord_t *x, pcb_coord_t *y)
+{
+	pcb_line_t *l;
+
+	if (sc->aux_layer == NULL)
+		pcb_subc_cache_update(sc);
+	if (sc->aux_layer == NULL)
+		return pcb_false;
+
+	l = find_aux_line(sc->aux_layer, role);
+	if (l == NULL)
+		return pcb_false;
+
+	*x = l->Point1.X;
+	*y = l->Point1.Y;
+
+	return pcb_true;
+}
+
 int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y)
 {
 	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_ORIGIN] == NULL))
