@@ -40,10 +40,13 @@
 #include <assert.h>
 #include <math.h>
 #include <time.h>
+#include <genht/htsi.h>
+#include <genht/hash.h>
 
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
@@ -133,7 +136,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	char buff[1024];
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
-	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0;
+	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0;
 
 	memset(lgss, 0, sizeof(lgss));
 	memset(group_not_empty, 0, sizeof(group_not_empty));
@@ -290,6 +293,33 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	}
 	PCB_END_LOOP;
 
+	PCB_SUBC_LOOP(PCB->Data) {
+		int bott;
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+		htsi_t t;
+		htsi_entry_t *e;
+
+		if (pcb_subc_get_side(subc, &bott) == 0) {
+			if (bott)
+				num_ebottom++;
+			else
+				num_etop++;
+		}
+
+		/* count each terminal ID only once, because of heavy terminals */
+		htsi_init(&t, strhash, strkeyeq);
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+			if (o->term != NULL)
+				htsi_set(&t, (char *)o->term, 1);
+	
+		for (e = htsi_first(&t); e != NULL; e = htsi_next(&t, e))
+			num_terms++;
+
+		htsi_uninit(&t);
+	}
+	PCB_END_LOOP;
+
 
 	fprintf(f, "	ha:board {\n");
 	fprintf(f, "		id={%s}\n", options[HA_board_id].str_value);
@@ -308,6 +338,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "			smd=%ld\n", (long int)num_esmd);
 	fprintf(f, "			pads=%ld\n", (long int)num_epads);
 	fprintf(f, "			pins=%ld\n", (long int)num_epins);
+	fprintf(f, "			terms=%ld\n", (long int)num_terms);
 	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
 
