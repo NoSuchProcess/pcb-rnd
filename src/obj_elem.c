@@ -138,10 +138,10 @@ pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element)
  * returns pcb_false on error
  * if successful, update some other stuff and reposition the pastebuffer
  */
-pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
+pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name, const char *fmt)
 {
 	pcb_buffer_clear(PCB, Buffer);
-	if (!pcb_parse_element(Buffer->Data, Name)) {
+	if (!pcb_parse_element(Buffer->Data, Name, fmt)) {
 		if (conf_core.editor.show_solder_side)
 			pcb_buffer_flip_side(PCB, Buffer);
 		pcb_set_buffer_bbox(Buffer);
@@ -172,7 +172,7 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
    into the buffer. Returns zero on success, non-zero on error.  */
 int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footprint)
 {
-	return !pcb_element_load_to_buffer(Buffer, Footprint);
+	return !pcb_element_load_to_buffer(Buffer, Footprint, NULL);
 }
 
 

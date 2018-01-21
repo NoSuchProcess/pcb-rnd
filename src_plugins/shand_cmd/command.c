@@ -154,7 +154,7 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x
 	switch (argc) {
 	case 1:											/* filename is passed in commandline */
 		filename = argv[0];
-		if (filename && pcb_element_load_to_buffer(PCB_PASTEBUFFER, filename))
+		if (filename && pcb_element_load_to_buffer(PCB_PASTEBUFFER, filename, NULL))
 			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		break;
 

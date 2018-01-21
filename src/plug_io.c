@@ -234,14 +234,12 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	return res;
 }
 
-int pcb_parse_element(pcb_data_t *Ptr, const char *Filename)
+int pcb_parse_element(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 {
 	int res = -1, len, n;
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
 	int accept_total = 0;
-#warning TODO: this should be a parameter
-	char *fmt = NULL;
 
 	len = pcb_test_parse_all(Filename, fmt, PCB_IOT_FOOTPRINT, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
 	if (len < 0)

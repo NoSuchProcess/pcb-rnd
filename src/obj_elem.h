@@ -83,7 +83,7 @@ unsigned int pcb_element_hash(const pcb_element_t *e);
 int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2);
 
 
-pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name);
+pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name, const char *fmt);
 int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footprint);
 pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer);
 pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer);

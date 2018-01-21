@@ -128,7 +128,7 @@ static int pcb_act_LoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
-		if (pcb_element_load_to_buffer(PCB_PASTEBUFFER, name))
+		if (pcb_element_load_to_buffer(PCB_PASTEBUFFER, name, NULL))
 			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
