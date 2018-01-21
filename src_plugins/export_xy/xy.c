@@ -585,7 +585,11 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "footprint")));
 		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")));
 
-		if (pcb_subc_get_origin(subc, &ctx.x, &ctx.y) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc origin for %s\n", ctx.name);
+		/* prefer the pnp-origin but if that doesn't exist, pick the subc origin */
+		if (!pcb_subc_find_aux_point(subc, "pnp-origin", &ctx.x, &ctx.y))
+			if (pcb_subc_get_origin(subc, &ctx.x, &ctx.y) != 0)
+				pcb_message(PCB_MSG_ERROR, "xy: can't get subc origin for %s\n", ctx.name);
+
 		if (pcb_subc_get_rotation(subc, &ctx.theta) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc rotation for %s\n", ctx.name);
 		if (pcb_subc_get_side(subc, &bott) != 0) pcb_message(PCB_MSG_ERROR, "xy: can't get subc side for %s\n", ctx.name);
 
