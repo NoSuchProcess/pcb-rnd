@@ -187,7 +187,7 @@ void pcb_elem_xy_rot(pcb_element_t *element, pcb_coord_t *cx, pcb_coord_t *cy, d
 					pin1y = piny[rpindex] - *cy;
 
 					if (verbose_rot)
-						pcb_trace("\nxy rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), pin_cnt, pin1x, pin1y);
+						pcb_trace("\npcb_elem_xy_rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), pin_cnt, pin1x, pin1y);
 
 					/* if only 1 pin, use pin 1's angle */
 					if (pin_cnt == 1) {
@@ -214,13 +214,13 @@ void pcb_elem_xy_rot(pcb_element_t *element, pcb_coord_t *cx, pcb_coord_t *cy, d
 
 			if (!found_any) {
 				pcb_message
-					(PCB_MSG_WARNING, "PrintXY(): unable to figure out angle because I could\n"
+					(PCB_MSG_WARNING, "pcb_elem_xy_rot: unable to figure out angle because I could\n"
 					 "     not find a suitable reference pin of element %s\n"
 					 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), *theta);
 			}
 			else if (!found_any_not_at_centroid) {
 				pcb_message
-					(PCB_MSG_WARNING, "PrintXY(): unable to figure out angle of element\n"
+					(PCB_MSG_WARNING, "pcb_elem_xy_rot: unable to figure out angle of element\n"
 					 "     %s because the reference pin(s) are at the centroid of the part.\n"
 					 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), *theta);
 			}
