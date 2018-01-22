@@ -345,6 +345,7 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 		assert(sc->aux_layer->is_bound);
 		sc->aux_layer->meta.bound.type &= ~PCB_LYT_TOP;
 		sc->aux_layer->meta.bound.type |= PCB_LYT_BOTTOM;
+		cs = -cs;
 	}
 
 	add_aux_line(sc->aux_layer, "subc-role", "origin", ox, oy, ox, oy);
