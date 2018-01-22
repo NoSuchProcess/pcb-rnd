@@ -118,8 +118,7 @@ static pcb_hid_attribute_t *IPCD356_get_export_options(int *n)
 	return IPCD356_options;
 }
 
-/*!
- * \brief Writes the IPC-D-356 Header to the file provided.
+/* Writes the IPC-D-356 Header to the file provided.
  *
  * The JOB name is the PCB Name (if set), otherwise the filename
  * (including the path) is used.
@@ -153,23 +152,22 @@ void IPCD356_WriteHeader(FILE * fd)
 }
 
 
-/*!
- * \brief Writes a net to the file provided.
+/* Writes a net to the file provided.
  *
  * The net name is passed through the "net" and should be 14 characters
- * max.\n
+ * max.
  * The function scans through pads, pins and vias  and looks for the
- * \c PCB_FLAG_FOUND.\n
+ * PCB_FLAG_FOUND.
  * Once the object has been added to the net list the \c PCB_FLAG_VISIT is
  * set on that object.
  *
- * \todo 1) The bottom layer is always written as layer #2 (A02).\n
- *          It could output the actual layer number (example: A06 on a
- *          6 layer board).\n
- *          But I could not find an easy way to do this...
+ * TODO 1) The bottom layer is always written as layer #2 (A02).
+ *         It could output the actual layer number (example: A06 on a
+ *         6 layer board).
+ *         But I could not find an easy way to do this...
  *
- * \todo 2) Objects with mutiple connections could have the "M"
- *          (column 32) field written to indicate a Mid Net Point.
+ * TODO 2) Objects with mutiple connections could have the "M"
+ *         (column 32) field written to indicate a Mid Net Point.
  */
 void IPCD356_WriteNet(FILE * fd, char *net)
 {
@@ -381,11 +379,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 }
 
 
-/*!
- * \brief The main IPC-D-356 function.
- *
- * Gets the filename for the netlist from the dialog.
- */
+/* The main IPC-D-356 function; gets the filename for the netlist from the dialog */
 int IPCD356_Netlist(void)
 {
 	FILE *fp;
