@@ -482,6 +482,27 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
 	hid_cfg_keyhash_t addr;
 	htpp_t *phash = (*seq_len == 0) ? &km->keys : &((seq[(*seq_len)-1])->seq_next);
 
+	if (key_raw == 0) {
+		static int warned = 0;
+		if (!warned) {
+			pcb_message(PCB_MSG_ERROR, "Keyboard translation error: probably the US layout is not enabled. Some hotkeys may not work properly\n");
+			warned = 1;
+		}
+		/* happens if only the translated version is available. Try to reverse
+		   engineer it as good as we can. */
+		if (isalpha(key_tr)) {
+			if (isupper(key_tr)) {
+				key_raw = tolower(key_tr);
+				mods |= PCB_M_Shift;
+			}
+			else
+				key_raw = key_tr;
+		}
+		else if (isdigit(key_tr))
+			key_raw = key_tr;
+		/* the rest: punctuations should be handled by key_tr; special keys: well... */
+	}
+
 	/* first check for base key + mods */
 	addr.mods = mods;
 	addr.key_raw = key_raw;
