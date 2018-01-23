@@ -61,6 +61,9 @@ set_fmt_args()
 		svg)
 			ext=.svg
 			;;
+		fidocadj)
+			ext=.fcd
+			;;
 	esac
 }
 
