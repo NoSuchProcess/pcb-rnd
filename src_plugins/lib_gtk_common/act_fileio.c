@@ -165,11 +165,15 @@ int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coo
 							fmt = n;
 
 				/* look for partial match */
-				if (fmt < 0)
-					for (n = 0; n < num_fmts; n++)
-						if (strstr(avail.plug[n]->description, default_pattern) != NULL)
+				if (fmt < 0) {
+					for (n = 0; n < num_fmts; n++) {
+						if (strstr(avail.plug[n]->description, default_pattern) != NULL) {
 							fmt = n;
-				
+							break; /* pick the first one, that has the highest prio */
+						}
+					}
+				}
+
 				if (fmt < 0) {
 					static int warned = 0;
 					if (!warned)
