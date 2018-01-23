@@ -163,6 +163,11 @@ static void write_custom_element(FILE *f, pcb_element_t *e)
 	pcb_message(PCB_MSG_ERROR, "Can't export custom footprint for %s yet\n", e->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
 }
 
+static void write_custom_subc(FILE *f, pcb_subc_t *sc)
+{
+	pcb_message(PCB_MSG_ERROR, "Can't export custom footprint for %s yet\n", sc->refdes);
+}
+
 static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
@@ -331,6 +336,28 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			fprintf(f, "MC %ld %ld %d 0 %s\n", crd(element->MarkX), crd(element->MarkY), 0, fp);
 		else
 			write_custom_element(f, element);
+	}
+	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(PCB->Data) {
+		const char *fp = pcb_attribute_get(&subc->Attributes, "footprint");
+		if ((fp != NULL) && have_lib && (htsi_get(&lib_names, fp))) {
+			pcb_coord_t x, y;
+			double rot = 0.0;
+			int on_bottom = 0;
+			if (pcb_subc_get_origin(subc, &x, &y)) {
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "can't figure subcircuit origin", "omitting this part until the proper subc-aux layer objects are added");
+				continue;
+			}
+			pcb_subc_get_rotation(subc, &rot);
+			pcb_subc_get_side(subc, &on_bottom);
+
+#warning TODO: figure how to store rotation
+#warning TODO: figure how to store side
+			fprintf(f, "MC %ld %ld %d 0 %s\n", crd(x), crd(y), 0, fp);
+		}
+		else
+			write_custom_subc(f, subc);
 	}
 	PCB_END_LOOP;
 
