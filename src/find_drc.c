@@ -29,6 +29,7 @@
 
 #include "drc.h"
 #include "compat_nls.h"
+#include "data_it.h"
 
 #include "obj_arc_draw.h"
 #include "obj_pad_draw.h"
@@ -334,6 +335,7 @@ doIsBad:
 }
 
 
+unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 
 /*-----------------------------------------------------------------------------
  * Check for DRC violations
@@ -396,6 +398,25 @@ int pcb_drc_all(void)
 		PCB_END_LOOP;
 		if (IsBad)
 			break;
+	}
+	PCB_END_LOOP;
+
+	/* search net (bloat) from subcircuit terminals */
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+			if (o->term == NULL) /* only terminals can be starting point of DRC net checks */
+				continue;
+			if (o->parent_type == PCB_PARENT_LAYER) { /* for layer objects, care about the ones on copper layers only */
+				pcb_layer_type_t lyt = pcb_layer_flags_(o->parent.layer);
+				if (!(lyt & PCB_LYT_COPPER))
+					continue;
+			}
+			DRCFind(pcb_obj_type2oldtype(o->type), (void *)subc, (void *)o, (void *)o);
+		}
 	}
 	PCB_END_LOOP;
 
