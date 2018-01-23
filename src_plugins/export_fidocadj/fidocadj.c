@@ -137,7 +137,7 @@ static long int crd(pcb_coord_t c)
 	return pcb_round((double)PCB_COORD_TO_MIL(c) / 5.0);
 }
 
-static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, const char *lyname)
+static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)
 {
 	if (lflg & PCB_LYT_COPPER) {
 		if (lflg & PCB_LYT_BOTTOM)
@@ -150,9 +150,9 @@ static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, const cha
 
 	(*fidoly_next)++;
 	if (*fidoly_next > 15) {
-		if (!*warned)
-			pcb_message(PCB_MSG_ERROR, "FidoCadJ can't handle this many layers - layer %s is not exported\n", lyname);
-		*warned = 1;
+		char *msg = pcb_strdup_printf("FidoCadJ can't handle this many layers - layer %s is not exported\n", lyname);
+		pcb_io_incompat_save(NULL, NULL, msg, NULL);
+		free(msg);
 		return -1;
 	}
 	return *fidoly_next;
@@ -160,12 +160,17 @@ static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, const cha
 
 static void write_custom_element(FILE *f, pcb_element_t *e)
 {
-	pcb_message(PCB_MSG_ERROR, "Can't export custom footprint for %s yet\n", e->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
+	char *msg = pcb_strdup_printf("Can't export custom footprint for %s yet\n", e->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
+	pcb_io_incompat_save(e->parent.data, (pcb_any_obj_t *)e, msg, "element omitted - add the footprint type on the footprint list!");
+	free(msg);
+
 }
 
 static void write_custom_subc(FILE *f, pcb_subc_t *sc)
 {
-	pcb_message(PCB_MSG_ERROR, "Can't export custom footprint for %s yet\n", sc->refdes);
+	char *msg = pcb_strdup_printf("Can't export custom footprint for %s yet\n", sc->refdes);
+	pcb_io_incompat_save(sc->parent.data, (pcb_any_obj_t *)sc, msg, "subcircuit omitted - add the footprint type on the footprint list!");
+	free(msg);
 }
 
 static void fidocadj_do_export(pcb_hid_attr_val_t * options)
@@ -174,7 +179,6 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	const char *filename, *libfile;
 	int n, fidoly_next, have_lib;
 	pcb_layer_id_t lid;
-	int layer_warned = 0, hole_warned = 0;
 	htsi_t lib_names; /* hash of names found in the library, if have_lib is 1 */
 
 	if (!options) {
@@ -210,7 +214,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	for(lid = 0; lid < pcb_max_layer; lid++) {
 		pcb_layer_t *ly = PCB->Data->Layer+lid;
 		unsigned int lflg = pcb_layer_flags(PCB, lid);
-		int fidoly = layer_map(lflg, &fidoly_next, &layer_warned, ly->name);
+		int fidoly = layer_map(lflg, &fidoly_next, ly->name);
 
 		if (fidoly < 0)
 			continue;
@@ -234,9 +238,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			pcb_pline_t *pl = polygon->Clipped->contours;
 
 			if (polygon->HoleIndexN > 0) {
-				if (!hole_warned)
-					pcb_message(PCB_MSG_ERROR, "FidoCadJ can't handle holes in polygons, ignoring holes for this export - some of the polygons will look different\n");
-				hole_warned = 1;
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "FidoCadJ can't handle holes in polygons, ignoring holes for this export", "(some of the polygons will look different unless you remove the holes or split up the polygons)");
 			}
 
 			fprintf(f, "PP %ld %ld", crd(pl->head.point[0]), crd(pl->head.point[1]));
