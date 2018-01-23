@@ -326,7 +326,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "can't export shaped padstack", "use round or square instead; (fallback to round for now)");
 				oshape = 0;
 		}
-		fprintf(f, "pa %ld %ld %ld %ld %ld %d\n", crd(x), crd(y), pad_dia, pad_dia, drill_dia, oshape);
+		fprintf(f, "pa %ld %ld %ld %ld %ld %d\n", crd(x), crd(y), crd(pad_dia), crd(pad_dia), crd(drill_dia), oshape);
 	}
 	PCB_END_LOOP;
 
