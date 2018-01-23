@@ -61,6 +61,7 @@
 #include "hid_helper.h"
 #include "hid_flags.h"
 
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
 
 static pcb_hid_t fidocadj_hid;
 
@@ -298,6 +299,29 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 		}
 		else
 			fprintf(f, "%ld %ld %ld 0\n", crd(via->Thickness), crd(via->Thickness), crd(via->DrillingHole)); /* circular */
+	}
+	PCB_END_LOOP;
+
+	PCB_PADSTACK_LOOP(PCB->Data) {
+		int oshape;
+		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+		pcb_pstk_compshape_t cshape;
+		pcb_bool plated;
+		if (!pcb_pstk_export_compat_via(padstack, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "can't export non-uniform padstacl", "use a simpler padstack - omiting this one from the export");
+			continue;
+		}
+		switch(cshape) {
+			case PCB_PSTK_COMPAT_OCTAGON:
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "can't export octagonal shape", "use round or square instead; (fallback to round for now)");
+				/* fall-through */
+			case PCB_PSTK_COMPAT_ROUND:  oshape = 0; break;
+			case PCB_PSTK_COMPAT_SQUARE: oshape = 1; break;  /* rectangle with sharp corners */
+			default:
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "can't export shaped padstack", "use round or square instead; (fallback to round for now)");
+				oshape = 0;
+		}
+		fprintf(f, "pa %ld %ld %ld %ld %ld %d\n", crd(x), crd(y), pad_dia, pad_dia, drill_dia, oshape);
 	}
 	PCB_END_LOOP;
 
