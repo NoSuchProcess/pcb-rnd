@@ -607,3 +607,51 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 
 	return pcb_true;
 }
+
+pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape)
+{
+	pcb_flag_t flg;
+	int n;
+
+	memset(&flg, 0, sizeof(flg));
+	flg.f = ps->Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
+	switch(cshape) {
+		case PCB_PSTK_COMPAT_ROUND:
+			break;
+		case PCB_PSTK_COMPAT_OCTAGON:
+			flg.f |= PCB_FLAG_OCTAGON;
+			break;
+		case PCB_PSTK_COMPAT_SQUARE:
+			flg.f |= PCB_FLAG_SQUARE;
+			flg.q = 1;
+			break;
+		default:
+			if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
+				flg.f |= PCB_FLAG_SQUARE;
+				cshape -= PCB_PSTK_COMPAT_SHAPED;
+				if (cshape == 1)
+					cshape = 17;
+				flg.q = cshape;
+			}
+			else
+				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style pin/via", "Old pin/via format is very much restricted; try to use a simpler shape (e.g. circle)");
+	}
+
+	for(n = 0; n < sizeof(flg.t) / sizeof(flg.t[0]); n++) {
+		unsigned char *ot = pcb_pstk_get_thermal(ps, n, 0);
+		int nt;
+		if ((ot == NULL) || (*ot == 0) || !((*ot) & PCB_THERMAL_ON))
+			continue;
+		switch(((*ot) & ~PCB_THERMAL_ON)) {
+			case PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL: nt = 1; break;
+			case PCB_THERMAL_SHARP: nt = 2; break;
+			case PCB_THERMAL_SOLID: nt = 3; break;
+			case PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL: nt = 4; break;
+			case PCB_THERMAL_ROUND: nt = 5; break;
+			default: nt = 0; pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert thermal to old-style via", "Old via format is very much restricted; try to use a simpler thermal shape");
+		}
+		PCB_FLAG_THERM_ASSIGN_(n, nt, flg);
+	}
+	return flg;
+}
+

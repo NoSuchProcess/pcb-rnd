@@ -71,8 +71,6 @@
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_compat_help/subc_help.h"
 
-#define VIA_COMPAT_FLAGS (PCB_FLAG_CLEARLINE | PCB_FLAG_SELECTED | PCB_FLAG_WARN | PCB_FLAG_USETHERMAL | PCB_FLAG_LOCK)
-
 pcb_unit_style_t pcb_io_pcb_usty_seen;
 
 static void WritePCBInfoHeader(FILE *);
@@ -324,53 +322,6 @@ static void WritePCBFontData(FILE * FP)
 	}
 }
 
-static pcb_flag_t pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape)
-{
-	pcb_flag_t flg;
-	int n;
-
-	memset(&flg, 0, sizeof(flg));
-	flg.f = ps->Flags.f & VIA_COMPAT_FLAGS;
-	switch(cshape) {
-		case PCB_PSTK_COMPAT_ROUND:
-			break;
-		case PCB_PSTK_COMPAT_OCTAGON:
-			flg.f |= PCB_FLAG_OCTAGON;
-			break;
-		case PCB_PSTK_COMPAT_SQUARE:
-			flg.f |= PCB_FLAG_SQUARE;
-			flg.q = 1;
-			break;
-		default:
-			if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
-				flg.f |= PCB_FLAG_SQUARE;
-				cshape -= PCB_PSTK_COMPAT_SHAPED;
-				if (cshape == 1)
-					cshape = 17;
-				flg.q = cshape;
-			}
-			else
-				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style pin/via", "Old pin/via format is very much restricted; try to use a simpler shape (e.g. circle)");
-	}
-
-	for(n = 0; n < sizeof(flg.t) / sizeof(flg.t[0]); n++) {
-		unsigned char *ot = pcb_pstk_get_thermal(ps, n, 0);
-		int nt;
-		if ((ot == NULL) || (*ot == 0) || !((*ot) & PCB_THERMAL_ON))
-			continue;
-		switch(((*ot) & ~PCB_THERMAL_ON)) {
-			case PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL: nt = 1; break;
-			case PCB_THERMAL_SHARP: nt = 2; break;
-			case PCB_THERMAL_SOLID: nt = 3; break;
-			case PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL: nt = 4; break;
-			case PCB_THERMAL_ROUND: nt = 5; break;
-			default: nt = 0; pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert thermal to old-style via", "Old via format is very much restricted; try to use a simpler thermal shape");
-		}
-		PCB_FLAG_THERM_ASSIGN_(n, nt, flg);
-	}
-	return flg;
-}
-
 static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
@@ -398,7 +349,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
 			pad_dia, clearance*2, mask, drill_dia);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(name));
-		fprintf(FP, " %s]\n", pcb_strflg_f2s(pinvia_flag(ps, cshape), PCB_TYPE_VIA, NULL));
+		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_TYPE_VIA, NULL));
 	}
 }
 
@@ -565,7 +516,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
 				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-				fprintf(FP, " %s]\n", pcb_strflg_f2s(pinvia_flag(ps, cshape), PCB_TYPE_PIN, &ic));
+				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_TYPE_PIN, &ic));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0);
@@ -1062,7 +1013,7 @@ pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_c
 		shp = PCB_PSTK_COMPAT_ROUND;
 
 	p = pcb_pstk_new_compat_via(data, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
-	p->Flags.f |= Flags.f & VIA_COMPAT_FLAGS;
+	p->Flags.f |= Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
 	for(n = 0; n < sizeof(Flags.t) / sizeof(Flags.t[0]); n++) {
 		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
 		if (t != 0) {
