@@ -391,7 +391,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		char *name = pcb_attribute_get(&ps->Attributes, "name");
 
 		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, unform shape padstack");
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
 			continue;
 		}
 
