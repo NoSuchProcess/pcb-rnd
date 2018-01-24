@@ -17,6 +17,7 @@
 #include "plugins.h"
 #include "compat_misc.h"
 #include "obj_pinvia.h"
+#include "obj_pstk_inlines.h"
 #include "layer.h"
 #include "netlist.h"
 #include "safe_fs.h"
@@ -223,21 +224,62 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_coord_t *pw, pcb_coord_t *ph, p
 	*pcy = (box.Y2 + box.Y1)/2;
 }
 
-static void count_pins_pads(subst_ctx_t *ctx, pcb_element_t *element, int *pins, int *pads)
+static void count_pins_pads(subst_ctx_t *ctx, int *pins, int *pads)
 {
 	*pins = *pads = 0;
 
-	PCB_PIN_LOOP(element);
-	{
-		(*pins)++;
-	}
-	PCB_END_LOOP;
+	if (ctx->element != NULL) {
+		PCB_PIN_LOOP(ctx->element);
+		{
+			(*pins)++;
+		}
+		PCB_END_LOOP;
 
-	PCB_PAD_LOOP(element);
-	{
-		(*pads)++;
+		PCB_PAD_LOOP(ctx->element);
+		{
+			(*pads)++;
+		}
+		PCB_END_LOOP;
 	}
-	PCB_END_LOOP;
+	if (ctx->subc != NULL) {
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+		for(o = pcb_data_first(&it, ctx->subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+			pcb_layer_type_t lyt;
+
+			if (o->term == NULL)
+				continue;
+
+			/* light terminals */
+			if (o->type == PCB_OBJ_PSTK) {
+				pcb_pstk_t *ps = (pcb_pstk_t *)o;
+				pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+				if (proto->hdia > 0) { /* through-hole */
+					(*pins)++;
+					continue;
+				}
+
+				/* smd */
+				if (pcb_pstk_shape(ps, PCB_LYT_TOP | PCB_LYT_COPPER, 0))
+					(*pads)++;
+				if (pcb_pstk_shape(ps, PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0))
+					(*pads)++;
+				continue;
+			}
+		
+			/* heavy terminal */
+			if (o->type == PCB_OBJ_SUBC) {
+#warning subc TODO: subc-in-subc
+				assert(!"no subc-in-subc support yet");
+				continue;
+			}
+			assert(o->parent_type == PCB_PARENT_LAYER);
+			lyt = pcb_layer_flags_(o->parent.layer);
+			if ((lyt & PCB_LYT_COPPER) && (lyt & (PCB_LYT_TOP || PCB_LYT_TOP)))
+				(*pads)++;
+		}
+	}
 }
 
 static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
@@ -430,7 +472,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "smdvsthru%", 10) == 0) {
 			*input += 10;
-			count_pins_pads(ctx, ctx->element, &pin_cnt, &pad_cnt);
+			count_pins_pads(ctx, &pin_cnt, &pad_cnt);
 			if (pin_cnt > 0) {
 				pcb_append_printf(s, "PTH");
 			} else if (pad_cnt > 0) {
@@ -442,7 +484,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "pincount%", 9) == 0) {
 			*input += 9;
-			count_pins_pads(ctx, ctx->element, &pin_cnt, &pad_cnt);
+			count_pins_pads(ctx, &pin_cnt, &pad_cnt);
 			if (pin_cnt > 0) {
 				pcb_append_printf(s, "%d", pin_cnt);
 			} else if (pad_cnt > 0) {
