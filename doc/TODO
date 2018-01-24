@@ -199,6 +199,7 @@
 SUBC: element removal:
 	- cleanup: remove the parallel PCB_TYPE_* enum and maybe all the type/ptr1/ptr2/ptr3 mess too
 	- remove Line->Number and *->Number: we use ->term
+	- "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 
 GTK2:
 	- next_gui: keep them open, hide
