@@ -52,6 +52,8 @@
 #include "safe_fs.h"
 #include "thermal.h"
 
+#include "src_plugins/lib_compat_help/pstk_compat.h"
+
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"
 /*#define CFMT "%$$mn"*/
@@ -643,6 +645,21 @@ static lht_node_t *build_pstk(pcb_pstk_t *ps)
 	return obj;
 }
 
+/* attempt to convert a padstack to an old-style via for v1, v2 and v3 */
+static lht_node_t *build_pstk_via(pcb_data_t *data, pcb_pstk_t *ps)
+{
+	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+	pcb_pstk_compshape_t cshape;
+	pcb_bool plated;
+	char *name = pcb_attribute_get(&ps->Attributes, "name");
+
+	if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
+		return NULL;
+	}
+	return NULL;
+}
+
 static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 {
 	lht_node_t *lstk, *grps, *grp, *layers, *flags;
@@ -833,6 +850,13 @@ static lht_node_t *build_data(pcb_data_t *data)
 		lht_dom_hash_put(ndt, build_pstk_protos(&data->ps_protos));
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps))
 			lht_dom_list_append(grp, build_pstk(ps));
+	}
+	else {
+		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+			lht_node_t *p = build_pstk_via(data, ps);
+			if (p != NULL)
+				lht_dom_list_append(grp, p);
+		}
 	}
 
 	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))

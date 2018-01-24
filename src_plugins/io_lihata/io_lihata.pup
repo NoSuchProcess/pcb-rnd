@@ -10,5 +10,6 @@ $fmt-feature-w lihata pcb-rnd subcircuit (any version)
 $fmt-feature-r lihata pcb-rnd font (any version)
 $fmt-feature-w lihata pcb-rnd font (any version)
 
+dep lib_compat_help
 default buildin
 autoload 1
