@@ -493,11 +493,79 @@ static lht_node_t *build_element(pcb_element_t *elem)
 	return obj;
 }
 
-static lht_node_t *build_subc_element(pcb_subc_t *sc)
+static lht_node_t *build_subc_element(pcb_subc_t *subc)
 {
-#warning subc TODO: implement conversion for backward compatibility
-	pcb_message(PCB_MSG_ERROR, "Can't save subcircuits in lihata versions lower than v3\n");
-	return NULL;
+	char buff[128];
+	pcb_line_t *li;
+	lht_node_t *obj, *lst;
+	pcb_coord_t ox, oy;
+	gdl_iterator_t sit, it;
+	int l;
+
+
+	if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
+		assert(subc->parent_type == PCB_PARENT_DATA);
+		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "Failed to convert subc to old-style element: missing origin", "make sure the subcircuit has the vectors on its subc-aux layer");
+		return NULL;
+	}
+
+	sprintf(buff, "element.%ld", subc->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_attributes(&subc->Attributes));
+	lht_dom_hash_put(obj, build_flags(&subc->Flags, PCB_TYPE_ELEMENT, 0));
+
+	/* build drawing primitives */
+	lst = lht_dom_node_alloc(LHT_LIST, "objects");
+	lht_dom_hash_put(obj, lst);
+
+
+	lht_dom_list_append(lst, build_text("desc", pcb_attribute_get(&subc->Attributes, "footprint")));
+	lht_dom_list_append(lst, build_text("name", pcb_attribute_get(&subc->Attributes, "refdes")));
+	lht_dom_list_append(lst, build_text("value", pcb_attribute_get(&subc->Attributes, "value")));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, ox));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, oy));
+
+	/* export layer objects: silk lines and arcs */
+	for(l = 0; l < subc->data->LayerN; l++) {
+		pcb_layer_t *ly = &subc->data->Layer[l];
+		pcb_line_t *line;
+		pcb_arc_t *arc;
+
+		if ((ly->meta.bound.type & PCB_LYT_SILK) && (ly->meta.bound.type & PCB_LYT_TOP)) {
+			linelist_foreach(&ly->Line, &it, line)
+				lht_dom_list_append(lst, build_line(line, -1, -ox, -oy, 0));
+			arclist_foreach(&ly->Arc, &it, arc) 
+				lht_dom_list_append(lst, build_arc(arc, -ox, -oy));
+			if (polylist_length(&ly->Polygon) > 0) {
+				char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element\n", ly->name);
+				pcb_io_incompat_save(subc->data, NULL, desc, "only lines and arcs are exported");
+				free(desc);
+			}
+			if (textlist_length(&ly->Text) > 1) {
+				char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element\n", ly->name);
+				pcb_io_incompat_save(subc->data, NULL, desc, "only lines and arcs are exported");
+				free(desc);
+			}
+			continue;
+		}
+
+		if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
+			char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element\n", ly->name);
+			pcb_io_incompat_save(subc->data, NULL, desc, "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
+			free(desc);
+		}
+	}
+
+/*
+	for(pi = pinlist_first(&elem->Pin); pi != NULL; pi = pinlist_next(pi))
+		lht_dom_list_append(lst, build_pin(pi, 0, -elem->MarkX, -elem->MarkY));
+
+	for(pa = padlist_first(&elem->Pad); pa != NULL; pa = padlist_next(pa))
+		lht_dom_list_append(lst, build_pad(pa, -elem->MarkX, -elem->MarkY));
+*/
+
+	return obj;
 }
 
 static lht_node_t *build_subc(pcb_subc_t *sc)
