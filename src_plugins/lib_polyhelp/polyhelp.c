@@ -358,8 +358,8 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_ha
 }
 
 
-static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [combination of h|v|c])\nPolyHatch(interactive)\n";
-static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer";
+static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [hvcp])\nPolyHatch(interactive)\n";
+static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly";
 static int pcb_act_PolyHatch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_coord_t period = 0;
