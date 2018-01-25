@@ -665,6 +665,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 			ny = PCB->MaxHeight - 1;
 
 		/* Place components onto center of board. */
+		pcb_crosshair.Y = ny; /* flipping side depends on the crosshair unfortunately */
 		if (pcb_buffer_copy_to_layout(PCB, nx, ny))
 			pcb_board_set_changed_flag(pcb_true);
 	}
