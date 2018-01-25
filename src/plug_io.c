@@ -65,6 +65,7 @@
 #include "compat_lrealpath.h"
 #include "layer_vis.h"
 #include "safe_fs.h"
+#include "plug_footprint.h"
 
 /* for opendir */
 #include "compat_inc.h"
@@ -130,12 +131,10 @@ void pcb_set_design_dir(const char *fn)
 	pcb_conf_ro("rc/path/design");
 }
 
-static int pcb_test_parse_all(const char *Filename, const char *fmt, pcb_plug_iot_t type, pcb_find_io_t *available, int *accepts, int *accept_total, int maxav, int ignore_missing, int gen_event)
+static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, pcb_plug_iot_t type, pcb_find_io_t *available, int *accepts, int *accept_total, int maxav, int ignore_missing, int gen_event)
 {
-	FILE *ft;
 	int len, n;
 
-	ft = pcb_fopen(Filename, "r");
 	if (ft == NULL) {
 		if (!ignore_missing)
 			pcb_message(PCB_MSG_ERROR, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
@@ -162,7 +161,6 @@ static int pcb_test_parse_all(const char *Filename, const char *fmt, pcb_plug_io
 
 		if (*accept_total <= 0) {
 			pcb_message(PCB_MSG_ERROR, "can't find a IO_ plugin to load a PCB using format %s\n", fmt);
-			fclose(ft);
 			return -1;
 		}
 
@@ -187,7 +185,6 @@ static int pcb_test_parse_all(const char *Filename, const char *fmt, pcb_plug_io
 			}
 		}
 	}
-	fclose(ft);
 
 	if (*accept_total == 0) {
 		pcb_message(PCB_MSG_ERROR, "none of the IO_ plugin recognized the file format of %s - it's either not a valid board file or does not match the format specified\n", Filename);
@@ -202,8 +199,12 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
 	int accept_total = 0;
+	FILE *ft;
 
-	len = pcb_test_parse_all(Filename, fmt, PCB_IOT_PCB, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), ignore_missing, load_settings);
+	ft = pcb_fopen(Filename, "r");
+	len = pcb_test_parse_all(ft, Filename, fmt, PCB_IOT_PCB, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), ignore_missing, load_settings);
+	if (ft != NULL)
+		fclose(ft);
 	if (len < 0)
 		return -1;
 
@@ -240,8 +241,13 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
 	int accept_total = 0;
+	FILE *f;
+	pcb_fp_fopen_ctx_t fctx;
 
-	len = pcb_test_parse_all(Filename, fmt, PCB_IOT_FOOTPRINT, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
+	f = pcb_fp_fopen(pcb_fp_default_search_path(), Filename, &fctx);
+	len = pcb_test_parse_all(f, Filename, fmt, PCB_IOT_FOOTPRINT, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
+	if (f != NULL)
+		pcb_fp_fclose(f, &fctx);
 	if (len < 0)
 		return -1;
 
