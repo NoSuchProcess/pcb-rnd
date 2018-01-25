@@ -255,7 +255,7 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 
 	/* try all plugins that said it could handle the file */
 	for(n = 0; n < len; n++) {
-		if ((available[n].plug->parse_pcb == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
+		if ((available[n].plug->parse_element == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
 			continue;
 		res = available[n].plug->parse_element(available[n].plug, Ptr, Filename);
 		if (res == 0) {
