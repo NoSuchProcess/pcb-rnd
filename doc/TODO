@@ -46,7 +46,8 @@
 	- Lesstif HID does not have this dialog => implement it, using DAD
 	- Default keyboard focus on "OK" button ? (allow closing the dialog with keyboard)
 - BUG: GTK-GL: adding new mask layer by right clicking on existing mask layer, add after existing layer, select "subtraction" drawing checkbox, and set name of new layer in dialog to test. Once done, new layer is called "New Layer", not the provided name. Subtraction checkbox use directly affects manifestion of bug. [report: erich]
-- BUG: polyhatch() - start pcb-rnd, draw a polygon on top copper signal, then invoking :polyhatch() fails to bring up window allowing user to specify crasshatch parameters [report: erich]
++ BUG: polyhatch() - start pcb-rnd, draw a polygon on top copper signal, then invoking :PolyHatch() fails to bring up window allowing user to specify crosshatch parameters [report: erich]
+	- Use :PolyHatch(interactive) to bring up the window.  :PolyHatch() is valid, and will perform the hatches using default values.
 - BUG: shift-m of alt-a selected polyhatch() lines to top mask layer can induce a crash.  Start pcb-rnd, create large polygon on top copper i.e. over half the area, invoke polyhatch(), click on crosshatched polygon and hit delete to delete the polygon. Then hit 'u' to undo associated line deletion, alt-a to select all lines (bug_files/polyhatch4a.lht and polyhatch2a.lht), switch to top mask, 'm' to move lines, and up with residual polygon copied to mask layer along with lines. rtree related segfault seems to have been fixed. [report: erich]
 - BUG: undo/redo broken after using 'insert new, after this layer': screencap http://scififaster.net/undo_add_layer.ogv [report: Miloh]
 - feature: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
