@@ -34,6 +34,7 @@
 #include "global_typedefs.h"
 #include "rats.h"
 #include "misc_util.h"
+#include "layer.h"
 
 int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
 pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
@@ -174,6 +175,13 @@ pcb_bool pcb_is_point_in_box(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_c
 
 /* Return the distance^2 between a line-center and a point */
 double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line);
+
+/* Return the first line object that has its centerline crossing the point;
+   if ang is not NULL, only return lines that are pointing in the right
+   angle (also accept 180 degree rotation)
+   if no_subc_part is true, ignore lines that are part of subcircuits;
+   if no_term is true, ignore lines that are terminals */
+pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_coord_t y, pcb_angle_t *ang, pcb_bool no_subc_part, pcb_bool no_term);
 
 int pcb_search_screen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
 int pcb_search_grid_slop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);

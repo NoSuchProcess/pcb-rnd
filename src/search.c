@@ -1153,6 +1153,28 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 #undef angle_in_range
 }
 
+pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_coord_t y, pcb_angle_t *ang, pcb_bool no_subc_part, pcb_bool no_term)
+{
+	pcb_rtree_it_t it;
+	pcb_rtree_box_t pt;
+	pcb_line_t *l;
+
+/* TODO: set pt coords to x and y */
+
+	for(l = pcb_rtree_first(&it, &layer->line_tree, &pt); l != NULL; l = pcb_rtree_next(&it)) {
+		/* check if line needs to be ignored and "continue;" if so:
+		   l->term is non-NULL if it's a terminal,
+		   pcb_lobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p) returns non-NULL if it's in a subc
+		 */
+		/* if the line shouldn't be ignored, check if x;y is on the centerline and
+		   "continue;" if bad */
+		/* check if angle is required and is correct; "continue;" on mismatch */
+		return l;
+	}
+	return NULL; /* found nothing */
+}
+
+
 /* ---------------------------------------------------------------------------
  * searches for any kind of object or for a set of object types
  * the calling routine passes two pointers to allocated memory for storing
