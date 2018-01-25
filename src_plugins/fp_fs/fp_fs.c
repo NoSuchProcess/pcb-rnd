@@ -469,14 +469,16 @@ out:;
 }
 
 #define F_IS_PARAMETRIC 0
+#define F_TMPNAME 1
 static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	char *basename, *params, *fullname;
-	FILE *f = NULL;
+	FILE *fp, *f = NULL;
 	const char *libshell;
 
 	pcb_conf_cmd_is_safe(rc.library_shell, &libshell, 1);
 
+	fctx->field[F_TMPNAME].p = NULL;
 	fctx->field[F_IS_PARAMETRIC].i = pcb_fp_dupname(name, &basename, &params);
 	if (basename == NULL)
 		return NULL;
@@ -500,7 +502,17 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			cmd = malloc(strlen(libshell) + strlen(fullname) + strlen(params) + 16);
 			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
-			f = pcb_popen(cmd, "r");
+			fctx->field[F_TMPNAME].p = pcb_tempfile_name_new("pcb-rnd-pfp");
+			f = pcb_fopen((char *)fctx->field[F_TMPNAME].p, "w+");
+			if (f != NULL) {
+				char buff[4096];
+				int len;
+				fp = pcb_popen(cmd, "r");
+				while((len = fread(buff, 1, sizeof(buff), fp)) > 0)
+					fwrite(buff, 1, len, f);
+				pcb_pclose(fp);
+				rewind(f);
+			}
 			free(cmd);
 		}
 		else
@@ -514,10 +526,9 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 
 static void fp_fs_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
-	if (fctx->field[F_IS_PARAMETRIC].i)
-		pcb_pclose(f);
-	else
-		fclose(f);
+	fclose(f);
+	if (fctx->field[F_TMPNAME].p != NULL)
+		pcb_tempfile_unlink((char *)fctx->field[F_TMPNAME].p);
 }
 
 
