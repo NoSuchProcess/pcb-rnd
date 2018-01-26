@@ -623,15 +623,27 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GtkTreePath *path;
+	pcb_bool key_handled, arrow_key;
 	GtkClipboard *clipboard;
 	const gchar *compname;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
-	/* Handle both lower and uppercase 'c', and 'Enter' keys */
-	if ( (event->keyval != GDK_KEY_Return) &&
+	arrow_key =  ( event->keyval == GDK_KEY_Up   || event->keyval == GDK_KEY_KP_Up
+							|| event->keyval == GDK_KEY_Down || event->keyval == GDK_KEY_KP_Down);
+	key_handled = (event->keyval == GDK_KEY_Return || arrow_key);
+
+	/* Handle both lower and uppercase 'c', and handled keys */
+	if ( !(key_handled) &&
 			 ( ((event->state & default_mod_mask) != GDK_CONTROL_MASK)
 				 || ((event->keyval != GDK_KEY_c) && (event->keyval != GDK_KEY_C))) )
 		return FALSE;
+
+	/* If arrows (up or down), let GTK process the selection change. Then activate the new selected row. */
+	if (arrow_key) {
+		GtkWidgetClass *class = GTK_WIDGET_GET_CLASS(tree_view);
+
+		class->key_press_event(tree_view, event);
+	}
 
 	selection = gtk_tree_view_get_selection(tree_view);
 	g_return_val_if_fail(selection != NULL, TRUE);
@@ -639,8 +651,8 @@ static gboolean treeview_key_press_cb(GtkTreeView * tree_view, GdkEventKey * eve
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return TRUE;
 
-	/* Handle 'Enter' key as "activate" */
-	if (event->keyval == GDK_KEY_Return) {
+	/* Handle 'Enter' key and arrow keys as "activate" */
+	if (event->keyval == GDK_KEY_Return || arrow_key) {
 		path = gtk_tree_model_get_path(model, &iter);
 		if (path != NULL) {
 			tree_row_activated(tree_view, path, NULL, user_data);
