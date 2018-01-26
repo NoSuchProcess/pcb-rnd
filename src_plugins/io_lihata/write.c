@@ -500,8 +500,7 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 	lht_node_t *obj, *lst;
 	pcb_coord_t ox, oy;
 	gdl_iterator_t sit, it;
-	int l;
-
+	int l, seen_refdes = 0;
 
 	if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
 		assert(subc->parent_type == PCB_PARENT_DATA);
@@ -520,9 +519,6 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 	lht_dom_hash_put(obj, lst);
 
 
-	lht_dom_list_append(lst, build_text("desc", pcb_attribute_get(&subc->Attributes, "footprint")));
-	lht_dom_list_append(lst, build_text("name", pcb_attribute_get(&subc->Attributes, "refdes")));
-	lht_dom_list_append(lst, build_text("value", pcb_attribute_get(&subc->Attributes, "value")));
 	lht_dom_hash_put(obj, build_textf("x", CFMT, ox));
 	lht_dom_hash_put(obj, build_textf("y", CFMT, oy));
 
@@ -531,12 +527,31 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 		pcb_layer_t *ly = &subc->data->Layer[l];
 		pcb_line_t *line;
 		pcb_arc_t *arc;
+		pcb_text_t *text;
 
 		if ((ly->meta.bound.type & PCB_LYT_SILK) && (ly->meta.bound.type & PCB_LYT_TOP)) {
 			linelist_foreach(&ly->Line, &it, line)
 				lht_dom_list_append(lst, build_line(line, -1, -ox, -oy, 0));
 			arclist_foreach(&ly->Arc, &it, arc) 
 				lht_dom_list_append(lst, build_arc(arc, -ox, -oy));
+			textlist_foreach(&ly->Text, &it, text) {
+				if (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text)) {
+					if (!seen_refdes) {
+						pcb_text_t tmp;
+						memcpy(&tmp, text, sizeof(tmp));
+						tmp.TextString = pcb_attribute_get(&subc->Attributes, "footprint");
+						lht_dom_list_append(lst, build_pcb_text("desc", &tmp));
+						tmp.TextString = pcb_attribute_get(&subc->Attributes, "refdes");
+						lht_dom_list_append(lst, build_pcb_text("name", &tmp));
+						tmp.TextString = pcb_attribute_get(&subc->Attributes, "value");
+						lht_dom_list_append(lst, build_pcb_text("value", &tmp));
+						seen_refdes = 1;
+					}
+				}
+				else {
+					pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)text, "can't export custom silk text object", "the only text old pcb elements support is the refdes/value/description text");
+				}
+			}
 			if (polylist_length(&ly->Polygon) > 0) {
 				char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element\n", ly->name);
 				pcb_io_incompat_save(subc->data, NULL, desc, "only lines and arcs are exported");
