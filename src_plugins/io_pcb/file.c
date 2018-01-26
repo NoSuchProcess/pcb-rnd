@@ -996,44 +996,6 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 
 /*** Compatibility wrappers: create padstack and subc as if they were vias and elements ***/
 
-pcb_pstk_t *io_pcb_via_new(pcb_data_t *data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
-{
-	pcb_pstk_t *p;
-	pcb_pstk_compshape_t shp;
-	int n;
-
-	if (Flags.f & PCB_FLAG_SQUARE) {
-		shp = Flags.q /*+ PCB_PSTK_COMPAT_SHAPED*/;
-		if (shp == 0)
-			shp = PCB_PSTK_COMPAT_SQUARE;
-	}
-	else if (Flags.f & PCB_FLAG_OCTAGON)
-		shp = PCB_PSTK_COMPAT_OCTAGON;
-	else
-		shp = PCB_PSTK_COMPAT_ROUND;
-
-	p = pcb_pstk_new_compat_via(data, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
-	p->Flags.f |= Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
-	for(n = 0; n < sizeof(Flags.t) / sizeof(Flags.t[0]); n++) {
-		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
-		if (t != 0) {
-			switch(t) {
-				case 1: nt |= PCB_THERMAL_SHARP | PCB_THERMAL_DIAGONAL; break;
-				case 2: nt |= PCB_THERMAL_SHARP; break;
-				case 3: nt |= PCB_THERMAL_SOLID; break;
-				case 4: nt |= PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL; break;
-				case 5: nt |= PCB_THERMAL_ROUND; break;
-			}
-			pcb_pstk_set_thermal(p, n, nt);
-		}
-	}
-
-	if (Name != NULL)
-		pcb_attribute_put(&p->Attributes, "name", Name);
-
-	return p;
-}
-
 static int yysubc_bottom;
 extern	pcb_subc_t *yysubc;
 extern	pcb_coord_t yysubc_ox, yysubc_oy;
@@ -1120,7 +1082,7 @@ pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y
 pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
-	p = io_pcb_via_new(subc->data, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
+	p = pcb_old_via_new(subc->data, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
 	if (Number != NULL)
 		pcb_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
