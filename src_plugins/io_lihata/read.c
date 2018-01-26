@@ -822,35 +822,44 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
+static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy, int subc_on_bottom)
 {
-	pcb_pin_t *via;
+	pcb_pstk_t *ps;
 	unsigned char intconn = 0;
+	pcb_coord_t Thickness, Clearance, Mask, DrillingHole, X, Y;
+	char *Name, *Number;
+	pcb_flag_t flg;
 
 	if (dt == NULL)
 		return -1;
 
-	via = pcb_via_alloc(dt);
+	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA, &intconn);
+	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
+	parse_coord(&Clearance, lht_dom_hash_get(obj, "clearance"));
+	parse_coord(&Mask, lht_dom_hash_get(obj, "mask"));
+	parse_coord(&DrillingHole, lht_dom_hash_get(obj, "hole"));
+	parse_coord(&X, lht_dom_hash_get(obj, "x"));
+	parse_coord(&Y, lht_dom_hash_get(obj, "y"));
+	parse_text(&Name, lht_dom_hash_get(obj, "name"));
+	parse_text(&Number, lht_dom_hash_get(obj, "number"));
 
-	parse_id(&via->ID, obj, 4);
-	parse_flags(&via->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA, &intconn);
-	pcb_attrib_compat_set_intconn(&via->Attributes, intconn);
-	parse_attributes(&via->Attributes, lht_dom_hash_get(obj, "attributes"));
+	ps = pcb_old_via_new(dt, X+dx, Y+dy, Thickness, Clearance, Mask, DrillingHole, Name, flg);
+	if (ps == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to convert old via to padstack\n");
+		return 0;
+	}
 
-	parse_coord(&via->Thickness, lht_dom_hash_get(obj, "thickness"));
-	parse_coord(&via->Clearance, lht_dom_hash_get(obj, "clearance"));
-	parse_coord(&via->Mask, lht_dom_hash_get(obj, "mask"));
-	parse_coord(&via->DrillingHole, lht_dom_hash_get(obj, "hole"));
-	parse_coord(&via->X, lht_dom_hash_get(obj, "x"));
-	parse_coord(&via->Y, lht_dom_hash_get(obj, "y"));
-	parse_text(&via->Name, lht_dom_hash_get(obj, "name"));
-	parse_text(&via->Number, lht_dom_hash_get(obj, "number"));
+	parse_id(&ps->ID, obj, 4);
+	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
+	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	via->X += dx;
-	via->Y += dy;
+	if (Number != NULL)
+		pcb_attribute_put(&ps->Attributes, "term", Number);
+	if (Name != NULL)
+		pcb_attribute_put(&ps->Attributes, "name", Name);
 
-	if (dt != NULL)
-		pcb_add_via(dt, via);
+	if (subc_on_bottom)
+		pcb_pstk_mirror(ps, 0, 1);
 
 	return 0;
 }
@@ -955,7 +964,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 				}
 			}
 			if (strncmp(n->name, "pin.", 4) == 0)
-				parse_via(subc->data, n, ox, oy);
+				parse_via(subc->data, n, ox, oy, onsld);
 			if (strncmp(n->name, "pad.", 4) == 0)
 				parse_pad(subc, n, ox, oy, onsld);
 		}
@@ -1052,7 +1061,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 		if (strncmp(n->name, "padstack_ref.", 13) == 0)
 			parse_pstk(dt, n);
 		if (strncmp(n->name, "via.", 4) == 0)
-			parse_via(dt, n, 0, 0);
+			parse_via(dt, n, 0, 0, 0);
 		if (strncmp(n->name, "rat.", 4) == 0)
 			parse_rat(dt, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
