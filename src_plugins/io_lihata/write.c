@@ -363,8 +363,40 @@ static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, pcb_coord_t dx, pcb_coo
 	return obj;
 }
 
-#warning padstack TODO: move that func here so no declaration needed
-static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool is_via, pcb_coord_t dx, pcb_coord_t dy);
+/* attempt to convert a padstack to an old-style via for v1, v2 and v3 */
+static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool is_via, pcb_coord_t dx, pcb_coord_t dy)
+{
+	char buff[128];
+	lht_node_t *obj;
+	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+	pcb_pstk_compshape_t cshape;
+	pcb_bool plated;
+	pcb_flag_t flg;
+	char *name = pcb_attribute_get(&ps->Attributes, "name");
+
+
+	if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
+		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
+		return NULL;
+	}
+
+	sprintf(buff, "%s.%ld", is_via ? "via" : "pin", ps->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	flg = pcb_pstk_compat_pinvia_flag(ps, cshape);
+
+	lht_dom_hash_put(obj, build_attributes(&ps->Attributes));
+	lht_dom_hash_put(obj, build_flags(&flg, PCB_TYPE_VIA, ps->intconn));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pad_dia));
+	lht_dom_hash_put(obj, build_textf("clearance", CFMT, clearance));
+	lht_dom_hash_put(obj, build_textf("mask", CFMT, mask));
+	lht_dom_hash_put(obj, build_textf("hole", CFMT, drill_dia));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, x + dx));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, y + dy));
+	lht_dom_hash_put(obj, build_text("name", name));
+	lht_dom_hash_put(obj, build_text("number", ps->term));
+	return obj;
+}
 
 static lht_node_t *build_pad(pcb_pad_t *pad, pcb_coord_t dx, pcb_coord_t dy)
 {
@@ -752,41 +784,6 @@ static lht_node_t *build_pstk(pcb_pstk_t *ps)
 
 	}
 
-	return obj;
-}
-
-/* attempt to convert a padstack to an old-style via for v1, v2 and v3 */
-static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool is_via, pcb_coord_t dx, pcb_coord_t dy)
-{
-	char buff[128];
-	lht_node_t *obj;
-	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
-	pcb_pstk_compshape_t cshape;
-	pcb_bool plated;
-	pcb_flag_t flg;
-	char *name = pcb_attribute_get(&ps->Attributes, "name");
-
-
-	if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
-		return NULL;
-	}
-
-	sprintf(buff, "%s.%ld", is_via ? "via" : "pin", ps->ID);
-	obj = lht_dom_node_alloc(LHT_HASH, buff);
-
-	flg = pcb_pstk_compat_pinvia_flag(ps, cshape);
-
-	lht_dom_hash_put(obj, build_attributes(&ps->Attributes));
-	lht_dom_hash_put(obj, build_flags(&flg, PCB_TYPE_VIA, ps->intconn));
-	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pad_dia));
-	lht_dom_hash_put(obj, build_textf("clearance", CFMT, clearance));
-	lht_dom_hash_put(obj, build_textf("mask", CFMT, mask));
-	lht_dom_hash_put(obj, build_textf("hole", CFMT, drill_dia));
-	lht_dom_hash_put(obj, build_textf("x", CFMT, x + dx));
-	lht_dom_hash_put(obj, build_textf("y", CFMT, y + dy));
-	lht_dom_hash_put(obj, build_text("name", name));
-	lht_dom_hash_put(obj, build_text("number", ps->term));
 	return obj;
 }
 
