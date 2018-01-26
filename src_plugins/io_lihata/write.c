@@ -579,9 +579,13 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 		pcb_pstk_compshape_t cshape;
 		pcb_bool plated, square, nopaste;
 		unsigned char ic = ps->intconn;
+
+#warning subc TODO: dont' depend on pcb_pin_t and pcb_pad_t here, rahter convert build_pin to call pcb_pstk_export_compat_via() directly
+
 		if (pcb_pstk_export_compat_via(ps, &pi.X, &pi.Y, &pi.DrillingHole, &pi.Thickness, &pi.Clearance, &pi.Mask, &cshape, &plated)) {
 			pi.Attributes = ps->Attributes;
 			pi.Flags = pcb_pstk_compat_pinvia_flag(ps, cshape);
+#warning subc TODO: move the plated check in pcb_pstk_compat_pinvia_flag(), io_pcb needs it too
 			if (!plated)
 				pi.Flags.f |= PCB_FLAG_HOLE;
 			pi.intconn = ps->intconn;
