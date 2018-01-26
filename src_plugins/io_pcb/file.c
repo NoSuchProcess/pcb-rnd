@@ -528,7 +528,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_TYPE_PAD, &ic));
 			}
 			else
-				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported az pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
+				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
 		}
 
 		for(l = 0; l < sc->data->LayerN; l++) {
