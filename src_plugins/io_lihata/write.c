@@ -579,6 +579,8 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 	for(pa = padlist_first(&elem->Pad); pa != NULL; pa = padlist_next(pa))
 		lht_dom_list_append(lst, build_pad(pa, -elem->MarkX, -elem->MarkY));
 */
+	if (!seen_refdes)
+		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "can't export subcircuit without refdes text on silk", "old pcb elements require refdes text on silk");
 
 	return obj;
 }
