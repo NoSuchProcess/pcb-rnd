@@ -1062,7 +1062,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	if (Value != NULL)
 		pcb_attribute_put(&sc->Attributes, "value", Value);
 
-#warning TODO: TextFlags
+#warning subc TODO: TextFlags
 	txt = pcb_subc_add_refdes_text(sc, TextX, TextY, Direction, TextScale, yysubc_bottom);
 
 	return sc;
