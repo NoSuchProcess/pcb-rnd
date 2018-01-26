@@ -822,19 +822,15 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-
-/* If el == NULL and dt != NULL it is a via (for now). */
-static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
+static int parse_via(pcb_data_t *dt, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_pin_t *via;
 	unsigned char intconn = 0;
 
-	if (dt != NULL)
-		via = pcb_via_alloc(dt);
-	else if (el != NULL)
-		via = pcb_pin_alloc(el);
-	else
+	if (dt == NULL)
 		return -1;
+
+	via = pcb_via_alloc(dt);
 
 	parse_id(&via->ID, obj, 4);
 	parse_flags(&via->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA, &intconn);
@@ -855,8 +851,6 @@ static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coo
 
 	if (dt != NULL)
 		pcb_add_via(dt, via);
-	if (el != NULL)
-		via->Element = el;
 
 	return 0;
 }
@@ -961,7 +955,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 				}
 			}
 			if (strncmp(n->name, "pin.", 4) == 0)
-				parse_pin(subc->data, NULL, n, ox, oy);
+				parse_via(subc->data, n, ox, oy);
 			if (strncmp(n->name, "pad.", 4) == 0)
 				parse_pad(subc, n, ox, oy, onsld);
 		}
@@ -1058,7 +1052,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 		if (strncmp(n->name, "padstack_ref.", 13) == 0)
 			parse_pstk(dt, n);
 		if (strncmp(n->name, "via.", 4) == 0)
-			parse_pin(dt, NULL, n, 0, 0);
+			parse_via(dt, n, 0, 0);
 		if (strncmp(n->name, "rat.", 4) == 0)
 			parse_rat(dt, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
