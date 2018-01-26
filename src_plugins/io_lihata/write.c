@@ -363,6 +363,9 @@ static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, pcb_coord_t dx, pcb_coo
 	return obj;
 }
 
+#warning padstack TODO: move that func here so no declaration needed
+static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool is_via, pcb_coord_t dx, pcb_coord_t dy);
+
 static lht_node_t *build_pad(pcb_pad_t *pad, pcb_coord_t dx, pcb_coord_t dy)
 {
 	char buff[128];
@@ -574,22 +577,18 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 	}
 
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
-		pcb_pin_t pi;
+		lht_node_t *nps;
 		pcb_pad_t pa;
 		pcb_pstk_compshape_t cshape;
 		pcb_bool plated, square, nopaste;
 		unsigned char ic = ps->intconn;
 
-#warning subc TODO: dont' depend on pcb_pin_t and pcb_pad_t here, rahter convert build_pin to call pcb_pstk_export_compat_via() directly
+#warning subc TODO: dont' depend on pcb_pad_t here, rahter convert build_pin to call pcb_pstk_export_compat_via() directly
 
-		if (pcb_pstk_export_compat_via(ps, &pi.X, &pi.Y, &pi.DrillingHole, &pi.Thickness, &pi.Clearance, &pi.Mask, &cshape, &plated)) {
-			pi.Attributes = ps->Attributes;
-			pi.Flags = pcb_pstk_compat_pinvia_flag(ps, cshape);
-#warning subc TODO: move the plated check in pcb_pstk_compat_pinvia_flag(), io_pcb needs it too
-			if (!plated)
-				pi.Flags.f |= PCB_FLAG_HOLE;
-			pi.intconn = ps->intconn;
-			lht_dom_list_append(lst, build_pin(&pi, 0, -ox, -oy));
+		nps = build_pstk_pinvia(subc->data, ps, pcb_false, -ox, -oy);
+		if (nps != NULL)
+		{
+			lht_dom_list_append(lst, nps);
 		}
 		else if (pcb_pstk_export_compat_pad(ps, &pa.Point1.X, &pa.Point1.Y, &pa.Point2.X, &pa.Point2.Y, &pa.Thickness, &pa.Clearance, &pa.Mask, &square, &nopaste)) {
 			pa.Attributes = ps->Attributes;
