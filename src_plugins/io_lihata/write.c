@@ -499,8 +499,9 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 	pcb_line_t *li;
 	lht_node_t *obj, *lst;
 	pcb_coord_t ox, oy;
-	gdl_iterator_t sit, it;
+	gdl_iterator_t it;
 	int l, seen_refdes = 0;
+	pcb_pstk_t *ps;
 
 	if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
 		assert(subc->parent_type == PCB_PARENT_DATA);
@@ -572,13 +573,34 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 		}
 	}
 
-/*
-	for(pi = pinlist_first(&elem->Pin); pi != NULL; pi = pinlist_next(pi))
-		lht_dom_list_append(lst, build_pin(pi, 0, -elem->MarkX, -elem->MarkY));
+	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+		pcb_pin_t pi;
+		pcb_pad_t pa;
+		pcb_pstk_compshape_t cshape;
+		pcb_bool plated, square, nopaste;
+		unsigned char ic = ps->intconn;
+		if (pcb_pstk_export_compat_via(ps, &pi.X, &pi.Y, &pi.DrillingHole, &pi.Thickness, &pi.Clearance, &pi.Mask, &cshape, &plated)) {
+			pi.Attributes = ps->Attributes;
+			pi.Flags = pcb_pstk_compat_pinvia_flag(ps, cshape);
+			if (!plated)
+				pi.Flags.f |= PCB_FLAG_HOLE;
+			pi.intconn = ps->intconn;
+			lht_dom_list_append(lst, build_pin(&pi, 0, -ox, -oy));
+		}
+		else if (pcb_pstk_export_compat_pad(ps, &pa.Point1.X, &pa.Point1.Y, &pa.Point2.X, &pa.Point2.Y, &pa.Thickness, &pa.Clearance, &pa.Mask, &square, &nopaste)) {
+			pa.Attributes = ps->Attributes;
+			pa.Flags = ps->Flags;
+			pa.intconn = ps->intconn;
+			if (square)
+				pa.Flags.f |= PCB_FLAG_SQUARE;
+			if (nopaste)
+				pa.Flags.f |= PCB_FLAG_NOPASTE;
+			lht_dom_list_append(lst, build_pad(&pa, -ox, -oy));
+		}
+		else
+			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
+	}
 
-	for(pa = padlist_first(&elem->Pad); pa != NULL; pa = padlist_next(pa))
-		lht_dom_list_append(lst, build_pad(pa, -elem->MarkX, -elem->MarkY));
-*/
 	if (!seen_refdes)
 		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "can't export subcircuit without refdes text on silk", "old pcb elements require refdes text on silk");
 
