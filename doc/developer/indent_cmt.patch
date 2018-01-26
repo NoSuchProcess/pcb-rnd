@@ -1,0 +1,18 @@
+diff -uri indent-2.2.11.orig/src/comments.c indent-2.2.11/src/comments.c
+--- indent-2.2.11.orig/src/comments.c	2018-01-26 13:45:48.474640060 +0100
++++ indent-2.2.11/src/comments.c	2018-01-26 14:47:06.867653819 +0100
+@@ -339,7 +339,13 @@
+          start_column = count_columns (compute_label_target (), s_lab, NULL_CHAR);
+       }
+ 
+-      if (start_column < target)
++      if (target == 0)
++      {
++         /* 0 means start right after the end of the line, adding a space, no alignment */
++         *e_com++ = ' ';
++         column++;
++      }
++      else if (start_column < target)
+       {
+          start_column = target;
+       }
