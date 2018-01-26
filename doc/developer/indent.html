@@ -13,6 +13,18 @@ commandline on their <b>new</b> code before sending a patch or committing
 to svn. The style of existing code lines should <b>not</b> be changed,
 not even the "sorrunding" lines to a largish patch, especially not in the
 same patch/commit with actual code changes.
+<p>
+We do not put space between the pointer-asterisk and name; indent(1)
+unfortunately does this in function delcaration:
+<table border=1>
+<tr><th>right </th>wrong
+<tr>
+	<td>int&nbsp;foo(char&nbsp;*bar);
+	<td>int&nbsp;foo(char&nbsp;*&nbsp;bar);
+</table>
+<p>
+We have a <a href="indent_fdecl.patch">patch</a> against indent 2.2.11 to
+fix this.
 
 </body>
 </html>

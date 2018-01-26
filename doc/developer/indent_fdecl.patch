@@ -1,0 +1,17 @@
+diff -uri indent-2.2.11.orig/src/handletoken.c indent-2.2.11/src/handletoken.c
+--- indent-2.2.11.orig/src/handletoken.c	2018-01-26 13:45:48.477640023 +0100
++++ indent-2.2.11/src/handletoken.c	2018-01-26 14:23:38.923255546 +0100
+@@ -677,8 +677,11 @@
+         
+     }
+ #endif
+-    
+-    parser_state_tos->want_blank = true;
++    if (parser_state_tos->in_decl)
++        parser_state_tos->want_blank = false;
++    else
++        parser_state_tos->want_blank = true;
++
+ }
+ 
+ /**
