@@ -58,6 +58,7 @@
 #include "vtpadstack.h"
 
 #include "../src_plugins/lib_compat_help/subc_help.h"
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 
 #warning cleanup TODO: put these in a gloal load-context-struct
@@ -860,36 +861,38 @@ static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coo
 	return 0;
 }
 
-static int parse_pad(pcb_subc_t *sc, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
+static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy, int subc_on_bottom)
 {
-	pcb_pad_t *pad;
+	pcb_pstk_t *p;
 	unsigned char intconn = 0;
+	pcb_flag_t flg;
+	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance, Mask;
+	char *Name, *Number;
 
-	pad = pcb_pad_alloc(sc);
+	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD, &intconn);
 
-	parse_id(&pad->ID, obj, 4);
-	parse_flags(&pad->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD, &intconn);
-	pcb_attrib_compat_set_intconn(&pad->Attributes, intconn);
-	parse_attributes(&pad->Attributes, lht_dom_hash_get(obj, "attributes"));
+	parse_coord(&Thickness, lht_dom_hash_get(obj, "thickness"));
+	parse_coord(&Clearance, lht_dom_hash_get(obj, "clearance"));
+	parse_coord(&Mask, lht_dom_hash_get(obj, "mask"));
+	parse_coord(&X1, lht_dom_hash_get(obj, "x1"));
+	parse_coord(&Y1, lht_dom_hash_get(obj, "y1"));
+	parse_coord(&X2, lht_dom_hash_get(obj, "x2"));
+	parse_coord(&Y2, lht_dom_hash_get(obj, "y2"));
+	parse_text(&Name, lht_dom_hash_get(obj, "name"));
+	parse_text(&Number, lht_dom_hash_get(obj, "number"));
 
-	parse_coord(&pad->Thickness, lht_dom_hash_get(obj, "thickness"));
-	parse_coord(&pad->Clearance, lht_dom_hash_get(obj, "clearance"));
-	parse_coord(&pad->Mask, lht_dom_hash_get(obj, "mask"));
-	parse_coord(&pad->Point1.X, lht_dom_hash_get(obj, "x1"));
-	parse_coord(&pad->Point1.Y, lht_dom_hash_get(obj, "y1"));
-	parse_coord(&pad->Point2.X, lht_dom_hash_get(obj, "x2"));
-	parse_coord(&pad->Point2.Y, lht_dom_hash_get(obj, "y2"));
-	parse_text(&pad->Name, lht_dom_hash_get(obj, "name"));
-	parse_text(&pad->Number, lht_dom_hash_get(obj, "number"));
+	p = pcb_pstk_new_compat_pad(subc->data, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)) != subc_on_bottom);
+	if (Number != NULL)
+		pcb_attribute_put(&p->Attributes, "term", Number);
+	if (Name != NULL)
+		pcb_attribute_put(&p->Attributes, "name", Name);
 
-	pad->Point1.X += dx;
-	pad->Point2.X += dx;
-	pad->Point1.Y += dy;
-	pad->Point2.Y += dy;
+	if (subc_on_bottom)
+		pcb_pstk_mirror(p, 0, 1);
 
-	post_id_req(&pad->Point1);
-	post_id_req(&pad->Point2);
-/*	pad->Element = el;*/
+	parse_id(&p->ID, obj, 4);
+	pcb_attrib_compat_set_intconn(&p->Attributes, intconn);
+	parse_attributes(&p->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	return 0;
 }
@@ -904,6 +907,8 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	int onsld, tdir = 0, tscale = 100;
 	pcb_coord_t ox, oy, tx, ty;
 	pcb_text_t *txt;
+
+	pcb_add_subc_to_data(dt, subc);
 
 	parse_id(&subc->ID, obj, 8);
 	parse_flags(&subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, NULL);
@@ -958,7 +963,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 			if (strncmp(n->name, "pin.", 4) == 0)
 				parse_pin(subc->data, NULL, n, ox, oy);
 			if (strncmp(n->name, "pad.", 4) == 0)
-				parse_pad(subc, n, ox, oy);
+				parse_pad(subc, n, ox, oy, onsld);
 		}
 	}
 
