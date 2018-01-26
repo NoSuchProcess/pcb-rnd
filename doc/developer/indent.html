@@ -20,8 +20,8 @@ unfortunately does this in function declaration:
 <table border=1>
 <tr><th>right <th>wrong
 <tr>
-	<td>int&nbsp;foo(char&nbsp;*bar);
-	<td>int&nbsp;foo(char&nbsp;*&nbsp;bar);
+	<td><code>int&nbsp;foo(char&nbsp;*bar);</code>
+	<td><code>int&nbsp;foo(char&nbsp;*&nbsp;bar);</code>
 </table>
 <p>
 We have a <a href="indent_fdecl.patch">patch</a> against indent 2.2.11 to
