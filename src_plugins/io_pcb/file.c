@@ -1032,27 +1032,11 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 
 void io_pcb_element_fin(pcb_data_t *Data)
 {
-	pcb_coord_t cx, cy;
-	double rot = 0, tmp;
-	pcb_subc_bbox(yysubc);
 	const char *cent;
 
-	pcb_subc_xy_rot(yysubc, &cx, &cy, &rot, &tmp, 1);
+	pcb_subc_xy_rot_pnp(yysubc, yysubc_ox, yysubc_oy, yysubc_bottom);
 
-/*	pcb_trace("io_pcb_element_fin(): subc rot=%f\n", rot);*/
-
-	/* unless xy-centre or pnp-centre is set to origin, place a pnp origin mark */
-	cent = pcb_attribute_get(&yysubc->Attributes, "xy-centre");
-	if (cent == NULL)
-		cent = pcb_attribute_get(&yysubc->Attributes, "pnp-centre");
-	if ((cent == NULL) || (strcmp(cent, "origin") != 0))
-		pcb_subc_create_aux_point(yysubc, cx, cy, "pnp-origin");
-
-	/* add the base vector at the origin imported, but with the rotation
-	   reverse engineered: the original element format does have an explicit
-	   origin but no rotation info */
-	pcb_subc_create_aux(yysubc, yysubc_ox, yysubc_oy, rot, yysubc_bottom);
-
+	pcb_subc_bbox(yysubc);
 	pcb_add_subc_to_data(Data, yysubc);
 	if (Data->subc_tree == NULL)
 		Data->subc_tree = pcb_r_create_tree();
