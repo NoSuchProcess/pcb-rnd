@@ -1031,21 +1031,23 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 }
 
 /* Parse a layer definition and do all the administration needed for the layer */
-static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype)
+static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree)
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
+#warning TODO: we shouldn't depend on layer IDs other than 0
 	switch (lnum) {
 		case 0:
-/*pcb_hid_actionl("dumpcsect", NULL);*/
-			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
-			id = pcb_layer_create(st->pcb, gid, lname);
-/*printf("------------------------------\n");
-pcb_hid_actionl("dumpcsect", NULL);*/
-			break;
 		case 15:
-			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1);
+		case 31:
+			if (strcmp(lname+1, ".Cu") != 0)
+				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (.Cu mismatch)");
+			if ((lname[0] != 'F') && (lname[0] != 'B'))
+				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (F or B mismatch)");
+			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
 			id = pcb_layer_create(st->pcb, gid, lname);
+/*printf("------------------------------ layer=%s\n", lname);
+pcb_hid_actionl("dumpcsect", NULL);*/
 			break;
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {
@@ -1061,6 +1063,7 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 			}
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
 				/* F. or B. layers */
+#warning TODO: update this: we have explicit silk, paste and mask now
 				if (strcmp(lname + 2, "SilkS") == 0)
 					return 0; /* silk layers are implicit */
 #if 0
@@ -1173,7 +1176,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 				/*pcb_trace("\tlayer #%d LAYERNUM found:\t%s\n", i, n->str); */
 				/*pcb_trace("\tlayer #%d layer label found:\t%s\n", i, lname); */
 				/*pcb_trace("\tlayer #%d layer description/type found:\t%s\n", i, ltype); */
-				if (kicad_create_layer(st, lnum, lname, ltype) < 0) {
+				if (kicad_create_layer(st, lnum, lname, ltype, n) < 0) {
 					pcb_message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
 					pcb_layergrp_inhibit_dec();
 					return -1;
