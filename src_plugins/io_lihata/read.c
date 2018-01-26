@@ -973,29 +973,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 #warning subc TODO: TextFlags
 	txt = pcb_subc_add_refdes_text(subc, tx, ty, tdir, tscale, onsld);
 
-#warning subc TODO: this code is shared with io_pcb io_pcb_element_fin() - make it a common helper in lib_compat_help
-	{
-		pcb_coord_t cx = ox, cy = oy;
-		double rot = 0.0, tmp;
-		const char *cent;
-
-/*pcb_trace("d1 cx=%mm cy=%mm rot=%f\n", cx, cy, rot);*/
-
-		pcb_subc_xy_rot(subc, &cx, &cy, &rot, &tmp, 1);
-/*pcb_trace("d2 cx=%mm cy=%mm rot=%f\n", cx, cy, rot);*/
-
-	/* unless xy-centre or pnp-centre is set to origin, place a pnp origin mark */
-		cent = pcb_attribute_get(&subc->Attributes, "xy-centre");
-		if (cent == NULL)
-			cent = pcb_attribute_get(&subc->Attributes, "pnp-centre");
-		if ((cent == NULL) || (strcmp(cent, "origin") != 0))
-			pcb_subc_create_aux_point(subc, cx, cy, "pnp-origin");
-
-		/* add the base vector at the origin imported, but with the rotation
-		   reverse engineered: the original element format does have an explicit
-		   origin but no rotation info */
-		pcb_subc_create_aux(subc, ox, oy, rot, onsld);
-	}
+	pcb_subc_xy_rot_pnp(subc, ox, oy, onsld);
 
 	pcb_subc_bbox(subc);
 

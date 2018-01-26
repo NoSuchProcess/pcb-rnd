@@ -368,3 +368,25 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double 
 		}
 	}
 }
+
+void pcb_subc_xy_rot_pnp(pcb_subc_t *subc, pcb_coord_t subc_ox, pcb_coord_t subc_oy, pcb_bool on_bottom)
+{
+	pcb_coord_t cx = subc_ox, cy = subc_oy;
+	double rot = 0.0, tmp;
+	const char *cent;
+
+	pcb_subc_xy_rot(subc, &cx, &cy, &rot, &tmp, 1);
+
+	/* unless xy-centre or pnp-centre is set to origin, place a pnp origin mark */
+	cent = pcb_attribute_get(&subc->Attributes, "xy-centre");
+	if (cent == NULL)
+		cent = pcb_attribute_get(&subc->Attributes, "pnp-centre");
+	if ((cent == NULL) || (strcmp(cent, "origin") != 0))
+		pcb_subc_create_aux_point(subc, cx, cy, "pnp-origin");
+
+	/* add the base vector at the origin imported, but with the rotation
+	   reverse engineered: the original element format does have an explicit
+	   origin but no rotation info */
+	pcb_subc_create_aux(subc, subc_ox, subc_oy, rot, on_bottom);
+}
+
