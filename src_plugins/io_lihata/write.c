@@ -554,12 +554,12 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 				}
 			}
 			if (polylist_length(&ly->Polygon) > 0) {
-				char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element\n", ly->name);
+				char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
 				pcb_io_incompat_save(subc->data, NULL, desc, "only lines and arcs are exported");
 				free(desc);
 			}
 			if (textlist_length(&ly->Text) > 1) {
-				char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element\n", ly->name);
+				char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element", ly->name);
 				pcb_io_incompat_save(subc->data, NULL, desc, "only lines and arcs are exported");
 				free(desc);
 			}
@@ -567,7 +567,7 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 		}
 
 		if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
-			char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element\n", ly->name);
+			char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element", ly->name);
 			pcb_io_incompat_save(subc->data, NULL, desc, "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
 			free(desc);
 		}
