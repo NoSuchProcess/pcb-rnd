@@ -398,6 +398,44 @@ static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool 
 	return obj;
 }
 
+/* attempt to convert a padstack to an old-style pad for v1, v2 and v3 */
+static lht_node_t *build_pstk_pad(pcb_data_t *data, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
+{
+	char buff[128];
+	lht_node_t *obj;
+	pcb_coord_t x1, y1, x2, y2, thickness, clearance, mask;
+	pcb_bool square, nopaste;
+	char *name = pcb_attribute_get(&ps->Attributes, "name");
+	pcb_flag_t flg;
+
+	if (!pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
+		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "Failed to convert to old-style pad", "Old pad format is very much restricted; try to use a simpler, uniform shape padstack, square or round-cap line based");
+		return NULL;
+	}
+
+	sprintf(buff, "pad.%ld", ps->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	flg = ps->Flags;
+	if (square)
+		flg.f |= PCB_FLAG_SQUARE;
+	if (nopaste)
+		flg.f |= PCB_FLAG_NOPASTE;
+
+	lht_dom_hash_put(obj, build_attributes(&ps->Attributes));
+	lht_dom_hash_put(obj, build_flags(&flg, PCB_TYPE_PAD, ps->intconn));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", CFMT, clearance));
+	lht_dom_hash_put(obj, build_textf("mask", CFMT, mask));
+	lht_dom_hash_put(obj, build_textf("x1", CFMT, x1+dx));
+	lht_dom_hash_put(obj, build_textf("y1", CFMT, y1+dy));
+	lht_dom_hash_put(obj, build_textf("x2", CFMT, x2+dx));
+	lht_dom_hash_put(obj, build_textf("y2", CFMT, y2+dy));
+	lht_dom_hash_put(obj, build_text("name", name));
+	lht_dom_hash_put(obj, build_text("number", ps->term));
+	return obj;
+}
+
 static lht_node_t *build_pad(pcb_pad_t *pad, pcb_coord_t dx, pcb_coord_t dy)
 {
 	char buff[128];
@@ -531,7 +569,6 @@ static lht_node_t *build_element(pcb_element_t *elem)
 static lht_node_t *build_subc_element(pcb_subc_t *subc)
 {
 	char buff[128];
-	pcb_line_t *li;
 	lht_node_t *obj, *lst;
 	pcb_coord_t ox, oy;
 	gdl_iterator_t it;
@@ -610,28 +647,12 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 		lht_node_t *nps;
-		pcb_pad_t pa;
-		pcb_pstk_compshape_t cshape;
-		pcb_bool plated, square, nopaste;
-		unsigned char ic = ps->intconn;
-
-#warning subc TODO: dont' depend on pcb_pad_t here, rahter convert build_pin to call pcb_pstk_export_compat_via() directly
 
 		nps = build_pstk_pinvia(subc->data, ps, pcb_false, -ox, -oy);
+		if (nps == NULL)
+			nps = build_pstk_pad(subc->data, ps, -ox, -oy);
 		if (nps != NULL)
-		{
 			lht_dom_list_append(lst, nps);
-		}
-		else if (pcb_pstk_export_compat_pad(ps, &pa.Point1.X, &pa.Point1.Y, &pa.Point2.X, &pa.Point2.Y, &pa.Thickness, &pa.Clearance, &pa.Mask, &square, &nopaste)) {
-			pa.Attributes = ps->Attributes;
-			pa.Flags = ps->Flags;
-			pa.intconn = ps->intconn;
-			if (square)
-				pa.Flags.f |= PCB_FLAG_SQUARE;
-			if (nopaste)
-				pa.Flags.f |= PCB_FLAG_NOPASTE;
-			lht_dom_list_append(lst, build_pad(&pa, -ox, -oy));
-		}
 		else
 			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
 	}
