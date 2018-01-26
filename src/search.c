@@ -801,6 +801,28 @@ static int is_point_on_line(pcb_coord_t px, pcb_coord_t py, pcb_coord_t lx1, pcb
 	return pcb_is_point_on_line(px, py, 1, &l);
 }
 
+pcb_bool pcb_is_point_on_thinline( pcb_coord_t X, pcb_coord_t Y, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,pcb_coord_t Y2 )
+{
+	/* Calculate the cross product of the vector from the first line point to the test point
+	 * and the vector from the first line point to the second line point. If the result is 
+	 * not 0 then the point does not lie on the line.
+	 */
+	const pcb_coord_t lx = X2 - X1;
+	const pcb_coord_t ly = Y2 - Y1;
+	const pcb_coord_t cross = ((X-X1) * ly) - ((Y-Y1) * lx);
+
+	if(cross != 0)
+		return pcb_false;
+
+	/* If the point does lie on the line then we do a simple check to see if the point is
+	 * between the end points. Use the longest side of the line to perform the check.
+	 */
+	if(abs(lx) > abs(ly))
+		return (X >= MIN(X1,X2)) && (X <= MAX(X1,X2)) ? pcb_true : pcb_false;
+
+	return (Y >= MIN(Y1,Y2)) && (Y <= MAX(Y1,Y2)) ? pcb_true : pcb_false;
+}
+
 /* checks if a line crosses a rectangle or is within the rectangle */
 pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_line_t *Line)
 {
@@ -1725,3 +1747,4 @@ int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_c
 	check(by1, by2, yi);
 	return 1;
 }
+

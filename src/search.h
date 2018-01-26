@@ -164,6 +164,7 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 	(PCB_IS_BOX_NEGATIVE(b) ? PCB_ARC_TOUCHES_BOX(a,b) : PCB_ARC_IN_BOX(a,b))
 
 pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line);
+pcb_bool pcb_is_point_on_thinline( pcb_coord_t X, pcb_coord_t Y, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,pcb_coord_t Y2 );
 pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line);
 pcb_bool pcb_is_point_in_pin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin);
 pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_t *Arc);
@@ -190,3 +191,4 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name);
 
 #endif
+
