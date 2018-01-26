@@ -3,9 +3,10 @@
 <h1> pcb-rnd - indentation </h1>
 
 As of r1022 all old code is converted using indent(1). Our preferred
-coding style is close to what the following command line produces:
+coding style is close to what the following command line produces, using
+our patched version of indent(1):
 <pre>
-indent --line-length128 -brs -br -nce --tab-size2 -ut -npsl  -npcs -hnl -cli2 -ncs
+indent --line-length128 -brs -br -nce --tab-size2 -ut -npsl  -npcs -hnl -cli2 -nsaf -sai -nsaw -ncs -c0 -cd0 -cp0
 </pre>
 <p>
 Contributors are kindly asked to follow this style or run the above
