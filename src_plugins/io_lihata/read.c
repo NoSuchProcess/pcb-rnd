@@ -57,6 +57,9 @@
 #include "plug_footprint.h"
 #include "vtpadstack.h"
 
+#include "../src_plugins/lib_compat_help/subc_help.h"
+#include "../src_plugins/lib_compat_help/elem_rot.h"
+
 #warning cleanup TODO: put these in a gloal load-context-struct
 vtp0_t post_ids, post_thermal;
 static int rdver;
@@ -857,12 +860,12 @@ static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coo
 	return 0;
 }
 
-static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
+static int parse_pad(pcb_subc_t *sc, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_pad_t *pad;
 	unsigned char intconn = 0;
 
-	pad = pcb_pad_alloc(el);
+	pad = pcb_pad_alloc(sc);
 
 	parse_id(&pad->ID, obj, 4);
 	parse_flags(&pad->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD, &intconn);
@@ -886,7 +889,7 @@ static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coo
 
 	post_id_req(&pad->Point1);
 	post_id_req(&pad->Point2);
-	pad->Element = el;
+/*	pad->Element = el;*/
 
 	return 0;
 }
@@ -894,47 +897,107 @@ static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coo
 
 static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
-	pcb_element_t *elem = pcb_element_alloc(dt);
+	pcb_subc_t *subc = pcb_subc_alloc();
+	pcb_layer_t *silk = NULL;
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
-	int onsld;
+	int onsld, tdir = 0, tscale = 100;
+	pcb_coord_t ox, oy, tx, ty;
+	pcb_text_t *txt;
 
-	parse_id(&elem->ID, obj, 8);
-	parse_flags(&elem->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, NULL);
-	parse_attributes(&elem->Attributes, lht_dom_hash_get(obj, "attributes"));
-	parse_coord(&elem->MarkX, lht_dom_hash_get(obj, "x"));
-	parse_coord(&elem->MarkY, lht_dom_hash_get(obj, "y"));
+	parse_id(&subc->ID, obj, 8);
+	parse_flags(&subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT, NULL);
+	parse_attributes(&subc->Attributes, lht_dom_hash_get(obj, "attributes"));
+	parse_coord(&ox, lht_dom_hash_get(obj, "x"));
+	parse_coord(&oy, lht_dom_hash_get(obj, "y"));
+	tx = ox;
+	ty = oy;
 
-	onsld = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, elem);
+	onsld = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, subc);
+	subc->Flags.f &= ~PCB_FLAG_ONSOLDER;
+
+	/* bind the via rtree so that vias added in this subc show up on the board */
+	if (pcb != NULL) {
+		if (dt->via_tree == NULL)
+			dt->via_tree = pcb_r_create_tree();
+		subc->data->via_tree = dt->via_tree;
+		if (dt->padstack_tree == NULL)
+			dt->padstack_tree = pcb_r_create_tree();
+		subc->data->padstack_tree = dt->padstack_tree;
+	}
+
+	/* the only layer objects are put on from and old element is the primary silk layer */
+	{
+		pcb_layer_type_t silk_side = onsld ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+		const char *name = onsld ? "bottom-silk" : "top-silk";
+		silk = pcb_subc_get_layer(subc, PCB_LYT_SILK | silk_side, /*PCB_LYC_AUTO*/0, pcb_true, name);
+	}
 
 	lst = lht_dom_hash_get(obj, "objects");
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(NULL, elem, n, 0, elem->MarkX, elem->MarkY);
+				parse_line(silk, NULL, n, 0, ox, oy);
 			if (strncmp(n->name, "arc.", 4) == 0)
-				parse_arc(NULL, elem, n, elem->MarkX, elem->MarkY);
-/*		if (strncmp(n->name, "polygon.", 8) == 0)
-			parse_polygon(ly, elem, n);*/
-			if (strncmp(n->name, "text.", 5) == 0)
-				parse_pcb_text(NULL, elem, n);
+				parse_arc(silk, NULL, n, ox, oy);
+			if (strncmp(n->name, "text.", 5) == 0) {
+				lht_node_t *role   = lht_dom_hash_get(n, "role");
+				lht_node_t *string = lht_dom_hash_get(n, "string");
+				if ((role != NULL) && (role->type == LHT_TEXT) && (string != NULL) && (string->type == LHT_TEXT)) {
+					const char *key = role->data.text.value;
+					const char *val = string->data.text.value;
+					if (strcmp(key, "desc") == 0)   pcb_attribute_put(&subc->Attributes, "footprint", val);
+					if (strcmp(key, "value") == 0)  pcb_attribute_put(&subc->Attributes, "value", val);
+					if (strcmp(key, "name") == 0)   pcb_attribute_put(&subc->Attributes, "refdes", val);
+					parse_coord(&tx, lht_dom_hash_get(n, "x"));
+					parse_coord(&ty, lht_dom_hash_get(n, "y"));
+					parse_coord(&tdir, lht_dom_hash_get(n, "direction"));
+					parse_coord(&tscale, lht_dom_hash_get(n, "scale"));
+				}
+			}
 			if (strncmp(n->name, "pin.", 4) == 0)
-				parse_pin(NULL, elem, n, elem->MarkX, elem->MarkY);
+				parse_pin(subc->data, NULL, n, ox, oy);
 			if (strncmp(n->name, "pad.", 4) == 0)
-				parse_pad(elem, n, elem->MarkX, elem->MarkY);
+				parse_pad(subc, n, ox, oy);
 		}
 	}
 
-	if (onsld) {
-		int n;
-		for(n = 0; n < PCB_MAX_ELEMENTNAMES; n++)
-			PCB_FLAG_SET(PCB_FLAG_ONSOLDER, &elem->Name[n]);
+#warning subc TODO: TextFlags
+	txt = pcb_subc_add_refdes_text(subc, tx, ty, tdir, tscale, onsld);
+
+#warning subc TODO: this code is shared with io_pcb io_pcb_element_fin() - make it a common helper in lib_compat_help
+	{
+		pcb_coord_t cx = ox, cy = oy;
+		double rot = 0.0, tmp;
+		const char *cent;
+
+/*pcb_trace("d1 cx=%mm cy=%mm rot=%f\n", cx, cy, rot);*/
+
+		pcb_subc_xy_rot(subc, &cx, &cy, &rot, &tmp, 1);
+/*pcb_trace("d2 cx=%mm cy=%mm rot=%f\n", cx, cy, rot);*/
+
+	/* unless xy-centre or pnp-centre is set to origin, place a pnp origin mark */
+		cent = pcb_attribute_get(&subc->Attributes, "xy-centre");
+		if (cent == NULL)
+			cent = pcb_attribute_get(&subc->Attributes, "pnp-centre");
+		if ((cent == NULL) || (strcmp(cent, "origin") != 0))
+			pcb_subc_create_aux_point(subc, cx, cy, "pnp-origin");
+
+		/* add the base vector at the origin imported, but with the rotation
+		   reverse engineered: the original element format does have an explicit
+		   origin but no rotation info */
+		pcb_subc_create_aux(subc, ox, oy, rot, onsld);
 	}
 
-	/* Make sure we use some sort of font */
-	if (pcb == NULL)
-		pcb = PCB;
-	pcb_element_bbox(dt, elem, pcb_font(PCB, 0, 1));
+	pcb_subc_bbox(subc);
+
+	pcb_add_subc_to_data(dt, subc);
+	if (dt->subc_tree == NULL)
+		dt->subc_tree = pcb_r_create_tree();
+	pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)subc);
+
+	pcb_subc_rebind(pcb, subc);
+
 	return 0;
 }
 
